@@ -137,7 +137,7 @@ A jtsparseit(J jt,A w,A a,A e){PROLOG(0091);A ax,c,x,y,z;B b,*cv;I cm,cn,m,n,r,*
  RE(m=prod(n,s)); b=equ(a,IX(r));
  RZ(x=virtual(b?w:cant2(ax,w),0,1+r-n)); AN(x)=AN(w); v=AS(x); *v=m; if(r>n)ICPY(1+v,n+s,r-n);
  b=b&&SB01&AT(z)&&equ(e,num(0)); c=w;
- if(!b)RZ(c=not(irs2(reshape(vec(INT,r-n,n+s),SPA(p,e)),x,VFLAGNONE, RMAX,-1L,jtmatch)));
+ if(!b)RZ(c=__not(irs2(reshape(vec(INT,r-n,n+s),SPA(p,e)),x,VFLAGNONE, RMAX,-1L,jtmatch)));
  cn=AN(c); cv=BAV(c); cm=bsum(cn,cv);
  /* RZ(y=abase2(vec(INT,n,s),repeat(c,IX(cn)))); */
  GATV0(y,INT,cm*n,2); u=AS(y); *u++=cm; *u=n;
@@ -186,7 +186,7 @@ F2(jtreaxis){A a1,e,p,q,x,y,z;B*b;I c,d,j,k,m,r,*u,*v,*ws,wt;P*wp,*zp;
   GATV0(q,INT,1+r,1); v=AV(q); k=0;
   s=AS(x); c=1; DO(AN(p), d=s[1+i]; if(b[i]){c*=d; v[k++]=d;}else u[j++]=d;); *u=c*m;
   RZ(x=reshape(vec(INT,j,u),cant2(increm(dgrade1(p)),x)));
-  RZ(q=not(irs2(x,reshape(vec(INT,AR(x)-1,1+AS(x)),e),0L,-1L,RMAX,jtmatch)));
+  RZ(q=__not(irs2(x,reshape(vec(INT,AR(x)-1,1+AS(x)),e),0L,-1L,RMAX,jtmatch)));
   SPBV(zp,x,x,repeat(q,x));
   RZ(y=stitch(repeat(sc(c),y),reshape(v2(c*m,k),abase2(vec(INT,k,v),IX(c)))));
   RZ(p=grade1(over(a,less(a1,a))));
@@ -293,7 +293,7 @@ F1(jtunzero){A e,q,x,z;I r;P*wp,*zp;
  ARGCHK1(w);
  wp=PAV(w); e=SPA(wp,e); x=SPA(wp,x); r=AR(x)-1;
  GASPARSE(z,AT(w),1,AR(w),AS(w)); zp=PAV(z);
- RZ(q=not(irs2(x,reshape(vec(INT,r,1+AS(x)),e),0L,r,r,jtmatch)));
+ RZ(q=__not(irs2(x,reshape(vec(INT,r,1+AS(x)),e),0L,r,r,jtmatch)));
  SPB(zp,x,repeat(q,x));
  SPB(zp,i,repeat(q,SPA(wp,i)));
  SPB(zp,a,ca(SPA(wp,a)));

@@ -2,6 +2,9 @@
 /* Licensed use only. Any other use is in violation of copyright.          */
 // utilities for JFE to load JE, initiallize, and run profile sentence
 // JFEs are jconsole, jwdw, and jwdp
+
+extern "C" {
+
 #define PLEN 1000 // path length
 #ifdef _WIN32
  #include <windows.h>
@@ -89,15 +92,11 @@ void* jehjdll(){return hjdll;}
 // load JE, Jinit, getprocaddresses, JSM
 J jeload(void* callbacks)
 {
-#ifdef _WIN32
- WCHAR wpath[PLEN];
- MultiByteToWideChar(CP_UTF8,0,pathdll,1+(int)strlen(pathdll),wpath,PLEN);
- hjdll=LoadLibraryW(wpath);
-#else
  hjdll=dlopen(pathdll,RTLD_LAZY);
-#endif
+ char* error = dlerror();
+ printf( "ERROR\tCould not open library globally: %s\n", error ? error : "" );
  if(!hjdll)return 0;
- jt=((JInitType)GETPROCADDRESS(hjdll,"JInit"))();
+ jt = static_cast<JST*>(reinterpret_cast<JInitType>(dlsym(hjdll,"JInit"))());
  if(!jt) return 0;
  ((JSMType)GETPROCADDRESS(hjdll,"JSM"))(jt,callbacks);
  jdo=(JDoType)GETPROCADDRESS(hjdll,"JDo");
@@ -278,8 +277,10 @@ void jesetpath(char* arg)
 // profile is from BINPATH, ARGV, ijx basic, or nothing
 int jefirst(int type,char* arg)
 {
-	int r; char* p,*q;
-	char* input=malloc(2000+strlen(arg));
+	int r; 
+	char* p;
+	char* q;
+	char* input=static_cast<char* >(malloc(2000+strlen(arg)));
 #if 0
 	char buf[50];
 #endif
@@ -386,4 +387,6 @@ void jefail(char* msg)
 	if(errno&&!strerror_r(errno,ermsg,1024))strcat(msg,ermsg);
 #endif
 	strcat(msg,"\n");
+}
+
 }

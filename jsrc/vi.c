@@ -6,9 +6,6 @@
 #include "j.h"
 #include "vcomp.h"
 
-// platforms without hardware crc32c
-#if !(C_CRC32C && SY_64)
-
 /* Floating point (type D) byte order:               */
 /* Archimedes              3 2 1 0 7 6 5 4           */
 /* VAX                     1 0 3 2 5 4 7 6           */
@@ -1616,7 +1613,7 @@ F2(jtless){A x=w;I ar,at,k,r,*s,wr,*ws,wt;
  if(wr&&r!=wr){RZ(x=virtual(w,0,r)); AN(x)=AN(w); s=AS(x); ws=AS(w); k=ar>wr?0:1+wr-r; *s=prod(k,ws); MCISH(1+s,k+ws,r-1);}  // bug: should test for error on the prod()
  // if nothing special (like sparse, or incompatible types, or x requires conversion) do the fast way; otherwise (-. x e. y) # y
  RZ(x=!(at&SPARSE)&&HOMO(at,wt)&&TYPESEQ(at,maxtype(at,wt))&&!(AFLAG(a)&AFNJA)?indexofsub(ILESS,x,a):
-     repeat(not(eps(a,x)),a));
+     repeat(__not(eps(a,x)),a));
  // We extracted from a, so mark it non-pristine.  If a was pristine and inplaceable, transfer its pristine status to the result
 // obsolete  I af=AFLAG(a); AFLAG(x)|=af&((SGNTO0(AC(a))&((I)jtinplace>>JTINPLACEAX))<<AFPRISTINEX); if(unlikely(af&AFVIRTUAL)){a=ABACK(a); af=AFLAG(a);} AFLAG(a)=af&~AFPRISTINE;
  PRISTXFERAF(x,a)
@@ -1750,4 +1747,3 @@ A jtiocol(J jt,I mode,A a,A w){A h,z;I ar,at,c,d,m,p,t,wr,*ws,wt;void(*fn)();
  R z;
 }    /* a i."1 &.|:w or a i:"1 &.|:w */
 
-#endif /* C_AVX */

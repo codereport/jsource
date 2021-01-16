@@ -272,7 +272,7 @@ static A jtredsp1a(J jt,C id,A z,A e,I n,I r,I*s){A t;B b,p=0;D d=1;
    ASSERT(B01&AT(e),EVNONCE); 
    if(!n)BAV(z)[0]=p; 
    b=1; DO(r, if(!(s[i]&1)){b=0; break;}); 
-   R !p==*BAV(e)&&b!=(n&1)?not(z):z;
+   R !p==*BAV(e)&&b!=(n&1)?__not(z):z;
 }}   /* f/w on sparse vector w, post processing */
 
 static A jtredsp1(J jt,A w,A self,C id,VARPSF ado,I cv,I f,I r,I zt){A e,x,z;I m,n;P*wp;

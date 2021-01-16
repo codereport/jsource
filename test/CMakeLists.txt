@@ -3,7 +3,6 @@ if(BUILD_TESTING)
     target_link_libraries(tsdll PRIVATE ${STANDARD_MATH_LIBRARY})
     target_sources(tsdll PRIVATE
         ../jsrc/tsdll.c
-        ../makevs/tsdll/tsdll.def
     )
 endif()
 

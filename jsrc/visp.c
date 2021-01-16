@@ -92,7 +92,7 @@ static A jtioe(J jt,I mode,A w){A b,j,p,y;I c,jn,*jv,k,n;P*wp;
  if(1<AR(b))RZ(b=aslash1(CSTARDOT,b));  /* b=. *./@,"_1 (3$.w)=5$.w */
  RZ(y=irs2(num(0),y,0L,0L,1L,jtfrom));
  RZ(df2(p,y,b,sldot(slash(ds(CSTARDOT)))));
- RZ(j=repeat(not(p),repeat(ne(y,curtail(over(num(-1),y))),y)));
+ RZ(j=repeat(__not(p),repeat(ne(y,curtail(over(num(-1),y))),y)));
  jn=AN(j); jv=AV(j);
  if(n==jn)k=n;
  else{
@@ -121,7 +121,7 @@ static B jtiopart(J jt,A w,I r,I mm,I*zc,A*zi,A*zj,A*zx){A b,f,wx,x,wy,y;B*bv;
      I c=*zc,d,i,j,k,m,n,nd,p,q,wr,*v,*xv;P*wp;
  wr=AR(w); d=wr-r;
  wp=PAV(w); wy=SPA(wp,i); wx=SPA(wp,x); n=AR(wx)-1;
- RZ(b=not(irs2(wx,reshape(vec(INT,n,1+AS(wx)),SPA(wp,e)),0L,n,n,jtmatch)));
+ RZ(b=__not(irs2(wx,reshape(vec(INT,n,1+AS(wx)),SPA(wp,e)),0L,n,n,jtmatch)));
  if(!all1(b)){RZ(wx=repeat(b,wx)); RZ(wy=repeat(b,wy));}
  v=AV(wy); m=*AS(wy); n=*(1+AS(wy)); nd=n-d;
  GATV0(b,B01,m,1); bv=BAV(b);

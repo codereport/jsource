@@ -72,7 +72,6 @@ target_sources(j PRIVATE
     c.c
     ca.c
     cc.c
-    cd.c
     cf.c
     cg.c
     ch.c
@@ -224,12 +223,6 @@ target_sources(linenoise PRIVATE
     linenoise.c
 )
  
-add_library(jeload OBJECT EXCLUDE_FROM_ALL)
-target_sources(jeload PRIVATE
-    jeload.h
-    jeload.cpp
-)
- 
 add_executable(jconsole)
 target_compile_definitions(jconsole PRIVATE READLINE)
 if(NOT UNIX OR ${CMAKE_SYSTEM_PROCESSOR} MATCHES "^(aarch64|arm)")
@@ -239,15 +232,11 @@ if("${CMAKE_C_COMPILER_FRONTEND_VARIANT}" STREQUAL "MSVC")
     target_link_options(jconsole PRIVATE /STACK:0x1000000)
 endif()
 target_link_libraries(jconsole PRIVATE ${CMAKE_DL_LIBS})
-target_link_libraries(jconsole PRIVATE jeload)
 target_sources(jconsole PRIVATE
     jconsole.c
     jeload.h
     jeload.cpp
     jlib.h
-    ../makevs/jconsole/jconsole.rc
-    ../makevs/jconsole/resource1.h
-    ../makevs/jconsole/jgray.ico
 )
 file(TO_NATIVE_PATH "${PROJECT_SOURCE_DIR}/jlibrary/bin" J_BINPATH)
 file(TO_NATIVE_PATH "/profile.ijs" J_PROFILE_SCRIPT)
@@ -257,16 +246,3 @@ file(GENERATE
 BINPATH_z_=: '${J_BINPATH}'
 0!:0<BINPATH,'${J_PROFILE_SCRIPT}'"
 )
-
-if(JNI_FOUND)
-    add_library(jnative)
-    target_include_directories(jnative PRIVATE ${JNI_INCLUDE_DIRS})
-    target_link_libraries(jnative PRIVATE ${JNI_LIBRARIES})
-    target_sources(jnative PRIVATE
-        andjnative.c
-        jeload.h
-        jeload.c
-        com_jsoftware_j_JInterface.h
-        ../makemsvc/jnative/jnative.def
-    )
-endif()

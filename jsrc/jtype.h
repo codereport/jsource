@@ -42,7 +42,7 @@ typedef long long          IL;
 typedef char               B;
 typedef unsigned char      C;
 typedef char*              Ptr;
-typedef short              S;
+typedef short              S; // short
 typedef short              C2;
 typedef unsigned int       C4;
 typedef unsigned char      UC;
@@ -51,8 +51,12 @@ typedef unsigned short     U2;
 typedef unsigned int       UINT;
 typedef int                I4;
 typedef unsigned int       UI4;
-typedef double             D;
-typedef float              DS;
+typedef double             D; // double
+//typedef float              DS; // Robert R? double single
+                               // Lesley L? shrank double
+                               // Conor H? d??? single
+                               // Alexandre B? decimal single precision
+                               // Shubham S? short double
 typedef FILE*              F;
 
 typedef long double        LD;
@@ -539,7 +543,7 @@ typedef struct {I i;US n,go,source;C type;C canend;} CW;
 #define DCJUNK   4      /* stack entry is stale                                      */
 
 typedef struct DS{      /* 1 2 3                                                        */
- struct DS*dclnk;       /* x x x  link to next stack entry                              */
+ struct DS* dclnk;       /* x x x  link to next stack entry                             */
  A dcy;                 /* x x x  &tokens; text       ; right argument                  */
  I dcn;                 /* x x x  #tokens; line #     ; ptr to symb entry               */
  I dcix;                // x x x  index ; next index  ; line# in exp def being executed, or to be exec next
@@ -678,10 +682,10 @@ typedef struct {
  // 11 words here; 7 words of header (we allocate no shape); 2 words of memory-allocation header; so this block is 20 words after the
  // memory allocation, and thus is on the same 256-bit boundary as the allocation.
  union {   // We index into the data with varying strides, depending on the range of the data
-  UC UC[1];  // cannot have union of empty vectors
-  US US[1];
-  UI4 UI4[1];
-  UI UI[1];
+  uint8_t      UC [1];  // cannot have union of empty vectors
+  uint16_t     US [1];
+  uint32_t       UI4[1];
+  uint64_t UI [1];
  } data;
 } IH;
 #define IHAV(x)         ((IH*)((C*)(x)+AK(x)))  //  how to refer to the header area
