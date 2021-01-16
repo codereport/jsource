@@ -164,9 +164,7 @@ typedef struct {
  A*   tstacknext;       // if not 0, points to the recently-used tstack buffer, whose chain field points to tstacknext   $
  A*   tstackcurr;       // current allocation, holding NTSTACK bytes+1 block for alignment.  First entry points to next-lower allocation   $
  D    cctdefault;        /* default complementary comparison tolerance set by user                    */
-#if !(C_CRC32C && SY_64)
  UIL  ctmask;           /* 1 iff significant wrt ct; for i. and i:         */
-#endif
  A    idothash0;        // 2-byte hash table for use by i.    $
  A    idothash1;        // 4-byte hash table for use by i.     $
  DC   sitop;            /* top of SI stack                                 */
@@ -186,10 +184,8 @@ typedef struct {
 #endif
 
 // unordered symbols follow
-#if !C_CRC32C
  I    hin;              /* used in dyad i. & i:                            */
  I*   hiv;              /* used in dyad i. & i:                            */
-#endif
  A    symp;             /* symbol pool array                               */
 // obsolete  L*   sympv;            /* symbol pool array value ptr, (L*)AV(jt->symp)   */
 // obsolete  I    symindex;         /* symbol table index (monotonically increasing)   */
@@ -243,9 +239,7 @@ typedef struct {
 // obsolete AF   lcp;              /* linear representation paren function            */
 // obsolete  A    ltext;            /* linear representation text                      */
 // obsolete AF   ltie;             /* linear representation tie   function            */
-#if !(C_CRC32C && SY_64)
  I    min;              /* the r result from irange                        */
-#endif
  I    mtyo;				      /* jsto output type - jfwrite arg to jpr           */
  C*   mtyostr;          /* jsto string                                     */
  I    nfe;              /* 1 for J native front end                        */

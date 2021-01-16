@@ -455,7 +455,6 @@ A jtpcvt(J jt,I t,A w){A y;B b;RANK2T oqr=jt->ranks;
  R b?y:w;
 }    /* convert w to type t, if possible, otherwise just return w */
 
-#if !C_CRC32C
 F1(jtcvt0){I n,t;D *u;
  ARGCHK1(w);
  t=AT(w); n=AN(w); 
@@ -465,7 +464,6 @@ F1(jtcvt0){I n,t;D *u;
  }
  R w;
 }    /* convert -0 to 0 in place */
-#endif
 
 F1(jtxco1){ARGCHK1(w); ASSERT(AT(w)&DENSE,EVNONCE); R cvt(AT(w)&B01+INT+XNUM?XNUM:RAT,w);}
 
