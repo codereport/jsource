@@ -1267,14 +1267,6 @@ if(likely(z<3)){_zzt+=z; z=(I)&oneone; _zzt=_i&3?_zzt:(I*)z; z=_i&2?(I)_zzt:z; z
 #define FLGWMINUSZX 6
 #define FLGWMINUSZ ((I)1<<FLGWMINUSZX)  // calculate z-x*y rather than x*y.  Used by %.
 
-#if !defined(C_CRC32C)
-#define C_CRC32C 0
-#endif
-#if (C_AVX&&SY_64) || defined(__aarch64__) || defined(_M_ARM64) || EMU_AVX
-#undef C_CRC32C
-#define C_CRC32C 1
-#endif
-
 
 #include "ja.h" 
 #include "jc.h" 
@@ -1549,35 +1541,3 @@ static __forceinline void aligned_free(void *ptr) {
 #else
 #define XANDY(x,y) ((I)((UI)(x)&(UI)(y)))
 #endif
-
-// Supported in architecture ARMv8.1 and later
-#if (C_CRC32C && (defined(__aarch64__)||defined(_M_ARM64)))
-#define CRC32CW(crc, value) __asm__("crc32cw %w[c], %w[c], %w[v]":[c]"+r"(crc):[v]"r"(value))
-#define CRC32CX(crc, value) __asm__("crc32cx %w[c], %w[c], %x[v]":[c]"+r"(crc):[v]"r"(value))
-#define CRC32(crc,value)  ({ uint32_t crci=crc; CRC32CW(crci, value); crci; })
-#define CRC32L(crc,value) ({ uint64_t crci=crc; CRC32CX(crci, value); crci; })
-#define CRC32LL CRC32L                 // takes UIL (8 bytes), return UI
-#endif
-
-// The following definitions are used only in builds for the AVX instruction set
-// 64-bit Atom cpu in android has hardware crc32c but not AVX
-#if C_CRC32C && (defined(_M_X64) || defined(__x86_64__))
-#if defined(ANDROID)
-#if defined(MMSC_VER)  // SY_WIN32
-// Visual Studio definitions
-#define CRC32(x,y) _mm_crc32_u32(x,y)  // takes UI4, returns UI4
-#define CRC32L(x,y) _mm_crc32_u64(x,y)  // takes UI, returns UI (top 32 bits 0)
-#else
-// gcc/clang definition
-#define CRC32(x,y) __builtin_ia32_crc32si(x,y)  // returns UI4
-#define CRC32L(x,y) __builtin_ia32_crc32di(x,y)  // returns UI
-#endif
-#elif EMU_AVX
-extern uint64_t crc32csb8(uint64_t crc, uint64_t value);
-extern uint32_t crc32csb4(uint32_t crc, uint32_t value);
-#define CRC32(x,y)  crc32csb4(x,y) // returns UI4
-#define CRC32L(x,y) crc32csb8(x,y) // returns UI
-#endif
-#define CRC32LL CRC32L                 // takes UIL (8 bytes), return UI
-#endif
-

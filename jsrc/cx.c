@@ -225,7 +225,7 @@ DF2(jtxdefn){F2PREFIP;PROLOG(0048);
     // for x (if given), slot is from the beginning of hashchain EXCEPT when that collides with y; then follow y's chain
     // We have verified that hardware CRC32 never results in collision, but the software hashes do (needs to be confirmed on ARM CPU hardware CRC32C)
   if(a){
-   if(!C_CRC32C&&xbuckptr==ybuckptr)xbuckptr=xbuckptr->next+sympv;
+   if(xbuckptr==ybuckptr)xbuckptr=xbuckptr->next+sympv;
    if((a!=w)&SGNTO0(AC(a)&(((AT(a)^AFLAG(a))&RECURSIBLE)-1))&((I)jtinplace>>JTINPLACEAX)){
     xbuckptr->flag=LPERMANENT|LWASABANDONED; AC(a)&=~ACINPLACE;
    }else ra(a);

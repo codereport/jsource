@@ -6,6 +6,8 @@
 #include "j.h"
 #include "vcomp.h"
 
+// platforms without hardware crc32c
+
 /* Floating point (type D) byte order:               */
 /* Archimedes              3 2 1 0 7 6 5 4           */
 /* VAX                     1 0 3 2 5 4 7 6           */
