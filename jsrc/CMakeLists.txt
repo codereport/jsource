@@ -227,7 +227,13 @@ target_sources(linenoise PRIVATE
     linenoise.h
     linenoise.c
 )
-
+ 
+add_library(jeload OBJECT EXCLUDE_FROM_ALL)
+target_sources(jeload PRIVATE
+    jeload.h
+    jeload.cpp
+)
+ 
 add_executable(jconsole)
 target_compile_definitions(jconsole PRIVATE READLINE)
 if(NOT UNIX OR ${CMAKE_SYSTEM_PROCESSOR} MATCHES "^(aarch64|arm)")
@@ -237,16 +243,16 @@ if("${CMAKE_C_COMPILER_FRONTEND_VARIANT}" STREQUAL "MSVC")
     target_link_options(jconsole PRIVATE /STACK:0x1000000)
 endif()
 target_link_libraries(jconsole PRIVATE ${CMAKE_DL_LIBS})
+target_link_libraries(jconsole PRIVATE jeload)
 target_sources(jconsole PRIVATE
     jconsole.c
     jeload.h
-    jeload.c
+    jeload.cpp
     jlib.h
     ../makevs/jconsole/jconsole.rc
     ../makevs/jconsole/resource1.h
     ../makevs/jconsole/jgray.ico
 )
-
 file(TO_NATIVE_PATH "${PROJECT_SOURCE_DIR}/jlibrary/bin" J_BINPATH)
 file(TO_NATIVE_PATH "/profile.ijs" J_PROFILE_SCRIPT)
 file(GENERATE
