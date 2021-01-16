@@ -12,8 +12,7 @@
 #endif
 
 /*
-All allocated and variable data for a J instance is accessed through
-its JST structure.
+All allocated and variable data for a J instance is accessed through its JST structure.
 
 Only simple constant data can be global and are shared by J instances.
 
@@ -23,6 +22,9 @@ allowed to unload as we don't have code to free mtm et. al.
 
 j.map must be checked to ensure no 'bad' global data exists. In
 windows the global data that needs scrutiny is in the 0003: section.
+
+ASSUME: JST = J Syntax Tree
+
 */
 
 

@@ -31,7 +31,7 @@
 #include "jversion.h"
 #include <stdint.h>
 
-static void* hjdll;
+static void* hjdll; // handle to J DLL
 static J jt;
 static JDoType jdo;
 static JFreeType jfree;

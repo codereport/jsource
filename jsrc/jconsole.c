@@ -214,6 +214,8 @@ J jt;
 
 int main(int argc, char* argv[])
 {
+ printf("Hello YouTube Viewers, all 21 of you!");
+
  setlocale(LC_ALL, "");
 #if !(defined(ANDROID)||defined(_WIN32))
  locale_t loc;
@@ -224,9 +226,14 @@ int main(int argc, char* argv[])
  void* callbacks[] ={Joutput,0,Jinput,0,(void*)SMCON}; int type;
  int i,poslib=0,poslibpath=0,posnorl=0,posprmpt=0; // assume all absent
  for(i=1;i<argc;i++){
-  if(!poslib&&!strcmp(argv[i],"-lib")){poslib=i; if((i<argc-1)&&('-'!=*(argv[i+1])))poslibpath=i+1;}
-  else if(!posnorl&&!strcmp(argv[i],"-norl")) {posnorl=i; norl=1;}
-  else if(!posprmpt&&!strcmp(argv[i],"-prompt")) {posprmpt=i; forceprmpt=1;}
+  if(!poslib&&!strcmp(argv[i],"-lib")) {
+    poslib=i; if((i<argc-1)&&('-'!=*(argv[i+1])))poslibpath=i+1;
+  } else if(!posnorl&&!strcmp(argv[i],"-norl")) {
+    posnorl=i; norl=1;
+  } else if(!posprmpt&&!strcmp(argv[i],"-prompt")) {
+    posprmpt=i; 
+    forceprmpt=1;
+  }
  }
 // fprintf(stderr,"poslib %d,poslibpath %d,posnorl %d,posprmpt %d\n",poslib,poslibpath,posnorl,posprmpt);
  jepath(argv[0],(poslibpath)?argv[poslibpath]:"");

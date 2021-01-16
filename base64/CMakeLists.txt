@@ -2,8 +2,6 @@ add_library(j-base64 OBJECT)
 target_compile_definitions(j-base64 PRIVATE HAVE_AVX2=1)
 target_sources(j-base64 PRIVATE
     include/libbase64.h
-    lib/arch/avx/codec-avx.c
-    lib/arch/avx2/codec-avx2.c
     lib/arch/generic/codec-generic.c
     lib/arch/neon64/codec-neon64.c
     lib/arch/sse41/codec-sse41.c
