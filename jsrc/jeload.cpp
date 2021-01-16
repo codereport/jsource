@@ -93,9 +93,11 @@ void* jehjdll(){return hjdll;}
 J jeload(void* callbacks)
 {
  hjdll=dlopen(pathdll,RTLD_LAZY);
- char* error = dlerror();
- printf( "ERROR\tCould not open library globally: %s\n", error ? error : "" );
- if(!hjdll)return 0;
+ if(!hjdll) {
+	char* error = dlerror();
+ 	printf( "ERROR\tCould not open library globally: %s\n", error ? error : "" );
+	return 0;
+ }
  jt = static_cast<JST*>(reinterpret_cast<JInitType>(dlsym(hjdll,"JInit"))());
  if(!jt) return 0;
  ((JSMType)GETPROCADDRESS(hjdll,"JSM"))(jt,callbacks);

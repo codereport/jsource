@@ -25,16 +25,6 @@ BASE64_CODEC_FUNCS(avx)
 void
 codec_choose (struct codec *codec, int flags)
 {
-	if (flags & BASE64_FORCE_AVX2) {
-		codec->enc = base64_stream_encode_avx2;
-		codec->dec = base64_stream_decode_avx2;
-		return;
-	}
-// 	if (flags & BASE64_FORCE_NEON32) {
-// 		codec->enc = base64_stream_encode_neon32;
-// 		codec->dec = base64_stream_decode_neon32;
-// 		return;
-// 	}
 	if (flags & BASE64_FORCE_NEON64) {
 		codec->enc = base64_stream_encode_neon64;
 		codec->dec = base64_stream_decode_neon64;
@@ -58,11 +48,6 @@ codec_choose (struct codec *codec, int flags)
 	if (flags & BASE64_FORCE_SSE42) {
 		codec->enc = base64_stream_encode_sse42;
 		codec->dec = base64_stream_decode_sse42;
-		return;
-	}
-	if (flags & BASE64_FORCE_AVX) {
-		codec->enc = base64_stream_encode_avx;
-		codec->dec = base64_stream_decode_avx;
 		return;
 	}
 	return;
