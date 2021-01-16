@@ -16,6 +16,7 @@ This is a fork of `jsoftware/jsource` and we will be porting it to C++20.
 ### Comparison of Languages
 
 Calculating the first 10 odd numbers:
+
 **Python**:
 ```python
 [1 + 2 * i for i in range(10)]
@@ -23,6 +24,11 @@ Calculating the first 10 odd numbers:
 **Haskell**:
 ```hs 
 map (1+) $ map (2*) [0..9]
+map ((+1) . (*2)) [0..9] -- alternative thanks to Alexandru Dinu
+```
+**R**:
+```R (thanks to Roi Barkan)
+-1+2*seq(10)
 ```
 **APL**:
 ```apl
