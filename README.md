@@ -1,8 +1,6 @@
 ## J: From C to C++20
 
-J is an [array programming language](https://en.wikipedia.org/wiki/Array_programming) created by Ken Iverson and Roger Hui. 
-
-TODO: add image later
+J is an [array programming language](https://en.wikipedia.org/wiki/Array_programming) created by Ken Iverson and Roger Hui (see image below). 
 
 This is a fork of `jsoftware/jsource` and we will be porting it to C++20.
 
@@ -50,3 +48,5 @@ map (1+) $ map (2*) [0..9]
     To run the debug build: `./build/jsrc/Debug/jconsole` 
 
     To run the release build: `./build/jsrc/Release/jconsole`
+
+![image](https://user-images.githubusercontent.com/36027403/104798929-e4311700-5798-11eb-859c-5a55738daf79.png)
