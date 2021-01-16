@@ -21,8 +21,6 @@
 static B jtmatchsub(J,A,A,B* RESTRICT,I,I,I,I,I);
 static F2(jtmatchs);
 
-#if !C_AVX2 && !EMU_AVX2
-
 #define MCS(q,af,wf)  ((((q>1)+(q>0))<<2)+(af?2:0)+(wf?1:0))
 // set *x++ to b1 if *u=*v, b0 otherwise
 #define QLOOP         b=b1; DO(q, if(u[i]!=v[i]){b^=1; break;}); *x++=b;
@@ -69,199 +67,6 @@ static B eqv(I af,I wf,I m,I n,I k,C*av,C*wv,B* RESTRICT x,B b1){B b,* RESTRICT 
  }
  R xx[0];
 }    /* what memcmp should have been */
-
-#else
-static AHDR2FN* compfn[4][2] = {{(AHDR2FN*)neCC, (AHDR2FN*)eqCC} , {(AHDR2FN*)neSS, (AHDR2FN*)eqSS} , {(AHDR2FN*)neUU, (AHDR2FN*)eqUU} , {(AHDR2FN*)neII, (AHDR2FN*)eqII} };
-static B eqv(I af,I wf,I m,I n,I k,C* RESTRICT av,C* RESTRICT wv,B* RESTRICT z,B b1){
- // Handle the special cases where the number of bytes to compare is a standard type.  Vector to the routine for comparing the type
- if(k==((k&-k)&(2*SZI-1))){
-  // length is 1, 2, 4, or 8.  There's a routine for that, for = or ~:
-  compfn[CTTZI(k)][b1](n,m,wv,av,z,0);  // no jt for these routines.  Swap wv/av because n is positive, which will mean repeat the first arg
-  R 0;  // return value immaterial
-}
- I n0=(k-1)>>LGSZI;  // number of Is to process (after we skip the first 1-8 chars); later, # repeat count in inner loop
- __m256i u,v;
- // prep for each compare loop
- __m256i endmask = _mm256_loadu_si256((__m256i*)(validitymask+((-n0)&(NPAR-1))));  /* mask for 0 1 2 3 4 5 is xxxx 0001 0011 0111 1111 0001 */
- I i0=(n0-1)>>LGNPAR;  /* # loops for 0 1 2 3 4 5 is x 0 0 0 0 1 */
- b1^=1;  // change success value to failure value
- // loop for each result
- // loop promotion: if cells of a are not repeated, modify loop counts to do outer loop once and inner loop for each rep
- I ka;  // amount to add to av in inner loop: k if the cells of a are not repeated, 0 if they are
- n0=m; ka=n==1?k:0; m=n==1?1:m; n=n==1?n0:n;  // move outer loop info to inner if inner loop not needed
- do{  // outer loop, for each unique cell of a
-  n0=n;
-  do{B b;  // inner loop, for each repeat of a
-   // compare up to 8 bytes.  This checks for early failure & allows us to operate on full qwords hereafter
-   {I ll=SZI; ll=k<ll?k:ll; I comp=(*(I*)av^*(I*)wv)<<(((-ll)&(SZI-1))<<LGBB); comp=-((I*)comp==0); I l8=8-k; if((l8&comp)>=0){b = b1^1^(comp-REPSGN(l8-8)); goto fail;}}  // if mismatch in 1st 8 bytes, or len <=8, return mismatch status  -(comp==0)) is ~0 if comp==0
-  // fetch the load mask for the last block: the words to load, including any trailing fragment
-   // step up to qword boundary
-   I *x=(I*)((C*)av+((k-1)&(SZI-1))+1), *y=(I*)((C*)wv+((k-1)&(SZI-1))+1);  // access the arguments as Is
-   __m256i allmatches =_mm256_cmpeq_epi8(endmask,endmask); // accumuland for compares init to all 1
-   b=b1;  // init store value to compare failure
-   if(i0){
-    I i = i0;  // inner loop size
-    switch(i0&3){
-    loopback:
-    case 0: u=_mm256_loadu_si256 ((__m256i*)x); v=_mm256_loadu_si256 ((__m256i*)y); allmatches=_mm256_and_si256(allmatches,_mm256_cmpeq_epi8(u,v)); x+=NPAR; y+=NPAR;
-    case 3: u=_mm256_loadu_si256 ((__m256i*)x); v=_mm256_loadu_si256 ((__m256i*)y); allmatches=_mm256_and_si256(allmatches,_mm256_cmpeq_epi8(u,v)); x+=NPAR; y+=NPAR;
-    case 2: u=_mm256_loadu_si256 ((__m256i*)x); v=_mm256_loadu_si256 ((__m256i*)y); allmatches=_mm256_and_si256(allmatches,_mm256_cmpeq_epi8(u,v)); x+=NPAR; y+=NPAR;
-    case 1: u=_mm256_loadu_si256 ((__m256i*)x); v=_mm256_loadu_si256 ((__m256i*)y); allmatches=_mm256_and_si256(allmatches,_mm256_cmpeq_epi8(u,v)); x+=NPAR; y+=NPAR;
-     if(i0<=4)goto oneloop;  // if we don't have to loop here, avoid the data-dependent branch and fold the comparisons into the last batch 
-     if(~_mm256_movemask_epi8(allmatches))goto fail;  // if searches are long, kick out when there is a miscompare
-     if((i-=4)>0)goto loopback;
-    }
-oneloop:;
-   }
-   u=_mm256_maskload_epi64(x,endmask); v=_mm256_maskload_epi64(y,endmask); 
-   b ^= 0==~_mm256_movemask_epi8(_mm256_and_si256(allmatches,_mm256_cmpeq_epi8(u,v)));  // no miscompares, switch failure value to success
-fail:
-   *z++=b;  // store one result
-   wv += k; av+= ka;  // advance w always, and a if original m was 1
-  }while(--n0);
-  av += k;  // advance a, only needed if a was repeated
- }while(--m);
-
- R 0;  // return value not used - results stored in *z
-}
-// memcmpne: test for inequality, not caring about order, for exact inputs
-// We use AVX2 instructions always, so this might be a little slower for repeat matches on short inputs; but it avoids misbranches
-I memcmpne(void *s, void *t, I l){
- if(l==0)R 0; // loops require nonempty arrays - empties compare equal.  If there are no atoms we can't safely fetch anything from memory
- // If the first fetch miscompares, we can avoid the setup overhead.  This will be worthwhile on long compares, and not too
- // expensive on short ones.  We roll arg-length testing and value testing into one
- {I ll=SZI; ll=l<ll?l:ll; I comp=(*(I*)s^*(I*)t)<<(((-ll)&(SZI-1))<<LGBB); comp=-((I*)comp==0); I l8=8-l; if((l8&comp)>=0)R comp-REPSGN(l8-8);}  // if mismatch in 1st 8 bytes, or len <=8, return mismatch status  -(comp==0)) is ~0 if comp==0
- // fetch the load mask for the last block: the words to load, including any trailing fragment
- // step up to qword boundary
- I *x=(I*)((C*)s+((l-1)&(SZI-1))+1), *y=(I*)((C*)t+((l-1)&(SZI-1))+1);  // access the arguments as Is
- I n=(l-1)>>LGSZI;  // number of Ds to process
- __m256i u,v;
- __m256i endmask = _mm256_loadu_si256((__m256i*)(validitymask+((-n)&(NPAR-1))));  // mask for 0 1 2 3 4 5 is xxxx 0001 0011 0111 1111 0001
-
- I i=(n-1)>>LGNPAR;  /* # loops for 0 1 2 3 4 5 is x 0 0 0 0 1 */
- if(i){
-  __m256i allmatches =_mm256_cmpeq_epi8(endmask,endmask); // accumuland for compares init to all 1
-  switch(i&3){
-  loopback:
-  case 0: u=_mm256_loadu_si256 ((__m256i*)x); v=_mm256_loadu_si256 ((__m256i*)y); allmatches=_mm256_and_si256(allmatches,_mm256_cmpeq_epi8(u,v)); x+=NPAR; y+=NPAR;
-  case 3: u=_mm256_loadu_si256 ((__m256i*)x); v=_mm256_loadu_si256 ((__m256i*)y); allmatches=_mm256_and_si256(allmatches,_mm256_cmpeq_epi8(u,v)); x+=NPAR; y+=NPAR;
-  case 2: u=_mm256_loadu_si256 ((__m256i*)x); v=_mm256_loadu_si256 ((__m256i*)y); allmatches=_mm256_and_si256(allmatches,_mm256_cmpeq_epi8(u,v)); x+=NPAR; y+=NPAR;
-  case 1: u=_mm256_loadu_si256 ((__m256i*)x); v=_mm256_loadu_si256 ((__m256i*)y); allmatches=_mm256_and_si256(allmatches,_mm256_cmpeq_epi8(u,v)); x+=NPAR; y+=NPAR;
-   if(~_mm256_movemask_epi8(allmatches))R 1;
-   if((i-=4)>0)goto loopback;
-  }
- }
-
- u=_mm256_maskload_epi64(x,endmask); v=_mm256_maskload_epi64(y,endmask); 
- R 0!=~_mm256_movemask_epi8(_mm256_cmpeq_epi8(u,v));  // no miscompares, compare equal
-}
-
-// memcmpnefl: test for inequality, not caring about order, for float inputs, possibly with tolerance
-// We use AVX2 instructions always, so this might be a little slower for repeat matches on short inputs; but it avoids misbranches
-// l is # atoms (D) to process
-I memcmpnefl(void *s, void *t, I l, J jt){
- if(l==0)R 0;  // loops require nonempty arrays
- // fetch the load mask for the last block: the words to load, including any trailing fragment
- // fetch the mask of valid bytes in the last batch fetched, maybe less than the load mask
- D *x=s, *y=t;  // access the arguments as doubles
- __m256d u,v;
- __m256i endmask = _mm256_loadu_si256((__m256i*)(validitymask+((-l)&(NPAR-1))));  // mask for 0 1 2 3 4 5 is xxxx 0001 0011 0111 1111 0001
- I i=(l-1)>>LGNPAR;  /* # loops for 0 1 2 3 4 5 is x 0 0 0 0 1 */
- if(jt->cct==1.0){
-  // intolerant comparison
-  if(i){
-   __m256d allmatches =_mm256_castsi256_pd(_mm256_cmpeq_epi8(endmask,endmask)); // accumuland for compares init to all 1
-   switch(i&3){
-   loopback:
-   case 0: u=_mm256_loadu_pd(x); v=_mm256_loadu_pd(y); allmatches=_mm256_and_pd(allmatches,_mm256_cmp_pd(u,v,_CMP_EQ_OQ)); x+=NPAR; y+=NPAR;
-   case 3: u=_mm256_loadu_pd(x); v=_mm256_loadu_pd(y); allmatches=_mm256_and_pd(allmatches,_mm256_cmp_pd(u,v,_CMP_EQ_OQ)); x+=NPAR; y+=NPAR;
-   case 2: u=_mm256_loadu_pd(x); v=_mm256_loadu_pd(y); allmatches=_mm256_and_pd(allmatches,_mm256_cmp_pd(u,v,_CMP_EQ_OQ)); x+=NPAR; y+=NPAR;
-   case 1: u=_mm256_loadu_pd(x); v=_mm256_loadu_pd(y); allmatches=_mm256_and_pd(allmatches,_mm256_cmp_pd(u,v,_CMP_EQ_OQ)); x+=NPAR; y+=NPAR;
-    if(0xf!=_mm256_movemask_pd(allmatches))R 1;
-    if((i-=4)>0)goto loopback;
-   }
-  }
-  u=_mm256_maskload_pd(x,endmask); v=_mm256_maskload_pd(y,endmask); 
-  R 0xf!=_mm256_movemask_pd(_mm256_cmp_pd(u,v,_CMP_EQ_OQ));  // no miscompares, compare equal
- }
- // tolerant comparison
- __m256d cct=_mm256_set1_pd(jt->cct);
- if(i){
-  do{
-   u=_mm256_loadu_pd(x); v=_mm256_loadu_pd(y); x+=NPAR; y+=NPAR;
-   if(0xf!=_mm256_movemask_pd(_mm256_xor_pd(_mm256_cmp_pd(u,_mm256_mul_pd(v,cct),_CMP_GT_OQ),_mm256_cmp_pd(v,_mm256_mul_pd(u,cct),_CMP_LE_OQ))))R 1;
-  }while(--i>0);
- }
- u=_mm256_maskload_pd(x,endmask); v=_mm256_maskload_pd(y,endmask); 
- R 0xf!=_mm256_movemask_pd(_mm256_xor_pd(_mm256_cmp_pd(u,_mm256_mul_pd(v,cct),_CMP_GT_OQ),_mm256_cmp_pd(v,_mm256_mul_pd(u,cct),_CMP_LE_OQ)));
-}
-
-static B eqvfl(I af,I wf,I m,I n,I k,D* RESTRICT av,D* RESTRICT wv,B* RESTRICT z,B b1,J jt){
- // Handle the special cases where the number of bytes to compare is a standard type.  Vector to the routine for comparing the type
- if(k==1){
-  // individual floats.  call the routine for that
-  (b1?eqDD:neDD)(n,m,wv,av,z,jt);  // Swap wv/av because n is positive, which will mean repeat the first arg
-  R 0;  // return value immaterial
- }
- __m256d u,v;
- // prep for each compare loop
- __m256i endmask = _mm256_loadu_si256((__m256i*)(validitymask+((-k)&(NPAR-1))));  // mask for 0 1 2 3 4 5 is xxxx 0001 0011 0111 1111 0001
- I i0=(k-1)>>LGNPAR;  /* # loops for 0 1 2 3 4 5 is x 0 0 0 0 1 */
- b1^=1;  // change success value to failure value
- // loop for each result
- // loop promotion: if cells of a are not repeated, modify loop counts to do outer loop once and inner loop for each rep
- I ka;  // amount to add to av in inner loop: k if the cells of a are not repeated, 0 if they are
- I n0=m; ka=n==1?k:0; m=n==1?1:m; n=n==1?n0:n;  // move outer loop info to inner if inner loop not needed
- do{  // outer loop, for each unique cell of a
-  n0=n;  // inner loop count
-  do{  // inner loop, for each repeat of a
-   D *x=av, *y=wv;  // init arg pointers to start of cell
-   B b=b1;  // init store value to compare failure
-
- if(jt->cct==1.0){
-  // intolerant comparison
-  __m256d allmatches =_mm256_castsi256_pd(_mm256_cmpeq_epi8(endmask,endmask)); // accumuland for compares init to all 1
-  if(i0){
-   I i = i0;  // inner loop size
-   switch(i&3){
-   loopback:
-   case 0: u=_mm256_loadu_pd(x); v=_mm256_loadu_pd(y); allmatches=_mm256_and_pd(allmatches,_mm256_cmp_pd(u,v,_CMP_EQ_OQ)); x+=NPAR; y+=NPAR;
-   case 3: u=_mm256_loadu_pd(x); v=_mm256_loadu_pd(y); allmatches=_mm256_and_pd(allmatches,_mm256_cmp_pd(u,v,_CMP_EQ_OQ)); x+=NPAR; y+=NPAR;
-   case 2: u=_mm256_loadu_pd(x); v=_mm256_loadu_pd(y); allmatches=_mm256_and_pd(allmatches,_mm256_cmp_pd(u,v,_CMP_EQ_OQ)); x+=NPAR; y+=NPAR;
-   case 1: u=_mm256_loadu_pd(x); v=_mm256_loadu_pd(y); allmatches=_mm256_and_pd(allmatches,_mm256_cmp_pd(u,v,_CMP_EQ_OQ)); x+=NPAR; y+=NPAR;
-    if(i0<=4)goto oneloop;  // if we don't have to loop here, avoid the data-dependent branch and fold the comparisons into the last batch 
-    if(0xf!=_mm256_movemask_pd(allmatches))goto fail;
-    if((i-=4)>0)goto loopback;
-   }
-  }
-oneloop:
-  u=_mm256_maskload_pd(x,endmask); v=_mm256_maskload_pd(y,endmask); 
-  b ^= 0xf==_mm256_movemask_pd(_mm256_and_pd(allmatches,_mm256_cmp_pd(u,v,_CMP_EQ_OQ)));  // no miscompares, compare equal
- }else{
-  // tolerant comparison
-  __m256d cct=_mm256_set1_pd(jt->cct);
-  if(i0){
-   I i = i0;  // inner loop size
-   do{  // unfortunately it's probably not worth checking for lengths 5-8 & we will have a misbranch whenever length > 4
-    u=_mm256_loadu_pd(x); v=_mm256_loadu_pd(y); x+=NPAR; y+=NPAR;
-    if(0xf!=_mm256_movemask_pd(_mm256_xor_pd(_mm256_cmp_pd(u,_mm256_mul_pd(v,cct),_CMP_GT_OQ),_mm256_cmp_pd(v,_mm256_mul_pd(u,cct),_CMP_LE_OQ))))goto fail;
-   }while(--i>0);
-  }
-  u=_mm256_maskload_pd(x,endmask); v=_mm256_maskload_pd(y,endmask); 
-  b ^= 0xf==_mm256_movemask_pd(_mm256_xor_pd(_mm256_cmp_pd(u,_mm256_mul_pd(v,cct),_CMP_GT_OQ),_mm256_cmp_pd(v,_mm256_mul_pd(u,cct),_CMP_LE_OQ)));
- }
-
-fail:
-   *z++=b;  // store one result
-   wv += k; av+= ka;  // advance w always, and a if original m was 1
-  }while(--n0);
-  av += k;  // advance a, only needed if a was repeated
- }while(--m);
-
- R 0;  // return value not used - results stored in *z
-}
-
-#endif
 
 // Return 1 if a and w match, 0 if not
 B jtequ(J jt,A a,A w){A x;
@@ -362,32 +167,15 @@ static B jtmatchsub(J jt,A a,A w,B* RESTRICT x,I af,I wf,I m,I n,I b1){C*av,*wv;
  default:
   c <<= bplg(t);
   if(!x){
-#if C_AVX2 || EMU_AVX2
-   R memcmpne(av,wv,c)^1;   // single call, thus not stored - return it immediately
-#else
-  
-  R !memcmp(av,wv,c);   // single call, thus not stored - return it immediately
-#endif
+    R !memcmp(av,wv,c);   // single call, thus not stored - return it immediately
   }else{
    R eqv(af,wf,m,n,c,av,wv,x,b1);  // stored version loops & stores
   }
   break;
  case CMPXX: if(1.0!=jt->cct){INNERT(Z,zeq) break;}  // tolerant, must use complex distance
-#if C_AVX2 || EMU_AVX2
-  c*=2;   // intolerant: treat as 2 floats, fall through
-#else
   INNERT(Z,ZEQCT0) break;
-#endif
  case FLX:
-#if C_AVX2 || EMU_AVX2
-  if(!x){
-   R memcmpnefl(av,wv,c,jt)^1;   // single call, thus not stored - return it immediately
-  }else{
-   R eqvfl(af,wf,m,n,c,(D*)av,(D*)wv,x,b1,jt);  // stored version loops & stores
-  }
-#else
    if(1.0!=jt->cct)INNERT(D,TEQ)else INNERT(D,DEQCT0)
-#endif
   break;
  case XNUMX: INNERT(X,equ); break;
  case RATX:  INNERT(Q,EQQ); break;

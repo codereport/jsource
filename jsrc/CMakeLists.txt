@@ -11,9 +11,6 @@ target_sources(j PRIVATE
     aes-arm_table.h
     aes-c.h
     ar.h
-    avx2intrin-emu.h
-    avxintrin-emu.h
-    avxintrin-neon.h
     cip_t.h
     cipfloatmm_t.h
     cpuinfo.h
@@ -152,7 +149,6 @@ target_sources(j PRIVATE
     vgsort.c
     vgsp.c
     vi.c
-    viavx.c
     viix.c
     visp.c
     vm.c

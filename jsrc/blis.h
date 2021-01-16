@@ -119,9 +119,7 @@ typedef struct cntx_s
 // SSE:         128
 // AVX/FMA:     256
 // AVX-512:     512
-#if C_AVX && (defined(_WIN64)||defined(__LP64__))
-#define SIMD_REGISTER_WIDTH 256
-#elif defined(__aarch64__)
+#if defined(__aarch64__)
 #define SIMD_REGISTER_WIDTH 128
 #elif defined(__SSE2__)
 #define SIMD_REGISTER_WIDTH 128
@@ -208,60 +206,7 @@ extern void bli_zgemm2_##f                               \
      );
 
 
-#if C_AVX && (defined(_WIN64)||defined(__LP64__))
-
-#if 0
-
-// haswell  /* not included in repository */
-
-#define BLIS_DGEMM_UKERNEL         bli_dgemm_asm_6x8
-#define BLIS_DEFAULT_MC_D          72
-#define BLIS_DEFAULT_KC_D          256
-#define BLIS_DEFAULT_NC_D          4080
-#define BLIS_DEFAULT_MR_D          6
-#define BLIS_DEFAULT_NR_D          8
-
-#define BLIS_ZGEMM_UKERNEL         bli_zgemm_asm_3x4
-#define BLIS_DEFAULT_MC_Z          72
-#define BLIS_DEFAULT_KC_Z          256
-#define BLIS_DEFAULT_NC_Z          4080
-#define BLIS_DEFAULT_MR_Z          3
-#define BLIS_DEFAULT_NR_Z          4
-
-#define BLIS_DRIVER BLIS_DRIVER_HASWELL
-DGEMM(asm_6x8)
-ZGEMM(asm_3x4)
-
-#else
-
-// sandy bridge (FMA if detected)
-
-// intrinsic is almost as good as asm
-#define BLIS_DGEMM_UKERNEL         bli_dgemm_int_6x8
-#define BLIS_DGEMM2_UKERNEL        bli_dgemm2_int_6x8
-#define BLIS_DEFAULT_MC_D          72
-#define BLIS_DEFAULT_KC_D          256
-#define BLIS_DEFAULT_NC_D          4080
-#define BLIS_DEFAULT_MR_D          6
-#define BLIS_DEFAULT_NR_D          8
-
-#define BLIS_ZGEMM_UKERNEL         bli_zgemm_int_3x4
-#define BLIS_ZGEMM2_UKERNEL        bli_zgemm2_int_3x4
-#define BLIS_DEFAULT_MC_Z          72
-#define BLIS_DEFAULT_KC_Z          256
-#define BLIS_DEFAULT_NC_Z          4080
-#define BLIS_DEFAULT_MR_Z          3
-#define BLIS_DEFAULT_NR_Z          4
-
-#define BLIS_DRIVER BLIS_DRIVER_AVX
-DGEMM(int_6x8)
-ZGEMM(int_3x4)
-DGEMM2(int_6x8)
-ZGEMM2(int_3x4)
-
-#endif
-
-#elif defined(__SSE2__)
+#if defined(__SSE2__)
 
 // sse2 x86_64 or x86
 

@@ -45,9 +45,7 @@ SORTQSCOPE void SORTQNAME(SORTQTYPE *v, I n){
       // encode l as 00 r as 11 m as 01/10, the sequence is mr-ll-rm 01 11 10 00 00 01 11 10  0 1 1 0 0 0 1 1 0 (LE) -> 011000110  0xc6
    I pivotx=((pivotcomp&1?r:l)+(pivotcomp&2?r:l))>>1; pivot=v[pivotx]; v[pivotx]=v[r];  // pick the median pivot, swap it (notionally) with the last 
   }
-#if SORTQCOND
-   SORTQTYPE256 pivot256=SORTQSET256(pivot,pivot,pivot,pivot);  // copy pivot across regs
-#endif
+
 
   I xchgx0, xchgx1;  // partition running pointers.  At the end xchgx0 is the end of the left side, xchgx1 the beginning of the right
   if(r-l<=BW){
@@ -58,18 +56,8 @@ SORTQSCOPE void SORTQNAME(SORTQTYPE *v, I n){
    // bit 0 is the lowest bit & corresponds to the beginning of the partition
    SORTQTYPE *v0=v+l;  // base of the partitioned region
    UI cstk=0;  // will hold comparison results.  Init to 0 for MSBs so as not to interfere with finding highest 1
-#if SORTQCOND
-   // go back to front, shifting bits up from the bottom
-   {
-   __m256i endmask;
-   endmask = _mm256_loadu_si256((__m256i*)(validitymask+((-(r-l))&(NPAR-1))));  /* mask for 00=1111, 01=1000, 10=1100, 11=1110 */
-   SORTQTYPE *vv=v0+(((r-l)-1)&(-NPAR));  // pointer to current batch, starting at end
-   cstk=_mm256_movemask_pd(_mm256_and_pd(_mm256_castsi256_pd(endmask),SORTQCASTTOPD(SORTQCMP256(pivot256,SORTQMASKLOAD(vv,endmask) SORTQCMPTYPE))));
-   do{vv-=NPAR; cstk=16*cstk+_mm256_movemask_pd(SORTQCASTTOPD(SORTQCMP256(pivot256,SORTQULOAD((SORTQULOADTYPE)vv) SORTQCMPTYPE)));}while(vv!=v0);  // >5 items, so safe to use while
-   }
-#else
+
    DQ(r-l, cstk=2*cstk+(v0[i]<pivot);)  // back to front, to leave cstk in normal order.  The last slot is empty, so don't compare.  We can have up to 64 compares.
-#endif
 
    if(!(cstk&(cstk+1))) {
     // Here there is no 0-bit with a higher 1-bit, i. e. no exchange to be  performed.  We have to check this separately because CT[LT]ZI is unpredictable on all-0 input.
@@ -132,41 +120,9 @@ finmedxchg:  // exchanges if any are done, and xchgx0/xchgx1 are set
      I ncmp1=cstklsb1; ncmp1=ncmp1>(in1-BW)-(in0+cstklsb0)+1?(in1-BW)-(in0+cstklsb0)+1:ncmp1;
      ncmp1=ncmp1>in1-midpoint+8?in1-midpoint+8:ncmp1; ncmp1=ncmp1<0?0:ncmp1; if(!(cstk1|ncmp1))goto partdone;
      // look for swappable values and stack them.  At end, note the position of the first swappable.  If there are none, advance LSB to end of word to leave maximum space
-#if SORTQCOND
-     // the LSB is the earliest bit in the compare order.  For side 0 it is the lowest address, for side 1 the highest.
-     // Therefore chunks of side 1 must be reversed
-     if(ncmp0){  // it is possible that there is nothing to do (if one side didn't move much).  In that case, leave everything set
-      __m256i endmask;
-      endmask = _mm256_loadu_si256((__m256i*)(validitymask+((-ncmp0)&(NPAR-1))));  /* mask for 00=1111, 01=1000, 10=1100, 11=1110 */
-      cstk0>>=ncmp0;  // put the preexisting bits below the space where new bits will go.  If this shifts too much, OK because reg is 0 then
-      I bittofill=BW-ncmp0;  // get the running index of where we will put new bits
-      SORTQTYPE *vv=v+in0+BW;  // pointer to current batch, starting at 
-      // fill 4-bit sections up to the last, which will be 1-4 bits
-      while(bittofill<BW-NPAR){cstk0=cstk0+((I)_mm256_movemask_pd(SORTQCASTTOPD(SORTQCMP256(SORTQULOAD((SORTQULOADTYPE)vv),pivot256 SORTQCMPTYPE)))<<bittofill); vv+=NPAR; bittofill+=NPAR;}
-      cstk0=cstk0+((I)_mm256_movemask_pd(SORTQCASTTOPD(SORTQCMP256(SORTQMASKLOAD(vv,endmask),pivot256 SORTQCMPTYPE)))<<bittofill);
-
-      // advance input pointer over the comparisons we made; get index of lowest 1-bit (handling the case of none specially)
-      in0+=ncmp0; cstklsb0=CTTZI(cstk0);cstklsb0=(cstk0==0)?BW:cstklsb0;
-     }
-     if(ncmp1){  // it is possible that there is nothing to do (if one side didn't move much).  In that case, leave everything set
-      __m256i endmask;
-      endmask = _mm256_loadu_si256((__m256i*)(validitymask+5+((ncmp1-1)&(NPAR-1))));  /* mask for 00=1111, 01=0001, 10=0011, 11=0111 */
-      cstk1>>=ncmp1;  // put the preexisting bits below the space where new bits will go.  If this shifts too much, OK because reg is 0 then
-      I bittofill=BW-ncmp1;  // get the running index of where we will put new bits
-      SORTQTYPE *vv=v+in1-BW-(NPAR-1);  // pointer to beginning of the 4-word section ending at in1 
-      // fill 4-bit sections up to the last, which will be 1-4 bits
-      // if AVX2, use permute4x rather than the 2 insts here
-      while(bittofill<BW-NPAR){cstk1=cstk1+((I)_mm256_movemask_pd(_mm256_permute_pd(_mm256_permute2f128_pd(SORTQCASTTOPD(SORTQCMP256(pivot256,SORTQULOAD((SORTQULOADTYPE)vv) SORTQCMPTYPE)),SORTQCASTTOPD(pivot256),0x01),0x5))<<bittofill); vv-=NPAR; bittofill+=NPAR;}
-      cstk1=cstk1+((I)_mm256_movemask_pd(_mm256_permute_pd(_mm256_permute2f128_pd(SORTQCASTTOPD(SORTQCMP256(pivot256,SORTQMASKLOAD(vv,endmask) SORTQCMPTYPE)),SORTQCASTTOPD(pivot256),0x01),0x5))<<bittofill);
-
-      // advance input pointer over the comparisons we made; get index of lowest 1-bit (handling the case of none specially)
-      in1-=ncmp1; cstklsb1=CTTZI(cstk1);cstklsb1=(cstk1==0)?BW:cstklsb1;
-     }
-#else
      UI newstkbit=1LL<<(BW-1);
      in0+=ncmp0; DP(ncmp0, UI newbit=v[i+in0+BW]>pivot?newstkbit:0; cstk0=(cstk0>>1)+newbit;) cstklsb0=CTTZI(cstk0);cstklsb0=(cstk0==0)?BW:cstklsb0;
      in1-=ncmp1; DQ(ncmp1, UI newbit=v[i+in1-BW+1]<pivot?newstkbit:0; cstk1=(cstk1>>1)+newbit;) cstklsb1=CTTZI(cstk1);cstklsb1=(cstk1==0)?BW:cstklsb1;
-#endif
     }while((cstk0==0)||(cstk1==0));
     // process the comparison stack until one of the stacks is empty.  Perform exchanges
     while(1){
@@ -201,7 +157,6 @@ finmedxchg:  // exchanges if any are done, and xchgx0/xchgx1 are set
   stack[stackp][0]=l0; stack[stackp][1]=r0; ++stackp;
  }
 }
-#undef SORTQCOND
 #undef SORTQSCOPE
 #undef SORTQNAME
 #undef SORTQTYPE

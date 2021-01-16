@@ -295,69 +295,13 @@ A jtvec(J jt,I t,I n,void*v){A z; GA(z,t,n,1,0); MC(AV(z),v,n<<bplg(t)); RETF(z)
 #pragma push_options
 #pragma optimize ("unroll-loops")
 #endif
-#if (C_AVX2&&SY_64) || EMU_AVX2
-A jtvecb01(J jt,I t,I n,void*v){A z; GA(z,t,n,1,0);if(t&B01){C*p=(C*)AV(z),*q=v; 
-__m256i zeros=_mm256_setzero_si256();
-__m256i ones=_mm256_set1_epi8(1);
-__m256i ffs=_mm256_set1_epi8(0xffu);
-UI n0=n<<bplg(t);
-UI mis=((uintptr_t)q)&31u;
-mis=(mis>n0)?n0:mis;
-if(mis){
-n0-=mis;
-#if defined(__clang__)
-#pragma clang loop vectorize(enable) interleave_count(4)
-#endif
-while(mis--)*p++=!!(*q++);
-}
-while (n0 >= 32) {
- _mm256_storeu_si256((__m256i *)p,_mm256_and_si256(_mm256_xor_si256(_mm256_cmpeq_epi8(_mm256_load_si256((__m256i*)q),zeros),ffs),ones));
- n0-=32;p+=32;q+=32;
-}
-if (n0 >= 16) {
-__m128i zeros=_mm_setzero_si128();
-__m128i ones=_mm_set1_epi8(1);
-__m128i ffs=_mm_set1_epi8(0xffu);
- _mm_storeu_si128((__m128i *)p,_mm_and_si128(_mm_xor_si128(_mm_cmpeq_epi8(_mm_loadu_si128((__m128i*)q),zeros),ffs),ones));
- n0-=16;p+=16;q+=16;
-}
-#if defined(__clang__)
-#pragma clang loop vectorize(enable) interleave_count(4)
-#endif
-while(n0--)*p++=!!(*q++);
-}else MC(AV(z),v,n<<bplg(t)); RETF(z);}
-#elif __SSE2__
-A jtvecb01(J jt,I t,I n,void*v){A z; GA(z,t,n,1,0);if(t&B01){C*p=(C*)AV(z),*q=v; 
-__m128i zeros=_mm_setzero_si128();
-__m128i ones=_mm_set1_epi8(1);
-__m128i ffs=_mm_set1_epi8(0xffu);
-UI n0=n<<bplg(t);
-UI mis=((uintptr_t)q)&15u;
-mis=(mis>n0)?n0:mis;
-if(mis){
-n0-=mis;
-#if defined(__clang__)
-#pragma clang loop vectorize(enable) interleave_count(4)
-#endif
-while(mis--)*p++=!!(*q++);
-}
-while (n0 >= 16) {
- _mm_storeu_si128((__m128i *)p,_mm_and_si128(_mm_xor_si128(_mm_cmpeq_epi8(_mm_loadu_si128((__m128i*)q),zeros),ffs),ones));
- n0-=16;p+=16;q+=16;
-}
-#if defined(__clang__)
-#pragma clang loop vectorize(enable) interleave_count(4)
-#endif
-while(n0--)*p++=!!(*q++);
-}else MC(AV(z),v,n<<bplg(t)); RETF(z);}
-#else
 A jtvecb01(J jt,I t,I n,void*v){A z; I i; GA(z,t,n,1,0);if(t&B01){C*p=(C*)AV(z),*q=v; 
 #if defined(__clang__)
 #pragma clang loop vectorize(enable) interleave_count(4)
 #endif
 for(i=0;i<n<<bplg(t);i++)*p++=!!(*q++);
 }else MC(AV(z),v,n<<bplg(t)); RETF(z);}
-#endif
+
 #if defined(__GNUC__) && !defined(__clang__)
 #pragma pop_options
 #endif

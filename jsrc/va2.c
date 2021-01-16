@@ -869,113 +869,8 @@ static A jtva2(J jt,AD * RESTRICT a,AD * RESTRICT w,AD * RESTRICT self,RANK2T ra
   }
 
 // 
-#if (C_AVX&&SY_64) || EMU_AVX
-// Do one 2x2 product of length dplen.  Leave results in acc000/010.  dplen must be >0
-// av, wv, wv1 are set up
-#define ONEPRODAVXD2(label,mid2x2,last2x2) {\
-   acc000=_mm256_setzero_pd(); acc010=acc000; acc100=acc000; acc110=acc000; \
-   if(dplen<=NPAR)goto label##9; \
-   acc001=acc000; acc011=acc000; acc101=acc000; acc111=acc000; \
-   I rem=dplen; if(rem>8*NPAR)goto label##8; \
-   while(rem>NPAR){ \
-    if(rem>4*NPAR) \
-     {if(rem>6*NPAR){if(rem>7*NPAR)goto label##7;else goto label##6;}else {if(rem>5*NPAR)goto label##5;else goto label##4;}} \
-    else{if(rem>2*NPAR){if(rem>3*NPAR)goto label##3;else goto label##2;}else {if(rem>1*NPAR)goto label##1;else break;}} \
-    label##8: mid2x2(7,0)  label##7: mid2x2(6,1)  label##6: mid2x2(5,0)  label##5: mid2x2(4,1)  \
-    label##4: mid2x2(3,0)  label##3: mid2x2(2,1)  label##2: mid2x2(1,0)  label##1: mid2x2(0,1)  \
-    av+=8*NPAR; wv+=8*NPAR; wv1+=8*NPAR; \
-    if((rem-=8*NPAR)>8*NPAR)goto label##8;  \
-   } \
-   av-=(NPAR-rem)&-NPAR; wv-=(NPAR-rem)&-NPAR; wv1-=(NPAR-rem)&-NPAR; \
-   acc000=_mm256_add_pd(acc000,acc001); acc010=_mm256_add_pd(acc010,acc011); acc100=_mm256_add_pd(acc100,acc101); acc110=_mm256_add_pd(acc110,acc111);  \
-   label##9: last2x2  \
-   acc000=_mm256_add_pd(acc000,_mm256_permute2f128_pd(acc000,acc000,0x01)); acc010=_mm256_add_pd(acc010,_mm256_permute2f128_pd(acc010,acc010,0x01)); \
-    acc100=_mm256_add_pd(acc100,_mm256_permute2f128_pd(acc100,acc100,0x01)); acc110=_mm256_add_pd(acc110,_mm256_permute2f128_pd(acc110,acc110,0x01)); \
-   acc000=_mm256_add_pd(acc000,_mm256_permute_pd (acc000,0xf)); acc010=_mm256_add_pd(acc010,_mm256_permute_pd (acc010,0x0));  \
-    acc100=_mm256_add_pd(acc100,_mm256_permute_pd (acc100,0xf)); acc110=_mm256_add_pd(acc110,_mm256_permute_pd (acc110,0x0)); \
-   acc000=_mm256_blend_pd(acc000,acc010,0xa); acc100=_mm256_blend_pd(acc100,acc110,0xa); \
-   av+=((dplen-1)&(NPAR-1))+1;  wv+=((dplen-1)&(NPAR-1))+1; \
-   }
 
-// do one 2x2, 4 combinations from offset using accumulator accno.
-// av, wv, and wv1 are set
-#define CELL2X2M(offset,accno) \
- acc00##accno = MUL_ACC(acc00##accno, _mm256_loadu_pd(&av[offset*NPAR]), _mm256_loadu_pd(&wv[offset*NPAR])); \
- acc01##accno = MUL_ACC(acc01##accno, _mm256_loadu_pd(&av[offset*NPAR]), _mm256_loadu_pd(&wv1[offset*NPAR])); \
- acc10##accno = MUL_ACC(acc10##accno, _mm256_loadu_pd(&av[dplen+offset*NPAR]), _mm256_loadu_pd(&wv[offset*NPAR])); \
- acc11##accno = MUL_ACC(acc11##accno, _mm256_loadu_pd(&av[dplen+offset*NPAR]), _mm256_loadu_pd(&wv1[offset*NPAR]));
-
-// same but with mask, on cell number 0
-#define CELL2X2L \
- acc000 = MUL_ACC(acc000, _mm256_maskload_pd(&av[0],endmask), _mm256_maskload_pd(&wv[0],endmask)); \
- acc010 = MUL_ACC(acc010, _mm256_maskload_pd(&av[0],endmask), _mm256_maskload_pd(&wv1[0],endmask)); \
- acc100 = MUL_ACC(acc100, _mm256_maskload_pd(&av[dplen+0],endmask), _mm256_maskload_pd(&wv[0],endmask)); \
- acc110 = MUL_ACC(acc110, _mm256_maskload_pd(&av[dplen+0],endmask), _mm256_maskload_pd(&wv1[0],endmask));
-
-// Do one 1x1 product of length dplen.  Leave results in acc000.  dplen must be >0
-// av,  wv, are set up
-#define ONEPRODAVXD1(label,mid1x1,last1x1) {\
-   acc000=_mm256_setzero_pd(); if(dplen<=NPAR)goto label##9; \
-   acc010=acc000; acc100=acc000; acc110=acc000; \
-   acc001=acc000; acc011=acc000; acc101=acc000; acc111=acc000; \
-   I rem=dplen; if(rem>8*NPAR)goto label##8; \
-   while(rem>NPAR){ \
-    if(rem>4*NPAR) \
-     {if(rem>6*NPAR){if(rem>7*NPAR)goto label##7;else goto label##6;}else {if(rem>5*NPAR)goto label##5;else goto label##4;}} \
-    else{if(rem>2*NPAR){if(rem>3*NPAR)goto label##3;else goto label##2;}else {if(rem>1*NPAR)goto label##1;else break;}} \
-    label##8: mid1x1(7,000)  label##7: mid1x1(6,001)  label##6: mid1x1(5,010)  label##5: mid1x1(4,011)  \
-    label##4: mid1x1(3,100)  label##3: mid1x1(2,101)  label##2: mid1x1(1,110)  label##1: mid1x1(0,111)  \
-    av+=8*NPAR; wv+=8*NPAR;  \
-    if((rem-=8*NPAR)>8*NPAR)goto label##8;  \
-   } \
-   acc000=_mm256_add_pd(acc000,acc001); acc010=_mm256_add_pd(acc010,acc011); acc100=_mm256_add_pd(acc100,acc101); acc110=_mm256_add_pd(acc110,acc111);  \
-   acc000=_mm256_add_pd(acc000,acc010); acc100=_mm256_add_pd(acc100,acc110); \
-   acc000=_mm256_add_pd(acc000,acc100);  \
-   av-=(NPAR-rem)&-NPAR; wv-=(NPAR-rem)&-NPAR; \
-   label##9: last1x1  \
-   acc000=_mm256_add_pd(acc000,_mm256_permute2f128_pd(acc000,acc000,0x01)); \
-   acc000=_mm256_add_pd(acc000,_mm256_permute_pd (acc000,0xf)); \
-   av+=((dplen-1)&(NPAR-1))+1;  wv+=((dplen-1)&(NPAR-1))+1; \
-   }
-
-// do one 1x1, using accumulator accno.
-// av, wv are set
-#define CELL1X1M(offset,accno) \
- acc##accno = MUL_ACC(acc##accno, _mm256_loadu_pd(&av[offset*NPAR]), _mm256_loadu_pd(&wv[offset*NPAR]));
-
-// same but with mask, on cell number 0
-#define CELL1X1L \
- acc000 = MUL_ACC(acc000, _mm256_maskload_pd(&av[0],endmask), _mm256_maskload_pd(&wv[0],endmask));
-
-
-
-#define ONEPRODD \
- __m256i endmask; /* length mask for the last word */ \
- _mm256_zeroupper(VOIDARG); \
- /* +/ vectors */ \
- __m256d idreg=_mm256_setzero_pd(); \
- endmask = _mm256_loadu_si256((__m256i*)(validitymask+((-dplen)&(NPAR-1))));  /* mask for 00=1111, 01=1000, 10=1100, 11=1110 */ \
- __m256d acc0=idreg; __m256d acc1=idreg; __m256d acc2=idreg; __m256d acc3=idreg; \
- DQ((dplen-1)>>(2+LGNPAR), \
-  acc0=MUL_ACC(acc0,_mm256_loadu_pd(av),_mm256_loadu_pd(wv)); \
-  acc1=MUL_ACC(acc1,_mm256_loadu_pd(av+1*NPAR),_mm256_loadu_pd(wv+1*NPAR)); \
-  acc2=MUL_ACC(acc2,_mm256_loadu_pd(av+2*NPAR),_mm256_loadu_pd(wv+2*NPAR)); \
-  acc3=MUL_ACC(acc3,_mm256_loadu_pd(av+3*NPAR),_mm256_loadu_pd(wv+3*NPAR)); av+=4*NPAR;  wv+=4*NPAR; \
- ) \
- if((dplen-1)&((4-1)<<LGNPAR)){acc0=MUL_ACC(acc0,_mm256_loadu_pd(av),_mm256_loadu_pd(wv)); \
-  if(((dplen-1)&((4-1)<<LGNPAR))>=2*NPAR){acc1=MUL_ACC(acc1,_mm256_loadu_pd(av+NPAR),_mm256_loadu_pd(wv+NPAR)); \
-   if(((dplen-1)&((4-1)<<LGNPAR))>2*NPAR){acc2=MUL_ACC(acc2,_mm256_loadu_pd(av+2*NPAR),_mm256_loadu_pd(wv+2*NPAR));} \
-  } \
-  av+=(dplen-1)&((4-1)<<LGNPAR); wv+=(dplen-1)&((4-1)<<LGNPAR);  \
- } \
- acc3=MUL_ACC(acc3,_mm256_maskload_pd(av,endmask),_mm256_maskload_pd(wv,endmask)); av+=((dplen-1)&(NPAR-1))+1;  wv+=((dplen-1)&(NPAR-1))+1; \
- acc0=_mm256_add_pd(acc0,acc1); acc2=_mm256_add_pd(acc2,acc3); acc0=_mm256_add_pd(acc0,acc2); /* combine accumulators vertically */ \
- acc0=_mm256_add_pd(acc0,_mm256_permute2f128_pd(acc0,acc0,0x01)); acc0=_mm256_add_pd(acc0,_mm256_permute_pd (acc0,0xf));   /* combine accumulators horizontally  01+=23, 0+=1 */ \
- _mm_storel_pd(zv++,_mm256_castpd256_pd128 (acc0));/* store the single result */
-
-#else
 #define ONEPRODD D total0=0.0; D total1=0.0; if(dplen&1)total1=(D)*av++*(D)*wv++; DQ(dplen>>1, total0+=(D)*av++*(D)*wv++; total1+=(D)*av++*(D)*wv++;); *zv++=total0+total1;
-#endif
 
 // routine to do the dot-product calculations.  Brought out to help the compiler allocate registers
 // it=type of input, a,w=args dplen=len of each dot-product
@@ -990,11 +885,7 @@ static A jtva2(J jt,AD * RESTRICT a,AD * RESTRICT w,AD * RESTRICT self,RANK2T ra
 I jtsumattymesprods(J jt,I it,void *avp, void *wvp,I dplen,I nfro,I nfri,I ndpo,I ndpi,void *zvp){
  if(it&FL){
   NAN0;
-#if C_AVX || EMU_AVX
-  SUMATLOOP2(D,D,ONEPRODAVXD2(D2,CELL2X2M,CELL2X2L),ONEPRODAVXD1(D1,CELL1X1M,CELL1X1L));
-#else
   SUMATLOOP(D,D,ONEPRODD)
-#endif
   if(NANTEST){  // if there was an error, it might be 0 * _ which we will turn to 0.  So rerun, checking for that.
    NAN0;
    SUMATLOOP(D,D,D total=0.0; DQ(dplen, D u=*av++; D v=*wv++; if(u&&v)total+=dmul2(u,v);); *zv++=total;)

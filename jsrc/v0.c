@@ -338,82 +338,6 @@ DF2(jtpoly2){F2PREFIP;A c,za;I b;D*ad,d,p,*x,u,*z;I an,at,j,t,n,wt;Z*az,e,q,*wz,
  // coeffs: d/e are not set
  case 0: R df2(za,w,a,eval("(^/i.@#) +/ .* ]"));  // XNUM/RAT/SPARSE
  case 1: NAN0;  // FL
-#if (C_AVX&&SY_64) || EMU_AVX
-// loop for atomic parallel ops.  // fixed: n is #atoms, x->input, z->result, u=input atom4 and result
-  switch(an){
-   
-  case 1: mvc(n*sizeof(D),z,sizeof(D),ad); break;
-  case 2:
-#if SLEEF
-   if(postfn)
-   {AVXATOMLOOPPIPE(
-    __m256d a0;__m256d t0;  t0=_mm256_set1_pd(ad[1]);
-    a0=_mm256_set1_pd(ad[0]);
-,
-    zt=MUL_ACC(a0,u,t0);
-,
-    u=Sleef_expd4(zu);
-,
-   )NAN0; }
-   else
-#endif
-   {AVXATOMLOOP(
-    __m256d a0;__m256d t0;  t0=_mm256_set1_pd(ad[1]);
-    a0=_mm256_set1_pd(ad[0]);
-,
-    u=MUL_ACC(a0,u,t0);
-,
-   )} break;
-  case 3:
-#if SLEEF
-   if(postfn)
-   {AVXATOMLOOPPIPE(
-    __m256d a0;__m256d a1;__m256d t0;__m256d t; t0=_mm256_set1_pd(ad[2]);
-    a1=_mm256_set1_pd(ad[1]); a0=_mm256_set1_pd(ad[0]);
-,
-    t=t0; t=MUL_ACC(a1,u,t); zt=MUL_ACC(a0,u,t);
-,
-    u=Sleef_expd4(zu);
-,
-   )NAN0; }
-   else
-#endif
-   {AVXATOMLOOP(
-    __m256d a0;__m256d a1;__m256d t0;__m256d t;  t0=_mm256_set1_pd(ad[2]);
-    a1=_mm256_set1_pd(ad[1]); a0=_mm256_set1_pd(ad[0]);
-,
-    t=t0; t=MUL_ACC(a1,u,t); u=MUL_ACC(a0,u,t);
-,
-   )} break;
-  case 4:
-   {AVXATOMLOOP(
-    __m256d a0;__m256d a1;__m256d a2;__m256d t0;__m256d t;  t0=_mm256_set1_pd(ad[3]);
-    a2=_mm256_set1_pd(ad[2]); a1=_mm256_set1_pd(ad[1]); a0=_mm256_set1_pd(ad[0]);
-,
-    t=t0; t=MUL_ACC(a2,u,t); t=MUL_ACC(a1,u,t); u=MUL_ACC(a0,u,t);
-,
-   )} break;
-  case 5:
-   {AVXATOMLOOP(
-    __m256d a0;__m256d a1;__m256d a2;__m256d a3;__m256d t0;__m256d t;  t0=_mm256_set1_pd(ad[4]);
-    a3=_mm256_set1_pd(ad[3]); a2=_mm256_set1_pd(ad[2]);
-    a1=_mm256_set1_pd(ad[1]); a0=_mm256_set1_pd(ad[0]);
-,
-    t=t0; t=MUL_ACC(a3,u,t); t=MUL_ACC(a2,u,t);
-    t=MUL_ACC(a1,u,t); u=MUL_ACC(a0,u,t);
-,
-    ;
-   )} break;
-  default:
-    {AVXATOMLOOP(
-    __m256d t0;__m256d t;  t0=_mm256_set1_pd(ad[an-1]);
-,
-    t=t0; DQ(an-1, t=MUL_ACC(_mm256_set1_pd(ad[i]),u,t);); u=t;
-,
-    ;
-   )} break;
- }
-#else
   switch(an){  // special cases for linear, quadratic, cubic
   case 2:
    {D c0=ad[0],c1=ad[1]; DQ(n, u=*x++; *z++=c0+u*c1;);} break;
@@ -424,7 +348,6 @@ DF2(jtpoly2){F2PREFIP;A c,za;I b;D*ad,d,p,*x,u,*z;I an,at,j,t,n,wt;Z*az,e,q,*wz,
   default:
    DO(n, p=ad[an-1]; u=*x++; DQ(an-1,p=ad[i]+u*p;); *z++=p;); break;
   }
-#endif
   NAN1; break;  // Horner's rule.  First multiply is never 0*_
  case 2: NAN0; DQ(n, q=zeroZ; y=*wz++; j=an; DQ(an,q=zplus(az[--j],ztymes(y,q));); *zz++=q;); NAN1; break;  // CMPX
  // mult/roots: d/e are set

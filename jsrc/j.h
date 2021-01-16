@@ -62,31 +62,14 @@
 #define C_AVX2 0
 #endif
 
-#if C_AVX2
-#if !C_AVX
-#undef C_AVX
-#define C_AVX 1
-#endif
-#endif
-#endif
-
-#if C_AVX
-#if (defined(__GNUC__) || defined(__CLANG__)) && (defined(__i386__) || defined(__x86_64__))
-#include <immintrin.h>
-#endif
 #if (defined(_MSC_VER))
 #include <intrin.h>
 #endif
-#if C_AVX2
-#undef EMU_AVX2
-#define EMU_AVX2 0
-#else
+
 #undef EMU_AVX2
 #define EMU_AVX2 1
 #include <stdint.h>
 #include <string.h>
-#include "avx2intrin-emu.h"
-#endif
 #undef EMU_AVX
 #define EMU_AVX 0
 
@@ -518,15 +501,9 @@ extern unsigned int __cdecl _clearfp (void);
 #define IPHALLEPS       (IPHOFFSET+IALLEPS)
 #define IPHIFBEPS       (IPHOFFSET+IIFBEPS)
 
-#if C_AVX   // _mm_round_pd requires sse4.1
-#define jceil(x) _mm_cvtsd_f64(_mm_round_pd(_mm_set1_pd(x),(_MM_FROUND_TO_POS_INF |_MM_FROUND_NO_EXC)))
-#define jfloor(x) _mm_cvtsd_f64(_mm_round_pd(_mm_set1_pd(x),(_MM_FROUND_TO_NEG_INF |_MM_FROUND_NO_EXC)))
-#define jround(x) _mm_cvtsd_f64(_mm_round_pd(_mm_set1_pd(x),(_MM_FROUND_TO_NEAREST_INT |_MM_FROUND_NO_EXC)))
-#else
 #define jceil(x) ceil(x)
 #define jfloor(x) floor(x)
 #define jround(x) floor(0.5+(x))  // for paranoid compatibility with earlier versions
-#endif
 
 
 #define BB              8      /* # bits in a byte */
@@ -548,23 +525,10 @@ extern unsigned int __cdecl _clearfp (void);
 #define TOOMANYATOMS 0xFFFFFFFFFFFFLL  // more atoms than this is considered overflow (64-bit).  i.-family can't handle more than 2G cells in array.
 
 // Tuning options for cip.c
-#if C_AVX2 && defined(_WIN32)
-// tuned for windows
-#if _OPENMP
-#define IGEMM_THRES  (400*400*400)   // when m*n*p less than this use cached; when higher, use BLAS
-#define DGEMM_THRES  (300*300*300)   // when m*n*p less than this use cached; when higher, use BLAS   _1 means 'never'
-#define ZGEMM_THRES  (400*400*400)   // when m*n*p less than this use cached; when higher, use BLAS  
-#else
-#define IGEMM_THRES  (-1)     // when m*n*p less than this use cached; when higher, use BLAS
-#define DGEMM_THRES  (-1)     // when m*n*p less than this use cached; when higher, use BLAS   _1 means 'never'
-#define ZGEMM_THRES  (-1)     // when m*n*p less than this use cached; when higher, use BLAS   _1 means 'never'
-#endif
-#else
 // tuned for linux
 #define IGEMM_THRES  (200*200*200)   // when m*n*p less than this use cached; when higher, use BLAS
 #define DGEMM_THRES  (200*200*200)   // when m*n*p less than this use cached; when higher, use BLAS   _1 means 'never'
 #define ZGEMM_THRES  (60*60*60)      // when m*n*p less than this use cached; when higher, use BLAS  
-#endif
 #define DCACHED_THRES  (64*64*64)    // when m*n*p less than this use blocked; when higher, use cached
 
 
@@ -610,26 +574,7 @@ extern unsigned int __cdecl _clearfp (void);
 #define ASSERTW(b,e)    {if(unlikely(!(b))){if((e)<=NEVM)jsignal(e); else jt->jerr=(e); R;}}
 #define ASSERTWR(c,e)   {if(unlikely(!(c))){R e;}}
 // verify that shapes *x and *y match for l axes using AVX for rank<5, memcmp otherwise
-#if 1 && ((C_AVX&&SY_64) || EMU_AVX)
-// We would like to use these AVX versions because they generate fewest instructions.  Unfortunately, they
-// modify ymm upper bits, which causes us to issue VZEROUPPER, which in turn causes us to save/restore all of ymm.
-// It's still worth it for all the register pressure it saves
-#define ASSERTAGREE(x,y,l) \
- {D *aaa=(D*)(x), *aab=(D*)(y); I aai=(l); \
-  if(likely(aai<=NPAR)){__m256i endmask = _mm256_loadu_si256((__m256i*)(validitymask+NPAR-aai)); \
-   endmask=_mm256_castpd_si256(_mm256_xor_pd(_mm256_maskload_pd(aaa,endmask),_mm256_maskload_pd(aab,endmask))); \
-   ASSERT(_mm256_testz_si256(endmask,endmask),EVLENGTH); /* result is 1 if all match */ \
-  }else{ASSERT(!memcmp(aaa,aab,aai<<LGSZI),EVLENGTH)} \
- }
-// set r nonzero if shapes disagree
-#define TESTDISAGREE(r,x,y,l) \
- {D *aaa=(D*)(x), *aab=(D*)(y); I aai=(l); \
-  if(likely(aai<=NPAR)){__m256i endmask = _mm256_loadu_si256((__m256i*)(validitymask+NPAR-aai)); \
-   endmask=_mm256_castpd_si256(_mm256_xor_pd(_mm256_maskload_pd(aaa,endmask),_mm256_maskload_pd(aab,endmask))); \
-   r=!_mm256_testz_si256(endmask,endmask); /* result is 1 if any mismatch */ \
-  }else{r=memcmp(aaa,aab,aai<<LGSZI)!=0;} \
- }
-#else
+
 #define ASSERTAGREE(x,y,l) \
  {I *aaa=(x), *aab=(y); I aai=(l); \
   if(likely(aai<=2)){ \
@@ -644,7 +589,7 @@ extern unsigned int __cdecl _clearfp (void);
    r=((aaa[0]^aab[0])+(aaa[aai]^aab[aai]))!=0;  \
   }else{r=memcmp(aaa,aab,aai<<LGSZI)!=0;} \
  }
-#endif
+
 #define ASSERTAGREESEGFAULT (x,y,l) {I *aaa=(x), *aab=(y), aai=(l)-1; do{aab=aai<0?aaa:aab; if(aaa[aai]!=aab[aai])SEGFAULT; --aai; aab=aai<0?aaa:aab; if(aaa[aai]!=aab[aai])SEGFAULT; --aai;}while(aai>=0); }
 // BETWEENx requires that lo be <= hi
 #define BETWEENC(x,lo,hi) ((UI)((x)-(lo))<=(UI)((hi)-(lo)))   // x is in [lo,hi]
@@ -745,12 +690,8 @@ extern unsigned int __cdecl _clearfp (void);
 #define GACOPYSHAPEG(name,type,atoms,rank,shaape) \
  {I *_d=AS(name); I *_s=(shaape); _s=_s?_s:_d; I cp=*_s; I _r=(rank); cp=_r<1?0:cp; cp=_r==1?(atoms):cp; _s=_r<=1?_d:_s; *_d=cp; ++_d; ++_s; if(likely(_r<3)){*_d=*_s;}else{MC(_d,_s,(_r-1)<<LGSZI);}}
 // Use when shape is known to be present but rank is not SDT.  One value is always written to shape
-#if (C_AVX&&SY_64) || EMU_AVX
-#define GACOPYSHAPE(name,type,atoms,rank,shaape) MCISH(AS(name),shaape,rank)
-#else
 // in this version one value is always written to shape
 #define GACOPYSHAPE(name,type,atoms,rank,shaape)  {I *_s=(I*)(shaape); I *_d=AS(name); *_d=*_s; I _r=1-(rank); do{_s+=SGNTO0(_r); _d+=SGNTO0(_r); *_d=*_s;}while(++_r<0);}
-#endif
 #define GACOPY1(name,type,atoms,rank,shaape) {I *_d=AS(name); *_d=1; I _r=1-(rank); do{_d+=SGNTO0(_r); *_d=1;}while(++_r<0);} // copy all 1s to shape
 #define GA(v,t,n,r,s)   RZ(v=ga(t,(I)(n),(I)(r),(I*)(s)))
 // GAE executes the given expression when there is an error
@@ -853,46 +794,11 @@ extern unsigned int __cdecl _clearfp (void);
 
 // memory copy, for J blocks.  Like memory copy, but knows it can fetch outside the arg boundaries for LIT-type args
 // if bytelen is 1, the arg may be of any length; if 0, must be a multiple of Is and the low bits of length are ignored
-#if C_AVX2 || EMU_AVX2
-#define JMCDECL(mskname) __m256i mskname;
-#define JMCSETMASK(mskname,l,bytelen) mskname=_mm256_loadu_si256((__m256i*)(validitymask+((-(((l)-bytelen)>>LGSZI))&(NPAR-1)))); /* 0->1111 1->1000 3->1110 */
-#define JMCcommon(d,s,l,lbl,bytelen,mskname,mskdecl) \
-{ \
- I ll=(l)-bytelen; \
- if(likely(!bytelen||ll>=0)){ \
-  void *src=(s); \
-  PREFETCH(src);  /* start bringing in the start of data */  \
-  void *dst=(d); \
-  mskdecl \
-  /* copy the remnants at the end - bytes and Is.  Do this early because they have address conflicts that will take 20 */ \
-  /* cycles to sort out, and we can put that time into the switch and loop branch overhead */ \
-  /* First, the odd bytes if any */ \
-  /* if there is 1 byte to do low bits of ll are 0, which means protect 7 bytes, thus 0->7, 1->6, 7->0 */ \
-  if(likely(bytelen!=0))STOREBYTES((C*)dst+(ll&(-SZI)),*(UI*)((C*)src+(ll&(-SZI))),~ll&(SZI-1));  /* copy remnant, 1-8 bytes. */ \
-  /* copy up till last section */ \
-  if(likely((ll&=(-SZI))>0)){  /* reduce ll by # bytes processed above, 1-8 (if bytelen), 0 if !bytelen (discarding garbage length).  Any left? */ \
-   /* copy last section, 1-4 Is. ll bits 00->4 bytes, 01->3 bytes, etc  */ \
-   ll=(ll-SZI)&(-NPAR*SZI);  /* ll=start of last section, 1-4 Is */ \
-   _mm256_maskstore_epi64((I*)((C*)dst+ll),mskname,_mm256_maskload_epi64((I*)((C*)src+ll),mskname)); \
-   /* copy 128-byte sections, first one being 0, 4, 8, or 12 Is. There could be 0 to do */ \
-   switch((ll>>(LGNPAR+LGSZI))&(4-1)){ \
-   lbl: _mm256_storeu_si256((__m256i*)dst,_mm256_loadu_si256((__m256i*)src)); dst=(C*)dst+NPAR*SZI; src=(C*)src+NPAR*SZI; \
-   case 3: _mm256_storeu_si256((__m256i*)dst,_mm256_loadu_si256((__m256i*)src)); dst=(C*)dst+NPAR*SZI; src=(C*)src+NPAR*SZI; \
-   case 2: _mm256_storeu_si256((__m256i*)dst,_mm256_loadu_si256((__m256i*)src)); dst=(C*)dst+NPAR*SZI; src=(C*)src+NPAR*SZI; \
-   case 1: _mm256_storeu_si256((__m256i*)dst,_mm256_loadu_si256((__m256i*)src)); dst=(C*)dst+NPAR*SZI; src=(C*)src+NPAR*SZI; \
-   case 0: if(likely((ll-=4*NPAR*SZI)>=0))goto lbl; \
-   } \
-  } \
- } \
-}
-#define JMC(d,s,l,lbl,bytelen) JMCcommon(d,s,l,lbl,bytelen,endmask,JMCDECL(endmask) JMCSETMASK(endmask,ll,0))  //   0->1111 1->1000 3->1110 bytelen has already been applied here
-#define JMCR(d,s,l,lbl,bytelen,maskname) JMCcommon(d,s,l,lbl,bytelen,maskname,)
-#else
+
 #define JMC(d,s,l,lbl,bytelen) MC(d,s,bytelen?(l):(l)&-SZI);
 #define JMCR(d,s,l,lbl,bytelen,maskname) MC(d,s,bytelen?(l):(l)&-SZI);
 #define JMCDECL(mskname)
 #define JMCSETMASK(mskname,l,bytelen)
-#endif
 
 #define IX(n)           apv((n),0L,1L)
 #define JATTN           {if(unlikely(*jt->adbreakr!=0)){jsignal(EVATTN); R 0;}}
@@ -900,12 +806,12 @@ extern unsigned int __cdecl _clearfp (void);
 #define JTIPA           ((J)((I)jt|JTINPLACEA))
 #define JTIPAW          ((J)((I)jt|JTINPLACEA+JTINPLACEW))
 #define JTIPW           ((J)((I)jt|JTINPLACEW))
-#define JTIPAtoW        (J)((I)jt+(((I)jtinplace>>JTINPLACEAX)&JTINPLACEW))  // jtinplace, with a' inplaceability transferred to w
+#define JTIPAtoW        (J)((I)jt+(((I)jtinplace>>JTINPLACEAX)&JTINPLACEW))          // jtinplace, with a' inplaceability transferred to w
 #define JTIPWonly       (J)((I)jtinplace&~(JTINPLACEA+JTWILLBEOPENED+JTCOUNTITEMS))  // dyad jt converted to monad for w
-#define JTIPEX1(name,arg) jt##name(JTIPW,arg)   // like name(arg) but inplace
-#define JTIPEX1S(name,arg,self) jt##name(JTIPW,arg,self)   // like name(arg,self) but inplace
-#define JTIPAEX2(name,arga,argw) jt##name(JTIPA,arga,argw)   // like name(arga,argw) but inplace on a
-#define JTIPAEX2S(name,arga,argw,self) jt##name(JTIPA,arga,argw,self)   // like name(arga,argw,self) but inplace on a
+#define JTIPEX1(name,arg) jt##name(JTIPW,arg)                                        // like name(arg) but inplace
+#define JTIPEX1S(name,arg,self) jt##name(JTIPW,arg,self)                             // like name(arg,self) but inplace
+#define JTIPAEX2(name,arga,argw) jt##name(JTIPA,arga,argw)                           // like name(arga,argw) but inplace on a
+#define JTIPAEX2S(name,arga,argw,self) jt##name(JTIPA,arga,argw,self)                // like name(arga,argw,self) but inplace on a
 // given a unique num, define loop begin and end labels
 #define LOOPBEGIN(num) lp##num
 #define LOOPEND(num) lp##num##e
@@ -919,15 +825,6 @@ extern unsigned int __cdecl _clearfp (void);
 #define MCISs(dest,src,n) {I * RESTRICT _d=(dest); I _n=~(n); while((_n-=REPSGN(_n))<0)*_d++=*src++;}  // ... this when s increments through the loop
 #define MCISds(dest,src,n) {I _n=~(n); while((_n-=REPSGN(_n))<0)*dest++=*src++;}  // ...this when both
 // Copy shapes.  Optimized for length <5, subroutine for others
-// For AVX, we can profitably use the MASKLOAD/STORE instruction to do all the  testing
-// #if 1 && ((C_AVX&&SY_64) || EMU_AVX)  // as with xAGREE, using ymm has too much baggage
-// #define MCISH(dest,src,n) \
-//  {D *_d=(D*)(dest), *_s=(D*)(src); I _n=(I)(n); \
-//   if(likely(_n<=NPAR)){__m256i endmask = _mm256_loadu_si256((__m256i*)(validitymask+NPAR-_n)); \
-//    _mm256_maskstore_pd(_d,endmask,_mm256_maskload_pd(_s,endmask)); \
-//   }else{MC(_d,_s,_n<<LGSZI);} \
-//  }
-// #else
 #define MCISH(dest,src,n) \
  {I *_d=(dest), *_s=(src); I _n=(I)(n); \
   if(likely(_n<=2)){ \
@@ -935,7 +832,6 @@ extern unsigned int __cdecl _clearfp (void);
    _d[0]=_s[0]; _d[_n]=_s[_n];  \
   }else{MC(_d,_s,_n<<LGSZI);} \
  }
-// #endif
 #define MCISHd(dest,src,n) {MCISH(dest,src,n) dest+=(n);}  // ... this version when d increments through the loop
 #define MCISHs(dest,src,n) {MCISH(dest,src,n) src+=(n);}
 #define MCISHds(dest,src,n) {MCISH(dest,src,n) dest+=(n); src+=(n);}
@@ -948,13 +844,6 @@ extern unsigned int __cdecl _clearfp (void);
 #define MODBLOCKTYPE(z,t)  {if(unlikely((AFLAG(z)&AFUNINCORPABLE)!=0)){RZ(z=clonevirtual(z));} AT(z)=(t);}
 #define MODIFIABLE(x)   (x)   // indicates that we modify the result, and it had better not be read-only
 // define multiply-add
-#if C_AVX2 || (EMU_AVX  && (defined(__aarch64__)||defined(_M_ARM64)))
-#define MUL_ACC(addend,mplr1,mplr2) _mm256_fmadd_pd(mplr1,mplr2,addend)
-#elif C_AVX || EMU_AVX
-#define MUL_ACC(addend,mplr1,mplr2) _mm256_add_pd(addend , _mm256_mul_pd(mplr1,mplr2))
-#elif defined(__SSE2__)
-#define MUL_ACC(addend,mplr1,mplr2) _mm_add_pd(addend , _mm_mul_pd(mplr1,mplr2))
-#endif
 #define NAN0            (_clearfp())
 #if defined(MMSC_VER) && _MSC_VER==1800 && !SY_64 // bug in some versions of VS 2013
 #define NAN1            {if(_SW_INVALID&_statusfp()){_clearfp();jsignal(EVNAN); R 0;}}
@@ -970,73 +859,7 @@ extern unsigned int __cdecl _clearfp (void);
 // #define NAN1T           {if(_SW_INVALID&_clearfp()){fprintf(stderr,"nan error: file %s line %d\n",__FILE__,__LINE__);jsignal(EVNAN);     }}
 #endif
 
-#if (C_AVX&&SY_64) || EMU_AVX
-// j64avx gcc _mm256_zeroupper -O2 failed SLEEF for expression % /\ ^:_1 ,: 1 2 3  => 1 2 0
-// upper half of all YMM registers clear AFTER loading endmask
-// ??? is_mm256_zeroupper really needed
-// -mavx or /arch:AVX should already generate VEX encoded for SSE instructions
-#define _mm256_zeroupperx(x)
-#define NPAR ((I)(sizeof(__m256d)/sizeof(D))) // number of Ds processed in parallel
-#define LGNPAR 2  // no good automatic way to do this
-// loop for atomic parallel ops.  // fixed: n is #atoms (never 0), x->input, z->result, u=input atom4 and result
-//                                                                                  __SSE2__    atom2
-#define AVXATOMLOOP(preloop,loopbody,postloop) \
- __m256i endmask;  __m256d u; \
- _mm256_zeroupperx(VOIDARG); \
- endmask = _mm256_loadu_si256((__m256i*)(validitymask+((-n)&(NPAR-1))));  /* mask for 0 1 2 3 4 5 is xxxx 0001 0011 0111 1111 0001 */ \
-                                                         /* __SSE2__ mask for 0 1 2 3 4 5 is xx 01 11 01 11 01 */ \
- preloop \
- I i=(n-1)>>LGNPAR;  /* # loops for 0 1 2 3 4 5 is x 0 0 0 0 1 */ \
-            /* __SSE2__ # loops for 0 1 2 3 4 5 is x 1 0 1 0 1 */ \
- while(--i>=0){ u=_mm256_loadu_pd(x); \
-  loopbody \
-  _mm256_storeu_pd(z, u); x+=NPAR; z+=NPAR; \
- } \
- u=_mm256_maskload_pd(x,endmask); \
- loopbody \
- _mm256_maskstore_pd(z, endmask, u); \
- x+=((n-1)&(NPAR-1))+1; z+=((n-1)&(NPAR-1))+1; \
- postloop
-
-// version that pipelines one read ahead.  Input to loopbody2 is zu; result of loopbody1 is in zt
-#define AVXATOMLOOPPIPE(preloop,loopbody1,loopbody2,postloop) \
- __m256i endmask;  __m256d u, zt, zu; \
- _mm256_zeroupperx(VOIDARG); \
- endmask = _mm256_loadu_si256((__m256i*)(validitymask+((-n)&(NPAR-1))));  /* mask for 0 1 2 3 4 5 is xxxx 0001 0011 0111 1111 0001 */ \
-                                                         /* __SSE2__ mask for 0 1 2 3 4 5 is xx 01 11 01 11 01 */ \
- preloop \
- I i=(n-1)>>LGNPAR;  /* # loops for 0 1 2 3 4 5 is x 0 0 0 0 1 */ \
-            /* __SSE2__ # loops for 0 1 2 3 4 5 is x 1 0 1 0 1 */ \
- if(likely(i>0)){u=_mm256_loadu_pd(x); x+=NPAR; loopbody1 \
- while(--i>=0){ u=_mm256_loadu_pd(x); x+=NPAR; \
-  zu=zt; loopbody1 loopbody2 \
-  _mm256_storeu_pd(z, u); z+=NPAR; \
- } zu=zt; loopbody2 _mm256_storeu_pd(z, u); z+=NPAR;} \
- u=_mm256_maskload_pd(x,endmask); \
- loopbody1 zu=zt; loopbody2 \
- _mm256_maskstore_pd(z, endmask, u); \
- x+=((n-1)&(NPAR-1))+1; z+=((n-1)&(NPAR-1))+1; \
- postloop
-
-// Dyadic version.  v is right argument, u is still result
-#define AVXATOMLOOP2(preloop,loopbody,postloop) \
- __m256i endmask;  __m256d u,v; \
- _mm256_zeroupperx(VOIDARG); \
- endmask = _mm256_loadu_si256((__m256i*)(validitymask+((-n)&(NPAR-1))));  /* mask for 0 1 2 3 4 5 is xxxx 0001 0011 0111 1111 0001 */ \
-                                                         /* __SSE2__ mask for 0 1 2 3 4 5 is xx 01 11 01 11 01 */ \
- preloop \
- I i=(n-1)>>LGNPAR;  /* # loops for 0 1 2 3 4 5 is x 0 0 0 0 1 */ \
-            /* __SSE2__ # loops for 0 1 2 3 4 5 is x 1 0 1 0 1 */ \
- while(--i>=0){ u=_mm256_loadu_pd(x); v=_mm256_loadu_pd(y); \
-  loopbody \
-  _mm256_storeu_pd(z, u); x+=NPAR; y+=NPAR; z+=NPAR; \
- } \
- u=_mm256_maskload_pd(x,endmask); v=_mm256_maskload_pd(y,endmask); \
- loopbody \
- _mm256_maskstore_pd(z, endmask, u); \
- postloop
-
-#elif defined(__GNUC__)   // vector extension
+#if defined(__GNUC__)   // vector extension
 
 #if !(defined(__aarch64__)||defined(__arm__))
 typedef int64_t int64x2_t __attribute__ ((vector_size (16),aligned(16)));
@@ -1614,8 +1437,10 @@ extern J gjt; // global for JPF (procs without jt)
 #endif
 #define _SW_INVALID  FE_INVALID
 
-static inline UINT _clearfp(void){int r=fetestexcept(FE_ALL_EXCEPT);
- feclearexcept(FE_ALL_EXCEPT); return r;
+static inline UINT _clearfp(void){
+  int r = fetestexcept(FE_ALL_EXCEPT);
+  feclearexcept(FE_ALL_EXCEPT); 
+  return r;
 }
 #endif
 
@@ -1737,7 +1562,7 @@ static __forceinline void aligned_free(void *ptr) {
 // The following definitions are used only in builds for the AVX instruction set
 // 64-bit Atom cpu in android has hardware crc32c but not AVX
 #if C_CRC32C && (defined(_M_X64) || defined(__x86_64__))
-#if C_AVX || defined(ANDROID)
+#if defined(ANDROID)
 #if defined(MMSC_VER)  // SY_WIN32
 // Visual Studio definitions
 #define CRC32(x,y) _mm_crc32_u32(x,y)  // takes UI4, returns UI4

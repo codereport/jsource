@@ -155,7 +155,8 @@ do{
        if(zexpshift>=0){zzcelllen<<=zexpshift; zzcellp<<=zexpshift;}else{zzcelllen>>=-zexpshift; zzcellp>>=-zexpshift;}
        // if the new type is recursible, make sure zz is recursive.  This simplifies logic below
        ra00(zz,zt);  // make recursive if recursible
-       JMCSETMASK(zzendmask,zzcelllen+(ZZSTARTATEND^1)*(SZI-1),ZZSTARTATEND)   // when len changes, reset mask
+       // #CHTODO probably this breaks stuff??
+      //  JMCSETMASK(zzendmask,zzcelllen+(ZZSTARTATEND^1)*(SZI-1),ZZSTARTATEND)   // when len changes, reset mask
       }
      }else{
       // empty cells.  Just adjust the type, using the type priority

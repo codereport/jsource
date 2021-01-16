@@ -94,15 +94,8 @@ I oneone[2]={1,1};  // used by PROD
 #define bits "32"
 #endif
 
-#if C_AVX2
-#define hw "avx2"
-#else
-#if C_AVX
-#define hw "avx"
-#else
+
 #define hw ""
-#endif
-#endif
 
 const char jeversion[]= "je9!:14 j"jversion"/j"bits""hw"/"jplatform"/"jtype"/"jlicense"/"jbuilder"/"__DATE__"T"__TIME__;
 

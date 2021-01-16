@@ -45,39 +45,11 @@ static AMONPS(sgnZ,   Z,Z, , if((1.0-jt->cct)>zmag(*x))*z=zeroZ; else *z=ztrend(
 
 static AMON(sqrtI,  D,I, ASSERTWR(0<=*x,EWIMAG); *z=sqrt((D)*x);)
 
-#if (C_AVX&&SY_64) || EMU_AVX
-AHDR1(sqrtD,D,D){
- AVXATOMLOOP(
- __m256d zero; zero=_mm256_setzero_pd();
- __m256d neg; __m256d comp; __m256d anyneg; anyneg=zero;
-
-,
-  neg=_mm256_cmp_pd(u,zero,_CMP_LT_OQ); comp=_mm256_sub_pd(zero,u); u=_mm256_blendv_pd(u,comp,neg); // convert to positive; then back to negative
-  anyneg=_mm256_or_pd(anyneg,neg);
-  u=_mm256_sqrt_pd(_mm256_blendv_pd(u,comp,neg)); comp=_mm256_sub_pd(zero,u); u=_mm256_blendv_pd(u,comp,neg);  // store sqrt, with sign of the original value
-
- ,
- R (_mm256_movemask_pd(anyneg)&0xf)?EWIMAG:EVOK;  // if there are any negative values, call for a postpass
- )
-}
-
-AHDR1(absD,D,D){
- AVXATOMLOOP(
-  __m256d absmask; absmask=_mm256_castsi256_pd(_mm256_set1_epi64x (0x7fffffffffffffff));
- ,
-  u=_mm256_and_pd(u,absmask);
- ,
-  R EVOK;
- )
-}
-
-#else
 static AMONPS(sqrtD,  D,D, I ret=EVOK; , if(*x>=0)*z=sqrt(*x);else{*z=-sqrt(-*x); ret=EWIMAG;}, R ret;)  // if input is negative, leave sqrt as negative
 #if BW==64
 static AMON(absD,   I,I, *z= *x&0x7fffffffffffffff;)
 #else
 static AMON(absD,   D,D, *z= ABS(*x);)
-#endif
 #endif
 static AMON(sqrtZ,  Z,Z, *z=zsqrt(*x);)
 
