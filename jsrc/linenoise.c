@@ -17,7 +17,7 @@
 #pragma warning(disable: 4244 4267)
 #define inline __inline
 #else
-#define inline __inline__ __attribute__((__always_inline__,__gnu_inline__))
+#define inline __inline__ __attribute__((inline,__gnu_inline__))
 #endif
 #endif
 

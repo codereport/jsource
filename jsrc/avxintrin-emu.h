@@ -106,7 +106,7 @@ extern "C" {
     #define __emu_int64_t         __int64
 #elif defined( __GNUC__ )
     #define __EMU_M256_ALIGN( a ) __attribute__((__aligned__(a)))
-    #define __emu_inline          __inline __attribute__((__always_inline__))
+    #define __emu_inline          __inline __attribute__((inline))
     #define __emu_int64_t         long long
 #else
     #error "unsupported platform"

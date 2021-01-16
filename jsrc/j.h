@@ -920,14 +920,14 @@ extern unsigned int __cdecl _clearfp (void);
 #define MCISds(dest,src,n) {I _n=~(n); while((_n-=REPSGN(_n))<0)*dest++=*src++;}  // ...this when both
 // Copy shapes.  Optimized for length <5, subroutine for others
 // For AVX, we can profitably use the MASKLOAD/STORE instruction to do all the  testing
-#if 1 && ((C_AVX&&SY_64) || EMU_AVX)  // as with xAGREE, using ymm has too much baggage
-#define MCISH(dest,src,n) \
- {D *_d=(D*)(dest), *_s=(D*)(src); I _n=(I)(n); \
-  if(likely(_n<=NPAR)){__m256i endmask = _mm256_loadu_si256((__m256i*)(validitymask+NPAR-_n)); \
-   _mm256_maskstore_pd(_d,endmask,_mm256_maskload_pd(_s,endmask)); \
-  }else{MC(_d,_s,_n<<LGSZI);} \
- }
-#else
+// #if 1 && ((C_AVX&&SY_64) || EMU_AVX)  // as with xAGREE, using ymm has too much baggage
+// #define MCISH(dest,src,n) \
+//  {D *_d=(D*)(dest), *_s=(D*)(src); I _n=(I)(n); \
+//   if(likely(_n<=NPAR)){__m256i endmask = _mm256_loadu_si256((__m256i*)(validitymask+NPAR-_n)); \
+//    _mm256_maskstore_pd(_d,endmask,_mm256_maskload_pd(_s,endmask)); \
+//   }else{MC(_d,_s,_n<<LGSZI);} \
+//  }
+// #else
 #define MCISH(dest,src,n) \
  {I *_d=(dest), *_s=(src); I _n=(I)(n); \
   if(likely(_n<=2)){ \
@@ -935,7 +935,7 @@ extern unsigned int __cdecl _clearfp (void);
    _d[0]=_s[0]; _d[_n]=_s[_n];  \
   }else{MC(_d,_s,_n<<LGSZI);} \
  }
-#endif
+// #endif
 #define MCISHd(dest,src,n) {MCISH(dest,src,n) dest+=(n);}  // ... this version when d increments through the loop
 #define MCISHs(dest,src,n) {MCISH(dest,src,n) src+=(n);}
 #define MCISHds(dest,src,n) {MCISH(dest,src,n) dest+=(n); src+=(n);}
@@ -1045,12 +1045,12 @@ typedef double float64x2_t __attribute__ ((vector_size (16),aligned(16)));
 #define dump_int64x2(a,x) {int64x2_t _b=x;fprintf(stderr,"%s %lli %lli \n", a, ((long long*)(&_b))[0], ((long long*)(&_b))[1]);}
 #define dump_float64x2(a,x) {float64x2_t _b=x;fprintf(stderr,"%s %f %f \n", a, ((double*)(&_b))[0], ((double*)(&_b))[1]);}
 
-static inline __attribute__((__always_inline__)) int vec_any_si128(int64x2_t mask)
+static inline __attribute__((inline)) int vec_any_si128(int64x2_t mask)
 {
    return (mask[0] & 0x8000000000000000)||(mask[1] & 0x8000000000000000);
 }
 
-static inline __attribute__((__always_inline__)) float64x2_t vec_maskload_pd(double const* mem_addr, int64x2_t mask)
+static inline __attribute__((inline)) float64x2_t vec_maskload_pd(double const* mem_addr, int64x2_t mask)
 {
    float64x2_t ret={0.0,0.0};
    int i;
@@ -1063,7 +1063,7 @@ static inline __attribute__((__always_inline__)) float64x2_t vec_maskload_pd(dou
     return ret;
 }
 
-static inline __attribute__((__always_inline__)) void vec_maskstore_pd(double * mem_addr, int64x2_t  mask, float64x2_t a)
+static inline __attribute__((inline)) void vec_maskstore_pd(double * mem_addr, int64x2_t  mask, float64x2_t a)
 {
    int i;
     for (i=0; i<2; i++){
@@ -1072,26 +1072,26 @@ static inline __attribute__((__always_inline__)) void vec_maskstore_pd(double * 
     }
 }
 
-static inline __attribute__((__always_inline__)) int64x2_t vec_loadu_si128(int64x2_t const * a)
+static inline __attribute__((inline)) int64x2_t vec_loadu_si128(int64x2_t const * a)
 {
    int64x2_t ret;
    memcpy(&ret, (int64_t *)a, 2*sizeof(int64_t));  // must cast pointer otherwise segment 
    return ret;
 }
 
-static inline __attribute__((__always_inline__)) float64x2_t vec_loadu_pd(double const * a)
+static inline __attribute__((inline)) float64x2_t vec_loadu_pd(double const * a)
 {
    float64x2_t ret;
    memcpy(&ret, a, 2*sizeof(double));
    return ret;
 }
 
-static inline __attribute__((__always_inline__)) void vec_storeu_pd(double * mem_addr, float64x2_t a)
+static inline __attribute__((inline)) void vec_storeu_pd(double * mem_addr, float64x2_t a)
 {
    memcpy(mem_addr, &a , 2*sizeof(double));
 }
 
-static inline __attribute__((__always_inline__)) float64x2_t vec_and_pd(float64x2_t a, float64x2_t b)
+static inline __attribute__((inline)) float64x2_t vec_and_pd(float64x2_t a, float64x2_t b)
 {
    int64x2_t a1,b1;
    float64x2_t ret;
@@ -1505,16 +1505,16 @@ if(likely(z<3)){_zzt+=z; z=(I)&oneone; _zzt=_i&3?_zzt:(I*)z; z=_i&2?(I)_zzt:z; z
 #else
 #define NOINLINE __attribute__((noinline))
 #ifndef __forceinline
-#define __forceinline inline __attribute__((__always_inline__))
+#define __forceinline inline __attribute__((inline))
 #endif
 #endif
 #ifdef __MINGW32__
 // original definition
-// #define __forceinline extern __inline__ __attribute__((__always_inline__,__gnu_inline__))
+// #define __forceinline extern __inline__ __attribute__((inline,__gnu_inline__))
 #ifdef __forceinline
 #undef __forceinline
 #endif
-#define __forceinline __inline__ __attribute__((__always_inline__,__gnu_inline__))
+#define __forceinline __inline__ __attribute__((inline,__gnu_inline__))
 #endif
 
 #ifdef __GNUC__
