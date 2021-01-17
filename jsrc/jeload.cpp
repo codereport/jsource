@@ -67,10 +67,10 @@ J jeload(void* callbacks)
  if(!hjdll) {
 	char* error = dlerror();
  	printf( "ERROR\tCould not open library globally: %s\n", error ? error : "" );
-	return 0;
+	return nullptr;
  }
  jt = static_cast<JST*>(reinterpret_cast<JInitType>(dlsym(hjdll,"JInit"))());
- if(!jt) return 0;
+ if(!jt) return nullptr;
  ((JSMType)GETPROCADDRESS(hjdll,"JSM"))(jt,callbacks);
  jdo=(JDoType)GETPROCADDRESS(hjdll,"JDo");
  jfree=(JFreeType)GETPROCADDRESS(hjdll,"JFree");
@@ -131,7 +131,7 @@ void jepath(char* arg,char* lib)
 	 {
 		 *snk=0;
 		 snk=strrchr(path,'/');
-		 snk=0==snk?path:snk;
+		 snk=nullptr==snk?path:snk;
 		 src+=3;
 	 }
 	 else if('/'==*src&&'.'==*(1+src)&&'/'==*(2+src))
