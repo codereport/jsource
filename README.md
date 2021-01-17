@@ -27,8 +27,8 @@ map (1+) $ map (2*) [0..9]
 map ((+1) . (*2)) [0..9] -- alternative thanks to Alexandru Dinu
 ```
 **R**:
-```R (thanks to Roi Barkan)
--1+2*seq(10)
+```R
+-1+2*seq(10) -- thanks to Roi Barkan
 ```
 **APL**:
 ```apl
