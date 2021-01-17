@@ -46,13 +46,8 @@ void jtshowerr(J jt){C b[1+2*NETX],*p,*q,*r;
   p=b; q=jt->etx; r=q+jt->etxn;
   while(q<r&&p<b+2*NETX-3){if(*q==CLF){strcpy(p,jt->outseq); p+=strlen(jt->outseq); ++q;}else *p++=*q++;}  // avoid buffer overrun on huge typeouts
   *p=0;
-#ifdef ANDROID
-  A z=tocesu8(str(strlen(b),b));
-  CAV(z)[AN(z)]=0;
-  jsto(jt,MTYOER,CAV(z));
-#else
+
   jsto(jt,MTYOER,b);
-#endif
  }
  jt->etxn=0;
 }

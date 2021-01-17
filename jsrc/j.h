@@ -205,10 +205,7 @@ static inline omp_int_t omp_get_max_threads() { return 1;}
 #include <math.h>
 #include <string.h>  
 
-#ifdef ANDROID
-#include <android/log.h>
-#define logcat_d(msg) __android_log_write(ANDROID_LOG_DEBUG,(const char*)"libj",msg)
-#endif
+
 
 #if defined(TARGET_OS_IPHONE)||defined(TARGET_OS_IOS)||defined(TARGET_OS_TV)||defined(TARGET_OS_WATCH)||defined(TARGET_OS_SIMULATOR)||defined(TARGET_OS_EMBEDDED)||defined(TARGET_IPHONE_SIMULATOR)
 #define TARGET_IOS 1
@@ -1422,11 +1419,9 @@ extern J gjt; // global for JPF (procs without jt)
 #if SYS & SYS_UNIX
 #include <fenv.h>
 // bug clang isnan(x) set NaN flag if x is NaN
-#if defined(ANDROID) && (defined(__aarch32__)||defined(__arm__))
-#define _isnan       __builtin_isnan
-#else
+
 #define _isnan       isnan
-#endif
+
 #define _SW_INVALID  FE_INVALID
 
 static inline UINT _clearfp(void){

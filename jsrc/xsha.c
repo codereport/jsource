@@ -3,9 +3,7 @@
 /*                                                                         */
 /* Xenos: SHA calculation                                                  */
 
-#ifdef ANDROID
-#include <endian.h>
-#elif defined(__MACH__)
+#ifdef defined(__MACH__)
 #include <machine/endian.h>
 #else
 #include <sys/types.h>

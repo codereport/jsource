@@ -33,36 +33,6 @@ void cpuInit(void)
 #ifndef TARGET_IOSDEVICE
   unsigned long hwcaps= getauxval(AT_HWCAP);
 
-#if defined(ANDROID)
-  if(hwcaps & HWCAP_FP) g_cpuFeatures |= ARM_HWCAP_FP;
-  if(hwcaps & HWCAP_ASIMD) g_cpuFeatures |= ARM_HWCAP_ASIMD;
-  if(hwcaps & HWCAP_EVTSTRM) g_cpuFeatures |= ARM_HWCAP_EVTSTRM;
-  if(hwcaps & HWCAP_AES) g_cpuFeatures |= ARM_HWCAP_AES;
-  if(hwcaps & HWCAP_PMULL) g_cpuFeatures |= ARM_HWCAP_PMULL;
-  if(hwcaps & HWCAP_SHA1) g_cpuFeatures |= ARM_HWCAP_SHA1;
-  if(hwcaps & HWCAP_SHA2) g_cpuFeatures |= ARM_HWCAP_SHA2;
-  if(hwcaps & HWCAP_CRC32) g_cpuFeatures |= ARM_HWCAP_CRC32;
-  if(hwcaps & HWCAP_ATOMICS) g_cpuFeatures |= ARM_HWCAP_ATOMICS;
-  if(hwcaps & HWCAP_FPHP) g_cpuFeatures |= ARM_HWCAP_FPHP;
-  if(hwcaps & HWCAP_ASIMDHP) g_cpuFeatures |= ARM_HWCAP_ASIMDHP;
-  if(hwcaps & HWCAP_CPUID) g_cpuFeatures |= ARM_HWCAP_CPUID;
-  if(hwcaps & HWCAP_ASIMDRDM) g_cpuFeatures |= ARM_HWCAP_ASIMDRDM;
-  if(hwcaps & HWCAP_JSCVT) g_cpuFeatures |= ARM_HWCAP_JSCVT;
-  if(hwcaps & HWCAP_FCMA) g_cpuFeatures |= ARM_HWCAP_FCMA;
-  if(hwcaps & HWCAP_LRCPC) g_cpuFeatures |= ARM_HWCAP_LRCPC;
-  if(hwcaps & HWCAP_DCPOP) g_cpuFeatures |= ARM_HWCAP_DCPOP;
-  if(hwcaps & HWCAP_SHA3) g_cpuFeatures |= ARM_HWCAP_SHA3;
-  if(hwcaps & HWCAP_SM3) g_cpuFeatures |= ARM_HWCAP_SM3;
-  if(hwcaps & HWCAP_SM4) g_cpuFeatures |= ARM_HWCAP_SM4;
-  if(hwcaps & HWCAP_ASIMDDP) g_cpuFeatures |= ARM_HWCAP_ASIMDDP;
-  if(hwcaps & HWCAP_SHA512) g_cpuFeatures |= ARM_HWCAP_SHA512;
-  if(hwcaps & HWCAP_SVE) g_cpuFeatures |= ARM_HWCAP_SVE;
-  if(hwcaps & HWCAP_ASIMDFHM) g_cpuFeatures |= ARM_HWCAP_ASIMDFHM;
-  if(hwcaps & HWCAP_DIT) g_cpuFeatures |= ARM_HWCAP_DIT;
-  if(hwcaps & HWCAP_USCAT) g_cpuFeatures |= ARM_HWCAP_USCAT;
-  if(hwcaps & HWCAP_ILRCPC) g_cpuFeatures |= ARM_HWCAP_ILRCPC;
-  if(hwcaps & HWCAP_FLAGM) g_cpuFeatures |= ARM_HWCAP_FLAGM;
-#else
 // see <uapi/asm/hwcap.h> kernel header
   if(hwcaps & ARM_HWCAP_FP) g_cpuFeatures |= ARM_HWCAP_FP;
   if(hwcaps & ARM_HWCAP_ASIMD) g_cpuFeatures |= ARM_HWCAP_ASIMD;
@@ -92,7 +62,6 @@ void cpuInit(void)
   if(hwcaps & ARM_HWCAP_USCAT) g_cpuFeatures |= ARM_HWCAP_USCAT;
   if(hwcaps & ARM_HWCAP_ILRCPC) g_cpuFeatures |= ARM_HWCAP_ILRCPC;
   if(hwcaps & ARM_HWCAP_FLAGM) g_cpuFeatures |= ARM_HWCAP_FLAGM;
-#endif
 
 #endif
 
@@ -118,9 +87,9 @@ extern void __cpuid(int CPUInfo[4], int InfoType);
 #include <string.h>
 #include <sys/utsname.h>
 #if defined(__x86_64__)||defined(__i386__)
-#ifndef ANDROID
+
 #include <cpuid.h>
-#endif
+
 #endif
 #endif
 #endif

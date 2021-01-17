@@ -35,22 +35,7 @@ typedef float complex float_complex;
 typedef double complex double_complex;
 #endif
 
-#ifdef ANDROID
-#if __ANDROID_API__ < 23
-#undef creal
-#undef cimag
-#undef cabs
-#undef crealf
-#undef cimagf
-#undef cabsf
-#define creal(x)  (*(double*)&x)
-#define cimag(x)  (*(1+(double*)&x))
-#define cabs(x)   (sqrt((*(double*)&x)*(*(double*)&x)+(*(1+(double*)&x))*(*(1+(double*)&x))))
-#define crealf(x) (*(float*)&x)
-#define cimagf(x) (*(1+(float*)&x))
-#define cabsf(x)  (sqrtf((*(float*)&x)*(*(float*)&x)+(*(1+(float*)&x))*(*(1+(float*)&x))))
-#endif
-#endif
+
 
 #include <stdio.h>
 

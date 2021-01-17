@@ -51,17 +51,6 @@ define one of the following in the build as required
 
 // auto config
 
-#if defined(RASPI) && defined(__arm__)
-#ifndef C_CD_ARMHF
-#define C_CD_ARMHF
-#endif
-#endif
-
-#if defined(ANDROID) && defined(__arm__)
-#ifndef C_CD_ARMEL
-#define C_CD_ARMEL
-#endif
-#endif
 
 #if defined(_WIN32) && !defined(__MINGW32__)
 #ifdef SY_GETTOD

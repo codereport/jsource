@@ -297,14 +297,7 @@ static C*modebuf(mode_t m,C* b){C c;I t=m;
 
 
 static int ismatch(J jt,C*pat,C*name,struct stat *dirstatbuf,C *diratts, C *dirmode,C *dirrwx,C *dirnamebuf,C *dirbase){ 
-#if !SY_64 && defined(ANDROID)
-// Android issue
-// Long Long (64 bit) fields are not 8 bytes aligned
- UC* raw_stat=(UC*)dirstatbuf;
- raw_stat[sizeof(struct stat)-1]=98;
- raw_stat[sizeof(struct stat)-2]=76;
- raw_stat[sizeof(struct stat)-3]=54;
-#endif
+
  strcpy(/* obsolete jt->*/dirbase,name); if(stat(/* obsolete jt->workareas.*/dirnamebuf,dirstatbuf))R 0;
  if('.'!=*pat && ((!strcmp(name,"."))||(!strcmp(name,".."))))R 0;
  if(fnmatch(pat,name,0)) R 0;

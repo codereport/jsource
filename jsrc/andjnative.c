@@ -21,11 +21,6 @@
 #endif
 
 #define LOCALOGTAG "libj"
-#ifdef ANDROID
-#include <android/log.h>
-#define LOGD(msg) __android_log_write(ANDROID_LOG_DEBUG,LOCALOGTAG,msg)
-#define LOGFD(...) __android_log_print(ANDROID_LOG_DEBUG,LOCALOGTAG,__VA_ARGS__)
-#else
 #define LOGD(msg)
 #define LOGFD(...)
 #endif

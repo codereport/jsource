@@ -207,10 +207,6 @@ IGNORENAN
   TRIGSYMM(1.0,_CMP_GT_OQ,EWIMAG,Sleef_asind4)
 #else
   DQ(n, t=*x++; ASSERTWR( -1.0<=t&&t<=1.0, EWIMAG ); *z++=asin(t););
-#if defined(ANDROID) && (defined(__aarch32__)||defined(__arm__)||defined(__aarch64__))
-// NaN bug in android asin()  _1 o. _1
-NAN0;
-#endif
 #endif
  break;
  case -2: ;

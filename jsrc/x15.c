@@ -67,18 +67,6 @@ typedef float complex float_complex;
 typedef double complex double_complex;
 #endif
 
-#ifdef ANDROID
-#if __ANDROID_API__ < 23
-#undef creal
-#undef cimag
-#undef crealf
-#undef cimagf
-#define creal(x)  (*(double*)&x)
-#define cimag(x)  (*(1+(double*)&x))
-#define crealf(x)  (*(float*)&x)
-#define cimagf(x)  (*(1+(float*)&x))
-#endif
-#endif
 
 #include "j.h"
 
@@ -107,10 +95,10 @@ char *toascbuf(wchar_t *src);
 #undef atop
 #endif
 
-#ifndef ANDROID
+
 #undef MAX     /* defined in sys/param.h */
 #undef MIN     /* defined in sys/param.h */
-#endif
+
 #include <sys/param.h>
 
 typedef void *HMODULE;
