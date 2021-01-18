@@ -5,12 +5,25 @@ J is an [array programming language](https://en.wikipedia.org/wiki/Array_program
 This is a fork of `jsoftware/jsource` and we will be porting it to C++20.
 
 ### Goals
-
+* [ ] Reduce complexity of build options
+   * [x] Remove Android
+   * [x] Remove AVX
+   * [x] Remove SLEEF
+   * [ ] Remove Neon
+   * [ ] Remove SSE41
+   * [ ] Remove SSE42
+   * [ ] Remove SSSE3
+   * [ ] Remove Windows
+   * [ ] Remove MacOS
+   * [ ] Remove Darwin
+   * [ ] Remove Raspberry Pi
 * [ ] Compile with GCC 10+
 * [ ] Compile with Clang 11+
 * [ ] Remove all (most) of the macros
 * [ ] Clang-format the code base
 * [ ] Get both build / tests running in parallel
+   * [x] Parallel build (for free off of zhihaoy branch)
+   * [ ] Parallel tests
 * [ ] Monitor compile & run time perf while refactoring
 
 ### Comparison of Languages
