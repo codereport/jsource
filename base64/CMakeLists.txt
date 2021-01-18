@@ -5,7 +5,6 @@ target_sources(j-base64 PRIVATE
     lib/arch/generic/codec-generic.c
     lib/codecs.h
     lib/codec_choose.c
-    lib/config.h
     lib/env.h
     lib/lib.c
     lib/tables/tables.c

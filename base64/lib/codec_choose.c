@@ -5,7 +5,6 @@
 
 #include "../include/libbase64.h"
 #include "codecs.h"
-#include "config.h"
 #include "env.h"
 
 // Function declarations:

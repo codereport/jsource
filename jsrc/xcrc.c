@@ -7,15 +7,7 @@
 #include "x.h"
 
 #include "../base64/include/libbase64.h"
-#if C_AVX2
-#define B64CODEC BASE64_FORCE_AVX2
-#elif C_AVX
-#define B64CODEC BASE64_FORCE_AVX
-#elif defined(__aarch64__)
-#define B64CODEC BASE64_FORCE_NEON64
-#else
 #define B64CODEC BASE64_FORCE_PLAIN
-#endif
 
 // Calculate byte-at-a-time CRC table in *crctab, and return the starting value as the result
 static UINT jtcrcvalidate(J jt,A w, UINT* crctab){A*wv;B*v;I m;UINT p,x,z=-1;

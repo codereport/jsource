@@ -12,14 +12,7 @@ extern "C" {
  * current build. Used in testing. Set to 0 for the default behavior, which is
  * runtime feature detection on x86, a compile-time fixed codec on ARM, and
  * the plain codec on other platforms: */
-#define BASE64_FORCE_AVX2	(1 << 0)
-#define BASE64_FORCE_NEON32	(1 << 1)
-#define BASE64_FORCE_NEON64	(1 << 2)
 #define BASE64_FORCE_PLAIN	(1 << 3)
-#define BASE64_FORCE_SSSE3	(1 << 4)
-#define BASE64_FORCE_SSE41	(1 << 5)
-#define BASE64_FORCE_SSE42	(1 << 6)
-#define BASE64_FORCE_AVX	(1 << 7)
 
 struct base64_state {
 	int eof;

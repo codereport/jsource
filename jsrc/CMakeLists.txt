@@ -56,7 +56,6 @@ target_sources(j PRIVATE
     ab.c
     aes-c.c
     aes-ni.c
-    aes-sse2.c
     af.c
     ai.c
     am.c
@@ -185,7 +184,7 @@ target_sources(j PRIVATE
     crc32c.c
 )
 
-configure_file(jversion-x.h ${CMAKE_CURRENT_SOURCE_DIR}/jversion.h COPYONLY)
+# configure_file(jversion-x.h ${CMAKE_CURRENT_SOURCE_DIR}/jversion.h COPYONLY)
 
 if(OpenMP_C_FOUND)
     target_link_libraries(j PRIVATE OpenMP::OpenMP_C)
