@@ -41,7 +41,7 @@ static int FHS=0;
 
 int jedo(char* sentence)
 {
-	return jdo(jt,(C*)sentence);
+    return jdo(jt,(C*)sentence);
 }
 
 A jegeta(I n, char* s){return jgeta(jt,n,(C*)s);}
@@ -54,30 +54,30 @@ A jega(I t, I n, I r, I*s){return jga(jt,t,n,r,s);}
 void* jehjdll() { return hjdll; }
 
 auto je_load_procedure_adresses(void* hjdll, void* callbacks) -> void {
-	auto jsm = reinterpret_cast<JSMType>(dlsym(hjdll,"JSM"));
-	jsm(jt,callbacks);
-	jdo        = (JDoType)        dlsym(hjdll,"JDo");
-	jfree      = (JFreeType)      dlsym(hjdll,"JFree");
-	jga        = (JgaType)        dlsym(hjdll,"Jga");
-	jgetlocale = (JGetLocaleType) dlsym(hjdll,"JGetLocale");
-	jgeta      = (JGetAType)      dlsym(hjdll,"JGetA");
-	jseta      = (JSetAType)      dlsym(hjdll,"JSetA");
+    auto jsm = reinterpret_cast<JSMType>(dlsym(hjdll,"JSM"));
+    jsm(jt,callbacks);
+    jdo        = (JDoType)        dlsym(hjdll,"JDo");
+    jfree      = (JFreeType)      dlsym(hjdll,"JFree");
+    jga        = (JgaType)        dlsym(hjdll,"Jga");
+    jgetlocale = (JGetLocaleType) dlsym(hjdll,"JGetLocale");
+    jgeta      = (JGetAType)      dlsym(hjdll,"JGetA");
+    jseta      = (JSetAType)      dlsym(hjdll,"JSetA");
 };
 
 // load JE, Jinit, getprocaddresses, JSM
 J jeload(void* callbacks) {
-	hjdll = dlopen(pathdll,RTLD_LAZY);
+    hjdll = dlopen(pathdll,RTLD_LAZY);
 
-	if(!hjdll) {
-		char* error = dlerror();
-		printf( "ERROR\tCould not open library globally: %s\n", error ? error : "" );
-		return nullptr;
-	}
+    if(!hjdll) {
+        char* error = dlerror();
+        printf( "ERROR\tCould not open library globally: %s\n", error ? error : "" );
+        return nullptr;
+    }
 
-	jt = static_cast<JST*>(reinterpret_cast<JInitType>(dlsym(hjdll,"JInit"))());
-	if (!jt) return nullptr;
-	je_load_procedure_adresses(hjdll, callbacks);
-	return jt;
+    jt = static_cast<JST*>(reinterpret_cast<JInitType>(dlsym(hjdll,"JInit"))());
+    if (!jt) return nullptr;
+    je_load_procedure_adresses(hjdll, callbacks);
+    return jt;
 }
 
 // set path and pathdll (wpath also set for win)
