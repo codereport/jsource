@@ -1,36 +1,41 @@
-## J: From C to C++20
+# J: From C to C++20
 
 J is an [array programming language](https://en.wikipedia.org/wiki/Array_programming) created by Ken Iverson and Roger Hui (see image below). 
 
 This is a fork of `jsoftware/jsource` and we will be porting it to C++20.
 
-### Goals
+## Goals
 * [ ] Reduce complexity of build options
-   * [x] Remove Android
+   * [x] Remove [blis](https://github.com/flame/blis)
+   * [x] Remove [SLEEF](https://sleef.org/)
    * [x] Remove AVX
-   * [x] Remove SLEEF
    * [x] Remove Neon
    * [x] Remove SSE41
    * [x] Remove SSE42
    * [x] Remove SSSE3
-   * [x] Remove Windows
+   * [x] Remove Android
+   * [x] Remove Windows (just use [WSL2](https://docs.microsoft.com/en-us/windows/wsl/compare-versions#whats-new-in-wsl-2))
    * [ ] Remove Raspberry Pi (not sure if much to do here)
    * [x] Remove blis
+   * [ ] Remove 32 bit support
+   * [ ] Remove big endian support
 * [ ] Compile with GCC 10+
 * [ ] Compile with Clang 11+
 * [ ] Remove all (most) of the macros
 * [ ] Clang-format the code base
 * [ ] Clang-tidy the code base
+* [ ] Set up Travis-CI
+* [ ] Set up CodeCov
 * [ ] Get both build / tests running in parallel
    * [x] Parallel build (for free off of zhihaoy branch)
    * [ ] Parallel tests
 * [ ] Monitor compile & run time perf while refactoring
 
-### Non-Codebase Goals
+## Non-Codebase Goals
 
 * [ ] Learn to not use mouse
 
-### Comparison of Languages
+## Comparison of Languages
 
 Calculating the first 10 odd numbers:
 
@@ -56,7 +61,7 @@ map ((+1) . (*2)) [0..9] -- alternative thanks to Alexandru Dinu
 1+2*i.10
 ```
 
-### Getting started & Building:
+## Getting started & Building:
 For building this repository, please see `CONTRIBUTING.md`.
 
 ![image](https://user-images.githubusercontent.com/36027403/104798929-e4311700-5798-11eb-859c-5a55738daf79.png)
