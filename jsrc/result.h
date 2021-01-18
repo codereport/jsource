@@ -318,11 +318,6 @@ do{
   // If zz is recursible, make it recursive-usecount (without actually recurring, since it's empty), unless WILLBEOPENED is set, since then we may put virtual blocks in the boxed array
   AFLAG(zz) |= (zzt&RECURSIBLE) & ((ZZFLAGWORD&ZZFLAGWILLBEOPENED)-1);  // if recursible type, (viz box), make it recursible.  But not if WILLBEOPENED set. Leave usecount unchanged
   // If zz is not DIRECT, it will contain things allocated on the stack and we can't pop back to here
-#if 0&&!ZZPOPNEVER  // obsolete 
-  ZZFLAGWORD |= (zzt&DIRECT)?0:ZZFLAGNOPOP;
-  // Remember the point before which we allocated zz.  This will be the free-back-to point, unless we require boxes later
-  zzold=jt->tnextpushp;  // pop back to AFTER where we allocated our result and argument blocks
-#endif
   // Install result frame by running user's routine.  zzs must be left pointing to the cell-shape
   ZZINSTALLFRAME(zzs)
   // Install the result shape.  If we encounter a sparse result,  We are going to have to box all the results and open them.  If the sparse result is the first,

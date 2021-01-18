@@ -526,13 +526,6 @@ static GF(jtgri){A x,y;B up;I e,i,*v,*wv,*xv;UI4 *yv,*yvb;I c=ai*n;
  // for lists, smallrange always beats radix, but loses to merge if the range is too high.  We assess the max acceptable range as
  // (80>>keylength)*(n), smaller if the range would exceed cache size
  CR rng;
-#if 0 // turn this on for performance measurements selecting algorithm on length
- if((n&3)==0)R gri1(m,ai,n,w,zv);  // radix
- if((n&3)==1)R grx(m,ai,n,w,zv);  // merge
- if((n&3)==2)R jtgriq(jt,m,ai,n,w,zv);  // quicksort
- // otherwise smallrange
- rng = condrange(wv,AN(w),IMAX,IMIN,IMAX);
-#else
 #if SY_64  // no quickgrade unless INTs are 64 bits
  if(ai==1){  // for atoms, usually use smallrange or quicksort
   if(n<10)R jtgriq(jt,m,ai,n,w,zv);  // for short lists just use qsort
@@ -554,7 +547,6 @@ static GF(jtgri){A x,y;B up;I e,i,*v,*wv,*xv;UI4 *yv,*yvb;I c=ai*n;
  // tweak this line to select path for timing
  // If there is only 1 item, radix beats merge for n>1300 or so (all positive) or more (mixed signed small numbers)
  if(!rng.range)R c==n&&n>2000?gri1(m,ai,n,w,zv):grx(m,ai,n,w,zv);  // revert to other methods if not small-range   TUNE
-#endif
  // doing small-range grade.  Allocate a hashtable area.  We will access it as UI4
  GATV0(y,C4T,rng.range,1); yvb=C4AV(y); yv=yvb-rng.min; up=SGNTO0(jt->workareas.compare.complt);
  // if there are multiple ints per item, we have to do multiple passes.  Allocate a workarea

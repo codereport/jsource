@@ -226,11 +226,7 @@ F1(jtjferase){A y,fn;US*s;I h;
  RZ(fn=toutf16x(y)); USAV(fn)[AN(fn)]=0;  // install termination
  s=USAV(fn);
 // #if SY_WIN32 && !SY_WINCE
-#if 0
- R !_wunlink(s)||!_wrmdir(s)||!rmdir2(jt, (wchar_t*)s)?num(1):jerrno();
-#else
  R !_wunlink(s)||!_wrmdir(s)?num(1):jerrno();
-#endif
 #endif
 }    /* erase file or directory */
 
@@ -296,18 +292,9 @@ F1(jtjgetpid){
 
 #if (SYS & SYS_UNIX)
 // #ifdef __GNUC__
-#if 0
-F1(jtpathdll){Dl_info info;
- ASSERTMTV(w);
- if(dladdr(jtpathdll, &info)){
-  R cstr((C*)info.dli_fname);
- } else R cstr((C*)"");
-}
-#else
 F1(jtpathdll){
  ASSERTMTV(w); R cstr((C*)"");
 }
-#endif
 #else
 F1(jtpathdll){char p[MAX_PATH]; extern C dllpath[];
  ASSERTMTV(w);

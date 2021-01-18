@@ -39,7 +39,6 @@ target_sources(j PRIVATE
     va.h
     vasm.h
     vcomp.h
-    vdx.h
     ve.h
     vg.h
     vgmerge.h
@@ -79,7 +78,6 @@ target_sources(j PRIVATE
     cpuinfo.c
     cr.c
     crs.c
-    ct.c
     cu.c
     cv.c
     cx.c
@@ -99,7 +97,6 @@ target_sources(j PRIVATE
     jdlllic.c
     k.c
     m.c
-    mbx.c
     p.c
     pv.c
     px.c
@@ -124,7 +121,6 @@ target_sources(j PRIVATE
     vamultsp.c
     vb.c
     vbang.c
-    vbit.c
     vcant.c
     vcat.c
     vcatsp.c
@@ -132,7 +128,6 @@ target_sources(j PRIVATE
     vcomp.c
     vcompsc.c
     vd.c
-    vdx.c
     ve.c
     vf.c
     vfft.c

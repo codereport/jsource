@@ -167,35 +167,6 @@ F1(jtseclevs){I k;
  R mtm;
 }
 
-#if 0  // not implemented
-F1(jtsysparmq){I k;
- RE(k=i0(w));
- switch(k){
-  default: ASSERT(0,EVINDEX);
-  case 0:  R sc(jt->fdepn);
-  case 1:  R sc(jt->fdepi);
-  case 2:  R sc(jt->fcalln);
-  case 3:  R sc(jt->callstacknext);
-}}
-
-F1(jtsysparms){A*wv;I k,m;
- ARGCHK1(w);
- ASSERT(BOX&AT(w),EVDOMAIN);
- ASSERT(1==AR(w),EVRANK);
- ASSERT(2==AN(w),EVLENGTH);
- wv=AAV(w); 
- RE(k=i0(wv[0]));
- switch(k){
-  default: ASSERT(0,EVINDEX);
-  case 0:  RE(m=i0(wv[1])); jt->fdepn =(I4)m; break;
-  case 1:  ASSERT(0,EVDOMAIN);  /* jt->fdepi  can not be set */
-  case 2:  RE(m=i0(wv[1])); jt->fcalln=(I4)m; break;
-  case 3:  ASSERT(0,EVDOMAIN);  /* jt->fcalli can not be set */
- }
- R mtm;
-}
-#endif
-
 F1(jtsysq){I j;
  ASSERTMTV(w);
  switch(SYS){
@@ -231,22 +202,6 @@ F1(jtasgzombs){I k;
  jt->asgzomblevel=(C)k;
  R mtm;
 }
-
-#if 0 // obsolete 
-// 9!:54/55  undocumented
-// unicodex78;       /* 1 iff disallow numeric argument for 7 8 u:      */
-F1(jtunicodex78q){
- ASSERTMTV(w);
- R sc(jt->unicodex78);
-}
-
-F1(jtunicodex78s){I k;
- RE(k=i0(w));
- ASSERT(BETWEENC(k,0,1),EVDOMAIN);
- jt->unicodex78=(C)k;
- R mtm;
-}
-#endif
 
 // 9!:56  undocumented
 // query/override cpu feature
@@ -300,15 +255,10 @@ F1(jtcpufeature){
  else if(!strcasecmp(CAV(w),"FLAGM"   )) R sc(!!(getCpuFeatures()&ARM_HWCAP_FLAGM ));
  else R sc(0);
 #elif defined(__x86_64__)||defined(__i386__)||defined(_M_X64)||defined(_M_IX86)
- if     (!strcasecmp(CAV(w),"SSSE3"   )) R sc(!!(getCpuFeatures()&CPU_X86_FEATURE_SSSE3 ));
- else if(!strcasecmp(CAV(w),"POPCNT"  )) R sc(!!(getCpuFeatures()&CPU_X86_FEATURE_POPCNT ));
+ if(!strcasecmp(CAV(w),"POPCNT"  )) R sc(!!(getCpuFeatures()&CPU_X86_FEATURE_POPCNT ));
  else if(!strcasecmp(CAV(w),"MOVBE"   )) R sc(!!(getCpuFeatures()&CPU_X86_FEATURE_MOVBE ));
- else if(!strcasecmp(CAV(w),"SSE4_1"  )) R sc(!!(getCpuFeatures()&CPU_X86_FEATURE_SSE4_1 ));
- else if(!strcasecmp(CAV(w),"SSE4_2"  )) R sc(!!(getCpuFeatures()&CPU_X86_FEATURE_SSE4_2 ));
  else if(!strcasecmp(CAV(w),"AES_NI"  )) R sc(!!(getCpuFeatures()&CPU_X86_FEATURE_AES_NI ));
- else if(!strcasecmp(CAV(w),"AVX"     )) R sc(!!(getCpuFeatures()&CPU_X86_FEATURE_AVX ));
  else if(!strcasecmp(CAV(w),"RDRAND"  )) R sc(!!(getCpuFeatures()&CPU_X86_FEATURE_RDRAND ));
- else if(!strcasecmp(CAV(w),"AVX2"    )) R sc(!!(getCpuFeatures()&CPU_X86_FEATURE_AVX2 ));
  else if(!strcasecmp(CAV(w),"SHA_NI"  )) R sc(!!(getCpuFeatures()&CPU_X86_FEATURE_SHA_NI ));
  else if(!strcasecmp(CAV(w),"FMA"     )) R sc(!!(getCpuFeatures()&CPU_X86_FEATURE_FMA ));
  else if(!strcasecmp(CAV(w),"RDSEED"  )) R sc(!!(getCpuFeatures()&CPU_X86_FEATURE_RDSEED ));

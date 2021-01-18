@@ -207,9 +207,6 @@ static void double_trick(double*v, I n){I i=0;
   #ifdef __PPC64__
    #define dtrick double_trick(dd[0],dd[1],dd[2],dd[3],dd[4],dd[5],dd[6],dd[7],dd[8],dd[9],dd[10],dd[11],dd[12]);
   #elif defined(__x86_64__)
-#if 0
-   #define dtrick double_trick(dd[0],dd[1],dd[2],dd[3],dd[4],dd[5],dd[6],dd[7]);
-#else
 /* might be faster */
    #define dtrick \
   __asm__ ("movq (%0),%%xmm0\n\t"       \
@@ -223,7 +220,6 @@ static void double_trick(double*v, I n){I i=0;
         : /* no output operands */      \
         : "r" (dd)                      \
         : "xmm0","xmm1","xmm2","xmm3","xmm4","xmm5","xmm6","xmm7","cc");
-#endif
   #elif defined(__aarch64__)
    #define dtrick double_trick(dd[0],dd[1],dd[2],dd[3],dd[4],dd[5],dd[6],dd[7]);
   #endif

@@ -178,9 +178,6 @@ int jefirst(int type,char* arg)
 	char* p;
 	char* q;
 	char* input=static_cast<char* >(malloc(2000+strlen(arg)));
-#if 0
-	char buf[50];
-#endif
 	*input=0;
 	if(0==type)
 	{
@@ -204,11 +201,6 @@ int jefirst(int type,char* arg)
 
 #if defined(__MACH__)
 	strcat(input,"[UNAME_z_=:'Darwin'");
-#endif
-#if 0
-	sprintf(buf,"(" FMTI ")",(I)(intptr_t)hjdll);
-	strcat(input,"[HLIBJ_z_=:");
-	strcat(input,buf);
 #endif
 	strcat(input,"[BINPATH_z_=:'");
 	p=path;
