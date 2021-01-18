@@ -253,7 +253,7 @@ F2(jtlogar2){A z;I t;
  ARGCHK2(a,w); 
  RE(t=maxtype(AT(a),AT(w)));
  if(!(t&XNUM)||jt->xmode==XMEXACT){jt->xmode=XMEXACT; R jtatomic2(JTIPAW,logar1(w),logar1(a),ds(CDIV));}  // better to multiply by recip, but not much, & it makes 0 ^. 0 not fail
- z=rank2ex0(cvt(XNUM,a),cvt(XNUM,w),DUMMYSELF,jtxlog2a); 
+ z=rank2ex0(cvt(XNUM,a),cvt(XNUM,w),UNUSED_VALUE,jtxlog2a); 
  if(z)R z;
  if(jt->jerr==EWIMAG||jt->jerr==EWIRR){RESETERR; jt->xmode=XMEXACT; R divideAW(logar1(w),logar1(a));}
  R 0;
@@ -265,7 +265,7 @@ F2(jtroot){A z;I t;
  A ma=a; if(TYPESNE(t,AT(a)))RZ(ma=cvt(t,a));
  A mw=w; if(TYPESNE(t,AT(w)))RZ(mw=cvt(t,w));
  if(!(t&XNUM))R expn2(mw,recip(ma));  // not inplaceable - could be IMAG
- z=rank2ex0(ma,mw,DUMMYSELF,jtxroota);
+ z=rank2ex0(ma,mw,UNUSED_VALUE,jtxroota);
  switch(jt->jerr){
   case EWIMAG: RESETERR; R expn2(cvt(CMPX,w),recip(cvt(CMPX,a)));
   case EWRAT: 

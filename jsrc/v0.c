@@ -243,7 +243,7 @@ static F1(jtrfc){A r,w1;I m=0,n,t;
 
 // entry point for p. y
 F1(jtpoly1){A c,e,x;
- F1RANK(1L,jtpoly1,DUMMYSELF);
+ F1RANK(1L,jtpoly1,UNUSED_VALUE);
  // If y is not boxed, it's a list of coefficients.  Get the roots
  if((-AN(w)&SGNIF(AT(w),BOXX))>=0)R rfc(w);
  x=AAV(w)[0];
@@ -360,13 +360,13 @@ DF2(jtpoly2){F2PREFIP;A c,za;I b;D*ad,d,p,*x,u,*z;I an,at,j,t,n,wt;Z*az,e,q,*wz,
 
 
 F1(jtpderiv1){
- F1RANK(1,jtpderiv1,DUMMYSELF);
+ F1RANK(1,jtpderiv1,UNUSED_VALUE);
  if(AN(w)&&!(NUMERIC&AT(w)))RZ(w=poly1(w));
  R 1>=AN(w) ? apv(1L,0L,0L) : tymes(behead(w),apv(AN(w)-1,1L,1L));
 }    /* p.. w */
 
 F2(jtpderiv2){
- F2RANK(0,1,jtpderiv2,DUMMYSELF);
+ F2RANK(0,1,jtpderiv2,UNUSED_VALUE);
  if(!(NUMERIC&AT(w)))RZ(w=poly1(w));
  ASSERT(NUMERIC&AT(a),EVDOMAIN);
  R over(a,divideW(w,apv(AN(w),1L,1L)));

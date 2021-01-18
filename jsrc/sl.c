@@ -270,14 +270,14 @@ static A jtlocale(J jt,B b,A w){A g=0,*wv,y;
  R g;
 }    /* last locale (symbol table) from boxed locale names; 0 if none or error.  if b=1, create locale */
 
-F1(jtlocpath1){AD * RESTRICT g; AD * RESTRICT z; F1RANK(0,jtlocpath1,DUMMYSELF); ASSERT(vlocnl(1,w),EVDOMAIN); RZ(g=locale(1,w));
+F1(jtlocpath1){AD * RESTRICT g; AD * RESTRICT z; F1RANK(0,jtlocpath1,UNUSED_VALUE); ASSERT(vlocnl(1,w),EVDOMAIN); RZ(g=locale(1,w));
  g=LOCPATH(g); RZ(z=ca(g)); DO(AN(g), A t; RZ(t=ca(AAV(g)[i])); AS(t)[0]=AN(t); ACIPNO(t); AAV(z)[i]=t;) R z;
 }
  // for paths, the shape holds the bucketx.  We must create a new copy that has the shape restored, and must incorporate it
      /* 18!:2  query locale path */
 
 F2(jtlocpath2){A g; AD * RESTRICT x;
- F2RANK(1,0,jtlocpath2,DUMMYSELF);
+ F2RANK(1,0,jtlocpath2,UNUSED_VALUE);
  if(AN(a))RZ(  locale(1,a)); RZ(x=every(ravel(a),ds(CCOMMA)));  // Don't audit empty a
  RZ(g=locale(1,w));
  // paths are special: the shape of each string holds the bucketx for the string.  Install that.
@@ -315,16 +315,16 @@ static F1(jtloccrenum){C s[20];I k,p;
 
 F1(jtloccre1){
  ARGCHK1(w);
- if(AN(w))R rank2ex0(mark,vlocnl(2+1,w),DUMMYSELF,jtloccre);
+ if(AN(w))R rank2ex0(mark,vlocnl(2+1,w),UNUSED_VALUE,jtloccre);
  ASSERT(1==AR(w),EVRANK);
  R loccrenum(mark);
 }    /* 18!:3  create locale */
 
 F2(jtloccre2){
  ARGCHK2(a,w);
- if(AN(w))R rank2ex0(a,vlocnl(2+1,w),DUMMYSELF,jtloccre);
+ if(AN(w))R rank2ex0(a,vlocnl(2+1,w),UNUSED_VALUE,jtloccre);
  ASSERT(1==AR(w),EVRANK);
- R rank1ex0(a,DUMMYSELF,jtloccrenum);
+ R rank1ex0(a,UNUSED_VALUE,jtloccrenum);
 }    /* 18!:3  create locale with specified hash table size */
 
 

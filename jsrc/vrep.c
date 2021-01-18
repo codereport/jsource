@@ -266,7 +266,7 @@ I att=SGNTO0(-(AT(a)&B01+SB01))+((UI)(-(AT(a)&CMPX+SCMPX))>>(BW-1-1));  // 0 if 
    if(!(AT(w)&SPARSE)){GA(z,AT(w),0,AR(w),0); MCISH(AS(z),AS(w),AR(w)) AS(z)[wf]=0; RETF(z);}  // 0 # y, return empty
   }
  }
- if(((1-acr)|(acr-ar))<0){z=rank2ex(a,w,DUMMYSELF,MIN(1,acr),wcr,acr,wcr,jtrepeat); PRISTCLRF(w) RETF(z);}  // multiple cells - must losr pristinity  // loop if multiple cells of a
+ if(((1-acr)|(acr-ar))<0){z=rank2ex(a,w,UNUSED_VALUE,MIN(1,acr),wcr,acr,wcr,jtrepeat); PRISTCLRF(w) RETF(z);}  // multiple cells - must losr pristinity  // loop if multiple cells of a
  ASSERT((-acr&-wcr)>=0||(AS(a)[0]==AS(w)[wf]),EVLENGTH);
  z=(*repfn)(jtinplace,a,w,wf,wcr);
  // mark w not pristine, since we pulled from it

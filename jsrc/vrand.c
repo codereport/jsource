@@ -759,7 +759,7 @@ F2(jtdeal){A z;I at,j,k,m,n,wt,*zv;UI c,s,t,x=jt->rngM[jt->rng];UI sq;
  ARGCHK2(a,w);
  at=AT(a); wt=AT(w);
  ASSERT(at&DENSE&at&&wt&DENSE,EVDOMAIN);
- F2RANK(0,0,jtdeal,DUMMYSELF);
+ F2RANK(0,0,jtdeal,UNUSED_VALUE);
  RE(m=i0(a)); RE(c=n=i0(w));  // c starts as max#+1
  ASSERT(0<=m&&m<=n,EVDOMAIN);  // m and n must both be positive
  if(0==m)z=mtv;
@@ -989,7 +989,7 @@ static F2(jtdealdot){A h,y,z;I at,d,*hv,i,i1,j,k,m,n,p,q,*v,wt,*yv,*zv;UI c,s,t,
  ARGCHK2(a,w);
  at=AT(a); wt=AT(w);
  ASSERT(at&DENSE&at&&wt&DENSE,EVDOMAIN);
- F2RANK(0,0,jtdealdot,DUMMYSELF);
+ F2RANK(0,0,jtdealdot,UNUSED_VALUE);
  RE(m=i0(a)); RE(c=n=i0(w));
  ASSERT(0<=m&&m<=n,EVDOMAIN);  // m and n must both be positive
  if(0==m)z=mtv;
@@ -1022,7 +1022,7 @@ static F2(jtdealdot){A h,y,z;I at,d,*hv,i,i1,j,k,m,n,p,q,*v,wt,*yv,*zv;UI c,s,t,
 #define FXSOD       {jt->rngV[GBI]=v; jt->rngI[GBI]=jt->rngi=i; rngselects(sc(j));}
 
 F1(jtrollx  ){FXSDECL; ARGCHK1(w);                 FXSDO; z=roll(w);         FXSOD; R z;}       
-F2(jtdealx  ){FXSDECL; F2RANK(0,0,jtdealx,DUMMYSELF); FXSDO; z=deal(a,w);       FXSOD; R z;}        
+F2(jtdealx  ){FXSDECL; F2RANK(0,0,jtdealx,UNUSED_VALUE); FXSDO; z=deal(a,w);       FXSOD; R z;}        
 DF2(jtrollkx){FXSDECL; ARGCHK3(a,w,self);        FXSDO; z=rollk(a,w,self); FXSOD; R z;}      
 
 

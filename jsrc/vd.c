@@ -56,7 +56,7 @@ static A jtrinvip(J jt,A w,I n,I ncomp){PROLOG(0066);A ai,bx,di,z;I m;
 // 128!:1 Invert Upper-triangular matrix R
 F1(jtrinv){
  ARGCHK1(w);
- F1RANK(2,jtrinv,DUMMYSELF);
+ F1RANK(2,jtrinv,UNUSED_VALUE);
  ASSERT(AR(w)==2,EVRANK);  // rank at least 2
  ASSERT(AS(w)[0]==AS(w)[1],EVLENGTH);  // error if not square
  if(!AN(w))R w;  // if empty, return empty
@@ -144,7 +144,7 @@ ARGCHK1(w);
 
 // qr (?) decomposition of w, returns q;r
 F1(jtqr){A r,z;D c=inf,d=0,x;I n1,n,*s,wr;
- F1RANK(2,jtqr,DUMMYSELF);
+ F1RANK(2,jtqr,UNUSED_VALUE);
  ASSERT(DENSE&AT(w),EVNONCE);
  ASSERT(AT(w)&B01+INT+FL+CMPX,EVDOMAIN);
  wr=AR(w); s=AS(w);
@@ -159,7 +159,7 @@ RETF(z);
 // return inverse of w, calculated by lq applied to adjoint
 // result has rank 2
 static F1(jtlq){A l;D c=inf,d=0,x;I n1,n,*s,wr;
- F1RANK(2,jtqr,DUMMYSELF);
+ F1RANK(2,jtqr,UNUSED_VALUE);
  ASSERT(DENSE&AT(w),EVNONCE);
  ASSERT(AT(w)&B01+INT+FL+CMPX,EVDOMAIN);
  wr=AR(w); s=AS(w);
@@ -189,7 +189,7 @@ static F1(jticor){D d,*v;
 }
 
 F1(jtminv){PROLOG(0068);A q,y,z;I m,n,*s,t,wr;
- F1RANK(2,jtminv,DUMMYSELF);
+ F1RANK(2,jtminv,UNUSED_VALUE);
  jt->workareas.minv.determ=0.0;
  t=AT(w); wr=AR(w); s=AS(w); m=wr?s[0]:1; n=1<wr?s[1]:1;
  if(!wr)R recip(w);
@@ -244,7 +244,7 @@ static F2(jtmdivsp){A a1,x,y;I at,d,m,n,t,*v,xt;P*wp;
 
 // a %. w  for all types
 F2(jtmdiv){PROLOG(0069);A z;I t;
- F2RANK(RMAX,2,jtmdiv,DUMMYSELF);
+ F2RANK(RMAX,2,jtmdiv,UNUSED_VALUE);
  if(AT(a)&SPARSE)RZ(a=denseit(a));
  t=AT(w);
  if(t&SPARSE)R mdivsp(a,w);

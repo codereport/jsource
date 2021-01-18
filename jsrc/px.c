@@ -32,7 +32,7 @@ F1(jtexec1){A z;
  ARGCHK1(w);
  if(AT(w)&NAME){z=nameref(w,jt->locsyms);  // the case ".@'name' which is the fastest way to refer to a deferred name
  }else{
-  F1RANK(1,jtexec1,DUMMYSELF);
+  F1RANK(1,jtexec1,UNUSED_VALUE);
   A savself = jt->sf;  // in case we are in a recursion, preserve the restart point
   STACKCHKOFL FDEPINC(1); z=parse(ddtokens(vs(w),4+1+(AN(jt->locsyms)>1))); jt->asgn=0; FDEPDEC(1);  // replace DDs, but require that they be complete within the string (no jgets)
   jt->sf=savself;
@@ -80,7 +80,7 @@ F1(jtexg){A*v,*wv,x,y,z;I n;
 L* jtjset(J jt,C*name,A x){R symbisdel(nfs((I)strlen(name),name),x,jt->global);}
 
 F2(jtapplystr){PROLOG(0054);A fs,z;
- F2RANK(1,RMAX,jtapplystr,DUMMYSELF);
+ F2RANK(1,RMAX,jtapplystr,UNUSED_VALUE);
  RZ(fs=parse(tokens(vs(a),1+(AN(jt->locsyms)>1))));
  ASSERT(VERB&AT(fs),EVSYNTAX);
  STACKCHKOFL FDEPINC(d=fdep(fs)); z=CALL1(FAV(fs)->valencefns[0],w,fs); FDEPDEC(d);

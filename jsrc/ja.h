@@ -619,7 +619,7 @@
 #define line(x0,x1,x2,x3)           jtline(jt,(x0),(x1),(x2),(x3))
 #define lineit(x)                   jtlineit(jt,(x))
 #define linf(x0,x1,x2,x3)           jtlinf(jt,(x0),(x1),(x2),(x3))
-#define link(x,y)                   jtlink(jt,(x),(y),DUMMYSELF)  
+#define link(x,y)                   jtlink(jt,(x),(y),UNUSED_VALUE)  
 #define linsert(x,y)                jtlinsert(jtinplace,(x),(y),ltext) 
 #define lnoun(x)                    jtlnoun(jtinplace,(x),ltext)
 #define lnoun0(x)                   jtlnoun0(jtinplace,(x),ltext)

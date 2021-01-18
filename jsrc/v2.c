@@ -374,7 +374,7 @@ static A jtqco2x(J jt,I m,A w){A y;I c,*dv,i,*pv,*yv;X d,q,r,x;
 F2(jtqco2){A q,y,z;B b,bb,xt;I c,j,k,m,*qv,wn,wr,*yv,*zv;
  ARGCHK2(a,w);
  wn=AN(w); wr=AR(w); b=all1(lt(a,zeroionei(0))); xt=1&&AT(w)&XNUM+RAT;
- if(AR(a)||wr&&(b||xt))R rank2ex0(a,w,DUMMYSELF,jtqco2);
+ if(AR(a)||wr&&(b||xt))R rank2ex0(a,w,UNUSED_VALUE,jtqco2);
  if(!b&&xt){RE(m=i0(vib(a))); if(BETWEENO(m,0,1229))R qco2x(m,w);}  /* 1229=p:^:_1 XBASE */
  RZ(q=factor(w)); qv=AV(q);
  if(b)RZ(a=negate(a));
@@ -645,7 +645,7 @@ static XF1(jtfac_ecm){A tt;I b1,b2,*b1b2,i,m;X a,b,g,q[3];
 }
 
 static F1(jtxfactor){PROLOG(0064);A st,z;B b=0;I k,m;X g,*sv,*sv0,x;
- F1RANK(0,jtxfactor,DUMMYSELF);
+ F1RANK(0,jtxfactor,UNUSED_VALUE);
  if(!(XNUM&AT(w)))RZ(w=cvt(XNUM,w));
  x=XAV(w)[0]; m=XDIG(x);
  ASSERT(m!=XPINF&&m!=XNINF&&0<m,EVDOMAIN);

@@ -90,7 +90,7 @@ static B jtwa(J jt,F f,I j,A w){C*x;I n,p=0;size_t q=1;
 
 
 F1(jtjfread){A z;F f;
- F1RANK(0,jtjfread,DUMMYSELF);
+ F1RANK(0,jtjfread,UNUSED_VALUE);
  RE(f=stdf(w));  // f=file#, or 0 if w is a filename
  if(f)R 1==(I)f?jgets("\001"):3==(I)f?rdns(stdin):rd(vfn(f),0L,-1L);  // if special file, read it all, possibly with error
  RZ(f=jope(w,FREAD_O)); z=rd(f,0L,-1L); fclose(f);  // otherwise open/read/close named file
@@ -98,7 +98,7 @@ F1(jtjfread){A z;F f;
 }
 
 F2(jtjfwrite){B b;F f;
- F2RANK(RMAX,0,jtjfwrite,DUMMYSELF);
+ F2RANK(RMAX,0,jtjfwrite,UNUSED_VALUE);
  if(BOX&AT(w)){ASSERT(1>=AR(a),EVRANK); ASSERT(!AN(a)||AT(a)&LIT+C2T+C4T,EVDOMAIN);}
  RE(f=stdf(w));
  if(2==(I)f){b=jt->tostdout; jt->tostdout=1; jt->mtyo=MTYOFILE; jpr(a); jt->mtyo=0; jt->tostdout=b; R a;}
@@ -111,7 +111,7 @@ F2(jtjfwrite){B b;F f;
 }
 
 F2(jtjfappend){B b;F f;
- F2RANK(RMAX,0,jtjfappend,DUMMYSELF);
+ F2RANK(RMAX,0,jtjfappend,UNUSED_VALUE);
  RE(f=stdf(w));
  if(2==(I)f){B b=jt->tostdout; jt->tostdout=1; jpr(a); jt->tostdout=b; R a;}
  ASSERT(!AN(a)||AT(a)&LIT+C2T+C4T,EVDOMAIN);
@@ -123,7 +123,7 @@ F2(jtjfappend){B b;F f;
 }
 
 F1(jtjfsize){B b;F f;I m;
- F1RANK(0,jtjfsize,DUMMYSELF);
+ F1RANK(0,jtjfsize,UNUSED_VALUE);
  RE(f=stdf(w));
  if(b=!f)RZ(f=jope(w,FREAD_O)) else RE(vfn(f)); 
  m=fsize(f); 
@@ -154,7 +154,7 @@ static B jtixin(J jt,A w,I s,I*i,I*n){A in,*wv;I j,k,m,*u;
 }    /* process index file arg for index and length */
 
 F1(jtjiread){A z=0;B b;F f;I i,n;
- F1RANK(1,jtjiread,DUMMYSELF);
+ F1RANK(1,jtjiread,UNUSED_VALUE);
  RE(f=ixf(w)); if(b=!f)RZ(f=jope(w,FREAD_O));
  if(ixin(w,fsize(f),&i,&n))z=rd(f,i,n);
  if(b)fclose(f);else fflush(f);
@@ -162,7 +162,7 @@ F1(jtjiread){A z=0;B b;F f;I i,n;
 }
 
 F2(jtjiwrite){B b;F f;I i;
- F2RANK(RMAX,1,jtjiwrite,DUMMYSELF);
+ F2RANK(RMAX,1,jtjiwrite,UNUSED_VALUE);
  ASSERT(!AN(a)||AT(a)&LIT+C2T+C4T,EVDOMAIN);
  ASSERT(1>=AR(a),EVRANK);
  RE(f=ixf(w)); if(b=!f)RZ(f=jope(w,FUPDATE_O));
@@ -200,7 +200,7 @@ static B rmdir(C*v){R!rmdir1(v);}
 
 
 F1(jtjmkdir){A y,z;
- F1RANK(0,jtjmkdir,DUMMYSELF);
+ F1RANK(0,jtjmkdir,UNUSED_VALUE);
  ASSERT(AT(w)&BOX,EVDOMAIN);
  RZ(y=str0(vslit(AAV(w)[0])));
 #if (SYS & SYS_UNIX)
@@ -212,7 +212,7 @@ F1(jtjmkdir){A y,z;
 }
 
 F1(jtjferase){A y,fn;US*s;I h;
- F1RANK(0,jtjferase,DUMMYSELF);
+ F1RANK(0,jtjferase,UNUSED_VALUE);
  RE(h=fnum(w));
  if(h) {RZ(y=str0(fname(sc(h))))} else ASSERT(y=vslit(AAV(w)[0]),EVFNUM);
  if(h)RZ(jclose(sc(h)));
@@ -250,7 +250,7 @@ F1(jtpathchdir){A z;
 #endif
 
 F1(jtjgetenv){
- F1RANK(1,jtjgetenv,DUMMYSELF);
+ F1RANK(1,jtjgetenv,UNUSED_VALUE);
  ASSERT((LIT+C2T+C4T)&AT(w),EVDOMAIN);
 #if (SYS & SYS_UNIX)
  {

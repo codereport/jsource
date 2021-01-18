@@ -533,7 +533,7 @@ static A jtthorn1main(J jt,A w,A prxthornuni){PROLOG(0001);A z;
     // we hit an invalid non-ASCII sequence, abort and keep the original byte string.
     // The conversion to C2T includes appending NUL to double-wide chars, and conversion up to
     // C4T if there are surrogate pairs or codes above U+FFFF
-   z=BAV(prxthornuni)[0]&1?rank2ex(w,prxthornuni,DUMMYSELF,MIN(AR(w),1L),0,MIN(AR(w),1L),0,RoutineA) : RETARG(w);  // check list for U8 codes, return LIT or C2T
+   z=BAV(prxthornuni)[0]&1?rank2ex(w,prxthornuni,UNUSED_VALUE,MIN(AR(w),1L),0,MIN(AR(w),1L),0,RoutineA) : RETARG(w);  // check list for U8 codes, return LIT or C2T
    break;
   case C2TX:
    // If C2T output is allowed, keep it as C2T (it's not worth the time to go through
@@ -544,12 +544,12 @@ static A jtthorn1main(J jt,A w,A prxthornuni){PROLOG(0001);A z;
    // on any conversion back to U8.
    // If there are surrogates, the value returned here might be C4T
    // If C2T output not allowed, convert to ragged array of bytes
-   z=rank2ex(w,prxthornuni,DUMMYSELF,MIN(AR(w),1L),0,MIN(AR(w),1L),0,BAV(prxthornuni)[0]&1?RoutineB:jttoutf8a);
+   z=rank2ex(w,prxthornuni,UNUSED_VALUE,MIN(AR(w),1L),0,MIN(AR(w),1L),0,BAV(prxthornuni)[0]&1?RoutineB:jttoutf8a);
    break;
   case C4TX:
    // If C2T output is allowed, keep this as C4T, but add the padding NUL characters following CJK fullwidth.
    // If C2T output not allowed, just convert to UTF-8 bytes
-   z=rank2ex(w,prxthornuni,DUMMYSELF,MIN(AR(w),1L),0,MIN(AR(w),1L),0,BAV(prxthornuni)[0]&1?RoutineC:jttoutf8a);
+   z=rank2ex(w,prxthornuni,UNUSED_VALUE,MIN(AR(w),1L),0,MIN(AR(w),1L),0,BAV(prxthornuni)[0]&1?RoutineC:jttoutf8a);
    break;
   case BOXX:  z=thbox(w,prxthornuni);                  break;
   case SBTX:  z=thsb(w,prxthornuni);                   break;
@@ -576,7 +576,7 @@ static A jtthorn1main(J jt,A w,A prxthornuni){PROLOG(0001);A z;
 F1(jtthorn1u){ A z; ARGCHK1(w); z = thorn1main(w,num(2+!(AT(w)&(LIT)))); R z; }  // set prx and prxthornuni flags
 
 // entry point for returning LIT array only.  Allow C2T result, then convert.  But always pass literal arguments unchanged
-F1(jtthorn1){ A z; ARGCHK1(w); A prxthornuni=zeroionei(!(AT(w)&(LIT+C2T+C4T))); z = thorn1main(w,prxthornuni); if (z&&AT(z)&(C2T+C4T))z = rank2ex(z,prxthornuni,DUMMYSELF,MIN(AR(z),1L),0,MIN(AR(z),1L),0, RoutineD); R z; }
+F1(jtthorn1){ A z; ARGCHK1(w); A prxthornuni=zeroionei(!(AT(w)&(LIT+C2T+C4T))); z = thorn1main(w,prxthornuni); if (z&&AT(z)&(C2T+C4T))z = rank2ex(z,prxthornuni,UNUSED_VALUE,MIN(AR(z),1L),0,MIN(AR(z),1L),0, RoutineD); R z; }
 
 
 #define DDD(v)   {*v++='.'; *v++='.'; *v++='.';}

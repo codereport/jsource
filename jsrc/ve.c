@@ -360,7 +360,7 @@ F2(jtbase2){I ar,*as,at,c,t,wr,*ws,wt;
  ASSERT(!((at|wt)&SPARSE),EVNONCE); t=maxtyped(at,wt);
  if(!(t&at))RZ(a=cvt(t,a));
  if(!(t&wt))RZ(w=cvt(t,w));
- R 1>=ar?pdt(w,weight(sc(c),a)):rank2ex(w,rank2ex(sc(c),a,DUMMYSELF,0L,MIN(ar,1),0L,MIN(ar,1),jtweight),DUMMYSELF,MIN(wr,1),1L,MIN(wr,1),1L,jtpdt);
+ R 1>=ar?pdt(w,weight(sc(c),a)):rank2ex(w,rank2ex(sc(c),a,UNUSED_VALUE,0L,MIN(ar,1),0L,MIN(ar,1),jtweight),UNUSED_VALUE,MIN(wr,1),1L,MIN(wr,1),1L,jtpdt);
 }
 
 // #: y
@@ -426,7 +426,7 @@ F2(jtabase2){A z;I an,ar,at,t,wn,wr,wt,zn;
   RETF(z);
  }
  {PROLOG(0070);A y,*zv;C*u,*yv;I k;
-  F2RANK(1,0,jtabase2,DUMMYSELF);
+  F2RANK(1,0,jtabase2,UNUSED_VALUE);
   k=bpnoun(at); u=an*k+CAV(a);
   GA(y,at, 1, 0,0); yv=CAV(y);
   GATV0(z,BOX,an,1); zv=an+AAV(z);

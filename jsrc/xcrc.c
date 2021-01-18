@@ -83,7 +83,7 @@ F2(jtqhash12){F2PREFIP; I hsiz; UI crc;
 
 static C base64tab[64] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 F1(jttobase64){
- F1RANK(1,jttobase64,DUMMYSELF);  // here we deal only with rank<= 1
+ F1RANK(1,jttobase64,UNUSED_VALUE);  // here we deal only with rank<= 1
  ASSERT(AT(w)&LIT,EVDOMAIN);  // we work only on ASCII (which includes UTF-8).  Other types must be converted first
  // Calculate # triples, #extras
  I n3=AN(w)/3; I ne=AN(w)%3;
@@ -110,7 +110,7 @@ static C base64invtab[256] = {
  };
 
 F1(jtfrombase64){
- F1RANK(1,jtfrombase64,DUMMYSELF);  // here we deal only with rank<= 1
+ F1RANK(1,jtfrombase64,UNUSED_VALUE);  // here we deal only with rank<= 1
  ASSERT(AT(w)&LIT,EVDOMAIN);  // we work only on ASCII
  // Calculate the number of result bytes.  We take the number of input bytes, and discard trailing '=' on a 2- or 3-boundary
  I wn=AN(w);
