@@ -13,8 +13,8 @@ This is a fork of `jsoftware/jsource` and we will be porting it to C++20.
    * [x] Remove SSE41
    * [x] Remove SSE42
    * [x] Remove SSSE3
-   * [ ] Remove Windows
-   * [ ] Remove Raspberry Pi
+   * [x] Remove Windows
+   * [ ] Remove Raspberry Pi (not sure if much to do here)
    * [x] Remove blis
 * [ ] Compile with GCC 10+
 * [ ] Compile with Clang 11+
