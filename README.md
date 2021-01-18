@@ -9,12 +9,11 @@ This is a fork of `jsoftware/jsource` and we will be porting it to C++20.
    * [x] Remove Android
    * [x] Remove AVX
    * [x] Remove SLEEF
-   * [ ] Remove Neon
-   * [ ] Remove SSE41
-   * [ ] Remove SSE42
-   * [ ] Remove SSSE3
+   * [x] Remove Neon
+   * [x] Remove SSE41
+   * [x] Remove SSE42
+   * [x] Remove SSSE3
    * [ ] Remove Windows
-   * [ ] Remove MacOS
    * [ ] Remove Darwin
    * [ ] Remove Raspberry Pi
 * [ ] Compile with GCC 10+
