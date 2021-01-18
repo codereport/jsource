@@ -3,6 +3,9 @@
 # jversion.h is your local edit copy and is not in repo
 jsrc/jversion.h
 
+#vscode
+.vscode/
+
 # unix
 *.o
 *.so
