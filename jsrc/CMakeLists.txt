@@ -196,9 +196,6 @@ endif()
 
 target_sources(j PRIVATE
     blis.h
-    blis/gemm_c-ref.c
-    blis/gemm_int-aarch64.c
-    blis/gemm_int-fma.c
     blis/gemm_vec-ref.c
 )
 
