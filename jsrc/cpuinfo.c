@@ -169,26 +169,14 @@ void cpuInit(void)
   OPENSSL_ia32cap_P[0] = (vendorIsIntel << 30) | ( OPENSSL_ia32cap_P[0] & ~(1 << 30));
   if(!vendorIsAMD) OPENSSL_ia32cap_P[1] &= ~(1 << 11);
 
-  if ((regs[2] & (1 << 9)) != 0) {
-    g_cpuFeatures |= CPU_X86_FEATURE_SSSE3;
-  }
   if ((regs[2] & (1 << 23)) != 0) {
     g_cpuFeatures |= CPU_X86_FEATURE_POPCNT;
-  }
-  if ((regs[2] & (1 << 19)) != 0) {
-    g_cpuFeatures |= CPU_X86_FEATURE_SSE4_1;
-  }
-  if ((regs[2] & (1 << 20)) != 0) {
-    g_cpuFeatures |= CPU_X86_FEATURE_SSE4_2;
   }
   if (vendorIsIntel && (regs[2] & (1 << 22)) != 0) {
     g_cpuFeatures |= CPU_X86_FEATURE_MOVBE;
   }
   if ((regs[2] & (1 << 25)) != 0) {
     g_cpuFeatures |= CPU_X86_FEATURE_AES_NI;
-  }
-  if ((regs[2] & (1 << 28)) != 0) {
-    g_cpuFeatures |= CPU_X86_FEATURE_AVX;
   }
   if ((regs[2] & (1 << 30)) != 0) {
     g_cpuFeatures |= CPU_X86_FEATURE_RDRAND;
@@ -204,9 +192,6 @@ void cpuInit(void)
     x86_cpuid(7, regs);
     OPENSSL_ia32cap_P[2] = regs[1];
     OPENSSL_ia32cap_P[3] = regs[2];
-    if ((regs[1] & (1 << 5)) != 0) {
-      g_cpuFeatures |= CPU_X86_FEATURE_AVX2;
-    }
     if ((regs[1] & (1 << 29)) != 0) {
       g_cpuFeatures |= CPU_X86_FEATURE_SHA_NI;
     }
@@ -219,9 +204,7 @@ void cpuInit(void)
   }
 
   if (!(AVX&&OSXSAVE)) {
-    g_cpuFeatures &= ~CPU_X86_FEATURE_AVX;
     g_cpuFeatures &= ~CPU_X86_FEATURE_FMA;
-    g_cpuFeatures &= ~CPU_X86_FEATURE_AVX2;
   }
 #endif
 
@@ -271,30 +254,19 @@ void OPENSSL_setcap(void)
 #endif
 #elif defined(__x86_64__)||defined(__i386__)||defined(_M_X64)||defined(_M_IX86)
   if (!(AVX&&OSXSAVE)) {
-    g_cpuFeatures &= ~CPU_X86_FEATURE_AVX;
     g_cpuFeatures &= ~CPU_X86_FEATURE_FMA;
-    g_cpuFeatures &= ~CPU_X86_FEATURE_AVX2;
   }
-  OPENSSL_ia32cap_P[1] &= ~(1 << 9);
-  OPENSSL_ia32cap_P[1] |= (g_cpuFeatures & CPU_X86_FEATURE_SSSE3) ? (1 << 9) : 0;
+  // #CH TODO my guess is all of this stuff can be deleted
   OPENSSL_ia32cap_P[1] &= ~(1 << 23);
   OPENSSL_ia32cap_P[1] |= (g_cpuFeatures & CPU_X86_FEATURE_POPCNT) ? (1 << 23) : 0;
-  OPENSSL_ia32cap_P[1] &= ~(1 << 19);
-  OPENSSL_ia32cap_P[1] |= (g_cpuFeatures & CPU_X86_FEATURE_SSE4_1) ? (1 << 19) : 0;
-  OPENSSL_ia32cap_P[1] &= ~(1 << 20);
-  OPENSSL_ia32cap_P[1] |= (g_cpuFeatures & CPU_X86_FEATURE_SSE4_2) ? (1 << 20) : 0;
   OPENSSL_ia32cap_P[1] &= ~(1 << 22);
   OPENSSL_ia32cap_P[1] |= (g_cpuFeatures & CPU_X86_FEATURE_MOVBE) ? (1 << 22) : 0;
   OPENSSL_ia32cap_P[1] &= ~(1 << 25);
   OPENSSL_ia32cap_P[1] |= (g_cpuFeatures & CPU_X86_FEATURE_AES_NI) ? (1 << 25) : 0;
-  OPENSSL_ia32cap_P[1] &= ~(1 << 28);
-  OPENSSL_ia32cap_P[1] |= (g_cpuFeatures & CPU_X86_FEATURE_AVX) ? (1 << 28) : 0;
   OPENSSL_ia32cap_P[1] &= ~(1 << 30);
   OPENSSL_ia32cap_P[1] |= (g_cpuFeatures & CPU_X86_FEATURE_RDRAND) ? (1 << 30) : 0;
   OPENSSL_ia32cap_P[1] &= ~(1 << 12);
   OPENSSL_ia32cap_P[1] |= (g_cpuFeatures & CPU_X86_FEATURE_FMA) ? (1 << 12) : 0;
-  OPENSSL_ia32cap_P[2] &= ~(1 << 5);
-  OPENSSL_ia32cap_P[2] |= (g_cpuFeatures & CPU_X86_FEATURE_AVX2) ? (1 << 5) : 0;
   OPENSSL_ia32cap_P[2] &= ~(1 << 29);
   OPENSSL_ia32cap_P[2] |= (g_cpuFeatures & CPU_X86_FEATURE_SHA_NI) ? (1 << 29) : 0;
   OPENSSL_ia32cap_P[2] &= ~(1 << 18);

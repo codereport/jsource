@@ -10,12 +10,17 @@
 #include "j.h"
 #include "cpuinfo.h"
 
-
+#if !SY_WINCE && (SY_WIN32 || (SYS & SYS_LINUX))
+#include <time.h>
+#else
 #if SYS & SYS_UNIX
 #include <sys/time.h>
 #endif
+#endif
 
-
+#if !SY_WIN32 && (SYS & SYS_DOS)
+#include <dos.h>
+#endif
 
 #ifndef CLOCKS_PER_SEC
 #if (SYS & SYS_UNIX)
@@ -77,6 +82,9 @@ R sc((I)getCpuFeatures());
 }
 */
 
+#if SY_WIN32
+ /* defined in jdll.c */
+#else
 F1(jtts){A z;D*x;struct tm tr,*t=&tr;struct timeval tv;
  ASSERTMTV(w);
  gettimeofday(&tv,NULL); t=localtime_r((time_t*)&tv.tv_sec,t);
@@ -89,6 +97,7 @@ F1(jtts){A z;D*x;struct tm tr,*t=&tr;struct timeval tv;
  x[5]=t->tm_sec+(D)tv.tv_usec/1e6;
  R z;
 }
+#endif
 
 F1(jtts0){A x,z;C s[9],*u,*v,*zv;D*xv;I n,q;
  ARGCHK1(w);
