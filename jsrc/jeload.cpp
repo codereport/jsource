@@ -88,7 +88,7 @@ void jepath(char* arg,char* lib)
  struct stat st;
 
  int32_t const sz  = 4000;
- int32_t const len = sz;
+ int32_t len = sz; // Cant be const for function call _NSGetExecutablePath
 
  char arg2[sz];
  char arg3[sz];
