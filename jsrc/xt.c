@@ -10,12 +10,17 @@
 #include "j.h"
 #include "cpuinfo.h"
 
-
+#if !SY_WINCE && (SY_WIN32 || (SYS & SYS_LINUX))
+#include <time.h>
+#else
 #if SYS & SYS_UNIX
 #include <sys/time.h>
 #endif
+#endif
 
-
+#if !SY_WIN32 && (SYS & SYS_DOS)
+#include <dos.h>
+#endif
 
 #ifndef CLOCKS_PER_SEC
 #if (SYS & SYS_UNIX)
