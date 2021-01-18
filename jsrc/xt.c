@@ -3,18 +3,9 @@
 /*                                                                         */
 /* Xenos: time and space                                                   */
 
-#ifdef _WIN32
-#include <windows.h>
-#include <winbase.h>
-#ifndef __MINGW32__
-#include <time.h>
-#else
-#include <sys/time.h>
-#endif
-#else
+
 #include <sys/time.h>
 #include <unistd.h>
-#endif
 
 #include "j.h"
 #include "cpuinfo.h"
@@ -138,23 +129,11 @@ D tod(void){R(D)clock()/CLOCKS_PER_SEC;}
 #endif
 
 
-#if SY_WIN32
-
-typedef LARGE_INTEGER LI;
-
-static const D qpm=4294967296.0;  /* 2^32 */
-
-D qpf(void){LI n; QueryPerformanceFrequency(&n); R n.LowPart+qpm*n.HighPart;}
-
-static D qpc(void){LI n; QueryPerformanceCounter(&n); R n.LowPart+qpm*n.HighPart;}
-
-#else
 
 D qpf(void){R (D)CLOCKS_PER_SEC;}
 
 static D qpc(void){R tod()*CLOCKS_PER_SEC;}
 
-#endif
 
 /* 
 // by Mark VanTassel from The Code Project
@@ -187,11 +166,8 @@ F2(jttsit2){A z;D t;I n;
 
 F1(jttsit1){R tsit2(num(1),w);}
 
-#ifdef _WIN32
-#define sleepms(i) Sleep(i)
-#else
+
 #define sleepms(i) usleep(i*1000)
-#endif
 
 F1(jtdl){D m,n,*v;UINT ms,s;
  RZ(w=cvt(FL,w));
@@ -282,11 +258,8 @@ void jtpmrecord(J jt,A name,A loc,I lc,int val){A x,y;B b;PM*v;PM0*u;
  v->lc  =lc;
  v->s=jt->bytesmax-u->s;
  u->s=jt->bytesmax=jt->bytes;
-#if SY_WIN32
- QueryPerformanceCounter((LI*)v->t);  // Save PM info
-#else
+
  {D d=tod(); MC(v->t,&d,sizeof(D));}
-#endif
 }
 
 // 6!:12
@@ -317,13 +290,9 @@ F1(jtpmunpack){A*au,*av,c,t,x,z,*zv;B*b;D*dv;I*iv,k,k1,m,n,p,q,wn,*wv;PM*v,*v0,*
  GATV0(t,INT,m,1); zv[3]=incorp(t); iv=AV(t); v=vq; DO(p, if(b[i])*iv++=v->lc; ++v;); v=v0; DO(q, if(b[p+i])*iv++=v->lc; ++v;);
  GATV0(t,INT,m,1); zv[4]=incorp(t); iv=AV(t); v=vq; DO(p, if(b[i])*iv++=v->s;  ++v;); v=v0; DO(q, if(b[p+i])*iv++=v->s;  ++v;); 
  GATV0(t,FL, m,1); zv[5]=incorp(t); dv=DAV(t);
-#if SY_WIN32
- v=vq; DO(p, if(b[i]  )*dv++=(((LI*)v->t)->LowPart+qpm*((LI*)v->t)->HighPart)/pf; ++v;);
- v=v0; DO(q, if(b[p+i])*dv++=(((LI*)v->t)->LowPart+qpm*((LI*)v->t)->HighPart)/pf; ++v;);
-#else
+
  v=vq; DO(p, if(b[i]  ){MC(dv,v->t,sizeof(D)); ++dv;} ++v;); 
  v=v0; DO(q, if(b[p+i]){MC(dv,v->t,sizeof(D)); ++dv;} ++v;); 
-#endif
  R z;
 }
 

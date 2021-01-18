@@ -36,11 +36,8 @@ static B jtdolock(J jt,B lk,F f,I i,I n){I e;long c;fpos_t v; fpos_t q;
  {INT64 vv; vv=i; v=*(fpos_t*)&vv;}
  c=fsetpos(f,(fpos_t*)&v);
  if(0!=c)R (B)(intptr_t)jerrno();
-#if SY_WIN32
- e=_locking(_fileno(f),lk?_LK_NBLCK:_LK_UNLCK,(long)n);
-#else
+
  e=lockf(fileno(f),lk?F_TLOCK:F_ULOCK,(I)n);
-#endif
  fsetpos(f,(fpos_t*)&q);
 #ifdef __MINGW32__
  R !e?1:(errno==EEXIST||errno==ENOENT||errno==EACCES)?0:(B)(intptr_t)jerrno();

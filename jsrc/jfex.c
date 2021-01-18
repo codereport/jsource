@@ -2,13 +2,7 @@
 // define _WIN32 for Windows, __MACH__ for MAC, J64 for 64-bit
 // JE is loaded from current working directory
 
-#ifdef _WIN32
- #define _CRT_SECURE_NO_WARNINGS
- #include <windows.h>
- #include <direct.h>
- #define GETPROCADDRESS(h,p) GetProcAddress(h,p)
- #define JDLLNAME "\\j.dll"
-#else
+
  #define _stdcall
  #include <dlfcn.h>
  #define GETPROCADDRESS(h,p)	dlsym(h,p)
@@ -18,7 +12,6 @@
   #define JDLLNAME "/libj.so"
  #endif
  #define _getcwd getcwd
-#endif
 
 #include <stdio.h>
 #include <signal.h>
@@ -128,11 +121,8 @@ int main(int argc, char* argv[])
 	char pathdll[1000];
 	if(!_getcwd(pathdll,sizeof(pathdll)))pathdll[0]=0;
 	strcat(pathdll,JDLLNAME);
-#ifdef _WIN32
-	hjdll=LoadLibraryA(pathdll);
-#else
+
 	hjdll=dlopen(pathdll,RTLD_LAZY);
-#endif
 	if(!hjdll)
 	{
 		fputs("Load library failed: ",stderr);

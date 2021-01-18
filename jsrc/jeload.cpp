@@ -6,16 +6,7 @@
 extern "C" {
 
 #define PLEN 1000 // path length
-#ifdef _WIN32
- #include <windows.h>
- #define GETPROCADDRESS(h,p) GetProcAddress(h,p)
- #define JDLLNAME "j.dll"
- #define filesep '\\'
- #define filesepx "\\"
- #ifdef MMSC_VER
- #define strcasecmp _stricmp
- #endif
-#else
+
  #include <unistd.h>
  #include <dlfcn.h>
  #define GETPROCADDRESS(h,p)	dlsym(h,p)
@@ -29,7 +20,7 @@ extern "C" {
   #include <sys/utsname.h>
   #define JDLLNAME "libj.so"
  #endif
-#endif
+
 #include "j.h"
 #include "jversion.h"
 #include <stdint.h>
@@ -85,17 +76,12 @@ J jeload(void* callbacks)
 // WIN arg is 0, Unix arg is argv[0]
 void jepath(char* arg,char* lib)
 {
-#ifndef _WIN32
- struct stat st;
-#endif
-#ifdef _WIN32
- WCHAR wpath[PLEN];
- GetModuleFileNameW(0,wpath,_MAX_PATH);
- *(wcsrchr(wpath, '\\')) = 0;
- WideCharToMultiByte(CP_UTF8,0,wpath,1+(int)wcslen(wpath),path,PLEN,0,0);
-#endif
 
-#ifndef _WIN32
+ struct stat st;
+
+
+
+
 #define sz 4000
  char arg2[sz],arg3[sz];
  char* src,*snk;int n,len=sz;
@@ -142,7 +128,6 @@ void jepath(char* arg,char* lib)
  *snk=0;
  snk=path+strlen(path)-1;
  if('/'==*snk) *snk=0;
-#endif
  strcpy(pathdll,path);
  strcat(pathdll,filesepx);
  strcat(pathdll,JDLLNAME);
@@ -217,9 +202,7 @@ int jefirst(int type,char* arg)
 	strcat(input,"[ARGV_z_=:");
 	strcat(input,arg);
 
-#if defined(_WIN32)
-	strcat(input,"[UNAME_z_=:'Win'");
-#elif defined(__MACH__)
+#if defined(__MACH__)
 	strcat(input,"[UNAME_z_=:'Darwin'");
 #endif
 #if 0

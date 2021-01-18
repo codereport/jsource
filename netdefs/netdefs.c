@@ -1,20 +1,13 @@
-#ifdef _WIN32
-#include <stdio.h>
-#include <stdlib.h>
-#include <winsock.h>
-#else
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
 #include <sys/socket.h>
-#ifdef sun
-#include <inet/tcp.h>
-#endif
+
 #include <netdb.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <sys/ioctl.h>
-#endif
 #include <sys/types.h>
 #define offset(r,f) (((char*)&((r*)0)->f)-((char*)((r*)0)))
 #if defined(_WIN64)||defined(__LP64__)
@@ -83,12 +76,10 @@ int main(){
 	puts ("INADDR_NONE=: _1");
 #endif
 	puts("");
-#ifndef _WIN32
 	printf ("INADDR_UNSPEC_GROUP=: %d\n",INADDR_UNSPEC_GROUP);
 	printf ("INADDR_ALLHOSTS_GROUP=: %d\n",INADDR_ALLHOSTS_GROUP);
 	printf ("INADDR_MAX_LOCAL_GROUP=: %d\n",INADDR_MAX_LOCAL_GROUP);
 	printf ("IN_LOOPBACKNET=: %d\n",IN_LOOPBACKNET);
-#endif
 	puts("");
 	printf ("SOCK_STREAM=: %d\n",SOCK_STREAM);
 	printf ("SOCK_DGRAM=: %d\n",SOCK_DGRAM);
@@ -142,7 +133,6 @@ int main(){
 	printf ("MSG_PEEK=: %d\n",MSG_PEEK);
 	printf ("MSG_DONTROUTE=: %d\n",MSG_DONTROUTE);
 	puts("");
-#ifndef _WIN32
 	printf ("msghdr_sz=: " FMTI "\n",sizeof (struct msghdr));
 	printf ("msg_name_off=: " FMTI "\n",offset(struct msghdr,msg_name));
 	printf ("msg_name_sz=: " FMTI "\n",sizeof(((struct msghdr*)0)->msg_name));
@@ -165,74 +155,6 @@ int main(){
 	printf ("msg_accrightslen_off=: " FMTI "\n",offset(struct msghdr,msg_accrightslen));
 	printf ("msg_accrightslen_sz=: " FMTI "\n",sizeof(((struct msghdr*)0)->msg_accrightslen));
 #endif
-#endif
 	puts("");
-#ifdef _WIN32
-	printf ("SOCKET_ERROR=: %d\n",SOCKET_ERROR);
-	printf ("FD_READ=: %d\n",FD_READ);
-	printf ("FD_WRITE=: %d\n",FD_WRITE);
-	printf ("FD_OOB=: %d\n",FD_OOB);
-	printf ("FD_ACCEPT=: %d\n",FD_ACCEPT);
-	printf ("FD_CONNECT=: %d\n",FD_CONNECT);
-	printf ("FD_CLOSE=: %d\n",FD_CLOSE);
-	printf ("WSABASEERR=: %d\n",WSABASEERR);
-	printf ("WSAEINTR=: %d\n",WSAEINTR);
-	printf ("WSAEBADF=: %d\n",WSAEBADF);
-	printf ("WSAEACCES=: %d\n",WSAEACCES);
-	printf ("WSAEFAULT=: %d\n",WSAEFAULT);
-	printf ("WSAEINVAL=: %d\n",WSAEINVAL);
-	printf ("WSAEMFILE=: %d\n",WSAEMFILE);
-	printf ("WSAEWOULDBLOCK=: %d\n",WSAEWOULDBLOCK);
-	printf ("WSAEINPROGRESS=: %d\n",WSAEINPROGRESS);
-	printf ("WSAEALREADY=: %d\n",WSAEALREADY);
-	printf ("WSAENOTSOCK=: %d\n",WSAENOTSOCK);
-	printf ("WSAEDESTADDRREQ=: %d\n",WSAEDESTADDRREQ);
-	printf ("WSAEMSGSIZE=: %d\n",WSAEMSGSIZE);
-	printf ("WSAEPROTOTYPE=: %d\n",WSAEPROTOTYPE);
-	printf ("WSAENOPROTOOPT=: %d\n",WSAENOPROTOOPT);
-	printf ("WSAEPROTONOSUPPORT=: %d\n",WSAEPROTONOSUPPORT);
-	printf ("WSAESOCKTNOSUPPORT=: %d\n",WSAESOCKTNOSUPPORT);
-	printf ("WSAEOPNOTSUPP=: %d\n",WSAEOPNOTSUPP);
-	printf ("WSAEPFNOSUPPORT=: %d\n",WSAEPFNOSUPPORT);
-	printf ("WSAEAFNOSUPPORT=: %d\n",WSAEAFNOSUPPORT);
-	printf ("WSAEADDRINUSE=: %d\n",WSAEADDRINUSE);
-	printf ("WSAEADDRNOTAVAIL=: %d\n",WSAEADDRNOTAVAIL);
-	printf ("WSAENETDOWN=: %d\n",WSAENETDOWN);
-	printf ("WSAENETUNREACH=: %d\n",WSAENETUNREACH);
-	printf ("WSAENETRESET=: %d\n",WSAENETRESET);
-	printf ("WSAECONNABORTED=: %d\n",WSAECONNABORTED);
-	printf ("WSAECONNRESET=: %d\n",WSAECONNRESET);
-	printf ("WSAENOBUFS=: %d\n",WSAENOBUFS);
-	printf ("WSAEISCONN=: %d\n",WSAEISCONN);
-	printf ("WSAENOTCONN=: %d\n",WSAENOTCONN);
-	printf ("WSAESHUTDOWN=: %d\n",WSAESHUTDOWN);
-	printf ("WSAETOOMANYREFS=: %d\n",WSAETOOMANYREFS);
-	printf ("WSAETIMEDOUT=: %d\n",WSAETIMEDOUT);
-	printf ("WSAECONNREFUSED=: %d\n",WSAECONNREFUSED);
-	printf ("WSAELOOP=: %d\n",WSAELOOP);
-	printf ("WSAENAMETOOLONG=: %d\n",WSAENAMETOOLONG);
-	printf ("WSAEHOSTDOWN=: %d\n",WSAEHOSTDOWN);
-	printf ("WSAEHOSTUNREACH=: %d\n",WSAEHOSTUNREACH);
-	printf ("WSAENOTEMPTY=: %d\n",WSAENOTEMPTY);
-	printf ("WSAEPROCLIM=: %d\n",WSAEPROCLIM);
-	printf ("WSAEUSERS=: %d\n",WSAEUSERS);
-	printf ("WSAEDQUOT=: %d\n",WSAEDQUOT);
-	printf ("WSAESTALE=: %d\n",WSAESTALE);
-	printf ("WSAEREMOTE=: %d\n",WSAEREMOTE);
-	printf ("WSASYSNOTREADY=: %d\n",WSASYSNOTREADY);
-	printf ("WSAVERNOTSUPPORTED=: %d\n",WSAVERNOTSUPPORTED);
-	printf ("WSANOTINITIALISED=: %d\n",WSANOTINITIALISED);
-	printf ("WSAHOST_NOT_FOUND=: %d\n",WSAHOST_NOT_FOUND);
-	printf ("HOST_NOT_FOUND=: %d\n",HOST_NOT_FOUND);
-	printf ("WSATRY_AGAIN=: %d\n",WSATRY_AGAIN);
-	printf ("TRY_AGAIN=: %d\n",TRY_AGAIN);
-	printf ("WSANO_RECOVERY=: %d\n",WSANO_RECOVERY);
-	printf ("NO_RECOVERY=: %d\n",NO_RECOVERY);
-	printf ("WSANO_DATA=: %d\n",WSANO_DATA);
-	printf ("NO_DATA=: %d\n",NO_DATA);
-	printf ("WSANO_ADDRESS=: %d\n",WSANO_ADDRESS);
-	printf ("NO_ADDRESS=: %d\n",NO_ADDRESS);
-	printf ("WM_USER=: %d\n",WM_USER);
-#endif
 	exit (0);
 }

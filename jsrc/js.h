@@ -52,14 +52,9 @@ define one of the following in the build as required
 // auto config
 
 
-#if defined(_WIN32) && !defined(__MINGW32__)
-#ifdef SY_GETTOD
-#undef SY_GETTOD
-#endif
-#else
+
 #ifndef SY_GETTOD
 #define SY_GETTOD
-#endif
 #endif
 
 /* Inclusion of a system herein does not necessarily mean that the source  */

@@ -25,13 +25,6 @@ typedef struct {
 #if defined(HAVE_ALIGNED_ALLOC) /* aligned_alloc is defined by C11 */
 # define aligned_malloc_wrapper aligned_alloc
 # define aligned_free_wrapper free
-#elif defined(_WIN32) /* _aligned_malloc is available on Windows */
-static void* aligned_malloc_wrapper(size_t alignment, size_t size)
-{
-  /* NB: _aligned_malloc takes its args in the opposite order from aligned_alloc */
-  return _aligned_malloc(size, alignment);
-}
-# define aligned_free_wrapper _aligned_free
 #elif ( !defined(ANDROID) || defined(__LP64__) )  /* posix_memalign is defined by POSIX */
 static void* aligned_malloc_wrapper(size_t alignment, size_t size)
 {

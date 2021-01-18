@@ -180,9 +180,6 @@
 /* #define Omit_Private_Memory */
 #define PRIVATE_MEM 8000
 #define Use_J_Memory
-#if SY_WIN32
-#define Llong __int64
-#endif
 
 #ifndef Long
 #define Long long
