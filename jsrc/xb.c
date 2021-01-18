@@ -191,16 +191,7 @@ static A jtbrep(J jt,B b,B d,A w){A y;I t;
  R y;  // return it
 }
 
-#if 0
-static A jthrep(J jt,B b,B d,A w){A y,z;C c,*hex="0123456789abcdef",*u,*v;I n,s[2];
- RZ(y=brep(b,d,w));
- n=AN(y); s[0]=n>>LGWS(d); s[1]=2*WS(d); 
- GATVR(z,LIT,2*n,2,s);  
- u=CAV(y); v=CAV(z); 
- DQ(n, c=*u++; *v++=hex[(c&0xf0)>>4]; *v++=hex[c&0x0f];); 
- RETF(z);
-}
-#else
+
 static A jthrep(J jt,B b,B d,A w){A y;C c,*hex="0123456789abcdef",*u,*v;I n,s[2],t;
  ARGCHK1(w);
  t=UNSAFE(AT(w)); 
@@ -219,7 +210,6 @@ static A jthrep(J jt,B b,B d,A w){A y;C c,*hex="0123456789abcdef",*u,*v;I n,s[2]
  DQ(n, c=*u++; *v++=hex[(c&0xf0)>>4]; *v++=hex[c&0x0f];);   // in-place translation to hex
  R y;  // return it
 }
-#endif
 
 F1(jtbinrep1){ARGCHK1(w); ASSERT(NOUN&AT(w),EVDOMAIN); R brep(BU,SY_64,w);}  /* 3!:1 w */
 F1(jthexrep1){ARGCHK1(w); ASSERT(NOUN&AT(w),EVDOMAIN); R hrep(BU,SY_64,w);}  /* 3!:3 w */

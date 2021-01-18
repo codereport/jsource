@@ -194,7 +194,7 @@ J jt;
 
 int main(int argc, char* argv[])
 {
- printf("Hello YouTube Viewers, all 12 of you!\n");
+ printf("Hello YouTube Viewers, all 22 of you!\n");
 
  setlocale(LC_ALL, "");
 

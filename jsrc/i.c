@@ -93,8 +93,6 @@ B jtglobinit(J jt){A x,y;A *oldpushx=jt->tnextpushp;
  cpuInit();
 #if defined(__aarch64__)
  hwaes=(getCpuFeatures()&ARM_HWCAP_AES)?1:0;
-#elif (defined(__i386__) || defined(_M_X64) || defined(__x86_64__))
- hwaes=((getCpuFeatures()&CPU_X86_FEATURE_SSE4_1)&&(getCpuFeatures()&CPU_X86_FEATURE_AES_NI))?1:0;
 #endif
  // take all the permanent blocks off the tpop stack so that we don't decrement their usecount.  All blocks allocated here must be permanent
  jt->tnextpushp=oldpushx;
@@ -238,36 +236,3 @@ static C jtjinit3(J jt){S t;
 }
 
 C jtjinit2(J jt,int dummy0,C**dummy1){jt->sesm=1; R jinit3();}
-
-
-
-/* unused cpuInfo
-
-#if 0   // Now we detect architecture at installation time, using C_AVX
- // See if processor supports AVX instructions
- // Tip o' hat to InsufficientlyComplicated and the commenter
- // Checking for AVX requires 3 things:
- // 1) CPUID indicates that the OS uses XSAVE and XRSTORE
- //     instructions (allowing saving YMM registers on context
- //     switch)
- // 2) CPUID indicates support for AVX
- // 3) XGETBV indicates the AVX registers will be saved and
- //     restored on context switch
- //
- // Note that XGETBV is only available on 686 or later CPUs, so
- // the instruction needs to be conditionally run.
- int cpuInfo[4];
- __cpuid(cpuInfo, 1);
- 
- I osUsesXSAVE_XRSTORE = cpuInfo[2] & (1L << 27);
- I cpuAVXSuport = cpuInfo[2] & (1L << 28);
- 
- if (osUsesXSAVE_XRSTORE && cpuAVXSuport)
- {
-  // Check if the OS will save the YMM registers
-  unsigned long long xcrFeatureMask = _xgetbv(_XCR_XFEATURE_ENABLED_MASK);
-  jt->cpuarchavx = (xcrFeatureMask & 0x6) == 0x6;
- }
-#endif
-*/
-

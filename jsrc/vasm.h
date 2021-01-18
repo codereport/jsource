@@ -11,8 +11,6 @@
 /* fp   zv=.+/\ xv    1<n */
 /* fs   zv=.+/\.xv    1<n */
 
-
-
 /* C routines for platforms without asm support */
 #ifndef OVF
 

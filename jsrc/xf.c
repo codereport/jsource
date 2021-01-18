@@ -279,18 +279,9 @@ F1(jtjgetpid){
 
 #if (SYS & SYS_UNIX)
 // #ifdef __GNUC__
-#if 0
-F1(jtpathdll){Dl_info info;
- ASSERTMTV(w);
- if(dladdr(jtpathdll, &info)){
-  R cstr((C*)info.dli_fname);
- } else R cstr((C*)"");
-}
-#else
 F1(jtpathdll){
  ASSERTMTV(w); R cstr((C*)"");
 }
-#endif
 #else
 F1(jtpathdll){char p[MAX_PATH]; extern C dllpath[];
  ASSERTMTV(w);

@@ -673,36 +673,8 @@ static A jtsent12c(J jt,A w){C*p,*q,*r,*s,*x;A z;
  // Now we have compacted all the lines.  Box them
  AS(wil)[0]=linex;  // advance to dyad, set its length
  R jtboxcut0(jt,wil,w,ds(CWORDS));
-#if 0
-  RZ(w=lineit(w));  // make lines LF-terminated
-  x=p=r=CAV(w);  /* p: monad start; r: dyad start */
-  q=s=p+AN(w);   /* q: monad end;   s: dyad end   */
-  while(x<s){
-   q=x;
-   while(' '==*x)++x; if(':'==*x){while(' '==*++x); if(CLF==*x){r=++x; break;}}
-   while(CLF!=*x++);
-  }
-  if(x==s)q=r=s;
-  A zc=cut(ds(CBOX),num(-2));  // create function for <;._2
-  *m=df1(z,str(q-p,p),zc);
-  *d=df1(z,str(s-r,r),zc);
- R *m&&*d;
- R df1(z,w,cut(ds(CBOX),num(-2)));  // create function for <;._2
-#endif
 }    /* literal fret-terminated or matrix sentences into monad/dyad */
 
-#if 0 // obsolete 
-static B jtsent12b(J jt,A w,A*m,A*d){A t,*wv,y,*yv;I j,*v;
- ASSERT(1>=AR(w),EVRANK);
- wv=AAV(w); 
- GATV(y,BOX,AN(w),AR(w),AS(w)); yv=AAV(y);
- DO(AN(w), RZ(yv[i]=vs(wv[i])););
- RZ(t=indexof(y,link(chrcolon,str(1L,":")))); v=AV(t); j=MIN(*v,*(1+v));
- *m=take(sc(j  ),y); 
- *d=drop(sc(j+1),y);
- R 1;
-}    /* boxed sentences into monad/dyad */
-#else
 // Audit w to make sure it contains all strings; convert to LIT if needed
 static A jtsent12b(J jt,A w){A t,*wv,y,*yv;I j,*v;
  ASSERT(1>=AR(w),EVRANK);
@@ -711,7 +683,6 @@ static A jtsent12b(J jt,A w){A t,*wv,y,*yv;I j,*v;
  DO(AN(w), RZ(yv[i]=vs(wv[i])););
  R y;
 }    /* boxed sentences into monad/dyad */
-#endif
 
 // Install bucket info into the NAME type t, if it is a local name
 // actstv points to the chain headers, actstn is the number of chains
@@ -1002,9 +973,6 @@ A jtddtokens(J jt,A w,I env){
 // TODO: Use LF for DDSEP, support {{), make nouns work
  PROLOG(000);F1PREFIP;
  ARGCHK1(w);
-#if 0  // set to 1 to disable DD scaf
- R (env&8)?w:tokens(w,env&3);  // return the input unmodified
-#endif
  // find word boundaries, remember if last word is NB
  A wil; RZ(wil=wordil(w));  // get index to words
  C *wv=CAV(w); I nw=AS(wil)[0]; I (*wilv)[2]=voidAV(wil);  // cv=pointer to chars, nw=#words including final NB   wilv->[][2] array of indexes into wv word start/end
@@ -1133,31 +1101,6 @@ A jtddtokens(J jt,A w,I env){
     ddschbgnx=0;  // start scan back at the beginning
    }
   }
-
-#if 0 // obsolete
-  //  create a faux block for the input to enqueue, so we can insert AM
-  A ddwds; fauxblockINT(ddfaux,0,3); fauxINT(ddwds,ddfaux,0,3)  AS(ddwds)[0]=ddendx-ddbgnx-1; AS(ddwds)[1]=2; AS(ddwds)[2]=1; AN(ddwds)=2*(ddendx-ddbgnx-1);
-  AK(ddwds)=(C*)(wilv+ddbgnx+1)-(C*)ddwds;  // point to data after the DDBGN
-// obsolete   A qwds; RZ(qwds=enqueue(ddwds,w,env&3)); I opflags=xop(qwds)|1;  // see what args are given - if no args at all, use y  scaf
-// obsolete   I deftype; CTLZI(opflags,deftype); deftype=(0x2143>>(deftype<<2))&0xf;  // digit number for the definition scaf let cx do it
-  A ddstg; RZ(ddstg=unwordil(ddwds,w,2+1));  // create string form: ask for enclosing quotes and 4 bytes of extra space.. Result is always writable
-  // Add (m:) to the string so we can refer to it
-  
-  I ddstglen=AN(ddstg); AN(ddstg)=AS(ddstg)[0]=ddstglen+4; C* suffv=CAV(ddstg)+ddstglen; suffv[0]='('; suffv[1]='9'; suffv[2]=':'; suffv[3]=')';
-  // append the new chars to w
-  I ddstgbgn=AN(w); RZ(w=jtapip(jtinplace,w,ddstg));   // remember where new string starts in combined string; add on to the character list
-  // replace the words of the DD with 5 word slots.  Transfer comment-at-end status to the new wordlist
-  I commentdiff=AS(wil)[0]-AM(wil);  // remember comment status, 0 or 1
-  RZ(wil=over(take(sc(ddbgnx+5),wil),drop(sc(ddendx+1),wil))); makewritable(wil);  // replace DD with 5 slots
-  AM(wil)=AS(wil)[0]-commentdiff;  // restore comment status to new wordlist
-  wv=CAV(w); nw=AS(wil)[0]; wilv=voidAV(wil);  // refresh pointer to word indexes, and length
-  // install pointers to the DD: ( m : string )
-  wilv[ddbgnx+3][0]=ddstgbgn; ddstglen+=ddstgbgn; wilv[ddbgnx+3][1]=ddstglen;  // word: 'string'
-  wilv[ddbgnx][0]=ddstglen; wilv[ddbgnx][1]=ddstglen+1;  // word: (
-  wilv[ddbgnx+1][0]=ddstglen+1; wilv[ddbgnx+1][1]=ddstglen+2;  // word: m
-  wilv[ddbgnx+2][0]=ddstglen+2; wilv[ddbgnx+2][1]=ddstglen+3;  // word: :
-  wilv[ddbgnx+4][0]=ddstglen+3; wilv[ddbgnx+4][1]=ddstglen+4;  // word: )
-#endif
 
   // We have replaced one DD with its equivalent explicit definition.  Rescan the line, starting at the first location where DDBGN was seen
   for(firstddbgnx=ddschbgnx;firstddbgnx<nw;++firstddbgnx){US ch2=*(US*)(wv+wilv[firstddbgnx][0]); ASSERT(!(ch2==DDEND&&(wilv[firstddbgnx][1]-wilv[firstddbgnx][0]==2)),EVCTRL) if(ch2==DDBGN&&(wilv[firstddbgnx][1]-wilv[firstddbgnx][0]==2))break; }

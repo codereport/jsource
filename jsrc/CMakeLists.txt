@@ -36,12 +36,9 @@ target_sources(j PRIVATE
     p.h
     result.h
     s.h
-    sse2neon.h
-    sse2neon2.h
     va.h
     vasm.h
     vcomp.h
-    vdx.h
     ve.h
     vg.h
     vgmerge.h
@@ -58,7 +55,6 @@ target_sources(j PRIVATE
     ab.c
     aes-c.c
     aes-ni.c
-    aes-sse2.c
     af.c
     ai.c
     am.c
@@ -82,7 +78,6 @@ target_sources(j PRIVATE
     cpuinfo.c
     cr.c
     crs.c
-    ct.c
     cu.c
     cv.c
     cx.c
@@ -102,7 +97,6 @@ target_sources(j PRIVATE
     jdlllic.c
     k.c
     m.c
-    mbx.c
     p.c
     pv.c
     px.c
@@ -127,7 +121,6 @@ target_sources(j PRIVATE
     vamultsp.c
     vb.c
     vbang.c
-    vbit.c
     vcant.c
     vcat.c
     vcatsp.c
@@ -135,7 +128,6 @@ target_sources(j PRIVATE
     vcomp.c
     vcompsc.c
     vd.c
-    vdx.c
     ve.c
     vf.c
     vfft.c
@@ -187,7 +179,7 @@ target_sources(j PRIVATE
     crc32c.c
 )
 
-configure_file(jversion-x.h ${CMAKE_CURRENT_SOURCE_DIR}/jversion.h COPYONLY)
+# configure_file(jversion-x.h ${CMAKE_CURRENT_SOURCE_DIR}/jversion.h COPYONLY)
 
 if(OpenMP_C_FOUND)
     target_link_libraries(j PRIVATE OpenMP::OpenMP_C)
@@ -201,16 +193,6 @@ if(OpenMP_C_FOUND)
         )
     endif()
 endif()
-
-target_sources(j PRIVATE
-    blis.h
-    blis/gemm_c-ref.c
-    blis/gemm_int-aarch64.c
-    blis/gemm_int-avx.c
-    blis/gemm_int-fma.c
-    blis/gemm_int-sse2.c
-    blis/gemm_vec-ref.c
-)
 
 if(NOT BUILD_SHARED_LIBS)
     return()
