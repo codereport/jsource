@@ -1,6 +1,6 @@
 # J: From C to C++20
 
-J is an [array programming language](https://en.wikipedia.org/wiki/Array_programming) created by Ken Iverson and Roger Hui (see image below). 
+J is an [array programming language](https://en.wikipedia.org/wiki/Array_programming) created by [Ken Iverson](https://en.wikipedia.org/wiki/Kenneth_E._Iverson) and [Roger Hui](https://en.wikipedia.org/wiki/Roger_Hui) (see image below).
 
 This is a fork of `jsoftware/jsource` and we will be porting it to C++20.
 
@@ -26,6 +26,7 @@ This is a fork of `jsoftware/jsource` and we will be porting it to C++20.
 * [ ] Clang-tidy the code base
 * [ ] Set up Travis-CI
 * [ ] Set up CodeCov
+* [ ] Set up [badges](https://github.com/badges/shields)
 * [ ] Get both build / tests running in parallel
    * [x] Parallel build (for free off of zhihaoy branch)
    * [ ] Parallel tests
