@@ -226,11 +226,8 @@ static inline omp_int_t omp_get_max_threads() { return 1;}
 #define FMTI04          "%04lli"
 #define FMTI05          "%05lli"
 
-#if defined(MMSC_VER)  // SY_WIN32
-#define strtoI         _strtoi64
-#else
+
 #define strtoI          strtoll
-#endif
 
 #else
 #define IMAX            2147483647L
@@ -352,13 +349,7 @@ extern unsigned int __cdecl _clearfp (void);
 #endif
 
 #if SY_64
-#if defined(MMSC_VER)  // SY_WIN32
-// RESTRICTI (for in-place) is used for things like *z++=*x++ - *y++;  Normally you wouldn't store to a z unless you were done reading
-// the x and y, so it would be safe to get the faster loop that RESTRICT generates, even though strictly speaking if x or y is the
-// same address as z the terms of the RESTRICT are violated.  But on 32-bit machines, registers are so tight that sometimes *z is used
-// as a temp, which means we can't take the liberties there
-#define RESTRICTI // __restrict don't take chances
-#endif
+
 #ifdef __GNUC__
 #define RESTRICTI // __restrict  don't take chances
 #endif
@@ -1260,19 +1251,7 @@ if(likely(z<3)){_zzt+=z; z=(I)&oneone; _zzt=_i&3?_zzt:(I*)z; z=_i&2?(I)_zzt:z; z
 // If CTTZ is not defined, the default routine defined in u.c will be used.  You can look there
 // for the complete spec for CTTZ and CTTZZ.
 
-#if defined(MMSC_VER)  // SY_WIN32
-// do not include intrin.h
-// #include <intrin.h>
-#define CTTZ(w) _tzcnt_u32((UINT)(w))
-#if SY_64
-#define CTTZI(w) _tzcnt_u64((UI)(w))
-#define CTLZI(in,out) _BitScanReverse64(&(out),in)  // actually bit # of highest set bit
-#else
-#define CTTZI(w) _tzcnt_u32((UINT)(w))
-#define CTLZI(in,out) _BitScanReverse(&(out),in)
-#endif
-#define CTTZZ(w) ((w)==0 ? 32 : CTTZ(w))
-#endif
+
 
 #ifdef MMSC_VER
 #define NOINLINE __declspec(noinline)
@@ -1398,16 +1377,7 @@ static inline UINT _clearfp(void){
 #if SY_64
 
 #if C_USEMULTINTRINSIC
-#if defined(MMSC_VER)  // SY_WIN32
-#define DPMULDECLS
-// DPMUL: *z=x*y, execute s if overflow
-#define DPMUL(x,y,z,s) {I _l,_h; *z=_l=_mul128(x,y,&_h); if(_h+(SGNTO0(_l)))s}
-#define DPMULDDECLS
-#define DPMULD(x,y,z,s) {I _h; z=_mul128(x,y,&_h); if(_h+(SGNTO0(z)))s}
-#define DPMULDZ(x,y,z) DPMULD(x,y,z,z=0;)
-#define DPMULDE(x,y,z)  DPMULD(x,y,z,ASSERT(0,EVLIMIT))
-#define DPUMUL(x,y,z,h) {z=_umul128((x),(y),&(h));}  // product in z and h
-#else
+
 #define DPMULDECLS
 #define DPMUL(x,y,z,s) if(unlikely(__builtin_smulll_overflow(x,y,z)))s
 #define DPMULDDECLS
@@ -1415,7 +1385,6 @@ static inline UINT _clearfp(void){
 #define DPMULDZ(x,y,z) z=__builtin_smulll_overflow(x,y,&z)?0:z;
 #define DPMULDE(x,y,z) ASSERT(!__builtin_smulll_overflow(x,y,&z),EVLIMIT)
 #define DPUMUL(x,y,z,h) {__int128 _t; _t=(__int128)(x)*(__int128)(y); z=(I)_t; h=(I)(_t>>64);}  // product in z and h
-#endif
 #else // C_USEMULTINTRINSIC 0 - use standard-C version (64-bit)
 #define DPMULDECLS
 #define DPMUL(x,y,z,s) {I _l, _x=(x), _y=(y); D _d; _l=_x*_y; _d=(D)_x*(D)_y-(D)_l; *z=_l; _d=ABS(_d); if(_d>1e8)s}  // *z may be the same as x or y
@@ -1428,18 +1397,11 @@ static inline UINT _clearfp(void){
 #else  // 32-bit
 
 #if C_USEMULTINTRINSIC
-#if defined(MMSC_VER)  // SY_WIN32
-// optimizer can't handle this #define SPDPADD(addend, sumlo, sumhi) {C c; c=_addcarry_u32(0,addend,sumlo,&sumlo); _addcarry_u32(c,0,sumhi,&sumhi);}
-#define DPMULDECLS unsigned __int64 _p;
-#define DPMUL(x,y,z,s) _p = __emul(x,y); *z=(I)_p; if((_p+0x80000000U)>0xFFFFFFFFU)s
-#define DPMULDDECLS unsigned __int64 _p;
-#define DPMULD(x,y,z,s) _p = __emul(x,y); z=(I)_p; if((_p+0x80000000U)>0xFFFFFFFFU)s
-#else
+
 #define DPMULDECLS
 #define DPMUL(x,y,z,s) if(__builtin_smull_overflow(x,y,z))s
 #define DPMULDDECLS
 #define DPMULD(x,y,z,s) if(__builtin_smull_overflow(x,y,&z))s
-#endif
 #else // C_USEMULTINTRINSIC 0 - use standard-C version (32-bit)
 #define DPMULDECLS D _p;
 #define DPMUL(x,y,z,s) _p = (D)x*(D)y; *z=(I)_p; if(_p>IMAX||_p<IMIN)s
@@ -1454,9 +1416,7 @@ static inline UINT _clearfp(void){
 
 // define single+double-precision integer add
 #if SY_64
-#if defined(MMSC_VER)  // SY_WIN32
-#define SPDPADD(addend, sumlo, sumhi) {C c; c=_addcarry_u64(0,addend,sumlo,&sumlo); _addcarry_u64(c,0,sumhi,&sumhi);}
-#endif
+
 #endif
 
 #ifndef SPDPADD   // default version for systems without addcarry
@@ -1489,8 +1449,5 @@ static __forceinline void aligned_free(void *ptr) {
 }
 
 // Create (x&y) where x and y are signed, so we can test for overflow.
-#if defined(MMSC_VER)  // SY_WIN32
-#define XANDY(x,y) ((x)&(y))
-#else
+
 #define XANDY(x,y) ((I)((UI)(x)&(UI)(y)))
-#endif

@@ -133,9 +133,7 @@ ZF1(jtzexp){D a,b,c,s,t;Z z;
 ZF1(jtzlog){ZF1DECL;
  zr=b?log(hypoth(a,b)):INF(a)?inf:a?log(hypoth(a,b)):-inf;
  zi=a||b?atan2(b,a):0;
-#if SY_WINCE_MIPS && !defined(WIN32_PLATFORM_PSPC)
- if(!b) zi=a<0?PI : 0;  /* atan2(0,v) fails in mips handheld wince - _9^2.5-1.5*/
-#endif
+
  ZEPILOG;
 }
 
@@ -231,9 +229,7 @@ static ZF1(jtzarc){D x,y;Z t,z;
  t=ztrend(v); x=t.re; y=t.im;
  if(0!=x||0!=y)z.re=atan2(y,x);
  
-#if SY_WINCE_MIPS && !defined(WIN32_PLATFORM_PSPC)
- if(!y) z.re=x<0?PI : 0;  /* atan2(0,v) fails in mips handheld wince - 12 o. _3 */
-#endif
+#
 
  R z;
 }

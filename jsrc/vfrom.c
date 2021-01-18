@@ -263,10 +263,7 @@ static A jtafrom2(J jt,A p,A q,A w,I r){A z;C*wv,*zv;I d,e,j,k,m,n,pn,pr,* RESTR
 #if SY_64
  case sizeof(I4): INNER2(I4);
 #endif
-#if !SY_64 && SY_WIN32
- case sizeof(D): if(AT(w)&FL)INNER2(D);
-  // copy only echt floats using floating-point moves.  Otherwise fall through to...
-#endif
+
  default:        {C* RESTRICT v=wv,* RESTRICT x=zv-k;n=k*n;   // n=#bytes in a cell of w
   JMCDECL(endmask) JMCSETMASK(endmask,k+(SZI-1),0) 
   DQ(m, DO(pn, j=e*pv[i]; DO(qn, x+=k; JMCR(x,v+k*(j+qv[i]),k+(SZI-1),loop1,0,endmask);)); v+=n;);} break;

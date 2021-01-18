@@ -46,9 +46,7 @@ F1(jthost){A z;
  F1RANK(1,jthost,DUMMYSELF);
  RZ(w=vslit(w));
 // #if SY_WINCE
-#if SY_WINCE || SY_WIN32
- ASSERT(0,EVDOMAIN);
-#else
+
 {
  A t;I b=0;C*fn,*s;F f;I n;
  n=AN(w);
@@ -91,7 +89,6 @@ F1(jthost){A z;
  }
  posix_spawn_file_actions_destroy(&action);
 #endif
-#endif
  if(b){f=fopen(fn,FREAD_O); z=rd(f,0L,-1L); fclose(f);}
  unlink(fn);
  ASSERT(b&&f,EVFACE);
@@ -104,9 +101,7 @@ F1(jthostne){
  F1RANK(1,jthostne,DUMMYSELF);
  RZ(w=vslit(w));
 // #if SY_WINCE
-#if SY_WINCE || SY_WIN32 || defined(TARGET_IOS)
- ASSERT(0,EVNONCE);
-#else
+
  {
   I b;
 #ifdef MMSC_VER
@@ -127,7 +122,6 @@ F1(jthostne){
  R mtv;
 }
 
-#endif
 
 
 #if !(SYS & SYS_UNIX)

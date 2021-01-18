@@ -1,4 +1,3 @@
-#ifndef _WIN32
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -6,12 +5,6 @@
 #include <regex.h>
 #include <sys/time.h>
 #include <sys/types.h>
-#else
-#include <stdio.h>
-#include <stdlib.h>
-#include <winsock.h>
-#include "../regex/rxposix.h"
-#endif
 #include <sys/types.h>
 #include <fcntl.h>
 #include <errno.h>
