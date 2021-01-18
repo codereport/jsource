@@ -46,30 +46,38 @@ int jedo(char* sentence)
 
 A jegeta(I n, char* s){return jgeta(jt,n,(C*)s);}
 I jeseta(I n,char* name,I x,char* d){return jseta(jt,n,(C*)name,x,(C*)d);}
+
 void jefree(){jfree(jt);}
 char* jegetlocale(){return (char*)jgetlocale(jt);}
 A jega(I t, I n, I r, I*s){return jga(jt,t,n,r,s);}
-void* jehjdll(){return hjdll;}
+
+void* jehjdll() { return hjdll; }
+
+auto je_load_procedure_adresses(void* hjdll, void* callbacks) -> void {
+	auto jsm = reinterpret_cast<JSMType>(dlsym(hjdll,"JSM"));
+	jsm(jt,callbacks);
+	jdo        = (JDoType)        dlsym(hjdll,"JDo");
+	jfree      = (JFreeType)      dlsym(hjdll,"JFree");
+	jga        = (JgaType)        dlsym(hjdll,"Jga");
+	jgetlocale = (JGetLocaleType) dlsym(hjdll,"JGetLocale");
+	jgeta      = (JGetAType)      dlsym(hjdll,"JGetA");
+	jseta      = (JSetAType)      dlsym(hjdll,"JSetA");
+};
 
 // load JE, Jinit, getprocaddresses, JSM
-J jeload(void* callbacks)
-{
- hjdll=dlopen(pathdll,RTLD_LAZY);
- if(!hjdll) {
-	char* error = dlerror();
- 	printf( "ERROR\tCould not open library globally: %s\n", error ? error : "" );
-	return nullptr;
- }
- jt = static_cast<JST*>(reinterpret_cast<JInitType>(dlsym(hjdll,"JInit"))());
- if(!jt) return nullptr;
- ((JSMType)GETPROCADDRESS(hjdll,"JSM"))(jt,callbacks);
- jdo=(JDoType)GETPROCADDRESS(hjdll,"JDo");
- jfree=(JFreeType)GETPROCADDRESS(hjdll,"JFree");
- jga=(JgaType)GETPROCADDRESS(hjdll,"Jga");
- jgetlocale=(JGetLocaleType)GETPROCADDRESS(hjdll,"JGetLocale");
- jgeta=(JGetAType)GETPROCADDRESS(hjdll,"JGetA");
- jseta=(JSetAType)GETPROCADDRESS(hjdll,"JSetA");
- return jt;
+J jeload(void* callbacks) {
+	hjdll = dlopen(pathdll,RTLD_LAZY);
+
+	if(!hjdll) {
+		char* error = dlerror();
+		printf( "ERROR\tCould not open library globally: %s\n", error ? error : "" );
+		return nullptr;
+	}
+
+	jt = static_cast<JST*>(reinterpret_cast<JInitType>(dlsym(hjdll,"JInit"))());
+	if (!jt) return nullptr;
+	je_load_procedure_adresses(hjdll, callbacks);
+	return jt;
 }
 
 // set path and pathdll (wpath also set for win)
@@ -79,27 +87,25 @@ void jepath(char* arg,char* lib)
 
  struct stat st;
 
+ int32_t const sz  = 4000;
+ int32_t const len = sz;
 
-
-
-#define sz 4000
- char arg2[sz],arg3[sz];
- char* src,*snk;int n,len=sz;
- // fprintf(stderr,"arg0 %s\n",arg);
+ char arg2[sz];
+ char arg3[sz];
+ char* src;
+ char *snk;
  // try host dependent way to get path to executable
  // use arg if they fail (arg command in PATH won't work)
-#ifdef __MACH__ 
- n=_NSGetExecutablePath(arg2,&len);
+#ifdef __MACH__
+ int n=_NSGetExecutablePath(arg2,&len);
  if(0!=n) strcat(arg2,arg);
 #else
- n=readlink("/proc/self/exe",arg2,sizeof(arg2));
+ int n=readlink("/proc/self/exe",arg2,sizeof(arg2));
  if(-1==n) strcpy(arg2,arg); else arg2[n]=0;
 #endif
- // fprintf(stderr,"arg2 %s\n",arg2);
  // arg2 is path (abs or relative) to executable or soft link
  n=readlink(arg2,arg3,sz);
  if(-1==n) strcpy(arg3,arg2); else arg3[n]=0;
- // fprintf(stderr,"arg3 %s\n",arg3);
  if('/'==*arg3)
   strcpy(path,arg3);
  else
@@ -160,7 +166,7 @@ void jesetpath(char* arg)
 // profile is from BINPATH, ARGV, ijx basic, or nothing
 int jefirst(int type,char* arg)
 {
-	int r; 
+	int r;
 	char* p;
 	char* q;
 	char* input=static_cast<char* >(malloc(2000+strlen(arg)));
