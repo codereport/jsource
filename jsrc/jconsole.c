@@ -227,7 +227,7 @@ int main(int argc, char* argv[])
   free(argvv);
  }
 
-#if !defined(WIN32)
+
 // set stack size to get limit error instead of crash
  struct rlimit lim;
  if(!getrlimit(RLIMIT_STACK,&lim)){
@@ -236,7 +236,7 @@ int main(int argc, char* argv[])
    setrlimit(RLIMIT_STACK,&lim);
   }
  }
-#endif
+
 #ifdef READLINE
   norl|=!_isatty(_fileno(stdin));    // readline works on tty only
 #if defined(USE_LINENOISE)
@@ -259,7 +259,6 @@ int main(int argc, char* argv[])
  jt=jeload(callbacks);
  if(!jt){char m[1000]; jefail(m); fputs(m,stderr); exit(1);}
  adadbreak=(char**)jt; // first address in jt is address of breakdata
-#ifndef _WIN32
  if(2==breadline){
   struct sigaction sa;
   sa.sa_flags = 0;
@@ -268,7 +267,6 @@ int main(int argc, char* argv[])
   sigaddset(&(sa.sa_mask), SIGINT);
   sigaction(SIGINT, &sa, NULL);
  }else
-#endif
   signal(SIGINT,sigint);
  
 #ifdef READLINE
@@ -294,8 +292,6 @@ int main(int argc, char* argv[])
  jefirst(type,input);
  while(1){jedo((char*)Jinput(jt,(forceprmpt||_isatty(_fileno(stdin)))?(C*)"   ":(C*)""));}
  jefree();
-#if !(defined(ANDROID)||defined(_WIN32))
  if(loc)freelocale(loc);
-#endif
  return 0;
 }

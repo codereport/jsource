@@ -17,10 +17,6 @@
 #include "j.h"
 #include "x.h"
 
-#if !SY_WIN32 && (SYS & SYS_DOS)
-#include <dos.h>
-#endif
-
 #if (SYS & SYS_UNIX)
 #include <stdlib.h>
 typedef long long INT64;
@@ -220,18 +216,8 @@ F1(jtjferase){A y,fn;US*s;I h;
  RE(h=fnum(w));
  if(h) {RZ(y=str0(fname(sc(h))))} else ASSERT(y=vslit(AAV(w)[0]),EVFNUM);
  if(h)RZ(jclose(sc(h)));
-#if (SYS&SYS_UNIX)
  A y0=str0(y); R !unlink(CAV(y0))||!rmdir(CAV(y0))?num(1):jerrno();
-#else
- RZ(fn=toutf16x(y)); USAV(fn)[AN(fn)]=0;  // install termination
- s=USAV(fn);
-// #if SY_WIN32 && !SY_WINCE
-#if 0
- R !_wunlink(s)||!_wrmdir(s)||!rmdir2(jt, (wchar_t*)s)?num(1):jerrno();
-#else
- R !_wunlink(s)||!_wrmdir(s)?num(1):jerrno();
-#endif
-#endif
+
 }    /* erase file or directory */
 
 F1(jtpathcwd){C path[1+NPATH];US wpath[1+NPATH];
@@ -287,11 +273,8 @@ F1(jtjgetenv){
 
 F1(jtjgetpid){
  ASSERTMTV(w);
-#if SY_WIN32
- R(sc(GetCurrentProcessId()));
-#else
+
  R(sc(getpid()));
-#endif
 }
 
 #if (SYS & SYS_UNIX)

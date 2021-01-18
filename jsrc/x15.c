@@ -152,9 +152,7 @@ typedef struct {
  C tletter[NCDARGS];            /* arguments type letters, cwusi etc.   */
 } CCT;
 
-#if SY_64 && SY_WIN32
-extern void double_trick(D,D,D,D);
-#endif
+
 
 #if (SYS & SYS_MACOSX) | (SYS & SYS_LINUX)
 #ifdef C_CD_ARMHF

@@ -50,11 +50,8 @@
 // the size of the total allocation of the block for w, always a power of 2
 #define alloroundsize(w)  FHRHSIZE(AFHRH(w))
 
-#if (MEMAUDIT==0 || !_WIN32)
 #define FREECHK(x) FREE(x)
-#else
-#define FREECHK(x) if(!FREE(x))SEGFAULT;  // crash on error
-#endif
+
 
 static void jttraverse(J,A,AF);
 

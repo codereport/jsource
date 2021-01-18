@@ -8,22 +8,16 @@
 #include <strings.h>
 #endif
 
-#ifdef _WIN32
- #define JDLLNAME "j.dll"
- #define filesepx "\\"
-#else
  #define filesepx "/"
  #ifdef __MACH__
   #define JDLLNAME "libj.dylib"
  #else
   #define JDLLNAME "libj.so"
  #endif
-#endif
 
 #define LOCALOGTAG "libj"
 #define LOGD(msg)
 #define LOGFD(...)
-#endif
 
 typedef struct A_RECORD {
   I k,flag,m,t,c,n,r,s[1];

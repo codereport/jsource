@@ -131,21 +131,7 @@ void jepath(char* arg,char* lib)
  strcpy(pathdll,path);
  strcat(pathdll,filesepx);
  strcat(pathdll,JDLLNAME);
-#if !defined(_WIN32) && !defined(__MACH__) && !defined(ANDROID) // Not sure what this should be for???
- char pathdllpx[10];
- strncpy(pathdllpx,pathdll,10); pathdllpx[9]=0;
- if(stat(pathdll,&st)&&!strcmp(pathdllpx,"/usr/bin/")) FHS=1;
- if (FHS) {
-  char _jdllver[20];
-  strcpy(_jdllver,jversion);
-  jdllver[0]=_jdllver[0];
-  jdllver[1]='.';
-  strcat(jdllver+2,_jdllver+1);
-  strcpy(pathdll,JDLLNAME);
-  strcat(pathdll,".");
-  strcat(pathdll,jdllver);
- }
-#endif
+
  if(*lib)
  {
 	 if(filesep==*lib || ('\\'==filesep && ':'==lib[1]))
