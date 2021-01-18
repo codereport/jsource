@@ -25,7 +25,6 @@ F1(jtboxq){ASSERTMTV(w); R str(sizeof(jt->bx),jt->bx);}
 F1(jtboxs){A x;
  RZ(w=vs(w));
  ASSERT(sizeof(jt->bx)==AS(w)[0],EVLENGTH);
-// obsolete  x=jt->bxa; RZ(ras(w)); RZ(jt->bxa=w); jt->bx=CAV(jt->bxa); fa(x);
  MC(jt->bx,CAV(w),sizeof(jt->bx));
  R mtv;
 }  // box-display characters

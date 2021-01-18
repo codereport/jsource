@@ -71,8 +71,6 @@ typedef struct {
  D    cct;               // complementary comparison tolerance $
 // ----- end of cache line 1
  A    nvra;             // data blocks that are in execution somewhere - always non-virtual, always rank 1, AS[0] holds current pointer
-// obsolete  A*   nvrav;            /* AAV(jt->nvra)      $                             */
-// obsolete  UI4  nvran;            // number of atoms in nvrav    $
  I4   slisti;           /* index into slist of current script     $         */
  A    stloc;            /* locales symbol table                            */
  A    fill;             // fill     stuck here as filler
@@ -105,30 +103,21 @@ typedef struct {
  UC   prioritytype[11];  // type bit for the priority types
  UC   typepriority[19];  // priority value for the noun types
 // end cache line 4.  10 bytes carry over.  next cache line is junk; we don't expect to use these types much
-// obsolete B    nflag;            /* 1 if space required before name               */
  B    sesm;             /* whether there is a session manager              */
-// obsolete  B    tmonad;           /* tacit translator: 1 iff monad         >          */
-// obsolete  B    tsubst;           /* tacit translator           >                     */
  UC   dbuser;           /* user-entered value for db                       */
  A    flkd;             /* file lock data: number, index, length           */
-// obsolete  I    flkn;             /* file lock count                                 */
  A    fopa;             /* open files boxed names                          */
  A    fopf;             /* open files corresp. file numbers                */
-// obsolete  I    fopn;             /* open files count                                */
  I    getlasterror;     /* DLL stuff                                       */
 // end cache line 5.
  void *dtoa;             /* use internally by dtoa.c                        */
  I    bytes;            /* bytes currently in use                          */
  I    bytesmax;         /* high-water mark of "bytes"                      */
  I    mulofloloc;       // index of the result at which II multiply overflow occurred  scaf  $
-// obsolete  D    fuzz;             /* fuzz (sometimes set to 0)  scaf  $                   */
  C    fillv0[sizeof(Z)];/* default fill value     $                         */
  C*   fillv;            /* fill value     $                                 */
  C    typesizes[32];    // the length of an allocated item of each type
 // --- end cache line 6.  24 bytes carry over.  next cache line is junk; we don't expect to use these types much
-// obsolete  B    prxthornuni;         /* 1 iff ": allowed to produce C2T result    >      */
-// obsolete  B    jprx;             /* 1 iff ": for jprx (jconsole output)       >      */
-// obsolete  C    unicodex78;       /* 1 iff disallow numeric argument for 7 8 u:  >  scaf  */
  B    retcomm;          /* 1 iff retain comments and redundant spaces      */
  UC   seclev;           /* security level                                  */
  C    recurstate;       // state of recursions through JDo
@@ -161,11 +150,7 @@ typedef struct {
  A    idothash0;        // 2-byte hash table for use by i.    $
  A    idothash1;        // 4-byte hash table for use by i.     $
  DC   sitop;            /* top of SI stack                                 */
-// obsolete  I    stmax;            /* numbered locales maximum number                 */
  A    stnum;            // numbered locale numbers or hash table - rank 1, holding symtab pointer for each entry.  0 means empty
-// obsolete  A    stptr;            /* numbered locale symbol table ptrs               */
-// obsolete  I    stused;           /* entries in stnum/stptr in use                   */
-// obsolete  I    sttsize;          // length of hash table, =AN(jt->stnum)
  I    pmctr;            /* perf. monitor: ctr>0 means do monitoring        */
  C    baselocale[4];    // will be "base"
  UI4  baselocalehash;   // name hash for base locale
@@ -180,20 +165,12 @@ typedef struct {
  I    hin;              /* used in dyad i. & i:                            */
  I*   hiv;              /* used in dyad i. & i:                            */
  A    symp;             /* symbol pool array                               */
-// obsolete  L*   sympv;            /* symbol pool array value ptr, (L*)AV(jt->symp)   */
-// obsolete  I    symindex;         /* symbol table index (monotonically increasing)   */
-// obsolete  L*   cursymb;          /* current symbol table entry                      */
-// obsolete  I    arg;              /* integer argument                                */
  I*   breakfh;          /* win break file handle                           */
  I*   breakmh;          /* win break map handle                            */
  C    bx[11];               /* box drawing characters                          */
-// obsolete  A    bxa;              /* array of box drawing characters                 */
  A    cdarg;            /* table of 15!:0 parsed left arguments            */
  A    cdhash;           /* hash table of indices into cdarg                */
  A    cdhashl;          /* hash table of indices into cdarg                */
-// obsolete  I    cdna;             /* # of used entries in cdarg                      */
-// obsolete  I    cdnl;             /* # of used entries in cdhashl                    */
-// obsolete  I    cdns;             /* length of used portion of cdstr                 */
  A    cdstr;            /* strings for cdarg                               */
 
  A    dbalpha;          /* left  argument for rerun                        */
@@ -208,30 +185,13 @@ typedef struct {
  A    dbstops;          /* stops set by the user                           */
  A    dbtrap;           /* trap, execute on suspension                     */
  DC   dcs;              /* ptr to debug stack entry for current script     */
-// obsolete  C*   dirbase;          /* for directory search                            */
-// obsolete  C    diratts[7];       /* set by ismatch, read by dir1                    */
-// obsolete  C    dirmode[11];      /* set by ismatch, read by dir1                    */
-// obsolete  C    dirrwx[3];        /* set by ismatch, read by dir1                    */
-// obsolete #if !SY_WINCE
-// obsolete  struct stat dirstatbuf; //set by ismatch, read by dir1
-// obsolete #if !SY_64 && (SYS & SYS_LINUX)
-// obsolete  struct stat dummy1;    // stat above should be stat64
-// obsolete  struct stat dummy2;    // reserve extra to avoid stomping disp
-// obsolete #endif
-// obsolete #endif 
  C*   capture;          /* capture output for python->J etc.               */
  I    dlllasterror;     /* DLL stuff                                       */
  I    etxn;             /* strlen(etx)                                     */
  I    etxn1;            /* last non-zero etxn                              */
  A    evm;              /* event messages                                  */
-// obsolete  I    fxi;              /* f. depth countdown                              */
-// obsolete  A    fxpath;           /* f. path of names                                */
-// obsolete  A*   fxpv;             /* f. AAV(fxpath)                                  */
  A    iep;              /* immediate execution phrase                      */
  C    locsize[2];       /* size indices for named and numbered locales     */
-// obsolete AF   lcp;              /* linear representation paren function            */
-// obsolete  A    ltext;            /* linear representation text                      */
-// obsolete AF   ltie;             /* linear representation tie   function            */
  I    min;              /* the r result from irange                        */
  I    mtyo;				      /* jsto output type - jfwrite arg to jpr           */
  C*   mtyostr;          /* jsto string                                     */
@@ -279,9 +239,6 @@ typedef struct {
  I    int64rflag;       /* com flag for returning 64-bit integers          */
  I    transposeflag;    /* com flag for transposed arrays                  */
  D    tssbase;          /* initial time of date                            */
-// obsolete  TA*  ttab;             /* tacit translator                                */
-// obsolete  I    ttabi;            /* tacit translator                                */
-// obsolete  I    ttabi0;           /* tacit translator                                */
  A    xmod;             /* extended integer: the m in m&|@f                */  
  I    xmode;            /* extended integer operating mode                 */
 #if MEMAUDIT & 2
@@ -313,9 +270,6 @@ union {
  struct {
   I    postflags;  // what to do with the result
  } compsc;
-// obsolete #if (SYS & SYS_UNIX)
-// obsolete  C    dirnamebuf[NPATH];/* for directory search                            */
-// obsolete #endif
  struct {
   CMP  comp;             /* comparison function in sort                     */
   B    compusejt;        // set if the parameter to comparison function is jt rather than n

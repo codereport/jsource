@@ -19,7 +19,6 @@ static A jtinitnl(J jt){A q;
  jt->stnum=q;  // save address of block
  AK(jt->stnum)=0;  // set next number to allocate
  AM(jt->stnum)=0;  // set number in use
-// obsolete jt->sttsize=s;  // set size of table
  R q;  // return no error
 }
 
@@ -41,7 +40,7 @@ static I jtgetnl(J jt){
    }
   }
   AK(new)=AK(jt->stnum); AM(new)=AM(jt->stnum);  // before freeing the block, copy # locales and next locales#
-  fa(jt->stnum); ras(new); jt->stnum=new; /* obsolete jt->sttsize=AN(new);*/ // install the new table, release the old
+  fa(jt->stnum); ras(new); jt->stnum=new;  // install the new table, release the old
  }
  R AK(jt->stnum);  // return index of next allocation
 }
@@ -107,12 +106,11 @@ A jtindexnl(J jt,I n) { R (A)IAV0(jt->stnum)[n]; }  // the locale address, or 0 
 // For local symbol tables, hash chain 0 is repurposed to hold symbol-index info for x/y (filled in later)
 A jtstcreate(J jt,C k,I p,I n,C*u){A g,x,xx;C s[20];L*v;
  GATV0(g,SYMB,(p+1)&-2,0);   // have odd number of hashchains, excluding LINFO
- // Allocate a symbol for the locale info, install in special hashchain 0.  Set flag; // obsolete  set sn to the symindex at time of allocation
- // (it is queried by 18!:31)
+ // Allocate a symbol for the locale info, install in special hashchain 0.  Set flag; // (it is queried by 18!:31)
  // The allocation clears all the hash chain bases, including the one used for SYMLINFO
  switch(k){
   case 0:  /* named    locale */
-   RZ(v=symnew(&LXAV0(g)[SYMLINFO],0)); v->flag|=LINFO; /* obsolete v->sn=(US)jt->symindex++; */   // allocate at head of chain
+   RZ(v=symnew(&LXAV0(g)[SYMLINFO],0)); v->flag|=LINFO;    // allocate at head of chain
    RZ(x=nfs(n,u));  // this fills in the hash for the name
    // Install name and path.  Path is 'z' except in z locale itself, which has empty path
    RZ(ras(x)); LOCNAME(g)=x; xx=1==n&&'z'==*u?vec(BOX,0L,0L):zpath; ras(xx); LOCPATH(g) = xx;   // ras() is never VIRTUAL
@@ -121,7 +119,7 @@ A jtstcreate(J jt,C k,I p,I n,C*u){A g,x,xx;C s[20];L*v;
    symbisdel(x,g,jt->stloc);
    break;
   case 1:  /* numbered locale */
-   RZ(v=symnew(&LXAV0(g)[SYMLINFO],0)); v->flag|=LINFO; /* obsolete v->sn=(US)jt->symindex++; */   // allocate at head of chain
+   RZ(v=symnew(&LXAV0(g)[SYMLINFO],0)); v->flag|=LINFO;    // allocate at head of chain
    sprintf(s,FMTI,n); RZ(x=nfs(strlen(s),s)); NAV(x)->bucketx=n; // this fills in the hash for the name; we save locale# if numeric
    RZ(ras(x)); LOCNAME(g)=x; ras(zpath); LOCPATH(g)=zpath;  // ras() is never virtual
    // Put this locale into the in-use list at an empty location.  ras(g) at that time

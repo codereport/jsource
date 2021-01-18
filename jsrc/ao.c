@@ -715,14 +715,10 @@ DF2(jtkeyheadtally){F2PREFIP;PROLOG(0017);A f,q,x,y,z;I b;I at,*av,k,n,r,*qv,*u,
   f=FAV(FAV(w)->fgh[0])->fgh[0];  // f->({.,#), found inside (({.,#)/. i.@#)  left of hook, then go past /.
  }
  ASSERT((-n&((wt&NUMERIC+VERB)-1))>=0,EVDOMAIN); // OK if n=0 or numeric/i.@# w
-// obsolete  if(unlikely((((SPARSE&AT(a))-1)&((I)AR(w)-2)&(-n)&(-AN(a)))>=0))R key(a,w,self);  // if sparse or w has rank>1 or a has no cells or no atoms, revert
  if(unlikely((((SPARSE&AT(a))-1)&((I)AR(w)-2)&(-n)&(-AN(a)))>=0))R wt&VERB?jthook1cell(jt,a,w):key(a,w,self);  // if sparse or w has rank>1 or a has no cells or no atoms, revert, to monad/dyad.  w=self for monad
  av=AV(a);
-// obsolete  f=FAV(self)->fgh[0]; f=VAV(f)->fgh[0]; b=CHEAD==ID(f);  // b is 1 for {.,#  0 for #,{.  i. e. index of tally
  f=FAV(f)->fgh[0]; b=CHEAD==ID(f);  // f-> left tine of (#,{.)  b is 1 for {.,#  0 for #,{.  i. e. index of tally
  if(unlikely((AT(a)&B01)!=0))if(1>=AR(a)&&!(wt&VERB)){B*p=(B*)av;I i,j,m;  // first special case: boolean list/atom, for which we can handle all types (except VERB)
-// obsolete   if(*p){i=0; B *d=(B*)memchr(p,C0,n); j=d-p; j=d?j:0;} // i=index of first 1, j=index of first 0 (0 if not found)
-// obsolete   else  {j=0; B *c=(B*)memchr(p,C1,n); i=c-p; i=c?i:0;}
   B *c=memchr(p,1^*p,n); i=c-p; i=c?i:0; j=i; i=*p?0:i; j=*p?j:0;  // i=index of first 1, j=index of first 0 (0 if not found)
   k=bsum(n,p); m=i+j?1:0;  // k=# 1s  m is 1 if there are 0s and 1s
   GATV0(x,INT,m+1,1); v=AV(x); v[m]=i+j; v[0]=0;  // 0=index of first item (always 0); 1 if it exists is the other

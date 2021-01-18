@@ -341,11 +341,9 @@ DF1(jtwd){A z=0;C*p=0;D*pd;I e,*pi,t;V*sv;
   jt->recurstate&=~RECSTATEBUSY;  // back to IDLE/PROMPT state
   if(SMOPTLOCALE&jt->smoption) {
 // pass locale as parameter of callback
-// obsolete     e= jt->smdowd? ((dowdtype2)(jt->smdowd))(jt, (int)t, w, &z, getlocale(jt)) : EVDOMAIN;
     e=((dowdtype2)(jt->smdowd))(jt, (int)t, w, &z, getlocale(jt));
   } else {
 // front-end will call getlocale() inside callback
-// obsolete     e=jt->smdowd ? ((dowdtype)(jt->smdowd))(jt, (int)t, w, &z) : EVDOMAIN;
     e=((dowdtype)(jt->smdowd))(jt, (int)t, w, &z);
   }
   jt->recurstate|=RECSTATEBUSY;  // wd complete, go back to normal running state, BUSY normally or RECUR if a prompt is pending

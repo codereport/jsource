@@ -109,7 +109,6 @@ static A jtfixa(J jt,A a,A w){A f,g,h,wf,x,y,z=w;V*v;fauxblock(fauxself); A aa; 
   case CATDOT:
   case CGRCO:
    IAV0(aa)[0]=(aif|na);
-// obsolete    RZ(f=every(every2(sc(aif|na),h,(A)&arofixaself),(A)&arofixaself)); // full A block required for call
    RZ(f=every(every2(aa,h,(A)&arofixaself),(A)&arofixaself)); // full A block required for call
    RZ(g=REFIXA(na,g));
    R df2(z,f,g,wf);
@@ -125,9 +124,7 @@ static A jtfixa(J jt,A a,A w){A f,g,h,wf,x,y,z=w;V*v;fauxblock(fauxself); A aa; 
   case CTILDE:
    if(f&&NAME&AT(f)){
     RZ(y=sfn(0,f));
-// obsolete     if(all1(eps(box(y),jt->fxpath)))R w;  // break out of loop if recursive name lookup
     if(all1(eps(box(y),(A)AM(a))))R w;  // break out of loop if recursive name lookup
-// obsolete     ASSERT(jt->fxi,EVLIMIT);
     ASSERT(AN((A)AM(a))<248,EVLIMIT);  // error if too many names in expansion
     // recursion check finished.  Now replace the name with its value
     if(x=symbrdlock(f)){
@@ -153,7 +150,6 @@ static A jtfixa(J jt,A a,A w){A f,g,h,wf,x,y,z=w;V*v;fauxblock(fauxself); A aa; 
      // a loop (since we are advancing the symbol pointer) and the name, which is just 'u', might well come up again; so we don't
      // add the name to the table in that case.  NOTE bug: an indirect locative a__b, if it appeared twice, would be detected as a loop even
      // if it evaluated to different locales
-// obsolete      if(savloc==jt->locsyms)jt->fxpv[--jt->fxi]=rifvs(y); // add name-string to list of visited names for recursion check
      I initn=AN((A)AM(a));  // save name depth coming in
      if(savloc==jt->locsyms){AAV1((A)AM(a))[AN((A)AM(a))]=rifvs(y); AN((A)AM(a))++; AS((A)AM(a))[0]++;} // add name-string to list of visited names for recursion check
      if(z=REFIXA(na,x)){
@@ -163,7 +159,6 @@ static A jtfixa(J jt,A a,A w){A f,g,h,wf,x,y,z=w;V*v;fauxblock(fauxself); A aa; 
      AN((A)AM(a))=AS((A)AM(a))[0]=initn;   // restore name count
      RZ(z);
     }
-// obsolete     jt->fxpv[jt->fxi++]=mtv;
     RE(z);
     ASSERT(PARTOFSPEECHEQ(AT(w),AT(z)),EVDOMAIN);  // if there was a change of part-of-speech during the fix, that's a pun, don't allow it
     R z;
@@ -182,7 +177,6 @@ static A jtfixa(J jt,A a,A w){A f,g,h,wf,x,y,z=w;V*v;fauxblock(fauxself); A aa; 
 // On internal calls, self is an integer whose value contains flags.  Otherwise zeroionei is used
 DF1(jtfix){PROLOG(0005);A z;
  ARGCHK1(w);
-// obsolete  RZ(jt->fxpath=mkwris(reshape(sc(jt->fxi=(I)255),ds(CACE)))); jt->fxpv=AAV(jt->fxpath);  // for stopping infinite recursions
  if(LIT&AT(w)){ASSERT(1>=AR(w),EVRANK); RZ(w=nfs(AN(w),CAV(w)));}
  // only verbs/noun can get in through the parser, but internally we also vet adv/conj
  ASSERT(AT(w)&NAME+VERB+ADV+CONJ,EVDOMAIN);
@@ -196,6 +190,5 @@ DF1(jtfix){PROLOG(0005);A z;
  // we set VFIX.  We only do so if the node has descendants (or a name).  We also turn off VNAMED, which is set in named explicit definitions (I don't
   // understand why).  We can do this only if we are sure the entire tree was traversed, i. e. we were not just looking for implicit locatives or inverses.
  if(!(*IAV0(self)&(FIXALOCSONLY|FIXALOCSONLYLOWEST|FIXASTOPATINV))&&AT(z)&VERB+ADV+CONJ){V*v=FAV(z); if(v->fgh[0]){v->flag|=VFIX+VNAMED; v->flag^=VNAMED;}}  // f is clear for anything in the pst
-// obsolete  jt->fxpath=0;
  EPILOG(z);
 }

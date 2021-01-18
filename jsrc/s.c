@@ -27,10 +27,6 @@
 // AN(jt->stnum) size of hashtable in entries (each 1 L*)
 // AK(jt->stnum) next loc# to allocate
 // AM(jt->stnum) number of entries in use in table
-// obsolete /* jt->stnum: -1 means free; others are numbers in use                     */
-// obsolete/* jt->stptr:  0 means free; others are symbol tables                      */
-// obsolete/* jt->stused: # entries in stnum/stptr in use                             */
-// obsolete/* jt->stmax:  1 + maximum number extant                                   */
 
 /* named locales:                                                          */
 /* jt->stloc:  locales symbol table                                        */
@@ -39,14 +35,12 @@
 #define symcol ((sizeof(L)+SZI-1)/SZI)
 
 B jtsymext(J jt,B b){A x,y;I j,m,n/*obsolete ,s[2]*/,*v,xn,yn;L*u;
- if(b){y=jt->symp; j=allosize(y)+NORMAH*SZI; /* obsolete n=AS(y)[0];*/ yn=AN(y); n=yn/symcol;}  // extract allo size from header (approx)
- else {            j=((I)1)<<12;            /* obsolete n=1;*/      yn=0; n=1;   }  // n is # rows in chain base + old values
+ if(b){y=jt->symp; j=allosize(y)+NORMAH*SZI;  yn=AN(y); n=yn/symcol;}  // extract allo size from header (approx)
+ else {            j=((I)1)<<12;                  yn=0; n=1;   }  // n is # rows in chain base + old values
  m=j<<1;                              /* new size in bytes           */
  m-=AKXR(0);                  /* less array overhead         */
  m/=symcol*SZI;                             /* new # rows                  */
-// obsolete  s[0]=m; s[1]=symcol;
  xn=m*symcol;          /* new pool array atoms        */
-// obsolete  GATVR(x,INT,xn,2,s); v=AV(x);                 /* new pool array              */
  GATV0(x,INT,xn,0); v=(I*)LAV0(x);                 /* new pool array              */
  if(b)ICPY(v,LAV0(y),yn);                     /* copy old data to new array  */
  memset(v+yn,C0,SZI*(xn-yn));               /* 0 unused area for safety    */
@@ -55,7 +49,6 @@ B jtsymext(J jt,B b){A x,y;I j,m,n/*obsolete ,s[2]*/,*v,xn,yn;L*u;
  if(b)u->next=LAV0(jt->symp)->next;              /* push extension onto stack   */
  ((L*)v)->next=(LX)n;                           /* new base of free chain               */
  ras(x); jt->symp=x;                           /* preserve new array          */
-// obsolete  LAV0(jt->symp)=LAV0(x);                       /* new array value ptr         */
  if(b)fa(y);                                /* release old array           */
  R 1;
 }    /* 0: initialize (no old array); 1: extend old array */
@@ -131,7 +124,6 @@ F1(jtsympool){A aa,q,x,y,*yv,z,*zv;I i,n,*u,*xv;L*pv;LX j,*v;
  ASSERT(1==AR(w),EVRANK); 
  ASSERT(!AN(w),EVLENGTH);
  GAT0(z,BOX,3,1); zv=AAV(z);
-// obsolete  n=AS(jt->symp)[0]; pv=LAV0(jt->symp);
  n=AN(jt->symp)/symcol; pv=LAV0(jt->symp);
  GATV0(x,INT,n*5,2); AS(x)[0]=n; AS(x)[1]=5; xv= AV(x); zv[0]=incorp(x);
  GATV0(y,BOX,n,  1);                         yv=AAV(y); zv[1]=incorp(y);

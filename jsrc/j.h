@@ -399,7 +399,6 @@ extern unsigned int __cdecl _clearfp (void);
 #define NTSTACK         16384L          // number of BYTES in an allocated block of tstack - pointers to allocated blocks - allocation is bigger to leave this many bytes on boundary
 #define NTSTACKBLOCK    2048            // boundary for beginning of stack block
 
-// OBSOLETE OLD WAY (with USECSTACK off)
 // Sizes for the internal stacks.  The goal here is to detect a runaway recursion before it creates a segfault.  This cannot
 // be done with precision because we don't know how much C stack we have, or how much is used by a recursion (and anyway it depends on
 // what J functions are running).

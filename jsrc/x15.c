@@ -666,7 +666,6 @@ static B jtcdinit(J jt){A x;
  RZ(x=exta(LIT,1L,1L,         5000L)); ras(x); memset(AV(x),C0,AN(x)); jt->cdstr=x;
  RZ(jt->cdhash =cdgahash(4*AS(jt->cdarg)[0]));
  RZ(jt->cdhashl=cdgahash(NLIBS+16           ));  // will round up to power of 2 - we allow 100 libraries, which will almost never be used, so we don't get the usual 2x
-// obsolete  jt->cdna=jt->cdns=jt->cdnl=0;
  AM(jt->cdarg)=AM(jt->cdstr)=AM(jt->cdhash)=AM(jt->cdhashl)=0;  // init all tables to empty
  R 1;
 }
@@ -690,21 +689,12 @@ static B jtcdinit(J jt){A x;
 // a is a string block for a cd string
 // result is the address in cdarg of the CCT block for the string, or 0 if not found
 static CCT*jtcdlookup(J jt,A a){
-// obsolete  hn=AN(jt->cdhash); hv=AV(jt->cdhash); pv=(CCT*)AV(jt->cdarg); s=CAV(jt->cdstr);
-// obsolete  an=AN(a); av=UAV(a); j=hic(an,av)%hn;
-// obsolete  while(0<=(k=hv[j])){if(an==pv[k].an&&!memcmpne(av,s+pv[k].ai,an))R k+pv; if((j=(j+1))==hn)j=0;}
  HASHLOOKUP(jt->cdhash,AN(a),UAV(a),a,&pv[k])
-// obsolete  R 0;
 }
 
 // av->null-terminated name of library
 // result is h field of the entry in cdarg for the library.  This entry may come from any CCT that matches the library name
 static HMODULE jtcdlookupl(J jt,C*av){
-// obsolete C*s;CCT*pv;I an,hn,*hv,j,k;
-// obsolete  hn=AN(jt->cdhashl); hv=AV(jt->cdhashl); pv=(CCT*)AV(jt->cdarg); s=CAV(jt->cdstr);
-// obsolete  an=strlen(av); j=hic(an,av)%hn;
-// obsolete  while(0<=(k=hv[j])){if(an==pv[k].ln&&!memcmpne(av,s+pv[k].li,an))R pv[k].h; if((j=(j+1))==hn)j=0;}
-// obsolete  R 0;
  I an=strlen(av);
  HASHLOOKUP(jt->cdhashl,an,av,l,pv[k].h)
 }
@@ -722,14 +712,9 @@ static CCT*jtcdinsert(J jt,A a,CCT*cc){A x;C*s;CCT*pv,*z;I an,hn,k;
  while(AM(jt->cdstr) > AN(jt->cdstr)-an){I oldm=AM(jt->cdstr); RZ(jt->cdstr=ext(1,jt->cdstr)); AM(jt->cdstr)=oldm;}  // double allocations as needed, keep count
  while(AM(jt->cdarg)==AS(jt->cdarg)[0]){I oldm=AM(jt->cdarg); RZ(jt->cdarg=ext(1,jt->cdarg)); AM(jt->cdarg)=oldm;}
  s=CAV(jt->cdstr); pv=(CCT*)AV(jt->cdarg);
-// obsolete  cc->ai=jt->cdns; MC(s+jt->cdns,CAV(a),an); jt->cdns+=an;
-// obsolete  z=pv+jt->cdna; MC(z,cc,sizeof(CCT)); k=jt->cdna++;
-// obsolete  if(AN(jt->cdhash)<=2*jt->cdna){k=0; RZ(x=cdgahash(2*jt->cdna)); fa(jt->cdhash); jt->cdhash=x;}
  cc->ai=AM(jt->cdstr); MC(s+AM(jt->cdstr),CAV(a),an); AM(jt->cdstr)+=an;
  z=pv+AM(jt->cdarg); MC(z,cc,sizeof(CCT)); k=AM(jt->cdarg);
  if(AN(jt->cdarg)<=2*AM(jt->cdarg)){RZ(x=cdgahash(2*AM(jt->cdarg))); fa(jt->cdhash); jt->cdhash=x; AM(jt->cdarg)=k; AM(jt->cdhash)=0; k=0;}  // reallo if needed, and signal to rehash all
-// obsolete  hv=AV(jt->cdhash); hn=AN(jt->cdhash);
-// obsolete  DQ(jt->cdna-k, j=hic(pv[k].an,s+pv[k].ai)%hn; while(0<=hv[j])if((j=(j+1))==hn)j=0; hv[j]=k; ++k;);
  // insert the last k elements of pv into the table.  This will be either all of them (on a rehash) or just the last 1.
  ++AM(jt->cdarg); DQ(AM(jt->cdarg)-k, HASHINSERT(jt->cdhash,pv[k].an,s+pv[k].ai,k) ++k;);  // add 1 ele to cdarg, and all or 1 to cdhash
  R z;
@@ -771,12 +756,8 @@ static CCT*jtcdload(J jt,CCT*cc,C*lib,C*proc){B ha=0;FARPROC f;HMODULE h;
  /* assumes the hash table for libraries (jt->cdhashl) is fixed sized */
  /* assumes cc will be cached as next entry of jt->cdarg              */
  if(ha){
-// obsolete I hn,*hv,j;
   // a new lib was loaded and verified.  Add it to the hash
   HASHINSERT(jt->cdhashl,cc->ln,lib,AM(jt->cdarg))
-// obsolete   ++jt->cdnl;
-// obsolete   hv=AV(jt->cdhashl); hn=AN(jt->cdhashl);
-// obsolete   j=hic(cc->ln,lib)%hn; while(0<=hv[j])if((j=(j+1))==hn)j=0; hv[j]=jt->cdna;
  }
  R cc;
 }
@@ -1145,12 +1126,9 @@ void dllquit(J jt){CCT*av;I j,*v;
  v=AV(jt->cdhashl); av=(CCT*)AV(jt->cdarg);
  DQ(AN(jt->cdhashl), j=*v++; if(0<=j)FREELIB(av[j].h););
  fa(jt->cdarg);   jt->cdarg  =0;
-// obsolete jt->cdna=0;
  fa(jt->cdstr);   jt->cdstr  =0;
-// obsolete  jt->cdns=0;
  fa(jt->cdhash);  jt->cdhash =0;
  fa(jt->cdhashl); jt->cdhashl=0;
-// obsolete  jt->cdnl=0;
 }    /* dllquit - shutdown and cdf clean up dll call resources */
 
 F1(jtcdf){ASSERTMTV(w); dllquit(jt); R mtm;}

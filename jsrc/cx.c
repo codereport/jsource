@@ -571,10 +571,6 @@ static DF1(xop1){
 static I jtxop(J jt,A w){I i,k;
  // init flags to 'not found'
  I fndflag=0;
-// obsolete  // Loop through monad and dyad
-// obsolete  A *wv=AAV(w); 
-// obsolete  for(k=0;k<=HN+0;k+=HN){    // for monad and dyad cases...
-// obsolete   A w=wv[k];  // w is now the box containing the words of the expdef
  A *wv=AAV(w);
    
  I in=AN(w);
@@ -644,7 +640,6 @@ static F1(jtlineit){
 // Convert ASCII w to boxed lines.  Create separate lists of boxes for monad and dyad
 // if preparsed it set, we know the lines have gone through wordil already & it is OK
 // to do it again.  This means we are processing 9 :  n
-// obsolete static B jtsent12c(J jt,A w,A*m,A*d,I preparsed){C*p,*q,*r,*s,*x;A z;
 static A jtsent12c(J jt,A w){C*p,*q,*r,*s,*x;A z;
  ASSERT(!AN(w)||LIT&AT(w),EVDOMAIN);
  ASSERT(2>=AR(w),EVRANK);
@@ -871,7 +866,7 @@ F2(jtcolon){A d,h,*hv,m;B b;C*s;I flag=VFLAGNONE,n,p;
  }
  RE(n=i0(a));  // m : n; set n=value of a argument
  I col0;  // set if it was m : 0
- if(col0=equ(w,num(0))){RZ(w=colon0(n)); /* obsolete if(!n)R w; */}   // if m : 0, read up to the ) .  If 0 : n, return the string unedited
+ if(col0=equ(w,num(0))){RZ(w=colon0(n)); }   // if m : 0, read up to the ) .  If 0 : n, return the string unedited
  if(!n){ra0(w); RCA(w);}  // noun - return it.  Give it recursive usecount
  if((C2T+C4T)&AT(w))RZ(w=cvt(LIT,w));
  I splitloc=-1;   // will hold line number of : line
@@ -879,7 +874,6 @@ F2(jtcolon){A d,h,*hv,m;B b;C*s;I flag=VFLAGNONE,n,p;
  else{  // not tacit translator - preparse the body
   // we want to get all forms to a common one: a list of boxed strings.  If we went through m : 0, we are in that form
   // already.  Convert strings
-// obsolete   RZ(BOX&AT(w)?sent12b(w,&m,&d):sent12c(w,&m,&d,n==9));  // get monad & dyad parts;
   if(!col0)if(BOX&AT(w)){RZ(w=sent12b(w))}else{RZ(w=sent12c(w))}  // convert to list of boxes
   // If there is a control line )x at the top of the definition, parse it now and discard it from m
   if(likely(AN(w)!=0))if(unlikely(AN(AAV(w)[0])&&CAV(AAV(w)[0])[0]==')')){
@@ -893,10 +887,6 @@ F2(jtcolon){A d,h,*hv,m;B b;C*s;I flag=VFLAGNONE,n,p;
    // discard the control line
    RZ(w=beheadW(w));
    // Noun DD
-// obsolete    // if the selected type is 0 (noun), add LFs at the end, run it together into one line, and return it
-// obsolete    if(n==0){  // noun DD
-// obsolete     RETF(w=raze(every2(w,scc(CLF),(A)&sfn0overself)));
-// obsolete    }
   }
   // find the location of the ':' divider line, if any.  But don't recognize : on the last line, since it could
   // conceivably be the return value from a modifier
@@ -917,7 +907,6 @@ F2(jtcolon){A d,h,*hv,m;B b;C*s;I flag=VFLAGNONE,n,p;
  // The h argument is logically h[2][HN] where the boxes hold (parsed words, in a row);(info for each control word);(original commented text (optional));(local symbol table)
  // Non-noun results cannot become inputs to verbs, so we do not force them to be recursive
  if((1LL<<n)&0x206){  // types 1, 2, 9
-// obsolete   I fndflag=xop(h);   // 4=mnuv 2=x 1=y
   I fndflag=xop(hv[0])|xop(hv[0+HN]);   // 4=mnuv 2=x 1=y, combined for both valences
   // for 9 : n, figure out best type after looking at n
   if(n==9){
@@ -929,7 +918,6 @@ F2(jtcolon){A d,h,*hv,m;B b;C*s;I flag=VFLAGNONE,n,p;
    b=fndflag>4;   // set if there is mnuv and xy scaf
    if(b)flag|=VXOPR;   // if this def refers to xy, set VXOPR
    ASSERT(!BETWEENC(fndflag,1,3),EVNONCE);  // scaf
-// obsolete if(BETWEENC(fndflag,1,3))jfwrite(str(129,"************ Old-style definition encountered.  It will be invalid after the beta period.\nIt has x/y without u/v/m/n **********\n"),num(2));
    // if there is only one valence defined, that will be the monad.  Swap it over to the dyad in two cases: (1) it is a conjunction with uv only: the operands will be the two verbs;
    // (2) it is an operator with a reference to x
    if(((-AN(m))&(AN(d)-1)&(((fndflag-5)&(1-n))|(5-fndflag)))<0){A*u=hv,*v=hv+HN,x; DQ(HN, x=*u; *u++=*v; *v++=x;);}  // if not, it executes on uv only; if conjunction, make the default the 'dyad' by swapping monad/dyad

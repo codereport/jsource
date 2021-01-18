@@ -72,9 +72,6 @@ A jtevery(J jt, A w, A fs){A * RESTRICT wv,x,z,* RESTRICT zv;
   if(AT(x)&DIRECT){   // will predict correctly
    flags&=SGNIFPRISTINABLE(AC(x))|~ACINPLACE;  // sign bit of flags will hold PRISTINE status of result: 1 if all DIRECT and inplaceable or PERMANENT.  NOTE that x may be the initial virtw.
          // If so, we will still let it show PRISTINE in z, because for virtw to be inplace, it must be abandoned or virtual, neither of which can be used again
-// obsolete    // If the verb returned its input, that means the input is escaping and the argument block is no longer pristine.  We only need to worry about this when the arg was pristine, which
-// obsolete    // means that x must be DIRECT.
-// obsolete    if(unlikely(x==virtw))AFLAG(w)&=~AFPRISTINE;
   }else{
     // not DIRECT.  result must be non-pristine, and we need to turn off pristinity of x since we are going to incorporate it
     flags&=~ACINPLACE;  // result not pristine
@@ -175,8 +172,6 @@ A jtevery2(J jt, A a, A w, A fs){A*av,*wv,x,z,*zv;
   // If the input is inplaceable, there is no more use for it after this verb.  If it was pristine, every block in it is DIRECT and was either permanent or inplaceable when it was added; so if it's
   // not PERMANENT it is OK to change the usecount to inplaceable.  We must remove inplaceability on the usecount after execution, in case the input block is recursive and the contents now show a count of 2
   // We may create a block with usecount 8..2,  That's OK, because it cannot be fa'd unless it is ra'd first, and the ra will wipe out the inplaceability.  We do need to keep the usecount accurate, though.
-// obsolete   AC(virta)|=(AC(virta)-(flags&ACPERMANENT))&ACINPLACE;
-// obsolete   AC(virtw)|=(AC(virtw)-((flags<<1)&ACPERMANENT))&ACINPLACE;
 
   if(((AC(virta)-(flags&ACPERMANENT))&ACINPLACE)<0){
    AC(virta)|=ACINPLACE;  // make the block inplaceable
@@ -194,10 +189,6 @@ A jtevery2(J jt, A a, A w, A fs){A*av,*wv,x,z,*zv;
   // If x is DIRECT inplaceable, it must be unique and we can inherit them into a pristine result.  Otherwise clear pristinity
   if(AT(x)&DIRECT){   // will predict correctly
    flags&=SGNIFPRISTINABLE(AC(x))|~ACINPLACE;  // sign bit of flags will hold PRISTINE status of result: 1 if all DIRECT and inplaceable or PERMANENT
-// obsolete    // If the verb returned its input, that means the input is escaping by address and the argument block is no longer pristine.  We only need to worry about this when the arg was pristine, which
-// obsolete    // means that x must be DIRECT.
-// obsolete   if(unlikely(x==virta))AFLAG(a)&=~AFPRISTINE;  // a, w = backers if original a, w were virtual
-// obsolete    if(unlikely(x==virtw))AFLAG(w)&=~AFPRISTINE;
   }else{
     // not DIRECT.  result must be non-pristine, and we need to turn off pristinity of x since we are going to incorporate it
     flags&=~ACINPLACE;  // result not pristine

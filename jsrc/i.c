@@ -160,7 +160,6 @@ if(((-1) >> 1) != -1)*(I *)4 = 104;
 jt->asgzomblevel = 1;  // allow premature change to zombie names, but not data-dependent errors
 jt->assert = 1;
 jt->directdef = 1;  // scaf
-// obsolete  RZ(jt->bxa=cstr("+++++++++|-")); jt->bx=CAV(jt->bxa);
  MC(jt->bx,"+++++++++|-",sizeof(jt->bx));
  jt->cctdefault=jt->cct= 1.0-FUZZ;
  jt->disp[0]=1; jt->disp[1]=5;
@@ -211,8 +210,6 @@ static C jtjinit3(J jt){S t;
  fpsetmask(0);
 #endif
  jt->tssbase=tod();
-// obsolete  jt->prxthornuni=0;  // init to non-unicode (normal) state
-// obsolete  jt->jprx=0;      // init to non jprx jconsole output (normal) state
  meminit();
  sesminit();
  evinit();

@@ -7,8 +7,7 @@
 #include "p.h"
 #include <stdint.h>
 
-#define RECURSIVERESULTSCHECK   // obsolete
-//  if(y&&(AT(y)&NOUN)&&!(AFLAG(y)&AFVIRTUAL)&&((AT(y)^AFLAG(y))&RECURSIBLE))SEGFAULT;  // stop if nonrecursive noun result detected
+#define RECURSIVERESULTSCHECK//  if(y&&(AT(y)&NOUN)&&!(AFLAG(y)&AFVIRTUAL)&&((AT(y)^AFLAG(y))&RECURSIBLE))SEGFAULT;  // stop if nonrecursive noun result detected
 
 
 #define PARSERSTKALLO (490*sizeof(PSTK))  // number of stack entries to allocate, when we allocate, in bytes
@@ -28,7 +27,7 @@
 // from the queue to the stack.  Local values are not pushed.
 
 B jtparseinit(J jt){A x;
- GAT0(x,INT,20,1); ras(x); jt->nvra=x; /* obsolete jt->nvrav=AAV(x); jt->nvran=(UI4)AN(x); */  // Initial stack.  Size is doubled as needed
+ GAT0(x,INT,20,1); ras(x); jt->nvra=x;   // Initial stack.  Size is doubled as needed
  R 1;
 }
 
@@ -145,7 +144,6 @@ static PSTK* jtis(J jt,PSTK *stack){B ger=0;C *s;
  else {
   // Point to the block for the assignment; fetch the assignment pseudochar (=. or =:); choose the starting symbol table
   // depending on which type of assignment (but if there is no local symbol table, always use the global)
-// obsolete   A symtab=jt->locsyms; if(!(asgt&ASGNLOCAL)||AN(jt->locsyms)==1)symtab=jt->global;
   A symtab=jt->locsyms; if(unlikely((SGNIF(asgt,ASGNLOCALX)&(1-AN(jt->locsyms)))>=0))symtab=jt->global;
   if(unlikely((AT(n)&BOXMULTIASSIGN)!=0)){
    // string assignment, where the NAME blocks have already been computed.  Use them.  The fast case is where we are assigning a boxed list
@@ -309,7 +307,7 @@ static A virthook(J jtip, A f, A g){
 #define EPZ(x) if(unlikely(!(x))){FP}   // exit parser if x==0
 
 // extend NVR stack, returning the A block for it
-A jtextnvr(J jt){ASSERT(jt->parserstackframe.nvrtop<32000,EVLIMIT); RZ(jt->nvra = ext(1, jt->nvra)); /* obsolete jt->nvran=(UI4)AN(jt->nvra); jt->nvrav = AAV(jt->nvra); */ R jt->nvra;}
+A jtextnvr(J jt){ASSERT(jt->parserstackframe.nvrtop<32000,EVLIMIT); RZ(jt->nvra = ext(1, jt->nvra));  R jt->nvra;}
 
 #define BACKMARKS 3   // amount of space to leave for marks at the end.  Because we stack 3 words before we start to parse, we will
  // never see 4 marks on the stack - the most we can have is 1 value + 3 marks.
@@ -655,7 +653,6 @@ RECURSIVERESULTSCHECK
    // before we exited, we backed the stack to before the initial mark entry.  At this point stack[0] is invalid,
    // stack[1] is the initial mark, stack[2] is the result, and stack[3] had better be the first ending mark
    z=stack[2].a;   // stack[1..2] are the mark; this is the sentence result, if there is no error
-// obsolete   if(!(PTISCAVN(stack[2])&&PTISM(stack[3]))){jt->parserstackframe.parsercurrtok = 0; jsignal(EVSYNTAX); z=0;}  // OK if 0 or 1 words left (0 should not occur)
    if(unlikely(!(PTOKEND(stack[2],stack[3])))){jt->parserstackframe.parsercurrtok = 0; jsignal(EVSYNTAX); z=0;}  // OK if 0 or 1 words left (0 should not occur)
   }else{
 failparse:  // If there was an error during execution or name-stacking, exit with failure.  Error has already been signaled.  Remove zombiesym

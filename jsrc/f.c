@@ -533,7 +533,6 @@ static A jtthorn1main(J jt,A w,A prxthornuni){PROLOG(0001);A z;
     // we hit an invalid non-ASCII sequence, abort and keep the original byte string.
     // The conversion to C2T includes appending NUL to double-wide chars, and conversion up to
     // C4T if there are surrogate pairs or codes above U+FFFF
-// obsolete    z=jt->prxthornuni?rank1ex(w,DUMMYSELF,MIN(AR(w),1L),RoutineA) : RETARG(w);  // check list for U8 codes, return LIT or C2T
    z=BAV(prxthornuni)[0]&1?rank2ex(w,prxthornuni,DUMMYSELF,MIN(AR(w),1L),0,MIN(AR(w),1L),0,RoutineA) : RETARG(w);  // check list for U8 codes, return LIT or C2T
    break;
   case C2TX:
@@ -574,11 +573,9 @@ static A jtthorn1main(J jt,A w,A prxthornuni){PROLOG(0001);A z;
 // entry point to allow C2T result from thorn1.  But always pass byte arguments unchanged
 // This will enable null insertion/removal for CJK, but that's OK since the result goes to display
 // This is called only from jprx()
-// obsolete F1(jtthorn1u){ A z; ARGCHK1(w); B to = jt->prxthornuni; jt->prxthornuni = !(AT(w)&(LIT)); z = thorn1main(w); jt->prxthornuni = to; R z; }
 F1(jtthorn1u){ A z; ARGCHK1(w); z = thorn1main(w,num(2+!(AT(w)&(LIT)))); R z; }  // set prx and prxthornuni flags
 
 // entry point for returning LIT array only.  Allow C2T result, then convert.  But always pass literal arguments unchanged
-// obsolete F1(jtthorn1){ A z; ARGCHK1(w); B to = jt->prxthornuni; jt->prxthornuni = !(AT(w)&(LIT+C2T+C4T)); z = thorn1main(w); if (z&&AT(z)&(C2T+C4T))z = rank1ex(z, DUMMYSELF, MIN(AR(z),1), RoutineD); jt->prxthornuni = to; R z; }
 F1(jtthorn1){ A z; ARGCHK1(w); A prxthornuni=zeroionei(!(AT(w)&(LIT+C2T+C4T))); z = thorn1main(w,prxthornuni); if (z&&AT(z)&(C2T+C4T))z = rank2ex(z,prxthornuni,DUMMYSELF,MIN(AR(z),1L),0,MIN(AR(z),1L),0, RoutineD); R z; }
 
 
@@ -692,7 +689,6 @@ static A jtjprx(J jt,I ieol,I maxlen,I lb,I la,A w){A y,z;B ch;C e,eov[2],*v,x,*
      I c,c1,h,i,j,k,lc,m,nbx,nq,p,q,r,*s,t,zn;
      static C bdc[]="123456789_123456\214\254\220\234\274\244\224\264\230\202\200";
  // Convert w to a character array; set t=1 if it's LIT, t=2 if C2T, 4 if C4T
-// obsolete  jt->jprx=1; y=thorn1u(w); jt->jprx=0; RZ(y); t=bpnoun(AT(y));
  RZ(y=thorn1u(w)); t=bpnoun(AT(y));
  // set ch iff input w is a character type.
  ch=1&&AT(w)&LIT+C2T+C4T+SBT;

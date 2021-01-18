@@ -32,7 +32,6 @@ DC jtdeba(J jt,C t,void *x,void *y,A fs){DC d;
   case DCCALL:   
    d->dcx=x; d->dcy=y; d->dcf=fs; 
    d->dca=jt->curname; d->dcm=NAV(d->dca)->m;
-// obsolete   d->dcn=(I)jt->cursymb;
    d->dcstop=-2;
    // dcn fill in in caller
    if(jt->dbss==SSSTEPINTO){d->dcss=SSSTEPINTO; jt->dbssd=d; jt->dbss=0;}

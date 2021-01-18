@@ -34,10 +34,8 @@ F1(jtbox){A y,z,*zv;C*wv;I f,k,m,n,r,wr,*ws;
   // If the input is DIRECT and abandoned, mark the result as PRISTINE
   // If the input is abandoned and direct or recursive, zap it rather than raising the usecount
   I aband=SGNTO0(AC(w))&((I)jtinplace>>JTINPLACEWX);  // bit 0 = 1 if w is abandoned
-// obsolete   GAT0(z,BOX,1,0); AFLAG(z)=BOX+((-(wt&DIRECT))&((aband)<<AFPRISTINEX)); INCORPRA(w); AAV(z)[0]=w;
   GAT0(z,BOX,1,0); AFLAG(z)=BOX+((-(wt&DIRECT))&((aband)<<AFPRISTINEX)); INCORP(w); AAV(z)[0]=w;
   if(((-aband)&((AFLAG(w)|DIRECT)&(wt&(RECURSIBLE|DIRECT))))!=0){*AZAPLOC(w)=0;}else{ra(w);}  // INCORPRA, but using zap where possible
-// obsolete   if(aband>((wt^AFLAG(w))&RECURSIBLE)){*AZAPLOC(w)=0;}else{ra(w);}  // INCORPRA, but using zap where possible
  } else {
   // <"r
   ws=AS(w);
@@ -55,13 +53,11 @@ F1(jtbox){A y,z,*zv;C*wv;I f,k,m,n,r,wr,*ws;
   // To avoid the tstack overhead, we switch the tpush pointer to our data area, so that blocks are filled in as they are allocated, with nothing put
   // onto the real tpop stack.  If we hit an error, that's OK, because whatever we did get allocated will be freed when the result block is freed.  We use GAE so that we don't abort on error
   A *pushxsave = jt->tnextpushp; jt->tnextpushp=AAV(z);  // save tstack info before allocation
-// obsolete   DQ(n, GAE(y,wt,m,r,f+ws,break); MC(CAV(y),wv,k); wv+=k; AC(y)=ACUC1; if(wt&RECURSIBLE){AFLAG(y)=wt; jtra(y,wt);});   // allocate, but don't grow the tstack.  Set usecount of cell to 1.  ra0() if recursible.  Put allocated addr into *jt->tnextpushp++
   JMCDECL(endmask) JMCSETMASK(endmask,k+SZI-1,0)   // set mask for JMCR - OK to copy SZIs
   DQ(n, GAE(y,wt,m,r,f+ws,break); JMCR(CAV(y),wv,k+SZI-1,lp000,0,endmask); wv+=k; AC(y)=ACUC1; if(wt&RECURSIBLE){AFLAG(y)=wt; jtra(y,wt);});   // allocate, but don't grow the tstack.  Set usecount of cell to 1.  ra0() if recursible.  Put allocated addr into *jt->tnextpushp++
 
 
   jt->tnextpushp=pushxsave;   // restore tstack pointer
-// obsolete   AFLAG(w)&=~AFPRISTINE;
   //   Since we are copying contents of w, it must lose PRISTINE status if it is boxed
   PRISTCLRF(w);  // destroys w
   ASSERT(y!=0,EVWSFULL);  // if we broke out an allocation failure, fail.  Since the block is recursive, when it is tpop()d it will recur to delete contents
@@ -88,7 +84,7 @@ F2PREFIP;ARGCHK2(a,w);
   I i; for(i=AR(a)-1; i>=0&&AS(a)[i]==AS(ABACK(a))[i];--i); if(i<0)a = ABACK(a);
  }
 #endif
-#if 1 // obsolete 
+#if 1 // obsolete
  ASSERT(!((AT(a)|AT(w))&SPARSE),EVNONCE);   // can't box sparse values
  I optype=FAV(self)->localuse.lclr[0];  // flag: sign set if (,<) or ,&< or (;<) which will always box w; bit 0 set if (,<)
  realizeifvirtual(w); realizeifvirtual(a);  // it's going into an array, so realize it
