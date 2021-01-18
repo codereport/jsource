@@ -101,9 +101,7 @@ int main(){
 	printf ("rm_eo_sz=: " FMTI "\n",sizeof(((regmatch_t*)0)->rm_eo));
 	puts("");
 #ifdef linux
-#ifndef ANDROID
 #define fds_bits __fds_bits
-#endif
 #endif
 	puts("");
 #ifndef _WIN32

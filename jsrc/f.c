@@ -867,10 +867,7 @@ static F1(jtjpr1){PROLOG(0002);A z;
  RZ(z=jprx(jt->outeol,jt->outmaxlen,jt->outmaxbefore,jt->outmaxafter,w));
  // write string to stdout, calling it a 'formatted array' unless otherwise overridden
  if(AN(z)){
-#ifdef ANDROID
-  z=tocesu8(z);
-  CAV(z)[AN(z)]=0;
-#endif
+
   ASSERTSYS(!CAV(z)[AN(z)],"jtjpr1 trailing null byte");
   jsto(jt,jt->mtyo==0?MTYOFM:jt->mtyo,CAV(z));
  }

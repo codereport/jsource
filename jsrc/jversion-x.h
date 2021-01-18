@@ -1,10 +1,6 @@
 #define jversion   "902"
 #ifdef _WIN32
 #define jplatform "windows"  // windows/linux/darwin/raspberry/android/...
-#elif defined(RASPI)
-#define jplatform "raspberry"
-#elif defined(ANDROID)
-#define jplatform "android"
 #elif defined(__MACH__)
 #define jplatform "darwin"
 #elif defined(__linux__)

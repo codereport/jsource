@@ -62,9 +62,6 @@ F1(jthost){A z;
 #else
 {
  A t;I b=0;C*fn,*s;F f;I n;
-#if defined(ANDROID) || defined(TARGET_IOS)
- const char*ftmp=getenv("TMPDIR");  /* android always define TMPDIR in jeload */
-#endif
  n=AN(w);
  GATV0(t,LIT,n+5+L_tmpnam+1,1); s=CAV(t);  // +1 for trailing nul
  fn=5+n+s; MC(s,AV(w),n);
@@ -76,11 +73,8 @@ F1(jthost){A z;
   b=!_wsystem(USAV(fz));
  }
 #else
-#if defined(ANDROID) || defined(TARGET_IOS)
- strcpy(fn,ftmp);   // s now got trailing nul from by ftmp or "/tmp"
-#else
+
  strcpy(fn,"/tmp");
-#endif
  strcat(fn,"/tmp.XXXXXX");
  {int fd=mkstemp(fn); close(fd);}
 #if defined(ANDROID) || (defined(__MACH__) && !defined(TARGET_IOS))
@@ -171,11 +165,9 @@ F1(jthostio){C*s;A z;F*pz;int fi[2],fo[2],r;int fii[2],foi[2];
  switch(r=fork()){
   case -1:CL(fi);CL(fo);ASSERT(0,EVFACE);
   case 0:close(0);{int i=dup(fo[0]);};close(1);{int i=dup(fi[1]);};CL(fi);CL(fo);
-#ifdef ANDROID
-         execl("/system/bin/sh","/system/bin/sh","-c",s,NULL); exit(-1);
-#else
+
          execl("/bin/sh","/bin/sh","-c",s,NULL); exit(-1);
-#endif
+
  }close(fo[0]);close(fi[1]);
  add2(NULL,NULL,NULL); pz[0]=(F)(intptr_t)r;
  R z;

@@ -34,7 +34,7 @@ static void sigint(int k){**adadbreak+=1;signal(SIGINT,sigint);}
 static void sigint2(int k){**adadbreak+=1;}
 static char input[30000];
 
-#if defined(ANDROID) || defined(_WIN32)
+#if defined(_WIN32)
 #undef USE_LINENOISE
 #ifdef READLINE
 #define USE_LINENOISE
