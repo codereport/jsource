@@ -50,11 +50,8 @@ C* _stdcall Jinput(J jt, C*);
 #define MTYOFILE 6 /* output 1!:2[2 */
 
 // smoptions
-#define SMWIN    0  /* j.exe    Jwdw (Windows) front end */
-#define SMJAVA   2  /* j.jar    Jwdp (Java) front end */
 #define SMCON    3  /* jconsole */
 #define SMQT     4  /* jqt */
-#define SMJA     5  /* jandroid */
 
 #define SMOPTLOCALE 1  /* pass current locale */
 #define SMOPTNOJGA  2  /* result not allocated by jga */

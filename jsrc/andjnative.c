@@ -324,7 +324,7 @@ JNIEXPORT jlong JNICALL Java_com_jsoftware_j_JInterface_JInit2
   if(wdId == 0) {
     LOGD("failed to get the method id for " "wd:" "(I[I[Ljava/lang/Object;[Ljava/lang/Object;Ljava/lang/String;)I" );
   }
-  void* callbacks[] = {outputHandler,wdHandler,(void*)inputHandler,0,(void*)(SMJA|(SMOPTMTH<<8))};  // assume multithreaded
+  void* callbacks[] = {outputHandler,wdHandler,(void*)inputHandler,0,(void*)(SMOPTMTH<<8)};  // assume multithreaded
   const char *nativeString = (*env)->GetStringUTFChars(env, libpath, 0);
   const char *nativelibj;
   char *arg;

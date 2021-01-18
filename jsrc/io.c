@@ -449,29 +449,11 @@ typedef C* (_stdcall * polltype) (J,int,int);
 void _stdcall JSM(J jt, void* callbacks[])
 {
  jt->smoutput = (outputtype)callbacks[0];  // callback function for output to J session
-// output type
-// #define MTYOFM  1 /* formatted result array output */
-// #define MTYOER  2 /* error output */
-// #define MTYOLOG  3 /* output log */
-// #define MTYOSYS  4 /* system assertion failure */
-// #define MTYOEXIT 5 /* exit */
-// #define MTYOFILE 6 /* output 1!:2[2 */
  jt->smdowd = callbacks[1];                // callback function for 11!:x
  jt->sminput = (inputtype)callbacks[2];    // callback function for input from J session keyboard
  jt->smpoll = (polltype)callbacks[3];      // callback function for unused
  jt->sm = 0xff & (I)callbacks[4];          // lowest byte, sm : sessioin manager type
-// smoptions
-// #define SMWIN    0  /* j.exe    Jwdw (Windows) front end */
-// #define SMJAVA   2  /* j.jar    Jwdp (Java) front end */
-// #define SMCON    3  /* jconsole */
-// #define SMQT     4  /* jqt */
-// #define SMJA     5  /* jandroid */
  jt->smoption = ((~0xff) & (UI)callbacks[4]) >> 8;  // upper bytes, smoption : 
-// #define SMOPTLOCALE 1  /* pass current locale */
-// #define SMOPTNOJGA  2  /* result not allocated by jga */
-// #define SMOPTPOLL   4  /* use smpoll to get last result */
-// #define SMOPTMTH    8  /* multithreaded */
- if(jt->sm==SMJAVA) jt->smoption |= SMOPTMTH;  /* assume java is multithreaded */
  if(SMOPTMTH&jt->smoption){
   jt->cstacktype = 2;
   jt->qtstackinit = (uintptr_t)&jt;
@@ -498,7 +480,6 @@ void _stdcall JSMX(J jt, void* out, void* wd, void* in, void* poll, I opts)
  jt->sm = 0xff & opts;
  jt->qtstackinit = (SMQT==jt->sm) ? (uintptr_t)poll : 0;
  jt->smoption = ((~0xff) & (UI)opts) >> 8;
- if(jt->sm==SMJAVA) jt->smoption |= SMOPTMTH;  /* assume java is multithreaded */
  if(SMOPTMTH&jt->smoption){
   jt->cstacktype = 2;
   jt->qtstackinit = (uintptr_t)&jt;
