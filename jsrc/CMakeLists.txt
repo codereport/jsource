@@ -36,8 +36,6 @@ target_sources(j PRIVATE
     p.h
     result.h
     s.h
-    sse2neon.h
-    sse2neon2.h
     va.h
     vasm.h
     vcomp.h
