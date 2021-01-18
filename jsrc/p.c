@@ -308,56 +308,6 @@ static A virthook(J jtip, A f, A g){
 #define EP goto exitparse;   // exit parser, preserving current status
 #define EPZ(x) if(unlikely(!(x))){FP}   // exit parser if x==0
 
-#if 0  // keep for commentary
-// An in-place operation requires an inplaceable argument, which is marked as AC<0,
-// Blocks are born non-inplaceable; they need to be marked inplaceable by the creator.
-// Blocks that are assigned are marked not-inplaceable.
-// But an in-placeable argument is not enough;
-// The key point is that an in-place operation is connected to a FUNCTION CALL as well as a DATA BLOCK.
-// For example, in (+/ % #) <: y the result of <: y has a usecount of 1 and is
-// not used anywhere else, so it is passed into the fork as an inplaceable argument.
-// This same block is not inplaceable when it is passed into # (because it will be needed later by +/)
-// but it can be inplaceable when passed into +/.
-//
-// By setting the inplaceable flag in a result, a verb warrants that the block does not contain and is not contained in
-// any other block.
-//
-// The 2 LSBs of jt are set to indicate inplaceability of arguments.  The caller sets them when e
-// has no further use for the argument AND e knows that the callee can handle in-place arguments.
-// An argument is inplaceable only if it is marked as such in the block AND in jt.
-// A caller should set the bit in jt only if it knows that the argument is inplaceable, which
-// will be true if (1) the block was created by the caller; or (2) the block was an argument to the caller with jt
-// marked to indicate its inplaceability
-//
-// Bit 0 of jt is for w, bit 1 for a.
-//
-// There is one more piece to the inplace system: reassigned names.  When there is an
-// assignment to a name, the block being reassigned can be reused for the output if:
-//   the usecount is 1
-//   the current execution is the only thing on the stack
-//   the name can be resolved before the execution
-// Resolving the name is vexed, because the execution might change the current locale, or the value
-// of an indirect locative.  Moreover, the global name may be on the stack in higher stack frames,
-// and assigning the name would change those values before they are executed.  Safest, therefore,
-// would be to detect in-place assignment to local names only; but that would not support name =: name , blah
-// which currently executes in-place (though with the aliasing problem mentioned above).
-//
-// The first rule is to have no truck with inplacing unless the execution is known to be locative-safe,
-// i. e. will not change locale, path, or any name that might go into a locative.  This is marked by a
-// flag ASGSAFE in the verb.
-
-// Any assignment to a name is resolved to an address when the copula is encountered and there
-//  is only one execution on the stack.  This resolution will always succeed for a local assignment to a name.
-//  For a global assignment to a locative, it may fail, or may resolve to an address that is different from
-//  the correct address after the execution.  The address of the L block for the symbol to be assigned is stored in jt->assignsym.
-//
-// [As a time-saving maneuver, we store jt->assignsym even if the name is not in-placeable because of its type or usecount.
-// We can use jt->assignsym to avoid re-looking-up the name.]
-//
-// If jt->assignsym is set, the (necessarily inplaceable) verb may choose to perform an in-place
-// operation.  It will check usecounts and addresses to decide whether to do this, and it bears the responsibility
-// of worrying about names on the stack.  Note that local names are not put onto the stack, so absence of AFNVR suffices for them.
-#endif
 // extend NVR stack, returning the A block for it
 A jtextnvr(J jt){ASSERT(jt->parserstackframe.nvrtop<32000,EVLIMIT); RZ(jt->nvra = ext(1, jt->nvra)); /* obsolete jt->nvran=(UI4)AN(jt->nvra); jt->nvrav = AAV(jt->nvra); */ R jt->nvra;}
 

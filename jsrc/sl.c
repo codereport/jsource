@@ -6,81 +6,6 @@
 #include "j.h"
 
 // Interfaces for numbered locales
-#if 0   // direct locale numbering
-// obsolete #define DELAYBEFOREREUSE 5000  // min number of locales to have before we start reusing
-// obsolete // Initialize the numbered-locale system.  Called during initialization, so no need for ras()
-// obsolete static A jtinitnl(J jt){A q;
-// obsolete  GATV0(q,INT,1,1);
-// obsolete  jt->stnum=q;  // save address of block
-// obsolete  jt->numloctbl=IAV(q);  // address of locale vector
-// obsolete  jt->numlocsize=1;  // length of locale vector
-// obsolete  jt->numlocdelqh=IAV(q);  // pointer to first locale number to allocate
-// obsolete  jt->numlocdelqn=1;  // init 1 value to allocate
-// obsolete  jt->numlocdelqt=IAV(q);  // pointer to end of queue (queue is never empty - it starts at 1 and never allocates unless there are DELAYBEFOREREUSE empties
-// obsolete  *jt->numlocdelqh=(I)IAV(q);  // Make the sole locale the end-of-chain by looping its chain to itself.  This is never needed as end-of-chain but it does ensure relocation
-// obsolete  R q;  // return no error
-// obsolete }
-// obsolete 
-// obsolete // Get the locale number to use for the next numbered locale.  (0 if error, with error code set)
-// obsolete // This call just gets the number to use, it does not allocate the number.  The locale will be installed later, unless an error intervenes
-// obsolete static I jtgetnl(J jt){
-// obsolete  if(jt->numlocdelqn<DELAYBEFOREREUSE){
-// obsolete   // There are not enough blocks in the delq to guarantee that the next free will lie fallow long enough.  Increase the allocation
-// obsolete   A x; UI oldsize=jt->numlocsize; do{RZ(x=ext(1,jt->stnum)) jt->stnum=x;}while(jt->numlocdelqn+AN(x)-oldsize<DELAYBEFOREREUSE);   // extend & save the allocation.  ext handles the usecount.  Stop when we have enough
-// obsolete   jt->numlocdelqn += AN(x)-oldsize;  // add the new allocation into the size of the delq
-// obsolete   I relodist=(I)IAV(x)-(I)jt->numloctbl;  // relocation factor
-// obsolete   I oldbase=(I)jt->numloctbl; I *reloptr=IAV(x);  // treat the locale pointer as integers for arithmetic here
-// obsolete   DQ(oldsize, if((UI)(*reloptr-oldbase)<(oldsize<<LGSZI))*reloptr+=relodist; ++reloptr;)  // if the pointer points to within the old block, relocate it to the new.  reloptr ends pointing to the first new block
-// obsolete   jt->numlocdelqh=(I*)((I)jt->numlocdelqh+relodist); jt->numlocdelqt=(I*)((I)jt->numlocdelqt+relodist);  // relocate delq head/tail
-// obsolete   // we could make the new block the head of the alloq, but then block 1 would go out before block 0 and Chris would complain.  So we chain them off the tail
-// obsolete   *jt->numlocdelqt=(I)reloptr; // chain the upcoming blocks at end of queue
-// obsolete   DQ(AN(x)-oldsize-1, *reloptr=(I)(reloptr+1); reloptr=reloptr+1;)  // chain each block to the next, except for the last.  end pointing to the last
-// obsolete   *reloptr=(I)reloptr; jt->numlocdelqt=reloptr; // chain added blocks as allocable, in ascending order.  The last one loops to self to indicate end, and becomes the end of the delq
-// obsolete   jt->numloctbl=IAV(x); jt->numlocsize=(UI4)AN(x); // set address and length of new table
-// obsolete  }
-// obsolete  R jt->numlocdelqh-jt->numloctbl;  // return index of next allocation
-// obsolete }
-// obsolete 
-// obsolete // Install locale l in the numbered-locale table, at the number returned by the previous jtgetnl.  No error is possible
-// obsolete static void jtinstallnl(J jt, A l){
-// obsolete  I *nextallo=(I*)*jt->numlocdelqh;  // save new head of the allo chain
-// obsolete  ras(l); *jt->numlocdelqh=(I)l;  // protect l and store it as the new locale for its index
-// obsolete  jt->numlocdelqh=nextallo;  // set next block as new head of chain
-// obsolete  // we can't be allocating the end-of-chain unless DELAYBEFOREREUSE is 1
-// obsolete  --jt->numlocdelqn;  // reduce number-of-items in delq by the 1 we have just released
-// obsolete }
-// obsolete 
-// obsolete // return the address of the locale block for number n, or 0 if not found
-// obsolete A jtfindnl(J jt, I n){A z;
-// obsolete  findnlz(n,z); R z;
-// obsolete }
-// obsolete 
-// obsolete // delete the locale numbered n, if it exists
-// obsolete static void jterasenl(J jt, I n){
-// obsolete  if(jtfindnl(jt,n)){  // if locale exists
-// obsolete   I newblock=(I)&jt->numloctbl[n];
-// obsolete   // chain the new block off the old tail
-// obsolete   *jt->numlocdelqt=newblock;
-// obsolete   // set end-of-chain (loop to self) in the new block
-// obsolete   jt->numloctbl[n]=newblock;
-// obsolete   // set the new block as new tail
-// obsolete   jt->numlocdelqt=(I*)newblock;
-// obsolete   // add 1 to the size of the delq
-// obsolete   ++jt->numlocdelqn;
-// obsolete  }
-// obsolete }
-// obsolete 
-// obsolete // return list of active numbered locales, using namelist mask
-// obsolete static A jtactivenl(J jt){A y;
-// obsolete  GATV0(y,INT,AN(jt->stnum),1); I *yv=IAV(y);   // allocate place to hold numbers of active locales
-// obsolete  I nloc=0; DO(AN(jt->stnum), if(jtfindnl(jt,i)){yv[nloc]=i; ++nloc;})
-// obsolete  R every(take(sc(nloc),y),ds(CTHORN));  // ".&.> nloc{.y
-// obsolete }
-// obsolete 
-// obsolete // iterator support
-// obsolete I jtcountnl(J jt) { R jt->numlocsize; }  // number of locales to reference by index
-// obsolete A jtindexnl(J jt,I n) { R findnl(n); }  // the locale address, or 0 if none
-#else
 // Hashed version, without locale reuse
 #if BW==64
 #define HASHSLOT(x,tsize) (((UI)((UI4)(x)*(UI4)2654435761U)*(UI)(tsize))>>32)
@@ -172,8 +97,6 @@ static A jtactivenl(J jt){A y;
 // iterator support.  countnl returns a number of iterations.  indexnl returns the A block (or 0) for 
 I jtcountnl(J jt) { R AN(jt->stnum); }  // number of locales to reference by index
 A jtindexnl(J jt,I n) { R (A)IAV0(jt->stnum)[n]; }  // the locale address, or 0 if none
-
-#endif
 
 // Create symbol table: k is 0 for named, 1 for numbered, 2 for local; p is the number of hash entries including SYMLINFOSIZE;
 // n is length of name (or locale# to allocate, for numbered locales), u->name

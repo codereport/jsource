@@ -15,27 +15,6 @@
 #define FEQ(u,v,fuzz)    (ABS((u)-(v))<=fuzz*MAX(ABS(u),ABS(v)))
 #define FIEQ(u,v,fuzz)   (ABS((u)-(v))<=fuzz*ABS(v))  // used when v is known to be exact integer.  It's close enough, maybe ULP too small on the high end
 
-#if 0  // for bit types
-#define TOBIT(T,AS)   {T*v=(T*)wv,x; \
-  for(i=0;i<m;++i){                                                       \
-   DO(q, k=0; DO(BB, if(x=*v++){if(AS)k|=bit[i]; else R 0;}); *zv++=k;);  \
-   if(r){k=0; DO(r,  if(x=*v++){if(AS)k|=bit[i]; else R 0;}); *zv++=k;}   \
-   DQ(r1, *zv++=0;);                                                      \
-  }} 
-
-static KF1(jtcvt2bit){I c,i,m,q,r,r1,wr,*ws,*wv;UC k,*zv=(UC*)yv;
- wv=AV(w); wr=AR(w); ws=AS(w); 
- c=wr?ws[wr-1]:1; m=c?AN(w)/c:0; q=c/BB; r=c%BB; r1=c%BW?(BW-c%BW)/BB:0;
- switch(CTTZNOFLAG(AT(w))){
-  default:  R 0;
-  case B01X: TOBIT(B, 1         ); break;
-  case INTX: TOBIT(I, 1==x      ); break;
-  case FLX:  TOBIT(D, FEQ(1.0,x)); break;
- }
- R 1;
-}
-#endif
-
 static KF1(jtC1fromC2){UC*x;US c,*v;
  v=USAV(w); x=(C*)yv;
  DQ(AN(w), c=*v++; if(!(256>c))R 0; *x++=(UC)c;);
@@ -338,12 +317,6 @@ B jtccvt(J jt,I tflagged,A w,A*y){F1PREFIP;A d;I n,r,*s,wt; void *wv,*yv;I t=tfl
    case CVCASE(C2TX, C4TX): R C2fromC4(w, yv);
    case CVCASE(C4TX, LITX): R C4fromC1(w, yv);
    case CVCASE(C4TX, C2TX): R C4fromC2(w, yv);
-#if 0  // bit types
-   case CVCASE(BITX, B01X): R cvt2bit(w, yv);
-   case CVCASE(BITX, INTX): R cvt2bit(w, yv);
-   case CVCASE(BITX, FLX): R cvt2bit(w, yv);
-   case CVCASE(BITX, CMPXX): GATV(d, FL, n, r, s); if(!(DfromZ(w, AV(d))))R 0; R cvt2bit(d, yv);
-#endif
    default:                ASSERT(0, EVDOMAIN);
   }
  }

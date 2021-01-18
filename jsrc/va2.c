@@ -432,30 +432,8 @@ A jtcvz(J jt,I cv,A w){I t;
 // static UC xnumpri[] = {10 ,8 ,9 ,9 ,11 ,8 ,9 ,9};
 #define xnumpri 0x998B998AU   // we use shift to select 4-bit sections
 
-#if 0 // for debug, to display info about a sparse block
-if(AT(a)&SPARSE){
-printf("va2a: shape="); A spt=a; DO(AR(spt), printf(" %d",AS(spt)[i]);) printf("\n");
-printf("va2a: axes="); spt=SPA(PAV(spt),a); DO(AN(spt), printf(" %d",IAV(spt)[i]);) printf("\n"); 
-printf("va2a: indexes="); spt=SPA(PAV(a),i); DO(AN(spt), printf(" %d",IAV(spt)[i]);) printf("\n");
-}
-#endif
 // repair routines for 
 static VF repairip[4] = {plusBIO, plusIIO, minusBIO, minusIIO};
-
-#if 0
-      // choose the non-in-place argument
-      adocv.f=(VF)plusIIO; nipw = z!=w; break; // if w not repeated, select it for not-in-place
-     case EWOVIPPLUSBI:
-      adocv.f=(VF)plusBIO; nipw = 0; break;   // Leave the Boolean argument as a
-     case EWOVIPPLUSIB:
-      adocv.f=(VF)plusBIO; nipw = 1; break;  // Use w as not-in-place
-     case EWOVIPMINUSII:
-      adocv.f=(VF)minusIIO; nipw = z!=w; break; // if w not repeated, select it for not-in-place
-     case EWOVIPMINUSBI:
-      adocv.f=(VF)minusBIO; nipw = 0; break;   // Leave the Boolean argument as a
-     case EWOVIPMINUSIB:
-      adocv.f=(VF)minusBIO; nipw = 1; break;  // Use w as not-in-place
-#endif
 
 // All dyadic arithmetic verbs f enter here, and also f"n.  a and w are the arguments, id
 // is the pseudocharacter indicating what operation is to be performed.  self is the block for this primitive,
@@ -775,15 +753,7 @@ static A jtva2(J jt,AD * RESTRICT a,AD * RESTRICT w,AD * RESTRICT self,RANK2T ra
      DQ(jt->mulofloloc, *zzvd++=(D)*zvi++;);  // convert the multiply results to float.  mulofloloc is known negative, and must be complemented
      // Now repeat the processing.  Unlike with add/subtract overflow, we have to match up all the argument atoms
      {C *av=CAV(a); C *wv=CAV(w);
-#if 0
-     adocv.f=(VF)tymesIIO;  // multiply-repair routine
-      I wkm,wkn,akm,akn;
-      wkm=awzk[1], akn=awzk[0]; wkn=REPSGN(nf); nf^=wkn;   // wkn=111..111 iff wk increments with n (and therefore ak with m).  Make nf positive
-      akm=akn&wkn; wkn&=wkm; wkm^=wkn; akn^=akm;  // if c, akm=ak/wkn=wk; else akn=ak/wkm=wk.  The other incr is 0
-      I im=mf; do{I in=nf; do{((AHDR2FN*)adocv.f)(n,m,av,wv,zzv,jt); zzv+=zzk; av+=akn; wv +=wkn;}while(--in); if(!--im)break; av+=akm; wv +=wkm;}while(1);
-#else
       I i=mf; I jj=nf; while(1){tymesIIO(n,m,(I*)av,(I*)wv,(D*)zzv,jt); if(!--i)break; zzv+=zzk; I jj1=--jj; jj=jj<0?nf:jj; av+=aawwzk[1+REPSGN(jj1)]; wv+=aawwzk[3+REPSGN(jj1)];}  // jj1 is -1 on the last inner iter, where we use outer incr
-#endif
      }
 // not yet     jt->mulofloloc=0;  // reinit for next time
     } else {   // not multiply repair, but something else to do inplace
@@ -793,14 +763,6 @@ static A jtva2(J jt,AD * RESTRICT a,AD * RESTRICT w,AD * RESTRICT self,RANK2T ra
      // if we are repeating cells of the not-in-place, we leave the repetition count in nf, otherwise subsume it in mf
      // b means 'repeat atoms inside a'; so if nipw!=b we repeat atoms of not-in-place, if nipw==b we set n to 1
      {C *av, *zv=CAV(z);
-#if 0
-      I origc=SGNTO0(nf); I origb=SGNTO0(n);   // see what the original repeat flags were
-      nf^=REPSGN(nf); n^=REPSGN(n);  // take abs of n, nf for calculations here
-      if(nipw){av=CAV(w), awzk[0]=awzk[1];}else{av=CAV(a);} if(nipw==origc){mf *= nf; nf = 1;} if(nipw==origb){m *= n; n = 1;}
-      n^=-nipw;  // install new setting of b flag
-     // We have set up ado,nf,mf,nipw,m,n for the conversion.  Now call the repair routine.  n is # times to repeat a for each z, m*n is # atoms of z/zz
-      DQ(mf, DQ(nf, ((AHDR2FN*)adocv.f)(n,m,av,zv,zzv,jt); zzv+=zzk; zv+=awzk[2];); av+=awzk[0];)  // use each cell of a (nf) times
-#else
       // zv and zzv process without repeats; they contain all the information for the in-place argument (if any).
       // av may have repeats.  Repeats before the function call are handled exactly as the first time through, by using aawwzk.
       // repeats inside the function call (from n) must appear only on a, i. e. n<0 to repeat a, or n==1 for no repeat
@@ -809,7 +771,6 @@ static A jtva2(J jt,AD * RESTRICT a,AD * RESTRICT w,AD * RESTRICT self,RANK2T ra
       av=CAV(nipw?w:a);  // point to the not-in-place argument
       I nsgn=SGNTO0(n); n^=REPSGN(n); if(nipw==nsgn){m *= n; n = 1;} n^=-nipw;  // force n to <=1; make n flag indicate whether args were switched
       I i=mf; I jj=nf; while(1){((AHDR2FN*)adocv.f)(n,m,av,zv,zzv,jt); if(!--i)break; zv+=aawwzk[4]; zzv+=zzk; I jj1=--jj; jj=jj<0?nf:jj; av+=aawwzk[2*nipw+1+REPSGN(jj1)];}  // jj1 is -1 on the last inner iter, where we use outer incr
-#endif
      }
     }
     R zz;  // Return the result after overflow has been corrected

@@ -48,8 +48,6 @@ A   mnuvxynam[6]={0,0,0,0,0,0};   // name blocks for all arg names
 // validitymask[15] will be 0 and we use &validitymask[12] as an A* with AT of 0 (a non-function) or an L* with val=0; and &validitymask[0] as a V* with ID of 0
 #if !SY_64
 long long validitymask[16]={-1, -1, 0, 0, -1, -1, 0, 0, -1, -1, 0, 0,0,0,0,0};  // maskload expect s64x2 mask
-#elif C_AVX || EMU_AVX || EMU_AVX2
-I validitymask[16]={-1, -1, -1, -1, 0, 0, 0, 0, -1, -1, -1, -1,0,0,0,0};  // allows inverted mask
 #else
 I validitymask[16]={-1, -1, 0, 0, -1, -1, 0, 0, -1, -1, 0, 0,0,0,0,0};  // native ss2/neon register is s64x2
 #endif
