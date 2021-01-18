@@ -148,13 +148,6 @@ typedef struct {
  void * iomalloc;   // address of block, if any, allocated in io.c to be returned to the FE
  I    iomalloclen;   // length of the allocated block (in case we can reuse it)
 // --- end cache line 7/8
-#if 0 // used only for direct locale numbering
- I*   numlocdelqh;      // head of deleted queue, waiting for realloc
- I    numlocdelqn;      // number of blocks on the deleted queue  could be UI4
- I*   numlocdelqt;       // tail of deleted queue
- I*   numloctbl;         // pointer to data area for locale-number to locale translation
- UI4  numlocsize;       // AN(jt->stnum)
-#endif
  I    igemm_thres;      // used by cip.c: when m*n*p exceeds this, use BLAS for integer matrix product.  _1 means 'never'
  I    dgemm_thres;      // used by cip.c: when m*n*p exceeds this, use BLAS for float matrix product.  _1 means 'never'
  I    zgemm_thres;      // used by cip.c: when m*n*p exceeds this, use BLAS for complex matrix product.  _1 means 'never'

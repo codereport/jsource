@@ -7,15 +7,7 @@
 #include "x.h"
 
 #include "../base64/include/libbase64.h"
-#if C_AVX2
-#define B64CODEC BASE64_FORCE_AVX2
-#elif C_AVX
-#define B64CODEC BASE64_FORCE_AVX
-#elif defined(__aarch64__)
-#define B64CODEC BASE64_FORCE_NEON64
-#else
 #define B64CODEC BASE64_FORCE_PLAIN
-#endif
 
 // Calculate byte-at-a-time CRC table in *crctab, and return the starting value as the result
 static UINT jtcrcvalidate(J jt,A w, UINT* crctab){A*wv;B*v;I m;UINT p,x,z=-1;
@@ -99,43 +91,9 @@ F1(jttobase64){
  // Allocate result
  A z; GATV0(z,LIT,zn<<2,1); UI4 *zv=UI4AV(z);  // result block, pointer into it
  C *wv=CAV(w);  // input pointer
-#if 0
- // Handle each 3-byte group, producing a 4-byte result.  We load 3 bytes at a time, so we may read into the padding area, but never
- // past the valid allocation.  We don't worry about load alignment
- for(;n3;--n3){
-  I bytes=*(I*)wv;   // read 3 bytes
-  // extract each 6 bits, look it up, shift into result register.  Remember it's bit-endian and we are little-endian
-  // the 3 bytes are characters AAAAABB BBBBCCCC CCDDDDDD in bits
-  //                            7     0 15     8 23    16
-  // We do byte D first, then C B A, and shift each into the bottom of the result which becomes ABCD, 4 result bytes
-  UI4 bytes4;
-  bytes4 = base64tab[(bytes>>16)&0x3f];  // byte D
-  bytes4 = (bytes4<<8) + base64tab[((bytes>>22)&0x3)+((bytes>>(8-2))&0x3c)]; // byte C
-  bytes4 = (bytes4<<8) + base64tab[((bytes>>12)&0xf)+((bytes<<(4-0))&0x30)]; // byte B
-  bytes4 = (bytes4<<8) + base64tab[((bytes>>(2-0))&0x3f)]; // byte A
-  // store the result
-  *zv++ = bytes4;
-  wv+= 3;  // next input triple
- }
- // Handle the incomplete section if any
- if(ne>0){
-  I bytes=*(I*)wv;   // read 3 bytes, possibly ovedreading
-  bytes &= ((UI4)1<<(ne<<3))-1;  // clear bits past end of string
-  UI4 bytes4=0;
-//  bytes4 = base64tab[(bytes>>16)&0x3f];  // byte D
-  bytes4 = (bytes4<<8) + base64tab[((bytes>>22)&0x3)+((bytes>>(8-2))&0x3c)]; // byte C
-  bytes4 = (bytes4<<8) + base64tab[((bytes>>12)&0xf)+((bytes<<(4-0))&0x30)]; // byte B
-  bytes4 = (bytes4<<8) + base64tab[((bytes>>(2-0))&0x3f)]; // byte A
-  // store the result
-  *zv++ = bytes4;
-  // stuff '=' over the last chars as needed
-  if(ne>=1){((C*)zv)[-1]='=';if(ne==1){((C*)zv)[-2]='=';}}
- }
-#else
 size_t zlen=AN(z);
 base64_encode(wv, AN(w), CAV(z), &zlen, B64CODEC );
 ASSERT((I)zlen==AN(z),EVDOMAIN);  // make sure length agreed
-#endif
  R z;
 
 }
@@ -163,29 +121,9 @@ F1(jtfrombase64){
  A z; GATV0(z,LIT,(wn>>2)*3 + (((wn&3)+1)>>1),1);  // 3 bytes per full set, plus 0, 1, or 2
  // process the input in full 4-byte groups.  We may overread the input AND overwrite the result, but we will always stay in the padding area,
  // which is OK because we allocated the result here
-#if 0
- UI4 *wv4=UI4AV(w); C *zv=CAV(z);  // write result as bytes, to avoid requiring heroic action in the write combiners
- for(wn-=3;wn>0;wn-=4){  // for each block of 4, not counting an incomplete last one
-  // translate the UTF8 via table lookup.  We could avoid the table reads if we didn't feel the need to validate the input
-  UI4 bytes4=*wv4++; I ba=base64invtab[bytes4&0xff]; I bb=base64invtab[(bytes4>>8)&0xff];  I bc=base64invtab[(bytes4>>16)&0xff];  I bd=base64invtab[(bytes4>>24)&0xff];
-  ASSERT((ba|bb|bc|bd)!=0xff,EVDOMAIN);  // make sure no invalid input bytes
-  // Create the 3 result bytes, MSB first
-  *zv++ = (C)((ba<<2) + (bb>>4));
-  *zv++ = (C)((bb<<4) + (bc>>2));
-  *zv++ = (C)((bc<<6) + (bd>>0));
- }
- // Do the incomplete last set if any, not reading any pad
- if((wn+=3)>0){
-  UI4 bytes4=*wv4++; I ba=base64invtab[bytes4&0xff]; I bb=base64invtab[(bytes4>>8)&0xff];  I bc=wn>2?base64invtab[(bytes4>>16)&0xff]:0;
-  ASSERT((ba|bb|bc)!=0xff,EVDOMAIN);  // make sure no invalid input bytes
-  *zv++ = (C)((ba<<2) + (bb>>4));
-  if(wn>2)*zv++ = (C)((bb<<4) + (bc>>2));
- }
-#else
 size_t zlen=AN(z);
 int rc=base64_decode(CAV(w), AN(w), CAV(z), &zlen, B64CODEC );
 ASSERT(rc==1&&(I)zlen==AN(z),EVDOMAIN);  // make sure no invalid input bytes
-#endif
  R z;
 }
   // the 3 bytes are characters AAAAABB BBBBCCCC CCDDDDDD in bits

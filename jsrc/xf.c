@@ -17,6 +17,10 @@
 #include "j.h"
 #include "x.h"
 
+#if !SY_WIN32 && (SYS & SYS_DOS)
+#include <dos.h>
+#endif
+
 #if (SYS & SYS_UNIX)
 #include <stdlib.h>
 typedef long long INT64;
@@ -216,8 +220,14 @@ F1(jtjferase){A y,fn;US*s;I h;
  RE(h=fnum(w));
  if(h) {RZ(y=str0(fname(sc(h))))} else ASSERT(y=vslit(AAV(w)[0]),EVFNUM);
  if(h)RZ(jclose(sc(h)));
+#if (SYS&SYS_UNIX)
  A y0=str0(y); R !unlink(CAV(y0))||!rmdir(CAV(y0))?num(1):jerrno();
-
+#else
+ RZ(fn=toutf16x(y)); USAV(fn)[AN(fn)]=0;  // install termination
+ s=USAV(fn);
+// #if SY_WIN32 && !SY_WINCE
+ R !_wunlink(s)||!_wrmdir(s)?num(1):jerrno();
+#endif
 }    /* erase file or directory */
 
 F1(jtpathcwd){C path[1+NPATH];US wpath[1+NPATH];
@@ -273,24 +283,18 @@ F1(jtjgetenv){
 
 F1(jtjgetpid){
  ASSERTMTV(w);
-
+#if SY_WIN32
+ R(sc(GetCurrentProcessId()));
+#else
  R(sc(getpid()));
+#endif
 }
 
 #if (SYS & SYS_UNIX)
 // #ifdef __GNUC__
-#if 0
-F1(jtpathdll){Dl_info info;
- ASSERTMTV(w);
- if(dladdr(jtpathdll, &info)){
-  R cstr((C*)info.dli_fname);
- } else R cstr((C*)"");
-}
-#else
 F1(jtpathdll){
  ASSERTMTV(w); R cstr((C*)"");
 }
-#endif
 #else
 F1(jtpathdll){char p[MAX_PATH]; extern C dllpath[];
  ASSERTMTV(w);

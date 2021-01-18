@@ -205,30 +205,7 @@ extern void bli_zgemm2_##f                               \
        cntx_t*    restrict cntx                          \
      );
 
-
-#if defined(__SSE2__)
-
-// sse2 x86_64 or x86
-
-#define BLIS_DGEMM_UKERNEL         bli_dgemm_int_d4x4
-#define BLIS_DEFAULT_MC_D          72
-#define BLIS_DEFAULT_KC_D          256
-#define BLIS_DEFAULT_NC_D          4080
-#define BLIS_DEFAULT_MR_D          4
-#define BLIS_DEFAULT_NR_D          4
-
-#define BLIS_ZGEMM_UKERNEL         bli_zgemm_int_d2x2
-#define BLIS_DEFAULT_MC_Z          72 
-#define BLIS_DEFAULT_KC_Z          256
-#define BLIS_DEFAULT_NC_Z          4080
-#define BLIS_DEFAULT_MR_Z          2
-#define BLIS_DEFAULT_NR_Z          2
-
-#define BLIS_DRIVER BLIS_DRIVER_SSE2
-DGEMM(int_d4x4)
-ZGEMM(int_d2x2)
-
-#elif defined(__aarch64__)||defined(_M_ARM64)
+#if defined(__aarch64__)||defined(_M_ARM64)
 
 // armv8 neon
 
