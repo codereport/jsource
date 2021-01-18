@@ -53,7 +53,7 @@ A jega(I t, I n, I r, I*s){return jga(jt,t,n,r,s);}
 
 void* jehjdll() { return hjdll; }
 
-auto je_load_procedure_adresses(void* hjdll, void* callbacks) -> void {
+auto je_load_procedure_addresses(void* hjdll, void* callbacks) -> void {
     auto jsm = reinterpret_cast<JSMType>(dlsym(hjdll,"JSM"));
     jsm(jt,callbacks);
     jdo        = (JDoType)        dlsym(hjdll,"JDo");
@@ -76,7 +76,7 @@ J jeload(void* callbacks) {
 
     jt = static_cast<JST*>(reinterpret_cast<JInitType>(dlsym(hjdll,"JInit"))());
     if (!jt) return nullptr;
-    je_load_procedure_adresses(hjdll, callbacks);
+    je_load_procedure_addresses(hjdll, callbacks);
     return jt;
 }
 
