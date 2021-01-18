@@ -24,7 +24,6 @@
 int main(){
 	printf ("NB. do not edit -- created by sym2ijs\n\n");
 	printf ("cocurrent <'jdefs'\n\n");
-#ifndef _WIN32
 	printf ("F_OK=: %d\n",F_OK);
 	printf ("R_OK=: %d\n",R_OK);
 	printf ("W_OK=: %d\n",W_OK);
@@ -32,12 +31,6 @@ int main(){
 	printf ("STDIN_FILENO=: %d\n",STDIN_FILENO);
 	printf ("STDOUT_FILENO=: %d\n",STDOUT_FILENO);
 	printf ("STDERR_FILENO=: %d\n",STDERR_FILENO);
-#else
-	puts ("F_OK=:0");
-	puts ("R_OK=:4");
-	puts ("W_OK=:2");
-	puts ("X_OK=:1");
-#endif
 	printf ("SEEK_CUR=: %d\n",SEEK_CUR);
 	printf ("SEEK_END=: %d\n",SEEK_END);
 	printf ("SEEK_SET=: %d\n",SEEK_SET);
@@ -50,7 +43,6 @@ int main(){
 	printf ("O_TRUNC=: %d\n",O_TRUNC);
 	printf ("O_WRONLY=: %d\n",O_WRONLY);
 	puts("");
-#ifndef _WIN32
 	printf ("O_ACCMODE=: %d\n",O_ACCMODE);
 	printf ("O_NOCTTY=: %d\n",O_NOCTTY);
 	printf ("O_NONBLOCK=: %d\n",O_NONBLOCK);
@@ -84,7 +76,6 @@ int main(){
 	printf ("MAP_SHARED=: %d\n",MAP_SHARED);
 	printf ("MAP_PRIVATE=: %d\n",MAP_PRIVATE);
 	printf ("MAP_FIXED=: %d\n",MAP_FIXED);
-#endif
 	puts("");
 	printf ("REG_EXTENDED=: %d\n",REG_EXTENDED);
 	printf ("REG_ICASE=: %d\n",REG_ICASE);
@@ -104,11 +95,9 @@ int main(){
 #define fds_bits __fds_bits
 #endif
 	puts("");
-#ifndef _WIN32
 	printf ("fd_set_sz=: " FMTI "\n",sizeof (fd_set));
 	printf ("fds_bits_off=: " FMTI "\n",offset(fd_set,fds_bits));
 	printf ("fds_bits_sz=: " FMTI "\n",sizeof(((fd_set*)0)->fds_bits));
-#endif
 	printf ("FD_SETSIZE=: %d\n",FD_SETSIZE);
 	printf ("timeval_sz=: " FMTI "\n",sizeof (struct timeval));
 	printf ("tv_sec_off=: " FMTI "\n",offset(struct timeval,tv_sec));
@@ -154,12 +143,10 @@ int main(){
 	printf ("EEXIST=: %d\n",EEXIST);
 	printf ("ENAMETOOLONG=: %d\n",ENAMETOOLONG);
 	puts("");
-#ifndef _WIN32
 	printf ("EINPROGRESS=: %d\n",EINPROGRESS);
 	printf ("ECANCELED=: %d\n",ECANCELED);
 	printf ("ETIMEDOUT=: %d\n",ETIMEDOUT);
 	printf ("EMSGSIZE=: %d\n",EMSGSIZE);
 	printf ("ENOTSUP=: %d\n",ENOTSUP);
-#endif
 	exit (0);
 }

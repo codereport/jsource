@@ -3,10 +3,6 @@
 /*                                                                         */
 /* Debug: Error Signalling and Display                                     */
 
-#ifdef _WIN32
-#include <windows.h>
-#include <winbase.h>
-#endif
 
 #include "j.h"
 #include "d.h"

@@ -207,9 +207,6 @@ static inline omp_int_t omp_get_max_threads() { return 1;}
 
 
 
-#if defined(TARGET_OS_IPHONE)||defined(TARGET_OS_IOS)||defined(TARGET_OS_TV)||defined(TARGET_OS_WATCH)||defined(TARGET_OS_SIMULATOR)||defined(TARGET_OS_EMBEDDED)||defined(TARGET_IPHONE_SIMULATOR)
-#define TARGET_IOS 1
-#endif
 
 #if defined(__aarch32__)||defined(__arm__)||defined(_M_ARM)||defined(__aarch64__)||defined(_M_ARM64)
 #ifndef __ARM_FEATURE_UNALIGNED
@@ -217,11 +214,7 @@ static inline omp_int_t omp_get_max_threads() { return 1;}
 #endif
 #endif
 
-#if SY_WIN32
-#if defined(_WIN32) && !defined(OLECOM)
-#define OLECOM
-#endif
-#endif
+
 
 #if SY_64
 #define IMAX            9223372036854775807LL
@@ -290,15 +283,7 @@ static inline omp_int_t omp_get_max_threads() { return 1;}
 #define XNAN            "\377\177\377\377\377\377\377\376" /* not right */
 #endif
 
-#if (SY_WINCE_MIPS || SY_WINCE_SH)
-#if WIN32_PLATFORM_PSPC
-#define XINF            "\000\000\000\000\000\000\360\177"
-#define XNAN            "\377\377\377\377\377\377\367\177"
-#else
-#define XINF            "\000\000\000\000\000\000\360\177"
-#define XNAN            "\001\000\000\000\000\000\360\177"
-#endif
-#endif
+
 
 #if SY_WINCE_ARM
 #define XINF            "\000\000\000\000\000\000\360\177"
@@ -1506,9 +1491,7 @@ static inline UINT _clearfp(void){
 static __forceinline void* aligned_malloc(size_t size, size_t align) {
  void *result;
  align = (align>=sizeof(void*))?align:sizeof(void*);
-#ifdef _WIN32
- result = _aligned_malloc(size, align);
-#elif ( !defined(ANDROID) || defined(__LP64__) )
+#if ( !defined(ANDROID) || defined(__LP64__) )
  if(posix_memalign(&result, align, size)) result = 0;
 #else
  void *mem = malloc(size+(align-1)+sizeof(void*));
@@ -1521,9 +1504,7 @@ static __forceinline void* aligned_malloc(size_t size, size_t align) {
 }
 
 static __forceinline void aligned_free(void *ptr) {
-#ifdef _WIN32
- _aligned_free(ptr);
-#elif ( !defined(ANDROID) || defined(__LP64__) )
+#if ( !defined(ANDROID) || defined(__LP64__) )
  free(ptr);
 #else
  free(((void**)ptr)[-1]);

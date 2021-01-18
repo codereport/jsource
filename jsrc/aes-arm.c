@@ -23,11 +23,7 @@
 #define AES_RKSIZE      272
 
 typedef struct {
-#ifdef _WIN32
-  __declspec(align(16)) uint8_t  rk[AES_RKSIZE];
-#else
   uint8_t __attribute__ ((aligned (16))) rk[AES_RKSIZE];
-#endif
   uint8_t Nk; //For this standard, Nk = 4, 6, or 8. (Also see Sec. 6.3.)
   uint8_t Nr; //For this standard, Nr = 10, 12, or 14. (Also see Sec. 6.3.)
 } block_state;

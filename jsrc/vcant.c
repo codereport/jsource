@@ -87,10 +87,7 @@ static F2(jtcanta){A m,s,t,z;C*wv,*zv;I*av,j,*mv,r,*sv,*tv,wf,wr,*ws,zn,zr,ms[4]
 #if SY_64
  case sizeof(I4): CANTA(I4, *u++=*(I4*)v;); break;
 #endif
-#if !SY_64 && SY_WIN32
- case sizeof(D): if(AT(w)&FL){CANTA(D, *u++=*(D*)v;); break;}
-   // move as D type only if echt floats - otherwise they get corrupted.  If not float, fall through to...
-#endif
+
  default:        CANTA(C, MC(u,v,cellsizeb); u+=cellsizeb;); break;
  }     
  RETF(z);  // should EPILOG?

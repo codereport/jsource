@@ -3,19 +3,12 @@
 /*                                                                         */
 /* Xenos: Host Command Facilities                                          */
 
-#ifdef _WIN32
-#include <windows.h>
-#include <winbase.h>
-#include <io.h>
-#include <stdlib.h>
-#else
 #include <sys/wait.h>
 #include <unistd.h>
 #ifndef ANDROID
 #include <spawn.h>
 #endif
 #include <fcntl.h>
-#endif
 #include <stdint.h>
 
 #ifdef MMSC_VER
@@ -180,11 +173,8 @@ F1(jtjwait){I k;int s; RE(k=i0(w)); if(-1==waitpid(k,&s,0))jerrno(); R sc(s);}
 /* return errno info from c library */
 F1(jtcerrno){C buf[1024],ermsg[1024];
  ASSERTMTV(w);
-#ifdef _WIN32
- if(errno&&!strerror_s(ermsg,1024,errno)) strcpy (buf, ermsg); else strcpy (buf, "");
-#else
+
  if(errno&&!strerror_r(errno,ermsg,1024)) strcpy (buf, ermsg); else strcpy (buf, "");
-#endif
  R link(sc(errno),cstr(buf));
 }    /* 2!:8  errno information */
 

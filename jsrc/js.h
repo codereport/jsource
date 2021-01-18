@@ -52,14 +52,9 @@ define one of the following in the build as required
 // auto config
 
 
-#if defined(_WIN32) && !defined(__MINGW32__)
-#ifdef SY_GETTOD
-#undef SY_GETTOD
-#endif
-#else
+
 #ifndef SY_GETTOD
 #define SY_GETTOD
-#endif
 #endif
 
 /* Inclusion of a system herein does not necessarily mean that the source  */
@@ -160,11 +155,6 @@ define one of the following in the build as required
 #endif
 
 
-#ifdef _WIN32
-#define SYS                 SYS_PCWIN
-#undef  SY_WIN32
-#define SY_WIN32            1
-#endif
 
 #ifdef UNDER_CE
 #undef  SY_WINCE

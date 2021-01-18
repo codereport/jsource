@@ -39,33 +39,18 @@ double_trick call must be immediately before SWITCHCALL
 otherwise the regs may be used and the parameter lost.
 */
 
-#if _WIN32
-#include <windows.h>
-#include <windowsx.h>
-#define FIXWINUTF8 // possibly should not be defined for MINGW32
-#ifdef __MINGW32__
-#ifndef _stdcall
-#define _stdcall __stdcall
-#define _cdecl __cdecl
-#endif
-#endif
-#else
+
 #include <stdlib.h>
 #include <unistd.h>
 typedef unsigned char       BYTE;
 #define CALLBACK
-#endif
 #include <stdint.h>
 #include <wchar.h>
 #include <complex.h>
 #undef I
-#ifdef _WIN32
-typedef _Fcomplex float_complex;
-typedef _Dcomplex double_complex;
-#else
+
 typedef float complex float_complex;
 typedef double complex double_complex;
-#endif
 
 
 #include "j.h"
@@ -218,9 +203,7 @@ static void double_trick(double*v, I n){I i=0;
 */
 
 #if SY_64
- #if SY_WIN32
-  #define dtrick {D*pd=(D*)d; double_trick(pd[0],pd[1],pd[2],pd[3]);}
- #elif SY_UNIX64
+ #if SY_UNIX64
   #ifdef __PPC64__
    #define dtrick double_trick(dd[0],dd[1],dd[2],dd[3],dd[4],dd[5],dd[6],dd[7],dd[8],dd[9],dd[10],dd[11],dd[12]);
   #elif defined(__x86_64__)
@@ -248,9 +231,7 @@ static void double_trick(double*v, I n){I i=0;
   #define dtrick ;
  #endif
 #else
- #if SY_WIN32
-  #define dtrick ;
- #elif SY_LINUX
+ #if SY_LINUX
  #ifdef C_CD_ARMHF
   #define dtrick double_trick(dd[0],dd[1],dd[2],dd[3],dd[4],dd[5],dd[6],dd[7],dd[8],dd[9],dd[10],dd[11],dd[12],dd[13],dd[14],dd[15]);
  #else
@@ -647,11 +628,8 @@ static void convertdown(I*pi,I n,C t){
   case 's': {short*pt=(short*)pi;             DO(n, pt[i]=(short)pi[i];);} break;
   case 'i': {int  *pt=(int  *)pi;             DO(n, pt[i]=(int)  pi[i];);} break;
   case 'f': {float*pt=(float*)pi;D*pd=(D*)pi; DO(n, pt[i]=(float)pd[i];);} break;
-#ifdef _WIN32
-  case 'z': {float_complex*pt=(float_complex*)pi;D*pd=(D*)pi; DO(n, pt[i]=_FCOMPLEX_((float)pd[2*i],(float)pd[1+2*i]););} break;
-#else
+
   case 'z': {float_complex*pt=(float_complex*)pi;D*pd=(D*)pi; DO(n, pt[i]=(float)pd[2*i]+_Complex_I*(float)pd[1+2*i];);} break;
-#endif
 }}   /* convert I in place to s or int and d to f and j to z */
 
 static void convertup(I*pi,I n,C t){I j=n;
@@ -781,28 +759,13 @@ static CCT*jtcdload(J jt,CCT*cc,C*lib,C*proc){B ha=0;FARPROC f;HMODULE h;
  if(h=cdlookupl(lib))cc->h=h;  // if lib is in hash table, use the handle for it.  Save the handle to match other hasshes later
  else{
   CDASSERT(AM(jt->cdhashl)<NLIBS,DETOOMANY);    /* too many dlls loaded */
-#if SY_WIN32
-#if SY_WINCE
-  h=LoadLibrary(tounibuf(lib));
-#else
-#ifdef FIXWINUTF8
-  wchar_t wlib[1024];
-  MultiByteToWideChar(CP_UTF8,0,lib,1+(int)strlen(lib),wlib,1024);
-  h=LoadLibraryW(wlib);
-#else
-  h=LoadLibraryA(lib);
-#endif
-#endif
-  CDASSERT((UI)h>HINSTANCE_ERROR,DEBADLIB);
-#endif
+
 #if SYS & SYS_UNIX
   CDASSERT(h=dlopen((*lib)?lib:0,RTLD_LAZY),DEBADLIB);
 #endif
   cc->h=h; ha=1;
  }
-#if SY_WIN32 && !SY_WINCE
- f=GetProcAddress(h,'#'==*proc?(LPCSTR)(I)atoi(proc+1):(LPCSTR)proc);
-#endif
+
 #if SY_WINCE
  f=GetProcAddress(h,tounibuf(proc));
 #endif
@@ -1143,10 +1106,7 @@ static B jtcdexec1(J jt,CCT*cc,C*zv0,C*wu,I wk,I wt,I wd){A*wv=(A*)wu,x,y,*zv;B 
  jt->recurstate|=RECSTATEBUSY;  // cd complete, go back to normal running state, BUSY normally or RECUR if a prompt is pending
 
  DO(cipcount, convertup(cipv[i],cipn[i],cipt[i]);); /* convert s and int to I and f to d as required */
-#if SY_WIN32
- t= GetLastError();
- if(cc->fpreset)_fpreset();         /* delphi dll (and others) damage fp state */
-#endif
+
 #if SYS&SYS_UNIX
  t=errno;
 #endif
@@ -1181,9 +1141,7 @@ F2(jtcd){A z;C*tv,*wv,*zv;CCT*cc;I k,m,n,p,q,t,wr,*ws,wt;
 }    /* 15!:0 */
 
 
-#if SY_WIN32
-#define FREELIB FreeLibrary
-#endif
+
 #if (SYS & SYS_UNIX)
 #define FREELIB dlclose
 #endif
@@ -1212,13 +1170,6 @@ F1(jtcder){I t; ASSERTMTV(w); t=jt->dlllasterror; jt->dlllasterror=DEOK; R v2(t&
 F1(jtcderx){I t;C buf[1024];
  ASSERTMTV(w); t=jt->getlasterror; jt->getlasterror=0;
 
-#if SY_WIN32 && !SY_WINCE
- FormatMessageA(
-    FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
-    NULL, (DWORD)t,
-    MAKELANGID(LANG_ENGLISH, SUBLANG_DEFAULT),  /* Default language */
-    buf, sizeof(buf), 0);
-#endif
 
 #if SY_WINCE
  {
@@ -1264,10 +1215,7 @@ F1(jtmemr){C*u;I m,n,t,*v;US*us;C4*c4;
    else {m=0; c4=(C4*)u; while(*c4++)m++;}
   }
  }
-#if SY_WIN32
-// This function is obsolete and should not be used
-// ASSERT(!IsBadReadPtr(u,m*k),EVDOMAIN);
-#endif
+
  R vecb01(t,m,u);
 }    /* 15!:1  memory read */
 
@@ -1283,10 +1231,7 @@ F2(jtmemw){C*u;I m,n,t,*v;
  if(B01&AT(a)&&t&INT) RZ(a=cvt(INT,a));
  if(INT&AT(a)&&t&B01) RZ(a=cvt(B01,a));
  ASSERT(TYPESEQ(t,AT(a)),EVDOMAIN);
-#if SY_WIN32
-// This function is obsolete and should not be used
-// ASSERT(!IsBadWritePtr(u,m*k),EVDOMAIN);
-#endif
+
  MC(u,AV(a),m<<bplg(t));
  R mtm;
 }    /* 15!:2  memory write */
@@ -1364,19 +1309,7 @@ static I CALLBACK cbx8(I a,I b,I c,I d,I e,I f,I g,I h){cbxn=8;cbx[0]=a;cbx[1]=b
 static I CALLBACK cbx9(I a,I b,I c,I d,I e,I f,I g,I h,I i){cbxn=9;cbx[0]=a;cbx[1]=b;cbx[2]=c;cbx[3]=d;cbx[4]=e;cbx[5]=f;cbx[6]=g;cbx[7]=h;cbx[8]=i;R cbnew();}
 static I cbvx[]={(I)&cbx0,(I)&cbx1,(I)&cbx2,(I)&cbx3,(I)&cbx4,(I)&cbx5,(I)&cbx6,(I)&cbx7,(I)&cbx8,(I)&cbx9};
 
-#if SY_WIN32
-static I _cdecl cbxalt0(){cbxn=0;R cbnew();}
-static I _cdecl cbxalt1(I a){cbxn=1;cbx[0]=a;R cbnew();}
-static I _cdecl cbxalt2(I a,I b){cbxn=2;cbx[0]=a;cbx[1]=b;R cbnew();}
-static I _cdecl cbxalt3(I a,I b,I c){cbxn=3;cbx[0]=a;cbx[1]=b;cbx[2]=c;R cbnew();}
-static I _cdecl cbxalt4(I a,I b,I c,I d){cbxn=4;cbx[0]=a;cbx[1]=b;cbx[2]=c;cbx[3]=d;R cbnew();}
-static I _cdecl cbxalt5(I a,I b,I c,I d,I e){cbxn=5;cbx[0]=a;cbx[1]=b;cbx[2]=c;cbx[3]=d;cbx[4]=e;R cbnew();}
-static I _cdecl cbxalt6(I a,I b,I c,I d,I e,I f){cbxn=6;cbx[0]=a;cbx[1]=b;cbx[2]=c;cbx[3]=d;cbx[4]=e;cbx[5]=f;R cbnew();}
-static I _cdecl cbxalt7(I a,I b,I c,I d,I e,I f,I g){cbxn=7;cbx[0]=a;cbx[1]=b;cbx[2]=c;cbx[3]=d;cbx[4]=e;cbx[5]=f;cbx[6]=g;R cbnew();}
-static I _cdecl cbxalt8(I a,I b,I c,I d,I e,I f,I g,I h){cbxn=8;cbx[0]=a;cbx[1]=b;cbx[2]=c;cbx[3]=d;cbx[4]=e;cbx[5]=f;cbx[6]=g;cbx[7]=h;R cbnew();}
-static I _cdecl cbxalt9(I a,I b,I c,I d,I e,I f,I g,I h,I i){cbxn=9;cbx[0]=a;cbx[1]=b;cbx[2]=c;cbx[3]=d;cbx[4]=e;cbx[5]=f;cbx[6]=g;cbx[7]=h;cbx[8]=i;R cbnew();}
-static I cbvxalt[]={(I)&cbxalt0,(I)&cbxalt1,(I)&cbxalt2,(I)&cbxalt3,(I)&cbxalt4,(I)&cbxalt5,(I)&cbxalt6,(I)&cbxalt7,(I)&cbxalt8,(I)&cbxalt9};
-#endif
+
 /* end of code generated by J script x15_callback.ijs */
 
 F1(jtcallback){
@@ -1388,9 +1321,7 @@ F1(jtcallback){
   ASSERT(1>=AR(w),EVRANK);
   s=CAV(str0(w));
   alt=0; while(*s==' ')++s; if('+'==*s){alt=1; ++s;}
-#if !SY_WIN32
-  ASSERT(0==alt,EVDOMAIN);
-#endif
+
   cnt=0; /* count x's in type declaration (including result) */
   while(c=*s++){
    if(' '==c)continue;
@@ -1399,11 +1330,8 @@ F1(jtcallback){
    ASSERT(0==*s||' '==*s,EVDOMAIN);
   }
   ASSERT(cnt>0&&cnt<CBTYPESMAX,EVDOMAIN);
-#if SY_WIN32
-  R sc((alt?cbvxalt:cbvx)[--cnt]); /* select callback based on alt * args */
-#else
+
   R sc(cbvx[--cnt]); /* select callback based on alt * args */
-#endif
  }
  else
  {
@@ -1460,21 +1388,7 @@ F1(jtcdproc1){CCT*cc;
 #pragma warning(disable: 4276)
 #endif
 
-#if SY_WIN32 && defined(OLECOM)
-#define VARIANT void
-CDPROC int _stdcall JBreak(J jt);
-CDPROC int _stdcall JIsBusy(J jt);
-CDPROC int _stdcall JGet(J jt, C* name, VARIANT* v);
-CDPROC int _stdcall JGetB(J jt, C* name, VARIANT* v);
-CDPROC int _stdcall JSet(J jt, C* name, VARIANT* v);
-CDPROC int _stdcall JSetB(J jt, C* name, VARIANT* v);
-CDPROC int _stdcall JErrorText(J jt, long ec, VARIANT* v);
-CDPROC int _stdcall JClear(J jt);
-CDPROC int _stdcall JTranspose(J jt, long b);
-CDPROC int _stdcall JErrorTextB(J jt, long ec, VARIANT* v);
-CDPROC int _stdcall JDoR(J jt, C* p, VARIANT* v);
-CDPROC int _stdcall JInt64R(J jt, long b);
-#endif
+
 
 // procedures in jlib.h
 static const void* jfntaddr[]={
@@ -1491,20 +1405,7 @@ JSMX,
 JSetA,
 JSetM,
 Jga,
-#if SY_WIN32 && defined(OLECOM)
-JBreak,
-JClear,
-JDoR,
-JErrorText,
-JErrorTextB,
-JGet,
-JGetB,
-JIsBusy,
-JSet,
-JSetB,
-JTranspose,
-JInt64R,
-#endif
+
 };
 
 static const C* jfntnm[]={
@@ -1521,20 +1422,7 @@ static const C* jfntnm[]={
 "JSetA",
 "JSetM",
 "Jga",
-#if SY_WIN32 && defined(OLECOM)
-"JBreak",
-"JClear",
-"JDoR",
-"JErrorText",
-"JErrorTextB",
-"JGet",
-"JGetB",
-"JIsBusy",
-"JSet",
-"JSetB",
-"JTranspose",
-"JInt64R",
-#endif
+
 };
 
 F2(jtcdproc2){C*proc;FARPROC f;HMODULE h;
@@ -1548,9 +1436,7 @@ F2(jtcdproc2){C*proc;FARPROC f;HMODULE h;
   DO(sizeof(jfntnm)/sizeof(C*), if(((I)strlen(jfntnm[i])==AN(w))&&!strncmp(jfntnm[i],proc,AN(w))){k=i; break;});
   f=(k==-1)?(FARPROC)0:(FARPROC)jfntaddr[k];
  }else{
-#if SY_WIN32 && !SY_WINCE
-  f=GetProcAddress(h,'#'==*proc?(LPCSTR)(I)atoi(proc+1):(LPCSTR)proc);
-#endif
+
 #if SY_WINCE
   f=GetProcAddress(h,tounibuf(proc));
 #endif

@@ -112,10 +112,6 @@ A recursive JDo may use a DD, but only if it is fully contained in the string
 
 */
 
-#ifdef _WIN32
-#include <windows.h>
-#include <winbase.h>
-#else
 #include <stdlib.h>
 #include <stdio.h>
 #include <sys/types.h>
@@ -125,7 +121,6 @@ A recursive JDo may use a DD, but only if it is fully contained in the string
 #include <unistd.h>
 #include <sys/mman.h>
 #define _stdcall
-#endif
 #include <stdint.h>
 
 #include "j.h"
@@ -163,9 +158,6 @@ static void jtwrf(J jt,I n,C*v,F f){C*u,*x;I j=0,m;
 //   if the vertical boxing character is Unicode, discard leading SP or | characters (which might have been error typeout)
 A jtinpl(J jt,B b,I n,C*s){C c;I k=0;
  if(n&&(c=s[n-1],CLF==c||CCR==c))--n;  // discard trailing [CR], CRLF, CRCR
-#if _WIN32
- if(n&&(c=s[n-1],CCR==c))--n;
-#endif
  ASSERT(!*jt->adbreak,EVINPRUPT);
  if(!b){ /* 1==b means literal input */
   if(n&&COFF==s[n-1])joff(num(0));
@@ -556,9 +548,6 @@ void jsto(J jt,I type,C*s){C e;I ex;
  }else{
   // Normal output.  Call the output routine
   if(jt->smoutput){((outputtype)(jt->smoutput))(jt,(int)type,s);R;} // JFE output
-#if SY_WIN32 && !SY_WINCE && defined(OLECOM)
-  if(jt->oleop && (type & MTYOFM)){oleoutput(jt,strlen(s),s);R;} // ole output
-#endif
   // lazy - malloc failure will crash and should alloc larger when full
   if(!jt->capture){jt->capture=MALLOC(capturesize);jt->capture[0]=0;}
   if(capturesize>2+strlen(jt->capture)+strlen(s))

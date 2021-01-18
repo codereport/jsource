@@ -7,11 +7,8 @@
 #include "j.h"
 #include "jsock.h"
 
-#ifdef _WIN32
-#include <io.h> 
-#else
+
 #define _stdcall
-#endif
 
 static char **adadbreak;
 static void sigint(int k){**adadbreak+=1;signal(SIGINT,sigint);}

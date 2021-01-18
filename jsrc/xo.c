@@ -3,25 +3,14 @@
 /*                                                                         */
 /* Xenos: File Open/Close                                                  */
 
-#ifdef _WIN32
-#include <windows.h>
-#include <winbase.h>
-#ifndef UNDER_CE
-#include <io.h>
-#include <fcntl.h>
-#endif 
-#endif
+
        
 #include "j.h"
 #include "x.h"
 
 
 B jtxoinit(J jt){A x;
-#if SY_WIN32 && !SY_WINCE
- _setmode(_fileno(stdin),_O_BINARY);
- _setmode(_fileno(stdout),_O_BINARY);
- _setmode(_fileno(stderr),_O_BINARY);
-#endif
+
  GAT0(x,BOX,8,1); memset(AV(x),C0,AN(x)*SZI); ras(x); jt->fopa=x;
  GAT0(x,INT,8,1);                             ras(x); jt->fopf=x; AM(jt->fopf)=0;  // AM is # valid files
  R 1;

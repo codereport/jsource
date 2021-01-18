@@ -267,34 +267,6 @@ void cpuInit(void)
     OPENSSL_ia32cap_P[2] = 0;
     OPENSSL_ia32cap_P[3] = 0;
   }
-#ifdef _WIN32
-#if 0
-  /* not very reliable check */
-#define XSTATE_MASK_AVX   (XSTATE_MASK_GSSE)
-  typedef DWORD64 (WINAPI *GETENABLEDXSTATEFEATURES)();
-  GETENABLEDXSTATEFEATURES pfnGetEnabledXStateFeatures = NULL;
-// Get the addresses of the AVX XState functions.
-  HMODULE hm = GetModuleHandleA("kernel32.dll");
-  if ((pfnGetEnabledXStateFeatures = (GETENABLEDXSTATEFEATURES)GetProcAddress(hm, "GetEnabledXStateFeatures")) &&
-      ((pfnGetEnabledXStateFeatures() & XSTATE_MASK_AVX) != 0))
-    AVX=1;
-  FreeLibrary(hm);
-#else
-  AVX=1;
-#endif
-  if (!(g_cpuFeatures & CPU_X86_FEATURE_AVX) || !check_xcr0_ymm()) AVX=0;
-#elif defined(__MACH__)
-// TODO
-  AVX=1;
-#else
-  struct utsname unm;
-  if (!uname(&unm) &&
-      ((unm.release[0]>'2'&&unm.release[0]<='9')||  // avoid sign/unsigned char difference
-       (strlen(unm.release)>5&&unm.release[0]=='2'&&unm.release[2]=='6'&&unm.release[4]=='3'&&
-        (unm.release[5]>='0'&&unm.release[5]<='9'))))
-    AVX=1;
-  if (!(g_cpuFeatures & CPU_X86_FEATURE_AVX) || !check_xcr0_ymm()) AVX=0;
-#endif
   if (!(AVX&&OSXSAVE)) {
     g_cpuFeatures &= ~CPU_X86_FEATURE_AVX;
     g_cpuFeatures &= ~CPU_X86_FEATURE_FMA;
