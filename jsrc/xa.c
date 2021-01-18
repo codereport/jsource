@@ -10,10 +10,7 @@
 extern uint64_t g_cpuFeatures;
 
 #include <string.h>
-#ifdef _WIN32
-#define strncasecmp _strnicmp
-#define strcasecmp _stricmp
-#endif
+
 
 F1(jtassertq){ASSERTMTV(w); R scb(jt->assert);}
 

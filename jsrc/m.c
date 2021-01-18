@@ -3,11 +3,8 @@
 /*                                                                         */
 /* Memory Management                                                       */
 
-#ifdef _WIN32
-#include <windows.h>
-#else
+
 #define __cdecl
-#endif
 #ifdef MMSC_VER
 #pragma warning(disable: 4334)
 #endif

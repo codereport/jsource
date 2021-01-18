@@ -8,15 +8,9 @@
 #include <malloc.h>
 #endif
 
-#if SY_WIN32 && !SY_WINCE
-#define FREE(a)     HeapFree(jt->heap,0,a)
-#define MALLOC(n)   (void*)HeapAlloc(jt->heap,0,n)
-#define REALLOC(a,n) (void*)HeapReAlloc(jt->heap,0,a,n)
-#else
 #define FREE(a) free(a)
 #define MALLOC(n) malloc(n)
 #define REALLOC(a,n) realloc(a,n)
-#endif
 
 // **** main blocks are managed by allocating 16 bits for all blocks, free or allocated
 // when the block is on the free list, AK is a chain pointer

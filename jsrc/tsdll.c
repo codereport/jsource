@@ -3,23 +3,12 @@
 
 /* used to build tsdll.dll for validating cd */
 
-#ifdef _WIN32
-#include <windows.h>
-int WINAPI DllMain (HINSTANCE hDLL, DWORD dwReason, LPVOID lpReserved)
-{
-	return TRUE;
-}
-typedef wchar_t wc;
-typedef unsigned int uc;
-#else
+
 #define _stdcall
 #define _cdecl
 typedef unsigned short wc;
 typedef unsigned int uc;
-#endif
-#ifdef _WIN32
-#define CDPROC
-#elif defined(__GNUC__)
+#if defined(__GNUC__)
 #define CDPROC __attribute__ ((visibility ("default")))
 #else
 #define CDPROC
@@ -27,13 +16,8 @@ typedef unsigned int uc;
 #include <math.h>
 #include <complex.h>
 #undef I
-#ifdef _WIN32
-typedef _Fcomplex float_complex;
-typedef _Dcomplex double_complex;
-#else
 typedef float complex float_complex;
 typedef double complex double_complex;
-#endif
 
 
 
@@ -65,13 +49,8 @@ CDPROC I       _stdcall xbasic(I*     a,  I     b, I*     c) sum
 CDPROC D       _stdcall dbasic(D*     a,  D     b, D*     c) sum
 CDPROC F       _stdcall fbasic(F*     a,  F     b, F*     c) sum
 
-#ifdef _WIN32
-#define dsum {a[0]=_DCOMPLEX_(creal(b[0])+creal(c[0])+creal(c[1]), cimag(b[0])+cimag(c[0])+cimag(c[1])); return cabs(a[0]);}
-#define fsum {a[0]=_FCOMPLEX_(crealf(b[0])+crealf(c[0])+crealf(c[1]), cimagf(b[0])+cimagf(c[0])+cimagf(c[1])); return cabsf(a[0]);}
-#else
 #define dsum {a[0]=b[0]+c[0]+c[1]; return cabs(a[0]);}
 #define fsum {a[0]=b[0]+c[0]+c[1]; return cabsf(a[0]);}
-#endif
 
 CDPROC D _stdcall jbasic(double_complex* a, double_complex* b, double_complex* c) dsum
 CDPROC F _stdcall zbasic(float_complex* a,  float_complex* b,  float_complex* c)  fsum

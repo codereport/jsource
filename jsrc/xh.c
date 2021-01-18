@@ -3,19 +3,12 @@
 /*                                                                         */
 /* Xenos: Host Command Facilities                                          */
 
-#ifdef _WIN32
-#include <windows.h>
-#include <winbase.h>
-#include <io.h>
-#include <stdlib.h>
-#else
 #include <sys/wait.h>
 #include <unistd.h>
 #ifndef ANDROID
 #include <spawn.h>
 #endif
 #include <fcntl.h>
-#endif
 #include <stdint.h>
 
 #ifdef MMSC_VER

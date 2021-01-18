@@ -118,44 +118,9 @@ F2(jtifrom){A z;C*wv,*zv;I acr,an,ar,*av,j,k,m,p,pq,q,wcr,wf,wk,wn,wr,*ws,zn;
 #define BSET(x,y0,y1,y2,y3)     *x++=y0; *x++=y1; *x++=y2; *x++=y3;
 #define BSETV(b)                MC(v,wv+b*k,k); v+=k;
 
-#if !SY_64 && SY_WIN32
-#define BNNERN(T)   \
- {B*au=av;T*v=(T*)wv,v0,v1,*x=(T*)zv;                                               \
-  DQ(m, v0=v[0]; v1=v[1]; u=(I*)av; DQ(q, switch(*u++){                             \
-   case B0000: BSET(x,v0,v0,v0,v0); break;  case B0001: BSET(x,v0,v0,v0,v1); break; \
-   case B0010: BSET(x,v0,v0,v1,v0); break;  case B0011: BSET(x,v0,v0,v1,v1); break; \
-   case B0100: BSET(x,v0,v1,v0,v0); break;  case B0101: BSET(x,v0,v1,v0,v1); break; \
-   case B0110: BSET(x,v0,v1,v1,v0); break;  case B0111: BSET(x,v0,v1,v1,v1); break; \
-   case B1000: BSET(x,v1,v0,v0,v0); break;  case B1001: BSET(x,v1,v0,v0,v1); break; \
-   case B1010: BSET(x,v1,v0,v1,v0); break;  case B1011: BSET(x,v1,v0,v1,v1); break; \
-   case B1100: BSET(x,v1,v1,v0,v0); break;  case B1101: BSET(x,v1,v1,v0,v1); break; \
-   case B1110: BSET(x,v1,v1,v1,v0); break;  case B1111: BSET(x,v1,v1,v1,v1); break; \
-  });                                                                               \
-  b=(B*)u; DQ(r, *x++=*b++?v1:v0;); v+=p;);                                         \
- }
-#define BNNERM(T,T1)   \
- {B*au=av;T*c,*v=(T*)wv,v0,v1,*x=(T*)zv;T1 vv[16],*y;                                  \
-  DQ(m, v0=v[0]; v1=v[1]; c=(T*)vv; y=(T1*)x; u=(I*)av;                                \
-   BSET(c,v0,v0,v0,v0); BSET(c,v0,v0,v0,v1); BSET(c,v0,v0,v1,v0); BSET(c,v0,v0,v1,v1); \
-   BSET(c,v0,v1,v0,v0); BSET(c,v0,v1,v0,v1); BSET(c,v0,v1,v1,v0); BSET(c,v0,v1,v1,v1); \
-   BSET(c,v1,v0,v0,v0); BSET(c,v1,v0,v0,v1); BSET(c,v1,v0,v1,v0); BSET(c,v1,v0,v1,v1); \
-   BSET(c,v1,v1,v0,v0); BSET(c,v1,v1,v0,v1); BSET(c,v1,v1,v1,v0); BSET(c,v1,v1,v1,v1); \
-   DQ(q, switch(*u++){                                                                 \
-    case B0000: *y++=vv[ 0]; break;  case B0001: *y++=vv[ 1]; break;                   \
-    case B0010: *y++=vv[ 2]; break;  case B0011: *y++=vv[ 3]; break;                   \
-    case B0100: *y++=vv[ 4]; break;  case B0101: *y++=vv[ 5]; break;                   \
-    case B0110: *y++=vv[ 6]; break;  case B0111: *y++=vv[ 7]; break;                   \
-    case B1000: *y++=vv[ 8]; break;  case B1001: *y++=vv[ 9]; break;                   \
-    case B1010: *y++=vv[10]; break;  case B1011: *y++=vv[11]; break;                   \
-    case B1100: *y++=vv[12]; break;  case B1101: *y++=vv[13]; break;                   \
-    case B1110: *y++=vv[14]; break;  case B1111: *y++=vv[15]; break;                   \
-   });                                                                                 \
-   b=(B*)u; x=(T*)y; DQ(r, *x++=*b++?v1:v0;); v+=p;);                                  \
- }
-#else
+
 #define BNNERN(T)       {T*v=(T*)wv,*x=(T*)zv; DQ(m, b=av; DQ(an, *x++=*(v+*b++);); v+=p;);}
 #define BNNERM(T,T1)    BNNERN(T)
-#endif
 
 #define INNER1B(T)  {T*v=(T*)wv,*x=(T*)zv; v+=*av; DQ(m, *x++=*v; v+=p;);}
 
@@ -190,39 +155,8 @@ static F2(jtbfrom){A z;B*av,*b;C*wv,*zv;I acr,an,ar,k,m,p,q,r,*u=0,wcr,wf,wk,wn,
   case 1+2*sizeof(I): INNER1B(I);  break;
   default:
    if(1==an){wv+=k**av; DQ(m, MC(zv,wv,k); zv+=k; wv+=wk;);}
-#if !SY_64 && SY_WIN32
-   else{A x;C*v,*xv,*xv00,*xv01,*xv02,*xv03,*xv04,*xv05,*xv06,*xv07,*xv08,*xv09,*xv10,*xv11,
-         *xv12,*xv13,*xv14,*xv15;I i,j,k4=k*4;
-    GATV0(x,LIT,16*k4,1); xv=CAV(x);
-    xv00=xv;       xv01=xv+   k4; xv02=xv+ 2*k4; xv03=xv+ 3*k4;
-    xv04=xv+ 4*k4; xv05=xv+ 5*k4; xv06=xv+ 6*k4; xv07=xv+ 7*k4;
-    xv08=xv+ 8*k4; xv09=xv+ 9*k4; xv10=xv+10*k4; xv11=xv+11*k4;
-    xv12=xv+12*k4; xv13=xv+13*k4; xv14=xv+14*k4; xv15=xv+15*k4;
-    for(i=0;i<m;++i){
-     u=(I*)av; v=xv;
-     BSETV(0); BSETV(0); BSETV(0); BSETV(0);   BSETV(0); BSETV(0); BSETV(0); BSETV(1);
-     BSETV(0); BSETV(0); BSETV(1); BSETV(0);   BSETV(0); BSETV(0); BSETV(1); BSETV(1);
-     BSETV(0); BSETV(1); BSETV(0); BSETV(0);   BSETV(0); BSETV(1); BSETV(0); BSETV(1);
-     BSETV(0); BSETV(1); BSETV(1); BSETV(0);   BSETV(0); BSETV(1); BSETV(1); BSETV(1);
-     BSETV(1); BSETV(0); BSETV(0); BSETV(0);   BSETV(1); BSETV(0); BSETV(0); BSETV(1);
-     BSETV(1); BSETV(0); BSETV(1); BSETV(0);   BSETV(1); BSETV(0); BSETV(1); BSETV(1);
-     BSETV(1); BSETV(1); BSETV(0); BSETV(0);   BSETV(1); BSETV(1); BSETV(0); BSETV(1);
-     BSETV(1); BSETV(1); BSETV(1); BSETV(0);   BSETV(1); BSETV(1); BSETV(1); BSETV(1);
-     for(j=0;j<q;++j,zv+=k4)switch(*u++){
-      case B0000: MC(zv,xv00,k4); break;   case B0001: MC(zv,xv01,k4); break;
-      case B0010: MC(zv,xv02,k4); break;   case B0011: MC(zv,xv03,k4); break;  
-      case B0100: MC(zv,xv04,k4); break;   case B0101: MC(zv,xv05,k4); break;
-      case B0110: MC(zv,xv06,k4); break;   case B0111: MC(zv,xv07,k4); break;
-      case B1000: MC(zv,xv08,k4); break;   case B1001: MC(zv,xv09,k4); break;
-      case B1010: MC(zv,xv10,k4); break;   case B1011: MC(zv,xv11,k4); break;
-      case B1100: MC(zv,xv12,k4); break;   case B1101: MC(zv,xv13,k4); break;
-      case B1110: MC(zv,xv14,k4); break;   case B1111: MC(zv,xv15,k4); break;
-     }
-     b=(B*)u; DQ(r, MC(zv,wv+k**b++,k); zv+=k;); wv+=wk;
-   }}
-#else
+
    else DQ(m, b=av; DQ(an, MC(zv,wv+k**b++,k); zv+=k;); wv+=wk;);
-#endif
  }
  RETF(z);
 }    /* a{"r w for boolean a */

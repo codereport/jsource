@@ -3,13 +3,9 @@
 /*                                                                         */
 /* Xenos: file directory, attributes, & permission                         */
 
-#ifdef _WIN32
-#include <windows.h>
-#include <winbase.h>
-#else
+
 #include <sys/types.h>
 #include <unistd.h>
-#endif
 
 #include "j.h"
 #include "x.h"
@@ -178,78 +174,6 @@ F2(jtjfperm2){ASSERT(0,EVNONCE);}
 /*   1 hidden       4 directory                              */
 /*   2 system       5 archive (modified since last back-up)  */
 
-#if SY_WIN32
-
-#include <stdlib.h>
-
-UINT getfileattr(char *);
-int setfileattr(char*, UINT);
-
-static A jtdir1(J jt,LPWIN32_FIND_DATAW f,C* fn) {A z,*zv;C rwx[3],*s,*t;I n,ts[6];
- FILETIME local_ftime; SYSTEMTIME x;
-
- FileTimeToLocalFileTime(&f->ftLastWriteTime, &local_ftime);
- FileTimeToSystemTime(&local_ftime, &x);
- ts[0]=x.wYear;   ts[1]=x.wMonth;  ts[2]=x.wDay;
- ts[3]=x.wHour;   ts[4]=x.wMinute; ts[5]=x.wSecond;
- s=fn; n=strlen(s); t=s+n-3;
- rwx[0]='r';
- rwx[1]=f->dwFileAttributes & FILE_ATTRIBUTE_READONLY ?'-':'w';
- rwx[2]=strcmp(t,"exe")&&strcmp(t,"bat")&&strcmp(t,"com")?'-':'x';
- GAT0(z,BOX,5,1); zv=AAV(z);
- RZ(zv[0]=rifvs(str(n,s))); 
- RZ(zv[1]=rifvs(vec(INT,6L,ts)));
-#if SY_64
- RZ(zv[2]=rifvs(sc(((I)f->nFileSizeHigh<<32) + (I)f->nFileSizeLow)));
-#else
- RZ(zv[2]=sc(   (f->nFileSizeHigh || 0>(I)f->nFileSizeLow)?-1:f->nFileSizeLow ));  
-#endif
- RZ(zv[3]=rifvs(str(3L,rwx)));
- RZ(zv[4]=rifvs(attv((S)f->dwFileAttributes)));
- R z;
-}
-
-F1(jtjdir){PROLOG(0102);A z,fn,*zv;I j=0,n=32;HANDLE fh; WIN32_FIND_DATAW f; C fnbuffer[10000]; C* name;
- ARGCHK1(w);
- RZ(w=vslit(!AR(w)&&BOX&AT(w)?ope(w):w));
- RZ(fn=jttoutf16x(jt,w)); USAV(fn)[AN(fn)]=0;
- fh=FindFirstFileW(USAV(fn),&f);
- GATV0(z,BOX,n,1); zv=AAV(z);  // allocate result area
- if (fh!=INVALID_HANDLE_VALUE) {
-  do {
-   jttoutf8w(jt,fnbuffer,sizeof fnbuffer,f.cFileName);
-   name = fnbuffer;
-   if(strcmp(name,".")&&strcmp(name,"..")){  // do not include . and .. as results
-    if(j==n){RZ(z=ext(0,z)); n=AN(z); zv=AAV(z);}  // if result area full, extend
-    A t; RZ(t=incorp(jtdir1(jt,&f,fnbuffer))); 
-    zv[j++]=t;
-   }
-  } while (FindNextFileW(fh,&f));
-  FindClose(fh);
- }
- z=j?ope(j<n?vec(BOX,j,zv):z):reshape(v2(0L,5L),ds(CACE));
- EPILOG(z);
-}
-
-F1(jtjfatt1){A y,fn;F f;U x;
- F1RANK(0,jtjfatt1,DUMMYSELF);
- RE(f=stdf(w)); if(f){RZ(y=fname(sc((I)f)))} else ASSERT(y=AAV(w)[0],EVFNUM)
- RZ(fn=toutf16x(y)); USAV(fn)[AN(fn)]=0;  // install termination
- x=GetFileAttributesW(USAV(fn));
- if(-1!=x) R attv(x);
- jsignal(EVFNAME); R 0; 
-}
-
-F2(jtjfatt2){A y,fn;F f;U x;
- F2RANK(1,0,jtjfatt2,DUMMYSELF);
- RE(x=attu(a));
- RE(f=stdf(w)); if(f){RZ(y=fname(sc((I)f)))} else ASSERT(y=vslit(AAV(w)[0]),EVFNUM)
- RZ(fn=toutf16x(y)); USAV(fn)[AN(fn)]=0;  // install termination
- if(SetFileAttributesW(USAV(fn), x)) R num(1);
- jsignal(EVFNAME); R 0;
-}
-
-#endif
 
 #if (SYS & SYS_UNIX)
 

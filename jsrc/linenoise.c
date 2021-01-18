@@ -12,14 +12,7 @@
 #undef MMSC_VER
 #endif
 
-#ifdef _WIN32
-#ifdef MMSC_VER
-#pragma warning(disable: 4244 4267)
-#define inline __inline
-#else
-#define inline __inline__ __attribute__((inline,__gnu_inline__))
-#endif
-#endif
+
 
 /* linenoise.c -- guerrilla line editing library against the idea that a
  * line editing lib needs to be 20,000 lines of C code.
@@ -132,26 +125,12 @@
  * This support based in part on work by Jon Griffiths.
  */
 
-#ifdef _WIN32 /* Windows platform, either MinGW or Visual Studio (MSVC) */
-#include <windows.h>
-#include <fcntl.h>
-#define USE_WINCONSOLE
-#ifdef __MINGW32__
-#define HAVE_UNISTD_H
-#else
-/* Microsoft headers don't like old POSIX names */
-#define strdup _strdup
-#if defined(MMSC_VER) && _MSC_VER < 1900
-#define snprintf _snprintf
-#endif
-#endif
-#else
+
 #include <termios.h>
 #include <sys/ioctl.h>
 #include <poll.h>
 #define USE_TERMIOS
 #define HAVE_UNISTD_H
-#endif
 
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>

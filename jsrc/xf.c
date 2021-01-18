@@ -5,10 +5,7 @@
 
 /* File functions accept file number or boxed file name or 1 or 2          */
 
-#ifdef _WIN32
-#include <windows.h>
-#include <winbase.h>
-#else
+
 #ifdef __GNUC__
 #define _GNU_SOURCE
 #include <dlfcn.h>
@@ -16,7 +13,6 @@
 #include <sys/types.h>
 #include <unistd.h>
 #include <fts.h>
-#endif
 
 #include "j.h"
 #include "x.h"
@@ -31,34 +27,21 @@ typedef long long INT64;
 static int rmdir2(const char *dir);
 #endif
 
-#if SY_WIN32 && !SY_WINCE
-#include <direct.h>
-#include <io.h>
-static int rmdir2(J jt, const wchar_t *dir);
-#endif
 
 
 #if SY_64
 static I fsize(F f){
  if(!f)R 0;
-#if SY_WIN32
- R _filelengthi64(_fileno(f));
-#else
+
  fpos_t z;
  fseek(f,0L,SEEK_END);
  fgetpos(f,&z);
  R *(I*)&z;
-#endif
 }
 #else
 static I fsize(F f){
  RZ(f);
-#if SY_WIN32
- R _filelength(_fileno(f));
-#else
- if(fseek(f,0L,SEEK_END))R -1;
- R ftell(f);
-#endif
+
 }
 #endif
 
@@ -394,21 +377,5 @@ finish:
  }
 
  return ret;
-}
-#endif
-#if SY_WIN32 && !SY_WINCE
-int rmdir2(J jt, const wchar_t *dir){A z;US*zv;
- SHFILEOPSTRUCTW sh;
- GATV0(z,C2T,wcslen(dir)+2,1); zv=USAV(z);
- memcpy(zv,dir,wcslen(dir)*sizeof(wchar_t));
- zv[1+wcslen(dir)]=zv[wcslen(dir)]=0;  // doubly null terminated string
- sh.hwnd   = NULL;
- sh.wFunc  = FO_DELETE;
- sh.pFrom  = zv;
- sh.pTo    = NULL;
- sh.fFlags = FOF_NOCONFIRMATION | FOF_SILENT;
- sh.hNameMappings = 0;
- sh.lpszProgressTitle = NULL;
- R SHFileOperationW (&sh);
 }
 #endif

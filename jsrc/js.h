@@ -155,11 +155,6 @@ define one of the following in the build as required
 #endif
 
 
-#ifdef _WIN32
-#define SYS                 SYS_PCWIN
-#undef  SY_WIN32
-#define SY_WIN32            1
-#endif
 
 #ifdef UNDER_CE
 #undef  SY_WINCE
