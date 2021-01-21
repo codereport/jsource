@@ -1,4 +1,5 @@
 # J: From C to C++20
+[![Build Status](https://travis-ci.com/codereport/jsource.svg?branch=main)](https://travis-ci.com/codereport/jsource)
 
 J is an [array programming language](https://en.wikipedia.org/wiki/Array_programming) created by [Ken Iverson](https://en.wikipedia.org/wiki/Kenneth_E._Iverson) and [Roger Hui](https://en.wikipedia.org/wiki/Roger_Hui) (see image below).
 
