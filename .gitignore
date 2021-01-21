@@ -1,8 +1,3 @@
-# jversion.h has 9!:14'' info
-# jversion-x.h default is in repo
-# jversion.h is your local edit copy and is not in repo
-jsrc/jversion.h
-
 #vscode
 .vscode/
 
