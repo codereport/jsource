@@ -6,6 +6,9 @@ os:
   - linux
 before_install:
   - sudo apt-get -y install ninja-build
+  - cmake --version
+  - pip install cmake
+  - cmake --version
 script:
   - cmake --version; cmake --log-level=VERBOSE -G "Ninja Multi-Config" -B build; ninja -j12 -C build
 branches:
