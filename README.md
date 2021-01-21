@@ -27,6 +27,10 @@ This is a fork of `jsoftware/jsource` and we will be porting it to C++20.
 * [ ] Clang-format the code base
 * [ ] Clang-tidy the code base
 * [ ] Set up Travis-CI
+   * [x] Setup for debug build
+   * [ ] Add release build
+   * [ ] Add release / debug build tests
+   * [ ] Add MacOS
 * [ ] Set up CodeCov
 * [ ] Set up [badges](https://github.com/badges/shields)
 * [ ] Get both build / tests running in parallel
