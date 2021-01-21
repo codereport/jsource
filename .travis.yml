@@ -1,0 +1,11 @@
+language: cpp
+compiler:
+  - clang
+  - gcc
+os:
+  - linux
+script:
+  - cmake -G "Ninja Multi-Config" -B build; ninja -j0 -C build
+branches:
+  only:
+    - main
