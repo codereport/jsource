@@ -7,7 +7,7 @@ os:
 before_install:
   - sudo apt-get -y install ninja-build
 script:
-  - cmake -G "Ninja Multi-Config" -B build; ninja -j12 -C build
+  - cmake --log-level=VERBOSE -G "Ninja Multi-Config" -B build; ninja -j12 -C build
 branches:
   only:
     - main
