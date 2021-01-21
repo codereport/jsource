@@ -88,7 +88,6 @@ add_compile_options($<$<COMPILE_LANG_AND_ID:CXX,AppleClang,Clang>:-Wno-delete-no
 
 add_subdirectory(jsrc)
 add_subdirectory(base64)
-add_subdirectory(dllsrc)
 add_subdirectory(jsrc/openssl/sha)
 
 if(BUILD_SHARED_LIBS)
@@ -97,7 +96,3 @@ if(BUILD_SHARED_LIBS)
     add_subdirectory(test)
 endif()
 target_link_libraries(j PRIVATE j-openssl-sha j-base64)
-if(WIN32)
-    target_link_libraries(j PRIVATE j-dll)
-    target_sources(j PRIVATE dllsrc/jdll.def dllsrc/jdll.rc dllsrc/jdll.tlb)
-endif()
