@@ -15,14 +15,8 @@ jobs:
         - linux
       before_install:
         - sudo apt-get -y install ninja-build
+        - sudo apt-get update clang
         - pip install cmake
-      addons:
-        apt:
-          sources:
-            - ubuntu-toolchain-r-test
-            - llvm-toolchain-precise-11
-            packages:
-              - clang-11
       script:
         - cmake --version; cmake --log-level=VERBOSE -G "Ninja Multi-Config" -B build; ninja -j12 -C build
         - ninja -j12 -C build -f build-Release.ninja
