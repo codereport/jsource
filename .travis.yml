@@ -31,7 +31,7 @@ jobs:
       os:
         - osx
       before_install:
-        - brew update
+        #- brew update
         - brew install ninja-build
         - brew install cmake
       script:
