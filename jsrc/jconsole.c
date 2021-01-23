@@ -257,7 +257,8 @@ int main(int argc, char* argv[])
 #endif
 
  jt=jeload(callbacks);
- if(!jt){jefail();}
+ if(!jt)
+	jefail();
  adadbreak=(char**)jt; // first address in jt is address of breakdata
  if(2==breadline){
   struct sigaction sa;
