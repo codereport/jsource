@@ -11,29 +11,12 @@ This is a fork of `jsoftware/jsource` and we will be porting it to C++20.
 
 ## Goals
 * [ ] Reduce complexity of build options
-   * [x] Remove [blis](https://github.com/flame/blis)
-   * [x] Remove [SLEEF](https://sleef.org/)
-   * [x] Remove AVX
-   * [x] Remove Neon
-   * [x] Remove SSE41
-   * [x] Remove SSE42
-   * [x] Remove SSSE3
-   * [x] Remove Android
-   * [x] Remove Windows (just use [WSL2](https://docs.microsoft.com/en-us/windows/wsl/compare-versions#whats-new-in-wsl-2))
-   * [ ] Remove Raspberry Pi (not sure if much to do here)
-   * [x] Remove blis
-   * [ ] Remove 32 bit support
-   * [ ] Remove big endian support
 * [ ] Compile with GCC 10+
 * [ ] Compile with Clang 11+
 * [ ] Remove all (most) of the macros
 * [ ] Clang-format the code base
 * [ ] Clang-tidy the code base
 * [ ] Set up Travis-CI
-   * [x] Setup for debug build
-   * [ ] Add release build
-   * [ ] Add release / debug build tests
-   * [ ] Add MacOS
 * [ ] Set up CodeCov
 * [ ] Set up [badges](https://github.com/badges/shields)
 * [ ] Get both build / tests running in parallel
