@@ -32,7 +32,7 @@ jobs:
         - osx
       before_install:
         #- brew update
-        - brew install ninja-build
+        - brew install ninja
         - brew install cmake
       script:
         - cmake --version; cmake --log-level=VERBOSE -G "Ninja Multi-Config" -B build; ninja -j12 -C build
