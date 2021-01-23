@@ -35,8 +35,8 @@ jobs:
 #            git clone git@github.com:hotkit/threading.git .circleci/threading
       - run:
           name: cmake
-         environment:
-           CMAKE_BUILD_TYPE: << parameters.variant >>
+          environment:
+            CMAKE_BUILD_TYPE: << parameters.variant >>
           command: cmake -G "Ninja Multi-Config" -B build # cmake -G Ninja -S .circleci -B .circleci
       - run:
           name: ninja
