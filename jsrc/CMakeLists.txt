@@ -194,6 +194,11 @@ if(OpenMP_C_FOUND)
     endif()
 endif()
 
+target_sources(j PRIVATE
+    blis.h
+    blis/gemm_vec-ref.c
+)
+
 if(NOT BUILD_SHARED_LIBS)
     return()
 endif()
