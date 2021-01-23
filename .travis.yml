@@ -4,6 +4,7 @@ compiler:
   - gcc
 os:
   - linux
+  - macOS
 before_install:
   - sudo apt-get -y install ninja-build
   - pip install cmake
