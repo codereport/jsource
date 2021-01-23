@@ -15,7 +15,6 @@ jobs:
         - linux
       before_install:
         - sudo apt-get -y install ninja-build
-        - sudo apt-get update clang
         - pip install cmake
       script:
         - cmake --version; cmake --log-level=VERBOSE -G "Ninja Multi-Config" -B build; ninja -j12 -C build
