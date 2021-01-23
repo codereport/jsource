@@ -91,7 +91,6 @@ set(test_cases
     g128x
     g128x3
     g128x5
-    g128x6
     g128x7
     g130
     g130a
@@ -253,7 +252,6 @@ set(test_cases
     g631
     g631c
     g632
-    g640
     g640k
     g640r
     g641
