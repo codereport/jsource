@@ -18,7 +18,11 @@ jobs:
         - pip install cmake
       addons:
         apt:
-          - clang-11
+          sources:
+            - ubuntu-toolchain-r-test
+            - llvm-toolchain-precise-11
+            packages:
+              - clang-11
       script:
         - cmake --version; cmake --log-level=VERBOSE -G "Ninja Multi-Config" -B build; ninja -j12 -C build
         - ninja -j12 -C build -f build-Release.ninja
