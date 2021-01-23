@@ -17,11 +17,11 @@ jobs:
         - sudo apt-get -y install ninja-build
         - pip install cmake
       script:
+        # Build
         - cmake --version; cmake --log-level=VERBOSE -G "Ninja Multi-Config" -B build; ninja -j12 -C build
         - ninja -j12 -C build -f build-Release.ninja
-        - ls build/jsrc/Debug
-        - ls build/jsrc/Release
-        - cd build; ctest -j12 -C Debug
+        # Tests
+        - cd build; ctest -VV -j12 -C Debug
       branches:
         only:
           - main
