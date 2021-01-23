@@ -3,7 +3,6 @@
 // utilities for JFE to load JE, initiallize, and run profile sentence
 // JFEs are jconsole, jwdw, and jwdp
 #include <string>
-#include <iostream>
 
 extern "C" {
 
