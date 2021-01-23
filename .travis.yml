@@ -21,7 +21,7 @@ jobs:
         - cmake --version; cmake --log-level=VERBOSE -G "Ninja Multi-Config" -B build; ninja -j12 -C build
         - ninja -j12 -C build -f build-Release.ninja
         # Tests
-        - cd build; ctest -VV -j12 -C Debug
+        - cd build; ctest -j12 -C Debug ## -VV
       branches:
         only:
           - main
