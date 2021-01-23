@@ -29,8 +29,9 @@ jobs:
         - clang
         - gcc
       os:
-        - linux
+        - osx
       before_install:
+        - brew update
         - brew install ninja-build
         - brew install cmake
       script:
