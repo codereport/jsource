@@ -3,7 +3,7 @@
 // utilities for JFE to load JE, initiallize, and run profile sentence
 // JFEs are jconsole, jwdw, and jwdp
 #include <string>
-
+#include <stdexcept>
 extern "C" {
 
 #define PLEN 1000 // path length
