@@ -22,7 +22,7 @@ jobs:
         type: executor
       variant:
         type: string
-   executor: << parameters.compiler >>
+    executor: << parameters.compiler >>
     steps:
       - checkout
 #      - run:
