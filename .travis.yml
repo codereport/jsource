@@ -3,7 +3,9 @@ stages:
   - build
 
 jobs:
-  includ:
+  include:
+  
+    # Linux
     - stage: build
       language: cpp
       compiler:
@@ -14,6 +16,23 @@ jobs:
       before_install:
         - sudo apt-get -y install ninja-build
         - pip install cmake
+      script:
+        - cmake --version; cmake --log-level=VERBOSE -G "Ninja Multi-Config" -B build; ninja -j12 -C build
+      branches:
+        only:
+          - main
+          
+    # macOS
+    - stage: build
+      language: cpp
+      compiler:
+        - clang
+        - gcc
+      os:
+        - linux
+      before_install:
+        - brew install ninja-build
+        - brew install cmake
       script:
         - cmake --version; cmake --log-level=VERBOSE -G "Ninja Multi-Config" -B build; ninja -j12 -C build
       branches:
