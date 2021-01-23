@@ -252,7 +252,6 @@ set(test_cases
     g631
     g631c
     g632
-    g640
     g640k
     g640r
     g641
