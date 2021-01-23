@@ -1,14 +1,47 @@
-language: cpp
-compiler:
-  - clang
-  - gcc
-os:
-  - linux
-before_install:
-  - sudo apt-get -y install ninja-build
-  - pip install cmake
-script:
-  - cmake --version; cmake --log-level=VERBOSE -G "Ninja Multi-Config" -B build; ninja -j12 -C build
-branches:
-  only:
-    - main
+
+stages:
+  - build
+
+jobs:
+  include:
+  
+    # Linux
+    - stage: build
+      language: cpp
+      compiler:
+        - clang
+        - gcc
+      os:
+        - linux
+      before_install:
+        - sudo apt-get -y install ninja-build
+        - pip install cmake
+      script:
+        - cmake --version; cmake --log-level=VERBOSE -G "Ninja Multi-Config" -B build; ninja -j12 -C build
+      branches:
+        only:
+          - main
+          
+    # macOS
+    - stage: build
+      language: cpp
+      compiler:
+        - clang
+        - gcc
+#       addons:
+#         homebrew:
+#           packages:
+#             - ninja
+      os:
+        - osx
+      osx_image: 
+        - xcode12
+      before_install:
+        #- brew update
+        - HOMEBREW_NO_AUTO_UPDATE=1 brew install ninja
+        #- brew install cmake
+      script:
+        - cmake --version; cmake --log-level=VERBOSE -G "Ninja Multi-Config" -B build; ninja -j12 -C build
+      branches:
+        only:
+          - main
