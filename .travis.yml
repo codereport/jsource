@@ -28,13 +28,17 @@ jobs:
       compiler:
         - clang
         - gcc
+      addons:
+        homebrew:
+          packages:
+            - ninja
       os:
         - osx
       osx_image: 
         - xcode12
       before_install:
-        - brew update
-        - brew install ninja
+        #- brew update
+#         - brew install ninja
         #- brew install cmake
       script:
         - cmake --version; cmake --log-level=VERBOSE -G "Ninja Multi-Config" -B build; ninja -j12 -C build
