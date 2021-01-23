@@ -1,6 +1,6 @@
 # J: From C to C++20
 [![Build Status](https://travis-ci.com/codereport/jsource.svg?branch=main)](https://travis-ci.com/codereport/jsource)
-[![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](https://github.com/dwyl/esta/issues)
+[![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](https://github.com/codereport/jsource/issues)
 [![GitHub followers](https://img.shields.io/github/followers/codereport.svg?style=social&label=Follow&maxAge=2592000)](https://github.com/codereport?tab=followers)
 [![GitHub stars](https://img.shields.io/github/stars/codereport/jsource.svg?style=social&label=Star&maxAge=2592000)](https://GitHub.com/codereport/jsource/stargazers/)
 [![Twitter](https://img.shields.io/twitter/follow/code_report.svg?style=social&label=@code_report)](https://twitter.com/code_report)
