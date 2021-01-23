@@ -3,8 +3,8 @@ version: 2.1
 
 executors:
   clang:
-#    docker:
-#    - image: fost/circleci
+   docker:
+   - image: cimg/base:2020.01
     environment:
       CC: clang
       CXX: clang++
