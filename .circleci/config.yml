@@ -55,4 +55,4 @@ workflows:
           matrix:
             parameters:
               compiler: [gcc, clang]
-              variant: [Debug, Release]
+              variant: [Debug]
