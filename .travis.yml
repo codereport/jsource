@@ -30,8 +30,10 @@ jobs:
         - gcc
       os:
         - osx
+      osx_image: 
+        - xcode12
       before_install:
-        #- brew update
+        - brew update
         - brew install ninja
         - brew install cmake
       script:
