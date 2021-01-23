@@ -90,5 +90,8 @@ add_subdirectory(jsrc)
 add_subdirectory(base64)
 
 if(BUILD_SHARED_LIBS)
+    set_target_properties(j-base64 PROPERTIES
+        POSITION_INDEPENDENT_CODE ON)
     add_subdirectory(test)
 endif()
+target_link_libraries(j PRIVATE j-base64)
