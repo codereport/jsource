@@ -19,9 +19,9 @@ jobs:
       script:
         - cmake --version; cmake --log-level=VERBOSE -G "Ninja Multi-Config" -B build; ninja -j12 -C build
         - ninja -j12 -C build -f build-Release.ninja
-      after_script:
-        - cd build
-        - ctest -j12 -C Debug
+        - ls build/jsrc/Debug
+        - ls build/jsrc/Release
+        - cd build; ctest -j12 -C Debug
       branches:
         only:
           - main
