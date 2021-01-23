@@ -16,6 +16,9 @@ jobs:
       before_install:
         - sudo apt-get -y install ninja-build
         - pip install cmake
+      addons:
+        apt:
+          - clang-11
       script:
         - cmake --version; cmake --log-level=VERBOSE -G "Ninja Multi-Config" -B build; ninja -j12 -C build
         - ninja -j12 -C build -f build-Release.ninja
