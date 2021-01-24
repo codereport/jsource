@@ -10,7 +10,7 @@ J is an [array programming language](https://en.wikipedia.org/wiki/Array_program
 This is a fork of `jsoftware/jsource` and we will be porting it to C++20.
 
 ## Goals
-* [ ] Reduce complexity of build options (https://github.com/codereport/jsource/issues/13)
+* [ ] [Reduce complexity of build options](https://github.com/codereport/jsource/issues/13)
 * [ ] Compile with GCC 10+
 * [ ] Compile with Clang 11+
 * [ ] Remove all (most) of the macros
