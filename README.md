@@ -7,7 +7,7 @@
 
 J is an [array programming language](https://en.wikipedia.org/wiki/Array_programming) created by [Ken Iverson](https://en.wikipedia.org/wiki/Kenneth_E._Iverson) and [Roger Hui](https://en.wikipedia.org/wiki/Roger_Hui) (see image below).
 
-This is a fork of [`jsoftware/jsource`](https://github.com/jsoftware/jsource) and we will be porting it to C++20.
+This is a fork of [`jsoftware/jsource`](https://github.com/jsoftware/jsource) and we will be porting it to [C++20](https://en.cppreference.com/w/cpp/20).
 
 ## Goals
 * [ ] [Reduce complexity of build options](https://github.com/codereport/jsource/issues/13)
