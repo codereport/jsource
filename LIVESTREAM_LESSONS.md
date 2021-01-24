@@ -28,7 +28,7 @@
 * To avoid crazy Travis-CI issues: HOMEBREW_NO_AUTO_UPDATE=1 brew install
 * `filename:` to filter for files on GitHub search
 * `path:` to filter for path on GitHub search
-* We also learned CirceCI is a PITA (and to just use Travis-CI)
+* We also learned CircleCI is a PITA (and to just use Travis-CI)
 * :star: We learned how to run tests in the jconsole:
 ```ijs
 testpath=: '/home/cph/jsource/test/'
