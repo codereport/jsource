@@ -1,4 +1,4 @@
-
+```
 *********************************************************************
 
 J SOURCE is all files in the distributed jsource folder.
@@ -15,5 +15,4 @@ in which case the terms and conditions of that license apply.
 Additional info at http://www.gnu.org/licenses.
 
 *********************************************************************
-
-
+```
