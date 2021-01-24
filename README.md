@@ -57,4 +57,6 @@ map ((+1) . (*2)) [0..9] -- alternative thanks to Alexandru Dinu
 ## Getting started & Building:
 For building this repository, please see [`CONTRIBUTING.md`](https://github.com/codereport/jsource/blob/main/CONTRIBUTING.md).
 
+
+## Image of Ken Iverson and Roger Hui
 ![image](https://user-images.githubusercontent.com/36027403/104798929-e4311700-5798-11eb-859c-5a55738daf79.png)
