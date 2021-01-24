@@ -1,10 +1,17 @@
 # <p align="center">J: From C to C++20</p>
-<p align="center">[![Build Status](https://travis-ci.com/codereport/jsource.svg?branch=main)](https://travis-ci.com/codereport/jsource)</p>
-<p align="center">[![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](https://github.com/dwyl/esta/issues)</p>
-<p align="center">[![GitHub followers](https://img.shields.io/github/followers/codereport.svg?style=social&label=Follow&maxAge=2592000)](https://github.com/codereport?tab=followers)</p>
-<p align="center">[![GitHub stars](https://img.shields.io/github/stars/codereport/jsource.svg?style=social&label=Star&maxAge=2592000)](https://GitHub.com/codereport/jsource/stargazers/)</p>
-<p align="center">[![Twitter](https://img.shields.io/twitter/follow/code_report.svg?style=social&label=@code_report)](https://twitter.com/code_report)</p>
 
+<p align="center">
+    <a href="https://travis-ci.com/codereport/jsource" alt="Build Status">
+        <img src="https://travis-ci.com/codereport/jsource.svg?branch=main" /></a>
+    <a href="https://github.com/dwyl/esta/issues" alt="contributions welcome">
+        <img src="https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat" /></a>
+    <a href="https://github.com/codereport?tab=followers" alt="GitHub followers">
+        <img src="https://img.shields.io/github/followers/codereport.svg?style=social&label=Follow&maxAge=2592000" /></a>
+    <a href="https://GitHub.com/codereport/jsource/stargazers/" alt="GitHub stars">
+        <img src="https://img.shields.io/github/stars/codereport/jsource.svg?style=social&label=Star&maxAge=2592000" /></a>
+    <a href="https://twitter.com/code_report" alt="Twitter">
+        <img src="https://img.shields.io/twitter/follow/code_report.svg?style=social&label=@code_report" /></a>
+</p>
 
 J is an [array programming language](https://en.wikipedia.org/wiki/Array_programming) created by [Ken Iverson](https://en.wikipedia.org/wiki/Kenneth_E._Iverson) and [Roger Hui](https://en.wikipedia.org/wiki/Roger_Hui) (see image below).
 
