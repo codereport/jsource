@@ -1,6 +1,3 @@
-//
-// Created by Ahmad Beirkdar on 2021-01-25.
-//
 
 #ifndef J_STRINGX_H
 #define J_STRINGX_H
