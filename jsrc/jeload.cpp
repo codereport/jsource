@@ -4,7 +4,7 @@
 // JFEs are jconsole, jwdw, and jwdp
 #include <string>
 #include <stdexcept>
-#include <iostream>
+#include "../util/stringx.h"
 
 extern "C" {
 
@@ -36,8 +36,10 @@ static JgaType jga;
 static JGetLocaleType jgetlocale;
 static JGetAType jgeta;
 static JSetAType jseta;
-char path[PLEN];
-char pathdll[PLEN];
+//char path[PLEN];
+//char pathdll[PLEN];
+std::string path;
+std::string pathdll;
 static char jdllver[20];
 static int FHS=0; // Not sure what this is
 
@@ -69,7 +71,7 @@ auto je_load_procedure_addresses(void* hjdll, void* callbacks) -> void {
 
 // load JE, Jinit, getprocaddresses, JSM
 J jeload(void* callbacks) {
-    hjdll = dlopen(pathdll,RTLD_LAZY);
+    hjdll = dlopen(pathdll.c_str(),RTLD_LAZY);
 
     if(!hjdll) {
         char* error = dlerror();
@@ -87,69 +89,74 @@ J jeload(void* callbacks) {
 // WIN arg is 0, Unix arg is argv[0]
 void jepath(char* arg,char* lib)
 {
-
- struct stat st;
-
  int32_t const sz  = 4000;
  int32_t len = sz; // Cant be const for function call _NSGetExecutablePath
 
- char arg2[sz];
- char arg3[sz];
- char* src;
- char *snk;
+ // C strings need to be used for POSIX APIs and macOS APIs
+ auto arg2 = new char[sz];
+ auto arg3 = new char[sz];
+ auto path_temp = new char[_PC_PATH_MAX];
+ // Return for readlinks
+ int n;
+
  // try host dependent way to get path to executable
  // use arg if they fail (arg command in PATH won't work)
 #ifdef __MACH__
- int n=_NSGetExecutablePath(arg2,&len);
- if(0!=n) strcat(arg2,arg);
+ // Returns 0 if path was copied, otherwise -1 if failed.
+ if(_NSGetExecutablePath(arg2,&len) != 0)
+     strcat(arg2,arg);
 #else
- int n=readlink("/proc/self/exe",arg2,sizeof(arg2));
- if(-1==n) strcpy(arg2,arg); else arg2[n]=0;
+ n = readlink("/proc/self/exe",arg2,len);
+ if( == -1)
+     strcpy(arg2,arg);
+ else
+     arg2[n]=0;
 #endif
  // arg2 is path (abs or relative) to executable or soft link
- n=readlink(arg2,arg3,sz);
- if(-1==n) strcpy(arg3,arg2); else arg3[n]=0;
+ n = readlink(arg2,arg3,sz);
+
+ if(n == -1)
+     strcpy(arg3,arg2);
+ else
+     arg3[n]=0;
+
  if('/'==*arg3)
-  strcpy(path,arg3);
+  strcpy(path_temp,arg3);
  else
  {
-  if(!getcwd(path,sizeof(path)))path[0]=0;
-  strcat(path,"/");
-  strcat(path,arg3);
+  if(!getcwd(path_temp,_PC_PATH_MAX))
+      path_temp[0]=0;
+  strcat(path_temp,"/");
+  strcat(path_temp,arg3);
  }
- *(1+strrchr(path,'/'))=0;
+ // Now append path_temp to path, as all POSIX and macOS API calls are done, and free up arg2, arg3, path_temp.
+ path.append(path_temp);
+ delete [] path_temp;
+ delete [] arg2;
+ delete [] arg3;
+
+ // Remove everything after the last / as that would be the current executables name
+ path.erase(std::next(path.begin(),path.rfind('/')),path.end());
+
+
+
  // remove ./ and backoff ../
- snk=src=path;
- while(*src)
- {
-	 if('/'==*src&&'.'==*(1+src)&&'.'==*(2+src)&&'/'==*(3+src))
-	 {
-		 *snk=0;
-		 snk=strrchr(path,'/');
-		 snk=nullptr==snk?path:snk;
-		 src+=3;
-	 }
-	 else if('/'==*src&&'.'==*(1+src)&&'/'==*(2+src))
-      src+=2;
-	 else
-	  *snk++=*src++;
- }
- *snk=0;
- snk=path+strlen(path)-1;
- if('/'==*snk) *snk=0;
- strcpy(pathdll,path);
- strcat(pathdll,filesepx);
- strcat(pathdll,JDLLNAME);
+ util::removeAllOccurrences(path,"../");
+ util::removeAllOccurrences(path,"./");
+
+ pathdll.append(path);
+ pathdll.append(filesepx);
+ pathdll.append(JDLLNAME);
 
  if(*lib)
  {
 	 if(filesep==*lib || ('\\'==filesep && ':'==lib[1]))
-		 strcpy(pathdll,lib); // absolute path
+         pathdll.append(lib);
 	 else
 	 {
-		 strcpy(pathdll,path);
-		 strcat(pathdll,filesepx);
-		 strcat(pathdll,lib); // relative path
+         pathdll.append(path);
+         pathdll.append(filesepx);
+         pathdll.append(lib);
 	 }
  }
 }
@@ -157,9 +164,9 @@ void jepath(char* arg,char* lib)
 // called by jwdp (java jnative.c) to set path
 void jesetpath(char* arg)
 {
-	strcpy(pathdll,arg); // jwdp gives path to j.dll
-	strcpy(path,arg);
-	if(strrchr(path,filesep))*(strrchr(path,filesep)) = 0;
+    pathdll.append(arg);
+    path.append(arg);
+    path.erase(std::next(path.begin(),path.rfind(filesep)),path.end());
 }
 
 
