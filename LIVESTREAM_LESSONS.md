@@ -27,3 +27,34 @@
 * Learned about Travis-CI
 * To avoid crazy Travis-CI issues: HOMEBREW_NO_AUTO_UPDATE=1 brew install
 * `filename:` to filter for files on GitHub search
+* `path:` to filter for path on GitHub search
+* We also learned CircleCI is a PITA (and to just use Travis-CI)
+* :star: We learned how to run tests in the jconsole:
+```ijs
+testpath=: '/home/cph/jsource/test/'
+0!:0 <testpath,'tsu.ijs'
+0!:2 <testpath,'<insert test name>.ijs'
+```
+* Learned the following about j
+```ijs
+-: NB. this is match
+|. NB. reverse
+]  NB. identity
+}. NB. drop
+{. NB. take
+
+palindrome =. (|. -: ])  NB. fork version
+palindrome =. (-: |.)    NB. hook version
+```
+* That Travis-CI is not free, you have 10,000 credits which get used per minute per OS 
+* We learned the following about CI pricing:
+
+|    Platform    | Free Linux Minutes |
+| :------------: | :----------------: |
+|   Travis CI    |        1000        |
+| Github Actions |        2000        |
+|   Buildkite    |     Infinity?      |
+
+* We learned for some reason macOS is 5-10x more costly when it comes to CI
+* ~~We should checkout GitHub actions~~
+* We should also look into [Buildkite](https://buildkite.com/)

@@ -7,10 +7,10 @@
 
 J is an [array programming language](https://en.wikipedia.org/wiki/Array_programming) created by [Ken Iverson](https://en.wikipedia.org/wiki/Kenneth_E._Iverson) and [Roger Hui](https://en.wikipedia.org/wiki/Roger_Hui) (see image below).
 
-This is a fork of `jsoftware/jsource` and we will be porting it to C++20.
+This is a fork of [`jsoftware/jsource`](https://github.com/jsoftware/jsource) and we will be porting it to [C++20](https://en.cppreference.com/w/cpp/20).
 
 ## Goals
-* [ ] Reduce complexity of build options
+* [ ] [Reduce complexity of build options](https://github.com/codereport/jsource/issues/13)
 * [ ] Compile with GCC 10+
 * [ ] Compile with Clang 11+
 * [ ] Remove all (most) of the macros
@@ -43,7 +43,7 @@ map ((+1) . (*2)) [0..9] -- alternative thanks to Alexandru Dinu
 ```
 **R**:
 ```R
--1+2*seq(10) -- thanks to Roi Barkan
+-1+2*seq(10) # thanks to Roi Barkan
 ```
 **APL**:
 ```apl
@@ -55,6 +55,8 @@ map ((+1) . (*2)) [0..9] -- alternative thanks to Alexandru Dinu
 ```
 
 ## Getting started & Building:
-For building this repository, please see `CONTRIBUTING.md`.
+For building this repository, please see [`CONTRIBUTING.md`](https://github.com/codereport/jsource/blob/main/CONTRIBUTING.md).
 
+
+## Image of Ken Iverson and Roger Hui
 ![image](https://user-images.githubusercontent.com/36027403/104798929-e4311700-5798-11eb-859c-5a55738daf79.png)

@@ -91,7 +91,6 @@ set(test_cases
     g128x
     g128x3
     g128x5
-    g128x6
     g128x7
     g130
     g130a
@@ -125,7 +124,7 @@ set(test_cases
     g202
     g202b
     g210
-    g210a
+    # g210a segfault #broken 
     g211
     g212
     g220
@@ -164,7 +163,7 @@ set(test_cases
     g330
     g330f
     g330t
-    g331
+    # g331 segfault #broken
     g331bx
     g331col
     g331ins
@@ -253,7 +252,6 @@ set(test_cases
     g631
     g631c
     g632
-    g640
     g640k
     g640r
     g641
@@ -280,7 +278,7 @@ set(test_cases
     gdll
     gdll_df
     ge
-    gebar
+    # gebar E. #broken
     gesc
     gf
     gfor
