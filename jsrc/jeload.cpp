@@ -95,7 +95,7 @@ void jepath(char* arg,char* lib)
  // C strings need to be used for POSIX APIs and macOS APIs
  auto arg2 = new char[sz];
  auto arg3 = new char[sz];
- auto path_temp = new char[_PC_PATH_MAX];
+ auto path_temp = new char[sz];
  // Return for readlinks
  int n;
 
@@ -106,7 +106,7 @@ void jepath(char* arg,char* lib)
  if(_NSGetExecutablePath(arg2,&len) != 0)
      strcat(arg2,arg);
 #else
- n = readlink("/proc/self/exe",arg2,len);
+ n = readlink("/proc/self/exe",arg2,sizeof(arg2));
  if( n == -1)
      strcpy(arg2,arg);
  else
@@ -124,8 +124,8 @@ void jepath(char* arg,char* lib)
   strcpy(path_temp,arg3);
  else
  {
-  if(!getcwd(path_temp,_PC_PATH_MAX))
-      path_temp[0]=0;
+ if(!getcwd(path_temp,sizeof(path_temp)))
+    path_temp[0]=0;
   strcat(path_temp,"/");
   strcat(path_temp,arg3);
  }
