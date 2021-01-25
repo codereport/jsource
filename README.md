@@ -1,11 +1,11 @@
 # J: From C to C++20
-[![Build status](https://badge.buildkite.com/836b4e62ac875246eb46bcf44cc5522af1ffca85451354c87d.svg)](https://buildkite.com/codereport/jsource)
+[![Build status](https://badge.buildkite.com/836b4e62ac875246eb46bcf44cc5522af1ffca85451354c87d.svg?branch=main)](https://buildkite.com/codereport/jsource)
 [![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](https://github.com/codereport/jsource/issues)
 [![GitHub followers](https://img.shields.io/github/followers/codereport.svg?style=social&label=Follow&maxAge=2592000&service=github)](https://github.com/codereport?tab=followers)
 [![GitHub stars](https://img.shields.io/github/stars/codereport/jsource.svg?style=social&label=Star&maxAge=2592000&service=github)](https://GitHub.com/codereport/jsource/stargazers/)
 [![Twitter](https://img.shields.io/twitter/follow/code_report.svg?style=social&label=@code_report)](https://twitter.com/code_report)
 
-J is an [array programming language](https://en.wikipedia.org/wiki/Array_programming) created by [Ken Iverson](https://en.wikipedia.org/wiki/Kenneth_E._Iverson) and [Roger Hui](https://en.wikipedia.org/wiki/Roger_Hui) (see image below).
+J is an [array programming language](https://en.wikipedia.org/wiki/Array_programming) created by [Ken Iverson](https://en.wikipedia.org/wiki/Kenneth_E._Iverson) and [Roger Hui](https://en.wikipedia.org/wiki/Roger_Hui) ([see image below](https://github.com/codereport/jsource#image-of-ken-iverson-and-roger-hui)).
 
 This is a fork of [`jsoftware/jsource`](https://github.com/jsoftware/jsource) and we will be porting it to [C++20](https://en.cppreference.com/w/cpp/20).
 

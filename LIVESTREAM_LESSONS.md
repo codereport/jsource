@@ -52,9 +52,12 @@ palindrome =. (-: |.)    NB. hook version
 |    Platform    | Free Linux Minutes |
 | :------------: | :----------------: |
 |   Travis CI    |        1000        |
+| Azure Pipelines|        1800        |
 | Github Actions |        2000        |
 |   Buildkite    |     Infinity?      |
+|   Appveyor     |     Infinity?      |
 
 * We learned for some reason macOS is 5-10x more costly when it comes to CI
 * ~~We should checkout GitHub actions~~
 * We should also look into [Buildkite](https://buildkite.com/)
+* Maybe also [Appveyor](https://www.appveyor.com)
