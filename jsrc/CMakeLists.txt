@@ -224,6 +224,8 @@ target_sources(jconsole PRIVATE
     jeload.h
     jeload.cpp
     jlib.h
+        ../util/stringx.cpp
+        ../util/stringx.h
 )
 file(TO_NATIVE_PATH "${PROJECT_SOURCE_DIR}/jlibrary/bin" J_BINPATH)
 file(TO_NATIVE_PATH "/profile.ijs" J_PROFILE_SCRIPT)

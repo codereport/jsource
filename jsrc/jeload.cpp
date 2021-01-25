@@ -107,7 +107,7 @@ void jepath(char* arg,char* lib)
      strcat(arg2,arg);
 #else
  n = readlink("/proc/self/exe",arg2,len);
- if( == -1)
+ if( n == -1)
      strcpy(arg2,arg);
  else
      arg2[n]=0;
