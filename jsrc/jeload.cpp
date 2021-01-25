@@ -106,11 +106,11 @@ void jepath(char* arg,char* lib)
  if(_NSGetExecutablePath(arg2,&len) != 0)
      strcat(arg2,arg);
 #else
- n = readlink("/proc/self/exe",arg2,sizeof(arg2));
- if( n == -1)
-     strcpy(arg2,arg);
- else
-     arg2[n]=0;
+    n = readlink("/proc/self/exe",arg2,sz);
+    if(n == -1)
+        strcpy(arg2,arg);
+    else
+        arg2[n]=0;
 #endif
  // arg2 is path (abs or relative) to executable or soft link
  n = readlink(arg2,arg3,sz);
