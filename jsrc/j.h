@@ -478,15 +478,10 @@ extern unsigned int __cdecl _clearfp (void);
 #define jround(x) floor(0.5+(x))  // for paranoid compatibility with earlier versions
 
 
-#define BB              8      /* # bits in a byte */
-#define LGBB 3    // lg(BB)
-#if SY_64
-#define BW              64     /* # bits in a word */
-#define LGSZI 3    // lg(#bytes in an I)
-#else
-#define BW              32
-#define LGSZI 2
-#endif
+#define BB    8            // # bits in a byte 
+#define LGBB  3            // lg(BB)
+#define BW    64           // # bits in a word 
+#define LGSZI 3            // lg(#bytes in an I)
 #define LGBW (LGSZI+LGBB)  // lg (# bits in a word)
 
 // nominal cache sizes for current processors
