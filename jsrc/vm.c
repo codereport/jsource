@@ -5,10 +5,6 @@
 
 #include "j.h"
 #include "ve.h"
-#if defined(__GNUC__)
-static int64_t m7f = 0x7fffffffffffffffLL;
-#define COMMA ,
-#endif
 
 D jtintpow(J jt,D x,I n){D r=1;
  if(0>n){x=1/x; if(n==IMIN){r=x; n=IMAX;} else n=-n;}  // kludge use r=x; n=-1-n;
