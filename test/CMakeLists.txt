@@ -205,7 +205,7 @@ set(test_cases
     g422sort
     g422sort1
     g422tao
-    g430
+    # g430
     g430a2
     g430avg
     g430b
