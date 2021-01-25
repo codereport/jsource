@@ -163,62 +163,61 @@ void jesetpath(char* arg)
 
 
 }
+extern "C" {
+    // build and run first sentence to set BINPATH, ARGV, and run profile
+    // arg is command line ready to set in ARGV_z_
+    // type is 0 normal, 1 -jprofile xxx, 2 ijx basic, 3 nothing
+    // profile[ARGV_z_=:...[BINPATH=:....
+    // profile is from BINPATH, ARGV, ijx basic, or nothing
+    int jefirst(int type, char *arg) {
+        std::string input;
 
-extern "C" void jefail()
-{
-    throw std::invalid_argument("Load library " + std::string(pathdll) + " failed: " + std::string(strerror(errno)));
-}
+        if (type == 0) {
+            if (!FHS)
+                input.append("(3 : '0!:0 y')<BINPATH,'");
+            else {
+                input.append("(3 : '0!:0 y')<'/etc/j/");
+                input.append(jdllver);
+            }
+            input.append(filesepx);
+            input.append("profile.ijs'");
+        } else if (type == 1)
+            input.append("(3 : '0!:0 y')2{ARGV");
+        else if (type == 2)
+            input.append("");
+        else
+            input.append("i.0 0");
 
-// build and run first sentence to set BINPATH, ARGV, and run profile
-// arg is command line ready to set in ARGV_z_
-// type is 0 normal, 1 -jprofile xxx, 2 ijx basic, 3 nothing
-// profile[ARGV_z_=:...[BINPATH=:....
-// profile is from BINPATH, ARGV, ijx basic, or nothing
-extern "C" int jefirst(int type, char* arg)
-{
-    std::string input;
+        input.append("[ARGV_z_=:");
+        input.append(arg);
 
-    if(type == 0) {
-        if (!FHS)
-            input.append("(3 : '0!:0 y')<BINPATH,'");
-        else {
-            input.append("(3 : '0!:0 y')<'/etc/j/");
-            input.append(jdllver);
+    #if defined(__MACH__)
+        input.append("[UNAME_z_=:'Darwin'");
+    #endif
+        input.append("[BINPATH_z_=:'");
+
+        // Getting bin path
+        std::string p{path};
+        for (const auto &i: p) {
+            if (i == '\'')
+                input += '\'';
+            input += i;
         }
-        input.append(filesepx);
-        input.append("profile.ijs'");
+        input.append("'[LIBFILE_z_=:'");
+        p = std::string(pathdll);
+        for (const auto &i: p) {
+            if (i == '\'')
+                input += '\'';
+            input += i;
+        }
+        input.append("'");
+
+        // TODO: When jedo is refactored, change this
+        return jedo(input.c_str());
     }
-    else if(type == 1)
-        input.append("(3 : '0!:0 y')2{ARGV");
-    else if(type == 2)
-        input.append("");
-    else
-        input.append("i.0 0");
 
-    input.append("[ARGV_z_=:");
-    input.append(arg);
-
-#if defined(__MACH__)
-    input.append("[UNAME_z_=:'Darwin'");
-#endif
-    input.append("[BINPATH_z_=:'");
-
-    // Getting bin path
-    std::string p{path};
-    for(const auto &i: p){
-        if(i == '\'')
-            input += '\'';
-        input += i;
+    void jefail() {
+        throw std::invalid_argument("Load library " + std::string(pathdll) + " failed: " + std::string(strerror(errno)));
     }
-    input.append("'[LIBFILE_z_=:'");
-    p = std::string(pathdll);
-    for(const auto &i: p){
-        if(i == '\'')
-            input += '\'';
-        input += i;
-    }
-    input.append("'");
 
-    // TODO: When jedo is refactored, change this
-    return jedo(input.c_str());
 }
