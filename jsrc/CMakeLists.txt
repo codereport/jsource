@@ -7,10 +7,10 @@ target_compile_definitions(j PRIVATE C_NA=0 C_AVX=1 C_AVX2=1 EMU_AVX=1)
 target_link_libraries(j PRIVATE ${STANDARD_MATH_LIBRARY})
 set_source_files_properties(aes-ni.c PROPERTIES COMPILE_FLAGS -maes)
 target_sources(j PRIVATE
-    a.h
+    adverbs/a.h
     aes-arm_table.h
     aes-c.h
-    ar.h
+    adverbs/ar.h
     cip_t.h
     cipfloatmm_t.h
     cpuinfo.h
@@ -51,20 +51,20 @@ target_sources(j PRIVATE
     w.h
     x.h
     xc.h
-    a.c
-    ab.c
+    adverbs/adverbs.c
+    adverbs/ab.c
     aes-c.c
     aes-ni.c
-    af.c
-    ai.c
-    am.c
-    am1.c
-    amn.c
-    ao.c
-    ap.c
-    ar.c
-    as.c
-    au.c
+    adverbs/af.c
+    adverbs/ai.c
+    adverbs/am.c
+    adverbs/am1.c
+    adverbs/amn.c
+    adverbs/ao.c
+    adverbs/ap.c
+    adverbs/ar.c
+    adverbs/as.c
+    adverbs/au.c
     c.c
     ca.c
     cc.c
