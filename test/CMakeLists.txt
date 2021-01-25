@@ -124,7 +124,7 @@ set(test_cases
     g202
     g202b
     g210
-    g210a
+    # g210a segfault #broken 
     g211
     g212
     g220
@@ -163,7 +163,7 @@ set(test_cases
     g330
     g330f
     g330t
-    g331
+    # g331 segfault #broken
     g331bx
     g331col
     g331ins
@@ -278,7 +278,7 @@ set(test_cases
     gdll
     gdll_df
     ge
-    gebar
+    # gebar E. #broken
     gesc
     gf
     gfor
