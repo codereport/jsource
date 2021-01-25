@@ -54,7 +54,9 @@ palindrome =. (-: |.)    NB. hook version
 |   Travis CI    |        1000        |
 | Github Actions |        2000        |
 |   Buildkite    |     Infinity?      |
+|   Appveyor     |     Infinity?      |
 
 * We learned for some reason macOS is 5-10x more costly when it comes to CI
 * ~~We should checkout GitHub actions~~
 * We should also look into [Buildkite](https://buildkite.com/)
+* Maybe also [Appvayor](https://www.appveyor.com)
