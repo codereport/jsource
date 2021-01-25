@@ -36,8 +36,6 @@ static JgaType jga;
 static JGetLocaleType jgetlocale;
 static JGetAType jgeta;
 static JSetAType jseta;
-//char path[PLEN];
-//char pathdll[PLEN];
 std::string path;
 std::string pathdll;
 static char jdllver[20];
@@ -85,93 +83,86 @@ J jeload(void* callbacks) {
     return jt;
 }
 
-// set path and pathdll (wpath also set for win)
-// WIN arg is 0, Unix arg is argv[0]
-void jepath(char* arg,char* lib)
-{
- int32_t const sz  = 4000;
- int32_t len = sz; // Cant be const for function call _NSGetExecutablePath
-
- // C strings need to be used for POSIX APIs and macOS APIs
- auto arg2 = new char[sz];
- auto arg3 = new char[sz];
- auto path_temp = new char[sz];
- // Return for readlinks
- int n;
-
- // try host dependent way to get path to executable
- // use arg if they fail (arg command in PATH won't work)
-#ifdef __MACH__
- // Returns 0 if path was copied, otherwise -1 if failed.
- if(_NSGetExecutablePath(arg2,&len) != 0)
-     strcat(arg2,arg);
-#else
-    n = readlink("/proc/self/exe",arg2,sz);
-    if(n == -1)
-        strcpy(arg2,arg);
-    else
-        arg2[n]=0;
-#endif
- // arg2 is path (abs or relative) to executable or soft link
- n = readlink(arg2,arg3,sz);
-
- if(n == -1)
-     strcpy(arg3,arg2);
- else
-     arg3[n]=0;
-
- if('/'==*arg3)
-  strcpy(path_temp,arg3);
- else
- {
- if(!getcwd(path_temp,sizeof(path_temp)))
-    path_temp[0]=0;
-  strcat(path_temp,"/");
-  strcat(path_temp,arg3);
- }
- // Now append path_temp to path, as all POSIX and macOS API calls are done, and free up arg2, arg3, path_temp.
- path.append(path_temp);
- delete [] path_temp;
- delete [] arg2;
- delete [] arg3;
-
- // Remove everything after the last / as that would be the current executables name
- path.erase(std::next(path.begin(),path.rfind('/')),path.end());
-
-
-
- // remove ./ and backoff ../
- util::removeAllOccurrences(path,"../");
- util::removeAllOccurrences(path,"./");
-
- pathdll.append(path);
- pathdll.append(filesepx);
- pathdll.append(JDLLNAME);
-
- if(*lib)
- {
-	 if(filesep==*lib || ('\\'==filesep && ':'==lib[1]))
-         pathdll.append(lib);
-	 else
-	 {
-         pathdll.append(path);
-         pathdll.append(filesepx);
-         pathdll.append(lib);
-	 }
- }
-}
-
-// called by jwdp (java jnative.c) to set path
-void jesetpath(char* arg)
-{
-    pathdll.append(arg);
-    path.append(arg);
-    path.erase(std::next(path.begin(),path.rfind(filesep)),path.end());
-}
-
-
 }
 extern "C" {
+    // set path and pathdll (wpath also set for win)
+    // WIN arg is 0, Unix arg is argv[0]
+    void jepath(char* arg,char* lib)
+    {
+        int32_t const sz  = 4000;
+        int32_t len = sz; // Cant be const for function call _NSGetExecutablePath
+
+        // C strings need to be used for POSIX APIs and macOS APIs
+        auto arg2 = new char[sz];
+        auto arg3 = new char[sz];
+        auto path_temp = new char[sz];
+        // Return for readlinks
+        int n;
+
+        // try host dependent way to get path to executable
+        // use arg if they fail (arg command in PATH won't work)
+    #ifdef __MACH__
+        // Returns 0 if path was copied, otherwise -1 if failed.
+        if(_NSGetExecutablePath(arg2,&len) != 0)
+            strcat(arg2,arg);
+    #else
+        n = readlink("/proc/self/exe",arg2,sz);
+        if(n == -1)
+            strcpy(arg2,arg);
+        else
+            arg2[n]=0;
+    #endif
+        // arg2 is path (abs or relative) to executable or soft link
+        n = readlink(arg2,arg3,sz);
+
+        if(n == -1)
+            strcpy(arg3,arg2);
+        else
+            arg3[n]=0;
+
+        if('/'==*arg3)
+            strcpy(path_temp,arg3);
+        else
+        {
+            if(!getcwd(path_temp,sizeof(path_temp)))
+                path_temp[0]=0;
+            strcat(path_temp,"/");
+            strcat(path_temp,arg3);
+        }
+        // Now append path_temp to path, as all POSIX and macOS API calls are done, and free up arg2, arg3, path_temp.
+        path.append(path_temp);
+        delete [] path_temp;
+        delete [] arg2;
+        delete [] arg3;
+
+        // Remove everything after the last / as that would be the current executables name
+        path.erase(std::next(path.begin(),path.rfind('/')),path.end());
+
+        // remove ./ and backoff ../
+        util::removeAllOccurrences(path,"../");
+        util::removeAllOccurrences(path,"./");
+
+        pathdll.append(path);
+        pathdll.append(filesepx);
+        pathdll.append(JDLLNAME);
+
+        if(*lib){
+            if(filesep != *lib){
+                pathdll.append(path);
+                pathdll.append(filesepx);
+            }
+            pathdll.append(lib);
+        }
+
+    }
+
+    // called by jwdp (java jnative.c) to set path
+    void jesetpath(char* arg)
+    {
+        pathdll.append(arg);
+        path.append(arg);
+        path.erase(std::next(path.begin(),path.rfind(filesep)),path.end());
+    }
     // build and run first sentence to set BINPATH, ARGV, and run profile
     // arg is command line ready to set in ARGV_z_
     // type is 0 normal, 1 -jprofile xxx, 2 ijx basic, 3 nothing
