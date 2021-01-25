@@ -16,12 +16,12 @@ This is a fork of [`jsoftware/jsource`](https://github.com/jsoftware/jsource) an
 * [ ] Remove all (most) of the macros
 * [ ] Clang-format the code base
 * [ ] Clang-tidy the code base
-* [ ] Set up Travis-CI
+* [x] Set up CI (Buildkite)
 * [ ] Set up CodeCov
-* [ ] Set up [badges](https://github.com/badges/shields)
-* [ ] Get both build / tests running in parallel
+* [x] Set up [badges](https://github.com/badges/shields)
+* [x] Get both build / tests running in parallel
    * [x] Parallel build (for free off of zhihaoy branch)
-   * [ ] Parallel tests
+   * [x] Parallel tests
 * [ ] Monitor compile & run time perf while refactoring
 
 ## Non-Codebase Goals
