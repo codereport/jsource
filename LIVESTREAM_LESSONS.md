@@ -52,6 +52,7 @@ palindrome =. (-: |.)    NB. hook version
 |    Platform    | Free Linux Minutes |
 | :------------: | :----------------: |
 |   Travis CI    |        1000        |
+| Azure Pipelines|        1800        |
 | Github Actions |        2000        |
 |   Buildkite    |     Infinity?      |
 |   Appveyor     |     Infinity?      |
