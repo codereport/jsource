@@ -129,11 +129,6 @@ F1(jtversq){
  strcat(p, "-");
  sprintf(p + strlen(p), "%i", __GNUC_MINOR__);
 #endif
- 
-#if SLEEF
- strcat(p,"/SLEEF=1");
-#else
- strcat(p,"/SLEEF=0");
-#endif
+
  R cstr(m);
 }

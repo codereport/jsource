@@ -133,10 +133,6 @@ typedef double float64x2_t __attribute__ ((vector_size (16)));
 #undef VOIDARG
 #define VOIDARG
 
-#if SLEEF
-#include "../sleef/include/sleef.h"
-#endif
-
 #if defined(_OPENMP)
 #include <omp.h>
 #else
