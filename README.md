@@ -1,5 +1,5 @@
 # J: From C to C++20
-[![Build status](https://badge.buildkite.com/836b4e62ac875246eb46bcf44cc5522af1ffca85451354c87d.svg)](https://buildkite.com/codereport/jsource?branch=main)
+[![Build status](https://badge.buildkite.com/836b4e62ac875246eb46bcf44cc5522af1ffca85451354c87d.svg?branch=main)](https://buildkite.com/codereport/jsource)
 [![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](https://github.com/codereport/jsource/issues)
 [![GitHub followers](https://img.shields.io/github/followers/codereport.svg?style=social&label=Follow&maxAge=2592000&service=github)](https://github.com/codereport?tab=followers)
 [![GitHub stars](https://img.shields.io/github/stars/codereport/jsource.svg?style=social&label=Star&maxAge=2592000&service=github)](https://GitHub.com/codereport/jsource/stargazers/)
