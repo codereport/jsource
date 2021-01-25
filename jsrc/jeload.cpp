@@ -44,15 +44,28 @@ static int FHS=0; // Not sure what this is
 
 int jedo(const char* sentence)
 {
-    return jdo(jt,(C*)sentence);
+    return jdo(jt,reinterpret_cast<C*>(const_cast<char *>(sentence)));
 }
 
-A jegeta(I n, char* s){return jgeta(jt,n,(C*)s);}
-I jeseta(I n,char* name,I x,char* d){return jseta(jt,n,(C*)name,x,(C*)d);}
+A jegeta(I n, char* s){
+    return jgeta(jt,n,reinterpret_cast<C*>(s));
+}
 
-void jefree(){jfree(jt);}
-char* jegetlocale(){return (char*)jgetlocale(jt);}
-A jega(I t, I n, I r, I*s){return jga(jt,t,n,r,s);}
+I jeseta(I n,char* name,I x,char* d){
+    return jseta(jt,n,reinterpret_cast<C*>(name),x,reinterpret_cast<C*>(d));
+}
+
+void jefree(){
+    jfree(jt);
+}
+
+char* jegetlocale(){
+    return reinterpret_cast<char*>(jgetlocale(jt));
+}
+
+A jega(I t, I n, I r, I*s){
+    return jga(jt,t,n,r,s);
+}
 
 void* jehjdll() { return hjdll; }
 
@@ -163,6 +176,7 @@ extern "C" {
         path.append(arg);
         path.erase(std::next(path.begin(),path.rfind(filesep)),path.end());
     }
+
     // build and run first sentence to set BINPATH, ARGV, and run profile
     // arg is command line ready to set in ARGV_z_
     // type is 0 normal, 1 -jprofile xxx, 2 ijx basic, 3 nothing
