@@ -214,9 +214,6 @@ static inline omp_int_t omp_get_max_threads() { return 1;}
 #endif
 #endif
 
-
-
-#if SY_64
 #define IMAX            9223372036854775807LL
 #define IMIN            (~9223372036854775807LL)   /* ANSI C LONG_MIN is  -LONG_MAX */
 #define FLIMAX          9223372036854775296.     // largest FL value that can be converted to I
@@ -226,20 +223,7 @@ static inline omp_int_t omp_get_max_threads() { return 1;}
 #define FMTI04          "%04lli"
 #define FMTI05          "%05lli"
 
-
 #define strtoI          strtoll
-
-#else
-#define IMAX            2147483647L
-#define IMIN            (~2147483647L)   /* ANSI C LONG_MIN is  -LONG_MAX */
-#define FLIMAX          ((D)IMAX+0.4)     // largest FL value that can be converted to I
-#define FLIMIN          ((D)IMIN)  // smallest FL value that can be converted to I
-#define FMTI            "%li"
-#define FMTI02          "%02li"
-#define FMTI04          "%04li"
-#define FMTI05          "%05li"
-#define strtoI          strtol
-#endif
 
 #define NEGATIVE0       0x8000000000000000LL   // IEEE -0 (double precision)
 
@@ -348,12 +332,9 @@ extern unsigned int __cdecl _clearfp (void);
 #endif
 #endif
 
-#if SY_64
-
 #ifdef __GNUC__
 #define RESTRICTI // __restrict  don't take chances
 #endif
-#endif  // SY_64
 
 #ifndef RESTRICT
 #define RESTRICT
@@ -416,7 +397,7 @@ extern unsigned int __cdecl _clearfp (void);
 // Since startup calls 18!:4 without a name, we have to allow for the possibility of deep recursion in the name stack.  Normally only a little of the stack is used
 #define NFCALL          (NFDEP/2)      // call depth for named calls, not important
 // Now we are trying to watch the C stack directly
-#define CSTACKSIZE      (SY_64?12000000:1000000)  // size we allocate in the calling function
+#define CSTACKSIZE      (12000000)  // size we allocate in the calling function
 #define CSTACKRESERVE   100000  // amount we allow for slop before we sample the stackpointer, and after the last check
 #define USECSTACK       1   // 0 to go back to counting J recursions    
 
