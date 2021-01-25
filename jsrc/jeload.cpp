@@ -228,7 +228,6 @@ int jefirst(int type,char* arg)
 
 }
 
-// Refactored to C++
 extern "C" void jefail()
 {
     throw std::invalid_argument("Load library " + std::string(pathdll) + " failed: " + std::string(strerror(errno)));
