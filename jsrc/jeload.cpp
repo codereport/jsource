@@ -2,6 +2,7 @@
 /* Licensed use only. Any other use is in violation of copyright.          */
 // utilities for JFE to load JE, initiallize, and run profile sentence
 // JFEs are jconsole, jwdw, and jwdp
+// TODO: Remove all void* where applicable when other parts of the code start being refactored
 #include <string>
 #include <stdexcept>
 #include "../util/stringx.h"
@@ -35,33 +36,29 @@ extern "C" {
     static int FHS=0; // Not sure what this is
 
 
-    int jedo(const char* sentence)
+    auto jedo(const char* sentence) -> int
     {
         return jdo(jt,reinterpret_cast<C*>(const_cast<char *>(sentence)));
     }
 
-    A jegeta(I n, char* s){
+    auto jegeta(I n, char* s) -> A {
         return jgeta(jt,n,reinterpret_cast<C*>(s));
     }
 
-    I jeseta(I n,char* name,I x,char* d){
+    auto jeseta(I n,char* name,I x,char* d) -> I {
         return jseta(jt,n,reinterpret_cast<C*>(name),x,reinterpret_cast<C*>(d));
     }
 
-    void jefree(){
+    auto jefree() -> void{
         jfree(jt);
     }
 
-    char* jegetlocale(){
+    auto jegetlocale() -> char* {
         return reinterpret_cast<char*>(jgetlocale(jt));
     }
 
-    A jega(I t, I n, I r, I*s){
+    auto jega(I t, I n, I r, I*s) -> A {
         return jga(jt,t,n,r,s);
-    }
-
-    void* jehjdll() {
-        return hjdll;
     }
 
     auto je_load_procedure_addresses(void* hjdll, void* callbacks) -> void {
