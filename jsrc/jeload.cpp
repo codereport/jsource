@@ -4,6 +4,7 @@
 // JFEs are jconsole, jwdw, and jwdp
 #include <string>
 #include <stdexcept>
+#include <iostream>
 
 extern "C" {
 
@@ -195,21 +196,9 @@ extern "C" {
         input.append("[UNAME_z_=:'Darwin'");
     #endif
         input.append("[BINPATH_z_=:'");
-
-        // Getting bin path
-        std::string p{path};
-        for (const auto &i: p) {
-            if (i == '\'')
-                input += '\'';
-            input += i;
-        }
+        input.append(path);
         input.append("'[LIBFILE_z_=:'");
-        p = std::string(pathdll);
-        for (const auto &i: p) {
-            if (i == '\'')
-                input += '\'';
-            input += i;
-        }
+        input.append(pathdll);
         input.append("'");
 
         // TODO: When jedo is refactored, change this
