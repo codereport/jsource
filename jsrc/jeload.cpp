@@ -171,7 +171,6 @@ int jefirst(int type,char* arg)
 	int r;
 	char* p;
 	char* q;
-//	char* input=static_cast<char* >(malloc(2000+strlen(arg)));
 	auto input = new char[2000+strlen(arg)];
 
 	*input=0;
