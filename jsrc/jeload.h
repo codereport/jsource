@@ -3,10 +3,10 @@
 
 #pragma once
 
+
 void jepath(char*,char *);
 void jesetpath(char*);
 void* jeload(void* callbacks); // returns J
-int jefirst(int,char*);
 A jegeta(int,char*);
 I jeseta(I n,char* name,I x,char* d);
 int jedo(char*); // could be jedi
@@ -15,3 +15,6 @@ char* jegetlocale();
 void jefail();
 void* jega(I t, I n, I r, I*s); // returns A
 void* jehjdll();
+
+
+extern int jefirst(int type,char* arg);

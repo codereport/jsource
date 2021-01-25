@@ -25,7 +25,7 @@ extern "C" {
 
 #include "j.h"
 #include "jversion.h"
-#include <stdint.h>
+#include <cstdint>
 
 static void* hjdll; // handle to J DLL
 static J jt;
@@ -38,7 +38,7 @@ static JSetAType jseta;
 char path[PLEN];
 char pathdll[PLEN];
 static char jdllver[20];
-static int FHS=0;
+static int FHS=0; // Not sure what this is
 
 
 int jedo(char* sentence)
@@ -161,74 +161,77 @@ void jesetpath(char* arg)
 	if(strrchr(path,filesep))*(strrchr(path,filesep)) = 0;
 }
 
-// build and run first sentence to set BINPATH, ARGV, and run profile
-// arg is command line ready to set in ARGV_z_
-// type is 0 normal, 1 -jprofile xxx, 2 ijx basic, 3 nothing
-// profile[ARGV_z_=:...[BINPATH=:....
-// profile is from BINPATH, ARGV, ijx basic, or nothing
-int jefirst(int type,char* arg)
-{
-	int r;
-	char* p;
-	char* q;
-	auto input = new char[2000+strlen(arg)];
-
-	*input=0;
-	if(0==type)
-	{
-      if (!FHS)
-            strcat(input,"(3 : '0!:0 y')<BINPATH,'");
-      else {
-            strcat(input,"(3 : '0!:0 y')<'/etc/j/");
-            strcat(input,jdllver);
-      }
-      strcat(input,filesepx);
-      strcat(input,"profile.ijs'");
-	}
-	else if(1==type)
-		strcat(input,"(3 : '0!:0 y')2{ARGV");
-	else if(2==type)
-		strcat(input,"");
-	else
-		strcat(input,"i.0 0");
-	strcat(input,"[ARGV_z_=:");
-	strcat(input,arg);
-
-#if defined(__MACH__)
-	strcat(input,"[UNAME_z_=:'Darwin'");
-#endif
-	strcat(input,"[BINPATH_z_=:'");
-	p=path;
-	q=input+strlen(input);
-	while(*p)
-	{
-		if(*p=='\'') *q++='\'';	// 's doubled
-		*q++=*p++;
-	}
-	*q=0;
-	strcat(input,"'");
-
-	strcat(input,"[LIBFILE_z_=:'");
-	p=pathdll;
-	q=input+strlen(input);
-	while(*p)
-	{
-		if(*p=='\'') *q++='\'';	// 's doubled
-		*q++=*p++;
-	}
-	*q=0;
-	strcat(input,"'");
-
-	r=jedo(input);
-	free(input);
-	return r;
-}
-
-
 
 }
 
 extern "C" void jefail()
 {
     throw std::invalid_argument("Load library " + std::string(pathdll) + " failed: " + std::string(strerror(errno)));
+}
+
+// build and run first sentence to set BINPATH, ARGV, and run profile
+// arg is command line ready to set in ARGV_z_
+// type is 0 normal, 1 -jprofile xxx, 2 ijx basic, 3 nothing
+// profile[ARGV_z_=:...[BINPATH=:....
+// profile is from BINPATH, ARGV, ijx basic, or nothing
+extern "C" int jefirst(int type, char* arg)
+{
+
+    int r;
+
+    std::string input;
+
+    // If normal
+    if(type == 0) {
+        if (!FHS)
+            input.append("(3 : '0!:0 y')<BINPATH,'");
+        else {
+            input.append("(3 : '0!:0 y')<'/etc/j/");
+            input.append(jdllver);
+        }
+        input.append(filesepx);
+        input.append("profile.ijs'");
+    }
+    else if(type == 1)
+        input.append("(3 : '0!:0 y')2{ARGV");
+    else if(type == 2)
+        input.append("");
+    else
+        input.append("i.0 0");
+
+    input.append("[ARGV_z_=:");
+    input.append(arg);
+
+
+
+
+
+#if defined(__MACH__)
+    input.append("[UNAME_z_=:'Darwin'");
+#endif
+    input.append("[BINPATH_z_=:'");
+
+    // Getting bin path
+    std::string p{path};
+    for(const auto &i: p){
+        if(i == '\'')
+            input += '\'';
+        input += i;
+    }
+    input.append("'[LIBFILE_z_=:'");
+    p = std::string(pathdll);
+    for(const auto &i: p){
+        if(i == '\'')
+            input += '\'';
+        input += i;
+    }
+    input.append("'");
+
+    // TODO: When jedo is refactored, change this
+    auto in = new char[2000+strlen(arg)];
+    strcpy(in,input.c_str());
+    r=jedo(in);
+    free(in);
+
+    return r;
 }
