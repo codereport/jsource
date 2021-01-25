@@ -36,13 +36,8 @@ static X jtxmodpow(J jt,A a,A w,A h){A ox,z;
 }
 
 #define DMOD 46340         /* <. %: _1+2^31 */
-
-#if SY_64
 #define XMOD 3037000499    /* <. %: _1+2^63 */
-#else
-#define XMOD 94906265      /* <. %: _1+2^53 */
 static I dmodpow(D x,I n,D m){D z=1; while(n){if(1&n)z=fmod(z*x,m); x=fmod(x*x,m); n>>=1;} R(I)z;}
-#endif
 
 static I imodpow(I x,I n,I m){I z=1; while(n){if(1&n)z=(z*x)%m;     x=(x*x)%m;     n>>=1;} R   z;}
 
@@ -62,11 +57,7 @@ static DF2(jtmodpow2){A h;B b,c;I at,m,n,wt,x,z;
  if(XMOD<m||XMOD<-m||m==IMIN||x==IMIN)R cvt(INT,xmodpow(a,w,h));
  if(b=0>m)m=-m;
  if(c=0>x)x=-x; x=x%m; if(c)x=m-x;
-#if SY_64
  z=imodpow(x,n,m);
-#else
- z=m>DMOD?dmodpow((D)x,n,(D)m):imodpow(x,n,m);
-#endif
  R sc(b?z-m:z);
 }    /* a m&|@^ w ; m guaranteed to be INT or XNUM */
 

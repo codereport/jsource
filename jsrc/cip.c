@@ -257,7 +257,6 @@ F2(jtpdt){PROLOG(0038);A z;I ar,at,i,m,n,p,p1,t,wr,wt;
   break;
  case INTX:
   {
-#if SY_64
  /*
    for(i=0;i<m;++i,v=wv,zv+=n){
      x=zv; c=*u++; er=asmtymes1v(n,x,c,v);    if(er)break; v+=n;
@@ -325,31 +324,7 @@ oflo2:
       DQ(p1, x=zv; c=(D)*u++; DQ(n, *x+++=c**v++;););
    }}}
 #endif
-#else
-   // 32-bit version - old style, converting to float
-  {I smallprob; 
-   NAN0;
-   if(n==1){D* RESTRICT zv; I* RESTRICT av, * RESTRICT wv;
-    zv=DAV(z); av=AV(a);
-    DQ(m, D tot=0; wv=AV(w); DQ(p, tot+=((D)*av++)*((D)*wv++);) *zv++=tot;)
-    smallprob=0;  // Don't compute it again
-   }else if(!(smallprob = m*n*(IL)p<1000LL)){  // if small problem, avoid the startup overhead of the matrix version  TUNE
-      memset(DAV(z),C0,m*n*sizeof(D));
-      igemm_nn(m,n,p,1,(I*)DAV(a),p,1,(I*)DAV(w),n,1,0,DAV(z),n,1);
-   }
-   // If there was a floating-point error, retry it the old way in case it was _ * 0
-   if(smallprob||NANTEST){D c,*x,*zv;I*u,*v,*wv;
-    u=AV(a); v=wv=AV(w); zv=DAV(z);
-    if(1==n)DQ(m, v=wv; c=0.0; DQ(p, c+=*u++*(D)*v++;); *zv++=c;)
-    else for(i=0;i<m;++i,v=wv,zv+=n){
-            x=zv; c=(D)*u++; DQ(n, *x++ =c**v++;);
-     DQ(p1, x=zv; c=(D)*u++; DQ(n, *x+++=c**v++;););
-    }
-   }
-  // convert float result back to int if it will fit
-  RZ(z=icvt(z));
-  }
-#endif
+
   }
   break;
  case FLX:

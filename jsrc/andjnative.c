@@ -151,13 +151,9 @@ static int javaWd(JNIEnv *env, jclass jcls, int type, A w, A *pz, const char*loc
         pinta[3*i+2] = -1;
       }
       jintArray intb= (*env)->NewIntArray(env, AN(*w1));
-#if SY_64
       jint *pintb = (*env)->GetIntArrayElements(env, intb, 0);
       for (j=0; j<AN(*w1); j++) pintb[j]=(jint)*(AV(*w1)+j);
       (*env)->ReleaseIntArrayElements(env, intb, pintb, 0);
-#else
-      (*env)->SetIntArrayRegion(env, intb, 0, AN(*w1), (jint*)AV(*w1));
-#endif
       (*env)->SetObjectArrayElement(env, inarr, i, intb);
       (*env)->DeleteLocalRef(env,intb);
     }
@@ -202,13 +198,9 @@ static int javaWd(JNIEnv *env, jclass jcls, int type, A w, A *pz, const char*loc
         } else {
           *pz=jega(INT,len,2,ishape);
         }
-#if SY_64
         jint *parray = (*env)->GetIntArrayElements(env, array, 0);
         for (j=0; j<len; j++) *(AV(*pz)+j)=parray[j];
         (*env)->ReleaseIntArrayElements(env, array, parray, 0);
-#else
-        (*env)->GetIntArrayRegion(env, array, 0, len, (jint*)AV(*pz));
-#endif
       } else {
         LOGD("result not string or integers");
         rc=3;
