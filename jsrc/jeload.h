@@ -15,6 +15,4 @@ char* jegetlocale();
 void jefail();
 void* jega(I t, I n, I r, I*s); // returns A
 void* jehjdll();
-
-
-extern int jefirst(int type,char* arg);
+int jefirst(int type,char* arg);
