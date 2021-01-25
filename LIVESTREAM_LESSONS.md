@@ -60,4 +60,4 @@ palindrome =. (-: |.)    NB. hook version
 * We learned for some reason macOS is 5-10x more costly when it comes to CI
 * ~~We should checkout GitHub actions~~
 * We should also look into [Buildkite](https://buildkite.com/)
-* Maybe also [Appvayor](https://www.appveyor.com)
+* Maybe also [Appveyor](https://www.appveyor.com)
