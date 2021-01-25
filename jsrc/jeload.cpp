@@ -41,7 +41,7 @@ static char jdllver[20];
 static int FHS=0; // Not sure what this is
 
 
-int jedo(char* sentence)
+int jedo(const char* sentence)
 {
     return jdo(jt,(C*)sentence);
 }
@@ -176,12 +176,8 @@ extern "C" void jefail()
 // profile is from BINPATH, ARGV, ijx basic, or nothing
 extern "C" int jefirst(int type, char* arg)
 {
-
-    int r;
-
     std::string input;
 
-    // If normal
     if(type == 0) {
         if (!FHS)
             input.append("(3 : '0!:0 y')<BINPATH,'");
@@ -201,10 +197,6 @@ extern "C" int jefirst(int type, char* arg)
 
     input.append("[ARGV_z_=:");
     input.append(arg);
-
-
-
-
 
 #if defined(__MACH__)
     input.append("[UNAME_z_=:'Darwin'");
@@ -228,10 +220,5 @@ extern "C" int jefirst(int type, char* arg)
     input.append("'");
 
     // TODO: When jedo is refactored, change this
-    auto in = new char[2000+strlen(arg)];
-    strcpy(in,input.c_str());
-    r=jedo(in);
-    free(in);
-
-    return r;
+    return jedo(input.c_str());
 }

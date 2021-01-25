@@ -9,7 +9,7 @@ void jesetpath(char*);
 void* jeload(void* callbacks); // returns J
 A jegeta(int,char*);
 I jeseta(I n,char* name,I x,char* d);
-int jedo(char*); // could be jedi
+int jedo(const char*); // could be jedi
 void jefree();
 char* jegetlocale();
 void jefail();
