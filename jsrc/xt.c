@@ -10,7 +10,7 @@
 #include "j.h"
 #include "cpuinfo.h"
 
-#if !SY_WINCE && (SY_WIN32 || (SYS & SYS_LINUX))
+#if (SYS & SYS_LINUX)
 #include <time.h>
 #else
 #if SYS & SYS_UNIX
@@ -18,7 +18,7 @@
 #endif
 #endif
 
-#if !SY_WIN32 && (SYS & SYS_DOS)
+#if (SYS & SYS_DOS)
 #include <dos.h>
 #endif
 
@@ -57,9 +57,6 @@ F1(jtparsercalls){ASSERTMTV(w); R sc(jt->parsercalls);}
 // 6!:5, window into the running J code
 F1(jtpeekdata){ I opeek=jt->peekdata; jt->peekdata = i0(w); R sc(opeek); }
 
-#if SY_WIN32
- /* defined in jdll.c */
-#else
 F1(jtts){A z;D*x;struct tm tr,*t=&tr;struct timeval tv;
  ASSERTMTV(w);
  gettimeofday(&tv,NULL); t=localtime_r((time_t*)&tv.tv_sec,t);
@@ -72,7 +69,6 @@ F1(jtts){A z;D*x;struct tm tr,*t=&tr;struct timeval tv;
  x[5]=t->tm_sec+(D)tv.tv_usec/1e6;
  R z;
 }
-#endif
 
 F1(jtts0){A x,z;C s[9],*u,*v,*zv;D*xv;I n,q;
  ARGCHK1(w);
@@ -96,11 +92,7 @@ F1(jtts0){A x,z;C s[9],*u,*v,*zv;D*xv;I n,q;
 #ifdef SY_GETTOD
 D tod(void){struct timeval t; gettimeofday(&t,NULL); R t.tv_sec+(D)t.tv_usec/1e6;}
 #else
-#if SY_WINCE
-D tod(void){SYSTEMTIME t; GetLocalTime(&t); R t.wSecond+(D)t.wMilliseconds/1e3;}
-#else
 D tod(void){R(D)clock()/CLOCKS_PER_SEC;}
-#endif
 #endif
 
 

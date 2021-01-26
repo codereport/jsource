@@ -36,13 +36,8 @@ static X jtxmodpow(J jt,A a,A w,A h){A ox,z;
 }
 
 #define DMOD 46340         /* <. %: _1+2^31 */
-
-#if SY_64
 #define XMOD 3037000499    /* <. %: _1+2^63 */
-#else
-#define XMOD 94906265      /* <. %: _1+2^53 */
 static I dmodpow(D x,I n,D m){D z=1; while(n){if(1&n)z=fmod(z*x,m); x=fmod(x*x,m); n>>=1;} R(I)z;}
-#endif
 
 static I imodpow(I x,I n,I m){I z=1; while(n){if(1&n)z=(z*x)%m;     x=(x*x)%m;     n>>=1;} R   z;}
 
@@ -62,11 +57,7 @@ static DF2(jtmodpow2){A h;B b,c;I at,m,n,wt,x,z;
  if(XMOD<m||XMOD<-m||m==IMIN||x==IMIN)R cvt(INT,xmodpow(a,w,h));
  if(b=0>m)m=-m;
  if(c=0>x)x=-x; x=x%m; if(c)x=m-x;
-#if SY_64
  z=imodpow(x,n,m);
-#else
- z=m>DMOD?dmodpow((D)x,n,(D)m):imodpow(x,n,m);
-#endif
  R sc(b?z-m:z);
 }    /* a m&|@^ w ; m guaranteed to be INT or XNUM */
 
@@ -270,9 +261,6 @@ F2(jtatco){A f,g;AF f1=on1cell,f2=jtupon2cell;C c,d,e;I flag, flag2=0,m=-1;V*av,
  flag = ((av->flag&wv->flag)&VASGSAFE)+(wv->flag&(VJTFLGOK1|VJTFLGOK2));
  switch(c){
   case CBOX:    flag2 |= (VF2BOXATOP1|VF2BOXATOP2); break;  // mark this as <@f
-#if SLEEF && (C_AVX || EMU_AVX)
-  case CEXP:    if(d==CPOLY){f2=jtpoly2; flag+=VIRS2+(VFATOPPOLYEXP<<VFATOPPOLYX);} break;   // ^@:p.
-#endif
   case CNOT:    if(d==CMATCH){f2=jtnotmatch; flag+=VIRS2; flag&=~VJTFLGOK2;} break;  // x -.@:-: y
   case CGRADE:  if(d==CGRADE){f1=jtranking; flag+=VIRS1; flag&=~VJTFLGOK1;} break;  // /:@:/: y
   case CCEIL:   f1=jtonf1; f2=jtuponf2; flag=VCEIL; flag&=~(VJTFLGOK1|VJTFLGOK2); break;  // [x] >.@:g y

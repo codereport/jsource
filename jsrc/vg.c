@@ -388,10 +388,8 @@ static GF(jtgri1){A x,y;I*wv;I i,*xv;US*u;void *yv;I c=ai*n;
   // process each 16-bit section of input
   u=(US*)wv+INTLSBWDX;   // point to LSB
   colflags=grcol(65536,0L,yv,n,0L,xv,sizeof(I)/sizeof(US),u,1-jt->workareas.compare.complt);  // move 'up' to bit 1
-#if SY_64
   colflags=grcol(65536,0L,yv,n,xv,zv,sizeof(I)/sizeof(US),u+=WDINC,colflags);
   colflags=grcol(65536,0L,yv,n,zv,xv,sizeof(I)/sizeof(US),u+=WDINC,colflags);
-#endif
   grcol(65536,0L,yv,n,xv,zv,sizeof(I)/sizeof(US),u+=WDINC,colflags|1);  // the 1 means 'handle sign bit'
   wv+=c; zv+=n;  // advance to next input/output area
  }
@@ -526,7 +524,6 @@ static GF(jtgri){A x,y;B up;I e,i,*v,*wv,*xv;UI4 *yv,*yvb;I c=ai*n;
  // for lists, smallrange always beats radix, but loses to merge if the range is too high.  We assess the max acceptable range as
  // (80>>keylength)*(n), smaller if the range would exceed cache size
  CR rng;
-#if SY_64  // no quickgrade unless INTs are 64 bits
  if(ai==1){  // for atoms, usually use smallrange or quicksort
   if(n<10)R jtgriq(jt,m,ai,n,w,zv);  // for short lists just use qsort
   UI4 lgn3; CTLZI(n,lgn3); lgn3 = (UI4)((lgn3*8) - 8 + (n>>(lgn3-3)));  // approx lg(n)<<3
@@ -540,7 +537,6 @@ static GF(jtgri){A x,y;B up;I e,i,*v,*wv,*xv;UI4 *yv,*yvb;I c=ai*n;
   }
   // fall through to small-range
  }else  // ! we already have range, don't calculate it again
-#endif
  // watch out! an else clause is active
  if(ai<=6){rng = condrange(wv,AN(w),IMAX,IMIN,(MIN(((ai*n<(L2CACHESIZE>>LGSZI))?16:4),80>>ai))*n);  // test may overflow; OK   TUNE
  }else rng.range=0;  // if smallrange impossible
@@ -666,7 +662,7 @@ static GF(jtgrc){A x;B b,q,up;I e,i,p,ps,*xv,yv[256];UC*vv,*wv;
  if((UI)ai>lgn)R grx(m,ai,n,w,zv);   // TUNE
  ai<<=((AT(w)>>C2TX)&1);
  p=B01&AT(w)?2:256; ps=p*SZI; wv=UAV(w); up=SGNTO0(jt->workareas.compare.complt);
- q=C2T&AT(w) && C_LE;
+ q=C2T&AT(w) && 1;
  if(1<ai){GATV0(x,INT,n,1); xv=AV(x);}
  for(i=0;i<m;++i){
   b=(B)(ai&1); if(q){e=-3; vv=wv+ai-2;}else{e=-1; vv=wv+ai-1;}

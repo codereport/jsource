@@ -2,6 +2,8 @@
 /* Licensed use only. Any other use is in violation of copyright.          */
 // utilities for JFE to load JE, initiallize, and run profile sentence
 // JFEs are jconsole, jwdw, and jwdp
+#include <string>
+#include <stdexcept>
 
 extern "C" {
 
@@ -88,7 +90,7 @@ void jepath(char* arg,char* lib)
  struct stat st;
 
  int32_t const sz  = 4000;
- int32_t const len = sz;
+ int32_t len = sz; // Cant be const for function call _NSGetExecutablePath
 
  char arg2[sz];
  char arg3[sz];
@@ -169,7 +171,8 @@ int jefirst(int type,char* arg)
 	int r;
 	char* p;
 	char* q;
-	char* input=static_cast<char* >(malloc(2000+strlen(arg)));
+	auto input = new char[2000+strlen(arg)];
+
 	*input=0;
 	if(0==type)
 	{
@@ -221,15 +224,11 @@ int jefirst(int type,char* arg)
 	return r;
 }
 
-void jefail(char* msg)
-{
-	strcpy(msg, "Load library ");
-	strcat(msg, pathdll);
-	strcat(msg," failed: ");
 
-	char ermsg[1024];
-	if(errno&&!strerror_r(errno,ermsg,1024))strcat(msg,ermsg);
-	strcat(msg,"\n");
+
 }
 
+extern "C" void jefail()
+{
+    throw std::invalid_argument("Load library " + std::string(pathdll) + " failed: " + std::string(strerror(errno)));
 }

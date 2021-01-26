@@ -84,9 +84,7 @@ static F2(jtcanta){A m,s,t,z;C*wv,*zv;I*av,j,*mv,r,*sv,*tv,wf,wr,*ws,zn,zr,ms[4]
  case sizeof(I): CANTA(I, *u++=*(I*)v;); break;
  case sizeof(C): CANTA(C, *u++=*(C*)v;); break;
  case sizeof(S): CANTA(S, *u++=*(S*)v;); break;
-#if SY_64
  case sizeof(I4): CANTA(I4, *u++=*(I4*)v;); break;
-#endif
 
  default:        CANTA(C, MC(u,v,cellsizeb); u+=cellsizeb;); break;
  }     

@@ -66,7 +66,6 @@ static KF1F(jtBfromD){B*x;D p,*v;I n;
 
 static KF1F(jtIfromD){D p,q,*v;I i,k=0,n,*x;
  n=AN(w); v=DAV(w); x=(I*)yv;
-#if SY_64
  for(i=0;i<n;++i){
   p=v[i]; q=jround(p); I rq=(I)q;
   if(!(p==q || FIEQ(p,q,fuzz)))R 0;  // must equal int, possibly out of range
@@ -75,14 +74,6 @@ static KF1F(jtIfromD){D p,q,*v;I i,k=0,n,*x;
   else if(p>=FLIMAX){if(!(p<=-(D)IMIN*(1+fuzz)))R 0; rq=IMAX;}  // if tolerantly > IMAX, error; else take IMAX
   *x++=rq;
  }
-#else
- q=IMIN*(1+fuzz); D r=IMAX*(1+fuzz);
- DO(n, p=v[i]; if(p<q||r<p)R 0;);
- for(i=0;i<n;++i){
-  p=v[i]; q=jfloor(p);
-  if(FIEQ(p,q,fuzz))*x++=(I)q; else if(FIEQ(p,1+q,fuzz))*x++=(I)(1+q); else R 0;
- }
-#endif
  R 1;
 }
 
@@ -167,7 +158,7 @@ static KF1(jtQfromX){X*v=XAV(w),*x=(X*)yv; DQ(AN(w), *x++=*v++; *x++=iv1;); R 1;
 
 static KF2(jtQfromD){B neg,recip;D c,d,t,*wv;I e,i,n,*v;Q q,*x;S*tv;
  if(!(w))R 0;
- n=AN(w); wv=DAV(w); x=(Q*)yv; tv=3*C_LE+(S*)&t;
+ n=AN(w); wv=DAV(w); x=(Q*)yv; tv=3+(S*)&t;
  for(i=0;i<n;++i){
   t=wv[i]; 
   ASSERT(!_isnan(t),EVNAN);

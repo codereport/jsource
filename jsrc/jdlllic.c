@@ -38,11 +38,7 @@ F1(jtlock1){A z; C* p; C* src;
  src=UAV(w);
  len=(int)AN(w);
  xlen=len;
-#if SY_WINCE
- {SYSTEMTIME st;GetLocalTime(&st);srand((UC)(st.wMilliseconds)); }
-#else
  srand((UC)time(NULL));
-#endif
  c1=lobyte(rand());
  c2=lobyte(rand());
  maxc1=max(33,c1);

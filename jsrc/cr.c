@@ -228,12 +228,8 @@ A jtrank1ex0(J jt,AD * RESTRICT w,A fs,AF f1){F1PREFIP;PROLOG(0041);A z,virtw;
  EPILOG(zz);
 }
 
-#if SY_64
 A jtrank2ex(J jt,AD * RESTRICT a,AD * RESTRICT w,A fs,UI lrrrlcrrcr,AF f2){
  I lrrr=(UI4)lrrrlcrrcr; I lcrrcr=lrrrlcrrcr>>2*RANKTX;  // inner, outer ranks
-#else
-A jtrank2ex(J jt,AD * RESTRICT a,AD * RESTRICT w,A fs,UI lrrr,UI lcrrcr,AF f2){
-#endif
  F2PREFIP;PROLOG(0042);A virta,virtw,z;I acn,ak,mn,wcn,wk;
  I outerframect, outerrptct, innerframect, innerrptct, aof, wof, sof, lof, sif, lif, *lis, *los;
  ARGCHK2(a,w);

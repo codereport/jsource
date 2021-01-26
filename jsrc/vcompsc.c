@@ -109,25 +109,25 @@
   R sc(n);                                                                                    \
  }
 
-#define SUMB(f,T0,T1,F)  \
- static F2(f){I an,*av,n,p,r1,wn,*wv,z=0;UI t,x;              \
-  an=AN(a); av=AV(a);                                                        \
-  wn=AN(w); wv=AV(w); n=1; n=AR(a)?an:n; n=AR(w)?wn:n;                      \
-  p=n>>LGSZI; r1=n&(SZI-1);                                       \
-  if     (!AR(a)){                                                           \
-   ASSIGNX(av);                                                              \
+#define SUMB(f,T0,T1,F)                                                                    \
+ static F2(f){I an,*av,n,p,r1,wn,*wv,z=0;UI t,x;                                           \
+  an=AN(a); av=AV(a);                                                                      \
+  wn=AN(w); wv=AV(w); n=1; n=AR(a)?an:n; n=AR(w)?wn:n;                                     \
+  p=n>>LGSZI; r1=n&(SZI-1);                                                                \
+  if     (!AR(a)){                                                                         \
+   ASSIGNX(av);                                                                            \
    while((p-=255)>0){t=0; DQ(255, t+=F(x,    *wv++);); ADDBYTESINI(t); z+=t;}              \
-         t=0; DQ(p+255,   t+=F(x,    *wv++);); ADDBYTESINI(t); z+=t; x=F(x,  *wv);  \
-  }else if(!AR(w)){                                                          \
-   ASSIGNX(wv);                                                              \
+         t=0; DQ(p+255,   t+=F(x,    *wv++);); ADDBYTESINI(t); z+=t; x=F(x,  *wv);         \
+  }else if(!AR(w)){                                                                        \
+   ASSIGNX(wv);                                                                            \
    while((p-=255)>0){t=0; DQ(255, t+=F(*av++,x    );); ADDBYTESINI(t); z+=t;}              \
-         t=0; DQ(p+255,   t+=F(*av++,x    );); ADDBYTESINI(t); z+=t; x=F(*av,x  );  \
-  }else{                                                                     \
+         t=0; DQ(p+255,   t+=F(*av++,x    );); ADDBYTESINI(t); z+=t; x=F(*av,x  );         \
+  }else{                                                                                   \
    while((p-=255)>0){t=0; DQ(255, t+=F(*av++,*wv++);); ADDBYTESINI(t); z+=t;}              \
-         t=0; DQ(p+255,   t+=F(*av++,*wv++);); ADDBYTESINI(t); z+=t; x=F(*av,*wv);  \
-  }                                                                          \
-  x &= ((I)1<<(r1<<LGBB))-1; ADDBYTESINI(x); z+=x;    /* C_LE */                                                       \
-  R sc(z);                                                                   \
+         t=0; DQ(p+255,   t+=F(*av++,*wv++);); ADDBYTESINI(t); z+=t; x=F(*av,*wv);         \
+  }                                                                                        \
+  x &= ((I)1<<(r1<<LGBB))-1; ADDBYTESINI(x); z+=x;                                         \
+  R sc(z);                                                                                 \
  }
 
 INDB( i0eqBB,B,B,NE   )  INDF( i0eqBI,B,I,ANE  )  INDF0( i0eqBD,B,D,TNEXD,NEXD0)  /* =  */

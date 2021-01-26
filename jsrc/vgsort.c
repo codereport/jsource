@@ -214,7 +214,7 @@ static SF(jtsortc2){A y,z;B up;I i,p,*yv;US j,k,*wv,*v;
  DO(p, yv[i]=0;);
  for(i=0;i<m;++i){
   DQ(n, ++yv[*wv++];);
-  if(C2T&AT(w)||!C_LE){
+  if(C2T&AT(w)){
    if(up){j=0;         DQ(p,                DQ(yv[j], *v++=j;); yv[j]=0;           ++j;);}
    else  {j=(US)(p-1); DQ(p,                DQ(yv[j], *v++=j;); yv[j]=0;           --j;);}
   }else{
@@ -235,10 +235,8 @@ static SF(jtsorti1){A x,y,z;I*wv;I i,*xv,*zv;void *yv;
  GATV0(x,INT,n,1); xv=AV(x);
  for(i=0;i<m;++i){I colflags;
   colflags=grcol(65536,0L,yv,n,wv,xv,sizeof(I)/sizeof(US),    INTLSBWDX+(US*)wv,4+1-jt->workareas.compare.complt);  // 'sort', and move 'up' to bit 1
-#if SY_64
   colflags=grcol(65536,0L,yv,n,xv,zv,sizeof(I)/sizeof(US),1*WDINC+INTLSBWDX+(US*)xv,colflags);
   colflags=grcol(65536,0L,yv,n,zv,xv,sizeof(I)/sizeof(US),2*WDINC+INTLSBWDX+(US*)zv,colflags);
-#endif
   grcol(65536,0L,yv,n,xv,zv,sizeof(I)/sizeof(US),INTMSBWDX+(US*)xv,colflags|1);
   wv+=n; zv+=n;
  }

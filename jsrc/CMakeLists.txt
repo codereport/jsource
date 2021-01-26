@@ -1,9 +1,6 @@
-if(WIN32)
-    add_compile_definitions(_CRT_SECURE_NO_WARNINGS)
-endif()
 
 add_library(j)
-target_compile_definitions(j PRIVATE C_NA=0 C_AVX=1 C_AVX2=1 EMU_AVX=1)
+target_compile_definitions(j PRIVATE C_NA=0 C_AVX=1 EMU_AVX=1)
 target_link_libraries(j PRIVATE ${STANDARD_MATH_LIBRARY})
 set_source_files_properties(aes-ni.c PROPERTIES COMPILE_FLAGS -maes)
 target_sources(j PRIVATE
@@ -193,6 +190,11 @@ if(OpenMP_C_FOUND)
         )
     endif()
 endif()
+
+target_sources(j PRIVATE
+    blis.h
+    blis/gemm_vec-ref.c
+)
 
 if(NOT BUILD_SHARED_LIBS)
     return()

@@ -200,7 +200,7 @@ A jtstfindcre(J jt,I n,C*u,I bucketx){
 // b is flags: 1=check name for validity, 2=do not allow numeric locales (whether atomic or not)
 static A jtvlocnl(J jt,I b,A w){A*wv,y;C*s;I i,m,n;
  ARGCHK1(w);
- if(((b-2) & (SGNIF(AT(w),INTX) | (SGNIF(AT(w),B01X) & (AR(w)-1))))<0)R w;  // integer list or scalar boolean is OK  C_LE
+ if(((b-2) & (SGNIF(AT(w),INTX) | (SGNIF(AT(w),B01X) & (AR(w)-1))))<0)R w;  // integer list or scalar boolean is OK
  n=AN(w);
  ASSERT(((n-1)|SGNIF(AT(w),BOXX))<0,EVDOMAIN);
  wv=AAV(w); 

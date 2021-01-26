@@ -543,11 +543,7 @@ static A jtgetnewpd(J jt, UC* pd, A pd0){A new;
 }
 
 // copy n atoms of type wt to type zt
-#if SY_64
 void copyTT(void *zv, void *wv, I n, I zt, I wt){
-#else
-void jtcopyTT(J jt, void *zv, void *wv, I n, I zt, I wt){
-#endif
   if(TYPESEQ(zt,wt))MC(zv,wv,n<<bplg(zt));
   else if(zt&INT){I *targ=zv; B *src=wv; DQ(n, *targ++ = *src++;)}  // B01-> int promotion
   else {D *targ=zv; I *src=wv; DQ(n, *targ++ = (D)*src++;)}
@@ -759,13 +755,7 @@ DF2(jtcut2){F2PREFIP;PROLOG(0025);A fs,z,zz;I neg,pfx;C id,*v1,*wv,*zc;I cger[12
   VARPS adocv; varps(adocv,fs,wt,0);  // qualify the operation, returning action routine and conversion info
   if(adocv.f){C*z0=0,*zc;I t,zk,zt;  // if the operation is a primitive that we can  apply / to...  z0 will hold a neutral if we have to calculate one
    zt=rtype(adocv.cv);
-#if SY_64
    GA(zz,zt,m*wcn,r,AS(w)); AS(zz)[0]=m; 
-#else
-   // plusinsI writes past the end of its result area if d==1 and there is overflow (normally that would be OK and would be converted to D inplace).  Here it overruns the buffer,
-   // so we allocate one extra word just in case
-   GA(zz,zt,m*wcn+1,r,AS(w)); AS(zz)[0]=m; AN(zz)=m*wcn;
-#endif
    if(!AN(zz))R zz;  // don't run function on empty arg
    I atomsize=bpnoun(zt);
    zc=CAV(zz); zk=wcn*atomsize;

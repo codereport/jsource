@@ -49,7 +49,8 @@ f=: <jpath '~temp/jdata.jmf'
 1 [ createjmf_jmf_ f,<4000  NB. 4000 bytes for data
 t=: fdir f
 1 = #t
-+./ ({.{.t) E.&> f
+
++./ ({.{.t) E.&> f 
 
 map_jmf_ 'jdata';f          NB. map jdata to jmf file
 '' -: jdata

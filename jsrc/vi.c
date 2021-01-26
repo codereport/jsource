@@ -16,13 +16,8 @@
 /* ThinkC MAC 6888x        0 1 _ _ 2 3 4 5 6 7 8 9   */
 /* normal                  0 1 2 3 4 5 6 7 ...       */
 
-#if C_LE
 #define MSW 1   /* most  significant word */
 #define LSW 0   /* least significant word */
-#else
-#define MSW 0
-#define LSW 1
-#endif
 
 // create a mask of bits in which a difference is considered significant for floating-point purposes.
 // we calculate this using pi as a reference: find pi +- ct, and see which bits are different.  Everything
@@ -55,39 +50,20 @@ static UI hicnz(    I k,UC*v){UI HASHINIT(z);UC c;        DQ(k, c=*v++; if(c&&c!
 
 static UI hicx(J jt,I k,UC*v){UI HASHINIT(z);I*u=jt->hiv; DQ(jt->hin, HASHSTEP(z,v[*u++]);      ); R z;}
 
-#if C_LE
        UI hic2(     I k,UC*v){UI HASHINIT(z);             DQ(k>>1,     HASHSTEP(z,v[0]);
                                                        if(*(v+1)){HASHSTEP(z,v[1]);} v+=2;); R z;}
-#else
-       UI hic2(     I k,UC*v){UI HASHINIT(z); ++v;        DQ(k>>1,     HASHSTEP(z,v[0]);
-                                                       if(*(v-1)){HASHSTEP(z,v[-1]);} v+=2;); R z;}
-#endif
 
-#if C_LE
        UI hic4(     I k,UC*v){UI HASHINIT(z);             DQ(k>>2,     HASHSTEP(z,v[0]);
                                                if(*(v+2)||*(v+3)){HASHSTEP(z,v[1]);
                                                                   HASHSTEP(z,v[2]);
                                                                   HASHSTEP(z,v[3]);}
                                                   else if(*(v+1)){HASHSTEP(z,v[1]);} v+=4;); R z;}
-#else
-       UI hic4(     I k,UC*v){UI HASHINIT(z); v+=3;       DQ(k>>2,     HASHSTEP(z,v[0]);
-                                               if(*(v-2)||*(v-3)){HASHSTEP(z,v[-1]);
-                                                                  HASHSTEP(z,v[-2]);
-                                                                  HASHSTEP(z,v[-3]);}
-                                                  else if(*(v-1)){HASHSTEP(z,v[-1]);} v+=4;); R z;}
-#endif
 
-
-#if SY_64
 // Hash a single unsigned INT
 #define hicw(v)  (10495464745870458733U**(UI*)(v))
 // Hash a single double, using only the bits in ctmask.  -0 is hashed differently than +0.  Should we take the sign bit out of ct?  Only if ct=0?
 //  not required for tolerant comparison, but if we tried to do tolerant comparison through the fast code it would help
 static UI jthid(J jt,D d){R 10495464745870458733U*(jt->ctmask&*(I*)&d);}
-#else
-#define hicw(v)  (2838338383U**(U*)(v))
-static UI jthid(J jt,D d){DI x; x.d=d; R 888888883U*(x.i[LSW]&jt->ctmask)+2838338383U*x.i[MSW];}
-#endif
 
 // Hash the data in the given A.  Comments say this is called only for singletons
 // If empty or boxed, hash the shape

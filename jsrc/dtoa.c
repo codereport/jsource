@@ -169,11 +169,7 @@
 /* Options for use with J */
 #include "js.h"
 #define Long int
-#if C_LE
 #define IEEE_8087
-#else
-#define IEEE_MC68k
-#endif
 #define MULTIPLE_THREADS
 #define ACQUIRE_DTOA_LOCK(n) /* handled by using jt */
 #define FREE_DTOA_LOCK(n)    /* handled by using jt */
