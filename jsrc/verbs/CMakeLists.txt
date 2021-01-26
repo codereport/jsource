@@ -5,8 +5,7 @@
 # Verbs are programs. Verbs operate on one or two noun operands, and produce a result which is always a noun.
 # The simplest verbs are the primitives, such as +. Larger verbs are created by connecting other verbs together.
 
-add_library(lib_verbs PUBLIC)
-target_sources(lib_verbs PUBLIC
+add_library(lib_verbs
         crc32c.c
         crc32c.h
         crc32ctables.h
@@ -65,4 +64,4 @@ target_sources(lib_verbs PUBLIC
         vx.c
         vz.c
         )
-target_include_directories(lib_verbs INTERFACE ${CMAKE_CURRENT_SOURCE_DIR})
+target_include_directories(lib_verbs PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})

@@ -1,7 +1,7 @@
 
 add_subdirectory(adverbs)
 add_subdirectory(conjunctions)
-#add_subdirectory(verbs)
+add_subdirectory(verbs)
 add_library(j)
 target_compile_definitions(j PRIVATE C_NA=0 C_AVX=1 C_AVX2=1 EMU_AVX=1)
 target_link_libraries(j PRIVATE ${STANDARD_MATH_LIBRARY}
