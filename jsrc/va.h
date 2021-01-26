@@ -27,7 +27,7 @@
 #define VRD             (SLIT<<VRESX)// convert result to D if possible - unused code point
 #define VRI             (SBOX<<VRESX)// convert result to I if possible - unused code point
 // bits VRESX+ 1 10 11 12 are free
-#define VIPWFLONGX     (SY_64?63:17)  // (must be >RANKTX) internal use in va2.  We use sign bit where possible
+#define VIPWFLONGX     (63)  // (must be >RANKTX) internal use in va2.  We use sign bit where possible
 #define VIPWFLONG      ((I)1<<VIPWFLONGX)
 #define VIPOKWX         20      // This routine can put its result over W
 #define VIPOKW          ((I)1<<VIPOKWX)
@@ -60,11 +60,7 @@
 // Extract the result type from cv coming from the table
 #define rtype(x) (((x)&VRESMSK)>>VRESX)
 
-#if SY_64
 #define NOT(v)          ((v)^0x0101010101010101)
-#else
-#define NOT(v)          ((v)^0x01010101)
-#endif
 
 #define SNOT(v)         ((v)^0x0101)
 #define INOT(v)         ((v)^0x01010101)

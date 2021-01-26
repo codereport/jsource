@@ -110,12 +110,7 @@ static A jtva1(J jt,A w,A self){A z;I cv,n,t,wt,zt;VA1F ado;
  UA *u=(UA *)FAV(self)->localuse.lvp[1];
  F1PREFIP;ARGCHK1(w);
  wt=AT(w); n=AN(w); wt=(I)jtinplace&JTEMPTY?B01:wt;
-#if SY_64
  VA1 *p=&u->p1[(0x0321000054032100>>(CTTZ(wt)<<2))&7];  // from MSB, we need xxx 011 010 001 xxx 000 xxx xxx   101 100 xxx 011 010 001 xxx 000
-#else
- if(wt&SPARSE){wt=AT(SPA(PAV(w),e));}
- VA1 *p=&u->p1[(0x54032100>>(CTTZ(wt)<<2))&7];  // from MSB, we need 101 100 xxx 011 010 001 xxx 000
-#endif
  ASSERT(wt&NUMERIC,EVDOMAIN);
  if(!((I)jtinplace&JTRETRY)){
   ado=p->f; cv=p->cv;

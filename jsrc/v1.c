@@ -56,9 +56,7 @@ static F2(jtmatchs);
 static B eqv(I af,I wf,I m,I n,I k,C*av,C*wv,B* RESTRICT x,B b1){B b,* RESTRICT xx=x;I mn=m*n,q;
   // select a comparison loop based on the size of the data area.  It's all about the fastest way to compare bytes
  if     (0==(k&(SZI-1))  )EQV(I)
-#if SY_64
  else if(0==(k&(SZI4-1)))EQV(int)
-#endif
  else if(0==(k&(SZS-1))  )EQV(S)
  else if(1==k)            EQV(C)
  else{

@@ -105,7 +105,6 @@ I CTTZ(I w){
 // same, except returns 32 if no bit set
 I CTTZZ(I w){ R w & 0xffffffff ? CTTZ(w) : 32; }
 // Same, but works on full length of an I argument (32 or 64 bits)
-#if SY_64
 I CTTZI(I w){
     I t = 1;
     if (0 == (w & 0xffffffffLL)){ w >>= 32; t += 32; }
@@ -115,11 +114,6 @@ I CTTZI(I w){
     if (0 == (w & 0x3)){ w >>= 2; t += 2; }
     R t - (w & 1);
 }
-#else
-// #define CTTZI CTTZ   // On 32-bit machines, I is same as long
-// j.h declares CTTZI as extern function
-I CTTZI(I w){R CTTZ(w);}
-#endif
 #endif
 
 I CTLZI_(UI w, UI4*out){
