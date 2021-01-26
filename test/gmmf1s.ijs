@@ -51,8 +51,7 @@ f=: <jpath '~temp/jdata.jmf'
 t=: fdir f
 1 = #t
 
-NB. #broken
-NB. +./ ({.{.t) E.&> f
++./ ({.{.t) E.&> f
 
 map_jmf_ 'jdata';f          NB. map jdata to jmf file
 '' -: jdata

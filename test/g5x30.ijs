@@ -27,9 +27,8 @@ t -: (,' ',.'01234',.lf),'...',lf,,(2":30+i.10 1),.lf
 t=: 0 _ 5 10 f x=: lf (100?2000)}2000$'x'
 16 = +/ t=lf
 
-NB. This fails because of E. (find/match) #broken
-NB. i =: 1 i.~ '...' E. t
-NB. t -: (i{.x),'...',lf,(((5+i)-#t){.x),lf
+i =: 1 i.~ '...' E. t
+t -: (i{.x),'...',lf,(((5+i)-#t){.x),lf
 
 ('a',LF,LF,'b',LF,'c',LF) -: (0 40 1 1) 5!:30 'a',LF,LF,'b',LF,'c'
 ('a',LF,LF,'bc',LF,'c',LF) -: (0 40 1 1) 5!:30 'a',LF,LF,'bc',LF,'c'
