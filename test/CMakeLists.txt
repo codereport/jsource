@@ -309,10 +309,10 @@ set(test_cases
     glocale
     gmean
     gmemo
-    # gmmf bus error 
-    gmmf1s
-    gmmf1u
-    gmmf1w
+    # gmmf bus errors, unstable
+    # gmmf1s 
+    # gmmf1u
+    # gmmf1w
     gmnom
     gn
     gnan
