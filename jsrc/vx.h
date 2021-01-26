@@ -3,11 +3,7 @@
 /*                                                                         */
 /* Extended Precision                                                      */
 
-#if SY_64
 #define XIDIG           5                  /* max # x digits in an integer */
-#else
-#define XIDIG           3
-#endif
 
 #define XBASE           (I)10000
 #define XBASEN          (I)4

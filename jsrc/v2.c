@@ -195,9 +195,7 @@ static const B pmsk[]={0,0,1,1,0,1,0,1,0,0, 0,1,0,1,0,0,0,1,0,1, 0,0,0,1,0,0,0,0
 static F1(jtiprimetest){A z;B*b;I d,j,n,*pv,q,*v,wn,*wv;
  ARGCHK1(w);
  wn=AN(w); wv=AV(w); pv=AV(jt->p4792);
-#if SY_64
  DO(wn, if(2147483647L<wv[i])R xprimetest(cvt(XNUM,w)););
-#endif
  GATV(z,B01,wn,AR(w),AS(w)); b=BAV(z);
  for(j=0;j<wn;++j){
   n=*wv++; v=pv;
@@ -410,9 +408,7 @@ F1(jtfactor){PROLOG(0063);A y,z;I c,d,i,k,m,n,q,*u,*v,wn,*wv,*zv;
  RZ(w=vi(w));
  wn=AN(w); wv=AV(w);
  n=0; DO(wn, k=wv[i]; ASSERT(0<k,EVDOMAIN); n=MAX(n,k););
-#if SY_64
  if(n>2147483647)R cvt(INT,xfactor(w));
-#endif
  u=AV(jt->p4792); c=8*SZI-2;
  GATV(z,INT,c*wn,1+AR(w),AS(w)); AS(z)[AR(w)]=c; v=zv=AV(z);
  for(i=m=0;i<wn;++i){
@@ -572,11 +568,7 @@ static B jteca(J jt,X n,X a,X b,X*p,X*q,X*z){
  R 1;
 }    /* elliptic curve add (mod proj coord) */
 
-#if SY_64
 #define BIT0 0x8000000000000000
-#else
-#define BIT0 0x80000000
-#endif
 
 static B jtecm(J jt,X n,X a,X b,I m,X*p,X*z){
  A *old=jt->tnextpushp;

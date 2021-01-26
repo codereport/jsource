@@ -55,8 +55,6 @@ typedef double complex double_complex;
 
 #include "j.h"
 
-#define SY_UNIX64 (SY_64 && (SY_LINUX || SY_MAC || SY_FREEBSD))
-
 #if SY_WINCE
 #define HINSTANCE_ERROR 0
 wchar_t *tounibuf(char * src);
@@ -109,10 +107,8 @@ typedef float              DoF;
 typedef double             DoF;
 #endif
 
-#if SY_64 || defined(__arm__)   /* J64 requires special float result */
 typedef float (__stdcall *STDCALLF)();
 typedef float (_cdecl    *ALTCALLF)();
-#endif
 
 /* error return codes */
 #define DEOK            0
@@ -188,56 +184,24 @@ static void double_trick(double*v, I n){I i=0;
 }
 #endif
 
-/*
-#if SYS & SYS_MACOSX
- #define dtrick double_trick(dd,dcnt);
-#elif SY_64 && SY_WIN32
- #define dtrick {D*pd=(D*)d; double_trick(pd[0],pd[1],pd[2],pd[3]);}
-#elif SY_64 && SY_LINUX
- #define dtrick double_trick(dd[0],dd[1],dd[2],dd[3],dd[4],dd[5],dd[6],dd[7]);
-#elif 1
- #define dtrick ;
-#endif
-*/
-
-#if SY_64
- #if SY_UNIX64
-  #ifdef __PPC64__
-   #define dtrick double_trick(dd[0],dd[1],dd[2],dd[3],dd[4],dd[5],dd[6],dd[7],dd[8],dd[9],dd[10],dd[11],dd[12]);
-  #elif defined(__x86_64__)
+#ifdef __PPC64__
+  #define dtrick double_trick(dd[0],dd[1],dd[2],dd[3],dd[4],dd[5],dd[6],dd[7],dd[8],dd[9],dd[10],dd[11],dd[12]);
+#elif defined(__x86_64__)
 /* might be faster */
-   #define dtrick \
-  __asm__ ("movq (%0),%%xmm0\n\t"       \
-        "movq  8(%0), %%xmm1\n\t"       \
-        "movq 16(%0), %%xmm2\n\t"       \
-        "movq 24(%0), %%xmm3\n\t"       \
-        "movq 32(%0), %%xmm4\n\t"       \
-        "movq 40(%0), %%xmm5\n\t"       \
-        "movq 48(%0), %%xmm6\n\t"       \
-        "movq 56(%0), %%xmm7\n\t"       \
-        : /* no output operands */      \
-        : "r" (dd)                      \
-        : "xmm0","xmm1","xmm2","xmm3","xmm4","xmm5","xmm6","xmm7","cc");
-  #elif defined(__aarch64__)
-   #define dtrick double_trick(dd[0],dd[1],dd[2],dd[3],dd[4],dd[5],dd[6],dd[7]);
-  #endif
- #else
-  #define dtrick ;
- #endif
-#else
- #if SY_LINUX
- #ifdef C_CD_ARMHF
-  #define dtrick double_trick(dd[0],dd[1],dd[2],dd[3],dd[4],dd[5],dd[6],dd[7],dd[8],dd[9],dd[10],dd[11],dd[12],dd[13],dd[14],dd[15]);
- #else
-  #define dtrick ;
- #endif
- #elif SY_FREEBSD
-  #define dtrick ;
- #elif SY_MACPPC
-  #define dtrick double_trick(dd,dcnt);
- #else
-  #define dtrick ;
- #endif
+  #define dtrick \
+__asm__ ("movq (%0),%%xmm0\n\t"       \
+      "movq  8(%0), %%xmm1\n\t"       \
+      "movq 16(%0), %%xmm2\n\t"       \
+      "movq 24(%0), %%xmm3\n\t"       \
+      "movq 32(%0), %%xmm4\n\t"       \
+      "movq 40(%0), %%xmm5\n\t"       \
+      "movq 48(%0), %%xmm6\n\t"       \
+      "movq 56(%0), %%xmm7\n\t"       \
+      : /* no output operands */      \
+      : "r" (dd)                      \
+      : "xmm0","xmm1","xmm2","xmm3","xmm4","xmm5","xmm6","xmm7","cc");
+#elif defined(__aarch64__)
+  #define dtrick double_trick(dd[0],dd[1],dd[2],dd[3],dd[4],dd[5],dd[6],dd[7]);
 #endif
 
 
@@ -561,7 +525,6 @@ static D     NOOPTIMIZE altcalld(ALTCALLD fp,I*d,I cnt,DoF*dd,I dcnt){D r;
  R r;
 }
 
-#if SY_64 || defined(__arm__)
 static float NOOPTIMIZE stdcallf(STDCALLF fp,I*d,I cnt,DoF*dd,I dcnt){float r;
 SWITCHCALL;
 R r;
@@ -570,7 +533,6 @@ static float NOOPTIMIZE altcallf(ALTCALLF fp,I*d,I cnt,DoF*dd,I dcnt){float r;
   SWITCHCALL;
  R r;
 }
-#endif
 
 /* fp        - function                                    */
 /* d         - address values for call arguments           */
@@ -597,14 +559,7 @@ static void docall(FARPROC fp, I*d, I cnt, DoF* dd, I dcnt, C zl, I*v, B alterna
    case '*'&0x1f: *v=r;         break;
    case 'n'&0x1f: *v=0;         break;
   }
- }else
-#if !SY_64 && !defined(__arm__)
- {D r;
-  r= alternate ? altcalld((ALTCALLD)fp,d,cnt,dd,dcnt) : stdcalld((STDCALLD)fp,d,cnt,dd,dcnt);
-  *(D*)v=r;
- }
-#else
- {/* the above doesn't work for J64 */
+ }else {/* the above doesn't work for J64 */
   if(zl=='d'){D r;
    r= alternate ? altcalld((ALTCALLD)fp,d,cnt,dd,dcnt) : stdcalld((STDCALLD)fp,d,cnt,dd,dcnt);
    *(D*)v=r;
@@ -613,7 +568,6 @@ static void docall(FARPROC fp, I*d, I cnt, DoF* dd, I dcnt, C zl, I*v, B alterna
    *(D*)v=(D)r;
   }
  }
-#endif
 }
 
 static void convertdown(I*pi,I n,C t){
@@ -671,11 +625,7 @@ static B jtcdinit(J jt){A x;
 }
 
 // find the starting index for v->string (length n) in table tbl
-#if SY_64
 #define HASHINDEX(tbl,n,v) ((hic(n,v)*(UI)AN(tbl))>>32)
-#else
-#define HASHINDEX(tbl,n,v) ((hic(n,v)*(UIL)AN(tbl))>>32)
-#endif
 
 // see if v->string (length n) is in hashtable tbl.  The hash in tbl contains indexes into cdarg, or -1 for empty slot.
 // return retval, where pv[k] is the address of the found slot in cdarg
@@ -725,7 +675,7 @@ static CCT*jtcdload(J jt,CCT*cc,C*lib,C*proc){B ha=0;FARPROC f;HMODULE h;
  /* not all platforms support GetModuleHandle, so we do it ourselves */
  /* we match on exactly the arg the user supplied                    */
  /* search path and case can cause us to reload the same dll         */
- if(cc->cc){C buf[SY_64?21:12];I k,n;
+ if(cc->cc){C buf[21];I k,n;
   n=strlen(proc);
   CDASSERT(BETWEENO(n,1,sizeof(buf)),DEBADFN);
   k='_'==*proc?-strtoI(1+proc,0L,10):strtoI(proc,0L,10);
@@ -829,7 +779,6 @@ static CCT*jtcdparse(J jt,A a,I empty){C c,lib[NPATH],*p,proc[NPATH],*s,*s0;CCT*
 #define vresvalues(w) CCM(w,'c')+CCM(w,'w')+CCM(w,'u')+CCM(w,'b')+CCM(w,'s')+CCM(w,'i')+CCM(w,'l')+CCM(w,'x')+CCM(w,'f')+CCM(w,'d')+CCM(w,'*')+CCM(w,'n')
  CCMWDS(vres) CCMCAND(vres,cand,c)  // see if zl is one of the allowed types
  CDASSERT(CCMTST(cand,c),DEDEC);
- CDASSERT(SY_64||'l'!=c,DEDEC);
  // if result is * followed by valid arg type, ratify it by advancing the pointer over the type (otherwise fail in next test)
 #define vargtvalues(w) CCM(w,'c')+CCM(w,'w')+CCM(w,'u')+CCM(w,'b')+CCM(w,'s')+CCM(w,'i')+CCM(w,'l')+CCM(w,'x')+CCM(w,'f')+CCM(w,'d')+CCM(w,'z')+CCM(w,'j')
  CCMWDS(vargt)  // set up for comparisons against list of bytes
@@ -852,7 +801,7 @@ static CCT*jtcdparse(J jt,A a,I empty){C c,lib[NPATH],*p,proc[NPATH],*s,*s0;CCT*
   cc->tletter[i]=c;
   CCMCAND(vargt,cand,c) CDASSERT(CCMTST(cand,c),der);  // vrgt defined above,list of valid arg bytes
   CDASSERT((c!='z'&&c!='j')||cc->star[i],der);
-  if('l'==c){CDASSERT(SY_64,der); cc->tletter[i]='x';}
+  if('l'==c){CDASSERT(1,der); cc->tletter[i]='x';}
 #ifdef C_CD_NODF // platform does not support f or d args
  CDASSERT(cc->star[i]==1 || (cc->tletter[i]!='f' && cc->tletter[i]!='d'),der);
 #endif
@@ -860,17 +809,6 @@ static CCT*jtcdparse(J jt,A a,I empty){C c,lib[NPATH],*p,proc[NPATH],*s,*s0;CCT*
  CDASSERT(0<=i||'1'!=cc->cc,DEDEC+256);
  MC(lib, s0+li,cc->ln); lib [cc->ln]=0;
  MC(proc,s0+pi,cc->pn); proc[cc->pn]=0;
-
-#if SY_MAC && !SY_64
-// mac osx 32 lseek off_t (64 bit) is not called properly
-// map libc.dylib seek to be libj.dylib x15lseek32
-if(!strcmp(lib,"libc.dylib")&&!strcmp(proc,"lseek"))
-{
-strcpy(lib,"libj.dylib");
-strcpy(proc,"x15lseek32");
-}
-#endif
-
  RZ(cc=cdload(cc,lib,proc));
  cc->n=1+i; RZ(cc=cdinsert(a,cc)); cc->li=li+cc->ai; cc->pi=pi+cc->ai;
  R cc;
@@ -896,18 +834,12 @@ static I*jtconvert0(J jt,I zt,I*v,I wt,C*u){D p,q;I k=0;US s;C4 s4;
   case CDT(INTX,B01X): *    v=*(B*)u; break;
   case CDT(INTX,INTX): *    v=*(I*)u; break;
   case CDT(INTX,FLX ):
-#if SY_64
   p=*(D*)u; q=jround(p); I rq=(I)q;
   if(!(p==q || FFIEQ(p,q)))R 0;  // must equal int, possibly out of range.  Exact equality is common enough to test for
   // out-of-range values don't convert, handle separately
   if(p<(D)IMIN){if(!(p>=IMIN*(1+FUZZ)))R 0; rq=IMIN;}  // if tolerantly < IMIN, error; else take IMIN
   else if(p>=FLIMAX){if(!(p<=-(IMIN*(1+FUZZ))))R 0; rq=IMAX;}  // if tolerantly > IMAX, error; else take IMAX
   *v=rq;
-#else
-   p=*(D*)u; q=jfloor(p);
-   if(p<IMIN*(1+FUZZ)||IMAX*(1+FUZZ)<p)R 0;
-   if(FFEQ(p,q))*v=(I)q; else if(FFEQ(p,1+q))*v=(I)(1+q); else R 0;
-#endif
  }
  R v;
 }    /* convert a single atom. I from D code adapted from IfromD() in k.c */
@@ -923,9 +855,9 @@ static B jtcdexec1(J jt,CCT*cc,C*zv0,C*wu,I wk,I wt,I wd){A*wv=(A*)wu,x,y,*zv;B 
  if(n&&!(wt&BOX)){DO(n, CDASSERT(!cc->star[i],DEPARM+256*i));}
  zbx=cc->zbx; zv=1+(A*)zv0; dv=data; u=wu; xr=0;
  for(i=0;i<n;++i,++zv){  // for each input field
-#if SY_UNIX64 && defined(__x86_64__)
+#if defined(__x86_64__)
   if(dv-data>=6&&dv-data<dcnt-2)dv=data+dcnt-2;
-#elif SY_UNIX64 && defined(__aarch64__)
+#elif defined(__aarch64__)
   if(dcnt>8&&dv-data==8)dv=data+dcnt;    /* v0 to v7 fully filled before x0 to x7 */
 #elif defined(C_CD_ARMHF)
   if((fcnt>16||dcnt>16)&&dv-data==4)dv=data+MAX(fcnt,dcnt)-12;  /* v0 to v15 fully filled before x0 to x3 */
@@ -957,7 +889,7 @@ static B jtcdexec1(J jt,CCT*cc,C*zv0,C*wu,I wk,I wt,I wd){A*wv=(A*)wu,x,y,*zv;B 
    if(star&1){RZ(x=jtmemu(jtinplace,x)); if(zbx)*zv=incorp(x); xv=AV(x);}  // what we install must not be inplaceable
    *dv++=(I)xv;                     /* pointer to J array memory     */
    CDASSERT(xt&LIT+C2T+C4T+INT+FL+CMPX,per);
-   if(!lit&&(c=='b'||c=='s'||c=='f'||c=='z'||SY_64&&c=='i')){
+   if(!lit&&(c=='b'||c=='s'||c=='f'||c=='z'||c=='i')){
     cipv[cipcount]=xv;              /* convert in place arguments */
     cipn[cipcount]=xn;
     cipt[cipcount]=c;
@@ -975,7 +907,6 @@ static B jtcdexec1(J jt,CCT*cc,C*zv0,C*wu,I wk,I wt,I wd){A*wv=(A*)wu,x,y,*zv;B 
 #if SY_MACPPC
           dd[dcnt++]=(float)*(D*)xv;
 #endif
-#if SY_64 && (SY_LINUX  || SY_MAC)
   #if defined(__PPC64__)
      /* +1 put the float in low bits in dv, but dd has to be D */
 #if C_LE
@@ -993,31 +924,11 @@ static B jtcdexec1(J jt,CCT*cc,C*zv0,C*wu,I wk,I wt,I wd){A*wv=(A*)wu,x,y,*zv;B 
       if(dcnt>8){ /* push the 9th F and more on to stack (must be the 7th I onward) */
         if(dv-data>=6)*(float*)(dv++)=f;else *(float*)(data+dcnt-3)=f;}}
   #endif
-#else
-#ifdef C_CD_ARMHF
-            {f=(float)*(D*)xv;
-             if(fcnt<16&&dcnt<=16){
-               dd[fcnt]=0; *(float*)(dd+fcnt++)=f;
-               if ((0==(fcnt&1)) && (fcnt<dcnt)) fcnt=dcnt;
-               if ((1==(fcnt&1)) && (fcnt>dcnt)) dcnt=fcnt+1;
-             }else{
-               if(dv-data>=4){
-                 *(float*)(dv++)=f;
-                 fcnt=(dv-data)+12;
-               }else{
-                 fcnt=MAX(fcnt,dcnt);
-                 *(((float*)data)+fcnt++ -12)=f;
-             }}}
-#else
-             f=(float)*(D*)xv; *dv++=*(int*)&f;
-#endif
-#endif
              break;
    case 'd':
 #if SY_MACPPC
              dd[dcnt++]=*(D*)xv;
 #endif
-#if SY_UNIX64
 #if defined(__PPC64__)
              /* always need to increment dv, the contents get used from the 14th D */
              *(D*)dv++=dd[dcnt++]=*(D*)xv;
@@ -1030,44 +941,16 @@ static B jtcdexec1(J jt,CCT*cc,C*zv0,C*wu,I wk,I wt,I wd){A*wv=(A*)wu,x,y,*zv;B 
              if(dcnt>8){ /* push the 9th D and more on to stack (must be the 7th I onward) */
                if(dv-data>=6)*dv++=*xv;else *(data+dcnt-3)=*xv;}
 #endif
-#endif
-#if !SY_UNIX64
-#ifdef C_CD_ARMHF
-            {if(dcnt<16){
-               if (dcnt==fcnt) fcnt+=2;
-               *(D*)(dd+dcnt++)= *(D*)xv; dcnt++;
-             }else{
-               if(dv-data>=4){
-                 if((dv-data)&1)dv++;
-                 *(D*)(dv++)=*(D*)xv; dv++;
-                 dcnt=(dv-data)+12;
-               }else{
-                 dcnt=MAX(fcnt,dcnt);
-                 dcnt = (dcnt+1)&-2;
-                 *(D*)(data+dcnt++ -12)=*(D*)xv; dcnt++;
-             }}}
-#else
-#ifdef C_CD_ARMEL
-             if((data-dv)&1) *dv++=0;   /* 8-byte alignment for double */
-#endif
-             *dv++=xv[0];
-#if !SY_64
-             *dv++=xv[1];
-#endif
-#endif
-#endif
   }
  }  // end of loop for each argument
 #ifdef C_CD_ARMHF
 // CDASSERT(16>=fcnt,DELIMIT);
 // CDASSERT(16>=dcnt,DELIMIT);
  if((fcnt>16||dcnt>16)&&dv-data<=4)dv=data+MAX(fcnt,dcnt)-12;  /* update dv to point to the end */
-#elif SY_UNIX64 && defined(__x86_64__)
+#elif defined(__x86_64__)
  if(dcnt>8&&dv-data<=6)dv=data+dcnt-2; /* update dv to point to the end */
-#elif SY_UNIX64 && defined(__aarch64__)
+#elif defined(__aarch64__)
  if(dcnt>8&&dv-data<=8)dv=data+dcnt;  /* update dv to point to the end */
-#elif !SY_64
- CDASSERT(dv-data<=NCDARGS,DECOUNT); /* D needs 2 I args in 32bit system, check it again. */
 #endif
 
  DO(cipcount, convertdown(cipv[i],cipn[i],cipt[i]););  /* convert I to s and int and d to f as required */
@@ -1247,10 +1130,6 @@ static I cbnew(){A r;
  if(B01&AT(r)) R ((BYTE*)AV(r))[0];
  R 0;
 }
-
-#if SY_MAC && !SY_64
-int x15lseek32(int fh,int off, int type){R (int)lseek(fh,(off_t)off,type);}// mac osx 32
-#endif
 
 /* start of code generated by J script x15_callback.ijs */
 #define CBTYPESMAX 10 /* result and 9 args */

@@ -89,11 +89,7 @@ F1(jtbdot){A b,h=0;I j=0,n,*v;
 /* 2 - box list of results corresp. to arguments    */
 /*     unused entries are set to 0                  */
 
-#if SY_64
 #define HIC(x,y)  ((UI)x+10495464745870458733U*(UI)y)
-#else
-#define HIC(x,y)  ((UI)x+2838338383U*(UI)y)
-#endif
 
 static A jtmemoget(J jt,I x,I y,A self){A h,*hv,q;I*jv,k,m,*v;
  h=FAV(self)->fgh[2]; hv=AAV(h); 

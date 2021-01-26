@@ -94,11 +94,8 @@ B jtmeminit(J jt){I k,m=MLEN;
 }
 
 // Audit all memory chains to detect overrun
-#if SY_64
 #define AUDITFILL ||(UI4)AFHRH(Wx)!=Wx->fill
-#else
-#define AUDITFILL 
-#endif
+
 void jtauditmemchains(J jt){F1PREFIP;
 #if MEMAUDIT&16
 I Wi,Wj;A Wx,prevWx=0; if(jt->peekdata){for(Wi=PMINL;Wi<=PLIML;++Wi){Wj=0; Wx=(jt->mfree[-PMINL+Wi].pool); while(Wx){if(FHRHPOOLBIN(AFHRH(Wx))!=(Wi-PMINL)AUDITFILL||Wj>0x10000000)SEGFAULT; prevWx=Wx; Wx=AFCHAIN(Wx); ++Wj;}}}
@@ -976,7 +973,7 @@ if((I)jt&3)SEGFAULT;
 #endif
    {I ot=jt->malloctotalhwmk; ot=ot>nt?ot:nt; jt->malloctotal=nt; jt->malloctotalhwmk=ot;}
    AFHRH(z) = (US)FHRHSYSJHDR(1+blockx);    // Save the size of the allocation so we know how to free it and how big it was
-#if MEMAUDIT&17 && SY_64
+#if MEMAUDIT&17
    z->fill=(UI4)AFHRH(z);
 #endif
    jt->mfreegenallo=mfreeb+=n;    // mfreegenallo is the byte count allocated for large blocks
@@ -1008,7 +1005,7 @@ if((I)jt&3)SEGFAULT;
 
 // bytes is total #bytes needed including headers, -1
 RESTRICTF A jtgafv(J jt, I bytes){UI4 j;
-#if NORMAH*(SY_64?8:4)<(1LL<<(PMINL-1))
+#if NORMAH*8<(1LL<<(PMINL-1))
  bytes|=(I)1<<(PMINL-1);  // if the memory header itself doesn't meet the minimum buffer length, insert a minimum
 #endif
  CTLZI((UI)bytes,j);  // 3 or 4 should return 2; 5 should return 3
@@ -1021,18 +1018,14 @@ RESTRICTF A jtga(J jt,I type,I atoms,I rank,I* shaape){A z;
  // Get the number of bytes needed, including the header, the atoms, and a full I appended for types that require a
  // trailing NUL (because boolean-op code needs it)
  I bytes = ALLOBYTESVSZ(atoms,rank,bp(type),type&LAST0,0);  // We never use GA for NAME types, so we don't need to check for it
-#if SY_64
  if(!((((unsigned long long)(atoms))&~TOOMANYATOMS)+((rank)&~RMAX))){
-#else
- if(((I)bytes>(I)(atoms)&&(I)(atoms)>=(I)0)&&!((rank)&~RMAX)){
-#endif
   RZ(z = jtgafv(jt, bytes));   // allocate the block, filling in AC and AFLAG
   I akx=AKXR(rank);   // Get offset to data
   AK(z)=akx; AT(z)=type; AN(z)=atoms;   // Fill in AK, AT, AN
   // Set rank, and shape if user gives it.  This might leave the shape unset, but that's OK
   AR(z)=(RANKT)rank;   // Storing the extra last I (as was done originally) might wipe out rank, so defer storing rank till here
   // Since we allocate powers of 2, we can make the memset a multiple of 32 bytes.  The value of an atomic box would come before the cleared region, but we pick that up here when the shape is cleared
-  if(!(type&DIRECT)){if(SY_64){memset((C*)(AS(z)+1),C0,(bytes-32)&-32);}else{memset((C*)z+akx,C0,bytes+1-akx);}}  // bytes=63=>0 bytes cleared.  bytes=64=>32 bytes cleared.  bytes=64 means the block is 65 bytes long
+  if(!(type&DIRECT)){memset((C*)(AS(z)+1),C0,(bytes-32)&-32);}  // bytes=63=>0 bytes cleared.  bytes=64=>32 bytes cleared.  bytes=64 means the block is 65 bytes long
   GACOPYSHAPEG(z,type,atoms,rank,shaape)  /* 1==atoms always if t&SPARSE  */  // copy shape by hand since short
    // Tricky point: if rank=0, GACOPYSHAPEG stores 0 in AS[0] so we don't have to do that in the DIRECT path
     // All non-DIRECT types have items that are multiples of I, so no need to round the length

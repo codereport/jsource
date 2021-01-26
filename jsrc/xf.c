@@ -25,7 +25,6 @@ static int rmdir2(const char *dir);
 
 
 
-#if SY_64
 static I fsize(F f){
  if(!f)R 0;
 
@@ -34,12 +33,6 @@ static I fsize(F f){
  fgetpos(f,&z);
  R *(I*)&z;
 }
-#else
-static I fsize(F f){
- RZ(f);
-
-}
-#endif
 
 static A jtrdns(J jt,F f){A za,z;I n=1024;size_t r,tr=0;
  GAT0(za,LIT,1024,1); clearerr(f);

@@ -18,11 +18,7 @@ extern A RoutineC(J,A,A);  // instal NUL after CJK characters of C4T
 extern A RoutineD(J,A,A);  // Convert C2T/C4T to UTF-8
 extern I stringdisplaywidth(J jt, I c2, void*src, I nsrc); // display width of a string
 
-#if SY_64
 #define WI          21L
-#else
-#define WI          12L
-#endif
 
 typedef void ((*FMTFUN)());
 

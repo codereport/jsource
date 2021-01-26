@@ -246,16 +246,6 @@ static A jtdir1(J jt,struct dirent*f,struct stat *dirstatbuf,C *diratts, C *dirm
  RZ(zv[0]=vec(LIT,n,s)); 
  RZ(zv[1]=vec(INT,6L,ts));
  sz=dirstatbuf[0].st_size;
-#if !SY_64 && defined(ANDROID)
- UC* raw_stat=(UC*)dirstatbuf;
- if(raw_stat[sizeof(struct stat)-1]==98 &&
-    raw_stat[sizeof(struct stat)-2]==76 &&
-    raw_stat[sizeof(struct stat)-3]==54){
-    // Wrong stat size. Long Long (64bit) fields are not 8 bytes aligned.
-     uint* raw_stat32 = (uint*)dirstatbuf;
-     sz=(I)(size_t)raw_stat32[11]; // st_size from the packed (without alignment) structure
- }
-#endif
  sz=sz<0?-1:sz;
  RZ(zv[2]=sc(sz));
  RZ(zv[3]=vec(LIT,3L, dirrwx ));

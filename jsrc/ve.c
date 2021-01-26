@@ -232,7 +232,7 @@ I remii(I a,I b){I r; R (a!=REPSGN(a))?(r=b%a,0<a?r+(a&REPSGN(r)):r+(a&REPSGN(-r
 AHDR2(remII,I,I,I){I u,v;
  if(n-1==0){DQ(m,*z++=remii(*x,*y); x++; y++; )
  }else if(n-1<0){   // repeated x.  Handle special cases and avoid integer divide
-#if SY_64 && C_USEMULTINTRINSIC
+#if C_USEMULTINTRINSIC
   DQ(m, u=*x++;
     // take abs(x); handle negative x in a postpass
    UI ua=-u>=0?-u:u;  // abs(x)

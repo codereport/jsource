@@ -78,16 +78,11 @@ static UI hicx(J jt,I k,UC*v){UI HASHINIT(z);I*u=jt->hiv; DQ(jt->hin, HASHSTEP(z
 #endif
 
 
-#if SY_64
 // Hash a single unsigned INT
 #define hicw(v)  (10495464745870458733U**(UI*)(v))
 // Hash a single double, using only the bits in ctmask.  -0 is hashed differently than +0.  Should we take the sign bit out of ct?  Only if ct=0?
 //  not required for tolerant comparison, but if we tried to do tolerant comparison through the fast code it would help
 static UI jthid(J jt,D d){R 10495464745870458733U*(jt->ctmask&*(I*)&d);}
-#else
-#define hicw(v)  (2838338383U**(U*)(v))
-static UI jthid(J jt,D d){DI x; x.d=d; R 888888883U*(x.i[LSW]&jt->ctmask)+2838338383U*x.i[MSW];}
-#endif
 
 // Hash the data in the given A.  Comments say this is called only for singletons
 // If empty or boxed, hash the shape

@@ -601,11 +601,7 @@ extern A virtifnonip(J jt, I ipok, A buf);
 extern A        jtassembleresults(J,I, A, A,A*,I,I,I,A,I,I,I);
 extern void     audittstack(J);
 extern I        cachedmmult(J,D*,D*,D*,I,I,I,I);
-#if SY_64
 extern void     copyTT(void *, void *, I, I,I);
-#else
-extern void     jtcopyTT(J, void *, void *, I, I,I);
-#endif
 extern A        jtac1(J,AF);
 extern A        jtac2(J,AF);
 extern B        jtadd2(J,F,F,C*);
@@ -766,11 +762,7 @@ extern A        jtras(J,AD* RESTRICT);
 extern A        jtra00s(J,AD* RESTRICT);
 extern A        jtrank1ex(J,AD * RESTRICT,A,I,AF);
 extern A        jtrank1ex0(J,AD * RESTRICT,A,AF);
-#if SY_64
 extern A        jtrank2ex(J,AD * RESTRICT,AD * RESTRICT,A,UI,AF);
-#else
-extern A        jtrank2ex(J,AD * RESTRICT,AD * RESTRICT,A,UI,UI,AF);
-#endif
 extern A        jtrank2ex0(J,AD * RESTRICT,AD * RESTRICT,A,AF);
 extern A        jtrd(J,F,I,I);
 extern A        jtrealize(J,A);
@@ -931,11 +923,7 @@ extern I Bchrcolon[];
 #define chrcolon ((A)&Bchrcolon)
 extern I Bchrspace[];
 #define chrspace ((A)&Bchrspace)
-#if !SY_64
-extern long long validitymask[];
-#else
 extern I validitymask[];
-#endif
 extern C  ctype[];
 extern const double dzero;
 extern D        inf;
@@ -947,10 +935,10 @@ extern I Biv1[];
 extern D        jnan;           /* "nan" name conflict under Solaris       */
 extern A        mnuvxynam[6];
 extern void     moveparseinfotosi(J);
-extern I Bnum[][9-SY_64];
+extern I Bnum[][8];
 #define zeroionei(n) ((A)(Bnum+(n)))
 #define num(n) ((A)(Bnum+2+(n)-NUMMIN))
-#define I1mem (Bnum[1][8-SY_64])  // 1 stored in memory
+#define I1mem (Bnum[1][7])  // 1 stored in memory
 extern struct Bd1 Bnumvr[];
 #define numvr(n) ((A)(Bnumvr+(n)))
 extern struct Bd1 Bonehalf;

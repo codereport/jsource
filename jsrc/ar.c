@@ -15,12 +15,7 @@ static DF1(jtreduce);
 #define PARITY2         u=(B*)&s; b=0; b^=*u++; b^=*u++;
 #define PARITY4         u=(B*)&s; b=0; b^=*u++; b^=*u++; b^=*u++; b^=*u++; 
 #define PARITY8         u=(B*)&s; b=0; b^=*u++; b^=*u++; b^=*u++; b^=*u++; b^=*u++; b^=*u++; b^=*u++; b^=*u++;
-
-#if SY_64
 #define PARITYW         PARITY8
-#else
-#define PARITYW         PARITY4
-#endif  
 
 #if SY_ALIGN
 #define VDONE(T,PAR)  \

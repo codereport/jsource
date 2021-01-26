@@ -135,13 +135,11 @@ static void jtfmt1(J jt,B e,I m,I d,C*s,I t,C*wv){D y;
  switch(CTTZNOFLAG(t)){
   case B01X:  sprintf(jt->th2buf,s,(D)*wv);     break;
   case INTX:;
-#if SY_64
    // If I is 64 bits, and the format string ends with '.0f', change the format to lld
    C *fldend; for(fldend=s;*fldend!='d'&&*fldend!='f'&&*fldend!='e';++fldend);  // find end-of-field
    if(fldend[0]=='f'&&fldend[-1]=='0'&&fldend[-2]=='.'){fldend[-2]='l'; fldend[-1]='l'; fldend[0]='d';}
    // If I is 64 bits and the format string ends with 'd', use integer; otherwise use float
    if(fldend[0]=='d'){sprintf(jt->th2buf,s,*(I*)wv); break;}
-#endif
    sprintf(jt->th2buf,s,(D)*(I*)wv);
    break;
   case XNUMX: fmtx(e,m,d,s,t,(X*)wv);          break;

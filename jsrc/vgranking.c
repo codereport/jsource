@@ -115,9 +115,7 @@ F1(jtranking){A y,z;C*wv;I icn,i,k,m,n,t,wcr,wf,wn,wr,*ws,wt,*zv;CR rng;TTYPE *y
   memset(yv,C0,rng.range*sizeof(*yv));
   switch(k){
    case sizeof(I): if(wt&INT){RANKINGLOOP(I); break;}
-#if SY_64
    case sizeof(C4):
-#endif
     RANKINGLOOP(C4); break;
    case sizeof(C):   RANKINGLOOP(UC); break;
 #if C_LE
