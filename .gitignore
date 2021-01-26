@@ -68,3 +68,8 @@ make2/
 /jlibrary/system/config
 /jlibrary/system/main
 /jlibrary/tools
+
+# clion's cmake creates cmake-build-release, cmake-build-debug, etc...
+cmake-build-*/
+# clion's settings folder. keep or not up to you. can be useful for spellcheck etc.
+.idea
