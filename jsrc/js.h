@@ -9,9 +9,6 @@
 
 // C_? new style config - default value if not defined by builder
 
-#ifdef SY_64
-#undef SY_64
-#endif
 #define SY_64 1
 
 #ifndef C_LE // littleendian/bigendian
