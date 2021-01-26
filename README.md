@@ -25,7 +25,7 @@ This is a fork of [`jsoftware/jsource`](https://github.com/jsoftware/jsource) an
 * [ ] Clang-format the code base
 * [ ] Clang-tidy the code base
 * [x] Set up CI (Buildkite)
-* [ ] Set up CodeCov
+* [ ] Set up Code Coverage
 * [x] Set up [badges](https://github.com/badges/shields)
 * [x] Get both build / tests running in parallel
    * [x] Parallel build (for free off of zhihaoy branch)
