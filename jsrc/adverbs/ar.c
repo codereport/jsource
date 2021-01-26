@@ -4,9 +4,9 @@
 /* Adverbs: Reduce (Insert), Outer Product, and Fold                              */
 
 #include "j.h"
-#include "vasm.h"
-#include "ve.h"
-#include "vcomp.h"
+#include "verbs/vasm.h"
+#include "verbs/ve.h"
+#include "verbs/vcomp.h"
 #include "ar.h"
 
 static DF1(jtreduce);

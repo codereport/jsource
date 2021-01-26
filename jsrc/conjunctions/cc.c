@@ -4,7 +4,7 @@
 /* Conjunctions: Cuts                                                      */
 
 #include "j.h"
-#include "vcomp.h"
+#include "verbs/vcomp.h"
 #define ZZDEFN
 #include "result.h"
 #define STATENEEDSASSEMBLYX 15

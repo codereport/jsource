@@ -5,7 +5,7 @@
 
 #include "j.h"
 #include "x.h"
-#include "vcomp.h" /* for TLT & friends */
+#include "verbs/vcomp.h" /* for TLT & friends */
 #include "dtoa.h"
 
 static const D ppwrs[10]={1, 1e1, 1e2, 1e3, 1e4, 1e5, 1e6, 1e7, 1e8, 1e9};

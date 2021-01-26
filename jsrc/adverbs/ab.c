@@ -6,7 +6,7 @@
 // TODO: rewrite & simplify, and remove divides
 // note u b./&.(a.&i.) fails when y is shorter than an int
 #include "j.h"
-#include "ve.h"
+#include "verbs/ve.h"
 #include "ar.h"
 
 

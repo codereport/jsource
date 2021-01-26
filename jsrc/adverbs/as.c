@@ -4,8 +4,8 @@
 /* Adverbs: Suffix and Outfix                                              */
 
 #include "j.h"
-#include "vasm.h"
-#include "ve.h"
+#include "verbs/vasm.h"
+#include "verbs/ve.h"
 #define ZZDEFN
 #include "result.h"
 
