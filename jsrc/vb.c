@@ -6,6 +6,16 @@
 #include "j.h"
 #include "ve.h"
 
+#ifdef MMSC_VER
+#pragma warning(disable: 4244)
+#endif
+
+BPFX( andBB, AND ,BAND, AND, BAND, _mm256_and_pd(u256,v256) , , )    
+BPFX(  orBB, OR  ,BOR,  OR,  BOR, _mm256_or_pd(u256,v256) , , )    
+BPFX(nandBB, NAND,BNAND,NAND,BNAND, _mm256_xor_pd(bool256,_mm256_and_pd(u256,v256)) , , __m256d bool256=_mm256_castsi256_pd(_mm256_set1_epi64x(0x0101010101010101)); )
+BPFX( norBB, NOR ,BNOR, NOR, BNOR, _mm256_xor_pd(bool256,_mm256_or_pd(u256,v256)) , , __m256d bool256=_mm256_castsi256_pd(_mm256_set1_epi64x(0x0101010101010101)); )
+
+
 F1(jtrazein){A z; R df2(z,w,box(raze(w)),amp(swap(ds(CEPS)),ds(COPE)));}
 
 
@@ -89,8 +99,6 @@ static I jtebarprep(J jt,A a,A w,A*za,A*zw,I*zc){I ar,at,m,n,t,wr,wt,memlimit;CR
  R t&B01+LIT+C2T||t&INT+SBT+C4T&&BETWEENC(rng.range,1,memlimit) ? rng.range : -4;
 }
 
-// extern "C" {
-
 #define EBLOOP(T,SUB0,SUB1,ZFUNC)  \
    {T*u=(T*)av,*v=(T*)wv;                                            \
     DO(m, yv[SUB0]=m-i;);                                            \
@@ -98,65 +106,38 @@ static I jtebarprep(J jt,A a,A w,A*za,A*zw,I*zc){I ar,at,m,n,t,wr,wt,memlimit;CR
     if   (k==p){for(i=0;i<m&&u[i]==v[k+i];++i); ZFUNC;             } \
    }
 
-F2(jtebar)
-{
-  PROLOG(0065);
-  A y, z;
-  I c, d, i, k = 0;
-  ARGCHK2(a, w);
-  ASSERT(!((AT(a) | AT(w)) & SPARSE), EVNONCE);
-  ASSERT((AR(a) == AR(w)) || (AR(a) + (AR(w) ^ 1)) == 0, EVRANK);
+F2(jtebar){PROLOG(0065);A y,z;B*zv;C*av,*wv;I c,d,i,k=0,m,n,p,*yv;
+ ARGCHK2(a,w);
+ ASSERT(!((AT(a) | AT(w)) & SPARSE), EVNONCE);
+ ASSERT((AR(a) == AR(w)) || (AR(a) + (AR(w) ^ 1)) == 0, EVRANK);
+ if(AN(a)==1)R eq(reshape(mtv,a),w);  // if a is a singleton, just revert to =
+ RE(d=ebarprep(a,w,&a,&w,&c));
+ av=CAV(a); m=AN(a);
+ wv=CAV(w); n=AN(w); p=n-m;
+ switch(d){
+  case -1: R reshape(shape(w),num(0));
+  case -2: R ebarmat(a,w);
+  case -3: R df2(z,shape(a),w,cut(amp(a,ds(CMATCH)),num(3)));
+  case -4: R ebarvec(a,w);
+ }
+ GATV0(z,B01,n,AR(w)); zv=BAV(z); memset(zv,m==0,n); if((-m&-n)>=0)R z;  // if x empty, return all 1s
+ GATV0(y,INT,d,1); yv= AV(y); DO(d, yv[i]=1+m;);
+ switch(CTTZ(AT(w))){
+  case INTX: if(c)EBLOOP(I, u[i]-c,v[k+m]-c, zv[k]=i==m) 
+            else EBLOOP(I, u[i],  v[k+m],   zv[k]=i==m); break;
+  case SBTX: if(c)EBLOOP(SB,u[i]-c,v[k+m]-c, zv[k]=i==m) 
+            else EBLOOP(SB,u[i],  v[k+m],   zv[k]=i==m); break;
+  case C2TX:      EBLOOP(US,u[i],  v[k+m],   zv[k]=i==m); break;
+  case C4TX: if(c)EBLOOP(C4,u[i]-c,v[k+m]-c, zv[k]=i==m) 
+            else EBLOOP(C4,u[i],  v[k+m],   zv[k]=i==m); break;
+#if !C_AVX2 && !EMU_AVX2
+default:
+            EBLOOP(UC,u[i],  v[k+m],   zv[k]=i==m);
+#endif
+ }
+ EPILOG(z);
+}    /* Daniel M. Sunday, CACM 1990 8, 132-142 */
 
-  if (AN(a) == 1) R eq(reshape(mtv, a), w);  // if a is a singleton, just revert to =
-
-  RE(d = ebarprep(a, w, &a, &w, &c));
-
-  C* av     = CAV(a);
-  I m       = AN(a);
-  C* wv     = CAV(w);
-  I n       = AN(w);
-  I const p = n - m;
-
-  switch (d) {
-    case -1: R reshape(shape(w), num(0));
-    case -2: R ebarmat(a, w);
-    case -3: R df2(z, shape(a), w, cut(amp(a, ds(CMATCH)), num(3)));
-    case -4: R ebarvec(a, w);
-  }
-  GATV0(z, B01, n, AR(w));
-  B* zv = BAV(z);
-  memset(zv, m == 0, n);
-  if ((-m & -n) >= 0) R z;  // if x empty, return all 1s
-  GATV0(y, INT, d, 1);
-  I* yv = AV(y);
-  DO(d, yv[i] = 1 + m;);
-  switch (CTTZ(AT(w))) {
-    case INTX:
-      if (c)
-        EBLOOP(I, u[i] - c, v[k + m] - c, zv[k] = i == m)
-      else
-        EBLOOP(I, u[i], v[k + m], zv[k] = i == m);
-      break;
-    case SBTX:
-      if (c)
-        EBLOOP(SB, u[i] - c, v[k + m] - c, zv[k] = i == m)
-      else
-        EBLOOP(SB, u[i], v[k + m], zv[k] = i == m);
-      break;
-    case C2TX: EBLOOP(US, u[i], v[k + m], zv[k] = i == m); break;
-    case C4TX:
-      if (c)
-        EBLOOP(C4, u[i] - c, v[k + m] - c, zv[k] = i == m)
-      else
-        EBLOOP(C4, u[i], v[k + m], zv[k] = i == m);
-      break;
-    default: EBLOOP(UC, u[i], v[k + m], zv[k] = i == m);
-  }
-  EPILOG(z);
-}
-// Daniel M. Sunday, CACM 1990 8, 132-142
-
-// }
 
 F2(jti1ebar){A y;C*av,*wv;I c,d,i,k=0,m,n,p,*yv;
  ARGCHK2(a,w);

@@ -503,6 +503,8 @@ A _stdcall Jga(J jt, I t, I n, I r, I*s){A z;
  return z;
 }
 
+void oleoutput(J jt, I n, char* s); /* SY_WIN32 only */
+
 #define capturesize 80000
 
 /* jsto - display output in output window */
