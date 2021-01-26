@@ -7,11 +7,7 @@
 
 // Interfaces for numbered locales
 // Hashed version, without locale reuse
-#if BW==64
 #define HASHSLOT(x,tsize) (((UI)((UI4)(x)*(UI4)2654435761U)*(UI)(tsize))>>32)
-#else
-#define HASHSLOT(x,tsize) (((UI4)(x)*(UI4)2654435761U)%(UI4)(tsize))
-#endif
 // Initialize the numbered-locale system.  Called during initialization, so no need for ras()
 static A jtinitnl(J jt){A q;
  I s; FULLHASHSIZE(5*1,INTSIZE,0,0,s);  // at least 5 slots, so we always have at least 2 empties

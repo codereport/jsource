@@ -291,7 +291,7 @@ static I hashallo(IH * RESTRICT hh,UI p,UI m,I md){
   md |= IIMODBASE0;  // if we clear the region, mention that so that we get the fastest code
   // Clear the entries of the first allocation to m.  Use fullword stores (should use cache-line stores).  Our allocations are always multiples of fullwords,
   // so it is safe to overfill with fullword stores
-  UI storeval=m; if(hh->hashelelgsize==1)storeval |= storeval<<16; if(SZI>4)storeval |= storeval<<(32%BW);  // Pad store value to 64 bits, dropping excess on smaller machines
+  UI storeval=m; if(hh->hashelelgsize==1)storeval |= storeval<<16; if(SZI>4)storeval |= storeval<<32;  // Pad store value to 64 bits, dropping excess on smaller machines
   I i, nstores=((p<<hh->hashelelgsize)+SZI-1)>>LGSZI;  // get count of partially-filled words
   for(i=0;i<nstores;++i){hh->data.UI[i]=storeval;}  // fill them all
   // Clear everything past the first allocation to 0, indicating 'not touched yet'.  But we can elide this if it is already 0, which we can tell by
@@ -1207,7 +1207,7 @@ A jtindexofsub(J jt,I mode,A a,A w){PROLOG(0079);A h=0,hi=mtv,z;B mk=w==mark,th;
       // the allocated position and index
       mode |= IIMODBASE0|IIMODFORCE0;  // we are surely initializing this table now, & it stays that way on every use
       // It's OK to round the fill up to the length of an I
-      UI fillval=m|(m<<16); if(SZI>4)fillval|=fillval<<(32%BW); I fillct=(p+(((((I)1)<<(LGSZI-LGSZUS))-1)))>>(LGSZI-LGSZUS);
+      UI fillval=m|(m<<16); if(SZI>4)fillval|=fillval<<32; I fillct=(p+(((((I)1)<<(LGSZI-LGSZUS))-1)))>>(LGSZI-LGSZUS);
       DO(fillct, hh->data.UI[i]=fillval;)
       hh->currentlo=0; hh->currentindexofst=0;  // clear the parms.  Leave index 0 for not found
      }else{
@@ -1251,7 +1251,7 @@ A jtindexofsub(J jt,I mode,A a,A w){PROLOG(0079);A h=0,hi=mtv,z;B mk=w==mark,th;
        mode |= IIMODBASE0|IIMODFORCE0;  // we are surely initializing this table now, & it stays that way on every use.  Only for non-Boolean
        fillval=m; 
       }  // fill bits with 0; fill full hashes with m
-      if(SZI>4)fillval|=fillval<<(32%BW);  // fill entire words
+      if(SZI>4)fillval|=fillval<<32;  // fill entire words
       UI fillct=(p+(((2LL<<(LGSZI-LGSZUI4))<<booladj)-1))>>(booladj+LGSZI-LGSZUI4);  // Round bits/UI4 up to SZI, then convert to count of Is.  We add 2 SZIs because we must pad packed bits on both ends 
       DO(fillct, hh->data.UI[i]=fillval;)
       hh->currentlo=0; hh->currentindexofst=0;  // clear the parms.  This will never go through hashallo, so right-side and upper info not needed

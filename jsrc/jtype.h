@@ -118,9 +118,7 @@ struct AD {
  I n;  // # atoms - always 1 for sparse arrays
  RANKT r;  // rank
  US h;   // reserved for allocator.  Not used for AFNJA memory
-#if BW==64
  UI4 fill;   // On 64-bit systems, there will be a padding word here - insert in case compiler doesn't
-#endif
  I s[1];   // shape starts here.  NOTE!! s[0] is always OK to fetch.  We allocate 8 words minimum and s[0] is the last.
 };
 

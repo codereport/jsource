@@ -261,7 +261,6 @@ I grcol2(I d,I c,US*yv,I n,I*xv,I*zv,const I m,US*u,I flags){
 
 
 // grade doubles
-#if BW==64
 // grade doubles by hiding the item number in the value and sorting.  Requires ai==1.
 // We interpret the input as integer form so that we can hide the item number in an infinity without turning it into a NaN
 static GF(jtgrdq){
@@ -306,13 +305,8 @@ static GF(jtgrdq){
  R 1;
 }
 
-#endif
-
-
 static GF(jtgrd){A x,y;int b;D*v,*wv;I *g,*h,nneg,*xv;US*u;void *yv;I c=ai*n;
-#if BW==64
  if(ai==1){R jtgrdq(jt,m,ai,n,w,zv);}  // if fast list code is available, always use it
-#endif
   // if not large and 1 atom per key, go do general grade
  if(!(ai==1&&n>3300))R grx(m,ai,n,w,zv);  // Empirically derived crossover   TUNE
  // The rest of this routine is not used on lists when the fast list code is available
@@ -411,7 +405,6 @@ static GF(jtgru1){A x,y;C4*wv;I i,*xv;US*u;void *yv;I c=ai*n;
  R 1;
 }    /* grade"r w on c4t w where c==n */
 
-#if BW==64
 // grade INTs by hiding the item number in the value and sorting.  Requires ai==1.
 // We interpret the input as integer form so that we can hide the item number in an infinity without turning it into a NaN
 static GF(jtgriq){
@@ -466,9 +459,6 @@ static GF(jtgriq){
  GEND  // restore from GBEGIN
  R 1;
 }
-
-#endif
-
 
 static GF(jtgri){A x,y;B up;I e,i,*v,*wv,*xv;UI4 *yv,*yvb;I c=ai*n;
  wv=AV(w);

@@ -7,7 +7,6 @@
 #include "ve.h"
 
 
-#if BW==64
 static AMONPS(floorDI,I,D,
  I rc=0; UI fbits; D mplrs[2]; mplrs[0]=2.0-jt->cct; mplrs[1]=jt->cct-0.00000000000000011; ,
  {if(((fbits=*(UI*)x)&0x7fffffffffffffff)<0x43c0000000000000){I neg=SGNTO0((*(UI*)x)-SGNTO0(*(UI*)x)); *z=(I)(*x*mplrs[neg])-neg;}  // -0 is NOT neg; take everything up to +-2^61
@@ -16,13 +15,9 @@ static AMONPS(floorDI,I,D,
   else{rc|=EWOVFLOOR0; D d=tfloor(*x); *z=fbits^(SGNTO0(fbits)<<(BW-2)); if(d!=(I)d)rc|=EWOVFLOOR1;} } ,  // we use DQ; i is n-1-reali, ~i = (reali-n+1)-1 = i-n
   R rc?rc:EVOK;
  ; )  // x100 0011 1100 =>2^61
-#else
-static AMON(floorDI,I,D, {D d=tfloor(*x); *z=(I)d; ASSERTWR(d==*z,EWOV);})
-#endif
 static AMON(floorD, D,D, *z=tfloor(*x);)
 static AMON(floorZ, Z,Z, *z=zfloor(*x);)
 
-#if BW==64
 static AMONPS(ceilDI,I,D,
  I rc=0; UI fbits; D mplrs[2]; mplrs[0]=2.0-jt->cct; mplrs[1]=jt->cct-0.00000000000000011; ,
  {if(((fbits=*(UI*)x)&0x7fffffffffffffff)<0x43c0000000000000){I pos=SGNTO0((0-*(UI*)x)-SGNTO0(0-*(UI*)x)); *z=(I)(*x*mplrs[pos])+pos;}  // 0 is NOT pos; take everything up to +-2^61
@@ -31,9 +26,6 @@ static AMONPS(ceilDI,I,D,
   else{rc|=EWOVFLOOR0; D d=tceil(*x); *z=fbits^(SGNTO0(fbits)<<(BW-2)); if(d!=(I)d)rc|=EWOVFLOOR1;} } ,  // we use DQ; i is n-1-reali, ~i = (reali-n+1)-1 = i-n
   R rc?rc:EVOK;
  ; )  // x100 0011 1100 =>2^61
-#else
-static AMON(ceilDI, I,D, {D d=tceil(*x);  *z=(I)d; ASSERTWR(d==*z,EWOV);})
-#endif
 static AMON(ceilD,  D,D, *z=tceil(*x);)
 static AMON(ceilZ,  Z,Z, *z=zceil(*x);)
 
@@ -46,11 +38,7 @@ static AMONPS(sgnZ,   Z,Z, , if((1.0-jt->cct)>zmag(*x))*z=zeroZ; else *z=ztrend(
 static AMON(sqrtI,  D,I, ASSERTWR(0<=*x,EWIMAG); *z=sqrt((D)*x);)
 
 static AMONPS(sqrtD,  D,D, I ret=EVOK; , if(*x>=0)*z=sqrt(*x);else{*z=-sqrt(-*x); ret=EWIMAG;}, R ret;)  // if input is negative, leave sqrt as negative
-#if BW==64
 static AMON(absD,   I,I, *z= *x&0x7fffffffffffffff;)
-#else
-static AMON(absD,   D,D, *z= ABS(*x);)
-#endif
 static AMON(sqrtZ,  Z,Z, *z=zsqrt(*x);)
 
 static AMON(expB,   D,B, *z=*x?2.71828182845904523536:1;)

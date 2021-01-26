@@ -589,7 +589,7 @@ DF2(jtcut2){F2PREFIP;PROLOG(0025);A fs,z,zz;I neg,pfx;C id,*v1,*wv,*zc;I cger[12
   }else{
    // monadic forms.  If we can handle the type/length here, leave it; otherwise convert to Boolean.
    // If w is Boolean, we have to pretend it's LIT so we use the correct fret value rather than hardwired 1
-   if((((wt&(B01|LIT|INT|FL|C2T|C4T|SBT))-1)|(k-1)|(((BW==32&&wt&FL&&k==SZD)-1)&((k&-k&(2*SZI-1))-k)))>=0){a=w; ak=k; at=(wt+B01)&~B01;  // monadic forms: if w is an immediate type we can handle, and the length is a machine-word length, use w unchanged
+   if((((wt&(B01|LIT|INT|FL|C2T|C4T|SBT))-1)|(k-1)|((-1)&((k&-k&(2*SZI-1))-k)))>=0){a=w; ak=k; at=(wt+B01)&~B01;  // monadic forms: if w is an immediate type we can handle, and the length is a machine-word length, use w unchanged
    }else{RZ(a=n?eps(w,take(num(pfx?1:-1),w)):mtv); ak=1; at=B01;}  // any other w, replace by w e. {.w (or {: w).  Set ak to the length of a cell of a, in bytes.  Empty cells of w go through here to convert to list
   }
   {I x; ASSERT(n==SETIC(a,x),EVLENGTH);}
@@ -605,7 +605,7 @@ DF2(jtcut2){F2PREFIP;PROLOG(0025);A fs,z,zz;I neg,pfx;C id,*v1,*wv,*zc;I cger[12
   case 0: // single bytes.  This is like the B01 case below but we cleverly detect noncomparing words by word-wide methods, and then convert the equality test into B01 format a word at a time
    {
     // In this loop d is the length of the fret
-    I valI=((UC *)fret)[0]; valI|=valI<<8; valI|=valI<<16; if(BW==64)valI|=valI<<(BW/2);  // the fret value, replicated in each byte of the word
+    I valI=((UC *)fret)[0]; valI|=valI<<8; valI|=valI<<16; valI|=valI<<32;  // the fret value, replicated in each byte of the word
     // n bits 0..LGSZI-1 are from original n & are the number of valid bits overflowing into a partial word.  Bits LGSZI..LGSZI+LGBB-1 are the (shifted) # words to process
     n+=(n&(SZI-1))?SZI:0; UI *wvv=(UI*)av; UI bits=*wvv++;  // prime the pipeline for top of loop.  Bias n to have the number of words we need to visit, even partially
     d=1-pfx; // If first fret is in position 0, that's length 0 for prefix, length 1 for suffix
@@ -641,10 +641,8 @@ DF2(jtcut2){F2PREFIP;PROLOG(0025);A fs,z,zz;I neg,pfx;C id,*v1,*wv,*zc;I cger[12
    FRETLOOPSGL(US) break;
   case 2: // 4 bytes
    FRETLOOPSGL(UI4) break;
-#if BW==64
   case 3: // 8 bytes
    FRETLOOPSGL(UI) break;
-#endif
   case 4: // single-byte Boolean, looking for 1s
    {
     // In this loop d is the length of the fret
