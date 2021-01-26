@@ -124,16 +124,13 @@ F2(jtebar){PROLOG(0065);A y,z;B*zv;C*av,*wv;I c,d,i,k=0,m,n,p,*yv;
  GATV0(y,INT,d,1); yv= AV(y); DO(d, yv[i]=1+m;);
  switch(CTTZ(AT(w))){
   case INTX: if(c)EBLOOP(I, u[i]-c,v[k+m]-c, zv[k]=i==m) 
-            else EBLOOP(I, u[i],  v[k+m],   zv[k]=i==m); break;
+             else EBLOOP(I, u[i],  v[k+m],   zv[k]=i==m); break;
   case SBTX: if(c)EBLOOP(SB,u[i]-c,v[k+m]-c, zv[k]=i==m) 
-            else EBLOOP(SB,u[i],  v[k+m],   zv[k]=i==m); break;
+             else EBLOOP(SB,u[i],  v[k+m],   zv[k]=i==m); break;
   case C2TX:      EBLOOP(US,u[i],  v[k+m],   zv[k]=i==m); break;
   case C4TX: if(c)EBLOOP(C4,u[i]-c,v[k+m]-c, zv[k]=i==m) 
-            else EBLOOP(C4,u[i],  v[k+m],   zv[k]=i==m); break;
-#if !C_AVX2 && !EMU_AVX2
-default:
-            EBLOOP(UC,u[i],  v[k+m],   zv[k]=i==m);
-#endif
+             else EBLOOP(C4,u[i],  v[k+m],   zv[k]=i==m); break;
+default:          EBLOOP(UC,u[i],  v[k+m],   zv[k]=i==m);
  }
  EPILOG(z);
 }    /* Daniel M. Sunday, CACM 1990 8, 132-142 */
