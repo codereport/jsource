@@ -156,44 +156,11 @@ F2(jtjiwrite){B b;F f;I i;
  RNE(mtm);
 }
 
-
-#if (SYS & SYS_MACINTOSH)
-
-static B setparm(C*v,C*ms,HParamBlockRec mp){I n;
- n=strlen(v);
- ASSERT(n<=NPATH,EVLIMIT); *ms=n; MC(1+ms,v,n);
- mp.fileParam.ioNamePtr=ms;
- mp.fileParam.ioVRefNum=0;
- mp.fileParam.ioDirID  =0;
- return 1;
-}
-
-#define DIRF(f,fsub)  \
- B f(J jt,C*v){C ms[256];HParamBlockRec mp; \
-  RZ(setparm(v,ms,mp));                     \
-  ASSERT(!fsub(&mp,0),EVFACE);              \
-  return 1;                                      \
- }
-
-static DIRF(jtmkdir1,PBDirCreate)
-static DIRF(jtrmdir1,PBHDelete  )
-
-static B mkdir(C*v){return!mkdir1(v);}
-static B rmdir(C*v){return!rmdir1(v);}
-
-#endif
-
-
 F1(jtjmkdir){A y,z;
  F1RANK(0,jtjmkdir,UNUSED_VALUE);
  ASSERT(AT(w)&BOX,EVDOMAIN);
  RZ(y=str0(vslit(AAV(w)[0])));
-#if (SYS & SYS_UNIX)
  return mkdir(CAV(y),0775)?jerrno():num(1);
-#else
- RZ(z=toutf16x(y)); USAV(z)[AN(z)]=0;  // install termination
- return _wmkdir(USAV(z))?jerrno():num(1);
-#endif
 }
 
 F1(jtjferase){A y,fn;US*s;I h;

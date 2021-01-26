@@ -18,10 +18,6 @@
 #endif
 #endif
 
-#if (SYS & SYS_DOS)
-#include <dos.h>
-#endif
-
 #ifndef CLOCKS_PER_SEC
 #if (SYS & SYS_UNIX)
 #define CLOCKS_PER_SEC  1000000
@@ -140,12 +136,8 @@ F1(jtdl){D m,n,*v;UINT ms,s;
  RZ(w=cvt(FL,w));
  n=0; v=DAV(w); DQ(AN(w), m=*v++; ASSERT(0<=m,EVDOMAIN); n+=m;);
  s=(UINT)jfloor(n); ms=(UINT)jround(1000*(n-s));
-#if SYS & SYS_MACINTOSH
- {I t=TickCount()+(I)(60*n); while(t>TickCount())JBREAK0;}
-#else
  DQ(s, sleepms(1000); JBREAK0;);
  sleepms(ms);
-#endif
  return w;
 }
 

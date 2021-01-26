@@ -15,14 +15,6 @@
 #include "cpuinfo.h"
 // static UC hwsha1=0,hwsha2=0,hwssse3=0,hwsse41=0,hwavx=0,hwavx2=0;
 
-#ifndef BYTE_ORDER
-#if defined(MMSC_VER)
-#define LITTLE_ENDIAN 1234
-#define BIG_ENDIAN    4321
-#define BYTE_ORDER LITTLE_ENDIAN
-#endif
-#endif
-
 static const char *hex_digits = "0123456789abcdef";
 
 /* not null terminated */

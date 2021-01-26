@@ -72,26 +72,15 @@ F2(jtforeign){I p,q;
   case XC(1,5):   return SDERIV(CIBEAM, jtjmkdir,     0,            VASGSAFE,0,   RMAX,RMAX);
   case XC(1,6):   return SDERIV(CIBEAM, jtjfatt1,     jtjfatt2,     VASGSAFE,0,   1,   0   );
   case XC(1,7):   return SDERIV(CIBEAM, jtjfperm1,    jtjfperm2,    VASGSAFE,0,   1,   0   );
-
   case XC(1,11):  return SDERIV(CIBEAM, jtjiread,     0,            VASGSAFE,1,   RMAX,RMAX);
   case XC(1,12):  return SDERIV(CIBEAM, 0,            jtjiwrite,    VASGSAFE,RMAX,RMAX,1   );
   case XC(1,20):  return SDERIV(CIBEAM, jtjfiles,     0,            VASGSAFE,RMAX,RMAX,RMAX);
   case XC(1,21):  return SDERIV(CIBEAM, jtjopen,      0,            VASGSAFE,RMAX,RMAX,RMAX);
   case XC(1,22):  return SDERIV(CIBEAM, jtjclose,     0,            VASGSAFE,RMAX,RMAX,RMAX);
-
-// #if (SYS & SYS_DOS+SYS_MACINTOSH+SYS_UNIX)
-#if (SYS & SYS_DOS+SYS_MACINTOSH)
-  case XC(1,30):  return SDERIV(CIBEAM, jtjlocks,     0,            VASGSAFE,RMAX,RMAX,RMAX);
-  case XC(1,31):  return SDERIV(CIBEAM, jtjlock,      0,            VASGSAFE,1,   RMAX,RMAX);
-  case XC(1,32):  return SDERIV(CIBEAM, jtjunlock,    0,            VASGSAFE,1,   RMAX,RMAX);
-#endif
-  
   case XC(1,43):  return SDERIV(CIBEAM, jtpathcwd,    0,            VASGSAFE,RMAX,RMAX,RMAX);
   case XC(1,44):  return SDERIV(CIBEAM, jtpathchdir,  0,            VASGSAFE,RMAX,RMAX,RMAX);
   case XC(1,46):  return CDERIV(CIBEAM, jtpathdll,    0,            VASGSAFE,RMAX,RMAX,RMAX);
-
   case XC(1,55):  return SDERIV(CIBEAM, jtjferase,    0,            VASGSAFE,0,   RMAX,RMAX);
-
   case XC(2,0):   return SDERIV(CIBEAM, jthost,       0,            VASGSAFE,1,   RMAX,RMAX);
   case XC(2,1):   return SDERIV(CIBEAM, jthostne,     0,            VASGSAFE,1,   RMAX,RMAX);
   case XC(2,2):   return SDERIV(CIBEAM, jthostio,     0,            VASGSAFE,1,   RMAX,RMAX);
@@ -141,8 +130,6 @@ F2(jtforeign){I p,q;
   case XC(6,3):   return CDERIV(CIBEAM, jtdl,         0,            VASGSAFE,0,   RMAX,RMAX);
   case XC(6,4):   return CDERIV(CIBEAM, jtparsercalls,0,            VASGSAFE,RMAX,RMAX,RMAX);
   case XC(6,5):   return CDERIV(CIBEAM, jtpeekdata,   0,            VASGSAFE,RMAX,RMAX,RMAX);  // turn on to provide a J window into the running system
-  // case XC(6,6):   return CDERIV(CIBEAM, jtprocarch,   0,            VASGSAFE,RMAX,RMAX,RMAX);   // read whether AVX supported
-  // case XC(6,7):   return CDERIV(CIBEAM, jtprocfeat,   0,            VASGSAFE,RMAX,RMAX,RMAX);   // report cpu features
   case XC(6,8):   return CDERIV(CIBEAM, jtqpfreq,     0,            VASGSAFE,RMAX,RMAX,RMAX);
   case XC(6,9):   return CDERIV(CIBEAM, jtqpctr,      0,            VASGSAFE,RMAX,RMAX,RMAX);
   case XC(6,10):  return CDERIV(CIBEAM, jtpmarea1,    jtpmarea2,    VASGSAFE,RMAX,RMAX,RMAX);

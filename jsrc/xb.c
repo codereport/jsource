@@ -6,12 +6,7 @@
 #include "j.h"
 #include "x.h"
 
-#ifdef MMSC_VER
-#pragma warning(disable: 4101)
-#endif
-
 F1(jtstype){ARGCHK1(w); return sc(AT(w)&-AT(w));}
-     /* 3!:0 w */
 
 // a is integer atom or list, values indicating the desired result
 // atom values in x: 0=NJA, others reserved

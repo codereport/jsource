@@ -340,14 +340,6 @@ dgemm_nn         (I              m,
 // -----------------------------------------------------------------
 // INT matrix
 
-/*
-#if defined(_WIN64)||defined(__LP64__)
-typedef long long I;
-#else
-typedef long I;
-#endif
-*/
-
 //
 //  Packing complete panels from A (i.e. without padding)
 //

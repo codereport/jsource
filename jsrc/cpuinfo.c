@@ -1,10 +1,5 @@
 #include "cpuinfo.h"
 
-#if defined(TARGET_OS_IPHONE)||defined(TARGET_OS_IOS)||defined(TARGET_OS_TV)||defined(TARGET_OS_WATCH)
-#define TARGET_IOSDEVICE 1
-#endif
-
-
 extern uint64_t g_cpuFeatures;
 
 #if defined(__aarch32__)||defined(__arm__)||defined(_M_ARM)
@@ -18,11 +13,9 @@ void cpuInit(void)
 
 #elif defined(__aarch64__)||defined(_M_ARM64)
 
-#ifndef TARGET_IOSDEVICE
 #include <sys/auxv.h>
 #include <asm/hwcap.h>
 #include <arm_neon.h>
-#endif
 
 uint32_t OPENSSL_armcap_P;
 
@@ -30,7 +23,6 @@ void cpuInit(void)
 {
   g_cpuFeatures = 0;
 
-#ifndef TARGET_IOSDEVICE
   unsigned long hwcaps= getauxval(AT_HWCAP);
 
 // see <uapi/asm/hwcap.h> kernel header
@@ -63,7 +55,6 @@ void cpuInit(void)
   if(hwcaps & ARM_HWCAP_ILRCPC) g_cpuFeatures |= ARM_HWCAP_ILRCPC;
   if(hwcaps & ARM_HWCAP_FLAGM) g_cpuFeatures |= ARM_HWCAP_FLAGM;
 
-#endif
 
   OPENSSL_setcap();
 }
@@ -91,16 +82,11 @@ uint32_t OPENSSL_ia32cap_P[4];
 static int check_xcr0_ymm()
 {
   uint32_t xcr0;
-#if defined(MMSC_VER)
-  xcr0 = (uint32_t)_xgetbv(0);  /* min VS2010 SP1 compiler is required */
-#else
   __asm__ ("xgetbv" : "=a" (xcr0) : "c" (0) : "%edx" );
-#endif
   return ((xcr0 & 6) == 6); /* checking if xmm and ymm state are enabled in XCR0 */
 }
 #endif
 
-#ifndef MMSC_VER
 static __inline int
 get_cpuid_count (unsigned int __level, unsigned int __count,
                  unsigned int *__eax, unsigned int *__ebx,
@@ -113,9 +99,8 @@ get_cpuid_count (unsigned int __level, unsigned int __count,
   __cpuid_count (__level, __count, *__eax, *__ebx, *__ecx, *__edx);
   return 1;
 }
-#define x86_cpuid(func, values) get_cpuid_count(func, 0, values, values+1, values+2, values+3)
 
-#endif
+#define x86_cpuid(func, values) get_cpuid_count(func, 0, values, values+1, values+2, values+3)
 
 void cpuInit(void)
 {
@@ -245,13 +230,11 @@ void OPENSSL_setcap(void)
 {
 #if defined(__aarch64__)||defined(_M_ARM64)
   OPENSSL_armcap_P = ARMV7_NEON;
-#ifndef TARGET_IOSDEVICE
   OPENSSL_armcap_P |= (g_cpuFeatures & ARM_HWCAP_AES) ? ARMV8_AES : 0;
   OPENSSL_armcap_P |= (g_cpuFeatures & ARM_HWCAP_SHA1) ? ARMV8_SHA1 : 0;
   OPENSSL_armcap_P |= (g_cpuFeatures & ARM_HWCAP_SHA2) ? ARMV8_SHA256 : 0;
   OPENSSL_armcap_P |= (g_cpuFeatures & ARM_HWCAP_PMULL) ? ARMV8_PMULL : 0;
   OPENSSL_armcap_P |= (g_cpuFeatures & ARM_HWCAP_SHA512) ? ARMV8_SHA512 : 0;
-#endif
 #elif defined(__x86_64__)||defined(__i386__)||defined(_M_X64)||defined(_M_IX86)
   if (!(AVX&&OSXSAVE)) {
     g_cpuFeatures &= ~CPU_X86_FEATURE_FMA;

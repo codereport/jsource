@@ -5,33 +5,13 @@
 
 #include <sys/wait.h>
 #include <unistd.h>
-#ifndef ANDROID
-#include <spawn.h>
-#endif
 #include <fcntl.h>
 #include <stdint.h>
-
-#ifdef MMSC_VER
-#define mktemp _mktemp
-#define unlink _unlink
-#endif
+#include <spawn.h>
 
 #include "j.h"
 #include "x.h"
 #include "cpuinfo.h"
-
-#if (SYS & SYS_ARCHIMEDES)
-#define Wimp_StartTask 0x400DE
-extern int os_swi1(I,I);
-#endif
-
-
-#if (SYS & SYS_MACINTOSH)
-
-F1(jthost  ){ASSERT(0,EVDOMAIN);}
-F1(jthostne){ASSERT(0,EVDOMAIN);}
-
-#else
 
 // return string indicating which JEs this hardware would run
 // ""         would run j.dll
@@ -51,18 +31,10 @@ F1(jthost){A z;
  GATV0(t,LIT,n+5+L_tmpnam+1,1); s=CAV(t);  // +1 for trailing nul
  fn=5+n+s; MC(s,AV(w),n);
  MC(n+s,"   > ",5L);
-#ifdef MMSC_VER
- strcpy(fn,"tmp.XXXXXX");
- {A fz; mktemp(fn);
-  RZ(fz=toutf16x(t));
-  b=!_wsystem(USAV(fz));
- }
-#else
-
  strcpy(fn,"/tmp");
  strcat(fn,"/tmp.XXXXXX");
  {int fd=mkstemp(fn); close(fd);}
-#if defined(ANDROID) || (defined(__MACH__) && !defined(TARGET_IOS))
+#if (defined(__MACH__) && !defined(TARGET_IOS))
 /* no posix_spawn */
  b=!system(s);
 #else
@@ -91,7 +63,6 @@ F1(jthost){A z;
  unlink(fn);
  ASSERT(b&&f,EVFACE);
 }
-#endif
  return z;
 }
 
@@ -99,18 +70,10 @@ F1(jthostne){
  F1RANK(1,jthostne,UNUSED_VALUE);
  RZ(w=vslit(w));
  {
-  I b;
-#ifdef MMSC_VER
-  A fz;
-  RZ(fz=toutf16x(w));
-  b=_wsystem(USAV(fz));
-#else
-  b=system(CAV(str0(w)));
-#endif
+  I b =system(CAV(str0(w)));
   b=!b;
   ASSERT(b!=0,EVFACE);
  }
-#endif
  return mtv;
 }
 

@@ -101,10 +101,6 @@ F1(jtjclose){A*av;I*iv,j;
  if(AR(w))return rank1ex0(w,UNUSED_VALUE,jtjclose);
  RE(j=i0(indexof(jt->fopf,sc(fnum(w))))); ASSERT(j<AM(jt->fopf),EVFNUM);
  av=AAV(jt->fopa); iv=IAV(jt->fopf); 
-// #if (SYS & SYS_DOS+SYS_MACINTOSH+SYS_UNIX)
-#if (SYS & SYS_DOS+SYS_MACINTOSH)
- RZ(unlk(iv[j]));
-#endif
  if(fclose((F)iv[j]))return jerrno();
  --AM(jt->fopf); fa(av[j]); if(j<AM(jt->fopf)){av[j]=av[AM(jt->fopf)]; iv[j]=iv[AM(jt->fopf)];}
  return num(1);

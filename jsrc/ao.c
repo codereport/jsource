@@ -5,10 +5,6 @@
 
 #include "j.h"
 
-#ifdef MMSC_VER
-#pragma warning(disable: 4244)
-#endif
-
 // This is the derived verb for f/. y
 static DF1(jtoblique){A x,y,z;I m,n,r;D rkblk[16];
  F1PREFIP;ARGCHK1(w);

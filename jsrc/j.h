@@ -57,20 +57,10 @@ static inline omp_int_t omp_get_max_threads() { return 1;}
 // If you are porting to a new compiler or architecture, see the bottom of this file
 // for instructions on defining the CTTZ macros
 
-#if (SYS & SYS_PCWIN)
-#define HEAPCHECK  heapcheck()
-#else
 #define HEAPCHECK
-#endif
 
-#if (SYS & SYS_ATARIST)
-#define __NO_INLINE__           1
-#endif
-
-#if (SYS & SYS_UNIX - SYS_SGI)
 #include <memory.h>
 #include <sys/types.h>
-#endif
 
 // likely/unlikely support
 #if defined(__clang__) || defined(__GNUC__)
@@ -128,40 +118,6 @@ static inline omp_int_t omp_get_max_threads() { return 1;}
 #define C4MAX           0xffffffffUL
 #define C4MIN           0L
 
-#if (SYS & SYS_AMIGA)
-#define XINF            "\177\377\000\000\000\000\000\000"
-#define XNAN            "\177\361\000\000\000\000\000\000"
-#endif
-
-#if (SYS & SYS_ARCHIMEDES)
-#define XINF            "\000\000\360\177\000\000\000\000"
-#define XNAN            "\000\000\370\377\000\000\000\000"
-#endif
-
-#if (SYS & SYS_DEC5500)
-#define XINF            "\000\000\000\000\000\000\360\177"
-#define XNAN            "\000\000\000\000\000\000\370\377"
-#endif
-
-#if (SYS & SYS_MACINTOSH)
-/* for old versions of ThinkC */
-/* #define XINF         "\177\377\000\000\000\000\000\000\000\000\000\000" */
-/* #define XNAN         "\377\377\100\000\100\000\000\000\000\000\000\000" */
-/* for ThinkC 7.0 or later */
-#define XINF            "\177\377\177\377\000\000\000\000\000\000\000\000"
-#define XNAN            "\377\377\377\377\100\000\000\000\000\000\000\000"
-#endif
-
-#if (SYS & SYS_SUN4+SYS_SUNSOL2)
-#define XINF            "\177\360\000\000\000\000\000\000"
-#define XNAN            "\177\377\377\377\377\377\377\377"
-#endif
-
-#if (SYS & SYS_VAX)
-#define XINF            "\377\177\377\377\377\377\377\377"
-#define XNAN            "\377\177\377\377\377\377\377\376" /* not right */
-#endif
-
 #ifndef XINF
 #define XINF            "\000\000\000\000\000\000\360\177"
 #define XNAN            "\000\000\000\000\000\000\370\377"
@@ -188,37 +144,12 @@ static inline omp_int_t omp_get_max_threads() { return 1;}
 // but normally something like *z = *x + *y will not cause trouble because there is no reason to refetch an input after
 // the result has been written.  On 32-bit machines, registers are so short that sometimes the compilers refetch an input
 // after writing to *z, so we don't turn RESTRICT on for 32-bit
-#if defined(MMSC_VER)
-// RESTRICT is an attribute of a pointer, and indicates that no other pointer points to the same area
-#define RESTRICT __restrict
-// RESTRICTF is an attribute of a function, and indicates that the object returned by the function is not aliased with any other object
-#define RESTRICTF __declspec(restrict)
-#define PREFETCH(x) _mm_prefetch((x),_MM_HINT_T0)
-#define PREFETCH2(x) _mm_prefetch((x),_MM_HINT_T1)   // prefetch into L2 cache but not L1
-#endif
+
 #ifdef __GNUC__
 #define RESTRICT __restrict
 // No RESTRICTF on GCC
 #define PREFETCH(x) __builtin_prefetch(x)
 #define PREFETCH2(x) __builtin_prefetch((x),0,2)   // prefetch into L2 cache but not L1
-#endif
-
-#ifdef __MINGW32__
-#ifndef _SW_INVALID
-#define _SW_INVALID    0x00000010 /* invalid */
-#endif
-#ifndef _EM_ZERODIVIDE
-#define _EM_ZERODIVIDE  0x00000008
-#endif
-#define EM_INVALID    _SW_INVALID
-#define EM_ZERODIVIDE _EM_ZERODIVIDE
-#if defined(__STRICT_ANSI__)
-extern int __cdecl _isnan (double);
-extern unsigned int __cdecl _clearfp (void);
-#endif
-#ifndef _MAX_PATH
-#define _MAX_PATH  (260)
-#endif
 #endif
 
 #ifdef __GNUC__
@@ -245,7 +176,6 @@ extern unsigned int __cdecl _clearfp (void);
 
 // disable C_USEMULTINTRINSIC if un-available
 #if C_USEMULTINTRINSIC
-#if !defined(MMSC_VER)
 #if defined(__clang__)
 #if !__has_builtin(__builtin_smull_overflow)
 #undef C_USEMULTINTRINSIC
@@ -254,7 +184,6 @@ extern unsigned int __cdecl _clearfp (void);
 #elif __GNUC__ < 5
 #undef C_USEMULTINTRINSIC
 #define C_USEMULTINTRINSIC 0
-#endif
 #endif
 #endif
 
@@ -275,11 +204,8 @@ extern unsigned int __cdecl _clearfp (void);
 // There are two limits: maximum depth of J functions, and maximum depth of named functions.  The named-function stack is intelligent
 // and stacks only when there is a locale change or deletion; it almost never limits unless locatives are used to an extreme degree.
 // The depth of J function calls will probably limit stack use.
-// #define NFDEP           4000             // fn call depth - for debug builds, must be small (<0xa00) to avoid stack overflow, even smaller for non-AVX
-// #define NFCALL          (NFDEP/10)      // call depth for named calls, not important
 // increase OS stack limit instead of restricting NFDEP/NFCALL
-#define NFDEP           2000L  // 4000             // (obsolete) fn call depth - for debug builds, must be small (<0xa00) to avoid stack overflow, even smaller for non-AVX
-
+#define NFDEP           2000L  
 
 // NEW WAY
 // The named-call stack is used only when there is a locative, EXCEPT that after a call to 18!:4 it is used until the function calling 18!:4 returns.
@@ -404,7 +330,6 @@ extern unsigned int __cdecl _clearfp (void);
 #define ASSERTSYS(b,s)  {if(unlikely(!(b))){fprintf(stderr,"system error: %s : file %s line %d\n",s,__FILE__,__LINE__); jsignal(EVSYSTEM); jtwri(jt,MTYOSYS,"",(I)strlen(s),s); return 0;}}
 #define ASSERTW(b,e)    {if(unlikely(!(b))){if((e)<=NEVM)jsignal(e); else jt->jerr=(e); return;}}
 #define ASSERTWR(c,e)   {if(unlikely(!(c))){return e;}}
-// verify that shapes *x and *y match for l axes using AVX for rank<5, memcmp otherwise
 
 #define ASSERTAGREE(x,y,l) \
  {I *aaa=(x), *aab=(y); I aai=(l); \
@@ -676,128 +601,6 @@ extern unsigned int __cdecl _clearfp (void);
 #define NAN1            {if(unlikely(_SW_INVALID&_clearfp())){jsignal(EVNAN); return 0;}}
 #define NAN1V           {if(unlikely(_SW_INVALID&_clearfp())){jsignal(EVNAN); return  ;}}
 #define NANTEST         (_SW_INVALID&_clearfp())
-
-#if defined(__GNUC__)   // vector extension
-
-#if !(defined(__aarch64__)||defined(__arm__))
-typedef int64_t int64x2_t __attribute__ ((vector_size (16),aligned(16)));
-typedef double float64x2_t __attribute__ ((vector_size (16),aligned(16)));
-#endif
-#define dump_int64x2(a,x) {int64x2_t _b=x;fprintf(stderr,"%s %lli %lli \n", a, ((long long*)(&_b))[0], ((long long*)(&_b))[1]);}
-#define dump_float64x2(a,x) {float64x2_t _b=x;fprintf(stderr,"%s %f %f \n", a, ((double*)(&_b))[0], ((double*)(&_b))[1]);}
-
-static inline __attribute__((inline)) int vec_any_si128(int64x2_t mask)
-{
-   return (mask[0] & 0x8000000000000000)||(mask[1] & 0x8000000000000000);
-}
-
-static inline __attribute__((inline)) float64x2_t vec_maskload_pd(double const* mem_addr, int64x2_t mask)
-{
-   float64x2_t ret={0.0,0.0};
-   int i;
-
-    for (i=0; i<2; i++){
-      if (mask[i] & 0x8000000000000000){
-        ret[i] = *(mem_addr + i);
-      }
-    }
-    return ret;
-}
-
-static inline __attribute__((inline)) void vec_maskstore_pd(double * mem_addr, int64x2_t  mask, float64x2_t a)
-{
-   int i;
-    for (i=0; i<2; i++){
-      if (mask[i] & 0x8000000000000000)
-        *(mem_addr + i) = a[i];
-    }
-}
-
-static inline __attribute__((inline)) int64x2_t vec_loadu_si128(int64x2_t const * a)
-{
-   int64x2_t ret;
-   memcpy(&ret, (int64_t *)a, 2*sizeof(int64_t));  // must cast pointer otherwise segment 
-   return ret;
-}
-
-static inline __attribute__((inline)) float64x2_t vec_loadu_pd(double const * a)
-{
-   float64x2_t ret;
-   memcpy(&ret, a, 2*sizeof(double));
-   return ret;
-}
-
-static inline __attribute__((inline)) void vec_storeu_pd(double * mem_addr, float64x2_t a)
-{
-   memcpy(mem_addr, &a , 2*sizeof(double));
-}
-
-static inline __attribute__((inline)) float64x2_t vec_and_pd(float64x2_t a, float64x2_t b)
-{
-   int64x2_t a1,b1;
-   float64x2_t ret;
-   memcpy(&a1, &a, 2*sizeof(double));
-   memcpy(&b1, &b, 2*sizeof(double));
-   a1 &= b1;
-   memcpy(&ret, &a1, 2*sizeof(double));
-   return ret;
-}
-
-#define NPAR ((I)(sizeof(float64x2_t)/sizeof(D))) // number of Ds processed in parallel
-#define LGNPAR 1  // 128-bit no good automatic way to do this
-// loop for atomic parallel ops.  // fixed: n is #atoms (never 0), x->input, z->result, u=input atom4 and result
-//                                                                                  __SSE2__    atom2
-#define AVXATOMLOOP(preloop,loopbody,postloop) \
- int64x2_t endmask;  float64x2_t u; \
- endmask = vec_loadu_si128((int64x2_t*)(validitymask+((-n)&(NPAR-1))));  /* mask for 0 1 2 3 4 5 is xx 01 11 01 11 01 */ \
- preloop \
- I i=(n-1)>>LGNPAR;  /* # loops for 0 1 2 3 4 5 is x 0 0 0 0 1 */ \
-            /* __SSE2__ # loops for 0 1 2 3 4 5 is x 1 0 1 0 1 */ \
- while(--i>=0){ u=vec_loadu_pd(x); \
-  loopbody \
-  vec_storeu_pd(z, u); x+=NPAR; z+=NPAR; \
- } \
- u=vec_maskload_pd(x,endmask); \
- loopbody \
- vec_maskstore_pd(z, endmask, u); \
- x+=((n-1)&(NPAR-1))+1; z+=((n-1)&(NPAR-1))+1; \
- postloop
-
-// version that pipelines one read ahead.  Input to loopbody2 is zu; result of loopbody1 is in zt
-#define AVXATOMLOOPPIPE(preloop,loopbody1,loopbody2,postloop) \
- int64x2_t endmask;  float64x2_t u, zt, zu; \
- endmask = vec_loadu_si128((int64x2_t*)(validitymask+((-n)&(NPAR-1))));  /* mask for 0 1 2 3 4 5 is xx 01 11 01 11 01 */ \
- preloop \
- I i=(n-1)>>LGNPAR;  /* # loops for 0 1 2 3 4 5 is x 0 0 0 0 1 */ \
-            /* __SSE2__ # loops for 0 1 2 3 4 5 is x 1 0 1 0 1 */ \
- if(i>0){u=*(float64x2_t *)(x); x+=NPAR; loopbody1 \
- while(--i>=0){ u=vec_loadu_pd(x); x+=NPAR; \
-  zu=zt; loopbody1 loopbody2 \
-  vec_storeu_pd(z, u); z+=NPAR; \
- } zu=zt; loopbody2 vec_storeu_pd(z, u); z+=NPAR;} \
- u=vec_maskload_pd(x,endmask); \
- loopbody1 zu=zt; loopbody2 \
- vec_maskstore_pd(z, endmask, u); \
- x+=((n-1)&(NPAR-1))+1; z+=((n-1)&(NPAR-1))+1; \
- postloop
-
-// Dyadic version.  v is right argument, u is still result
-#define AVXATOMLOOP2(preloop,loopbody,postloop) \
- int64x2_t endmask;  float64x2_t u,v; \
- endmask = vec_loadu_si128((int64x2_t*)(validitymask+((-n)&(NPAR-1))));  /* mask for 0 1 2 3 4 5 is xx 01 11 01 11 01 */ \
- preloop \
- I i=(n-1)>>LGNPAR;  /* # loops for 0 1 2 3 4 5 is x 0 0 0 0 1 */ \
-            /* __SSE2__ # loops for 0 1 2 3 4 5 is x 1 0 1 0 1 */ \
- while(--i>=0){ u=vec_loadu_pd(x); v=vec_loadu_pd(y); \
-  loopbody \
-  vec_storeu_pd(z, u); x+=NPAR; y+=NPAR; z+=NPAR; \
- } \
- u=_mm_maskload_pd(x,endmask); v=_mm_maskload_pd(y,endmask); \
- loopbody \
- _mm_maskstore_pd(z, endmask, u); \
- postloop
-
-#endif
 
 #define NUMMAX          9    // largest number represented in num[]
 #define NUMMIN          (~NUMMAX)    // smallest number represented in num[]
@@ -1173,7 +976,7 @@ static inline UINT _clearfp(void){
 static __forceinline void* aligned_malloc(size_t size, size_t align) {
  void *result;
  align = (align>=sizeof(void*))?align:sizeof(void*);
-#if ( !defined(ANDROID) || defined(__LP64__) )
+#if defined(__LP64__)
  if(posix_memalign(&result, align, size)) result = 0;
 #else
  void *mem = malloc(size+(align-1)+sizeof(void*));
@@ -1186,7 +989,7 @@ static __forceinline void* aligned_malloc(size_t size, size_t align) {
 }
 
 static __forceinline void aligned_free(void *ptr) {
-#if ( !defined(ANDROID) || defined(__LP64__) )
+#if defined(__LP64__)
  free(ptr);
 #else
  free(((void**)ptr)[-1]);

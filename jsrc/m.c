@@ -5,9 +5,6 @@
 
 
 #define __cdecl
-#ifdef MMSC_VER
-#pragma warning(disable: 4334)
-#endif
 
 #include "j.h"
 

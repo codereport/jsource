@@ -168,13 +168,7 @@ F1(jtseclevs){I k;
 
 F1(jtsysq){I j;
  ASSERTMTV(w);
- switch(SYS){
-  case SYS_PC:        j=0;                break;
-  case SYS_PC386:     j=1;                break;
-  case SYS_MACINTOSH: j=3;                break;
-  case SYS_OS2:       j=4;                break;
-  default:            j=SYS&SYS_UNIX ? 5 : -1;
- }
+ j=SYS&SYS_UNIX ? 5 : -1;
  return sc(j);
 }
 

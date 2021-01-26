@@ -26,7 +26,7 @@ static void FUNCNAME (D* av,D* wv,D* zv,I m,I n,I p){D c[(CACHEHEIGHT+1)*CACHEWI
    // read the 16x64 section of w into the cache area (8KB, 2 ways of cache), with prefetch of rows
    for(i=MIN(CACHEHEIGHT,w1rem),cvx=cvw;i;--i){I j;
     D* RESTRICT w1x=w1next; w1next+=n;  // save start of current input row, point to next row...
-    // I don't think it's worth the trouble to move the data with AVX instructions - though it was to prefetch it
+    // I don't think it's worth the trouble to move the data with avx instructions - though it was to prefetch it
     for(j=0;j<MIN(CACHEWIDTH,w0rem);++j)*cvx++=*w1x++; for(;j<CACHEWIDTH;++j)*cvx++=0.0;   // move current row during prefetch
    }
    // Because of loop unrolling, we fetch and multiply one extra value in each cache column.  We make sure those values are 0 to avoid NaN errors
@@ -42,20 +42,6 @@ static void FUNCNAME (D* av,D* wv,D* zv,I m,I n,I p){D c[(CACHEHEIGHT+1)*CACHEWI
     // Prepare for the 2x16 block of a
     // If the second row of a is off the end of the data, we mustn't fetch it - switch the pointer to a row of 1s so it won't give NaN error on multiplying by infinity
     D *a2base1 = (a2rem>1)?a2base0+p:missingrow;
-#if ARCHAVX
-    // Make 4 sequential copies of each float in a, to support the parallel multiply for the outer product.  Interleave the values
-    // from the two rows, putting them in the correct order for the multiply.  We fetch each row in order, to make sure we get fast page mode
-    // for the row
-    {__m256d *cvx;D *a0x;I j;
-     for(a0x=a2base0,i=0;i<OPHEIGHT;++i,a0x=a2base1){
-      for(cvx=(__m256d*)cva+i,j=MIN(CACHEHEIGHT,w1rem);j;--j,++a0x,cvx+=OPHEIGHT){
-       *cvx = _mm256_set_pd(*a0x,*a0x,*a0x,*a0x);
-      }
-      // Because of loop unrolling, we fetch and multiply one extra outer product.  Make sure it is harmless, to avoid NaN errors
-      *cvx = _mm256_set_pd(0.0,0.0,0.0,0.0);
-     }
-    }
-#endif
 #ifdef PREFETCH
     // While we are processing the sections of a, move the next cache block into L2 (not L1, so we don't overrun it)
     // We would like to do all the prefetches for a CACHEWIDTH at once to stay in page mode
@@ -70,21 +56,10 @@ static void FUNCNAME (D* av,D* wv,D* zv,I m,I n,I p){D c[(CACHEHEIGHT+1)*CACHEWI
     D* RESTRICT z3base=z2base; D* c3base=c2base;
     for(;a3rem>0;a3rem-=OPWIDTH,c3base+=OPWIDTH,z3base+=OPWIDTH){
      // initialize accumulator with the z values accumulated so far.
-#if ARCHAVX
-     __m256d z00,z01,z10,z11,z20,z21; static I valmask[8]={0, 0,0,0,-1,-1,-1,-1};
-     z21 = z20 = z11 = z10 = _mm256_set_pd(0.0,0.0,0.0,0.0);
-     // We have to use masked load at the edges of the array, to make sure we don't fetch from undefined memory.  Fill anything not loaded with 0
-     if(a3rem>3){z00 = _mm256_loadu_pd(z3base);if(a2rem>1)z01 = _mm256_loadu_pd(z3base+n); else z01=z21;   // In the main area, do normal (unaligned) loads
-     }else{z01 = z00 = z20;
-           z00 = _mm256_maskload_pd(z3base,_mm256_set_epi64x(valmask[a3rem],valmask[a3rem+1],valmask[a3rem+2],valmask[a3rem+3]));
-           I vx= (a2rem>1)?a3rem:0; z01 = _mm256_maskload_pd(z3base+n,_mm256_set_epi64x(valmask[vx],valmask[vx+1],valmask[vx+2],valmask[vx+3]));
-     }
-#else
      D z00,z01,z02,z03,z10,z11,z12,z13;
      z00=z3base[0];
      if(a3rem>3){z01=z3base[1],z02=z3base[2],z03=z3base[3]; if(a2rem>1)z10=z3base[n],z11=z3base[n+1],z12=z3base[n+2],z13=z3base[n+3];
      }else{if(a3rem>1){z01=z3base[1];if(a3rem>2)z02=z3base[2];}; if(a2rem>1){z10=z3base[n];if(a3rem>1)z11=z3base[n+1];if(a3rem>2)z12=z3base[n+2];}}
-#endif
      // process outer product of each 2x1 section on each 1x4 section of cache
 
      // Prefetch the next lines of a and z into L2 cache.  We don't prefetch all the way to L1 because that might overfill L1,
@@ -102,52 +77,6 @@ static void FUNCNAME (D* av,D* wv,D* zv,I m,I n,I p){D c[(CACHEHEIGHT+1)*CACHEWI
 
      I a4rem=MIN(w1rem,CACHEHEIGHT);
      D* RESTRICT c4base=c3base;
-#if ARCHAVX  // This version if AVX instruction set is available.
-     __m256d *a4base0=(__m256d *)cva;   // Can't put RESTRICT on this - the loop to init *cva gets optimized away
-      // read the 2x1 a values and the 1x4 cache values
-      // form outer product, add to accumulator
-// This loop is hand-unrolled because the compiler doesn't seem to do it.  Unroll 3 times - needed on dual ALUs
-     __m256d cval0 = _mm256_load_pd(c4base);  // read from cache
-
-     __m256d cval1 = _mm256_load_pd(c4base+CACHEWIDTH);
-     __m256d aval00 = _mm256_mul_pd(cval0,a4base0[0]);  // multiply by a
-     __m256d aval01 = _mm256_mul_pd(cval0,a4base0[1]);
-
-     do{
-      __m256d cval2 = _mm256_load_pd(c4base+2*CACHEWIDTH);
-      __m256d aval10 = _mm256_mul_pd(cval1,a4base0[2]);
-      __m256d aval11 = _mm256_mul_pd(cval1,a4base0[3]);
-      z00 = _mm256_add_pd(z00 , aval00);    // accumulate into z
-      z01 = _mm256_add_pd(z01 , aval01);
-      if(--a4rem<=0)break;
-
-      cval0 = _mm256_load_pd(c4base+3*CACHEWIDTH);
-      __m256d aval20 = _mm256_mul_pd(cval2,a4base0[4]);
-      __m256d aval21 = _mm256_mul_pd(cval2,a4base0[5]);
-      z10 = _mm256_add_pd(z10 , aval10);
-      z11 = _mm256_add_pd(z11 , aval11);
-      if(--a4rem<=0)break;
-
-      cval1 = _mm256_load_pd(c4base+4*CACHEWIDTH);
-      aval00 = _mm256_mul_pd(cval0,a4base0[6]);
-      aval01 = _mm256_mul_pd(cval0,a4base0[7]);
-      z20 = _mm256_add_pd(z20 , aval20);
-      z21 = _mm256_add_pd(z21 , aval21);
-      if(--a4rem<=0)break;
-
-      a4base0 += OPHEIGHT*3;  // OPWIDTH is implied by __m256d type
-      c4base+=CACHEWIDTH*3;
-     }while(1);
-
-     // Collect the sums of products
-     z10 = _mm256_add_pd(z10,z20);z11 = _mm256_add_pd(z11,z21); z00 = _mm256_add_pd(z00,z10); z01 = _mm256_add_pd(z01,z11);
-     // Store accumulator into z.  Don't store outside the array
-     if(a3rem>3){_mm256_storeu_pd(z3base,z00);if(a2rem>1)_mm256_storeu_pd(z3base+n,z01);
-     }else{_mm256_maskstore_pd(z3base,_mm256_set_epi64x(valmask[a3rem],valmask[a3rem+1],valmask[a3rem+2],valmask[a3rem+3]),z00);
-           if(a2rem>1)_mm256_maskstore_pd(z3base+n,_mm256_set_epi64x(valmask[a3rem],valmask[a3rem+1],valmask[a3rem+2],valmask[a3rem+3]),z01);
-     }
-
-#else   // If no AVX instructions
      D* RESTRICT a4base0=a2base0; D* RESTRICT a4base1=a2base1; 
      do{
       // read the 2x1 a values and the 1x4 cache values
@@ -169,7 +98,6 @@ static void FUNCNAME (D* av,D* wv,D* zv,I m,I n,I p){D c[(CACHEHEIGHT+1)*CACHEWI
      z3base[0]=z00;
      if(a3rem>3){z3base[1]=z01,z3base[2]=z02,z3base[3]=z03; if(a2rem>1)z3base[n]=z10,z3base[n+1]=z11,z3base[n+2]=z12,z3base[n+3]=z13;
      }else{if(a3rem>1){z3base[1]=z01;if(a3rem>2)z3base[2]=z02;}; if(a2rem>1){z3base[n]=z10;if(a3rem>1){z3base[n+1]=z11;if(a3rem>2)z3base[n+2]=z12;}}}
-#endif
     }
    }
   }

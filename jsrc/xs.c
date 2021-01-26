@@ -23,15 +23,6 @@ F1(jtscnl){ASSERTMTV(w); return vec(INT,jt->slistn,AAV(jt->sclist));}
      /* 4!:8  list of script indices which loaded slist */
 
 
-#if (SYS & SYS_MACINTOSH)
-void setftype(C*v,OSType type,OSType crea){C p[256];FInfo f;
- __c2p(v,p);
- GetFInfo(p,0,&f);
- f.fdType=type; f.fdCreator=crea;
- SetFInfo(p,0,&f);
-}
-#endif
-
 /* line/linf arguments:                         */
 /* a:   left argument for unlock                */
 /* w:   input file or lines; 1 means keyboard   */
@@ -113,9 +104,6 @@ static A jtlinf(J jt,A a,A w,C ce,B tso){A x,y,z;B lk=0;C*s;I i=-1,n,oldi=jt->sl
  jt->slisti=(UI4)i;    // glock=0 or 1 is original setting; 2 if this script is locked (so reset after 
  z=line(x,i,ce,tso); 
  jt->slisti=(UI4)oldi;
-#if SYS & SYS_PCWIN
- if(lk)memset(AV(x),C0,AN(x));  /* security paranoia */
-#endif
  return z;
 }
 

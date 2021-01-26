@@ -95,7 +95,7 @@ I cachedmmult(J jt,D* av,D* wv,D* zv,I m,I n,I p,I flgs){D c[(CACHEHEIGHT+1)*CAC
    // read the 16x64 section of w into the cache area (8KB, 2 ways of cache), with prefetch of rows
    for(i=MIN(CACHEHEIGHT,w1rem),cvx=cvw;i;--i){I j;
     D* RESTRICT w1x=w1next; w1next+=n;  // save start of current input row, point to next row...
-    // I don't think it's worth the trouble to move the data with AVX instructions - though it was to prefetch it
+    // I don't think it's worth the trouble to move the data with avx instructions - though it was to prefetch it
     for(j=0;j<MIN(CACHEWIDTH,w0rem);++j){D fv = *w1x; if(flgs&FLGINT)fv=(D)*(I*)w1x; *cvx++=fv; w1x++;}  // move the valid data
     for(;j<CACHEWIDTH;++j)*cvx++=0.0;   // fill the rest with 0
    }
@@ -335,19 +335,7 @@ oflo2:
     if(m)RZ(jtsumattymesprods(jt,FL,voidAV(w),voidAV(a),p,1,1,1,m,voidAV(z)));  // use +/@:*"1 .  Exchange w and a because a is the repeated arg in jtsumattymesprods.  If error, clear z
     smallprob=0;  // Don't compute it again
    }else{
-
-   // not single column.  Choose the algorithm to use
-#if (C_AVX || EMU_AVX) && defined(PREFETCH)
-    smallprob=0;  // never use Dic method; but used to detect pick up NaN errors
-    D *av=DAV(a), *wv=DAV(w), *zv=DAV(z);  //  pointers to sections
-    I flgs=((AFLAG(a)>>(AFUPPERTRIX-FLGAUTRIX))&FLGAUTRI)|((AFLAG(w)>>(AFUPPERTRIX-FLGWUTRIX))&FLGWUTRI);  // flags from a or w
-    if((UI)(m*n*(IL)p)>=(UI)jt->dgemm_thres){   // test for BLAS.  For AVX2 this should not be taken; for other architectures tuning is required
-     memset(DAV(z),C0,m*n*sizeof(D));
-     dgemm_nn(m,n,p,1.0,DAV(a),p,1,DAV(w),n,1,0.0,DAV(z),n,1);
-    } else {
-     smallprob=1^cachedmmult(jt,av,wv,zv,m,n,p,flgs);  // run the cached mult; if NaN error, remember that fact
-    }
-#else
+    // not single column.  Choose the algorithm to use
     I probsize = (m-1)*n*(IL)p;  // This is proportional to the number of multiply-adds.  We use it to select the implementation.  If m==1 we are doing dot-products; no gain from fancy code then
     if(!(smallprob = (m<=4||probsize<1000LL))){  // if small problem, avoid the startup overhead of the matrix version  TUNE
      if((UI)probsize < (UI)jt->dgemm_thres)
@@ -358,7 +346,6 @@ oflo2:
       dgemm_nn(m,n,p,1.0,DAV(a),p,1,DAV(w),n,1,0.0,DAV(z),n,1);
      }
     }
-#endif
    }
    // If there was a floating-point error, retry it the old way in case it was _ * 0
    if(smallprob||NANTEST){D c,s,t,*u,*v,*wv,*x,*zv;
