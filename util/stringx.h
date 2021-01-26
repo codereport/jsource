@@ -1,6 +1,6 @@
 
-#ifndef J_STRINGX_H
-#define J_STRINGX_H
+#pragma once
+
 #include <string>
 
 namespace util{
