@@ -1,9 +1,14 @@
-
 add_subdirectory(j_parent)
 add_subdirectory(adverbs)
 add_subdirectory(conjunctions)
 add_subdirectory(verbs)
 add_library(j)
+#set_target_properties(j lib_adverbs lib_conjunctions lib_verbs
+#        PROPERTIES
+#        ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib"
+#        LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib"
+#        RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin"
+#        )
 target_compile_definitions(j PRIVATE C_NA=0 C_AVX=1 C_AVX2=1 EMU_AVX=1)
 target_link_libraries(j PRIVATE ${STANDARD_MATH_LIBRARY}
         lib_adverbs
@@ -136,6 +141,7 @@ if ("${CMAKE_C_COMPILER_FRONTEND_VARIANT}" STREQUAL "MSVC")
     target_link_options(jconsole PRIVATE /STACK:0x1000000)
 endif ()
 target_link_libraries(jconsole PRIVATE ${CMAKE_DL_LIBS} j)
+
 target_sources(jconsole PRIVATE
         jconsole.c
         jeload.h

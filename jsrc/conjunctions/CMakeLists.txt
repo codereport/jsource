@@ -5,7 +5,7 @@
 # A conjunction modifies the words or phrases to its left and right to produce a derived entity which is usually a verb,
 # though it can be any of the four primary parts of speech. More...
 
-add_library(lib_conjunction STATIC
+add_library(lib_conjunctions STATIC
         ca.c
         c.c
         cc.c
@@ -23,5 +23,5 @@ add_library(lib_conjunction STATIC
         cv.c
         cx.c
         )
-target_include_directories(lib_conjunction PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
-target_link_libraries(lib_conjunction lib_j_parent)
+target_include_directories(lib_conjunctions PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+target_link_libraries(lib_conjunctions lib_j_parent)
