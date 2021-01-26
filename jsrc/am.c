@@ -337,7 +337,7 @@ static DF1(mergv1){DECLF; return merge1(w,CALL1(f1,w,fs));}
 static B ger(A w){A*wv,x;
  if(!(BOX&AT(w)))return 0;
  wv=AAV(w); 
- DO(AN(w), x=wv[i]; if((-(BOX&AT(x))&(((AR(x)^1)|(AN(x)^2))-1))<0)x=AAV(x)[0]; if(((-(LIT&AT(x))&(AR(x)-2)&-AN(x)))>=0)return 0;);  // box/rank1/N=2; lit/return<2/N!=0
+ DO(AN(w), x=wv[i]; if((-(BOX&AT(x))&(((AR(x)^1)|(AN(x)^2))-1))<0)x=AAV(x)[0]; if(((-(LIT&AT(x))&(AR(x)-2)&-AN(x)))>=0)return 0;);  // box/rank1/N=2; lit/R<2/N!=0
  return 1;
 }    /* 0 if w is definitely not a gerund; 1 if possibly a gerund */
 
