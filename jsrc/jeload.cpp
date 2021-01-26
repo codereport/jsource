@@ -64,12 +64,12 @@ extern "C" {
     auto je_load_procedure_addresses(void* hjdll, void* callbacks) -> void {
         auto jsm = reinterpret_cast<JSMType>(dlsym(hjdll,"JSM"));
         jsm(jt,callbacks);
-        jdo        = (JDoType)        dlsym(hjdll,"JDo");
-        jfree      = (JFreeType)      dlsym(hjdll,"JFree");
-        jga        = (JgaType)        dlsym(hjdll,"Jga");
-        jgetlocale = (JGetLocaleType) dlsym(hjdll,"JGetLocale");
-        jgeta      = (JGetAType)      dlsym(hjdll,"JGetA");
-        jseta      = (JSetAType)      dlsym(hjdll,"JSetA");
+        jdo        = reinterpret_cast<JDoType>           (dlsym(hjdll,"JDo"));
+        jfree      = reinterpret_cast<JFreeType>         (dlsym(hjdll,"JFree"));
+        jga        = reinterpret_cast<JgaType>           (dlsym(hjdll,"Jga"));
+        jgetlocale = reinterpret_cast<JGetLocaleType>    (dlsym(hjdll,"JGetLocale"));
+        jgeta      = reinterpret_cast<JGetAType>         (dlsym(hjdll,"JGetA"));
+        jseta      = reinterpret_cast<JSetAType>         (dlsym(hjdll,"JSetA"));
     }
 
     // load JE, Jinit, getprocaddresses, JSM
