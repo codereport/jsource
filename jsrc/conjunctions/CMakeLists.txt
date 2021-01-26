@@ -5,23 +5,6 @@
 # A conjunction modifies the words or phrases to its left and right to produce a derived entity which is usually a verb,
 # though it can be any of the four primary parts of speech. More...
 
-add_library(lib_conjunctions SHARED
-        ca.c
-        c.c
-        cc.c
-        cf.c
-        cg.c
-        ch.c
-        cip.c
-        cip_t.h
-        cl.c
-        cp.c
-        cpdtsp.c
-        cr.c
-        crs.c
-        cu.c
-        cv.c
-        cx.c
-        )
-target_include_directories(lib_conjunctions PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
-target_link_libraries(lib_conjunctions lib_j_parent)
+add_library(lib_conjunctions INTERFACE)
+target_include_directories(lib_conjunctions INTERFACE ${CMAKE_CURRENT_SOURCE_DIR})
+target_link_libraries(lib_conjunctions INTERFACE lib_j_parent)

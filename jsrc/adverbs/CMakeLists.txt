@@ -5,21 +5,6 @@
 # An adverb modifies the word or phrase to its left to produce a derived entity which is usually a verb
 # (though it may be any of the four primary parts of speech). More...
 
-add_library(lib_adverbs SHARED
-        a.c
-        #a.h
-        ab.c
-        af.c
-        ai.c
-        am.c
-        am1.c
-        amn.c
-        ao.c
-        ap.c
-        ar.c
-        ar.h
-        as.c
-        au.c
-        )
-target_include_directories(lib_adverbs PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
-target_link_libraries(lib_adverbs lib_j_parent)
+add_library(lib_adverbs INTERFACE)
+target_include_directories(lib_adverbs INTERFACE ${CMAKE_CURRENT_SOURCE_DIR})
+target_link_libraries(lib_adverbs INTERFACE lib_j_parent)

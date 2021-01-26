@@ -3,22 +3,131 @@ add_subdirectory(adverbs)
 add_subdirectory(conjunctions)
 add_subdirectory(verbs)
 add_library(j)
-#set_target_properties(j lib_adverbs lib_conjunctions lib_verbs
-#        PROPERTIES
-#        ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib"
-#        LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib"
-#        RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin"
-#        )
 target_compile_definitions(j PRIVATE C_NA=0 C_AVX=1 C_AVX2=1 EMU_AVX=1)
-target_link_libraries(j PUBLIC
-        ${STANDARD_MATH_LIBRARY}
-        lib_j_parent
-        lib_adverbs
-        lib_conjunctions
-        lib_verbs
+target_link_libraries(j
+        PRIVATE ${STANDARD_MATH_LIBRARY}
+        PUBLIC lib_j_parent
+        PUBLIC lib_adverbs
+        PUBLIC lib_conjunctions
+        PUBLIC lib_verbs
         )
 set_source_files_properties(aes-ni.c PROPERTIES COMPILE_FLAGS -maes)
 target_sources(j PUBLIC
+        ./adverbs/a.c
+        #./adverbs/a.h
+        ./adverbs/ab.c
+        ./adverbs/af.c
+        ./adverbs/ai.c
+        ./adverbs/am.c
+        ./adverbs/am1.c
+        ./adverbs/amn.c
+        ./adverbs/ao.c
+        ./adverbs/ap.c
+        ./adverbs/ar.c
+        ./adverbs/ar.h
+        ./adverbs/as.c
+        ./adverbs/au.c
+        ./conjunctions/ca.c
+        ./conjunctions/c.c
+        ./conjunctions/cc.c
+        ./conjunctions/cf.c
+        ./conjunctions/cg.c
+        ./conjunctions/ch.c
+        ./conjunctions/cip.c
+        ./conjunctions/cip_t.h
+        ./conjunctions/cl.c
+        ./conjunctions/cp.c
+        ./conjunctions/cpdtsp.c
+        ./conjunctions/cr.c
+        ./conjunctions/crs.c
+        ./conjunctions/cu.c
+        ./conjunctions/cv.c
+        ./conjunctions/cx.c
+        ./j_parent/d.h
+        ./j_parent/j.h
+        ./j_parent/j.c
+        ./j_parent/ja.h
+        ./j_parent/jc.h
+        ./j_parent/jtype.h
+        ./j_parent/js.h
+        ./j_parent/jt.h
+        ./j_parent/jlib.h
+        ./j_parent/je.h
+        ./j_parent/jerr.h
+        ./j_parent/m.h
+        ./j_parent/p.c
+        ./j_parent/p.h
+        ./j_parent/result.h
+        ./j_parent/va.h
+        ./j_parent/vasm.h
+        ./j_parent/vcomp.h
+        ./j_parent/ve.h
+        ./j_parent/vq.h
+        ./j_parent/vx.h
+        ./j_parent/vz.h
+        ./j_parent/a.h
+        ./j_parent/s.h
+        ./j_parent/jversion.h
+        ./j_parent/gemm.h
+        ./j_parent/w.h
+        ./j_parent/w.c
+        ./verbs/crc32c.c
+        ./verbs/crc32c.h
+        ./verbs/crc32ctables.h
+        ./verbs/v.c
+        ./verbs/v0.c
+        ./verbs/v1.c
+        ./verbs/v2.c
+        #./verbs/va.h
+        ./verbs/va1.c
+        ./verbs/va1ss.c
+        ./verbs/va2.c
+        ./verbs/va2s.c
+        ./verbs/va2ss.c
+        ./verbs/vamultsp.c
+        #./verbs/vasm.h
+        ./verbs/vb.c
+        ./verbs/vbang.c
+        ./verbs/vcant.c
+        ./verbs/vcat.c
+        ./verbs/vcatsp.c
+        ./verbs/vchar.c
+        ./verbs/vcomp.c
+        #./verbs/vcomp.h
+        ./verbs/vcompsc.c
+        ./verbs/vd.c
+        ./verbs/ve.c
+        #./verbs/ve.h
+        ./verbs/vf.c
+        ./verbs/vfft.c
+        ./verbs/vfrom.c
+        ./verbs/vfromsp.c
+        ./verbs/vg.c
+        ./verbs/vg.h
+        ./verbs/vgauss.c
+        ./verbs/vgcomp.c
+        ./verbs/vgmerge.h
+        ./verbs/vgmergemincomp.h
+        ./verbs/vgranking.c
+        ./verbs/vgsort.c
+        ./verbs/vgsort.h
+        ./verbs/vgsortq.h
+        ./verbs/vgsp.c
+        ./verbs/vi.c
+        ./verbs/viix.c
+        ./verbs/visp.c
+        ./verbs/vm.c
+        ./verbs/vo.c
+        ./verbs/vp.c
+        ./verbs/vq.c
+        #./verbs/vq.h
+        ./verbs/vrand.c
+        ./verbs/vrep.c
+        ./verbs/vs.c
+        ./verbs/vsb.c
+        ./verbs/vt.c
+        ./verbs/vx.c
+        ./verbs/vz.c
         aes-arm_table.h
         aes-c.c
         aes-c.h
@@ -118,7 +227,7 @@ if (OpenMP_C_FOUND)
     endif ()
 endif ()
 
-target_sources(j PRIVATE
+target_sources(j PUBLIC
         blis.h
         blis/gemm_vec-ref.c
         )
