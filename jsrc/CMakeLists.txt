@@ -116,7 +116,7 @@ target_sources(j PRIVATE
     va2s.c
     va2ss.c
     vamultsp.c
-    vb.c
+    vb.cpp
     vbang.c
     vcant.c
     vcat.c
