@@ -7,7 +7,7 @@
 
 add_library(lib_adverbs
         a.c
-        a.h
+        #a.h
         ab.c
         af.c
         ai.c
@@ -22,3 +22,4 @@ add_library(lib_adverbs
         au.c
         )
 target_include_directories(lib_adverbs PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+target_link_libraries(lib_adverbs lib_j_parent)

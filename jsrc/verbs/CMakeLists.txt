@@ -13,14 +13,14 @@ add_library(lib_verbs
         v0.c
         v1.c
         v2.c
-        va.h
+        #va.h
         va1.c
         va1ss.c
         va2.c
         va2s.c
         va2ss.c
         vamultsp.c
-        vasm.h
+        #vasm.h
         vb.c
         vbang.c
         vcant.c
@@ -28,11 +28,11 @@ add_library(lib_verbs
         vcatsp.c
         vchar.c
         vcomp.c
-        vcomp.h
+        #vcomp.h
         vcompsc.c
         vd.c
         ve.c
-        ve.h
+        #ve.h
         vf.c
         vfft.c
         vfrom.c
@@ -55,7 +55,7 @@ add_library(lib_verbs
         vo.c
         vp.c
         vq.c
-        vq.h
+        #vq.h
         vrand.c
         vrep.c
         vs.c
@@ -65,3 +65,4 @@ add_library(lib_verbs
         vz.c
         )
 target_include_directories(lib_verbs PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+target_link_libraries(lib_verbs lib_j_parent)

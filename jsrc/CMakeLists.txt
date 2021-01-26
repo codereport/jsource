@@ -1,4 +1,5 @@
 
+add_subdirectory(j_parent)
 add_subdirectory(adverbs)
 add_subdirectory(conjunctions)
 add_subdirectory(verbs)
@@ -15,13 +16,13 @@ target_sources(j PUBLIC
         aes-c.c
         aes-c.h
         aes-ni.c
-        cip_t.h
+        #cip_t.h
         cipfloatmm_t.h
         cpuinfo.c
         cpuinfo.h
         cr_t.h # templates
         d.c
-        d.h
+        #d.h
         dc.c
         dss.c
         dstop.c
@@ -33,45 +34,43 @@ target_sources(j PUBLIC
         fbu.c
         fnmatch.h
         gemm.c
-        gemm.h
+        #gemm.h
         i.c
         io.c
-        j.c
-        j.h
-        ja.h
-        jc.h
+        #ja.h
+        #jc.h
         jdlllic.c
-        je.h
-        jerr.h
+        #je.h
+        #jerr.h
         jfex.h
-        js.h
-        jt.h
-        jtype.h
-        jversion.h
+        #js.h
+        #jt.h
+        #jtype.h
+        #jversion.h
         k.c
         linenoise.h
         m.c
-        m.h
-        p.c
-        p.h
+        #m.h
+        #p.c
+        #p.h
         pv.c
         px.c
         r.c
-        result.h
+        #result.h
         rl.c
         rt.c
         s.c
-        s.h
+        #s.h
         sc.c
         sl.c
         sn.c
         t.c
         u.c # Interpreter Utilities
         vu.c # Unicode (2-byte unsigned characters)
-        vx.h # Extended Precision
-        vz.h # Complex Numbers
-        w.c
-        w.h
+        #vx.h # Extended Precision
+        #vz.h # Complex Numbers
+        #w.c
+        #w.h
         wc.c
         wn.c
         ws.c
@@ -136,12 +135,12 @@ endif ()
 if ("${CMAKE_C_COMPILER_FRONTEND_VARIANT}" STREQUAL "MSVC")
     target_link_options(jconsole PRIVATE /STACK:0x1000000)
 endif ()
-target_link_libraries(jconsole PRIVATE ${CMAKE_DL_LIBS})
+target_link_libraries(jconsole PRIVATE ${CMAKE_DL_LIBS} j)
 target_sources(jconsole PRIVATE
         jconsole.c
         jeload.h
         jeload.cpp
-        jlib.h
+        #jlib.h
         )
 file(TO_NATIVE_PATH "${PROJECT_SOURCE_DIR}/jlibrary/bin" J_BINPATH)
 file(TO_NATIVE_PATH "/profile.ijs" J_PROFILE_SCRIPT)

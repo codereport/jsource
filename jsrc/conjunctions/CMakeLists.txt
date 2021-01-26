@@ -13,6 +13,7 @@ add_library(lib_conjunction
         cg.c
         ch.c
         cip.c
+        cip_t.h
         cl.c
         cp.c
         cpdtsp.c
@@ -23,3 +24,4 @@ add_library(lib_conjunction
         cx.c
         )
 target_include_directories(lib_conjunction PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+target_link_libraries(lib_conjunction lib_j_parent)
