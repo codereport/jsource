@@ -61,3 +61,12 @@ palindrome =. (-: |.)    NB. hook version
 * ~~We should checkout GitHub actions~~
 * We should also look into [Buildkite](https://buildkite.com/)
 * Maybe also [Appveyor](https://www.appveyor.com)
+
+### Livestream #3 2021-01-25
+* Ctrl+Shift+\ is select to matching brace
+* `git commit -m`
+* `git branch -m oldname newname` to rename branch
+*  j$(nproc)
+* Need to review [Mixing C and C++ Code](https://isocpp.org/wiki/faq/mixing-c-and-cpp)
+* We learned J code base has the egregious local variable seemingly not used but its use is hidden in a macro
+* :star: Learned how to correctly set up repo merge conditions (aka build / reviews - summary: only one, use *)
