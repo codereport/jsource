@@ -17,24 +17,24 @@ target_sources(j PRIVATE
         adverbs/ar.c
         adverbs/as.c
         adverbs/au.c
+        conjunctions/c.c
+        conjunctions/ca.c
+        conjunctions/cc.c
+        conjunctions/cf.c
+        conjunctions/cg.c
+        conjunctions/ch.c
+        conjunctions/cip.c
+        conjunctions/cl.c
+        conjunctions/cp.c
+        conjunctions/cpdtsp.c
+        conjunctions/cr.c
+        conjunctions/crs.c
+        conjunctions/cu.c
+        conjunctions/cv.c
+        conjunctions/cx.c
         aes-c.c
         aes-ni.c
-        c.c
-        ca.c
-        cc.c
-        cf.c
-        cg.c
-        ch.c
-        cip.c
-        cl.c
-        cp.c
-        cpdtsp.c
         cpuinfo.c
-        cr.c
-        crs.c
-        cu.c
-        cv.c
-        cx.c
         d.c
         dc.c
         dss.c
