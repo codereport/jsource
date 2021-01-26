@@ -271,11 +271,9 @@ static inline omp_int_t omp_get_max_threads() { return 1;}
 #define XNAN            "\000\000\000\000\000\000\370\177"
 #endif
 
-#if C_LE
 #ifndef XINF
 #define XINF            "\000\000\000\000\000\000\360\177"
 #define XNAN            "\000\000\000\000\000\000\370\377"
-#endif
 #endif
 
 #ifndef XINF
@@ -921,15 +919,10 @@ static inline __attribute__((inline)) float64x2_t vec_and_pd(float64x2_t a, floa
 #define NUMMAX          9    // largest number represented in num[]
 #define NUMMIN          (~NUMMAX)    // smallest number represented in num[]
 // Given SZI B01s read into p, pack the bits into the MSBs of p and clear the lower bits of p
-#if C_LE  // if anybody makes a bigendian CPU we'll have to recode
 #if BW==64
 // this is what it should be #define PACKBITS(p) {p|=p>>7LL;p|=p>>14LL;p|=p>>28LL;p<<=56LL;}
 #define PACKBITS(p) {p|=p>>7LL;p|=p>>14LL;p|=p<<28LL;p&=0xff0000000; p<<=28LL;}  // this generates one extra instruction, rather than the 3 for the correct version
 #define PACKBITSINTO(p,out) {p|=p>>7LL;p|=p>>14LL;out=((p|(p>>28LL))<<56)|(out>>SZI);}  // pack and shift into out
-#else
-#define PACKBITS(p) {p|=p>>7LL;p|=p>>14LL;p<<=28LL;}
-#define PACKBITSINTO(p,out) {p|=p>>7LL;p|=p>>14LL;out=(p<<28)|(out>>SZI);}  // pack and shift into out
-#endif
 #endif
 #define PRISTCOMSET(w,flg) awback=(w); if(unlikely((flg&AFVIRTUAL)!=0)){awback=ABACK(awback); flg=AFLAG(awback);} AFLAG(awback)=flg&~AFPRISTINE;
 #define PRISTCOMSETF(w,flg) if(unlikely((flg&AFVIRTUAL)!=0)){w=ABACK(w); flg=AFLAG(w);} AFLAG(w)=flg&~AFPRISTINE;   // used only at end, when w can be destroyed
@@ -1057,10 +1050,8 @@ if(likely(z<3)){_zzt+=z; z=(I)&oneone; _zzt=_i&3?_zzt:(I*)z; z=_i&2?(I)_zzt:z; z
 #else
 #define REPLBYTETOW(in,out) (out=(UC)(in),out|=out<<8,out|=out<<16)
 #endif
-#if C_LE
 // Output is pointer, Input is I/UI, count is # bytes to NOT store to output pointer (0-7).
 #define STOREBYTES(out,in,n) {*(UI*)(out) = (*(UI*)(out)&~((UI)~(I)0 >> ((n)<<3))) | ((in)&((UI)~(I)0 >> ((n)<<3)));}
-#endif
 // Input is the name of word of bytes.  Result is modified name, 1 bit per input byte, spaced like B01s, with the bit 0 iff the corresponding input byte was all 0.  Non-boolean bits of result are garbage.
 #define ZBYTESTOZBITS(b) (b=b|((b|(~b+VALIDBOOLEAN))>>7))  // for each byte: zero if b0 off, b7 off, and b7 turns on when you subtract 1 or 2
 // to verify gah conversion #define RETF(exp)       { A retfff=(exp);  if ((retfff) && ((AT(retfff)&SPARSE && AN(retfff)!=1) || (AT(retfff)&DENSE && AN(retfff)!=prod(AR(retfff),AS(retfff)))))SEGFAULT;; R retfff; } // scaf
@@ -1099,7 +1090,6 @@ if(likely(z<3)){_zzt+=z; z=(I)&oneone; _zzt=_i&3?_zzt:(I*)z; z=_i&2?(I)_zzt:z; z
 #define VAL2            '\002'
 #define WITHDEBUGOFF(stmt) {UC d=jt->uflags.us.cx.cx_c.db; jt->uflags.us.cx.cx_c.db=0; stmt jt->uflags.us.cx.cx_c.db=d;}  // execute stmt with debug turned off
 
-#if C_LE
 #if BW==64
 #define IHALF0  0x00000000ffffffffLL
 #else
@@ -1125,38 +1115,8 @@ if(likely(z<3)){_zzt+=z; z=(I)&oneone; _zzt=_i&3?_zzt:(I*)z; z=_i&2?(I)_zzt:z; z
 #define BS01    0x0100
 #define BS10    0x0001
 #define BS11    0x0101
-#else
-#if BW==64
-#define IHALF0  0xffffffff00000000LL
-#else
-#define IHALF0  0xffff0000
-#endif
-#define B0000   0x00000000
-#define B0001   0x00000001
-#define B0010   0x00000100
-#define B0011   0x00000101
-#define B0100   0x00010000
-#define B0101   0x00010001
-#define B0110   0x00010100
-#define B0111   0x00010101
-#define B1000   0x01000000
-#define B1001   0x01000001
-#define B1010   0x01000100
-#define B1011   0x01000101
-#define B1100   0x01010000
-#define B1101   0x01010001
-#define B1110   0x01010100
-#define B1111   0x01010101
-#define BS00    0x0000
-#define BS01    0x0001
-#define BS10    0x0100
-#define BS11    0x0101
-#endif
-
-
 
 #define CACHELINESIZE 64  // size of processor cache line, in case we align to it
-
 
 // flags in call to cachedmmult and blockedmmult
 #define FLGCMPX 0

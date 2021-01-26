@@ -56,7 +56,7 @@ F2(jtnouninfo2){A z;
 #define BR(d,a)         ((C*)(a)+(3LL<<LGWS(d)))       /* rank                            */
 #define BS(d,a)         ((C*)(a)+(4LL<<LGWS(d)))       /* shape                           */
 #define BV(d,a,r)       (BS(d,a)+((r)<<LGWS(d)))     /* value                           */
-#define BU              (C_LE ? 1 : 0)
+#define BU              (1)
 
 static A jtbrep(J jt,B b,B d,A w);  // forward declaration
 static A jthrep(J jt,B b,B d,A w);

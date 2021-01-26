@@ -18,7 +18,6 @@ A jttoc1(J jt,B h,A w){A z;C*wv,*zv;I n;C4*w4;
  w4=C4AV(w);
  ASSERT(!n||(C2T+C4T)&AT(w),EVDOMAIN);  // must be empty or unicode
  GATV(z,LIT,n,AR(w),AS(w)); zv=CAV(z);  // allocate ASCII area with same data shape
-#if C_LE
  if(C2T&AT(w))
  {
  if(h)DQ(n, *zv++=*wv++; wv++;) else DQ(n, *zv++=*wv++; ASSERT(!*wv++,EVDOMAIN);)
@@ -29,16 +28,6 @@ A jttoc1(J jt,B h,A w){A z;C*wv,*zv;I n;C4*w4;
  }
  // copy the low byte of the data (if there is any).  if b==0, verify high byte is 0
  // where low and high are depends on endianness
-#else
- if(C2T&AT(w))
- {
- if(h)DQ(n, wv++; *zv++=*wv++;) else DQ(n, ASSERT(!*wv++,EVDOMAIN); *zv++=*wv++;)
- }
- else
- {
- if(h)DQ(n, *zv++=(UC)*w4++; ) else DQ(n, *zv++=(UC)*w4++; ASSERT(*(w4-1)<256UL,EVDOMAIN);)
- }
-#endif
  RETF(z);
 }    /* convert 2-byte or 4-byte chars to 1-byte chars; 0==h iff high order byte(s) must be 0 */
 
@@ -48,7 +37,6 @@ static F1(jttoc2){A z;C*wv,*zv;I n;C4*w4;US*z2;
  n=AN(w); wv=CAV(w); w4=C4AV(w);
  ASSERT(!n||(LIT+C4T)&AT(w),EVDOMAIN);
  GATV(z,C2T,n,AR(w),AS(w)); zv=CAV(z); z2=USAV(z);
-#if C_LE
  if(LIT&AT(w))
  {
  DQ(n, *zv++=*wv++; *zv++=0;);
@@ -57,16 +45,6 @@ static F1(jttoc2){A z;C*wv,*zv;I n;C4*w4;US*z2;
  {
  DQ(n, *z2++=(US)*w4++;);
  }
-#else
- if(LIT&AT(w))
- {
- DQ(n, *zv++=0; *zv++=*wv++;);
- }
- else
- {
- DQ(n, *z2++=(US)*w4++;);
- }
-#endif
  R z;
 }    /* convert 1-byte chars or 4-byte chars(discard high order half) to 2-byte chars */
 

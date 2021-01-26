@@ -3,16 +3,6 @@
 /*                                                                         */
 /* SYS_ and friends                                                        */
 
-// configuration - conditional compilation
-// historical confusion that will slowly be sorted out
-// complexity of autoconf et. al. seems overkill for J - we shall see
-
-// C_? new style config - default value if not defined by builder
-
-#ifndef C_LE // littleendian/bigendian
-#define C_LE 1
-#endif
-
 #ifndef C_NA // noasm/asm
 #define C_NA 1
 #endif

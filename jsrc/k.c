@@ -158,7 +158,7 @@ static KF1(jtQfromX){X*v=XAV(w),*x=(X*)yv; DQ(AN(w), *x++=*v++; *x++=iv1;); R 1;
 
 static KF2(jtQfromD){B neg,recip;D c,d,t,*wv;I e,i,n,*v;Q q,*x;S*tv;
  if(!(w))R 0;
- n=AN(w); wv=DAV(w); x=(Q*)yv; tv=3*C_LE+(S*)&t;
+ n=AN(w); wv=DAV(w); x=(Q*)yv; tv=3+(S*)&t;
  for(i=0;i<n;++i){
   t=wv[i]; 
   ASSERT(!_isnan(t),EVNAN);
