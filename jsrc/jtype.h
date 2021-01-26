@@ -116,18 +116,10 @@ struct AD {
  I c;  // usecount
 //  NOTE!! result.h faux cellshape block depends on n, r, and s being in place from here to the end of this struct, with 2 Is from n to s
  I n;  // # atoms - always 1 for sparse arrays
-#if C_LE
  RANKT r;  // rank
  US h;   // reserved for allocator.  Not used for AFNJA memory
 #if BW==64
  UI4 fill;   // On 64-bit systems, there will be a padding word here - insert in case compiler doesn't
-#endif
-#else
-#if BW==64
- UI4 fill;   // On 64-bit systems, there will be a padding word here - insert in case compiler doesn't
-#endif
- US h;   // reserved for allocator.  Not used for AFNJA memory
- RANKT r;  // rank
 #endif
  I s[1];   // shape starts here.  NOTE!! s[0] is always OK to fetch.  We allocate 8 words minimum and s[0] is the last.
 };
@@ -210,10 +202,7 @@ typedef I SI;
 #define PAV(x)          ( (P*)((C*)(x)+AK(x)))  /* sparse                  */
 #define SBAV(x)         ((SB*)((C*)(x)+AK(x)))  /* symbol                  */
 #define voidAV(x)       ((void*)((C*)(x)+AK(x)))  // unknown
-
-#if C_LE
 #define BIV0(w) (IAV(w)[0]&(1-((AT(w)&INT)>>(INTX-1))))  // the first (presumably only) value in w, when w is an INT or B01 type
-#endif
 
 /* Types for AT(x) field of type A                                         */
 /* Note: BOOL name conflict with ???; SCHAR name conflict with sqltypes.h  */

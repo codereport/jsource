@@ -1002,7 +1002,7 @@ DF2(jtfslashatg){A fs,gs,y,z;B b,sb=0;C*av,c,d,*wv;I ak,an,ar,*as,at,m,
   tn=(zn+SZI-1)>>LGSZI; GATV0(t,INT,tn,1); tc=UAV(t); ti=(UI*)tc;
   // Run g in batches of up to 255, accumulating the result bytewise.  NOTE: there may be garbage at the end of yv, but because
   // we are supporting littleendian only, it will not affect the result
-  for(j=nn;0<j;j-=255/C_LE){
+  for(j=nn;0<j;j-=255){
    memset(ti,C0,tn*SZI); 
    DO(MIN(j,255), ((AHDR2FN*)adocv.f)(n,m,av,wv,yv,jt); av+=ak; wv+=wk; DO(tn,ti[i]+=yv[i];););
    DO(zn, zv[i]+=tc[i];);
