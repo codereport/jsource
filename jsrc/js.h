@@ -3,10 +3,6 @@
 /*                                                                         */
 /* SYS_ and friends                                                        */
 
-#ifndef C_LE // littleendian/bigendian
-#define C_LE 1
-#endif
-
 #ifndef C_NA // noasm/asm
 #define C_NA 1
 #endif

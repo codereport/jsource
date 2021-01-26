@@ -909,11 +909,7 @@ static B jtcdexec1(J jt,CCT*cc,C*zv0,C*wu,I wk,I wt,I wd){A*wv=(A*)wu,x,y,*zv;B 
 #endif
   #if defined(__PPC64__)
      /* +1 put the float in low bits in dv, but dd has to be D */
-#if C_LE
      *dv=0; *(((float*)dv++))=(float)(dd[dcnt++]=*(D*)xv);
-#else
-     *dv=0; *(((float*)dv++)+1)=(float)(dd[dcnt++]=*(D*)xv);
-#endif
      /* *dv=0; *(((float*)dv++)+1)=dd[dcnt++]=(float)*(D*)xv; */
   #elif defined(__aarch64__)
      {f=(float)*(D*)xv; dd[dcnt]=0; *(float*)(dd+dcnt++)=f;
