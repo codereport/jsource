@@ -152,10 +152,6 @@ static inline omp_int_t omp_get_max_threads() { return 1;}
 // If you are porting to a new compiler or architecture, see the bottom of this file
 // for instructions on defining the CTTZ macros
 
-#if SY_WINCE
-#include "..\cesrc\cecompat.h"
-#endif
-
 #if (SYS & SYS_PCWIN)
 #define HEAPCHECK  heapcheck()
 #else
@@ -197,11 +193,8 @@ static inline omp_int_t omp_get_max_threads() { return 1;}
 #define const /*nothing*/   /* blame rx.h */
 #endif
 
-#if ! SY_WINCE
 #include <errno.h>
 #include <stdio.h>
-#endif
-
 #include <math.h>
 #include <string.h>  
 
@@ -240,7 +233,7 @@ static inline omp_int_t omp_get_max_threads() { return 1;}
 #define XNAN            "\000\000\370\377\000\000\000\000"
 #endif
 
-#if (SYS & SYS_DEC5500) || SY_WINCE_SH
+#if (SYS & SYS_DEC5500)
 #define XINF            "\000\000\000\000\000\000\360\177"
 #define XNAN            "\000\000\000\000\000\000\370\377"
 #endif
@@ -262,13 +255,6 @@ static inline omp_int_t omp_get_max_threads() { return 1;}
 #if (SYS & SYS_VAX)
 #define XINF            "\377\177\377\377\377\377\377\377"
 #define XNAN            "\377\177\377\377\377\377\377\376" /* not right */
-#endif
-
-
-
-#if SY_WINCE_ARM
-#define XINF            "\000\000\000\000\000\000\360\177"
-#define XNAN            "\000\000\000\000\000\000\370\177"
 #endif
 
 #ifndef XINF
@@ -1240,10 +1226,6 @@ extern I CTLZI_(UI,UI4*);
 #define JPF(s,v) {char b[1000]; sprintf(b, s, v); jsto(gjt,MTYOFM,b);}
 extern J gjt; // global for JPF (procs without jt)
 
-#if SY_WINCE_MIPS
-/* strchr fails for CE MIPS - neg chars - spellit fails in ws.c for f=.+.  */
-#define strchr(a,b)     (C*)strchr((unsigned char*)(a), (unsigned char)(b))
-#endif
 #if (defined(__arm__)||defined(__aarch64__)||defined(_M_ARM64)) && !defined(__MACH__)
 // option -fsigned-char in android and raspberry
 #ifdef strchr

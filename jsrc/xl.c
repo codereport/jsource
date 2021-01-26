@@ -14,7 +14,7 @@
 static B jtdolock(J jt,B lk,F f,I i,I n){ASSERT(0,EVNONCE);}
 #endif
 
-#if (SYS & SYS_UNIX) || (SY_WIN32 && SYS&SYS_DOS && !SY_WINCE)
+#if (SYS & SYS_UNIX)
 typedef long long INT64;
 #include <stdint.h>
 #include <stdio.h>

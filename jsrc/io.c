@@ -243,13 +243,9 @@ void breakclose(J jt)
  jt->breakmh=0;
  CloseHandle(jt->breakfh);
  jt->breakfh=0;
-#if SY_WINCE
- DeleteFile(tounibuf(jt->breakfn));
-#else
  WCHAR wpath[NPATH];
  MultiByteToWideChar(CP_UTF8,0,jt->breakfn,1+(int)strlen(jt->breakfn),wpath,NPATH);
  DeleteFileW(wpath);
-#endif
  *jt->breakfn=0;
 }
 #endif
