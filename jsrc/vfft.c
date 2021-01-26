@@ -55,9 +55,9 @@ static F1(jtravtranspose){I i,n,s;Z t,*v;UC*iv,*jv;UI j;
   REVBITS(iv,jv); j>>=s;
   if(j>(UI)i){t=v[i]; v[i]=v[j]; v[j]=t;}
  }
- R w;
+ return w;
 }    /* ravel transpose in place: ,|:(#:&.<:#w)$w  or  (|."1&.#:i.#w){w */
 
 static A jtfloop(J jt,A w,I k,B inv){
-R 0;
+return 0;
 }

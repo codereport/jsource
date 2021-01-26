@@ -22,7 +22,7 @@ static A jtcants(J jt,A a,A w,A z){A a1,q,y;B*b,*c;I*u,wr,zr;P*wp,*zp;
  RZ(q=grade1(y));
  SPB(zp,i,from(q,y));
  SPB(zp,x,from(q,canta(over(zeroionei(0),increm(grade1(less(a,a1)))),SPA(wp,x))));
- R z;
+ return z;
 }    /* w is sparse */
 
 // do the innermost loop fast.  r must be >= 1
@@ -65,7 +65,7 @@ static F2(jtcanta){A m,s,t,z;C*wv,*zv;I*av,j,*mv,r,*sv,*tv,wf,wr,*ws,zn,zr,ms[4]
  // r will hold number of unelided trailing axes of result
  I noelideend=0; I cellsizeb=bpnoun(AT(w)); r=zr; I scanws=1; j=wr;  // cellsizeb is number of bytes in a cell of the transpose, after deleting trailing axes
  DQ(wr, --j; tv[j]=scanws; if(noelideend|=(j^av[j])){scanws*=ws[j];}else{cellsizeb*=ws[j]; --r;});  // tv = */\. ws
- if(!r)R RETARG(w);  // if all the axes are elided, just return the input unchanged
+ if(!r)return RETARG(w);  // if all the axes are elided, just return the input unchanged
  for(j=0,zn=1;j<zr;++j){  // for each axis of the result...  (must include deleted axes to get the shape of result axis, and total # items)
   UI axislenres=~0; I axislenin=0;  // axislenin will hold length of axis (in the input), axislenres is length of axis in result
   // look at all input axes, and accumulate info for each one that matches the result axis we are working on.
@@ -75,8 +75,8 @@ static F2(jtcanta){A m,s,t,z;C*wv,*zv;I*av,j,*mv,r,*sv,*tv,wf,wr,*ws,zn,zr,ms[4]
   ASSERT(axislenres!=~0UL,EVINDEX);  // abort if there is no input axis as source for this result axis
   zn*=(I)axislenres; sv[j]=(I)axislenres; mv[j]=axislenin*cellsizeb;  // accumulate result: axis len multiplies * cells, smallest goes to sv, total stride to mv
  }
- if(unlikely((SPARSE&AT(w))!=0)){GASPARSE(z,AT(w),1,zr,sv); R cants(a,w,z);}  // if sparse, go to sparse transpose code.
- GA(z,AT(w),zn,zr,sv); if(!zn)R z;  // allocate result.  If result is empty, return it now
+ if(unlikely((SPARSE&AT(w))!=0)){GASPARSE(z,AT(w),1,zr,sv); return cants(a,w,z);}  // if sparse, go to sparse transpose code.
+ GA(z,AT(w),zn,zr,sv); if(!zn)return z;  // allocate result.  If result is empty, return it now
  // now run the transpose
  zv=CAV(z); wv=CAV(w);
  memset(tv,C0,r*SZI);  // repurpose tv to be the index list of the input pointer, and set to 0s.  Only the first r axes matter

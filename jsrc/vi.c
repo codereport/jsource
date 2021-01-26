@@ -44,26 +44,26 @@ static void ctmask(J jt){DI p,x,y;UINT c,d,e,m,q;
 #define HASHINIT(z)  z=2166136261u    // FNV-1a 32 bits
 #define HASHSTEP(z,byte)  (z=(UI4)((z^(byte))*16777619L))    // FNV-1a 32 bits
 
-       UI hic (     I k,UC*v){UI HASHINIT(z);             DQ(k,       HASHSTEP(z,*v++);      ); R z;}
+       UI hic (     I k,UC*v){UI HASHINIT(z);             DQ(k,       HASHSTEP(z,*v++);      ); return z;}
 
-static UI hicnz(    I k,UC*v){UI HASHINIT(z);UC c;        DQ(k, c=*v++; if(c&&c!=255)HASHSTEP(z,c);); R z;}
+static UI hicnz(    I k,UC*v){UI HASHINIT(z);UC c;        DQ(k, c=*v++; if(c&&c!=255)HASHSTEP(z,c);); return z;}
 
-static UI hicx(J jt,I k,UC*v){UI HASHINIT(z);I*u=jt->hiv; DQ(jt->hin, HASHSTEP(z,v[*u++]);      ); R z;}
+static UI hicx(J jt,I k,UC*v){UI HASHINIT(z);I*u=jt->hiv; DQ(jt->hin, HASHSTEP(z,v[*u++]);      ); return z;}
 
        UI hic2(     I k,UC*v){UI HASHINIT(z);             DQ(k>>1,     HASHSTEP(z,v[0]);
-                                                       if(*(v+1)){HASHSTEP(z,v[1]);} v+=2;); R z;}
+                                                       if(*(v+1)){HASHSTEP(z,v[1]);} v+=2;); return z;}
 
        UI hic4(     I k,UC*v){UI HASHINIT(z);             DQ(k>>2,     HASHSTEP(z,v[0]);
                                                if(*(v+2)||*(v+3)){HASHSTEP(z,v[1]);
                                                                   HASHSTEP(z,v[2]);
                                                                   HASHSTEP(z,v[3]);}
-                                                  else if(*(v+1)){HASHSTEP(z,v[1]);} v+=4;); R z;}
+                                                  else if(*(v+1)){HASHSTEP(z,v[1]);} v+=4;); return z;}
 
 // Hash a single unsigned INT
 #define hicw(v)  (10495464745870458733U**(UI*)(v))
 // Hash a single double, using only the bits in ctmask.  -0 is hashed differently than +0.  Should we take the sign bit out of ct?  Only if ct=0?
 //  not required for tolerant comparison, but if we tried to do tolerant comparison through the fast code it would help
-static UI jthid(J jt,D d){R 10495464745870458733U*(jt->ctmask&*(I*)&d);}
+static UI jthid(J jt,D d){return 10495464745870458733U*(jt->ctmask&*(I*)&d);}
 
 // Hash the data in the given A.  Comments say this is called only for singletons
 // If empty or boxed, hash the shape
@@ -73,12 +73,12 @@ static UI jthid(J jt,D d){R 10495464745870458733U*(jt->ctmask&*(I*)&d);}
 //  is ctmask=~0 for exact compares?  Better be.
 static UI jthia(J jt,D hct,A y){UC*yv;D d;I n,t;Q*u;
  n=AN(y); t=AT(y); yv=UAV(y);
- if(!n||t&BOX)R hic(AR(y)*SZI,(UC*)AS(y));
+ if(!n||t&BOX)return hic(AR(y)*SZI,(UC*)AS(y));
  switch(CTTZ(t)){
-  case LITX:  R hic(n,yv);
-  case C2TX:  R hic2(2*n,yv);
-  case C4TX:  R hic4(4*n,yv);
-  case SBTX:  R hic(n*SZI,yv);
+  case LITX:  return hic(n,yv);
+  case C2TX:  return hic2(2*n,yv);
+  case C4TX:  return hic4(4*n,yv);
+  case SBTX:  return hic(n*SZI,yv);
   case B01X:  d=*(B*)yv; break;
   case INTX:  d=(D)*(I*)yv; break;
   case FLX: 
@@ -86,34 +86,34 @@ static UI jthia(J jt,D hct,A y){UC*yv;D d;I n,t;Q*u;
   case XNUMX: d=xdouble(*(X*)yv); break;
   case RATX:  u=(Q*)yv; d=xdouble(u->n)/xdouble(u->d);
  }
- R hid(d*hct);
+ return hid(d*hct);
 }
 
 // Hash y, which is not a singleton.  Integral types do not hash bytes that equal 0 or 255 (why??).
 static UI jthiau(J jt,A y){I m,n;UC*v=UAV(y);UI z=2038074751;X*u,x;
  m=n=AN(y);
- if(!n)R 0;
+ if(!n)return 0;
  switch(CTTZ(AT(y))){
   case RATX:  m+=n;  /* fall thru */
-  case XNUMX: u=XAV(y); DQ(m, x=*u++; v=UAV(x); z+=hicnz(AN(x)*SZI,UAV(x));); R z;
-  case INTX:                                    z =hicnz(n    *SZI,UAV(y));   R z;
-  default:   R hic(n<<bplg(AT(y)),UAV(y));
+  case XNUMX: u=XAV(y); DQ(m, x=*u++; v=UAV(x); z+=hicnz(AN(x)*SZI,UAV(x));); return z;
+  case INTX:                                    z =hicnz(n    *SZI,UAV(y));   return z;
+  default:   return hic(n<<bplg(AT(y)),UAV(y));
 }}
 
 // Hashes for extended/rational types.  Hash only the numerator of rationals.  These are
 // Q and X types (Q is a brace of X types)
-static UI hix(X*v){A y=*v;   R hic(AN(y)*SZI,UAV(y));}
-static UI hiq(Q*v){A y=v->n; R hic(AN(y)*SZI,UAV(y));}
+static UI hix(X*v){A y=*v;   return hic(AN(y)*SZI,UAV(y));}
+static UI hiq(Q*v){A y=v->n; return hic(AN(y)*SZI,UAV(y));}
 
 // Comparisons for extended/rational/float/complex types.  teq should use the macro
-static B jteqx(J jt,I n,X*u,X*v){DQ(n, if(!equ(*u,*v))R 0; ++u; ++v;); R 1;}
-static B jteqq(J jt,I n,Q*u,Q*v){DQ(n, if(!QEQ(*u,*v))R 0; ++u; ++v;); R 1;}
-static B jteqd(J jt,I n,D*u,D*v){DQ(n, if(!TEQ(*u,*v))R 0; ++u; ++v;); R 1;}
-static B jteqz(J jt,I n,Z*u,Z*v){DQ(n, if(!zeq(*u,*v))R 0; ++u; ++v;); R 1;}
+static B jteqx(J jt,I n,X*u,X*v){DQ(n, if(!equ(*u,*v))return 0; ++u; ++v;); return 1;}
+static B jteqq(J jt,I n,Q*u,Q*v){DQ(n, if(!QEQ(*u,*v))return 0; ++u; ++v;); return 1;}
+static B jteqd(J jt,I n,D*u,D*v){DQ(n, if(!TEQ(*u,*v))return 0; ++u; ++v;); return 1;}
+static B jteqz(J jt,I n,Z*u,Z*v){DQ(n, if(!zeq(*u,*v))return 0; ++u; ++v;); return 1;}
 
 // test a subset of two boxed arrays for match.  u/v point to pointers to contants, c and d are the relative flags
 // We test n subboxes
-static B jteqa(J jt,I n,A*u,A*v){DQ(n, if(!equ(*u,*v))R 0; ++u; ++v;); R 1;}
+static B jteqa(J jt,I n,A*u,A*v){DQ(n, if(!equ(*u,*v))return 0; ++u; ++v;); return 1;}
 
 /*
  mode one of the following:
@@ -228,7 +228,7 @@ static I hashallo(IH * RESTRICT hh,UI p,UI m,I md){
    hh->currenthi = MAX(hh->currenthi,p);  // adjust partition to be after the invalid area
    hh->invalidhi=p;  // adjust high-water mark
   }
-  R md;
+  return md;
  }
  // Not bits. We have a choice of allocating on the left or the right.  Allocating on the left creates cache coherence
  // but tends to waste address points.  Calculate the cost of each and choose.
@@ -323,7 +323,7 @@ static I hashallo(IH * RESTRICT hh,UI p,UI m,I md){
   hh->currentlo=0;    // Indic left-side starting position (return value)
   hh->invalidlo=IMAX; hh->invalidhi=0;  // clear invalidity region
  }
- R md;
+ return md;
 }
 
 // *************** first class: intolerant comparisons, unboxed ***********************
@@ -366,7 +366,7 @@ static I hashallo(IH * RESTRICT hh,UI p,UI m,I md){
     case IALLEPS: s=1; XDO(hash,exp,inc,if(m==hj){s=0; break;}); *zb++=1&&s; break;  \
     case IIFBEPS: s=c; XDO(hash,exp,inc,if(m> hj)*zi++=i      ); ZISHAPE;    break;  \
   }}                                                                                 \
-  R z;                                                                               \
+  return z;                                                                               \
  }
 
 //
@@ -486,7 +486,7 @@ static IOFX(I,jtioi,  hicw(v),           *v!=av[hj],                      ++v,  
     case IALLEPS: s=1; TDO(FXY,FYY,expa,expw,if(m==il&&m==ir){s=0; break;}); *zb++=1&&s; break;  \
     case IIFBEPS:      TDO(FXY,FYY,expa,expw,if(m> il||m> ir)*zi++=i      ); ZISHAPE;    break;  \
   }}                                                                                             \
-  R z;                                                                                           \
+  return z;                                                                                           \
  }
 
 // Verbs for the types of inputs
@@ -660,7 +660,7 @@ static IOFT(A,jtioa1,THASHBX,TFINDBX,TFINDBX,!equ(*v,av[hj]),!equ(*v,av[hj]))
    SMFULLPACK(T,0,IIFBEPS,DCLZVO(I,0) I *zv0=zv; , (T,0,*zv=i+c; zv+=v;); *AS(z)=AN(z)=zv-zv0;)  \
    }  \
   }  \
-  R z; \
+  return z; \
  }
 // init to 1 for ~. ~: NUBI LESS   others to 0
 
@@ -706,10 +706,10 @@ static void jtiosc(J jt,I mode,I m,I c,I ac,I wc,A a,A w,A z){B*zb;I j,p,q,*u,*v
 
 // return 1 if a is boxed, and ct==0, and a contains a box whose contents are boxed, or complex, or numeric with more than one atom
 static B jtusebs(J jt,A a,I ac,I m){A*av,x;I t;
- if(!(BOX&AT(a)&&1.0==jt->cct))R 0;
+ if(!(BOX&AT(a)&&1.0==jt->cct))return 0;
  av=AAV(a); 
- DO(ac*m, x=av[i]; t=AT(x); if(t&BOX+CMPX||1<AN(x)&&t&NUMERIC)R 1;);
- R 0;
+ DO(ac*m, x=av[i]; t=AT(x); if(t&BOX+CMPX||1<AN(x)&&t&NUMERIC)return 1;);
+ return 0;
 }    /* n (# elements in a target item) is assumed to be 1 */
 
 // 
@@ -732,7 +732,7 @@ static A jtnodupgrade(J jt,A a,I acr,I ac,I acn,I ad,I n,I m,B b,B bk){A*av,h,*u
   if(bk){hu=--hi; DQ(m-1, q=*hi--; v=av+n*q; if(!eqa(n,u,v)){u=v; *hu--=q;}); m1=hv-hu; if(m>m1)hv[1-m]=1-m1;}
   else  {hu=++hi; DQ(m-1, q=*hi++; v=av+n*q; if(!eqa(n,u,v)){u=v; *hu++=q;}); m1=hu-hv; if(m>m1)hv[m-1]=1-m1;}
  }
- R h;
+ return h;
 } 
 
 // hiinc will inc or dec hi
@@ -788,7 +788,7 @@ static IOF(jtiobs){A*av,h=*hp,*wv,y;B b,bk,*yb,*zb;C*zc;I acn,*hu,*hv,l,m1,md,s,
  zi=zv=AV(z); zb=(B*)zv; zc=(C*)zv;
  // If a has not been sorted already, sort it
  if(mode<IPHOFFSET)RZ(*hp=h=nodupgrade(a,acr,ac,acn,0,n,m,b,bk));
- if(w==mark)R mark;
+ if(w==mark)return mark;
  hv=AV(h)+bk*(m-1); jt->workareas.compare.complt=-1;
  for(l=0;l<ac;++l,av+=acn,wv+=wcn,hv+=m){  // loop for each result in a
   // m1=index of last item, which may be less than m if there were discarded duplicates (signaled by last index <0)
@@ -814,14 +814,14 @@ static IOF(jtiobs){A*av,h=*hp,*wv,y;B b,bk,*yb,*zb;C*zc;I acn,*hu,*hv,l,m1,md,s,
    case ISUMEPS: s=0; BSLOOPAW(if(-2==q)++s);                  *zi++=s;    break;
    case IIFBEPS:      BSLOOPAW(if(-2==q)*zi++=i);              ZISHAPE;    break;
  }}
- R z;
+ return z;
 }    /* a i.!.0 w on boxed a,w by grading and binary search */
 
 static I jtutype(J jt,A w,I c){A*wv,x;I m,t;
- if(!AN(w))R 1;
+ if(!AN(w))return 1;
  m=AN(w)/c; wv=AAV(w); 
- DO(c, t=0; DO(m, x=wv[i]; if(AN(x)){if(t)RZ(TYPESEQ(t,AT(x))) else{t=AT(x); if(t&FL+CMPX+BOX)R 0;}}););
- R t;
+ DO(c, t=0; DO(m, x=wv[i]; if(AN(x)){if(t)RZ(TYPESEQ(t,AT(x))) else{t=AT(x); if(t&FL+CMPX+BOX)return 0;}}););
+ return t;
 }    /* return type if opened atoms of cells of w has uniform type (but not one that may contain -0), else 0. c is # of cells */
 
 // Routine to find range of an array of I
@@ -862,8 +862,8 @@ CR condrange(I *s,I n,I min,I max,I maxrange){CR ret;I i,min0,min1,max0,max1;I x
  // combine last results
  max0=(max1>max0)?max1:max0; min0=(min1<min0)?min1:min0; if((UI)(max0-min0)>=(UI)maxrange)goto fail;
  ret.min=min0; ret.range=max0-min0+1;  // because the tests succeed, this will give the proper range
- R ret;
-fail: ret.min=ret.range=0; R ret;
+ return ret;
+fail: ret.min=ret.range=0; return ret;
 }
 // Same for 4-bytes types, such as C4T
 CR condrange4(C4 *s,I n,I min,I max,I maxrange){CR ret;I i; C4 min0,min1,max0,max1;C4 x;
@@ -894,8 +894,8 @@ CR condrange4(C4 *s,I n,I min,I max,I maxrange){CR ret;I i; C4 min0,min1,max0,ma
  // combine last results
  max0=(max1>max0)?max1:max0; min0=(min1<min0)?min1:min0; if((UI)(max0-min0)>=(UI)maxrange)goto fail;
  ret.min=min0; ret.range=(I)((UI)(max0-min0)+1);  // because the tests succeed, this will give the proper range
- R ret;
-fail: ret.min=ret.range=0; R ret;
+ return ret;
+fail: ret.min=ret.range=0; return ret;
 }
 // Same for US types
 CR condrange2(US *s,I n,I min,I max,I maxrange){CR ret;I i; US min0,min1,max0,max1;US x;
@@ -926,12 +926,12 @@ CR condrange2(US *s,I n,I min,I max,I maxrange){CR ret;I i; US min0,min1,max0,ma
  // combine last results
  max0=(max1>max0)?max1:max0; min0=(min1<min0)?min1:min0; if((UI)(max0-min0)>=(UI)maxrange)goto fail;
  ret.min=min0; ret.range=(I)((UI)(max0-min0)+1);  // because the tests succeed, this will give the proper range
- R ret;
-fail: ret.min=ret.range=0; R ret;
+ return ret;
+fail: ret.min=ret.range=0; return ret;
 }
 #else  // the simpler non-unrolled version
 static CR condrange(I *s,I n,I min,I max,I maxrange){CR ret;I i;I x;
- if(!n){ret.range=0; R ret;}; // return failure if no data
+ if(!n){ret.range=0; return ret;}; // return failure if no data
  if(min>max){min=max=*s++; --n;}  // init min & max to valid, so that only one changes at a time
  while(n){
   --n;i=n&63; n&=~63;  // do a block of compares
@@ -941,14 +941,14 @@ static CR condrange(I *s,I n,I min,I max,I maxrange){CR ret;I i;I x;
    // use wide instructions)
    min=(x<min)?x:min; max=(x>max)?x:max;
   }while(--i>=0);
-  if((UI)(max-min)>=(UI)maxrange){ret.range=0; R ret;}
+  if((UI)(max-min)>=(UI)maxrange){ret.range=0; return ret;}
  }
  ret.min=min; ret.range=1+max-min;  // 1+p-q can never be < 0, from the previous test
- R ret;
+ return ret;
 }
 // Same for US types
 static CR condrange2(US *s,I n,I min,I max,I maxrange){CR ret;I i;US x;
- if(!n){ret.range=0; R ret;}; // return failure if no data
+ if(!n){ret.range=0; return ret;}; // return failure if no data
  if(min>max){min=max=*s++; --n;}  // init min & max to valid, so that only one changes at a time
  while(n){
   --n;i=n&63; n&=~63;  // do a block of compares
@@ -958,10 +958,10 @@ static CR condrange2(US *s,I n,I min,I max,I maxrange){CR ret;I i;US x;
    // use wide instructions)
    min=(x<min)?x:min; max=(x>max)?x:max;
   }while(--i>=0);
-  if((UI)(max-min)>=(UI)maxrange){ret.range=0; R ret;}
+  if((UI)(max-min)>=(UI)maxrange){ret.range=0; return ret;}
  }
  ret.min=min; ret.range=1+max-min;  // 1+p-q can never be < 0, from the previous test
- R ret;
+ return ret;
 }
 #endif
 
@@ -997,14 +997,14 @@ A jtindexofsub(J jt,I mode,A a,A w){PROLOG(0079);A h=0,hi=mtv,z;B mk=w==mark,th;
    m=acr?as[af]:1; f0=MAX(0,f1); RE(zn=mult(prod(f,s),prod(f0,ws+wf)));
    switch(mode){
     case IIDOT:  
-    case IICO:    GATV(z,INT,zn,f+f0,s); if(af)MCISH(f+AS(z),ws+wf,f0); v=AV(z); DQ(zn, *v++=m;); R z;
-    case IEPS:    GATV(z,B01,zn,f+f0,s); if(af)MCISH(f+AS(z),ws+wf,f0); memset(BAV(z),C0,zn); R z;
+    case IICO:    GATV(z,INT,zn,f+f0,s); if(af)MCISH(f+AS(z),ws+wf,f0); v=AV(z); DQ(zn, *v++=m;); return z;
+    case IEPS:    GATV(z,B01,zn,f+f0,s); if(af)MCISH(f+AS(z),ws+wf,f0); memset(BAV(z),C0,zn); return z;
     case ILESS:                              RCA(w);
-    case IIFBEPS:                            R mtv;
-    case IANYEPS: case IALLEPS: case II0EPS: R num(0);
-    case ISUMEPS:                            R sc(0L);
-    case II1EPS:  case IJ1EPS:               R sc(witems);
-    case IJ0EPS:                             R sc(witems-1);
+    case IIFBEPS:                            return mtv;
+    case IANYEPS: case IALLEPS: case II0EPS: return num(0);
+    case ISUMEPS:                            return sc(0L);
+    case II1EPS:  case IJ1EPS:               return sc(witems);
+    case IJ0EPS:                             return sc(witems-1);
     case INUBSV:  case INUB:    case INUBI:  ASSERTSYS(0,"indexofsub"); // impossible 
  }}}
  // f is len of frame of a (or of w if a has no frame); s->shape of a (or of w is a has no frame)
@@ -1012,8 +1012,8 @@ A jtindexofsub(J jt,I mode,A a,A w){PROLOG(0079);A h=0,hi=mtv,z;B mk=w==mark,th;
  // other words the frame of the results each cell of w will produce
  if(at&SPARSE||wt&SPARSE){A z;
   // Handle sparse arguments
-  if(1>=acr)R af?sprank2(a,w,0L,acr,RMAX,jtindexof):wt&SPARSE?iovxs(mode,a,w):iovsd(mode,a,w);
-  if(af||wf)R sprank2(a,w,0L,acr,wcr,jtindexof);
+  if(1>=acr)return af?sprank2(a,w,0L,acr,RMAX,jtindexof):wt&SPARSE?iovxs(mode,a,w):iovsd(mode,a,w);
+  if(af||wf)return sprank2(a,w,0L,acr,wcr,jtindexof);
   switch((at&SPARSE?2:0)+(wt&SPARSE?1:0)){
    case 1: z=indexofxx(mode,a,w); break;
    case 2: z=indexofxx(mode,a,w); break;
@@ -1066,7 +1066,7 @@ A jtindexofsub(J jt,I mode,A a,A w){PROLOG(0079);A h=0,hi=mtv,z;B mk=w==mark,th;
   case INUBI:   q=m+1; GATV0(z,INT,q,1); break;  // +1 because we speculatively overwrite  Was MIN(m,p) but we don't have the range yet
   // (e. i. 0:) and friends don't do anything useful if e. produces rank > 1.  The search for 0/1 always fails
   case II0EPS: case II1EPS: case IJ0EPS: case IJ1EPS:
-                if(wr>MAX(ar,1))R sc(wr>r?ws[0]:1); GAT0(z,INT,1,0); break;
+                if(wr>MAX(ar,1))return sc(wr>r?ws[0]:1); GAT0(z,INT,1,0); break;
   // ([: I. e.) ([: +/ e.) ([: +./ e.) ([: *./ e.) work only if e. produces rank 0 or 1.  Nonce error otherwise
   case IIFBEPS: ASSERT(wr<=MAX(ar,1),EVNONCE); GATV0(z,INT,c+1,1); break;  // +1 because we speculatively overwrite
   case IANYEPS: case IALLEPS:
@@ -1082,23 +1082,23 @@ A jtindexofsub(J jt,I mode,A a,A w){PROLOG(0079);A h=0,hi=mtv,z;B mk=w==mark,th;
   // If empty argument or result, or inhomogeneous arguments, return an appropriate empty or not-found
   // We also handle the case of i.&0@:e. when the rank of w is more than 1 greater than the rank of a cell of a;
   // in that case the search always fails
-  case IIDOT:   R reshape(shape(z),sc(n?m:0  ));
-  case IFORKEY: {z=reshape(shape(z),take(sc(m),sc(m))); RZ(z=mkwris(z)); AM(z)=!!m; R z;}  // all 0 but the first has the total count
-  case IICO:    R reshape(shape(z),sc(n?m:m-1));
-  case INUBSV:  R reshape(shape(z),take(sc(m),num(1)));
-  case INUB:    AN(z)=0; *AS(z)=m?1:0; R z;
-  case ILESS:   if(m)AN(z)=*AS(z)=0; else MC(AV(z),AV(w),k1*AN(w)); R z;
-  case IEPS:    R reshape(shape(z),num(m&&(!n||th)) );
-  case INUBI:   R m?iv0:mtv;
+  case IIDOT:   return reshape(shape(z),sc(n?m:0  ));
+  case IFORKEY: {z=reshape(shape(z),take(sc(m),sc(m))); RZ(z=mkwris(z)); AM(z)=!!m; return z;}  // all 0 but the first has the total count
+  case IICO:    return reshape(shape(z),sc(n?m:m-1));
+  case INUBSV:  return reshape(shape(z),take(sc(m),num(1)));
+  case INUB:    AN(z)=0; *AS(z)=m?1:0; return z;
+  case ILESS:   if(m)AN(z)=*AS(z)=0; else MC(AV(z),AV(w),k1*AN(w)); return z;
+  case IEPS:    return reshape(shape(z),num(m&&(!n||th)) );
+  case INUBI:   return m?iv0:mtv;
   // th<0 means that the result of e. would have rank>1 and would never compare against either 0 or 1
-  case II0EPS:  R sc(n&&zn?0L        :witems         );
-  case II1EPS:  R sc(n&&zn?witems         :0L        );
-  case IJ0EPS:  R sc(n&&zn?MAX(0,witems-1):witems         );
-  case IJ1EPS:  R sc(n&&zn?witems         :MAX(0,witems-1));
-  case ISUMEPS: R sc(n?0L        :c         );  // must include shape of w
-  case IANYEPS: R num(!n) ;
-  case IALLEPS: R num(!(c&&n));
-  case IIFBEPS: R n?mtv :IX(c);
+  case II0EPS:  return sc(n&&zn?0L        :witems         );
+  case II1EPS:  return sc(n&&zn?witems         :0L        );
+  case IJ0EPS:  return sc(n&&zn?MAX(0,witems-1):witems         );
+  case IJ1EPS:  return sc(n&&zn?witems         :MAX(0,witems-1));
+  case ISUMEPS: return sc(n?0L        :c         );  // must include shape of w
+  case IANYEPS: return num(!n) ;
+  case IALLEPS: return num(!(c&&n));
+  case IIFBEPS: return n?mtv :IX(c);
  }}
 
  // NOTE: from here on we may add modifiers to mode, indicating FULL/BITS/PACK etc.  These flags are needed in the action routine, and must be
@@ -1330,7 +1330,7 @@ A jtindexofprehashed(J jt,A a,A w,A hs){A h,hi,*hv,x,z;AF fn;I ar,*as,at,c,f1,k,
  if(!(r<=ar&&0<=f1))c=0;   // w must have rank big enough to hold a cell of a
  if(ICMP(as+ar-r,ws+f1,r))c=0;  // and its shape at that rank must match the shape of a cell of a
  // If there is any error, switch back to the non-prehashed code.  We must remove any command bits from mode, leaving just the operation type
- if(!(m&&n&&c&&HOMO(t,wt)&&UNSAFE(t)>=UNSAFE(wt)))R indexofsub(mode&IIOPMSK,a,w);
+ if(!(m&&n&&c&&HOMO(t,wt)&&UNSAFE(t)>=UNSAFE(wt)))return indexofsub(mode&IIOPMSK,a,w);
 
  // allocate enough space for the result, depending on the type of the operation
  switch(ztype){
@@ -1340,7 +1340,7 @@ A jtindexofprehashed(J jt,A a,A w,A hs){A h,hi,*hv,x,z;AF fn;I ar,*as,at,c,f1,k,
   case PREHRESVAR: GA(z,wt, AN(w),1+r,ws); break;
   case PREHRESBV: GATV(z,B01,c,    f1, ws); break;
   case PREHRESBAN: ASSERT(wr<=MAX(ar,1),EVNONCE); GAT0(z,B01,1,    0); break;
-  case PREHRESIA: if(wr>MAX(ar,1))R sc(wr>r?ws[0]:1); GAT0(z,INT,1,    0); break;
+  case PREHRESIA: if(wr>MAX(ar,1))return sc(wr>r?ws[0]:1); GAT0(z,INT,1,    0); break;
   case PREHRESIAN: ASSERT(wr<=MAX(ar,1),EVNONCE); GAT0(z,INT,1,    0); break;
  }
  // save info used by the routines
@@ -1350,31 +1350,31 @@ A jtindexofprehashed(J jt,A a,A w,A hs){A h,hi,*hv,x,z;AF fn;I ar,*as,at,c,f1,k,
  // if ct does change, the stored hashtable is invalid.  We should store the ct as part of the hashtable
  if(TYPESNE(t,wt))RZ(w=cvt(t,w)) else if(t&FL+CMPX)RZ(w=cvt0(w));
  // call the action routine
- R fn(jt,mode+IPHOFFSET,m,n,c,k,AR(a),AR(w),(I)1,(I)1,(I)0,(I)0,a,w,&h,z);
+ return fn(jt,mode+IPHOFFSET,m,n,c,k,AR(a),AR(w),(I)1,(I)1,(I)0,(I)0,a,w,&h,z);
 }
 
 // Now, support for the primitives that use indexof
 
 // x i. y
-F2(jtindexof){R indexofsub(IIDOT,a,w);}
+F2(jtindexof){return indexofsub(IIDOT,a,w);}
      /* a i."r w */
 
 // x i: y
-F2(jtjico2){R indexofsub(IICO,a,w);}
+F2(jtjico2){return indexofsub(IICO,a,w);}
      /* a i:"r w */
 
 // ~: y
 F1(jtnubsieve){
  ARGCHK1(w);
- if(SPARSE&AT(w))R nubsievesp(w); 
+ if(SPARSE&AT(w))return nubsievesp(w);
  jt->ranks=(RANKT)jt->ranks + ((RANKT)jt->ranks<<RANKTX);  // we process as if dyad; make left rank=right rank
- R indexofsub(INUBSV,w,w); 
+ return indexofsub(INUBSV,w,w);
 }    /* ~:"r w */
 
 // ~. y  - does not have IRS
 F1(jtnub){ 
  F1PREFIP;ARGCHK1(w);
- if(SPARSE&AT(w)||AFLAG(w)&AFNJA)R repeat(nubsieve(w),w); 
+ if(SPARSE&AT(w)||AFLAG(w)&AFNJA)return repeat(nubsieve(w),w);
  A z; RZ(z=indexofsub(INUB,w,w));
  // We extracted from w, so mark it (or its backer if virtual) non-pristine.  If w was pristine and inplaceable, transfer its pristine status to the result.  We overwrite w because it is no longer in use
  PRISTXFERF(z,w)
@@ -1402,33 +1402,33 @@ F2(jteps){I l,r;
  ARGCHK2(a,w);
  l=jt->ranks>>RANKTX; l=AR(a)<l?AR(a):l;
  r=(RANKT)jt->ranks; r=AR(w)<r?AR(w):r; RESETRANK;
- if(SPARSE&(AT(a)|AT(w)))R lt(irs2(w,a,0L,r,l,jtindexof),sc(r?*(AS(w)+AR(w)-r):1));  // for sparse, implement as (# cell of y) > y i. x
+ if(SPARSE&(AT(a)|AT(w)))return lt(irs2(w,a,0L,r,l,jtindexof),sc(r?*(AS(w)+AR(w)-r):1));  // for sparse, implement as (# cell of y) > y i. x
  jt->ranks=(RANK2T)((r<<RANKTX)+l);  // swap ranks for subroutine.  Subroutine will reset ranks
- R indexofsub(IEPS,w,a);
+ return indexofsub(IEPS,w,a);
 }    /* a e."r w */
 
 // I.@~: y   does not have IRS
 F1(jtnubind){
  ARGCHK1(w);
- R SPARSE&AT(w)?icap(nubsieve(w)):indexofsub(INUBI,w,w);
+ return SPARSE&AT(w)?icap(nubsieve(w)):indexofsub(INUBI,w,w);
 }    /* I.@~: w */
 
 // i.@(~:!.0) y     does not have IRS
 F1(jtnubind0){A z;
  ARGCHK1(w);
  PUSHCCT(1.0) z=SPARSE&AT(w)?icap(nubsieve(w)):indexofsub(INUBI,w,w); POPCCT
- R z;
+ return z;
 }    /* I.@(~:!.0) w */
 
 // = y    
 F1(jtsclass){A e,x,xy,y,z;I c,j,m,n,*v;P*p;
  ARGCHK1(w);
  // If w is scalar, return 1 1$1
- if(!AR(w))R reshape(v2(1L,1L),num(1));
+ if(!AR(w))return reshape(v2(1L,1L),num(1));
  SETIC(w,n);   // n=#items of y
  RZ(x=indexof(w,w));   // x = i.~ y
  // if w is dense, return ((x = i.n) # x) =/ x
- if(DENSE&AT(w))R atab(CEQ,repeat(eq(IX(n),x),x),x);
+ if(DENSE&AT(w))return atab(CEQ,repeat(eq(IX(n),x),x),x);
  // if x is sparse... ??
  p=PAV(x); e=SPA(p,e); y=SPA(p,i); RZ(xy=stitch(SPA(p,x),y));
  if(n>*AV(e))RZ(xy=over(xy,stitch(e,less(IX(n),y))));
@@ -1441,7 +1441,7 @@ F1(jtsclass){A e,x,xy,y,z;I c,j,m,n,*v;P*p;
  SPB(p,e,num(0));
  SPB(p,i,xy);
  SPB(p,x,reshape(sc(c),num(1)));
- R z;
+ return z;
 }
 
 
@@ -1521,6 +1521,6 @@ A jtiocol(J jt,I mode,A a,A w){A h,z;I ar,at,c,d,m,p,t,wr,*ws,wt;void(*fn)();
   case CMPXX: fn=mode==IICO?jtjocolz:jtiocolz; ctmask(jt); break;
  }
  fn(jt,m,c,d,a,w,z,h);
- R z;
+ return z;
 }    /* a i."1 &.|:w or a i:"1 &.|:w */
 

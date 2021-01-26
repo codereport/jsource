@@ -19,7 +19,7 @@ static B jtspsscell(J jt,A w,I wf,I wcr,A*zc,A*zt){A c,t,y;B b;
  y=SPA(wp,i); s=AS(y); m=s[0]; n=s[1];
  u0=AV(y); u=u0+n; 
  v0=u0+wf; v=v0+n;
- if(!m){*zt=*zc=mtv; R 1;}
+ if(!m){*zt=*zc=mtv; return 1;}
  GATV0(t,INT,2+2*m,1); tv=AV(t); tv[0]=tv[1]=0; tn=2;
  GATV0(c,INT,  2*m,2); cv=AV(c); cv[0]=0;       cn=0; *(1+AS(c))=2;
  for(j=1;j<m;++j){
@@ -40,14 +40,14 @@ static B jtspsscell(J jt,A w,I wf,I wcr,A*zc,A*zt){A c,t,y;B b;
  cn+=2;
  AN(t)=    *AS(t)=tn;   *zt=t;  /* cell divisions (row indices in y)            */
  AN(c)=cn; *AS(c)=cn>>1; *zc=c;  /* item divisions (indices in t, # of elements) */
- R 1;
+ return 1;
 }    /* frame: all sparse; cell: 1 or more sparse, then dense */
 
 static A jtgrd1spz(J jt,A w,I wf,I wcr){A z;I*ws,zn;
  ws=AS(w);
  RE(zn=prod(wf+!!wcr,ws)); 
  GATV(z,INT,zn,1+wf,ws); if(!wcr)AS(z)[wf]=1;
- R z;
+ return z;
 }    /* allocate result for grd1sp__ */
 
 static void sp1merge0(I n,I n1,I yc,I*zv,I*xv,I*yv,I*tv){I c,d=n1-1,h,i,j,k,p,q,*v=zv;
@@ -86,7 +86,7 @@ static A jtgrd1spss(J jt,A w,I wf,I wcr){A c,d,t,x,y,z;I cn,*cv,*dv,i,n,n1,*tv,*
  }
  DO(AN(z)/n-(zv-AV(z))/n, DO(n, zv[i]=i;); zv+=n;);
  RE(0);
- R z;
+ return z;
 }    /* grade"r w , sparse frame, sparse cell */
 
 static A jtgrd1spsd(J jt,A w,I wf,I wcr){A d,t,y,z;I*dv,i,n,p,*tv,yc,*ws,*ys,*yv,*zv;P*wp;
@@ -101,14 +101,14 @@ static A jtgrd1spsd(J jt,A w,I wf,I wcr){A d,t,y,z;I*dv,i,n,p,*tv,yc,*ws,*ys,*yv
   yv+=yc; tv+=n; zv+=n; ADVANCE(dv);
  }
  DO(AN(z)/n-(zv-AV(z))/n, DO(n, zv[i]=i;); zv+=n;);
- R z;
+ return z;
 }    /* grade"r w , sparse frame, dense cell */
 
 static B jtspdscell(J jt,A w,I wf,I wcr,A*zc,A*zt){A c,t,y;I*cv,m,n,p,*s,tn,*tv,*v,*v0;P*wp;
  wp=PAV(w); s=AS(w); p=3+s[wf];
  y=SPA(wp,i); s=AS(y); m=s[0]; n=s[1];
  v0=AV(y); v=v0+n; 
- if(!m){*zt=*zc=mtv; R 1;}
+ if(!m){*zt=*zc=mtv; return 1;}
  GATV0(t,INT,2+m,1); tv=AV(t); tv[0]=tv[1]=0; tn=2;
  GAT0(c,INT,2,  2); cv=AV(c); cv[0]=0;       *(1+AS(c))=2;
  DO(m-1, if(*v0!=*v){tv[tn++]=1+i; v0=v;} v+=n;);
@@ -116,7 +116,7 @@ static B jtspdscell(J jt,A w,I wf,I wcr,A*zc,A*zt){A c,t,y;I*cv,m,n,p,*s,tn,*tv,
  if(p==tn){++cv[0]; cv[1]-=2;}
  AN(t)=   *AS(t)=tn; *zt=t;  /* cell divisions (row indices in y)            */
  AN(c)=2; *AS(c)=1;  *zc=c;  /* item divisions (indices in t, # of elements) */
- R 1;
+ return 1;
 }    /* frame: all dense; cell: 1 or more sparse, then dense */
 
 static A jtgrd1spds(J jt,A w,I wf,I wcr){A c,t,x,y,z;I*cv,m,n,n1,p,*tv,*ws,wt,*xv,yc,*yv,*zv;P*wp;
@@ -127,18 +127,18 @@ static A jtgrd1spds(J jt,A w,I wf,I wcr){A c,t,x,y,z;I*cv,m,n,n1,p,*tv,*ws,wt,*x
  x=SPA(wp,x); jt->workareas.compare.compsxv=CAV(x);   jt->workareas.compare.compsxc=p=aii(x)*(wt&SCMPX?2:1); jt->workareas.compare.compn=p/m;
  jt->workareas.compare.comp=(CMP)(wt&SB01?compspdsB:wt&SINT?compspdsI:wt&SFL?compspdsD:compspdsZ); jt->workareas.compare.compusejt=1;
  RZ(spdscell(w,wf,wcr,&c,&t));
- if(!AN(c)){DO(m, DO(n, zv[i]=i;); zv+=n;); R z;}
+ if(!AN(c)){DO(m, DO(n, zv[i]=i;); zv+=n;); return z;}
  cv=AV(c); n1=cv[1]-1; jt->workareas.compare.compstv=tv=cv[0]+AV(t);
  GATV0(x,INT,MAX(n,1+n1),1); xv=AV(x);  /* work area for msmerge() */
  if(cv[0])DO(m, jt->workareas.compare.compsi=i; DO(n1, zv[i]=i;); msort(n1,(void**)zv,(void**)xv);                                 zv+=n;)
  else     DO(m, jt->workareas.compare.compsi=i; DO(n1, xv[i]=i;); msort(n1,(void**)xv,(void**)zv); sp1merge0(n,n1,yc,zv,xv,yv,tv); zv+=n;);
- R z;
+ return z;
 }    /* grade"r w , dense frame, sparse cell */
 
 static A jtgrd1spdd(J jt,A w,I wf,I wcr){A x,z;I n,*ws;P*wp;
  wp=PAV(w); ws=AS(w); n=wcr?ws[wf]:1;
  x=SPA(wp,x);
- if(AN(x)){RZ(z=from(num(0),x)); R IRS1(z,0L,wcr,jtgr1,x);}else{R reshape(vec(INT,1+wf,ws),IX(n));}
+ if(AN(x)){RZ(z=from(num(0),x)); return IRS1(z,0L,wcr,jtgr1,x);}else{return reshape(vec(INT,1+wf,ws),IX(n));}
 }    /* grade"r w , dense frame, dense cell */
 
 /* sparse right argument:                               */
@@ -212,14 +212,14 @@ static A jtgrd2spss(J jt,A w,I wf,I wcr){A c,t,x,y,z,zy;
   else         sp2merge0(n,n1,yc,zyv+wf,xv,yv+wf,u);
  }
  RZ(x=grade1(zy)); SPB(zp,i,from(x,zy)); SPB(zp,x,from(x,SPA(zp,x)));
- R z;
+ return z;
 }    /* sparse frame, sparse cell */
 
 static A jtgrd2spsd(J jt,A w,I wf,I wcr){A x,z;P*zp;
  RZ(z=ca(w)); zp=PAV(z);
  x=SPA(zp,x);
  SPB(zp,x,irs2(irs1(x,0L,-1L,jtgr1),x,0L,1L,-1L,jtfrom));
- R z;
+ return z;
 }    /* sparse frame, dense cell */
 
 F2(jtgrd2sp){PROLOG(0078);A z;B b,c,*wb;I acr,af,am,ar,*as,j,m,wcr,wf,wm,wr,*ws;P*wp;

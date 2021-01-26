@@ -6,10 +6,10 @@
 
 #define QF1(f)          Q f(J jt,   Q  w)
 #define QF2(f)          Q f(J jt,Q a,Q w)
-#define QASSERT(b,e)    {if(!(b)){jsignal(e); R zeroQ;}}
-#define QEPILOG(q)      {Q z9; z9=(qstd(q)); if(!gc3(&z9.n,&z9.d,0L,_ttop))R zeroQ; R z9;}
-#define QRE(exp)        {if((exp),jt->jerr)R zeroQ;}
-#define QRZ(exp)        {if(!(exp))        R zeroQ;}
+#define QASSERT(b,e)    {if(!(b)){jsignal(e); return zeroQ;}}
+#define QEPILOG(q)      {Q z9; z9=(qstd(q)); if(!gc3(&z9.n,&z9.d,0L,_ttop))return zeroQ; return z9;}
+#define QRE(exp)        {if((exp),jt->jerr)return zeroQ;}
+#define QRZ(exp)        {if(!(exp))        return zeroQ;}
 #define QX1(x)          (1==AN(x)&&1==XDIG(x))
 
 #define QEQ(x,y)        (equ((x).n,(y).n)&&equ((x).d,(y).d))

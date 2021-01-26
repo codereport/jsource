@@ -226,7 +226,7 @@ void _stdcall outputHandler(J jt,int type, const char* s)
 
 int _stdcall wdHandler(J jt,int type, A w, A *pz)
 {
-  R javaWd(local_jnienv,local_basecls,type,w,pz,jegetlocale());
+  return javaWd(local_jnienv,local_basecls,type,w,pz,jegetlocale());
 }
 
 JNIEXPORT jint JNICALL Java_com_jsoftware_j_JInterface_JDo
@@ -332,7 +332,7 @@ JNIEXPORT jlong JNICALL Java_com_jsoftware_j_JInterface_JInit2
   free(arg);
   (*env)->ReleaseStringUTFChars(env, libpath, nativeString);
   if(libj) (*env)->ReleaseStringUTFChars(env, libj, nativelibj);
-  R (jlong)(intptr_t)jeload(callbacks);
+  return (jlong)(intptr_t)jeload(callbacks);
 }
 
 /*

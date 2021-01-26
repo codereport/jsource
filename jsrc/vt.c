@@ -6,10 +6,10 @@
 #include "j.h"
 
 
-F1(jtbehead ){F1PREFIP; R jtdrop(jtinplace,zeroionei(1),    w);}
-F1(jtcurtail){F1PREFIP; R jtdrop(jtinplace,num(-1),w);}
+F1(jtbehead ){F1PREFIP; return jtdrop(jtinplace,zeroionei(1),    w);}
+F1(jtcurtail){F1PREFIP; return jtdrop(jtinplace,num(-1),w);}
 
-F1(jtshift1){R drop(num(-1),over(num(1),w));}
+F1(jtshift1){return drop(num(-1),over(num(1),w));}
 
 static A jttk0(J jt,B b,A a,A w){A z;I k,m=0,n,p,r,*s,*u;
  r=AR(w); n=AN(a); u=AV(a); 
@@ -17,7 +17,7 @@ static A jttk0(J jt,B b,A a,A w){A z;I k,m=0,n,p,r,*s,*u;
  GA(z,AT(w),m,r,AS(w)); 
  s=AS(z); DO(n, p=u[i]; ASSERT(p>IMIN,EVLIMIT); *s++=ABS(p););
  if(m){k=bpnoun(AT(w)); mvc(k*m,AV(z),k,jt->fillv);}
- R z;
+ return z;
 }
 
 static F2(jttks){PROLOG(0092);A a1,q,x,y,z;B b,c;I an,m,r,*s,*u,*v;P*wp,*zp;
@@ -52,9 +52,9 @@ static F2(jttks){PROLOG(0092);A a1,q,x,y,z;B b,c;I an,m,r,*s,*u,*v;P*wp,*zp;
 // general take routine.  a is result frame followed by signed take values i. e. shape of result, w is array
 static F2(jttk){PROLOG(0093);A y,z;B b=0;C*yv,*zv;I c,d,dy,dz,e,i,k,m,n,p,q,r,*s,t,*u;
  n=AN(a); u=AV(a); r=AR(w); s=AS(w); t=AT(w);
- if(unlikely((t&SPARSE)!=0))R tks(a,w);
+ if(unlikely((t&SPARSE)!=0))return tks(a,w);
  DO(n, if(!u[i]){b=1; break;}); if(!b)DO(r-n, if(!s[n+i]){b=1; break;});  // if empty take, or take from empty cell, set b
- if(((b-1)&AN(w))==0)R tk0(b,a,w);   // this handles empty w, so PROD OK below   b||!AN(w)
+ if(((b-1)&AN(w))==0)return tk0(b,a,w);   // this handles empty w, so PROD OK below   b||!AN(w)
  k=bpnoun(t); z=w; c=q=1;  // c will be #cells for this axis
  // process take one axis at a time
  for(i=0;i<n;++i){I itemsize;
@@ -142,7 +142,7 @@ F2(jtdrop){A s;I acr,af,ar,d,m,n,*u,*v,wcr,wf,wr;
  ar=AR(a); acr=jt->ranks>>RANKTX; acr=ar<acr?ar:acr; af=ar-acr;  // ?r=rank, ?cr=cell rank, ?f=length of frame
  wr=AR(w); wcr=(RANKT)jt->ranks; wcr=wr<wcr?wr:wcr; wf=wr-wcr; RESETRANK; I wt=AT(w);
  // special case: if a is atomic 0, and cells of w are not atomic
- if((-wcr&(ar-1))<0&&(IAV(a)[0]==0))R RETARG(w);   // 0 }. y, return y
+ if((-wcr&(ar-1))<0&&(IAV(a)[0]==0))return RETARG(w);   // 0 }. y, return y
  if(((af-1)&(acr-2))>=0){
   s=rank2ex(a,w,UNUSED_VALUE,MIN(acr,1),wcr,acr,wcr,jtdrop);  // if multiple x values, loop over them  af>0 or acr>1
   // We extracted from w, so mark it (or its backer if virtual) non-pristine.  There may be replication, so we don't pass pristinity through  We overwrite w because it is no longer in use
@@ -188,7 +188,7 @@ static F1(jtrsh0){A x,y;I wcr,wf,wr,*ws;
  ws=AS(w);
  RZ(x=vec(INT,wr-1,ws)); MCISH(wf+AV(x),ws+wf+1,wcr-1);
  RZ(w=setfv(w,w)); GA(y,AT(w),1,0,0); MC(AV(y),jt->fillv,bp(AT(w)));
- R reshape(x,y);
+ return reshape(x,y);
  // not pristine
 }
 
@@ -218,7 +218,7 @@ F1(jttail){I wcr,wf,wr;
  F1PREFIP;
  ARGCHK1(w);
  wr=AR(w); wcr=(RANKT)jt->ranks; wcr=wr<wcr?wr:wcr; wf=wr-wcr;  // no RESETRANK: rank is passed into from/take/rsh0.  Left rank is garbage but that's OK
- R !wcr||AS(w)[wf]?jtfrom(jtinplace,num(-1),w) :  // if cells are atoms, or if the cells are nonempty arrays, result is last cell(s) scaf should generate virtual block here for speed
+ return !wcr||AS(w)[wf]?jtfrom(jtinplace,num(-1),w) :  // if cells are atoms, or if the cells are nonempty arrays, result is last cell(s) scaf should generate virtual block here for speed
      SPARSE&AT(w)?irs2(num(0),take(num(-1),w),0L,0L,wcr,jtfrom):rsh0(w);
  // pristinity from other verbs
 }

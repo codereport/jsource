@@ -22,7 +22,7 @@ AHDR2(plusBI,I,B,I){I u;I v;I oflo=0;
  if(n-1==0)  DQ(m, u=(I)*x; v=*y; if(v==IMAX)oflo+=u; v=u+v; *z++=v; x++; y++; )
  else if(n-1<0){n=~n; DQ(m, u=(I)*x++; if(u){DQ(n, v=*y; if(v==IMAX)oflo=1; v=v+1; *z++=v; y++;)}else{if(z!=y)MC(z,y,n<<LGSZI); z+=n; y+=n;})}
  else      DQ(m, v=*y++; DQ(n, u=(I)*x; if(v==IMAX)oflo+=u; u=u+v; *z++=u; x++;))
- R oflo?EWOVIP+EWOVIPPLUSBI:EVOK;
+ return oflo?EWOVIP+EWOVIPPLUSBI:EVOK;
 }
 
 // IB add, noting overflow and leaving it, possibly in place.  If we add 0, copy the numbers (or leave unchanged, if in place)
@@ -30,15 +30,15 @@ AHDR2(plusIB,I,I,B){I u;I v;I oflo=0;
  if(n-1==0)  DQ(m, u=*x; v=(I)*y; if(u==IMAX)oflo+=v; u=u+v; *z++=u; x++; y++; )
  else if(n-1<0)DQ(m, u=*x++; DQC(n, v=(I)*y; if(u==IMAX)oflo+=v; v=u+v; *z++=v; y++;))
  else      DQ(m, v=(I)*y++; if(v){DQ(n, u=*x; if(u==IMAX)oflo=1; u=u+1; *z++=u; x++;)}else{if(z!=x)MC(z,x,n<<LGSZI); z+=n; x+=n;})
- R oflo?EWOVIP+EWOVIPPLUSIB:EVOK;
+ return oflo?EWOVIP+EWOVIPPLUSIB:EVOK;
 }
 
-APFX( plusDD, D,D,D, PLUS,NAN0;,ASSERTWR(!NANTEST,EVNAN); R EVOK;)
-APFX(minusDD, D,D,D, MINUS,NAN0;,ASSERTWR(!NANTEST,EVNAN); R EVOK;)
-APFX(minDD, D,D,D, MIN,,R EVOK;)
-APFX(maxDD, D,D,D, MAX,,R EVOK;)
-APFX(tymesDD, D,D,D, TYMESDD,,R EVOK;)
-APFX(  divDD, D,D,D, DIV,NAN0;,ASSERTWR(!NANTEST,EVNAN); R EVOK;)
+APFX( plusDD, D,D,D, PLUS,NAN0;,ASSERTWR(!NANTEST,EVNAN); return EVOK;)
+APFX(minusDD, D,D,D, MINUS,NAN0;,ASSERTWR(!NANTEST,EVNAN); return EVOK;)
+APFX(minDD, D,D,D, MIN,,return EVOK;)
+APFX(maxDD, D,D,D, MAX,,return EVOK;)
+APFX(tymesDD, D,D,D, TYMESDD,,return EVOK;)
+APFX(  divDD, D,D,D, DIV,NAN0;,ASSERTWR(!NANTEST,EVNAN); return EVOK;)
 
 // II add, noting overflow and leaving it, possibly in place
 AHDR2(plusII,I,I,I){I u;I v;I w;I oflo=0;
@@ -47,7 +47,7 @@ AHDR2(plusII,I,I,I){I u;I v;I w;I oflo=0;
  if(n-1==0) DQ(m, u=*x; v=*y; w= ~u; u+=v; *z=u; ++x; ++y; ++z; w^=v; v^=u; if(XANDY(w,v)<0)++oflo;)
  else if(n-1<0)DQ(m, u=*x++; I thresh = IMIN-u; if (u<=0){DQC(n, v=*y; if(v<thresh)++oflo; v=u+v; *z++=v; y++;)}else{DQC(n, v=*y; if(v>=thresh)++oflo; v=u+v; *z++=v; y++;)})
  else      DQ(m, v=*y++; I thresh = IMIN-v; if (v<=0){DQ(n, u=*x; if(u<thresh)++oflo; u=u+v; *z++=u; x++;)}else{DQ(n, u=*x; if(u>=thresh)++oflo; u=u+v; *z++=u; x++;)})
- R oflo?EWOVIP+EWOVIPPLUSII:EVOK;
+ return oflo?EWOVIP+EWOVIPPLUSII:EVOK;
 // II subtract, noting overflow and leaving it, possibly in place
 }
 AHDR2(minusII,I,I,I){I u;I v;I w;I oflo=0;
@@ -57,10 +57,10 @@ AHDR2(minusII,I,I,I){I u;I v;I w;I oflo=0;
  else if(n-1<0)DQ(m, u=*x++; I thresh = u-IMIN; if (u<0){DQC(n, v=*y; if(v>thresh)++oflo; w=u-v; *z++=w; y++;)}else{DQC(n, v=*y; if(v<=thresh)++oflo; w=u-v; *z++=w; y++;)})
  // if v>0, oflo if u-v < IMIN => u < v+IMIN = v-IMIN; if v<=0, oflo if u-v > IMAX => u>v+IMAX => u>v-1-IMIN => u >= v-IMIN
  else      DQ(m, v=*y++; I thresh = v-IMIN; if (v<=0){DQ(n, u=*x; if(u>=thresh)++oflo; u=u-v; *z++=u; x++;)}else{DQ(n, u=*x; if(u<thresh)++oflo; u=u-v; *z++=u; x++;)})
- R oflo?EWOVIP+EWOVIPMINUSII:EVOK;
+ return oflo?EWOVIP+EWOVIPMINUSII:EVOK;
 }
-APFX(  minII, I,I,I, MIN,,R EVOK;)
-APFX(  maxII, I,I,I, MAX,,R EVOK;)
+APFX(  minII, I,I,I, MIN,,return EVOK;)
+APFX(  maxII, I,I,I, MAX,,return EVOK;)
 
 // BD DB add similarly?
 
@@ -69,7 +69,7 @@ AHDR2(minusBI,I,B,I){I u;I v;I w;I oflo=0;
  if(n-1==0)  DQ(m, u=(I)*x; v=*y; u=u-v; if((v&u)<0)++oflo; *z++=u; x++; y++; )
  else if(n-1<0)DQ(m, u=(I)*x++; DQC(n, v=*y; w=u-v; if((v&w)<0)++oflo; *z++=w; y++;))
  else      DQ(m, v=*y++; DQ(n, u=(I)*x; u=u-v; if((v&u)<0)++oflo; *z++=u; x++;))
- R oflo?EWOVIP+EWOVIPMINUSBI:EVOK;
+ return oflo?EWOVIP+EWOVIPMINUSBI:EVOK;
 }
 
 // IB subtract, noting overflow and leaving it, possibly in place.  If we add 0, copy the numbers (or leave unchanged, if in place)
@@ -78,16 +78,16 @@ AHDR2(minusIB,I,I,B){I u;I v;I w;I oflo=0;
  else if(n-1<0)DQ(m, u=*x++; DQC(n, v=(I)*y; if(u==IMIN)oflo+=v; w=u-v; *z++=w; y++;))
  else      DQ(m, v=(I)*y++; if(v){DQ(n, u=*x; if(u==IMIN)oflo=1; u=u-1; *z++=u; x++;)}else{if(z!=x)MC(z,x,n<<LGSZI); z+=n; x+=n;})
  
- R oflo?EWOVIP+EWOVIPMINUSIB:EVOK;
+ return oflo?EWOVIP+EWOVIPMINUSIB:EVOK;
 }
 
 // II multiply, in double precision.  Always return error code so we can clean up
-AHDR2(tymesII,I,I,I){DPMULDECLS I u;I v; if(jt->mulofloloc<0)R EWOVIP+EWOVIPMULII; I *zi=z;   // could use a side channel to avoid having main loop look at rc
+AHDR2(tymesII,I,I,I){DPMULDECLS I u;I v; if(jt->mulofloloc<0)return EWOVIP+EWOVIPMULII; I *zi=z;   // could use a side channel to avoid having main loop look at rc
  if(n-1==0)  DQ(m, u=*x; v=*y; DPMUL(u,v,z, goto oflo;) z++; x++; y++; )
  else if(n-1<0)DQ(m, u=*x; DQC(n, v=*y; DPMUL(u,v,z, goto oflo;) z++; y++;) x++;)
  else      DQ(m, v=*y; DQ(n, u=*x; DPMUL(u,v,z, goto oflo;) z++; x++;) y++;)
- jt->mulofloloc += z-zi; R EVOK;  // not yet for EVOKCLEANUP
-oflo: *x=u; *y=v; jt->mulofloloc = ~(jt->mulofloloc + z-zi);R EWOVIP+EWOVIPMULII;  // back out the last store, in case it's in-place; gcc stores before overflow
+ jt->mulofloloc += z-zi; return EVOK;  // not yet for EVOKCLEANUP
+oflo: *x=u; *y=v; jt->mulofloloc = ~(jt->mulofloloc + z-zi);return EWOVIP+EWOVIPMULII;  // back out the last store, in case it's in-place; gcc stores before overflow
 }
 
 // BI multiply, using clear/copy
@@ -95,7 +95,7 @@ AHDR2(tymesBI,I,B,I){I v;
  if(n-1==0)  DQ(m, I u=*x; *z++=*y&-u; x++; y++; )
  else if(n-1<0){n=~n; DQ(m, B u=*x++; if(u){if(z!=y)MC(z,y,n<<LGSZI);}else{memset(z,0,n<<LGSZI);} z+=n; y+=n;)}
  else DQ(m, v=*y++; DQ(n, I u=*x; *z++=v&-u; x++;))
- R EVOK;
+ return EVOK;
 }
 
 // IB multiply, using clear/copy
@@ -103,7 +103,7 @@ AHDR2(tymesIB,I,I,B){I u;
  if(n-1==0)  DQ(m, I v=*y; *z++=*x&-v; x++; y++; )
  else if(n-1<0)DQ(m, u=*x++; DQC(n, I v=*y; *z++=u&-v; y++;))
  else DQ(m, B v=*y++; if(v){if(z!=x)MC(z,x,n<<LGSZI);}else{memset(z,0,n<<LGSZI);} z+=n; x+=n;)
- R EVOK;
+ return EVOK;
 }
 
 // BD multiply, using clear/copy
@@ -111,7 +111,7 @@ AHDR2(tymesBD,D,B,D){
  if(n-1==0)  DQ(m, D *yv=(D*)&dzero; yv=*x?y:yv; *z++=*yv; x++; y++; )
  else if(n-1<0){n=~n; DQ(m, B u=*x++; if(u){if(z!=y)MC(z,y,n*sizeof(D));}else{memset(z,0,n*sizeof(D));} z+=n; y+=n;)}
  else DQ(m, DQ(n, D *yv=(D*)&dzero; yv=*x?y:yv; *z++=*yv; x++;) ++y;)
- R EVOK;
+ return EVOK;
 }
 
 // DB multiply, using clear/copy
@@ -119,7 +119,7 @@ AHDR2(tymesDB,D,D,B){
  if(n-1==0)  DQ(m, D *yv=(D*)&dzero; yv=*y?x:yv; *z++=*yv; x++; y++; )
  else if(n-1<0)DQ(m, DQC(n, D *yv=(D*)&dzero; yv=*y?x:yv; *z++=*yv; y++;) ++x;)
  else DQ(m, B v=*y++; if(v){if(z!=x)MC(z,x,n*sizeof(D));}else{memset(z,0,n*sizeof(D));} z+=n; x+=n;)
- R EVOK;
+ return EVOK;
 }
 
 // Overflow repair routines
@@ -130,21 +130,21 @@ AHDR2(tymesDB,D,D,B){
 // b is unused for plus
 AHDR2(plusIIO,D,I,I){I u; I absn=n^REPSGN(n);
  DQ(m, u=*x++; DQ(absn, *z=(D)u + (D)(*y-u); ++y; ++z;));
- R EVOK;
+ return EVOK;
 }
 AHDR2(plusBIO,D,B,I){I u; I absn=n^REPSGN(n);
  DQ(m, u=(I)*x++; DQ(absn, *z=(D)u + (D)(*y-u); ++y; ++z;));
- R EVOK;
+ return EVOK;
 }
 
 // For subtract repair, b is 1 if x was the subtrahend, 0 if the minuend
 AHDR2(minusIIO,D,I,I){I u; I absn=n^REPSGN(n);
  DQ(m, u=*x++; DQ(absn, *z=n<0?((D)(*y+u)-(D)u):((D)u - (D)(u-*y)); ++y; ++z;));
- R EVOK;
+ return EVOK;
 }
 AHDR2(minusBIO,D,B,I){I u; I absn=n^REPSGN(n);
  DQ(m, u=(I)*x++; DQ(absn, *z=n<0?((D)(*y+u)-(D)u):((D)u - (D)(u-*y)); ++y; ++z;));
- R EVOK;
+ return EVOK;
 }
 
 // In multiply repair, z points to result, x and y to inputs
@@ -162,7 +162,7 @@ AHDR2(tymesIIO,D,I,I){I u,v; I absn=n^REPSGN(n);
  }
  // Store the new skipct
  jt->mulofloloc=skipct;
- R EVOK;
+ return EVOK;
 }
 
 
@@ -172,47 +172,47 @@ AHDR2(tymesIIO,D,I,I){I u,v; I absn=n^REPSGN(n);
 
 
 // These routines are used by sparse processing, which doesn't do in-place overflow
-APFX( plusIO, D,I,I,  PLUSO,,R EVOK;)
-APFX(minusIO, D,I,I, MINUSO,,R EVOK;)
-APFX(tymesIO, D,I,I, TYMESO,,R EVOK;)
+APFX( plusIO, D,I,I,  PLUSO,,return EVOK;)
+APFX(minusIO, D,I,I, MINUSO,,return EVOK;)
+APFX(tymesIO, D,I,I, TYMESO,,return EVOK;)
 
 AIFX( plusBB, I,B,B, +     )    /* plusBI */                AIFX( plusBD, D,B,D, +   )
    /* plusIB */                 /* plusII */                AIFX( plusID, D,I,D, +   )
 AIFX( plusDB, D,D,B, +     )  AIFX( plusDI, D,D,I, +)       /* plusDD */
-APFX( plusZZ, Z,Z,Z, zplus,NAN0;,ASSERTWR(!NANTEST,EVNAN); R EVOK; )
+APFX( plusZZ, Z,Z,Z, zplus,NAN0;,ASSERTWR(!NANTEST,EVNAN); return EVOK; )
 
 
 AIFX(minusBB, I,B,B, -     )    /* minusBI */               AIFX(minusBD, D,B,D, -    )
   /* minusIB */                 /* minusII */               AIFX(minusID, D,I,D, -    )
 AIFX(minusDB, D,D,B, -     )  AIFX(minusDI, D,D,I, -)       /* minusDD */
-APFX(minusZZ, Z,Z,Z, zminus,NAN0;,ASSERTWR(!NANTEST,EVNAN); R EVOK;)
+APFX(minusZZ, Z,Z,Z, zminus,NAN0;,ASSERTWR(!NANTEST,EVNAN); return EVOK;)
 
     /* andBB */                 /* tymesBI */                   /* tymesBD */            
-    /* tymesIB */               /* tymesII */               APFX(tymesID, D,I,D, TYMESID,,R EVOK;)  
-    /* tymesDB */             APFX(tymesDI, D,D,I, TYMESDI,,R EVOK;)    /* tymesDD */ 
-APFX(tymesZZ, Z,Z,Z, ztymes,NAN0;,ASSERTWR(!NANTEST,EVNAN); R EVOK; )
+    /* tymesIB */               /* tymesII */               APFX(tymesID, D,I,D, TYMESID,,return EVOK;)
+    /* tymesDB */             APFX(tymesDI, D,D,I, TYMESDI,,return EVOK;)    /* tymesDD */
+APFX(tymesZZ, Z,Z,Z, ztymes,NAN0;,ASSERTWR(!NANTEST,EVNAN); return EVOK; )
 
-APFX(  divBB, D,B,B, DIVBB,,R EVOK;)   APFX(  divBI, D,B,I, DIVI,,R EVOK;)    APFX(  divBD, D,B,D, DIV,,R EVOK;)
-APFX(  divIB, D,I,B, DIVI ,,R EVOK;)   APFX(  divII, D,I,I, DIVI,,R EVOK;)    APFX(  divID, D,I,D, DIV,,R EVOK;)
-APFX(  divDB, D,D,B, DIVI ,,R EVOK;)   APFX(  divDI, D,D,I, DIVI,,R EVOK;)       /* divDD */
+APFX(  divBB, D,B,B, DIVBB,,return EVOK;)   APFX(  divBI, D,B,I, DIVI,,return EVOK;)    APFX(  divBD, D,B,D, DIV,,return EVOK;)
+APFX(  divIB, D,I,B, DIVI ,,return EVOK;)   APFX(  divII, D,I,I, DIVI,,return EVOK;)    APFX(  divID, D,I,D, DIV,,return EVOK;)
+APFX(  divDB, D,D,B, DIVI ,,return EVOK;)   APFX(  divDI, D,D,I, DIVI,,return EVOK;)       /* divDD */
 APFX(  divZZ, Z,Z,Z, zdiv,NAN0;,HDR1JERRNAN  )
 
-     /* orBB */               APFX(  minBI, I,B,I, MIN,,R EVOK;)     APFX(  minBD, D,B,D, MIN,,R EVOK;)    
-APFX(  minIB, I,I,B, MIN,,R EVOK;)     /* minII */                   APFX(  minID, D,I,D, MIN,,R EVOK;)  
-APFX(  minDB, D,D,B, MIN,,R EVOK;)     APFX(  minDI, D,D,I, MIN,,R EVOK;)        /* minDD */
-APFX(  minSS, SB,SB,SB, SBMIN,,R EVOK;)
+     /* orBB */               APFX(  minBI, I,B,I, MIN,,return EVOK;)     APFX(  minBD, D,B,D, MIN,,return EVOK;)
+APFX(  minIB, I,I,B, MIN,,return EVOK;)     /* minII */                   APFX(  minID, D,I,D, MIN,,return EVOK;)
+APFX(  minDB, D,D,B, MIN,,return EVOK;)     APFX(  minDI, D,D,I, MIN,,return EVOK;)        /* minDD */
+APFX(  minSS, SB,SB,SB, SBMIN,,return EVOK;)
 
-    /* andBB */               APFX(  maxBI, I,B,I, MAX,,R EVOK;)     APFX(  maxBD, D,B,D, MAX,,R EVOK;)    
-APFX(  maxIB, I,I,B, MAX,,R EVOK;)     /* maxII */                   APFX(  maxID, D,I,D, MAX,,R EVOK;)  
-APFX(  maxDB, D,D,B, MAX,,R EVOK;)     APFX(  maxDI, D,D,I, MAX,,R EVOK;)         /* maxDD */
-APFX(  maxSS, SB,SB,SB, SBMAX,,R EVOK;)
+    /* andBB */               APFX(  maxBI, I,B,I, MAX,,return EVOK;)     APFX(  maxBD, D,B,D, MAX,,return EVOK;)
+APFX(  maxIB, I,I,B, MAX,,return EVOK;)     /* maxII */                   APFX(  maxID, D,I,D, MAX,,return EVOK;)
+APFX(  maxDB, D,D,B, MAX,,return EVOK;)     APFX(  maxDI, D,D,I, MAX,,return EVOK;)         /* maxDD */
+APFX(  maxSS, SB,SB,SB, SBMAX,,return EVOK;)
 
 D jtremdd(J jt,D a,D b){D q,x,y;
- if(!a)R b;
+ if(!a)return b;
  ASSERT(!INF(b),EVNAN);
- if(a==inf )R 0<=b?b:a;
- if(a==infm)R 0>=b?b:a;
- q=b/a; x=tfloor(q); y=tceil(q); R TEQ(x,y)?0:b-a*x;
+ if(a==inf )return 0<=b?b:a;
+ if(a==infm)return 0>=b?b:a;
+ q=b/a; x=tfloor(q); y=tceil(q); return TEQ(x,y)?0:b-a*x;
 }
 
 APFX(remDD, D,D,D, remdd,,HDR1JERR)
@@ -222,12 +222,12 @@ I jtremid(J jt,I a,D b){D r;I k;
  ASSERT(a&&-9e15<b&&b<9e15,EWOV);
  r=b-a*jfloor(b/a); k=(I)r;
  ASSERT(k==r,EWOV);   // not really overflow - just has a fractional part
- R k;
+ return k;
 }
 
 APFX(remID, I,I,D, remid,,HDR1JERR)
 
-I remii(I a,I b){I r; R (a!=REPSGN(a))?(r=b%a,0<a?r+(a&REPSGN(r)):r+(a&REPSGN(-r))):a?0:b;}  // must handle IMIN/-1, which overflows.  If a=0, return b.
+I remii(I a,I b){I r; return (a!=REPSGN(a))?(r=b%a,0<a?r+(a&REPSGN(r)):r+(a&REPSGN(-r))):a?0:b;}  // must handle IMIN/-1, which overflows.  If a=0, return b.
 
 AHDR2(remII,I,I,I){I u,v;
  if(n-1==0){DQ(m,*z++=remii(*x,*y); x++; y++; )
@@ -264,37 +264,37 @@ AHDR2(remII,I,I,I){I u,v;
   )
 #endif
  }else      DQ(m, v=*y++; DQ(n, *z++=remii(*x, v); x++;     ));
- R EVOK;
+ return EVOK;
 }
 
 
-static I igcd1(I a,I b){R a?igcd1(b%a,a):b;}  // Emulate Euclid
+static I igcd1(I a,I b){return a?igcd1(b%a,a):b;}  // Emulate Euclid
 
 I jtigcd(J jt,I a,I b){
  if(a>IMIN&&b>IMIN){a=ABS(a); b=ABS(b);}
  else{
-  if(a==b||!a||!b){jt->jerr=EWOV; R 0;}
+  if(a==b||!a||!b){jt->jerr=EWOV; return 0;}
   if(a==IMIN){b=ABS(b); a=-(a+b);}else{a=ABS(a); b=-(a+b);}
  }
- R a?igcd1(b%a,a):b;
+ return a?igcd1(b%a,a):b;
 }
 
 D jtdgcd(J jt,D a,D b){D a1,b1,t;B stop = 0;
  a=ABS(a); b=ABS(b); if(a>b){t=a; a=b; b=t;}
  ASSERT(inf!=b,EVNAN);
- if(!a)R b;
+ if(!a)return b;
  a1=a; b1=b;
  while(remdd(a1/jround(a1/a),b1)){t=a; if((a=remdd(a,b))==0)break; b=t;}  // avoid infinite loop if a goes to 0
- R a;
+ return a;
 }    /* D.L. Forkes 1984; E.E. McDonnell 1992 */
 I jtilcm(J jt,I a,I b){I z;I d;
- if(a&&b){RZ(d=igcd(a,b)); if(0==(z=jtmult(0,a,b/d)))jt->jerr=EWOV; R z;}else R 0;
+ if(a&&b){RZ(d=igcd(a,b)); if(0==(z=jtmult(0,a,b/d)))jt->jerr=EWOV; return z;}else return 0;
 }
 
 #define GCDIO(u,v)      (dgcd((D)u,(D)v))
 #define LCMIO(u,v)      (dlcm((D)u,(D)v))
 
-D jtdlcm(J jt,D a,D b){ASSERT(!(INF(a)||INF(b)),EVNAN); R a&&b?a*(b/dgcd(a,b)):0;}
+D jtdlcm(J jt,D a,D b){ASSERT(!(INF(a)||INF(b)),EVNAN); return a&&b?a*(b/dgcd(a,b)):0;}
 
 APFX(gcdIO, D,I,I, GCDIO,,HDR1JERR)
 APFX(gcdII, I,I,I, igcd ,,HDR1JERR)
@@ -335,17 +335,17 @@ F2(jtintdiv){A z;B b,flr;I an,ar,*as,*av,c,d,j,k,m,n,p,p1,r,*s,wn,wr,*ws,*wv,*zv
   else   if(b)DQ(m,          GETD; DQ(n, c=*av++; *zv++=INTDIVC(c,d););)
   else        DQ(m, c=*av++;       DQ(n, GETD;    *zv++=INTDIVC(c,d););)
  }
- R z?z:flr?floor1(divide(a,w)):ceil1(divide(a,w));
+ return z?z:flr?floor1(divide(a,w)):ceil1(divide(a,w));
 }    /* <.@% or >.@% on integers */
 
 
-static F2(jtweight){ARGCHK2(a,w); A z; R df1(z,behead(over(AR(w)?w:reshape(a,w),num(1))),bsdot(slash(ds(CSTAR))));}  // */\. }. (({:$a)$w),1
+static F2(jtweight){ARGCHK2(a,w); A z; return df1(z,behead(over(AR(w)?w:reshape(a,w),num(1))),bsdot(slash(ds(CSTAR))));}  // */\. }. (({:$a)$w),1
 
 F1(jtbase1){A z;B*v;I c,m,n,p,r,*s,t,*x;
  ARGCHK1(w);
  n=AN(w); t=AT(w); r=AR(w); s=AS(w); c=AS(w)[r-1]; c=r?c:1;
  ASSERT(t&DENSE,EVNONCE);
- if(((c-BW)&SGNIF(t,B01X))>=0)R pdt(w,weight(sc(c),t&RAT+XNUM?cvt(XNUM,num(2)):num(2)));  // 
+ if(((c-BW)&SGNIF(t,B01X))>=0)return pdt(w,weight(sc(c),t&RAT+XNUM?cvt(XNUM,num(2)):num(2)));  //
  CPROD1(n,m,r-1,s);
  GATV(z,INT,m,r?r-1:0,s); x=AV(z); v=BAV(w);
  if(c)DQ(m, p=0; DQ(c, p=2*p+*v++;); *x++=p;)
@@ -360,7 +360,7 @@ F2(jtbase2){I ar,*as,at,c,t,wr,*ws,wt;
  ASSERT(!((at|wt)&SPARSE),EVNONCE); t=maxtyped(at,wt);
  if(!(t&at))RZ(a=cvt(t,a));
  if(!(t&wt))RZ(w=cvt(t,w));
- R 1>=ar?pdt(w,weight(sc(c),a)):rank2ex(w,rank2ex(sc(c),a,UNUSED_VALUE,0L,MIN(ar,1),0L,MIN(ar,1),jtweight),UNUSED_VALUE,MIN(wr,1),1L,MIN(wr,1),1L,jtpdt);
+ return 1>=ar?pdt(w,weight(sc(c),a)):rank2ex(w,rank2ex(sc(c),a,UNUSED_VALUE,0L,MIN(ar,1),0L,MIN(ar,1),jtweight),UNUSED_VALUE,MIN(wr,1),1L,MIN(wr,1),1L,jtpdt);
 }
 
 // #: y
@@ -371,20 +371,20 @@ F1(jtabase1){A d,z;B*zv;I c,n,p,r,t,*v;UI x;
  ASSERT(t&DENSE,EVNONCE);
  // Result has rank one more than the input.  If there are no atoms,
  // return (($w),0)($,)w; if Boolean, return (($w),1)($,)w
- if((-n&SGNIFNOT(t,B01X))>=0)R reshape(apip(shape(w),zeroionei(n!=0)),w);
+ if((-n&SGNIFNOT(t,B01X))>=0)return reshape(apip(shape(w),zeroionei(n!=0)),w);
  if(!(t&INT)){
   // Not integer.  Calculate # digits-1 as d = 2 <.@^. >./ | , w  
   df2(d,num(2),maximum(zeroionei(1),aslash(CMAX,mag(ravel(w)))),atop(ds(CFLOOR),ds(CLOG)));
   // Calculate z = ((1+d)$2) #: w
   RZ(z=abase2(reshape(increm(d),num(2)),w));
   // If not float, result is exact or complex; either way, keep it
-  if(!(t&FL))R z;
+  if(!(t&FL))return z;
   // If float, see if we had one digit too many (could happen, if the log was too close to an integer)
   // calculate that as (0 = >./ ({."1 z)).  If so, return }."1 z ,  otherwise z
   // But we can't delete a digit if any of the values were negative - all are significant then
   // We also can't delete a digit if there is only 1 digit in the numbers
-  if(AS(z)[AR(z)-1]<=1 || i0(aslash(CPLUSDOT,ravel(lt(w,zeroionei(0))))))R z;
-  if(0==i0(aslash(CMAX,ravel(IRS1(z,0L,1L,jthead,d)))))R IRS1(z,0L,1L,jtbehead,d);
+  if(AS(z)[AR(z)-1]<=1 || i0(aslash(CPLUSDOT,ravel(lt(w,zeroionei(0))))))return z;
+  if(0==i0(aslash(CMAX,ravel(IRS1(z,0L,1L,jthead,d)))))return IRS1(z,0L,1L,jtbehead,d);
   RETF(z);
  }
  // Integer.  Calculate x=max magnitude encountered (minimum of 1, to leave 1 output value)
@@ -402,14 +402,14 @@ F2(jtabase2){A z;I an,ar,at,t,wn,wr,wt,zn;
  an=AN(a); ar=AR(a); at=AT(a);
  wn=AN(w); wr=AR(w); wt=AT(w);
  ASSERT(!((at|wt)&SPARSE),EVNONCE);
- if(1>ar)R residue(a,w);
+ if(1>ar)return residue(a,w);
  if(1==ar&&!((at|wt)&(NOUN-(B01+INT)))){I*av,d,r,*u,*wv,x,*zv;
   // both types are int/boolean, and ar is a list
   {t=INT; if(!TYPESEQ(t,at)){RZ(a=cvt(t,a));} if(!TYPESEQ(t,wt)){RZ(w=cvt(t,w));}}  // convert args to compatible precisions, changing a and w if needed.  INT if both empty
   // If a ends with _1 followed by any number of 1, there will be overflow if w contains any imin.  Detect that very rare case
   av=an+AV(a); wv=wn+AV(w);
   for(zv=av, d=an;d&&*--zv==1;--d);
-  if(d&&*zv==-1){zv=wv; DQ(wn, if(*--zv==IMIN){d=0; break;}) if(!d){RZ(a=cvt(FL,a)); R abase2(a,w);}}
+  if(d&&*zv==-1){zv=wv; DQ(wn, if(*--zv==IMIN){d=0; break;}) if(!d){RZ(a=cvt(FL,a)); return abase2(a,w);}}
   DPMULDE(an,wn,zn); GATV(z,INT,zn,1+wr,AS(w)); AS(z)[wr]=an;  // allocate result area
   zv=zn+AV(z);
   if((((2^an)-1)&(av[-2]-1)&-(d=av[-1]))<0){I d1,k;
@@ -438,7 +438,7 @@ F2(jtabase2){A z;I an,ar,at,t,wn,wr,wt,zn;
 // Compute power-of-2 | w for INT w, by ANDing.  Result is boolean if mod is 1 or 2
 A jtintmod2(J jt,A w,I mod){A z;B *v;I n,q,r,*u;UI m=0;  // init m for warning
  F1PREFIP;ARGCHK1(w);
- if(mod>2)R jtatomic2(jtinplace,sc(mod-1),w,ds(CBW0001));  // INT result, by AND
+ if(mod>2)return jtatomic2(jtinplace,sc(mod-1),w,ds(CBW0001));  // INT result, by AND
  // the rest is boolean result
  n=AN(w); v=BAV(w);  // littleendian only
  GATV(z,B01,n,AR(w),AS(w)); RZ(n);  // loops below can't handle empty

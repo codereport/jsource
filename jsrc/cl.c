@@ -12,7 +12,7 @@
 static DF1(jtlev1){
  ARGCHK1(w);  // self is never 0
  A fs=(A)AM(self); AF fsf=FAV(fs)->valencefns[0];  // fetch verb and routine for leaf nodes.  Do it early
- if(levelle(w,AT(self))){R CALL1(fsf,w,fs);} else{STACKCHKOFL R every(w,self);}  // since this recurs, check stack
+ if(levelle(w,AT(self))){return CALL1(fsf,w,fs);} else{STACKCHKOFL return every(w,self);}  // since this recurs, check stack
 }
 
 // Like monad, but AT(self) is left trigger level, AC(self) is the right trigger level 
@@ -23,13 +23,13 @@ static A jtlev2(J jt,A a,A w,A self){
  // If both args are ready to process, do so.  Otherwise, drop down a level and try again.  If one arg is ready but the other isn't,
  // add a boxing level before we drop down so that when it is processed it will be the first level at which it became active.  This result could
  // be achieved by altering the left/right levels, but Roger did it this way.
- if(aready&wready){R CALL2(fsf,a,w,fs);
- }else{STACKCHKOFL R every2(aready?box(a):a,wready?box(w):w,self);}  // since this recurs, check stack
+ if(aready&wready){return CALL2(fsf,a,w,fs);
+ }else{STACKCHKOFL return every2(aready?box(a):a,wready?box(w):w,self);}  // since this recurs, check stack
  // We do this with the if statement rather than a computed branch in the hope that the CPU can detect patterns in the conditions.
  // There may be a structure in the user's data that could be detected for branch prediction.
 }
 
-static I jtefflev(J jt,I j,A h,A x){I n,t; n=*(j+AV(h)); R n>=0?n:(t=level(x),MAX(0,n+t));}
+static I jtefflev(J jt,I j,A h,A x){I n,t; n=*(j+AV(h)); return n>=0?n:(t=level(x),MAX(0,n+t));}
 
 // execution of u L: n y.  Create the self to send to the recursion routine
 // L: and S: will be rarely used on pristine blocks, which be definition have all DIRECT contents & would thus be
@@ -63,7 +63,7 @@ static DF1(jtscfn){
  ARGCHK1(w);
  if(AS(AKASA(self))[0]==AN(AKASA(self))){I n=AN(AKASA(self)); RZ(AKASA(self)=ext(1,AKASA(self))); AS(AKASA(self))[0]=n;}  // if current buffer is full, reallocate.  ext resets AS
  AAV(AKASA(self))[AS(AKASA(self))[0]++]=incorp(w);  // copy in new result pointer
- R num(0);  // harmless good return
+ return num(0);  // harmless good return
 }
 
 // u S: n - like L: except for calling the logger
@@ -71,7 +71,7 @@ static DF1(jtlevs1){
  ARGCHK1(w);  // self is never 0
  A fs=(A)AM(self); AF fsf=FAV(fs)->valencefns[0];  // fetch verb and routine for leaf nodes.  Do it early
  if(levelle(w,AT(self))){RZ(scfn(CALL1(fsf,w,fs),self));} else{STACKCHKOFL RZ(every(w,self));}  // since this recurs, check stack
- R num(0);
+ return num(0);
 }
 
 static DF2(jtlevs2){
@@ -85,7 +85,7 @@ static DF2(jtlevs2){
  }else{STACKCHKOFL RZ(every2(aready?box(a):a,wready?box(w):w,self));}  // since this recurs, check stack
  // We do this with the if statement rather than a computed branch in the hope that the CPU can detect patterns in the conditions.
  // There may be a structure in the user's data that could be detected for branch prediction.
-  R num(0);
+  return num(0);
 }
 
 static DF1(jtscapco1){PROLOG(555);A x,z=0;I m;V*v=FAV(self);
@@ -138,9 +138,9 @@ static A jtlsub(J jt,C id,A a,A w){A h,t;B b=id==CLCAPCO;I*hv,n,*v;
  RZ(t=vib(w)); v=AV(t);
  GAT0(h,INT,3,1); hv=AV(h);  // save levels in h
  hv[0]=v[2==n]; hv[1]=v[3==n]; hv[2]=v[n-1];  // monad, left, right
- R fdef(0,id,VERB, b?jtlcapco1:jtscapco1,b?jtlcapco2:jtscapco2, a,w,h, VFLAGNONE, RMAX,RMAX,RMAX);
+ return fdef(0,id,VERB, b?jtlcapco1:jtscapco1,b?jtlcapco2:jtscapco2, a,w,h, VFLAGNONE, RMAX,RMAX,RMAX);
 }
 
-F2(jtlcapco){R lsub(CLCAPCO,a,w);}
-F2(jtscapco){R lsub(CSCAPCO,a,w);}
+F2(jtlcapco){return lsub(CLCAPCO,a,w);}
+F2(jtscapco){return lsub(CSCAPCO,a,w);}
 

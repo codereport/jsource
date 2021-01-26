@@ -60,12 +60,12 @@ static F2(jttclosure){A z;I an,*av,c,d,i,wn,wr,wt,*wv,*zv,*zz;
 static DF1(jtindexseqlim1){A fs;
  ARGCHK1(w); 
  fs=FAV(self)->fgh[0];  // {&x
- R AN(w)&&AT(w)&B01+INT?tclosure(FAV(fs)->fgh[1],w):powseqlim(w,fs);
+ return AN(w)&&AT(w)&B01+INT?tclosure(FAV(fs)->fgh[1],w):powseqlim(w,fs);
 }    /* {&x^:(<_) w */
 
 static DF2(jtindexseqlim2){
  ARGCHK2(a,w);
- R 1==AR(a)&&AT(a)&INT&&AN(w)&&AT(w)&B01+INT?tclosure(a,w):powseqlim(w,amp(ds(CFROM),a));
+ return 1==AR(a)&&AT(a)&INT&&AN(w)&&AT(w)&B01+INT?tclosure(a,w):powseqlim(w,amp(ds(CFROM),a));
 }    /* a {~^:(<_) w */
 
 // u^:(<n) If n negative, take inverse of u; if v infinite, go to routine that checks for no change.  Otherwise convert to u^:(i.|n) and restart
@@ -76,8 +76,8 @@ static DF1(jtpowseq){A fs,gs,x;I n=IMAX;V*sv;
  ASSERT(BOX&AT(gs),EVDOMAIN);
  x=AAV(gs)[0]; if(!AR(x))RE(n=i0(vib(x)));
  if(0>n){RZ(fs=inv(fs)); n=-n;}
- if(n==IMAX||1==AR(x)&&!AN(x))R powseqlim(w,fs);
- R df1(gs,w,powop(fs,IX(n),0));
+ if(n==IMAX||1==AR(x)&&!AN(x))return powseqlim(w,fs);
+ return df1(gs,w,powop(fs,IX(n),0));
 }    /* f^:(<n) w */
 
 // u^:n w where n is nonnegative finite integer atom (but never 0 or 1, which are handled as special cases)
@@ -206,8 +206,8 @@ static DF1(jtinverr){F1PREFIP;ASSERT(0,EVDOMAIN);}  // used for uninvertible mon
 // old static CS2(jtply2, df1(z,w,powop(amp(a,fs),gs,0)),0107)  // dyad adds x to make x&u, and then reinterpret the compound.  We could interpret u differently now that it has been changed (x {~^:a: y)
 DF2(jtply2){PROLOG(107);DECLFG;A z, zz; PREF2(jtply2); z=(df1(zz,w,powop(amp(a,fs),gs,0))); EPILOG(z);}
 
-static DF1(jtpowg1){A z,h=FAV(self)->fgh[2]; R df1(z,  w,AAV(h)[0]);}
-static DF2(jtpowg2){A z,h=FAV(self)->fgh[2]; R df2(z,a,w,AAV(h)[0]);}
+static DF1(jtpowg1){A z,h=FAV(self)->fgh[2]; return df1(z,  w,AAV(h)[0]);}
+static DF2(jtpowg2){A z,h=FAV(self)->fgh[2]; return df2(z,a,w,AAV(h)[0]);}
 
 // When u^:v is encountered, we replace it with a verb that comes to one of these.
 // This creates a verb, jtpowxx, which calls jtdf1 within a PROLOG/EPILOG pair, after creating several names:
@@ -260,7 +260,7 @@ DF2(jtpowop){A hs;B b;V*v;
   // u^:v.  Create derived verb to handle it.
   v=FAV(a); b=((v->id&~1)==CATCO)&&ID(v->fgh[1])==CRIGHT;  // detect u@]^:v  (or @:)
   // The action routines are inplaceable; take ASGSAFE from u and v, inplaceability from u
-  R CDERIV(CPOWOP,jtpowv1cell,b?jtpowv2acell:jtpowv2cell,(v->flag&FAV(w)->flag&VASGSAFE)+(v->flag&(VJTFLGOK1|VJTFLGOK2)), RMAX,RMAX,RMAX);
+  return CDERIV(CPOWOP,jtpowv1cell,b?jtpowv2acell:jtpowv2cell,(v->flag&FAV(w)->flag&VASGSAFE)+(v->flag&(VJTFLGOK1|VJTFLGOK2)), RMAX,RMAX,RMAX);
  }
  // u^:n.  Check for special types.
  if(BOX&AT(w)){A x,y;AF f1,f2;
@@ -273,29 +273,29 @@ DF2(jtpowop){A hs;B b;V*v;
     if(CAMP==v->id&&(CFROM==ID(v->fgh[0])&&(y=v->fgh[1],INT&AT(y)&&1==AR(y)))){f1=jtindexseqlim1;}  // {&b^:_ y
     else if(CTILDE==v->id&&CFROM==ID(v->fgh[0])){f2=jtindexseqlim2;}   // x {~^:_ y
    }
-   R CDERIV(CPOWOP,f1,f2,VFLAGNONE, RMAX,RMAX,RMAX);  // create the derived verb for <n
+   return CDERIV(CPOWOP,f1,f2,VFLAGNONE, RMAX,RMAX,RMAX);  // create the derived verb for <n
   }
 //    ASSERT(self!=0,EVDOMAIN);  // If gerund returns gerund, error.  This check is removed pending further design
-  R gconj(a,w,CPOWOP);  // create the derived verb for [v0`]v1`v2
+  return gconj(a,w,CPOWOP);  // create the derived verb for [v0`]v1`v2
  }
  // fall through for unboxed n.
  // handle the very important case of scalar   int/boolean   n of 0/1
- if(likely(((-(AT(w)&B01+INT))&((AR(w)|((UI)BIV0(w)>>1))-1))<0))R a=BIV0(w)?a:ds(CRIGHT);  //  u^:0 is like ],  u^:1 is like u   AR(w)==0 and B01|INT and BAV0=0 or 1
+ if(likely(((-(AT(w)&B01+INT))&((AR(w)|((UI)BIV0(w)>>1))-1))<0))return a=BIV0(w)?a:ds(CRIGHT);  //  u^:0 is like ],  u^:1 is like u   AR(w)==0 and B01|INT and BAV0=0 or 1
  RZ(hs=vib(w));   // hs=n coerced to integer
  AF f1=jtply1;  // default routine for general array.  no reason to inplace this, since it has to keep the old value to check for changes
  I flag=0;  // flags for the verb we build
  if(!AR(w)){  // input is an atom
   // Handle the 4 important cases: atomic _1 (inverse), 0 (nop), 1 (execute u), and _ (converge/do while)
-  if(!(IAV(hs)[0]&~1))R a=IAV(hs)[0]?a:ds(CRIGHT);  //  u^:0 is like ],  u^:1 is like u 
+  if(!(IAV(hs)[0]&~1))return a=IAV(hs)[0]?a:ds(CRIGHT);  //  u^:0 is like ],  u^:1 is like u
   if((IAV(hs)[0]<<1)==-2){  //  u^:_1 or u^:_
    if(IAV(hs)[0]<0){  // u^:_1
     // if there are no names, calculate the monadic inverse and save it in h.  Inverse of the dyad, or the monad if there are names,
     // must wait until we get arguments
     A h=0; f1=jtinv1; if(nameless(a)){if(h=inv(a)){f1=jtinvh1;}else{f1=jtinverr; RESETERRANDMSG}} // h must be valid for free.  If no names in w, take the inverse.  If it doesn't exist, fail the monad but keep the dyad going
     flag = (FAV(a)->flag&VASGSAFE) + (h?FAV(h)->flag&VJTFLGOK1:VJTFLGOK1);  // inv1 inplaces and calculates ip for next step; invh has ip from inverse
-    R fdef(0,CPOWOP,VERB,(AF)(f1),jtinv2,a,w,h,flag,RMAX,RMAX,RMAX);
+    return fdef(0,CPOWOP,VERB,(AF)(f1),jtinv2,a,w,h,flag,RMAX,RMAX,RMAX);
    }else{  // u^:_
-    R fdef(0,CPOWOP,VERB,jtpinf12,jtpinf12,a,w,0,VFLAGNONE,RMAX,RMAX,RMAX);
+    return fdef(0,CPOWOP,VERB,jtpinf12,jtpinf12,a,w,0,VFLAGNONE,RMAX,RMAX,RMAX);
    }
   }
   if(IAV(hs)[0]>=0){f1=jtfpown; flag=FAV(a)->flag&VJTFLGOK1;}  // if nonneg atom, go to special routine for that, which supports inplace
@@ -303,5 +303,5 @@ DF2(jtpowop){A hs;B b;V*v;
  // If not special case, fall through to handle general case
  I m=AN(hs); // m=#atoms of n; n=1st atom; r=n has rank>0
  ASSERT(m!=0,EVDOMAIN);  // empty power is error
- R fdef(0,CPOWOP,VERB, f1,jtply2, a,w,hs,flag, RMAX,RMAX,RMAX);   // Create derived verb: pass in integer powers as h
+ return fdef(0,CPOWOP,VERB, f1,jtply2, a,w,hs,flag, RMAX,RMAX,RMAX);   // Create derived verb: pass in integer powers as h
 }

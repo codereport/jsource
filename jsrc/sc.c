@@ -173,12 +173,12 @@ DF2(jtunquote){A z;
   }
  }
  // ************** errors OK now
- R z;
+ return z;
 }
 
 
 // The monad calls the bivalent case with (w,self,self) so that the inputs can pass through to the executed function
-static DF1(jtunquote1){R unquote(w,self,self);}  // This just transfers to jtunquote.  It passes jt, with inplacing bits, unmodified
+static DF1(jtunquote1){return unquote(w,self,self);}  // This just transfers to jtunquote.  It passes jt, with inplacing bits, unmodified
 
 // return ref to adv/conj/verb whose name is a and whose symbol-table entry is w
 // if the value is a noun, we just return the value; otherwise we create a 'name~' block
@@ -186,7 +186,7 @@ static DF1(jtunquote1){R unquote(w,self,self);}  // This just transfers to jtunq
 // If the name is undefined, return a reference to [: (a verb that always fails)
 A jtnamerefacv(J jt, A a, L* w){A y;V*v;
  y=w?w->val:ds(CCAP);  // If there is a slot, get the value; if not, treat as [: (verb that creates error)
- if(!y||NOUN&AT(y))R y;  // return if error or it's a noun
+ if(!y||NOUN&AT(y))return y;  // return if error or it's a noun
  // We are about to create a reference to a name.  Since this reference might escape into another context, either (1) by becoming part of a
  // non-noun result; (2) being assigned to a global name; (3) being passed into an explicit modifier: we have to expunge any reference to local
  // buckets.  Tolerable because local ACVs are rare
@@ -205,7 +205,7 @@ A jtnamerefacv(J jt, A a, L* w){A y;V*v;
  if(w&&!(NAV(a)->flag&(NMLOC|NMILOC|NMDOT))){
   FAV(z)->localuse.lvp[0]=y; AM(z)=jt->modifiercounter;
  }
- R z;
+ return z;
 }
 
 
@@ -215,7 +215,7 @@ A jtnamerefacv(J jt, A a, L* w){A y;V*v;
 //  the name will be dereferenced when the function is executed
 A jtnameref(J jt,A w,A locsyms){
  ARGCHK1(w);
- R namerefacv(w,syrd(w,locsyms));  // get the symbol-table slot for the name (don't store the locale-name); return its 'value'
+ return namerefacv(w,syrd(w,locsyms));  // get the symbol-table slot for the name (don't store the locale-name); return its 'value'
 }    /* argument assumed to be a NAME */
 
 // Create a pseudo-named entity.  a is the name, w is the actual entity
@@ -223,7 +223,7 @@ A jtnameref(J jt,A w,A locsyms){
 F2(jtnamerefop){V*v;
  ARGCHK2(a,w);
  v=FAV(w);
- R fdef(0,CCOLON,VERB,  jtunquote1,jtunquote, 0L,a,w, VXOPCALL|v->flag, v->mr,lrv(v),rrv(v));
+ return fdef(0,CCOLON,VERB,  jtunquote1,jtunquote, 0L,a,w, VXOPCALL|v->flag, v->mr,lrv(v),rrv(v));
 }    
 
 /* namerefop() is used by explicit defined operators when: */
@@ -240,5 +240,5 @@ DF2(jtimplocref){
  self=AT(w)&NOUN?self:w;
  self=jt->implocref[FAV(self)->id&1];
  w=AT(w)&NOUN?w:self;
- R unquote(a,w,self); // call as (w,self,self) or (a,w,self)
+ return unquote(a,w,self); // call as (w,self,self) or (a,w,self)
 }

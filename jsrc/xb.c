@@ -10,7 +10,7 @@
 #pragma warning(disable: 4101)
 #endif
 
-F1(jtstype){ARGCHK1(w); R sc(AT(w)&-AT(w));}
+F1(jtstype){ARGCHK1(w); return sc(AT(w)&-AT(w));}
      /* 3!:0 w */
 
 // a is integer atom or list, values indicating the desired result
@@ -68,17 +68,17 @@ static I bsize(J jt,B d,B tb,I t,I n,I r,I*s){I k,w,z;
  w=WS(d);
  z=BH(d)+w*r;
  k=t&INT+SBT+BOX+XNUM?w:t&RAT?w+w:bp(t); 
- R z+((n*k+(tb&&t&LAST0)+w-1)&(-w));
+ return z+((n*k+(tb&&t&LAST0)+w-1)&(-w));
 }   /* size in byte of binary representation, rounded up to even # words */
 
 // like bsize, but recursive.  Add up the size of this block and the sizes of the descendants
 // size is rounded to integral # words
 static I bsizer(J jt,B d,B tb,A w){A *wv=AAV(w);
  I totalsize = bsize(jt,d,tb,AT(w),AN(w),AR(w),AS(w));
- if(AT(w)&DIRECT)R totalsize;
+ if(AT(w)&DIRECT)return totalsize;
  I nchildren = AN(w); nchildren<<=((AT(w)>>RATX)&1);  // # subblocks
  DO(nchildren, totalsize+=bsizer(jt,d,tb,wv[i]);)
- R totalsize;
+ return totalsize;
 }
 
 
@@ -110,7 +110,7 @@ static B jtmvw(J jt,C*v,C*u,I n,B bv,B bu,B dv,B du){C c;
   case MVCS(1,1,1,0): DO(n, DO(8, v[7-i]=u[i];); v+=8; u+=8;); break;
   case MVCS(1,1,1,1): MC(v,u,n*8);                             break;
  }
- R 1;
+ return 1;
 }    /* move n words from u to v */
 
 // move the header, return new move point
@@ -121,11 +121,11 @@ static C*jtbrephdrq(J jt,B b,B d,A w,C *q){I f,r;I extt = UNSAFE(AT(w));
  RZ(mvw(BN(d,q),(C*)&AN(w),1L,b,BU,d,1));
  RZ(mvw(BR(d,q),(C*)&r,1L,b,BU,d,1));  // r is an I
  RZ(mvw(BS(d,q),(C*) AS(w),r, b,BU,d,1));
- R BV(d,q,r);
+ return BV(d,q,r);
 }
 
 // move the header for block w to the preallocated block y
-static C*jtbrephdr(J jt,B b,B d,A w,A y){R jtbrephdrq(jt,b,d,w,CAV(y));}
+static C*jtbrephdr(J jt,B b,B d,A w,A y){return jtbrephdrq(jt,b,d,w,CAV(y));}
 
 static A jtbreps(J jt,B b,B d,A w){A q,y,z,*zv;C*v;I c=0,kk,m,n;P*wp;
  wp=PAV(w);
@@ -139,7 +139,7 @@ static A jtbreps(J jt,B b,B d,A w){A q,y,z,*zv;C*v;I c=0,kk,m,n;P*wp;
  RZ(zv[2]=q=incorp(brep(b,d,SPA(wp,e)))); RZ(mvw(v+2*kk,(C*)&m,1L,b,BU,d,1)); m+=AN(q);
  RZ(zv[3]=q=incorp(brep(b,d,SPA(wp,i)))); RZ(mvw(v+3*kk,(C*)&m,1L,b,BU,d,1)); m+=AN(q);
  RZ(zv[4]=q=incorp(brep(b,d,SPA(wp,x)))); RZ(mvw(v+4*kk,(C*)&m,1L,b,BU,d,1));
- R raze(z);
+ return raze(z);
 }    /* 3!:1 w for sparse w */
 
 
@@ -167,7 +167,7 @@ static C* jtbrepfill(J jt,B b,B d,A w,C *zv){I klg,kk;
    memset((origzv+blksize)-suffsize,C0,suffsize);   // clear suffix
    MC(zv,u,n<<klg); break;}      // copy the valid part of the data
   }
-  R origzv+blksize;  // return next output position
+  return origzv+blksize;  // return next output position
  }
  // Here for non-DIRECT values.  These recur through the boxes
  // we have already written the header for the indirect block.  Skip over the indirect pointers; they will be replaced by
@@ -178,17 +178,17 @@ static C* jtbrepfill(J jt,B b,B d,A w,C *zv){I klg,kk;
  // move in the blocks: first the offset, writing over the indirect block, then the data
  // the offsets are all relative to the start of the block, which is origzv
  DO(n, I offset=zv-origzv; RZ(mvw(zvx,(C*)&offset,1L,b,BU,d,1)); zvx+=kk; RZ(zv=jtbrepfill(jt,b,d,wv[i],zv));)
- R zv;
+ return zv;
 }    /* b iff reverse the bytes; d iff 64-bit */
 
 // main entry point for brep.  First calculate the size by a (recursive) call; allocate; then make a (recursive) call to fill in the block
 static A jtbrep(J jt,B b,B d,A w){A y;I t;
  ARGCHK1(w);
  t=UNSAFE(AT(w)); 
- if(unlikely((t&SPARSE)!=0))R breps(b,d,w);  // sparse separately
+ if(unlikely((t&SPARSE)!=0))return breps(b,d,w);  // sparse separately
  GATV0(y,LIT,bsizer(jt,d,1,w),1);   // allocate entire result
  RZ(jtbrepfill(jt,b,d,w,CAV(y)));   // fill it
- R y;  // return it
+ return y;  // return it
 }
 
 
@@ -208,30 +208,30 @@ static A jthrep(J jt,B b,B d,A w){A y;C c,*hex="0123456789abcdef",*u,*v;I n,s[2]
  RZ(jtbrepfill(jt,b,d,w,n+CAV(y)));   // fill brep starting from the middle of buffer
  u=n+CAV(y); v=CAV(y); 
  DQ(n, c=*u++; *v++=hex[(c&0xf0)>>4]; *v++=hex[c&0x0f];);   // in-place translation to hex
- R y;  // return it
+ return y;  // return it
 }
 
-F1(jtbinrep1){ARGCHK1(w); ASSERT(NOUN&AT(w),EVDOMAIN); R brep(BU,1,w);}  /* 3!:1 w */
-F1(jthexrep1){ARGCHK1(w); ASSERT(NOUN&AT(w),EVDOMAIN); R hrep(BU,1,w);}  /* 3!:3 w */
+F1(jtbinrep1){ARGCHK1(w); ASSERT(NOUN&AT(w),EVDOMAIN); return brep(BU,1,w);}  /* 3!:1 w */
+F1(jthexrep1){ARGCHK1(w); ASSERT(NOUN&AT(w),EVDOMAIN); return hrep(BU,1,w);}  /* 3!:3 w */
 
 F2(jtbinrep2){I k;
  ARGCHK2(a,w);
  RE(k=i0(a)); if(10<=k)k-=8;
  ASSERT(BETWEENC(k,0,3),EVDOMAIN);
- R brep((B)(k&1),(B)(2<=k),w);
+ return brep((B)(k&1),(B)(2<=k),w);
 }    /* a 3!:1 w */
 
 F2(jthexrep2){I k;
  ARGCHK2(a,w); 
  RE(k=i0(a)); if(10<=k)k-=8;
  ASSERT(BETWEENC(k,0,3),EVDOMAIN);
- R hrep((B)(k&1),(B)(2<=k),w);
+ return hrep((B)(k&1),(B)(2<=k),w);
 }    /* a 3!:3 w */
 
 
 static S jtunh(J jt,C c){
- if(BETWEENC(c,'0','9'))R c-'0';
- if(BETWEENC(c,'a','f'))R 10+c-'a';
+ if(BETWEENC(c,'0','9'))return c-'0';
+ if(BETWEENC(c,'a','f'))return 10+c-'a';
  ASSERT(0,EVDOMAIN);
 }
 
@@ -293,10 +293,10 @@ F1(jtunbin){A q;B b,d;C*v;I c,i,k,m,n,r,t;
  ASSERT(m>=8,EVLENGTH);
  q=(A)AV(w);
  switch(CAV(w)[0]){
-  case (C)0xe0: R unbinr(0,0,0,m,q);
-  case (C)0xe1: R unbinr(1,0,0,m,q);
-  case (C)0xe2: R unbinr(0,1,0,m,q);
-  case (C)0xe3: R unbinr(1,1,0,m,q);
+  case (C)0xe0: return unbinr(0,0,0,m,q);
+  case (C)0xe1: return unbinr(1,0,0,m,q);
+  case (C)0xe2: return unbinr(0,1,0,m,q);
+  case (C)0xe3: return unbinr(1,1,0,m,q);
  }
  /* code to handle pre 601 headers */
  d=1; v=8+CAV(w); DQ(8, if(CFF!=*v++){d=0; break;});       /* detect 64-bit        */
@@ -315,7 +315,7 @@ F1(jtunbin){A q;B b,d;C*v;I c,i,k,m,n,r,t;
   }
   b=b||n!=c;
  }
- R unbinr(b,d,1,m,q);
+ return unbinr(b,d,1,m,q);
 }    /* 3!:2 w, inverse for binrep/hexrep */
 
 
@@ -363,10 +363,10 @@ F2(jtfc2){A z;D*x,*v;I j,m,n,p,zt;float*s;
 // w is a box, result is 1 if it contains a  NaN
 static B jtisnanq(J jt,A w){
  ARGCHK1(w);
- if(AT(w)&FL+CMPX){D *v=DAV(w); DQ(AN(w)<<((AT(w)>>CMPXX)&1), if(_isnan(v[i]))R 1;);}  // if there might be a NaN, return if there is one
- else if(AT(w)&BOX){A *v=AAV(w); STACKCHKOFL DQ(AN(w), if(isnanq(v[i]))R 1;);}  // if boxed, check each one recursively; ensure no stack overflow
+ if(AT(w)&FL+CMPX){D *v=DAV(w); DQ(AN(w)<<((AT(w)>>CMPXX)&1), if(_isnan(v[i]))return 1;);}  // if there might be a NaN, return if there is one
+ else if(AT(w)&BOX){A *v=AAV(w); STACKCHKOFL DQ(AN(w), if(isnanq(v[i]))return 1;);}  // if boxed, check each one recursively; ensure no stack overflow
  // other types never have NaN
- R 0;  // if we get here, there must be no NaN
+ return 0;  // if we get here, there must be no NaN
 }
 
 // 128!:5  Result is boolean with same shape as w
@@ -403,7 +403,7 @@ F1(jtbit1){A z;B*wv;BT*zv;I c,i,j,n,p,q,r,*s;UI x,y;
     *zv++=x;
   }
  }
- R z;
+ return z;
 }    /* convert byte booleans to bit booleans */
 
 F2(jtbit2){

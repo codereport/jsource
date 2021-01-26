@@ -13,7 +13,7 @@ static AMONPS(floorDI,I,D,
   // if there is a value above 2^61, encode it by setting bit 62 to the opposite of bit 63 (we know bit 62 was 1 originally).  Remember the fact that we need a correction pass.
   // See if the value must be promoted to floating-point in the correction pass.  Return value of EWOVFLOOR0 if there are values all of which fit in an integer, EWOVFLOOR1 if float is required
   else{rc|=EWOVFLOOR0; D d=tfloor(*x); *z=fbits^(SGNTO0(fbits)<<(BW-2)); if(d!=(I)d)rc|=EWOVFLOOR1;} } ,  // we use DQ; i is n-1-reali, ~i = (reali-n+1)-1 = i-n
-  R rc?rc:EVOK;
+  return rc?rc:EVOK;
  ; )  // x100 0011 1100 =>2^61
 static AMON(floorD, D,D, *z=tfloor(*x);)
 static AMON(floorZ, Z,Z, *z=zfloor(*x);)
@@ -24,7 +24,7 @@ static AMONPS(ceilDI,I,D,
   // if there is a value above 2^61, encode it by setting bit 62 to the opposite of bit 63 (we know bit 62 was 1 originally).  Remember the fact that we need a correction pass.
   // See if the value must be promoted to floating-point in the correction pass.  Return value of -2 if there are values all of which fit in an integer, -3 if float is required
   else{rc|=EWOVFLOOR0; D d=tceil(*x); *z=fbits^(SGNTO0(fbits)<<(BW-2)); if(d!=(I)d)rc|=EWOVFLOOR1;} } ,  // we use DQ; i is n-1-reali, ~i = (reali-n+1)-1 = i-n
-  R rc?rc:EVOK;
+  return rc?rc:EVOK;
  ; )  // x100 0011 1100 =>2^61
 static AMON(ceilD,  D,D, *z=tceil(*x);)
 static AMON(ceilZ,  Z,Z, *z=zceil(*x);)
@@ -37,7 +37,7 @@ static AMONPS(sgnZ,   Z,Z, , if((1.0-jt->cct)>zmag(*x))*z=zeroZ; else *z=ztrend(
 
 static AMON(sqrtI,  D,I, ASSERTWR(0<=*x,EWIMAG); *z=sqrt((D)*x);)
 
-static AMONPS(sqrtD,  D,D, I ret=EVOK; , if(*x>=0)*z=sqrt(*x);else{*z=-sqrt(-*x); ret=EWIMAG;}, R ret;)  // if input is negative, leave sqrt as negative
+static AMONPS(sqrtD,  D,D, I ret=EVOK; , if(*x>=0)*z=sqrt(*x);else{*z=-sqrt(-*x); ret=EWIMAG;}, return ret;)  // if input is negative, leave sqrt as negative
 static AMON(absD,   I,I, *z= *x&0x7fffffffffffffff;)
 static AMON(sqrtZ,  Z,Z, *z=zsqrt(*x);)
 
@@ -47,10 +47,10 @@ static AMONPS(expZ, Z,Z, , *z=zexp(*x); , HDR1JERR)
 static AMON(logB,   D,B, *z=*x?0:infm;)
 static AMON(logZ,   Z,Z, *z=zlog(*x);)
 
-static AMONPS(absI,   I,I, I vtot=0; , I val=*x; val=(val^REPSGN(val))-REPSGN(val); vtot |= val; *z=val; , R vtot<0?EWOV:EVOK;)
+static AMONPS(absI,   I,I, I vtot=0; , I val=*x; val=(val^REPSGN(val))-REPSGN(val); vtot |= val; *z=val; , return vtot<0?EWOV:EVOK;)
 static AMONPS(absZ,   D,Z, , *z=zmag(*x); , HDR1JERR)
 
-static AHDR1(oneB,C,C){memset(z,C1,n); R EVOK;}
+static AHDR1(oneB,C,C){memset(z,C1,n); return EVOK;}
 
 extern AHDR1FN expI, expD, logI, logD;
 
@@ -79,7 +79,7 @@ static A jtva1s(J jt,A w,A self,I cv,VA1F ado){A e,x,z,ze,zx;B c;I n,oprc,t,zt;P
  oprc=oprc<0?EWOV:oprc;  //   If a restart is required, turn the result to EWOV (must be floor/ceil)
  if(oprc!=EVOK){
   jt->jerr=(UC)oprc;  // signal error to the retry code, or to the system
-  if(jt->jerr<=NEVM)R 0;
+  if(jt->jerr<=NEVM)return 0;
   J jtinplace=(J)((I)jt+JTRETRY);  // tell va1 it's a retry
   RZ(ze=jtva1(jtinplace,e,self)); 
   jt->jerr=(UC)oprc; RZ(zx=jtva1(jtinplace,x,self));   // restore restart signal for the main data too
@@ -89,7 +89,7 @@ static A jtva1s(J jt,A w,A self,I cv,VA1F ado){A e,x,z,ze,zx;B c;I n,oprc,t,zt;P
  SPB(zp,i,ca(SPA(wp,i)));
  SPB(zp,e,ze);
  SPB(zp,x,zx);
- R z;
+ return z;
 }
 
 #define VA1CASE(e,f) (10*(e)+(f))
@@ -105,7 +105,7 @@ static A jtva1(J jt,A w,A self){A z;I cv,n,t,wt,zt;VA1F ado;
  }else{
   I m=REPSGN((wt&XNUM+RAT)-1);   // -1 if not XNUM/RAT
   switch(VA1CASE(jt->jerr,FAV(self)->lc-VA2CMIN)){
-   default:     R 0;  // unknown type - error must have come from previous verb
+   default:     return 0;  // unknown type - error must have come from previous verb
    // all these cases are needed because sparse code may fail over to them
    case VA1CASE(EWOV,  VA2CMIN-VA2CMIN): cv=VD;       ado=floorD;               break;
    case VA1CASE(EWOV,  VA2CMAX-VA2CMIN): cv=VD;       ado=ceilD;                break;
@@ -119,8 +119,8 @@ static A jtva1(J jt,A w,A self){A z;I cv,n,t,wt,zt;VA1F ado;
   }
   RESETERR;
  }
- if(ado==0)R w;  // if function is identity, return arg
- if(unlikely((-(AT(w)&SPARSE)&-n)<0))R va1s(w,self,cv,ado);  // branch off to do sparse
+ if(ado==0)return w;  // if function is identity, return arg
+ if(unlikely((-(AT(w)&SPARSE)&-n)<0))return va1s(w,self,cv,ado);  // branch off to do sparse
  // from here on is dense va1
  t=atype(cv); zt=rtype(cv);  // extract required type of input and result
  if(UNSAFE(t&~wt)){RZ(w=cvt(t,w)); jtinplace=(J)((I)jtinplace|JTINPLACEW);}  // convert input if necessary; if we converted, converted result is ipso facto inplaceable.  t is usually 0
@@ -152,7 +152,7 @@ static A jtva1(J jt,A w,A self){A z;I cv,n,t,wt,zt;VA1F ado;
   // not recoverable in place.  If recoverable with a retry, do the retry; otherwise fail.  Caller will decide; we return error indic
   // we set the error code from the value given by the routine, except that if it involves a restart it must have been ceil/floor that we couldn't restart - that's a EWOV
   oprc=oprc<0?EWOV:oprc; if(oprc>NEVM)RESETERR; jt->jerr=(UC)oprc;  // if this is going to retry, clear the old error text; but leave the error value
-  R 0;
+  return 0;
  }
 }
 
@@ -178,4 +178,4 @@ DF1(jtatomic1){A z;
  }
 }
 
-DF1(jtpix   ){F1PREFIP; ARGCHK1(w); if(XNUM&AT(w)&&(jt->xmode==XMFLR||jt->xmode==XMCEIL))R jtatomic1(jtinplace,w,self); R jtatomic2(jtinplace,pie,w,ds(CSTAR));}
+DF1(jtpix   ){F1PREFIP; ARGCHK1(w); if(XNUM&AT(w)&&(jt->xmode==XMFLR||jt->xmode==XMCEIL))return jtatomic1(jtinplace,w,self); return jtatomic2(jtinplace,pie,w,ds(CSTAR));}

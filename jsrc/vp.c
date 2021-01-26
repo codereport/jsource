@@ -10,7 +10,7 @@ static I jtord(J jt,A w){I j,n,*v,z;
  ARGCHK1(w);
  n=AN(w); z=-n;
  if(n){if(!(INT&AT(w)))RZ(w=cvt(INT,w)); v=AV(w); DQ(n, j=*v++; z=z<j?j:z;); ++z;}
- R z;
+ return z;
 }  // the order of the permutation w: max element of w (could be negative)
 
 F1(jtpinv){I m=-1,n,*v;  // empty perm will set m=0
@@ -18,7 +18,7 @@ F1(jtpinv){I m=-1,n,*v;  // empty perm will set m=0
  RZ(w=vi(w));
  n=AN(w); v=AV(w);
  DO(n, I r=v[i]^REPSGN(v[i]); m=r>m?r:m;); ++m;  // take 1s-comp of negative ele#, then find max; add 1 to get #eles
- R indexof(pfill(m,w),IX(m));
+ return indexof(pfill(m,w),IX(m));
 }    /* permutation inverse */
 
 // w contains indexes (its shape is immaterial).  n is the length of the axis.  Result is new array, same shape, with equivalent positive indexes
@@ -27,11 +27,11 @@ A jtpind(J jt,I n,A w){A z;I j,*v;
  RZ(z=AT(w)&INT?w:cvt(INT,w));  // z is now an INT vector, possibly the input argument
  // Make a quick scan to see if all are positive, as they usually are
  for(j=AN(z), v=IAV(z);j;--j)if((UI)*v++>=(UI)n)break;
- if(j==0)R z;  // if all indices in range, keep the original vector
+ if(j==0)return z;  // if all indices in range, keep the original vector
  // There was an out-of-bounds or negative index.  We may have to modify the index vector.  Reallocate it if we didn't already
  if(z==w)RZ(z=ca(z));  // Create temp area if we don't have one already
  for(j=AN(z), v=IAV(z);j;--j){if((UI)*v>=(UI)n){*v+=n; ASSERT((UI)*v<(UI)n,EVINDEX);} ++v;}  // replace negative indexes
- R z;
+ return z;
 }    /* positive indices */
 
 // n is the order of permutation w; w may omit some indexes
@@ -67,7 +67,7 @@ static F1(jtcfd){A b,q,x,z,*zv;B*bv;I c,i,j,n,*qv,*u,*v,zn;
  }
  AN(z)=AS(z)[0]=zn=i; j=zn-1; DO(zn>>1, x=zv[i]; zv[i]=zv[j]; zv[j]=x; --j;);
  AFLAG(z)|=AFPRISTINE;  // what we generated is always pristine
- R z;
+ return z;
 }    /* cycle from direct */
 
 static A jtdfc(J jt,I n,A w){PROLOG(0082);A b,q,*wv,z;B*bv;I c,j,qn,*qv,*x;
@@ -85,13 +85,13 @@ static A jtdfc(J jt,I n,A w){PROLOG(0082);A b,q,*wv,z;B*bv;I c,j,qn,*qv,*x;
  EPILOG(z);
 }    /* direct from cycle */
 
-F1(jtcdot1){F1RANK(1,jtcdot1,UNUSED_VALUE); R BOX&AT(w)?dfc(ord(raze(w)),w):cfd(w);}
+F1(jtcdot1){F1RANK(1,jtcdot1,UNUSED_VALUE); return BOX&AT(w)?dfc(ord(raze(w)),w):cfd(w);}
 
 F2(jtcdot2){A p;I k;
  F2RANK(1,RMAX,jtcdot2,UNUSED_VALUE);
  SETIC(w,k);
  RZ(p=BOX&AT(a)?dfc(k,a):pfill(k,a));
- R AR(w)?from(p,w):w;
+ return AR(w)?from(p,w):w;
 }
 
 F1(jtpparity){A x,y,z;B *u;I i,j,k,m,n,p,r,*s,*v,*zv;
@@ -106,7 +106,7 @@ F1(jtpparity){A x,y,z;B *u;I i,j,k,m,n,p,r,*s,*v,*zv;
   zv[i]=p&(j-n-1);   // return parity or 0
   v+=n;
  }
- R z;
+ return z;
 }    /* permutation parity; # interchanges to get i.n */
 
 // reduced form seems to be (>:i.-$y) #: y where y is the permutation number (note there is a redundant 0 at the end)
@@ -119,21 +119,21 @@ static F1(jtdfr){A z;I c,d,i,j,m,n,*v,*x;
   DO(n-1, j=i; c=x[j+v[j]]; DO(1+v[j], d=x[j+i]; x[j+i]=c; c=d;););   // within the length-j suffix of the permutation, right-rotate the first v[j] elements 
   x+=n; v+=n;
  }
- R z;
+ return z;
 }    /* direct from reduced */
 
 static F1(jtrfd){A z;I j,k,m,n,r,*s,*x;
  RZ(z=ca(w)); x=AV(z);
  r=AR(w); s=AS(w); PROD(m,r-1,s);
  if(n=s[r-1])DO(m, j=n-1; ++x; DO(n-1, k=0; DO(j--, k+=*x>x[i];); *x++=k;););
- R z;
+ return z;
 }    /* reduced from direct */
 
 F1(jtadot1){A y;I n;
  F1RANK(1,jtadot1,UNUSED_VALUE);
  RZ(y=BOX&AT(w)?cdot1(w):pfill(ord(w),w));
  SETIC(y,n);
- R base2(cvt(XNUM,apv(n,n,-1L)),rfd(y));
+ return base2(cvt(XNUM,apv(n,n,-1L)),rfd(y));
 }
 
 F2(jtadot2){A m,p;I n;
@@ -142,7 +142,7 @@ F2(jtadot2){A m,p;I n;
  ASSERT(all1(le(negate(m),a))&&all1(lt(a,m)),EVINDEX);
  if(!AR(w)){RZ(vi(a)); RCA(w);}
  RZ(p=dfr(vi(abase2(apv(n,n,-1L),a))));
- R equ(w,IX(n))?p:from(p,w);  // special case when w is index vector - just return permutation.  Otherwise shuffle items of w
+ return equ(w,IX(n))?p:from(p,w);  // special case when w is index vector - just return permutation.  Otherwise shuffle items of w
  // pristinity unchanged here: if w boxed, it was set by {
 }
 

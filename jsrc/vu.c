@@ -6,7 +6,7 @@
 #include "j.h"
 
 
-B jtvc1(J jt,I n,US*v){DQ(n, RZ(255>=*v++);); R 1;}
+B jtvc1(J jt,I n,US*v){DQ(n, RZ(255>=*v++);); return 1;}
      /* verify that 2-byte chars have high-order 0 bytes */
 
 // allocate new datablock and return the ASCII for the characters in w
@@ -45,7 +45,7 @@ static F1(jttoc2){A z;C*wv,*zv;I n;C4*w4;US*z2;
  {
  DQ(n, *z2++=(US)*w4++;);
  }
- R z;
+ return z;
 }    /* convert 1-byte chars or 4-byte chars(discard high order half) to 2-byte chars */
 
 static F1(jttoc2e){A z;I m,n,r;
@@ -84,22 +84,22 @@ F1(jtuco1){I t;
  ARGCHK1(w);
  t=AT(w);
  ASSERT(!AN(w)||t&JCHAR+NUMERIC,EVDOMAIN);
- R t&NUMERIC?c2fi(w):t&C2T?w:toc2(w);  // was ca(w)
+ return t&NUMERIC?c2fi(w):t&C2T?w:toc2(w);  // was ca(w)
 }    /* return 2-byte chars unchanged; convert 1-byte or 4-byte to 2-byte */
 
 F2(jtuco2){I j;
  ARGCHK2(a,w);
  RE(j=i0(a));
  switch(j){
-  case 1: R toc1(1,w);
-  case 2: R toc2(w);
-  case 3: R ifc2(w);
-  case 4: R c2fi(w);
-  case 5: R toc1(0,w);
-  case 6: R toc2e(w);
-  case 7: R toutf16(w);
-  case 8: R toutf8(w);
-  case 9: R toutf32(w);
-  case 10: R tou32(w);
+  case 1: return toc1(1,w);
+  case 2: return toc2(w);
+  case 3: return ifc2(w);
+  case 4: return c2fi(w);
+  case 5: return toc1(0,w);
+  case 6: return toc2e(w);
+  case 7: return toutf16(w);
+  case 8: return toutf8(w);
+  case 9: return toutf32(w);
+  case 10: return tou32(w);
   default: ASSERT(0,EVDOMAIN);
 }}

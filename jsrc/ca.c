@@ -37,9 +37,9 @@ static X jtxmodpow(J jt,A a,A w,A h){A ox,z;
 
 #define DMOD 46340         /* <. %: _1+2^31 */
 #define XMOD 3037000499    /* <. %: _1+2^63 */
-static I dmodpow(D x,I n,D m){D z=1; while(n){if(1&n)z=fmod(z*x,m); x=fmod(x*x,m); n>>=1;} R(I)z;}
+static I dmodpow(D x,I n,D m){D z=1; while(n){if(1&n)z=fmod(z*x,m); x=fmod(x*x,m); n>>=1;} return(I)z;}
 
-static I imodpow(I x,I n,I m){I z=1; while(n){if(1&n)z=(z*x)%m;     x=(x*x)%m;     n>>=1;} R   z;}
+static I imodpow(I x,I n,I m){I z=1; while(n){if(1&n)z=(z*x)%m;     x=(x*x)%m;     n>>=1;} return   z;}
 
 static DF2(jtmodpow2){A h;B b,c;I at,m,n,wt,x,z;
  PREF2(jtmodpow2);
@@ -48,20 +48,20 @@ static DF2(jtmodpow2){A h;B b,c;I at,m,n,wt,x,z;
  if(RAT&AT(w))RZ(w=pcvt(XNUM,w)) else if(!(AT(w)&INT+XNUM))RZ(w=pcvt(INT,w));
  at=AT(a); wt=AT(w);
  if(((AT(h)|at|wt)&XNUM)&&!((at|wt)&(NOUN&~(XNUM+INT)))){A z;
-  z=xmodpow(a,w,h); if(!jt->jerr)R z; RESETERR; R residue(h,expn2(a,w)); 
+  z=xmodpow(a,w,h); if(!jt->jerr)return z; RESETERR; return residue(h,expn2(a,w));
  }
  n=AV(w)[0];
- if(!(INT&at&&INT&wt&&0<=n))R residue(h,expn2(a,w));
+ if(!(INT&at&&INT&wt&&0<=n))return residue(h,expn2(a,w));
  m=AV(h)[0]; x=AV(a)[0];
- if(!m)R expn2(a,w);
- if(XMOD<m||XMOD<-m||m==IMIN||x==IMIN)R cvt(INT,xmodpow(a,w,h));
+ if(!m)return expn2(a,w);
+ if(XMOD<m||XMOD<-m||m==IMIN||x==IMIN)return cvt(INT,xmodpow(a,w,h));
  if(b=0>m)m=-m;
  if(c=0>x)x=-x; x=x%m; if(c)x=m-x;
  z=imodpow(x,n,m);
- R sc(b?z-m:z);
+ return sc(b?z-m:z);
 }    /* a m&|@^ w ; m guaranteed to be INT or XNUM */
 
-static DF1(jtmodpow1){A g=FAV(self)->fgh[1]; R rank2ex0(FAV(g)->fgh[0],w,self,jtmodpow2);}  // m must be an atom; I think n can have shape.  But we treat w as atomic
+static DF1(jtmodpow1){A g=FAV(self)->fgh[1]; return rank2ex0(FAV(g)->fgh[0],w,self,jtmodpow2);}  // m must be an atom; I think n can have shape.  But we treat w as atomic
      /* m&|@(n&^) w ; m guaranteed to be INT or XNUM */
 
 // u@v and u@:v
@@ -88,17 +88,17 @@ RZ(z=(f1)(jtinplace,gx,fs));} \
 ,0114)
 // special case for rank 0.  Transfer to loop.  
 // if there is only one cell, process it through on1, which understands this type
-static DF1(jton10){R jtrank1ex0(jt,w,self,on1cell);}  // pass inplaceability through
-static DF2(jtupon20){R jtrank2ex0(jt,a,w,self,jtupon2cell);}  // pass inplaceability through
+static DF1(jton10){return jtrank1ex0(jt,w,self,on1cell);}  // pass inplaceability through
+static DF2(jtupon20){return jtrank2ex0(jt,a,w,self,jtupon2cell);}  // pass inplaceability through
 
 // special lightweight case for u@[ and u@].
-static DF1(onright1){F1PREFIP; R (FAV(FAV(self)->fgh[0])->valencefns[0])(jtinplace,w,FAV(self)->fgh[0]);}  // pass straight through.  All we do here is set self.  Leave inplaceability unchanged
-static DF2(onleft2){F2PREFIP; R (FAV(FAV(self)->fgh[0])->valencefns[0])((J)(((I)jtinplace&~(JTINPLACEA+JTINPLACEW))+(((I)jtinplace&JTINPLACEA)>>(JTINPLACEAX-JTINPLACEWX))),a,FAV(self)->fgh[0]);}  // move inplaceable a to w
-static DF2(onright2){F2PREFIP; R (FAV(FAV(self)->fgh[0])->valencefns[0])((J)((I)jtinplace&~JTINPLACEA),w,FAV(self)->fgh[0]);}  // keep inplaceable w
+static DF1(onright1){F1PREFIP; return (FAV(FAV(self)->fgh[0])->valencefns[0])(jtinplace,w,FAV(self)->fgh[0]);}  // pass straight through.  All we do here is set self.  Leave inplaceability unchanged
+static DF2(onleft2){F2PREFIP; return (FAV(FAV(self)->fgh[0])->valencefns[0])((J)(((I)jtinplace&~(JTINPLACEA+JTINPLACEW))+(((I)jtinplace&JTINPLACEA)>>(JTINPLACEAX-JTINPLACEWX))),a,FAV(self)->fgh[0]);}  // move inplaceable a to w
+static DF2(onright2){F2PREFIP; return (FAV(FAV(self)->fgh[0])->valencefns[0])((J)((I)jtinplace&~JTINPLACEA),w,FAV(self)->fgh[0]);}  // keep inplaceable w
 
 // u@n
-static DF1(onconst1){DECLFG;R (f1)(jt,gs,fs);}
-static DF2(onconst2){DECLFG;R (f1)(jt,gs,fs);}
+static DF1(onconst1){DECLFG;return (f1)(jt,gs,fs);}
+static DF2(onconst2){DECLFG;return (f1)(jt,gs,fs);}
 
 // x u&v y
 // We don't bother passing WILLOPEN from u into v, since it's rarely used.  We do pass WILLOPEN into u.
@@ -112,7 +112,7 @@ CS2IP(static,static,on2, \
  POPZOMB; jtinplace=(J)(intptr_t)(((I)jtinplace&~(JTINPLACEA+JTINPLACEW))+(I )(ga!=prota)*JTINPLACEA+(I )(gw!=protw)*JTINPLACEW); jtinplace=FAV(fs)->flag&VJTFLGOK2?jtinplace:jt; \
  RZ(z=(f2)(jtinplace,ga,gw,fs)); \
 ,0023)
-static DF2(on20){R jtrank2ex0(jt,a,w,self,on2cell);}  // pass inplaceability through
+static DF2(on20){return jtrank2ex0(jt,a,w,self,on2cell);}  // pass inplaceability through
 
 static DF2(atcomp){AF f;A z;
  ARGCHK2(a,w); 
@@ -168,12 +168,12 @@ F2(jtatop){A f,g,h=0,x;AF f1=on1,f2=jtupon2;B b=0,j;C c,d,e;I flag, flag2=0,m=-1
    // We give the w the strange flagging of NAME AND ALSO LIT - it will be handled as a name when executed, but as a noun for representations
    if(AR(w)<=1 && (g=tokens(vs(w),1)) && AN(g)==1 && AT(AAV(g)[0])&NAME){w=rifvs(AAV(g)[0]); AT(w)|=LIT;}
   }
-  R fdef(0,CAT,VERB, onconst1,onconst2, a,w,h, VFLAGNONE, RMAX,RMAX,RMAX);
+  return fdef(0,CAT,VERB, onconst1,onconst2, a,w,h, VFLAGNONE, RMAX,RMAX,RMAX);
  }
  wv=FAV(w); d=wv->id;
  if((d&~1)==CLEFT){
   // the very common case u@] and u@[.  Take ASGSAFE and inplaceability from u.  No IRS.  Vector the monad straight to u; vector the dyad to our routine that shuffles args and inplace bits
-  R fdef(0,CAT,VERB, onright1,d&1?onright2:onleft2, a,w,0, (av->flag&VASGSAFE)+(av->flag&VJTFLGOK1)*((VJTFLGOK2+VJTFLGOK1)/VJTFLGOK1), RMAX,RMAX,RMAX);
+  return fdef(0,CAT,VERB, onright1,d&1?onright2:onleft2, a,w,0, (av->flag&VASGSAFE)+(av->flag&VJTFLGOK1)*((VJTFLGOK2+VJTFLGOK1)/VJTFLGOK1), RMAX,RMAX,RMAX);
  }
  // Set flag with ASGSAFE status from f/g; keep INPLACE? in sync with f1,f2.  But we can turn off inplacing that is not supported by v, which may
  // save a few tests during execution and is vital for handling <@v, where we may execute v directly without going through @ and therefore mustn't inplace
@@ -243,7 +243,7 @@ F2(jtatop){A f,g,h=0,x;AF f1=on1,f2=jtupon2;B b=0,j;C c,d,e;I flag, flag2=0,m=-1
  if(f1==on1){flag2|=VF2RANKATOP1; if(wv->mr==RMAX)f1=on1cell; else{if(wv->mr==0)f1=jton10;}}
  if(f2==jtupon2){flag2|=VF2RANKATOP2; if(wv->lrr==(UI)R2MAX)f2=jtupon2cell; else{if(wv->lrr==0)f2=jtupon20;}}
 
- R fdef(flag2,CAT,VERB, f1,f2, a,w,h, flag, (I)wv->mr,(I)lrv(wv),rrv(wv));
+ return fdef(flag2,CAT,VERB, f1,f2, a,w,h, flag, (I)wv->mr,(I)lrv(wv),rrv(wv));
 }
 
 // u@:v
@@ -253,7 +253,7 @@ F2(jtatco){A f,g;AF f1=on1cell,f2=jtupon2cell;C c,d,e;I flag, flag2=0,m=-1;V*av,
  wv=FAV(w); d=wv->id;
  if((d&~1)==CLEFT){
   // the very common case u@:] and u@:[.  Take ASGSAFE and inplaceability from u.  No IRS.  Vector the monad straight to u; vector the dyad to our routine that shuffles args and inplace bits
-  R fdef(0,CATCO,VERB, onright1,d&1?onright2:onleft2, a,w,0, (av->flag&VASGSAFE)+(av->flag&VJTFLGOK1)*((VJTFLGOK2+VJTFLGOK1)/VJTFLGOK1), RMAX,RMAX,RMAX);
+  return fdef(0,CATCO,VERB, onright1,d&1?onright2:onleft2, a,w,0, (av->flag&VASGSAFE)+(av->flag&VJTFLGOK1)*((VJTFLGOK2+VJTFLGOK1)/VJTFLGOK1), RMAX,RMAX,RMAX);
  }
  // Set flag with ASGSAFE status from f/g; keep INPLACE? in sync with f1,f2.  But we can turn off inplacing that is not supported by v, which may
  // save a few tests during execution and is vital for handling <@v, where we may execute v directly without going through @ and therefore mustn't inplace
@@ -312,7 +312,7 @@ F2(jtatco){A f,g;AF f1=on1cell,f2=jtupon2cell;C c,d,e;I flag, flag2=0,m=-1;V*av,
  // Copy the open/raze status from v into u@v
  flag2 |= wv->flag2&(VF2WILLOPEN1|VF2WILLOPEN2W|VF2WILLOPEN2A|VF2USESITEMCOUNT1|VF2USESITEMCOUNT2W|VF2USESITEMCOUNT2A);
 
- R fdef(flag2,CATCO,VERB, f1,f2, a,w,0L, flag, RMAX,RMAX,RMAX);
+ return fdef(flag2,CATCO,VERB, f1,f2, a,w,0L, flag, RMAX,RMAX,RMAX);
 }
 
 // u&:v
@@ -343,7 +343,7 @@ F2(jtampco){AF f1=on1cell,f2=on2cell;C c,d;I flag,flag2=0,linktype=0;V*wv;
  // Install the flags to indicate that this function starts out with a rank loop, and thus can be subsumed into a higher rank loop
  flag2|=(f1==on1cell)<<VF2RANKATOP1X;  flag2|=VF2RANKATOP2; 
  A z; RZ(z=fdef(flag2,CAMPCO,VERB, f1,f2, a,w,0L, flag, RMAX,RMAX,RMAX));
- FAV(z)->localuse.lclr[0]=linktype; R z;
+ FAV(z)->localuse.lclr[0]=linktype; return z;
 }
 
 // m&v and u&n.  Never inplace the noun argument, since the verb may
@@ -356,22 +356,22 @@ static DF1(withr){F1PREFIP;DECLFG; jtinplace=(J)(intptr_t)((I)jtinplace+((I)jtin
 
 // Here for m&i. and m&i:, computing a prehashed table from a
 // v->fgh[2] is the info/hash/bytemask result from calculating the prehash
-static DF1(ixfixedleft  ){V*v=FAV(self); R indexofprehashed(v->fgh[0],w,v->fgh[2]);}
+static DF1(ixfixedleft  ){V*v=FAV(self); return indexofprehashed(v->fgh[0],w,v->fgh[2]);}
 // Here for compounds like (i.&0@:e.)&n or -.&n that compute a prehashed table from w
-static DF1(ixfixedright ){V*v=FAV(self); R indexofprehashed(v->fgh[1],w,v->fgh[2]);}
+static DF1(ixfixedright ){V*v=FAV(self); return indexofprehashed(v->fgh[1],w,v->fgh[2]);}
 
 // Here if ct was 0 when the compound was created - we must keep it 0
 static DF1(ixfixedleft0 ){A z;V*v=FAV(self); 
  PUSHCCT(1.0) z=indexofprehashed(v->fgh[0],w,v->fgh[2]); POPCCT
- R z;
+ return z;
 }
 
 static DF1(ixfixedright0){A z;V*v=FAV(self); 
  PUSHCCT(1.0) z=indexofprehashed(v->fgh[1],w,v->fgh[2]); POPCCT 
- R z;
+ return z;
 }
 
-static DF2(with2){A z; R df1(z,w,powop(self,a,0));}
+static DF2(with2){A z; return df1(z,w,powop(self,a,0));}
 
 // u&v
 F2(jtamp){A h=0;AF f1,f2;B b;C c,d=0;I flag,flag2=0,linktype=0,mode=-1,p,r;V*u,*v;
@@ -402,7 +402,7 @@ F2(jtamp){A h=0;AF f1,f2;B b;C c,d=0;I flag,flag2=0,linktype=0,mode=-1,p,r;V*u,*
    case CWORDS: RZ(a=fsmvfya(a)); f1=jtfsmfx; flag&=~VJTFLGOK1; break;
    case CIBEAM: if(v->fgh[0]&&v->fgh[1]&&128==i0(v->fgh[0])&&3==i0(v->fgh[1])){RZ(h=crccompile(a)); f1=jtcrcfixedleft; flag&=~VJTFLGOK1;}
   }
-  R fdef(0,CAMP,VERB, f1,with2, a,w,h, flag, RMAX,RMAX,RMAX);
+  return fdef(0,CAMP,VERB, f1,with2, a,w,h, flag, RMAX,RMAX,RMAX);
  case VN: 
   f1=withr; v=FAV(a);
   // set flag according to ASGSAFE of verb, and INPLACE and IRS from the dyad of the verb 
@@ -424,7 +424,7 @@ F2(jtamp){A h=0;AF f1,f2;B b;C c,d=0;I flag,flag2=0,linktype=0,mode=-1,p,r;V*u,*
    if(b){PUSHCCT(1.0) h=indexofsub(mode,w,mark); POPCCT f1=ixfixedright0; flag&=~VJTFLGOK1;}
    else {            h=indexofsub(mode,w,mark);             f1=ixfixedright ; flag&=~VJTFLGOK1;}
   }
-  R fdef(0,CAMP,VERB, f1,with2, a,w,h, flag, RMAX,RMAX,RMAX);
+  return fdef(0,CAMP,VERB, f1,with2, a,w,h, flag, RMAX,RMAX,RMAX);
  case VV:
   // u&v
   f1=on1; f2=on2;
@@ -470,6 +470,6 @@ F2(jtamp){A h=0;AF f1,f2;B b;C c,d=0;I flag,flag2=0,linktype=0,mode=-1,p,r;V*u,*
   if(f1==on1){flag2|=VF2RANKATOP1; if(r==RMAX)f1=on1cell; else{if(r==0)f1=jton10;}}
   if(f2==on2){flag2|=VF2RANKATOP2; if(r==RMAX)f2=on2cell; else{if(r==0)f2=on20;}}
   A z; RZ(z=fdef(flag2,CAMP,VERB, f1,f2, a,w,0L, flag, r,r,r));
-  FAV(z)->localuse.lclr[0]=linktype; R z;
+  FAV(z)->localuse.lclr[0]=linktype; return z;
  }
 }

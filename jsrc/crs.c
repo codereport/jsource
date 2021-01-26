@@ -11,7 +11,7 @@ static A jtsprarg(J jt,I f,A x){A q;B*b,c;I r;P*xp;
  if(SPARSE&AT(x)){c=1; RZ(b=bfi(r,SPA(xp,a),1)); DO(f, if(!b[i]){c=0; break;});}
  else{c=0; GATV0(q,B01,r,1); b=BAV(q); memset(b,C0,r);}
  memset(b,C1,f);
- R c||!r?x:reaxis(ifb(r,b),x);
+ return c||!r?x:reaxis(ifb(r,b),x);
 }    /* ensure frame axes are sparse */
 
 static A jtsprinit(J jt,I f,I r,I*s,I t,P*p){A a,a1,z;I n,*u,*v;P*zp;
@@ -21,7 +21,7 @@ static A jtsprinit(J jt,I f,I r,I*s,I t,P*p){A a,a1,z;I n,*u,*v;P*zp;
  SPB(zp,e,ca(SPA(p,e)));
  SPB(zp,i,iota(v2(0L,n)));  // empty so cannot be readonly
  SPB(zp,x,repeat(num(0),SPA(p,x)));
- R z;
+ return z;
 }    /* initialize an argument cell */
 
 static B*jtspredge(J jt,A y,I f,I*zm){A q;B*b;I c,m,n,*v;
@@ -32,7 +32,7 @@ static B*jtspredge(J jt,A y,I f,I*zm){A q;B*b;I c,m,n,*v;
   b[n-1]=1;
  }
  *zm=m;
- R b;
+ return b;
 }    /* cell boundaries per index matrix y */
 
 static A jtsprz(J jt,A z0,A y,A e,I f,I*s){A a,a0,q,y0,z;B d;I c,et,h,m,n,r,t,*u,*v,zt;P*ep,*zp,*zq;
@@ -46,7 +46,7 @@ static A jtsprz(J jt,A z0,A y,A e,I f,I*s){A a,a0,q,y0,z;B d;I c,et,h,m,n,r,t,*u
   zp=PAV(z); SPB(zp,e,q); SPB(zp,a,mtv); 
   GATR(q,INT,0,2,(I*)&zeroZ); SPB(zp,i,q);   // zeroZ is a pun for 0 0!!
   GA(q,t,0L,1+AR(z),0L); *AS(q)=0; ICPY(1+AS(q),AS(z),AR(z)); SPB(zp,x,q);
-  R z;
+  return z;
  }
  e=q;
  zt=t=AT(z0); d=t&SPARSE?0:1; if(d)zt=STYPE(t); else t=DTYPE(zt);
@@ -54,7 +54,7 @@ static A jtsprz(J jt,A z0,A y,A e,I f,I*s){A a,a0,q,y0,z;B d;I c,et,h,m,n,r,t,*u
  r=AR(z0);
  GASPARSE(z,zt,1,f+r-1,s); ICPY(AS(z)+f,AS(z0)+1,r-1);
  zp=PAV(z); SPB(zp,e,TYPESEQ(m,et)?e:cvt(m,e));
- if(d){SPB(zp,a,apvwr(f,0L,1L)); SPB(zp,i,y); SPB(zp,x,TYPESEQ(m,t)?z0:cvt(m,z0)); R z;}
+ if(d){SPB(zp,a,apvwr(f,0L,1L)); SPB(zp,i,y); SPB(zp,x,TYPESEQ(m,t)?z0:cvt(m,z0)); return z;}
  zq=PAV(z0); y0=SPA(zq,i); v=AS(y0); n=v[0]; c=v[1]; v=AV(y0);
  ASSERT(equ(e,SPA(zq,e)),EVNONCE);
  h=*AS(y); GATV0(q,INT,h,1); u=AV(q); memset(u,C0,h*SZI); 
@@ -65,14 +65,14 @@ static A jtsprz(J jt,A z0,A y,A e,I f,I*s){A a,a0,q,y0,z;B d;I c,et,h,m,n,r,t,*u
  SPB(zp,a,a);
 // memory leak if(TYPESEQ(m,t))ras(SPA(zq,x));
  SPB(zp,x,TYPESEQ(m,t)?SPA(zq,x):cvt(m,SPA(zq,x)));
- R z;
+ return z;
 }    /* result processing */
 
 A jtsprank1(J jt,A w,A fs,I mr,AF f1){PROLOG(0043);A q,wx,wy,wy1,ww,z,ze,zi,*zv;B*wb;
      I c,i,*iv,j,k,m,n,*v,wcr,wf,wr,*ws,wt,*wv;P*wp,*wq;
  ARGCHK1(w);
  wr=AR(w); ws=AS(w); efr(wcr,wr,mr); wf=wr-wcr;
- if(!wf)R CALL1(f1,w,fs);
+ if(!wf)return CALL1(f1,w,fs);
  DO(wf, ASSERT(ws[i]!=0,EVNONCE););
  RZ(w=sprarg(wf,w)); wp=PAV(w); wx=SPA(wp,x); wy=SPA(wp,i); 
  if(mr){
@@ -105,7 +105,7 @@ static I jtspradv(J jt,I n,B*b,I f,I r,I j,P*p,A*z){A s,x;I k;P*q;
   SPB(q,i,from(s,dropr(f,SPA(p,i)))); 
   SPB(q,x,from(s,x));
  }else RZ(*z=AN(x)?from(sc(j),x):ca(SPA(p,e)));
- R k;
+ return k;
 }    /* advance to the next cell */
 
 static A jtsprank2_0w(J jt,A a,A w,A fs,AF f2,I wf,I wcr){PROLOG(0044);A we,ww,y,z,zi,*zv;B*wb;
@@ -152,11 +152,11 @@ A jtsprank2(J jt,A a,A w,A fs,I lr,I rr,AF f2){PROLOG(0046);A aa,ae,we,ww,y,zi,z
  STACKCHKOFL
  ar=AR(a); as=AS(a); efr(acr,ar,lr); af=ar-acr; 
  wr=AR(w); ws=AS(w); efr(wcr,wr,rr); wf=wr-wcr; 
- if(!af&&!wf)R CALL2(f2,a,w,fs);
+ if(!af&&!wf)return CALL2(f2,a,w,fs);
  DO(af, ASSERT(as[i]!=0,EVNONCE););
  DO(wf, ASSERT(ws[i]!=0,EVNONCE););
- if(!af)R sprank2_0w(a,w,fs,f2,wf,wcr);
- if(!wf)R sprank2_a0(a,w,fs,f2,af,acr);
+ if(!af)return sprank2_0w(a,w,fs,f2,wf,wcr);
+ if(!wf)return sprank2_a0(a,w,fs,f2,af,acr);
  f=MIN(af,wf); g=MAX(af,wf); m=1;
  if(f<g){d=g-f; RZ(y=odom(2L,d,f+(af<wf?ws:as))); ii=AV(y); m=*AS(y);}
  ASSERT(!ICMP(as,ws,f),EVLENGTH);

@@ -6,8 +6,8 @@
 #include "j.h"
 
 
-static APFX(maxC, UC,UC,UC, MAX,, R EVOK;)
-static APFX(minC, UC,UC,UC, MIN,, R EVOK;)
+static APFX(maxC, UC,UC,UC, MAX,, return EVOK;)
+static APFX(minC, UC,UC,UC, MIN,, return EVOK;)
 
 static AIFX(ltC,  B, UC,UC, <  )
 static AIFX(leC,  B, UC,UC, <= )
@@ -25,8 +25,8 @@ DF2(jtcharfn2){A z;B b;C c;I an,ar,*as,m,n,wn,wr,*ws,zn,zt;V*v;VF ado=0;
 // not used   this was never detected as special  case CAT:   z=VAV(v->fgh[0])->fgh[0]; v=VAV(z); if(CAMP==v->id&&256==i0(v->fgh[0])&&CSTILE==ID(v->fgh[1]));
   default: ASSERTSYS(ado,"charfn2 ado");
  }else switch(c){
-  case CEQ:   R eq(a,w);
-  case CNE:   R ne(a,w);
+  case CEQ:   return eq(a,w);
+  case CNE:   return ne(a,w);
   case CLT:   zt=B01; ado=(VF)ltC;  break;
   case CLE:   zt=B01; ado=(VF)leC;  break;
   case CGE:   zt=B01; ado=(VF)geC;  break;
@@ -38,7 +38,7 @@ DF2(jtcharfn2){A z;B b;C c;I an,ar,*as,m,n,wn,wr,*ws,zn,zt;V*v;VF ado=0;
  wn=AN(w); wr=AR(w); ws=AS(w);
  ASSERTAGREE(as,ws,MIN(ar,wr))
  b=ar<=wr; zn=b?wn:an; m=b?an:wn; I r=b?wr:ar; I *s=b?ws:as; I rs=b?ar:wr; PROD(n,r-rs,s+rs);
- GA(z,zt,zn,r,s); if(!zn)R z;
+ GA(z,zt,zn,r,s); if(!zn)return z;
  n^=-b; n=(n==~1)?1:n;  // encode b flag in sign of n
  ((AHDR2FN*)ado)(n,m,CAV(a),CAV(w),CAV(z),jt);
  RETF(z);

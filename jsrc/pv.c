@@ -19,7 +19,7 @@
 #define FGR(v)      folk(v->fgh[0],v->fgh[1],ds(CRIGHT))
 #define LF          ds(CLEFT )
 #define RT          ds(CRIGHT)
-#define RZZ(exp)    {if(!(exp))R zz;}
+#define RZZ(exp)    {if(!(exp))return zz;}
 
 
 static const TA zz={0,0};
@@ -37,13 +37,13 @@ static F1(jtvtokens){A t,*y,z;I n,*s;TA*x;
  x->a=mark; x->t=0; ++x;
  x->a=mark; x->t=0; ++x;
  AM(z)=tmonad;
- R z;
+ return z;
 }    /* build string sentence into queue suitable for parsing */
 
-static F1(jtcfn){I j; R !AR(w)&&INT&AT(w)&&(j=AV(w)[0],-9<=j&&j<=9)?FCONS(w):qq(w,ainf);}
+static F1(jtcfn){I j; return !AR(w)&&INT&AT(w)&&(j=AV(w)[0],-9<=j&&j<=9)?FCONS(w):qq(w,ainf);}
      /* constant function with value w */
 
-static A jttine(J jt,A w,I tmonad){V*v; R w&&tmonad&&(v=FAV(w),CP==v->fgh[0]&&RT==v->fgh[2])?v->fgh[1]:w;}
+static A jttine(J jt,A w,I tmonad){V*v; return w&&tmonad&&(v=FAV(w),CP==v->fgh[0]&&RT==v->fgh[2])?v->fgh[1]:w;}
      /* if monad and w = [: g ], then g; else just w itself */
 
 static I tvi(A w){A x;I i,z=-1;V*v;
@@ -53,15 +53,15 @@ static I tvi(A w){A x;I i,z=-1;V*v;
    x=v->fgh[0]; 
    if(!AR(x)&&INT&AT(x)){i=AV(x)[0]-TC; z=0<=i&&i<NTTAB?i:-1;}
  }}
- R z;
+ return z;
 }
 
 static const C ctab[]={CEQ,CMIN,CMAX,CPLUS,CPLUSDOT,CPLUSCO,CSTAR,CSTARDOT,CSTARCO,CMATCH,CNE,0};
 
 static F1(jtswapc){C c;
- if(!primitive(w))R swap(w);
+ if(!primitive(w))return swap(w);
  c=ID(w);
- R strchr(ctab,c)?w:c==CLT?ds(CGT):c==CGT?ds(CLT):c==CLE?ds(CGE):c==CGE?ds(CLE):swap(w);
+ return strchr(ctab,c)?w:c==CLT?ds(CGT):c==CGT?ds(CLT):c==CLE?ds(CGE):c==CGE?ds(CLE):swap(w);
 }    /* w~ or equivalent */
 
 TACT(jtvmonad){A fs;TA y,z={num(1),0};V*v;
@@ -73,11 +73,11 @@ TACT(jtvmonad){A fs;TA y,z={num(1),0};V*v;
   else if(NOUN&AT(v->fgh[0]))           z.t=folk(CP,folk(CP,fs,folk(v->fgh[0],v->fgh[1],RT)),tine(v->fgh[2]));
   else                             z.t=folk(tine(v->fgh[0]),folk(CP,fs,v->fgh[1]),tine(v->fgh[2]));
  }
- R z;
+ return z;
 }
 
 static I jtdcase(J jt,I xi,V*v){
- R !v ? 0 : 0>xi ? 1 : CFORK!=v->id ? 2 : NOUN&AT(v->fgh[0]) ? 3 : CP==v->fgh[0] ? 4 : 5;
+ return !v ? 0 : 0>xi ? 1 : CFORK!=v->id ? 2 : NOUN&AT(v->fgh[0]) ? 3 : CP==v->fgh[0] ? 4 : 5;
 }    
 /* 0   x        */
 /* 1      f     */
@@ -90,7 +90,7 @@ TACT(jtvdyad){A fs,sf,xt,yt;B xl,xr,yl,yr;I xi=-1,yi=-1;TA x,y,z={num(1),0};V*u=
  fs=stack[e-1].a; x=stack[b]; y=stack[e]; sf=swapc(fs);
  if(xt=tine(x.t)){xi=tvi(x.t); u=FAV(xt); if(0>xi&&CFORK==u->id){xi=tvi(u->fgh[0]); if(0>xi)xi=tvi(u->fgh[2]);}}
  if(yt=tine(y.t)){yi=tvi(y.t); v=FAV(yt); if(0>yi&&CFORK==v->id){yi=tvi(v->fgh[0]); if(0>yi)yi=tvi(v->fgh[2]);}}
- if(fs==ds(CLEFT)){if(xt)z.t=xt; else z.a=x.a; R z;}
+ if(fs==ds(CLEFT)){if(xt)z.t=xt; else z.a=x.a; return z;}
  if(0>xi&&0>yi)switch((xt?2:0)+(yt?1:0)){
   case 0: df2(z.a,x.a,y.a,fs); break;
   case 1: z.t=folk(x.a,fs,yt); break;
@@ -141,38 +141,38 @@ TACT(jtvdyad){A fs,sf,xt,yt;B xl,xr,yl,yr;I xi=-1,yi=-1;TA x,y,z={num(1),0};V*u=
   }
   RZZ(z.t);
  }
- R z;
+ return z;
 }
 
-TACT(jtvadv ){TA z={0,0}; if(CHK1)df1(z.a,stack[b].a,stack[e].a); R z;}
+TACT(jtvadv ){TA z={0,0}; if(CHK1)df1(z.a,stack[b].a,stack[e].a); return z;}
 
-TACT(jtvconj){TA z={0,0}; if(CHK2)df2(z.a,stack[b].a,stack[e].a,stack[e-1].a); R z;}
+TACT(jtvconj){TA z={0,0}; if(CHK2)df2(z.a,stack[b].a,stack[e].a,stack[e-1].a); return z;}
 
-TACT(jtvfolk){TA z={0,0}; if(CHK3)z.a=folk(stack[b].a,stack[1+b].a,stack[e].a); R z;}
+TACT(jtvfolk){TA z={0,0}; if(CHK3)z.a=folk(stack[b].a,stack[1+b].a,stack[e].a); return z;}
 
-TACT(jtvhook){TA z={0,0}; if(CHK2)z.a=hook(stack[b].a,stack[e].a); R z;}
+TACT(jtvhook){TA z={0,0}; if(CHK2)z.a=hook(stack[b].a,stack[e].a); return z;}
 
-TACT(jtvpunc){R stack[e-1];}
+TACT(jtvpunc){return stack[e-1];}
 
 TACT(jtvis){A ea,et,n,t;I j;TA*u,z={0,0};
  n=stack[b].a;
- if(!(NAME&AT(n)&&CASGN==CAV(stack[1+b].a)[0]))R z;
+ if(!(NAME&AT(n)&&CASGN==CAV(stack[1+b].a)[0]))return z;
  t=sfn(0,n); j=*ttabi; u=ttab;
- if(!t||NTTAB==*ttabi)R z;
- DQ(j, if(equ(t,u->a))R z; ++u;);
+ if(!t||NTTAB==*ttabi)return z;
+ DQ(j, if(equ(t,u->a))return z; ++u;);
  ea=stack[e].a; et=stack[e].t;
  symbisdel(n,ea,locsyms);
  ++*ttabi; u->a=t; u->t=et?et:cfn(ea);
  z.a=ea;  z.t=tsubst?qq(sc(TC+j),num(-1)):et;
- R z;
+ return z;
 }
 
 static TACT(jtvmove){A t;TA*u,x,z;
  x=stack[MAX(0,e)];
- if(!(NAME&AT(x.a))||ASGN&AT(stack[b].a))R x;
+ if(!(NAME&AT(x.a))||ASGN&AT(stack[b].a))return x;
  z.a=nameref(x.a,locsyms); z.t=0; t=sfn(0,x.a); u=ttab;
  DO(*ttabi, if(equ(t,u->a)){z.t=tsubst&&ttabi0<=i?qq(sc(TC+i),num(-1)):u->t; break;} ++u;);
- R z;
+ return z;
 }
 
 /* final translator result                             */
@@ -183,9 +183,9 @@ static TACT(jtvmove){A t;TA*u,x,z;
 
 static A jtvfinal(J jt,A w,I tmonad,I tsubst,TA *ttab,I *ttabi,I ttabi0){I i;V*u,*v;
  ARGCHK1(w);
- if(!(VERB&AT(w)))R w;
+ if(!(VERB&AT(w)))return w;
  v=FAV(w);
- if(CFORK!=v->id){i=tvi(w); R 0<=i?jtvfinal(jt,ttab[i].t,tmonad,tsubst,ttab,ttabi,ttabi0):w;}
+ if(CFORK!=v->id){i=tvi(w); return 0<=i?jtvfinal(jt,ttab[i].t,tmonad,tsubst,ttab,ttabi,ttabi0):w;}
  RZ(v->fgh[0]=incorp(tine(jtvfinal(jt,v->fgh[0],tmonad,tsubst,ttab,ttabi,ttabi0))));
  RZ(v->fgh[1]=incorp(tine(jtvfinal(jt,v->fgh[1],tmonad,tsubst,ttab,ttabi,ttabi0))));
  RZ(v->fgh[2]=incorp(tine(jtvfinal(jt,v->fgh[2],tmonad,tsubst,ttab,ttabi,ttabi0))));
@@ -195,7 +195,7 @@ static A jtvfinal(J jt,A w,I tmonad,I tsubst,TA *ttab,I *ttabi,I ttabi0){I i;V*u
   else if(CQQ==u->id&&NOUN&AT(u->fgh[0])&&equ(ainf,u->fgh[1]))v->fgh[0]=u->fgh[0];  // must be incorped already
   if(NOUN&AT(v->fgh[0]))RZ(w=folk(v->fgh[0],v->fgh[1],v->fgh[2]));
  }
- R tine(w);
+ return tine(w);
 }    
 
 static A jttparse(J jt,A w,A locsyms,I tmonad,I tsubst,TA *ttab,I *ttabi,I ttabi0){A*s,t,x;C d;I b,*c,e,i,j,k,m,n;TA*stack;
@@ -214,13 +214,13 @@ static A jttparse(J jt,A w,A locsyms,I tmonad,I tsubst,TA *ttab,I *ttabi,I ttabi
    b=cases[i].b; j=n+b;
    e=cases[i].e; k=n+e;
    stack[k]=(cases[i].vf)(jt,j,k,stack,locsyms,tmonad,tsubst,ttab,ttabi,ttabi0);
-   if(!(stack[k].a))R A0;
+   if(!(stack[k].a))return A0;
    DQ(b,stack[--k]=stack[--j];); n=k;
   } else {stack[n-1]=jtvmove(jt,n,m-1,stack,locsyms,tmonad,tsubst,ttab,ttabi,ttabi0); RE(0); n-=0<m--;}
  } while(0<=m);
  x=stack[1+n].a; t=stack[1+n].t;
  ASSERT(NOUN&AT(x)&&MARK&AT(stack[2+n].a),EVSYNTAX);
- R t?jtvfinal(jt,t,tmonad,tsubst,ttab,ttabi,ttabi0):cfn(x);
+ return t?jtvfinal(jt,t,tmonad,tsubst,ttab,ttabi,ttabi0):cfn(x);
 }
 
 F1(jtvtrans){PROLOG(0053);A locsyms,y,z=0; I c,i,ttabi;TA ttab[NTTAB];

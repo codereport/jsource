@@ -24,7 +24,7 @@ static A jtipprep(J jt,A a,A w,I zt,I*pm,I*pn,I*pp){A z=mark;I*as,ar,ar1,m,mn,n,
  GA(z,zt,mn,ar1+wr1,0);   // allocate result area
  MCISH(AS(z),      as,ar1);  // Set shape: 1-frame of a followed by shape of item of w
  MCISH(AS(z)+ar1,1+ws,wr1);
- R z;
+ return z;
 }    /* argument validation & result for an inner product */
 
 #define IINC(x,y)    {b=0>x; x+=y; BOV(b==0>y&&b!=0>x);}
@@ -212,7 +212,7 @@ I cachedmmult(J jt,D* av,D* wv,D* zv,I m,I n,I p,I flgs){D c[(CACHEHEIGHT+1)*CAC
    }
   }
  }
- R 1;
+ return 1;
 }
 
 // +/ . *
@@ -221,9 +221,9 @@ F2(jtpdt){PROLOG(0038);A z;I ar,at,i,m,n,p,p1,t,wr,wt;
  // ?r = rank, ?t = type (but set Boolean type for an empty argument)
  ar=AR(a); at=AT(a); at=AN(a)?at:B01;
  wr=AR(w); wt=AT(w); wt=AN(w)?wt:B01;
- if(unlikely(((at|wt)&SPARSE))!=0)R pdtsp(a,w);  // Transfer to sparse code if either arg sparse
- if(unlikely(((at|wt)&XNUM+RAT))!=0)R df2(z,a,w,atop(slash(ds(CPLUS)),qq(ds(CSTAR),v2(1L,AR(w)))));  // On indirect numeric, execute as +/@(*"(1,(wr)))
- if(unlikely(B01&(at|wt)&&TYPESNE(at,wt)&&((ar-1)|(wr-1)|(AN(a)-1)|(AN(w)-1))>=0))R pdtby(a,w);   // If exactly one arg is boolean, handle separately
+ if(unlikely(((at|wt)&SPARSE))!=0)return pdtsp(a,w);  // Transfer to sparse code if either arg sparse
+ if(unlikely(((at|wt)&XNUM+RAT))!=0)return df2(z,a,w,atop(slash(ds(CPLUS)),qq(ds(CSTAR),v2(1L,AR(w)))));  // On indirect numeric, execute as +/@(*"(1,(wr)))
+ if(unlikely(B01&(at|wt)&&TYPESNE(at,wt)&&((ar-1)|(wr-1)|(AN(a)-1)|(AN(w)-1))>=0))return pdtby(a,w);   // If exactly one arg is boolean, handle separately
  {t=maxtyped(at,wt); if(!TYPESEQ(t,AT(a))){RZ(a=cvt(t,a));} if(!TYPESEQ(t,AT(w))){RZ(w=cvt(t,w));}}  // convert args to compatible precisions, changing a and w if needed.  B01 if both empty
  ASSERT(t&NUMERIC,EVDOMAIN);
  // Allocate result area and calculate loop controls
@@ -234,8 +234,8 @@ F2(jtpdt){PROLOG(0038);A z;I ar,at,i,m,n,p,p1,t,wr,wt;
  // INT multiplies convert to float, for both 32- and 64-bit systems.  It is converted back if there is no overflow
  m=t; m=t&INT?FL:m; m=t&B01?INT:m;  // type of result, promoting bool and int
  RZ(z=ipprep(a,w,m,&m,&n,&p));  // allocate the result area, with the needed shape and type
- if(AN(z)==0)R z;  // return without computing if result is empty
- if(!p){memset(AV(z),C0,AN(z)<<bplg(AT(z))); R z;}  // if dot-products are all 0 length, set them all to 0
+ if(AN(z)==0)return z;  // return without computing if result is empty
+ if(!p){memset(AV(z),C0,AN(z)<<bplg(AT(z))); return z;}  // if dot-products are all 0 length, set them all to 0
  // If either arg is atomic, reshape it to a list
  if(!ar!=!wr){if(ar)RZ(w=reshape(sc(p),w)) else RZ(a=reshape(sc(p),a));}
  p1=p-1;
@@ -459,34 +459,34 @@ static A jtipbx(J jt,A a,A w,C c,C d){A g=0,x0,x1,z;B*av,*av0,b,*v0,*v1,*zv;C c0
 #include "cip_t.h"
    break;
  }
- R z;
+ return z;
 }    /* a f/ . g w  where a and w are nonempty and a is boolean */
 
 static DF2(jtdotprod){A fs,gs;C c;I r;V*sv;
  ARGCHK3(a,w,self);
  sv=FAV(self); fs=sv->fgh[0]; gs=sv->fgh[1];  // op is fs . gs
  if((SGNIF(AT(a)&AT(w),B01X)&-AN(a)&-AN(w)&-(FAV(gs)->flag&VISATOMIC2))<0&&CSLASH==ID(fs)&&  // fs is c/
-     (c=FAV(FAV(fs)->fgh[0])->id,c==CSTARDOT||c==CPLUSDOT||c==CNE))R ipbx(a,w,c,FAV(gs)->id);  // [+.*.~:]/ . boolean
+     (c=FAV(FAV(fs)->fgh[0])->id,c==CSTARDOT||c==CPLUSDOT||c==CNE))return ipbx(a,w,c,FAV(gs)->id);  // [+.*.~:]/ . boolean
 r=lr(gs);   // left rank of v
- A z; R df2(z,a,w,atop(fs,qq(gs,v2(r==RMAX?r:1+r,RMAX))));  // inner product according to the Dic
+ A z; return df2(z,a,w,atop(fs,qq(gs,v2(r==RMAX?r:1+r,RMAX))));  // inner product according to the Dic
 }
 
 
 static F1(jtminors){A d,z;
  RZ(d=apvwr(3L,-1L,1L)); AV(d)[0]=0;
- R drop(d,df2(z,num(1),w,bsdot(ds(CLEFT))));  // 0 0 1 }. 1 [\. w 
+ return drop(d,df2(z,num(1),w,bsdot(ds(CLEFT))));  // 0 0 1 }. 1 [\. w
 }
 
 static DF1(jtdet){DECLFG;A h=sv->fgh[2];I c,r,*s;
  ARGCHK1(w);
  r=AR(w); s=AS(w);
- A z; if(h&&1<r&&2==s[r-1]&&s[r-2]==s[r-1])R df1(z,w,h);
+ A z; if(h&&1<r&&2==s[r-1]&&s[r-2]==s[r-1])return df1(z,w,h);
  F1RANK(2,jtdet,self);
  c=2>r?1:s[1];
- R !c ? df1(z,mtv,slash(gs)) : 1==c ? CALL1(f1,ravel(w),fs) : h && c==s[0] ? gaussdet(w) : detxm(w,self); 
+ return !c ? df1(z,mtv,slash(gs)) : 1==c ? CALL1(f1,ravel(w),fs) : h && c==s[0] ? gaussdet(w) : detxm(w,self);
 }
 
-DF1(jtdetxm){A z; R dotprod(IRS1(w,0L,1L,jthead,z),det(minors(w),self),self);}
+DF1(jtdetxm){A z; return dotprod(IRS1(w,0L,1L,jthead,z),det(minors(w),self),self);}
      /* determinant via expansion by minors. w is matrix with >1 columns */
 
 F2(jtdot){A f,h=0;AF f2=jtdotprod;C c,d;
@@ -497,5 +497,5 @@ F2(jtdot){A f,h=0;AF f2=jtdotprod;C c,d;
    if(c==CPLUS )f2=jtpdt;   // +/ . * is a special function
    if(c==CMINUS)RZ(h=eval("[: -/\"1 {.\"2 * |.\"1@:({:\"2)"));  // -/ . * - calculate some function used by determinant?
  }}
- R fdef(0,CDOT,VERB, jtdet,f2, a,w,h, 0L, 2L,RMAX,RMAX);
+ return fdef(0,CDOT,VERB, jtdet,f2, a,w,h, 0L, 2L,RMAX,RMAX);
 }

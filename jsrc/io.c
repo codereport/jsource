@@ -163,15 +163,15 @@ A jtinpl(J jt,B b,I n,C*s){C c;I k=0;
   if(n&&COFF==s[n-1])joff(num(0));
   c=jt->bx[9]; if((UC)c>127)DO(n, if(' '!=s[i]&&c!=s[i]){k=i; break;});
  }
- R str(n-k,s+k);
+ return str(n-k,s+k);
 }
 
 // s->beginning of input, j is starting index of search, n is #characters
 // result is index just past the end-of-line, which ends after CR, LF, or both
 static I advl(I j,I n,C*s){B b;C c,*v;
  v=j+s; 
- DO(n-j, c=*v++; b=c==CCR; if(b||c==CLF)R j+1+i+(I )(b&&CLF==*v););
- R n;
+ DO(n-j, c=*v++; b=c==CCR; if(b||c==CLF)return j+1+i+(I )(b&&CLF==*v););
+ return n;
 }    /* advance one line on CR, CRLF, or LF */
 
 void breakclose(J jt);
@@ -193,12 +193,12 @@ A jtjgets(J jt,C*p){A y;B b;C*v;I j,k,m,n;UC*s;
  if(jt->dcs){   // DCSCRIPT debug type - means we are reading from file (or string)  for 0!:x
   ++jt->dcs->dcn; j=jt->dcs->dcix; // increment line# and fetch current start index
   y=jt->dcs->dcy; n=AN(y); s=UAV(y);
-  if(!(j<n))R 0;  // return 0 for EOF
+  if(!(j<n))return 0;  // return 0 for EOF
   jt->dcs->dcj=k=j;  // k=start index
   jt->dcs->dcix=j=advl(j,n,s);  // j=end+1 index
   m=j-k; if(m&&32>s[k+m-1])--m; if(m&&32>s[k+m-1])--m;  // m is length; discard trailing control characters (usually CRLF, but not necessarily) ?not needed: done in inpl
   jtwri(jt,MTYOLOG,p,m,k+s);  // log the input
-  R inpl(b,m,k+s);  // process & return the line
+  return inpl(b,m,k+s);  // process & return the line
  }
  /* J calls for input in 3 cases:
     debug suspension for normal input
@@ -218,7 +218,7 @@ A jtjgets(J jt,C*p){A y;B b;C*v;I j,k,m,n;UC*s;
   v=((inputtype)(jt->sminput))(jt,p);
  }
  jt->recurstate=RECSTATEBUSY;  // prompt complete, go back to normal running state
- R inpl(b,(I)strlen(v),v);  // return A block for string
+ return inpl(b,(I)strlen(v),v);  // return A block for string
 }
 
 
@@ -257,7 +257,7 @@ F1(jtjoff){I x;
  if(jt->sesm)jsto(jt, MTYOEXIT,(C*)x); else JFree(jt);
 // let front-end to handle exit
 // exit((int)x);
- R 0;
+ return 0;
 }
 
 I jdo(J jt, C* lp){I e;A x;
@@ -282,12 +282,12 @@ I jdo(J jt, C* lp){I e;A x;
  showerr();
  spfree();
  tpop(old);
- R e;
+ return e;
 }
 
 #define SZINT             ((I)sizeof(int))
 
-C* getlocale(J jt){A y=locname(mtv); y=AAV(y)[0]; R CAV(str0(y));}
+C* getlocale(J jt){A y=locname(mtv); y=AAV(y)[0]; return CAV(str0(y));}
 
 // Front-ends can call any functions exposed by JE, but the callback function for 11!:0 only calls jga to allocate a new literal array for returning result.
 // A front-end knows nothing how J memory pool works and it won't try to free or pop memory itself. This was just a design decision. eg,
@@ -343,7 +343,7 @@ DF1(jtwd){A z=0;C*p=0;D*pd;I e,*pi,t;V*sv;
     e=((dowdtype)(jt->smdowd))(jt, (int)t, w, &z);
   }
   jt->recurstate|=RECSTATEBUSY;  // wd complete, go back to normal running state, BUSY normally or RECUR if a prompt is pending
-  if(!e) R mtm;   // e==0 is MTM
+  if(!e) return mtm;   // e==0 is MTM
   ASSERT(e<=0,e); // e>=0 is EVDOMAIN etc
   if(SMOPTPOLL&jt->smoption){jt->recurstate=RECSTATEPROMPT; z=(A)((polltype)(jt->smpoll))(jt, (int)t, (int)e); jt->recurstate=RECSTATEBUSY; RZ(z);} // alternate way to get result aftercallback, but not yet used in any front-end
   if(SMOPTNOJGA&jt->smoption) z=ca(z);  // front-end promised not to use Jga to allocate memory, but not yet used in any front-end
@@ -358,7 +358,7 @@ DF1(jtwd){A z=0;C*p=0;D*pd;I e,*pi,t;V*sv;
 
 static char breaknone=0;
 
-B jtsesminit(J jt){jt->adbreakr=jt->adbreak=&breakdata; R 1;}
+B jtsesminit(J jt){jt->adbreakr=jt->adbreak=&breakdata; return 1;}
 
 // Main entry point to run the sentence in *lp
 int _stdcall JDo(J jt, C* lp){int r; UI savcstackmin, savcstackinit, savqtstackinit;
@@ -383,11 +383,11 @@ int _stdcall JDo(J jt, C* lp){int r; UI savcstackmin, savcstackinit, savqtstacki
  while(jt->nfe){  // nfe normally loops here forever
   A *old=jt->tnextpushp; r=(int)jdo(jt,nfeinput(jt,"input_jfe_'   '")); tpop(old);
  }
- R r;
+ return r;
 } 
 
 C* _stdcall JGetR(J jt){
- R jt->capture?jt->capture:(C*)"";
+ return jt->capture?jt->capture:(C*)"";
 }
 
 /* socket protocol CMDGET name */
@@ -397,7 +397,7 @@ C* _stdcall JGetR(J jt){
 // it preserves the interface
 // If the pointer to the name is NULL we just free the block
 A _stdcall JGetA(J jt, I n, C* name){A x,z=0;
- if(name==0){if(jt->iomalloc){FREE(jt->iomalloc); jt->malloctotal -= jt->iomalloclen; jt->iomalloc=0; jt->iomalloclen=0;} R 0;}
+ if(name==0){if(jt->iomalloc){FREE(jt->iomalloc); jt->malloctotal -= jt->iomalloclen; jt->iomalloc=0; jt->iomalloclen=0;} return 0;}
  jt->jerr=0;
  A *old=jt->tnextpushp;
  if(!(x=symbrdlock(nfs(n,name)))){ jsignal(EVILNAME);  // look up the name, error if invalid
@@ -417,17 +417,17 @@ A _stdcall JGetA(J jt, I n, C* name){A x,z=0;
  }
  // z has the result, which is in MALLOC memory if it exists.  Free any J memory we used
  tpop(old);
- R z;   // return the allocated (or reused) area
+ return z;   // return the allocated (or reused) area
 }
 
 /* socket protocol CMDSET */
 I _stdcall JSetA(J jt,I n,C* name,I dlen,C* d){
  jt->jerr=0;
- if(!vnm(n,name)){ jsignal(EVILNAME); R EVILNAME;}
+ if(!vnm(n,name)){ jsignal(EVILNAME); return EVILNAME;}
  A *old=jt->tnextpushp;
  symbisdel(nfs(n,name),jtunbin(jt,str(dlen,d)),jt->global);
  tpop(old);
- R jt->jerr;
+ return jt->jerr;
 }
 
 /* set jclient callbacks */
@@ -494,7 +494,7 @@ C* _stdcall JGetLocale(J jt){
  C* z=getlocale(jt);  // get address of string to return
  if(jt->iomalloc=MALLOC(1+strlen(z))){jt->malloctotal += 1+strlen(z); jt->iomalloclen = 1+strlen(z); strcpy(jt->iomalloc,z); }  // allocate & copy, and account for its space
  tpop(old);  // free allocated blocks
- R jt->iomalloc;  // return pointer to string
+ return jt->iomalloc;  // return pointer to string
 }
 
 A _stdcall Jga(J jt, I t, I n, I r, I*s){A z;
@@ -522,7 +522,7 @@ void jsto(J jt,I type,C*s){C e;I ex;
   jt->jerr=e; jt->etxn=ex; 
  }else{
   // Normal output.  Call the output routine
-  if(jt->smoutput){((outputtype)(jt->smoutput))(jt,(int)type,s);R;} // JFE output
+  if(jt->smoutput){((outputtype)(jt->smoutput))(jt,(int)type,s);return;} // JFE output
   // lazy - malloc failure will crash and should alloc larger when full
   if(!jt->capture){jt->capture=MALLOC(capturesize);jt->capture[0]=0;}
   if(capturesize>2+strlen(jt->capture)+strlen(s))
@@ -530,7 +530,7 @@ void jsto(J jt,I type,C*s){C e;I ex;
   else
    strcpy(jt->capture,"too much output ...\n");
  }
- R;
+ return;
 }
 
 #if SYS&SYS_UNIX
@@ -541,39 +541,39 @@ C dll_initialized= 0; // dll init sets to 1
 __attribute__((constructor)) static void Initializer(int argc, char** argv, char** envp)
 {
  J jtnobdy=malloc(sizeof(JST)+JTALIGNBDY-1);
- if(!jtnobdy) R;
+ if(!jtnobdy) return;
  J jt = (J)(((I)jtnobdy+JTALIGNBDY-1)&-JTALIGNBDY);  // force to SDRAM page boundary
  memset(jt,0,sizeof(JST));
- if(!jtglobinit(jt)){free(jtnobdy); R;}
+ if(!jtglobinit(jt)){free(jtnobdy); return;}
  dll_initialized= 1; jt->heap=(void *)jtnobdy;  // save allo address for later free
 }
 
 J JInit(void){
- if(!dll_initialized) R 0; // constructor failed
+ if(!dll_initialized) return 0; // constructor failed
  J jtnobdy;
  RZ(jtnobdy=malloc(sizeof(JST)+JTALIGNBDY-1));
  J jt = (J)(((I)jtnobdy+JTALIGNBDY-1)&-JTALIGNBDY);  // force to SDRAM page boundary
  memset(jt,0,sizeof(JST));
- if(!jtjinit2(jt,0,0)){free(jtnobdy); R 0;};
+ if(!jtjinit2(jt,0,0)){free(jtnobdy); return 0;};
  jt->heap=(void *)jtnobdy;  // save allo address for later free
- R jt;
+ return jt;
 }
 
 // clean up at the end of a J instance
 int JFree(J jt){
-  if(!jt) R 0;
+  if(!jt) return 0;
   breakclose(jt);
   jt->jerr=0; jt->etxn=0; /* clear old errors */
   if(jt->xep&&AN(jt->xep)){A *old=jt->tnextpushp; immex(jt->xep); fa(jt->xep); jt->xep=0; jt->jerr=0; jt->etxn=0; tpop(old); }
   dllquit(jt);  // clean up call dll
   free(jt->heap);  // free the initial allocation
-  R 0;
+  return 0;
 }
 #endif
 
 F1(jtbreakfnq){
  ASSERTMTV(w);
- R cstr(jt->breakfn);
+ return cstr(jt->breakfn);
 }
 
 F1(jtbreakfns){A z;I *fh,*mh=0; void* ad;
@@ -581,7 +581,7 @@ F1(jtbreakfns){A z;I *fh,*mh=0; void* ad;
  ASSERT(!AN(w)||AT(w)&LIT,EVDOMAIN);
  ASSERT(AN(w)<NPATH,EVDOMAIN);
  w=str0(w);
- if(!strcmp(jt->breakfn,CAV(w))) R mtm;
+ if(!strcmp(jt->breakfn,CAV(w))) return mtm;
  breakclose(jt);
 #if SYS&SYS_UNIX
  fh=(I*)(I)open(CAV(w),O_RDWR);
@@ -601,7 +601,7 @@ F1(jtbreakfns){A z;I *fh,*mh=0; void* ad;
  jt->breakfh=fh;
  jt->breakmh=mh;
  jt->adbreakr=jt->adbreak=ad;
- R mtm;
+ return mtm;
 }
 
 int valid(C* psrc, C* psnk)
@@ -612,7 +612,7 @@ int valid(C* psrc, C* psnk)
  while(*psrc == ' ') ++psrc;
  if(*psrc) return EVILNAME;
  *psnk = 0;
- return 0;  
+ return 0;
 }
 
 int _stdcall JGetM(J jt, C* name, I* jtype, I* jrank, I* jshape, I* jdata)
@@ -669,12 +669,12 @@ static int setterm(J jt, C* name, I* jtype, I* jrank, I* jshape, I* jdata)
   break;
   
  default:
-  return EVDOMAIN; 
+  return EVDOMAIN;
  }
 
  // validate name
  if(strlen(name) >= sizeof(gn)) return EVILNAME;
- if(valid(name, gn)) return EVILNAME; 
+ if(valid(name, gn)) return EVILNAME;
  for(i=0; i<*jrank; ++i) k *= ((I*)(*jshape))[i];
  a = ga(*jtype, k, *jrank, (I*)*jshape);
  if(!a) return EVWSFULL;

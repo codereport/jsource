@@ -28,9 +28,9 @@ F1(jtgausselm){I c,e,i,j,r,r1,*s;Q p,*u,*v,*x;
    u=v+c*i; p=u[j];  /* pivot */
    ra(p.n); ra(p.d); DO(c, Q z=qminus(u[i],qtymes(p,x[i])); INSTALLRAT(w,u,i,z);); fa(p.n); fa(p.d);
   }
-  if(!gc3(&w,0L,0L,old))R 0;  // use simple gc3 to ensure all changes use the stack, since w is modified inplace.  Alternatively could turn off inplacing here
+  if(!gc3(&w,0L,0L,old))return 0;  // use simple gc3 to ensure all changes use the stack, since w is modified inplace.  Alternatively could turn off inplacing here
  }
- R w;
+ return w;
 }    /* Gaussian elimination in place */
 
 static F1(jtdetr){A z;I c,e,g=1,i,j,k,r,*s;Q d,p,*u,*v,*x;
@@ -41,19 +41,19 @@ static F1(jtdetr){A z;I c,e,g=1,i,j,k,r,*s;Q d,p,*u,*v,*x;
  for(j=0;j<r;++j){
   v=QAV(w); 
   e=-1; u=v+c*j+j; DO(r-j, if(XDIG(u->n)){e=i+j; break;} u+=c;);  /* find pivot row */
-  if(0>e)R cvt(RAT,num(0));
+  if(0>e)return cvt(RAT,num(0));
   x=v+c*j;
   if(j!=e){u=v+c*e; DO(c, Q t1=u[i]; u[i]=x[i]; x[i]=t1;); g=-g;}  /* interchange rows e and j */
-  i=XDIG(x[j].n); if(i==XPINF||i==XNINF)R mark;
+  i=XDIG(x[j].n); if(i==XPINF||i==XNINF)return mark;
   for(i=j+1;i<r;++i){
    u=v+c*i;
    if(XDIG(u[j].n)){p=qdiv(u[j],x[j]); ra(p.n); ra(p.d); for(k=j+1;k<r;++k){Q z=qminus(u[k],qtymes(p,x[k]));INSTALLRAT(w,u,k,z);} fa(p.n); fa(p.d);}
   }
-  if(!gc3(&w,0L,0L,old))R 0;  // use simple gc3 to ensure all changes use the stack, since w is modified inplace.  Alternatively could turn off inplacing here
+  if(!gc3(&w,0L,0L,old))return 0;  // use simple gc3 to ensure all changes use the stack, since w is modified inplace.  Alternatively could turn off inplacing here
  }
  d=0<g?*v:qminus(zeroQ,*v); u=v+1+c; DQ(r-1, d=qtymes(d,*u); u+=1+c;);
  RE(0);
- GAT0(z,RAT,1,0); QAV(z)[0]=d; R z;
+ GAT0(z,RAT,1,0); QAV(z)[0]=d; return z;
 }    /* determinant on rational matrix; works in place */
 
 static F1(jtdetd){D g,h,p,q,*u,*v,*x,*y,z=1.0;I c,d,e,i,j,k,r,*s;
@@ -63,8 +63,8 @@ static F1(jtdetd){D g,h,p,q,*u,*v,*x,*y,z=1.0;I c,d,e,i,j,k,r,*s;
  for(j=0;j<r;++j){
   x=v+c*j; u=x+j; h=0.0; 
   DO(r-j, k=i; DO(c-j, g=ABS(*u); if(h<g){h=g; d=j+k; e=j+i;} ++u;); u+=j;);  /* find pivot, maximum abs element */
-  if(h==inf)R mark;
-  if(0==h)R scf(0.0);
+  if(h==inf)return mark;
+  if(0==h)return scf(0.0);
   if(j!=d){u=v+c*d+j; y=x+j; DQ(c-j, q=*u; *u=*y; *y=q; ++u;  ++y; ); z=-z;}  /* interchange rows j and d */
   if(j!=e){u=x+e;     y=x+j; DQ(r-j, q=*u; *u=*y; *y=q; u+=c; y+=c;); z=-z;}  /* interchange cols j and e */
   q=x[j]; z*=q; JBREAK0;
@@ -73,7 +73,7 @@ static F1(jtdetd){D g,h,p,q,*u,*v,*x,*y,z=1.0;I c,d,e,i,j,k,r,*s;
    if(u[j]){p=u[j]/q; for(k=j+1;k<r;++k)u[k]-=p*x[k];}
  }}
  NAN1;
- R scf(z);
+ return scf(z);
 }    /* determinant on real     matrix; works in place */
 
 #define ZABT(v)         ((v).re*(v).re+(v).im*(v).im)
@@ -86,8 +86,8 @@ static F1(jtdetz){A t;D g,h;I c,d,e,i,j,k,r,*s;Z p,q,*u,*v,*x,*y,z;
  for(j=0;j<r;++j){
   x=v+c*j; u=x+j; h=0.0; 
   DO(r-j, k=i; DO(c-j, g=ZABT(*u); if(h<g){h=g; d=j+k; e=j+i;} ++u;); u+=j;);  /* find pivot, maximum abs element */
-  if(h==inf)R mark;
-  if(0==h)R scf(0.0);
+  if(h==inf)return mark;
+  if(0==h)return scf(0.0);
   if(j!=d){u=v+c*d;              DO(c-j, q=u[j+i]; u[j+i]=x[j+i]; x[j+i]=q;); z=zminus(zeroZ,z);}  /* interchange rows j and d */
   if(j!=e){u=v+c*j+e; y=v+c*j+j; DQ(r-j, q=*u; *u=*y; *y=q; u+=c; y+=c;);     z=zminus(zeroZ,z);}  /* interchange cols j and e */
   q=x[j]; z=ztymes(z,q);
@@ -96,7 +96,7 @@ static F1(jtdetz){A t;D g,h;I c,d,e,i,j,k,r,*s;Z p,q,*u,*v,*x,*y,z;
    if(ZNZ(u[j])){p=zdiv(u[j],q); for(k=j+1;k<r;++k)u[k]=zminus(u[k],ztymes(p,x[k]));}
  }}
  NAN1; RE(0);
- GAT0(t,CMPX,1,0); ZAV(t)[0]=z; R t;
+ GAT0(t,CMPX,1,0); ZAV(t)[0]=z; return t;
 }    /* determinant on complex  matrix; works in place */
 
 F1(jtgaussdet){A z;I*s;
@@ -107,11 +107,11 @@ F1(jtgaussdet){A z;I*s;
  switch(CTTZNOFLAG(AT(w))){
   default:   ASSERT(0,EVDOMAIN);
   case B01X:
-  case INTX:  R detd(cvt(FL,w));
+  case INTX:  return detd(cvt(FL,w));
   case FLX:   z=detd(ca(w));      break;
   case CMPXX: z=detz(ca(w));      break;
   case XNUMX: z=detr(cvt(RAT,w)); break;
   case RATX:  z=detr(ca(w));
  }
- R z==mark?detxm(w,eval("-/ .*")):z;
+ return z==mark?detxm(w,eval("-/ .*")):z;
 }    /* determinant on square matrix */

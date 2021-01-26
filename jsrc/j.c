@@ -115,5 +115,5 @@ F1(jtversq){
  sprintf(p + strlen(p), "%i", __GNUC_MINOR__);
 #endif
 
- R cstr(m);
+ return cstr(m);
 }

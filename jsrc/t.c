@@ -204,5 +204,5 @@ PRIM primtab[256] = {
 
 B jtpinit(J jt){
  AS((A)&primtab[CALP])[0]=NALP;  AK((A)&primtab[CALP])=(I)alp-(I)&primtab[CALP];
- R 1;
+ return 1;
 }

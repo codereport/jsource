@@ -37,7 +37,7 @@
    MC(z,x,d*sizeof(Tx)); x+=d;                                        \
    DQ(n-1, vecfn(1,d,z,x,z+d,jt); z+=d; x+=d; ); z+=d;                     \
   }}                                                                   \
-  R NANTEST?EVNAN:EVOK;                                                             \
+  return NANTEST?EVNAN:EVOK;                                                             \
  }   /* for associative functions only */
 
 #define PREFICPFX(f,Tz,Tx,pfx)  \
@@ -46,7 +46,7 @@
   else{for(i=0;i<m;++i){                                              \
    y=z; DQ(d, *z++=(Tz)*x++;);                                        \
    DQ(n-1, DQ(d, *z=pfx(*y,*x); ++z; ++x; ++y;));                     \
- }}R EVOK;}  /* for associative functions only */
+ }}return EVOK;}  /* for associative functions only */
 
 #define PREFIXALT(f,Tz,Tx,pfx,retstmt)  \
  AHDRP(f,Tz,Tx){B b;I i;Tz v,* y;                                                 \
@@ -64,7 +64,7 @@
    y=z; DQ(d, *z++=    *x++;); b=0;                                                    \
    DQ(n-1, b^=1; DQ(d, pfx(b,*z,*y,*x); ++z; ++x; ++y;));                              \
   }}                                                                                    \
-  R NANTEST?EVNAN:EVOK;                                                                               \
+  return NANTEST?EVNAN:EVOK;                                                                               \
  }
 
 #define PREFICALT(f,Tz,Tx,pfx)  \
@@ -73,7 +73,7 @@
   else{for(i=0;i<m;++i){                                                               \
    y=z; DQ(d, *z++=(Tz)*x++;); b=0;                                                    \
    DQ(n-1, b^=1; DQ(d, pfx(b,*z,*y,*x); ++z; ++x; ++y;));                              \
- }}R EVOK;}
+ }}return EVOK;}
 
 #define PREFIXOVF(f,Tz,Tx,fp1,fvv)  \
  AHDRP(f,I,I){I i,*xx=x,* y,*zz=z;                      \
@@ -83,7 +83,7 @@
   }else{for(i=0;i<m;++i){                                           \
    y=z; DQ(d, *z++=*x++;); zz=z; xx=x;                              \
    DQ(n-1, fvv(d,z,y,x); x=xx+=d; y=zz; z=zz+=d;);             \
- }}R EVOK;}
+ }}return EVOK;}
 
   
 #if SY_ALIGN
@@ -91,7 +91,7 @@
  {T* xx=(T*)x,* yy,* zz=(T*)z;  \
   q=d/sizeof(T);             \
   DQ(m, yy=zz; DQ(q, *zz++=*xx++;); DQ(n-1, DQ(q, *zz++=pfx(*yy,*xx); ++xx; ++yy;)));  \
- R EVOK;}
+ return EVOK;}
 
 #define PREFIXBFX(f,pfx,ipfx,spfx,bpfx,vexp)          \
  AHDRP(f,B,B){B* y;I j,q;                        \
@@ -100,7 +100,7 @@
   else if(0==(d&(sizeof(UINT)-1)))PREFIXBFXLOOP(UINT,ipfx)  \
   else if(0==(d&(sizeof(US  )-1)))PREFIXBFXLOOP(US,  spfx)  \
   else DQ(m, y=z; DQ(d, *z++=*x++;); DQ(n-1, DQ(d, *z++=bpfx(*y,*x); ++x; ++y;)));  \
-  R EVOK;}    /* f/\"r z for boolean associative atomic function f */
+  return EVOK;}    /* f/\"r z for boolean associative atomic function f */
 #else
 #define PREFIXBFX(f,pfx,ipfx,spfx,bpfx,vexp)          \
  AHDRP(f,B,B){B*tv;I i,q,r,t,*xi,*yi,*zi;                      \
@@ -166,11 +166,11 @@ static B jtpscanlt(J jt,I m,I d,I n,B*z,B*x,B p){A t;B*v;I i;
    xiv0=(I*)((I)xiv0+n*d); ziv0=(I*)((I)ziv0+n*d);  // advance to next cell
   }
  }
- R 1;
+ return 1;
 }    /* f/\"r w for < and <: */
 
-AHDRP(ltpfxB,B,B){pscanlt(m,d,n,z,x,C1);R EVOK;}
-AHDRP(lepfxB,B,B){pscanlt(m,d,n,z,x,C0);R EVOK;}
+AHDRP(ltpfxB,B,B){pscanlt(m,d,n,z,x,C1);return EVOK;}
+AHDRP(lepfxB,B,B){pscanlt(m,d,n,z,x,C0);return EVOK;}
 
 // result is alternating pp,~pp,... till a is encountered; then one atom from pa,~pa (as if started from 0), then one atom from ~ps,ps,... repeated
 static B jtpscangt(J jt,I m,I d,I n,B*z,B*x,I apas){
@@ -222,13 +222,13 @@ static B jtpscangt(J jt,I m,I d,I n,B*z,B*x,I apas){
    xiv0=(I*)((I)xiv0+n*d); ziv0=(I*)((I)ziv0+n*d);  // advance to next cell
   }
  }
- R 1;
+ return 1;
 }    /* f/\"r w for > >: +: *: */
 
-AHDRP(  gtpfxB,B,B){pscangt(m,d,n,z,x,0x2);R EVOK;}
-AHDRP(  gepfxB,B,B){pscangt(m,d,n,z,x,0xd);R EVOK;}
-AHDRP( norpfxB,B,B){pscangt(m,d,n,z,x,0x5);R EVOK;}
-AHDRP(nandpfxB,B,B){pscangt(m,d,n,z,x,0xa);R EVOK;}
+AHDRP(  gtpfxB,B,B){pscangt(m,d,n,z,x,0x2);return EVOK;}
+AHDRP(  gepfxB,B,B){pscangt(m,d,n,z,x,0xd);return EVOK;}
+AHDRP( norpfxB,B,B){pscangt(m,d,n,z,x,0x5);return EVOK;}
+AHDRP(nandpfxB,B,B){pscangt(m,d,n,z,x,0xa);return EVOK;}
 
 PREFIXOVF( pluspfxI, I, I,  PLUSP, PLUSVV)
 PREFIXOVF(tymespfxI, I, I, TYMESP,TYMESVV)
@@ -241,13 +241,13 @@ AHDRP(minuspfxI,I,I){C er=0;I i,j,n1=n-1,*xx=x,*y,*zz=z;
   y=z; DQ(d, *z++=*x++;); zz=z; xx=x; j=0;
   DQ(n1, MINUSVV(d,z,y,x); x=xx+=d; y=zz; z=zz+=d; if(n1<=++j)break;
           PLUSVV(d,z,y,x); x=xx+=d; y=zz; z=zz+=d; if(n1<=++j)break;);
-}R EVOK;}
+}return EVOK;}
 
 PREFICPFX( pluspfxO, D, I,  PLUS   )
 PREFICPFX(tymespfxO, D, I,  TYMES  )
 PREFICALT(minuspfxO, D, I,  MINUSPA)
 
-PREFIXPFX( pluspfxB, I, B,  PLUS, plusIB , R EVOK; )
+PREFIXPFX( pluspfxB, I, B,  PLUS, plusIB , return EVOK; )
 AHDRP(pluspfxD,D,D){I i;
  NAN0;
  if(d==1){
@@ -261,18 +261,18 @@ AHDRP(pluspfxD,D,D){I i;
    DQ(n-1, plusDD(1,d,z,x,z+d,jt); z+=d; x+=d;); z+=d;
   }
  }
- R NANTEST?EVNAN:EVOK;
+ return NANTEST?EVNAN:EVOK;
 }   /* for associative functions only */
 PREFIXNAN( pluspfxZ, Z, Z,  zplus, plusZZ  )
 PREFIXPFX( pluspfxX, X, X,  xplus, plusXX ,HDR1JERR; )
 PREFIXPFX( pluspfxQ, Q, Q,  qplus, plusQQ ,HDR1JERR; )
 
-PREFIXPFX(tymespfxD, D, D,  TYMES, tymesDD ,R EVOK;  )
-PREFIXPFX(tymespfxZ, Z, Z,  ztymes, tymesZZ ,R EVOK;)
-PREFIXPFX(tymespfxX, X, X,  xtymes, tymesXX ,R EVOK;)
-PREFIXPFX(tymespfxQ, Q, Q,  qtymes, tymesQQ ,R EVOK;)
+PREFIXPFX(tymespfxD, D, D,  TYMES, tymesDD ,return EVOK;  )
+PREFIXPFX(tymespfxZ, Z, Z,  ztymes, tymesZZ ,return EVOK;)
+PREFIXPFX(tymespfxX, X, X,  xtymes, tymesXX ,return EVOK;)
+PREFIXPFX(tymespfxQ, Q, Q,  qtymes, tymesQQ ,return EVOK;)
 
-PREFIXALT(minuspfxB, I, B,  MINUSPA, R EVOK;)
+PREFIXALT(minuspfxB, I, B,  MINUSPA, return EVOK;)
 PREALTNAN(minuspfxD, D, D,  MINUSPA)
 PREALTNAN(minuspfxZ, Z, Z,  MINUSPZ)
 PREFIXALT(minuspfxX, X, X,  MINUSPX, HDR1JERR;)
@@ -281,44 +281,44 @@ PREFIXALT(minuspfxQ, Q, Q,  MINUSPQ, HDR1JERR;)
 PREALTNAN(  divpfxD, D, D,  DIVPA  )
 PREALTNAN(  divpfxZ, Z, Z,  DIVPZ  )
 
-PREFIXPFX(  maxpfxI, I, I,  MAX , maxII   ,R EVOK;)
-PREFIXPFX(  maxpfxD, D, D,  MAX , maxDD   ,R EVOK;)
-PREFIXPFX(  maxpfxX, X, X,  XMAX, maxXX   ,R EVOK;)
-PREFIXPFX(  maxpfxQ, Q, Q,  QMAX, maxQQ   ,R EVOK;)
-PREFIXPFX(  maxpfxS, SB,SB, SBMAX, maxSS  ,R EVOK;)
+PREFIXPFX(  maxpfxI, I, I,  MAX , maxII   ,return EVOK;)
+PREFIXPFX(  maxpfxD, D, D,  MAX , maxDD   ,return EVOK;)
+PREFIXPFX(  maxpfxX, X, X,  XMAX, maxXX   ,return EVOK;)
+PREFIXPFX(  maxpfxQ, Q, Q,  QMAX, maxQQ   ,return EVOK;)
+PREFIXPFX(  maxpfxS, SB,SB, SBMAX, maxSS  ,return EVOK;)
 
-PREFIXPFX(  minpfxI, I, I,  MIN, minII    ,R EVOK;)
-PREFIXPFX(  minpfxD, D, D,  MIN, minDD    ,R EVOK;)
-PREFIXPFX(  minpfxX, X, X,  XMIN, minXX   ,R EVOK;)
-PREFIXPFX(  minpfxQ, Q, Q,  QMIN, minQQ   ,R EVOK;)
-PREFIXPFX(  minpfxS, SB,SB, SBMIN, minSS  ,R EVOK;)
+PREFIXPFX(  minpfxI, I, I,  MIN, minII    ,return EVOK;)
+PREFIXPFX(  minpfxD, D, D,  MIN, minDD    ,return EVOK;)
+PREFIXPFX(  minpfxX, X, X,  XMIN, minXX   ,return EVOK;)
+PREFIXPFX(  minpfxQ, Q, Q,  QMIN, minQQ   ,return EVOK;)
+PREFIXPFX(  minpfxS, SB,SB, SBMIN, minSS  ,return EVOK;)
 
-PREFIXPFX(bw0000pfxI, UI,UI, BW0000, bw0000II,R EVOK;)
-PREFIXPFX(bw0001pfxI, UI,UI, BW0001, bw0001II,R EVOK;)
-PREFIXPFX(bw0011pfxI, UI,UI, BW0011, bw0011II,R EVOK;)
-PREFIXPFX(bw0101pfxI, UI,UI, BW0101, bw0101II,R EVOK;)
-PREFIXPFX(bw0110pfxI, UI,UI, BW0110, bw0110II,R EVOK;)
-PREFIXPFX(bw0111pfxI, UI,UI, BW0111, bw0111II,R EVOK;)
-PREFIXPFX(bw1001pfxI, UI,UI, BW1001, bw1001II,R EVOK;)
-PREFIXPFX(bw1111pfxI, UI,UI, BW1111, bw1111II,R EVOK;)
+PREFIXPFX(bw0000pfxI, UI,UI, BW0000, bw0000II,return EVOK;)
+PREFIXPFX(bw0001pfxI, UI,UI, BW0001, bw0001II,return EVOK;)
+PREFIXPFX(bw0011pfxI, UI,UI, BW0011, bw0011II,return EVOK;)
+PREFIXPFX(bw0101pfxI, UI,UI, BW0101, bw0101II,return EVOK;)
+PREFIXPFX(bw0110pfxI, UI,UI, BW0110, bw0110II,return EVOK;)
+PREFIXPFX(bw0111pfxI, UI,UI, BW0111, bw0111II,return EVOK;)
+PREFIXPFX(bw1001pfxI, UI,UI, BW1001, bw1001II,return EVOK;)
+PREFIXPFX(bw1111pfxI, UI,UI, BW1111, bw1111II,return EVOK;)
 
 // This old prefix support is needed for sparse matrices
 
 static DF1(jtprefix){DECLF;I r;
  ARGCHK1(w);
- r = (RANKT)jt->ranks; RESETRANK; if(r<AR(w)){R rank1ex(w,self,r,jtprefix);}
- R eachl(apv(SETIC(w,r),1L,1L),w,atop(fs,ds(CTAKE)));
+ r = (RANKT)jt->ranks; RESETRANK; if(r<AR(w)){return rank1ex(w,self,r,jtprefix);}
+ return eachl(apv(SETIC(w,r),1L,1L),w,atop(fs,ds(CTAKE)));
 }    /* f\"r w for general f */
 
 static DF1(jtgprefix){A h,*hv,z,*zv;I m,n,r;
  ARGCHK1(w);
  ASSERT(DENSE&AT(w),EVNONCE);
- r = (RANKT)jt->ranks; RESETRANK; if(r<AR(w)){R rank1ex(w,self,r,jtgprefix);}
+ r = (RANKT)jt->ranks; RESETRANK; if(r<AR(w)){return rank1ex(w,self,r,jtgprefix);}
  SETIC(w,n); 
  h=VAV(self)->fgh[2]; hv=AAV(h); m=AN(h);
  GATV0(z,BOX,n,1); zv=AAV(z); I imod=0;
  DO(n, imod=(imod==m)?0:imod; RZ(zv[i]=df1(h,take(sc(1+i),w),hv[imod])); ++imod;);
- R ope(z);
+ return ope(z);
 }    /* g\"r w for gerund g */
 
 
@@ -334,7 +334,7 @@ static F2(jtseg){A z;I c,k,m,n,*u,zn;
  GA(z,AT(w),zn,MAX(1,AR(w)),AS(w)); AS(z)[0]=n;  // Allocate array of items, move in shape, override # items
  // Copy the selected items to the new block and return the new block
  MC(AV(z),CAV(w)+m*k,n*k);
- R z;
+ return z;
 }
 
 // m is the infix length (x), w is the array (y)
@@ -349,7 +349,7 @@ static A jtifxi(J jt,I m,A w){A z;I d,j,k,n,p,*x;
  // x->result area; k=stride between infixes; j=starting index (prebiased); copy (index,length) for each infix;
  // repair last length if it runs off the end
  x=AV(z); k=0>m?p:1; j=-k; DQ(d, *x++=j+=k; *x++=p;); if(d)*--x=MIN(p,n-j);
- R z;
+ return z;
 }
 
 // Entry point for infix.  a is x, w is y, fs points to u
@@ -391,11 +391,11 @@ static DF2(jtginfix){A h,*hv,x,z,*zv;I d,m,n;
  if(SETIC(x,n)){
   GATV0(z,BOX,n,1); zv=AAV(z);
   DO(n, RZ(zv[i]=df1(h,seg(from(sc(i),x),w),hv[i%d])););
-  R ope(z);
+  return ope(z);
  }else{A s;
   RZ(s=AR(w)?shape(w):ca(iv0)); AV(s)[0]=ABS(m);
   RZ(df1(x,reshape(s,filler(w)),*hv));
-  R reshape(over(zeroionei(0),shape(x)),x);
+  return reshape(over(zeroionei(0),shape(x)),x);
 }}
 
 // *** start of non-sparse code ***
@@ -414,10 +414,10 @@ static DF2(jtinfixprefix2){F2PREFIP;PROLOG(00202);A fs;I cger[128/SZI];
  if(unlikely((wt&SPARSE)!=0)){
   // Use the old-style non-virtual code for sparse types
   switch(((VAV(self)->flag&VGERL)>>(VGERLX-1)) + (a==mark)) {  // 2: is gerund  1: is prefix
-  case (0+0): R jtinfix(jt,a,w,self);
-  case (0+1): R jtprefix(jt,w,self);
-  case (2+0): R jtginfix(jt,a,w,self);
-  case (2+1): R jtgprefix(jt,w,self);
+  case (0+0): return jtinfix(jt,a,w,self);
+  case (0+1): return jtprefix(jt,w,self);
+  case (2+0): return jtginfix(jt,a,w,self);
+  case (2+1): return jtgprefix(jt,w,self);
   }
  }
  // Not sparse.  Calculate the # result items
@@ -586,30 +586,30 @@ static DF2(jtinfixprefix2){F2PREFIP;PROLOG(00202);A fs;I cger[128/SZI];
 
 // prefix, vectors to common processor.  Handles IRS.  Supports inplacing
 static DF1(jtinfixprefix1){F1PREFIP;
- I r = (RANKT)jt->ranks; RESETRANK; if(r<AR(w)){R jtrank1ex(jtinplace,w,self,r,jtinfixprefix1);}
- R jtinfixprefix2(jtinplace,mark,w,self);
+ I r = (RANKT)jt->ranks; RESETRANK; if(r<AR(w)){return jtrank1ex(jtinplace,w,self,r,jtinfixprefix1);}
+ return jtinfixprefix2(jtinplace,mark,w,self);
 }
 
 //  f/\"r y    w is y, fs is in self
 static DF1(jtpscan){A z;I f,n,r,t,wn,wr,*ws,wt;
  F1PREFIP;ARGCHK1(w);
  wt=AT(w);   // get type of w
- if(unlikely((SPARSE&wt)!=0))R scansp(w,self,jtpscan);  // if sparse, go do it separately
+ if(unlikely((SPARSE&wt)!=0))return scansp(w,self,jtpscan);  // if sparse, go do it separately
  // wn = #atoms in w, wr=rank of w, r=effective rank, f=length of frame, ws->shape of w
  wn=AN(w); wr=AR(w); r=(RANKT)jt->ranks; r=wr<r?wr:r; RESETRANK; f=wr-r; ws=AS(w);
  // m = #cells, c=#atoms/cell, n = #items per cell
  SETICFR(w,f,r,n);  // wn=0 doesn't matter
  // If there are 0 or 1 items, or w is empty, return the input unchanged, except: if rank 0, return (($w),1)($,)w - if atomic op, do it right here, otherwise call the routine to get the shape of result cell
- if(((1-n)&-wn)>=0){R r?RETARG(w):reshape(apip(shape(w),zeroionei(1)),w);}  // n<2 or wn=0
+ if(((1-n)&-wn)>=0){return r?RETARG(w):reshape(apip(shape(w),zeroionei(1)),w);}  // n<2 or wn=0
  VARPS adocv; varps(adocv,self,wt,1);  // fetch info for f/\ and this type of arg
- if(!adocv.f)R IRS1(w,self,r,jtinfixprefix1,z);  // if there is no special function for this type, do general scan
+ if(!adocv.f)return IRS1(w,self,r,jtinfixprefix1,z);  // if there is no special function for this type, do general scan
  // Here is the fast special reduce for +/ etc
  I d,m; PROD(m,f,ws); PROD1(d,r-1,ws+f+1);   // m=#scans, d=#atoms in a cell of each scan
  if((t=atype(adocv.cv))&&TYPESNE(t,wt))RZ(w=cvt(t,w));  // convert input if necessary
  // if inplaceable, reuse the input area for the result
  if(ASGNINPLACESGN(SGNIF((I)jtinplace,JTINPLACEWX)&SGNIF(adocv.cv,VIPOKWX),w))z=w; else GA(z,rtype(adocv.cv),wn,wr,ws);
  I rc=((AHDRPFN*)adocv.f)(d,n,m,AV(w),AV(z),jt);
- if(255&rc){jsignal(rc); R (rc>=EWOV)?IRS1(w,self,r,jtpscan,z):0;} else R adocv.cv&VRI+VRD?cvz(adocv.cv,z):z;
+ if(255&rc){jsignal(rc); return (rc>=EWOV)?IRS1(w,self,r,jtpscan,z):0;} else return adocv.cv&VRI+VRD?cvz(adocv.cv,z):z;
 }    /* f/\"r w atomic f main control */
 
 static DF2(jtinfixd){A fs,z;C*x,*y;I c=0,d,k,m,n,p,q,r,*s,wr,*ws,wt,zc; 
@@ -636,13 +636,13 @@ static DF2(jtinfixd){A fs,z;C*x,*y;I c=0,d,k,m,n,p,q,r,*s,wr,*ws,wt,zc;
 
 #define MOVSUMAVG(Tw,Ty,ty,Tz,tz,xd,SET)  \
  {Tw*u,*v;Ty*s,x=0,*yv;Tz*zv;                                  \
-  GATVS(z,tz,c*(1+p),AR(w),AS(w),tz##SIZE,GACOPYSHAPE,R 0); AS(z)[0]=1+p;                    \
+  GATVS(z,tz,c*(1+p),AR(w),AS(w),tz##SIZE,GACOPYSHAPE,return 0); AS(z)[0]=1+p;                    \
   zv=(Tz*)AV(z); u=v=(Tw*)AV(w);                               \
   if(1==c){                                                    \
    DQ(m, x+=*v++;); *zv++=xd;                                  \
    DQ(p, x+=(Ty)*v++-(Ty)*u++; *zv++=xd;);                     \
   }else{                                                       \
-   GATVS(y,ty,c,1,0,ty##SIZE,GACOPYSHAPE0,R 0); s=yv=(Ty*)AV(y); DQ(c, *s++=0;);            \
+   GATVS(y,ty,c,1,0,ty##SIZE,GACOPYSHAPE0,return 0); s=yv=(Ty*)AV(y); DQ(c, *s++=0;);            \
    DQ(m, s=yv; DQ(c, *s+++=*v++;);); SET;                      \
    DQ(p, s=yv; DQ(c, x=*s+++=(Ty)*v++-(Ty)*u++; *zv++=xd;););  \
  }}
@@ -668,15 +668,15 @@ static A jtmovsumavg1(J jt,I m,A w,A fs,B avg){A y,z;D d=(D)m;I c,p,wt;
 
 static A jtmovsumavg(J jt,I m,A w,A fs,B avg){A z;
  z=movsumavg1(m,w,fs,avg);
- if(jt->jerr==EVNAN)RESETERR else R z;
- R jtinfixprefix2(jt,sc(m),w,fs);
+ if(jt->jerr==EVNAN)RESETERR else return z;
+ return jtinfixprefix2(jt,sc(m),w,fs);
 }
 
 static DF2(jtmovavg){I m,j;
  PREF2(jtmovavg);
  RE(m=i0(vib(a)));SETIC(w,j);
- if(0<m&&m<=j&&AT(w)&B01+FL+INT)R movsumavg(m,w,self,1);   // j may be 0
- R jtinfixprefix2(jt,a,w,self);
+ if(0<m&&m<=j&&AT(w)&B01+FL+INT)return movsumavg(m,w,self,1);   // j may be 0
+ return jtinfixprefix2(jt,a,w,self);
 }    /* a (+/ % #)\w */
 
 #define MOVMINMAX(T,type,ie,CMP)    \
@@ -689,7 +689,7 @@ static DF2(jtmovavg){I m,j;
     if(d CMP x)x=d; else if(e==x){x=d; t=u; DQ(m-1, e=*t++; if(e CMP x)x=e;);}  \
     *zv++=x;                                                   \
   }}else{                                                      \
-   GATVS(y,type,c,1,0,type##SIZE,GACOPYSHAPE0,R 0); s=yv=(T*)AV(y); DQ(c, *s++=ie;);          \
+   GATVS(y,type,c,1,0,type##SIZE,GACOPYSHAPE0,return 0); s=yv=(T*)AV(y); DQ(c, *s++=ie;);          \
    DQ(m, s=yv; DQ(c, d=*v++; if(d CMP *s)*s=d; ++s;);); SETZ; /* should store to sink instead of branching */ \
    for(i=0;i<p;++i){                                           \
     for(j=0,s=yv;j<c;++j,++s){                                 \
@@ -710,7 +710,7 @@ static DF2(jtmovavg){I m,j;
     if(CMP(d,x))x=d; else if(e==x){x=d; t=u; DQ(m-1, e=*t++; if(CMP(e,x))x=e;);}  \
     *zv++=x;                                                   \
   }}else{                                                      \
-   GATVS(y,type,c,1,0,type##SIZE,GACOPYSHAPE0,R 0); s=yv=(T*)AV(y); DQ(c, *s++=ie;);          \
+   GATVS(y,type,c,1,0,type##SIZE,GACOPYSHAPE0,return 0); s=yv=(T*)AV(y); DQ(c, *s++=ie;);          \
    DQ(m, s=yv; DQ(c, d=*v++; if(CMP(d,*s))*s=d; ++s;);); SETZ;  /* should store to sink instead of branching */ \
    for(i=0;i<p;++i){                                           \
     for(j=0,s=yv;j<c;++j,++s){                                 \
@@ -804,25 +804,25 @@ static DF2(jtmovfslash){A x,z;B b;C id,*wv,*zv;I d,m,m0,p,t,wk,wt,zi,zk,zt;
  PREF2(jtmovfslash);
  SETIC(w,p); wt=AT(w);   // p=#items of w
  RE(m0=i0(vib(a))); m=REPSGN(m0); m=(m^m0)-m; m^=REPSGN(m);  // m0=infx x,  m=abs(m0), handling IMIN
- if(m==1)R AR(w)?w:ravel(w);  // 1 f/\ w is always w, except on an atom
- if((SGNIF((m0==2)&FAV(self)->flag,VFSCANIRSX)&-(wt&DENSE)&(1-p))<0)R jtinfix2(jt,w,self);  // if  2 u/\ y supports IRS, go do (}: u }.) y - faster than cells - if >1 cell and dense  uses VFSCANIRSX=0
- if((((2^m)-1)|(m-1)|(p-m))<0)R jtinfixprefix2(jt,a,w,self);  // If m is 0 or 2, or if there is just 1 infix, go to general case
+ if(m==1)return AR(w)?w:ravel(w);  // 1 f/\ w is always w, except on an atom
+ if((SGNIF((m0==2)&FAV(self)->flag,VFSCANIRSX)&-(wt&DENSE)&(1-p))<0)return jtinfix2(jt,w,self);  // if  2 u/\ y supports IRS, go do (}: u }.) y - faster than cells - if >1 cell and dense  uses VFSCANIRSX=0
+ if((((2^m)-1)|(m-1)|(p-m))<0)return jtinfixprefix2(jt,a,w,self);  // If m is 0 or 2, or if there is just 1 infix, go to general case
  x=FAV(self)->fgh[0]; x=FAV(x)->fgh[0]; id=ID(x); 
  if(wt&B01){id=id==CMIN?CSTARDOT:id; id=id==CMAX?CPLUSDOT:id;}
  if(id==CBDOT&&(x=VAV(x)->fgh[1],INT&AT(x)&&!AR(x)))id=(C)AV(x)[0];
  switch(AR(w)&&BETWEENC(m0,0,AS(w)[0])?id:0){
-  case CPLUS:    if(wt&B01+INT+FL)R movsumavg(m,w,self,0); break;
-  case CMIN:     if(wt&SBT+INT+FL)R movminmax(m,w,self,0); break;
-  case CMAX:     if(wt&SBT+INT+FL)R movminmax(m,w,self,1); break;
-  case CSTARDOT: if(wt&B01       )R  movandor(m,w,self,0); break;
-  case CPLUSDOT: if(wt&B01       )R  movandor(m,w,self,1); break;
-  case CNE:      if(wt&B01       )R   movneeq(m,w,self,0); break;
-  case CEQ:      if(wt&B01       )R   movneeq(m,w,self,1); break;
-  case CBW1001:  if(wt&    INT   )R movbwneeq(m,w,self,1); break;
-  case CBW0110:  if(wt&    INT   )R movbwneeq(m,w,self,0); break;
+  case CPLUS:    if(wt&B01+INT+FL)return movsumavg(m,w,self,0); break;
+  case CMIN:     if(wt&SBT+INT+FL)return movminmax(m,w,self,0); break;
+  case CMAX:     if(wt&SBT+INT+FL)return movminmax(m,w,self,1); break;
+  case CSTARDOT: if(wt&B01       )return  movandor(m,w,self,0); break;
+  case CPLUSDOT: if(wt&B01       )return  movandor(m,w,self,1); break;
+  case CNE:      if(wt&B01       )return   movneeq(m,w,self,0); break;
+  case CEQ:      if(wt&B01       )return   movneeq(m,w,self,1); break;
+  case CBW1001:  if(wt&    INT   )return movbwneeq(m,w,self,1); break;
+  case CBW0110:  if(wt&    INT   )return movbwneeq(m,w,self,0); break;
  }
  VARPS adocv;
- varps(adocv,self,wt,0); if(!adocv.f)R jtinfixprefix2(jt,a,w,self);  // if no special routine for insert, do general case
+ varps(adocv,self,wt,0); if(!adocv.f)return jtinfixprefix2(jt,a,w,self);  // if no special routine for insert, do general case
  if(m0>=0){zi=MAX(0,1+p-m);}else{zi=1+(p-1)/m; zi=(p==0)?p:zi;}  // zi = # result cells
  PROD(d,AR(w)-1,AS(w)+1) b=0>m0&&zi*m!=p;   // b='has shard'
  zt=rtype(adocv.cv); RESETRANK;
@@ -834,15 +834,15 @@ static DF2(jtmovfslash){A x,z;B b;C id,*wv,*zv;I d,m,m0,p,t,wk,wt,zi,zk,zt;
  I rc=EVOK;
  DQ(zi-b, I lrc=((AHDRPFN*)adocv.f)(d,m,(I)1,wv,zv,jt); rc=lrc<rc?lrc:rc; zv+=zk; wv+=wk;);
  if(b){m=p-m*(zi-1); if(m>1){I lrc=((AHDRPFN*)adocv.f)(d,m,(I)1,wv,zv,jt); rc=lrc<rc?lrc:rc;}else{copyTT(zv,wv,d,zt,wt);}}
- if(255&rc){jsignal(rc); if(rc>=EWOV){RESETERR; R movfslash(a,cvt(FL,w),self);}R0;}else R z;
+ if(255&rc){jsignal(rc); if(rc>=EWOV){RESETERR; return movfslash(a,cvt(FL,w),self);}R0;}else return z;
 }    /* a f/\w */
 
-static DF1(jtiota1){I j; R apv(SETIC(w,j),1L,1L);}
+static DF1(jtiota1){I j; return apv(SETIC(w,j),1L,1L);}
 
 F1(jtbslash){A f;AF f1=jtinfixprefix1,f2=jtinfixprefix2;V*v;I flag=FAV(ds(CBSLASH))->flag;
 ;
  ARGCHK1(w);
- if(NOUN&AT(w))R fdef(0,CBSLASH,VERB, jtinfixprefix1,jtinfixprefix2, w,0L,fxeachv(1L,w), VGERL|flag, RMAX,0L,RMAX);
+ if(NOUN&AT(w))return fdef(0,CBSLASH,VERB, jtinfixprefix1,jtinfixprefix2, w,0L,fxeachv(1L,w), VGERL|flag, RMAX,0L,RMAX);
  v=FAV(w);  // v is the u in u\ y
  switch(v->id){
   case CPOUND:
@@ -861,7 +861,7 @@ F1(jtbslash){A f;AF f1=jtinfixprefix1,f2=jtinfixprefix2;V*v;I flag=FAV(ds(CBSLAS
  RZ(f=ADERIV(CBSLASH,f1,f2,flag,RMAX,0L,RMAX));
  // Fill in the lvp[1] field: with 0 if not f/\; with the lookup field for f/ if f/\ .
  FAV(f)->localuse.lvp[1]=v->id==CSLASH?v->localuse.lvp[1]:0;  // f is nonnull if f/\ .
- R f;
+ return f;
 }
 
-A jtascan(J jt,C c,A w){ARGCHK1(w); A z; R df1(z,w,bslash(slash(ds(c))));}
+A jtascan(J jt,C c,A w){ARGCHK1(w); A z; return df1(z,w,bslash(slash(ds(c))));}

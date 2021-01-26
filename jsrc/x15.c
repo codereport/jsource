@@ -495,28 +495,28 @@ __asm__ ("movq (%0),%%xmm0\n\t"       \
 
 static I     NOOPTIMIZE stdcalli(STDCALLI fp,I*d,I cnt,DoF*dd,I dcnt){I r;
  SWITCHCALL;
- R r;
+ return r;
 }  /* I result */
 static I     NOOPTIMIZE altcalli(ALTCALLI fp,I*d,I cnt,DoF*dd,I dcnt){I r;
  SWITCHCALL;
- R r;
+ return r;
 }
 static D     NOOPTIMIZE stdcalld(STDCALLD fp,I*d,I cnt,DoF*dd,I dcnt){D r;
  SWITCHCALL;
- R r;
+ return r;
 }  /* D result */
 static D     NOOPTIMIZE altcalld(ALTCALLD fp,I*d,I cnt,DoF*dd,I dcnt){D r;
  SWITCHCALL;
- R r;
+ return r;
 }
 
 static float NOOPTIMIZE stdcallf(STDCALLF fp,I*d,I cnt,DoF*dd,I dcnt){float r;
 SWITCHCALL;
-R r;
+return r;
 }  /* J64 float result */
 static float NOOPTIMIZE altcallf(ALTCALLF fp,I*d,I cnt,DoF*dd,I dcnt){float r;
   SWITCHCALL;
- R r;
+ return r;
 }
 
 /* fp        - function                                    */
@@ -597,7 +597,7 @@ static void convertup(I*pi,I n,C t){I j=n;
 static A jtcdgahash(J jt,I n){A z;I hn;
  FULLHASHSIZE(n,INTSIZE,0,0,hn);
  GATV0(z,INT,hn,0); memset(AV(z),CFF,hn*SZI);  // no rank - use all words for table
- R ras(z);
+ return ras(z);
 }
 
 static B jtcdinit(J jt){A x;
@@ -606,7 +606,7 @@ static B jtcdinit(J jt){A x;
  RZ(jt->cdhash =cdgahash(4*AS(jt->cdarg)[0]));
  RZ(jt->cdhashl=cdgahash(NLIBS+16           ));  // will round up to power of 2 - we allow 100 libraries, which will almost never be used, so we don't get the usual 2x
  AM(jt->cdarg)=AM(jt->cdstr)=AM(jt->cdhash)=AM(jt->cdhashl)=0;  // init all tables to empty
- R 1;
+ return 1;
 }
 
 // find the starting index for v->string (length n) in table tbl
@@ -615,7 +615,7 @@ static B jtcdinit(J jt){A x;
 // see if v->string (length n) is in hashtable tbl.  The hash in tbl contains indexes into cdarg, or -1 for empty slot.
 // return retval, where pv[k] is the address of the found slot in cdarg
 #define HASHLOOKUP(tbl,nn,vv,pvklett,retval) I j=HASHINDEX(tbl,nn,vv); I *hv=IAV0(tbl); C *s=CAV1(jt->cdstr); CCT*pv=(CCT*)CAV2(jt->cdarg); \
- while(1){I k=hv[j]; if(k<0)R 0; if(nn==pv[k].pvklett##n&&!memcmpne(vv,s+pv[k].pvklett##i,nn))R retval; if(--j<0)j+=AN(tbl);}
+ while(1){I k=hv[j]; if(k<0)return 0; if(nn==pv[k].pvklett##n&&!memcmpne(vv,s+pv[k].pvklett##i,nn))return retval; if(--j<0)j+=AN(tbl);}
 
 // add v->string (length n) to hashtable tbl.  argx is the index to insert into the hashtable.  Increment AM(tbl), which contains the # hashed items
 #define HASHINSERT(tbl,n,v,argx) I j=HASHINDEX(tbl,n,v); I *hv=IAV0(tbl); ++AM(tbl); while(hv[j]>=0)if(--j<0)j+=AN(tbl); hv[j]=argx;
@@ -652,7 +652,7 @@ static CCT*jtcdinsert(J jt,A a,CCT*cc){A x;C*s;CCT*pv,*z;I an,hn,k;
  if(AN(jt->cdarg)<=2*AM(jt->cdarg)){RZ(x=cdgahash(2*AM(jt->cdarg))); fa(jt->cdhash); jt->cdhash=x; AM(jt->cdarg)=k; AM(jt->cdhash)=0; k=0;}  // reallo if needed, and signal to rehash all
  // insert the last k elements of pv into the table.  This will be either all of them (on a rehash) or just the last 1.
  ++AM(jt->cdarg); DQ(AM(jt->cdarg)-k, HASHINSERT(jt->cdhash,pv[k].an,s+pv[k].ai,k) ++k;);  // add 1 ele to cdarg, and all or 1 to cdhash
- R z;
+ return z;
 }
 
 
@@ -668,7 +668,7 @@ static CCT*jtcdload(J jt,CCT*cc,C*lib,C*proc){B ha=0;FARPROC f;HMODULE h;
   sprintf(buf,FMTI,k); if(0>k)*buf='_';
   CDASSERT(!strcmp(proc,buf),DEBADFN);
   cc->fp=(FARPROC)k;
-  R cc;
+  return cc;
  }
  if(h=cdlookupl(lib))cc->h=h;  // if lib is in hash table, use the handle for it.  Save the handle to match other hasshes later
  else{
@@ -691,11 +691,11 @@ static CCT*jtcdload(J jt,CCT*cc,C*lib,C*proc){B ha=0;FARPROC f;HMODULE h;
   // a new lib was loaded and verified.  Add it to the hash
   HASHINSERT(jt->cdhashl,cc->ln,lib,AM(jt->cdarg))
  }
- R cc;
+ return cc;
 }
 
      /* J type from type letter */
-static I cdjtype(C c){I r=INT; r=c=='c'?LIT:r; r=c=='w'?C2T:r; r=c=='u'?C4T:r; r=(c&(C)~('j'^'z'))=='j'?CMPX:r; r=(c&(C)~('d'^'f'))=='d'?FL:r; r=c==0?0:r; R r;}  // d/f and j/z differ by only 1 bit
+static I cdjtype(C c){I r=INT; r=c=='c'?LIT:r; r=c=='w'?C2T:r; r=c=='u'?C4T:r; r=(c&(C)~('j'^'z'))=='j'?CMPX:r; r=(c&(C)~('d'^'f'))=='d'?FL:r; r=c==0?0:r; return r;}  // d/f and j/z differ by only 1 bit
 
 /* See "Calling DLLs" chapter in J User Manual                  */
 /* format of left argument to 15!:0                             */
@@ -734,7 +734,7 @@ static CCT*jtcdparse(J jt,A a,I empty){C c,lib[NPATH],*p,proc[NPATH],*s,*s0;CCT*
  ASSERT(LIT&AT(a),EVDOMAIN);
  ASSERT(1>=AR(a),EVRANK);
  ASSERT(NLEFTARG>=AN(a),EVLIMIT);
- if(cc=cdlookup(a))R cc;
+ if(cc=cdlookup(a))return cc;
  cc=&cct; cc->an=an=AN(a); s=s0=CAV(str0(a));
  /* library (module, file) name */
  while(*s==' ')++s; p=*s=='"'?strchr(++s,'"'):strchr(s,' '); li=s-s0; cc->ln=p?p-s:0;
@@ -787,37 +787,37 @@ static CCT*jtcdparse(J jt,A a,I empty){C c,lib[NPATH],*p,proc[NPATH],*s,*s0;CCT*
  MC(proc,s0+pi,cc->pn); proc[cc->pn]=0;
  RZ(cc=cdload(cc,lib,proc));
  cc->n=1+i; RZ(cc=cdinsert(a,cc)); cc->li=li+cc->ai; cc->pi=pi+cc->ai;
- R cc;
+ return cc;
 }
 
 #define CDT(x,y) ((x)+32*(y))  // x runs from B01 to C4T 0-3, 17-18
 
 static I*jtconvert0(J jt,I zt,I*v,I wt,C*u){D p,q;I k=0;US s;C4 s4;
  switch(CDT(CTTZ(zt),CTTZ(wt))){
-  default:           R 0;
+  default:           return 0;
   case CDT(FLX, B01X): *(D*)v=*(B*)u; break;
   case CDT(FLX, INTX): *(D*)v=(D)*(I*)u; break;
   case CDT(FLX, FLX ): *(D*)v=*(D*)u; break;
   case CDT(C2TX,LITX): *(US*)v=*(UC*)u; break;
   case CDT(C2TX,C2TX): *(US*)v=*(US*)u; break;
   case CDT(LITX,LITX): *(UC*)v=*(UC*)u; break;
-  case CDT(LITX,C2TX): s=*(US*)u; if(256<=(US)s)R 0; *(UC*)v=(UC)s; break;
+  case CDT(LITX,C2TX): s=*(US*)u; if(256<=(US)s)return 0; *(UC*)v=(UC)s; break;
   case CDT(C4TX,LITX): *(C4*)v=*(UC*)u; break;
   case CDT(C4TX,C2TX): *(C4*)v=*(US*)u; break;
   case CDT(C4TX,C4TX): *(C4*)v=*(C4*)u; break;
-  case CDT(LITX,C4TX): s4=*(C4*)u; if(256<=(C4)s4)R 0; *(UC*)v=(UC)s4; break;
-  case CDT(C2TX,C4TX): s4=*(C4*)u; if(65536<=(C4)s4)R 0; *(US*)v=(US)s4; break;
+  case CDT(LITX,C4TX): s4=*(C4*)u; if(256<=(C4)s4)return 0; *(UC*)v=(UC)s4; break;
+  case CDT(C2TX,C4TX): s4=*(C4*)u; if(65536<=(C4)s4)return 0; *(US*)v=(US)s4; break;
   case CDT(INTX,B01X): *    v=*(B*)u; break;
   case CDT(INTX,INTX): *    v=*(I*)u; break;
   case CDT(INTX,FLX ):
   p=*(D*)u; q=jround(p); I rq=(I)q;
-  if(!(p==q || FFIEQ(p,q)))R 0;  // must equal int, possibly out of range.  Exact equality is common enough to test for
+  if(!(p==q || FFIEQ(p,q)))return 0;  // must equal int, possibly out of range.  Exact equality is common enough to test for
   // out-of-range values don't convert, handle separately
-  if(p<(D)IMIN){if(!(p>=IMIN*(1+FUZZ)))R 0; rq=IMIN;}  // if tolerantly < IMIN, error; else take IMIN
-  else if(p>=FLIMAX){if(!(p<=-(IMIN*(1+FUZZ))))R 0; rq=IMAX;}  // if tolerantly > IMAX, error; else take IMAX
+  if(p<(D)IMIN){if(!(p>=IMIN*(1+FUZZ)))return 0; rq=IMIN;}  // if tolerantly < IMIN, error; else take IMIN
+  else if(p>=FLIMAX){if(!(p<=-(IMIN*(1+FUZZ))))return 0; rq=IMAX;}  // if tolerantly > IMAX, error; else take IMAX
   *v=rq;
  }
- R v;
+ return v;
 }    /* convert a single atom. I from D code adapted from IfromD() in k.c */
 
 // make one call to the DLL.
@@ -935,7 +935,7 @@ static B jtcdexec1(J jt,CCT*cc,C*zv0,C*wu,I wk,I wt,I wd){A*wv=(A*)wu,x,y,*zv;B 
  t=errno;
 #endif
  if(t!=0)jt->getlasterror=t;
- R 1;
+ return 1;
 }
 
 F2(jtcd){A z;C*tv,*wv,*zv;CCT*cc;I k,m,n,p,q,t,wr,*ws,wt;
@@ -943,7 +943,7 @@ F2(jtcd){A z;C*tv,*wv,*zv;CCT*cc;I k,m,n,p,q,t,wr,*ws,wt;
  ARGCHK2(a,w);
  AFLAG(w)&=~AFPRISTINE;  // we transfer boxes from w to the result, thereby letting them escape.  That makes w non-pristine
  if(!jt->cdarg)RZ(cdinit());
- if(1<AR(a)){I rr=AR(w); rr=rr==0?1:rr; R rank2ex(a,w,UNUSED_VALUE,1L,rr,1L,rr,jtcd);}
+ if(1<AR(a)){I rr=AR(w); rr=rr==0?1:rr; return rank2ex(a,w,UNUSED_VALUE,1L,rr,1L,rr,jtcd);}
  wt=AT(w); wr=AR(w); ws=AS(w); PRODX(m,wr-1,ws,1);
  ASSERT(wt&DENSE,EVDOMAIN);
  ASSERT(LIT&AT(a),EVDOMAIN);
@@ -961,7 +961,7 @@ F2(jtcd){A z;C*tv,*wv,*zv;CCT*cc;I k,m,n,p,q,t,wr,*ws,wt;
  wv=CAV(w); zv=CAV(z); k=bpnoun(wt);
  if(1==m)RZ(jtcdexec1(jtinplace,cc,zv,wv,k,wt,0))
  else{p=n*k; q=cc->zbx?sizeof(A)*(1+n):bp(AT(z)); DQ(m, RZ(jtcdexec1(jtinplace,cc,zv,wv,k,wt,0)); wv+=p; zv+=q;);}
- R z;
+ return z;
 }    /* 15!:0 */
 
 
@@ -971,7 +971,7 @@ F2(jtcd){A z;C*tv,*wv,*zv;CCT*cc;I k,m,n,p,q,t,wr,*ws,wt;
 #endif
 
 void dllquit(J jt){CCT*av;I j,*v;
- if(!jt->cdarg)R;
+ if(!jt->cdarg)return;
  v=AV(jt->cdhashl); av=(CCT*)AV(jt->cdarg);
  DQ(AN(jt->cdhashl), j=*v++; if(0<=j)FREELIB(av[j].h););
  fa(jt->cdarg);   jt->cdarg  =0;
@@ -980,11 +980,11 @@ void dllquit(J jt){CCT*av;I j,*v;
  fa(jt->cdhashl); jt->cdhashl=0;
 }    /* dllquit - shutdown and cdf clean up dll call resources */
 
-F1(jtcdf){ASSERTMTV(w); dllquit(jt); R mtm;}
+F1(jtcdf){ASSERTMTV(w); dllquit(jt); return mtm;}
      /* 15!:5 */
 
 /* return error info from last cd domain error - resets to DEOK */
-F1(jtcder){I t; ASSERTMTV(w); t=jt->dlllasterror; jt->dlllasterror=DEOK; R v2(t&0xff,t>>8);}
+F1(jtcder){I t; ASSERTMTV(w); t=jt->dlllasterror; jt->dlllasterror=DEOK; return v2(t&0xff,t>>8);}
      /* 15!:10 */
 
 /* return errno info from last cd with errno not equal to 0 - resets to 0 */
@@ -994,13 +994,13 @@ F1(jtcderx){I t;C buf[1024];
 #if SYS&SYS_UNIX
  {const char *e = dlerror(); strcpy (buf, e?e:"");}
 #endif
- R link(sc(t),cstr(buf));
+ return link(sc(t),cstr(buf));
 }    /* 15!:11  GetLastError information */
 
-F1(jtmema){I k; RE(k=i0(w)); R sc((I)MALLOC(k));} /* ce */
+F1(jtmema){I k; RE(k=i0(w)); return sc((I)MALLOC(k));} /* ce */
      /* 15!:3  memory allocate */
 
-F1(jtmemf){I k; RE(k=i0(w)); FREE((void*)k); R num(0);}
+F1(jtmemf){I k; RE(k=i0(w)); FREE((void*)k); return num(0);}
      /* 15!:4  memory free */
 
 F1(jtmemr){C*u;I m,n,t,*v;US*us;C4*c4;
@@ -1024,7 +1024,7 @@ F1(jtmemr){C*u;I m,n,t,*v;US*us;C4*c4;
   }
  }
 
- R vecb01(t,m,u);
+ return vecb01(t,m,u);
 }    /* 15!:1  memory read */
 
 F2(jtmemw){C*u;I m,n,t,*v;
@@ -1041,7 +1041,7 @@ F2(jtmemw){C*u;I m,n,t,*v;
  ASSERT(TYPESEQ(t,AT(a)),EVDOMAIN);
 
  MC(u,AV(a),m<<bplg(t));
- R mtm;
+ return mtm;
 }    /* 15!:2  memory write */
 
 // 15!:15 memu - make a copy of y if it is not writable (inplaceable and not read-only)
@@ -1049,13 +1049,13 @@ F2(jtmemw){C*u;I m,n,t,*v;
 F1(jtmemu) { F1PREFIP; ARGCHK1(w); if(!((I)jtinplace&JTINPLACEW && (AC(w)<(AFLAG(w)<<((BW-1)-AFROX)))))w=ca(w); if(AT(w)&LAST0)*(C4*)&CAV(w)[AN(w)*bp(AT(w))]=0;  RETF(w); }  // append 0 so that calls from cd append NUL termination
 F2(jtmemu2) { RETF(ca(w)); }  // dyad - force copy willy-nilly
 
-F1(jtgh15){A z;I k; RE(k=i0(w)); RZ(z=gah(k,0L)); ACINCR(z); R sc((I)z);}
+F1(jtgh15){A z;I k; RE(k=i0(w)); RZ(z=gah(k,0L)); ACINCR(z); return sc((I)z);}
      /* 15!:8  get header */
 
-F1(jtfh15){I k; RE(k=i0(w)); fh((A)k); R num(0);}
+F1(jtfh15){I k; RE(k=i0(w)); fh((A)k); return num(0);}
      /* 15!:9  free header */
 
-F1(jtdllsymset){ARGCHK1(w); R (A)i0(w);}      /* do some validation here */
+F1(jtdllsymset){ARGCHK1(w); return (A)i0(w);}      /* do some validation here */
      /* 15!:7 */
 
 /* dll callback routines */
@@ -1069,19 +1069,19 @@ static I cbold(I n,I *pi){char d[256],*p;A r;I i;
  if (!n) { *p++='\''; *p++='\''; }
  *p=0;
  r=exec1(cstr(d));
- if(!r||AR(r)) R 0;
- if(INT&AT(r)) R AV(r)[0];
- if(B01&AT(r)) R ((BYTE*)AV(r))[0];
- R 0;
+ if(!r||AR(r)) return 0;
+ if(INT&AT(r)) return AV(r)[0];
+ if(B01&AT(r)) return ((BYTE*)AV(r))[0];
+ return 0;
 }
 
 static I cbnew(){A r;
  J jt=cbjt;
  r=exec1(cstr("cdcallback''"));
- if(!r||AR(r)) R 0;
- if(INT&AT(r)) R AV(r)[0];
- if(B01&AT(r)) R ((BYTE*)AV(r))[0];
- R 0;
+ if(!r||AR(r)) return 0;
+ if(INT&AT(r)) return AV(r)[0];
+ if(B01&AT(r)) return ((BYTE*)AV(r))[0];
+ return 0;
 }
 
 /* start of code generated by J script x15_callback.ijs */
@@ -1089,28 +1089,28 @@ static I cbnew(){A r;
 static I cbx[CBTYPESMAX-1];
 I cbxn=0;
 
-static I CALLBACK cb0(){I x[]={0};R cbold(0,x);}
-static I CALLBACK cb1(I a){I x[]={a};R cbold(1,x);}
-static I CALLBACK cb2(I a,I b){I x[]={a,b};R cbold(2,x);}
-static I CALLBACK cb3(I a,I b,I c){I x[]={a,b,c};R cbold(3,x);}
-static I CALLBACK cb4(I a,I b,I c,I d){I x[]={a,b,c,d};R cbold(4,x);}
-static I CALLBACK cb5(I a,I b,I c,I d,I e){I x[]={a,b,c,d,e};R cbold(5,x);}
-static I CALLBACK cb6(I a,I b,I c,I d,I e,I f){I x[]={a,b,c,d,e,f};R cbold(6,x);}
-static I CALLBACK cb7(I a,I b,I c,I d,I e,I f,I g){I x[]={a,b,c,d,e,f,g};R cbold(7,x);}
-static I CALLBACK cb8(I a,I b,I c,I d,I e,I f,I g,I h){I x[]={a,b,c,d,e,f,g,h};R cbold(8,x);}
-static I CALLBACK cb9(I a,I b,I c,I d,I e,I f,I g,I h,I i){I x[]={a,b,c,d,e,f,g,h,i};R cbold(9,x);}
+static I CALLBACK cb0(){I x[]={0};return cbold(0,x);}
+static I CALLBACK cb1(I a){I x[]={a};return cbold(1,x);}
+static I CALLBACK cb2(I a,I b){I x[]={a,b};return cbold(2,x);}
+static I CALLBACK cb3(I a,I b,I c){I x[]={a,b,c};return cbold(3,x);}
+static I CALLBACK cb4(I a,I b,I c,I d){I x[]={a,b,c,d};return cbold(4,x);}
+static I CALLBACK cb5(I a,I b,I c,I d,I e){I x[]={a,b,c,d,e};return cbold(5,x);}
+static I CALLBACK cb6(I a,I b,I c,I d,I e,I f){I x[]={a,b,c,d,e,f};return cbold(6,x);}
+static I CALLBACK cb7(I a,I b,I c,I d,I e,I f,I g){I x[]={a,b,c,d,e,f,g};return cbold(7,x);}
+static I CALLBACK cb8(I a,I b,I c,I d,I e,I f,I g,I h){I x[]={a,b,c,d,e,f,g,h};return cbold(8,x);}
+static I CALLBACK cb9(I a,I b,I c,I d,I e,I f,I g,I h,I i){I x[]={a,b,c,d,e,f,g,h,i};return cbold(9,x);}
 static I cbv[]={(I)&cb0,(I)&cb1,(I)&cb2,(I)&cb3,(I)&cb4,(I)&cb5,(I)&cb6,(I)&cb7,(I)&cb8,(I)&cb9};
 
-static I CALLBACK cbx0(){cbxn=0;R cbnew();}
-static I CALLBACK cbx1(I a){cbxn=1;cbx[0]=a;R cbnew();}
-static I CALLBACK cbx2(I a,I b){cbxn=2;cbx[0]=a;cbx[1]=b;R cbnew();}
-static I CALLBACK cbx3(I a,I b,I c){cbxn=3;cbx[0]=a;cbx[1]=b;cbx[2]=c;R cbnew();}
-static I CALLBACK cbx4(I a,I b,I c,I d){cbxn=4;cbx[0]=a;cbx[1]=b;cbx[2]=c;cbx[3]=d;R cbnew();}
-static I CALLBACK cbx5(I a,I b,I c,I d,I e){cbxn=5;cbx[0]=a;cbx[1]=b;cbx[2]=c;cbx[3]=d;cbx[4]=e;R cbnew();}
-static I CALLBACK cbx6(I a,I b,I c,I d,I e,I f){cbxn=6;cbx[0]=a;cbx[1]=b;cbx[2]=c;cbx[3]=d;cbx[4]=e;cbx[5]=f;R cbnew();}
-static I CALLBACK cbx7(I a,I b,I c,I d,I e,I f,I g){cbxn=7;cbx[0]=a;cbx[1]=b;cbx[2]=c;cbx[3]=d;cbx[4]=e;cbx[5]=f;cbx[6]=g;R cbnew();}
-static I CALLBACK cbx8(I a,I b,I c,I d,I e,I f,I g,I h){cbxn=8;cbx[0]=a;cbx[1]=b;cbx[2]=c;cbx[3]=d;cbx[4]=e;cbx[5]=f;cbx[6]=g;cbx[7]=h;R cbnew();}
-static I CALLBACK cbx9(I a,I b,I c,I d,I e,I f,I g,I h,I i){cbxn=9;cbx[0]=a;cbx[1]=b;cbx[2]=c;cbx[3]=d;cbx[4]=e;cbx[5]=f;cbx[6]=g;cbx[7]=h;cbx[8]=i;R cbnew();}
+static I CALLBACK cbx0(){cbxn=0;return cbnew();}
+static I CALLBACK cbx1(I a){cbxn=1;cbx[0]=a;return cbnew();}
+static I CALLBACK cbx2(I a,I b){cbxn=2;cbx[0]=a;cbx[1]=b;return cbnew();}
+static I CALLBACK cbx3(I a,I b,I c){cbxn=3;cbx[0]=a;cbx[1]=b;cbx[2]=c;return cbnew();}
+static I CALLBACK cbx4(I a,I b,I c,I d){cbxn=4;cbx[0]=a;cbx[1]=b;cbx[2]=c;cbx[3]=d;return cbnew();}
+static I CALLBACK cbx5(I a,I b,I c,I d,I e){cbxn=5;cbx[0]=a;cbx[1]=b;cbx[2]=c;cbx[3]=d;cbx[4]=e;return cbnew();}
+static I CALLBACK cbx6(I a,I b,I c,I d,I e,I f){cbxn=6;cbx[0]=a;cbx[1]=b;cbx[2]=c;cbx[3]=d;cbx[4]=e;cbx[5]=f;return cbnew();}
+static I CALLBACK cbx7(I a,I b,I c,I d,I e,I f,I g){cbxn=7;cbx[0]=a;cbx[1]=b;cbx[2]=c;cbx[3]=d;cbx[4]=e;cbx[5]=f;cbx[6]=g;return cbnew();}
+static I CALLBACK cbx8(I a,I b,I c,I d,I e,I f,I g,I h){cbxn=8;cbx[0]=a;cbx[1]=b;cbx[2]=c;cbx[3]=d;cbx[4]=e;cbx[5]=f;cbx[6]=g;cbx[7]=h;return cbnew();}
+static I CALLBACK cbx9(I a,I b,I c,I d,I e,I f,I g,I h,I i){cbxn=9;cbx[0]=a;cbx[1]=b;cbx[2]=c;cbx[3]=d;cbx[4]=e;cbx[5]=f;cbx[6]=g;cbx[7]=h;cbx[8]=i;return cbnew();}
 static I cbvx[]={(I)&cbx0,(I)&cbx1,(I)&cbx2,(I)&cbx3,(I)&cbx4,(I)&cbx5,(I)&cbx6,(I)&cbx7,(I)&cbx8,(I)&cbx9};
 
 
@@ -1135,14 +1135,14 @@ F1(jtcallback){
   }
   ASSERT(cnt>0&&cnt<CBTYPESMAX,EVDOMAIN);
 
-  R sc(cbvx[--cnt]); /* select callback based on alt * args */
+  return sc(cbvx[--cnt]); /* select callback based on alt * args */
  }
  else
  {
   I k;
   RE(k=i0(w));
   ASSERT((UI)k<(UI)sizeof(cbv)/SZI, EVINDEX);
-  R sc(cbv[k]);
+  return sc(cbv[k]);
  }
 }    /* 15!:13 */
 
@@ -1150,23 +1150,23 @@ F1(jtnfes){I k;I r;
  RE(k=i0(w));
  r=jt->nfe;
  jt->nfe=k;
- R sc(r);
+ return sc(r);
 } /* 15!:16 toggle native front end (nfe) state */
 
 F1(jtcallbackx){
  ASSERTMTV(w);
- R vec(INT,cbxn,cbx);
+ return vec(INT,cbxn,cbx);
 } /* 15!:17 return x callback arguments */
 
 F1(jtnfeoutstr){I k;
  RE(k=i0(w));
  ASSERT(0==k,EVDOMAIN);
- R cstr(jt->mtyostr?jt->mtyostr:(C*)"");
+ return cstr(jt->mtyostr?jt->mtyostr:(C*)"");
 } /* 15!:18 return last jsto output */
 
 F1(jtcdjt){
  ASSERTMTV(w);
- R sc((I)(intptr_t)jt);
+ return sc((I)(intptr_t)jt);
 } /* 15!:19 return jt */
 
 F1(jtcdlibl){
@@ -1174,8 +1174,8 @@ F1(jtcdlibl){
  ASSERT(LIT&AT(w),EVDOMAIN);
  ASSERT(1>=AR(w),EVRANK);
  ASSERT(AN(w),EVLENGTH);
- if(!jt->cdarg)R num(0);
- R sc((I)cdlookupl(CAV(w)));
+ if(!jt->cdarg)return num(0);
+ return sc((I)cdlookupl(CAV(w)));
 }    /* 15!:20 return library handle */
 
 F1(jtcdproc1){CCT*cc;
@@ -1185,7 +1185,7 @@ F1(jtcdproc1){CCT*cc;
  ASSERT(AN(w),EVLENGTH);
  if(!jt->cdarg)RE(cdinit());
  C* enda=&CAV(w)[AN(w)]; C endc=*enda; *enda=0; cc=cdparse(w,1); *enda=endc; RE(cc); // should do outside rank2 loop?
- R sc((I)cc->fp);
+ return sc((I)cc->fp);
 }    /* 15!:21 return proc address */
 
 #ifdef MMSC_VER
@@ -1246,6 +1246,6 @@ F2(jtcdproc2){C*proc;FARPROC f;HMODULE h;
 #endif
  }
  CDASSERT(f!=0,DEBADFN);
- R sc((I)f);
+ return sc((I)f);
 }    /* 15!:21 return proc address */
 

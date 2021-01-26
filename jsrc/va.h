@@ -162,10 +162,10 @@ typedef I AHDRRFN(I d,I n,I m,void* RESTRICTI x,void* RESTRICTI z,J jt);
 typedef I AHDRSFN(I d,I n,I m,void* RESTRICTI x,void* RESTRICTI z,J jt);
 
 #define AHDR1(f,Tz,Tx)          I f(JST * RESTRICT jt,I n,Tz* z,Tx* x)   // must match VA1F, AHDR1FN
-#define AMON(f,Tz,Tx,stmt)      AHDR1(f,Tz,Tx){DQ(n, {stmt} ++z; ++x;); R EVOK;}
+#define AMON(f,Tz,Tx,stmt)      AHDR1(f,Tz,Tx){DQ(n, {stmt} ++z; ++x;); return EVOK;}
 #define AMONPS(f,Tz,Tx,prefix,stmt,suffix)      AHDR1(f,Tz,Tx){prefix DQ(n, {stmt} ++z; ++x;) suffix}
-#define HDR1JERR I rc=jt->jerr; jt->jerr=0; R rc?rc:EVOK;   // translate no error to no-error value
-#define HDR1JERRNAN I rc=jt->jerr; rc=NANTEST?EVNAN:rc; jt->jerr=0; R rc?rc:EVOK;   // translate no error to no-error value
+#define HDR1JERR I rc=jt->jerr; jt->jerr=0; return rc?rc:EVOK;   // translate no error to no-error value
+#define HDR1JERRNAN I rc=jt->jerr; rc=NANTEST?EVNAN:rc; jt->jerr=0; return rc?rc:EVOK;   // translate no error to no-error value
 
 
 
@@ -239,7 +239,7 @@ typedef I AHDRSFN(I d,I n,I m,void* RESTRICTI x,void* RESTRICTI z,J jt);
   if(n-1==0)  DQ(m,               *z++=*x++ symb *y++; )   \
   else if(n-1<0)DQ(m, u=*x++; DQC(n, *z++=u    symb *y++;))   \
   else      DQ(m, v=*y++; DQ(n, *z++=*x++ symb v;   ));  \
-  R EVOK; \
+  return EVOK; \
  }
 
 // suff must return the correct result
@@ -290,7 +290,7 @@ AHDR2(name,D,D,D){ \
   if(n-1==0)  DQ(m, u=(D)*x++;       v=(D)*y++; *z=pfx(u,v); z++; )    \
   else if(n-1<0)DQ(m, u=(D)*x++; DQC(n, v=(D)*y++; *z=pfx(u,v); z++;))    \
   else      DQ(m, v=(D)*y++; DQ(n, u=(D)*x++; *z=pfx(u,v); z++;));   \
-  R EVOK; \
+  return EVOK; \
  }
 // support intolerant comparisons explicitly
 #define ACMP0(f,Tz,Tx,Ty,pfx,pfx0)   \
@@ -304,7 +304,7 @@ AHDR2(name,D,D,D){ \
    else if(n-1<0)DQ(m, u=(D)*x++; DQC(n, v=(D)*y++; *z=u pfx0 v; z++;))    \
    else      DQ(m, v=(D)*y++; DQ(n, u=(D)*x++; *z=u pfx0 v; z++;));   \
   } \
-  R EVOK; \
+  return EVOK; \
  }
 
 
@@ -329,7 +329,7 @@ AHDR2(f,void,void,void){ I u,v;       \
    u=*(I*)x; u=pfx(u,v); STOREBYTES(z,u,(-n)&(SZI-1)); x=(I*)((UC*)x+(((n-1)&(SZI-1))+1)); z=(I*)((UC*)z+(((n-1)&(SZI-1))+1)); \
   ) \
  } \
- R EVOK; \
+ return EVOK; \
 }
 
 #define BPFXAVX2(f,pfx,bpfx,pfyx,bpfyx,fuv,decls,decls256) BPFXNOAVX(f,pfx,bpfx,pfyx,bpfyx,fuv,decls,decls256)

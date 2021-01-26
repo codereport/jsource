@@ -29,7 +29,7 @@ static void** MERGEFNNAME(CMP comp, I compn, void * * RESTRICT lo, I lon, void *
   if(orderedlen==lon){
    // Presorted list.  If the two lists are contiguous, just return their address.  Otherwise copy to be contiguous
    if(loend!=hi){MCIL(loend,hi,hin);}
-   R lo;  // return contiguous result
+   return lo;  // return contiguous result
   }
   // Partial presort.  Because the presorted part is larger, leave it in place and copy the shorter remnant at the end
   // to the workarea; then change the pointers so we merge the moved remnant onto the end of the presorted fragment
@@ -69,21 +69,21 @@ static void** MERGEFNNAME(CMP comp, I compn, void * * RESTRICT lo, I lon, void *
   }
 #endif
  }while(1);
- R wk;  // We have merged into the workarea
+ return wk;  // We have merged into the workarea
 }
 // sort the values in *in, using *wk as a work area of the same size.  The graded pointers will go into either
 // in or wk, and the result will be the address of the graded data
 static void** GRADEFNNAME(CMP comp, I compn, void *(in[]), I n, void *(wk[])){void *a,*b,*c,*d,*e;
  switch(n){
- case 0: case 1: R in;
+ case 0: case 1: return in;
  case 2:  // happens only if original input is 2 long
-  if(!COMPFN(compn,in[0],in[1])){void *tmp=in[0]; in[0]=in[1]; in[1]=tmp;} R in;
+  if(!COMPFN(compn,in[0],in[1])){void *tmp=in[0]; in[0]=in[1]; in[1]=tmp;} return in;
  case 3:
   a=in[0]; b=in[1];c=in[2];  // abc
   CXCHG2(b,c);
   CXCHG2(a,b);
   CXCHG2(b,c);
-  in[0]=a; in[1]=b; in[2]=c; R in;
+  in[0]=a; in[1]=b; in[2]=c; return in;
  case 4:
   a=in[0]; b=in[1];c=in[2]; d=in[3]; // abcd
   CXCHG2(a,b);
@@ -91,7 +91,7 @@ static void** GRADEFNNAME(CMP comp, I compn, void *(in[]), I n, void *(wk[])){vo
   CXCHG2(a,c);
   CXCHG2(b,d);
   CXCHG2(b,c);
-  in[0]=a; in[1]=b; in[2]=c; in[3]=d; R in;
+  in[0]=a; in[1]=b; in[2]=c; in[3]=d; return in;
  case 5:
   a=in[0]; b=in[1];c=in[2]; d=in[3]; e=in[4]; // abcde
   CXCHG2(b,c);
@@ -103,13 +103,13 @@ static void** GRADEFNNAME(CMP comp, I compn, void *(in[]), I n, void *(wk[])){vo
   CXCHG2(a,b);
   CXCHG2(c,d);
   CXCHG2(b,c);
-  in[0]=a; in[1]=b; in[2]=c; in[3]=(void *)d; in[4]=(void *)e; R in;
+  in[0]=a; in[1]=b; in[2]=c; in[3]=(void *)d; in[4]=(void *)e; return in;
 
  default:
   // sort the low and high halves, and then merge the results, giving as workarea whatever buffer does not contain lo
   {I lohalf=n>>1; I hihalf=n-lohalf;
    void *lo=GRADEFNNAME(comp, compn, in, lohalf, wk); void *hi=GRADEFNNAME(comp, compn, in+lohalf, hihalf, wk+lohalf);
-   R MERGEFNNAME(comp,compn,lo,lohalf,hi,hihalf,(void *)((I)in+(I)wk-(I)lo));
+   return MERGEFNNAME(comp,compn,lo,lohalf,hi,hihalf,(void *)((I)in+(I)wk-(I)lo));
   }
  }
 }
