@@ -662,7 +662,7 @@ static GF(jtgrc){A x;B b,q,up;I e,i,p,ps,*xv,yv[256];UC*vv,*wv;
  if((UI)ai>lgn)R grx(m,ai,n,w,zv);   // TUNE
  ai<<=((AT(w)>>C2TX)&1);
  p=B01&AT(w)?2:256; ps=p*SZI; wv=UAV(w); up=SGNTO0(jt->workareas.compare.complt);
- q=C2T&AT(w);
+ q=C2T&AT(w) && 1;
  if(1<ai){GATV0(x,INT,n,1); xv=AV(x);}
  for(i=0;i<m;++i){
   b=(B)(ai&1); if(q){e=-3; vv=wv+ai-2;}else{e=-1; vv=wv+ai-1;}
