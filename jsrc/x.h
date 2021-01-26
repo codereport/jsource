@@ -34,12 +34,3 @@
 #undef L_tmpnam
 #endif
 #define L_tmpnam        300  /* full path name can be very long */
-
-#if SY_WINCE
-#define _wmkdir(x)	(!CreateDirectory (x,0))
-#define _wrmdir(x)	(!RemoveDirectory (x))
-#define _wunlink(x)	(!DeleteFile (x))
-
-wchar_t *tounibuf(char * src);
-char *toascbuf(wchar_t *src);
-#endif

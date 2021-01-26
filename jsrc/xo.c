@@ -61,17 +61,9 @@ F jtjope(J jt,A w,C*mode){A t;F f;I n;static I nf=25; A z;
  s=USAV(z);
  for(i=0;i<(I)strlen(mode);++i){usmode[i]=(US)mode[i];}
  usmode[i]=0;
-#if !SY_WINCE 
  f=_wfopen(s,usmode);
  if(!f&&errno==ENOENT&&!wcscmp(usmode,FLUPDATE_O))f=_wfopen(s,FLUPDATEC_O);
  if(!f&&errno==EACCES&& wcscmp(usmode,FLREAD_O  ))f=_wfopen(s,FLREAD_O);
-#else
- {
- f=_wfopen(s,usmode);
- if(!f&&!wcscmp(usmode,FLUPDATE_O))f=_wfopen(s,FLUPDATEC_O); // no errno on wince
- if(!f&& wcscmp(usmode,FLREAD_O  ))f=_wfopen(s,FLREAD_O);
- }
-#endif
 }
 #endif
  R f?f:(F)jerrno();

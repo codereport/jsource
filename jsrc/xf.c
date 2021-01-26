@@ -25,7 +25,6 @@ static int rmdir2(const char *dir);
 
 
 
-#if SY_64
 static I fsize(F f){
  if(!f)R 0;
 
@@ -34,12 +33,6 @@ static I fsize(F f){
  fgetpos(f,&z);
  R *(I*)&z;
 }
-#else
-static I fsize(F f){
- RZ(f);
-
-}
-#endif
 
 static A jtrdns(J jt,F f){A za,z;I n=1024;size_t r,tr=0;
  GAT0(za,LIT,1024,1); clearerr(f);
@@ -55,11 +48,7 @@ A jtrd(J jt,F f,I j,I n){A z;C*x;I p=0;size_t q=1;
  RZ(f);
  if(0>n){if(j<0) n=-j; else n=fsize(f)-j;}
 
-#if !SY_WINCE
  {INT64 v; v= j+((0>j)?fsize(f):0); fsetpos(f,(fpos_t*)&v);}
-#else
- fseek(f,(long)(0>j?1+j:j),0>j?SEEK_END:SEEK_SET);
-#endif
 
  clearerr(f);
  GATV0(z,LIT,n,1); x=CAV(z);
@@ -74,11 +63,7 @@ static B jtwa(J jt,F f,I j,A w){C*x;I n,p=0;size_t q=1;
  RZ(f&&w);
  n=AN(w)*(C4T&AT(w)?4:C2T&AT(w)?2:1); x=CAV(w);
 
-#if !SY_WINCE
  {INT64 v; v= j+((0>j)?fsize(f):0); fsetpos(f,(fpos_t*)&v);}
-#else
- fseek(f,(long)(0>j?1+j:j),0>j?SEEK_END:SEEK_SET);
-#endif
  
  clearerr(f);
  while(q&&n>p){
@@ -245,10 +230,6 @@ F1(jtpathchdir){A z;
  R mtv;
 }
 
-#if SY_WINCE
-#define _wgetenv(s)  (0)
-#endif
-
 F1(jtjgetenv){
  F1RANK(1,jtjgetenv,UNUSED_VALUE);
  ASSERT((LIT+C2T+C4T)&AT(w),EVDOMAIN);
@@ -257,7 +238,7 @@ F1(jtjgetenv){
   C*s;
   R(s=getenv(CAV(toutf8x(w))))?cstr(s):num(0); // toutf8x has trailing nul
  }
-#else
+#else // # i think this corresponds to WIN -ish stuff
  {
   A z; US* us;
   RZ(z=toutf16x(toutf8(w))); USAV(z)[AN(z)]=0;  // install termination

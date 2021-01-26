@@ -41,18 +41,14 @@ floop=: 4 : 0
 )
 */
 
-#if SY_64
 #define REVBITS(x,y)
-#else
-#define REVBITS(x,y)   {y[3]=revb[x[0]]; y[2]=revb[x[1]]; y[1]=revb[x[2]]; y[0]=revb[x[3]];}
-#endif
 
 static const UC revb16[16]={0,8,4,12, 2,10,6,14, 1,9,5,13, 3,11,7,15};
 static UC revb[256];
 
 static F1(jtravtranspose){I i,n,s;Z t,*v;UC*iv,*jv;UI j;
  n=AN(w); v=ZAV(w);
- j=n; s=SY_64?64:32; while(1<j){j>>=1; --s;} 
+ j=n; s=64; while(1<j){j>>=1; --s;} 
  iv=(UC*)&i; jv=(UC*)&j;
  if(128!=revb[1])DO(256, revb[i]=(revb16[i&15]<<4)+revb16[i>>4];);
  for(i=0;i<n;++i){

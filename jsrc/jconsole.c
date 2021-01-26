@@ -54,7 +54,6 @@ char* rl_readline_name;
 int hist=1;
 char histfile[512];
 
-#if !defined(ANDROID) && !defined(_WIN32)
 static int readlineinit()
 {
  if(hreadline)return 0; // already run
@@ -83,20 +82,6 @@ static int readlineinit()
  using_history=(USING_HISTORY)GETPROCADDRESS(hreadline,"using_history");
  return 1;
 }
-#else
-static int readlineinit()
-{
-#if defined(USE_LINENOISE)
-    add_history=linenoiseHistoryAdd;
-    read_history=linenoiseHistoryLoad;
-    write_history=linenoiseHistorySave;
-    readline=linenoise;
-    return 2;
-#else
-    return 0;
-#endif
-}
-#endif
 
 void rlexit(int c){	if(!hist&&histfile[0]) write_history(histfile);}
 
@@ -257,7 +242,8 @@ int main(int argc, char* argv[])
 #endif
 
  jt=jeload(callbacks);
- if(!jt){char m[1000]; jefail(m); fputs(m,stderr); exit(1);}
+ if(!jt)
+	jefail();
  adadbreak=(char**)jt; // first address in jt is address of breakdata
  if(2==breadline){
   struct sigaction sa;

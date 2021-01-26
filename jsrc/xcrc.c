@@ -71,11 +71,7 @@ F2(jtqhash12){F2PREFIP; I hsiz; UI crc;
   A *av=AAV(w);  // pointer to subvalues
   DQ(lpct, crc=CRC32L(crc,i0(jtqhash12(jt,zeroionei(0),*av++)));)  // recur
  }
-#if SY_64
  if(hsiz)crc=(crc*(UI)hsiz)>>32;   // convert hash to user's range
-#else
- if(hsiz)crc=crc%hsiz;   // convert hash to user's range
-#endif
  R sc((I)(I4)crc);   // make the result a valid integer.  Could reuse the a arg inplace
 }
 

@@ -40,22 +40,14 @@ extern I grcol2(I,I,US*,I,I*,I*,const I,US*,I);
 extern void jtmsort(J,I,void**,void**);
 
 // Convert 2 Booleans to a code 0-3
-#if C_LE
 #define IND2(x) {US xx = (x); ii = ((xx<<9)|xx)>>8;}
-#else
-#define IND2(x) {US xx = (x); ii = 0x3&((xx>>7)|xx);}
-#endif
 
 // Convert 4 Booleans to a code 0-15
-#if C_LE
 #define IND4(x) {UINT xx = (x); xx|=xx<<9; xx|=xx<<18; ii = xx>>24;}  // first byte (bit 0) is the MSB when a word is loaded
-#else
-#define IND4(x) {UINT xx = (x); ii = 0xf&((xx>>21)|(xx>>14)|(xx>>7)|xx);}
-#endif
 
 // endian constants for 16-bit radix sorts
-#define FPLSBWDX (C_LE?0:3)
-#define FPMSBWDX (C_LE?3:0)
-#define INTLSBWDX (C_LE?0:(SZI/2-1))
-#define INTMSBWDX (C_LE?(SZI/2-1):0)
-#define WDINC (C_LE?1:-1)
+#define FPLSBWDX  (0)
+#define FPMSBWDX  (3)
+#define INTLSBWDX (0)
+#define INTMSBWDX (SZI/2-1)
+#define WDINC     (1)

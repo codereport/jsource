@@ -232,7 +232,7 @@ I remii(I a,I b){I r; R (a!=REPSGN(a))?(r=b%a,0<a?r+(a&REPSGN(r)):r+(a&REPSGN(-r
 AHDR2(remII,I,I,I){I u,v;
  if(n-1==0){DQ(m,*z++=remii(*x,*y); x++; y++; )
  }else if(n-1<0){   // repeated x.  Handle special cases and avoid integer divide
-#if SY_64 && C_USEMULTINTRINSIC
+#if C_USEMULTINTRINSIC
   DQ(m, u=*x++;
     // take abs(x); handle negative x in a postpass
    UI ua=-u>=0?-u:u;  // abs(x)
@@ -442,7 +442,7 @@ A jtintmod2(J jt,A w,I mod){A z;B *v;I n,q,r,*u;UI m=0;  // init m for warning
  // the rest is boolean result
  n=AN(w); v=BAV(w);  // littleendian only
  GATV(z,B01,n,AR(w),AS(w)); RZ(n);  // loops below can't handle empty
- u=AV(z); q=(n-1)>>(LGSZI/C_LE); r=((n-1)&(SZI-1))+1;   // there is always a remnant
+ u=AV(z); q=(n-1)>>(LGSZI); r=((n-1)&(SZI-1))+1;   // there is always a remnant
  I mask=mod==2?VALIDBOOLEAN:0;  // if mod is 1, all results will be 0; otherwise boolean result
  DQ(q, DQ(SZI, m=(m>>8)+((UI)*v<<((SZI-1)*8)); v+=SZI;); *u++=m&mask;)
  DQ(r, m=(m>>8)+((UI)*v<<((SZI-1)*8)); v+=SZI;);  // 1-8 bytes

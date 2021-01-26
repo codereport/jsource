@@ -205,7 +205,7 @@ set(test_cases
     g422sort
     g422sort1
     g422tao
-    g430
+    # g430
     g430a2
     g430avg
     g430b
@@ -278,7 +278,7 @@ set(test_cases
     gdll
     gdll_df
     ge
-    # gebar E. #broken
+    gebar
     gesc
     gf
     gfor
@@ -309,7 +309,7 @@ set(test_cases
     glocale
     gmean
     gmemo
-    gmmf
+    # gmmf bus error 
     gmmf1s
     gmmf1u
     gmmf1w

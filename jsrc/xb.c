@@ -56,7 +56,7 @@ F2(jtnouninfo2){A z;
 #define BR(d,a)         ((C*)(a)+(3LL<<LGWS(d)))       /* rank                            */
 #define BS(d,a)         ((C*)(a)+(4LL<<LGWS(d)))       /* shape                           */
 #define BV(d,a,r)       (BS(d,a)+((r)<<LGWS(d)))     /* value                           */
-#define BU              (C_LE ? 1 : 0)
+#define BU              (1)
 
 static A jtbrep(J jt,B b,B d,A w);  // forward declaration
 static A jthrep(J jt,B b,B d,A w);
@@ -116,11 +116,11 @@ static B jtmvw(J jt,C*v,C*u,I n,B bv,B bu,B dv,B du){C c;
 // move the header, return new move point
 static C*jtbrephdrq(J jt,B b,B d,A w,C *q){I f,r;I extt = UNSAFE(AT(w));
   r=AR(w); f=0;
- RZ(mvw(BF(d,q),(C*)&f,    1L,b,BU,d,SY_64)); *q=d?(b?0xe3:0xe2):(b?0xe1:0xe0);
- RZ(mvw(BT(d,q),(C*)&extt,1L,b,BU,d,SY_64));
- RZ(mvw(BN(d,q),(C*)&AN(w),1L,b,BU,d,SY_64));
- RZ(mvw(BR(d,q),(C*)&r,1L,b,BU,d,SY_64));  // r is an I
- RZ(mvw(BS(d,q),(C*) AS(w),r, b,BU,d,SY_64));
+ RZ(mvw(BF(d,q),(C*)&f,    1L,b,BU,d,1)); *q=d?(b?0xe3:0xe2):(b?0xe1:0xe0);
+ RZ(mvw(BT(d,q),(C*)&extt,1L,b,BU,d,1));
+ RZ(mvw(BN(d,q),(C*)&AN(w),1L,b,BU,d,1));
+ RZ(mvw(BR(d,q),(C*)&r,1L,b,BU,d,1));  // r is an I
+ RZ(mvw(BS(d,q),(C*) AS(w),r, b,BU,d,1));
  R BV(d,q,r);
 }
 
@@ -133,12 +133,12 @@ static A jtbreps(J jt,B b,B d,A w){A q,y,z,*zv;C*v;I c=0,kk,m,n;P*wp;
  GATV0(z,BOX,n,1); zv=AAV(z);
  GATV0(y,LIT,bsize(jt,d,1,INT,n,AR(w),AS(w)),1);
  v=brephdr(b,d,w,y);
- RZ(mvw(v,(C*)&c,1L,BU,b,d,SY_64));  /* reserved for flag */
+ RZ(mvw(v,(C*)&c,1L,BU,b,d,1));  /* reserved for flag */
  zv[0]=incorp(y); m=AN(y);
- RZ(zv[1]=q=incorp(brep(b,d,SPA(wp,a)))); RZ(mvw(v+  kk,(C*)&m,1L,b,BU,d,SY_64)); m+=AN(q);
- RZ(zv[2]=q=incorp(brep(b,d,SPA(wp,e)))); RZ(mvw(v+2*kk,(C*)&m,1L,b,BU,d,SY_64)); m+=AN(q);
- RZ(zv[3]=q=incorp(brep(b,d,SPA(wp,i)))); RZ(mvw(v+3*kk,(C*)&m,1L,b,BU,d,SY_64)); m+=AN(q);
- RZ(zv[4]=q=incorp(brep(b,d,SPA(wp,x)))); RZ(mvw(v+4*kk,(C*)&m,1L,b,BU,d,SY_64));
+ RZ(zv[1]=q=incorp(brep(b,d,SPA(wp,a)))); RZ(mvw(v+  kk,(C*)&m,1L,b,BU,d,1)); m+=AN(q);
+ RZ(zv[2]=q=incorp(brep(b,d,SPA(wp,e)))); RZ(mvw(v+2*kk,(C*)&m,1L,b,BU,d,1)); m+=AN(q);
+ RZ(zv[3]=q=incorp(brep(b,d,SPA(wp,i)))); RZ(mvw(v+3*kk,(C*)&m,1L,b,BU,d,1)); m+=AN(q);
+ RZ(zv[4]=q=incorp(brep(b,d,SPA(wp,x)))); RZ(mvw(v+4*kk,(C*)&m,1L,b,BU,d,1));
  R raze(z);
 }    /* 3!:1 w for sparse w */
 
@@ -154,7 +154,7 @@ static C* jtbrepfill(J jt,B b,B d,A w,C *zv){I klg,kk;
   I blksize=bsizer(jt,d,1,w);  // get size of this block (never needs recursion)
   switch(CTTZ(t)){
   case SBTX:
-  case INTX:  RZ(mvw(zv,u,n,  b,BU,d,SY_64)); break;
+  case INTX:  RZ(mvw(zv,u,n,  b,BU,d,1)); break;
   case FLX:   RZ(mvw(zv,u,n,  b,BU,1,1    )); break;
   case CMPXX: RZ(mvw(zv,u,n+n,b,BU,1,1    )); break;
   default:
@@ -177,7 +177,7 @@ static C* jtbrepfill(J jt,B b,B d,A w,C *zv){I klg,kk;
  C* zvx=zv; zv += n*kk;  // save start of index, step over index
  // move in the blocks: first the offset, writing over the indirect block, then the data
  // the offsets are all relative to the start of the block, which is origzv
- DO(n, I offset=zv-origzv; RZ(mvw(zvx,(C*)&offset,1L,b,BU,d,SY_64)); zvx+=kk; RZ(zv=jtbrepfill(jt,b,d,wv[i],zv));)
+ DO(n, I offset=zv-origzv; RZ(mvw(zvx,(C*)&offset,1L,b,BU,d,1)); zvx+=kk; RZ(zv=jtbrepfill(jt,b,d,wv[i],zv));)
  R zv;
 }    /* b iff reverse the bytes; d iff 64-bit */
 
@@ -211,8 +211,8 @@ static A jthrep(J jt,B b,B d,A w){A y;C c,*hex="0123456789abcdef",*u,*v;I n,s[2]
  R y;  // return it
 }
 
-F1(jtbinrep1){ARGCHK1(w); ASSERT(NOUN&AT(w),EVDOMAIN); R brep(BU,SY_64,w);}  /* 3!:1 w */
-F1(jthexrep1){ARGCHK1(w); ASSERT(NOUN&AT(w),EVDOMAIN); R hrep(BU,SY_64,w);}  /* 3!:3 w */
+F1(jtbinrep1){ARGCHK1(w); ASSERT(NOUN&AT(w),EVDOMAIN); R brep(BU,1,w);}  /* 3!:1 w */
+F1(jthexrep1){ARGCHK1(w); ASSERT(NOUN&AT(w),EVDOMAIN); R hrep(BU,1,w);}  /* 3!:3 w */
 
 F2(jtbinrep2){I k;
  ARGCHK2(a,w);
@@ -247,9 +247,9 @@ static F1(jtunhex){A z;C*u;I c,n;UC p,q,*v;
 
 static A jtunbinr(J jt,B b,B d,B pre601,I m,A w){A y,z;C*u=(C*)w,*v;I e,j,kk,n,p,r,*s,t,*vv;
  ASSERT(m>BH(d),EVLENGTH);
- RZ(mvw((C*)&t,BTX(d,pre601,w),1L,BU,b,SY_64,d));
- RZ(mvw((C*)&n,BN(d,w),1L,BU,b,SY_64,d));
- RZ(mvw((C*)&r,BR(d,w),1L,BU,b,SY_64,d)); 
+ RZ(mvw((C*)&t,BTX(d,pre601,w),1L,BU,b,1,d));
+ RZ(mvw((C*)&n,BN(d,w),1L,BU,b,1,d));
+ RZ(mvw((C*)&r,BR(d,w),1L,BU,b,1,d)); 
  kk=WS(d); v=BV(d,w,r);
  ASSERT((t==LOWESTBIT(t))&&t&(B01|INT|FL|CMPX|BOX|XNUM|RAT|LIT|C2T|C4T|SB01|SLIT|SINT|SFL|SCMPX|SBOX|SBT),EVDOMAIN);
  ASSERT(0<=n,EVDOMAIN);
@@ -257,10 +257,10 @@ static A jtunbinr(J jt,B b,B d,B pre601,I m,A w){A y,z;C*u=(C*)w,*v;I e,j,kk,n,p
  p=bsize(jt,d,0,t,n,r,0L); e=t&RAT?n+n:t&SPARSE?1+sizeof(P)/SZI:n; 
  ASSERT(m>=p,EVLENGTH);
  if(likely((t&DENSE)!=0)){GA(z,t,n,r,0)}else{GASPARSE(z,t,n,r,(I*)0)} s=AS(z);
- RZ(mvw((C*)s,BS(d,w),r,BU,b,SY_64,d)); 
+ RZ(mvw((C*)s,BS(d,w),r,BU,b,1,d)); 
  j=1; DO(r, ASSERT(0<=s[i],EVLENGTH); if(t&DENSE)j*=s[i];); 
  ASSERT(j==n,EVLENGTH);
- if(t&BOX+XNUM+RAT+SPARSE){GATV0(y,INT,e,1); vv=AV(y); RZ(mvw((C*)vv,v,e,BU,b,SY_64,d));}
+ if(t&BOX+XNUM+RAT+SPARSE){GATV0(y,INT,e,1); vv=AV(y); RZ(mvw((C*)vv,v,e,BU,b,1,d));}
  if(t&BOX+XNUM+RAT){A*zv=AAV(z);I i,k=0,*iv;
   RZ(y=indexof(y,y)); iv=AV(y);
   for(i=0;i<e;++i){
@@ -276,9 +276,9 @@ static A jtunbinr(J jt,B b,B d,B pre601,I m,A w){A y,z;C*u=(C*)w,*v;I e,j,kk,n,p
  }else if(n)switch(CTTZNOFLAG(t)){
   case B01X:  {B c,*zv=BAV(z); DO(n, c=v[i]; ASSERT(c==C0||c==C1,EVDOMAIN); zv[i]=c;);} break; 
   case SBTX:
-  case INTX:  RZ(mvw(CAV(z),v,n,  BU,b,SY_64,d)); break;
-  case FLX:   RZ(mvw(CAV(z),v,n,  BU,b,1,    1)); break;
-  case CMPXX: RZ(mvw(CAV(z),v,n+n,BU,b,1,    1)); break;
+  case INTX:  RZ(mvw(CAV(z),v,n,  BU,b,1,d)); break;
+  case FLX:   RZ(mvw(CAV(z),v,n,  BU,b,1,1)); break;
+  case CMPXX: RZ(mvw(CAV(z),v,n+n,BU,b,1,1)); break;
   default:   e=n<<bplg(t); ASSERTSYS(e<=allosize(z),"unbinr"); MC(CAV(z),v,e);
  }
  RE(z); RETF(z);
@@ -302,14 +302,14 @@ F1(jtunbin){A q;B b,d;C*v;I c,i,k,m,n,r,t;
  d=1; v=8+CAV(w); DQ(8, if(CFF!=*v++){d=0; break;});       /* detect 64-bit        */
  ASSERT(m>=1+BH(d),EVLENGTH);
  b=0;
- if(!mvw((C*)&t,BTX(d,1,q),1L,BU,0,SY_64,d)){RESETERR; b=1;} /* detect reverse bytes */
- if(!mvw((C*)&n,BN(d,q),1L,BU,0,SY_64,d)){RESETERR; b=1;}
- if(!mvw((C*)&r,BR(d,q),1L,BU,0,SY_64,d)){RESETERR; b=1;}
+ if(!mvw((C*)&t,BTX(d,1,q),1L,BU,0,1,d)){RESETERR; b=1;} /* detect reverse bytes */
+ if(!mvw((C*)&n,BN(d,q),1L,BU,0,1,d)){RESETERR; b=1;}
+ if(!mvw((C*)&r,BR(d,q),1L,BU,0,1,d)){RESETERR; b=1;}
  b=b||!(t&NOUN&&0<=n&&0<=r&&(r||1==n)&&m>=BH(d)+r*WS(d));
  if(t&DENSE){
   v=BS(d,q); c=1;
   for(i=0;!b&&i<r;++i){
-   if(!mvw((C*)&k,v,1L,BU,0,SY_64,d)){RESETERR; b=1;}
+   if(!mvw((C*)&k,v,1L,BU,0,1,d)){RESETERR; b=1;}
    v+=WS(d); c*=k;
    if(!(0<=k&&(!n||0<=c&&k<=n&&c<=n)))b=1;
   }
@@ -324,11 +324,7 @@ F2(jtic2){A z;I j,m,n,p,*v,*x,zt;I4*y;UI4*y1;S*s;U short*u;
  ASSERT(1>=AR(w),EVRANK);
  n=AN(w);
  RE(j=i0(a));
-#if SY_64
  ASSERT(ABS(j)<=4,EVDOMAIN);
-#else
- ASSERT(ABS(j)<=2,EVDOMAIN);
-#endif
 // long way p=4==j||-4==j?4:3==j||-3==j?8:2==j||-2==j?4:2;
  p=ABS(j); p+=(I )(p==0)-((p&4)>>1);   // p becomes (|j){1 1 2 3 2
  if(0<j){m=n<<p; zt=LIT; if(!(INT&AT(w)))RZ(w=cvt(INT,w));}
@@ -433,7 +429,6 @@ F2(jtbit2){
 // e from yyyymmddhhmnss.  The argument is assumed to be well-formed
 static I eft(I n,UI* e,UI* t)
 {
-#if SY_64
 	I i; UI4 kk,M,Y,D; UI k,hh,mm,ss;  // use unsigned to make / and % generate better code
 	for(i=0;i<n;++i){
 	 k=t[i];  // read the yyyymmddhhmnss value
@@ -461,7 +456,6 @@ static I eft(I n,UI* e,UI* t)
   // Combine everything into one # and store
  	e[i]=(NANOS*24LL*60LL*60LL)*temp + (NANOS*3600LL)*hh + (NANOS*60LL)*mm + NANOS*ss;  // eschew Horner's Rule because of multiply latency
 	}
-#endif
 	return 0;
 }
 
@@ -486,7 +480,6 @@ static const I nanopowers[9] = {100000000, 10000000, 1000000, 100000, 10000, 100
 // prec is -1 for date only, 0 for integer seconds, 1-9 for that many fractional seconds places
 // prec of 7*SZI-21 means 'produce 7 ints per input time'
 static A sfe(J jt,A w,I prec,UC decimalpt,UC zuluflag){
-#if SY_64
 	UI k; UI4 ymd,E,N,M,HMS,d,j,g,m,t,y;I i;A z;  // unsigned for faster / %
  // Validate input.  We will accept FL input, but it's not going to have nanosecond precision
  RZ(w=vi(w));  // convert to INT
@@ -556,17 +549,12 @@ static A sfe(J jt,A w,I prec,UC decimalpt,UC zuluflag){
   }
  }
 	RETF(z);
-#else
-R 0;
-#endif
 }
-
 
 // w is LIT array of ISO strings (rank>0, not empty), result is array of INTs with nanosecond time for each string
 // We don't bother to support a boxed-string version because the strings are shorter than the boxes & it is probably just about as good to just open the boxed strings
 // prec is -1 (day only) or 0,3,9 for that many fractional digits below seconds
 static A efs(J jt,A w,I prec){
-#if SY_64
 	I i;A z;
  // Allocate result area
  I n; PROD(n,AR(w)-1,AS(w)); GATV(z,INT,n,AR(w)-1,AS(w))
@@ -658,11 +646,7 @@ err:
   s[strglen]=savesentinel;  // restore end-of-string marker
  }
  RETF(z);
-#else
-R 0;
-#endif
 }
-
 
 
 
@@ -670,7 +654,7 @@ R 0;
 F1(jtinttoe){A z;I n;
  ARGCHK1(w);
  n=AN(w);
- ASSERT(SY_64,EVNONCE);
+ ASSERT(1,EVNONCE);
  RZ(w=vi(w));  // verify valid integer
  GATV(z,INT,n,AR(w),AS(w));
  eft(n,IAV(z),IAV(w));
@@ -680,7 +664,7 @@ F1(jtinttoe){A z;I n;
 // 6!:15 Convert a block of nanosecond times to Y M D h m s nanosec
 F1(jtetoint){
  ARGCHK1(w);
- ASSERT(SY_64,EVNONCE);
+ ASSERT(1,EVNONCE);
  RETF(sfe(jt,w,7*SZI-20,0,0));  // special precision meaning 'store INTs'.  Turns into linelen=56
 }
 
@@ -690,7 +674,7 @@ F1(jtetoint){
 // Default is '. 0'
 F2(jtetoiso8601){UC decimalpt,zuluflag;I prec;
  ARGCHK1(w);
- ASSERT(SY_64,EVNONCE);
+ ASSERT(1,EVNONCE);
  // If monad, supply defaults; if dyad, audit
  if(AT(w)&NOUN){  // dyad
   ASSERT(AT(a)&LIT,EVDOMAIN);
@@ -709,7 +693,7 @@ F2(jtetoiso8601){UC decimalpt,zuluflag;I prec;
 // Bivalent.  left arg is 'd', '0', '3', or '9', like 3d digit of 6!:16, default '9'
 F2(jtiso8601toe){A z;I prec;
  ARGCHK1(w);
- ASSERT(SY_64,EVNONCE);
+ ASSERT(1,EVNONCE);
  // If monad, supply defaults; if dyad, audit
  if(AT(w)&NOUN){  // dyad
   ASSERT(AT(a)&LIT,EVDOMAIN);

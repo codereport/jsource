@@ -3,7 +3,7 @@
 /*                                                                         */
 /* Definitions for jt ("jthis")                                            */
 
-#if !SY_WINCE && (SYS & SYS_DOS)
+#if (SYS & SYS_DOS)
 #include <sys/stat.h>
 #endif
 

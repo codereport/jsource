@@ -156,9 +156,7 @@ F1(jtreverse){A z;C*wv,*zv;I f,k,m,n,nk,r,*v,*ws,wt,wr;
   default:        {C*s=wv-k,*t; DQ(m, t=s+=nk; DQ(n, MC(zv,t,k); zv+=k; t-=k;););} break;
   case sizeof(C): {C*s=    wv,*t,*u=    zv; DQ(m, t=s+=n; DQ(n, *u++=*--t;););} break;
   case sizeof(S): {S*s=(S*)wv,*t,*u=(S*)zv; DQ(m, t=s+=n; DQ(n, *u++=*--t;););} break;
-#if SY_64
   case sizeof(int):{int*s=(int*)wv,*t,*u=(int*)zv; DQ(m, t=s+=n; DQ(n, *u++=*--t;););} break;
-#endif
   case sizeof(I): {I*s=(I*)wv,*t,*u=(I*)zv; DQ(m, t=s+=n; DQ(n, *u++=*--t;););} break;
  }
  RETF(z);
@@ -291,9 +289,7 @@ F2(jtexpand){A z;B*av;C*wv,*wx,*zv;I an,*au,i,k,p,wc,wk,wn,wt,zn;
  switch(wk){
   case sizeof(C): EXPAND(C); break;
   case sizeof(S): EXPAND(S); break;
-#if SY_64
   case sizeof(int): EXPAND(int); break;
-#endif
   case sizeof(I): EXPAND(I); break;
   default:  
    mvc(k*zn,zv,k,jt->fillv); // here we are trying to minimize calls to MC

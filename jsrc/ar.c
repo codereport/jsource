@@ -15,12 +15,7 @@ static DF1(jtreduce);
 #define PARITY2         u=(B*)&s; b=0; b^=*u++; b^=*u++;
 #define PARITY4         u=(B*)&s; b=0; b^=*u++; b^=*u++; b^=*u++; b^=*u++; 
 #define PARITY8         u=(B*)&s; b=0; b^=*u++; b^=*u++; b^=*u++; b^=*u++; b^=*u++; b^=*u++; b^=*u++; b^=*u++;
-
-#if SY_64
 #define PARITYW         PARITY8
-#else
-#define PARITYW         PARITY4
-#endif  
 
 #if SY_ALIGN
 #define VDONE(T,PAR)  \
@@ -440,13 +435,13 @@ static DF1(jtreducesp){A a,g,z;B b;I f,n,r,*v,wn,wr,*ws,wt,zt;P*wp;
                          else   DQ(m,       x=*u++; y=*u++; *zv++=F(x,y);              ); \
                         }
 #define BTABIFX(F)      {btab[0                        ]=0 F 0;  \
-                         btab[C_LE?256:  1]=0 F 1;  \
-                         btab[C_LE?  1:256]=1 F 0;  \
+                         btab[256]=0 F 1;  \
+                         btab[  1]=1 F 0;  \
                          btab[257                      ]=1 F 1;  \
                         }
 #define BTABPFX(F)      {btab[0                        ]=F(0,0); \
-                         btab[C_LE?256:  1]=F(0,1); \
-                         btab[C_LE?  1:256]=F(1,0); \
+                         btab[256]=F(0,1); \
+                         btab[  1]=F(1,0); \
                          btab[257                      ]=F(1,1); \
                         }
 #define BR2CASE(t,id)   ((id)+256*(t))

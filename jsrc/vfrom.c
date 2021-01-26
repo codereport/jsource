@@ -99,9 +99,7 @@ F2(jtifrom){A z;C*wv,*zv;I acr,an,ar,*av,j,k,m,p,pq,q,wcr,wf,wk,wn,wr,*ws,zn;
    break;
   case sizeof(C): IFROMLOOP(C); break; 
   case sizeof(S): IFROMLOOP(S); break;  
-#if SY_64
   case sizeof(int):IFROMLOOP(int); break;
-#endif
   default:
   // cells are not simple types.  We can safely move full words, since there is always extra buffer space at the end of any type that is not a word-multiple
    {C* RESTRICT u,* RESTRICT v=(C*)wv,* RESTRICT x=(C*)zv;
@@ -149,9 +147,7 @@ static F2(jtbfrom){A z;B*av,*b;C*wv,*zv;I acr,an,ar,k,m,p,q,r,*u=0,wcr,wf,wk,wn,
   case   2*sizeof(C): BNNERM(C,I); break; 
   case 1+2*sizeof(C): INNER1B(C);  break;
   case 1+2*sizeof(S): INNER1B(S);  break;
-#if SY_64
   case 1+2*sizeof(int): INNER1B(int);  break;
-#endif
   case 1+2*sizeof(I): INNER1B(I);  break;
   default:
    if(1==an){wv+=k**av; DQ(m, MC(zv,wv,k); zv+=k; wv+=wk;);}
@@ -260,9 +256,7 @@ static A jtafrom2(J jt,A p,A q,A w,I r){A z;C*wv,*zv;I d,e,j,k,m,n,pn,pr,* RESTR
  case sizeof(I): INNER2(I);
  case sizeof(C): INNER2(C);
  case sizeof(S): INNER2(S);
-#if SY_64
  case sizeof(I4): INNER2(I4);
-#endif
 
  default:        {C* RESTRICT v=wv,* RESTRICT x=zv-k;n=k*n;   // n=#bytes in a cell of w
   JMCDECL(endmask) JMCSETMASK(endmask,k+(SZI-1),0) 
@@ -330,7 +324,7 @@ F2(jtfrom){I at;A z;
  if(likely(!((AT(a)|AT(w))&(SPARSE)))){
   // if B01|INT|FL atom { INT|FL|BOX array, and no frame, just pluck the value.  If a is inplaceable and not unincorpable, use it
   // If we turn the result to BOX it will have the original flags, i. e. it will be nonrecursive.  Thus fa will not free the contents, which do not have incremented usecount (and are garbage on error)
-  if(SY_64&&!((AT(a)&(NOUN&~(B01|INT|FL)))+(AT(w)&(NOUN&~(INT|FL|BOX)))+AR(a)+(SGNTO0((((RANKT)jt->ranks-AR(w))|(AR(w)-1))))+(AFLAG(w)&AFNJA))){   // NJAwhy
+  if(!((AT(a)&(NOUN&~(B01|INT|FL)))+(AT(w)&(NOUN&~(INT|FL|BOX)))+AR(a)+(SGNTO0((((RANKT)jt->ranks-AR(w))|(AR(w)-1))))+(AFLAG(w)&AFNJA))){   // NJAwhy
    I av;  // selector value
    if(AT(a)&(B01|INT)){av=BIV0(a);  // INT index
    }else{  // FL index

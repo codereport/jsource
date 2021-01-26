@@ -13,12 +13,8 @@
 struct Bd2 {I hdr[AKXR(0)/SZI]; D v[2];};
 #define CREBLOCKATOMV2(name,t,v1,v2) struct Bd2 B##name={{AKXR(0),(t)&TRAVERSIBLE,0,(t),ACPERMANENT,1,0},{v1,v2}};
 CREBLOCKATOMV2(a0j1,CMPX,0.0,1.0)  // 0j1
-#if SY_64
 #define CBAIVAL(t,v) {7*SZI,(t)&TRAVERSIBLE,0,(t),ACPERMANENT,1,0,(v)}
-#else
-#define CBAIVAL(t,v) {8*SZI,(t)&TRAVERSIBLE,0,(t),ACPERMANENT,1,0,0,(v)}
-#endif
-#define CREBLOCKATOMI(name,t,v) I B##name[9-SY_64]=CBAIVAL(t,v);
+#define CREBLOCKATOMI(name,t,v) I B##name[8]=CBAIVAL(t,v);
 #define CREBLOCKVEC0(name,t) I B##name[8]={8*SZI,(t)&TRAVERSIBLE,0,(t),ACPERMANENT,0,1,0};  // no padding at end - no atoms should be referenced
 CREBLOCKVEC0(aqq,LIT)  // ''
 CREBLOCKVEC0(mtv,B01)  // i.0 boolean
@@ -46,13 +42,9 @@ D   jnan=NAN;               /* _.                                   */
 A   mnuvxynam[6]={0,0,0,0,0,0};   // name blocks for all arg names
 // NOTE: for fetching IDs we use the validitymask as a safe place to fetch 0s from.  We know that
 // validitymask[15] will be 0 and we use &validitymask[12] as an A* with AT of 0 (a non-function) or an L* with val=0; and &validitymask[0] as a V* with ID of 0
-#if !SY_64
-long long validitymask[16]={-1, -1, 0, 0, -1, -1, 0, 0, -1, -1, 0, 0,0,0,0,0};  // maskload expect s64x2 mask
-#else
 I validitymask[16]={-1, -1, 0, 0, -1, -1, 0, 0, -1, -1, 0, 0,0,0,0,0};  // native ss2/neon register is s64x2
-#endif
 
-I Bnum[22][9-SY_64] = {  // the numbers we keep at hand.  0 and 1 are B01, the rest INT; but the first 2 are integer forms of 0 and 1
+I Bnum[22][8] = {  // the numbers we keep at hand.  0 and 1 are B01, the rest INT; but the first 2 are integer forms of 0 and 1
 CBAIVAL(INT,0), CBAIVAL(INT,1),
 CBAIVAL(INT,-10), CBAIVAL(INT,-9), CBAIVAL(INT,-8), CBAIVAL(INT,-7), CBAIVAL(INT,-6), CBAIVAL(INT,-5), CBAIVAL(INT,-4), CBAIVAL(INT,-3), CBAIVAL(INT,-2), CBAIVAL(INT,-1), 
 CBAIVAL(B01,0), CBAIVAL(B01,1),
@@ -85,14 +77,7 @@ const dcomplex zzero={0.0,0.0};
 I oneone[2]={1,1};  // used by PROD
 // global const end 
 
-
-#if SY_64
-#define bits "64"
-#else
-#define bits "32"
-#endif
-
-
+#define bits "64" 
 #define hw ""
 
 const char jeversion[]= "je9!:14 j"jversion"/j"bits""hw"/"jplatform"/"jtype"/"jlicense"/"jbuilder"/"__DATE__"T"__TIME__;

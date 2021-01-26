@@ -6,9 +6,6 @@
 #include "j.h"
 #include "vasm.h"
 
-
-#if SY_64
-
 // If jt is 0, don't call jsignal when there is an error
 // Returns x*y, or 0 if there is an error (and in that case jsignal might have been called)
 #ifdef DPMULD
@@ -56,13 +53,6 @@ I jtprod(J jt,I n,I*v){I z;
  ASSERT(z!=0,EVLIMIT)
  R z;
 }
-#else
-
-I jtmult(J jt,I x,I y){D z=x*(D)y; ASSERT(((z<=IMAX)&&(z>=IMIN))||(z=0,!jt),EVLIMIT); R(I)z;}  // If jt==0, return quiet 0
-
-I jtprod(J jt,I n,I*v){D z=1; DO(n, z*=(D)v[i];); ASSERT(z<=IMAX,EVLIMIT); R(I)z;}
-
-#endif
 
 // w is a boolean array, result is 1 iff all values are 0
 B all0(A w){if(!w)R 0; R !memchr(AV(w),C1,AN(w));}
@@ -115,7 +105,6 @@ I CTTZ(I w){
 // same, except returns 32 if no bit set
 I CTTZZ(I w){ R w & 0xffffffff ? CTTZ(w) : 32; }
 // Same, but works on full length of an I argument (32 or 64 bits)
-#if SY_64
 I CTTZI(I w){
     I t = 1;
     if (0 == (w & 0xffffffffLL)){ w >>= 32; t += 32; }
@@ -125,11 +114,6 @@ I CTTZI(I w){
     if (0 == (w & 0x3)){ w >>= 2; t += 2; }
     R t - (w & 1);
 }
-#else
-// #define CTTZI CTTZ   // On 32-bit machines, I is same as long
-// j.h declares CTTZI as extern function
-I CTTZI(I w){R CTTZ(w);}
-#endif
 #endif
 
 I CTLZI_(UI w, UI4*out){

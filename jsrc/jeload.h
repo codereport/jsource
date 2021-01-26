@@ -12,6 +12,6 @@ I jeseta(I n,char* name,I x,char* d);
 int jedo(char*); // could be jedi
 void jefree();
 char* jegetlocale();
-void jefail(char*);
+void jefail();
 void* jega(I t, I n, I r, I*s); // returns A
 void* jehjdll();
