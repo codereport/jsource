@@ -1,55 +1,25 @@
 
 add_subdirectory(adverbs)
-#add_subdirectory(conjunctions)
+add_subdirectory(conjunctions)
 #add_subdirectory(verbs)
 add_library(j)
 target_compile_definitions(j PRIVATE C_NA=0 C_AVX=1 C_AVX2=1 EMU_AVX=1)
 target_link_libraries(j PRIVATE ${STANDARD_MATH_LIBRARY}
         lib_adverbs
-        #lib_conjunctions
-        #lib_verbs
+        lib_conjunctions
+        lib_verbs
         )
 set_source_files_properties(aes-ni.c PROPERTIES COMPILE_FLAGS -maes)
-target_sources(j PRIVATE
-
+target_sources(j PUBLIC
         aes-arm_table.h
         aes-c.c
         aes-c.h
         aes-ni.c
-
-
-
-
-
-
-
-
-
-
-
-        c.c
-        ca.c
-        cc.c
-        cf.c
-        cg.c
-        ch.c
-        cip.c
         cip_t.h
         cipfloatmm_t.h
-        cl.c
-        cp.c
-        cpdtsp.c
         cpuinfo.c
         cpuinfo.h
-        cr.c
-        cr_t.h
-        crc32c.c
-        crc32c.h
-        crc32ctables.h
-        crs.c
-        cu.c
-        cv.c
-        cx.c
+        cr_t.h # templates
         d.c
         d.h
         dc.c
@@ -96,64 +66,10 @@ target_sources(j PRIVATE
         sl.c
         sn.c
         t.c
-        u.c
-        v.c
-        v0.c
-        v1.c
-        v2.c
-        va.h
-        va1.c
-        va1ss.c
-        va2.c
-        va2s.c
-        va2ss.c
-        vamultsp.c
-        vasm.h
-        vb.c
-        vbang.c
-        vcant.c
-        vcat.c
-        vcatsp.c
-        vchar.c
-        vcomp.c
-        vcomp.h
-        vcompsc.c
-        vd.c
-        ve.c
-        ve.h
-        vf.c
-        vfft.c
-        vfrom.c
-        vfromsp.c
-        vg.c
-        vg.h
-        vgauss.c
-        vgcomp.c
-        vgmerge.h
-        vgmergemincomp.h
-        vgranking.c
-        vgsort.c
-        vgsort.h
-        vgsortq.h
-        vgsp.c
-        vi.c
-        viix.c
-        visp.c
-        vm.c
-        vo.c
-        vp.c
-        vq.c
-        vq.h
-        vrand.c
-        vrep.c
-        vs.c
-        vsb.c
-        vt.c
-        vu.c
-        vx.c
-        vx.h
-        vz.c
-        vz.h
+        u.c # Interpreter Utilities
+        #vu.c # Unicode (2-byte unsigned characters) Not included anywhere?
+        vx.h # Extended Precision
+        vz.h # Complex Numbers
         w.c
         w.h
         wc.c

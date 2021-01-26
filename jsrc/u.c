@@ -4,8 +4,8 @@
 /* Interpreter Utilities                                                   */
 
 #include "j.h"
-#include "vasm.h"
-
+//#include "vasm.h"
+#include "v
 // If jt is 0, don't call jsignal when there is an error
 // Returns x*y, or 0 if there is an error (and in that case jsignal might have been called)
 #ifdef DPMULD
