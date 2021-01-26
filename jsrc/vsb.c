@@ -96,19 +96,19 @@ static __inline int Vcompare(J jt,I a,I b){I m,n;SBU*u,*v;UC*s,*t;US*p,*q;C4*f,*
 //         u   s   m                        v   t   n
  switch((SBC4&u->flag?6:SBC2&u->flag?3:0)+(SBC4&v->flag?2:SBC2&v->flag?1:0)){
 // u LIT
-  case 0: {                                DQ(MIN(m,n), if(*s!=*t)R *s<*t; ++s; ++t;);} break;
-  case 1: {          q=(US*)t;       n>>=1; DQ(MIN(m,n), if(*s!=*q)R *s<*q; ++s; ++q;);} break;
-  case 2: {          g=(C4*)t;       n>>=2; DQ(MIN(m,n), if(*s!=*g)R *s<*g; ++s; ++g;);} break;
+  case 0: {                                DQ(MIN(m,n), if(*s!=*t)return *s<*t; ++s; ++t;);} break;
+  case 1: {          q=(US*)t;       n>>=1; DQ(MIN(m,n), if(*s!=*q)return *s<*q; ++s; ++q;);} break;
+  case 2: {          g=(C4*)t;       n>>=2; DQ(MIN(m,n), if(*s!=*g)return *s<*g; ++s; ++g;);} break;
 // u C2T
-  case 3: {p=(US*)s;           m>>=1;       DQ(MIN(m,n), if(*p!=*t)R *p<*t; ++p; ++t;);} break;
-  case 4: {p=(US*)s; q=(US*)t; m>>=1; n>>=1; DQ(MIN(m,n), if(*p!=*q)R *p<*q; ++p; ++q;);} break;
-  case 5: {p=(US*)s; g=(C4*)t; m>>=1; n>>=2; DQ(MIN(m,n), if(*p!=*g)R *p<*g; ++p; ++g;);} break;
+  case 3: {p=(US*)s;           m>>=1;       DQ(MIN(m,n), if(*p!=*t)return *p<*t; ++p; ++t;);} break;
+  case 4: {p=(US*)s; q=(US*)t; m>>=1; n>>=1; DQ(MIN(m,n), if(*p!=*q)return *p<*q; ++p; ++q;);} break;
+  case 5: {p=(US*)s; g=(C4*)t; m>>=1; n>>=2; DQ(MIN(m,n), if(*p!=*g)return *p<*g; ++p; ++g;);} break;
 // u C4T
-  case 6: {f=(C4*)s;           m>>=2;       DQ(MIN(m,n), if(*f!=*t)R *f<*t; ++f; ++t;);} break;
-  case 7: {f=(C4*)s; q=(US*)t; m>>=2; n>>=1; DQ(MIN(m,n), if(*f!=*q)R *f<*q; ++f; ++q;);} break;
-  case 8: {f=(C4*)s; g=(C4*)t; m>>=2; n>>=2; DQ(MIN(m,n), if(*f!=*g)R *f<*g; ++f; ++g;);} break;
+  case 6: {f=(C4*)s;           m>>=2;       DQ(MIN(m,n), if(*f!=*t)return *f<*t; ++f; ++t;);} break;
+  case 7: {f=(C4*)s; q=(US*)t; m>>=2; n>>=1; DQ(MIN(m,n), if(*f!=*q)return *f<*q; ++f; ++q;);} break;
+  case 8: {f=(C4*)s; g=(C4*)t; m>>=2; n>>=2; DQ(MIN(m,n), if(*f!=*g)return *f<*g; ++f; ++g;);} break;
  }
- R m<n;
+ return m<n;
 }
 
 static __inline void rotateLeft(J jt, I x) {I y;
@@ -183,7 +183,7 @@ static statusEnum insert(J jt, I key) {
     static I icount=0;
 #endif
 
-    if (key < 0) R STATUS_KEY_NOT_FOUND;
+    if (key < 0) return STATUS_KEY_NOT_FOUND;
 
    /***********************************************
     *  allocate node for data and insert in tree  *
@@ -285,7 +285,7 @@ static I jtsbextend(J jt,I n,C*s,UI h,I hi){A x;I c,*hv,j,p;SBU*v;
   hi=h%p;                               /* new hi wrt new sbh size      */
   while(0<=hv[hi]){++hi; if(hi==p)hi=0;} 
  }
- R hi;
+ return hi;
 }
 
 static SB jtsbinsert(J jt,S c2,S c0,I n,C*s,UI h,UI hi){I c,m,p;SBU*u;
@@ -310,11 +310,11 @@ static SB jtsbinsert(J jt,S c2,S c0,I n,C*s,UI h,UI hi){I c,m,p;SBU*u;
  (jt->sbhv)[hi]=c;                      /* make sbh point to new symbol */
  ++jt->sbun;                            /* # unique symbols             */
  jt->sbsn+=n+p;                         /* # chars in sbs               */
- R(SB)c;
+ return(SB)c;
 }    /* insert new symbol */
 
 static SB jtsbprobe(J jt,S c2,I n,C*s,I test){B b;UC*t;I hi,ui;SBU*u;UI h,hn;UC*us=(UC*)s;
- if(!n)R(SB)0;   // sentinel
+ if(!n)return(SB)0;   // sentinel
 // optimize storage if ascii or short
  S c0=c2;  // save original flag
  if(SBC4&c2){C4*ss=(C4*)s;     c2=c2&~SBC4; DQ(n>>2,if(65535<*ss){c2|=SBC4;break;}else if(127<*ss++){c2|=SBC2;});}
@@ -327,7 +327,7 @@ static SB jtsbprobe(J jt,S c2,I n,C*s,I test){B b;UC*t;I hi,ui;SBU*u;UI h,hn;UC*
  hi=h%hn;                               /* index into hash table        */
  while(1){
   ui=(jt->sbhv)[hi];                    /* index into unique symbols    */
-  if(0>ui){if(test)R -1; else R sbinsert(c2,c0,n,s,h,hi);} /* new symbol                   */
+  if(0>ui){if(test)return -1; else return sbinsert(c2,c0,n,s,h,hi);} /* new symbol                   */
   u=SBUV(ui);
   if(h==u->h){                          /* old symbol, maybe            */
    t=(UC*)SBSV(u->i);
@@ -335,18 +335,18 @@ static SB jtsbprobe(J jt,S c2,I n,C*s,I test){B b;UC*t;I hi,ui;SBU*u;UI h,hn;UC*
 //         c0  us  n                u->flag  t  u->n
    switch((c0&SBC4?6:c0&SBC2?3:0)+(u->flag&SBC4?2:u->flag&SBC2?1:0)){
 // c0==0
-    case 1: if(n==u->n>>1){US*q=(US*)t;  b=1; DO(n,   if(us[i]!=q[i]){b=0; break;}); if(b)R(SB)ui;} break;
-    case 2: if(n==u->n>>2){C4*q=(C4*)t;  b=1; DO(n,   if(us[i]!=q[i]){b=0; break;}); if(b)R(SB)ui;} break;
+    case 1: if(n==u->n>>1){US*q=(US*)t;  b=1; DO(n,   if(us[i]!=q[i]){b=0; break;}); if(b)return(SB)ui;} break;
+    case 2: if(n==u->n>>2){C4*q=(C4*)t;  b=1; DO(n,   if(us[i]!=q[i]){b=0; break;}); if(b)return(SB)ui;} break;
 // c0==SBC2
-    case 3: if(n==u->n*2){US*q=(US*)us;               b=1; DO(n>>1, if(t[i]!=q[i]) {b=0; break;}); if(b)R(SB)ui;} break;
-    case 5: if(n==u->n>>1){US*q=(US*)us; C4*t1=(C4*)t; b=1; DO(n>>1, if(t1[i]!=q[i]){b=0; break;}); if(b)R(SB)ui;} break;
+    case 3: if(n==u->n*2){US*q=(US*)us;               b=1; DO(n>>1, if(t[i]!=q[i]) {b=0; break;}); if(b)return(SB)ui;} break;
+    case 5: if(n==u->n>>1){US*q=(US*)us; C4*t1=(C4*)t; b=1; DO(n>>1, if(t1[i]!=q[i]){b=0; break;}); if(b)return(SB)ui;} break;
 // c0==SBC4
-    case 6: if(n==u->n*4){C4*q=(C4*)us;               b=1; DO(n>>2, if(t[i]!=q[i]) {b=0; break;}); if(b)R(SB)ui;} break;
-    case 7: if(n==u->n*2){C4*q=(C4*)us; US*t1=(US*)t; b=1; DO(n>>2, if(t1[i]!=q[i]){b=0; break;}); if(b)R(SB)ui;} break;
+    case 6: if(n==u->n*4){C4*q=(C4*)us;               b=1; DO(n>>2, if(t[i]!=q[i]) {b=0; break;}); if(b)return(SB)ui;} break;
+    case 7: if(n==u->n*2){C4*q=(C4*)us; US*t1=(US*)t; b=1; DO(n>>2, if(t1[i]!=q[i]){b=0; break;}); if(b)return(SB)ui;} break;
 // c0==u->flag
     case 4:
     case 8:
-    case 0: if(n==u->n&&!memcmpne(t,s,n))R(SB)ui; break;
+    case 0: if(n==u->n&&!memcmpne(t,s,n))return(SB)ui; break;
   }}
   ++hi; hi&=(I )(hi==(I)hn)-1;                         /* next hash table index        */
   }
@@ -355,7 +355,7 @@ static SB jtsbprobe(J jt,S c2,I n,C*s,I test){B b;UC*t;I hi,ui;SBU*u;UI h,hn;UC*
 
 static A jtsbunstr(J jt,I q,A w){A z;S c2;I i,j,m,wn;SB*zv;
  ARGCHK1(w);
- if(!AN(w))R vec(SBT,0L,0L);
+ if(!AN(w))return vec(SBT,0L,0L);
  ASSERT(AT(w)&LIT+C2T+C4T,EVDOMAIN);
  ASSERT(1>=AR(w),EVRANK);
  wn=AN(w);
@@ -379,7 +379,7 @@ static A jtsbunstr(J jt,I q,A w){A z;S c2;I i,j,m,wn;SB*zv;
   if(q==-1){for(i=j=1;i<=wn;++i)if(c==wv[i]||i==wn){RE(*zv++=sbprobe(c2,i-j,j+wv,0)); j=i+1;}}
   else     {for(i=j=0;i< wn;++i)if(c==wv[i]       ){RE(*zv++=sbprobe(c2,i-j,j+wv,0)); j=i+1;}}
  }
- R z;
+ return z;
 }    /* monad s: on leading (_1=q) or trailing (_2=q) character separated strings */
 
 static A jtsbunlit(J jt,C cx,A w){A z;S c2;I i,m,wc,wr,*ws;SB*zv;
@@ -407,7 +407,7 @@ static A jtsbunlit(J jt,C cx,A w){A z;S c2;I i,m,wc,wr,*ws;SB*zv;
    RE(*zv++=sbprobe(c2,(c!=*s)+s-wv,wv,0));
    wv+=wc;
  }}
- R z;
+ return z;
 }    /* each row of literal array w less the trailing "blanks" is a symbol */
 
 static F1(jtsbunbox){A*wv,x,z;S c2;I i,m,n;SB*zv;
@@ -421,7 +421,7 @@ static F1(jtsbunbox){A*wv,x,z;S c2;I i,m,n;SB*zv;
   ASSERT(1>=AR(x),EVRANK);
   RE(*zv++=sbprobe(c2,c2&SBC4?(4*n):c2&SBC2?(2*n):n,CAV(x),0));
  }
- R z;
+ return z;
 }    /* each element of boxed array w is a string */
 
 static F1(jtsbunind){A z;I j,n,*zv;
@@ -429,7 +429,7 @@ static F1(jtsbunind){A z;I j,n,*zv;
  zv=AV(z); n=jt->sbun;
  DQ(AN(w), j=*zv++; ASSERT((UI)j<(UI)n,EVINDEX););
  AT(z)=SBT;
- R z;
+ return z;
 }    /* w is a numeric array of symbol indices */
 
 #ifdef TMP
@@ -445,7 +445,7 @@ F1(jtsb1){
   case BOXX: abc=(sbunbox(w));
  }  
  clo-=clock();
- R abc;
+ return abc;
 }
 #else
 F1(jtsb1){
@@ -454,8 +454,8 @@ F1(jtsb1){
   default:  ASSERT(0,EVDOMAIN);
   case C2TX:
   case C4TX:
-  case LITX: R 1>=AR(w)?sbunstr(-1L,w):sbunlit(' ',w);
-  case BOXX: R sbunbox(w);
+  case LITX: return 1>=AR(w)?sbunstr(-1L,w):sbunlit(' ',w);
+  case BOXX: return sbunbox(w);
 }}   /* monad s: main control */
 #endif
 
@@ -466,7 +466,7 @@ F1(jtsborder){A z;I n,*zv;SB*v;
  ASSERT(!n||SBT&AT(w),EVDOMAIN);
  GATV(z,INT,n,AR(w),AS(w)); zv=AV(z);
  DQ(n, *zv++=SBUV(*v++)->order;);
- R z;
+ return z;
 }    /* order numbers for symbol array w */
 
 static F1(jtsbbox){A z,*zv;C*s;I n;SB*v;SBU*u;
@@ -475,7 +475,7 @@ static F1(jtsbbox){A z,*zv;C*s;I n;SB*v;SBU*u;
  ASSERT(!n||SBT&AT(w),EVDOMAIN);
  GATV(z,BOX,n,AR(w),AS(w)); zv=AAV(z);
  DO(n, u=SBUV(*v++); s=SBSV(u->i); RZ(*zv++=incorp(SBC4&u->flag?vec(C4T,u->n>>2,s):SBC2&u->flag?vec(C2T,u->n>>1,s):str(u->n,s))););
- R z;
+ return z;
 }    /* boxed strings for symbol array w */
 
 #define C2FSB(zv,u,q,m,c)  \
@@ -509,7 +509,7 @@ static A jtsbstr(J jt,I q,A w){A z;S c2=0;C c;I m,n;SB*v,*v0;SBU*u;
   DO(n-1, u=SBUV(*v++); MC(zv,SBSV(u->i),u->n); zv+=u->n; *zv++=c;); 
   if(n){  u=SBUV(*v++); MC(zv,SBSV(u->i),u->n); zv+=u->n; if(2==q)*zv=c;}
  }
- R z;
+ return z;
 }    /* leading (1=q) or trailing (2=q) separated string for symbol array w */
 
 static A jtsblit(J jt,C c,A w){A z;S c2=0;I k,m=0,n;SB*v,*v0;SBU*u;
@@ -523,7 +523,7 @@ static A jtsblit(J jt,C c,A w){A z;S c2=0;I k,m=0,n;SB*v,*v0;SBU*u;
  if(c2&SBC4){C4*zv=C4AV(z); DQ(n, u=SBUV(*v++); C2FSB(zv,u,3,m,c););}
  else if(c2&SBC2){US*zv=USAV(z); DQ(n, u=SBUV(*v++); C2FSB(zv,u,3,m,c););}
  else  {C*zv=CAV(z); memset(zv,c,n*m); DO(n, u=SBUV(*v++); MC(zv,SBSV(u->i),u->n); zv+=m;);}
- R z;
+ return z;
 }    /* literal array for symbol array w padded with c */
 
 
@@ -531,7 +531,7 @@ static F1(jtsbhashstat){A z;I j,k,n,p,*zv;SBU*v;
  n=jt->sbun; v=jt->sbuv; p=AN(jt->sbh);
  GATV0(z,INT,n,1); zv=AV(z);
  DO(n, j=v++->h%p; k=1; while(i!=(jt->sbhv)[j]){++j; if(j==p)j=0; ++k;} *zv++=k;);
- R z;
+ return z;
 }    /* # queries in hash table for each unique symbol */
 
 static A jtsbcheck1(J jt,A una,A sna,A u,A s,A h,A roota,A ff,A gp){PROLOG(0003);A x,*xv,y;
@@ -648,7 +648,7 @@ static A jtsbcheck2(J jt,A una,A sna,A u,A s){PROLOG(0000);
  EPILOG(num(1));
 }
 
-static F1(jtsbcheck){R sbcheck1(sc(jt->sbun),sc(jt->sbsn),jt->sbu,jt->sbs,jt->sbh,sc(ROOT),sc(FILLFACTOR),sc(GAP));}
+static F1(jtsbcheck){return sbcheck1(sc(jt->sbun),sc(jt->sbsn),jt->sbu,jt->sbs,jt->sbh,sc(ROOT),sc(FILLFACTOR),sc(GAP));}
 
 static F1(jtsbsetdata){A h,s,u,*wv,x;
  ARGCHK1(w);
@@ -666,7 +666,7 @@ static F1(jtsbsetdata){A h,s,u,*wv,x;
  FILLFACTOR=AV(wv[6])[0];
  GAP       =AV(wv[7])[0];
  fa(u); fa(s); fa(h);
- R num(1);
+ return num(1);
 }
 
 static void resetdata(J jt){
@@ -680,7 +680,7 @@ static F1(jtsbsetdata2){A *wv;I c,i,sn,offset=0;SBU*uv,*v;C*sv;
  ASSERTD(!AN(w)||BOX&AT(w),"arg type");
  ASSERTD(1==AR(w), "arg rank");
  ASSERTD(!AN(w)||4<=AN(w), "arg length");
- if(!AN(w)){resetdata(jt); R num(1); }
+ if(!AN(w)){resetdata(jt); return num(1); }
  wv=AAV(w); 
  RZ(sbcheck2(wv[0],wv[1],wv[2],wv[3]));
  c=AV(wv[0])[0];                         // cardinality
@@ -695,7 +695,7 @@ static F1(jtsbsetdata2){A *wv;I c,i,sn,offset=0;SBU*uv,*v;C*sv;
   vc=(UC*)(sv+vi);                      // symbol string
   RE(sbprobe((S)v->flag,vn,vc,0));      // insert symbol
  }
- R num(1);
+ return num(1);
 }
 
 static F1(jtsbtestbox){A*wv,x,z;S c2;I i,m,n;B*zv;
@@ -709,7 +709,7 @@ static F1(jtsbtestbox){A*wv,x,z;S c2;I i,m,n;B*zv;
   ASSERT(1>=AR(x),EVRANK);
   RE(*zv++=0<=sbprobe(c2,c2&SBC4?(4*n):c2&SBC2?(2*n):n,CAV(x),1));
  }
- R z;
+ return z;
 }    /* test symbol, each element of boxed array w is a string */
 
 static F1(jtsbgetdata){A z,*zv;
@@ -722,7 +722,7 @@ static F1(jtsbgetdata){A z,*zv;
  RZ(zv[5]=incorp(sc(ROOT)));
  RZ(zv[6]=incorp(sc(FILLFACTOR)));
  RZ(zv[7]=incorp(sc(GAP)));
- R z;
+ return z;
 }
 
 F2(jtsb2){A z;I j,k,n;
@@ -738,38 +738,38 @@ F2(jtsb2){A z;I j,k,n;
    RE(k=i0(w));
    switch(k){
     default: ASSERT(0,EVDOMAIN);
-    case 0:  R sc(jt->sbun);
-    case 1:  R sc(jt->sbsn);
-    case 2:  R ca(jt->sbu);
-    case 3:  R ca(jt->sbs);
-    case 4:  R ca(jt->sbh);
-    case 5:  R sc(ROOT);
-    case 6:  R sc(FILLFACTOR);
-    case 7:  R sc(GAP);
-    case 10: R sbgetdata(num(0));
-    case 11: R sbcheck(num(0));
-    case 12: R sbhashstat(num(0));
+    case 0:  return sc(jt->sbun);
+    case 1:  return sc(jt->sbsn);
+    case 2:  return ca(jt->sbu);
+    case 3:  return ca(jt->sbs);
+    case 4:  return ca(jt->sbh);
+    case 5:  return sc(ROOT);
+    case 6:  return sc(FILLFACTOR);
+    case 7:  return sc(GAP);
+    case 10: return sbgetdata(num(0));
+    case 11: return sbcheck(num(0));
+    case 12: return sbhashstat(num(0));
    }
-  case  1:   R sbstr(1L,w);
-  case -1:   R sbunstr(-1L,w);
-  case  2:   R sbstr(2L,w);
-  case -2:   R sbunstr(-2L,w);
-  case  3:   R sblit(C0,w);
-  case -3:   R sbunlit(C0,w);
-  case  4:   R sblit(' ',w);
-  case -4:   R sbunlit(' ',w);
-  case  5:   R sbbox(w);
-  case -5:   R sbunbox(w);
-  case  6:   RZ(z=ca(w)); AT(z)=INT; R z;
-  case -6:   R sbunind(w);
-  case  7:   R sborder(w);
-  case 10:   R sbsetdata(w);
-  case 16:   GAP = 4;                                       R sc(GAP);
-  case 17:   GAP++;         ASSERT(FILLFACTOR>GAP,EVLIMIT); R sc(GAP);
-  case 18:   GAP--;                                         R sc(GAP);
-  case 19:   FILLFACTOR=1024;                               R sc(FILLFACTOR);
-  case 20:   FILLFACTOR*=2;                                 R sc(FILLFACTOR);
-  case 21:   FILLFACTOR>>=1; ASSERT(FILLFACTOR>GAP,EVLIMIT); R sc(FILLFACTOR);
+  case  1:   return sbstr(1L,w);
+  case -1:   return sbunstr(-1L,w);
+  case  2:   return sbstr(2L,w);
+  case -2:   return sbunstr(-2L,w);
+  case  3:   return sblit(C0,w);
+  case -3:   return sbunlit(C0,w);
+  case  4:   return sblit(' ',w);
+  case -4:   return sbunlit(' ',w);
+  case  5:   return sbbox(w);
+  case -5:   return sbunbox(w);
+  case  6:   RZ(z=ca(w)); AT(z)=INT; return z;
+  case -6:   return sbunind(w);
+  case  7:   return sborder(w);
+  case 10:   return sbsetdata(w);
+  case 16:   GAP = 4;                                       return sc(GAP);
+  case 17:   GAP++;         ASSERT(FILLFACTOR>GAP,EVLIMIT); return sc(GAP);
+  case 18:   GAP--;                                         return sc(GAP);
+  case 19:   FILLFACTOR=1024;                               return sc(FILLFACTOR);
+  case 20:   FILLFACTOR*=2;                                 return sc(FILLFACTOR);
+  case 21:   FILLFACTOR>>=1; ASSERT(FILLFACTOR>GAP,EVLIMIT); return sc(FILLFACTOR);
 #ifdef TMP
   case 22:
     GAT0(z,INT,10,1); zv=AV(z);
@@ -783,7 +783,7 @@ F2(jtsb2){A z;I j,k,n;
     zv[7] = tmp_imax    = 0;
     zv[8] = tmp_lhit;
     zv[9] = tmp_rhit;
-    R z;
+    return z;
   case 23:
     GAT0(z,INT,10,1);
     zv[0] = tmp_lr;
@@ -796,9 +796,9 @@ F2(jtsb2){A z;I j,k,n;
     zv[7] = tmp_imax;
     zv[8] = tmp_lhit;
     zv[9] = tmp_rhit;
-    R z;
-  case 24:   R sc((I)clo);
-  case 25:   R scf(tickk);
+    return z;
+  case 24:   return sc((I)clo);
+  case 25:   return scf(tickk);
 #endif
  }
 }
@@ -819,6 +819,6 @@ B jtsbtypeinit(J jt){A x;I c=sizeof(SBU)/SZI,s[2],p;
  jt->sbuv[0]=sentinel;
  jt->sbun=1;
  jt->sbhv[hash0%AN(jt->sbh)]=0;  // clear symbol-table entry for empty symbol
- R 1;
+ return 1;
 }    /* initialize global data for SBT datatype */
 

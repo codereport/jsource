@@ -21,14 +21,14 @@
                    
 #define ZF1DECL         Z z;D zr=0.0,zi=0.0,a=v.re,b=v.im
 #define ZF2DECL         Z z;D zr=0.0,zi=0.0,a=u.re,b=u.im,c=v.re,d=v.im
-#define ZEPILOG         z.re=zr; z.im=zi; R z
+#define ZEPILOG         z.re=zr; z.im=zi; return z
 #define ZF1(f)          Z f(J jt,Z v)
 #define ZF2(f)          Z f(J jt,Z u,Z v)
 #define ZS1(f,stmts)    ZF1(f){ZF1DECL; stmts; ZEPILOG;}
 #define ZS2(f,stmts)    ZF2(f){ZF2DECL; stmts; ZEPILOG;}
 #define MMM(a,b)        {p=ABS(a); q=ABS(b); if(p<q){D t=p; p=q; q=t;}}
 
-#define ZASSERT(b,e)    {if(!(b)){jsignal(e); R zeroZ;}}
+#define ZASSERT(b,e)    {if(!(b)){jsignal(e); return zeroZ;}}
 #define ZNZ(v)          (  (v).re||(v).im )
 #define ZEZ(v)          (!((v).re||(v).im))
 #define ZINF(v)         (inf==(v).re||inf==(v).im||infm==(v).re||infm==(v).im)

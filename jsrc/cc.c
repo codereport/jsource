@@ -14,7 +14,7 @@
 
 static DF1(jtcut01){DECLF;A h,x,z;
  RZ(x=from(box(every(negate(shape(w)),ds(CIOTA))),w));
- if(VGERL&sv->flag){h=sv->fgh[2]; R df1(z,x,AAV(h)[0]);}else R CALL1(f1,x,fs);
+ if(VGERL&sv->flag){h=sv->fgh[2]; return df1(z,x,AAV(h)[0]);}else return CALL1(f1,x,fs);
 }    /* f;.0 w */
 
 static DF2(jtcut02){F2PREFIP;A fs,q,qq,*qv,z,zz=0;I*as,c,e,i,ii,j,k,m,n,*u,*ws;PROLOG(876);I cger[128/SZI];
@@ -129,7 +129,7 @@ static DF2(jtcut02){F2PREFIP;A fs,q,qq,*qv,z,zz=0;I*as,c,e,i,ii,j,k,m,n,*u,*ws;P
 DF2(jtspecialatoprestart){
   ARGCHK3(a,w,self);  // return fast if there has been an error
   V *sv=FAV(self);  // point to verb info for the current overall compound
-  R a==mark?(sv->id==CFORK?jtcork1:on1)(jt,w,self) : (sv->id==CFORK?jtcork2:jtupon2)(jt,a,w,self);  // figure out the default routine that should process the compound, and transfer to it
+  return a==mark?(sv->id==CFORK?jtcork1:on1)(jt,w,self) : (sv->id==CFORK?jtcork2:jtupon2)(jt,a,w,self);  // figure out the default routine that should process the compound, and transfer to it
 }
 
 // x <;.0 y  and  x (<;.0~ -~/"2)~ y   where _2 { $x is 1 (i. e. 1 dimension of selection)  localuse distinguishes the two cases (relative vs absolute length)
@@ -139,9 +139,9 @@ DF2(jtboxcut0){A z;
  // NOTE: this routine is called from jtwords.  In that case, self comes from jtwords and is set up with the parm for x (<;.0~ -~/"2)~ y but with no failover routine.
  // Thus, the preliminary tests must not cause a failover.  They don't, because the inputs from jtwords are known to be well-formed
  // We require a have rank >=2, not sparse
- if(unlikely(((1-(I)AR(a))&(((AT(a)|AT(w))&SPARSE)-1))>=0))R (FAV(self)->localuse.lpf.func)(jtinplace,a,w,self);
+ if(unlikely(((1-(I)AR(a))&(((AT(a)|AT(w))&SPARSE)-1))>=0))return (FAV(self)->localuse.lpf.func)(jtinplace,a,w,self);
  // Shape of a must end 2 1 - a one-dimensional selection
- if((AS(a)[AR(a)-2]^2)|(AS(a)[AR(a)-1]^1))R (FAV(self)->localuse.lpf.func)(jtinplace,a,w,self);
+ if((AS(a)[AR(a)-2]^2)|(AS(a)[AR(a)-1]^1))return (FAV(self)->localuse.lpf.func)(jtinplace,a,w,self);
  // it is a (set of) one-dimensional selection
  // a must be integral
  RZ(a=vib(a));  // make a integer
@@ -165,10 +165,10 @@ DF2(jtboxcut0){A z;
  wr=wr==0?1:wr;   // We use this rank to allocate the boxes - we always create arrays
  DQ(resatoms,
    I start=av[0]; I endorlen=av[1];
-   if(!(BETWEENO(start,0,wi))){jt->tnextpushp=pushxsave; R (FAV(self)->localuse.lfns[1])(jtinplace,a,w,self);}  // verify start in range - failover if not
+   if(!(BETWEENO(start,0,wi))){jt->tnextpushp=pushxsave; return (FAV(self)->localuse.lfns[1])(jtinplace,a,w,self);}  // verify start in range - failover if not
    endorlen+=start&abslength;  // convert len to end+1 form
    endorlen=endorlen>wi?wi:endorlen; endorlen-=start;  // get length; limit length, convert back to true length
-   if(endorlen<0){jt->tnextpushp=pushxsave; R (FAV(self)->localuse.lfns[1])(jtinplace,a,w,self);}  // failover if len negative.  Overflow is not a practical possibility
+   if(endorlen<0){jt->tnextpushp=pushxsave; return (FAV(self)->localuse.lfns[1])(jtinplace,a,w,self);}  // failover if len negative.  Overflow is not a practical possibility
    I substratoms=endorlen*cellsize;
    // Allocate the result box.  If WILLBEOPENED, make it a virtual block.  Otherwise copy the data
    GAE(y,t,(I)jtinplace&JTWILLBEOPENED?0:substratoms,wr,AS(w),break); AS(y)[0]=endorlen;  // allocate, but don't grow the tstack. Fix up the shape
@@ -197,14 +197,14 @@ DF2(jtrazecut0){A z;C*wv,*zv;I ar,*as,(*av)[2],j,k,m,n,wt;
  wt=AT(w); wv=CAV(w);
  ar=AR(a); as=AS(a);
  // we need rank of a>2 (otherwise why bother?), rank of w>0, w not sparse, a not empty, w not empty (to make item-size easier)
- if((((ar-3)|(-(wt&SPARSE))|(AR(w)-1)|(AN(a)-1)))<0)R jtspecialatoprestart(jt,a,w,self);
+ if((((ar-3)|(-(wt&SPARSE))|(AR(w)-1)|(AN(a)-1)))<0)return jtspecialatoprestart(jt,a,w,self);
  // the 1-cells of a must be 2x1
- if(unlikely((as[ar-2]^2)|(as[ar-1]^1)))R jtspecialatoprestart(jt,a,w,self);
+ if(unlikely((as[ar-2]^2)|(as[ar-1]^1)))return jtspecialatoprestart(jt,a,w,self);
  n=AS(w)[0]; m=AN(a)>>1;  // number of items of w, number of w-items in result
  // pass through a, counting result items.  abort if there is a reversal - too rare to bother with in the fast path
  RZ(a=vib(a)); av=(I(*)[2])AV(a); I nitems=0;
  // verify starting value in range (unless length=0); truncate length if overrun
- DO(m, j=av[i][0]; k=av[i][1]; if(k<0)R jtspecialatoprestart(jt,a,w,self); I jj=j+n; jj=(j>=0)?j:jj; ASSERT(((jj^(jj-n))|(k-1))<0,EVINDEX); j=n-jj; k=k>j?j:k; nitems+=k; ASSERT(nitems>=0,EVLIMIT))
+ DO(m, j=av[i][0]; k=av[i][1]; if(k<0)return jtspecialatoprestart(jt,a,w,self); I jj=j+n; jj=(j>=0)?j:jj; ASSERT(((jj^(jj-n))|(k-1))<0,EVINDEX); j=n-jj; k=k>j?j:k; nitems+=k; ASSERT(nitems>=0,EVLIMIT))
  // audits passed and we have counted the items.  Allocate the result and copy
  I wcn; PROD(wcn,AR(w)-1,AS(w)+1);  // number of atoms per cell of w
  I zn; DPMULDE(wcn,nitems,zn);  // number of atoms in result
@@ -245,25 +245,25 @@ static DF2(jtcut2bx){A*av,b,t,x,*xv,y,*yv;B*bv;I an,bn,i,j,m,p,q,*u,*v,*ws;
  RZ(x=ope(catalog(x)));
  RZ(y=ope(catalog(y)));
  if(AN(x)){RZ(IRS2(x,y,0L,1L,1L,jtlamin2,t));}else{RZ(t=iota(apip(shape(x),v2(2L,0L))));}
- R cut02(t,w,self);
+ return cut02(t,w,self);
 }    /* a f;.n w for boxed a, with special code for matrix w */
 
 
 #define CUTSWITCH(EACHC)  \
  switch(id){A z,*za;C id1,*v1,*zc;I d,i,j,ke,q,*zi,*zs;                 \
   case CPOUND:                                                               \
-   GATV0(z,INT,m,1); zi=AV(z); EACHC(*zi++=d;); R z;                          \
+   GATV0(z,INT,m,1); zi=AV(z); EACHC(*zi++=d;); return z;                          \
   case CDOLLAR:                                                              \
    GATV0(z,INT,m,1); zi=AV(z); EACHC(*zi++=d;);                               \
    A zz,zw; RZ(zw=vec(INT,MAX(0,r-1),1+s)); IRS2(z,zw,0L,0L,1L,jtover,zz); RETF(zz);  \
   case CHEAD:                                                                \
    GA(z,t,m*c,r,s); zc=CAV(z); AS(z)[0]=m;                                     \
    EACHC(ASSERT(d!=0,EVINDEX); MC(zc,v1,k); zc+=k;);                            \
-   R z;                                                                      \
+   return z;                                                                      \
   case CTAIL:                                                                \
    GA(z,t,m*c,r,s); zc=CAV(z); AS(z)[0]=m;                                     \
    EACHC(ASSERT(d!=0,EVINDEX); MC(zc,v1+k*(d-1),k); zc+=k;);                    \
-   R z;                                                                      \
+   return z;                                                                      \
   case CCOMMA:                                                               \
   case CLEFT:                                                                \
   case CRIGHT:                                                               \
@@ -271,20 +271,20 @@ static DF2(jtcut2bx){A*av,b,t,x,*xv,y,*yv;B*bv;I an,bn,i,j,m,p,q,*u,*v,*ws;
    GA(z,t,d,id==CCOMMA?2:1+r,s-1); zc=CAV(z); fillv(t,d,zc);                 \
    zs=AS(z); zs[0]=m; zs[1]=id==CCOMMA?e*c:e; ke=k*e;                        \
    EACHC(MC(zc,v1,d*k);  zc+=ke;);                                           \
-   R z;                                                                      \
+   return z;                                                                      \
   case CBOX:                                                                 \
    GA(z,m?BOX:B01,m,1,0); za=AAV(z);                                         \
    EACHC(GA(y,t,d*c,r,s); AS(y)[0]=d; MC(AV(y),v1,d*k); *za++=incorp(y););             \
-   R z;                                                                      \
+   return z;                                                                      \
   case CAT: case CATCO: case CAMP: case CAMPCO:                              \
    if(CBOX==ID(vf->fgh[0])&&(id1=ID(vf->fgh[1]),((id1&~1)==CBEHEAD))){           \
     GA(z,m?BOX:B01,m,1,0); za=AAV(z);                                        \
     EACHC(d=d?d-1:0; GA(y,t,d*c,r,s); AS(y)[0]=d; MC(AV(y),id1==CBEHEAD?v1+k:v1,d*k); *za++=incorp(y););               \
-    R z;                                                                     \
+    return z;                                                                     \
    }                                                                         \
    /* note: fall through */                                                  \
   default:                                                                   \
-   if(!m){y=reitem(zeroionei(0),w); R iota(over(zeroionei(0),shape(h?df1(z,y,*hv):CALL1(f1,y,fs))));}                            \
+   if(!m){y=reitem(zeroionei(0),w); return iota(over(zeroionei(0),shape(h?df1(z,y,*hv):CALL1(f1,y,fs))));}                            \
    GATV0(z,BOX,m,1); za=AAV(z); j=0;                                          \
    if(h){EACHC(GA(y,t,d*c,r,s); AS(y)[0]=d; MC(AV(y),v1,d*k); A Zz; RZ (df1(Zz,y,hv[j])); j=(1+j)%hn; incorp(Zz); *za++=Zz;); \
    }else{EACHC(GA(y,t,d*c,r,s); AS(y)[0]=d; MC(AV(y),v1,d*k); A Zz; RZ(Zz = CALL1(f1,y,fs)); incorp(Zz); *za++=Zz; ); \
@@ -304,14 +304,14 @@ static F1(jtcps){A z;P*wp,*zp;
  SPB(zp,a,SPA(wp,a)); 
  SPB(zp,e,SPA(wp,e));
  SPB(zp,i,SPA(wp,i));
- R z;
+ return z;
 }
 
 static A jtselx(J jt,A x,I r,I i){A z;I c,k;
  PROD(c,AR(x)-1,AS(x)+1) k=c<<bplg(AT(x));
  GA(z,AT(x),r*c,AR(x),AS(x)); AS(z)[0]=r;
  MC(CAV(z),CAV(x)+i*k,r*k);
- R z;
+ return z;
 }    /* (i+i.r){x */
 
 static A jtsely(J jt,A y,I r,I i,I j){A z;I c,*s,*v;
@@ -320,7 +320,7 @@ static A jtsely(J jt,A y,I r,I i,I j){A z;I c,*s,*v;
  v=AV(z);
  ICPY(v,AV(y)+i*c,r*c);
  DQ(r, *v-=j; v+=c;);
- R z;
+ return z;
 }    /* ((i+i.r){y)-"1 ({:$y){.j */
 
 static DF2(jtcut2sx){PROLOG(0024);DECLF;A h=0,*hv,y,yy;B b,neg,pfx,*u,*v;C id;I d,e,hn,m,n,p,t,yn,*yu,*yv;P*ap;V*vf;
@@ -329,7 +329,7 @@ static DF2(jtcut2sx){PROLOG(0024);DECLF;A h=0,*hv,y,yy;B b,neg,pfx,*u,*v;C id;I 
  RZ(a=a==mark?eps(w,take(num(pfx?1:-1),w)):DENSE&AT(a)?sparse1(a):a);
  ASSERT(n==AS(a)[0],EVLENGTH);
  ap=PAV(a);
- if(!(equ(num(0),SPA(ap,e))&&AN(SPA(ap,a))))R cut2(cvt(B01,a),w,self); 
+ if(!(equ(num(0),SPA(ap,e))&&AN(SPA(ap,a))))return cut2(cvt(B01,a),w,self);
  vf=VAV(fs);
  if(VGERL&sv->flag){h=sv->fgh[2]; hv=AAV(h); hn=AN(h); id=0;}else id=vf->id; 
  y=SPA(ap,i); yn=AN(y); yv=AV(y); u=v=BAV(SPA(ap,x)); e=m=0;
@@ -411,9 +411,9 @@ static C*jtidenv0(J jt,A a,A w,V*sv,I zt,A*zz){A fs,y,z;
  *zz=0; 
  fs=sv->fgh[0];
  RE(df1(y,num(0),iden(VAV(fs)->fgh[0])));
- if(TYPESLT(zt,AT(y))){*zz=df1(z,cut2(a,w,cut(ds(CBOX),sv->fgh[1])),amp(fs,ds(COPE))); R 0;}  // fgh still has the original A, OK to use
+ if(TYPESLT(zt,AT(y))){*zz=df1(z,cut2(a,w,cut(ds(CBOX),sv->fgh[1])),amp(fs,ds(COPE))); return 0;}  // fgh still has the original A, OK to use
  if(TYPESGT(zt,AT(y)))RE(y=cvt(zt,y)); 
- R CAV(y);
+ return CAV(y);
 }    /* pointer to identity element */
 
 /* locals in cut2:                       */
@@ -539,7 +539,7 @@ static A jtgetnewpd(J jt, UC* pd, A pd0){A new;
  CUTFRETCHAIN(pd0)=new;  // chain the new block to the old
  pd0=new;  // step pd0 to new block
  CUTFRETEND(pd0)=(I)(CUTFRETFRETS(pd0)+(FRETALLOSIZE*SZI)-10);  // return value: endptr of new buffer
- R pd0;  // return address of data in the new block
+ return pd0;  // return address of data in the new block
 }
 
 // copy n atoms of type wt to type zt
@@ -553,7 +553,7 @@ DF2(jtcut2){F2PREFIP;PROLOG(0025);A fs,z,zz;I neg,pfx;C id,*v1,*wv,*zc;I cger[12
      I ak,at,wcn,d,k,m=0,n,r,wt,*zi;I d1[32]; A pd0; UC *pd, *pdend;  // Don't make d1 too big - it fill lots of stack space
  PREF2(jtcut2);
  // a may have come from /., in which case it is incompletely filled in.  We look at the type, but nothing else
- if(unlikely((SGNIF(AT(a),SB01X)|-(AT(w)&SPARSE))<0))R cut2sx(a,w,self);
+ if(unlikely((SGNIF(AT(a),SB01X)|-(AT(w)&SPARSE))<0))return cut2sx(a,w,self);
 #define ZZFLAGWORD state
  I state=ZZFLAGINITSTATE;  // init flags, including zz flags
 
@@ -580,9 +580,9 @@ DF2(jtcut2){F2PREFIP;PROLOG(0025);A fs,z,zz;I neg,pfx;C id,*v1,*wv,*zc;I cger[12
   pfx=(I)FAV(self)->localuse.lvp[0]; neg=SGNTO0(pfx); pfx&=1;  // neg=cut type is _1/_2; pfx=cut type is 1/_1
   if(a!=mark){  // dyadic forms
    if(((AN(a)-1)&(-n))<0){  // empty x, do one call on the entire w if y is non-empty
-    R CALL1(f1,w,fs);
+    return CALL1(f1,w,fs);
    }
-   if(((-AN(a))&(SGNIF(AT(a),BOXX)))<0)R cut2bx(a,w,self);  // handle boxed a separately if a not empty
+   if(((-AN(a))&(SGNIF(AT(a),BOXX)))<0)return cut2bx(a,w,self);  // handle boxed a separately if a not empty
    if(!(B01&AT(a)))RZ(a=cvt(B01,a));  // convert other a to binary, error if impossible
    if(!AR(a))RZ(a=reshape(sc(n),a));   // extend scalar x to length of y
    ak=1; at=B01;  // cell of a is 1 byte, and it's Boolean
@@ -740,7 +740,7 @@ DF2(jtcut2){F2PREFIP;PROLOG(0025);A fs,z,zz;I neg,pfx;C id,*v1,*wv,*zc;I cger[12
   break;
  case CDOLLAR:   // calculate as #;.n ,"0 1 }. $ w
   GATV0(zz,INT,m,1); zi=AV(zz); EACHCUT(*zi++=d;); A zw=vec(INT,MAX(0,r-1),AS(w)+1);  // could use virt block
-  R IRS2(zz,zw,0L,0L,1L,jtover,z);
+  return IRS2(zz,zw,0L,0L,1L,jtover,z);
  case CTAIL:
  case CHEAD: ;
   // remove pristinity from w since a contents is escaping
@@ -754,19 +754,19 @@ DF2(jtcut2){F2PREFIP;PROLOG(0025);A fs,z,zz;I neg,pfx;C id,*v1,*wv,*zc;I cger[12
   if(adocv.f){C*z0=0,*zc;I t,zk,zt;  // if the operation is a primitive that we can  apply / to...  z0 will hold a neutral if we have to calculate one
    zt=rtype(adocv.cv);
    GA(zz,zt,m*wcn,r,AS(w)); AS(zz)[0]=m; 
-   if(!AN(zz))R zz;  // don't run function on empty arg
+   if(!AN(zz))return zz;  // don't run function on empty arg
    I atomsize=bpnoun(zt);
    zc=CAV(zz); zk=wcn*atomsize;
    if((t=atype(adocv.cv))&&TYPESNE(t,wt)){RZ(w=cvt(t,w)); wv=CAV(w);}
    I rc=EVOK;   // accumulate error code
    EACHCUT(if(d>1){ I lrc=((AHDRRFN*)adocv.f)(wcn,d,(I)1,v1,zc,jt); rc=lrc<rc?lrc:rc;} else if(d==1){copyTT(zc,v1,wcn,zt,wt);} else{if(!z0){z0=idenv0(a,w,FAV(self),zt,&z); // compared to normal reduces, c means d and d means n
-       if(!z0){if(z)R z; else{rc=jt->jerr; break;}}} mvc(zk,zc,atomsize,z0);} zc+=zk;
+       if(!z0){if(z)return z; else{rc=jt->jerr; break;}}} mvc(zk,zc,atomsize,z0);} zc+=zk;
    );
    if(255&rc){
     jsignal(rc);
     if(FAV(self)->id!=CCUT)CUTFRETCOUNT(a)=m;  // if we are going to retry, we have to reset the # frets indicator which has been destroyed
-    R rc>=EWOV?cut2(a,w,self):0;
-   }else R adocv.cv&VRI+VRD?cvz(adocv.cv,zz):zz;
+    return rc>=EWOV?cut2(a,w,self):0;
+   }else return adocv.cv&VRI+VRD?cvz(adocv.cv,zz):zz;
    break;
   }
  }
@@ -825,7 +825,7 @@ DF2(jtcut2){F2PREFIP;PROLOG(0025);A fs,z,zz;I neg,pfx;C id,*v1,*wv,*zc;I cger[12
 }    /* f;.1  f;._1  f;.2  f;._2  monad and dyad */
 
 
-static DF1(jtcut1){R cut2(mark,w,self);}
+static DF1(jtcut1){return cut2(mark,w,self);}
 
 // ;@((<@(f/\));._2 _1 1 2) when  f is atomic   also @: but only when no rank loop required  also \. for \
 // also [: ; (<@(f/\));._2 _1 1 2)  when no rank loop required
@@ -839,9 +839,9 @@ DF2(jtrazecut2){A fs,gs,y,z=0;B b; I neg,pfx;C id,sep,*u,*v,*wv,*zv;I d,k,m=0,wi
  id=FAV(fs)->id;  // fs is f/id   where id is \ \.
   // if f is atomic/\ or atomic /\., set ado and cv with info for the operation
  varps(adocv,fs,wt,1+(id!=CBSLASH));   // fs is f/\  type 1 is f/\ 2 is f/\.
- if(SPARSE&AT(w)||!adocv.f)R jtspecialatoprestart(jt,a,w,self);  // if sparse w or nonatomic function, do it the long way
+ if(SPARSE&AT(w)||!adocv.f)return jtspecialatoprestart(jt,a,w,self);  // if sparse w or nonatomic function, do it the long way
  if(a!=mark){   // dyadic case
-  if((-AN(a)&((AR(a)^1)-1)&-(AT(a)&B01+SB01))>=0)R jtspecialatoprestart(jt,a,w,self);  // if a is not nonempty boolean list, do it the long way.  This handles ;@: when a has rank>1
+  if((-AN(a)&((AR(a)^1)-1)&-(AT(a)&B01+SB01))>=0)return jtspecialatoprestart(jt,a,w,self);  // if a is not nonempty boolean list, do it the long way.  This handles ;@: when a has rank>1
   // a is nonempty boolean list
   if(AT(a)&SB01)RZ(a=cvt(B01,a));
   v=CAV(a); sep=C1;
@@ -861,15 +861,15 @@ DF2(jtrazecut2){A fs,gs,y,z=0;B b; I neg,pfx;C id,sep,*u,*v,*wv,*zv;I d,k,m=0,wi
   if(n=q-neg){  // number of items in this section
    I rc=EVOK;
    if(d)rc=((AHDRPFN*)adocv.f)(d,n,(I)1,wv+k*(b+wi-p),zv,jt);  // do the prefix, but not if items empty
-   if(rc&255){jsignal(rc); R rc>=EWOV?razecut2(a,w,self):0;}  // if overflow, restart the whole thing with conversion to float
+   if(rc&255){jsignal(rc); return rc>=EWOV?razecut2(a,w,self):0;}  // if overflow, restart the whole thing with conversion to float
    m+=n; zv+=n*zk; 
   }
   p-=q; v=u;  
  }
- AS(z)[0]=m; AN(z)=m*d; R adocv.cv&VRI+VRD?cvz(adocv.cv,z):z;
+ AS(z)[0]=m; AN(z)=m*d; return adocv.cv&VRI+VRD?cvz(adocv.cv,z):z;
 }   
 
-DF1(jtrazecut1){R razecut2(mark,w,self);}
+DF1(jtrazecut1){return razecut2(mark,w,self);}
 
 // if pv given, it is the place to put the shapes of the top 2 result axes.  If omitted, do them all and return an A block for them
 // if pv is given, set pv[0] to 0 if there is a 0 anywhere in the result frame
@@ -882,7 +882,7 @@ static A jttesos(J jt,A a,A w,I n, I *pv){A p;I*av,c,axisct,k,m,s,*ws;
  }else{GATV0(p,INT,c,1); pv=AV(p); AS(p)[0]=c;}  // all requested, make an A block for it
  if(n>0)DO(axisct, m=av[i]; s=ws[i]; if(!((I)p|(m = m?(s+m-1)/m:1&&s)))pv[0]=0; if(i<c)pv[i]=m;)  // ;.3, calculate # sections
  else   DO(axisct, m=av[i]; k=av[axisct+i]; s=ws[i]-ABS(k); if(!((I)p|(m = 0>s?0:m?(I )(k||s%m)+s/m:1)))pv[0]=0; if(i<c)pv[i]=m;);
- R p;
+ return p;
 }    /* tesselation result outer shape */
 
 
@@ -1105,7 +1105,7 @@ static DF1(jttess1){A s;I m,r,*v;
  ARGCHK1(w);
  r=AR(w); RZ(s=shape(w)); RZ(s=mkwris(s)); v=AV(s);
  m=IMAX; DO(r, if(m>v[i])m=v[i];); DO(r, v[i]=m;);  // Get length of long axis; set all axes to that length in a arg to cut
- R tess2(s,w,self);
+ return tess2(s,w,self);
 }
 
 
@@ -1120,7 +1120,7 @@ F2(jtcut){A h=0,z;I flag=0,k;
  case 0:          if(FAV(a)->id==CBOX){   // <;.0
   RZ(z=fdef(0,CCUT,VERB, jtcut01,jtboxcut0, a,w,h, flag|VJTFLGOK2, RMAX,2L,RMAX));
   FAV(z)->localuse.lpf.parm=~0; FAV(z)->localuse.lpf.func=jtcut02;  // store parms to specify start/len format
-  R z;
+  return z;
   }
   z=fdef(0,CCUT,VERB, jtcut01,jtcut02, a,w,h, flag|VJTFLGOK2, RMAX,2L,RMAX); break;
  case 1: case -1:
@@ -1130,5 +1130,5 @@ F2(jtcut){A h=0,z;I flag=0,k;
  }
  RZ(z);
  FAV(z)->localuse.lvp[0]=(void *)k;  // remember the integer form of the cut selector  This is saved for all cases EXCEPT jtboxcut0.  0-cut will not look at it
- R z;
+ return z;
 }

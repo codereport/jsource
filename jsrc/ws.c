@@ -94,7 +94,7 @@ C spellin(I n,C*s){
   // 1- and 2-byte strings, with no data-dependent branches.  The dominant case
   I inf=-1;  // will hold inflections: init to 0 for 1-bytes, -1 for 2-byte: this will be the value for invalid inflections
   inf=s[n-1]==CESC1?1:inf; inf=s[n-1]==CESC2?2:inf; inf&=1-n;  // no inflection=0, .=1, :=2, erroneous inflection=-1 
-  R BETWEENO((C)inf|p,0x20,0x80)?spellintab2[p-0x20][inf]:0;  // if inflection error, or not ASCII graphic, return 0 (error)
+  return BETWEENO((C)inf|p,0x20,0x80)?spellintab2[p-0x20][inf]:0;  // if inflection error, or not ASCII graphic, return 0 (error)
  }
  // 3-byte characters.  Rare, so handle individually.  Most likely these will be names that are being checked to see if they are primitives
  if(p!='_'){
@@ -103,10 +103,10 @@ C spellin(I n,C*s){
   // there are 4 possible inflections: decode them, checking for erroneous inflection
   I inf1=-16; inf1=s[1]==CESC1?0:inf1; inf1=s[1]==CESC2?1:inf1; I inf2=-16; inf2=s[2]==CESC1?0:inf2; inf2=s[2]==CESC2?1:inf2; inf2=2*inf1+inf2;  // inf2=0-3, or neg if error
   C *bp=&spellintab3[ind][inf2]; bp=inf2<0?&spellintab3[0][0]:bp;   // point to the result; if erroneous inflection, point to error return
-  R *bp;  // return the character
+  return *bp;  // return the character
  }else{
   // must be _n: for n a digit
-  R BETWEENC(s[1],'0','9')&&s[2]==CESC2?CFCONS:0;
+  return BETWEENC(s[1],'0','9')&&s[2]==CESC2?CFCONS:0;
  }
 }
 // s is a buffer long enough to hold the longest spelling.  Fill it with the spelling of c
@@ -118,10 +118,10 @@ void spellit(UC c,UC *s){
 A jtspella(J jt,A w){C c,s[3];V*v;
  ARGCHK1(w);
  v=FAV(w); c=v->id;
- if(c==CFCONS)R apip(thorn1(v->fgh[2]),chrcolon); 
+ if(c==CFCONS)return apip(thorn1(v->fgh[2]),chrcolon);
  spellit(c,s); 
- R str(1+!!s[1]+!!s[2],s);
+ return str(1+!!s[1]+!!s[2],s);
 }
 
 // returns the string for primitive whose pseudochar is c - 1, 2, or 3 characters long
-A jtspellout(J jt,C c){C s[3]; spellit(c,s); R str(1+!!s[1]+!!s[2],s);}
+A jtspellout(J jt,C c){C s[3]; spellit(c,s); return str(1+!!s[1]+!!s[2],s);}

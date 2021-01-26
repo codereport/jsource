@@ -138,7 +138,7 @@ static const UINT  widechars[] = {
 0x30000, 0x103FFFD     // outside of allocated blocks, default to "W":
 };
 
- if(w<widechars[0] || w>(widechars[sizeof(widechars)/sizeof(widechars[0])-1]&0xffffff))R 0;
+ if(w<widechars[0] || w>(widechars[sizeof(widechars)/sizeof(widechars[0])-1]&0xffffff))return 0;
  // binary search to find the first entry >= w
  I l=0, r=sizeof(widechars)/sizeof(widechars[0])-1;  // left index, right index.  w is >= widechars[l] and widechars[r]
  while(l<=r){
@@ -148,7 +148,7 @@ static const UINT  widechars[] = {
   else if(w < (widechars[m]&0xffffff))r = m-1;
  }
  // widechars[l] is the first entry >= w.  If it is an end-of-interval, or it is equal to w, w is in an interval: return 1 then else 0
- R (widechars[l]&0x1000000) || widechars[l]==w;
+ return (widechars[l]&0x1000000) || widechars[l]==w;
 }
 
 static I wtomnullsize(US* src, I srcn){ US w,w1;I nignulls = 0; I r=0;
@@ -192,7 +192,7 @@ static I wtomnullsize(US* src, I srcn){ US w,w1;I nignulls = 0; I r=0;
    }
   }
  }
- R r;
+ return r;
 }
 
 static void wtomnull(US* src, I srcn, UC* snk){ US w,w1;I nignulls = 0;
@@ -272,7 +272,7 @@ static I utomnullsize(C4* src, I srcn){ C4 w;I nignulls = 0; I r=0;
    if(eatnull)nignulls = extrawidth(w);  // extra nulls only possible in upper pages.  See if there are any
   }
  }
- R r;
+ return r;
 }
 
 // c4v to utf-8 - assume valid data and snk size is ok
@@ -316,7 +316,7 @@ static void utomnull(C4* src, I srcn, UC* snk){ C4 w;I nignulls = 0;
 // there will not be NUL bytes in user input (since they were going to be eaten before display anyway)
 static A wtownull(J jt,A w){US *wv,*zv;I n,i,nignulls=0,naddednulls=0;A z;
  ARGCHK1(w); n=AN(w);
- if(!n) R w;
+ if(!n) return w;
  wv=USAV(w);
  // See how many NUL codes we will need to add
  for(i=0;i<n;++i){
@@ -324,7 +324,7 @@ static A wtownull(J jt,A w){US *wv,*zv;I n,i,nignulls=0,naddednulls=0;A z;
   else if(wv[i]>=0x1100)naddednulls += nignulls = extrawidth(wv[i]);
  }
  // If no padding is needed, no copy is required
- if(!naddednulls)R w;
+ if(!naddednulls)return w;
  // Allocate result and copy the string, adding null padding where needed
  GATV0(z,C2T,n+naddednulls,1); zv=USAV(z);
  nignulls = 0;
@@ -332,12 +332,12 @@ static A wtownull(J jt,A w){US *wv,*zv;I n,i,nignulls=0,naddednulls=0;A z;
   if(nignulls && (--nignulls,wv[i]==0));  // If an added null is already present, skip the copy
   else{*zv++ = wv[i]; if(wv[i]>=0x1100&&(nignulls = extrawidth(wv[i]))){*zv++=0;}}  // copy the char; if doublewide, copy the null for it
  }
- R z;
+ return z;
 }
 
 static A utounull(J jt,A w){C4 *wv,*zv;I n,i,nignulls=0,naddednulls=0;A z;
  ARGCHK1(w); n=AN(w);
- if(!n) R w;
+ if(!n) return w;
  wv=C4AV(w);
  // See how many NUL codes we will need to add
  for(i=0;i<n;++i){
@@ -345,7 +345,7 @@ static A utounull(J jt,A w){C4 *wv,*zv;I n,i,nignulls=0,naddednulls=0;A z;
   else if(wv[i]>=0x1100)naddednulls += nignulls = extrawidth(wv[i]);
  }
  // If no padding is needed, no copy is required
- if(!naddednulls)R w;
+ if(!naddednulls)return w;
  // Allocate result and copy the string, adding null padding where needed
  GATV0(z,C4T,n+naddednulls,1); zv=C4AV(z);
  nignulls = 0;
@@ -353,7 +353,7 @@ static A utounull(J jt,A w){C4 *wv,*zv;I n,i,nignulls=0,naddednulls=0;A z;
   if(nignulls && (--nignulls,wv[i]==0));  // If an added null is already present, skip the copy
   else{*zv++ = wv[i]; if(wv[i]>=0x1100&&(nignulls = extrawidth(wv[i]))){*zv++=0;}}  // copy the char; if doublewide, copy the null for it
  }
- R z;
+ return z;
 }
 
 
@@ -404,7 +404,7 @@ Process:
 A RoutineA(J jt,A w,A prxthornuni){A z;I n,t,q,q1,b=0; UC* wv;
  ARGCHK1(w); ASSERT(1>=AR(w),EVRANK); n=AN(w); t=AT(w); wv=UAV(w);
  ASSERT(t&LIT,EVDOMAIN);
- if(!n) {GATV(z,LIT,n,AR(w),AS(w)); R z;}; // empty lit list 
+ if(!n) {GATV(z,LIT,n,AR(w),AS(w)); return z;}; // empty lit list
  DQ(n, if(127<*wv++){b=1;break;});
  if(!b)RCA(w);
  q=mtowsize(UAV(w),n);
@@ -412,48 +412,48 @@ A RoutineA(J jt,A w,A prxthornuni){A z;I n,t,q,q1,b=0; UC* wv;
  if(q==(q1=mtousize(UAV(w),n))){
   GATV0(z,C2T,q,1);
   mtow(UAV(w),n,USAV(z));
-  R RoutineB(jt,z,prxthornuni);
+  return RoutineB(jt,z,prxthornuni);
  }else{
   GATV0(z,C4T,q1,1);
   mtou(UAV(w),n,C4AV(z));
-  R RoutineC(jt,z,prxthornuni);
+  return RoutineC(jt,z,prxthornuni);
  }
 }
 
 A RoutineB(J jt,A w,A prxthornuni){A z;I n,t,q,b=0; UC* wv; US* c2v; C4* c4v;
  ARGCHK1(w); ASSERT(1>=AR(w),EVRANK); n=AN(w); t=AT(w); wv=UAV(w);
  ASSERT(t&C2T,EVDOMAIN);
- if(!n) {GATV(z,C2T,n,AR(w),AS(w)); R z;}; // empty C2T list 
+ if(!n) {GATV(z,C2T,n,AR(w),AS(w)); return z;}; // empty C2T list
  q=wtousize(USAV(w),n);
  if(q<0||q!=n){
   GATV(z,C4T,n,AR(w),AS(w));
   c4v=C4AV(z);
   c2v=USAV(w);
   DQ(n, *c4v++=(C4)*c2v++;);
-  R RoutineC(jt,z,prxthornuni);
+  return RoutineC(jt,z,prxthornuni);
  }
- if(BAV(prxthornuni)[0]&1)R wtownull(jt,w);
- R w;
+ if(BAV(prxthornuni)[0]&1)return wtownull(jt,w);
+ return w;
 }
 
 A RoutineC(J jt,A w,A prxthornuni){A z;I n,t,q,b=0; C4* wv;
  ARGCHK1(w); ASSERT(1>=AR(w),EVRANK); n=AN(w); t=AT(w); wv=C4AV(w);
  ASSERT(t&C4T,EVDOMAIN);
- if(!n) {GATV(z,C4T,n,AR(w),AS(w)); R z;}; // empty C4T list 
+ if(!n) {GATV(z,C4T,n,AR(w),AS(w)); return z;}; // empty C4T list
  DQ(n, if((UI4)(*wv-0xd800)<=(UI4)(0xdfff-0xd800)){b=1;break;};wv++;);
  if(b){
  q=utousize(C4AV(w),n);
  GATV0(z,C4T,q,1);
  utou(C4AV(w),n,C4AV(z));
- if(BAV(prxthornuni)[0]&1)R utounull(jt,z); else R z;
+ if(BAV(prxthornuni)[0]&1)return utounull(jt,z); else return z;
  }
- if(BAV(prxthornuni)[0]&1)R utounull(jt,w);
- R w;
+ if(BAV(prxthornuni)[0]&1)return utounull(jt,w);
+ return w;
 }
 
 A RoutineD(J jt,A w,A prxthornuni){A z;I n,t,q,b=0;C4* c4v;
 ARGCHK1(w); ASSERT(1>=AR(w),EVRANK); n=AN(w); t=AT(w);
-if(!n) {GATV(z,LIT,n,AR(w),AS(w)); R z;}; // empty lit list
+if(!n) {GATV(z,LIT,n,AR(w),AS(w)); return z;}; // empty lit list
 ASSERT(t&(C2T+C4T), EVDOMAIN);
 if(t&C4T)
 {
@@ -488,7 +488,7 @@ else
  wtom(USAV(w),n,UAV(z));
  }
 }
-R z;
+return z;
 }
 
 // display width of a string
@@ -518,5 +518,5 @@ I stringdisplaywidth(J jt, I c2, void*src, I nsrc){I n=nsrc,q;A c4;C4*u;
   break;
  }
  EPILOG0;
- R n;
+ return n;
 }

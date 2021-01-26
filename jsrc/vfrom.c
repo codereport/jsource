@@ -8,7 +8,7 @@
 
 F1(jtcatalog){PROLOG(0072);A b,*wv,x,z,*zv;C*bu,*bv,**pv;I*cv,i,j,k,m=1,n,p,*qv,r=0,*s,t=0,*u;
  F1RANK(1,jtcatalog,UNUSED_VALUE);
- if((-AN(w)&-(AT(w)&BOX+SBOX))>=0)R box(w);   // empty or unboxed, just box it
+ if((-AN(w)&-(AT(w)&BOX+SBOX))>=0)return box(w);   // empty or unboxed, just box it
  n=AN(w); wv=AAV(w); 
  DO(n, x=wv[i]; if(AN(x)){p=AT(x); t=t?t:p; ASSERT(HOMO(t,p),EVDOMAIN); RE(t=maxtype(t,p));});  // use vector maxtype; establish type of result
  t=t?t:B01; k=bpnoun(t);  // if all empty, use boolean for result
@@ -48,7 +48,7 @@ F2(jtifrom){A z;C*wv,*zv;I acr,an,ar,*av,j,k,m,p,pq,q,wcr,wf,wk,wn,wr,*ws,zn;
  // IRS supported.  This has implications for empty arguments.
  ar=AR(a); acr=jt->ranks>>RANKTX; acr=ar<acr?ar:acr;
  wr=AR(w); wcr=(RANKT)jt->ranks; wcr=wr<wcr?wr:wcr; wf=wr-wcr; RESETRANK;
- if(ar>acr)R rank2ex(a,w,UNUSED_VALUE,acr,wcr,acr,wcr,jtifrom);  // split a into cells if needed.  Only 1 level of rank loop is used
+ if(ar>acr)return rank2ex(a,w,UNUSED_VALUE,acr,wcr,acr,wcr,jtifrom);  // split a into cells if needed.  Only 1 level of rank loop is used
  // From here on, execution on a single cell of a (on matching cell(s) of w, or all w).  The cell of a may have any rank
  an=AN(a); wn=AN(w); ws=AS(w);
  if(!(INT&AT(a)))RZ(a=cvt(INT,a));
@@ -89,7 +89,7 @@ F2(jtifrom){A z;C*wv,*zv;I acr,an,ar,*av,j,k,m,p,pq,q,wcr,wf,wk,wn,wr,*ws,zn;
  // Allocate the result area and fill in the shape
  GA(z,AT(w),zn,ar+wr-(I )(0<wcr),0);  // result-shape is frame of w followed by shape of a followed by shape of item of cell of w; start with w-shape, which gets the frame
  MCISH(AS(z),AS(w),wf); MCISH(&AS(z)[wf],AS(a),ar); if(wcr)MCISH(&AS(z)[wf+ar],1+wf+ws,wcr-1);
- if(!zn){DO(an, SETJ(av[i])) R z;}  // If no data to move, just audit the indexes and quit
+ if(!zn){DO(an, SETJ(av[i])) return z;}  // If no data to move, just audit the indexes and quit
  // from here on we are moving items
  wk=k*p;   // stride between cells of w
  wv=CAV(w); zv=CAV(z); SETJ(*av);
@@ -127,7 +127,7 @@ static F2(jtbfrom){A z;B*av,*b;C*wv,*zv;I acr,an,ar,k,m,p,q,r,*u=0,wcr,wf,wk,wn,
  ARGCHK2(a,w);
  ar=AR(a); acr=jt->ranks>>RANKTX; acr=ar<acr?ar:acr;
  wr=AR(w); wcr=(RANKT)jt->ranks; wcr=wr<wcr?wr:wcr; wf=wr-wcr; RESETRANK;
- if(ar>acr)R rank2ex(a,w,UNUSED_VALUE,acr,wcr,acr,wcr,jtbfrom);  // use rank loop if multiple cells of a
+ if(ar>acr)return rank2ex(a,w,UNUSED_VALUE,acr,wcr,acr,wcr,jtbfrom);  // use rank loop if multiple cells of a
  an=AN(a); wn=AN(w); ws=AS(w);
  // If a is empty, it needs to simulate execution on a cell of fills.  But that might produce domain error, if w has no
  // items, where 0 { empty is an index error!  In that case, we set wr to 0, in effect making it an atom (since failing exec on fill-cell produces atomic result)
@@ -140,7 +140,7 @@ static F2(jtbfrom){A z;B*av,*b;C*wv,*zv;I acr,an,ar,k,m,p,q,r,*u=0,wcr,wf,wk,wn,
  }else{zn=0;}
  GA(z,AT(w),zn,ar+wr-(I )(0<wcr),0);
  MCISH(AS(z),AS(w),wf); MCISH(&AS(z)[wf],AS(a),ar); if(wcr)MCISH(&AS(z)[wf+ar],1+wf+ws,wcr-1);
- if(!zn)R z;  // If no data to move, just return the shape
+ if(!zn)return z;  // If no data to move, just return the shape
  av=BAV(a); wv=CAV(w); zv=CAV(z);
  switch(k+k+(I )(1==an)){
   case   2*sizeof(I): BNNERN(I);   break;
@@ -167,7 +167,7 @@ A jtfrombu(J jt,A a,A w,I wf){F1PREFIP;A p,q,z;I ar,*as,h,m,r,*u,*v,wcr,wr,*ws;
  if((-AN(a)&-AN(w))>=0){  // empty array, either a or w
   // allocate empty result, move in shape: frame of w, frame of a, shape of item
   GA(z,AT(w),0,wf+(wcr-h)+(ar-1),0); MCISH(AS(z),AS(w),wf) MCISH(AS(z)+wf,AS(a),ar-1)  MCISH(AS(z)+wf+ar-1,AS(w)+wf+h,wcr-h)
-  R z;
+  return z;
  }
  fauxblockINT(pfaux,4,1); fauxINT(p,pfaux,h,1) v=AV(p)+h; u=ws+wf+h; m=1; DQ(h, *--v=m; m*=*--u;);  // m is number of items in the block of axes that index into w
  r=wr+1-h;  // rank of intermediate w arg is rank of w, minus h axes that go away and are replaced by 1 axis
@@ -191,28 +191,28 @@ A jtfrombu(J jt,A a,A w,I wf){F1PREFIP;A p,q,z;I ar,*as,h,m,r,*u,*v,wcr,wr,*ws;
 B jtaindex(J jt,A a,A w,I wf,A*ind){A*av,q,z;I an,ar,c,j,k,t,*u,*v,*ws;
  ARGCHK2(a,w);
  an=AN(a); *ind=0;
- if(!an)R 0;
+ if(!an)return 0;
  ws=wf+AS(w); ar=AR(a); av=AAV(a);  q=av[0]; c=AN(q);   // q=addr, c=length of first box
- if(!c)R 0;
+ if(!c)return 0;
  ASSERT(c<=AR(w)-wf,EVLENGTH);
  GATV(z,INT,an*c,1+ar,AS(a)); AS(z)[ar]=c; v=AV(z);  // allocate array for result
  for(j=0;j<an;++j){
   q=av[j]; t=AT(q);
-  if(t&BOX)R 0;   // if empty boxed array, error
+  if(t&BOX)return 0;   // if empty boxed array, error
   if(!(t&INT))RZ(q=cvt(INT,q));  // if can't convert to INT, error
-  if((((c^AN(q))-1)&(AR(q)-2))>=0)R 0;   // if not the same length, or rank>1, error
+  if((((c^AN(q))-1)&(AR(q)-2))>=0)return 0;   // if not the same length, or rank>1, error
   u=AV(q);
   DO(c, SETNDX(k,u[i],ws[i]) *v++=k;);   // copy in the indexes, with correction for negative indexes
  }
  *ind=z;
- R 1;
+ return 1;
 }    /* <"1 a to a where a is an integer index array */
 
 static B jtaindex1(J jt,A a,A w,I wf,A*ind){A z;I c,i,k,n,t,*v,*ws;
  ARGCHK2(a,w);
- n=AN(a); t=AT(a); *ind=0; if(AR(a)==0)R 0;  // revert to normal code for atomic a
+ n=AN(a); t=AT(a); *ind=0; if(AR(a)==0)return 0;  // revert to normal code for atomic a
  ws=wf+AS(w); c=AS(a)[AR(a)-1];   // c = length of 1-cell
- if(((n-1)|(c-1)|SGNIF(t,BOXX))<0)R 0;  // revert to normal code for empty or boxed a
+ if(((n-1)|(c-1)|SGNIF(t,BOXX))<0)return 0;  // revert to normal code for empty or boxed a
  ASSERT(c<=AR(w)-wf,EVLENGTH);
  PROD(n,AR(a)-1,AS(a));  v=AV(a); // n now=number of 1-cells of a   v=running pointer through a
  // Go through a fast verification pass.  If all values nonnegative and valid, return original a
@@ -233,7 +233,7 @@ static B jtaindex1(J jt,A a,A w,I wf,A*ind){A z;I c,i,k,n,t,*v,*ws;
   DQ(n, DO(c, SETNDXRW(k,*v,ws[i]) ++v;););  // convert indexes to nonnegative & check for in-range
  }
  *ind=z;
- R 1;
+ return 1;
 }    /* verify that <"1 a is valid for (<"1 a){w - used only for sparse matrices */
 
 static A jtafrom2(J jt,A p,A q,A w,I r){A z;C*wv,*zv;I d,e,j,k,m,n,pn,pr,* RESTRICT pv,
@@ -248,7 +248,7 @@ static A jtafrom2(J jt,A p,A q,A w,I r){A z;C*wv,*zv;I d,e,j,k,m,n,pn,pr,* RESTR
  }else{zn=0;}
  GA(z,AT(w),zn,wf+pr+qr+r-2,ws);
  s=AS(z)+wf; MCISH(s,AS(p),pr); MCISH(s+pr,AS(q),qr); MCISH(s+pr+qr,ws+wf+2,r-2);
- if(!zn)R z;  // If no data to move, exit with empty.  Rank is right
+ if(!zn)return z;  // If no data to move, exit with empty.  Rank is right
  wv=CAV(w); zv=CAV(z); 
  switch(k=d<<bplg(AT(w))){   // k=*bytes in a _2-cell of a cell of w
 #define INNER2(T) {T* RESTRICT v=(T*)wv,* RESTRICT x=(T*)zv;   \
@@ -268,10 +268,10 @@ static A jtafrom2(J jt,A p,A q,A w,I r){A z;C*wv,*zv;I d,e,j,k,m,n,pn,pr,* RESTR
 // n is length of axis, w is doubly-unboxed selector
 // result is list of selectors - complementary if w is boxed, with a: standing for axis taken in full
 static A jtafi(J jt,I n,A w){A x;
- if((-AN(w)&SGNIF(AT(w),BOXX))>=0)R pind(n,w);   // empty or not boxed
+ if((-AN(w)&SGNIF(AT(w),BOXX))>=0)return pind(n,w);   // empty or not boxed
  ASSERT(!AR(w),EVINDEX);  // if boxed, must be an atom
  x=AAV(w)[0];
- R AN(x)?less(IX(n),pind(n,x)):ds(CACE);   // complementary
+ return AN(x)?less(IX(n),pind(n,x)):ds(CACE);   // complementary
 }
 
 // general boxed a
@@ -280,15 +280,15 @@ static F2(jtafrom){PROLOG(0073);A c,ind,p=0,q,*v,y=w;B bb=1;I acr,ar,i=0,j,m,n,p
  ar=AR(a); acr=jt->ranks>>RANKTX; acr=ar<acr?ar:acr;
  wr=AR(w); wcr=(RANKT)jt->ranks; wcr=wr<wcr?wr:wcr; wf=wr-wcr; RESETRANK;
  if(ar){  // if there is an array of boxes
-  if(((ar^acr)|(wr^wcr))==0){RE(aindex(a,w,wf,&ind)); if(ind)R frombu(ind,w,wf);}  // if boxing doesn't contribute to shape, open the boxes of a and copy the values
-  R wr==wcr?rank2ex(a,w,UNUSED_VALUE,0L,wcr,0L,wcr,jtafrom):  // if a has frame, rank-loop over a
+  if(((ar^acr)|(wr^wcr))==0){RE(aindex(a,w,wf,&ind)); if(ind)return frombu(ind,w,wf);}  // if boxing doesn't contribute to shape, open the boxes of a and copy the values
+  return wr==wcr?rank2ex(a,w,UNUSED_VALUE,0L,wcr,0L,wcr,jtafrom):  // if a has frame, rank-loop over a
       df2(p,IRS1(a,0L,acr,jtbox,c),IRS1(w,0L,wcr,jtbox,ind),amp(ds(CLBRACE),ds(COPE)));  // (<"0 a) {&> <"0 w
  }
  c=AAV(a)[0]; t=AT(c); SETIC(c,n); v=AAV(c);   // B prob not reqd 
  s=AS(w)+wr-wcr;
  ASSERT(1>=AR(c),EVRANK);
  ASSERT(n<=wcr,EVLENGTH);
- if((-n&SGNIFNOT(t,BOXX))<0){RE(aindex(a,w,wf,&ind)); if(ind)R frombu(ind,w,wf);}  // not empty and not boxed, handle as 1 index list
+ if((-n&SGNIFNOT(t,BOXX))<0){RE(aindex(a,w,wf,&ind)); if(ind)return frombu(ind,w,wf);}  // not empty and not boxed, handle as 1 index list
  if(wcr==wr){
   for(i=m=pr=0;i<n;++i){
    p=afi(s[i],v[i]);
@@ -393,7 +393,7 @@ F2(jtsfrom){
   }
  }else{A ind;
   // sparse.  See if we can audit the index list.  If we can, use it, else execute the slow way
-  RE(aindex1(a,w,0L,&ind)); if(ind)R frombsn(ind,w,0L);
+  RE(aindex1(a,w,0L,&ind)); if(ind)return frombsn(ind,w,0L);
  }
  // If we couldn't handle it as a special case, do it the hard way
  A z; RETF(from(IRS1(a,0L,1L,jtbox,z),w));
@@ -404,21 +404,21 @@ static EVERYFS(mapxself,0,jtmapx,0,VFLAGNONE)
 
 static F2(jtmapx){A z1,z2,z3;
  ARGCHK2(a,w);
- if(!(BOX&AT(w)))R ope(a);
+ if(!(BOX&AT(w)))return ope(a);
  RZ(z1=catalog(every(shape(w),ds(CIOTA))));  // create index list of each box
  IRS1(z1,0,0,jtbox,z2);
  RZ(z2=every2(a,z2,(A)&sfn0overself));
  IRS1(z2,0,0,jtbox,z3);
- R every2(z3,w,(A)&mapxself);
+ return every2(z3,w,(A)&mapxself);
 }
 
-F1(jtmap){R mapx(ds(CACE),w);}
+F1(jtmap){return mapx(ds(CACE),w);}
 
 // extract the single box a from w and open it.  Don't mark it no-inplace.  If w is not boxed, it had better be an atom, and we return it after auditing the index
 static F2(jtquicksel){I index;
  RE(index=i0(a));  // extract the index
  SETNDX(index,index,AN(w))   // remap negative index, check range
- R AT(w)&BOX?AAV(w)[index]:w;  // select the box, or return the entire unboxed w
+ return AT(w)&BOX?AAV(w)[index]:w;  // select the box, or return the entire unboxed w
 }
 
 F2(jtfetch){A*av, z;I n;F2PREFIP;
@@ -438,7 +438,7 @@ F2(jtfetch){A*av, z;I n;F2PREFIP;
   RZ(a=jtbox(JTIPAtoW,a));  // if not special case, box any unboxed a
  }
  n=AN(a); av=AAV(a); 
- if(!n)R w; z=w;
+ if(!n)return w; z=w;
  DO(n, A next=av[i]; if(((AT(z)>>BOXX)&1)>=(2*(AR(next)+(AT(next)&BOX))+AR(z))){RZ(z=jtquicksel(jt,next,z))}  // next is unboxed atom, z is boxed atom or list, use fast indexing  AR(next)==0 && !(AT(next)&BOX) && (AR(z)==0 || (AR(z)==1 && AT(z)&BOX))
       else{RZ(z=afrom(box(next),z)); ASSERT(((i+1-n)&-AR(z))>=0,EVRANK); if(((AR(z)-1)&SGNIF(AT(z),BOXX))<0)RZ(z=ope(z));}  // Rank must be 0 unless last; open if boxed atom
    );

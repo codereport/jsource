@@ -28,7 +28,7 @@
    DQ(d, *--z=    *--x;);                                        \
    DQ(n-1, Tz *y=z; z-=d; x-=d; vecfn(1,d,x,y,z,jt););                     \
   }}                                                                   \
-  R NANTEST?EVNAN:EVOK;                                                              \
+  return NANTEST?EVNAN:EVOK;                                                              \
  }
 
 #define SUFFICPFX(f,Tz,Tx,pfx)  \
@@ -38,7 +38,7 @@
   else{for(i=0;i<m;++i){                                              \
    y=z; DQ(d, *--z=(Tz)*--x;);                                        \
    DQ(n-1, DQ(d, --x; --y; --z; *z=pfx(*x,*y);));                     \
- }}R EVOK;}
+ }}return EVOK;}
 
 #define SUFFIXOVF(f,Tz,Tx,fs1,fvv)  \
  AHDRS(f,I,I){C er=0;I i,*xx,*y,*zz;                      \
@@ -49,7 +49,7 @@
   }else{for(i=0;i<m;++i){                                   \
    DQ(d, *--zz=*--xx;);                                     \
    DQ(n-1, x=xx-=d; y=zz; z=zz-=d; fvv(d,z,x,y););     \
- }}R EVOK;}
+ }}return EVOK;}
 
 #if SY_ALIGN
 #define SUFFIXBFXLOOP(T,pfx)  \
@@ -61,17 +61,17 @@
 #define SUFFIXBFX(f,pfx,ipfx,spfx,bpfx,vexp)  \
  AHDRP(f,B,B){B v,* RESTRICT y;I q;                                        \
   x+=m*d*n; z+=m*d*n;                                           \
-  if(1==d){DQ(m, *--z=v=*--x; DQ(n-1, --x; --z; *z=v=vexp;)); R EVOK;}  \
-  if(0==(d&(sizeof(UI  )-1))){SUFFIXBFXLOOP(UI,   pfx); R EVOK;}              \
-  if(0==(d&(sizeof(UI4)-1))){SUFFIXBFXLOOP(UINT,ipfx); R EVOK;}              \
-  if(0==(d&(sizeof(US  )-1))){SUFFIXBFXLOOP(US,  spfx); R EVOK;}              \
-  DQ(m, y=z; DQ(d, *--z=*--x;); DQ(n-1, DQ(d, --x; --y; --z; *z=bpfx(*x,*y);)));R EVOK;  \
+  if(1==d){DQ(m, *--z=v=*--x; DQ(n-1, --x; --z; *z=v=vexp;)); return EVOK;}  \
+  if(0==(d&(sizeof(UI  )-1))){SUFFIXBFXLOOP(UI,   pfx); return EVOK;}              \
+  if(0==(d&(sizeof(UI4)-1))){SUFFIXBFXLOOP(UINT,ipfx); return EVOK;}              \
+  if(0==(d&(sizeof(US  )-1))){SUFFIXBFXLOOP(US,  spfx); return EVOK;}              \
+  DQ(m, y=z; DQ(d, *--z=*--x;); DQ(n-1, DQ(d, --x; --y; --z; *z=bpfx(*x,*y);)));return EVOK;  \
  }
 #else
 #define SUFFIXBFX(f,pfx,ipfx,spfx,bpfx,vexp)  \
  AHDRS(f,B,B){B v;I i,q,r,t,*xi,*yi,*zi;                         \
   x+=m*d*n; z+=m*d*n;                                           \
-  if(1==d){DQ(m, *--z=v=*--x; DQ(n-1, --x; --z; *z=v=vexp;)); R;}  \
+  if(1==d){DQ(m, *--z=v=*--x; DQ(n-1, --x; --z; *z=v=vexp;)); return;}  \
   q=d>>LGSZI; r=d&(SZI-1); xi=(I*)x; zi=(I*)z;                            \
   if(0==r)for(i=0;i<m;++i){                                        \
    yi=zi; DQ(q, *--zi=*--xi;);                                     \
@@ -105,7 +105,7 @@ SUFFICPFX( plussfxO, D, I, PLUS  )
 SUFFICPFX(minussfxO, D, I, MINUS )
 SUFFICPFX(tymessfxO, D, I, TYMES )
 
-SUFFIXPFX( plussfxB, I, B, PLUS, plusBI, R EVOK;  )
+SUFFIXPFX( plussfxB, I, B, PLUS, plusBI, return EVOK;  )
 AHDRS(plussfxD,D,D){I i;
  NAN0;
  x+=m*d*n; z+=m*d*n;
@@ -120,74 +120,74 @@ AHDRS(plussfxD,D,D){I i;
    DQ(n-1, D *y=z; z-=d; x-=d; plusDD(1,d,x,y,z,jt););
   }
  }
- R NANTEST?EVNAN:EVOK;
+ return NANTEST?EVNAN:EVOK;
 }
 SUFFIXNAN( plussfxZ, Z, Z, zplus, plusZZ )
 SUFFIXPFX( plussfxX, X, X, xplus, plusXX, HDR1JERR; )
 SUFFIXPFX( plussfxQ, Q, Q, qplus, plusQQ, HDR1JERR; )
 
-SUFFIXPFX(minussfxB, I, B, MINUS, minusBI, R EVOK; )
+SUFFIXPFX(minussfxB, I, B, MINUS, minusBI, return EVOK; )
 SUFFIXNAN(minussfxD, D, D, MINUS, minusDD )
 SUFFIXNAN(minussfxZ, Z, Z, zminus, minusZZ)
 
-SUFFIXPFX(tymessfxD, D, D, TYMES, tymesDD , R EVOK;)
-SUFFIXPFX(tymessfxZ, Z, Z, ztymes, tymesZZ, R EVOK;)
-SUFFIXPFX(tymessfxX, X, X, xtymes, tymesXX, R EVOK;)
-SUFFIXPFX(tymessfxQ, Q, Q, qtymes, tymesQQ, R EVOK;)
+SUFFIXPFX(tymessfxD, D, D, TYMES, tymesDD , return EVOK;)
+SUFFIXPFX(tymessfxZ, Z, Z, ztymes, tymesZZ, return EVOK;)
+SUFFIXPFX(tymessfxX, X, X, xtymes, tymesXX, return EVOK;)
+SUFFIXPFX(tymessfxQ, Q, Q, qtymes, tymesQQ, return EVOK;)
 
 SUFFIXNAN(  divsfxD, D, D, DIV, divDD   )
 SUFFIXNAN(  divsfxZ, Z, Z, zdiv, divZZ  )
 
-SUFFIXPFX(  maxsfxI, I, I, MAX, maxII   ,R EVOK;)
-SUFFIXPFX(  maxsfxD, D, D, MAX, maxDD   ,R EVOK;)
-SUFFIXPFX(  maxsfxX, X, X, XMAX, maxXX  ,R EVOK;)
-SUFFIXPFX(  maxsfxQ, Q, Q, QMAX, maxQQ  ,R EVOK;)
-SUFFIXPFX(  maxsfxS, SB,SB,SBMAX, maxSS ,R EVOK;)
+SUFFIXPFX(  maxsfxI, I, I, MAX, maxII   ,return EVOK;)
+SUFFIXPFX(  maxsfxD, D, D, MAX, maxDD   ,return EVOK;)
+SUFFIXPFX(  maxsfxX, X, X, XMAX, maxXX  ,return EVOK;)
+SUFFIXPFX(  maxsfxQ, Q, Q, QMAX, maxQQ  ,return EVOK;)
+SUFFIXPFX(  maxsfxS, SB,SB,SBMAX, maxSS ,return EVOK;)
 
-SUFFIXPFX(  minsfxI, I, I, MIN, minII  ,R EVOK;)
-SUFFIXPFX(  minsfxD, D, D, MIN, minDD  ,R EVOK;)
-SUFFIXPFX(  minsfxX, X, X, XMIN, minXX  ,R EVOK;)
-SUFFIXPFX(  minsfxQ, Q, Q, QMIN, minQQ  ,R EVOK;)
-SUFFIXPFX(  minsfxS, SB,SB,SBMIN, minSS ,R EVOK;)
+SUFFIXPFX(  minsfxI, I, I, MIN, minII  ,return EVOK;)
+SUFFIXPFX(  minsfxD, D, D, MIN, minDD  ,return EVOK;)
+SUFFIXPFX(  minsfxX, X, X, XMIN, minXX  ,return EVOK;)
+SUFFIXPFX(  minsfxQ, Q, Q, QMIN, minQQ  ,return EVOK;)
+SUFFIXPFX(  minsfxS, SB,SB,SBMIN, minSS ,return EVOK;)
 
-SUFFIXPFX(bw0000sfxI, UI,UI, BW0000, bw0000II,R EVOK;)
-SUFFIXPFX(bw0001sfxI, UI,UI, BW0001, bw0001II,R EVOK;)
-SUFFIXPFX(bw0010sfxI, UI,UI, BW0010, bw0010II,R EVOK;)
-SUFFIXPFX(bw0011sfxI, UI,UI, BW0011, bw0011II,R EVOK;)
-SUFFIXPFX(bw0100sfxI, UI,UI, BW0100, bw0100II,R EVOK;)
-SUFFIXPFX(bw0101sfxI, UI,UI, BW0101, bw0101II,R EVOK;)
-SUFFIXPFX(bw0110sfxI, UI,UI, BW0110, bw0110II,R EVOK;)
-SUFFIXPFX(bw0111sfxI, UI,UI, BW0111, bw0111II,R EVOK;)
-SUFFIXPFX(bw1000sfxI, UI,UI, BW1000, bw1000II,R EVOK;)
-SUFFIXPFX(bw1001sfxI, UI,UI, BW1001, bw1001II,R EVOK;)
-SUFFIXPFX(bw1010sfxI, UI,UI, BW1010, bw1010II,R EVOK;)
-SUFFIXPFX(bw1011sfxI, UI,UI, BW1011, bw1011II,R EVOK;)
-SUFFIXPFX(bw1100sfxI, UI,UI, BW1100, bw1100II,R EVOK;)
-SUFFIXPFX(bw1101sfxI, UI,UI, BW1101, bw1101II,R EVOK;)
-SUFFIXPFX(bw1110sfxI, UI,UI, BW1110, bw1110II,R EVOK;)
-SUFFIXPFX(bw1111sfxI, UI,UI, BW1111, bw1111II,R EVOK;)
+SUFFIXPFX(bw0000sfxI, UI,UI, BW0000, bw0000II,return EVOK;)
+SUFFIXPFX(bw0001sfxI, UI,UI, BW0001, bw0001II,return EVOK;)
+SUFFIXPFX(bw0010sfxI, UI,UI, BW0010, bw0010II,return EVOK;)
+SUFFIXPFX(bw0011sfxI, UI,UI, BW0011, bw0011II,return EVOK;)
+SUFFIXPFX(bw0100sfxI, UI,UI, BW0100, bw0100II,return EVOK;)
+SUFFIXPFX(bw0101sfxI, UI,UI, BW0101, bw0101II,return EVOK;)
+SUFFIXPFX(bw0110sfxI, UI,UI, BW0110, bw0110II,return EVOK;)
+SUFFIXPFX(bw0111sfxI, UI,UI, BW0111, bw0111II,return EVOK;)
+SUFFIXPFX(bw1000sfxI, UI,UI, BW1000, bw1000II,return EVOK;)
+SUFFIXPFX(bw1001sfxI, UI,UI, BW1001, bw1001II,return EVOK;)
+SUFFIXPFX(bw1010sfxI, UI,UI, BW1010, bw1010II,return EVOK;)
+SUFFIXPFX(bw1011sfxI, UI,UI, BW1011, bw1011II,return EVOK;)
+SUFFIXPFX(bw1100sfxI, UI,UI, BW1100, bw1100II,return EVOK;)
+SUFFIXPFX(bw1101sfxI, UI,UI, BW1101, bw1101II,return EVOK;)
+SUFFIXPFX(bw1110sfxI, UI,UI, BW1110, bw1110II,return EVOK;)
+SUFFIXPFX(bw1111sfxI, UI,UI, BW1111, bw1111II,return EVOK;)
 
 
 static DF1(jtsuffix){DECLF;I r;
  ARGCHK1(w);
- r=(RANKT)jt->ranks; RESETRANK; if(r<AR(w))R rank1ex(w,self,r,jtsuffix);
- R eachl(IX(SETIC(w,r)),w,atop(fs,ds(CDROP)));
+ r=(RANKT)jt->ranks; RESETRANK; if(r<AR(w))return rank1ex(w,self,r,jtsuffix);
+ return eachl(IX(SETIC(w,r)),w,atop(fs,ds(CDROP)));
 }    /* f\."r w for general f */
 
 static DF1(jtgsuffix){A h,*hv,z,*zv;I m,n,r;
  ARGCHK1(w);
- r=(RANKT)jt->ranks; RESETRANK; if(r<AR(w))R rank1ex(w,self,r,jtgsuffix);
+ r=(RANKT)jt->ranks; RESETRANK; if(r<AR(w))return rank1ex(w,self,r,jtgsuffix);
  SETIC(w,n); 
  h=VAV(self)->fgh[2]; hv=AAV(h); m=AN(h);
  GATV0(z,BOX,n,1); zv=AAV(z); I imod=0;
  DO(n, imod=(imod==m)?0:imod; RZ(zv[i]=df1(h,drop(sc(i),w),hv[imod])); ++imod;);
- R ope(z);
+ return ope(z);
 }    /* g\."r w for gerund g */
 
 #define SSGULOOP(T)  \
  {T*v=(T*)zv;                      \
   for(i=0;i<n1;++i){               \
-   RZ(q=CALL2(f2,x,y,fs)); if(!(TYPESEQ(t,AT(q))&&!AR(q)))R A0; /* error if error; abort if not compatible scalar */ \
+   RZ(q=CALL2(f2,x,y,fs)); if(!(TYPESEQ(t,AT(q))&&!AR(q)))return A0; /* error if error; abort if not compatible scalar */ \
    *v--=*(T*)AV(q);                \
    AK(x)-=k; AK(y)-=k; tpop(old);  \
  }}
@@ -196,7 +196,7 @@ static DF1(jtssg){F1PREFIP;PROLOG(0020);A a,z;I i,n,r,wr;
  ARGCHK1(w);
  ASSERT(DENSE&AT(w),EVNONCE);
  // loop over rank - we claim to handle IRS
- wr=AR(w); r=(RANKT)jt->ranks; r=wr<r?wr:r; RESETRANK; if(r<wr)R rank1ex(w,self,r,jtssg);
+ wr=AR(w); r=(RANKT)jt->ranks; r=wr<r?wr:r; RESETRANK; if(r<wr)return rank1ex(w,self,r,jtssg);
 
  // From here on we are doing a single scan
  n=AS(w)[0]; // n=#cells
@@ -280,7 +280,7 @@ A jtscansp(J jt,A w,A self,AF sf){A e,ee,x,z;B*b;I f,m,j,r,t,wr;P*wp,*zp;
  wp=PAV(w); e=SPA(wp,e); RZ(ee=over(e,e));
  if(!equ(ee,CALL1(sf,ee,self))){
   RZ(x=denseit(w));
-  R IRS1(x,self,r,sf,z);
+  return IRS1(x,self,r,sf,z);
  }else{
   RZ(b=bfi(wr,SPA(wp,a),1));
   if(r&&b[f]){b[f]=0; RZ(w=reaxis(ifb(wr,b),w));}
@@ -295,26 +295,26 @@ A jtscansp(J jt,A w,A self,AF sf){A e,ee,x,z;B*b;I f,m,j,r,t,wr;P*wp,*zp;
  SPB(zp,x,x); 
  SPB(zp,i,ca(SPA(wp,i))); 
  SPB(zp,a,ca(SPA(wp,a)));
- R z;
+ return z;
 }    /* f/\"r or f/\."r on sparse w */
 
 static DF1(jtsscan){A y,z;I d,f,m,n,r,t,wn,wr,*ws,wt;
  F1PREFIP;ARGCHK1(w);
  wt=AT(w);
- if(unlikely((SPARSE&wt)!=0))R scansp(w,self,jtsscan);
+ if(unlikely((SPARSE&wt)!=0))return scansp(w,self,jtsscan);
  wn=AN(w); wr=AR(w); r=(RANKT)jt->ranks; r=wr<r?wr:r; f=wr-r; ws=AS(w); RESETRANK;
  PROD(m,f,ws); PROD1(d,r-1,f+ws+1); I *nn=&ws[f]; nn=r?nn:&I1mem; n=*nn;   // will not be used if WN==0, so PROD ok.  n is # items along the selected rank
  y=FAV(self)->fgh[0]; // y is f/
- if(((n-2)|(wn-1))<0){if(FAV(FAV(y)->fgh[0])->flag&VISATOMIC2){R r?RETARG(w):reshape(apip(shape(w),zeroionei(1)),w);}else R IRS1(w,self,r,jtsuffix,z);}  // if empty arg, or just 1 cell in selected axis, convert to f/\ which handles the short arg 
+ if(((n-2)|(wn-1))<0){if(FAV(FAV(y)->fgh[0])->flag&VISATOMIC2){return r?RETARG(w):reshape(apip(shape(w),zeroionei(1)),w);}else return IRS1(w,self,r,jtsuffix,z);}  // if empty arg, or just 1 cell in selected axis, convert to f/\ which handles the short arg
 
    // note that the above line always takes the r==0 case
  VARPS adocv; varps(adocv,self,wt,2);  // analyze f - get suffix routine
- if(!adocv.f)R IRSIP1(w,self,r,jtssg,z);   // if not supported atomically, go do general suffix
+ if(!adocv.f)return IRSIP1(w,self,r,jtssg,z);   // if not supported atomically, go do general suffix
  // The rest handles primitives with fast suffix scans
  if((t=atype(adocv.cv))&&TYPESNE(t,wt))RZ(w=cvt(t,w));
  if(ASGNINPLACESGN(SGNIF((I)jtinplace,JTINPLACEWX)&SGNIF(adocv.cv,VIPOKWX),w))z=w; else GA(z,rtype(adocv.cv),wn,wr,ws);
  I rc=((AHDRSFN*)adocv.f)(d,n,m,AV(w),AV(z),jt);
- if(rc&255){jsignal(rc); R jt->jerr>=EWOV?IRS1(w,self,r,jtsscan,z):0;} else R adocv.cv&VRI+VRD?cvz(adocv.cv,z):z;
+ if(rc&255){jsignal(rc); return jt->jerr>=EWOV?IRS1(w,self,r,jtsscan,z):0;} else return adocv.cv&VRI+VRD?cvz(adocv.cv,z):z;
 }    /* f/\."r w main control */
 
 
@@ -324,7 +324,7 @@ static F2(jtomask){A c,r,x,y;I m,n,p;
  r=sc(0>m?(n+p-1)/p:MAX(0,1+n-m)); c=tally(w);
  x=reshape(sc(p),  num(0));
  y=reshape(0>m?c:r,num(1) );
- R reshapeW(over(r,c),over(x,y));
+ return reshapeW(over(r,c),over(x,y));
 }
 
 static DF2(jtgoutfix){A h,*hv,x,z,*zv;I m,n;
@@ -333,7 +333,7 @@ static DF2(jtgoutfix){A h,*hv,x,z,*zv;I m,n;
  h=VAV(self)->fgh[2]; hv=AAV(h); m=AN(h);
  GATV0(z,BOX,n,1); zv=AAV(z); I imod=0;
  DO(n, imod=(imod==m)?0:imod; RZ(zv[i]=df1(h,repeat(from(sc(i),x),w),hv[imod])); ++imod;);
- R ope(z);
+ return ope(z);
 }
 
 static AS2(jtoutfix, eachl(omask(a,w),w,atop(fs,ds(CPOUND))),0117)
@@ -341,16 +341,16 @@ static AS2(jtoutfix, eachl(omask(a,w),w,atop(fs,ds(CPOUND))),0117)
 static DF2(jtofxinv){A f,fs,z;C c;I t;V*v;
  F2RANKW(0,RMAX,jtofxinv,self);
  fs=FAV(self)->fgh[0]; f=FAV(fs)->fgh[0]; v=FAV(f); c=v->id; t=AT(w);  // self = f/\. fs = f/  f = f  v = verb info for f
- if(!(c==CPLUS||c==CBDOT&&t&INT||((c&-2)==CEQ)&&t&B01))R outfix(a,w,self);  // if not +/\. or m b./\. or =/\. or ~:/\.
+ if(!(c==CPLUS||c==CBDOT&&t&INT||((c&-2)==CEQ)&&t&B01))return outfix(a,w,self);  // if not +/\. or m b./\. or =/\. or ~:/\.
  A z0,z1; z=irs2(df1(z0,w,fs),df2(z1,a,w,bslash(fs)),c==CPLUS?ds(CMINUS):f, RMAX,-1L,jtatomic2);
- if(jt->jerr==EVNAN){RESETERR; R outfix(a,w,self);}else R z;
+ if(jt->jerr==EVNAN){RESETERR; return outfix(a,w,self);}else return z;
 }    /* a f/\. w where f has an "undo" */
 
 static DF2(jtofxassoc){A f,i,j,p,s,x,z;C id,*zv;I c,d,k,kc,m,r,t;V*v;VA2 adocv;
  F2RANKW(0,RMAX,jtofxassoc,self);
  SETIC(w,m); RE(k=i0(a)); c=ABS(k);  // m = # items in w; k is value of a; c is # items per suffix
  f=FAV(self)->fgh[0]; x=FAV(f)->fgh[0]; v=FAV(x); id=CBDOT==v->id?(C)AV(v->fgh[1])[0]:v->id;  // self = f/\. f = f/  x = f  v = verb info for f
- if(k==IMIN||m<=c||id==CSTARDOT&&!(B01&AT(w)))R outfix(a,w,self);  // if there is not >1 outfix, do general code which handles empties
+ if(k==IMIN||m<=c||id==CSTARDOT&&!(B01&AT(w)))return outfix(a,w,self);  // if there is not >1 outfix, do general code which handles empties
  if(-1<=k){d=m-c;     RZ(i=IX(d)); RZ(j=apv(d,c,1L));}
  else     {d=(m-1)/c; RZ(i=apv(d,c-1,c )); RZ(j=apv(d,c,c ));}
  // d is (number of result cells)-1; i is indexes of last item of the excluded infix for cells AFTER the first
@@ -375,16 +375,16 @@ static DF2(jtofxassoc){A f,i,j,p,s,x,z;C id,*zv;I c,d,k,kc,m,r,t;V*v;VA2 adocv;
   // If there was overflow on the ado, we have to redo the operation as a float.
   // We also have to redo if the types of p and s were different (for example, if one overflowed to float and the other didn't)
  }
- if((rc&255)>=EWOV){ R ofxassoc(a,cvt(FL,w),self);}
+ if((rc&255)>=EWOV){ return ofxassoc(a,cvt(FL,w),self);}
  if(rc)jsignal(rc);  // if there was an error, signal it
- R z;
+ return z;
 }    /* a f/\. w where f is an atomic associative fn */
 
-static DF1(jtiota1rev){I j; SETIC(w,j); R apv(j,j,-1L);}
+static DF1(jtiota1rev){I j; SETIC(w,j); return apv(j,j,-1L);}
 
 F1(jtbsdot){A f;AF f1=jtsuffix,f2=jtoutfix;I flag=FAV(ds(CBSDOT))->flag;C id;V*v;  // init flag is IRS1
  ARGCHK1(w);
- if(NOUN&AT(w))R fdef(0,CBSLASH,VERB, jtgsuffix,jtgoutfix, w,0L,fxeachv(1L,w), VGERL|VAV(ds(CBSLASH))->flag, RMAX,0L,RMAX);
+ if(NOUN&AT(w))return fdef(0,CBSLASH,VERB, jtgsuffix,jtgoutfix, w,0L,fxeachv(1L,w), VGERL|VAV(ds(CBSLASH))->flag, RMAX,0L,RMAX);
  v=FAV(w);  // verb info for w
  switch(v->id){
   case CPOUND: f1=jtiota1rev; break;
@@ -399,5 +399,5 @@ F1(jtbsdot){A f;AF f1=jtsuffix,f2=jtoutfix;I flag=FAV(ds(CBSDOT))->flag;C id;V*v
  RZ(f=ADERIV(CBSDOT,f1,f2,flag,RMAX,0,RMAX));
  // Fill in the lvp[1] field: with 0 if not f/\; with the lookup field for f/ if f/\ .
  FAV(f)->localuse.lvp[1]=v->id==CSLASH?v->localuse.lvp[1]:0;  // f is nonnull if f/\ .
- R f;
+ return f;
 }

@@ -9,10 +9,10 @@
 // create inplace bits as copy of W, or swap A & W
 static DF1(swap1){DECLF; F1PREFIP; jtinplace = (J)(intptr_t)(((I)jtinplace&~JTINPLACEA)+2*((I)jtinplace&JTINPLACEW));
  // a~ carried the IRS flag from a and thus we might have ranks set.  If so, use them, and no need to check agreement again.  For ease, we just use whatever is set 
- A z; IRSIP2(w,w,fs,(RANKT)jt->ranks,(RANKT)jt->ranks,f2,z); R z;
+ A z; IRSIP2(w,w,fs,(RANKT)jt->ranks,(RANKT)jt->ranks,f2,z); return z;
 }
 static DF2(swap2){DECLF; F2PREFIP; jtinplace = (J)(intptr_t)((I)jtinplace^((JTINPLACEW+JTINPLACEA)&(0x3C>>(2*((I)jtinplace&JTINPLACEW+JTINPLACEA)))));
- A z; IRSIP2(w,a,fs,(RANKT)jt->ranks,jt->ranks>>RANKTX,f2,z); R z;
+ A z; IRSIP2(w,a,fs,(RANKT)jt->ranks,jt->ranks>>RANKTX,f2,z); return z;
 }
 
 // w~, which is either reflexive/passive or evoke
@@ -21,7 +21,7 @@ F1(jtswap){A y;C*s;I n;
  if(VERB&AT(w)){
   // reflexive/passive.  Create verb that swaps.  Most flags do not apply to the derived verb
   I flag = FAV(w)->flag&(VIRS2|VJTFLGOK2); flag = (FAV(w)->flag&VASGSAFE)+flag+(flag>>1);  // set ASGSAFE, both inplace/irs bits from dyad; ISATOMIC immaterial, since always dyad
-  R fdef(0,CTILDE,VERB,(AF)(swap1),(AF)(swap2),w,0L,0L,flag,(I)(RMAX),(I)(rr(w)),(I)(lr(w)));
+  return fdef(0,CTILDE,VERB,(AF)(swap1),(AF)(swap2),w,0L,0L,flag,(I)(RMAX),(I)(rr(w)),(I)(lr(w)));
  }else{
   // evoke.  Ii must be LIT and convertible to ASCII.
   if((C2T+C4T)&AT(w))RZ(w=cvt(LIT,w)) else ASSERT(LIT&AT(w),EVDOMAIN);
@@ -29,7 +29,7 @@ F1(jtswap){A y;C*s;I n;
   n=AN(w); s=CAV(w); 
   ASSERT(vnm(n,s),EVILNAME);   // valid name
   RZ(y=nfs(AN(w),CAV(w)));  // create a NAME block for the string
-  R nameref(y,jt->locsyms);  // Create a name-reference pointing to the name
+  return nameref(y,jt->locsyms);  // Create a name-reference pointing to the name
 }}
 
 
@@ -38,9 +38,9 @@ static const B booltab[64]={
  1,0,0,0, 1,0,0,1, 1,0,1,0, 1,0,1,1,  1,1,0,0, 1,1,0,1, 1,1,1,0, 1,1,1,1,
 };
 
-static DF2(jtbdot2){R from(plusA(duble(cvt(B01,a)),cvt(B01,w)),FAV(self)->fgh[2]);}  // dyad b. (2*a + w) { h
+static DF2(jtbdot2){return from(plusA(duble(cvt(B01,a)),cvt(B01,w)),FAV(self)->fgh[2]);}  // dyad b. (2*a + w) { h
 
-static DF1(jtbdot1){R bdot2(num(0),w,self);}
+static DF1(jtbdot1){return bdot2(num(0),w,self);}
 
 static DF1(jtbasis1){DECLF;A z;D*x;I j;V*v;
  PREF1(jtbasis1);
@@ -51,15 +51,15 @@ static DF1(jtbasis1){DECLF;A z;D*x;I j;V*v;
    j=v->mr; x[0]=j<=-RMAX?-inf:j>=RMAX?inf:j;
    j=lrv(v); x[1]=j<=-RMAX?-inf:j>=RMAX?inf:j;
    j=rrv(v); x[2]=j<=-RMAX?-inf:j>=RMAX?inf:j;
-   R pcvt(INT,z);
-  case -1: R lrep(inv (fs));
-  case  1: R lrep(iden(fs));
+   return pcvt(INT,z);
+  case -1: return lrep(inv (fs));
+  case  1: return lrep(iden(fs));
   default: ASSERT(0,EVDOMAIN);
 }}
 
 F1(jtbdot){A b,h=0;I j=0,n,*v;
  ARGCHK1(w);
- if(VERB&AT(w))R ADERIV(CBDOT, jtbasis1,0L, 0L,0,0,0);
+ if(VERB&AT(w))return ADERIV(CBDOT, jtbasis1,0L, 0L,0,0,0);
  RZ(w=vi(w));
  n=AN(w); v=AV(w);
  if(1==n){j=*v; ASSERT(BETWEENC(j,-16,34),EVINDEX);}
@@ -67,11 +67,11 @@ F1(jtbdot){A b,h=0;I j=0,n,*v;
  if(j<16){
   GAT0(b,B01,64,2); AS(b)[0]=16; AS(b)[1]=4; MC(AV(b),booltab,64L);
   RZ(h=rifvs(cant2(IX(AR(w)),from(w,b))));  // h is an array representing b.  One cell for each atom of b; cell is 4 values
-  R fdef(0,CBDOT,VERB, jtbdot1,jtbdot2, 0L,w,h, VFLAGNONE, RMAX,0L,0L);
+  return fdef(0,CBDOT,VERB, jtbdot1,jtbdot2, 0L,w,h, VFLAGNONE, RMAX,0L,0L);
  }else switch(j){
-  case 32: R fdef(0,CBDOT,VERB, jtbitwise1,jtbitwiserotate, 0L,w,0L, VASGSAFE|VJTFLGOK2, 0L,0L,0L);
-  case 33: R fdef(0,CBDOT,VERB, jtbitwise1,jtbitwiseshift, 0L,w,0L, VASGSAFE|VJTFLGOK2, 0L,0L,0L);
-  case 34: R fdef(0,CBDOT,VERB, jtbitwise1,jtbitwiseshifta, 0L,w,0L, VASGSAFE|VJTFLGOK2, 0L,0L,0L);
+  case 32: return fdef(0,CBDOT,VERB, jtbitwise1,jtbitwiserotate, 0L,w,0L, VASGSAFE|VJTFLGOK2, 0L,0L,0L);
+  case 33: return fdef(0,CBDOT,VERB, jtbitwise1,jtbitwiseshift, 0L,w,0L, VASGSAFE|VJTFLGOK2, 0L,0L,0L);
+  case 34: return fdef(0,CBDOT,VERB, jtbitwise1,jtbitwiseshifta, 0L,w,0L, VASGSAFE|VJTFLGOK2, 0L,0L,0L);
   // The code uses a VERB with id CBDOT to stand for the derived verb of m b. .  This is used for spellout and for inverses, so we retain it.
   // We copy the other information from the verb that executes the function.  This contains pointers to the routines, and to the function table
   default: {A z=ca(ds(j-16+CBW0000)); RZ(z); RZ(FAV(z)->fgh[1]=rifvs(w)); FAV(z)->id=CBDOT; RETF(z);}  // use g field not f to avoid interfering with atomic2
@@ -95,7 +95,7 @@ static A jtmemoget(J jt,I x,I y,A self){A h,*hv,q;I*jv,k,m,*v;
  h=FAV(self)->fgh[2]; hv=AAV(h); 
  q=hv[1]; jv=AV(q); m=*AS(q);
  k=HIC(x,y)%m; v=jv+2*k; while(IMIN!=*v&&!(y==*v&&x==v[1])){v+=2; if(v==jv+2*m)v=jv;}  // search hash table, stop on match or end
- R AAV(hv[2])[((v-jv)>>1)];  // return match if found, 0 if not
+ return AAV(hv[2])[((v-jv)>>1)];  // return match if found, 0 if not
 }
 
 static A jtmemoput(J jt,I x,I y,A self,A z){A*cv,h,*hv,q;I *jv,k,m,*mv,*v;
@@ -123,31 +123,31 @@ static A jtmemoput(J jt,I x,I y,A self,A z){A*cv,h,*hv,q;I *jv,k,m,*mv,*v;
  k=HIC(x,y)%m; v=jv+2*k; while(IMIN!=*v){v+=2; if(v==jv+2*m)v=jv;}
  // bump the usecount of the result to account for new ref from table
  RZ(ras(z)); cv[(v-jv)>>1]=z; v[0]=y; v[1]=x; 
- R z;
+ return z;
 }
 
 static I jtint0(J jt,A w){A x;
- if(AR(w))R IMIN;
+ if(AR(w))return IMIN;
  if(NUMERIC&AT(w))switch(UNSAFE(AT(w))){
-  case B01: R (I)BAV(w)[0];
-  case INT: R AV(w)[0];
+  case B01: return (I)BAV(w)[0];
+  case INT: return AV(w)[0];
  }
  x=pcvt(INT,w); 
- R x&&INT&AT(x)?AV(x)[0]:IMIN; 
+ return x&&INT&AT(x)?AV(x)[0]:IMIN;
 }
 
 static DF1(jtmemo1){DECLF;A z;I x,y;
  ARGCHK1(w);
  x=IMIN; y=int0(w);
- if(y==IMIN)R CALL1(f1,w,fs);
- R (z=memoget(x,y,self))?z:memoput(x,y,self,CALL1(f1,w,fs));
+ if(y==IMIN)return CALL1(f1,w,fs);
+ return (z=memoget(x,y,self))?z:memoput(x,y,self,CALL1(f1,w,fs));
 }
 
 static DF2(jtmemo2){DECLF;A z;I x,y; 
  ARGCHK2(a,w);
  x=int0(a); y=int0(w);
- if(MIN(x,y)==IMIN)R CALL2(f2,a,w,fs);  // IMIN is unmemoable, run fn
- R (z=memoget(x,y,self))?z:memoput(x,y,self,CALL2(f2,a,w,fs));  // if memo lookup returns empty, run the function and remember the result
+ if(MIN(x,y)==IMIN)return CALL2(f2,a,w,fs);  // IMIN is unmemoable, run fn
+ return (z=memoget(x,y,self))?z:memoput(x,y,self,CALL2(f2,a,w,fs));  // if memo lookup returns empty, run the function and remember the result
 }
 
 // Create the memoed verb.  We create an h argument that is a list of 3 boxes, containing:

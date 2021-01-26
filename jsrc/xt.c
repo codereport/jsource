@@ -32,7 +32,7 @@
 #endif
 
 
-F1(jtsp){ASSERTMTV(w); R sc(spbytesinuse());}  //  7!:0
+F1(jtsp){ASSERTMTV(w); return sc(spbytesinuse());}  //  7!:0
 
 // 7!:1
 // Return (current allo),(max since reset)
@@ -40,7 +40,7 @@ F1(jtsp){ASSERTMTV(w); R sc(spbytesinuse());}  //  7!:0
 F1(jtsphwmk){
   I curr = jt->malloctotal; I hwmk = jt->malloctotalhwmk;
   if(AN(w)){I new; RE(new=i0(w)); jt->malloctotalhwmk=new;}
-  R v2(curr,hwmk);
+  return v2(curr,hwmk);
 }
 
 F1(jtspit){A z;I k; 
@@ -49,13 +49,13 @@ F1(jtspit){A z;I k;
  FDEPINC(1); z=exec1(w); FDEPDEC(1);
  spendtracking();  // end tracking, even if there was an error
  RZ(z);
- R sc(jt->bytesmax-k);
+ return sc(jt->bytesmax-k);
 }   // 7!:2, calculate max space used
 
-F1(jtparsercalls){ASSERTMTV(w); R sc(jt->parsercalls);}
+F1(jtparsercalls){ASSERTMTV(w); return sc(jt->parsercalls);}
 
 // 6!:5, window into the running J code
-F1(jtpeekdata){ I opeek=jt->peekdata; jt->peekdata = i0(w); R sc(opeek); }
+F1(jtpeekdata){ I opeek=jt->peekdata; jt->peekdata = i0(w); return sc(opeek); }
 
 F1(jtts){A z;D*x;struct tm tr,*t=&tr;struct timeval tv;
  ASSERTMTV(w);
@@ -67,7 +67,7 @@ F1(jtts){A z;D*x;struct tm tr,*t=&tr;struct timeval tv;
  x[3]=t->tm_hour;
  x[4]=t->tm_min;
  x[5]=t->tm_sec+(D)tv.tv_usec/1e6;
- R z;
+ return z;
 }
 
 F1(jtts0){A x,z;C s[9],*u,*v,*zv;D*xv;I n,q;
@@ -75,7 +75,7 @@ F1(jtts0){A x,z;C s[9],*u,*v,*zv;D*xv;I n,q;
  ASSERT(1>=AR(w),EVRANK);
  RZ(x=ts(mtv));
  n=AN(w); xv=DAV(x);
- if(!n)R x;
+ if(!n)return x;
  if(!(AT(w)&LIT))RZ(w=cvt(LIT,w));
  GATV(z,LIT,n,AR(w),AS(w)); zv=CAV(z); MC(zv,CAV(w),n);
  q=0; v=zv; DQ(n, q+='Y'==*v++;); u=2==q?s+2:s;   // if only 2 Y, advance over century
@@ -85,21 +85,21 @@ F1(jtts0){A x,z;C s[9],*u,*v,*zv;D*xv;I n,q;
  sprintf(s,FMTI02,(I)xv[3]);        u=s; v=zv; DQ(n, if(*v=='h'){*v=*u++; if(!*u)break;} ++v;);
  sprintf(s,FMTI02,(I)xv[4]);        u=s; v=zv; DQ(n, if(*v=='m'){*v=*u++; if(!*u)break;} ++v;);
  sprintf(s,FMTI05,(I)(1000*xv[5])); u=s; v=zv; DQ(n, if(*v=='s'){*v=*u++; if(!*u)break;} ++v;);
- R z;
+ return z;
 }
 
 
 #ifdef SY_GETTOD
-D tod(void){struct timeval t; gettimeofday(&t,NULL); R t.tv_sec+(D)t.tv_usec/1e6;}
+D tod(void){struct timeval t; gettimeofday(&t,NULL); return t.tv_sec+(D)t.tv_usec/1e6;}
 #else
-D tod(void){R(D)clock()/CLOCKS_PER_SEC;}
+D tod(void){return(D)clock()/CLOCKS_PER_SEC;}
 #endif
 
 
 
-D qpf(void){R (D)CLOCKS_PER_SEC;}
+D qpf(void){return (D)CLOCKS_PER_SEC;}
 
-static D qpc(void){R tod()*CLOCKS_PER_SEC;}
+static D qpc(void){return tod()*CLOCKS_PER_SEC;}
 
 
 /* 
@@ -117,7 +117,7 @@ __int64 GetMachineCycleCount()
 */
 
 
-F1(jttss){ASSERTMTV(w); R scf(tod()-jt->tssbase);}
+F1(jttss){ASSERTMTV(w); return scf(tod()-jt->tssbase);}
 
 F2(jttsit2){A z;D t;I n;
  F2RANK(0,1,jttsit2,UNUSED_VALUE);
@@ -128,10 +128,10 @@ F2(jttsit2){A z;D t;I n;
  t=qpc()-t;
  FDEPDEC(1);  // Assert OK now
  RZ(z);
- R scf(n?t/(n*pf):0);
+ return scf(n?t/(n*pf):0);
 }
 
-F1(jttsit1){R tsit2(num(1),w);}
+F1(jttsit1){return tsit2(num(1),w);}
 
 
 #define sleepms(i) usleep(i*1000)
@@ -146,13 +146,13 @@ F1(jtdl){D m,n,*v;UINT ms,s;
  DQ(s, sleepms(1000); JBREAK0;);
  sleepms(ms);
 #endif
- R w;
+ return w;
 }
 
 
-F1(jtqpfreq){ASSERTMTV(w); R scf(pf);}
+F1(jtqpfreq){ASSERTMTV(w); return scf(pf);}
 
-F1(jtqpctr ){ASSERTMTV(w); R scf(qpc());}
+F1(jtqpctr ){ASSERTMTV(w); return scf(qpc());}
 
 // 6!:13
 F1(jtpmctr){D x;I q;
@@ -161,7 +161,7 @@ F1(jtpmctr){D x;I q;
  x=q+(D)jt->pmctr;
  ASSERT(IMIN<=x&&x<FLIMAX,EVDOMAIN);
  jt->pmctr=q=(I)x; jt->cxspecials=1; jt->uflags.us.uq.uq_c.pmctrbstk&=~PMCTRBPMON; jt->uflags.us.uq.uq_c.pmctrbstk|=q?PMCTRBPMON:0;  // tell cx and unquote to look for pm
- R sc(q);
+ return sc(q);
 }    /* add w to pmctr */
 
 static F1(jtpmfree){A x,y;C*c;I m;PM*v;PM0*u;
@@ -172,10 +172,10 @@ static F1(jtpmfree){A x,y;C*c;I m;PM*v;PM0*u;
         y=v->loc;  if(y&&NAME&AT(y)&&AN(y)==AS(y)[0])fa(y); ++v;);
   fa(w);
  }
- R num(1);
+ return num(1);
 }    /* free old data area */
 
-F1(jtpmarea1){R pmarea2(vec(B01,2L,&zeroZ),w);}  // 6!:10
+F1(jtpmarea1){return pmarea2(vec(B01,2L,&zeroZ),w);}  // 6!:10
 
 F2(jtpmarea2){A x;B a0,a1,*av;C*v;I an,n=0,s=sizeof(PM),s0=sizeof(PM0),wn;PM0*u;
  ARGCHK2(a,w);
@@ -205,7 +205,7 @@ F2(jtpmarea2){A x;B a0,a1,*av;C*v;I an,n=0,s=sizeof(PM),s0=sizeof(PM0),wn;PM0*u;
   u->trunc=a1; 
   u->wrapped=0;
  }
- R sc(n);
+ return sc(n);
 }
 
 // Add an entry to the Performance Monitor area
@@ -217,7 +217,7 @@ void jtpmrecord(J jt,A name,A loc,I lc,int val){A x,y;B b;PM*v;PM0*u;
  v=jt->pmv+u->i;  // v -> next PM slot to fill
  if(b=u->wrapped){x=v->name; y=v->loc;}  // If this slot already has valid name/loc, extract those values for free
  ++u->i;  // Advance index to next slot
- if(u->i>u->n){u->wrapped=1; if(u->trunc){u->i=u->n; R;}else u->i=0;}  // If we stepped off the end,
+ if(u->i>u->n){u->wrapped=1; if(u->trunc){u->i=u->n; return;}else u->i=0;}  // If we stepped off the end,
   // reset next pointer to 0 (if not trunc) or stay pegged at then end (if trunc).  Trunc comes from the original x to start_jpm_
  v->name=name; if(name)ACINCR(name);  // move name/loc; incr use counts
  v->loc =loc;  if(loc )ACINCR(loc ); if(b){fa(x); fa(y);}  // If this slot was overwritten, decr use counts, freeing
@@ -260,7 +260,7 @@ F1(jtpmunpack){A*au,*av,c,t,x,z,*zv;B*b;D*dv;I*iv,k,k1,m,n,p,q,wn,*wv;PM*v,*v0,*
 
  v=vq; DO(p, if(b[i]  ){MC(dv,v->t,sizeof(D)); ++dv;} ++v;); 
  v=v0; DO(q, if(b[p+i]){MC(dv,v->t,sizeof(D)); ++dv;} ++v;); 
- R z;
+ return z;
 }
 
 // 6!:14
@@ -276,11 +276,11 @@ F1(jtpmstats){A x,z;I*zv;PM0*u;
   zv[4]=u->wrapped;
   zv[5]=jt->pmctr;
  }else zv[0]=zv[1]=zv[2]=zv[3]=zv[4]=zv[5]=0;
- R z;
+ return z;
 }
 
 
-F1(jttlimq){ASSERTMTV(w); R scf(0.001*jt->timelimit);}
+F1(jttlimq){ASSERTMTV(w); return scf(0.001*jt->timelimit);}
 
 F1(jttlims){D d;
  ARGCHK1(w);
@@ -290,5 +290,5 @@ F1(jttlims){D d;
  ASSERT(0<=d,EVDOMAIN);
  ASSERT(FLIMAX>1000*d,EVLIMIT);
  jt->timelimit=(UI)(1000*d);
- R mtm;
+ return mtm;
 }

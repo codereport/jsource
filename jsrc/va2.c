@@ -419,9 +419,9 @@ VA va[]={
 
 A jtcvz(J jt,I cv,A w){I t;
  t=AT(w);
- if(cv&VRD&&!(t&FL) )R pcvt(FL,w);  // convert if possible
- if(cv&VRI&&!(t&INT))R icvt(w);  // convert to integer if possible
- R w;
+ if(cv&VRD&&!(t&FL) )return pcvt(FL,w);  // convert if possible
+ if(cv&VRI&&!(t&INT))return icvt(w);  // convert to integer if possible
+ return w;
 }    /* convert result */
 
 
@@ -714,13 +714,13 @@ static A jtva2(J jt,AD * RESTRICT a,AD * RESTRICT w,AD * RESTRICT self,UI allran
       I i=mf; I jj=nf; while(1){((AHDR2FN*)adocv.f)(n,m,av,zv,zzv,jt); if(!--i)break; zv+=aawwzk[4]; zzv+=zzk; I jj1=--jj; jj=jj<0?nf:jj; av+=aawwzk[2*nipw+1+REPSGN(jj1)];}  // jj1 is -1 on the last inner iter, where we use outer incr
      }
     }
-    R zz;  // Return the result after overflow has been corrected
+    return zz;  // Return the result after overflow has been corrected
    }
    // retry required, not inplaceable.  Signal the error code to the caller.  If the error is not retryable, set the error message
    if(rc<=NEVM)jsignal(rc);else jt->jerr=(UC)rc;
   }
- }else{z=vasp(a,w,FAV(self)->id,aadocv->f,aadocv->cv,atype(aadocv->cv),rtype(aadocv->cv),mf,aawwzk[0],nf,aawwzk[1],fr>>RANKTX,(RANKT)fr-(fr>>RANKTX)); if(!jt->jerr)R z;}  // handle sparse arrays separately.
- R 0;  // return to the caller, who will retry any retryable errors
+ }else{z=vasp(a,w,FAV(self)->id,aadocv->f,aadocv->cv,atype(aadocv->cv),rtype(aadocv->cv),mf,aawwzk[0],nf,aawwzk[1],fr>>RANKTX,(RANKT)fr-(fr>>RANKTX)); if(!jt->jerr)return z;}  // handle sparse arrays separately.
+ return 0;  // return to the caller, who will retry any retryable errors
 }    /* scalar fn primitive and f"r main control */
 
 
@@ -802,7 +802,7 @@ I jtsumattymesprods(J jt,I it,void *avp, void *wvp,I dplen,I nfro,I nfri,I ndpo,
    *zv++=total;
   )
  }
- R 1;
+ return 1;
 }
 
 
@@ -820,7 +820,7 @@ DF2(jtsumattymes1){
  RESETRANK;  // This is required if we go to slower code
  // if an argument is empty, sparse, has cell-rank 0, or not a fast arithmetic type, revert to the code for f/@:g atomic
  if(((-((AT(a)|AT(w))&(NOUN&~(B01|INT|FL))))|(AN(a)-1)|(AN(w)-1)|(acr-1)|(wcr-1))<0) { // test for all unusual cases
-  R rank2ex(a,w,FAV(self)->fgh[0],MIN(acr,1),MIN(wcr,1),acr,wcr,jtfslashatg);
+  return rank2ex(a,w,FAV(self)->fgh[0],MIN(acr,1),MIN(wcr,1),acr,wcr,jtfslashatg);
  }
  // We can handle it here, and both ranks are at least 1.
 
@@ -967,7 +967,7 @@ DF2(jtfslashatg){A fs,gs,y,z;B b,sb=0;C*av,c,d,*wv;I ak,an,ar,*as,at,m,
  b=ar<=wr; r=b?wr:ar; rs=b?ar:wr; s=b?ws:as; nn=s[0]; nn=r?nn:1;  // b='w has higher rank'; r=higher rank rs=lower rank s->longer shape  nn=#items in longer-shape arg
  ASSERTAGREE(as,ws,MIN(ar,wr));
  {I isfork=CFORK==FAV(self)->id; fs=FAV(self)->fgh[0+isfork]; gs=FAV(self)->fgh[1+isfork];}   // b=0 if @:, 1 if fork; take fs,gs accordingly
- if(SPARSE&(at|wt)||!an||!wn||2>nn){ R df1(z,df2(y,a,w,gs),fs);}  // if sparse or empty, or just 1 item, do it the old-fashioned way
+ if(SPARSE&(at|wt)||!an||!wn||2>nn){ return df1(z,df2(y,a,w,gs),fs);}  // if sparse or empty, or just 1 item, do it the old-fashioned way
  rs=MAX(1,rs); PROD(m,rs-1,s+1); PROD(n,r-rs,s+rs); zn=m*n;   // zn=#atoms in _1-cell of longer arg = #atoms in result; m=#atoms in _1-cell of shorter arg  n=#times to repeat shorter arg  (*/ surplus longer shape)
    // if the short-frame arg is an atom, move its rank to 1 so we get the lengths of the _1-cells of the replicated arguments
  y=FAV(fs)->fgh[0]; c=ID(y); d=ID(gs);
@@ -976,19 +976,19 @@ DF2(jtfslashatg){A fs,gs,y,z;B b,sb=0;C*av,c,d,*wv;I ak,an,ar,*as,at,m,
   if((((at&wt&(n==1))>(zn&(SZI-1)))||!SY_ALIGN)){   //  relies on B01==1
 #define sumbfvalues(w) CCM(w,CGE)+CCM(w,CLE)+CCM(w,CGT)+CCM(w,CLT)+CCM(w,CPLUSCO)+CCM(w,CSTARCO)+CCM(w,CNE)+CCM(w,CEQ)+ \
  CCM(w,CSTARDOT)+CCM(w,CPLUSDOT)+CCM(w,CMIN)+CCM(w,CMAX)+CCM(w,CSTAR)
-   CCMWDS(sumbf) CCMCAND(sumbf,cand,d) if(CCMTST(cand,d))R sumatgbool(a,w,d);   // quickly handle verbs that have primitive inverses
+   CCMWDS(sumbf) CCMCAND(sumbf,cand,d) if(CCMTST(cand,d))return sumatgbool(a,w,d);   // quickly handle verbs that have primitive inverses
   }
   if(d==CSTAR){
    if(!ar||!wr){  // if either argument is atomic, apply the distributive property to save multiplies
     A z0; z=!ar?tymes(a,df1(z0,w,fs)):tymes(w,df1(z0,a,fs));
-    if(jt->jerr==EVNAN)RESETERR else R z;
-   }else if(TYPESEQ(at,wt)&&at&B01+FL)R jtsumattymes(jt,a,w,b,at,m,n,nn,r,s,zn);  // +/@:*
+    if(jt->jerr==EVNAN)RESETERR else return z;
+   }else if(TYPESEQ(at,wt)&&at&B01+FL)return jtsumattymes(jt,a,w,b,at,m,n,nn,r,s,zn);  // +/@:*
   }
  }
  adocv=var(gs,at,wt); ASSERT(adocv.f,EVDOMAIN); yt=rtype(adocv.cv ); t=atype(adocv.cv);
  adocvf=var(y,yt,yt); ASSERT(adocvf.f,EVDOMAIN); zt=rtype(adocvf.cv);
  sb=yt&(c==CPLUS);  // +/@:g where g produces Boolean.
- if(!(sb||TYPESEQ(yt,zt)))R df1(z,df2(y,a,w,gs),fs);
+ if(!(sb||TYPESEQ(yt,zt)))return df1(z,df2(y,a,w,gs),fs);
  if(t){
   if(TYPESNE(t,at))RZ(a=cvt(t|(adocv.cv&VARGCVTMSKF),a));
   if(TYPESNE(t,wt))RZ(w=cvt(t|(adocv.cv&VARGCVTMSKF),w));
@@ -1051,11 +1051,11 @@ DF2(jtatomic2){A z;
  z=jtva2(jtinplace,a,w,self,(awr<<RANK2TX)+selfranks);  // execute the verb
  if(likely(z!=0)){RETF(z);}  // normal case is good return
  if(unlikely(jt->jerr<=NEVM)){RETF(z);}   // if error is unrecoverable, don't retry
- R z=jtva2((J)((I)jtinplace|JTRETRY),a,w,self,(awr<<RANK2TX)+selfranks);  // execute the verb
+ return z=jtva2((J)((I)jtinplace|JTRETRY),a,w,self,(awr<<RANK2TX)+selfranks);  // execute the verb
 }
 
-DF2(jtexpn2  ){F2PREFIP; ARGCHK2(a,w); if(unlikely(((((I)AR(w)-1)&SGNIF(AT(w),FLX))<0)))if(unlikely(0.5==DAV(w)[0]))R sqroot(a);  R jtatomic2(jtinplace,a,w,self);}  // use sqrt hardware for sqrt.  Only for atomic w. 
-DF2(jtresidue){F2PREFIP; ARGCHK2(a,w); I intmod; if(!((AT(a)|AT(w))&(NOUN&~INT)|AR(a))&&(intmod=IAV(a)[0], (intmod&-intmod)+(intmod<=0)==0))R intmod2(w,intmod); R jtatomic2(jtinplace,a,w,self);}
+DF2(jtexpn2  ){F2PREFIP; ARGCHK2(a,w); if(unlikely(((((I)AR(w)-1)&SGNIF(AT(w),FLX))<0)))if(unlikely(0.5==DAV(w)[0]))return sqroot(a);  return jtatomic2(jtinplace,a,w,self);}  // use sqrt hardware for sqrt.  Only for atomic w.
+DF2(jtresidue){F2PREFIP; ARGCHK2(a,w); I intmod; if(!((AT(a)|AT(w))&(NOUN&~INT)|AR(a))&&(intmod=IAV(a)[0], (intmod&-intmod)+(intmod<=0)==0))return intmod2(w,intmod); return jtatomic2(jtinplace,a,w,self);}
 
 
 // These are the unary ops that are implemented using a canned argument
@@ -1068,17 +1068,17 @@ DF2(jtresidue){F2PREFIP; ARGCHK2(a,w); I intmod; if(!((AT(a)|AT(w))&(NOUN&~INT)|
 #define SETCONPTR(n) A conptr=num(n); A conptr2=zeroionei(n); A conptr3=numvr(n); conptr=AT(w)&INT?conptr2:conptr; conptr=AT(w)&FL?conptr3:conptr;  // for 0 or 1 only
 #define SETCONPTR2(n) A conptr=num(n); A conptr3=numvr(n); conptr=AT(w)&FL?conptr3:conptr;   // used for 2, when the only options are INT/FL
 
-F1(jtnot   ){ARGCHK1(w); SETCONPTR(1) R AT(w)&B01+SB01?eq(num(0),w):minus(conptr,w);}
-F1(jtnegate){ARGCHK1(w); SETCONPTR(0) R minus(conptr,w);}
-F1(jtdecrem){ARGCHK1(w); SETCONPTR(1) IPSHIFTWA; R minus(w,conptr);}
-F1(jtincrem){ARGCHK1(w); SETCONPTR(1) R plus(conptr,w);}
-F1(jtduble ){ARGCHK1(w); SETCONPTR2(2) R tymes(conptr,w);}
-F1(jtsquare){ARGCHK1(w); R tymes(w,w);}   // leave inplaceable in w only  ?? never inplaces
-F1(jtrecip ){ARGCHK1(w); SETCONPTR(1) R divide(conptr,w);}
-F1(jthalve ){ARGCHK1(w); if(!(AT(w)&XNUM+RAT))R tymes(onehalf,w); IPSHIFTWA; R divide(w,num(2));} 
+F1(jtnot   ){ARGCHK1(w); SETCONPTR(1) return AT(w)&B01+SB01?eq(num(0),w):minus(conptr,w);}
+F1(jtnegate){ARGCHK1(w); SETCONPTR(0) return minus(conptr,w);}
+F1(jtdecrem){ARGCHK1(w); SETCONPTR(1) IPSHIFTWA; return minus(w,conptr);}
+F1(jtincrem){ARGCHK1(w); SETCONPTR(1) return plus(conptr,w);}
+F1(jtduble ){ARGCHK1(w); SETCONPTR2(2) return tymes(conptr,w);}
+F1(jtsquare){ARGCHK1(w); return tymes(w,w);}   // leave inplaceable in w only  ?? never inplaces
+F1(jtrecip ){ARGCHK1(w); SETCONPTR(1) return divide(conptr,w);}
+F1(jthalve ){ARGCHK1(w); if(!(AT(w)&XNUM+RAT))return tymes(onehalf,w); IPSHIFTWA; return divide(w,num(2));}
 
-static AHDR2(zeroF,B,void,void){memset(z,C0,m*(n^REPSGN(n)));R EVOK;}
-static AHDR2(oneF,B,void,void){memset(z,C1,m*(n^REPSGN(n)));R EVOK;}
+static AHDR2(zeroF,B,void,void){memset(z,C0,m*(n^REPSGN(n)));return EVOK;}
+static AHDR2(oneF,B,void,void){memset(z,C1,m*(n^REPSGN(n)));return EVOK;}
 
 // table of routines to handle = ~:
 static VF eqnetbl[2][16] = {
@@ -1110,7 +1110,7 @@ VA2 jtvar(J jt,A self,I at,I wt){I t;
    // Here for the fast and important case, where the arguments are both B01/INT/FL
    // The index into va is atype*3 + wtype, calculated sneakily
    jt->mulofloloc = 0;  // Reinit multiplier-overflow count, in case we hit overflow
-   R vainfo->p2[(UNSAFE(at)>>(INTX-1))+((UNSAFE(at)+UNSAFE(wt))>>INTX)];
+   return vainfo->p2[(UNSAFE(at)>>(INTX-1))+((UNSAFE(at)+UNSAFE(wt))>>INTX)];
   }else if(!(t&(NOUN&~NUMERIC))) {
    // Here one of the arguments is CMPX/RAT/XNUM  (we don't support XD and XZ yet)
    // They are in priority order CMPX, FL, RAT, XNUM.  Extract those bits and look up
@@ -1121,7 +1121,7 @@ VA2 jtvar(J jt,A self,I at,I wt){I t;
    // one input is FL and the other must be RAT or XNUM, 
    // we'd better specify an input conversion of VDD, unless the verb is one like +. or bitwise that forces conversion to integer/boolean
    if((prix==8)&&!(selva2.cv&(VBB|VII|VDD|VZZ))){selva2.cv = (selva2.cv&(~VARGMSK))|VDD;}   // This is part of where XNUM/RAT is promoted to FL
-   R selva2;
+   return selva2;
   }else{
    // Normal case, but something is nonnumeric.  This will be a domain error except for = and ~:, and a few symbol operations
    VA2 retva2;  retva2.cv=VB; // where we build the return value   cv indicates no input conversion, boolean result
@@ -1131,11 +1131,11 @@ VA2 jtvar(J jt,A self,I at,I wt){I t;
      opcode=((at>>(C2TX-2))+(wt>>C2TX))|(3*(5&(((t>>(SBTX-(BOXX+2)))+t)>>BOXX))); // bits are a4 a2 w4 w2 if char, 1100 if symbol, 0011 if box.  symbol is 1110, coming from a and symb shift
     }else opcode=15;  // inhomogeneous line
     retva2.f=eqnetbl[(UC)FAV(self)->id&1][opcode];  // return the comparison
-    R retva2;
+    return retva2;
    }
    // not = ~:, better be a symbol
-   if(at&wt&SBT)R vainfo->p2[12];  // symbol on symbol - process it through the optbl
-   retva2.f=0; R retva2;  // if not symbol, return not found
+   if(at&wt&SBT)return vainfo->p2[12];  // symbol on symbol - process it through the optbl
+   retva2.f=0; return retva2;  // if not symbol, return not found
   }
  }else{VA2 retva2;
   // Here there was an error in a previous run.  We see if we have a way to retry the operation
@@ -1156,6 +1156,6 @@ VA2 jtvar(J jt,A self,I at,I wt){I t;
   case CSTILE: if(jt->jerr==EWOV){retva2.f=(VF)remDD; retva2.cv=VD+VDD+VIP;} break;
   }
   if(retva2.f){RESETERR}else{if(jt->jerr>NEVM){RESETERR jsignal(EVSYSTEM);}}  // system error if unhandled exception.  Otherwise reset error only if we handled it
-  R retva2;
+  return retva2;
  }
 }    /* function and control for rank */

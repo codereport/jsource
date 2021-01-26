@@ -15,9 +15,9 @@
      \
   else{z+=(m-1)*d; x+=(m*n-1)*d;                                        \
    for(i=0;i<m;++i,z-=d){I rc;                                    \
-    Tx* RESTRICT y=x; x-=d; if(255&(rc=vecfn1(1,d,x,y,z,jt)))R rc; x-=d;        \
-    DQ(n-2,    if(255&(rc=vecfnn(1,d,x,z,z,jt)))R rc; x-=d;);        \
-  }}R EVOK;}
+    Tx* RESTRICT y=x; x-=d; if(255&(rc=vecfn1(1,d,x,y,z,jt)))return rc; x-=d;        \
+    DQ(n-2,    if(255&(rc=vecfnn(1,d,x,z,z,jt)))return rc; x-=d;);        \
+  }}return EVOK;}
 
 // used on idempotent verbs, using 2 accumulators
 #define REDUCEPFXIDEM2(f,Tz,Tx,pfx,vecfn)  \
@@ -28,7 +28,7 @@
    for(i=0;i<m;++i,z-=d){                                    \
     Tx* RESTRICT y=x; x-=d; vecfn(1,d,x,y,z,jt); x-=d;        \
     DQ(n-2,    vecfn(1,d,x,z,z,jt); x-=d;);        \
-  }}R EVOK;}
+  }}return EVOK;}
 
 // used on idempotent verbs, using 4 accumulators but using the 256-bit instructions if available
 #define REDUCEPFXIDEM2PRIM256(f,Tz,Tx,pfx,vecfn,prim,identity) REDUCEPFXIDEM2(f,Tz,Tx,pfx,vecfn)
@@ -40,10 +40,10 @@
      \
   else{z+=(m-1)*d; x+=(m*n-1)*d;                                        \
    for(i=0;i<m;++i,z-=d){I rc;                                    \
-    Tx* RESTRICT y=x; x-=d; if(255&(rc=vecfn(1,d,x,y,z,jt)))R rc; x-=d;        \
-    DQ(n-2,    if(255&(rc=vecfn(1,d,x,z,z,jt)))R rc; x-=d;);        \
+    Tx* RESTRICT y=x; x-=d; if(255&(rc=vecfn(1,d,x,y,z,jt)))return rc; x-=d;        \
+    DQ(n-2,    if(255&(rc=vecfn(1,d,x,z,z,jt)))return rc; x-=d;);        \
   }}                                                               \
-  R NANTEST?EVNAN:EVOK;                                                          \
+  return NANTEST?EVNAN:EVOK;                                                          \
 }
 
 #define REDUCCPFX(f,Tz,Tx,pfx)  \
@@ -54,7 +54,7 @@
    for(i=0;i<m;++i,zz-=d){                                    \
     y=x; x-=d; z=zz; DQ(d, --z; --x; --y; *z=pfx(*x,*y););         \
     DQ(n-2,    z=zz; DQ(d, --z; --x;      *z=pfx(*x,*z);));        \
-  }}R EVOK;}
+  }}return EVOK;}
 
 
 
@@ -62,11 +62,11 @@
 
 #define REDUCEOVF(f,Tz,Tx,fr1,fvv,frn)  \
  AHDRR(f,I,I){I er=EVOK;I i,* RESTRICT xx,*y,* RESTRICT zz;                          \
-  if(d==1){xx=x; zz=z; DQ(m, z=zz++; x=xx; fr1(n,z,x); xx += n;); R er;}        \
-  if(1==n){if(sizeof(Tz)!=sizeof(Tx)){DQ(d, *z++=*x++;)}else{MC((C*)z,(C*)x,d*sizeof(Tz));} R er;}   \
+  if(d==1){xx=x; zz=z; DQ(m, z=zz++; x=xx; fr1(n,z,x); xx += n;); return er;}        \
+  if(1==n){if(sizeof(Tz)!=sizeof(Tx)){DQ(d, *z++=*x++;)}else{MC((C*)z,(C*)x,d*sizeof(Tz));} return er;}   \
   zz=z+=m*d; xx=x+=m*d*n;                                  \
   xx-=d; zz-=d;                                                 \
   for(i=0;i<m;++i,xx-=d,zz-=d){                                 \
    y=xx;   x=xx-=d; z=zz; fvv(d,z,x,y);                    \
    DQ(n-2, x=xx-=d; z=zz; frn(d,z,x);  );                  \
- }R er;}
+ }return er;}

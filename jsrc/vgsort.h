@@ -32,7 +32,7 @@ static void* MERGEFNNAME(CMP comp, I compn, I bpi, T * lo, I lon, T * hi, I hin,
   if(orderedlen==lon){
    // Presorted list.  If the two lists are contiguous, just return their address.  Otherwise copy to be contiguous
    if(loend!=hi){MCL(loend,hi,hin*bpi);}
-   R lo;  // return contiguous result
+   return lo;  // return contiguous result
   }
   // Partial presort.  Because the presorted part is larger, leave it in place and copy the shorter remnant at the end
   // to the workarea; then change the pointers so we merge the moved remnant onto the end of the presorted fragment
@@ -71,7 +71,7 @@ static void* MERGEFNNAME(CMP comp, I compn, I bpi, T * lo, I lon, T * hi, I hin,
    break;  // all finished
   }
  }while(1);
- R wk;  // We have merged into the workarea
+ return wk;  // We have merged into the workarea
 }
 
 // sort the values in *wv, using *wk as a work area of the same size.  in and wk are the main output and the workarea to use.
@@ -120,13 +120,13 @@ exitde:
 exite:
   MVITEMS(in,e,1);
 case 0:
-  R iin;
+  return iin;
 
  default:
   // sort the low and high halves, and then merge the results, giving as workarea whatever buffer does not contain lo
   {I lohalf=n>>1; I hihalf=n-lohalf;
    T *lo=GRADEFNNAME(comp, compn, lohalf, bpi, in, wk, wv); T *hi=GRADEFNNAME(comp, compn, hihalf, bpi, PTRADD(in,lohalf), PTRADD(wk,lohalf), PTRADD(wv,lohalf));
-   R MERGEFNNAME(comp,compn,bpi,lo,lohalf,hi,hihalf,(T *)((I)in+(I)wk-(I)lo));
+   return MERGEFNNAME(comp,compn,bpi,lo,lohalf,hi,hihalf,(T *)((I)in+(I)wk-(I)lo));
   }
  }
 

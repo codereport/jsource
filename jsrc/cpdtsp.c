@@ -37,7 +37,7 @@ static F2(jtpdtspvv){A x;D*av,s,t,*wv,z;I i,*u,*u0,*uu,*v,*v0,*vv;P*ap,*wp;
   if(i==*u){s=av[u-u0]; t=wv[v-v0]; z+=s&&t?s*t:0; ++u; ++v; continue;}
  }
  NAN1;
- R scf(z);
+ return scf(z);
 }
 
 static F2(jtpdtspmv){A ax,b,g,x,wx,y,yi,yj,z;B*bv;I m,n,s[2],*u,*v,*yv;P*ap,*wp,*zp;
@@ -65,7 +65,7 @@ static F2(jtpdtspmv){A ax,b,g,x,wx,y,yi,yj,z;B*bv;I m,n,s[2],*u,*v,*yv;P*ap,*wp,
  SPB(zp,e,scf(0.0));
  SPB(zp,i,from(g,y));
  SPB(zp,x,from(g,x));
- R z;
+ return z;
 }    /* (sparse matrix) +/ .* vector; non-complex */
 
 static F2(jtpdtspvm){A ax,b,g,x,wx,y,yi,yj,z;B*bv;D*av,c,d,*wv,*xv;I m,n,s[2],*u,*v,*yv;P*ap,*wp,*zp;
@@ -94,7 +94,7 @@ static F2(jtpdtspvm){A ax,b,g,x,wx,y,yi,yj,z;B*bv;D*av,c,d,*wv,*xv;I m,n,s[2],*u
  SPB(zp,e,scf(0.0));
  SPB(zp,i,from(g,y));
  SPB(zp,x,from(g,x));
- R z;
+ return z;
 }    /* vector +/ .* (sparse matrix); non-complex */
 
 /* p  - ptr to sparse array value part   */
@@ -112,7 +112,7 @@ static B jtmmprep(J jt,P*p,I*n,I**iv,I*m,I**nv,D**xv){A x;I j,k,q,*u,*v;
   k=-1; DO(q, j=*u++; u++; if(j>k){*v++=i; k=j;});
   *v++=q; AN(x)=*AS(x)=k=v-*nv; *m=k-1;
  }
- R 1;
+ return 1;
 }
 
 /* ii  - row index in result                  */
@@ -129,7 +129,7 @@ static B jtmmharvest(J jt,I ii,I zjn,A zj,D*zyv,I*n,A*zi,A*zx){A x;D*zxv,*zxv0;I
  p=-1; v=AV(x); ziv=AV(*zi)+(*n<<1); zxv=zxv0=DAV(*zx)+*n;
  DQ(zjn, if(p<(j=*v++)){p=j; *ziv++=ii; *ziv++=j; *zxv++=zyv[j]; zyv[j]=0;});
  *n+=zxv-zxv0;
- R 1;
+ return 1;
 }    /* collect accumulated values for row ii */
 
 static F2(jtpdtspmm){A z,zi,zj,zx,zy,*old;D*axv,c,d,*dv,*wxv,*zyv;
@@ -165,7 +165,7 @@ static F2(jtpdtspmm){A z,zi,zj,zx,zy,*old;D*axv,c,d,*dv,*wxv,*zyv;
  *AS(zx)=AN(zx)=*AS(zi)=n; AN(zi)=n<<1;
  GASPARSE(z,SFL,1,2,AS(a)); *(1+AS(z))=*(1+AS(w));
  zp=PAV(z); SPB(zp,a,apvwr(2,0L,1L)); SPB(zp,e,scf(0.0)); SPB(zp,i,zi); SPB(zp,x,zx);
- R z;
+ return z;
 }
 
 
@@ -176,9 +176,9 @@ F2(jtpdtsp){A x;B ab=0,wb=0;P*p;
   if(SPARSE&AT(a)){p=PAV(a); x=SPA(p,a); ab=AR(a)==AN(x)&&equ(num(0),SPA(p,e));}
   if(SPARSE&AT(w)){p=PAV(w); x=SPA(p,a); wb=AR(w)==AN(x)&&equ(num(0),SPA(p,e));}
  }
- if(ab&&1==AR(a)&&wb&&1==AR(w))R pdtspvv(a,w);
- if(ab&&2==AR(a)&&    1==AR(w))R pdtspmv(a,w);
- if(    1==AR(a)&&wb&&2==AR(w))R pdtspvm(a,w);
- if(ab&&2==AR(a)&&wb&&2==AR(w))R pdtspmm(a,w);
- R df2(x,a,w,atop(slash(ds(CPLUS)),qq(ds(CSTAR),v2(1L,AR(w)))));
+ if(ab&&1==AR(a)&&wb&&1==AR(w))return pdtspvv(a,w);
+ if(ab&&2==AR(a)&&    1==AR(w))return pdtspmv(a,w);
+ if(    1==AR(a)&&wb&&2==AR(w))return pdtspvm(a,w);
+ if(ab&&2==AR(a)&&wb&&2==AR(w))return pdtspmm(a,w);
+ return df2(x,a,w,atop(slash(ds(CPLUS)),qq(ds(CSTAR),v2(1L,AR(w)))));
 }

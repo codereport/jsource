@@ -61,7 +61,7 @@ static DF2(jtfolk2){F2PREFIP;DECLFGH;PROLOG(0029);A z; FOLK2;
 // see if f is defined as [:, as a single name
 static B jtcap(J jt,A x){V*v;L *l;
  if(v=VAV(x),CTILDE==v->id&&NAME&AT(v->fgh[0])&&(l=syrd(v->fgh[0],jt->locsyms))&&(x=l->val))v=VAV(x);  // don't go through chain of names, since it might loop (on u) and it's ugly to chase the chain
- R CCAP==v->id;
+ return CCAP==v->id;
 }
 
 
@@ -109,8 +109,8 @@ static DF2(jtfolkcomp0){F2PREFIP;DECLFGH;PROLOG(0035);A z;AF f;
  EPILOG(z);
 }
 
-static DF1(jtcharmapa){V*v=FAV(self); R charmap(w,FAV(v->fgh[2])->fgh[0],v->fgh[0]);}
-static DF1(jtcharmapb){V*v=FAV(self); R charmap(w,FAV(v->fgh[0])->fgh[0],FAV(v->fgh[2])->fgh[0]);}
+static DF1(jtcharmapa){V*v=FAV(self); return charmap(w,FAV(v->fgh[2])->fgh[0],v->fgh[0]);}
+static DF1(jtcharmapb){V*v=FAV(self); return charmap(w,FAV(v->fgh[0])->fgh[0],FAV(v->fgh[2])->fgh[0]);}
 
 // Create the derived verb for a fork.  Insert in-placeable flags based on routine, and asgsafe based on fgh
 A jtfolk(J jt,A f,A g,A h){A p,q,x,y;AF f1=jtfolk1,f2=jtfolk2;B b;C c,fi,gi,hi;I flag,flag2=0,j,m=-1;V*fv,*gv,*hv,*v;
@@ -129,7 +129,7 @@ A jtfolk(J jt,A f,A g,A h){A p,q,x,y;AF f1=jtfolk1,f2=jtfolk2;B b;C c,fi,gi,hi;I
    x=hv->fgh[0];
    if(LIT&AT(x)&&1==AR(x)&&CIOTA==ID(hv->fgh[1])&&CRIGHT==ID(hv->fgh[2])){f1=jtcharmapa;  flag &=~(VJTFLGOK1);}  // (N {~ N i, ])
   }
-  R fdef(0,CFORK,VERB, f1,jtnvv2, f,g,h, flag, RMAX,RMAX,RMAX);
+  return fdef(0,CFORK,VERB, f1,jtnvv2, f,g,h, flag, RMAX,RMAX,RMAX);
  }
  fv=FAV(f); fi=cap(f)?CCAP:fv->id; // if f is a name defined as [:, detect that now & treat it as if capped fork
  if(fi!=CCAP){
@@ -204,13 +204,13 @@ A jtfolk(J jt,A f,A g,A h){A p,q,x,y;AF f1=jtfolk1,f2=jtfolk2;B b;C c,fi,gi,hi;I
  // If this fork is not a special form, set the flags to indicate whether the f verb does not use an
  // argument.  In that case h can inplace the unused argument.
  if(f1==jtfolk1 && f2==jtfolk2) flag |= atoplr(f);
- R fdef(flag2,CFORK,VERB, f1,f2, f,g,h, flag, RMAX,RMAX,RMAX);
+ return fdef(flag2,CFORK,VERB, f1,f2, f,g,h, flag, RMAX,RMAX,RMAX);
 }
 
 // Handlers for to  handle w (aa), w (vc), w (cv)
-static DF1(taa){TDECL; A z,t; df1(t,w,fs); ASSERT(!t||AT(t)&NOUN+VERB,EVSYNTAX); R df1(z,t,gs);}
-static DF1(tvc){TDECL; A z; R df2(z,fs,w,gs);}  /* also nc */
-static DF1(tcv){TDECL; A z; R df2(z,w,gs,fs);}  /* also cn */
+static DF1(taa){TDECL; A z,t; df1(t,w,fs); ASSERT(!t||AT(t)&NOUN+VERB,EVSYNTAX); return df1(z,t,gs);}
+static DF1(tvc){TDECL; A z; return df2(z,fs,w,gs);}  /* also nc */
+static DF1(tcv){TDECL; A z; return df2(z,w,gs,fs);}  /* also cn */
 
 CS1IPext(static,,jthook1, \
 {PUSHZOMB; A protw = (A)(intptr_t)((I)w+((I)jtinplace&JTINPLACEW)); \
@@ -239,15 +239,15 @@ static DF1(jthkiota){DECLFG;A a,e;I n;P*p;
  SETIC(w,n);\
  if(SB01&AT(w)&&1==AR(w)){
   p=PAV(w); a=SPA(p,a); e=SPA(p,e); 
-  R BAV(e)[0]||equ(mtv,a) ? repeat(w,IX(n)) : repeat(SPA(p,x),ravel(SPA(p,i)));
+  return BAV(e)[0]||equ(mtv,a) ? repeat(w,IX(n)) : repeat(SPA(p,x),ravel(SPA(p,i)));
  }
- R B01&AT(w)&&1>=AR(w) ? ifb(n,BAV(w)) : repeat(w,IX(n));
+ return B01&AT(w)&&1>=AR(w) ? ifb(n,BAV(w)) : repeat(w,IX(n));
 }    /* special code for (# i.@#) */
 
 static DF1(jthkodom){DECLFG;B b=0;I n,*v;
  ARGCHK1(w);
- if(INT&AT(w)&&1==AR(w)){n=AN(w); v=AV(w); DO(n, if(b=0>v[i])break;); if(!b)R odom(2L,n,v);}
- R CALL2(f2,w,CALL1(g1,w,gs),fs);
+ if(INT&AT(w)&&1==AR(w)){n=AN(w); v=AV(w); DO(n, if(b=0>v[i])break;); if(!b)return odom(2L,n,v);}
+ return CALL2(f2,w,CALL1(g1,w,gs),fs);
 }    /* special code for (#: i.@(* /)) */
 
 #define IDOTSEARCH(T,comp,compe)  {T *wv=T##AV(w); I optx0=-1; T opt0=wv[0]; I optx1=optx0; T opt1=wv[1]; wv+=2; \
@@ -261,7 +261,7 @@ static DF1(jthkodom){DECLFG;B b=0;I n,*v;
 static DF1(jthkindexofmaxmin){I z=0;
  ARGCHK2(w,self);
  I n=AN(w);
- if(!(1==AR(w)&&AT(w)&INT+FL))R hook1(w,self);
+ if(!(1==AR(w)&&AT(w)&INT+FL))return hook1(w,self);
  if(n>1){
   switch((AT(w)&INT)+(CICO==ID(FAV(self)->fgh[0])?2:0)+(CMAX==ID(FAV(FAV(self)->fgh[1])->fgh[0]))){
   case 0: IDOTSEARCH(D,<,<=)
@@ -274,7 +274,7 @@ static DF1(jthkindexofmaxmin){I z=0;
   case 7: ICOSEARCH(I,>,>=)
   }
  }
- R sc(z);
+ return sc(z);
 }    /* special code for (i.<./) (i.>./) (i:<./) (i:>./) */
 
 // (compare L.) dyadic
@@ -316,7 +316,7 @@ F2(jthook){AF f1=0,f2=0;C c,d,e,id;I flag=VFLAGNONE,linktype=0;V*u,*v;
    }
    // Return the derived verb
    A z;RZ(z=fdef(0,CHOOK, VERB, f1,f2, a,w,0L, flag, RMAX,RMAX,RMAX));
-   FAV(z)->localuse.lclr[0]=linktype; R z;  // if it's a form of ;, install the form
+   FAV(z)->localuse.lclr[0]=linktype; return z;  // if it's a form of ;, install the form
   // All other cases produce an adverb
   case BD(ADV, ADV ): f1=taa; break;
   case BD(NOUN,CONJ):
@@ -329,5 +329,5 @@ F2(jthook){AF f1=0,f2=0;C c,d,e,id;I flag=VFLAGNONE,linktype=0;V*u,*v;
    f1=tcv; id=ID(a);
    if(BOX&AT(w)&&(id==CGRAVE||id==CPOWOP&&1<AN(w))&&gerexact(w))flag+=VGERR;
  }
- R fdef(0,CADVF, ADV, f1,0L, a,w,0L, flag, 0L,0L,0L);
+ return fdef(0,CADVF, ADV, f1,0L, a,w,0L, flag, 0L,0L,0L);
 }

@@ -24,38 +24,38 @@
  static F2(f){I n;T0*av,x;T1*wv,y;                                      \
   av=(T0*)AV(a);                                                    \
   wv=(T1*)AV(w);             \
-  if     (!AR(a)){x=*av;        DP(n=AN(w),          y=*wv++; if(F(x,y))R sc(n+i););} \
-  else if(!AR(w)){y=*wv;        DP(n=AN(a), x=*av++;          if(F(x,y))R sc(n+i););} \
-  else           {              DP(n=AN(w), x=*av++; y=*wv++; if(F(x,y))R sc(n+i););} \
-  R sc(n);                                                                    \
+  if     (!AR(a)){x=*av;        DP(n=AN(w),          y=*wv++; if(F(x,y))return sc(n+i););} \
+  else if(!AR(w)){y=*wv;        DP(n=AN(a), x=*av++;          if(F(x,y))return sc(n+i););} \
+  else           {              DP(n=AN(w), x=*av++; y=*wv++; if(F(x,y))return sc(n+i););} \
+  return sc(n);                                                                    \
  }
 #define INDF0(f,T0,T1,F,C)  \
  static F2(f){I n;T0*av,x;T1*wv,y;                                      \
   av=(T0*)AV(a);                                                    \
   wv=(T1*)AV(w);             \
-  if     (!AR(a)){x=*av;        if(1.0==jt->cct)DP(n=AN(w),          y=*wv++; if(C(x,y))R sc(n+i);)else DP(n=AN(w),          y=*wv++; if(F(x,y))R sc(n+i);)} \
-  else if(!AR(w)){y=*wv;        if(1.0==jt->cct)DP(n=AN(a), x=*av++;          if(C(x,y))R sc(n+i);)else DP(n=AN(a), x=*av++;          if(F(x,y))R sc(n+i);)} \
-  else           {              if(1.0==jt->cct)DP(n=AN(w), x=*av++; y=*wv++; if(C(x,y))R sc(n+i);)else DP(n=AN(w), x=*av++; y=*wv++; if(F(x,y))R sc(n+i);)} \
-  R sc(n);                                                                    \
+  if     (!AR(a)){x=*av;        if(1.0==jt->cct)DP(n=AN(w),          y=*wv++; if(C(x,y))return sc(n+i);)else DP(n=AN(w),          y=*wv++; if(F(x,y))return sc(n+i);)} \
+  else if(!AR(w)){y=*wv;        if(1.0==jt->cct)DP(n=AN(a), x=*av++;          if(C(x,y))return sc(n+i);)else DP(n=AN(a), x=*av++;          if(F(x,y))return sc(n+i);)} \
+  else           {              if(1.0==jt->cct)DP(n=AN(w), x=*av++; y=*wv++; if(C(x,y))return sc(n+i);)else DP(n=AN(w), x=*av++; y=*wv++; if(F(x,y))return sc(n+i);)} \
+  return sc(n);                                                                    \
  }
 
 #define JNDF(f,T0,T1,F)  \
  static F2(f){I n;T0*av,x;T1*wv,y;                                          \
   av=(T0*)AV(a);                                                        \
   wv=(T1*)AV(w);                  \
-  if     (!AR(a)){x=*av; wv+=AN(w); DQ(n=AN(w),          y=*--wv; if(F(x,y))R sc(i););} \
-  else if(!AR(w)){y=*wv; av+=AN(a); DQ(n=AN(a), x=*--av;          if(F(x,y))R sc(i););} \
-  else           {av+=AN(w); wv+=AN(w); DQ(n=AN(w), x=*--av; y=*--wv; if(F(x,y))R sc(i););} \
-  R sc(n);                                                                        \
+  if     (!AR(a)){x=*av; wv+=AN(w); DQ(n=AN(w),          y=*--wv; if(F(x,y))return sc(i););} \
+  else if(!AR(w)){y=*wv; av+=AN(a); DQ(n=AN(a), x=*--av;          if(F(x,y))return sc(i););} \
+  else           {av+=AN(w); wv+=AN(w); DQ(n=AN(w), x=*--av; y=*--wv; if(F(x,y))return sc(i););} \
+  return sc(n);                                                                        \
  }
 #define JNDF0(f,T0,T1,F,C)  \
  static F2(f){I n;T0*av,x;T1*wv,y;                                          \
   av=(T0*)AV(a);                                                        \
   wv=(T1*)AV(w);                  \
-  if     (!AR(a)){x=*av; wv+=AN(w); if(1.0==jt->cct)DQ(n=AN(w),          y=*--wv; if(C(x,y))R sc(i);)else DQ(n=AN(w),          y=*--wv; if(F(x,y))R sc(i);)} \
-  else if(!AR(w)){y=*wv; av+=AN(a); if(1.0==jt->cct)DQ(n=AN(a), x=*--av;          if(C(x,y))R sc(i);)else DQ(n=AN(a), x=*--av;          if(F(x,y))R sc(i);)} \
-  else           {av+=AN(w); wv+=AN(w); if(1.0==jt->cct)DQ(n=AN(w), x=*--av; y=*--wv; if(C(x,y))R sc(i);)else DQ(n=AN(w), x=*--av; y=*--wv; if(F(x,y))R sc(i);)} \
-  R sc(n);                                                                        \
+  if     (!AR(a)){x=*av; wv+=AN(w); if(1.0==jt->cct)DQ(n=AN(w),          y=*--wv; if(C(x,y))return sc(i);)else DQ(n=AN(w),          y=*--wv; if(F(x,y))return sc(i);)} \
+  else if(!AR(w)){y=*wv; av+=AN(a); if(1.0==jt->cct)DQ(n=AN(a), x=*--av;          if(C(x,y))return sc(i);)else DQ(n=AN(a), x=*--av;          if(F(x,y))return sc(i);)} \
+  else           {av+=AN(w); wv+=AN(w); if(1.0==jt->cct)DQ(n=AN(w), x=*--av; y=*--wv; if(C(x,y))return sc(i);)else DQ(n=AN(w), x=*--av; y=*--wv; if(F(x,y))return sc(i);)} \
+  return sc(n);                                                                        \
  }
 
 #define SUMF(f,T0,T1,F)  \
@@ -65,7 +65,7 @@
   if     (!AR(a)){x=*av; DQ(n=AN(w),          y=*wv++; m+=(F(x,y)););} \
   else if(!AR(w)){y=*wv; DQ(n=AN(a), x=*av++;          m+=(F(x,y)););} \
   else           {       DQ(n=AN(w), x=*av++; y=*wv++; m+=(F(x,y)););} \
-  R sc(m);                                                         \
+  return sc(m);                                                         \
  }
 #define SUMF0(f,T0,T1,F,C)  \
  static F2(f){I m=0,n;T0*av,x;T1*wv,y;                       \
@@ -74,13 +74,13 @@
   if     (!AR(a)){x=*av; if(1.0==jt->cct)DQ(n=AN(w),          y=*wv++; m+=(C(x,y));)else DQ(n=AN(w),          y=*wv++; m+=(F(x,y));)} \
   else if(!AR(w)){y=*wv; if(1.0==jt->cct)DQ(n=AN(a), x=*av++;          m+=(C(x,y));)else DQ(n=AN(a), x=*av++;          m+=(F(x,y));)} \
   else           {       if(1.0==jt->cct)DQ(n=AN(w), x=*av++; y=*wv++; m+=(C(x,y));)else DQ(n=AN(w), x=*av++; y=*wv++; m+=(F(x,y));)} \
-  R sc(m);                                                         \
+  return sc(m);                                                         \
  }
 
 
 /* Now define byte-parallel (4 bytes at a time) versions of above  */
 
-#define JNDBR(yy)      if(r&&(y=yy))DO(r, if(yv[r-1-i])R sc(n-1-i););
+#define JNDBR(yy)      if(r&&(y=yy))DO(r, if(yv[r-1-i])return sc(n-1-i););
 
 #define ASSIGNX(v)     {x=*(C*)v; x|=x<<8; x|=x<<16; x|=x<<32; }
 #define INDB3          {n=(UI)n>i*(UI)SZI+(CTTZI(y)>>LGBB)?i*SZI+(CTTZI(y)>>LGBB):n; break;}
@@ -94,19 +94,19 @@
   if     (!AR(a)){ASSIGNX(av); DO(q, if(y=F(x,    *wv++))INDB3;);}  \
   else if(!AR(w)){ASSIGNX(wv); DO(q, if(y=F(*av++,x    ))INDB3;);}  \
   else           {             DO(q, if(y=F(*av++,*wv++))INDB3;);}  \
-  R sc(n);                                                                        \
+  return sc(n);                                                                        \
  }
 
 #define JNDB(f,T0,T1,F)  \
  static F2(f){I an,*av,n,q,r,wn,*wv,x,y;                                             \
   an=AN(a); av=AV(a);                                                                         \
   wn=AN(w); wv=AV(w); n=1; n=AR(a)?an:n; n=AR(w)?wn:n;                      \
-  if((q=(n-1)>>LGSZI)<0)R zeroionei(0); r=((n-1)&(SZI-1));  /* # first bytes to do minus 1 */                                                                           \
+  if((q=(n-1)>>LGSZI)<0)return zeroionei(0); r=((n-1)&(SZI-1));  /* # first bytes to do minus 1 */                                                                           \
   I i=q;                                                                       \
   if     (!AR(a)){ASSIGNX(av); wv+=q; y=(F(x,*wv))&(((I)0x100<<(r<<3))-1); while(1){if(y)JNDB3; if(--i<0)break; y=F(x,*--wv);} }  \
   else if(!AR(w)){ASSIGNX(wv); av+=q; y=(F(*av,x))&(((I)0x100<<(r<<3))-1); while(1){if(y)JNDB3; if(--i<0)break; y=F(*--av,x);} }  \
   else           {av+=q;       wv+=q; y=(F(*av,*wv))&(((I)0x100<<(r<<3))-1); while(1){if(y)JNDB3; if(--i<0)break; y=F(*--av,*--wv);} }  \
-  R sc(n);                                                                                    \
+  return sc(n);                                                                                    \
  }
 
 #define SUMB(f,T0,T1,F)                                                                    \
@@ -127,7 +127,7 @@
          t=0; DQ(p+255,   t+=F(*av++,*wv++);); ADDBYTESINI(t); z+=t; x=F(*av,*wv);         \
   }                                                                                        \
   x &= ((I)1<<(r1<<LGBB))-1; ADDBYTESINI(x); z+=x;                                         \
-  R sc(z);                                                                                 \
+  return sc(z);                                                                                 \
  }
 
 INDB( i0eqBB,B,B,NE   )  INDF( i0eqBI,B,I,ANE  )  INDF0( i0eqBD,B,D,TNEXD,NEXD0)  /* =  */
@@ -269,13 +269,13 @@ static AF atcompSB[]={  /* table for SBT vs. SBT */
 };
 
 // the special case for compounds like +/@e.
-static F2( jti0eps){R indexofsub( II0EPS,w,a);}
-static F2( jti1eps){R indexofsub( II1EPS,w,a);}
-static F2( jtj0eps){R indexofsub( IJ0EPS,w,a);}
-static F2( jtj1eps){R indexofsub( IJ1EPS,w,a);}
-static F2(jtsumeps){R indexofsub(ISUMEPS,w,a);}
-static F2(jtanyeps){R indexofsub(IANYEPS,w,a);}
-static F2(jtalleps){R indexofsub(IALLEPS,w,a);}
+static F2( jti0eps){return indexofsub( II0EPS,w,a);}
+static F2( jti1eps){return indexofsub( II1EPS,w,a);}
+static F2( jtj0eps){return indexofsub( IJ0EPS,w,a);}
+static F2( jtj1eps){return indexofsub( IJ1EPS,w,a);}
+static F2(jtsumeps){return indexofsub(ISUMEPS,w,a);}
+static F2(jtanyeps){return indexofsub(IANYEPS,w,a);}
+static F2(jtalleps){return indexofsub(IALLEPS,w,a);}
 
 // This table is indexed by m[5 4 3 0]
 static AF atcompX[]={   /* table for any vs. any */
@@ -310,7 +310,7 @@ AF jtatcompf(J jt,A a,A w,A self){I m;
  m=FAV(self)->flag&255;
  if((m&6)!=6){   // normal comparison
   // verify rank is OK, based on operation
-  if((AR(a)|AR(w))>1){jt->workareas.compsc.postflags=0; R (m>=(4<<3))?(AF)jtfslashatg:0;}   // If an operand has rank>1, reject it unless it can be turned to f/@g special
+  if((AR(a)|AR(w))>1){jt->workareas.compsc.postflags=0; return (m>=(4<<3))?(AF)jtfslashatg:0;}   // If an operand has rank>1, reject it unless it can be turned to f/@g special
   ASSERT(AN(a)==AN(w)||((AR(a)&AR(w))==0),EVLENGTH)   // agreement is same length or one an atom - we know ranks<=1
   // split m into search and comparison
   I search=m>>3; I comp=m&7;
@@ -320,16 +320,16 @@ AF jtatcompf(J jt,A a,A w,A self){I m;
   comp^=(0x606010>>(((search&1)+(comp&6))<<2))&7; search>>=1;  // complement comp if search is i&1; then the only search values are 0, 2, 4 so map them to 012.  Could reorder compares to = ~: < >: > <: to save code here
   if(!((AT(a)|AT(w))&(NOUN&~(INT+FL+B01)))){
    // numeric types that we can handle here, for sure
-   R atcompxy[6*9*search+9*comp+3*(AT(a)>>INTX)+(AT(w)>>INTX)];
+   return atcompxy[6*9*search+9*comp+3*(AT(a)>>INTX)+(AT(w)>>INTX)];
   }
   // Other types have a chance only if they are equal types; fetch from the appropriate table then
-  if((AT(a)&AT(w)&(LIT+C2T+C4T+SBT))){R (AT(a)&LIT?atcompC:AT(a)&C2T?atcompUS:AT(a)&C4T?atcompC4:atcompSB)[6*search+comp];}
-  R 0;
+  if((AT(a)&AT(w)&(LIT+C2T+C4T+SBT))){return (AT(a)&LIT?atcompC:AT(a)&C2T?atcompUS:AT(a)&C4T?atcompC4:atcompSB)[6*search+comp];}
+  return 0;
  }else{  // E. (6) or e. (7)
   jt->workareas.compsc.postflags=0;
   if((AR(a)|AR(w))>1){if(!(m&1)||AR(a)>(AR(w)?AR(w):1))R0;}  // some rank > 1, fail if E. or e. returns rank>1
-  if(((m&1)|(AN(a)-1))==0)R 0;  // E. when a is a singleton - no need for the full E. treatment
-  R atcompX[((m>>2)&~1)+(m&1)];  // choose i.-family routine
+  if(((m&1)|(AN(a)-1))==0)return 0;  // E. when a is a singleton - no need for the full E. treatment
+  return atcompX[((m>>2)&~1)+(m&1)];  // choose i.-family routine
  }
 }    /* function table look-up for  comp i. 1:  and  i.&1@:comp  etc. */
 

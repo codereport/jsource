@@ -77,7 +77,7 @@ static A jtrankingb(J jt,A w,I wf,I wcr,I m,I n,I k){A z;C*wv;I i,j,p,t,*zv;TTYP
    }
    wv+=n*k;
  }}
- R z;
+ return z;
 }    /* /:@/: w where w is boolean and items have length 2 or 4 */
 
 // /:@/:
@@ -87,10 +87,10 @@ F1(jtranking){A y,z;C*wv;I icn,i,k,m,n,t,wcr,wf,wn,wr,*ws,wt,*zv;CR rng;TTYPE *y
  wt=AT(w); wv=CAV(w); wn=AN(w);
  ws=AS(w); SETICFR(w,wf,wcr,n);   // n=#cells in w; m is number of atoms in w
  if(wn){PROD(m,wf,ws);}  // If there are atoms, calculate result-shape the fast way
- else{RE(m=prod(wf,ws)); R m?reitem(vec(INT,wf,ws),iota(v2(1L,n))):reshape(vec(INT,1+wf,ws),num(0));}
+ else{RE(m=prod(wf,ws)); return m?reitem(vec(INT,wf,ws),iota(v2(1L,n))):reshape(vec(INT,1+wf,ws),num(0));}
  PROD1(icn,wcr-1,ws+wf+1); k=icn<<bplg(wt);  // wk=size of atom in bytes; icn=# atoms in an item of a cell  k = *bytes in an item of a CELL of w
  // if Boolean 2- or 4-byte, go off to handle that special case
- if(wt&B01&&(k==2||k==sizeof(int)))R rankingb(w,wf,wcr,m,n,k);
+ if(wt&B01&&(k==2||k==sizeof(int)))return rankingb(w,wf,wcr,m,n,k);
  // See if the values qualify for small-range processing
  if(icn==1&&wt&INT+C4T){  // items are individual INTs or C4Ts
   // Calculate the largest range we can abide.  The cost of a sort is about n*lg(n)*4 cycles; the cost of small-range indexing is

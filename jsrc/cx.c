@@ -67,14 +67,14 @@ static B jtforinit(J jt,CDATA*cv,A t){A x;C*s,*v;I k;
   cv->xv=v=CAV(x); MC(k+v,"_index",6L);  /* index name          */
   cv->iv=s;                              /* item name           */
  }
- R 1;
+ return 1;
 }    /* for. do. end. initializations */
 
 // A for. block is ending.   free the text string "xyz_index" (if saved) and the iteration array, Don't delete any names
 static B jtunstackcv(J jt,CDATA*cv){
  if(cv->x){fa(cv->x);}
  fa(cv->t); 
- R 1;
+ return 1;
 }
 
 static void jttryinit(J jt,TD*v,I i,CW*cw){I j=i,t=0;
@@ -93,7 +93,7 @@ static void jttryinit(J jt,TD*v,I i,CW*cw){I j=i,t=0;
 // This is called only if tdi is nonzero & therefore we have a stack
 static I trypopgoto(TD* tdv, I tdi, I dest){
  while(tdi&&!BETWEENC(dest,tdv[tdi-1].b,tdv[tdi-1].e))--tdi;  // discard stack frame if structure does not include dest
- R tdi;
+ return tdi;
 }
 
 #define CHECKNOUN if (!(NOUN&AT(t))){   /* error, T block not creating noun */ \
@@ -117,7 +117,7 @@ static I debugnewi(I i, DC thisframe, A self){
    siparent->dcix=i;  // notify the debugger of the line we are on, in case we stop  
   }
  }
- R i;  // return the current line, possibly modified
+ return i;  // return the current line, possibly modified
 }
 
 // Processing of explicit definitions, line by line
@@ -543,14 +543,14 @@ dobblock:
 }
 
 // execution of u : v, selecting the version of self to use based on  valence
-static DF1(xv1){A z; R df1(z,  w,FAV(self)->fgh[0]);}
-static DF2(xv2){A z; R df2(z,a,w,FAV(self)->fgh[1]);}
+static DF1(xv1){A z; return df1(z,  w,FAV(self)->fgh[0]);}
+static DF2(xv2){A z; return df2(z,a,w,FAV(self)->fgh[1]);}
 
-static DF1(xn1 ){R xdefn(0L,w, self);}  // Transfer monadic xdef to the common code - inplaceable
-static DF1(xadv){R xdefn(w, 0L,self);}  // inplaceable
+static DF1(xn1 ){return xdefn(0L,w, self);}  // Transfer monadic xdef to the common code - inplaceable
+static DF1(xadv){return xdefn(w, 0L,self);}  // inplaceable
 
 // Nilad.  See if an anonymous verb needs to be named.  If so, result is the name, otherwise 0
-static F1(jtxopcall){R jt->uflags.us.cx.cx_c.db&&DCCALL==jt->sitop->dctype?jt->sitop->dca:0;}
+static F1(jtxopcall){return jt->uflags.us.cx.cx_c.db&&DCCALL==jt->sitop->dctype?jt->sitop->dca:0;}
 
 
 // This handles adverbs/conjs that refer to x/y.  Install a[/w] into the derived verb as f/h, and copy the flags
@@ -559,10 +559,10 @@ static F1(jtxopcall){R jt->uflags.us.cx.cx_c.db&&DCCALL==jt->sitop->dctype?jt->s
 // Flag the operator with VOPR, and remove VFIX for it so that the compound can be fixed
 DF2(jtxop2){A ff,x;
  RZ(ff=fdef(0,CCOLON,VERB, xn1,jtxdefn, a,self,w,  (VXOP|VFIX|VJTFLGOK1|VJTFLGOK2)^FAV(self)->flag, RMAX,RMAX,RMAX));
- R (x=xopcall(0))?namerefop(x,ff):ff;
+ return (x=xopcall(0))?namerefop(x,ff):ff;
 }
 static DF1(xop1){
- R xop2(w,0,self);
+ return xop2(w,0,self);
 }
 
 
@@ -594,9 +594,9 @@ static I jtxop(J jt,A w){I i,k;
     if((FAV(w)->id&-2)==CUDOT)fndflag|=4;  // u./v.
   }
   // exit if we have seen enough: mnuv plus x.  No need to wait for y.  If we have seen only y, keep looking for x
-  if(fndflag>=8+4+2)R fndflag;
+  if(fndflag>=8+4+2)return fndflag;
  }  // loop for each word
- R fndflag;  // return what we found
+ return fndflag;  // return what we found
 }
 
 // handle m : 0.  deftype=m.
@@ -627,14 +627,14 @@ static A jtcolon0(J jt, I deftype){A l,z;C*p,*q,*s;A *sb;I m,n;
   }
  }
  // Return the string.  No need to trim down the list of boxes, as it's transitory
- if(isboxed){AN(z)=AS(z)[0]=n; R z;}
- R str(n,s);
+ if(isboxed){AN(z)=AS(z)[0]=n; return z;}
+ return str(n,s);
 }    /* enter nl terminated lines; ) on a line by itself to exit */
 
 // w is character array or list
 // if table, take , w ,. LF    if list take ,&LF^:(LF~:{:) w)
 static F1(jtlineit){
- R 1<AR(w)?ravel(stitch(w,scc(CLF))):AN(w)&&CLF==cl(w)?w:over(w,scc(CLF));
+ return 1<AR(w)?ravel(stitch(w,scc(CLF))):AN(w)&&CLF==cl(w)?w:over(w,scc(CLF));
 }
 
 // Convert ASCII w to boxed lines.  Create separate lists of boxes for monad and dyad
@@ -643,7 +643,7 @@ static F1(jtlineit){
 static A jtsent12c(J jt,A w){C*p,*q,*r,*s,*x;A z;
  ASSERT(!AN(w)||LIT&AT(w),EVDOMAIN);
  ASSERT(2>=AR(w),EVRANK);
- if(AR(w)>1)R IRS1(w,0L,1,jtbox,z);  // table, just box lines individually 
+ if(AR(w)>1)return IRS1(w,0L,1,jtbox,z);  // table, just box lines individually
 
  // otherwise we have a single string.  Could be from 9 : string
  if(!(AN(w)&&DDSEP==cl(w)))RZ(w=over(w,scc(DDSEP)));  // add LF if missing
@@ -667,7 +667,7 @@ static A jtsent12c(J jt,A w){C*p,*q,*r,*s,*x;A z;
  }
  // Now we have compacted all the lines.  Box them
  AS(wil)[0]=linex;  // advance to dyad, set its length
- R jtboxcut0(jt,wil,w,ds(CWORDS));
+ return jtboxcut0(jt,wil,w,ds(CWORDS));
 }    /* literal fret-terminated or matrix sentences into monad/dyad */
 
 // Audit w to make sure it contains all strings; convert to LIT if needed
@@ -676,7 +676,7 @@ static A jtsent12b(J jt,A w){A t,*wv,y,*yv;I j,*v;
  wv=AAV(w); 
  GATV(y,BOX,AN(w),AR(w),AS(w)); yv=AAV(y);
  DO(AN(w), RZ(yv[i]=vs(wv[i])););
- R y;
+ return y;
 }    /* boxed sentences into monad/dyad */
 
 // Install bucket info into the NAME type t, if it is a local name
@@ -830,7 +830,7 @@ A jtcrelocalsyms(J jt, A l, A c,I type, I dyad, I flags){A actst,*lv,pfst,t,wds;
    }
   }
  }  // 'noun result guaranteed'
- R actst;
+ return actst;
 }
 
 // a is a local symbol table, possibly in use
@@ -853,7 +853,7 @@ A jtclonelocalsyms(J jt, A a){A z;I j;I an=AN(a); LX *av=LXAV0(a),*zv;
    ahx = (LAV0(jt->symp))[ahx].next;  // advance to next symbol
   }
  }
- R z;
+ return z;
 }
 
 F2(jtcolon){A d,h,*hv,m;B b;C*s;I flag=VFLAGNONE,n,p;
@@ -862,7 +862,7 @@ F2(jtcolon){A d,h,*hv,m;B b;C*s;I flag=VFLAGNONE,n,p;
   // If nested v : v, prune the tree
   if(CCOLON==FAV(a)->id&&FAV(a)->fgh[0]&&VERB&AT(FAV(a)->fgh[0])&&VERB&AT(FAV(a)->fgh[1]))a=FAV(a)->fgh[0];  // look for v : v; don't fail if fgh[0]==0 (namerefop).  Must test fgh[0] first
   if(CCOLON==FAV(w)->id&&FAV(w)->fgh[0]&&VERB&AT(FAV(w)->fgh[0])&&VERB&AT(FAV(w)->fgh[1]))w=FAV(w)->fgh[1];
-  R fdef(0,CCOLON,VERB,xv1,xv2,a,w,0L,((FAV(a)->flag&FAV(w)->flag)&VASGSAFE),mr(a),lr(w),rr(w));  // derived verb is ASGSAFE if both parents are 
+  return fdef(0,CCOLON,VERB,xv1,xv2,a,w,0L,((FAV(a)->flag&FAV(w)->flag)&VASGSAFE),mr(a),lr(w),rr(w));  // derived verb is ASGSAFE if both parents are
  }
  RE(n=i0(a));  // m : n; set n=value of a argument
  I col0;  // set if it was m : 0
@@ -934,11 +934,11 @@ F2(jtcolon){A d,h,*hv,m;B b;C*s;I flag=VFLAGNONE,n,p;
   if(AN(hv[HN+1]))RZ(hv[HN+3] = incorp(crelocalsyms(hv[HN+0], hv[HN+1],n,1,flag)));  // words,cws,type,dyad,flag
  }
  switch(n){
-  case 3:  R fdef(0,CCOLON, VERB, xn1,jtxdefn,       num(n),0L,h, flag|VJTFLGOK1|VJTFLGOK2, RMAX,RMAX,RMAX);
-  case 1:  R fdef(0,CCOLON, ADV,  b?xop1:xadv,0L,    num(n),0L,h, flag, RMAX,RMAX,RMAX);
-  case 2:  R fdef(0,CCOLON, CONJ, 0L,b?jtxop2:jtxdefn, num(n),0L,h, flag, RMAX,RMAX,RMAX);
-  case 4:  R fdef(0,CCOLON, VERB, xn1,jtxdefn,       num(n),0L,h, flag|VJTFLGOK1|VJTFLGOK2, RMAX,RMAX,RMAX);
-  case 13: R vtrans(w);
+  case 3:  return fdef(0,CCOLON, VERB, xn1,jtxdefn,       num(n),0L,h, flag|VJTFLGOK1|VJTFLGOK2, RMAX,RMAX,RMAX);
+  case 1:  return fdef(0,CCOLON, ADV,  b?xop1:xadv,0L,    num(n),0L,h, flag, RMAX,RMAX,RMAX);
+  case 2:  return fdef(0,CCOLON, CONJ, 0L,b?jtxop2:jtxdefn, num(n),0L,h, flag, RMAX,RMAX,RMAX);
+  case 4:  return fdef(0,CCOLON, VERB, xn1,jtxdefn,       num(n),0L,h, flag|VJTFLGOK1|VJTFLGOK2, RMAX,RMAX,RMAX);
+  case 13: return vtrans(w);
   default: ASSERT(0,EVDOMAIN);
  }
 }
@@ -968,7 +968,7 @@ A jtddtokens(J jt,A w,I env){
  I firstddbgnx;  // index of first/last start of DD, and end of DD
  I ddschbgnx=0; // place where we started looking for DD
  for(firstddbgnx=ddschbgnx;firstddbgnx<nw;++firstddbgnx){US ch2=*(US*)(wv+wilv[firstddbgnx][0]); ASSERT(!(ch2==DDEND&&(wilv[firstddbgnx][1]-wilv[firstddbgnx][0]==2)),EVCTRL) if(ch2==DDBGN&&(wilv[firstddbgnx][1]-wilv[firstddbgnx][0]==2))break; }
- if(firstddbgnx>=nw){ASSERT(AM(wil)>=0,EVOPENQ) R env&8?w:enqueue(wil,w,env&3);}    //   If no DD chars found, and caller wants a string, return w fast
+ if(firstddbgnx>=nw){ASSERT(AM(wil)>=0,EVOPENQ) return env&8?w:enqueue(wil,w,env&3);}    //   If no DD chars found, and caller wants a string, return w fast
  // loop till all DDs found
  while(firstddbgnx<nw){
   // We know that firstddbgnx is DDBGN

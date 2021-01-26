@@ -13,10 +13,10 @@ static I jtioev(J jt,I mode,A a){A ae,ax,ay,p;B*pv;I j,k,m,n,*yv;P*ap;
  ax=SPA(ap,x); m=k=AN(ax); n=j=*AS(a); 
  RZ(p=eq(ax,ae)); pv=BAV(p);
  switch((AN(ay)?2:0)+(I )(1==mode)){
-  case 0:  DO(m,           if(          pv[i])R i;); R m;
-  case 1:  DQ(m,      --k; if(          pv[k])R k;); R n-!m;
-  case 2:  DO(m,           if(i!=yv[i]||pv[i])R i;); R m;
-  default: DQ(m, --j; --k; if(j!=yv[k]||pv[k])R j;); R m==n?n:n-m-1;
+  case 0:  DO(m,           if(          pv[i])return i;); return m;
+  case 1:  DQ(m,      --k; if(          pv[k])return k;); return n-!m;
+  case 2:  DO(m,           if(i!=yv[i]||pv[i])return i;); return m;
+  default: DQ(m, --j; --k; if(j!=yv[k]||pv[k])return j;); return m==n?n:n-m-1;
 }}   /* index of sparse element */
 
 A jtiovxs(J jt,I mode,A a,A w){A e,x,z;B h;I at,t,wt;P*ap=0,*wp,*zp;
@@ -47,12 +47,12 @@ A jtiovxs(J jt,I mode,A a,A w){A e,x,z;B h;I at,t,wt;P*ap=0,*wp,*zp;
   SPB(zp,e,indexofsub(mode,a,e));
   SPB(zp,x,indexofsub(mode,a,x));
  }
- R z;
+ return z;
 }    /* vector i. sparse */
 
 A jtiovsd(J jt,I mode,A a,A w){A ae,ax,ay,p,z;B h,*pv;I at,j,m,n,t,wt,*v,*yv;P*ap;
  ap=PAV(a); ax=SPA(ap,x); ay=SPA(ap,i);
- if(!AN(ay))R indexofsub(mode,ravel(ax),w);
+ if(!AN(ay))return indexofsub(mode,ravel(ax),w);
  m=AN(ax); n=*AS(a); yv=AV(ay); ae=SPA(ap,e);
  at=DTYPE(AT(a)); wt=AT(w); if(h=HOMO(at,wt))t=maxtype(at,wt);
  if(h&&TYPESNE(t,wt))RZ(w=cvt(t,w));
@@ -60,7 +60,7 @@ A jtiovsd(J jt,I mode,A a,A w){A ae,ax,ay,p,z;B h,*pv;I at,j,m,n,t,wt,*v,*yv;P*a
  RZ(z=indexofsub(mode,ax,w)); v=AV(z);
  RZ(p=eq(ae,w)); pv=BAV(p); 
  DO(AN(w), *v=pv[i]?j:m>*v?yv[*v]:n; ++v;);
- R z;
+ return z;
 }    /* (sparse vector) i. dense */
 
 
@@ -73,20 +73,20 @@ A jtindexofxx(J jt,I mode,A a,A w){A x;B*b,*c,s;I ar,d,j,m,n,wr;P*p;
  GATV0(x,B01,n,1); c=BAV(x);
  DO(ABS(d), c[i]=s;);  // initialize unfilled part of c
  j=0; DQ(MIN(ar,wr), ++j; c[n-j]=b[m-j];);
- R indexofss(mode,s?a:reaxis(ifb(n,c),a),s?reaxis(ifb(n,c),w):w);
+ return indexofss(mode,s?a:reaxis(ifb(n,c),a),s?reaxis(ifb(n,c),w):w);
 }    /* dense i. sparse   or   sparse i. dense;  1<AR(a) */ 
 
 static F1(jtifdz){I m;
  ARGCHK1(w);
  m=bplg(AT(w))-LGSZI; AN(w)<<=m; *(1+AS(w))<<=m;
  AT(w)=INT;
- R w;
+ return w;
 }    /* INT from FL or CMPX, in place */
 
 static A jtioe(J jt,I mode,A w){A b,j,p,y;I c,jn,*jv,k,n;P*wp;
  wp=PAV(w);
  n=*AS(w); y=SPA(wp,i);
- if(!AN(y))R sc(1==mode?(n?n-1:0):0);
+ if(!AN(y))return sc(1==mode?(n?n-1:0):0);
  RZ(b=eq(SPA(wp,e),SPA(wp,x)));
  if(2<AR(b)){*(1+AS(b))=aii(b); AR(b)=2;}
  if(1<AR(b))RZ(b=aslash1(CSTARDOT,b));  /* b=. *./@,"_1 (3$.w)=5$.w */
@@ -99,7 +99,7 @@ static A jtioe(J jt,I mode,A w){A b,j,p,y;I c,jn,*jv,k,n;P*wp;
   if(1==mode){k=*jv-1; jv+=jn-1; c=n; DO(jn, --c; if(c!=*jv--){k=c; break;});}  /* i: */
   else       {k=1+jv[jn-1];           DO(jn,      if(i!=*jv++){k=i; break;});}  /* i. */
  }
- R sc(k);
+ return sc(k);
 }    /* index of sparse item; leading axis is sparse */
 
 static B jtioresparse(J jt,B aw,A*za,A*zw){A a,e,w;B*ab,ac=0,*wb,wc=0;I ar,j,wr;P*ap,*wp;
@@ -114,7 +114,7 @@ static B jtioresparse(J jt,B aw,A*za,A*zw){A a,e,w;B*ab,ac=0,*wb,wc=0;I ar,j,wr;
  }
  if(    ac)RZ(*za=reaxis(ifb(ar,ab),a));
  if(aw&&wc)RZ(*zw=reaxis(ifb(wr,wb),w));
- R 1;
+ return 1;
 }    /* harmonize sparse elements and sparse axes for a and w */
 
 static B jtiopart(J jt,A w,I r,I mm,I*zc,A*zi,A*zj,A*zx){A b,f,wx,x,wy,y;B*bv;
@@ -144,7 +144,7 @@ static B jtiopart(J jt,A w,I r,I mm,I*zc,A*zi,A*zj,A*zx){A b,f,wx,x,wy,y;B*bv;
  RZ(*zi=repeat(b,taker(d,wy)));
  *zj=y;
  *zx=x;
- R 1;
+ return 1;
 }
 
 A jtindexofss(J jt,I mode,A a,A w){A ai,aj,ax,wi,wj,wx,x,y,z;B aw=a!=w;I ar,c,m,mm,n,r,*u,*v,wr;P*ap,*wp,*zp;
@@ -166,20 +166,20 @@ A jtindexofss(J jt,I mode,A a,A w){A ai,aj,ax,wi,wj,wx,x,y,z;B aw=a!=w;I ar,c,m,
  m=*AS(ai); v=AV(ai); 
  if(aw)DO(AN(x), u[i]=m>u[i]?v[u[i]]:n;)
  else  DO(AN(x), u[i]=v[u[i]];);
- if(!r)R AN(x)?sc(*u):ioe(mode,a);
+ if(!r)return AN(x)?sc(*u):ioe(mode,a);
  GASPARSE(z,SINT,1,r,AS(w)); zp=PAV(z);
  SPB(zp,a,apvwr(r,0L,1L));
  SPB(zp,e,ioe(mode,a));
  SPB(zp,i,aw?wi:ai);
  SPB(zp,x,x);
- R z;
+ return z;
 }    /* sparse i. sparse */
 
 F1(jtnubsievesp){A e,x,y,z;I c,j,m,n,r,*s,*u,*v,*vv,wr,*yv;P*p;D rkblk[16];
  ARGCHK1(w);
  wr=AR(w); r=(RANKT)jt->ranks; r=wr<r?wr:r; RESETRANK;
  n=r?*(AS(w)+wr-r):1;
- if(r<wr)R ATOMIC2(jt,IX(n),irs2(w,w,0L,r,r,jtindexof),rkblk,1L,r?1L:0L,CEQ);  // seems to fail
+ if(r<wr)return ATOMIC2(jt,IX(n),irs2(w,w,0L,r,r,jtindexof),rkblk,1L,r?1L:0L,CEQ);  // seems to fail
  RZ(x=indexof(w,w)); p=PAV(x);
  y=SPA(p,i); u=AV(y); c=*AS(y);
  x=SPA(p,x); v=AV(x);
@@ -193,5 +193,5 @@ F1(jtnubsievesp){A e,x,y,z;I c,j,m,n,r,*s,*u,*v,*vv,wr,*yv;P*p;D rkblk[16];
  SPB(p,e,num(0));
  SPB(p,i,y);
  SPB(p,x,reshape(sc(m),num(1)));
- R z;
+ return z;
 }

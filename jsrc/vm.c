@@ -9,21 +9,21 @@
 D jtintpow(J jt,D x,I n){D r=1;
  if(0>n){x=1/x; if(n==IMIN){r=x; n=IMAX;} else n=-n;}  // kludge use r=x; n=-1-n;
  while(n){if(1&n)r*=x; x*=x; n>>=1;}
- R r;
+ return r;
 }    /* x^n where x is real and n is integral */
 
 D jtpospow(J jt,D x,D y){
- if(0==y)R 1.0;
- if(0==x)R 0<y?0.0:inf;
+ if(0==y)return 1.0;
+ if(0==x)return 0<y?0.0:inf;
  if(0<x){
-  if(y== inf)R 1<x?inf:1>x?0.0:1.0;
-  if(y==-inf)R 1<x?0.0:1>x?inf:1.0;
-  R exp(y*log(x));
+  if(y== inf)return 1<x?inf:1>x?0.0:1.0;
+  if(y==-inf)return 1<x?0.0:1>x?inf:1.0;
+  return exp(y*log(x));
  }
- if(y==-inf){ASSERT(-1>x,EVDOMAIN); R 0.0;}
- if(y== inf){ASSERT(-1<x,EVDOMAIN); R 0.0;}
+ if(y==-inf){ASSERT(-1>x,EVDOMAIN); return 0.0;}
+ if(y== inf){ASSERT(-1<x,EVDOMAIN); return 0.0;}
  jt->jerr=EWIMAG;
- R 0;
+ return 0;
 }    /* x^y where x and y are real */
 
 #define POWXB(u,v)  (v?u:1)
@@ -31,12 +31,12 @@ D jtpospow(J jt,D x,D y){
 #define POWII(u,v)  intpow((D)u,v)
 #define POWID(u,v)  pospow((D)u,v)
 
-APFX(powBI, D,B,I, POWBX ,,R EVOK;)
-APFX(powBD, D,B,D, POWBX ,,R EVOK;)
-APFX(powIB, I,I,B, POWXB ,,R EVOK;)
+APFX(powBI, D,B,I, POWBX ,,return EVOK;)
+APFX(powBD, D,B,D, POWBX ,,return EVOK;)
+APFX(powIB, I,I,B, POWXB ,,return EVOK;)
 APFX(powII, D,I,I, POWII ,,HDR1JERR)
 APFX(powID, D,I,D, POWID ,,HDR1JERR)
-APFX(powDB, D,D,B, POWXB ,,R EVOK;)
+APFX(powDB, D,D,B, POWXB ,,return EVOK;)
 APFX(powZZ, Z,Z,Z, zpow  ,,HDR1JERR)
 
 
@@ -94,28 +94,28 @@ static I jtcirx(J jt,I n,I k,D*z,D*x){D p,t;
  case 12: DQ(n,         *z++=0<=*x++?0.0:PI;); break;
  }
  ASSERTWR(!NANTEST,EVNAN);
- R EVOK;
+ return EVOK;
 }
 
-AHDR2(cirBD,D,B,D){ASSERTWR(n<=1&&1==m,EWIMAG); n^=REPSGN(n); R cirx(n,   (I)*x,z,y);}
-AHDR2(cirID,D,I,D){ASSERTWR(n<=1&&1==m,EWIMAG); n^=REPSGN(n); R cirx(n,   *x,z,y);}
+AHDR2(cirBD,D,B,D){ASSERTWR(n<=1&&1==m,EWIMAG); n^=REPSGN(n); return cirx(n,   (I)*x,z,y);}
+AHDR2(cirID,D,I,D){ASSERTWR(n<=1&&1==m,EWIMAG); n^=REPSGN(n); return cirx(n,   *x,z,y);}
 
 AHDR2(cirDD,D,D,D){I k=(I)jround(*x);
  ASSERTWR(k==*x,EVDOMAIN); 
  ASSERTWR(n<=1&&1==m,EWIMAG); // if more than one x value, retry as general case
  n^=REPSGN(n);   // convert complementary n to nonneg
- R cirx(n,k,z,y);
+ return cirx(n,k,z,y);
 }
 
 
 F2(jtlogar2){A z;I t;
  ARGCHK2(a,w); 
  RE(t=maxtype(AT(a),AT(w)));
- if(!(t&XNUM)||jt->xmode==XMEXACT){jt->xmode=XMEXACT; R jtatomic2(JTIPAW,logar1(w),logar1(a),ds(CDIV));}  // better to multiply by recip, but not much, & it makes 0 ^. 0 not fail
+ if(!(t&XNUM)||jt->xmode==XMEXACT){jt->xmode=XMEXACT; return jtatomic2(JTIPAW,logar1(w),logar1(a),ds(CDIV));}  // better to multiply by recip, but not much, & it makes 0 ^. 0 not fail
  z=rank2ex0(cvt(XNUM,a),cvt(XNUM,w),UNUSED_VALUE,jtxlog2a); 
- if(z)R z;
- if(jt->jerr==EWIMAG||jt->jerr==EWIRR){RESETERR; jt->xmode=XMEXACT; R divideAW(logar1(w),logar1(a));}
- R 0;
+ if(z)return z;
+ if(jt->jerr==EWIMAG||jt->jerr==EWIRR){RESETERR; jt->xmode=XMEXACT; return divideAW(logar1(w),logar1(a));}
+ return 0;
 }
     
 F2(jtroot){A z;I t;
@@ -123,28 +123,28 @@ F2(jtroot){A z;I t;
  RE(t=maxtype(AT(a),AT(w)));
  A ma=a; if(TYPESNE(t,AT(a)))RZ(ma=cvt(t,a));
  A mw=w; if(TYPESNE(t,AT(w)))RZ(mw=cvt(t,w));
- if(!(t&XNUM))R expn2(mw,recip(ma));  // not inplaceable - could be IMAG
+ if(!(t&XNUM))return expn2(mw,recip(ma));  // not inplaceable - could be IMAG
  z=rank2ex0(ma,mw,UNUSED_VALUE,jtxroota);
  switch(jt->jerr){
-  case EWIMAG: RESETERR; R expn2(cvt(CMPX,w),recip(cvt(CMPX,a)));
+  case EWIMAG: RESETERR; return expn2(cvt(CMPX,w),recip(cvt(CMPX,a)));
   case EWRAT: 
-  case EWIRR:  RESETERR; R expn2(cvt(FL,  w),recip(cvt(FL,  a)));
-  default:     R z;
+  case EWIRR:  RESETERR; return expn2(cvt(FL,  w),recip(cvt(FL,  a)));
+  default:     return z;
 }}
 
-F1(jtjdot1){R tymes(a0j1,w);}
-F2(jtjdot2){R plus(a,tymes(a0j1,w));}
-F1(jtrdot1){R expn1(jdot1(w));}
-F2(jtrdot2){R tymes(a,rdot1(w));}
+F1(jtjdot1){return tymes(a0j1,w);}
+F2(jtjdot2){return plus(a,tymes(a0j1,w));}
+F1(jtrdot1){return expn1(jdot1(w));}
+F2(jtrdot2){return tymes(a,rdot1(w));}
 
 
-F1(jtpolar){ARGCHK1(w); A z; R cvt(SPARSE&AT(w)?SFL:FL,df2(z,v2(10L,12L),w,qq(ds(CCIRCLE),v2(1L,0L))));}
+F1(jtpolar){ARGCHK1(w); A z; return cvt(SPARSE&AT(w)?SFL:FL,df2(z,v2(10L,12L),w,qq(ds(CCIRCLE),v2(1L,0L))));}
 
 F1(jtrect){A e,z;B b;I r,t;P*wp,*zp;Z c;
  ARGCHK1(w); 
  t=AT(w); r=AR(w); RESETRANK;   // Run as infinite rank
  ASSERT(!AN(w)||t&NUMERIC,EVDOMAIN);
- if(t&CMPX){GATV(z,FL,2*AN(w),1+r,AS(w)); AS(z)[r]=2; MC(AV(z),AV(w),AN(z)*sizeof(D)); R z;}
+ if(t&CMPX){GATV(z,FL,2*AN(w),1+r,AS(w)); AS(z)[r]=2; MC(AV(z),AV(w),AN(z)*sizeof(D)); return z;}
  else if(unlikely((t&SPARSE)!=0)){
   b=1&&t&SCMPX;
   GASPARSE(z,b?SFL:t,1,1+r,AS(w)); AS(z)[r]=2;
@@ -154,6 +154,6 @@ F1(jtrect){A e,z;B b;I r,t;P*wp,*zp;Z c;
   SPB(zp,a,ca(SPA(wp,a)));
   SPB(zp,i,ca(SPA(wp,i)));
   SPB(zp,x,rect(SPA(wp,x)));
-  R z;
- }else R df2(z,w,num(0),qq(ds(CCOMMA),zeroionei(0)));
+  return z;
+ }else return df2(z,w,num(0),qq(ds(CCOMMA),zeroionei(0)));
 }

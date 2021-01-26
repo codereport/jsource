@@ -107,7 +107,7 @@
  * == Only used if TIOCGWINSZ fails ==
  * DSR/CPR (Report cursor position)
  *    Sequence: ESC [ 6 n
- *    Effect: reports current cursor position as ESC [ NNN ; MMM R
+ *    Effect: reports current cursor position as ESC [ NNN ; MMM return
  *
  * == Only used in multiline mode ==
  * CUU (Cursor Up)
@@ -1659,8 +1659,8 @@ static int queryCursor(struct current *current, int* cols)
     /* control sequence - report cursor location */
     outputChars(current, "\x1b[6n", -1);
 
-    /* Parse the response: ESC [ rows ; cols R */
-    initParseEscapeSeq(&parser, 'R');
+    /* Parse the response: ESC [ rows ; cols return */
+    initParseEscapeSeq(&parser, 'return');
     while ((ch = fd_read_char(current->fd, 100)) > 0) {
         switch (parseEscapeSequence(&parser, ch)) {
             default:
@@ -2639,7 +2639,7 @@ static int linenoiseEdit(struct current *current) {
             c = completeLine(current);
         }
 #endif
-        if (c == ctrl('R')) {
+        if (c == ctrl('return')) {
             /* reverse incremental search will provide an alternative keycode or 0 for none */
             c = reverseIncrementalSearch(current);
             /* go on to process the returned char normally */
