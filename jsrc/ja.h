@@ -180,9 +180,6 @@
 #define constr(x,y)                 jtconstr(jt,(x),(y))
 #define convert0(x0,x1,x2,x3)       jtconvert0(jt,(x0),(x1),(x2),(x3)) 
 #define conword(x,y)                jtconword(jt,(x),(y))
-#if !SY_64
-#define copyTT(x,y,z,v,w)           jtcopyTT(jt,(x),(y),(z),(v),(w))
-#endif
 #define cpa(x,y)                    jtcpa(jt,(x),(y))
 #define cps(x)                      jtcps(jt,(x))
 #define crc2(x,y)                   jtcrc2(jt,(x),(y))
@@ -865,11 +862,7 @@
 #define ranec(x0,x1,x2,x3,x4,x5)    jtranec(jt,(x0),(x1),(x2),(x3),(x4),(x5))
 #define rank1ex(x0,x1,x2,x3)        jtrank1ex(jt,(x0),(x1),(x2),(x3))
 #define rank1ex0(x0,x1,x2)          jtrank1ex0(jt,(x0),(x1),(x2))
-#if SY_64
 #define REX2R(lr,rr,lcr,rcr)        (((I)(lr)<<RANKTX)+(I)(rr)+((((I)(lcr)<<RANKTX)+(I)(rcr))<<2*RANKTX))
-#else
-#define REX2R(lr,rr,lcr,rcr)        (((I)(lr)<<RANKTX)+(I)(rr)),(((I)(lcr)<<RANKTX)+(I)(rcr))
-#endif
 #define rank2ex(x0,x1,x2,x3,x4,x5,x6,x7)  jtrank2ex(jt,(x0),(x1),(x2),REX2R((x3),(x4),(x5),(x6)),(x7))
 #define rank2ex0(x0,x1,x2,x3)       jtrank2ex0(jt,(x0),(x1),(x2),(x3))
 #define rankingb(x0,x1,x2,x3,x4,x5) jtrankingb(jt,(x0),(x1),(x2),(x3),(x4),(x5))
