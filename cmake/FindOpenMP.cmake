@@ -99,9 +99,7 @@ function(_OPENMP_FLAG_CANDIDATES LANG)
     set(OMP_FLAG_Clang "-fopenmp=libomp" "-fopenmp=libiomp5" "-fopenmp" "-Xclang -fopenmp")
     set(OMP_FLAG_AppleClang "-Xclang -fopenmp")
     set(OMP_FLAG_HP "+Oopenmp")
-    if(WIN32)
-      set(OMP_FLAG_Intel "-Qopenmp")
-    elseif(CMAKE_${LANG}_COMPILER_ID STREQUAL "Intel" AND
+    if(CMAKE_${LANG}_COMPILER_ID STREQUAL "Intel" AND
            "${CMAKE_${LANG}_COMPILER_VERSION}" VERSION_LESS "15.0.0.20140528")
       set(OMP_FLAG_Intel "-openmp")
     else()
@@ -293,25 +291,6 @@ function(_OPENMP_GET_FLAGS LANG FLAG_MODE OPENMP_FLAG_VAR OPENMP_LIB_NAMES_VAR)
             )
           endif()
         endif()
-        if(OpenMP_COMPILE_RESULT_${FLAG_MODE}_${OPENMP_PLAIN_FLAG})
-          set("${OPENMP_FLAG_VAR}" "${OPENMP_FLAG}" PARENT_SCOPE)
-          set("${OPENMP_LIB_NAMES_VAR}" "libomp" PARENT_SCOPE)
-          break()
-        endif()
-      endif()
-    elseif(CMAKE_${LANG}_COMPILER_ID STREQUAL "Clang" AND WIN32)
-      # Check for separate OpenMP library for Clang on Windows
-      find_library(OpenMP_libomp_LIBRARY
-        NAMES libomp libgomp libiomp5
-        HINTS ${CMAKE_${LANG}_IMPLICIT_LINK_DIRECTORIES}
-      )
-      mark_as_advanced(OpenMP_libomp_LIBRARY)
-      if(OpenMP_libomp_LIBRARY)
-        try_compile( OpenMP_COMPILE_RESULT_${FLAG_MODE}_${OPENMP_PLAIN_FLAG} ${CMAKE_BINARY_DIR} ${_OPENMP_TEST_SRC}
-          CMAKE_FLAGS "-DCOMPILE_DEFINITIONS:STRING=${OPENMP_FLAGS_TEST}"
-          LINK_LIBRARIES ${CMAKE_${LANG}_VERBOSE_FLAG} ${OpenMP_libomp_LIBRARY}
-          OUTPUT_VARIABLE OpenMP_TRY_COMPILE_OUTPUT
-        )
         if(OpenMP_COMPILE_RESULT_${FLAG_MODE}_${OPENMP_PLAIN_FLAG})
           set("${OPENMP_FLAG_VAR}" "${OPENMP_FLAG}" PARENT_SCOPE)
           set("${OPENMP_LIB_NAMES_VAR}" "libomp" PARENT_SCOPE)

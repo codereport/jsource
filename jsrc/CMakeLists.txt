@@ -1,6 +1,3 @@
-if(WIN32)
-    add_compile_definitions(_CRT_SECURE_NO_WARNINGS)
-endif()
 
 add_library(j)
 target_compile_definitions(j PRIVATE C_NA=0 C_AVX=1 C_AVX2=1 EMU_AVX=1)
