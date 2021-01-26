@@ -290,7 +290,7 @@ F2(jtforeign){I p,q;
   default:        ASSERT(0,EVDOMAIN);  // any unknown combination is a domain error right away
 }}
 
-/* SY_64 double trick - null routines here to avoid optimization */
+/* 64 bit double trick - null routines here to avoid optimization */
 void double_trick(D a,D b,D c,D d,D e,D f,D g,D h){;}
 
 #ifdef C_CD_ARMHF
