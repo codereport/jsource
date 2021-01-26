@@ -285,14 +285,6 @@ AHDR2(name,D,D,D){ \
 }
 
 /* Embedded visual tools v3.0 fails perform the z++ on all wince platforms. -KBI */
-#if SY_WINCE
-#define ACMP(f,Tz,Tx,Ty,pfx)   \
- AHDR2(f,B,Tx,Ty){D u,v;                                          \
-  if(n-1==0)  DQ(m, u=(D)*x++;       v=(D)*y++; *z++=pfx(u,v); )    \
-  else if(n-1<0)DQ(m, u=(D)*x++; DQC(n, v=(D)*y++; *z++=pfx(u,v);))    \
-  else      DQ(m, v=(D)*y++; DQ(n, u=(D)*x++; *z++=pfx(u,v);));   \
- }
-#else
 #define ACMP(f,Tz,Tx,Ty,pfx)   \
  AHDR2(f,B,Tx,Ty){D u,v;                                             \
   if(n-1==0)  DQ(m, u=(D)*x++;       v=(D)*y++; *z=pfx(u,v); z++; )    \
@@ -300,7 +292,6 @@ AHDR2(name,D,D,D){ \
   else      DQ(m, v=(D)*y++; DQ(n, u=(D)*x++; *z=pfx(u,v); z++;));   \
   R EVOK; \
  }
-#endif
 // support intolerant comparisons explicitly
 #define ACMP0(f,Tz,Tx,Ty,pfx,pfx0)   \
  AHDR2(f,B,Tx,Ty){D u,v;                                             \

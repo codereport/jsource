@@ -10,26 +10,6 @@
 #undef C_NA
 #define C_NA 1   // scaf force noasm
 
-/*
-C_CD_?
-cd ABI config for traditional J platorms done with SYS_? and SY_?
-cd ABI config for new J platforms (raspberry pi, android, etc) done with C_CD_?
-define one of the following in the build as required
-
--DC_CD_NODF
- f result and f/d args gets 5 x error (rather than wrong result or crash when abi support not available)
-
--DC_CD_ARMHF
- arm hardware float - result/args passed in float hardware - used by raspbian
-
--DC_CD_ARMEL
- arm software float - result/args passed without using float hardware
-*/
-
-// auto config
-
-
-
 #ifndef SY_GETTOD
 #define SY_GETTOD
 #endif
@@ -61,8 +41,6 @@ define one of the following in the build as required
 #define SYS_SUNSOL2         2097152L        /* GCC                         */
 #define SYS_MACOSX          4194304L        /* GCC (CC)                    */
 
-#define SY_WIN32            0    /* any windows intel Visual Studio        */
-#define SY_WINCE            0    /* any windows ce versions                */
 #define SY_LINUX            0    /* any linux intel version                */
 #define SY_MAC              0    /* any macosx intel (once included ppc)   */
 #define SY_MACPPC           0    /* macosx powerpc                         */
@@ -132,34 +110,9 @@ define one of the following in the build as required
 #endif
 
 
-
-#ifdef UNDER_CE
-#undef  SY_WINCE
-#define SY_WINCE            1
-#endif
-
 // SY_ALIGN 1 for compilers requiring strict alignment
 //             e.g. if (I*)av is not allowed for arbitrary av of type C*
 #define SY_ALIGN 1 // always use 1 so all use same code; required by nvr stack in parser
-
-/* Windows CE target autoconfiguration: */
-#if SY_WINCE
-#ifdef SH3
-#define SY_WINCE_SH         1
-#else
-#define SY_WINCE_SH         0
-#endif
-#ifdef MIPS
-#define SY_WINCE_MIPS       1
-#else
-#define SY_WINCE_MIPS       0
-#endif
-#ifdef ARM
-#define SY_WINCE_ARM        1
-#else
-#define SY_WINCE_ARM        0
-#endif
-#endif
 
 #ifndef SYS     /* must be defined */
  error: "SYS must be defined"

@@ -52,14 +52,7 @@ typedef unsigned char       BYTE;
 typedef float complex float_complex;
 typedef double complex double_complex;
 
-
 #include "j.h"
-
-#if SY_WINCE
-#define HINSTANCE_ERROR 0
-wchar_t *tounibuf(char * src);
-char *toascbuf(wchar_t *src);
-#endif
 
 /*  unix issues                                                 */
 /*  if there is only one calling convention then                */
@@ -101,11 +94,7 @@ typedef I     (_cdecl    *ALTCALLI)();
 typedef D     (__stdcall *STDCALLD)();
 typedef D     (_cdecl    *ALTCALLD)();
 
-#ifdef C_CD_ARMHF
-typedef float              DoF;
-#else
 typedef double             DoF;
-#endif
 
 typedef float (__stdcall *STDCALLF)();
 typedef float (_cdecl    *ALTCALLF)();
@@ -151,14 +140,10 @@ typedef struct {
 
 
 #if (SYS & SYS_MACOSX) | (SYS & SYS_LINUX)
-#ifdef C_CD_ARMHF
-extern void double_trick(float,float,float,float,float,float,float,float,float,float,float,float,float,float,float,float);
-#else
 #ifdef __PPC64__
 extern void double_trick(D,D,D,D,D,D,D,D,D,D,D,D,D);
 #else
 extern void double_trick(D,D,D,D,D,D,D,D);
-#endif
 #endif
 #endif
 #if SY_MACPPC
@@ -695,9 +680,6 @@ static CCT*jtcdload(J jt,CCT*cc,C*lib,C*proc){B ha=0;FARPROC f;HMODULE h;
   cc->h=h; ha=1;
  }
 
-#if SY_WINCE
- f=GetProcAddress(h,tounibuf(proc));
-#endif
 #if (SYS & SYS_UNIX)
  f=(FARPROC)dlsym(h,proc);
 #endif
@@ -786,9 +768,6 @@ static CCT*jtcdparse(J jt,A a,I empty){C c,lib[NPATH],*p,proc[NPATH],*s,*s0;CCT*
   CCMCAND(vargt,cand,*s) s+=SGNTO0(CCMSGN(cand,*s)); // if *s is valid, skip over it
  }
  CDASSERT((*s&~' ')==0,DEDEC);  // 0 or SP
-#ifdef C_CD_NODF // platform does not support f result
- CDASSERT(cc->zl!='f',DEDEC)
-#endif
  /* argument type declarations */
  i=-1;
  while(c=*s++){
@@ -802,9 +781,6 @@ static CCT*jtcdparse(J jt,A a,I empty){C c,lib[NPATH],*p,proc[NPATH],*s,*s0;CCT*
   CCMCAND(vargt,cand,c) CDASSERT(CCMTST(cand,c),der);  // vrgt defined above,list of valid arg bytes
   CDASSERT((c!='z'&&c!='j')||cc->star[i],der);
   if('l'==c){CDASSERT(1,der); cc->tletter[i]='x';}
-#ifdef C_CD_NODF // platform does not support f or d args
- CDASSERT(cc->star[i]==1 || (cc->tletter[i]!='f' && cc->tletter[i]!='d'),der);
-#endif
  }
  CDASSERT(0<=i||'1'!=cc->cc,DEDEC+256);
  MC(lib, s0+li,cc->ln); lib [cc->ln]=0;
@@ -859,8 +835,6 @@ static B jtcdexec1(J jt,CCT*cc,C*zv0,C*wu,I wk,I wt,I wd){A*wv=(A*)wu,x,y,*zv;B 
   if(dv-data>=6&&dv-data<dcnt-2)dv=data+dcnt-2;
 #elif defined(__aarch64__)
   if(dcnt>8&&dv-data==8)dv=data+dcnt;    /* v0 to v7 fully filled before x0 to x7 */
-#elif defined(C_CD_ARMHF)
-  if((fcnt>16||dcnt>16)&&dv-data==4)dv=data+MAX(fcnt,dcnt)-12;  /* v0 to v15 fully filled before x0 to x3 */
 #endif
   per=DEPARM+i*256; star=cc->star[i]; c=cc->tletter[i]; t=cdjtype(c);  // c is type in the call, t is the J type for that.  star in the *& qualifier
    // should convert or store c as a bit for comp ease here
@@ -939,11 +913,7 @@ static B jtcdexec1(J jt,CCT*cc,C*zv0,C*wu,I wk,I wt,I wd){A*wv=(A*)wu,x,y,*zv;B 
 #endif
   }
  }  // end of loop for each argument
-#ifdef C_CD_ARMHF
-// CDASSERT(16>=fcnt,DELIMIT);
-// CDASSERT(16>=dcnt,DELIMIT);
- if((fcnt>16||dcnt>16)&&dv-data<=4)dv=data+MAX(fcnt,dcnt)-12;  /* update dv to point to the end */
-#elif defined(__x86_64__)
+#if defined(__x86_64__)
  if(dcnt>8&&dv-data<=6)dv=data+dcnt-2; /* update dv to point to the end */
 #elif defined(__aarch64__)
  if(dcnt>8&&dv-data<=8)dv=data+dcnt;  /* update dv to point to the end */
@@ -1020,19 +990,6 @@ F1(jtcder){I t; ASSERTMTV(w); t=jt->dlllasterror; jt->dlllasterror=DEOK; R v2(t&
 /* return errno info from last cd with errno not equal to 0 - resets to 0 */
 F1(jtcderx){I t;C buf[1024];
  ASSERTMTV(w); t=jt->getlasterror; jt->getlasterror=0;
-
-
-#if SY_WINCE
- {
- WCHAR wbuf[1024];
- FormatMessage(
-    FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
-    NULL, (DWORD)t,
-    MAKELANGID(LANG_ENGLISH, SUBLANG_DEFAULT),  /* Default language */
-    wbuf, sizeof(buf), 0);
- strcpy(buf,toascbuf(wbuf));
- }
-#endif
 
 #if SYS&SYS_UNIX
  {const char *e = dlerror(); strcpy (buf, e?e:"");}
@@ -1284,9 +1241,6 @@ F2(jtcdproc2){C*proc;FARPROC f;HMODULE h;
   f=(k==-1)?(FARPROC)0:(FARPROC)jfntaddr[k];
  }else{
 
-#if SY_WINCE
-  f=GetProcAddress(h,tounibuf(proc));
-#endif
 #if (SYS & SYS_UNIX)
   f=(FARPROC)dlsym(h,proc);
 #endif

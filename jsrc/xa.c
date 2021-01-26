@@ -171,7 +171,6 @@ F1(jtsysq){I j;
  switch(SYS){
   case SYS_PC:        j=0;                break;
   case SYS_PC386:     j=1;                break;
-  case SYS_PCWIN:     j=SY_WIN32 ? (SY_WINCE ? 7 : 6) : 2; break;
   case SYS_MACINTOSH: j=3;                break;
   case SYS_OS2:       j=4;                break;
   default:            j=SYS&SYS_UNIX ? 5 : -1;

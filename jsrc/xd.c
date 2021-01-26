@@ -10,54 +10,16 @@
 #include "j.h"
 #include "x.h"
 
-#if !SY_WINCE
 char* toascbuf(char* s){ return s;}
 char* tounibuf(char* s){ return s;}
-#else
-wchar_t* tounibuf(char* src)
-{
- static wchar_t buf[2048+1];
-
- wchar_t* p=buf;
- if(2048>strlen(src))
- {
-  while(*src) *p++=*src++;
- }
- *p=0;
- return buf;
-}
-
-char *toascbuf(wchar_t *src)
-{
- static char buf[2048+1];
-
- char* p=buf;
- if(2048>wcslen(src))
- {
-  while(*src) *p++=(char)*src++;
- }
- *p=0;
- return buf;
-}
-#define _A_NORMAL   FILE_ATTRIBUTE_NORMAL
-#define _A_RDONLY   FILE_ATTRIBUTE_READONLY
-#define _A_HIDDEN   FILE_ATTRIBUTE_HIDDEN
-#define _A_SYSTEM   FILE_ATTRIBUTE_SYSTEM
-#define _A_VOLID    0
-#define _A_SUBDIR   FILE_ATTRIBUTE_DIRECTORY
-#define _A_ARCH     FILE_ATTRIBUTE_ARCHIVE
-
-#endif 
 
 #if (SYS & SYS_DOS)
 
-#if !SY_WINCE
 #include <ctype.h>
 #include <io.h>
 #include <dos.h>
 #include <direct.h>
 #include <time.h>
-#endif
 
 #ifndef F_OK            /* for access() */
 #define F_OK            0x00
@@ -102,21 +64,13 @@ static S jtattu(J jt,A w){C*s;I i,n;S z=0;
 
 F1(jtfullname){C dirpath[_MAX_PATH];
  RZ(w=str0(vslit(w)));
-#if SY_WINCE
- C*s;
- s=CAV(w); DQ(AN(w), if(' '!=*s)break; ++s;);
- if(*s=='\\'||*s=='/') strcpy(dirpath,s);
- else {strcpy(dirpath, "\\"); strcat(dirpath,s);}
-#else
  wchar_t wdirpath[_MAX_PATH];
  RZ(w=toutf16x(w)); USAV(w)[AN(w)]=0;
  _wfullpath(wdirpath,USAV(w),_MAX_PATH);
  WideCharToMultiByte(CP_UTF8,0,wdirpath,1+(int)wcslen(wdirpath),dirpath,_MAX_PATH,0,0);
-#endif
  R cstr(dirpath);
 }
 
-#if !SY_WINCE
 
 F1(jtjfperm1){A y,fn,z;C *s;F f;int x; US *p,*q;
  F1RANK(0,jtjfperm1,UNUSED_VALUE);
@@ -145,23 +99,6 @@ F2(jtjfperm2){A y,fn;C*s;F f;int x=0;US *p;
  R _wchmod(p,x)?jerrno():mtm;
 }
 
-#else /* SY_WINCE: */
-
-F1(jtjfperm1){A y,z;C*p,*q,*s;F f; DWORD attr;
- F1RANK(0,jtjfperm1,UNUSED_VALUE);
- RE(f=stdf(w)); if(f){RZ(y=fname(sc((I)f)))} else ASSERT(y=AAV(w)[0],EVFNUM)
- p=CAV(y); q=p+AN(y)-3;
- GAT0(z,LIT,3,1); s=CAV(z);
- if((attr=GetFileAttributes(tounibuf(p)))==0xFFFFFFFF)R jerrno();
- s[0]='r';
- s[1]=attr&FILE_ATTRIBUTE_READONLY?'-':'w';
- s[2]=strcmp(q,"exe")&&strcmp(q,"bat")&&strcmp(q,"com")?'-':'x';
- R z;
-}
-
-F2(jtjfperm2){ASSERT(0,EVNONCE);}
-
-#endif
 #endif
 
 /* jdir produces a 5-column matrix of boxes:                 */

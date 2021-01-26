@@ -1,7 +1,5 @@
 #define jversion   "902"
-#ifdef _WIN32
-#define jplatform "windows"  // windows/linux/darwin/raspberry/android/...
-#elif defined(__MACH__)
+#if defined(__MACH__)
 #define jplatform "darwin"
 #elif defined(__linux__)
 #define jplatform "linux"
