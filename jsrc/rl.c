@@ -4,11 +4,7 @@
 /* Representations: Linear and Paren                                       */
 
 #include "j.h"
-
-#if !SY_WINCE
-// extern int isdigit(int);
 #include <ctype.h>
-#endif
 
 #define F1X(f)           A f(J jt,A w,A *ltext)
 #define DF1X(f)           A f(J jt,A w,A self,A *ltext)

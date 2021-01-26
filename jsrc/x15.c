@@ -52,14 +52,7 @@ typedef unsigned char       BYTE;
 typedef float complex float_complex;
 typedef double complex double_complex;
 
-
 #include "j.h"
-
-#if SY_WINCE
-#define HINSTANCE_ERROR 0
-wchar_t *tounibuf(char * src);
-char *toascbuf(wchar_t *src);
-#endif
 
 /*  unix issues                                                 */
 /*  if there is only one calling convention then                */
@@ -687,9 +680,6 @@ static CCT*jtcdload(J jt,CCT*cc,C*lib,C*proc){B ha=0;FARPROC f;HMODULE h;
   cc->h=h; ha=1;
  }
 
-#if SY_WINCE
- f=GetProcAddress(h,tounibuf(proc));
-#endif
 #if (SYS & SYS_UNIX)
  f=(FARPROC)dlsym(h,proc);
 #endif
@@ -1001,19 +991,6 @@ F1(jtcder){I t; ASSERTMTV(w); t=jt->dlllasterror; jt->dlllasterror=DEOK; R v2(t&
 F1(jtcderx){I t;C buf[1024];
  ASSERTMTV(w); t=jt->getlasterror; jt->getlasterror=0;
 
-
-#if SY_WINCE
- {
- WCHAR wbuf[1024];
- FormatMessage(
-    FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
-    NULL, (DWORD)t,
-    MAKELANGID(LANG_ENGLISH, SUBLANG_DEFAULT),  /* Default language */
-    wbuf, sizeof(buf), 0);
- strcpy(buf,toascbuf(wbuf));
- }
-#endif
-
 #if SYS&SYS_UNIX
  {const char *e = dlerror(); strcpy (buf, e?e:"");}
 #endif
@@ -1264,9 +1241,6 @@ F2(jtcdproc2){C*proc;FARPROC f;HMODULE h;
   f=(k==-1)?(FARPROC)0:(FARPROC)jfntaddr[k];
  }else{
 
-#if SY_WINCE
-  f=GetProcAddress(h,tounibuf(proc));
-#endif
 #if (SYS & SYS_UNIX)
   f=(FARPROC)dlsym(h,proc);
 #endif

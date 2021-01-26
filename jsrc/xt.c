@@ -92,11 +92,7 @@ F1(jtts0){A x,z;C s[9],*u,*v,*zv;D*xv;I n,q;
 #ifdef SY_GETTOD
 D tod(void){struct timeval t; gettimeofday(&t,NULL); R t.tv_sec+(D)t.tv_usec/1e6;}
 #else
-#if SY_WINCE
-D tod(void){SYSTEMTIME t; GetLocalTime(&t); R t.wSecond+(D)t.wMilliseconds/1e3;}
-#else
 D tod(void){R(D)clock()/CLOCKS_PER_SEC;}
-#endif
 #endif
 
 

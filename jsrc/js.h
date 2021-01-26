@@ -110,34 +110,9 @@
 #endif
 
 
-
-#ifdef UNDER_CE
-#undef  SY_WINCE
-#define SY_WINCE            1
-#endif
-
 // SY_ALIGN 1 for compilers requiring strict alignment
 //             e.g. if (I*)av is not allowed for arbitrary av of type C*
 #define SY_ALIGN 1 // always use 1 so all use same code; required by nvr stack in parser
-
-/* Windows CE target autoconfiguration: */
-#if SY_WINCE
-#ifdef SH3
-#define SY_WINCE_SH         1
-#else
-#define SY_WINCE_SH         0
-#endif
-#ifdef MIPS
-#define SY_WINCE_MIPS       1
-#else
-#define SY_WINCE_MIPS       0
-#endif
-#ifdef ARM
-#define SY_WINCE_ARM        1
-#else
-#define SY_WINCE_ARM        0
-#endif
-#endif
 
 #ifndef SYS     /* must be defined */
  error: "SYS must be defined"

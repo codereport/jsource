@@ -9,7 +9,7 @@
 #endif
 #include "x.h"
 
-#if SY_WINCE || !(SYS & SYS_DOS+SYS_MACINTOSH+SYS_UNIX)
+#if !(SYS & SYS_DOS+SYS_MACINTOSH+SYS_UNIX)
 #define LOCK 1
 static B jtdolock(J jt,B lk,F f,I i,I n){ASSERT(0,EVNONCE);}
 #endif

@@ -45,8 +45,6 @@ R cstr("");
 F1(jthost){A z;
  F1RANK(1,jthost,UNUSED_VALUE);
  RZ(w=vslit(w));
-// #if SY_WINCE
-
 {
  A t;I b=0;C*fn,*s;F f;I n;
  n=AN(w);
@@ -100,8 +98,6 @@ F1(jthost){A z;
 F1(jthostne){
  F1RANK(1,jthostne,UNUSED_VALUE);
  RZ(w=vslit(w));
-// #if SY_WINCE
-
  {
   I b;
 #ifdef MMSC_VER
