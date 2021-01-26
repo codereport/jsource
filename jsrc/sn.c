@@ -14,32 +14,32 @@ B jtvnm(J jt,I n,C *s){C c,t;I j;
   // (the string can't start with _)
  C cn=s[n-1];  // last character
  t|=ctype[(UC)cn];   // include flags for last char
- if(n<=2)R 1^((t&1)|(cn=='_'));  // 1- or 2-char name, OK if char(s) OK & doesn't end with _
+ if(n<=2)return 1^((t&1)|(cn=='_'));  // 1- or 2-char name, OK if char(s) OK & doesn't end with _
  {C prevcu0; C cu0=cn^'_';  // cu0 = 0 iff cn=='_'
   j=-1;  // Init no indirect locative found
   DQU(n-2, prevcu0=cu0; t|=ctype[(UC)(c=s[i+1])]; cu0=c^'_'; j=(cu0|prevcu0)?j:i;)
  }
  // Now t is the mask of invalidity, and j is the index one before the first __ (-1 if no __)
- if((t&1)+((cn!='_')&SGNTO0(j)))R 1^(t&1);   // Return if accumulated error, or if not trailing '_' and no __ (normal return)
+ if((t&1)+((cn!='_')&SGNTO0(j)))return 1^(t&1);   // Return if accumulated error, or if not trailing '_' and no __ (normal return)
  // If the last char is _, any ind loc is invalid (but not trailing __); scan to find previous _ (call its index j, error if 0); audit locale name, or OK if empty (base locale)
- if(cn=='_'){if(j>=0)R j==n-3; j=n-3; do{if(s[j]=='_')R((ctype[(UC)s[j+1]]&CA)||vlocnm(n-j-2,s+j+1));}while(--j>0); R 0;}  // return if any __, including at end; find last '_', which cannot be in the last 2 chars; see if valid locale name; if no '_', error
+ if(cn=='_'){if(j>=0)return j==n-3; j=n-3; do{if(s[j]=='_')return((ctype[(UC)s[j+1]]&CA)||vlocnm(n-j-2,s+j+1));}while(--j>0); return 0;}  // return if any __, including at end; find last '_', which cannot be in the last 2 chars; see if valid locale name; if no '_', error
  // Here last char was not _, and j is still pointed after __ if any
  // There is an indirect locative.  Scan all of them, verifying first char of each name is alphabetic (all chars were verified alphameric above)
  // Also verify that any _ is preceded or followed by _
  // We do this with a state machine that scans 3 characters at a time, creating 3 bits: [0]='_' [1]='_' [2]=digit (including _).  We always start pointing to the first '_'.  State result tells
  // how many characters to advance, 0 meaning error.  We stop when there are <2 characters left.  The word cannot end with '_'.  If it ends xx9_9 we will go to 9_9 and then _9?, i. e. overfetch the buffer by 1.  But that's OK on literal data.
  // advance counts are: xxa=3, xx9=2, x_a=0, x_9=1, _xa=0, _x9=0, __a=3, __9=0 
- ++j; do{I state=4*(s[j]=='_')+2*(s[j+1]=='_')+(ctype[(UC)s[j+2]]>>3); state=(0x03001023L>>(state<<2))&3; if(state==0)R 0; j+=state;}while(j<n-1);
- R 1;
+ ++j; do{I state=4*(s[j]=='_')+2*(s[j+1]=='_')+(ctype[(UC)s[j+2]]>>3); state=(0x03001023L>>(state<<2))&3; if(state==0)return 0; j+=state;}while(j<n-1);
+ return 1;
 }    /* validate name s, return 1 if name well-formed or 0 if error */
 
 B vlocnm(I n,C*s){
  I accummask=0; DO(n, UC c=s[i]; C t=ctype[c]; t=c=='_'?CX:t; accummask|=t;)  // create mask of types encountered.  Treat  '_' as nonalphameric
- if(accummask&~(CA|C9))R 0;  // error if any non-alphameric encountered
- if(n<2)R (B)n;  // error if n=0; OK if n=1 (any alphameric is OK then)
- if(s[0]>'9')R 1;  // if nonnumeric locale, alphameric name must be OK
- if(s[0]=='0'||n>(SZI==8?18:9))R 0;  // numeric locale: if (multi-digit) locale starts with '0', or number is too long for an I (conservatively), error
- R accummask==C9;   // if there are any alphabetics, give error
+ if(accummask&~(CA|C9))return 0;  // error if any non-alphameric encountered
+ if(n<2)return (B)n;  // error if n=0; OK if n=1 (any alphameric is OK then)
+ if(s[0]>'9')return 1;  // if nonnumeric locale, alphameric name must be OK
+ if(s[0]=='0'||n>(SZI==8?18:9))return 0;  // numeric locale: if (multi-digit) locale starts with '0', or number is too long for an I (conservatively), error
+ return accummask==C9;   // if there are any alphabetics, give error
 }    /* validate locale name: 1 if locale-name OK, 0 if error */
 
 static const C argnames[7]={'m','n','u','v','x','y',0};
@@ -53,7 +53,7 @@ A jtnfs(J jt,I n,C*s){A z;C f,*t;I m,p;NM*zv;
  ASSERT(n!=0,EVILNAME);   // error if name is empty  (? not required since name always valid?
  // If the name is the special x y.. or x. y. ..., return a copy of the preallocated block for that name (we may have to add flags to it)
  if(SGNTO0(n-2)&BETWEENC(f,'m','y')&(p=(0x1b03>>(f-'m')))){  // M N o p q r s t U V w X Y 1101100000011
-  R ca(mnuvxynam[5-((p&0x800)>>(11-2))-((p&0x8)>>(3-1))-((p&0x2)>>(1-0))]);  // return a clone of the argument block (because flags may be added)
+  return ca(mnuvxynam[5-((p&0x800)>>(11-2))-((p&0x8)>>(3-1))-((p&0x2)>>(1-0))]);  // return a clone of the argument block (because flags may be added)
  }
  // The name may not be valid, but we will allocate a NAME block for it anyway
  GATV0(z,NAME,n,1); zv=NAV(z);   // the block is cleared to 0
@@ -78,10 +78,10 @@ A jtnfs(J jt,I n,C*s){A z;C f,*t;I m,p;NM*zv;
 
 // string from name: returns string for the name
 // if b&SFNSIMPLEONLY, return only the simple name
-A jtsfn(J jt,B b,A w){NM*v; ARGCHK1(w); v=NAV(w); R str(b&SFNSIMPLEONLY?v->m:AN(w),v->s);}
+A jtsfn(J jt,B b,A w){NM*v; ARGCHK1(w); v=NAV(w); return str(b&SFNSIMPLEONLY?v->m:AN(w),v->s);}
 
 // string from name evocation: returns string for name UNLESS the name was an NMDOT type; in that case it returns w f. which will be a verb
-A jtsfne(J jt,A w){ARGCHK1(w); A wn=FAV(w)->fgh[0]; if(AT(wn)&NAMEBYVALUE)R fix(w,zeroionei(0)); R sfn(0,wn);}
+A jtsfne(J jt,A w){ARGCHK1(w); A wn=FAV(w)->fgh[0]; if(AT(wn)&NAMEBYVALUE)return fix(w,zeroionei(0)); return sfn(0,wn);}
 
 
 F1(jtnfb){A y;C*s;I n;
@@ -91,22 +91,22 @@ F1(jtnfb){A y;C*s;I n;
  RZ(y=vs(ope(w)));
  n=AN(y); s=CAV(y);
  ASSERTN(vnm(n,s),EVILNAME,nfs(n,s));
- R nfs(n,s);
+ return nfs(n,s);
 }    /* name from scalar boxed string */
 
 // w is an A for a name string; return NAME block or 0 if error
 static F1(jtstdnm){C*s;I j,n,p,q;
- if(!(w=vs(w)))R 0;  // convert to ASCII
+ if(!(w=vs(w)))return 0;  // convert to ASCII
  n=AN(w); s=CAV(w);  // n = #characters, s->string
- if(!(n))R 0;
+ if(!(n))return 0;
  j=0;   DQ(n, if(' '!=s[j++])break;); p=j-1;
  j=n-1; DQ(n, if(' '!=s[j--])break;); q=(n-2)-j;
- if(!(vnm(n-(p+q),p+s)))R 0;   // Validate name
- R nfs(n-(p+q),p+s);   // Create NAME block for name
+ if(!(vnm(n-(p+q),p+s)))return 0;   // Validate name
+ return nfs(n-(p+q),p+s);   // Create NAME block for name
 }    /* 0 result means error or invalid name */
 
 // x is a (possibly) boxed string; result is NAME block for name x, error if invalid name
-F1(jtonm){A x,y; RZ(x=ope(w)); y=stdnm(x); ASSERTN(y,EVILNAME,nfs(AN(x),CAV(x))); R y;}
+F1(jtonm){A x,y; RZ(x=ope(w)); y=stdnm(x); ASSERTN(y,EVILNAME,nfs(AN(x),CAV(x))); return y;}
 
 // w is array of boxed strings; result is name class for each
 F1(jtnc){A*wv,x,y,z;I i,n,t,*zv;L*v; 
@@ -145,10 +145,10 @@ static F1(jtnlx){A z=mtv;B b;I m=0,*v,x;
  if(b           )RZ(z=nlxxx(jt->global));
  if(b&&(AN(jt->locsyms)>1))RZ(z=over(nlxxx(jt->locsyms),z));
  if(m==SYMB     )RZ(z=over(nlsym(jt->stloc),z));
- R nub(grade2(z,ope(z)));
+ return nub(grade2(z,ope(z)));
 }
 
-F1(jtnl1){memset(jt->workareas.namelist.nla,C1,256L); R nlx(w);}
+F1(jtnl1){memset(jt->workareas.namelist.nla,C1,256L); return nlx(w);}
      /* 4!:1  name list */
 
 F2(jtnl2){UC*u;
@@ -156,7 +156,7 @@ F2(jtnl2){UC*u;
  ASSERT(LIT&AT(a),EVDOMAIN);
  memset(jt->workareas.namelist.nla,C0,256L); 
  u=UAV(a); DQ(AN(a),jt->workareas.namelist.nla[*u++]=1;);
- R nlx(w);
+ return nlx(w);
 }    /* 4!:1  name list */
 
 
@@ -192,7 +192,7 @@ static A jtnch1(J jt,B b,A w,I*pm,A ch){A*v,x,y;C*s,*yv;LX *e;I i,k,m,p,wn;L*d;
    d=d->next+LAV0(jt->symp);
  }}
  *pm=m;
- R ch;
+ return ch;
 }
 
 F1(jtnch){A ch;B b;LX *e;I i,m,n;L*d;
@@ -213,7 +213,7 @@ F1(jtnch){A ch;B b;LX *e;I i,m,n;L*d;
  }
  jt->stch=b;
  AN(ch)=AS(ch)[0]=m;
- R grade2(ch,ope(ch));
+ return grade2(ch,ope(ch));
 }    /* 4!:5  names changed */
 
 

@@ -57,8 +57,8 @@ static const US orderfromcomp5[1024] = {
 
 // Comparison functions.  Do one comparison before the loop for a fast exit if it differs.
 // On VS this sequence, where a single byte is returned, creates a CMP/JE/SETL sequence, performing only one (fused) compare
-// #define COMPGRADE(T,t) T av=*a, bv=*b; if(av!=bv) R av t bv; while(--n){++a; ++b; av=*a, bv=*b; if(av!=bv) R av t bv;} R a<b;
-#define COMPGRADE(T,t) do{T av=*a, bv=*b; if(av!=bv) R av t bv; if(!--n)break; ++a; ++b;}while(1); R 1;
+// #define COMPGRADE(T,t) T av=*a, bv=*b; if(av!=bv) return av t bv; while(--n){++a; ++b; av=*a, bv=*b; if(av!=bv) return av t bv;} return a<b;
+#define COMPGRADE(T,t) do{T av=*a, bv=*b; if(av!=bv) return av t bv; if(!--n)break; ++a; ++b;}while(1); return 1;
 static __forceinline B compiu(I n, I *a, I *b){COMPGRADE(I,<)}
 static __forceinline B compid(I n, I *a, I *b){COMPGRADE(I,>)}
 static __forceinline B compdu(I n, D *a, D *b){COMPGRADE(D,<)}
@@ -136,14 +136,14 @@ static A jtsortdirect(J jt,I m,I api,I n,A w){A x,z;I t;
   void *sortres=(*sortfunc)(cmpfunc,cpi,n,bpi,(void*)zv,(void*)xv,wv);
   if(m==1){
    // If there is only one cell, it may be either *zv or *xv, but either way it should be the result
-   R (sortres==zv)?z:x;
+   return (sortres==zv)?z:x;
   }else{
    // If there is more than one cell, we have to make sure all the data migrates to *zv, if it's not there already
    if(sortres!=zv)MCL(zv,sortres,bps);
   }
   wv=(void*)((C*)wv+bps); zv=(void*)((C*)zv+bps);
  );
- R z;  // multiple cells - return original z
+ return z;  // multiple cells - return original z
 }    /* w grade"r w for direct types, by moving the data without pointers */
 
 
@@ -163,7 +163,7 @@ static SF(jtsortb){A z;B up,*u,*v;I i,s;
   else  {memset(v,C1,s  ); memset(v+s,  C0,n-s);}
   u+=n; v+=n;
  }
- R z;
+ return z;
 }    /* w grade"1 w on boolean */
 
 static SF(jtsortb2){A z;B up;I i,ii,j,p,yv[4];US*v,*wv,x,zz[4];
@@ -176,7 +176,7 @@ static SF(jtsortb2){A z;B up;I i,ii,j,p,yv[4];US*v,*wv,x,zz[4];
   if(up){j=0;   DQ(p, x=zz[j]; DQ(yv[j], *v++=x;); yv[j]=0; ++j;);}
   else  {j=p-1; DQ(p, x=zz[j]; DQ(yv[j], *v++=x;); yv[j]=0; --j;);}
  }
- R z;
+ return z;
 }    /* w grade"r w on 2-byte boolean items */
 
 static SF(jtsortb4){A z;B up;I i,ii,j,p,yv[16];UINT*v,*wv,x,zz[16];
@@ -192,7 +192,7 @@ static SF(jtsortb4){A z;B up;I i,ii,j,p,yv[16];UINT*v,*wv,x,zz[16];
   if(up){j=0;   DQ(p, x=zz[j]; DQ(yv[j], *v++=x;); yv[j]=0; ++j;);}
   else  {j=p-1; DQ(p, x=zz[j]; DQ(yv[j], *v++=x;); yv[j]=0; --j;);}
  }
- R z;
+ return z;
 }    /* w grade"r w on 4-byte boolean items */
 
 static SF(jtsortc){A z;B up;I i,p,yv[256];UC j,*wv,*v;
@@ -204,7 +204,7 @@ static SF(jtsortc){A z;B up;I i,p,yv[256];UC j,*wv,*v;
   if(up){j=0;         DQ(p, DQ(yv[j], *v++=j;); yv[j]=0; ++j;);}
   else  {j=(UC)(p-1); DQ(p, DQ(yv[j], *v++=j;); yv[j]=0; --j;);}
  }
- R z;
+ return z;
 }    /* w grade"1 w on boolean or character */
 
 static SF(jtsortc2){A y,z;B up;I i,p,*yv;US j,k,*wv,*v;
@@ -221,7 +221,7 @@ static SF(jtsortc2){A y,z;B up;I i,p,*yv;US j,k,*wv,*v;
    if(up){k=0;         DQ(256, j=k; DQ(256, DQ(yv[j], *v++=j;); yv[j]=0; j+=256;); ++k;);}
    else  {k=(US)(p-1); DQ(256, j=k; DQ(256, DQ(yv[j], *v++=j;); yv[j]=0; j-=256;); --k;);}
  }}
- R z;
+ return z;
 }    /* w grade"1 w on 2-byte character or unicode items */
 
 
@@ -240,7 +240,7 @@ static SF(jtsorti1){A x,y,z;I*wv;I i,*xv,*zv;void *yv;
   grcol(65536,0L,yv,n,xv,zv,sizeof(I)/sizeof(US),INTMSBWDX+(US*)xv,colflags|1);
   wv+=n; zv+=n;
  }
- R z;
+ return z;
 }    /* w grade"r w on large-range integers */
 
 // sort a single integer list using quicksort without misprediction, inplace
@@ -279,9 +279,9 @@ static SF(jtsorti){FPREFIP;A y,z;I i;UI4 *yv;I j,s,*wv,*zv;
  CR rng = condrange(wv,AN(w),IMAX,IMIN,n*((0x12325>>(nrange<<2))&7)); // 1 2 3 2 5 5 are the shift amounts for the ranges
  // smallrange always wins if applicable; otherwise use the table above
  if(!rng.range){  // range was too large
-  if(n<50000)R jtsortiq(jtinplace,m,n,w);  // qsort for very short lists.  TUNE
-  if(n<100000)R jtsortdirect(jt,m,1,n,w);  // 800-99999, mergesort   TUNE
-  R sorti1(m,n,w);  // 100000+, radix  TUNE
+  if(n<50000)return jtsortiq(jtinplace,m,n,w);  // qsort for very short lists.  TUNE
+  if(n<100000)return jtsortdirect(jt,m,1,n,w);  // 800-99999, mergesort   TUNE
+  return sorti1(m,n,w);  // 100000+, radix  TUNE
  }
  // allocate area for the data, and result area
  GATV0(y,C4T,rng.range,1); yv=C4AV(y)-rng.min;  // yv->totals area
@@ -296,7 +296,7 @@ static SF(jtsorti){FPREFIP;A y,z;I i;UI4 *yv;I j,s,*wv,*zv;
   I incr = -jt->workareas.compare.complt; I zincr = (incr&1/*always 1*/)*sizeof(*zv); j=rng.min+(REPSGN(incr)&(rng.range-1));  // jt>complt is 1 or -1
   DQ(rng.range, s=yv[j]; DQ(s, *zv=j; zv=(I*)((C*)zv+zincr);) j+=incr;)  // Don't zv+=zincr, because VS doesn't pull the *8 out
  }
- R z;
+ return z;
 }    /* w grade"1 w on small-range integers */
 
 
@@ -308,7 +308,7 @@ static SF(jtsortu){FPREFIP;A y,z;I i;UI4 *yv;C4 j,s,*wv,*zv;
  I maxrange; CR rng;
  if(0<(maxrange=16*(n-32))){rng = condrange4(wv,AN(w),-1,0,maxrange);
  }else rng.range=0;
- if(!rng.range)R n>700?sortu1(m,n,w):jtsortdirect(jt,m,1,n,w);  // TUNE
+ if(!rng.range)return n>700?sortu1(m,n,w):jtsortdirect(jt,m,1,n,w);  // TUNE
  GATV0(y,C4T,rng.range,1); yv=C4AV(y)-rng.min;
  GA(z,AT(w),AN(w),AR(w),AS(w)); zv=C4AV(z);
  for(i=0;i<m;++i){
@@ -317,7 +317,7 @@ static SF(jtsortu){FPREFIP;A y,z;I i;UI4 *yv;C4 j,s,*wv,*zv;
   I incr = -jt->workareas.compare.complt; I zincr = (incr&1)*sizeof(*zv); j=(C4)(rng.min+(REPSGN(incr)&(rng.range-1)));
   DQ(rng.range, s=yv[j]; DQ(s, *zv=j; zv=(C4*)((C*)zv+zincr);) j+=(C4)incr;)
  }
- R z;
+ return z;
 }    /* w grade"1 w on small-range literal4 */
 
 // We are known to have 1 atom per item
@@ -333,7 +333,7 @@ static SF(jtsortu1){A x,y,z;C4 *xu,*wv,*zu;I i;void *yv;
   grcol(65536, 0L, yv,n,(UI*)xu, (UI*)zu,sizeof(C4)/sizeof(US),INTLSBWDX+1*WDINC+(US*)xu ,colflags);
   wv+=n; zu+=n;
  }
- R z;
+ return z;
 }    /* w grade"r w on large-range literal4 */
 
 
@@ -361,9 +361,9 @@ static SF(jtsortdq){FPREFIP;  // m=#sorts, n=#items in each sort, w is block
 // We are known to have 1 atom per item
 static SF(jtsortd){FPREFIP;A x,y,z;B b;D*g,*h,*xu,*wv,*zu;I i,nneg;void *yv;
  // Use quicksort for normal-sized lists
- if(n<50000)R jtsortdq(jtinplace,m,n,w);  // TUNE
-// testing if(n&1)R jtsortdq(jtinplace,m,n,w);
-// testing if(n&2)R jtsortdirect(jt,m,1,n,w);  // TUNE - it never wins
+ if(n<50000)return jtsortdq(jtinplace,m,n,w);  // TUNE
+// testing if(n&1)return jtsortdq(jtinplace,m,n,w);
+// testing if(n&2)return jtsortdirect(jt,m,1,n,w);  // TUNE - it never wins
  // falling through for radix sort
  GA(z,AT(w),AN(w),AR(w),AS(w));
  wv=DAV(w); zu=DAV(z);
@@ -385,7 +385,7 @@ static SF(jtsortd){FPREFIP;A x,y,z;B b;D*g,*h,*xu,*wv,*zu;I i,nneg;void *yv;
   }
   wv+=n; zu+=n;
  }
- R z;
+ return z;
 }    /* w grade"1 w on real w */
 
 

@@ -28,7 +28,7 @@
 
 B jtparseinit(J jt){A x;
  GAT0(x,INT,20,1); ras(x); jt->nvra=x;   // Initial stack.  Size is doubled as needed
- R 1;
+ return 1;
 }
 
 // w is a block that looks ripe for in-place assignment.  We just have to make sure that it is not in use somewhere up the stack.
@@ -39,9 +39,9 @@ I jtnotonupperstack(J jt, A w) {
   // w is known nonzero
   // see if name was stacked (for the first time) in this very sentence
   A *v=jt->parserstackframe.nvrotop+AAV1(jt->nvra);  // point to current-sentence region of the nvr area
-  DQ(jt->parserstackframe.nvrtop-jt->parserstackframe.nvrotop, if(*v==w)R 1; ++v;);   // if name stacked in this sentence, that's OK
+  DQ(jt->parserstackframe.nvrtop-jt->parserstackframe.nvrotop, if(*v==w)return 1; ++v;);   // if name stacked in this sentence, that's OK
   // see if name was not stacked at all
-  R !(AFLAG(w)&AFNVR);   // return OK if name not stacked (rare, because if it wasn't stacked in the current sentence why would we think we can inplace it?)
+  return !(AFLAG(w)&AFNVR);   // return OK if name not stacked (rare, because if it wasn't stacked in the current sentence why would we think we can inplace it?)
 }
 
 
@@ -116,7 +116,7 @@ static PSTK* jtpfork(J jt,PSTK *stack){
 RECURSIVERESULTSCHECK
  RZ(y);  // if error, return 0 stackpointer
  stack[3].t = stack[1].t; stack[3].a = y;  // take err tok from f; save result; no need to set parsertype, since it didn't change
- stack[2]=stack[0]; R stack+2;  // close up stack & return
+ stack[2]=stack[0]; return stack+2;  // close up stack & return
 }
 
 static PSTK* jtphook(J jt,PSTK *stack){
@@ -124,17 +124,17 @@ static PSTK* jtphook(J jt,PSTK *stack){
 RECURSIVERESULTSCHECK
  RZ(y);  // if error, return 0 stackpointer
  PTFROMTYPE(stack[2].pt,AT(y)) stack[2].t = stack[1].t; stack[2].a = y;  // take err tok from f; save result
- stack[1]=stack[0]; R stack+1;  // close up stack & return
+ stack[1]=stack[0]; return stack+1;  // close up stack & return
 }
 
 static PSTK* jtpparen(J jt,PSTK *stack){
  ASSERT(PTISCAVN(stack[1])&&PTISRPAR(stack[2]),EVSYNTAX);  // if error, signal so with 0 stack.  Look only at pt since MARK doesn't have an a
  stack[2].pt=stack[1].pt; stack[2].t=stack[0].t; stack[2].a = stack[1].a;  //  Install result over ).  Use value from expr, token # from (
- R stack+2;  // advance stack pointer to result
+ return stack+2;  // advance stack pointer to result
 }
 
 // multiple assignment.  self has parms.  ABACK(self) is the symbol table to assign to, valencefns[0] is preconditioning routine to open value or convert it to AR
-static DF2(jtisf){RZ(symbis(onm(a),CALL1(FAV(self)->valencefns[0],w,0L),ABACK(self))); R num(0);} 
+static DF2(jtisf){RZ(symbis(onm(a),CALL1(FAV(self)->valencefns[0],w,0L),ABACK(self))); return num(0);}
 
 // assignment, single or multiple
 static PSTK* jtis(J jt,PSTK *stack){B ger=0;C *s;
@@ -195,7 +195,7 @@ static PSTK* jtis(J jt,PSTK *stack){B ger=0;C *s;
   }
  }
 retstack:  // return, but 0 if error
- stack+=2; stack=jt->jerr?0:stack; R stack;  // the result is the same value that was assigned
+ stack+=2; stack=jt->jerr?0:stack; return stack;  // the result is the same value that was assigned
 }
 
 static PSTK * (*(lines58[]))() = {jtpfork,jtphook,jtis,jtpparen};  // handlers for parse lines 5-8
@@ -206,7 +206,7 @@ static PSTK * (*(lines58[]))() = {jtpfork,jtphook,jtis,jtpparen};  // handlers f
 // Initial call has nonrecurok and virtok both set
 
 void auditblock(A w, I nonrecurok, I virtok) {
- if(!w)R;
+ if(!w)return;
  I nonrecur = (AT(w)&RECURSIBLE) && ((AT(w)^AFLAG(w))&RECURSIBLE);  // recursible type, but not marked recursive
  if(AFLAG(w)&AFVIRTUAL && !(AFLAG(w)&AFUNINCORPABLE))if(AFLAG(ABACK(w))&AFVIRTUAL)SEGFAULT;  // make sure e real backer is valid and not virtual
  if(nonrecur&&!nonrecurok)SEGFAULT;
@@ -250,7 +250,7 @@ F1(jtparse){A z;
  RZ(deba(DCPARSE,queue,(A)m,0L));  // We don't need a new stack frame if there is one already and debug is off
  z=parsea(queue,m);
  debz();
- R z;
+ return z;
 }
 
 
@@ -266,33 +266,33 @@ A virtifnonip(J jt, I ipok, A buf) {
   I* RESTRICT s=AS(buf); I* RESTRICT os=AS(oldbuf); DO(AR(oldbuf), s[i]=os[i];);  // shape of virtual matches shape of w except for #items
     AN(buf)=AN(oldbuf);  // install # atoms
  }
- R buf;
+ return buf;
 }
 
 // We intercept all the function calls, for this file only
 static A virtdfs1(J jtip, A w, A self){
  J jt = (J)(intptr_t)((I)jtip&-4);  // estab legit jt
  w = virtifnonip(jt,(I)jtip&JTINPLACEW,w);
- R jtdfs1(jtip,w,self);
+ return jtdfs1(jtip,w,self);
 }
 static A virtdfs2(J jtip, A a, A w, A self){
  J jt = (J)(intptr_t)((I)jtip&-4);  // estab legit jt
  a = virtifnonip(jt,(I)jtip&JTINPLACEA,a);
  w = virtifnonip(jt,(I)jtip&JTINPLACEW,w);
- R jtdfs2(jtip,a,w,self);
+ return jtdfs2(jtip,a,w,self);
 }
 static A virtfolk(J jtip, A f, A g, A h){
  J jt = (J)(intptr_t)((I)jtip&-4);  // estab legit jt
  f = virtifnonip(jt,0,f);
  g = virtifnonip(jt,0,g);
  h = virtifnonip(jt,0,h);
- R jtfolk(jtip,f,g,h);
+ return jtfolk(jtip,f,g,h);
 }
 static A virthook(J jtip, A f, A g){
  J jt = (J)(intptr_t)((I)jtip&-4);  // estab legit jt
  f = virtifnonip(jt,0,f);
  g = virtifnonip(jt,0,g);
- R jthook(jtip,f,g);
+ return jthook(jtip,f,g);
 }
 
 // redefine the names for when they are used below
@@ -307,7 +307,7 @@ static A virthook(J jtip, A f, A g){
 #define EPZ(x) if(unlikely(!(x))){FP}   // exit parser if x==0
 
 // extend NVR stack, returning the A block for it
-A jtextnvr(J jt){ASSERT(jt->parserstackframe.nvrtop<32000,EVLIMIT); RZ(jt->nvra = ext(1, jt->nvra));  R jt->nvra;}
+A jtextnvr(J jt){ASSERT(jt->parserstackframe.nvrtop<32000,EVLIMIT); RZ(jt->nvra = ext(1, jt->nvra));  return jt->nvra;}
 
 #define BACKMARKS 3   // amount of space to leave for marks at the end.  Because we stack 3 words before we start to parse, we will
  // never see 4 marks on the stack - the most we can have is 1 value + 3 marks.
@@ -679,7 +679,7 @@ failparse:  // If there was an error during execution or name-stacking, exit wit
 #endif
   jt->sf=savfs;  // pop $: stack
   // NOW it is OK to return
-  R z;  // this is the return point from normal parsing
+  return z;  // this is the return point from normal parsing
 
  }else{A y;  // m<2.  Happens fairly often, and full parse can be omitted
   if(likely(m==1)){  // exit fast if empty input.  Happens only during load, but we can't deal with it
@@ -704,7 +704,7 @@ failparse:  // If there was an error during execution or name-stacking, exit wit
    if(likely(y!=0))if(unlikely(!(AT(y)&CAVN))){jsignal(EVSYNTAX); y=0;}  // if not CAVN result, error
   }else y=mark;  // empty input - return with 'mark' as the value, which means nothing to parse.  This result must not be passed into a sentence
   jt->parserstackframe = oframe;
-  R y;
+  return y;
  }
 
 }

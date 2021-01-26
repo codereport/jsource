@@ -62,7 +62,7 @@ static I jtc2j(J jt,B e,I m,C*zv){C c,*s,*t;I k,p;
   DO(k, c=t[i]; *zv++='-'==c?CSIGN:c;);
  }
  // return the length of the string copied
- R k;
+ return k;
 }    /* c format to j format */
 
 static B jtfmtex(J jt,I m,I d,I n,I*xv,B b,I c,I q,I ex){B bm=b||m;C*u,*v=jt->th2buf;I k;
@@ -78,15 +78,15 @@ static B jtfmtex(J jt,I m,I d,I n,I*xv,B b,I c,I q,I ex){B bm=b||m;C*u,*v=jt->th
   memset(u+1,'0',v-u-1);
  }
  jt->th2buf[bm]=jt->th2buf[bm+1]; jt->th2buf[bm+1]='.'; sprintf(v-!d,"e"FMTI"",ex);
- R 1;
+ return 1;
 }    /* format one extended integer in exponential form */
 
 static B jtfmtx(J jt,B e,I m,I d,C*s,I t,X*wv){B b;C*v=jt->th2buf;I c,n,p,q,*xv;X x;
  x=*wv; n=AN(x); xv=AV(x)+n-1; 
  c=*xv; b=0>c; if(b)c=-c;
- if(c==XPINF){if(b)*v++='_'; *v++='_'; *v=0; R 1;}
+ if(c==XPINF){if(b)*v++='_'; *v++='_'; *v=0; return 1;}
  q=c>999?4:c>99?3:c>9?2:1; p=q+XBASEN*(n-1);
- if(e)R fmtex(m,d,n,xv,b,c,q,p-1);
+ if(e)return fmtex(m,d,n,xv,b,c,q,p-1);
  else if(m&&m<b+p+d+!!d){memset(v,'*',m); v[m]=0;}
  else{
   if(jt->th2bufn<4+p+d){A s; jt->th2bufn=4+p+d; GATV0(s,LIT,jt->th2bufn,1); v=jt->th2buf=CAV(s);}
@@ -95,12 +95,12 @@ static B jtfmtx(J jt,B e,I m,I d,C*s,I t,X*wv){B b;C*v=jt->th2buf;I c,n,p,q,*xv;
   DQ(n-1, c=*--xv; sprintf(v,FMTI04,b?-c:c); v+=XBASEN;); 
   if(d){*v++='.'; memset(v,'0',d); v[d]=0;}
  }
- R 1;
+ return 1;
 }    /* format one extended integer */
 
 static B jtfmtq(J jt,B e,I m,I d,C*s,I t,Q*wv){B b;C*v=jt->th2buf;I c,ex=0,k,n,p,q,*xv;Q y;X a,g,x;
  y=*wv; x=y.n; c=XDIG(x); b=0>c; if(b)x=negate(x);
- if(c==XPINF||c==XNINF){if(e)*v++=' '; if(e>b)*v++=' '; if(b)*v++='_'; *v++='_'; *v=0; R 1;}
+ if(c==XPINF||c==XNINF){if(e)*v++=' '; if(e>b)*v++=' '; if(b)*v++='_'; *v++='_'; *v=0; return 1;}
  RZ(a=xpow(xc(10L),xc(1+d)));
  if(e&&c&&0>xcompare(x,y.d)){
   ex=XBASEN*(AN(y.n)-AN(y.d));
@@ -112,7 +112,7 @@ static B jtfmtq(J jt,B e,I m,I d,C*s,I t,Q*wv){B b;C*v=jt->th2buf;I c,ex=0,k,n,p
  RZ(x=xdiv(xplus(x,xc(5L)),xc(10L),XMFLR));
  n=AN(x); xv=AV(x)+n-1; c=*xv; b=0>c; if(b)c=-c;
  q=c>999?4:c>99?3:c>9?2:1; p=q+XBASEN*(n-1); if(c||!e)ex+=p-d-1;
- if(e)R fmtex(m,d,n,xv,b,c,q,ex);
+ if(e)return fmtex(m,d,n,xv,b,c,q,ex);
  else if(m&&m<b+d+(I )!!d+(0>ex?1:1+ex)){memset(v,'*',m); v[m]=0;}
  else{
   if(jt->th2bufn<4+p+d){A s; jt->th2bufn=4+p+d; GATV0(s,LIT,jt->th2bufn,1); v=jt->th2buf=CAV(s);}
@@ -122,7 +122,7 @@ static B jtfmtq(J jt,B e,I m,I d,C*s,I t,Q*wv){B b;C*v=jt->th2buf;I c,ex=0,k,n,p
   DQ(n-1, c=*--xv; sprintf(v,FMTI04,b?-c:c); v+=XBASEN;);
   if(d){v[1]=0; DQ(d, *v=*(v-1); --v;); *v='.';}
  }
- R 1;
+ return 1;
 }    /* format one rational number */
 
 // Format a single number
@@ -178,7 +178,7 @@ static A jtth2a(J jt,B e,I m,I d,C*s,I n,I t,I wk,C*wv,B first){PROLOG(0049);A y
   // Allocate space for all results; set shape to (n,q); zv->result area
  GATV0(z,LIT,p,2); AS(z)[0]=n; AS(z)[1]=q; zv=CAV(z);
  // If field length is fixed, format the column to that width & return it
- if(m){th2c(e,m,d,s,n,t,wk,wv,m,zv); R z;}
+ if(m){th2c(e,m,d,s,n,t,wk,wv,m,zv); return z;}
  // Otherwise, field has variable width.  Format the values one by one.
  // q holds total length so far, p is length of allocated buffer.  ; m will hold the maximum length encountered
  // b will be set for exponential fields only, if no result is negative
@@ -256,7 +256,7 @@ static B jtth2ctrl(J jt,A a,A*ep,A*mp,A*dp,A*sp,I*zkp){A da,ea,ma,s;B b=1,*ev,r,
  // Now that we know the conversion buffer size, allocate it
  GATV0(s,LIT,jt->th2bufn,1); jt->th2buf=CAV(s);
  // Output total line width if it is valid, 0 if not
- *zkp=b?zk:0; R 1;
+ *zkp=b?zk:0; return 1;
 }    /* parse format control (left argument of ":) */
 
 // x ": y
@@ -264,7 +264,7 @@ F2(jtthorn2){PROLOG(0050);A da,ea,h,ma,s,y,*yv,z;B e,*ev;C*sv,*wv,*zv;I an,c,d,*
  F2RANK(1,RMAX,jtthorn2,UNUSED_VALUE);  // apply rank 1 _
  // From here on the a arg is rank 0 or 1
  an=AN(a); t=AT(w);  // an=#atoms of a, t=type of w
- if(t&BOX)R th2box(a,w);  // If boxed w, go handle as special case
+ if(t&BOX)return th2box(a,w);  // If boxed w, go handle as special case
  ASSERT(t&NUMERIC&&!(t&SPARSE)&&!(AT(a)&SPARSE),EVDOMAIN);  // w must be numeric and dense; a must be dense
  // r=rank of w; ws->shape of w; c=#atoms in 1-cell of w; n = #1-cells of w
  r=AR(w); ws=AS(w); SHAPEN(w,r-1,c);  PRODX(n,r-1,ws,1);

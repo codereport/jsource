@@ -46,7 +46,7 @@ static A jtmerge1(J jt,A w,A ind){A z;B*b;C*wc,*zc;D*wd,*zd;I c,it,j,k,m,r,*s,t,
  }
  // We modified w which is now not pristine.
  PRISTCLRF(w)
- R z;
+ return z;
 }
 
 #define CASE2Z(T)  {T*xv=(T*)AV(x),*yv=(T*)AV(y),*zv=(T*)AV(z); DO(n, zv[i]=(bv[i]?yv:xv)[i];); break;}
@@ -70,7 +70,7 @@ F1(jtcasev){A b,*u,*v,w1,x,y,z;B*bv,p,q;I*aa,c,*iv,j,m,n,r,*s,t;
   if(p)DO(m, y=u[i]; if(!(TYPESEQ(t,AT(y))&&r==AR(y)&&!ICMP(s,AS(y),r))){p=0; break;});  // fail if list is not homogeneous in type, rank, and shape
  }
  // If the audit failed, the sentence might work, but we won't be doing it here.  Go run the original sentence
- if(!p)R parse(v[m+2]);   // NOTE this will end up assigning the value twice: once in the parse, and again when we return.  Should we whack off the first two words?
+ if(!p)return parse(v[m+2]);   // NOTE this will end up assigning the value twice: once in the parse, and again when we return.  Should we whack off the first two words?
  // We can do it here!  We split into two cases: Boolean pqr with two names in the list, which can never fail;
  // and all other, which may produce index error
  fauxblockINT(aafaux,4,1);
@@ -227,20 +227,20 @@ A jtcelloffset(J jt,AD * RESTRICT w,AD * RESTRICT ind){A z;
                     *zv++=r; iv+=naxes;)
   }
  }
- R z;
+ return z;
 }
 
 // Convert ind to a list of cell offsets.  Error if inhomogeneous cells.
 // Result *cellframelen gives the number of axes of w that have been boiled down to indices in the result
 static A jtjstd(J jt,A w,A ind,I *cellframelen){A j=0,k,*v,x;I b;I d,i,n,r,*u,wr,*ws;D rkblk[16];
  wr=AR(w); ws=AS(w); b=-AN(ind)&SGNIF(AT(ind),BOXX);  // b<0 = indexes are boxed and nonempty
- if(!wr){x=from(ind,zeroionei(0)); *cellframelen=0; R x;}  // if w is an atom, the best you can get is indexes of 0.  No axes are used
+ if(!wr){x=from(ind,zeroionei(0)); *cellframelen=0; return x;}  // if w is an atom, the best you can get is indexes of 0.  No axes are used
  if((b&-AR(ind))<0){   // array of boxed indexes
   RE(aindex(ind,w,0L,&j));  // see if the boxes are homogeneous
   if(!j){  // if not...
    RZ(x=MODIFIABLE(from(ind,increm(iota(shape(w)))))); u=AV(x); // go back to the original indexes, select from table of all possible incremented indexes; since it is incremented, it is writable
    DQ(AN(x), ASSERT(*u,EVDOMAIN); --*u; ++u;);   // if anything required fill, it will leave a 0.  Fail then, and unincrement the indexes
-   *cellframelen=AR(w); R x;   // the indexes are what we want, and they include all the axes of w
+   *cellframelen=AR(w); return x;   // the indexes are what we want, and they include all the axes of w
   }
   // Homogeneous boxes.  j has them in a single table.  turn each row into an index
   b=0; ind=j;  // use the code for numeric array
@@ -275,7 +275,7 @@ static A jtjstd(J jt,A w,A ind,I *cellframelen){A j=0,k,*v,x;I b;I d,i,n,r,*u,wr
  // It might be good to give a dispensation and allow virtual ind.  In that case, j might have survived this long and thus
  // be virtual.  In that case we must (1) realize it; (2) use the filler field (64-bit only) to pass back the number of axes; (3) use
  // a field in jt to pass back the number of axes.
- *cellframelen=n; R j;  // insert the number of axes used in each cell of j
+ *cellframelen=n; return j;  // insert the number of axes used in each cell of j
 }    /* convert ind in a ind}w into integer atom-offsets */
 
 /* Reference count for w for amend in place */
@@ -330,15 +330,15 @@ static DF2(amccv2){F2PREFIP;DECLF;
 }
 
 
-static DF1(mergn1){       R merge1(w,VAV(self)->fgh[0]);}
-static DF1(mergv1){DECLF; R merge1(w,CALL1(f1,w,fs));}
+static DF1(mergn1){       return merge1(w,VAV(self)->fgh[0]);}
+static DF1(mergv1){DECLF; return merge1(w,CALL1(f1,w,fs));}
 
 // called from m}, m is usually NOT a gerund
 static B ger(A w){A*wv,x;
- if(!(BOX&AT(w)))R 0;
+ if(!(BOX&AT(w)))return 0;
  wv=AAV(w); 
- DO(AN(w), x=wv[i]; if((-(BOX&AT(x))&(((AR(x)^1)|(AN(x)^2))-1))<0)x=AAV(x)[0]; if(((-(LIT&AT(x))&(AR(x)-2)&-AN(x)))>=0)R 0;);  // box/rank1/N=2; lit/R<2/N!=0
- R 1;
+ DO(AN(w), x=wv[i]; if((-(BOX&AT(x))&(((AR(x)^1)|(AN(x)^2))-1))<0)x=AAV(x)[0]; if(((-(LIT&AT(x))&(AR(x)-2)&-AN(x)))>=0)return 0;);  // box/rank1/N=2; lit/R<2/N!=0
+ return 1;
 }    /* 0 if w is definitely not a gerund; 1 if possibly a gerund */
 
 // w is the contents of a presumptive AR/gerund.  Return 1 if good form for AR/gerund, 0 if not
@@ -351,53 +351,53 @@ static B gerar(J jt, A w){A x; C c;
   if(!vnm(n,stg)){
    // not name, see if valid primitive
    UC p = spellin(n,stg);
-   R (p>>7)|!!ds(p);  // return if valid primitive (all non-ASCII are valid primitives, but 0: is not in pst[] so force that in)
+   return (p>>7)|!!ds(p);  // return if valid primitive (all non-ASCII are valid primitives, but 0: is not in pst[] so force that in)
   }
  } else if(AT(w)&BOX) {A *wv;I bmin=0,bmax=0;
   // boxed contents.  There must be exactly 2 boxes.  The first one may be a general AR; or the special cases singleton 0, 2, 3, or 4
   // Second may be anything for special case 0 (noun); otherwise must be a valid gerund, 1 or 2 boxes if first box is general AR, 2 boxes if special case
   // 2 (hook) or 4 (bident), 3 if special case 3 (fork)
   // 
-  if(!(n==2))R 0;  // verify 2 boxes
+  if(!(n==2))return 0;  // verify 2 boxes
   wv = AAV(w);  x=wv[0]; // point to pointers to boxes; point to first box contents
   // see if first box is a special flag
   if((SGNIF(AT(x),LITX)&(AR(x)-2)&((AN(x)^1)-1))<0){ // LIT, rank<2, AN=1
    c = CAV(x)[0];   // fetch that character
-   if(c=='0')R 1;    // if noun, the second box can be anything & is always OK, don't require AR there
+   if(c=='0')return 1;    // if noun, the second box can be anything & is always OK, don't require AR there
    I oride=2+(c&1);  // 2 if '2'/'4', 3 if '3'
    bmin=BETWEENC(c,'2','4')?oride:bmin; bmax=BETWEENC(c,'2','4')?oride:bmax; 
   }
   // If the first box is not a special case, it had better be a valid AR; and it will take 1 or 2 operands
-  if(bmin==0){if(!(gerar(jt,x)))R 0; bmin=1,bmax=2;}
+  if(bmin==0){if(!(gerar(jt,x)))return 0; bmin=1,bmax=2;}
   // Now look at the second box.  It should contain between bmin and bmax boxes, each of which must be an AR
   x = wv[1];   // point to second box
-  if((SGNIF(AT(x),BOXX) & ((AR(x)^1)-1))>=0)R 0;   // verify it contains a list of boxes
-  if(!BETWEENC(AN(x),bmin,bmax))R 0;  // verify correct number of boxes
-  R gerexact(x);  // recursively audit the other ARs in the second box
- } else R 0;
- R 1;
+  if((SGNIF(AT(x),BOXX) & ((AR(x)^1)-1))>=0)return 0;   // verify it contains a list of boxes
+  if(!BETWEENC(AN(x),bmin,bmax))return 0;  // verify correct number of boxes
+  return gerexact(x);  // recursively audit the other ARs in the second box
+ } else return 0;
+ return 1;
 }
 
 B jtgerexact(J jt, A w){A*wv;
- if(!(BOX&AT(w)))R 0;   // verify gerund is boxed
- if(!(AN(w)))R 0;   // verify there are boxes
+ if(!(BOX&AT(w)))return 0;   // verify gerund is boxed
+ if(!(AN(w)))return 0;   // verify there are boxes
  wv = AAV(w);   // point to pointers to contents
- DO(AN(w), if(!(gerar(jt, wv[i])))R 0;);   // fail if any box contains a non-gerund
- R 1;
+ DO(AN(w), if(!(gerar(jt, wv[i])))return 0;);   // fail if any box contains a non-gerund
+ return 1;
 }    /* 0 if w is definitely not a gerund; 1 if possibly a gerund */
 
 
 // u} handling.  This is not inplaceable but the derived verb is
 F1(jtamend){
  ARGCHK1(w);
- if(VERB&AT(w)) R ADERIV(CRBRACE,mergv1,amccv2,VASGSAFE|VJTFLGOK2, RMAX,RMAX,RMAX);  // verb} 
- else if(ger(w))R gadv(w,CRBRACE);   // v0`v1`v2}
- else           R ADERIV(CRBRACE,mergn1,jtamendn2,VASGSAFE|VJTFLGOK2, RMAX,RMAX,RMAX);  // m}
+ if(VERB&AT(w)) return ADERIV(CRBRACE,mergv1,amccv2,VASGSAFE|VJTFLGOK2, RMAX,RMAX,RMAX);  // verb}
+ else if(ger(w))return gadv(w,CRBRACE);   // v0`v1`v2}
+ else           return ADERIV(CRBRACE,mergn1,jtamendn2,VASGSAFE|VJTFLGOK2, RMAX,RMAX,RMAX);  // m}
 }
 
 static DF2(jtamen2){ASSERT(0,EVNONCE);}
 
 F1(jtemend){
  ASSERT(NOUN&AT(w),EVDOMAIN);
- R ADERIV(CEMEND,0L,jtamen2,VFLAGNONE, RMAX,RMAX,RMAX);
+ return ADERIV(CEMEND,0L,jtamen2,VFLAGNONE, RMAX,RMAX,RMAX);
 }

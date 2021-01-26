@@ -56,15 +56,15 @@ static C*modebuf(mode_t m,C* b){C c;I t=m;
   case S_IFREG:  b[0]='-'; break;
   default:       b[0]='?';
  }
- R b;
+ return b;
 }
 
 
 static int ismatch(J jt,C*pat,C*name,struct stat *dirstatbuf,C *diratts, C *dirmode,C *dirrwx,C *dirnamebuf,C *dirbase){ 
 
- strcpy(dirbase,name); if(stat(dirnamebuf,dirstatbuf))R 0;
- if('.'!=*pat && ((!strcmp(name,"."))||(!strcmp(name,".."))))R 0;
- if(fnmatch(pat,name,0)) R 0;
+ strcpy(dirbase,name); if(stat(dirnamebuf,dirstatbuf))return 0;
+ if('.'!=*pat && ((!strcmp(name,"."))||(!strcmp(name,".."))))return 0;
+ if(fnmatch(pat,name,0)) return 0;
 /* Set up dirrwx, diratts, and dirmode for this file */
  dirrwx[0]=access(dirnamebuf,R_OK)?'-':'r';
  dirrwx[1]=access(dirnamebuf,W_OK)?'-':'w';
@@ -74,7 +74,7 @@ static int ismatch(J jt,C*pat,C*name,struct stat *dirstatbuf,C *diratts, C *dirm
  diratts[1]=('.'==name[0])?'h':'-';
  modebuf(dirstatbuf[0].st_mode,dirmode);
  diratts[4]=('d'==dirmode[0])?'d':'-';
- R 1;
+ return 1;
 }
 
 static A jtdir1(J jt,struct dirent*f,struct stat *dirstatbuf,C *diratts, C *dirmode,C *dirrwx){A z,*zv;C*s,att[16];I n,ts[6],i,m,sz;S x;struct tm tmr,*tm=&tmr;
@@ -91,7 +91,7 @@ static A jtdir1(J jt,struct dirent*f,struct stat *dirstatbuf,C *diratts, C *dirm
  RZ(zv[3]=vec(LIT,3L, dirrwx ));
  RZ(zv[4]=vec(LIT, 6L,diratts));
  RZ(zv[5]=vec(LIT,10L,dirmode));
- R z;
+ return z;
 }
 
 F1(jtjdir){PROLOG(0103);A*v,z,*zv;C*dir,*pat,*s,*x;I j=0,n=32;DIR*DP;struct dirent *f;
@@ -102,7 +102,7 @@ F1(jtjdir){PROLOG(0103);A*v,z,*zv;C*dir,*pat,*s,*x;I j=0,n=32;DIR*DP;struct dire
  RZ(w=str0(vslit(!AR(w)&&BOX&AT(w)?ope(w):w)));
  s=CAV(w);
  if(x=strrchr(s,'/')){dir=s==x?(C*)"/":s; pat=x+1; *x=0;}else{dir="."; pat=s;}
- if(NULL==(DP=opendir(dir)))R reshape(v2(0L,6L),ds(CACE));
+ if(NULL==(DP=opendir(dir)))return reshape(v2(0L,6L),ds(CACE));
  /*
   * SYSV and BSD have different return types for sprintf(),
   * so we use less efficient but portable code.
@@ -131,8 +131,8 @@ F1(jtjfperm1){A y;F f;C b[11];
  struct stat dirstatbuf[3];
  F1RANK(0,jtjfperm1,UNUSED_VALUE);
  RE(f=stdf(w)); if(f){RZ(y=fname(sc((I)f)));y=str0(y);} else ASSERT(y=str0(vslit(AAV(w)[0])),EVFNUM)
- if(0!=stat(CAV(y),dirstatbuf))R jerrno();
- R vec(LIT,9L,1+modebuf(dirstatbuf[0].st_mode,b));
+ if(0!=stat(CAV(y),dirstatbuf))return jerrno();
+ return vec(LIT,9L,1+modebuf(dirstatbuf[0].st_mode,b));
 }
 
 
@@ -155,11 +155,11 @@ F2(jtjfperm2){A y;C*s;F f;int x=0,i;C*m;
  for(i=0;i<9;i++)
     {ASSERT(NULL!=(m=strchr(permtab[i].c,s[i])),EVDOMAIN);
      x|=permtab[i].p[m-permtab[i].c];}
- R chmod(CAV(y),x)?jerrno():mtm;
+ return chmod(CAV(y),x)?jerrno():mtm;
 }
 
 
 
 /* ----------------------------------------------------------------------- */
 
-F1(jtfullname){R w;}
+F1(jtfullname){return w;}

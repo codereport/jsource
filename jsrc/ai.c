@@ -10,25 +10,25 @@ static F1(jtinvamp);
 
 static B ip(A w,C c,C d){A f,g;V*v;
  v=FAV(w); f=v->fgh[0]; g=v->fgh[1];
- R CSLASH==ID(f)&&c==ID(FAV(f)->fgh[0])&&d==ID(g);
+ return CSLASH==ID(f)&&c==ID(FAV(f)->fgh[0])&&d==ID(g);
 }
 
 static B consf(A w){A f;C c;
  c=ID(w);
- if(c==CFCONS||c==CQQ&&(f=FAV(w)->fgh[0],NOUN&AT(f)))R 1;
- R 0;
+ if(c==CFCONS||c==CQQ&&(f=FAV(w)->fgh[0],NOUN&AT(f)))return 1;
+ return 0;
 }    /* 1 iff w is a constant function */
 
 static F2(jtfong){A f;C c;V*v;
  ARGCHK2(a,w);
  v=FAV(a); c=v->id; f=v->fgh[0];
- R c==CRIGHT ? w : c==CFORK&&(NOUN&AT(f)||CCAP==ID(f)) ? folk(f,v->fgh[1],fong(v->fgh[2],w)) : folk(ds(CCAP),a,w);
+ return c==CRIGHT ? w : c==CFORK&&(NOUN&AT(f)||CCAP==ID(f)) ? folk(f,v->fgh[1],fong(v->fgh[2],w)) : folk(ds(CCAP),a,w);
 }   // [: f g  with simplifications: [: ] w -> w;  [: (N/[: x y) w -> N/[: x [: y w   and y omittrd if ]
 
 static F1(jtinvfork){A f,fi,g,gi,h,k;B b,c;V*v;
  ARGCHK1(w);
  v=FAV(w); RZ(f=unname(v->fgh[0])); g=v->fgh[1]; RZ(h=unname(v->fgh[2]));
- if(CCAP==ID(f))R fong(invrecur(h),invrecur(g));
+ if(CCAP==ID(f))return fong(invrecur(h),invrecur(g));
  c=1&&NOUN&AT(f); b=c||consf(f);
  ASSERT(b!=consf(h),EVDOMAIN);
  RZ(k=c?f:df1(gi,num(0),b?f:h));
@@ -39,16 +39,16 @@ static F1(jtinvfork){A f,fi,g,gi,h,k;B b,c;V*v;
   if     (NOUN&AT(v->fgh[0]))RZ(gi=folk(v->fgh[0],     v->fgh[1], ds(CRIGHT)))
   else if(NOUN&AT(v->fgh[1]))RZ(gi=folk(v->fgh[1],swap(v->fgh[0]),ds(CRIGHT)));
  }
- R fong(fi,gi);
+ return fong(fi,gi);
 }
 
-static DF1(jtexpandf){A f; ARGCHK2(w,self); f=FAV(self)->fgh[0]; R expand(VAV(f)->fgh[0],w);}
+static DF1(jtexpandf){A f; ARGCHK2(w,self); f=FAV(self)->fgh[0]; return expand(VAV(f)->fgh[0],w);}
 
 static DF1(jtexpandg){A f,g,z;V*v;
  ARGCHK2(w,self);
  f=FAV(self)->fgh[0]; v=FAV(f); g=v->fgh[1];
  jt->fill=FAV(g)->fgh[1]; z=expand(v->fgh[0],w); jt->fill=0;   // elements of FAV cannot be virtual
- R z;
+ return z;
 }
 
 static F2(jtdiag){I d,m,p,r,t,*v;
@@ -69,8 +69,8 @@ static F1(jtbminv){A*wv,x,z=w;I i,j,m,r,*s,t=0,*u,**v,*y,wn,wr,*ws;
  ASSERT(0,EVNONCE);
  ASSERT(BOX&AT(w),EVDOMAIN);
  wn=AN(w); wr=AR(w); ws=AS(w); wv=AAV(w); 
- if(1>=wr)R raze(w);
- if(!wn)R iota(reshape(sc(wr),num(0)));
+ if(1>=wr)return raze(w);
+ if(!wn)return iota(reshape(sc(wr),num(0)));
  GATV0(x,INT,wr,1); u=AV(x); memset(u,C0,wr*SZI);
  GATV0(x,INT,wr,1); v=(I**)AV(x);
  DO(wr, m=ws[i]; GATV0(x,INT,m,1); memset(v[i]=AV(x),CFF,m*SZI););
@@ -103,78 +103,78 @@ static F1(jtinvamp){A f,ff,g,h,x,y;B nf,ng;C c,d,*yv;I n;V*u,*v;
  g=v->fgh[1]; ng=!!(NOUN&AT(g));
  h=nf?g:f; x=nf?f:g; c=ID(h); u=VAV(h);   // h=verb arg, x=noun arg
  switch(c){
-  case CPLUS:    R amp(negate(x),h);
-  case CSTAR:    R amp(recip(x), h);
-  case CMINUS:   R nf?w:amp(x,ds(CPLUS));
-  case CDIV:     R nf?w:amp(x,ds(CSTAR));
-  case CROOT:    R amp(ds(nf?CEXP:CLOG),x);
-  case CEXP:     R ng&&equ(x,num(2))?ds(CROOT):amp(x,ds(nf?CLOG:CROOT));
-  case CLOG:     R nf?amp(x,ds(CEXP)):amp(ds(CROOT),x);
-  case CJDOT:    R nf?atop(invrecur(ds(CJDOT)),amp(ds(CMINUS),x)):amp(ds(CMINUS),jdot1(x));
-  case CRDOT:    R nf?atop(invrecur(ds(CRDOT)),amp(ds(CDIV  ),x)):amp(ds(CDIV  ),rdot1(x));
-  case CLBRACE:  R nf?amp(pinv(x),h):amp(x,ds(CIOTA));
-  case COBVERSE: ff=FAV(h)->fgh[1]; R amp(nf?x:ff,nf?ff:x);
-  case CPDERIV:  if(nf&&!AR(x))R ds(CPDERIV); break;  // only atom&p.. is invertible
+  case CPLUS:    return amp(negate(x),h);
+  case CSTAR:    return amp(recip(x), h);
+  case CMINUS:   return nf?w:amp(x,ds(CPLUS));
+  case CDIV:     return nf?w:amp(x,ds(CSTAR));
+  case CROOT:    return amp(ds(nf?CEXP:CLOG),x);
+  case CEXP:     return ng&&equ(x,num(2))?ds(CROOT):amp(x,ds(nf?CLOG:CROOT));
+  case CLOG:     return nf?amp(x,ds(CEXP)):amp(ds(CROOT),x);
+  case CJDOT:    return nf?atop(invrecur(ds(CJDOT)),amp(ds(CMINUS),x)):amp(ds(CMINUS),jdot1(x));
+  case CRDOT:    return nf?atop(invrecur(ds(CRDOT)),amp(ds(CDIV  ),x)):amp(ds(CDIV  ),rdot1(x));
+  case CLBRACE:  return nf?amp(pinv(x),h):amp(x,ds(CIOTA));
+  case COBVERSE: ff=FAV(h)->fgh[1]; return amp(nf?x:ff,nf?ff:x);
+  case CPDERIV:  if(nf&&!AR(x))return ds(CPDERIV); break;  // only atom&p.. is invertible
   case CXCO:     RE(n=i0(x)); ASSERT(n&&BETWEENC(n,-2,2),EVDOMAIN);  // fall through to create (-x)&u
   case CROT:          // fall through to create (-x)&u
   case CCIRCLE:       // fall through to create (-x)&u
-  case CSPARSE:  if(nf)R amp(negate(x),h);   break;
-  case CABASE:   if(nf)R amp(x,ds(CBASE));   break;
-  case CIOTA:    if(nf)R amp(ds(CLBRACE),x); break;
-  case CTHORN:   if(nf)R ds(CEXEC);          break;
+  case CSPARSE:  if(nf)return amp(negate(x),h);   break;
+  case CABASE:   if(nf)return amp(x,ds(CBASE));   break;
+  case CIOTA:    if(nf)return amp(ds(CLBRACE),x); break;
+  case CTHORN:   if(nf)return ds(CEXEC);          break;
   case CTILDE:   
-   if(ff=FAV(h)->fgh[0],VERB&AT(ff))R invamp(amp(nf?ff:x,nf?x:ff));
-   else{ff=unname(h); R invamp(amp(nf?x:ff,nf?ff:x));}
+   if(ff=FAV(h)->fgh[0],VERB&AT(ff))return invamp(amp(nf?ff:x,nf?x:ff));
+   else{ff=unname(h); return invamp(amp(nf?x:ff,nf?ff:x));}
   case CSCO:     
    ASSERT(nf!=0,EVDOMAIN); 
    RE(n=i0(x)); ASSERT(n&&BETWEENC(n,-6,6),EVDOMAIN);
-   R amp(sc(-n),h);
+   return amp(sc(-n),h);
   case CUCO:
    ASSERT(nf!=0,EVDOMAIN); 
    RE(n=i0(x)); ASSERT(BETWEENC(n,1,8)&!BETWEENC(n,5,6),EVDOMAIN);
-   R amp(sc(-(1^(-n))),h);
+   return amp(sc(-(1^(-n))),h);
   case CCANT:    
    ASSERT(nf!=0,EVDOMAIN); 
-   R obverse(eva(x,"] |:~ u C.^:_1 i.@#@$"),w);
+   return obverse(eva(x,"] |:~ u C.^:_1 i.@#@$"),w);
   case CPCO:
    if(nf){
     RE(n=i0(x));
     switch(n){
-     case -4: case 4: R amp(negate(x),h);
-     case -1:         R ds(CPCO);
-     case  2:         R obverse(eval("*/@(^/)\"2"),w);
-     case  3:         R eval("*/");
+     case -4: case 4: return amp(negate(x),h);
+     case -1:         return ds(CPCO);
+     case  2:         return obverse(eval("*/@(^/)\"2"),w);
+     case  3:         return eval("*/");
    }}
    break;
   case CQCO:     
    if(nf){
     ASSERT(!AR(x),EVRANK);
-    R obverse(eval(all1(lt(x,zeroionei(0)))?"*/@(^/)\"2":"(p:@i.@# */ .^ ])\"1"),w);
+    return obverse(eval(all1(lt(x,zeroionei(0)))?"*/@(^/)\"2":"(p:@i.@# */ .^ ])\"1"),w);
    }
    break;
   case CFIT:
    ASSERT(nf&&(CPOUND==ID(FAV(g)->fgh[0])),EVDOMAIN);
    ASSERT(1==AR(x),EVRANK);
-   R fdef(0,CPOWOP,VERB, jtexpandg,0L, w,num(-1),0L, VFLAGNONE, RMAX,0L,0L);
+   return fdef(0,CPOWOP,VERB, jtexpandg,0L, w,num(-1),0L, VFLAGNONE, RMAX,0L,0L);
   case CPOUND:
    ASSERT(nf!=0,EVDOMAIN);
    ASSERT(1==AR(x),EVRANK);
-   R fdef(0,CPOWOP,VERB, jtexpandf,0L, w,num(-1),0L, VFLAGNONE, RMAX,0L,0L);
+   return fdef(0,CPOWOP,VERB, jtexpandf,0L, w,num(-1),0L, VFLAGNONE, RMAX,0L,0L);
    break;
   case CPOWOP:
-   if(VGERL&u->flag){ff=*(1+AAV(u->fgh[2])); R amp(nf?x:ff,nf?ff:x);} 
+   if(VGERL&u->flag){ff=*(1+AAV(u->fgh[2])); return amp(nf?x:ff,nf?ff:x);}
    break;
   case CCOMMA:  
    SETIC(x,n); 
-   R obverse(1==n?ds(nf?CDROP:CCTAIL):amp(sc(nf?n:-n),ds(CDROP)),w);
+   return obverse(1==n?ds(nf?CDROP:CCTAIL):amp(sc(nf?n:-n),ds(CDROP)),w);
   case CBASE:   
    if(!nf)break;
-   R AR(x) ? amp(x,ds(CABASE)) : 
+   return AR(x) ? amp(x,ds(CABASE)) :
     obverse(evc(x,mag(x),"$&u@>:@(v&(<.@^.))@(1&>.)@(>./)@:|@, #: ]"),w);
   case CATOMIC:
-   if(ng){ASSERT(equ(x,nub(x)),EVDOMAIN); R obverse(atop(f,amp(x,ds(CIOTA))),w);}  // fall through to common obverse (?)
+   if(ng){ASSERT(equ(x,nub(x)),EVDOMAIN); return obverse(atop(f,amp(x,ds(CIOTA))),w);}  // fall through to common obverse (?)
   case CCYCLE:
-   if(nf&&AR(x)<=(c==CCYCLE))R obverse(eva(w,"/:@u@(i.@#) { ]"),w); break;
+   if(nf&&AR(x)<=(c==CCYCLE))return obverse(eva(w,"/:@u@(i.@#) { ]"),w); break;
   case CDROP:
    if(!(nf&&1>=AR(x)))break;
    RZ(x=cvt(INT,x));
@@ -182,45 +182,45 @@ static F1(jtinvamp){A f,ff,g,h,x,y;B nf,ng;C c,d,*yv;I n;V*u,*v;
    f=amp(mag(x),ds(CPLUS));
    g=1==AN(x)?ds(CPOUND):atop(amp(tally(x),ds(CTAKE)),ds(CDOLLAR));
    h=!yv[1]?f:atop(!yv[0]?ds(CMINUS):amp(negate(signum(x)),ds(CSTAR)),f);
-   R obverse(hook(swap(ds(CTAKE)),atop(h,g)),w);
+   return obverse(hook(swap(ds(CTAKE)),atop(h,g)),w);
   case CDOMINO:
    if(!(2==AR(x)&&*AS(x)==*(1+AS(x))))break;
    ff=eval("+/ .*");
-   R nf?atop(h,amp(ff,minv(x))):amp(x,ff);
+   return nf?atop(h,amp(ff,minv(x))):amp(x,ff);
   case CDOT:
    if(ip(h,CPLUS,CSTAR)){
     ASSERT(2==AR(x),EVRANK);
     ASSERT(AS(x)[0]==AS(x)[1],EVLENGTH);
-    R nf?amp(ds(CDOMINO),x):amp(h,minv(x));
+    return nf?amp(ds(CDOMINO),x):amp(h,minv(x));
    }
    break;
   case CQQ:
-   if(ng&&equ(x,num(1))&&equ(f,eval("i.\"1")))R hook(ds(CFROM),ds(CEQ));
+   if(ng&&equ(x,num(1))&&equ(f,eval("i.\"1")))return hook(ds(CFROM),ds(CEQ));
    break;
   case CBSLASH:
-   if(nf&&(n=i0(x),0>n)&&(d=ID(u->fgh[0]),(d&-2)==CLEFT))R slash(ds(CCOMMA));  // LEFT || RIGHT
+   if(nf&&(n=i0(x),0>n)&&(d=ID(u->fgh[0]),(d&-2)==CLEFT))return slash(ds(CCOMMA));  // LEFT || RIGHT
    break;
   case CIBEAM:
    x=FAV(h)->fgh[0]; y=FAV(h)->fgh[1];
    if(NOUN&AT(x)&&equ(x,num(3))&&NOUN&AT(y)){
     RE(n=i0(f));
-    if(all1(eps(y,v2(4L,5L)))){ASSERT(n&&BETWEENC(n,-2,2),EVDOMAIN); R amp(sc(-n),g);}
-    if(all1(eps(y,v2(1L,3L)))){ASSERT(0==n||1==n||10==n||11==n,EVDOMAIN); R foreign(x,num(2));}
+    if(all1(eps(y,v2(4L,5L)))){ASSERT(n&&BETWEENC(n,-2,2),EVDOMAIN); return amp(sc(-n),g);}
+    if(all1(eps(y,v2(1L,3L)))){ASSERT(0==n||1==n||10==n||11==n,EVDOMAIN); return foreign(x,num(2));}
    }
    break;
   case CBDOT:
    RE(n=i0(x));
    switch(i0(FAV(h)->fgh[1])){
-    case 22: case 25:          R w;
-    case 19: case 28:          if(ng)R w; break;
-    case 21: case 26:          if(nf)R w; break;
-    case 32: case 33: case 34: ASSERT(nf!=0,EVDOMAIN); R amp(negate(x),h);
+    case 22: case 25:          return w;
+    case 19: case 28:          if(ng)return w; break;
+    case 21: case 26:          if(nf)return w; break;
+    case 32: case 33: case 34: ASSERT(nf!=0,EVDOMAIN); return amp(negate(x),h);
    }
    break;
   case CPOLY:
    if(nf&&1==AR(x)&&2==AN(x)&&NUMERIC&AT(x)&&!equ(zeroionei(0),tail(x))){  // linear polynomial only
     RZ(y=recip(tail(x)));
-    R amp(apip(tymes(y,negate(head(x))),y),h);
+    return amp(apip(tymes(y,negate(head(x))),y),h);
  }}
  ASSERT(0,EVDOMAIN);
 }
@@ -243,48 +243,48 @@ A jtinv(J jt, A w, I recur){A f,ff,g;B b,nf,ng,vf,vg;C id;I p,q;V*v;
  CCM(w,CNOT)+CCM(w,CGRADE)+CCM(w,CCYCLE)+CCM(w,CDOMINO)+CCM(w,COPE)+CCM(w,CLOG)+CCM(w,CBOX)+CCM(w,CEXP)+ \
  CCM(w,CGE)+CCM(w,CLE)+CCM(w,CHALVE)+CCM(w,CPLUSCO)+CCM(w,CSQRT)+CCM(w,CSTARCO)+CCM(w,CHEAD)+CCM(w,CLAMIN)+ \
  CCM(w,CABASE)+CCM(w,CBASE)+CCM(w,CTHORN)+CCM(w,CEXEC)
- CCMWDS(simpleinv) CCMCAND(simpleinv,cand,id) if(CCMTST(cand,id))R ds(simpleinv[id&127]);
+ CCMWDS(simpleinv) CCMCAND(simpleinv,cand,id) if(CCMTST(cand,id))return ds(simpleinv[id&127]);
  // in case id indicates a modifier, set (f|g) to the operand, n? if it is a noun or name, v? if it is a verb
  f=v->fgh[0]; nf=f&&AT(f)&NOUN+NAME; vf=f&&!nf;
  g=v->fgh[1]; ng=g&&AT(g)&NOUN+NAME; vg=g&&!ng;
  switch(id){
-  case CCIRCLE:  R eval("1p_1&*");
-  case CJDOT:    R eval("0j_1&*");
-  case CRDOT:    R eval("%&0j1@^.");
-  case CPLUSDOT: R eval("j./\"1\"_ :. +.");
-  case CSTARDOT: R eval("r./\"1\"_ :. *.");
-  case CDGRADE:  R eval("/:@|.");
-  case CWORDS:   R eval("}:@;@(,&' '&.>\"1) :. ;:");
-  case CBANG:    R eval("3 : '(-(y -~ !)%0.001&* (0.001%~[:-/[:! 0.001 0 +/ ]) ])^:_<.&170^:(-:+)^.y' :. !");
-  case CXCO:     R amp(num(-1),w);
-  case CSPARSE:  R fdef(0,CPOWOP,VERB,jtdenseit,0L, w,num(-1),0L, VFLAGNONE, RMAX,RMAX,RMAX);
-  case CPCO:     R fdef(0,CPOWOP,VERB,jtplt,    0L, w,num(-1),0L, 0L, 0L,  0L,  0L  );
-  case CQCO:     R eval("*/");
-  case CUCO:     R amp(num(3),w);
-  case CUNDER:   R under(invrecur(f),g);
-  case CFORK:    R invfork(w);
-  case CAMP:     if(nf!=ng){A z=invamp(w); if(nf^ng)R z;}  // may fall through... but avoid tail-recursion so we get out of loop
-  case CAT:      if(vf&&vg)R atop(invrecur(g),invrecur(f));   break;
+  case CCIRCLE:  return eval("1p_1&*");
+  case CJDOT:    return eval("0j_1&*");
+  case CRDOT:    return eval("%&0j1@^.");
+  case CPLUSDOT: return eval("j./\"1\"_ :. +.");
+  case CSTARDOT: return eval("r./\"1\"_ :. *.");
+  case CDGRADE:  return eval("/:@|.");
+  case CWORDS:   return eval("}:@;@(,&' '&.>\"1) :. ;:");
+  case CBANG:    return eval("3 : '(-(y -~ !)%0.001&* (0.001%~[:-/[:! 0.001 0 +/ ]) ])^:_<.&170^:(-:+)^.y' :. !");
+  case CXCO:     return amp(num(-1),w);
+  case CSPARSE:  return fdef(0,CPOWOP,VERB,jtdenseit,0L, w,num(-1),0L, VFLAGNONE, RMAX,RMAX,RMAX);
+  case CPCO:     return fdef(0,CPOWOP,VERB,jtplt,    0L, w,num(-1),0L, 0L, 0L,  0L,  0L  );
+  case CQCO:     return eval("*/");
+  case CUCO:     return amp(num(3),w);
+  case CUNDER:   return under(invrecur(f),g);
+  case CFORK:    return invfork(w);
+  case CAMP:     if(nf!=ng){A z=invamp(w); if(nf^ng)return z;}  // may fall through... but avoid tail-recursion so we get out of loop
+  case CAT:      if(vf&&vg)return atop(invrecur(g),invrecur(f));   break;
   case CAMPCO:
-  case CATCO:    if(vf&&vg)R atco(invrecur(g),invrecur(f));   break;
-  case CSLASH:   if(CSTAR==ID(f))R ds(CQCO);        break;
-  case CQQ:      if(vf)R qq(invrecur(f),g);              break;
-  case COBVERSE: if(vf&&vg)R obverse(g,f);          break;  // if defined obverse, return it
-  case CSCO:     R amp(num(5),w);
+  case CATCO:    if(vf&&vg)return atco(invrecur(g),invrecur(f));   break;
+  case CSLASH:   if(CSTAR==ID(f))return ds(CQCO);        break;
+  case CQQ:      if(vf)return qq(invrecur(f),g);              break;
+  case COBVERSE: if(vf&&vg)return obverse(g,f);          break;  // if defined obverse, return it
+  case CSCO:     return amp(num(5),w);
   case CPOWOP:   
-   if(vf&&ng){RE(p=i0(g)); R -1==p?f:1==p?invrecur(f):powop(0>p?f:invrecur(f),sc(ABS(p)),0);}
-   if(VGERL&v->flag)R*(1+AAV(v->fgh[2]));
+   if(vf&&ng){RE(p=i0(g)); return -1==p?f:1==p?invrecur(f):powop(0>p?f:invrecur(f),sc(ABS(p)),0);}
+   if(VGERL&v->flag)return*(1+AAV(v->fgh[2]));
    break;
   case CTILDE:
-   if(nf)R invrecur(symbrd(f));  // name~ - resolve name & try again
+   if(nf)return invrecur(symbrd(f));  // name~ - resolve name & try again
    switch(ID(f)){   // inverses for reflexive monads
-    case CPLUS:  R ds(CHALVE);
-    case CSTAR:  R ds(CSQRT);
-    case CJDOT:  R eval("0.5j_0.5&*");
-    case CLAMIN: R eval("{. :. (,:~)");
-    case CSEMICO:R eval(">@{. :. (;~)");
-    case CCOMMA: R eval("<.@-:@# {. ] :. (,~)");
-    case CEXP:   R eval("3 : '(- -&b@(*^.) % >:@^.)^:_ ]1>.b=.^.y' \" 0 :. (^~)");
+    case CPLUS:  return ds(CHALVE);
+    case CSTAR:  return ds(CSQRT);
+    case CJDOT:  return eval("0.5j_0.5&*");
+    case CLAMIN: return eval("{. :. (,:~)");
+    case CSEMICO:return eval(">@{. :. (;~)");
+    case CCOMMA: return eval("<.@-:@# {. ] :. (,~)");
+    case CEXP:   return eval("3 : '(- -&b@(*^.) % >:@^.)^:_ ]1>.b=.^.y' \" 0 :. (^~)");
    }
    break;
   case CBSLASH:
@@ -292,32 +292,32 @@ A jtinv(J jt, A w, I recur){A f,ff,g;B b,nf,ng,vf,vg;C id;I p,q;V*v;
    if(CSLASH==ID(f)&&(ff=FAV(f)->fgh[0],ff&&VERB&AT(ff))){  //  ff/\  or ff/\.
     b=id==CBSDOT;
     switch(ID(ff)){
-     case CPLUS: R obverse(eval(b?"- 1&(|.!.0)":" - |.!.0"),w);
-     case CSTAR: R obverse(eval(b?"% 1&(|.!.1)":" % |.!.1"),w);
-     case CEQ:   R obverse(eval(b?"= 1&(|.!.1)":" = |.!.1"),w);
-     case CNE:   R obverse(eval(b?"~:1&(|.!.0)":" ~:|.!.0"),w);
-     case CMINUS:R obverse(eval(b?"+ 1&(|.!.0)":"(- |.!.0) *\"_1 $&1 _1@#"),w);
-     case CDIV:  R obverse(eval(b?"* 1&(|.!.1)":"(% |.!.1) ^\"_1 $&1 _1@#"),w);
+     case CPLUS: return obverse(eval(b?"- 1&(|.!.0)":" - |.!.0"),w);
+     case CSTAR: return obverse(eval(b?"% 1&(|.!.1)":" % |.!.1"),w);
+     case CEQ:   return obverse(eval(b?"= 1&(|.!.1)":" = |.!.1"),w);
+     case CNE:   return obverse(eval(b?"~:1&(|.!.0)":" ~:|.!.0"),w);
+     case CMINUS:return obverse(eval(b?"+ 1&(|.!.0)":"(- |.!.0) *\"_1 $&1 _1@#"),w);
+     case CDIV:  return obverse(eval(b?"* 1&(|.!.1)":"(% |.!.1) ^\"_1 $&1 _1@#"),w);
    }}
    break;
   case CCUT:
-   if(CBOX==ID(f)&&ng&&(p=i0(g),1==p||2==p))R fdef(0,CPOWOP,VERB, jtbminv,0L, w,num(-1), 0L,VFLAGNONE, RMAX,RMAX,RMAX);
+   if(CBOX==ID(f)&&ng&&(p=i0(g),1==p||2==p))return fdef(0,CPOWOP,VERB, jtbminv,0L, w,num(-1), 0L,VFLAGNONE, RMAX,RMAX,RMAX);
    break;
   case CIBEAM:
    p=i0(f); q=i0(g);
-   if(3==p&&1==q)R foreign(f,num(2));
-   if(3==p&&2==q)R foreign(f,num(1)   );
-   if(3==p&&3==q)R foreign(f,num(2));
+   if(3==p&&1==q)return foreign(f,num(2));
+   if(3==p&&2==q)return foreign(f,num(1)   );
+   if(3==p&&3==q)return foreign(f,num(2));
    break;
   case CHOOK:
-    if(BOTHEQ8(ID(f),ID(g),CFROM,CEQ))R eval("i.\"1&1");
+    if(BOTHEQ8(ID(f),ID(g),CFROM,CEQ))return eval("i.\"1&1");
    break;
  }
  // Failure - no inverse found.  If there are names in w, try fixing w and try on that.
  // But only fix once, at the top recursion level, (1) to avoid an infinite loop if
  // there is a circular reference that leaves names in the fixed form of w; (2) to avoid
  // repeated fixing of lower branches, which will only be tried again when higher levels are fixed
- if(!recur&&!nameless(w))R invrecur(fix(w,zeroionei(0)));
+ if(!recur&&!nameless(w))return invrecur(fix(w,zeroionei(0)));
  ASSERT(0,EVDOMAIN);
 }
 
@@ -326,14 +326,14 @@ static F1(jtneutral){A x,y;B b;V*v;
  v=FAV(w);
  ASSERT(!v->lrr,EVDOMAIN);
  RZ(y=v2(0L,1L));
- RZ(x=scf(infm)); b=equ(y,CALL2(v->valencefns[1],x,y,w)); RESETERR; if(b)R x;
- x=ainf;          b=equ(y,CALL2(v->valencefns[1],x,y,w)); RESETERR; if(b)R x;
- x=zeroionei(0);          b=equ(y,CALL2(v->valencefns[1],x,y,w)); RESETERR; if(b)R num(0); 
- x=zeroionei(1);           b=equ(y,CALL2(v->valencefns[1],x,y,w)); RESETERR; if(b)R num(1);
- RZ(x=scf(infm)); b=equ(y,CALL2(v->valencefns[1],y,x,w)); RESETERR; if(b)R x;
- x=ainf;          b=equ(y,CALL2(v->valencefns[1],y,x,w)); RESETERR; if(b)R x;
- x=zeroionei(0);          b=equ(y,CALL2(v->valencefns[1],y,x,w)); RESETERR; if(b)R num(0);
- x=zeroionei(1);           b=equ(y,CALL2(v->valencefns[1],y,x,w)); RESETERR; if(b)R num(1);
+ RZ(x=scf(infm)); b=equ(y,CALL2(v->valencefns[1],x,y,w)); RESETERR; if(b)return x;
+ x=ainf;          b=equ(y,CALL2(v->valencefns[1],x,y,w)); RESETERR; if(b)return x;
+ x=zeroionei(0);          b=equ(y,CALL2(v->valencefns[1],x,y,w)); RESETERR; if(b)return num(0);
+ x=zeroionei(1);           b=equ(y,CALL2(v->valencefns[1],x,y,w)); RESETERR; if(b)return num(1);
+ RZ(x=scf(infm)); b=equ(y,CALL2(v->valencefns[1],y,x,w)); RESETERR; if(b)return x;
+ x=ainf;          b=equ(y,CALL2(v->valencefns[1],y,x,w)); RESETERR; if(b)return x;
+ x=zeroionei(0);          b=equ(y,CALL2(v->valencefns[1],y,x,w)); RESETERR; if(b)return num(0);
+ x=zeroionei(1);           b=equ(y,CALL2(v->valencefns[1],y,x,w)); RESETERR; if(b)return num(1);
  ASSERT(0,EVDOMAIN);
 }    /* neutral of arbitrary rank-0 function */
 
@@ -342,12 +342,12 @@ F1(jtiden){A f,g,x=0;V*u,*v;
  v=FAV(w); f=v->fgh[0]; g=v->fgh[1];
  switch(v->id){
   default:      RZ(x=neutral(w)); break;
-  case CCOMMA:  R eval("i.@(0&,)@(2&}.)@$");
+  case CCOMMA:  return eval("i.@(0&,)@(2&}.)@$");
   case CDOT:    if(!(ip(w,CPLUS,CSTAR)||ip(w,CPLUSDOT,CSTARDOT)||ip(w,CNE,CSTARDOT)))break;  // if matrix multiply, fall through to...
-  case CDOMINO: R atop(atop(ds(CEQ),ds(CGRADE)),ds(CHEAD));
+  case CDOMINO: return atop(atop(ds(CEQ),ds(CGRADE)),ds(CHEAD));
   case CCYCLE:
-  case CLBRACE: R atop(ds(CGRADE),ds(CHEAD));
-  case CSLASH:  if(VERB&AT(f))R atop(iden(f),ds(CPOUND)); break;
+  case CLBRACE: return atop(ds(CGRADE),ds(CHEAD));
+  case CSLASH:  if(VERB&AT(f))return atop(iden(f),ds(CPOUND)); break;
   case CPLUS: case CMINUS: case CSTILE:   case CNE:
   case CGT:   case CLT:    case CPLUSDOT: case CJDOT:   case CRDOT:
                 x=num(0); break;
@@ -375,17 +375,17 @@ F1(jtiden){A f,g,x=0;V*u,*v;
    break;
   }
  ASSERT(x!=0,EVDOMAIN);
- R folk(x,swap(ds(CDOLLAR)),atop(ds(CBEHEAD),ds(CDOLLAR)));
+ return folk(x,swap(ds(CDOLLAR)),atop(ds(CBEHEAD),ds(CDOLLAR)));
 }
 
 F1(jtidensb){A f,g,x=0,w0=w;V*v;
  RZ(w=fix(w,zeroionei(0))); ASSERT(VERB&AT(w),EVDOMAIN);
  v=FAV(w); f=v->fgh[0]; g=v->fgh[1];
  switch(v->id){
-  default:      R iden(w0);
+  default:      return iden(w0);
   case CMAX:    GATV0(x,SBT,1,0);SBAV(x)[0]=0; break;
   case CMIN:    GATV0(x,SBT,1,0);SBAV(x)[0]=jt->sbuv[0].down; break;
  }
  ASSERT(x!=0,EVDOMAIN);
- R folk(x,swap(ds(CDOLLAR)),atop(ds(CBEHEAD),ds(CDOLLAR)));
+ return folk(x,swap(ds(CDOLLAR)),atop(ds(CBEHEAD),ds(CDOLLAR)));
 }

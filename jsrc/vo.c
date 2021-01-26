@@ -7,23 +7,23 @@
 #include "result.h"
 
 I level(A w){A*wv;I d,j;
- if((-AN(w)&-(AT(w)&BOX+SBOX))>=0)R 0;
+ if((-AN(w)&-(AT(w)&BOX+SBOX))>=0)return 0;
  d=0; wv=AAV(w);
  DQ(AN(w), j=level(wv[i]); d=d<j?j:d;);
- R 1+d;
+ return 1+d;
 }
 
 // return 0 if the level of w is greater than l, 1 if <=
 // terminates early if possible
 I levelle(A w,I l){
- if((-AN(w)&-(AT(w)&BOX+SBOX))>=0)R SGNTO0(~l);  // if arg is unboxed, its level is 0, so return 1 if l>=0
- if(l<=0)R 0;  // (arg is boxed) if l is <=0, arglevel is  > l
+ if((-AN(w)&-(AT(w)&BOX+SBOX))>=0)return SGNTO0(~l);  // if arg is unboxed, its level is 0, so return 1 if l>=0
+ if(l<=0)return 0;  // (arg is boxed) if l is <=0, arglevel is  > l
  --l; A *wv=AAV(w);
- DO(AN(w), if(!levelle(wv[i],l))R 0;);  // stop as soon as we see level big enough
- R 1;  // if it never gets big enough, say so, keep looking
+ DO(AN(w), if(!levelle(wv[i],l))return 0;);  // stop as soon as we see level big enough
+ return 1;  // if it never gets big enough, say so, keep looking
 }
 
-F1(jtlevel1){ARGCHK1(w); R sc(level(w));}
+F1(jtlevel1){ARGCHK1(w); return sc(level(w));}
 
 F1(jtbox){A y,z,*zv;C*wv;I f,k,m,n,r,wr,*ws; 
  F1PREFIP;ARGCHK1(w);I wt=AT(w); FLAGT waf=AFLAG(w);
@@ -65,7 +65,7 @@ F1(jtbox){A y,z,*zv;C*wv;I f,k,m,n,r,wr,*ws;
  RETF(z);
 }    /* <"r w */
 
-F1(jtboxopen){F1PREFIP; ARGCHK1(w); if((-AN(w)&-(AT(w)&BOX+SBOX))>=0){w = jtbox(jtinplace,w);} R w;}
+F1(jtboxopen){F1PREFIP; ARGCHK1(w); if((-AN(w)&-(AT(w)&BOX+SBOX))>=0){w = jtbox(jtinplace,w);} return w;}
 
 // x ; y, with options for x (,<) y   x (;<) y   x ,&< y
 DF2(jtlink){
@@ -89,7 +89,7 @@ F2PREFIP;ARGCHK2(a,w);
  I optype=FAV(self)->localuse.lclr[0];  // flag: sign set if (,<) or ,&< or (;<) which will always box w; bit 0 set if (,<)
  realizeifvirtual(w); realizeifvirtual(a);  // it's going into an array, so realize it
  // if (,<) and a is not boxed singleton atom/list, revert
- if(unlikely((optype&1)>((AT(a)>>BOXX)&SGNTO0((AR(a)-2)&((AN(a)^1)-1))))){R jthook2cell(jtinplace,a,w,self);}  // (,<) and ((not boxed) or (rank>1) or (n!=1)) - revert to normal processing
+ if(unlikely((optype&1)>((AT(a)>>BOXX)&SGNTO0((AR(a)-2)&((AN(a)^1)-1))))){return jthook2cell(jtinplace,a,w,self);}  // (,<) and ((not boxed) or (rank>1) or (n!=1)) - revert to normal processing
  I unboxempty=SGNIFNOT(AT(w),BOXX)|(AN(w)-1)|optype;  // sign set if unboxed or empty, or the operation is (,<) or ,&< or (;<) which will always box w
  I aband=(a!=w)&SGNTO0(AC(w))&((I)jtinplace>>JTINPLACEWX);  // bit 0 = 1 if w is abandoned.  Must not accept a==w as it could lead to w containing itself
  if((unboxempty|((AN(w)|AR(w))-2))<0){A neww;   // unboxed/empty or force-boxed w, or AN(w)<2 and AR(w)<2
@@ -145,7 +145,7 @@ F2PREFIP;ARGCHK2(a,w);
 #endif
  // else fall through to handle general case
  if((-AN(w)&SGNIF(AT(w),BOXX))>=0){w = jtbox(JTIPWonly,w);}
- R jtover(jtinplace,jtbox(JTIPAtoW,a),w);  // box empty or unboxed w, join to boxed a
+ return jtover(jtinplace,jtbox(JTIPAtoW,a),w);  // box empty or unboxed w, join to boxed a
 }
 
 // Calculate the value to use for r arg of copyresultcell: bit 0=ra() flag, next 15=rank requiring fill, higher=-(#leading axes of 1)
@@ -154,7 +154,7 @@ static I rescellrarg(I *zs, I zr, I *s, I r){
  zs+=zr, s+=r;  // advance to end+1 of shapes
  zr-=r; zr*=(RMAX+1);  // amount of surplus rank, moved to high bits
  for(;r;--r)if(*--zs!=*--s)break;  // leave r with #axes up to & including the last requiring fill
- R (r-zr)<<1;  // join fields & return
+ return (r-zr)<<1;  // join fields & return
 }
 
 // copy w into memory area z, which is known to be big enough to hold it (like povtake, but recursive implementation that doesn't require pre-fill)
@@ -173,7 +173,7 @@ static C *copyresultcell(J jt, C *z, C *w, I *sizes, I rf, I *s){I wadv;I r=rf>>
   // the entire r matched the suffix of the shape of zcell, and we can copy the entire cell
   wadv=sizes[0];
   if(rf&1){DO(wadv>>LGSZI, A a=((A*)w)[i]; ra(a); ((A*)z)[i]=a;)}else{MC(z,w,wadv);}
-  R wadv+w;
+  return wadv+w;
  }
  // otherwise there will be fill
  C *endoffill=z+sizes[0];  // save address of end of area
@@ -194,7 +194,7 @@ static C *copyresultcell(J jt, C *z, C *w, I *sizes, I rf, I *s){I wadv;I r=rf>>
  }
  // copy the fill, from z (new output pointer) to endoffill (end+1 of output cell)
  mvc(endoffill-z,z,sizeof(jt->fillv0),jt->fillv0);
- R w;
+ return w;
 }
 
 A jtassembleresults(J jt, I ZZFLAGWORD, A zz, A zzbox, A* zzboxp, I zzcellp, I zzcelllen, I zzresultpri, A zzcellshape, I zzncells, I zzwf, I startatend) {A zztemp;  // if we never allocated the boxed area (including force-boxed cases which never do) we just keep zz as the final result
@@ -293,7 +293,7 @@ A jtassembleresults(J jt, I ZZFLAGWORD, A zz, A zzbox, A* zzboxp, I zzcellp, I z
          // from zzcell, which has been copied from, through the end of tempp, which has not been copied to yet.  If reverse, we go from
          // tempp, which has not been copied to, to zzcell, which has been copied.
       }
-      R 0;
+      return 0;
      }
     }
     I *zzbcs=AS(zzboxcell);  // convert if needed, point to shape
@@ -335,24 +335,24 @@ A jtassembleresults(J jt, I ZZFLAGWORD, A zz, A zzbox, A* zzboxp, I zzcellp, I z
   }
   zz=ope(zztemp);  // do the full open on the result 
  }
- R zz;
+ return zz;
 }
 
 static B povtake(J jt,A a,A w,C*x){B b;C*v;I d,i,j,k,m,n,p,q,r,*s,*ss,*u,*uu,y;
- if(!w)R 0;
+ if(!w)return 0;
  r=AR(w); n=AN(w); k=bpnoun(AT(w)); v=CAV(w);
- if(1>=r){MC(x,v,k*n); R 1;}
+ if(1>=r){MC(x,v,k*n); return 1;}
  m=AN(a); u=AV(a); s=AS(w);
  p=0; d=1; DO(r, if(u[m-1-i]==s[r-1-i]){d*=s[r-1-i]; ++p;}else break;);
  b=0; DO(r-p, if(b=1<s[i])break;);
- if(!b){MC(x,v,k*n); R 1;}
+ if(!b){MC(x,v,k*n); return 1;}
  k*=d; n/=d; ss=s+r-p; uu=u+m-p;
  for(i=0;i<n;++i){
   y=0; d=1; q=i; /* y=.a#.((-$a){.(($a)$1),$w)#:i */
   s=ss; u=uu; DQ(r-p, j=*--s; y+=q%j*d; d*=*--u; q/=j;);
   MC(x+y*k,v,k); v+=k;
  }
- R 1;
+ return 1;
 }
 
 static B jtopes1(J jt,B**zb,A*za,A*ze,I*zm,A cs,A w){A a,e=0,q,*wv,x;B*b;I i,k,m=0,n,*v,wcr;P*p;
@@ -368,7 +368,7 @@ static B jtopes1(J jt,B**zb,A*za,A*ze,I*zm,A cs,A w){A a,e=0,q,*wv,x;B*b;I i,k,m
  *zb=b;                 /* mask corresp. to sparse axes   */
  *ze=e?e:num(0);          /* sparse element                 */
  *zm=m;                 /* estimate # of non-sparse cells */
- R 1;
+ return 1;
 }
 
 static B jtopes2(J jt,A*zx,A*zy,B*b,A a,A e,A q,I wcr){A x;B*c;I dt,k,r,*s,t;P*p;
@@ -388,7 +388,7 @@ static B jtopes2(J jt,A*zx,A*zy,B*b,A a,A e,A q,I wcr){A x;B*c;I dt,k,r,*s,t;P*p
  x=SPA(p,x); if(!(dt&AT(x)))RZ(x=cvt(dt,x));
  *zx=x;         /* data cells              */
  *zy=SPA(p,i);  /* corresp. index matrix   */
- R 1;
+ return 1;
 }
 
 static A jtopes(J jt,I zt,A cs,A w){A a,d,e,sh,t,*wv,x,x1,y,y1,z;B*b;C*xv;I an,*av,c,dk,dt,*dv,i,j,k,m,m1,n,
@@ -418,7 +418,7 @@ static A jtopes(J jt,I zt,A cs,A w){A a,d,e,sh,t,*wv,x,x1,y,y1,z;B*b;C*xv;I an,*
  }
  SPB(zp,x,p==m?x:take(sc(p),x));
  SPB(zp,i,p==m?y:take(sc(p),y));
- R z;
+ return z;
 }  // > w when w contains sparse contents, maxtype=zt
 
 // > y (rank is immaterial)
@@ -435,7 +435,7 @@ F1(jtope){PROLOG(0080);A cs,*v,y,z;I nonh;C*x;I i,n,*p,q=RMAX,r=0,*s,t=0,te=0,*u
 #if AUDITBOXAC
   if(!(AFLAG(w)&AFVIRTUALBOXED)&&AC(z)<0)SEGFAULT;
 #endif
-  PRISTCLRF(w) R z;
+  PRISTCLRF(w) return z;
  }
  // Here we have an array of boxes.  We will create a new block with the concatenated contents (even if there is only one box), and thus we don't need to turn of pristine in w
  // set q=min rank of contents, r=max rank of contents
@@ -550,9 +550,9 @@ static A jtrazeg(J jt,A w,I t,I n,I r,A*v,I nonempt){A h,h1,y,z;C*zu;I c=0,i,j,k
 F1(jtraze){A*v,y,z,* RESTRICT zv;C* RESTRICT zu;I *wws,d,i,klg,m=0,n,r=1,t=0,te=0;
  ARGCHK1(w);
  n=AN(w); v=AAV(w);  // n=#,w  v->w data
- if(!n)R mtv;   // if empty operand, return boolean empty
- if(!(BOX&AT(w)))R ravel(w);   // if not boxed, just return ,w
- if(1==n){RZ(z=*v); PRISTCLRF(w) R AR(z)?z:ravel(z);}  // if just 1 box, return its contents - except ravel if atomic.  Since these contents are excaping via a pointer, w must lose pristinity
+ if(!n)return mtv;   // if empty operand, return boolean empty
+ if(!(BOX&AT(w)))return ravel(w);   // if not boxed, just return ,w
+ if(1==n){RZ(z=*v); PRISTCLRF(w) return AR(z)?z:ravel(z);}  // if just 1 box, return its contents - except ravel if atomic.  Since these contents are excaping via a pointer, w must lose pristinity
  // If there is more than 1 box w can remain pristine, because the (necessarily DIRECT) contents are copied to a new block
  // scan the boxes to create the following values:
  // m = total # items in contents; aim=#atoms per item;  r = maximum rank of contents
@@ -578,7 +578,7 @@ F1(jtraze){A*v,y,z,* RESTRICT zv;C* RESTRICT zu;I *wws,d,i,klg,m=0,n,r=1,t=0,te=
   // t is the type to use.  i is 0 if there were no nonempties
   // if there are only empties, t is the type to use
   // if the cell-rank was 2 or higher, there may be reshaping and fill needed - go to the general case
-  if(1<r)R razeg(w,t,n,r,v,i);
+  if(1<r)return razeg(w,t,n,r,v,i);
   // fall through for boxes containing lists and atoms, where the result is a list.  No fill possible, but if all inputs are
   // empty the fill-cell will give the type of the result (similar to 0 {.!.f 0$...)
 
@@ -608,7 +608,7 @@ F1(jtraze){A*v,y,z,* RESTRICT zv;C* RESTRICT zu;I *wws,d,i,klg,m=0,n,r=1,t=0,te=
 F1(jtrazeh){A*wv,y,z;C*xv,*yv,*zv;I c=0,ck,dk,i,k,n,p,r,*s,t;
  ARGCHK1(w);
  ASSERT(BOX&AT(w),EVDOMAIN);
- if(!AR(w))R ope(w);
+ if(!AR(w))return ope(w);
  n=AN(w); wv=AAV(w);  y=wv[0]; SETIC(y,p); t=AT(y); k=bpnoun(t);
  DO(n, I l; y=wv[i]; r=AR(y); ASSERT(p==SETIC(y,l),EVLENGTH); ASSERT(r&&r<=2&&TYPESEQ(t,AT(y)),EVNONCE); c+=1==r?1:*(1+AS(y)););
  GA(z,t,p*c,2,0); s=AS(z); s[0]=p; s[1]=c; 

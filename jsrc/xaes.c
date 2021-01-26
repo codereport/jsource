@@ -76,7 +76,7 @@ F2(jtaes2)
   ASSERT(0==(n%16),EVDOMAIN);
   GATV0(z,LIT,n,1);
   out=UAV(z);
-  if(!n)R z;
+  if(!n)return z;
   MC(out,CAV(w),AN(w));
   if(!decrypt) {
     if(padding) {
@@ -109,7 +109,7 @@ F2(jtaes2)
     AS(z)[0]=AN(z)=n-n1;
     memset(out+n-n1,0,n1);
   }
-  R z;
+  return z;
 }
 
 /*
@@ -147,7 +147,7 @@ int aes_c(I decrypt,I mode,UC *key,I keyn,UC* iv,UC* out,I n)
       break;
 
     default:
-      R 1;
+      return 1;
     }
-  R 0;  // success
+  return 0;  // success
 }

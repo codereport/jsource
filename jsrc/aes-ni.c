@@ -339,9 +339,9 @@ int aes_ni(I decrypt,I mode,UC *key,I keyn,UC* ivec,UC* out,I len)
   break;
 
   default:
-    R 1;
+    return 1;
 
   }
 
-  R 0;  // success
+  return 0;  // success
 }

@@ -30,7 +30,7 @@ static B jtiixBX(J jt,I n,I m,A a,A w,I*zv){B*av,*b,descend;I p,q;
   }else{DQ(m, *zv++=q* *b++;)  /* p q */
   }
  }
- R 1;
+ return 1;
 }    /* a I."r w where a is a boolean list */
 
 static B jtiixI(J jt,I n,I m,A a,A w,I*zv){A t;B ascend;I*av,j,p,q,*tv,*u,*v,*vv,*wv,x,y;
@@ -42,7 +42,7 @@ static B jtiixI(J jt,I n,I m,A a,A w,I*zv){A t;B ascend;I*av,j,p,q,*tv,*u,*v,*vv
  else      {u=av+n-1; x=*u--;      j=n; DQ(n-1, --j; y=*u--; ASSERT(BETWEENC(y,x,q),EVDOMAIN); DQ(y-x, *v++=j;); x=y;);}
  if(ascend)DQ(m, x=*wv++; *zv++=x<=p?0:q<x?n:tv[x];)
  else      DQ(m, x=*wv++; *zv++=x>=q?0:p>x?n:tv[x];);
- R 1;
+ return 1;
 }    /* a I. w where a is a list of small range integers */
 
 #define SBCOMP(x,y) (SBGT((x),(y))-SBLT((x),(y)))
@@ -107,15 +107,15 @@ F2(jticap2){A*av,*wv,z;C*uu,*vv;I ar,*as,at,b,c,ck,cm,ge,gt,j,k,m,n,p,q,r,t,wr,*
  ASSERT((POSIFHOMO(at,wt)&-AN(a)&-AN(w))>=0,EVDOMAIN); ASSERT(!((at|wt)&SPARSE),EVNONCE); // if no empties, verify agreement & non-sparse
  CPROD(AN(w),m,wr-r,ws); CPROD(AN(w),c,r,ws+wr-r);  // m=#atoms in result   c=# atoms in a cell of w
  GATV(z,INT,m,wr-r,ws); zv=AV(z);
- if(((m-1)|(n-1)|(c-1))<0){DQ(m, *zv++=0;); R z;}  // exit with zeros for empty args
+ if(((m-1)|(n-1)|(c-1))<0){DQ(m, *zv++=0;); return z;}  // exit with zeros for empty args
  t=maxtyped(at,wt);
  if(1==c){  // the search is for atoms
-  if(at&B01&&wt&B01+INT+FL){RZ(iixBX(n,m,a,w,zv)); R z;}
+  if(at&B01&&wt&B01+INT+FL){RZ(iixBX(n,m,a,w,zv)); return z;}
   if(at&wt&INT){
    // Integer search.  check for small-range
    UI r=IAV(a)[n-1]-IAV(a)[0]; r=IAV(a)[n-1]<IAV(a)[0]?0-r:r;  // get range, which may overflow I but will stay within UI
    UI4 nlg; CTLZI(n,nlg); nlg=(nlg<<1)+(SGNTO0(SGNIF((n<<1),nlg)));   // approx lg with 1 bit frac precision.  Can't shift 64 bits in case r=1
-   if((I)((r>>2)+2*n)<(I)(m*nlg)){RZ(iixI(n,m,a,w,zv)); R z;}  // weight misbranches as equiv to 8 stores
+   if((I)((r>>2)+2*n)<(I)(m*nlg)){RZ(iixI(n,m,a,w,zv)); return z;}  // weight misbranches as equiv to 8 stores
  }}
  jt->workareas.compare.complt=-1; cc=0; uu=CAV(a); vv=CAV(a)+(c*(n-1)<<bplg(at));
  // first decide if the input array is ascending or descending, comparing the first & last items atom by atom

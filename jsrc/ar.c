@@ -85,7 +85,7 @@ static void vdone(I m,I n,B*x,B*z,B pc){B b;I q,r;UC*u;UI s,*y;
 
 #define REDUCECFX(f,pfx,ipfx,spfx,bpfx,vdo)  \
  AHDRP(f,B,B){B*y=0;I j,q;                       \
-  if(d==1){vdo; R;}                                \
+  if(d==1){vdo; return;}                                \
   if(1==n)DQ(d, *z++=*x++;)                        \
   else if(0==d%sizeof(UI  ))RCFXLOOP(UI,   pfx)    \
   else if(0==d%sizeof(UINT))RCFXLOOP(UINT,ipfx)    \
@@ -98,14 +98,14 @@ static void vdone(I m,I n,B*x,B*z,B pc){B b;I q,r;UC*u;UI s,*y;
 // no errors possible here
 #define REDUCEBFX(f,pfx,ipfx,spfx,bpfx,vdo)  \
  AHDRP(f,B,B){B*y=0;I j,q;                       \
-  if(d==1){vdo; R EVOK;}                                \
+  if(d==1){vdo; return EVOK;}                                \
   x+=m*d*n; z+=m*d;                           \
           \
   if(0==d%sizeof(UI  ))RBFXLOOP(UI,   pfx)    \
   else if(0==d%sizeof(UINT))RBFXLOOP(UINT,ipfx)    \
   else if(0==d%sizeof(US  ))RBFXLOOP(US,  spfx)    \
   else                      RBFXODDSIZE(pfx,bpfx)  \
- R EVOK;}  /* non-commutative */
+ return EVOK;}  /* non-commutative */
 
 REDUCECFX(  eqinsB, EQ,  IEQ,  SEQ,  BEQ,  vdone(m,n,x,z,(B)(n&1)))
 REDUCECFX(  neinsB, NE,  INE,  SNE,  BNE,  vdone(m,n,x,z,1       ))
@@ -135,7 +135,7 @@ AHDRR(plusinsB,I,B){I dw,i,p,q,r,r1,s;UC*tu;UI*v;
  }}else{A t;UI*tv;
   dw=(d+SZI-1)>>LGSZI; p=dw*SZI; memset(z,C0,m*d*SZI);
   q=n/255; r=n%255;
-  t=ga(INT,dw,1,0); if(!t)R;
+  t=ga(INT,dw,1,0); if(!t)return;
   tu=UAV(t); tv=(UI*)tu; v=(UI*)x;
   for(i=0;i<m;++i,z+=d){
    DO(q, memset(tv,C0,p); DO(255, DO(dw,tv[i]+=v[i];); x+=d; v=(UI*)x;); DO(d,z[i]+=tu[i];));
@@ -161,11 +161,11 @@ AHDRR(plusinsD,D,D){I i;D* RESTRICT y;
   }
   else{z+=(m-1)*d; x+=(m*n-1)*d;
    for(i=0;i<m;++i,z-=d){I rc;
-    y=x; x-=d; if(255&(rc=plusDD(1,d,x,y,z,jt)))R rc; x-=d;
-    DQ(n-2,    if(255&(rc=plusDD(1,d,x,z,z,jt)))R rc; x-=d; );
+    y=x; x-=d; if(255&(rc=plusDD(1,d,x,y,z,jt)))return rc; x-=d;
+    DQ(n-2,    if(255&(rc=plusDD(1,d,x,z,z,jt)))return rc; x-=d; );
    }
   }
-  R NANTEST?EVNAN:EVOK;
+  return NANTEST?EVNAN:EVOK;
 }
 
 REDUCENAN( plusinsZ, Z, Z, zplus, plusZZ )
@@ -195,7 +195,7 @@ REDUCEPFX(  mininsS, SB,SB,SBMIN, minSS, minSS )
 static DF1(jtred0){DECLF;A x,z;I f,r,wr,*s;
  wr=AR(w); r=(RANKT)jt->ranks; r=wr<r?wr:r; f=wr-r; RESETRANK; s=AS(w);
  if(likely((AT(w)&DENSE)!=0)){GA(x,AT(w),0L,r,f+s);}else{GASPARSE(x,AT(w),1,r,f+s);}
- R reitem(vec(INT,f,s),lamin1(df1(z,x,(AT(w)&SBT)?idensb(fs):iden(fs))));
+ return reitem(vec(INT,f,s),lamin1(df1(z,x,(AT(w)&SBT)?idensb(fs):iden(fs))));
 }    /* f/"r w identity case */
 
 // general reduce.  We inplace the results into the next iteration.  This routine cannot inplace its inputs.
@@ -204,7 +204,7 @@ static DF1(jtredg){F1PREFIP;PROLOG(0020);DECLF;AD * RESTRICT a;I i,n,r,wr;
  ASSERT(DENSE&AT(w),EVNONCE);
  // loop over rank
  wr=AR(w); r=(RANKT)jt->ranks; r=wr<r?wr:r; RESETRANK;
- if(r<wr)R rank1ex(w,self,r,jtredg);
+ if(r<wr)return rank1ex(w,self,r,jtredg);
  // From here on we are doing a single reduction
  n=AS(w)[0]; // n=#cells
  // Allocate virtual block for the running x argument.
@@ -256,33 +256,33 @@ static const C fca[]={CSTAR, CPLUS, CEQ, CMIN, CMAX, CPLUSDOT, CSTARDOT, CNE, 0}
 static A jtredsp1a(J jt,C id,A z,A e,I n,I r,I*s){A t;B b,p=0;D d=1;
  switch(id){
   default:       ASSERT(0,EVNONCE);
-  case CPLUSDOT: R n?gcd(z,e):ca(e);
-  case CSTARDOT: R n?lcm(z,e):ca(e);
-  case CMIN:     R n?minimum(z,e):ca(e);
-  case CMAX:     R n?maximum(z,e):ca(e);
-  case CPLUS:    if(n&&equ(e,num(0)))R z; DO(r, d*=s[i];); t=tymes(e,d>=FLIMAX?scf(d-n):sc((I)d-n)); R n?plus(z,t):t;
-  case CSTAR:    if(n&&equ(e,num(1) ))R z; DO(r, d*=s[i];); t=expn2(e,d>=FLIMAX?scf(d-n):sc((I)d-n)); R n?tymes(z,t):t;
+  case CPLUSDOT: return n?gcd(z,e):ca(e);
+  case CSTARDOT: return n?lcm(z,e):ca(e);
+  case CMIN:     return n?minimum(z,e):ca(e);
+  case CMAX:     return n?maximum(z,e):ca(e);
+  case CPLUS:    if(n&&equ(e,num(0)))return z; DO(r, d*=s[i];); t=tymes(e,d>=FLIMAX?scf(d-n):sc((I)d-n)); return n?plus(z,t):t;
+  case CSTAR:    if(n&&equ(e,num(1) ))return z; DO(r, d*=s[i];); t=expn2(e,d>=FLIMAX?scf(d-n):sc((I)d-n)); return n?tymes(z,t):t;
   case CEQ:      p=1;  /* fall thru */
   case CNE:
    ASSERT(B01&AT(e),EVNONCE); 
    if(!n)BAV(z)[0]=p; 
    b=1; DO(r, if(!(s[i]&1)){b=0; break;}); 
-   R !p==*BAV(e)&&b!=(n&1)?__not(z):z;
+   return !p==*BAV(e)&&b!=(n&1)?__not(z):z;
 }}   /* f/w on sparse vector w, post processing */
 
 static A jtredsp1(J jt,A w,A self,C id,VARPSF ado,I cv,I f,I r,I zt){A e,x,z;I m,n;P*wp;
  ARGCHK1(w);
  wp=PAV(w); e=SPA(wp,e); x=SPA(wp,x); n=AN(x); m=*AS(w);
  GA(z,zt,1,0,0);
- if(n){I rc=((AHDRRFN*)ado)(1L,n,1L,AV(x),AV(z),jt); if(255&rc)jsignal(rc); RE(0); if(m==n)R z;}
- R redsp1a(id,z,e,n,AR(w),AS(w));
+ if(n){I rc=((AHDRRFN*)ado)(1L,n,1L,AV(x),AV(z),jt); if(255&rc)jsignal(rc); RE(0); if(m==n)return z;}
+ return redsp1a(id,z,e,n,AR(w),AS(w));
 }    /* f/"r w for sparse vector w */
 
 DF1(jtredravel){A f,x,z;I n;P*wp;
  F1PREFIP;
  ARGCHK1(w);
  f=FAV(self)->fgh[0];  // f/
- if(likely(!(SPARSE&AT(w))))R reduce(jtravel(jtinplace,w),f);
+ if(likely(!(SPARSE&AT(w))))return reduce(jtravel(jtinplace,w),f);
  // The rest is sparse
  wp=PAV(w); x=SPA(wp,x); n=AN(x);
  I rc=EVOK;
@@ -291,7 +291,7 @@ DF1(jtredravel){A f,x,z;I n;P*wp;
   ASSERT(adocv.f,EVNONCE);
   GA(z,rtype(adocv.cv),1,0,0);
   if(n)rc=((AHDRRFN*)adocv.f)((I)1,n,(I)1,AV(x),AV(z),jt);  // mustn't adocv on empty
-  rc&=255; if(rc)jsignal(rc); if(rc<EWOV){if(rc)R0; R redsp1a(FAV(FAV(f)->fgh[0])->id,z,SPA(wp,e),n,AR(w),AS(w));}  // since f has an insert fn, its id must be OK
+  rc&=255; if(rc)jsignal(rc); if(rc<EWOV){if(rc)R0; return redsp1a(FAV(FAV(f)->fgh[0])->id,z,SPA(wp,e),n,AR(w),AS(w));}  // since f has an insert fn, its id must be OK
  }
 }  /* f/@, w */
 
@@ -318,7 +318,7 @@ static A jtredspd(J jt,A w,A self,C id,VARPSF ado,I cv,I f,I r,I zt){A a,e,x,z,z
  SPB(zp,e,cvt(AT(zx),e));
  SPB(zp,i,SPA(wp,i));
  SPB(zp,x,zx);
- R z;
+ return z;
 }    /* f/"r w for sparse w, rank > 1, dense axis */
 
 static B jtredspsprep(J jt,C id,I f,I zt,A a,A e,A x,A y,I*zm,I**zdv,B**zpv,I**zqv,C**zxxv,A*zsn){
@@ -345,7 +345,7 @@ static B jtredspsprep(J jt,C id,I f,I zt,A a,A e,A x,A y,I*zm,I**zdv,B**zpv,I**z
  }
  if(j)GATV0(sn,INT,m,1);
  *zm=m; *zdv=dv; *zpv=pv; *zqv=qv; *zxxv=xxv; *zsn=sn;
- R 1;
+ return 1;
 }
 
 static B jtredspse(J jt,C id,I wm,I xt,A e,A zx,A sn,A*ze,A*zzx){A b;B nz;I t,zt;
@@ -362,7 +362,7 @@ static B jtredspse(J jt,C id,I wm,I xt,A e,A zx,A sn,A*ze,A*zzx){A b;B nz;I t,zt
  }
  if(TYPESNE(AT(e),AT(zx))){t=maxtypene(AT(e),AT(zx)); if(TYPESNE(t,AT(zx)))RZ(zx=cvt(t,zx));}
  *ze=e; *zzx=zx;
- R 1;
+ return 1;
 }
 
 static A jtredsps(J jt,A w,A self,C id,VARPSF ado,I cv,I f,I r,I zt){A a,a1,e,sn,x,x1=0,y,z,zx,zy;B*pv;
@@ -394,7 +394,7 @@ static A jtredsps(J jt,A w,A self,C id,VARPSF ado,I cv,I f,I r,I zt){A a,a1,e,sn
  SPB(zp,e,cvt(AT(zx),e));
  SPB(zp,x,zx); 
  SPB(zp,i,zy);
- R z;
+ return z;
 }    /* f/"r w for sparse w, rank > 1, sparse axis */
 
 static DF1(jtreducesp){A a,g,z;B b;I f,n,r,*v,wn,wr,*ws,wt,zt;P*wp;
@@ -403,16 +403,16 @@ static DF1(jtreducesp){A a,g,z;B b;I f,n,r,*v,wn,wr,*ws,wt,zt;P*wp;
  wn=AN(w); ws=AS(w); n=r?ws[f]:1;
  wt=AT(w); wt=wn?DTYPE(wt):B01;
  g=VAV(self)->fgh[0];  // g is the f in f/
- if(!n)R red0(w,self);  // red0 uses ranks, and resets them
+ if(!n)return red0(w,self);  // red0 uses ranks, and resets them
  C id; if(AT(g)&VERB){id=FAV(g)->id; id=FAV(g)->flag&VISATOMIC2?id:0;}else id=0;
  VARPS adocv; varps(adocv,self,wt,0);
  if(2==n&&!(adocv.f&&strchr(fca,id))){
   A x; IRS2(num(0),w,0L,0,r,jtfrom,x); A y; IRS2(num(1),w,0L,0,r,jtfrom,y);
-  R df2(z,x,y,g);  // rank has been reset for this call
+  return df2(z,x,y,g);  // rank has been reset for this call
  }
  // original rank still set
- if(!adocv.f)R redg(w,self);
- if(1==n)R tail(w);
+ if(!adocv.f)return redg(w,self);
+ if(1==n)return tail(w);
  zt=rtype(adocv.cv);
  RESETRANK;
  if(1==wr)z=redsp1(w,self,id,adocv.f,adocv.cv,f,r,zt);
@@ -421,7 +421,7 @@ static DF1(jtreducesp){A a,g,z;B b;I f,n,r,*v,wn,wr,*ws,wt,zt;P*wp;
   b=0; DO(AN(a), if(f==v[i]){b=1; break;});
   z=b?redsps(w,self,id,adocv.f,adocv.cv,f,r,zt):redspd(w,self,id,adocv.f,adocv.cv,f,r,zt);
  }
- R jt->jerr>=EWOV?IRS1(w,self,r,jtreducesp,z):z;
+ return jt->jerr>=EWOV?IRS1(w,self,r,jtreducesp,z):z;
 }    /* f/"r for sparse w */
 
 #define BR2IFX(T,F)     {T*u=(T*)wv,*v=u+d,x,y;                                           \
@@ -491,12 +491,12 @@ static B jtreduce2(J jt,A w,C id,I f,I r,A*zz){A z=0;B b=0,btab[258],*zv;I c,d,m
  if(b){S*u=(S*)wv; GATV(z,B01,wn>>1,wr-1,ws); zv=BAV(z); DQ(m, *zv++=btab[*u++];);}
  if(z&&1<r){I*u=f+AS(z),*v=f+1+ws; DQ(r-1, *u++=*v++;);}
  *zz=z;
- R 1;
+ return 1;
 }    /* f/"r for dense w over an axis of length 2 */
 
 static DF1(jtreduce){A z;I d,f,m,n,r,t,wr,*ws,zt;
  F1PREFIP;ARGCHK1(w);
- if(unlikely((SPARSE&AT(w))!=0))R reducesp(w,self);  // If sparse, go handle it
+ if(unlikely((SPARSE&AT(w))!=0))return reducesp(w,self);  // If sparse, go handle it
  wr=AR(w); ws=AS(w);
  // Create  r: the effective rank; f: length of frame; n: # items in a CELL of w
  r=(RANKT)jt->ranks; r=wr<r?wr:r; f=wr-r; SETICFR(w,f,r,n);  // no RESETRANK
@@ -512,7 +512,7 @@ static DF1(jtreduce){A z;I d,f,m,n,r,t,wr,*ws,zt;
   // Normal processing for multiple items.  Get the routine & flags to process it
   VARPS adocv; varps(adocv,self,wt,0);
   // If there is no special routine, go perform general reduce
-  if(!adocv.f)R redg(w,self);  // jt->ranks is still set.  redg will clear the ranks
+  if(!adocv.f)return redg(w,self);  // jt->ranks is still set.  redg will clear the ranks
   // Here for primitive reduce handled by special code.
   // Calculate m: #cells of w to operate on; d: #atoms in an item of a cell of w cell of w (a cell to which u is applied);
   // zn: #atoms in result
@@ -535,8 +535,8 @@ static DF1(jtreduce){A z;I d,f,m,n,r,t,wr,*ws,zt;
   if(255&rc){if(jt->jerr==EWOV1){AT(z)=FL;RETF(z);}else {jsignal(rc); RETF(rc>=EWOV?IRS1(w,self,r,jtreduce,z):0);}} else {RETF(adocv.cv&VRI+VRD?cvz(adocv.cv,z):z);}
 
   // special cases:
- }else if(n==1)R head(w);    // reduce on single items - ranks are still set
- else R red0(w,self);    // 0 items - neutrals - ranks are still set
+ }else if(n==1)return head(w);    // reduce on single items - ranks are still set
+ else return red0(w,self);    // 0 items - neutrals - ranks are still set
 
 
 
@@ -571,7 +571,7 @@ static A jtredcatsp(J jt,A w,A z,I r){A a,q,x,y;B*b;I c,d,e,f,j,k,m,n,n1,p,*u,*v
   RZ(q=grade1(y)); RZ(y=from(q,y)); RZ(x=from(q,x));
   SPB(zp,x,x); SPB(zp,i,y);
  }
- R z;
+ return z;
 }    /* ,/"r w for sparse w, 2<r */
 
 // ,&.:(<"r)  run together all axes above the last r.  r must not exceed AR(w)-1
@@ -579,7 +579,7 @@ static A jtredcatsp(J jt,A w,A z,I r){A a,q,x,y;B*b;I c,d,e,f,j,k,m,n,n1,p,*u,*v
 A jtredcatcell(J jt,A w,I r){A z;
  F1PREFIP;ARGCHK1(w);
  I wr=AR(w);  // get original rank, which may change if we inplace into the same block
- if(r>=wr-1)R RETARG(w);  // if only 1 axis left to run together, return the input
+ if(r>=wr-1)return RETARG(w);  // if only 1 axis left to run together, return the input
  if((ASGNINPLACESGN(SGNIF((I)jtinplace,JTINPLACEWX)&(-r),w) && !(AFLAG(w)&AFUNINCORPABLE))){  // inplace allowed, usecount is right
   // operation is loosely inplaceable.  Just shorten the shape to frame,(#atoms in cell).  We do this here rather than relying on
   // the self-virtual-block code in virtual() because we can do it for indirect types also, since we know we are not changing
@@ -590,7 +590,7 @@ A jtredcatcell(J jt,A w,I r){A z;
  }
  I m; PROD(m,wr-r,AS(w));   // # cells being strung together
  AS(z)[0]=m; MCISH(AS(z)+1,AS(w)+wr-r,r);  // install # cells and then shift the last r axes back 
- R z;
+ return z;
 }
 
 
@@ -603,20 +603,20 @@ DF1(jtredcat){A z;B b;I f,r,*s,*v,wr;
  if(likely(!(SPARSE&AT(w)))){
   RZ(z=jtvirtual(jtinplace,w,0,wr-1)); AN(z)=AN(w); // Allocate the block.  Then move in AN and shape
   I *zs=AS(z); MCISH(zs,s,f); if(!b){DPMULDE(s[f],s[f+1],zs[f]); MCISH(zs+f+1,s+f+2,r-2);}
-  R z;
+  return z;
  }else{
   GASPARSE(z,AT(w),AN(w),wr-1,s); 
   if(!b){v=f+AS(z); DPMULDE(s[f],s[1+f],*v); MCISH(1+v,2+f+s,r-2);}
-  R redcatsp(w,z,r);
+  return redcatsp(w,z,r);
  }
 }    /* ,/"r w */
 
 static DF1(jtredsemi){I f,n,r,*s,wr;
  ARGCHK1(w);
  wr=AR(w); r=(RANKT)jt->ranks; r=wr<r?wr:r; f=wr-r; s=AS(w); SETICFR(w,f,r,n);   // let the rank run into tail   n=#items  in a cell of w
- if(2>n){ASSERT(n!=0,EVDOMAIN); R tail(w);}  // rank still set
- if(BOX&AT(w))R jtredg(jt,w,self);  // the old way failed because it did not mimic scalar replication; revert to the long way.  ranks are still set
- else{A z; R IRS1(w,0L,r-1,jtbox,z);}  // unboxed, just box the cells
+ if(2>n){ASSERT(n!=0,EVDOMAIN); return tail(w);}  // rank still set
+ if(BOX&AT(w))return jtredg(jt,w,self);  // the old way failed because it did not mimic scalar replication; revert to the long way.  ranks are still set
+ else{A z; return IRS1(w,0L,r-1,jtbox,z);}  // unboxed, just box the cells
 }    /* ;/"r w */
 
 static DF1(jtredstitch){A c,y;I f,n,r,*s,*v,wr;
@@ -624,9 +624,9 @@ static DF1(jtredstitch){A c,y;I f,n,r,*s,*v,wr;
  wr=AR(w); r=(RANKT)jt->ranks; r=wr<r?wr:r; f=wr-r; RESETRANK;
  s=AS(w); SETICFR(w,f,r,n);
  ASSERT(n!=0,EVDOMAIN);
- if(1==n)R IRS1(w,0L,r,jthead,y);
- if(1==r){if(2==n)R RETARG(w); A z1,z2,z3; RZ(IRS2(num(-2),w,0L,0L,1L,jtdrop,z1)); RZ(IRS2(num(-2),w,0L,0L,1L,jttake,z2)); R IRS2(z1,z2,0L,1L,0L,jtover,z3);}
- if(2==r)R IRS1(w,0L,2L,jtcant1,y);
+ if(1==n)return IRS1(w,0L,r,jthead,y);
+ if(1==r){if(2==n)return RETARG(w); A z1,z2,z3; RZ(IRS2(num(-2),w,0L,0L,1L,jtdrop,z1)); RZ(IRS2(num(-2),w,0L,0L,1L,jttake,z2)); return IRS2(z1,z2,0L,1L,0L,jtover,z3);}
+ if(2==r)return IRS1(w,0L,2L,jtcant1,y);
  RZ(c=apvwr(wr,0L,1L)); v=AV(c); v[f]=f+1; v[f+1]=f; RZ(y=cant2(c,w));  // transpose last 2 axes
  if(unlikely((SPARSE&AT(w))!=0)){A x;
   GATV0(x,INT,f+r-1,1); v=AV(x); MCISH(v,AS(y),f+1);
@@ -642,18 +642,18 @@ static DF1(jtredstitch){A c,y;I f,n,r,*s,*v,wr;
 static DF1(jtredstiteach){A*wv,y;I n,p,r,t;
  ARGCHK1(w);
  n=AN(w);
- if(!(2<n&&1==AR(w)&&BOX&AT(w)))R reduce(w,self);
+ if(!(2<n&&1==AR(w)&&BOX&AT(w)))return reduce(w,self);
  wv=AAV(w);  y=wv[0]; SETIC(y,p); t=AT(y);
- DO(n, y=wv[i]; r=AR(y); if(!((((r-1)&-2)==0)&&p==SETIC(y,n)&&TYPESEQ(t,AT(y))))R reduce(w,self););  // rank 1 or 2, rows match, equal types
- R box(razeh(w));
+ DO(n, y=wv[i]; r=AR(y); if(!((((r-1)&-2)==0)&&p==SETIC(y,n)&&TYPESEQ(t,AT(y))))return reduce(w,self););  // rank 1 or 2, rows match, equal types
+ return box(razeh(w));
 }    /* ,.&.>/ w */
 
 static DF1(jtredcateach){A*u,*v,*wv,x,*xv,z,*zv;I f,m,mn,n,r,wr,*ws,zm,zn;I n1=0,n2=0;
  ARGCHK1(w);
  wr=AR(w); ws=AS(w); r=(RANKT)jt->ranks; r=wr<r?wr:r; f=wr-r; RESETRANK;
  SETICFR(w,f,r,n);
- if(!r||1>=n)R reshape(repeat(ne(sc(f),IX(wr)),shape(w)),n?w:ds(CACE));
- if(!(BOX&AT(w)))R df1(z,cant2(sc(f),w),qq(ds(CBOX),zeroionei(1)));  // handle unboxed args
+ if(!r||1>=n)return reshape(repeat(ne(sc(f),IX(wr)),shape(w)),n?w:ds(CACE));
+ if(!(BOX&AT(w)))return df1(z,cant2(sc(f),w),qq(ds(CBOX),zeroionei(1)));  // handle unboxed args
 // bug: ,&.>/ y does scalar replication wrong
 // wv=AN(w)+AAV(w); DQ(AN(w), if(AN(*--wv)&&AR(*wv)&&n1&&n2) ASSERT(0,EVNONCE); if((!AR(*wv))&&n1)n2=1; if(AN(*wv)&&1<AR(*wv))n1=1;);
  zn=AN(w)/n; PROD(zm,f,ws); PROD(m,r-1,ws+f+1); mn=m*n;
@@ -664,12 +664,12 @@ static DF1(jtredcateach){A*u,*v,*wv,x,*xv,z,*zv;I f,m,mn,n,r,wr,*ws,zm,zn;I n1=0
  RETF(z);
 }    /* ,&.>/"r w */
 
-static DF2(jtoprod){A z; R df2(z,a,w,FAV(self)->fgh[2]);}  // x u/ y - transfer to the u"lr,_ verb (precalculated)
+static DF2(jtoprod){A z; return df2(z,a,w,FAV(self)->fgh[2]);}  // x u/ y - transfer to the u"lr,_ verb (precalculated)
 
 
 F1(jtslash){A h;AF f1;C c;V*v;I flag=0;
  ARGCHK1(w);
- if(NOUN&AT(w))R evger(w,sc(GINSERT));  // treat m/ as m;.6.  This means that a node with CSLASH never contains gerund u
+ if(NOUN&AT(w))return evger(w,sc(GINSERT));  // treat m/ as m;.6.  This means that a node with CSLASH never contains gerund u
  v=FAV(w); 
  switch(v->id){  // select the monadic case
   case CCOMMA:  f1=jtredcat; flag=VJTFLGOK1;   break;
@@ -682,12 +682,12 @@ F1(jtslash){A h;AF f1;C c;V*v;I flag=0;
  RZ(h=fdef(0,CSLASH,VERB, f1,jtoprod, w,0L,h, flag|FAV(ds(CSLASH))->flag, RMAX,RMAX,RMAX));
  // set lvp[1] to point to the VARPSA block for w if w is atomic dyad; otherwise to the null VARPSA block
  FAV(h)->localuse.lvp[1]=v->flag&VISATOMIC2?((VA*)v->localuse.lvp[0])->rps:&rpsnull;
- R h;
+ return h;
 }
 
-A jtaslash (J jt,C c,    A w){RZ(   w); A z; R df1(z,  w,   slash(ds(c))     );}
-A jtaslash1(J jt,C c,    A w){RZ(   w); A z; R df1(z,  w,qq(slash(ds(c)),zeroionei(1)));}
-A jtatab   (J jt,C c,A a,A w){ARGCHK2(a,w); A z; R df2(z,a,w,   slash(ds(c))     );}
+A jtaslash (J jt,C c,    A w){RZ(   w); A z; return df1(z,  w,   slash(ds(c))     );}
+A jtaslash1(J jt,C c,    A w){RZ(   w); A z; return df1(z,  w,qq(slash(ds(c)),zeroionei(1)));}
+A jtatab   (J jt,C c,A a,A w){ARGCHK2(a,w); A z; return df2(z,a,w,   slash(ds(c))     );}
 
 DF1(jtmean){
  ARGCHK1(w);
@@ -714,7 +714,7 @@ static DF2(jtfoldx){F2PREFIP;  // this stands in place of jtxdefn, which inplace
  B foldrunning=jt->foldrunning; jt->foldrunning=1; A z=(*(FAV(self)->localuse.lfns[1]))(jt,a,w,self); jt->foldrunning=foldrunning;
  // if there was an error, save the error code and recreate the error at this level, to cover up details inside the script
  if(jt->jerr){I e=jt->jerr; RESETERR; jsignal(e);}
- R z;
+ return z;
 }
 
 // entry point for monad and dyad F. F.. F.: F: F:. F::
@@ -738,7 +738,7 @@ found: ;
  FAV(derivvb)->valencefns[0]=FAV(derivvb)->valencefns[1]=jtfoldx;
  // Tell the stub what the original fold type was
  FAV(derivvb)->lc=FAV(self)->id;
- R derivvb;
+ return derivvb;
 }
 
 // x Z: y
@@ -750,5 +750,5 @@ DF2(jtfoldZ){
  A z=unquote(a,w,foldvb);
  // if there was an error, save the error code and recreate the error at this level, to cover up details inside the script
  if(jt->jerr){I e=jt->jerr; RESETERR; jsignal(e);}
- R z;
+ return z;
 }

@@ -44,9 +44,9 @@ static FMTF(jtfmtI,I){I x=*v;
 }
 
 static FMTF(jtfmtD,D){B q;C buf[1+WD],c,*t;D x=*v;I k=0;
- if(!memcmpne(v,&inf, SZD)){strcpy(s,"_" ); R;}  // require exact bitmatch
- if(!memcmpne(v,&infm,SZD)){strcpy(s,"__"); R;}
- if(_isnan(*v)          ){strcpy(s,"_."); R;}
+ if(!memcmpne(v,&inf, SZD)){strcpy(s,"_" ); return;}  // require exact bitmatch
+ if(!memcmpne(v,&infm,SZD)){strcpy(s,"__"); return;}
+ if(_isnan(*v)          ){strcpy(s,"_."); return;}
 // x=*v; x=x==*(D*)minus0?0.0:x;  /* -0 to 0*/
  x=*v; x=x==(-1)*0.0?0.0:x;  /* -0 to 0*/
  sprintf(buf,jt->pp,x);
@@ -96,7 +96,7 @@ I jtthv(J jt,A w,I n,C*s){A t;B ov=0;C buf[WZ],*x,*y=s;I k,n4=n-4,p,wd,wn,wt;FMT
  }
  if(ov){if(' '!=*(y-1))*y++=' '; memset(y,'.',3L); y+=3;}
  else if(' '==*(y-1))--y; 
- *y=0; R y-s;
+ *y=0; return y-s;
 }
 
 static F1(jtthbit){
@@ -144,7 +144,7 @@ static I sbtou8size(J jt,SBU*u,I*dw){I q=u->n;
  }else{
   if(dw&&q>0)*dw=stringdisplaywidth(jt, 0,(void*)SBSV(u->i),u->n);
  }
- R q;
+ return q;
 }
 
 // cvt SB string to utf8
@@ -213,13 +213,13 @@ static A jtthsb(J jt,A w,A prxthornuni){A d,z;C*zv;I c,*dv,m,n,p,q,r,*s;SB*x,*y;
 
 static F1(jtthx1){A z;B b;C*s,s1[2+XBASEN];I n,p,p1,*v;
  n=AN(w); v=AV(w)+n-1; b=0>*v; 
- p=*v; if(p==XPINF)R cstr("_"); else if(p==XNINF)R cstr("__");
+ p=*v; if(p==XPINF)return cstr("_"); else if(p==XNINF)return cstr("__");
  sprintf(s1,FMTI,*v); p1=strlen(s1);
  p=p1+XBASEN*(n-1);
  GATV0(z,LIT,p,1); s=CAV(z); 
  MC(s,s1,p1); if(b)s[0]=CSIGN; s+=p1; 
  DQ(n-1, --v; I j=*v; j=b?-j:j; sprintf(s,FMTI04,j); s+=XBASEN;);
- R z;           
+ return z;
 }
 
 static A jtthq1(J jt,Q y){A c,d,z;B b;C*zv;I m,n=-1;
@@ -228,20 +228,20 @@ static A jtthq1(J jt,Q y){A c,d,z;B b;C*zv;I m,n=-1;
  if(b=1<AN(d)||1!=AV(d)[0]){RZ(d=thx1(y.d)); n=AN(d);}
  GATV0(z,LIT,m+n+1,1); zv=CAV(z);
  MC(zv,AV(c),m); if(b){*(zv+m)='r'; MC(zv+m+1,AV(d),n);}
- R z;
+ return z;
 }
 
 static A jtthdx1(J jt,DX y){A x,z;B b;C*s,s1[2+XBASEN],s2[20];I e,n,p,p1,p2,*v;
  e=y.e-1; x=y.x; p=y.p;
  n=AN(x); v=AV(x)+n-1; b=0>*v; 
- if(p==DXINF)R cstr("_"); else if(p==DXMINF)R cstr("__");
+ if(p==DXINF)return cstr("_"); else if(p==DXMINF)return cstr("__");
  sprintf(s1,FMTI,b?-*v:*v); p1=strlen(s1);
  if(e&&*v){s=s2; *s++='e'; if(0>e)*s++=CSIGN; sprintf(s,FMTI,0<e?e:-e); p2=strlen(s2);}else p2=0; 
  GATV0(z,LIT,b+p1+(I )(1<p1)+XBASEN*(n-1)+p2,1); s=CAV(z);
  if(b)*s++=CSIGN; *s++=*s1; if(1<p1){*s++='.'; MC(s,1+s1,p1-1); s+=p1-1;}
  DQ(n-1, --v; I j=*v; j=b?-j:j; sprintf(s,FMTI04,j); s+=XBASEN;);
  MC(s,s2,p2);
- R z;
+ return z;
 }
 
 static F1(jtthxqe){A d,t,*tv,*v,y,z;C*zv;I c,*dv,m,n,p,r,*s,*wv;
@@ -266,7 +266,7 @@ static F1(jtthxqe){A d,t,*tv,*v,y,z;C*zv;I c,*dv,m,n,p,r,*s,*wv;
  p=0; DO(c, p+=++dv[i];);
  GATV(z,LIT,m*p,r+!r,s); AS(z)[AR(z)-1]=p; zv=CAV(z); memset(zv,' ',AN(z));
  v=tv; DO(m, DO(c, zv+=dv[i]; y=*v++; p=AN(y); MC(zv-p-(I )(c>1+i),AV(y),p);));
- R z;
+ return z;
 }
 
 // w is an array of boxes of any shape, where the contents of each box are character tables.
@@ -289,7 +289,7 @@ static B jtrc(J jt,A w,A*px,A*py, I *t){A*v,x,y;I j=0,k=0,maxt=0,r,*s,xn,*xv,yn,
  DO(xn, ASSERT(xv[i]<IMAX,EVLIMIT); ++xv[i];); 
  DO(yn, ASSERT(yv[i]<IMAX,EVLIMIT); ++yv[i];);
  *t=maxt;  // Return maximum type of inputs
- R 1;  // good return
+ return 1;  // good return
 }
 
 // Boxing characters are taken from jt->bx, with interpretation as follows:
@@ -425,7 +425,7 @@ static F1(jtenframe){A x,y,z;C*zv;I ht,m,n,p,q,t,wd,wdb,wr,xn,*xv,yn,*yv,zn;
  DPMULDE(ht,wd,p); q=MAX(1,xn*yn); m=n/q; DPMULDE(m,p,zn);  // in case 2-cells of w are empty, avoid zerodivide.  zn will be 0 then
  // Allocate result area, using max type of the children; initialize shape to shape of w with the last 2 dimensions replaced by (ht,wd) of result 2-cell
  GA(z,t,zn,wr,AS(w)); AS(z)[wr-2]=ht; AS(z)[wr-1]=wd; 
- if(!n)R z;  // If w has 0 cells, return the empty array
+ if(!n)return z;  // If w has 0 cells, return the empty array
  // Here w has cells.
  zv=CAV(z);  // zv->result area
  wdb=wd*(t=bpnoun(t));  // Replace t with the length of a character of t; get length of line in bytes
@@ -433,7 +433,7 @@ static F1(jtenframe){A x,y,z;C*zv;I ht,m,n,p,q,t,wd,wdb,wr,xn,*xv,yn,*yv,zn;
  fminit(m,ht,wdb,x,y,zv,t);
  // Insert the data for each atom into the result
  fmfill(p,q,wdb,w,x,y,zv,t);
- R z;
+ return z;
 }
 
 // Convert any character array to a table for display
@@ -462,11 +462,11 @@ F1(jtmat){A z;B b=0;C*v,*x;I c,k,m=1,p,q,qc,r,*s,t,zn;
  if(2<r)fillv(t,zn,x);
  // for each 2-cell, leave a gap if required, then copy in the 2-cell.  Change c to size in bytes; qc=size of 2-cell
  if(zn){c<<=bplg(t); DPMULDE(q,c,qc); DO(m, ENGAP(i*q,r,s,x+=c;); MC(x,v,qc); x+=qc; v+=qc;);}
- R z;
+ return z;
 }
 
 // Convert 1 box to character array, then to character table
-static F2(jtmatth1){R mat(thorn1main(a,w));}
+static F2(jtmatth1){return mat(thorn1main(a,w));}
 static EVERYFS(matth1self,0,jtmatth1,0,VFLAGNONE)
 
 // Format boxed array.  Result is table of characters, with space-changing characters (like BS, CR) converted to spaces
@@ -485,7 +485,7 @@ static A jtthbox(J jt,A w,A prxthornuni){A z;static UC ctrl[]=" \001\002\003\004
   case C2TX: {US *s=USAV(z); DO(AN(z), if(14>s[i]&&(s[i]||!i||s[i-1]<0x1100))s[i]=ctrl[s[i]];);} break;  // wide char
   default: {C4 *s=C4AV(z); DO(AN(z), if(14>s[i]&&(s[i]||!i||s[i-1]<0x1100))s[i]=ctrl[s[i]];);} break;  // must be literal4
  }
- R z;
+ return z;
 }
 
 // format sparse array
@@ -500,7 +500,7 @@ static F1(jtths){A e,i,x,z;C c,*u,*v;I d,m,n,*s;P*p;
  d=aii(z); v=CAV(z)-d; DQ(m, MC(v+=d,u+=n,n););
  if(2<AR(z))RZ(z=matth1(z,zeroionei(0)));  // no prxthornuni
  s=AS(z); d=*(1+s); v=1+CAV(z); c=jt->bx[9]; DQ(*s, *(v+n)=c; v+=d;);
- R z;
+ return z;
 }
 
 // ": y, returning character array.  If jt->prxthornuni is set, LIT and C2T types return.  prxthornuni is zeroionei[0 or 1]
@@ -510,11 +510,11 @@ static A jtthorn1main(J jt,A w,A prxthornuni){PROLOG(0001);A z;
  if(!AN(w))GATV(z,LIT,0,AR(w),AS(w))
  else switch(CTTZ(AT(w))){
 #ifdef UNDER_CE
-  default:   if(AT(w)&XD+XZ)z=thxqe(w); else R 0; break;
+  default:   if(AT(w)&XD+XZ)z=thxqe(w); else return 0; break;
   case XNUMX: case RATX:
              z=thxqe(w);                  break;
 #else
-  default:   R 0;
+  default:   return 0;
   case XNUMX: case RATX: case XDX: case XZX:
              z=thxqe(w);                  break;
 #endif
@@ -569,10 +569,10 @@ static A jtthorn1main(J jt,A w,A prxthornuni){PROLOG(0001);A z;
 // entry point to allow C2T result from thorn1.  But always pass byte arguments unchanged
 // This will enable null insertion/removal for CJK, but that's OK since the result goes to display
 // This is called only from jprx()
-F1(jtthorn1u){ A z; ARGCHK1(w); z = thorn1main(w,num(2+!(AT(w)&(LIT)))); R z; }  // set prx and prxthornuni flags
+F1(jtthorn1u){ A z; ARGCHK1(w); z = thorn1main(w,num(2+!(AT(w)&(LIT)))); return z; }  // set prx and prxthornuni flags
 
 // entry point for returning LIT array only.  Allow C2T result, then convert.  But always pass literal arguments unchanged
-F1(jtthorn1){ A z; ARGCHK1(w); A prxthornuni=zeroionei(!(AT(w)&(LIT+C2T+C4T))); z = thorn1main(w,prxthornuni); if (z&&AT(z)&(C2T+C4T))z = rank2ex(z,prxthornuni,UNUSED_VALUE,MIN(AR(z),1L),0,MIN(AR(z),1L),0, RoutineD); R z; }
+F1(jtthorn1){ A z; ARGCHK1(w); A prxthornuni=zeroionei(!(AT(w)&(LIT+C2T+C4T))); z = thorn1main(w,prxthornuni); if (z&&AT(z)&(C2T+C4T))z = rank2ex(z,prxthornuni,UNUSED_VALUE,MIN(AR(z),1L),0,MIN(AR(z),1L),0, RoutineD); return z; }
 
 
 #define DDD(v)   {*v++='.'; *v++='.'; *v++='.';}
@@ -595,9 +595,9 @@ else{*zv++=(C)(0xf0+((x)>>18));*zv++=(C)(0x80+(((x)>>12)&0x3f));*zv++=(C)(0x80+(
 // lb,la # lines to accept at beginning & end
 static I countonlines(I (*f)(), I t, C* v, I h, I nq, I c, I lb, I la){
  // if we can output all the lines, go count every character
- if(h>=nq)R (*f)(t,v,c*nq);
+ if(h>=nq)return (*f)(t,v,c*nq);
  // if we are going to suppress some lines, count the prefix and suffix separately
- R (*f)(t,v,c*lb) + (*f)(t,(v+c*t*(nq-la)),c*la);
+ return (*f)(t,v,c*lb) + (*f)(t,(v+c*t*(nq-la)),c*la);
 }
 
 // count the number of bytes that must be added because of UTF-8 expansion.
@@ -622,7 +622,7 @@ static I scanbdc(I t, C*v,I n){C x;I m=0;
    DQ(n, ux=*u; if(BETWEENC(ux,16,26)){m+=2;*u=(C4)bdc[ux];}else if(ux>127){++m; if(ux>2047){++m; if(ux>65535)++m;}} ++u;)
   }
  }
- R m;
+ return m;
 }
 // Count number of interior EOL sequences
 // This routine is called only when 2-byte CRLF EOLs are in use.
@@ -642,7 +642,7 @@ static I scaneol(I t, C*v,I n){I m=0;
   case 2: {US e,x=0,*u=(US*)v; DQ(n, e=x; x=*u++; if(x==CCR)++m; else if(x==CLF)e==CCR?--m:++m;) } break;
   default: {C4 e,x=0,*u=(C4*)v; DQ(n, e=x; x=*u++; if(x==CCR)++m; else if(x==CLF)e==CCR?--m:++m;) } break;  // must be C4T
  }
- R m;
+ return m;
 }
 
 // Cut display down to the max size specified by the user
@@ -670,7 +670,7 @@ static C*dropl(C*zu,C*zv,I lb,I la,C*eol){C ec0,ec1,*u,*v;I n,p,zn=zv-zu;
  // But if the amount of data to be removed is less than the length of ..., don't do it, since
  // it would overwrite valid data in the suffix
  // Return pointer to end+1 of the compacted data
- if(v-u>3){DDD(u); n=zv-v; memmove(u,v,n); R u+n;}else R zv;
+ if(v-u>3){DDD(u); n=zv-v; memmove(u,v,n); return u+n;}else return zv;
 }    /* drop excessive lines */
 
 // w is any noun, result is a null-terminated string to display for the noun
@@ -694,7 +694,7 @@ static A jtjprx(J jt,I ieol,I maxlen,I lb,I la,A w){A y,z;B ch;C e,eov[2],*v,x,*
  if(ieol){m=2; eov[0]=CCR; eov[1]=CLF;}else{m=1; eov[0]=CLF; eov[1]=0;}
  // q=#lines in a 2-cell, c=#chars in a row, n=#2-cells, nq=total # lines (without spacing)
  // if w is empty the values could overflow.  In that case, just display nothing
- SHAPEN(y,r-2,q); SHAPEN(y,r-1,c); nq=prod(r-1,s); if(jt->jerr){RESETERR z=str(m+1,eov); makewritable(z) CAV(z)[m]=0; AN(z)=AS(z)[0]=m; R z;}
+ SHAPEN(y,r-2,q); SHAPEN(y,r-1,c); nq=prod(r-1,s); if(jt->jerr){RESETERR z=str(m+1,eov); makewritable(z) CAV(z)[m]=0; AN(z)=AS(z)[0]=m; return z;}
  // c1=#characters to put out per line, lba=max # lines to put out
  c1=MIN(c,maxlen); lba=(D)lb+la;
  // calculate p=total # lines of spacing needed, as sum of (#k-cells-1) for k>=2
@@ -804,7 +804,7 @@ static A jtjprx(J jt,I ieol,I maxlen,I lb,I la,A w){A y,z;B ch;C e,eov[2],*v,x,*
  ASSERTSYS(p<=zn,"jprx zn");
  // Null-terminate the string, and set the size and shape of the valid part
  *zv=0; AN(z)=AS(z)[0]=p;
- R z;
+ return z;
 }    /* output string from array w */
 
 // 5!:30, to debug formatted display
@@ -822,7 +822,7 @@ F2(jtoutstr){I*v;
  ASSERT(0<=v[1],EVDOMAIN);
  ASSERT(0<=v[2],EVDOMAIN);
  ASSERT(0<=v[3],EVDOMAIN);
- R jprx(v[0],v[1],v[2],v[3],w);
+ return jprx(v[0],v[1],v[2],v[3],w);
 }
 
 // w is a noun.  Convert it to a UTF-8 string and write it to the console
@@ -860,5 +860,5 @@ F1(jtjpr){A y;I i,n,t; UC *v;
     case 5: RZ(jpr1(lrep(y))); break;
     case 6: RZ(jpr1(prep(y))); break;
  }}}
- R mtm;
+ return mtm;
 }

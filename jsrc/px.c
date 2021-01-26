@@ -20,12 +20,12 @@
 #include "p.h"
 
 
-A jteval(J jt,C*s){R parse(tokens(cstr(s),1+(AN(jt->locsyms)>1)));}
+A jteval(J jt,C*s){return parse(tokens(cstr(s),1+(AN(jt->locsyms)>1)));}
 
-A jtev1(J jt,    A w,C*s){A z; R df1(z,  w,eval(s));}  // parse *s and apply to w
-A jtev2(J jt,A a,A w,C*s){A z; R df2(z,a,w,eval(s));}  // parse *s and apply to a and w
-A jteva(J jt,    A w,C*s){A z; R df1(z,  w,colon(num(1),   cstr(s)));}
-A jtevc(J jt,A a,A w,C*s){A z; R df2(z,a,w,colon(num(2),cstr(s)));}
+A jtev1(J jt,    A w,C*s){A z; return df1(z,  w,eval(s));}  // parse *s and apply to w
+A jtev2(J jt,A a,A w,C*s){A z; return df2(z,a,w,eval(s));}  // parse *s and apply to a and w
+A jteva(J jt,    A w,C*s){A z; return df1(z,  w,colon(num(1),   cstr(s)));}
+A jtevc(J jt,A a,A w,C*s){A z; return df2(z,a,w,colon(num(2),cstr(s)));}
 
 // ". y
 F1(jtexec1){A z;
@@ -42,7 +42,7 @@ F1(jtexec1){A z;
 
 // execute w, which is either a string or the boxed words of a string (as if from tokens())
 F1(jtimmex){A z;
- if(!w)R A0;  // if no string, return error
+ if(!w)return A0;  // if no string, return error
  // When we start a sentence, we need to establish AKGST in locsyms as a shadow of jt->global, because that's
  // the normal condition and u./v. will rely on it.  This is not needed for a recursive call, but it doesn't hurt either,
  // because if AKGST has been set it will already hold jt->global.  Of course, any event code must restore everything
@@ -61,7 +61,7 @@ F1(jtimmea){A t,z,z1;
  RETF(z);
 }
 
-static A jtcex(J jt,A w,AF f,A self){A z; RE(w); z=f(jt,w,self); RESETERR; R z;}
+static A jtcex(J jt,A w,AF f,A self){A z; RE(w); z=f(jt,w,self); RESETERR; return z;}
      /* conditional execute - return 0 if error */
 
 // convert the gerund (i.e  AR) in w into a verb
@@ -70,14 +70,14 @@ F1(jtexg){A*v,*wv,x,y,z;I n;
  n=AN(w); wv=AAV(w); 
  ASSERT(n!=0,EVLENGTH);
  ASSERT(1>=AR(w),EVRANK);
- if(VERB&AT(w))R w;
+ if(VERB&AT(w))return w;
  ASSERT(BOX&AT(w),EVDOMAIN);
  GATV0(z,BOX,n,1); v=AAV(z);
  DO(n, x=wv[i]; RZ(*v++=(y=cex(x,jtfx,0L))?y:exg(x)););  // if the AR can be converted to an A, do so; otherwise it should be a list of ARs, recur on each
- R parse(z);
+ return parse(z);
 }
 
-L* jtjset(J jt,C*name,A x){R symbisdel(nfs((I)strlen(name),name),x,jt->global);}
+L* jtjset(J jt,C*name,A x){return symbisdel(nfs((I)strlen(name),name),x,jt->global);}
 
 F2(jtapplystr){PROLOG(0054);A fs,z;
  F2RANK(1,RMAX,jtapplystr,UNUSED_VALUE);

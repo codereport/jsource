@@ -71,9 +71,9 @@ int _stdcall JwdS(J jt, int x, A w, A* p1, int** p2)
 
 int _stdcall JmsgsS(J jt)
 {
-	if(!*jt->adbreak) R 0;
+	if(!*jt->adbreak) return 0;
 	*jt->adbreak=0;
-	R 1;
+	return 1;
 }
 
 char* _stdcall JinputS(J jt, char* prompt)

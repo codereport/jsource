@@ -3,7 +3,7 @@
 /*                                                                         */
 /* Verbs: Comparatives                                                     */
 
-/* See  R. Bernecky, Comparison Tolerance, SATN-23, IPSA, 1977-06-10       */
+/* See  return. Bernecky, Comparison Tolerance, SATN-23, IPSA, 1977-06-10       */
 /* For finite numbers, the following defns hold:                           */
 /*                                                                         */
 /*   TEQ(u,v)   ABS(u-v)<=ct*MAX(ABS(u),ABS(v))                            */

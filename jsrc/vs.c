@@ -8,7 +8,7 @@
 B jtscheck(J jt,A w){A a,e,x,y;I k1,k2,r,*s,t;P*p;D rkblk[16];
  ARGCHK1(w);
  r=AR(w); s=AS(w); t=AT(w);
- if(t&DENSE)R 1;
+ if(t&DENSE)return 1;
  ASSERTSYS(r,"scheck rank");
  DO(r, ASSERTSYS(0<=s[i],"scheck shape"););
  p=PAV(w); a=SPA(p,a); e=SPA(p,e); y=SPA(p,i); x=SPA(p,x);
@@ -32,10 +32,10 @@ B jtscheck(J jt,A w){A a,e,x,y;I k1,k2,r,*s,t;P*p;D rkblk[16];
  ASSERTSYS(equ(grade1(y),IX(*AS(y))),"scheck i sorted");
  ASSERTSYS(AR(x)==1+r-AN(a),"scheck x rank");
  ASSERTSYS(equ(behead(shape(x)),from(less(IX(r),a),shape(w))),"scheck x shape");
- R 1;
+ return 1;
 }    /* assertions on sparse array w */
 
-static A jtselm(J jt,I t){R t&NUMERIC?cvt(t,num(0)):t&BOX?ds(CACE):chrspace;}
+static A jtselm(J jt,I t){return t&NUMERIC?cvt(t,num(0)):t&BOX?ds(CACE):chrspace;}
 
 A jtpaxis(J jt,I r,A a){A y,z;B*b;I j,*u,*v;
  ARGCHK1(a);
@@ -46,7 +46,7 @@ A jtpaxis(J jt,I r,A a){A y,z;B*b;I j,*u,*v;
  GATV0(z,INT,r,1); v= AV(z); 
  DO(r, if( b[i])*v++=i;);
  DO(r, if(!b[i])*v++=i;);
- R z;
+ return z;
 }    /* permuted axes per sparse axes specification a */
 
 static A jtvaxis(J jt,I r,A a){A y;B*b;I j,n,*v;
@@ -55,10 +55,10 @@ static A jtvaxis(J jt,I r,A a){A y;B*b;I j,n,*v;
  ASSERT(1>=AR(a),EVRANK);
  GATV0(y,B01,r,1); b=BAV(y); memset(b,C0,r);
  DO(n, j=v[i]; if(0>j)j+=r; ASSERT(0<=j&&j<r&&!b[j],EVINDEX); b[j]=1;);
- R caro(ifb(r,b));   // avoid readonly
+ return caro(ifb(r,b));   // avoid readonly
 }    /* standardize axes to be non-negative, sorted */
 
-A jtdaxis(J jt,I r,A a){R less(IX(r),a);}
+A jtdaxis(J jt,I r,A a){return less(IX(r),a);}
      /* dense axes relative to sparse axes a */
 
 // e is sparse element
@@ -120,7 +120,7 @@ static A jtsparse1a(J jt,A s,A a,A e,A y,A x){A z;B*b;I an,*av,et,r,*sv,t,*v;P*p
  SPB(p,e,e); 
  SPB(p,i,y);
  SPB(p,x,x);
- R z;
+ return z;
 }
 
 // convert w to sparse, with sparse element e (which must be a dense atom)
@@ -129,7 +129,7 @@ A jtsparseit(J jt,A w,A a,A e){PROLOG(0091);A ax,c,x,y,z;B b,*cv;I cm,cn,m,n,r,*
  r=AR(w); t=AT(w); wn=AN(w); n=AN(a);
  ASSERT(!(t&LIT+BOX),EVNONCE);  // must not be LIT or BOX
  ASSERT(STYPE(t)!=0,EVDOMAIN);  // w must be dense
- if(!r){ASSERT(!AN(a),EVINDEX); R ca(w);}
+ if(!r){ASSERT(!AN(a),EVINDEX); return ca(w);}
  RZ(z=sparse1a(shape(w),a,e,mark,mark)); p=PAV(z);
  RZ(ax=paxis(r,a));
  GATV0(y,INT,r,1); s=AV(y);
@@ -157,24 +157,24 @@ A jtsparseit(J jt,A w,A a,A e){PROLOG(0091);A ax,c,x,y,z;B b,*cv;I cm,cn,m,n,r,*
 F1(jtdenseit){A a,e,q,s1,x,y,z;B b;C*xv,*zv;I an,ck,k,n,r,t,*s,xn,*yv;P*wp;
  ARGCHK1(w);
  r=AR(w); t=AT(w);
- if(!r||t&DENSE)R ca(w);
+ if(!r||t&DENSE)return ca(w);
  t=DTYPE(t);
  wp=PAV(w); a=SPA(wp,a); e=SPA(wp,e); x=SPA(wp,x); y=SPA(wp,i); 
  xn=AN(x); an=AN(a); b=equ(a,IX(an));
- if(!an||!xn)R reshape(shape(w),xn?x:e);
+ if(!an||!xn)return reshape(shape(w),xn?x:e);
  if(b)s=AS(w); else{RZ(q=over(a,less(IX(r),a))); RZ(s1=from(q,shape(w))); s=AV(s1);}
  RE(n=prod(r,s));
  GA(z,t,n,r,s); zv=CAV(z); xv=CAV(x); 
  if(1<an)RZ(y=base2(vec(INT,an,s),y)); yv=AV(y);
  k=bpnoun(t); ck=k*aii(x); mvc(k*n,zv,k,AV(e));
  DQ(SETIC(y,an), MC(zv+ck**yv,xv,ck); ++yv; xv+=ck;);
- R b?z:cant2(pinv(q),z);
+ return b?z:cant2(pinv(q),z);
 }    /* $.^:_1 */
 
 F2(jtreaxis){A a1,e,p,q,x,y,z;B*b;I c,d,j,k,m,r,*u,*v,*ws,wt;P*wp,*zp;
  ARGCHK2(a,w);
  wt=AT(w);
- if(wt&DENSE)R sparseit(w,a,selm(wt));
+ if(wt&DENSE)return sparseit(w,a,selm(wt));
  r=AR(w); ws=AS(w); wp=PAV(w);
  GASPARSE(z,wt,1L,r,ws); zp=PAV(z); 
  SPBV(zp,a,a1,vaxis(r,a)); 
@@ -192,7 +192,7 @@ F2(jtreaxis){A a1,e,p,q,x,y,z;B*b;I c,d,j,k,m,r,*u,*v,*ws,wt;P*wp,*zp;
   RZ(p=grade1(over(a,less(a1,a))));
   if(equ(p,IX(AN(p))))SPB(zp,i,repeat(q,y))
   else{y=fromr(p,repeat(q,y)); q=grade1(y); SPB(zp,i,from(q,y)); SPB(zp,x,from(q,x));}
-  R z;
+  return z;
  }
  if(all1(eps(a1,a))){A x1,y1;B*pv;C*s,*t;I g,h,*iv,n;  /* new is subset of old */
   c=AN(a); d=AN(a1);
@@ -212,9 +212,9 @@ F2(jtreaxis){A a1,e,p,q,x,y,z;B*b;I c,d,j,k,m,r,*u,*v,*ws,wt;P*wp,*zp;
   k=bpnoun(AT(x)); g=k*aii(x); h=k*aii(x1); mvc(k*AN(x1),t,k,AV(e));
   DO(m, MC(t+g*iv[i],s,g); s+=g; if(b[i]){ICPY(v,u+i*c,d); v+=d; t+=h;});
   SPB(zp,i,y1); SPB(zp,x,cant2(increm(indexof(p,daxis(r,a1))),x1));
-  R z;
+  return z;
  }
- R reaxis(a1,reaxis(over(a,less(a1,a)),w));
+ return reaxis(a1,reaxis(over(a,less(a1,a)),w));
 }    /* (2;a)$.w */
 
 static A jtaxbytes1(J jt,I t,I an,I m,I xr,I*xs){I k,z;
@@ -223,7 +223,7 @@ static A jtaxbytes1(J jt,I t,I an,I m,I xr,I*xs){I k,z;
   z+=SZI*NORMAH+k;
   z+=SZI*NORMAH+SZI*(1+xr)+k*m*prod(xr,xs);
   z+=SZI*NORMAH+SZI*2+SZI*m*an;
-  R sc(z);
+  return sc(z);
 }
 
 static F2(jtaxbytes){A a1,e,p,q,x;B*b;I c,d,j,m,n=0,r,*u,*v,*ws,wt;P*wp;
@@ -238,7 +238,7 @@ static F2(jtaxbytes){A a1,e,p,q,x;B*b;I c,d,j,m,n=0,r,*u,*v,*ws,wt;P*wp;
   v=c+AS(x); DO(AN(p), if(!b[i])u[j++]=v[i];);
   RZ(q=irs2(cant2(plus(sc(c),dgrade1(p)),x),reshape(vec(INT,j,u),e),0L,j,j,jtmatch));
   b=BAV(q); n=AN(q); DQ(n, if(*b++)--n;); 
-  R axbytes1(AT(e),d,n,j,u);
+  return axbytes1(AT(e),d,n,j,u);
  }
  if(all1(eps(a1,a))){A y=SPA(wp,i);   /* new is subset of old */
   RZ(y=fromr(indexof(a,a1),y)); 
@@ -246,9 +246,9 @@ static F2(jtaxbytes){A a1,e,p,q,x;B*b;I c,d,j,m,n=0,r,*u,*v,*ws,wt;P*wp;
   if(m=*AS(y)){n=1; u=AV(y); DQ(m-1, if(ICMP(u,u+d,d))++n; u+=d;);} 
   RZ(p=over(less(a,a1),daxis(r,a))); v=AV(p);
   DQ(AN(p), u[j++]=ws[*v++];);
-  R axbytes1(AT(e),d,n,j,u);
+  return axbytes1(AT(e),d,n,j,u);
  }
- R axbytes(a1,reaxis(over(a,less(a1,a)),w));
+ return axbytes(a1,reaxis(over(a,less(a1,a)),w));
 }    /* bytes required for (2;a)$.w */
 
 static F2(jtaxtally){A a1,e,p,q,x;B*b;I c,d,j,m,n=0,r,*u,*v,*ws,wt;P*wp;
@@ -263,15 +263,15 @@ static F2(jtaxtally){A a1,e,p,q,x;B*b;I c,d,j,m,n=0,r,*u,*v,*ws,wt;P*wp;
   v=c+AS(x); DO(AN(p), if(!b[i])u[j++]=v[i];);
   RZ(q=irs2(cant2(plus(sc(c),dgrade1(p)),x),reshape(vec(INT,j,u),e),0L,j,j,jtmatch));
   b=BAV(q); n=AN(q); DQ(n, if(*b++)--n;); 
-  R sc(n);
+  return sc(n);
  }
  if(all1(eps(a1,a))){A y=SPA(wp,i);   /* new is subset of old */
   RZ(y=fromr(indexof(a,a1),y)); 
   RZ(y=grade2(y,y));
   if(m=*AS(y)){n=1; u=AV(y); DQ(m-1, if(ICMP(u,u+d,d))++n; u+=d;);} 
-  R sc(n);
+  return sc(n);
  }
- R axtally(a1,reaxis(over(a,less(a1,a)),w));
+ return axtally(a1,reaxis(over(a,less(a1,a)),w));
 }    /* #4$.(2;a)$.w */
 
 F2(jtrezero){A x,z;I at,t,wt,zt;P*wp,*zp;
@@ -286,7 +286,7 @@ F2(jtrezero){A x,z;I at,t,wt,zt;P*wp,*zp;
  SPB(zp,a,ca(SPA(wp,a)));
  SPB(zp,i,ca(SPA(wp,i)));
  SPB(zp,x,TYPESEQ(t,wt)?ca(x):cvt(t,x));
- R z;
+ return z;
 }    /* respecify the sparse element */
 
 F1(jtunzero){A e,q,x,z;I r;P*wp,*zp;
@@ -298,14 +298,14 @@ F1(jtunzero){A e,q,x,z;I r;P*wp,*zp;
  SPB(zp,i,repeat(q,SPA(wp,i)));
  SPB(zp,a,ca(SPA(wp,a)));
  SPB(zp,e,ca(e));
- R z;
+ return z;
 }    /* remove completely sparse cells */
 
 static F1(jtsparsep1){A*wv;I n=0;
  ARGCHK1(w);
  ASSERT(1>=AR(w),EVRANK); 
  if(BOX&AT(w)){n=AN(w); wv=AAV(w); ASSERT(1<=n&&n<=3||5==n,EVLENGTH);}
- R sparse1a(0<n?wv[0]:w,1<n?wv[1]:mark,2<n?wv[2]:mark,3<n?wv[3]:mark,4<n?wv[4]:mark);
+ return sparse1a(0<n?wv[0]:w,1<n?wv[1]:mark,2<n?wv[2]:mark,3<n?wv[3]:mark,4<n?wv[4]:mark);
 }
 
 static F1(jtsparsen1){A*u,z;P*p;
@@ -313,13 +313,13 @@ static F1(jtsparsen1){A*u,z;P*p;
  ASSERT(SPARSE&AT(w),EVDOMAIN);
  GAT0(z,BOX,3,1); u=AAV(z); p=PAV(w);
  u[0]=shape(w); u[1]=ca(SPA(p,a)); u[2]=ca(SPA(p,e));
- RE(0); R z;
+ RE(0); return z;
 }
 
 F1(jtsparse1){
  ARGCHK1(w);
- if(!AR(w)||SPARSE&AT(w))R ca(w);
- R sparseit(w,IX(AR(w)),selm(AT(w)));
+ if(!AR(w)||SPARSE&AT(w))return ca(w);
+ return sparseit(w,IX(AR(w)),selm(AT(w)));
 }    /* $. y */
 
 F2(jtsparse2){A*av,q=0;B b;I j,k,t,*v;P*p;
@@ -337,16 +337,16 @@ F2(jtsparse2){A*av,q=0;B b;I j,k,t,*v;P*p;
  p=PAV(w); t=AT(w); b=1&&t&SPARSE;
  ASSERT(b||0<=k&&k<=2,EVDOMAIN);
  switch(k){
-  case 0:  ASSERT(!q,EVDOMAIN); R t&SPARSE?denseit(w):sparse1(w);
-  case 1:  ASSERT(!q,EVDOMAIN); q=sparsep1(w); PRISTCLRF(w); R q;
-  case -1: ASSERT(!q,EVDOMAIN); R sparsen1(w);
+  case 0:  ASSERT(!q,EVDOMAIN); return t&SPARSE?denseit(w):sparse1(w);
+  case 1:  ASSERT(!q,EVDOMAIN); q=sparsep1(w); PRISTCLRF(w); return q;
+  case -1: ASSERT(!q,EVDOMAIN); return sparsen1(w);
   case 2:
-   if(AR(a)){j=v[1]; ASSERT(q&&(1==j||2==j),EVDOMAIN); R 1==j?axbytes(q,w):axtally(q,w);}
-   if(q)R reaxis(q,w); else if(b)R rat(SPA(p,a)); else{ASSERT(STYPE(t)!=0,EVDOMAIN); R IX(AR(w));}
-  case 3:  R q?rezero(q,w):rat(SPA(p,e));  // ? there rat()s don't protect anything?  SPA is as permanent as w
-  case 4:  ASSERT(!q,EVDOMAIN); R rat(SPA(p,i)); 
-  case 5:  ASSERT(!q,EVDOMAIN); R rat(SPA(p,x));
-  case 7:  ASSERT(!q,EVDOMAIN); R sc(SETIC(SPA(p,i),j));
-  case 8:  ASSERT(!q,EVDOMAIN); R unzero(w);
+   if(AR(a)){j=v[1]; ASSERT(q&&(1==j||2==j),EVDOMAIN); return 1==j?axbytes(q,w):axtally(q,w);}
+   if(q)return reaxis(q,w); else if(b)return rat(SPA(p,a)); else{ASSERT(STYPE(t)!=0,EVDOMAIN); return IX(AR(w));}
+  case 3:  return q?rezero(q,w):rat(SPA(p,e));  // ? there rat()s don't protect anything?  SPA is as permanent as w
+  case 4:  ASSERT(!q,EVDOMAIN); return rat(SPA(p,i));
+  case 5:  ASSERT(!q,EVDOMAIN); return rat(SPA(p,x));
+  case 7:  ASSERT(!q,EVDOMAIN); return sc(SETIC(SPA(p,i),j));
+  case 8:  ASSERT(!q,EVDOMAIN); return unzero(w);
   default: ASSERT(0,EVDOMAIN);
 }}   /* x $. y */

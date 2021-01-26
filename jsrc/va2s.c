@@ -12,16 +12,16 @@ static A jtvaspc(J jt,A a,A w,C id,VF ado,I cv,I t,I zt,I af,I acr,I wf,I wcr,I 
  GATV0(q,INT,f+r,1); v=AV(q);
  if(r>acr){ICPY(v,wf+ws,r); RZ(a=irs2(vec(INT,r-acr,acr+v),a,0L,1L,0L,jtreshape));}
  if(r>wcr){ICPY(v,af+as,r); RZ(w=irs2(vec(INT,r-wcr,wcr+v),w,0L,1L,0L,jtreshape));}
- R vasp(a,w,id,ado,cv,t,zt,af,r,wf,r,f,r);
+ return vasp(a,w,id,ado,cv,t,zt,af,r,wf,r,f,r);
 }    /* prefix agreement on cells */
 
 F1(jtvaspz){A e,x,y;B c,*u,*xu,*xv;I j,n,*v,*yu,*yv,xc,yc;P*wp;
- if(!(SB01&AT(w)))R w;
+ if(!(SB01&AT(w)))return w;
  wp=PAV(w); 
  e=SPA(wp,e); c=!*BAV(e);
  x=SPA(wp,x); xv=xu=u=BAV(x); xc=aii(x); n=*AS(x); j=0;
  y=SPA(wp,i); yv=yu=   AV(y); yc=*(1+AS(y));
- if(!(n&&xc&&yc))R w;
+ if(!(n&&xc&&yc))return w;
  while(u=memchr(xv+xc*j,c,xc*(n-j))){
   j=(u-xv)/xc; v=yv+yc*j;
   if(v==yu){yu+=yc; xu+=xc;}
@@ -50,7 +50,7 @@ static A jtvasp0(J jt,A a,A w,VF ado,I cv,I t,I zt){A e,x,xx,y,z,ze,zx;B b;I n;P
  SPB(zp,i,ca(SPA(p,i)));
  SPB(zp,e,ze);
  SPB(zp,x,zx);
- R vaspz(z);
+ return vaspz(z);
 }    /* one argument is sparse and the other is scalar */
 
 /*
@@ -68,7 +68,7 @@ static B jtvaspprep(J jt,A a,A w,I t,I af,I acr,I wf,I wcr,I f,I r,A*ae,A*ay,A*a
  ap=PAV(a); *ae=e=SPA(ap,e); *ay=SPA(ap,i); *ax=x=SPA(ap,x); if(t&&TYPESNE(t,AT(x))){RZ(*ae=cvt(t,e)); RZ(*ax=cvt(t,x));}
  wp=PAV(w); *we=e=SPA(wp,e); *wy=SPA(wp,i); *wx=x=SPA(wp,x); if(t&&TYPESNE(t,AT(x))){RZ(*we=cvt(t,e)); RZ(*wx=cvt(t,x));}
  RZ(*za=ifb(f+r,b));
- R 1;
+ return 1;
 }
 */
 
@@ -84,7 +84,7 @@ static B jtvaspeqprep(J jt,A a,A w,I t,I f,I r,A*ae,A*ay,A*ax,A*we,A*wy,A*wx,A*z
  if(!sw||!equ(q,wa))RZ(w=reaxis(q,w));
  p=PAV(a); *ae=e=SPA(p,e); *ay=SPA(p,i); *ax=x=SPA(p,x); if(t&&TYPESNE(t,AT(x))){RZ(*ae=cvt(t,e)); RZ(*ax=cvt(t,x));}
  p=PAV(w); *we=e=SPA(p,e); *wy=SPA(p,i); *wx=x=SPA(p,x); if(t&&TYPESNE(t,AT(x))){RZ(*we=cvt(t,e)); RZ(*wx=cvt(t,x));}
- R 1;
+ return 1;
 }
 
 static I zcount(A ay,A wy,B ab,B wb){I c,d,i,j,m,n,*u,*v,yc;
@@ -96,7 +96,7 @@ static I zcount(A ay,A wy,B ab,B wb){I c,d,i,j,m,n,*u,*v,yc;
   else if(c){            v+=yc; ++j; if(ab)++d;}
   else      {u+=yc; ++i; v+=yc; ++j;       ++d;}
  } 
- R d+wb*(m-i)+ab*(n-j);
+ return d+wb*(m-i)+ab*(n-j);
 }    /* item count for sparse result */
 
 #define ADVA   axv+=ak; u+=yc; ++i;
@@ -130,13 +130,13 @@ static A jtvaspeq(J jt,A a,A w,C id,VF ado,I cv,I t,I zt,I f,I r){A ae,ax,ay,we,
  GASPARSE(z,STYPE(AT(zx)),1,AR(a),AS(a));
  zp=PAV(z); 
  SPB(zp,a,za); SPB(zp,e,ze); SPB(zp,i,zy); SPB(zp,x,zx);
- R vaspz(z);
+ return vaspz(z);
 }    /* frames and cell ranks equal */
 
 A jtvasp(J jt,A a,A w,C id,VF ado,I cv,I t,I zt,I af,I acr,I wf,I wcr,I f,I r){A fs,z;
- if(!AR(a)||!AR(w))R vasp0(a,w,ado,cv,t,zt);
- if((SPARSE&AT(a)||SPARSE&AT(w))&&spmult(&z,a,w,id,af,acr,wf,wcr))R z;
- if(af!=wf){RZ(fs=ds(id)); R sprank2(a,w,fs,acr,wcr,VAV(fs)->valencefns[1]);}
- if(acr!=wcr)R vaspc(a,w,id,ado,cv,t,zt,af,acr,wf,wcr,f,r);
- R vaspeq(a,w,id,ado,cv,t,zt,f,r);
+ if(!AR(a)||!AR(w))return vasp0(a,w,ado,cv,t,zt);
+ if((SPARSE&AT(a)||SPARSE&AT(w))&&spmult(&z,a,w,id,af,acr,wf,wcr))return z;
+ if(af!=wf){RZ(fs=ds(id)); return sprank2(a,w,fs,acr,wcr,VAV(fs)->valencefns[1]);}
+ if(acr!=wcr)return vaspc(a,w,id,ado,cv,t,zt,af,acr,wf,wcr,f,r);
+ return vaspeq(a,w,id,ado,cv,t,zt,f,r);
 }    /* scalar dyadic fns with one or both arguments sparse */

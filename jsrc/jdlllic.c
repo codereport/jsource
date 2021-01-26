@@ -24,7 +24,7 @@ int swapint(int n){C* p,c;
  p=(C*)&n;
  c=p[3];p[3]=p[0];p[0]=c;
  c=p[2];p[2]=p[1];p[1]=c;
- R n;
+ return n;
 }
 #endif
 
@@ -69,12 +69,12 @@ F1(jtlock1){A z; C* p; C* src;
  p+=SK;
  for(i=0;i<maxc2;++i) *p++= lobyte(rand());
  for(i=0;i<2*SERIALNUMSIZE;++i) *p++= lobyte(rand());
- R z;
+ return z;
 }
 
 F2(jtlock2){ASSERT(0,EVDOMAIN);}
 
-F1(jtunlock1){R unlock2(mtv,w);}
+F1(jtunlock1){return unlock2(mtv,w);}
 
 F2(jtunlock2){int i,j,len,tlen;UC c1,c2,k1[SK],*lp,*sp,*d;
  ARGCHK2(a,w);  
@@ -98,5 +98,5 @@ F2(jtunlock2){int i,j,len,tlen;UC c1,c2,k1[SK],*lp,*sp,*d;
   if(++j==SK) j=0;
  }
  while(sp<d+tlen)*sp++=' ';
- R w;
+ return w;
 }    /* ignores left argument */

@@ -2244,7 +2244,7 @@ d2a_Malloc
 #endif
 
 B jtecvtinit(J jt) {A x; struct dtoa_info *di;
- if(jt->dtoa) R 1;
+ if(jt->dtoa) return 1;
  GATV0(x, LIT, sizeof(struct dtoa_info), 1);
  di=(struct dtoa_info*)AV(x); 
  di->_p5s=0;
@@ -2253,7 +2253,7 @@ B jtecvtinit(J jt) {A x; struct dtoa_info *di;
  memset(di->_freelist, 0, sizeof(di->_freelist));
  di->jt=jt;
  ras(x); jt->dtoa=di;
- R 1;
+ return 1;
 }
 
 /* uses dtoa and behaves like ecvt (well, ecvt_r) */
@@ -2268,7 +2268,7 @@ B jtecvt(J jt, D dw, I ndp, int *decpt, int *sign, C *dest)
  y=d2a_dtoa(di, dw, 2, (int)ndp, decpt, sign, (char**)&z);
  RZ(y&&z);
  memset(z, '0', ndp-(z-y));
- R 1;
+ return 1;
 }
 
 #ifdef __cplusplus

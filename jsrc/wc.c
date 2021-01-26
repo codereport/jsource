@@ -8,7 +8,7 @@
 
 // CTESTB         (CIF+CELSEIF+CSELECT+CSELECTN+CWHILE+CWHILST+CFOR+CCASE+CFCASE)
 #define CWCASE(x,y)    (x+256*y)
-#define CWASSERT(b)    if(!(b))R i
+#define CWASSERT(b)    if(!(b))return i
 
 
 static A jtcongotoblk(J jt,I n,CW*con){A z;CW*d=con;I i,j,k,*u,*v;
@@ -24,13 +24,13 @@ static A jtcongotoblk(J jt,I n,CW*con){A z;CW*d=con;I i,j,k,*u,*v;
    case CFOR: case CIF: case CSELECT: case CTRY: case CWHILE: case CWHILST:
     v[j]=i; k=1+j; j+=2;
  }}
- R z;
+ return z;
 }    /* compute blocks for goto checking */
 
 static I jtcongotochk(J jt,I i,I j,A x){I k,n,*v;
  n=AS(x)[0]; v=AV(x);
- for(k=0;k<n;++k,v+=2)if(BETWEENO(j,v[0],v[1])&&!BETWEENO(i,v[0],v[1]))R i;
- R -1;
+ for(k=0;k<n;++k,v+=2)if(BETWEENO(j,v[0],v[1])&&!BETWEENO(i,v[0],v[1]))return i;
+ return -1;
 }    /* i: goto; j: label; return -1 if ok or i if bad */
 
 #define LABELEQU(m,s,e)    (CLABEL==e->type&&(x=lv[e->i],!memcmpne(s,6+CAV(x),m)))
@@ -45,9 +45,9 @@ static I jtcongoto(J jt,I n,CW*con,A*lv){A x,z;C*s;CW*d=con,*e;I i,j,k,m;
    CWASSERT(0<=j);
    e=con+j-1;
    for(k=j;k<n;++k){++e; if(LABELEQU(m,s,e)){i=k; CWASSERT(0);}}
-   if(0<=congotochk(i,j-1,z))R i;
+   if(0<=congotochk(i,j-1,z))return i;
   }
- R -1;
+ return -1;
 }    /* same result as conall */
 
 
@@ -90,7 +90,7 @@ static I conend(I i,I j,I k,CW*b,CW*c,CW*d,I p,I q,I r){I e,m,t;
    CWASSERT(b&&d); b->go=(US)j;   m=i-k-1;
    DQ(m, ++d; t=d->type; if(SMAX==d->go)d->go=(((((I)1<<CBREAK)|((I)1<<CBREAKS))>>t)&1)?(d->type=CBREAKF,(US)e):(((((I)1<<CCONT)|((I)1<<CCONTS))>>(t&31))&1)?(US)j:(US)SMAX;);
  }
- R -1;
+ return -1;
 }
 
 // Fix up the stack after encountering the end. for a try.  e=address of end.
@@ -117,7 +117,7 @@ static I conendtry(I e,I top,I stack[],CW*con){CW*v;I c[3],d[4],i=-1,j,k=0,m,t=0
  // kludge if break/continue encountered:  while. do. try. break. catch. end. end.  leaves the break pointing past the outer end, and the try stack unpopped
  if     (0<=c[0]){ii=(US)(1+c[0]); v=j+con; DQ(m-j-1, ++v; if(SMAX==v->go&&!(((((I)1<<CCONT)|((I)1<<CCONTS)|((I)1<<CBREAK)|((I)1<<CBREAKS))>>(v->type&31))&1))v->go=ii;);}
  else if(0<=c[1]){ii=(US)(1+c[1]); v=j+con; DQ(m-j-1, ++v; if(SMAX==v->go&&!(((((I)1<<CCONT)|((I)1<<CCONTS)|((I)1<<CBREAK)|((I)1<<CBREAKS))>>(v->type&31))&1))v->go=ii;);}
- R top;  //return stack pointer with the try. ... end. removed
+ return top;  //return stack pointer with the try. ... end. removed
 }    /* result is new value of top */
 
 // Fix up the stack after encountering the end, for a select.  i=address of end.
@@ -136,7 +136,7 @@ static I conendsel(I endline,I top,I stack[],CW*con){I c=endline-1,d=0,j,ot=top,
  (c+con)->go=(US)(1+c);  // set first case. to fall through to the first test
  // j points to the select. for this end.  Replace any hitherto unfilled break./continue. with BREAKS/CONTS
  DQ(endline-j-2, ++j; if(SMAX==con[j].go){if(CBREAK==con[j].type)con[j].type=CBREAKS;else if(CCONT==con[j].type)con[j].type=CCONTS;});
- R top;     // return stack with select. ... end. removed
+ return top;     // return stack with select. ... end. removed
 }    /* result is new value of top */
 
 // audit the control sequence in con, making replacement in places
@@ -224,7 +224,7 @@ static I jtconall(J jt,I n,CW*con){A y;CW*b=0,*c=0,*d=0;I e,i,j,k,p=0,q,r,*stack
   }
 }
  // when it's over, the stack should be empty.  If not, return the index of the top control on the stack
- if(top)R stack[top-1];
+ if(top)return stack[top-1];
  // Fill in the canend field, which tells whether the previous B-block result can become the overall result.  It is used only
  // in T blocks and end./continue./break.
  // Clear canend to 0, meaning 'don't know'.  1=must return, 2=won't return, 4/8=provisional values of same
@@ -274,69 +274,69 @@ static I jtconall(J jt,I n,CW*con){A y;CW*b=0,*c=0,*d=0;I e,i,j,k,p=0,q,r,*stack
   }
  }while(madechange);
 
- R -1;
+ return -1;
 }    /* modifies con; return -1 if OK or index of bad con entry */
 
 A jtspellcon(J jt,I c){
  switch(c){
   default:      ASSERTSYS(0,"spellcon");
-  case CASSERT: R cstr("assert.");
-  case CBBLOCK: case CBBLOCKEND: R cstr("bblock.");
-  case CBREAK: case CBREAKF:  case CBREAKS: R cstr("break.");
-  case CCASE:   R cstr("case.");
-  case CCATCH:  R cstr("catch.");
-  case CCATCHD: R cstr("catchd.");
-  case CCATCHT: R cstr("catcht.");
-  case CCONT: case CCONTS: R cstr("continue.");
+  case CASSERT: return cstr("assert.");
+  case CBBLOCK: case CBBLOCKEND: return cstr("bblock.");
+  case CBREAK: case CBREAKF:  case CBREAKS: return cstr("break.");
+  case CCASE:   return cstr("case.");
+  case CCATCH:  return cstr("catch.");
+  case CCATCHD: return cstr("catchd.");
+  case CCATCHT: return cstr("catcht.");
+  case CCONT: case CCONTS: return cstr("continue.");
   case CDO:
   case CDOF:    
-  case CDOSEL:  R cstr("do.");
-  case CELSE:   R cstr("else.");
-  case CELSEIF: R cstr("elseif.");
+  case CDOSEL:  return cstr("do.");
+  case CELSE:   return cstr("else.");
+  case CELSEIF: return cstr("elseif.");
   case CEND:    
-  case CENDSEL: R cstr("end.");
-  case CFCASE:  R cstr("fcase.");
-  case CFOR:    R cstr("for.");
-  case CGOTO:   R cstr("goto_.");
-  case CIF:     R cstr("if.");
-  case CLABEL:  R cstr("label_.");
-  case CRETURN: R cstr("return.");
+  case CENDSEL: return cstr("end.");
+  case CFCASE:  return cstr("fcase.");
+  case CFOR:    return cstr("for.");
+  case CGOTO:   return cstr("goto_.");
+  case CIF:     return cstr("if.");
+  case CLABEL:  return cstr("label_.");
+  case CRETURN: return cstr("return.");
   case CSELECTN:
-  case CSELECT: R cstr("select.");
-  case CTBLOCK: R cstr("tblock.");
-  case CTHROW:  R cstr("throw.");
-  case CTRY:    R cstr("try.");
-  case CWHILE:  R cstr("while.");
-  case CWHILST: R cstr("whilst.");
+  case CSELECT: return cstr("select.");
+  case CTBLOCK: return cstr("tblock.");
+  case CTHROW:  return cstr("throw.");
+  case CTRY:    return cstr("try.");
+  case CWHILE:  return cstr("while.");
+  case CWHILST: return cstr("whilst.");
 }}
 
 static I jtconword(J jt,I n,C*s){
  if(2<n&&'.'==s[n-1])switch(*s){
-  case 'a': if(!strncmp(s,"assert.",  n))R CASSERT;  break;
-  case 'b': if(!strncmp(s,"break.",   n))R CBREAK;   break;
-  case 'c': if(!strncmp(s,"case.",    n))R CCASE;    
-            if(!strncmp(s,"continue.",n))R CCONT;
-            if(!strncmp(s,"catch.",   n))R CCATCH;
-            if(!strncmp(s,"catchd.",  n))R CCATCHD;
-            if(!strncmp(s,"catcht.",  n))R CCATCHT;  break;
-  case 'd': if(!strncmp(s,"do.",      n))R CDO;      break;
-  case 'e': if(!strncmp(s,"end.",     n))R CEND;
-            if(!strncmp(s,"else.",    n))R CELSE;
-            if(!strncmp(s,"elseif.",  n))R CELSEIF;  break;
-  case 'f': if(!strncmp(s,"for.",     n))R CFOR;
-            if(!strncmp(s,"for_",    4L)){ASSERTN(vnm(n-5,4+s),EVILNAME,nfs(n-5,4+s)); R CFOR;}
-            if(!strncmp(s,"fcase.",   n))R CFCASE;   break;
-  case 'g': if(!strncmp(s,"goto_",   5L))R CGOTO;    break;
-  case 'i': if(!strncmp(s,"if.",      n))R CIF;      break;
-  case 'l': if(!strncmp(s,"label_",  6L))R CLABEL;   break;
-  case 'r': if(!strncmp(s,"return.",  n))R CRETURN;  break;
-  case 's': if(!strncmp(s,"select.",  n))R CSELECT;  break;
-  case 't': if(!strncmp(s,"throw.",   n))R CTHROW;
-            if(!strncmp(s,"try.",     n))R CTRY;     break;
-  case 'w': if(!strncmp(s,"while.",   n))R CWHILE;
-            if(!strncmp(s,"whilst.",  n))R CWHILST;  break;
+  case 'a': if(!strncmp(s,"assert.",  n))return CASSERT;  break;
+  case 'b': if(!strncmp(s,"break.",   n))return CBREAK;   break;
+  case 'c': if(!strncmp(s,"case.",    n))return CCASE;
+            if(!strncmp(s,"continue.",n))return CCONT;
+            if(!strncmp(s,"catch.",   n))return CCATCH;
+            if(!strncmp(s,"catchd.",  n))return CCATCHD;
+            if(!strncmp(s,"catcht.",  n))return CCATCHT;  break;
+  case 'd': if(!strncmp(s,"do.",      n))return CDO;      break;
+  case 'e': if(!strncmp(s,"end.",     n))return CEND;
+            if(!strncmp(s,"else.",    n))return CELSE;
+            if(!strncmp(s,"elseif.",  n))return CELSEIF;  break;
+  case 'f': if(!strncmp(s,"for.",     n))return CFOR;
+            if(!strncmp(s,"for_",    4L)){ASSERTN(vnm(n-5,4+s),EVILNAME,nfs(n-5,4+s)); return CFOR;}
+            if(!strncmp(s,"fcase.",   n))return CFCASE;   break;
+  case 'g': if(!strncmp(s,"goto_",   5L))return CGOTO;    break;
+  case 'i': if(!strncmp(s,"if.",      n))return CIF;      break;
+  case 'l': if(!strncmp(s,"label_",  6L))return CLABEL;   break;
+  case 'r': if(!strncmp(s,"return.",  n))return CRETURN;  break;
+  case 's': if(!strncmp(s,"select.",  n))return CSELECT;  break;
+  case 't': if(!strncmp(s,"throw.",   n))return CTHROW;
+            if(!strncmp(s,"try.",     n))return CTRY;     break;
+  case 'w': if(!strncmp(s,"while.",   n))return CWHILE;
+            if(!strncmp(s,"whilst.",  n))return CWHILST;  break;
  }
- R 0;
+ return 0;
 }
 
 // w is string, result is list of boxed strings, one per sentence in string (delimited by control words)
@@ -355,7 +355,7 @@ static F1(jtgetsen){A y,z,*z0,*zv;C*s;I i,j,k=-1,m,n,*v;
    k=-1;           // reset start-of-sentence search
  }}
  if(0<=k)RZ(*zv++=incorp(str(j+m-k,k+s))); // if there was a final sentence in progress, append it
- R vec(BOX,zv-z0,z0);  // keep only the boxes that we used
+ return vec(BOX,zv-z0,z0);  // keep only the boxes that we used
 }    /* partition by controls */
 
 /* preparse - return tokenized lines and control information     */
@@ -367,7 +367,7 @@ static F1(jtgetsen){A y,z,*z0,*zv;C*s;I i,j,k=-1,m,n,*v;
 /* control info has 3 I values for each line                     */
 /* control info values - type, goto linenum, source linenum      */
 
-#define ASSERTCW(b,j)  {if(!(b)){I jj=(j); jsignal3(EVCTRL,wv[jj],jj); R 0;}}
+#define ASSERTCW(b,j)  {if(!(b)){I jj=(j); jsignal3(EVCTRL,wv[jj],jj); return 0;}}
 
 B jtpreparse(J jt,A w,A*zl,A*zc){PROLOG(0004);A c,l,*lv,*v,w0,w1,*wv,x,y;B b=0,try=0;
      C*s;CW*d,*cv;I as=0,i,j,k,m,n,p,q,yn;
@@ -416,5 +416,5 @@ B jtpreparse(J jt,A w,A*zl,A*zc){PROLOG(0004);A c,l,*lv,*v,w0,w1,*wv,x,y;B b=0,t
  // Install the number of words and cws into the return blocks, and return those blocks
  AN(l)=AS(l)[0]=m; *zl=incorp(l);
  AN(c)=AS(c)[0]=n; *zc=incorp(c);
- R try;
+ return try;
 }

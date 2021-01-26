@@ -19,7 +19,7 @@
 // "avx avx2" would run j.dll or javx.dll or javx2.dll
 F1(jtjgetx){
 
-R cstr("");
+return cstr("");
 }
 
 F1(jthost){A z;
@@ -63,7 +63,7 @@ F1(jthost){A z;
  unlink(fn);
  ASSERT(b&&f,EVFACE);
 }
- R z;
+ return z;
 }
 
 F1(jthostne){
@@ -74,7 +74,7 @@ F1(jthostne){
   b=!b;
   ASSERT(b!=0,EVFACE);
  }
- R mtv;
+ return mtv;
 }
 
 
@@ -108,10 +108,10 @@ F1(jthostio){C*s;A z;F*pz;int fi[2],fo[2],r;int fii[2],foi[2];
 
  }close(fo[0]);close(fi[1]);
  add2(NULL,NULL,NULL); pz[0]=(F)(intptr_t)r;
- R z;
+ return z;
 }
 
-F1(jtjwait){I k;int s; RE(k=i0(w)); if(-1==waitpid(k,&s,0))jerrno(); R sc(s);}
+F1(jtjwait){I k;int s; RE(k=i0(w)); if(-1==waitpid(k,&s,0))jerrno(); return sc(s);}
 
 #endif
 
@@ -120,6 +120,6 @@ F1(jtcerrno){C buf[1024],ermsg[1024];
  ASSERTMTV(w);
 
  if(errno&&!strerror_r(errno,ermsg,1024)) strcpy (buf, ermsg); else strcpy (buf, "");
- R link(sc(errno),cstr(buf));
+ return link(sc(errno),cstr(buf));
 }    /* 2!:8  errno information */
 

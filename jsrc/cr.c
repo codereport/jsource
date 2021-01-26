@@ -36,8 +36,8 @@ A jtrank1ex(J jt,AD * RESTRICT w,A fs,I rr,AF f1){F1PREFIP;PROLOG(0041);A z,virt
    I mn,wcn,wf,wk;
  ARGCHK1(w);
  wf=AR(w)-rr;
- if(unlikely(!wf)){R CALL1IP(f1,w,fs);}  // if there's only one cell and no frame, run on it, that's the result.
- if(unlikely((AT(w)&SPARSE)!=0))R sprank1(w,fs,rr,f1);
+ if(unlikely(!wf)){return CALL1IP(f1,w,fs);}  // if there's only one cell and no frame, run on it, that's the result.
+ if(unlikely((AT(w)&SPARSE)!=0))return sprank1(w,fs,rr,f1);
 #define ZZFLAGWORD state
  I state=ZZFLAGINITSTATE;  // init flags, including zz flags
  // RANKONLY verbs were handled in the caller to this routine, but fs might be RANKATOP.  In that case we could include its rank in the loop here,
@@ -120,9 +120,9 @@ A jtrank1ex(J jt,AD * RESTRICT w,A fs,I rr,AF f1){F1PREFIP;PROLOG(0041);A z,virt
 A jtrank1ex0(J jt,AD * RESTRICT w,A fs,AF f1){F1PREFIP;PROLOG(0041);A z,virtw;
    I wk;
  ARGCHK1(w);
- if(unlikely(!AR(w))){R CALL1IP(f1,w,fs);}  // if there's only one cell and no frame, run on it, that's the result.  Make this as fast as possible.
+ if(unlikely(!AR(w))){return CALL1IP(f1,w,fs);}  // if there's only one cell and no frame, run on it, that's the result.  Make this as fast as possible.
  // Switch to sparse code if argument is sparse
- if(unlikely((AT(w)&SPARSE)!=0))R sprank1(w,fs,0,f1);
+ if(unlikely((AT(w)&SPARSE)!=0))return sprank1(w,fs,0,f1);
 #define ZZFLAGWORD state
  // wr=rank, ws->shape
  // Each cell is an atom.  Get # atoms (=#result cells)
@@ -233,8 +233,8 @@ A jtrank2ex(J jt,AD * RESTRICT a,AD * RESTRICT w,A fs,UI lrrrlcrrcr,AF f2){
  F2PREFIP;PROLOG(0042);A virta,virtw,z;I acn,ak,mn,wcn,wk;
  I outerframect, outerrptct, innerframect, innerrptct, aof, wof, sof, lof, sif, lif, *lis, *los;
  ARGCHK2(a,w);
- if(unlikely((UI)lrrr==(((UI)AR(a)<<RANKTX)+AR(w)))){R CALL2IP(f2,a,w,fs);}  // if there's only one cell and no frame, run on it, that's the result.
- if(unlikely(((AT(a)|AT(w))&SPARSE)!=0))R sprank2(a,w,fs,(UI)lcrrcr>>RANKTX,lcrrcr&RANKTMSK,f2);  // this needs to be updated to handle multiple ranks
+ if(unlikely((UI)lrrr==(((UI)AR(a)<<RANKTX)+AR(w)))){return CALL2IP(f2,a,w,fs);}  // if there's only one cell and no frame, run on it, that's the result.
+ if(unlikely(((AT(a)|AT(w))&SPARSE)!=0))return sprank2(a,w,fs,(UI)lcrrcr>>RANKTX,lcrrcr&RANKTMSK,f2);  // this needs to be updated to handle multiple ranks
 // lr,rr are the ranks of the underlying verb.  lcr,rcr are the cell-ranks given by u"lcr rcr.
 // If " was not used, lcr,rcr=lr,rr usually
 // The ranks of the arguments have already been applied, so that we know that lr<=lcr<=AR(a), & similarly for w
@@ -409,8 +409,8 @@ A jtrank2ex(J jt,AD * RESTRICT a,AD * RESTRICT w,A fs,UI lrrrlcrrcr,AF f2){
 // This code does not set inplaceability on nonrepeated cells - hardly useful at rank 0
 A jtrank2ex0(J jt,AD * RESTRICT a,AD * RESTRICT w,A fs,AF f2){F2PREFIP;PROLOG(0042);A virta,virtw,z;
    I ak,ar,*as,ict,oct,mn,wk,wr,*ws;
- ARGCHK2(a,w); ar=AR(a); wr=AR(w); if(unlikely(!(ar+wr)))R CALL2IP(f2,a,w,fs);   // if no frame, make just 1 call
- if(unlikely(((AT(a)|AT(w))&SPARSE)!=0))R sprank2(a,w,fs,0,0,f2);  // this needs to be updated to handle multiple ranks
+ ARGCHK2(a,w); ar=AR(a); wr=AR(w); if(unlikely(!(ar+wr)))return CALL2IP(f2,a,w,fs);   // if no frame, make just 1 call
+ if(unlikely(((AT(a)|AT(w))&SPARSE)!=0))return sprank2(a,w,fs,0,0,f2);  // this needs to be updated to handle multiple ranks
 #define ZZFLAGWORD state
 
  // Verify agreement
@@ -592,19 +592,19 @@ A jtirs2(J jt,A a,A w,A fs,I l,I r,AF f2){A z;I ar,wr;
 }
 
 
-static DF1(cons1a){R FAV(self)->fgh[0];}
-static DF2(cons2a){R FAV(self)->fgh[0];}
+static DF1(cons1a){return FAV(self)->fgh[0];}
+static DF2(cons2a){return FAV(self)->fgh[0];}
 
 // Constant verbs do not inplace because we loop over cells.  We could speed this up if it were worthwhile.
 static DF1(cons1){V*sv=FAV(self);
  ARGCHK1(w);
  I mr; efr(mr,AR(w),(I)sv->localuse.lI4[0]);
- R rank1ex(w,self,mr,cons1a);
+ return rank1ex(w,self,mr,cons1a);
 }
 static DF2(cons2){V*sv=FAV(self);
  ARGCHK2(a,w);
  I lr2,rr2; efr(lr2,AR(a),(I)sv->localuse.lI4[1]); efr(rr2,AR(w),(I)sv->localuse.lI4[2]);
- R rank2ex(a,w,self,lr2,rr2,lr2,rr2,cons2a);
+ return rank2ex(a,w,self,lr2,rr2,lr2,rr2,cons2a);
 }
 
 // cyclic-gerund verbs create an iterator from the gerund and pass that into rank processing, looping over cells
@@ -612,13 +612,13 @@ static DF1(cycr1){V*sv=FAV(self);I cger[128/SZI];
  ARGCHK1(w);
  RZ(self=createcycliciterator((A)&cger, self));  // fill in an iterator for this gerund
  I mr; efr(mr,AR(w),(I)sv->localuse.lI4[0]);
- R rank1ex(w,self,mr,FAV(self)->valencefns[0]);  // callback is to the cyclic-execution function
+ return rank1ex(w,self,mr,FAV(self)->valencefns[0]);  // callback is to the cyclic-execution function
 }
 static DF2(cycr2){V*sv=FAV(self);I cger[128/SZI];
  ARGCHK2(a,w);
  RZ(self=createcycliciterator((A)&cger, self));  // fill in an iterator for this gerund
  I lr2,rr2; efr(lr2,AR(a),(I)sv->localuse.lI4[1]); efr(rr2,AR(w),(I)sv->localuse.lI4[2]);
- R rank2ex(a,w,self,lr2,rr2,lr2,rr2,FAV(self)->valencefns[1]);  // callback is to the cyclic-execution function
+ return rank2ex(a,w,self,lr2,rr2,lr2,rr2,FAV(self)->valencefns[1]);  // callback is to the cyclic-execution function
 }
 
 
@@ -669,17 +669,17 @@ static DF1(rank1){DECLF;I m,wr;
   I hm=FAV(fs)->localuse.lI4[0]; efr(hm,m,hm); if(hm<m)break;  // if new rank smaller than old, abort
   m=hm; fs=FAV(fs)->fgh[0]; f1=FAV(fs)->valencefns[0];
  }
- R m<wr?rank1ex(w,fs,m,f1):CALL1(f1,w,fs);
+ return m<wr?rank1ex(w,fs,m,f1):CALL1(f1,w,fs);
 }
 // Version for rank 0.  Call rank1ex0, pointing to the u"r
-static DF1(jtrank10atom){ A fs=FAV(self)->fgh[0]; R (FAV(fs)->valencefns[0])(jt,w,fs);}  // will be used only for no-frame executions.  Otherwise will be replaced by the flags loop
-static DF1(jtrank10){R jtrank1ex0(jt,w,self,jtrank10atom);}  // pass inplaceability through.
+static DF1(jtrank10atom){ A fs=FAV(self)->fgh[0]; return (FAV(fs)->valencefns[0])(jt,w,fs);}  // will be used only for no-frame executions.  Otherwise will be replaced by the flags loop
+static DF1(jtrank10){return jtrank1ex0(jt,w,self,jtrank10atom);}  // pass inplaceability through.
 
 
 static DF1(rank1q){  // fast version: nonneg rank, no check for multiple RANKONLY
  ARGCHK1(w);
  I r=AR(w); r=r>FAV(self)->localuse.lI4[0]?FAV(self)->localuse.lI4[0]:r; A fs=FAV(self)->fgh[0];
- R rank1ex(w,fs,r,FAV(fs)->valencefns[0]);
+ return rank1ex(w,fs,r,FAV(fs)->valencefns[0]);
 }
 // For the dyads, rank2ex does a quadruply-nested loop over two rank-pairs, which are the n in u"n (stored in h) and the rank of u itself (fetched from u).
 // THIS SUPPORTS INPLACING: NOTHING HERE MAY DEREFERENCE jt!!
@@ -687,7 +687,7 @@ static DF1(rank1q){  // fast version: nonneg rank, no check for multiple RANKONL
 static DF2(rank2q){
  ARGCHK2(a,w);
  I ar=AR(a); ar=ar>FAV(self)->localuse.lI4[1]?FAV(self)->localuse.lI4[1]:ar; I wr=AR(w); wr=wr>FAV(self)->localuse.lI4[2]?FAV(self)->localuse.lI4[2]:wr; A fs=FAV(self)->fgh[0];
- R rank2ex(a,w,fs,ar,wr,ar,wr,FAV(fs)->valencefns[1]);
+ return rank2ex(a,w,fs,ar,wr,ar,wr,FAV(fs)->valencefns[1]);
 }
 
 static DF2(rank2){DECLF;I ar,l=sv->localuse.lI4[1],r=sv->localuse.lI4[2],wr;
@@ -707,12 +707,12 @@ static DF2(rank2){DECLF;I ar,l=sv->localuse.lI4[1],r=sv->localuse.lI4[2],wr;
    // either we can ignore the new rank or we can consume it.  In either case pass on to the next one
    fs=FAV(fs)->fgh[0]; f2=FAV(fs)->valencefns[1];   // advance to the new function
   }
-  R rank2ex(a,w,fs,llr,lrr,l,r,f2);
- }else R CALL2(f2,a,w,fs);  // pass in verb ranks to save a level of rank processing if not infinite.  Preserves inplacing
+  return rank2ex(a,w,fs,llr,lrr,l,r,f2);
+ }else return CALL2(f2,a,w,fs);  // pass in verb ranks to save a level of rank processing if not infinite.  Preserves inplacing
 }
 // Version for rank 0.  Call rank1ex0, pointing to the u"r
-static DF2(jtrank20atom){ A fs=FAV(self)->fgh[0]; R (FAV(fs)->valencefns[1])(jt,a,w,fs);}  // will be used only for no-frame executions.  Otherwise will be replaced by the flags loop
-static DF2(jtrank20){R jtrank2ex0(jt,a,w,self,jtrank20atom);}  // pass inplaceability through.
+static DF2(jtrank20atom){ A fs=FAV(self)->fgh[0]; return (FAV(fs)->valencefns[1])(jt,a,w,fs);}  // will be used only for no-frame executions.  Otherwise will be replaced by the flags loop
+static DF2(jtrank20){return jtrank2ex0(jt,a,w,self,jtrank20atom);}  // pass inplaceability through.
 
 
 // a"w; result is a verb
@@ -782,5 +782,5 @@ F2(jtqq){A t;AF f1,f2;D*d;I hv[3],n,r[3],vf,flag2=0,*v;A ger=0;
  // Create the derived verb.  The derived verb (u"n) NEVER supports IRS; it inplaces if the action verb u supports inplacing
  A z; RZ(z=fdef(flag2,CQQ,VERB, f1,f2, a,w,ger, vf, r[0],r[1],r[2]));
  FAV(z)->localuse.lI4[0]=(I4)hv[0]; FAV(z)->localuse.lI4[1]=(I4)hv[1]; FAV(z)->localuse.lI4[2]=(I4)hv[2];  // pass the possibly-negative ranks in through localuse
- R z;
+ return z;
 }

@@ -36,7 +36,7 @@ DC jtdeba(J jt,C t,void *x,void *y,A fs){DC d;
    // dcn fill in in caller
    if(jt->dbss==SSSTEPINTO){d->dcss=SSSTEPINTO; jt->dbssd=d; jt->dbss=0;}
  }
- R d;
+ return d;
 }    /* create new top of si stack */
 
 void jtdebz(J jt){jt->sitop=jt->sitop->dclnk;}
@@ -60,27 +60,27 @@ F1(jtsiinfo){A z,*zv;DC d;I c=5,n,*s;
   }
   zv+=c; d=d->dclnk;
  }
- R z;
+ return z;
 }    /* 13!:32 si info */
 
 I lnumcw(I j,A w){CW*u;
- if(0>j)R -2; 
- else if(!w)R j; 
- else{u=(CW*)AV(w); DO(AN(w), if(j<=u[i].source)R i;) R IMAX/2;}
+ if(0>j)return -2;
+ else if(!w)return j;
+ else{u=(CW*)AV(w); DO(AN(w), if(j<=u[i].source)return i;) return IMAX/2;}
 }    /* line number in CW corresp. to j */
 
 I lnumsi(DC d){A c;I i;
- if(c=d->dcc){i=d->dcix; R(MIN(i,AN(c)-1)+(CW*)AV(c))->source;}else R 0;
+ if(c=d->dcc){i=d->dcix; return(MIN(i,AN(c)-1)+(CW*)AV(c))->source;}else return 0;
 }    /* source line number from DCCALL-type stack entry */
 
 
 
 static DC suspset(DC d){DC e=0;
  while(d&&DCCALL!=d->dctype){e=d; d=d->dclnk;}  /* find bottommost call                 */
- if(!(d&&DCCALL==d->dctype))R 0;                /* don't suspend if no such call     */
+ if(!(d&&DCCALL==d->dctype))return 0;                /* don't suspend if no such call     */
  if(d->dcc){RZ(e); e->dcsusp=1;}               // if explicit, set susp on line - there should always be a following frame, but if not do nothing
  else      d->dcsusp=1;                         /* if not explicit, set susp on call */
- R d;
+ return d;
 }    /* find topmost call and set suspension flag */
 
 static B jterrcap(J jt){A y,*yv;
@@ -91,7 +91,7 @@ static B jterrcap(J jt){A y,*yv;
  RZ(yv[2]=dbcall(mtv));
  RZ(yv[3]=locname(mtv));
  RZ(symbis(nfs(22L,"STACK_ERROR_INFO_base_"),y,mark));
- R 1;
+ return 1;
 }    /* error capture */
 
 // suspension.  Loop on keyboard input.  Keep executing sentences until something changes dbsusact.
@@ -101,7 +101,7 @@ static void jtsusp(J jt){B t;DC d;
  // and it will create a stack frame for its result.  CREATION of this stack frame will overwrite the current top-of-stack
  // if it holds error information.  So, we create an empty frame to take the store from immex.  This frame has no display.
  jt->dbsusact=SUSCLEAR;  // if we can't add a frame, exit suspension
- if(!deba(DCJUNK,0,0,0))R; // create spacer frame
+ if(!deba(DCJUNK,0,0,0))return; // create spacer frame
  jt->dbsusact=SUSCONT;
  A *old=jt->tnextpushp;  // fence must be after we have allocated out stack block
  d=jt->dcs; t=jt->tostdout;
@@ -146,7 +146,7 @@ static A jtdebug(J jt){A z=0;C e;DC c,d;
  if(jt->dbssd){jt->dbssd->dcss=0; jt->dbssd=0;}  // clear previous single-step state - should do at end instead
 // create debug state frame scaf
  RZ(d=suspset(jt->sitop));
- if(d->dcix<0)R 0;  // if the verb has exited, all we can do is return
+ if(d->dcix<0)return 0;  // if the verb has exited, all we can do is return
  e=jt->jerr; jt->jerr=0;
 // pass in & rcv debug state frame
  susp();
@@ -167,7 +167,7 @@ static A jtdebug(J jt){A z=0;C e;DC c,d;
  // If there is an error, set z=0; if not, make sure z is nonzero (use i. 0 0)
   if(jt->jerr)z=0; // return z=0 to cause us to look for resumption address
 // return debug state frame scaf
- R z;
+ return z;
 }
 
 // post-execution error.  Used to signal an error on sentences whose result is bad only in context, i. e. non-nouns or assertions
@@ -178,7 +178,7 @@ A jtpee(J jt,A *queue,CW*ci,I err,I lk,DC c){A z=0;
  jsignal(err);   // signal the requested error
  // enter debug mode if that is enabled
  if(c&&jt->uflags.us.cx.cx_c.db){jt->sitop->dcj=jt->jerr; z=debug(); jt->sitop->dcj=0;} //  d is PARSE type; set d->dcj=err#; d->dcn must remain # tokens debz();  not sure why we change previous frame
- if(jt->jerr)z=0; R z;  // if we entered debug, the error may have been cleared.  If not, clear the result.  Return debug result, which is result to use or 0 to indicate jump
+ if(jt->jerr)z=0; return z;  // if we entered debug, the error may have been cleared.  If not, clear the result.  Return debug result, which is result to use or 0 to indicate jump
 }
 
 // parsex: parse an explicit defn line when the debugger is running
@@ -195,7 +195,7 @@ A jtparsex(J jt,A* queue,I m,CW*ci,DC c){A z;B s;
  // If we hit a stop, or if we hit an error outside of try./catch., enter debug mode.  But if debug mode is off now, we must have just
  // executed 13!:0]0, and we should continue on outside of debug mode.  Error processing filled the current si line with the info from the parse
  if(!z&&jt->uflags.us.cx.cx_c.db){DC t=jt->sitop->dclnk; t->dcj=jt->sitop->dcj=jt->jerr; z=debug(); t->dcj=0;} //  d is PARSE type; set d->dcj=err#; d->dcn must remain # tokens
- R z;
+ return z;
 }
 
 A jtdbunquote(J jt,A a,A w,A self,L *stabent){A t,z;B b=0,s;DC d;V*sv;
@@ -220,7 +220,7 @@ A jtdbunquote(J jt,A a,A w,A self,L *stabent){A t,z;B b=0,s;DC d;V*sv;
  if(d->dcss)ssnext(d,d->dcss);
  if(jt->dbss==SSSTEPINTOs)jt->dbss=0;
  debz();
- R z;
+ return z;
 }    /* function call, debug version */
 
 
@@ -242,22 +242,22 @@ F1(jtdbc){UC k;
   jt->fcalln=NFCALL/(k?2:1);
  }
  jt->dbsusact=SUSCLEAR; 
- R mtm;
+ return mtm;
 }    /* 13!:0  clear stack; enable/disable suspension */
 
-F1(jtdbq){ASSERTMTV(w); R sc(jt->dbuser);}
+F1(jtdbq){ASSERTMTV(w); return sc(jt->dbuser);}
      /* 13!:17 debug flag */
 
-F1(jtdbrun ){ASSERTMTV(w); jt->dbsusact=SUSRUN;  R mtm;}
+F1(jtdbrun ){ASSERTMTV(w); jt->dbsusact=SUSRUN;  return mtm;}
      /* 13!:4  run again */
 
-F1(jtdbnext){ASSERTMTV(w); jt->dbsusact=SUSNEXT; R mtm;}
+F1(jtdbnext){ASSERTMTV(w); jt->dbsusact=SUSNEXT; return mtm;}
      /* 13!:5  run next */
 
-F1(jtdbret ){ARGCHK1(w); jt->dbsusact=SUSRET; ras(w); jt->dbresult=w; R mtm;}
+F1(jtdbret ){ARGCHK1(w); jt->dbsusact=SUSRET; ras(w); jt->dbresult=w; return mtm;}
      /* 13!:6  exit with result */
 
-F1(jtdbjump){RE(jt->dbjump=i0(w)); jt->dbsusact=SUSJUMP; R mtm;}
+F1(jtdbjump){RE(jt->dbjump=i0(w)); jt->dbsusact=SUSJUMP; return mtm;}
      /* 13!:7  resume at line n (return result error if out of range) */
 
 static F2(jtdbrr){DC d;
@@ -266,14 +266,14 @@ static F2(jtdbrr){DC d;
  ASSERT(d&&VERB&AT(d->dcf)&&!d->dcc,EVDOMAIN);  /* must be explicit verb */
  RZ(ras(a)); jt->dbalpha=a; RZ(ras(w)); jt->dbomega=w; 
  jt->dbsusact=SUSRUN;
- R mtm;
+ return mtm;
 }
 
-F1(jtdbrr1 ){R dbrr(0L,w);}   /* 13!:9   re-run with arg(s) */
-F2(jtdbrr2 ){R dbrr(a, w);}
+F1(jtdbrr1 ){return dbrr(0L,w);}   /* 13!:9   re-run with arg(s) */
+F2(jtdbrr2 ){return dbrr(a, w);}
 
-F1(jtdbtrapq){ASSERTMTV(w); R jt->dbtrap?jt->dbtrap:mtv;}   
+F1(jtdbtrapq){ASSERTMTV(w); return jt->dbtrap?jt->dbtrap:mtv;}
      /* 13!:14 query trap */
 
-F1(jtdbtraps){RZ(w=vs(w)); fa(jt->dbtrap); if(AN(w)){RZ(ras(w)); jt->dbtrap=w;}else jt->dbtrap=0L; R mtm;}
+F1(jtdbtraps){RZ(w=vs(w)); fa(jt->dbtrap); if(AN(w)){RZ(ras(w)); jt->dbtrap=w;}else jt->dbtrap=0L; return mtm;}
      /* 13!:15 set trap */

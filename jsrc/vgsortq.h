@@ -35,7 +35,7 @@ SORTQSCOPE void SORTQNAME(SORTQTYPE *v, I n){
    case -1: case 0:;
    }
    // that batch is sorted; move to the next
-   if(--stackp<0)R;  // back up stack; if we're finishing the last call, we're through
+   if(--stackp<0)return;  // back up stack; if we're finishing the last call, we're through
    l=stack[stackp][0]; r=stack[stackp][1];  // resume the next 
   }
   // medium or long batch: partition it and recur

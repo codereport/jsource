@@ -18,10 +18,10 @@ F2(jtsetfv){A q=jt->fill;I t;
   if(TYPESNE(t,AT(q)))RZ(q=cvt(t,q));  // convert the user's type if needed
   jt->fillv=CAV(q);   // jt->fillv points to the fill atom
  }else{if(!t)t=AT(w); fillv(t,1L,jt->fillv0); jt->fillv=jt->fillv0;}    // empty fill.  move 1 std fill atom to fillv0 and point jt->fillv at it
- R TYPESEQ(t,AT(w))?w:cvt(t,w);  // note if w is boxed and nonempty this won't change it
+ return TYPESEQ(t,AT(w))?w:cvt(t,w);  // note if w is boxed and nonempty this won't change it
 }
 
-F1(jtfiller){A z; ARGCHK1(w); GA(z,AT(w),1,0,0); fillv(AT(w),1L,CAV(z)); R z;}
+F1(jtfiller){A z; ARGCHK1(w); GA(z,AT(w),1,0,0); fillv(AT(w),1L,CAV(z)); return z;}
 
 // move n default fills of type t to *v
 void jtfillv(J jt,I t,I n,C*v){I k=bpnoun(t);A afill;
@@ -43,7 +43,7 @@ static F2(jtrotsp){PROLOG(0071);A q,x,y,z;B bx,by;I acr,af,ar,*av,d,k,m,n,p,*qv,
  ASSERT(!jt->fill,EVNONCE);
  ar=AR(a); acr=jt->ranks>>RANKTX; acr=ar<acr?ar:acr; af=ar-acr; p=acr?*(af+AS(a)):1;
  wr=AR(w); wcr=(RANKT)jt->ranks; wcr=wr<wcr?wr:wcr; wf=wr-wcr; RESETRANK;
- if(1<acr||af)R df2(z,a,w,qq(qq(ds(CROT),v2(1L,RMAX)),v2(acr,wcr)));
+ if(1<acr||af)return df2(z,a,w,qq(qq(ds(CROT),v2(1L,RMAX)),v2(acr,wcr)));
  if(!wcr&&1<p){RZ(w=reshape(over(shape(w),apv(p,1L,0L)),w)); wr=wcr=p;}
  ASSERT(!wcr||p<=wcr,EVLENGTH);
  s=AS(w);
@@ -94,19 +94,19 @@ static void jtrot(J jt,I m,I d,I n,I atomsize,I p,I*av,C*u,C*v){I dk,e,k,j,r,x,y
 
 F2(jtrotate){A origw=w,y,z;B b;C*u,*v;I acr,af,ar,*av,d,k,m,n,p,*s,wcr,wf,wn,wr;
  F2PREFIP;ARGCHK2(a,w);
- if(unlikely((SPARSE&AT(w))!=0))R rotsp(a,w);
+ if(unlikely((SPARSE&AT(w))!=0))return rotsp(a,w);
  ar=AR(a); acr=jt->ranks>>RANKTX; acr=ar<acr?ar:acr; af=ar-acr; p=acr?*(af+AS(a)):1;
  wr=AR(w); wcr=(RANKT)jt->ranks; wcr=wr<wcr?wr:wcr; wf=wr-wcr; RESETRANK;
  RZ(a=vi(a));
  // special case: if a is atomic 0, and cells of w are not atomic
- if((wcr!=0)&(((ar|IAV(a)[0])==0)))R RETARG(w);   // 0 |. y, return y
- if(((1-acr)|((-af)&(-acr|(wf-1))))<0)R df2(z,a,w,qq(qq(ds(CROT),v2(1L,RMAX)),v2(acr,wcr)));  // if multiple a-lists per cell, or a has frame and (a cell is not an atom or w has frame) handle rank by using " for it
+ if((wcr!=0)&(((ar|IAV(a)[0])==0)))return RETARG(w);   // 0 |. y, return y
+ if(((1-acr)|((-af)&(-acr|(wf-1))))<0)return df2(z,a,w,qq(qq(ds(CROT),v2(1L,RMAX)),v2(acr,wcr)));  // if multiple a-lists per cell, or a has frame and (a cell is not an atom or w has frame) handle rank by using " for it
  if(((wcr-1)&(1-p))<0){RZ(w=reshape(apip(shape(w),apv(p,1L,0L)),w)); wr=wcr=p;}  // if cell is an atom, extend it up to #axes being rotated   !wcr && p>1
  ASSERT(((-wcr)&(wcr-p))>=0,EVLENGTH);    // !wcr||p<=wcr  !(wcr&&p>wcr)
  av=AV(a);
  RZ(w=setfv(w,w)); u=CAV(w); wn=AN(w); s=AS(w); k=bpnoun(AT(w));  // set fill value if given
  GA(z,AT(w),wn,wr,s); v=CAV(z);
- if(!wn)R z;
+ if(!wn)return z;
  PROD(m,wf,s); PROD1(d,wr-wf-1,s+wf+1); SETICFR(w,wf,wcr,n);   // m=#cells of w, n=#items per cell  d=#atoms per item of cell
  rot(m,d,n,k,1>=p?AN(a):1L,av,u,v);
  if(1<p){
@@ -135,15 +135,15 @@ static F1(jtrevsp){A a,q,x,y,z;I c,f,k,m,n,r,*v,wr;P*wp,*zp;
  SPB(zp,e,ca(SPA(wp,e))); 
  SPB(zp,i,y); 
  SPB(zp,x,x);
- R z;
+ return z;
 }    /* |."r w on sparse arrays */
 
 F1(jtreverse){A z;C*wv,*zv;I f,k,m,n,nk,r,*v,*ws,wt,wr;
  F1PREFIP;ARGCHK1(w);
- if(unlikely((SPARSE&AT(w))!=0))R revsp(w);
- if(jt->fill)R rotate(num(-1),w);  // rank is set - not inplaceable because it uses fill
+ if(unlikely((SPARSE&AT(w))!=0))return revsp(w);
+ if(jt->fill)return rotate(num(-1),w);  // rank is set - not inplaceable because it uses fill
  wr=AR(w); r=(RANKT)jt->ranks; r=wr<r?wr:r; f=wr-r;  // no RESETRANK - we don't call any primitive from here on
- if(!(r&&AN(w))){R RETARG(w);}  // no atoms or reversing atoms - keep input unchanged
+ if(!(r&&AN(w))){return RETARG(w);}  // no atoms or reversing atoms - keep input unchanged
  wt=AT(w); ws=AS(w); wv=CAV(w);
  n=ws[f]; 
  m=1; DO(f, m*=ws[i];);
@@ -168,7 +168,7 @@ static A jtreshapesp0(J jt,A a,A w,I wf,I wcr){A e,p,x,y,z;B*b,*pv;I c,d,r,*v,wr
  wp=PAV(w); RZ(b=bfi(wr,SPA(wp,a),1));
  RZ(e=ca(SPA(wp,e))); x=SPA(wp,x); y=SPA(wp,i);
  v=AS(y); r=v[0]; c=v[1]; d=0; DO(wf, if(b[i])++d;);
- if(!wf){if(r&&c){v=AV(y); DO(c, if(v[i])R e;);} R AN(x)?reshape(mtv,x):e;}
+ if(!wf){if(r&&c){v=AV(y); DO(c, if(v[i])return e;);} return AN(x)?reshape(mtv,x):e;}
  GASPARSE(z,AT(w),1,wf,ws);
  zp=PAV(z); SPB(zp,e,e); A bvec=ifb(wf,b); makewritable(bvec) SPB(zp,a,bvec);  // avoid readonly
  GATV0(p,B01,r,1); pv=BAV(p);
@@ -176,7 +176,7 @@ static A jtreshapesp0(J jt,A a,A w,I wf,I wcr){A e,p,x,y,z;B*b,*pv;I c,d,r,*v,wr
  DO(r, *pv=1; DO(c-d, if(v[d+i]){*pv=0; break;}); ++pv; v+=c;);
  SPB(zp,i,repeat(p,taker(d,y)));
  SPB(zp,x,irs2(mtv,repeat(p,x),0L,1L,wcr-(c-d),jtreshape));
- R z;
+ return z;
 }    /* '' ($,)"wcr w for sparse w */
 
 static A jtreshapesp(J jt,A a,A w,I wf,I wcr){A a1,e,t,x,y,z;B az,*b,wz;I an,*av,c,d,j,m,*u,*v,wr,*ws;P*wp,*zp;
@@ -184,11 +184,11 @@ static A jtreshapesp(J jt,A a,A w,I wf,I wcr){A a1,e,t,x,y,z;B az,*b,wz;I an,*av
  az=0; DO(an,  if(!av[   i])az=1;);
  wz=0; DO(wcr, if(!ws[wf+i])wz=1;);
  ASSERT(az||!wz,EVLENGTH);
- if(!an)R reshapesp0(a,w,wf,wcr);
+ if(!an)return reshapesp0(a,w,wf,wcr);
  wp=PAV(w); a1=SPA(wp,a); c=AN(a1); RZ(b=bfi(wr,a1,1));  // b=bitmask, length wr, with 1s for each value in a1
  RZ(e=ca(SPA(wp,e))); x=SPA(wp,x); y=SPA(wp,i);
  u=av+an; v=ws+wr; m=0; DQ(MIN(an,wcr-1), if(*--u!=*--v){m=1; break;});
- if(m||an<wcr) R reshapesp(a,IRS1(w,0L,wcr,jtravel,z),wf,1L);
+ if(m||an<wcr) return reshapesp(a,IRS1(w,0L,wcr,jtravel,z),wf,1L);
  ASSERT(!jt->fill,EVDOMAIN);
  GASPARSE(z,AT(w),1,wf+an,ws); MCISH(wf+AS(z),av,an);
  zp=PAV(z); SPB(zp,e,e);  
@@ -196,7 +196,7 @@ static A jtreshapesp(J jt,A a,A w,I wf,I wcr){A a1,e,t,x,y,z;B az,*b,wz;I an,*av
  DO(wf, if(b[i])*v++=i;); if(b[wf])DO(d, *v++=wf+i;); j=wf; DQ(wcr, if(b[j])*v++=d+j; ++j;);
  SPB(zp,a,t);
  if(b[wf]){I n,q,r,*v0;   /* sparse */
-  if(wf!=*AV(a1))R rank2ex(a,w,UNUSED_VALUE,MIN(AR(a),1),wcr,MIN(AR(a),1),wcr,jtreshape);
+  if(wf!=*AV(a1))return rank2ex(a,w,UNUSED_VALUE,MIN(AR(a),1),wcr,MIN(AR(a),1),wcr,jtreshape);
   RE(m=prod(1+d,av)); SETIC(y,n); if(ws[wf]){q=n*(m/ws[wf]); r=m%ws[wf];} else {q=0; r=0;}
   v=AV(y); DQ(n, if(r<=*v)break; ++q; v+=c;);
   GATV0(t,INT,q,1); u=AV(t); v=v0=AV(y);
@@ -208,7 +208,7 @@ static A jtreshapesp(J jt,A a,A w,I wf,I wcr){A a1,e,t,x,y,z;B az,*b,wz;I an,*av
   SPB(zp,i,ca(y));
   SPB(zp,x,irs2(vec(INT,m,v),x,0L,1L,wcr-(an-m),jtreshape));
  }
- R z;
+ return z;
 }    /* a ($,)"wcr w for sparse w and scalar or vector a */
 
 F2(jtreshape){A z;B filling;C*wv,*zv;I acr,ar,c,k,m,n,p,q,r,*s,t,* RESTRICT u,wcr,wf,wn,wr,* RESTRICT ws,zn;
@@ -240,7 +240,7 @@ F2(jtreshape){A z;B filling;C*wv,*zv;I acr,ar,c,k,m,n,p,q,r,*s,t,* RESTRICT u,wc
  k=bpnoun(t); p=k*m; q=k*n;
  DPMULDE(c,m,zn);
  GA(z,t,zn,r+wf,0); s=AS(z); MCISH(s,ws,wf); MCISH(s+wf,u,r);
- if(!zn)R z;
+ if(!zn)return z;
  zv=CAV(z); wv=CAV(w); 
  // We extracted from w, so mark it (or its backer if virtual) non-pristine.  Note that w was not changed above if it was boxed nonempty.  z is never pristine, since it may have repeats
  PRISTCLRF(w)
@@ -264,7 +264,7 @@ F2(jtreitem){A y,z;I acr,an,ar,r,*v,wcr,wr;
   fauxINT(y,yfaux,an+r,1) v=AV(y);
   MCISH(v,AV(a),an); MCISH(v+an,AS(w)+wr-r,r);
  }
- R wr==wcr?jtreshape(jtinplace,y,w):IRS2(y,w,0L,acr,wcr,jtreshape,z);  // Since a has no frame, we dont have to check agreement
+ return wr==wcr?jtreshape(jtinplace,y,w):IRS2(y,w,0L,acr,wcr,jtreshape,z);  // Since a has no frame, we dont have to check agreement
 }    /* a $"r w */
 
 #define EXPAND(T)  \
@@ -278,7 +278,7 @@ F2(jtexpand){A z;B*av;C*wv,*wx,*zv;I an,*au,i,k,p,wc,wk,wn,wt,zn;
  if(!(B01&AT(a)))RZ(a=cvt(B01,a));
  ASSERT(1==AR(a),EVRANK);
  RZ(w=setfv(w,w)); 
- if(!AR(w))R from(a,take(num(-2),w));  // atomic w, use a { _2 {. w
+ if(!AR(w))return from(a,take(num(-2),w));  // atomic w, use a { _2 {. w
  av=BAV(a); an=AN(a); au=(I*)av;
  ASSERT(bsum(an,av)==AS(w)[0],EVLENGTH);  // each item of w must be used exactly once
  wv=CAV(w); wn=AN(w); PROD(wc,AR(w)-1,AS(w)+1) wt=AT(w); k=bpnoun(wt); wk=k*wc; wx=wv+wk*AS(w)[0];  // k=bytes/atom, wk=bytes/item, wx=end+1 of area

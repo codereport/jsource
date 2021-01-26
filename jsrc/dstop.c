@@ -17,27 +17,27 @@ static B stopsub(C*p,C*nw,I md){C*q,*s;I n;
  s=strchr(p,';'); if(!s)s=p+strlen(p);
  q=strchr(p,':'); if(!q||q>s)q=s;
  if(2==md){p=q; q=s; if(':'==*p)++p;}
- s=strchr(p,'*'); if(s&&q>s)R 1;
+ s=strchr(p,'*'); if(s&&q>s)return 1;
  n=strlen(nw);
  while(q>p){
   while(' '==*p)++p;
-  if(!strncmp(p,nw,n)&&(q==p+n||' '==*(p+n)))R 1;
+  if(!strncmp(p,nw,n)&&(q==p+n||' '==*(p+n)))return 1;
   while(q>p&&' '!=*p)++p;
  }
- R 0;
+ return 0;
 }
 
 B jtdbstop(J jt,DC d,I i){A a;B b,c=0,e;C nw[11],*s,*t,*u,*v;I md,n,p,q;
- if(!d)R 0;  // if we are in an unnamed function, there can be no stop
- if(!jt->dbss&&d->dcss){d->dcss=0; jt->dbssd=0; c=i!=d->dcstop; d->dcstop=i; R c;}
+ if(!d)return 0;  // if we are in an unnamed function, there can be no stop
+ if(!jt->dbss&&d->dcss){d->dcss=0; jt->dbssd=0; c=i!=d->dcstop; d->dcstop=i; return c;}
  switch(jt->dbss){
   case SSSTEPOVER:  jt->dbss=0;           break;  
   case SSSTEPINTO:  jt->dbss=SSSTEPINTOs; break;  
   case SSSTEPINTOs: jt->dbss=0; if(jt->dbssd){jt->dbssd->dcss=0; jt->dbssd=0;} 
-   c=i!=d->dcstop; d->dcstop=i; R c;
+   c=i!=d->dcstop; d->dcstop=i; return c;
  }       
- if(i==d->dcstop){d->dcstop=-2; R 0;}     /* not stopping if already stopped at the same place */
- if(!(jt->dbstops))R 0; s=CAV(str0(jt->dbstops)); sprintf(nw,FMTI,i);
+ if(i==d->dcstop){d->dcstop=-2; return 0;}     /* not stopping if already stopped at the same place */
+ if(!(jt->dbstops))return 0; s=CAV(str0(jt->dbstops)); sprintf(nw,FMTI,i);
  a=d->dca; n=d->dcm; t=NAV(a)->s; md=d->dcx&&d->dcy?2:1; 
  while(s){
   while(' '==*s)++s; if(b='~'==*s)++s; while(' '==*s)++s;
@@ -49,12 +49,12 @@ B jtdbstop(J jt,DC d,I i){A a;B b,c=0,e;C nw[11],*s,*t,*u,*v;I md,n,p,q;
  }
  if(c){d->dcstop=i; d->dcss=jt->dbss=0; if(jt->dbssd){jt->dbssd->dcss=0; jt->dbssd=0;}}
  else  d->dcstop=-2;
- R c;
+ return c;
 }    /* stop on line i? */
 
 
-F1(jtdbstopq){ASSERTMTV(w); R jt->dbstops?jt->dbstops:mtv;}
+F1(jtdbstopq){ASSERTMTV(w); return jt->dbstops?jt->dbstops:mtv;}
      /* 13!:2  query stops */
 
-F1(jtdbstops){RZ(w=vs(w)); fa(jt->dbstops); if(AN(w)){RZ(ras(w)); jt->dbstops=w;}else jt->dbstops=0; R mtm;}
+F1(jtdbstops){RZ(w=vs(w)); fa(jt->dbstops); if(AN(w)){RZ(ras(w)); jt->dbstops=w;}else jt->dbstops=0; return mtm;}
      /* 13!:3  set stops */

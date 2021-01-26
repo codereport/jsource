@@ -13,13 +13,13 @@ B jtxsinit(J jt){A x;
  GAT0(x,BOX,10,1); memset(AV(x),C0,AN(x)*SZI); ras(x); jt->slist=x;
  GAT0(x,INT,10,1); memset(AV(x),C0,AN(x)*SZI); ras(x); jt->sclist=x;
  jt->slisti=-1;
- R 1;
+ return 1;
 }
 
-F1(jtsnl){ASSERTMTV(w); R vec(BOX,jt->slistn,AAV(jt->slist));}
+F1(jtsnl){ASSERTMTV(w); return vec(BOX,jt->slistn,AAV(jt->slist));}
      /* 4!:3  list of script names */
 
-F1(jtscnl){ASSERTMTV(w); R vec(INT,jt->slistn,AAV(jt->sclist));}
+F1(jtscnl){ASSERTMTV(w); return vec(INT,jt->slistn,AAV(jt->sclist));}
      /* 4!:8  list of script indices which loaded slist */
 
 
@@ -36,7 +36,7 @@ F1(jtscnl){ASSERTMTV(w); R vec(INT,jt->slistn,AAV(jt->sclist));}
 
 #define SEEKLEAK 0
 static A jtline(J jt,A w,I si,C ce,B tso){A x=mtv,z;B xt=jt->tostdout;DC d,xd=jt->dcs;
- if(equ(w,num(1)))R mtm;
+ if(equ(w,num(1)))return mtm;
  RZ(w=vs(w));
  // Handle locking.  Global glock has lock status for higher levels.  We see if this text is locked; if so, we mark lock status for this level
  // We do not inherit the lock from higher levels, per the original design
@@ -70,7 +70,7 @@ static A jtline(J jt,A w,I si,C ce,B tso){A x=mtv,z;B xt=jt->tostdout;DC d,xd=jt
   debz();
  FDEPDEC(1);  // ASSERT OK now
  jt->uflags.us.cx.cx_c.glock=oldk; // pop lock status
- if(3==ce){z=num(jt->jerr==0); RESETERR; R z;}else RNE(mtm);
+ if(3==ce){z=num(jt->jerr==0); RESETERR; return z;}else RNE(mtm);
 }
 
 static F1(jtaddscriptname){I i;
@@ -80,7 +80,7 @@ static F1(jtaddscriptname){I i;
   RZ(ras(w)); RZ(*(jt->slistn+AAV(jt->slist))=w); *(jt->slistn+IAV(jt->sclist))=jt->slisti;
   ++jt->slistn;
  }
- R sc(i);
+ return sc(i);
 }
 
 
@@ -104,14 +104,14 @@ static A jtlinf(J jt,A a,A w,C ce,B tso){A x,y,z;B lk=0;C*s;I i=-1,n,oldi=jt->sl
  jt->slisti=(UI4)i;    // glock=0 or 1 is original setting; 2 if this script is locked (so reset after 
  z=line(x,i,ce,tso); 
  jt->slisti=(UI4)oldi;
- R z;
+ return z;
 }
 
 // 4!:6 add script name to list and return its index
 F1(jtscriptstring){
  ASSERT(AT(w)&LIT,EVDOMAIN);  // literal
  ASSERT(AR(w)<2,EVRANK);  // list
- R jtaddscriptname(jt,w);   // add name if new; return index to name
+ return jtaddscriptname(jt,w);   // add name if new; return index to name
 }
 
 // 4!:7 set script name to use and return previous value
@@ -120,19 +120,19 @@ F1(jtscriptnum){
  ASSERT(BETWEENO(i,-1,jt->slistn),EVINDEX);  // make sure it's _1 or valid index
  A rv=sc(jt->slisti);  // save the old value
  RZ(rv); jt->slisti=(UI4)i;  // set the new value (if no error)
- R rv;  // return prev value
+ return rv;  // return prev value
 }
 
-F1(jtscm00 ){I r; ARGCHK1(w);    r=1&&AT(w)&LIT+C2T+C4T; F1RANK(     r,jtscm00, UNUSED_VALUE); R r?line(w,-1L,0,0):linf(mark,w,0,0);}
-F1(jtscm01 ){I r; ARGCHK1(w);    r=1&&AT(w)&LIT+C2T+C4T; F1RANK(     r,jtscm01, UNUSED_VALUE); R r?line(w,-1L,0,1):linf(mark,w,0,1);}
-F1(jtscm10 ){I r; ARGCHK1(w);    r=1&&AT(w)&LIT+C2T+C4T; F1RANK(     r,jtscm10, UNUSED_VALUE); R r?line(w,-1L,1,0):linf(mark,w,1,0);}
-F1(jtscm11 ){I r; ARGCHK1(w);    r=1&&AT(w)&LIT+C2T+C4T; F1RANK(     r,jtscm11, UNUSED_VALUE); R r?line(w,-1L,1,1):linf(mark,w,1,1);}
-F1(jtsct1  ){I r; ARGCHK1(w);    r=1&&AT(w)&LIT+C2T+C4T; F1RANK(     r,jtsct1,  UNUSED_VALUE); R r?line(w,-1L,2,1):linf(mark,w,2,1);}
-F1(jtscz1  ){I r; ARGCHK1(w);    r=1&&AT(w)&LIT+C2T+C4T; F1RANK(     r,jtscz1,  UNUSED_VALUE); R r?line(w,-1L,3,0):linf(mark,w,3,0);}
+F1(jtscm00 ){I r; ARGCHK1(w);    r=1&&AT(w)&LIT+C2T+C4T; F1RANK(     r,jtscm00, UNUSED_VALUE); return r?line(w,-1L,0,0):linf(mark,w,0,0);}
+F1(jtscm01 ){I r; ARGCHK1(w);    r=1&&AT(w)&LIT+C2T+C4T; F1RANK(     r,jtscm01, UNUSED_VALUE); return r?line(w,-1L,0,1):linf(mark,w,0,1);}
+F1(jtscm10 ){I r; ARGCHK1(w);    r=1&&AT(w)&LIT+C2T+C4T; F1RANK(     r,jtscm10, UNUSED_VALUE); return r?line(w,-1L,1,0):linf(mark,w,1,0);}
+F1(jtscm11 ){I r; ARGCHK1(w);    r=1&&AT(w)&LIT+C2T+C4T; F1RANK(     r,jtscm11, UNUSED_VALUE); return r?line(w,-1L,1,1):linf(mark,w,1,1);}
+F1(jtsct1  ){I r; ARGCHK1(w);    r=1&&AT(w)&LIT+C2T+C4T; F1RANK(     r,jtsct1,  UNUSED_VALUE); return r?line(w,-1L,2,1):linf(mark,w,2,1);}
+F1(jtscz1  ){I r; ARGCHK1(w);    r=1&&AT(w)&LIT+C2T+C4T; F1RANK(     r,jtscz1,  UNUSED_VALUE); return r?line(w,-1L,3,0):linf(mark,w,3,0);}
 
-F2(jtscm002){I r; ARGCHK2(a,w); r=1&&AT(w)&LIT+C2T+C4T; F2RANK(RMAX,r,jtscm002,UNUSED_VALUE); R r?line(w,-1L,0,0):linf(a,   w,0,0);}
-F2(jtscm012){I r; ARGCHK2(a,w); r=1&&AT(w)&LIT+C2T+C4T; F2RANK(RMAX,r,jtscm012,UNUSED_VALUE); R r?line(w,-1L,0,1):linf(a,   w,0,1);}
-F2(jtscm102){I r; ARGCHK2(a,w); r=1&&AT(w)&LIT+C2T+C4T; F2RANK(RMAX,r,jtscm102,UNUSED_VALUE); R r?line(w,-1L,1,0):linf(a,   w,1,0);}
-F2(jtscm112){I r; ARGCHK2(a,w); r=1&&AT(w)&LIT+C2T+C4T; F2RANK(RMAX,r,jtscm112,UNUSED_VALUE); R r?line(w,-1L,1,1):linf(a,   w,1,1);}
-F2(jtsct2  ){I r; ARGCHK2(a,w); r=1&&AT(w)&LIT+C2T+C4T; F2RANK(RMAX,r,jtsct2,  UNUSED_VALUE); R r?line(w,-1L,2,1):linf(a,   w,2,1);}
-F2(jtscz2  ){I r; ARGCHK2(a,w); r=1&&AT(w)&LIT+C2T+C4T; F2RANK(RMAX,r,jtscz2,  UNUSED_VALUE); R r?line(w,-1L,3,0):linf(a,   w,3,0);}
+F2(jtscm002){I r; ARGCHK2(a,w); r=1&&AT(w)&LIT+C2T+C4T; F2RANK(RMAX,r,jtscm002,UNUSED_VALUE); return r?line(w,-1L,0,0):linf(a,   w,0,0);}
+F2(jtscm012){I r; ARGCHK2(a,w); r=1&&AT(w)&LIT+C2T+C4T; F2RANK(RMAX,r,jtscm012,UNUSED_VALUE); return r?line(w,-1L,0,1):linf(a,   w,0,1);}
+F2(jtscm102){I r; ARGCHK2(a,w); r=1&&AT(w)&LIT+C2T+C4T; F2RANK(RMAX,r,jtscm102,UNUSED_VALUE); return r?line(w,-1L,1,0):linf(a,   w,1,0);}
+F2(jtscm112){I r; ARGCHK2(a,w); r=1&&AT(w)&LIT+C2T+C4T; F2RANK(RMAX,r,jtscm112,UNUSED_VALUE); return r?line(w,-1L,1,1):linf(a,   w,1,1);}
+F2(jtsct2  ){I r; ARGCHK2(a,w); r=1&&AT(w)&LIT+C2T+C4T; F2RANK(RMAX,r,jtsct2,  UNUSED_VALUE); return r?line(w,-1L,2,1):linf(a,   w,2,1);}
+F2(jtscz2  ){I r; ARGCHK2(a,w); r=1&&AT(w)&LIT+C2T+C4T; F2RANK(RMAX,r,jtscz2,  UNUSED_VALUE); return r?line(w,-1L,3,0):linf(a,   w,3,0);}

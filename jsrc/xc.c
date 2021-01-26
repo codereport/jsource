@@ -8,7 +8,7 @@
 
 F2(jtforeignextra){
  ARGCHK2(a,w);
- R CDERIV(CIBEAM, 0,0, VFLAGNONE,RMAX,RMAX,RMAX);
+ return CDERIV(CIBEAM, 0,0, VFLAGNONE,RMAX,RMAX,RMAX);
 }
 
 // create explicit equivalent of verb w
@@ -19,5 +19,5 @@ F2(jtforeignextra){
 F2(jtfixrecursive){A z;
  ARGCHK2(a,w);
  df1(z,w,eval("1 : 'u y\n:\nx u y'"));
- R z;
+ return z;
 }

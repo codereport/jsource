@@ -15,7 +15,7 @@ static A jteverysp(J jt,A w,A fs){A*wv,x,z,*zv;P*wp,*zp;
  wp=PAV(w); x=SPA(wp,x); wv=AAV(x);
  zp=PAV(z); x=SPA(zp,x); zv=AAV(x);
  DQ(AN(x), RZ(*zv++=CALL1(f1,*wv++,fs)););
- R z;
+ return z;
 }
 
 #define EVERYI(exp)  {RZ(x=exp); INCORP(x); RZ(*zv++=x); ASSERT(!(SPARSE&AT(x)),EVNONCE);}
@@ -23,11 +23,11 @@ static A jteverysp(J jt,A w,A fs){A*wv,x,z,*zv;P*wp,*zp;
 
 // NOTE: internal calls to every/every2 use a skeletal fs created by the EVERYFS macro.  It fills in only
 // AK, valencefns, and flag.  If these routines use other fields, EVERYFS will need to fill them in
-DF1(jteveryself){R jtevery(jt,w,FAV(self)->fgh[0]);}   // replace u&.> with u and process
+DF1(jteveryself){return jtevery(jt,w,FAV(self)->fgh[0]);}   // replace u&.> with u and process
 // u&.>, but w may be a gerund, which makes the result a list of functions masquerading as an aray of boxes
 A jtevery(J jt, A w, A fs){A * RESTRICT wv,x,z,* RESTRICT zv;
  F1PREFIP;ARGCHK1(w);RESETRANK;  // we claim to support IRS1 but really there's nothing to do for it
- if(unlikely((SPARSE&AT(w))!=0))R everysp(w,fs);
+ if(unlikely((SPARSE&AT(w))!=0))return everysp(w,fs);
  AF f1=FAV(fs)->valencefns[0];   // pointer to function to call
  A virtw; I flags;  // flags are: ACINPLACE=pristine result; JTWILLBEOPENED=nonrecursive result; BOX=input was boxed; ACPERMANENT=input was inplaceable pristine, contents can be inplaced
  // If the result will be immediately unboxed, we create a NONrecursive result and we can store virtual blocks in it.  This echoes what result.h does.
@@ -44,7 +44,7 @@ A jtevery(J jt, A w, A fs){A * RESTRICT wv,x,z,* RESTRICT zv;
  // Allocate result area
  GATV(z,BOX,AN(w),AR(w),AS(w));
  AFLAG(z)=(~flags<<(BOXX-JTWILLBEOPENEDX))&BOX;  // if WILLBEOPENED is NOT set, make the result a recursive box
- I natoms=AN(w); if(!natoms)R z;  // exit if no result atoms
+ I natoms=AN(w); if(!natoms)return z;  // exit if no result atoms
  zv=AAV(z);
  // Get jt flags to pass to next level - take them from  fs, so that we always inplace this verb, which will allow us to set pristinity better
  // We must remove raze flags since we are using them here
@@ -107,10 +107,10 @@ A jtevery(J jt, A w, A fs){A * RESTRICT wv,x,z,* RESTRICT zv;
 
  // indicate pristinity of result
  AFLAG(z)|=(flags>>(ACINPLACEX-AFPRISTINEX))&AFPRISTINE;   // could synthesize rather than loading from z
- R z;
+ return z;
 }
 
-DF2(jtevery2self){R jtevery2(jt,a,w,FAV(self)->fgh[0]);}   // replace u&.> with u and process
+DF2(jtevery2self){return jtevery2(jt,a,w,FAV(self)->fgh[0]);}   // replace u&.> with u and process
 // u&.>, but w may be a gerund, which makes the result a list of functions masquerading as an aray of boxes
 A jtevery2(J jt, A a, A w, A fs){A*av,*wv,x,z,*zv;
  F2PREFIP;ARGCHK2(a,w);
@@ -131,7 +131,7 @@ A jtevery2(J jt, A a, A w, A fs){A*av,*wv,x,z,*zv;
   // Verify agreement
   ASSERTAGREE(AS(a),AS(w),cf);  // frames must agree
   // Allocate result
-  GATV(z,BOX,natoms,lr,AS(la)); if(!natoms)R z; zv=AAV(z);  // make sure we don't fetch outside empty arg
+  GATV(z,BOX,natoms,lr,AS(la)); if(!natoms)return z; zv=AAV(z);  // make sure we don't fetch outside empty arg
  }
  // If the result will be immediately unboxed, we create a NONrecursive result and we can store virtual blocks in it.  This echoes what result.h does.
  flags|=ACINPLACE|((I)jtinplace&JTWILLBEOPENED)|(AT(w)&BOX)|((AT(a)&BOX)<<1);
@@ -230,31 +230,31 @@ A jtevery2(J jt, A a, A w, A fs){A*av,*wv,x,z,*zv;
  }
  // indicate pristinity of result
  AFLAG(z)|=(flags>>(ACINPLACEX-AFPRISTINEX))&AFPRISTINE;   // could synthesize rather than loading from z
- R z;
+ return z;
 }
 
 // apply f2 on items of a or w against the entirety of the other argument.  Pass on rank of f2 to reduce rank nesting
-DF2(jteachl){ARGCHK3(a,w,self); I lcr=AR(a)-1<0?0:AR(a)-1; I lr=lr(self); lr=lcr<lr?lcr:lr; I rr=rr(self); rr=AR(w)<rr?AR(w):rr; R rank2ex(a,w,self,lr,rr,lcr,AR(w),FAV(self)->valencefns[1]);}
-DF2(jteachr){ARGCHK3(a,w,self); I rcr=AR(w)-1<0?0:AR(w)-1; I rr=rr(self); rr=rcr<rr?rcr:rr; I lr=lr(self); lr=AR(a)<lr?AR(a):lr; R rank2ex(a,w,self,lr,rr,AR(a),rcr,FAV(self)->valencefns[1]);}
+DF2(jteachl){ARGCHK3(a,w,self); I lcr=AR(a)-1<0?0:AR(a)-1; I lr=lr(self); lr=lcr<lr?lcr:lr; I rr=rr(self); rr=AR(w)<rr?AR(w):rr; return rank2ex(a,w,self,lr,rr,lcr,AR(w),FAV(self)->valencefns[1]);}
+DF2(jteachr){ARGCHK3(a,w,self); I rcr=AR(w)-1<0?0:AR(w)-1; I rr=rr(self); rr=rcr<rr?rcr:rr; I lr=lr(self); lr=AR(a)<lr?AR(a):lr; return rank2ex(a,w,self,lr,rr,AR(a),rcr,FAV(self)->valencefns[1]);}
 
 // u&.v
 // PUSH/POP ZOMB is performed in atop/amp/ampco
 // under is for when we could not precalculate the inverse.  The verb is in localuse
-static DF1(jtunder1){F1PREFIP;DECLFG;A fullf; RZ(fullf=atop(invrecur(fix(sv->localuse.lvp[0],sc(FIXASTOPATINV))),sv->fgh[2])); R (FAV(fullf)->valencefns[0])(FAV(fullf)->flag&VJTFLGOK1?jtinplace:jt,w,fullf);}
-static DF2(jtunder2){F2PREFIP;DECLFG;A fullf; RZ(fullf=atop(invrecur(fix(sv->localuse.lvp[0],sc(FIXASTOPATINV))),sv->fgh[2])); R (FAV(fullf)->valencefns[1])(FAV(fullf)->flag&VJTFLGOK2?jtinplace:jt,a,w,fullf);}
+static DF1(jtunder1){F1PREFIP;DECLFG;A fullf; RZ(fullf=atop(invrecur(fix(sv->localuse.lvp[0],sc(FIXASTOPATINV))),sv->fgh[2])); return (FAV(fullf)->valencefns[0])(FAV(fullf)->flag&VJTFLGOK1?jtinplace:jt,w,fullf);}
+static DF2(jtunder2){F2PREFIP;DECLFG;A fullf; RZ(fullf=atop(invrecur(fix(sv->localuse.lvp[0],sc(FIXASTOPATINV))),sv->fgh[2])); return (FAV(fullf)->valencefns[1])(FAV(fullf)->flag&VJTFLGOK2?jtinplace:jt,a,w,fullf);}
 // underh has the inverse precalculated, and the inplaceability set from it.  It handles &. and &.: which differ only in rank
-static DF1(jtunderh1){F1PREFIP;DECLFGH; R (FAV(hs)->valencefns[0])(jtinplace,w,hs);}
-static DF2(jtunderh2){F2PREFIP;DECLFGH; R (FAV(hs)->valencefns[1])(jtinplace,a,w,hs);}
+static DF1(jtunderh1){F1PREFIP;DECLFGH; return (FAV(hs)->valencefns[0])(jtinplace,w,hs);}
+static DF2(jtunderh2){F2PREFIP;DECLFGH; return (FAV(hs)->valencefns[1])(jtinplace,a,w,hs);}
 // undco is for when we could not precalculate the inverse
-static DF1(jtundco1){F1PREFIP;DECLFG;A fullf; RZ(fullf=atop(inv(sv->localuse.lvp[0]),sv->fgh[2])); R (FAV(fullf)->valencefns[0])(FAV(fullf)->flag&VJTFLGOK1?jtinplace:jt,w,fullf);}
-static DF2(jtundco2){F2PREFIP;DECLFG;A fullf; RZ(fullf=atop(inv(sv->localuse.lvp[0]),sv->fgh[2])); R (FAV(fullf)->valencefns[1])(FAV(fullf)->flag&VJTFLGOK2?jtinplace:jt,a,w,fullf);}
+static DF1(jtundco1){F1PREFIP;DECLFG;A fullf; RZ(fullf=atop(inv(sv->localuse.lvp[0]),sv->fgh[2])); return (FAV(fullf)->valencefns[0])(FAV(fullf)->flag&VJTFLGOK1?jtinplace:jt,w,fullf);}
+static DF2(jtundco2){F2PREFIP;DECLFG;A fullf; RZ(fullf=atop(inv(sv->localuse.lvp[0]),sv->fgh[2])); return (FAV(fullf)->valencefns[1])(FAV(fullf)->flag&VJTFLGOK2?jtinplace:jt,a,w,fullf);}
 
 // versions for rank 0 (including each).  Passes inplaceability through
 // if there is only one cell, process it through under[h]1, which understands this type; if more, loop through
-static DF1(jtunder10){R jtrank1ex0(jt,w,self,jtunder1);}  // pass inplaceability through
-static DF1(jtunderh10){R jtrank1ex0(jt,w,self,jtunderh1);}  // pass inplaceability through
-static DF2(jtunder20){R jtrank2ex0(jt,a,w,self,jtunder2);}  // pass inplaceability through
-static DF2(jtunderh20){R jtrank2ex0(jt,a,w,self,jtunderh2);}  // pass inplaceability through
+static DF1(jtunder10){return jtrank1ex0(jt,w,self,jtunder1);}  // pass inplaceability through
+static DF1(jtunderh10){return jtrank1ex0(jt,w,self,jtunderh1);}  // pass inplaceability through
+static DF2(jtunder20){return jtrank2ex0(jt,a,w,self,jtunder2);}  // pass inplaceability through
+static DF2(jtunderh20){return jtrank2ex0(jt,a,w,self,jtunderh2);}  // pass inplaceability through
 
 static DF1(jtunderai1){DECLF;A x,y,z;B b;I j,n,*u,*v;UC f[256],*wv,*zv;
  ARGCHK1(w);
@@ -265,7 +265,7 @@ static DF1(jtunderai1){DECLF;A x,y,z;B b;I j,n,*u,*v;UC f[256],*wv,*zv;
   if(b){u=AV(x); v=AV(y); DO(256, j=*u++; if(j==*v++&&BETWEENO(j,-256,256))f[i]=(UC)(j&255); else{b=0; break;});}  // verify both results the same & in bounds
   if(jt->jerr)RESETERR;
  }         
- if(!b)R from(df1(z,indexof(ds(CALP),w),fs),ds(CALP));
+ if(!b)return from(df1(z,indexof(ds(CALP),w),fs),ds(CALP));
  n=AN(w);
  GATV(z,LIT,n,AR(w),AS(w)); zv=UAV(z); wv=UAV(w);
  if(!bitwisecharamp(f,n,wv,zv))DQ(n, *zv++=f[*wv++];); 
@@ -290,7 +290,7 @@ F2(jtunder){A x,wvb=w;AF f1,f2;B b,b1;C c,uid;I gside=-1;V*u,*v;
  // If v is WILLOPEN, so will the compound be - for all valences
  switch(v->id&gside){  // never special if gerund - this could evaluate to 0 or 1, neither of which is one of these codes
  case COPE:
-  R fdef(VF2WILLOPEN1|VF2WILLOPEN2A|VF2WILLOPEN2W,CUNDER,VERB,jteveryself,jtevery2self,a,w,0,flag|VIRS1,0,0,0);   // this is the commonest case.  Return fast, avoiding analysis below
+  return fdef(VF2WILLOPEN1|VF2WILLOPEN2A|VF2WILLOPEN2W,CUNDER,VERB,jteveryself,jtevery2self,a,w,0,flag|VIRS1,0,0,0);   // this is the commonest case.  Return fast, avoiding analysis below
    // We do not expose BOXATOP or ATOPOPEN flags, because we want all u&.> to go through this path & thus we don't want to allow other loops to break in
    // We set VIRS1 just in case a user writes u&.>"n which we can ignore
    // The flags are ignored during u&.>, but they can forward through to affect previous verbs.
@@ -330,7 +330,7 @@ F2(jtunder){A x,wvb=w;AF f1,f2;B b,b1;C c,uid;I gside=-1;V*u,*v;
  RZ(h=fdef(flag2,CUNDER,VERB,(AF)(f1),(AF)(f2),a,w,h,(flag),rmr,rlr,rrr));
  // install wvb into the verb so we can get to it if needed
  FAV(h)->localuse.lvp[0]=wvb;
- R h;
+ return h;
 }
 
 F2(jtundco){AF f1=0,f2;I gside=-1, flag=0;
@@ -365,5 +365,5 @@ F2(jtundco){AF f1=0,f2;I gside=-1, flag=0;
  RZ(h=fdef(0,CUNDCO,VERB,(AF)(f1),(AF)(f2),a,w,h,flag,RMAX,RMAX,RMAX));
  // install wvb into the verb so we can get to it if needed
  FAV(h)->localuse.lvp[0]=wvb;
- R h;
+ return h;
 }

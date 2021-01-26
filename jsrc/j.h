@@ -321,15 +321,15 @@ static inline omp_int_t omp_get_max_threads() { return 1;}
 
 #define A0              0   // a nonexistent A-block
 #define ABS(a)          (0<=(a)?(a):-(a))
-#define ASSERT(b,e)     {if(unlikely(!(b))){jsignal(e); R 0;}}
+#define ASSERT(b,e)     {if(unlikely(!(b))){jsignal(e); return 0;}}
 // version for debugging
-// #define ASSERT(b,e)     {if(unlikely(!(b))){fprintf(stderr,"error code: %i : file %s line %d\n",(int)(e),__FILE__,__LINE__); jsignal(e); R 0;}}
-#define ASSERTD(b,s)    {if(unlikely(!(b))){jsigd((s)); R 0;}}
+// #define ASSERT(b,e)     {if(unlikely(!(b))){fprintf(stderr,"error code: %i : file %s line %d\n",(int)(e),__FILE__,__LINE__); jsignal(e); return 0;}}
+#define ASSERTD(b,s)    {if(unlikely(!(b))){jsigd((s)); return 0;}}
 #define ASSERTMTV(w)    {ARGCHK1(w); ASSERT(1==AR(w),EVRANK); ASSERT(!AN(w),EVLENGTH);}
-#define ASSERTN(b,e,nm) {if(unlikely(!(b))){jt->curname=(nm); jsignal(e); R 0;}}  // set name for display (only if error)
-#define ASSERTSYS(b,s)  {if(unlikely(!(b))){fprintf(stderr,"system error: %s : file %s line %d\n",s,__FILE__,__LINE__); jsignal(EVSYSTEM); jtwri(jt,MTYOSYS,"",(I)strlen(s),s); R 0;}}
-#define ASSERTW(b,e)    {if(unlikely(!(b))){if((e)<=NEVM)jsignal(e); else jt->jerr=(e); R;}}
-#define ASSERTWR(c,e)   {if(unlikely(!(c))){R e;}}
+#define ASSERTN(b,e,nm) {if(unlikely(!(b))){jt->curname=(nm); jsignal(e); return 0;}}  // set name for display (only if error)
+#define ASSERTSYS(b,s)  {if(unlikely(!(b))){fprintf(stderr,"system error: %s : file %s line %d\n",s,__FILE__,__LINE__); jsignal(EVSYSTEM); jtwri(jt,MTYOSYS,"",(I)strlen(s),s); return 0;}}
+#define ASSERTW(b,e)    {if(unlikely(!(b))){if((e)<=NEVM)jsignal(e); else jt->jerr=(e); return;}}
+#define ASSERTWR(c,e)   {if(unlikely(!(c))){return e;}}
 
 #define ASSERTAGREE(x,y,l) \
  {I *aaa=(x), *aab=(y); I aai=(l); \
@@ -418,13 +418,13 @@ static inline omp_int_t omp_get_max_threads() { return 1;}
 #define FPREFIP         J jtinplace=jt; jt=(J)(intptr_t)((I)jt&~JTFLAGMSK)  // turn off all flag bits in jt, leave them in jtinplace
 #define F1PREFIP        FPREFIP
 #define F2PREFIP        FPREFIP
-#define F1RANK(m,f,self)    {ARGCHK1(w); if(unlikely(m<AR(w)))if(m==0)R rank1ex0(w,(A)self,f);else R rank1ex(  w,(A)self,(I)m,     f);}  // if there is more than one cell, run rank1ex on them.  m=monad rank, f=function to call for monad cell.  Fall through otherwise
-#define F2RANKcommon(l,r,f,self,extra)  {ARGCHK2(a,w); extra if(unlikely((I)((l-AR(a))|(r-AR(w)))<0))if((l|r)==0)R rank2ex0(a,w,(A)self,f);else{I lr=MIN((I)l,AR(a)); I rr=MIN((I)r,AR(w)); R rank2ex(a,w,(A)self,lr,rr,lr,rr,f);}}  // If there is more than one cell, run rank2ex on them.  l,r=dyad ranks, f=function to call for dyad cell
+#define F1RANK(m,f,self)    {ARGCHK1(w); if(unlikely(m<AR(w)))if(m==0)return rank1ex0(w,(A)self,f);else return rank1ex(  w,(A)self,(I)m,     f);}  // if there is more than one cell, run rank1ex on them.  m=monad rank, f=function to call for monad cell.  Fall through otherwise
+#define F2RANKcommon(l,r,f,self,extra)  {ARGCHK2(a,w); extra if(unlikely((I)((l-AR(a))|(r-AR(w)))<0))if((l|r)==0)return rank2ex0(a,w,(A)self,f);else{I lr=MIN((I)l,AR(a)); I rr=MIN((I)r,AR(w)); return rank2ex(a,w,(A)self,lr,rr,lr,rr,f);}}  // If there is more than one cell, run rank2ex on them.  l,r=dyad ranks, f=function to call for dyad cell
 #define F2RANK(l,r,f,self)  F2RANKcommon(l,r,f,self,)
 // same, but used when the function may pull an address from w.  In that case, we have to turn pristine off since there may be duplicates in the result
 #define F2RANKW(l,r,f,self) F2RANKcommon(l,r,f,self,PRISTCLR(w))
-#define F1RANKIP(m,f,self)    {RZ(   w); if(unlikely(m<AR(w)))R jtrank1ex(jtinplpace,  w,(A)self,(I)m,     f);}  // if there is more than one cell, run rank1ex on them.  m=monad rank, f=function to call for monad cell
-#define F2RANKIP(l,r,f,self)  {ARGCHK2(a,w); if(unlikely((I)((l-AR(a))|(r-AR(w)))<0)){I lr=MIN((I)l,AR(a)); I rr=MIN((I)r,AR(w)); R jtrank2ex(jtinplace,a,w,(A)self,REX2R(lr,rr,lr,rr),f);}}  // If there is more than one cell, run rank2ex on them.  l,r=dyad ranks, f=function to call for dyad cell
+#define F1RANKIP(m,f,self)    {RZ(   w); if(unlikely(m<AR(w)))return jtrank1ex(jtinplpace,  w,(A)self,(I)m,     f);}  // if there is more than one cell, run rank1ex on them.  m=monad rank, f=function to call for monad cell
+#define F2RANKIP(l,r,f,self)  {ARGCHK2(a,w); if(unlikely((I)((l-AR(a))|(r-AR(w)))<0)){I lr=MIN((I)l,AR(a)); I rr=MIN((I)r,AR(w)); return jtrank2ex(jtinplace,a,w,(A)self,REX2R(lr,rr,lr,rr),f);}}  // If there is more than one cell, run rank2ex on them.  l,r=dyad ranks, f=function to call for dyad cell
 // get # of things of size s, rank r to allocate so as to have an odd number of them at least n, after discarding w items of waste.  Try to fill up a full buffer 
 #define FULLHASHSIZE(n,s,r,w,z) {UI4 zzz;  CTLZI((((n)|1)+(w))*(s) + AKXR(r) - 1,zzz); z = ((((I)1<<(zzz+1)) - AKXR(r)) / (s) - 1) | (1&~(w)); }
 // Memory-allocation macros
@@ -467,9 +467,9 @@ static inline omp_int_t omp_get_max_threads() { return 1;}
     \
  }else{erraction;} \
 }
-#define GAT(name,type,atoms,rank,shaape)  GATS(name,type,atoms,rank,shaape,type##SIZE,GACOPYSHAPE,R 0)
-#define GATR(name,type,atoms,rank,shaape)  GATS(name,type,atoms,rank,shaape,type##SIZE,GACOPYSHAPER,R 0)
-#define GAT0(name,type,atoms,rank)  GATS(name,type,atoms,rank,0,type##SIZE,GACOPYSHAPE0,R 0)
+#define GAT(name,type,atoms,rank,shaape)  GATS(name,type,atoms,rank,shaape,type##SIZE,GACOPYSHAPE,return 0)
+#define GATR(name,type,atoms,rank,shaape)  GATS(name,type,atoms,rank,shaape,type##SIZE,GACOPYSHAPER,return 0)
+#define GAT0(name,type,atoms,rank)  GATS(name,type,atoms,rank,0,type##SIZE,GACOPYSHAPE0,return 0)
 #define GAT0E(name,type,atoms,rank,erraction)  GATS(name,type,atoms,rank,0,type##SIZE,GACOPYSHAPE0,erraction)
 
 // Used when type is known and something else is variable.  ##SIZE must be applied before type is substituted, so we have GATVS to use inside other macros.  Normally use GATV
@@ -488,10 +488,10 @@ static inline omp_int_t omp_get_max_threads() { return 1;}
 }
 
 // see warnings above under GATVS
-#define GATV(name,type,atoms,rank,shaape) GATVS(name,type,atoms,rank,shaape,type##SIZE,GACOPYSHAPE,R 0)
-#define GATVR(name,type,atoms,rank,shaape) GATVS(name,type,atoms,rank,shaape,type##SIZE,GACOPYSHAPER,R 0)
-#define GATV1(name,type,atoms,rank) GATVS(name,type,atoms,rank,0,type##SIZE,GACOPY1,R 0)  // this version copies 1 to the entire shape
-#define GATV0(name,type,atoms,rank) GATVS(name,type,atoms,rank,0,type##SIZE,GACOPYSHAPE0,R 0)  // shape not written unless rank==1
+#define GATV(name,type,atoms,rank,shaape) GATVS(name,type,atoms,rank,shaape,type##SIZE,GACOPYSHAPE,return 0)
+#define GATVR(name,type,atoms,rank,shaape) GATVS(name,type,atoms,rank,shaape,type##SIZE,GACOPYSHAPER,return 0)
+#define GATV1(name,type,atoms,rank) GATVS(name,type,atoms,rank,0,type##SIZE,GACOPY1,return 0)  // this version copies 1 to the entire shape
+#define GATV0(name,type,atoms,rank) GATVS(name,type,atoms,rank,0,type##SIZE,GACOPYSHAPE0,return 0)  // shape not written unless rank==1
 #define GATV0E(name,type,atoms,rank,erraction) GATVS(name,type,atoms,rank,0,type##SIZE,GACOPYSHAPE0,erraction)  // shape not written unless rank==1
 // use this version when you are allocating a sparse matrix.  It handles the AS[0] field correctly.  ALL sparse allocations must come through here so that AC is set sorrectly
 #define GASPARSE(n,t,a,r,s) {if((r)==1){GA(n,(t),a,1,0); if(s)AS(n)[0]=(s)[0];}else{GA(n,(t),a,r,s)} AC(n)=ACUC1;}
@@ -556,8 +556,8 @@ static inline omp_int_t omp_get_max_threads() { return 1;}
 #define JMCSETMASK(mskname,l,bytelen)
 
 #define IX(n)           apv((n),0L,1L)
-#define JATTN           {if(unlikely(*jt->adbreakr!=0)){jsignal(EVATTN); R 0;}}
-#define JBREAK0         {if(unlikely(2<=*jt->adbreakr)){jsignal(EVBREAK); R 0;}}
+#define JATTN           {if(unlikely(*jt->adbreakr!=0)){jsignal(EVATTN); return 0;}}
+#define JBREAK0         {if(unlikely(2<=*jt->adbreakr)){jsignal(EVBREAK); return 0;}}
 #define JTIPA           ((J)((I)jt|JTINPLACEA))
 #define JTIPAW          ((J)((I)jt|JTINPLACEA+JTINPLACEW))
 #define JTIPW           ((J)((I)jt|JTINPLACEW))
@@ -598,8 +598,8 @@ static inline omp_int_t omp_get_max_threads() { return 1;}
 #define MODIFIABLE(x)   (x)   // indicates that we modify the result, and it had better not be read-only
 // define multiply-add
 #define NAN0            (_clearfp())
-#define NAN1            {if(unlikely(_SW_INVALID&_clearfp())){jsignal(EVNAN); R 0;}}
-#define NAN1V           {if(unlikely(_SW_INVALID&_clearfp())){jsignal(EVNAN); R  ;}}
+#define NAN1            {if(unlikely(_SW_INVALID&_clearfp())){jsignal(EVNAN); return 0;}}
+#define NAN1V           {if(unlikely(_SW_INVALID&_clearfp())){jsignal(EVNAN); return  ;}}
 #define NANTEST         (_SW_INVALID&_clearfp())
 
 #define NUMMAX          9    // largest number represented in num[]
@@ -671,11 +671,11 @@ if(likely(z<3)){_zzt+=z; z=(I)&oneone; _zzt=_i&3?_zzt:(I*)z; z=_i&2?(I)_zzt:z; z
 #define PROLOGNOTREQ(x)   // if nothing is allocated, we don't really need PROLOG
 #define EPILOGNORET(z) (gc(z,_ttop))   // protect z and return its address
 #define EPILOG(z)       RETF(EPILOGNORET(z))   // z is the result block
-#define EPILOGNOVIRT(z)       R rifvsdebug((gc(z,_ttop)))   // use this when the repercussions of allowing virtual result are too severe
+#define EPILOGNOVIRT(z)       return rifvsdebug((gc(z,_ttop)))   // use this when the repercussions of allowing virtual result are too severe
 #define EPILOGZOMB(z)       if(unlikely(!gc3(&(z),0L,0L,_ttop)))R0; RETF(z);   // z is the result block.  Use this if z may contain inplaceable contents that would free prematurely
 // Routines that do little except call a function that does PROLOG/EPILOG have EPILOGNULL as a placeholder
-#define EPILOGNULL(z)   R z
-#define EPILOGNOTREQ(z)   R z  // used if originak JE had needless EPILOG
+#define EPILOGNULL(z)   return z
+#define EPILOGNOTREQ(z)   return z  // used if originak JE had needless EPILOG
 // Routines that do not return A
 #define EPILOG0         tpop(_ttop)
 // Routines that modify the comparison tolerance must stack it
@@ -688,21 +688,20 @@ if(likely(z<3)){_zzt+=z; z=(I)&oneone; _zzt=_i&3?_zzt:(I*)z; z=_i&2?(I)_zzt:z; z
 #define CLEARZOMBIE     {jt->assignsym=0;}  // Used when we know there shouldn't be an assignsym, just in case
 #define PUSHZOMB L*savassignsym = jt->assignsym; if(savassignsym){if(unlikely(((jt->asgzomblevel-1)|((AN(jt->locsyms)-2)))<0)){CLEARZOMBIE}}  // test is (jt->asgzomblevel==0||AN(jt->locsyms)<2)
 #define POPZOMB {jt->assignsym=savassignsym;}
-#define R               return
 #if FINDNULLRET   // When we return 0, we should always have an error code set.  trap if not
-#define R0 {if(jt->jerr)R A0;else SEGFAULT;}
+#define R0 {if(jt->jerr)return A0;else SEGFAULT;}
 #else
-#define R0 R 0;
+#define R0 return 0;
 #endif
 #define REPSGN(x) ((x)>>(BW-1))  // replicate sign bit of x to entire word (assuming x is signed type - if unsigned, just move sign to bit 0)
 #define SGNTO0(x) ((UI)(x)>>(BW-1))  // move sign bit to bit 0, clear other bits
-// In the original JE many verbs returned a clone of the input, i. e. R ca(w).  We have changed these to avoid the clone, but we preserve the memory in case we need to go back
-#define RCA(w)          R w
-#define RE(exp)         {if(unlikely(((exp),jt->jerr!=0)))R 0;}
+// In the original JE many verbs returned a clone of the input, i. e. return ca(w).  We have changed these to avoid the clone, but we preserve the memory in case we need to go back
+#define RCA(w)          return w
+#define RE(exp)         {if(unlikely(((exp),jt->jerr!=0)))return 0;}
 #define RESETERR        {jt->etxn=jt->jerr=0;}
 #define RESETERRANDMSG  {jt->etxn1=jt->etxn=jt->jerr=0;}
 #define RESETRANK       (jt->ranks=(RANK2T)~0)
-#define RNE(exp)        {R jt->jerr?0:(exp);}
+#define RNE(exp)        {return jt->jerr?0:(exp);}
 #define RZ(exp)         {if(unlikely(!(exp)))R0}
 #if MEMAUDIT&0xc
 #define DEADARG(x)      (x?(AFLAG(x)&CONW?SEGFAULT:0):0); if(MEMAUDIT&0x10)auditmemchains(); if(MEMAUDIT&0x2)audittstack(jt); 
@@ -720,12 +719,12 @@ if(likely(z<3)){_zzt+=z; z=(I)&oneone; _zzt=_i&3?_zzt:(I*)z; z=_i&2?(I)_zzt:z; z
 
 // RETF is the normal function return.  For debugging we hook into it
 #if AUDITEXECRESULTS && (FORCEVIRTUALINPUTS==2)
-#define RETF(exp)       A ZZZz = (exp); auditblock(ZZZz,1,1); ZZZz = virtifnonip(jt,0,ZZZz); R ZZZz
+#define RETF(exp)       A ZZZz = (exp); auditblock(ZZZz,1,1); ZZZz = virtifnonip(jt,0,ZZZz); return ZZZz
 #else
 #if MEMAUDIT&0xc
-#define RETF(exp)       A ZZZz = (exp); DEADARG(ZZZz); R ZZZz
+#define RETF(exp)       A ZZZz = (exp); DEADARG(ZZZz); return ZZZz
 #else
-#define RETF(exp)       R exp
+#define RETF(exp)       return exp
 #endif
 // Input is a byte.  It is replicated to all lanes of a UI
 #endif
@@ -734,7 +733,7 @@ if(likely(z<3)){_zzt+=z; z=(I)&oneone; _zzt=_i&3?_zzt:(I*)z; z=_i&2?(I)_zzt:z; z
 #define STOREBYTES(out,in,n) {*(UI*)(out) = (*(UI*)(out)&~((UI)~(I)0 >> ((n)<<3))) | ((in)&((UI)~(I)0 >> ((n)<<3)));}
 // Input is the name of word of bytes.  Result is modified name, 1 bit per input byte, spaced like B01s, with the bit 0 iff the corresponding input byte was all 0.  Non-boolean bits of result are garbage.
 #define ZBYTESTOZBITS(b) (b=b|((b|(~b+VALIDBOOLEAN))>>7))  // for each byte: zero if b0 off, b7 off, and b7 turns on when you subtract 1 or 2
-// to verify gah conversion #define RETF(exp)       { A retfff=(exp);  if ((retfff) && ((AT(retfff)&SPARSE && AN(retfff)!=1) || (AT(retfff)&DENSE && AN(retfff)!=prod(AR(retfff),AS(retfff)))))SEGFAULT;; R retfff; } // scaf
+// to verify gah conversion #define RETF(exp)       { A retfff=(exp);  if ((retfff) && ((AT(retfff)&SPARSE && AN(retfff)!=1) || (AT(retfff)&DENSE && AN(retfff)!=prod(AR(retfff),AS(retfff)))))SEGFAULT;; return retfff; } // scaf
 #define SBSV(x)         (jt->sbsv+(I)(x))
 #define SBUV(x)         (jt->sbuv+(I)(x))
 #define SEGFAULT        (*(volatile I*)0 = 0)

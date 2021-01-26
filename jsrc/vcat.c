@@ -47,16 +47,16 @@ static A jtovs0(J jt,B p,I r,A a,A w){A a1,e,q,x,y,z;B*b;I at,*av,c,d,j,k,f,m,n,
  if(r)++*(f+AS(z)); else *(wr+AS(z))=2;
  A bvec=ifb(zr,b); makewritable(bvec)  // avoid readonly
  zp=PAV(z); SPB(zp,a,bvec); SPB(zp,e,e); SPB(zp,i,y); SPB(zp,x,x);
- R z;
+ return z;
 }    /* a,"r w (0=p) or w,"r a (1=p) where a is scalar and w is sparse */
 
 static F2(jtovs){A ae,ax,ay,q,we,wx,wy,x,y,z,za,ze;B*ab,*wb,*zb;I acr,ar,*as,at,c,m,n,r,t,*v,wcr,wr,*ws,wt,*zs;P*ap,*wp,*zp;
  ARGCHK2(a,w);
  acr=jt->ranks>>RANKTX; ar=AR(a); at=AT(a); acr=ar<acr?ar:acr; 
  wcr=(RANKT)jt->ranks; wr=AR(w); wt=AT(w); wcr=wr<wcr?wr:wcr; RESETRANK; 
- if(!ar)R ovs0(0,wcr,a,w);
- if(!wr)R ovs0(1,acr,w,a);
- if(ar>acr||wr>wcr)R sprank2(a,w,0L,acr,wcr,jtover);
+ if(!ar)return ovs0(0,wcr,a,w);
+ if(!wr)return ovs0(1,acr,w,a);
+ if(ar>acr||wr>wcr)return sprank2(a,w,0L,acr,wcr,jtover);
  r=MAX(ar,wr);
  if(r>ar)RZ(a=reshape(over(apv(r-ar,1L,0L),shape(a)),a)); as=AS(a);
  if(r>wr)RZ(w=reshape(over(apv(r-wr,1L,0L),shape(w)),w)); ws=AS(w);
@@ -115,7 +115,7 @@ static C*jtovgmove(J jt,I k,I c,I m,A s,A w,C*x,A z){I d,n,p=c*m;
  }else{  // scalar replication
   mvc(k*p,x,k,AV(w));
  }
- R x+k*p;
+ return x+k*p;
 }    /* move an argument into the result area */
 
 static F2(jtovg){A s,z;C*x;I ar,*as,c,k,m,n,r,*sv,t,wr,*ws,zn;
@@ -181,7 +181,7 @@ static void(*moveawtbl[])() = {moveawVV,moveawVS,moveawSV};
 F2(jtover){AD * RESTRICT z;C*zv;I replct,framect,acr,af,ar,*as,k,ma,mw,p,q,r,t,wcr,wf,wr,*ws,zn;
  F2PREFIP;ARGCHK2(a,w);
  UI jtr=jt->ranks;//  fetch early
- if(unlikely((SPARSE&(AT(a)|AT(w)))!=0)){R ovs(a,w);}  // if either arg is sparse, switch to sparse code
+ if(unlikely((SPARSE&(AT(a)|AT(w)))!=0)){return ovs(a,w);}  // if either arg is sparse, switch to sparse code
  if(unlikely(AT(a)!=(t=AT(w)))){t=maxtypedne(AT(a)|(AN(a)==0),t|(AN(w)==0)); t&=-t; if(!TYPESEQ(t,AT(a))){RZ(a=cvt(t,a));} else {RZ(w=cvt(t,w));}}  // convert args to compatible precisions, changing a and w if needed.  Treat empty arg as boolean
  ar=AR(a); wr=AR(w);
  acr=jtr>>RANKTX; acr=ar<acr?ar:acr; af=ar-acr;  // acr=rank of cell, af=len of frame, as->shape
@@ -232,7 +232,7 @@ F2(jtover){AD * RESTRICT z;C*zv;I replct,framect,acr,af,ar,*as,k,ma,mw,p,q,r,t,w
  r=MAX(acr,wcr); r=(r==0)?1:r;  // r=cell-rank, or 1 if both atoms.
  // if max cell-rank>2, or an argument is empty, or (joining table/table or table/row with cells of different lengths), do general case
  if(((r-3)&-AN(a)&-AN(w)&((acr+wcr-3)|((p^q)-1)))>=0){  // r>2, or empty (if max rank <= 2 and sum of ranks >2, neither can possibly be an atom), and items (which are lists) have same length 
-  RESETRANK; z=rank2ex(a,w,UNUSED_VALUE,acr,wcr,acr,wcr,jtovg); R z;  // ovg calls other functions, so we clear rank
+  RESETRANK; z=rank2ex(a,w,UNUSED_VALUE,acr,wcr,acr,wcr,jtovg); return z;  // ovg calls other functions, so we clear rank
  }
  // joining rows, or table/row with same lengths, or table/atom.  In any case no fill is possible, but scalar replication might be
  I cc2a=as[ar-2]; p=acr?p:1; cc2a=acr<=1?1:cc2a; ma=cc2a*p; ma=wcr>acr+1?q:ma;  //   cc2a is # 2-cells of a; ma is #atoms in a cell of a EXCEPT when joining atom a to table w: then length of row of w
@@ -253,8 +253,8 @@ F2(jtstitch){I ar,wr; A z;
  F2PREFIP;ARGCHK2(a,w);
  ar=AR(a); wr=AR(w);
  ASSERT((-ar&-wr&-(AS(a)[0]^AS(w)[0]))>=0,EVLENGTH);  // a or w scalar, or same # items    always OK to fetch s[0]
- if(likely((((SPARSE&(AT(a)|AT(w)))-1)&(2-ar)&(2-wr))>=0))R IRSIP2(a,w,0L,(ar-1)&RMAX,(wr-1)&RMAX,jtover,z);  // not sparse or rank>2
- R stitchsp2(a,w);  // sparse rank <=2 separately
+ if(likely((((SPARSE&(AT(a)|AT(w)))-1)&(2-ar)&(2-wr))>=0))return IRSIP2(a,w,0L,(ar-1)&RMAX,(wr-1)&RMAX,jtover,z);  // not sparse or rank>2
+ return stitchsp2(a,w);  // sparse rank <=2 separately
 }
 
 F1(jtlamin1){A x;I* RESTRICT s,* RESTRICT v,wcr,wf,wr; 
@@ -262,7 +262,7 @@ F1(jtlamin1){A x;I* RESTRICT s,* RESTRICT v,wcr,wf,wr;
  wr=AR(w); wcr=(RANKT)jt->ranks; wcr=wr<wcr?wr:wcr; RESETRANK; wf=wr-wcr;
  fauxblockINT(wfaux,4,1); fauxINT(x,wfaux,1+wr,1) v=AV(x);
  s=AS(w); MCISH(v,s,wf); v[wf]=1; MCISH(v+wf+1,s+wf,wcr);  // frame, 1, shape - the final shape
- R jtreshape(jtinplace,x,w);
+ return jtreshape(jtinplace,x,w);
 }    /* ,:"r w */
 
 F2(jtlamin2){A z;I ar,p,q,wr;
@@ -369,5 +369,5 @@ A jtapip(J jt, A a, A w){F2PREFIP;A h;C*av,*wv;I ak,k,p,*u,*v,wk,wm,wn;
    }  // end 'a and w compatible in rank and type'
   }   // end 'inplaceable usecount'
  }  // end 'inplaceable'
- R(jtover(jtinplace,a,w));  // if there was trouble, failover to non-in-place code
+ return(jtover(jtinplace,a,w));  // if there was trouble, failover to non-in-place code
 }    /* append in place if possible */

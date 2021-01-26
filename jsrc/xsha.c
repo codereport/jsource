@@ -28,5 +28,5 @@ static UC* tohex(UC* dest, UC* src, I len)
     *buffer++ = hex_digits[*d & 0x0f];
     d++;
   }
-  R dest;
+  return dest;
 }

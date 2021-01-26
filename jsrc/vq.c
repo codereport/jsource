@@ -11,15 +11,15 @@ QF1(jtqstd){I d,n;Q z;X g;
  QRZ(w.n&&w.d&&!jt->jerr);
  n=XDIG(w.n); d=XDIG(w.d); z.d=iv1;
  if(0>d){QRE(w.n=rifvs(negate(w.n))); QRE(w.d=rifvs(negate(w.d))); n=-n; d=-d;}  // w could become the result
- if(!n){z.n=iv0; R z;}
- if(!d){z.n=rifvsdebug(vci(0<n?XPINF:XNINF)); R z;}
- if(d==XPINF){QASSERT(n!=XPINF&&n!=XNINF,EVNAN); R zeroQ;}
- if(n==XPINF||n==XNINF){z.n=rifvsdebug(w.n); R z;}
+ if(!n){z.n=iv0; return z;}
+ if(!d){z.n=rifvsdebug(vci(0<n?XPINF:XNINF)); return z;}
+ if(d==XPINF){QASSERT(n!=XPINF&&n!=XNINF,EVNAN); return zeroQ;}
+ if(n==XPINF||n==XNINF){z.n=rifvsdebug(w.n); return z;}
  QRE(g=xgcd(w.n,w.d));
- if(QX1(g))R w;
+ if(QX1(g))return w;
  z.n=rifvsdebug(xdiv(w.n,g,XMEXACT));
  z.d=rifvsdebug(xdiv(w.d,g,XMEXACT));
- R z;
+ return z;
 }
 
 QF2(jtqplus){PROLOG(0083);Q z;
@@ -49,10 +49,10 @@ QF2(jtqdiv){PROLOG(0086);Q z;
 static QF2(jtqrem){PROLOG(0087);I c,d;Q m,q,z;
  c=XDIG(a.n);
  d=XDIG(w.n);
- if(!c)R w;
+ if(!c)return w;
  QASSERT(!(d==XPINF||d==XNINF),EVNAN);
- if(c==XPINF)R 0<=d?w:a;
- if(c==XNINF)R 0>=d?w:a;
+ if(c==XPINF)return 0<=d?w:a;
+ if(c==XNINF)return 0>=d?w:a;
  q=qdiv(w,a);
  m.n=xtymes(a.n,xdiv(q.n,q.d,XMFLR)); m.d=a.d;
  z=qminus(w,m);
@@ -65,7 +65,7 @@ static QF2(jtqgcd){PROLOG(0088);Q z;
  QEPILOG(z);
 }
 
-static QF2(jtqlcm){R qtymes(a,qdiv(w,qgcd(a,w)));}
+static QF2(jtqlcm){return qtymes(a,qdiv(w,qgcd(a,w)));}
 
 static QF2(jtqpow){PROLOG(0089);B c;I p,q,s;Q t,z;X d;
  QRE(1);
@@ -74,13 +74,13 @@ static QF2(jtqpow){PROLOG(0089);B c;I p,q,s;Q t,z;X d;
  if(p==XPINF||p==XNINF){
   QASSERT(0<p||q!=XPINF,EVDOMAIN); 
   z.n=rifvs(vci(!q?1L:0>q?0L:0<p?p:1&(AV(w.n)[0])?XNINF:XPINF));
-  R z;
+  return z;
  }
  if(q==XPINF||q==XNINF){
   s=xcompare(mag(a.n),a.d);
   QASSERT(0<=p||0>s&&q==XPINF||0<s&&q==XNINF,EVDOMAIN); 
   z.n=rifvs(vci(!s?1L:!p&&0>q||0<s&&p&&0<q||0>s&&0>q?XPINF:0L));
-  R z;
+  return z;
  }
  QASSERT(c||0<=p,EWIMAG);
  QASSERT(c||QX1(a.d)&&1==AN(a.n)&&(0==p||1==p),EWIRR);
@@ -98,16 +98,16 @@ static QF2(jtqpow){PROLOG(0089);B c;I p,q,s;Q t,z;X d;
  QEPILOG(z);
 }
 
-I jtqcompare(J jt,Q a,Q w){R QCOMP(a,w);}
+I jtqcompare(J jt,Q a,Q w){return QCOMP(a,w);}
 
-static X jtqbin(J jt,Q a,Q w){ASSERT(QX1(a.d)&&QX1(w.d),EWIRR); R rifvsdebug(xbin(a.n,w.n));}
+static X jtqbin(J jt,Q a,Q w){ASSERT(QX1(a.d)&&QX1(w.d),EWIRR); return rifvsdebug(xbin(a.n,w.n));}
 
-static D jtqlogd1(J jt,Q w){ASSERT(0<=XDIG(w.n),EWIMAG); R xlogabs(w.n)-xlogabs(w.d);}
+static D jtqlogd1(J jt,Q w){ASSERT(0<=XDIG(w.n),EWIMAG); return xlogabs(w.n)-xlogabs(w.d);}
 
-static Z jtqlogz1(J jt,Q w){Z z; z.re=xlogabs(w.n)-xlogabs(w.d); z.im=0>XDIG(w.n)?PI:0.0; R z;}
+static Z jtqlogz1(J jt,Q w){Z z; z.re=xlogabs(w.n)-xlogabs(w.d); z.im=0>XDIG(w.n)?PI:0.0; return z;}
 
 
-#define QSQRT(x)    z->n=rifvsdebug(xsqrt(x->n)); z->d=rifvsdebug(xsqrt(x->d)); {I rc; if(rc=jt->jerr){RESETERR; R rc;}}
+#define QSQRT(x)    z->n=rifvsdebug(xsqrt(x->n)); z->d=rifvsdebug(xsqrt(x->d)); {I rc; if(rc=jt->jerr){RESETERR; return rc;}}
 #define QFACT(x)    ASSERTWR(QX1(x->d),EWIRR); *z=xfact(x->n);
 
 AMON(floorQ, X,Q, *z=rifvsdebug(xdiv(x->n,x->d,XMFLR ));)
@@ -119,8 +119,8 @@ AMONPS( factQ, X,Q, , QFACT(x) , HDR1JERR)
 AMONPS( logQD, D,Q, , *z=qlogd1(*x); , HDR1JERR)
 AMONPS( logQZ, Z,Q, , *z=qlogz1(*x); , HDR1JERR)
 
-APFX(  maxQQ, Q,Q,Q, QMAX  ,,R EVOK;)
-APFX(  minQQ, Q,Q,Q, QMIN  ,,R EVOK;)
+APFX(  maxQQ, Q,Q,Q, QMAX  ,,return EVOK;)
+APFX(  minQQ, Q,Q,Q, QMIN  ,,return EVOK;)
 APFX( plusQQ, Q,Q,Q, qplus ,,HDR1JERR)
 APFX(minusQQ, Q,Q,Q, qminus,,HDR1JERR)
 APFX(tymesQQ, Q,Q,Q, qtymes,,HDR1JERR)
