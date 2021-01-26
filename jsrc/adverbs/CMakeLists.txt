@@ -5,7 +5,7 @@
 # An adverb modifies the word or phrase to its left to produce a derived entity which is usually a verb
 # (though it may be any of the four primary parts of speech). More...
 
-add_library(lib_adverbs STATIC
+add_library(lib_adverbs SHARED
         a.c
         #a.h
         ab.c

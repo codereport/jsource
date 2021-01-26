@@ -10,7 +10,9 @@ add_library(j)
 #        RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin"
 #        )
 target_compile_definitions(j PRIVATE C_NA=0 C_AVX=1 C_AVX2=1 EMU_AVX=1)
-target_link_libraries(j PRIVATE ${STANDARD_MATH_LIBRARY}
+target_link_libraries(j PUBLIC
+        ${STANDARD_MATH_LIBRARY}
+        lib_j_parent
         lib_adverbs
         lib_conjunctions
         lib_verbs
