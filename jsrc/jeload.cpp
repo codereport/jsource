@@ -5,7 +5,7 @@
 // TODO: Remove all void* where applicable when other parts of the code start being refactored
 #include <string>
 #include <stdexcept>
-#include "../util/stringx.h"
+#include "util/stringx.h"
 #include <unistd.h>
 #include <dlfcn.h>
 #include "j.h"
@@ -36,7 +36,7 @@ extern "C" {
     static int FHS=0; // Not sure what this is
 
 
-    auto jedo(const char* sentence) -> int
+    auto jedo(char const *sentence) -> int
     {
         return jdo(jt,reinterpret_cast<C*>(const_cast<char *>(sentence)));
     }
@@ -143,8 +143,8 @@ extern "C" {
         path.erase(std::next(path.begin(),path.rfind('/')),path.end());
 
         // remove ./ and backoff ../
-        util::removeAllOccurrences(path,"../");
-        util::removeAllOccurrences(path,"./");
+        util::remove_all_occurrences(path,"../");
+        util::remove_all_occurrences(path,"./");
 
         pathdll.append(path);
         pathdll.append("/");
