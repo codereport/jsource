@@ -20,26 +20,14 @@
 
 #define NEXT        (jt->rngf(jt))
 
-#if SY_64
 #define INITD       {sh=mk=1;}
 #define NEXTD1      ((0.5+X52/2)+X64*(I)(NEXT&(UI)0xfffffffffffff000))
 #define NEXTD0      NEXTD1
-#else
-#define INITD       {sh=32-jt->rngw; mk=0x003fffff>>(2-sh);}
-#define NEXTD1      ((0.5+X52/2)+X32*((int)NEXT<<sh)+X52*(mk&(int)NEXT))
-#define NEXTD0      ((0.5+X52/2)+X32* (int)NEXT     +X52*(mk&(int)NEXT))
-#endif
 
-#if SY_64           /* m<x, greatest multiple of m less than x */
+/* m<x, greatest multiple of m less than x */
 #define GMOF(m,x)   (((UI)0xffffffffffffffffLL/(m))*(m))
 #define GMOF2(m,x,z,zq)  (zq=(UI)0xffffffffffffffffLL/(m), z=zq*(m))
 #define GMOTHRESH (UI)0xf000000000000000
-#else
-#define GMOF(m,x)   (x ? x-x%m : x31+(x31-(2*(x31%m))%m))
-#define GMOF2(m,x,z,zq)  (zq=(UI)0xffffffffLL/(m), z=zq*(m))
-#define GMOTHRESH (UI)0xf0000000
-#endif
-
 
 /* ----------------------------------------------------------------------- */
 /* linear congruential generator                                           */
@@ -83,16 +71,12 @@ static UI jtgb_flip_cycle(J jt){I*A=(I*)jt->rngv;register I*i,*j;
  R (UI)A[55];
 }
 
-#if SY_64
 static UI jtgb_next(J jt){UI a,b,c;
  a= jt->rngi ? jt->rngv[jt->rngi--] : gb_flip_cycle();
  b= jt->rngi ? jt->rngv[jt->rngi--] : gb_flip_cycle();
  c= jt->rngi ? jt->rngv[jt->rngi--] : gb_flip_cycle();
  R a+(b<<31)+(c<<33&0xc000000000000000UL);
 }
-#else
-static UI jtgb_next(J jt){R jt->rngi ? jt->rngv[jt->rngi--] : gb_flip_cycle();}
-#endif
 
 static void jtgb_init(J jt,UI s){I*A;register I i,next=1,prev,seed;
  A=(I*)jt->rngv; next=1; prev=seed=(I)s;
@@ -176,28 +160,17 @@ F1(jtgb_test){I j=jt->rng;
 
 /* Period parameters */
 
-#if SY_64
 #define MTN         312
 #define MTM         156
 #define MATRIX_A    0xB5026F5AA96619E9ULL
 #define UM          0xFFFFFFFF80000000ULL /* Most significant 33 bits */
-#else
-#define MTN         624
-#define MTM         397
-#define MATRIX_A    0x9908b0dfUL    /* constant vector a         */
-#define UM          0x80000000UL    /* most significant w-r bits */
-#endif
 #define LM          0x7fffffffUL    /* least significant r bits  */
 
 /* initializes mt[MTN] with a seed */
 static void jtmt_init(J jt,UI s){I i;UI*mt=jt->rngv;
  mt[0]= s;
  for (i=1; i<MTN; i++)
-#if SY_64
   mt[i] = (6364136223846793005ULL * (mt[i-1] ^ (mt[i-1] >> 62)) + i);
-#else
-  mt[i] = (1812433253UL           * (mt[i-1] ^ (mt[i-1] >> 30)) + i);
-#endif
   /* See Knuth TAOCP Vol2. 3rd Ed. P.106 for multiplier. */
   /* In the previous versions, MSBs of the seed affect   */
   /* only MSBs of the array mt[].                        */
@@ -209,29 +182,17 @@ static void jtmt_init_by_array(J jt,UI init_key[], I key_length){I i,j,k;UI*mt=j
  mt_init((UI)19650218);
  i=1; j=0; k=MTN>key_length?MTN:key_length;
  for(; k; k--) {
-#if SY_64
   mt[i] = (mt[i] ^ (mt[i-1]^mt[i-1]>>62)*3935559000370003845ULL)+init_key[j]+j; /* non linear */
-#else
-  mt[i] = (mt[i] ^ (mt[i-1]^mt[i-1]>>30)*1664525UL             )+init_key[j]+j; /* non linear */
-#endif
   i++; j++;
   if(i>=MTN){mt[0]=mt[MTN-1]; i=1;}
   if(j>=key_length)j=0;
  }
  for (k=MTN-1; k; k--) {
-#if SY_64
   mt[i] = (mt[i] ^ (mt[i-1]^mt[i-1]>>62)*2862933555777941757ULL)-i; /* non linear */
-#else
-  mt[i] = (mt[i] ^ (mt[i-1]^mt[i-1]>>30)*1566083941UL          )-i; /* non linear */
-#endif
   i++;
   if (i>=MTN) { mt[0] = mt[MTN-1]; i=1; }
  }
-#if SY_64
  mt[0] = 1ULL << 63;   /* MSB is 1; assuring non-zero initial array */
-#else
- mt[0] = 0x80000000UL; /* MSB is 1; assuring non-zero initial array */
-#endif
 }
 
 /* generates a random 32-or 64-bit number */
@@ -244,21 +205,13 @@ static UI jtmt_next(J jt){UI*mt=jt->rngv,*u,*v,*w,y;
   jt->rngi=0;
  }
  y = mt[jt->rngi++];
-#if SY_64
  y ^= (y >> 29) & 0x5555555555555555ULL;
  y ^= (y << 17) & 0x71D67FFFEDA60000ULL;
  y ^= (y << 37) & 0xFFF7EEE000000000ULL;
  y ^= (y >> 43);
-#else
- y ^= (y >> 11);
- y ^= (y <<  7) & 0x9d2c5680UL;
- y ^= (y << 15) & 0xefc60000UL;
- y ^= (y >> 18);
-#endif
  R y;
 }
 
-#if SY_64
 F1(jtmt_test){I j=jt->rng;UI init[4]={0x12345ULL, 0x23456ULL, 0x34567ULL, 0x45678ULL},x;
  ASSERTMTV(w);
  RZ(rngselects(sc(MTI)));
@@ -271,20 +224,6 @@ F1(jtmt_test){I j=jt->rng;UI init[4]={0x12345ULL, 0x23456ULL, 0x34567ULL, 0x4567
  RZ(rngselects(sc(j)));
  R num(1);
 }
-#else
-F1(jtmt_test){I j=jt->rng;UI init[4]={0x123, 0x234, 0x345, 0x456},x;
- ASSERTMTV(w);
- RZ(rngselects(sc(MTI)));
- mt_init_by_array(init,(I)4);
- x=mt_next();
- ASSERTSYS(x==1067595299UL, "mt_test32 0");
- DQ(998, mt_next(););
- x=mt_next();
- ASSERTSYS(x==3460025646UL, "mt_test32 1");
- RZ(rngselects(sc(j)));
- R num(1);
-}
-#endif
 
 /* ----------------------------------------------------------------------- */
 /* DX-1597-4d                                                              */
@@ -297,7 +236,6 @@ F1(jtmt_test){I j=jt->rng;UI init[4]={0x123, 0x234, 0x345, 0x456},x;
 #define DXBD 1073741362.0
 #define DXN  1597
 
-#if SY_64
 static UI jtdx_next30(J jt){I j;UI*u,*v,*vv,r,x;
  j=jt->rngi; v=vv=j+jt->rngv; u=DXN+jt->rngv;
  r =*v; v+=532; if(v>=u)v-=DXN;
@@ -315,19 +253,6 @@ static UI jtdx_next(J jt){UI a,b,c;
  c=dx_next30()&0x000000003fffffff;;
  R a|b<<30|c<<34&0xf000000000000000UL;
 }
-#else
-static UI jtdx_next(J jt){I j;UI*u,*v,*vv,r,x;
- j=jt->rngi; v=vv=j+jt->rngv; u=DXN+jt->rngv;
- r =*v;                    v+=532; if(v>=u)v-=DXN;
- r+=*v; r=(r&DXM)+(r>>31); v+=532; if(v>=u)v-=DXN; 
- r+=*v; r=(r&DXM)+(r>>31); v+=532; if(v>=u)v-=DXN;
- r+=*v; r=(r&DXM)+(r>>31);
- x=(DXM&r*DXB)+(UI)((r*DXBD)/2147483648.0);
- *vv=x=(x&DXM)+(x>>31);
- ++j; jt->rngi=j==DXN?0:j;
- R x;
-}
-#endif
 
 static void jtdx_init(J jt,UI s){lcg(DXN,jt->rngv,s); jt->rngi=0;} 
 
@@ -351,8 +276,6 @@ F1(jtdx_test){I j=jt->rng,x;
 /* pp. 159-164.                                                            */
 
 #define MRN  6
-
-#if SY_64
 #define MRM0 4294967087UL  /*   _209+2^32 */
 #define MRM1 4294944443UL  /* _22853+2^32 */
 
@@ -375,24 +298,7 @@ static UI jtmr_next(J jt){UI a,b,c;
  R a+(b<<31)+(c<<33&0xc000000000000000UL);
 }
 
-#else
 
-#define MRM0 4294967087.0  /*   _209+2^32 */
-#define MRM1 4294944443.0  /* _22853+2^32 */
-
-static UI jtmr_next(J jt){D d,*v=(D*)jt->rngv,x,y;I j,k;
- switch(j=jt->rngi){
-  case 0: x=1403580.0*v[1]-810728.0*v[0]; y=527612.0*v[5]-1370589.0*v[3]; jt->rngi=1; break;
-  case 1: x=1403580.0*v[2]-810728.0*v[1]; y=527612.0*v[3]-1370589.0*v[4]; jt->rngi=2; break;
-  case 2: x=1403580.0*v[0]-810728.0*v[2]; y=527612.0*v[4]-1370589.0*v[5]; jt->rngi=0;
- }
- k=(I)(x/MRM0); x-=k*MRM0; if(x<0.0)x+=MRM0; v[j  ]=x;
- k=(I)(y/MRM1); y-=k*MRM1; if(y<0.0)y+=MRM1; v[j+3]=y;
- d=x-y; 
- k=(I)(d/MRM0); d-=k*MRM0; if(d<0.0)d+=MRM0;
- R (UI)d;
-}
-#endif
 
 static void jtmr_init(J jt,UI s){D*v=(D*)jt->rngv;I t[MRN];
  lcg(MRN,t,s);

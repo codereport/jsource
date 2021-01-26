@@ -14,11 +14,7 @@
 /* C routines for platforms without asm support */
 #ifndef OVF
 
-#if SY_64
 #define DI LD
-#else
-#define DI D
-#endif
 
 #define PLUSVV(n,z,x,y)   {I u,v,w; DQ(n, u=*x; v=*y; w=~u; u+=v; *z=u; ++x; ++y; ++z; w^=v; v^=u; if(XANDY(w,v)<0)R EWOV;)}
 #define MINUSVV(n,z,x,y)   {I u,v,w; DQ(n, u=*x; v=*y; w=u-v; *z=w; ++x; ++y; ++z; v^=u; u^=w; if(XANDY(u,v)<0)R EWOV;)}

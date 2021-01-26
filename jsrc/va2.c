@@ -1048,18 +1048,10 @@ DF2(jtatomic2){A z;
  af=af<wf?af:wf;   // now af is short frame
  ASSERTAGREE(AS(a),AS(w),af);  // outermost (or only) agreement check
  // Run the full dyad, retrying if a retryable error is returned
-#if SY_64
  z=jtva2(jtinplace,a,w,self,(awr<<RANK2TX)+selfranks);  // execute the verb
-#else
- z=jtva2(jtinplace,a,w,self,selfranks,(RANK2T)awr);  // execute the verb
-#endif
  if(likely(z!=0)){RETF(z);}  // normal case is good return
  if(unlikely(jt->jerr<=NEVM)){RETF(z);}   // if error is unrecoverable, don't retry
-#if SY_64
  R z=jtva2((J)((I)jtinplace|JTRETRY),a,w,self,(awr<<RANK2TX)+selfranks);  // execute the verb
-#else
- R z=jtva2((J)((I)jtinplace|JTRETRY),a,w,self,selfranks,(RANK2T)awr);  // execute the verb
-#endif
 }
 
 DF2(jtexpn2  ){F2PREFIP; ARGCHK2(a,w); if(unlikely(((((I)AR(w)-1)&SGNIF(AT(w),FLX))<0)))if(unlikely(0.5==DAV(w)[0]))R sqroot(a);  R jtatomic2(jtinplace,a,w,self);}  // use sqrt hardware for sqrt.  Only for atomic w. 
