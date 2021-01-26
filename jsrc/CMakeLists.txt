@@ -1,33 +1,32 @@
 
 add_subdirectory(adverbs)
-add_subdirectory(conjunctions)
-add_subdirectory(verbs)
+#add_subdirectory(conjunctions)
+#add_subdirectory(verbs)
 add_library(j)
 target_compile_definitions(j PRIVATE C_NA=0 C_AVX=1 C_AVX2=1 EMU_AVX=1)
 target_link_libraries(j PRIVATE ${STANDARD_MATH_LIBRARY}
         lib_adverbs
-        lib_conjunctions
-        lib_verbs)
+        #lib_conjunctions
+        #lib_verbs
+        )
 set_source_files_properties(aes-ni.c PROPERTIES COMPILE_FLAGS -maes)
 target_sources(j PRIVATE
-        a.c
-        a.h
-        ab.c
+
         aes-arm_table.h
         aes-c.c
         aes-c.h
         aes-ni.c
-        af.c
-        ai.c
-        am.c
-        am1.c
-        amn.c
-        ao.c
-        ap.c
-        ar.c
-        ar.h
-        as.c
-        au.c
+
+
+
+
+
+
+
+
+
+
+
         c.c
         ca.c
         cc.c
