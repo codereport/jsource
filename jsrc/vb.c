@@ -124,16 +124,13 @@ F2(jtebar){PROLOG(0065);A y,z;B*zv;C*av,*wv;I c,d,i,k=0,m,n,p,*yv;
  GATV0(y,INT,d,1); yv= AV(y); DO(d, yv[i]=1+m;);
  switch(CTTZ(AT(w))){
   case INTX: if(c)EBLOOP(I, u[i]-c,v[k+m]-c, zv[k]=i==m) 
-            else EBLOOP(I, u[i],  v[k+m],   zv[k]=i==m); break;
+             else EBLOOP(I, u[i],  v[k+m],   zv[k]=i==m); break;
   case SBTX: if(c)EBLOOP(SB,u[i]-c,v[k+m]-c, zv[k]=i==m) 
-            else EBLOOP(SB,u[i],  v[k+m],   zv[k]=i==m); break;
+             else EBLOOP(SB,u[i],  v[k+m],   zv[k]=i==m); break;
   case C2TX:      EBLOOP(US,u[i],  v[k+m],   zv[k]=i==m); break;
   case C4TX: if(c)EBLOOP(C4,u[i]-c,v[k+m]-c, zv[k]=i==m) 
-            else EBLOOP(C4,u[i],  v[k+m],   zv[k]=i==m); break;
-#if !C_AVX2 && !EMU_AVX2
-default:
-            EBLOOP(UC,u[i],  v[k+m],   zv[k]=i==m);
-#endif
+             else EBLOOP(C4,u[i],  v[k+m],   zv[k]=i==m); break;
+  default:        EBLOOP(UC,u[i],  v[k+m],   zv[k]=i==m);
  }
  EPILOG(z);
 }    /* Daniel M. Sunday, CACM 1990 8, 132-142 */
@@ -152,16 +149,13 @@ F2(jti1ebar){A y;C*av,*wv;I c,d,i,k=0,m,n,p,*yv;
  GATV0(y,INT,d,1); yv= AV(y); DO(d, yv[i]=1+m;);
  switch(CTTZ(AT(w))){
   case INTX: if(c)EBLOOP(I, u[i]-c,v[k+m]-c, if(i==m)R sc(k)) 
-            else EBLOOP(I, u[i],  v[k+m],   if(i==m)R sc(k)); break;
+             else EBLOOP(I, u[i],  v[k+m],   if(i==m)R sc(k)); break;
   case SBTX: if(c)EBLOOP(SB,u[i]-c,v[k+m]-c, if(i==m)R sc(k)) 
-            else EBLOOP(SB,u[i],  v[k+m],   if(i==m)R sc(k)); break;
+             else EBLOOP(SB,u[i],  v[k+m],   if(i==m)R sc(k)); break;
   case C2TX:      EBLOOP(US,u[i],  v[k+m],   if(i==m)R sc(k)); break;
   case C4TX: if(c)EBLOOP(C4,u[i]-c,v[k+m]-c, if(i==m)R sc(k)) 
-            else EBLOOP(C4,u[i],  v[k+m],   if(i==m)R sc(k)); break;
-#if !C_AVX2 && !EMU_AVX2
-default:
-       EBLOOP(UC,u[i],  v[k+m],   if(i==m)R sc(k));
-#endif
+             else EBLOOP(C4,u[i],  v[k+m],   if(i==m)R sc(k)); break;
+  default:        EBLOOP(UC,u[i],  v[k+m],   if(i==m)R sc(k));
  }
  R sc(n);
 }    /* a (E. i. 1:) w where a and w are atoms or lists */
@@ -179,16 +173,13 @@ F2(jtsumebar){A y;C*av,*wv;I c,d,i,k=0,m,n,p,*yv,z=0;
  GATV0(y,INT,d,1); yv= AV(y); DO(d, yv[i]=1+m;);
  switch(CTTZ(AT(w))){
   case INTX: if(c)EBLOOP(I, u[i]-c,v[k+m]-c, if(i==m)++z) 
-            else EBLOOP(I, u[i],  v[k+m],   if(i==m)++z); break;
+             else EBLOOP(I, u[i],  v[k+m],   if(i==m)++z); break;
   case SBTX: if(c)EBLOOP(SB,u[i]-c,v[k+m]-c, if(i==m)++z) 
-            else EBLOOP(SB,u[i],  v[k+m],   if(i==m)++z); break;
+             else EBLOOP(SB,u[i],  v[k+m],   if(i==m)++z); break;
   case C2TX:      EBLOOP(US,u[i],  v[k+m],   if(i==m)++z); break;
   case C4TX: if(c)EBLOOP(C4,u[i]-c,v[k+m]-c, if(i==m)++z) 
-            else EBLOOP(C4,u[i],  v[k+m],   if(i==m)++z); break;
-#if !C_AVX2 && !EMU_AVX2
-default:
-       EBLOOP(UC,u[i],  v[k+m],   if(i==m)++z);
-#endif
+             else EBLOOP(C4,u[i],  v[k+m],   if(i==m)++z); break;
+  default:        EBLOOP(UC,u[i],  v[k+m],   if(i==m)++z);
  }
  R sc(z);
 }    /* a ([: +/ E.) w where a and w are atoms or lists */
@@ -206,16 +197,13 @@ F2(jtanyebar){A y;C*av,*wv;I c,d,i,k=0,m,n,p,*yv;
  GATV0(y,INT,d,1); yv= AV(y); DO(d, yv[i]=1+m;);
  switch(CTTZ(AT(w))){
   case INTX: if(c)EBLOOP(I, u[i]-c,v[k+m]-c, if(i==m)R num(1)) 
-            else EBLOOP(I, u[i],  v[k+m],   if(i==m)R num(1)); break;
+             else EBLOOP(I, u[i],  v[k+m],   if(i==m)R num(1)); break;
   case SBTX: if(c)EBLOOP(SB,u[i]-c,v[k+m]-c, if(i==m)R num(1)) 
-            else EBLOOP(SB,u[i],  v[k+m],   if(i==m)R num(1)); break;
+             else EBLOOP(SB,u[i],  v[k+m],   if(i==m)R num(1)); break;
   case C2TX:      EBLOOP(US,u[i],  v[k+m],   if(i==m)R num(1)); break;
   case C4TX: if(c)EBLOOP(C4,u[i]-c,v[k+m]-c, if(i==m)R num(1)) 
-            else EBLOOP(C4,u[i],  v[k+m],   if(i==m)R num(1)); break;
-#if !C_AVX2 && !EMU_AVX2
-default:
-       EBLOOP(UC,u[i],  v[k+m],   if(i==m)R num(1));
-#endif
+             else EBLOOP(C4,u[i],  v[k+m],   if(i==m)R num(1)); break;
+  default:        EBLOOP(UC,u[i],  v[k+m],   if(i==m)R num(1));
  }
  R num(0);
 }    /* a ([: +./ E.) w where a and w are atoms or lists */
@@ -237,16 +225,13 @@ F2(jtifbebar){A y,z;C*av,*wv;I c,d,i,k=0,m,n,p,*yv,*zu,*zv;
  GATV0(y,INT,d,1); yv= AV(y); DO(d, yv[i]=1+m;);
  switch(CTTZ(AT(w))){
   case INTX: if(c)EBLOOP(I, u[i]-c,v[k+m]-c, if(i==m)IFB1)
-            else EBLOOP(I, u[i],  v[k+m],   if(i==m)IFB1); break;
+             else EBLOOP(I, u[i],  v[k+m],   if(i==m)IFB1); break;
   case SBTX: if(c)EBLOOP(SB,u[i]-c,v[k+m]-c, if(i==m)IFB1)
-            else EBLOOP(SB,u[i],  v[k+m],   if(i==m)IFB1); break;
+             else EBLOOP(SB,u[i],  v[k+m],   if(i==m)IFB1); break;
   case C2TX:      EBLOOP(US,u[i],  v[k+m],   if(i==m)IFB1); break;
   case C4TX: if(c)EBLOOP(C4,u[i]-c,v[k+m]-c, if(i==m)IFB1)
-            else EBLOOP(C4,u[i],  v[k+m],   if(i==m)IFB1); break;
-#if !C_AVX2 && !EMU_AVX2
-default:
-       EBLOOP(UC,u[i],  v[k+m],   if(i==m)IFB1);
-#endif
+             else EBLOOP(C4,u[i],  v[k+m],   if(i==m)IFB1); break;
+  default:        EBLOOP(UC,u[i],  v[k+m],   if(i==m)IFB1);
  }
  AN(z)=AS(z)[0]=zv-AV(z);
  RETF(z);

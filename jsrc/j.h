@@ -16,39 +16,6 @@
 #define __GNUC_PATCHLEVEL__ 1
 #endif
 
-// ms vc++ defined _MSC_VER but clang-cl also defined _MSC_VER
-// clang-cl doesn't emulate ms vc++ good enough
-// and it breaks program logic previously guarded by _MSC_VER
-// MMSC_VER means the real ms vc++ excluding clang-cl
-// use MMSC_VER instead of _MSC_VER throughout JE source
-#if defined(_MSC_VER) && !defined(__clang__)
-#undef MMSC_VER
-#define MMSC_VER
-#else
-#undef MMSC_VER
-#endif
-
-#ifndef EMU_AVX
-#define EMU_AVX 0
-#endif
-#if defined(MMSC_VER)
-#undef EMU_AVX
-#define EMU_AVX 0
-#endif
-#undef EMU_AVX2
-#define EMU_AVX2 0
-
-/* msvc does not define __SSE2__ */
-#if !defined(__SSE2__)
-#if defined(MMSC_VER)
-#if (defined(_M_AMD64) || defined(_M_X64))
-#define __SSE2__ 1
-#elif _M_IX86_FP==2
-#define __SSE2__ 1
-#endif
-#endif
-#endif
-
 // for debugging
 #define NANTEST0        (fetestexcept(FE_INVALID))  // test but does not clear
 #define dump_m128i(a,x) {__m128i _b=x;fprintf(stderr,"%s %li %li %li %li \n", a, ((long*)(&_b))[0], ((long*)(&_b))[1], ((long*)(&_b))[2], ((long*)(&_b))[3]);}
@@ -57,66 +24,8 @@
 #define dump_m256d(a,x) {__m256d _b=x;fprintf(stderr,"%s %f %f %f %f \n", a, ((double*)(&_b))[0], ((double*)(&_b))[1], ((double*)(&_b))[2], ((double*)(&_b))[3]);}
 #define dump_m128d(a,x) {__m128d _b=x;fprintf(stderr,"%s %f %f \n", a, ((double*)(&_b))[0], ((double*)(&_b))[1]);}
 
-#if defined(__i386__) || defined(__x86_64__) || defined(_M_X64) || defined(_M_IX86)
-#ifndef C_AVX2
-#define C_AVX2 0
-#endif
-
-#if (defined(_MSC_VER))
-#include <intrin.h>
-#endif
-
-#undef EMU_AVX2
-#define EMU_AVX2 1
-#include <stdint.h>
-#include <string.h>
-#undef EMU_AVX
-#define EMU_AVX 0
-
-#elif defined(__SSE2__)
-#if EMU_AVX
-#undef EMU_AVX2
-#define EMU_AVX2 1   // test avx2 emulation
-#include <stdint.h>
-#include <string.h>
-#include "avxintrin-emu.h"
-#else
-#include <emmintrin.h>
-#endif
-#define _CMP_EQ          0
-#define _CMP_LT          1
-#define _CMP_LE          2
-#define _CMP_UNORD       3
-#define _CMP_NEQ         4
-#define _CMP_NLT         5
-#define _CMP_NLE         6
-#define _CMP_ORD         7
-#undef _CMP_EQ_OQ
-#undef _CMP_GE_OQ
-#undef _CMP_GT_OQ
-#undef _CMP_LE_OQ
-#undef _CMP_LT_OQ
-#undef _CMP_NEQ_OQ
-#define _CMP_EQ_OQ _CMP_EQ
-#define _CMP_GE_OQ _CMP_NLT
-#define _CMP_GT_OQ _CMP_NLE
-#define _CMP_LE_OQ _CMP_LE
-#define _CMP_LT_OQ _CMP_LT
-#define _CMP_NEQ_OQ _CMP_NEQ
-#endif
-
 #if defined(__aarch64__)||defined(_M_ARM64)
-#if EMU_AVX
-#undef EMU_AVX2
-#define EMU_AVX2 1   // test avx2 emulation
-#include <stdint.h>
-#include <string.h>
-#include "sse2neon.h"
-#include "sse2neon2.h"
-#include "avxintrin-neon.h"
-#else
 #include <arm_neon.h>
-#endif
 #endif
 
 #if defined(__arm__)
@@ -132,10 +41,6 @@ typedef double float64x2_t __attribute__ ((vector_size (16)));
 
 #undef VOIDARG
 #define VOIDARG
-
-#if SLEEF
-#include "../sleef/include/sleef.h"
-#endif
 
 #if defined(_OPENMP)
 #include <omp.h>
@@ -1155,25 +1060,13 @@ if(likely(z<3)){_zzt+=z; z=(I)&oneone; _zzt=_i&3?_zzt:(I*)z; z=_i&2?(I)_zzt:z; z
 
 
 
-#ifdef MMSC_VER
-#define NOINLINE __declspec(noinline)
-#else
 #define NOINLINE __attribute__((noinline))
 #ifndef __forceinline
 #define __forceinline inline __attribute__((inline))
 #endif
-#endif
-#ifdef __MINGW32__
-// original definition
-// #define __forceinline extern __inline__ __attribute__((inline,__gnu_inline__))
-#ifdef __forceinline
-#undef __forceinline
-#endif
-#define __forceinline __inline__ __attribute__((inline,__gnu_inline__))
-#endif
 
 #ifdef __GNUC__
-#define CTTZ(w) __builtin_ctzl((UINT)(w))
+#define CTTZ(w)  __builtin_ctzl((UINT)(w))
 #define CTTZI(w) __builtin_ctzll((UI)(w))
 #define CTLZI(w,out) (out=(63-__builtin_clzll((UI)(w))))
 #define CTTZZ(w) ((w)==0 ? 32 : CTTZ(w))

@@ -278,7 +278,7 @@ set(test_cases
     gdll
     gdll_df
     ge
-    # gebar E. #broken
+    gebar
     gesc
     gf
     gfor
