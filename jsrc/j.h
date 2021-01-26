@@ -665,8 +665,6 @@ extern unsigned int __cdecl _clearfp (void);
 #define MCISHd(dest,src,n) {MCISH(dest,src,n) dest+=(n);}  // ... this version when d increments through the loop
 #define MCISHs(dest,src,n) {MCISH(dest,src,n) src+=(n);}
 #define MCISHds(dest,src,n) {MCISH(dest,src,n) dest+=(n); src+=(n);}
-// not used #define MCISU(dest,src,n) {I * RESTRICT _d=(I*)(dest); I * RESTRICT _s=(I*)(src); I _n=-(n); do{*_d++=*_s++;}while((_n-=(_n>>(BW-1)))<0);}  // always runs once
-// not used #define MCISUds(dest,src,n) {I _n=-(n); do{*dest++=*src++;}while((_n-=(_n>>(BW-1)))<0);}  // always runs once
 
 #define MIN(a,b)        ((a)<(b)?(a):(b))
 #define MLEN            (63)
