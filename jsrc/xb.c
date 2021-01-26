@@ -555,7 +555,6 @@ static A sfe(J jt,A w,I prec,UC decimalpt,UC zuluflag){
 // We don't bother to support a boxed-string version because the strings are shorter than the boxes & it is probably just about as good to just open the boxed strings
 // prec is -1 (day only) or 0,3,9 for that many fractional digits below seconds
 static A efs(J jt,A w,I prec){
-#if SY_64
 	I i;A z;
  // Allocate result area
  I n; PROD(n,AR(w)-1,AS(w)); GATV(z,INT,n,AR(w)-1,AS(w))
@@ -647,11 +646,7 @@ err:
   s[strglen]=savesentinel;  // restore end-of-string marker
  }
  RETF(z);
-#else
-R 0;
-#endif
 }
-
 
 
 
@@ -659,7 +654,7 @@ R 0;
 F1(jtinttoe){A z;I n;
  ARGCHK1(w);
  n=AN(w);
- ASSERT(SY_64,EVNONCE);
+ ASSERT(1,EVNONCE);
  RZ(w=vi(w));  // verify valid integer
  GATV(z,INT,n,AR(w),AS(w));
  eft(n,IAV(z),IAV(w));
@@ -669,7 +664,7 @@ F1(jtinttoe){A z;I n;
 // 6!:15 Convert a block of nanosecond times to Y M D h m s nanosec
 F1(jtetoint){
  ARGCHK1(w);
- ASSERT(SY_64,EVNONCE);
+ ASSERT(1,EVNONCE);
  RETF(sfe(jt,w,7*SZI-20,0,0));  // special precision meaning 'store INTs'.  Turns into linelen=56
 }
 
@@ -679,7 +674,7 @@ F1(jtetoint){
 // Default is '. 0'
 F2(jtetoiso8601){UC decimalpt,zuluflag;I prec;
  ARGCHK1(w);
- ASSERT(SY_64,EVNONCE);
+ ASSERT(1,EVNONCE);
  // If monad, supply defaults; if dyad, audit
  if(AT(w)&NOUN){  // dyad
   ASSERT(AT(a)&LIT,EVDOMAIN);
@@ -698,7 +693,7 @@ F2(jtetoiso8601){UC decimalpt,zuluflag;I prec;
 // Bivalent.  left arg is 'd', '0', '3', or '9', like 3d digit of 6!:16, default '9'
 F2(jtiso8601toe){A z;I prec;
  ARGCHK1(w);
- ASSERT(SY_64,EVNONCE);
+ ASSERT(1,EVNONCE);
  // If monad, supply defaults; if dyad, audit
  if(AT(w)&NOUN){  // dyad
   ASSERT(AT(a)&LIT,EVDOMAIN);
