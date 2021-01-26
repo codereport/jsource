@@ -1,0 +1,11 @@
+#if these were Header Only you don't need to include the filenames just
+#add_library(adverbs INTERFACE)
+
+# https://code.jsoftware.com/wiki/Vocabulary/Glossary#Adverb
+# An adverb modifies the word or phrase to its left to produce a derived entity which is usually a verb
+# (though it may be any of the four primary parts of speech). More...
+
+add_library(lib_adverbs PUBLIC
+
+        )
+target_include_directories(lib_adverbs PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
