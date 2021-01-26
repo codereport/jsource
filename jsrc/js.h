@@ -9,18 +9,10 @@
 
 // C_? new style config - default value if not defined by builder
 
-// #ifndef C_64 // 64/32 bits
-// #define C_64 1
-// #endif
-// auto config C_64
-#ifdef C_64
-#undef C_64
+#ifdef SY_64
+#undef SY_64
 #endif
-#if defined(_WIN64)||defined(__LP64__)
-#define C_64 1
-#else
-#define C_64 0
-#endif
+#define SY_64 1
 
 #ifndef C_LE // littleendian/bigendian
 #define C_LE 1
@@ -187,7 +179,4 @@ define one of the following in the build as required
 #ifndef SYS     /* must be defined */
  error: "SYS must be defined"
 #endif
-
-// map C_?? config to old stuff until it is no longer necessary
-#define SY_64 C_64         // eventually replace SY_64 with C_64
 
