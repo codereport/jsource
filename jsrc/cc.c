@@ -605,7 +605,7 @@ DF2(jtcut2){F2PREFIP;PROLOG(0025);A fs,z,zz;I neg,pfx;C id,*v1,*wv,*zc;I cger[12
   case 0: // single bytes.  This is like the B01 case below but we cleverly detect noncomparing words by word-wide methods, and then convert the equality test into B01 format a word at a time
    {
     // In this loop d is the length of the fret
-    I valI=((UC *)fret)[0]; valI|=valI<<8; valI|=valI<<16; if(BW==64)valI|=valI<<(BW/2);  // the fret value, replicated in each byte of the word
+    I valI=((UC *)fret)[0]; valI|=valI<<8; valI|=valI<<16; valI|=valI<<32;  // the fret value, replicated in each byte of the word
     // n bits 0..LGSZI-1 are from original n & are the number of valid bits overflowing into a partial word.  Bits LGSZI..LGSZI+LGBB-1 are the (shifted) # words to process
     n+=(n&(SZI-1))?SZI:0; UI *wvv=(UI*)av; UI bits=*wvv++;  // prime the pipeline for top of loop.  Bias n to have the number of words we need to visit, even partially
     d=1-pfx; // If first fret is in position 0, that's length 0 for prefix, length 1 for suffix
