@@ -291,7 +291,7 @@ void jtspendtracking(J jt){I i;
  R;
 }
 
-#if BW==64 && MEMAUDIT&2
+#if MEMAUDIT&2
 // Make sure all deletecounts start at 0
 static void auditsimverify0(A w){
  if(!w)R;
@@ -396,7 +396,7 @@ R num(0);
 // Verify that block w does not appear on tstack more than lim times
 // nextpushp might start out on a boundary
 void audittstack(J jt){F1PREFIP;
-#if BW==64 && MEMAUDIT&2
+#if MEMAUDIT&2
  if(jt->audittstackdisabled&1)R;
  A *ttop;
  A *nvrav=AAV1(jt->nvra);
@@ -945,7 +945,7 @@ if((I)jt&3)SEGFAULT;
     {I ot=jt->malloctotalhwmk; ot=ot>nt?ot:nt; jt->malloctotal=nt; jt->malloctotalhwmk=ot;}
     // split the allocation into blocks.  Chain them together, and flag the base.  We chain them in ascending order (the order doesn't matter), but
     // we visit them in back-to-front order so the first-allocated headers are in cache
-#if MEMAUDIT&17 && BW==64
+#if MEMAUDIT&17
     u=(A)((C*)z+PSIZE); chn = 0; hrh = FHRHENDVALUE(1+blockx-PMINL); DQ(PSIZE/2>>blockx, u=(A)((C*)u-n); AFCHAIN(u)=chn; chn=u; hrh -= FHRHBININCR(1+blockx-PMINL); AFHRH(u)=hrh; u->fill=AFHRH(u););    // chain blocks to each other; set chain of last block to 0
     AFHRH(u) = hrh|FHRHROOT;  u->fill=AFHRH(u);  // flag first block as root.  It has 0 offset already
 #else
