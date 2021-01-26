@@ -360,11 +360,11 @@ B jtrnginit(J jt){
  jt->rngF[2]=jtmt_next; jt->rngS[2]=16807;
  jt->rngF[3]=jtdx_next; jt->rngS[3]=16807;
  jt->rngF[4]=jtmr_next; jt->rngS[4]=16807;
- jt->rngM[0]=SY_64?0:0;             /*   %      2^32 */
- jt->rngM[1]=SY_64?0:2147483648UL;  /*   %      2^31 */
+ jt->rngM[0]=0;             /*   %      2^32 */
+ jt->rngM[1]=0;  /*   %      2^31 */
  jt->rngM[2]=0;                     /*   %      2^32 */
- jt->rngM[3]=SY_64?0:2147483648UL;  /*   %   _1+2^31 */  /* fudge; should be _1+2^31 */
- jt->rngM[4]=SY_64?0:4294967087UL;  /*   % _209+2^32 */
+ jt->rngM[3]=0;  /*   %   _1+2^31 */  /* fudge; should be _1+2^31 */
+ jt->rngM[4]=0;  /*   % _209+2^32 */
  jt->rngI0[GBI]=54;
  rngselects(num(2)); 
  R 1;
@@ -392,12 +392,12 @@ F1(jtrngselects){I i;UI**vv=jt->rngV;
  ASSERT(BETWEENO(i,0,NRNG),EVDOMAIN);
  jt->rngI[jt->rng]=jt->rngi;
  switch(jt->rng=i){
-  case SMI: vv=jt->rngV0;      jt->rngw=SY_64?64:32;
+  case SMI: vv=jt->rngV0;      jt->rngw=64;
             RZ(rngga(GBI,vv)); RZ(rngga(MTI,vv)); RZ(rngga(DXI,vv)); RZ(rngga(MRI,vv)); break;
-  case GBI: RZ(rngga(i,  vv)); jt->rngw=SY_64?64:31; break;
-  case MTI: RZ(rngga(i,  vv)); jt->rngw=SY_64?64:32; break; 
-  case DXI: RZ(rngga(i,  vv)); jt->rngw=SY_64?64:30; break;
-  case MRI: RZ(rngga(i,  vv)); jt->rngw=SY_64?64:31; 
+  case GBI: RZ(rngga(i,  vv)); jt->rngw=64; break;
+  case MTI: RZ(rngga(i,  vv)); jt->rngw=64; break; 
+  case DXI: RZ(rngga(i,  vv)); jt->rngw=64; break;
+  case MRI: RZ(rngga(i,  vv)); jt->rngw=64; 
  }
  jt->rngf=jt->rngF[jt->rng];
  R mtv;
@@ -412,21 +412,12 @@ F1(jtrngstateq){A x=0,z,*zv;D*u=0;I n;UI*v;
    RZ(*zv++=incorp(sc(jt->rngI0[GBI]))); RZ(*zv++=incorp(vec(INT,GBN,jt->rngV0[GBI])));
    RZ(*zv++=incorp(sc(jt->rngI0[MTI]))); RZ(*zv++=incorp(vec(INT,MTN,jt->rngV0[MTI])));
    RZ(*zv++=incorp(sc(jt->rngI0[DXI]))); RZ(*zv++=incorp(vec(INT,DXN,jt->rngV0[DXI])));
-#if SY_64
    RZ(*zv++=incorp(sc(jt->rngI0[MRI]))); RZ(*zv++=incorp(vec(INT,MRN,jt->rngV0[MRI])));
-#else
-   u=(D*)jt->rngV0[MRI]; GAT0(x,INT,MRN,1); v=AV(x); DO(MRN, v[i]=(UI)u[i];);
-   RZ(*zv++=incorp(sc(jt->rngI0[MRI]))); *zv++=x;
-#endif
    R z;
   case GBI: n=GBN; v=jt->rngv; break;
   case MTI: n=MTN; v=jt->rngv; break;
   case DXI: n=DXN; v=jt->rngv; break;
-#if SY_64
   case MRI: n=MRN; v=jt->rngv; break;
-#else
-  case MRI: n=MRN; u=(D*)jt->rngv; GATV0(x,INT,n,1); v=AV(x); DO(n, v[i]=(UI)u[i];);
-#endif
  }
  GAT0(z,BOX,3,1); zv=AAV(z);
  RZ(*zv++=incorp(sc(jt->rng))); RZ(*zv++=incorp(sc(jt->rngi))); RZ(*zv++=incorp(vec(INT,n,v)));
@@ -439,7 +430,7 @@ static B jtrngstates1(J jt,I j,I n,UI**vv,I i,I k,A x,B p){D*u;UI*xv;
  ASSERT(n==AN(x),EVLENGTH); 
  ASSERT(i<=k&&k<n+(I )(j==MTI),EVINDEX); 
  if(p)DO(n, ASSERT(x31>xv[i],EVDOMAIN););
- if(SY_64||j!=MRI)ICPY(vv[j],xv,n); else{u=(D*)vv[j]; DO(n, u[i]=(D)xv[i];);}
+ ICPY(vv[j],xv,n);
  jt->rngi=k;
  R 1;
 }
@@ -506,11 +497,7 @@ static F2(jtrollksub){A z;I an,*av,k,m1,n,p,q,r,sh;UI m,mk,s,t,*u,x=jt->rngM[jt-
   p = (BW/8) * (nslice = (8 - (BW-jt->rngw)));  // #bits/slice, times number of slices
   // See how many p-size blocks we can have, and how many single leftovers
   q=n/p; r=n%p;   // q=# p-size blocks, r=#single-bit leftovers
-#if SY_64
   mk=(UI)0x0101010101010101;
-#else
-  mk=0x01010101;
-#endif
   // Loop to output all the p-size blocks
   for(j=0;j<q;++j){
    t=NEXT;
@@ -602,11 +589,7 @@ static A jtroll2(J jt,A w,B*b){A z;I j,n,nslice,p,q,r,*v;UI mk,t,*zv;
  p = (BW/8) * (nslice = (8 - (BW-jt->rngw)));  // #bits/slice, times number of slices
  // See how many p-size blocks we can have, and how many single leftovers
  q=n/p; r=n%p;   // q=# p-size blocks, r=#single-bit leftovers
-#if SY_64
   mk=(UI)0x0101010101010101;
-#else
-  mk=0x01010101;
-#endif
  GATV(z,B01,n,AR(w),AS(w)); zv=(UI*)AV(z);  // Allocate result area
  // Loop to output all the p-size blocks
  for(j=0;j<q;++j){
@@ -706,11 +689,8 @@ F2(jtdeal){A z;I at,j,k,m,n,wt,*zv;UI c,s,t,x=jt->rngM[jt->rng];UI sq;
 // support for ?.
 // To the extent possible, ?. is frozen.  Changed modules need to be copied here to preserve compatibility
 #undef GMOF
-#if SY_64           /* m<x, greatest multiple of m less than x */
+           /* m<x, greatest multiple of m less than x */
 #define GMOF(m,x)   (            x63+(x63-(2*(x63%m))%m))
-#else
-#define GMOF(m,x)   (x ? x-x%m : x31+(x31-(2*(x31%m))%m))
-#endif
 
 #undef rollksub
 #define rollksub(a,w) jtrollksubdot(jt,(a),(w))
@@ -724,11 +704,7 @@ static F2(jtrollksubdot){A z;I an,*av,k,m1,n,p,q,r,sh;UI j,m,mk,s,t,*u,x=jt->rng
   p = (BW/8) * (nslice = (8 - (BW-jt->rngw)));  // #bits/slice, times number of slices
   // See how many p-size blocks we can have, and how many single leftovers
   q=n/p; r=n%p;   // q=# p-size blocks, r=#single-bit leftovers
-#if SY_64
   mk=(UI)0x0101010101010101;
-#else
-  mk=0x01010101;
-#endif
   // Loop to output all the p-size blocks
   for(j=0;j<q;++j){
    t=NEXT;
@@ -824,11 +800,7 @@ static A jtroll2dot(J jt,A w,B*b){A z;I j,n,nslice,p,q,r,*v;UI mk,t,*zv;
  p = (BW/8) * (nslice = (8 - (BW-jt->rngw)));  // #bits/slice, times number of slices
  // See how many p-size blocks we can have, and how many single leftovers
  q=n/p; r=n%p;   // q=# p-size blocks, r=#single-bit leftovers
-#if SY_64
   mk=(UI)0x0101010101010101;
-#else
-  mk=0x01010101;
-#endif
  GATV(z,B01,n,AR(w),AS(w)); zv=(UI*)AV(z);  // Allocate result area
  // Loop to output all the p-size blocks
  for(j=0;j<q;++j){

@@ -55,8 +55,6 @@ typedef double complex double_complex;
 
 #include "j.h"
 
-#define SY_UNIX64 (SY_64 && (SY_LINUX || SY_MAC || SY_FREEBSD))
-
 #if SY_WINCE
 #define HINSTANCE_ERROR 0
 wchar_t *tounibuf(char * src);
@@ -200,44 +198,24 @@ static void double_trick(double*v, I n){I i=0;
 #endif
 */
 
-#if SY_64
- #if SY_UNIX64
-  #ifdef __PPC64__
-   #define dtrick double_trick(dd[0],dd[1],dd[2],dd[3],dd[4],dd[5],dd[6],dd[7],dd[8],dd[9],dd[10],dd[11],dd[12]);
-  #elif defined(__x86_64__)
+#ifdef __PPC64__
+  #define dtrick double_trick(dd[0],dd[1],dd[2],dd[3],dd[4],dd[5],dd[6],dd[7],dd[8],dd[9],dd[10],dd[11],dd[12]);
+#elif defined(__x86_64__)
 /* might be faster */
-   #define dtrick \
-  __asm__ ("movq (%0),%%xmm0\n\t"       \
-        "movq  8(%0), %%xmm1\n\t"       \
-        "movq 16(%0), %%xmm2\n\t"       \
-        "movq 24(%0), %%xmm3\n\t"       \
-        "movq 32(%0), %%xmm4\n\t"       \
-        "movq 40(%0), %%xmm5\n\t"       \
-        "movq 48(%0), %%xmm6\n\t"       \
-        "movq 56(%0), %%xmm7\n\t"       \
-        : /* no output operands */      \
-        : "r" (dd)                      \
-        : "xmm0","xmm1","xmm2","xmm3","xmm4","xmm5","xmm6","xmm7","cc");
-  #elif defined(__aarch64__)
-   #define dtrick double_trick(dd[0],dd[1],dd[2],dd[3],dd[4],dd[5],dd[6],dd[7]);
-  #endif
- #else
-  #define dtrick ;
- #endif
-#else
- #if SY_LINUX
- #ifdef C_CD_ARMHF
-  #define dtrick double_trick(dd[0],dd[1],dd[2],dd[3],dd[4],dd[5],dd[6],dd[7],dd[8],dd[9],dd[10],dd[11],dd[12],dd[13],dd[14],dd[15]);
- #else
-  #define dtrick ;
- #endif
- #elif SY_FREEBSD
-  #define dtrick ;
- #elif SY_MACPPC
-  #define dtrick double_trick(dd,dcnt);
- #else
-  #define dtrick ;
- #endif
+  #define dtrick \
+__asm__ ("movq (%0),%%xmm0\n\t"       \
+      "movq  8(%0), %%xmm1\n\t"       \
+      "movq 16(%0), %%xmm2\n\t"       \
+      "movq 24(%0), %%xmm3\n\t"       \
+      "movq 32(%0), %%xmm4\n\t"       \
+      "movq 40(%0), %%xmm5\n\t"       \
+      "movq 48(%0), %%xmm6\n\t"       \
+      "movq 56(%0), %%xmm7\n\t"       \
+      : /* no output operands */      \
+      : "r" (dd)                      \
+      : "xmm0","xmm1","xmm2","xmm3","xmm4","xmm5","xmm6","xmm7","cc");
+#elif defined(__aarch64__)
+  #define dtrick double_trick(dd[0],dd[1],dd[2],dd[3],dd[4],dd[5],dd[6],dd[7]);
 #endif
 
 

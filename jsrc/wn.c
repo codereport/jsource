@@ -63,7 +63,7 @@ static NUMH(jtnumi){I neg;I j;
  j=0; DQ(n, I dig=*s++; if(!BETWEENC(dig,'0','9'))R 0; j=10*j+(dig-'0'););
  *(I*)vv=(j^(-neg))+neg;   // if - was coded, take 2's comp, which will leave IMIN unchanged
  R 1+REPSGN(j&(j-neg));  // overflow if negative AND not the case of -2^63, which shows as IMIN with a negative flag
-}     /* called only if SY_64 */
+}     /* called only if 64 bit */
 
 static NUMH(jtnumx){A y;B b,c;C d;I j,k,m,*yv;X*v;
  v=(X*)vv;
@@ -190,16 +190,14 @@ static I jtnumcase(J jt,I n,C*s){B e;C c;I ret;
  DQ(n>>LGSZI, allor|=*si; anydot|=(*si^WDDOT)-VALIDBOOLEAN; ++si;)  // sets a sign bit if anything is '.', valid only if no alphas
  I tailmsk=~((~(I)0)<<((n&(SZI-1))<<3)); allor|=(*si&tailmsk); anydot|=((*si&tailmsk)^WDDOT)-VALIDBOOLEAN;
  if(!(allor&(3*VALIDBOOLEAN<<6))){   // if no 0xc0 bit set, there are no lower-case alphas or non-ASCII chars
-  R SY_64?((anydot&(VALIDBOOLEAN<<6))==0?INT:0):0;  // no byte had 0xC0 set; if byte^'.' - 1 had 0x40 set, it must have been '.'.  Set ii if there are none such
+  R ((anydot&(VALIDBOOLEAN<<6))==0?INT:0);  // no byte had 0xC0 set; if byte^'.' - 1 had 0x40 set, it must have been '.'.  Set ii if there are none such
  }else{
   // if there are alphabetics/non-ASCII, do the full analysis
   // if it contains 'b' or 'p', that becomes the type regardless of others
   // (types incompatible with that raise errors later)
   ret=(memchr(s,'j',n)||memchr(s,'a',n)?CMPX:0) + (memchr(s,'b',n)||memchr(s,'p',n)?LIT:0);
   if(ret==0){
-#if SY_64
    ret|=INT;  // default to 'nothing seen except integers'
-#endif
    // if not j or b type, scan again. x indicates 1x2 or 23x.  Set both
    if(memchr(s,'x',n)){ret|=LIT+XNUM; ret&=~INT;}
    // if string contains r, it's rational (since not ar)
