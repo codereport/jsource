@@ -5,7 +5,7 @@
 # A conjunction modifies the words or phrases to its left and right to produce a derived entity which is usually a verb,
 # though it can be any of the four primary parts of speech. More...
 
-add_library(lib_conjunction
+add_library(lib_conjunction STATIC
         ca.c
         c.c
         cc.c

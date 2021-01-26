@@ -5,7 +5,7 @@
 # Verbs are programs. Verbs operate on one or two noun operands, and produce a result which is always a noun.
 # The simplest verbs are the primitives, such as +. Larger verbs are created by connecting other verbs together.
 
-add_library(lib_verbs
+add_library(lib_verbs STATIC
         crc32c.c
         crc32c.h
         crc32ctables.h

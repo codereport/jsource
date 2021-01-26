@@ -4,7 +4,7 @@
 # j.h is required by many files and it requires a few things. This library contains the things required.
 
 
-add_library(lib_j_parent
+add_library(lib_j_parent STATIC
         d.h
         j.h
         j.c
