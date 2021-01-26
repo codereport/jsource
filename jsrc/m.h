@@ -4,7 +4,7 @@
 /* Memory Management                                                       */
 
 /* ANSI C already has malloc by j.h include of stdlib.h                    */
-#if (SYS & SYS_PCWIN+SYS_PC386+SYS_UNIX) && !(SYS+SYS_ANSI)
+#if (SYS & SYS_UNIX) && !(SYS+SYS_ANSI)
 #include <malloc.h>
 #endif
 

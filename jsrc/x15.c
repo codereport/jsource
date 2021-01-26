@@ -66,12 +66,6 @@ typedef double complex double_complex;
 
 #include <dlfcn.h>
 
-#if SYS & SYS_FREEBSD
-/* resolve some harmless name clashes */
-#undef atop
-#endif
-
-
 #undef MAX     /* defined in sys/param.h */
 #undef MIN     /* defined in sys/param.h */
 
@@ -1187,12 +1181,6 @@ F1(jtcdproc1){CCT*cc;
  C* enda=&CAV(w)[AN(w)]; C endc=*enda; *enda=0; cc=cdparse(w,1); *enda=endc; RE(cc); // should do outside rank2 loop?
  R sc((I)cc->fp);
 }    /* 15!:21 return proc address */
-
-#ifdef MMSC_VER
-#pragma warning(disable: 4276)
-#endif
-
-
 
 // procedures in jlib.h
 static const void* jfntaddr[]={

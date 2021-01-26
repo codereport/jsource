@@ -13,7 +13,7 @@
 
 
 int aes_c(I decrypt,I mode,UC *key,I keyn,UC* iv,UC* out,I n);
-#if !defined(ANDROID) && (defined(__i386__) || defined(_M_X64) || defined(__x86_64__))
+#if defined(__i386__) || defined(_M_X64) || defined(__x86_64__)
 int aes_ni(I decrypt,I mode,UC *key,I keyn,UC* iv,UC* out,I n);
 #endif
 #if defined(__aarch64__)

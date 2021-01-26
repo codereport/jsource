@@ -18,7 +18,7 @@ uint32_t crc32csb4(uint32_t crc, uint32_t value)
   return crc;
 }
 
-#if defined(_WIN64)||defined(__LP64__)
+#if defined(__LP64__)
 uint64_t crc32csb8(uint64_t crci, uint64_t value)
 #else
 uint32_t crc32csb8(uint32_t crci, uint64_t value)

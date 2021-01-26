@@ -7,11 +7,6 @@
 #include "w.h"
 #include "cpuinfo.h"
 
-#if SYS & SYS_FREEBSD
-#include <floatingpoint.h>
-#endif
-
-
 // These statics get copied into jt for cache footprint.  If you change them,
 // change the definition in jt.h
 
@@ -200,15 +195,6 @@ static C jtjinit3(J jt){S t;
  MC(jt->typesizes,typesizes,sizeof(jt->typesizes));  // required for ma.
  MC(jt->typepriority,typepriority,sizeof(jt->typepriority));  // required for ma.  Repeated for each thread in jtinit3
  MC(jt->prioritytype,prioritytype,sizeof(jt->prioritytype));  // required for ma.  Repeated for each thread in jtinit3
-#if (SYS & SYS_DOS)
- t=EM_ZERODIVIDE+EM_INVALID; _controlfp(t,t);
-#endif
-#if (SYS & SYS_OS2)
- t=EM_ZERODIVIDE+EM_INVALID+EM_OVERFLOW+EM_UNDERFLOW; _control87(t,t);
-#endif
-#if (SYS & SYS_FREEBSD)
- fpsetmask(0);
-#endif
  jt->tssbase=tod();
  meminit();
  sesminit();
@@ -220,10 +206,6 @@ static C jtjinit3(J jt){S t;
  xsinit();
  sbtypeinit();
  rnginit();
-// #if (SYS & SYS_DOS+SYS_MACINTOSH+SYS_UNIX)
-#if (SYS & SYS_DOS+SYS_MACINTOSH)
- xlinit();
-#endif
  jtecvtinit(jt);
  // We have completed initial allocation.  Everything allocated so far will not be freed by a tpop, because
  // tpop() isn't called during initialization.  So, to keep the memory auditor happy, we reset ttop so that it doesn't

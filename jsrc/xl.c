@@ -9,11 +9,6 @@
 #endif
 #include "x.h"
 
-#if !(SYS & SYS_DOS+SYS_MACINTOSH+SYS_UNIX)
-#define LOCK 1
-static B jtdolock(J jt,B lk,F f,I i,I n){ASSERT(0,EVNONCE);}
-#endif
-
 #if (SYS & SYS_UNIX)
 typedef long long INT64;
 #include <stdint.h>
@@ -39,11 +34,7 @@ static B jtdolock(J jt,B lk,F f,I i,I n){I e;long c;fpos_t v; fpos_t q;
 
  e=lockf(fileno(f),lk?F_TLOCK:F_ULOCK,(I)n);
  fsetpos(f,(fpos_t*)&q);
-#ifdef __MINGW32__
- R !e?1:(errno==EEXIST||errno==ENOENT||errno==EACCES)?0:(B)(intptr_t)jerrno();
-#else
  R !e?1:errno==EACCES?0:(B)(intptr_t)jerrno();
-#endif
 }
 #endif
 

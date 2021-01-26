@@ -6,13 +6,6 @@
 #define __GNUC__ 5
 #endif
 
-#if defined(_MSC_VER) && !defined(__clang__)
-#undef MMSC_VER
-#define MMSC_VER
-#else
-#undef MMSC_VER
-#endif
-
 #include <stdint.h>
 
 extern void cpuInit(void);

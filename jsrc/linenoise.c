@@ -5,15 +5,6 @@
 #define __GNUC__ 5
 #endif
 
-#if defined(_MSC_VER) && !defined(__clang__)
-#undef MMSC_VER
-#define MMSC_VER
-#else
-#undef MMSC_VER
-#endif
-
-
-
 /* linenoise.c -- guerrilla line editing library against the idea that a
  * line editing lib needs to be 20,000 lines of C code.
  *
@@ -1005,11 +996,7 @@ donedigits:
 /*#define DEBUG_REFRESHLINE*/
 
 #ifdef DEBUG_REFRESHLINE
-#ifdef MMSC_VER
-#define DRL(ARGS, ...) fprintf(dfh, ARGS)
-#else
 #define DRL(ARGS...) fprintf(dfh, ARGS)
-#endif
 static FILE *dfh;
 
 static void DRL_CHAR(int ch)
@@ -1034,11 +1021,7 @@ static void DRL_STR(const char *str)
     }
 }
 #else
-#ifdef MMSC_VER
-#define DRL(...)
-#else
 #define DRL(ARGS...)
-#endif
 #define DRL_CHAR(ch)
 #define DRL_STR(str)
 #endif

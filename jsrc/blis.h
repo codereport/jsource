@@ -6,45 +6,15 @@
 #define __GNUC__ 5
 #endif
 
-#if defined(_MSC_VER) && !defined(__clang__)
-#undef MMSC_VER
-#define MMSC_VER
-#else
-#undef MMSC_VER
-#endif
-
 /* simplified blis header */
 
 #define BLIS_DRIVER_GENERIC     0
 #define BLIS_DRIVER_GNUVEC      1
-#define BLIS_DRIVER_SSE2        2
-#define BLIS_DRIVER_AVX         3
 #define BLIS_DRIVER_HASWELL     4
 #define BLIS_DRIVER_AARCH64     5
 
 #define restrict __restrict
 
-/* msvc does not define __SSE2__ */
-#if !defined(__SSE2__)
-#if defined(MMSC_VER)
-#if (defined(_M_AMD64) || defined(_M_X64))
-#define __SSE2__ 1
-#include <emmintrin.h>
-#include <xmmintrin.h>   /* header file for _mm_prefetch() */
-#elif _M_IX86_FP==2
-#define __SSE2__ 1
-#include <emmintrin.h>
-#include <xmmintrin.h>   /* header file for _mm_prefetch() */
-#endif
-#endif
-#endif
-
-#if defined(MMSC_VER)
-#ifndef PREFETCH
-#define PREFETCH(x) _mm_prefetch((x),_MM_HINT_T0)
-#define PREFETCH2(x) _mm_prefetch((x),_MM_HINT_T1)   // prefetch into L2 cache but not L1
-#endif
-#endif
 #ifdef __GNUC__
 #ifndef PREFETCH
 #define PREFETCH(x) __builtin_prefetch(x)
@@ -61,7 +31,7 @@
 #endif
 #endif
 
-#if defined(_WIN64)||defined(__LP64__)
+#if defined(__LP64__)
 typedef long long  gint_t;
 #else
 typedef long       gint_t;
@@ -115,10 +85,6 @@ typedef struct cntx_s
 #define bli_auxinfo_set_next_a( data , next_a) (data)->a_next=(void*)(next_a);
 #define bli_auxinfo_set_next_b( data , next_b) (data)->b_next=(void*)(next_b);
 
-// SIMD-Register width in bits
-// SSE:         128
-// AVX/FMA:     256
-// AVX-512:     512
 #if defined(__aarch64__)
 #define SIMD_REGISTER_WIDTH 128
 #elif defined(__SSE2__)

@@ -3,13 +3,7 @@
 /*                                                                         */
 /* Definitions for jt ("jthis")                                            */
 
-#if (SYS & SYS_DOS)
 #include <sys/stat.h>
-#endif
-
-#if  (SYS & SYS_UNIX)   /*   IVL   */
-#include <sys/stat.h>
-#endif
 
 /*
 All allocated and variable data for a J instance is accessed through its JST structure.

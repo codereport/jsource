@@ -271,10 +271,6 @@ int main(int argc, char* argv[])
  else
 	 type=0;
  addargv(argc,argv,input+strlen(input));
-#if !defined(READLINE) && defined(__MINGW32__)
-  if(!norl)
-  _setmode( _fileno( stdin ), _O_TEXT ); //readline filters '\r' (so does this)
-#endif
  jefirst(type,input);
  while(1){jedo((char*)Jinput(jt,(forceprmpt||_isatty(_fileno(stdin)))?(C*)"   ":(C*)""));}
  jefree();

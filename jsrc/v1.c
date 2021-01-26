@@ -7,10 +7,6 @@
 #include "vcomp.h"
 #include "ve.h"
 
-#ifdef MMSC_VER
-#pragma warning(disable: 4244)
-#endif
-
 // To reduce parameter overhead, we call matchsub with trailing parameters omitted if x==0.  This is fine for clang.  In MSVC, the parameter area
 // is used as a workarea by the routine, and thus omitting the parms makes for a segfault.
 #if defined(__clang__)

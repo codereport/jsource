@@ -13,94 +13,6 @@
 char* toascbuf(char* s){ return s;}
 char* tounibuf(char* s){ return s;}
 
-#if (SYS & SYS_DOS)
-
-#include <ctype.h>
-#include <io.h>
-#include <dos.h>
-#include <direct.h>
-#include <time.h>
-
-#ifndef F_OK            /* for access() */
-#define F_OK            0x00
-#define X_OK            0x01
-#define W_OK            0x02
-#define R_OK            0x04
-#endif
-
-#ifndef _A_VOLID
-#define _A_VOLID        0x00
-#endif
-
-#define _A_ALL          (_A_NORMAL+_A_RDONLY+_A_HIDDEN+_A_SYSTEM+_A_VOLID+ \
-                         _A_SUBDIR+_A_ARCH)
-
-static A jtattv(J jt,U x){A z;C*s;
- GAT0(z,LIT,6,1); s=CAV(z);
- s[0]=x&_A_RDONLY?'r':'-';
- s[1]=x&_A_HIDDEN?'h':'-';
- s[2]=x&_A_SYSTEM?'s':'-';
- s[3]=x&_A_VOLID ?'v':'-';
- s[4]=x&_A_SUBDIR?'d':'-';
- s[5]=x&_A_ARCH  ?'a':'-';
- R z;
-}    /* convert from 16-bit attributes x into 6-element string */
-
-static S jtattu(J jt,A w){C*s;I i,n;S z=0;
- RZ(w=vslit(w)); 
- n=AN(w); s=CAV(w);
- for(i=0;i<n;++i)switch(s[i]){
-  case 'r': z^=_A_RDONLY; break;
-  case 'h': z^=_A_HIDDEN; break;
-  case 's': z^=_A_SYSTEM; break;
-  case 'v': z^=_A_VOLID;  break;
-  case 'd': z^=_A_SUBDIR; break;
-  case 'a': z^=_A_ARCH;   break;
-  case '-':               break;
-  default:  ASSERT(0,EVDOMAIN);
- }
- R z;
-}    /* convert from 6-element string into 16-bit attributes */
-
-F1(jtfullname){C dirpath[_MAX_PATH];
- RZ(w=str0(vslit(w)));
- wchar_t wdirpath[_MAX_PATH];
- RZ(w=toutf16x(w)); USAV(w)[AN(w)]=0;
- _wfullpath(wdirpath,USAV(w),_MAX_PATH);
- WideCharToMultiByte(CP_UTF8,0,wdirpath,1+(int)wcslen(wdirpath),dirpath,_MAX_PATH,0,0);
- R cstr(dirpath);
-}
-
-
-F1(jtjfperm1){A y,fn,z;C *s;F f;int x; US *p,*q;
- F1RANK(0,jtjfperm1,UNUSED_VALUE);
- RE(f=stdf(w)); if(f){RZ(y=fname(sc((I)f)))} else ASSERT(y=AAV(w)[0],EVFNUM)
- RZ(fn=toutf16x(y)); USAV(fn)[AN(fn)]=0;  // install termination
- p=USAV(fn); q=p+AN(fn)-3;
- GAT0(z,LIT,3,1); s=CAV(z);
- x=_waccess(p,R_OK); if(0>x)R jerrno();
- s[0]=x?'-':'r';
- s[1]=_waccess(p,W_OK)?'-':'w';
- s[2]=wcscmp(q,L"exe")&&wcscmp(q,L"bat")&&wcscmp(q,L"com")?'-':'x';
- R z;
-}
-
-F2(jtjfperm2){A y,fn;C*s;F f;int x=0;US *p;
- F2RANK(1,0,jtjfperm2,UNUSED_VALUE);
- RE(f=stdf(w)); if(f){RZ(y=fname(sc((I)f)))} else ASSERT(y=AAV(w)[0],EVFNUM)
- RZ(a=vslit(a)); ASSERT(3==AN(a),EVLENGTH); 
- RZ(fn=toutf16x(y)); USAV(fn)[AN(fn)]=0;  // install termination
- s=CAV(y);
- p=USAV(fn);;
- s=CAV(a);
- if('r'==s[0]) x|=S_IREAD;  else ASSERT('-'==s[0],EVDOMAIN);
- if('w'==s[1]) x|=S_IWRITE; else ASSERT('-'==s[1],EVDOMAIN);
- if('x'==s[2]) x|=S_IEXEC;  else ASSERT('-'==s[2],EVDOMAIN);
- R _wchmod(p,x)?jerrno():mtm;
-}
-
-#endif
-
 /* jdir produces a 5-column matrix of boxes:                 */
 /* 0 name                                                    */
 /* 1 time of last write, y m d h m s                         */
@@ -110,9 +22,6 @@ F2(jtjfperm2){A y,fn;C*s;F f;int x=0;US *p;
 /*   0 read-only    3 volume label                           */
 /*   1 hidden       4 directory                              */
 /*   2 system       5 archive (modified since last back-up)  */
-
-
-#if (SYS & SYS_UNIX)
 
 /* FIXME:   rename J link() function so we can include unistd.h */
 // undefs to avoid darwin warnings - should be a better fix
@@ -126,13 +35,7 @@ F2(jtjfperm2){A y,fn;C*s;F f;int x=0;US *p;
 #include <sys/stat.h>
 #include <dirent.h>
 #include <time.h>
-
-#if SYS&(SYS_SUN4+SYS_SGI)
-#include "fnmatch.h"
-#else
 #include <fnmatch.h>
-#endif
-
 
 /* Return mode_t formatted into 11-character buffer supplied by the caller.  The last byte of the buffer is the string terminator \0 */
 static C*modebuf(mode_t m,C* b){C c;I t=m;
@@ -256,11 +159,7 @@ F2(jtjfperm2){A y;C*s;F f;int x=0,i;C*m;
 }
 
 
-#endif
 
 /* ----------------------------------------------------------------------- */
 
-
-#if ! (SYS & SYS_DOS)
 F1(jtfullname){R w;}
-#endif
