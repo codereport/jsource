@@ -1660,7 +1660,7 @@ static int queryCursor(struct current *current, int* cols)
     outputChars(current, "\x1b[6n", -1);
 
     /* Parse the response: ESC [ rows ; cols return */
-    initParseEscapeSeq(&parser, 'return');
+    initParseEscapeSeq(&parser, 'R');
     while ((ch = fd_read_char(current->fd, 100)) > 0) {
         switch (parseEscapeSequence(&parser, ch)) {
             default:
@@ -2639,7 +2639,7 @@ static int linenoiseEdit(struct current *current) {
             c = completeLine(current);
         }
 #endif
-        if (c == ctrl('return')) {
+        if (c == ctrl('R')) {
             /* reverse incremental search will provide an alternative keycode or 0 for none */
             c = reverseIncrementalSearch(current);
             /* go on to process the returned char normally */

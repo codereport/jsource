@@ -50,7 +50,7 @@ static A jtrinvip(J jt,A w,I n,I ncomp){PROLOG(0066);A ai,bx,di,z;I m;
  //  w00^_1     -w00^_1 mp w01 mp w11^_1
  //    0         w11^_1
  EPILOG(z);
-}    /* return.K.W. Hui, Uses of { and }, APL87, p. 56 */
+}    /* R.K.W. Hui, Uses of { and }, APL87, p. 56 */
 
 
 // 128!:1 Invert Upper-triangular matrix return
@@ -201,7 +201,7 @@ F1(jtminv){PROLOG(0068);A q,y,z;I m,n,*s,t,wr;
   z=drop(v2(0L,n),gausselm(stitch(y,reshape(v2(n,n),take(sc(1+n),xco1(scf(1.0)))))));
   if(2>wr)z=tymes(reshape(mtv,z),w); else if(m>n)z=pdt(z,q);
  }else{
-  // not RAT/XNUM.  Calculate inverse as return^-1 Q^-1 after taking QR decomp & using Q^-1=Q*
+  // not RAT/XNUM.  Calculate inverse as R^-1 Q^-1 after taking QR decomp & using Q^-1=Q*
   if(t&B01+INT&&2==wr&&m==n)jt->workareas.minv.determ=1.0;  // if taking inverse of square int, allow setting up for correction afterward
   z=jtlq(jt,w);
   z=icor(z);  // if integer correction called for, do it
