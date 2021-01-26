@@ -67,7 +67,7 @@ target_sources(j PUBLIC
         sn.c
         t.c
         u.c # Interpreter Utilities
-        #vu.c # Unicode (2-byte unsigned characters) Not included anywhere?
+        vu.c # Unicode (2-byte unsigned characters)
         vx.h # Extended Precision
         vz.h # Complex Numbers
         w.c
