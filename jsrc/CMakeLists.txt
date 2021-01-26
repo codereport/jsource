@@ -5,20 +5,20 @@ target_compile_definitions(j PRIVATE C_NA=0)
 target_link_libraries(j PRIVATE ${STANDARD_MATH_LIBRARY})
 set_source_files_properties(aes-ni.c PROPERTIES COMPILE_FLAGS -maes)
 target_sources(j PRIVATE
-        a.c
-        ab.c
+        adverbs/a.c
+        adverbs/ab.c
+        adverbs/af.c
+        adverbs/ai.c
+        adverbs/am.c
+        adverbs/am1.c
+        adverbs/amn.c
+        adverbs/ao.c
+        adverbs/ap.c
+        adverbs/ar.c
+        adverbs/as.c
+        adverbs/au.c
         aes-c.c
         aes-ni.c
-        af.c
-        ai.c
-        am.c
-        am1.c
-        amn.c
-        ao.c
-        ap.c
-        ar.c
-        as.c
-        au.c
         c.c
         ca.c
         cc.c
