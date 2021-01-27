@@ -7,6 +7,7 @@
 
 
 static I jtord(J jt,A w){I j,n,*v,z;
+ ARGCHK1(w);
  n=AN(w); z=-n;
  if(n){if(!(INT&AT(w)))RZ(w=cvt(INT,w)); v=AV(w); DQ(n, j=*v++; z=z<j?j:z;); ++z;}
  return z;
@@ -46,6 +47,7 @@ A jtpfill(J jt,I n,A w){PROLOG(0081);A b,z;B*bv;I*wv,*zv;
 }
 
 static F1(jtcfd){A b,q,x,z,*zv;B*bv;I c,i,j,n,*qv,*u,*v,zn;
+ ARGCHK1(w);
  if(c=1&&INT&AT(w)){
   n=AN(w); v=AV(w);
   GATV0(b,B01,1+n,1); bv=BAV(b); memset(bv,C0,n);
@@ -109,6 +111,7 @@ F1(jtpparity){A x,y,z;B *u;I i,j,k,m,n,p,r,*s,*v,*zv;
 
 // reduced form seems to be (>:i.-$y) #: y where y is the permutation number (note there is a redundant 0 at the end)
 static F1(jtdfr){A z;I c,d,i,j,m,n,*v,*x;
+ ARGCHK1(w);
  n=AS(w)[AR(w)-1]; PROD(m,AR(w)-1,AS(w)); v=AV(w);  // n=length of each permutation, m=#permutations
  GATV(z,INT,AN(w),AR(w),AS(w)); x=AV(z);
  for(i=0;i<m;++i){   // for each permutation

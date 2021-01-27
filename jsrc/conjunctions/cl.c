@@ -35,6 +35,7 @@ static I jtefflev(J jt,I j,A h,A x){I n,t; n=*(j+AV(h)); return n>=0?n:(t=level(
 // L: and S: will be rarely used on pristine blocks, which be definition have all DIRECT contents & would thus be
 // better served by &.> .  Thus, we just mark the inputs as non-pristinable.
 static DF1(jtlcapco1){A z;V*v=FAV(self); 
+ ARGCHK1(w);
  PRISTCLR(w)
 
  PRIM shdr; A recurself=(A)&shdr;  // allocate the block we will recur with
@@ -59,6 +60,7 @@ static DF2(jtlcapco2){A z;V*v=FAV(self);
 // Result logger for S:   w is the result; we add it to AK(self), reallocating as needed
 // result is 0 for error or a harmless small result (0) which will be collected at higher levels and discarded
 static DF1(jtscfn){
+ ARGCHK1(w);
  if(AS(AKASA(self))[0]==AN(AKASA(self))){I n=AN(AKASA(self)); RZ(AKASA(self)=ext(1,AKASA(self))); AS(AKASA(self))[0]=n;}  // if current buffer is full, reallocate.  ext resets AS
  AAV(AKASA(self))[AS(AKASA(self))[0]++]=incorp(w);  // copy in new result pointer
  return num(0);  // harmless good return
@@ -87,6 +89,7 @@ static DF2(jtlevs2){
 }
 
 static DF1(jtscapco1){PROLOG(555);A x,z=0;I m;V*v=FAV(self);
+ ARGCHK1(w);
  PRISTCLR(w)
  PRIM shdr; A recurself=(A)&shdr;  // allocate the block we will recur with
  AM(recurself)=(I)v->fgh[0];  // fill in the pointer to u

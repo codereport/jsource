@@ -171,6 +171,7 @@ B jtspfree(J jt){I i;A p;
 }    /* free unused blocks */
 
 static F1(jtspfor1){
+ ARGCHK1(w);
  if(BOX&AT(w)){A*wv=AAV(w); DO(AN(w), if(wv[i])spfor1(wv[i]););}
  else if(AT(w)&TRAVERSIBLE)traverse(w,jtspfor1); 
  if(!ACISPERM(AC(w))) {
@@ -191,6 +192,7 @@ static F1(jtspfor1){
 }
 
 F1(jtspfor){A*wv,x,y,z;C*s;D*v,*zv;I i,m,n;
+ ARGCHK1(w);
  n=AN(w); wv=AAV(w);  v=&jt->spfor;
  ASSERT(!n||BOX&AT(w),EVDOMAIN);
  GATV(z,FL,n,AR(w),AS(w)); zv=DAV(z); 
@@ -206,6 +208,7 @@ F1(jtspfor){A*wv,x,y,z;C*s;D*v,*zv;I i,m,n;
 }    /* 7!:5 space for named object; w is <'name' */
 
 F1(jtspforloc){A*wv,x,y,z;C*s;D*v,*zv;I i,j,m,n;L*u;LX *yv,c;
+ ARGCHK1(w);
  n=AN(w); wv=AAV(w);  v=&jt->spfor;
  ASSERT(!n||BOX&AT(w),EVDOMAIN);
  GATV(z,FL,n,AR(w),AS(w)); zv=DAV(z);   // zv-> results
@@ -449,6 +452,7 @@ ra(w);   // ensure that the backer is not deleted while it is a backer.
 // Mark the backing block non-PRISTINE, because realize is a form of escaping from the backer
 A jtrealize(J jt, A w){A z; I t;
 // allocate a block of the correct type and size.  Copy the shape
+ ARGCHK1(w);
  t=AT(w);
  AFLAG(ABACK(w))&=~AFPRISTINE;  // clear PRISTINE in the backer, since its contents are escaping
  GA(z,t,AN(w),AR(w),AS(w));
@@ -937,6 +941,7 @@ RESTRICTF A jtgah(J jt,I r,A w){A z;
 
 // clone w, returning the address of the cloned area.  Result is NOT recursive, not AFRO, not virtual
 F1(jtca){A z;I t;P*wp,*zp;
+ ARGCHK1(w);
  t=AT(w);
  if(unlikely((t&SPARSE)!=0)){
   GASPARSE(z,t,AN(w),AR(w),AS(w))

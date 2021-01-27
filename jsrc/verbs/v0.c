@@ -30,6 +30,7 @@ static CFR(jtcfrx,X,XNUM,xplus,xtymes, negate)
 static CFR(jtcfrq,Q,RAT, qplus,qtymes,QNEGATE)
 
 static F1(jtrsort){A t,z;
+ ARGCHK1(w);
  PUSHCCT(1.0-FUZZ)
  RZ(t=over(mag(w),cant1(rect(w))));
  A tt; RZ(IRS2(t,t,0L,1L,1L,jtindexof,tt));
@@ -259,6 +260,7 @@ F1(jtpoly1){A c,e,x;
 
 
 static A jtmnomx(J jt,I m,A w){A s,*wv,x,z=w,*zv;I i,n,r;
+ ARGCHK1(w);
  if(BOX&AT(w)){
   n=AN(w); wv=AAV(w);  RZ(s=sc(m));
   GATV(z,BOX,n,AR(w),AS(w)); zv=AAV(z);

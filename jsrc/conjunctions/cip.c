@@ -465,6 +465,7 @@ static F1(jtminors){A d,z;
 }
 
 static DF1(jtdet){DECLFG;A h=sv->fgh[2];I c,r,*s;
+ ARGCHK1(w);
  r=AR(w); s=AS(w);
  A z; if(h&&1<r&&2==s[r-1]&&s[r-2]==s[r-1])return df1(z,w,h);
  F1RANK(2,jtdet,self);

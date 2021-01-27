@@ -41,6 +41,7 @@ static DF2(jtfindrange2){
 
 // 13!:83  Return header info: t, flag, m, type, c, n, r
 static DF1(jthdrinfo){A z;
+ ARGCHK1(w);
  GAT0(z,INT,7,1);
  IAV(z)[0]=AK(w); IAV(z)[1]=AFLAG(w); IAV(z)[2]=AM(w); IAV(z)[3]=AT(w); IAV(z)[4]=AC(w); IAV(z)[5]=AN(w); IAV(z)[6]=AR(w);
  return z;

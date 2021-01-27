@@ -9,6 +9,7 @@ static F1(jttrr);
 
 
 static F1(jttrc){A bot,p,*v,x,y;B b;C*bv,c,ul,ll,*pv;I j,k,m,*s,xn,*xv,yn,*yv;
+ ARGCHK1(w);
  s=AS(w); v=AAV(w);
  xn=s[0]; RZ(x=apvwr(xn,0L,0L)); xv=AV(x);
  yn=s[1]; RZ(y=apvwr(yn,0L,0L)); yv=AV(y);
@@ -86,6 +87,7 @@ static F2(jttroot){A t,x;B b;C*u,*v;I j=0,k=0,m,n,*s;
 }
 
 static F1(jttleaf){A t,z;C*v;I n,*s;
+ ARGCHK1(w);
  n=AN(w);
  GATV0(t,LIT,2+n,2); s=AS(t); s[0]=1; s[1]=2+n;
  v=CAV(t); v[0]=jt->bx[10]; v[1]=' '; MC(2+v,AV(w),n);
@@ -94,6 +96,7 @@ static F1(jttleaf){A t,z;C*v;I n,*s;
 }
 
 static F1(jttconnect){A*wv,x,y,z;B b,d;C c,*u,*xv,*yv,*zv;I e,i,j,m,n,p,q,zn;
+ ARGCHK1(w);
  n=AN(w); wv=AAV(w); y=wv[0]; m=AS(y)[0];
  e=0; DO(n,e+=*(1+AS(wv[i])););
  RE(zn=mult(m,e)); GATVR(z,LIT,zn,2,AS(y)); AS(z)[1]=e; zv=CAV(z);
@@ -120,6 +123,7 @@ EVERYFS(trrself,jttrr,0,0,VFLAGNONE)
 static F1(jttreach){return troot(scc('0'),graft(ope(every(w,(A)&trrself))));}
 
 static F1(jttrr){PROLOG(0058);A hs,s,t,*x,z;B ex,xop;C id;I fl,*hv,m;V*v;
+ ARGCHK1(w);
  if(AT(w)&NOUN+NAME){RETF(tleaf(lrep(w)));}
  v=FAV(w); id=v->id; fl=v->flag;
  I fndx=(id==CBDOT)&&!v->fgh[0]; A fs=v->fgh[fndx]; A gs=v->fgh[fndx^1];  // In verb for m b., if f is empty look to g for the left arg.  It would be nice to be more general

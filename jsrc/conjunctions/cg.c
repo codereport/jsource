@@ -78,6 +78,7 @@ static A jtcreategerunditerator(J jt, A z, A w, A r){  // z is result area, w is
 
 // w is a gerund whose max rank is r.  Result is a boxed array of VERBs, one for each gerund, if they are well formed
 A jtfxeachv(J jt,I r,A w){A*wv,x,z,*zv;I n;
+ ARGCHK1(w);
  n=AN(w); wv=AAV(w); 
  ASSERT(r>=AR(w),EVRANK);  // max rank allowed
  ASSERT(n!=0,EVLENGTH);  // gerund must not be empty
@@ -113,6 +114,7 @@ static DF2(jtcon2){A h,*hv,*x,z;V*sv;
 
 // u`:3 insert 
 static DF1(jtinsert){A hs,*hv,z;I hfx,j,m,n;A *old;
+ ARGCHK1(w);
  SETIC(w,n); j=n-1; hs=FAV(self)->fgh[2]; m=AN(hs); hfx=j%m; hv=AAV(hs);  // m cannot be 0
  if(!n)return df1(z,w,iden(*hv));
  RZ(z=from(num(-1),w));
@@ -424,6 +426,7 @@ A protw = (A)(intptr_t)((I)w+((I)jtinplace&JTINPLACEW)); A prota = (A)(intptr_t)
 // handle v0`v1[`v2]} to create the verb to process it when [x] and y arrive
 // The id is the pseudocharacter for the function, which is passed in as the pchar for the derived verb
 A jtgadv(J jt,A w,C id){A hs;I n;
+ ARGCHK1(w);
  ASSERT(BOX&AT(w),EVDOMAIN);
  n=AN(w);
  ASSERT(1>=AR(w),EVRANK);

@@ -67,6 +67,7 @@ F1(jtts){A z;D*x;struct tm tr,*t=&tr;struct timeval tv;
 }
 
 F1(jtts0){A x,z;C s[9],*u,*v,*zv;D*xv;I n,q;
+ ARGCHK1(w);
  ASSERT(1>=AR(w),EVRANK);
  RZ(x=ts(mtv));
  n=AN(w); xv=DAV(x);
@@ -222,6 +223,7 @@ void jtpmrecord(J jt,A name,A loc,I lc,int val){A x,y;B b;PM*v;PM0*u;
 
 // 6!:12
 F1(jtpmunpack){A*au,*av,c,t,x,z,*zv;B*b;D*dv;I*iv,k,k1,m,n,p,q,wn,*wv;PM*v,*v0,*vq;PM0*u;
+ ARGCHK1(w);
  ASSERT(jt->pma,EVDOMAIN);
  if(!(INT&AT(w)))RZ(w=cvt(INT,w));
  wn=AN(w); wv=AV(w);
@@ -273,6 +275,7 @@ F1(jtpmstats){A x,z;I*zv;PM0*u;
 F1(jttlimq){ASSERTMTV(w); return scf(0.001*jt->timelimit);}
 
 F1(jttlims){D d;
+ ARGCHK1(w);
  ASSERT(!AR(w),EVRANK);
  if(!(FL&AT(w)))RZ(w=cvt(FL,w));
  d=DAV(w)[0];

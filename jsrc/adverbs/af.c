@@ -7,12 +7,14 @@
 
 
 F1(jtunname){A x;V*v;
+ ARGCHK1(w); 
  v=VAV(w);
  if(CTILDE==v->id&&!jt->uflags.us.cx.cx_c.glock&&!(VLOCK&v->flag)){x=v->fgh[0]; if(NAME&AT(x))return symbrd(x);}
  RETF(w);
 }
 
 static B jtselfq(J jt,A w){A hs,*u;V*v;
+ ARGCHK1(w);
  if(AT(w)&NOUN+NAME)return 0;
  v=FAV(w);
  switch(v->id){
@@ -30,6 +32,7 @@ static B jtselfq(J jt,A w){A hs,*u;V*v;
 
 // See if there are references to implicit locatives.  Return 1 if so, 0 if not
 B jthasimploc(J jt,A w){A hs,*u;V*v;
+ ARGCHK1(w);
  if(AT(w)&NOUN+NAME)return 0;
  v=FAV(w);
  switch(v->id){
@@ -70,6 +73,7 @@ EVERYFS(arofixaself,jtaro,jtfixa,0,VFLAGNONE)  // create A block to be used in e
 // AM(a) points to the recursion name-list and must be passed to all recursion levels
 static A jtfixa(J jt,A a,A w){A f,g,h,wf,x,y,z=w;V*v;fauxblock(fauxself); A aa; fauxINT(aa,fauxself,1,0); AM((A)aa)=AM(a);  // place to build recursion parm - make the AK field right, and pass the AM field along
 #define REFIXA(a,x) (IAV0(aa)[0]=(aif|(a)), fixa((A)aa,(x)))
+ ARGCHK1(w);
  I ai=IAV(a)[0];  // value of a
  I aif=ai&(FIXALOCSONLY|FIXALOCSONLYLOWEST|FIXASTOPATINV); // extract control flags
  ai^=aif;   // now ai = state without flags
@@ -172,6 +176,7 @@ static A jtfixa(J jt,A a,A w){A f,g,h,wf,x,y,z=w;V*v;fauxblock(fauxself); A aa; 
 
 // On internal calls, self is an integer whose value contains flags.  Otherwise zeroionei is used
 DF1(jtfix){PROLOG(0005);A z;
+ ARGCHK1(w);
  if(LIT&AT(w)){ASSERT(1>=AR(w),EVRANK); RZ(w=nfs(AN(w),CAV(w)));}
  // only verbs/noun can get in through the parser, but internally we also vet adv/conj
  ASSERT(AT(w)&NAME+VERB+ADV+CONJ,EVDOMAIN);

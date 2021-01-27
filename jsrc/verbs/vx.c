@@ -44,6 +44,7 @@ I jtxint(J jt,X w){I c,n,*v,z;
 }
 
 XF1(jtxstd){A z;B b;I c=0,d,i,j,k,m=XBASE,n,*zv;
+ ARGCHK1(w);
  n=AN(w); RZ(z=ca(w)); zv=AV(z);
  b=0; j=n; DQ(n, --j; if(zv[j]){b=0<zv[j]; break;});
  if(b) for(i=0;i<n;++i){
@@ -224,6 +225,7 @@ XF2(jtxgcd){I c,d;X p,q,t;
 XF2(jtxlcm){return rifvsdebug(xtymes(a,xdiv(w,xgcd(a,w),XMEXACT)));}
 
 static X jtxexp(J jt,X w,I mode){I k,m;X s,y;
+ ARGCHK1(w);
  k=XDIG(w);
  ASSERT(!k||mode!=XMEXACT,EWIRR);
  if(0>k)return rifvsdebug(xc(mode));
@@ -270,6 +272,7 @@ XF2(jtxpow){PROLOG(0097);I c,d,e,r;X m,t,z;
 XF1(jtxsq){return xtymes(w,w);}
 
 XF1(jtxsqrt){I c,m,n,p,q,*wv;X e,x;
+ ARGCHK1(w);
  n=AN(w); wv=AV(w); c=wv[n-1];
  ASSERT(0<=c,EWIMAG);
  if(!(1&n))c=wv[n-2]+c*XBASE;
@@ -417,6 +420,7 @@ static A jtpiev(J jt,I n,X b){A e;I ek,i,n1=n-1;X bi,e0,e1,*ev,t;
 }
 
 static XF1(jtxpi){A e;B p;I i,n,n1,sk;X a,b,c,d,*ev,k,f,m,q,s,s0,t;
+ ARGCHK1(w);
  if(!XDIG(w))return iv0;
  ASSERT(jt->xmode!=XMEXACT,EVDOMAIN);
  RZ(a=xc(545140134L));
@@ -463,6 +467,7 @@ AMONPS( pixX, X,X, , *z=   rifvsdebug(xpi(*x)); , HDR1JERR)
 
 
 F1(jtdigits10){A z;B b=0;I c,m,n,*v,*zv,*zv0;X x;
+ ARGCHK1(w);
  if(!AR(w))switch(CTTZ(AT(w))){
   case INTX:  b=0<=AV(w)[0]; break;
   case XNUMX: x=XAV(w)[0]; n=AN(x); v=AV(x); b=0<=v[n-1]; break;

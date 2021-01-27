@@ -506,6 +506,7 @@ static F1(jtths){A e,i,x,z;C c,*u,*v;I d,m,n,*s;P*p;
 // ": y, returning character array.  If jt->prxthornuni is set, LIT and C2T types return.  prxthornuni is zeroionei[0 or 1]
 // C2T when there are unicodes present
 static A jtthorn1main(J jt,A w,A prxthornuni){PROLOG(0001);A z;
+ ARGCHK1(w);
  if(!AN(w))GATV(z,LIT,0,AR(w),AS(w))
  else switch(CTTZ(AT(w))){
 #ifdef UNDER_CE
@@ -841,6 +842,7 @@ static F1(jtjpr1){PROLOG(0002);A z;
 // if jt->tostdout is clear (for loading scripts quietly), check for errors but produce no output
 // Result is 0 if error, otherwise a harmless constant
 F1(jtjpr){A y;I i,n,t; UC *v;
+ ARGCHK1(w);
  t=AT(w);
   // if w is a noun, format it and output it
  if(t&NOUN&&jt->tostdout)RZ(jpr1(w))

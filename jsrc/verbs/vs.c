@@ -6,6 +6,7 @@
 #include "j.h"
 
 B jtscheck(J jt,A w){A a,e,x,y;I k1,k2,r,*s,t;P*p;D rkblk[16];
+ ARGCHK1(w);
  r=AR(w); s=AS(w); t=AT(w);
  if(t&DENSE)return 1;
  ASSERTSYS(r,"scheck rank");
@@ -154,6 +155,7 @@ A jtsparseit(J jt,A w,A a,A e){PROLOG(0091);A ax,c,x,y,z;B b,*cv;I cm,cn,m,n,r,*
 }
 
 F1(jtdenseit){A a,e,q,s1,x,y,z;B b;C*xv,*zv;I an,ck,k,n,r,t,*s,xn,*yv;P*wp;
+ ARGCHK1(w);
  r=AR(w); t=AT(w);
  if(!r||t&DENSE)return ca(w);
  t=DTYPE(t);
@@ -288,6 +290,7 @@ F2(jtrezero){A x,z;I at,t,wt,zt;P*wp,*zp;
 }    /* respecify the sparse element */
 
 F1(jtunzero){A e,q,x,z;I r;P*wp,*zp;
+ ARGCHK1(w);
  wp=PAV(w); e=SPA(wp,e); x=SPA(wp,x); r=AR(x)-1;
  GASPARSE(z,AT(w),1,AR(w),AS(w)); zp=PAV(z);
  RZ(q=__not(irs2(x,reshape(vec(INT,r,1+AS(x)),e),0L,r,r,jtmatch)));
@@ -299,12 +302,14 @@ F1(jtunzero){A e,q,x,z;I r;P*wp,*zp;
 }    /* remove completely sparse cells */
 
 static F1(jtsparsep1){A*wv;I n=0;
+ ARGCHK1(w);
  ASSERT(1>=AR(w),EVRANK); 
  if(BOX&AT(w)){n=AN(w); wv=AAV(w); ASSERT(1<=n&&n<=3||5==n,EVLENGTH);}
  return sparse1a(0<n?wv[0]:w,1<n?wv[1]:mark,2<n?wv[2]:mark,3<n?wv[3]:mark,4<n?wv[4]:mark);
 }
 
 static F1(jtsparsen1){A*u,z;P*p;
+ ARGCHK1(w);
  ASSERT(SPARSE&AT(w),EVDOMAIN);
  GAT0(z,BOX,3,1); u=AAV(z); p=PAV(w);
  u[0]=shape(w); u[1]=ca(SPA(p,a)); u[2]=ca(SPA(p,e));
@@ -312,6 +317,7 @@ static F1(jtsparsen1){A*u,z;P*p;
 }
 
 F1(jtsparse1){
+ ARGCHK1(w);
  if(!AR(w)||SPARSE&AT(w))return ca(w);
  return sparseit(w,IX(AR(w)),selm(AT(w)));
 }    /* $. y */

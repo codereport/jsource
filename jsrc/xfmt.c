@@ -60,6 +60,7 @@ static const C*qq=">)}]";
 
 
 static F1(jtfmtbfc){A*u,z;B t;C c,p,q,*s,*wv;I i,j,m,n;
+ ARGCHK1(w); 
  if((C2T+C4T)&AT(w))RZ(w=uco2(num(5),w))
  ASSERT(1>=AR(w),EVDOMAIN);
  n=AN(w); wv=CAV(w); t=0; m=1; j=0;
@@ -133,6 +134,7 @@ static B jtwidthdp(J jt, A a, I *w, I *d){
 
 static F1(jtfmtparse){A x,z,*zv;B ml[2+NMODVALS],mod,t;C c,*cu="srqpnmdbijklc",*cu1="?kjibdmnpqrs",d,*s,*wv;
      I fb,i,j,mi,n,n1,p,q,vals[3]={-1,-1,0};
+ ARGCHK1(w);
  w=AAV(w)[0]; n=AN(w);
  GAT0(z,BOX,1+NMODVALS,1); zv=AAV(z); 
  DO(NMODVALS, zv[1+i]=mtv;);

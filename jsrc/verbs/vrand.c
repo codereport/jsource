@@ -436,6 +436,7 @@ static B jtrngstates1(J jt,I j,I n,UI**vv,I i,I k,A x,B p){D*u;UI*xv;
 }
 
 F1(jtrngstates){A*wv;I k;UI**vv=jt->rngV;
+ ARGCHK1(w);
  ASSERT(1==AR(w),EVRANK);
  ASSERT(BOX&AT(w),EVDOMAIN);
  ASSERT(2<=AN(w),EVLENGTH);
@@ -630,6 +631,7 @@ static A jtrollany(J jt,A w,B*b){A z;D*u;I j,m1,n,sh,*v;UI m,mk,s,t,x=jt->rngM[j
 }    /* ?s$x where x can be anything and 1<#x */
 
 F1(jtroll){A z;B b=0;I m,wt;
+ ARGCHK1(w);
  wt=AT(w);
  ASSERT(wt&DENSE,EVDOMAIN);
  if(!AN(w)){GATV(z,B01,0,AR(w),AS(w)); return z;}
@@ -829,6 +831,7 @@ static A jtrollanydot(J jt,A w,B*b){A z;D*u;I j,m1,n,sh,*v;UI m,mk,s,t,x=jt->rng
 #undef roll
 #define roll(w) jtrolldot(jt,(w))
 static F1(jtrolldot){A z;B b=0;I m,wt;
+ ARGCHK1(w);
  wt=AT(w);
  ASSERT(wt&DENSE,EVDOMAIN);
  if(!AN(w)){GATV(z,B01,0,AR(w),AS(w)); return z;}
@@ -886,6 +889,7 @@ DF2(jtrollkx){FXSDECL; ARGCHK3(a,w,self);        FXSDO; z=rollk(a,w,self); FXSOD
 
 /*
 static F1(jtroll){A z;D rl=jt->rl;static D dm=16807,p=2147483647L;I c,n,*v,*x;
+ ARGCHK1(w);
  n=AN(w); v=AV(w);
  RZ(z=reshape(shape(w),num(2))); x=AV(z);
  if(ICMP(v,x,n))

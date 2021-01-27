@@ -292,6 +292,7 @@ F1(jtvi){ARGCHK1(w); return INT&AT(w)?w:cvt(INT,w);}
 
 // Audit w to ensure valid integer value(s).  Error if non-integral.  Result is A block for integer array.  Infinities converted to IMAX/-IMAX
 F1(jtvib){A z;D d,e,*wv;I i,n,*zv;
+ ARGCHK1(w);
  if(AT(w)&INT)return RETARG(w);  // handle common non-failing cases quickly: INT and boolean
  if(AT(w)&B01){if(!AR(w))return zeroionei(BAV(w)[0]); return cvt(INT,w);}
  if(w==ainf)return imax;  // sentence words of _ always use the same block, so catch that too
