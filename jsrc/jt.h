@@ -235,9 +235,6 @@ typedef struct {
  D    tssbase;          /* initial time of date                            */
  A    xmod;             /* extended integer: the m in m&|@f                */  
  I    xmode;            /* extended integer operating mode                 */
-#if MEMAUDIT & 2
- I    audittstackdisabled;   // set to 1 to disable auditing
-#endif
  I    rng;              /* RNG: generator selector                         */
  UF   rngF[5];          /* RNG: function to get the next random number     */
  UI*  rngfxsv;          /* RNG: rngv for fixed seed (?.)                   */

@@ -94,9 +94,6 @@ B jtmeminit(J jt){I k,m=MLEN;
 #define AUDITFILL ||(UI4)AFHRH(Wx)!=Wx->fill
 
 void jtauditmemchains(J jt){F1PREFIP;
-#if MEMAUDIT&16
-I Wi,Wj;A Wx,prevWx=0; if(jt->peekdata){for(Wi=PMINL;Wi<=PLIML;++Wi){Wj=0; Wx=(jt->mfree[-PMINL+Wi].pool); while(Wx){if(FHRHPOOLBIN(AFHRH(Wx))!=(Wi-PMINL)AUDITFILL||Wj>0x10000000)SEGFAULT; prevWx=Wx; Wx=AFCHAIN(Wx); ++Wj;}}}
-#endif
 }
 
 
@@ -122,9 +119,6 @@ B jtspfree(J jt){I i;A p;
    A baseblockproxyroot = 0;  // init to empty proxy chain
    US freereqd = 0;  // indicate if any fully-freed block is found
    for(p=jt->mfree[i].pool;p;p=AFCHAIN(p)){
-#if MEMAUDIT&1
-    if(FHRHPOOLBIN(AFHRH(p))!=i)SEGFAULT;  // make sure chains are valid
-#endif
     A base = FHRHROOTADDR(p,offsetmask);   // address of base
     US baseh = AFHRH(base);  // fetch header for base
     if(baseh==virginbase) {AFPROXYCHAIN(p) = baseblockproxyroot; baseblockproxyroot = p;}  // on first encounter of base block, chain the proxy for it
@@ -288,82 +282,6 @@ void jtspendtracking(J jt){I i;
  return;
 }
 
-#if MEMAUDIT&2
-// Make sure all deletecounts start at 0
-static void auditsimverify0(A w){
- if(!w)return;
- if(AFLAG(w)>>AFAUDITUCX)SEGFAULT;   // hang if nonzero count
- if(AC(w)==0 || (AC(w)<0 && AC(w)!=ACINPLACE+ACUC1 && AC(w)!=ACINPLACE+2))SEGFAULT; 
- if(AFLAG(w)&AFVIRTUAL)auditsimverify0(ABACK(w));  // check backer
- if(AT(w)&(RAT|XNUM)) {A* v=AAV(w);  DQ(AT(w)&RAT?2*AN(w):AN(w), if(*v)auditsimverify0(*v); ++v;)}
- if(!(AFLAG(w)&AFVIRTUAL)&&UCISRECUR(w)){  // process children
-  if(AT(w)&BOX){
-   I n=AN(w); I af=AFLAG(w);
-   A* RESTRICT wv=AAV(w);  // pointer to box pointers
-   I wrel = af&AFNJA?(I)w:0;  // If NJA, add wv[] to wd; otherwise wv[] is a direct pointer
-   if((af&AFNJA)||n==0)return;  // no processing if not J-managed memory (rare)
-   DO(n, auditsimverify0((A)(intptr_t)((I)wv[i]+(I)wrel)););
-  }else if(AT(w)&FUNC) {V* RESTRICT v=VAV(w);
-   auditsimverify0(v->fgh[0]); auditsimverify0(v->fgh[1]); auditsimverify0(v->fgh[2]);
-  }else if(AT(w)&RAT|XNUM) {
-  }else SEGFAULT;  // inadmissible type for recursive usecount
- }
- return;
-}
-
-// Simulate tpop on the input block.  If that produces a delete count that equals the usecount,
-// recur on children if any.  If it produces a delete count higher than the use count in the block, abort
-static void auditsimdelete(A w){I delct;
- if(!w)return;
- if((UI)AN(w)==0xdeadbeefdeadbeef||(UI)AN(w)==0xfeeefeeefeeefeee)SEGFAULT;
- if((delct = ((AFLAG(w)+=AFAUDITUC)>>AFAUDITUCX))>ACUC(w))SEGFAULT;   // hang if too many deletes
- if(AFLAG(w)&AFVIRTUAL && (AT(w)^AFLAG(w))&RECURSIBLE)SEGFAULT;   // hang if nonrecursive virtual
- if(delct==ACUC(w)&&AFLAG(w)&AFVIRTUAL){A wb = ABACK(w);
-  // we fa() the backer, while we mf() the block itself.  So if the backer is NOT recursive, we have to
-  // handle nonrecursive children.  All recursible types will be recursive
-  if(AFLAG(w)&AFVIRTUAL && (AT(wb)^AFLAG(wb))&RECURSIBLE)SEGFAULT;  // backer must be recursive
-  auditsimdelete(wb);  // delete backer of virtual block, recursibly
- }
- if(delct==ACUC(w)&&!(AFLAG(w)&AFVIRTUAL)&&(UCISRECUR(w))){  // we deleted down to 0.  process children
-  if(AT(w)&BOX){
-   I n=AN(w); I af=AFLAG(w);
-   A* RESTRICT wv=AAV(w);  // pointer to box pointers
-   I wrel = af&AFNJA?(I)w:0;  // If NJA, add wv[] to wd; othewrwise wv[] is a direct pointer
-   if((af&AFNJA)||n==0)return;  // no processing if not J-managed memory (rare)
-   DO(n, auditsimdelete((A)(intptr_t)((I)wv[i]+(I)wrel)););
-  }else if(AT(w)&FUNC) {V* RESTRICT v=VAV(w);
-   auditsimdelete(v->fgh[0]); auditsimdelete(v->fgh[1]); auditsimdelete(v->fgh[2]);
-  }else if(AT(w)&RAT|XNUM) {A* v=AAV(w);  DQ(AT(w)&RAT?2*AN(w):AN(w), if(*v)auditsimdelete(*v); ++v;)
-  }else SEGFAULT;  // inadmissible type for recursive usecount
- }
- return;
-}
-// clear delete counts back to 0 for next run
-static void auditsimreset(A w){I delct;
- if(!w)return;
- delct = AFLAG(w)>>AFAUDITUCX;   // did this recur?
- AFLAG(w) &= AFAUDITUC-1;   // clear count for next time
- if(AFLAG(w)&AFVIRTUAL){A wb = ABACK(w);
-  auditsimreset(wb);  // reset backer of virtual block
-  if(AT(wb)&(RAT|XNUM)) {A* v=AAV(wb);  DQ(AT(wb)&RAT?2*AN(wb):AN(wb), if(*v)auditsimreset(*v); ++v;)}  // reset children
- }
- if(delct==ACUC(w)&&!(AFLAG(w)&AFVIRTUAL)&&(UCISRECUR(w))){  // if so, recursive reset
-  if(AT(w)&BOX){
-   I n=AN(w); I af=AFLAG(w);
-   A* RESTRICT wv=AAV(w);  // pointer to box pointers
-   I wrel = af&AFNJA?(I)w:0;  // If NJA, add wv[] to wd; othewrwise wv[] is a direct pointer
-   if((af&AFNJA)||n==0)return;  // no processing if not J-managed memory (rare)
-   DO(n, auditsimreset((A)(intptr_t)((I)wv[i]+(I)wrel)););
-  }else if(AT(w)&FUNC) {V* RESTRICT v=VAV(w);
-   auditsimreset(v->fgh[0]); auditsimreset(v->fgh[1]); auditsimreset(v->fgh[2]);
-  }else if(AT(w)&RAT|XNUM) {A* v=AAV(w);  DQ(AT(w)&RAT?2*AN(w):AN(w), if(*v)auditsimreset(*v); ++v;)
-  }else SEGFAULT;  // inadmissible type for recursive usecount
- }
- return;
-}
-
-#endif
-
 // Register the value to insert into leak-sniff records
 void jtsetleakcode(J jt, I code) {
 #if LEAKSNIFF
@@ -393,38 +311,6 @@ return num(0);
 // Verify that block w does not appear on tstack more than lim times
 // nextpushp might start out on a boundary
 void audittstack(J jt){F1PREFIP;
-#if MEMAUDIT&2
- if(jt->audittstackdisabled&1)return;
- A *ttop;
- A *nvrav=AAV1(jt->nvra);
- // verify counts start clear
- for(ttop=jt->tnextpushp-!!((I)jt->tnextpushp&(NTSTACKBLOCK-1));ttop;){
-  // loop through each entry, skipping the first which is a chain
-  for(;(I)ttop&(NTSTACKBLOCK-1);ttop--){
-   if(*ttop)auditsimverify0(*ttop);
-  }
-  // back up to previous block
-  ttop = (A*)*ttop;  // back up to end of previous block, or 0 if last block
- }
- // Process the NVR stack as well
- DO(jt->parserstackframe.nvrtop, auditsimverify0(nvrav[i]);)
- // loop through each block of stack
- for(ttop=jt->tnextpushp-!!((I)jt->tnextpushp&(NTSTACKBLOCK-1));ttop;){
-  for(;(I)ttop&(NTSTACKBLOCK-1);ttop--){
-   if(*ttop)auditsimdelete(*ttop);
-  }
-  ttop = (A*)*ttop;  // back up to end of previous block, or 0 if last block
- }
- DO(jt->parserstackframe.nvrtop, if(!(AFLAG(nvrav[i])&AFNVRUNFREED))auditsimdelete(nvrav[i]);)
- // again to clear the counts
- for(ttop=jt->tnextpushp-!!((I)jt->tnextpushp&(NTSTACKBLOCK-1));ttop;){
-  for(;(I)ttop&(NTSTACKBLOCK-1);ttop--){
-   if(*ttop)auditsimreset(*ttop);
-  }
-  ttop = (A*)*ttop;  // back up to end of previous block, or 0 if last block
- }
- DO(jt->parserstackframe.nvrtop, auditsimreset(nvrav[i]);)
-#endif
 }
 
 // Free all symbols pointed to by the SYMB block w.
@@ -871,10 +757,6 @@ void jttpop(J jt,A *old){A *endingtpushp;
    }
    pushp=(A*)np; // move to the next block, whichever allocation it is in 
   } else {
-   // The return point:
-#if MEMAUDIT&2
-   audittstack(jt);   // one audit for each tpop.  Mustn't audit inside tpop loop, because that's inconsistent state
-#endif
    return;
   }
  }
@@ -896,9 +778,6 @@ A jtra00s(J jt, AD * RESTRICT w) { ARGCHK1(w); ra00(w,AT(w)); return w; }  // su
 A jtrifvs(J jt, AD * RESTRICT w) { ARGCHK1(w); realizeifvirtual(w); return w; }  // subroutine version of rifv() to save space and be an rvalue
 A jtmkwris(J jt, AD * RESTRICT w) { ARGCHK1(w); makewritable(w); return w; }  // subroutine version of makewritable() to save space and be an rvalue
 
-#if MEMAUDIT&8
-static I lfsr = 1;  // holds varying memory pattern
-#endif
 
 // static auditmodulus = 0;
 // blockx is bit# of MSB in (length-1), i. e. lg2(bufsize)-1
@@ -906,12 +785,6 @@ RESTRICTF A jtgaf(J jt,I blockx){A z;I mfreeb;I n=(I)2<<blockx;  // n=size of al
 // audit free chain I i,j;MS *x; for(i=PMINL;i<=PLIML;++i){j=0; x=(jt->mfree[-PMINL+i].pool); while(x){x=(MS*)(x->a); if(++j>25)break;}}  // every time, audit first 25 entries
 // audit free chain if(++auditmodulus>25){auditmodulus=0; for(i=PMINL;i<=PLIML;++i){j=0; x=(jt->mfree[-PMINL+i].pool); while(x){x=(MS*)(x->a); ++j;}}}
 // use 6!:5 to start audit I i,j;MS *x; if(jt->peekdata){for(i=PMINL;i<=PLIML;++i){j=0; x=(jt->mfree[-PMINL+i].pool); while(x){x=(MS*)(x->a); ++j;}}}
-#if MEMAUDIT&16
-auditmemchains();
-#endif
-#if MEMAUDIT&15
-if((I)jt&3)SEGFAULT;
-#endif
  z=jt->mfree[-PMINL+1+blockx].pool;   // tentatively use head of free list as result - normal case, and even if blockx is out of bounds will not segfault
  if(likely(2>*jt->adbreakr)){  // this is JBREAK0, done this way so predicted fallthrough will be true
   A *pushp=jt->tnextpushp;  // start reads for tpush
@@ -922,10 +795,6 @@ if((I)jt&3)SEGFAULT;
 
    if(z){         // allocate from a chain of free blocks
     jt->mfree[-PMINL+1+blockx].pool = AFCHAIN(z);  // remove & use the head of the free chain
-#if MEMAUDIT&1
-    if(AFCHAIN(z)&&FHRHPOOLBIN(AFHRH(AFCHAIN(z)))!=(1+blockx-PMINL))SEGFAULT;  // reference the next block to verify chain not damaged
-    if(FHRHPOOLBIN(AFHRH(z))!=(1+blockx-PMINL))SEGFAULT;  // verify block has correct size
-#endif
    }else{A u,chn; US hrh; I nt=jt->malloctotal;                   // small block, but chain is empty.  Alloc PSIZE and split it into blocks
 #if 1 || ALIGNTOCACHE   // with smaller headers, always align pool allo to cache bdy
     // align the buffer list on a cache-line boundary
@@ -942,13 +811,8 @@ if((I)jt&3)SEGFAULT;
     {I ot=jt->malloctotalhwmk; ot=ot>nt?ot:nt; jt->malloctotal=nt; jt->malloctotalhwmk=ot;}
     // split the allocation into blocks.  Chain them together, and flag the base.  We chain them in ascending order (the order doesn't matter), but
     // we visit them in back-to-front order so the first-allocated headers are in cache
-#if MEMAUDIT&17
-    u=(A)((C*)z+PSIZE); chn = 0; hrh = FHRHENDVALUE(1+blockx-PMINL); DQ(PSIZE/2>>blockx, u=(A)((C*)u-n); AFCHAIN(u)=chn; chn=u; hrh -= FHRHBININCR(1+blockx-PMINL); AFHRH(u)=hrh; u->fill=AFHRH(u););    // chain blocks to each other; set chain of last block to 0
-    AFHRH(u) = hrh|FHRHROOT;  u->fill=AFHRH(u);  // flag first block as root.  It has 0 offset already
-#else
     u=(A)((C*)z+PSIZE); chn = 0; hrh = FHRHENDVALUE(1+blockx-PMINL); DQ(PSIZE/2>>blockx, u=(A)((C*)u-n); AFCHAIN(u)=chn; chn=u; hrh -= FHRHBININCR(1+blockx-PMINL); AFHRH(u)=hrh;);    // chain blocks to each other; set chain of last block to 0
     AFHRH(u) = hrh|FHRHROOT;    // flag first block as root.  It has 0 offset already
-#endif
     jt->mfree[-PMINL+1+blockx].pool=(A)((C*)u+n);  // the second block becomes the head of the free list
     mfreeb-=PSIZE;     // We are adding a bunch of free blocks now...
     jt->mfreegenallo+=PSIZE;   // ...add them to the total bytes allocated
@@ -970,14 +834,8 @@ if((I)jt&3)SEGFAULT;
 #endif
    {I ot=jt->malloctotalhwmk; ot=ot>nt?ot:nt; jt->malloctotal=nt; jt->malloctotalhwmk=ot;}
    AFHRH(z) = (US)FHRHSYSJHDR(1+blockx);    // Save the size of the allocation so we know how to free it and how big it was
-#if MEMAUDIT&17
-   z->fill=(UI4)AFHRH(z);
-#endif
    jt->mfreegenallo=mfreeb+=n;    // mfreegenallo is the byte count allocated for large blocks
   }
-#if MEMAUDIT&8
-  DO((((I)1)<<(1+blockx-LGSZI)), lfsr = (lfsr<<1LL) ^ (lfsr<0?0x1b:0); if(i!=6)((I*)z)[i] = lfsr;);   // fill block with garbage - but not the allocation word
-#endif
   AFLAG(z)=0; AZAPLOC(z)=pushp; AC(z)=ACUC1|ACINPLACE;  // all blocks are born inplaceable, and point to their deletion entry in tpop
    // we do not attempt to combine the AFLAG write into a 64-bit operation, because as of 2017 Intel processors
    // will properly store-forward any read that is to the same boundary as the write, and we always read the same way we write
@@ -1032,12 +890,6 @@ RESTRICTF A jtga(J jt,I type,I atoms,I rank,I* shaape){A z;
 
 // free a block.  The usecount must make it freeable
 void jtmf(J jt,A w){I mfreeb;
-#if MEMAUDIT&16
-auditmemchains();
-#endif
-#if MEMAUDIT&15
-if((I)jt&3)SEGFAULT;
-#endif
 #if LEAKSNIFF
  if(leakcode){I i;
   // Remove block from the table if the address matches
@@ -1055,16 +907,8 @@ if((I)jt&3)SEGFAULT;
  if(AT(w)==SYMB){
   freesymb(jt,w);
  }
-#if MEMAUDIT&1
- if(hrh==0 || blockx>(PLIML-PMINL+1))SEGFAULT;  // pool number must be valid
-#if MEMAUDIT&17
-#endif
-#endif
  if(FHRHBINISPOOL(blockx)){   // allocated by malloc
   allocsize = FHRHPOOLBINSIZE(blockx);
-#if MEMAUDIT&4
-  DO((allocsize>>LGSZI), if(i!=6)((I*)w)[i] = (I)0xdeadbeefdeadbeefLL;);   // wipe the block clean before we free it - but not the reserved area
-#endif
   mfreeb = jt->mfree[blockx].ballo;   // number of bytes allocated at this size (biased zero point)
   AFCHAIN(w)=jt->mfree[blockx].pool;  // append free list to the new addition...
   jt->mfree[blockx].pool=w;   //  ...and make new addition the new head
@@ -1074,9 +918,6 @@ if((I)jt&3)SEGFAULT;
  }else{                // buffer allocated from subpool.
   mfreeb = jt->mfreegenallo;
   allocsize = FHRHSYSSIZE(hrh);
-#if MEMAUDIT&4
-  DO((allocsize>>LGSZI), if(i!=6)((I*)w)[i] = (I)0xdeadbeefdeadbeefLL;);   // wipe the block clean before we free it - but not the reserved area
-#endif
 #if ALIGNTOCACHE
   FREECHK(((I**)w)[-1]);  // point to initial allocation and free it
   jt->malloctotal-=allocsize+CACHELINESIZE;
