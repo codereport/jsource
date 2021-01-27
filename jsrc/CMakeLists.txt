@@ -1,7 +1,7 @@
 
 add_library(j)
 target_include_directories(j PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
-target_compile_definitions(j PRIVATE C_NA=0)
+target_compile_definitions(j PRIVATE)
 target_link_libraries(j PRIVATE ${STANDARD_MATH_LIBRARY})
 set_source_files_properties(aes-ni.c PROPERTIES COMPILE_FLAGS -maes)
 target_sources(j PRIVATE

@@ -3,13 +3,6 @@
 /*                                                                         */
 /* SYS_ and friends                                                        */
 
-#ifndef C_NA // noasm/asm
-#define C_NA 1
-#endif
-
-#undef C_NA
-#define C_NA 1   // scaf force noasm
-
 /* Inclusion of a system herein does not necessarily mean that the source  */
 /* compiles or works under that system.                                    */
 
