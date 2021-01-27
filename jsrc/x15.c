@@ -134,16 +134,10 @@ typedef struct {
 
 
 #if (SYS & SYS_MACOSX) | (SYS & SYS_LINUX)
-#ifdef __PPC64__
-extern void double_trick(D,D,D,D,D,D,D,D,D,D,D,D,D);
-#else
 extern void double_trick(D,D,D,D,D,D,D,D);
 #endif
-#endif
 
-#ifdef __PPC64__
-  #define dtrick double_trick(dd[0],dd[1],dd[2],dd[3],dd[4],dd[5],dd[6],dd[7],dd[8],dd[9],dd[10],dd[11],dd[12]);
-#elif defined(__x86_64__)
+#if defined(__x86_64__)
 /* might be faster */
   #define dtrick \
 __asm__ ("movq (%0),%%xmm0\n\t"       \
@@ -850,11 +844,7 @@ static B jtcdexec1(J jt,CCT*cc,C*zv0,C*wu,I wk,I wt,I wd){A*wv=(A*)wu,x,y,*zv;B 
    case 'i': *dv++=(int)*xv; break;
    case 'x': *dv++=*xv;      break;
    case 'f':
-  #if defined(__PPC64__)
-     /* +1 put the float in low bits in dv, but dd has to be D */
-     *dv=0; *(((float*)dv++))=(float)(dd[dcnt++]=*(D*)xv);
-     /* *dv=0; *(((float*)dv++)+1)=dd[dcnt++]=(float)*(D*)xv; */
-  #elif defined(__aarch64__)
+  #if defined(__aarch64__)
      {f=(float)*(D*)xv; dd[dcnt]=0; *(float*)(dd+dcnt++)=f;
       if(dcnt>8){
         if(dv-data>=8)*(float*)(dv++)=f;else *(float*)(data+dcnt-1)=f;}}
@@ -865,10 +855,7 @@ static B jtcdexec1(J jt,CCT*cc,C*zv0,C*wu,I wk,I wt,I wd){A*wv=(A*)wu,x,y,*zv;B 
   #endif
              break;
    case 'd':
-#if defined(__PPC64__)
-             /* always need to increment dv, the contents get used from the 14th D */
-             *(D*)dv++=dd[dcnt++]=*(D*)xv;
-#elif defined(__aarch64__)
+#if defined(__aarch64__)
              dd[dcnt++]=*(D*)xv;
              if(dcnt>8){
                if(dv-data>=8)*dv++=*xv;else *(data+dcnt-1)=*xv;}
