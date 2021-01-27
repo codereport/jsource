@@ -21,7 +21,7 @@ F2(jtsetfv){A q=jt->fill;I t;
  return TYPESEQ(t,AT(w))?w:cvt(t,w);  // note if w is boxed and nonempty this won't change it
 }
 
-F1(jtfiller){A z; GA(z,AT(w),1,0,0); fillv(AT(w),1L,CAV(z)); return z;}
+F1(jtfiller){A z; ARGCHK1(w); GA(z,AT(w),1,0,0); fillv(AT(w),1L,CAV(z)); return z;}
 
 // move n default fills of type t to *v
 void jtfillv(J jt,I t,I n,C*v){I k=bpnoun(t);A afill;
@@ -121,6 +121,7 @@ F2(jtrotate){A origw=w,y,z;B b;C*u,*v;I acr,af,ar,*av,d,k,m,n,p,*s,wcr,wf,wn,wr;
 }    /* a|.!.f"r w */
 
 static F1(jtrevsp){A a,q,x,y,z;I c,f,k,m,n,r,*v,wr;P*wp,*zp;
+ ARGCHK1(w);
  ASSERT(!jt->fill,EVNONCE);
  wr=AR(w); r=(RANKT)jt->ranks; r=wr<r?wr:r; f=wr-r; RESETRANK;
  m=*(f+AS(w)); wp=PAV(w);
@@ -138,7 +139,7 @@ static F1(jtrevsp){A a,q,x,y,z;I c,f,k,m,n,r,*v,wr;P*wp,*zp;
 }    /* |."r w on sparse arrays */
 
 F1(jtreverse){A z;C*wv,*zv;I f,k,m,n,nk,r,*v,*ws,wt,wr;
- F1PREFIP;
+ F1PREFIP;ARGCHK1(w);
  if(unlikely((SPARSE&AT(w))!=0))return revsp(w);
  if(jt->fill)return rotate(num(-1),w);  // rank is set - not inplaceable because it uses fill
  wr=AR(w); r=(RANKT)jt->ranks; r=wr<r?wr:r; f=wr-r;  // no RESETRANK - we don't call any primitive from here on

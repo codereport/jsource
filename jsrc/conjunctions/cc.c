@@ -1102,6 +1102,7 @@ static DF2(jttess2){A z,zz=0,virtw,strip;I n,rs[3],cellatoms,cellbytes,vmv,hmv,v
 }
 
 static DF1(jttess1){A s;I m,r,*v;
+ ARGCHK1(w);
  r=AR(w); RZ(s=shape(w)); RZ(s=mkwris(s)); v=AV(s);
  m=IMAX; DO(r, if(m>v[i])m=v[i];); DO(r, v[i]=m;);  // Get length of long axis; set all axes to that length in a arg to cut
  return tess2(s,w,self);

@@ -16,7 +16,7 @@ F2(jtobverse){ASSERTVV(a,w); return CDERIV(COBVERSE,obv1,obv2,((FAV(a)->flag&FAV
 
 // Adverse.  Run f, and if that fails (and not with THROW), run g
 static DF1(ad1){DECLFG;A z;
- 
+ ARGCHK1(w); 
  WITHDEBUGOFF(z=CALL1(f1,  w,fs);)
  if(EVTHROW==jt->jerr)return 0;
  RESETERR;

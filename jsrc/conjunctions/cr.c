@@ -34,6 +34,7 @@
 // rr is the rank at which the verb will be applied: in u"n, the smaller of rank-of-u and n
 A jtrank1ex(J jt,AD * RESTRICT w,A fs,I rr,AF f1){F1PREFIP;PROLOG(0041);A z,virtw;
    I mn,wcn,wf,wk;
+ ARGCHK1(w);
  wf=AR(w)-rr;
  if(unlikely(!wf)){return CALL1IP(f1,w,fs);}  // if there's only one cell and no frame, run on it, that's the result.
  if(unlikely((AT(w)&SPARSE)!=0))return sprank1(w,fs,rr,f1);
@@ -118,6 +119,7 @@ A jtrank1ex(J jt,AD * RESTRICT w,A fs,I rr,AF f1){F1PREFIP;PROLOG(0041);A z,virt
 // f1 is the function to use if there are no flags, OR if there is just 1 cell with no frame or a cell of fill 
 A jtrank1ex0(J jt,AD * RESTRICT w,A fs,AF f1){F1PREFIP;PROLOG(0041);A z,virtw;
    I wk;
+ ARGCHK1(w);
  if(unlikely(!AR(w))){return CALL1IP(f1,w,fs);}  // if there's only one cell and no frame, run on it, that's the result.  Make this as fast as possible.
  // Switch to sparse code if argument is sparse
  if(unlikely((AT(w)&SPARSE)!=0))return sprank1(w,fs,0,f1);
@@ -557,7 +559,7 @@ A jtrank2ex0(J jt,AD * RESTRICT a,AD * RESTRICT w,A fs,AF f2){F2PREFIP;PROLOG(00
 // irs1() and irs2() are simply calls to the IRS-savvy function f[12] with the specified rank, faster than creating a verb with rank
 
 A jtirs1(J jt,A w,A fs,I m,AF f1){A z;I wr; 
- F1PREFIP; 
+ F1PREFIP; ARGCHK1(w);
 // Get the rank of w; if the requested rank m is > wr, use ~0 because some verbs test for that as an expedient
 // If m is negative, use wr+m but never < 0
  wr=AR(w); m=m>=wr?(RANK2T)~0:m; wr+=m; wr=wr<0?0:wr; wr=m>=0?m:wr;   // requested rank, after negative resolution, or ~0
@@ -595,6 +597,7 @@ static DF2(cons2a){return FAV(self)->fgh[0];}
 
 // Constant verbs do not inplace because we loop over cells.  We could speed this up if it were worthwhile.
 static DF1(cons1){V*sv=FAV(self);
+ ARGCHK1(w);
  I mr; efr(mr,AR(w),(I)sv->localuse.lI4[0]);
  return rank1ex(w,self,mr,cons1a);
 }
@@ -606,6 +609,7 @@ static DF2(cons2){V*sv=FAV(self);
 
 // cyclic-gerund verbs create an iterator from the gerund and pass that into rank processing, looping over cells
 static DF1(cycr1){V*sv=FAV(self);I cger[128/SZI];
+ ARGCHK1(w);
  RZ(self=createcycliciterator((A)&cger, self));  // fill in an iterator for this gerund
  I mr; efr(mr,AR(w),(I)sv->localuse.lI4[0]);
  return rank1ex(w,self,mr,FAV(self)->valencefns[0]);  // callback is to the cyclic-execution function
@@ -621,19 +625,19 @@ static DF2(cycr2){V*sv=FAV(self);I cger[128/SZI];
 
 
 // Handle u"n y where u supports irs.  Since the verb may support inplacing even with rank (,"n for example), pass that through.
-static DF1(rank1i){F1PREFIP;DECLF;  // this version when requested rank is positive
+static DF1(rank1i){F1PREFIP;ARGCHK1(w);DECLF;  // this version when requested rank is positive
  I m=sv->localuse.lI4[0]; m=m>=AR(w)?~0:m; jt->ranks=(RANK2T)(m);  // install rank for called routine
  A z=CALL1IP(f1,w,fs);
  jt->ranks=(RANK2T)~0;  // reset rank to infinite
  RETF(z);
 }
-static DF1(rank1in){F1PREFIP;DECLF;  // this version when requested rank is negative
+static DF1(rank1in){F1PREFIP;ARGCHK1(w);DECLF;  // this version when requested rank is negative
  I m=sv->localuse.lI4[0]+AR(w); m=m<0?0:m; jt->ranks=(RANK2T)(m);  // install rank for called routine
  A z=CALL1IP(f1,w,fs);
  jt->ranks=(RANK2T)~0;  // reset rank to infinite
  RETF(z);
 }
-static DF2(rank2i){F2PREFIP;DECLF;  // this version when requested rank is positive
+static DF2(rank2i){F2PREFIP;ARGCHK1(w);DECLF;  // this version when requested rank is positive
  I ar=sv->localuse.lI4[1]; ar=ar>=AR(a)?(RANKT)~0:ar; I af=AR(a)-ar;   // left rank
  I wr=sv->localuse.lI4[2]; wr=wr>=AR(w)?(RANKT)~0:wr; I wf=AR(w)-wr;   // right rank
  af=wf<af?wf:af; af=af<0?0:af;
@@ -643,7 +647,7 @@ static DF2(rank2i){F2PREFIP;DECLF;  // this version when requested rank is posit
  jt->ranks=(RANK2T)~0;  // reset rank to infinite
  RETF(z);
 }
-static DF2(rank2in){F2PREFIP;DECLF;  // this version when a requested rank is negative
+static DF2(rank2in){F2PREFIP;ARGCHK1(w);DECLF;  // this version when a requested rank is negative
  I wr=AR(w); I r=sv->localuse.lI4[2]; r=r>=wr?(RANKT)~0:r; wr+=r; wr=wr<0?0:wr; wr=r>=0?r:wr; I wf=AR(w)-wr;   // right rank
  I ar=AR(a); r=sv->localuse.lI4[1];   r=r>=ar?(RANKT)~0:r; ar+=r; ar=ar<0?0:ar; ar=r>=0?r:ar; I af=AR(a)-ar;   // left rank
  af=wf<af?wf:af; af=af<0?0:af;
@@ -657,6 +661,7 @@ static DF2(rank2in){F2PREFIP;DECLF;  // this version when a requested rank is ne
 // u"n y when u does not support irs. We loop over cells, and as we do there is no reason to enable inplacing
 // THIS SUPPORTS INPLACING: NOTHING HERE MAY DEREFERENCE jt!!
 static DF1(rank1){DECLF;I m,wr;
+ ARGCHK1(w);
  wr=AR(w); efr(m,wr,(I)sv->localuse.lI4[0]);
  // We know that the first call is RANKONLY, and we consume any other RANKONLYs in the chain until we get to something else.  The something else becomes the
  // fs/f1 to rank1ex.  Until we can handle multiple fill neighborhoods, we mustn't consume a verb of lower rank
@@ -672,6 +677,7 @@ static DF1(jtrank10){return jtrank1ex0(jt,w,self,jtrank10atom);}  // pass inplac
 
 
 static DF1(rank1q){  // fast version: nonneg rank, no check for multiple RANKONLY
+ ARGCHK1(w);
  I r=AR(w); r=r>FAV(self)->localuse.lI4[0]?FAV(self)->localuse.lI4[0]:r; A fs=FAV(self)->fgh[0];
  return rank1ex(w,fs,r,FAV(fs)->valencefns[0]);
 }

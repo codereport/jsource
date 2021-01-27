@@ -11,6 +11,7 @@
 
 // Calculate byte-at-a-time CRC table in *crctab, and return the starting value as the result
 static UINT jtcrcvalidate(J jt,A w, UINT* crctab){A*wv;B*v;I m;UINT p,x,z=-1;
+ ARGCHK1(w);
  ASSERT(1>=AR(w),EVRANK);
  m=AN(w);
  if(m&&BOX&AT(w)){ASSERT(2>=m,EVLENGTH); wv=AAV(w);  w=wv[0]; if(2==m)RE(z=(UINT)i0(wv[1]));}
@@ -35,6 +36,7 @@ F2(jtcrc2){I n;UINT z;UC*v; UINT crctab[256];
 }
 
 F1(jtcrccompile){A h,*hv;UINT z; UINT crctab[256];
+ ARGCHK1(w);
  GAT0(h,BOX,2,1); hv=AAV(h);
  RE(z=crcvalidate(w,crctab));
  RZ(hv[0]=rifvs(vec(LIT,sizeof(crctab),crctab)));  // Save the table.  We don't have any other good type to use
@@ -43,6 +45,7 @@ F1(jtcrccompile){A h,*hv;UINT z; UINT crctab[256];
 }
 
 DF1(jtcrcfixedleft){A h,*hv;I n;UINT*t,z;UC*v;
+ ARGCHK1(w);
  h=FAV(self)->fgh[2]; hv=AAV(h); t=(UINT*)AV(hv[0]); z=(UINT)AV(hv[1])[0];
  n=AN(w); v=UAV(w);
  ASSERT(!n||AT(w)&LIT+C2T+C4T,EVDOMAIN);

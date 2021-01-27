@@ -16,6 +16,7 @@
 
 
 static DF1(jtpowseqlim){PROLOG(0039);A x,y,z,*zv;I i,n;
+ ARGCHK1(w);
  RZ(z=exta(BOX,1L,1L,20L)); zv=AAV(z); INCORP(w); *zv++=x=w;
  i=1; n=AN(z);
  while(1){
@@ -57,6 +58,7 @@ static F2(jttclosure){A z;I an,*av,c,d,i,wn,wr,wt,*wv,*zv,*zz;
 }    /* {&a^:(<_) w */
 
 static DF1(jtindexseqlim1){A fs;
+ ARGCHK1(w); 
  fs=FAV(self)->fgh[0];  // {&x
  return AN(w)&&AT(w)&B01+INT?tclosure(FAV(fs)->fgh[1],w):powseqlim(w,fs);
 }    /* {&x^:(<_) w */
@@ -68,6 +70,7 @@ static DF2(jtindexseqlim2){
 
 // u^:(<n) If n negative, take inverse of u; if v infinite, go to routine that checks for no change.  Otherwise convert to u^:(i.|n) and restart
 static DF1(jtpowseq){A fs,gs,x;I n=IMAX;V*sv;
+ ARGCHK1(w);
  sv=FAV(self); fs=sv->fgh[0]; gs=sv->fgh[1];
  ASSERT(!AR(gs),EVRANK);
  ASSERT(BOX&AT(gs),EVDOMAIN);
@@ -79,7 +82,7 @@ static DF1(jtpowseq){A fs,gs,x;I n=IMAX;V*sv;
 
 // u^:n w where n is nonnegative finite integer atom (but never 0 or 1, which are handled as special cases)
 static DF1(jtfpown){A fs,z;AF f1;I n;V*sv;A *old;
- F1PREFIP;
+ F1PREFIP;ARGCHK1(w);
  sv=FAV(self);
  n=AV(sv->fgh[2])[0];
  fs=sv->fgh[0]; f1=FAV(fs)->valencefns[0];
@@ -195,8 +198,8 @@ static DF2(jtpinf12){PROLOG(0340);A z;  // no reason to inplace, since w must be
  }
 }
 
-static DF1(jtinv1){F1PREFIP;DECLFG;A z; A i; RZ(i=inv((fs))); FDEPINC(1);  z=(FAV(i)->valencefns[0])(FAV(i)->flag&VJTFLGOK1?jtinplace:jt,w,i);       FDEPDEC(1); RETF(z);}  // was invrecur(fix(fs))
-static DF1(jtinvh1){F1PREFIP;DECLFGH;A z;    FDEPINC(1); z=(FAV(hs)->valencefns[0])(jtinplace,w,hs);        FDEPDEC(1); RETF(z);}
+static DF1(jtinv1){F1PREFIP;DECLFG;A z; ARGCHK1(w);A i; RZ(i=inv((fs))); FDEPINC(1);  z=(FAV(i)->valencefns[0])(FAV(i)->flag&VJTFLGOK1?jtinplace:jt,w,i);       FDEPDEC(1); RETF(z);}  // was invrecur(fix(fs))
+static DF1(jtinvh1){F1PREFIP;DECLFGH;A z; ARGCHK1(w);    FDEPINC(1); z=(FAV(hs)->valencefns[0])(jtinplace,w,hs);        FDEPDEC(1); RETF(z);}
 static DF2(jtinv2){DECLFG;A z; ARGCHK2(a,w); FDEPINC(1); df1(z,w,inv(amp(a,fs))); FDEPDEC(1); STACKCHKOFL RETF(z);}  // the CHKOFL is to avoid tail recursion, which prevents a recursion loop from being broken
 static DF1(jtinverr){F1PREFIP;ASSERT(0,EVDOMAIN);}  // used for uninvertible monads
 

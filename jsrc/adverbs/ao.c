@@ -7,7 +7,7 @@
 
 // This is the derived verb for f/. y
 static DF1(jtoblique){A x,y,z;I m,n,r;D rkblk[16];
- F1PREFIP;
+ F1PREFIP;ARGCHK1(w);
  r=AR(w);  // r = rank of w
  // create y= ,/ w - the _2-cells of w arranged in a list (virtual block)
  RZ(y=redcat(w,self)); if(1>=r){m=AN(w); n=1;}else{m=AS(w)[0]; n=AS(w)[1];}
@@ -36,6 +36,7 @@ static DF1(jtoblique){A x,y,z;I m,n,r;D rkblk[16];
 
 // Derived verb for f//. y for atomic f
 static DF1(jtobqfslash){A y,z;B b=0,p;C er,id,*wv;I c,d,k,m,m1,mn,n,n1,r,*s,wt;
+ ARGCHK1(w);
  r=AR(w); s=AS(w); wt=AT(w); wv=CAV(w);
  if((-AN(w)&(1-r)&-(DENSE&wt))>=0)return oblique(w,self);  // revert to default if rank<2, empty, or sparse.  This implies m/n below are non0
  y=FAV(self)->fgh[0]; y=FAV(y)->fgh[0]; id=FAV(y)->id;
@@ -636,6 +637,7 @@ const UI4 shortrange[3][4] = {{0,65536,65536,0}, {0,2,258,0}, {0,256,65536,0}}; 
 static DF2(jtkeytally);
 
 static F1(jtkeytallysp){PROLOG(0015);A b,e,q,x,y,z;I c,d,j,k,*u,*v;P*p;
+ ARGCHK1(w);
  RZ(q=indexof(w,w));
  p=PAV(q); 
  x=SPA(p,x); u=AV(x); c=AN(x);
@@ -776,6 +778,7 @@ DF2(jtkeyheadtally){F2PREFIP;PROLOG(0017);A f,q,x,y,z;I b;I at,*av,k,n,r,*qv,*u,
 F1(jtsldot){A h=0;AF f1=jtoblique,f2;C c,d,e;I flag=VJTFLGOK1|VJTFLGOK2;V*v;
 // NOTE: u/. is processed using the code for u;.1 and passing the self for /. into the cut verb.  So, the self produced
 // by /. and ;.1 must be the same as far as flags etc.
+ ARGCHK1(w);
  if(NOUN&AT(w)){flag|=VGERL; RZ(h=fxeachv(1L,w));}
  v=VAV(w);
  switch(ID(w)){  // no default for f2: every path must set it

@@ -738,7 +738,7 @@ I utousize(C4* src, I srcn){ C4 w,w1; I r=0;
 
 F1(jttoutf16){A z;I n,t,q,b=0,j; UC* wv; US* c2v; C4* c4v; A c4; I *v;
  PROLOG(0000);
- ASSERT(1>=AR(w),EVRANK); n=AN(w); t=AT(w); wv=UAV(w);
+ ARGCHK1(w); ASSERT(1>=AR(w),EVRANK); n=AN(w); t=AT(w); wv=UAV(w);
  if(!n) {GATV(z,LIT,n,AR(w),AS(w)); return z;}; // empty lit list
  ASSERT(t&(NUMERIC+JCHAR), EVDOMAIN);
  if(NUMERIC&t) // u16 from int
@@ -796,7 +796,7 @@ F1(jttoutf16){A z;I n,t,q,b=0,j; UC* wv; US* c2v; C4* c4v; A c4; I *v;
 // w is C2T C4T or LIT.  Result is U8 string
 A jttoutf8a(J jt,A w,A prxthornuni){A z;I n,t,q;  // prxthornuni is unused
 PROLOG(0000);
-ASSERT(1>=AR(w),EVRANK); n=AN(w); t=AT(w);
+ARGCHK1(w); ASSERT(1>=AR(w),EVRANK); n=AN(w); t=AT(w);
 if(!n) {GATV(z,LIT,n,AR(w),AS(w)); return z;}; // empty lit list
 if(t&LIT)RCA(w); // char unchanged
 ASSERT(t&(C2T+C4T), EVDOMAIN);
@@ -820,7 +820,7 @@ EPILOG(z);
 // w is C2T C4T or LIT INT.  Result is U8 string
 F1(jttoutf8){A z;I n,t,q,j; A c4; C4* c4v; I *v;
 PROLOG(0000);
-ASSERT(1>=AR(w),EVRANK); n=AN(w); t=AT(w);
+ARGCHK1(w); ASSERT(1>=AR(w),EVRANK); n=AN(w); t=AT(w);
 if(!n) {GATV(z,LIT,n,AR(w),AS(w)); return z;}; // empty lit list
 if(t&LIT)RCA(w); // char unchanged
 ASSERT(t&(NUMERIC+JCHAR), EVDOMAIN);
@@ -855,7 +855,7 @@ EPILOG(z);
 // Similar to jttoutf16, but unlike 7&u: this one always returns unicode
 F1(jttoutf16x){A z;I n,t,q;
 PROLOG(0000);
-ASSERT(1>=AR(w),EVRANK); n=AN(w); t=AT(w);
+ARGCHK1(w); ASSERT(1>=AR(w),EVRANK); n=AN(w); t=AT(w);
 if(!n) {GATV(z,C2T,n,AR(w),AS(w)); return z;}; // empty list
 if(t&C2T)RCA(w);
 ASSERT(t&LIT+C4T,EVDOMAIN);
@@ -892,7 +892,7 @@ f[q]=0;
 
 F1(jttoutf32){A z;I n,t,q,b=0,j; UC* wv; US* c2v; C4* c4v; I* v;
  PROLOG(0000);
- ASSERT(1>=AR(w),EVRANK); n=AN(w); t=AT(w); wv=UAV(w);
+ ARGCHK1(w); ASSERT(1>=AR(w),EVRANK); n=AN(w); t=AT(w); wv=UAV(w);
  if(!n) {GATV(z,LIT,n,AR(w),AS(w)); return z;}; // empty lit list
  ASSERT(t&(NUMERIC+JCHAR), EVDOMAIN);
  if(NUMERIC&t) // u32 from int
@@ -956,7 +956,7 @@ F1(jttoutf32){A z;I n,t,q,b=0,j; UC* wv; US* c2v; C4* c4v; I* v;
 // rank is infinit
 F1(jttou32){A z;I n,t,b=0,j; UC* wv; US* c2v; C4* c4v; I* v; UC* c1v;
  PROLOG(0000);
- n=AN(w); t=AT(w); wv=UAV(w);
+ ARGCHK1(w); n=AN(w); t=AT(w); wv=UAV(w);
  if(C4T&AT(w))RCA(w);  // if already C4T, return
  ASSERT(!n||(NUMERIC+JCHAR)&AT(w),EVDOMAIN);  // must be empty or unicode
  if(!n) {GATV(z,C4T,n,AR(w),AS(w)); return z;}; // empty list
@@ -987,7 +987,7 @@ F1(jttou32){A z;I n,t,b=0,j; UC* wv; US* c2v; C4* c4v; I* v; UC* c1v;
 // cnull 0: cesu-8  1: modified utf-8
 static A tocesu8a(J jt, A w, I cnul) {A z,z1; UC* wv=UAV(w); I n,t,q; C4* c4v; US* c2v;
 PROLOG(0000);
-ASSERT(1>=AR(w),EVRANK); n=AN(w); t=AT(w);
+ARGCHK1(w); ASSERT(1>=AR(w),EVRANK); n=AN(w); t=AT(w);
 if(!n) {GATV(z,LIT,n,AR(w),AS(w)); return z;}; // empty list
 ASSERT(t&LIT,EVDOMAIN);
 // convert to utf-16

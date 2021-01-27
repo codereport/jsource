@@ -60,6 +60,7 @@ static const C*qq=">)}]";
 
 
 static F1(jtfmtbfc){A*u,z;B t;C c,p,q,*s,*wv;I i,j,m,n;
+ ARGCHK1(w); 
  if((C2T+C4T)&AT(w))RZ(w=uco2(num(5),w))
  ASSERT(1>=AR(w),EVDOMAIN);
  n=AN(w); wv=CAV(w); t=0; m=1; j=0;
@@ -101,7 +102,7 @@ static I jtdpone(J jt, B bits, D w){D t;
 // returns 0 if error, and sets *w and *d.  If both omitted, return -1/-1; if only www omitted, error;
 //  if no '.', return -1/www; if both given (even if d empty) return www/ddd
 static B jtwidthdp(J jt, A a, I *w, I *d){
- RZ(w); RZ(d);
+ ARGCHK1(a); RZ(w); RZ(d);
  #define digdotvalues(w) CCM(w,'0')+CCM(w,'1')+CCM(w,'2')+CCM(w,'3')+CCM(w,'4')+CCM(w,'5')+CCM(w,'6')+CCM(w,'7')+CCM(w,'8')+CCM(w,'9')+CCM(w,'.')
  CCMWDS(digdot)
  I remchars=AN(a); C *v=CAV(a);  // number of chars left, pointer to current
@@ -133,6 +134,7 @@ static B jtwidthdp(J jt, A a, I *w, I *d){
 
 static F1(jtfmtparse){A x,z,*zv;B ml[2+NMODVALS],mod,t;C c,*cu="srqpnmdbijklc",*cu1="?kjibdmnpqrs",d,*s,*wv;
      I fb,i,j,mi,n,n1,p,q,vals[3]={-1,-1,0};
+ ARGCHK1(w);
  w=AAV(w)[0]; n=AN(w);
  GAT0(z,BOX,1+NMODVALS,1); zv=AAV(z); 
  DO(NMODVALS, zv[1+i]=mtv;);
@@ -392,8 +394,8 @@ static F2(jtfmtprecomp) {A*as,base,fb,len,strs,*u,z;B*bits,*bw;D dtmp,*dw;
 static A jtfmtallcol(J jt, A a, A w, I mode) {A *a1v,base,fb,len,strs,*u,v,x;
     B *bits,*bv;C*cB,*cD,*cM,*cN,*cP,*cQ,*cR,*cI,*cJ,*cK,*cv,**cvv,*cx,*subs;D dtmp,*dv;
     I coll,d,g,h,i,*ib,imod,*iv,*il,j,k,l,m,mods,nB,nD,nM,nN,nP,nQ,nR,nI,nJ,nK,n,nc,nf,t,wr,*ws,y,zs[2];
- u=AAV(a); base=*u++; strs=*u++; len=*u++; fb=*u++; u=0; subs=0;  // extract components: len->lengths of the values
- n=AN(w); t=AT(w); wr=AR(w); ws=AS(w); SHAPEN(w,wr-1,nc); 
+ ARGCHK1(a); u=AAV(a); base=*u++; strs=*u++; len=*u++; fb=*u++; u=0; subs=0;  // extract components: len->lengths of the values
+ ARGCHK1(w); n=AN(w); t=AT(w); wr=AR(w); ws=AS(w); SHAPEN(w,wr-1,nc); 
  ASSERT(B01+INT+FL&t, EVDOMAIN);
 
  nf=1==AR(base)?1:AS(base)[0];
@@ -565,6 +567,6 @@ F2(jtfmt22){A z;I mode,r,j;
  return AS(z)[0]?razeh(z):lamin1(z);
 } /* 8!:2 dyad */
 
-F1(jtfmt01){RETF(fmt02(AR(w)?reshape(sc(AS(w)[AR(w)-1]),ds(CACE)):ds(CACE),w));} /* 8!:0 monad */
-F1(jtfmt11){RETF(fmt12(AR(w)?reshape(sc(AS(w)[AR(w)-1]),ds(CACE)):ds(CACE),w));} /* 8!:1 monad */
-F1(jtfmt21){RETF(fmt22(AR(w)?reshape(sc(AS(w)[AR(w)-1]),ds(CACE)):ds(CACE),w));} /* 8!:2 monad */
+F1(jtfmt01){ARGCHK1(w); RETF(fmt02(AR(w)?reshape(sc(AS(w)[AR(w)-1]),ds(CACE)):ds(CACE),w));} /* 8!:0 monad */
+F1(jtfmt11){ARGCHK1(w); RETF(fmt12(AR(w)?reshape(sc(AS(w)[AR(w)-1]),ds(CACE)):ds(CACE),w));} /* 8!:1 monad */
+F1(jtfmt21){ARGCHK1(w); RETF(fmt22(AR(w)?reshape(sc(AS(w)[AR(w)-1]),ds(CACE)):ds(CACE),w));} /* 8!:2 monad */

@@ -225,6 +225,7 @@ A jtdbunquote(J jt,A a,A w,A self,L *stabent){A t,z;B b=0,s;DC d;V*sv;
 
 
 F1(jtdbc){UC k;
+ ARGCHK1(w);
  if(AN(w)){
   RE(k=(UC)i0(w));
   ASSERT(!(k&~1),EVDOMAIN);
@@ -253,7 +254,7 @@ F1(jtdbrun ){ASSERTMTV(w); jt->dbsusact=SUSRUN;  return mtm;}
 F1(jtdbnext){ASSERTMTV(w); jt->dbsusact=SUSNEXT; return mtm;}
      /* 13!:5  run next */
 
-F1(jtdbret ){jt->dbsusact=SUSRET; ras(w); jt->dbresult=w; return mtm;}
+F1(jtdbret ){ARGCHK1(w); jt->dbsusact=SUSRET; ras(w); jt->dbresult=w; return mtm;}
      /* 13!:6  exit with result */
 
 F1(jtdbjump){RE(jt->dbjump=i0(w)); jt->dbsusact=SUSJUMP; return mtm;}

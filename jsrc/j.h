@@ -319,7 +319,7 @@ static inline omp_int_t omp_get_max_threads() { return 1;}
 // version for debugging
 // #define ASSERT(b,e)     {if(unlikely(!(b))){fprintf(stderr,"error code: %i : file %s line %d\n",(int)(e),__FILE__,__LINE__); jsignal(e); return 0;}}
 #define ASSERTD(b,s)    {if(unlikely(!(b))){jsigd((s)); return 0;}}
-#define ASSERTMTV(w)    {ASSERT(1==AR(w),EVRANK); ASSERT(!AN(w),EVLENGTH);}
+#define ASSERTMTV(w)    {ARGCHK1(w); ASSERT(1==AR(w),EVRANK); ASSERT(!AN(w),EVLENGTH);}
 #define ASSERTN(b,e,nm) {if(unlikely(!(b))){jt->curname=(nm); jsignal(e); return 0;}}  // set name for display (only if error)
 #define ASSERTSYS(b,s)  {if(unlikely(!(b))){fprintf(stderr,"system error: %s : file %s line %d\n",s,__FILE__,__LINE__); jsignal(EVSYSTEM); jtwri(jt,MTYOSYS,"",(I)strlen(s),s); return 0;}}
 #define ASSERTW(b,e)    {if(unlikely(!(b))){if((e)<=NEVM)jsignal(e); else jt->jerr=(e); return;}}
@@ -412,7 +412,7 @@ static inline omp_int_t omp_get_max_threads() { return 1;}
 #define FPREFIP         J jtinplace=jt; jt=(J)(intptr_t)((I)jt&~JTFLAGMSK)  // turn off all flag bits in jt, leave them in jtinplace
 #define F1PREFIP        FPREFIP
 #define F2PREFIP        FPREFIP
-#define F1RANK(m,f,self)    {if(unlikely(m<AR(w)))if(m==0)return rank1ex0(w,(A)self,f);else return rank1ex(  w,(A)self,(I)m,     f);}  // if there is more than one cell, run rank1ex on them.  m=monad rank, f=function to call for monad cell.  Fall through otherwise
+#define F1RANK(m,f,self)    {ARGCHK1(w); if(unlikely(m<AR(w)))if(m==0)return rank1ex0(w,(A)self,f);else return rank1ex(  w,(A)self,(I)m,     f);}  // if there is more than one cell, run rank1ex on them.  m=monad rank, f=function to call for monad cell.  Fall through otherwise
 #define F2RANKcommon(l,r,f,self,extra)  {ARGCHK2(a,w); extra if(unlikely((I)((l-AR(a))|(r-AR(w)))<0))if((l|r)==0)return rank2ex0(a,w,(A)self,f);else{I lr=MIN((I)l,AR(a)); I rr=MIN((I)r,AR(w)); return rank2ex(a,w,(A)self,lr,rr,lr,rr,f);}}  // If there is more than one cell, run rank2ex on them.  l,r=dyad ranks, f=function to call for dyad cell
 #define F2RANK(l,r,f,self)  F2RANKcommon(l,r,f,self,)
 // same, but used when the function may pull an address from w.  In that case, we have to turn pristine off since there may be duplicates in the result
@@ -698,11 +698,13 @@ if(likely(z<3)){_zzt+=z; z=(I)&oneone; _zzt=_i&3?_zzt:(I*)z; z=_i&2?(I)_zzt:z; z
 #define RNE(exp)        {return jt->jerr?0:(exp);}
 #define RZ(exp)         {if(unlikely(!(exp)))R0}
 
+#define DEADARG(x)      0
 #define ARGCHK1D(x)
 #define ARGCHK2D(x,y)
 
-#define ARGCHK2(x,y)    
-#define ARGCHK3(x,y,z)  
+#define ARGCHK1(x)      RZ(x) DEADARG(x);   // bit set in deadbeef
+#define ARGCHK2(x,y)    ARGCHK1(x) ARGCHK1(y)
+#define ARGCHK3(x,y,z)  ARGCHK1(x) ARGCHK1(y) ARGCHK1(z)
 
 
 // RETF is the normal function return.  For debugging we hook into it
