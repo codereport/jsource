@@ -566,7 +566,7 @@ A jtirs1(J jt,A w,A fs,I m,AF f1){A z;I wr;
  jt->ranks=(RANK2T)wr;  // install rank for called routine
  z=CALL1IP(f1,w,fs);
  jt->ranks=(RANK2T)~0;  // reset rank to infinite
- RETF(z);
+ return z;
 }
 
 // IRS setup for dyads x op y.  This routine sets jt->rank and calls the verb, which loops if it needs to
@@ -588,7 +588,7 @@ A jtirs2(J jt,A a,A w,A fs,I l,I r,AF f2){A z;I ar,wr;
  z=CALL2IP(f2,a,w,fs);   // save ranks, call setup verb, pop rank stack
    // Not all verbs (*f2)() use the fs argument.
  jt->ranks=(RANK2T)~0;  // reset rank to infinite
- RETF(z);
+ return z;
 }
 
 
@@ -629,13 +629,13 @@ static DF1(rank1i){F1PREFIP;ARGCHK1(w);DECLF;  // this version when requested ra
  I m=sv->localuse.lI4[0]; m=m>=AR(w)?~0:m; jt->ranks=(RANK2T)(m);  // install rank for called routine
  A z=CALL1IP(f1,w,fs);
  jt->ranks=(RANK2T)~0;  // reset rank to infinite
- RETF(z);
+ return z;
 }
 static DF1(rank1in){F1PREFIP;ARGCHK1(w);DECLF;  // this version when requested rank is negative
  I m=sv->localuse.lI4[0]+AR(w); m=m<0?0:m; jt->ranks=(RANK2T)(m);  // install rank for called routine
  A z=CALL1IP(f1,w,fs);
  jt->ranks=(RANK2T)~0;  // reset rank to infinite
- RETF(z);
+ return z;
 }
 static DF2(rank2i){F2PREFIP;ARGCHK1(w);DECLF;  // this version when requested rank is positive
  I ar=sv->localuse.lI4[1]; ar=ar>=AR(a)?(RANKT)~0:ar; I af=AR(a)-ar;   // left rank
@@ -645,7 +645,7 @@ static DF2(rank2i){F2PREFIP;ARGCHK1(w);DECLF;  // this version when requested ra
  jt->ranks=(RANK2T)((ar<<RANKTX)+wr);  // install as parm to the function.  Set to ~0 if possible
  A z=CALL2IP(f2,a,w,fs);   // save ranks, call setup verb, pop rank stack
  jt->ranks=(RANK2T)~0;  // reset rank to infinite
- RETF(z);
+ return z;
 }
 static DF2(rank2in){F2PREFIP;ARGCHK1(w);DECLF;  // this version when a requested rank is negative
  I wr=AR(w); I r=sv->localuse.lI4[2]; r=r>=wr?(RANKT)~0:r; wr+=r; wr=wr<0?0:wr; wr=r>=0?r:wr; I wf=AR(w)-wr;   // right rank
@@ -655,7 +655,7 @@ static DF2(rank2in){F2PREFIP;ARGCHK1(w);DECLF;  // this version when a requested
  jt->ranks=(RANK2T)((ar<<RANKTX)+wr);  // install as parm to the function.  Set to ~0 if possible
  A z=CALL2IP(f2,a,w,fs);   // save ranks, call setup verb, pop rank stack
  jt->ranks=(RANK2T)~0;  // reset rank to infinite
- RETF(z);
+ return z;
 }
 
 // u"n y when u does not support irs. We loop over cells, and as we do there is no reason to enable inplacing

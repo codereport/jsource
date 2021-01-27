@@ -454,7 +454,7 @@ static DF1(jtreduce){A z;I d,f,m,n,r,t,wr,*ws,zt;
   // Allocate the result area
   zt=rtype(adocv.cv);
   GA(z,zt,m*d,MAX(0,wr-1),ws); if(1<r)MCISH(f+AS(z),f+1+ws,r-1);  // allocate, and install shape
-  if(m*d==0){RETF(z);}  // mustn't call the function on an empty argument!
+  if(m*d==0){return z;}  // mustn't call the function on an empty argument!
   // Convert inputs if needed 
   if((t=atype(adocv.cv))&&TYPESNE(t,wt))RZ(w=cvt(t,w));
   // call the selected reduce routine.
@@ -462,7 +462,7 @@ static DF1(jtreduce){A z;I d,f,m,n,r,t,wr,*ws,zt;
   // if return is EWOV, it's an integer overflow and we must restart, after restoring the ranks
   // EWOV1 means that there was an overflow on a single result, which was calculated accurately and stored as a D.  So in that case all we
   // have to do is change the type of the result.
-  if(255&rc){if(jt->jerr==EWOV1){AT(z)=FL;RETF(z);}else {jsignal(rc); RETF(rc>=EWOV?IRS1(w,self,r,jtreduce,z):0);}} else {RETF(adocv.cv&VRI+VRD?cvz(adocv.cv,z):z);}
+  if(255&rc){if(jt->jerr==EWOV1){AT(z)=FL;return z;}else {jsignal(rc); return rc>=EWOV?IRS1(w,self,r,jtreduce,z):0;}} else {return adocv.cv&VRI+VRD?cvz(adocv.cv,z):z;}
 
   // special cases:
  }else if(n==1)return head(w);    // reduce on single items - ranks are still set
@@ -561,12 +561,12 @@ static DF1(jtredstitch){A c,y;I f,n,r,*s,*v,wr;
  if((SPARSE&AT(w))!=0){A x;
   GATV0(x,INT,f+r-1,1); v=AV(x); MCISH(v,AS(y),f+1);
   DPMULDE(s[f],s[f+2],v[f+1]); MCISH(v+f+2,s+3+f,r-3);
-  RETF(reshape(x,y));
+  return reshape(x,y);
  }else{
   v=AS(y); 
   DPMULDE(s[f],s[f+2],v[f+1]); MCISH(v+f+2,s+3+f,r-3);
   --AR(y); 
-  RETF(y);
+  return y;
 }}   /* ,./"r w */
 
 static DF1(jtredstiteach){A*wv,y;I n,p,r,t;
@@ -591,7 +591,7 @@ static DF1(jtredcateach){A*u,*v,*wv,x,*xv,z,*zv;I f,m,mn,n,r,wr,*ws,zm,zn;I n1=0
  GATV0(x,BOX,n,1); xv=AAV(x);
  zv=AAV(z); wv=AAV(w); 
  DO(zm, u=wv; DO(m, v=u++; DO(n, xv[i]=*v; v+=m;); A Zz; RZ(Zz=raze(x)); INCORP(Zz); *zv++ = Zz;); wv+=mn;);  // no need to incorp *v since it's already boxed
- RETF(z);
+ return z;
 }    /* ,&.>/"r w */
 
 static DF2(jtoprod){A z; return df2(z,a,w,FAV(self)->fgh[2]);}  // x u/ y - transfer to the u"lr,_ verb (precalculated)
@@ -628,7 +628,7 @@ A sum=reduce(w,FAV(self)->fgh[0]);  // calculate +/"r
  RESETRANK;  // back to infinite rank for the divide
  RZ(sum);
  RZ(w=jtatomic2(JTIPA,sum,sc(n),ds(CDIV)));  // take quotient inplace and return it
- RETF(w);
+ return w;
 }    // (+/%#)"r w, implemented as +/"r % cell-length
 
 // entry point to execute monad/dyad Fold after the noun arguments are supplied

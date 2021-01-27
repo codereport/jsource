@@ -6,8 +6,8 @@
 #include "j.h"
 
 
-F1(jttally ){A z; I k; ARGCHK1(w); z=sc(SETIC(w,k));            RETF(AT(w)&XNUM+RAT?xco1(z):z);}  //  # y
-F1(jtshapex){A z; ARGCHK1(w); z=vec(INT,AR(w),AS(w)); RETF(AT(w)&XNUM+RAT?xco1(z):z);}
+F1(jttally ){A z; I k; ARGCHK1(w); z=sc(SETIC(w,k));            return AT(w)&XNUM+RAT?xco1(z):z;}  //  # y
+F1(jtshapex){A z; ARGCHK1(w); z=vec(INT,AR(w),AS(w)); return AT(w)&XNUM+RAT?xco1(z):z;}
 F1(jtshape){ARGCHK1(w); return vec(INT,AR(w),AS(w));}  // $ y
 F1(jtisempty){ARGCHK1(w); if((AT(w)&SPARSE)!=0)return eps(zeroionei(0),shape(w)); return num(AN(w)==0);}  // 0 e. $
 F1(jtisnotempty){ARGCHK1(w); if((AT(w)&SPARSE)!=0)return __not(eps(zeroionei(0),shape(w))); return num(AN(w)!=0);}  // *@#@,
@@ -27,17 +27,17 @@ F1(jtravel){A a,c,q,x,y,y0,z;B*b;I f,j,m,r,*u,*v,*yv;P*wp,*zp;
    // the self-virtual-block code in virtual() because we can do it for indirect types also, since we know we are not changing
    // the number of atoms
    // We preserve pristinity between the input and the output
-   AR(w)=(RANKT)(1+f); AS(w)[f]=m; RETF(w);
+   AR(w)=(RANKT)(1+f); AS(w)[f]=m; return w;
   }
   // Not self-virtual.  Create a (noninplace) virtual copy, but not if NJA memory  NJAwhy
   // If rank 0 were the only thing stopping us from inplacing, we could inherit pristinity
-  if(!(AFLAG(w)&(AFNJA))){RZ(z=virtual(w,0,1+f)); AN(z)=AN(w); MCISH(AS(z),AS(w),f) AS(z)[f]=m; RETF(z);}
+  if(!(AFLAG(w)&(AFNJA))){RZ(z=virtual(w,0,1+f)); AN(z)=AN(w); MCISH(AS(z),AS(w),f) AS(z)[f]=m; return z;}
 
   // If we have to allocate a new block, do so.  In that rare case, revoke pristinity of w
   GA(z,AT(w),AN(w),1+f,AS(w)); AS(z)[f]=m;   // allocate result area, shape=frame+1 more to hold size of cell; fill in shape
   MC(AV(z),AV(w),AN(w)<<bplg(AT(w)));
   PRISTCLRF(w)
-  RETF(z); // if dense, move the data and relocate it as needed
+  return z; // if dense, move the data and relocate it as needed
  }
  // the rest handles sparse matrix enfile
  RESETRANK;   // clear IRS for calls made here
@@ -60,7 +60,7 @@ F1(jtravel){A a,c,q,x,y,y0,z;B*b;I f,j,m,r,*u,*v,*yv;P*wp,*zp;
  SPB(zp,e,ca(SPA(wp,e)));
  SPB(zp,x,x);
  SPB(zp,i,y); 
- RETF(z);
+ return z;
 }
 
 F1(jttable){A z,zz;I r,wr;
@@ -82,14 +82,14 @@ static A jtlr2(J jt,RANK2T ranks,A a,A w){I acr,af,ar,wcr,wf,wr;
  // Cells of the shorter-frame argument are repeated.  If the shorter- (or equal-)-frame argument
  // is the one being discarded (eg (i. 10 10) ["0 i. 10), the replication doesn't matter, and we
  // simply keep the surviving argument intact.
- if(wf>=af){RETF(w);}  // no replication - quick out
- RESETRANK; RETF(reitem(vec(INT,af-wf,AS(a)),lamin1(w)));  // could use virtual block, but this case is so rare...
+ if(wf>=af){return w;}  // no replication - quick out
+ RESETRANK; return reitem(vec(INT,af-wf,AS(a)),lamin1(w));  // could use virtual block, but this case is so rare...
 } 
 
-F2(jtleft2 ){F2PREFIP;RANK2T jtr=jt->ranks; if(jtr==(RANK2T)~0)RETARG(a); RETF(lr2((jtr<<RMAXX)|(jtr>>RMAXX),w,a));}  // swap a & w, and their ranks
-F2(jtright2){F2PREFIP;RANK2T jtr=jt->ranks; if(jtr==(RANK2T)~0)RETARG(w); RETF(lr2(jtr,a,w));}
+F2(jtleft2 ){F2PREFIP;RANK2T jtr=jt->ranks; if(jtr==(RANK2T)~0)RETARG(a); return lr2((jtr<<RMAXX)|(jtr>>RMAXX),w,a);}  // swap a & w, and their ranks
+F2(jtright2){F2PREFIP;RANK2T jtr=jt->ranks; if(jtr==(RANK2T)~0)RETARG(w); return lr2(jtr,a,w);}
 
-F1(jtright1){RETF(w);}
+F1(jtright1){return w;}
 
 // i. y
 F1(jtiota){A z;I m,n,*v;
@@ -99,7 +99,7 @@ F1(jtiota){A z;I m,n,*v;
  if(1==n){m=*v; return 0>m?apv(-m,-m-1,-1L):IX(m);}
  A mg; RZ(mg=mag(w)); PRODX(m,n,IAV(mg),1); RZ(z=IX(m)); RZ(z=reshape(mag(w),z));
  DO(n, A zz; if(0>v[i])z=IRS1(z,0L,n-i,jtreverse,zz););
- RETF(z);
+ return z;
 }
 
 // i: w
@@ -112,7 +112,7 @@ F1(jtjico1){A y,z;B b;D d,*v;I c,m,n;
  if(b&&m*c==2*ABS(n))z=apv(1+m,-n,0>d?-c:c);  // if integer works, use it
  else                z=plusW(scf(0>d?d:-d),tymesW(scf(2*ABS(d)/m),apv(1+m,0>d?m:0L,0>d?-1L:1L)));  // otherwise FL
  if(AT(w)&XNUM+RAT)z=cvt(AT(w)&XNUM||equ(w,floor1(w))?XNUM:RAT,z);  // cvrt to XNUM as needed
- RETF(z);
+ return z;
 }
 
 DF1(jtnum1){ARGCHK2(w,self); return FAV(self)->fgh[2];}
@@ -143,5 +143,5 @@ A jtcharmap(J jt,A w,A x,A y){A z;B bb[256];I k,n,wn;UC c,*u,*v,zz[256];
  GATV(z,LIT,wn,AR(w),AS(w)); v=UAV(z); u=UAV(w);
  if(((k-1)&(n-AN(y)))>=0)DQ(wn, c=*u++; ASSERT(bb[c],EVINDEX); *v++=zz[c];)  // not all codes mapped AND #x>=#y, meaning index error possible on {
  else if(!bitwisecharamp(zz,wn,u,v))DQ(wn, *v++=zz[*u++];);  // no index error possible, and special case not handled
- RETF(z);
+ return z;
 }    /* y {~ x i. w */

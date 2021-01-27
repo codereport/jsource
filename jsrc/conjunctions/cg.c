@@ -94,7 +94,7 @@ PRIM jtfxself[2]={ {{0,0,0,0,0,0,0},{{{jtfx,0},{0,0,0},0,0,0,0,0,0,0}}} , {{1,0,
 // run jtfx on each box in w, turning AR into an A block
 // self is a parm passed through to jtfx, coming from jtfxself above.  if AK(self) is nonzero, we return nouns as is
 // Result claims to be an array of boxes, but each box holds a function
-DF1(jtfxeach){RETF(every(w,self));}
+DF1(jtfxeach){return every(w,self);}
 
 static DF1(jtcon1){A h,*hv,*x,z;V*sv;
  PREF1(jtcon1);
@@ -120,7 +120,7 @@ static DF1(jtinsert){A hs,*hv,z;I hfx,j,m,n;A *old;
  RZ(z=from(num(-1),w));
  old=jt->tnextpushp;
  --m; DQ(n-1, --j; --hfx; hfx=(hfx<0)?m:hfx; RZ(z=CALL2(FAV(hv[hfx])->valencefns[1],from(sc(j),w),z,hv[hfx])); z=gc(z,old);)
- RETF(z);
+ return z;
 }
 
 // u`:m

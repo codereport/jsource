@@ -85,7 +85,7 @@ F2(jttake){A s;I acr,af,ar,n,*v,wcr,wf,wr;
   s=rank2ex(a,w,UNUSED_VALUE,MIN(acr,1),wcr,acr,wcr,jttake);  // if multiple x values, loop over them  af>0 or acr>1
   // We extracted from w, so mark it (or its backer if virtual) non-pristine.  There may be replication (if there was fill), so we don't pass pristinity through  We overwrite w because it is no longer in use
   PRISTCLRF(w)
-  RETF(s);
+  return s;
  }
  // canonicalize x
  n=AN(a);    // n = #axes in a
@@ -121,7 +121,7 @@ F2(jttake){A s;I acr,af,ar,n,*v,wcr,wf,wr;
    I* RESTRICT ss=AS(s); ss[0]=tkabs; DO(wr-1, ss[i+1]=ws[i+1];);  // shape of virtual matches shape of w except for #items
    AN(s)=tkabs*wcellsize;  // install # atoms
    // virtual block does not affect pristinity of w
-   RETF(s);
+   return s;
   }
  }
  // full processing for more complex a
@@ -133,7 +133,7 @@ F2(jttake){A s;I acr,af,ar,n,*v,wcr,wf,wr;
  s=tk(s,w);  // go do the general take/drop
  // We extracted from w, so mark it (or its backer if virtual) non-pristine.  There may be replication (if there was fill), so we don't pass pristinity through  We overwrite w because it is no longer in use
  PRISTCLRF(w)
- RETF(s);
+ return s;
 }
 
 F2(jtdrop){A s;I acr,af,ar,d,m,n,*u,*v,wcr,wf,wr;
@@ -147,7 +147,7 @@ F2(jtdrop){A s;I acr,af,ar,d,m,n,*u,*v,wcr,wf,wr;
   s=rank2ex(a,w,UNUSED_VALUE,MIN(acr,1),wcr,acr,wcr,jtdrop);  // if multiple x values, loop over them  af>0 or acr>1
   // We extracted from w, so mark it (or its backer if virtual) non-pristine.  There may be replication, so we don't pass pristinity through  We overwrite w because it is no longer in use
   PRISTCLRF(w)
-  RETF(s);
+  return s;
  }
  n=AN(a); u=AV(a);     // n=#axes to drop, u->1st axis
  // virtual case: scalar a
@@ -168,7 +168,7 @@ F2(jtdrop){A s;I acr,af,ar,d,m,n,*u,*v,wcr,wf,wr;
   I* RESTRICT ss=AS(s); ss[0]=remlen; DO(wr-1, ss[i+1]=ws[i+1];);  // shape of virtual matches shape of w except for #items
   AN(s)=remlen*wcellsize;  // install # atoms
   // virtual block does not affect pristinity
-  RETF(s);
+  return s;
  }
 
    // length error if too many axes
@@ -178,7 +178,7 @@ F2(jtdrop){A s;I acr,af,ar,d,m,n,*u,*v,wcr,wf,wr;
  RZ(s=tk(s,w));
  // We extracted from w, so mark it (or its backer if virtual) non-pristine.  If w was pristine and inplaceable, transfer its pristine status to the result.  We overwrite w because it is no longer in use
  PRISTXFERF(s,w)
- RETF(s);
+ return s;
 }
 
 
@@ -203,13 +203,13 @@ F1(jthead){I wcr,wf,wr;
    A z; RZ(z=virtualip(w,0,wcr));  // allocate the cell.  Now fill in shape & #atoms
     // if w is empty we have to worry about overflow when calculating #atoms
    I zn; PROD(zn,wcr,AS(w)+1) MCISH(AS(z),AS(w)+1,wcr) AN(z)=zn;  // Since z and w may be the same, the copy destroys AS(w).  So calc zn first.  copy shape of CELL of w into z
-   RETF(z);
+   return z;
   }else{
    // frame not 0, or non-virtualable type, or cell is an atom.  Use from.  Note that jt->ranks is still set, so this may produce multiple cells
    // left rank is garbage, but since zeroionei(0) is an atom it doesn't matter
-   RETF(jtfrom(jtinplace,zeroionei(0),w));  // could call jtfromi directly for non-sparse w
+   return jtfrom(jtinplace,zeroionei(0),w);  // could call jtfromi directly for non-sparse w
   }
- }else{RETF(SPARSE&AT(w)?irs2(num(0),take(num( 1),w),0L,0L,wcr,jtfrom):rsh0(w));  // cell of w is empty - create a cell of fills  jt->ranks is still set for use in take.  Left rank is garbage, but that's OK
+ }else{return SPARSE&AT(w)?irs2(num(0),take(num( 1),w),0L,0L,wcr,jtfrom):rsh0(w);  // cell of w is empty - create a cell of fills  jt->ranks is still set for use in take.  Left rank is garbage, but that's OK
  }
  // pristinity from the called verb
 }

@@ -539,7 +539,7 @@ dobblock:
  // Note that we know we are not returning a virtual block here, so it is OK to write to AM
 
  if(z!=0)if((_ttop!=jt->tnextpushp)==AC(z)){AC(z)=ACINPLACE|ACUC1; ABACK(z)=(A)_ttop;}  // AC can't be 0
- RETF(z);
+ return z;
 }
 
 // execution of u : v, selecting the version of self to use based on  valence

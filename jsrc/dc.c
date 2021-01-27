@@ -40,5 +40,5 @@ F1(jtdbcall){A y,*yv,z,zz,*zv;DC si,s0=0;I c=9,m=0,*s;
  RZ(y=from(scind(IRS1(z,0L,1L,jthead,zz)),over(snl(mtv),ds(CACE))));  // get script index for each line of stack; then fetch the name, or a: if no name
  yv=AAV(y); zv=5+AAV(z);
  DQ(m, *zv=incorp(*yv); yv++; zv+=c;);  // copy the script names into column 5
- RETF(z);
+ return z;
 }    /* 13!:13 function call matrix */

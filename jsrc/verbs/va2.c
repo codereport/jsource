@@ -657,7 +657,7 @@ static A jtva2(J jt,AD * RESTRICT a,AD * RESTRICT w,AD * RESTRICT self,UI allran
   }else{GA(z,rtype((I)jtinplace),zn,(RANKT)fr,0); MCISH(AS(z),AS(((I)jtinplace&VIPWFLONG)?w:a),(fr>>RANKTX)&RANKTMSK); MCISH(AS(z)+((fr>>RANKTX)&RANKTMSK),scell,(fr&RANKTMSK)-((fr>>RANKTX)&RANKTMSK));} 
 //                                                 frame loc     shape of long frame             len of long frame           cellshape loc              cellshape     longer cellen 
   // fr free
-  if(zn==0){RETF(z);}  // If the result is empty, the allocated area says it all
+  if(zn==0){return z;}  // If the result is empty, the allocated area says it all
   // zn  NOT USED FROM HERE ON
 
   // End of setup phase.  The execution phase:
@@ -676,10 +676,10 @@ static A jtva2(J jt,AD * RESTRICT a,AD * RESTRICT w,AD * RESTRICT self,UI allran
    }
 
    // The work has been done.  If there was no error, check for optional conversion-if-possible or -if-necessary
-   if(rc==EVOK){if((I)jtinplace&VRI+VRD)z=cvz((I)jtinplace,z); RETF(z);  // normal return is here.  The rest is error recovery
+   if(rc==EVOK){if((I)jtinplace&VRI+VRD)z=cvz((I)jtinplace,z); return z;  // normal return is here.  The rest is error recovery
    }else if(rc-EWOVIP>=0){A zz;C *zzv;I zzk;
     // Here for overflow that can be corrected in place
-// not yet    if(rc==EVOKCLEANUP){jt->mulofloloc=0; RETF(z);}  // if multiply that did not overflow, clear the oflo position for next time, and return
+// not yet    if(rc==EVOKCLEANUP){jt->mulofloloc=0; return z;}  // if multiply that did not overflow, clear the oflo position for next time, and return
     // If the original result block cannot hold the D result, allocate a separate result area
     if(sizeof(D)==sizeof(I)){zz=z; MODBLOCKTYPE(zz,FL); zzk=aawwzk[4];   // shape etc are already OK
     }else{GATV(zz,FL,AN(z),AR(z),AS(z)); zzk=aawwzk[4]*(sizeof(D)/sizeof(I));}
@@ -866,7 +866,7 @@ DF2(jtsumattymes1){
  }
 
  RZ(jtsumattymesprods(jt,it,voidAV(a),voidAV(w),dplen,nfro,nfri,ndpo,ndpi,voidAV(z)));  // eval, check for error
- RETF(z);
+ return z;
 }
 
 
@@ -910,7 +910,7 @@ static A jtsumattymes(J jt, A a, A w, I b, I t, I m, I n, I nn, I r, I *s, I zn)
    }
   }
  }
- RETF(z);
+ return z;
 }    /* a +/@:* w for non-scalar a and w */
 
 
@@ -950,7 +950,7 @@ static A jtsumatgbool(J jt,A a,A w,C id){A t,z;B* RESTRICTI av,* RESTRICTI wv;I 
   case CGT:      SUMBFLOOP(GT  ); break;
   case CGE:      SUMBFLOOP(GE  ); break;
  }
- RETF(z);
+ return z;
 }    /* a +/@:g w  for boolean a,w where a-:&(* /@$)w; see also plusinsB */
 
 DF2(jtfslashatg){A fs,gs,y,z;B b,sb=0;C*av,c,d,*wv;I ak,an,ar,*as,at,m,
@@ -1009,7 +1009,7 @@ DF2(jtfslashatg){A fs,gs,y,z;B b,sb=0;C*av,c,d,*wv;I ak,an,ar,*as,at,m,
   DQ(nn-1, av-=ak; wv-=wk; I lrc; lrc=((AHDR2FN*)adocv.f)(n,m,av,wv,yv,jt); rc=lrc<rc?lrc:rc; lrc=((AHDR2FN*)adocvf.f)((I)1,zn,yv,p?zu:zv,p?zv:zu,jt); rc=lrc<rc?lrc:rc; p^=1;);  // p==1 means result goes to ping buffer zv
   if(NEVM<(rc&255)){df1(z,df2(y,a,w,gs),fs);}else{if(rc&255)jsignal(rc); z=p?z1:z;}  // if overflow, revert to old-fashioned way.  If p points to ping, prev result went to pong, make pong the result
  }
- RE(0); RETF(z);
+ RE(0); return z;
 }    /* a f/@:g w where f and g are atomic*/
 
 // Consolidated entry point for ATOMIC2 verbs.  These can be called with self pointing either to a rank block or to the block for
@@ -1027,8 +1027,8 @@ DF2(jtatomic2){A z;
  // check for singletons
  if(!(awm1|((AT(a)|AT(w))&(NOUN&UNSAFE(~(B01+INT+FL)))))){
   z=jtssingleton(jtinplace,a,w,self,(RANK2T)awr,selfranks);
-  if(z!=0){RETF(z);}  // normal case is good return
-  if(jt->jerr<=NEVM){RETF(z);}   // if error is unrecoverable, don't retry
+  if(z!=0){return z;}  // normal case is good return
+  if(jt->jerr<=NEVM){return z;}   // if error is unrecoverable, don't retry
   // if retryable error, fall through.  The retry will not be through the singleton code
   jtinplace=(J)((I)jtinplace|JTRETRY);  // indicate that we are retrying the operation.  We must, because jt->jerr is set with the retry code
  }
@@ -1043,8 +1043,8 @@ DF2(jtatomic2){A z;
  ASSERTAGREE(AS(a),AS(w),af);  // outermost (or only) agreement check
  // Run the full dyad, retrying if a retryable error is returned
  z=jtva2(jtinplace,a,w,self,(awr<<RANK2TX)+selfranks);  // execute the verb
- if(z!=0){RETF(z);}  // normal case is good return
- if(jt->jerr<=NEVM){RETF(z);}   // if error is unrecoverable, don't retry
+ if(z!=0){return z;}  // normal case is good return
+ if(jt->jerr<=NEVM){return z;}   // if error is unrecoverable, don't retry
  return z=jtva2((J)((I)jtinplace|JTRETRY),a,w,self,(awr<<RANK2TX)+selfranks);  // execute the verb
 }
 

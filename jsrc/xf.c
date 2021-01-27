@@ -79,7 +79,7 @@ F1(jtjfread){A z;F f;
  RE(f=stdf(w));  // f=file#, or 0 if w is a filename
  if(f)return 1==(I)f?jgets("\001"):3==(I)f?rdns(stdin):rd(vfn(f),0L,-1L);  // if special file, read it all, possibly with error
  RZ(f=jope(w,FREAD_O)); z=rd(f,0L,-1L); fclose(f);  // otherwise open/read/close named file
- RETF(z);
+ return z;
 }
 
 F2(jtjfwrite){B b;F f;

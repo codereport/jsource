@@ -80,7 +80,7 @@ F2(jtifrom){A z;C*wv,*zv;I acr,an,ar,*av,j,k,m,p,pq,q,wcr,wf,wk,wn,wr,*ws,zn;
     RZ(z=virtualip(w,index0*k,ar+wr-1));
     // fill in shape and number of atoms.  ar can be anything.
     I* as=AS(a); AN(z)=zn; I *s=AS(z); MCISH(s,as,ar) MCISH(s+ar,ws+1,wr-1)
-    RETF(z);
+    return z;
    }
   }
   // for copying items, we need    k: size in bytes of an item of a cell of w
@@ -110,7 +110,7 @@ F2(jtifrom){A z;C*wv,*zv;I acr,an,ar,*av,j,k,m,p,pq,q,wcr,wf,wk,wn,wr,*ws,zn;
    }
    break;
   }
-  RETF(z);
+  return z;
 }    /* a{"r w for numeric a */
 
 #define BSET(x,y0,y1,y2,y3)     *x++=y0; *x++=y1; *x++=y2; *x++=y3;
@@ -154,7 +154,7 @@ static F2(jtbfrom){A z;B*av,*b;C*wv,*zv;I acr,an,ar,k,m,p,q,r,*u=0,wcr,wf,wk,wn,
 
    else DQ(m, b=av; DQ(an, MC(zv,wv+k**b++,k); zv+=k;); wv+=wk;);
  }
- RETF(z);
+ return z;
 }    /* a{"r w for boolean a */
 
 // a is array whose 1-cells are index lists, w is array
@@ -262,7 +262,7 @@ static A jtafrom2(J jt,A p,A q,A w,I r){A z;C*wv,*zv;I d,e,j,k,m,n,pn,pr,* RESTR
   JMCDECL(endmask) JMCSETMASK(endmask,k+(SZI-1),0) 
   DQ(m, DO(pn, j=e*pv[i]; DO(qn, x+=k; JMCR(x,v+k*(j+qv[i]),k+(SZI-1),loop1,0,endmask);)); v+=n;);} break;
  }
- RETF(z);   // return block
+ return z;   // return block
 }   /* (<p;q){"r w  for positive integer arrays p,q */
 
 // n is length of axis, w is doubly-unboxed selector
@@ -360,7 +360,7 @@ F2(jtfrom){I at;A z;
  }else if(!((AT(a)|AT(w))&(NOUN&~SPARSE))){z=fromss(a,w);}  // sparse cases
  else if(AT(w)&SPARSE){z=at&BOX?frombs(a,w) : fromis(a,w);}
  else{z=fromsd(a,w);}
- RETF(z);
+ return z;
 }   /* a{"r w main control */
 
 F2(jtsfrom){
@@ -388,7 +388,7 @@ F2(jtsfrom){
      DQ(AN(ind), JMCR(zv,wv+*iv++*cellsize,cellsize+(SZI-1),loop1,0,endmask); zv+=cellsize;)  // use memcpy
      break;
     }
-    RETF(z);
+    return z;
    }
   }
  }else{A ind;
@@ -396,7 +396,7 @@ F2(jtsfrom){
   RE(aindex1(a,w,0L,&ind)); if(ind)return frombsn(ind,w,0L);
  }
  // If we couldn't handle it as a special case, do it the hard way
- A z; RETF(from(IRS1(a,0L,1L,jtbox,z),w));
+ A z; return from(IRS1(a,0L,1L,jtbox,z),w);
 }    /* (<"1 a){w */
 
 static F2(jtmapx);
@@ -433,7 +433,7 @@ F2(jtfetch){A*av, z;I n;F2PREFIP;
 #endif
    // Since the whole purpose of fetch is to copy one contents by address, we turn off pristinity of w
    PRISTCLRF(w)
-   RETF(z);   // turn off inplace if w not inplaceable, or jt not inplaceable.
+   return z;   // turn off inplace if w not inplaceable, or jt not inplaceable.
   }
   RZ(a=jtbox(JTIPAtoW,a));  // if not special case, box any unboxed a
  }
@@ -444,5 +444,5 @@ F2(jtfetch){A*av, z;I n;F2PREFIP;
    );
  // Since the whole purpose of fetch is to copy one contents by address, we turn off pristinity of w
  PRISTCLRF(w)
- RETF(z);   // Mark the box as non-inplaceable, as above
+ return z;   // Mark the box as non-inplaceable, as above
 }

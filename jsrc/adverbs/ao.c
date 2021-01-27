@@ -20,7 +20,7 @@ static DF1(jtoblique){A x,y,z;I m,n,r;D rkblk[16];
  // m and n are both non0: when one is 0, result has 0 cells (but that cell is the correct result
  // of execution on a fill-cell).  Correct the length of the 0 case, when the result length should be nonzero
 // if((m==0 || n==0) && (m+n>0)){return reitem(sc(m+n-1),x);}  This change withdrawn pending further deliberation
- RETF(z);
+ return z;
 }
 
 
@@ -150,7 +150,7 @@ DF2(jtpolymult){A f,g,z;B b=0;C*av,c,d,*wv;I at,i,j,k,m,m1,n,p,t,wt,zn;V*v;
  }
  if(t&FL+CMPX)NAN1; RE(0);
  if(!b)return obqfslash(df2(z,a,w,g),f);
- RETF(z);
+ return z;
 }    /* f//.@(g/) for atomic f, g */
 
 // start of x f/. y (Key)
@@ -524,7 +524,7 @@ DF2(jtkeybox){F2PREFIP;PROLOG(0009);A ai,z=0;I nitems;
   I nboxes=AM(ai);  //fetch # frets before we possibly clone ai
   makewritable(ai);  // we modify the size+index info to be running endptrs into the reorder area
   // allocate the result, which will be recursive, and set up to fill it with blocks off the tstack
-  GATV0(z,BOX,nboxes,1); if(nboxes==0){RETF(z);} // allocate result, and exit if empty for comp ease below
+  GATV0(z,BOX,nboxes,1); if(nboxes==0){return z;} // allocate result, and exit if empty for comp ease below
   // boxes will be in AAV(z), in order.  Details of hijacking tnextpushp are discussed in jtbox().
   // We have to do it a little differently here, because when we allocate a block the contents come in piecemeal and we have no
   // convenient time to INCORPRA the new contents.  So instead we leave the outer box non-recursive, and rely on the EPILOG to make
@@ -582,7 +582,7 @@ DF2(jtkeybox){F2PREFIP;PROLOG(0009);A ai,z=0;I nitems;
   I nboxes=0;  // initialize fret counter, incremented for each fret
   av=IAV(a); DQ(nitems, I tval=ftblv[*av&valmsk]; ftblv[*av&valmsk]=++tval; nboxes+=tval==freqminval; av=(I*)((I)av+k);)   // build (negative) frequency table; sub 1 for each non-fret
   // allocate the result, which will be recursive, and set up to fill it with blocks off the tstack
-  GATV0(z,BOX,nboxes,1); if(nboxes==0){RETF(z);} // allocate result, and exit if empty for comp ease below
+  GATV0(z,BOX,nboxes,1); if(nboxes==0){return z;} // allocate result, and exit if empty for comp ease below
   // boxes will be in AAV(z), in order.  Details discussed in jtbox().
   // We will later make the block recursive usecount, and we will set all the initial usecounts to 1 since they are not on the tpop stack
   pushxsave = jt->tnextpushp; jt->tnextpushp=AAV(z);  // save tstack info before allocation

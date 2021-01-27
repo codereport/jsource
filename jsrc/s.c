@@ -155,7 +155,7 @@ F1(jtsympool){A aa,q,x,y,*yv,z,*zv;I i,n,*u,*xv;L*pv;LX j,*v;
   RZ(aa=incorp(cstr("**local**")));
   RZ(q=sympoola(x)); u=AV(q); DO(AN(q), yv[u[i]]=aa;);
  }
- RETF(z);
+ return z;
 }    /* 18!:31 symbol pool */
 
 // l/string are length/addr of name, hash is hash of the name, g is symbol table
@@ -407,7 +407,7 @@ static A jtdllsymaddr(J jt,A w,C flag){A*wv,x,y,z;I i,n,*zv;L*v;
   ASSERT(NOUN&AT(y),EVDOMAIN);
   zv[i]=flag?(I)AV(y):(I)v;
  }
- RETF(z);
+ return z;
 }    /* 15!:6 (0=flag) or 15!:14 (1=flag) */
 
 F1(jtdllsymget){return dllsymaddr(w,0);}

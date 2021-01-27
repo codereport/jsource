@@ -124,15 +124,15 @@ static F1(jttreach){return troot(scc('0'),graft(ope(every(w,(A)&trrself))));}
 
 static F1(jttrr){PROLOG(0058);A hs,s,t,*x,z;B ex,xop;C id;I fl,*hv,m;V*v;
  ARGCHK1(w);
- if(AT(w)&NOUN+NAME){RETF(tleaf(lrep(w)));}
+ if(AT(w)&NOUN+NAME){return tleaf(lrep(w));}
  v=FAV(w); id=v->id; fl=v->flag;
  I fndx=(id==CBDOT)&&!v->fgh[0]; A fs=v->fgh[fndx]; A gs=v->fgh[fndx^1];  // In verb for m b., if f is empty look to g for the left arg.  It would be nice to be more general
  hs=v->fgh[2]; if(id==CBOX)gs=0;  // ignore gs field in BOX, there to simulate BOXATOP
- if(fl&VXOPCALL){RETF(trr(hs));}
+ if(fl&VXOPCALL){return trr(hs);}
  xop=1&&VXOP&fl; ex=id==CCOLON&&hs&&!xop;
  m=(I )!!fs+(I )(gs||ex)+(I )(id==CFORK||xop&&hs);
- if(!m){RETF(tleaf(spella(w)));}
- if(evoke(w)){RZ(w=sfne(w)); RETF((AT(w)&FUNC?jttrr:jttleaf)(jt,w));}
+ if(!m){return tleaf(spella(w));}
+ if(evoke(w)){RZ(w=sfne(w)); return (AT(w)&FUNC?jttrr:jttleaf)(jt,w);}
  GATV0(t,BOX,m,1); x=AAV(t);
  if(0<m)RZ(x[0]=incorp(fl&VGERL?treach(fxeach(fs,(A)&jtfxself[0])):trr(fs)));
  if(1<m)RZ(x[1]=incorp(fl&VGERR?treach(fxeach(gs,(A)&jtfxself[0])):ex?trr(unparsem(num(0),w)):trr(gs)));

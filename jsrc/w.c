@@ -100,7 +100,7 @@ A jtunwordil(J jt, A wil, A w, I opts){A z;
  UI dupchar=(opts&1)?'\'':256; *zv='\''; zv+=(opts&1);  // if dup requested, set to look for quotes and install leading quote
  DO(n, C *w0=wv+wilv[i][0]; C *wend=wv+wilv[i][1]; while(w0!=wend){C c=*w0++; *zv++=c; if(c==dupchar)*zv++=c;})  // copy all words, with 1 space between, duplicating where needed
  AS(z)[0]=AN(z)=zv-zv0;  // install length of result
- RETF(z);
+ return z;
 }
 
 // ;: y
@@ -199,11 +199,11 @@ A jtenqueue(J jt,A a,A w,I env){A*v,*x,y,z;B b;C d,e,p,*s,*wi;I i,n,*u,wl;UC c;
     j=4; DO(m, yv[i]=p=v[j]; j+=2; if(AN(p)==k&&!memcmpne(s,NAV(p)->s,k))c=i;);  // move name into argument, remember if matched abc
     yv[m]=v[2]; RZ(yv[m+1]=rifvs(sc(c))); yv[m+2]=z;    // add the 3 ending elements
     x[0]=v[0]; x[1]=v[1]; x[2]=ds(CCASEV); x[3]=y;  // build the sentence
-    RETF(z1);  // that's what we'll execute
+    return z1;  // that's what we'll execute
    }
   }
  }
- RETF(z);
+ return z;
 }    /* produce boxed list of words suitable for parsing */
                                                             
 /* locals in enqueue:                                           */

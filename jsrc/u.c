@@ -188,7 +188,7 @@ A jtifb(J jt,I n,B* RESTRICT b){A z;I p,* RESTRICT zv;
 }    /* integer vector from boolean mask */
 
 // i. # w
-static F1(jtii){ARGCHK1(w); I j; RETF(IX(SETIC(w,j)));}
+static F1(jtii){ARGCHK1(w); I j; return IX(SETIC(w,j));}
 
 // Return the higher-priority of the types s and t.  s and t are known to be not equal.
 // If either is sparse, convert the result to sparse.
@@ -226,32 +226,32 @@ A jtodom(J jt,I r,I n,I* RESTRICT s){A z;I m,mn,*u,*zv;
 
 F1(jtrankle){return!w||AR(w)?w:ravel(w);}
 
-A jtsc(J jt,I k)     {A z; if((k^REPSGN(k))<=NUMMAX){z=num(k); z=k&~1?z:zeroionei(k); return z;} GAT0(z,INT, 1,0); IAV(z)[0]=k;     RETF(z);}  // always return I
-A jtscib(J jt,I k)   {A z; if((k^REPSGN(k))<=NUMMAX)return num(k); GAT0(z,INT, 1,0); IAV(z)[0]=k;     RETF(z);}  // return b if 0 or 1, else I
-A jtsc4(J jt,I t,I v){A z; GA(z,t,   1,0,0); IAV(z)[0]=v;     RETF(z);}  // return scalar with a given I-length type (numeric or box)
+A jtsc(J jt,I k)     {A z; if((k^REPSGN(k))<=NUMMAX){z=num(k); z=k&~1?z:zeroionei(k); return z;} GAT0(z,INT, 1,0); IAV(z)[0]=k;     return z;}  // always return I
+A jtscib(J jt,I k)   {A z; if((k^REPSGN(k))<=NUMMAX)return num(k); GAT0(z,INT, 1,0); IAV(z)[0]=k;     return z;}  // return b if 0 or 1, else I
+A jtsc4(J jt,I t,I v){A z; GA(z,t,   1,0,0); IAV(z)[0]=v;     return z;}  // return scalar with a given I-length type (numeric or box)
 A jtscb(J jt,B b)    {return num(b);}   // A block for boolean
-A jtscc(J jt,C c)    {A z; GAT0(z,LIT, 1,0); CAV(z)[0]=c;     RETF(z);}  // create scalar character
-A jtscf(J jt,D x)    {A z; GAT0(z,FL,  1,0); DAV(z)[0]=x;     RETF(z);}   // scalar float
-A jtscx(J jt,X x)    {A z; GAT0(z,XNUM,1,0); XAV(z)[0]=ca(x); RETF(z);}  // scalar extended
+A jtscc(J jt,C c)    {A z; GAT0(z,LIT, 1,0); CAV(z)[0]=c;     return z;}  // create scalar character
+A jtscf(J jt,D x)    {A z; GAT0(z,FL,  1,0); DAV(z)[0]=x;     return z;}   // scalar float
+A jtscx(J jt,X x)    {A z; GAT0(z,XNUM,1,0); XAV(z)[0]=ca(x); return z;}  // scalar extended
 
 // return A-block for the string *s with length n
-A jtstr(J jt,I n,C*s){A z; GATV0(z,LIT,n,1); MC(AV(z),s,n); RETF(z);}
+A jtstr(J jt,I n,C*s){A z; GATV0(z,LIT,n,1); MC(AV(z),s,n); return z;}
 
 // return A-block for the string *s with length n, enclosed in quotes and quotes doubled
-A jtstrq(J jt,I n,C*s){A z; I qc=2; DO(n, qc+=s[i]=='\'';) GATV0(z,LIT,n+qc,1); C *zv=CAV(z); *zv++='\''; DO(n, C c=s[i]; if(c=='\'')*zv++=c; *zv++=c;) *zv='\''; RETF(z);}
+A jtstrq(J jt,I n,C*s){A z; I qc=2; DO(n, qc+=s[i]=='\'';) GATV0(z,LIT,n+qc,1); C *zv=CAV(z); *zv++='\''; DO(n, C c=s[i]; if(c=='\'')*zv++=c; *zv++=c;) *zv='\''; return z;}
 
 // w is a LIT string; result is a new block with the same string, with terminating NUL added
-F1(jtstr0){A z;C*x;I n; ARGCHK1(w); ASSERT(LIT&AT(w),EVDOMAIN); n=AN(w); GATV0(z,LIT,n+1,1); x=CAV(z); MC(x,AV(w),n); x[n]=0; RETF(z);}
+F1(jtstr0){A z;C*x;I n; ARGCHK1(w); ASSERT(LIT&AT(w),EVDOMAIN); n=AN(w); GATV0(z,LIT,n+1,1); x=CAV(z); MC(x,AV(w),n); x[n]=0; return z;}
 
 // return A-block for a 2-atom integer vector containing a,b
-A jtv2(J jt,I a,I b){A z;I*x; GAT0(z,INT,2,1); x=AV(z); *x++=a; *x=b; RETF(z);}
+A jtv2(J jt,I a,I b){A z;I*x; GAT0(z,INT,2,1); x=AV(z); *x++=a; *x=b; return z;}
 
 // return A-block for singleton integer list whose value is k
-A jtvci(J jt,I k){A z; GAT0(z,INT,1,1); IAV(z)[0]=k; RETF(z);}
+A jtvci(J jt,I k){A z; GAT0(z,INT,1,1); IAV(z)[0]=k; return z;}
 
 // return A-block for list of type t, length n, and values *v
 // MUST NOT return virtual or fixed block, because we often modify the returned area
-A jtvec(J jt,I t,I n,void*v){A z; GA(z,t,n,1,0); MC(AV(z),v,n<<bplg(t)); RETF(z);}
+A jtvec(J jt,I t,I n,void*v){A z; GA(z,t,n,1,0); MC(AV(z),v,n<<bplg(t)); return z;}
 
 // return A-block for list of type t, length n, and values *v
 // with special handling to coerce boolean type
@@ -264,7 +264,7 @@ A jtvecb01(J jt,I t,I n,void*v){A z; I i; GA(z,t,n,1,0);if(t&B01){C*p=(C*)AV(z),
 #pragma clang loop vectorize(enable) interleave_count(4)
 #endif
 for(i=0;i<n<<bplg(t);i++)*p++=!!(*q++);
-}else MC(AV(z),v,n<<bplg(t)); RETF(z);}
+}else MC(AV(z),v,n<<bplg(t)); return z;}
 
 #if defined(__GNUC__) && !defined(__clang__)
 #pragma pop_options
@@ -298,11 +298,11 @@ F1(jtvib){A z;D d,e,*wv;I i,n,*zv;
   case XNUM:
   case RAT:  z=cvt(INT,maximum(sc(p),minimum(sc(q),w))); break;
  }
- jt->ranks=oqr; RETF(z);
+ jt->ranks=oqr; return z;
 }
 
 // Convert w to integer if needed, and verify every atom is nonnegative
-F1(jtvip){I*v; ARGCHK1(w); if(!(INT&AT(w)))RZ(w=cvt(INT,w)); v=AV(w); DQ(AN(w), ASSERT(0<=*v++,EVDOMAIN);); RETF(w);}
+F1(jtvip){I*v; ARGCHK1(w); if(!(INT&AT(w)))RZ(w=cvt(INT,w)); v=AV(w); DQ(AN(w), ASSERT(0<=*v++,EVDOMAIN);); return w;}
 
 // Convert w to string, verify it is a list or atom
 F1(jtvs){ARGCHK1(w); ASSERT(1>=AR(w),EVRANK); return LIT&AT(w)?w:cvt(LIT,w);}

@@ -22,7 +22,7 @@ F2(jtnouninfo2){A z;
   case 0: *zv++=(AFLAG(w)>>AFNJAX)&1; break;
   }
  )
- RETF(z);
+ return z;
 }
 // a 3!:9 w   noun info
 
@@ -196,7 +196,7 @@ static A jthrep(J jt,B b,B d,A w){A y;C c,*hex="0123456789abcdef",*u,*v;I n,s[2]
   GATVR(z,LIT,2*n,2,s);  
   u=CAV(y); v=CAV(z); 
   DQ(n, c=*u++; *v++=hex[(c&0xf0)>>4]; *v++=hex[c&0x0f];); 
-  RETF(z);
+  return z;
  }
  n=bsizer(jt,d,1,w); s[0]=n>>LGWS(d); s[1]=2*WS(d); 
  GATVR(y,LIT,2*n,2,s);   // allocate entire result
@@ -237,7 +237,7 @@ static F1(jtunhex){A z;C*u;I c,n;UC p,q,*v;
  n=AN(w)>>1; u=CAV(w);
  GATV0(z,LIT,n,1); v=UAV(z);
  DQ(n, p=*u++; q=*u++; *v++=16*unh(p)+unh(q););
- RE(z); RETF(z);
+ RE(z); return z;
 }
 
 static A jtunbinr(J jt,B b,B d,B pre601,I m,A w){A y,z;C*u=(C*)w,*v;I e,j,kk,n,p,r,*s,t,*vv;
@@ -276,7 +276,7 @@ static A jtunbinr(J jt,B b,B d,B pre601,I m,A w){A y,z;C*u=(C*)w,*v;I e,j,kk,n,p
   case CMPXX: RZ(mvw(CAV(z),v,n+n,BU,b,1,1)); break;
   default:   e=n<<bplg(t); ASSERTSYS(e<=allosize(z),"unbinr"); MC(CAV(z),v,e);
  }
- RE(z); RETF(z);
+ RE(z); return z;
 }    /* b iff reverse the bytes; d iff argument is 64-bits */
 
 F1(jtunbin){A q;B b,d;C*v;I c,i,k,m,n,r,t;
@@ -327,15 +327,15 @@ F2(jtic2){A z;I j,m,n,p,*v,*x,zt;I4*y;UI4*y1;S*s;U short*u;
  GA(z,zt,m,1,0); v=AV(z); x=AV(w); 
  switch(j){
   default: ASSERT(0,EVDOMAIN);
-  case -4: y1=(UI4*)x;    DQ(m, *v++=    *y1++;); {RETF(z);}
-  case  4: y1=(UI4*)v;    DQ(n, *y1++=(UI4)*x++;); {RETF(z);}
-  case -3: ICPY(v,x,m); {RETF(z);}
-  case  3: MC(v,x,m);   {RETF(z);}
-  case -2: y=(I4*)x;      DQ(m, *v++=    *y++;); {RETF(z);}
-  case  2: y=(I4*)v;      DQ(n, *y++=(I4)*x++;); {RETF(z);}
-  case -1: s=(S*)x;       DQ(m, *v++=    *s++;); {RETF(z);}
-  case  1: s=(S*)v;       DQ(n, *s++=(S) *x++;); {RETF(z);}
-  case  0: u=(U short*)x; DQ(m, *v++=    *u++;); {RETF(z);}
+  case -4: y1=(UI4*)x;    DQ(m, *v++=    *y1++;); {return z;}
+  case  4: y1=(UI4*)v;    DQ(n, *y1++=(UI4)*x++;); {return z;}
+  case -3: ICPY(v,x,m); {return z;}
+  case  3: MC(v,x,m);   {return z;}
+  case -2: y=(I4*)x;      DQ(m, *v++=    *y++;); {return z;}
+  case  2: y=(I4*)v;      DQ(n, *y++=(I4)*x++;); {return z;}
+  case -1: s=(S*)x;       DQ(m, *v++=    *s++;); {return z;}
+  case  1: s=(S*)v;       DQ(n, *s++=(S) *x++;); {return z;}
+  case  0: u=(U short*)x; DQ(m, *v++=    *u++;); {return z;}
 }}
 
 F2(jtfc2){A z;D*x,*v;I j,m,n,p,zt;float*s;
@@ -349,10 +349,10 @@ F2(jtfc2){A z;D*x,*v;I j,m,n,p,zt;float*s;
  GA(z,zt,m,1,0); v=DAV(z); x=DAV(w);
  switch(j){
   default: ASSERT(0,EVDOMAIN);
-  case -2: MC(v,x,n); {RETF(z);}
-  case  2: MC(v,x,m); {RETF(z);}
-  case -1: s=(float*)x; DQ(m, *v++=       *s++;); {RETF(z);}
-  case  1: s=(float*)v; DQ(n, *s++=(float)*x++;); {RETF(z);}
+  case -2: MC(v,x,n); {return z;}
+  case  2: MC(v,x,m); {return z;}
+  case -1: s=(float*)x; DQ(m, *v++=       *s++;); {return z;}
+  case  1: s=(float*)v; DQ(n, *s++=(float)*x++;); {return z;}
 }}
 
 // w is a box, result is 1 if it contains a  NaN
@@ -374,7 +374,7 @@ F1(jtisnan){A*wv,z;B*u;D*v;I n,t;
  else if(t&CMPX){v=DAV(w); DQ(n, *u++=_isnan(v[0])|_isnan(v[1]); v+=2;);}  // complex - check each half
  else if(t&BOX){wv=AAV(w); DO(n, *u++=isnanq(wv[i]);); RE(0);}  // boxed - check contents
  else memset(u,C0,n);  // other types are never NaN
- RETF(z);
+ return z;
 }
 
 
@@ -485,7 +485,7 @@ static A sfe(J jt,A w,I prec,UC decimalpt,UC zuluflag){
  GATV0(z,LIT,AN(w)*linelen,AR(w)+1) MCISH(AS(z),AS(w),AR(w)) AS(z)[AR(w)]=linelen==7*SZI?7:linelen;
  // If the result will be INT, make it so
  if(linelen==56){AT(z)=INT; AN(z)>>=LGSZI;}
- if(AN(w)==0){RETF(z);}  // handle empty return
+ if(AN(w)==0){return z;}  // handle empty return
  I rows=AN(w);  // number of rows to process
  I *e=IAV(w);  // pointer to nanosecond data
  C *s=CAV(z);  // pointer to result
@@ -543,7 +543,7 @@ static A sfe(J jt,A w,I prec,UC decimalpt,UC zuluflag){
    ((I*)s)[0]=y; ((I*)s)[1]=m; ((I*)s)[2]=d; ((I*)s)[3]=HMS; ((I*)s)[4]=M; ((I*)s)[5]=E; ((I*)s)[6]=N;
   }
  }
-	RETF(z);
+	return z;
 }
 
 // w is LIT array of ISO strings (rank>0, not empty), result is array of INTs with nanosecond time for each string
@@ -640,7 +640,7 @@ gottime: ;
 err:
   s[strglen]=savesentinel;  // restore end-of-string marker
  }
- RETF(z);
+ return z;
 }
 
 
@@ -653,14 +653,14 @@ F1(jtinttoe){A z;I n;
  RZ(w=vi(w));  // verify valid integer
  GATV(z,INT,n,AR(w),AS(w));
  eft(n,IAV(z),IAV(w));
- RETF(z);
+ return z;
 }
 
 // 6!:15 Convert a block of nanosecond times to Y M D h m s nanosec
 F1(jtetoint){
  ARGCHK1(w);
  ASSERT(1,EVNONCE);
- RETF(sfe(jt,w,7*SZI-20,0,0));  // special precision meaning 'store INTs'.  Turns into linelen=56
+ return sfe(jt,w,7*SZI-20,0,0);  // special precision meaning 'store INTs'.  Turns into linelen=56
 }
 
 // 6!:16 convert a block of nanoseconds times to iso8601 format.  Result has an extra axis, long enough to hold the result
@@ -681,7 +681,7 @@ F2(jtetoiso8601){UC decimalpt,zuluflag;I prec;
  }else{
   w=a; decimalpt='.'; zuluflag=' '; prec=0;  // monad: switch argument, set defaults
  }
- RETF(sfe(jt,w,prec,decimalpt,zuluflag));
+ return sfe(jt,w,prec,decimalpt,zuluflag);
 }
 
 // 6!:17 convert a block of iso8601-format strings to nanosecond times.  Result has one INT for each string
@@ -701,6 +701,6 @@ F2(jtiso8601toe){A z;I prec;
  }
  ASSERT(AT(w)&LIT,EVDOMAIN);  // must be LIT
  ASSERT(AR(w),EVRANK);    // must not be an atom
- if(!AN(w)){RETF(df1(z,w,qq(sc(IMIN),zeroionei(1))));}   // return _"1 w on empty w - equivalent
- RETF(efs(jt,w,prec));
+ if(!AN(w)){return df1(z,w,qq(sc(IMIN),zeroionei(1)));}   // return _"1 w on empty w - equivalent
+ return efs(jt,w,prec);
 }

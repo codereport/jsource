@@ -36,7 +36,7 @@ static F1(jtrsort){A t,z;
  A tt; RZ(IRS2(t,t,0L,1L,1L,jtindexof,tt));
  z=dgrade2(w,cant1(IRS2(tt,t,0L,1L,1L,jtfrom,z)));
  POPCCT
- RETF(z);
+ return z;
 }
 
 static F2(jtcfrz){A z;B b=0,p;I j,n;Z c,d,*t,*u,*v;
@@ -218,7 +218,7 @@ static A jtrfcz(J jt,I m,A w){A x,y,z;B bb=0,real;D c,d;I i;Z r,*xv,*yv,*zv;
    DO(m, zv[i]=newt(m,xv,zv[i],10L););
  }}
  if(real){B b=1; DO(m, if(zv[i].im){b=0; break;}); if(b)z=cvt(FL,z);}
- RETF(z);
+ return z;
 }    /* roots from coefficients, degree m is 2 or more */
 
 // roots from coefficients.  w is (possibly empty) list of coefficients
@@ -329,7 +329,7 @@ DF2(jtpoly2){F2PREFIP;A c,za;I b;D*ad,d,p,*x,u,*z;I an,at,j,t,n,wt;Z*az,e,q,*wz,
  b=b?3:b;
  if(((j-1)&((t&XNUM+RAT+SPARSE)-1))<0){
   if(ASGNINPLACESGN(SGNIF((I)jtinplace,JTINPLACEWX),w))za=w;else{GA(za,t,AN(w),AR(w),AS(w));}
-  if(n==0){RETF(za);}  // don't run the copy loop if 0 atoms in result
+  if(n==0){return za;}  // don't run the copy loop if 0 atoms in result
   z=DAV(za); zz=ZAV(za);
   b+=(t>>FLX)&3; // must be FL/CMPX, add 1 or 2
  }else{if(postfn)return jtupon2cell(jt,a,w,self);  // revert if there is a postfn, and we are using the eval path.  type must be FL
@@ -355,7 +355,7 @@ DF2(jtpoly2){F2PREFIP;A c,za;I b;D*ad,d,p,*x,u,*z;I an,at,j,t,n,wt;Z*az,e,q,*wz,
  case 4: NAN0; DO(n, p=d; u=*x++; DO(an,p*=u-ad[i];); *z++=p;); NAN1;                  break;
  case 5: NAN0; DO(n, q=e; y=*wz++; DO(an,q=ztymes(q,zminus(y,az[i]));); *zz++=q;); NAN1; break;
  }
- RETF(za);
+ return za;
 }    /* a p."r w */
 
 

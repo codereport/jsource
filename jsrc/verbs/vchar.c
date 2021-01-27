@@ -41,5 +41,5 @@ DF2(jtcharfn2){A z;B b;C c;I an,ar,*as,m,n,wn,wr,*ws,zn,zt;V*v;VF ado=0;
  GA(z,zt,zn,r,s); if(!zn)return z;
  n^=-b; n=(n==~1)?1:n;  // encode b flag in sign of n
  ((AHDR2FN*)ado)(n,m,CAV(a),CAV(w),CAV(z),jt);
- RETF(z);
+ return z;
 }

@@ -37,7 +37,7 @@ F1(jtexec1){A z;
   STACKCHKOFL FDEPINC(1); z=parse(ddtokens(vs(w),4+1+(AN(jt->locsyms)>1))); jt->asgn=0; FDEPDEC(1);  // replace DDs, but require that they be complete within the string (no jgets)
   jt->sf=savself;
  }
- RETF(z&&!(AT(z)&NOUN)?mtv:z);  // if non-noun result, return empty $0
+ return z&&!(AT(z)&NOUN)?mtv:z;  // if non-noun result, return empty $0
 }
 
 // execute w, which is either a string or the boxed words of a string (as if from tokens())
@@ -50,7 +50,7 @@ F1(jtimmex){A z;
  AKGST(jt->locsyms)=jt->global; // in case the sentence has operators, set a locale for it
  STACKCHKOFL FDEPINC(1); z=parse(AT(w)&BOX?w:tokens(w,1+(AN(jt->locsyms)>1))); FDEPDEC(1);
  if(z&&!jt->asgn)jpr(z);
- RETF(z);
+ return z;
 }
 
 // execute for assert: check result for all 1
@@ -58,7 +58,7 @@ F1(jtimmea){A t,z,z1;
  RZ(w=ddtokens(w,4+1+(AN(jt->locsyms)>1))); z=immex(w);   // check for DD, but don't allow continuation read
  ASSERT(jt->asgn||!z||!(AT(z)&NOUN)||(t=eq(num(1),z),
      all1(AT(z)&SPARSE?df1(z1,t,atop(slash(ds(CSTARDOT)),ds(CCOMMA))):t)),EVASSERT);  // apply *./@, if sparse
- RETF(z);
+ return z;
 }
 
 static A jtcex(J jt,A w,AF f,A self){A z; RE(w); z=f(jt,w,self); RESETERR; return z;}

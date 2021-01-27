@@ -50,7 +50,7 @@ static REPF(jtrepbdx){A z;I c,k,m,p;
  m=AN(a);
  void *zvv; void *wvv=voidAV(w); I n=0; // pointer to output area; pointer to input data; number of prefix bytes to skip in first cell
  p=bsum(m,BAV(a));  // p=# 1s in result, i. e. length of result item axis
- if(m==p){RETF(w);}  // if all the bits are 1, we can return very quickly.  It's rare, but so cheap to test for.
+ if(m==p){return w;}  // if all the bits are 1, we can return very quickly.  It's rare, but so cheap to test for.
  PROD(c,wf,AS(w)); PROD(k,wcr-1,AS(w)+wf+1); // c=#cells, k=#atoms per item of cell
  I zn=c*k*p;  // zn=#atoms in result
  k<<=bplg(AT(w));   // k is now # bytes/cell
@@ -261,13 +261,13 @@ I att=SGNTO0(-(AT(a)&B01+SB01))+((UI)(-(AT(a)&CMPX+SCMPX))>>(BW-1-1));  // 0 if 
  if(((-wcr)&(ar-1)&(-(AT(a)&(B01|INT))))<0){I aval = BIV0(a);  // no fast support for float; take all of INT, or 1 bit of B01
   if(!(aval&-2LL)){  // 0 or 1
    if(aval==1)return RETARG(w);   // 1 # y, return y
-   if(!(AT(w)&SPARSE)){GA(z,AT(w),0,AR(w),0); MCISH(AS(z),AS(w),AR(w)) AS(z)[wf]=0; RETF(z);}  // 0 # y, return empty
+   if(!(AT(w)&SPARSE)){GA(z,AT(w),0,AR(w),0); MCISH(AS(z),AS(w),AR(w)) AS(z)[wf]=0; return z;}  // 0 # y, return empty
   }
  }
- if(((1-acr)|(acr-ar))<0){z=rank2ex(a,w,UNUSED_VALUE,MIN(1,acr),wcr,acr,wcr,jtrepeat); PRISTCLRF(w) RETF(z);}  // multiple cells - must losr pristinity  // loop if multiple cells of a
+ if(((1-acr)|(acr-ar))<0){z=rank2ex(a,w,UNUSED_VALUE,MIN(1,acr),wcr,acr,wcr,jtrepeat); PRISTCLRF(w) return z;}  // multiple cells - must losr pristinity  // loop if multiple cells of a
  ASSERT((-acr&-wcr)>=0||(AS(a)[0]==AS(w)[wf]),EVLENGTH);
  z=(*repfn)(jtinplace,a,w,wf,wcr);
  // mark w not pristine, since we pulled from it
  PRISTCLRF(w)
- RETF(z);
+ return z;
 }    /* a#"r w main control */
