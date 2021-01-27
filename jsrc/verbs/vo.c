@@ -428,7 +428,7 @@ static A jtopes(J jt,I zt,A cs,A w){A a,d,e,sh,t,*wv,x,x1,y,y1,z;B*b;C*xv;I an,*
 F1(jtope){PROLOG(0080);A cs,*v,y,z;I nonh;C*x;I i,n,*p,q=RMAX,r=0,*s,t=0,te=0,*u,zn;
  ARGCHK1(w);
  n=AN(w); v=AAV(w);
- if(!(BOX&(AT(w)&REPSGN(-n))))RCA(w);  // return w if empty or open
+ if(!(BOX&(AT(w)&REPSGN(-n))))return w;  // return w if empty or open
  if(!AR(w)){
   // scalar box: Turn off pristine in w since we are pulling an address from it.  Contents must not be inplaceable
   z=*v;

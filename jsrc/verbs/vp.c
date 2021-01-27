@@ -140,7 +140,7 @@ F2(jtadot2){A m,p;I n;
  ARGCHK2(a,w);
  SETIC(w,n); p=sc(n); if(XNUM&AT(a))p=cvt(XNUM,p); RZ(m=fact(p));
  ASSERT(all1(le(negate(m),a))&&all1(lt(a,m)),EVINDEX);
- if(!AR(w)){RZ(vi(a)); RCA(w);}
+ if(!AR(w)){RZ(vi(a)); return w;}
  RZ(p=dfr(vi(abase2(apv(n,n,-1L),a))));
  return equ(w,IX(n))?p:from(p,w);  // special case when w is index vector - just return permutation.  Otherwise shuffle items of w
  // pristinity unchanged here: if w boxed, it was set by {

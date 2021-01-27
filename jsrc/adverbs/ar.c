@@ -528,7 +528,7 @@ DF1(jtredcat){A z;B b;I f,r,*s,*v,wr;
  F1PREFIP;ARGCHK1(w);
  wr=AR(w); r=(RANKT)jt->ranks; r=wr<r?wr:r; f=wr-r; s=AS(w); RESETRANK;
  b=1==r&&1==s[f];  // special case: ,/ on last axis which has length 1: in that case, the rules say the axis disappears (because of the way ,/ works on length-1 lists)
- if(2>r&&!b)RCA(w);  // in all OTHER cases, result=input for ranks<2
+ if(2>r&&!b)return w;  // in all OTHER cases, result=input for ranks<2
  // use virtual block (possibly self-virtual) for all cases except sparse
  if(!(SPARSE&AT(w))){
   RZ(z=jtvirtual(jtinplace,w,0,wr-1)); AN(z)=AN(w); // Allocate the block.  Then move in AN and shape
