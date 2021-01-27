@@ -10,7 +10,6 @@
 #define SYS_MACOSX          4194304L        /* GCC (CC)                    */
 
 #define SY_LINUX            0    /* any linux intel version                */
-#define SY_MAC              0    /* any macosx intel                       */
 
 #define SYS_UNIX            (SYS_LINUX + SYS_MACOSX)
 
@@ -23,8 +22,6 @@
 #ifdef __MACH__
 #ifdef __GNUC__
 #define SYS SYS_MACOSX
-#undef SY_MAC
-#define SY_MAC 1
 #endif
 #endif
 
