@@ -51,7 +51,6 @@
    DQ(n-1, x=xx-=d; y=zz; z=zz-=d; fvv(d,z,x,y););     \
  }}return EVOK;}
 
-#if SY_ALIGN
 #define SUFFIXBFXLOOP(T,pfx)  \
  {T* RESTRICT xx=(T*)x,* RESTRICT yy,* RESTRICT zz=(T*)z;   \
   q=d/sizeof(T);              \
@@ -67,24 +66,6 @@
   if(0==(d&(sizeof(US  )-1))){SUFFIXBFXLOOP(US,  spfx); return EVOK;}              \
   DQ(m, y=z; DQ(d, *--z=*--x;); DQ(n-1, DQ(d, --x; --y; --z; *z=bpfx(*x,*y);)));return EVOK;  \
  }
-#else
-#define SUFFIXBFX(f,pfx,ipfx,spfx,bpfx,vexp)  \
- AHDRS(f,B,B){B v;I i,q,r,t,*xi,*yi,*zi;                         \
-  x+=m*d*n; z+=m*d*n;                                           \
-  if(1==d){DQ(m, *--z=v=*--x; DQ(n-1, --x; --z; *z=v=vexp;)); return;}  \
-  q=d>>LGSZI; r=d&(SZI-1); xi=(I*)x; zi=(I*)z;                            \
-  if(0==r)for(i=0;i<m;++i){                                        \
-   yi=zi; DQ(q, *--zi=*--xi;);                                     \
-   DQ(n-1, DQ(q, --xi; --yi; --zi; *zi=pfx(*xi,*yi);));            \
-  }else for(i=0;i<m;++i){                                          \
-   yi=zi; DQ(q, *--zi=*--xi;);                                     \
-   x=(B*)xi; z=(B*)zi; DQ(r, *--z=*--x;); xi=(I*)x; zi=(I*)z;      \
-   DQ(n-1, DQ(q, --xi; --yi; --zi; *zi=pfx(*xi,*yi););             \
-    xi=(I*)((B*)xi-r);                                             \
-    yi=(I*)((B*)yi-r);                                             \
-    zi=(I*)((B*)zi-r); t=pfx(*xi,*yi); MC(zi,&t,r););              \
- }}
-#endif
 
 SUFFIXBFX(   orsfxB, OR,  IOR,  SOR,  BOR,  *x||v   ) 
 SUFFIXBFX(  andsfxB, AND, IAND, SAND, BAND, *x&&v   )

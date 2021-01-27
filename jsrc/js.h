@@ -44,11 +44,6 @@
 #endif
 #endif
 
-
-// SY_ALIGN 1 for compilers requiring strict alignment
-//             e.g. if (I*)av is not allowed for arbitrary av of type C*
-#define SY_ALIGN 1 // always use 1 so all use same code; required by nvr stack in parser
-
 #ifndef SYS     /* must be defined */
  error: "SYS must be defined"
 #endif

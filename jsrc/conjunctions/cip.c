@@ -242,7 +242,7 @@ F2(jtpdt){PROLOG(0038);A z;I ar,at,i,m,n,p,p1,t,wr,wt;
  // Perform the inner product according to the type
  switch(CTTZNOFLAG(t)){
  case B01X:
-  if(0==(n&(SZI-1))||!SY_ALIGN){A tt;B*u,*v,*wv;I nw,*x,*zv;UC*c,*tc;UI*d,*ti,*vi;
+  if(0==(n&(SZI-1))){A tt;B*u,*v,*wv;I nw,*x,*zv;UC*c,*tc;UI*d,*ti,*vi;
    nw=(n+SZI-1)>>LGSZI;
    GATV0(tt,INT,nw,1); ti=(UI*)AV(tt); tc=(UC*)ti;
    u=BAV(a); v=wv=BAV(w); zv=AV(z);
