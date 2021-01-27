@@ -10,8 +10,7 @@
 #define SYS_MACOSX          4194304L        /* GCC (CC)                    */
 
 #define SY_LINUX            0    /* any linux intel version                */
-#define SY_MAC              0    /* any macosx intel (once included ppc)   */
-#define SY_MACPPC           0    /* macosx powerpc                         */
+#define SY_MAC              0    /* any macosx intel                       */
 
 #define SYS_UNIX            (SYS_LINUX + SYS_MACOSX)
 
@@ -22,25 +21,10 @@
 #endif
 
 #ifdef __MACH__
-#ifdef __ppc__
 #ifdef __GNUC__
-#define SYS SYS_MACOSX // powerpc
+#define SYS SYS_MACOSX
 #undef SY_MAC
 #define SY_MAC 1
-#undef SY_MACPPC
-#def SY_MACPPC 1
-#endif
-#endif
-#endif
-
-#ifdef __MACH__
-#ifndef __ppc__
-#ifdef __GNUC__
-#define SYS SYS_MACOSX // intel
-#undef SY_MAC
-#define SY_MAC 1
-
-#endif
 #endif
 #endif
 
