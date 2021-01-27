@@ -169,6 +169,7 @@ F1(jtdenseit){A a,e,q,s1,x,y,z;B b;C*xv,*zv;I an,ck,k,n,r,t,*s,xn,*yv;P*wp;
 }    /* $.^:_1 */
 
 F2(jtreaxis){A a1,e,p,q,x,y,z;B*b;I c,d,j,k,m,r,*u,*v,*ws,wt;P*wp,*zp;
+ ARGCHK2(a,w);
  wt=AT(w);
  if(wt&DENSE)return sparseit(w,a,selm(wt));
  r=AR(w); ws=AS(w); wp=PAV(w);
@@ -223,6 +224,7 @@ static A jtaxbytes1(J jt,I t,I an,I m,I xr,I*xs){I k,z;
 }
 
 static F2(jtaxbytes){A a1,e,p,q,x;B*b;I c,d,j,m,n=0,r,*u,*v,*ws,wt;P*wp;
+ ARGCHK2(a,w);
  r=AR(w); ws=AS(w); wt=AT(w); 
  GATV0(q,INT,r,1); u=AV(q); j=0;
  RZ(a1=vaxis(r,a)); d=AN(a1);  
@@ -247,6 +249,7 @@ static F2(jtaxbytes){A a1,e,p,q,x;B*b;I c,d,j,m,n=0,r,*u,*v,*ws,wt;P*wp;
 }    /* bytes required for (2;a)$.w */
 
 static F2(jtaxtally){A a1,e,p,q,x;B*b;I c,d,j,m,n=0,r,*u,*v,*ws,wt;P*wp;
+ ARGCHK2(a,w);
  r=AR(w); ws=AS(w); wt=AT(w); 
  GATV0(q,INT,r,1); u=AV(q); j=0;
  RZ(a1=vaxis(r,a)); d=AN(a1);  
@@ -269,6 +272,7 @@ static F2(jtaxtally){A a1,e,p,q,x;B*b;I c,d,j,m,n=0,r,*u,*v,*ws,wt;P*wp;
 }    /* #4$.(2;a)$.w */
 
 F2(jtrezero){A x,z;I at,t,wt,zt;P*wp,*zp;
+ ARGCHK2(a,w);
  at=AT(a); wp=PAV(w); x=SPA(wp,x); wt=AT(x);
  ASSERT(!AR(a),EVRANK);
  ASSERT(HOMO(at,wt),EVDOMAIN);
@@ -312,6 +316,7 @@ F1(jtsparse1){
 }    /* $. y */
 
 F2(jtsparse2){A*av,q=0;B b;I j,k,t,*v;P*p;
+ ARGCHK2(a,w);
  if(BOX&AT(a)){
   ASSERT(1==AR(a),EVRANK);
   ASSERT(2==AN(a),EVLENGTH);

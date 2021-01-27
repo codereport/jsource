@@ -30,6 +30,7 @@ static DF1(jtpowseqlim){PROLOG(0039);A x,y,z,*zv;I i,n;
 
 // AR(a) is 1 and AN(w)!=0
 static F2(jttclosure){A z;I an,*av,c,d,i,wn,wr,wt,*wv,*zv,*zz;
+ ARGCHK2(a,w);
  wt=AT(w); wn=AN(w); wr=AR(w);
  if(B01&wt)RZ(w=cvt(INT,w)); wv=AV(w);
  av=AV(a); an=AN(a);
@@ -61,6 +62,7 @@ static DF1(jtindexseqlim1){A fs;
 }    /* {&x^:(<_) w */
 
 static DF2(jtindexseqlim2){
+ ARGCHK2(a,w);
  return 1==AR(a)&&AT(a)&INT&&AN(w)&&AT(w)&B01+INT?tclosure(a,w):powseqlim(w,amp(ds(CFROM),a));
 }    /* a {~^:(<_) w */
 
@@ -195,7 +197,7 @@ static DF2(jtpinf12){PROLOG(0340);A z;  // no reason to inplace, since w must be
 
 static DF1(jtinv1){F1PREFIP;DECLFG;A z; A i; RZ(i=inv((fs))); FDEPINC(1);  z=(FAV(i)->valencefns[0])(FAV(i)->flag&VJTFLGOK1?jtinplace:jt,w,i);       FDEPDEC(1); RETF(z);}  // was invrecur(fix(fs))
 static DF1(jtinvh1){F1PREFIP;DECLFGH;A z;    FDEPINC(1); z=(FAV(hs)->valencefns[0])(jtinplace,w,hs);        FDEPDEC(1); RETF(z);}
-static DF2(jtinv2){DECLFG;A z; FDEPINC(1); df1(z,w,inv(amp(a,fs))); FDEPDEC(1); STACKCHKOFL RETF(z);}  // the CHKOFL is to avoid tail recursion, which prevents a recursion loop from being broken
+static DF2(jtinv2){DECLFG;A z; ARGCHK2(a,w); FDEPINC(1); df1(z,w,inv(amp(a,fs))); FDEPDEC(1); STACKCHKOFL RETF(z);}  // the CHKOFL is to avoid tail recursion, which prevents a recursion loop from being broken
 static DF1(jtinverr){F1PREFIP;ASSERT(0,EVDOMAIN);}  // used for uninvertible monads
 
 // old static CS2(jtply2, df1(z,w,powop(amp(a,fs),gs,0)),0107)  // dyad adds x to make x&u, and then reinterpret the compound.  We could interpret u differently now that it has been changed (x {~^:a: y)
@@ -249,6 +251,7 @@ z=(FAV(u)->valencefns[0])(FAV(u)->flag&VJTFLGOK1?jtinplace:jt,w,u);} \
 // from parse) to 0 in all calls resulting from execution of gerund v.  Then we fail any gerund
 // if self is 0.
 DF2(jtpowop){A hs;B b;V*v;
+ ARGCHK2(a,w);
  ASSERT(AT(a)&VERB,EVDOMAIN);  // u must be a verb
  if(AT(w)&VERB){
   // u^:v.  Create derived verb to handle it.

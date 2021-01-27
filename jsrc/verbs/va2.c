@@ -809,6 +809,7 @@ I jtsumattymesprods(J jt,I it,void *avp, void *wvp,I dplen,I nfro,I nfri,I ndpo,
 
 // +/@:*"1 with IRS
 DF2(jtsumattymes1){
+ ARGCHK2(a,w);
  I ar=AR(a); I wr=AR(w); I acr=jt->ranks>>RANKTX; I wcr=jt->ranks&RMAX;
  // get the cell-ranks to use 
  acr=ar<acr?ar:acr;   // r=left rank of verb, acr=effective rank
@@ -872,6 +873,7 @@ DF2(jtsumattymes1){
 
 
 static A jtsumattymes(J jt, A a, A w, I b, I t, I m, I n, I nn, I r, I *s, I zn){A z;
+ ARGCHK2(a,w);
  switch(UNSAFE(t)){
  case B01:  // the aligned cases are handled elsewhere, a word at a time
   {B*av=BAV(a),u,*wv=BAV(w);I*zu,*zv;
@@ -931,6 +933,7 @@ static A jtsumattymes(J jt, A a, A w, I b, I t, I m, I n, I nn, I r, I *s, I zn)
 #endif
 
 static A jtsumatgbool(J jt,A a,A w,C id){A t,z;B* RESTRICTI av,* RESTRICTI wv;I dw,n,p,q,r,*s,zn,* RESTRICT zv;UC* RESTRICT tu;UI* RESTRICTI tv,*u,*v;
+ ARGCHK2(a,w);
  s=AS(w); n=*s;
  zn=AN(w)/n; dw=(zn+SZI-1)>>LGSZI; p=dw*SZI;
  q=n/255; r=n%255;
@@ -1023,7 +1026,7 @@ DF2(jtatomic2){A z;
  A realself=FAV(self)->fgh[0];  // if rank operator, this is nonzero and points to the left arg of rank
  RANK2T selfranks=FAV(self)->lrr;  // get left & right rank from rank/primitive
  self=realself?realself:self;  // if this is a rank block, move to the primitive.  u b. or any atomic primitive has f clear
- F2PREFIP;
+ F2PREFIP;ARGCHK2(a,w);
  RANK2T jtranks=jt->ranks;  // fetch IRS ranks if any
  UI ar=AR(a), wr=AR(w), awr=(ar<<RANKTX)+wr; I awm1=(AN(a)-1)|(AN(w)-1);
  selfranks=jtranks==(RANK2T)~0?selfranks:jtranks;
@@ -1051,8 +1054,8 @@ DF2(jtatomic2){A z;
  return z=jtva2((J)((I)jtinplace|JTRETRY),a,w,self,(awr<<RANK2TX)+selfranks);  // execute the verb
 }
 
-DF2(jtexpn2  ){F2PREFIP; if(unlikely(((((I)AR(w)-1)&SGNIF(AT(w),FLX))<0)))if(unlikely(0.5==DAV(w)[0]))return sqroot(a);  return jtatomic2(jtinplace,a,w,self);}  // use sqrt hardware for sqrt.  Only for atomic w.
-DF2(jtresidue){F2PREFIP; I intmod; if(!((AT(a)|AT(w))&(NOUN&~INT)|AR(a))&&(intmod=IAV(a)[0], (intmod&-intmod)+(intmod<=0)==0))return intmod2(w,intmod); return jtatomic2(jtinplace,a,w,self);}
+DF2(jtexpn2  ){F2PREFIP; ARGCHK2(a,w); if(unlikely(((((I)AR(w)-1)&SGNIF(AT(w),FLX))<0)))if(unlikely(0.5==DAV(w)[0]))return sqroot(a);  return jtatomic2(jtinplace,a,w,self);}  // use sqrt hardware for sqrt.  Only for atomic w.
+DF2(jtresidue){F2PREFIP; ARGCHK2(a,w); I intmod; if(!((AT(a)|AT(w))&(NOUN&~INT)|AR(a))&&(intmod=IAV(a)[0], (intmod&-intmod)+(intmod<=0)==0))return intmod2(w,intmod); return jtatomic2(jtinplace,a,w,self);}
 
 
 // These are the unary ops that are implemented using a canned argument

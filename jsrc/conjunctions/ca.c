@@ -16,6 +16,7 @@ static DF1(jtonf1){PROLOG(0021);DECLFG;A z;I flag=sv->flag,m=jt->xmode;
 }
 
 static DF2(jtuponf2){PROLOG(0022);DECLFG;A z;I flag=sv->flag,m=jt->xmode;
+ ARGCHK2(a,w);
  if(primitive(gs))if(flag&VFLR)jt->xmode=XMFLR; else if(flag&VCEIL)jt->xmode=XMCEIL;
  if(RAT&AT(a))RZ(a=pcvt(XNUM,a));
  if(RAT&AT(w))RZ(w=pcvt(XNUM,w));
@@ -77,7 +78,7 @@ RZ(z=(f1)(jtinplace,gx,fs));} \
 ,0113)
 
 CS2IP(,,jtupon2, \
-{PUSHZOMB; A protw = (A)(intptr_t)((I)w+((I)jtinplace&JTINPLACEW)); A prota = (A)(intptr_t)((I)a+((I)jtinplace&JTINPLACEA)); A gx; \
+{PUSHZOMB; ARGCHK2D(a,w) A protw = (A)(intptr_t)((I)w+((I)jtinplace&JTINPLACEW)); A prota = (A)(intptr_t)((I)a+((I)jtinplace&JTINPLACEA)); A gx; \
 RZ(gx=(g2)((J)(intptr_t)(((I)jtinplace&(~(JTWILLBEOPENED+JTCOUNTITEMS))) + (REPSGN(SGNIF(FAV(gs)->flag,VJTFLGOK2X)) & FAV(fs)->flag2 & VF2WILLOPEN1+VF2USESITEMCOUNT1)),a,w,gs));  /* inplace g */ \
 ARGCHK1D(gx) \
 /* inplace gx unless it is protected */ \
@@ -114,6 +115,7 @@ CS2IP(static,static,on2, \
 static DF2(on20){return jtrank2ex0(jt,a,w,self,on2cell);}  // pass inplaceability through
 
 static DF2(atcomp){AF f;A z;
+ ARGCHK2(a,w); 
  f=atcompf(a,w,self);
  if(f){
   I postflags=jt->workareas.compsc.postflags;
@@ -124,6 +126,7 @@ static DF2(atcomp){AF f;A z;
 }
 
 static DF2(atcomp0){A z;AF f;
+ ARGCHK2(a,w);
  f=atcompf(a,w,self);
  PUSHCCT(1.0)
  if(f){
@@ -372,6 +375,7 @@ static DF2(with2){A z; return df1(z,w,powop(self,a,0));}
 
 // u&v
 F2(jtamp){A h=0;AF f1,f2;B b;C c,d=0;I flag,flag2=0,linktype=0,mode=-1,p,r;V*u,*v;
+ ARGCHK2(a,w);
  switch(CONJCASE(a,w)){
  default: ASSERTSYS(0,"amp");
  case NN: ASSERT(0,EVDOMAIN);

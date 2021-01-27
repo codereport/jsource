@@ -69,7 +69,7 @@ F1(jtboxopen){F1PREFIP; if((-AN(w)&-(AT(w)&BOX+SBOX))>=0){w = jtbox(jtinplace,w)
 
 // x ; y, with options for x (,<) y   x (;<) y   x ,&< y
 DF2(jtlink){
-F2PREFIP;
+F2PREFIP;ARGCHK2(a,w);
 #if FORCEVIRTUALINPUTS
  // to allow mapped-boxed tests to run, we detect when the virtual block being realized is at offset 0 from its
  // base block, and has the same atomsct/rank/shape.  Then we just return the base block, since the virtual block

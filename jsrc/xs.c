@@ -86,6 +86,7 @@ static F1(jtaddscriptname){I i;
 
 
 static A jtlinf(J jt,A a,A w,C ce,B tso){A x,y,z;B lk=0;C*s;I i=-1,n,oldi=jt->slisti;
+ ARGCHK2(a,w);
  ASSERT(AT(w)&BOX,EVDOMAIN);
  if(jt->seclev){
   y=AAV(w)[0]; n=AN(y); s=CAV(y); 
@@ -129,9 +130,9 @@ F1(jtscm11 ){I r;    r=1&&AT(w)&LIT+C2T+C4T; F1RANK(     r,jtscm11, UNUSED_VALUE
 F1(jtsct1  ){I r;    r=1&&AT(w)&LIT+C2T+C4T; F1RANK(     r,jtsct1,  UNUSED_VALUE); return r?line(w,-1L,2,1):linf(mark,w,2,1);}
 F1(jtscz1  ){I r;    r=1&&AT(w)&LIT+C2T+C4T; F1RANK(     r,jtscz1,  UNUSED_VALUE); return r?line(w,-1L,3,0):linf(mark,w,3,0);}
 
-F2(jtscm002){I r; r=1&&AT(w)&LIT+C2T+C4T; F2RANK(RMAX,r,jtscm002,UNUSED_VALUE); return r?line(w,-1L,0,0):linf(a,   w,0,0);}
-F2(jtscm012){I r; r=1&&AT(w)&LIT+C2T+C4T; F2RANK(RMAX,r,jtscm012,UNUSED_VALUE); return r?line(w,-1L,0,1):linf(a,   w,0,1);}
-F2(jtscm102){I r; r=1&&AT(w)&LIT+C2T+C4T; F2RANK(RMAX,r,jtscm102,UNUSED_VALUE); return r?line(w,-1L,1,0):linf(a,   w,1,0);}
-F2(jtscm112){I r; r=1&&AT(w)&LIT+C2T+C4T; F2RANK(RMAX,r,jtscm112,UNUSED_VALUE); return r?line(w,-1L,1,1):linf(a,   w,1,1);}
-F2(jtsct2  ){I r; r=1&&AT(w)&LIT+C2T+C4T; F2RANK(RMAX,r,jtsct2,  UNUSED_VALUE); return r?line(w,-1L,2,1):linf(a,   w,2,1);}
-F2(jtscz2  ){I r; r=1&&AT(w)&LIT+C2T+C4T; F2RANK(RMAX,r,jtscz2,  UNUSED_VALUE); return r?line(w,-1L,3,0):linf(a,   w,3,0);}
+F2(jtscm002){I r; ARGCHK2(a,w); r=1&&AT(w)&LIT+C2T+C4T; F2RANK(RMAX,r,jtscm002,UNUSED_VALUE); return r?line(w,-1L,0,0):linf(a,   w,0,0);}
+F2(jtscm012){I r; ARGCHK2(a,w); r=1&&AT(w)&LIT+C2T+C4T; F2RANK(RMAX,r,jtscm012,UNUSED_VALUE); return r?line(w,-1L,0,1):linf(a,   w,0,1);}
+F2(jtscm102){I r; ARGCHK2(a,w); r=1&&AT(w)&LIT+C2T+C4T; F2RANK(RMAX,r,jtscm102,UNUSED_VALUE); return r?line(w,-1L,1,0):linf(a,   w,1,0);}
+F2(jtscm112){I r; ARGCHK2(a,w); r=1&&AT(w)&LIT+C2T+C4T; F2RANK(RMAX,r,jtscm112,UNUSED_VALUE); return r?line(w,-1L,1,1):linf(a,   w,1,1);}
+F2(jtsct2  ){I r; ARGCHK2(a,w); r=1&&AT(w)&LIT+C2T+C4T; F2RANK(RMAX,r,jtsct2,  UNUSED_VALUE); return r?line(w,-1L,2,1):linf(a,   w,2,1);}
+F2(jtscz2  ){I r; ARGCHK2(a,w); r=1&&AT(w)&LIT+C2T+C4T; F2RANK(RMAX,r,jtscz2,  UNUSED_VALUE); return r?line(w,-1L,3,0):linf(a,   w,3,0);}

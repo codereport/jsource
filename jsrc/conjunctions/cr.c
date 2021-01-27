@@ -230,6 +230,7 @@ A jtrank2ex(J jt,AD * RESTRICT a,AD * RESTRICT w,A fs,UI lrrrlcrrcr,AF f2){
  I lrrr=(UI4)lrrrlcrrcr; I lcrrcr=lrrrlcrrcr>>2*RANKTX;  // inner, outer ranks
  F2PREFIP;PROLOG(0042);A virta,virtw,z;I acn,ak,mn,wcn,wk;
  I outerframect, outerrptct, innerframect, innerrptct, aof, wof, sof, lof, sif, lif, *lis, *los;
+ ARGCHK2(a,w);
  if(unlikely((UI)lrrr==(((UI)AR(a)<<RANKTX)+AR(w)))){return CALL2IP(f2,a,w,fs);}  // if there's only one cell and no frame, run on it, that's the result.
  if(unlikely(((AT(a)|AT(w))&SPARSE)!=0))return sprank2(a,w,fs,(UI)lcrrcr>>RANKTX,lcrrcr&RANKTMSK,f2);  // this needs to be updated to handle multiple ranks
 // lr,rr are the ranks of the underlying verb.  lcr,rcr are the cell-ranks given by u"lcr rcr.
@@ -406,7 +407,7 @@ A jtrank2ex(J jt,AD * RESTRICT a,AD * RESTRICT w,A fs,UI lrrrlcrrcr,AF f2){
 // This code does not set inplaceability on nonrepeated cells - hardly useful at rank 0
 A jtrank2ex0(J jt,AD * RESTRICT a,AD * RESTRICT w,A fs,AF f2){F2PREFIP;PROLOG(0042);A virta,virtw,z;
    I ak,ar,*as,ict,oct,mn,wk,wr,*ws;
- ar=AR(a); wr=AR(w); if(unlikely(!(ar+wr)))return CALL2IP(f2,a,w,fs);   // if no frame, make just 1 call
+ ARGCHK2(a,w); ar=AR(a); wr=AR(w); if(unlikely(!(ar+wr)))return CALL2IP(f2,a,w,fs);   // if no frame, make just 1 call
  if(unlikely(((AT(a)|AT(w))&SPARSE)!=0))return sprank2(a,w,fs,0,0,f2);  // this needs to be updated to handle multiple ranks
 #define ZZFLAGWORD state
 
@@ -576,7 +577,7 @@ A jtirs1(J jt,A w,A fs,I m,AF f1){A z;I wr;
 // we have it, we call the setup verb, which will go on to do its internal looping and (optionally) call
 // the verb f2 to finish operation on a cell
 A jtirs2(J jt,A a,A w,A fs,I l,I r,AF f2){A z;I ar,wr;
- F2PREFIP; 
+ F2PREFIP; ARGCHK2(a,w);
  wr=AR(w); r=r>=wr?(RANKT)~0:r; wr+=r; wr=wr<0?0:wr; wr=r>=0?r:wr; r=AR(w)-wr;   // wr=requested rank, after negative resolution, or ~0; r=frame of w, possibly negative if no frame
  ar=AR(a); l=l>=ar?(RANKT)~0:l; ar+=l; ar=ar<0?0:ar; ar=l>=0?l:ar; l=AR(a)-ar;   // ar=requested rank, after negative resolution, or ~0; l=frame of a, possibly negative if no frame
  l=MIN(r,l); l=l<0?0:l;  // get length of frame
@@ -598,6 +599,7 @@ static DF1(cons1){V*sv=FAV(self);
  return rank1ex(w,self,mr,cons1a);
 }
 static DF2(cons2){V*sv=FAV(self);
+ ARGCHK2(a,w);
  I lr2,rr2; efr(lr2,AR(a),(I)sv->localuse.lI4[1]); efr(rr2,AR(w),(I)sv->localuse.lI4[2]);
  return rank2ex(a,w,self,lr2,rr2,lr2,rr2,cons2a);
 }
@@ -609,6 +611,7 @@ static DF1(cycr1){V*sv=FAV(self);I cger[128/SZI];
  return rank1ex(w,self,mr,FAV(self)->valencefns[0]);  // callback is to the cyclic-execution function
 }
 static DF2(cycr2){V*sv=FAV(self);I cger[128/SZI];
+ ARGCHK2(a,w);
  RZ(self=createcycliciterator((A)&cger, self));  // fill in an iterator for this gerund
  I lr2,rr2; efr(lr2,AR(a),(I)sv->localuse.lI4[1]); efr(rr2,AR(w),(I)sv->localuse.lI4[2]);
  return rank2ex(a,w,self,lr2,rr2,lr2,rr2,FAV(self)->valencefns[1]);  // callback is to the cyclic-execution function
@@ -676,11 +679,13 @@ static DF1(rank1q){  // fast version: nonneg rank, no check for multiple RANKONL
 // THIS SUPPORTS INPLACING: NOTHING HERE MAY DEREFERENCE jt!!
 // This version for use when the ranks are nonnegative and u is not RANKONLY
 static DF2(rank2q){
+ ARGCHK2(a,w);
  I ar=AR(a); ar=ar>FAV(self)->localuse.lI4[1]?FAV(self)->localuse.lI4[1]:ar; I wr=AR(w); wr=wr>FAV(self)->localuse.lI4[2]?FAV(self)->localuse.lI4[2]:wr; A fs=FAV(self)->fgh[0];
  return rank2ex(a,w,fs,ar,wr,ar,wr,FAV(fs)->valencefns[1]);
 }
 
 static DF2(rank2){DECLF;I ar,l=sv->localuse.lI4[1],r=sv->localuse.lI4[2],wr;
+ ARGCHK2(a,w);
  ar=AR(a); efr(l,ar,l);
  wr=AR(w); efr(r,wr,r);
  if(((l-ar)|(r-wr))<0) {I llr=l, lrr=r;  // inner ranks, if any
@@ -706,6 +711,7 @@ static DF2(jtrank20){return jtrank2ex0(jt,a,w,self,jtrank20atom);}  // pass inpl
 
 // a"w; result is a verb
 F2(jtqq){A t;AF f1,f2;D*d;I hv[3],n,r[3],vf,flag2=0,*v;A ger=0;
+ ARGCHK2(a,w);
  // The localuse value in the function will hold the ranks from w.
  if(VERB&AT(w)){
   // verb v.  Extract the ranks into a floating-point list

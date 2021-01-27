@@ -18,16 +18,18 @@ A hx; RZ(hx=(h1)((J)(intptr_t)(((I)jt) + (REPSGN(SGNIF(FAV(hs)->flag,VJTFLGOK1X)
 ARGCHK1D(hx) \
 /* the call to f is inplaceable if the caller allowed inplacing, and f is inplaceable, and the hx is NOT the same as y.  Here only the LSB of jtinplace is used */ \
 A fx; RZ(fx=(f1)((J)(intptr_t)(((I)jt) + (REPSGN(SGNIF(FAV(fs)->flag,VJTFLGOK1X)) & (((I)jtinplace&(I )(hx!=w)) + ((FAV(gs)->flag2>>(VF2WILLOPEN2AX-VF2WILLOPEN1X)) & VF2WILLOPEN1+VF2USESITEMCOUNT1)))),w,fs)); \
+ARGCHK2D(fx,hx) \
 /* The call to g is inplaceable if g allows it, UNLESS fx or hx is the same as disallowed y.  Pass in WILLOPEN from the input */ \
 POPZOMB; RZ(z=(g2)((J)(intptr_t)((((I)jtinplace&(~(JTINPLACEA+JTINPLACEW)))|((I )(fx!=protw)*JTINPLACEA+(I )(hx!=protw)*JTINPLACEW))&(REPSGN(SGNIF(FAV(gs)->flag,VJTFLGOK2X))|~JTFLAGMSK)),fx,hx,gs));}
 
-#define FOLK2 {PUSHZOMB; A protw = (A)(intptr_t)((I)w+((I)jtinplace&JTINPLACEW)); A prota = (A)(intptr_t)((I)a+((I)jtinplace&JTINPLACEA)); \
+#define FOLK2 {PUSHZOMB; ARGCHK2D(a,w) A protw = (A)(intptr_t)((I)w+((I)jtinplace&JTINPLACEW)); A prota = (A)(intptr_t)((I)a+((I)jtinplace&JTINPLACEA)); \
 /* the call to h is not inplaceable, but it may allow WILLOPEN and USESITEMCOUNT.  Inplace h if f is x@], but not if a==w  Actually we turn off all flags here if a==w, for comp ease */ \
 A hx; RZ(hx=(h2)((J)(intptr_t)(((I)jt) + ((-((FAV(hs)->flag>>VJTFLGOK2X)&(I )(a!=w))) & (((I)jtinplace&sv->flag&(VFATOPL|VFATOPR)) + ((FAV(gs)->flag2>>(VF2WILLOPEN2WX-VF2WILLOPEN1X)) & VF2WILLOPEN1+VF2USESITEMCOUNT1)))),a,w,hs)); \
 ARGCHK1D(hx) \
 /* If any result equals protw/prota, it must not be inplaced: if original w/a is inplaceable, protw/prota will not match anything */ \
 /* the call to f is inplaceable if the caller allowed inplacing, and f is inplaceable; but only where hx is NOT the same as x or y.  Both flags in jtinplace are used */ \
 A fx; RZ(fx=(f2)((J)(intptr_t)(((I)jt) + (REPSGN(SGNIF(FAV(fs)->flag,VJTFLGOK2X)) & (((I)jtinplace&(JTINPLACEA*(I )(hx!=a)+(I )(hx!=w))) + ((FAV(gs)->flag2>>(VF2WILLOPEN2AX-VF2WILLOPEN1X)) & VF2WILLOPEN1+VF2USESITEMCOUNT1)))),a,w,fs)); \
+ARGCHK2D(fx,hx) \
 /* The call to g is inplaceable if g allows it, UNLESS fx or hx is the same as disallowed y.  Pass in WILLOPEN from the input */ \
 POPZOMB; RZ(z=(g2)((J)(intptr_t)((((I)jtinplace&(~(JTINPLACEA+JTINPLACEW)))|(((I )(fx!=protw)&(I )(fx!=prota))*JTINPLACEA+((I )(hx!=protw)&(I )(hx!=prota)*JTINPLACEW)))&(REPSGN(SGNIF(FAV(gs)->flag,VJTFLGOK2X))|~JTFLAGMSK)),fx,hx,gs));}
 
@@ -84,6 +86,7 @@ A z;RZ(z=(g2)(jtinplace,fs,hx,gs));
 EPILOG(z);}
 
 static DF2(jtfolkcomp){F2PREFIP;DECLFGH;PROLOG(0034);A z;AF f;
+ ARGCHK2(a,w);
  f=atcompf(a,w,self);
  if(f){
   I postflags=jt->workareas.compsc.postflags;
@@ -94,6 +97,7 @@ static DF2(jtfolkcomp){F2PREFIP;DECLFGH;PROLOG(0034);A z;AF f;
 }
 
 static DF2(jtfolkcomp0){F2PREFIP;DECLFGH;PROLOG(0035);A z;AF f;
+ ARGCHK2(a,w);
  PUSHCCT(1.0)
  f=atcompf(a,w,self);
  if(f){
@@ -253,6 +257,7 @@ static DF1(jthkodom){DECLFG;B b=0;I n,*v;
   z=((opt0 comp opt1) || (opt0==opt1&&optx0>=optx1))?2*optx0+1:2*optx1; opt0=opt0  compe opt1?opt0:opt1; z+=n&1; if(n&1&&wv[0] comp opt0)z=0; break;}
 
 static DF1(jthkindexofmaxmin){I z=0;
+ ARGCHK2(w,self);
  I n=AN(w);
  if(!(1==AR(w)&&AT(w)&INT+FL))return hook1(w,self);
  if(n>1){
@@ -278,6 +283,7 @@ static DF2(jthklvl2){
 }
 
 F2(jthook){AF f1=0,f2=0;C c,d,e,id;I flag=VFLAGNONE,linktype=0;V*u,*v;
+ ARGCHK2(a,w);
  switch(BD(AT(a),AT(w))){
   default:            ASSERT(0,EVSYNTAX);
   case BD(VERB,VERB):

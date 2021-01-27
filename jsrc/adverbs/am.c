@@ -5,11 +5,27 @@
 
 #include "j.h"
 
+
+/*
+static A jtmerge1(J jt,A w,A ind){PROLOG(0006);A z;C*v,*x;I c,k,r,*s,t,*u;
+ ARGCHK2(w,ind);
+ RZ(ind=pind(IC(w),ind));
+ r=MAX(0,AR(w)-1); s=1+AS(w); t=AT(w); c=aii(w);
+ ASSERT(!(t&SPARSE),EVNONCE);
+ ASSERT(r==AR(ind),EVRANK);
+ ASSERT(!ICMP(s,AS(ind),r),EVLENGTH);
+ GA(z,t,c,r,s); x=CAV(z); v=CAV(w); u=AV(ind); k=bpnoun(t);
+ DO(c, MC(x+k*i,v+k*(i+c*u[i]),k););
+ EPILOG(z);
+}
+*/
+
 #define MCASE(t,k)  ((t)+4*(k))
 #define MINDEX        {j=*u++; if(0>j)j+=m; ASSERT(BETWEENO(j,0,m),EVINDEX);}
 
 // m} y
 static A jtmerge1(J jt,A w,A ind){A z;B*b;C*wc,*zc;D*wd,*zd;I c,it,j,k,m,r,*s,t,*u,*wi,*zi;
+ ARGCHK2(w,ind);
  r=MAX(0,AR(w)-1); s=1+AS(w); t=AT(w); k=bpnoun(t); SETIC(w,m); c=aii(w);  // m = # items of w
  ASSERT(!(t&SPARSE),EVNONCE);
  ASSERT(r==AR(ind),EVRANK);
@@ -302,6 +318,7 @@ static DF2(jtamendn2){F2PREFIP;PROLOG(0007);A e,z; B b;I atd,wtd,t,t1;P*p;
 // Execution of x u} y.  Call u to get the indices, then
 // call merge2 to do the merge.  Pass inplaceability into merge2.
 static DF2(amccv2){F2PREFIP;DECLF; 
+ ARGCHK2(a,w); 
  ASSERT(DENSE&AT(w),EVNONCE);  // u} not supported for sparse
  A x;RZ(x=pind(AN(w),CALL2(f2,a,w,fs)));
  A z=jtmerge2(jtinplace,a,w,x,AR(w));   // The atoms of x include all axes of w, since we are addressing atoms

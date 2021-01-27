@@ -220,6 +220,7 @@ A jtnameref(J jt,A w,A locsyms){
 // Create a pseudo-named entity.  a is the name, w is the actual entity
 // Result has type ':' but goes to unquote.  We mark a pseudo-named entity by having f=0, g=name, h=actual entity to execute
 F2(jtnamerefop){V*v;
+ ARGCHK2(a,w);
  v=FAV(w);
  return fdef(0,CCOLON,VERB,  jtunquote1,jtunquote, 0L,a,w, VXOPCALL|v->flag, v->mr,lrv(v),rrv(v));
 }    

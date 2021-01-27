@@ -419,6 +419,7 @@ F1(jtcvt0){I n,t;D *u;
 F1(jtxco1){ASSERT(AT(w)&DENSE,EVNONCE); return cvt(AT(w)&B01+INT+XNUM?XNUM:RAT,w);}
 
 F2(jtxco2){A z;B b;I j,n,r,*s,t,*wv,*zu,*zv;
+ ARGCHK2(a,w);
  n=AN(w); r=AR(w); t=AT(w);
  ASSERT(t&DENSE,EVNONCE);
  RE(j=i0(a));

@@ -466,7 +466,7 @@ L* jtprobeisquiet(J jt,A a,A locsyms){A g;  // locsyms is used in the call, but 
 // assign symbol: assign name a in symbol table g to the value w (but g is special if jt->assignsym is nonnull)
 // Result points to the symbol-table block for the assignment
 L* jtsymbis(J jt,A a,A w,A g){A x;I m,n,wn,wr,wt;L*e;
- RZ(g)
+ ARGCHK2(a,w); RZ(g)
  // If we have an assignsym, we have looked this name up already, so just use the symbol-table entry found then
  // in this case g is the type field of the name being assigned; and jt->locsyms must exist, since it comes from
  // an explicit definition

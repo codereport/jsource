@@ -16,6 +16,7 @@ F1(jtrazein){A z; return df2(z,w,box(raze(w)),amp(swap(ds(CEPS)),ds(COPE)));}
 
 
 static F2(jtebarmat){A ya,yw,z;B b,*zv;C*au,*av,*u,*v,*v0,*wu,*wv;I*as,c,i,k,m,n,r,s,si,sj,t,*ws;
+ ARGCHK2(a,w);
  as=AS(a);      av=CAV(a);
  ws=AS(w); v=v0=wv=CAV(w);
  si=as[0]; m=1+ws[0]-si;
@@ -37,6 +38,7 @@ static F2(jtebarmat){A ya,yw,z;B b,*zv;C*au,*av,*u,*v,*v0,*wu,*wv;I*as,c,i,k,m,n
 }    /* E. on matrix arguments */
 
 static F2(jtebarvec){A y,z;B*zv;C*av,*wv,*yv;I an,k,n,s,t,wn;
+ ARGCHK2(a,w);
  an=AN(a); av=CAV(a); 
  wn=AN(w); wv=CAV(w); n=1+wn-an; 
  t=AT(w); k=bpnoun(t); s=k*an;
@@ -101,6 +103,7 @@ static I jtebarprep(J jt,A a,A w,A*za,A*zw,I*zc){I ar,at,m,n,t,wr,wt,memlimit;CR
    }
 
 F2(jtebar){PROLOG(0065);A y,z;B*zv;C*av,*wv;I c,d,i,k=0,m,n,p,*yv;
+ ARGCHK2(a,w);
  ASSERT(!((AT(a) | AT(w)) & SPARSE), EVNONCE);
  ASSERT((AR(a) == AR(w)) || (AR(a) + (AR(w) ^ 1)) == 0, EVRANK);
  if(AN(a)==1)return eq(reshape(mtv,a),w);  // if a is a singleton, just revert to =
@@ -130,6 +133,7 @@ F2(jtebar){PROLOG(0065);A y,z;B*zv;C*av,*wv;I c,d,i,k=0,m,n,p,*yv;
 
 
 F2(jti1ebar){A y;C*av,*wv;I c,d,i,k=0,m,n,p,*yv;
+ ARGCHK2(a,w);
 
  RE(d=ebarprep(a,w,&a,&w,&c));
  av=CAV(a); m=AN(a);
@@ -153,6 +157,7 @@ F2(jti1ebar){A y;C*av,*wv;I c,d,i,k=0,m,n,p,*yv;
 }    /* a (E. i. 1:) w where a and w are atoms or lists */
 
 F2(jtsumebar){A y;C*av,*wv;I c,d,i,k=0,m,n,p,*yv,z=0;
+ ARGCHK2(a,w);
  RE(d=ebarprep(a,w,&a,&w,&c));
  av=CAV(a); m=AN(a);
  wv=CAV(w); n=AN(w); p=n-m;
@@ -176,6 +181,7 @@ F2(jtsumebar){A y;C*av,*wv;I c,d,i,k=0,m,n,p,*yv,z=0;
 }    /* a ([: +/ E.) w where a and w are atoms or lists */
 
 F2(jtanyebar){A y;C*av,*wv;I c,d,i,k=0,m,n,p,*yv;
+ ARGCHK2(a,w);
  RE(d=ebarprep(a,w,&a,&w,&c));
  av=CAV(a); m=AN(a);
  wv=CAV(w); n=AN(w); p=n-m;
@@ -202,6 +208,7 @@ F2(jtanyebar){A y;C*av,*wv;I c,d,i,k=0,m,n,p,*yv;
  {if(zu==zv){I m=zu-AV(z); RZ(z=ext(0,z)); zv=m+AV(z); zu=AN(z)+AV(z);} *zv++=k;}
 
 F2(jtifbebar){A y,z;C*av,*wv;I c,d,i,k=0,m,n,p,*yv,*zu,*zv;
+ ARGCHK2(a,w);
  RE(d=ebarprep(a,w,&a,&w,&c));
  av=CAV(a); m=AN(a);
  wv=CAV(w); n=AN(w); p=n-m;

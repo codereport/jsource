@@ -276,6 +276,7 @@ static A*jtunparse1a(J jt,I m,A*hv,A*zv){A*v,x,y;CW*u;I i,j,k;
 
 // w is a def.  Return unparsed form
 F2(jtunparsem){A h,*hv,dc,ds,mc,ms,z,*zu,*zv;I dn,m,mn,n,p;V*wv;
+ ARGCHK2(a,w);
  wv=VAV(w); h=wv->fgh[2]; hv=AAV(h);  // h[2][HN] is preparsed def
  mc=hv[1];    ms=hv[2];    m=mn=AN(mc);  // mc->control words ms->commented text
  dc=hv[1+HN]; ds=hv[2+HN]; n=dn=AN(dc);
@@ -300,6 +301,7 @@ F2(jtunparsem){A h,*hv,dc,ds,mc,ms,z,*zu,*zv;I dn,m,mn,n,p;V*wv;
 }    /* convert h parameter for : definitions; open if a is 0 */
 
 static F2(jtxrep){A h,*hv,*v,x,z,*zv;CW*u;I i,j,n,q[3],*s;V*wv; 
+ ARGCHK2(a,w);
  RE(j=i0(a)); ASSERT(1==j||2==j,EVDOMAIN); j=1==j?0:HN;
  ASSERT(AT(w)&VERB+ADV+CONJ,EVDOMAIN);
  wv=FAV(w); h=wv->fgh[2];

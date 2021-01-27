@@ -262,6 +262,7 @@ static B laa(A a,A w){C c,d;
 static B lnn(A a,A w){C c; if(!(a&&w))return 0; c=cl(a); return ('x'==c||'.'==c||C9==ctype[(UC)c])&&C9==ctype[(UC)cf(w)];}
 
 static F2X(jtlinsert){F1PREFIP;A*av,f,g,h,t,t0,t1,t2,*u,y;B b,ft,gt,ht;C c,id;I n;V*v;
+ ARGCHK2(a,w);
  n=AN(a); av=AAV(a);  
  v=VAV(w); id=v->id;
  b=id==CCOLON&&VXOP&v->flag;

@@ -109,6 +109,7 @@ AHDR2(cirDD,D,D,D){I k=(I)jround(*x);
 
 
 F2(jtlogar2){A z;I t;
+ ARGCHK2(a,w); 
  RE(t=maxtype(AT(a),AT(w)));
  if(!(t&XNUM)||jt->xmode==XMEXACT){jt->xmode=XMEXACT; return jtatomic2(JTIPAW,logar1(w),logar1(a),ds(CDIV));}  // better to multiply by recip, but not much, & it makes 0 ^. 0 not fail
  z=rank2ex0(cvt(XNUM,a),cvt(XNUM,w),UNUSED_VALUE,jtxlog2a); 
@@ -118,6 +119,7 @@ F2(jtlogar2){A z;I t;
 }
     
 F2(jtroot){A z;I t;
+ ARGCHK2(a,w);
  RE(t=maxtype(AT(a),AT(w)));
  A ma=a; if(TYPESNE(t,AT(a)))RZ(ma=cvt(t,a));
  A mw=w; if(TYPESNE(t,AT(w)))RZ(mw=cvt(t,w));

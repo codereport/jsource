@@ -9,6 +9,6 @@
 
 F1(jtaflag1){return sc(AFLAG(w));}
 
-F2(jtaflag2){I k; RE(k=i0(a)); AFLAG(w)=(FLAGT)k; return w;}
+F2(jtaflag2){I k; ARGCHK2(a,w); RE(k=i0(a)); AFLAG(w)=(FLAGT)k; return w;}
 
 F1(jthash){RZ(w=vs(w)); return sc(hic(AN(w),UAV(w)));}

@@ -330,6 +330,7 @@ static F1(jtdetmr){A z;B*zv;I d,h,i,n,wn,*wv;
 }    /* deterministic Miller-Rabin */ 
 
 F2(jtpco2){A z;B*b;I k;
+ ARGCHK2(a,w);
  RZ(init4792(jt));
  RE(k=i0(a));
  switch(k){
@@ -359,6 +360,7 @@ static A jtqco2x(J jt,I m,A w){A y;I c,*dv,i,*pv,*yv;X d,q,r,x;
 }    /* m q: w where 0<:m and p: m is one xdigit and w is a single extended integer */
 
 F2(jtqco2){A q,y,z;B b,bb,xt;I c,j,k,m,*qv,wn,wr,*yv,*zv;
+ ARGCHK2(a,w);
  wn=AN(w); wr=AR(w); b=all1(lt(a,zeroionei(0))); xt=1&&AT(w)&XNUM+RAT;
  if(AR(a)||wr&&(b||xt))return rank2ex0(a,w,UNUSED_VALUE,jtqco2);
  if(!b&&xt){RE(m=i0(vib(a))); if(BETWEENO(m,0,1229))return qco2x(m,w);}  /* 1229=p:^:_1 XBASE */

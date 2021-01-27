@@ -257,6 +257,7 @@ F1(jtcpufeature){
 
 // thread unsafe
 F2(jtcpufeature2){I k;
+ ARGCHK2(a,w);
  ASSERT(AT(w)&LIT,EVDOMAIN);
  ASSERT(AN(w),EVLENGTH);
  ASSERT(1>=AR(w),EVRANK);
@@ -362,6 +363,7 @@ F1(jtgemmtune){I k;
 }
 
 F2(jtgemmtune2){I j,k;
+ ARGCHK2(a,w);
  ASSERT(AT(a)&(B01+INT),EVDOMAIN);
  ASSERT(1==AN(a),EVLENGTH);
  ASSERT(1>=AR(a),EVRANK);

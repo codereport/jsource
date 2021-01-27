@@ -24,6 +24,7 @@ static DF1(ad1){DECLFG;A z;
 }
 
 static DF2(ad2){DECLFG;A z;
+ ARGCHK2(a,w); 
  WITHDEBUGOFF(z=CALL2(f2,a,w,fs);)
  if(EVTHROW==jt->jerr)return 0;
  RESETERR; 
