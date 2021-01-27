@@ -14,7 +14,6 @@ static I jtfdepger(J jt,A w){A*wv;I d=0,k;
 
 #if !USECSTACK
 I jtfdep(J jt,A w){A f,g;I d=0,k;V*v;
- ARGCHK1(w);
  v=VAV(w);
  if(v->fdep)return v->fdep;  // for speed, use previous value if it has been calculated
  if(f=v->fgh[0]) d=VERB&AT(f)?fdep(f):NOUN&AT(f)&&VGERL&v->flag?fdepger(f):0;
@@ -79,7 +78,6 @@ B nameless(A w){A f,g,h;C id;V*v;
 }
 
 B jtprimitive(J jt,A w){A x=w;V*v;
- ARGCHK1(w);
  v=VAV(w);
  if(CTILDE==v->id&&NOUN&AT(v->fgh[0]))RZ(x=fix(w,zeroionei(0)));
  return!VAV(x)->fgh[0];

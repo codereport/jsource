@@ -8,7 +8,6 @@
 
 
 static A jteverysp(J jt,A w,A fs){A*wv,x,z,*zv;P*wp,*zp;
- ARGCHK1(w);
  AF f1=FAV(fs)->valencefns[0];
  ASSERT(SBOX&AT(w),EVNONCE);
  RZ(z=ca(w));
@@ -257,7 +256,6 @@ static DF2(jtunder20){return jtrank2ex0(jt,a,w,self,jtunder2);}  // pass inplace
 static DF2(jtunderh20){return jtrank2ex0(jt,a,w,self,jtunderh2);}  // pass inplaceability through
 
 static DF1(jtunderai1){DECLF;A x,y,z;B b;I j,n,*u,*v;UC f[256],*wv,*zv;
- ARGCHK1(w);
  if(b=LIT&AT(w)&&256<AN(w)){  // long w.  run on all bytecodes, as i. 128 2  and i. 8 32
         df1(x,iota(v2(128L, 2L)),fs); b=x&&256==AN(x)&&NUMERIC&AT(x);
   if(b){df1(y,iota(v2(  8L,32L)),fs); b=y&&256==AN(y)&&NUMERIC&AT(y);}

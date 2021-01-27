@@ -998,7 +998,6 @@ F1(jtmemf){I k; RE(k=i0(w)); FREE((void*)k); return num(0);}
      /* 15!:4  memory free */
 
 F1(jtmemr){C*u;I m,n,t,*v;US*us;C4*c4;
- ARGCHK1(w);
  ASSERT(INT&AT(w),EVDOMAIN);
  ASSERT(1==AR(w),EVRANK);
  n=AN(w); v=AV(w);
@@ -1112,7 +1111,6 @@ static I cbvx[]={(I)&cbx0,(I)&cbx1,(I)&cbx2,(I)&cbx3,(I)&cbx4,(I)&cbx5,(I)&cbx6,
 
 F1(jtcallback){
  cbjt=jt; /* callbacks don't work with multiple instances of j */
- ARGCHK1(w);
  if(LIT&AT(w))
  {
   I cnt,alt;C c;C* s;
@@ -1164,7 +1162,6 @@ F1(jtcdjt){
 } /* 15!:19 return jt */
 
 F1(jtcdlibl){
- ARGCHK1(w);
  ASSERT(LIT&AT(w),EVDOMAIN);
  ASSERT(1>=AR(w),EVRANK);
  ASSERT(AN(w),EVLENGTH);
@@ -1173,7 +1170,6 @@ F1(jtcdlibl){
 }    /* 15!:20 return library handle */
 
 F1(jtcdproc1){CCT*cc;
- ARGCHK1(w);
  ASSERT(LIT&AT(w),EVDOMAIN);
  ASSERT(1>=AR(w),EVRANK);
  ASSERT(AN(w),EVLENGTH);

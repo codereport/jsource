@@ -16,7 +16,6 @@
 
 
 static DF1(jtpowseqlim){PROLOG(0039);A x,y,z,*zv;I i,n;
- ARGCHK1(w);
  RZ(z=exta(BOX,1L,1L,20L)); zv=AAV(z); INCORP(w); *zv++=x=w;
  i=1; n=AN(z);
  while(1){
@@ -58,7 +57,6 @@ static F2(jttclosure){A z;I an,*av,c,d,i,wn,wr,wt,*wv,*zv,*zz;
 }    /* {&a^:(<_) w */
 
 static DF1(jtindexseqlim1){A fs;
- ARGCHK1(w); 
  fs=FAV(self)->fgh[0];  // {&x
  return AN(w)&&AT(w)&B01+INT?tclosure(FAV(fs)->fgh[1],w):powseqlim(w,fs);
 }    /* {&x^:(<_) w */
@@ -70,7 +68,6 @@ static DF2(jtindexseqlim2){
 
 // u^:(<n) If n negative, take inverse of u; if v infinite, go to routine that checks for no change.  Otherwise convert to u^:(i.|n) and restart
 static DF1(jtpowseq){A fs,gs,x;I n=IMAX;V*sv;
- ARGCHK1(w);
  sv=FAV(self); fs=sv->fgh[0]; gs=sv->fgh[1];
  ASSERT(!AR(gs),EVRANK);
  ASSERT(BOX&AT(gs),EVDOMAIN);

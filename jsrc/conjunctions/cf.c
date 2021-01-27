@@ -235,7 +235,6 @@ RZ(z=(f2)(jtinplace,a,gx,fs)); \
 , 0112)
 
 static DF1(jthkiota){DECLFG;A a,e;I n;P*p;
- ARGCHK1(w);
  SETIC(w,n);\
  if(SB01&AT(w)&&1==AR(w)){
   p=PAV(w); a=SPA(p,a); e=SPA(p,e); 
@@ -245,7 +244,6 @@ static DF1(jthkiota){DECLFG;A a,e;I n;P*p;
 }    /* special code for (# i.@#) */
 
 static DF1(jthkodom){DECLFG;B b=0;I n,*v;
- ARGCHK1(w);
  if(INT&AT(w)&&1==AR(w)){n=AN(w); v=AV(w); DO(n, if(b=0>v[i])break;); if(!b)return odom(2L,n,v);}
  return CALL2(f2,w,CALL1(g1,w,gs),fs);
 }    /* special code for (#: i.@(* /)) */

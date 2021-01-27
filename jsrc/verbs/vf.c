@@ -121,7 +121,6 @@ F2(jtrotate){A origw=w,y,z;B b;C*u,*v;I acr,af,ar,*av,d,k,m,n,p,*s,wcr,wf,wn,wr;
 }    /* a|.!.f"r w */
 
 static F1(jtrevsp){A a,q,x,y,z;I c,f,k,m,n,r,*v,wr;P*wp,*zp;
- ARGCHK1(w);
  ASSERT(!jt->fill,EVNONCE);
  wr=AR(w); r=(RANKT)jt->ranks; r=wr<r?wr:r; f=wr-r; RESETRANK;
  m=*(f+AS(w)); wp=PAV(w);

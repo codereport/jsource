@@ -32,7 +32,6 @@ F1(jtlock1){A z; C* p; C* src;
  UC c,c1,c2,k1[SK],k2[SK];    
  int r,len,xlen,maxc1,maxc2,i,j,k;
 
- ARGCHK1(w);
  ASSERT(1==AR(w),EVRANK);
  ASSERT(AT(w)&LIT,EVDOMAIN);
  src=UAV(w);

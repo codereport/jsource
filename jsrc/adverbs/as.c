@@ -169,13 +169,11 @@ SUFFIXPFX(bw1111sfxI, UI,UI, BW1111, bw1111II,return EVOK;)
 
 
 static DF1(jtsuffix){DECLF;I r;
- ARGCHK1(w);
  r=(RANKT)jt->ranks; RESETRANK; if(r<AR(w))return rank1ex(w,self,r,jtsuffix);
  return eachl(IX(SETIC(w,r)),w,atop(fs,ds(CDROP)));
 }    /* f\."r w for general f */
 
 static DF1(jtgsuffix){A h,*hv,z,*zv;I m,n,r;
- ARGCHK1(w);
  r=(RANKT)jt->ranks; RESETRANK; if(r<AR(w))return rank1ex(w,self,r,jtgsuffix);
  SETIC(w,n); 
  h=VAV(self)->fgh[2]; hv=AAV(h); m=AN(h);
@@ -193,7 +191,6 @@ static DF1(jtgsuffix){A h,*hv,z,*zv;I m,n,r;
  }}
 
 static DF1(jtssg){F1PREFIP;PROLOG(0020);A a,z;I i,n,r,wr;
- ARGCHK1(w);
  ASSERT(DENSE&AT(w),EVNONCE);
  // loop over rank - we claim to handle IRS
  wr=AR(w); r=(RANKT)jt->ranks; r=wr<r?wr:r; RESETRANK; if(r<wr)return rank1ex(w,self,r,jtssg);
@@ -383,7 +380,6 @@ static DF2(jtofxassoc){A f,i,j,p,s,x,z;C id,*zv;I c,d,k,kc,m,r,t;V*v;VA2 adocv;
 static DF1(jtiota1rev){I j; SETIC(w,j); return apv(j,j,-1L);}
 
 F1(jtbsdot){A f;AF f1=jtsuffix,f2=jtoutfix;I flag=FAV(ds(CBSDOT))->flag;C id;V*v;  // init flag is IRS1
- ARGCHK1(w);
  if(NOUN&AT(w))return fdef(0,CBSLASH,VERB, jtgsuffix,jtgoutfix, w,0L,fxeachv(1L,w), VGERL|VAV(ds(CBSLASH))->flag, RMAX,0L,RMAX);
  v=FAV(w);  // verb info for w
  switch(v->id){

@@ -225,7 +225,6 @@ A jtdbunquote(J jt,A a,A w,A self,L *stabent){A t,z;B b=0,s;DC d;V*sv;
 
 
 F1(jtdbc){UC k;
- ARGCHK1(w);
  if(AN(w)){
   RE(k=(UC)i0(w));
   ASSERT(!(k&~1),EVDOMAIN);

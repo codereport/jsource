@@ -200,7 +200,6 @@ static DF1(jtred0){DECLF;A x,z;I f,r,wr,*s;
 
 // general reduce.  We inplace the results into the next iteration.  This routine cannot inplace its inputs.
 static DF1(jtredg){F1PREFIP;PROLOG(0020);DECLF;AD * RESTRICT a;I i,n,r,wr;
- ARGCHK1(w);
  ASSERT(DENSE&AT(w),EVNONCE);
  // loop over rank
  wr=AR(w); r=(RANKT)jt->ranks; r=wr<r?wr:r; RESETRANK;
@@ -271,7 +270,6 @@ static A jtredsp1a(J jt,C id,A z,A e,I n,I r,I*s){A t;B b,p=0;D d=1;
 }}   /* f/w on sparse vector w, post processing */
 
 static A jtredsp1(J jt,A w,A self,C id,VARPSF ado,I cv,I f,I r,I zt){A e,x,z;I m,n;P*wp;
- ARGCHK1(w);
  wp=PAV(w); e=SPA(wp,e); x=SPA(wp,x); n=AN(x); m=*AS(w);
  GA(z,zt,1,0,0);
  if(n){I rc=((AHDRRFN*)ado)(1L,n,1L,AV(x),AV(z),jt); if(255&rc)jsignal(rc); RE(0); if(m==n)return z;}
@@ -280,7 +278,6 @@ static A jtredsp1(J jt,A w,A self,C id,VARPSF ado,I cv,I f,I r,I zt){A e,x,z;I m
 
 DF1(jtredravel){A f,x,z;I n;P*wp;
  F1PREFIP;
- ARGCHK1(w);
  f=FAV(self)->fgh[0];  // f/
  if(likely(!(SPARSE&AT(w))))return reduce(jtravel(jtinplace,w),f);
  // The rest is sparse
@@ -296,7 +293,6 @@ DF1(jtredravel){A f,x,z;I n;P*wp;
 }  /* f/@, w */
 
 static A jtredspd(J jt,A w,A self,C id,VARPSF ado,I cv,I f,I r,I zt){A a,e,x,z,zx;I c,m,n,*s,t,*v,wr,*ws,xf,xr;P*wp,*zp;
- ARGCHK1(w);
  ASSERT(strchr(fca,id),EVNONCE);
  wp=PAV(w); a=SPA(wp,a); e=SPA(wp,e); x=SPA(wp,x); s=AS(x);
  xr=r; v=AV(a); DO(AN(a), if(f<v[i])--xr;); xf=AR(x)-xr;
@@ -367,7 +363,6 @@ static B jtredspse(J jt,C id,I wm,I xt,A e,A zx,A sn,A*ze,A*zzx){A b;B nz;I t,zt
 
 static A jtredsps(J jt,A w,A self,C id,VARPSF ado,I cv,I f,I r,I zt){A a,a1,e,sn,x,x1=0,y,z,zx,zy;B*pv;
      C*xv,*xxv,*zv;I*dv,i,m,n,*qv,*sv,*v,wr,xk,xt,wm,*ws,xc,yc,yr,*yu,*yv,zk;P*wp,*zp;
- ARGCHK1(w);
  ASSERT(strchr(fca,id),EVNONCE);
  wr=AR(w); ws=AS(w); wm=ws[f];
  wp=PAV(w); a=SPA(wp,a); e=SPA(wp,e); 
@@ -612,7 +607,6 @@ DF1(jtredcat){A z;B b;I f,r,*s,*v,wr;
 }    /* ,/"r w */
 
 static DF1(jtredsemi){I f,n,r,*s,wr;
- ARGCHK1(w);
  wr=AR(w); r=(RANKT)jt->ranks; r=wr<r?wr:r; f=wr-r; s=AS(w); SETICFR(w,f,r,n);   // let the rank run into tail   n=#items  in a cell of w
  if(2>n){ASSERT(n!=0,EVDOMAIN); return tail(w);}  // rank still set
  if(BOX&AT(w))return jtredg(jt,w,self);  // the old way failed because it did not mimic scalar replication; revert to the long way.  ranks are still set
@@ -620,7 +614,6 @@ static DF1(jtredsemi){I f,n,r,*s,wr;
 }    /* ;/"r w */
 
 static DF1(jtredstitch){A c,y;I f,n,r,*s,*v,wr;
- ARGCHK1(w);
  wr=AR(w); r=(RANKT)jt->ranks; r=wr<r?wr:r; f=wr-r; RESETRANK;
  s=AS(w); SETICFR(w,f,r,n);
  ASSERT(n!=0,EVDOMAIN);
@@ -640,7 +633,6 @@ static DF1(jtredstitch){A c,y;I f,n,r,*s,*v,wr;
 }}   /* ,./"r w */
 
 static DF1(jtredstiteach){A*wv,y;I n,p,r,t;
- ARGCHK1(w);
  n=AN(w);
  if(!(2<n&&1==AR(w)&&BOX&AT(w)))return reduce(w,self);
  wv=AAV(w);  y=wv[0]; SETIC(y,p); t=AT(y);
@@ -649,7 +641,6 @@ static DF1(jtredstiteach){A*wv,y;I n,p,r,t;
 }    /* ,.&.>/ w */
 
 static DF1(jtredcateach){A*u,*v,*wv,x,*xv,z,*zv;I f,m,mn,n,r,wr,*ws,zm,zn;I n1=0,n2=0;
- ARGCHK1(w);
  wr=AR(w); ws=AS(w); r=(RANKT)jt->ranks; r=wr<r?wr:r; f=wr-r; RESETRANK;
  SETICFR(w,f,r,n);
  if(!r||1>=n)return reshape(repeat(ne(sc(f),IX(wr)),shape(w)),n?w:ds(CACE));
@@ -668,7 +659,6 @@ static DF2(jtoprod){A z; return df2(z,a,w,FAV(self)->fgh[2]);}  // x u/ y - tran
 
 
 F1(jtslash){A h;AF f1;C c;V*v;I flag=0;
- ARGCHK1(w);
  if(NOUN&AT(w))return evger(w,sc(GINSERT));  // treat m/ as m;.6.  This means that a node with CSLASH never contains gerund u
  v=FAV(w); 
  switch(v->id){  // select the monadic case
@@ -690,7 +680,6 @@ A jtaslash1(J jt,C c,    A w){RZ(   w); A z; return df1(z,  w,qq(slash(ds(c)),ze
 A jtatab   (J jt,C c,A a,A w){ARGCHK2(a,w); A z; return df2(z,a,w,   slash(ds(c))     );}
 
 DF1(jtmean){
- ARGCHK1(w);
  I wr=AR(w); I r=(RANKT)jt->ranks; r=wr<r?wr:r;
  I n=AS(w)[wr-r]; n=r?n:1;
  // leave jt->ranks unchanged to pass into +/

@@ -214,7 +214,6 @@ A jtnamerefacv(J jt, A a, L* w){A y;V*v;
 // For other types, we build a function ref to 'name~', and fill in the type, rank, and a pointer to the name;
 //  the name will be dereferenced when the function is executed
 A jtnameref(J jt,A w,A locsyms){
- ARGCHK1(w);
  return namerefacv(w,syrd(w,locsyms));  // get the symbol-table slot for the name (don't store the locale-name); return its 'value'
 }    /* argument assumed to be a NAME */
 

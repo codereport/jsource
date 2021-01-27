@@ -10,7 +10,6 @@ static F1(jtdrr);
 EVERYFS(drrself,jtdrr,0,0,VFLAGNONE)
 
 static F1(jtdrr){PROLOG(0055);A df,dg,hs,*x,z;B b,ex,xop;C c,id;I fl,*hv,m;V*v;
- ARGCHK1(w);
  // If the input is a name, it must be from ".@'name' which turned into ".@(name+noun)  - or in debug, but that's discarded
  if(AT(w)&NAME){RZ(w=sfn(0,w));}
  // If noun, return the value of the noun.
@@ -40,7 +39,6 @@ F1(jtdrep){A z=drr(w); return z&&AT(z)&BOX?z:ravel(box(z));}
 
 
 F1(jtaro){A fs,gs,hs,s,*u,*x,y,z;B ex,xop;C id;I*hv,m;V*v;
- ARGCHK1(w);
  if(FUNC&AT(w)){
   v=FAV(w); id=v->id;
   I fndx=(id==CBDOT)&&!v->fgh[0]; fs=v->fgh[fndx]; gs=v->fgh[fndx^1];  // In verb for m b., if f is empty look to g for the left arg.  It would be nice to be more general
@@ -83,7 +81,6 @@ static DF1(jtfxchar){A y;C c,d,id,*s;I m,n;
 // Convert an AR to an A block.  w is a gerund that has been opened
 // self is normally 0; if nonzero, we return a noun type ('0';<value) as is rather than returning value, and leave adv/conj ARs looking like nouns
 DF1(jtfx){A f,fs,g,h,p,q,*wv,y,*yv;C id;I m,n=0;
- ARGCHK1(w);
  // if string, handle that special case (verb/primitive)
  if(LIT&AT(w))return fxchar(w,self);
  // otherwise, it had better be boxed with rank 0 or 1, and 1 or 2 atoms

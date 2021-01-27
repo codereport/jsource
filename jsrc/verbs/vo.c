@@ -426,7 +426,6 @@ static A jtopes(J jt,I zt,A cs,A w){A a,d,e,sh,t,*wv,x,x1,y,y1,z;B*b;C*xv;I an,*
 // if y contained inplaceable components (possible if y came from < yy or <"r yy).  In that case, mark the result as non-inplaceable.
 // We don't support inplacing here yet so just do that always
 F1(jtope){PROLOG(0080);A cs,*v,y,z;I nonh;C*x;I i,n,*p,q=RMAX,r=0,*s,t=0,te=0,*u,zn;
- ARGCHK1(w);
  n=AN(w); v=AAV(w);
  if(!(BOX&(AT(w)&REPSGN(-n))))RCA(w);  // return w if empty or open
  if(!AR(w)){
@@ -548,7 +547,6 @@ static A jtrazeg(J jt,A w,I t,I n,I r,A*v,I nonempt){A h,h1,y,z;C*zu;I c=0,i,j,k
 
 // ; y
 F1(jtraze){A*v,y,z,* RESTRICT zv;C* RESTRICT zu;I *wws,d,i,klg,m=0,n,r=1,t=0,te=0;
- ARGCHK1(w);
  n=AN(w); v=AAV(w);  // n=#,w  v->w data
  if(!n)return mtv;   // if empty operand, return boolean empty
  if(!(BOX&AT(w)))return ravel(w);   // if not boxed, just return ,w
@@ -606,7 +604,6 @@ F1(jtraze){A*v,y,z,* RESTRICT zv;C* RESTRICT zu;I *wws,d,i,klg,m=0,n,r=1,t=0,te=
 // TODO: remove divides from razeh
 
 F1(jtrazeh){A*wv,y,z;C*xv,*yv,*zv;I c=0,ck,dk,i,k,n,p,r,*s,t;
- ARGCHK1(w);
  ASSERT(BOX&AT(w),EVDOMAIN);
  if(!AR(w))return ope(w);
  n=AN(w); wv=AAV(w);  y=wv[0]; SETIC(y,p); t=AT(y); k=bpnoun(t);
