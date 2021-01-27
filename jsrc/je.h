@@ -599,7 +599,6 @@ extern void auditblock(A w, I nonrecurok, I virtok);
 extern A virtifnonip(J jt, I ipok, A buf);
 #endif
 extern A        jtassembleresults(J,I, A, A,A*,I,I,I,A,I,I,I);
-extern void     audittstack(J);
 extern I        cachedmmult(J,D*,D*,D*,I,I,I,I);
 extern void     copyTT(void *, void *, I, I,I);
 extern A        jtac1(J,AF);
