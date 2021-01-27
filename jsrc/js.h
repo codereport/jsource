@@ -8,15 +8,10 @@
 
 #define SYS_LINUX           262144L         /* GCC                         */
 #define SYS_MACOSX          4194304L        /* GCC (CC)                    */
-
-#define SY_LINUX            0    /* any linux intel version                */
-
 #define SYS_UNIX            (SYS_LINUX + SYS_MACOSX)
 
 #ifdef __linux__
 #define SYS SYS_LINUX
-#undef SY_LINUX
-#define SY_LINUX 1
 #endif
 
 #ifdef __MACH__
