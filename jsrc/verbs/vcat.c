@@ -181,8 +181,8 @@ static void(*moveawtbl[])() = {moveawVV,moveawVS,moveawSV};
 F2(jtover){AD * RESTRICT z;C*zv;I replct,framect,acr,af,ar,*as,k,ma,mw,p,q,r,t,wcr,wf,wr,*ws,zn;
  F2PREFIP;ARGCHK2(a,w);
  UI jtr=jt->ranks;//  fetch early
- if(unlikely((SPARSE&(AT(a)|AT(w)))!=0)){return ovs(a,w);}  // if either arg is sparse, switch to sparse code
- if(unlikely(AT(a)!=(t=AT(w)))){t=maxtypedne(AT(a)|(AN(a)==0),t|(AN(w)==0)); t&=-t; if(!TYPESEQ(t,AT(a))){RZ(a=cvt(t,a));} else {RZ(w=cvt(t,w));}}  // convert args to compatible precisions, changing a and w if needed.  Treat empty arg as boolean
+ if((SPARSE&(AT(a)|AT(w)))!=0){return ovs(a,w);}  // if either arg is sparse, switch to sparse code
+ if(AT(a)!=(t=AT(w))){t=maxtypedne(AT(a)|(AN(a)==0),t|(AN(w)==0)); t&=-t; if(!TYPESEQ(t,AT(a))){RZ(a=cvt(t,a));} else {RZ(w=cvt(t,w));}}  // convert args to compatible precisions, changing a and w if needed.  Treat empty arg as boolean
  ar=AR(a); wr=AR(w);
  acr=jtr>>RANKTX; acr=ar<acr?ar:acr; af=ar-acr;  // acr=rank of cell, af=len of frame, as->shape
  wcr=(RANKT)jtr; wcr=wr<wcr?wr:wcr; wf=wr-wcr;  // wcr=rank of cell, wf=len of frame, ws->shape
@@ -193,12 +193,12 @@ F2(jtover){AD * RESTRICT z;C*zv;I replct,framect,acr,af,ar,*as,k,ma,mw,p,q,r,t,w
   // No frame.  See if ranks are equal or different by 1, and if the items have the same shape
   I lr=ar;  // rank of arg with long shape
   A l=a; l=wr>ar?w:l; lr=wr>ar?wr:lr;  // arg with long shape.  Not needed till later but we usually go through the fast path
-  if(likely(2*lr-1<=ar+wr)){  // if ranks differ by at most 1
+  if(2*lr-1<=ar+wr){  // if ranks differ by at most 1
    // items have the same rank or one argument is an item of the other (cases where the ranks differ by more than 1 follow the general path below)
    // see if the shapes agree up to the shape of an item of the longer argument
    I mismatch=0; I cr=lr-1; cr=cr<0?0:cr;
    TESTDISAGREE(mismatch,as+ar-cr,ws+wr-cr,cr)  // compare the tail of the shapes, for the length of an item of the longer shape
-   if(likely(!mismatch)){
+   if(!mismatch){
     // The data can be copied in toto, with only the number of items changing.
     A s=(A)((I)a+(I)w-(I)l);  // arg with short shape
     // The rank is the rank of the long argument, unless both arguments are atoms; then it's 1
@@ -219,8 +219,8 @@ F2(jtover){AD * RESTRICT z;C*zv;I replct,framect,acr,af,ar,*as,k,ma,mw,p,q,r,t,w
     // We extracted from a and w, so mark them (or the backer if virtual) non-pristine.  If both were pristine and abandoned, transfer its pristine status to the result
     // if they were boxed nonempty, a and w have not been changed.  Otherwise the PRISTINE flag doesn't matter.
     // If a and w are the same, we mustn't mark the result pristine!  It has repetitions
-    if(unlikely((aflg&AFVIRTUAL)!=0)){AFLAG(ABACK(a))&=~AFPRISTINE;}  //  like PRISTCOMSETF
-    if(unlikely((wflg&AFVIRTUAL)!=0)){AFLAG(ABACK(w))&=~AFPRISTINE;}  //  like PRISTCOMSETF
+    if((aflg&AFVIRTUAL)!=0){AFLAG(ABACK(a))&=~AFPRISTINE;}  //  like PRISTCOMSETF
+    if((wflg&AFVIRTUAL)!=0){AFLAG(ABACK(w))&=~AFPRISTINE;}  //  like PRISTCOMSETF
     RETF(z);
    }
   }
@@ -253,7 +253,7 @@ F2(jtstitch){I ar,wr; A z;
  F2PREFIP;ARGCHK2(a,w);
  ar=AR(a); wr=AR(w);
  ASSERT((-ar&-wr&-(AS(a)[0]^AS(w)[0]))>=0,EVLENGTH);  // a or w scalar, or same # items    always OK to fetch s[0]
- if(likely((((SPARSE&(AT(a)|AT(w)))-1)&(2-ar)&(2-wr))>=0))return IRSIP2(a,w,0L,(ar-1)&RMAX,(wr-1)&RMAX,jtover,z);  // not sparse or rank>2
+ if((((SPARSE&(AT(a)|AT(w)))-1)&(2-ar)&(2-wr))>=0)return IRSIP2(a,w,0L,(ar-1)&RMAX,(wr-1)&RMAX,jtover,z);  // not sparse or rank>2
  return stitchsp2(a,w);  // sparse rank <=2 separately
 }
 
@@ -331,7 +331,7 @@ A jtapip(J jt, A a, A w){F2PREFIP;A h;C*av,*wv;I ak,k,p,*u,*v,wk,wm,wn;
      if(allosize(a)>=ak+wk+(REPSGN((-(at&LAST0))&((aflag&AFNJA)-1))&(SZI-1))){    // SZI-1 if LAST0 && !NJA
       // We have passed all the tests.  Inplacing is OK.
       // If w must change precision, do.  This is where we catch domain errors.
-      if(unlikely(TYPESGT(at,AT(w))))RZ(w=cvt(at,w));
+      if(TYPESGT(at,AT(w)))RZ(w=cvt(at,w));
       // result is pristine if a and w both are, and they are not the same block, and there is no fill, and w is inplaceable (of course we know a is)
       I wprist = (((a!=w)&((I)jtinplace>>JTINPLACEWX)&SGNTO0(AC(w)))<<AFPRISTINEX) & AFLAG(w);  // set if w qualifies as pristine
       // If the items of w must be padded to the result item-size, do so.

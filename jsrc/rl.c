@@ -243,7 +243,7 @@ static F1X(jtlnoun0){F1PREFIP;A s,x;B r1;
 static F1X(jtlnoun){F1PREFIP;I t;
  ARGCHK1(w);
  t=AT(w);
- if(unlikely((t&SPARSE)!=0))return lsparse(w);
+ if((t&SPARSE)!=0)return lsparse(w);
  if(!AN(w))return lnoun0(w);
  switch(CTTZ(t)){
   case LITX: return lchar(w);

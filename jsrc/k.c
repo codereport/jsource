@@ -252,7 +252,7 @@ static B jtDXfI(J jt,I p,A w,DX*x){A y;I b,c,d,dd,e,i,m,n,q,r,*wv,*yv;
 B jtccvt(J jt,I tflagged,A w,A*y){F1PREFIP;A d;I n,r,*s,wt; void *wv,*yv;I t=tflagged&NOUN;
  ARGCHK1(w);
  r=AR(w); s=AS(w);
- if(unlikely(((t|AT(w))&SPARSE)!=0)){
+ if(((t|AT(w))&SPARSE)!=0){
   // Handle sparse
   RANK2T oqr=jt->ranks; RESETRANK; 
   switch((t&SPARSE?2:0)+(AT(w)&SPARSE?1:0)){I t1;P*wp,*yp;

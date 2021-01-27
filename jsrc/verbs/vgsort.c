@@ -434,7 +434,6 @@ F2(jtgr2){F2PREFIP;PROLOG(0076);A z=0;I acr,api,d,f,m,n,*s,t,wcr;
   // a will now be non-inplaceable and z will be virtual but not inplaceable.
   AFLAG(z)|=awflg&((SGNTO0(AC(a))&((I)jtinplace>>JTINPLACEAX)&(((acr-AR(a))^(wcr-AR(w)))-1))<<AFPRISTINEX);
   // But the original a certainly loses pristinity.  We rely on from to have done that, if it didn't create a virtual block
-// not needed  if(unlikely(awflg&AFVIRTUAL)){a=ABACK(a); awflg=AFLAG(a);} AFLAG(a)=awflg&~AFPRISTINE;
  }  // if inputs agreed, they will agree with w replaced by /:w and rank by 1
  EPILOG(z);
 }    /* a grade"r w main control for dense w */

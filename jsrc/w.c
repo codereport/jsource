@@ -74,7 +74,7 @@ if(!jt->directdef&&(currc==CDD||currc==CDDZ))currc=CX;  // scaf  if direct def d
   // handle {{. etc.  It looked like a DD but turns out to be inflected.  We have outed the start for the first character;
   // we also outed the second character but did not accept the word.  We accept it now by advancing x over it
   // Use an IF because this is rare and we don't want it in the normal path
-  if(unlikely(s&UNDD))x+=2;
+  if(s&UNDD)x+=2;
   // do two stores, and advance over any that are to be emitted.  0, 1, or 2 may be emitted (0 when the state has no action, 1 when the
   // state is an end+1 or start value, and 2 if an end+1 AND start value)
   x[0]=i; x[1]=i; x+=s&3;
@@ -84,7 +84,7 @@ if(!jt->directdef&&(currc==CDD||currc==CDDZ))currc=CX;  // scaf  if direct def d
  x=(I*)((I)x-(((s<<1)&16)>>(3-LGSZI)));    // same as above, with CS as the character
  *x=i;
  m=((x-AV(z))+1)>>1; AS(z)[0]=m; AM(z)=m-((((1LL<<SNZ)|(1LL<<SZ))>>(s>>4))&1); // Calculate & install count; if last field is NB., subtract 1 from word count
- if(unlikely((s>>4)==SQ))AM(z)=-1;  // error if open quote, indicated by nag AM
+ if((s>>4)==SQ)AM(z)=-1;  // error if open quote, indicated by nag AM
  return z;
 }    // word index & end+1; z is m 2 1$(i0,e0),(i1,e1),... AM(z) is # words not including any final NB, or -1 if quote error
 
@@ -162,7 +162,7 @@ A jtenqueue(J jt,A a,A w,I env){A*v,*x,y,z;B b;C d,e,p,*s,*wi;I i,n,*u,wl;UC c;
    p=b?b:p;    // otherwise, it's not a primitive, but data, either numeric, string, or name.  Check first character, but fail if inflected form, which must be invalid.  p must be non0
     // If the name is a call-by-value name (x y u. etc), we mark it as BYVALUE if it is slated for execution in an explicit definition
    if((p&~CA)==0){ASSERTN(vnm(wl,wi),EVILNAME,nfs(wl,wi)); RZ(*x=nfs(wl,wi)); if((env==2)&&(NAV(*x)->flag&NMXY)){AT(*x)|=NAMEBYVALUE;}  // starts with alphabetic, make it a name, error if invalid name
-   }else if(p==C9){if(unlikely(!(*x=connum(wl,wi)))){I lje=jt->jerr; RESETERR; jsignal3(lje,w,u[0]); return 0;}   // starts with numeric, create numeric constant.. If error, give a message showing the bad number
+   }else if(p==C9){if(!(*x=connum(wl,wi))){I lje=jt->jerr; RESETERR; jsignal3(lje,w,u[0]); return 0;}   // starts with numeric, create numeric constant.. If error, give a message showing the bad number
    }else if(p==CQ){ RZ(*x=constr(wl,wi));   // start with ', make string constant
    }else{jsignal3(EVSPELL,w,wi-s); return 0;}   // bad first character or inflection
   }

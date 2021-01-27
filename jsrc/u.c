@@ -49,7 +49,7 @@ I jtprod(J jt,I n,I*v){I z;
  // the error assertion.  Then, at the end, if the product is 0, it must mean that there was an error, and
  // we report it then.  This way we don't need a separate pass to check for 0.
  z=1;
- DQ(n, if(unlikely(*v==0))return 0; DPMULDZ(z,*v,z) ++v;)
+ DQ(n, if(*v==0)return 0; DPMULDZ(z,*v,z) ++v;)
  ASSERT(z!=0,EVLIMIT)
  return z;
 }
@@ -199,7 +199,7 @@ static F1(jtii){ARGCHK1(w); I j; RETF(IX(SETIC(w,j)));}
 I jtmaxtype(J jt,I s,I t){
  // If values differ and are both nonzero...
  I resultbit = jt->prioritytype[MAX(jt->typepriority[CTTZ(s)],jt->typepriority[CTTZ(t)])];  // Get the higher-priority type
- if(unlikely(((s|t)&SPARSE))!=0){ASSERT(!((s|t)&(C2T|C4T|XNUM|RAT|SBT)),EVDOMAIN); return (I)1 << (resultbit+SB01X-B01X);}  // If either operand sparse, return sparse version
+ if(((s|t)&SPARSE)!=0){ASSERT(!((s|t)&(C2T|C4T|XNUM|RAT|SBT)),EVDOMAIN); return (I)1 << (resultbit+SB01X-B01X);}  // If either operand sparse, return sparse version
  return (I)1 << resultbit;   // otherwise, return normal version
 }
 
@@ -281,7 +281,7 @@ F1(jtvib){A z;D d,e,*wv;I i,n,*zv;
  if(w==ainf)return imax;  // sentence words of _ always use the same block, so catch that too
  I p=-IMAX,q=IMAX;
  RANK2T oqr=jt->ranks; RESETRANK;
- if(unlikely((AT(w)&SPARSE)!=0))RZ(w=denseit(w));
+ if((AT(w)&SPARSE)!=0)RZ(w=denseit(w));
  switch(UNSAFE(AT(w))){
  default:
   if(!(AT(w)&FL))RZ(w=cvt(FL,w));

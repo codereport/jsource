@@ -280,7 +280,7 @@ DF2(jtpowop){A hs;B b;V*v;
  }
  // fall through for unboxed n.
  // handle the very important case of scalar   int/boolean   n of 0/1
- if(likely(((-(AT(w)&B01+INT))&((AR(w)|((UI)BIV0(w)>>1))-1))<0))return a=BIV0(w)?a:ds(CRIGHT);  //  u^:0 is like ],  u^:1 is like u   AR(w)==0 and B01|INT and BAV0=0 or 1
+ if(((-(AT(w)&B01+INT))&((AR(w)|((UI)BIV0(w)>>1))-1))<0)return a=BIV0(w)?a:ds(CRIGHT);  //  u^:0 is like ],  u^:1 is like u   AR(w)==0 and B01|INT and BAV0=0 or 1
  RZ(hs=vib(w));   // hs=n coerced to integer
  AF f1=jtply1;  // default routine for general array.  no reason to inplace this, since it has to keep the old value to check for changes
  I flag=0;  // flags for the verb we build

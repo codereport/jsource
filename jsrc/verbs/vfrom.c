@@ -321,7 +321,7 @@ F2(jtfrom){I at;A z;
  F2PREFIP;
  ARGCHK2(a,w);
  at=AT(a);
- if(likely(!((AT(a)|AT(w))&(SPARSE)))){
+ if(!((AT(a)|AT(w))&(SPARSE))){
   // if B01|INT|FL atom { INT|FL|BOX array, and no frame, just pluck the value.  If a is inplaceable and not unincorpable, use it
   // If we turn the result to BOX it will have the original flags, i. e. it will be nonrecursive.  Thus fa will not free the contents, which do not have incremented usecount (and are garbage on error)
   if(!((AT(a)&(NOUN&~(B01|INT|FL)))+(AT(w)&(NOUN&~(INT|FL|BOX)))+AR(a)+(SGNTO0((((RANKT)jt->ranks-AR(w))|(AR(w)-1))))+(AFLAG(w)&AFNJA))){   // NJAwhy
