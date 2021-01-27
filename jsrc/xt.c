@@ -84,15 +84,7 @@ F1(jtts0){A x,z;C s[9],*u,*v,*zv;D*xv;I n,q;
  return z;
 }
 
-
-#ifdef SY_GETTOD
 D tod(void){struct timeval t; gettimeofday(&t,NULL); return t.tv_sec+(D)t.tv_usec/1e6;}
-#else
-D tod(void){return(D)clock()/CLOCKS_PER_SEC;}
-#endif
-
-
-
 D qpf(void){return (D)CLOCKS_PER_SEC;}
 
 static D qpc(void){return tod()*CLOCKS_PER_SEC;}
