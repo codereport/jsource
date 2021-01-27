@@ -6,7 +6,7 @@
 #include "j.h"
 
 
-B jtvc1(J jt,I n,US*v){DQ(n, RZ(255>=*v++);); R 1;}
+B jtvc1(J jt,I n,US*v){DQ(n, RZ(255>=*v++);); return 1;}
      /* verify that 2-byte chars have high-order 0 bytes */
 
 // allocate new datablock and return the ASCII for the characters in w
@@ -18,7 +18,6 @@ A jttoc1(J jt,B h,A w){A z;C*wv,*zv;I n;C4*w4;
  w4=C4AV(w);
  ASSERT(!n||(C2T+C4T)&AT(w),EVDOMAIN);  // must be empty or unicode
  GATV(z,LIT,n,AR(w),AS(w)); zv=CAV(z);  // allocate ASCII area with same data shape
-#if C_LE
  if(C2T&AT(w))
  {
  if(h)DQ(n, *zv++=*wv++; wv++;) else DQ(n, *zv++=*wv++; ASSERT(!*wv++,EVDOMAIN);)
@@ -29,16 +28,6 @@ A jttoc1(J jt,B h,A w){A z;C*wv,*zv;I n;C4*w4;
  }
  // copy the low byte of the data (if there is any).  if b==0, verify high byte is 0
  // where low and high are depends on endianness
-#else
- if(C2T&AT(w))
- {
- if(h)DQ(n, wv++; *zv++=*wv++;) else DQ(n, ASSERT(!*wv++,EVDOMAIN); *zv++=*wv++;)
- }
- else
- {
- if(h)DQ(n, *zv++=(UC)*w4++; ) else DQ(n, *zv++=(UC)*w4++; ASSERT(*(w4-1)<256UL,EVDOMAIN);)
- }
-#endif
  RETF(z);
 }    /* convert 2-byte or 4-byte chars to 1-byte chars; 0==h iff high order byte(s) must be 0 */
 
@@ -48,7 +37,6 @@ static F1(jttoc2){A z;C*wv,*zv;I n;C4*w4;US*z2;
  n=AN(w); wv=CAV(w); w4=C4AV(w);
  ASSERT(!n||(LIT+C4T)&AT(w),EVDOMAIN);
  GATV(z,C2T,n,AR(w),AS(w)); zv=CAV(z); z2=USAV(z);
-#if C_LE
  if(LIT&AT(w))
  {
  DQ(n, *zv++=*wv++; *zv++=0;);
@@ -57,17 +45,7 @@ static F1(jttoc2){A z;C*wv,*zv;I n;C4*w4;US*z2;
  {
  DQ(n, *z2++=(US)*w4++;);
  }
-#else
- if(LIT&AT(w))
- {
- DQ(n, *zv++=0; *zv++=*wv++;);
- }
- else
- {
- DQ(n, *z2++=(US)*w4++;);
- }
-#endif
- R z;
+ return z;
 }    /* convert 1-byte chars or 4-byte chars(discard high order half) to 2-byte chars */
 
 static F1(jttoc2e){A z;I m,n,r;
@@ -90,11 +68,7 @@ static F1(jtifc2){A z;I n,t,*zv;
  GATV(z,INT,n,AR(w),AS(w)); zv=AV(z);
  if(t&LIT){UC*v=UAV(w); DQ(n, *zv++=*v++;);}
  else if(t&C2T){US*v=USAV(w); DQ(n, *zv++=*v++;);}
-#if SY_64
  else          {C4*v=C4AV(w); DQ(n, *zv++=*v++;);}
-#else
- else          {I*v=(I*)AV(w); DQ(n, *zv++=*v++;);}
-#endif
  RETF(z);
 }    /* integers from 1- or 2-byte or 4-byte chars */
 
@@ -110,22 +84,22 @@ F1(jtuco1){I t;
  ARGCHK1(w);
  t=AT(w);
  ASSERT(!AN(w)||t&JCHAR+NUMERIC,EVDOMAIN);
- R t&NUMERIC?c2fi(w):t&C2T?w:toc2(w);  // was ca(w)
+ return t&NUMERIC?c2fi(w):t&C2T?w:toc2(w);  // was ca(w)
 }    /* return 2-byte chars unchanged; convert 1-byte or 4-byte to 2-byte */
 
 F2(jtuco2){I j;
  ARGCHK2(a,w);
  RE(j=i0(a));
  switch(j){
-  case 1: R toc1(1,w);
-  case 2: R toc2(w);
-  case 3: R ifc2(w);
-  case 4: R c2fi(w);
-  case 5: R toc1(0,w);
-  case 6: R toc2e(w);
-  case 7: R toutf16(w);
-  case 8: R toutf8(w);
-  case 9: R toutf32(w);
-  case 10: R tou32(w);
+  case 1: return toc1(1,w);
+  case 2: return toc2(w);
+  case 3: return ifc2(w);
+  case 4: return c2fi(w);
+  case 5: return toc1(0,w);
+  case 6: return toc2e(w);
+  case 7: return toutf16(w);
+  case 8: return toutf8(w);
+  case 9: return toutf32(w);
+  case 10: return tou32(w);
   default: ASSERT(0,EVDOMAIN);
 }}

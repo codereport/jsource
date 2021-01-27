@@ -14,17 +14,17 @@ static F1(jtdrr){PROLOG(0055);A df,dg,hs,*x,z;B b,ex,xop;C c,id;I fl,*hv,m;V*v;
  // If the input is a name, it must be from ".@'name' which turned into ".@(name+noun)  - or in debug, but that's discarded
  if(AT(w)&NAME){RZ(w=sfn(0,w));}
  // If noun, return the value of the noun.
- if(AT(w)&NOUN)R w;  // no quotes needed
+ if(AT(w)&NOUN)return w;  // no quotes needed
  // Non-nouns and NMDOT names carry on
  v=FAV(w); id=v->id; fl=v->flag;
  I fndx=(id==CBDOT)&&!v->fgh[0]; A fs=v->fgh[fndx]; A gs=v->fgh[fndx^1];  // In verb for m b., if f is empty look to g for the left arg.  It would be nice to be more general
  hs=v->fgh[2]; if(id==CBOX)gs=0;  // ignore gs field in BOX, there to simulate BOXATOP
- if(fl&VXOPCALL)R drr(hs);
+ if(fl&VXOPCALL)return drr(hs);
  xop=1&&VXOP&fl; ex=id==CCOLON&&hs&&!xop;
  b=BETWEENC(id,CHOOK,CADVF); c=id==CFORK; b&=1^c;  // HOOK ADVF, and FORK
  m=!!fs+(gs||ex);
- if(!m)R spella(w);
- if(evoke(w))R drr(sfne(w));  // turn nameref into string or verb; then take rep
+ if(!m)return spella(w);
+ if(evoke(w))return drr(sfne(w));  // turn nameref into string or verb; then take rep
  if(fs)RZ(df=fl&VGERL?every(fxeach(fs,(A)&jtfxself[0]),(A)&drrself):drr(fs));
  if(gs)RZ(dg=fl&VGERR?every(fxeach(gs,(A)&jtfxself[0]),(A)&drrself):drr(gs));
  if(ex)RZ(dg=unparsem(num(0),w));
@@ -36,7 +36,7 @@ static F1(jtdrr){PROLOG(0055);A df,dg,hs,*x,z;B b,ex,xop;C c,id;I fl,*hv,m;V*v;
  EPILOG(z);
 }
 
-F1(jtdrep){A z=drr(w); R z&&AT(z)&BOX?z:ravel(box(z));}
+F1(jtdrep){A z=drr(w); return z&&AT(z)&BOX?z:ravel(box(z));}
 
 
 F1(jtaro){A fs,gs,hs,s,*u,*x,y,z;B ex,xop;C id;I*hv,m;V*v;
@@ -45,12 +45,12 @@ F1(jtaro){A fs,gs,hs,s,*u,*x,y,z;B ex,xop;C id;I*hv,m;V*v;
   v=FAV(w); id=v->id;
   I fndx=(id==CBDOT)&&!v->fgh[0]; fs=v->fgh[fndx]; gs=v->fgh[fndx^1];  // In verb for m b., if f is empty look to g for the left arg.  It would be nice to be more general
   hs=v->fgh[2]; if(id==CBOX)gs=0;  // ignore gs field in BOX, there to simulate BOXATOP
-  if(VXOPCALL&v->flag)R aro(hs);
+  if(VXOPCALL&v->flag)return aro(hs);
   xop=1&&VXOP&v->flag;
   ex=hs&&id==CCOLON&&!xop;
   m=id==CFORK?3:!!fs+(ex||xop&&hs||!xop&&gs);
-  if(!m)R spella(w);
-  if(evoke(w)){RZ(w=sfne(w)); if(FUNC&AT(w))w=aro(w); R w;}  // keep nameref as a string, UNLESS it is NMDOT, in which case use the (f.'d) verb value
+  if(!m)return spella(w);
+  if(evoke(w)){RZ(w=sfne(w)); if(FUNC&AT(w))w=aro(w); return w;}  // keep nameref as a string, UNLESS it is NMDOT, in which case use the (f.'d) verb value
  }
  GAT0(z,BOX,2,1); x=AAV(z);
  if(NOUN&AT(w)){RZ(x[0]=incorp(ravel(scc(CNOUN)))); if(AT(w)&NAME)RZ(w=sfn(0,w)); RZ(x[1]=INCORPNA(w)); RETF(z);}  // if name, must be ".@'name', format name as string
@@ -60,10 +60,10 @@ F1(jtaro){A fs,gs,hs,s,*u,*x,y,z;B ex,xop;C id;I*hv,m;V*v;
  if(2<m)RZ(u[2]=incorp(aro(hs)));
  s=xop?aro(gs):VDDOP&v->flag?(hv=AV(hs),aro(foreign(sc(hv[0]),sc(hv[1])))):spellout(id);
  RZ(x[0]=incorp(s)); RZ(x[1]=INCORPNA(y));
- R z;
+ return z;
 }
 
-F1(jtarep){R box(aro(w));}
+F1(jtarep){return box(aro(w));}
 
 // Create A for a string - name~, a primitive, or the boxed string
 static DF1(jtfxchar){A y;C c,d,id,*s;I m,n;
@@ -72,12 +72,12 @@ static DF1(jtfxchar){A y;C c,d,id,*s;I m,n;
  ASSERT(n!=0,EVLENGTH);
  s=CAV(w); c=s[n-1];
  DO(n, d=s[i]; ASSERT((C)(d-32)<(C)(127-32),EVSPELL););  // must be all ASCII
- if(((ctype[(UC)s[0]]&~CA)==0)&&c!=CESC1&&c!=CESC2)R swap(w);  // If name and not control word, treat as name~, create nameref
+ if(((ctype[(UC)s[0]]&~CA)==0)&&c!=CESC1&&c!=CESC2)return swap(w);  // If name and not control word, treat as name~, create nameref
  ASSERT(id=spellin(n,s),EVSPELL);  // not name, must be control word or primitive.  Also classify string 
  if(id!=CFCONS)y=ds(id); else{m=s[n-2]-'0'; y=FCONS(CSIGN!=s[0]?scib(m):2==n?ainf:scib(-m));} // define 0:, if it's that, using boolean for 0/1
  ASSERT(y&&RHS&AT(y),EVDOMAIN);   // make sure it's a noun/verb/adv/conj
- if(!self || AT(y)&NOUN+VERB)R y;  // return any NV, or AC as well if it's not the top level
- R box(w);  // If top level, we have to make sure (<,'&')`  doesn't replace the left part with bare &
+ if(!self || AT(y)&NOUN+VERB)return y;  // return any NV, or AC as well if it's not the top level
+ return box(w);  // If top level, we have to make sure (<,'&')`  doesn't replace the left part with bare &
 }
 
 // Convert an AR to an A block.  w is a gerund that has been opened
@@ -85,7 +85,7 @@ static DF1(jtfxchar){A y;C c,d,id,*s;I m,n;
 DF1(jtfx){A f,fs,g,h,p,q,*wv,y,*yv;C id;I m,n=0;
  ARGCHK1(w);
  // if string, handle that special case (verb/primitive)
- if(LIT&AT(w))R fxchar(w,self);
+ if(LIT&AT(w))return fxchar(w,self);
  // otherwise, it had better be boxed with rank 0 or 1, and 1 or 2 atoms
  m=AN(w);   // m=#atoms
  ASSERT(BOX&AT(w),EVDOMAIN);
@@ -98,27 +98,27 @@ DF1(jtfx){A f,fs,g,h,p,q,*wv,y,*yv;C id;I m,n=0;
  else{RZ(y=vs(y)); ASSERT(id=spellin(AN(y),CAV(y)),EVSPELL);}
  if(1<m){
   y=wv[1]; n=AN(y); yv=AAV(y); 
-  if(id==CNOUN)R self?box(w):y;
+  if(id==CNOUN)return self?box(w):y;
   ASSERT(1>=AR(y),EVRANK);
   ASSERT(BOX&AT(y),EVDOMAIN);
  }
  switch(id){
   case CHOOK: case CADVF:
-   ASSERT(2==n,EVLENGTH); R hook(fx(yv[0]),fx(yv[1]));
+   ASSERT(2==n,EVLENGTH); return hook(fx(yv[0]),fx(yv[1]));
   case CFORK:
    ASSERT(3==n,EVLENGTH); 
    RZ(f=fx(yv[0])); ASSERT(AT(f)&VERB+NOUN,EVSYNTAX);
    RZ(g=fx(yv[1])); ASSERT(AT(g)&VERB,     EVSYNTAX);
    RZ(h=fx(yv[2])); ASSERT(AT(h)&VERB,     EVSYNTAX);
-   R folk(f,g,h);
+   return folk(f,g,h);
   default:
    if(id)fs=ds(id);
    ASSERT(fs&&RHS&AT(fs),EVDOMAIN);
-   if(!n)R fs;
+   if(!n)return fs;
    ASSERT(1==n&&ADV&AT(fs)||2==n&&CONJ&AT(fs),EVLENGTH);
    if(0<n){RZ(p=fx(yv[0])); ASSERT(AT(p)&NOUN+VERB,EVDOMAIN);}
    if(1<n){RZ(q=fx(yv[1])); ASSERT(AT(q)&NOUN+VERB,EVDOMAIN);}
-   R 1==n ? df1(g,p,fs) : df2(g,p,q,fs);
+   return 1==n ? df1(g,p,fs) : df2(g,p,q,fs);
 }}
 
 // Convert any DD (i. e. 9 : string or quoted string containing LF) found in a line to DD form for display
@@ -255,7 +255,7 @@ static A jtunparse1(J jt,CW*c,A x,I j,A y){A q,z;C*s;I t;
   MC(s,CAV(y),AN(y)); s+=AN(y); *s++=' '; MC(s,CAV(z),AN(z)); 
   z=q;
  }
- R z;
+ return z;
 }    /* unparse a single line */
 
 // unparse a definition, by going through the control words
@@ -274,7 +274,7 @@ static A*jtunparse1a(J jt,I m,A*hv,A*zv){A*v,x,y;CW*u;I i,j,k;
  }
  if(y)*zv++=jtunDD(jt,y);  // repeat to out last line
  DQ(k-j-1, *zv++=mtv;);
- R zv;
+ return zv;
 }
 
 // w is a def.  Return unparsed form
@@ -300,7 +300,7 @@ F2(jtunparsem){A h,*hv,dc,ds,mc,ms,z,*zu,*zv;I dn,m,mn,n,p;V*wv;
   DO(dn, *zv++=jtunDD(jt,AAV(ds)[i]););
  }
  if(a==num(0)){RZ(z=ope(z)); if(1==AR(z))z=table(z);}
- R z;
+ return z;
 }    /* convert h parameter for : definitions; open if a is 0 */
 
 static F2(jtxrep){A h,*hv,*v,x,z,*zv;CW*u;I i,j,n,q[3],*s;V*wv; 
@@ -308,7 +308,7 @@ static F2(jtxrep){A h,*hv,*v,x,z,*zv;CW*u;I i,j,n,q[3],*s;V*wv;
  RE(j=i0(a)); ASSERT(1==j||2==j,EVDOMAIN); j=1==j?0:HN;
  ASSERT(AT(w)&VERB+ADV+CONJ,EVDOMAIN);
  wv=FAV(w); h=wv->fgh[2];
- if(!(h&&CCOLON==wv->id))R reshape(v2(0L,3L),ds(CACE)); 
+ if(!(h&&CCOLON==wv->id))return reshape(v2(0L,3L),ds(CACE));
  hv=AAV(h);
  x=hv[  j]; v=    AAV(x); 
  x=hv[1+j]; u=(CW*)AV(x); n=AN(x);
@@ -319,14 +319,14 @@ static F2(jtxrep){A h,*hv,*v,x,z,*zv;CW*u;I i,j,n,q[3],*s;V*wv;
   q[0]=u->type; q[1]=u->go; q[2]=u->source; RZ(*zv++=incorp(vec(INT,3L,q)));
   RZ(*zv++=incorp(unparse1(u,vec(BOX,u->n,v+u->i),-1L,0L)));
  }
- R z;
+ return z;
 }    /* explicit representation -- h parameter for : definitions */
 
 
-F1(jtarx){F1RANK(0,  jtarx,UNUSED_VALUE); R arep(  symbrdlocknovalerr(nfb(w)));}
-F1(jtdrx){F1RANK(0,  jtdrx,UNUSED_VALUE); R drep(  symbrdlocknovalerr(nfb(w)));}
-F1(jttrx){F1RANK(0,  jttrx,UNUSED_VALUE); R trep(  symbrdlocknovalerr(nfb(w)));}
-F1(jtlrx){F1RANK(0,  jtlrx,UNUSED_VALUE); R lrep(  symbrdlocknovalerr(nfb(w)));}
-F1(jtprx){F1RANK(0,  jtprx,UNUSED_VALUE); R prep(  symbrdlocknovalerr(nfb(w)));}
+F1(jtarx){F1RANK(0,  jtarx,UNUSED_VALUE); return arep(  symbrdlocknovalerr(nfb(w)));}
+F1(jtdrx){F1RANK(0,  jtdrx,UNUSED_VALUE); return drep(  symbrdlocknovalerr(nfb(w)));}
+F1(jttrx){F1RANK(0,  jttrx,UNUSED_VALUE); return trep(  symbrdlocknovalerr(nfb(w)));}
+F1(jtlrx){F1RANK(0,  jtlrx,UNUSED_VALUE); return lrep(  symbrdlocknovalerr(nfb(w)));}
+F1(jtprx){F1RANK(0,  jtprx,UNUSED_VALUE); return prep(  symbrdlocknovalerr(nfb(w)));}
 
-F2(jtxrx){F2RANK(0,0,jtxrx,UNUSED_VALUE); R xrep(a,symbrdlock(nfb(w)));}  // 5!:7
+F2(jtxrx){F2RANK(0,0,jtxrx,UNUSED_VALUE); return xrep(a,symbrdlock(nfb(w)));}  // 5!:7

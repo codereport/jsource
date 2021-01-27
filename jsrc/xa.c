@@ -12,24 +12,24 @@ extern uint64_t g_cpuFeatures;
 #include <string.h>
 
 
-F1(jtassertq){ASSERTMTV(w); R scb(jt->assert);}
+F1(jtassertq){ASSERTMTV(w); return scb(jt->assert);}
 
-F1(jtasserts){B b; RE(b=b0(w)); jt->assert=b; R mtm;}
+F1(jtasserts){B b; RE(b=b0(w)); jt->assert=b; return mtm;}
 
-F1(jtdirectdefq){ASSERTMTV(w); R scb(jt->directdef);}  // scaf 9!:62
+F1(jtdirectdefq){ASSERTMTV(w); return scb(jt->directdef);}  // scaf 9!:62
 
-F1(jtdirectdefs){B b; RE(b=b0(w)); jt->directdef=b; R mtm;}  // scaf 9!:63
+F1(jtdirectdefs){B b; RE(b=b0(w)); jt->directdef=b; return mtm;}  // scaf 9!:63
 
-F1(jtboxq){ASSERTMTV(w); R str(sizeof(jt->bx),jt->bx);}
+F1(jtboxq){ASSERTMTV(w); return str(sizeof(jt->bx),jt->bx);}
 
 F1(jtboxs){A x;
  RZ(w=vs(w));
  ASSERT(sizeof(jt->bx)==AS(w)[0],EVLENGTH);
  MC(jt->bx,CAV(w),sizeof(jt->bx));
- R mtv;
+ return mtv;
 }  // box-display characters
 
-F1(jtctq){ASSERTMTV(w); R scf(1.0-jt->cct);}
+F1(jtctq){ASSERTMTV(w); return scf(1.0-jt->cct);}
 
 F1(jtcts){D d;
  ASSERT(!AR(w),EVRANK);
@@ -37,10 +37,10 @@ F1(jtcts){D d;
  ASSERT(0<=d,EVDOMAIN); 
  ASSERT(d<=5.820766091e-11,EVDOMAIN);
  jt->cctdefault=jt->cct=1.0-d;
- R mtv;
+ return mtv;
 }
 
-F1(jtdispq){A z; ASSERTMTV(w); GATV0(z,INT,*jt->disp,1); ICPY(AV(z),1+jt->disp,*jt->disp); R z;}
+F1(jtdispq){A z; ASSERTMTV(w); GATV0(z,INT,*jt->disp,1); ICPY(AV(z),1+jt->disp,*jt->disp); return z;}
 
 F1(jtdisps){UC n;
  RZ(w=vi(w));
@@ -49,10 +49,10 @@ F1(jtdisps){UC n;
  ASSERT(all1(nubsieve(w)),EVDOMAIN);
  ASSERT(all1(eps(w,eval("1 2 4 5 6"))),EVINDEX);
  *jt->disp=n; DO(n, jt->disp[1+i]=(UC)IAV(w)[i];);
- R mtv;
+ return mtv;
 }
 
-F1(jtevmq){ASSERTMTV(w); R behead(jt->evm);}
+F1(jtevmq){ASSERTMTV(w); return behead(jt->evm);}
 
 F1(jtevms){A t,*tv,*wv;
  ARGCHK1(w);
@@ -64,25 +64,25 @@ F1(jtevms){A t,*tv,*wv;
  wv=AAV(w);
  DQ(NEVM, RZ(*tv=ca(vs(*wv))); CAV(*tv)[AN(*tv)]=0; ++tv; ++wv;);  // NUL-terminate.  ca to make sure there's room
  ras(t); fa(jt->evm); jt->evm=t;
- R mtv;
+ return mtv;
 }
 
 F1(jtfxx){
  ARGCHK1(w);
  ASSERT(AT(w)&LIT+BOX,EVDOMAIN);
  ASSERT(1>=AR(w),EVRANK);
- R fx(ope(w)); 
+ return fx(ope(w));
 }
 
-F1(jtiepdoq){ASSERTMTV(w); R scb(jt->iepdo);}
+F1(jtiepdoq){ASSERTMTV(w); return scb(jt->iepdo);}
 
-F1(jtiepdos){B b; RE(b=b0(w)); jt->iepdo=b; R mtm;}
+F1(jtiepdos){B b; RE(b=b0(w)); jt->iepdo=b; return mtm;}
 
 F1(jtiepq){
  ASSERTMTV(w); 
  ASSERT(1==AR(w),EVRANK);
  ASSERT(!AN(w),EVDOMAIN); 
- R jt->iep?jt->iep:mtv;
+ return jt->iep?jt->iep:mtv;
 }
 
 F1(jtieps){
@@ -91,7 +91,7 @@ F1(jtieps){
  ASSERT(!AN(w)||AT(w)&LIT,EVDOMAIN);
  fa(jt->iep);
  RZ(ras(w)); RZ(jt->iep=w); 
- R mtm;
+ return mtm;
 }
 
 F1(jtoutparmq){A z;D*u;I*v;
@@ -125,10 +125,10 @@ F1(jtoutparms){I*v;
  jt->outmaxlen   =v[1];
  jt->outmaxbefore=v[2];
  jt->outmaxafter =v[3];
- R mtv;
+ return mtv;
 }
 
-F1(jtposq){ASSERTMTV(w); R v2(jt->pos[0],jt->pos[1]);}
+F1(jtposq){ASSERTMTV(w); return v2(jt->pos[0],jt->pos[1]);}
 
 F1(jtposs){I n,p,q,*v;
  RZ(w=vi(w));
@@ -138,50 +138,43 @@ F1(jtposs){I n,p,q,*v;
  if(1==n)p=q=*v; else{p=v[0]; q=v[1];} 
  ASSERT(BETWEENC(p,0,2)&&BETWEENC(q,0,2),EVDOMAIN);
  jt->pos[0]=p; jt->pos[1]=q;   
- R mtv;
+ return mtv;
 }
 
 F1(jtppq){C*end;I k;
  ASSERTMTV(w);
  k = strtoI(3+jt->pp, (char**)&end, 10);
- R sc(k);
+ return sc(k);
 }
 
 F1(jtpps){I k;
  RE(sc(k=i0(w))); ASSERT(0<k,EVDOMAIN); ASSERT(k<=NPP,EVLIMIT);
  sprintf(3+jt->pp,FMTI"g", k);
- R mtv;
+ return mtv;
 }
 
-F1(jtretcommq){ASSERTMTV(w); R scb(jt->retcomm);}
+F1(jtretcommq){ASSERTMTV(w); return scb(jt->retcomm);}
 
-F1(jtretcomms){B b; RE(b=b0(w)); jt->retcomm=b; R mtm;}
+F1(jtretcomms){B b; RE(b=b0(w)); jt->retcomm=b; return mtm;}
 
-F1(jtseclevq){ASSERTMTV(w); R sc(jt->seclev);}
+F1(jtseclevq){ASSERTMTV(w); return sc(jt->seclev);}
 
 F1(jtseclevs){I k; 
  RE(k=i0(w)); 
  ASSERT(0==k||1==k,EVDOMAIN); 
  if(!jt->seclev&&1==k)jt->seclev=(UC)k;
- R mtm;
+ return mtm;
 }
 
 F1(jtsysq){I j;
  ASSERTMTV(w);
- switch(SYS){
-  case SYS_PC:        j=0;                break;
-  case SYS_PC386:     j=1;                break;
-  case SYS_PCWIN:     j=SY_WIN32 ? (SY_WINCE ? 7 : 6) : 2; break;
-  case SYS_MACINTOSH: j=3;                break;
-  case SYS_OS2:       j=4;                break;
-  default:            j=SYS&SYS_UNIX ? 5 : -1;
- }
- R sc(j);
+ j=SYS&SYS_UNIX ? 5 : -1;
+ return sc(j);
 }
 
 F1(jtxepq){
  ASSERTMTV(w); 
- R jt->xep?jt->xep:mtv;
+ return jt->xep?jt->xep:mtv;
 }
 
 F1(jtxeps){
@@ -190,16 +183,16 @@ F1(jtxeps){
  ASSERT(!AN(w)||AT(w)&LIT,EVDOMAIN);
  fa(jt->xep);
  RZ(ras(w)); RZ(jt->xep=w); 
- R mtm;
+ return mtm;
 }
 
-F1(jtasgzombq){ASSERTMTV(w); R sc(jt->asgzomblevel);}
+F1(jtasgzombq){ASSERTMTV(w); return sc(jt->asgzomblevel);}
 
 F1(jtasgzombs){I k; 
  RE(k=i0(w)); 
  ASSERT(BETWEENC(k,0,2),EVDOMAIN);
  jt->asgzomblevel=(C)k;
- R mtm;
+ return mtm;
 }
 
 // 9!:56  undocumented
@@ -212,58 +205,58 @@ F1(jtcpufeature){
  w=str0(w);
  if (!strcasecmp(CAV(w),"CPU")) {
 #if defined(__aarch64__)||defined(_M_ARM64)
-  R cstr("arm64");
+  return cstr("arm64");
 #elif defined(__arm__)||defined(_M_ARM)
-  R cstr("arm");
+  return cstr("arm");
 #elif defined(__x86_64__)||defined(_M_X64)
-  R cstr("x86_64");
+  return cstr("x86_64");
 #elif defined(__i386__)||defined(_M_IX86)
-  R cstr("x86");
+  return cstr("x86");
 #else
-  R cstr("unknown");
+  return cstr("unknown");
 #endif
  }
 #if defined(__aarch64__)
- if     (!strcasecmp(CAV(w),"FP"      )) R sc(!!(getCpuFeatures()&ARM_HWCAP_FP ));
- else if(!strcasecmp(CAV(w),"ASIMD"   )) R sc(!!(getCpuFeatures()&ARM_HWCAP_ASIMD ));
- else if(!strcasecmp(CAV(w),"EVTSTRM" )) R sc(!!(getCpuFeatures()&ARM_HWCAP_EVTSTRM ));
- else if(!strcasecmp(CAV(w),"AES"     )) R sc(!!(getCpuFeatures()&ARM_HWCAP_AES ));
- else if(!strcasecmp(CAV(w),"PMULL"   )) R sc(!!(getCpuFeatures()&ARM_HWCAP_PMULL ));
- else if(!strcasecmp(CAV(w),"SHA1"    )) R sc(!!(getCpuFeatures()&ARM_HWCAP_SHA1 ));
- else if(!strcasecmp(CAV(w),"SHA2"    )) R sc(!!(getCpuFeatures()&ARM_HWCAP_SHA2 ));
- else if(!strcasecmp(CAV(w),"CRC32"   )) R sc(!!(getCpuFeatures()&ARM_HWCAP_CRC32 ));
- else if(!strcasecmp(CAV(w),"ATOMICS" )) R sc(!!(getCpuFeatures()&ARM_HWCAP_ATOMICS ));
- else if(!strcasecmp(CAV(w),"FPHP"    )) R sc(!!(getCpuFeatures()&ARM_HWCAP_FPHP ));
- else if(!strcasecmp(CAV(w),"ASIMDHP" )) R sc(!!(getCpuFeatures()&ARM_HWCAP_ASIMDHP ));
- else if(!strcasecmp(CAV(w),"CPUID"   )) R sc(!!(getCpuFeatures()&ARM_HWCAP_CPUID ));
- else if(!strcasecmp(CAV(w),"ASIMDRDM")) R sc(!!(getCpuFeatures()&ARM_HWCAP_ASIMDRDM ));
- else if(!strcasecmp(CAV(w),"JSCVT"   )) R sc(!!(getCpuFeatures()&ARM_HWCAP_JSCVT ));
- else if(!strcasecmp(CAV(w),"FCMA"    )) R sc(!!(getCpuFeatures()&ARM_HWCAP_FCMA ));
- else if(!strcasecmp(CAV(w),"LRCPC"   )) R sc(!!(getCpuFeatures()&ARM_HWCAP_LRCPC ));
- else if(!strcasecmp(CAV(w),"DCPOP"   )) R sc(!!(getCpuFeatures()&ARM_HWCAP_DCPOP ));
- else if(!strcasecmp(CAV(w),"SHA3"    )) R sc(!!(getCpuFeatures()&ARM_HWCAP_SHA3 ));
- else if(!strcasecmp(CAV(w),"SM3"     )) R sc(!!(getCpuFeatures()&ARM_HWCAP_SM3 ));
- else if(!strcasecmp(CAV(w),"SM4"     )) R sc(!!(getCpuFeatures()&ARM_HWCAP_SM4 ));
- else if(!strcasecmp(CAV(w),"ASIMDDP" )) R sc(!!(getCpuFeatures()&ARM_HWCAP_ASIMDDP ));
- else if(!strcasecmp(CAV(w),"SHA512"  )) R sc(!!(getCpuFeatures()&ARM_HWCAP_SHA512 ));
- else if(!strcasecmp(CAV(w),"SVE"     )) R sc(!!(getCpuFeatures()&ARM_HWCAP_SVE ));
- else if(!strcasecmp(CAV(w),"ASIMDFHM")) R sc(!!(getCpuFeatures()&ARM_HWCAP_ASIMDFHM ));
- else if(!strcasecmp(CAV(w),"DIT"     )) R sc(!!(getCpuFeatures()&ARM_HWCAP_DIT ));
- else if(!strcasecmp(CAV(w),"USCAT"   )) R sc(!!(getCpuFeatures()&ARM_HWCAP_USCAT ));
- else if(!strcasecmp(CAV(w),"ILRCPC"  )) R sc(!!(getCpuFeatures()&ARM_HWCAP_ILRCPC ));
- else if(!strcasecmp(CAV(w),"FLAGM"   )) R sc(!!(getCpuFeatures()&ARM_HWCAP_FLAGM ));
- else R sc(0);
+ if     (!strcasecmp(CAV(w),"FP"      )) return sc(!!(getCpuFeatures()&ARM_HWCAP_FP ));
+ else if(!strcasecmp(CAV(w),"ASIMD"   )) return sc(!!(getCpuFeatures()&ARM_HWCAP_ASIMD ));
+ else if(!strcasecmp(CAV(w),"EVTSTRM" )) return sc(!!(getCpuFeatures()&ARM_HWCAP_EVTSTRM ));
+ else if(!strcasecmp(CAV(w),"AES"     )) return sc(!!(getCpuFeatures()&ARM_HWCAP_AES ));
+ else if(!strcasecmp(CAV(w),"PMULL"   )) return sc(!!(getCpuFeatures()&ARM_HWCAP_PMULL ));
+ else if(!strcasecmp(CAV(w),"SHA1"    )) return sc(!!(getCpuFeatures()&ARM_HWCAP_SHA1 ));
+ else if(!strcasecmp(CAV(w),"SHA2"    )) return sc(!!(getCpuFeatures()&ARM_HWCAP_SHA2 ));
+ else if(!strcasecmp(CAV(w),"CRC32"   )) return sc(!!(getCpuFeatures()&ARM_HWCAP_CRC32 ));
+ else if(!strcasecmp(CAV(w),"ATOMICS" )) return sc(!!(getCpuFeatures()&ARM_HWCAP_ATOMICS ));
+ else if(!strcasecmp(CAV(w),"FPHP"    )) return sc(!!(getCpuFeatures()&ARM_HWCAP_FPHP ));
+ else if(!strcasecmp(CAV(w),"ASIMDHP" )) return sc(!!(getCpuFeatures()&ARM_HWCAP_ASIMDHP ));
+ else if(!strcasecmp(CAV(w),"CPUID"   )) return sc(!!(getCpuFeatures()&ARM_HWCAP_CPUID ));
+ else if(!strcasecmp(CAV(w),"ASIMDRDM")) return sc(!!(getCpuFeatures()&ARM_HWCAP_ASIMDRDM ));
+ else if(!strcasecmp(CAV(w),"JSCVT"   )) return sc(!!(getCpuFeatures()&ARM_HWCAP_JSCVT ));
+ else if(!strcasecmp(CAV(w),"FCMA"    )) return sc(!!(getCpuFeatures()&ARM_HWCAP_FCMA ));
+ else if(!strcasecmp(CAV(w),"LRCPC"   )) return sc(!!(getCpuFeatures()&ARM_HWCAP_LRCPC ));
+ else if(!strcasecmp(CAV(w),"DCPOP"   )) return sc(!!(getCpuFeatures()&ARM_HWCAP_DCPOP ));
+ else if(!strcasecmp(CAV(w),"SHA3"    )) return sc(!!(getCpuFeatures()&ARM_HWCAP_SHA3 ));
+ else if(!strcasecmp(CAV(w),"SM3"     )) return sc(!!(getCpuFeatures()&ARM_HWCAP_SM3 ));
+ else if(!strcasecmp(CAV(w),"SM4"     )) return sc(!!(getCpuFeatures()&ARM_HWCAP_SM4 ));
+ else if(!strcasecmp(CAV(w),"ASIMDDP" )) return sc(!!(getCpuFeatures()&ARM_HWCAP_ASIMDDP ));
+ else if(!strcasecmp(CAV(w),"SHA512"  )) return sc(!!(getCpuFeatures()&ARM_HWCAP_SHA512 ));
+ else if(!strcasecmp(CAV(w),"SVE"     )) return sc(!!(getCpuFeatures()&ARM_HWCAP_SVE ));
+ else if(!strcasecmp(CAV(w),"ASIMDFHM")) return sc(!!(getCpuFeatures()&ARM_HWCAP_ASIMDFHM ));
+ else if(!strcasecmp(CAV(w),"DIT"     )) return sc(!!(getCpuFeatures()&ARM_HWCAP_DIT ));
+ else if(!strcasecmp(CAV(w),"USCAT"   )) return sc(!!(getCpuFeatures()&ARM_HWCAP_USCAT ));
+ else if(!strcasecmp(CAV(w),"ILRCPC"  )) return sc(!!(getCpuFeatures()&ARM_HWCAP_ILRCPC ));
+ else if(!strcasecmp(CAV(w),"FLAGM"   )) return sc(!!(getCpuFeatures()&ARM_HWCAP_FLAGM ));
+ else return sc(0);
 #elif defined(__x86_64__)||defined(__i386__)||defined(_M_X64)||defined(_M_IX86)
- if(!strcasecmp(CAV(w),"POPCNT"  )) R sc(!!(getCpuFeatures()&CPU_X86_FEATURE_POPCNT ));
- else if(!strcasecmp(CAV(w),"MOVBE"   )) R sc(!!(getCpuFeatures()&CPU_X86_FEATURE_MOVBE ));
- else if(!strcasecmp(CAV(w),"AES_NI"  )) R sc(!!(getCpuFeatures()&CPU_X86_FEATURE_AES_NI ));
- else if(!strcasecmp(CAV(w),"RDRAND"  )) R sc(!!(getCpuFeatures()&CPU_X86_FEATURE_RDRAND ));
- else if(!strcasecmp(CAV(w),"SHA_NI"  )) R sc(!!(getCpuFeatures()&CPU_X86_FEATURE_SHA_NI ));
- else if(!strcasecmp(CAV(w),"FMA"     )) R sc(!!(getCpuFeatures()&CPU_X86_FEATURE_FMA ));
- else if(!strcasecmp(CAV(w),"RDSEED"  )) R sc(!!(getCpuFeatures()&CPU_X86_FEATURE_RDSEED ));
- else R sc(0);
+ if(!strcasecmp(CAV(w),"POPCNT"  )) return sc(!!(getCpuFeatures()&CPU_X86_FEATURE_POPCNT ));
+ else if(!strcasecmp(CAV(w),"MOVBE"   )) return sc(!!(getCpuFeatures()&CPU_X86_FEATURE_MOVBE ));
+ else if(!strcasecmp(CAV(w),"AES_NI"  )) return sc(!!(getCpuFeatures()&CPU_X86_FEATURE_AES_NI ));
+ else if(!strcasecmp(CAV(w),"RDRAND"  )) return sc(!!(getCpuFeatures()&CPU_X86_FEATURE_RDRAND ));
+ else if(!strcasecmp(CAV(w),"SHA_NI"  )) return sc(!!(getCpuFeatures()&CPU_X86_FEATURE_SHA_NI ));
+ else if(!strcasecmp(CAV(w),"FMA"     )) return sc(!!(getCpuFeatures()&CPU_X86_FEATURE_FMA ));
+ else if(!strcasecmp(CAV(w),"RDSEED"  )) return sc(!!(getCpuFeatures()&CPU_X86_FEATURE_RDSEED ));
+ else return sc(0);
 #else
- R sc(0);
+ return sc(0);
 #endif
 }
 
@@ -356,7 +349,7 @@ F2(jtcpufeature2){I k;
 #endif
 }
 OPENSSL_setcap();
-R mtm;
+return mtm;
 }
 
 // 9!:58  undocumented
@@ -372,7 +365,7 @@ F1(jtgemmtune){I k;
  ASSERT(1>=AR(w),EVRANK);
  RE(k=i0(w));  // get arg
  ASSERT(k==0||k==1||k==2,EVDOMAIN);
- R sc((0==k)?jt->igemm_thres:(1==k)?jt->dgemm_thres:jt->zgemm_thres);
+ return sc((0==k)?jt->igemm_thres:(1==k)?jt->dgemm_thres:jt->zgemm_thres);
 }
 
 F2(jtgemmtune2){I j,k;
@@ -390,7 +383,7 @@ F2(jtgemmtune2){I j,k;
  if(k==0) jt->igemm_thres=j;
  else if(k==1) jt->dgemm_thres=j;
  else jt->zgemm_thres=j;
- R sc(1);
+ return sc(1);
 }
 
 // enable/disable tstack auditing, since some testcases run too long with it enabled
@@ -403,8 +396,8 @@ F1(jtaudittdisab){
  RE(k=i0(w));  // get arg
  if(k&2){jt->audittstackdisabled=0; audittstack(jt);}  // run once if so requested
  jt->audittstackdisabled=k;
- R sc(oldval);
+ return sc(oldval);
 #else
- R sc(0);
+ return sc(0);
 #endif
 }

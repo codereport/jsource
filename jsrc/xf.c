@@ -25,21 +25,14 @@ static int rmdir2(const char *dir);
 
 
 
-#if SY_64
 static I fsize(F f){
- if(!f)R 0;
+ if(!f)return 0;
 
  fpos_t z;
  fseek(f,0L,SEEK_END);
  fgetpos(f,&z);
- R *(I*)&z;
+ return *(I*)&z;
 }
-#else
-static I fsize(F f){
- RZ(f);
-
-}
-#endif
 
 static A jtrdns(J jt,F f){A za,z;I n=1024;size_t r,tr=0;
  GAT0(za,LIT,1024,1); clearerr(f);
@@ -48,51 +41,43 @@ static A jtrdns(J jt,F f){A za,z;I n=1024;size_t r,tr=0;
  }
  if(tr==(U)n)z=za;
  else {GATV0(z,LIT,(I)tr,1); MC(CAV(z),CAV(za),tr);}
- R z;
+ return z;
 }    /* read entire file stream (non-seekable) */
 
 A jtrd(J jt,F f,I j,I n){A z;C*x;I p=0;size_t q=1;
  RZ(f);
  if(0>n){if(j<0) n=-j; else n=fsize(f)-j;}
 
-#if !SY_WINCE
  {INT64 v; v= j+((0>j)?fsize(f):0); fsetpos(f,(fpos_t*)&v);}
-#else
- fseek(f,(long)(0>j?1+j:j),0>j?SEEK_END:SEEK_SET);
-#endif
 
  clearerr(f);
  GATV0(z,LIT,n,1); x=CAV(z);
  while(q&&n>p){
   p+=q=fread(p+x,sizeof(C),(size_t)(n-p),f);
-  if(ferror(f))R jerrno();
+  if(ferror(f))return jerrno();
  }
- R z;
+ return z;
 }    /* read file f for n bytes at j */
 
 static B jtwa(J jt,F f,I j,A w){C*x;I n,p=0;size_t q=1;
  RZ(f&&w);
  n=AN(w)*(C4T&AT(w)?4:C2T&AT(w)?2:1); x=CAV(w);
 
-#if !SY_WINCE
  {INT64 v; v= j+((0>j)?fsize(f):0); fsetpos(f,(fpos_t*)&v);}
-#else
- fseek(f,(long)(0>j?1+j:j),0>j?SEEK_END:SEEK_SET);
-#endif
  
  clearerr(f);
  while(q&&n>p){
   p+=q=fwrite(p+x,sizeof(C),(size_t)(n-p),f); 
-  if(ferror(f))R jerrno()?1:0;
+  if(ferror(f))return jerrno()?1:0;
  }
- R 1;
+ return 1;
 }    /* write/append string w to file f at j */
 
 
 F1(jtjfread){A z;F f;
  F1RANK(0,jtjfread,UNUSED_VALUE);
  RE(f=stdf(w));  // f=file#, or 0 if w is a filename
- if(f)R 1==(I)f?jgets("\001"):3==(I)f?rdns(stdin):rd(vfn(f),0L,-1L);  // if special file, read it all, possibly with error
+ if(f)return 1==(I)f?jgets("\001"):3==(I)f?rdns(stdin):rd(vfn(f),0L,-1L);  // if special file, read it all, possibly with error
  RZ(f=jope(w,FREAD_O)); z=rd(f,0L,-1L); fclose(f);  // otherwise open/read/close named file
  RETF(z);
 }
@@ -101,9 +86,9 @@ F2(jtjfwrite){B b;F f;
  F2RANK(RMAX,0,jtjfwrite,UNUSED_VALUE);
  if(BOX&AT(w)){ASSERT(1>=AR(a),EVRANK); ASSERT(!AN(a)||AT(a)&LIT+C2T+C4T,EVDOMAIN);}
  RE(f=stdf(w));
- if(2==(I)f){b=jt->tostdout; jt->tostdout=1; jt->mtyo=MTYOFILE; jpr(a); jt->mtyo=0; jt->tostdout=b; R a;}
- if(4==(I)f){R (U)AN(a)!=fwrite(CAV(a),sizeof(C),AN(a),stdout)?jerrno():a;}
- if(5==(I)f){R (U)AN(a)!=fwrite(CAV(a),sizeof(C),AN(a),stderr)?jerrno():a;}
+ if(2==(I)f){b=jt->tostdout; jt->tostdout=1; jt->mtyo=MTYOFILE; jpr(a); jt->mtyo=0; jt->tostdout=b; return a;}
+ if(4==(I)f){return (U)AN(a)!=fwrite(CAV(a),sizeof(C),AN(a),stdout)?jerrno():a;}
+ if(5==(I)f){return (U)AN(a)!=fwrite(CAV(a),sizeof(C),AN(a),stderr)?jerrno():a;}
  if(b=!f)RZ(f=jope(w,FWRITE_O)) else RE(vfn(f)); 
  wa(f,0L,a); 
  if(b)fclose(f);else fflush(f);
@@ -113,7 +98,7 @@ F2(jtjfwrite){B b;F f;
 F2(jtjfappend){B b;F f;
  F2RANK(RMAX,0,jtjfappend,UNUSED_VALUE);
  RE(f=stdf(w));
- if(2==(I)f){B b=jt->tostdout; jt->tostdout=1; jpr(a); jt->tostdout=b; R a;}
+ if(2==(I)f){B b=jt->tostdout; jt->tostdout=1; jpr(a); jt->tostdout=b; return a;}
  ASSERT(!AN(a)||AT(a)&LIT+C2T+C4T,EVDOMAIN);
  ASSERT(1>=AR(a),EVRANK);
  if(b=!f)RZ(f=jope(w,FAPPEND_O)) else RE(vfn(f));
@@ -139,7 +124,7 @@ static F jtixf(J jt,A w){F f;
   case BOXX: ASSERT(2==AN(w),EVLENGTH); f=stdf(head(w)); break; 
   case INTX: f=(F)AV(w)[0]; ASSERT(2<(UI)f,EVFNUM);
  }
- R f?vfn(f):f;
+ return f?vfn(f):f;
 }    /* process index file arg for file number; 0 if a file name */
 
 static B jtixin(J jt,A w,I s,I*i,I*n){A in,*wv;I j,k,m,*u;
@@ -150,7 +135,7 @@ static B jtixin(J jt,A w,I s,I*i,I*n){A in,*wv;I j,k,m,*u;
  j=u[0]; j=0>j?s+j:j; m=1==k?s-j:u[1];
  ASSERT(0<=j&&(!n||j<s&&j+m<=s&&0<=m),EVINDEX);
  *i=j; if(n)*n=m;
- R 1;
+ return 1;
 }    /* process index file arg for index and length */
 
 F1(jtjiread){A z=0;B b;F f;I i,n;
@@ -158,7 +143,7 @@ F1(jtjiread){A z=0;B b;F f;I i,n;
  RE(f=ixf(w)); if(b=!f)RZ(f=jope(w,FREAD_O));
  if(ixin(w,fsize(f),&i,&n))z=rd(f,i,n);
  if(b)fclose(f);else fflush(f);
- R z;
+ return z;
 }
 
 F2(jtjiwrite){B b;F f;I i;
@@ -171,44 +156,11 @@ F2(jtjiwrite){B b;F f;I i;
  RNE(mtm);
 }
 
-
-#if (SYS & SYS_MACINTOSH)
-
-static B setparm(C*v,C*ms,HParamBlockRec mp){I n;
- n=strlen(v);
- ASSERT(n<=NPATH,EVLIMIT); *ms=n; MC(1+ms,v,n);
- mp.fileParam.ioNamePtr=ms;
- mp.fileParam.ioVRefNum=0;
- mp.fileParam.ioDirID  =0;
- R 1;
-}
-
-#define DIRF(f,fsub)  \
- B f(J jt,C*v){C ms[256];HParamBlockRec mp; \
-  RZ(setparm(v,ms,mp));                     \
-  ASSERT(!fsub(&mp,0),EVFACE);              \
-  R 1;                                      \
- }
-
-static DIRF(jtmkdir1,PBDirCreate)
-static DIRF(jtrmdir1,PBHDelete  )
-
-static B mkdir(C*v){R!mkdir1(v);}
-static B rmdir(C*v){R!rmdir1(v);}
-
-#endif
-
-
 F1(jtjmkdir){A y,z;
  F1RANK(0,jtjmkdir,UNUSED_VALUE);
  ASSERT(AT(w)&BOX,EVDOMAIN);
  RZ(y=str0(vslit(AAV(w)[0])));
-#if (SYS & SYS_UNIX)
- R mkdir(CAV(y),0775)?jerrno():num(1);
-#else
- RZ(z=toutf16x(y)); USAV(z)[AN(z)]=0;  // install termination
- R _wmkdir(USAV(z))?jerrno():num(1);
-#endif
+ return mkdir(CAV(y),0775)?jerrno():num(1);
 }
 
 F1(jtjferase){A y,fn;US*s;I h;
@@ -216,7 +168,7 @@ F1(jtjferase){A y,fn;US*s;I h;
  RE(h=fnum(w));
  if(h) {RZ(y=str0(fname(sc(h))))} else ASSERT(y=vslit(AAV(w)[0]),EVFNUM);
  if(h)RZ(jclose(sc(h)));
- A y0=str0(y); R !unlink(CAV(y0))||!rmdir(CAV(y0))?num(1):jerrno();
+ A y0=str0(y); return !unlink(CAV(y0))||!rmdir(CAV(y0))?num(1):jerrno();
 
 }    /* erase file or directory */
 
@@ -228,7 +180,7 @@ F1(jtpathcwd){C path[1+NPATH];US wpath[1+NPATH];
  ASSERT(_wgetcwd(wpath,NPATH),EVFACE);
  jttoutf8w(jt,path,NPATH,wpath);
 #endif
- R cstr(path);
+ return cstr(path);
 }
 
 F1(jtpathchdir){A z;
@@ -242,12 +194,8 @@ F1(jtpathchdir){A z;
  RZ(z=toutf16x(toutf8(w))); USAV(z)[AN(z)]=0;  // install termination
  ASSERT(0==_wchdir(USAV(z)),EVFACE);
 #endif
- R mtv;
+ return mtv;
 }
-
-#if SY_WINCE
-#define _wgetenv(s)  (0)
-#endif
 
 F1(jtjgetenv){
  F1RANK(1,jtjgetenv,UNUSED_VALUE);
@@ -255,39 +203,39 @@ F1(jtjgetenv){
 #if (SYS & SYS_UNIX)
  {
   C*s;
-  R(s=getenv(CAV(toutf8x(w))))?cstr(s):num(0); // toutf8x has trailing nul
+  return(s=getenv(CAV(toutf8x(w))))?cstr(s):num(0); // toutf8x has trailing nul
  }
-#else
+#else // # i think this corresponds to WIN -ish stuff
  {
   A z; US* us;
   RZ(z=toutf16x(toutf8(w))); USAV(z)[AN(z)]=0;  // install termination
   us=_wgetenv(USAV(z));
-  if(!us)R num(0);
+  if(!us)return num(0);
   GATV0(z,C2T,wcslen(us),1);
   MC(USAV(z),us,2*wcslen(us));
-  R toutf8(z);
+  return toutf8(z);
  }
 #endif
- R num(0);
+ return num(0);
 }
 
 F1(jtjgetpid){
  ASSERTMTV(w);
 
- R(sc(getpid()));
+ return(sc(getpid()));
 }
 
 #if (SYS & SYS_UNIX)
 // #ifdef __GNUC__
 F1(jtpathdll){
- ASSERTMTV(w); R cstr((C*)"");
+ ASSERTMTV(w); return cstr((C*)"");
 }
 #else
 F1(jtpathdll){char p[MAX_PATH]; extern C dllpath[];
  ASSERTMTV(w);
  strcpy(p,dllpath);
  if('\\'==p[strlen(p)-1]) p[strlen(p)-1]=0;
- R cstr(p);
+ return cstr(p);
 }
 #endif
 

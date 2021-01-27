@@ -5,7 +5,7 @@
 
 #include "j.h"
 #include "x.h"
-#include "vcomp.h" /* for TLT & friends */
+#include "verbs/vcomp.h" /* for TLT & friends */
 #include "dtoa.h"
 
 static const D ppwrs[10]={1, 1e1, 1e2, 1e3, 1e4, 1e5, 1e6, 1e7, 1e8, 1e9};
@@ -79,7 +79,7 @@ static F1(jtfmtbfc){A*u,z;B t;C c,p,q,*s,*wv;I i,j,m,n;
   else if(s=strchr(pp,c)){t=1; q=qq[s-pp];}
  }
  RZ(*u=incorp(str(n-j,wv+j)));
- R z;
+ return z;
 } /* format phrases: boxed from char */
 
 static B jtfmtcomma(J jt, C *x, I l, I d, C *subs) {C *v,*u;I j,n,c;
@@ -87,15 +87,15 @@ static B jtfmtcomma(J jt, C *x, I l, I d, C *subs) {C *v,*u;I j,n,c;
  if(v=memchr(x, SUBd, n)){j=n-(v-x); u-=j; memmove(u+1,v,j); v--;} else v=x+n-1;
  j=0;
  DQ(v-x+1, if((C)(*v-'0')<=(C)('9'-'0')){if(j==3){*u--=SUBc; j=0;} j++;} *u--=*v--;);
- R 1;
+ return 1;
 }
 
 static I jtdpone(J jt, B bits, D w){D t;
- if(bits&BITSf) R 0;
+ if(bits&BITSf) return 0;
  w=ABS(w);
  if(bits&BITSe) w/=pow(10,tfloor(log10(w)));
- DO(10, t=npwrs[i]*jround(ppwrs[i]*w); if(TEQ(t,w)) R i; );
- R 9;
+ DO(10, t=npwrs[i]*jround(ppwrs[i]*w); if(TEQ(t,w)) return i; );
+ return 9;
 }
 
 // scan a for [www[.ddd]}
@@ -109,7 +109,7 @@ static B jtwidthdp(J jt, A a, I *w, I *d){
  // advance to first digit/.
  for(;remchars;++v,--remchars){C vv=*v; CCMCAND(digdot,cand,vv) if(CCMTST(cand,vv))break;}
  // if none, exit with neither field
- if(!remchars){*w=*d=-1; R 1;}
+ if(!remchars){*w=*d=-1; return 1;}
  // if ., error
  ASSERT(*v!='.',EVDOMAIN);
  // consume digits, creating w value
@@ -123,7 +123,7 @@ static B jtwidthdp(J jt, A a, I *w, I *d){
  // verify no remaining digits/. in field
  for(;remchars;++v,--remchars){C vv=*v; CCMCAND(digdot,cand,vv) ASSERT(!CCMTST(cand,vv),EVDOMAIN);}
  ASSERT(BETWEENC(*d,-1,9), EVDOMAIN);
- R 1;
+ return 1;
 } /* width and decimal places */
 
 /* parse a single boxed format phrase                                        */
@@ -166,7 +166,7 @@ static F1(jtfmtparse){A x,z,*zv;B ml[2+NMODVALS],mod,t;C c,*cu="srqpnmdbijklc",*
   RZ(zv[NMODVALS]=incorp(str(5L,subs)));
  }
  vals[2]=fb; RZ(*zv=incorp(vec(INT,3,vals)));
- R z;
+ return z;
 }
 
 
@@ -176,15 +176,15 @@ typedef union u_DI8_tag { I8 i; D d; } DI8;
 static D jtroundID(J jt,I d,D y){D f,q,c,h;DI8 f8,q8,c8;
  q=ppwrs[d]*y; if(q<1) h=2; else h=0; q+=h;
  f=jfloor(q); c=-jfloor(-q); 
- if(f==c) R npwrs[d]*(c-h);
+ if(f==c) return npwrs[d]*(c-h);
  ASSERTSYS(f<=q&&q<=c, "roundID: fqc");
  f8.d=f;q8.d=q;c8.d=c;
  ASSERTSYS(0<=f8.i&&0<=q8.i&&0<=c8.i, "roundID: sign");
- if(q8.i-f8.i >= c8.i-q8.i-1) R npwrs[d]*(c-h);
- else                         R npwrs[d]*(f-h);
+ if(q8.i-f8.i >= c8.i-q8.i-1) return npwrs[d]*(c-h);
+ else                         return npwrs[d]*(f-h);
 } /* round a number in not in exponential notation */
 
-static D jtafzrndID(J jt,I dp,D y){R SGN(y)*roundID(dp,ABS(y));}
+static D jtafzrndID(J jt,I dp,D y){return SGN(y)*roundID(dp,ABS(y));}
          /* round-to-nearest, solve ties by rounding Away From Zero */
 
 static D jtexprndID(J jt, I d, D y){I e,s;D f,q,c,x1,x2;DI8 f8,y8,c8;
@@ -197,10 +197,10 @@ static D jtexprndID(J jt, I d, D y){I e,s;D f,q,c,x1,x2;DI8 f8,y8,c8;
  f=jfloor( q)/x1; f/=x2;
  c=(-jfloor(-q))/x1; c/=x2;
 
- if(f==c) R s*c;
+ if(f==c) return s*c;
  /*ASSERTSYS(f<=y && y<=c, "exprndID: fyc");*/ /* why does this fail? */
  f8.d=f; y8.d=y; c8.d=c;
- if(y8.i-f8.i >= c8.i-y8.i-1) R s*c; else R s*f;
+ if(y8.i-f8.i >= c8.i-y8.i-1) return s*c; else return s*f;
 } /* afzrnd for numbers in exponential notation */
 
 static B jtsprintfI(J jt, C *x, I m, I dp, I iw, C *subs) {I r,g;
@@ -209,11 +209,11 @@ static B jtsprintfI(J jt, C *x, I m, I dp, I iw, C *subs) {I r,g;
  g=SGN(iw); UI uiw=ABS(iw);
  while(uiw){ *x--='0'+(C)(uiw%10); uiw/=10; r++; }
  if(g==0) { *x--='0'; r++; }
- R 1;
+ return 1;
 }
 
 static B jtsprintfnD(J jt, C *x, I m, I dp, D dw, C *subs) {I nd;int decpt, sign;
- if(dw==0) { memset(x, '0', m); if(dp) x[1]=SUBd; R 1; }
+ if(dw==0) { memset(x, '0', m); if(dp) x[1]=SUBd; return 1; }
  if(ABS(dw) < 1) nd=dp; else nd=m-!!dp;
  RZ(ecvt(dw,nd,&decpt,&sign,x));
  if(decpt > 0) {
@@ -224,7 +224,7 @@ static B jtsprintfnD(J jt, C *x, I m, I dp, D dw, C *subs) {I nd;int decpt, sign
   memset(x, '0', 2-decpt);
   if(dp) x[1]=SUBd;
  }
- R 1;
+ return 1;
 }
 
 static B jtsprintfeD(J jt, C *x, I m, I dp, D dw, C *subs) {I y,y0;int decpt,sign;
@@ -236,7 +236,7 @@ static B jtsprintfeD(J jt, C *x, I m, I dp, D dw, C *subs) {I y,y0;int decpt,sig
  y0=decpt/100; if(y0)    *x++='0'+(C)y0; decpt%=100;
  y =decpt/10 ; if(y||y0) *x++='0'+(C)y ; decpt%=10;
  y =decpt    ;           *x++='0'+(C)y ; 
- R 1;
+ return 1;
 }
 
 /* the output of jtfmtprecomp looks like this                                */
@@ -361,12 +361,8 @@ static F2(jtfmtprecomp) {A*as,base,fb,len,strs,*u,z;B*bits,*bw;D dtmp,*dw;
          if(*dw < 0) { if(mMN) (*iv)+=nMN; else (*iv)++; }
          else if(mPQ) (*iv)+=nPQ;
         } else {
-#if SY_64
          if ((((UI)*iw)^(UI)REPSGN(*iw))-(UI)REPSGN(*iw) < 10000000000L) *iv=2+!!d+d+  1;  // (UI)ABS(*iw) without signed arithmetic
          else                         *iv=2+!!d+d+  2;
-#else
-         *iv=2+!!d+d+  1;
-#endif
          if(*iw < 0) { if(mMN) (*iv)+=nMN; else (*iv)++; }
          else if(mPQ) (*iv) += nPQ;
         }
@@ -390,7 +386,7 @@ static F2(jtfmtprecomp) {A*as,base,fb,len,strs,*u,z;B*bits,*bw;D dtmp,*dw;
  }
  ib=AV(base);
  if(1==nf){if(!ib[0])ib[0]=maxl;}else DQ(nf, if(ib[0]==0)ib[0]=ib[3]; ib+=4;);
- R z;
+ return z;
 } /* format: precomputation to separate the group and column concept */
 
 /* a is jtfmtprecomp result */
@@ -519,14 +515,14 @@ static A jtfmtallcol(J jt, A a, A w, I mode) {A *a1v,base,fb,len,strs,*u,v,x;
   a1v++; il++; bits++; bv++; iv++; dv++; h++; j++;
  }
  
- R x;
+ return x;
 } /* format w */
 
 static A jtfmtxi(J jt, A a, A w, I mode, I *omode){I lvl;
  ARGCHK2(a,w); *omode=0;
  if(unlikely((SPARSE&AT(w))!=0)) RZ(w=denseit(w));
  if(!AN(w))       RZ(w=reshape(shape(w),chrspace));
- if(JCHAR&AT(w))  R df1(a,w,qq(atop(ds(CBOX),ds(CCOMMA)),num(1)));
+ if(JCHAR&AT(w))  return df1(a,w,qq(atop(ds(CBOX),ds(CCOMMA)),num(1)));
  ASSERT(1>=AR(a), EVRANK); 
  ASSERT(!AN(a) || JCHAR+BOX&AT(a), EVDOMAIN);
  if(JCHAR&AT(a)||!AN(a)) RZ(a=fmtbfc(a));
@@ -538,37 +534,37 @@ static A jtfmtxi(J jt, A a, A w, I mode, I *omode){I lvl;
   ASSERT(1>=lvl, EVDOMAIN);
   DO(AN(w), x=wv[i]; ASSERT(1>=AR(x),EVRANK); if(AN(x)){ASSERT(AT(x)&JCHAR+NUMERIC,EVDOMAIN);
       ASSERT(!(AR(x)&&AT(x)&NUMERIC),EVRANK);});
-  A z; R df2(z,reitem(shape(w),a),w,amp(foreign(num(8),num(0)), ds(COPE)));
+  A z; return df2(z,reitem(shape(w),a),w,amp(foreign(num(8),num(0)), ds(COPE)));
  } else {
   if(XNUM+RAT+CMPX&AT(w))RZ(w=cvt(FL,w));
   *omode=mode;
-  R fmtallcol(fmtprecomp(rank1ex0(a,UNUSED_VALUE,jtfmtparse),w),w,mode);
+  return fmtallcol(fmtprecomp(rank1ex0(a,UNUSED_VALUE,jtfmtparse),w),w,mode);
 }} /* 8!:x internals */
   /* mode is the requested mode, *omode is the actual mode computed */
   /* mode is 0, 1, or 2 for 8!:0, 8!:1, or 8!:2                     */
   /* *omode is either 0 or mode                                     */
 
-F2(jtfmt02){I mode; R fmtxi(a,w,0,&mode);} /* 8!:0 dyad */
+F2(jtfmt02){I mode; return fmtxi(a,w,0,&mode);} /* 8!:0 dyad */
 
 F2(jtfmt12){A z;I mode,r,j;
  ARGCHK2(a,w);
  ASSERT(2>=AR(w), EVRANK);
  RZ(z=fmtxi(a,w,1,&mode));
- if(mode==1)R z;
+ if(mode==1)return z;
  r=AR(z);
  A t; df1(t,cant1(2==r?z:reshape(v2(1L,SETIC(z,j)),z)), qq(atco(ds(CBOX),ds(COPE)),num(1)));
- R ravel(t);
+ return ravel(t);
 } /* 8!:1 dyad */
 
 F2(jtfmt22){A z;I mode,r,j;
  ARGCHK2(a,w);
  ASSERT(2>=AR(w), EVRANK);
  RZ(z=fmtxi(a,w,2,&mode));
- if(mode==2)R z;
+ if(mode==2)return z;
  r=AR(z);
  A t; df1(t,cant1(2==r?z:reshape(v2(1L,SETIC(z,j)),z)), qq(atco(ds(CBOX),ds(COPE)),num(1)));
  RZ(z=ravel(t));
- R AS(z)[0]?razeh(z):lamin1(z);
+ return AS(z)[0]?razeh(z):lamin1(z);
 } /* 8!:2 dyad */
 
 F1(jtfmt01){ARGCHK1(w); RETF(fmt02(AR(w)?reshape(sc(AS(w)[AR(w)-1]),ds(CACE)):ds(CACE),w));} /* 8!:0 monad */

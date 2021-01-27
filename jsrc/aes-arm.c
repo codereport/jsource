@@ -2,9 +2,6 @@
 
 #include <stdint.h>
 #include <string.h>
-#if defined(__ARM_NEON) || defined(_WIN32)
-#include <arm_neon.h>
-#endif
 /* GCC and LLVM Clang, but not Apple Clang */
 # if defined(__GNUC__) && !defined(__apple_build_version__)
 #  if defined(__ARM_ACLE) || defined(__ARM_FEATURE_CRYPTO)
@@ -231,11 +228,7 @@ static void block_finalize(block_state* self)
 int aes_arm(I decrypt,I mode,UC *key,I keyn,UC* ivec,UC* out,I len)
 {
   block_state self;
-#ifdef _WIN32
-  __declspec(align(16)) uint8_t rk_tmp[AES_RKSIZE];
-#else
   uint8_t __attribute__ ((aligned (16))) rk_tmp[AES_RKSIZE];
-#endif
   uint8_t *str=out;
   I i;
 
@@ -312,11 +305,11 @@ int aes_arm(I decrypt,I mode,UC *key,I keyn,UC* ivec,UC* out,I len)
   break;
 
   default:
-    R 1;
+    return 1;
 
   }
 
-  R 0;  // success
+  return 0;  // success
 }
 
 #endif

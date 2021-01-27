@@ -26,7 +26,7 @@ static F1(jttrc){A bot,p,*v,x,y;B b;C*bv,c,ul,ll,*pv;I j,k,m,*s,xn,*xv,yn,*yv;
     bv[k]=*(pv+AN(p)-m);
    }else bv[k]=' ';
   }
- R link(x,y);
+ return link(x,y);
 }
 
 static I jtpad(J jt,A a,A w,C*zv){C dash,*u,*v,*wv;I c,d,r,*s;
@@ -39,7 +39,7 @@ static I jtpad(J jt,A a,A w,C*zv){C dash,*u,*v,*wv;I c,d,r,*s;
    zv-=d; v=zv+c-1; u=wv-c; dash=jt->bx[10];
    DQ(SETIC(w,k), MC(zv+=d,u+=c,c); v+=d; if(dash==*v)memset(1+v,dash,d-c););
  }}
- R r*d;
+ return r*d;
 }
 
 static F1(jtgraft){A p,q,t,*u,x,y,z,*zv;C*v;I d,j,k,m,n,*pv,*s,xn,*xv,yn,*yv;
@@ -65,14 +65,14 @@ static F1(jtgraft){A p,q,t,*u,x,y,z,*zv;C*v;I d,j,k,m,n,*pv,*s,xn,*xv,yn,*yv;
   if(1==d)*(v+j)=jt->bx[10]; else{memset(v+j,jt->bx[9],d); *(v+j)=*jt->bx; *(v+k-1)=jt->bx[6];}
  }
  RZ(zv[0]=incorp(stitch(p,t)));
- R z;
+ return z;
 }
 
 static A jtcenter(J jt,A a,I j,I k,I m){A z;C*x;I n,*s,zn;
  ARGCHK1(a);
  n=AN(a); RE(zn=mult(m,n)); GATV0(z,LIT,zn,2); s=AS(z); *s=m; *++s=n;
  x=CAV(z); memset(x,' ',AN(z)); MC(x+n*(j+((m-(j+k))>>1)),AV(a),n);
- R z;
+ return z;
 }
 
 static F2(jttroot){A t,x;B b;C*u,*v;I j=0,k=0,m,n,*s;
@@ -83,7 +83,7 @@ static F2(jttroot){A t,x;B b;C*u,*v;I j=0,k=0,m,n,*s;
  t=AAV(w)[0]; s=AS(t); m=s[0]; n=s[1];
  u=CAV(t);         DO(m, if(' '!=*u){j=i; break;} u+=n;);
  u=CAV(t)+(m-1)*n; DO(m, if(' '!=*u){k=i; break;} u-=n;);
- R link(center(x,j,k,m),w);
+ return link(center(x,j,k,m),w);
 }
 
 static F1(jttleaf){A t,z;C*v;I n,*s;
@@ -92,7 +92,7 @@ static F1(jttleaf){A t,z;C*v;I n,*s;
  GATV0(t,LIT,2+n,2); s=AS(t); s[0]=1; s[1]=2+n;
  v=CAV(t); v[0]=jt->bx[10]; v[1]=' '; MC(2+v,AV(w),n);
  GAT0(z,BOX,1,1); AAV(z)[0]=incorp(t);
- R z;
+ return z;
 }
 
 static F1(jttconnect){A*wv,x,y,z;B b,d;C c,*u,*xv,*yv,*zv;I e,i,j,m,n,p,q,zn;
@@ -115,12 +115,12 @@ static F1(jttconnect){A*wv,x,y,z;B b,d;C c,*u,*xv,*yv,*zv;I e,i,j,m,n,p,q,zn;
   u=zv-e; yv=CAV(y)-q; DQ(m, MC(u+=e,yv+=q,q);); zv+=q;
   x=y; p=q;
  }
- R z;
+ return z;
 }
 
 EVERYFS(trrself,jttrr,0,0,VFLAGNONE)
 
-static F1(jttreach){R troot(scc('0'),graft(ope(every(w,(A)&trrself))));}
+static F1(jttreach){return troot(scc('0'),graft(ope(every(w,(A)&trrself))));}
 
 static F1(jttrr){PROLOG(0058);A hs,s,t,*x,z;B ex,xop;C id;I fl,*hv,m;V*v;
  ARGCHK1(w);

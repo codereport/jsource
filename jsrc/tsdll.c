@@ -23,13 +23,7 @@ typedef double complex double_complex;
 
 #include <stdio.h>
 
-#if defined(_WIN64) || defined(_UNIX64)
-#define SY_64 1
 typedef long long I;
-#else
-#define SY_64 0
-typedef long I;
-#endif
 
 #define sum {return a[0]=b+c[0]+c[1];}
 

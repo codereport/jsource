@@ -16,39 +16,6 @@
 #define __GNUC_PATCHLEVEL__ 1
 #endif
 
-// ms vc++ defined _MSC_VER but clang-cl also defined _MSC_VER
-// clang-cl doesn't emulate ms vc++ good enough
-// and it breaks program logic previously guarded by _MSC_VER
-// MMSC_VER means the real ms vc++ excluding clang-cl
-// use MMSC_VER instead of _MSC_VER throughout JE source
-#if defined(_MSC_VER) && !defined(__clang__)
-#undef MMSC_VER
-#define MMSC_VER
-#else
-#undef MMSC_VER
-#endif
-
-#ifndef EMU_AVX
-#define EMU_AVX 0
-#endif
-#if defined(MMSC_VER)
-#undef EMU_AVX
-#define EMU_AVX 0
-#endif
-#undef EMU_AVX2
-#define EMU_AVX2 0
-
-/* msvc does not define __SSE2__ */
-#if !defined(__SSE2__)
-#if defined(MMSC_VER)
-#if (defined(_M_AMD64) || defined(_M_X64))
-#define __SSE2__ 1
-#elif _M_IX86_FP==2
-#define __SSE2__ 1
-#endif
-#endif
-#endif
-
 // for debugging
 #define NANTEST0        (fetestexcept(FE_INVALID))  // test but does not clear
 #define dump_m128i(a,x) {__m128i _b=x;fprintf(stderr,"%s %li %li %li %li \n", a, ((long*)(&_b))[0], ((long*)(&_b))[1], ((long*)(&_b))[2], ((long*)(&_b))[3]);}
@@ -57,66 +24,8 @@
 #define dump_m256d(a,x) {__m256d _b=x;fprintf(stderr,"%s %f %f %f %f \n", a, ((double*)(&_b))[0], ((double*)(&_b))[1], ((double*)(&_b))[2], ((double*)(&_b))[3]);}
 #define dump_m128d(a,x) {__m128d _b=x;fprintf(stderr,"%s %f %f \n", a, ((double*)(&_b))[0], ((double*)(&_b))[1]);}
 
-#if defined(__i386__) || defined(__x86_64__) || defined(_M_X64) || defined(_M_IX86)
-#ifndef C_AVX2
-#define C_AVX2 0
-#endif
-
-#if (defined(_MSC_VER))
-#include <intrin.h>
-#endif
-
-#undef EMU_AVX2
-#define EMU_AVX2 1
-#include <stdint.h>
-#include <string.h>
-#undef EMU_AVX
-#define EMU_AVX 0
-
-#elif defined(__SSE2__)
-#if EMU_AVX
-#undef EMU_AVX2
-#define EMU_AVX2 1   // test avx2 emulation
-#include <stdint.h>
-#include <string.h>
-#include "avxintrin-emu.h"
-#else
-#include <emmintrin.h>
-#endif
-#define _CMP_EQ          0
-#define _CMP_LT          1
-#define _CMP_LE          2
-#define _CMP_UNORD       3
-#define _CMP_NEQ         4
-#define _CMP_NLT         5
-#define _CMP_NLE         6
-#define _CMP_ORD         7
-#undef _CMP_EQ_OQ
-#undef _CMP_GE_OQ
-#undef _CMP_GT_OQ
-#undef _CMP_LE_OQ
-#undef _CMP_LT_OQ
-#undef _CMP_NEQ_OQ
-#define _CMP_EQ_OQ _CMP_EQ
-#define _CMP_GE_OQ _CMP_NLT
-#define _CMP_GT_OQ _CMP_NLE
-#define _CMP_LE_OQ _CMP_LE
-#define _CMP_LT_OQ _CMP_LT
-#define _CMP_NEQ_OQ _CMP_NEQ
-#endif
-
 #if defined(__aarch64__)||defined(_M_ARM64)
-#if EMU_AVX
-#undef EMU_AVX2
-#define EMU_AVX2 1   // test avx2 emulation
-#include <stdint.h>
-#include <string.h>
-#include "sse2neon.h"
-#include "sse2neon2.h"
-#include "avxintrin-neon.h"
-#else
 #include <arm_neon.h>
-#endif
 #endif
 
 #if defined(__arm__)
@@ -133,10 +42,6 @@ typedef double float64x2_t __attribute__ ((vector_size (16)));
 #undef VOIDARG
 #define VOIDARG
 
-#if SLEEF
-#include "../sleef/include/sleef.h"
-#endif
-
 #if defined(_OPENMP)
 #include <omp.h>
 #else
@@ -152,24 +57,10 @@ static inline omp_int_t omp_get_max_threads() { return 1;}
 // If you are porting to a new compiler or architecture, see the bottom of this file
 // for instructions on defining the CTTZ macros
 
-#if SY_WINCE
-#include "..\cesrc\cecompat.h"
-#endif
-
-#if (SYS & SYS_PCWIN)
-#define HEAPCHECK  heapcheck()
-#else
 #define HEAPCHECK
-#endif
 
-#if (SYS & SYS_ATARIST)
-#define __NO_INLINE__           1
-#endif
-
-#if (SYS & SYS_UNIX - SYS_SGI)
 #include <memory.h>
 #include <sys/types.h>
-#endif
 
 // likely/unlikely support
 #if defined(__clang__) || defined(__GNUC__)
@@ -197,11 +88,8 @@ static inline omp_int_t omp_get_max_threads() { return 1;}
 #define const /*nothing*/   /* blame rx.h */
 #endif
 
-#if ! SY_WINCE
 #include <errno.h>
 #include <stdio.h>
-#endif
-
 #include <math.h>
 #include <string.h>  
 
@@ -214,9 +102,6 @@ static inline omp_int_t omp_get_max_threads() { return 1;}
 #endif
 #endif
 
-
-
-#if SY_64
 #define IMAX            9223372036854775807LL
 #define IMIN            (~9223372036854775807LL)   /* ANSI C LONG_MIN is  -LONG_MAX */
 #define FLIMAX          9223372036854775296.     // largest FL value that can be converted to I
@@ -226,72 +111,16 @@ static inline omp_int_t omp_get_max_threads() { return 1;}
 #define FMTI04          "%04lli"
 #define FMTI05          "%05lli"
 
-
 #define strtoI          strtoll
-
-#else
-#define IMAX            2147483647L
-#define IMIN            (~2147483647L)   /* ANSI C LONG_MIN is  -LONG_MAX */
-#define FLIMAX          ((D)IMAX+0.4)     // largest FL value that can be converted to I
-#define FLIMIN          ((D)IMIN)  // smallest FL value that can be converted to I
-#define FMTI            "%li"
-#define FMTI02          "%02li"
-#define FMTI04          "%04li"
-#define FMTI05          "%05li"
-#define strtoI          strtol
-#endif
 
 #define NEGATIVE0       0x8000000000000000LL   // IEEE -0 (double precision)
 
 #define C4MAX           0xffffffffUL
 #define C4MIN           0L
 
-#if (SYS & SYS_AMIGA)
-#define XINF            "\177\377\000\000\000\000\000\000"
-#define XNAN            "\177\361\000\000\000\000\000\000"
-#endif
-
-#if (SYS & SYS_ARCHIMEDES)
-#define XINF            "\000\000\360\177\000\000\000\000"
-#define XNAN            "\000\000\370\377\000\000\000\000"
-#endif
-
-#if (SYS & SYS_DEC5500) || SY_WINCE_SH
-#define XINF            "\000\000\000\000\000\000\360\177"
-#define XNAN            "\000\000\000\000\000\000\370\377"
-#endif
-
-#if (SYS & SYS_MACINTOSH)
-/* for old versions of ThinkC */
-/* #define XINF         "\177\377\000\000\000\000\000\000\000\000\000\000" */
-/* #define XNAN         "\377\377\100\000\100\000\000\000\000\000\000\000" */
-/* for ThinkC 7.0 or later */
-#define XINF            "\177\377\177\377\000\000\000\000\000\000\000\000"
-#define XNAN            "\377\377\377\377\100\000\000\000\000\000\000\000"
-#endif
-
-#if (SYS & SYS_SUN4+SYS_SUNSOL2)
-#define XINF            "\177\360\000\000\000\000\000\000"
-#define XNAN            "\177\377\377\377\377\377\377\377"
-#endif
-
-#if (SYS & SYS_VAX)
-#define XINF            "\377\177\377\377\377\377\377\377"
-#define XNAN            "\377\177\377\377\377\377\377\376" /* not right */
-#endif
-
-
-
-#if SY_WINCE_ARM
-#define XINF            "\000\000\000\000\000\000\360\177"
-#define XNAN            "\000\000\000\000\000\000\370\177"
-#endif
-
-#if C_LE
 #ifndef XINF
 #define XINF            "\000\000\000\000\000\000\360\177"
 #define XNAN            "\000\000\000\000\000\000\370\377"
-#endif
 #endif
 
 #ifndef XINF
@@ -315,14 +144,7 @@ static inline omp_int_t omp_get_max_threads() { return 1;}
 // but normally something like *z = *x + *y will not cause trouble because there is no reason to refetch an input after
 // the result has been written.  On 32-bit machines, registers are so short that sometimes the compilers refetch an input
 // after writing to *z, so we don't turn RESTRICT on for 32-bit
-#if defined(MMSC_VER)
-// RESTRICT is an attribute of a pointer, and indicates that no other pointer points to the same area
-#define RESTRICT __restrict
-// RESTRICTF is an attribute of a function, and indicates that the object returned by the function is not aliased with any other object
-#define RESTRICTF __declspec(restrict)
-#define PREFETCH(x) _mm_prefetch((x),_MM_HINT_T0)
-#define PREFETCH2(x) _mm_prefetch((x),_MM_HINT_T1)   // prefetch into L2 cache but not L1
-#endif
+
 #ifdef __GNUC__
 #define RESTRICT __restrict
 // No RESTRICTF on GCC
@@ -330,30 +152,9 @@ static inline omp_int_t omp_get_max_threads() { return 1;}
 #define PREFETCH2(x) __builtin_prefetch((x),0,2)   // prefetch into L2 cache but not L1
 #endif
 
-#ifdef __MINGW32__
-#ifndef _SW_INVALID
-#define _SW_INVALID    0x00000010 /* invalid */
-#endif
-#ifndef _EM_ZERODIVIDE
-#define _EM_ZERODIVIDE  0x00000008
-#endif
-#define EM_INVALID    _SW_INVALID
-#define EM_ZERODIVIDE _EM_ZERODIVIDE
-#if defined(__STRICT_ANSI__)
-extern int __cdecl _isnan (double);
-extern unsigned int __cdecl _clearfp (void);
-#endif
-#ifndef _MAX_PATH
-#define _MAX_PATH  (260)
-#endif
-#endif
-
-#if SY_64
-
 #ifdef __GNUC__
 #define RESTRICTI // __restrict  don't take chances
 #endif
-#endif  // SY_64
 
 #ifndef RESTRICT
 #define RESTRICT
@@ -375,7 +176,6 @@ extern unsigned int __cdecl _clearfp (void);
 
 // disable C_USEMULTINTRINSIC if un-available
 #if C_USEMULTINTRINSIC
-#if !defined(MMSC_VER)
 #if defined(__clang__)
 #if !__has_builtin(__builtin_smull_overflow)
 #undef C_USEMULTINTRINSIC
@@ -384,7 +184,6 @@ extern unsigned int __cdecl _clearfp (void);
 #elif __GNUC__ < 5
 #undef C_USEMULTINTRINSIC
 #define C_USEMULTINTRINSIC 0
-#endif
 #endif
 #endif
 
@@ -405,18 +204,15 @@ extern unsigned int __cdecl _clearfp (void);
 // There are two limits: maximum depth of J functions, and maximum depth of named functions.  The named-function stack is intelligent
 // and stacks only when there is a locale change or deletion; it almost never limits unless locatives are used to an extreme degree.
 // The depth of J function calls will probably limit stack use.
-// #define NFDEP           4000             // fn call depth - for debug builds, must be small (<0xa00) to avoid stack overflow, even smaller for non-AVX
-// #define NFCALL          (NFDEP/10)      // call depth for named calls, not important
 // increase OS stack limit instead of restricting NFDEP/NFCALL
-#define NFDEP           2000L  // 4000             // (obsolete) fn call depth - for debug builds, must be small (<0xa00) to avoid stack overflow, even smaller for non-AVX
-
+#define NFDEP           2000L  
 
 // NEW WAY
 // The named-call stack is used only when there is a locative, EXCEPT that after a call to 18!:4 it is used until the function calling 18!:4 returns.
 // Since startup calls 18!:4 without a name, we have to allow for the possibility of deep recursion in the name stack.  Normally only a little of the stack is used
 #define NFCALL          (NFDEP/2)      // call depth for named calls, not important
 // Now we are trying to watch the C stack directly
-#define CSTACKSIZE      (SY_64?12000000:1000000)  // size we allocate in the calling function
+#define CSTACKSIZE      (12000000)  // size we allocate in the calling function
 #define CSTACKRESERVE   100000  // amount we allow for slop before we sample the stackpointer, and after the last check
 #define USECSTACK       1   // 0 to go back to counting J recursions    
 
@@ -478,15 +274,10 @@ extern unsigned int __cdecl _clearfp (void);
 #define jround(x) floor(0.5+(x))  // for paranoid compatibility with earlier versions
 
 
-#define BB              8      /* # bits in a byte */
-#define LGBB 3    // lg(BB)
-#if SY_64
-#define BW              64     /* # bits in a word */
-#define LGSZI 3    // lg(#bytes in an I)
-#else
-#define BW              32
-#define LGSZI 2
-#endif
+#define BB    8            // # bits in a byte 
+#define LGBB  3            // lg(BB)
+#define BW    64           // # bits in a word 
+#define LGSZI 3            // lg(#bytes in an I)
 #define LGBW (LGSZI+LGBB)  // lg (# bits in a word)
 
 // nominal cache sizes for current processors
@@ -519,16 +310,10 @@ extern unsigned int __cdecl _clearfp (void);
 #define FINDNULLRET 0
 
 
-#if BW==64
 #define ALTBYTES 0x00ff00ff00ff00ffLL
 // t has totals per byte-lane, result combines them into single total.  t must be an lvalue
 #define ADDBYTESINI(t) (t=(t&ALTBYTES)+((t>>8)&ALTBYTES), t = (t>>32) + t, t = (t>>16) + t, t&=0xffff) // sig in 01ff01ff01ff01ff, then xxxxxxxx03ff03ff, then xxxxxxxxxxxx07ff, then 00000000000007ff
 #define VALIDBOOLEAN 0x0101010101010101LL   // valid bits in a Boolean
-#else
-#define ALTBYTES 0x00ff00ffLL
-#define ADDBYTESINI(t) (t=(t&ALTBYTES)+((t>>8)&ALTBYTES), t = (t>>16) + t, t&=0xffff) // sig in 01ff01ff, then xxxx03ff, then 000003ff
-#define VALIDBOOLEAN 0x01010101   // valid bits in a Boolean
-#endif
 
 // macros for bit testing
 #define SGNIF(v,bitno) ((I)(v)<<(BW-1-(bitno)))  // Sets sign bit if the numbered bit is set
@@ -536,16 +321,15 @@ extern unsigned int __cdecl _clearfp (void);
 
 #define A0              0   // a nonexistent A-block
 #define ABS(a)          (0<=(a)?(a):-(a))
-#define ASSERT(b,e)     {if(unlikely(!(b))){jsignal(e); R 0;}}
+#define ASSERT(b,e)     {if(unlikely(!(b))){jsignal(e); return 0;}}
 // version for debugging
-// #define ASSERT(b,e)     {if(unlikely(!(b))){fprintf(stderr,"error code: %i : file %s line %d\n",(int)(e),__FILE__,__LINE__); jsignal(e); R 0;}}
-#define ASSERTD(b,s)    {if(unlikely(!(b))){jsigd((s)); R 0;}}
+// #define ASSERT(b,e)     {if(unlikely(!(b))){fprintf(stderr,"error code: %i : file %s line %d\n",(int)(e),__FILE__,__LINE__); jsignal(e); return 0;}}
+#define ASSERTD(b,s)    {if(unlikely(!(b))){jsigd((s)); return 0;}}
 #define ASSERTMTV(w)    {ARGCHK1(w); ASSERT(1==AR(w),EVRANK); ASSERT(!AN(w),EVLENGTH);}
-#define ASSERTN(b,e,nm) {if(unlikely(!(b))){jt->curname=(nm); jsignal(e); R 0;}}  // set name for display (only if error)
-#define ASSERTSYS(b,s)  {if(unlikely(!(b))){fprintf(stderr,"system error: %s : file %s line %d\n",s,__FILE__,__LINE__); jsignal(EVSYSTEM); jtwri(jt,MTYOSYS,"",(I)strlen(s),s); R 0;}}
-#define ASSERTW(b,e)    {if(unlikely(!(b))){if((e)<=NEVM)jsignal(e); else jt->jerr=(e); R;}}
-#define ASSERTWR(c,e)   {if(unlikely(!(c))){R e;}}
-// verify that shapes *x and *y match for l axes using AVX for rank<5, memcmp otherwise
+#define ASSERTN(b,e,nm) {if(unlikely(!(b))){jt->curname=(nm); jsignal(e); return 0;}}  // set name for display (only if error)
+#define ASSERTSYS(b,s)  {if(unlikely(!(b))){fprintf(stderr,"system error: %s : file %s line %d\n",s,__FILE__,__LINE__); jsignal(EVSYSTEM); jtwri(jt,MTYOSYS,"",(I)strlen(s),s); return 0;}}
+#define ASSERTW(b,e)    {if(unlikely(!(b))){if((e)<=NEVM)jsignal(e); else jt->jerr=(e); return;}}
+#define ASSERTWR(c,e)   {if(unlikely(!(c))){return e;}}
 
 #define ASSERTAGREE(x,y,l) \
  {I *aaa=(x), *aab=(y); I aai=(l); \
@@ -634,21 +418,21 @@ extern unsigned int __cdecl _clearfp (void);
 #define FPREFIP         J jtinplace=jt; jt=(J)(intptr_t)((I)jt&~JTFLAGMSK)  // turn off all flag bits in jt, leave them in jtinplace
 #define F1PREFIP        FPREFIP
 #define F2PREFIP        FPREFIP
-#define F1RANK(m,f,self)    {ARGCHK1(w); if(unlikely(m<AR(w)))if(m==0)R rank1ex0(w,(A)self,f);else R rank1ex(  w,(A)self,(I)m,     f);}  // if there is more than one cell, run rank1ex on them.  m=monad rank, f=function to call for monad cell.  Fall through otherwise
-#define F2RANKcommon(l,r,f,self,extra)  {ARGCHK2(a,w); extra if(unlikely((I)((l-AR(a))|(r-AR(w)))<0))if((l|r)==0)R rank2ex0(a,w,(A)self,f);else{I lr=MIN((I)l,AR(a)); I rr=MIN((I)r,AR(w)); R rank2ex(a,w,(A)self,lr,rr,lr,rr,f);}}  // If there is more than one cell, run rank2ex on them.  l,r=dyad ranks, f=function to call for dyad cell
+#define F1RANK(m,f,self)    {ARGCHK1(w); if(unlikely(m<AR(w)))if(m==0)return rank1ex0(w,(A)self,f);else return rank1ex(  w,(A)self,(I)m,     f);}  // if there is more than one cell, run rank1ex on them.  m=monad rank, f=function to call for monad cell.  Fall through otherwise
+#define F2RANKcommon(l,r,f,self,extra)  {ARGCHK2(a,w); extra if(unlikely((I)((l-AR(a))|(r-AR(w)))<0))if((l|r)==0)return rank2ex0(a,w,(A)self,f);else{I lr=MIN((I)l,AR(a)); I rr=MIN((I)r,AR(w)); return rank2ex(a,w,(A)self,lr,rr,lr,rr,f);}}  // If there is more than one cell, run rank2ex on them.  l,r=dyad ranks, f=function to call for dyad cell
 #define F2RANK(l,r,f,self)  F2RANKcommon(l,r,f,self,)
 // same, but used when the function may pull an address from w.  In that case, we have to turn pristine off since there may be duplicates in the result
 #define F2RANKW(l,r,f,self) F2RANKcommon(l,r,f,self,PRISTCLR(w))
-#define F1RANKIP(m,f,self)    {RZ(   w); if(unlikely(m<AR(w)))R jtrank1ex(jtinplpace,  w,(A)self,(I)m,     f);}  // if there is more than one cell, run rank1ex on them.  m=monad rank, f=function to call for monad cell
-#define F2RANKIP(l,r,f,self)  {ARGCHK2(a,w); if(unlikely((I)((l-AR(a))|(r-AR(w)))<0)){I lr=MIN((I)l,AR(a)); I rr=MIN((I)r,AR(w)); R jtrank2ex(jtinplace,a,w,(A)self,REX2R(lr,rr,lr,rr),f);}}  // If there is more than one cell, run rank2ex on them.  l,r=dyad ranks, f=function to call for dyad cell
+#define F1RANKIP(m,f,self)    {RZ(   w); if(unlikely(m<AR(w)))return jtrank1ex(jtinplpace,  w,(A)self,(I)m,     f);}  // if there is more than one cell, run rank1ex on them.  m=monad rank, f=function to call for monad cell
+#define F2RANKIP(l,r,f,self)  {ARGCHK2(a,w); if(unlikely((I)((l-AR(a))|(r-AR(w)))<0)){I lr=MIN((I)l,AR(a)); I rr=MIN((I)r,AR(w)); return jtrank2ex(jtinplace,a,w,(A)self,REX2R(lr,rr,lr,rr),f);}}  // If there is more than one cell, run rank2ex on them.  l,r=dyad ranks, f=function to call for dyad cell
 // get # of things of size s, rank r to allocate so as to have an odd number of them at least n, after discarding w items of waste.  Try to fill up a full buffer 
 #define FULLHASHSIZE(n,s,r,w,z) {UI4 zzz;  CTLZI((((n)|1)+(w))*(s) + AKXR(r) - 1,zzz); z = ((((I)1<<(zzz+1)) - AKXR(r)) / (s) - 1) | (1&~(w)); }
 // Memory-allocation macros
 // Size-of-block calculations.  VSZ when size is constant or variable.  Byte counts are (total length including header)-1
 // Because the Boolean dyads read beyond the end of the byte area (up to 1 extra word), we add one SZI-1 for islast (which includes B01), rather than adding 1
-#define ALLOBYTESVSZ(atoms,rank,size,islast,isname)      ( ((((rank)|(!SY_64))*SZI  + ((islast)? (isname)?(NORMAH*SZI+sizeof(NM)+SZI-1-1):(NORMAH*SZI+SZI-1-1) : (NORMAH*SZI-1)) + (atoms)*(size)))  )  // # bytes to allocate allowing 1 I for string pad - include mem hdr - minus 1
+#define ALLOBYTESVSZ(atoms,rank,size,islast,isname)      ( (((rank)*SZI  + ((islast)? (isname)?(NORMAH*SZI+sizeof(NM)+SZI-1-1):(NORMAH*SZI+SZI-1-1) : (NORMAH*SZI-1)) + (atoms)*(size)))  )  // # bytes to allocate allowing 1 I for string pad - include mem hdr - minus 1
 // here when size is constant.  The number of bytes, rounded up with overhead added, must not exceed 2^(PMINL+4)
-#define ALLOBYTES(atoms,rank,size,islast,isname)      ((size&(SZI-1))?ALLOBYTESVSZ(atoms,rank,size,islast,isname):(SZI*(((rank)|(!SY_64))+NORMAH+((size)>>LGSZI)*(atoms)+!!(islast))-1))  // # bytes to allocate-1
+#define ALLOBYTES(atoms,rank,size,islast,isname)      ((size&(SZI-1))?ALLOBYTESVSZ(atoms,rank,size,islast,isname):(SZI*((rank)+NORMAH+((size)>>LGSZI)*(atoms)+!!(islast))-1))  // # bytes to allocate-1
 #define ALLOBLOCK(n) ((n)<2*PMIN?((n)<PMIN?PMINL-1:PMINL) : (n)<8*PMIN?((n)<4*PMIN?PMINL+1:PMINL+2) : (n)<32*PMIN?((n)<16*PMIN?PMINL+3:PMINL+4) : IMIN)   // lg2(#bytes to allocate)-1.  n is #bytes-1
 // value to put into name->bucketx for locale names: number if numeric, hash otherwise
 #define BUCKETXLOC(len,s) ((*(s)<='9')?strtoI10s((len),(s)):(I)nmhash((len),(s)))
@@ -678,37 +462,36 @@ extern unsigned int __cdecl _clearfp (void);
  if(likely(name!=0)){   \
  AK(name)=akx; AT(name)=(type); AN(name)=atoms;   \
  AR(name)=(RANKT)(rank);     \
- if(!((type)&DIRECT)){if(SY_64){if(rank==0)AS(name)[0]=0; memset((C*)(AS(name)+1),C0,(bytes-32)&-32);}else{memset((C*)name+akx,C0,bytes+1-akx);}}  \
+ if(!((type)&DIRECT)){if(rank==0)AS(name)[0]=0; memset((C*)(AS(name)+1),C0,(bytes-32)&-32);}  \
  shapecopier(name,type,atoms,rank,shaape)   \
     \
  }else{erraction;} \
 }
-#define GAT(name,type,atoms,rank,shaape)  GATS(name,type,atoms,rank,shaape,type##SIZE,GACOPYSHAPE,R 0)
-#define GATR(name,type,atoms,rank,shaape)  GATS(name,type,atoms,rank,shaape,type##SIZE,GACOPYSHAPER,R 0)
-#define GAT0(name,type,atoms,rank)  GATS(name,type,atoms,rank,0,type##SIZE,GACOPYSHAPE0,R 0)
+#define GAT(name,type,atoms,rank,shaape)  GATS(name,type,atoms,rank,shaape,type##SIZE,GACOPYSHAPE,return 0)
+#define GATR(name,type,atoms,rank,shaape)  GATS(name,type,atoms,rank,shaape,type##SIZE,GACOPYSHAPER,return 0)
+#define GAT0(name,type,atoms,rank)  GATS(name,type,atoms,rank,0,type##SIZE,GACOPYSHAPE0,return 0)
 #define GAT0E(name,type,atoms,rank,erraction)  GATS(name,type,atoms,rank,0,type##SIZE,GACOPYSHAPE0,erraction)
 
 // Used when type is known and something else is variable.  ##SIZE must be applied before type is substituted, so we have GATVS to use inside other macros.  Normally use GATV
 // Note: assigns name before assigning the components of the array, so the components had better not depend on name, i. e. no GATV(z,BOX,AN(z),AR(z),AS(z))
 #define GATVS(name,type,atoms,rank,shaape,size,shapecopier,erraction) \
 { I bytes = ALLOBYTES(atoms,rank,size,(type)&LAST0,(type)&NAME); \
- if(SY_64){ASSERT(!((((unsigned long long)(atoms))&~TOOMANYATOMS)+((rank)&~RMAX)),EVLIMIT)} \
- else{ASSERT(((I)bytes>(I)(atoms)&&(I)(atoms)>=(I)0)&&!((rank)&~RMAX),EVLIMIT)} \
+ ASSERT(!((((unsigned long long)(atoms))&~TOOMANYATOMS)+((rank)&~RMAX)),EVLIMIT) \
  name = jtgafv(jt, bytes);   \
  I akx=AKXR(rank);   \
  if(likely(name!=0)){   \
   AK(name)=akx; AT(name)=(type); AN(name)=atoms; AR(name)=(RANKT)(rank);     \
-  if(!((type)&DIRECT)){if(SY_64){AS(name)[0]=0; memset((C*)(AS(name)+1),C0,(bytes-32)&-32);}else{memset((C*)name+akx,C0,bytes+1-akx);}}  \
+  if(!((type)&DIRECT)){AS(name)[0]=0; memset((C*)(AS(name)+1),C0,(bytes-32)&-32);}  \
   shapecopier(name,type,atoms,rank,shaape)   \
      \
  }else{erraction;} \
 }
 
 // see warnings above under GATVS
-#define GATV(name,type,atoms,rank,shaape) GATVS(name,type,atoms,rank,shaape,type##SIZE,GACOPYSHAPE,R 0)
-#define GATVR(name,type,atoms,rank,shaape) GATVS(name,type,atoms,rank,shaape,type##SIZE,GACOPYSHAPER,R 0)
-#define GATV1(name,type,atoms,rank) GATVS(name,type,atoms,rank,0,type##SIZE,GACOPY1,R 0)  // this version copies 1 to the entire shape
-#define GATV0(name,type,atoms,rank) GATVS(name,type,atoms,rank,0,type##SIZE,GACOPYSHAPE0,R 0)  // shape not written unless rank==1
+#define GATV(name,type,atoms,rank,shaape) GATVS(name,type,atoms,rank,shaape,type##SIZE,GACOPYSHAPE,return 0)
+#define GATVR(name,type,atoms,rank,shaape) GATVS(name,type,atoms,rank,shaape,type##SIZE,GACOPYSHAPER,return 0)
+#define GATV1(name,type,atoms,rank) GATVS(name,type,atoms,rank,0,type##SIZE,GACOPY1,return 0)  // this version copies 1 to the entire shape
+#define GATV0(name,type,atoms,rank) GATVS(name,type,atoms,rank,0,type##SIZE,GACOPYSHAPE0,return 0)  // shape not written unless rank==1
 #define GATV0E(name,type,atoms,rank,erraction) GATVS(name,type,atoms,rank,0,type##SIZE,GACOPYSHAPE0,erraction)  // shape not written unless rank==1
 // use this version when you are allocating a sparse matrix.  It handles the AS[0] field correctly.  ALL sparse allocations must come through here so that AC is set sorrectly
 #define GASPARSE(n,t,a,r,s) {if((r)==1){GA(n,(t),a,1,0); if(s)AS(n)[0]=(s)[0];}else{GA(n,(t),a,r,s)} AC(n)=ACUC1;}
@@ -773,8 +556,8 @@ extern unsigned int __cdecl _clearfp (void);
 #define JMCSETMASK(mskname,l,bytelen)
 
 #define IX(n)           apv((n),0L,1L)
-#define JATTN           {if(unlikely(*jt->adbreakr!=0)){jsignal(EVATTN); R 0;}}
-#define JBREAK0         {if(unlikely(2<=*jt->adbreakr)){jsignal(EVBREAK); R 0;}}
+#define JATTN           {if(unlikely(*jt->adbreakr!=0)){jsignal(EVATTN); return 0;}}
+#define JBREAK0         {if(unlikely(2<=*jt->adbreakr)){jsignal(EVBREAK); return 0;}}
 #define JTIPA           ((J)((I)jt|JTINPLACEA))
 #define JTIPAW          ((J)((I)jt|JTINPLACEA+JTINPLACEW))
 #define JTIPW           ((J)((I)jt|JTINPLACEW))
@@ -807,165 +590,24 @@ extern unsigned int __cdecl _clearfp (void);
 #define MCISHd(dest,src,n) {MCISH(dest,src,n) dest+=(n);}  // ... this version when d increments through the loop
 #define MCISHs(dest,src,n) {MCISH(dest,src,n) src+=(n);}
 #define MCISHds(dest,src,n) {MCISH(dest,src,n) dest+=(n); src+=(n);}
-// not used #define MCISU(dest,src,n) {I * RESTRICT _d=(I*)(dest); I * RESTRICT _s=(I*)(src); I _n=-(n); do{*_d++=*_s++;}while((_n-=(_n>>(BW-1)))<0);}  // always runs once
-// not used #define MCISUds(dest,src,n) {I _n=-(n); do{*dest++=*src++;}while((_n-=(_n>>(BW-1)))<0);}  // always runs once
 
 #define MIN(a,b)        ((a)<(b)?(a):(b))
-#define MLEN            (SY_64?63:31)
+#define MLEN            (63)
 // change the type of the inplaceable block z to t.  We know or assume that the type is being changed.  If the block is UNINCORPABLE (& therefore virtual), replace it with a clone first.  z is an lvalue
 #define MODBLOCKTYPE(z,t)  {if(unlikely((AFLAG(z)&AFUNINCORPABLE)!=0)){RZ(z=clonevirtual(z));} AT(z)=(t);}
 #define MODIFIABLE(x)   (x)   // indicates that we modify the result, and it had better not be read-only
 // define multiply-add
 #define NAN0            (_clearfp())
-#if defined(MMSC_VER) && _MSC_VER==1800 && !SY_64 // bug in some versions of VS 2013
-#define NAN1            {if(_SW_INVALID&_statusfp()){_clearfp();jsignal(EVNAN); R 0;}}
-#define NAN1V           {if(_SW_INVALID&_statusfp()){_clearfp();jsignal(EVNAN); R  ;}}
-#define NANTEST         (_SW_INVALID&_statusfp())
-#else
-#define NAN1            {if(unlikely(_SW_INVALID&_clearfp())){jsignal(EVNAN); R 0;}}
-#define NAN1V           {if(unlikely(_SW_INVALID&_clearfp())){jsignal(EVNAN); R  ;}}
+#define NAN1            {if(unlikely(_SW_INVALID&_clearfp())){jsignal(EVNAN); return 0;}}
+#define NAN1V           {if(unlikely(_SW_INVALID&_clearfp())){jsignal(EVNAN); return  ;}}
 #define NANTEST         (_SW_INVALID&_clearfp())
-// for debug only
-// #define NAN1            {if(_SW_INVALID&_clearfp()){fprintf(stderr,"nan error: file %s line %d\n",__FILE__,__LINE__);jsignal(EVNAN); R 0;}}
-// #define NAN1V           {if(_SW_INVALID&_clearfp()){fprintf(stderr,"nan error: file %s line %d\n",__FILE__,__LINE__);jsignal(EVNAN); R  ;}}
-// #define NAN1T           {if(_SW_INVALID&_clearfp()){fprintf(stderr,"nan error: file %s line %d\n",__FILE__,__LINE__);jsignal(EVNAN);     }}
-#endif
-
-#if defined(__GNUC__)   // vector extension
-
-#if !(defined(__aarch64__)||defined(__arm__))
-typedef int64_t int64x2_t __attribute__ ((vector_size (16),aligned(16)));
-typedef double float64x2_t __attribute__ ((vector_size (16),aligned(16)));
-#endif
-#define dump_int64x2(a,x) {int64x2_t _b=x;fprintf(stderr,"%s %lli %lli \n", a, ((long long*)(&_b))[0], ((long long*)(&_b))[1]);}
-#define dump_float64x2(a,x) {float64x2_t _b=x;fprintf(stderr,"%s %f %f \n", a, ((double*)(&_b))[0], ((double*)(&_b))[1]);}
-
-static inline __attribute__((inline)) int vec_any_si128(int64x2_t mask)
-{
-   return (mask[0] & 0x8000000000000000)||(mask[1] & 0x8000000000000000);
-}
-
-static inline __attribute__((inline)) float64x2_t vec_maskload_pd(double const* mem_addr, int64x2_t mask)
-{
-   float64x2_t ret={0.0,0.0};
-   int i;
-
-    for (i=0; i<2; i++){
-      if (mask[i] & 0x8000000000000000){
-        ret[i] = *(mem_addr + i);
-      }
-    }
-    return ret;
-}
-
-static inline __attribute__((inline)) void vec_maskstore_pd(double * mem_addr, int64x2_t  mask, float64x2_t a)
-{
-   int i;
-    for (i=0; i<2; i++){
-      if (mask[i] & 0x8000000000000000)
-        *(mem_addr + i) = a[i];
-    }
-}
-
-static inline __attribute__((inline)) int64x2_t vec_loadu_si128(int64x2_t const * a)
-{
-   int64x2_t ret;
-   memcpy(&ret, (int64_t *)a, 2*sizeof(int64_t));  // must cast pointer otherwise segment 
-   return ret;
-}
-
-static inline __attribute__((inline)) float64x2_t vec_loadu_pd(double const * a)
-{
-   float64x2_t ret;
-   memcpy(&ret, a, 2*sizeof(double));
-   return ret;
-}
-
-static inline __attribute__((inline)) void vec_storeu_pd(double * mem_addr, float64x2_t a)
-{
-   memcpy(mem_addr, &a , 2*sizeof(double));
-}
-
-static inline __attribute__((inline)) float64x2_t vec_and_pd(float64x2_t a, float64x2_t b)
-{
-   int64x2_t a1,b1;
-   float64x2_t ret;
-   memcpy(&a1, &a, 2*sizeof(double));
-   memcpy(&b1, &b, 2*sizeof(double));
-   a1 &= b1;
-   memcpy(&ret, &a1, 2*sizeof(double));
-   return ret;
-}
-
-#define NPAR ((I)(sizeof(float64x2_t)/sizeof(D))) // number of Ds processed in parallel
-#define LGNPAR 1  // 128-bit no good automatic way to do this
-// loop for atomic parallel ops.  // fixed: n is #atoms (never 0), x->input, z->result, u=input atom4 and result
-//                                                                                  __SSE2__    atom2
-#define AVXATOMLOOP(preloop,loopbody,postloop) \
- int64x2_t endmask;  float64x2_t u; \
- endmask = vec_loadu_si128((int64x2_t*)(validitymask+((-n)&(NPAR-1))));  /* mask for 0 1 2 3 4 5 is xx 01 11 01 11 01 */ \
- preloop \
- I i=(n-1)>>LGNPAR;  /* # loops for 0 1 2 3 4 5 is x 0 0 0 0 1 */ \
-            /* __SSE2__ # loops for 0 1 2 3 4 5 is x 1 0 1 0 1 */ \
- while(--i>=0){ u=vec_loadu_pd(x); \
-  loopbody \
-  vec_storeu_pd(z, u); x+=NPAR; z+=NPAR; \
- } \
- u=vec_maskload_pd(x,endmask); \
- loopbody \
- vec_maskstore_pd(z, endmask, u); \
- x+=((n-1)&(NPAR-1))+1; z+=((n-1)&(NPAR-1))+1; \
- postloop
-
-// version that pipelines one read ahead.  Input to loopbody2 is zu; result of loopbody1 is in zt
-#define AVXATOMLOOPPIPE(preloop,loopbody1,loopbody2,postloop) \
- int64x2_t endmask;  float64x2_t u, zt, zu; \
- endmask = vec_loadu_si128((int64x2_t*)(validitymask+((-n)&(NPAR-1))));  /* mask for 0 1 2 3 4 5 is xx 01 11 01 11 01 */ \
- preloop \
- I i=(n-1)>>LGNPAR;  /* # loops for 0 1 2 3 4 5 is x 0 0 0 0 1 */ \
-            /* __SSE2__ # loops for 0 1 2 3 4 5 is x 1 0 1 0 1 */ \
- if(i>0){u=*(float64x2_t *)(x); x+=NPAR; loopbody1 \
- while(--i>=0){ u=vec_loadu_pd(x); x+=NPAR; \
-  zu=zt; loopbody1 loopbody2 \
-  vec_storeu_pd(z, u); z+=NPAR; \
- } zu=zt; loopbody2 vec_storeu_pd(z, u); z+=NPAR;} \
- u=vec_maskload_pd(x,endmask); \
- loopbody1 zu=zt; loopbody2 \
- vec_maskstore_pd(z, endmask, u); \
- x+=((n-1)&(NPAR-1))+1; z+=((n-1)&(NPAR-1))+1; \
- postloop
-
-// Dyadic version.  v is right argument, u is still result
-#define AVXATOMLOOP2(preloop,loopbody,postloop) \
- int64x2_t endmask;  float64x2_t u,v; \
- endmask = vec_loadu_si128((int64x2_t*)(validitymask+((-n)&(NPAR-1))));  /* mask for 0 1 2 3 4 5 is xx 01 11 01 11 01 */ \
- preloop \
- I i=(n-1)>>LGNPAR;  /* # loops for 0 1 2 3 4 5 is x 0 0 0 0 1 */ \
-            /* __SSE2__ # loops for 0 1 2 3 4 5 is x 1 0 1 0 1 */ \
- while(--i>=0){ u=vec_loadu_pd(x); v=vec_loadu_pd(y); \
-  loopbody \
-  vec_storeu_pd(z, u); x+=NPAR; y+=NPAR; z+=NPAR; \
- } \
- u=_mm_maskload_pd(x,endmask); v=_mm_maskload_pd(y,endmask); \
- loopbody \
- _mm_maskstore_pd(z, endmask, u); \
- postloop
-
-#endif
 
 #define NUMMAX          9    // largest number represented in num[]
 #define NUMMIN          (~NUMMAX)    // smallest number represented in num[]
 // Given SZI B01s read into p, pack the bits into the MSBs of p and clear the lower bits of p
-#if C_LE  // if anybody makes a bigendian CPU we'll have to recode
-#if BW==64
 // this is what it should be #define PACKBITS(p) {p|=p>>7LL;p|=p>>14LL;p|=p>>28LL;p<<=56LL;}
 #define PACKBITS(p) {p|=p>>7LL;p|=p>>14LL;p|=p<<28LL;p&=0xff0000000; p<<=28LL;}  // this generates one extra instruction, rather than the 3 for the correct version
 #define PACKBITSINTO(p,out) {p|=p>>7LL;p|=p>>14LL;out=((p|(p>>28LL))<<56)|(out>>SZI);}  // pack and shift into out
-#else
-#define PACKBITS(p) {p|=p>>7LL;p|=p>>14LL;p<<=28LL;}
-#define PACKBITSINTO(p,out) {p|=p>>7LL;p|=p>>14LL;out=(p<<28)|(out>>SZI);}  // pack and shift into out
-#endif
-#endif
 #define PRISTCOMSET(w,flg) awback=(w); if(unlikely((flg&AFVIRTUAL)!=0)){awback=ABACK(awback); flg=AFLAG(awback);} AFLAG(awback)=flg&~AFPRISTINE;
 #define PRISTCOMSETF(w,flg) if(unlikely((flg&AFVIRTUAL)!=0)){w=ABACK(w); flg=AFLAG(w);} AFLAG(w)=flg&~AFPRISTINE;   // used only at end, when w can be destroyed
 #define PRISTCOMMON(w,exe) awflg=AFLAG(w); exe PRISTCOMSET(w,awflg)
@@ -1002,7 +644,6 @@ if(likely(z<3)){_zzt+=z; z=(I)&oneone; _zzt=_i&3?_zzt:(I*)z; z=_i&2?(I)_zzt:z; z
 // PRODX takes the product of init and v[0..n-1], generating error if overflow, but waiting till the end so no error if there is a 0 in the product
 // overflow sets z to the error value of 0; if we see a multiplicand of 0 we stop right away so we can skip the error
 // This is written to be branchless for rank < 3
-#if SY_64
 // I have been unable to make clang produce a simple loop that doesn't end with a backward branch.  So I am going to handle ranks 0-2 here and call a subroutine for the rest
 #define PRODX(z,n,v,init) \
  {I nn=(n); \
@@ -1011,9 +652,6 @@ if(likely(z<3)){_zzt+=z; z=(I)&oneone; _zzt=_i&3?_zzt:(I*)z; z=_i&2?(I)_zzt:z; z
    z=((I*)z)[0]; if(likely(z!=0)){DPMULDZ(z,_zzt[1],z); if(likely(_zzt[1]!=0)){DPMULDZ(z,temp,z);if(likely(temp!=0)){ASSERT(z!=0,EVLIMIT)}}}  /* no error if any nonzero */ \
   }else{DPMULDE(init,prod(nn,v),z) RE(0)} /* error if error inside prod */ \
  }
-#else
-#define PRODX(z,n,v,init) RE(z=mult(init,prod(n,v)))
-#endif
 // CPROD is to be used to create a test testing #atoms.  Because empty arrays can have cells that have too many atoms, we can't use PROD if
 // we don't know that the array isn't empty or will be checked later
 #define CPROD(t,z,x,a) PRODX(z,x,a,1)
@@ -1033,11 +671,11 @@ if(likely(z<3)){_zzt+=z; z=(I)&oneone; _zzt=_i&3?_zzt:(I*)z; z=_i&2?(I)_zzt:z; z
 #define PROLOGNOTREQ(x)   // if nothing is allocated, we don't really need PROLOG
 #define EPILOGNORET(z) (gc(z,_ttop))   // protect z and return its address
 #define EPILOG(z)       RETF(EPILOGNORET(z))   // z is the result block
-#define EPILOGNOVIRT(z)       R rifvsdebug((gc(z,_ttop)))   // use this when the repercussions of allowing virtual result are too severe
+#define EPILOGNOVIRT(z)       return rifvsdebug((gc(z,_ttop)))   // use this when the repercussions of allowing virtual result are too severe
 #define EPILOGZOMB(z)       if(unlikely(!gc3(&(z),0L,0L,_ttop)))R0; RETF(z);   // z is the result block.  Use this if z may contain inplaceable contents that would free prematurely
 // Routines that do little except call a function that does PROLOG/EPILOG have EPILOGNULL as a placeholder
-#define EPILOGNULL(z)   R z
-#define EPILOGNOTREQ(z)   R z  // used if originak JE had needless EPILOG
+#define EPILOGNULL(z)   return z
+#define EPILOGNOTREQ(z)   return z  // used if originak JE had needless EPILOG
 // Routines that do not return A
 #define EPILOG0         tpop(_ttop)
 // Routines that modify the comparison tolerance must stack it
@@ -1050,21 +688,20 @@ if(likely(z<3)){_zzt+=z; z=(I)&oneone; _zzt=_i&3?_zzt:(I*)z; z=_i&2?(I)_zzt:z; z
 #define CLEARZOMBIE     {jt->assignsym=0;}  // Used when we know there shouldn't be an assignsym, just in case
 #define PUSHZOMB L*savassignsym = jt->assignsym; if(savassignsym){if(unlikely(((jt->asgzomblevel-1)|((AN(jt->locsyms)-2)))<0)){CLEARZOMBIE}}  // test is (jt->asgzomblevel==0||AN(jt->locsyms)<2)
 #define POPZOMB {jt->assignsym=savassignsym;}
-#define R               return
 #if FINDNULLRET   // When we return 0, we should always have an error code set.  trap if not
-#define R0 {if(jt->jerr)R A0;else SEGFAULT;}
+#define R0 {if(jt->jerr)return A0;else SEGFAULT;}
 #else
-#define R0 R 0;
+#define R0 return 0;
 #endif
 #define REPSGN(x) ((x)>>(BW-1))  // replicate sign bit of x to entire word (assuming x is signed type - if unsigned, just move sign to bit 0)
 #define SGNTO0(x) ((UI)(x)>>(BW-1))  // move sign bit to bit 0, clear other bits
-// In the original JE many verbs returned a clone of the input, i. e. R ca(w).  We have changed these to avoid the clone, but we preserve the memory in case we need to go back
-#define RCA(w)          R w
-#define RE(exp)         {if(unlikely(((exp),jt->jerr!=0)))R 0;}
+// In the original JE many verbs returned a clone of the input, i. e. return ca(w).  We have changed these to avoid the clone, but we preserve the memory in case we need to go back
+#define RCA(w)          return w
+#define RE(exp)         {if(unlikely(((exp),jt->jerr!=0)))return 0;}
 #define RESETERR        {jt->etxn=jt->jerr=0;}
 #define RESETERRANDMSG  {jt->etxn1=jt->etxn=jt->jerr=0;}
 #define RESETRANK       (jt->ranks=(RANK2T)~0)
-#define RNE(exp)        {R jt->jerr?0:(exp);}
+#define RNE(exp)        {return jt->jerr?0:(exp);}
 #define RZ(exp)         {if(unlikely(!(exp)))R0}
 #if MEMAUDIT&0xc
 #define DEADARG(x)      (x?(AFLAG(x)&CONW?SEGFAULT:0):0); if(MEMAUDIT&0x10)auditmemchains(); if(MEMAUDIT&0x2)audittstack(jt); 
@@ -1082,38 +719,28 @@ if(likely(z<3)){_zzt+=z; z=(I)&oneone; _zzt=_i&3?_zzt:(I*)z; z=_i&2?(I)_zzt:z; z
 
 // RETF is the normal function return.  For debugging we hook into it
 #if AUDITEXECRESULTS && (FORCEVIRTUALINPUTS==2)
-#define RETF(exp)       A ZZZz = (exp); auditblock(ZZZz,1,1); ZZZz = virtifnonip(jt,0,ZZZz); R ZZZz
+#define RETF(exp)       A ZZZz = (exp); auditblock(ZZZz,1,1); ZZZz = virtifnonip(jt,0,ZZZz); return ZZZz
 #else
 #if MEMAUDIT&0xc
-#define RETF(exp)       A ZZZz = (exp); DEADARG(ZZZz); R ZZZz
+#define RETF(exp)       A ZZZz = (exp); DEADARG(ZZZz); return ZZZz
 #else
-#define RETF(exp)       R exp
+#define RETF(exp)       return exp
 #endif
 // Input is a byte.  It is replicated to all lanes of a UI
 #endif
-#if BW==64
 #define REPLBYTETOW(in,out) (out=(UC)(in),out|=out<<8,out|=out<<16,out|=out<<32)
-#else
-#define REPLBYTETOW(in,out) (out=(UC)(in),out|=out<<8,out|=out<<16)
-#endif
-#if C_LE
 // Output is pointer, Input is I/UI, count is # bytes to NOT store to output pointer (0-7).
 #define STOREBYTES(out,in,n) {*(UI*)(out) = (*(UI*)(out)&~((UI)~(I)0 >> ((n)<<3))) | ((in)&((UI)~(I)0 >> ((n)<<3)));}
-#endif
 // Input is the name of word of bytes.  Result is modified name, 1 bit per input byte, spaced like B01s, with the bit 0 iff the corresponding input byte was all 0.  Non-boolean bits of result are garbage.
 #define ZBYTESTOZBITS(b) (b=b|((b|(~b+VALIDBOOLEAN))>>7))  // for each byte: zero if b0 off, b7 off, and b7 turns on when you subtract 1 or 2
-// to verify gah conversion #define RETF(exp)       { A retfff=(exp);  if ((retfff) && ((AT(retfff)&SPARSE && AN(retfff)!=1) || (AT(retfff)&DENSE && AN(retfff)!=prod(AR(retfff),AS(retfff)))))SEGFAULT;; R retfff; } // scaf
+// to verify gah conversion #define RETF(exp)       { A retfff=(exp);  if ((retfff) && ((AT(retfff)&SPARSE && AN(retfff)!=1) || (AT(retfff)&DENSE && AN(retfff)!=prod(AR(retfff),AS(retfff)))))SEGFAULT;; return retfff; } // scaf
 #define SBSV(x)         (jt->sbsv+(I)(x))
 #define SBUV(x)         (jt->sbuv+(I)(x))
 #define SEGFAULT        (*(volatile I*)0 = 0)
 #define SGN(a)          ((I )(0<(a))-(I )(0>(a)))
 #define SMAX            65535
 #define SMIN            (-65536)
-#if SY_64
 #define SYMHASH(h,n)    (((UI)(h)*(UI)(n)>>32)+SYMLINFOSIZE)   // h is hash value for symbol; n is number of symbol chains (not including LINFO entries)
-#else
-#define SYMHASH(h,n)    ((UI)(((D)(h)*(D)(n)*(1.0/4294967296.0))+SYMLINFOSIZE))   // h is hash value for symbol; n is number of symbol chains (not including LINFO entries)
-#endif
 // symbol tables.   jt->locsyms is locals and jt->global is globals.  AN(table) gives #hashchains+1; if it's 1 we have an empty table, used to indicate that there are no locals
 // At all times we keep the k field of locsyms as a copy of jt->global so that if we need it for u./v. we know what the symbol tables were.  We could remove jt->global but that would cost
 // some load instructions sometimes.  AM(local table) points to the previous local table in the stack, looping to self at end
@@ -1142,12 +769,7 @@ if(likely(z<3)){_zzt+=z; z=(I)&oneone; _zzt=_i&3?_zzt:(I*)z; z=_i&2?(I)_zzt:z; z
 #define VAL2            '\002'
 #define WITHDEBUGOFF(stmt) {UC d=jt->uflags.us.cx.cx_c.db; jt->uflags.us.cx.cx_c.db=0; stmt jt->uflags.us.cx.cx_c.db=d;}  // execute stmt with debug turned off
 
-#if C_LE
-#if BW==64
 #define IHALF0  0x00000000ffffffffLL
-#else
-#define IHALF0  0x0000ffff
-#endif
 #define B0000   0x00000000
 #define B0001   0x01000000
 #define B0010   0x00010000
@@ -1168,38 +790,8 @@ if(likely(z<3)){_zzt+=z; z=(I)&oneone; _zzt=_i&3?_zzt:(I*)z; z=_i&2?(I)_zzt:z; z
 #define BS01    0x0100
 #define BS10    0x0001
 #define BS11    0x0101
-#else
-#if BW==64
-#define IHALF0  0xffffffff00000000LL
-#else
-#define IHALF0  0xffff0000
-#endif
-#define B0000   0x00000000
-#define B0001   0x00000001
-#define B0010   0x00000100
-#define B0011   0x00000101
-#define B0100   0x00010000
-#define B0101   0x00010001
-#define B0110   0x00010100
-#define B0111   0x00010101
-#define B1000   0x01000000
-#define B1001   0x01000001
-#define B1010   0x01000100
-#define B1011   0x01000101
-#define B1100   0x01010000
-#define B1101   0x01010001
-#define B1110   0x01010100
-#define B1111   0x01010101
-#define BS00    0x0000
-#define BS01    0x0001
-#define BS10    0x0100
-#define BS11    0x0101
-#endif
-
-
 
 #define CACHELINESIZE 64  // size of processor cache line, in case we align to it
-
 
 // flags in call to cachedmmult and blockedmmult
 #define FLGCMPX 0
@@ -1226,11 +818,11 @@ if(likely(z<3)){_zzt+=z; z=(I)&oneone; _zzt=_i&3?_zzt:(I*)z; z=_i&2?(I)_zzt:z; z
 #include "jlib.h"
 #include "je.h" 
 #include "jerr.h" 
-#include "va.h" 
+#include "verbs/va.h"
 #include "vq.h" 
 #include "vx.h" 
 #include "vz.h"
-#include "a.h"
+#include "adverbs/a.h"
 #include "s.h"
 
 
@@ -1252,32 +844,15 @@ if(likely(z<3)){_zzt+=z; z=(I)&oneone; _zzt=_i&3?_zzt:(I*)z; z=_i&2?(I)_zzt:z; z
 
 
 
-#ifdef MMSC_VER
-#define NOINLINE __declspec(noinline)
-#else
 #define NOINLINE __attribute__((noinline))
 #ifndef __forceinline
 #define __forceinline inline __attribute__((inline))
 #endif
-#endif
-#ifdef __MINGW32__
-// original definition
-// #define __forceinline extern __inline__ __attribute__((inline,__gnu_inline__))
-#ifdef __forceinline
-#undef __forceinline
-#endif
-#define __forceinline __inline__ __attribute__((inline,__gnu_inline__))
-#endif
 
 #ifdef __GNUC__
-#define CTTZ(w) __builtin_ctzl((UINT)(w))
-#if SY_64
+#define CTTZ(w)  __builtin_ctzl((UINT)(w))
 #define CTTZI(w) __builtin_ctzll((UI)(w))
 #define CTLZI(w,out) (out=(63-__builtin_clzll((UI)(w))))
-#else
-#define CTTZI(w) __builtin_ctzl((UINT)(w))
-#define CTLZI(w,out) (out=(31-__builtin_clzl((UI)(w))))
-#endif
 #define CTTZZ(w) ((w)==0 ? 32 : CTTZ(w))
 #endif
 
@@ -1328,10 +903,6 @@ extern I CTLZI_(UI,UI4*);
 #define JPF(s,v) {char b[1000]; sprintf(b, s, v); jsto(gjt,MTYOFM,b);}
 extern J gjt; // global for JPF (procs without jt)
 
-#if SY_WINCE_MIPS
-/* strchr fails for CE MIPS - neg chars - spellit fails in ws.c for f=.+.  */
-#define strchr(a,b)     (C*)strchr((unsigned char*)(a), (unsigned char)(b))
-#endif
 #if (defined(__arm__)||defined(__aarch64__)||defined(_M_ARM64)) && !defined(__MACH__)
 // option -fsigned-char in android and raspberry
 #ifdef strchr
@@ -1373,7 +944,6 @@ static inline UINT _clearfp(void){
 
 // Define integer multiply, *z=x*y but do something else if integer overflow.
 // Depending on the compiler, the overflowed result may or may not have been stored
-#if SY_64
 
 #if C_USEMULTINTRINSIC
 
@@ -1393,30 +963,9 @@ static inline UINT _clearfp(void){
 #define DPMULDE(x,y,z)  DPMULD(x,y,z,ASSERT(0,EVLIMIT))
 #endif
 
-#else  // 32-bit
-
-#if C_USEMULTINTRINSIC
-
-#define DPMULDECLS
-#define DPMUL(x,y,z,s) if(__builtin_smull_overflow(x,y,z))s
-#define DPMULDDECLS
-#define DPMULD(x,y,z,s) if(__builtin_smull_overflow(x,y,&z))s
-#else // C_USEMULTINTRINSIC 0 - use standard-C version (32-bit)
-#define DPMULDECLS D _p;
-#define DPMUL(x,y,z,s) _p = (D)x*(D)y; *z=(I)_p; if(_p>IMAX||_p<IMIN)s
-#define DPMULDDECLS D _p;
-#define DPMULD(x,y,z,s) _p = (D)x*(D)y; z=(I)_p; if(_p>IMAX||_p<IMIN)s
-#endif
-#define DPMULDZ(x,y,z) DPMULD(x,y,z,z=0;)
-#define DPMULDE(x,y,z) RE(z=mult(x,y))
-
-#endif
 // end of multiply builtins
 
 // define single+double-precision integer add
-#if SY_64
-
-#endif
 
 #ifndef SPDPADD   // default version for systems without addcarry
 #define SPDPADD(addend, sumlo, sumhi) sumlo += addend; sumhi += (addend > sumlo);
@@ -1427,7 +976,7 @@ static inline UINT _clearfp(void){
 static __forceinline void* aligned_malloc(size_t size, size_t align) {
  void *result;
  align = (align>=sizeof(void*))?align:sizeof(void*);
-#if ( !defined(ANDROID) || defined(__LP64__) )
+#if defined(__LP64__)
  if(posix_memalign(&result, align, size)) result = 0;
 #else
  void *mem = malloc(size+(align-1)+sizeof(void*));
@@ -1440,7 +989,7 @@ static __forceinline void* aligned_malloc(size_t size, size_t align) {
 }
 
 static __forceinline void aligned_free(void *ptr) {
-#if ( !defined(ANDROID) || defined(__LP64__) )
+#if defined(__LP64__)
  free(ptr);
 #else
  free(((void**)ptr)[-1]);

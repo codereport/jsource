@@ -14,17 +14,17 @@ static void** GRADEFNNAME(CMP comp, I compn, void *(in[]), I n, void *(wk[])){I 
   case 2: 
    if(VS2(0,1))XC2(0,1); 
   case 0: case 1:
-   R in;
+   return in;
   case 3:
    if(VS2(0,1))XC2(0,1);
    if(VS2(1,2))if(VS2(0,2))P32(2,0,1) else XC2(1,2);
-   R in;
+   return in;
   case 4:
    if(VS2(0,1))XC2(0,1);
    if(VS2(2,3))XC2(2,3);
    if(VS2(1,3)){XC2(0,2); XC2(1,3);}
    if(VS2(1,2))if(VS2(0,2))P32(2,0,1) else XC2(1,2);
-   R in;
+   return in;
   case 5: 
    if(VS2(0,1))XC2(0,1);
    if(VS2(2,3))XC2(2,3);
@@ -33,12 +33,12 @@ static void** GRADEFNNAME(CMP comp, I compn, void *(in[]), I n, void *(wk[])){I 
    else       if(VS2(4,0)){a=0; b=4; c=1; d=3;}else{a=4; b=0; c=1; d=3;}
    if(VS2(2,b)){if(3!=c)if(VS2(2,c))P52(a,b,c,2,d) else P52(a,b,2,c,d);}
    else       {        if(VS2(2,a))P52(a,2,b,c,d) else P52(2,a,b,c,d);}
-   R in;
+   return in;
  default:
   // sort the low and high halves, and then merge the results, giving as workarea whatever buffer does not contain lo
   {I lohalf=n>>1; I hihalf=n-lohalf;
    void *lo=GRADEFNNAME(comp, compn, in, lohalf, wk); void *hi=GRADEFNNAME(comp, compn, in+lohalf, hihalf, wk+lohalf);
-   R MERGEFNNAME(comp,compn,lo,lohalf,hi,hihalf,(void *)((I)in+(I)wk-(I)lo));
+   return MERGEFNNAME(comp,compn,lo,lohalf,hi,hihalf,(void *)((I)in+(I)wk-(I)lo));
   }
  }
 }

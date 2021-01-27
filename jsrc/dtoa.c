@@ -169,11 +169,7 @@
 /* Options for use with J */
 #include "js.h"
 #define Long int
-#if C_LE
 #define IEEE_8087
-#else
-#define IEEE_MC68k
-#endif
 #define MULTIPLE_THREADS
 #define ACQUIRE_DTOA_LOCK(n) /* handled by using jt */
 #define FREE_DTOA_LOCK(n)    /* handled by using jt */
@@ -227,22 +223,6 @@ static double private_mem[PRIVATE_mem], *pmem_next = private_mem;
 #define DBL_MAX_EXP 1024
 #define FLT_RADIX 2
 #endif /*IEEE_Arith*/
-
-#ifdef IBM
-#define DBL_DIG 16
-#define DBL_MAX_10_EXP 75
-#define DBL_MAX_EXP 63
-#define FLT_RADIX 16
-#define DBL_MAX 7.2370055773322621e+75
-#endif
-
-#ifdef VAX
-#define DBL_DIG 16
-#define DBL_MAX_10_EXP 38
-#define DBL_MAX_EXP 127
-#define FLT_RADIX 2
-#define DBL_MAX 1.7014118346046923e+38
-#endif
 
 #ifndef LONG_MAX
 #define LONG_MAX 2147483647
@@ -1107,14 +1087,9 @@ d2a_d2b
 #ifndef Sudden_Underflow
  int i;
 #endif
-#ifdef VAX
- ULong d0, d1;
- d0 = word0(d) >> 16 | word0(d) << 16;
- d1 = word1(d) >> 16 | word1(d) << 16;
-#else
+
 #define d0 word0(d)
 #define d1 word1(d)
-#endif
 
 #ifdef Pack_32
  b = Balloc(1);
@@ -1236,9 +1211,6 @@ tens[] = {
   1e0, 1e1, 1e2, 1e3, 1e4, 1e5, 1e6, 1e7, 1e8, 1e9,
   1e10, 1e11, 1e12, 1e13, 1e14, 1e15, 1e16, 1e17, 1e18, 1e19,
   1e20, 1e21, 1e22
-#ifdef VAX
-  , 1e23, 1e24
-#endif
   };
 
  static CONSTANT double
@@ -2272,7 +2244,7 @@ d2a_Malloc
 #endif
 
 B jtecvtinit(J jt) {A x; struct dtoa_info *di;
- if(jt->dtoa) R 1;
+ if(jt->dtoa) return 1;
  GATV0(x, LIT, sizeof(struct dtoa_info), 1);
  di=(struct dtoa_info*)AV(x); 
  di->_p5s=0;
@@ -2281,7 +2253,7 @@ B jtecvtinit(J jt) {A x; struct dtoa_info *di;
  memset(di->_freelist, 0, sizeof(di->_freelist));
  di->jt=jt;
  ras(x); jt->dtoa=di;
- R 1;
+ return 1;
 }
 
 /* uses dtoa and behaves like ecvt (well, ecvt_r) */
@@ -2296,7 +2268,7 @@ B jtecvt(J jt, D dw, I ndp, int *decpt, int *sign, C *dest)
  y=d2a_dtoa(di, dw, 2, (int)ndp, decpt, sign, (char**)&z);
  RZ(y&&z);
  memset(z, '0', ndp-(z-y));
- R 1;
+ return 1;
 }
 
 #ifdef __cplusplus

@@ -18,10 +18,10 @@ static UINT jtcrcvalidate(J jt,A w, UINT* crctab){A*wv;B*v;I m;UINT p,x,z=-1;
  if(B01&AT(w)){ASSERT(32==AN(w),EVLENGTH); v=BAV(w); p=0; DQ(32, p<<=1; p|=*v++;);}
  else RE(p=(UINT)i0(w));
  DO(256, x=(UINT)i; DO(8, x=(x>>1)^(p&((UINT)-(I4)(x&1)));); crctab[i]=x;); 
- R z;
+ return z;
 }
 
-F1(jtcrc1){R crc2(sc(-306674912),w);}
+F1(jtcrc1){return crc2(sc(-306674912),w);}
 
 F2(jtcrc2){I n;UINT z;UC*v; UINT crctab[256];
  ARGCHK2(a,w);
@@ -32,7 +32,7 @@ F2(jtcrc2){I n;UINT z;UC*v; UINT crctab[256];
  RE(z=crcvalidate(a,crctab));
  n=AT(w)&C4T?(4*n):AT(w)&C2T?n+n:n;
  DQ(n, z=z>>8^crctab[255&(z^*v++)];);  // do the computation using unsigned z
- R sc((I)(I4)(z^-1L));  // sign-extend result if needed to make 64-bit and 32-bit the same numeric value
+ return sc((I)(I4)(z^-1L));  // sign-extend result if needed to make 64-bit and 32-bit the same numeric value
 }
 
 F1(jtcrccompile){A h,*hv;UINT z; UINT crctab[256];
@@ -41,7 +41,7 @@ F1(jtcrccompile){A h,*hv;UINT z; UINT crctab[256];
  RE(z=crcvalidate(w,crctab));
  RZ(hv[0]=rifvs(vec(LIT,sizeof(crctab),crctab)));  // Save the table.  We don't have any other good type to use
  RZ(hv[1]=rifvs(sc((I)z)));
- R h;
+ return h;
 }
 
 DF1(jtcrcfixedleft){A h,*hv;I n;UINT*t,z;UC*v;
@@ -51,7 +51,7 @@ DF1(jtcrcfixedleft){A h,*hv;I n;UINT*t,z;UC*v;
  ASSERT(!n||AT(w)&LIT+C2T+C4T,EVDOMAIN);
  n=AT(w)&C4T?(4*n):AT(w)&C2T?n+n:n;
  DQ(n, z=z>>8^t[255&(z^*v++)];);
- R sc((I)(I4)(z^-1L));
+ return sc((I)(I4)(z^-1L));
 }
 
 // CRC-based hash.  Bivalent
@@ -71,12 +71,8 @@ F2(jtqhash12){F2PREFIP; I hsiz; UI crc;
   A *av=AAV(w);  // pointer to subvalues
   DQ(lpct, crc=CRC32L(crc,i0(jtqhash12(jt,zeroionei(0),*av++)));)  // recur
  }
-#if SY_64
  if(hsiz)crc=(crc*(UI)hsiz)>>32;   // convert hash to user's range
-#else
- if(hsiz)crc=crc%hsiz;   // convert hash to user's range
-#endif
- R sc((I)(I4)crc);   // make the result a valid integer.  Could reuse the a arg inplace
+ return sc((I)(I4)crc);   // make the result a valid integer.  Could reuse the a arg inplace
 }
 
 // base64 stuff
@@ -94,7 +90,7 @@ F1(jttobase64){
 size_t zlen=AN(z);
 base64_encode(wv, AN(w), CAV(z), &zlen, B64CODEC );
 ASSERT((I)zlen==AN(z),EVDOMAIN);  // make sure length agreed
- R z;
+ return z;
 
 }
 
@@ -124,7 +120,7 @@ F1(jtfrombase64){
 size_t zlen=AN(z);
 int rc=base64_decode(CAV(w), AN(w), CAV(z), &zlen, B64CODEC );
 ASSERT(rc==1&&(I)zlen==AN(z),EVDOMAIN);  // make sure no invalid input bytes
- R z;
+ return z;
 }
   // the 3 bytes are characters AAAAABB BBBBCCCC CCDDDDDD in bits
   //                            7     0 15     8 23    16

@@ -1,5 +1,5 @@
 // J Front End Example
-// define _WIN32 for Windows, __MACH__ for MAC, J64 for 64-bit
+// define __MACH__ for MAC, J64 for 64-bit
 // JE is loaded from current working directory
 
 

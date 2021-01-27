@@ -10,159 +10,8 @@
 #include "j.h"
 #include "x.h"
 
-#if !SY_WINCE
 char* toascbuf(char* s){ return s;}
 char* tounibuf(char* s){ return s;}
-#else
-wchar_t* tounibuf(char* src)
-{
- static wchar_t buf[2048+1];
-
- wchar_t* p=buf;
- if(2048>strlen(src))
- {
-  while(*src) *p++=*src++;
- }
- *p=0;
- return buf;
-}
-
-char *toascbuf(wchar_t *src)
-{
- static char buf[2048+1];
-
- char* p=buf;
- if(2048>wcslen(src))
- {
-  while(*src) *p++=(char)*src++;
- }
- *p=0;
- return buf;
-}
-#define _A_NORMAL   FILE_ATTRIBUTE_NORMAL
-#define _A_RDONLY   FILE_ATTRIBUTE_READONLY
-#define _A_HIDDEN   FILE_ATTRIBUTE_HIDDEN
-#define _A_SYSTEM   FILE_ATTRIBUTE_SYSTEM
-#define _A_VOLID    0
-#define _A_SUBDIR   FILE_ATTRIBUTE_DIRECTORY
-#define _A_ARCH     FILE_ATTRIBUTE_ARCHIVE
-
-#endif 
-
-#if (SYS & SYS_DOS)
-
-#if !SY_WINCE
-#include <ctype.h>
-#include <io.h>
-#include <dos.h>
-#include <direct.h>
-#include <time.h>
-#endif
-
-#ifndef F_OK            /* for access() */
-#define F_OK            0x00
-#define X_OK            0x01
-#define W_OK            0x02
-#define R_OK            0x04
-#endif
-
-#ifndef _A_VOLID
-#define _A_VOLID        0x00
-#endif
-
-#define _A_ALL          (_A_NORMAL+_A_RDONLY+_A_HIDDEN+_A_SYSTEM+_A_VOLID+ \
-                         _A_SUBDIR+_A_ARCH)
-
-static A jtattv(J jt,U x){A z;C*s;
- GAT0(z,LIT,6,1); s=CAV(z);
- s[0]=x&_A_RDONLY?'r':'-';
- s[1]=x&_A_HIDDEN?'h':'-';
- s[2]=x&_A_SYSTEM?'s':'-';
- s[3]=x&_A_VOLID ?'v':'-';
- s[4]=x&_A_SUBDIR?'d':'-';
- s[5]=x&_A_ARCH  ?'a':'-';
- R z;
-}    /* convert from 16-bit attributes x into 6-element string */
-
-static S jtattu(J jt,A w){C*s;I i,n;S z=0;
- RZ(w=vslit(w)); 
- n=AN(w); s=CAV(w);
- for(i=0;i<n;++i)switch(s[i]){
-  case 'r': z^=_A_RDONLY; break;
-  case 'h': z^=_A_HIDDEN; break;
-  case 's': z^=_A_SYSTEM; break;
-  case 'v': z^=_A_VOLID;  break;
-  case 'd': z^=_A_SUBDIR; break;
-  case 'a': z^=_A_ARCH;   break;
-  case '-':               break;
-  default:  ASSERT(0,EVDOMAIN);
- }
- R z;
-}    /* convert from 6-element string into 16-bit attributes */
-
-F1(jtfullname){C dirpath[_MAX_PATH];
- RZ(w=str0(vslit(w)));
-#if SY_WINCE
- C*s;
- s=CAV(w); DQ(AN(w), if(' '!=*s)break; ++s;);
- if(*s=='\\'||*s=='/') strcpy(dirpath,s);
- else {strcpy(dirpath, "\\"); strcat(dirpath,s);}
-#else
- wchar_t wdirpath[_MAX_PATH];
- RZ(w=toutf16x(w)); USAV(w)[AN(w)]=0;
- _wfullpath(wdirpath,USAV(w),_MAX_PATH);
- WideCharToMultiByte(CP_UTF8,0,wdirpath,1+(int)wcslen(wdirpath),dirpath,_MAX_PATH,0,0);
-#endif
- R cstr(dirpath);
-}
-
-#if !SY_WINCE
-
-F1(jtjfperm1){A y,fn,z;C *s;F f;int x; US *p,*q;
- F1RANK(0,jtjfperm1,UNUSED_VALUE);
- RE(f=stdf(w)); if(f){RZ(y=fname(sc((I)f)))} else ASSERT(y=AAV(w)[0],EVFNUM)
- RZ(fn=toutf16x(y)); USAV(fn)[AN(fn)]=0;  // install termination
- p=USAV(fn); q=p+AN(fn)-3;
- GAT0(z,LIT,3,1); s=CAV(z);
- x=_waccess(p,R_OK); if(0>x)R jerrno();
- s[0]=x?'-':'r';
- s[1]=_waccess(p,W_OK)?'-':'w';
- s[2]=wcscmp(q,L"exe")&&wcscmp(q,L"bat")&&wcscmp(q,L"com")?'-':'x';
- R z;
-}
-
-F2(jtjfperm2){A y,fn;C*s;F f;int x=0;US *p;
- F2RANK(1,0,jtjfperm2,UNUSED_VALUE);
- RE(f=stdf(w)); if(f){RZ(y=fname(sc((I)f)))} else ASSERT(y=AAV(w)[0],EVFNUM)
- RZ(a=vslit(a)); ASSERT(3==AN(a),EVLENGTH); 
- RZ(fn=toutf16x(y)); USAV(fn)[AN(fn)]=0;  // install termination
- s=CAV(y);
- p=USAV(fn);;
- s=CAV(a);
- if('r'==s[0]) x|=S_IREAD;  else ASSERT('-'==s[0],EVDOMAIN);
- if('w'==s[1]) x|=S_IWRITE; else ASSERT('-'==s[1],EVDOMAIN);
- if('x'==s[2]) x|=S_IEXEC;  else ASSERT('-'==s[2],EVDOMAIN);
- R _wchmod(p,x)?jerrno():mtm;
-}
-
-#else /* SY_WINCE: */
-
-F1(jtjfperm1){A y,z;C*p,*q,*s;F f; DWORD attr;
- F1RANK(0,jtjfperm1,UNUSED_VALUE);
- RE(f=stdf(w)); if(f){RZ(y=fname(sc((I)f)))} else ASSERT(y=AAV(w)[0],EVFNUM)
- p=CAV(y); q=p+AN(y)-3;
- GAT0(z,LIT,3,1); s=CAV(z);
- if((attr=GetFileAttributes(tounibuf(p)))==0xFFFFFFFF)R jerrno();
- s[0]='r';
- s[1]=attr&FILE_ATTRIBUTE_READONLY?'-':'w';
- s[2]=strcmp(q,"exe")&&strcmp(q,"bat")&&strcmp(q,"com")?'-':'x';
- R z;
-}
-
-F2(jtjfperm2){ASSERT(0,EVNONCE);}
-
-#endif
-#endif
 
 /* jdir produces a 5-column matrix of boxes:                 */
 /* 0 name                                                    */
@@ -173,9 +22,6 @@ F2(jtjfperm2){ASSERT(0,EVNONCE);}
 /*   0 read-only    3 volume label                           */
 /*   1 hidden       4 directory                              */
 /*   2 system       5 archive (modified since last back-up)  */
-
-
-#if (SYS & SYS_UNIX)
 
 /* FIXME:   rename J link() function so we can include unistd.h */
 // undefs to avoid darwin warnings - should be a better fix
@@ -189,13 +35,7 @@ F2(jtjfperm2){ASSERT(0,EVNONCE);}
 #include <sys/stat.h>
 #include <dirent.h>
 #include <time.h>
-
-#if SYS&(SYS_SUN4+SYS_SGI)
-#include "fnmatch.h"
-#else
 #include <fnmatch.h>
-#endif
-
 
 /* Return mode_t formatted into 11-character buffer supplied by the caller.  The last byte of the buffer is the string terminator \0 */
 static C*modebuf(mode_t m,C* b){C c;I t=m;
@@ -216,15 +56,15 @@ static C*modebuf(mode_t m,C* b){C c;I t=m;
   case S_IFREG:  b[0]='-'; break;
   default:       b[0]='?';
  }
- R b;
+ return b;
 }
 
 
 static int ismatch(J jt,C*pat,C*name,struct stat *dirstatbuf,C *diratts, C *dirmode,C *dirrwx,C *dirnamebuf,C *dirbase){ 
 
- strcpy(dirbase,name); if(stat(dirnamebuf,dirstatbuf))R 0;
- if('.'!=*pat && ((!strcmp(name,"."))||(!strcmp(name,".."))))R 0;
- if(fnmatch(pat,name,0)) R 0;
+ strcpy(dirbase,name); if(stat(dirnamebuf,dirstatbuf))return 0;
+ if('.'!=*pat && ((!strcmp(name,"."))||(!strcmp(name,".."))))return 0;
+ if(fnmatch(pat,name,0)) return 0;
 /* Set up dirrwx, diratts, and dirmode for this file */
  dirrwx[0]=access(dirnamebuf,R_OK)?'-':'r';
  dirrwx[1]=access(dirnamebuf,W_OK)?'-':'w';
@@ -234,7 +74,7 @@ static int ismatch(J jt,C*pat,C*name,struct stat *dirstatbuf,C *diratts, C *dirm
  diratts[1]=('.'==name[0])?'h':'-';
  modebuf(dirstatbuf[0].st_mode,dirmode);
  diratts[4]=('d'==dirmode[0])?'d':'-';
- R 1;
+ return 1;
 }
 
 static A jtdir1(J jt,struct dirent*f,struct stat *dirstatbuf,C *diratts, C *dirmode,C *dirrwx){A z,*zv;C*s,att[16];I n,ts[6],i,m,sz;S x;struct tm tmr,*tm=&tmr;
@@ -246,22 +86,12 @@ static A jtdir1(J jt,struct dirent*f,struct stat *dirstatbuf,C *diratts, C *dirm
  RZ(zv[0]=vec(LIT,n,s)); 
  RZ(zv[1]=vec(INT,6L,ts));
  sz=dirstatbuf[0].st_size;
-#if !SY_64 && defined(ANDROID)
- UC* raw_stat=(UC*)dirstatbuf;
- if(raw_stat[sizeof(struct stat)-1]==98 &&
-    raw_stat[sizeof(struct stat)-2]==76 &&
-    raw_stat[sizeof(struct stat)-3]==54){
-    // Wrong stat size. Long Long (64bit) fields are not 8 bytes aligned.
-     uint* raw_stat32 = (uint*)dirstatbuf;
-     sz=(I)(size_t)raw_stat32[11]; // st_size from the packed (without alignment) structure
- }
-#endif
  sz=sz<0?-1:sz;
  RZ(zv[2]=sc(sz));
  RZ(zv[3]=vec(LIT,3L, dirrwx ));
  RZ(zv[4]=vec(LIT, 6L,diratts));
  RZ(zv[5]=vec(LIT,10L,dirmode));
- R z;
+ return z;
 }
 
 F1(jtjdir){PROLOG(0103);A*v,z,*zv;C*dir,*pat,*s,*x;I j=0,n=32;DIR*DP;struct dirent *f;
@@ -272,7 +102,7 @@ F1(jtjdir){PROLOG(0103);A*v,z,*zv;C*dir,*pat,*s,*x;I j=0,n=32;DIR*DP;struct dire
  RZ(w=str0(vslit(!AR(w)&&BOX&AT(w)?ope(w):w)));
  s=CAV(w);
  if(x=strrchr(s,'/')){dir=s==x?(C*)"/":s; pat=x+1; *x=0;}else{dir="."; pat=s;}
- if(NULL==(DP=opendir(dir)))R reshape(v2(0L,6L),ds(CACE));
+ if(NULL==(DP=opendir(dir)))return reshape(v2(0L,6L),ds(CACE));
  /*
   * SYSV and BSD have different return types for sprintf(),
   * so we use less efficient but portable code.
@@ -301,8 +131,8 @@ F1(jtjfperm1){A y;F f;C b[11];
  struct stat dirstatbuf[3];
  F1RANK(0,jtjfperm1,UNUSED_VALUE);
  RE(f=stdf(w)); if(f){RZ(y=fname(sc((I)f)));y=str0(y);} else ASSERT(y=str0(vslit(AAV(w)[0])),EVFNUM)
- if(0!=stat(CAV(y),dirstatbuf))R jerrno();
- R vec(LIT,9L,1+modebuf(dirstatbuf[0].st_mode,b));
+ if(0!=stat(CAV(y),dirstatbuf))return jerrno();
+ return vec(LIT,9L,1+modebuf(dirstatbuf[0].st_mode,b));
 }
 
 
@@ -325,15 +155,11 @@ F2(jtjfperm2){A y;C*s;F f;int x=0,i;C*m;
  for(i=0;i<9;i++)
     {ASSERT(NULL!=(m=strchr(permtab[i].c,s[i])),EVDOMAIN);
      x|=permtab[i].p[m-permtab[i].c];}
- R chmod(CAV(y),x)?jerrno():mtm;
+ return chmod(CAV(y),x)?jerrno():mtm;
 }
 
 
-#endif
 
 /* ----------------------------------------------------------------------- */
 
-
-#if ! (SYS & SYS_DOS)
-F1(jtfullname){R w;}
-#endif
+F1(jtfullname){return w;}

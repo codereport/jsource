@@ -85,7 +85,7 @@ if(!jt->directdef&&(currc==CDD||currc==CDDZ))currc=CX;  // scaf  if direct def d
  *x=i;
  m=((x-AV(z))+1)>>1; AS(z)[0]=m; AM(z)=m-((((1LL<<SNZ)|(1LL<<SZ))>>(s>>4))&1); // Calculate & install count; if last field is NB., subtract 1 from word count
  if(unlikely((s>>4)==SQ))AM(z)=-1;  // error if open quote, indicated by nag AM
- R z;
+ return z;
 }    // word index & end+1; z is m 2 1$(i0,e0),(i1,e1),... AM(z) is # words not including any final NB, or -1 if quote error
 
 // Turn word list back into string
@@ -108,16 +108,16 @@ DF1(jtwords){A t,*x,z;C*s;I k,n,*y;
  F1RANK(1,jtwords,self);
  RZ(w=vs(w));  // convert w to LIT if it's not already
  RZ(t=wordil(w)); ASSERT(AM(t)>=0,EVOPENQ)
- R jtboxcut0(jt,t,w,self);  // result of wordil has shape suitable for <;.0, so we use that
+ return jtboxcut0(jt,t,w,self);  // result of wordil has shape suitable for <;.0, so we use that
 }
 
 
 static A jtconstr(J jt,I n,C*s){A z;C b,c,p,*t,*x;I m=0;
  p=0; t=s; DQ(n-2, c=*++t; b=c==CQUOTE; m+=(b^1)|p; p=((b^1)|p)^1;);  // should just take half the # '
- if(0==m)R aqq; 
+ if(0==m)return aqq;
  GATV0(z,LIT,m,1!=m); x=CAV(z);
  p=0; t=s; DQ(n-2, *x=c=*++t; b=c==CQUOTE; x+=(b^1)|p; p=((b^1)|p)^1;);  // This may overstore by 1 character but that's OK because LIT types have allocated space at the end
- R z;
+ return z;
 }
 
 #define TNAME(i)    (NAME&AT(v[i]))
@@ -162,9 +162,9 @@ A jtenqueue(J jt,A a,A w,I env){A*v,*x,y,z;B b;C d,e,p,*s,*wi;I i,n,*u,wl;UC c;
    p=b?b:p;    // otherwise, it's not a primitive, but data, either numeric, string, or name.  Check first character, but fail if inflected form, which must be invalid.  p must be non0
     // If the name is a call-by-value name (x y u. etc), we mark it as BYVALUE if it is slated for execution in an explicit definition
    if((p&~CA)==0){ASSERTN(vnm(wl,wi),EVILNAME,nfs(wl,wi)); RZ(*x=nfs(wl,wi)); if((env==2)&&(NAV(*x)->flag&NMXY)){AT(*x)|=NAMEBYVALUE;}  // starts with alphabetic, make it a name, error if invalid name
-   }else if(p==C9){if(unlikely(!(*x=connum(wl,wi)))){I lje=jt->jerr; RESETERR; jsignal3(lje,w,u[0]); R 0;}   // starts with numeric, create numeric constant.. If error, give a message showing the bad number
+   }else if(p==C9){if(unlikely(!(*x=connum(wl,wi)))){I lje=jt->jerr; RESETERR; jsignal3(lje,w,u[0]); return 0;}   // starts with numeric, create numeric constant.. If error, give a message showing the bad number
    }else if(p==CQ){ RZ(*x=constr(wl,wi));   // start with ', make string constant
-   }else{jsignal3(EVSPELL,w,wi-s); R 0;}   // bad first character or inflection
+   }else{jsignal3(EVSPELL,w,wi-s); return 0;}   // bad first character or inflection
   }
   // Since the word is being incorporated into a list, we must realize it
   rifv(*x);
@@ -225,7 +225,7 @@ A jtenqueue(J jt,A a,A w,I env){A*v,*x,y,z;B b;C d,e,p,*s,*wi;I i,n,*u,wl;UC c;
 
 // env is the environment: 0=tacit translator, 1=keyboard/immex with no local symbol, 2=explicit definition running
 // w is either a string block or a string block that has been processed into words in wordil format, with AM set
-A jttokens(J jt,A w,I env){A t; RZ(t=wordil(w)); ASSERT(AM(t)>=0,EVOPENQ) R enqueue(t,w,env);}
+A jttokens(J jt,A w,I env){A t; RZ(t=wordil(w)); ASSERT(AM(t)>=0,EVOPENQ) return enqueue(t,w,env);}
 // enqueue produces nonrecursive result, and so does tokens.  This is OK because the result is always parsed and is never an argument to a verb
 
 
@@ -300,7 +300,7 @@ static A jtfsmdo(J jt,I f,A s,A m,I*ijrd,A w,A w0){A x,z;C*cc,*wv0;
   case 12+4: {UC*wv=UAV(w); FSMF(I,1,INT,2, 3,mv[wv[i]],EMIT4, ZVAx);} break;
   case 12+5: {UC*wv=UAV(w); FSMF(I,1,INT,2, 6,mv[wv[i]],EMIT5, ZVA5);} break;
  }
- R z;
+ return z;
 }
 
 F1(jtfsmvfya){PROLOG(0099);A a,*av,m,s,x,z,*zv;I an,c,e,f,ijrd[4],k,p,q,*sv,*v;
@@ -363,8 +363,8 @@ static A jtfsm0(J jt,A a,A w,C chka){PROLOG(0100);A*av,m,s,x,w0=w;B b;I c,f,*ijr
  EPILOG(z);
 }
 
-F2(jtfsm){R fsm0(a,w,1);}
+F2(jtfsm){return fsm0(a,w,1);}
      /* x;:y */
 
-DF1(jtfsmfx){ARGCHK2(w,self); R fsm0(FAV(self)->fgh[0],w,0);}
+DF1(jtfsmfx){ARGCHK2(w,self); return fsm0(FAV(self)->fgh[0],w,0);}
      /* x&;: y */

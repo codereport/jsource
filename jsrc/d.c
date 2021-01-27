@@ -57,7 +57,7 @@ static void jtdspell(J jt,C id,A w,I nflag){C c,s[5];
   eputs(s+!(c==CESC1||c==CESC2||nflag&&((ctype[(UC)c]&~CA)==0)));
 }}
 
-static F1(jtsfn0){R sfn(0,w);}  // return string form of full name for a NAME block
+static F1(jtsfn0){return sfn(0,w);}  // return string form of full name for a NAME block
 EVERYFS(sfn0overself,jtsfn0,jtover,0,VFLAGNONE)
 
 // print a noun; nflag if space needed before name/numeric; return new value of nflag
@@ -82,7 +82,7 @@ static I jtdisp(J jt,A w,I nflag){B b=1&&AT(w)&NAME+NUMERIC;
  case MARKX:                          break;
  default:   dspell(FAV(w)->id,w,nflag);     break;
  }
- R b;  // new nflag
+ return b;  // new nflag
 }
 
 // display DCPARSE stack frame
@@ -106,7 +106,7 @@ F1(jtunparse){A*v,z;
  jt->etxn=0; I nflag=0;
  v=AAV(w); DO(AN(w), nflag=disp(v[i],nflag);); z=str(jt->etxn,jt->etx);
  jt->etxn=0;
- R z;
+ return z;
 }
 
 // Display DCCALL stack frame
@@ -142,25 +142,25 @@ static B jtdebsi1(J jt,DC d){I t;
  t=d->dctype;
  RZ(t==DCSCRIPT||t==DCCALL&&d->dcloc);
  debdisp(d);
- R 1;
+ return 1;
 }
 
 F1(jtdbstack){DC d=jt->sitop; 
  ASSERTMTV(w);
  if(d){if(DCCALL!=d->dctype)d=d->dclnk; while(d){debdisp(d); d=d->dclnk;}}
- R mtm;
+ return mtm;
 }    /* 13!:1  display SI stack */
 
 F1(jtdbstackz){A y,z; 
  RE(dbstack(w)); 
  RZ(y=str(jt->etxn,jt->etx)); 
  jt->etxn=0; 
- R df1(z,y,cut(ds(CLEFT),num(-2)));
+ return df1(z,y,cut(ds(CLEFT),num(-2)));
 }    /* 13!:18  SI stack as result */
 
 
 static void jtjsigstr(J jt,I e,I n,C*s){
- if(jt->jerr){jt->curname=0; R;}   // clear error-name indicator
+ if(jt->jerr){jt->curname=0; return;}   // clear error-name indicator
  if(e!=EVSTOP)moveparseinfotosi(jt); jt->jerr=(C)e; jt->jerr1=(C)e; jt->etxn=0;  // before we display, move error info from parse variables to si; but if STOP, it's already installed
  dhead(0,0L);
  if(jt->uflags.us.cx.cx_c.db&&!spc()){eputs("ws full (can not suspend)"); eputc(CLF); jt->uflags.us.cx.cx_c.db=0;}
@@ -192,7 +192,7 @@ void jtjsignal(J jt,I e){A x;
 }
 
 void jtjsignal3(J jt,I e,A w,I j){
- if(jt->jerr)R; 
+ if(jt->jerr)return;
  moveparseinfotosi(jt); jt->jerr=(C)e; jt->jerr1=(C)e; jt->etxn=0;  // before we display, move error info from parse variables to si
  dhead(0,0L);
  if(jt->uflags.us.cx.cx_c.db&&!spc()){eputs("ws full (can not suspend)"); eputc(CLF); jt->uflags.us.cx.cx_c.db=0;}
@@ -210,47 +210,28 @@ void jtjsignal3(J jt,I e,A w,I j){
 
 static F2(jtdbsig){I e;
  RE(0);
- if(!AN(w))R mtm;
+ if(!AN(w))return mtm;
  RZ(w=vi(w)); e=AV(w)[0]; 
  ASSERT(1<=e,EVDOMAIN);
  ASSERT(e<=255,EVLIMIT);
  if(a||e>NEVM){if(!a)a=mtv; RZ(a=vs(a)); jsig(e,a);} else jsignal(e);
- R 0;
+ return 0;
 }    
 
-F1(jtdbsig1){R dbsig(0L,w);}   /* 13!:8  signal error */
-F2(jtdbsig2){R dbsig(a, w);}
+F1(jtdbsig1){return dbsig(0L,w);}   /* 13!:8  signal error */
+F2(jtdbsig2){return dbsig(a, w);}
 
 
-F1(jtdberr){ASSERTMTV(w); R sc(jt->jerr1);}           /* 13!:11 last error number   */
-F1(jtdbetx){ASSERTMTV(w); R str(jt->etxn1,jt->etx);}  /* 13!:12 last error text     */
+F1(jtdberr){ASSERTMTV(w); return sc(jt->jerr1);}           /* 13!:11 last error number   */
+F1(jtdbetx){ASSERTMTV(w); return str(jt->etxn1,jt->etx);}  /* 13!:12 last error text     */
 
 
 A jtjerrno(J jt){
-#if !SY_WINCE
  switch(errno){
   case EMFILE:
-  case ENFILE: jsignal(EVLIMIT  ); R 0;
-  case ENOENT: jsignal(EVFNAME  ); R 0;
-  case EBADF:  jsignal(EVFNUM   ); R 0;
-  case EACCES: jsignal(EVFACCESS); R 0;
-#else /* WINCE: */
- switch(GetLastError()){
-  case ERROR_DISK_FULL:
-  case ERROR_FILENAME_EXCED_RANGE:
-  case ERROR_NO_MORE_FILES:
-  case ERROR_NOT_ENOUGH_MEMORY:
-  case ERROR_NOT_ENOUGH_QUOTA:
-  case ERROR_TOO_MANY_OPEN_FILES:    jsignal(EVLIMIT  ); R 0;
-  case ERROR_BAD_PATHNAME:
-  case ERROR_INVALID_NAME:           jsignal(EVDOMAIN ); R 0;
-  case ERROR_ALREADY_EXISTS:
-  case ERROR_FILE_EXISTS:
-  case ERROR_PATH_NOT_FOUND:
-  case ERROR_FILE_NOT_FOUND:         jsignal(EVFNAME  ); R 0;
-  case ERROR_ACCESS_DENIED:
-  case ERROR_WRITE_PROTECT:
-  case ERROR_SHARING_VIOLATION:      jsignal(EVFACCESS); R 0;
-#endif
-  default:     jsignal(EVFACE); R 0;
+  case ENFILE: jsignal(EVLIMIT  ); return 0;
+  case ENOENT: jsignal(EVFNAME  ); return 0;
+  case EBADF:  jsignal(EVFNUM   ); return 0;
+  case EACCES: jsignal(EVFACCESS); return 0;
+  default:     jsignal(EVFACE); return 0;
 }}   /* see <errno.h> / <winerror.h> */

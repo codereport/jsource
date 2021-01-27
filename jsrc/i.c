@@ -7,11 +7,6 @@
 #include "w.h"
 #include "cpuinfo.h"
 
-#if SYS & SYS_FREEBSD
-#include <floatingpoint.h>
-#endif
-
-
 // These statics get copied into jt for cache footprint.  If you change them,
 // change the definition in jt.h
 
@@ -47,7 +42,7 @@ static A jtmakename(J jt,C*s){A z;I m;NM*zv;
  zv->flag=NMDOT+NMXY;
  zv->hash=(UI4)nmhash(m,s);
  ACX(z);
- R z;
+ return z;
 }
 
 /* 
@@ -98,7 +93,7 @@ B jtglobinit(J jt){A x,y;A *oldpushx=jt->tnextpushp;
  jt->tnextpushp=oldpushx;
  DO(IOTAVECLEN, iotavec[i]=i+IOTAVECBEGIN;)  // init our vector of ascending integers
 
- R 1;
+ return 1;
 }
 
 static B jtevinit(J jt){A q,*v;
@@ -140,7 +135,7 @@ static B jtevinit(J jt){A q,*v;
  v[EVTIME   ]=cstr("time limit"                 );
  v[EVVALUE  ]=cstr("value error"                );
  ras(q); jt->evm=q;
- if(jt->jerr){printf("evinit failed; error %hhi\n", jt->jerr); R 0;} else R 1;
+ if(jt->jerr){printf("evinit failed; error %hhi\n", jt->jerr); return 0;} else return 1;
 }
 
 /* static void sigflpe(int k){jsignal(EVDOMAIN); signal(SIGFPE,sigflpe);} */
@@ -191,7 +186,7 @@ jt->directdef = 1;  // scaf
  jt->igemm_thres=IGEMM_THRES;   // tuning parameters for cip.c
  jt->dgemm_thres=DGEMM_THRES;
  jt->zgemm_thres=ZGEMM_THRES;
- R 1;
+ return 1;
 }
 
 static C jtjinit3(J jt){S t;
@@ -200,15 +195,6 @@ static C jtjinit3(J jt){S t;
  MC(jt->typesizes,typesizes,sizeof(jt->typesizes));  // required for ma.
  MC(jt->typepriority,typepriority,sizeof(jt->typepriority));  // required for ma.  Repeated for each thread in jtinit3
  MC(jt->prioritytype,prioritytype,sizeof(jt->prioritytype));  // required for ma.  Repeated for each thread in jtinit3
-#if (SYS & SYS_DOS)
- t=EM_ZERODIVIDE+EM_INVALID; _controlfp(t,t);
-#endif
-#if (SYS & SYS_OS2)
- t=EM_ZERODIVIDE+EM_INVALID+EM_OVERFLOW+EM_UNDERFLOW; _control87(t,t);
-#endif
-#if (SYS & SYS_FREEBSD)
- fpsetmask(0);
-#endif
  jt->tssbase=tod();
  meminit();
  sesminit();
@@ -220,16 +206,12 @@ static C jtjinit3(J jt){S t;
  xsinit();
  sbtypeinit();
  rnginit();
-// #if (SYS & SYS_DOS+SYS_MACINTOSH+SYS_UNIX)
-#if (SYS & SYS_DOS+SYS_MACINTOSH)
- xlinit();
-#endif
  jtecvtinit(jt);
  // We have completed initial allocation.  Everything allocated so far will not be freed by a tpop, because
  // tpop() isn't called during initialization.  So, to keep the memory auditor happy, we reset ttop so that it doesn't
  // look like those symbols have a free outstanding.
  jt->tnextpushp=(A*)(((I)jt->tstackcurr+NTSTACKBLOCK)&(-NTSTACKBLOCK))+1;  // first store is to entry 1 of the first block
- R !jt->jerr;
+ return !jt->jerr;
 }
 
-C jtjinit2(J jt,int dummy0,C**dummy1){jt->sesm=1; R jinit3();}
+C jtjinit2(J jt,int dummy0,C**dummy1){jt->sesm=1; return jinit3();}

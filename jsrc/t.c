@@ -4,8 +4,8 @@
 /* Table of Primitive Symbols                                              */
 
 #include "j.h"
-#include "ve.h"
-#include "vcomp.h"
+#include "verbs/ve.h"
+#include "verbs/vcomp.h"
 
 
 C ctype[256]={
@@ -204,5 +204,5 @@ PRIM primtab[256] = {
 
 B jtpinit(J jt){
  AS((A)&primtab[CALP])[0]=NALP;  AK((A)&primtab[CALP])=(I)alp-(I)&primtab[CALP];
- R 1;
+ return 1;
 }
