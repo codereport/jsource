@@ -677,7 +677,7 @@ F1(jtslash){A h;AF f1;C c;V*v;I flag=0;
 
 A jtaslash (J jt,C c,    A w){RZ(   w); A z; return df1(z,  w,   slash(ds(c))     );}
 A jtaslash1(J jt,C c,    A w){RZ(   w); A z; return df1(z,  w,qq(slash(ds(c)),zeroionei(1)));}
-A jtatab   (J jt,C c,A a,A w){ARGCHK2(a,w); A z; return df2(z,a,w,   slash(ds(c))     );}
+A jtatab   (J jt,C c,A a,A w){A z; return df2(z,a,w,   slash(ds(c))     );}
 
 DF1(jtmean){
  I wr=AR(w); I r=(RANKT)jt->ranks; r=wr<r?wr:r;

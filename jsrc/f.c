@@ -809,7 +809,6 @@ static A jtjprx(J jt,I ieol,I maxlen,I lb,I la,A w){A y,z;B ch;C e,eov[2],*v,x,*
 // w is any noun
 // Result is the UTF-8 byte string that would be displayed
 F2(jtoutstr){I*v;
- ARGCHK2(a,w);
  RZ(a=vib(a));
  ASSERT(1==AR(a), EVRANK);
  ASSERT(4==AN(a), EVLENGTH);

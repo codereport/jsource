@@ -76,7 +76,7 @@ static F2(jttk){PROLOG(0093);A y,z;B b=0;C*yv,*zv;I c,d,dy,dz,e,i,k,m,n,p,q,r,*s
 
 F2(jttake){A s;I acr,af,ar,n,*v,wcr,wf,wr;
  F2PREFIP;
- ARGCHK2(a,w); I wt = AT(w);  // wt=type of w
+ I wt = AT(w);  // wt=type of w
  if(unlikely((SPARSE&AT(a))!=0))RZ(a=denseit(a));
  if(likely(!(SPARSE&wt)))RZ(w=setfv(w,w)); 
  ar=AR(a); acr=jt->ranks>>RANKTX; acr=ar<acr?ar:acr; af=ar-acr;  // ?r=rank, ?cr=cell rank, ?f=length of frame

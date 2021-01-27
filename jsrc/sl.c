@@ -249,7 +249,6 @@ F1(jtlocnl1){memset(jt->workareas.namelist.nla,C1,256); return locnlx(w);}
     /* 18!:1 locale name list */
 
 F2(jtlocnl2){UC*u;
- ARGCHK2(a,w);
  ASSERT(LIT&AT(a),EVDOMAIN);
  memset(jt->workareas.namelist.nla,C0,256); 
  u=UAV(a); DQ(AN(a),jt->workareas.namelist.nla[*u++]=1;);
@@ -283,7 +282,6 @@ F2(jtlocpath2){A g; AD * RESTRICT x;
 
 
 static F2(jtloccre){A g,y;C*s;I n,p;L*v;
- ARGCHK2(a,w);
  if(MARK&AT(a))p=jt->locsize[0]; else{RE(p=i0(a)); ASSERT(0<=p,EVDOMAIN); ASSERT(p<14,EVLIMIT);}
  y=AAV(w)[0]; n=AN(y); s=CAV(y);
  if(v=probe(n,s,(UI4)nmhash(n,s),jt->stloc)){   // scaf this is disastrous if the named locale is on the stack
@@ -313,7 +311,6 @@ F1(jtloccre1){
 }    /* 18!:3  create locale */
 
 F2(jtloccre2){
- ARGCHK2(a,w);
  if(AN(w))return rank2ex0(a,vlocnl(2+1,w),UNUSED_VALUE,jtloccre);
  ASSERT(1==AR(w),EVRANK);
  return rank1ex0(a,UNUSED_VALUE,jtloccrenum);

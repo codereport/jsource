@@ -134,7 +134,6 @@ F1(jtadot1){A y;I n;
 }
 
 F2(jtadot2){A m,p;I n;
- ARGCHK2(a,w);
  SETIC(w,n); p=sc(n); if(XNUM&AT(a))p=cvt(XNUM,p); RZ(m=fact(p));
  ASSERT(all1(le(negate(m),a))&&all1(lt(a,m)),EVINDEX);
  if(!AR(w)){RZ(vi(a)); RCA(w);}

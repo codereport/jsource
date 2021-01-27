@@ -717,7 +717,6 @@ F2(jtsb2){A z;I j,k,n;
 #ifdef TMP
  I*zv;
 #endif
- ARGCHK2(a,w);
  RE(j=i0(a)); n=AN(w);
  ASSERT(!BETWEENC(j,1,7)||!n||SBT&AT(w),EVDOMAIN);
  switch(j){

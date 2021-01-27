@@ -141,7 +141,6 @@ static DF1(jtmemo1){DECLF;A z;I x,y;
 }
 
 static DF2(jtmemo2){DECLF;A z;I x,y; 
- ARGCHK2(a,w);
  x=int0(a); y=int0(w);
  if(MIN(x,y)==IMIN)return CALL2(f2,a,w,fs);  // IMIN is unmemoable, run fn
  return (z=memoget(x,y,self))?z:memoput(x,y,self,CALL2(f2,a,w,fs));  // if memo lookup returns empty, run the function and remember the result

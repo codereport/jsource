@@ -78,7 +78,6 @@ I jtxcompare(J jt,X a,X w){I*av,j,m,n,x,y,*wv;int s,t;
 XF1(jtxsgn){I x=XDIG(w); return xc(SGN(x));}
 
 XF2(jtxplus){PROLOG(0094);A z;I an,*av,c,d,m,n,wn,*wv,*zv;
- ARGCHK2(a,w);
  an=AN(a); av=AV(a); c=av[an-1];
  wn=AN(w); wv=AV(w); d=wv[wn-1];
  if(c==XPINF||c==XNINF||d==XPINF||d==XNINF){
@@ -94,7 +93,6 @@ XF2(jtxplus){PROLOG(0094);A z;I an,*av,c,d,m,n,wn,*wv,*zv;
 }
 
 XF2(jtxminus){PROLOG(0095);A z;I an,*av,c,d,m,n,wn,*wv,*zv;
- ARGCHK2(a,w);
  an=AN(a); av=AV(a); c=av[an-1];
  wn=AN(w); wv=AV(w); d=wv[wn-1];
  if(c==XPINF||c==XNINF||d==XPINF||d==XNINF){
@@ -110,7 +108,6 @@ XF2(jtxminus){PROLOG(0095);A z;I an,*av,c,d,m,n,wn,*wv,*zv;
 }
 
 XF2(jtxtymes){A z;I an,*av,c,d,e,i,j,m=XBASE,n,*v,wn,*wv,*zv;
- ARGCHK2(a,w);
  an=AN(a); av=AV(a); c=av[an-1];
  wn=AN(w); wv=AV(w); d=wv[wn-1];
  if(!c||!d)return iv0;
@@ -190,7 +187,6 @@ X jtxdiv(J jt,X a,X w,I mode){PROLOG(0096);B di;I an,*av,c,c0,d,e,k,s,u[2],u1,wn
 }   /* <.a%w (mode=XMFLR) or >.a%w (mode=XMCEIL) or a%w (mode=XMEXACT) */
 
 XF2(jtxrem){I c,d,e;X q,r,y;
- ARGCHK2(a,w);
  c=XDIG(a); d=XDIG(w);
  if(!c)return rifvs(w);
  ASSERT(!(d==XPINF||d==XNINF),EVNAN);
@@ -205,7 +201,6 @@ XF2(jtxrem){I c,d,e;X q,r,y;
 }}
                                              
 XF2(jtxgcd){I c,d;X p,q,t;
- ARGCHK2(a,w);
  c=XDIG(a); if(0>c)RZ(a=negate(a)); 
  d=XDIG(w); if(0>d)RZ(w=negate(w));
  ASSERT(!(c==XPINF||c==XNINF||d==XPINF||d==XNINF),EVNAN);
@@ -233,7 +228,6 @@ static X jtxexp(J jt,X w,I mode){I k,m;X s,y;
 }
 
 XF2(jtxpow){PROLOG(0097);I c,d,e,r;X m,t,z;
- ARGCHK2(a,w);
  c=XDIG(a); d=XDIG(w); e=AV(w)[0];
  if(c==XPINF||c==XNINF){
   ASSERT(0<c||d!=XPINF,EVDOMAIN); 
@@ -334,7 +328,6 @@ static Z jtxlogz1(J jt,X w){Z z; z.re=xlogabs(w); z.im=0>XDIG(w)?PI:0.0; return 
 static XF2(jtxlog2sub){ASSERT(0,EVNONCE);}
 
 static XF2(jtxlog2){D c,d,x,y;I an,*av,j,k,m,n,wn,*wv;X p,q;
- ARGCHK2(a,w);
  an=AN(a); av=AV(a); c=(D)av[an-1]; if(1<an)c=av[an-2]+c*XBASE;
  wn=AN(w); wv=AV(w); d=(D)wv[wn-1]; if(1<wn)d=wv[wn-2]+d*XBASE;
  if(2<an)return rifvsdebug(xlog2sub(a,w));

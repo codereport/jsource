@@ -150,7 +150,6 @@ F1(jtnl1){memset(jt->workareas.namelist.nla,C1,256L); return nlx(w);}
      /* 4!:1  name list */
 
 F2(jtnl2){UC*u;
- ARGCHK2(a,w);
  ASSERT(LIT&AT(a),EVDOMAIN);
  memset(jt->workareas.namelist.nla,C0,256L); 
  u=UAV(a); DQ(AN(a),jt->workareas.namelist.nla[*u++]=1;);

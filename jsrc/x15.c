@@ -934,7 +934,6 @@ static B jtcdexec1(J jt,CCT*cc,C*zv0,C*wu,I wk,I wt,I wd){A*wv=(A*)wu,x,y,*zv;B 
 
 F2(jtcd){A z;C*tv,*wv,*zv;CCT*cc;I k,m,n,p,q,t,wr,*ws,wt;
  F2PREFIP;
- ARGCHK2(a,w);
  AFLAG(w)&=~AFPRISTINE;  // we transfer boxes from w to the result, thereby letting them escape.  That makes w non-pristine
  if(!jt->cdarg)RZ(cdinit());
  if(1<AR(a)){I rr=AR(w); rr=rr==0?1:rr; return rank2ex(a,w,UNUSED_VALUE,1L,rr,1L,rr,jtcd);}
@@ -1021,7 +1020,6 @@ F1(jtmemr){C*u;I m,n,t,*v;US*us;C4*c4;
 }    /* 15!:1  memory read */
 
 F2(jtmemw){C*u;I m,n,t,*v;
- ARGCHK2(a,w);
  ASSERT(INT&AT(w),EVDOMAIN);
  ASSERT(1==AR(w),EVRANK);
  n=AN(w); v=AV(w);
@@ -1214,7 +1212,6 @@ static const C* jfntnm[]={
 };
 
 F2(jtcdproc2){C*proc;FARPROC f;HMODULE h;
- ARGCHK2(a,w);
  ASSERT(LIT&AT(w),EVDOMAIN);
  ASSERT(1>=AR(w),EVRANK);
  ASSERT(AN(w),EVLENGTH);

@@ -325,7 +325,6 @@ static DF1(jtgprefix){A h,*hv,z,*zv;I m,n,r;
 // block a contains (start,length) of infix.  w is the A for the data.
 // Result is new block containing the extracted infix
 static F2(jtseg){A z;I c,k,m,n,*u,zn;
- ARGCHK2(a,w);
  // The (start,length) had better be integers.  Extract them into m,n
  if(INT&AT(a)){u=AV(a); m=*u; n=*(1+u);} else m=n=0;
  c=aii(w); k=c<<bplg(AT(w)); DPMULDE(n,c,zn);  // c=#atoms per item, k=#bytes/item, zn=atoms/infix

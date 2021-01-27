@@ -83,7 +83,6 @@ F1(jtuco1){I t;
 }    /* return 2-byte chars unchanged; convert 1-byte or 4-byte to 2-byte */
 
 F2(jtuco2){I j;
- ARGCHK2(a,w);
  RE(j=i0(a));
  switch(j){
   case 1: return toc1(1,w);

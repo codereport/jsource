@@ -74,7 +74,6 @@ F1(jttable){A z,zz;I r,wr;
 // ]"n, dyadic - also ["n, implemented as ] with ranks switched
 // length error has already been detected, in irs
 static A jtlr2(J jt,RANK2T ranks,A a,A w){I acr,af,ar,wcr,wf,wr;
- ARGCHK2(a,w);
  // ?r=rank of ? arg; ?cr= verb-rank for that arg; ?f=frame for ?; ?s->shape
  // We know that jt->rank is nonzero, because the caller checked it
  ar=AR(a); acr=ranks>>RANKTX; acr=ar<acr?ar:acr; af=ar-acr;
@@ -115,11 +114,11 @@ F1(jtjico1){A y,z;B b;D d,*v;I c,m,n;
  RETF(z);
 }
 
-DF1(jtnum1){ARGCHK2(w,self); return FAV(self)->fgh[2];}
+DF1(jtnum1){return FAV(self)->fgh[2];}
 DF2(jtnum2){ARGCHK3(a,w,self); return FAV(self)->fgh[2];}
 
-F2(jtfromr  ){ARGCHK2(a,w); A z; return IRS2(a,w,0, RMAX,1L,jtfrom  ,z);} // no agreement check because left rank is infinite - no frame  {"_ 1
-F2(jtrepeatr){ARGCHK2(a,w); A z; return IRS2(a,w,0, RMAX,1L,jtrepeat,z);}  // #"_ 1
+F2(jtfromr  ){A z; return IRS2(a,w,0, RMAX,1L,jtfrom  ,z);} // no agreement check because left rank is infinite - no frame  {"_ 1
+F2(jtrepeatr){A z; return IRS2(a,w,0, RMAX,1L,jtrepeat,z);}  // #"_ 1
 
 A jttaker(J jt,I n,A w){A a,z; RZ(a=sc(n)); return IRS2(a,w,0, RMAX,1L,jttake,z);}  // n {."1 w
 A jtdropr(J jt,I n,A w){A a,z; RZ(a=sc(n)); return IRS2(a,w,0, RMAX,1L,jtdrop,z);}  // n }."1 w

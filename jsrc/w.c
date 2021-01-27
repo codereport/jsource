@@ -134,7 +134,6 @@ static A jtconstr(J jt,I n,C*s){A z;C b,c,p,*t,*x;I m=0;
 // env is the environment for which this is being parsed: 0=tacit translator, 1=keyboard/immex with no locals, 2=for explicit defn
 // result is a list of parsable words, with types right.  The result is input only to parsing, never to verbs, and thus may be nonrecursive
 A jtenqueue(J jt,A a,A w,I env){A*v,*x,y,z;B b;C d,e,p,*s,*wi;I i,n,*u,wl;UC c;
- ARGCHK2(a,w);
  s=CAV(w); u=AV(a);
  n=AM(a);  // get # words not including any final NB.
  GATV0(z,BOX,n,1); x=v=AAV(z);   //  allocate list of words; set running word pointer x, and static
@@ -337,7 +336,6 @@ F1(jtfsmvfya){PROLOG(0099);A a,*av,m,s,x,z,*zv;I an,c,e,f,ijrd[4],k,p,q,*sv,*v;
 }    /* check left argument of x;:y */
 
 static A jtfsm0(J jt,A a,A w,C chka){PROLOG(0100);A*av,m,s,x,w0=w;B b;I c,f,*ijrd,k,n,p,q,*v;
- ARGCHK2(a,w);
  if(chka)RZ(a=fsmvfya(a)); 
  av=AAV(a); 
  f=i0(av[0]); s=av[1]; m=av[2]; ijrd=AV(av[3]);
@@ -365,5 +363,5 @@ static A jtfsm0(J jt,A a,A w,C chka){PROLOG(0100);A*av,m,s,x,w0=w;B b;I c,f,*ijr
 F2(jtfsm){return fsm0(a,w,1);}
      /* x;:y */
 
-DF1(jtfsmfx){ARGCHK2(w,self); return fsm0(FAV(self)->fgh[0],w,0);}
+DF1(jtfsmfx){return fsm0(FAV(self)->fgh[0],w,0);}
      /* x&;: y */

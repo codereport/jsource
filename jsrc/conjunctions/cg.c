@@ -123,7 +123,6 @@ static DF1(jtinsert){A hs,*hv,z;I hfx,j,m,n;A *old;
 
 // u`:m
 F2(jtevger){A hs;I k;
- ARGCHK2(a,w);
  RE(k=i0(w)); 
  if(k==GTRAIN)return exg(a);
  RZ(hs=fxeachv(RMAX,a));
@@ -137,13 +136,13 @@ F2(jtevger){A hs;I k;
    ASSERT(0,EVDOMAIN);
 }}
 
-F2(jttie){ARGCHK2(a,w); return over(VERB&AT(a)?arep(a):a,VERB&AT(w)?arep(w):w);}
+F2(jttie){return over(VERB&AT(a)?arep(a):a,VERB&AT(w)?arep(w):w);}
 
 
 // m@.:v y.  Execute the verbs at high rank if the operands are large
 // Bivalent entry point: called as (jt,w,self) or (jt,a,w,self)
 static DF2(jtcasei12){A vres,z;I gerit[128/SZI],ZZFLAGWORD;
- F1PREFIP; ARGCHK2(a,w);
+ F1PREFIP; 
  PROLOG(997);
  // see if we were called as monad or dyad.  If monad, fix up w and self
  ZZFLAGWORD=AT(w)&VERB?ZZFLAGINITSTATE|ZZFLAGWILLBEOPENED|ZZFLAGCOUNTITEMS:ZZFLAGINITSTATE|ZZFLAGWILLBEOPENED|ZZFLAGCOUNTITEMS|ZZFLAGISDYAD;  // we collect the results on the cells, but we don't assemble into a result.  To signal this, we force BOXATOP and set WILLBEOPENED
@@ -314,7 +313,6 @@ static DF2(jtcasei12){A vres,z;I gerit[128/SZI],ZZFLAGWORD;
 
 // @.n
 static F2(jtgerfrom){A*av,*v,z;I n;
- ARGCHK2(a,w);  /* 1==AR(w)&&BOX&AT(w) */
  ASSERT(1>=AR(a),EVRANK);
  if(NUMERIC&AT(a))return from(a,w);
  else{
@@ -326,7 +324,6 @@ static F2(jtgerfrom){A*av,*v,z;I n;
 }}
 
 F2(jtagendai){I flag;
- ARGCHK2(a,w)
  if(NOUN&AT(w))return exg(gerfrom(w,a));  // noun form, as before
  // verb v.  Create a "BOX" type holding the verb form of each gerund
  A avb; RZ(avb = incorp(fxeachv(1L,a)));
@@ -375,7 +372,6 @@ static DF2(jtgcr2){DECLFG;A ff,z0,z1,z2,*hv=AAV(sv->fgh[2]);
 // then execute the operation
 // a is the original u, w is the original v
 A jtgconj(J jt,A a,A w,C id){A hs,y;B na;I n;
- ARGCHK2(a,w);
  ASSERT(((AT(a)|AT(w))&(VERB|BOX))==(VERB|BOX),EVDOMAIN);  // v`box or box`v
  na=1&&BOX&AT(a); y=na?a:w; n=AN(y);  // na is 1 for gerund}; y is the gerund
  ASSERT(1>=AR(y),EVRANK);

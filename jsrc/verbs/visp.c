@@ -65,7 +65,6 @@ A jtiovsd(J jt,I mode,A a,A w){A ae,ax,ay,p,z;B h,*pv;I at,j,m,n,t,wt,*v,*yv;P*a
 
 
 A jtindexofxx(J jt,I mode,A a,A w){A x;B*b,*c,s;I ar,d,j,m,n,wr;P*p;
- ARGCHK2(a,w);
  s=1&&SPARSE&AT(a); ar=AR(a); wr=AR(w); d=wr-ar;
  if(s){p=PAV(a); m=ar; n=wr;}
  else {p=PAV(w); m=wr; n=ar;}
@@ -147,7 +146,6 @@ static B jtiopart(J jt,A w,I r,I mm,I*zc,A*zi,A*zj,A*zx){A b,f,wx,x,wy,y;B*bv;
 }
 
 A jtindexofss(J jt,I mode,A a,A w){A ai,aj,ax,wi,wj,wx,x,y,z;B aw=a!=w;I ar,c,m,mm,n,r,*u,*v,wr;P*ap,*wp,*zp;
- ARGCHK2(a,w);
  ar=AR(a); ap=PAV(a);
  wr=AR(w); wp=PAV(w); r=1+wr-ar;
  RZ(ioresparse(aw,&a,&w));

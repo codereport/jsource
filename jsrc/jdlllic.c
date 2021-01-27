@@ -76,7 +76,7 @@ F2(jtlock2){ASSERT(0,EVDOMAIN);}
 F1(jtunlock1){return unlock2(mtv,w);}
 
 F2(jtunlock2){int i,j,len,tlen;UC c1,c2,k1[SK],*lp,*sp,*d;
- ARGCHK2(a,w);  
+  
  d=UAV(w);
  tlen=(int)AN(w);
  if(!tlen || 255!=d[0] || 0 != d[1] || tlen<8+SK) return w; /* not jl */

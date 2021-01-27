@@ -255,7 +255,6 @@ static B jtsprintfeD(J jt, C *x, I m, I dp, D dw, C *subs) {I y,y0;int decpt,sig
 
 static F2(jtfmtprecomp) {A*as,base,fb,len,strs,*u,z;B*bits,*bw;D dtmp,*dw;
      I d,i,*ib,imod,*iw,*iv,maxl,mods,n,nB,nD,nMN,nPQ,nI,nc,nf,*s,wr,*ws,wt;
- ARGCHK2(a,w); 
  nf=AS(a)[0]; nf=1==AR(a)?1:nf; n=AN(w); wt=AT(w); wr=AR(w); ws=AS(w); SHAPEN(w,wr-1,nc);   // nf=#cells, nc=length of 1-cell (# columns)
  ASSERT(wt&B01+INT+FL, EVDOMAIN);
  if(1<nf){GATV0(base,INT,nf*4,2); s=AS(base); *s++=nf; *s=4;}else GATV0(base,INT,3+nc,1);
@@ -517,7 +516,7 @@ static A jtfmtallcol(J jt, A a, A w, I mode) {A *a1v,base,fb,len,strs,*u,v,x;
 } /* format w */
 
 static A jtfmtxi(J jt, A a, A w, I mode, I *omode){I lvl;
- ARGCHK2(a,w); *omode=0;
+ *omode=0;
  if(unlikely((SPARSE&AT(w))!=0)) RZ(w=denseit(w));
  if(!AN(w))       RZ(w=reshape(shape(w),chrspace));
  if(JCHAR&AT(w))  return df1(a,w,qq(atop(ds(CBOX),ds(CCOMMA)),num(1)));
@@ -545,7 +544,6 @@ static A jtfmtxi(J jt, A a, A w, I mode, I *omode){I lvl;
 F2(jtfmt02){I mode; return fmtxi(a,w,0,&mode);} /* 8!:0 dyad */
 
 F2(jtfmt12){A z;I mode,r,j;
- ARGCHK2(a,w);
  ASSERT(2>=AR(w), EVRANK);
  RZ(z=fmtxi(a,w,1,&mode));
  if(mode==1)return z;
@@ -555,7 +553,6 @@ F2(jtfmt12){A z;I mode,r,j;
 } /* 8!:1 dyad */
 
 F2(jtfmt22){A z;I mode,r,j;
- ARGCHK2(a,w);
  ASSERT(2>=AR(w), EVRANK);
  RZ(z=fmtxi(a,w,2,&mode));
  if(mode==2)return z;

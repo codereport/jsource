@@ -11,7 +11,6 @@ F1(jtstype){return sc(AT(w)&-AT(w));}
 // a is integer atom or list, values indicating the desired result
 // atom values in x: 0=NJA, others reserved
 F2(jtnouninfo2){A z;
- ARGCHK2(a,w);
  RZ(a=vi(a)); // convert to integer, error if can't
  ASSERT(AR(a)<2,EVRANK);  // must be atom or list
  GATV(z,INT,AN(a),AR(a),AS(a));  // allocate result
@@ -208,14 +207,12 @@ F1(jtbinrep1){ASSERT(NOUN&AT(w),EVDOMAIN); return brep(BU,1,w);}  /* 3!:1 w */
 F1(jthexrep1){ASSERT(NOUN&AT(w),EVDOMAIN); return hrep(BU,1,w);}  /* 3!:3 w */
 
 F2(jtbinrep2){I k;
- ARGCHK2(a,w);
  RE(k=i0(a)); if(10<=k)k-=8;
  ASSERT(BETWEENC(k,0,3),EVDOMAIN);
  return brep((B)(k&1),(B)(2<=k),w);
 }    /* a 3!:1 w */
 
 F2(jthexrep2){I k;
- ARGCHK2(a,w); 
  RE(k=i0(a)); if(10<=k)k-=8;
  ASSERT(BETWEENC(k,0,3),EVDOMAIN);
  return hrep((B)(k&1),(B)(2<=k),w);
@@ -311,7 +308,6 @@ F1(jtunbin){A q;B b,d;C*v;I c,i,k,m,n,r,t;
 
 
 F2(jtic2){A z;I j,m,n,p,*v,*x,zt;I4*y;UI4*y1;S*s;U short*u;
- ARGCHK2(a,w);
  ASSERT(1>=AR(w),EVRANK);
  n=AN(w);
  RE(j=i0(a));
@@ -335,7 +331,6 @@ F2(jtic2){A z;I j,m,n,p,*v,*x,zt;I4*y;UI4*y1;S*s;U short*u;
 }}
 
 F2(jtfc2){A z;D*x,*v;I j,m,n,p,zt;float*s;
- ARGCHK2(a,w);
  ASSERT(1>=AR(w),EVRANK);
  n=AN(w);
  RE(j=i0(a));
