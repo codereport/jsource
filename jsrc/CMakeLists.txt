@@ -5,36 +5,81 @@ target_compile_definitions(j PRIVATE C_NA=0)
 target_link_libraries(j PRIVATE ${STANDARD_MATH_LIBRARY})
 set_source_files_properties(aes-ni.c PROPERTIES COMPILE_FLAGS -maes)
 target_sources(j PRIVATE
-        a.c
-        ab.c
+        adverbs/a.c
+        adverbs/ab.c
+        adverbs/af.c
+        adverbs/ai.c
+        adverbs/am.c
+        adverbs/am1.c
+        adverbs/amn.c
+        adverbs/ao.c
+        adverbs/ap.c
+        adverbs/ar.c
+        adverbs/as.c
+        adverbs/au.c
+        conjunctions/c.c
+        conjunctions/ca.c
+        conjunctions/cc.c
+        conjunctions/cf.c
+        conjunctions/cg.c
+        conjunctions/ch.c
+        conjunctions/cip.c
+        conjunctions/cl.c
+        conjunctions/cp.c
+        conjunctions/cpdtsp.c
+        conjunctions/cr.c
+        conjunctions/crs.c
+        conjunctions/cu.c
+        conjunctions/cv.c
+        conjunctions/cx.c
+        verbs/crc32c.c
+        verbs/v.c
+        verbs/v0.c
+        verbs/v1.c
+        verbs/v2.c
+        verbs/va1.c
+        verbs/va1ss.c
+        verbs/va2.c
+        verbs/va2s.c
+        verbs/va2ss.c
+        verbs/vamultsp.c
+        verbs/vb.c
+        verbs/vbang.c
+        verbs/vcant.c
+        verbs/vcat.c
+        verbs/vcatsp.c
+        verbs/vchar.c
+        verbs/vcomp.c
+        verbs/vcompsc.c
+        verbs/vd.c
+        verbs/ve.c
+        verbs/vf.c
+        verbs/vfft.c
+        verbs/vfrom.c
+        verbs/vfromsp.c
+        verbs/vg.c
+        verbs/vgauss.c
+        verbs/vgcomp.c
+        verbs/vgranking.c
+        verbs/vgsort.c
+        verbs/vgsp.c
+        verbs/vi.c
+        verbs/viix.c
+        verbs/visp.c
+        verbs/vm.c
+        verbs/vo.c
+        verbs/vp.c
+        verbs/vq.c
+        verbs/vrand.c
+        verbs/vrep.c
+        verbs/vs.c
+        verbs/vsb.c
+        verbs/vt.c
+        verbs/vx.c
+        verbs/vz.c
         aes-c.c
         aes-ni.c
-        af.c
-        ai.c
-        am.c
-        am1.c
-        amn.c
-        ao.c
-        ap.c
-        ar.c
-        as.c
-        au.c
-        c.c
-        ca.c
-        cc.c
-        cf.c
-        cg.c
-        ch.c
-        cip.c
-        cl.c
-        cp.c
-        cpdtsp.c
         cpuinfo.c
-        cr.c
-        crs.c
-        cu.c
-        cv.c
-        cx.c
         d.c
         dc.c
         dss.c
@@ -63,51 +108,7 @@ target_sources(j PRIVATE
         sn.c
         t.c
         u.c
-        v.c
-        v0.c
-        v1.c
-        v2.c
-        va1.c
-        va1ss.c
-        va2.c
-        va2s.c
-        va2ss.c
-        vamultsp.c
-        vb.c
-        vbang.c
-        vcant.c
-        vcat.c
-        vcatsp.c
-        vchar.c
-        vcomp.c
-        vcompsc.c
-        vd.c
-        ve.c
-        vf.c
-        vfft.c
-        vfrom.c
-        vfromsp.c
-        vg.c
-        vgauss.c
-        vgcomp.c
-        vgranking.c
-        vgsort.c
-        vgsp.c
-        vi.c
-        viix.c
-        visp.c
-        vm.c
-        vo.c
-        vp.c
-        vq.c
-        vrand.c
-        vrep.c
-        vs.c
-        vsb.c
-        vt.c
         vu.c
-        vx.c
-        vz.c
         w.c
         wc.c
         wn.c
@@ -130,7 +131,6 @@ target_sources(j PRIVATE
         xsha.c
         xt.c
         xu.c
-        crc32c.c
         )
 
 # configure_file( ${CMAKE_CURRENT_SOURCE_DIR}/ COPYONLY)

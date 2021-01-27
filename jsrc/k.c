@@ -4,7 +4,7 @@
 /* Conversions Amongst Internal Types                                      */
 
 #include "j.h"
-#include "vcomp.h"
+#include "verbs/vcomp.h"
 
 #define KF1(f)          B f(J jt,A w,void*yv)
 #define KF1F(f)         B f(J jt,A w,void*yv,D fuzz)  // calls that use optional fuzz

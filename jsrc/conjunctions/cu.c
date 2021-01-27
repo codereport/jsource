@@ -4,7 +4,7 @@
 /* Conjunctions: Under and Each                                            */
 
 #include "j.h"
-#include "ve.h"
+#include "verbs/ve.h"
 
 
 static A jteverysp(J jt,A w,A fs){A*wv,x,z,*zv;P*wp,*zp;

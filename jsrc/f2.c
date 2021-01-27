@@ -4,7 +4,7 @@
 /* Format: ": Dyad                                                         */
 
 #include "j.h"
-#include "vcomp.h"
+#include "verbs/vcomp.h"
 
 
 static F2(jtth2box){A z;I n,p,q,*v,x,y;

@@ -4,8 +4,8 @@
 /* Table of Primitive Symbols                                              */
 
 #include "j.h"
-#include "ve.h"
-#include "vcomp.h"
+#include "verbs/ve.h"
+#include "verbs/vcomp.h"
 
 
 C ctype[256]={

@@ -818,11 +818,11 @@ if(likely(z<3)){_zzt+=z; z=(I)&oneone; _zzt=_i&3?_zzt:(I*)z; z=_i&2?(I)_zzt:z; z
 #include "jlib.h"
 #include "je.h" 
 #include "jerr.h" 
-#include "va.h" 
+#include "verbs/va.h"
 #include "vq.h" 
 #include "vx.h" 
 #include "vz.h"
-#include "a.h"
+#include "adverbs/a.h"
 #include "s.h"
 
 
