@@ -175,9 +175,9 @@ endif ()
 target_link_libraries(jconsole PRIVATE ${CMAKE_DL_LIBS})
 target_sources(jconsole PRIVATE
         jconsole.c
-
         jeload.cpp
-
+        util/string.cpp
+        util/string.hpp
         )
 file(TO_NATIVE_PATH "${PROJECT_SOURCE_DIR}/jlibrary/bin" J_BINPATH)
 file(TO_NATIVE_PATH "/profile.ijs" J_PROFILE_SCRIPT)
