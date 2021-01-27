@@ -61,6 +61,11 @@ map ((+1) . (*2)) [0..9] -- alternative thanks to Alexandru Dinu
 ```ijs
 1+2*i.10
 ```
+**C++**:
+```c++
+for(int i=0;i<10;i++){
+cout<<(2 * i )+ 1<<"\n";}
+```
 
 ## Getting started & Building:
 For building this repository, please see [`CONTRIBUTING.md`](https://github.com/codereport/jsource/blob/main/CONTRIBUTING.md).
