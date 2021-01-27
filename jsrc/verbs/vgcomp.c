@@ -39,7 +39,7 @@ I jtcompare(J jt,A a,A w){C*av,*wv;I ar,an,*as,at,c,d,j,m,t,wn,wr,*ws,wt;
  ARGCHK2(a,w);
  an=AN(a); at=an?AT(a):B01; ar=AR(a); as=AS(a);
  wn=AN(w); wt=wn?AT(w):B01; wr=AR(w); ws=AS(w); t=maxtyped(at,wt);
- if(unlikely(!HOMO(at,wt)))return (at&BOX?-1:wt&BOX?1:at&JCHAR?-1:wt&JCHAR?1:
+ if(!HOMO(at,wt))return (at&BOX?-1:wt&BOX?1:at&JCHAR?-1:wt&JCHAR?1:
                    at&SBT?-1:1)*jt->workareas.compare.complt;
  if(ar!=wr)return (ar>wr?-1:1)*jt->workareas.compare.complt;
  if(1<ar&&ICMP(1+as,1+ws,ar)){A s;I*v;fauxblockINT(sfaux,4,1);

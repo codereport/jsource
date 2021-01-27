@@ -729,7 +729,7 @@ void jttpop(J jt,A *old){A *endingtpushp;
     // We never tpush a PERMANENT block so we needn't check for it.
     // If count goes to 0: if the usercount is marked recursive, do the recursive fa(), otherwise just free using mf().  If virtual, the backer must be recursive, so fa() it
     // Otherwise just decrement the count
-    if(likely(--c<=0)){
+    if(--c<=0){
      I flg=AFLAG(np);  // fetch flags
      // The block is going to be destroyed.  See if there are further ramifications
      if(flg&AFVIRTUAL){A b=ABACK(np); fanano0(b); mf(np);}  // if virtual block going away, reduce usecount in backer, ignore the flagged recursiveness just free the virt block
@@ -781,7 +781,7 @@ RESTRICTF A jtgaf(J jt,I blockx){A z;I mfreeb;I n=(I)2<<blockx;  // n=size of al
 // audit free chain if(++auditmodulus>25){auditmodulus=0; for(i=PMINL;i<=PLIML;++i){j=0; x=(jt->mfree[-PMINL+i].pool); while(x){x=(MS*)(x->a); ++j;}}}
 // use 6!:5 to start audit I i,j;MS *x; if(jt->peekdata){for(i=PMINL;i<=PLIML;++i){j=0; x=(jt->mfree[-PMINL+i].pool); while(x){x=(MS*)(x->a); ++j;}}}
  z=jt->mfree[-PMINL+1+blockx].pool;   // tentatively use head of free list as result - normal case, and even if blockx is out of bounds will not segfault
- if(likely(2>*jt->adbreakr)){  // this is JBREAK0, done this way so predicted fallthrough will be true
+ if(2>*jt->adbreakr){  // this is JBREAK0, done this way so predicted fallthrough will be true
   A *pushp=jt->tnextpushp;  // start reads for tpush
 
   if(blockx<PLIML){ 
@@ -846,7 +846,7 @@ RESTRICTF A jtgaf(J jt,I blockx){A z;I mfreeb;I n=(I)2<<blockx;  // n=size of al
   }
 #endif
   // If the user is keeping track of memory high-water mark with 7!:2, figure it out & keep track of it.  Otherwise save the cycles
-  if(unlikely(((mfreeb&MFREEBCOUNTING)!=0))){
+  if(((mfreeb&MFREEBCOUNTING)!=0)){
    jt->bytes += n; if(jt->bytes>jt->bytesmax)jt->bytesmax=jt->bytes;
   }
   return z;
@@ -943,7 +943,7 @@ RESTRICTF A jtgah(J jt,I r,A w){A z;
 F1(jtca){A z;I t;P*wp,*zp;
  ARGCHK1(w);
  t=AT(w);
- if(unlikely((t&SPARSE)!=0)){
+ if((t&SPARSE)!=0){
   GASPARSE(z,t,AN(w),AR(w),AS(w))
   wp=PAV(w); zp=PAV(z);
   SPB(zp,a,ca(SPA(wp,a)));

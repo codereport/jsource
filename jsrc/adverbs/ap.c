@@ -411,7 +411,7 @@ static DF2(jtinfixprefix2){F2PREFIP;PROLOG(00202);A fs;I cger[128/SZI];
  ARGCHK1(w);
  PREF2IP(jtinfixprefix2);  // handle rank loop if needed
  wt=AT(w);
- if(unlikely((wt&SPARSE)!=0)){
+ if((wt&SPARSE)!=0){
   // Use the old-style non-virtual code for sparse types
   switch(((VAV(self)->flag&VGERL)>>(VGERLX-1)) + (a==mark)) {  // 2: is gerund  1: is prefix
   case (0+0): return jtinfix(jt,a,w,self);
@@ -594,7 +594,7 @@ static DF1(jtinfixprefix1){F1PREFIP;
 static DF1(jtpscan){A z;I f,n,r,t,wn,wr,*ws,wt;
  F1PREFIP;ARGCHK1(w);
  wt=AT(w);   // get type of w
- if(unlikely((SPARSE&wt)!=0))return scansp(w,self,jtpscan);  // if sparse, go do it separately
+ if((SPARSE&wt)!=0)return scansp(w,self,jtpscan);  // if sparse, go do it separately
  // wn = #atoms in w, wr=rank of w, r=effective rank, f=length of frame, ws->shape of w
  wn=AN(w); wr=AR(w); r=(RANKT)jt->ranks; r=wr<r?wr:r; RESETRANK; f=wr-r; ws=AS(w);
  // m = #cells, c=#atoms/cell, n = #items per cell

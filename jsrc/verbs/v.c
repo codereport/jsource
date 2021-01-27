@@ -9,17 +9,17 @@
 F1(jttally ){A z; I k; ARGCHK1(w); z=sc(SETIC(w,k));            RETF(AT(w)&XNUM+RAT?xco1(z):z);}  //  # y
 F1(jtshapex){A z; ARGCHK1(w); z=vec(INT,AR(w),AS(w)); RETF(AT(w)&XNUM+RAT?xco1(z):z);}
 F1(jtshape){ARGCHK1(w); return vec(INT,AR(w),AS(w));}  // $ y
-F1(jtisempty){ARGCHK1(w); if(unlikely((AT(w)&SPARSE)!=0))return eps(zeroionei(0),shape(w)); return num(AN(w)==0);}  // 0 e. $
-F1(jtisnotempty){ARGCHK1(w); if(unlikely((AT(w)&SPARSE)!=0))return __not(eps(zeroionei(0),shape(w))); return num(AN(w)!=0);}  // *@#@,
+F1(jtisempty){ARGCHK1(w); if((AT(w)&SPARSE)!=0)return eps(zeroionei(0),shape(w)); return num(AN(w)==0);}  // 0 e. $
+F1(jtisnotempty){ARGCHK1(w); if((AT(w)&SPARSE)!=0)return __not(eps(zeroionei(0),shape(w))); return num(AN(w)!=0);}  // *@#@,
 F1(jtisitems){ARGCHK1(w); return num(!AR(w)|!!AS(w)[0]);}   // *@#   *@:#
 F1(jtrank){F1PREFIP; ARGCHK1(w); return sc(AR(w));}  // #@$
-F1(jtnatoms){F1PREFIP; A z; ARGCHK1(w); if(unlikely((AT(w)&SPARSE)!=0))return df1(z,shape(w),slash(ds(CSTAR))); return sc(AN(w));}   // */@$  #@,
+F1(jtnatoms){F1PREFIP; A z; ARGCHK1(w); if((AT(w)&SPARSE)!=0)return df1(z,shape(w),slash(ds(CSTAR))); return sc(AN(w));}   // */@$  #@,
 
 // ,y and ,"r y - producing virtual blocks
 F1(jtravel){A a,c,q,x,y,y0,z;B*b;I f,j,m,r,*u,*v,*yv;P*wp,*zp;
  F1PREFIP; ARGCHK1(w); 
  r=(RANKT)jt->ranks; r=AR(w)<r?AR(w):r; f=AR(w)-r; // r=effective rank (jt->rank is effective rank from irs1), f=frame
- if(likely(!(AT(w)&SPARSE))){
+ if(!(AT(w)&SPARSE)){
   if(r==1)return RETARG(w);  // if we are enfiling 1-cells, there's nothing to do, return the input (note: AN of sparse array is always 1)
   CPROD(AN(w),m,r,f+AS(w));   // m=#atoms in cell
   if(ASGNINPLACESGN(SGNIF((I)jtinplace,JTINPLACEWX)&(-r),w) && !(AFLAG(w)&AFUNINCORPABLE)){  // inplace allowed, rank not 0 (so shape will fit), usecount is right

@@ -444,7 +444,7 @@ static A jtva2(J jt,AD * RESTRICT a,AD * RESTRICT w,AD * RESTRICT self,UI allran
  F2PREFIP;
  {I at=AT(a);
   I wt=AT(w);
-  if(likely(!(((I)jtinplace&(JTRETRY|JTEMPTY))+((UNSAFE(at|wt))&(NOUN&~(B01|INT|FL)))))){  // no error, bool/int/fl args, no empties
+  if(!(((I)jtinplace&(JTRETRY|JTEMPTY))+((UNSAFE(at|wt))&(NOUN&~(B01|INT|FL))))){  // no error, bool/int/fl args, no empties
    // Here for the fast and important case, where the arguments are both B01/INT/FL
    VA *vainfo=(VA*)FAV(self)->localuse.lvp[0];  // extract table line from the primitive
    // The index into va is atype*3 + wtype, calculated sneakily.  We test here to avoid the call overhead
@@ -458,7 +458,7 @@ static A jtva2(J jt,AD * RESTRICT a,AD * RESTRICT w,AD * RESTRICT self,UI allran
    // If we switch a sparse nonnumeric matrix to boolean, that may be a space problem; but we don't
    // support nonnumeric sparse now
    // if an operand is sparse, replace its type with the corresponding non-sparse type, for purposes of testing operand precisions
-   if(unlikely(((at|wt)&SPARSE)!=0)){
+   if(((at|wt)&SPARSE)!=0){
     at=(SPARSE&at)?DTYPE(at):at;
     wt=(SPARSE&wt)?DTYPE(wt):wt;
     jtinplace=0;  // We use jtinplace==0 as a flag meaning 'sparse'
@@ -476,16 +476,14 @@ static A jtva2(J jt,AD * RESTRICT a,AD * RESTRICT w,AD * RESTRICT self,UI allran
  // if we are retrying the operation, we may be in error state until var clears it; and prod and mult can fail,
  // so we have to RE when we call them
 
-// I ar = AR(a);
-// I wr = AR(w);
  // Analyze the rank and calculate cell shapes, counts, and sizes.
  // We detect agreement error before domain error
- {//I *as = AS(a); I *ws = AS(w);
-  if(likely((allranks&RANK2TMSK)==0)){ // rank 0 0 means no outer frames, sets up faster
+ {
+  if((allranks&RANK2TMSK)==0){ // rank 0 0 means no outer frames, sets up faster
    fr=allranks>>(3*RANKTX); UI shortr=(allranks>>(2*RANKTX))&RANKTMSK;  // fr,shortr = ar,wr to begin with.  Changes later
    // No rank specified.  Since all these verbs have rank 0, that simplifies quite a bit.  ak/wk/zk are not needed and are garbage
    // n is not needed for sparse, but we start it early to get it finished
-   if(likely(jtinplace!=0)){
+   if(jtinplace!=0){
     I an=AN(a); m=zn=AN(w);
     I raminusw=fr-shortr;   // ar-wr, neg if WISLONG
     zn=raminusw<0?zn:an; m=raminusw<0?an:m;  // zn=# atoms in bigger operand, m=#atoms in smaller
@@ -523,7 +521,7 @@ static A jtva2(J jt,AD * RESTRICT a,AD * RESTRICT w,AD * RESTRICT self,UI allran
     wcr=acr; wcr&=RANKTMSK; wf<<=2*RANKTX+1; wcr|=wf;   // wcr = wfr/0/wcr  final value
     acr>>=RANKTX; af<<=RANKTX+1; acr|=af;  // acr = afr/0/acr    final value
    }
-   if(likely(jtinplace!=0)){  // If not sparse... This block isn't needed for sparse arguments, and may fail on them.
+   if(jtinplace!=0){  // If not sparse... This block isn't needed for sparse arguments, and may fail on them.
     jtinplace = (J)((I)jtinplace&3);  // remove all but the inplacing bits
     jtinplace = (J)((I)jtinplace+aadocv->cv);  // insert flag bits for routine (always has bits 0-3=0xc); set bits 2-3 (converted inplacing bits) aadocv free
     jtinplace = (J)((I)jtinplace+((acr+((I)1<<(2*RANKTX))-wcr)&(VIPWFLONG|VIPWCRLONG)));  // set flag for 'w has longer cell-rank' and 'w has longer frame (wrt verb)'.  The 1 is a carry blocker
@@ -582,7 +580,7 @@ static A jtva2(J jt,AD * RESTRICT a,AD * RESTRICT w,AD * RESTRICT self,UI allran
     // 1: m=1 and n=1: move mf->m, nf->n, and complement n if ak==0 (i. e. x arg is repeated) example:  list *"0 _ atom
     // 2: n=1 and nf=1: multiply m by mf, leave n  example: (shape 4 5) *"1 (shape 4 5 or 1 4 5)
     // 3: m=1 and nf=1: multiply m by mf, leave n  example: (shape 4 5) *"1 0 (shape 5)
-    if(unlikely(((nf==1)+(n==1)+(m==1))>1)){  // 2 values=1, can lose a loop
+    if(((nf==1)+(n==1)+(m==1))>1){  // 2 values=1, can lose a loop
      // migration is possible
      n=(n*nf)^REPSGN(SGNIF(jtinplace,VIPWFLONGX)&(1-nf)); m*=mf;   // propagate mf and nf down; if n is not 1, complement if af<wf
      DPMULDE(nf,mf,mf);  // mf is total # iterations
@@ -608,7 +606,7 @@ static A jtva2(J jt,AD * RESTRICT a,AD * RESTRICT w,AD * RESTRICT self,UI allran
 
  // Signal domain error if appropriate. Must do this after agreement tests
  ASSERT(aadocv->f,EVDOMAIN);
- if(likely(jtinplace!=0)){   // if not sparse...
+ if(jtinplace!=0){   // if not sparse...
   // Not sparse.
 
    // If op specifies forced input conversion AND if both arguments are non-sparse: convert them to the selected type.
@@ -616,7 +614,7 @@ static A jtva2(J jt,AD * RESTRICT a,AD * RESTRICT w,AD * RESTRICT self,UI allran
    // might fail because the type in t is incompatible with the actual type in a.  t is rare.
    //
    // Because of the priority of errors we mustn't check the type until we have verified agreement above
-   if(unlikely(((I)jtinplace&VARGMSK)!=0))if(likely(zn>0)){I t=atype((I)jtinplace);  // input conversion required (rare), and the result is not empty
+   if(((I)jtinplace&VARGMSK)!=0)if(zn>0){I t=atype((I)jtinplace);  // input conversion required (rare), and the result is not empty
     // Conversions to XNUM use a routine that pushes/sets/pops jt->mode, which controls the
     // type of conversion to XNUM in use.  Any result of the conversion is automatically inplaceable.  If type changes, change the cell-size too, possibly larger or smaller
     // bits 2-3 of jtinplace indicate whether inplaceability is allowed by the op, the ranks, and the addresses
@@ -652,14 +650,14 @@ static A jtva2(J jt,AD * RESTRICT a,AD * RESTRICT w,AD * RESTRICT self,UI allran
   // The ordering here assumes that jtinplace will usually be set
 // alternative  if(((I)jtinplace&1) && (AC(w)<ACUC1 || AC(w)==ACUC1&&jt->assignsym&&jt->assignsym->val==w&&!(adocv.cv&VCANHALT && jt->asgzomblevel<2))){z=w; if(TYPESNE(AT(w),zt))MODBLOCKTYPE(z,zt)  //  Uses JTINPLACEW==1
 // alternative  }else if(((I)jtinplace&2) && (AC(a)<ACUC1 || AC(a)==ACUC1&&jt->assignsym&&jt->assignsym->val==a&&!(adocv.cv&VCANHALT && jt->asgzomblevel<2))){z=a; if(TYPESNE(AT(a),zt))MODBLOCKTYPE(z,zt)  //  Uses JTINPLACEA==2
-  if(ASGNINPLACESGN(SGNIF(jtinplace,JTINPLACEWX),w)){z=w; I zt=rtype((I)jtinplace); if(unlikely(TYPESNE(AT(w),zt)))MODBLOCKTYPE(z,zt)  //  Uses JTINPLACEW==1
-  }else if(ASGNINPLACESGN(SGNIF(jtinplace,JTINPLACEAX),a)){z=a; I zt=rtype((I)jtinplace); if(unlikely(TYPESNE(AT(a),zt)))MODBLOCKTYPE(z,zt)  //  Uses JTINPLACEA==2
+  if(ASGNINPLACESGN(SGNIF(jtinplace,JTINPLACEWX),w)){z=w; I zt=rtype((I)jtinplace); if(TYPESNE(AT(w),zt))MODBLOCKTYPE(z,zt)  //  Uses JTINPLACEW==1
+  }else if(ASGNINPLACESGN(SGNIF(jtinplace,JTINPLACEAX),a)){z=a; I zt=rtype((I)jtinplace); if(TYPESNE(AT(a),zt))MODBLOCKTYPE(z,zt)  //  Uses JTINPLACEA==2
 #define scell AS((I)jtinplace&VIPWCRLONG?w:a)+(fr>>(3*RANKTX))  // address of start of cell shape     shape of long cell+frame(long cell)
     // fr is (frame(long cell))  /  (shorter frame len)   /  (longer frame len)                      /   (longer frame len+longer celllen)
   }else{GA(z,rtype((I)jtinplace),zn,(RANKT)fr,0); MCISH(AS(z),AS(((I)jtinplace&VIPWFLONG)?w:a),(fr>>RANKTX)&RANKTMSK); MCISH(AS(z)+((fr>>RANKTX)&RANKTMSK),scell,(fr&RANKTMSK)-((fr>>RANKTX)&RANKTMSK));} 
 //                                                 frame loc     shape of long frame             len of long frame           cellshape loc              cellshape     longer cellen 
   // fr free
-  if(unlikely(zn==0)){RETF(z);}  // If the result is empty, the allocated area says it all
+  if(zn==0){RETF(z);}  // If the result is empty, the allocated area says it all
   // zn  NOT USED FROM HERE ON
 
   // End of setup phase.  The execution phase:
@@ -674,11 +672,11 @@ static A jtva2(J jt,AD * RESTRICT a,AD * RESTRICT w,AD * RESTRICT self,UI allran
      // but aawwzk[1,3] have 0 in a repeated argument.  aawwzk[1,3] are added for each inner iteration, aawwzk[0,2] at the end of an inner cycle
      // m is the number of outer loops the caller will run
      // n is the number of times the inner-loop atom is repeated for each outer loop: n=1 means no inner loop needed; n>1 means each atom of y is repeated n times; n<0 means each atom of x is repeated ~n times.  n*m cannot=0. 
-   I i=mf; I jj=nf; lp000: {I lrc=((AHDR2FN*)aadocv->f)(n,m,av,wv,zv,jt); rc=lrc<rc?lrc:rc; if(unlikely(--i!=0)){ I jj1=--jj; jj=jj<0?nf:jj; av+=aawwzk[1+REPSGN(jj1)]; wv+=aawwzk[3+REPSGN(jj1)]; zv+=aawwzk[4]; goto lp000; }}  // jj1 is -1 on the last inner iter, where we use outer incr
+   I i=mf; I jj=nf; lp000: {I lrc=((AHDR2FN*)aadocv->f)(n,m,av,wv,zv,jt); rc=lrc<rc?lrc:rc; if(--i!=0){ I jj1=--jj; jj=jj<0?nf:jj; av+=aawwzk[1+REPSGN(jj1)]; wv+=aawwzk[3+REPSGN(jj1)]; zv+=aawwzk[4]; goto lp000; }}  // jj1 is -1 on the last inner iter, where we use outer incr
    }
 
    // The work has been done.  If there was no error, check for optional conversion-if-possible or -if-necessary
-   if(likely(rc==EVOK)){if(unlikely((I)jtinplace&VRI+VRD))z=cvz((I)jtinplace,z); RETF(z);  // normal return is here.  The rest is error recovery
+   if(rc==EVOK){if((I)jtinplace&VRI+VRD)z=cvz((I)jtinplace,z); RETF(z);  // normal return is here.  The rest is error recovery
    }else if(rc-EWOVIP>=0){A zz;C *zzv;I zzk;
     // Here for overflow that can be corrected in place
 // not yet    if(rc==EVOKCLEANUP){jt->mulofloloc=0; RETF(z);}  // if multiply that did not overflow, clear the oflo position for next time, and return
@@ -1033,8 +1031,8 @@ DF2(jtatomic2){A z;
  // check for singletons
  if(!(awm1|((AT(a)|AT(w))&(NOUN&UNSAFE(~(B01+INT+FL)))))){
   z=jtssingleton(jtinplace,a,w,self,(RANK2T)awr,selfranks);
-  if(likely(z!=0)){RETF(z);}  // normal case is good return
-  if(unlikely(jt->jerr<=NEVM)){RETF(z);}   // if error is unrecoverable, don't retry
+  if(z!=0){RETF(z);}  // normal case is good return
+  if(jt->jerr<=NEVM){RETF(z);}   // if error is unrecoverable, don't retry
   // if retryable error, fall through.  The retry will not be through the singleton code
   jtinplace=(J)((I)jtinplace|JTRETRY);  // indicate that we are retrying the operation.  We must, because jt->jerr is set with the retry code
  }
@@ -1049,12 +1047,12 @@ DF2(jtatomic2){A z;
  ASSERTAGREE(AS(a),AS(w),af);  // outermost (or only) agreement check
  // Run the full dyad, retrying if a retryable error is returned
  z=jtva2(jtinplace,a,w,self,(awr<<RANK2TX)+selfranks);  // execute the verb
- if(likely(z!=0)){RETF(z);}  // normal case is good return
- if(unlikely(jt->jerr<=NEVM)){RETF(z);}   // if error is unrecoverable, don't retry
+ if(z!=0){RETF(z);}  // normal case is good return
+ if(jt->jerr<=NEVM){RETF(z);}   // if error is unrecoverable, don't retry
  return z=jtva2((J)((I)jtinplace|JTRETRY),a,w,self,(awr<<RANK2TX)+selfranks);  // execute the verb
 }
 
-DF2(jtexpn2  ){F2PREFIP; ARGCHK2(a,w); if(unlikely(((((I)AR(w)-1)&SGNIF(AT(w),FLX))<0)))if(unlikely(0.5==DAV(w)[0]))return sqroot(a);  return jtatomic2(jtinplace,a,w,self);}  // use sqrt hardware for sqrt.  Only for atomic w.
+DF2(jtexpn2  ){F2PREFIP; ARGCHK2(a,w); if(((((I)AR(w)-1)&SGNIF(AT(w),FLX))<0))if(0.5==DAV(w)[0])return sqroot(a);  return jtatomic2(jtinplace,a,w,self);}  // use sqrt hardware for sqrt.  Only for atomic w.
 DF2(jtresidue){F2PREFIP; ARGCHK2(a,w); I intmod; if(!((AT(a)|AT(w))&(NOUN&~INT)|AR(a))&&(intmod=IAV(a)[0], (intmod&-intmod)+(intmod<=0)==0))return intmod2(w,intmod); return jtatomic2(jtinplace,a,w,self);}
 
 
@@ -1125,9 +1123,9 @@ VA2 jtvar(J jt,A self,I at,I wt){I t;
   }else{
    // Normal case, but something is nonnumeric.  This will be a domain error except for = and ~:, and a few symbol operations
    VA2 retva2;  retva2.cv=VB; // where we build the return value   cv indicates no input conversion, boolean result
-    if(likely(((UC)FAV(self)->id&~1)==CEQ)){I opcode;  // CEQ or CNE
+    if(((UC)FAV(self)->id&~1)==CEQ){I opcode;  // CEQ or CNE
     // = or ~:, possibly inhomogeneous
-    if(likely(HOMO(at,wt))){
+    if(HOMO(at,wt)){
      opcode=((at>>(C2TX-2))+(wt>>C2TX))|(3*(5&(((t>>(SBTX-(BOXX+2)))+t)>>BOXX))); // bits are a4 a2 w4 w2 if char, 1100 if symbol, 0011 if box.  symbol is 1110, coming from a and symb shift
     }else opcode=15;  // inhomogeneous line
     retva2.f=eqnetbl[(UC)FAV(self)->id&1][opcode];  // return the comparison

@@ -265,7 +265,7 @@ static DF1(jtssg){F1PREFIP;PROLOG(0020);A a,z;I i,n,r,wr;
    ACIPNO(z); AAV(boxedz)[0]=z; z=boxedz;  // incorporate z into boxedz; point boxedz to the previous result, and make that the new argument for next time
   }
   // if result happens to be the same virtual block that we passed in, we have to clone it before we change the pointer
-  else if(unlikely(a==z)){RZ(z=virtual(z,0,AR(a))); AN(z)=AN(a); MCISH(AS(z),AS(a),r-1);}
+  else if(a==z){RZ(z=virtual(z,0,AR(a))); AN(z)=AN(a); MCISH(AS(z),AS(a),r-1);}
 
   AK(a)-=k;  // back up to next input
   AC(a)=ACUC1 + ((state&ZZFLAGVIRTAINPLACE)<<(ACINPLACEX-ZZFLAGVIRTAINPLACEX));   // in case we created a virtual block from it, restore inplaceability to the UNINCORPABLE block
@@ -301,7 +301,7 @@ A jtscansp(J jt,A w,A self,AF sf){A e,ee,x,z;B*b;I f,m,j,r,t,wr;P*wp,*zp;
 static DF1(jtsscan){A y,z;I d,f,m,n,r,t,wn,wr,*ws,wt;
  F1PREFIP;ARGCHK1(w);
  wt=AT(w);
- if(unlikely((SPARSE&wt)!=0))return scansp(w,self,jtsscan);
+ if((SPARSE&wt)!=0)return scansp(w,self,jtsscan);
  wn=AN(w); wr=AR(w); r=(RANKT)jt->ranks; r=wr<r?wr:r; f=wr-r; ws=AS(w); RESETRANK;
  PROD(m,f,ws); PROD1(d,r-1,f+ws+1); I *nn=&ws[f]; nn=r?nn:&I1mem; n=*nn;   // will not be used if WN==0, so PROD ok.  n is # items along the selected rank
  y=FAV(self)->fgh[0]; // y is f/

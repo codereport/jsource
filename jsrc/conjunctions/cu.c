@@ -27,14 +27,14 @@ DF1(jteveryself){return jtevery(jt,w,FAV(self)->fgh[0]);}   // replace u&.> with
 // u&.>, but w may be a gerund, which makes the result a list of functions masquerading as an aray of boxes
 A jtevery(J jt, A w, A fs){A * RESTRICT wv,x,z,* RESTRICT zv;
  F1PREFIP;ARGCHK1(w);RESETRANK;  // we claim to support IRS1 but really there's nothing to do for it
- if(unlikely((SPARSE&AT(w))!=0))return everysp(w,fs);
+ if((SPARSE&AT(w))!=0)return everysp(w,fs);
  AF f1=FAV(fs)->valencefns[0];   // pointer to function to call
  A virtw; I flags;  // flags are: ACINPLACE=pristine result; JTWILLBEOPENED=nonrecursive result; BOX=input was boxed; ACPERMANENT=input was inplaceable pristine, contents can be inplaced
  // If the result will be immediately unboxed, we create a NONrecursive result and we can store virtual blocks in it.  This echoes what result.h does.
  flags=ACINPLACE|((I)jtinplace&JTWILLBEOPENED)|(AT(w)&BOX);
  // Get input pointer
  I virtblockw[NORMAH];  // space for a virtual block of rank 0
- if(likely((flags&BOX)!=0)){virtw=*(wv=AAV(w));  // if input is boxed, point to first box
+ if((flags&BOX)!=0){virtw=*(wv=AAV(w));  // if input is boxed, point to first box
   if(ASGNINPLACESGN(SGNIF(jtinplace,JTINPLACEWX)&SGNIF(AFLAG(w),AFPRISTINEX),w))flags|=ACPERMANENT&-(AFLAG(w)&RECURSIBLE);  // indicates inplaceability of boxed contents - only if recursive block
  }else{
   // if input is not boxed, use a faux-virtual block to point to the atoms.  Repurpose unneeded wv to hold length
@@ -78,7 +78,7 @@ A jtevery(J jt, A w, A fs){A * RESTRICT wv,x,z,* RESTRICT zv;
     {PRISTCLR(x)}  // x can never be pristine, since is being incorped
   }
   // prepare the result so that it can be incorporated into the overall boxed result
-  if(likely(!(flags&JTWILLBEOPENED))) {
+  if(!(flags&JTWILLBEOPENED)) {
    // normal case where we are creating the result box.  Must incorp the result
    realizeifvirtual(x); ra(x);   // Since we are moving the result into a recursive box, we must ra() it.  This plus rifv plus pristine removal=INCORPRA.  We could save some fetches by bundling this code into the RIRECT path
    // We have to see if virtw escaped.  If so, we must mark w non-PRISTINE.  Since we are concerned about virtw itself escaping, rather than a part of it,
@@ -139,7 +139,7 @@ A jtevery2(J jt, A a, A w, A fs){A*av,*wv,x,z,*zv;
  A virtw;
  // Get input pointer
  I virtblockw[NORMAH];  // space for a virtual block of rank 0
- if(likely((flags&BOX)!=0)){
+ if((flags&BOX)!=0){
   virtw=*(wv=AAV(w));  // if input is boxed, point to first box
   if(ASGNINPLACESGN(SGNIF((I)jtinplace&~flags,JTINPLACEWX)&SGNIF(AFLAG(w),AFPRISTINEX),w))flags|=(ACPERMANENT>>1)&-(AFLAG(w)&RECURSIBLE);  // indicates inplaceability of boxed contents.  Never if arg repeated, only if recursive
  }else{
@@ -150,7 +150,7 @@ A jtevery2(J jt, A a, A w, A fs){A*av,*wv,x,z,*zv;
  // repeat for a
  A virta;
  I virtblocka[NORMAH];
- if(likely((flags&(BOX<<1))!=0)){
+ if((flags&(BOX<<1))!=0){
   virta=*(av=AAV(a));
   if(ASGNINPLACESGN(SGNIF((I)jtinplace&~flags,JTINPLACEAX)&SGNIF(AFLAG(a),AFPRISTINEX),a))flags|=ACPERMANENT&-(AFLAG(a)&RECURSIBLE);
  }else{
@@ -196,7 +196,7 @@ A jtevery2(J jt, A a, A w, A fs){A*av,*wv,x,z,*zv;
   }
 
   // prepare the result so that it can be incorporated into the overall boxed result
-  if(likely(!(flags&JTWILLBEOPENED))) {
+  if(!(flags&JTWILLBEOPENED)) {
    // normal case where we are creating the result box.  Must incorp the result
    realizeifvirtual(x); ra(x);   // Since we are moving the result into a recursive box, we must ra() it.  This plus rifv plus pristine removal=INCORPRA.  We could save some fetches by bundling this code into the RIRECT path
    // We have to see if virtw escaped.  If so, we must mark w non-PRISTINE.  Since we are concerned about virtw itself escaping, rather than a part of it,

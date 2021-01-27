@@ -132,12 +132,12 @@ do{
      // change in rank/shape: fail
    zexprank=(zexprank!=zr)?-1:zexprank;  // if zexprank!=zr, make zexprank negative to make sure loop doesn't overrun the smaller shape
    DO(zexprank, zexprank+=zs[i]^zzs[i];)  // if shapes don't match, set zexprank
-   if(likely(!((zt&SPARSE) + (zexprank^zr)))){  // if there was no wreck...
+   if(!((zt&SPARSE) + (zexprank^zr))){  // if there was no wreck...
     // rank/shape did not change.  What about the type?
-    if(unlikely(TYPESNE(zt,zzt))){
+    if(TYPESNE(zt,zzt)){
      // The type changed.  Convert the types to match.
      zt=maxtypedne(zt,zzt);  // get larger priority
-     if(likely(AN(z)!=0)){I zatomct;
+     if(AN(z)!=0){I zatomct;
       // nonempty cells. we must convert the actual data.  See which we have to change
       if(zt==zzt){
        // Here the type of z must change.  Just convert it to type zt
@@ -178,7 +178,7 @@ do{
 #else
     I zzoktozap=AC(z)&SGNIFNOT(AFLAG(z),AFVIRTUALX);  // neg if inplaceable, not virtual
 #endif
-    if(unlikely(((zzoktozap&(-(AFLAG(z)&RECURSIBLE)))|((AT(z)&RECURSIBLE)-1))>=0)){  // not ok to zap OR must be made recursive, only if type is recursible
+    if(((zzoktozap&(-(AFLAG(z)&RECURSIBLE)))|((AT(z)&RECURSIBLE)-1))>=0){  // not ok to zap OR must be made recursive, only if type is recursible
      // if unzappable OR recursible nonrecursive, raise children - even if z is UNINCORPABLE or VIRTUAL.  The children are about to be copied
      // We raise only the children, not the base block.  This converts the children to recursive usecount.  We leave the base block nonrecursive if it started
      // that way.  We may zap it later.  By not making the base recursive, we add 1 to the effective usecount of the children
@@ -192,7 +192,7 @@ do{
     // We free only the z block itself, not its children: children were incorporated above
     // if the value iz zappable, zap it (it may have become zappable, if it turned recursive above).  Free only the root block
     // We should do this for virtual blocks also, to get the full effect of tpop.  When we can zap virtuals we will
-    if(likely(zzoktozap<0)){*AZAPLOC(z)=0; mf(z);}  // free the root block.  If is has descendants their ownership was transferred to zz.
+    if(zzoktozap<0){*AZAPLOC(z)=0; mf(z);}  // free the root block.  If is has descendants their ownership was transferred to zz.
 #if !ZZSTARTATEND
     zzcellp+=zzcelllen;  // advance to next cell
 #else
@@ -200,7 +200,7 @@ do{
 #endif
     // **** z may have been destroyed and must not be used from here on ****
    }else{  // there was a wreck
-    if(unlikely((zt&SPARSE)!=0)){
+    if((zt&SPARSE)!=0){
      // we encountered a sparse result.  Ecch.  We are going to have to box all the results and open them.  Remember that fact
      ZZFLAGWORD|=ZZFLAGUSEOPEN;
     }
@@ -255,7 +255,7 @@ do{
    ASSERT(!(AT(z)&SPARSE),EVNONCE);
    // If z is DIRECT inplaceable, it must be unique and we can inherit them into a pristine result.  Otherwise clear pristinity
    ZZFLAGWORD&=((AC(z)>>(BW-AFPRISTINEX))&(-(AT(z)&DIRECT)))|~ZZFLAGPRISTINE;
-   if(likely(ZZWILLBEOPENEDNEVER||!(ZZFLAGWORD&ZZFLAGWILLBEOPENED))) {  // scaf it might be better to allow the virtual to be stored in the main result, and realize it only for the looparound z
+   if(ZZWILLBEOPENEDNEVER||!(ZZFLAGWORD&ZZFLAGWILLBEOPENED)) {  // scaf it might be better to allow the virtual to be stored in the main result, and realize it only for the looparound z
     // normal case where we are creating the result box.  Must incorp the result
     realizeifvirtual(z); ra(z);   // Since we are moving the result into a recursive box, we must ra() it.  This plus rifv plus pristine flagging (above) =INCORPRA
     *zzboxp=z;  // install the new box.  zzboxp is ALWAYS a pointer to a box when force-boxed result
@@ -271,7 +271,7 @@ do{
     // pristinity of lower results; thus we may not relax the rule that all contents must be non-inplaceable
     // box code all over assumes that contents are never inplaceable, and since we go through here only when we are going through box code next, we honor that
     ACIPNO(z); *zzboxp=z;  // install the new box.  zzboxp is ALWAYS a pointer to a box when force-boxed result
-    if(unlikely((ZZFLAGWORD&ZZFLAGCOUNTITEMS)!=0)){
+    if((ZZFLAGWORD&ZZFLAGCOUNTITEMS)!=0){
      // if the result will be razed next, we will count the items and store that in AM.  We will also ensure that the result boxes' contents have the same type
      // and item-shape.  If one does not, we turn off special raze processing.  It is safe to take over the AM field in this case, because we know this is WILLBEOPENED and
      // (1) will never assemble or epilog; (2) will feed directly into a verb that will discard it without doing any usecount modification

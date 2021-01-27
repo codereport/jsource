@@ -29,7 +29,7 @@ F1(jtbox){A y,z,*zv;C*wv;I f,k,m,n,r,wr,*ws;
  F1PREFIP;ARGCHK1(w);I wt=AT(w); FLAGT waf=AFLAG(w);
  ASSERT(!(SPARSE&wt),EVNONCE);
  wr=AR(w); r=(RANKT)jt->ranks; r=wr<r?wr:r; f=wr-r;   // no RESETRANK because we call no primitives
- if(likely(!f)){
+ if(!f){
   // single box: fast path.  Allocate a scalar box and point it to w.  Mark w as incorporated.  Make all results recursive
   // If the input is DIRECT and abandoned, mark the result as PRISTINE
   // If the input is abandoned and direct or recursive, zap it rather than raising the usecount
@@ -89,7 +89,7 @@ F2PREFIP;ARGCHK2(a,w);
  I optype=FAV(self)->localuse.lclr[0];  // flag: sign set if (,<) or ,&< or (;<) which will always box w; bit 0 set if (,<)
  realizeifvirtual(w); realizeifvirtual(a);  // it's going into an array, so realize it
  // if (,<) and a is not boxed singleton atom/list, revert
- if(unlikely((optype&1)>((AT(a)>>BOXX)&SGNTO0((AR(a)-2)&((AN(a)^1)-1))))){return jthook2cell(jtinplace,a,w,self);}  // (,<) and ((not boxed) or (rank>1) or (n!=1)) - revert to normal processing
+ if((optype&1)>((AT(a)>>BOXX)&SGNTO0((AR(a)-2)&((AN(a)^1)-1)))){return jthook2cell(jtinplace,a,w,self);}  // (,<) and ((not boxed) or (rank>1) or (n!=1)) - revert to normal processing
  I unboxempty=SGNIFNOT(AT(w),BOXX)|(AN(w)-1)|optype;  // sign set if unboxed or empty, or the operation is (,<) or ,&< or (;<) which will always box w
  I aband=(a!=w)&SGNTO0(AC(w))&((I)jtinplace>>JTINPLACEWX);  // bit 0 = 1 if w is abandoned.  Must not accept a==w as it could lead to w containing itself
  if((unboxempty|((AN(w)|AR(w))-2))<0){A neww;   // unboxed/empty or force-boxed w, or AN(w)<2 and AR(w)<2
@@ -113,10 +113,10 @@ F2PREFIP;ARGCHK2(a,w);
  }
  // now w has been boxed if needed & includes the new w value
 
- if(likely(((aband-AR(w))|SGNIFNOT(AFLAG(w),BOXX))>=0)){   // if w is recursive abandoned rank 1: (rank can't be 0, since we would have replaced it above)
+ if(((aband-AR(w))|SGNIFNOT(AFLAG(w),BOXX))>=0){   // if w is recursive abandoned rank 1: (rank can't be 0, since we would have replaced it above)
   // w was recursive abandoned.  We will store back-to-front, on the assumption that ; usually happens in bunches and w probably came from ;
   // if new w has no space before the end, allocate a bigger block and move w to the end of it
-  if(unlikely(AK(w)==AKXR(1))){A neww;   // no space at the beginning of w
+  if(AK(w)==AKXR(1)){A neww;   // no space at the beginning of w
    I neededn=AN(w)+4+8; CTLZI(neededn,neededn); neededn=(2LL<<neededn)-8;  // number of atoms needed in larger block: room for at least 4 more, rounded up to power of 2 after header
    GATV0(neww,BOX,neededn,1); AN(neww)=AS(neww)[0]=AN(w); AK(neww)+=(neededn-(AN(w)+4))*SZI;  // allocate and position AK to put AN(w) atoms at end, with several spaces extra in case user wants to append in place
    MC(AAV(neww),AAV(w),AN(w)*SZI);  // copy the atoms from old to new
@@ -124,7 +124,7 @@ F2PREFIP;ARGCHK2(a,w);
    w=neww;  // start adding to the new block
   }
   aband=SGNTO0(AC(a))&((I)jtinplace>>JTINPLACEAX)&&(a!=w);  // bit 0 = 1 if a is abandoned and is not the same as x
-  if(unlikely(optype&1)){  // if verb is (,<) we deal with contents of a
+  if(optype&1){  // if verb is (,<) we deal with contents of a
    // if verb is (,<), a must be a boxed singleton.  move the contents of a into w, then ra/zap as above
    // a was boxed, & a known singleton.  Put the single value into w, then ra or zap.  w loses pristinity unless a is abandoned pristine
    // We don't have access to the tpush stack, but if a is abandoned recursive we can use the slot in a as a surrogate location to zap - maybe could even if nonrecursive?
@@ -208,7 +208,7 @@ A jtassembleresults(J jt, I ZZFLAGWORD, A zz, A zzbox, A* zzboxp, I zzcellp, I z
  A* box0=AAV(zzbox)+(startatend&(AN(zzbox)-1));  // address of last valid box pointer, depending on direction of movement
  C* zzcell=CAV(zz)+zzcellp;  // address of last+1 cell moved to zz
 
- if(likely(!(ZZFLAGWORD&ZZFLAGUSEOPEN))){
+ if(!(ZZFLAGWORD&ZZFLAGUSEOPEN)){
   // No sparse results.  We will bypass jtope and move the results into the result area here, with conversion and fill
 
   // Create the fill-cell we will need.  Note: all recursible fills must have the PERMANENT flag set, since we may not increment the usecount
@@ -281,7 +281,7 @@ A jtassembleresults(J jt, I ZZFLAGWORD, A zz, A zzbox, A* zzboxp, I zzcellp, I z
     // cell comes from zzboxp.  Convert if necessary, then move.  Before moving, calculate the rank to use for the fill.
     // Don't convert empties, to make sure we don't have a failure while we are processing boxed results
     if((-AN(zzboxcell)&-TYPESXOR(zft,AT(zzboxcell)))<0){  // not empty and new type
-     if(unlikely(!(zzboxcell=cvt(zft,zzboxcell)))){
+     if(!(zzboxcell=cvt(zft,zzboxcell))){
       // error during conversion.  THIS IS THE ONLY PLACE WHERE ERROR IS POSSIBLE DURING THE COPY.
       // If zz and zztemp are the same block, and that block is recursive, it may be in an invalid state: values have been copied
       // from zzcell up the the end of the block and are now duplicated.  To fix it, we have to zero out anything was was copied but
@@ -460,7 +460,7 @@ F1(jtope){PROLOG(0080);A cs,*v,y,z;I nonh;C*x;I i,n,*p,q=RMAX,r=0,*s,t=0,te=0,*u
  fauxblockINT(csfaux,4,1); fauxINT(cs,csfaux,r,1) u=AV(cs); DO(r-q, u[i]=1;); p=u+r-q; DO(q, p[i]=0;);
  // find the shape of a result-cell
  DO(n, y=v[i]; s=AS(y); p=u+r-AR(y); DO(AR(y),p[i]=MAX(p[i],s[i]);););
- if(unlikely((t&SPARSE)!=0))RZ(z=opes(t,cs,w))
+ if((t&SPARSE)!=0)RZ(z=opes(t,cs,w))
  else{I klg; I m;
   PRODX(m,r,u,1); DPMULDE(n,m,zn); klg=bplg(t); q=m<<klg;
   // Allocate result area & copy in shape (= frame followed by result-cell shape)

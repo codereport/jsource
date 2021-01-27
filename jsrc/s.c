@@ -198,11 +198,11 @@ L*jtprobe(J jt,I l,C*string,UI4 hash,A g){
 L *jtprobelocal(J jt,A a,A locsyms){NM*u;I b,bx;
  // There is always a local symbol table, but it may be empty
  ARGCHK1(a);u=NAV(a);  // u->NM block
- if(likely((b = u->bucket)!=0)){
+ if((b = u->bucket)!=0){
   if(0 > (bx = ~u->bucketx)){
    // positive bucketx (now negative); that means skip that many items and then do name search.  This is set for words that were recognized as names but were not detected as assigned-to in the definition
    // If no new names have been assigned since the table was created, we can skip this search, since it must fail (this is the path for words in z eg)
-   if(likely(!(AR(locsyms)&LNAMEADDED)))return 0;
+   if(!(AR(locsyms)&LNAMEADDED))return 0;
    LX lx = LXAV0(locsyms)[b];  // index of first block if any
    I m=u->m; C* s=u->s;  // length/addr of name from name block
    while(0>++bx){lx = LAV0(jt->symp)[lx].next;}
@@ -498,7 +498,7 @@ L* jtsymbis(J jt,A a,A w,A g){A x;I m,n,wn,wr,wt;L*e;
  I xt;  // If not assigned, use empty type
  if(x){
    xaf=AFLAG(x); xt=AT(x); // if assigned, get the actual flags, from the name and the old value
-   if(unlikely((e->flag&LWASABANDONED)!=0)){
+   if((e->flag&LWASABANDONED)!=0){
      // Reassigning an x/y that was abandoned into this execution.  We did not increment the value when we started, so we'd better not decrement now.
      // However, we did change 8..1 to 1, and if the 1 is still there, we set it back to 8..1 so that the caller can see that the value is unincorporated.
      // The case where x==w is of interest (it comes up in x =. x , 5).  In that case we will not change the usecount of x/w below, so we have to keep the ABANDONED
@@ -511,8 +511,8 @@ L* jtsymbis(J jt,A a,A w,A g){A x;I m,n,wn,wr,wt;L*e;
  if(!(AFNJA&xaf)){
   // Normal case of non-memory-mapped assignment.
   // If we are assigning the same data block that's already there, don't bother with changing use counts or anything else
-  if(likely(x!=w)){
-   if(unlikely(((xt|AT(w))&(VERB|CONJ|ADV))!=0)){
+  if(x!=w){
+   if(((xt|AT(w))&(VERB|CONJ|ADV))!=0){
     // When we assign to, or reassign, a modifier, invalidate all the lookups of modifiers that are extant
     // It's a pity that we have to do this for ALL assignments, even assignments to uv.  If we don't, a reference to a local modifier may get passed in, and
     // it will still be considered valid even though the local names have disappeared.  Maybe we could avoid this if the local namespace has no defined modifiers - but then we'd have to keep up with that...
@@ -531,8 +531,8 @@ L* jtsymbis(J jt,A a,A w,A g){A x;I m,n,wn,wr,wt;L*e;
    // won't be freed till later.  By deferring all deletions we don't have to worry about whether local values are on the stack; and that allows us to avoid putting local values
    // on the NVR stack at all.
    // ABANDONED values can never be NVR (which are never inplaceable), so they will be flagged as !NVR,!UNFREED,ABANDONED
-   if(likely((xaf&AFNVRUNFREED)!=0)){  // x is 0, or unfreed on the NVR stack, or abandoned.  Do not fa().  0 is probably the normal case (assignment to unassigned name)
-    if(unlikely((xaf&AFNVR)!=0)){AFLAG(x)=(xaf&=~AFNVRUNFREED);} // If unfreed on the NVR stack, mark as to-be-freed on the stack.  This defers the deletion
+   if((xaf&AFNVRUNFREED)!=0){  // x is 0, or unfreed on the NVR stack, or abandoned.  Do not fa().  0 is probably the normal case (assignment to unassigned name)
+    if((xaf&AFNVR)!=0){AFLAG(x)=(xaf&=~AFNVRUNFREED);} // If unfreed on the NVR stack, mark as to-be-freed on the stack.  This defers the deletion
     // x=0 case, and LABANDONED case, go through quietly making no change to the usecount of x
    }else{  // x is non0 and either already marked as freed on the NVR stack or must be put there now, or VIRTUAL
     if(!(xaf&(AFNVR|AFVIRTUAL))){
@@ -542,7 +542,7 @@ L* jtsymbis(J jt,A a,A w,A g){A x;I m,n,wn,wr,wt;L*e;
      // (2) the value is not VIRTUAL.  The only way for an assigned value to be VIRTUAL is for it to be an initial assignment to x/y.  And to get here
      // the value must not have been adandoned.  So the usecount was raised on assignment (otherwise we would have gone through the no-fa special case).  So it is safe to fa() immediately then
      A nvra=jt->nvra;
-     if(unlikely((I)(jt->parserstackframe.nvrtop+1U) > AN(nvra)))RZ(nvra=extnvr());  // Extend nvr stack if necessary.  copied from parser
+     if((I)(jt->parserstackframe.nvrtop+1U) > AN(nvra))RZ(nvra=extnvr());  // Extend nvr stack if necessary.  copied from parser
      AAV1(nvra)[jt->parserstackframe.nvrtop++] = x;   // record the place where the value was protected (i. e. this sentence); it will be freed when this sentence finishes
      AFLAG(x) |= AFNVR;  // mark the value as protected in NVR stack
     }else{
@@ -563,7 +563,7 @@ L* jtsymbis(J jt,A a,A w,A g){A x;I m,n,wn,wr,wt;L*e;
   }
  }
  e->sn=jt->slisti;  // Save the script in which this name was defined
- if(unlikely(jt->stch!=0))e->flag|=LCH;  // update 'changed' flag if enabled - no harm in marking locals too
+ if(jt->stch!=0)e->flag|=LCH;  // update 'changed' flag if enabled - no harm in marking locals too
  return e;   // return the block for the assignment
 }    /* a: name; w: value; g: symbol table */
 

@@ -62,19 +62,6 @@ static inline omp_int_t omp_get_max_threads() { return 1;}
 #include <memory.h>
 #include <sys/types.h>
 
-// likely/unlikely support
-#if defined(__clang__) || defined(__GNUC__)
-#ifndef likely
-#define likely(x) __builtin_expect((x),1)
-#endif
-#ifndef unlikely
-#define unlikely(x) __builtin_expect((x),0)
-#endif
-#else
-#define likely(x) (x)
-#define unlikely(x) (x)
-#endif
-
 #if 1
 #include <stdint.h>
 #include <float.h>
@@ -294,26 +281,25 @@ static inline omp_int_t omp_get_max_threads() { return 1;}
 
 #define A0              0   // a nonexistent A-block
 #define ABS(a)          (0<=(a)?(a):-(a))
-#define ASSERT(b,e)     {if(unlikely(!(b))){jsignal(e); return 0;}}
+#define ASSERT(b,e)     {if(!(b)){jsignal(e); return 0;}}
 // version for debugging
-// #define ASSERT(b,e)     {if(unlikely(!(b))){fprintf(stderr,"error code: %i : file %s line %d\n",(int)(e),__FILE__,__LINE__); jsignal(e); return 0;}}
-#define ASSERTD(b,s)    {if(unlikely(!(b))){jsigd((s)); return 0;}}
+#define ASSERTD(b,s)    {if(!(b)){jsigd((s)); return 0;}}
 #define ASSERTMTV(w)    {ARGCHK1(w); ASSERT(1==AR(w),EVRANK); ASSERT(!AN(w),EVLENGTH);}
-#define ASSERTN(b,e,nm) {if(unlikely(!(b))){jt->curname=(nm); jsignal(e); return 0;}}  // set name for display (only if error)
-#define ASSERTSYS(b,s)  {if(unlikely(!(b))){fprintf(stderr,"system error: %s : file %s line %d\n",s,__FILE__,__LINE__); jsignal(EVSYSTEM); jtwri(jt,MTYOSYS,"",(I)strlen(s),s); return 0;}}
-#define ASSERTW(b,e)    {if(unlikely(!(b))){if((e)<=NEVM)jsignal(e); else jt->jerr=(e); return;}}
-#define ASSERTWR(c,e)   {if(unlikely(!(c))){return e;}}
+#define ASSERTN(b,e,nm) {if(!(b)){jt->curname=(nm); jsignal(e); return 0;}}  // set name for display (only if error)
+#define ASSERTSYS(b,s)  {if(!(b)){fprintf(stderr,"system error: %s : file %s line %d\n",s,__FILE__,__LINE__); jsignal(EVSYSTEM); jtwri(jt,MTYOSYS,"",(I)strlen(s),s); return 0;}}
+#define ASSERTW(b,e)    {if(!(b)){if((e)<=NEVM)jsignal(e); else jt->jerr=(e); return;}}
+#define ASSERTWR(c,e)   {if(!(c)){return e;}}
 
 #define ASSERTAGREE(x,y,l) \
  {I *aaa=(x), *aab=(y); I aai=(l); \
-  if(likely(aai<=2)){ \
+  if(aai<=2){ \
    aai-=1; aaa=(aai<0)?(I*)&validitymask[1]:aaa; aab=(aai<0)?(I*)&validitymask[1]:aab; \
    ASSERT(((aaa[0]^aab[0])+(aaa[aai]^aab[aai]))==0,EVLENGTH); \
   }else{ASSERT(!memcmp(aaa,aab,aai<<LGSZI),EVLENGTH)} \
  }
 #define TESTDISAGREE(r,x,y,l) \
  {I *aaa=(x), *aab=(y); I aai=(l); \
-  if(likely(aai<=2)){ \
+  if(aai<=2){ \
    aai-=1; aaa=(aai<0)?(I*)&validitymask[1]:aaa; aab=(aai<0)?(I*)&validitymask[1]:aab; \
    r=((aaa[0]^aab[0])+(aaa[aai]^aab[aai]))!=0;  \
   }else{r=memcmp(aaa,aab,aai<<LGSZI)!=0;} \
@@ -391,13 +377,13 @@ static inline omp_int_t omp_get_max_threads() { return 1;}
 #define FPREFIP         J jtinplace=jt; jt=(J)(intptr_t)((I)jt&~JTFLAGMSK)  // turn off all flag bits in jt, leave them in jtinplace
 #define F1PREFIP        FPREFIP
 #define F2PREFIP        FPREFIP
-#define F1RANK(m,f,self)    {ARGCHK1(w); if(unlikely(m<AR(w)))if(m==0)return rank1ex0(w,(A)self,f);else return rank1ex(  w,(A)self,(I)m,     f);}  // if there is more than one cell, run rank1ex on them.  m=monad rank, f=function to call for monad cell.  Fall through otherwise
-#define F2RANKcommon(l,r,f,self,extra)  {ARGCHK2(a,w); extra if(unlikely((I)((l-AR(a))|(r-AR(w)))<0))if((l|r)==0)return rank2ex0(a,w,(A)self,f);else{I lr=MIN((I)l,AR(a)); I rr=MIN((I)r,AR(w)); return rank2ex(a,w,(A)self,lr,rr,lr,rr,f);}}  // If there is more than one cell, run rank2ex on them.  l,r=dyad ranks, f=function to call for dyad cell
+#define F1RANK(m,f,self)    {ARGCHK1(w); if(m<AR(w))if(m==0)return rank1ex0(w,(A)self,f);else return rank1ex(  w,(A)self,(I)m,     f);}  // if there is more than one cell, run rank1ex on them.  m=monad rank, f=function to call for monad cell.  Fall through otherwise
+#define F2RANKcommon(l,r,f,self,extra)  {ARGCHK2(a,w); extra if((I)((l-AR(a))|(r-AR(w)))<0)if((l|r)==0)return rank2ex0(a,w,(A)self,f);else{I lr=MIN((I)l,AR(a)); I rr=MIN((I)r,AR(w)); return rank2ex(a,w,(A)self,lr,rr,lr,rr,f);}}  // If there is more than one cell, run rank2ex on them.  l,r=dyad ranks, f=function to call for dyad cell
 #define F2RANK(l,r,f,self)  F2RANKcommon(l,r,f,self,)
 // same, but used when the function may pull an address from w.  In that case, we have to turn pristine off since there may be duplicates in the result
 #define F2RANKW(l,r,f,self) F2RANKcommon(l,r,f,self,PRISTCLR(w))
-#define F1RANKIP(m,f,self)    {RZ(   w); if(unlikely(m<AR(w)))return jtrank1ex(jtinplpace,  w,(A)self,(I)m,     f);}  // if there is more than one cell, run rank1ex on them.  m=monad rank, f=function to call for monad cell
-#define F2RANKIP(l,r,f,self)  {ARGCHK2(a,w); if(unlikely((I)((l-AR(a))|(r-AR(w)))<0)){I lr=MIN((I)l,AR(a)); I rr=MIN((I)r,AR(w)); return jtrank2ex(jtinplace,a,w,(A)self,REX2R(lr,rr,lr,rr),f);}}  // If there is more than one cell, run rank2ex on them.  l,r=dyad ranks, f=function to call for dyad cell
+#define F1RANKIP(m,f,self)    {RZ(   w); if(m<AR(w))return jtrank1ex(jtinplpace,  w,(A)self,(I)m,     f);}  // if there is more than one cell, run rank1ex on them.  m=monad rank, f=function to call for monad cell
+#define F2RANKIP(l,r,f,self)  {ARGCHK2(a,w); if((I)((l-AR(a))|(r-AR(w)))<0){I lr=MIN((I)l,AR(a)); I rr=MIN((I)r,AR(w)); return jtrank2ex(jtinplace,a,w,(A)self,REX2R(lr,rr,lr,rr),f);}}  // If there is more than one cell, run rank2ex on them.  l,r=dyad ranks, f=function to call for dyad cell
 // get # of things of size s, rank r to allocate so as to have an odd number of them at least n, after discarding w items of waste.  Try to fill up a full buffer 
 #define FULLHASHSIZE(n,s,r,w,z) {UI4 zzz;  CTLZI((((n)|1)+(w))*(s) + AKXR(r) - 1,zzz); z = ((((I)1<<(zzz+1)) - AKXR(r)) / (s) - 1) | (1&~(w)); }
 // Memory-allocation macros
@@ -417,14 +403,14 @@ static inline omp_int_t omp_get_max_threads() { return 1;}
 #define GACOPYSHAPE0(name,type,atoms,rank,shaape) if((rank)==1)AS(name)[0]=(atoms);
 // General shape copy, branchless when rank<3  AS[0] is always written: #atoms if rank=1, 0 if rank=0.  Used in jtga(), which uses the 0 in AS[0] as a pun for nullptr
 #define GACOPYSHAPEG(name,type,atoms,rank,shaape) \
- {I *_d=AS(name); I *_s=(shaape); _s=_s?_s:_d; I cp=*_s; I _r=(rank); cp=_r<1?0:cp; cp=_r==1?(atoms):cp; _s=_r<=1?_d:_s; *_d=cp; ++_d; ++_s; if(likely(_r<3)){*_d=*_s;}else{MC(_d,_s,(_r-1)<<LGSZI);}}
+ {I *_d=AS(name); I *_s=(shaape); _s=_s?_s:_d; I cp=*_s; I _r=(rank); cp=_r<1?0:cp; cp=_r==1?(atoms):cp; _s=_r<=1?_d:_s; *_d=cp; ++_d; ++_s; if(_r<3){*_d=*_s;}else{MC(_d,_s,(_r-1)<<LGSZI);}}
 // Use when shape is known to be present but rank is not SDT.  One value is always written to shape
 // in this version one value is always written to shape
 #define GACOPYSHAPE(name,type,atoms,rank,shaape)  {I *_s=(I*)(shaape); I *_d=AS(name); *_d=*_s; I _r=1-(rank); do{_s+=SGNTO0(_r); _d+=SGNTO0(_r); *_d=*_s;}while(++_r<0);}
 #define GACOPY1(name,type,atoms,rank,shaape) {I *_d=AS(name); *_d=1; I _r=1-(rank); do{_d+=SGNTO0(_r); *_d=1;}while(++_r<0);} // copy all 1s to shape
 #define GA(v,t,n,r,s)   RZ(v=ga(t,(I)(n),(I)(r),(I*)(s)))
 // GAE executes the given expression when there is an error
-#define GAE(v,t,n,r,s,erraction)   if(unlikely(!(v=ga(t,(I)(n),(I)(r),(I*)(s)))))erraction;
+#define GAE(v,t,n,r,s,erraction)   if(!(v=ga(t,(I)(n),(I)(r),(I*)(s))))erraction;
 // When the type and all rank/shape are known at compile time, use GAT.  The compiler precalculates almost everything
 // For best results declare name as: AD* RESTRICT name;  The number of bytes, rounded up with overhead added, must not exceed 2^(PMINL+4)
 #define GATS(name,type,atoms,rank,shaape,size,shapecopier,erraction) \
@@ -432,7 +418,7 @@ static inline omp_int_t omp_get_max_threads() { return 1;}
  I bytes = ALLOBYTES(atoms,rank,size,(type)&LAST0,(type)&NAME); \
  name = jtgaf(jt, ALLOBLOCK(bytes)); \
  I akx=AKXR(rank);   \
- if(likely(name!=0)){   \
+ if(name!=0){   \
  AK(name)=akx; AT(name)=(type); AN(name)=atoms;   \
  AR(name)=(RANKT)(rank);     \
  if(!((type)&DIRECT)){if(rank==0)AS(name)[0]=0; memset((C*)(AS(name)+1),C0,(bytes-32)&-32);}  \
@@ -452,7 +438,7 @@ static inline omp_int_t omp_get_max_threads() { return 1;}
  ASSERT(!((((unsigned long long)(atoms))&~TOOMANYATOMS)+((rank)&~RMAX)),EVLIMIT) \
  name = jtgafv(jt, bytes);   \
  I akx=AKXR(rank);   \
- if(likely(name!=0)){   \
+ if(name!=0){   \
   AK(name)=akx; AT(name)=(type); AN(name)=atoms; AR(name)=(RANKT)(rank);     \
   if(!((type)&DIRECT)){AS(name)[0]=0; memset((C*)(AS(name)+1),C0,(bytes-32)&-32);}  \
   shapecopier(name,type,atoms,rank,shaape)   \
@@ -478,7 +464,7 @@ static inline omp_int_t omp_get_max_threads() { return 1;}
 #define SETIC(w,targ)   (targ=AS(w)[0], targ=AR(w)?targ:1)  //   (AR(w) ? *AS(w) : 1L)
 #define ICMP(z,w,n)     memcmpne((z),(w),(n)*SZI)
 #define ICPY(z,w,n)     memcpy((z),(w),(n)*SZI)
-#define IFCMPNAME(name,string,len,stmt) if(likely((name)->m==(len)))if(likely(!memcmpne((name)->s,string,len)))stmt
+#define IFCMPNAME(name,string,len,stmt) if((name)->m==(len))if(!memcmpne((name)->s,string,len))stmt
 
 // Mark a block as incorporated by removing its inplaceability.  The blocks that are tested for incorporation are ones that are allocated by partitioning, and they will always start out as inplaceable
 // If a block is virtual, it must be realized before it can be incorporated.  realized blocks always start off inplaceable and non-pristine
@@ -487,12 +473,12 @@ static inline omp_int_t omp_get_max_threads() { return 1;}
 // even by calling a function that returns it, you can be OK just using rifv() or rifvs().  This may leave an incorporated block marked inplaceable,
 // but that's OK as long as you don't pass it to some place where it can become an argument to another function
 // When a block is incorporated it becomes not pristine, because extractions from the parent may compromise it and we don't want to have to go through recursively to find them
-#define INCORP(z) {I af=AFLAG(z); if(unlikely((af&AFVIRTUAL)!=0)){RZ((z)=realize(z))} else{AFLAG(z)=af&~AFPRISTINE;} ACIPNO(z); }
+#define INCORP(z) {I af=AFLAG(z); if((af&AFVIRTUAL)!=0){RZ((z)=realize(z))} else{AFLAG(z)=af&~AFPRISTINE;} ACIPNO(z); }
 #define INCORPNV(z) {I af=AFLAG(z); AFLAG(z)=af&~AFPRISTINE; ACIPNO(z);}  // use when z is known nonvirtul
 // same, but for nonassignable argument.  Must remember to check the result for 0
 #define INCORPNA(z) incorp(z)
 // use to incorporate into a known-recursive box.  We raise the usecount of z
-#define INCORPRA(z) {I af=AFLAG(z); if(unlikely((af&AFVIRTUAL)!=0)){RZ((z)=realize(z))} else{AFLAG(z)=af&~AFPRISTINE;} ra(z); }
+#define INCORPRA(z) {I af=AFLAG(z); if((af&AFVIRTUAL)!=0){RZ((z)=realize(z))} else{AFLAG(z)=af&~AFPRISTINE;} ra(z); }
 // Tests for whether a result incorporates its argument.  The originator, who is going to check this, always marks the argument inplaceable,
 // and we signal incorporation either by returning the argument itself or by marking it non-inplaceable (if we box it)
 #define WASINCORP1(z,w)    ((z)==(w)||0<=AC(w))
@@ -502,12 +488,12 @@ static inline omp_int_t omp_get_max_threads() { return 1;}
 #define UCISRECUR(a)    (AFLAG(a)&RECURSIBLE)
 // Install new value z into xv[k], where xv is AAV(x).  If x has recursive usecount, we must increment the usecount of z.
 // This also guarantees that z has recursive usecount whenever x does, and that z is realized
-#define INSTALLBOX(x,xv,k,z) rifv(z); if(likely((UCISRECUR(x))!=0)){A zzZ=xv[k]; ra(z); fa(zzZ);} xv[k]=z
-#define INSTALLBOXNF(x,xv,k,z) rifv(z); if(likely((UCISRECUR(x))!=0)){ra(z);} xv[k]=z   // Don't do the free - if we are installing into known 0 or known nonrecursive
+#define INSTALLBOX(x,xv,k,z) rifv(z); if((UCISRECUR(x))!=0){A zzZ=xv[k]; ra(z); fa(zzZ);} xv[k]=z
+#define INSTALLBOXNF(x,xv,k,z) rifv(z); if((UCISRECUR(x))!=0){ra(z);} xv[k]=z   // Don't do the free - if we are installing into known 0 or known nonrecursive
 #define INSTALLBOXRECUR(xv,k,z) rifv(z); {I zzK=(k); {A zzZ=xv[zzK]; ra(z); fa(zzZ);} xv[zzK]=z;}  // Don't test - we know we are installing into a recursive block
 // Same thing for RAT type.  z is a Q, xv[k] is a Q
-#define INSTALLRAT(x,xv,k,z) if(likely((UCISRECUR(x))!=0)){Q zzZ=xv[k]; ra(z.n); ra(z.d); fa(zzZ.n); fa(zzZ.d);} xv[k]=z
-#define INSTALLRATNF(x,xv,k,z) if(likely((UCISRECUR(x))!=0)){ra(z.n); ra(z.d);} xv[k]=z   // Don't do the free - if we are installing into known 0
+#define INSTALLRAT(x,xv,k,z) if((UCISRECUR(x))!=0){Q zzZ=xv[k]; ra(z.n); ra(z.d); fa(zzZ.n); fa(zzZ.d);} xv[k]=z
+#define INSTALLRATNF(x,xv,k,z) if((UCISRECUR(x))!=0){ra(z.n); ra(z.d);} xv[k]=z   // Don't do the free - if we are installing into known 0
 #define INSTALLRATRECUR(xv,k,z) rifv(z.n); rifv(z.d); {I zzK=(k); {Q zzZ=xv[k]; ra(z.n); ra(z.d); fa(zzZ.n); fa(zzZ.d);} xv[zzK]=z;}  // Don't test - we know we are installing into a recursive block
 // Use IRS[12] to call a verb that supports IRS.  Rank is nonnegative; result is assigned to z.  z mustn't be any other arg - it is also used as a temp
 #define IRS1COMMON(j,w,fs,r,f1,z) (z=(A)(r),z=(I)AR(w)>(I)(r)?z:(A)~0,jt->ranks=(RANK2T)(I)z,z=((AF)(f1))(j,(w),(A)(fs)),jt->ranks=(RANK2T)~0,z)  // nonneg rank
@@ -529,8 +515,8 @@ static inline omp_int_t omp_get_max_threads() { return 1;}
 #define JMCSETMASK(mskname,l,bytelen)
 
 #define IX(n)           apv((n),0L,1L)
-#define JATTN           {if(unlikely(*jt->adbreakr!=0)){jsignal(EVATTN); return 0;}}
-#define JBREAK0         {if(unlikely(2<=*jt->adbreakr)){jsignal(EVBREAK); return 0;}}
+#define JATTN           {if(*jt->adbreakr!=0){jsignal(EVATTN); return 0;}}
+#define JBREAK0         {if(2<=*jt->adbreakr){jsignal(EVBREAK); return 0;}}
 #define JTIPA           ((J)((I)jt|JTINPLACEA))
 #define JTIPAW          ((J)((I)jt|JTINPLACEA+JTINPLACEW))
 #define JTIPW           ((J)((I)jt|JTINPLACEW))
@@ -555,7 +541,7 @@ static inline omp_int_t omp_get_max_threads() { return 1;}
 // Copy shapes.  Optimized for length <5, subroutine for others
 #define MCISH(dest,src,n) \
  {I *_d=(dest), *_s=(src); I _n=(I)(n); \
-  if(likely(_n<=2)){ \
+  if(_n<=2){ \
    _n-=1; _d=(_n<0)?jt->shapesink+1:_d; _s=(_n<0)?jt->shapesink+1:_s; \
    _d[0]=_s[0]; _d[_n]=_s[_n];  \
   }else{MC(_d,_s,_n<<LGSZI);} \
@@ -567,12 +553,12 @@ static inline omp_int_t omp_get_max_threads() { return 1;}
 #define MIN(a,b)        ((a)<(b)?(a):(b))
 #define MLEN            (63)
 // change the type of the inplaceable block z to t.  We know or assume that the type is being changed.  If the block is UNINCORPABLE (& therefore virtual), replace it with a clone first.  z is an lvalue
-#define MODBLOCKTYPE(z,t)  {if(unlikely((AFLAG(z)&AFUNINCORPABLE)!=0)){RZ(z=clonevirtual(z));} AT(z)=(t);}
+#define MODBLOCKTYPE(z,t)  {if((AFLAG(z)&AFUNINCORPABLE)!=0){RZ(z=clonevirtual(z));} AT(z)=(t);}
 #define MODIFIABLE(x)   (x)   // indicates that we modify the result, and it had better not be read-only
 // define multiply-add
 #define NAN0            (_clearfp())
-#define NAN1            {if(unlikely(_SW_INVALID&_clearfp())){jsignal(EVNAN); return 0;}}
-#define NAN1V           {if(unlikely(_SW_INVALID&_clearfp())){jsignal(EVNAN); return  ;}}
+#define NAN1            {if(_SW_INVALID&_clearfp()){jsignal(EVNAN); return 0;}}
+#define NAN1V           {if(_SW_INVALID&_clearfp()){jsignal(EVNAN); return  ;}}
 #define NANTEST         (_SW_INVALID&_clearfp())
 
 #define NUMMAX          9    // largest number represented in num[]
@@ -581,8 +567,8 @@ static inline omp_int_t omp_get_max_threads() { return 1;}
 // this is what it should be #define PACKBITS(p) {p|=p>>7LL;p|=p>>14LL;p|=p>>28LL;p<<=56LL;}
 #define PACKBITS(p) {p|=p>>7LL;p|=p>>14LL;p|=p<<28LL;p&=0xff0000000; p<<=28LL;}  // this generates one extra instruction, rather than the 3 for the correct version
 #define PACKBITSINTO(p,out) {p|=p>>7LL;p|=p>>14LL;out=((p|(p>>28LL))<<56)|(out>>SZI);}  // pack and shift into out
-#define PRISTCOMSET(w,flg) awback=(w); if(unlikely((flg&AFVIRTUAL)!=0)){awback=ABACK(awback); flg=AFLAG(awback);} AFLAG(awback)=flg&~AFPRISTINE;
-#define PRISTCOMSETF(w,flg) if(unlikely((flg&AFVIRTUAL)!=0)){w=ABACK(w); flg=AFLAG(w);} AFLAG(w)=flg&~AFPRISTINE;   // used only at end, when w can be destroyed
+#define PRISTCOMSET(w,flg) awback=(w); if((flg&AFVIRTUAL)!=0){awback=ABACK(awback); flg=AFLAG(awback);} AFLAG(awback)=flg&~AFPRISTINE;
+#define PRISTCOMSETF(w,flg) if((flg&AFVIRTUAL)!=0){w=ABACK(w); flg=AFLAG(w);} AFLAG(w)=flg&~AFPRISTINE;   // used only at end, when w can be destroyed
 #define PRISTCOMMON(w,exe) awflg=AFLAG(w); exe PRISTCOMSET(w,awflg)
 // same but destroy w
 #define PRISTCOMMONF(w,exe) I awflg=AFLAG(w); exe PRISTCOMSETF(w,awflg)
@@ -604,13 +590,13 @@ static inline omp_int_t omp_get_max_threads() { return 1;}
 // PROD multiplies a list of numbers, where the product is known not to overflow a signed int (for example, it might be part of the shape of a nonempty dense array)
 // assign length first so we can sneak some computation into ain in va2
 #define PROD(z,length,ain) {I _i=(length); I * RESTRICT _zzt=(ain)-2; \
-if(likely(_i<3)){_zzt+=_i; z=(I)&oneone; _zzt=_i>=1?_zzt:(I*)z; z=_i>1?(I)_zzt:z; z=((I*)z)[0]; z*=_zzt[1];}else{z=prod(_i,_zzt+2);} }
+if(_i<3){_zzt+=_i; z=(I)&oneone; _zzt=_i>=1?_zzt:(I*)z; z=_i>1?(I)_zzt:z; z=((I*)z)[0]; z*=_zzt[1];}else{z=prod(_i,_zzt+2);} }
 // This version ignores bits of length above the low RANKTX bits
 #define PRODRNK(result,length,ain) {I _i=(length); I * RESTRICT _zzt=(ain); \
-  if(likely((US)_i<3)){_zzt=_i&3?_zzt:iotavec-IOTAVECBEGIN+1; result=*_zzt; ++_zzt; _zzt=_i&2?_zzt:iotavec-IOTAVECBEGIN+1; result*=*_zzt;}else{result=prod((US)_i,_zzt);} }
+  if((US)_i<3){_zzt=_i&3?_zzt:iotavec-IOTAVECBEGIN+1; result=*_zzt; ++_zzt; _zzt=_i&2?_zzt:iotavec-IOTAVECBEGIN+1; result*=*_zzt;}else{result=prod((US)_i,_zzt);} }
 // the 3REG version is perfect - too perfect, because the compiler saves a reg and decides to spill acr rather than aaa/aab which are used only in a predictable test
 #define PRODRNK3REG(z,length,ain) {I _i=(length); I * RESTRICT _zzt=(ain)-2; z=(US)_i; \
-if(likely(z<3)){_zzt+=z; z=(I)&oneone; _zzt=_i&3?_zzt:(I*)z; z=_i&2?(I)_zzt:z; z=((I*)z)[0]; z*=_zzt[1];}else{z=prod(z,_zzt+2);} }
+if(z<3){_zzt+=z; z=(I)&oneone; _zzt=_i&3?_zzt:(I*)z; z=_i&2?(I)_zzt:z; z=((I*)z)[0]; z*=_zzt[1];}else{z=prod(z,_zzt+2);} }
 
 #define PROD1(result,length,ain) PROD(result,length,ain)  // scaf
 // PRODX replaces CPROD.  It is PROD with a test for overflow included.  To save calls to mult, PRODX takes an initial value
@@ -620,9 +606,9 @@ if(likely(z<3)){_zzt+=z; z=(I)&oneone; _zzt=_i&3?_zzt:(I*)z; z=_i&2?(I)_zzt:z; z
 // I have been unable to make clang produce a simple loop that doesn't end with a backward branch.  So I am going to handle ranks 0-2 here and call a subroutine for the rest
 #define PRODX(z,n,v,init) \
  {I nn=(n); \
-  if(likely(nn<3)){I temp=(init);  /* must use temp because init may depend on z */ \
+  if(nn<3){I temp=(init);  /* must use temp because init may depend on z */ \
    I *_zzt=(v); _zzt+=nn-2; z=(I)&oneone; _zzt=nn>=1?_zzt:(I*)z; z=nn>1?(I)_zzt:z;   /* set up pointers to args, and init value */ \
-   z=((I*)z)[0]; if(likely(z!=0)){DPMULDZ(z,_zzt[1],z); if(likely(_zzt[1]!=0)){DPMULDZ(z,temp,z);if(likely(temp!=0)){ASSERT(z!=0,EVLIMIT)}}}  /* no error if any nonzero */ \
+   z=((I*)z)[0]; if(z!=0){DPMULDZ(z,_zzt[1],z); if(_zzt[1]!=0){DPMULDZ(z,temp,z);if(temp!=0){ASSERT(z!=0,EVLIMIT)}}}  /* no error if any nonzero */ \
   }else{DPMULDE(init,prod(nn,v),z) RE(0)} /* error if error inside prod */ \
  }
 // CPROD is to be used to create a test testing #atoms.  Because empty arrays can have cells that have too many atoms, we can't use PROD if
@@ -645,7 +631,7 @@ if(likely(z<3)){_zzt+=z; z=(I)&oneone; _zzt=_i&3?_zzt:(I*)z; z=_i&2?(I)_zzt:z; z
 #define EPILOGNORET(z) (gc(z,_ttop))   // protect z and return its address
 #define EPILOG(z)       RETF(EPILOGNORET(z))   // z is the result block
 #define EPILOGNOVIRT(z)       return rifvsdebug((gc(z,_ttop)))   // use this when the repercussions of allowing virtual result are too severe
-#define EPILOGZOMB(z)       if(unlikely(!gc3(&(z),0L,0L,_ttop)))R0; RETF(z);   // z is the result block.  Use this if z may contain inplaceable contents that would free prematurely
+#define EPILOGZOMB(z)       if(!gc3(&(z),0L,0L,_ttop))R0; RETF(z);   // z is the result block.  Use this if z may contain inplaceable contents that would free prematurely
 // Routines that do little except call a function that does PROLOG/EPILOG have EPILOGNULL as a placeholder
 #define EPILOGNULL(z)   return z
 #define EPILOGNOTREQ(z)   return z  // used if originak JE had needless EPILOG
@@ -659,7 +645,7 @@ if(likely(z<3)){_zzt+=z; z=(I)&oneone; _zzt=_i&3?_zzt:(I*)z; z=_i&2?(I)_zzt:z; z
 // data.  So, we clear the inplace variables if we don't want to allow that: if the user set zomblevel=0, or if there is no local symbol table
 // (which means the user is fooling around at the keyboard & performance is not as important as transparency)
 #define CLEARZOMBIE     {jt->assignsym=0;}  // Used when we know there shouldn't be an assignsym, just in case
-#define PUSHZOMB L*savassignsym = jt->assignsym; if(savassignsym){if(unlikely(((jt->asgzomblevel-1)|((AN(jt->locsyms)-2)))<0)){CLEARZOMBIE}}  // test is (jt->asgzomblevel==0||AN(jt->locsyms)<2)
+#define PUSHZOMB L*savassignsym = jt->assignsym; if(savassignsym){if(((jt->asgzomblevel-1)|((AN(jt->locsyms)-2)))<0){CLEARZOMBIE}}  // test is (jt->asgzomblevel==0||AN(jt->locsyms)<2)
 #define POPZOMB {jt->assignsym=savassignsym;}
 #if FINDNULLRET   // When we return 0, we should always have an error code set.  trap if not
 #define R0 {if(jt->jerr)return A0;else SEGFAULT;}
@@ -670,12 +656,12 @@ if(likely(z<3)){_zzt+=z; z=(I)&oneone; _zzt=_i&3?_zzt:(I*)z; z=_i&2?(I)_zzt:z; z
 #define SGNTO0(x) ((UI)(x)>>(BW-1))  // move sign bit to bit 0, clear other bits
 // In the original JE many verbs returned a clone of the input, i. e. return ca(w).  We have changed these to avoid the clone, but we preserve the memory in case we need to go back
 #define RCA(w)          return w
-#define RE(exp)         {if(unlikely(((exp),jt->jerr!=0)))return 0;}
+#define RE(exp)         {if(((exp),jt->jerr!=0))return 0;}
 #define RESETERR        {jt->etxn=jt->jerr=0;}
 #define RESETERRANDMSG  {jt->etxn1=jt->etxn=jt->jerr=0;}
 #define RESETRANK       (jt->ranks=(RANK2T)~0)
 #define RNE(exp)        {return jt->jerr?0:(exp);}
-#define RZ(exp)         {if(unlikely(!(exp)))R0}
+#define RZ(exp)         {if(!(exp))R0}
 
 #define DEADARG(x)      0
 #define ARGCHK1D(x)
@@ -714,7 +700,7 @@ if(likely(z<3)){_zzt+=z; z=(I)&oneone; _zzt=_i&3?_zzt:(I*)z; z=_i&2?(I)_zzt:z; z
 #define SYMSETLOCAL(l) (AKGST(l)=jt->global, jt->locsyms=(l))  // change the locals to l
 #define SYMPUSHLOCAL(l) (AM(l)=(I)jt->locsyms, SYMSETLOCAL(l))  // push l onto locals stack
 // fa() the value when a symbol is deleted/reassigned.  If the symbol was ABANDONED, don't fa() because there was no ra() - but do revert 1 to 8..1 
-#define SYMVALFA(l) if(unlikely(((l).flag&LWASABANDONED)!=0)){(l).flag&=~LWASABANDONED; AC((l).val)|=ACINPLACE&(AC((l).val)-2);}else{fa((l).val);}
+#define SYMVALFA(l) if(((l).flag&LWASABANDONED)!=0){(l).flag&=~LWASABANDONED; AC((l).val)|=ACINPLACE&(AC((l).val)-2);}else{fa((l).val);}
 #define SZA             ((I)sizeof(A))
 #define LGSZA    LGSZI  // we always require A and I to have same size
 #define SZD             ((I)sizeof(D))

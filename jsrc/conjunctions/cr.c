@@ -36,14 +36,14 @@ A jtrank1ex(J jt,AD * RESTRICT w,A fs,I rr,AF f1){F1PREFIP;PROLOG(0041);A z,virt
    I mn,wcn,wf,wk;
  ARGCHK1(w);
  wf=AR(w)-rr;
- if(unlikely(!wf)){return CALL1IP(f1,w,fs);}  // if there's only one cell and no frame, run on it, that's the result.
- if(unlikely((AT(w)&SPARSE)!=0))return sprank1(w,fs,rr,f1);
+ if(!wf){return CALL1IP(f1,w,fs);}  // if there's only one cell and no frame, run on it, that's the result.
+ if((AT(w)&SPARSE)!=0)return sprank1(w,fs,rr,f1);
 #define ZZFLAGWORD state
  I state=ZZFLAGINITSTATE;  // init flags, including zz flags
  // RANKONLY verbs were handled in the caller to this routine, but fs might be RANKATOP.  In that case we could include its rank in the loop here,
  // if its rank is not less than the outer rank (we would simply ignore it), but we don't bother.  If its rank is smaller we can't ignore it because assembly might affect
  // the order of fill.  But if f is BOXATOP, there will be no fill, and we can safely use the smaller rank
- if(unlikely((FAV(fs)->flag2&VF2BOXATOP1)!=0)){
+ if((FAV(fs)->flag2&VF2BOXATOP1)!=0){
   I mr=FAV(fs)->mr; rr=rr<mr?rr:mr;
   state |= (FAV(fs)->flag2&VF2BOXATOP1)>>(VF2BOXATOP1X-ZZFLAGBOXATOPX);  // If this is BOXATOP, set so for loop.  Don't touch fs yet, since we might not loop
   state &= ~((FAV(fs)->flag2&VF2ATOPOPEN1)>>(VF2ATOPOPEN1X-ZZFLAGBOXATOPX));  // We don't handle &.> here; ignore it
@@ -120,9 +120,9 @@ A jtrank1ex(J jt,AD * RESTRICT w,A fs,I rr,AF f1){F1PREFIP;PROLOG(0041);A z,virt
 A jtrank1ex0(J jt,AD * RESTRICT w,A fs,AF f1){F1PREFIP;PROLOG(0041);A z,virtw;
    I wk;
  ARGCHK1(w);
- if(unlikely(!AR(w))){return CALL1IP(f1,w,fs);}  // if there's only one cell and no frame, run on it, that's the result.  Make this as fast as possible.
+ if(!AR(w)){return CALL1IP(f1,w,fs);}  // if there's only one cell and no frame, run on it, that's the result.  Make this as fast as possible.
  // Switch to sparse code if argument is sparse
- if(unlikely((AT(w)&SPARSE)!=0))return sprank1(w,fs,0,f1);
+ if((AT(w)&SPARSE)!=0)return sprank1(w,fs,0,f1);
 #define ZZFLAGWORD state
  // wr=rank, ws->shape
  // Each cell is an atom.  Get # atoms (=#result cells)
@@ -134,7 +134,7 @@ A jtrank1ex0(J jt,AD * RESTRICT w,A fs,AF f1){F1PREFIP;PROLOG(0041);A z,virtw;
  // Look for the forms we handle specially: <@:f (not here where rank=0)  <@f  f@>   and their combinations  <@(f@>) f&.> (<@:f)@>  but not as combinations  (<@f)@> (unless f has rank _) <@:(f@>)   also using &
  I state=ZZFLAGINITSTATE;
 
- if(likely((AN(w))!=0)){  // if no cells, go handle fill before we advance over flags
+ if((AN(w))!=0){  // if no cells, go handle fill before we advance over flags
   // Here there are cells to execute on.  Collect ATOP flags
   // RANKONLY verbs contain an invalid f1 pointer (it was used to get to a call to here).  We have to step over the RANKONLY to get to what we can execute
   while(FAV(fs)->flag2&VF2RANKONLY1){fs=FAV(fs)->fgh[0]; f1=FAV(fs)->valencefns[0];}
@@ -171,7 +171,7 @@ A jtrank1ex0(J jt,AD * RESTRICT w,A fs,AF f1){F1PREFIP;PROLOG(0041);A z,virtw;
   // Now that we have handled the structural requirements of ATOPOPEN, clear it if w is not open
   // Allocate a non-in-place virtual block unless this is ATOPOPEN and w is boxed, in which case we will just use the value of the A block
   fauxblock(virtwfaux);
-  if(likely((SGNIF(state,ZZFLAGATOPOPEN1X)&SGNIF(AT(w),BOXX))>=0)){   // if not (ATOPOPEN and w boxed)...
+  if((SGNIF(state,ZZFLAGATOPOPEN1X)&SGNIF(AT(w),BOXX))>=0){   // if not (ATOPOPEN and w boxed)...
    fauxvirtual(virtw,virtwfaux,w,0,ACUC1); AN(virtw)=1; state&=~ZZFLAGATOPOPEN1;
    // Mark the virtual block as inplaceable only if w is fully inplaceable.  We have to turn of inplaceability in the virtual block so that
    // a non-inplaceable value might cause PRISTINE to be set.  We also require the type to be right, with some allowances for &.>
@@ -197,7 +197,7 @@ A jtrank1ex0(J jt,AD * RESTRICT w,A fs,AF f1){F1PREFIP;PROLOG(0041);A z,virtw;
      // for simplicity we apply this correction to the faux block, so as to ensure we don't do it when ATOPOPEN is active.  This means ranks higher than the max for
      // the faux virtual block miss out on the reinitialization.  That's not so bad
    // advance input pointer for next cell.  We keep the same virtual block because it can't be incorporated into anything
-   if(likely(!(state&ZZFLAGATOPOPEN1))){AK(virtw) += wk;}else{virtw=*wav++;}
+   if(!(state&ZZFLAGATOPOPEN1)){AK(virtw) += wk;}else{virtw=*wav++;}
   }while(1);
 
 #define ZZEXIT
@@ -233,8 +233,8 @@ A jtrank2ex(J jt,AD * RESTRICT a,AD * RESTRICT w,A fs,UI lrrrlcrrcr,AF f2){
  F2PREFIP;PROLOG(0042);A virta,virtw,z;I acn,ak,mn,wcn,wk;
  I outerframect, outerrptct, innerframect, innerrptct, aof, wof, sof, lof, sif, lif, *lis, *los;
  ARGCHK2(a,w);
- if(unlikely((UI)lrrr==(((UI)AR(a)<<RANKTX)+AR(w)))){return CALL2IP(f2,a,w,fs);}  // if there's only one cell and no frame, run on it, that's the result.
- if(unlikely(((AT(a)|AT(w))&SPARSE)!=0))return sprank2(a,w,fs,(UI)lcrrcr>>RANKTX,lcrrcr&RANKTMSK,f2);  // this needs to be updated to handle multiple ranks
+ if((UI)lrrr==(((UI)AR(a)<<RANKTX)+AR(w))){return CALL2IP(f2,a,w,fs);}  // if there's only one cell and no frame, run on it, that's the result.
+ if(((AT(a)|AT(w))&SPARSE)!=0)return sprank2(a,w,fs,(UI)lcrrcr>>RANKTX,lcrrcr&RANKTMSK,f2);  // this needs to be updated to handle multiple ranks
 // lr,rr are the ranks of the underlying verb.  lcr,rcr are the cell-ranks given by u"lcr rcr.
 // If " was not used, lcr,rcr=lr,rr usually
 // The ranks of the arguments have already been applied, so that we know that lr<=lcr<=AR(a), & similarly for w
@@ -263,7 +263,7 @@ A jtrank2ex(J jt,AD * RESTRICT a,AD * RESTRICT w,A fs,UI lrrrlcrrcr,AF f2){
  // fetch empty-argument flags
  state|=(SGNTO0(-AN(a))<<STATEANOTEMPTYX)|(SGNTO0(-AN(w))<<STATEWNOTEMPTYX)|((SGNTO0(-AN(a))&SGNTO0(-AN(w)))<<STATEAWNOTEMPTYX);
  // RANKONLY verbs were handled in the caller to this routine, but fs might be RANKATOP.  In that case we can include its rank in the loop here, which will save loop setups
- if(unlikely((UI)(FAV(fs)->flag2&(VF2RANKATOP2|VF2BOXATOP2))>(UI)REPSGN(lrrr-lcrrcr))){  // if there are new ranks to include, provided ?r=?cr
+ if((UI)(FAV(fs)->flag2&(VF2RANKATOP2|VF2BOXATOP2))>(UI)REPSGN(lrrr-lcrrcr)){  // if there are new ranks to include, provided ?r=?cr
  I lr=(UI)lrrr>>RANKTX, rr=lrrr&RANKTMSK;
  I t=(I)lr(fs); lr=t<lr?t:lr; t=(I)rr(fs); rr=t<rr?t:rr;   // get the ranks if we accept the new cell
   state |= (FAV(fs)->flag2&VF2BOXATOP2)>>(VF2BOXATOP2X-ZZFLAGBOXATOPX);  // If this is BOXATOP, set so for loop.  Don't touch fs yet, since we might not loop
@@ -278,7 +278,7 @@ A jtrank2ex(J jt,AD * RESTRICT a,AD * RESTRICT w,A fs,UI lrrrlcrrcr,AF f2){
  // Get the length of the outer frames, which are needed only if either "-rank is greater than the verb rank,
  // either argument has frame with respect to the "-ranks, and those frames are not the same length
  I aofwof=((UI)AR(a)<<RANKTX)+AR(w)-lcrrcr;  // outer frames
- if(likely((I)((lrrr-lcrrcr)&(-((aofwof>>RANKTX)^(aofwof&RANKTMSK))))>=0)){los=0; lof=aof=wof=0; outerframect=outerrptct=1;  // no outer frame unless it's needed
+ if((I)((lrrr-lcrrcr)&(-((aofwof>>RANKTX)^(aofwof&RANKTMSK))))>=0){los=0; lof=aof=wof=0; outerframect=outerrptct=1;  // no outer frame unless it's needed
  }else{
   // outerframect is the number of cells in the shorter frame; outerrptct is the number of cells in the residual frame
   // find smaller/larger frame/shape, and indicate if a is the repeated arg (otherwise we assume w)
@@ -301,7 +301,7 @@ A jtrank2ex(J jt,AD * RESTRICT a,AD * RESTRICT w,A fs,UI lrrrlcrrcr,AF f2){
 
  // Migrate loops with count=1 toward the inner to reduce overhead.  We choose not to promote the outer to the inner if both
  // innerframect & innerrptct are 1, on grounds of rarity
- if(likely(innerrptct==1)){innerrptct=innerframect; innerframect=1; state &=~(STATEINNERREPEATW|STATEINNERREPEATA);}  // if only one loop needed, make it the inner, with no repeats
+ if(innerrptct==1){innerrptct=innerframect; innerframect=1; state &=~(STATEINNERREPEATW|STATEINNERREPEATA);}  // if only one loop needed, make it the inner, with no repeats
 
  // Get size of each argument cell in atoms.  If this overflows, there must be a 0 in the frame, & we will have
  // gone through the fill path (& caught the overflow)
@@ -324,7 +324,7 @@ A jtrank2ex(J jt,AD * RESTRICT a,AD * RESTRICT w,A fs,UI lrrrlcrrcr,AF f2){
  // See which arguments we can inplace.  The key is that they have to be not repeated.  This means outerrptct=1, and the specified argument not repeated in the inner loop.  Also,
  // a and w mustn't be the same block (one cannot be a virtual of the other unless the backer's usecount disables inplacing)
  fauxblock(virtwfaux); fauxblock(virtafaux); 
- if(likely((mn|(state&STATEANOTEMPTY))!=0)){
+ if((mn|(state&STATEANOTEMPTY))!=0){
   // OK to inplace an arg if it's not the same as the other, not repeated, correct type (unless &.>), inplaceable usecount
   state |= (UI)(SGNIF((a!=w)&(outerrptct==1),0)&SGNIF((I)jtinplace,JTINPLACEAX)&AC(a)&~(((AT(a)&TYPEVIPOK)-(f2!=jtevery2self))|SGNIF(state,STATEINNERREPEATAX)))>>(BW-1-ZZFLAGVIRTAINPLACEX);   // requires JTINPLACEWX==0.  Single flag bit  sign=0 if (VIPOK or &.>) 
   fauxvirtual(virta,virtafaux,a,(UI)lrrr>>RANKTX,ACUC1) MCISH(AS(virta),AS(a)+(afwf>>RANKTX),(UI)lrrr>>RANKTX); AN(virta)=acn;
@@ -333,7 +333,7 @@ A jtrank2ex(J jt,AD * RESTRICT a,AD * RESTRICT w,A fs,UI lrrrlcrrcr,AF f2){
   AC(virta)=ACUC1 + ((state&ZZFLAGVIRTAINPLACE)<<(ACINPLACEX-ZZFLAGVIRTAINPLACEX));
  }else{RZ(virta=reshape(vec(INT,(UI)lrrr>>RANKTX,AS(a)+(afwf>>RANKTX)),filler(a)));}
 
- if(likely((mn|(state&STATEWNOTEMPTY))!=0)){  // repeat for w
+ if((mn|(state&STATEWNOTEMPTY))!=0){  // repeat for w
   state |= (UI)(SGNIF((a!=w)&(outerrptct==1),0)&SGNIF((I)jtinplace,JTINPLACEWX)&AC(w)&~(((AT(w)&TYPEVIPOK)-(f2!=jtevery2self))|SGNIF(state,STATEINNERREPEATWX)))>>(BW-1-ZZFLAGVIRTWINPLACEX);   // requires JTINPLACEWX==0.  Single flag bit  sign=0 if (VIPOK or &.>) 
   fauxvirtual(virtw,virtwfaux,w,lrrr&RANKTMSK,ACUC1) MCISH(AS(virtw),AS(w)+(afwf&RANKTMSK),lrrr&RANKTMSK); AN(virtw)=wcn;
   AC(virtw)=ACUC1 + ((state&ZZFLAGVIRTWINPLACE)<<(ACINPLACEX-ZZFLAGVIRTWINPLACEX));
@@ -342,7 +342,7 @@ A jtrank2ex(J jt,AD * RESTRICT a,AD * RESTRICT w,A fs,UI lrrrlcrrcr,AF f2){
  jtinplace = (J)(intptr_t)((I)jtinplace & (~(JTWILLBEOPENED+JTCOUNTITEMS)));
 
  A zz=0;  // place where we will build up the homogeneous result cells
- if(likely(mn!=0)){I i0, i1, i2, i3;  // likely on single word fails
+ if(mn!=0){I i0, i1, i2, i3;  // likely on single word fails
   // Normal case where there are cells.
   // loop over the matched part of the outer frame
 
@@ -369,17 +369,17 @@ A jtrank2ex(J jt,AD * RESTRICT a,AD * RESTRICT w,A fs,UI lrrrlcrrcr,AF f2){
 #include "result.h"
 
       // advance input pointers for next cell.  We keep the same virtual blocks because they can't be incorporated into anything
-      if(likely(!(state&STATEINNERREPEATA))){  // predictable
+      if(!(state&STATEINNERREPEATA)){  // predictable
        AK(virta) += ak;
       }
 
-      if(likely(!(state&STATEINNERREPEATW))){  // predictable
+      if(!(state&STATEINNERREPEATW)){  // predictable
        AK(virtw) += wk;
       }
      }
       // advance input pointers for next cell.  We increment any block that was being held constant in the inner loop.  There can be only one such.  Such an arg is never inplaced
-     if(unlikely((state&STATEINNERREPEATA)!=0))AK(virta) += ak;
-     else if(unlikely((state&STATEINNERREPEATW)!=0))AK(virtw) += wk;
+     if((state&STATEINNERREPEATA)!=0)AK(virta) += ak;
+     else if((state&STATEINNERREPEATW)!=0)AK(virtw) += wk;
     }
    }
   }
@@ -396,7 +396,7 @@ A jtrank2ex(J jt,AD * RESTRICT a,AD * RESTRICT w,A fs,UI lrrrlcrrcr,AF f2){
   // would be wrong to ignore it, because the verb might execute erroneously with no
   // indication that anything unusual happened.  So fail then
   WITHDEBUGOFF(z=CALL2(f2,virta,virtw,fs);)
-  if(unlikely(jt->jerr!=0)){if(EMSK(jt->jerr)&EXIGENTERROR)RZ(z); z=num(0); RESETERR;}  // use 0 as result if error encountered
+  if(jt->jerr!=0){if(EMSK(jt->jerr)&EXIGENTERROR)RZ(z); z=num(0); RESETERR;}  // use 0 as result if error encountered
   GA(zz,AT(z),0L,lof+lif+AR(z),0L); zzs=AS(zz);
   MCISH(zzs,los,lof); MCISH(zzs+lof,lis,lif); MCISH(zzs+lof+lif,AS(z),AR(z));
  }
@@ -409,8 +409,8 @@ A jtrank2ex(J jt,AD * RESTRICT a,AD * RESTRICT w,A fs,UI lrrrlcrrcr,AF f2){
 // This code does not set inplaceability on nonrepeated cells - hardly useful at rank 0
 A jtrank2ex0(J jt,AD * RESTRICT a,AD * RESTRICT w,A fs,AF f2){F2PREFIP;PROLOG(0042);A virta,virtw,z;
    I ak,ar,*as,ict,oct,mn,wk,wr,*ws;
- ARGCHK2(a,w); ar=AR(a); wr=AR(w); if(unlikely(!(ar+wr)))return CALL2IP(f2,a,w,fs);   // if no frame, make just 1 call
- if(unlikely(((AT(a)|AT(w))&SPARSE)!=0))return sprank2(a,w,fs,0,0,f2);  // this needs to be updated to handle multiple ranks
+ ARGCHK2(a,w); ar=AR(a); wr=AR(w); if(!(ar+wr))return CALL2IP(f2,a,w,fs);   // if no frame, make just 1 call
+ if(((AT(a)|AT(w))&SPARSE)!=0)return sprank2(a,w,fs,0,0,f2);  // this needs to be updated to handle multiple ranks
 #define ZZFLAGWORD state
 
  // Verify agreement
@@ -445,7 +445,7 @@ A jtrank2ex0(J jt,AD * RESTRICT a,AD * RESTRICT w,A fs,AF f2){F2PREFIP;PROLOG(00
  A zz=0;  // place where we will build up the homogeneous result cells
  fauxblock(virtafaux);  fauxblock(virtwfaux);
 
- if(likely(mn!=0)){   // likely fails on single word
+ if(mn!=0){   // likely fails on single word
   // Collect flags <@ and @> from the nodes.  It would be nice to do this even on empty arguments, but that would complicate our job in coming up with a fill-cell or argument cell, because
   // we would have to keep track of whether we passed an ATOPOPEN.  But then we could avoid executing the fill cell any time the is a BOXATOP, even down the stack.  As it is, the only time we
   // elide the execution is when BOXATOP occurs at the first node, i.e. for an each that is not boxed
@@ -486,10 +486,10 @@ A jtrank2ex0(J jt,AD * RESTRICT a,AD * RESTRICT w,A fs,AF f2){F2PREFIP;PROLOG(00
 
   // Now that we have handled the structural requirements of ATOPOPEN, clear it if the argument is not boxed
   // Allocate a non-in-place virtual block unless this is ATOPOPEN and w is boxed, in which case we will just use the value of the A block
-  if(likely((SGNIF(state,ZZFLAGATOPOPEN2WX)&SGNIF(AT(w),BOXX))>=0)){
+  if((SGNIF(state,ZZFLAGATOPOPEN2WX)&SGNIF(AT(w),BOXX))>=0){
    fauxvirtual(virtw,virtwfaux,w,0,ACUC1); AN(virtw)=1; state&=~ZZFLAGATOPOPEN2W;
   }else{wav=AAV(w); virtw=*wav;}
-  if(likely((SGNIF(state,ZZFLAGATOPOPEN2AX)&SGNIF(AT(a),BOXX))>=0)){
+  if((SGNIF(state,ZZFLAGATOPOPEN2AX)&SGNIF(AT(a),BOXX))>=0){
    fauxvirtual(virta,virtafaux,a,0,ACUC1); AN(virta)=1; state&=~ZZFLAGATOPOPEN2A;
   }else{aav=AAV(a); virta=*aav;}
   
@@ -508,13 +508,13 @@ A jtrank2ex0(J jt,AD * RESTRICT a,AD * RESTRICT w,A fs,AF f2){F2PREFIP;PROLOG(00
 #include "result.h"
 
     if(--i0==0)break;  // stop before we load the last+1 item
-    if(likely(!(state&ZZFLAGATOPOPEN2A))){AK(virta) += ak;}else{aav=(A*)((I)aav+ak); virta=*aav;}
-    if(likely(!(state&ZZFLAGATOPOPEN2W))){AK(virtw) += wk;}else{wav=(A*)((I)wav+wk); virtw=*wav; }
+    if(!(state&ZZFLAGATOPOPEN2A)){AK(virta) += ak;}else{aav=(A*)((I)aav+ak); virta=*aav;}
+    if(!(state&ZZFLAGATOPOPEN2W)){AK(virtw) += wk;}else{wav=(A*)((I)wav+wk); virtw=*wav; }
    }while(1);
    // we have stopped with the pointers pointing to the last item read.  Advance them both to the next atom
    if(--oct<=0)break;  // if no more cells, avoid fetching out of bounds
-   if(likely(!(state&ZZFLAGATOPOPEN2A))){AK(virta) += ak?ak:wr;}else{virta=*++aav;}
-   if(likely(!(state&ZZFLAGATOPOPEN2W))){AK(virtw) += wk?wk:wr;}else{virtw=*++wav;}
+   if(!(state&ZZFLAGATOPOPEN2A)){AK(virta) += ak?ak:wr;}else{virta=*++aav;}
+   if(!(state&ZZFLAGATOPOPEN2W)){AK(virtw) += wk?wk:wr;}else{virtw=*++wav;}
   }while(1);
 
 #define ZZEXIT

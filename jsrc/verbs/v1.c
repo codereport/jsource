@@ -66,7 +66,7 @@ static B eqv(I af,I wf,I m,I n,I k,C*av,C*wv,B* RESTRICT x,B b1){B b,* RESTRICT 
 B jtequ(J jt,A a,A w){A x;
  F2PREFIP;ARGCHK2(a,w);  // allow inplace request - it has no effect
  if(a==w)return 1;
- if(unlikely((SPARSE&(AT(a)|AT(w)))!=0))if(AR(a)&&AR(w)){RZ(x=matchs(a,w)); return BAV(x)[0];}
+ if((SPARSE&(AT(a)|AT(w)))!=0)if(AR(a)&&AR(w)){RZ(x=matchs(a,w)); return BAV(x)[0];}
  return ((B (*)())jtmatchsub)(jt,a,w,0   MATCHSUBDEFAULTS);  // don't check level - it takes too long for big arrays
 }
 
@@ -210,7 +210,7 @@ F2(jtmatch){A z;I af,m,n,mn,wf;
  I eqis0 = (I)jt&1; jt=(J)((I)jt&~1);
  ARGCHK2(a,w);
  I isatoms = (-AN(a))&(-AN(w));  // neg if both args have atoms
- if(unlikely((SPARSE&(AT(a)|AT(w)))!=0))return ne(num(eqis0),matchs(a,w));
+ if((SPARSE&(AT(a)|AT(w)))!=0)return ne(num(eqis0),matchs(a,w));
  af=AR(a)-(I)(jt->ranks>>RANKTX); af=af<0?0:af; wf=AR(w)-(I)((RANKT)jt->ranks); wf=wf<0?0:wf; RESETRANK;
  // exchange a and w as needed to ensure a has the shorter frame, i. e. is the repeated argument
  {A ta=a; I ti=af; I afhi=af-wf; a=afhi>=0?w:a; w=afhi>=0?ta:w; af=afhi>=0?wf:af; wf=afhi>=0?ti:wf;} 

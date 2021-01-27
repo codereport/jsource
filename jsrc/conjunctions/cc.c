@@ -139,7 +139,7 @@ DF2(jtboxcut0){A z;
  // NOTE: this routine is called from jtwords.  In that case, self comes from jtwords and is set up with the parm for x (<;.0~ -~/"2)~ y but with no failover routine.
  // Thus, the preliminary tests must not cause a failover.  They don't, because the inputs from jtwords are known to be well-formed
  // We require a have rank >=2, not sparse
- if(unlikely(((1-(I)AR(a))&(((AT(a)|AT(w))&SPARSE)-1))>=0))return (FAV(self)->localuse.lpf.func)(jtinplace,a,w,self);
+ if(((1-(I)AR(a))&(((AT(a)|AT(w))&SPARSE)-1))>=0)return (FAV(self)->localuse.lpf.func)(jtinplace,a,w,self);
  // Shape of a must end 2 1 - a one-dimensional selection
  if((AS(a)[AR(a)-2]^2)|(AS(a)[AR(a)-1]^1))return (FAV(self)->localuse.lpf.func)(jtinplace,a,w,self);
  // it is a (set of) one-dimensional selection
@@ -199,7 +199,7 @@ DF2(jtrazecut0){A z;C*wv,*zv;I ar,*as,(*av)[2],j,k,m,n,wt;
  // we need rank of a>2 (otherwise why bother?), rank of w>0, w not sparse, a not empty, w not empty (to make item-size easier)
  if((((ar-3)|(-(wt&SPARSE))|(AR(w)-1)|(AN(a)-1)))<0)return jtspecialatoprestart(jt,a,w,self);
  // the 1-cells of a must be 2x1
- if(unlikely((as[ar-2]^2)|(as[ar-1]^1)))return jtspecialatoprestart(jt,a,w,self);
+ if((as[ar-2]^2)|(as[ar-1]^1))return jtspecialatoprestart(jt,a,w,self);
  n=AS(w)[0]; m=AN(a)>>1;  // number of items of w, number of w-items in result
  // pass through a, counting result items.  abort if there is a reversal - too rare to bother with in the fast path
  RZ(a=vib(a)); av=(I(*)[2])AV(a); I nitems=0;
@@ -553,7 +553,7 @@ DF2(jtcut2){F2PREFIP;PROLOG(0025);A fs,z,zz;I neg,pfx;C id,*v1,*wv,*zc;I cger[12
      I ak,at,wcn,d,k,m=0,n,r,wt,*zi;I d1[32]; A pd0; UC *pd, *pdend;  // Don't make d1 too big - it fill lots of stack space
  PREF2(jtcut2);
  // a may have come from /., in which case it is incompletely filled in.  We look at the type, but nothing else
- if(unlikely((SGNIF(AT(a),SB01X)|-(AT(w)&SPARSE))<0))return cut2sx(a,w,self);
+ if((SGNIF(AT(a),SB01X)|-(AT(w)&SPARSE))<0)return cut2sx(a,w,self);
 #define ZZFLAGWORD state
  I state=ZZFLAGINITSTATE;  // init flags, including zz flags
 
@@ -720,9 +720,9 @@ DF2(jtcut2){F2PREFIP;PROLOG(0025);A fs,z,zz;I neg,pfx;C id,*v1,*wv,*zc;I cger[12
  zz=0;   // indicate no result from special cases
  switch(id){
  case CBOX:  // do <;.n to produce recursive pristine result, all zapped
-  if(likely(!(state&ZZFLAGWILLBEOPENED))){  // If we will open the result, we will gain more by boxing virtual blocks than by zapping them here
+  if(!(state&ZZFLAGWILLBEOPENED)){  // If we will open the result, we will gain more by boxing virtual blocks than by zapping them here
    GATV0(zz,BOX,m,1); AFLAG(zz) = BOX+((-(wt&DIRECT))&AFPRISTINE);  // allocate result, set recursive, and also PRISTINE if direct
-   if(likely(m!=0)){ // exit if empty for comp ease below
+   if(m!=0){ // exit if empty for comp ease below
     // boxes will be in AAV(z), in order.  Details of hijacking tnextpushp are discussed in jtbox().
     A *pushxsave = jt->tnextpushp; jt->tnextpushp=AAV(zz);  // save tstack info before allocation
     // **** MUST NOT FAIL FROM HERE UNTIL THE END, WHERE THE ALLOCATION SYSTEM CAN BE RESTORED ****
