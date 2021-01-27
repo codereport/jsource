@@ -912,7 +912,6 @@ extern J gjt; // global for JPF (procs without jt)
 #define CCBLOCK
 #endif
 
-#if SYS & SYS_UNIX
 #include <fenv.h>
 // bug clang isnan(x) set NaN flag if x is NaN
 
@@ -925,7 +924,6 @@ static inline UINT _clearfp(void){
   feclearexcept(FE_ALL_EXCEPT); 
   return r;
 }
-#endif
 
 // Define integer multiply, *z=x*y but do something else if integer overflow.
 // Depending on the compiler, the overflowed result may or may not have been stored

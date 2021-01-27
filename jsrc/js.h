@@ -8,7 +8,6 @@
 
 #define SYS_LINUX           262144L         /* GCC                         */
 #define SYS_MACOSX          4194304L        /* GCC (CC)                    */
-#define SYS_UNIX            (SYS_LINUX + SYS_MACOSX)
 
 #ifdef __linux__
 #define SYS SYS_LINUX

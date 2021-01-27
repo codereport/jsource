@@ -47,25 +47,12 @@ F jtjope(J jt,A w,C*mode){A t;F f;I n;static I nf=25; A z;
  RZ(t=str0(vslit(AAV(w)[0])));
  n=AN(t)-1;
  ASSERT(n!=0,EVLENGTH);
-#if (SYS&SYS_UNIX)
 {
  C* cs=CAV(t);
  f=fopen(cs,mode);
  if(!f&&errno==ENOENT&&!strcmp(mode,FUPDATE_O))f=fopen(cs,FUPDATEC_O);
  if(!f&&errno==EACCES&& strcmp(mode,FREAD_O  ))f=fopen(cs,FREAD_O);
 }
-#else
-{
- US usmode[10]; US*s; I i;
- RZ(z=jttoutf16x(jt,t));
- s=USAV(z);
- for(i=0;i<(I)strlen(mode);++i){usmode[i]=(US)mode[i];}
- usmode[i]=0;
- f=_wfopen(s,usmode);
- if(!f&&errno==ENOENT&&!wcscmp(usmode,FLUPDATE_O))f=_wfopen(s,FLUPDATEC_O);
- if(!f&&errno==EACCES&& wcscmp(usmode,FLREAD_O  ))f=_wfopen(s,FLREAD_O);
-}
-#endif
  return f?f:(F)jerrno();
 }
 

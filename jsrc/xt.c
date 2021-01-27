@@ -13,15 +13,11 @@
 #if (SYS & SYS_LINUX)
 #include <time.h>
 #else
-#if SYS & SYS_UNIX
 #include <sys/time.h>
-#endif
 #endif
 
 #ifndef CLOCKS_PER_SEC
-#if (SYS & SYS_UNIX)
 #define CLOCKS_PER_SEC  1000000
-#endif
 #ifdef  CLK_TCK
 #define CLOCKS_PER_SEC  CLK_TCK
 #endif

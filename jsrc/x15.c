@@ -62,8 +62,6 @@ typedef double complex double_complex;
 /*  LoadLibrary, GetProcAddress, FreeLibrary routines           */
 /*  GetLastError and FormatMessage                              */
 
-#if (SYS & SYS_UNIX)
-
 #include <dlfcn.h>
 
 #undef MAX     /* defined in sys/param.h */
@@ -76,7 +74,6 @@ typedef char *LPSTR;
 typedef I (*FARPROC)();
 #define __stdcall
 #define _cdecl
-#endif
 
 /* windows has 2 dll calling conventions - __stdcall and _cdecl */
 /* __stdcall is used by most DLLs, including all system APIs    */
@@ -640,15 +637,11 @@ static CCT*jtcdload(J jt,CCT*cc,C*lib,C*proc){B ha=0;FARPROC f;HMODULE h;
  else{
   CDASSERT(AM(jt->cdhashl)<NLIBS,DETOOMANY);    /* too many dlls loaded */
 
-#if SYS & SYS_UNIX
   CDASSERT(h=dlopen((*lib)?lib:0,RTLD_LAZY),DEBADLIB);
-#endif
   cc->h=h; ha=1;
  }
 
-#if (SYS & SYS_UNIX)
  f=(FARPROC)dlsym(h,proc);
-#endif
  CDASSERT(f!=0,DEBADFN);
  cc->fp=f;
  /* assumes the hash table for libraries (jt->cdhashl) is fixed sized */
@@ -884,9 +877,7 @@ static B jtcdexec1(J jt,CCT*cc,C*zv0,C*wu,I wk,I wt,I wd){A*wv=(A*)wu,x,y,*zv;B 
 
  DO(cipcount, convertup(cipv[i],cipn[i],cipt[i]);); /* convert s and int to I and f to d as required */
 
-#if SYS&SYS_UNIX
  t=errno;
-#endif
  if(t!=0)jt->getlasterror=t;
  return 1;
 }
@@ -919,9 +910,7 @@ F2(jtcd){A z;C*tv,*wv,*zv;CCT*cc;I k,m,n,p,q,t,wr,*ws,wt;
 
 
 
-#if (SYS & SYS_UNIX)
 #define FREELIB dlclose
-#endif
 
 void dllquit(J jt){CCT*av;I j,*v;
  if(!jt->cdarg)return;
@@ -944,9 +933,7 @@ F1(jtcder){I t; ASSERTMTV(w); t=jt->dlllasterror; jt->dlllasterror=DEOK; return 
 F1(jtcderx){I t;C buf[1024];
  ASSERTMTV(w); t=jt->getlasterror; jt->getlasterror=0;
 
-#if SYS&SYS_UNIX
  {const char *e = dlerror(); strcpy (buf, e?e:"");}
-#endif
  return link(sc(t),cstr(buf));
 }    /* 15!:11  GetLastError information */
 
@@ -1188,9 +1175,7 @@ F2(jtcdproc2){C*proc;FARPROC f;HMODULE h;
   f=(k==-1)?(FARPROC)0:(FARPROC)jfntaddr[k];
  }else{
 
-#if (SYS & SYS_UNIX)
   f=(FARPROC)dlsym(h,proc);
-#endif
  }
  CDASSERT(f!=0,DEBADFN);
  return sc((I)f);

@@ -17,11 +17,9 @@
 #include "j.h"
 #include "x.h"
 
-#if (SYS & SYS_UNIX)
 #include <stdlib.h>
 typedef long long INT64;
 static int rmdir2(const char *dir);
-#endif
 
 
 
@@ -174,12 +172,7 @@ F1(jtjferase){A y,fn;US*s;I h;
 
 F1(jtpathcwd){C path[1+NPATH];US wpath[1+NPATH];
  ASSERTMTV(w);
-#if (SYS & SYS_UNIX)
  ASSERT(getcwd(path,NPATH),EVFACE);
-#else
- ASSERT(_wgetcwd(wpath,NPATH),EVFACE);
- jttoutf8w(jt,path,NPATH,wpath);
-#endif
  return cstr(path);
 }
 
@@ -188,34 +181,17 @@ F1(jtpathchdir){A z;
  ASSERT(1>=AR(w),EVRANK);
  ASSERT(AN(w),EVLENGTH);
  ASSERT((LIT+C2T+C4T)&AT(w),EVDOMAIN);
-#if (SYS & SYS_UNIX)
  ASSERT(!chdir(CAV(toutf8x(w))),EVFACE);
-#else
- RZ(z=toutf16x(toutf8(w))); USAV(z)[AN(z)]=0;  // install termination
- ASSERT(0==_wchdir(USAV(z)),EVFACE);
-#endif
  return mtv;
 }
 
 F1(jtjgetenv){
  F1RANK(1,jtjgetenv,UNUSED_VALUE);
  ASSERT((LIT+C2T+C4T)&AT(w),EVDOMAIN);
-#if (SYS & SYS_UNIX)
  {
   C*s;
   return(s=getenv(CAV(toutf8x(w))))?cstr(s):num(0); // toutf8x has trailing nul
  }
-#else // # i think this corresponds to WIN -ish stuff
- {
-  A z; US* us;
-  RZ(z=toutf16x(toutf8(w))); USAV(z)[AN(z)]=0;  // install termination
-  us=_wgetenv(USAV(z));
-  if(!us)return num(0);
-  GATV0(z,C2T,wcslen(us),1);
-  MC(USAV(z),us,2*wcslen(us));
-  return toutf8(z);
- }
-#endif
  return num(0);
 }
 
@@ -225,21 +201,10 @@ F1(jtjgetpid){
  return(sc(getpid()));
 }
 
-#if (SYS & SYS_UNIX)
-// #ifdef __GNUC__
 F1(jtpathdll){
  ASSERTMTV(w); return cstr((C*)"");
 }
-#else
-F1(jtpathdll){char p[MAX_PATH]; extern C dllpath[];
- ASSERTMTV(w);
- strcpy(p,dllpath);
- if('\\'==p[strlen(p)-1]) p[strlen(p)-1]=0;
- return cstr(p);
-}
-#endif
 
-#if (SYS & SYS_UNIX)
 int rmdir2(const char *dir)
 {
  int ret=0;
@@ -300,4 +265,3 @@ finish:
 
  return ret;
 }
-#endif
