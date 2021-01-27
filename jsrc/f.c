@@ -275,7 +275,6 @@ static F1(jtthxqe){A d,t,*tv,*v,y,z;C*zv;I c,*dv,m,n,p,r,*s,*wv;
 // Also return the largest type encountered
 // Result is 1 normally, 0 if size out of bounds
 static B jtrc(J jt,A w,A*px,A*py, I *t){A*v,x,y;I j=0,k=0,maxt=0,r,*s,xn,*xv,yn,*yv;
- ARGCHK1(w);  // return failure if no input
  // r = rank of w, s->shape of w, v->values
  r=AR(w); s=AS(w); v=AAV(w);
  // xn = #rows in 2-cell of joined table, x=vector of (xn+1) 0s, xv->data for vector
@@ -440,7 +439,6 @@ static F1(jtenframe){A x,y,z;C*zv;I ht,m,n,p,q,t,wd,wdb,wr,xn,*xv,yn,*yv,zn;
 // w is an r-dimensional array of characters; result is a table with
 // 1 blank line between 2-cells, 2 blank lines between 3-cells, etc
 F1(jtmat){A z;B b=0;C*v,*x;I c,k,m=1,p,q,qc,r,*s,t,zn;
- ARGCHK1(w);  // return if no w
  // r=rank of w, s->shape, v->characters, t=type
  r=AR(w); s=AS(w); v=CAV(w); t=AT(w);
  // set (q,c) to the shape of a 2-cell of the input

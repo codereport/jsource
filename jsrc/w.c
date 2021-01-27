@@ -57,7 +57,6 @@ static const ST state[SDDD+1][16]={
 // AM(z) gives # of words not counting a final comment, ({.$z) - hascomment
 // If there are mismatched quotes, AM(z) is set to -1 and the number of valid tokens is in AS(z)[0]
 F1(jtwordil){A z;I s,i,m,n,nv,*x;UC*v;
- ARGCHK1(w);  // if no string, could be empty line from keyboard; return null A in that case
  nv=0;    // set not creating numeric constant
  n=AN(w); v=UAV(w); GATV0(z,INT,n+n,3); x=AV(z); AS(z)[1]=2; AS(z)[2]=1;  // get count of characters n and address v; turn into suitable shape for ;.0 (x 2 1)
   // allocate absolute worst-case output area (each char is 1 word); point x to output indexes

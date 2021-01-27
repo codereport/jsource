@@ -480,7 +480,6 @@ A jtrealize(J jt, A w){A z; I t;
 
 
 A jtgc (J jt,A w,A* old){
- ARGCHK1(w);  // return if no input (could be error or unfilled box)
  I c=AC(w);  // remember original usecount/inplaceability
  // We want to avoid realizing w if possible, so we handle virtual w separately
  if(AFLAG(w)&(AFVIRTUAL|AFVIRTUALBOXED)){
@@ -991,7 +990,6 @@ B jtspc(J jt){A z; RZ(z=MALLOC(1000)); FREECHK(z); return 1; }  // see if 1000 b
 // if b=1, the result will replace w, so decrement usecount of w and increment usecount of new buffer
 // the itemcount of the result is set as large as will fit evenly, and the atomcount is adjusted accordingly
 A jtext(J jt,B b,A w){A z;I c,k,m,m1,t;
- ARGCHK1(w);                               /* assume AR(w)&&AN(w)    */
  m=AS(w)[0]; PROD(c,AR(w)-1,AS(w)+1); t=AT(w); k=c*bp(t);
  GA(z,t,2*AN(w)+(AN(w)?0:c),AR(w),0);  // ensure we allocate SOMETHING to make progress
  m1=allosize(z)/k;  // start this divide before the copy
