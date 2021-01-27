@@ -1068,14 +1068,14 @@ DF2(jtresidue){F2PREFIP; ARGCHK2(a,w); I intmod; if(!((AT(a)|AT(w))&(NOUN&~INT)|
 #define SETCONPTR(n) A conptr=num(n); A conptr2=zeroionei(n); A conptr3=numvr(n); conptr=AT(w)&INT?conptr2:conptr; conptr=AT(w)&FL?conptr3:conptr;  // for 0 or 1 only
 #define SETCONPTR2(n) A conptr=num(n); A conptr3=numvr(n); conptr=AT(w)&FL?conptr3:conptr;   // used for 2, when the only options are INT/FL
 
-F1(jtnot   ){ARGCHK1(w); SETCONPTR(1) return AT(w)&B01+SB01?eq(num(0),w):minus(conptr,w);}
-F1(jtnegate){ARGCHK1(w); SETCONPTR(0) return minus(conptr,w);}
-F1(jtdecrem){ARGCHK1(w); SETCONPTR(1) IPSHIFTWA; return minus(w,conptr);}
-F1(jtincrem){ARGCHK1(w); SETCONPTR(1) return plus(conptr,w);}
-F1(jtduble ){ARGCHK1(w); SETCONPTR2(2) return tymes(conptr,w);}
-F1(jtsquare){ARGCHK1(w); return tymes(w,w);}   // leave inplaceable in w only  ?? never inplaces
-F1(jtrecip ){ARGCHK1(w); SETCONPTR(1) return divide(conptr,w);}
-F1(jthalve ){ARGCHK1(w); if(!(AT(w)&XNUM+RAT))return tymes(onehalf,w); IPSHIFTWA; return divide(w,num(2));}
+F1(jtnot   ){SETCONPTR(1) return AT(w)&B01+SB01?eq(num(0),w):minus(conptr,w);}
+F1(jtnegate){SETCONPTR(0) return minus(conptr,w);}
+F1(jtdecrem){SETCONPTR(1) IPSHIFTWA; return minus(w,conptr);}
+F1(jtincrem){SETCONPTR(1) return plus(conptr,w);}
+F1(jtduble ){SETCONPTR2(2) return tymes(conptr,w);}
+F1(jtsquare){return tymes(w,w);}   // leave inplaceable in w only  ?? never inplaces
+F1(jtrecip ){SETCONPTR(1) return divide(conptr,w);}
+F1(jthalve ){if(!(AT(w)&XNUM+RAT))return tymes(onehalf,w); IPSHIFTWA; return divide(w,num(2));}
 
 static AHDR2(zeroF,B,void,void){memset(z,C0,m*(n^REPSGN(n)));return EVOK;}
 static AHDR2(oneF,B,void,void){memset(z,C1,m*(n^REPSGN(n)));return EVOK;}

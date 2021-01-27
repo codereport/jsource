@@ -120,7 +120,6 @@ extern void jtsymfreeha(J jt, A w){I j,wn=AN(w); LX k,* RESTRICT wv=LXAV0(w);
 static SYMWALK(jtsympoola, I,INT,100,1, 1, *zv++=j;)
 
 F1(jtsympool){A aa,q,x,y,*yv,z,*zv;I i,n,*u,*xv;L*pv;LX j,*v;
- ARGCHK1(w); 
  ASSERT(1==AR(w),EVRANK); 
  ASSERT(!AN(w),EVLENGTH);
  GAT0(z,BOX,3,1); zv=AAV(z);
@@ -197,7 +196,7 @@ L*jtprobe(J jt,I l,C*string,UI4 hash,A g){
 // This code is copied in p.c
 L *jtprobelocal(J jt,A a,A locsyms){NM*u;I b,bx;
  // There is always a local symbol table, but it may be empty
- ARGCHK1(a);u=NAV(a);  // u->NM block
+ u=NAV(a);  // u->NM block
  if(likely((b = u->bucket)!=0)){
   if(0 > (bx = ~u->bucketx)){
    // positive bucketx (now negative); that means skip that many items and then do name search.  This is set for words that were recognized as names but were not detected as assigned-to in the definition
@@ -229,7 +228,7 @@ L *jtprobelocal(J jt,A a,A locsyms){NM*u;I b,bx;
 // If not found, one is created
 L *jtprobeislocal(J jt,A a){NM*u;I b,bx;L *sympv=LAV0(jt->symp);
  // If there is bucket information, there must be a local symbol table, so search it
- ARGCHK1(a);u=NAV(a);  // u->NM block
+ u=NAV(a);  // u->NM block
  if(b = u->bucket){
   LX lx = LXAV0(jt->locsyms)[b];  // index of first block if any
   if(0 > (bx = ~u->bucketx)){
@@ -362,7 +361,6 @@ A jtsybaseloc(J jt,A a) {I m,n;NM*v;
 // result is symbol-table slot for the name if found, or 0 if not found
 // This code is copied in p.c
 L*jtsyrd(J jt,A a,A locsyms){A g;
- ARGCHK1(a);
  if(!(NAV(a)->flag&(NMLOC|NMILOC))){L *e;
   // If there is a local symbol table, search it first
   if(e = probelocal(a,locsyms)){return e;}  // return flagging the result if local
@@ -372,7 +370,6 @@ L*jtsyrd(J jt,A a,A locsyms){A g;
 }
 // same, but return locale in which found
 A jtsyrdforlocale(J jt,A a){A g;
- ARGCHK1(a);
  if(!(NAV(a)->flag&(NMLOC|NMILOC))){L *e;
   // If there is a local symbol table, search it first
   if(e = probelocal(a,jt->locsyms)){return jt->locsyms;}  // return flagging the result if local
@@ -385,7 +382,6 @@ A jtsyrdforlocale(J jt,A a){A g;
 // result is symbol-table slot for the name if found, or 0 if not found
 // This code is copied in p.c
 L*jtsyrdnobuckets(J jt,A a){A g;
- ARGCHK1(a);
  if(!(NAV(a)->flag&(NMLOC|NMILOC))){L *e;
   // If there is a local symbol table, search it first
   if(!NAV(a)->bucket && (e = probe(NAV(a)->m,NAV(a)->s,NAV(a)->hash,jt->locsyms))){return e;}  // return if found locally from name
@@ -396,7 +392,6 @@ L*jtsyrdnobuckets(J jt,A a){A g;
 
 
 static A jtdllsymaddr(J jt,A w,C flag){A*wv,x,y,z;I i,n,*zv;L*v;
- ARGCHK1(w);
  n=AN(w); wv=AAV(w); 
  ASSERT(!n||BOX&AT(w),EVDOMAIN);
  GATV(z,INT,n,AR(w),AS(w)); zv=AV(z); 
@@ -414,7 +409,7 @@ F1(jtdllsymget){return dllsymaddr(w,0);}
 F1(jtdllsymdat){return dllsymaddr(w,1);}
 
 // look up the name w using full name resolution.  Return the value if found, abort if not found or invalid name
-F1(jtsymbrd){L*v; ARGCHK1(w); ASSERTN(v=syrd(w,jt->locsyms),EVVALUE,w); return v->val;}
+F1(jtsymbrd){L*v; ASSERTN(v=syrd(w,jt->locsyms),EVVALUE,w); return v->val;}
 
 // look up name w, return value unless locked or undefined; then return just the name
 F1(jtsymbrdlocknovalerr){A y;L *v;

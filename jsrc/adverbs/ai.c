@@ -26,7 +26,6 @@ static F2(jtfong){A f;C c;V*v;
 }   // [: f g  with simplifications: [: ] w -> w;  [: (N/[: x y) w -> N/[: x [: y w   and y omittrd if ]
 
 static F1(jtinvfork){A f,fi,g,gi,h,k;B b,c;V*v;
- ARGCHK1(w);
  v=FAV(w); RZ(f=unname(v->fgh[0])); g=v->fgh[1]; RZ(h=unname(v->fgh[2]));
  if(CCAP==ID(f))return fong(invrecur(h),invrecur(g));
  c=1&&NOUN&AT(f); b=c||consf(f);
@@ -65,7 +64,6 @@ static F2(jtdiag){I d,m,p,r,t,*v;
 }}
 
 static F1(jtbminv){A*wv,x,z=w;I i,j,m,r,*s,t=0,*u,**v,*y,wn,wr,*ws;
- ARGCHK1(w);
  ASSERT(0,EVNONCE);
  ASSERT(BOX&AT(w),EVDOMAIN);
  wn=AN(w); wr=AR(w); ws=AS(w); wv=AAV(w); 
@@ -97,7 +95,6 @@ static F1(jtbminv){A*wv,x,z=w;I i,j,m,r,*s,t=0,*u,**v,*y,wn,wr,*ws;
 
 
 static F1(jtinvamp){A f,ff,g,h,x,y;B nf,ng;C c,d,*yv;I n;V*u,*v;
- ARGCHK1(w);
  v=FAV(w);
  f=v->fgh[0]; nf=!!(NOUN&AT(f));
  g=v->fgh[1]; ng=!!(NOUN&AT(g));
@@ -236,7 +233,7 @@ static const C simpleinv[128] = {
 // Return inverse of monad w.  recur is a recursion indicator, always forced to 0 for the initial call, and
 // set to 1 here for recursive calls
 A jtinv(J jt, A w, I recur){A f,ff,g;B b,nf,ng,vf,vg;C id;I p,q;V*v;
- ARGCHK1(w); STACKCHKOFL  // make sure we don't have a recursion loop through inv
+ STACKCHKOFL  // make sure we don't have a recursion loop through inv
  ASSERT(VERB&AT(w),EVDOMAIN); 
  id=ID(w); v=FAV(w);  // id=pseudochar for w, v->verb info
 #define simpleinvvalues(w) CCM(w,CDIV)+CCM(w,CPLUS)+CCM(w,CMINUS)+CCM(w,CLEFT)+CCM(w,CRIGHT)+CCM(w,CREV)+CCM(w,CCANT)+CCM(w,CPOLY)+ \
@@ -322,7 +319,6 @@ A jtinv(J jt, A w, I recur){A f,ff,g;B b,nf,ng,vf,vg;C id;I p,q;V*v;
 }
 
 static F1(jtneutral){A x,y;B b;V*v;
- ARGCHK1(w);
  v=FAV(w);
  ASSERT(!v->lrr,EVDOMAIN);
  RZ(y=v2(0L,1L));

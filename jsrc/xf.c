@@ -184,7 +184,6 @@ F1(jtpathcwd){C path[1+NPATH];US wpath[1+NPATH];
 }
 
 F1(jtpathchdir){A z;
- ARGCHK1(w);
  ASSERT(1>=AR(w),EVRANK);
  ASSERT(AN(w),EVLENGTH);
  ASSERT((LIT+C2T+C4T)&AT(w),EVDOMAIN);

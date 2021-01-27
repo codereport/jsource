@@ -55,7 +55,6 @@ F1(jtdisps){UC n;
 F1(jtevmq){ASSERTMTV(w); return behead(jt->evm);}
 
 F1(jtevms){A t,*tv,*wv;
- ARGCHK1(w);
  ASSERT(1==AR(w),EVRANK);
  ASSERT(NEVM==AN(w),EVLENGTH);
  ASSERT(BOX&AT(w),EVDOMAIN);
@@ -68,7 +67,6 @@ F1(jtevms){A t,*tv,*wv;
 }
 
 F1(jtfxx){
- ARGCHK1(w);
  ASSERT(AT(w)&LIT+BOX,EVDOMAIN);
  ASSERT(1>=AR(w),EVRANK);
  return fx(ope(w));
@@ -86,7 +84,6 @@ F1(jtiepq){
 }
 
 F1(jtieps){
- ARGCHK1(w);
  ASSERT(1>=AR(w),EVRANK);
  ASSERT(!AN(w)||AT(w)&LIT,EVDOMAIN);
  fa(jt->iep);
@@ -178,7 +175,6 @@ F1(jtxepq){
 }
 
 F1(jtxeps){
- ARGCHK1(w);
  ASSERT(1>=AR(w),EVRANK);
  ASSERT(!AN(w)||AT(w)&LIT,EVDOMAIN);
  fa(jt->xep);
@@ -198,7 +194,6 @@ F1(jtasgzombs){I k;
 // 9!:56  undocumented
 // query/override cpu feature
 F1(jtcpufeature){
- ARGCHK1(w);
  ASSERT(AT(w)&LIT,EVDOMAIN);
  ASSERT(AN(w),EVLENGTH);
  ASSERT(1>=AR(w),EVRANK);
@@ -359,7 +354,6 @@ return mtm;
 // 2 zgemm_thres  complex threshold
 
 F1(jtgemmtune){I k;
- ARGCHK1(w);
  ASSERT(AT(w)&(B01+INT),EVDOMAIN);
  ASSERT(1==AN(w),EVLENGTH);
  ASSERT(1>=AR(w),EVRANK);

@@ -245,7 +245,6 @@ void auditblock(A w, I nonrecurok, I virtok) {
 
 // Run parser, creating a new debug frame.  Explicit defs, which make other tests first, then go through jtparsea
 F1(jtparse){A z;
- ARGCHK1(w);
  A *queue=AAV(w); I m=AN(w);   // addr and length of sentence
  RZ(deba(DCPARSE,queue,(A)m,0L));  // We don't need a new stack frame if there is one already and debug is off
  z=parsea(queue,m);

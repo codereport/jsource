@@ -78,14 +78,13 @@ A jtnfs(J jt,I n,C*s){A z;C f,*t;I m,p;NM*zv;
 
 // string from name: returns string for the name
 // if b&SFNSIMPLEONLY, return only the simple name
-A jtsfn(J jt,B b,A w){NM*v; ARGCHK1(w); v=NAV(w); return str(b&SFNSIMPLEONLY?v->m:AN(w),v->s);}
+A jtsfn(J jt,B b,A w){NM*v; v=NAV(w); return str(b&SFNSIMPLEONLY?v->m:AN(w),v->s);}
 
 // string from name evocation: returns string for name UNLESS the name was an NMDOT type; in that case it returns w f. which will be a verb
-A jtsfne(J jt,A w){ARGCHK1(w); A wn=FAV(w)->fgh[0]; if(AT(wn)&NAMEBYVALUE)return fix(w,zeroionei(0)); return sfn(0,wn);}
+A jtsfne(J jt,A w){A wn=FAV(w)->fgh[0]; if(AT(wn)&NAMEBYVALUE)return fix(w,zeroionei(0)); return sfn(0,wn);}
 
 
 F1(jtnfb){A y;C*s;I n;
- ARGCHK1(w);
  ASSERT(BOX&AT(w),EVDOMAIN);
  ASSERT(!AR(w),EVRANK);
  RZ(y=vs(ope(w)));
@@ -110,7 +109,6 @@ F1(jtonm){A x,y; RZ(x=ope(w)); y=stdnm(x); ASSERTN(y,EVILNAME,nfs(AN(x),CAV(x)))
 
 // w is array of boxed strings; result is name class for each
 F1(jtnc){A*wv,x,y,z;I i,n,t,*zv;L*v; 
- ARGCHK1(w);
  n=AN(w); wv=AAV(w);   // n=#names  wv->first box
  ASSERT(!n||BOX&AT(w),EVDOMAIN);   // verify boxed input (unless empty)
  GATV(z,INT,n,AR(w),AS(w)); zv=AV(z);   // Allocate z=result, same shape as input; zv->first result
@@ -161,7 +159,6 @@ F2(jtnl2){UC*u;
 
 
 F1(jtscind){A*wv,x,y,z;I n,*zv;L*v;
- ARGCHK1(w);
  n=AN(w); 
  ASSERT(!n||BOX&AT(w),EVDOMAIN);
  wv=AAV(w); 
@@ -172,7 +169,6 @@ F1(jtscind){A*wv,x,y,z;I n,*zv;L*v;
 
 
 static A jtnch1(J jt,B b,A w,I*pm,A ch){A*v,x,y;C*s,*yv;LX *e;I i,k,m,p,wn;L*d;
- ARGCHK1(w);
  wn=AN(w); e=LXAV0(w);                                /* locale                */
  x=(A)(*e+LAV0(jt->symp))->name; p=AN(x); s=NAV(x)->s;  /* locale name/number           */
  m=*pm; v=AAV(ch)+m;                               /* result to appended to */
@@ -218,7 +214,6 @@ F1(jtnch){A ch;B b;LX *e;I i,m,n;L*d;
 
 
 F1(jtex){A*wv,y,z;B*zv;I i,n;L*v;I modifierchg=0;
- ARGCHK1(w);
  n=AN(w); wv=AAV(w); 
  ASSERT(((n-1)|SGNIF(AT(w),BOXX))<0,EVDOMAIN);
  GATV(z,B01,n,AR(w),AS(w)); zv=BAV(z);

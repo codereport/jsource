@@ -102,7 +102,6 @@ static void jtseeparse(J jt,DC d){A*v;I m;
 }    /* display error line */
 
 F1(jtunparse){A*v,z;
- ARGCHK1(w);
  jt->etxn=0; I nflag=0;
  v=AAV(w); DO(AN(w), nflag=disp(v[i],nflag);); z=str(jt->etxn,jt->etx);
  jt->etxn=0;

@@ -29,7 +29,6 @@ A jtevc(J jt,A a,A w,C*s){A z; return df2(z,a,w,colon(num(2),cstr(s)));}
 
 // ". y
 F1(jtexec1){A z;
- ARGCHK1(w);
  if(AT(w)&NAME){z=nameref(w,jt->locsyms);  // the case ".@'name' which is the fastest way to refer to a deferred name
  }else{
   F1RANK(1,jtexec1,UNUSED_VALUE);
@@ -66,7 +65,6 @@ static A jtcex(J jt,A w,AF f,A self){A z; RE(w); z=f(jt,w,self); RESETERR; retur
 
 // convert the gerund (i.e  AR) in w into a verb
 F1(jtexg){A*v,*wv,x,y,z;I n;
- ARGCHK1(w);
  n=AN(w); wv=AAV(w); 
  ASSERT(n!=0,EVLENGTH);
  ASSERT(1>=AR(w),EVRANK);

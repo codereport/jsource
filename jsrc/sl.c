@@ -151,7 +151,6 @@ F1(jtlocsizeq){C*v; ASSERTMTV(w); v=jt->locsize; return v2(v[0],v[1]);}
      /* 9!:38 default locale size query */
 
 F1(jtlocsizes){I p,q,*v;
- ARGCHK1(w);
  ASSERT(1==AR(w),EVRANK);
  ASSERT(2==AN(w),EVLENGTH);
  RZ(w=vi(w)); v=AV(w); p=v[0]; q=v[1];
@@ -195,7 +194,6 @@ A jtstfindcre(J jt,I n,C*u,I bucketx){
 
 // b is flags: 1=check name for validity, 2=do not allow numeric locales (whether atomic or not)
 static A jtvlocnl(J jt,I b,A w){A*wv,y;C*s;I i,m,n;
- ARGCHK1(w);
  if(((b-2) & (SGNIF(AT(w),INTX) | (SGNIF(AT(w),B01X) & (AR(w)-1))))<0)return w;  // integer list or scalar boolean is OK
  n=AN(w);
  ASSERT(((n-1)|SGNIF(AT(w),BOXX))<0,EVDOMAIN);
@@ -300,7 +298,6 @@ static F2(jtloccre){A g,y;C*s;I n,p;L*v;
 }    /* create a locale named w with hash table size a */
 
 static F1(jtloccrenum){C s[20];I k,p;
- ARGCHK1(w);
  if(MARK&AT(w))p=jt->locsize[1]; else{RE(p=i0(w)); ASSERT(0<=p,EVDOMAIN); ASSERT(p<14,EVLIMIT);}
  RE(k=jtgetnl(jt));
  FULLHASHSIZE(1LL<<(p+5),SYMBSIZE,1,SYMLINFOSIZE,p);  // get table, size 2^p+6 minus a little
@@ -310,7 +307,6 @@ static F1(jtloccrenum){C s[20];I k,p;
 }    /* create a numbered locale with hash table size n */
 
 F1(jtloccre1){
- ARGCHK1(w);
  if(AN(w))return rank2ex0(mark,vlocnl(2+1,w),UNUSED_VALUE,jtloccre);
  ASSERT(1==AR(w),EVRANK);
  return loccrenum(mark);
@@ -325,7 +321,6 @@ F2(jtloccre2){
 
 
 F1(jtlocswitch){A g;
- ARGCHK1(w);
  ASSERT(!AR(w),EVRANK); 
  RZ(g=locale(1,w));
  // put a marker for the operation on the call stack
@@ -352,7 +347,6 @@ static SYMWALK(jtlocmap1,I,INT,18,3,1,
      *zv++=(I)rifvs(sfn(SFNSIMPLEONLY,d->name));})  // this is going to be put into a box
 
 F1(jtlocmap){A g,q,x,y,*yv,z,*zv;I c=-1,d,j=0,m,*qv,*xv;
- ARGCHK1(w);
  ASSERT(!AR(w),EVRANK);
  RE(g=equ(w,zeroionei(0))?jt->stloc:equ(w,zeroionei(1))?jt->locsyms:locale(0,w));
  ASSERT(g!=0,EVLOCALE);

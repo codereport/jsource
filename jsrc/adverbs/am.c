@@ -57,7 +57,6 @@ static A jtmerge1(J jt,A w,A ind){A z;B*b;C*wc,*zc;D*wd,*zd;I c,it,j,k,m,r,*s,t,
 
 // Handle the case statement abc =: pqr} x,...,y,:z, with in-place operation if pqr is Boolean and abc appears on the right
 F1(jtcasev){A b,*u,*v,w1,x,y,z;B*bv,p,q;I*aa,c,*iv,j,m,n,r,*s,t;
- ARGCHK1(w);
  RZ(w1=ca(w)); u=AAV(w1);   // make a copy of the input, point to its value
  // the input is a boxed list.  The last 3 values are (name pqr);(index in which abc appeared in the x,y,... or -1 if it didn't);(original sentence queue)
  p=1; m=AN(w)-3; v=AAV(w); c=i0(v[m+1]);   // get # items in list, and index of the matching one
@@ -190,7 +189,6 @@ static A jtmerge2(J jt,A a,A w,A ind,I cellframelen){F2PREFIP;A z;I t;
 // speed to validate the input, and pdt works well for a large number of short vectors - in particular it avoids the carried dependency between axes that
 // Horner's Rule creates.  This version keeps things in registers and has less setup time; and it is much better if there are negative indexes.
 A jtcelloffset(J jt,AD * RESTRICT w,AD * RESTRICT ind){A z;
- ARGCHK1(w);
  if(AR(ind)<2){RZ(z=pind(AS(w)[0],ind));  // (m}only) treat a list as a list of independent indexes.  pind handles that case quickly and possibly in-place.
  }else if(AS(ind)[AR(ind)-1]==1){RZ(z=pind(AS(w)[0],IRS1(ind,0L,2L,jtravel,z)));  // if rows are 1 long, pind handles that too - remove the last axis
  }else{
@@ -389,7 +387,6 @@ B jtgerexact(J jt, A w){A*wv;
 
 // u} handling.  This is not inplaceable but the derived verb is
 F1(jtamend){
- ARGCHK1(w);
  if(VERB&AT(w)) return ADERIV(CRBRACE,mergv1,amccv2,VASGSAFE|VJTFLGOK2, RMAX,RMAX,RMAX);  // verb}
  else if(ger(w))return gadv(w,CRBRACE);   // v0`v1`v2}
  else           return ADERIV(CRBRACE,mergn1,jtamendn2,VASGSAFE|VJTFLGOK2, RMAX,RMAX,RMAX);  // m}

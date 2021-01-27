@@ -6,18 +6,18 @@
 #include "j.h"
 
 
-F1(jttally ){A z; I k; ARGCHK1(w); z=sc(SETIC(w,k));            RETF(AT(w)&XNUM+RAT?xco1(z):z);}  //  # y
-F1(jtshapex){A z; ARGCHK1(w); z=vec(INT,AR(w),AS(w)); RETF(AT(w)&XNUM+RAT?xco1(z):z);}
-F1(jtshape){ARGCHK1(w); return vec(INT,AR(w),AS(w));}  // $ y
-F1(jtisempty){ARGCHK1(w); if(unlikely((AT(w)&SPARSE)!=0))return eps(zeroionei(0),shape(w)); return num(AN(w)==0);}  // 0 e. $
-F1(jtisnotempty){ARGCHK1(w); if(unlikely((AT(w)&SPARSE)!=0))return __not(eps(zeroionei(0),shape(w))); return num(AN(w)!=0);}  // *@#@,
-F1(jtisitems){ARGCHK1(w); return num(!AR(w)|!!AS(w)[0]);}   // *@#   *@:#
-F1(jtrank){F1PREFIP; ARGCHK1(w); return sc(AR(w));}  // #@$
-F1(jtnatoms){F1PREFIP; A z; ARGCHK1(w); if(unlikely((AT(w)&SPARSE)!=0))return df1(z,shape(w),slash(ds(CSTAR))); return sc(AN(w));}   // */@$  #@,
+F1(jttally )    {A z; I k;      z=sc(SETIC(w,k));            RETF(AT(w)&XNUM+RAT?xco1(z):z);}  //  # y
+F1(jtshapex)    {A z;           z=vec(INT,AR(w),AS(w)); RETF(AT(w)&XNUM+RAT?xco1(z):z);}
+F1(jtshape)     {               return vec(INT,AR(w),AS(w));}  // $ y
+F1(jtisempty)   {               if(unlikely((AT(w)&SPARSE)!=0))return eps(zeroionei(0),shape(w)); return num(AN(w)==0);}  // 0 e. $
+F1(jtisnotempty){               if(unlikely((AT(w)&SPARSE)!=0))return __not(eps(zeroionei(0),shape(w))); return num(AN(w)!=0);}  // *@#@,
+F1(jtisitems)   {               return num(!AR(w)|!!AS(w)[0]);}   // *@#   *@:#
+F1(jtrank)      {F1PREFIP;      return sc(AR(w));}  // #@$
+F1(jtnatoms)    {F1PREFIP; A z; if(unlikely((AT(w)&SPARSE)!=0))return df1(z,shape(w),slash(ds(CSTAR))); return sc(AN(w));}   // */@$  #@,
 
 // ,y and ,"r y - producing virtual blocks
 F1(jtravel){A a,c,q,x,y,y0,z;B*b;I f,j,m,r,*u,*v,*yv;P*wp,*zp;
- F1PREFIP; ARGCHK1(w); 
+ F1PREFIP; 
  r=(RANKT)jt->ranks; r=AR(w)<r?AR(w):r; f=AR(w)-r; // r=effective rank (jt->rank is effective rank from irs1), f=frame
  if(likely(!(AT(w)&SPARSE))){
   if(r==1)return RETARG(w);  // if we are enfiling 1-cells, there's nothing to do, return the input (note: AN of sparse array is always 1)
@@ -64,7 +64,7 @@ F1(jtravel){A a,c,q,x,y,y0,z;B*b;I f,j,m,r,*u,*v,*yv;P*wp,*zp;
 }
 
 F1(jttable){A z,zz;I r,wr;
- F1PREFIP;ARGCHK1(w);
+ F1PREFIP;
  // We accept the pristine calculations from ravel
  wr=AR(w); r=(RANKT)jt->ranks; r=wr<r?wr:r;  // r=rank to use
  RZ(IRSIP1(w,0L,r-1<0?0:r-1,jtravel,z));  // perform ravel on items
@@ -121,8 +121,8 @@ DF2(jtnum2){ARGCHK3(a,w,self); return FAV(self)->fgh[2];}
 F2(jtfromr  ){ARGCHK2(a,w); A z; return IRS2(a,w,0, RMAX,1L,jtfrom  ,z);} // no agreement check because left rank is infinite - no frame  {"_ 1
 F2(jtrepeatr){ARGCHK2(a,w); A z; return IRS2(a,w,0, RMAX,1L,jtrepeat,z);}  // #"_ 1
 
-A jttaker(J jt,I n,A w){ARGCHK1(w); A a,z; RZ(a=sc(n)); return IRS2(a,w,0, RMAX,1L,jttake,z);}  // n {."1 w
-A jtdropr(J jt,I n,A w){ARGCHK1(w); A a,z; RZ(a=sc(n)); return IRS2(a,w,0, RMAX,1L,jtdrop,z);}  // n }."1 w
+A jttaker(J jt,I n,A w){A a,z; RZ(a=sc(n)); return IRS2(a,w,0, RMAX,1L,jttake,z);}  // n {."1 w
+A jtdropr(J jt,I n,A w){A a,z; RZ(a=sc(n)); return IRS2(a,w,0, RMAX,1L,jtdrop,z);}  // n }."1 w
 
 F1(jticap){A a,e;I n;P*p;
  F1RANK(1,jticap,UNUSED_VALUE);

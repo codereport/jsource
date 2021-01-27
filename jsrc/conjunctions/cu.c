@@ -8,7 +8,6 @@
 
 
 static A jteverysp(J jt,A w,A fs){A*wv,x,z,*zv;P*wp,*zp;
- ARGCHK1(w);
  AF f1=FAV(fs)->valencefns[0];
  ASSERT(SBOX&AT(w),EVNONCE);
  RZ(z=ca(w));
@@ -26,7 +25,7 @@ static A jteverysp(J jt,A w,A fs){A*wv,x,z,*zv;P*wp,*zp;
 DF1(jteveryself){return jtevery(jt,w,FAV(self)->fgh[0]);}   // replace u&.> with u and process
 // u&.>, but w may be a gerund, which makes the result a list of functions masquerading as an aray of boxes
 A jtevery(J jt, A w, A fs){A * RESTRICT wv,x,z,* RESTRICT zv;
- F1PREFIP;ARGCHK1(w);RESETRANK;  // we claim to support IRS1 but really there's nothing to do for it
+ F1PREFIP;RESETRANK;  // we claim to support IRS1 but really there's nothing to do for it
  if(unlikely((SPARSE&AT(w))!=0))return everysp(w,fs);
  AF f1=FAV(fs)->valencefns[0];   // pointer to function to call
  A virtw; I flags;  // flags are: ACINPLACE=pristine result; JTWILLBEOPENED=nonrecursive result; BOX=input was boxed; ACPERMANENT=input was inplaceable pristine, contents can be inplaced
@@ -257,7 +256,6 @@ static DF2(jtunder20){return jtrank2ex0(jt,a,w,self,jtunder2);}  // pass inplace
 static DF2(jtunderh20){return jtrank2ex0(jt,a,w,self,jtunderh2);}  // pass inplaceability through
 
 static DF1(jtunderai1){DECLF;A x,y,z;B b;I j,n,*u,*v;UC f[256],*wv,*zv;
- ARGCHK1(w);
  if(b=LIT&AT(w)&&256<AN(w)){  // long w.  run on all bytecodes, as i. 128 2  and i. 8 32
         df1(x,iota(v2(128L, 2L)),fs); b=x&&256==AN(x)&&NUMERIC&AT(x);
   if(b){df1(y,iota(v2(  8L,32L)),fs); b=y&&256==AN(y)&&NUMERIC&AT(y);}
