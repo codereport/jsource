@@ -400,6 +400,3 @@ see: tsu_notes, tsu_usage, tsu_pacman, and tsu_jd
    RUN  ddall  NB. report scripts that fail
    RECHO ddall NB. echo script names as run and final count of failures
 )
-
-echo 9!:14''
-
