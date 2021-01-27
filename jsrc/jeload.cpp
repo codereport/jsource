@@ -5,12 +5,12 @@
 // TODO: Remove all void* where applicable when other parts of the code start being refactored
 #include <string>
 #include <stdexcept>
-#include "util/stringx.h"
+#include <cstdint>
 #include <unistd.h>
 #include <dlfcn.h>
 #include "j.h"
 #include "jversion.h"
-#include <cstdint>
+#include "util/string.hpp"
 
 #ifdef __MACH__
     #include <mach-o/dyld.h> // for  _NSGetExecutablePath
