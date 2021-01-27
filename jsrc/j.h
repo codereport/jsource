@@ -165,27 +165,6 @@ static inline omp_int_t omp_get_max_threads() { return 1;}
 #ifndef RESTRICTI
 #define RESTRICTI
 #endif
-// If PREFETCH is not defined, we won't generate prefetch instrs
-
-// If the user switch C_NOMULTINTRINSIC is defined, suppress using it
-#ifdef C_NOMULTINTRINSIC
-#define C_USEMULTINTRINSIC 0
-#else
-#define C_USEMULTINTRINSIC 1
-#endif
-
-// disable C_USEMULTINTRINSIC if un-available
-#if C_USEMULTINTRINSIC
-#if defined(__clang__)
-#if !__has_builtin(__builtin_smull_overflow)
-#undef C_USEMULTINTRINSIC
-#define C_USEMULTINTRINSIC 0
-#endif
-#elif __GNUC__ < 5
-#undef C_USEMULTINTRINSIC
-#define C_USEMULTINTRINSIC 0
-#endif
-#endif
 
 #define NALP            256             /* size of alphabet                */
 #define NETX            2000            /* size of error display buffer    */
@@ -927,28 +906,12 @@ static inline UINT _clearfp(void){
 }
 #endif
 
-// Define integer multiply, *z=x*y but do something else if integer overflow.
-// Depending on the compiler, the overflowed result may or may not have been stored
-
-#if C_USEMULTINTRINSIC
-
-#define DPMULDECLS
-#define DPMUL(x,y,z,s) if(unlikely(__builtin_smulll_overflow(x,y,z)))s
-#define DPMULDDECLS
-#define DPMULD(x,y,z,s) if(unlikely(__builtin_smulll_overflow(x,y,&z)))s
-#define DPMULDZ(x,y,z) z=__builtin_smulll_overflow(x,y,&z)?0:z;
-#define DPMULDE(x,y,z) ASSERT(!__builtin_smulll_overflow(x,y,&z),EVLIMIT)
-#define DPUMUL(x,y,z,h) {__int128 _t; _t=(__int128)(x)*(__int128)(y); z=(I)_t; h=(I)(_t>>64);}  // product in z and h
-#else // C_USEMULTINTRINSIC 0 - use standard-C version (64-bit)
 #define DPMULDECLS
 #define DPMUL(x,y,z,s) {I _l, _x=(x), _y=(y); D _d; _l=_x*_y; _d=(D)_x*(D)_y-(D)_l; *z=_l; _d=ABS(_d); if(_d>1e8)s}  // *z may be the same as x or y
 #define DPMULDDECLS
 #define DPMULD(x,y,z,s) {I _l, _x=(x), _y=(y); D _d; _l=_x*_y; _d=(D)_x*(D)_y-(D)_l; z=_l; _d=ABS(_d); if(_d>1e8)s}
 #define DPMULDZ(x,y,z) DPMULD(x,y,z,z=0;)
 #define DPMULDE(x,y,z)  DPMULD(x,y,z,ASSERT(0,EVLIMIT))
-#endif
-
-// end of multiply builtins
 
 // define single+double-precision integer add
 

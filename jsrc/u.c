@@ -209,23 +209,6 @@ void mvc(I m,void*z,I n,void*w){I p=n,r;static I k=sizeof(D);  // ???
  MC(z,w,MIN(p,m)); while(m>p){r=m-p; MC(p+(C*)z,z,MIN(p,r)); p+=p;}
 }
 
-/*   // exponent bytes are silently changed by one bit
-void mvc(I m,void*z,I n,void*w){I p=n,r;static I k=sizeof(D);
- if(m<k||k<n||(I)z%k){MC(z,w,MIN(p,m)); while(m>p){r=m-p; MC(p+(C*)z,z,MIN(p,r)); p+=p;}}
- else{C*e,*s;D d[7],d0,*v;
-  p=0==k%n?8:6==n?24:n*k;  // p=lcm(k,n)
-  e=(C*)d; s=w; DO(p, *e++=s[i%n];);
-  v=(D*)z; d0=*d;
-  switch(p){
-   case  8: DQ(m/p, *v++=d0;); break;
-   case 24: DQ(m/p, *v++=d0; *v++=d[1]; *v++=d[2];); break;
-   case 40: DQ(m/p, *v++=d0; *v++=d[1]; *v++=d[2]; *v++=d[3]; *v++=d[4];); break;
-   case 56: DQ(m/p, *v++=d0; *v++=d[1]; *v++=d[2]; *v++=d[3]; *v++=d[4]; *v++=d[5]; *v++=d[6];);
-  }
-  if(r=m%p){s=(C*)v; e=(C*)d; DO(r, *s++=e[i];);}
-}}
-*/
-
 // odometer, up to the n numbers s[]
 A jtodom(J jt,I r,I n,I* RESTRICT s){A z;I m,mn,*u,*zv;
  PRODX(m,n,s,1) DPMULDE(m,n,mn);
