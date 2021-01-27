@@ -390,5 +390,14 @@ F2(jtgemmtune2){I j,k;
 // bit 0 is set to disable, bit 1 is a one-shot to ask for an audit
 // result is old value
 F1(jtaudittdisab){
+#if MEMAUDIT&2
+ I k,oldval;
+ oldval = jt->audittstackdisabled;  // return value
+ RE(k=i0(w));  // get arg
+ if(k&2){jt->audittstackdisabled=0; audittstack(jt);}  // run once if so requested
+ jt->audittstackdisabled=k;
+ return sc(oldval);
+#else
  return sc(0);
+#endif
 }

@@ -347,7 +347,7 @@
 // Zczero is ~0 if usecount is going negative, 0 otherwise.  Usecount 1->0, 8..1->8..2, 4..0 unchanged, others decrement
 #define fadecr(x) I Zc=AC(x); AC(x)=Zc=Zc-1+((UI)Zc>>(BW-2));  // this does the decrement only, checking for PERMANENT
 #define faaction(x, nomfaction) {fadecr(x) I tt=AT(x); Zc=REPSGN(Zc-1); if(unlikely(((tt&=TRAVERSIBLE)&(Zc|~AFLAG(x)))!=0))jtfa(jt,(x),tt); if(likely(Zc!=0)){jtmf(jt,x);} nomfaction}
-#define fa(x)                       {if(likely((x)!=0))faaction((x),)}
+#define fa(x)                       {if(likely((x)!=0))faaction((x),else {if(MEMAUDIT&2)audittstack(jt);})}
 // Within the tpush/tpop when we know the usecount has gone to 0, no need to audit fa, since it was checked on the push
 #define fana(x)                     {if(likely((x)!=0))fanano0(x)}
 // when x is known to be valid and usecount has gone to 0
@@ -1197,12 +1197,12 @@
 // NOTE that PERMANENT blocks are always marked traversible if they are of traversible type, so we will not recur on them internally
 #define tpushcommon(x,suffix) {if(likely(!ACISPERM(AC(x)))){I tt=AT(x); A *pushp=jt->tnextpushp; *pushp++=(x); \
                               if(unlikely(!((I)pushp&(NTSTACKBLOCK-1)))){RZ(pushp=tg(pushp));} if(unlikely(((tt^AFLAG(x))&TRAVERSIBLE)!=0))RZ(pushp=jttpush(jt,(x),tt,pushp)); jt->tnextpushp=pushp; suffix}}
-#define tpush(x)              tpushcommon(x,)
+#define tpush(x)              tpushcommon(x,if(MEMAUDIT&2)audittstack(jt);)
 #define tpushna(x)            tpushcommon(x,)   // suppress audit
 // Internal version, used when the local name pushp is known to hold jt->tnextpushp
 #define tpushi(x)                   {if(likely(!ACISPERM(AC(x)))){I tt=AT(x); *pushp++=(x); if(unlikely(!((I)pushp&(NTSTACKBLOCK-1)))){RZ(pushp=tg(pushp));} if((unlikely((tt^AFLAG(x))&TRAVERSIBLE)!=0))RZ(pushp=jttpush(jt,(x),tt,pushp)); }}
 // tpush1 is like tpush, but it does not recur to lower levels.  Used only for virtual block (which cannot be PERMANENT)
-#define tpush1(x)                   {A *pushp=jt->tnextpushp; *pushp++=(x); if(unlikely(!((I)pushp&(NTSTACKBLOCK-1)))){RZ(pushp=tg(pushp));} jt->tnextpushp=pushp;}
+#define tpush1(x)                   {A *pushp=jt->tnextpushp; *pushp++=(x); if(unlikely(!((I)pushp&(NTSTACKBLOCK-1)))){RZ(pushp=tg(pushp));} jt->tnextpushp=pushp; if(MEMAUDIT&2)audittstack(jt);}
 #define traverse(x,y)               jttraverse(jt,(x),(y))
 #define trc(x)                      jttrc(jt,(x))     
 #define treach(x)                   jttreach(jt,(x))
