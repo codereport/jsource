@@ -10,6 +10,7 @@
 // AT(self) is the trigger level (the original n)
 // AM(self) is the block for u
 static DF1(jtlev1){
+ ARGCHK1(w);  // self is never 0
  A fs=(A)AM(self); AF fsf=FAV(fs)->valencefns[0];  // fetch verb and routine for leaf nodes.  Do it early
  if(levelle(w,AT(self))){return CALL1(fsf,w,fs);} else{STACKCHKOFL return every(w,self);}  // since this recurs, check stack
 }
@@ -65,6 +66,7 @@ static DF1(jtscfn){
 
 // u S: n - like L: except for calling the logger
 static DF1(jtlevs1){
+ ARGCHK1(w);  // self is never 0
  A fs=(A)AM(self); AF fsf=FAV(fs)->valencefns[0];  // fetch verb and routine for leaf nodes.  Do it early
  if(levelle(w,AT(self))){RZ(scfn(CALL1(fsf,w,fs),self));} else{STACKCHKOFL RZ(every(w,self));}  // since this recurs, check stack
  return num(0);
