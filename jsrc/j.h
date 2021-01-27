@@ -266,9 +266,6 @@ static inline omp_int_t omp_get_max_threads() { return 1;}
 #define AUDITEXECRESULTS 0  // When set, we go through all execution results to verify recursive and virtual bits are OK
 #define FORCEVIRTUALINPUTS 0  // When 1 set, we make all non-inplaceable noun inputs to executions VIRTUAL.  Tests should still run
                            // When 2 set, make all outputs from return  virtual.  Tests for inplacing will fail; that's OK if nothing crashes
-// set FINDNULLRET to trap when a routine returns 0 without having set an error message
-#define FINDNULLRET 0
-
 
 #define ALTBYTES 0x00ff00ff00ff00ffLL
 // t has totals per byte-lane, result combines them into single total.  t must be an lvalue
@@ -631,7 +628,7 @@ if(z<3){_zzt+=z; z=(I)&oneone; _zzt=_i&3?_zzt:(I*)z; z=_i&2?(I)_zzt:z; z=((I*)z)
 #define EPILOGNORET(z) (gc(z,_ttop))   // protect z and return its address
 #define EPILOG(z)       return EPILOGNORET(z)   // z is the result block
 #define EPILOGNOVIRT(z)       return rifvsdebug((gc(z,_ttop)))   // use this when the repercussions of allowing virtual result are too severe
-#define EPILOGZOMB(z)       if(!gc3(&(z),0L,0L,_ttop))R0; return z;   // z is the result block.  Use this if z may contain inplaceable contents that would free prematurely
+#define EPILOGZOMB(z)       if(!gc3(&(z),0L,0L,_ttop))return 0; return z;   // z is the result block.  Use this if z may contain inplaceable contents that would free prematurely
 // Routines that do little except call a function that does PROLOG/EPILOG have EPILOGNULL as a placeholder
 // Routines that do not return A
 #define EPILOG0         tpop(_ttop)
@@ -645,11 +642,6 @@ if(z<3){_zzt+=z; z=(I)&oneone; _zzt=_i&3?_zzt:(I*)z; z=_i&2?(I)_zzt:z; z=((I*)z)
 #define CLEARZOMBIE     {jt->assignsym=0;}  // Used when we know there shouldn't be an assignsym, just in case
 #define PUSHZOMB L*savassignsym = jt->assignsym; if(savassignsym){if(((jt->asgzomblevel-1)|((AN(jt->locsyms)-2)))<0){CLEARZOMBIE}}  // test is (jt->asgzomblevel==0||AN(jt->locsyms)<2)
 #define POPZOMB {jt->assignsym=savassignsym;}
-#if FINDNULLRET   // When we return 0, we should always have an error code set.  trap if not
-#define R0 {if(jt->jerr)return A0;else SEGFAULT;}
-#else
-#define R0 return 0;
-#endif
 #define REPSGN(x) ((x)>>(BW-1))  // replicate sign bit of x to entire word (assuming x is signed type - if unsigned, just move sign to bit 0)
 #define SGNTO0(x) ((UI)(x)>>(BW-1))  // move sign bit to bit 0, clear other bits
 // In the original JE many verbs returned a clone of the input, i. e. return ca(w).  We have changed these to avoid the clone, but we preserve the memory in case we need to go back
@@ -658,7 +650,7 @@ if(z<3){_zzt+=z; z=(I)&oneone; _zzt=_i&3?_zzt:(I*)z; z=_i&2?(I)_zzt:z; z=((I*)z)
 #define RESETERRANDMSG  {jt->etxn1=jt->etxn=jt->jerr=0;}
 #define RESETRANK       (jt->ranks=(RANK2T)~0)
 #define RNE(exp)        {return jt->jerr?0:(exp);}
-#define RZ(exp)         {if(!(exp))R0}
+#define RZ(exp)         {if(!(exp))return 0;}
 
 #define DEADARG(x)      0
 #define ARGCHK1D(x)

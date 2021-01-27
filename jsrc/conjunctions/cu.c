@@ -66,7 +66,7 @@ A jtevery(J jt, A w, A fs){A * RESTRICT wv,x,z,* RESTRICT zv;
   }
   I wcpre=AC(virtw);  // remember usecount before call
   if(!(x=CALL1IP(f1,virtw,fs))){ // run the user's verb
-   AC(virtw)&=~ACINPLACE; R0;  // make sure we reset the usecounts of the virtual blocks in case of error
+   AC(virtw)&=~ACINPLACE; return 0;  // make sure we reset the usecounts of the virtual blocks in case of error
   }
   // If x is DIRECT inplaceable, it must be unique and we can inherit them into a pristine result.  Otherwise clear pristinity
   if(AT(x)&DIRECT){   // will predict correctly
@@ -184,7 +184,7 @@ A jtevery2(J jt, A a, A w, A fs){A*av,*wv,x,z,*zv;
 
   I wcpre=AC(virtw), acpre=AC(virta);  // remember usecount before call
   if(!(x=CALL2IP(f2,virta,virtw,fs))){; // run the user's verb
-   AC(virtw)&=~ACINPLACE; AC(virta)&=~ACINPLACE; R0;  // make sure usecount restored on error
+   AC(virtw)&=~ACINPLACE; AC(virta)&=~ACINPLACE; return 0;  // make sure usecount restored on error
   }
   // If x is DIRECT inplaceable, it must be unique and we can inherit them into a pristine result.  Otherwise clear pristinity
   if(AT(x)&DIRECT){   // will predict correctly

@@ -221,7 +221,7 @@ DF1(jtredravel){A f,x,z;I n;P*wp;
   ASSERT(adocv.f,EVNONCE);
   GA(z,rtype(adocv.cv),1,0,0);
   if(n)rc=((AHDRRFN*)adocv.f)((I)1,n,(I)1,AV(x),AV(z),jt);  // mustn't adocv on empty
-  rc&=255; if(rc)jsignal(rc); if(rc<EWOV){if(rc)R0; return redsp1a(FAV(FAV(f)->fgh[0])->id,z,SPA(wp,e),n,AR(w),AS(w));}  // since f has an insert fn, its id must be OK
+  rc&=255; if(rc)jsignal(rc); if(rc<EWOV){if(rc)return 0; return redsp1a(FAV(FAV(f)->fgh[0])->id,z,SPA(wp,e),n,AR(w),AS(w));}  // since f has an insert fn, its id must be OK
  }
 }  /* f/@, w */
 

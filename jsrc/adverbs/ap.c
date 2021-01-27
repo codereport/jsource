@@ -814,7 +814,7 @@ static DF2(jtmovfslash){A x,z;B b;C id,*wv,*zv;I d,m,m0,p,t,wk,wt,zi,zk,zt;
  I rc=EVOK;
  DQ(zi-b, I lrc=((AHDRPFN*)adocv.f)(d,m,(I)1,wv,zv,jt); rc=lrc<rc?lrc:rc; zv+=zk; wv+=wk;);
  if(b){m=p-m*(zi-1); if(m>1){I lrc=((AHDRPFN*)adocv.f)(d,m,(I)1,wv,zv,jt); rc=lrc<rc?lrc:rc;}else{copyTT(zv,wv,d,zt,wt);}}
- if(255&rc){jsignal(rc); if(rc>=EWOV){RESETERR; return movfslash(a,cvt(FL,w),self);}R0;}else return z;
+ if(255&rc){jsignal(rc); if(rc>=EWOV){RESETERR; return movfslash(a,cvt(FL,w),self);}return 0;}else return z;
 }    /* a f/\w */
 
 static DF1(jtiota1){I j; return apv(SETIC(w,j),1L,1L);}

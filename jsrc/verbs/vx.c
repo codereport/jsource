@@ -217,7 +217,7 @@ XF2(jtxgcd){I c,d;X p,q,t;
   t=p;
   RZ(p=xrem(p,q));
   q=t;
-  if(!gc3(&p,&q,0L,old))R0;
+  if(!gc3(&p,&q,0L,old))return 0;
  }
  return rifvsdebug(q);
 }
