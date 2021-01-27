@@ -297,18 +297,11 @@ static inline omp_int_t omp_get_max_threads() { return 1;}
 
 // Debugging options
 
-// Use MEMAUDIT to sniff out errant memory alloc/free
-#define MEMAUDIT 0x00     // Bitmask for memory audits: 1=check headers 2=full audit of tpush/tpop 4=write garbage to memory before freeing it 8=write garbage to memory after getting it
-                     // 16=audit freelist at every alloc/free (starting after you have run 6!:5 (1) to turn it on)
- // 13 (0xD) will verify that there are no blocks being used after they are freed, or freed prematurely.  If you get a wild free, turn on bit 0x2
- // 2 will detect double-frees before they happen, at the time of the erroneous tpush
-
-#define AUDITEXECRESULTS 0  // When set, we go through all execution results to verify recursive and virtual bits are OK
+#define AUDITEXECRESULTS 0    // When set, we go through all execution results to verify recursive and virtual bits are OK
 #define FORCEVIRTUALINPUTS 0  // When 1 set, we make all non-inplaceable noun inputs to executions VIRTUAL.  Tests should still run
-                           // When 2 set, make all outputs from RETF() virtual.  Tests for inplacing will fail; that's OK if nothing crashes
-// set FINDNULLRET to trap when a routine returns 0 without having set an error message
+                              // When 2 set, make all outputs from RETF() virtual.  Tests for inplacing will fail; that's OK if nothing crashes
+                              // set FINDNULLRET to trap when a routine returns 0 without having set an error message
 #define FINDNULLRET 0
-
 
 #define ALTBYTES 0x00ff00ff00ff00ffLL
 // t has totals per byte-lane, result combines them into single total.  t must be an lvalue
@@ -703,15 +696,7 @@ if(likely(z<3)){_zzt+=z; z=(I)&oneone; _zzt=_i&3?_zzt:(I*)z; z=_i&2?(I)_zzt:z; z
 #define RESETRANK       (jt->ranks=(RANK2T)~0)
 #define RNE(exp)        {return jt->jerr?0:(exp);}
 #define RZ(exp)         {if(unlikely(!(exp)))R0}
-#if MEMAUDIT&0xc
-#define DEADARG(x)      (x?(AFLAG(x)&CONW?SEGFAULT:0):0); if(MEMAUDIT&0x10)auditmemchains(); if(MEMAUDIT&0x2)audittstack(jt); 
-#define ARGCHK1D(x)     ARGCHK1(x)  // these not needed normally, but useful for debugging
-#define ARGCHK2D(x,y)   ARGCHK2(x,y)
-#else
-#define DEADARG(x)      0
-#define ARGCHK1D(x)
-#define ARGCHK2D(x,y)
-#endif
+
 #define ARGCHK1(x)      RZ(x) DEADARG(x);   // bit set in deadbeef
 #define ARGCHK2(x,y)    ARGCHK1(x) ARGCHK1(y)
 #define ARGCHK3(x,y,z)  ARGCHK1(x) ARGCHK1(y) ARGCHK1(z)
@@ -721,11 +706,7 @@ if(likely(z<3)){_zzt+=z; z=(I)&oneone; _zzt=_i&3?_zzt:(I*)z; z=_i&2?(I)_zzt:z; z
 #if AUDITEXECRESULTS && (FORCEVIRTUALINPUTS==2)
 #define RETF(exp)       A ZZZz = (exp); auditblock(ZZZz,1,1); ZZZz = virtifnonip(jt,0,ZZZz); return ZZZz
 #else
-#if MEMAUDIT&0xc
-#define RETF(exp)       A ZZZz = (exp); DEADARG(ZZZz); return ZZZz
-#else
 #define RETF(exp)       return exp
-#endif
 // Input is a byte.  It is replicated to all lanes of a UI
 #endif
 #define REPLBYTETOW(in,out) (out=(UC)(in),out|=out<<8,out|=out<<16,out|=out<<32)
