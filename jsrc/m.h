@@ -3,11 +3,6 @@
 /*                                                                         */
 /* Memory Management                                                       */
 
-/* ANSI C already has malloc by j.h include of stdlib.h                    */
-#if !(SYS+SYS_ANSI)
-#include <malloc.h>
-#endif
-
 #define FREE(a) free(a)
 #define MALLOC(n) malloc(n)
 #define REALLOC(a,n) realloc(a,n)

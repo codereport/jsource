@@ -130,9 +130,7 @@ typedef struct {
 
 
 
-#if (SYS & SYS_MACOSX) | (SYS & SYS_LINUX)
 extern void double_trick(D,D,D,D,D,D,D,D);
-#endif
 
 #if defined(__x86_64__)
 /* might be faster */

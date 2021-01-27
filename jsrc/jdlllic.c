@@ -19,14 +19,12 @@
 #define SERIALNUMSIZE 32
 #define lobyte(w)  ((UC)(w))
 
-#if !(SYS & SYS_LILENDIAN)
 int swapint(int n){C* p,c;
  p=(C*)&n;
  c=p[3];p[3]=p[0];p[0]=c;
  c=p[2];p[2]=p[1];p[1]=c;
  return n;
 }
-#endif
 
 F1(jtlock1){A z; C* p; C* src;
  UC c,c1,c2,k1[SK],k2[SK];    
@@ -46,9 +44,6 @@ F1(jtlock1){A z; C* p; C* src;
  r=4+4+SK+LOCKEXTRA+maxc1+len+SK+maxc2+2*SERIALNUMSIZE; /* result len */
  GATV0(z,LIT,r,1);
  p=CAV(z);
-#if !(SYS & SYS_LILENDIAN)
- xlen=swapint(len);
-#endif
  for(i=0;i<SK;++i) k1[i] = lobyte(rand());
  for(i=0;i<SK;++i) k2[i] = lobyte(rand());
  *p++=(UC)255; *p++=0; *p++=c1; *p++=c2;
@@ -83,9 +78,6 @@ F2(jtunlock2){int i,j,len,tlen;UC c1,c2,k1[SK],*lp,*sp,*d;
  if(!tlen || 255!=d[0] || 0 != d[1] || tlen<8+SK) return w; /* not jl */
  MC(k1, d+8, SK);
  for(i=0;i<(int)sizeof(int);++i) *(i+(UC*)&len) = k1[i] ^ d[4+i];
-#if !(SYS & SYS_LILENDIAN)
- len=swapint(len);
-#endif
  c1 = max(33,d[2]);
  c2 = max(33,d[3]);
  if(!tlen == (8+LOCKEXTRA+c1+c2+len+ 2*SK + 2*SERIALNUMSIZE)) return w; /* not jl */
