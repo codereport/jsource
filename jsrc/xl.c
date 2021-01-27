@@ -9,19 +9,13 @@
 #endif
 #include "x.h"
 
-#if (SYS & SYS_UNIX)
 typedef long long INT64;
 #include <stdint.h>
 #include <stdio.h>
 #define LOCK 1
-#if (SYS & SYS_UNIX)
 #include <unistd.h>
 #include <fcntl.h>
 #include <sys/file.h>
-#else
-#include <sys/locking.h>
-#include <io.h>
-#endif
 
 // extern int _locking(int,int,long);
 
@@ -36,7 +30,6 @@ static B jtdolock(J jt,B lk,F f,I i,I n){I e;long c;fpos_t v; fpos_t q;
  fsetpos(f,(fpos_t*)&q);
  return !e?1:errno==EACCES?0:(B)(intptr_t)jerrno();
 }
-#endif
 
 #ifndef LOCK
 static B jtdolock(J jt,B lk,F f,I i,I n){I e;

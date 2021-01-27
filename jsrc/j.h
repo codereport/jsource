@@ -860,7 +860,6 @@ extern J gjt; // global for JPF (procs without jt)
 #define CCBLOCK
 #endif
 
-#if SYS & SYS_UNIX
 #include <fenv.h>
 // bug clang isnan(x) set NaN flag if x is NaN
 
@@ -873,7 +872,6 @@ static inline UINT _clearfp(void){
   feclearexcept(FE_ALL_EXCEPT); 
   return r;
 }
-#endif
 
 #define DPMULDECLS
 #define DPMUL(x,y,z,s) {I _l, _x=(x), _y=(y); D _d; _l=_x*_y; _d=(D)_x*(D)_y-(D)_l; *z=_l; _d=ABS(_d); if(_d>1e8)s}  // *z may be the same as x or y

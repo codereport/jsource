@@ -5,9 +5,7 @@
 
 #define U unsigned
 
-#if (SYS & SYS_UNIX)
-#define _stdcall      
-#endif
+#define _stdcall
 
 #if defined(__GNUC__)
 #define CDPROC __attribute__ ((visibility ("default")))

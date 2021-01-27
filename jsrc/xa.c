@@ -168,7 +168,7 @@ F1(jtseclevs){I k;
 
 F1(jtsysq){I j;
  ASSERTMTV(w);
- j=SYS&SYS_UNIX ? 5 : -1;
+ j=5;
  return sc(j);
 }
 

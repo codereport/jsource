@@ -222,7 +222,6 @@ A jtjgets(J jt,C*p){A y;B b;C*v;I j,k,m,n;UC*s;
 }
 
 
-#if SYS&SYS_UNIX
 void breakclose(J jt)
 {
  if(jt->adbreak==&breakdata) return;
@@ -233,22 +232,7 @@ void breakclose(J jt)
  unlink(jt->breakfn);
  *jt->breakfn=0;
 }
-#else
-void breakclose(J jt)
-{
- if(jt->adbreak==&breakdata) return;
- UnmapViewOfFile(jt->adbreak);
- jt->adbreakr=jt->adbreak=&breakdata;
- CloseHandle(jt->breakmh);
- jt->breakmh=0;
- CloseHandle(jt->breakfh);
- jt->breakfh=0;
- WCHAR wpath[NPATH];
- MultiByteToWideChar(CP_UTF8,0,jt->breakfn,1+(int)strlen(jt->breakfn),wpath,NPATH);
- DeleteFileW(wpath);
- *jt->breakfn=0;
-}
-#endif
+
 
 F1(jtjoff){I x;
  ARGCHK1(w);
@@ -533,8 +517,6 @@ void jsto(J jt,I type,C*s){C e;I ex;
  return;
 }
 
-#if SYS&SYS_UNIX
-
 C dll_initialized= 0; // dll init sets to 1
 
 // dll init on load - eqivalent to windows DLLMAIN DLL_ATTACH_PROOCESS
@@ -569,7 +551,6 @@ int JFree(J jt){
   free(jt->heap);  // free the initial allocation
   return 0;
 }
-#endif
 
 F1(jtbreakfnq){
  ASSERTMTV(w);
@@ -583,20 +564,10 @@ F1(jtbreakfns){A z;I *fh,*mh=0; void* ad;
  w=str0(w);
  if(!strcmp(jt->breakfn,CAV(w))) return mtm;
  breakclose(jt);
-#if SYS&SYS_UNIX
  fh=(I*)(I)open(CAV(w),O_RDWR);
  ASSERT(-1!=(I)fh,EVDOMAIN);
  ad=mmap(0,1,PROT_READ|PROT_WRITE,MAP_SHARED,(I)fh,0);
  if(0==ad){close((intptr_t)fh); ASSERT(0,EVDOMAIN);}
-#else
- RZ(z=toutf16x(w));
- fh=CreateFileW(USAV(z),GENERIC_READ|GENERIC_WRITE,FILE_SHARE_READ|FILE_SHARE_WRITE,0,OPEN_EXISTING,0,0);
- ASSERT(INVALID_HANDLE_VALUE!=fh,EVDOMAIN);
- mh=CreateFileMapping(fh,0,PAGE_READWRITE,0,1,0);
- if(0==mh){CloseHandle(fh); ASSERT(0,EVDOMAIN);}
- ad=MapViewOfFile(mh,FILE_MAP_WRITE,0,0,0);
- if(0==ad){CloseHandle(mh); CloseHandle(fh); ASSERT(0,EVDOMAIN);}
-#endif
  strcpy(jt->breakfn,CAV(w));
  jt->breakfh=fh;
  jt->breakmh=mh;

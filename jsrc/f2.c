@@ -247,7 +247,7 @@ static B jtth2ctrl(J jt,A a,A*ep,A*mp,A*dp,A*sp,I*zkp){A da,ea,ma,s;B b=1,*ev,r,
   if(0>m)m=-m; if(0>d)d=-d; ASSERT(0<=(m|d),EVLIMIT);  // verify no overflow
   // Create sprintf format string for the field, depending on decimal/exponential form
   if(!x)sprintf(sv, "%%"FMTI"."FMTI"f",  m,d);  // %m.df
-  else  sprintf(sv, m?"%%- "FMTI"."FMTI"e" :"%%-"FMTI"."FMTI"e", m?m-1:0,d+!!(SYS&0));  // %- m.de (m=0)  or %-m.de (m!=0)
+  else  sprintf(sv, m?"%%- "FMTI"."FMTI"e" :"%%-"FMTI"."FMTI"e", m?m-1:0,d);  // %- m.de (m=0)  or %-m.de (m!=0)
   // store results in output areas; advance sprintf pointer; count # bytes in fields; see if there are any unknown widths
   sv+=sk; ev[i]=x; mv[i]=m; dv[i]=d; zk+=m; b=b&&m; 
   // keep the size of the conversion buffer to a minimum of the given field width or 500+the number of decimal places (in case the values overflows the field)

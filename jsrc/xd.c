@@ -48,9 +48,6 @@ static C*modebuf(mode_t m,C* b){C c;I t=m;
   case S_IFBLK:  b[0]='b'; break;
   case S_IFCHR:  b[0]='c'; break;
   case S_IFDIR:  b[0]='d'; break;
-#if !(SYS & SYS_UNIX)
-  case S_IFFIFO: b[0]='f'; break;    /*IVL */
-#endif
   case S_IFLNK:  b[0]='l'; break;
   case S_IFSOCK: b[0]='s'; break;
   case S_IFREG:  b[0]='-'; break;

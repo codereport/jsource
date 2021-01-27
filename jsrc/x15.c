@@ -62,8 +62,6 @@ typedef double complex double_complex;
 /*  LoadLibrary, GetProcAddress, FreeLibrary routines           */
 /*  GetLastError and FormatMessage                              */
 
-#if (SYS & SYS_UNIX)
-
 #include <dlfcn.h>
 
 #undef MAX     /* defined in sys/param.h */
@@ -76,7 +74,6 @@ typedef char *LPSTR;
 typedef I (*FARPROC)();
 #define __stdcall
 #define _cdecl
-#endif
 
 /* windows has 2 dll calling conventions - __stdcall and _cdecl */
 /* __stdcall is used by most DLLs, including all system APIs    */
@@ -133,39 +130,9 @@ typedef struct {
 
 
 
-#if (SYS & SYS_MACOSX) | (SYS & SYS_LINUX)
-#ifdef __PPC64__
-extern void double_trick(D,D,D,D,D,D,D,D,D,D,D,D,D);
-#else
 extern void double_trick(D,D,D,D,D,D,D,D);
-#endif
-#endif
-#if SY_MACPPC
-static void double_trick(double*v, I n){I i=0;
- for(;i<n;i++)
-#define l(a) case (a-1): asm volatile ( "mr r14, %0\nlfd f" #a ", 0(r14)" : : "r" (v+a-1 ) : "f" #a , "r14" ); break;
-  switch(i) {
-   l(1)
-   l(2)
-   l(3)
-   l(4)
-   l(5)
-   l(6)
-   l(7)
-   l(8)
-   l(9)
-   l(10)
-   l(11)
-   l(12)
-   l(13)
-  }
-#undef l
-}
-#endif
 
-#ifdef __PPC64__
-  #define dtrick double_trick(dd[0],dd[1],dd[2],dd[3],dd[4],dd[5],dd[6],dd[7],dd[8],dd[9],dd[10],dd[11],dd[12]);
-#elif defined(__x86_64__)
+#if defined(__x86_64__)
 /* might be faster */
   #define dtrick \
 __asm__ ("movq (%0),%%xmm0\n\t"       \
@@ -668,15 +635,11 @@ static CCT*jtcdload(J jt,CCT*cc,C*lib,C*proc){B ha=0;FARPROC f;HMODULE h;
  else{
   CDASSERT(AM(jt->cdhashl)<NLIBS,DETOOMANY);    /* too many dlls loaded */
 
-#if SYS & SYS_UNIX
   CDASSERT(h=dlopen((*lib)?lib:0,RTLD_LAZY),DEBADLIB);
-#endif
   cc->h=h; ha=1;
  }
 
-#if (SYS & SYS_UNIX)
  f=(FARPROC)dlsym(h,proc);
-#endif
  CDASSERT(f!=0,DEBADFN);
  cc->fp=f;
  /* assumes the hash table for libraries (jt->cdhashl) is fixed sized */
@@ -872,14 +835,7 @@ static B jtcdexec1(J jt,CCT*cc,C*zv0,C*wu,I wk,I wt,I wd){A*wv=(A*)wu,x,y,*zv;B 
    case 'i': *dv++=(int)*xv; break;
    case 'x': *dv++=*xv;      break;
    case 'f':
-#if SY_MACPPC
-          dd[dcnt++]=(float)*(D*)xv;
-#endif
-  #if defined(__PPC64__)
-     /* +1 put the float in low bits in dv, but dd has to be D */
-     *dv=0; *(((float*)dv++))=(float)(dd[dcnt++]=*(D*)xv);
-     /* *dv=0; *(((float*)dv++)+1)=dd[dcnt++]=(float)*(D*)xv; */
-  #elif defined(__aarch64__)
+  #if defined(__aarch64__)
      {f=(float)*(D*)xv; dd[dcnt]=0; *(float*)(dd+dcnt++)=f;
       if(dcnt>8){
         if(dv-data>=8)*(float*)(dv++)=f;else *(float*)(data+dcnt-1)=f;}}
@@ -890,13 +846,7 @@ static B jtcdexec1(J jt,CCT*cc,C*zv0,C*wu,I wk,I wt,I wd){A*wv=(A*)wu,x,y,*zv;B 
   #endif
              break;
    case 'd':
-#if SY_MACPPC
-             dd[dcnt++]=*(D*)xv;
-#endif
-#if defined(__PPC64__)
-             /* always need to increment dv, the contents get used from the 14th D */
-             *(D*)dv++=dd[dcnt++]=*(D*)xv;
-#elif defined(__aarch64__)
+#if defined(__aarch64__)
              dd[dcnt++]=*(D*)xv;
              if(dcnt>8){
                if(dv-data>=8)*dv++=*xv;else *(data+dcnt-1)=*xv;}
@@ -925,9 +875,7 @@ static B jtcdexec1(J jt,CCT*cc,C*zv0,C*wu,I wk,I wt,I wd){A*wv=(A*)wu,x,y,*zv;B 
 
  DO(cipcount, convertup(cipv[i],cipn[i],cipt[i]);); /* convert s and int to I and f to d as required */
 
-#if SYS&SYS_UNIX
  t=errno;
-#endif
  if(t!=0)jt->getlasterror=t;
  return 1;
 }
@@ -960,9 +908,7 @@ F2(jtcd){A z;C*tv,*wv,*zv;CCT*cc;I k,m,n,p,q,t,wr,*ws,wt;
 
 
 
-#if (SYS & SYS_UNIX)
 #define FREELIB dlclose
-#endif
 
 void dllquit(J jt){CCT*av;I j,*v;
  if(!jt->cdarg)return;
@@ -985,9 +931,7 @@ F1(jtcder){I t; ASSERTMTV(w); t=jt->dlllasterror; jt->dlllasterror=DEOK; return 
 F1(jtcderx){I t;C buf[1024];
  ASSERTMTV(w); t=jt->getlasterror; jt->getlasterror=0;
 
-#if SYS&SYS_UNIX
  {const char *e = dlerror(); strcpy (buf, e?e:"");}
-#endif
  return link(sc(t),cstr(buf));
 }    /* 15!:11  GetLastError information */
 
@@ -1229,11 +1173,8 @@ F2(jtcdproc2){C*proc;FARPROC f;HMODULE h;
   f=(k==-1)?(FARPROC)0:(FARPROC)jfntaddr[k];
  }else{
 
-#if (SYS & SYS_UNIX)
   f=(FARPROC)dlsym(h,proc);
-#endif
  }
  CDASSERT(f!=0,DEBADFN);
  return sc((I)f);
 }    /* 15!:21 return proc address */
-

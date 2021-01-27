@@ -77,15 +77,6 @@ F1(jthostne){
  return mtv;
 }
 
-
-
-#if !(SYS & SYS_UNIX)
-
-F1(jthostio){ASSERT(0,EVDOMAIN);}
-F1(jtjwait ){ASSERT(0,EVDOMAIN);}
-
-#else
-
 #define CL(f) {close(f[0]);close(f[1]);}
 
 F1(jthostio){C*s;A z;F*pz;int fi[2],fo[2],r;int fii[2],foi[2];
@@ -113,8 +104,6 @@ F1(jthostio){C*s;A z;F*pz;int fi[2],fo[2],r;int fii[2],foi[2];
 
 F1(jtjwait){I k;int s; RE(k=i0(w)); if(-1==waitpid(k,&s,0))jerrno(); return sc(s);}
 
-#endif
-
 /* return errno info from c library */
 F1(jtcerrno){C buf[1024],ermsg[1024];
  ASSERTMTV(w);
@@ -122,4 +111,3 @@ F1(jtcerrno){C buf[1024],ermsg[1024];
  if(errno&&!strerror_r(errno,ermsg,1024)) strcpy (buf, ermsg); else strcpy (buf, "");
  return link(sc(errno),cstr(buf));
 }    /* 2!:8  errno information */
-
