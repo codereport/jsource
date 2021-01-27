@@ -242,7 +242,7 @@ F2(jtpdt){PROLOG(0038);A z;I ar,at,i,m,n,p,p1,t,wr,wt;
  // Perform the inner product according to the type
  switch(CTTZNOFLAG(t)){
  case B01X:
-  if(0==(n&(SZI-1))||!SY_ALIGN){A tt;B*u,*v,*wv;I nw,*x,*zv;UC*c,*tc;UI*d,*ti,*vi;
+  if(0==(n&(SZI-1))){A tt;B*u,*v,*wv;I nw,*x,*zv;UC*c,*tc;UI*d,*ti,*vi;
    nw=(n+SZI-1)>>LGSZI;
    GATV0(tt,INT,nw,1); ti=(UI*)AV(tt); tc=(UC*)ti;
    u=BAV(a); v=wv=BAV(w); zv=AV(z);
@@ -263,7 +263,6 @@ F2(jtpdt){PROLOG(0038);A z;I ar,at,i,m,n,p,p1,t,wr,wt;
      DQ(p1, x=zv; c=*u++; er=asminnerprodx(n,x,c,v); if(er)break; v+=n;);
 
  */
-#if C_NA   // non-assembler version
    // INT product is problematic, because it is used for many internal purposes, such as #. and indexing of { and m} .  For these uses,
    // one argument (usually w) has only one item, a list that is reused.  So, we check for that case; if found we go through faster code that just
    // performs vector inner products, accumulating in registers.  And we have multiple versions of that: one when the totals can't get close to
@@ -310,21 +309,6 @@ oflo2:
     for(zv=DAV(z), i=AN(z); i; --i, ++zv)if(*zv>1e13 || *zv<-1e13)break;   // see if any value is out of range
     if(!i){AT(z)=INT;for(zv=DAV(z), i=AN(z); i; --i, ++zv)*(I*)zv=(I)*zv;}  // if not, convert all to integer
    }
-#else  // !C_NA
-    for(i=0;i<m;++i,v=wv,zv+=n){
-     x=zv; c=*u++; TYMES1V(n,x,c,v); if(er)break; v+=n;
-     DQ(p1, x=zv; c=*u++; er=asminnerprodx(n,x,c,v); if(er)break; v+=n;);
-     if(er)break;
-    }
-    if(er){A z1;D c,* RESTRICT x,* RESTRICT zv;I* RESTRICT u,* RESTRICT v,* RESTRICT wv;
-     GATV(z1,FL,AN(z),AR(z),AS(z)); z=z1;
-     u=AV(a); v=wv=AV(w); zv=DAV(z);
-     for(i=0;i<m;++i,v=wv,zv+=n){
-             x=zv; c=(D)*u++; DQ(n, *x++ =c**v++;);
-      DQ(p1, x=zv; c=(D)*u++; DQ(n, *x+++=c**v++;););
-   }}}
-#endif
-
   }
   break;
  case FLX:

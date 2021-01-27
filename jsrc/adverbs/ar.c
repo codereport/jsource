@@ -17,7 +17,6 @@ static DF1(jtreduce);
 #define PARITY8         u=(B*)&s; b=0; b^=*u++; b^=*u++; b^=*u++; b^=*u++; b^=*u++; b^=*u++; b^=*u++; b^=*u++;
 #define PARITYW         PARITY8
 
-#if SY_ALIGN
 #define VDONE(T,PAR)  \
  {I q=n/sizeof(T);T s,*y=(T*)x; DQ(m, s=0; DQ(q, s^=*y++;); PAR; *z++=b==pc;);}
 
@@ -33,16 +32,6 @@ static void vdone(I m,I n,B*x,B*z,B pc){B b,*u;
  else  if(0==(n&(sizeof(US  )-1)))VDONE(US,  PARITY2)
  else  DQ(m, b=0; DQ(n, b^=*x++;); *z++=b==pc;);
 }
-#else
-static void vdone(I m,I n,B*x,B*z,B pc){B b;I q,r;UC*u;UI s,*y;
- q=n>>LGSZI; r=n&(SZI-1); y=(UI*)x;
- switch((r?2:0)+pc){
-  case 0: DQ(m, s=0; DQ(q, s^=*y++;); PARITYW;                            *z++=!b;); break;
-  case 1: DQ(m, s=0; DQ(q, s^=*y++;); PARITYW;                            *z++= b;); break;
-  case 2: DQ(m, s=0; DQ(q, s^=*y++;); PARITYW; u=(UC*)y; DQ(r, b^=*u++;); *z++=!b; x+=n; y=(UI*)x;); break;
-  case 3: DQ(m, s=0; DQ(q, s^=*y++;); PARITYW; u=(UC*)y; DQ(r, b^=*u++;); *z++= b; x+=n; y=(UI*)x;); break;
-}}
-#endif
 
 #define RBFXLOOP(T,pfx)  \
  {T* RESTRICT xx=(T*)x,* RESTRICT yy,*z0,* RESTRICT zz=(T*)z;   \
@@ -60,40 +49,8 @@ static void vdone(I m,I n,B*x,B*z,B pc){B b;I q,r;UC*u;UI s,*y;
    DQ(n-2,       zz=z0; DQ(q, *zz++=pfx(*zz,*xx); ++xx;      ););  \
  }}  /* commutative */
 
-#if SY_ALIGN
 #define RBFXODDSIZE(pfx,bpfx)  RBFXLOOP(C,bpfx)
 #define REDUCECFX              REDUCEBFX
-#else
-#define RBFXODDSIZE(pfx,bpfx)  \
- {B*zz;I r,t,*xi,*yi,*zi;                                                       \
-  q=d>>LGSZI; r=d&(SZI-1); xi=(I*)x; zz=z;                                             \
-  for(j=0;j<m;++j,zz-=d){                                                       \
-   yi=xi; xi=(I*)((B*)xi-d); zi=(I*)zz;                                         \
-   DQ(q, --xi; --yi; *--zi=pfx(*xi,*yi););                                      \
-    xi=(I*)((B*)xi-r); yi=(I*)((B*)yi-r); t=pfx(*xi,*yi); MC((B*)zi-r,&t,r);    \
-   DQ(n-2, zi=(I*)zz; DQ(q, --xi; --zi; *zi=pfx(*xi,*zi););                     \
-    xi=(I*)((B*)xi-r); zi=(I*)((B*)zi-r); t=pfx(*xi,*zi); MC(    zi,  &t,r););  \
- }}  /* non-commutative */
-
-#define RCFXODDSIZE(pfx,bpfx)  \
- {I r,t,*xi,*yi,*zi;                                                            \
-  q=d>>LGSZI; r=d&(SZI-1);                                                             \
-  for(j=0;j<m;++j,x+=d,z+=d){                                                   \
-   yi=(I*)x; x+=d; xi=(I*)x; zi=(I*)z; DQ(q, *zi++=pfx(*yi,*xi); ++xi; ++yi;); t=pfx(*yi,*xi); MC(zi,&t,r);    \
-   DQ(n-2,   x+=d; xi=(I*)x; zi=(I*)z; DQ(q, *zi++=pfx(*zi,*xi); ++xi;      ); t=pfx(*zi,*xi); MC(zi,&t,r););  \
- }}  /* commutative */
-
-#define REDUCECFX(f,pfx,ipfx,spfx,bpfx,vdo)  \
- AHDRP(f,B,B){B*y=0;I j,q;                       \
-  if(d==1){vdo; return;}                                \
-  if(1==n)DQ(d, *z++=*x++;)                        \
-  else if(0==d%sizeof(UI  ))RCFXLOOP(UI,   pfx)    \
-  else if(0==d%sizeof(UINT))RCFXLOOP(UINT,ipfx)    \
-  else if(0==d%sizeof(US  ))RCFXLOOP(US,  spfx)    \
-  else                      RCFXODDSIZE(pfx,bpfx)  \
- }  /* commutative */
-
-#endif
 
 // no errors possible here
 #define REDUCEBFX(f,pfx,ipfx,spfx,bpfx,vdo)  \
@@ -117,37 +74,10 @@ REDUCEBFX(  gtinsB, GT,  IGT,  SGT,  BGT,  {I c=d*n; DQ(m, y=memchr(x,C0,n); *z+
 REDUCEBFX(  geinsB, GE,  IGE,  SGE,  BGE,  {I c=d*n; DQ(m, y=memchr(x,C1,n); *z++=!  (y?1&(y-x):1&n);      x+=c;)})
 REDUCEBFX( norinsB, NOR, INOR, SNOR, BNOR, {I c=d*n; DQ(m, y=memchr(x,C1,n); d=y?y-x:n; *z++=(1&d)==d<n-1; x+=c;)})
 REDUCEBFX(nandinsB, NAND,INAND,SNAND,BNAND,{I c=d*n; DQ(m, y=memchr(x,C0,n); d=y?y-x:n; *z++=(1&d)!=d<n-1; x+=c;)})
-
-
-#if SY_ALIGN
 REDUCEPFX(plusinsB,I,B,PLUS, plusBB, plusBI)
-#else
-AHDRR(plusinsB,I,B){I dw,i,p,q,r,r1,s;UC*tu;UI*v;
- if(d==1&n<SZI)DQ(m, s=0; DQ(n, s+=*x++;); *z++=s;)
- else if(d==1){UI t;
-  p=n>>LGSZI; q=p/255; r=p%255; r1=n&(SZI-1); tu=(UC*)&t;
-  for(i=0;i<m;++i){
-   s=0; v=(UI*)x; 
-   DO(q, t=0; DO(255, t+=*v++;); DO(SZI, s+=tu[i];));
-         t=0; DO(r,   t+=*v++;); DO(SZI, s+=tu[i];);
-   x=(B*)v; DQ(r1, s+=*x++;); 
-   *z++=s;
- }}else{A t;UI*tv;
-  dw=(d+SZI-1)>>LGSZI; p=dw*SZI; memset(z,C0,m*d*SZI);
-  q=n/255; r=n%255;
-  t=ga(INT,dw,1,0); if(!t)return;
-  tu=UAV(t); tv=(UI*)tu; v=(UI*)x;
-  for(i=0;i<m;++i,z+=d){
-   DO(q, memset(tv,C0,p); DO(255, DO(dw,tv[i]+=v[i];); x+=d; v=(UI*)x;); DO(d,z[i]+=tu[i];));
-         memset(tv,C0,p); DO(r,   DO(dw,tv[i]+=v[i];); x+=d; v=(UI*)x;); DO(d,z[i]+=tu[i];) ;
-}}}  /* +/"r w on boolean w, originally by Roger Moore */
-#endif
-
-
 REDUCEOVF( plusinsI, I, I,  PLUSR, PLUSVV, PLUSRV) 
 REDUCEOVF(minusinsI, I, I, MINUSR,MINUSVV,MINUSRV) 
 REDUCEOVF(tymesinsI, I, I, TYMESR,TYMESVV,TYMESRV)
-
 REDUCCPFX( plusinsO, D, I,  PLUSO)
 REDUCCPFX(minusinsO, D, I, MINUSO) 
 REDUCCPFX(tymesinsO, D, I, TYMESO) 

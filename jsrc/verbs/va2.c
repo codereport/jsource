@@ -924,11 +924,7 @@ static A jtsumattymes(J jt, A a, A w, I b, I t, I m, I n, I nn, I r, I *s, I zn)
         memset(tv,C0,p); DO(r,   DO(dw,tv[i]+=BF(*u,*v); ++u; ++v;);                           \
                                av+=zn; u=(UI*)av; wv+=zn; v=(UI*)wv;); DO(zn,zv[i]+=tu[i];) ;  \
  }
-#if SY_ALIGN
 #define SUMBFLOOP(BF)   SUMBFLOOPW(BF)
-#else
-#define SUMBFLOOP(BF)   if(zn%SZI)SUMBFLOOPX(BF) else SUMBFLOOPW(BF)
-#endif
 
 static A jtsumatgbool(J jt,A a,A w,C id){A t,z;B* RESTRICTI av,* RESTRICTI wv;I dw,n,p,q,r,*s,zn,* RESTRICT zv;UC* RESTRICT tu;UI* RESTRICTI tv,*u,*v;
  ARGCHK2(a,w);
@@ -971,7 +967,7 @@ DF2(jtfslashatg){A fs,gs,y,z;B b,sb=0;C*av,c,d,*wv;I ak,an,ar,*as,at,m,
  y=FAV(fs)->fgh[0]; c=ID(y); d=ID(gs);
  if(c==CPLUS){
   // +/@:g is special if args are boolean, length is integral number of I, and g is boolean or *
-  if((((at&wt&(n==1))>(zn&(SZI-1)))||!SY_ALIGN)){   //  relies on B01==1
+  if((((at&wt&(n==1))>(zn&(SZI-1)))||0)){   //  relies on B01==1
 #define sumbfvalues(w) CCM(w,CGE)+CCM(w,CLE)+CCM(w,CGT)+CCM(w,CLT)+CCM(w,CPLUSCO)+CCM(w,CSTARCO)+CCM(w,CNE)+CCM(w,CEQ)+ \
  CCM(w,CSTARDOT)+CCM(w,CPLUSDOT)+CCM(w,CMIN)+CCM(w,CMAX)+CCM(w,CSTAR)
    CCMWDS(sumbf) CCMCAND(sumbf,cand,d) if(CCMTST(cand,d))return sumatgbool(a,w,d);   // quickly handle verbs that have primitive inverses

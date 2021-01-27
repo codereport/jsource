@@ -86,7 +86,6 @@
  }}return EVOK;}
 
   
-#if SY_ALIGN
 #define PREFIXBFXLOOP(T,pfx)  \
  {T* xx=(T*)x,* yy,* zz=(T*)z;  \
   q=d/sizeof(T);             \
@@ -101,25 +100,6 @@
   else if(0==(d&(sizeof(US  )-1)))PREFIXBFXLOOP(US,  spfx)  \
   else DQ(m, y=z; DQ(d, *z++=*x++;); DQ(n-1, DQ(d, *z++=bpfx(*y,*x); ++x; ++y;)));  \
   return EVOK;}    /* f/\"r z for boolean associative atomic function f */
-#else
-#define PREFIXBFX(f,pfx,ipfx,spfx,bpfx,vexp)          \
- AHDRP(f,B,B){B*tv;I i,q,r,t,*xi,*yi,*zi;                      \
-  q=d/SZI; r=d%SZI; xi=(I*)x; zi=(I*)z; tv=(B*)&t;        \
-  if(1==d)   for(r=0;r<m;++r){vexp}                              \
-  else if(!r)for(i=0;i<m;++i){                                   \
-   yi=zi; DQ(q, *zi++=*xi++;);                                   \
-   DQ(n-1, DQ(q, *zi=pfx(*yi,*xi); ++zi; ++xi; ++yi;));          \
-  }else for(i=0;i<m;++i){                                        \
-   yi=zi; MC(zi,xi,d);                                           \
-   xi=(I*)((B*)xi+d);                                            \
-   zi=(I*)((B*)zi+d);                                            \
-   DQ(n-1, DQ(q, *zi=pfx(*yi,*xi); ++zi; ++xi; ++yi;);           \
-    t=pfx(*yi,*xi); z=(B*)zi; DO(r, z[i]=tv[i];);                \
-    xi=(I*)(r+(B*)xi);                                           \
-    yi=(I*)(r+(B*)yi);                                           \
-    zi=(I*)(r+(B*)zi); );                                        \
- }}   /* f/\"r z for boolean associative atomic function f */
-#endif
 
 #define BFXANDOR(c0,c1)  \
  {B*y=memchr(x,c0,n); if(y){q=y-x; memset(z,c1,q); memset(z+q,c0,n-q);}else memset(z,c1,n); x+=d*n; z+=d*n;}
