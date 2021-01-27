@@ -308,11 +308,6 @@ return num(0);
 #endif
 }
 
-// Verify that block w does not appear on tstack more than lim times
-// nextpushp might start out on a boundary
-void audittstack(J jt){F1PREFIP;
-}
-
 // Free all symbols pointed to by the SYMB block w.
 static void freesymb(J jt, A w){I j,wn=AN(w); LX k,kt,* RESTRICT wv=LXAV0(w);
  L *jtsympv=LAV0(jt->symp);  // Move base of symbol block to a register.  Block 0 is the base of the free chain.  MUST NOT move the base of the free queue to a register,
