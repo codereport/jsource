@@ -327,7 +327,7 @@ AF jtatcompf(J jt,A a,A w,A self){I m;
   return 0;
  }else{  // E. (6) or e. (7)
   jt->workareas.compsc.postflags=0;
-  if((AR(a)|AR(w))>1){if(!(m&1)||AR(a)>(AR(w)?AR(w):1))R0;}  // some rank > 1, fail if E. or e. returns rank>1
+  if((AR(a)|AR(w))>1){if(!(m&1)||AR(a)>(AR(w)?AR(w):1))return 0;}  // some rank > 1, fail if E. or e. returns rank>1
   if(((m&1)|(AN(a)-1))==0)return 0;  // E. when a is a singleton - no need for the full E. treatment
   return atcompX[((m>>2)&~1)+(m&1)];  // choose i.-family routine
  }

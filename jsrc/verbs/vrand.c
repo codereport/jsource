@@ -534,7 +534,7 @@ DF2(jtrollk){A g,z;V*sv;
  ARGCHK3(a,w,self);
  sv=FAV(self); g=sv->fgh[2]?sv->fgh[2]:sv->fgh[1];
  if(AT(w)&XNUM+RAT||!(!AR(w)&&1>=AR(a)&&(g==ds(CDOLLAR)||1==AN(a))))return roll(df2(z,a,w,g));
- RETF(rollksub(a,vi(w)));
+ return rollksub(a,vi(w));
 }    /* ?@$ or ?@# or [:?$ or [:?# */
 
 static X jtxrand(J jt,X x){PROLOG(0090);A q,z;B b=1;I j,m,n,*qv,*xv,*zv;
@@ -641,7 +641,7 @@ F1(jtroll){A z;B b=0;I m,wt;
  if(    2==m)RZ(z=roll2   (w,&b));
  if(!b&&0!=m)RZ(z=rollnot0(w,&b));
  if(!b      )RZ(z=rollany (w,&b));
- RETF(z&&!(FL&AT(z))&&wt&XNUM+RAT?xco1(z):z);
+ return z&&!(FL&AT(z))&&wt&XNUM+RAT?xco1(z):z;
 }
 
 F2(jtdeal){A z;I at,j,k,m,n,wt,*zv;UI c,s,t,x=jt->rngM[jt->rng];UI sq;
@@ -666,7 +666,7 @@ F2(jtdeal){A z;I at,j,k,m,n,wt,*zv;UI c,s,t,x=jt->rngM[jt->rng];UI sq;
   
   AN(z)=AS(z)[0]=m;  // lots of wasted space!
  }
- RETF(at&XNUM+RAT||wt&XNUM+RAT?xco1(z):z);
+ return at&XNUM+RAT||wt&XNUM+RAT?xco1(z):z;
 }
 
 // support for ?.
@@ -721,7 +721,7 @@ DF2(jtrollkdot){A g,z;V*sv;
  ARGCHK3(a,w,self);
  sv=FAV(self); g=sv->fgh[2]?sv->fgh[2]:sv->fgh[1];
  if(AT(w)&XNUM+RAT||!(!AR(w)&&1>=AR(a)&&(g==ds(CDOLLAR)||1==AN(a))))return roll(df2(z,a,w,g));
- RETF(rollksub(a,vi(w)));
+ return rollksub(a,vi(w));
 }    /* ?@$ or ?@# or [:?$ or [:?# */
 
 #undef xrand
@@ -841,7 +841,7 @@ static F1(jtrolldot){A z;B b=0;I m,wt;
  if(    2==m)RZ(z=roll2   (w,&b));
  if(!b&&0!=m)RZ(z=rollnot0(w,&b));
  if(!b      )RZ(z=rollany (w,&b));
- RETF(z&&!(FL&AT(z))&&wt&XNUM+RAT?xco1(z):z);
+ return z&&!(FL&AT(z))&&wt&XNUM+RAT?xco1(z):z;
 }
 
 #undef deal
@@ -870,7 +870,7 @@ static F2(jtdealdot){A h,y,z;I at,d,*hv,i,i1,j,k,m,n,p,q,*v,wt,*yv,*zv;UI c,s,t,
   DO(m, s=GMOF(c,x); t=NEXT; if(s)while(s<=t)t=NEXT; j=i+t%c--; k=zv[i]; zv[i]=zv[j]; zv[j]=k;);
   AN(z)=AS(z)[0]=m;
  }
- RETF(at&XNUM+RAT||wt&XNUM+RAT?xco1(z):z);
+ return at&XNUM+RAT||wt&XNUM+RAT?xco1(z):z;
 }
 
 

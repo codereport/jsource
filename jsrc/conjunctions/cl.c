@@ -43,7 +43,7 @@ static DF1(jtlcapco1){A z;V*v=FAV(self);
  FAV(recurself)->valencefns[0]=jtlev1;  // fill in function pointer
  AT(recurself)=efflev(0L,v->fgh[2],w);  // fill in the trigger level
  FAV(recurself)->flag=VFLAGNONE;  // fill in the inplaceability flags
- RETF(lev1(w,recurself));
+ return lev1(w,recurself);
 }
 
 static DF2(jtlcapco2){A z;V*v=FAV(self);
@@ -54,7 +54,7 @@ static DF2(jtlcapco2){A z;V*v=FAV(self);
  FAV(recurself)->valencefns[1]=jtlev2;  // fill in function pointer
  AT(recurself)=efflev(1L,v->fgh[2],a); AC(recurself)=efflev(2L,v->fgh[2],w);  // fill in the trigger levels
  FAV(recurself)->flag=VFLAGNONE;  // fill in the inplaceability flags
- RETF(lev2(a,w,recurself));
+ return lev2(a,w,recurself);
 }
 
 // Result logger for S:   w is the result; we add it to AK(self), reallocating as needed

@@ -88,7 +88,7 @@ static F2(jtcanta){A m,s,t,z;C*wv,*zv;I*av,j,*mv,r,*sv,*tv,wf,wr,*ws,zn,zr,ms[4]
 
  default:        CANTA(C, MC(u,v,cellsizeb); u+=cellsizeb;); break;
  }     
- RETF(z);  // should EPILOG?
+ return z;  // should EPILOG?
 }    /* dyadic transpose in APL\360, a f"(1,r) w where 1>:#$a  */
 
 F1(jtcant1){I r; 
@@ -98,14 +98,14 @@ F1(jtcant1){I r;
  // We extracted from w, so mark it (or its backer if virtual) non-pristine.  If w was pristine and inplaceable, transfer its pristine status to the result
  // But if we are returning the input block unchanged, leave pristinity unchanged
  if(z!=w){PRISTXFERF(z,w)}
- RETF(z);
+ return z;
 }    /* |:"r w */
 
 F2(jtcant2){A*av,p,t,y;I j,k,m,n,*pv,q,r,*v;
  F2PREFIP;ARGCHK2(a,w); 
  r=(RANKT)jt->ranks; r=AR(w)<r?AR(w):r; 
  q=jt->ranks>>RANKTX; q=AR(a)<q?AR(a):q; RESETRANK;
- if(((q-2)&(AR(a)-q-1))>=0){t=rank2ex(a,w,UNUSED_VALUE,MIN(q,1),r,q,r,jtcant2); PRISTCLRF(w) RETF(t);} // rank loop on a.  Loses pristinity
+ if(((q-2)&(AR(a)-q-1))>=0){t=rank2ex(a,w,UNUSED_VALUE,MIN(q,1),r,q,r,jtcant2); PRISTCLRF(w) return t;} // rank loop on a.  Loses pristinity
  if(BOX&AT(a)){
   RZ(y=pfill(r,t=raze(a))); v=AV(y);
   GATV0(p,INT,AN(y),1); pv=AV(p);
@@ -115,5 +115,5 @@ F2(jtcant2){A*av,p,t,y;I j,k,m,n,*pv,q,r,*v;
  A z; IRS2(p,w,0L,1L,r,jtcanta,z); RZ(z);  // Set rank for w in canta.  p is now INT type.  No need to check agreement since a has rank 1
  // We extracted from w, so mark it (or its backer if virtual) non-pristine.  If w was pristine and inplaceable, transfer its pristine status to the result
  PRISTXFERF(z,w)
- RETF(z);
+ return z;
 }    /* a|:"r w main control */ 

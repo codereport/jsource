@@ -265,10 +265,7 @@ static inline omp_int_t omp_get_max_threads() { return 1;}
 
 #define AUDITEXECRESULTS 0  // When set, we go through all execution results to verify recursive and virtual bits are OK
 #define FORCEVIRTUALINPUTS 0  // When 1 set, we make all non-inplaceable noun inputs to executions VIRTUAL.  Tests should still run
-                           // When 2 set, make all outputs from RETF() virtual.  Tests for inplacing will fail; that's OK if nothing crashes
-// set FINDNULLRET to trap when a routine returns 0 without having set an error message
-#define FINDNULLRET 0
-
+                           // When 2 set, make all outputs from return  virtual.  Tests for inplacing will fail; that's OK if nothing crashes
 
 #define ALTBYTES 0x00ff00ff00ff00ffLL
 // t has totals per byte-lane, result combines them into single total.  t must be an lvalue
@@ -629,12 +626,10 @@ if(z<3){_zzt+=z; z=(I)&oneone; _zzt=_i&3?_zzt:(I*)z; z=_i&2?(I)_zzt:z; z=((I*)z)
 #define PROLOG(x)       A *_ttop=jt->tnextpushp
 #define PROLOGNOTREQ(x)   // if nothing is allocated, we don't really need PROLOG
 #define EPILOGNORET(z) (gc(z,_ttop))   // protect z and return its address
-#define EPILOG(z)       RETF(EPILOGNORET(z))   // z is the result block
+#define EPILOG(z)       return EPILOGNORET(z)   // z is the result block
 #define EPILOGNOVIRT(z)       return rifvsdebug((gc(z,_ttop)))   // use this when the repercussions of allowing virtual result are too severe
-#define EPILOGZOMB(z)       if(!gc3(&(z),0L,0L,_ttop))R0; RETF(z);   // z is the result block.  Use this if z may contain inplaceable contents that would free prematurely
+#define EPILOGZOMB(z)       if(!gc3(&(z),0L,0L,_ttop))return 0; return z;   // z is the result block.  Use this if z may contain inplaceable contents that would free prematurely
 // Routines that do little except call a function that does PROLOG/EPILOG have EPILOGNULL as a placeholder
-#define EPILOGNULL(z)   return z
-#define EPILOGNOTREQ(z)   return z  // used if originak JE had needless EPILOG
 // Routines that do not return A
 #define EPILOG0         tpop(_ttop)
 // Routines that modify the comparison tolerance must stack it
@@ -647,21 +642,15 @@ if(z<3){_zzt+=z; z=(I)&oneone; _zzt=_i&3?_zzt:(I*)z; z=_i&2?(I)_zzt:z; z=((I*)z)
 #define CLEARZOMBIE     {jt->assignsym=0;}  // Used when we know there shouldn't be an assignsym, just in case
 #define PUSHZOMB L*savassignsym = jt->assignsym; if(savassignsym){if(((jt->asgzomblevel-1)|((AN(jt->locsyms)-2)))<0){CLEARZOMBIE}}  // test is (jt->asgzomblevel==0||AN(jt->locsyms)<2)
 #define POPZOMB {jt->assignsym=savassignsym;}
-#if FINDNULLRET   // When we return 0, we should always have an error code set.  trap if not
-#define R0 {if(jt->jerr)return A0;else SEGFAULT;}
-#else
-#define R0 return 0;
-#endif
 #define REPSGN(x) ((x)>>(BW-1))  // replicate sign bit of x to entire word (assuming x is signed type - if unsigned, just move sign to bit 0)
 #define SGNTO0(x) ((UI)(x)>>(BW-1))  // move sign bit to bit 0, clear other bits
 // In the original JE many verbs returned a clone of the input, i. e. return ca(w).  We have changed these to avoid the clone, but we preserve the memory in case we need to go back
-#define RCA(w)          return w
 #define RE(exp)         {if(((exp),jt->jerr!=0))return 0;}
 #define RESETERR        {jt->etxn=jt->jerr=0;}
 #define RESETERRANDMSG  {jt->etxn1=jt->etxn=jt->jerr=0;}
 #define RESETRANK       (jt->ranks=(RANK2T)~0)
 #define RNE(exp)        {return jt->jerr?0:(exp);}
-#define RZ(exp)         {if(!(exp))R0}
+#define RZ(exp)         {if(!(exp))return 0;}
 
 #define DEADARG(x)      0
 #define ARGCHK1D(x)
@@ -671,19 +660,13 @@ if(z<3){_zzt+=z; z=(I)&oneone; _zzt=_i&3?_zzt:(I*)z; z=_i&2?(I)_zzt:z; z=((I*)z)
 #define ARGCHK2(x,y)    ARGCHK1(x) ARGCHK1(y)
 #define ARGCHK3(x,y,z)  ARGCHK1(x) ARGCHK1(y) ARGCHK1(z)
 
-// RETF is the normal function return.  For debugging we hook into it
-#if AUDITEXECRESULTS && (FORCEVIRTUALINPUTS==2)
-#define RETF(exp)       A ZZZz = (exp); auditblock(ZZZz,1,1); ZZZz = virtifnonip(jt,0,ZZZz); return ZZZz
-#else
-#define RETF(exp)       return exp
 // Input is a byte.  It is replicated to all lanes of a UI
-#endif
 #define REPLBYTETOW(in,out) (out=(UC)(in),out|=out<<8,out|=out<<16,out|=out<<32)
 // Output is pointer, Input is I/UI, count is # bytes to NOT store to output pointer (0-7).
 #define STOREBYTES(out,in,n) {*(UI*)(out) = (*(UI*)(out)&~((UI)~(I)0 >> ((n)<<3))) | ((in)&((UI)~(I)0 >> ((n)<<3)));}
 // Input is the name of word of bytes.  Result is modified name, 1 bit per input byte, spaced like B01s, with the bit 0 iff the corresponding input byte was all 0.  Non-boolean bits of result are garbage.
 #define ZBYTESTOZBITS(b) (b=b|((b|(~b+VALIDBOOLEAN))>>7))  // for each byte: zero if b0 off, b7 off, and b7 turns on when you subtract 1 or 2
-// to verify gah conversion #define RETF(exp)       { A retfff=(exp);  if ((retfff) && ((AT(retfff)&SPARSE && AN(retfff)!=1) || (AT(retfff)&DENSE && AN(retfff)!=prod(AR(retfff),AS(retfff)))))SEGFAULT;; return retfff; } // scaf
+// to verify gah conversion #define return exp       { A retfff=(exp);  if ((retfff) && ((AT(retfff)&SPARSE && AN(retfff)!=1) || (AT(retfff)&DENSE && AN(retfff)!=prod(AR(retfff),AS(retfff)))))SEGFAULT;; return retfff; } // scaf
 #define SBSV(x)         (jt->sbsv+(I)(x))
 #define SBUV(x)         (jt->sbuv+(I)(x))
 #define SEGFAULT        (*(volatile I*)0 = 0)

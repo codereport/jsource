@@ -323,7 +323,7 @@ F1(jtbase1){A z;B*v;I c,m,n,p,r,*s,t,*x;
  GATV(z,INT,m,r?r-1:0,s); x=AV(z); v=BAV(w);
  if(c)DQ(m, p=0; DQ(c, p=2*p+*v++;); *x++=p;)
  else memset(x,C0,m*SZI);
- RETF(z);
+ return z;
 }
 
 F2(jtbase2){I ar,*as,at,c,t,wr,*ws,wt;
@@ -358,7 +358,7 @@ F1(jtabase1){A d,z;B*zv;I c,n,p,r,t,*v;UI x;
   // We also can't delete a digit if there is only 1 digit in the numbers
   if(AS(z)[AR(z)-1]<=1 || i0(aslash(CPLUSDOT,ravel(lt(w,zeroionei(0))))))return z;
   if(0==i0(aslash(CMAX,ravel(IRS1(z,0L,1L,jthead,d)))))return IRS1(z,0L,1L,jtbehead,d);
-  RETF(z);
+  return z;
  }
  // Integer.  Calculate x=max magnitude encountered (minimum of 1, to leave 1 output value)
  x=1; v=AV(w);
@@ -367,7 +367,7 @@ F1(jtabase1){A d,z;B*zv;I c,n,p,r,t,*v;UI x;
  GATV(z,B01,n*c,1+r,AS(w)); AS(z)[r]=c;  // Allocate result area, install shape
  v=n+AV(w); zv=AN(z)+BAV(z);  // v->last input location (prebiased), zv->last result location (prebiased)
  DQ(n, x=*--v; DQ(c, *--zv=(B)(x&1); x>>=1;));  // copy in the bits, starting with the LSB
- RETF(z);
+ return z;
 }
 
 F2(jtabase2){A z;I an,ar,at,t,wn,wr,wt,zn;
@@ -396,7 +396,7 @@ F2(jtabase2){A z;I an,ar,at,t,wn,wr,wt,zn;
     DQ(wn, x=*--wv; *--zv=x&d1; *--zv=x>>k;)
    }
   }else DQ(wn, x=*--wv; u=av; DQ(an, d=*--u; *--zv=r=remii(d,x); x=d?(x-r)/d:0;););
-  RETF(z);
+  return z;
  }
  {PROLOG(0070);A y,*zv;C*u,*yv;I k;
   F2RANK(1,0,jtabase2,UNUSED_VALUE);
@@ -420,5 +420,5 @@ A jtintmod2(J jt,A w,I mod){A z;B *v;I n,q,r,*u;UI m=0;  // init m for warning
  DQ(q, DQ(SZI, m=(m>>8)+((UI)*v<<((SZI-1)*8)); v+=SZI;); *u++=m&mask;)
  DQ(r, m=(m>>8)+((UI)*v<<((SZI-1)*8)); v+=SZI;);  // 1-8 bytes
  STOREBYTES(v,m&mask,8-r);
- RETF(z);
+ return z;
 }

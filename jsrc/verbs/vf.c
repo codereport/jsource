@@ -117,7 +117,7 @@ F2(jtrotate){A origw=w,y,z;B b;C*u,*v;I acr,af,ar,*av,d,k,m,n,p,*s,wcr,wf,wn,wr;
  } 
  // w is going to be replaced.  That makes it non-pristine; but if it is inplaceable it can pass its pristinity to the result, as long as there is no fill
  PRISTXFERFIF(z,origw,jt->fill==0)  // transfer pristinity if there is no fill
- RETF(z);
+ return z;
 }    /* a|.!.f"r w */
 
 static F1(jtrevsp){A a,q,x,y,z;I c,f,k,m,n,r,*v,wr;P*wp,*zp;
@@ -159,7 +159,7 @@ F1(jtreverse){A z;C*wv,*zv;I f,k,m,n,nk,r,*v,*ws,wt,wr;
   case sizeof(int):{int*s=(int*)wv,*t,*u=(int*)zv; DQ(m, t=s+=n; DQ(n, *u++=*--t;););} break;
   case sizeof(I): {I*s=(I*)wv,*t,*u=(I*)zv; DQ(m, t=s+=n; DQ(n, *u++=*--t;););} break;
  }
- RETF(z);
+ return z;
 }    /* |."r w */
 
 
@@ -216,10 +216,10 @@ F2(jtreshape){A z;B filling;C*wv,*zv;I acr,ar,c,k,m,n,p,q,r,*s,t,* RESTRICT u,wc
  ARGCHK2(a,w);
  ar=AR(a); acr=jt->ranks>>RANKTX; acr=ar<acr?ar:acr;
  wr=AR(w); wcr=(RANKT)jt->ranks; wcr=wr<wcr?wr:wcr; wf=wr-wcr; ws=AS(w); RESETRANK;
- if((I )(1<acr)|(I )(acr<ar)){z=rank2ex(a,w,UNUSED_VALUE,MIN(acr,1),wcr,acr,wcr,jtreshape); PRISTCLRF(w) RETF(z);}  // multiple cells - must lose pristinity
+ if((I )(1<acr)|(I )(acr<ar)){z=rank2ex(a,w,UNUSED_VALUE,MIN(acr,1),wcr,acr,wcr,jtreshape); PRISTCLRF(w) return z;}  // multiple cells - must lose pristinity
  // now a is an atom or a list.  w can have any rank
  RZ(a=vip(a)); r=AN(a); u=AV(a);   // r=length of a   u->values of a
- if((SPARSE&AT(w))!=0){RETF(reshapesp(a,w,wf,wcr));}
+ if((SPARSE&AT(w))!=0){return reshapesp(a,w,wf,wcr);}
  wn=AN(w); PRODX(m,r,u,1) CPROD(wn,c,wf,ws); CPROD(wn,n,wcr,wf+ws);  // m=*/a (#atoms in result)  c=#cells of w  n=#atoms/cell of w
  ASSERT(n||!m||jt->fill,EVLENGTH);  // error if attempt to extend array of no items to some items without fill
  t=AT(w); filling = 0;
@@ -229,11 +229,11 @@ F2(jtreshape){A z;B filling;C*wv,*zv;I acr,ar,c,k,m,n,p,q,r,*s,t,* RESTRICT u,wc
    // because then who would free the blocks?  (Actually it would be OK if nonrecursive, but we are trying to exterminate those).  Since it must be DIRECT, there's no question about PRISTINE, but that would be OK to transfer if inplaceable
    if(ASGNINPLACESGN(SGNIF((I)jtinplace,JTINPLACEWX)&(r-(wcr+1))&((n-(m+1))|-(t&DIRECT)),w)){  //  inplace allowed, just one cell, result rank (an) <= current rank (so rank fits), usecount is right
     // operation is loosely inplaceable.  Copy in the rank, shape, and atom count.
-    AR(w)=(RANKT)(r+wf); AN(w)=m; ws+=wf; MCISH(ws,u,r) RETF(w);   // Start the copy after the (unchanged) frame
+    AR(w)=(RANKT)(r+wf); AN(w)=m; ws+=wf; MCISH(ws,u,r) return w;   // Start the copy after the (unchanged) frame
    }
    // Not inplaceable.  Create a (noninplace) virtual copy, but not if NJA memory
-// correct   if(!(AFLAG(w)&(AFNJA))){RZ(z=virtual(w,0,r+wf)); AN(z)=m; I *zs=AS(z); DO(wf, *zs++=ws[i];); DO(r, zs[i]=u[i];) RETF(z);}
-   if((SGNIF(AFLAG(w),AFNJAX)|((t&(DIRECT|RECURSIBLE))-1))>=0){RZ(z=virtual(w,0,r+wf)); AN(z)=m; I * RESTRICT zs=AS(z); MCISH(zs,ws,wf) MCISH(zs+wf,u,r) RETF(z);}  // NJAwhy
+// correct   if(!(AFLAG(w)&(AFNJA))){RZ(z=virtual(w,0,r+wf)); AN(z)=m; I *zs=AS(z); DO(wf, *zs++=ws[i];); DO(r, zs[i]=u[i];) return z;}
+   if((SGNIF(AFLAG(w),AFNJAX)|((t&(DIRECT|RECURSIBLE))-1))>=0){RZ(z=virtual(w,0,r+wf)); AN(z)=m; I * RESTRICT zs=AS(z); MCISH(zs,ws,wf) MCISH(zs+wf,u,r) return z;}  // NJAwhy
    // for NJA/SMM, fall through to nonvirtual code
   }
  }else if(filling=jt->fill!=0){RZ(w=setfv(w,w)); t=AT(w);}   // if fill required, set fill value.  Remember if we need to fill
@@ -247,7 +247,7 @@ F2(jtreshape){A z;B filling;C*wv,*zv;I acr,ar,c,k,m,n,p,q,r,*s,t,* RESTRICT u,wc
  // w has been destroyed
  if(filling)DQ(c, mvc(q,zv,q,wv); mvc(p-q,q+zv,k,jt->fillv); zv+=p; wv+=q;)
  else DQ(c, mvc(p,zv,q,wv); zv+=p; wv+=q;);
- RETF(z);
+ return z;
 }    /* a ($,)"r w */
 
 F2(jtreitem){A y,z;I acr,an,ar,r,*v,wcr,wr;
@@ -255,7 +255,7 @@ F2(jtreitem){A y,z;I acr,an,ar,r,*v,wcr,wr;
  ARGCHK2(a,w);
  ar=AR(a); acr=jt->ranks>>RANKTX; acr=ar<acr?ar:acr;
  wr=AR(w); wcr=(RANKT)jt->ranks; wcr=wr<wcr?wr:wcr; r=wcr-1; RESETRANK;
- if((I )(1<acr)|(I )(acr<ar)){z=rank2ex(a,w,UNUSED_VALUE,MIN(acr,1),wcr,acr,wcr,jtreitem); PRISTCLRF(w) RETF(z);}  // multiple cells - must lose pristinity  // We handle only single operations here, where a has rank<2
+ if((I )(1<acr)|(I )(acr<ar)){z=rank2ex(a,w,UNUSED_VALUE,MIN(acr,1),wcr,acr,wcr,jtreitem); PRISTCLRF(w) return z;}  // multiple cells - must lose pristinity  // We handle only single operations here, where a has rank<2
  // acr<=ar; ar<=acr; therefore ar==acr here
  fauxblockINT(yfaux,4,1);
  if(1>=wcr)y=a;  // y is atom or list: $ is the same as ($,)
@@ -298,7 +298,7 @@ F2(jtexpand){A z;B*av;C*wv,*wx,*zv;I an,*au,i,k,p,wc,wk,wn,wt,zn;
     else{if(p){MC(zv,wv,p); wv+=p; zv+=p; p=0;} zv+=wk;}
    if(p){MC(zv,wv,p);}
  }
- RETF(z);
+ return z;
 }    /* a&#^:_1 w or a&#^:_1!.f w */
 
 

@@ -224,7 +224,7 @@ F1(jtlocnc){A*wv,y,z;C c,*u;I i,m,n,*zv;
  n=AN(w); wv=AAV(w); 
  GATV(z,INT,n,AR(w),AS(w)); zv=AV(z);
  if(!n)return z;  // if no input, return empty before handling numeric-atom case
- if(AT(w)&(INT|B01)){IAV(z)[0]=findnl(BIV0(w))?1:-1; RETF(z);}  // if integer, must have been atomic or empty.  Handle the one value
+ if(AT(w)&(INT|B01)){IAV(z)[0]=findnl(BIV0(w))?1:-1; return z;}  // if integer, must have been atomic or empty.  Handle the one value
  for(i=0;i<n;++i){
   y=wv[i];
   if(!AR(y)&&AT(y)&((INT|B01))){  // atomic numeric locale
@@ -237,7 +237,7 @@ F1(jtlocnc){A*wv,y,z;C c,*u;I i,m,n,*zv;
    else            zv[i]=probe(m,u,(UI4)nmhash(m,u),jt->stloc)?0:-1;
   }
  }
- RETF(z);
+ return z;
 }    /* 18!:0 locale name class */
 
 static F1(jtlocnlx){A y,z=mtv;B*wv;I m=0;

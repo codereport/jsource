@@ -73,7 +73,7 @@ A jtnfs(J jt,I n,C*s){A z;C f,*t;I m,p;NM*zv;
  ASSERT((m|p)<=255,EVLIMIT);  // error if name too long.  Requires limit be power of 2
  zv->flag=f;  // Install locative flag
  zv->m=(UC)m; zv->hash=(UI4)nmhash(m,s); // Install length, and calculate hash of simple name
- RETF(z);
+ return z;
 }    /* name from string */
 
 // string from name: returns string for the name
@@ -125,7 +125,7 @@ F1(jtnc){A*wv,x,y,z;I i,n,t,*zv;L*v;
   zc=x?zc:-1; zc=y?zc:-2;
   zv[i]=zc;  // calculate the type, store in result array
  }
- RETF(z);
+ return z;
 }    /* 4!:0  name class */
 
 
@@ -167,7 +167,7 @@ F1(jtscind){A*wv,x,y,z;I n,*zv;L*v;
  wv=AAV(w); 
  GATV(z,INT,n,AR(w),AS(w)); zv=AV(z);
  DO(n, x=wv[i]; RE(y=stdnm(x)); ASSERTN(y,EVILNAME,nfs(AN(x),CAV(x))); v=syrd(y,jt->locsyms); RESETERR; zv[i]=v?v->sn:-1;);
- RETF(z);
+ return z;
 }    /* 4!:4  script index */
 
 
@@ -246,5 +246,5 @@ F1(jtex){A*wv,y,z;B*zv;I i,n;L*v;I modifierchg=0;
   }
  }
  jt->modifiercounter+=modifierchg;
- RETF(z);
+ return z;
 }    /* 4!:55 expunge */

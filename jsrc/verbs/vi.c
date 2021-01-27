@@ -999,7 +999,7 @@ A jtindexofsub(J jt,I mode,A a,A w){PROLOG(0079);A h=0,hi=mtv,z;B mk=w==mark,th;
     case IIDOT:  
     case IICO:    GATV(z,INT,zn,f+f0,s); if(af)MCISH(f+AS(z),ws+wf,f0); v=AV(z); DQ(zn, *v++=m;); return z;
     case IEPS:    GATV(z,B01,zn,f+f0,s); if(af)MCISH(f+AS(z),ws+wf,f0); memset(BAV(z),C0,zn); return z;
-    case ILESS:                              RCA(w);
+    case ILESS:                              return w;
     case IIFBEPS:                            return mtv;
     case IANYEPS: case IALLEPS: case II0EPS: return num(0);
     case ISUMEPS:                            return sc(0L);
@@ -1167,7 +1167,7 @@ A jtindexofsub(J jt,I mode,A a,A w){PROLOG(0079);A h=0,hi=mtv,z;B mk=w==mark,th;
     // creating and processing the small-range table itself, so we will let it do that.  We return a special short block (LSB=1)
     // that indicates the length of the key (AN) and the start and range of the keys (AK and AM)
     A z; GAT0(z,INT,1,0); AN(z)=k; AK(z)=datamin; AM(z)=p;  // allocate and return
-    RETF((A)((I)z+1));  // return the tagged address
+    return (A)((I)z+1);  // return the tagged address
    }
    // make sure we have a hashtable of the requisite size.  p has the number of entries, booladj indicates whether they are 1 bit each.
    // if the #entries fits in a US, use the short table.  But bits always use the long table
@@ -1309,7 +1309,7 @@ A jtindexofsub(J jt,I mode,A a,A w){PROLOG(0079);A h=0,hi=mtv,z;B mk=w==mark,th;
  RZ(z=EPILOGNORET(z));
  // Since EPILOG may have rewritten AM, and IFORKEY never returns to the parser, we can store the FORKEY result in AM.
  *((mode&IIOPMSK)==IFORKEY?(I*)&AM(z):(I*)&jt->shapesink)=forkeyresult;
- RETF(z);
+ return z;
 }    /* a i."r w main control */
 
 // verb to handle compounds like m&i. e.&n .  m/n has already been hashed and the result saved away
@@ -1378,7 +1378,7 @@ F1(jtnub){
  A z; RZ(z=indexofsub(INUB,w,w));
  // We extracted from w, so mark it (or its backer if virtual) non-pristine.  If w was pristine and inplaceable, transfer its pristine status to the result.  We overwrite w because it is no longer in use
  PRISTXFERF(z,w)
- RETF(z);
+ return z;
 }    /* ~.w */
 
 // x -. y.  does not have IRS
@@ -1386,7 +1386,7 @@ F2(jtless){A x=w;I ar,at,k,r,*s,wr,*ws,wt;
  F2PREFIP;ARGCHK2(a,w);
  at=AT(a); ar=AR(a); 
  wt=AT(w); wr=AR(w); r=MAX(1,ar);
- if(ar>1+wr)RCA(a);  // if w's rank is smaller than that of a cell of a, nothing can be removed, return a
+ if(ar>1+wr)return a;  // if w's rank is smaller than that of a cell of a, nothing can be removed, return a
  // if w's rank is larger than that of a cell of a, reheader w to look like a list of such cells.  The number of atoms stays the same
  if(wr&&r!=wr){RZ(x=virtual(w,0,r)); AN(x)=AN(w); s=AS(x); ws=AS(w); k=ar>wr?0:1+wr-r; *s=prod(k,ws); MCISH(1+s,k+ws,r-1);}  // bug: should test for error on the prod()
  // if nothing special (like sparse, or incompatible types, or x requires conversion) do the fast way; otherwise (-. x e. y) # y
@@ -1394,7 +1394,7 @@ F2(jtless){A x=w;I ar,at,k,r,*s,wr,*ws,wt;
      repeat(__not(eps(a,x)),a));
  // We extracted from a, so mark it non-pristine.  If a was pristine and inplaceable, transfer its pristine status to the result
  PRISTXFERAF(x,a)
- RETF(x);
+ return x;
 }    /* a-.w */
 
 // x e. y

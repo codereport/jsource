@@ -46,7 +46,7 @@ static DF2(jtcut02){F2PREFIP;A fs,q,qq,*qv,z,zz=0;I*as,c,e,i,ii,j,k,m,n,*u,*ws;P
   if(z==0)z=zeroionei(0);  // use zero as fill result if error
   GA(zz,AT(z),n,m+AR(z),0); I *zzs=AS(zz); I *zs=AS(z); 
   MCISH(zzs,as,m) MCISH(zzs+m,zs,AR(z)) // move in frame of a followed by shape of result-cell
-  RETF(zz);
+  return zz;
  }
  // otherwise general case, one axis at a time
  ws=AS(w);
@@ -152,7 +152,7 @@ DF2(jtboxcut0){A z;
  I resatoms; PROD(resatoms,f,AS(a)); I cellsize; PROD(cellsize,wr-1,AS(w)+1);
  I k=bplg(t); C *wv=CAV(w);  // k is length of an atom of w
  // allocate the result area
- GATV(z,BOX,resatoms,f,AS(a)); AFLAG(z) = BOX; if(resatoms==0){RETF(z);}  // could avoid filling with 0 if we modified AN after error, or cleared after *tnextpushp
+ GATV(z,BOX,resatoms,f,AS(a)); AFLAG(z) = BOX; if(resatoms==0){return z;}  // could avoid filling with 0 if we modified AN after error, or cleared after *tnextpushp
   // We have allocated the result; now we allocate a block for each cell of w and copy
   // the w values to the new block.
   // Make result inplaceable; recursive too, since otherwise the boxes won't get freed
@@ -185,7 +185,7 @@ DF2(jtboxcut0){A z;
  ASSERT(y!=0,EVWSFULL);  // if we broke out an allocation failure, fail.  Since the block is recursive, when it is tpop()d it will recur to delete contents
  // The result can be called pristine if the contents are DIRECT and the result is recursive, because it contains all copied data
  AFLAG(z)|=(-(t&DIRECT))&(~(I)jtinplace<<(AFPRISTINEX-JTWILLBEOPENEDX))&AFPRISTINE;
- RETF(z);  // return the recursive block
+ return z;  // return the recursive block
 }
 
 
@@ -212,7 +212,7 @@ DF2(jtrazecut0){A z;C*wv,*zv;I ar,*as,(*av)[2],j,k,m,n,wt;
  // copy em in.  We use MC because the strings are probably long and unpredictable - think HTML parsing
  I wcb=wcn<<bplg(wt);  // number of bytes in a cell of w
  DO(m, j=av[i][0]; k=av[i][1]; I jj=j+n; jj=(j>=0)?j:jj; j=n-jj; k=k>j?j:k; k*=wcb; MC(zv,wv+jj*wcb,k); zv+=k;)
- RETF(z);
+ return z;
 }    /* a ;@:(<;.0) vector */
 
 
@@ -255,7 +255,7 @@ static DF2(jtcut2bx){A*av,b,t,x,*xv,y,*yv;B*bv;I an,bn,i,j,m,p,q,*u,*v,*ws;
    GATV0(z,INT,m,1); zi=AV(z); EACHC(*zi++=d;); return z;                          \
   case CDOLLAR:                                                              \
    GATV0(z,INT,m,1); zi=AV(z); EACHC(*zi++=d;);                               \
-   A zz,zw; RZ(zw=vec(INT,MAX(0,r-1),1+s)); IRS2(z,zw,0L,0L,1L,jtover,zz); RETF(zz);  \
+   A zz,zw; RZ(zw=vec(INT,MAX(0,r-1),1+s)); IRS2(z,zw,0L,0L,1L,jtover,zz); return zz;  \
   case CHEAD:                                                                \
    GA(z,t,m*c,r,s); zc=CAV(z); AS(z)[0]=m;                                     \
    EACHC(ASSERT(d!=0,EVINDEX); MC(zc,v1,k); zc+=k;);                            \
@@ -893,12 +893,12 @@ static F2(jttesa){A x;I*av,ac,c,d,k,r,*s,t,*u,*v;
  r=AR(a); s=AS(a); SHAPEN(a,r-1,c);  ac=c; av=AV(a); d=AR(w);  // r = rank of x; s->shape of x; c=#axes specd in x, av->data; d=rank of w
  ASSERT(d>=c&&(2>r||2==s[0]),EVLENGTH);  // x must not be bigger than called for by rank of w, and must be a list or 2-item table
  if(2<=r)DO(c, ASSERT(0<=av[i],EVDOMAIN););  // if movement vector given, it must be nonnegative
- if(2==r&&t&INT){RETF(a);}  // if we can use a as given, return a as is
+ if(2==r&&t&INT){return a;}  // if we can use a as given, return a as is
  GATV0(x,INT,2*c,2); s=AS(x); s[0]=2; s[1]=c;  // allocate space for start/stride, only for axes that will be modified.  We will modify it
  u=AV(x); v=u+c; s=AS(w);  // u->movement vector, v->length
  if(2==r)DO(c,   *u++=av[i]; k=av[i+ac]; if(k&((I)IMIN>>1)){k=(s[i]^REPSGN(k))-REPSGN(k);} *v++=k;);  // if k infinite, make length the axis length, + or -
  if(2> r)DO(c,   *u++=1;     k=av[i];  if(k&((I)IMIN>>1)){k=(s[i]^REPSGN(k))-REPSGN(k);} *v++=k;);
- RETF(x);
+ return x;
 }    /* tesselation standardized left argument */
 
 // These bits overlap with those used for ;.0
@@ -921,7 +921,7 @@ static DF2(jttess2){A z,zz=0,virtw,strip;I n,rs[3],cellatoms,cellbytes,vmv,hmv,v
   // trailing axes taken in full will be omitted from the shape of the result
   RZ(p=tesos(a,w,n,0));  // recalculate all the result shapes
   A za, zw; RZ(za=cant1(tymesW(head(a),cant1(abase2(p,iota(p)))))); RZ(zw=tail(a));
-  RETF(cut02(IRS2(za, zw,0L,1L,1L,jtlamin2,z),w,self));  // ((|: ({.a) * |: (#: i.)p) ,:"1 ({:a)) u;.0 w
+  return cut02(IRS2(za, zw,0L,1L,1L,jtlamin2,z),w,self);  // ((|: ({.a) * |: (#: i.)p) ,:"1 ({:a)) u;.0 w
  }
  DECLF;  // get the function pointers
  fauxblockINT(xfaux,5,1); // declare xpose arg where it has scope

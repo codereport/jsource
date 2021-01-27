@@ -109,7 +109,7 @@ static F1(jtthb){A z;B*x;C*y;I c,m,n,p,r,*s;
  GATV(z,LIT,m*p,r+!r,s); AS(z)[AR(z)-1]=p; 
  x=BAV(w); y=CAV(z);
  DQ(m, DQ(c-1, *y++=*x++?'1':'0'; *y++=' ';); *y++=*x++?'1':'0';);
- RETF(z);
+ return z;
 }
 
 static F1(jtthn){A d,t,z;C*tv,*x,*y,*zv;I c,*dv,k,m,n,p,r,*s,wd;FMTFUN fmt;
@@ -126,7 +126,7 @@ static F1(jtthn){A d,t,z;C*tv,*x,*y,*zv;I c,*dv,k,m,n,p,r,*s,wd;FMTFUN fmt;
   GATV(z,LIT,m*p,r+!r,s); AS(z)[AR(z)-1]=p; zv=CAV(z); memset(zv,' ',AN(z));
   y=tv; DO(m, DO(c, zv+=dv[i]; p=strlen(y); MC(zv-p-(I )(c>1+i),y,p); y+=wd;););
  }
- RETF(z);
+ return z;
 }
 
 // cvt SB string to utf8

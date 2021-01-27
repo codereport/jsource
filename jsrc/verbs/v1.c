@@ -235,7 +235,7 @@ F2(jtmatch){A z;I af,m,n,mn,wf;
  mn=m*n;  // total number of matches to do, i. e. # results
  GATV(z,B01,mn,wf,AS(w)); matchsub(a,w,BAV(z),af,wf,m,n,eqis0^1);  // matchsub stores, and we ignore the result
  // We do not check for a==w here & thus will compare them
- RETF(z);
+ return z;
 }    /* a -:"r w */
 
 F2(jtnotmatch){return jtmatch((J)((I)jt+1),a,w);}   /* a -.@-:"r w */

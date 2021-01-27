@@ -10,7 +10,7 @@ F1(jtunname){A x;V*v;
  ARGCHK1(w); 
  v=VAV(w);
  if(CTILDE==v->id&&!jt->uflags.us.cx.cx_c.glock&&!(VLOCK&v->flag)){x=v->fgh[0]; if(NAME&AT(x))return symbrd(x);}
- RETF(w);
+ return w;
 }
 
 static B jtselfq(J jt,A w){A hs,*u;V*v;

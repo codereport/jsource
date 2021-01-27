@@ -92,7 +92,7 @@ static F1(jtbminv){A*wv,x,z=w;I i,j,m,r,*s,t=0,*u,**v,*y,wn,wr,*ws;
    j=wr-1; while(1){--j; ++u[j]; if(ws[j]>u[j])break; u[j]=0;}
  }}
  DO(wr, A t=z; RZ(df1(z,t,slash(under(qq(ds(CCOMMA),sc(wr-i)),ds(COPE))))););
- RETF(ope(z));
+ return ope(z);
 }    /* <;.1 or <;.2 inverse on matrix argument */
 
 

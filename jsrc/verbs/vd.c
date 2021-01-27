@@ -153,7 +153,7 @@ F1(jtqr){A r,z;D c=inf,d=0,x;I n1,n,*s,wr;
  if(FL&AT(r)){D*v=DAV(r);  DQ(n, x= ABS(*v); if(x<c)c=x; if(x>d)d=x; v+=n1;);}
  else        {Z*v=ZAV(r);  DQ(n, x=zmag(*v); if(x<c)c=x; if(x>d)d=x; v+=n1;);}
  ASSERT(!n||c>d*FUZZ,EVDOMAIN);
-RETF(z);
+return z;
 }
 
 // return inverse of w, calculated by lq applied to adjoint
@@ -172,7 +172,7 @@ static F1(jtlq){A l;D c=inf,d=0,x;I n1,n,*s,wr;
  if(FL&AT(l)){D*v=DAV(l); D determ=jt->workareas.minv.determ; DQ(n, x= ABS(*v); if(determ!=0){determ*=x; if(determ>1e20)determ=0.0;} if(x<c)c=x; if(x>d)d=x; v+=n1;); jt->workareas.minv.determ=determ;} 
  else        {Z*v=ZAV(l);  DQ(n, x=zmag(*v); if(x<c)c=x; if(x>d)d=x; v+=n1;);}
  ASSERT(!n||c>d*FUZZ,EVDOMAIN);
- RETF(pdt(jtrinvip(jt,l,n,AT(w)&FL?2:0),w));  // engage fast reciprocal for float matrices
+ return pdt(jtrinvip(jt,l,n,AT(w)&FL?2:0),w);  // engage fast reciprocal for float matrices
 }
 
 // Boolean/integer correction.  If the inversand was B01 or INT, we can eliminate some rounding error by forcing the

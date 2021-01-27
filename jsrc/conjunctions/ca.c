@@ -122,7 +122,7 @@ static DF2(atcomp){AF f;A z;
   z=f(jt,a,w,self);
   if(z){if(postflags&2){z=num((IAV(z)[0]!=AN(AR(a)>=AR(w)?a:w))^(postflags&1));}}
  }else z=upon2(a,w,self);
- RETF(z);
+ return z;
 }
 
 static DF2(atcomp0){A z;AF f;
@@ -134,7 +134,7 @@ static DF2(atcomp0){A z;AF f;
   z=f(jt,a,w,self);
   if(z){if(postflags&2){z=num((IAV(z)[0]!=AN(AR(a)>=AR(w)?a:w))^(postflags&1));}}
  }else z=upon2(a,w,self);
- RETF(z);
+ return z;
 }
 
 // The combining modifiers keep track of some flags used by partitions and Result Assembly.
@@ -351,8 +351,8 @@ F2(jtampco){AF f1=on1cell,f2=on2cell;C c,d;I flag,flag2=0,linktype=0;V*wv;
 // We marked the derived verb inplaceable only if the dyad of u/v was inplaceable
 // This supports IRS so that it can pass the rank on to the called function; no need to revalidate here
 // We pass the WILLOPEN flags through
-static DF1(withl){F1PREFIP;DECLFG; A z; I r=(RANKT)jt->ranks; IRSIP2(fs,w,gs,RMAX,(RANKT)jt->ranks,g2,z); RETF(z);}
-static DF1(withr){F1PREFIP;DECLFG; jtinplace=(J)(intptr_t)((I)jtinplace+((I)jtinplace&JTINPLACEW)); A z; I r=(RANKT)jt->ranks; IRSIP2(w,gs,fs,(RANKT)jt->ranks,RMAX,f2,z); RETF(z);}
+static DF1(withl){F1PREFIP;DECLFG; A z; I r=(RANKT)jt->ranks; IRSIP2(fs,w,gs,RMAX,(RANKT)jt->ranks,g2,z); return z;}
+static DF1(withr){F1PREFIP;DECLFG; jtinplace=(J)(intptr_t)((I)jtinplace+((I)jtinplace&JTINPLACEW)); A z; I r=(RANKT)jt->ranks; IRSIP2(w,gs,fs,(RANKT)jt->ranks,RMAX,f2,z); return z;}
 
 // Here for m&i. and m&i:, computing a prehashed table from a
 // v->fgh[2] is the info/hash/bytemask result from calculating the prehash

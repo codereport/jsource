@@ -99,7 +99,7 @@ static F2(jtovs){A ae,ax,ay,q,we,wx,wy,x,y,z,za,ze;B*ab,*wb,*zb;I acr,ar,*as,at,
   }
   SPB(zp,i,p?take(sc(mn-p),y):y); SPB(zp,x,p?take(sc(mn-p),x):x);
  }
- RETF(z);
+ return z;
 }    /* a,"r w where a or w or both are sparse */
 
 
@@ -135,7 +135,7 @@ static F2(jtovg){A s,z;C*x;I ar,*as,c,k,m,n,r,*sv,t,wr,*ws,zn;
  GA(z,AT(a),zn,r,sv); AS(z)[0]=m+n; x=CAV(z); k=bpnoun(AT(a));
  RZ(x=ovgmove(k,c,m,s,a,x,z));
  RZ(x=ovgmove(k,c,n,s,w,x,z));
- RETF(z);
+ return z;
 }    /* a,w general case for dense array with the same type; jt->ranks=~0 */
 
 // these variants copy vectors or scalars, with optional repetition of items and, for the scalars, scalar repetition
@@ -221,7 +221,7 @@ F2(jtover){AD * RESTRICT z;C*zv;I replct,framect,acr,af,ar,*as,k,ma,mw,p,q,r,t,w
     // If a and w are the same, we mustn't mark the result pristine!  It has repetitions
     if((aflg&AFVIRTUAL)!=0){AFLAG(ABACK(a))&=~AFPRISTINE;}  //  like PRISTCOMSETF
     if((wflg&AFVIRTUAL)!=0){AFLAG(ABACK(w))&=~AFPRISTINE;}  //  like PRISTCOMSETF
-    RETF(z);
+    return z;
    }
   }
  }
@@ -246,7 +246,7 @@ F2(jtover){AD * RESTRICT z;C*zv;I replct,framect,acr,af,ar,*as,k,ma,mw,p,q,r,t,w
  // copy in the data, creating the result in order (to avoid page thrashing and to make best use of write buffers)
  // scalar replication is required for any arg whose rank is 0 and yet its length is >1.  Choose the copy routine based on that
  moveawtbl[SGNTO0((acr-1)&(1-ma))*2+(SGNTO0(((wcr-1)&(1-mw))))](CAV(z),CAV(a),CAV(w),replct*framect,k,ma*k,mw*k,(wf>=af)?replct:1,(wf>=af)?1:replct);
- RETF(z);
+ return z;
 }    /* overall control, and a,w and a,"r w for cell rank <: 2 */
 
 F2(jtstitch){I ar,wr; A z;
@@ -274,7 +274,7 @@ F2(jtlamin2){A z;I ar,p,q,wr;
  if(q)RZ(w=IRS1(w,0L,q,jtlamin1,z));
  RZ(IRS2(a,w,0L,p+!!p,q+!!q,jtover,z));
  if(!(p|q))z=IRS1(z,0L,0L,jtlamin1,a);
- RETF(z);
+ return z;
 }    /* a,:"r w */
 
 // Append, including tests for append-in-place
@@ -363,7 +363,7 @@ A jtapip(J jt, A a, A w){F2PREFIP;A h;C*av,*wv;I ak,k,p,*u,*v,wk,wm,wn;
       }
       // a was inplaceable & thus not virtual, but we must clear pristinity from w wherever it is
       PRISTCLRF(w)
-      RETF(a);
+      return a;
      }else ASSERT(!(aflag&AFNJA),EVALLOC)  // if we failed only because the new value wouldn't fit, signal EVALLOC if NJA, to avoid creating a huge unassignable value
     }  // end 'items of a are big enough'
    }  // end 'a and w compatible in rank and type'

@@ -102,7 +102,7 @@ F1(jtspcount){A z;I c=0,i,j,*v;A x;
  GATV0(z,INT,2*(-PMINL+PLIML+1),2); v=AV(z);
  for(i=PMINL;i<=PLIML;++i){j=0; x=(jt->mfree[-PMINL+i].pool); while(x){x=AFCHAIN(x); ++j;} if(j){++c; *v++=(I)1<<i; *v++=j;}}
  v=AS(z); v[0]=c; v[1]=2; AN(z)=2*c;
- RETF(z);
+ return z;
 }    /* 7!:3 count of unused blocks */
 
 // Garbage collector.  Called when free has decided a call is needed
@@ -204,7 +204,7 @@ F1(jtspfor){A*wv,x,y,z;C*s;D*v,*zv;I i,m,n;
   RZ(y=symbrd(nfs(m,s))); 
   *v=0.0; spfor1(y); zv[i]=*v;
  }
- RETF(z);
+ return z;
 }    /* 7!:5 space for named object; w is <'name' */
 
 F1(jtspforloc){A*wv,x,y,z;C*s;D*v,*zv;I i,j,m,n;L*u;LX *yv,c;
@@ -236,11 +236,11 @@ F1(jtspforloc){A*wv,x,y,z;C*s;D*v,*zv;I i,j,m,n;L*u;LX *yv,c;
   }
   zv[i]=*v;
  }
- RETF(z);
+ return z;
 }    /* 7!:6 space for a locale */
 
 
-F1(jtmmaxq){ASSERTMTV(w); RETF(sc(jt->mmax));}
+F1(jtmmaxq){ASSERTMTV(w); return sc(jt->mmax);}
      /* 9!:20 space limit query */
 
 F1(jtmmaxs){I j,m=MLEN,n;
@@ -248,7 +248,7 @@ F1(jtmmaxs){I j,m=MLEN,n;
  ASSERT(1E5<=n,EVLIMIT);
  j=m-1; DO(m, if(n<=(I)1<<i){j=i; break;});
  jt->mmax=(I)1<<j;
- RETF(mtm);
+ return mtm;
 }    /* 9!:21 space limit set */
 
 
@@ -957,7 +957,7 @@ F1(jtca){A z;I t;P*wp,*zp;
  return z;
 }
 // clone block only if it is read-only
-F1(jtcaro){ if(AFLAG(w)&AFRO){RETF(ca(w));} RETF(w); }
+F1(jtcaro){ if(AFLAG(w)&AFRO){return ca(w);} return w; }
 
 // clone recursive.
 F1(jtcar){A*u,*wv,z;I n;P*p;V*v;

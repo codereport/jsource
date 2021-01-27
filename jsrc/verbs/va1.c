@@ -125,28 +125,28 @@ static A jtva1(J jt,A w,A self){A z;I cv,n,t,wt,zt;VA1F ado;
  t=atype(cv); zt=rtype(cv);  // extract required type of input and result
  if(UNSAFE(t&~wt)){RZ(w=cvt(t,w)); jtinplace=(J)((I)jtinplace|JTINPLACEW);}  // convert input if necessary; if we converted, converted result is ipso facto inplaceable.  t is usually 0
  if(ASGNINPLACESGN(SGNIF((I)jtinplace,JTINPLACEWX)&SGNIF(cv,VIPOKWX),w)){z=w; if(TYPESNE(AT(w),zt))MODBLOCKTYPE(z,zt)}else{GA(z,zt,n,AR(w),AS(w));}
- if(!n){RETF(z);} 
+ if(!n){return z;}
  I oprc = ((AHDR1FN*)ado)(jt,n,AV(z),AV(w));  // perform the operation on all the atoms, save result status.  If an error was signaled it will be reported here, but not necessarily vice versa
- if(oprc==EVOK){RETF(cv&VRI+VRD?cvz(cv,z):z);}  // Normal return point: if no error, convert the result if necessary (rare)
+ if(oprc==EVOK){return cv&VRI+VRD?cvz(cv,z):z;}  // Normal return point: if no error, convert the result if necessary (rare)
  else{
   // There was an error.  If it is recoverable in place, handle the cases here
   // positive result gives error type to use for retrying the operation; negative is 1's complement of the restart point (first value NOT stored)
   // integer abs: convert everything to float, changing IMIN to IMAX+1
-  if(ado==absI){A zz=z; if(VIP64){MODBLOCKTYPE(zz,FL)}else{GATV(zz,FL,n,AR(z),AS(z))}; I *zv=IAV(z); D *zzv=DAV(zz); DQ(n, if(*zv<0)*zzv=-(D)*zv;else*zzv=(D)*zv; ++zv; ++zzv;) RETF(zz);}
+  if(ado==absI){A zz=z; if(VIP64){MODBLOCKTYPE(zz,FL)}else{GATV(zz,FL,n,AR(z),AS(z))}; I *zv=IAV(z); D *zzv=DAV(zz); DQ(n, if(*zv<0)*zzv=-(D)*zv;else*zzv=(D)*zv; ++zv; ++zzv;) return zz;}
   // float sqrt: reallocate as complex, scan to make positive results real and negative ones imaginary
-  if(ado==sqrtD){A zz; GATV(zz,CMPX,n,AR(z),AS(z)); D *zv=DAV(z); Z *zzv=ZAV(zz); DQ(n, if(*zv>=0){zzv->re=*zv;zzv->im=0.0;}else{zzv->im=-*zv;zzv->re=0.0;} ++zv; ++zzv;) RETF(zz);}
+  if(ado==sqrtD){A zz; GATV(zz,CMPX,n,AR(z),AS(z)); D *zv=DAV(z); Z *zzv=ZAV(zz); DQ(n, if(*zv>=0){zzv->re=*zv;zzv->im=0.0;}else{zzv->im=-*zv;zzv->re=0.0;} ++zv; ++zzv;) return zz;}
   // float floor: unconvertable cases are stored with bit 63 and bit 62 unlike; restore the float value by setting bit 62.
   // if bit 0 of oprc is 1, values must be converted to float; if 0, they can be left as int
   if(VIP64&&ado==floorDI){A zz=z;
    if(!(oprc&1)){I *zv=IAV(z); DQ(n, I bits=*(I*)zv; if((bits^SGNIF(bits,BW-2))<0){bits|=0x4000000000000000; *zv=(I)tfloor(*(D*)&bits);} ++zv;)}  // convert overflows, turn back to integer
    else{MODBLOCKTYPE(zz,FL) I *zv=IAV(z); D *zzv=DAV(zz); DQ(n, I bits=*(I*)zv++; if((bits^SGNIF(bits,BW-2))>=0)*zzv=(D)bits;else{bits|=0x4000000000000000; *zzv=tfloor(*(D*)&bits);} ++zzv;)}   // force float conversion
-   RETF(zz);
+   return zz;
   }
   // float ceil, similarly
   if(VIP64&&ado==ceilDI){A zz=z;
    if(!(oprc&1)){I *zv=IAV(z); DQ(n, I bits=*(I*)zv; if((bits^SGNIF(bits,BW-2))<0){bits|=0x4000000000000000; *zv=(I)tceil(*(D*)&bits);} ++zv;)}  // convert overflows, turn back to integer
    else{MODBLOCKTYPE(zz,FL) I *zv=IAV(z); D *zzv=DAV(zz); DQ(n, I bits=*(I*)zv++; if((bits^SGNIF(bits,BW-2))>=0)*zzv=(D)bits;else{bits|=0x4000000000000000; *zzv=tceil(*(D*)&bits);} ++zzv;)}   // force float conversion
-   RETF(zz);
+   return zz;
   }
 
   // not recoverable in place.  If recoverable with a retry, do the retry; otherwise fail.  Caller will decide; we return error indic
@@ -164,7 +164,7 @@ DF1(jtatomic1){A z;
  // check for singletons
  if(!(awm1|(AT(w)&(NOUN&UNSAFE(~(B01+INT+FL)))))){  // len=1 andbool/int/float
   z=jtssingleton1(jtinplace,w,self);
-  if(z||jt->jerr<=NEVM){RETF(z);}  // normal return, or non-retryable error
+  if(z||jt->jerr<=NEVM){return z;}  // normal return, or non-retryable error
   // if retryable error, fall through.  The retry will not be through the singleton code
   jtinplace=(J)((I)jtinplace|JTRETRY);  // indicate that we are retrying the operation
  }
@@ -173,7 +173,7 @@ DF1(jtatomic1){A z;
  // Run the full dyad, retrying if a retryable error is returned
  while(1){  // run until we get no error
   z=jtva1(jtinplace,w,self);  // execute the verb
-  if(z||jt->jerr<=NEVM){RETF(z);}   // return if no error or error not retryable
+  if(z||jt->jerr<=NEVM){return z;}   // return if no error or error not retryable
   jtinplace=(J)((I)jtinplace|JTRETRY);  // indicate that we are retrying the operation
  }
 }

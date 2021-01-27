@@ -281,7 +281,7 @@ static DF1(jthkindexofmaxmin){I z=0;
 static DF2(jthklvl2){
  F2RANK(0,RMAX,jthklvl2,self);
  I comparand; RE(comparand=i0(a));  // get value to compare against
- RETF(num(((VAV(self)->flag>>VFHKLVLGTX)&1)^levelle(w,comparand-(VAV(self)->flag&VFHKLVLDEC))));  // decrement for < or >:; complement for > >:
+ return num(((VAV(self)->flag>>VFHKLVLGTX)&1)^levelle(w,comparand-(VAV(self)->flag&VFHKLVLDEC)));  // decrement for < or >:; complement for > >:
 }
 
 F2(jthook){AF f1=0,f2=0;C c,d,e,id;I flag=VFLAGNONE,linktype=0;V*u,*v;

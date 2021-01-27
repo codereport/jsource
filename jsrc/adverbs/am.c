@@ -109,7 +109,7 @@ F1(jtcasev){A b,*u,*v,w1,x,y,z;B*bv,p,q;I*aa,c,*iv,j,m,n,r,*s,t;
  }
  // Mark all the inputs as nonpristine
  DO(m, w=u[i]; PRISTCLRF(w))
- RETF(z);
+ return z;
 }   /* z=:b}x0,x1,x2,...,x(m-2),:x(m-1) */
 
 // Handle a ind} w after indices have been converted to integer atoms, dense
@@ -123,7 +123,7 @@ static A jtmerge2(J jt,A a,A w,A ind,I cellframelen){F2PREFIP;A z;I t;
  // <---a   a a
  ASSERTAGREE(AS(a),AS(ind)+AR(ind)-MAX(0,AR(a)-(AR(w)-cellframelen)),MAX(0,AR(a)-(AR(w)-cellframelen)));  // shape of m{y is the shape of m, as far as it goes.  The first part of a may overlap with m
  ASSERTAGREE(AS(a)+MAX(0,AR(a)-(AR(w)-cellframelen)),AS(w)+AR(w)-(AR(a)-MAX(0,AR(a)-(AR(w)-cellframelen))),AR(a)-MAX(0,AR(a)-(AR(w)-cellframelen)));  // the rest of the shape of m{y comes from shape of y
- if(!AN(w))RCA(w);  // if y empty, return.  It's small.  Ignore inplacing
+ if(!AN(w))return w;  // if y empty, return.  It's small.  Ignore inplacing
  t=AN(a)?maxtyped(AT(a),AT(w)):AT(w);  // get the type of the result: max of types, but if x empty, leave y as is
  if((-AN(a)&-TYPESXOR(t,AT(a)))<0)RZ(a=cvt(t,a));  // if a must change precision, do so
  // Keep the original address if the caller allowed it, precision of y is OK, the usecount allows inplacing, and the type is either
@@ -177,7 +177,7 @@ static A jtmerge2(J jt,A a,A w,A ind,I cellframelen){F2PREFIP;A z;I t;
    C* RESTRICT zv=CAV(z); DO(AN(ind), mvc(cellsize,zv+iv[i]*cellsize,abytes,av0); )  // scatter-copy the data, with repeat
   }
  }
- RETF(z);
+ return z;
 }
 
 // Convert list/table of indexes to a list of cell offsets (the number of the atom starting the cell)
@@ -326,7 +326,7 @@ static DF2(amccv2){F2PREFIP;DECLF;
  A z=jtmerge2(jtinplace,a,w,x,AR(w));   // The atoms of x include all axes of w, since we are addressing atoms
  // We modified w which is now not pristine.
  PRISTCLRF(w)
- RETF(z);
+ return z;
 }
 
 

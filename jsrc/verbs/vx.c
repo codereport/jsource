@@ -217,7 +217,7 @@ XF2(jtxgcd){I c,d;X p,q,t;
   t=p;
   RZ(p=xrem(p,q));
   q=t;
-  if(!gc3(&p,&q,0L,old))R0;
+  if(!gc3(&p,&q,0L,old))return 0;
  }
  return rifvsdebug(q);
 }
@@ -483,7 +483,7 @@ F1(jtdigits10){A z;B b=0;I c,m,n,*v,*zv,*zv0;X x;
  }
  AN(z)=AS(z)[0]=n=zv-zv0; 
  zv=zv0; v=zv0+n-1; DQ(n>>1, c=*zv; *zv++=*v; *v--=c;); /* reverse in place */
- RETF(z);
+ return z;
 }    /* "."0@": w */
 
 

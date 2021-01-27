@@ -85,7 +85,7 @@ static F1(jtprime1){A d,t,y,z;B*b,*u;I c,*dv,e,i,j,k,m,n,p,q,*wv,x,*zv;
   while(n>k&&1==wv[dv[k]])zv[dv[k++]]=3;
   while(n>k&&2==wv[dv[k]])zv[dv[k++]]=5;
  }
- if(n==k){RETF(z);} 
+ if(n==k){return z;}
  j=3; p=0; e=PT; q=1+(I)sqrt((D)m); x=wv[dv[k]]; 
  GATV0(t,B01,q,1);         u=BAV(t); sieve(0L,q,u,u); 
  GATV0(y,B01,MIN(m,MM),1); b=BAV(y); 
@@ -96,7 +96,7 @@ static F1(jtprime1){A d,t,y,z;B*b,*u;I c,*dv,e,i,j,k,m,n,p,q,*wv,x,*zv;
   else   for(i=1-(p&1);i<q;i+=2)
    if(b[i]){while(j==x){zv[dv[k++]]=i+p; if(n==k)return z; x=wv[dv[k]];} ++j;}
  }
- while(n>k)zv[dv[k++]]=p; RETF(z);
+ while(n>k)zv[dv[k++]]=p; return z;
 }
 
 static I init4792(J jt) {
@@ -202,7 +202,7 @@ static F1(jtiprimetest){A z;B*b;I d,j,n,*pv,q,*v,wn,*wv;
   if(32>n)b[j]=pmsk[MAX(0,n)];
   else{b[j]=1; DQ(AN(jt->p4792), d=*v++; q=n/d; if(n==q*d){b[j]=0; break;}else if(q<d)break;);}
  }
- RETF(z);
+ return z;
 }
 
 static F1(jtxprimetest){A z;B*b,rat;I d,j,q,n,*pv,*v,wn,wt,*yv;X r,*wv,x,xmaxint,y;
@@ -225,7 +225,7 @@ static F1(jtxprimetest){A z;B*b,rat;I d,j,q,n,*pv,*v,wn,wt,*yv;X r,*wv,x,xmaxint
    if(32>n)b[j]=pmsk[MAX(0,n)];
    else DQ(AN(jt->p4792), d=*v++; q=n/d; if(n==q*d){b[j]=0; break;}else if(q<d)break;);
  }}
- RETF(z);
+ return z;
 }    /* prime test for extended integers or rationals */
 
 static F1(jtprimetest){A x;I t;
@@ -281,7 +281,7 @@ static F1(jtprevprime){A fs,x,y;I k,m,n,*xv,*yv;X*wv;
 static F1(jttotient){A b,x,z;B*bv,p=0;I k,n,t;
  ARGCHK1(w);
  n=AN(w); t=AT(w);
- if(t&B01)RCA(w);
+ if(t&B01)return w;
  GATV(b,B01,n,AR(w),AS(w)); bv=BAV(b);
  if(t&INT){I*wv=AV(w),*xv;
   GATV(x,INT,n,AR(w),AS(w)); xv=AV(x);
@@ -391,7 +391,7 @@ F2(jtqco2){A q,y,z;B b,bb,xt;I c,j,k,m,*qv,wn,wr,*yv,*zv;
   GATV(z,INT,wn*m,1+wr,AS(w)); AS(z)[wr]=m; zv=AV(z);
   memset(zv,C0,AN(z)*SZI);
   j=0; c=AS(q)[wr]; DQ(wn, DQ(c, if(qv[j]&&m>yv[j])++zv[yv[j]]; ++j;); zv+=m;);
-  RETF(AT(w)&XNUM+RAT?cvt(XNUM,z):z);
+  return AT(w)&XNUM+RAT?cvt(XNUM,z):z;
 }}   /* a q: w for array w */
 
 static F1(jtxfactor);
@@ -496,7 +496,7 @@ static XF1(jtpollard_rho){I i,n;X g,y1,y2;
   RZ(y2=xrem(w,xplus(iv1,xsq(xplus(iv1,xsq(y2))))));
   RZ(g=xgcd(w,xrem(w,xminus(y2,y1))));
   if(!equ(g,iv1)&&!equ(g,w))return g;
-  if(!gc3(&y1,&y2,0L,old))R0;
+  if(!gc3(&y1,&y2,0L,old))return 0;
  }
  return iv1;
 }
@@ -539,7 +539,7 @@ static B jtecd(J jt,X n,X a,X b,X*q,X*z){X m,s,x2,y2,yy,z2;
   RZ(z2=xtymes(xc(2L),xtymes(q[1],q[2])));
   RZ(z[0]=xrem(n,x2)); RZ(z[1]=xrem(n,y2)); RZ(z[2]=xrem(n,z2));
  }
- if(!gc3(z,z+1,z+2,old))R0;
+ if(!gc3(z,z+1,z+2,old))return 0;
  return 1;
 }    /* elliptic curve double point (mod proj coord) */
 
@@ -564,7 +564,7 @@ static B jteca(J jt,X n,X a,X b,X*p,X*q,X*z){
    RZ(z3=xtymes(p[2],xtymes(q[2],w)));
    RZ(z[0]=xrem(n,x3)); RZ(z[1]=xrem(n,y3)); RZ(z[2]=xrem(n,z3));
  }}
- if(!gc3(z,z+1,z+2,old))R0;
+ if(!gc3(z,z+1,z+2,old))return 0;
  return 1;
 }    /* elliptic curve add (mod proj coord) */
 
@@ -582,7 +582,7 @@ static B jtecm(J jt,X n,X a,X b,I m,X*p,X*z){
   DQ(k, RZ(ecd(n,a,b,q,q)); if(BIT0&(c^d))RZ(eca(n,a,b,q,c&BIT0?p:pm,q)); c<<=1; d<<=1;);
   z[0]=q[0]; z[1]=q[1]; z[2]=q[2];
  }
- if(!gc3(z,z+1,z+2,old))R0;
+ if(!gc3(z,z+1,z+2,old))return 0;
  return 1;
 }    /* scalar mult ladder (mod proj coord) */
 
@@ -593,7 +593,7 @@ static B jtecm_s1(J jt,X n,X a,X b,I b1,X*q,X*z){A tt;D d,lg;I dd,m,*pv;X x[3];
  x[0]=q[0]; x[1]=q[1]; x[2]=q[2];
  DQ(m, d=(D)*pv++; dd=(I)pow(d,jfloor(5e-14+lg/log(d))); RZ(ecm(n,a,b,dd,x,x)););
  z[0]=x[0]; z[1]=x[1]; z[2]=x[2];
- if(!gc3(z,z+1,z+2,old))R0;
+ if(!gc3(z,z+1,z+2,old))return 0;
  return 1;
 }
 
@@ -610,7 +610,7 @@ static B jtecm_s2(J jt,X n,X a,X b,I b1,I b2,X*q,X*z){A sda,tt;I d,di,i,k,m,p0,*
   di=pd[i];
   DQ(di/d, RZ(eca(n,a,b,x,sdd,x)););
   RZ(eca(n,a,b,x,sd+3*(di%d),x));
- if(!gc3(x,x+1,x+2,old))R0;
+ if(!gc3(x,x+1,x+2,old))return 0;
  }
  z[0]=x[0]; z[1]=x[1]; z[2]=x[2];
  return 1;
@@ -675,7 +675,7 @@ static F1(test_ecm){A*wv,z;X*ab,n,*zv;
  ab=XAV(wv[0]);
  GAT0(z,XNUM,3,1); zv=XAV(z);
  RZ(ecm(n,ab[0],ab[1],i0(wv[2]),XAV(wv[3]),zv));
- RETF(z);
+ return z;
 }
 
 static F1(test_ecm_s1){A*wv,z;X*ab,n,*zv;
@@ -692,7 +692,7 @@ static F1(test_ecm_s1){A*wv,z;X*ab,n,*zv;
  ab=XAV(wv[0]);
  GAT0(z,XNUM,3,1); zv=XAV(z);
  RZ(ecm_s1(n,ab[0],ab[1],i0(wv[2]),XAV(wv[3]),zv));
- RETF(z);
+ return z;
 }
 
 static F1(test_ecm_s2){A*wv,z;I*b1b2;X*ab,n,*zv;
@@ -710,7 +710,7 @@ static F1(test_ecm_s2){A*wv,z;I*b1b2;X*ab,n,*zv;
  b1b2=AV(wv[2]);
  GAT0(z,XNUM,3,1); zv=XAV(z);
  RZ(ecm_s2(n,ab[0],ab[1],b1b2[0],b1b2[1],XAV(wv[3]),zv));
- RETF(z);
+ return z;
 }
 
 static F1(test_fac_ecm){

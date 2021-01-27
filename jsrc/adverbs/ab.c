@@ -77,7 +77,7 @@ static AHDRR(bw1010insC,UC,UC){I k=d*(n-1);UC t=(UC)((n&1)-1); x+=k; DQ(m, DQ(d,
   if     (AR(a)==AR(w))DQ(AN(a), x=*av++;           y=*wv++; *zv++=op(x,y);  )  \
   else if(AR(a)< AR(w))DQ(AN(a), x=*av++; DQ(AN(w)/AN(a), y=*wv++; *zv++=op(x,y););)  \
   else           DQ(AN(w), y=*wv++; DQ(AN(a)/AN(w), x=*av++; *zv++=op(x,y););); \
-  RE(0); RETF(z);                                                          \
+  RE(0); return z;                                                          \
  }
 
 #define BWROT(x,y)      ((y<<(x&(BW-1)))|(y>>(BW-(x&(BW-1)))))
@@ -116,7 +116,7 @@ DF2(jtbitwisechar){DECLFG;A*p,x,y,z;B b;I j,m,n,zn;AHDR2FN* ado;
  n^=-b; n=(n==~1)?1:n;  // encode b flag in sign of n
  ado(n,m,AV(x),AV(y),AV(z),jt); 
  *(zn+CAV(z))=0;
- RETF(z);
+ return z;
 }
 
 /* compute z=: t{~ a.i.w if t=: c&(m b.) a.                             */

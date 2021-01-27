@@ -181,5 +181,5 @@ F2(jticap2){A*av,*wv,z;C*uu,*vv;I ar,*as,at,b,c,ck,cm,ge,gt,j,k,m,n,p,q,r,t,wr,*
     case RAT:  BSLOOF(Q,Q, qcompare); break;
     default:   ASSERT(0,EVNONCE);
  }}
- RETF(z);
+ return z;
 }    /* a I. w */
