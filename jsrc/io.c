@@ -124,7 +124,7 @@ A recursive JDo may use a DD, but only if it is fully contained in the string
 #include <stdint.h>
 
 #include "j.h"
-#include "d.h"
+#include "debugging/d.h"
 
 extern void dllquit(J);
 

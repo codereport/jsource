@@ -13,7 +13,7 @@
 /*       3  vector of triples of control information                       */
 
 #include "j.h"
-#include "d.h"
+#include "debugging/d.h"
 #include "p.h"
 #include "words/w.h"
 

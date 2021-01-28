@@ -77,11 +77,11 @@ target_sources(j PRIVATE
         verbs/vx.c
         verbs/vz.c
         cpuinfo.c
-        d.c
-        dc.c
-        dss.c
-        dstop.c
-        dsusp.c
+        debugging/d.c
+        debugging/dc.c
+        debugging/dss.c
+        debugging/dstop.c
+        debugging/dsusp.c
         dtoa.c
         f.c
         f2.c
