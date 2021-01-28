@@ -86,9 +86,6 @@ B jtglobinit(J jt){A x,y;A *oldpushx=jt->tnextpushp;
  pinit();
 
  cpuInit();
-#if defined(__aarch64__)
- hwaes=(getCpuFeatures()&ARM_HWCAP_AES)?1:0;
-#endif
  // take all the permanent blocks off the tpop stack so that we don't decrement their usecount.  All blocks allocated here must be permanent
  jt->tnextpushp=oldpushx;
  DO(IOTAVECLEN, iotavec[i]=i+IOTAVECBEGIN;)  // init our vector of ascending integers

@@ -91,7 +91,6 @@ set(test_cases
     g128x
     g128x3
     g128x5
-    g128x7
     g130
     g130a
     g130i
