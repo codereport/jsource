@@ -110,23 +110,22 @@ target_sources(j PRIVATE
         words/wc.c
         words/wn.c
         words/ws.c
-        x.c
-        x15.c
-        xa.c
-        xb.c
-        xc.c
-        xcrc.c
-        xd.c
-        xf.c
-        xfmt.c
-        xh.c
-        xi.c
-        xl.c
-        xo.c
-        xs.c
-        xsha.c
-        xt.c
-        xu.c
+        xenos/x.c
+        xenos/x15.c
+        xenos/xa.c
+        xenos/xb.c
+        xenos/xc.c
+        xenos/xcrc.c
+        xenos/xd.c
+        xenos/xf.c
+        xenos/xfmt.c
+        xenos/xh.c
+        xenos/xi.c
+        xenos/xl.c
+        xenos/xo.c
+        xenos/xs.c
+        xenos/xt.c
+        xenos/xu.c
         )
 
 # configure_file( ${CMAKE_CURRENT_SOURCE_DIR}/ COPYONLY)
