@@ -96,9 +96,9 @@ target_sources(j PRIVATE
         p.c
         pv.c
         px.c
-        r.c
-        rl.c
-        rt.c
+        representations/r.c
+        representations/rl.c
+        representations/rt.c
         s.c
         sc.c
         sl.c
