@@ -5,18 +5,31 @@
 2. Build jconsole:
 
     Prerequisites:
-       
-       * CMake version 3.17.0+ -> Ubuntu systems seem to have a problem getting the latest version, please build from sources or use another package such as snap. 
-       * Ninja
+   * CMake version 3.17.0+ -> Ubuntu systems seem to have a problem getting the latest version, please build from sources or use another package such as snap. 
+     * [Ubuntu CMake update instructions](https://apt.kitware.com/)
+   * Ninja
     
-    `cd jsource`
+    ```sh
+    cd jsource
 
-    `mkdir build && cmake -G "Ninja Multi-Config" -B build`
+    mkdir build && cmake -G "Ninja Multi-Config" -B build
+    #building debug
+    ninja -C build 
+    #building release.
+    ninja -C build -f build-Release.ninja` 
+    ```
 
-    `ninja -C build` or `ninja -C build -f build-Release.ninja` if you are building for release.
+    To run the debug build:
+    ```sh
+    ./build/jsrc/Debug/jconsole
+    ```
 
-    To run the debug build: `./build/jsrc/Debug/jconsole` 
+    To run the release build:
+    ```sh
+    ./build/jsrc/Release/jconsole
+    ```
 
-    To run the release build: `./build/jsrc/Release/jconsole`
-
-    To run tests: `ninja -C build test`
+    To run tests:
+    ```sh
+    ninja -C build test
+    ```
