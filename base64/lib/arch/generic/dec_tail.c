@@ -11,7 +11,6 @@
 		st.bytes++;
 
 		// Deliberate fallthrough:
-		BASE64_FALLTHROUGH
 
 	case 1:	if (slen-- == 0) {
 			ret = 1;
@@ -28,7 +27,6 @@
 		olen++;
 
 		// Deliberate fallthrough:
-		BASE64_FALLTHROUGH
 
 	case 2:	if (slen-- == 0) {
 			ret = 1;
@@ -63,7 +61,6 @@
 		olen++;
 
 		// Deliberate fallthrough:
-		BASE64_FALLTHROUGH
 
 	case 3:	if (slen-- == 0) {
 			ret = 1;
