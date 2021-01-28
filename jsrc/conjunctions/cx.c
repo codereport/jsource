@@ -14,7 +14,7 @@
 
 #include "j.h"
 #include "debugging/d.h"
-#include "p.h"
+#include "parsing/p.h"
 #include "words/w.h"
 
 // DD definitions

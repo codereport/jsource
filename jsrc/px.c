@@ -17,7 +17,7 @@
 /* B     tostdout  1 iff output to standard output                         */
 
 #include "j.h"
-#include "p.h"
+#include "parsing/p.h"
 
 
 A jteval(J jt,C*s){return parse(tokens(cstr(s),1+(AN(jt->locsyms)>1)));}

@@ -93,8 +93,8 @@ target_sources(j PRIVATE
         jdlllic.c
         k.c
         m.c
-        p.c
-        pv.c
+        parsing/p.c
+        parsing/pv.c
         px.c
         representations/r.c
         representations/rl.c
