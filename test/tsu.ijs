@@ -64,11 +64,11 @@ efx      =: ". eftx
 
 
 
-THRESHOLD=: 0 NB. allow timing tests to trigger failure 
-THRESHOLD=: 1 NB. force timing tests to pass
+NB. THRESHOLD =: 0 NB. allow timing tests to trigger failure
+THRESHOLD =: 1 NB. force timing tests to pass
 
-threshold=: 0.75 NB. tighter timing tests
-threshold=: 0.2  NB. timing tests
+NB. threshold=: 0.75 NB. tighter timing tests
+threshold=: 0.1  NB. timing tests
 
 timer    =: 6!:2
 
