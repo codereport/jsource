@@ -83,9 +83,9 @@ target_sources(j PRIVATE
         debugging/dstop.c
         debugging/dsusp.c
         dtoa.c
-        f.c
-        f2.c
-        fbu.c
+        format/f.c
+        format/f2.c
+        format/fbu.c
         gemm.c
         i.c
         io.c
