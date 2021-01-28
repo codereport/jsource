@@ -4,7 +4,7 @@
 /* Representations: Atomic, Boxed, and 5!:0                                */
 
 #include "j.h"
-#include "w.h"
+#include "words/w.h"
 
 static F1(jtdrr);
 EVERYFS(drrself,jtdrr,0,0,VFLAGNONE)

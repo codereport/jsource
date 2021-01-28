@@ -106,10 +106,10 @@ target_sources(j PRIVATE
         t.c
         u.c
         vu.c
-        w.c
-        wc.c
-        wn.c
-        ws.c
+        words/w.c
+        words/wc.c
+        words/wn.c
+        words/ws.c
         x.c
         x15.c
         xa.c

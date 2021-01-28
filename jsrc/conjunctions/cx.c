@@ -15,7 +15,7 @@
 #include "j.h"
 #include "d.h"
 #include "p.h"
-#include "w.h"
+#include "words/w.h"
 
 // DD definitions
 #define DDBGN (US)('{'+256*'{')  // digraph for start DD
