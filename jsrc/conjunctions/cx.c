@@ -13,9 +13,9 @@
 /*       3  vector of triples of control information                       */
 
 #include "j.h"
-#include "d.h"
-#include "p.h"
-#include "w.h"
+#include "debugging/d.h"
+#include "parsing/p.h"
+#include "words/w.h"
 
 // DD definitions
 #define DDBGN (US)('{'+256*'{')  // digraph for start DD

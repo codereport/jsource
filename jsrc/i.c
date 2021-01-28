@@ -4,7 +4,7 @@
 /* Initializations                                                         */
 
 #include "j.h"
-#include "w.h"
+#include "words/w.h"
 #include "cpuinfo.h"
 
 // These statics get copied into jt for cache footprint.  If you change them,

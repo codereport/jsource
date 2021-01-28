@@ -77,15 +77,15 @@ target_sources(j PRIVATE
         verbs/vx.c
         verbs/vz.c
         cpuinfo.c
-        d.c
-        dc.c
-        dss.c
-        dstop.c
-        dsusp.c
+        debugging/d.c
+        debugging/dc.c
+        debugging/dss.c
+        debugging/dstop.c
+        debugging/dsusp.c
         dtoa.c
-        f.c
-        f2.c
-        fbu.c
+        format/f.c
+        format/f2.c
+        format/fbu.c
         gemm.c
         i.c
         io.c
@@ -93,12 +93,12 @@ target_sources(j PRIVATE
         jdlllic.c
         k.c
         m.c
-        p.c
-        pv.c
+        parsing/p.c
+        parsing/pv.c
         px.c
-        r.c
-        rl.c
-        rt.c
+        representations/r.c
+        representations/rl.c
+        representations/rt.c
         s.c
         sc.c
         sl.c
@@ -106,27 +106,26 @@ target_sources(j PRIVATE
         t.c
         u.c
         vu.c
-        w.c
-        wc.c
-        wn.c
-        ws.c
-        x.c
-        x15.c
-        xa.c
-        xb.c
-        xc.c
-        xcrc.c
-        xd.c
-        xf.c
-        xfmt.c
-        xh.c
-        xi.c
-        xl.c
-        xo.c
-        xs.c
-        xsha.c
-        xt.c
-        xu.c
+        words/w.c
+        words/wc.c
+        words/wn.c
+        words/ws.c
+        xenos/x.c
+        xenos/x15.c
+        xenos/xa.c
+        xenos/xb.c
+        xenos/xc.c
+        xenos/xcrc.c
+        xenos/xd.c
+        xenos/xf.c
+        xenos/xfmt.c
+        xenos/xh.c
+        xenos/xi.c
+        xenos/xl.c
+        xenos/xo.c
+        xenos/xs.c
+        xenos/xt.c
+        xenos/xu.c
         )
 
 # configure_file( ${CMAKE_CURRENT_SOURCE_DIR}/ COPYONLY)

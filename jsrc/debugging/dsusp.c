@@ -5,7 +5,7 @@
 
 #include "j.h"
 #include "d.h"
-#include "w.h"
+#include "words/w.h"
 
 // When we move off of a parser frame, or when we go into debug with a new parser frame, fill the frame with
 // the info for the parse that was interrupted
