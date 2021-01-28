@@ -7,7 +7,6 @@
 		olen += 1;
 
 		// Deliberate fallthrough:
-		BASE64_FALLTHROUGH
 
 	case 1:	if (slen-- == 0) {
 			break;
@@ -18,7 +17,6 @@
 		olen += 1;
 
 		// Deliberate fallthrough:
-		BASE64_FALLTHROUGH
 
 	case 2:	if (slen-- == 0) {
 			break;
