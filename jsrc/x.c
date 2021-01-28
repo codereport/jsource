@@ -269,11 +269,8 @@ F2(jtforeign){I p,q;
   case XC(128,3): return CDERIV(CIBEAM, jtcrc1,       jtcrc2,       VASGSAFE,RMAX,RMAX,RMAX);
   case XC(128,4): return CDERIV(CIBEAM, jtrngraw,     0,            VASGSAFE,RMAX,RMAX,RMAX);
   case XC(128,5): return CDERIV(CIBEAM, jtisnan,      0,            VASGSAFE,RMAX,RMAX,RMAX);
-  case XC(128,7): return CDERIV(CIBEAM, 0,            jtaes2,       VASGSAFE,RMAX,RMAX,RMAX);
   case XC(128,8): return CDERIV(CIBEAM, jtqhash12,    jtqhash12,    VASGSAFE|VJTFLGOK1|VJTFLGOK2,RMAX,RMAX,RMAX);
-//  case XC(128,110): return CDERIV(CIBEAM, jttest1,    0,            VASGSAFE,RMAX,RMAX,RMAX);
 
-//  default:        return foreignextra(a,w);
   default:        ASSERT(0,EVDOMAIN);  // any unknown combination is a domain error right away
 }}
 

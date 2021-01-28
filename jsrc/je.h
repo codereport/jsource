@@ -376,12 +376,9 @@ extern F1(jtxco1);
 extern F1(jtxepq);
 extern F1(jtxeps);
 
-// extern F1(jttest1);
-
 extern F2(jtabase2);
 extern F2(jtadot2);
 extern F2(jtadverse);
-extern F2(jtaes2);
 extern F2(jtaflag2);
 extern F2(jtagenda);
 extern F2(jtagendai);
@@ -954,7 +951,6 @@ extern I oneone[2];
 extern A        zpath;
 extern I iotavec[IOTAVECLEN];  // ascending integers, starting at IOTAVECBEGIN
 /* cpu feature */
-extern UC       hwaes;
 extern UC       hwfma;
 extern VARPSA rpsnull;
 extern PRIM sfn0overself;

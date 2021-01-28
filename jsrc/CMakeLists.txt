@@ -3,7 +3,6 @@ add_library(j)
 target_include_directories(j PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 target_compile_definitions(j PRIVATE)
 target_link_libraries(j PRIVATE ${STANDARD_MATH_LIBRARY})
-set_source_files_properties(aes-ni.c PROPERTIES COMPILE_FLAGS -maes)
 target_sources(j PRIVATE
         adverbs/a.c
         adverbs/ab.c
@@ -77,8 +76,6 @@ target_sources(j PRIVATE
         verbs/vt.c
         verbs/vx.c
         verbs/vz.c
-        aes-c.c
-        aes-ni.c
         cpuinfo.c
         d.c
         dc.c
@@ -116,7 +113,6 @@ target_sources(j PRIVATE
         x.c
         x15.c
         xa.c
-        xaes.c
         xb.c
         xc.c
         xcrc.c
