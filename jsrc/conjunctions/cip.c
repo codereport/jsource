@@ -5,7 +5,6 @@
 
 #include "j.h"
 #include "verbs/vasm.h"
-#include "gemm.h"
 
 #define MAXAROWS 384  // max rows of a that we can process to stay in L2 cache   a strip is m*CACHEHEIGHT, z strip is m*CACHEWIDTH   this is wired to 128*3 - check if you change
 
@@ -102,11 +101,6 @@ I cachedmmult(J jt,D* av,D* wv,D* zv,I m,I n,I p,I flgs){D c[(CACHEHEIGHT+1)*CAC
    // Because of loop unrolling, we fetch and multiply one extra value in each cache column.  We make sure those values are 0 to avoid NaN errors
    for(i=0;i<MIN(CACHEWIDTH,w0rem);++i)*cvx++=0.0;
 
-   // w1next is left pointing to the next cache block in the column.  We will use that to prefetch
-#ifdef PREFETCH
-   D *nextprefetch=w1next;  // start prefetches for the next block at the beginning
-#endif
-
    // the mx16 vertical strip of a (mx32 if flgs) will be multiplied by the 16x64 section of w and accumulated into z
    // process each 2x16 section of a against the 16x64 cache block
    D *a2base0=a1base; D* w2base=w1base; I a2rem=m; D* z2base=z1base; D* c2base=cvw;
@@ -114,18 +108,6 @@ I cachedmmult(J jt,D* av,D* wv,D* zv,I m,I n,I p,I flgs){D c[(CACHEHEIGHT+1)*CAC
     // Prepare for the 2x16 block of a (2x32 if flgs)
     // If the second row of a is off the end of the data, we mustn't fetch it - switch the pointer to a row of 1s so it won't give NaN error on multiplying by infinity
     D *a2base1 = (a2rem>1)?a2base0+p:missingrow;
-#ifdef PREFETCH
-    // While we are processing the sections of a, move the next cache block into L2 (not L1, so we don't overrun it)
-    // We would like to do all the prefetches for a CACHEWIDTH at once to stay in page mode
-    // but that might overrun the prefetch queue, which holds 10 prefetches.
-    // The length of a cache row is (CACHEWIDTH*sizeof(D))/CACHELINESIZE=8 cache lines, plus one in case the data is misaligned.
-    // We start the prefetches when we get to within 3*CACHEHEIGHT iterations from the end, which gives us 3 iterations
-    // to fetch each row of the cache, 3 fetches per iteration.
-    if(a2rem<=3*OPHEIGHT*CACHEHEIGHT+(OPHEIGHT-1)){
-     PREFETCH2((C*)nextprefetch); PREFETCH2((C*)nextprefetch+CACHELINESIZE); PREFETCH2((C*)nextprefetch+2*CACHELINESIZE);  // 3 prefetches
-     if(nextprefetch==(D*)((C*)w1next+6*CACHELINESIZE)){nextprefetch = w1next += n;}else{nextprefetch+=(3*CACHELINESIZE)/sizeof(*nextprefetch);}  // next col, or next row after 9 prefetches
-    }
-#endif
     // process each 16x4 section of cache, accumulating into z (this holds 16x2 complex values, if flgs)
     I a3rem=MIN(w0rem,CACHEWIDTH);
     D* RESTRICT z3base=z2base; D* c3base=c2base;
@@ -136,19 +118,6 @@ I cachedmmult(J jt,D* av,D* wv,D* zv,I m,I n,I p,I flgs){D c[(CACHEHEIGHT+1)*CAC
      if(a3rem>3){z01=z3base[1],z02=z3base[2],z03=z3base[3]; if(a2rem>1)z10=z3base[n],z11=z3base[n+1],z12=z3base[n+2],z13=z3base[n+3];
      }else{if(a3rem>1){z01=z3base[1];if(a3rem>2)z02=z3base[2];}; if(a2rem>1){z10=z3base[n];if(a3rem>1)z11=z3base[n+1];if(a3rem>2)z12=z3base[n+2];}}
      // process outer product of each 2x1 section on each 1x4 section of cache
-
-     // Prefetch the next lines of a and z into L2 cache.  We don't prefetch all the way to L1 because that might overfill L1,
-     // if all the prefetches hit the same line (we already have 2 lines for our cache area, plus the current z values)
-     // The number of prefetches we need per line is (CACHEHEIGHT*sizeof(D)/CACHELINESIZE)+1, and we need that for
-     // OPHEIGHT*(OPWIDTH/4) lines for each of a and z.  We squeeze off half the prefetches for a row at once so we can use fast page mode
-     // to read the data (only half to avoid overfilling the prefetch buffer), and we space the reads as much as possible through the column-swatches
-#ifdef PREFETCH   // if architecture doesn't support prefetch, skip it
-     if((3*OPWIDTH)==(a3rem&(3*OPWIDTH))){  // every fourth swatch
-      I inc=((a3rem&(8*OPWIDTH))?p:n)*sizeof(D);    // counting down, a then z
-      C *base=(C*)((a3rem&(8*OPWIDTH))?a2base0:z2base) + inc + (a3rem&(4*OPWIDTH)?0:inc);
-      PREFETCH2(base); PREFETCH2(base+CACHELINESIZE); PREFETCH2(base+2*CACHELINESIZE);
-     }
-#endif
 
      // Now do the 16 outer products for the block, each 2ax4w (or 2ax2w if flgs)
      I a4rem=MIN(w1rem,CACHEHEIGHT);
@@ -295,13 +264,7 @@ oflo2:
     if(m)RZ(jtsumattymesprods(jt,INT,voidAV(w),voidAV(a),p,1,1,1,m,voidAV(z)));  // use +/@:*"1 .  Exchange w and a because a is the repeated arg in jtsumattymesprods.  If error, clear z (should not happen here)
    }else{
      // full matrix products
-     I probsize = m*n*(IL)p;  // This is proportional to the number of multiply-adds.  We use it to select the implementation
-     if((UI)probsize < (UI)jt->igemm_thres){RZ(a=cvt(FL,a)); RZ(w=cvt(FL,w)); cachedmmult(jt,DAV(a),DAV(w),DAV(z),m,n,p,0);}  // Do our matrix multiply - converting   TUNE
-     else {
-      // for large problem, use BLAS
-      memset(DAV(z),C0,m*n*sizeof(D));
-      igemm_nn(m,n,p,1,(I*)DAV(a),p,1,(I*)DAV(w),n,1,0,DAV(z),n,1);
-    }
+     RZ(a=cvt(FL,a)); RZ(w=cvt(FL,w)); cachedmmult(jt,DAV(a),DAV(w),DAV(z),m,n,p,0);  // Do our matrix multiply - converting   TUNE
     // If the result has a value that has been truncated, we should keep it as a float.  Unfortunately, there is no way to be sure that some
     // overflow has not occurred.  So we guess.  If the result is much less than the dynamic range of a float integer, convert the result
     // to integer.
@@ -322,13 +285,7 @@ oflo2:
     // not single column.  Choose the algorithm to use
     I probsize = (m-1)*n*(IL)p;  // This is proportional to the number of multiply-adds.  We use it to select the implementation.  If m==1 we are doing dot-products; no gain from fancy code then
     if(!(smallprob = (m<=4||probsize<1000LL))){  // if small problem, avoid the startup overhead of the matrix version  TUNE
-     if((UI)probsize < (UI)jt->dgemm_thres)
       cachedmmult(jt,DAV(a),DAV(w),DAV(z),m,n,p,((AFLAG(a)>>(AFUPPERTRIX-FLGAUTRIX))&FLGAUTRI)|((AFLAG(w)>>(AFUPPERTRIX-FLGWUTRIX))&FLGWUTRI));  // Do our one-core matrix multiply - real   TUNE this is 160x160 times 160x160.  Tell routine if uppertri
-     else{
-      // If the problem is really big, use BLAS
-      memset(DAV(z),C0,m*n*sizeof(D));
-      dgemm_nn(m,n,p,1.0,DAV(a),p,1,DAV(w),n,1,0.0,DAV(z),n,1);
-     }
     }
    }
    // If there was a floating-point error, retry it the old way in case it was _ * 0
@@ -349,12 +306,7 @@ oflo2:
    I probsize = m*n*(IL)p;  // This is proportional to the number of multiply-adds.  We use it to select the implementation
    I smallprob=probsize<1000;  // set if we do the old-fashioned way, possibly after error
    if(!smallprob){  // use old-fashioned way if small.  16b3.4 comes though here
-    if((UI)probsize<(UI)jt->zgemm_thres){smallprob=1^cachedmmult(jt,DAV(a),DAV(w),DAV(z),m,n*2,p*2,((AFLAG(a)>>(AFUPPERTRIX-FLGAUTRIX))&FLGAUTRI)|((AFLAG(w)>>(AFUPPERTRIX-FLGWUTRIX))&FLGWUTRI)|FLGCMP);}  // Do the fast matrix multiply - complex.  Change widths to widths in D atoms, not complex atoms  TUNE  this is 130x130 times 130x130
-    else {
-      // Large problem - start up BLAS
-      memset(DAV(z),C0,2*m*n*sizeof(D));
-      zgemm_nn(m,n,p,zone,(dcomplex*)DAV(a),p,1,(dcomplex*)DAV(w),n,1,zzero,(dcomplex*)DAV(z),n,1);
-    }
+    smallprob=1^cachedmmult(jt,DAV(a),DAV(w),DAV(z),m,n*2,p*2,((AFLAG(a)>>(AFUPPERTRIX-FLGAUTRIX))&FLGAUTRI)|((AFLAG(w)>>(AFUPPERTRIX-FLGWUTRIX))&FLGWUTRI)|FLGCMP);  // Do the fast matrix multiply - complex.  Change widths to widths in D atoms, not complex atoms  TUNE  this is 130x130 times 130x130
    }
    if(smallprob||NANTEST){Z c,*u,*v,*wv,*x,*zv;
     // There was a floating-point error.  In case it was 0*_ retry old-style

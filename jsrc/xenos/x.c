@@ -194,9 +194,7 @@ F2(jtforeign){I p,q;
   case XC(9,47):  return CDERIV(CIBEAM, jtbreakfns,   0,            VASGSAFE,RMAX,RMAX,RMAX);
   case XC(9,52):  return CDERIV(CIBEAM, jtasgzombq,   0,            VASGSAFE,RMAX,RMAX,RMAX);
   case XC(9,53):  return CDERIV(CIBEAM, jtasgzombs,   0,            VFLAGNONE,RMAX,RMAX,RMAX);
-  case XC(9,56):  return CDERIV(CIBEAM, jtcpufeature, jtcpufeature2, VASGSAFE,RMAX,RMAX,RMAX);
   case XC(9,57):  return CDERIV(CIBEAM, jtaudittdisab, 0,            VFLAGNONE,RMAX,RMAX,RMAX);
-  case XC(9,58):  return CDERIV(CIBEAM, jtgemmtune, jtgemmtune2,    VFLAGNONE,RMAX,RMAX,RMAX);
   case XC(9,60):  return CDERIV(CIBEAM, jtleakblockread, 0,            VFLAGNONE,RMAX,RMAX,RMAX);
   case XC(9,61):  return CDERIV(CIBEAM, jtleakblockreset, 0,            VFLAGNONE,RMAX,RMAX,RMAX);
   case XC(9,62):  return CDERIV(CIBEAM, jtdirectdefq,    0,            VASGSAFE,RMAX,RMAX,RMAX); // scaf

@@ -2,7 +2,6 @@
 /* Licensed use only. Any other use is in violation of copyright.          */
 /*                                                                         */
 /* Extern Declarations                                                     */
-#include "gemm.h"
 
 extern F1(jtabase1);
 extern F1(jtadot1);
@@ -50,7 +49,6 @@ extern F1(jtceil1);
 extern F1(jtcerrno);
 extern F1(jtconjug);
 extern DF1(jtcork1);
-extern F1(jtcpufeature);
 extern F1(jtcrc1);
 extern F1(jtcrccompile);
 extern F1(jtctq);
@@ -123,7 +121,6 @@ extern F1(jtfxx);
 extern F1(jtgaussdet);
 extern F1(jtgausselm);
 extern F1(jtgb_test);
-extern F1(jtgemmtune);
 extern F1(jtgh15);
 extern F1(jtgrade1);
 extern DF2(jtkeybox);
@@ -403,7 +400,6 @@ extern F2(jtcdot2);
 extern F2(jtcdproc2);
 extern F2(jtcolon);
 extern DF2(jtcork2);
-extern F2(jtcpufeature2);
 extern F2(jtcrc2);
 extern DF2(jtcut2);
 extern F2(jtcut);
@@ -445,7 +441,6 @@ extern F2(jtfromr);
 extern F2(jtfromsd);
 extern F2(jtfromss);
 extern F2(jtfsm);
-extern F2(jtgemmtune2);
 extern F2(jtgenbitwiserotate);
 extern F2(jtgenbitwiseshift);
 extern F2(jtgenbitwiseshifta);
@@ -945,12 +940,8 @@ extern struct Bd1 Bpie;
 extern PRIM     primtab[];
 extern const UI4      shortrange[3][4];
 extern Z        zeroZ;
-extern const dcomplex zone;
-extern const dcomplex zzero;
 extern I oneone[2];
 extern A        zpath;
 extern I iotavec[IOTAVECLEN];  // ascending integers, starting at IOTAVECBEGIN
-/* cpu feature */
-extern UC       hwfma;
 extern VARPSA rpsnull;
 extern PRIM sfn0overself;
