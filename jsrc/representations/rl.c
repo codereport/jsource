@@ -6,7 +6,6 @@
 #include "j.h"
 #include <ctype.h>
 
-#define F2X(f)           A f(J jt,A a,A w,A *ltext)
 static A jtlnoun(J jt,A w,A *ltext);
 static A jtlnum(J jt,A w,A *ltext);
 static A jtlrr(J jt,A w,A self,A *ltext);
@@ -271,7 +270,7 @@ static B laa(A a,A w){C c,d;
 // Is a string a number?  Must start with a digit and end with digit, x, or .
 static B lnn(A a,A w){C c; if(!(a&&w))return 0; c=cl(a); return ('x'==c||'.'==c||C9==ctype[(UC)c])&&C9==ctype[(UC)cf(w)];}
 
-static F2X(jtlinsert){F1PREFIP;A*av,f,g,h,t,t0,t1,t2,*u,y;B b,ft,gt,ht;C c,id;I n;V*v;
+static A jtlinsert(J jt,A a,A w,A *ltext){F1PREFIP;A*av,f,g,h,t,t0,t1,t2,*u,y;B b,ft,gt,ht;C c,id;I n;V*v;
  ARGCHK2(a,w);
  n=AN(a); av=AAV(a);  
  v=VAV(w); id=v->id;
