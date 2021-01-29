@@ -6,17 +6,17 @@
 #include "j.h"
 
 
-F1(jttally ){A z; I k; ARGCHK1(w); z=sc(SETIC(w,k));            return AT(w)&XNUM+RAT?xco1(z):z;}  //  # y
-F1(jtshapex){A z; ARGCHK1(w); z=vec(INT,AR(w),AS(w)); return AT(w)&XNUM+RAT?xco1(z):z;}
-F1(jtshape){ARGCHK1(w); return vec(INT,AR(w),AS(w));}  // $ y
-F1(jtisempty){ARGCHK1(w); if((AT(w)&SPARSE)!=0)return eps(zeroionei(0),shape(w)); return num(AN(w)==0);}  // 0 e. $
-F1(jtisnotempty){ARGCHK1(w); if((AT(w)&SPARSE)!=0)return __not(eps(zeroionei(0),shape(w))); return num(AN(w)!=0);}  // *@#@,
-F1(jtisitems){ARGCHK1(w); return num(!AR(w)|!!AS(w)[0]);}   // *@#   *@:#
-F1(jtrank){F1PREFIP; ARGCHK1(w); return sc(AR(w));}  // #@$
-F1(jtnatoms){F1PREFIP; A z; ARGCHK1(w); if((AT(w)&SPARSE)!=0)return df1(z,shape(w),slash(ds(CSTAR))); return sc(AN(w));}   // */@$  #@,
+ A jttally (J jt, A w){A z; I k; ARGCHK1(w); z=sc(SETIC(w,k));            return AT(w)&XNUM+RAT?xco1(z):z;}  //  # y
+ A jtshapex(J jt, A w){A z; ARGCHK1(w); z=vec(INT,AR(w),AS(w)); return AT(w)&XNUM+RAT?xco1(z):z;}
+ A jtshape(J jt, A w){ARGCHK1(w); return vec(INT,AR(w),AS(w));}  // $ y
+ A jtisempty(J jt, A w){ARGCHK1(w); if((AT(w)&SPARSE)!=0)return eps(zeroionei(0),shape(w)); return num(AN(w)==0);}  // 0 e. $
+ A jtisnotempty(J jt, A w){ARGCHK1(w); if((AT(w)&SPARSE)!=0)return __not(eps(zeroionei(0),shape(w))); return num(AN(w)!=0);}  // *@#@,
+ A jtisitems(J jt, A w){ARGCHK1(w); return num(!AR(w)|!!AS(w)[0]);}   // *@#   *@:#
+ A jtrank(J jt, A w){F1PREFIP; ARGCHK1(w); return sc(AR(w));}  // #@$
+ A jtnatoms(J jt, A w){F1PREFIP; A z; ARGCHK1(w); if((AT(w)&SPARSE)!=0)return df1(z,shape(w),slash(ds(CSTAR))); return sc(AN(w));}   // */@$  #@,
 
 // ,y and ,"r y - producing virtual blocks
-F1(jtravel){A a,c,q,x,y,y0,z;B*b;I f,j,m,r,*u,*v,*yv;P*wp,*zp;
+ A jtravel(J jt, A w){A a,c,q,x,y,y0,z;B*b;I f,j,m,r,*u,*v,*yv;P*wp,*zp;
  F1PREFIP; ARGCHK1(w); 
  r=(RANKT)jt->ranks; r=AR(w)<r?AR(w):r; f=AR(w)-r; // r=effective rank (jt->rank is effective rank from irs1), f=frame
  if(!(AT(w)&SPARSE)){
@@ -63,7 +63,7 @@ F1(jtravel){A a,c,q,x,y,y0,z;B*b;I f,j,m,r,*u,*v,*yv;P*wp,*zp;
  return z;
 }
 
-F1(jttable){A z,zz;I r,wr;
+ A jttable(J jt, A w){A z,zz;I r,wr;
  F1PREFIP;ARGCHK1(w);
  // We accept the pristine calculations from ravel
  wr=AR(w); r=(RANKT)jt->ranks; r=wr<r?wr:r;  // r=rank to use
@@ -89,10 +89,10 @@ static A jtlr2(J jt,RANK2T ranks,A a,A w){I acr,af,ar,wcr,wf,wr;
 F2(jtleft2 ){F2PREFIP;RANK2T jtr=jt->ranks; if(jtr==(RANK2T)~0)RETARG(a); return lr2((jtr<<RMAXX)|(jtr>>RMAXX),w,a);}  // swap a & w, and their ranks
 F2(jtright2){F2PREFIP;RANK2T jtr=jt->ranks; if(jtr==(RANK2T)~0)RETARG(w); return lr2(jtr,a,w);}
 
-F1(jtright1){return w;}
+ A jtright1(J jt, A w){return w;}
 
 // i. y
-F1(jtiota){A z;I m,n,*v;
+ A jtiota(J jt, A w){A z;I m,n,*v;
  F1RANK(1,jtiota,UNUSED_VALUE);
  if(AT(w)&XNUM+RAT)return cvt(XNUM,iota(vi(w)));
  RZ(w=vi(w)); n=AN(w); v=AV(w);
@@ -103,7 +103,7 @@ F1(jtiota){A z;I m,n,*v;
 }
 
 // i: w
-F1(jtjico1){A y,z;B b;D d,*v;I c,m,n; 
+ A jtjico1(J jt, A w){A y,z;B b;D d,*v;I c,m,n; 
  F1RANK(0,jtjico1,UNUSED_VALUE);
  RZ(y=cvt(FL,rect(w))); v=DAV(y); d=*v;  // convert to complex, d=real part of value
  RE(m=v[1]?i0(cvt(INT,tail(y))):i0(tymes(mag(w),num(2))));  // m=#steps: imaginary part if nonzero; otherwise 2*|w
@@ -124,7 +124,7 @@ F2(jtrepeatr){ARGCHK2(a,w); A z; return IRS2(a,w,0, RMAX,1L,jtrepeat,z);}  // #"
 A jttaker(J jt,I n,A w){ARGCHK1(w); A a,z; RZ(a=sc(n)); return IRS2(a,w,0, RMAX,1L,jttake,z);}  // n {."1 w
 A jtdropr(J jt,I n,A w){ARGCHK1(w); A a,z; RZ(a=sc(n)); return IRS2(a,w,0, RMAX,1L,jtdrop,z);}  // n }."1 w
 
-F1(jticap){A a,e;I n;P*p;
+ A jticap(J jt, A w){A a,e;I n;P*p;
  F1RANK(1,jticap,UNUSED_VALUE);
  SETIC(w,n);
  if(SB01&AT(w)){

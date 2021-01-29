@@ -24,18 +24,18 @@
 #endif
 
 
-F1(jtsp){ASSERTMTV(w); return sc(spbytesinuse());}  //  7!:0
+ A jtsp(J jt, A w){ASSERTMTV(w); return sc(spbytesinuse());}  //  7!:0
 
 // 7!:1
 // Return (current allo),(max since reset)
 // If arg is an atom, reset to it
-F1(jtsphwmk){
+ A jtsphwmk(J jt, A w){
   I curr = jt->malloctotal; I hwmk = jt->malloctotalhwmk;
   if(AN(w)){I new; RE(new=i0(w)); jt->malloctotalhwmk=new;}
   return v2(curr,hwmk);
 }
 
-F1(jtspit){A z;I k; 
+ A jtspit(J jt, A w){A z;I k; 
  F1RANK(1,jtspit,UNUSED_VALUE); 
  jt->bytesmax=k=spstarttracking();  // start keeping track of bytesmax
  FDEPINC(1); z=exec1(w); FDEPDEC(1);
@@ -44,12 +44,12 @@ F1(jtspit){A z;I k;
  return sc(jt->bytesmax-k);
 }   // 7!:2, calculate max space used
 
-F1(jtparsercalls){ASSERTMTV(w); return sc(jt->parsercalls);}
+ A jtparsercalls(J jt, A w){ASSERTMTV(w); return sc(jt->parsercalls);}
 
 // 6!:5, window into the running J code
-F1(jtpeekdata){ I opeek=jt->peekdata; jt->peekdata = i0(w); return sc(opeek); }
+ A jtpeekdata(J jt, A w){ I opeek=jt->peekdata; jt->peekdata = i0(w); return sc(opeek); }
 
-F1(jtts){A z;D*x;struct tm tr,*t=&tr;struct timeval tv;
+ A jtts(J jt, A w){A z;D*x;struct tm tr,*t=&tr;struct timeval tv;
  ASSERTMTV(w);
  gettimeofday(&tv,NULL); t=localtime_r((time_t*)&tv.tv_sec,t);
  GAT0(z,FL,6,1); x=DAV(z);
@@ -62,7 +62,7 @@ F1(jtts){A z;D*x;struct tm tr,*t=&tr;struct timeval tv;
  return z;
 }
 
-F1(jtts0){A x,z;C s[9],*u,*v,*zv;D*xv;I n,q;
+ A jtts0(J jt, A w){A x,z;C s[9],*u,*v,*zv;D*xv;I n,q;
  ARGCHK1(w);
  ASSERT(1>=AR(w),EVRANK);
  RZ(x=ts(mtv));
@@ -101,7 +101,7 @@ __int64 GetMachineCycleCount()
 */
 
 
-F1(jttss){ASSERTMTV(w); return scf(tod()-jt->tssbase);}
+ A jttss(J jt, A w){ASSERTMTV(w); return scf(tod()-jt->tssbase);}
 
 F2(jttsit2){A z;D t;I n;
  F2RANK(0,1,jttsit2,UNUSED_VALUE);
@@ -115,12 +115,12 @@ F2(jttsit2){A z;D t;I n;
  return scf(n?t/(n*pf):0);
 }
 
-F1(jttsit1){return tsit2(num(1),w);}
+ A jttsit1(J jt, A w){return tsit2(num(1),w);}
 
 
 #define sleepms(i) usleep(i*1000)
 
-F1(jtdl){D m,n,*v;UINT ms,s;
+ A jtdl(J jt, A w){D m,n,*v;UINT ms,s;
  RZ(w=cvt(FL,w));
  n=0; v=DAV(w); DQ(AN(w), m=*v++; ASSERT(0<=m,EVDOMAIN); n+=m;);
  s=(UINT)jfloor(n); ms=(UINT)jround(1000*(n-s));
@@ -130,12 +130,12 @@ F1(jtdl){D m,n,*v;UINT ms,s;
 }
 
 
-F1(jtqpfreq){ASSERTMTV(w); return scf(pf);}
+ A jtqpfreq(J jt, A w){ASSERTMTV(w); return scf(pf);}
 
-F1(jtqpctr ){ASSERTMTV(w); return scf(qpc());}
+ A jtqpctr (J jt, A w){ASSERTMTV(w); return scf(qpc());}
 
 // 6!:13
-F1(jtpmctr){D x;I q;
+ A jtpmctr(J jt, A w){D x;I q;
  RE(q=i0(w));
  ASSERT(jt->pma,EVDOMAIN);
  x=q+(D)jt->pmctr;
@@ -144,7 +144,7 @@ F1(jtpmctr){D x;I q;
  return sc(q);
 }    /* add w to pmctr */
 
-static F1(jtpmfree){A x,y;C*c;I m;PM*v;PM0*u;
+static A jtpmfree(J jt, A w){A x,y;C*c;I m;PM*v;PM0*u;
  if(w){
   c=CAV(w); u=(PM0*)c; v=(PM*)(c+sizeof(PM0)); 
   m=u->wrapped?u->n:u->i; 
@@ -155,7 +155,7 @@ static F1(jtpmfree){A x,y;C*c;I m;PM*v;PM0*u;
  return num(1);
 }    /* free old data area */
 
-F1(jtpmarea1){return pmarea2(vec(B01,2L,&zeroZ),w);}  // 6!:10
+ A jtpmarea1(J jt, A w){return pmarea2(vec(B01,2L,&zeroZ),w);}  // 6!:10
 
 F2(jtpmarea2){A x;B a0,a1,*av;C*v;I an,n=0,s=sizeof(PM),s0=sizeof(PM0),wn;PM0*u;
  ARGCHK2(a,w);
@@ -210,7 +210,7 @@ void jtpmrecord(J jt,A name,A loc,I lc,int val){A x,y;B b;PM*v;PM0*u;
 }
 
 // 6!:12
-F1(jtpmunpack){A*au,*av,c,t,x,z,*zv;B*b;D*dv;I*iv,k,k1,m,n,p,q,wn,*wv;PM*v,*v0,*vq;PM0*u;
+ A jtpmunpack(J jt, A w){A*au,*av,c,t,x,z,*zv;B*b;D*dv;I*iv,k,k1,m,n,p,q,wn,*wv;PM*v,*v0,*vq;PM0*u;
  ARGCHK1(w);
  ASSERT(jt->pma,EVDOMAIN);
  if(!(INT&AT(w)))RZ(w=cvt(INT,w));
@@ -244,7 +244,7 @@ F1(jtpmunpack){A*au,*av,c,t,x,z,*zv;B*b;D*dv;I*iv,k,k1,m,n,p,q,wn,*wv;PM*v,*v0,*
 }
 
 // 6!:14
-F1(jtpmstats){A x,z;I*zv;PM0*u;
+ A jtpmstats(J jt, A w){A x,z;I*zv;PM0*u;
  ASSERTMTV(w);
  GAT0(z,INT,6,1); zv=AV(z);
  if(x=jt->pma){
@@ -260,9 +260,9 @@ F1(jtpmstats){A x,z;I*zv;PM0*u;
 }
 
 
-F1(jttlimq){ASSERTMTV(w); return scf(0.001*jt->timelimit);}
+ A jttlimq(J jt, A w){ASSERTMTV(w); return scf(0.001*jt->timelimit);}
 
-F1(jttlims){D d;
+ A jttlims(J jt, A w){D d;
  ARGCHK1(w);
  ASSERT(!AR(w),EVRANK);
  if(!(FL&AT(w)))RZ(w=cvt(FL,w));

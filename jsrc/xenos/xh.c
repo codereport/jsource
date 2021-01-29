@@ -17,12 +17,12 @@
 // ""         would run j.dll
 // "avx"      would run j.dll or javx.dll
 // "avx avx2" would run j.dll or javx.dll or javx2.dll
-F1(jtjgetx){
+ A jtjgetx(J jt, A w){
 
 return cstr("");
 }
 
-F1(jthost){A z;
+ A jthost(J jt, A w){A z;
  F1RANK(1,jthost,UNUSED_VALUE);
  RZ(w=vslit(w));
 {
@@ -66,7 +66,7 @@ F1(jthost){A z;
  return z;
 }
 
-F1(jthostne){
+ A jthostne(J jt, A w){
  F1RANK(1,jthostne,UNUSED_VALUE);
  RZ(w=vslit(w));
  {
@@ -79,7 +79,7 @@ F1(jthostne){
 
 #define CL(f) {close(f[0]);close(f[1]);}
 
-F1(jthostio){C*s;A z;F*pz;int fi[2],fo[2],r;int fii[2],foi[2];
+ A jthostio(J jt, A w){C*s;A z;F*pz;int fi[2],fo[2],r;int fii[2],foi[2];
  if(pipe(fi)==-1) ASSERT(0,EVFACE);
  if(pipe(fo)==-1){CL(fi); ASSERT(0,EVFACE);}
  fii[0]=fi[0];fii[1]=fi[1];foi[0]=fo[0];foi[1]=fo[1];
@@ -102,10 +102,10 @@ F1(jthostio){C*s;A z;F*pz;int fi[2],fo[2],r;int fii[2],foi[2];
  return z;
 }
 
-F1(jtjwait){I k;int s; RE(k=i0(w)); if(-1==waitpid(k,&s,0))jerrno(); return sc(s);}
+ A jtjwait(J jt, A w){I k;int s; RE(k=i0(w)); if(-1==waitpid(k,&s,0))jerrno(); return sc(s);}
 
 /* return errno info from c library */
-F1(jtcerrno){C buf[1024],ermsg[1024];
+ A jtcerrno(J jt, A w){C buf[1024],ermsg[1024];
  ASSERTMTV(w);
 
  if(errno&&!strerror_r(errno,ermsg,1024)) strcpy (buf, ermsg); else strcpy (buf, "");

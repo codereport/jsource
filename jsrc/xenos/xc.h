@@ -15,10 +15,10 @@ static DF2(jtseqpow);
 static DF2(jtx102d0);
 static DF2(jtx102d1);
 static DF1(jtx103d0);
-static F1(jtwex);
+static A jtwex(J jt, A w);
 static F2(jttiebox);
-static F1(jtbg);
-static F1(jtgb);
+static A jtbg(J jt, A w);
+static A jtgb(J jt, A w);
 static DF1(jttconj);
 static DF2(jtoa);
 

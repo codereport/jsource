@@ -132,15 +132,15 @@ F2(jtroot){A z;I t;
   default:     return z;
 }}
 
-F1(jtjdot1){return tymes(a0j1,w);}
+ A jtjdot1(J jt, A w){return tymes(a0j1,w);}
 F2(jtjdot2){return plus(a,tymes(a0j1,w));}
-F1(jtrdot1){return expn1(jdot1(w));}
+ A jtrdot1(J jt, A w){return expn1(jdot1(w));}
 F2(jtrdot2){return tymes(a,rdot1(w));}
 
 
-F1(jtpolar){ARGCHK1(w); A z; return cvt(SPARSE&AT(w)?SFL:FL,df2(z,v2(10L,12L),w,qq(ds(CCIRCLE),v2(1L,0L))));}
+ A jtpolar(J jt, A w){ARGCHK1(w); A z; return cvt(SPARSE&AT(w)?SFL:FL,df2(z,v2(10L,12L),w,qq(ds(CCIRCLE),v2(1L,0L))));}
 
-F1(jtrect){A e,z;B b;I r,t;P*wp,*zp;Z c;
+ A jtrect(J jt, A w){A e,z;B b;I r,t;P*wp,*zp;Z c;
  ARGCHK1(w); 
  t=AT(w); r=AR(w); RESETRANK;   // Run as infinite rank
  ASSERT(!AN(w)||t&NUMERIC,EVDOMAIN);

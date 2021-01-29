@@ -234,7 +234,7 @@ void breakclose(J jt)
 }
 
 
-F1(jtjoff){I x;
+ A jtjoff(J jt, A w){I x;
  ARGCHK1(w);
  x=i0(w);
  jt->jerr=0; jt->etxn=0; /* clear old errors */
@@ -552,12 +552,12 @@ int JFree(J jt){
   return 0;
 }
 
-F1(jtbreakfnq){
+ A jtbreakfnq(J jt, A w){
  ASSERTMTV(w);
  return cstr(jt->breakfn);
 }
 
-F1(jtbreakfns){A z;I *fh,*mh=0; void* ad;
+ A jtbreakfns(J jt, A w){A z;I *fh,*mh=0; void* ad;
  ASSERT(1>=AR(w),EVRANK);
  ASSERT(!AN(w)||AT(w)&LIT,EVDOMAIN);
  ASSERT(AN(w)<NPATH,EVDOMAIN);

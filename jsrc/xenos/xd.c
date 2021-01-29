@@ -91,7 +91,7 @@ static A jtdir1(J jt,struct dirent*f,struct stat *dirstatbuf,C *diratts, C *dirm
  return z;
 }
 
-F1(jtjdir){PROLOG(0103);A*v,z,*zv;C*dir,*pat,*s,*x;I j=0,n=32;DIR*DP;struct dirent *f;
+ A jtjdir(J jt, A w){PROLOG(0103);A*v,z,*zv;C*dir,*pat,*s,*x;I j=0,n=32;DIR*DP;struct dirent *f;
  C diratts[7]; C dirmode[11];  C dirrwx[3];
  struct stat dirstatbuf[3];  // for some reason there were 2 dummy blocks reserved after the buffer for 32-bit Linux.  Preserve that
  C dirnamebuf[NPATH];  // workarea
@@ -120,11 +120,11 @@ F1(jtjdir){PROLOG(0103);A*v,z,*zv;C*dir,*pat,*s,*x;I j=0,n=32;DIR*DP;struct dire
 
 
 
-F1(jtjfatt1){ASSERT(0,EVNONCE);}
+ A jtjfatt1(J jt, A w){ASSERT(0,EVNONCE);}
 F2(jtjfatt2){ASSERT(0,EVNONCE);}
 
 
-F1(jtjfperm1){A y;F f;C b[11];
+ A jtjfperm1(J jt, A w){A y;F f;C b[11];
  struct stat dirstatbuf[3];
  F1RANK(0,jtjfperm1,UNUSED_VALUE);
  RE(f=stdf(w)); if(f){RZ(y=fname(sc((I)f)));y=str0(y);} else ASSERT(y=str0(vslit(AAV(w)[0])),EVFNUM)
@@ -159,4 +159,4 @@ F2(jtjfperm2){A y;C*s;F f;int x=0,i;C*m;
 
 /* ----------------------------------------------------------------------- */
 
-F1(jtfullname){return w;}
+ A jtfullname(J jt, A w){return w;}

@@ -766,7 +766,7 @@ void jttpop(J jt,A *old){A *endingtpushp;
 // If the noun is assigned as part of a named derived verb, protection is not needed (but harmless) because if the same value is
 // assigned to another name, the usecount will be >1 and therefore not inplaceable.  Likewise, the the noun is non-DIRECT we need
 // only protect the top level, because if the named value is incorporated at a lower level its usecount must be >1.
-F1(jtrat){ARGCHK1(w); ras(w); tpush(w); return w;}  // recursive.  w can be zero only if explicit definition had a failing sentence
+ A jtrat(J jt, A w){ARGCHK1(w); ras(w); tpush(w); return w;}  // recursive.  w can be zero only if explicit definition had a failing sentence
 
 A jtras(J jt, AD * RESTRICT w) { ARGCHK1(w); realizeifvirtual(w); ra(w); return w; }  // subroutine version of ra() to save space
 A jtra00s(J jt, AD * RESTRICT w) { ARGCHK1(w); ra00(w,AT(w)); return w; }  // subroutine version of ra00() to save space
@@ -940,7 +940,7 @@ RESTRICTF A jtgah(J jt,I r,A w){A z;
 }    /* allocate header */ 
 
 // clone w, returning the address of the cloned area.  Result is NOT recursive, not AFRO, not virtual
-F1(jtca){A z;I t;P*wp,*zp;
+ A jtca(J jt, A w){A z;I t;P*wp,*zp;
  ARGCHK1(w);
  t=AT(w);
  if((t&SPARSE)!=0){
@@ -957,10 +957,10 @@ F1(jtca){A z;I t;P*wp,*zp;
  return z;
 }
 // clone block only if it is read-only
-F1(jtcaro){ if(AFLAG(w)&AFRO){return ca(w);} return w; }
+ A jtcaro(J jt, A w){ if(AFLAG(w)&AFRO){return ca(w);} return w; }
 
 // clone recursive.
-F1(jtcar){A*u,*wv,z;I n;P*p;V*v;
+ A jtcar(J jt, A w){A*u,*wv,z;I n;P*p;V*v;
  RZ(z=ca(w));
  n=AN(w);
  switch(CTTZ(AT(w))){
@@ -984,7 +984,7 @@ F1(jtcar){A*u,*wv,z;I n;P*p;V*v;
 }
 
 // clone virtual block, producing a new virtual block
-F1(jtclonevirtual){
+ A jtclonevirtual(J jt, A w){
  A z; RZ(z=virtual(w,0,AR(w)));  // allocate a new virtual block
  AN(z)=AN(w); MCISH(AS(z),AS(w),(I)AR(w));  // copy AN and shape; leave AC alone
  return z;

@@ -550,7 +550,7 @@ static DF1(xn1 ){return xdefn(0L,w, self);}  // Transfer monadic xdef to the com
 static DF1(xadv){return xdefn(w, 0L,self);}  // inplaceable
 
 // Nilad.  See if an anonymous verb needs to be named.  If so, result is the name, otherwise 0
-static F1(jtxopcall){return jt->uflags.us.cx.cx_c.db&&DCCALL==jt->sitop->dctype?jt->sitop->dca:0;}
+static A jtxopcall(J jt, A w){return jt->uflags.us.cx.cx_c.db&&DCCALL==jt->sitop->dctype?jt->sitop->dca:0;}
 
 
 // This handles adverbs/conjs that refer to x/y.  Install a[/w] into the derived verb as f/h, and copy the flags
@@ -633,7 +633,7 @@ static A jtcolon0(J jt, I deftype){A l,z;C*p,*q,*s;A *sb;I m,n;
 
 // w is character array or list
 // if table, take , w ,. LF    if list take ,&LF^:(LF~:{:) w)
-static F1(jtlineit){
+static A jtlineit(J jt, A w){
  return 1<AR(w)?ravel(stitch(w,scc(CLF))):AN(w)&&CLF==cl(w)?w:over(w,scc(CLF));
 }
 

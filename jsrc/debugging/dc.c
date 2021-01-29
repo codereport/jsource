@@ -7,7 +7,7 @@
 #include "d.h"
 
 
-static F1(jtdfrep){ARGCHK1(w); return NOUN&AT(w)?w:lrep(w);}
+static A jtdfrep(J jt, A w){ARGCHK1(w); return NOUN&AT(w)?w:lrep(w);}
 
 static SYMWALK(jtdloc,A,BOX,5,2,1,{RZ(*zv++=incorp(sfn(0,d->name))); RZ(*zv++=incorp(dfrep(d->val)));})
 
@@ -30,7 +30,7 @@ static B jtdrow(J jt,DC si,DC s0,A*zv){A fs,q,*qv,y,z;C c;
  return 1;
 }    /* construct one row of function call matrix */
 
-F1(jtdbcall){A y,*yv,z,zz,*zv;DC si,s0=0;I c=9,m=0,*s;
+ A jtdbcall(J jt, A w){A y,*yv,z,zz,*zv;DC si,s0=0;I c=9,m=0,*s;
  ASSERTMTV(w);
  si=jt->sitop;
  while(si){if(DCCALL==si->dctype)++m; si=si->dclnk;}  // count # rows in result

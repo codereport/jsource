@@ -16,7 +16,7 @@ static DF2(swap2){DECLF; F2PREFIP; jtinplace = (J)(intptr_t)((I)jtinplace^((JTIN
 }
 
 // w~, which is either reflexive/passive or evoke
-F1(jtswap){A y;C*s;I n;
+ A jtswap(J jt, A w){A y;C*s;I n;
  ARGCHK1(w); 
  if(VERB&AT(w)){
   // reflexive/passive.  Create verb that swaps.  Most flags do not apply to the derived verb
@@ -57,7 +57,7 @@ static DF1(jtbasis1){DECLF;A z;D*x;I j;V*v;
   default: ASSERT(0,EVDOMAIN);
 }}
 
-F1(jtbdot){A b,h=0;I j=0,n,*v;
+ A jtbdot(J jt, A w){A b,h=0;I j=0,n,*v;
  ARGCHK1(w);
  if(VERB&AT(w))return ADERIV(CBDOT, jtbasis1,0L, 0L,0,0,0);
  RZ(w=vi(w));
@@ -155,7 +155,7 @@ static DF2(jtmemo2){DECLF;A z;I x,y;
 // 1 mx2 INT table of input value; index of result
 // 2 boxed list containing results
 // All these start life on the tpush stack
-F1(jtmemo){PROLOG(300);A h,*hv,q;I m;V*v;
+ A jtmemo(J jt, A w){PROLOG(300);A h,*hv,q;I m;V*v;
  ARGCHK1(w);
  ASSERT(VERB&AT(w),EVDOMAIN);
  v=FAV(w); FULLHASHSIZE(30,BOXSIZE,1,0,m);  // m = # items to allocate

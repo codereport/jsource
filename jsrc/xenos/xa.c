@@ -12,26 +12,26 @@ extern uint64_t g_cpuFeatures;
 #include <string.h>
 
 
-F1(jtassertq){ASSERTMTV(w); return scb(jt->assert);}
+ A jtassertq(J jt, A w){ASSERTMTV(w); return scb(jt->assert);}
 
-F1(jtasserts){B b; RE(b=b0(w)); jt->assert=b; return mtm;}
+ A jtasserts(J jt, A w){B b; RE(b=b0(w)); jt->assert=b; return mtm;}
 
-F1(jtdirectdefq){ASSERTMTV(w); return scb(jt->directdef);}  // scaf 9!:62
+ A jtdirectdefq(J jt, A w){ASSERTMTV(w); return scb(jt->directdef);}  // scaf 9!:62
 
-F1(jtdirectdefs){B b; RE(b=b0(w)); jt->directdef=b; return mtm;}  // scaf 9!:63
+ A jtdirectdefs(J jt, A w){B b; RE(b=b0(w)); jt->directdef=b; return mtm;}  // scaf 9!:63
 
-F1(jtboxq){ASSERTMTV(w); return str(sizeof(jt->bx),jt->bx);}
+ A jtboxq(J jt, A w){ASSERTMTV(w); return str(sizeof(jt->bx),jt->bx);}
 
-F1(jtboxs){A x;
+ A jtboxs(J jt, A w){A x;
  RZ(w=vs(w));
  ASSERT(sizeof(jt->bx)==AS(w)[0],EVLENGTH);
  MC(jt->bx,CAV(w),sizeof(jt->bx));
  return mtv;
 }  // box-display characters
 
-F1(jtctq){ASSERTMTV(w); return scf(1.0-jt->cct);}
+ A jtctq(J jt, A w){ASSERTMTV(w); return scf(1.0-jt->cct);}
 
-F1(jtcts){D d;
+ A jtcts(J jt, A w){D d;
  ASSERT(!AR(w),EVRANK);
  RZ(w=cvt(FL,w)); d=DAV(w)[0];
  ASSERT(0<=d,EVDOMAIN); 
@@ -40,9 +40,9 @@ F1(jtcts){D d;
  return mtv;
 }
 
-F1(jtdispq){A z; ASSERTMTV(w); GATV0(z,INT,*jt->disp,1); ICPY(AV(z),1+jt->disp,*jt->disp); return z;}
+ A jtdispq(J jt, A w){A z; ASSERTMTV(w); GATV0(z,INT,*jt->disp,1); ICPY(AV(z),1+jt->disp,*jt->disp); return z;}
 
-F1(jtdisps){UC n;
+ A jtdisps(J jt, A w){UC n;
  RZ(w=vi(w));
  n=(UC)AN(w);
  ASSERT(1>=AR(w),EVRANK);
@@ -52,9 +52,9 @@ F1(jtdisps){UC n;
  return mtv;
 }
 
-F1(jtevmq){ASSERTMTV(w); return behead(jt->evm);}
+ A jtevmq(J jt, A w){ASSERTMTV(w); return behead(jt->evm);}
 
-F1(jtevms){A t,*tv,*wv;
+ A jtevms(J jt, A w){A t,*tv,*wv;
  ARGCHK1(w);
  ASSERT(1==AR(w),EVRANK);
  ASSERT(NEVM==AN(w),EVLENGTH);
@@ -67,25 +67,25 @@ F1(jtevms){A t,*tv,*wv;
  return mtv;
 }
 
-F1(jtfxx){
+ A jtfxx(J jt, A w){
  ARGCHK1(w);
  ASSERT(AT(w)&LIT+BOX,EVDOMAIN);
  ASSERT(1>=AR(w),EVRANK);
  return fx(ope(w));
 }
 
-F1(jtiepdoq){ASSERTMTV(w); return scb(jt->iepdo);}
+ A jtiepdoq(J jt, A w){ASSERTMTV(w); return scb(jt->iepdo);}
 
-F1(jtiepdos){B b; RE(b=b0(w)); jt->iepdo=b; return mtm;}
+ A jtiepdos(J jt, A w){B b; RE(b=b0(w)); jt->iepdo=b; return mtm;}
 
-F1(jtiepq){
+ A jtiepq(J jt, A w){
  ASSERTMTV(w); 
  ASSERT(1==AR(w),EVRANK);
  ASSERT(!AN(w),EVDOMAIN); 
  return jt->iep?jt->iep:mtv;
 }
 
-F1(jtieps){
+ A jtieps(J jt, A w){
  ARGCHK1(w);
  ASSERT(1>=AR(w),EVRANK);
  ASSERT(!AN(w)||AT(w)&LIT,EVDOMAIN);
@@ -94,7 +94,7 @@ F1(jtieps){
  return mtm;
 }
 
-F1(jtoutparmq){A z;D*u;I*v;
+ A jtoutparmq(J jt, A w){A z;D*u;I*v;
  ASSERTMTV(w);
  if(IMAX==jt->outmaxlen||IMAX==jt->outmaxbefore||IMAX==jt->outmaxafter){
   GAT0(z,FL, 4,1); u=DAV(z);
@@ -112,7 +112,7 @@ F1(jtoutparmq){A z;D*u;I*v;
  return z;
 }
 
-F1(jtoutparms){I*v;
+ A jtoutparms(J jt, A w){I*v;
  RZ(w=vib(w));
  ASSERT(1==AR(w),EVRANK);
  ASSERT(4==AN(w),EVLENGTH);
@@ -128,9 +128,9 @@ F1(jtoutparms){I*v;
  return mtv;
 }
 
-F1(jtposq){ASSERTMTV(w); return v2(jt->pos[0],jt->pos[1]);}
+ A jtposq(J jt, A w){ASSERTMTV(w); return v2(jt->pos[0],jt->pos[1]);}
 
-F1(jtposs){I n,p,q,*v;
+ A jtposs(J jt, A w){I n,p,q,*v;
  RZ(w=vi(w));
  n=AN(w); v=AV(w);
  ASSERT(1>=AR(w),EVRANK);
@@ -141,43 +141,43 @@ F1(jtposs){I n,p,q,*v;
  return mtv;
 }
 
-F1(jtppq){C*end;I k;
+ A jtppq(J jt, A w){C*end;I k;
  ASSERTMTV(w);
  k = strtoI(3+jt->pp, (char**)&end, 10);
  return sc(k);
 }
 
-F1(jtpps){I k;
+ A jtpps(J jt, A w){I k;
  RE(sc(k=i0(w))); ASSERT(0<k,EVDOMAIN); ASSERT(k<=NPP,EVLIMIT);
  sprintf(3+jt->pp,FMTI"g", k);
  return mtv;
 }
 
-F1(jtretcommq){ASSERTMTV(w); return scb(jt->retcomm);}
+ A jtretcommq(J jt, A w){ASSERTMTV(w); return scb(jt->retcomm);}
 
-F1(jtretcomms){B b; RE(b=b0(w)); jt->retcomm=b; return mtm;}
+ A jtretcomms(J jt, A w){B b; RE(b=b0(w)); jt->retcomm=b; return mtm;}
 
-F1(jtseclevq){ASSERTMTV(w); return sc(jt->seclev);}
+ A jtseclevq(J jt, A w){ASSERTMTV(w); return sc(jt->seclev);}
 
-F1(jtseclevs){I k; 
+ A jtseclevs(J jt, A w){I k; 
  RE(k=i0(w)); 
  ASSERT(0==k||1==k,EVDOMAIN); 
  if(!jt->seclev&&1==k)jt->seclev=(UC)k;
  return mtm;
 }
 
-F1(jtsysq){I j;
+ A jtsysq(J jt, A w){I j;
  ASSERTMTV(w);
  j=5;
  return sc(j);
 }
 
-F1(jtxepq){
+ A jtxepq(J jt, A w){
  ASSERTMTV(w); 
  return jt->xep?jt->xep:mtv;
 }
 
-F1(jtxeps){
+ A jtxeps(J jt, A w){
  ARGCHK1(w);
  ASSERT(1>=AR(w),EVRANK);
  ASSERT(!AN(w)||AT(w)&LIT,EVDOMAIN);
@@ -186,9 +186,9 @@ F1(jtxeps){
  return mtm;
 }
 
-F1(jtasgzombq){ASSERTMTV(w); return sc(jt->asgzomblevel);}
+ A jtasgzombq(J jt, A w){ASSERTMTV(w); return sc(jt->asgzomblevel);}
 
-F1(jtasgzombs){I k; 
+ A jtasgzombs(J jt, A w){I k; 
  RE(k=i0(w)); 
  ASSERT(BETWEENC(k,0,2),EVDOMAIN);
  jt->asgzomblevel=(C)k;
@@ -197,7 +197,7 @@ F1(jtasgzombs){I k;
 
 // 9!:56  undocumented
 // query/override cpu feature
-F1(jtcpufeature){
+ A jtcpufeature(J jt, A w){
  ARGCHK1(w);
  ASSERT(AT(w)&LIT,EVDOMAIN);
  ASSERT(AN(w),EVLENGTH);
@@ -358,7 +358,7 @@ return mtm;
 // 1 dgemm_thres  real threshold
 // 2 zgemm_thres  complex threshold
 
-F1(jtgemmtune){I k;
+ A jtgemmtune(J jt, A w){I k;
  ARGCHK1(w);
  ASSERT(AT(w)&(B01+INT),EVDOMAIN);
  ASSERT(1==AN(w),EVLENGTH);
@@ -389,6 +389,6 @@ F2(jtgemmtune2){I j,k;
 // enable/disable tstack auditing, since some testcases run too long with it enabled
 // bit 0 is set to disable, bit 1 is a one-shot to ask for an audit
 // result is old value
-F1(jtaudittdisab){
+ A jtaudittdisab(J jt, A w){
  return sc(0);
 }

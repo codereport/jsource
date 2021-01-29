@@ -257,7 +257,7 @@ F2(jtstitch){I ar,wr; A z;
  return stitchsp2(a,w);  // sparse rank <=2 separately
 }
 
-F1(jtlamin1){A x;I* RESTRICT s,* RESTRICT v,wcr,wf,wr; 
+ A jtlamin1(J jt, A w){A x;I* RESTRICT s,* RESTRICT v,wcr,wf,wr; 
  F1PREFIP;ARGCHK1(w);
  wr=AR(w); wcr=(RANKT)jt->ranks; wcr=wr<wcr?wr:wcr; RESETRANK; wf=wr-wcr;
  fauxblockINT(wfaux,4,1); fauxINT(x,wfaux,1+wr,1) v=AV(x);

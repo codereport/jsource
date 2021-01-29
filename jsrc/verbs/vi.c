@@ -1364,7 +1364,7 @@ F2(jtjico2){return indexofsub(IICO,a,w);}
      /* a i:"r w */
 
 // ~: y
-F1(jtnubsieve){
+ A jtnubsieve(J jt, A w){
  ARGCHK1(w);
  if(SPARSE&AT(w))return nubsievesp(w);
  jt->ranks=(RANKT)jt->ranks + ((RANKT)jt->ranks<<RANKTX);  // we process as if dyad; make left rank=right rank
@@ -1372,7 +1372,7 @@ F1(jtnubsieve){
 }    /* ~:"r w */
 
 // ~. y  - does not have IRS
-F1(jtnub){ 
+ A jtnub(J jt, A w){ 
  F1PREFIP;ARGCHK1(w);
  if(SPARSE&AT(w)||AFLAG(w)&AFNJA)return repeat(nubsieve(w),w);
  A z; RZ(z=indexofsub(INUB,w,w));
@@ -1408,20 +1408,20 @@ F2(jteps){I l,r;
 }    /* a e."r w */
 
 // I.@~: y   does not have IRS
-F1(jtnubind){
+ A jtnubind(J jt, A w){
  ARGCHK1(w);
  return SPARSE&AT(w)?icap(nubsieve(w)):indexofsub(INUBI,w,w);
 }    /* I.@~: w */
 
 // i.@(~:!.0) y     does not have IRS
-F1(jtnubind0){A z;
+ A jtnubind0(J jt, A w){A z;
  ARGCHK1(w);
  PUSHCCT(1.0) z=SPARSE&AT(w)?icap(nubsieve(w)):indexofsub(INUBI,w,w); POPCCT
  return z;
 }    /* I.@(~:!.0) w */
 
 // = y    
-F1(jtsclass){A e,x,xy,y,z;I c,j,m,n,*v;P*p;
+ A jtsclass(J jt, A w){A e,x,xy,y,z;I c,j,m,n,*v;P*p;
  ARGCHK1(w);
  // If w is scalar, return 1 1$1
  if(!AR(w))return reshape(v2(1L,1L),num(1));

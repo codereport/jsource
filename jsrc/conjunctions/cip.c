@@ -443,7 +443,7 @@ r=lr(gs);   // left rank of v
 }
 
 
-static F1(jtminors){A d,z;
+static A jtminors(J jt, A w){A d,z;
  RZ(d=apvwr(3L,-1L,1L)); AV(d)[0]=0;
  return drop(d,df2(z,num(1),w,bsdot(ds(CLEFT))));  // 0 0 1 }. 1 [\. w
 }

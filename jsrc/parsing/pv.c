@@ -25,7 +25,7 @@
 static const TA zz={0,0};
 
 // Returns AM(z) 1 if monad, 0 if dyad
-static F1(jtvtokens){A t,*y,z;I n,*s;TA*x;
+static A jtvtokens(J jt, A w){A t,*y,z;I n,*s;TA*x;
  RZ(t=tokens(vs(w),0)); n=AN(t); y=AAV(t);
  I tmonad=1; 
  GATV0(z,BOX,WTA*(5+n),2); s=AS(z); *s++=5+n; *s=WTA;
@@ -40,7 +40,7 @@ static F1(jtvtokens){A t,*y,z;I n,*s;TA*x;
  return z;
 }    /* build string sentence into queue suitable for parsing */
 
-static F1(jtcfn){I j; return !AR(w)&&INT&AT(w)&&(j=AV(w)[0],-9<=j&&j<=9)?FCONS(w):qq(w,ainf);}
+static A jtcfn(J jt, A w){I j; return !AR(w)&&INT&AT(w)&&(j=AV(w)[0],-9<=j&&j<=9)?FCONS(w):qq(w,ainf);}
      /* constant function with value w */
 
 static A jttine(J jt,A w,I tmonad){V*v; return w&&tmonad&&(v=FAV(w),CP==v->fgh[0]&&RT==v->fgh[2])?v->fgh[1]:w;}
@@ -58,7 +58,7 @@ static I tvi(A w){A x;I i,z=-1;V*v;
 
 static const C ctab[]={CEQ,CMIN,CMAX,CPLUS,CPLUSDOT,CPLUSCO,CSTAR,CSTARDOT,CSTARCO,CMATCH,CNE,0};
 
-static F1(jtswapc){C c;
+static A jtswapc(J jt, A w){C c;
  if(!primitive(w))return swap(w);
  c=ID(w);
  return strchr(ctab,c)?w:c==CLT?ds(CGT):c==CGT?ds(CLT):c==CLE?ds(CGE):c==CGE?ds(CLE):swap(w);
@@ -223,7 +223,7 @@ static A jttparse(J jt,A w,A locsyms,I tmonad,I tsubst,TA *ttab,I *ttabi,I ttabi
  return t?jtvfinal(jt,t,tmonad,tsubst,ttab,ttabi,ttabi0):cfn(x);
 }
 
-F1(jtvtrans){PROLOG(0053);A locsyms,y,z=0; I c,i,ttabi;TA ttab[NTTAB];
+ A jtvtrans(J jt, A w){PROLOG(0053);A locsyms,y,z=0; I c,i,ttabi;TA ttab[NTTAB];
  RZ(ttab[0].a=cstr("x")); ttab[0].t=ds(CLEFT);
  RZ(ttab[1].a=cstr("y")); ttab[1].t=RT; c=2;
  for(i=0;!z&&2>i;++i){

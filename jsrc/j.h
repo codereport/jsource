@@ -366,8 +366,6 @@ static inline omp_int_t omp_get_max_threads() { return 1;}
 // FFEQ/FFIEQ (fixed fuzz) are used where we know for sure the test should be tolerant
 #define FFEQ(u,v)        (ABS((u)-(v))<=FUZZ*MAX(ABS(u),ABS(v)))
 #define FFIEQ(u,v)       (ABS((u)-(v))<=FUZZ*ABS(v))  // used when v is known to be exact integer.  It's close enough, maybe ULP too small on the high end
-//should be unused now
-#define F1(f)           A f(J jt,    A w)
 #define F2(f)           A f(J jt,A a,A w)
 #define FPREF           
 #define F1PREF          FPREF

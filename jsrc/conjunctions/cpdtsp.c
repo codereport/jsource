@@ -6,8 +6,8 @@
 #include "j.h"
 
 
-static F1(jtbtreetest){ASSERT(0,EVDOMAIN);}
-static F1(jtbtreedft){ASSERT(0,EVDOMAIN);}
+static A jtbtreetest(J jt, A w){ASSERT(0,EVDOMAIN);}
+static A jtbtreedft(J jt, A w){ASSERT(0,EVDOMAIN);}
 
 
 /*

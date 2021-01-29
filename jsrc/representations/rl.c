@@ -351,7 +351,7 @@ static DF1X(jtlrr){F1PREFIP;A hs,t,*tv;C id;I fl,m;V*v;
 
 // Create linear representation of w.  Call lrr, which creates an A for the text plus jt->ltext which is appended to it.
 // jt->lcp and jt->ltie are routines for handling adding enclosing () and handling `
-F1(jtlrep){PROLOG(0056);A z;A ltextb=0, *ltext=&ltextb;
+ A jtlrep(J jt, A w){PROLOG(0056);A z;A ltextb=0, *ltext=&ltextb;
  RE(z=jtlrr(jt,w,w,ltext));  // the w for self is just any nonzero to indicate top-level call
  if(*ltext)z=apip(z,*ltext);
  EPILOG(z);
@@ -359,7 +359,7 @@ F1(jtlrep){PROLOG(0056);A z;A ltextb=0, *ltext=&ltextb;
 
 // Create paren representation of w.  Call lrr, which creates an A for the text plus jt->ltext which is appended to it.
 // jt->lcp and jt->ltie are routines for handling adding enclosing () and handling `
-F1(jtprep){PROLOG(0057);A z;A ltextb=0, *ltext=&ltextb;
+ A jtprep(J jt, A w){PROLOG(0057);A z;A ltextb=0, *ltext=&ltextb;
  RE(z=jtlrr((J)((I)jt|JTPARENS),w,w,ltext));
  if(*ltext)z=apip(z,*ltext);
  EPILOG(z);

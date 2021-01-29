@@ -6,7 +6,7 @@
 #include "j.h"
 #include "x.h"
 
-F1(jtstype){ARGCHK1(w); return sc(AT(w)&-AT(w));}
+ A jtstype(J jt, A w){ARGCHK1(w); return sc(AT(w)&-AT(w));}
 
 // a is integer atom or list, values indicating the desired result
 // atom values in x: 0=NJA, others reserved
@@ -206,8 +206,8 @@ static A jthrep(J jt,B b,B d,A w){A y;C c,*hex="0123456789abcdef",*u,*v;I n,s[2]
  return y;  // return it
 }
 
-F1(jtbinrep1){ARGCHK1(w); ASSERT(NOUN&AT(w),EVDOMAIN); return brep(BU,1,w);}  /* 3!:1 w */
-F1(jthexrep1){ARGCHK1(w); ASSERT(NOUN&AT(w),EVDOMAIN); return hrep(BU,1,w);}  /* 3!:3 w */
+ A jtbinrep1(J jt, A w){ARGCHK1(w); ASSERT(NOUN&AT(w),EVDOMAIN); return brep(BU,1,w);}  /* 3!:1 w */
+ A jthexrep1(J jt, A w){ARGCHK1(w); ASSERT(NOUN&AT(w),EVDOMAIN); return hrep(BU,1,w);}  /* 3!:3 w */
 
 F2(jtbinrep2){I k;
  ARGCHK2(a,w);
@@ -230,7 +230,7 @@ static S jtunh(J jt,C c){
  ASSERT(0,EVDOMAIN);
 }
 
-static F1(jtunhex){A z;C*u;I c,n;UC p,q,*v;
+static A jtunhex(J jt, A w){A z;C*u;I c,n;UC p,q,*v;
  ARGCHK1(w);
  c=*(1+AS(w));
  ASSERT(c==8||c==16,EVLENGTH);  
@@ -279,7 +279,7 @@ static A jtunbinr(J jt,B b,B d,B pre601,I m,A w){A y,z;C*u=(C*)w,*v;I e,j,kk,n,p
  RE(z); return z;
 }    /* b iff reverse the bytes; d iff argument is 64-bits */
 
-F1(jtunbin){A q;B b,d;C*v;I c,i,k,m,n,r,t;
+ A jtunbin(J jt, A w){A q;B b,d;C*v;I c,i,k,m,n,r,t;
  ARGCHK1(w);
  ASSERT(LIT&AT(w),EVDOMAIN);
  if(2==AR(w))RZ(w=unhex(w));
@@ -365,7 +365,7 @@ static B jtisnanq(J jt,A w){
 }
 
 // 128!:5  Result is boolean with same shape as w
-F1(jtisnan){A*wv,z;B*u;D*v;I n,t;
+ A jtisnan(J jt, A w){A*wv,z;B*u;D*v;I n,t;
  ARGCHK1(w);
  n=AN(w); t=AT(w);
  ASSERT(t&DENSE,EVNONCE);
@@ -378,7 +378,7 @@ F1(jtisnan){A*wv,z;B*u;D*v;I n,t;
 }
 
 
-F1(jtbit1){A z;B*wv;BT*zv;I c,i,j,n,p,q,r,*s;UI x,y;
+ A jtbit1(J jt, A w){A z;B*wv;BT*zv;I c,i,j,n,p,q,r,*s;UI x,y;
  ARGCHK1(w);
  if(!(B01&AT(w)))RZ(w=cvt(B01,w));
  n=AN(w); r=AR(w); wv=BAV(w); s=AS(w);
@@ -646,7 +646,7 @@ err:
 
 
 // 6!:14 Convert a block of integer yyyymmddHHMMSS to nanoseconds from year 2000
-F1(jtinttoe){A z;I n;
+ A jtinttoe(J jt, A w){A z;I n;
  ARGCHK1(w);
  n=AN(w);
  ASSERT(1,EVNONCE);
@@ -657,7 +657,7 @@ F1(jtinttoe){A z;I n;
 }
 
 // 6!:15 Convert a block of nanosecond times to Y M D h m s nanosec
-F1(jtetoint){
+ A jtetoint(J jt, A w){
  ARGCHK1(w);
  ASSERT(1,EVNONCE);
  return sfe(jt,w,7*SZI-20,0,0);  // special precision meaning 'store INTs'.  Turns into linelen=56

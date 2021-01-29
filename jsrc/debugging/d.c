@@ -57,7 +57,7 @@ static void jtdspell(J jt,C id,A w,I nflag){C c,s[5];
   eputs(s+!(c==CESC1||c==CESC2||nflag&&((ctype[(UC)c]&~CA)==0)));
 }}
 
-static F1(jtsfn0){return sfn(0,w);}  // return string form of full name for a NAME block
+static A jtsfn0(J jt, A w){return sfn(0,w);}  // return string form of full name for a NAME block
 EVERYFS(sfn0overself,jtsfn0,jtover,0,VFLAGNONE)
 
 // print a noun; nflag if space needed before name/numeric; return new value of nflag
@@ -101,7 +101,7 @@ static void jtseeparse(J jt,DC d){A*v;I m;
  }
 }    /* display error line */
 
-F1(jtunparse){A*v,z;
+ A jtunparse(J jt, A w){A*v,z;
  ARGCHK1(w);
  jt->etxn=0; I nflag=0;
  v=AAV(w); DO(AN(w), nflag=disp(v[i],nflag);); z=str(jt->etxn,jt->etx);
@@ -145,13 +145,13 @@ static B jtdebsi1(J jt,DC d){I t;
  return 1;
 }
 
-F1(jtdbstack){DC d=jt->sitop; 
+ A jtdbstack(J jt, A w){DC d=jt->sitop; 
  ASSERTMTV(w);
  if(d){if(DCCALL!=d->dctype)d=d->dclnk; while(d){debdisp(d); d=d->dclnk;}}
  return mtm;
 }    /* 13!:1  display SI stack */
 
-F1(jtdbstackz){A y,z; 
+ A jtdbstackz(J jt, A w){A y,z; 
  RE(dbstack(w)); 
  RZ(y=str(jt->etxn,jt->etx)); 
  jt->etxn=0; 
@@ -218,12 +218,12 @@ static F2(jtdbsig){I e;
  return 0;
 }    
 
-F1(jtdbsig1){return dbsig(0L,w);}   /* 13!:8  signal error */
+ A jtdbsig1(J jt, A w){return dbsig(0L,w);}   /* 13!:8  signal error */
 F2(jtdbsig2){return dbsig(a, w);}
 
 
-F1(jtdberr){ASSERTMTV(w); return sc(jt->jerr1);}           /* 13!:11 last error number   */
-F1(jtdbetx){ASSERTMTV(w); return str(jt->etxn1,jt->etx);}  /* 13!:12 last error text     */
+ A jtdberr(J jt, A w){ASSERTMTV(w); return sc(jt->jerr1);}           /* 13!:11 last error number   */
+ A jtdbetx(J jt, A w){ASSERTMTV(w); return str(jt->etxn1,jt->etx);}  /* 13!:12 last error text     */
 
 
 A jtjerrno(J jt){

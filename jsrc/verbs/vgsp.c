@@ -145,7 +145,7 @@ static A jtgrd1spdd(J jt,A w,I wf,I wcr){A x,z;I n,*ws;P*wp;
 /*  frame axes: all sparse or all dense                 */
 /*  cell  axes: 0 or more sparse axes, then dense axes  */
 
-F1(jtgrd1sp){PROLOG(0077);A z;B b,c,*wb;I j,m,wcr,wf,wr;P*wp;
+ A jtgrd1sp(J jt, A w){PROLOG(0077);A z;B b,c,*wb;I j,m,wcr,wf,wr;P*wp;
  ARGCHK1(w);
  wr=AR(w); wcr=(RANKT)jt->ranks; wcr=wr<wcr?wr:wcr; wf=wr-wcr; RESETRANK;
  wp=PAV(w);

@@ -42,7 +42,7 @@ DC jtdeba(J jt,C t,void *x,void *y,A fs){DC d;
 void jtdebz(J jt){jt->sitop=jt->sitop->dclnk;}
      /* remove     top of si stack */
 
-F1(jtsiinfo){A z,*zv;DC d;I c=5,n,*s;
+ A jtsiinfo(J jt, A w){A z,*zv;DC d;I c=5,n,*s;
  ASSERTMTV(w);
  n=0; d=jt->sitop; while(d){++n; d=d->dclnk;}
  GATV0(z,BOX,c*n,2); s=AS(z); s[0]=n; s[1]=c; zv=AAV(z);
@@ -224,7 +224,7 @@ A jtdbunquote(J jt,A a,A w,A self,L *stabent){A t,z;B b=0,s;DC d;V*sv;
 }    /* function call, debug version */
 
 
-F1(jtdbc){UC k;
+ A jtdbc(J jt, A w){UC k;
  ARGCHK1(w);
  if(AN(w)){
   RE(k=(UC)i0(w));
@@ -245,19 +245,19 @@ F1(jtdbc){UC k;
  return mtm;
 }    /* 13!:0  clear stack; enable/disable suspension */
 
-F1(jtdbq){ASSERTMTV(w); return sc(jt->dbuser);}
+ A jtdbq(J jt, A w){ASSERTMTV(w); return sc(jt->dbuser);}
      /* 13!:17 debug flag */
 
-F1(jtdbrun ){ASSERTMTV(w); jt->dbsusact=SUSRUN;  return mtm;}
+ A jtdbrun (J jt, A w){ASSERTMTV(w); jt->dbsusact=SUSRUN;  return mtm;}
      /* 13!:4  run again */
 
-F1(jtdbnext){ASSERTMTV(w); jt->dbsusact=SUSNEXT; return mtm;}
+ A jtdbnext(J jt, A w){ASSERTMTV(w); jt->dbsusact=SUSNEXT; return mtm;}
      /* 13!:5  run next */
 
-F1(jtdbret ){ARGCHK1(w); jt->dbsusact=SUSRET; ras(w); jt->dbresult=w; return mtm;}
+ A jtdbret (J jt, A w){ARGCHK1(w); jt->dbsusact=SUSRET; ras(w); jt->dbresult=w; return mtm;}
      /* 13!:6  exit with result */
 
-F1(jtdbjump){RE(jt->dbjump=i0(w)); jt->dbsusact=SUSJUMP; return mtm;}
+ A jtdbjump(J jt, A w){RE(jt->dbjump=i0(w)); jt->dbsusact=SUSJUMP; return mtm;}
      /* 13!:7  resume at line n (return result error if out of range) */
 
 static F2(jtdbrr){DC d;
@@ -269,11 +269,11 @@ static F2(jtdbrr){DC d;
  return mtm;
 }
 
-F1(jtdbrr1 ){return dbrr(0L,w);}   /* 13!:9   re-run with arg(s) */
+ A jtdbrr1 (J jt, A w){return dbrr(0L,w);}   /* 13!:9   re-run with arg(s) */
 F2(jtdbrr2 ){return dbrr(a, w);}
 
-F1(jtdbtrapq){ASSERTMTV(w); return jt->dbtrap?jt->dbtrap:mtv;}
+ A jtdbtrapq(J jt, A w){ASSERTMTV(w); return jt->dbtrap?jt->dbtrap:mtv;}
      /* 13!:14 query trap */
 
-F1(jtdbtraps){RZ(w=vs(w)); fa(jt->dbtrap); if(AN(w)){RZ(ras(w)); jt->dbtrap=w;}else jt->dbtrap=0L; return mtm;}
+ A jtdbtraps(J jt, A w){RZ(w=vs(w)); fa(jt->dbtrap); if(AN(w)){RZ(ras(w)); jt->dbtrap=w;}else jt->dbtrap=0L; return mtm;}
      /* 13!:15 set trap */

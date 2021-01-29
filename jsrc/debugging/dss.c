@@ -42,13 +42,13 @@ static A jtssdo(J jt,A a,A w,C c){DC d,e;I n;
  return mtm;                                     /* 0 return to terminate call      */
 }
 
-F1(jtdbcutback  ){return ssdo(0L,w,SSCUTBACK );}  /* 13!:19 */
+ A jtdbcutback  (J jt, A w){return ssdo(0L,w,SSCUTBACK );}  /* 13!:19 */
 
-F1(jtdbstepover1){return ssdo(0L,w,SSSTEPOVER);}  /* 13!:20 */
+ A jtdbstepover1(J jt, A w){return ssdo(0L,w,SSSTEPOVER);}  /* 13!:20 */
 F2(jtdbstepover2){return ssdo(a, w,SSSTEPOVER);}
 
-F1(jtdbstepinto1){return ssdo(0L,w,SSSTEPINTO);}  /* 13!:21 */
+ A jtdbstepinto1(J jt, A w){return ssdo(0L,w,SSSTEPINTO);}  /* 13!:21 */
 F2(jtdbstepinto2){return ssdo(a, w,SSSTEPINTO);}
 
-F1(jtdbstepout1 ){return ssdo(0L,w,SSSTEPOUT );}  /* 13!:22 */
+ A jtdbstepout1 (J jt, A w){return ssdo(0L,w,SSSTEPOUT );}  /* 13!:22 */
 F2(jtdbstepout2 ){return ssdo(a, w,SSSTEPOUT );}

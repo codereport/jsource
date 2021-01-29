@@ -28,7 +28,7 @@ A jteva(J jt,    A w,C*s){A z; return df1(z,  w,colon(num(1),   cstr(s)));}
 A jtevc(J jt,A a,A w,C*s){A z; return df2(z,a,w,colon(num(2),cstr(s)));}
 
 // ". y
-F1(jtexec1){A z;
+ A jtexec1(J jt, A w){A z;
  ARGCHK1(w);
  if(AT(w)&NAME){z=nameref(w,jt->locsyms);  // the case ".@'name' which is the fastest way to refer to a deferred name
  }else{
@@ -41,7 +41,7 @@ F1(jtexec1){A z;
 }
 
 // execute w, which is either a string or the boxed words of a string (as if from tokens())
-F1(jtimmex){A z;
+ A jtimmex(J jt, A w){A z;
  if(!w)return A0;  // if no string, return error
  // When we start a sentence, we need to establish AKGST in locsyms as a shadow of jt->global, because that's
  // the normal condition and u./v. will rely on it.  This is not needed for a recursive call, but it doesn't hurt either,
@@ -54,7 +54,7 @@ F1(jtimmex){A z;
 }
 
 // execute for assert: check result for all 1
-F1(jtimmea){A t,z,z1;
+ A jtimmea(J jt, A w){A t,z,z1;
  RZ(w=ddtokens(w,4+1+(AN(jt->locsyms)>1))); z=immex(w);   // check for DD, but don't allow continuation read
  ASSERT(jt->asgn||!z||!(AT(z)&NOUN)||(t=eq(num(1),z),
      all1(AT(z)&SPARSE?df1(z1,t,atop(slash(ds(CSTARDOT)),ds(CCOMMA))):t)),EVASSERT);  // apply *./@, if sparse
@@ -65,7 +65,7 @@ static A jtcex(J jt,A w,AF f,A self){A z; RE(w); z=f(jt,w,self); RESETERR; retur
      /* conditional execute - return 0 if error */
 
 // convert the gerund (i.e  AR) in w into a verb
-F1(jtexg){A*v,*wv,x,y,z;I n;
+ A jtexg(J jt, A w){A*v,*wv,x,y,z;I n;
  ARGCHK1(w);
  n=AN(w); wv=AAV(w); 
  ASSERT(n!=0,EVLENGTH);
