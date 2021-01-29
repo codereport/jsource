@@ -573,9 +573,6 @@ I jtra(AD* RESTRICT wd,I t){I n=AN(wd);
   np=*wv;  // prefetch first box
   while(--n>0){AD* np0;  // n is always >0 to start.  Loop for n-1 times
    np0=*++wv;  // fetch next box if it exists, otherwise harmless value.  This fetch settles while the ra() is running
-#ifdef PREFETCH
-   PREFETCH((C*)np0);   // prefetch the next box while ra() is running
-#endif
    if(np)ra(np);  // increment the box, possibly turning it to recursive
    np=np0;  // advance to next box
   };
@@ -602,9 +599,6 @@ I jtfa(J jt,AD* RESTRICT wd,I t){I n=AN(wd);
   np=*wv;  // prefetch first box
   while(--n>0){AD* np0;  // n is always >0 to start.  Loop for n-1 times
    np0=*++wv;  // fetch next box if it exists, otherwise harmless value.  This fetch settles while the ra() is running
-#ifdef PREFETCH
-   PREFETCH((C*)np0);   // prefetch the next box while ra() is running
-#endif
    fana(np);  // increment the box, possibly turning it to recursive
    np=np0;  // advance to next box
   };
@@ -723,9 +717,6 @@ void jttpop(J jt,A *old){A *endingtpushp;
    np0=*pushp;   // point to block for next pass through loop
    if(np){
     I c=AC(np);  // fetch usecount
-#ifdef PREFETCH
-    PREFETCH((C*)np0);   // prefetch the next box.  Might be 0; that's no crime
-#endif
     // We never tpush a PERMANENT block so we needn't check for it.
     // If count goes to 0: if the usercount is marked recursive, do the recursive fa(), otherwise just free using mf().  If virtual, the backer must be recursive, so fa() it
     // Otherwise just decrement the count

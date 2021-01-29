@@ -101,11 +101,6 @@ I cachedmmult(J jt,D* av,D* wv,D* zv,I m,I n,I p,I flgs){D c[(CACHEHEIGHT+1)*CAC
    // Because of loop unrolling, we fetch and multiply one extra value in each cache column.  We make sure those values are 0 to avoid NaN errors
    for(i=0;i<MIN(CACHEWIDTH,w0rem);++i)*cvx++=0.0;
 
-   // w1next is left pointing to the next cache block in the column.  We will use that to prefetch
-#ifdef PREFETCH
-   D *nextprefetch=w1next;  // start prefetches for the next block at the beginning
-#endif
-
    // the mx16 vertical strip of a (mx32 if flgs) will be multiplied by the 16x64 section of w and accumulated into z
    // process each 2x16 section of a against the 16x64 cache block
    D *a2base0=a1base; D* w2base=w1base; I a2rem=m; D* z2base=z1base; D* c2base=cvw;
@@ -113,18 +108,6 @@ I cachedmmult(J jt,D* av,D* wv,D* zv,I m,I n,I p,I flgs){D c[(CACHEHEIGHT+1)*CAC
     // Prepare for the 2x16 block of a (2x32 if flgs)
     // If the second row of a is off the end of the data, we mustn't fetch it - switch the pointer to a row of 1s so it won't give NaN error on multiplying by infinity
     D *a2base1 = (a2rem>1)?a2base0+p:missingrow;
-#ifdef PREFETCH
-    // While we are processing the sections of a, move the next cache block into L2 (not L1, so we don't overrun it)
-    // We would like to do all the prefetches for a CACHEWIDTH at once to stay in page mode
-    // but that might overrun the prefetch queue, which holds 10 prefetches.
-    // The length of a cache row is (CACHEWIDTH*sizeof(D))/CACHELINESIZE=8 cache lines, plus one in case the data is misaligned.
-    // We start the prefetches when we get to within 3*CACHEHEIGHT iterations from the end, which gives us 3 iterations
-    // to fetch each row of the cache, 3 fetches per iteration.
-    if(a2rem<=3*OPHEIGHT*CACHEHEIGHT+(OPHEIGHT-1)){
-     PREFETCH2((C*)nextprefetch); PREFETCH2((C*)nextprefetch+CACHELINESIZE); PREFETCH2((C*)nextprefetch+2*CACHELINESIZE);  // 3 prefetches
-     if(nextprefetch==(D*)((C*)w1next+6*CACHELINESIZE)){nextprefetch = w1next += n;}else{nextprefetch+=(3*CACHELINESIZE)/sizeof(*nextprefetch);}  // next col, or next row after 9 prefetches
-    }
-#endif
     // process each 16x4 section of cache, accumulating into z (this holds 16x2 complex values, if flgs)
     I a3rem=MIN(w0rem,CACHEWIDTH);
     D* RESTRICT z3base=z2base; D* c3base=c2base;
@@ -135,19 +118,6 @@ I cachedmmult(J jt,D* av,D* wv,D* zv,I m,I n,I p,I flgs){D c[(CACHEHEIGHT+1)*CAC
      if(a3rem>3){z01=z3base[1],z02=z3base[2],z03=z3base[3]; if(a2rem>1)z10=z3base[n],z11=z3base[n+1],z12=z3base[n+2],z13=z3base[n+3];
      }else{if(a3rem>1){z01=z3base[1];if(a3rem>2)z02=z3base[2];}; if(a2rem>1){z10=z3base[n];if(a3rem>1)z11=z3base[n+1];if(a3rem>2)z12=z3base[n+2];}}
      // process outer product of each 2x1 section on each 1x4 section of cache
-
-     // Prefetch the next lines of a and z into L2 cache.  We don't prefetch all the way to L1 because that might overfill L1,
-     // if all the prefetches hit the same line (we already have 2 lines for our cache area, plus the current z values)
-     // The number of prefetches we need per line is (CACHEHEIGHT*sizeof(D)/CACHELINESIZE)+1, and we need that for
-     // OPHEIGHT*(OPWIDTH/4) lines for each of a and z.  We squeeze off half the prefetches for a row at once so we can use fast page mode
-     // to read the data (only half to avoid overfilling the prefetch buffer), and we space the reads as much as possible through the column-swatches
-#ifdef PREFETCH   // if architecture doesn't support prefetch, skip it
-     if((3*OPWIDTH)==(a3rem&(3*OPWIDTH))){  // every fourth swatch
-      I inc=((a3rem&(8*OPWIDTH))?p:n)*sizeof(D);    // counting down, a then z
-      C *base=(C*)((a3rem&(8*OPWIDTH))?a2base0:z2base) + inc + (a3rem&(4*OPWIDTH)?0:inc);
-      PREFETCH2(base); PREFETCH2(base+CACHELINESIZE); PREFETCH2(base+2*CACHELINESIZE);
-     }
-#endif
 
      // Now do the 16 outer products for the block, each 2ax4w (or 2ax2w if flgs)
      I a4rem=MIN(w1rem,CACHEHEIGHT);
