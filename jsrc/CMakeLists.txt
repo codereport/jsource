@@ -128,19 +128,6 @@ target_sources(j PRIVATE
 
 # configure_file( ${CMAKE_CURRENT_SOURCE_DIR}/ COPYONLY)
 
-if (OpenMP_C_FOUND)
-    target_link_libraries(j PRIVATE OpenMP::OpenMP_C)
-
-    if (DEFINED OpenMP_libomp_DLL)
-        add_custom_command(
-                TARGET j POST_BUILD
-                COMMAND ${CMAKE_COMMAND} -E copy
-                ${OpenMP_libomp_DLL}
-                "${CMAKE_CURRENT_BINARY_DIR}$<${is_multi_config}:/$<CONFIG>>"
-        )
-    endif ()
-endif ()
-
 if (NOT BUILD_SHARED_LIBS)
     return()
 endif ()
