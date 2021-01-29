@@ -5,11 +5,7 @@
 
 #include "j.h"
 
-
-#define REPF(f)         A f(J jt,A a,A w,I wf,I wcr)
-
-
-static REPF(jtrepzdx){A p,q,x;P*wp;
+static A jtrepzdx(J jt,A a,A w,I wf,I wcr){A p,q,x;P*wp;
  F2PREFIP;ARGCHK2(a,w);
  if(SPARSE&AT(w)){wp=PAV(w); x=SPA(wp,e);}
  else x=jt->fill&&AN(jt->fill)?jt->fill:filler(w);
@@ -18,7 +14,7 @@ static REPF(jtrepzdx){A p,q,x;P*wp;
  return IRS2(p,q,0L,1L,wcr+!wcr,jtfrom,x);
 }    /* (dense complex) # (dense or sparse) */
 
-static REPF(jtrepzsx){A q,x,y;I c,d,j,k=-1,m,p=0,*qv,*xv,*yv;P*ap;
+static A jtrepzsx(J jt,A a,A w,I wf,I wcr){A q,x,y;I c,d,j,k=-1,m,p=0,*qv,*xv,*yv;P*ap;
  F2PREFIP;ARGCHK2(a,w);
  ap=PAV(a); x=SPA(ap,x); m=AN(x);
  if(!AN(SPA(ap,a)))return repzdx(ravel(x),w,wf,wcr);
@@ -43,7 +39,7 @@ static REPF(jtrepzsx){A q,x,y;I c,d,j,k=-1,m,p=0,*qv,*xv,*yv;P*ap;
  ASSERT(0,EVNONCE);
 }    /* (sparse complex) #"r (dense or sparse) */
 
-static REPF(jtrepbdx){A z;I c,k,m,p;
+static A jtrepbdx(J jt,A a,A w,I wf,I wcr){A z;I c,k,m,p;
  // wf and wcr are set
  F2PREFIP;ARGCHK2(a,w);
  if(SPARSE&AT(w))return irs2(ifb(AN(a),BAV(a)),w,0L,1L,wcr,jtfrom);
@@ -110,7 +106,7 @@ static REPF(jtrepbdx){A z;I c,k,m,p;
  return z;
 }    /* (dense boolean)#"r (dense or sparse) */
 
-static REPF(jtrepbsx){A ai,c,d,e,g,q,x,wa,wx,wy,y,y1,z,zy;B*b;I*dv,*gv,j,m,n,*u,*v,*v0;P*ap,*wp,*zp;
+static A jtrepbsx(J jt,A a,A w,I wf,I wcr){A ai,c,d,e,g,q,x,wa,wx,wy,y,y1,z,zy;B*b;I*dv,*gv,j,m,n,*u,*v,*v0;P*ap,*wp,*zp;
  F2PREFIP;ARGCHK2(a,w);
  ap=PAV(a); e=SPA(ap,e); 
  y=SPA(ap,i); u=AV(y);
@@ -143,7 +139,7 @@ static REPF(jtrepbsx){A ai,c,d,e,g,q,x,wa,wx,wy,y,y1,z,zy;B*b;I*dv,*gv,j,m,n,*u,
  return z;
 }    /* (sparse boolean) #"r (dense or sparse) */
 
-static REPF(jtrepidx){A y;I j,m,p=0,*v,*x;
+static A jtrepidx(J jt,A a,A w,I wf,I wcr){A y;I j,m,p=0,*v,*x;
  F2PREFIP;ARGCHK2(a,w);
  RZ(a=vi(a)); x=AV(a);
  m=AS(a)[0];
@@ -153,7 +149,7 @@ static REPF(jtrepidx){A y;I j,m,p=0,*v,*x;
  A z; return IRS2(y,w,0L,1L,wcr,jtfrom,z);
 }    /* (dense  integer) #"r (dense or sparse) */
 
-static REPF(jtrepisx){A e,q,x,y;I c,j,m,p=0,*qv,*xv,*yv;P*ap;
+static A jtrepisx(J jt,A a,A w,I wf,I wcr){A e,q,x,y;I c,j,m,p=0,*qv,*xv,*yv;P*ap;
  F2PREFIP;ARGCHK2(a,w);
  ap=PAV(a); e=SPA(ap,e); 
  y=SPA(ap,i); yv=AV(y);
@@ -170,7 +166,7 @@ static REPF(jtrepisx){A e,q,x,y;I c,j,m,p=0,*qv,*xv,*yv;P*ap;
 }    /* (sparse integer) #"r (dense or sparse) */
 
 
-static REPF(jtrep1d){A z;C*wv,*zv;I c,k,m,n,p=0,q,t,*ws,zk,zn;
+static A jtrep1d(J jt,A a,A w,I wf,I wcr){A z;C*wv,*zv;I c,k,m,n,p=0,q,t,*ws,zk,zn;
  F2PREFIP;ARGCHK2(a,w);
  t=AT(a); m=AN(a); ws=AS(w); SETICFR(w,wf,wcr,n);   // n=length of item axis in input.  If atom, is repeated to length of a
  if(t&CMPX){
@@ -203,7 +199,7 @@ static B jtrep1sa(J jt,A a,I*c,I*d){A x;B b;I*v;
  return 1;
 }    /* process a in a#"0 w */
 
-static REPF(jtrep1s){A ax,e,x,y,z;B*b;I c,d,cd,j,k,m,n,p,q,*u,*v,wr,*ws;P*wp,*zp;
+static A jtrep1s(J jt,A a,A w,I wf,I wcr){A ax,e,x,y,z;B*b;I c,d,cd,j,k,m,n,p,q,*u,*v,wr,*ws;P*wp,*zp;
  F2PREFIP;ARGCHK2(a,w);
  if(AT(a)&SCMPX)return rep1d(denseit(a),w,wf,wcr);
  RE(rep1sa(a,&c,&d)); cd=c+d;
