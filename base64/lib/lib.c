@@ -1,8 +1,5 @@
 #include <stdint.h>
 #include <stddef.h>
-#ifdef _OPENMP
-#include <omp.h>
-#endif
 
 #include "../include/libbase64.h"
 #include "tables/tables.h"
@@ -89,16 +86,6 @@ base64_stream_decode
 	return codec.dec(state, src, srclen, out, outlen);
 }
 
-#ifdef _OPENMP
-
-	// Due to the overhead of initializing OpenMP and creating a team of
-	// threads, we require the data length to be larger than a threshold:
-	#define OMP_THRESHOLD 20000
-
-	// Conditionally include OpenMP-accelerated codec implementations:
-	#include "lib_openmp.c"
-#endif
-
 void
 base64_encode
 	( const char	*src
@@ -111,13 +98,6 @@ base64_encode
 	size_t s;
 	size_t t;
 	struct base64_state state;
-
-	#ifdef _OPENMP
-	if (srclen >= OMP_THRESHOLD) {
-		base64_encode_openmp(src, srclen, out, outlen, flags);
-		return;
-	}
-	#endif
 
 	// Init the stream reader:
 	base64_stream_encode_init(&state, flags);
@@ -143,12 +123,6 @@ base64_decode
 {
 	int ret;
 	struct base64_state state;
-
-	#ifdef _OPENMP
-	if (srclen >= OMP_THRESHOLD) {
-		return base64_decode_openmp(src, srclen, out, outlen, flags);
-	}
-	#endif
 
 	// Init the stream reader:
 	base64_stream_decode_init(&state, flags);
