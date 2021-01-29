@@ -6,7 +6,6 @@
 #include "j.h"
 #include "verbs/vcomp.h"
 
-#define KF2(f)          B f(J jt,A w,void*yv,I mode)
 #define CVCASE(a,b)     (((a)<<3)+(b))   // The main cases fit in low 8 bits of mask
 
 // FEQ/FIEQ are used in bcvt, where FUZZ may be set to 0 to ensure only exact values are demoted to lower precision
@@ -119,7 +118,7 @@ static X jtxd1(J jt,D p, I mode){PROLOG(0052);A t;D d,e=tfloor(p),q,r;I m,*u;
  EPILOG(z);
 }
 
-static KF2(jtXfromD){D*v=DAV(w);X*x=(X*)yv; DO(AN(w), x[i]=rifvsdebug(xd1(v[i],mode));); return !jt->jerr;}
+static B jtXfromD(J jt,A w,void*yv,I mode){D*v=DAV(w);X*x=(X*)yv; DO(AN(w), x[i]=rifvsdebug(xd1(v[i],mode));); return !jt->jerr;}
 
 static B jtBfromX(J jt,A w,void*yv){A q;B*x;I e;X*v;
  v=XAV(w); x=(B*)yv;
@@ -154,7 +153,7 @@ static B jtDfromX(J jt,A w,void*yv){D d,*x=(D*)yv/*,dm,dp*/;I c,i,n,*v,wn;X p,*w
 
 static B jtQfromX(J jt,A w,void*yv){X*v=XAV(w),*x=(X*)yv; DQ(AN(w), *x++=*v++; *x++=iv1;); return 1;}
 
-static KF2(jtQfromD){B neg,recip;D c,d,t,*wv;I e,i,n,*v;Q q,*x;S*tv;
+static B jtQfromD(J jt,A w,void*yv,I mode){B neg,recip;D c,d,t,*wv;I e,i,n,*v;Q q,*x;S*tv;
  if(!(w))return 0;
  n=AN(w); wv=DAV(w); x=(Q*)yv; tv=3+(S*)&t;
  for(i=0;i<n;++i){
