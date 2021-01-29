@@ -6,7 +6,7 @@
 #include "j.h"
 
 
-static F1(jtnorm){return sqroot(pdt(w,conjug(w)));}
+static A jtnorm(J jt, A w){return sqroot(pdt(w,conjug(w)));}
 
 // take inverse of upper-triangular w.  We ASSUME w is inplaceable
 // n is the size of the nxn matrix w; ncomp codes for special processing
@@ -54,7 +54,7 @@ static A jtrinvip(J jt,A w,I n,I ncomp){PROLOG(0066);A ai,bx,di,z;I m;
 
 
 // 128!:1 Invert Upper-triangular matrix return
-F1(jtrinv){
+ A jtrinv(J jt, A w){
  ARGCHK1(w);
  F1RANK(2,jtrinv,UNUSED_VALUE);
  ASSERT(AR(w)==2,EVRANK);  // rank at least 2
@@ -64,7 +64,7 @@ F1(jtrinv){
 }
 
 // recursive subroutine for qr decomposition, returns q;r
-static F1(jtqrr){PROLOG(0067);A a1,q,q0,q1,r,r0,r1,t,*tv,t0,t1,y,z;I m,n,p,*s;
+static A jtqrr(J jt, A w){PROLOG(0067);A a1,q,q0,q1,r,r0,r1,t,*tv,t0,t1,y,z;I m,n,p,*s;
  ARGCHK1(w);
  if(2>AR(w)){p=AN(w); n=1;}else{s=AS(w); p=s[0]; n=s[1];}  // p=#rows, n=#columns
  m=n>>1; I tom=(0x01222100>>((n&7)<<2))&3; m=(m+tom<n)?m+tom:m;  // Minimize number of wasted multiply slots, processing in batches of 4
@@ -94,7 +94,7 @@ static F1(jtqrr){PROLOG(0067);A a1,q,q0,q1,r,r0,r1,t,*tv,t0,t1,y,z;I m,n,p,*s;
 // this version operates on rows, inplace.  w is not empty
 // q is the ADJOINT of the original q matrix
 // result is adjoint of the L in LQ decomp, therefore upper-triangular
-static F1(jtltqip){PROLOG(0067);A l0,l1,y,z;
+static A jtltqip(J jt, A w){PROLOG(0067);A l0,l1,y,z;
 ARGCHK1(w);
  A q0; fauxblock(virtwq0); D *w0v=DAV(w);  // q0 & q1 data
  I rw=AS(w)[0]; I cl=AS(w)[1];  // # rows, # columns
@@ -143,7 +143,7 @@ ARGCHK1(w);
 }
 
 // qr (?) decomposition of w, returns q;r
-F1(jtqr){A r,z;D c=inf,d=0,x;I n1,n,*s,wr;
+ A jtqr(J jt, A w){A r,z;D c=inf,d=0,x;I n1,n,*s,wr;
  F1RANK(2,jtqr,UNUSED_VALUE);
  ASSERT(DENSE&AT(w),EVNONCE);
  ASSERT(AT(w)&B01+INT+FL+CMPX,EVDOMAIN);
@@ -158,7 +158,7 @@ return z;
 
 // return inverse of w, calculated by lq applied to adjoint
 // result has rank 2
-static F1(jtlq){A l;D c=inf,d=0,x;I n1,n,*s,wr;
+static A jtlq(J jt, A w){A l;D c=inf,d=0,x;I n1,n,*s,wr;
  F1RANK(2,jtqr,UNUSED_VALUE);
  ASSERT(DENSE&AT(w),EVNONCE);
  ASSERT(AT(w)&B01+INT+FL+CMPX,EVDOMAIN);
@@ -178,7 +178,7 @@ static F1(jtlq){A l;D c=inf,d=0,x;I n1,n,*s,wr;
 // Boolean/integer correction.  If the inversand was B01 or INT, we can eliminate some rounding error by forcing the
 // determinant to integer and then each value to an integer multiple of the determinant.
 // The determinant was calculated when we inverted the matrix
-static F1(jticor){D d,*v;
+static A jticor(J jt, A w){D d,*v;
  ARGCHK1(w);
  d=jt->workareas.minv.determ;  // fetch flag/determinant
  if(d==0.0)return w;  // if not enabled or not applicable, return input unchanged
@@ -188,7 +188,7 @@ static F1(jticor){D d,*v;
  return w;
 }
 
-F1(jtminv){PROLOG(0068);A q,y,z;I m,n,*s,t,wr;
+ A jtminv(J jt, A w){PROLOG(0068);A q,y,z;I m,n,*s,t,wr;
  F1RANK(2,jtminv,UNUSED_VALUE);
  jt->workareas.minv.determ=0.0;
  t=AT(w); wr=AR(w); s=AS(w); m=wr?s[0]:1; n=1<wr?s[1]:1;

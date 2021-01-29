@@ -693,7 +693,7 @@ static B (*grroutine[])(J,I,I,I,A,I*) = {  // index is [bitx]
 [B01X]=jtgrc, [LITX]=jtgrc, [INTX]=jtgri, [FLX]=jtgrd, [CMPXX]=jtgrx,[BOXX]=jtgrx, [XNUMX]=jtgrx, [RATX]=jtgrx, [C2TX]=jtgrc, [C4TX]=jtgru, [SBTX]=jtgrs};
 
 // /: and \: with IRS support
-F1(jtgr1){PROLOG(0075);A z;I c,f,ai,m,n,r,*s,t,wn,wr,zn;
+ A jtgr1(J jt, A w){PROLOG(0075);A z;I c,f,ai,m,n,r,*s,t,wn,wr,zn;
  ARGCHK1(w);
  t=AT(w); wr=AR(w); r=(RANKT)jt->ranks; r=wr<r?wr:r; RESETRANK;
  f=wr-r; s=AS(w);
@@ -714,8 +714,8 @@ F1(jtgr1){PROLOG(0075);A z;I c,f,ai,m,n,r,*s,t,wn,wr,zn;
  EPILOG(z);
 }    /*   grade"r w main control for dense w */
 
-F1(jtgrade1 ){A z;GBEGIN(-1); RZ(   w); z=SPARSE&AT(w)?grd1sp(  w):gr1(  w); GEND return z;}
-F1(jtdgrade1){A z;GBEGIN( 1); RZ(   w); z=SPARSE&AT(w)?grd1sp(  w):gr1(  w); GEND return z;}
+ A jtgrade1 (J jt, A w){A z;GBEGIN(-1); RZ(   w); z=SPARSE&AT(w)?grd1sp(  w):gr1(  w); GEND return z;}
+ A jtdgrade1(J jt, A w){A z;GBEGIN( 1); RZ(   w); z=SPARSE&AT(w)?grd1sp(  w):gr1(  w); GEND return z;}
 // Since grade2 pulls from a, mark a as non-pristine.  But since there can be no repeats, transfer a's pristinity to result if a is inplaceable
 // We do this in jtgr2 because it has a branch where all boxed values go
 F2(jtgrade2 ){F2PREFIP;A z;GBEGIN(-1); ARGCHK2(a,w); RZ(z=SPARSE&AT(w)?grd2sp(a,w):jtgr2(jtinplace,a,w)); GEND

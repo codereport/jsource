@@ -297,7 +297,7 @@ static DF2(jtcut2bx){A*av,b,t,x,*xv,y,*yv;B*bv;I an,bn,i,j,m,p,q,*u,*v,*ws;
  if(pfx)for(i=m;i>=1;--i){q=yu[i-1]-yu[i  ]; d=q-neg; v1=wv+k*(b+p); stmt; p+=q;}  \
  else   for(i=1;i<=m;++i){q=yu[i  ]-yu[i-1]; d=q-neg; v1=wv+k*(b+p); stmt; p+=q;}
 
-static F1(jtcps){A z;P*wp,*zp;
+static A jtcps(J jt, A w){A z;P*wp,*zp;
  GASPARSE(z,AT(w),1,AR(w),AS(w)); 
  zp=PAV(z);
  wp=PAV(w); 

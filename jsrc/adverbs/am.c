@@ -56,7 +56,7 @@ static A jtmerge1(J jt,A w,A ind){A z;B*b;C*wc,*zc;D*wd,*zd;I c,it,j,k,m,r,*s,t,
                        zv[i]=*(i+(T*)aa[j]);); break;}
 
 // Handle the case statement abc =: pqr} x,...,y,:z, with in-place operation if pqr is Boolean and abc appears on the right
-F1(jtcasev){A b,*u,*v,w1,x,y,z;B*bv,p,q;I*aa,c,*iv,j,m,n,r,*s,t;
+ A jtcasev(J jt, A w){A b,*u,*v,w1,x,y,z;B*bv,p,q;I*aa,c,*iv,j,m,n,r,*s,t;
  ARGCHK1(w);
  RZ(w1=ca(w)); u=AAV(w1);   // make a copy of the input, point to its value
  // the input is a boxed list.  The last 3 values are (name pqr);(index in which abc appeared in the x,y,... or -1 if it didn't);(original sentence queue)
@@ -388,7 +388,7 @@ B jtgerexact(J jt, A w){A*wv;
 
 
 // u} handling.  This is not inplaceable but the derived verb is
-F1(jtamend){
+ A jtamend(J jt, A w){
  ARGCHK1(w);
  if(VERB&AT(w)) return ADERIV(CRBRACE,mergv1,amccv2,VASGSAFE|VJTFLGOK2, RMAX,RMAX,RMAX);  // verb}
  else if(ger(w))return gadv(w,CRBRACE);   // v0`v1`v2}
@@ -397,7 +397,7 @@ F1(jtamend){
 
 static DF2(jtamen2){ASSERT(0,EVNONCE);}
 
-F1(jtemend){
+ A jtemend(J jt, A w){
  ASSERT(NOUN&AT(w),EVDOMAIN);
  return ADERIV(CEMEND,0L,jtamen2,VFLAGNONE, RMAX,RMAX,RMAX);
 }

@@ -4,9 +4,9 @@
 /* Grades                                                                  */
 
 
-extern F1(jtgr1);
+extern A jtgr1(J jt, A w);
 extern F2(jtgr2);
-extern F1(jtgrd1sp);
+extern A jtgrd1sp(J jt, A w);
 extern F2(jtgrd2sp);
 
 extern B compcu(I,UC*,UC*);

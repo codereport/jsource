@@ -53,8 +53,8 @@ B jtdbstop(J jt,DC d,I i){A a;B b,c=0,e;C nw[11],*s,*t,*u,*v;I md,n,p,q;
 }    /* stop on line i? */
 
 
-F1(jtdbstopq){ASSERTMTV(w); return jt->dbstops?jt->dbstops:mtv;}
+ A jtdbstopq(J jt, A w){ASSERTMTV(w); return jt->dbstops?jt->dbstops:mtv;}
      /* 13!:2  query stops */
 
-F1(jtdbstops){RZ(w=vs(w)); fa(jt->dbstops); if(AN(w)){RZ(ras(w)); jt->dbstops=w;}else jt->dbstops=0; return mtm;}
+ A jtdbstops(J jt, A w){RZ(w=vs(w)); fa(jt->dbstops); if(AN(w)){RZ(ras(w)); jt->dbstops=w;}else jt->dbstops=0; return mtm;}
      /* 13!:3  set stops */

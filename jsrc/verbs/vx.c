@@ -466,7 +466,7 @@ AMONPS(factX, X,X, , *z= rifvsdebug(xfact(*x)); , HDR1JERR)
 AMONPS( pixX, X,X, , *z=   rifvsdebug(xpi(*x)); , HDR1JERR)
 
 
-F1(jtdigits10){A z;B b=0;I c,m,n,*v,*zv,*zv0;X x;
+ A jtdigits10(J jt, A w){A z;B b=0;I c,m,n,*v,*zv,*zv0;X x;
  ARGCHK1(w);
  if(!AR(w))switch(CTTZ(AT(w))){
   case INTX:  b=0<=AV(w)[0]; break;

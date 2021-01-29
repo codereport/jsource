@@ -6,10 +6,10 @@
 #include "j.h"
 #include "words/w.h"
 
-static F1(jtdrr);
+static A jtdrr(J jt, A w);
 EVERYFS(drrself,jtdrr,0,0,VFLAGNONE)
 
-static F1(jtdrr){PROLOG(0055);A df,dg,hs,*x,z;B b,ex,xop;C c,id;I fl,*hv,m;V*v;
+static A jtdrr(J jt, A w){PROLOG(0055);A df,dg,hs,*x,z;B b,ex,xop;C c,id;I fl,*hv,m;V*v;
  ARGCHK1(w);
  // If the input is a name, it must be from ".@'name' which turned into ".@(name+noun)  - or in debug, but that's discarded
  if(AT(w)&NAME){RZ(w=sfn(0,w));}
@@ -36,10 +36,10 @@ static F1(jtdrr){PROLOG(0055);A df,dg,hs,*x,z;B b,ex,xop;C c,id;I fl,*hv,m;V*v;
  EPILOG(z);
 }
 
-F1(jtdrep){A z=drr(w); return z&&AT(z)&BOX?z:ravel(box(z));}
+ A jtdrep(J jt, A w){A z=drr(w); return z&&AT(z)&BOX?z:ravel(box(z));}
 
 
-F1(jtaro){A fs,gs,hs,s,*u,*x,y,z;B ex,xop;C id;I*hv,m;V*v;
+ A jtaro(J jt, A w){A fs,gs,hs,s,*u,*x,y,z;B ex,xop;C id;I*hv,m;V*v;
  ARGCHK1(w);
  if(FUNC&AT(w)){
   v=FAV(w); id=v->id;
@@ -63,7 +63,7 @@ F1(jtaro){A fs,gs,hs,s,*u,*x,y,z;B ex,xop;C id;I*hv,m;V*v;
  return z;
 }
 
-F1(jtarep){return box(aro(w));}
+ A jtarep(J jt, A w){return box(aro(w));}
 
 // Create A for a string - name~, a primitive, or the boxed string
 static DF1(jtfxchar){A y;C c,d,id,*s;I m,n;
@@ -323,10 +323,10 @@ static F2(jtxrep){A h,*hv,*v,x,z,*zv;CW*u;I i,j,n,q[3],*s;V*wv;
 }    /* explicit representation -- h parameter for : definitions */
 
 
-F1(jtarx){F1RANK(0,  jtarx,UNUSED_VALUE); return arep(  symbrdlocknovalerr(nfb(w)));}
-F1(jtdrx){F1RANK(0,  jtdrx,UNUSED_VALUE); return drep(  symbrdlocknovalerr(nfb(w)));}
-F1(jttrx){F1RANK(0,  jttrx,UNUSED_VALUE); return trep(  symbrdlocknovalerr(nfb(w)));}
-F1(jtlrx){F1RANK(0,  jtlrx,UNUSED_VALUE); return lrep(  symbrdlocknovalerr(nfb(w)));}
-F1(jtprx){F1RANK(0,  jtprx,UNUSED_VALUE); return prep(  symbrdlocknovalerr(nfb(w)));}
+ A jtarx(J jt, A w){F1RANK(0,  jtarx,UNUSED_VALUE); return arep(  symbrdlocknovalerr(nfb(w)));}
+ A jtdrx(J jt, A w){F1RANK(0,  jtdrx,UNUSED_VALUE); return drep(  symbrdlocknovalerr(nfb(w)));}
+ A jttrx(J jt, A w){F1RANK(0,  jttrx,UNUSED_VALUE); return trep(  symbrdlocknovalerr(nfb(w)));}
+ A jtlrx(J jt, A w){F1RANK(0,  jtlrx,UNUSED_VALUE); return lrep(  symbrdlocknovalerr(nfb(w)));}
+ A jtprx(J jt, A w){F1RANK(0,  jtprx,UNUSED_VALUE); return prep(  symbrdlocknovalerr(nfb(w)));}
 
 F2(jtxrx){F2RANK(0,0,jtxrx,UNUSED_VALUE); return xrep(a,symbrdlock(nfb(w)));}  // 5!:7

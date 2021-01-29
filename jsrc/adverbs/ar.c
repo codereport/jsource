@@ -597,7 +597,7 @@ static DF1(jtredcateach){A*u,*v,*wv,x,*xv,z,*zv;I f,m,mn,n,r,wr,*ws,zm,zn;I n1=0
 static DF2(jtoprod){A z; return df2(z,a,w,FAV(self)->fgh[2]);}  // x u/ y - transfer to the u"lr,_ verb (precalculated)
 
 
-F1(jtslash){A h;AF f1;C c;V*v;I flag=0;
+ A jtslash(J jt, A w){A h;AF f1;C c;V*v;I flag=0;
  ARGCHK1(w);
  if(NOUN&AT(w))return evger(w,sc(GINSERT));  // treat m/ as m;.6.  This means that a node with CSLASH never contains gerund u
  v=FAV(w); 

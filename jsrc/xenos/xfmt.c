@@ -59,7 +59,7 @@ static const C*qq=">)}]";
 #define uS  (u[11])
 
 
-static F1(jtfmtbfc){A*u,z;B t;C c,p,q,*s,*wv;I i,j,m,n;
+static A jtfmtbfc(J jt, A w){A*u,z;B t;C c,p,q,*s,*wv;I i,j,m,n;
  ARGCHK1(w); 
  if((C2T+C4T)&AT(w))RZ(w=uco2(num(5),w))
  ASSERT(1>=AR(w),EVDOMAIN);
@@ -132,7 +132,7 @@ static B jtwidthdp(J jt, A a, I *w, I *d){
 /* corresponding to      c lkji bdmn pqrs                                        */
 /* k j i b d m n p q r s are the strings to use; s is '' if all defaults           */
 
-static F1(jtfmtparse){A x,z,*zv;B ml[2+NMODVALS],mod,t;C c,*cu="srqpnmdbijklc",*cu1="?kjibdmnpqrs",d,*s,*wv;
+static A jtfmtparse(J jt, A w){A x,z,*zv;B ml[2+NMODVALS],mod,t;C c,*cu="srqpnmdbijklc",*cu1="?kjibdmnpqrs",d,*s,*wv;
      I fb,i,j,mi,n,n1,p,q,vals[3]={-1,-1,0};
  ARGCHK1(w);
  w=AAV(w)[0]; n=AN(w);

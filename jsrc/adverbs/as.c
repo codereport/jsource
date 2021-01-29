@@ -363,7 +363,7 @@ static DF2(jtofxassoc){A f,i,j,p,s,x,z;C id,*zv;I c,d,k,kc,m,r,t;V*v;VA2 adocv;
 
 static DF1(jtiota1rev){I j; SETIC(w,j); return apv(j,j,-1L);}
 
-F1(jtbsdot){A f;AF f1=jtsuffix,f2=jtoutfix;I flag=FAV(ds(CBSDOT))->flag;C id;V*v;  // init flag is IRS1
+ A jtbsdot(J jt, A w){A f;AF f1=jtsuffix,f2=jtoutfix;I flag=FAV(ds(CBSDOT))->flag;C id;V*v;  // init flag is IRS1
  ARGCHK1(w);
  if(NOUN&AT(w))return fdef(0,CBSLASH,VERB, jtgsuffix,jtgoutfix, w,0L,fxeachv(1L,w), VGERL|VAV(ds(CBSLASH))->flag, RMAX,0L,RMAX);
  v=FAV(w);  // verb info for w

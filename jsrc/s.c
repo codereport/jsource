@@ -119,7 +119,7 @@ extern void jtsymfreeha(J jt, A w){I j,wn=AN(w); LX k,* RESTRICT wv=LXAV0(w);
 
 static SYMWALK(jtsympoola, I,INT,100,1, 1, *zv++=j;)
 
-F1(jtsympool){A aa,q,x,y,*yv,z,*zv;I i,n,*u,*xv;L*pv;LX j,*v;
+ A jtsympool(J jt, A w){A aa,q,x,y,*yv,z,*zv;I i,n,*u,*xv;L*pv;LX j,*v;
  ARGCHK1(w); 
  ASSERT(1==AR(w),EVRANK); 
  ASSERT(!AN(w),EVLENGTH);
@@ -410,14 +410,14 @@ static A jtdllsymaddr(J jt,A w,C flag){A*wv,x,y,z;I i,n,*zv;L*v;
  return z;
 }    /* 15!:6 (0=flag) or 15!:14 (1=flag) */
 
-F1(jtdllsymget){return dllsymaddr(w,0);}
-F1(jtdllsymdat){return dllsymaddr(w,1);}
+ A jtdllsymget(J jt, A w){return dllsymaddr(w,0);}
+ A jtdllsymdat(J jt, A w){return dllsymaddr(w,1);}
 
 // look up the name w using full name resolution.  Return the value if found, abort if not found or invalid name
-F1(jtsymbrd){L*v; ARGCHK1(w); ASSERTN(v=syrd(w,jt->locsyms),EVVALUE,w); return v->val;}
+ A jtsymbrd(J jt, A w){L*v; ARGCHK1(w); ASSERTN(v=syrd(w,jt->locsyms),EVVALUE,w); return v->val;}
 
 // look up name w, return value unless locked or undefined; then return just the name
-F1(jtsymbrdlocknovalerr){A y;L *v;
+ A jtsymbrdlocknovalerr(J jt, A w){A y;L *v;
  if(!(v=syrd(w,jt->locsyms))){
   // no value.  Could be undefined name (no error) or some other error including value error, which means error looking up an indirect locative
   // If error, abort with it; if undefined, return a reference to the undefined name
@@ -430,7 +430,7 @@ F1(jtsymbrdlocknovalerr){A y;L *v;
 }
 
 // Same, but value error if name not defined
-F1(jtsymbrdlock){A y;
+ A jtsymbrdlock(J jt, A w){A y;
  RZ(y=symbrd(w));
  return FUNC&AT(y)&&(jt->uflags.us.cx.cx_c.glock||VLOCK&FAV(y)->flag)?nameref(w,jt->locsyms):y;
 }

@@ -314,7 +314,7 @@ F2(jtintdiv){A z;B b,flr;I an,ar,*as,*av,c,d,j,k,m,n,p,p1,r,*s,wn,wr,*ws,*wv,*zv
 
 static F2(jtweight){ARGCHK2(a,w); A z; return df1(z,behead(over(AR(w)?w:reshape(a,w),num(1))),bsdot(slash(ds(CSTAR))));}  // */\. }. (({:$a)$w),1
 
-F1(jtbase1){A z;B*v;I c,m,n,p,r,*s,t,*x;
+ A jtbase1(J jt, A w){A z;B*v;I c,m,n,p,r,*s,t,*x;
  ARGCHK1(w);
  n=AN(w); t=AT(w); r=AR(w); s=AS(w); c=AS(w)[r-1]; c=r?c:1;
  ASSERT(t&DENSE,EVNONCE);
@@ -337,7 +337,7 @@ F2(jtbase2){I ar,*as,at,c,t,wr,*ws,wt;
 }
 
 // #: y
-F1(jtabase1){A d,z;B*zv;I c,n,p,r,t,*v;UI x;
+ A jtabase1(J jt, A w){A d,z;B*zv;I c,n,p,r,t,*v;UI x;
  ARGCHK1(w);
  // n = #atoms, r=rank, t=type
  n=AN(w); r=AR(w); t=AT(w);

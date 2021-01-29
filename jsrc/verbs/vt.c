@@ -6,10 +6,10 @@
 #include "j.h"
 
 
-F1(jtbehead ){F1PREFIP; return jtdrop(jtinplace,zeroionei(1),    w);}
-F1(jtcurtail){F1PREFIP; return jtdrop(jtinplace,num(-1),w);}
+ A jtbehead (J jt, A w){F1PREFIP; return jtdrop(jtinplace,zeroionei(1),    w);}
+ A jtcurtail(J jt, A w){F1PREFIP; return jtdrop(jtinplace,num(-1),w);}
 
-F1(jtshift1){return drop(num(-1),over(num(1),w));}
+ A jtshift1(J jt, A w){return drop(num(-1),over(num(1),w));}
 
 static A jttk0(J jt,B b,A a,A w){A z;I k,m=0,n,p,r,*s,*u;
  r=AR(w); n=AN(a); u=AV(a); 
@@ -183,7 +183,7 @@ F2(jtdrop){A s;I acr,af,ar,d,m,n,*u,*v,wcr,wf,wr;
 
 
 // create 1 cell of fill when head/tail of an array with no items (at the given rank)
-static F1(jtrsh0){A x,y;I wcr,wf,wr,*ws;
+static A jtrsh0(J jt, A w){A x,y;I wcr,wf,wr,*ws;
  wr=AR(w); wcr=(RANKT)jt->ranks; wcr=wr<wcr?wr:wcr; wf=wr-wcr; RESETRANK;
  ws=AS(w);
  RZ(x=vec(INT,wr-1,ws)); MCISH(wf+AV(x),ws+wf+1,wcr-1);
@@ -192,7 +192,7 @@ static F1(jtrsh0){A x,y;I wcr,wf,wr,*ws;
  // not pristine
 }
 
-F1(jthead){I wcr,wf,wr;
+ A jthead(J jt, A w){I wcr,wf,wr;
  F1PREFIP;
  ARGCHK1(w);
  wr=AR(w); wcr=(RANKT)jt->ranks; wcr=wr<wcr?wr:wcr; wf=wr-wcr;  // no RESETRANK so that we can pass rank into other code
@@ -214,7 +214,7 @@ F1(jthead){I wcr,wf,wr;
  // pristinity from the called verb
 }
 
-F1(jttail){I wcr,wf,wr;
+ A jttail(J jt, A w){I wcr,wf,wr;
  F1PREFIP;
  ARGCHK1(w);
  wr=AR(w); wcr=(RANKT)jt->ranks; wcr=wr<wcr?wr:wcr; wf=wr-wcr;  // no RESETRANK: rank is passed into from/take/rsh0.  Left rank is garbage but that's OK

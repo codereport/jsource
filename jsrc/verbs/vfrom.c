@@ -6,7 +6,7 @@
 #include "j.h"
 
 
-F1(jtcatalog){PROLOG(0072);A b,*wv,x,z,*zv;C*bu,*bv,**pv;I*cv,i,j,k,m=1,n,p,*qv,r=0,*s,t=0,*u;
+ A jtcatalog(J jt, A w){PROLOG(0072);A b,*wv,x,z,*zv;C*bu,*bv,**pv;I*cv,i,j,k,m=1,n,p,*qv,r=0,*s,t=0,*u;
  F1RANK(1,jtcatalog,UNUSED_VALUE);
  if((-AN(w)&-(AT(w)&BOX+SBOX))>=0)return box(w);   // empty or unboxed, just box it
  n=AN(w); wv=AAV(w); 
@@ -412,7 +412,7 @@ static F2(jtmapx){A z1,z2,z3;
  return every2(z3,w,(A)&mapxself);
 }
 
-F1(jtmap){return mapx(ds(CACE),w);}
+ A jtmap(J jt, A w){return mapx(ds(CACE),w);}
 
 // extract the single box a from w and open it.  Don't mark it no-inplace.  If w is not boxed, it had better be an atom, and we return it after auditing the index
 static F2(jtquicksel){I index;

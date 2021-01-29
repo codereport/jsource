@@ -24,7 +24,7 @@ I jtfdep(J jt,A w){A f,g;I d=0,k;V*v;
  return 1+d;
 }    /* function depth:  1 + max depth of components */
 
-F1(jtfdepadv){ARGCHK1(w); ASSERT(VERB&AT(w),EVDOMAIN); return sc(fdep(w));}
+ A jtfdepadv(J jt, A w){ARGCHK1(w); ASSERT(VERB&AT(w),EVDOMAIN); return sc(fdep(w));}
 #endif
 
 
@@ -38,13 +38,13 @@ return z;}
 
 
 // $: itself
-F1(jtself1){A z; FDEPINC(d=fdep(jt->sf)); STACKCHKOFL df1(z,  w,jt->sf);  FDEPDEC(d); forcetomemory(w); return z;}
+ A jtself1(J jt, A w){A z; FDEPINC(d=fdep(jt->sf)); STACKCHKOFL df1(z,  w,jt->sf);  FDEPDEC(d); forcetomemory(w); return z;}
 F2(jtself2){A z; FDEPINC(d=fdep(jt->sf)); STACKCHKOFL df2(z,a,w,jt->sf);  FDEPDEC(d); forcetomemory(w); return z;}
 
 A jtac1(J jt,AF f){return fdef(0,0,VERB, f,0L, 0L,0L,0L, VFLAGNONE, RMAX,RMAX,RMAX);}
 A jtac2(J jt,AF f){return fdef(0,0,VERB, 0L,f, 0L,0L,0L, VFLAGNONE, RMAX,RMAX,RMAX);}
 
-F1(jtdomainerr1){ASSERT(0,EVDOMAIN);}
+ A jtdomainerr1(J jt, A w){ASSERT(0,EVDOMAIN);}
 F2(jtdomainerr2){ASSERT(0,EVDOMAIN);}
 
 // create a block for a function (verb/adv/conj).  The meanings of all fields depend on the function executed in f1/f2
