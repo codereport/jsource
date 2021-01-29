@@ -112,8 +112,7 @@ void jtmsort(J jt, I n, void **zv, void **xv){
 
 
 // m: #cells in w (# sorts to do)   n: #items in a cell of w   ai: #atoms in an item of a cell of w
-#define B f(J jt,I m,I ai,I n,A w,I*zv)         B f(J jt,I m,I ai,I n,A w,I*zv)
-
+// B f(J jt,I m,I ai,I n,A w,I*zv)
 /* m  - # cells (# individual grades to do) */
 /* c  - # atoms in a cell                   */
 /* n  - length of sort axis                 */
