@@ -76,7 +76,6 @@ target_sources(j PRIVATE
         verbs/vt.c
         verbs/vx.c
         verbs/vz.c
-        cpuinfo.c
         debugging/d.c
         debugging/dc.c
         debugging/dss.c
@@ -86,7 +85,6 @@ target_sources(j PRIVATE
         format/f.c
         format/f2.c
         format/fbu.c
-        gemm.c
         i.c
         io.c
         j.c
@@ -142,11 +140,6 @@ if (OpenMP_C_FOUND)
         )
     endif ()
 endif ()
-
-target_sources(j PRIVATE
-
-        blis/gemm_vec-ref.c
-        )
 
 if (NOT BUILD_SHARED_LIBS)
     return()
