@@ -124,7 +124,7 @@ static DF1(jtinsert){A hs,*hv,z;I hfx,j,m,n;A *old;
 }
 
 // u`:m
-F2(jtevger){A hs;I k;
+ A jtevger(J jt,A a,A w){A hs;I k;
  ARGCHK2(a,w);
  RE(k=i0(w)); 
  if(k==GTRAIN)return exg(a);
@@ -139,7 +139,7 @@ F2(jtevger){A hs;I k;
    ASSERT(0,EVDOMAIN);
 }}
 
-F2(jttie){ARGCHK2(a,w); return over(VERB&AT(a)?arep(a):a,VERB&AT(w)?arep(w):w);}
+ A jttie(J jt,A a,A w){ARGCHK2(a,w); return over(VERB&AT(a)?arep(a):a,VERB&AT(w)?arep(w):w);}
 
 
 // m@.:v y.  Execute the verbs at high rank if the operands are large
@@ -315,7 +315,7 @@ static DF2(jtcasei12){A vres,z;I gerit[128/SZI],ZZFLAGWORD;
 }
 
 // @.n
-static F2(jtgerfrom){A*av,*v,z;I n;
+static A jtgerfrom(J jt,A a,A w){A*av,*v,z;I n;
  ARGCHK2(a,w);  /* 1==AR(w)&&BOX&AT(w) */
  ASSERT(1>=AR(a),EVRANK);
  if(NUMERIC&AT(a))return from(a,w);
@@ -327,7 +327,7 @@ static F2(jtgerfrom){A*av,*v,z;I n;
   return z;
 }}
 
-F2(jtagendai){I flag;
+ A jtagendai(J jt,A a,A w){I flag;
  ARGCHK2(a,w)
  if(NOUN&AT(w))return exg(gerfrom(w,a));  // noun form, as before
  // verb v.  Create a "BOX" type holding the verb form of each gerund

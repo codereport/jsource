@@ -30,7 +30,7 @@ static DF1(jtpowseqlim){PROLOG(0039);A x,y,z,*zv;I i,n;
 }    /* f^:(<_) w */
 
 // AR(a) is 1 and AN(w)!=0
-static F2(jttclosure){A z;I an,*av,c,d,i,wn,wr,wt,*wv,*zv,*zz;
+static A jttclosure(J jt,A a,A w){A z;I an,*av,c,d,i,wn,wr,wt,*wv,*zv,*zz;
  ARGCHK2(a,w);
  wt=AT(w); wn=AN(w); wr=AR(w);
  if(B01&wt)RZ(w=cvt(INT,w)); wv=AV(w);

@@ -87,7 +87,7 @@ static A jtdfc(J jt,I n,A w){PROLOG(0082);A b,q,*wv,z;B*bv;I c,j,qn,*qv,*x;
 
  A jtcdot1(J jt, A w){F1RANK(1,jtcdot1,UNUSED_VALUE); return BOX&AT(w)?dfc(ord(raze(w)),w):cfd(w);}
 
-F2(jtcdot2){A p;I k;
+ A jtcdot2(J jt,A a,A w){A p;I k;
  F2RANK(1,RMAX,jtcdot2,UNUSED_VALUE);
  SETIC(w,k);
  RZ(p=BOX&AT(a)?dfc(k,a):pfill(k,a));
@@ -136,7 +136,7 @@ static A jtrfd(J jt, A w){A z;I j,k,m,n,r,*s,*x;
  return base2(cvt(XNUM,apv(n,n,-1L)),rfd(y));
 }
 
-F2(jtadot2){A m,p;I n;
+ A jtadot2(J jt,A a,A w){A m,p;I n;
  ARGCHK2(a,w);
  SETIC(w,n); p=sc(n); if(XNUM&AT(a))p=cvt(XNUM,p); RZ(m=fact(p));
  ASSERT(all1(le(negate(m),a))&&all1(lt(a,m)),EVINDEX);

@@ -87,7 +87,7 @@ static A jtc2fi(J jt, A w){A z;I j,n,*v;US*zv;
  return t&NUMERIC?c2fi(w):t&C2T?w:toc2(w);  // was ca(w)
 }    /* return 2-byte chars unchanged; convert 1-byte or 4-byte to 2-byte */
 
-F2(jtuco2){I j;
+ A jtuco2(J jt,A a,A w){I j;
  ARGCHK2(a,w);
  RE(j=i0(a));
  switch(j){

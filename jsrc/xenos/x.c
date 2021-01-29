@@ -47,7 +47,7 @@ static DF1(jthdrinfo){A z;
  return z;
 }
 
-F2(jtforeign){I p,q;
+ A jtforeign(J jt,A a,A w){I p,q;
  ARGCHK2(a,w);
  p=i0(a); q=i0(w); RE(0);
  if(11==p)return fdef(0,CIBEAM,VERB, jtwd,0L, a,w,0L, VASGSAFE, 1L,RMAX,RMAX);

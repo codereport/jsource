@@ -121,7 +121,7 @@ static A jtdir1(J jt,struct dirent*f,struct stat *dirstatbuf,C *diratts, C *dirm
 
 
  A jtjfatt1(J jt, A w){ASSERT(0,EVNONCE);}
-F2(jtjfatt2){ASSERT(0,EVNONCE);}
+ A jtjfatt2(J jt,A a,A w){ASSERT(0,EVNONCE);}
 
 
  A jtjfperm1(J jt, A w){A y;F f;C b[11];
@@ -145,7 +145,7 @@ static const struct tperms {C*c;I p[4];} permtab[]=
        {"-xTt",{0,S_IXOTH,S_ISVTX,S_ISVTX+S_IXOTH}},
     };
 
-F2(jtjfperm2){A y;C*s;F f;int x=0,i;C*m;
+ A jtjfperm2(J jt,A a,A w){A y;C*s;F f;int x=0,i;C*m;
  F2RANK(1,0,jtjfperm2,UNUSED_VALUE);
  RE(f=stdf(w)); if(f){RZ(y=fname(sc((I)f)));y=str0(y);} else ASSERT(y=str0(vslit(AAV(w)[0])),EVFNUM)
  RZ(a=vslit(a)); ASSERT(9==AN(a),EVLENGTH); s=CAV(a);

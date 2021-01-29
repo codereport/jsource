@@ -880,7 +880,7 @@ static B jtcdexec1(J jt,CCT*cc,C*zv0,C*wu,I wk,I wt,I wd){A*wv=(A*)wu,x,y,*zv;B 
  return 1;
 }
 
-F2(jtcd){A z;C*tv,*wv,*zv;CCT*cc;I k,m,n,p,q,t,wr,*ws,wt;
+ A jtcd(J jt,A a,A w){A z;C*tv,*wv,*zv;CCT*cc;I k,m,n,p,q,t,wr,*ws,wt;
  F2PREFIP;
  ARGCHK2(a,w);
  AFLAG(w)&=~AFPRISTINE;  // we transfer boxes from w to the result, thereby letting them escape.  That makes w non-pristine
@@ -965,7 +965,7 @@ void dllquit(J jt){CCT*av;I j,*v;
  return vecb01(t,m,u);
 }    /* 15!:1  memory read */
 
-F2(jtmemw){C*u;I m,n,t,*v;
+ A jtmemw(J jt,A a,A w){C*u;I m,n,t,*v;
  ARGCHK2(a,w);
  ASSERT(INT&AT(w),EVDOMAIN);
  ASSERT(1==AR(w),EVRANK);
@@ -985,7 +985,7 @@ F2(jtmemw){C*u;I m,n,t,*v;
 // 15!:15 memu - make a copy of y if it is not writable (inplaceable and not read-only)
 // We have to check jt in case this usage is in a fork that will use the block later
  A jtmemu(J jt, A w) { F1PREFIP; ARGCHK1(w); if(!((I)jtinplace&JTINPLACEW && (AC(w)<(AFLAG(w)<<((BW-1)-AFROX)))))w=ca(w); if(AT(w)&LAST0)*(C4*)&CAV(w)[AN(w)*bp(AT(w))]=0;  return w; }  // append 0 so that calls from cd append NUL termination
-F2(jtmemu2) { return ca(w); }  // dyad - force copy willy-nilly
+ A jtmemu2(J jt,A a,A w) { return ca(w); }  // dyad - force copy willy-nilly
 
  A jtgh15(J jt, A w){A z;I k; RE(k=i0(w)); RZ(z=gah(k,0L)); ACINCR(z); return sc((I)z);}
      /* 15!:8  get header */
@@ -1161,7 +1161,7 @@ static const C* jfntnm[]={
 
 };
 
-F2(jtcdproc2){C*proc;FARPROC f;HMODULE h;
+ A jtcdproc2(J jt,A a,A w){C*proc;FARPROC f;HMODULE h;
  ARGCHK2(a,w);
  ASSERT(LIT&AT(w),EVDOMAIN);
  ASSERT(1>=AR(w),EVRANK);

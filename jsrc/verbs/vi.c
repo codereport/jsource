@@ -1356,11 +1356,11 @@ A jtindexofprehashed(J jt,A a,A w,A hs){A h,hi,*hv,x,z;AF fn;I ar,*as,at,c,f1,k,
 // Now, support for the primitives that use indexof
 
 // x i. y
-F2(jtindexof){return indexofsub(IIDOT,a,w);}
+ A jtindexof(J jt,A a,A w){return indexofsub(IIDOT,a,w);}
      /* a i."r w */
 
 // x i: y
-F2(jtjico2){return indexofsub(IICO,a,w);}
+ A jtjico2(J jt,A a,A w){return indexofsub(IICO,a,w);}
      /* a i:"r w */
 
 // ~: y
@@ -1382,7 +1382,7 @@ F2(jtjico2){return indexofsub(IICO,a,w);}
 }    /* ~.w */
 
 // x -. y.  does not have IRS
-F2(jtless){A x=w;I ar,at,k,r,*s,wr,*ws,wt;
+ A jtless(J jt,A a,A w){A x=w;I ar,at,k,r,*s,wr,*ws,wt;
  F2PREFIP;ARGCHK2(a,w);
  at=AT(a); ar=AR(a); 
  wt=AT(w); wr=AR(w); r=MAX(1,ar);
@@ -1398,7 +1398,7 @@ F2(jtless){A x=w;I ar,at,k,r,*s,wr,*ws,wt;
 }    /* a-.w */
 
 // x e. y
-F2(jteps){I l,r;
+ A jteps(J jt,A a,A w){I l,r;
  ARGCHK2(a,w);
  l=jt->ranks>>RANKTX; l=AR(a)<l?AR(a):l;
  r=(RANKT)jt->ranks; r=AR(w)<r?AR(w):r; RESETRANK;

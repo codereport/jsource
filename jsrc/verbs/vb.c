@@ -15,7 +15,7 @@ BPFX( norBB, NOR ,BNOR, NOR, BNOR, _mm256_xor_pd(bool256,_mm256_or_pd(u256,v256)
  A jtrazein(J jt, A w){A z; return df2(z,w,box(raze(w)),amp(swap(ds(CEPS)),ds(COPE)));}
 
 
-static F2(jtebarmat){A ya,yw,z;B b,*zv;C*au,*av,*u,*v,*v0,*wu,*wv;I*as,c,i,k,m,n,r,s,si,sj,t,*ws;
+static A jtebarmat(J jt,A a,A w){A ya,yw,z;B b,*zv;C*au,*av,*u,*v,*v0,*wu,*wv;I*as,c,i,k,m,n,r,s,si,sj,t,*ws;
  ARGCHK2(a,w);
  as=AS(a);      av=CAV(a);
  ws=AS(w); v=v0=wv=CAV(w);
@@ -37,7 +37,7 @@ static F2(jtebarmat){A ya,yw,z;B b,*zv;C*au,*av,*u,*v,*v0,*wu,*wv;I*as,c,i,k,m,n
  return z;
 }    /* E. on matrix arguments */
 
-static F2(jtebarvec){A y,z;B*zv;C*av,*wv,*yv;I an,k,n,s,t,wn;
+static A jtebarvec(J jt,A a,A w){A y,z;B*zv;C*av,*wv,*yv;I an,k,n,s,t,wn;
  ARGCHK2(a,w);
  an=AN(a); av=CAV(a); 
  wn=AN(w); wv=CAV(w); n=1+wn-an; 
@@ -102,7 +102,7 @@ static I jtebarprep(J jt,A a,A w,A*za,A*zw,I*zc){I ar,at,m,n,t,wr,wt,memlimit;CR
     if   (k==p){for(i=0;i<m&&u[i]==v[k+i];++i); ZFUNC;             } \
    }
 
-F2(jtebar){PROLOG(0065);A y,z;B*zv;C*av,*wv;I c,d,i,k=0,m,n,p,*yv;
+ A jtebar(J jt,A a,A w){PROLOG(0065);A y,z;B*zv;C*av,*wv;I c,d,i,k=0,m,n,p,*yv;
  ARGCHK2(a,w);
  ASSERT(!((AT(a) | AT(w)) & SPARSE), EVNONCE);
  ASSERT((AR(a) == AR(w)) || (AR(a) + (AR(w) ^ 1)) == 0, EVRANK);
@@ -132,7 +132,7 @@ F2(jtebar){PROLOG(0065);A y,z;B*zv;C*av,*wv;I c,d,i,k=0,m,n,p,*yv;
 }    /* Daniel M. Sunday, CACM 1990 8, 132-142 */
 
 
-F2(jti1ebar){A y;C*av,*wv;I c,d,i,k=0,m,n,p,*yv;
+ A jti1ebar(J jt,A a,A w){A y;C*av,*wv;I c,d,i,k=0,m,n,p,*yv;
  ARGCHK2(a,w);
 
  RE(d=ebarprep(a,w,&a,&w,&c));
@@ -156,7 +156,7 @@ F2(jti1ebar){A y;C*av,*wv;I c,d,i,k=0,m,n,p,*yv;
  return sc(n);
 }    /* a (E. i. 1:) w where a and w are atoms or lists */
 
-F2(jtsumebar){A y;C*av,*wv;I c,d,i,k=0,m,n,p,*yv,z=0;
+ A jtsumebar(J jt,A a,A w){A y;C*av,*wv;I c,d,i,k=0,m,n,p,*yv,z=0;
  ARGCHK2(a,w);
  RE(d=ebarprep(a,w,&a,&w,&c));
  av=CAV(a); m=AN(a);
@@ -180,7 +180,7 @@ F2(jtsumebar){A y;C*av,*wv;I c,d,i,k=0,m,n,p,*yv,z=0;
  return sc(z);
 }    /* a ([: +/ E.) w where a and w are atoms or lists */
 
-F2(jtanyebar){A y;C*av,*wv;I c,d,i,k=0,m,n,p,*yv;
+ A jtanyebar(J jt,A a,A w){A y;C*av,*wv;I c,d,i,k=0,m,n,p,*yv;
  ARGCHK2(a,w);
  RE(d=ebarprep(a,w,&a,&w,&c));
  av=CAV(a); m=AN(a);
@@ -207,7 +207,7 @@ F2(jtanyebar){A y;C*av,*wv;I c,d,i,k=0,m,n,p,*yv;
 #define IFB1  \
  {if(zu==zv){I m=zu-AV(z); RZ(z=ext(0,z)); zv=m+AV(z); zu=AN(z)+AV(z);} *zv++=k;}
 
-F2(jtifbebar){A y,z;C*av,*wv;I c,d,i,k=0,m,n,p,*yv,*zu,*zv;
+ A jtifbebar(J jt,A a,A w){A y,z;C*av,*wv;I c,d,i,k=0,m,n,p,*yv,*zu,*zv;
  ARGCHK2(a,w);
  RE(d=ebarprep(a,w,&a,&w,&c));
  av=CAV(a); m=AN(a);

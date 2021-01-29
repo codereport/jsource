@@ -261,7 +261,7 @@ extern uint64_t g_cpuFeatures;
 }
 
 // thread unsafe
-F2(jtcpufeature2){I k;
+ A jtcpufeature2(J jt,A a,A w){I k;
  ARGCHK2(a,w);
  ASSERT(AT(w)&LIT,EVDOMAIN);
  ASSERT(AN(w),EVLENGTH);
@@ -368,7 +368,7 @@ return mtm;
  return sc((0==k)?jt->igemm_thres:(1==k)?jt->dgemm_thres:jt->zgemm_thres);
 }
 
-F2(jtgemmtune2){I j,k;
+ A jtgemmtune2(J jt,A a,A w){I j,k;
  ARGCHK2(a,w);
  ASSERT(AT(a)&(B01+INT),EVDOMAIN);
  ASSERT(1==AN(a),EVLENGTH);

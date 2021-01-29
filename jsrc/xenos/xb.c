@@ -10,7 +10,7 @@
 
 // a is integer atom or list, values indicating the desired result
 // atom values in x: 0=NJA, others reserved
-F2(jtnouninfo2){A z;
+ A jtnouninfo2(J jt,A a,A w){A z;
  ARGCHK2(a,w);
  RZ(a=vi(a)); // convert to integer, error if can't
  ASSERT(AR(a)<2,EVRANK);  // must be atom or list
@@ -209,14 +209,14 @@ static A jthrep(J jt,B b,B d,A w){A y;C c,*hex="0123456789abcdef",*u,*v;I n,s[2]
  A jtbinrep1(J jt, A w){ARGCHK1(w); ASSERT(NOUN&AT(w),EVDOMAIN); return brep(BU,1,w);}  /* 3!:1 w */
  A jthexrep1(J jt, A w){ARGCHK1(w); ASSERT(NOUN&AT(w),EVDOMAIN); return hrep(BU,1,w);}  /* 3!:3 w */
 
-F2(jtbinrep2){I k;
+ A jtbinrep2(J jt,A a,A w){I k;
  ARGCHK2(a,w);
  RE(k=i0(a)); if(10<=k)k-=8;
  ASSERT(BETWEENC(k,0,3),EVDOMAIN);
  return brep((B)(k&1),(B)(2<=k),w);
 }    /* a 3!:1 w */
 
-F2(jthexrep2){I k;
+ A jthexrep2(J jt,A a,A w){I k;
  ARGCHK2(a,w); 
  RE(k=i0(a)); if(10<=k)k-=8;
  ASSERT(BETWEENC(k,0,3),EVDOMAIN);
@@ -314,7 +314,7 @@ static A jtunbinr(J jt,B b,B d,B pre601,I m,A w){A y,z;C*u=(C*)w,*v;I e,j,kk,n,p
 }    /* 3!:2 w, inverse for binrep/hexrep */
 
 
-F2(jtic2){A z;I j,m,n,p,*v,*x,zt;I4*y;UI4*y1;S*s;U short*u;
+ A jtic2(J jt,A a,A w){A z;I j,m,n,p,*v,*x,zt;I4*y;UI4*y1;S*s;U short*u;
  ARGCHK2(a,w);
  ASSERT(1>=AR(w),EVRANK);
  n=AN(w);
@@ -338,7 +338,7 @@ F2(jtic2){A z;I j,m,n,p,*v,*x,zt;I4*y;UI4*y1;S*s;U short*u;
   case  0: u=(U short*)x; DQ(m, *v++=    *u++;); {return z;}
 }}
 
-F2(jtfc2){A z;D*x,*v;I j,m,n,p,zt;float*s;
+ A jtfc2(J jt,A a,A w){A z;D*x,*v;I j,m,n,p,zt;float*s;
  ARGCHK2(a,w);
  ASSERT(1>=AR(w),EVRANK);
  n=AN(w);
@@ -401,7 +401,7 @@ static B jtisnanq(J jt,A w){
  return z;
 }    /* convert byte booleans to bit booleans */
 
-F2(jtbit2){
+ A jtbit2(J jt,A a,A w){
  ASSERT(0,EVNONCE);
 }    /* convert byte booleans to bit booleans */
 
@@ -667,7 +667,7 @@ err:
 // Bivalent.  left arg is 3 characters, one to use as the decimal point, one to store just after the value (usually ' ' or 'Z'),
 // one for result precision ('d'=date only, '0'-'9' give # fractional digits)
 // Default is '. 0'
-F2(jtetoiso8601){UC decimalpt,zuluflag;I prec;
+ A jtetoiso8601(J jt,A a,A w){UC decimalpt,zuluflag;I prec;
  ARGCHK1(w);
  ASSERT(1,EVNONCE);
  // If monad, supply defaults; if dyad, audit
@@ -686,7 +686,7 @@ F2(jtetoiso8601){UC decimalpt,zuluflag;I prec;
 
 // 6!:17 convert a block of iso8601-format strings to nanosecond times.  Result has one INT for each string
 // Bivalent.  left arg is 'd', '0', '3', or '9', like 3d digit of 6!:16, default '9'
-F2(jtiso8601toe){A z;I prec;
+ A jtiso8601toe(J jt,A a,A w){A z;I prec;
  ARGCHK1(w);
  ASSERT(1,EVNONCE);
  // If monad, supply defaults; if dyad, audit

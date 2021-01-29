@@ -15,7 +15,7 @@
 #define MATCHSUBDEFAULTS ,0,0,1,1,1
 #endif
 static B jtmatchsub(J,A,A,B* RESTRICT,I,I,I,I,I);
-static F2(jtmatchs);
+static A jtmatchs(J jt,A a,A w);
 
 #define MCS(q,af,wf)  ((((q>1)+(q>0))<<2)+(af?2:0)+(wf?1:0))
 // set *x++ to b1 if *u=*v, b0 otherwise
@@ -179,7 +179,7 @@ static B jtmatchsub(J jt,A a,A w,B* RESTRICT x,I af,I wf,I m,I n,I b1){C*av,*wv;
  return 0;  // Return value matters only for single compare (x=0); we have returned already in that case
 }
 
-static F2(jtmatchs){A ae,ax,p,q,we,wx,x;B*b,*pv,*qv;D d;I acr,an=0,ar,c,j,k,m,n,r,*s,*v,wcr,wn=0,wr;P*ap,*wp;
+static A jtmatchs(J jt,A a,A w){A ae,ax,p,q,we,wx,x;B*b,*pv,*qv;D d;I acr,an=0,ar,c,j,k,m,n,r,*s,*v,wcr,wn=0,wr;P*ap,*wp;
  ARGCHK2(a,w);
  ar=AR(a); acr=jt->ranks>>RANKTX; acr=ar<acr?ar:acr; r=ar;
  wr=AR(w); wcr=(RANKT)jt->ranks; wcr=wr<wcr?wr:wcr; RESETRANK;
@@ -206,7 +206,7 @@ static F2(jtmatchs){A ae,ax,p,q,we,wx,x;B*b,*pv,*qv;D d;I acr,an=0,ar,c,j,k,m,n,
 
 
 // x -:"r y or x -.@-:"r y depending on LSB of jt
-F2(jtmatch){A z;I af,m,n,mn,wf;
+ A jtmatch(J jt,A a,A w){A z;I af,m,n,mn,wf;
  I eqis0 = (I)jt&1; jt=(J)((I)jt&~1);
  ARGCHK2(a,w);
  I isatoms = (-AN(a))&(-AN(w));  // neg if both args have atoms
@@ -238,4 +238,4 @@ F2(jtmatch){A z;I af,m,n,mn,wf;
  return z;
 }    /* a -:"r w */
 
-F2(jtnotmatch){return jtmatch((J)((I)jt+1),a,w);}   /* a -.@-:"r w */
+ A jtnotmatch(J jt,A a,A w){return jtmatch((J)((I)jt+1),a,w);}   /* a -.@-:"r w */

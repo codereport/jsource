@@ -86,8 +86,8 @@ static A jtlr2(J jt,RANK2T ranks,A a,A w){I acr,af,ar,wcr,wf,wr;
  RESETRANK; return reitem(vec(INT,af-wf,AS(a)),lamin1(w));  // could use virtual block, but this case is so rare...
 } 
 
-F2(jtleft2 ){F2PREFIP;RANK2T jtr=jt->ranks; if(jtr==(RANK2T)~0)RETARG(a); return lr2((jtr<<RMAXX)|(jtr>>RMAXX),w,a);}  // swap a & w, and their ranks
-F2(jtright2){F2PREFIP;RANK2T jtr=jt->ranks; if(jtr==(RANK2T)~0)RETARG(w); return lr2(jtr,a,w);}
+ A jtleft2 (J jt,A a,A w){F2PREFIP;RANK2T jtr=jt->ranks; if(jtr==(RANK2T)~0)RETARG(a); return lr2((jtr<<RMAXX)|(jtr>>RMAXX),w,a);}  // swap a & w, and their ranks
+ A jtright2(J jt,A a,A w){F2PREFIP;RANK2T jtr=jt->ranks; if(jtr==(RANK2T)~0)RETARG(w); return lr2(jtr,a,w);}
 
  A jtright1(J jt, A w){return w;}
 
@@ -118,8 +118,8 @@ F2(jtright2){F2PREFIP;RANK2T jtr=jt->ranks; if(jtr==(RANK2T)~0)RETARG(w); return
 DF1(jtnum1){ARGCHK2(w,self); return FAV(self)->fgh[2];}
 DF2(jtnum2){ARGCHK3(a,w,self); return FAV(self)->fgh[2];}
 
-F2(jtfromr  ){ARGCHK2(a,w); A z; return IRS2(a,w,0, RMAX,1L,jtfrom  ,z);} // no agreement check because left rank is infinite - no frame  {"_ 1
-F2(jtrepeatr){ARGCHK2(a,w); A z; return IRS2(a,w,0, RMAX,1L,jtrepeat,z);}  // #"_ 1
+ A jtfromr  (J jt,A a,A w){ARGCHK2(a,w); A z; return IRS2(a,w,0, RMAX,1L,jtfrom  ,z);} // no agreement check because left rank is infinite - no frame  {"_ 1
+ A jtrepeatr(J jt,A a,A w){ARGCHK2(a,w); A z; return IRS2(a,w,0, RMAX,1L,jtrepeat,z);}  // #"_ 1
 
 A jttaker(J jt,I n,A w){ARGCHK1(w); A a,z; RZ(a=sc(n)); return IRS2(a,w,0, RMAX,1L,jttake,z);}  // n {."1 w
 A jtdropr(J jt,I n,A w){ARGCHK1(w); A a,z; RZ(a=sc(n)); return IRS2(a,w,0, RMAX,1L,jtdrop,z);}  // n }."1 w

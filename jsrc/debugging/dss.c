@@ -45,10 +45,10 @@ static A jtssdo(J jt,A a,A w,C c){DC d,e;I n;
  A jtdbcutback  (J jt, A w){return ssdo(0L,w,SSCUTBACK );}  /* 13!:19 */
 
  A jtdbstepover1(J jt, A w){return ssdo(0L,w,SSSTEPOVER);}  /* 13!:20 */
-F2(jtdbstepover2){return ssdo(a, w,SSSTEPOVER);}
+ A jtdbstepover2(J jt,A a,A w){return ssdo(a, w,SSSTEPOVER);}
 
  A jtdbstepinto1(J jt, A w){return ssdo(0L,w,SSSTEPINTO);}  /* 13!:21 */
-F2(jtdbstepinto2){return ssdo(a, w,SSSTEPINTO);}
+ A jtdbstepinto2(J jt,A a,A w){return ssdo(a, w,SSSTEPINTO);}
 
  A jtdbstepout1 (J jt, A w){return ssdo(0L,w,SSSTEPOUT );}  /* 13!:22 */
-F2(jtdbstepout2 ){return ssdo(a, w,SSSTEPOUT );}
+ A jtdbstepout2 (J jt,A a,A w){return ssdo(a, w,SSSTEPOUT );}

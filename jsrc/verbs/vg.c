@@ -666,7 +666,7 @@ static GF(jtgrc){A x;B b,q,up;I e,i,p,ps,*xv,yv[256];UC*vv,*wv;
 static GF(jtgrs){return gri(m,ai,n,sborder(w),zv);}
      /* grade"r w on symbols w */
 
-F2(jtgrade1p){PROLOG(0074);A x,z;I n,*s,*xv,*zv;
+ A jtgrade1p(J jt,A a,A w){PROLOG(0074);A x,z;I n,*s,*xv,*zv;
  s=AS(w); n=s[0]; jt->workareas.compare.compn=s[1]-1; jt->workareas.compare.compk=SZI*s[1];
  jt->workareas.compare.comp=compp; jt->workareas.compare.compsyv=AV(a); jt->workareas.compare.compv=CAV(w); jt->workareas.compare.compusejt=1;
  GATV0(z,INT,n,1); zv=AV(z);
@@ -718,9 +718,9 @@ static B (*grroutine[])(J,I,I,I,A,I*) = {  // index is [bitx]
  A jtdgrade1(J jt, A w){A z;GBEGIN( 1); RZ(   w); z=SPARSE&AT(w)?grd1sp(  w):gr1(  w); GEND return z;}
 // Since grade2 pulls from a, mark a as non-pristine.  But since there can be no repeats, transfer a's pristinity to result if a is inplaceable
 // We do this in jtgr2 because it has a branch where all boxed values go
-F2(jtgrade2 ){F2PREFIP;A z;GBEGIN(-1); ARGCHK2(a,w); RZ(z=SPARSE&AT(w)?grd2sp(a,w):jtgr2(jtinplace,a,w)); GEND
+ A jtgrade2 (J jt,A a,A w){F2PREFIP;A z;GBEGIN(-1); ARGCHK2(a,w); RZ(z=SPARSE&AT(w)?grd2sp(a,w):jtgr2(jtinplace,a,w)); GEND
  return z;}
-F2(jtdgrade2){F2PREFIP;A z;GBEGIN( 1); ARGCHK2(a,w); RZ(z=SPARSE&AT(w)?grd2sp(a,w):jtgr2(jtinplace,a,w)); GEND
+ A jtdgrade2(J jt,A a,A w){F2PREFIP;A z;GBEGIN( 1); ARGCHK2(a,w); RZ(z=SPARSE&AT(w)?grd2sp(a,w):jtgr2(jtinplace,a,w)); GEND
  return z;}
 
 
@@ -761,7 +761,7 @@ F2(jtdgrade2){F2PREFIP;A z;GBEGIN( 1); ARGCHK2(a,w); RZ(z=SPARSE&AT(w)?grd2sp(a,
   }  \
  }
 
-F2(jtordstat){A q,t=0;I j,m,m0,m1,n,wt;D *qv;
+ A jtordstat(J jt,A a,A w){A q,t=0;I j,m,m0,m1,n,wt;D *qv;
  I i=NRANDS-1;  // i points to the next random number to draw
  ARGCHK2(a,w);
  n=AN(w); wt=AT(w); RE(j=i0(a));
@@ -772,7 +772,7 @@ F2(jtordstat){A q,t=0;I j,m,m0,m1,n,wt;D *qv;
  if(wt&FL)OSLOOP(D,scf) else OSLOOP(I,sc);
 }    /* a{/:~w */
 
-F2(jtordstati){A t;I n,wt;
+ A jtordstati(J jt,A a,A w){A t;I n,wt;
  ARGCHK2(a,w);
  n=AN(w); wt=AT(w);
  if(((4-n)&((AR(a)|(1^AR(w)))-1)&(-(wt&FL+INT)))>=0)return from(a,grade1(w));

@@ -19,7 +19,7 @@ static B consf(A w){A f;C c;
  return 0;
 }    /* 1 iff w is a constant function */
 
-static F2(jtfong){A f;C c;V*v;
+static A jtfong(J jt,A a,A w){A f;C c;V*v;
  ARGCHK2(a,w);
  v=FAV(a); c=v->id; f=v->fgh[0];
  return c==CRIGHT ? w : c==CFORK&&(NOUN&AT(f)||CCAP==ID(f)) ? folk(f,v->fgh[1],fong(v->fgh[2],w)) : folk(ds(CCAP),a,w);
@@ -51,7 +51,7 @@ static DF1(jtexpandg){A f,g,z;V*v;
  return z;
 }
 
-static F2(jtdiag){I d,m,p,r,t,*v;
+static A jtdiag(J jt,A a,A w){I d,m,p,r,t,*v;
  ARGCHK2(a,w);
  r=AR(w); t=AT(w);
  v=AS(w);   m=0;      DO(r, m=MIN(m,v[i]););

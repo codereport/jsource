@@ -856,7 +856,7 @@ A jtclonelocalsyms(J jt, A a){A z;I j;I an=AN(a); LX *av=LXAV0(a),*zv;
  return z;
 }
 
-F2(jtcolon){A d,h,*hv,m;B b;C*s;I flag=VFLAGNONE,n,p;
+ A jtcolon(J jt,A a,A w){A d,h,*hv,m;B b;C*s;I flag=VFLAGNONE,n,p;
  ARGCHK2(a,w);
  if(VERB&AT(a)&AT(w)){  // v : v case
   // If nested v : v, prune the tree

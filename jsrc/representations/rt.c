@@ -75,7 +75,7 @@ static A jtcenter(J jt,A a,I j,I k,I m){A z;C*x;I n,*s,zn;
  return z;
 }
 
-static F2(jttroot){A t,x;B b;C*u,*v;I j=0,k=0,m,n,*s;
+static A jttroot(J jt,A a,A w){A t,x;B b;C*u,*v;I j=0,k=0,m,n,*s;
  ARGCHK2(a,w);
  m=AN(a); u=CAV(a); b=!m||1==m&&BETWEENC(*u,'0','9');
  GATV0(x,LIT,b?1:4+m,1); v=CAV(x);

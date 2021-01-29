@@ -260,7 +260,7 @@ A jtdbunquote(J jt,A a,A w,A self,L *stabent){A t,z;B b=0,s;DC d;V*sv;
  A jtdbjump(J jt, A w){RE(jt->dbjump=i0(w)); jt->dbsusact=SUSJUMP; return mtm;}
      /* 13!:7  resume at line n (return result error if out of range) */
 
-static F2(jtdbrr){DC d;
+static A jtdbrr(J jt,A a,A w){DC d;
  RE(0);
  d=jt->sitop; while(d&&DCCALL!=d->dctype)d=d->dclnk; 
  ASSERT(d&&VERB&AT(d->dcf)&&!d->dcc,EVDOMAIN);  /* must be explicit verb */
@@ -270,7 +270,7 @@ static F2(jtdbrr){DC d;
 }
 
  A jtdbrr1 (J jt, A w){return dbrr(0L,w);}   /* 13!:9   re-run with arg(s) */
-F2(jtdbrr2 ){return dbrr(a, w);}
+ A jtdbrr2 (J jt,A a,A w){return dbrr(a, w);}
 
  A jtdbtrapq(J jt, A w){ASSERTMTV(w); return jt->dbtrap?jt->dbtrap:mtv;}
      /* 13!:14 query trap */

@@ -886,7 +886,7 @@ static A jttesos(J jt,A a,A w,I n, I *pv){A p;I*av,c,axisct,k,m,s,*ws;
 }    /* tesselation result outer shape */
 
 
-static F2(jttesa){A x;I*av,ac,c,d,k,r,*s,t,*u,*v;
+static A jttesa(J jt,A a,A w){A x;I*av,ac,c,d,k,r,*s,t,*u,*v;
  ARGCHK2(a,w);
  t=AT(a);
  RZ(a=vib(a));    // convert a to integer (possibly with infinities)
@@ -1109,7 +1109,7 @@ static DF1(jttess1){A s;I m,r,*v;
 }
 
 
-F2(jtcut){A h=0,z;I flag=0,k;
+ A jtcut(J jt,A a,A w){A h=0,z;I flag=0,k;
 // NOTE: u/. is processed using the code for u;.1 and passing the self for /. into the cut verb.  So, the self produced
 // by /. and ;.1 must be the same as far as flags etc.  For the shared case, inplacing is OK
  ARGCHK2(a,w);

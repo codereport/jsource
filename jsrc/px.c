@@ -79,7 +79,7 @@ static A jtcex(J jt,A w,AF f,A self){A z; RE(w); z=f(jt,w,self); RESETERR; retur
 
 L* jtjset(J jt,C*name,A x){return symbisdel(nfs((I)strlen(name),name),x,jt->global);}
 
-F2(jtapplystr){PROLOG(0054);A fs,z;
+ A jtapplystr(J jt,A a,A w){PROLOG(0054);A fs,z;
  F2RANK(1,RMAX,jtapplystr,UNUSED_VALUE);
  RZ(fs=parse(tokens(vs(a),1+(AN(jt->locsyms)>1))));
  ASSERT(VERB&AT(fs),EVSYNTAX);

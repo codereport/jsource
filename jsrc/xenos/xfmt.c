@@ -255,7 +255,7 @@ static B jtsprintfeD(J jt, C *x, I m, I dp, D dw, C *subs) {I y,y0;int decpt,sig
 
 #define mods_coldp 0x40000000 /* applied to modifiers when we're computing this columns # of decimal places */
 
-static F2(jtfmtprecomp) {A*as,base,fb,len,strs,*u,z;B*bits,*bw;D dtmp,*dw;
+static A jtfmtprecomp(J jt,A a,A w) {A*as,base,fb,len,strs,*u,z;B*bits,*bw;D dtmp,*dw;
      I d,i,*ib,imod,*iw,*iv,maxl,mods,n,nB,nD,nMN,nPQ,nI,nc,nf,*s,wr,*ws,wt;
  ARGCHK2(a,w); 
  nf=AS(a)[0]; nf=1==AR(a)?1:nf; n=AN(w); wt=AT(w); wr=AR(w); ws=AS(w); SHAPEN(w,wr-1,nc);   // nf=#cells, nc=length of 1-cell (# columns)
@@ -544,9 +544,9 @@ static A jtfmtxi(J jt, A a, A w, I mode, I *omode){I lvl;
   /* mode is 0, 1, or 2 for 8!:0, 8!:1, or 8!:2                     */
   /* *omode is either 0 or mode                                     */
 
-F2(jtfmt02){I mode; return fmtxi(a,w,0,&mode);} /* 8!:0 dyad */
+ A jtfmt02(J jt,A a,A w){I mode; return fmtxi(a,w,0,&mode);} /* 8!:0 dyad */
 
-F2(jtfmt12){A z;I mode,r,j;
+ A jtfmt12(J jt,A a,A w){A z;I mode,r,j;
  ARGCHK2(a,w);
  ASSERT(2>=AR(w), EVRANK);
  RZ(z=fmtxi(a,w,1,&mode));
@@ -556,7 +556,7 @@ F2(jtfmt12){A z;I mode,r,j;
  return ravel(t);
 } /* 8!:1 dyad */
 
-F2(jtfmt22){A z;I mode,r,j;
+ A jtfmt22(J jt,A a,A w){A z;I mode,r,j;
  ARGCHK2(a,w);
  ASSERT(2>=AR(w), EVRANK);
  RZ(z=fmtxi(a,w,2,&mode));

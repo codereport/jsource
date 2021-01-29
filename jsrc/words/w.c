@@ -363,7 +363,7 @@ static A jtfsm0(J jt,A a,A w,C chka){PROLOG(0100);A*av,m,s,x,w0=w;B b;I c,f,*ijr
  EPILOG(z);
 }
 
-F2(jtfsm){return fsm0(a,w,1);}
+ A jtfsm(J jt,A a,A w){return fsm0(a,w,1);}
      /* x;:y */
 
 DF1(jtfsmfx){ARGCHK2(w,self); return fsm0(FAV(self)->fgh[0],w,0);}

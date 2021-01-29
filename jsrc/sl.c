@@ -250,7 +250,7 @@ static A jtlocnlx(J jt, A w){A y,z=mtv;B*wv;I m=0;
  A jtlocnl1(J jt, A w){memset(jt->workareas.namelist.nla,C1,256); return locnlx(w);}
     /* 18!:1 locale name list */
 
-F2(jtlocnl2){UC*u;
+ A jtlocnl2(J jt,A a,A w){UC*u;
  ARGCHK2(a,w);
  ASSERT(LIT&AT(a),EVDOMAIN);
  memset(jt->workareas.namelist.nla,C0,256); 
@@ -272,7 +272,7 @@ static A jtlocale(J jt,B b,A w){A g=0,*wv,y;
  // for paths, the shape holds the bucketx.  We must create a new copy that has the shape restored, and must incorporate it
      /* 18!:2  query locale path */
 
-F2(jtlocpath2){A g; AD * RESTRICT x;
+ A jtlocpath2(J jt,A a,A w){A g; AD * RESTRICT x;
  F2RANK(1,0,jtlocpath2,UNUSED_VALUE);
  if(AN(a))RZ(  locale(1,a)); RZ(x=every(ravel(a),ds(CCOMMA)));  // Don't audit empty a
  RZ(g=locale(1,w));
@@ -284,7 +284,7 @@ F2(jtlocpath2){A g; AD * RESTRICT x;
 }    /* 18!:2  set locale path */
 
 
-static F2(jtloccre){A g,y;C*s;I n,p;L*v;
+static A jtloccre(J jt,A a,A w){A g,y;C*s;I n,p;L*v;
  ARGCHK2(a,w);
  if(MARK&AT(a))p=jt->locsize[0]; else{RE(p=i0(a)); ASSERT(0<=p,EVDOMAIN); ASSERT(p<14,EVLIMIT);}
  y=AAV(w)[0]; n=AN(y); s=CAV(y);
@@ -316,7 +316,7 @@ static A jtloccrenum(J jt, A w){C s[20];I k,p;
  return loccrenum(mark);
 }    /* 18!:3  create locale */
 
-F2(jtloccre2){
+ A jtloccre2(J jt,A a,A w){
  ARGCHK2(a,w);
  if(AN(w))return rank2ex0(a,vlocnl(2+1,w),UNUSED_VALUE,jtloccre);
  ASSERT(1==AR(w),EVRANK);

@@ -45,7 +45,7 @@ static A jtipprep(J jt,A a,A w,I zt,I*pm,I*pn,I*pp){A z=mark;I*as,ar,ar1,m,mn,n,
   else    DQ(m, v=wv; memset(zv,C0,zk); DQ(p, x=zv; INIT; DQ(n, if(*v++)INC(*x,c); ++x;);); zv+=n;  );  \
  }
 
-static F2(jtpdtby){A z;B b,*u,*v,*wv;C er=0;I at,m,n,p,t,wt,zk;
+static A jtpdtby(J jt,A a,A w){A z;B b,*u,*v,*wv;C er=0;I at,m,n,p,t,wt,zk;
  at=AT(a); wt=AT(w); t=at&B01?wt:at;
  RZ(z=ipprep(a,w,t,&m,&n,&p)); zk=n<<bplg(t); u=BAV(a); v=wv=BAV(w);
  NAN0;
@@ -216,7 +216,7 @@ I cachedmmult(J jt,D* av,D* wv,D* zv,I m,I n,I p,I flgs){D c[(CACHEHEIGHT+1)*CAC
 }
 
 // +/ . *
-F2(jtpdt){PROLOG(0038);A z;I ar,at,i,m,n,p,p1,t,wr,wt;
+ A jtpdt(J jt,A a,A w){PROLOG(0038);A z;I ar,at,i,m,n,p,p1,t,wr,wt;
  ARGCHK2(a,w);
  // ?r = rank, ?t = type (but set Boolean type for an empty argument)
  ar=AR(a); at=AT(a); at=AN(a)?at:B01;
@@ -460,7 +460,7 @@ static DF1(jtdet){DECLFG;A h=sv->fgh[2];I c,r,*s;
 DF1(jtdetxm){A z; return dotprod(IRS1(w,0L,1L,jthead,z),det(minors(w),self),self);}
      /* determinant via expansion by minors. w is matrix with >1 columns */
 
-F2(jtdot){A f,h=0;AF f2=jtdotprod;C c,d;
+ A jtdot(J jt,A a,A w){A f,h=0;AF f2=jtdotprod;C c,d;
  ASSERTVV(a,w);
  if(CSLASH==ID(a)){
   f=FAV(a)->fgh[0]; c=ID(f); d=ID(w);  // op was c/ . d

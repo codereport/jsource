@@ -9,7 +9,7 @@
 // if jt->fill is set, we use that value instead
 // we put one atom of fill into jt->fillv0 and point jt->fillv to that atom
 // if w is not the same type as the fill, convert it.  The user has to handle a.
-F2(jtsetfv){A q=jt->fill;I t;
+ A jtsetfv(J jt,A a,A w){A q=jt->fill;I t;
  ARGCHK2(a,w);
  q=q?q:mtv;  // if no fill given, use empty vector
  I t2=REPSGN(-AN(w))&AT(w); t=REPSGN(-AN(a))&AT(a); t=t?t:t2;  // ignoring empties, use type of a then w
@@ -38,7 +38,7 @@ void jtfillv(J jt,I t,I n,C*v){I k=bpnoun(t);A afill;
 }
 
 
-static F2(jtrotsp){PROLOG(0071);A q,x,y,z;B bx,by;I acr,af,ar,*av,d,k,m,n,p,*qv,*s,*v,wcr,wf,wr;P*wp,*zp;
+static A jtrotsp(J jt,A a,A w){PROLOG(0071);A q,x,y,z;B bx,by;I acr,af,ar,*av,d,k,m,n,p,*qv,*s,*v,wcr,wf,wr;P*wp,*zp;
  ARGCHK2(a,w);
  ASSERT(!jt->fill,EVNONCE);
  ar=AR(a); acr=jt->ranks>>RANKTX; acr=ar<acr?ar:acr; af=ar-acr; p=acr?*(af+AS(a)):1;
@@ -92,7 +92,7 @@ static void jtrot(J jt,I m,I d,I n,I atomsize,I p,I*av,C*u,C*v){I dk,e,k,j,r,x,y
    u   source data area 
    v   target data area      */
 
-F2(jtrotate){A origw=w,y,z;B b;C*u,*v;I acr,af,ar,*av,d,k,m,n,p,*s,wcr,wf,wn,wr;
+ A jtrotate(J jt,A a,A w){A origw=w,y,z;B b;C*u,*v;I acr,af,ar,*av,d,k,m,n,p,*s,wcr,wf,wn,wr;
  F2PREFIP;ARGCHK2(a,w);
  if((SPARSE&AT(w))!=0)return rotsp(a,w);
  ar=AR(a); acr=jt->ranks>>RANKTX; acr=ar<acr?ar:acr; af=ar-acr; p=acr?*(af+AS(a)):1;
@@ -211,7 +211,7 @@ static A jtreshapesp(J jt,A a,A w,I wf,I wcr){A a1,e,t,x,y,z;B az,*b,wz;I an,*av
  return z;
 }    /* a ($,)"wcr w for sparse w and scalar or vector a */
 
-F2(jtreshape){A z;B filling;C*wv,*zv;I acr,ar,c,k,m,n,p,q,r,*s,t,* RESTRICT u,wcr,wf,wn,wr,* RESTRICT ws,zn;
+ A jtreshape(J jt,A a,A w){A z;B filling;C*wv,*zv;I acr,ar,c,k,m,n,p,q,r,*s,t,* RESTRICT u,wcr,wf,wn,wr,* RESTRICT ws,zn;
  F2PREFIP;
  ARGCHK2(a,w);
  ar=AR(a); acr=jt->ranks>>RANKTX; acr=ar<acr?ar:acr;
@@ -250,7 +250,7 @@ F2(jtreshape){A z;B filling;C*wv,*zv;I acr,ar,c,k,m,n,p,q,r,*s,t,* RESTRICT u,wc
  return z;
 }    /* a ($,)"r w */
 
-F2(jtreitem){A y,z;I acr,an,ar,r,*v,wcr,wr;
+ A jtreitem(J jt,A a,A w){A y,z;I acr,an,ar,r,*v,wcr,wr;
  F2PREFIP;
  ARGCHK2(a,w);
  ar=AR(a); acr=jt->ranks>>RANKTX; acr=ar<acr?ar:acr;
@@ -273,7 +273,7 @@ F2(jtreitem){A y,z;I acr,an,ar,r,*v,wcr,wr;
    DQ(an, I abit=*av++; T *uv=abit?u:&x; *v++=*uv; u+=abit;);  \
   }
 
-F2(jtexpand){A z;B*av;C*wv,*wx,*zv;I an,*au,i,k,p,wc,wk,wn,wt,zn;
+ A jtexpand(J jt,A a,A w){A z;B*av;C*wv,*wx,*zv;I an,*au,i,k,p,wc,wk,wn,wt,zn;
  ARGCHK2(a,w);
  if(!(B01&AT(a)))RZ(a=cvt(B01,a));
  ASSERT(1==AR(a),EVRANK);

@@ -284,7 +284,7 @@ static DF2(jthklvl2){
  return num(((VAV(self)->flag>>VFHKLVLGTX)&1)^levelle(w,comparand-(VAV(self)->flag&VFHKLVLDEC)));  // decrement for < or >:; complement for > >:
 }
 
-F2(jthook){AF f1=0,f2=0;C c,d,e,id;I flag=VFLAGNONE,linktype=0;V*u,*v;
+ A jthook(J jt,A a,A w){AF f1=0,f2=0;C c,d,e,id;I flag=VFLAGNONE,linktype=0;V*u,*v;
  ARGCHK2(a,w);
  switch(BD(AT(a),AT(w))){
   default:            ASSERT(0,EVSYNTAX);

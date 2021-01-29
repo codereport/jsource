@@ -466,7 +466,7 @@ static A jtenframe(J jt, A w){A x,y,z;C*zv;I ht,m,n,p,q,t,wd,wdb,wr,xn,*xv,yn,*y
 }
 
 // Convert 1 box to character array, then to character table
-static F2(jtmatth1){return mat(thorn1main(a,w));}
+static A jtmatth1(J jt,A a,A w){return mat(thorn1main(a,w));}
 static EVERYFS(matth1self,0,jtmatth1,0,VFLAGNONE)
 
 // Format boxed array.  Result is table of characters, with space-changing characters (like BS, CR) converted to spaces
@@ -811,7 +811,7 @@ static A jtjprx(J jt,I ieol,I maxlen,I lb,I la,A w){A y,z;B ch;C e,eov[2],*v,x,*
 // a is the output control, (outeol, outmaxlen, outmaxbefore, outmaxafter)
 // w is any noun
 // Result is the UTF-8 byte string that would be displayed
-F2(jtoutstr){I*v;
+ A jtoutstr(J jt,A a,A w){I*v;
  ARGCHK2(a,w);
  RZ(a=vib(a));
  ASSERT(1==AR(a), EVRANK);

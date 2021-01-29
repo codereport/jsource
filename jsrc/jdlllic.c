@@ -67,11 +67,11 @@ int swapint(int n){C* p,c;
  return z;
 }
 
-F2(jtlock2){ASSERT(0,EVDOMAIN);}
+ A jtlock2(J jt,A a,A w){ASSERT(0,EVDOMAIN);}
 
  A jtunlock1(J jt, A w){return unlock2(mtv,w);}
 
-F2(jtunlock2){int i,j,len,tlen;UC c1,c2,k1[SK],*lp,*sp,*d;
+ A jtunlock2(J jt,A a,A w){int i,j,len,tlen;UC c1,c2,k1[SK],*lp,*sp,*d;
  ARGCHK2(a,w);  
  d=UAV(w);
  tlen=(int)AN(w);

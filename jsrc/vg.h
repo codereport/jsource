@@ -5,9 +5,9 @@
 
 
 extern A jtgr1(J jt, A w);
-extern F2(jtgr2);
+extern A jtgr2(J jt,A a,A w);
 extern A jtgrd1sp(J jt, A w);
-extern F2(jtgrd2sp);
+extern A jtgrd2sp(J jt,A a,A w);
 
 extern B compcu(I,UC*,UC*);
 extern B compcd(I,UC*,UC*);

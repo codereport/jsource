@@ -151,7 +151,7 @@ static A jtnlx(J jt, A w){A z=mtv;B b;I m=0,*v,x;
  A jtnl1(J jt, A w){memset(jt->workareas.namelist.nla,C1,256L); return nlx(w);}
      /* 4!:1  name list */
 
-F2(jtnl2){UC*u;
+ A jtnl2(J jt,A a,A w){UC*u;
  ARGCHK2(a,w);
  ASSERT(LIT&AT(a),EVDOMAIN);
  memset(jt->workareas.namelist.nla,C0,256L); 

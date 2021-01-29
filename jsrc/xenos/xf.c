@@ -80,7 +80,7 @@ static B jtwa(J jt,F f,I j,A w){C*x;I n,p=0;size_t q=1;
  return z;
 }
 
-F2(jtjfwrite){B b;F f;
+ A jtjfwrite(J jt,A a,A w){B b;F f;
  F2RANK(RMAX,0,jtjfwrite,UNUSED_VALUE);
  if(BOX&AT(w)){ASSERT(1>=AR(a),EVRANK); ASSERT(!AN(a)||AT(a)&LIT+C2T+C4T,EVDOMAIN);}
  RE(f=stdf(w));
@@ -93,7 +93,7 @@ F2(jtjfwrite){B b;F f;
  RNE(mtm);
 }
 
-F2(jtjfappend){B b;F f;
+ A jtjfappend(J jt,A a,A w){B b;F f;
  F2RANK(RMAX,0,jtjfappend,UNUSED_VALUE);
  RE(f=stdf(w));
  if(2==(I)f){B b=jt->tostdout; jt->tostdout=1; jpr(a); jt->tostdout=b; return a;}
@@ -144,7 +144,7 @@ static B jtixin(J jt,A w,I s,I*i,I*n){A in,*wv;I j,k,m,*u;
  return z;
 }
 
-F2(jtjiwrite){B b;F f;I i;
+ A jtjiwrite(J jt,A a,A w){B b;F f;I i;
  F2RANK(RMAX,1,jtjiwrite,UNUSED_VALUE);
  ASSERT(!AN(a)||AT(a)&LIT+C2T+C4T,EVDOMAIN);
  ASSERT(1>=AR(a),EVRANK);

@@ -725,7 +725,7 @@ static A jtsbgetdata(J jt, A w){A z,*zv;
  return z;
 }
 
-F2(jtsb2){A z;I j,k,n;
+ A jtsb2(J jt,A a,A w){A z;I j,k,n;
 #ifdef TMP
  I*zv;
 #endif

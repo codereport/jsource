@@ -103,7 +103,7 @@ __int64 GetMachineCycleCount()
 
  A jttss(J jt, A w){ASSERTMTV(w); return scf(tod()-jt->tssbase);}
 
-F2(jttsit2){A z;D t;I n;
+ A jttsit2(J jt,A a,A w){A z;D t;I n;
  F2RANK(0,1,jttsit2,UNUSED_VALUE);
  RE(n=i0(a));
  FDEPINC(1);  // No ASSERTs/returns till the DEPDEC below
@@ -157,7 +157,7 @@ static A jtpmfree(J jt, A w){A x,y;C*c;I m;PM*v;PM0*u;
 
  A jtpmarea1(J jt, A w){return pmarea2(vec(B01,2L,&zeroZ),w);}  // 6!:10
 
-F2(jtpmarea2){A x;B a0,a1,*av;C*v;I an,n=0,s=sizeof(PM),s0=sizeof(PM0),wn;PM0*u;
+ A jtpmarea2(J jt,A a,A w){A x;B a0,a1,*av;C*v;I an,n=0,s=sizeof(PM),s0=sizeof(PM0),wn;PM0*u;
  ARGCHK2(a,w);
  RZ(a=cvt(B01,a)); 
  an=AN(a);

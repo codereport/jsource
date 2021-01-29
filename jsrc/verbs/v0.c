@@ -14,7 +14,7 @@
 #define QNEGATE(x)     (qminus(zeroQ,x))
 
 #define CFR(f,T,TYPE,fplus,ftymes,fnegate)  \
- F2(f){PROLOG(0060);A z;I j,n;T d,*t,*u,*v;            \
+ A f(J jt,A a,A w){PROLOG(0060);A z;I j,n;T d,*t,*u,*v;            \
   n=AN(w); u=(T*)AV(w);                          \
   GATVS(z,TYPE,1+n,1,0,TYPE##SIZE,GACOPYSHAPE0,return 0); v=(T*)AV(z); *v=*(T*)AV(a);  \
   for(j=0;j<n;++j){                              \
@@ -39,7 +39,7 @@ static A jtrsort(J jt, A w){A t,z;
  return z;
 }
 
-static F2(jtcfrz){A z;B b=0,p;I j,n;Z c,d,*t,*u,*v;
+static A jtcfrz(J jt,A a,A w){A z;B b=0,p;I j,n;Z c,d,*t,*u,*v;
  RZ(w=rsort(w)); 
  n=AN(w); u=ZAV(w); 
  GATV0(z,CMPX,1+n,1); v=ZAV(z); v[0]=c=ZAV(a)[0]; p=!c.im;
@@ -276,7 +276,7 @@ static A jtmnomx(J jt,I m,A w){A s,*wv,x,z=w,*zv;I i,n,r;
  return z;
 }    /* standardize multinomial right arg */
 
-static F2(jtpoly2a){A c,e,x;I m;D rkblk[16];
+static A jtpoly2a(J jt,A a,A w){A c,e,x;I m;D rkblk[16];
  ARGCHK2(a,w);
  m=*(1+AS(a))-1;
  ASSERT(AT(a)&NUMERIC,EVDOMAIN);
@@ -365,7 +365,7 @@ DF2(jtpoly2){F2PREFIP;A c,za;I b;D*ad,d,p,*x,u,*z;I an,at,j,t,n,wt;Z*az,e,q,*wz,
  return 1>=AN(w) ? apv(1L,0L,0L) : tymes(behead(w),apv(AN(w)-1,1L,1L));
 }    /* p.. w */
 
-F2(jtpderiv2){
+ A jtpderiv2(J jt,A a,A w){
  F2RANK(0,1,jtpderiv2,UNUSED_VALUE);
  if(!(NUMERIC&AT(w)))RZ(w=poly1(w));
  ASSERT(NUMERIC&AT(a),EVDOMAIN);

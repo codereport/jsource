@@ -299,7 +299,7 @@ static DF1(jtsscan){A y,z;I d,f,m,n,r,t,wn,wr,*ws,wt;
 }    /* f/\."r w main control */
 
 
-static F2(jtomask){A c,r,x,y;I m,n,p;
+static A jtomask(J jt,A a,A w){A c,r,x,y;I m,n,p;
  ARGCHK2(a,w);
  RE(m=i0(a)); p=ABS(m); SETIC(w,n);
  r=sc(0>m?(n+p-1)/p:MAX(0,1+n-m)); c=tally(w);

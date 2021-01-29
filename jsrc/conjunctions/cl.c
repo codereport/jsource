@@ -141,6 +141,6 @@ static A jtlsub(J jt,C id,A a,A w){A h,t;B b=id==CLCAPCO;I*hv,n,*v;
  return fdef(0,id,VERB, b?jtlcapco1:jtscapco1,b?jtlcapco2:jtscapco2, a,w,h, VFLAGNONE, RMAX,RMAX,RMAX);
 }
 
-F2(jtlcapco){return lsub(CLCAPCO,a,w);}
-F2(jtscapco){return lsub(CSCAPCO,a,w);}
+ A jtlcapco(J jt,A a,A w){return lsub(CLCAPCO,a,w);}
+ A jtscapco(J jt,A a,A w){return lsub(CSCAPCO,a,w);}
 

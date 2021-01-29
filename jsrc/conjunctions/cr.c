@@ -716,7 +716,7 @@ static DF2(jtrank20){return jtrank2ex0(jt,a,w,self,jtrank20atom);}  // pass inpl
 
 
 // a"w; result is a verb
-F2(jtqq){A t;AF f1,f2;D*d;I hv[3],n,r[3],vf,flag2=0,*v;A ger=0;
+ A jtqq(J jt,A a,A w){A t;AF f1,f2;D*d;I hv[3],n,r[3],vf,flag2=0,*v;A ger=0;
  ARGCHK2(a,w);
  // The localuse value in the function will hold the ranks from w.
  if(VERB&AT(w)){

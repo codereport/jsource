@@ -208,7 +208,7 @@ void jtjsignal3(J jt,I e,A w,I j){
  jt->etxn1=jt->etxn;
 }    /* signal error e on line w with caret at j */
 
-static F2(jtdbsig){I e;
+static A jtdbsig(J jt,A a,A w){I e;
  RE(0);
  if(!AN(w))return mtm;
  RZ(w=vi(w)); e=AV(w)[0]; 
@@ -219,7 +219,7 @@ static F2(jtdbsig){I e;
 }    
 
  A jtdbsig1(J jt, A w){return dbsig(0L,w);}   /* 13!:8  signal error */
-F2(jtdbsig2){return dbsig(a, w);}
+ A jtdbsig2(J jt,A a,A w){return dbsig(a, w);}
 
 
  A jtdberr(J jt, A w){ASSERTMTV(w); return sc(jt->jerr1);}           /* 13!:11 last error number   */

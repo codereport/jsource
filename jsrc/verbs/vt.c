@@ -20,7 +20,7 @@ static A jttk0(J jt,B b,A a,A w){A z;I k,m=0,n,p,r,*s,*u;
  return z;
 }
 
-static F2(jttks){PROLOG(0092);A a1,q,x,y,z;B b,c;I an,m,r,*s,*u,*v;P*wp,*zp;
+static A jttks(J jt,A a,A w){PROLOG(0092);A a1,q,x,y,z;B b,c;I an,m,r,*s,*u,*v;P*wp,*zp;
  an=AN(a); u=AV(a); r=AR(w); s=AS(w); 
  GASPARSE(z,AT(w),1,r,s); v=AS(z); DO(an, v[i]=ABS(u[i]););
  zp=PAV(z); wp=PAV(w);
@@ -50,7 +50,7 @@ static F2(jttks){PROLOG(0092);A a1,q,x,y,z;B b,c;I an,m,r,*s,*u,*v;P*wp,*zp;
 }    /* take on sparse array w */
 
 // general take routine.  a is result frame followed by signed take values i. e. shape of result, w is array
-static F2(jttk){PROLOG(0093);A y,z;B b=0;C*yv,*zv;I c,d,dy,dz,e,i,k,m,n,p,q,r,*s,t,*u;
+static A jttk(J jt,A a,A w){PROLOG(0093);A y,z;B b=0;C*yv,*zv;I c,d,dy,dz,e,i,k,m,n,p,q,r,*s,t,*u;
  n=AN(a); u=AV(a); r=AR(w); s=AS(w); t=AT(w);
  if((t&SPARSE)!=0)return tks(a,w);
  DO(n, if(!u[i]){b=1; break;}); if(!b)DO(r-n, if(!s[n+i]){b=1; break;});  // if empty take, or take from empty cell, set b
@@ -74,7 +74,7 @@ static F2(jttk){PROLOG(0093);A y,z;B b=0;C*yv,*zv;I c,d,dy,dz,e,i,k,m,n,p,q,r,*s
  EPILOG(z);
 }
 
-F2(jttake){A s;I acr,af,ar,n,*v,wcr,wf,wr;
+ A jttake(J jt,A a,A w){A s;I acr,af,ar,n,*v,wcr,wf,wr;
  F2PREFIP;
  ARGCHK2(a,w); I wt = AT(w);  // wt=type of w
  if((SPARSE&AT(a))!=0)RZ(a=denseit(a));
@@ -136,7 +136,7 @@ F2(jttake){A s;I acr,af,ar,n,*v,wcr,wf,wr;
  return s;
 }
 
-F2(jtdrop){A s;I acr,af,ar,d,m,n,*u,*v,wcr,wf,wr;
+ A jtdrop(J jt,A a,A w){A s;I acr,af,ar,d,m,n,*u,*v,wcr,wf,wr;
  F2PREFIP;
  RZ((a=vib(a))&&w);  // convert & audit a
  ar=AR(a); acr=jt->ranks>>RANKTX; acr=ar<acr?ar:acr; af=ar-acr;  // ?r=rank, ?cr=cell rank, ?f=length of frame

@@ -422,7 +422,7 @@ A jtpcvt(J jt,I t,A w){A y;B b;RANK2T oqr=jt->ranks;
 
  A jtxco1(J jt, A w){ARGCHK1(w); ASSERT(AT(w)&DENSE,EVNONCE); return cvt(AT(w)&B01+INT+XNUM?XNUM:RAT,w);}
 
-F2(jtxco2){A z;B b;I j,n,r,*s,t,*wv,*zu,*zv;
+ A jtxco2(J jt,A a,A w){A z;B b;I j,n,r,*s,t,*wv,*zu,*zv;
  ARGCHK2(a,w);
  n=AN(w); r=AR(w); t=AT(w);
  ASSERT(t&DENSE,EVNONCE);

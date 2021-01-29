@@ -247,7 +247,7 @@ static REPF(jtrep1s){A ax,e,x,y,z;B*b;I c,d,cd,j,k,m,n,p,q,*u,*v,wr,*ws;P*wp,*zp
 }    /* scalar #"r sparse   or  sparse #"0 (dense or sparse) */
 
 A (*reptab[])() = {jtrepisx,jtrepidx,jtrepbsx,jtrepbdx,jtrep1s,jtrep1d,jtrepzsx,jtrepzdx};
-F2(jtrepeat){A z;I acr,ar,wcr,wf,wr;
+ A jtrepeat(J jt,A a,A w){A z;I acr,ar,wcr,wf,wr;
  F2PREFIP;ARGCHK2(a,w);
  ar=AR(a); acr=jt->ranks>>RANKTX; acr=ar<acr?ar:acr;
  wr=AR(w); wcr=(RANKT)jt->ranks; wcr=wr<wcr?wr:wcr; wf=wr-wcr; RESETRANK;

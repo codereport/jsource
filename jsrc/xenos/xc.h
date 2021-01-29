@@ -16,7 +16,7 @@ static DF2(jtx102d0);
 static DF2(jtx102d1);
 static DF1(jtx103d0);
 static A jtwex(J jt, A w);
-static F2(jttiebox);
+static A jttiebox(J jt,A a,A w);
 static A jtbg(J jt, A w);
 static A jtgb(J jt, A w);
 static DF1(jttconj);

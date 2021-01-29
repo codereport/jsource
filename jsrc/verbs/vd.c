@@ -225,7 +225,7 @@ static B jttridiag(J jt,I n,A a,A x){D*av,d,p,*xv;I i,j,n1=n-1;
  return 1;
 }
 
-static F2(jtmdivsp){A a1,x,y;I at,d,m,n,t,*v,xt;P*wp;
+static A jtmdivsp(J jt,A a,A w){A a1,x,y;I at,d,m,n,t,*v,xt;P*wp;
  ASSERT(2==AR(w),EVRANK);
  v=AS(w); n=v[0]; 
  ASSERT(n>=v[1]&&n==AN(a),EVLENGTH); 
@@ -243,7 +243,7 @@ static F2(jtmdivsp){A a1,x,y;I at,d,m,n,t,*v,xt;P*wp;
 
 
 // a %. w  for all types
-F2(jtmdiv){PROLOG(0069);A z;I t;
+ A jtmdiv(J jt,A a,A w){PROLOG(0069);A z;I t;
  F2RANK(RMAX,2,jtmdiv,UNUSED_VALUE);
  if(AT(a)&SPARSE)RZ(a=denseit(a));
  t=AT(w);
