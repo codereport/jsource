@@ -7,7 +7,7 @@
 #include "ve.h"
 
 
-QF1(jtqstd){I d,n;Q z;X g;
+ Q jtqstd(J jt,   Q  w){I d,n;Q z;X g;
  QRZ(w.n&&w.d&&!jt->jerr);
  n=XDIG(w.n); d=XDIG(w.d); z.d=iv1;
  if(0>d){QRE(w.n=rifvs(negate(w.n))); QRE(w.d=rifvs(negate(w.d))); n=-n; d=-d;}  // w could become the result

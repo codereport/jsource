@@ -4,7 +4,6 @@
 /* Rational Numbers                                                        */
 
 
-#define QF1(f)          Q f(J jt,   Q  w)
 #define QF2(f)          Q f(J jt,Q a,Q w)
 #define QASSERT(b,e)    {if(!(b)){jsignal(e); return zeroQ;}}
 #define QEPILOG(q)      {Q z9; z9=(qstd(q)); if(!gc3(&z9.n,&z9.d,0L,_ttop))return zeroQ; return z9;}
@@ -21,7 +20,7 @@
 #define QMAX(x,y)       (QGE(x,y)?x:y)
 #define QMIN(x,y)       (QLE(x,y)?x:y)
 
-extern QF1(jtqstd);
+extern Q jtqstd(J jt,   Q  w);
 
 extern QF2(jtqdiv);
 extern QF2(jtqminus);
