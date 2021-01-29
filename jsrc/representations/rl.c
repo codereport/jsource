@@ -6,11 +6,10 @@
 #include "j.h"
 #include <ctype.h>
 
-#define DF1X(f)           A f(J jt,A w,A self,A *ltext)
 #define F2X(f)           A f(J jt,A a,A w,A *ltext)
 static A jtlnoun(J jt,A w,A *ltext);
 static A jtlnum(J jt,A w,A *ltext);
-static DF1X(jtlrr);
+static A jtlrr(J jt,A w,A self,A *ltext);
 
 #define NUMV(c)  (((1LL<<C9)|(1LL<<CD)|(1LL<<CS)|(1LL<<CA)|(1LL<<CN)|(1LL<<CB))&(1LL<<(c)))
 
@@ -326,7 +325,7 @@ static A jtlcolon(J jt,A w,A *ltext){F1PREFIP;A*v,x,y;C*s,*s0;I m,n;
 }
 
 // Main routine for () and linear rep.  w is to be represented
-static DF1X(jtlrr){F1PREFIP;A hs,t,*tv;C id;I fl,m;V*v;
+static A jtlrr(J jt,A w,A self,A *ltext){F1PREFIP;A hs,t,*tv;C id;I fl,m;V*v;
  ARGCHK1(w);
  // If name, it must be in ".@'name', or (in debug mode) the function name, which we will discard
  if(AT(w)&NAME){RZ(w=sfn(0,w));}
