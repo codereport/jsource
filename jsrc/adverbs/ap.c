@@ -333,7 +333,7 @@ static A jtifxi(J jt,I m,A w){A z;I d,j,k,n,p,*x;
 }
 
 // Entry point for infix.  a is x, w is y, fs points to u
-static DF2(jtinfix){PROLOG(0018);DECLF;A x,z;I m; 
+static A jtinfix(J jt,A a,A w,A self){PROLOG(0018);DECLF;A x,z;I m; 
  PREF2(jtinfix); // Handle looping over rank.  This returns here for each cell (including this test)
  // The rest of this verb handles a single cell
  // If length is infinite, convert to large integer
@@ -364,7 +364,7 @@ static A jtinfix2(J jt,    A w,A self){PROLOG(0019);A f;
  EPILOG(z);
 }    /* 2 f/\w, where f supports IRS */
 
-static DF2(jtginfix){A h,*hv,x,z,*zv;I d,m,n;
+static A jtginfix(J jt,A a,A w,A self){A h,*hv,x,z,*zv;I d,m,n;
  RE(m=i0(vib(a))); 
  RZ(x=ifxi(m,w));
  h=VAV(self)->fgh[2]; hv=AAV(h); d=AN(h);
@@ -385,7 +385,7 @@ static DF2(jtginfix){A h,*hv,x,z,*zv;I d,m,n;
 #define STATESLASH2 ((I)1<<STATESLASH2X)
 
 // prefix and infix: prefix if a is mark
-static DF2(jtinfixprefix2){F2PREFIP;PROLOG(00202);A fs;I cger[128/SZI];
+static A jtinfixprefix2(J jt,A a,A w,A self){F2PREFIP;PROLOG(00202);A fs;I cger[128/SZI];
    I wt;
  
  ARGCHK1(w);
@@ -592,7 +592,7 @@ static A jtpscan(J jt,    A w,A self){A z;I f,n,r,t,wn,wr,*ws,wt;
  if(255&rc){jsignal(rc); return (rc>=EWOV)?IRS1(w,self,r,jtpscan,z):0;} else return adocv.cv&VRI+VRD?cvz(adocv.cv,z):z;
 }    /* f/\"r w atomic f main control */
 
-static DF2(jtinfixd){A fs,z;C*x,*y;I c=0,d,k,m,n,p,q,r,*s,wr,*ws,wt,zc; 
+static A jtinfixd(J jt,A a,A w,A self){A fs,z;C*x,*y;I c=0,d,k,m,n,p,q,r,*s,wr,*ws,wt,zc; 
  F2RANKW(0,RMAX,jtinfixd,self);
  wr=AR(w); ws=AS(w); wt=AT(w); SETIC(w,n);
  RE(m=i0(vib(a))); if(m==IMAX){m=n+1;} p=m==IMIN?IMAX:ABS(m);
@@ -652,7 +652,7 @@ static A jtmovsumavg(J jt,I m,A w,A fs,B avg){A z;
  return jtinfixprefix2(jt,sc(m),w,fs);
 }
 
-static DF2(jtmovavg){I m,j;
+static A jtmovavg(J jt,A a,A w,A self){I m,j;
  PREF2(jtmovavg);
  RE(m=i0(vib(a)));SETIC(w,j);
  if(0<m&&m<=j&&AT(w)&B01+FL+INT)return movsumavg(m,w,self,1);   // j may be 0
@@ -780,7 +780,7 @@ static A jtmovbwneeq(J jt,I m,A w,A fs,B eq){A y,z;I c,p,*s,*u,*v,x,*yv,*zv;
  return z;
 }    /* m 22 b./\w (0=eq) or m 25 b./\ (1=eq); integer w; 0<m */
 
-static DF2(jtmovfslash){A x,z;B b;C id,*wv,*zv;I d,m,m0,p,t,wk,wt,zi,zk,zt;
+static A jtmovfslash(J jt,A a,A w,A self){A x,z;B b;C id,*wv,*zv;I d,m,m0,p,t,wk,wt,zi,zk,zt;
  PREF2(jtmovfslash);
  SETIC(w,p); wt=AT(w);   // p=#items of w
  RE(m0=i0(vib(a))); m=REPSGN(m0); m=(m^m0)-m; m^=REPSGN(m);  // m0=infx x,  m=abs(m0), handling IMIN

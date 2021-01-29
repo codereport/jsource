@@ -11,7 +11,7 @@ static A swap1(J jt,    A w,A self){DECLF; F1PREFIP; jtinplace = (J)(intptr_t)((
  // a~ carried the IRS flag from a and thus we might have ranks set.  If so, use them, and no need to check agreement again.  For ease, we just use whatever is set 
  A z; IRSIP2(w,w,fs,(RANKT)jt->ranks,(RANKT)jt->ranks,f2,z); return z;
 }
-static DF2(swap2){DECLF; F2PREFIP; jtinplace = (J)(intptr_t)((I)jtinplace^((JTINPLACEW+JTINPLACEA)&(0x3C>>(2*((I)jtinplace&JTINPLACEW+JTINPLACEA)))));
+static A swap2(J jt,A a,A w,A self){DECLF; F2PREFIP; jtinplace = (J)(intptr_t)((I)jtinplace^((JTINPLACEW+JTINPLACEA)&(0x3C>>(2*((I)jtinplace&JTINPLACEW+JTINPLACEA)))));
  A z; IRSIP2(w,a,fs,(RANKT)jt->ranks,jt->ranks>>RANKTX,f2,z); return z;
 }
 
@@ -38,7 +38,7 @@ static const B booltab[64]={
  1,0,0,0, 1,0,0,1, 1,0,1,0, 1,0,1,1,  1,1,0,0, 1,1,0,1, 1,1,1,0, 1,1,1,1,
 };
 
-static DF2(jtbdot2){return from(plusA(duble(cvt(B01,a)),cvt(B01,w)),FAV(self)->fgh[2]);}  // dyad b. (2*a + w) { h
+static A jtbdot2(J jt,A a,A w,A self){return from(plusA(duble(cvt(B01,a)),cvt(B01,w)),FAV(self)->fgh[2]);}  // dyad b. (2*a + w) { h
 
 static A jtbdot1(J jt,    A w,A self){return bdot2(num(0),w,self);}
 
@@ -143,7 +143,7 @@ static A jtmemo1(J jt,    A w,A self){DECLF;A z;I x,y;
  return (z=memoget(x,y,self))?z:memoput(x,y,self,CALL1(f1,w,fs));
 }
 
-static DF2(jtmemo2){DECLF;A z;I x,y; 
+static A jtmemo2(J jt,A a,A w,A self){DECLF;A z;I x,y; 
  ARGCHK2(a,w);
  x=int0(a); y=int0(w);
  if(MIN(x,y)==IMIN)return CALL2(f2,a,w,fs);  // IMIN is unmemoable, run fn

@@ -68,7 +68,7 @@ I levelle(A w,I l){
  A jtboxopen(J jt, A w){F1PREFIP; ARGCHK1(w); if((-AN(w)&-(AT(w)&BOX+SBOX))>=0){w = jtbox(jtinplace,w);} return w;}
 
 // x ; y, with options for x (,<) y   x (;<) y   x ,&< y
-DF2(jtlink){
+ A jtlink(J jt,A a,A w,A self){
 F2PREFIP;ARGCHK2(a,w);
 #if FORCEVIRTUALINPUTS
  // to allow mapped-boxed tests to run, we detect when the virtual block being realized is at offset 0 from its

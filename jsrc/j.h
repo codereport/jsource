@@ -329,7 +329,6 @@ static inline omp_int_t omp_get_max_threads() { return 1;}
 // set the sign bit to the selected bit of the mask
 #define CCMSGN(cand,tval) (cand<<(tval&(BW-1)))   // set sign bit if value found
 #define CCMTST(cand,tval) (cand&(1LL<<(~tval&(BW-1))))  // test true is value found
-#define DF2(f)          A f(J jt,A a,A w,A self)
 #define DO(n,stm)       {I i=0,_n=(n); for(;i<_n;i++){stm}}  // i runs from 0 to n-1
 #define DP(n,stm)       {I i=-(n);    for(;i<0;++i){stm}}   // i runs from -n to -1 (faster than DO)
 #define DQ(n,stm)       {I i=(I)(n)-1;    for(;i>=0;--i){stm}}  // i runs from n-1 downto 0 (fastest when you don't need i)

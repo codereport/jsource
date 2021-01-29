@@ -433,7 +433,7 @@ static A jtipbx(J jt,A a,A w,C c,C d){A g=0,x0,x1,z;B*av,*av0,b,*v0,*v1,*zv;C c0
  return z;
 }    /* a f/ . g w  where a and w are nonempty and a is boolean */
 
-static DF2(jtdotprod){A fs,gs;C c;I r;V*sv;
+static A jtdotprod(J jt,A a,A w,A self){A fs,gs;C c;I r;V*sv;
  ARGCHK3(a,w,self);
  sv=FAV(self); fs=sv->fgh[0]; gs=sv->fgh[1];  // op is fs . gs
  if((SGNIF(AT(a)&AT(w),B01X)&-AN(a)&-AN(w)&-(FAV(gs)->flag&VISATOMIC2))<0&&CSLASH==ID(fs)&&  // fs is c/

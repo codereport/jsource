@@ -593,7 +593,7 @@ A jtirs2(J jt,A a,A w,A fs,I l,I r,AF f2){A z;I ar,wr;
 
 
 static A cons1a(J jt,    A w,A self){return FAV(self)->fgh[0];}
-static DF2(cons2a){return FAV(self)->fgh[0];}
+static A cons2a(J jt,A a,A w,A self){return FAV(self)->fgh[0];}
 
 // Constant verbs do not inplace because we loop over cells.  We could speed this up if it were worthwhile.
 static A cons1(J jt,    A w,A self){V*sv=FAV(self);
@@ -601,7 +601,7 @@ static A cons1(J jt,    A w,A self){V*sv=FAV(self);
  I mr; efr(mr,AR(w),(I)sv->localuse.lI4[0]);
  return rank1ex(w,self,mr,cons1a);
 }
-static DF2(cons2){V*sv=FAV(self);
+static A cons2(J jt,A a,A w,A self){V*sv=FAV(self);
  ARGCHK2(a,w);
  I lr2,rr2; efr(lr2,AR(a),(I)sv->localuse.lI4[1]); efr(rr2,AR(w),(I)sv->localuse.lI4[2]);
  return rank2ex(a,w,self,lr2,rr2,lr2,rr2,cons2a);
@@ -614,7 +614,7 @@ static A cycr1(J jt,    A w,A self){V*sv=FAV(self);I cger[128/SZI];
  I mr; efr(mr,AR(w),(I)sv->localuse.lI4[0]);
  return rank1ex(w,self,mr,FAV(self)->valencefns[0]);  // callback is to the cyclic-execution function
 }
-static DF2(cycr2){V*sv=FAV(self);I cger[128/SZI];
+static A cycr2(J jt,A a,A w,A self){V*sv=FAV(self);I cger[128/SZI];
  ARGCHK2(a,w);
  RZ(self=createcycliciterator((A)&cger, self));  // fill in an iterator for this gerund
  I lr2,rr2; efr(lr2,AR(a),(I)sv->localuse.lI4[1]); efr(rr2,AR(w),(I)sv->localuse.lI4[2]);
@@ -637,7 +637,7 @@ static A rank1in(J jt,    A w,A self){F1PREFIP;ARGCHK1(w);DECLF;  // this versio
  jt->ranks=(RANK2T)~0;  // reset rank to infinite
  return z;
 }
-static DF2(rank2i){F2PREFIP;ARGCHK1(w);DECLF;  // this version when requested rank is positive
+static A rank2i(J jt,A a,A w,A self){F2PREFIP;ARGCHK1(w);DECLF;  // this version when requested rank is positive
  I ar=sv->localuse.lI4[1]; ar=ar>=AR(a)?(RANKT)~0:ar; I af=AR(a)-ar;   // left rank
  I wr=sv->localuse.lI4[2]; wr=wr>=AR(w)?(RANKT)~0:wr; I wf=AR(w)-wr;   // right rank
  af=wf<af?wf:af; af=af<0?0:af;
@@ -647,7 +647,7 @@ static DF2(rank2i){F2PREFIP;ARGCHK1(w);DECLF;  // this version when requested ra
  jt->ranks=(RANK2T)~0;  // reset rank to infinite
  return z;
 }
-static DF2(rank2in){F2PREFIP;ARGCHK1(w);DECLF;  // this version when a requested rank is negative
+static A rank2in(J jt,A a,A w,A self){F2PREFIP;ARGCHK1(w);DECLF;  // this version when a requested rank is negative
  I wr=AR(w); I r=sv->localuse.lI4[2]; r=r>=wr?(RANKT)~0:r; wr+=r; wr=wr<0?0:wr; wr=r>=0?r:wr; I wf=AR(w)-wr;   // right rank
  I ar=AR(a); r=sv->localuse.lI4[1];   r=r>=ar?(RANKT)~0:r; ar+=r; ar=ar<0?0:ar; ar=r>=0?r:ar; I af=AR(a)-ar;   // left rank
  af=wf<af?wf:af; af=af<0?0:af;
@@ -684,13 +684,13 @@ static A rank1q(J jt,    A w,A self){  // fast version: nonneg rank, no check fo
 // For the dyads, rank2ex does a quadruply-nested loop over two rank-pairs, which are the n in u"n (stored in h) and the rank of u itself (fetched from u).
 // THIS SUPPORTS INPLACING: NOTHING HERE MAY DEREFERENCE jt!!
 // This version for use when the ranks are nonnegative and u is not RANKONLY
-static DF2(rank2q){
+static A rank2q(J jt,A a,A w,A self){
  ARGCHK2(a,w);
  I ar=AR(a); ar=ar>FAV(self)->localuse.lI4[1]?FAV(self)->localuse.lI4[1]:ar; I wr=AR(w); wr=wr>FAV(self)->localuse.lI4[2]?FAV(self)->localuse.lI4[2]:wr; A fs=FAV(self)->fgh[0];
  return rank2ex(a,w,fs,ar,wr,ar,wr,FAV(fs)->valencefns[1]);
 }
 
-static DF2(rank2){DECLF;I ar,l=sv->localuse.lI4[1],r=sv->localuse.lI4[2],wr;
+static A rank2(J jt,A a,A w,A self){DECLF;I ar,l=sv->localuse.lI4[1],r=sv->localuse.lI4[2],wr;
  ARGCHK2(a,w);
  ar=AR(a); efr(l,ar,l);
  wr=AR(w); efr(r,wr,r);
@@ -711,8 +711,8 @@ static DF2(rank2){DECLF;I ar,l=sv->localuse.lI4[1],r=sv->localuse.lI4[2],wr;
  }else return CALL2(f2,a,w,fs);  // pass in verb ranks to save a level of rank processing if not infinite.  Preserves inplacing
 }
 // Version for rank 0.  Call rank1ex0, pointing to the u"r
-static DF2(jtrank20atom){ A fs=FAV(self)->fgh[0]; return (FAV(fs)->valencefns[1])(jt,a,w,fs);}  // will be used only for no-frame executions.  Otherwise will be replaced by the flags loop
-static DF2(jtrank20){return jtrank2ex0(jt,a,w,self,jtrank20atom);}  // pass inplaceability through.
+static A jtrank20atom(J jt,A a,A w,A self){ A fs=FAV(self)->fgh[0]; return (FAV(fs)->valencefns[1])(jt,a,w,fs);}  // will be used only for no-frame executions.  Otherwise will be replaced by the flags loop
+static A jtrank20(J jt,A a,A w,A self){return jtrank2ex0(jt,a,w,self,jtrank20atom);}  // pass inplaceability through.
 
 
 // a"w; result is a verb

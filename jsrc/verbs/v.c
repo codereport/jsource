@@ -116,7 +116,7 @@ static A jtlr2(J jt,RANK2T ranks,A a,A w){I acr,af,ar,wcr,wf,wr;
 }
 
  A jtnum1(J jt,    A w,A self){ARGCHK2(w,self); return FAV(self)->fgh[2];}
-DF2(jtnum2){ARGCHK3(a,w,self); return FAV(self)->fgh[2];}
+ A jtnum2(J jt,A a,A w,A self){ARGCHK3(a,w,self); return FAV(self)->fgh[2];}
 
  A jtfromr  (J jt,A a,A w){ARGCHK2(a,w); A z; return IRS2(a,w,0, RMAX,1L,jtfrom  ,z);} // no agreement check because left rank is infinite - no frame  {"_ 1
  A jtrepeatr(J jt,A a,A w){ARGCHK2(a,w); A z; return IRS2(a,w,0, RMAX,1L,jtrepeat,z);}  // #"_ 1

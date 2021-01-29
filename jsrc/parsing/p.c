@@ -134,7 +134,7 @@ static PSTK* jtpparen(J jt,PSTK *stack){
 }
 
 // multiple assignment.  self has parms.  ABACK(self) is the symbol table to assign to, valencefns[0] is preconditioning routine to open value or convert it to AR
-static DF2(jtisf){RZ(symbis(onm(a),CALL1(FAV(self)->valencefns[0],w,0L),ABACK(self))); return num(0);}
+static A jtisf(J jt,A a,A w,A self){RZ(symbis(onm(a),CALL1(FAV(self)->valencefns[0],w,0L),ABACK(self))); return num(0);}
 
 // assignment, single or multiple
 static PSTK* jtis(J jt,PSTK *stack){B ger=0;C *s;

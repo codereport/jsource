@@ -489,7 +489,7 @@ AMONPS( pixX, X,X, , *z=   rifvsdebug(xpi(*x)); , HDR1JERR)
 
 #define DXBODY(exp)  DECLG;A y=sv->fgh[2],z;I m=jt->xmode; jt->xmode=XMFLR; z=exp; jt->xmode=m; return z
 #define DX1(f,exp) A f(J jt,    A w,A self){DXBODY(exp);} 
-#define DX2(f,exp)   DF2(f){DXBODY(exp);}
+#define DX2(f,exp) A f(J jt,A a,A w,A self){DXBODY(exp);}
 #define XT(w)        tymes(y,w)
 
 static DX1(postmult1, XT(CALL1(g1,  w,gs)))

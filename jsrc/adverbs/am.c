@@ -284,7 +284,7 @@ static A jtjstd(J jt,A w,A ind,I *cellframelen){A j=0,k,*v,x;I b;I d,i,n,r,*u,wr
 /* 1 jdo     tpop                           */
 
 // Execution of x m} y.  Split on sparse/dense, passing on the dense to merge2, including inplaceability
-static DF2(jtamendn2){F2PREFIP;PROLOG(0007);A e,z; B b;I atd,wtd,t,t1;P*p;
+static A jtamendn2(J jt,A a,A w,A self){F2PREFIP;PROLOG(0007);A e,z; B b;I atd,wtd,t,t1;P*p;
  AD * RESTRICT ind=VAV(self)->fgh[0];
  ARGCHK3(a,w,ind);
  if(!((AT(w)|AT(ind))&SPARSE)){
@@ -319,7 +319,7 @@ static DF2(jtamendn2){F2PREFIP;PROLOG(0007);A e,z; B b;I atd,wtd,t,t1;P*p;
 
 // Execution of x u} y.  Call u to get the indices, then
 // call merge2 to do the merge.  Pass inplaceability into merge2.
-static DF2(amccv2){F2PREFIP;DECLF; 
+static A amccv2(J jt,A a,A w,A self){F2PREFIP;DECLF; 
  ARGCHK2(a,w); 
  ASSERT(DENSE&AT(w),EVNONCE);  // u} not supported for sparse
  A x;RZ(x=pind(AN(w),CALL2(f2,a,w,fs)));
@@ -395,7 +395,7 @@ B jtgerexact(J jt, A w){A*wv;
  else           return ADERIV(CRBRACE,mergn1,jtamendn2,VASGSAFE|VJTFLGOK2, RMAX,RMAX,RMAX);  // m}
 }
 
-static DF2(jtamen2){ASSERT(0,EVNONCE);}
+static A jtamen2(J jt,A a,A w,A self){ASSERT(0,EVNONCE);}
 
  A jtemend(J jt, A w){
  ASSERT(NOUN&AT(w),EVDOMAIN);

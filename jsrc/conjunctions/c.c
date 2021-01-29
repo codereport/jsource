@@ -23,7 +23,7 @@ static A ad1(J jt,    A w,A self){DECLFG;A z;
  return z?z:AT(gs)&NOUN?gs:CALL1(g1,  w,gs);
 }
 
-static DF2(ad2){DECLFG;A z;
+static A ad2(J jt,A a,A w,A self){DECLFG;A z;
  ARGCHK2(a,w); 
  WITHDEBUGOFF(z=CALL2(f2,a,w,fs);)
  if(EVTHROW==jt->jerr)return 0;

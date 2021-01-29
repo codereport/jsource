@@ -17,22 +17,22 @@
 
 
 static A secf1(J jt,    A w,A self){F1PREFIP; A h=FAV(self)->fgh[2]; ASSERT(!jt->seclev,EVSECURE); return CALL1IP((AF)AV(h)[0],  w,self);}
-static DF2(secf2){F2PREFIP; A h=FAV(self)->fgh[2]; ASSERT(!jt->seclev,EVSECURE); return CALL2IP((AF)AV(h)[1],a,w,self);}
+static A secf2(J jt,A a,A w,A self){F2PREFIP; A h=FAV(self)->fgh[2]; ASSERT(!jt->seclev,EVSECURE); return CALL2IP((AF)AV(h)[1],a,w,self);}
 
 // undocumented 13!:80 functions, used to test condrange
-static DF2(jtfindrange){
+static A jtfindrange(J jt,A a,A w,A self){
  ARGCHK2(a,w);
  I *av = AV(a);
  CR rng = condrange(AV(w),AN(w),av[0],av[1],av[2]);
  return v2(rng.min,rng.range);
 } // 13!:80
-static DF2(jtfindrange4){
+static A jtfindrange4(J jt,A a,A w,A self){
  ARGCHK2(a,w);
  I *av = AV(a);
  CR rng = condrange4(C4AV(w),AN(w),av[0],av[1],av[2]);
  return v2(rng.min,rng.range);
 }  // 13!:81
-static DF2(jtfindrange2){
+static A jtfindrange2(J jt,A a,A w,A self){
  ARGCHK2(a,w);
  I *av = AV(a);
  CR rng = condrange2(USAV(w),AN(w),av[0],av[1],av[2]);

@@ -15,7 +15,7 @@ static A jtonf1(J jt,    A w,A self){PROLOG(0021);DECLFG;A z;I flag=sv->flag,m=j
  EPILOG(z);
 }
 
-static DF2(jtuponf2){PROLOG(0022);DECLFG;A z;I flag=sv->flag,m=jt->xmode;
+static A jtuponf2(J jt,A a,A w,A self){PROLOG(0022);DECLFG;A z;I flag=sv->flag,m=jt->xmode;
  ARGCHK2(a,w);
  if(primitive(gs))if(flag&VFLR)jt->xmode=XMFLR; else if(flag&VCEIL)jt->xmode=XMCEIL;
  if(RAT&AT(a))RZ(a=pcvt(XNUM,a));
@@ -41,7 +41,7 @@ static I dmodpow(D x,I n,D m){D z=1; while(n){if(1&n)z=fmod(z*x,m); x=fmod(x*x,m
 
 static I imodpow(I x,I n,I m){I z=1; while(n){if(1&n)z=(z*x)%m;     x=(x*x)%m;     n>>=1;} return   z;}
 
-static DF2(jtmodpow2){A h;B b,c;I at,m,n,wt,x,z;
+static A jtmodpow2(J jt,A a,A w,A self){A h;B b,c;I at,m,n,wt,x,z;
  PREF2(jtmodpow2);
  h=FAV(self)->fgh[2]; 
  if(RAT&AT(a))RZ(a=pcvt(XNUM,a)) else if(!(AT(a)&INT+XNUM))RZ(a=pcvt(INT,a)); 
@@ -89,16 +89,16 @@ RZ(z=(f1)(jtinplace,gx,fs));} \
 // special case for rank 0.  Transfer to loop.  
 // if there is only one cell, process it through on1, which understands this type
 static A jton10(J jt,    A w,A self){return jtrank1ex0(jt,w,self,on1cell);}  // pass inplaceability through
-static DF2(jtupon20){return jtrank2ex0(jt,a,w,self,jtupon2cell);}  // pass inplaceability through
+static A jtupon20(J jt,A a,A w,A self){return jtrank2ex0(jt,a,w,self,jtupon2cell);}  // pass inplaceability through
 
 // special lightweight case for u@[ and u@].
 static A onright1(J jt,    A w,A self){F1PREFIP; return (FAV(FAV(self)->fgh[0])->valencefns[0])(jtinplace,w,FAV(self)->fgh[0]);}  // pass straight through.  All we do here is set self.  Leave inplaceability unchanged
-static DF2(onleft2){F2PREFIP; return (FAV(FAV(self)->fgh[0])->valencefns[0])((J)(((I)jtinplace&~(JTINPLACEA+JTINPLACEW))+(((I)jtinplace&JTINPLACEA)>>(JTINPLACEAX-JTINPLACEWX))),a,FAV(self)->fgh[0]);}  // move inplaceable a to w
-static DF2(onright2){F2PREFIP; return (FAV(FAV(self)->fgh[0])->valencefns[0])((J)((I)jtinplace&~JTINPLACEA),w,FAV(self)->fgh[0]);}  // keep inplaceable w
+static A onleft2(J jt,A a,A w,A self){F2PREFIP; return (FAV(FAV(self)->fgh[0])->valencefns[0])((J)(((I)jtinplace&~(JTINPLACEA+JTINPLACEW))+(((I)jtinplace&JTINPLACEA)>>(JTINPLACEAX-JTINPLACEWX))),a,FAV(self)->fgh[0]);}  // move inplaceable a to w
+static A onright2(J jt,A a,A w,A self){F2PREFIP; return (FAV(FAV(self)->fgh[0])->valencefns[0])((J)((I)jtinplace&~JTINPLACEA),w,FAV(self)->fgh[0]);}  // keep inplaceable w
 
 // u@n
 static A onconst1(J jt,    A w,A self){DECLFG;return (f1)(jt,gs,fs);}
-static DF2(onconst2){DECLFG;return (f1)(jt,gs,fs);}
+static A onconst2(J jt,A a,A w,A self){DECLFG;return (f1)(jt,gs,fs);}
 
 // x u&v y
 // We don't bother passing WILLOPEN from u into v, since it's rarely used.  We do pass WILLOPEN into u.
@@ -112,9 +112,9 @@ CS2IP(static,static,on2, \
  POPZOMB; jtinplace=(J)(intptr_t)(((I)jtinplace&~(JTINPLACEA+JTINPLACEW))+(I )(ga!=prota)*JTINPLACEA+(I )(gw!=protw)*JTINPLACEW); jtinplace=FAV(fs)->flag&VJTFLGOK2?jtinplace:jt; \
  RZ(z=(f2)(jtinplace,ga,gw,fs)); \
 ,0023)
-static DF2(on20){return jtrank2ex0(jt,a,w,self,on2cell);}  // pass inplaceability through
+static A on20(J jt,A a,A w,A self){return jtrank2ex0(jt,a,w,self,on2cell);}  // pass inplaceability through
 
-static DF2(atcomp){AF f;A z;
+static A atcomp(J jt,A a,A w,A self){AF f;A z;
  ARGCHK2(a,w); 
  f=atcompf(a,w,self);
  if(f){
@@ -125,7 +125,7 @@ static DF2(atcomp){AF f;A z;
  return z;
 }
 
-static DF2(atcomp0){A z;AF f;
+static A atcomp0(J jt,A a,A w,A self){A z;AF f;
  ARGCHK2(a,w);
  f=atcompf(a,w,self);
  PUSHCCT(1.0)
@@ -371,7 +371,7 @@ static A ixfixedright0(J jt,    A w,A self){A z;V*v=FAV(self);
  return z;
 }
 
-static DF2(with2){A z; return df1(z,w,powop(self,a,0));}
+static A with2(J jt,A a,A w,A self){A z; return df1(z,w,powop(self,a,0));}
 
 // u&v
  A jtamp(J jt,A a,A w){A h=0;AF f1,f2;B b;C c,d=0;I flag,flag2=0,linktype=0,mode=-1,p,r;V*u,*v;

@@ -17,7 +17,7 @@ static A jtcut01(J jt,    A w,A self){DECLF;A h,x,z;
  if(VGERL&sv->flag){h=sv->fgh[2]; return df1(z,x,AAV(h)[0]);}else return CALL1(f1,x,fs);
 }    /* f;.0 w */
 
-static DF2(jtcut02){F2PREFIP;A fs,q,qq,*qv,z,zz=0;I*as,c,e,i,ii,j,k,m,n,*u,*ws;PROLOG(876);I cger[128/SZI];
+static A jtcut02(J jt,A a,A w,A self){F2PREFIP;A fs,q,qq,*qv,z,zz=0;I*as,c,e,i,ii,j,k,m,n,*u,*ws;PROLOG(876);I cger[128/SZI];
  ARGCHK2(a,w);
 #define ZZFLAGWORD state
  I state=ZZFLAGINITSTATE;  // init flags, including zz flags
@@ -126,7 +126,7 @@ static DF2(jtcut02){F2PREFIP;A fs,q,qq,*qv,z,zz=0;I*as,c,e,i,ii,j,k,m,n,*u,*ws;P
 
 // self is a compound, using @/@:/&/&:, that we tried to run with special code, but we found that we don't support the arguments
 // here we revert to the non-special code for the compound
-DF2(jtspecialatoprestart){
+ A jtspecialatoprestart(J jt,A a,A w,A self){
   ARGCHK3(a,w,self);  // return fast if there has been an error
   V *sv=FAV(self);  // point to verb info for the current overall compound
   return a==mark?(sv->id==CFORK?jtcork1:on1)(jt,w,self) : (sv->id==CFORK?jtcork2:jtupon2)(jt,a,w,self);  // figure out the default routine that should process the compound, and transfer to it
@@ -134,7 +134,7 @@ DF2(jtspecialatoprestart){
 
 // x <;.0 y  and  x (<;.0~ -~/"2)~ y   where _2 { $x is 1 (i. e. 1 dimension of selection)  localuse distinguishes the two cases (relative vs absolute length)
 // We go for minimum overhead in the box allocation and copy
-DF2(jtboxcut0){A z;
+ A jtboxcut0(J jt,A a,A w,A self){A z;
  F2PREFIP;ARGCHK2(a,w);
  // NOTE: this routine is called from jtwords.  In that case, self comes from jtwords and is set up with the parm for x (<;.0~ -~/"2)~ y but with no failover routine.
  // Thus, the preliminary tests must not cause a failover.  They don't, because the inputs from jtwords are known to be well-formed
@@ -192,7 +192,7 @@ DF2(jtboxcut0){A z;
 // a ;@:(<;.0) w where a has one column.  We allocate a single area and copy in the items
 // if we encounter a reversal, we abort
 // if it's a case we can't handle, we fail over to the normal code, with BOXATOP etc flags set
-DF2(jtrazecut0){A z;C*wv,*zv;I ar,*as,(*av)[2],j,k,m,n,wt;
+ A jtrazecut0(J jt,A a,A w,A self){A z;C*wv,*zv;I ar,*as,(*av)[2],j,k,m,n,wt;
  ARGCHK2(a,w);
  wt=AT(w); wv=CAV(w);
  ar=AR(a); as=AS(a);
@@ -216,7 +216,7 @@ DF2(jtrazecut0){A z;C*wv,*zv;I ar,*as,(*av)[2],j,k,m,n,wt;
 }    /* a ;@:(<;.0) vector */
 
 
-static DF2(jtcut2bx){A*av,b,t,x,*xv,y,*yv;B*bv;I an,bn,i,j,m,p,q,*u,*v,*ws;
+static A jtcut2bx(J jt,A a,A w,A self){A*av,b,t,x,*xv,y,*yv;B*bv;I an,bn,i,j,m,p,q,*u,*v,*ws;
  ARGCHK3(a,w,self);
  q=(I)FAV(self)->localuse.lvp[0];  // fetch the n in the original u;.n
  an=AN(a); av=AAV(a);  ws=AS(w);
@@ -323,7 +323,7 @@ static A jtsely(J jt,A y,I r,I i,I j){A z;I c,*s,*v;
  return z;
 }    /* ((i+i.r){y)-"1 ({:$y){.j */
 
-static DF2(jtcut2sx){PROLOG(0024);DECLF;A h=0,*hv,y,yy;B b,neg,pfx,*u,*v;C id;I d,e,hn,m,n,p,t,yn,*yu,*yv;P*ap;V*vf;
+static A jtcut2sx(J jt,A a,A w,A self){PROLOG(0024);DECLF;A h=0,*hv,y,yy;B b,neg,pfx,*u,*v;C id;I d,e,hn,m,n,p,t,yn,*yu,*yv;P*ap;V*vf;
  PREF2(jtcut2sx);
  SETIC(w,n); t=AT(w); m=(I)sv->localuse.lvp[0]; neg=0>m; pfx=m==1||m==-1; b=neg&&pfx;  // m = n from u;.n
  RZ(a=a==mark?eps(w,take(num(pfx?1:-1),w)):DENSE&AT(a)?sparse1(a):a);
@@ -549,7 +549,7 @@ void copyTT(void *zv, void *wv, I n, I zt, I wt){
   else {D *targ=zv; I *src=wv; DQ(n, *targ++ = (D)*src++;)}
 }
 
-DF2(jtcut2){F2PREFIP;PROLOG(0025);A fs,z,zz;I neg,pfx;C id,*v1,*wv,*zc;I cger[128/SZI];
+ A jtcut2(J jt,A a,A w,A self){F2PREFIP;PROLOG(0025);A fs,z,zz;I neg,pfx;C id,*v1,*wv,*zc;I cger[128/SZI];
      I ak,at,wcn,d,k,m=0,n,r,wt,*zi;I d1[32]; A pd0; UC *pd, *pdend;  // Don't make d1 too big - it fill lots of stack space
  PREF2(jtcut2);
  // a may have come from /., in which case it is incompletely filled in.  We look at the type, but nothing else
@@ -831,7 +831,7 @@ static A jtcut1(J jt,    A w,A self){return cut2(mark,w,self);}
 // also [: ; (<@(f/\));._2 _1 1 2)  when no rank loop required
 // NOTE: if there are no cuts, this routine produces different results from the normal routine if the operation is one we recognise.
 //  This routine produces an extra axis, as if the shape of the boxed result were preserved even when there are no boxed results
-DF2(jtrazecut2){A fs,gs,y,z=0;B b; I neg,pfx;C id,sep,*u,*v,*wv,*zv;I d,k,m=0,wi,p,q,r,*s,wt;
+ A jtrazecut2(J jt,A a,A w,A self){A fs,gs,y,z=0;B b; I neg,pfx;C id,sep,*u,*v,*wv,*zv;I d,k,m=0,wi,p,q,r,*s,wt;
     V *vv;VARPS adocv;
  ARGCHK2(a,w);
  gs=FAV(self)->fgh[1+(CFORK==FAV(self)->id)]; vv=VAV(gs); y=vv->fgh[0]; fs=VAV(y)->fgh[1];  // self is ;@:(<@(f/\);.1)     gs  gs is <@(f/\);.1   y is <@(f/\)  fs is   f/\  ...
@@ -905,7 +905,7 @@ static A jttesa(J jt,A a,A w){A x;I*av,ac,c,d,k,r,*s,t,*u,*v;
 #define STATEREFLECTX 0x400  // subarray must be reflected
 #define STATEREFLECTY 0x800
 #define STATETAKE 0x1000  // subarray must be shortened at the end
-static DF2(jttess2){A z,zz=0,virtw,strip;I n,rs[3],cellatoms,cellbytes,vmv,hmv,vsz,hsz,hss,hds,vss1,vss,vds1,vds,vlrc,vtrc,lrchsiz,hi,vi,vkeep1,vtrunc,hkeep1,htrunc;C *svh,*dvh;
+static A jttess2(J jt,A a,A w,A self){A z,zz=0,virtw,strip;I n,rs[3],cellatoms,cellbytes,vmv,hmv,vsz,hsz,hss,hds,vss1,vss,vds1,vds,vlrc,vtrc,lrchsiz,hi,vi,vkeep1,vtrunc,hkeep1,htrunc;C *svh,*dvh;
  PROLOG(600); PREF2(jttess2);   // enforce left rank 2
 #define ZZFLAGWORD state
  I state;

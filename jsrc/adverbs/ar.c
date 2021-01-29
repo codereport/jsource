@@ -594,7 +594,7 @@ static A jtredcateach(J jt,    A w,A self){A*u,*v,*wv,x,*xv,z,*zv;I f,m,mn,n,r,w
  return z;
 }    /* ,&.>/"r w */
 
-static DF2(jtoprod){A z; return df2(z,a,w,FAV(self)->fgh[2]);}  // x u/ y - transfer to the u"lr,_ verb (precalculated)
+static A jtoprod(J jt,A a,A w,A self){A z; return df2(z,a,w,FAV(self)->fgh[2]);}  // x u/ y - transfer to the u"lr,_ verb (precalculated)
 
 
  A jtslash(J jt, A w){A h;AF f1;C c;V*v;I flag=0;
@@ -632,7 +632,7 @@ A sum=reduce(w,FAV(self)->fgh[0]);  // calculate +/"r
 }    // (+/%#)"r w, implemented as +/"r % cell-length
 
 // entry point to execute monad/dyad Fold after the noun arguments are supplied
-static DF2(jtfoldx){F2PREFIP;  // this stands in place of jtxdefn, which inplaces
+static A jtfoldx(J jt,A a,A w,A self){F2PREFIP;  // this stands in place of jtxdefn, which inplaces
  // see if this is monad or dyad
  I foldflag=((~AT(w))>>(VERBX-3))&8;  // flags: dyad mult fwd rev  if w is not conj, this must be a dyad call
  self=foldflag?self:w; w=foldflag?w:a; a=foldflag?a:mtv; // if monad, it's w self garbage,  move to '' w self
@@ -648,7 +648,7 @@ static DF2(jtfoldx){F2PREFIP;  // this stands in place of jtxdefn, which inplace
 }
 
 // entry point for monad and dyad F. F.. F.: F: F:. F::
-DF2(jtfold){
+ A jtfold(J jt,A a,A w,A self){
  // The name Fold_j_ should have been loaded at startup.  If not, try loading its script.  If that still fails, quit
  A foldconj; I step;
  for(step=0;step<2;++step){
@@ -672,7 +672,7 @@ found: ;
 }
 
 // x Z: y
-DF2(jtfoldZ){
+ A jtfoldZ(J jt,A a,A w,A self){
  ASSERT(jt->foldrunning,EVSYNTAX);  // If fold not running, fail.  Should be a semantic error rather than syntax
  // The name FoldZ_j_ should have been loaded at startup.  If not, fail
  A foldvb; RZ(foldvb=nameref(nfs(8,"FoldZ_j_"),jt->locsyms)); ASSERT((AT(foldvb)&VERB),EVNONCE);   // error if undefined or not verb

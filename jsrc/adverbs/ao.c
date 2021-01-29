@@ -97,7 +97,7 @@ static A jtobqfslash(J jt,    A w,A self){A y,z;B b=0,p;C er,id,*wv;I c,d,k,m,m1
    expr0; DQ(p-1, expr;); *zv++=x;           \
  }}
 
-DF2(jtpolymult){A f,g,z;B b=0;C*av,c,d,*wv;I at,i,j,k,m,m1,n,p,t,wt,zn;V*v;
+ A jtpolymult(J jt,A a,A w,A self){A f,g,z;B b=0;C*av,c,d,*wv;I at,i,j,k,m,m1,n,p,t,wt,zn;V*v;
  ARGCHK3(a,w,self);
  ASSERT(!((AT(a)|AT(w))&SPARSE),EVNONCE);
  m=AN(a); n=AN(w); m1=m-1; zn=m+n-1; k=MIN(m,n);
@@ -154,9 +154,9 @@ DF2(jtpolymult){A f,g,z;B b=0;C*av,c,d,*wv;I at,i,j,k,m,m1,n,p,t,wt,zn;V*v;
 }    /* f//.@(g/) for atomic f, g */
 
 // start of x f/. y (Key)
-static DF2(jtkey);
+static A jtkey(J jt,A a,A w,A self);
 
-static DF2(jtkeysp){PROLOG(0008);A b,by,e,q,x,y,z;I j,k,n,*u,*v;P*p;
+static A jtkeysp(J jt,A a,A w,A self){PROLOG(0008);A b,by,e,q,x,y,z;I j,k,n,*u,*v;P*p;
  ARGCHK2(a,w);
  {I t2; ASSERT(SETIC(a,n)==SETIC(w,t2),EVLENGTH);}  // verify agreement.  n is # items of a
  RZ(q=indexof(a,a)); p=PAV(q); 
@@ -175,7 +175,7 @@ static DF2(jtkeysp){PROLOG(0008);A b,by,e,q,x,y,z;I j,k,n,*u,*v;P*p;
 }
 
 // a u/. w.  Self-classify a, then rearrange w and call cut.  Includes special cases for f//.
-static DF2(jtkey){F2PREFIP;PROLOG(0009);A ai,z=0;I nitems;
+static A jtkey(J jt,A a,A w,A self){F2PREFIP;PROLOG(0009);A ai,z=0;I nitems;
  ARGCHK2(a,w);
  if((SPARSE&AT(a))!=0)return keysp(a,w,self);  // if sparse, go handle it
  {I t2; ASSERT(SETIC(a,nitems)==SETIC(w,t2),EVLENGTH);}  // verify agreement.  nitems is # items of a
@@ -488,7 +488,7 @@ static DF2(jtkey){F2PREFIP;PROLOG(0009);A ai,z=0;I nitems;
 }    /* a f/. w for dense x & w */
 
 // bivalent entry point: a </. w   or  (</. i.@#) w
-DF2(jtkeybox){F2PREFIP;PROLOG(0009);A ai,z=0;I nitems;
+ A jtkeybox(J jt,A a,A w,A self){F2PREFIP;PROLOG(0009);A ai,z=0;I nitems;
  ARGCHK2(a,w);  // we don't neep ip, but all jtkey dyads must support it
  if((SPARSE&AT(a))!=0)return (AT(w)&NOUN?(AF)jtkeysp:(AF)jthook1cell)(jt,a,w,self);  // if sparse, go handle it
  SETIC(a,nitems);   // nitems is # items in a and w
@@ -634,7 +634,7 @@ const UI4 shortrange[3][4] = {{0,65536,65536,0}, {0,2,258,0}, {0,256,65536,0}}; 
 
 
 
-static DF2(jtkeytally);
+static A jtkeytally(J jt,A a,A w,A self);
 
 static A jtkeytallysp(J jt, A w){PROLOG(0015);A b,e,q,x,y,z;I c,d,j,k,*u,*v;P*p;
  ARGCHK1(w);
@@ -651,7 +651,7 @@ static A jtkeytallysp(J jt, A w){PROLOG(0015);A b,e,q,x,y,z;I c,d,j,k,*u,*v;P*p;
  EPILOG(z);
 }    /* x #/.y , sparse x */
 
-static DF2(jtkeytally){F2PREFIP;PROLOG(0016);A z,q;I at,j,k,n,r,s,*qv,*u,*v;
+static A jtkeytally(J jt,A a,A w,A self){F2PREFIP;PROLOG(0016);A z,q;I at,j,k,n,r,s,*qv,*u,*v;
  ARGCHK2(a,w);  // we don't neep ip, but all jtkey dyads must support it
  SETIC(a,n); at=AT(a);
  ASSERT(n==SETIC(w,k),EVLENGTH);
@@ -695,7 +695,7 @@ static DF2(jtkeytally){F2PREFIP;PROLOG(0016);A z,q;I at,j,k,n,r,s,*qv,*u,*v;
 
 
 //  bivalent entry point for x ({.,#)/.y or x (#,{.)/. y (dyad), or (({.,#)/. i.@#) y or ((#,{.)/. i.@#) y  (monad)
-DF2(jtkeyheadtally){F2PREFIP;PROLOG(0017);A f,q,x,y,z;I b;I at,*av,k,n,r,*qv,*u,*v,wt,*zv;
+ A jtkeyheadtally(J jt,A a,A w,A self){F2PREFIP;PROLOG(0017);A f,q,x,y,z;I b;I at,*av,k,n,r,*qv,*u,*v,wt,*zv;
  ARGCHK2(a,w);  // we don't neep ip, but all jtkey dyads must support it
  SETIC(a,n); wt=AT(w);
  if((AT(w)&NOUN)!=0){

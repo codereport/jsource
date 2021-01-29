@@ -43,7 +43,7 @@ static A jthgd(J jt,B b,I n,A w,A p,A q){A c,d,e,z;D r,s,t,*u,*v,x,*zv;I j,pn,qn
  return !b?scf(s):z?take(sc(1+j),z):hgd(b,j,w,p,q);
 }    /* real vector p,q; real scalar w; all terms (1=b) or last term (0=b) */
 
-static DF2(jthgeom2){PROLOG(0036);A h,*hv,t,z;B b;I an,*av,j,n;V*sv=FAV(self);
+static A jthgeom2(J jt,A a,A w,A self){PROLOG(0036);A h,*hv,t,z;B b;I an,*av,j,n;V*sv=FAV(self);
  ARGCHK2(a,w);
  if(AR(w))return rank2ex0(a,w,self,jthgeom2);
  RZ(a=AT(a)&FL+CMPX?vib(a):vi(a));  // kludge just call vib?

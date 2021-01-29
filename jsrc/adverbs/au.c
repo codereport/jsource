@@ -29,7 +29,7 @@ I jtfdep(J jt,A w){A f,g;I d=0,k;V*v;
 
 
  A jtdfs1(J jt,    A w,A self){F1PREFIP;A s=jt->sf,z; RZ(self); z=CALL1IP(FAV(self)->valencefns[0],  w,jt->sf=self); jt->sf=s; return z;}
-DF2(jtdfs2){F2PREFIP;
+ A jtdfs2(J jt,A a,A w,A self){F2PREFIP;
 A s=jt->sf,z; 
 RZ(self); 
 z=CALL2IP(FAV(self)->valencefns[1],a,w,jt->sf=self); jt->sf=s; 

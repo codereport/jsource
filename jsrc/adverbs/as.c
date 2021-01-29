@@ -308,7 +308,7 @@ static A jtomask(J jt,A a,A w){A c,r,x,y;I m,n,p;
  return reshapeW(over(r,c),over(x,y));
 }
 
-static DF2(jtgoutfix){A h,*hv,x,z,*zv;I m,n;
+static A jtgoutfix(J jt,A a,A w,A self){A h,*hv,x,z,*zv;I m,n;
  RZ(x=omask(a,w));
  SETIC(x,n);
  h=VAV(self)->fgh[2]; hv=AAV(h); m=AN(h);
@@ -319,7 +319,7 @@ static DF2(jtgoutfix){A h,*hv,x,z,*zv;I m,n;
 
 static AS2(jtoutfix, eachl(omask(a,w),w,atop(fs,ds(CPOUND))),0117)
 
-static DF2(jtofxinv){A f,fs,z;C c;I t;V*v;
+static A jtofxinv(J jt,A a,A w,A self){A f,fs,z;C c;I t;V*v;
  F2RANKW(0,RMAX,jtofxinv,self);
  fs=FAV(self)->fgh[0]; f=FAV(fs)->fgh[0]; v=FAV(f); c=v->id; t=AT(w);  // self = f/\. fs = f/  f = f  v = verb info for f
  if(!(c==CPLUS||c==CBDOT&&t&INT||((c&-2)==CEQ)&&t&B01))return outfix(a,w,self);  // if not +/\. or m b./\. or =/\. or ~:/\.
@@ -327,7 +327,7 @@ static DF2(jtofxinv){A f,fs,z;C c;I t;V*v;
  if(jt->jerr==EVNAN){RESETERR; return outfix(a,w,self);}else return z;
 }    /* a f/\. w where f has an "undo" */
 
-static DF2(jtofxassoc){A f,i,j,p,s,x,z;C id,*zv;I c,d,k,kc,m,r,t;V*v;VA2 adocv;
+static A jtofxassoc(J jt,A a,A w,A self){A f,i,j,p,s,x,z;C id,*zv;I c,d,k,kc,m,r,t;V*v;VA2 adocv;
  F2RANKW(0,RMAX,jtofxassoc,self);
  SETIC(w,m); RE(k=i0(a)); c=ABS(k);  // m = # items in w; k is value of a; c is # items per suffix
  f=FAV(self)->fgh[0]; x=FAV(f)->fgh[0]; v=FAV(x); id=CBDOT==v->id?(C)AV(v->fgh[1])[0]:v->id;  // self = f/\. f = f/  x = f  v = verb info for f

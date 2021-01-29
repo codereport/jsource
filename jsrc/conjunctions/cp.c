@@ -63,7 +63,7 @@ static A jtindexseqlim1(J jt,    A w,A self){A fs;
  return AN(w)&&AT(w)&B01+INT?tclosure(FAV(fs)->fgh[1],w):powseqlim(w,fs);
 }    /* {&x^:(<_) w */
 
-static DF2(jtindexseqlim2){
+static A jtindexseqlim2(J jt,A a,A w,A self){
  ARGCHK2(a,w);
  return 1==AR(a)&&AT(a)&INT&&AN(w)&&AT(w)&B01+INT?tclosure(a,w):powseqlim(w,amp(ds(CFROM),a));
 }    /* a {~^:(<_) w */
@@ -180,7 +180,7 @@ static A jtply1(J jt,    A w,A self){PROLOG(0040);DECLFG;A zz=0;
 }
 
 // u^:_ w  Bivalent, called as w,fs or a,w,fs
-static DF2(jtpinf12){PROLOG(0340);A z;  // no reason to inplace, since w must be preserved for comparison, & a for reuse
+static A jtpinf12(J jt,A a,A w,A self){PROLOG(0340);A z;  // no reason to inplace, since w must be preserved for comparison, & a for reuse
  I i=0;
  I ismonad=(AT(w)>>VERBX)&1; self=ismonad?w:self;  // the call shows the dyad; if it's really a monad, w->self, leave arg in a
  A fs=FAV(self)->fgh[0]; w=ismonad?fs:w;   // for monad, fs->w
@@ -200,14 +200,14 @@ static DF2(jtpinf12){PROLOG(0340);A z;  // no reason to inplace, since w must be
 
 static A jtinv1(J jt,    A w,A self){F1PREFIP;DECLFG;A z; ARGCHK1(w);A i; RZ(i=inv((fs))); FDEPINC(1);  z=(FAV(i)->valencefns[0])(FAV(i)->flag&VJTFLGOK1?jtinplace:jt,w,i);       FDEPDEC(1); return z;}  // was invrecur(fix(fs))
 static A jtinvh1(J jt,    A w,A self){F1PREFIP;DECLFGH;A z; ARGCHK1(w);    FDEPINC(1); z=(FAV(hs)->valencefns[0])(jtinplace,w,hs);        FDEPDEC(1); return z;}
-static DF2(jtinv2){DECLFG;A z; ARGCHK2(a,w); FDEPINC(1); df1(z,w,inv(amp(a,fs))); FDEPDEC(1); STACKCHKOFL return z;}  // the CHKOFL is to avoid tail recursion, which prevents a recursion loop from being broken
+static A jtinv2(J jt,A a,A w,A self){DECLFG;A z; ARGCHK2(a,w); FDEPINC(1); df1(z,w,inv(amp(a,fs))); FDEPDEC(1); STACKCHKOFL return z;}  // the CHKOFL is to avoid tail recursion, which prevents a recursion loop from being broken
 static A jtinverr(J jt,    A w,A self){F1PREFIP;ASSERT(0,EVDOMAIN);}  // used for uninvertible monads
 
 // old static CS2(jtply2, df1(z,w,powop(amp(a,fs),gs,0)),0107)  // dyad adds x to make x&u, and then reinterpret the compound.  We could interpret u differently now that it has been changed (x {~^:a: y)
-DF2(jtply2){PROLOG(107);DECLFG;A z, zz; PREF2(jtply2); z=(df1(zz,w,powop(amp(a,fs),gs,0))); EPILOG(z);}
+ A jtply2(J jt,A a,A w,A self){PROLOG(107);DECLFG;A z, zz; PREF2(jtply2); z=(df1(zz,w,powop(amp(a,fs),gs,0))); EPILOG(z);}
 
 static A jtpowg1(J jt,    A w,A self){A z,h=FAV(self)->fgh[2]; return df1(z,  w,AAV(h)[0]);}
-static DF2(jtpowg2){A z,h=FAV(self)->fgh[2]; return df2(z,a,w,AAV(h)[0]);}
+static A jtpowg2(J jt,A a,A w,A self){A z,h=FAV(self)->fgh[2]; return df2(z,a,w,AAV(h)[0]);}
 
 // When u^:v is encountered, we replace it with a verb that comes to one of these.
 // This creates a verb, jtpowxx, which calls jtdf1 within a PROLOG/EPILOG pair, after creating several names:
@@ -253,7 +253,7 @@ z=(FAV(u)->valencefns[0])(FAV(u)->flag&VJTFLGOK1?jtinplace:jt,w,u);} \
 // kibosh on it by setting self (otherwise unused, and set to nonzero in the initial invocation
 // from parse) to 0 in all calls resulting from execution of gerund v.  Then we fail any gerund
 // if self is 0.
-DF2(jtpowop){A hs;B b;V*v;
+ A jtpowop(J jt,A a,A w,A self){A hs;B b;V*v;
  ARGCHK2(a,w);
  ASSERT(AT(a)&VERB,EVDOMAIN);  // u must be a verb
  if(AT(w)&VERB){

@@ -52,10 +52,10 @@ RZ(z=(g1)(jtinplace,hx,gs));}
 
 
  A jtcork1(J jt,    A w,A self){F1PREFIP;DECLFGH;PROLOG(0026);A z;  CAP1; EPILOG(z);}
-DF2(jtcork2){F2PREFIP;DECLFGH;PROLOG(0027);A z;  CAP2; EPILOG(z);}
+ A jtcork2(J jt,A a,A w,A self){F2PREFIP;DECLFGH;PROLOG(0027);A z;  CAP2; EPILOG(z);}
 
 static A jtfolk1(J jt,    A w,A self){F1PREFIP;DECLFGH;PROLOG(0028);A z; FOLK1; EPILOG(z);}
-static DF2(jtfolk2){F2PREFIP;DECLFGH;PROLOG(0029);A z; FOLK2;
+static A jtfolk2(J jt,A a,A w,A self){F2PREFIP;DECLFGH;PROLOG(0029);A z; FOLK2;
  EPILOG(z);}
 
 // see if f is defined as [:, as a single name
@@ -76,7 +76,7 @@ jtinplace=(J)(intptr_t)(((I)jtinplace&~(JTINPLACEA+JTINPLACEW))+((I )(hx!=protw)
 jtinplace=FAV(gs)->flag&VJTFLGOK2?jtinplace:jt;
 A z; RZ(z=(g2)(jtinplace,fs,hx,gs));
 EPILOG(z);}
-static DF2(jtnvv2){F1PREFIP;DECLFGH;PROLOG(0033);
+static A jtnvv2(J jt,A a,A w,A self){F1PREFIP;DECLFGH;PROLOG(0033);
 PUSHZOMB; A protw = (A)(intptr_t)((I)w+((I)jtinplace&JTINPLACEW)); A prota = (A)(intptr_t)((I)a+((I)jtinplace&JTINPLACEA));
 A hx; RZ(hx=(h2)((J)(intptr_t)(((I)jtinplace&(~(JTWILLBEOPENED+JTCOUNTITEMS))) + (REPSGN(SGNIF(FAV(hs)->flag,VJTFLGOK2X)) & (FAV(gs)->flag2>>(VF2WILLOPEN2WX-VF2WILLOPEN1X)) & JTWILLBEOPENED+JTCOUNTITEMS)),a,w,hs));  /* inplace g */
 /* inplace gx unless it is protected */
@@ -85,7 +85,7 @@ jtinplace=FAV(gs)->flag&VJTFLGOK2?jtinplace:jt;
 A z;RZ(z=(g2)(jtinplace,fs,hx,gs));
 EPILOG(z);}
 
-static DF2(jtfolkcomp){F2PREFIP;DECLFGH;PROLOG(0034);A z;AF f;
+static A jtfolkcomp(J jt,A a,A w,A self){F2PREFIP;DECLFGH;PROLOG(0034);A z;AF f;
  ARGCHK2(a,w);
  f=atcompf(a,w,self);
  if(f){
@@ -96,7 +96,7 @@ static DF2(jtfolkcomp){F2PREFIP;DECLFGH;PROLOG(0034);A z;AF f;
  EPILOG(z);
 }
 
-static DF2(jtfolkcomp0){F2PREFIP;DECLFGH;PROLOG(0035);A z;AF f;
+static A jtfolkcomp0(J jt,A a,A w,A self){F2PREFIP;DECLFGH;PROLOG(0035);A z;AF f;
  ARGCHK2(a,w);
  PUSHCCT(1.0)
  f=atcompf(a,w,self);
@@ -278,7 +278,7 @@ static A jthkindexofmaxmin(J jt,    A w,A self){I z=0;
 }    /* special code for (i.<./) (i.>./) (i:<./) (i:>./) */
 
 // (compare L.) dyadic
-static DF2(jthklvl2){
+static A jthklvl2(J jt,A a,A w,A self){
  F2RANK(0,RMAX,jthklvl2,self);
  I comparand; RE(comparand=i0(a));  // get value to compare against
  return num(((VAV(self)->flag>>VFHKLVLGTX)&1)^levelle(w,comparand-(VAV(self)->flag&VFHKLVLDEC)));  // decrement for < or >:; complement for > >:

@@ -4,23 +4,23 @@
 /* Xenos: Custom                                                           */
 
 
-static DF2(jtcblas_dgemm);
-static DF2(jtcblas_dscal);
+static A jtcblas_dgemm(J jt,A a,A w,A self);
+static A jtcblas_dscal(J jt,A a,A w,A self);
 static A jtdgeev(J jt,    A w,A self);
 static A jtdgeqrf(J jt,    A w,A self);
-static DF2(jtdmultmatmat_32x32);
-static DF2(jtmatadd);
-static DF2(jtseqex);
-static DF2(jtseqpow);
-static DF2(jtx102d0);
-static DF2(jtx102d1);
+static A jtdmultmatmat_32x32(J jt,A a,A w,A self);
+static A jtmatadd(J jt,A a,A w,A self);
+static A jtseqex(J jt,A a,A w,A self);
+static A jtseqpow(J jt,A a,A w,A self);
+static A jtx102d0(J jt,A a,A w,A self);
+static A jtx102d1(J jt,A a,A w,A self);
 static A jtx103d0(J jt,    A w,A self);
 static A jtwex(J jt, A w);
 static A jttiebox(J jt,A a,A w);
 static A jtbg(J jt, A w);
 static A jtgb(J jt, A w);
 static A jttconj(J jt,    A w,A self);
-static DF2(jtoa);
+static A jtoa(J jt,A a,A w,A self);
 
 #define bg(x)                   jtbg(jt, (x))
 #define consfn(x)               jtconsfn(jt,(x))

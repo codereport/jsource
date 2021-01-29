@@ -8,7 +8,7 @@
 
 static A jtfitct1(J jt,    A w,A self){DECLFG;F1PREFIP;A z; PUSHCCT(FAV(self)->localuse.lD) z=CALL1IP(f1,  w,fs); POPCCT return z;}  // lD has the complementary ct
 
-#define fitctvector(name,vector) static DF2(name){DECLFG;F2PREFIP;A z; PUSHCCT(FAV(self)->localuse.lD) z=vector; POPCCT return z;}
+#define fitctvector(name,vector) static A name(J jt,A a,A w,A self){DECLFG;F2PREFIP;A z; PUSHCCT(FAV(self)->localuse.lD) z=vector; POPCCT return z;}
 fitctvector(jtfitct2,CALL2IP(f2,a,w,fs))
 fitctvector(jtfitcteq,jtatomic2(jtinplace,a,w,fs))
 
@@ -25,19 +25,19 @@ static A jtfitct(J jt,A a,A w,I cno){V*sv;
  RZ(fn); FAV(fn)->localuse.lD = 1.0-d; return fn;  // save the fit value in this verb
 }
 
-static DF2(jtfitexp2){
+static A jtfitexp2(J jt,A a,A w,A self){
  F2RANK(0,0,jtfitexp2,self);
  ASSERT(0<=i0(w)&&!jt->jerr,EVDOMAIN);
  A z; return aslash(CSTAR,plus(a,df2(z,iota(w),FAV(self)->fgh[1],slash(ds(CSTAR)))));
 }    /* a ^!.s w */
 
-static DF2(jtfitpoly2){I j;
+static A jtfitpoly2(J jt,A a,A w,A self){I j;
  F2RANK(1,0,jtfitpoly2,self);
  A z; return aslash(CPLUS,tymes(a,ascan(CSTAR,shift1(plus(w,df2(z,IX(SETIC(a,j)),FAV(self)->fgh[1],slash(ds(CSTAR))))))));
 }    /* a p.!.s w */
 
 static A jtfitfill1(J jt,    A w,A self){DECLFG;F1PREFIP;A z; jt->fill=gs; z=CALL1IP(f1,  w,fs); jt->fill=0; return z;}  // gs cannot be virtual
-static DF2(jtfitfill2){DECLFG;F2PREFIP;A z; jt->fill=gs; z=CALL2IP(f2,a,w,fs); jt->fill=0; return z;}
+static A jtfitfill2(J jt,A a,A w,A self){DECLFG;F2PREFIP;A z; jt->fill=gs; z=CALL2IP(f2,a,w,fs); jt->fill=0; return z;}
 
 static A jtfitpp1(J jt,    A w,A self){DECLFG;A z;C d[8],*s=3+jt->pp;
  MC(d,s,8L); 
@@ -47,7 +47,7 @@ static A jtfitpp1(J jt,    A w,A self){DECLFG;A z;C d[8],*s=3+jt->pp;
 }
 
 static A jtfitf1(J jt,    A w,A self){V*sv=FAV(self); A z; return df1(z,  w,fit(fix(sv->fgh[0],zeroionei(0)),sv->fgh[1]));}
-static DF2(jtfitf2){V*sv=FAV(self); A z; return df2(z,a,w,fit(fix(sv->fgh[0],zeroionei(0)),sv->fgh[1]));}
+static A jtfitf2(J jt,A a,A w,A self){V*sv=FAV(self); A z; return df2(z,a,w,fit(fix(sv->fgh[0],zeroionei(0)),sv->fgh[1]));}
 
 // Fit conjunction u!.n
 // Preserve IRS1/IRS2 from u in result verb (exception: CEXP)

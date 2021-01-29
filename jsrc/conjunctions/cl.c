@@ -46,7 +46,7 @@ static A jtlcapco1(J jt,    A w,A self){A z;V*v=FAV(self);
  return lev1(w,recurself);
 }
 
-static DF2(jtlcapco2){A z;V*v=FAV(self);
+static A jtlcapco2(J jt,A a,A w,A self){A z;V*v=FAV(self);
  ARGCHK2(a,w);
  PRISTCLR(w) PRISTCLRNODCL(a)
  PRIM shdr; A recurself=(A)&shdr;  // allocate the block we will recur with
@@ -74,7 +74,7 @@ static A jtlevs1(J jt,    A w,A self){
  return num(0);
 }
 
-static DF2(jtlevs2){
+static A jtlevs2(J jt,A a,A w,A self){
  ARGCHK2(a,w);
  A fs=(A)AM(self); AF fsf=FAV(fs)->valencefns[1];  // fetch verb and routine for leaf nodes.  Do it early
  I aready=levelle(a,AT(self)); I wready=levelle(w,AC(self));  // see if args are at the needed level
@@ -108,7 +108,7 @@ static A jtscapco1(J jt,    A w,A self){PROLOG(555);A x,z=0;I m;V*v=FAV(self);
  EPILOG(z);
 }
 
-static DF2(jtscapco2){PROLOG(556);A x,z=0;V*v=FAV(self); 
+static A jtscapco2(J jt,A a,A w,A self){PROLOG(556);A x,z=0;V*v=FAV(self); 
  ARGCHK2(a,w);
  PRISTCLR(w) PRISTCLRNODCL(a)
  PRIM shdr; A recurself=(A)&shdr;  // allocate the block we will recur with
