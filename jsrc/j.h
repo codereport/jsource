@@ -327,8 +327,6 @@ static inline omp_int_t omp_get_max_threads() { return 1;}
 // set the sign bit to the selected bit of the mask
 #define CCMSGN(cand,tval) (cand<<(tval&(BW-1)))   // set sign bit if value found
 #define CCMTST(cand,tval) (cand&(1LL<<(~tval&(BW-1))))  // test true is value found
-#define DF1(f)          A f(J jt,    A w,A self)
-#define DF2(f)          A f(J jt,A a,A w,A self)
 #define DO(n,stm)       {I i=0,_n=(n); for(;i<_n;i++){stm}}  // i runs from 0 to n-1
 #define DP(n,stm)       {I i=-(n);    for(;i<0;++i){stm}}   // i runs from -n to -1 (faster than DO)
 #define DQ(n,stm)       {I i=(I)(n)-1;    for(;i>=0;--i){stm}}  // i runs from n-1 downto 0 (fastest when you don't need i)
@@ -364,9 +362,7 @@ static inline omp_int_t omp_get_max_threads() { return 1;}
 // FFEQ/FFIEQ (fixed fuzz) are used where we know for sure the test should be tolerant
 #define FFEQ(u,v)        (ABS((u)-(v))<=FUZZ*MAX(ABS(u),ABS(v)))
 #define FFIEQ(u,v)       (ABS((u)-(v))<=FUZZ*ABS(v))  // used when v is known to be exact integer.  It's close enough, maybe ULP too small on the high end
-#define F1(f)           A f(J jt,    A w)
-#define F2(f)           A f(J jt,A a,A w)
-#define FPREF           
+#define FPREF
 #define F1PREF          FPREF
 #define F2PREF          FPREF
 #define FPREFIP         J jtinplace=jt; jt=(J)(intptr_t)((I)jt&~JTFLAGMSK)  // turn off all flag bits in jt, leave them in jtinplace

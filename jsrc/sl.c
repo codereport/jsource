@@ -147,10 +147,10 @@ B jtsymbinit(J jt){A q;
 }
 
 
-F1(jtlocsizeq){C*v; ASSERTMTV(w); v=jt->locsize; return v2(v[0],v[1]);}
+ A jtlocsizeq(J jt, A w){C*v; ASSERTMTV(w); v=jt->locsize; return v2(v[0],v[1]);}
      /* 9!:38 default locale size query */
 
-F1(jtlocsizes){I p,q,*v;
+ A jtlocsizes(J jt, A w){I p,q,*v;
  ARGCHK1(w);
  ASSERT(1==AR(w),EVRANK);
  ASSERT(2==AN(w),EVLENGTH);
@@ -219,7 +219,7 @@ static A jtvlocnl(J jt,I b,A w){A*wv,y;C*s;I i,m,n;
 // subroutine version
 I strtoI10s(I l,C* p) {I z; strtoI10(p,l,z); return z; }
 
-F1(jtlocnc){A*wv,y,z;C c,*u;I i,m,n,*zv;
+ A jtlocnc(J jt, A w){A*wv,y,z;C c,*u;I i,m,n,*zv;
  RZ(vlocnl(0,w));
  n=AN(w); wv=AAV(w); 
  GATV(z,INT,n,AR(w),AS(w)); zv=AV(z);
@@ -240,17 +240,17 @@ F1(jtlocnc){A*wv,y,z;C c,*u;I i,m,n,*zv;
  return z;
 }    /* 18!:0 locale name class */
 
-static F1(jtlocnlx){A y,z=mtv;B*wv;I m=0;
+static A jtlocnlx(J jt, A w){A y,z=mtv;B*wv;I m=0;
  RZ(w=cvt(B01,w)); wv=BAV(w); DO(AN(w), m|=1+wv[i];);  // accumulate mask of requested types
  if(1&m)z=nlsym(jt->stloc);  // named locales
  if(2&m){RZ(y=jtactivenl(jt)); z=over(y,z); }  // get list of active numbered locales
  return grade2(z,ope(z));
 }
 
-F1(jtlocnl1){memset(jt->workareas.namelist.nla,C1,256); return locnlx(w);}
+ A jtlocnl1(J jt, A w){memset(jt->workareas.namelist.nla,C1,256); return locnlx(w);}
     /* 18!:1 locale name list */
 
-F2(jtlocnl2){UC*u;
+ A jtlocnl2(J jt,A a,A w){UC*u;
  ARGCHK2(a,w);
  ASSERT(LIT&AT(a),EVDOMAIN);
  memset(jt->workareas.namelist.nla,C0,256); 
@@ -266,13 +266,13 @@ static A jtlocale(J jt,B b,A w){A g=0,*wv,y;
  return g;
 }    /* last locale (symbol table) from boxed locale names; 0 if none or error.  if b=1, create locale */
 
-F1(jtlocpath1){AD * RESTRICT g; AD * RESTRICT z; F1RANK(0,jtlocpath1,UNUSED_VALUE); ASSERT(vlocnl(1,w),EVDOMAIN); RZ(g=locale(1,w));
+ A jtlocpath1(J jt, A w){AD * RESTRICT g; AD * RESTRICT z; F1RANK(0,jtlocpath1,UNUSED_VALUE); ASSERT(vlocnl(1,w),EVDOMAIN); RZ(g=locale(1,w));
  g=LOCPATH(g); RZ(z=ca(g)); DO(AN(g), A t; RZ(t=ca(AAV(g)[i])); AS(t)[0]=AN(t); ACIPNO(t); AAV(z)[i]=t;) return z;
 }
  // for paths, the shape holds the bucketx.  We must create a new copy that has the shape restored, and must incorporate it
      /* 18!:2  query locale path */
 
-F2(jtlocpath2){A g; AD * RESTRICT x;
+ A jtlocpath2(J jt,A a,A w){A g; AD * RESTRICT x;
  F2RANK(1,0,jtlocpath2,UNUSED_VALUE);
  if(AN(a))RZ(  locale(1,a)); RZ(x=every(ravel(a),ds(CCOMMA)));  // Don't audit empty a
  RZ(g=locale(1,w));
@@ -284,7 +284,7 @@ F2(jtlocpath2){A g; AD * RESTRICT x;
 }    /* 18!:2  set locale path */
 
 
-static F2(jtloccre){A g,y;C*s;I n,p;L*v;
+static A jtloccre(J jt,A a,A w){A g,y;C*s;I n,p;L*v;
  ARGCHK2(a,w);
  if(MARK&AT(a))p=jt->locsize[0]; else{RE(p=i0(a)); ASSERT(0<=p,EVDOMAIN); ASSERT(p<14,EVLIMIT);}
  y=AAV(w)[0]; n=AN(y); s=CAV(y);
@@ -299,7 +299,7 @@ static F2(jtloccre){A g,y;C*s;I n,p;L*v;
  return boxW(ca(y));
 }    /* create a locale named w with hash table size a */
 
-static F1(jtloccrenum){C s[20];I k,p;
+static A jtloccrenum(J jt, A w){C s[20];I k,p;
  ARGCHK1(w);
  if(MARK&AT(w))p=jt->locsize[1]; else{RE(p=i0(w)); ASSERT(0<=p,EVDOMAIN); ASSERT(p<14,EVLIMIT);}
  RE(k=jtgetnl(jt));
@@ -309,14 +309,14 @@ static F1(jtloccrenum){C s[20];I k,p;
  return boxW(cstr(s));
 }    /* create a numbered locale with hash table size n */
 
-F1(jtloccre1){
+ A jtloccre1(J jt, A w){
  ARGCHK1(w);
  if(AN(w))return rank2ex0(mark,vlocnl(2+1,w),UNUSED_VALUE,jtloccre);
  ASSERT(1==AR(w),EVRANK);
  return loccrenum(mark);
 }    /* 18!:3  create locale */
 
-F2(jtloccre2){
+ A jtloccre2(J jt,A a,A w){
  ARGCHK2(a,w);
  if(AN(w))return rank2ex0(a,vlocnl(2+1,w),UNUSED_VALUE,jtloccre);
  ASSERT(1==AR(w),EVRANK);
@@ -324,7 +324,7 @@ F2(jtloccre2){
 }    /* 18!:3  create locale with specified hash table size */
 
 
-F1(jtlocswitch){A g;
+ A jtlocswitch(J jt, A w){A g;
  ARGCHK1(w);
  ASSERT(!AR(w),EVRANK); 
  RZ(g=locale(1,w));
@@ -337,7 +337,7 @@ F1(jtlocswitch){A g;
  return mtm;
 }    /* 18!:4  switch locale */
 
-F1(jtlocname){A g=jt->global;
+ A jtlocname(J jt, A w){A g=jt->global;
  ASSERTMTV(w);
  ASSERT(g!=0,EVLOCALE);
  return boxW(sfn(0,LOCNAME(g)));
@@ -351,7 +351,7 @@ static SYMWALK(jtlocmap1,I,INT,18,3,1,
      *zv++=zc;
      *zv++=(I)rifvs(sfn(SFNSIMPLEONLY,d->name));})  // this is going to be put into a box
 
-F1(jtlocmap){A g,q,x,y,*yv,z,*zv;I c=-1,d,j=0,m,*qv,*xv;
+ A jtlocmap(J jt, A w){A g,q,x,y,*yv,z,*zv;I c=-1,d,j=0,m,*qv,*xv;
  ARGCHK1(w);
  ASSERT(!AR(w),EVRANK);
  RE(g=equ(w,zeroionei(0))?jt->stloc:equ(w,zeroionei(1))?jt->locsyms:locale(0,w));
@@ -369,7 +369,7 @@ F1(jtlocmap){A g,q,x,y,*yv,z,*zv;I c=-1,d,j=0,m,*qv,*xv;
 static SYMWALK(jtredefg,B,B01,100,1,1,RZ(redef(mark,d)))
      /* check for redefinition (erasure) of entire symbol table */
 
-F1(jtlocexmark){A g,*wv,y,z;B *zv;C*u;I i,m,n;L*v;
+ A jtlocexmark(J jt, A w){A g,*wv,y,z;B *zv;C*u;I i,m,n;L*v;
  RZ(vlocnl(1,w));
  if(AT(w)&B01)RZ(w=cvt(INT,w));  // Since we have an array, we must convert b01 to INT
  n=AN(w); wv=AAV(w); 

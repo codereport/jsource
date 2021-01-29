@@ -56,7 +56,7 @@ static A jtmerge1(J jt,A w,A ind){A z;B*b;C*wc,*zc;D*wd,*zd;I c,it,j,k,m,r,*s,t,
                        zv[i]=*(i+(T*)aa[j]);); break;}
 
 // Handle the case statement abc =: pqr} x,...,y,:z, with in-place operation if pqr is Boolean and abc appears on the right
-F1(jtcasev){A b,*u,*v,w1,x,y,z;B*bv,p,q;I*aa,c,*iv,j,m,n,r,*s,t;
+ A jtcasev(J jt, A w){A b,*u,*v,w1,x,y,z;B*bv,p,q;I*aa,c,*iv,j,m,n,r,*s,t;
  ARGCHK1(w);
  RZ(w1=ca(w)); u=AAV(w1);   // make a copy of the input, point to its value
  // the input is a boxed list.  The last 3 values are (name pqr);(index in which abc appeared in the x,y,... or -1 if it didn't);(original sentence queue)
@@ -284,7 +284,7 @@ static A jtjstd(J jt,A w,A ind,I *cellframelen){A j=0,k,*v,x;I b;I d,i,n,r,*u,wr
 /* 1 jdo     tpop                           */
 
 // Execution of x m} y.  Split on sparse/dense, passing on the dense to merge2, including inplaceability
-static DF2(jtamendn2){F2PREFIP;PROLOG(0007);A e,z; B b;I atd,wtd,t,t1;P*p;
+static A jtamendn2(J jt,A a,A w,A self){F2PREFIP;PROLOG(0007);A e,z; B b;I atd,wtd,t,t1;P*p;
  AD * RESTRICT ind=VAV(self)->fgh[0];
  ARGCHK3(a,w,ind);
  if(!((AT(w)|AT(ind))&SPARSE)){
@@ -319,7 +319,7 @@ static DF2(jtamendn2){F2PREFIP;PROLOG(0007);A e,z; B b;I atd,wtd,t,t1;P*p;
 
 // Execution of x u} y.  Call u to get the indices, then
 // call merge2 to do the merge.  Pass inplaceability into merge2.
-static DF2(amccv2){F2PREFIP;DECLF; 
+static A amccv2(J jt,A a,A w,A self){F2PREFIP;DECLF; 
  ARGCHK2(a,w); 
  ASSERT(DENSE&AT(w),EVNONCE);  // u} not supported for sparse
  A x;RZ(x=pind(AN(w),CALL2(f2,a,w,fs)));
@@ -330,8 +330,8 @@ static DF2(amccv2){F2PREFIP;DECLF;
 }
 
 
-static DF1(mergn1){       return merge1(w,VAV(self)->fgh[0]);}
-static DF1(mergv1){DECLF; return merge1(w,CALL1(f1,w,fs));}
+static A mergn1(J jt,    A w,A self){       return merge1(w,VAV(self)->fgh[0]);}
+static A mergv1(J jt,    A w,A self){DECLF; return merge1(w,CALL1(f1,w,fs));}
 
 // called from m}, m is usually NOT a gerund
 static B ger(A w){A*wv,x;
@@ -388,16 +388,16 @@ B jtgerexact(J jt, A w){A*wv;
 
 
 // u} handling.  This is not inplaceable but the derived verb is
-F1(jtamend){
+ A jtamend(J jt, A w){
  ARGCHK1(w);
  if(VERB&AT(w)) return ADERIV(CRBRACE,mergv1,amccv2,VASGSAFE|VJTFLGOK2, RMAX,RMAX,RMAX);  // verb}
  else if(ger(w))return gadv(w,CRBRACE);   // v0`v1`v2}
  else           return ADERIV(CRBRACE,mergn1,jtamendn2,VASGSAFE|VJTFLGOK2, RMAX,RMAX,RMAX);  // m}
 }
 
-static DF2(jtamen2){ASSERT(0,EVNONCE);}
+static A jtamen2(J jt,A a,A w,A self){ASSERT(0,EVNONCE);}
 
-F1(jtemend){
+ A jtemend(J jt, A w){
  ASSERT(NOUN&AT(w),EVDOMAIN);
  return ADERIV(CEMEND,0L,jtamen2,VFLAGNONE, RMAX,RMAX,RMAX);
 }

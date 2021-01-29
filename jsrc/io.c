@@ -234,7 +234,7 @@ void breakclose(J jt)
 }
 
 
-F1(jtjoff){I x;
+ A jtjoff(J jt, A w){I x;
  ARGCHK1(w);
  x=i0(w);
  jt->jerr=0; jt->etxn=0; /* clear old errors */
@@ -283,7 +283,7 @@ C* getlocale(J jt){A y=locname(mtv); y=AAV(y)[0]; return CAV(str0(y));}
 // The array allocated by jga is post processed inside jtwd and becomes the return value of jtwd, ie, the result of calling 11!:0 in J script.
 //
 // This may be confusing because the actual callback functions do not appear anywhere inside JE source.
-DF1(jtwd){A z=0;C*p=0;D*pd;I e,*pi,t;V*sv;
+ A jtwd(J jt,    A w,A self){A z=0;C*p=0;D*pd;I e,*pi,t;V*sv;
   F1PREFIP;
   F1RANK(1,jtwd,self);
   ARGCHK1(w);
@@ -552,12 +552,12 @@ int JFree(J jt){
   return 0;
 }
 
-F1(jtbreakfnq){
+ A jtbreakfnq(J jt, A w){
  ASSERTMTV(w);
  return cstr(jt->breakfn);
 }
 
-F1(jtbreakfns){A z;I *fh,*mh=0; void* ad;
+ A jtbreakfns(J jt, A w){A z;I *fh,*mh=0; void* ad;
  ASSERT(1>=AR(w),EVRANK);
  ASSERT(!AN(w)||AT(w)&LIT,EVDOMAIN);
  ASSERT(AN(w)<NPATH,EVDOMAIN);

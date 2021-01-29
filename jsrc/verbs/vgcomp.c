@@ -22,8 +22,6 @@ B compqu(I n, Q *a, Q *b){J jt=(J)n; I j; n=jt->workareas.compare.compn; do{if(j
 B compqd(I n, Q *a, Q *b){J jt=(J)n; I j; n=jt->workareas.compare.compn; do{if(j=QCOMP(*b,*a))return SGNTO0(j); if(!--n)break; ++a; ++b;}while(1); return a<b;} // QCOMP returns 1/0/-1
 B compp(I n,I *a, I *b){J jt=(J)n; I*cv=jt->workareas.compare.compsyv; DO(jt->workareas.compare.compn, if(a[cv[i]]!=b[cv[i]])return a[cv[i]]<b[cv[i]];); return a<b;}
 
-#define CF(f)            int f(J jt,I a,I b)
-
 #define COMPDCLP(T)      T*x=(T*)(jt->workareas.compare.compv+a*jt->workareas.compare.compk),*y=(T*)(jt->workareas.compare.compv+b*jt->workareas.compare.compk)
 #define COMPDCLQ(T)      T*x=(T*)av,*y=(T*)wv
 #define COMPDCLS(T)      T*x=(T*)SBAV(a),*y=(T*)SBAV(w)
@@ -77,7 +75,7 @@ I jtcompare(J jt,A a,A w){C*av,*wv;I ar,an,*as,at,c,d,j,m,t,wn,wr,*ws,wt;
 
 
 #define COMPSPSS(f,T,e1init,esel)  \
- CF(f){I c,ia,ib,na,nb,p,*tv,wf,xc,*ya,*yb,yc,*yv;T e,e1,*xa,*xb,*xv;    \
+ int f(J jt,I a,I b){I c,ia,ib,na,nb,p,*tv,wf,xc,*ya,*yb,yc,*yv;T e,e1,*xa,*xb,*xv;    \
   e=*(T*)jt->workareas.compare.compsev; e1=e1init;                                                                         \
   wf=jt->workareas.compare.compswf; tv=jt->workareas.compare.compstv;                                                                        \
   yv=jt->workareas.compare.compsyv+wf+1; yc=jt->workareas.compare.compsyc; p=yc-1-wf;                                                        \
@@ -98,7 +96,7 @@ I jtcompare(J jt,A a,A w){C*av,*wv;I ar,an,*as,at,c,d,j,m,t,wn,wr,*ws,wt;
  }}}
 
 #define COMPSPDS(f,T,e1init,esel)  \
- CF(f){I c,ia,ib,n,na,nb,p,*tv,xc,*ya,*yb,yc,*yv;T e,e1,*xa,*xb,*xv;     \
+ int f(J jt,I a,I b){I c,ia,ib,n,na,nb,p,*tv,xc,*ya,*yb,yc,*yv;T e,e1,*xa,*xb,*xv;     \
   tv=jt->workareas.compare.compstv;                                                                                        \
   e=*(T*)jt->workareas.compare.compsev; e1=e1init;                                                                         \
   tv=jt->workareas.compare.compstv; n=jt->workareas.compare.compn;                                                                           \

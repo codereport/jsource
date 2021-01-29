@@ -73,7 +73,7 @@ I oneone[2]={1,1};  // used by PROD
 
 const char jeversion[]= "je9!:14 j"jversion"/j"bits""hw"/"jplatform"/"jtype"/"jlicense"/"jbuilder"/"__DATE__"T"__TIME__;
 
-F1(jtversq){
+ A jtversq(J jt, A w){
  char m[1000];char d[21]; char months[] = "Jan01Feb02Mar03Apr04May05Jun06Jul07Aug08Sep09Oct10Nov11Dec12"; C* p; C* q;
  ASSERTMTV(w);
  strcpy(m,jeversion+8);

@@ -6,8 +6,8 @@
 #include "j.h"
 
 
-static F1(jtbtreetest){ASSERT(0,EVDOMAIN);}
-static F1(jtbtreedft){ASSERT(0,EVDOMAIN);}
+static A jtbtreetest(J jt, A w){ASSERT(0,EVDOMAIN);}
+static A jtbtreedft(J jt, A w){ASSERT(0,EVDOMAIN);}
 
 
 /*
@@ -24,7 +24,7 @@ mv=: 4 : 0     NB. sparse matrix +/ .* vector
 )
 */
 
-static F2(jtpdtspvv){A x;D*av,s,t,*wv,z;I i,*u,*u0,*uu,*v,*v0,*vv;P*ap,*wp;
+static A jtpdtspvv(J jt,A a,A w){A x;D*av,s,t,*wv,z;I i,*u,*u0,*uu,*v,*v0,*vv;P*ap,*wp;
  ARGCHK2(a,w);
  ap=PAV(a); x=SPA(ap,i); u=u0=AV(x); uu=u+AN(x); x=SPA(ap,x); av=DAV(x);
  wp=PAV(w); x=SPA(wp,i); v=v0=AV(x); vv=v+AN(x); x=SPA(wp,x); wv=DAV(x);
@@ -40,7 +40,7 @@ static F2(jtpdtspvv){A x;D*av,s,t,*wv,z;I i,*u,*u0,*uu,*v,*v0,*vv;P*ap,*wp;
  return scf(z);
 }
 
-static F2(jtpdtspmv){A ax,b,g,x,wx,y,yi,yj,z;B*bv;I m,n,s[2],*u,*v,*yv;P*ap,*wp,*zp;
+static A jtpdtspmv(J jt,A a,A w){A ax,b,g,x,wx,y,yi,yj,z;B*bv;I m,n,s[2],*u,*v,*yv;P*ap,*wp,*zp;
  ARGCHK2(a,w);
  ap=PAV(a); y=SPA(ap,i); yv=AV(y); s[0]=n=*AS(y); s[1]=1;
  GATVR(yj,INT,n,2,s);
@@ -68,7 +68,7 @@ static F2(jtpdtspmv){A ax,b,g,x,wx,y,yi,yj,z;B*bv;I m,n,s[2],*u,*v,*yv;P*ap,*wp,
  return z;
 }    /* (sparse matrix) +/ .* vector; non-complex */
 
-static F2(jtpdtspvm){A ax,b,g,x,wx,y,yi,yj,z;B*bv;D*av,c,d,*wv,*xv;I m,n,s[2],*u,*v,*yv;P*ap,*wp,*zp;
+static A jtpdtspvm(J jt,A a,A w){A ax,b,g,x,wx,y,yi,yj,z;B*bv;D*av,c,d,*wv,*xv;I m,n,s[2],*u,*v,*yv;P*ap,*wp,*zp;
  ARGCHK2(a,w);
  wp=PAV(w); y=SPA(wp,i); yv=AV(y); s[0]=n=*AS(y); s[1]=1;
  if(DENSE&AT(a)){
@@ -132,7 +132,7 @@ static B jtmmharvest(J jt,I ii,I zjn,A zj,D*zyv,I*n,A*zi,A*zx){A x;D*zxv,*zxv0;I
  return 1;
 }    /* collect accumulated values for row ii */
 
-static F2(jtpdtspmm){A z,zi,zj,zx,zy,*old;D*axv,c,d,*dv,*wxv,*zyv;
+static A jtpdtspmm(J jt,A a,A w){A z,zi,zj,zx,zy,*old;D*axv,c,d,*dv,*wxv,*zyv;
      I*aiv,*aivm,i,ii,j,k,k0,m,n=0,p,q,*v,wm,*wiv,*wnv,*zjv,*zjv0;P*zp;
  ARGCHK2(a,w);
  RZ(mmprep(PAV(a),&m,&aiv,0L ,0L  ,&axv)); aivm=m+aiv;
@@ -169,7 +169,7 @@ static F2(jtpdtspmm){A z,zi,zj,zx,zy,*old;D*axv,c,d,*dv,*wxv,*zyv;
 }
 
 
-F2(jtpdtsp){A x;B ab=0,wb=0;P*p;
+ A jtpdtsp(J jt,A a,A w){A x;B ab=0,wb=0;P*p;
  ARGCHK2(a,w);
  ASSERT(!AR(a)||!AR(w)||*(AS(a)+AR(a)-1)==*AS(w),EVLENGTH);
  if(AT(a)&FL+SFL&&AT(w)&FL+SFL){

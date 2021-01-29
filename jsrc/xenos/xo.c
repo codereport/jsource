@@ -29,13 +29,13 @@ I jtfnum(J jt,A w){A y;I h,j;
  return j<AM(jt->fopf)?*(j+AV(jt->fopf)):0;
 }    /* file# corresp. to standard argument w */
 
-F1(jtfname){I j; 
+ A jtfname(J jt, A w){I j; 
  RE(j=i0(indexof(jt->fopf,w)));
  ASSERT(j<AM(jt->fopf),EVFNUM);
  return ca(*(j+AAV(jt->fopa)));
 }    /* string name corresp. to file# w */
 
-F1(jtjfiles){A y,z;
+ A jtjfiles(J jt, A w){A y,z;
  ASSERTMTV(w);
  RZ(y=vec(INT,AM(jt->fopf),AV(jt->fopf)));
  return grade2(stitch(IRS1(y,0,0,jtbox,z),vec(BOX,AM(jt->fopf),AV(jt->fopa))),y);
@@ -56,7 +56,7 @@ F jtjope(J jt,A w,C*mode){A t;F f;I n;static I nf=25; A z;
  return f?f:(F)jerrno();
 }
 
-F1(jtjopen){A z;I h;
+ A jtjopen(J jt, A w){A z;I h;
  ARGCHK1(w);
  if(!AN(w))return w;
  if(AR(w))return rank1ex0(w,UNUSED_VALUE,jtjopen);
@@ -82,7 +82,7 @@ B jtadd2(J jt,F f1,F f2,C*cmd){A c,x;
 }   /* add 2 entries to AM(jt->fopf) table (for hostio); null arg commits entries */
 
 
-F1(jtjclose){A*av;I*iv,j;
+ A jtjclose(J jt, A w){A*av;I*iv,j;
  ARGCHK1(w);
  if(!AN(w))return w;
  if(AR(w))return rank1ex0(w,UNUSED_VALUE,jtjclose);

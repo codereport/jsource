@@ -6,65 +6,62 @@
 #include "j.h"
 #include "verbs/vcomp.h"
 
-#define KF1(f)          B f(J jt,A w,void*yv)
-#define KF1F(f)         B f(J jt,A w,void*yv,D fuzz)  // calls that use optional fuzz
-#define KF2(f)          B f(J jt,A w,void*yv,I mode)
 #define CVCASE(a,b)     (((a)<<3)+(b))   // The main cases fit in low 8 bits of mask
 
 // FEQ/FIEQ are used in bcvt, where FUZZ may be set to 0 to ensure only exact values are demoted to lower precision
 #define FEQ(u,v,fuzz)    (ABS((u)-(v))<=fuzz*MAX(ABS(u),ABS(v)))
 #define FIEQ(u,v,fuzz)   (ABS((u)-(v))<=fuzz*ABS(v))  // used when v is known to be exact integer.  It's close enough, maybe ULP too small on the high end
 
-static KF1(jtC1fromC2){UC*x;US c,*v;
+static B jtC1fromC2(J jt,A w,void*yv){UC*x;US c,*v;
  v=USAV(w); x=(C*)yv;
  DQ(AN(w), c=*v++; if(!(256>c))return 0; *x++=(UC)c;);
  return 1;
 }
 
-static KF1(jtC2fromC1){UC*v;US*x;
+static B jtC2fromC1(J jt,A w,void*yv){UC*v;US*x;
  v=UAV(w); x=(US*)yv;
  DQ(AN(w), *x++=*v++;);
  return 1;
 }
 
-static KF1(jtC1fromC4){UC*x;C4 c,*v;
+static B jtC1fromC4(J jt,A w,void*yv){UC*x;C4 c,*v;
  v=C4AV(w); x=(C*)yv;
  DQ(AN(w), c=*v++; if(!(256>c))return 0; *x++=(UC)c;);
  return 1;
 }
 
-static KF1(jtC2fromC4){US*x;C4 c,*v;
+static B jtC2fromC4(J jt,A w,void*yv){US*x;C4 c,*v;
  v=C4AV(w); x=(US*)yv;
  DQ(AN(w), c=*v++; if(!(65536>c))return 0; *x++=(US)c;);
  return 1;
 }
 
-static KF1(jtC4fromC1){UC*v;C4*x;
+static B jtC4fromC1(J jt,A w,void*yv){UC*v;C4*x;
  v=UAV(w); x=(C4*)yv;
  DQ(AN(w), *x++=*v++;);
  return 1;
 }
 
-static KF1(jtC4fromC2){US*v;C4*x;
+static B jtC4fromC2(J jt,A w,void*yv){US*v;C4*x;
  v=USAV(w); x=(C4*)yv;
  DQ(AN(w), *x++=*v++;);
  return 1;
 }
 
-static KF1(jtBfromI){B*x;I n,p,*v;
+static B jtBfromI(J jt,A w,void*yv){B*x;I n,p,*v;
  n=AN(w); v=AV(w); x=(B*)yv;
  DQ(n, p=*v++; *x++=(B)p; if(p&-2)return 0;);
  return 1;
 }
 
-static KF1F(jtBfromD){B*x;D p,*v;I n;
+static  B jtBfromD(J jt,A w,void*yv,D fuzz){B*x;D p,*v;I n;
  n=AN(w); v=DAV(w); x=(B*)yv;
  DQ(n, p=*v++; if(p<-2||2<p)return 0;   // handle infinities
   I val=2; val=(p==0)?0:val; val=FIEQ(p,1.0,fuzz)?1:val; if(val==2)return 0; *x++=(B)val; )
  return 1;
 }
 
-static KF1F(jtIfromD){D p,q,*v;I i,k=0,n,*x;
+static  B jtIfromD(J jt,A w,void*yv,D fuzz){D p,q,*v;I i,k=0,n,*x;
  n=AN(w); v=DAV(w); x=(I*)yv;
  for(i=0;i<n;++i){
   p=v[i]; q=jround(p); I rq=(I)q;
@@ -77,20 +74,20 @@ static KF1F(jtIfromD){D p,q,*v;I i,k=0,n,*x;
  return 1;
 }
 
-static KF1F(jtDfromZ){D d,*x;I n;Z*v;
+static  B jtDfromZ(J jt,A w,void*yv,D fuzz){D d,*x;I n;Z*v;
  n=AN(w); v=ZAV(w); x=(D*)yv;
  if(fuzz)DQ(n, d=ABS(v->im); if(d!=inf&&d<=fuzz*ABS(v->re)){*x++=v->re; v++;} else return 0;)
  else        DQ(n, d=    v->im ; if(!d                            ){*x++=v->re; v++;} else return 0;);
  return 1;
 }
 
-static KF1(jtXfromB){B*v;I n,u[1];X*x;
+static B jtXfromB(J jt,A w,void*yv){B*v;I n,u[1];X*x;
  n=AN(w); v=BAV(w); x=(X*)yv;
  DO(n, *u=v[i]; x[i]=rifvsdebug(vec(INT,1L,u)););           
  return !jt->jerr;
 }
 
-static KF1(jtXfromI){B b;I c,d,i,j,n,r,u[XIDIG],*v;X*x;
+static B jtXfromI(J jt,A w,void*yv){B b;I c,d,i,j,n,r,u[XIDIG],*v;X*x;
  n=AN(w); v=AV(w); x=(X*)yv;
  for(i=0;i<n;++i){
   c=v[i]; b=c==IMIN; d=b?-(1+c):ABS(c); j=0;
@@ -121,15 +118,15 @@ static X jtxd1(J jt,D p, I mode){PROLOG(0052);A t;D d,e=tfloor(p),q,r;I m,*u;
  EPILOG(z);
 }
 
-static KF2(jtXfromD){D*v=DAV(w);X*x=(X*)yv; DO(AN(w), x[i]=rifvsdebug(xd1(v[i],mode));); return !jt->jerr;}
+static B jtXfromD(J jt,A w,void*yv,I mode){D*v=DAV(w);X*x=(X*)yv; DO(AN(w), x[i]=rifvsdebug(xd1(v[i],mode));); return !jt->jerr;}
 
-static KF1(jtBfromX){A q;B*x;I e;X*v;
+static B jtBfromX(J jt,A w,void*yv){A q;B*x;I e;X*v;
  v=XAV(w); x=(B*)yv;
  DO(AN(w), q=v[i]; e=AV(q)[0]; if((AN(q)^1)|(e&-2))return 0; x[i]=(B)e;);
  return 1;
 }
 
-static KF1(jtIfromX){I a,i,m,n,*u,*x;X c,p,q,*v;
+static B jtIfromX(J jt,A w,void*yv){I a,i,m,n,*u,*x;X c,p,q,*v;
  v=XAV(w); x=(I*)yv; n=AN(w);
  if(!(p=xc(IMAX)))return 0; if(!(q=xminus(negate(p),xc(1L))))return 0;
  for(i=0;i<n;++i){
@@ -139,7 +136,7 @@ static KF1(jtIfromX){I a,i,m,n,*u,*x;X c,p,q,*v;
  return 1;
 }
 
-static KF1(jtDfromX){D d,*x=(D*)yv/*,dm,dp*/;I c,i,n,*v,wn;X p,*wv;
+static B jtDfromX(J jt,A w,void*yv){D d,*x=(D*)yv/*,dm,dp*/;I c,i,n,*v,wn;X p,*wv;
 // dp=1.7976931348623157e308; dm=-dp;
  wn=AN(w); wv=XAV(w);
  for(i=0;i<wn;++i){
@@ -154,9 +151,9 @@ static KF1(jtDfromX){D d,*x=(D*)yv/*,dm,dp*/;I c,i,n,*v,wn;X p,*wv;
  return 1;
 }
 
-static KF1(jtQfromX){X*v=XAV(w),*x=(X*)yv; DQ(AN(w), *x++=*v++; *x++=iv1;); return 1;}
+static B jtQfromX(J jt,A w,void*yv){X*v=XAV(w),*x=(X*)yv; DQ(AN(w), *x++=*v++; *x++=iv1;); return 1;}
 
-static KF2(jtQfromD){B neg,recip;D c,d,t,*wv;I e,i,n,*v;Q q,*x;S*tv;
+static B jtQfromD(J jt,A w,void*yv,I mode){B neg,recip;D c,d,t,*wv;I e,i,n,*v;Q q,*x;S*tv;
  if(!(w))return 0;
  n=AN(w); wv=DAV(w); x=(Q*)yv; tv=3+(S*)&t;
  for(i=0;i<n;++i){
@@ -181,7 +178,7 @@ static KF2(jtQfromD){B neg,recip;D c,d,t,*wv;I e,i,n,*v;Q q,*x;S*tv;
  return !jt->jerr;
 }
 
-static KF1(jtDfromQ){D d,f,n,*x,xb=(D)XBASE;I cn,i,k,m,nn,pn,qn,r,*v,wn;Q*wv;X c,p,q,x2=0;
+static B jtDfromQ(J jt,A w,void*yv){D d,f,n,*x,xb=(D)XBASE;I cn,i,k,m,nn,pn,qn,r,*v,wn;Q*wv;X c,p,q,x2=0;
  wn=AN(w); wv=QAV(w); x=(D*)yv; nn=308/XBASEN;
  for(i=0;i<wn;++i){
   p=wv[i].n; pn=AN(p); k=1==pn?AV(p)[0]:0;
@@ -203,14 +200,14 @@ static KF1(jtDfromQ){D d,f,n,*x,xb=(D)XBASE;I cn,i,k,m,nn,pn,qn,r,*v,wn;Q*wv;X c
  return 1;
 }
 
-static KF1(jtXfromQ){Q*v;X*x;
+static B jtXfromQ(J jt,A w,void*yv){Q*v;X*x;
  v=QAV(w); x=(X*)yv;
  DQ(AN(w), if(!(equ(iv1,v->d)))return 0; *x++=v->n; ++v;);
  return !jt->jerr;
 }
 
 // Imaginary parts have already been cleared
-static KF1(jtZfromD){
+static B jtZfromD(J jt,A w,void*yv){
  D *wv=DAV(w); Z *zv=yv; DQ(AN(w), zv++->re=*wv++;) return 1;
 }
 
@@ -394,7 +391,7 @@ A jtbcvt(J jt,C mode,A w){FPREFIP; A y,z=w;
  RNE(z);
 }    /* convert to lowest type. 0=mode: don't convert XNUM/RAT to other types */
 
-F1(jticvt){A z;D*v,x;I i,n,*u;
+ A jticvt(J jt, A w){A z;D*v,x;I i,n,*u;
  ARGCHK1(w);
  n=AN(w); v=DAV(w);
  GATV(z,INT,n,AR(w),AS(w)); u=AV(z);
@@ -410,7 +407,7 @@ A jtpcvt(J jt,I t,A w){A y;B b;RANK2T oqr=jt->ranks;
  return b?y:w;
 }    /* convert w to type t, if possible, otherwise just return w */
 
-F1(jtcvt0){I n,t;D *u;
+ A jtcvt0(J jt, A w){I n,t;D *u;
  ARGCHK1(w);
  t=AT(w); n=AN(w); 
  if(n&&t&FL+CMPX){
@@ -420,9 +417,9 @@ F1(jtcvt0){I n,t;D *u;
  return w;
 }    /* convert -0 to 0 in place */
 
-F1(jtxco1){ARGCHK1(w); ASSERT(AT(w)&DENSE,EVNONCE); return cvt(AT(w)&B01+INT+XNUM?XNUM:RAT,w);}
+ A jtxco1(J jt, A w){ARGCHK1(w); ASSERT(AT(w)&DENSE,EVNONCE); return cvt(AT(w)&B01+INT+XNUM?XNUM:RAT,w);}
 
-F2(jtxco2){A z;B b;I j,n,r,*s,t,*wv,*zu,*zv;
+ A jtxco2(J jt,A a,A w){A z;B b;I j,n,r,*s,t,*wv,*zu,*zv;
  ARGCHK2(a,w);
  n=AN(w); r=AR(w); t=AT(w);
  ASSERT(t&DENSE,EVNONCE);

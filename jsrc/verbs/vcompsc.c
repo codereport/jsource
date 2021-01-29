@@ -21,7 +21,7 @@
 
 
 #define INDF(f,T0,T1,F)  \
- static F2(f){I n;T0*av,x;T1*wv,y;                                      \
+ static A f(J jt,A a,A w){I n;T0*av,x;T1*wv,y;                                      \
   av=(T0*)AV(a);                                                    \
   wv=(T1*)AV(w);             \
   if     (!AR(a)){x=*av;        DP(n=AN(w),          y=*wv++; if(F(x,y))return sc(n+i););} \
@@ -30,7 +30,7 @@
   return sc(n);                                                                    \
  }
 #define INDF0(f,T0,T1,F,C)  \
- static F2(f){I n;T0*av,x;T1*wv,y;                                      \
+ static A f(J jt,A a,A w){I n;T0*av,x;T1*wv,y;                                      \
   av=(T0*)AV(a);                                                    \
   wv=(T1*)AV(w);             \
   if     (!AR(a)){x=*av;        if(1.0==jt->cct)DP(n=AN(w),          y=*wv++; if(C(x,y))return sc(n+i);)else DP(n=AN(w),          y=*wv++; if(F(x,y))return sc(n+i);)} \
@@ -40,7 +40,7 @@
  }
 
 #define JNDF(f,T0,T1,F)  \
- static F2(f){I n;T0*av,x;T1*wv,y;                                          \
+ static A f(J jt,A a,A w){I n;T0*av,x;T1*wv,y;                                          \
   av=(T0*)AV(a);                                                        \
   wv=(T1*)AV(w);                  \
   if     (!AR(a)){x=*av; wv+=AN(w); DQ(n=AN(w),          y=*--wv; if(F(x,y))return sc(i););} \
@@ -49,7 +49,7 @@
   return sc(n);                                                                        \
  }
 #define JNDF0(f,T0,T1,F,C)  \
- static F2(f){I n;T0*av,x;T1*wv,y;                                          \
+ static A f(J jt,A a,A w){I n;T0*av,x;T1*wv,y;                                          \
   av=(T0*)AV(a);                                                        \
   wv=(T1*)AV(w);                  \
   if     (!AR(a)){x=*av; wv+=AN(w); if(1.0==jt->cct)DQ(n=AN(w),          y=*--wv; if(C(x,y))return sc(i);)else DQ(n=AN(w),          y=*--wv; if(F(x,y))return sc(i);)} \
@@ -59,7 +59,7 @@
  }
 
 #define SUMF(f,T0,T1,F)  \
- static F2(f){I m=0,n;T0*av,x;T1*wv,y;                       \
+ static A f(J jt,A a,A w){I m=0,n;T0*av,x;T1*wv,y;                       \
   av=(T0*)AV(a);                                         \
   wv=(T1*)AV(w);   \
   if     (!AR(a)){x=*av; DQ(n=AN(w),          y=*wv++; m+=(F(x,y)););} \
@@ -68,7 +68,7 @@
   return sc(m);                                                         \
  }
 #define SUMF0(f,T0,T1,F,C)  \
- static F2(f){I m=0,n;T0*av,x;T1*wv,y;                       \
+ static A f(J jt,A a,A w){I m=0,n;T0*av,x;T1*wv,y;                       \
   av=(T0*)AV(a);                                         \
   wv=(T1*)AV(w);   \
   if     (!AR(a)){x=*av; if(1.0==jt->cct)DQ(n=AN(w),          y=*wv++; m+=(C(x,y));)else DQ(n=AN(w),          y=*wv++; m+=(F(x,y));)} \
@@ -87,7 +87,7 @@
 #define JNDB3          {UI4 bitno; CTLZI(y,bitno); n=(i*SZI+(bitno>>LGBB)); break;}
 
 #define INDB(f,T0,T1,F)  \
- static F2(f){I an,*av,n,q,wn,*wv,x,y;                                 \
+ static A f(J jt,A a,A w){I an,*av,n,q,wn,*wv,x,y;                                 \
   an=AN(a); av=AV(a);                                                             \
   wn=AN(w); wv=AV(w); n=1; n=AR(a)?an:n; n=AR(w)?wn:n;                      \
   q=(n+(SZI-1))>>LGSZI;                                           \
@@ -98,7 +98,7 @@
  }
 
 #define JNDB(f,T0,T1,F)  \
- static F2(f){I an,*av,n,q,r,wn,*wv,x,y;                                             \
+ static A f(J jt,A a,A w){I an,*av,n,q,r,wn,*wv,x,y;                                             \
   an=AN(a); av=AV(a);                                                                         \
   wn=AN(w); wv=AV(w); n=1; n=AR(a)?an:n; n=AR(w)?wn:n;                      \
   if((q=(n-1)>>LGSZI)<0)return zeroionei(0); r=((n-1)&(SZI-1));  /* # first bytes to do minus 1 */                                                                           \
@@ -110,7 +110,7 @@
  }
 
 #define SUMB(f,T0,T1,F)                                                                    \
- static F2(f){I an,*av,n,p,r1,wn,*wv,z=0;UI t,x;                                           \
+ static A f(J jt,A a,A w){I an,*av,n,p,r1,wn,*wv,z=0;UI t,x;                                           \
   an=AN(a); av=AV(a);                                                                      \
   wn=AN(w); wv=AV(w); n=1; n=AR(a)?an:n; n=AR(w)?wn:n;                                     \
   p=n>>LGSZI; r1=n&(SZI-1);                                                                \
@@ -269,13 +269,13 @@ static AF atcompSB[]={  /* table for SBT vs. SBT */
 };
 
 // the special case for compounds like +/@e.
-static F2( jti0eps){return indexofsub( II0EPS,w,a);}
-static F2( jti1eps){return indexofsub( II1EPS,w,a);}
-static F2( jtj0eps){return indexofsub( IJ0EPS,w,a);}
-static F2( jtj1eps){return indexofsub( IJ1EPS,w,a);}
-static F2(jtsumeps){return indexofsub(ISUMEPS,w,a);}
-static F2(jtanyeps){return indexofsub(IANYEPS,w,a);}
-static F2(jtalleps){return indexofsub(IALLEPS,w,a);}
+static A  jti0eps(J jt,A a,A w){return indexofsub( II0EPS,w,a);}
+static A  jti1eps(J jt,A a,A w){return indexofsub( II1EPS,w,a);}
+static A  jtj0eps(J jt,A a,A w){return indexofsub( IJ0EPS,w,a);}
+static A  jtj1eps(J jt,A a,A w){return indexofsub( IJ1EPS,w,a);}
+static A jtsumeps(J jt,A a,A w){return indexofsub(ISUMEPS,w,a);}
+static A jtanyeps(J jt,A a,A w){return indexofsub(IANYEPS,w,a);}
+static A jtalleps(J jt,A a,A w){return indexofsub(IALLEPS,w,a);}
 
 // This table is indexed by m[5 4 3 0]
 static AF atcompX[]={   /* table for any vs. any */

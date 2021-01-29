@@ -44,7 +44,7 @@ static A jtipprep(J jt,A a,A w,I zt,I*pm,I*pn,I*pp){A z=mark;I*as,ar,ar1,m,mn,n,
   else    DQ(m, v=wv; memset(zv,C0,zk); DQ(p, x=zv; INIT; DQ(n, if(*v++)INC(*x,c); ++x;);); zv+=n;  );  \
  }
 
-static F2(jtpdtby){A z;B b,*u,*v,*wv;C er=0;I at,m,n,p,t,wt,zk;
+static A jtpdtby(J jt,A a,A w){A z;B b,*u,*v,*wv;C er=0;I at,m,n,p,t,wt,zk;
  at=AT(a); wt=AT(w); t=at&B01?wt:at;
  RZ(z=ipprep(a,w,t,&m,&n,&p)); zk=n<<bplg(t); u=BAV(a); v=wv=BAV(w);
  NAN0;
@@ -185,7 +185,7 @@ I cachedmmult(J jt,D* av,D* wv,D* zv,I m,I n,I p,I flgs){D c[(CACHEHEIGHT+1)*CAC
 }
 
 // +/ . *
-F2(jtpdt){PROLOG(0038);A z;I ar,at,i,m,n,p,p1,t,wr,wt;
+ A jtpdt(J jt,A a,A w){PROLOG(0038);A z;I ar,at,i,m,n,p,p1,t,wr,wt;
  ARGCHK2(a,w);
  // ?r = rank, ?t = type (but set Boolean type for an empty argument)
  ar=AR(a); at=AT(a); at=AN(a)?at:B01;
@@ -385,7 +385,7 @@ static A jtipbx(J jt,A a,A w,C c,C d){A g=0,x0,x1,z;B*av,*av0,b,*v0,*v1,*zv;C c0
  return z;
 }    /* a f/ . g w  where a and w are nonempty and a is boolean */
 
-static DF2(jtdotprod){A fs,gs;C c;I r;V*sv;
+static A jtdotprod(J jt,A a,A w,A self){A fs,gs;C c;I r;V*sv;
  ARGCHK3(a,w,self);
  sv=FAV(self); fs=sv->fgh[0]; gs=sv->fgh[1];  // op is fs . gs
  if((SGNIF(AT(a)&AT(w),B01X)&-AN(a)&-AN(w)&-(FAV(gs)->flag&VISATOMIC2))<0&&CSLASH==ID(fs)&&  // fs is c/
@@ -395,12 +395,12 @@ r=lr(gs);   // left rank of v
 }
 
 
-static F1(jtminors){A d,z;
+static A jtminors(J jt, A w){A d,z;
  RZ(d=apvwr(3L,-1L,1L)); AV(d)[0]=0;
  return drop(d,df2(z,num(1),w,bsdot(ds(CLEFT))));  // 0 0 1 }. 1 [\. w
 }
 
-static DF1(jtdet){DECLFG;A h=sv->fgh[2];I c,r,*s;
+static A jtdet(J jt,    A w,A self){DECLFG;A h=sv->fgh[2];I c,r,*s;
  ARGCHK1(w);
  r=AR(w); s=AS(w);
  A z; if(h&&1<r&&2==s[r-1]&&s[r-2]==s[r-1])return df1(z,w,h);
@@ -409,10 +409,10 @@ static DF1(jtdet){DECLFG;A h=sv->fgh[2];I c,r,*s;
  return !c ? df1(z,mtv,slash(gs)) : 1==c ? CALL1(f1,ravel(w),fs) : h && c==s[0] ? gaussdet(w) : detxm(w,self);
 }
 
-DF1(jtdetxm){A z; return dotprod(IRS1(w,0L,1L,jthead,z),det(minors(w),self),self);}
+ A jtdetxm(J jt,    A w,A self){A z; return dotprod(IRS1(w,0L,1L,jthead,z),det(minors(w),self),self);}
      /* determinant via expansion by minors. w is matrix with >1 columns */
 
-F2(jtdot){A f,h=0;AF f2=jtdotprod;C c,d;
+ A jtdot(J jt,A a,A w){A f,h=0;AF f2=jtdotprod;C c,d;
  ASSERTVV(a,w);
  if(CSLASH==ID(a)){
   f=FAV(a)->fgh[0]; c=ID(f); d=ID(w);  // op was c/ . d

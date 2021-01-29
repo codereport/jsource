@@ -6,7 +6,7 @@
 #include "j.h"
 
 
-static DF1(jtonf1){PROLOG(0021);DECLFG;A z;I flag=sv->flag,m=jt->xmode;
+static A jtonf1(J jt,    A w,A self){PROLOG(0021);DECLFG;A z;I flag=sv->flag,m=jt->xmode;
  PREF1(jtonf1);
  if(primitive(gs))if(flag&VFLR)jt->xmode=XMFLR; else if(flag&VCEIL)jt->xmode=XMCEIL;
  if(RAT&AT(w))RZ(w=pcvt(XNUM,w));
@@ -15,7 +15,7 @@ static DF1(jtonf1){PROLOG(0021);DECLFG;A z;I flag=sv->flag,m=jt->xmode;
  EPILOG(z);
 }
 
-static DF2(jtuponf2){PROLOG(0022);DECLFG;A z;I flag=sv->flag,m=jt->xmode;
+static A jtuponf2(J jt,A a,A w,A self){PROLOG(0022);DECLFG;A z;I flag=sv->flag,m=jt->xmode;
  ARGCHK2(a,w);
  if(primitive(gs))if(flag&VFLR)jt->xmode=XMFLR; else if(flag&VCEIL)jt->xmode=XMCEIL;
  if(RAT&AT(a))RZ(a=pcvt(XNUM,a));
@@ -41,7 +41,7 @@ static I dmodpow(D x,I n,D m){D z=1; while(n){if(1&n)z=fmod(z*x,m); x=fmod(x*x,m
 
 static I imodpow(I x,I n,I m){I z=1; while(n){if(1&n)z=(z*x)%m;     x=(x*x)%m;     n>>=1;} return   z;}
 
-static DF2(jtmodpow2){A h;B b,c;I at,m,n,wt,x,z;
+static A jtmodpow2(J jt,A a,A w,A self){A h;B b,c;I at,m,n,wt,x,z;
  PREF2(jtmodpow2);
  h=FAV(self)->fgh[2]; 
  if(RAT&AT(a))RZ(a=pcvt(XNUM,a)) else if(!(AT(a)&INT+XNUM))RZ(a=pcvt(INT,a)); 
@@ -61,7 +61,7 @@ static DF2(jtmodpow2){A h;B b,c;I at,m,n,wt,x,z;
  return sc(b?z-m:z);
 }    /* a m&|@^ w ; m guaranteed to be INT or XNUM */
 
-static DF1(jtmodpow1){A g=FAV(self)->fgh[1]; return rank2ex0(FAV(g)->fgh[0],w,self,jtmodpow2);}  // m must be an atom; I think n can have shape.  But we treat w as atomic
+static A jtmodpow1(J jt,    A w,A self){A g=FAV(self)->fgh[1]; return rank2ex0(FAV(g)->fgh[0],w,self,jtmodpow2);}  // m must be an atom; I think n can have shape.  But we treat w as atomic
      /* m&|@(n&^) w ; m guaranteed to be INT or XNUM */
 
 // u@v and u@:v
@@ -88,17 +88,17 @@ RZ(z=(f1)(jtinplace,gx,fs));} \
 ,0114)
 // special case for rank 0.  Transfer to loop.  
 // if there is only one cell, process it through on1, which understands this type
-static DF1(jton10){return jtrank1ex0(jt,w,self,on1cell);}  // pass inplaceability through
-static DF2(jtupon20){return jtrank2ex0(jt,a,w,self,jtupon2cell);}  // pass inplaceability through
+static A jton10(J jt,    A w,A self){return jtrank1ex0(jt,w,self,on1cell);}  // pass inplaceability through
+static A jtupon20(J jt,A a,A w,A self){return jtrank2ex0(jt,a,w,self,jtupon2cell);}  // pass inplaceability through
 
 // special lightweight case for u@[ and u@].
-static DF1(onright1){F1PREFIP; return (FAV(FAV(self)->fgh[0])->valencefns[0])(jtinplace,w,FAV(self)->fgh[0]);}  // pass straight through.  All we do here is set self.  Leave inplaceability unchanged
-static DF2(onleft2){F2PREFIP; return (FAV(FAV(self)->fgh[0])->valencefns[0])((J)(((I)jtinplace&~(JTINPLACEA+JTINPLACEW))+(((I)jtinplace&JTINPLACEA)>>(JTINPLACEAX-JTINPLACEWX))),a,FAV(self)->fgh[0]);}  // move inplaceable a to w
-static DF2(onright2){F2PREFIP; return (FAV(FAV(self)->fgh[0])->valencefns[0])((J)((I)jtinplace&~JTINPLACEA),w,FAV(self)->fgh[0]);}  // keep inplaceable w
+static A onright1(J jt,    A w,A self){F1PREFIP; return (FAV(FAV(self)->fgh[0])->valencefns[0])(jtinplace,w,FAV(self)->fgh[0]);}  // pass straight through.  All we do here is set self.  Leave inplaceability unchanged
+static A onleft2(J jt,A a,A w,A self){F2PREFIP; return (FAV(FAV(self)->fgh[0])->valencefns[0])((J)(((I)jtinplace&~(JTINPLACEA+JTINPLACEW))+(((I)jtinplace&JTINPLACEA)>>(JTINPLACEAX-JTINPLACEWX))),a,FAV(self)->fgh[0]);}  // move inplaceable a to w
+static A onright2(J jt,A a,A w,A self){F2PREFIP; return (FAV(FAV(self)->fgh[0])->valencefns[0])((J)((I)jtinplace&~JTINPLACEA),w,FAV(self)->fgh[0]);}  // keep inplaceable w
 
 // u@n
-static DF1(onconst1){DECLFG;return (f1)(jt,gs,fs);}
-static DF2(onconst2){DECLFG;return (f1)(jt,gs,fs);}
+static A onconst1(J jt,    A w,A self){DECLFG;return (f1)(jt,gs,fs);}
+static A onconst2(J jt,A a,A w,A self){DECLFG;return (f1)(jt,gs,fs);}
 
 // x u&v y
 // We don't bother passing WILLOPEN from u into v, since it's rarely used.  We do pass WILLOPEN into u.
@@ -112,9 +112,9 @@ CS2IP(static,static,on2, \
  POPZOMB; jtinplace=(J)(intptr_t)(((I)jtinplace&~(JTINPLACEA+JTINPLACEW))+(I )(ga!=prota)*JTINPLACEA+(I )(gw!=protw)*JTINPLACEW); jtinplace=FAV(fs)->flag&VJTFLGOK2?jtinplace:jt; \
  RZ(z=(f2)(jtinplace,ga,gw,fs)); \
 ,0023)
-static DF2(on20){return jtrank2ex0(jt,a,w,self,on2cell);}  // pass inplaceability through
+static A on20(J jt,A a,A w,A self){return jtrank2ex0(jt,a,w,self,on2cell);}  // pass inplaceability through
 
-static DF2(atcomp){AF f;A z;
+static A atcomp(J jt,A a,A w,A self){AF f;A z;
  ARGCHK2(a,w); 
  f=atcompf(a,w,self);
  if(f){
@@ -125,7 +125,7 @@ static DF2(atcomp){AF f;A z;
  return z;
 }
 
-static DF2(atcomp0){A z;AF f;
+static A atcomp0(J jt,A a,A w,A self){A z;AF f;
  ARGCHK2(a,w);
  f=atcompf(a,w,self);
  PUSHCCT(1.0)
@@ -157,7 +157,7 @@ static DF2(atcomp0){A z;AF f;
 // tzhe items, which is valuable if the result is larger than cache.
 //
 // u@v
-F2(jtatop){A f,g,h=0,x;AF f1=on1,f2=jtupon2;B b=0,j;C c,d,e;I flag, flag2=0,m=-1;V*av,*wv;
+ A jtatop(J jt,A a,A w){A f,g,h=0,x;AF f1=on1,f2=jtupon2;B b=0,j;C c,d,e;I flag, flag2=0,m=-1;V*av,*wv;
  ASSERTVVn(a,w);
  av=FAV(a); c=av->id;
  if(AT(w)&NOUN){  // u@n
@@ -247,7 +247,7 @@ F2(jtatop){A f,g,h=0,x;AF f1=on1,f2=jtupon2;B b=0,j;C c,d,e;I flag, flag2=0,m=-1
 }
 
 // u@:v
-F2(jtatco){A f,g;AF f1=on1cell,f2=jtupon2cell;C c,d,e;I flag, flag2=0,m=-1;V*av,*wv;
+ A jtatco(J jt,A a,A w){A f,g;AF f1=on1cell,f2=jtupon2cell;C c,d,e;I flag, flag2=0,m=-1;V*av,*wv;
  ASSERTVV(a,w);
  av=FAV(a); c=av->id; f=av->fgh[0]; g=av->fgh[1]; e=ID(f);   /// c=op for a, d=op for w   if a is r&s, f is r and e is its id; and g is s
  wv=FAV(w); d=wv->id;
@@ -316,7 +316,7 @@ F2(jtatco){A f,g;AF f1=on1cell,f2=jtupon2cell;C c,d,e;I flag, flag2=0,m=-1;V*av,
 }
 
 // u&:v
-F2(jtampco){AF f1=on1cell,f2=on2cell;C c,d;I flag,flag2=0,linktype=0;V*wv;
+ A jtampco(J jt,A a,A w){AF f1=on1cell,f2=on2cell;C c,d;I flag,flag2=0,linktype=0;V*wv;
  ASSERTVV(a,w);
  c=ID(a); wv=FAV(w); d=wv->id;  // c=pseudochar for u, d=pseudochar for v
  // Set flag wfith ASGSAFE status from f/g; keep INPLACE? in sync with f1,f2.  Inplace only if monad v can handle it
@@ -351,30 +351,30 @@ F2(jtampco){AF f1=on1cell,f2=on2cell;C c,d;I flag,flag2=0,linktype=0;V*wv;
 // We marked the derived verb inplaceable only if the dyad of u/v was inplaceable
 // This supports IRS so that it can pass the rank on to the called function; no need to revalidate here
 // We pass the WILLOPEN flags through
-static DF1(withl){F1PREFIP;DECLFG; A z; I r=(RANKT)jt->ranks; IRSIP2(fs,w,gs,RMAX,(RANKT)jt->ranks,g2,z); return z;}
-static DF1(withr){F1PREFIP;DECLFG; jtinplace=(J)(intptr_t)((I)jtinplace+((I)jtinplace&JTINPLACEW)); A z; I r=(RANKT)jt->ranks; IRSIP2(w,gs,fs,(RANKT)jt->ranks,RMAX,f2,z); return z;}
+static A withl(J jt,    A w,A self){F1PREFIP;DECLFG; A z; I r=(RANKT)jt->ranks; IRSIP2(fs,w,gs,RMAX,(RANKT)jt->ranks,g2,z); return z;}
+static A withr(J jt,    A w,A self){F1PREFIP;DECLFG; jtinplace=(J)(intptr_t)((I)jtinplace+((I)jtinplace&JTINPLACEW)); A z; I r=(RANKT)jt->ranks; IRSIP2(w,gs,fs,(RANKT)jt->ranks,RMAX,f2,z); return z;}
 
 // Here for m&i. and m&i:, computing a prehashed table from a
 // v->fgh[2] is the info/hash/bytemask result from calculating the prehash
-static DF1(ixfixedleft  ){V*v=FAV(self); return indexofprehashed(v->fgh[0],w,v->fgh[2]);}
+static A ixfixedleft  (J jt,    A w,A self){V*v=FAV(self); return indexofprehashed(v->fgh[0],w,v->fgh[2]);}
 // Here for compounds like (i.&0@:e.)&n or -.&n that compute a prehashed table from w
-static DF1(ixfixedright ){V*v=FAV(self); return indexofprehashed(v->fgh[1],w,v->fgh[2]);}
+static A ixfixedright (J jt,    A w,A self){V*v=FAV(self); return indexofprehashed(v->fgh[1],w,v->fgh[2]);}
 
 // Here if ct was 0 when the compound was created - we must keep it 0
-static DF1(ixfixedleft0 ){A z;V*v=FAV(self); 
+static A ixfixedleft0 (J jt,    A w,A self){A z;V*v=FAV(self); 
  PUSHCCT(1.0) z=indexofprehashed(v->fgh[0],w,v->fgh[2]); POPCCT
  return z;
 }
 
-static DF1(ixfixedright0){A z;V*v=FAV(self); 
+static A ixfixedright0(J jt,    A w,A self){A z;V*v=FAV(self); 
  PUSHCCT(1.0) z=indexofprehashed(v->fgh[1],w,v->fgh[2]); POPCCT 
  return z;
 }
 
-static DF2(with2){A z; return df1(z,w,powop(self,a,0));}
+static A with2(J jt,A a,A w,A self){A z; return df1(z,w,powop(self,a,0));}
 
 // u&v
-F2(jtamp){A h=0;AF f1,f2;B b;C c,d=0;I flag,flag2=0,linktype=0,mode=-1,p,r;V*u,*v;
+ A jtamp(J jt,A a,A w){A h=0;AF f1,f2;B b;C c,d=0;I flag,flag2=0,linktype=0,mode=-1,p,r;V*u,*v;
  ARGCHK2(a,w);
  switch(CONJCASE(a,w)){
  default: ASSERTSYS(0,"amp");

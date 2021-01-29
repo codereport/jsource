@@ -284,7 +284,7 @@ APFX(lcmZZ, Z,Z,Z, zlcm ,,HDR1JERR)
 #define INTDIVF(c,d)  (((c^d)>=0)?c/d:c%d?c/d-1:c/d)  // c/d - (c^d)<0 && c%d
 #define INTDIVC(c,d)  (((c^d)<0)?c/d:c%d?c/d+1:c/d)   // c/d + (c^d)>=0 && c%d
 
-F2(jtintdiv){A z;B b,flr;I an,ar,*as,*av,c,d,j,k,m,n,p,p1,r,*s,wn,wr,*ws,*wv,*zv;
+ A jtintdiv(J jt,A a,A w){A z;B b,flr;I an,ar,*as,*av,c,d,j,k,m,n,p,p1,r,*s,wn,wr,*ws,*wv,*zv;
  ARGCHK2(a,w);
  an=AN(a); ar=AR(a); as=AS(a); av=AV(a);
  wn=AN(w); wr=AR(w); ws=AS(w); wv=AV(w); b=ar>=wr; r=b?wr:ar; s=b?as:ws;
@@ -312,9 +312,9 @@ F2(jtintdiv){A z;B b,flr;I an,ar,*as,*av,c,d,j,k,m,n,p,p1,r,*s,wn,wr,*ws,*wv,*zv
 }    /* <.@% or >.@% on integers */
 
 
-static F2(jtweight){ARGCHK2(a,w); A z; return df1(z,behead(over(AR(w)?w:reshape(a,w),num(1))),bsdot(slash(ds(CSTAR))));}  // */\. }. (({:$a)$w),1
+static A jtweight(J jt,A a,A w){ARGCHK2(a,w); A z; return df1(z,behead(over(AR(w)?w:reshape(a,w),num(1))),bsdot(slash(ds(CSTAR))));}  // */\. }. (({:$a)$w),1
 
-F1(jtbase1){A z;B*v;I c,m,n,p,r,*s,t,*x;
+ A jtbase1(J jt, A w){A z;B*v;I c,m,n,p,r,*s,t,*x;
  ARGCHK1(w);
  n=AN(w); t=AT(w); r=AR(w); s=AS(w); c=AS(w)[r-1]; c=r?c:1;
  ASSERT(t&DENSE,EVNONCE);
@@ -326,7 +326,7 @@ F1(jtbase1){A z;B*v;I c,m,n,p,r,*s,t,*x;
  return z;
 }
 
-F2(jtbase2){I ar,*as,at,c,t,wr,*ws,wt;
+ A jtbase2(J jt,A a,A w){I ar,*as,at,c,t,wr,*ws,wt;
  ARGCHK2(a,w);
  at=AT(a); ar=AR(a); as=AS(a);
  wt=AT(w); wr=AR(w); ws=AS(w); c=AS(w)[wr-1]; c=wr?c:1;
@@ -337,7 +337,7 @@ F2(jtbase2){I ar,*as,at,c,t,wr,*ws,wt;
 }
 
 // #: y
-F1(jtabase1){A d,z;B*zv;I c,n,p,r,t,*v;UI x;
+ A jtabase1(J jt, A w){A d,z;B*zv;I c,n,p,r,t,*v;UI x;
  ARGCHK1(w);
  // n = #atoms, r=rank, t=type
  n=AN(w); r=AR(w); t=AT(w);
@@ -370,7 +370,7 @@ F1(jtabase1){A d,z;B*zv;I c,n,p,r,t,*v;UI x;
  return z;
 }
 
-F2(jtabase2){A z;I an,ar,at,t,wn,wr,wt,zn;
+ A jtabase2(J jt,A a,A w){A z;I an,ar,at,t,wn,wr,wt,zn;
  ARGCHK2(a,w);
  an=AN(a); ar=AR(a); at=AT(a);
  wn=AN(w); wr=AR(w); wt=AT(w);

@@ -356,8 +356,8 @@ static XF2(jtxlog2){D c,d,x,y;I an,*av,j,k,m,n,wn,*wv;X p,q;
  return rifvsdebug(xc(!j?m:!k?n:jt->xmode==XMCEIL?n:m));
 }
 
-F2(jtxlog2a){A z; GAT0(z,XNUM,1L,0L); XAV(z)[0]=rifvsdebug(xlog2(XAV(a)[0],XAV(w)[0])); RNE(z);}
-F2(jtxroota){A z; GAT0(z,XNUM,1L,0L); XAV(z)[0]=rifvsdebug(xroot(XAV(a)[0],XAV(w)[0])); RNE(z);}
+ A jtxlog2a(J jt,A a,A w){A z; GAT0(z,XNUM,1L,0L); XAV(z)[0]=rifvsdebug(xlog2(XAV(a)[0],XAV(w)[0])); RNE(z);}
+ A jtxroota(J jt,A a,A w){A z; GAT0(z,XNUM,1L,0L); XAV(z)[0]=rifvsdebug(xroot(XAV(a)[0],XAV(w)[0])); RNE(z);}
 
 XF1(jtxfact){I n;
  n=AV(w)[0];
@@ -466,7 +466,7 @@ AMONPS(factX, X,X, , *z= rifvsdebug(xfact(*x)); , HDR1JERR)
 AMONPS( pixX, X,X, , *z=   rifvsdebug(xpi(*x)); , HDR1JERR)
 
 
-F1(jtdigits10){A z;B b=0;I c,m,n,*v,*zv,*zv0;X x;
+ A jtdigits10(J jt, A w){A z;B b=0;I c,m,n,*v,*zv,*zv0;X x;
  ARGCHK1(w);
  if(!AR(w))switch(CTTZ(AT(w))){
   case INTX:  b=0<=AV(w)[0]; break;
@@ -488,8 +488,8 @@ F1(jtdigits10){A z;B b=0;I c,m,n,*v,*zv,*zv0;X x;
 
 
 #define DXBODY(exp)  DECLG;A y=sv->fgh[2],z;I m=jt->xmode; jt->xmode=XMFLR; z=exp; jt->xmode=m; return z
-#define DX1(f,exp)   DF1(f){DXBODY(exp);} 
-#define DX2(f,exp)   DF2(f){DXBODY(exp);}
+#define DX1(f,exp) A f(J jt,    A w,A self){DXBODY(exp);} 
+#define DX2(f,exp) A f(J jt,A a,A w,A self){DXBODY(exp);}
 #define XT(w)        tymes(y,w)
 
 static DX1(postmult1, XT(CALL1(g1,  w,gs)))

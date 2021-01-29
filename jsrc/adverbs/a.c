@@ -7,16 +7,16 @@
 
 // These routines support IRS iff the underlying verb does, so all we have to do is switch the ranks if any and vector on to the function
 // create inplace bits as copy of W, or swap A & W
-static DF1(swap1){DECLF; F1PREFIP; jtinplace = (J)(intptr_t)(((I)jtinplace&~JTINPLACEA)+2*((I)jtinplace&JTINPLACEW));
+static A swap1(J jt,    A w,A self){DECLF; F1PREFIP; jtinplace = (J)(intptr_t)(((I)jtinplace&~JTINPLACEA)+2*((I)jtinplace&JTINPLACEW));
  // a~ carried the IRS flag from a and thus we might have ranks set.  If so, use them, and no need to check agreement again.  For ease, we just use whatever is set 
  A z; IRSIP2(w,w,fs,(RANKT)jt->ranks,(RANKT)jt->ranks,f2,z); return z;
 }
-static DF2(swap2){DECLF; F2PREFIP; jtinplace = (J)(intptr_t)((I)jtinplace^((JTINPLACEW+JTINPLACEA)&(0x3C>>(2*((I)jtinplace&JTINPLACEW+JTINPLACEA)))));
+static A swap2(J jt,A a,A w,A self){DECLF; F2PREFIP; jtinplace = (J)(intptr_t)((I)jtinplace^((JTINPLACEW+JTINPLACEA)&(0x3C>>(2*((I)jtinplace&JTINPLACEW+JTINPLACEA)))));
  A z; IRSIP2(w,a,fs,(RANKT)jt->ranks,jt->ranks>>RANKTX,f2,z); return z;
 }
 
 // w~, which is either reflexive/passive or evoke
-F1(jtswap){A y;C*s;I n;
+ A jtswap(J jt, A w){A y;C*s;I n;
  ARGCHK1(w); 
  if(VERB&AT(w)){
   // reflexive/passive.  Create verb that swaps.  Most flags do not apply to the derived verb
@@ -38,11 +38,11 @@ static const B booltab[64]={
  1,0,0,0, 1,0,0,1, 1,0,1,0, 1,0,1,1,  1,1,0,0, 1,1,0,1, 1,1,1,0, 1,1,1,1,
 };
 
-static DF2(jtbdot2){return from(plusA(duble(cvt(B01,a)),cvt(B01,w)),FAV(self)->fgh[2]);}  // dyad b. (2*a + w) { h
+static A jtbdot2(J jt,A a,A w,A self){return from(plusA(duble(cvt(B01,a)),cvt(B01,w)),FAV(self)->fgh[2]);}  // dyad b. (2*a + w) { h
 
-static DF1(jtbdot1){return bdot2(num(0),w,self);}
+static A jtbdot1(J jt,    A w,A self){return bdot2(num(0),w,self);}
 
-static DF1(jtbasis1){DECLF;A z;D*x;I j;V*v;
+static A jtbasis1(J jt,    A w,A self){DECLF;A z;D*x;I j;V*v;
  PREF1(jtbasis1);
  RZ(w=vi(w));
  switch(AV(w)[0]){
@@ -57,7 +57,7 @@ static DF1(jtbasis1){DECLF;A z;D*x;I j;V*v;
   default: ASSERT(0,EVDOMAIN);
 }}
 
-F1(jtbdot){A b,h=0;I j=0,n,*v;
+ A jtbdot(J jt, A w){A b,h=0;I j=0,n,*v;
  ARGCHK1(w);
  if(VERB&AT(w))return ADERIV(CBDOT, jtbasis1,0L, 0L,0,0,0);
  RZ(w=vi(w));
@@ -136,14 +136,14 @@ static I jtint0(J jt,A w){A x;
  return x&&INT&AT(x)?AV(x)[0]:IMIN;
 }
 
-static DF1(jtmemo1){DECLF;A z;I x,y;
+static A jtmemo1(J jt,    A w,A self){DECLF;A z;I x,y;
  ARGCHK1(w);
  x=IMIN; y=int0(w);
  if(y==IMIN)return CALL1(f1,w,fs);
  return (z=memoget(x,y,self))?z:memoput(x,y,self,CALL1(f1,w,fs));
 }
 
-static DF2(jtmemo2){DECLF;A z;I x,y; 
+static A jtmemo2(J jt,A a,A w,A self){DECLF;A z;I x,y; 
  ARGCHK2(a,w);
  x=int0(a); y=int0(w);
  if(MIN(x,y)==IMIN)return CALL2(f2,a,w,fs);  // IMIN is unmemoable, run fn
@@ -155,7 +155,7 @@ static DF2(jtmemo2){DECLF;A z;I x,y;
 // 1 mx2 INT table of input value; index of result
 // 2 boxed list containing results
 // All these start life on the tpush stack
-F1(jtmemo){PROLOG(300);A h,*hv,q;I m;V*v;
+ A jtmemo(J jt, A w){PROLOG(300);A h,*hv,q;I m;V*v;
  ARGCHK1(w);
  ASSERT(VERB&AT(w),EVDOMAIN);
  v=FAV(w); FULLHASHSIZE(30,BOXSIZE,1,0,m);  // m = # items to allocate

@@ -7,7 +7,7 @@
 #include "verbs/vcomp.h"
 
 
-static F2(jtth2box){A z;I n,p,q,*v,x,y;
+static A jtth2box(J jt,A a,A w){A z;I n,p,q,*v,x,y;
  p=jt->pos[0]; q=jt->pos[1];
  RZ(a=vi(a)); n=AN(a); v=AV(a);
  ASSERT(1>=AR(a),EVRANK);
@@ -260,7 +260,7 @@ static B jtth2ctrl(J jt,A a,A*ep,A*mp,A*dp,A*sp,I*zkp){A da,ea,ma,s;B b=1,*ev,r,
 }    /* parse format control (left argument of ":) */
 
 // x ": y
-F2(jtthorn2){PROLOG(0050);A da,ea,h,ma,s,y,*yv,z;B e,*ev;C*sv,*wv,*zv;I an,c,d,*dv,k,m,*mv,n,r,sk,t,wk,*ws,zk;
+ A jtthorn2(J jt,A a,A w){PROLOG(0050);A da,ea,h,ma,s,y,*yv,z;B e,*ev;C*sv,*wv,*zv;I an,c,d,*dv,k,m,*mv,n,r,sk,t,wk,*ws,zk;
  F2RANK(1,RMAX,jtthorn2,UNUSED_VALUE);  // apply rank 1 _
  // From here on the a arg is rank 0 or 1
  an=AN(a); t=AT(w);  // an=#atoms of a, t=type of w

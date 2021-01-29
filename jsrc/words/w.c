@@ -56,7 +56,7 @@ static const ST state[SDDD+1][16]={
 // result is word index & length; z is (i0,end0+1),(i1,end1+1),...
 // AM(z) gives # of words not counting a final comment, ({.$z) - hascomment
 // If there are mismatched quotes, AM(z) is set to -1 and the number of valid tokens is in AS(z)[0]
-F1(jtwordil){A z;I s,i,m,n,nv,*x;UC*v;
+ A jtwordil(J jt, A w){A z;I s,i,m,n,nv,*x;UC*v;
  ARGCHK1(w);  // if no string, could be empty line from keyboard; return null A in that case
  nv=0;    // set not creating numeric constant
  n=AN(w); v=UAV(w); GATV0(z,INT,n+n,3); x=AV(z); AS(z)[1]=2; AS(z)[2]=1;  // get count of characters n and address v; turn into suitable shape for ;.0 (x 2 1)
@@ -104,7 +104,7 @@ A jtunwordil(J jt, A wil, A w, I opts){A z;
 }
 
 // ;: y
-DF1(jtwords){A t,*x,z;C*s;I k,n,*y;
+ A jtwords(J jt,    A w,A self){A t,*x,z;C*s;I k,n,*y;
  F1RANK(1,jtwords,self);
  RZ(w=vs(w));  // convert w to LIT if it's not already
  RZ(t=wordil(w)); ASSERT(AM(t)>=0,EVOPENQ)
@@ -303,7 +303,7 @@ static A jtfsmdo(J jt,I f,A s,A m,I*ijrd,A w,A w0){A x,z;C*cc,*wv0;
  return z;
 }
 
-F1(jtfsmvfya){PROLOG(0099);A a,*av,m,s,x,z,*zv;I an,c,e,f,ijrd[4],k,p,q,*sv,*v;
+ A jtfsmvfya(J jt, A w){PROLOG(0099);A a,*av,m,s,x,z,*zv;I an,c,e,f,ijrd[4],k,p,q,*sv,*v;
  RZ(a=w);
  ASSERT(1==AR(a),EVRANK);
  ASSERT(BOX&AT(a),EVDOMAIN);
@@ -363,8 +363,8 @@ static A jtfsm0(J jt,A a,A w,C chka){PROLOG(0100);A*av,m,s,x,w0=w;B b;I c,f,*ijr
  EPILOG(z);
 }
 
-F2(jtfsm){return fsm0(a,w,1);}
+ A jtfsm(J jt,A a,A w){return fsm0(a,w,1);}
      /* x;:y */
 
-DF1(jtfsmfx){ARGCHK2(w,self); return fsm0(FAV(self)->fgh[0],w,0);}
+ A jtfsmfx(J jt,    A w,A self){ARGCHK2(w,self); return fsm0(FAV(self)->fgh[0],w,0);}
      /* x&;: y */

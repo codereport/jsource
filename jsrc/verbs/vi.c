@@ -164,7 +164,7 @@ static B jteqa(J jt,I n,A*u,A*v){DQ(n, if(!equ(*u,*v))return 0; ++u; ++v;); retu
 
 // should change IOF to return pointer to h; then could just pass in h rather than hp
 // should not pass in wcr - not used.  Check other args
-#define IOF(f)     A f(J jt,I mode,I m,I n,I c,I k,I acr,I wcr,I ac,I wc,I ak,I wk,A a,A w,A*hp,A z)
+// A f(J jt,I mode,I m,I n,I c,I k,I acr,I wcr,I ac,I wc,I ak,I wk,A a,A w,A*hp,A z)
 // variables used in IOF routines:
 // h=A for hashtable, hv->hashtable data, p=#entries in table, pm=unsigned p, used for converting hash to bucket#
 // zb,zc,zi are pointer to result area, of different sizes according to the operation
@@ -340,7 +340,7 @@ static I hashallo(IH * RESTRICT hh,UI p,UI m,I md){
 
 // if there is not a prehashed hashtable, we clear the hashtable and fill it from a, then hash & check each item of w
 #define IOFX(T,f,hash,exp,inc,dec)   \
- IOF(f){RDECL;IODECL(T);B b;I cm,md,s;UC*u=0;                                      \
+ A f(J jt,I mode,I m,I n,I c,I k,I acr,I wcr,I ac,I wc,I ak,I wk,A a,A w,A*hp,A z){RDECL;IODECL(T);B b;I cm,md,s;UC*u=0;                                      \
   md=mode<IPHOFFSET?mode:mode-IPHOFFSET;                                             \
   b=a==w&&ac==wc&&(mode==IIDOT||mode==IICO||mode==INUBSV||mode==INUB||mode==INUBI||mode==IFORKEY);  \
   zb=(B*)zv; zc=(C*)zv; zi=zv; cm=w==mark?0:c;                                       \
@@ -454,7 +454,7 @@ static IOFX(I,jtioi,  hicw(v),           *v!=av[hj],                      ++v,  
 
 // Do the operation.  Build a hash for a except when unboxed self-index
 #define IOFT(T,f,FA,FXY,FYY,expa,expw)   \
- IOF(f){RDECL;IODECL(T);B b,bx;D tl=jt->cct,tr=1/tl,x,*zd;DI dl,dr,dx;I e,il,ir,jx,md,s;  \
+ A f(J jt,I mode,I m,I n,I c,I k,I acr,I wcr,I ac,I wc,I ak,I wk,A a,A w,A*hp,A z){RDECL;IODECL(T);B b,bx;D tl=jt->cct,tr=1/tl,x,*zd;DI dl,dr,dx;I e,il,ir,jx,md,s;  \
   md=mode<IPHOFFSET?mode:mode-IPHOFFSET;                                                         \
   b=a==w&&ac==wc&&(mode==IIDOT||mode==IICO||mode==INUBSV||mode==INUB||mode==INUBI||mode==IFORKEY);              \
   zb=(B*)zv; zc=(C*)zv; zd=(D*)zv; zi=zv; e=cn*(m-1); bx=1&&BOX&AT(a);                           \
@@ -597,7 +597,7 @@ static IOFT(A,jtioa1,THASHBX,TFINDBX,TFINDBX,!equ(*v,av[hj]),!equ(*v,av[hj]))
 // CQW is the result loop for (e. i: 1:) (e. i: 0:)
 // cm is the number of cells of w per cell of a 
 #define IOFSMALLRANGE(f,T,Ttype)    \
- IOF(f){IH *hh=IHAV(*hp);I e,l;T* RESTRICT av,* RESTRICT wv;T max,min; UI p; \
+ A f(J jt,I mode,I m,I n,I c,I k,I acr,I wcr,I ac,I wc,I ak,I wk,A a,A w,A*hp,A z){IH *hh=IHAV(*hp);I e,l;T* RESTRICT av,* RESTRICT wv;T max,min; UI p; \
   mode|=((mode&(IIOPMSK&~(IIDOT^IICO)))|((I)a^(I)w)|(ac^wc))?0:IIMODREFLEX; \
   av=(T*)AV(a); wv=(T*)AV(w); \
   min=(T)hh->datamin; p=hh->datarange; max=min+(T)p-1;\
@@ -778,7 +778,7 @@ static A jtnodupgrade(J jt,A a,I acr,I ac,I acn,I ad,I n,I m,B b,B bk){A*av,h,*u
 // index by sorting a into order, then doing binary search on each item of w.
 // Used only when ct=0 and (boxed rank>1 or boxes contain numeric arrays)
 // 
-static IOF(jtiobs){A*av,h=*hp,*wv,y;B b,bk,*yb,*zb;C*zc;I acn,*hu,*hv,l,m1,md,s,wcn,*zi,*zv;
+static A jtiobs(J jt,I mode,I m,I n,I c,I k,I acr,I wcr,I ac,I wc,I ak,I wk,A a,A w,A*hp,A z){A*av,h=*hp,*wv,y;B b,bk,*yb,*zb;C*zc;I acn,*hu,*hv,l,m1,md,s,wcn,*zi,*zv;
  bk=mode==IICO||mode==IJ0EPS||mode==IJ1EPS||mode==IPHICO||mode==IPHJ0EPS||mode==IPHJ1EPS;
  b=a==w&&ac==wc&&(mode==IIDOT||mode==IICO||mode==INUB||mode==INUBSV||mode==INUBI||mode==IFORKEY); 
  if(mode==INUB||mode==INUBI){GATV0(y,B01,m,1); yb=BAV(y);}
@@ -1356,15 +1356,15 @@ A jtindexofprehashed(J jt,A a,A w,A hs){A h,hi,*hv,x,z;AF fn;I ar,*as,at,c,f1,k,
 // Now, support for the primitives that use indexof
 
 // x i. y
-F2(jtindexof){return indexofsub(IIDOT,a,w);}
+ A jtindexof(J jt,A a,A w){return indexofsub(IIDOT,a,w);}
      /* a i."r w */
 
 // x i: y
-F2(jtjico2){return indexofsub(IICO,a,w);}
+ A jtjico2(J jt,A a,A w){return indexofsub(IICO,a,w);}
      /* a i:"r w */
 
 // ~: y
-F1(jtnubsieve){
+ A jtnubsieve(J jt, A w){
  ARGCHK1(w);
  if(SPARSE&AT(w))return nubsievesp(w);
  jt->ranks=(RANKT)jt->ranks + ((RANKT)jt->ranks<<RANKTX);  // we process as if dyad; make left rank=right rank
@@ -1372,7 +1372,7 @@ F1(jtnubsieve){
 }    /* ~:"r w */
 
 // ~. y  - does not have IRS
-F1(jtnub){ 
+ A jtnub(J jt, A w){ 
  F1PREFIP;ARGCHK1(w);
  if(SPARSE&AT(w)||AFLAG(w)&AFNJA)return repeat(nubsieve(w),w);
  A z; RZ(z=indexofsub(INUB,w,w));
@@ -1382,7 +1382,7 @@ F1(jtnub){
 }    /* ~.w */
 
 // x -. y.  does not have IRS
-F2(jtless){A x=w;I ar,at,k,r,*s,wr,*ws,wt;
+ A jtless(J jt,A a,A w){A x=w;I ar,at,k,r,*s,wr,*ws,wt;
  F2PREFIP;ARGCHK2(a,w);
  at=AT(a); ar=AR(a); 
  wt=AT(w); wr=AR(w); r=MAX(1,ar);
@@ -1398,7 +1398,7 @@ F2(jtless){A x=w;I ar,at,k,r,*s,wr,*ws,wt;
 }    /* a-.w */
 
 // x e. y
-F2(jteps){I l,r;
+ A jteps(J jt,A a,A w){I l,r;
  ARGCHK2(a,w);
  l=jt->ranks>>RANKTX; l=AR(a)<l?AR(a):l;
  r=(RANKT)jt->ranks; r=AR(w)<r?AR(w):r; RESETRANK;
@@ -1408,20 +1408,20 @@ F2(jteps){I l,r;
 }    /* a e."r w */
 
 // I.@~: y   does not have IRS
-F1(jtnubind){
+ A jtnubind(J jt, A w){
  ARGCHK1(w);
  return SPARSE&AT(w)?icap(nubsieve(w)):indexofsub(INUBI,w,w);
 }    /* I.@~: w */
 
 // i.@(~:!.0) y     does not have IRS
-F1(jtnubind0){A z;
+ A jtnubind0(J jt, A w){A z;
  ARGCHK1(w);
  PUSHCCT(1.0) z=SPARSE&AT(w)?icap(nubsieve(w)):indexofsub(INUBI,w,w); POPCCT
  return z;
 }    /* I.@(~:!.0) w */
 
 // = y    
-F1(jtsclass){A e,x,xy,y,z;I c,j,m,n,*v;P*p;
+ A jtsclass(J jt, A w){A e,x,xy,y,z;I c,j,m,n,*v;P*p;
  ARGCHK1(w);
  // If w is scalar, return 1 1$1
  if(!AR(w))return reshape(v2(1L,1L),num(1));
@@ -1448,7 +1448,6 @@ F1(jtsclass){A e,x,xy,y,z;I c,j,m,n,*v;P*p;
 // support for a i."1 &.|:w or a i:"1 &.|:w
 
 // function definition
-#define IOCOLF(f)     void f(J jt,I m,I c,I d,A a,A w,A z,A h)
 #define IOCOLDECL(T)  D tl=jt->cct,tr=1/tl,x;                           \
                           I hj,*hv=AV(h),i,j,jr,l,p=AN(h),*u,*zv=AV(z);  \
                           T*av=(T*)AV(a),*v,*wv=(T*)AV(w);UI pm=p
@@ -1461,7 +1460,7 @@ F1(jtsclass){A e,x,xy,y,z;I c,j,m,n,*v;P*p;
 // exp is a test for not-equal, returning 1 when values do not match
 // For each column, clear the hash table, then hash the items of a, then look up the items of w 
 #define IOCOLFT(T,f,hasha,hashl,hashr,exp)  \
- IOCOLF(f){IOCOLDECL(T);                                                   \
+ void f(J jt,I m,I c,I d,A a,A w,A z,A h){IOCOLDECL(T);                                                   \
   for(l=0;l<c;++l){                                                        \
    DO(p, hv[i]=m;);                                                        \
    v=av;         DO(m, j=(hasha)%pm; FIND(exp); if(m==hj)hv[j]=i; v+=c;);  \
@@ -1477,7 +1476,7 @@ F1(jtsclass){A e,x,xy,y,z;I c,j,m,n,*v;P*p;
 
 // Similar, but search backward
 #define JOCOLFT(T,f,hasha,hashl,hashr,exp)  \
- IOCOLF(f){IOCOLDECL(T);I q;                                               \
+ void f(J jt,I m,I c,I d,A a,A w,A z,A h){IOCOLDECL(T);I q;                                               \
   for(l=0;l<c;++l){                                                        \
    DO(p, hv[i]=m;);                                                        \
    v=av+c*(m-1); DQ(m, j=(hasha)%pm; FIND(exp); if(m==hj)hv[j]=i; v-=c;);  \

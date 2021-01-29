@@ -806,7 +806,7 @@ I jtsumattymesprods(J jt,I it,void *avp, void *wvp,I dplen,I nfro,I nfri,I ndpo,
 
 
 // +/@:*"1 with IRS
-DF2(jtsumattymes1){
+ A jtsumattymes1(J jt,A a,A w,A self){
  ARGCHK2(a,w);
  I ar=AR(a); I wr=AR(w); I acr=jt->ranks>>RANKTX; I wcr=jt->ranks&RMAX;
  // get the cell-ranks to use 
@@ -953,7 +953,7 @@ static A jtsumatgbool(J jt,A a,A w,C id){A t,z;B* RESTRICTI av,* RESTRICTI wv;I 
  return z;
 }    /* a +/@:g w  for boolean a,w where a-:&(* /@$)w; see also plusinsB */
 
-DF2(jtfslashatg){A fs,gs,y,z;B b,sb=0;C*av,c,d,*wv;I ak,an,ar,*as,at,m,
+ A jtfslashatg(J jt,A a,A w,A self){A fs,gs,y,z;B b,sb=0;C*av,c,d,*wv;I ak,an,ar,*as,at,m,
      n,nn,r,rs,*s,t,wk,wn,wr,*ws,wt,yt,zn,zt;VA2 adocv,adocvf;
  ARGCHK3(a,w,self);
  an=AN(a); ar=AR(a); as=AS(a); at=AT(a); at=an?at:B01;
@@ -1016,7 +1016,7 @@ DF2(jtfslashatg){A fs,gs,y,z;B b,sb=0;C*av,c,d,*wv;I ak,an,ar,*as,at,m,
 // the atomic.  If the block is a rank block, we will switch self over to the block for the atomic.
 // Rank can be passed in via jt->ranks, or in the rank for self.  jt->ranks has priority.
 // This entry point supports inplacing
-DF2(jtatomic2){A z;
+ A jtatomic2(J jt,A a,A w,A self){A z;
  A realself=FAV(self)->fgh[0];  // if rank operator, this is nonzero and points to the left arg of rank
  RANK2T selfranks=FAV(self)->lrr;  // get left & right rank from rank/primitive
  self=realself?realself:self;  // if this is a rank block, move to the primitive.  u b. or any atomic primitive has f clear
@@ -1048,8 +1048,8 @@ DF2(jtatomic2){A z;
  return z=jtva2((J)((I)jtinplace|JTRETRY),a,w,self,(awr<<RANK2TX)+selfranks);  // execute the verb
 }
 
-DF2(jtexpn2  ){F2PREFIP; ARGCHK2(a,w); if(((((I)AR(w)-1)&SGNIF(AT(w),FLX))<0))if(0.5==DAV(w)[0])return sqroot(a);  return jtatomic2(jtinplace,a,w,self);}  // use sqrt hardware for sqrt.  Only for atomic w.
-DF2(jtresidue){F2PREFIP; ARGCHK2(a,w); I intmod; if(!((AT(a)|AT(w))&(NOUN&~INT)|AR(a))&&(intmod=IAV(a)[0], (intmod&-intmod)+(intmod<=0)==0))return intmod2(w,intmod); return jtatomic2(jtinplace,a,w,self);}
+ A jtexpn2  (J jt,A a,A w,A self){F2PREFIP; ARGCHK2(a,w); if(((((I)AR(w)-1)&SGNIF(AT(w),FLX))<0))if(0.5==DAV(w)[0])return sqroot(a);  return jtatomic2(jtinplace,a,w,self);}  // use sqrt hardware for sqrt.  Only for atomic w.
+ A jtresidue(J jt,A a,A w,A self){F2PREFIP; ARGCHK2(a,w); I intmod; if(!((AT(a)|AT(w))&(NOUN&~INT)|AR(a))&&(intmod=IAV(a)[0], (intmod&-intmod)+(intmod<=0)==0))return intmod2(w,intmod); return jtatomic2(jtinplace,a,w,self);}
 
 
 // These are the unary ops that are implemented using a canned argument
@@ -1062,14 +1062,14 @@ DF2(jtresidue){F2PREFIP; ARGCHK2(a,w); I intmod; if(!((AT(a)|AT(w))&(NOUN&~INT)|
 #define SETCONPTR(n) A conptr=num(n); A conptr2=zeroionei(n); A conptr3=numvr(n); conptr=AT(w)&INT?conptr2:conptr; conptr=AT(w)&FL?conptr3:conptr;  // for 0 or 1 only
 #define SETCONPTR2(n) A conptr=num(n); A conptr3=numvr(n); conptr=AT(w)&FL?conptr3:conptr;   // used for 2, when the only options are INT/FL
 
-F1(jtnot   ){ARGCHK1(w); SETCONPTR(1) return AT(w)&B01+SB01?eq(num(0),w):minus(conptr,w);}
-F1(jtnegate){ARGCHK1(w); SETCONPTR(0) return minus(conptr,w);}
-F1(jtdecrem){ARGCHK1(w); SETCONPTR(1) IPSHIFTWA; return minus(w,conptr);}
-F1(jtincrem){ARGCHK1(w); SETCONPTR(1) return plus(conptr,w);}
-F1(jtduble ){ARGCHK1(w); SETCONPTR2(2) return tymes(conptr,w);}
-F1(jtsquare){ARGCHK1(w); return tymes(w,w);}   // leave inplaceable in w only  ?? never inplaces
-F1(jtrecip ){ARGCHK1(w); SETCONPTR(1) return divide(conptr,w);}
-F1(jthalve ){ARGCHK1(w); if(!(AT(w)&XNUM+RAT))return tymes(onehalf,w); IPSHIFTWA; return divide(w,num(2));}
+ A jtnot   (J jt, A w){ARGCHK1(w); SETCONPTR(1) return AT(w)&B01+SB01?eq(num(0),w):minus(conptr,w);}
+ A jtnegate(J jt, A w){ARGCHK1(w); SETCONPTR(0) return minus(conptr,w);}
+ A jtdecrem(J jt, A w){ARGCHK1(w); SETCONPTR(1) IPSHIFTWA; return minus(w,conptr);}
+ A jtincrem(J jt, A w){ARGCHK1(w); SETCONPTR(1) return plus(conptr,w);}
+ A jtduble (J jt, A w){ARGCHK1(w); SETCONPTR2(2) return tymes(conptr,w);}
+ A jtsquare(J jt, A w){ARGCHK1(w); return tymes(w,w);}   // leave inplaceable in w only  ?? never inplaces
+ A jtrecip (J jt, A w){ARGCHK1(w); SETCONPTR(1) return divide(conptr,w);}
+ A jthalve (J jt, A w){ARGCHK1(w); if(!(AT(w)&XNUM+RAT))return tymes(onehalf,w); IPSHIFTWA; return divide(w,num(2));}
 
 static AHDR2(zeroF,B,void,void){memset(z,C0,m*(n^REPSGN(n)));return EVOK;}
 static AHDR2(oneF,B,void,void){memset(z,C1,m*(n^REPSGN(n)));return EVOK;}

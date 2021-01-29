@@ -43,7 +43,7 @@ static A jthgd(J jt,B b,I n,A w,A p,A q){A c,d,e,z;D r,s,t,*u,*v,x,*zv;I j,pn,qn
  return !b?scf(s):z?take(sc(1+j),z):hgd(b,j,w,p,q);
 }    /* real vector p,q; real scalar w; all terms (1=b) or last term (0=b) */
 
-static DF2(jthgeom2){PROLOG(0036);A h,*hv,t,z;B b;I an,*av,j,n;V*sv=FAV(self);
+static A jthgeom2(J jt,A a,A w,A self){PROLOG(0036);A h,*hv,t,z;B b;I an,*av,j,n;V*sv=FAV(self);
  ARGCHK2(a,w);
  if(AR(w))return rank2ex0(a,w,self,jthgeom2);
  RZ(a=AT(a)&FL+CMPX?vib(a):vi(a));  // kludge just call vib?
@@ -62,9 +62,9 @@ static DF2(jthgeom2){PROLOG(0036);A h,*hv,t,z;B b;I an,*av,j,n;V*sv=FAV(self);
  EPILOG(z);
 }
 
-static DF1(jthgeom1){return hgeom2(sc(IMAX),w,self);}
+static A jthgeom1(J jt,    A w,A self){return hgeom2(sc(IMAX),w,self);}
 
-static F2(jtcancel){A c,d,f,x,y;
+static A jtcancel(J jt,A a,A w){A c,d,f,x,y;
  f=eval("#/.~");   // could call keytally
  a=ravel(a); x=nub(a); df1(c,a,f);
  w=ravel(w); y=nub(w); df1(d,w,f);
@@ -73,7 +73,7 @@ static F2(jtcancel){A c,d,f,x,y;
  return link(a,w);
 }
 
-F2(jthgeom){A c,d,h=0;B p,q;I at,wt;
+ A jthgeom(J jt,A a,A w){A c,d,h=0;B p,q;I at,wt;
  ARGCHK2(a,w);
  at=AT(a); p=1&&at&NOUN; c=d=mtv;
  wt=AT(w); q=1&&wt&NOUN;
@@ -83,7 +83,7 @@ F2(jthgeom){A c,d,h=0;B p,q;I at,wt;
  return fdef(0,CHGEOM,VERB, jthgeom1,jthgeom2, a,w,h, 0L, 0L,0L,0L);
 }    /* a H. w */
 
-DF1(jthgcoeff){PROLOG(0037);A c,d,h,*hv,y,z;B b;I j,n,pn,qn,*v;V*sv=FAV(self);
+ A jthgcoeff(J jt,    A w,A self){PROLOG(0037);A c,d,h,*hv,y,z;B b;I j,n,pn,qn,*v;V*sv=FAV(self);
  RZ(w=vi(w)); v=AV(w); 
  n=0; DO(AN(w), j=v[i]; ASSERT(0<=j,EVDOMAIN); if(n<j)n=j;);
  if(!n)return eq(w,w);

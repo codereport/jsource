@@ -6,7 +6,7 @@
 #include "j.h"
 
 
-F1(jtcatalog){PROLOG(0072);A b,*wv,x,z,*zv;C*bu,*bv,**pv;I*cv,i,j,k,m=1,n,p,*qv,r=0,*s,t=0,*u;
+ A jtcatalog(J jt, A w){PROLOG(0072);A b,*wv,x,z,*zv;C*bu,*bv,**pv;I*cv,i,j,k,m=1,n,p,*qv,r=0,*s,t=0,*u;
  F1RANK(1,jtcatalog,UNUSED_VALUE);
  if((-AN(w)&-(AT(w)&BOX+SBOX))>=0)return box(w);   // empty or unboxed, just box it
  n=AN(w); wv=AAV(w); 
@@ -42,7 +42,7 @@ F1(jtcatalog){PROLOG(0072);A b,*wv,x,z,*zv;C*bu,*bv,**pv;I*cv,i,j,k,m=1,n,p,*qv,
  }
 
 // a is not boxed and not boolean (except when a is an atom, which we pass through here to allow a virtual result)
-F2(jtifrom){A z;C*wv,*zv;I acr,an,ar,*av,j,k,m,p,pq,q,wcr,wf,wk,wn,wr,*ws,zn;
+ A jtifrom(J jt,A a,A w){A z;C*wv,*zv;I acr,an,ar,*av,j,k,m,p,pq,q,wcr,wf,wk,wn,wr,*ws,zn;
  F1PREFIP;
  ARGCHK2(a,w);
  // IRS supported.  This has implications for empty arguments.
@@ -123,7 +123,7 @@ F2(jtifrom){A z;C*wv,*zv;I acr,an,ar,*av,j,k,m,p,pq,q,wcr,wf,wk,wn,wr,*ws,zn;
 #define INNER1B(T)  {T*v=(T*)wv,*x=(T*)zv; v+=*av; DQ(m, *x++=*v; v+=p;);}
 
 // a is boolean
-static F2(jtbfrom){A z;B*av,*b;C*wv,*zv;I acr,an,ar,k,m,p,q,r,*u=0,wcr,wf,wk,wn,wr,*ws,zn;
+static A jtbfrom(J jt,A a,A w){A z;B*av,*b;C*wv,*zv;I acr,an,ar,k,m,p,q,r,*u=0,wcr,wf,wk,wn,wr,*ws,zn;
  ARGCHK2(a,w);
  ar=AR(a); acr=jt->ranks>>RANKTX; acr=ar<acr?ar:acr;
  wr=AR(w); wcr=(RANKT)jt->ranks; wcr=wr<wcr?wr:wcr; wf=wr-wcr; RESETRANK;
@@ -275,7 +275,7 @@ static A jtafi(J jt,I n,A w){A x;
 }
 
 // general boxed a
-static F2(jtafrom){PROLOG(0073);A c,ind,p=0,q,*v,y=w;B bb=1;I acr,ar,i=0,j,m,n,pr,*s,t,wcr,wf,wr;
+static A jtafrom(J jt,A a,A w){PROLOG(0073);A c,ind,p=0,q,*v,y=w;B bb=1;I acr,ar,i=0,j,m,n,pr,*s,t,wcr,wf,wr;
  ARGCHK2(a,w);
  ar=AR(a); acr=jt->ranks>>RANKTX; acr=ar<acr?ar:acr;
  wr=AR(w); wcr=(RANKT)jt->ranks; wcr=wr<wcr?wr:wcr; wf=wr-wcr; RESETRANK;
@@ -317,7 +317,7 @@ static F2(jtafrom){PROLOG(0073);A c,ind,p=0,q,*v,y=w;B bb=1;I acr,ar,i=0,j,m,n,p
  EPILOG(y);   // If the result is NJA, it must be virtual.  NJAwhy can it happen?  scaf
 }    /* a{"r w for boxed index a */
 
-F2(jtfrom){I at;A z;
+ A jtfrom(J jt,A a,A w){I at;A z;
  F2PREFIP;
  ARGCHK2(a,w);
  at=AT(a);
@@ -363,7 +363,7 @@ F2(jtfrom){I at;A z;
  return z;
 }   /* a{"r w main control */
 
-F2(jtsfrom){
+ A jtsfrom(J jt,A a,A w){
  if(!(SPARSE&AT(w))){
   // Not sparse.  Verify the indexes are numeric and not empty
   if(((AN(a)-1)|(AR(a)-2)|((AT(a)&NUMERIC)-1))>=0){A ind;   // a is an array with rank>1 and numeric.  Rank 1 is unusual & unimportant & we'll ignore it
@@ -399,10 +399,10 @@ F2(jtsfrom){
  A z; return from(IRS1(a,0L,1L,jtbox,z),w);
 }    /* (<"1 a){w */
 
-static F2(jtmapx);
+static A jtmapx(J jt,A a,A w);
 static EVERYFS(mapxself,0,jtmapx,0,VFLAGNONE)
 
-static F2(jtmapx){A z1,z2,z3;
+static A jtmapx(J jt,A a,A w){A z1,z2,z3;
  ARGCHK2(a,w);
  if(!(BOX&AT(w)))return ope(a);
  RZ(z1=catalog(every(shape(w),ds(CIOTA))));  // create index list of each box
@@ -412,16 +412,16 @@ static F2(jtmapx){A z1,z2,z3;
  return every2(z3,w,(A)&mapxself);
 }
 
-F1(jtmap){return mapx(ds(CACE),w);}
+ A jtmap(J jt, A w){return mapx(ds(CACE),w);}
 
 // extract the single box a from w and open it.  Don't mark it no-inplace.  If w is not boxed, it had better be an atom, and we return it after auditing the index
-static F2(jtquicksel){I index;
+static A jtquicksel(J jt,A a,A w){I index;
  RE(index=i0(a));  // extract the index
  SETNDX(index,index,AN(w))   // remap negative index, check range
  return AT(w)&BOX?AAV(w)[index]:w;  // select the box, or return the entire unboxed w
 }
 
-F2(jtfetch){A*av, z;I n;F2PREFIP;
+ A jtfetch(J jt,A a,A w){A*av, z;I n;F2PREFIP;
  F2RANKW(1,RMAX,jtfetch,UNUSED_VALUE);  // body of verb applies to rank-1 a, and must turn pristine off if used higher, since there may be repetitions.
  if(!(BOX&AT(a))){
   // look for the common special case scalar { boxed vector.  This path doesn't run EPILOG

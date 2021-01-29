@@ -84,7 +84,7 @@ A jtsfn(J jt,B b,A w){NM*v; ARGCHK1(w); v=NAV(w); return str(b&SFNSIMPLEONLY?v->
 A jtsfne(J jt,A w){ARGCHK1(w); A wn=FAV(w)->fgh[0]; if(AT(wn)&NAMEBYVALUE)return fix(w,zeroionei(0)); return sfn(0,wn);}
 
 
-F1(jtnfb){A y;C*s;I n;
+ A jtnfb(J jt, A w){A y;C*s;I n;
  ARGCHK1(w);
  ASSERT(BOX&AT(w),EVDOMAIN);
  ASSERT(!AR(w),EVRANK);
@@ -95,7 +95,7 @@ F1(jtnfb){A y;C*s;I n;
 }    /* name from scalar boxed string */
 
 // w is an A for a name string; return NAME block or 0 if error
-static F1(jtstdnm){C*s;I j,n,p,q;
+static A jtstdnm(J jt, A w){C*s;I j,n,p,q;
  if(!(w=vs(w)))return 0;  // convert to ASCII
  n=AN(w); s=CAV(w);  // n = #characters, s->string
  if(!(n))return 0;
@@ -106,10 +106,10 @@ static F1(jtstdnm){C*s;I j,n,p,q;
 }    /* 0 result means error or invalid name */
 
 // x is a (possibly) boxed string; result is NAME block for name x, error if invalid name
-F1(jtonm){A x,y; RZ(x=ope(w)); y=stdnm(x); ASSERTN(y,EVILNAME,nfs(AN(x),CAV(x))); return y;}
+ A jtonm(J jt, A w){A x,y; RZ(x=ope(w)); y=stdnm(x); ASSERTN(y,EVILNAME,nfs(AN(x),CAV(x))); return y;}
 
 // w is array of boxed strings; result is name class for each
-F1(jtnc){A*wv,x,y,z;I i,n,t,*zv;L*v; 
+ A jtnc(J jt, A w){A*wv,x,y,z;I i,n,t,*zv;L*v;
  ARGCHK1(w);
  n=AN(w); wv=AAV(w);   // n=#names  wv->first box
  ASSERT(!n||BOX&AT(w),EVDOMAIN);   // verify boxed input (unless empty)
@@ -137,7 +137,7 @@ static SYMWALK(jtnlxxx, A,BOX,20,1, jt->workareas.namelist.nla[*((UC*)NAV(d->nam
 
 static const I nlmask[] = {NOUN,ADV,CONJ,VERB, MARK,MARK,SYMB,MARK};
 
-static F1(jtnlx){A z=mtv;B b;I m=0,*v,x;
+static A jtnlx(J jt, A w){A z=mtv;B b;I m=0,*v,x;
  RZ(w=vi(w)); v=AV(w); 
  DQ(AN(w), x=*v++; m|=nlmask[BETWEENC(x,0,6)?x:7];); 
  jt->workareas.namelist.nlt=m&RHS; b=1&&jt->workareas.namelist.nlt&RHS;
@@ -148,10 +148,10 @@ static F1(jtnlx){A z=mtv;B b;I m=0,*v,x;
  return nub(grade2(z,ope(z)));
 }
 
-F1(jtnl1){memset(jt->workareas.namelist.nla,C1,256L); return nlx(w);}
+ A jtnl1(J jt, A w){memset(jt->workareas.namelist.nla,C1,256L); return nlx(w);}
      /* 4!:1  name list */
 
-F2(jtnl2){UC*u;
+ A jtnl2(J jt,A a,A w){UC*u;
  ARGCHK2(a,w);
  ASSERT(LIT&AT(a),EVDOMAIN);
  memset(jt->workareas.namelist.nla,C0,256L); 
@@ -160,7 +160,7 @@ F2(jtnl2){UC*u;
 }    /* 4!:1  name list */
 
 
-F1(jtscind){A*wv,x,y,z;I n,*zv;L*v;
+ A jtscind(J jt, A w){A*wv,x,y,z;I n,*zv;L*v;
  ARGCHK1(w);
  n=AN(w); 
  ASSERT(!n||BOX&AT(w),EVDOMAIN);
@@ -195,7 +195,7 @@ static A jtnch1(J jt,B b,A w,I*pm,A ch){A*v,x,y;C*s,*yv;LX *e;I i,k,m,p,wn;L*d;
  return ch;
 }
 
-F1(jtnch){A ch;B b;LX *e;I i,m,n;L*d;
+ A jtnch(J jt, A w){A ch;B b;LX *e;I i,m,n;L*d;
  RZ(w=cvt(B01,w)); ASSERT(!AR(w),EVRANK); b=BAV(w)[0];
  GAT0(ch,BOX,20,1); m=0;
  if(jt->stch){
@@ -217,7 +217,7 @@ F1(jtnch){A ch;B b;LX *e;I i,m,n;L*d;
 }    /* 4!:5  names changed */
 
 
-F1(jtex){A*wv,y,z;B*zv;I i,n;L*v;I modifierchg=0;
+ A jtex(J jt, A w){A*wv,y,z;B*zv;I i,n;L*v;I modifierchg=0;
  ARGCHK1(w);
  n=AN(w); wv=AAV(w); 
  ASSERT(((n-1)|SGNIF(AT(w),BOXX))<0,EVDOMAIN);

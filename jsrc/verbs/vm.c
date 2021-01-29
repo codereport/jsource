@@ -108,7 +108,7 @@ AHDR2(cirDD,D,D,D){I k=(I)jround(*x);
 }
 
 
-F2(jtlogar2){A z;I t;
+ A jtlogar2(J jt,A a,A w){A z;I t;
  ARGCHK2(a,w); 
  RE(t=maxtype(AT(a),AT(w)));
  if(!(t&XNUM)||jt->xmode==XMEXACT){jt->xmode=XMEXACT; return jtatomic2(JTIPAW,logar1(w),logar1(a),ds(CDIV));}  // better to multiply by recip, but not much, & it makes 0 ^. 0 not fail
@@ -118,7 +118,7 @@ F2(jtlogar2){A z;I t;
  return 0;
 }
     
-F2(jtroot){A z;I t;
+ A jtroot(J jt,A a,A w){A z;I t;
  ARGCHK2(a,w);
  RE(t=maxtype(AT(a),AT(w)));
  A ma=a; if(TYPESNE(t,AT(a)))RZ(ma=cvt(t,a));
@@ -132,15 +132,15 @@ F2(jtroot){A z;I t;
   default:     return z;
 }}
 
-F1(jtjdot1){return tymes(a0j1,w);}
-F2(jtjdot2){return plus(a,tymes(a0j1,w));}
-F1(jtrdot1){return expn1(jdot1(w));}
-F2(jtrdot2){return tymes(a,rdot1(w));}
+ A jtjdot1(J jt, A w){return tymes(a0j1,w);}
+ A jtjdot2(J jt,A a,A w){return plus(a,tymes(a0j1,w));}
+ A jtrdot1(J jt, A w){return expn1(jdot1(w));}
+ A jtrdot2(J jt,A a,A w){return tymes(a,rdot1(w));}
 
 
-F1(jtpolar){ARGCHK1(w); A z; return cvt(SPARSE&AT(w)?SFL:FL,df2(z,v2(10L,12L),w,qq(ds(CCIRCLE),v2(1L,0L))));}
+ A jtpolar(J jt, A w){ARGCHK1(w); A z; return cvt(SPARSE&AT(w)?SFL:FL,df2(z,v2(10L,12L),w,qq(ds(CCIRCLE),v2(1L,0L))));}
 
-F1(jtrect){A e,z;B b;I r,t;P*wp,*zp;Z c;
+ A jtrect(J jt, A w){A e,z;B b;I r,t;P*wp,*zp;Z c;
  ARGCHK1(w); 
  t=AT(w); r=AR(w); RESETRANK;   // Run as infinite rank
  ASSERT(!AN(w)||t&NUMERIC,EVDOMAIN);

@@ -65,7 +65,7 @@ static AHDRR(bw1010insC,UC,UC){I k=d*(n-1);UC t=(UC)((n&1)-1); x+=k; DQ(m, DQ(d,
 
 
 #define BITWISE(f,T,op)  \
- F2(f){A z;I *av,k=0,x;T*wv,y,*zv;             \
+ A f(J jt,A a,A w){A z;I *av,k=0,x;T*wv,y,*zv;             \
   F2PREFIP;ARGCHK2(a,w);  /* kludge we allow inplace call but we don't honor it yet */ \
   if(!(INT&AT(a)))RZ(a=cvt(INT,a));                                    \
   if(!(INT&AT(w)))RZ(w=cvt(INT,w));                                    \
@@ -88,7 +88,7 @@ BITWISE(jtbitwiserotate,UI,BWROT   )
 BITWISE(jtbitwiseshift, UI,BWSHIFT )
 BITWISE(jtbitwiseshifta,I, BWSHIFTA)
 
-DF1(jtbitwise1){return CALL2(FAV(self)->valencefns[1],zeroionei(0),w,self);}   // inplaceable - don't touch jt
+ A jtbitwise1(J jt,    A w,A self){return CALL2(FAV(self)->valencefns[1],zeroionei(0),w,self);}   // inplaceable - don't touch jt
 
 
 static AHDR2FN* bwC[16]={(AHDR2FN*)bw0000CC,(AHDR2FN*)bw0001CC,(AHDR2FN*)bw0010CC,(AHDR2FN*)bw0011CC, (AHDR2FN*)bw0100CC,(AHDR2FN*)bw0101CC,(AHDR2FN*)bw0110CC,(AHDR2FN*)bw0111CC,
@@ -101,7 +101,7 @@ static AHDR2FN* bwI[16]={(AHDR2FN*)bw0000II,(AHDR2FN*)bw0001II,(AHDR2FN*)bw0010I
 /* a m b.&.(a.i.]) w */
 /* m e. 16+i.16      */
 
-DF2(jtbitwisechar){DECLFG;A*p,x,y,z;B b;I j,m,n,zn;AHDR2FN* ado;
+ A jtbitwisechar(J jt,A a,A w,A self){DECLFG;A*p,x,y,z;B b;I j,m,n,zn;AHDR2FN* ado;
  ARGCHK2(a,w);
  x=a;
  y=w;
@@ -148,7 +148,7 @@ static AHDRRFN* bwinsI[16]={(AHDRRFN*)bw0000insI,(AHDRRFN*)bw0001insI,(AHDRRFN*)
 /* m b./&.(a.i.]) w */
 /* m e. 16+i.16     */
 
-DF1(jtbitwiseinsertchar){A fs,z;I d,j,n,r,wn,wr,zatoms;UC*u,*v,*wv,x,*zv;AHDRRFN* ado;
+ A jtbitwiseinsertchar(J jt,    A w,A self){A fs,z;I d,j,n,r,wn,wr,zatoms;UC*u,*v,*wv,x,*zv;AHDRRFN* ado;
  ARGCHK2(w,self);
  wr=AR(w); wn=AN(w); SETIC(w,n); z=VAV(self)->fgh[0]; fs=VAV(z)->fgh[0];
  if((-(wn)&(SZI-n)&SGNIF(AT(w),LITX))>=0)return from(df1(z,indexof(ds(CALP),w),fs),ds(CALP));  // revert if not wn!=0 & n>SZI & LIT

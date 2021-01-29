@@ -74,7 +74,7 @@ static void sieve(I n,I m,B*b,B*u){I i,j,q;
  else for(i=7;i<q;i+=2){if(b[i]){j=i+i;            while(j<m){b[j]=0; j+=i;}}}
 }    /* sieve b for n+i.m, but if 0=n then b=. 0 (2 3 5)}b */
 
-static F1(jtprime1){A d,t,y,z;B*b,*u;I c,*dv,e,i,j,k,m,n,p,q,*wv,x,*zv;
+static A jtprime1(J jt, A w){A d,t,y,z;B*b,*u;I c,*dv,e,i,j,k,m,n,p,q,*wv,x,*zv;
  ARGCHK1(w);
  k=0; n=AN(w); wv=AV(w); RE(m=sup(n,wv)); RESETRANK; JBREAK0;
  GATV(z,INT,n,AR(w),AS(w)); zv= AV(z);
@@ -120,7 +120,7 @@ static void sieved(D n,I m,B*b){I c,d,e,i,q,r,*u,*v;
  }}
 }    /* sieve b for n+i.m; n>0; u is mask for primes */
 
-static F1(jtprime1d){A d,z;D*wv,x,*zv;I*dv,k,n;
+static A jtprime1d(J jt, A w){A d,z;D*wv,x,*zv;I*dv,k,n;
  ARGCHK1(w);
  n=AN(w); wv=DAV(w);
  GATV(z,FL,n,AR(w),AS(w)); zv=DAV(z);
@@ -135,7 +135,7 @@ static F1(jtprime1d){A d,z;D*wv,x,*zv;I*dv,k,n;
  ASSERT(0,EVLIMIT);
 }
 
-F1(jtprime){PROLOG(0061);A z;B b=1;I n,t;
+ A jtprime(J jt, A w){PROLOG(0061);A z;B b=1;I n,t;
  ARGCHK1(w);
  RZ(init4792(jt));
  n=AN(w); t=AT(w);
@@ -153,7 +153,7 @@ F1(jtprime){PROLOG(0061);A z;B b=1;I n,t;
 static I jtsuq(J jt,I n,I*wv){I c=24; DO(n, c=MAX(c,wv[i]););  return c==0x7fffffff?c:1+c;}
      /* 1+24>.>./w */
 
-F1(jtplt){PROLOG(0062);A d,t,y,z;B*b,*u,xt;I c,*dv,e,i,j,k,m,n,p,q,*wv,x,*zv;
+ A jtplt(J jt, A w){PROLOG(0062);A d,t,y,z;B*b,*u,xt;I c,*dv,e,i,j,k,m,n,p,q,*wv,x,*zv;
  ARGCHK1(w);
  xt=1&&AT(w)&XNUM+RAT;
  if(!(INT&AT(w)))RZ(w=vi(ceil1(w))); wv=AV(w); JBREAK0;
@@ -187,12 +187,12 @@ F1(jtplt){PROLOG(0062);A d,t,y,z;B*b,*u,xt;I c,*dv,e,i,j,k,m,n,p,q,*wv,x,*zv;
 
 
 static B jtxprimeq(J,I,X);
-static F1(jtxprimetest);
+static A jtxprimetest(J jt, A w);
 
 static const B pmsk[]={0,0,1,1,0,1,0,1,0,0, 0,1,0,1,0,0,0,1,0,1, 0,0,0,1,0,0,0,0,0,1, 0,1};
      /* indicates which i<32 is prime */
 
-static F1(jtiprimetest){A z;B*b;I d,j,n,*pv,q,*v,wn,*wv;
+static A jtiprimetest(J jt, A w){A z;B*b;I d,j,n,*pv,q,*v,wn,*wv;
  ARGCHK1(w);
  wn=AN(w); wv=AV(w); pv=AV(jt->p4792);
  DO(wn, if(2147483647L<wv[i])return xprimetest(cvt(XNUM,w)););
@@ -205,7 +205,7 @@ static F1(jtiprimetest){A z;B*b;I d,j,n,*pv,q,*v,wn,*wv;
  return z;
 }
 
-static F1(jtxprimetest){A z;B*b,rat;I d,j,q,n,*pv,*v,wn,wt,*yv;X r,*wv,x,xmaxint,y;
+static A jtxprimetest(J jt, A w){A z;B*b,rat;I d,j,q,n,*pv,*v,wn,wt,*yv;X r,*wv,x,xmaxint,y;
  ARGCHK1(w);
  wn=AN(w); wt=AT(w); wv=XAV(w); pv=AV(jt->p4792); 
  rat=1&&wt&RAT; RZ(xmaxint=xc(2147483647L)); RZ(y=xc(-1L)); yv=AV(y);
@@ -228,7 +228,7 @@ static F1(jtxprimetest){A z;B*b,rat;I d,j,q,n,*pv,*v,wn,wt,*yv;X r,*wv,x,xmaxint
  return z;
 }    /* prime test for extended integers or rationals */
 
-static F1(jtprimetest){A x;I t;
+static A jtprimetest(J jt, A w){A x;I t;
  ARGCHK1(w);
  t=AT(w);
  if((UI)SGNIF(t,B01X)>=(UI)AN(w))return reshape(shape(w),num(0));  // AN is 0, or t is boolean
@@ -242,7 +242,7 @@ static F1(jtprimetest){A x;I t;
 }}   /* primality test */
 
 
-static F1(jtnextprime){A b,fs,x,y;B*bv;I k,n,*xv,*yv;X*wv;
+static A jtnextprime(J jt, A w){A b,fs,x,y;B*bv;I k,n,*xv,*yv;X*wv;
  ARGCHK1(w);
  n=AN(w);
  if((UI)SGNIF(AT(w),B01X)>=(UI)AN(w))return reshape(shape(w),num(2));
@@ -261,7 +261,7 @@ static F1(jtnextprime){A b,fs,x,y;B*bv;I k,n,*xv,*yv;X*wv;
  return rank1ex0(tymes(b,plus(w,x)),fs,FAV(fs)->valencefns[0]);
 }
 
-static F1(jtprevprime){A fs,x,y;I k,m,n,*xv,*yv;X*wv;
+static A jtprevprime(J jt, A w){A fs,x,y;I k,m,n,*xv,*yv;X*wv;
  ARGCHK1(w);
  n=AN(w);
  ASSERT(!n||NUMERIC&AT(w)&&!(B01&AT(w)),EVDOMAIN);
@@ -278,7 +278,7 @@ static F1(jtprevprime){A fs,x,y;I k,m,n,*xv,*yv;X*wv;
  return rank1ex0(minus(w,x),fs,FAV(fs)->valencefns[0]);
 }
 
-static F1(jttotient){A b,x,z;B*bv,p=0;I k,n,t;
+static A jttotient(J jt, A w){A b,x,z;B*bv,p=0;I k,n,t;
  ARGCHK1(w);
  n=AN(w); t=AT(w);
  if(t&B01)return w;
@@ -324,7 +324,7 @@ static B jtspspx(J jt,I b,I n,I d,I h){I ai,n1;X a,ox,xn;
  return 0;
 }
 
-static F1(jtdetmr){A z;B*zv;I d,h,i,n,wn,*wv;
+static A jtdetmr(J jt, A w){A z;B*zv;I d,h,i,n,wn,*wv;
  RZ(w=vi(w));
  wn=AN(w); wv=AV(w);
  GATV(z,B01,wn,AR(w),AS(w)); zv=BAV(z);
@@ -339,7 +339,7 @@ static F1(jtdetmr){A z;B*zv;I d,h,i,n,wn,*wv;
  RE(0); return z;
 }    /* deterministic Miller-Rabin */ 
 
-F2(jtpco2){A z;B*b;I k;
+ A jtpco2(J jt,A a,A w){A z;B*b;I k;
  ARGCHK2(a,w);
  RZ(init4792(jt));
  RE(k=i0(a));
@@ -369,7 +369,7 @@ static A jtqco2x(J jt,I m,A w){A y;I c,*dv,i,*pv,*yv;X d,q,r,x;
  return cvt(XNUM,y);
 }    /* m q: w where 0<:m and p: m is one xdigit and w is a single extended integer */
 
-F2(jtqco2){A q,y,z;B b,bb,xt;I c,j,k,m,*qv,wn,wr,*yv,*zv;
+ A jtqco2(J jt,A a,A w){A q,y,z;B b,bb,xt;I c,j,k,m,*qv,wn,wr,*yv,*zv;
  ARGCHK2(a,w);
  wn=AN(w); wr=AR(w); b=all1(lt(a,zeroionei(0))); xt=1&&AT(w)&XNUM+RAT;
  if(AR(a)||wr&&(b||xt))return rank2ex0(a,w,UNUSED_VALUE,jtqco2);
@@ -394,9 +394,9 @@ F2(jtqco2){A q,y,z;B b,bb,xt;I c,j,k,m,*qv,wn,wr,*yv,*zv;
   return AT(w)&XNUM+RAT?cvt(XNUM,z):z;
 }}   /* a q: w for array w */
 
-static F1(jtxfactor);
+static A jtxfactor(J jt, A w);
 
-F1(jtfactor){PROLOG(0063);A y,z;I c,d,i,k,m,n,q,*u,*v,wn,*wv,*zv;
+ A jtfactor(J jt, A w){PROLOG(0063);A y,z;I c,d,i,k,m,n,q,*u,*v,wn,*wv,*zv;
  ARGCHK1(w);
  RZ(init4792(jt));
  if(AT(w)&XNUM+RAT)return xfactor(w);
@@ -636,7 +636,7 @@ static XF1(jtfac_ecm){A tt;I b1,b2,*b1b2,i,m;X a,b,g,q[3];
  return iv1;
 }
 
-static F1(jtxfactor){PROLOG(0064);A st,z;B b=0;I k,m;X g,*sv,*sv0,x;
+static A jtxfactor(J jt, A w){PROLOG(0064);A st,z;B b=0;I k,m;X g,*sv,*sv0,x;
  F1RANK(0,jtxfactor,UNUSED_VALUE);
  if(!(XNUM&AT(w)))RZ(w=cvt(XNUM,w));
  x=XAV(w)[0]; m=XDIG(x);
@@ -661,7 +661,7 @@ static F1(jtxfactor){PROLOG(0064);A st,z;B b=0;I k,m;X g,*sv,*sv0,x;
 
 /* ---------------------------------------------------- */
 
-static F1(test_ecm){A*wv,z;X*ab,n,*zv;
+static A test_ecm(J jt, A w){A*wv,z;X*ab,n,*zv;
  ARGCHK1(w);
  RZ(init4792(jt));
  ASSERT(4==AN(w),EVLENGTH);
@@ -678,7 +678,7 @@ static F1(test_ecm){A*wv,z;X*ab,n,*zv;
  return z;
 }
 
-static F1(test_ecm_s1){A*wv,z;X*ab,n,*zv;
+static A test_ecm_s1(J jt, A w){A*wv,z;X*ab,n,*zv;
  ARGCHK1(w);
  RZ(init4792(jt));
  ASSERT(4==AN(w),EVLENGTH);
@@ -695,7 +695,7 @@ static F1(test_ecm_s1){A*wv,z;X*ab,n,*zv;
  return z;
 }
 
-static F1(test_ecm_s2){A*wv,z;I*b1b2;X*ab,n,*zv;
+static A test_ecm_s2(J jt, A w){A*wv,z;I*b1b2;X*ab,n,*zv;
  ARGCHK1(w);
  RZ(init4792(jt));
  ASSERT(4==AN(w),EVLENGTH);
@@ -713,7 +713,7 @@ static F1(test_ecm_s2){A*wv,z;I*b1b2;X*ab,n,*zv;
  return z;
 }
 
-static F1(test_fac_ecm){
+static A test_fac_ecm(J jt, A w){
  ARGCHK1(w);
  RZ(init4792(jt));
  ASSERT(!AR(w),EVRANK);

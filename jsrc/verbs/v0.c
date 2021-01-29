@@ -14,7 +14,7 @@
 #define QNEGATE(x)     (qminus(zeroQ,x))
 
 #define CFR(f,T,TYPE,fplus,ftymes,fnegate)  \
- F2(f){PROLOG(0060);A z;I j,n;T d,*t,*u,*v;            \
+ A f(J jt,A a,A w){PROLOG(0060);A z;I j,n;T d,*t,*u,*v;            \
   n=AN(w); u=(T*)AV(w);                          \
   GATVS(z,TYPE,1+n,1,0,TYPE##SIZE,GACOPYSHAPE0,return 0); v=(T*)AV(z); *v=*(T*)AV(a);  \
   for(j=0;j<n;++j){                              \
@@ -29,7 +29,7 @@ static CFR(jtcfrd,D,FL,  dplus,dtymes,dnegate)
 static CFR(jtcfrx,X,XNUM,xplus,xtymes, negate)
 static CFR(jtcfrq,Q,RAT, qplus,qtymes,QNEGATE)
 
-static F1(jtrsort){A t,z;
+static A jtrsort(J jt, A w){A t,z;
  ARGCHK1(w);
  PUSHCCT(1.0-FUZZ)
  RZ(t=over(mag(w),cant1(rect(w))));
@@ -39,7 +39,7 @@ static F1(jtrsort){A t,z;
  return z;
 }
 
-static F2(jtcfrz){A z;B b=0,p;I j,n;Z c,d,*t,*u,*v;
+static A jtcfrz(J jt,A a,A w){A z;B b=0,p;I j,n;Z c,d,*t,*u,*v;
  RZ(w=rsort(w)); 
  n=AN(w); u=ZAV(w); 
  GATV0(z,CMPX,1+n,1); v=ZAV(z); v[0]=c=ZAV(a)[0]; p=!c.im;
@@ -52,7 +52,7 @@ static F2(jtcfrz){A z;B b=0,p;I j,n;Z c,d,*t,*u,*v;
  return p>b?cvt(FL,z):z;
 }
 
-static F1(jtcfr){A c,r,*wv;I t;
+static A jtcfr(J jt, A w){A c,r,*wv;I t;
  ASSERT((-AR(w)&-(AN(w)^2))>=0,EVLENGTH);
  wv=AAV(w); 
  if(AR(w)){c=wv[0]; r=wv[1];}else{c=num(1); r=wv[0];}
@@ -222,7 +222,7 @@ static A jtrfcz(J jt,I m,A w){A x,y,z;B bb=0,real;D c,d;I i;Z r,*xv,*yv,*zv;
 }    /* roots from coefficients, degree m is 2 or more */
 
 // roots from coefficients.  w is (possibly empty) list of coefficients
-static F1(jtrfc){A r,w1;I m=0,n,t;
+static A jtrfc(J jt, A w){A r,w1;I m=0,n,t;
  n=AN(w); t=AT(w);  // n=#coeffs, t=type
  if(n){
   ASSERT(t&(DENSE&NUMERIC),EVDOMAIN);  // coeffs must be dense numeric
@@ -242,7 +242,7 @@ static F1(jtrfc){A r,w1;I m=0,n,t;
 }
 
 // entry point for p. y
-F1(jtpoly1){A c,e,x;
+ A jtpoly1(J jt, A w){A c,e,x;
  F1RANK(1L,jtpoly1,UNUSED_VALUE);
  // If y is not boxed, it's a list of coefficients.  Get the roots
  if((-AN(w)&SGNIF(AT(w),BOXX))>=0)return rfc(w);
@@ -276,7 +276,7 @@ static A jtmnomx(J jt,I m,A w){A s,*wv,x,z=w,*zv;I i,n,r;
  return z;
 }    /* standardize multinomial right arg */
 
-static F2(jtpoly2a){A c,e,x;I m;D rkblk[16];
+static A jtpoly2a(J jt,A a,A w){A c,e,x;I m;D rkblk[16];
  ARGCHK2(a,w);
  m=*(1+AS(a))-1;
  ASSERT(AT(a)&NUMERIC,EVDOMAIN);
@@ -289,7 +289,7 @@ static F2(jtpoly2a){A c,e,x;I m;D rkblk[16];
 }    /* multinomial: (<c,.e0,.e1,.e2) p. <x0,x1,x2, left argument opened */
 
 // x p. y    Supports IRS on the y argument; supports inplace
-DF2(jtpoly2){F2PREFIP;A c,za;I b;D*ad,d,p,*x,u,*z;I an,at,j,t,n,wt;Z*az,e,q,*wz,y,*zz;
+ A jtpoly2(J jt,A a,A w,A self){F2PREFIP;A c,za;I b;D*ad,d,p,*x,u,*z;I an,at,j,t,n,wt;Z*az,e,q,*wz,y,*zz;
  ARGCHK2(a,w);
  { RANK2T jtr=jt->ranks;I acr=jtr>>RANKTX; acr=AR(a)<acr?AR(a):acr; RESETRANK; // cell-rank of a
    if(((1-acr)|(acr-AR(a)))<0){return rank2ex(a,w,self,MIN(acr,1),0,acr,MIN(AR(w),jtr&RMAX),jtpoly2);}  // loop if multiple cells of a
@@ -359,13 +359,13 @@ DF2(jtpoly2){F2PREFIP;A c,za;I b;D*ad,d,p,*x,u,*z;I an,at,j,t,n,wt;Z*az,e,q,*wz,
 }    /* a p."r w */
 
 
-F1(jtpderiv1){
+ A jtpderiv1(J jt, A w){
  F1RANK(1,jtpderiv1,UNUSED_VALUE);
  if(AN(w)&&!(NUMERIC&AT(w)))RZ(w=poly1(w));
  return 1>=AN(w) ? apv(1L,0L,0L) : tymes(behead(w),apv(AN(w)-1,1L,1L));
 }    /* p.. w */
 
-F2(jtpderiv2){
+ A jtpderiv2(J jt,A a,A w){
  F2RANK(0,1,jtpderiv2,UNUSED_VALUE);
  if(!(NUMERIC&AT(w)))RZ(w=poly1(w));
  ASSERT(NUMERIC&AT(a),EVDOMAIN);

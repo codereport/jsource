@@ -6,7 +6,7 @@
 #include "j.h"
 
 
-static F1(jtinvamp);
+static A jtinvamp(J jt, A w);
 
 static B ip(A w,C c,C d){A f,g;V*v;
  v=FAV(w); f=v->fgh[0]; g=v->fgh[1];
@@ -19,13 +19,13 @@ static B consf(A w){A f;C c;
  return 0;
 }    /* 1 iff w is a constant function */
 
-static F2(jtfong){A f;C c;V*v;
+static A jtfong(J jt,A a,A w){A f;C c;V*v;
  ARGCHK2(a,w);
  v=FAV(a); c=v->id; f=v->fgh[0];
  return c==CRIGHT ? w : c==CFORK&&(NOUN&AT(f)||CCAP==ID(f)) ? folk(f,v->fgh[1],fong(v->fgh[2],w)) : folk(ds(CCAP),a,w);
 }   // [: f g  with simplifications: [: ] w -> w;  [: (N/[: x y) w -> N/[: x [: y w   and y omittrd if ]
 
-static F1(jtinvfork){A f,fi,g,gi,h,k;B b,c;V*v;
+static A jtinvfork(J jt, A w){A f,fi,g,gi,h,k;B b,c;V*v;
  ARGCHK1(w);
  v=FAV(w); RZ(f=unname(v->fgh[0])); g=v->fgh[1]; RZ(h=unname(v->fgh[2]));
  if(CCAP==ID(f))return fong(invrecur(h),invrecur(g));
@@ -42,16 +42,16 @@ static F1(jtinvfork){A f,fi,g,gi,h,k;B b,c;V*v;
  return fong(fi,gi);
 }
 
-static DF1(jtexpandf){A f; ARGCHK2(w,self); f=FAV(self)->fgh[0]; return expand(VAV(f)->fgh[0],w);}
+static A jtexpandf(J jt,    A w,A self){A f; ARGCHK2(w,self); f=FAV(self)->fgh[0]; return expand(VAV(f)->fgh[0],w);}
 
-static DF1(jtexpandg){A f,g,z;V*v;
+static A jtexpandg(J jt,    A w,A self){A f,g,z;V*v;
  ARGCHK2(w,self);
  f=FAV(self)->fgh[0]; v=FAV(f); g=v->fgh[1];
  jt->fill=FAV(g)->fgh[1]; z=expand(v->fgh[0],w); jt->fill=0;   // elements of FAV cannot be virtual
  return z;
 }
 
-static F2(jtdiag){I d,m,p,r,t,*v;
+static A jtdiag(J jt,A a,A w){I d,m,p,r,t,*v;
  ARGCHK2(a,w);
  r=AR(w); t=AT(w);
  v=AS(w);   m=0;      DO(r, m=MIN(m,v[i]););
@@ -64,7 +64,7 @@ static F2(jtdiag){I d,m,p,r,t,*v;
   ASSERT(0,EVNONCE);
 }}
 
-static F1(jtbminv){A*wv,x,z=w;I i,j,m,r,*s,t=0,*u,**v,*y,wn,wr,*ws;
+static A jtbminv(J jt, A w){A*wv,x,z=w;I i,j,m,r,*s,t=0,*u,**v,*y,wn,wr,*ws;
  ARGCHK1(w);
  ASSERT(0,EVNONCE);
  ASSERT(BOX&AT(w),EVDOMAIN);
@@ -96,7 +96,7 @@ static F1(jtbminv){A*wv,x,z=w;I i,j,m,r,*s,t=0,*u,**v,*y,wn,wr,*ws;
 }    /* <;.1 or <;.2 inverse on matrix argument */
 
 
-static F1(jtinvamp){A f,ff,g,h,x,y;B nf,ng;C c,d,*yv;I n;V*u,*v;
+static A jtinvamp(J jt, A w){A f,ff,g,h,x,y;B nf,ng;C c,d,*yv;I n;V*u,*v;
  ARGCHK1(w);
  v=FAV(w);
  f=v->fgh[0]; nf=!!(NOUN&AT(f));
@@ -321,7 +321,7 @@ A jtinv(J jt, A w, I recur){A f,ff,g;B b,nf,ng,vf,vg;C id;I p,q;V*v;
  ASSERT(0,EVDOMAIN);
 }
 
-static F1(jtneutral){A x,y;B b;V*v;
+static A jtneutral(J jt, A w){A x,y;B b;V*v;
  ARGCHK1(w);
  v=FAV(w);
  ASSERT(!v->lrr,EVDOMAIN);
@@ -337,7 +337,7 @@ static F1(jtneutral){A x,y;B b;V*v;
  ASSERT(0,EVDOMAIN);
 }    /* neutral of arbitrary rank-0 function */
 
-F1(jtiden){A f,g,x=0;V*u,*v;
+ A jtiden(J jt, A w){A f,g,x=0;V*u,*v;
  RZ(w=fix(w,zeroionei(0))); ASSERT(VERB&AT(w),EVDOMAIN);
  v=FAV(w); f=v->fgh[0]; g=v->fgh[1];
  switch(v->id){
@@ -378,7 +378,7 @@ F1(jtiden){A f,g,x=0;V*u,*v;
  return folk(x,swap(ds(CDOLLAR)),atop(ds(CBEHEAD),ds(CDOLLAR)));
 }
 
-F1(jtidensb){A f,g,x=0,w0=w;V*v;
+ A jtidensb(J jt, A w){A f,g,x=0,w0=w;V*v;
  RZ(w=fix(w,zeroionei(0))); ASSERT(VERB&AT(w),EVDOMAIN);
  v=FAV(w); f=v->fgh[0]; g=v->fgh[1];
  switch(v->id){

@@ -46,10 +46,10 @@ B jtxlinit(J jt){A x;I*s;
  return 1;
 }
 
-F1(jtjlocks){A y; ASSERTMTV(w); y=take(sc(AM(jt->flkd)),jt->flkd); return grade2(y,y);}
+ A jtjlocks(J jt, A w){A y; ASSERTMTV(w); y=take(sc(AM(jt->flkd)),jt->flkd); return grade2(y,y);}
      /* return the locks, a 3-column table of (number,index,length) */
 
-F1(jtjlock){B b;I*v;
+ A jtjlock(J jt, A w){B b;I*v;
  F1RANK(1,jtjlock,UNUSED_VALUE);
  RZ(w=vi(w)); 
  ASSERT(LKC==AN(w),EVLENGTH);
@@ -77,7 +77,7 @@ B jtunlk(J jt,I x){I j=0,*v=AV(jt->flkd);
  return 1;
 }    /* unlock all existing locks for file# x */
 
-F1(jtjunlock){
+ A jtjunlock(J jt, A w){
  F1RANK(1,jtjunlock,UNUSED_VALUE); 
  ASSERT(INT&AT(w),EVDOMAIN); 
  return unlj(i0(indexof(jt->flkd,w)));

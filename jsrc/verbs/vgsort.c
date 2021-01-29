@@ -147,14 +147,13 @@ static A jtsortdirect(J jt,I m,I api,I n,A w){A x,z;I t;
 }    /* w grade"r w for direct types, by moving the data without pointers */
 
 
-#define SF(f)         A f(J jt,I m,I n,A w)
-
+//A f(J jt,I m,I n,A w)
 /* m - # cells (# individual grades to do) */
 /* c - # atoms in a cell                   */
 /* n - length of sort axis                 */
 /* w - array to be graded                  */
 
-static SF(jtsortb){A z;B up,*u,*v;I i,s;
+static A jtsortb(J jt,I m,I n,A w){A z;B up,*u,*v;I i,s;
  GA(z,AT(w),AN(w),AR(w),AS(w)); v=BAV(z);
  up=SGNTO0(jt->workareas.compare.complt);  u=BAV(w);
  for(i=0;i<m;++i){
@@ -166,7 +165,7 @@ static SF(jtsortb){A z;B up,*u,*v;I i,s;
  return z;
 }    /* w grade"1 w on boolean */
 
-static SF(jtsortb2){A z;B up;I i,ii,j,p,yv[4];US*v,*wv,x,zz[4];
+static A jtsortb2(J jt,I m,I n,A w){A z;B up;I i,ii,j,p,yv[4];US*v,*wv,x,zz[4];
  GA(z,AT(w),AN(w),AR(w),AS(w)); v=USAV(z);
  wv=USAV(w); p=4; up=SGNTO0(jt->workareas.compare.complt);
  DO(p, yv[i]=0;); 
@@ -179,7 +178,7 @@ static SF(jtsortb2){A z;B up;I i,ii,j,p,yv[4];US*v,*wv,x,zz[4];
  return z;
 }    /* w grade"r w on 2-byte boolean items */
 
-static SF(jtsortb4){A z;B up;I i,ii,j,p,yv[16];UINT*v,*wv,x,zz[16];
+static A jtsortb4(J jt,I m,I n,A w){A z;B up;I i,ii,j,p,yv[16];UINT*v,*wv,x,zz[16];
  GA(z,AT(w),AN(w),AR(w),AS(w)); v=(UINT*)AV(z);
  wv=(UINT*)AV(w); p=16; up=SGNTO0(jt->workareas.compare.complt);
  DO(p, yv[i]=0;); 
@@ -195,7 +194,7 @@ static SF(jtsortb4){A z;B up;I i,ii,j,p,yv[16];UINT*v,*wv,x,zz[16];
  return z;
 }    /* w grade"r w on 4-byte boolean items */
 
-static SF(jtsortc){A z;B up;I i,p,yv[256];UC j,*wv,*v;
+static A jtsortc(J jt,I m,I n,A w){A z;B up;I i,p,yv[256];UC j,*wv,*v;
  GA(z,AT(w),AN(w),AR(w),AS(w)); v=UAV(z);
  wv=UAV(w); p=LIT&AT(w)?256:2; up=SGNTO0(jt->workareas.compare.complt);
  DO(p, yv[i]=0;);
@@ -207,7 +206,7 @@ static SF(jtsortc){A z;B up;I i,p,yv[256];UC j,*wv,*v;
  return z;
 }    /* w grade"1 w on boolean or character */
 
-static SF(jtsortc2){A y,z;B up;I i,p,*yv;US j,k,*wv,*v;
+static A jtsortc2(J jt,I m,I n,A w){A y,z;B up;I i,p,*yv;US j,k,*wv,*v;
  GA(z,AT(w),AN(w),AR(w),AS(w)); v=USAV(z);
  wv=USAV(w); p=65536; up=SGNTO0(jt->workareas.compare.complt);
  GATV0(y,INT,p,1); yv=AV(y);
@@ -226,7 +225,7 @@ static SF(jtsortc2){A y,z;B up;I i,p,*yv;US j,k,*wv,*v;
 
 
 // We are known to have 1 atom per item
-static SF(jtsorti1){A x,y,z;I*wv;I i,*xv,*zv;void *yv;
+static A jtsorti1(J jt,I m,I n,A w){A x,y,z;I*wv;I i,*xv,*zv;void *yv;
  GA(z,AT(w),AN(w),AR(w),AS(w)); zv=AV(z);
  wv=AV(w);
  // choose bucket table size & function; allocate the bucket area
@@ -257,7 +256,7 @@ static SF(jtsorti1){A x,y,z;I*wv;I i,*xv,*zv;void *yv;
 #define SORTQULOADTYPE __m256i*
 #include "vgsortq.h"
 
-static SF(jtsortiq){FPREFIP;  // m=#sorts, n=#items in each sort, w is block
+static A jtsortiq(J jt,I m,I n,A w){FPREFIP;  // m=#sorts, n=#items in each sort, w is block
  A z; 
  if(ASGNINPLACESGN(SGNIF((I)jtinplace,JTINPLACEWX),w))z=w; else RZ(z=ca(w));   // output area, possibly the same as the input
  I *zv=IAV(z); DQ(m, sortiq1(zv,n); if(jt->workareas.compare.complt>0){I *zv1=zv; I *zv2=zv+n; DQ(n>>1, I t=*zv1; *zv1++=*--zv2; *zv2=t;)} zv+=n;)  // sort each list (ascending); reverse if descending
@@ -265,7 +264,7 @@ static SF(jtsortiq){FPREFIP;  // m=#sorts, n=#items in each sort, w is block
 }
 
 
-static SF(jtsorti){FPREFIP;A y,z;I i;UI4 *yv;I j,s,*wv,*zv;
+static A jtsorti(J jt,I m,I n,A w){FPREFIP;A y,z;I i;UI4 *yv;I j,s,*wv,*zv;
  wv=AV(w);
  // figure out whether we should do small-range processing.  Comments in vg.c
  // First, decide, based on the length of the list, what the threshold for small-range sorting will be.
@@ -300,10 +299,10 @@ static SF(jtsorti){FPREFIP;A y,z;I i;UI4 *yv;I j,s,*wv,*zv;
 }    /* w grade"1 w on small-range integers */
 
 
-static SF(jtsortu1);
+static A jtsortu1(J jt,I m,I n,A w);
 
 // see jtsorti above
-static SF(jtsortu){FPREFIP;A y,z;I i;UI4 *yv;C4 j,s,*wv,*zv;
+static A jtsortu(J jt,I m,I n,A w){FPREFIP;A y,z;I i;UI4 *yv;C4 j,s,*wv,*zv;
  wv=C4AV(w);
  I maxrange; CR rng;
  if(0<(maxrange=16*(n-32))){rng = condrange4(wv,AN(w),-1,0,maxrange);
@@ -321,7 +320,7 @@ static SF(jtsortu){FPREFIP;A y,z;I i;UI4 *yv;C4 j,s,*wv,*zv;
 }    /* w grade"1 w on small-range literal4 */
 
 // We are known to have 1 atom per item
-static SF(jtsortu1){A x,y,z;C4 *xu,*wv,*zu;I i;void *yv;
+static A jtsortu1(J jt,I m,I n,A w){A x,y,z;C4 *xu,*wv,*zu;I i;void *yv;
  GA(z,AT(w),AN(w),AR(w),AS(w));
  wv=C4AV(w); zu=C4AV(z);
  // choose bucket table size & function; allocate the bucket area
@@ -351,7 +350,7 @@ static SF(jtsortu1){A x,y,z;C4 *xu,*wv,*zu;I i;void *yv;
 #define SORTQULOADTYPE D*
 #include "vgsortq.h"
 
-static SF(jtsortdq){FPREFIP;  // m=#sorts, n=#items in each sort, w is block
+static A jtsortdq(J jt,I m,I n,A w){FPREFIP;  // m=#sorts, n=#items in each sort, w is block
  A z; 
  if(ASGNINPLACESGN(SGNIF((I)jtinplace,JTINPLACEWX),w))z=w; else RZ(z=ca(w));   // output area, possibly the same as the input
  D *zv=DAV(z); DQ(m, sortdq1(zv,n); if(jt->workareas.compare.complt>0){D *zv1=zv; D *zv2=zv+n; DQ(n>>1, D t=*zv1; *zv1++=*--zv2; *zv2=t;)} zv+=n;)  // sort each list (ascending); reverse if descending
@@ -359,7 +358,7 @@ static SF(jtsortdq){FPREFIP;  // m=#sorts, n=#items in each sort, w is block
 }
 
 // We are known to have 1 atom per item
-static SF(jtsortd){FPREFIP;A x,y,z;B b;D*g,*h,*xu,*wv,*zu;I i,nneg;void *yv;
+static A jtsortd(J jt,I m,I n,A w){FPREFIP;A x,y,z;B b;D*g,*h,*xu,*wv,*zu;I i,nneg;void *yv;
  // Use quicksort for normal-sized lists
  if(n<50000)return jtsortdq(jtinplace,m,n,w);  // TUNE
 // testing if(n&1)return jtsortdq(jtinplace,m,n,w);
@@ -390,7 +389,7 @@ static SF(jtsortd){FPREFIP;A x,y,z;B b;D*g,*h,*xu,*wv,*zu;I i,nneg;void *yv;
 
 
 // x /:"r y, not sparse
-F2(jtgr2){F2PREFIP;PROLOG(0076);A z=0;I acr,api,d,f,m,n,*s,t,wcr; 
+ A jtgr2(J jt,A a,A w){F2PREFIP;PROLOG(0076);A z=0;I acr,api,d,f,m,n,*s,t,wcr; 
  ARGCHK2(a,w);
  // ?cr= rank of the cells being sorted; t= type of w
  acr=jt->ranks>>RANKTX; acr=AR(a)<acr?AR(a):acr; 

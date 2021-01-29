@@ -134,7 +134,7 @@ static PSTK* jtpparen(J jt,PSTK *stack){
 }
 
 // multiple assignment.  self has parms.  ABACK(self) is the symbol table to assign to, valencefns[0] is preconditioning routine to open value or convert it to AR
-static DF2(jtisf){RZ(symbis(onm(a),CALL1(FAV(self)->valencefns[0],w,0L),ABACK(self))); return num(0);}
+static A jtisf(J jt,A a,A w,A self){RZ(symbis(onm(a),CALL1(FAV(self)->valencefns[0],w,0L),ABACK(self))); return num(0);}
 
 // assignment, single or multiple
 static PSTK* jtis(J jt,PSTK *stack){B ger=0;C *s;
@@ -244,7 +244,7 @@ void auditblock(A w, I nonrecurok, I virtok) {
 
 
 // Run parser, creating a new debug frame.  Explicit defs, which make other tests first, then go through jtparsea
-F1(jtparse){A z;
+ A jtparse(J jt, A w){A z;
  ARGCHK1(w);
  A *queue=AAV(w); I m=AN(w);   // addr and length of sentence
  RZ(deba(DCPARSE,queue,(A)m,0L));  // We don't need a new stack frame if there is one already and debug is off

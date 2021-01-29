@@ -10,7 +10,7 @@
 // This routine called a 'named' function, which was created by name~ or the equivalent for a stacked verb.
 // It also handles pseudo-named functions, which are anonymous entities that need to be given a temporary name
 // when they are running under debug.  Pseudo-named functions are created by namerefop.  We need to run them here so they get the debug side-effects of having a name.
-DF2(jtunquote){A z;
+ A jtunquote(J jt,A a,A w,A self){A z;
  F2PREFIP;  // We understand inplacing.  We check inplaceability of the called function.
  RE(0);
  JATTN;
@@ -178,7 +178,7 @@ DF2(jtunquote){A z;
 
 
 // The monad calls the bivalent case with (w,self,self) so that the inputs can pass through to the executed function
-static DF1(jtunquote1){return unquote(w,self,self);}  // This just transfers to jtunquote.  It passes jt, with inplacing bits, unmodified
+static A jtunquote1(J jt,    A w,A self){return unquote(w,self,self);}  // This just transfers to jtunquote.  It passes jt, with inplacing bits, unmodified
 
 // return ref to adv/conj/verb whose name is a and whose symbol-table entry is w
 // if the value is a noun, we just return the value; otherwise we create a 'name~' block
@@ -220,7 +220,7 @@ A jtnameref(J jt,A w,A locsyms){
 
 // Create a pseudo-named entity.  a is the name, w is the actual entity
 // Result has type ':' but goes to unquote.  We mark a pseudo-named entity by having f=0, g=name, h=actual entity to execute
-F2(jtnamerefop){V*v;
+ A jtnamerefop(J jt,A a,A w){V*v;
  ARGCHK2(a,w);
  v=FAV(w);
  return fdef(0,CCOLON,VERB,  jtunquote1,jtunquote, 0L,a,w, VXOPCALL|v->flag, v->mr,lrv(v),rrv(v));
@@ -236,7 +236,7 @@ F2(jtnamerefop){V*v;
 // u./v.
 // We process this as 'u'~ where the name is flagged as NMIMPLOC
 // Bivalent: called with (a,w,self) or (w,self).  We treat as dyad but turn it into monad if input w is not a noun
-DF2(jtimplocref){
+ A jtimplocref(J jt,A a,A w,A self){
  self=AT(w)&NOUN?self:w;
  self=jt->implocref[FAV(self)->id&1];
  w=AT(w)&NOUN?w:self;

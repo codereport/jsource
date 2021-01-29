@@ -4,10 +4,10 @@
 /* Grades                                                                  */
 
 
-extern F1(jtgr1);
-extern F2(jtgr2);
-extern F1(jtgrd1sp);
-extern F2(jtgrd2sp);
+extern A jtgr1(J jt, A w);
+extern A jtgr2(J jt,A a,A w);
+extern A jtgrd1sp(J jt, A w);
+extern A jtgrd2sp(J jt,A a,A w);
 
 extern B compcu(I,UC*,UC*);
 extern B compcd(I,UC*,UC*);

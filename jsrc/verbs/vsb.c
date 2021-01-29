@@ -410,7 +410,7 @@ static A jtsbunlit(J jt,C cx,A w){A z;S c2;I i,m,wc,wr,*ws;SB*zv;
  return z;
 }    /* each row of literal array w less the trailing "blanks" is a symbol */
 
-static F1(jtsbunbox){A*wv,x,z;S c2;I i,m,n;SB*zv;
+static A jtsbunbox(J jt, A w){A*wv,x,z;S c2;I i,m,n;SB*zv;
  ARGCHK1(w);
  ASSERT(!AN(w)||BOX&AT(w),EVDOMAIN);
  m=AN(w); wv=AAV(w); 
@@ -424,7 +424,7 @@ static F1(jtsbunbox){A*wv,x,z;S c2;I i,m,n;SB*zv;
  return z;
 }    /* each element of boxed array w is a string */
 
-static F1(jtsbunind){A z;I j,n,*zv;
+static A jtsbunind(J jt, A w){A z;I j,n,*zv;
  RZ(z=cvt(INT,w));
  zv=AV(z); n=jt->sbun;
  DQ(AN(w), j=*zv++; ASSERT((UI)j<(UI)n,EVINDEX););
@@ -433,7 +433,7 @@ static F1(jtsbunind){A z;I j,n,*zv;
 }    /* w is a numeric array of symbol indices */
 
 #ifdef TMP
-F1(jtsb1){
+ A jtsb1(J jt, A w){
  A abc;
  clo=clock();
  ARGCHK1(w);
@@ -448,7 +448,7 @@ F1(jtsb1){
  return abc;
 }
 #else
-F1(jtsb1){
+ A jtsb1(J jt, A w){
  ARGCHK1(w);
  switch(CTTZ(AT(w))){
   default:  ASSERT(0,EVDOMAIN);
@@ -460,7 +460,7 @@ F1(jtsb1){
 #endif
 
 
-F1(jtsborder){A z;I n,*zv;SB*v;
+ A jtsborder(J jt, A w){A z;I n,*zv;SB*v;
  ARGCHK1(w);
  n=AN(w); v=SBAV(w);
  ASSERT(!n||SBT&AT(w),EVDOMAIN);
@@ -469,7 +469,7 @@ F1(jtsborder){A z;I n,*zv;SB*v;
  return z;
 }    /* order numbers for symbol array w */
 
-static F1(jtsbbox){A z,*zv;C*s;I n;SB*v;SBU*u;
+static A jtsbbox(J jt, A w){A z,*zv;C*s;I n;SB*v;SBU*u;
  ARGCHK1(w);
  n=AN(w); v=SBAV(w);
  ASSERT(!n||SBT&AT(w),EVDOMAIN);
@@ -527,7 +527,7 @@ static A jtsblit(J jt,C c,A w){A z;S c2=0;I k,m=0,n;SB*v,*v0;SBU*u;
 }    /* literal array for symbol array w padded with c */
 
 
-static F1(jtsbhashstat){A z;I j,k,n,p,*zv;SBU*v;
+static A jtsbhashstat(J jt, A w){A z;I j,k,n,p,*zv;SBU*v;
  n=jt->sbun; v=jt->sbuv; p=AN(jt->sbh);
  GATV0(z,INT,n,1); zv=AV(z);
  DO(n, j=v++->h%p; k=1; while(i!=(jt->sbhv)[j]){++j; if(j==p)j=0; ++k;} *zv++=k;);
@@ -648,9 +648,9 @@ static A jtsbcheck2(J jt,A una,A sna,A u,A s){PROLOG(0000);
  EPILOG(num(1));
 }
 
-static F1(jtsbcheck){return sbcheck1(sc(jt->sbun),sc(jt->sbsn),jt->sbu,jt->sbs,jt->sbh,sc(ROOT),sc(FILLFACTOR),sc(GAP));}
+static A jtsbcheck(J jt, A w){return sbcheck1(sc(jt->sbun),sc(jt->sbsn),jt->sbu,jt->sbs,jt->sbh,sc(ROOT),sc(FILLFACTOR),sc(GAP));}
 
-static F1(jtsbsetdata){A h,s,u,*wv,x;
+static A jtsbsetdata(J jt, A w){A h,s,u,*wv,x;
  ARGCHK1(w);
  ASSERTD(BOX&AT(w),"arg type");
  ASSERTD(1==AR(w), "arg rank");
@@ -675,7 +675,7 @@ static void resetdata(J jt){
  ras(jt->sbu); ras(jt->sbs); ras(jt->sbh); // prevent automatically freed by tpop()
 }    /* re-initialize global symbol table */
 
-static F1(jtsbsetdata2){A *wv;I c,i,sn,offset=0;SBU*uv,*v;C*sv;
+static A jtsbsetdata2(J jt, A w){A *wv;I c,i,sn,offset=0;SBU*uv,*v;C*sv;
  ARGCHK1(w);
  ASSERTD(!AN(w)||BOX&AT(w),"arg type");
  ASSERTD(1==AR(w), "arg rank");
@@ -698,7 +698,7 @@ static F1(jtsbsetdata2){A *wv;I c,i,sn,offset=0;SBU*uv,*v;C*sv;
  return num(1);
 }
 
-static F1(jtsbtestbox){A*wv,x,z;S c2;I i,m,n;B*zv;
+static A jtsbtestbox(J jt, A w){A*wv,x,z;S c2;I i,m,n;B*zv;
  ARGCHK1(w);
  ASSERT(!AN(w)||BOX&AT(w),EVDOMAIN);
  m=AN(w); wv=AAV(w); 
@@ -712,7 +712,7 @@ static F1(jtsbtestbox){A*wv,x,z;S c2;I i,m,n;B*zv;
  return z;
 }    /* test symbol, each element of boxed array w is a string */
 
-static F1(jtsbgetdata){A z,*zv;
+static A jtsbgetdata(J jt, A w){A z,*zv;
  GAT0(z,BOX,8,1); zv=AAV(z);
  RZ(zv[0]=incorp(sc(jt->sbun)));
  RZ(zv[1]=incorp(sc(jt->sbsn)));
@@ -725,7 +725,7 @@ static F1(jtsbgetdata){A z,*zv;
  return z;
 }
 
-F2(jtsb2){A z;I j,k,n;
+ A jtsb2(J jt,A a,A w){A z;I j,k,n;
 #ifdef TMP
  I*zv;
 #endif

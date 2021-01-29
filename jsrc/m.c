@@ -97,7 +97,7 @@ void jtauditmemchains(J jt){F1PREFIP;
 }
 
 
-F1(jtspcount){A z;I c=0,i,j,*v;A x;
+ A jtspcount(J jt, A w){A z;I c=0,i,j,*v;A x;
  ASSERTMTV(w);
  GATV0(z,INT,2*(-PMINL+PLIML+1),2); v=AV(z);
  for(i=PMINL;i<=PLIML;++i){j=0; x=(jt->mfree[-PMINL+i].pool); while(x){x=AFCHAIN(x); ++j;} if(j){++c; *v++=(I)1<<i; *v++=j;}}
@@ -170,7 +170,7 @@ B jtspfree(J jt){I i;A p;
  return 1;
 }    /* free unused blocks */
 
-static F1(jtspfor1){
+static A jtspfor1(J jt, A w){
  ARGCHK1(w);
  if(BOX&AT(w)){A*wv=AAV(w); DO(AN(w), if(wv[i])spfor1(wv[i]););}
  else if(AT(w)&TRAVERSIBLE)traverse(w,jtspfor1); 
@@ -191,7 +191,7 @@ static F1(jtspfor1){
  return mtm;
 }
 
-F1(jtspfor){A*wv,x,y,z;C*s;D*v,*zv;I i,m,n;
+ A jtspfor(J jt, A w){A*wv,x,y,z;C*s;D*v,*zv;I i,m,n;
  ARGCHK1(w);
  n=AN(w); wv=AAV(w);  v=&jt->spfor;
  ASSERT(!n||BOX&AT(w),EVDOMAIN);
@@ -207,7 +207,7 @@ F1(jtspfor){A*wv,x,y,z;C*s;D*v,*zv;I i,m,n;
  return z;
 }    /* 7!:5 space for named object; w is <'name' */
 
-F1(jtspforloc){A*wv,x,y,z;C*s;D*v,*zv;I i,j,m,n;L*u;LX *yv,c;
+ A jtspforloc(J jt, A w){A*wv,x,y,z;C*s;D*v,*zv;I i,j,m,n;L*u;LX *yv,c;
  ARGCHK1(w);
  n=AN(w); wv=AAV(w);  v=&jt->spfor;
  ASSERT(!n||BOX&AT(w),EVDOMAIN);
@@ -240,10 +240,10 @@ F1(jtspforloc){A*wv,x,y,z;C*s;D*v,*zv;I i,j,m,n;L*u;LX *yv,c;
 }    /* 7!:6 space for a locale */
 
 
-F1(jtmmaxq){ASSERTMTV(w); return sc(jt->mmax);}
+ A jtmmaxq(J jt, A w){ASSERTMTV(w); return sc(jt->mmax);}
      /* 9!:20 space limit query */
 
-F1(jtmmaxs){I j,m=MLEN,n;
+ A jtmmaxs(J jt, A w){I j,m=MLEN,n;
  RE(n=i0(vib(w)));
  ASSERT(1E5<=n,EVLIMIT);
  j=m-1; DO(m, if(n<=(I)1<<i){j=i; break;});
@@ -290,7 +290,7 @@ void jtsetleakcode(J jt, I code) {
 #endif
 }
 
-F1(jtleakblockread){
+ A jtleakblockread(J jt, A w){
 #if LEAKSNIFF
 if(!leakblock)return num(0);
 return vec(INT,2*leaknbufs,IAV(leakblock));
@@ -298,7 +298,7 @@ return vec(INT,2*leaknbufs,IAV(leakblock));
 return num(0);
 #endif
 }
-F1(jtleakblockreset){
+ A jtleakblockreset(J jt, A w){
 #if LEAKSNIFF
 leakcode = 0;
 leaknbufs = 0;
@@ -757,7 +757,7 @@ void jttpop(J jt,A *old){A *endingtpushp;
 // If the noun is assigned as part of a named derived verb, protection is not needed (but harmless) because if the same value is
 // assigned to another name, the usecount will be >1 and therefore not inplaceable.  Likewise, the the noun is non-DIRECT we need
 // only protect the top level, because if the named value is incorporated at a lower level its usecount must be >1.
-F1(jtrat){ARGCHK1(w); ras(w); tpush(w); return w;}  // recursive.  w can be zero only if explicit definition had a failing sentence
+ A jtrat(J jt, A w){ARGCHK1(w); ras(w); tpush(w); return w;}  // recursive.  w can be zero only if explicit definition had a failing sentence
 
 A jtras(J jt, AD * RESTRICT w) { ARGCHK1(w); realizeifvirtual(w); ra(w); return w; }  // subroutine version of ra() to save space
 A jtra00s(J jt, AD * RESTRICT w) { ARGCHK1(w); ra00(w,AT(w)); return w; }  // subroutine version of ra00() to save space
@@ -931,7 +931,7 @@ RESTRICTF A jtgah(J jt,I r,A w){A z;
 }    /* allocate header */ 
 
 // clone w, returning the address of the cloned area.  Result is NOT recursive, not AFRO, not virtual
-F1(jtca){A z;I t;P*wp,*zp;
+ A jtca(J jt, A w){A z;I t;P*wp,*zp;
  ARGCHK1(w);
  t=AT(w);
  if((t&SPARSE)!=0){
@@ -948,10 +948,10 @@ F1(jtca){A z;I t;P*wp,*zp;
  return z;
 }
 // clone block only if it is read-only
-F1(jtcaro){ if(AFLAG(w)&AFRO){return ca(w);} return w; }
+ A jtcaro(J jt, A w){ if(AFLAG(w)&AFRO){return ca(w);} return w; }
 
 // clone recursive.
-F1(jtcar){A*u,*wv,z;I n;P*p;V*v;
+ A jtcar(J jt, A w){A*u,*wv,z;I n;P*p;V*v;
  RZ(z=ca(w));
  n=AN(w);
  switch(CTTZ(AT(w))){
@@ -975,7 +975,7 @@ F1(jtcar){A*u,*wv,z;I n;P*p;V*v;
 }
 
 // clone virtual block, producing a new virtual block
-F1(jtclonevirtual){
+ A jtclonevirtual(J jt, A w){
  A z; RZ(z=virtual(w,0,AR(w)));  // allocate a new virtual block
  AN(z)=AN(w); MCISH(AS(z),AS(w),(I)AR(w));  // copy AN and shape; leave AC alone
  return z;

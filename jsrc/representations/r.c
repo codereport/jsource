@@ -6,10 +6,10 @@
 #include "j.h"
 #include "words/w.h"
 
-static F1(jtdrr);
+static A jtdrr(J jt, A w);
 EVERYFS(drrself,jtdrr,0,0,VFLAGNONE)
 
-static F1(jtdrr){PROLOG(0055);A df,dg,hs,*x,z;B b,ex,xop;C c,id;I fl,*hv,m;V*v;
+static A jtdrr(J jt, A w){PROLOG(0055);A df,dg,hs,*x,z;B b,ex,xop;C c,id;I fl,*hv,m;V*v;
  ARGCHK1(w);
  // If the input is a name, it must be from ".@'name' which turned into ".@(name+noun)  - or in debug, but that's discarded
  if(AT(w)&NAME){RZ(w=sfn(0,w));}
@@ -36,10 +36,10 @@ static F1(jtdrr){PROLOG(0055);A df,dg,hs,*x,z;B b,ex,xop;C c,id;I fl,*hv,m;V*v;
  EPILOG(z);
 }
 
-F1(jtdrep){A z=drr(w); return z&&AT(z)&BOX?z:ravel(box(z));}
+ A jtdrep(J jt, A w){A z=drr(w); return z&&AT(z)&BOX?z:ravel(box(z));}
 
 
-F1(jtaro){A fs,gs,hs,s,*u,*x,y,z;B ex,xop;C id;I*hv,m;V*v;
+ A jtaro(J jt, A w){A fs,gs,hs,s,*u,*x,y,z;B ex,xop;C id;I*hv,m;V*v;
  ARGCHK1(w);
  if(FUNC&AT(w)){
   v=FAV(w); id=v->id;
@@ -63,10 +63,10 @@ F1(jtaro){A fs,gs,hs,s,*u,*x,y,z;B ex,xop;C id;I*hv,m;V*v;
  return z;
 }
 
-F1(jtarep){return box(aro(w));}
+ A jtarep(J jt, A w){return box(aro(w));}
 
 // Create A for a string - name~, a primitive, or the boxed string
-static DF1(jtfxchar){A y;C c,d,id,*s;I m,n;
+static A jtfxchar(J jt,    A w,A self){A y;C c,d,id,*s;I m,n;
  n=AN(w);
  ASSERT(1>=AR(w),EVRANK);  // string must be an atom or list
  ASSERT(n!=0,EVLENGTH);
@@ -82,7 +82,7 @@ static DF1(jtfxchar){A y;C c,d,id,*s;I m,n;
 
 // Convert an AR to an A block.  w is a gerund that has been opened
 // self is normally 0; if nonzero, we return a noun type ('0';<value) as is rather than returning value, and leave adv/conj ARs looking like nouns
-DF1(jtfx){A f,fs,g,h,p,q,*wv,y,*yv;C id;I m,n=0;
+ A jtfx(J jt,    A w,A self){A f,fs,g,h,p,q,*wv,y,*yv;C id;I m,n=0;
  ARGCHK1(w);
  // if string, handle that special case (verb/primitive)
  if(LIT&AT(w))return fxchar(w,self);
@@ -278,7 +278,7 @@ static A*jtunparse1a(J jt,I m,A*hv,A*zv){A*v,x,y;CW*u;I i,j,k;
 }
 
 // w is a def.  Return unparsed form
-F2(jtunparsem){A h,*hv,dc,ds,mc,ms,z,*zu,*zv;I dn,m,mn,n,p;V*wv;
+ A jtunparsem(J jt,A a,A w){A h,*hv,dc,ds,mc,ms,z,*zu,*zv;I dn,m,mn,n,p;V*wv;
  ARGCHK2(a,w);
  wv=VAV(w); h=wv->fgh[2]; hv=AAV(h);  // h[2][HN] is preparsed def
  mc=hv[1];    ms=hv[2];    m=mn=AN(mc);  // mc->control words ms->commented text
@@ -303,7 +303,7 @@ F2(jtunparsem){A h,*hv,dc,ds,mc,ms,z,*zu,*zv;I dn,m,mn,n,p;V*wv;
  return z;
 }    /* convert h parameter for : definitions; open if a is 0 */
 
-static F2(jtxrep){A h,*hv,*v,x,z,*zv;CW*u;I i,j,n,q[3],*s;V*wv; 
+static A jtxrep(J jt,A a,A w){A h,*hv,*v,x,z,*zv;CW*u;I i,j,n,q[3],*s;V*wv; 
  ARGCHK2(a,w);
  RE(j=i0(a)); ASSERT(1==j||2==j,EVDOMAIN); j=1==j?0:HN;
  ASSERT(AT(w)&VERB+ADV+CONJ,EVDOMAIN);
@@ -323,10 +323,10 @@ static F2(jtxrep){A h,*hv,*v,x,z,*zv;CW*u;I i,j,n,q[3],*s;V*wv;
 }    /* explicit representation -- h parameter for : definitions */
 
 
-F1(jtarx){F1RANK(0,  jtarx,UNUSED_VALUE); return arep(  symbrdlocknovalerr(nfb(w)));}
-F1(jtdrx){F1RANK(0,  jtdrx,UNUSED_VALUE); return drep(  symbrdlocknovalerr(nfb(w)));}
-F1(jttrx){F1RANK(0,  jttrx,UNUSED_VALUE); return trep(  symbrdlocknovalerr(nfb(w)));}
-F1(jtlrx){F1RANK(0,  jtlrx,UNUSED_VALUE); return lrep(  symbrdlocknovalerr(nfb(w)));}
-F1(jtprx){F1RANK(0,  jtprx,UNUSED_VALUE); return prep(  symbrdlocknovalerr(nfb(w)));}
+ A jtarx(J jt, A w){F1RANK(0,  jtarx,UNUSED_VALUE); return arep(  symbrdlocknovalerr(nfb(w)));}
+ A jtdrx(J jt, A w){F1RANK(0,  jtdrx,UNUSED_VALUE); return drep(  symbrdlocknovalerr(nfb(w)));}
+ A jttrx(J jt, A w){F1RANK(0,  jttrx,UNUSED_VALUE); return trep(  symbrdlocknovalerr(nfb(w)));}
+ A jtlrx(J jt, A w){F1RANK(0,  jtlrx,UNUSED_VALUE); return lrep(  symbrdlocknovalerr(nfb(w)));}
+ A jtprx(J jt, A w){F1RANK(0,  jtprx,UNUSED_VALUE); return prep(  symbrdlocknovalerr(nfb(w)));}
 
-F2(jtxrx){F2RANK(0,0,jtxrx,UNUSED_VALUE); return xrep(a,symbrdlock(nfb(w)));}  // 5!:7
+ A jtxrx(J jt,A a,A w){F2RANK(0,0,jtxrx,UNUSED_VALUE); return xrep(a,symbrdlock(nfb(w)));}  // 5!:7

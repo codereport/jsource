@@ -72,7 +72,7 @@ static B jtwa(J jt,F f,I j,A w){C*x;I n,p=0;size_t q=1;
 }    /* write/append string w to file f at j */
 
 
-F1(jtjfread){A z;F f;
+ A jtjfread(J jt, A w){A z;F f;
  F1RANK(0,jtjfread,UNUSED_VALUE);
  RE(f=stdf(w));  // f=file#, or 0 if w is a filename
  if(f)return 1==(I)f?jgets("\001"):3==(I)f?rdns(stdin):rd(vfn(f),0L,-1L);  // if special file, read it all, possibly with error
@@ -80,7 +80,7 @@ F1(jtjfread){A z;F f;
  return z;
 }
 
-F2(jtjfwrite){B b;F f;
+ A jtjfwrite(J jt,A a,A w){B b;F f;
  F2RANK(RMAX,0,jtjfwrite,UNUSED_VALUE);
  if(BOX&AT(w)){ASSERT(1>=AR(a),EVRANK); ASSERT(!AN(a)||AT(a)&LIT+C2T+C4T,EVDOMAIN);}
  RE(f=stdf(w));
@@ -93,7 +93,7 @@ F2(jtjfwrite){B b;F f;
  RNE(mtm);
 }
 
-F2(jtjfappend){B b;F f;
+ A jtjfappend(J jt,A a,A w){B b;F f;
  F2RANK(RMAX,0,jtjfappend,UNUSED_VALUE);
  RE(f=stdf(w));
  if(2==(I)f){B b=jt->tostdout; jt->tostdout=1; jpr(a); jt->tostdout=b; return a;}
@@ -105,7 +105,7 @@ F2(jtjfappend){B b;F f;
  RNE(mtm);
 }
 
-F1(jtjfsize){B b;F f;I m;
+ A jtjfsize(J jt, A w){B b;F f;I m;
  F1RANK(0,jtjfsize,UNUSED_VALUE);
  RE(f=stdf(w));
  if(b=!f)RZ(f=jope(w,FREAD_O)) else RE(vfn(f)); 
@@ -136,7 +136,7 @@ static B jtixin(J jt,A w,I s,I*i,I*n){A in,*wv;I j,k,m,*u;
  return 1;
 }    /* process index file arg for index and length */
 
-F1(jtjiread){A z=0;B b;F f;I i,n;
+ A jtjiread(J jt, A w){A z=0;B b;F f;I i,n;
  F1RANK(1,jtjiread,UNUSED_VALUE);
  RE(f=ixf(w)); if(b=!f)RZ(f=jope(w,FREAD_O));
  if(ixin(w,fsize(f),&i,&n))z=rd(f,i,n);
@@ -144,7 +144,7 @@ F1(jtjiread){A z=0;B b;F f;I i,n;
  return z;
 }
 
-F2(jtjiwrite){B b;F f;I i;
+ A jtjiwrite(J jt,A a,A w){B b;F f;I i;
  F2RANK(RMAX,1,jtjiwrite,UNUSED_VALUE);
  ASSERT(!AN(a)||AT(a)&LIT+C2T+C4T,EVDOMAIN);
  ASSERT(1>=AR(a),EVRANK);
@@ -154,14 +154,14 @@ F2(jtjiwrite){B b;F f;I i;
  RNE(mtm);
 }
 
-F1(jtjmkdir){A y,z;
+ A jtjmkdir(J jt, A w){A y,z;
  F1RANK(0,jtjmkdir,UNUSED_VALUE);
  ASSERT(AT(w)&BOX,EVDOMAIN);
  RZ(y=str0(vslit(AAV(w)[0])));
  return mkdir(CAV(y),0775)?jerrno():num(1);
 }
 
-F1(jtjferase){A y,fn;US*s;I h;
+ A jtjferase(J jt, A w){A y,fn;US*s;I h;
  F1RANK(0,jtjferase,UNUSED_VALUE);
  RE(h=fnum(w));
  if(h) {RZ(y=str0(fname(sc(h))))} else ASSERT(y=vslit(AAV(w)[0]),EVFNUM);
@@ -170,13 +170,13 @@ F1(jtjferase){A y,fn;US*s;I h;
 
 }    /* erase file or directory */
 
-F1(jtpathcwd){C path[1+NPATH];US wpath[1+NPATH];
+ A jtpathcwd(J jt, A w){C path[1+NPATH];US wpath[1+NPATH];
  ASSERTMTV(w);
  ASSERT(getcwd(path,NPATH),EVFACE);
  return cstr(path);
 }
 
-F1(jtpathchdir){A z;
+ A jtpathchdir(J jt, A w){A z;
  ARGCHK1(w);
  ASSERT(1>=AR(w),EVRANK);
  ASSERT(AN(w),EVLENGTH);
@@ -185,7 +185,7 @@ F1(jtpathchdir){A z;
  return mtv;
 }
 
-F1(jtjgetenv){
+ A jtjgetenv(J jt, A w){
  F1RANK(1,jtjgetenv,UNUSED_VALUE);
  ASSERT((LIT+C2T+C4T)&AT(w),EVDOMAIN);
  {
@@ -195,13 +195,13 @@ F1(jtjgetenv){
  return num(0);
 }
 
-F1(jtjgetpid){
+ A jtjgetpid(J jt, A w){
  ASSERTMTV(w);
 
  return(sc(getpid()));
 }
 
-F1(jtpathdll){
+ A jtpathdll(J jt, A w){
  ASSERTMTV(w); return cstr((C*)"");
 }
 
