@@ -6,7 +6,6 @@
 
 #define NCASES          9L           /* # of rows in cases parses table    */
 #define ACTION(f)       A*  f(J jt)
-#define TACT(f)         TA f(J jt,I b,I e,TA*stack,A locsyms,I tmonad,I tsubst,TA *ttab,I *ttabi,I ttabi0)
 
 typedef TA(*TAF)();
 typedef A*(*ACTF)();
@@ -22,12 +21,12 @@ typedef struct{ I c[4];ACTF f; TAF vf; I b, e, k; } PT;
 
 extern PT       cases[];
 
-extern TACT(jtvadv);
-extern TACT(jtvconj);
-extern TACT(jtvdyad);
-extern TACT(jtvfolk);
-extern TACT(jtvhook);
-extern TACT(jtvis);
-extern TACT(jtvmonad);
-extern TACT(jtvpunc);
+extern TA jtvadv(J jt,I b,I e,TA*stack,A locsyms,I tmonad,I tsubst,TA *ttab,I *ttabi,I ttabi0);
+extern TA jtvconj(J jt,I b,I e,TA*stack,A locsyms,I tmonad,I tsubst,TA *ttab,I *ttabi,I ttabi0);
+extern TA jtvdyad(J jt,I b,I e,TA*stack,A locsyms,I tmonad,I tsubst,TA *ttab,I *ttabi,I ttabi0);
+extern TA jtvfolk(J jt,I b,I e,TA*stack,A locsyms,I tmonad,I tsubst,TA *ttab,I *ttabi,I ttabi0);
+extern TA jtvhook(J jt,I b,I e,TA*stack,A locsyms,I tmonad,I tsubst,TA *ttab,I *ttabi,I ttabi0);
+extern TA jtvis(J jt,I b,I e,TA*stack,A locsyms,I tmonad,I tsubst,TA *ttab,I *ttabi,I ttabi0);
+extern TA jtvmonad(J jt,I b,I e,TA*stack,A locsyms,I tmonad,I tsubst,TA *ttab,I *ttabi,I ttabi0);
+extern TA jtvpunc(J jt,I b,I e,TA*stack,A locsyms,I tmonad,I tsubst,TA *ttab,I *ttabi,I ttabi0);
 
