@@ -1448,7 +1448,6 @@ A jtindexofprehashed(J jt,A a,A w,A hs){A h,hi,*hv,x,z;AF fn;I ar,*as,at,c,f1,k,
 // support for a i."1 &.|:w or a i:"1 &.|:w
 
 // function definition
-#define IOCOLF(f)     void f(J jt,I m,I c,I d,A a,A w,A z,A h)
 #define IOCOLDECL(T)  D tl=jt->cct,tr=1/tl,x;                           \
                           I hj,*hv=AV(h),i,j,jr,l,p=AN(h),*u,*zv=AV(z);  \
                           T*av=(T*)AV(a),*v,*wv=(T*)AV(w);UI pm=p
@@ -1461,7 +1460,7 @@ A jtindexofprehashed(J jt,A a,A w,A hs){A h,hi,*hv,x,z;AF fn;I ar,*as,at,c,f1,k,
 // exp is a test for not-equal, returning 1 when values do not match
 // For each column, clear the hash table, then hash the items of a, then look up the items of w 
 #define IOCOLFT(T,f,hasha,hashl,hashr,exp)  \
- IOCOLF(f){IOCOLDECL(T);                                                   \
+ void f(J jt,I m,I c,I d,A a,A w,A z,A h){IOCOLDECL(T);                                                   \
   for(l=0;l<c;++l){                                                        \
    DO(p, hv[i]=m;);                                                        \
    v=av;         DO(m, j=(hasha)%pm; FIND(exp); if(m==hj)hv[j]=i; v+=c;);  \
@@ -1477,7 +1476,7 @@ A jtindexofprehashed(J jt,A a,A w,A hs){A h,hi,*hv,x,z;AF fn;I ar,*as,at,c,f1,k,
 
 // Similar, but search backward
 #define JOCOLFT(T,f,hasha,hashl,hashr,exp)  \
- IOCOLF(f){IOCOLDECL(T);I q;                                               \
+ void f(J jt,I m,I c,I d,A a,A w,A z,A h){IOCOLDECL(T);I q;                                               \
   for(l=0;l<c;++l){                                                        \
    DO(p, hv[i]=m;);                                                        \
    v=av+c*(m-1); DQ(m, j=(hasha)%pm; FIND(exp); if(m==hj)hv[j]=i; v-=c;);  \
