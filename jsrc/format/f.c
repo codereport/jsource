@@ -24,7 +24,6 @@ typedef void ((*FMTFUN)());
 
 #define WD          (9L+NPP)
 #define WZ          (WD+WD)
-#define FMTF(f,T)   void f(J jt,C*s,T*v)
 // Calculate the number of blank lines to leave before a 2-cell of output, depending on how many
 // cell boundaries are crossed moving to it
 // j = line number in input of the line about to be written
@@ -38,12 +37,12 @@ typedef void ((*FMTFUN)());
 static A jtthxqe(J jt, A w);
 static A jtthorn1main(J,A,A);
 
-static FMTF(jtfmtI,I){I x=*v;
+static void jtfmtI(J jt,C*s,I*v){I x=*v;
  sprintf(s,FMTI,x);
  if('-'==s[0])s[0]=CSIGN;
 }
 
-static FMTF(jtfmtD,D){B q;C buf[1+WD],c,*t;D x=*v;I k=0;
+static void jtfmtD(J jt,C*s,D*v){B q;C buf[1+WD],c,*t;D x=*v;I k=0;
  if(!memcmpne(v,&inf, SZD)){strcpy(s,"_" ); return;}  // require exact bitmatch
  if(!memcmpne(v,&infm,SZD)){strcpy(s,"__"); return;}
  if(_isnan(*v)          ){strcpy(s,"_."); return;}
@@ -59,7 +58,7 @@ static FMTF(jtfmtD,D){B q;C buf[1+WD],c,*t;D x=*v;I k=0;
   if(k)while(*t=*(k+t))t++;
 }}
 
-static FMTF(jtfmtZ,Z){fmtD(s,&v->re); if(v->im){I k=strlen(s); *(k+s)='j'; fmtD(1+k+s,&v->im);}}
+static void jtfmtZ(J jt,C*s,Z*v){fmtD(s,&v->re); if(v->im){I k=strlen(s); *(k+s)='j'; fmtD(1+k+s,&v->im);}}
 
 static void thcase(I t,I*wd,FMTFUN *fmt){
  switch(CTTZ(t)){
