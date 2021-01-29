@@ -592,11 +592,11 @@ A jtirs2(J jt,A a,A w,A fs,I l,I r,AF f2){A z;I ar,wr;
 }
 
 
-static DF1(cons1a){return FAV(self)->fgh[0];}
+static A cons1a(J jt,    A w,A self){return FAV(self)->fgh[0];}
 static DF2(cons2a){return FAV(self)->fgh[0];}
 
 // Constant verbs do not inplace because we loop over cells.  We could speed this up if it were worthwhile.
-static DF1(cons1){V*sv=FAV(self);
+static A cons1(J jt,    A w,A self){V*sv=FAV(self);
  ARGCHK1(w);
  I mr; efr(mr,AR(w),(I)sv->localuse.lI4[0]);
  return rank1ex(w,self,mr,cons1a);
@@ -608,7 +608,7 @@ static DF2(cons2){V*sv=FAV(self);
 }
 
 // cyclic-gerund verbs create an iterator from the gerund and pass that into rank processing, looping over cells
-static DF1(cycr1){V*sv=FAV(self);I cger[128/SZI];
+static A cycr1(J jt,    A w,A self){V*sv=FAV(self);I cger[128/SZI];
  ARGCHK1(w);
  RZ(self=createcycliciterator((A)&cger, self));  // fill in an iterator for this gerund
  I mr; efr(mr,AR(w),(I)sv->localuse.lI4[0]);
@@ -625,13 +625,13 @@ static DF2(cycr2){V*sv=FAV(self);I cger[128/SZI];
 
 
 // Handle u"n y where u supports irs.  Since the verb may support inplacing even with rank (,"n for example), pass that through.
-static DF1(rank1i){F1PREFIP;ARGCHK1(w);DECLF;  // this version when requested rank is positive
+static A rank1i(J jt,    A w,A self){F1PREFIP;ARGCHK1(w);DECLF;  // this version when requested rank is positive
  I m=sv->localuse.lI4[0]; m=m>=AR(w)?~0:m; jt->ranks=(RANK2T)(m);  // install rank for called routine
  A z=CALL1IP(f1,w,fs);
  jt->ranks=(RANK2T)~0;  // reset rank to infinite
  return z;
 }
-static DF1(rank1in){F1PREFIP;ARGCHK1(w);DECLF;  // this version when requested rank is negative
+static A rank1in(J jt,    A w,A self){F1PREFIP;ARGCHK1(w);DECLF;  // this version when requested rank is negative
  I m=sv->localuse.lI4[0]+AR(w); m=m<0?0:m; jt->ranks=(RANK2T)(m);  // install rank for called routine
  A z=CALL1IP(f1,w,fs);
  jt->ranks=(RANK2T)~0;  // reset rank to infinite
@@ -660,7 +660,7 @@ static DF2(rank2in){F2PREFIP;ARGCHK1(w);DECLF;  // this version when a requested
 
 // u"n y when u does not support irs. We loop over cells, and as we do there is no reason to enable inplacing
 // THIS SUPPORTS INPLACING: NOTHING HERE MAY DEREFERENCE jt!!
-static DF1(rank1){DECLF;I m,wr;
+static A rank1(J jt,    A w,A self){DECLF;I m,wr;
  ARGCHK1(w);
  wr=AR(w); efr(m,wr,(I)sv->localuse.lI4[0]);
  // We know that the first call is RANKONLY, and we consume any other RANKONLYs in the chain until we get to something else.  The something else becomes the
@@ -672,11 +672,11 @@ static DF1(rank1){DECLF;I m,wr;
  return m<wr?rank1ex(w,fs,m,f1):CALL1(f1,w,fs);
 }
 // Version for rank 0.  Call rank1ex0, pointing to the u"r
-static DF1(jtrank10atom){ A fs=FAV(self)->fgh[0]; return (FAV(fs)->valencefns[0])(jt,w,fs);}  // will be used only for no-frame executions.  Otherwise will be replaced by the flags loop
-static DF1(jtrank10){return jtrank1ex0(jt,w,self,jtrank10atom);}  // pass inplaceability through.
+static A jtrank10atom(J jt,    A w,A self){ A fs=FAV(self)->fgh[0]; return (FAV(fs)->valencefns[0])(jt,w,fs);}  // will be used only for no-frame executions.  Otherwise will be replaced by the flags loop
+static A jtrank10(J jt,    A w,A self){return jtrank1ex0(jt,w,self,jtrank10atom);}  // pass inplaceability through.
 
 
-static DF1(rank1q){  // fast version: nonneg rank, no check for multiple RANKONLY
+static A rank1q(J jt,    A w,A self){  // fast version: nonneg rank, no check for multiple RANKONLY
  ARGCHK1(w);
  I r=AR(w); r=r>FAV(self)->localuse.lI4[0]?FAV(self)->localuse.lI4[0]:r; A fs=FAV(self)->fgh[0];
  return rank1ex(w,fs,r,FAV(fs)->valencefns[0]);

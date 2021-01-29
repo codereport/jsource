@@ -62,7 +62,7 @@ static DF2(jthgeom2){PROLOG(0036);A h,*hv,t,z;B b;I an,*av,j,n;V*sv=FAV(self);
  EPILOG(z);
 }
 
-static DF1(jthgeom1){return hgeom2(sc(IMAX),w,self);}
+static A jthgeom1(J jt,    A w,A self){return hgeom2(sc(IMAX),w,self);}
 
 static A jtcancel(J jt,A a,A w){A c,d,f,x,y;
  f=eval("#/.~");   // could call keytally
@@ -83,7 +83,7 @@ static A jtcancel(J jt,A a,A w){A c,d,f,x,y;
  return fdef(0,CHGEOM,VERB, jthgeom1,jthgeom2, a,w,h, 0L, 0L,0L,0L);
 }    /* a H. w */
 
-DF1(jthgcoeff){PROLOG(0037);A c,d,h,*hv,y,z;B b;I j,n,pn,qn,*v;V*sv=FAV(self);
+ A jthgcoeff(J jt,    A w,A self){PROLOG(0037);A c,d,h,*hv,y,z;B b;I j,n,pn,qn,*v;V*sv=FAV(self);
  RZ(w=vi(w)); v=AV(w); 
  n=0; DO(AN(w), j=v[i]; ASSERT(0<=j,EVDOMAIN); if(n<j)n=j;);
  if(!n)return eq(w,w);

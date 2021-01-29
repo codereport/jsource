@@ -178,7 +178,7 @@ DF2(jtunquote){A z;
 
 
 // The monad calls the bivalent case with (w,self,self) so that the inputs can pass through to the executed function
-static DF1(jtunquote1){return unquote(w,self,self);}  // This just transfers to jtunquote.  It passes jt, with inplacing bits, unmodified
+static A jtunquote1(J jt,    A w,A self){return unquote(w,self,self);}  // This just transfers to jtunquote.  It passes jt, with inplacing bits, unmodified
 
 // return ref to adv/conj/verb whose name is a and whose symbol-table entry is w
 // if the value is a noun, we just return the value; otherwise we create a 'name~' block

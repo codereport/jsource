@@ -12,7 +12,7 @@
 
 
 
-static DF1(jtcut01){DECLF;A h,x,z;
+static A jtcut01(J jt,    A w,A self){DECLF;A h,x,z;
  RZ(x=from(box(every(negate(shape(w)),ds(CIOTA))),w));
  if(VGERL&sv->flag){h=sv->fgh[2]; return df1(z,x,AAV(h)[0]);}else return CALL1(f1,x,fs);
 }    /* f;.0 w */
@@ -825,7 +825,7 @@ DF2(jtcut2){F2PREFIP;PROLOG(0025);A fs,z,zz;I neg,pfx;C id,*v1,*wv,*zc;I cger[12
 }    /* f;.1  f;._1  f;.2  f;._2  monad and dyad */
 
 
-static DF1(jtcut1){return cut2(mark,w,self);}
+static A jtcut1(J jt,    A w,A self){return cut2(mark,w,self);}
 
 // ;@((<@(f/\));._2 _1 1 2) when  f is atomic   also @: but only when no rank loop required  also \. for \
 // also [: ; (<@(f/\));._2 _1 1 2)  when no rank loop required
@@ -869,7 +869,7 @@ DF2(jtrazecut2){A fs,gs,y,z=0;B b; I neg,pfx;C id,sep,*u,*v,*wv,*zv;I d,k,m=0,wi
  AS(z)[0]=m; AN(z)=m*d; return adocv.cv&VRI+VRD?cvz(adocv.cv,z):z;
 }   
 
-DF1(jtrazecut1){return razecut2(mark,w,self);}
+ A jtrazecut1(J jt,    A w,A self){return razecut2(mark,w,self);}
 
 // if pv given, it is the place to put the shapes of the top 2 result axes.  If omitted, do them all and return an A block for them
 // if pv is given, set pv[0] to 0 if there is a 0 anywhere in the result frame
@@ -1101,7 +1101,7 @@ static DF2(jttess2){A z,zz=0,virtw,strip;I n,rs[3],cellatoms,cellbytes,vmv,hmv,v
 
 }
 
-static DF1(jttess1){A s;I m,r,*v;
+static A jttess1(J jt,    A w,A self){A s;I m,r,*v;
  ARGCHK1(w);
  r=AR(w); RZ(s=shape(w)); RZ(s=mkwris(s)); v=AV(s);
  m=IMAX; DO(r, if(m>v[i])m=v[i];); DO(r, v[i]=m;);  // Get length of long axis; set all axes to that length in a arg to cut

@@ -104,7 +104,7 @@ A jtunwordil(J jt, A wil, A w, I opts){A z;
 }
 
 // ;: y
-DF1(jtwords){A t,*x,z;C*s;I k,n,*y;
+ A jtwords(J jt,    A w,A self){A t,*x,z;C*s;I k,n,*y;
  F1RANK(1,jtwords,self);
  RZ(w=vs(w));  // convert w to LIT if it's not already
  RZ(t=wordil(w)); ASSERT(AM(t)>=0,EVOPENQ)
@@ -366,5 +366,5 @@ static A jtfsm0(J jt,A a,A w,C chka){PROLOG(0100);A*av,m,s,x,w0=w;B b;I c,f,*ijr
  A jtfsm(J jt,A a,A w){return fsm0(a,w,1);}
      /* x;:y */
 
-DF1(jtfsmfx){ARGCHK2(w,self); return fsm0(FAV(self)->fgh[0],w,0);}
+ A jtfsmfx(J jt,    A w,A self){ARGCHK2(w,self); return fsm0(FAV(self)->fgh[0],w,0);}
      /* x&;: y */

@@ -6,20 +6,20 @@
 
 static DF2(jtcblas_dgemm);
 static DF2(jtcblas_dscal);
-static DF1(jtdgeev);
-static DF1(jtdgeqrf);
+static A jtdgeev(J jt,    A w,A self);
+static A jtdgeqrf(J jt,    A w,A self);
 static DF2(jtdmultmatmat_32x32);
 static DF2(jtmatadd);
 static DF2(jtseqex);
 static DF2(jtseqpow);
 static DF2(jtx102d0);
 static DF2(jtx102d1);
-static DF1(jtx103d0);
+static A jtx103d0(J jt,    A w,A self);
 static A jtwex(J jt, A w);
 static A jttiebox(J jt,A a,A w);
 static A jtbg(J jt, A w);
 static A jtgb(J jt, A w);
-static DF1(jttconj);
+static A jttconj(J jt,    A w,A self);
 static DF2(jtoa);
 
 #define bg(x)                   jtbg(jt, (x))

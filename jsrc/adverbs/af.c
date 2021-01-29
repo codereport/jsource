@@ -175,7 +175,7 @@ static A jtfixa(J jt,A a,A w){A f,g,h,wf,x,y,z=w;V*v;fauxblock(fauxself); A aa; 
 }   /* 0=a if fix names; 1=a if fix names only if does not contain $: */
 
 // On internal calls, self is an integer whose value contains flags.  Otherwise zeroionei is used
-DF1(jtfix){PROLOG(0005);A z;
+ A jtfix(J jt,    A w,A self){PROLOG(0005);A z;
  ARGCHK1(w);
  if(LIT&AT(w)){ASSERT(1>=AR(w),EVRANK); RZ(w=nfs(AN(w),CAV(w)));}
  // only verbs/noun can get in through the parser, but internally we also vet adv/conj

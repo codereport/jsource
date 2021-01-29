@@ -284,13 +284,13 @@ PREFIXPFX(bw1111pfxI, UI,UI, BW1111, bw1111II,return EVOK;)
 
 // This old prefix support is needed for sparse matrices
 
-static DF1(jtprefix){DECLF;I r;
+static A jtprefix(J jt,    A w,A self){DECLF;I r;
  ARGCHK1(w);
  r = (RANKT)jt->ranks; RESETRANK; if(r<AR(w)){return rank1ex(w,self,r,jtprefix);}
  return eachl(apv(SETIC(w,r),1L,1L),w,atop(fs,ds(CTAKE)));
 }    /* f\"r w for general f */
 
-static DF1(jtgprefix){A h,*hv,z,*zv;I m,n,r;
+static A jtgprefix(J jt,    A w,A self){A h,*hv,z,*zv;I m,n,r;
  ARGCHK1(w);
  ASSERT(DENSE&AT(w),EVNONCE);
  r = (RANKT)jt->ranks; RESETRANK; if(r<AR(w)){return rank1ex(w,self,r,jtgprefix);}
@@ -358,7 +358,7 @@ static DF2(jtinfix){PROLOG(0018);DECLF;A x,z;I m;
  EPILOG(z);
 }
 
-static DF1(jtinfix2){PROLOG(0019);A f; 
+static A jtinfix2(J jt,    A w,A self){PROLOG(0019);A f; 
  f=FAV(self)->fgh[0]; f=FAV(f)->fgh[0];  // f=u in u/\ y
  A l=curtail(w), r=behead(w), z; IRS2(l,r,f,AR(w)-1,AR(w)-1,FAV(f)->valencefns[1],z); // (}: u"_1 }.) y
  EPILOG(z);
@@ -565,13 +565,13 @@ static DF2(jtinfixprefix2){F2PREFIP;PROLOG(00202);A fs;I cger[128/SZI];
 }
 
 // prefix, vectors to common processor.  Handles IRS.  Supports inplacing
-static DF1(jtinfixprefix1){F1PREFIP;
+static A jtinfixprefix1(J jt,    A w,A self){F1PREFIP;
  I r = (RANKT)jt->ranks; RESETRANK; if(r<AR(w)){return jtrank1ex(jtinplace,w,self,r,jtinfixprefix1);}
  return jtinfixprefix2(jtinplace,mark,w,self);
 }
 
 //  f/\"r y    w is y, fs is in self
-static DF1(jtpscan){A z;I f,n,r,t,wn,wr,*ws,wt;
+static A jtpscan(J jt,    A w,A self){A z;I f,n,r,t,wn,wr,*ws,wt;
  F1PREFIP;ARGCHK1(w);
  wt=AT(w);   // get type of w
  if((SPARSE&wt)!=0)return scansp(w,self,jtpscan);  // if sparse, go do it separately
@@ -817,7 +817,7 @@ static DF2(jtmovfslash){A x,z;B b;C id,*wv,*zv;I d,m,m0,p,t,wk,wt,zi,zk,zt;
  if(255&rc){jsignal(rc); if(rc>=EWOV){RESETERR; return movfslash(a,cvt(FL,w),self);}return 0;}else return z;
 }    /* a f/\w */
 
-static DF1(jtiota1){I j; return apv(SETIC(w,j),1L,1L);}
+static A jtiota1(J jt,    A w,A self){I j; return apv(SETIC(w,j),1L,1L);}
 
  A jtbslash(J jt, A w){A f;AF f1=jtinfixprefix1,f2=jtinfixprefix2;V*v;I flag=FAV(ds(CBSLASH))->flag;
 ;

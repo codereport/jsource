@@ -330,8 +330,8 @@ static DF2(amccv2){F2PREFIP;DECLF;
 }
 
 
-static DF1(mergn1){       return merge1(w,VAV(self)->fgh[0]);}
-static DF1(mergv1){DECLF; return merge1(w,CALL1(f1,w,fs));}
+static A mergn1(J jt,    A w,A self){       return merge1(w,VAV(self)->fgh[0]);}
+static A mergv1(J jt,    A w,A self){DECLF; return merge1(w,CALL1(f1,w,fs));}
 
 // called from m}, m is usually NOT a gerund
 static B ger(A w){A*wv,x;

@@ -66,7 +66,7 @@ static A jtdrr(J jt, A w){PROLOG(0055);A df,dg,hs,*x,z;B b,ex,xop;C c,id;I fl,*h
  A jtarep(J jt, A w){return box(aro(w));}
 
 // Create A for a string - name~, a primitive, or the boxed string
-static DF1(jtfxchar){A y;C c,d,id,*s;I m,n;
+static A jtfxchar(J jt,    A w,A self){A y;C c,d,id,*s;I m,n;
  n=AN(w);
  ASSERT(1>=AR(w),EVRANK);  // string must be an atom or list
  ASSERT(n!=0,EVLENGTH);
@@ -82,7 +82,7 @@ static DF1(jtfxchar){A y;C c,d,id,*s;I m,n;
 
 // Convert an AR to an A block.  w is a gerund that has been opened
 // self is normally 0; if nonzero, we return a noun type ('0';<value) as is rather than returning value, and leave adv/conj ARs looking like nouns
-DF1(jtfx){A f,fs,g,h,p,q,*wv,y,*yv;C id;I m,n=0;
+ A jtfx(J jt,    A w,A self){A f,fs,g,h,p,q,*wv,y,*yv;C id;I m,n=0;
  ARGCHK1(w);
  // if string, handle that special case (verb/primitive)
  if(LIT&AT(w))return fxchar(w,self);

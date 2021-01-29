@@ -42,9 +42,9 @@ static A jtinvfork(J jt, A w){A f,fi,g,gi,h,k;B b,c;V*v;
  return fong(fi,gi);
 }
 
-static DF1(jtexpandf){A f; ARGCHK2(w,self); f=FAV(self)->fgh[0]; return expand(VAV(f)->fgh[0],w);}
+static A jtexpandf(J jt,    A w,A self){A f; ARGCHK2(w,self); f=FAV(self)->fgh[0]; return expand(VAV(f)->fgh[0],w);}
 
-static DF1(jtexpandg){A f,g,z;V*v;
+static A jtexpandg(J jt,    A w,A self){A f,g,z;V*v;
  ARGCHK2(w,self);
  f=FAV(self)->fgh[0]; v=FAV(f); g=v->fgh[1];
  jt->fill=FAV(g)->fgh[1]; z=expand(v->fgh[0],w); jt->fill=0;   // elements of FAV cannot be virtual

@@ -44,7 +44,7 @@ static UINT jtcrcvalidate(J jt,A w, UINT* crctab){A*wv;B*v;I m;UINT p,x,z=-1;
  return h;
 }
 
-DF1(jtcrcfixedleft){A h,*hv;I n;UINT*t,z;UC*v;
+ A jtcrcfixedleft(J jt,    A w,A self){A h,*hv;I n;UINT*t,z;UC*v;
  ARGCHK1(w);
  h=FAV(self)->fgh[2]; hv=AAV(h); t=(UINT*)AV(hv[0]); z=(UINT)AV(hv[1])[0];
  n=AN(w); v=UAV(w);

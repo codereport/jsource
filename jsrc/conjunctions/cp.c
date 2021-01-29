@@ -15,7 +15,7 @@
 #define ZZFLAGWORD state
 
 
-static DF1(jtpowseqlim){PROLOG(0039);A x,y,z,*zv;I i,n;
+static A jtpowseqlim(J jt,    A w,A self){PROLOG(0039);A x,y,z,*zv;I i,n;
  ARGCHK1(w);
  RZ(z=exta(BOX,1L,1L,20L)); zv=AAV(z); INCORP(w); *zv++=x=w;
  i=1; n=AN(z);
@@ -57,7 +57,7 @@ static A jttclosure(J jt,A a,A w){A z;I an,*av,c,d,i,wn,wr,wt,*wv,*zv,*zz;
  return z;
 }    /* {&a^:(<_) w */
 
-static DF1(jtindexseqlim1){A fs;
+static A jtindexseqlim1(J jt,    A w,A self){A fs;
  ARGCHK1(w); 
  fs=FAV(self)->fgh[0];  // {&x
  return AN(w)&&AT(w)&B01+INT?tclosure(FAV(fs)->fgh[1],w):powseqlim(w,fs);
@@ -69,7 +69,7 @@ static DF2(jtindexseqlim2){
 }    /* a {~^:(<_) w */
 
 // u^:(<n) If n negative, take inverse of u; if v infinite, go to routine that checks for no change.  Otherwise convert to u^:(i.|n) and restart
-static DF1(jtpowseq){A fs,gs,x;I n=IMAX;V*sv;
+static A jtpowseq(J jt,    A w,A self){A fs,gs,x;I n=IMAX;V*sv;
  ARGCHK1(w);
  sv=FAV(self); fs=sv->fgh[0]; gs=sv->fgh[1];
  ASSERT(!AR(gs),EVRANK);
@@ -81,7 +81,7 @@ static DF1(jtpowseq){A fs,gs,x;I n=IMAX;V*sv;
 }    /* f^:(<n) w */
 
 // u^:n w where n is nonnegative finite integer atom (but never 0 or 1, which are handled as special cases)
-static DF1(jtfpown){A fs,z;AF f1;I n;V*sv;A *old;
+static A jtfpown(J jt,    A w,A self){A fs,z;AF f1;I n;V*sv;A *old;
  F1PREFIP;ARGCHK1(w);
  sv=FAV(self);
  n=AV(sv->fgh[2])[0];
@@ -94,7 +94,7 @@ static DF1(jtfpown){A fs,z;AF f1;I n;V*sv;A *old;
 }
 
 // general u^:n w where n is any array or finite atom.  If atom, it will be negative
-static DF1(jtply1){PROLOG(0040);DECLFG;A zz=0;
+static A jtply1(J jt,    A w,A self){PROLOG(0040);DECLFG;A zz=0;
 #define ZZWILLBEOPENEDNEVER 1  // can't honor willbeopened because the results are recycled as inputs
 #define ZZPOPNEVER 1  // can't pop the inputs - 
 #define ZZDECL
@@ -198,15 +198,15 @@ static DF2(jtpinf12){PROLOG(0340);A z;  // no reason to inplace, since w must be
  }
 }
 
-static DF1(jtinv1){F1PREFIP;DECLFG;A z; ARGCHK1(w);A i; RZ(i=inv((fs))); FDEPINC(1);  z=(FAV(i)->valencefns[0])(FAV(i)->flag&VJTFLGOK1?jtinplace:jt,w,i);       FDEPDEC(1); return z;}  // was invrecur(fix(fs))
-static DF1(jtinvh1){F1PREFIP;DECLFGH;A z; ARGCHK1(w);    FDEPINC(1); z=(FAV(hs)->valencefns[0])(jtinplace,w,hs);        FDEPDEC(1); return z;}
+static A jtinv1(J jt,    A w,A self){F1PREFIP;DECLFG;A z; ARGCHK1(w);A i; RZ(i=inv((fs))); FDEPINC(1);  z=(FAV(i)->valencefns[0])(FAV(i)->flag&VJTFLGOK1?jtinplace:jt,w,i);       FDEPDEC(1); return z;}  // was invrecur(fix(fs))
+static A jtinvh1(J jt,    A w,A self){F1PREFIP;DECLFGH;A z; ARGCHK1(w);    FDEPINC(1); z=(FAV(hs)->valencefns[0])(jtinplace,w,hs);        FDEPDEC(1); return z;}
 static DF2(jtinv2){DECLFG;A z; ARGCHK2(a,w); FDEPINC(1); df1(z,w,inv(amp(a,fs))); FDEPDEC(1); STACKCHKOFL return z;}  // the CHKOFL is to avoid tail recursion, which prevents a recursion loop from being broken
-static DF1(jtinverr){F1PREFIP;ASSERT(0,EVDOMAIN);}  // used for uninvertible monads
+static A jtinverr(J jt,    A w,A self){F1PREFIP;ASSERT(0,EVDOMAIN);}  // used for uninvertible monads
 
 // old static CS2(jtply2, df1(z,w,powop(amp(a,fs),gs,0)),0107)  // dyad adds x to make x&u, and then reinterpret the compound.  We could interpret u differently now that it has been changed (x {~^:a: y)
 DF2(jtply2){PROLOG(107);DECLFG;A z, zz; PREF2(jtply2); z=(df1(zz,w,powop(amp(a,fs),gs,0))); EPILOG(z);}
 
-static DF1(jtpowg1){A z,h=FAV(self)->fgh[2]; return df1(z,  w,AAV(h)[0]);}
+static A jtpowg1(J jt,    A w,A self){A z,h=FAV(self)->fgh[2]; return df1(z,  w,AAV(h)[0]);}
 static DF2(jtpowg2){A z,h=FAV(self)->fgh[2]; return df2(z,a,w,AAV(h)[0]);}
 
 // When u^:v is encountered, we replace it with a verb that comes to one of these.

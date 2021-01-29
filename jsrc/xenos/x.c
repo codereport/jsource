@@ -16,7 +16,7 @@
  fdef(0,id,VERB,f1,   secf2,a,w,v2((I)(f1?f1:jtdomainerr1),(I)(f2?f2:jtdomainerr2)),(flag),(I)m,(I)l,(I)r)
 
 
-static DF1(secf1){F1PREFIP; A h=FAV(self)->fgh[2]; ASSERT(!jt->seclev,EVSECURE); return CALL1IP((AF)AV(h)[0],  w,self);}
+static A secf1(J jt,    A w,A self){F1PREFIP; A h=FAV(self)->fgh[2]; ASSERT(!jt->seclev,EVSECURE); return CALL1IP((AF)AV(h)[0],  w,self);}
 static DF2(secf2){F2PREFIP; A h=FAV(self)->fgh[2]; ASSERT(!jt->seclev,EVSECURE); return CALL2IP((AF)AV(h)[1],a,w,self);}
 
 // undocumented 13!:80 functions, used to test condrange
@@ -40,7 +40,7 @@ static DF2(jtfindrange2){
 }  // 13!:82
 
 // 13!:83  Return header info: t, flag, m, type, c, n, r
-static DF1(jthdrinfo){A z;
+static A jthdrinfo(J jt,    A w,A self){A z;
  ARGCHK1(w);
  GAT0(z,INT,7,1);
  IAV(z)[0]=AK(w); IAV(z)[1]=AFLAG(w); IAV(z)[2]=AM(w); IAV(z)[3]=AT(w); IAV(z)[4]=AC(w); IAV(z)[5]=AN(w); IAV(z)[6]=AR(w);

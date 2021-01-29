@@ -6,7 +6,7 @@
 #include "j.h"
 
 // This is the derived verb for f/. y
-static DF1(jtoblique){A x,y,z;I m,n,r;D rkblk[16];
+static A jtoblique(J jt,    A w,A self){A x,y,z;I m,n,r;D rkblk[16];
  F1PREFIP;ARGCHK1(w);
  r=AR(w);  // r = rank of w
  // create y= ,/ w - the _2-cells of w arranged in a list (virtual block)
@@ -35,7 +35,7 @@ static DF1(jtoblique){A x,y,z;I m,n,r;D rkblk[16];
  }
 
 // Derived verb for f//. y for atomic f
-static DF1(jtobqfslash){A y,z;B b=0,p;C er,id,*wv;I c,d,k,m,m1,mn,n,n1,r,*s,wt;
+static A jtobqfslash(J jt,    A w,A self){A y,z;B b=0,p;C er,id,*wv;I c,d,k,m,m1,mn,n,n1,r,*s,wt;
  ARGCHK1(w);
  r=AR(w); s=AS(w); wt=AT(w); wv=CAV(w);
  if((-AN(w)&(1-r)&-(DENSE&wt))>=0)return oblique(w,self);  // revert to default if rank<2, empty, or sparse.  This implies m/n below are non0

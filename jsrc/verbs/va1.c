@@ -158,7 +158,7 @@ static A jtva1(J jt,A w,A self){A z;I cv,n,t,wt,zt;VA1F ado;
 
 // Consolidated entry point for ATOMIC1 verbs.
 // This entry point supports inplacing
-DF1(jtatomic1){A z;
+ A jtatomic1(J jt,    A w,A self){A z;
  F1PREFIP;ARGCHK1(w);
  I awm1=AN(w)-1;
  // check for singletons
@@ -178,4 +178,4 @@ DF1(jtatomic1){A z;
  }
 }
 
-DF1(jtpix   ){F1PREFIP; ARGCHK1(w); if(XNUM&AT(w)&&(jt->xmode==XMFLR||jt->xmode==XMCEIL))return jtatomic1(jtinplace,w,self); return jtatomic2(jtinplace,pie,w,ds(CSTAR));}
+ A jtpix   (J jt,    A w,A self){F1PREFIP; ARGCHK1(w); if(XNUM&AT(w)&&(jt->xmode==XMFLR||jt->xmode==XMCEIL))return jtatomic1(jtinplace,w,self); return jtatomic2(jtinplace,pie,w,ds(CSTAR));}

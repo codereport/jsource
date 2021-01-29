@@ -271,7 +271,7 @@ B jtztridiag(J jt,I n,A a,A x){I i,j,n1=n-1;Z*av,d,p,*xv;
  return 1;
 }
 
-DF1(jtexppi){A z;B b;D r,th,y;I k;Z*v,t;
+ A jtexppi(J jt,    A w,A self){A z;B b;D r,th,y;I k;Z*v,t;
  F1RANK(0,jtexppi,UNUSED_VALUE);
  if(!(CMPX&AT(w)))return expn1(pix(w));
  v=ZAV(w); r=exp(PI*v->re); y=v->im; if(b=0>y)y=-y;

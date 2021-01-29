@@ -7,7 +7,7 @@
 
 // These routines support IRS iff the underlying verb does, so all we have to do is switch the ranks if any and vector on to the function
 // create inplace bits as copy of W, or swap A & W
-static DF1(swap1){DECLF; F1PREFIP; jtinplace = (J)(intptr_t)(((I)jtinplace&~JTINPLACEA)+2*((I)jtinplace&JTINPLACEW));
+static A swap1(J jt,    A w,A self){DECLF; F1PREFIP; jtinplace = (J)(intptr_t)(((I)jtinplace&~JTINPLACEA)+2*((I)jtinplace&JTINPLACEW));
  // a~ carried the IRS flag from a and thus we might have ranks set.  If so, use them, and no need to check agreement again.  For ease, we just use whatever is set 
  A z; IRSIP2(w,w,fs,(RANKT)jt->ranks,(RANKT)jt->ranks,f2,z); return z;
 }
@@ -40,9 +40,9 @@ static const B booltab[64]={
 
 static DF2(jtbdot2){return from(plusA(duble(cvt(B01,a)),cvt(B01,w)),FAV(self)->fgh[2]);}  // dyad b. (2*a + w) { h
 
-static DF1(jtbdot1){return bdot2(num(0),w,self);}
+static A jtbdot1(J jt,    A w,A self){return bdot2(num(0),w,self);}
 
-static DF1(jtbasis1){DECLF;A z;D*x;I j;V*v;
+static A jtbasis1(J jt,    A w,A self){DECLF;A z;D*x;I j;V*v;
  PREF1(jtbasis1);
  RZ(w=vi(w));
  switch(AV(w)[0]){
@@ -136,7 +136,7 @@ static I jtint0(J jt,A w){A x;
  return x&&INT&AT(x)?AV(x)[0]:IMIN;
 }
 
-static DF1(jtmemo1){DECLF;A z;I x,y;
+static A jtmemo1(J jt,    A w,A self){DECLF;A z;I x,y;
  ARGCHK1(w);
  x=IMIN; y=int0(w);
  if(y==IMIN)return CALL1(f1,w,fs);

@@ -51,10 +51,10 @@ RZ(z=(g1)(jtinplace,hx,gs));}
 
 
 
-DF1(jtcork1){F1PREFIP;DECLFGH;PROLOG(0026);A z;  CAP1; EPILOG(z);}
+ A jtcork1(J jt,    A w,A self){F1PREFIP;DECLFGH;PROLOG(0026);A z;  CAP1; EPILOG(z);}
 DF2(jtcork2){F2PREFIP;DECLFGH;PROLOG(0027);A z;  CAP2; EPILOG(z);}
 
-static DF1(jtfolk1){F1PREFIP;DECLFGH;PROLOG(0028);A z; FOLK1; EPILOG(z);}
+static A jtfolk1(J jt,    A w,A self){F1PREFIP;DECLFGH;PROLOG(0028);A z; FOLK1; EPILOG(z);}
 static DF2(jtfolk2){F2PREFIP;DECLFGH;PROLOG(0029);A z; FOLK2;
  EPILOG(z);}
 
@@ -67,7 +67,7 @@ static B jtcap(J jt,A x){V*v;L *l;
 
 // nvv forks.  n must not be inplaced, since the fork may be reused.  hx can be inplaced unless protected by caller.
 // This generally follows the logic for CAP, but with dyad g
-static DF1(jtnvv1){F1PREFIP;DECLFGH;PROLOG(0032);
+static A jtnvv1(J jt,    A w,A self){F1PREFIP;DECLFGH;PROLOG(0032);
 PUSHZOMB; A protw = (A)(intptr_t)((I)w+((I)jtinplace&JTINPLACEW));
 A hx; RZ(hx=(h1)((J)(intptr_t)(((I)jtinplace&(~(JTWILLBEOPENED+JTCOUNTITEMS))) + (REPSGN(SGNIF(FAV(hs)->flag,VJTFLGOK1X)) & (FAV(gs)->flag2>>(VF2WILLOPEN2WX-VF2WILLOPEN1X)) & JTWILLBEOPENED+JTCOUNTITEMS)),w,hs));  /* inplace g.  jtinplace is set for g */
 /* inplace gx unless it is protected */
@@ -109,8 +109,8 @@ static DF2(jtfolkcomp0){F2PREFIP;DECLFGH;PROLOG(0035);A z;AF f;
  EPILOG(z);
 }
 
-static DF1(jtcharmapa){V*v=FAV(self); return charmap(w,FAV(v->fgh[2])->fgh[0],v->fgh[0]);}
-static DF1(jtcharmapb){V*v=FAV(self); return charmap(w,FAV(v->fgh[0])->fgh[0],FAV(v->fgh[2])->fgh[0]);}
+static A jtcharmapa(J jt,    A w,A self){V*v=FAV(self); return charmap(w,FAV(v->fgh[2])->fgh[0],v->fgh[0]);}
+static A jtcharmapb(J jt,    A w,A self){V*v=FAV(self); return charmap(w,FAV(v->fgh[0])->fgh[0],FAV(v->fgh[2])->fgh[0]);}
 
 // Create the derived verb for a fork.  Insert in-placeable flags based on routine, and asgsafe based on fgh
 A jtfolk(J jt,A f,A g,A h){A p,q,x,y;AF f1=jtfolk1,f2=jtfolk2;B b;C c,fi,gi,hi;I flag,flag2=0,j,m=-1;V*fv,*gv,*hv,*v;
@@ -208,9 +208,9 @@ A jtfolk(J jt,A f,A g,A h){A p,q,x,y;AF f1=jtfolk1,f2=jtfolk2;B b;C c,fi,gi,hi;I
 }
 
 // Handlers for to  handle w (aa), w (vc), w (cv)
-static DF1(taa){TDECL; A z,t; df1(t,w,fs); ASSERT(!t||AT(t)&NOUN+VERB,EVSYNTAX); return df1(z,t,gs);}
-static DF1(tvc){TDECL; A z; return df2(z,fs,w,gs);}  /* also nc */
-static DF1(tcv){TDECL; A z; return df2(z,w,gs,fs);}  /* also cn */
+static A taa(J jt,    A w,A self){TDECL; A z,t; df1(t,w,fs); ASSERT(!t||AT(t)&NOUN+VERB,EVSYNTAX); return df1(z,t,gs);}
+static A tvc(J jt,    A w,A self){TDECL; A z; return df2(z,fs,w,gs);}  /* also nc */
+static A tcv(J jt,    A w,A self){TDECL; A z; return df2(z,w,gs,fs);}  /* also cn */
 
 CS1IPext(static,,jthook1, \
 {PUSHZOMB; A protw = (A)(intptr_t)((I)w+((I)jtinplace&JTINPLACEW)); \
@@ -234,7 +234,7 @@ RZ(z=(f2)(jtinplace,a,gx,fs)); \
 } \
 , 0112)
 
-static DF1(jthkiota){DECLFG;A a,e;I n;P*p;
+static A jthkiota(J jt,    A w,A self){DECLFG;A a,e;I n;P*p;
  ARGCHK1(w);
  SETIC(w,n);\
  if(SB01&AT(w)&&1==AR(w)){
@@ -244,7 +244,7 @@ static DF1(jthkiota){DECLFG;A a,e;I n;P*p;
  return B01&AT(w)&&1>=AR(w) ? ifb(n,BAV(w)) : repeat(w,IX(n));
 }    /* special code for (# i.@#) */
 
-static DF1(jthkodom){DECLFG;B b=0;I n,*v;
+static A jthkodom(J jt,    A w,A self){DECLFG;B b=0;I n,*v;
  ARGCHK1(w);
  if(INT&AT(w)&&1==AR(w)){n=AN(w); v=AV(w); DO(n, if(b=0>v[i])break;); if(!b)return odom(2L,n,v);}
  return CALL2(f2,w,CALL1(g1,w,gs),fs);
@@ -258,7 +258,7 @@ static DF1(jthkodom){DECLFG;B b=0;I n,*v;
   DQ(optx0, if(wv[0] comp opt0){opt0=wv[0]; optx0=i;} if(wv[-1] comp opt1){opt1=wv[-1]; optx1=i;} wv-=2;) \
   z=((opt0 comp opt1) || (opt0==opt1&&optx0>=optx1))?2*optx0+1:2*optx1; opt0=opt0  compe opt1?opt0:opt1; z+=n&1; if(n&1&&wv[0] comp opt0)z=0; break;}
 
-static DF1(jthkindexofmaxmin){I z=0;
+static A jthkindexofmaxmin(J jt,    A w,A self){I z=0;
  ARGCHK2(w,self);
  I n=AN(w);
  if(!(1==AR(w)&&AT(w)&INT+FL))return hook1(w,self);

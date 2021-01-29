@@ -94,9 +94,9 @@ PRIM jtfxself[2]={ {{0,0,0,0,0,0,0},{{{jtfx,0},{0,0,0},0,0,0,0,0,0,0}}} , {{1,0,
 // run jtfx on each box in w, turning AR into an A block
 // self is a parm passed through to jtfx, coming from jtfxself above.  if AK(self) is nonzero, we return nouns as is
 // Result claims to be an array of boxes, but each box holds a function
-DF1(jtfxeach){return every(w,self);}
+ A jtfxeach(J jt,    A w,A self){return every(w,self);}
 
-static DF1(jtcon1){A h,*hv,*x,z;V*sv;
+static A jtcon1(J jt,    A w,A self){A h,*hv,*x,z;V*sv;
  PREF1(jtcon1);
  sv=FAV(self); h=sv->fgh[2]; hv=AAV(h);
  GATV(z,BOX,AN(h),AR(h),AS(h)); x=AAV(z);
@@ -113,7 +113,7 @@ static DF2(jtcon2){A h,*hv,*x,z;V*sv;
 }
 
 // u`:3 insert 
-static DF1(jtinsert){A hs,*hv,z;I hfx,j,m,n;A *old;
+static A jtinsert(J jt,    A w,A self){A hs,*hv,z;I hfx,j,m,n;A *old;
  ARGCHK1(w);
  SETIC(w,n); j=n-1; hs=FAV(self)->fgh[2]; m=AN(hs); hfx=j%m; hv=AAV(hs);  // m cannot be 0
  if(!n)return df1(z,w,iden(*hv));
@@ -344,7 +344,7 @@ static A jtgerfrom(J jt,A a,A w){A*av,*v,z;I n;
 //                gs=sv->fgh[1] (the A block for the g operand); g1=f1 in sv->fgh[1] (0 if sv->fgh[1]==0); g2=f2 in sv->fgh[1] (0 if sv->fgh[1]==0)
 
 
-static DF1(jtgcl1){DECLFG;A ff,z0,z1,*hv=AAV(sv->fgh[2]);
+static A jtgcl1(J jt,    A w,A self){DECLFG;A ff,z0,z1,*hv=AAV(sv->fgh[2]);
  STACKCHKOFL FDEPINC(d=fdep(hv[1])); df2(ff,df1(z0,w,hv[1]),gs,ds(sv->id)); FDEPDEC(d);
  return df1(z0,df1(z1,w,hv[2]),ff);
 }
@@ -357,7 +357,7 @@ static DF1(jtgcl1){DECLFG;A ff,z0,z1,*hv=AAV(sv->fgh[2]);
 //     this is a conjunction execution, executing a u^:n form, and creates a derived verb to perform that function; call that verb ff
 // then we execute gerund v2 on y (with self set to v2)
 // then we execute ff on the result of (v2 y), with self set to ff
-static DF1(jtgcr1){DECLFG;A ff,z0,z1,*hv=AAV(sv->fgh[2]);
+static A jtgcr1(J jt,    A w,A self){DECLFG;A ff,z0,z1,*hv=AAV(sv->fgh[2]);
  STACKCHKOFL FDEPINC(d=fdep(hv[1])); df2(ff,fs,df1(z0,w,hv[1]),ds(sv->id)); FDEPDEC(d);
  return df1(z0,df1(z1,w,hv[2]),ff);
 }
@@ -388,7 +388,7 @@ A jtgconj(J jt,A a,A w,C id){A hs,y;B na;I n;
 }
 
 // verb executed for v0`v1`v2} y
-static DF1(jtgav1){DECLF;A ff,ffm,ffx,*hv=AAV(sv->fgh[2]);
+static A jtgav1(J jt,    A w,A self){DECLF;A ff,ffm,ffx,*hv=AAV(sv->fgh[2]);
  // first, get the indexes to use.  Since this is going to call m} again, we protect against
  // stack overflow in the loop in case the generated ff generates a recursive call to }
  // If the AR is a noun, just leave it as is
@@ -442,7 +442,7 @@ A jtgadv(J jt,A w,C id){A hs;I n;
 }
 
 
-static DF1(jtgf1){A z,h=FAV(self)->fgh[2]; return df1(z,  w,AAV(h)[0]);}
+static A jtgf1(J jt,    A w,A self){A z,h=FAV(self)->fgh[2]; return df1(z,  w,AAV(h)[0]);}
 static DF2(jtgf2){A z,h=FAV(self)->fgh[2]; return df2(z,a,w,AAV(h)[0]);}
 
 A jtvger2(J jt,C id,A a,A w){A h,*hv,x;V*v;
