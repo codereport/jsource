@@ -135,8 +135,6 @@ static inline omp_int_t omp_get_max_threads() { return 1;}
 #ifdef __GNUC__
 #define RESTRICT __restrict
 // No RESTRICTF on GCC
-#define PREFETCH(x) __builtin_prefetch(x)
-#define PREFETCH2(x) __builtin_prefetch((x),0,2)   // prefetch into L2 cache but not L1
 #endif
 
 #ifdef __GNUC__

@@ -11,7 +11,6 @@
 
 #include "j.h"
 #include "x.h"
-#include "cpuinfo.h"
 
 // return string indicating which JEs this hardware would run
 // ""         would run j.dll

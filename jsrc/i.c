@@ -5,7 +5,6 @@
 
 #include "j.h"
 #include "words/w.h"
-#include "cpuinfo.h"
 
 // These statics get copied into jt for cache footprint.  If you change them,
 // change the definition in jt.h
@@ -85,7 +84,6 @@ B jtglobinit(J jt){A x,y;A *oldpushx=jt->tnextpushp;
  pf=qpf();
  pinit();
 
- cpuInit();
  // take all the permanent blocks off the tpop stack so that we don't decrement their usecount.  All blocks allocated here must be permanent
  jt->tnextpushp=oldpushx;
  DO(IOTAVECLEN, iotavec[i]=i+IOTAVECBEGIN;)  // init our vector of ascending integers
@@ -180,9 +178,6 @@ jt->directdef = 1;  // scaf
  A vimp=ca(mnuvxynam[3]); NAV(vimp)->flag|=NMIMPLOC;
  jt->implocref[1] = fdef(0,CTILDE,VERB, 0,0, vimp,0L,0L, 0, RMAX,RMAX,RMAX);  //create 'v.'~
 
- jt->igemm_thres=IGEMM_THRES;   // tuning parameters for cip.c
- jt->dgemm_thres=DGEMM_THRES;
- jt->zgemm_thres=ZGEMM_THRES;
  return 1;
 }
 

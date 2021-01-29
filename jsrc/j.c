@@ -5,7 +5,6 @@
 
 #include "j.h"
 #include "jversion.h"
-#include "gemm.h"
 #include <math.h>
 #pragma warning(disable : 4056)  // negative infinity overflow
 
@@ -56,23 +55,16 @@ struct Bd1 Bnumvr[3] = {  // floating-point 0, 1, and 2, used for constants
 {{AKXR(0),FL&TRAVERSIBLE,0,FL,ACPERMANENT,1,0},1.0},
 {{AKXR(0),FL&TRAVERSIBLE,0,FL,ACPERMANENT,1,0},2.0}
 };
-//I   v00[2]={0,0};         // vector value to use for rank 0 0
 D   pf=0;                 /* performance frequency                */
 Q   zeroQ={iv0,iv1};          /* 0r1                                  */
 DX  zeroDX={0,0,iv1};       /* 0                                    */
 Z   zeroZ={0,0};          /* 0j0                                  */
 A   zpath=0;              /* default locale search path           */
 I   iotavec[IOTAVECLEN];  // return values for i. small
-uint64_t g_cpuFeatures;   // blis
-UC  hwfma=0;              // blis cpu tuning
 // globals end
 
 // global const start -  do not need globinit
-//!      I   v00[2]={0,0};         // vector value to use for rank 0 0
-// const UC  bit[8]={(UC)0x80, (UC)0x40, (UC)0x20, (UC)0x10, (UC)0x08, (UC)0x04, (UC)0x02, (UC)0x01};
-const double dzero=0.0;   // used by gemm
-const dcomplex zone={1.0,0.0};  // used gy gemm
-const dcomplex zzero={0.0,0.0};
+const double dzero=0.0;   // used by verbs/ve.c
 I oneone[2]={1,1};  // used by PROD
 // global const end 
 

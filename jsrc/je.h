@@ -2,7 +2,6 @@
 /* Licensed use only. Any other use is in violation of copyright.          */
 /*                                                                         */
 /* Extern Declarations                                                     */
-#include "gemm.h"
 
 extern A jtabase1(J jt, A w);
 extern A jtadot1(J jt, A w);
@@ -945,12 +944,8 @@ extern struct Bd1 Bpie;
 extern PRIM     primtab[];
 extern const UI4      shortrange[3][4];
 extern Z        zeroZ;
-extern const dcomplex zone;
-extern const dcomplex zzero;
 extern I oneone[2];
 extern A        zpath;
 extern I iotavec[IOTAVECLEN];  // ascending integers, starting at IOTAVECBEGIN
-/* cpu feature */
-extern UC       hwfma;
 extern VARPSA rpsnull;
 extern PRIM sfn0overself;

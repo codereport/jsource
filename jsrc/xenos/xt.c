@@ -8,7 +8,6 @@
 #include <unistd.h>
 
 #include "j.h"
-#include "cpuinfo.h"
 
 #if (SYS & SYS_LINUX)
 #include <time.h>
