@@ -112,7 +112,7 @@ void jtmsort(J jt, I n, void **zv, void **xv){
 
 
 // m: #cells in w (# sorts to do)   n: #items in a cell of w   ai: #atoms in an item of a cell of w
-#define GF(f)         B f(J jt,I m,I ai,I n,A w,I*zv)
+#define B f(J jt,I m,I ai,I n,A w,I*zv)         B f(J jt,I m,I ai,I n,A w,I*zv)
 
 /* m  - # cells (# individual grades to do) */
 /* c  - # atoms in a cell                   */
@@ -131,7 +131,7 @@ static struct {
 
 
 
-static GF(jtgrx){A x;I ck,t,*xv;I c=ai*n;
+static B jtgrx(J jt,I m,I ai,I n,A w,I*zv){A x;I ck,t,*xv;I c=ai*n;
  t=AT(w);
  jt->workareas.compare.compk=ai<<bplg(t); ck=jt->workareas.compare.compk*n;
  jt->workareas.compare.compn=ai<<((t>>CMPXX)&1); jt->workareas.compare.compv=CAV(w);
@@ -263,7 +263,7 @@ I grcol2(I d,I c,US*yv,I n,I*xv,I*zv,const I m,US*u,I flags){
 // grade doubles
 // grade doubles by hiding the item number in the value and sorting.  Requires ai==1.
 // We interpret the input as integer form so that we can hide the item number in an infinity without turning it into a NaN
-static GF(jtgrdq){
+static B jtgrdq(J jt,I m,I ai,I n,A w,I*zv){
  GBEGIN(-1);  // subsorts will always be ascending
  I sortdown63=(~olt)&IMIN;  // sign bit set if sorting down; other bits 0
  // See how many bits we must reserve for the item number, and make a mask for the item number
@@ -305,7 +305,7 @@ static GF(jtgrdq){
  return 1;
 }
 
-static GF(jtgrd){A x,y;int b;D*v,*wv;I *g,*h,nneg,*xv;US*u;void *yv;I c=ai*n;
+static B jtgrd(J jt,I m,I ai,I n,A w,I*zv){A x,y;int b;D*v,*wv;I *g,*h,nneg,*xv;US*u;void *yv;I c=ai*n;
  if(ai==1){return jtgrdq(jt,m,ai,n,w,zv);}  // if fast list code is available, always use it
   // if not large and 1 atom per key, go do general grade
  if(!(ai==1&&n>3300))return grx(m,ai,n,w,zv);  // Empirically derived crossover   TUNE
@@ -370,7 +370,7 @@ static GF(jtgrd){A x,y;int b;D*v,*wv;I *g,*h,nneg,*xv;US*u;void *yv;I c=ai*n;
 }    /* grade"r w on real w; main code here is for c==n */
 
 // ai==1 and n is big enough: grade by repeated bucketsort
-static GF(jtgri1){A x,y;I*wv;I i,*xv;US*u;void *yv;I c=ai*n;
+static B jtgri1(J jt,I m,I ai,I n,A w,I*zv){A x,y;I*wv;I i,*xv;US*u;void *yv;I c=ai*n;
  wv=AV(w);
  // choose bucket table size & function; allocate the bucket area
  I (*grcol)(I,I,void*,I,I*,I*,const I,US*,I);  // prototype for either size of buffer
@@ -390,7 +390,7 @@ static GF(jtgri1){A x,y;I*wv;I i,*xv;US*u;void *yv;I c=ai*n;
  return 1;
 }    /* grade"r w on integer w where c==n */
 
-static GF(jtgru1){A x,y;C4*wv;I i,*xv;US*u;void *yv;I c=ai*n;
+static B jtgru1(J jt,I m,I ai,I n,A w,I*zv){A x,y;C4*wv;I i,*xv;US*u;void *yv;I c=ai*n;
  wv=C4AV(w);
  // choose bucket table size & function; allocate the bucket area
  I (*grcol)(I,I,void*,I,I*,I*,const I,US*,I);  // prototype for either size of buffer
@@ -407,7 +407,7 @@ static GF(jtgru1){A x,y;C4*wv;I i,*xv;US*u;void *yv;I c=ai*n;
 
 // grade INTs by hiding the item number in the value and sorting.  Requires ai==1.
 // We interpret the input as integer form so that we can hide the item number in an infinity without turning it into a NaN
-static GF(jtgriq){
+static B jtgriq(J jt,I m,I ai,I n,A w,I*zv){
  GBEGIN(-1);  // subsorts will always be ascending
  I gradedown=REPSGN(~olt);  // ~0 if sorting down, else 0
  // See how many bits we must reserve for the item number, and make a mask for the item number
@@ -460,7 +460,7 @@ static GF(jtgriq){
  return 1;
 }
 
-static GF(jtgri){A x,y;B up;I e,i,*v,*wv,*xv;UI4 *yv,*yvb;I c=ai*n;
+static B jtgri(J jt,I m,I ai,I n,A w,I*zv){A x,y;B up;I e,i,*v,*wv,*xv;UI4 *yv,*yvb;I c=ai*n;
  wv=AV(w);
  // select algorithm based on size & range.  To develop models for the different algorithms, modify the code here to force one choice
  // & run test lines.
@@ -579,7 +579,7 @@ static GF(jtgri){A x,y;B up;I e,i,*v,*wv,*xv;UI4 *yv,*yvb;I c=ai*n;
 }    /* grade"r w on small-range integers w */
 
 
-static GF(jtgru){A x,y;B up;I e,i,*xv;UI4 *yv,*yvb;C4 *v,*wv;I c=ai*n;
+static B jtgru(J jt,I m,I ai,I n,A w,I*zv){A x,y;B up;I e,i,*xv;UI4 *yv,*yvb;C4 *v,*wv;I c=ai*n;
  wv=C4AV(w);
  CR rng;
  if(ai<=6){rng = condrange4(wv,AN(w),-1,0,(MIN(((ai*n<(L2CACHESIZE>>LGSZI))?16:4),80>>ai))*n);   //  TUNE
@@ -633,7 +633,7 @@ static GF(jtgru){A x,y;B up;I e,i,*xv;UI4 *yv,*yvb;C4 *v,*wv;I c=ai*n;
   v=vv; DO(n, IND4(iicalc1); h[yv[ii]++]=ind; vinc;);  \
  }
 
-static GF(jtgrb){A x;B b,up;I i,p,ps,q,*xv,yv[16];UC*vv,*wv;I c=ai*n;
+static B jtgrb(J jt,I m,I ai,I n,A w,I*zv){A x;B b,up;I i,p,ps,q,*xv,yv[16];UC*vv,*wv;I c=ai*n;
  UI4 lgn; CTLZI(n,lgn);
  if((UI)ai>4*lgn)return grx(m,ai,n,w,zv);     // TUNE
  q=ai>>2; p=16; ps=p*SZI; wv=UAV(w); up=SGNTO0(jt->workareas.compare.complt);
@@ -647,7 +647,7 @@ static GF(jtgrb){A x;B b,up;I i,p,ps,q,*xv,yv[16];UC*vv,*wv;I c=ai*n;
  return 1;
 }    /* grade"r w on boolean w, works 4 columns at a time (d%4 guaranteed to be 0)*/
 
-static GF(jtgrc){A x;B b,q,up;I e,i,p,ps,*xv,yv[256];UC*vv,*wv;
+static B jtgrc(J jt,I m,I ai,I n,A w,I*zv){A x;B b,q,up;I e,i,p,ps,*xv,yv[256];UC*vv,*wv;
  UI4 lgn; CTLZI(n,lgn);
  if((UI)ai>lgn)return grx(m,ai,n,w,zv);   // TUNE
  ai<<=((AT(w)>>C2TX)&1);
@@ -663,7 +663,7 @@ static GF(jtgrc){A x;B b,q,up;I e,i,p,ps,*xv,yv[256];UC*vv,*wv;
  return 1;
 }    /* grade"r w on boolean or char or unicode w */
 
-static GF(jtgrs){return gri(m,ai,n,sborder(w),zv);}
+static B jtgrs(J jt,I m,I ai,I n,A w,I*zv){return gri(m,ai,n,sborder(w),zv);}
      /* grade"r w on symbols w */
 
  A jtgrade1p(J jt,A a,A w){PROLOG(0074);A x,z;I n,*s,*xv,*zv;
