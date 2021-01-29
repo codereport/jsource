@@ -6,7 +6,6 @@
 #include "j.h"
 #include "verbs/vcomp.h"
 
-#define KF1F(f)         B f(J jt,A w,void*yv,D fuzz)  // calls that use optional fuzz
 #define KF2(f)          B f(J jt,A w,void*yv,I mode)
 #define CVCASE(a,b)     (((a)<<3)+(b))   // The main cases fit in low 8 bits of mask
 
@@ -56,14 +55,14 @@ static B jtBfromI(J jt,A w,void*yv){B*x;I n,p,*v;
  return 1;
 }
 
-static KF1F(jtBfromD){B*x;D p,*v;I n;
+static  B jtBfromD(J jt,A w,void*yv,D fuzz){B*x;D p,*v;I n;
  n=AN(w); v=DAV(w); x=(B*)yv;
  DQ(n, p=*v++; if(p<-2||2<p)return 0;   // handle infinities
   I val=2; val=(p==0)?0:val; val=FIEQ(p,1.0,fuzz)?1:val; if(val==2)return 0; *x++=(B)val; )
  return 1;
 }
 
-static KF1F(jtIfromD){D p,q,*v;I i,k=0,n,*x;
+static  B jtIfromD(J jt,A w,void*yv,D fuzz){D p,q,*v;I i,k=0,n,*x;
  n=AN(w); v=DAV(w); x=(I*)yv;
  for(i=0;i<n;++i){
   p=v[i]; q=jround(p); I rq=(I)q;
@@ -76,7 +75,7 @@ static KF1F(jtIfromD){D p,q,*v;I i,k=0,n,*x;
  return 1;
 }
 
-static KF1F(jtDfromZ){D d,*x;I n;Z*v;
+static  B jtDfromZ(J jt,A w,void*yv,D fuzz){D d,*x;I n;Z*v;
  n=AN(w); v=ZAV(w); x=(D*)yv;
  if(fuzz)DQ(n, d=ABS(v->im); if(d!=inf&&d<=fuzz*ABS(v->re)){*x++=v->re; v++;} else return 0;)
  else        DQ(n, d=    v->im ; if(!d                            ){*x++=v->re; v++;} else return 0;);
