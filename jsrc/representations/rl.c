@@ -6,11 +6,10 @@
 #include "j.h"
 #include <ctype.h>
 
-#define F1X(f)           A f(J jt,A w,A *ltext)
 #define DF1X(f)           A f(J jt,A w,A self,A *ltext)
 #define F2X(f)           A f(J jt,A a,A w,A *ltext)
-static F1X(jtlnoun);
-static F1X(jtlnum);
+static A jtlnoun(J jt,A w,A *ltext);
+static A jtlnum(J jt,A w,A *ltext);
 static DF1X(jtlrr);
 
 #define NUMV(c)  (((1LL<<C9)|(1LL<<CD)|(1LL<<CS)|(1LL<<CA)|(1LL<<CN)|(1LL<<CB))&(1LL<<(c)))
@@ -50,7 +49,7 @@ static A jtlcpb(J jt,B b,A w){F1PREFIP;A z=w;B p;C c,*v,*wv,*zv;I n;
 
 static A jtlcpx(J jt,A w){F1PREFIP;ARGCHK1(w); return parfn(jtinplace,lp(w),w);}
 
-static F1X(jtltiea){F1PREFIP;A t,*v,*wv,x,y;B b;C c;I n;
+static A jtltiea(J jt,A w,A *ltext){F1PREFIP;A t,*v,*wv,x,y;B b;C c;I n;
  ARGCHK1(w);
  n=AN(w); wv=AAV(w);  RZ(t=spellout(CGRAVE));
  GATV0(y,BOX,n+n,1); v=AAV(y);
@@ -59,7 +58,7 @@ static F1X(jtltiea){F1PREFIP;A t,*v,*wv,x,y;B b;C c;I n;
  return raze(y);
 }
 
-static F1X(jtltieb){F1PREFIP;A pt,t,*v,*wv,x,y;B b;C c,*s;I n;
+static A jtltieb(J jt,A w,A *ltext){F1PREFIP;A pt,t,*v,*wv,x,y;B b;C c,*s;I n;
  ARGCHK1(w);
  n=AN(w); wv=AAV(w);  RZ(t=spellout(CGRAVE)); RZ(pt=over(scc(')'),t));
  GATV0(y,BOX,n+n,1); v=AAV(y);
@@ -70,17 +69,17 @@ static F1X(jtltieb){F1PREFIP;A pt,t,*v,*wv,x,y;B b;C c,*s;I n;
 }
 
 // return string for the shape: 's$'
-static F1X(jtlsh){F1PREFIP;return apip(thorn1(shape(w)),spellout(CDOLLAR));}
+static A jtlsh(J jt,A w,A *ltext){F1PREFIP;return apip(thorn1(shape(w)),spellout(CDOLLAR));}
 
 // return something to turn a list into the shape:
-static F1X(jtlshape){F1PREFIP;I r,*s;
+static A jtlshape(J jt,A w,A *ltext){F1PREFIP;I r,*s;
  ARGCHK1(w);
  r=AR(w); s=AS(w);
  return 2==r&&(1==s[0]||1==s[1]) ? spellout((C)(1==s[1]?CCOMDOT:CLAMIN)) : !r ? mtv :
      1<r ? lsh(w) : 1<AN(w) ? mtv : spellout(CCOMMA);
 }
 
-static F1X(jtlchar){F1PREFIP;A y;B b,p=1,r1;C c,d,*u,*v;I j,k,m,n;
+static A jtlchar(J jt,A w,A *ltext){F1PREFIP;A y;B b,p=1,r1;C c,d,*u,*v;I j,k,m,n;
  ARGCHK1(w);
  m=AN(ds(CALP)); n=AN(w); j=n-m; r1=1==AR(w); u=v=CAV(w); d=*v;  // m=256, n=string length, j=n-256, r1 set if rank is 1, u=v->string, d=first char
  if(0<=j&&r1&&!memcmpne(v+j,AV(ds(CALP)),m)){
@@ -110,7 +109,7 @@ static F1X(jtlchar){F1PREFIP;A y;B b,p=1,r1;C c,d,*u,*v;I j,k,m,n;
  return over(b?lsh(w):lshape(w),y);
 }    /* non-empty character array */
 
-static F1X(jtlbox){F1PREFIP;A p,*v,*vv,*wv,x,y;B b=0;I n;
+static A jtlbox(J jt,A w,A *ltext){F1PREFIP;A p,*v,*vv,*wv,x,y;B b=0;I n;
  ARGCHK1(w);
  if(equ(ds(CACE),w)&&B01&AT(AAV(w)[0]))return cstr("a:");
  n=AN(w); wv=AAV(w); 
@@ -163,14 +162,14 @@ A jtdecorate(J jt,A w,I t){
 }
 
 
-static F1X(jtlnum1){F1PREFIP;A z,z0;I t;
+static A jtlnum1(J jt,A w,A *ltext){F1PREFIP;A z,z0;I t;
  ARGCHK1(w);
  t=AT(w);
  RZ(z=t&FL+CMPX?df1(z0,w,fit(ds(CTHORN),sc((I)18))):thorn1(w));
  return decorate(z,t);
 }    /* dense non-empty numeric vector */
 
-static F1X(jtlnum){F1PREFIP;A b,d,t,*v,y;B p;I n;
+static A jtlnum(J jt,A w,A *ltext){F1PREFIP;A b,d,t,*v,y;B p;I n;
  RZ(t=ravel(w));
  n=AN(w);
  if(7<n||1<n&&1<AR(w)){
@@ -194,7 +193,7 @@ static F1X(jtlnum){F1PREFIP;A b,d,t,*v,y;B p;I n;
  return over(lshape(w),lnum1(t));
 }    /* dense numeric non-empty array */
 
-static F1X(jtlsparse){F1PREFIP;A a,e,q,t,x,y,z;B ba,be,bn;I j,r,*v;P*p;
+static A jtlsparse(J jt,A w,A *ltext){F1PREFIP;A a,e,q,t,x,y,z;B ba,be,bn;I j,r,*v;P*p;
  ARGCHK1(w);
  r=AR(w); p=PAV(w); a=SPA(p,a); e=SPA(p,e); y=SPA(p,i); x=SPA(p,x);
  bn=0; v=AS(w); DQ(r, if(!*v++){bn=1; break;});
@@ -222,7 +221,7 @@ static F1X(jtlsparse){F1PREFIP;A a,e,q,t,x,y,z;B ba,be,bn;I j,r,*v;P*p;
  return over(lcpx(lnoun(drop(sc(j),q))),over(cstr("|:"),z));
 }    /* sparse array */
 
-static F1X(jtlnoun0){F1PREFIP;A s,x;B r1;
+static A jtlnoun0(J jt,A w,A *ltext){F1PREFIP;A s,x;B r1;
  ARGCHK1(w);
  r1=1==AR(w); RZ(s=thorn1(shape(w)));
  switch(CTTZ(AT(w))){
@@ -240,7 +239,7 @@ static F1X(jtlnoun0){F1PREFIP;A s,x;B r1;
 }}   /* empty dense array */
 
 
-static F1X(jtlnoun){F1PREFIP;I t;
+static A jtlnoun(J jt,A w,A *ltext){F1PREFIP;I t;
  ARGCHK1(w);
  t=AT(w);
  if((t&SPARSE)!=0)return lsparse(w);
@@ -307,7 +306,7 @@ static F2X(jtlinsert){F1PREFIP;A*av,f,g,h,t,t0,t1,t2,*u,y;B b,ft,gt,ht;C c,id;I 
 }}
 
 // create linear rep for m : n
-static F1X(jtlcolon){F1PREFIP;A*v,x,y;C*s,*s0;I m,n;
+static A jtlcolon(J jt,A w,A *ltext){F1PREFIP;A*v,x,y;C*s,*s0;I m,n;
  RZ(y=unparsem(num(1),w));
  n=AN(y); v=AAV(y); RZ(x=lrr(VAV(w)->fgh[0]));
  if(2>n||2==n&&1==AN(v[0])&&':'==CAV(v[0])[0]){
