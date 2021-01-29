@@ -3,6 +3,8 @@
 /*                                                                         */
 /* Rational Numbers                                                        */
 
+
+#define QF2(f)          Q f(J jt,Q a,Q w)
 #define QASSERT(b,e)    {if(!(b)){jsignal(e); return zeroQ;}}
 #define QEPILOG(q)      {Q z9; z9=(qstd(q)); if(!gc3(&z9.n,&z9.d,0L,_ttop))return zeroQ; return z9;}
 #define QRE(exp)        {if((exp),jt->jerr)return zeroQ;}
@@ -20,9 +22,9 @@
 
 extern Q jtqstd(J jt,   Q  w);
 
-extern Q jtqdiv(J jt,Q a,Q w);
-extern Q jtqminus(J jt,Q a,Q w);
-extern Q jtqplus(J jt,Q a,Q w);
-extern Q jtqtymes(J jt,Q a,Q w);
+extern QF2(jtqdiv);
+extern QF2(jtqminus);
+extern QF2(jtqplus);
+extern QF2(jtqtymes);
 
 extern Q zeroQ;
