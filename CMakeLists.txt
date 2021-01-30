@@ -81,6 +81,7 @@ add_compile_options($<$<COMPILE_LANG_AND_ID:CXX,AppleClang,Clang>:-Wno-delete-no
 
 add_subdirectory(jsrc)
 add_subdirectory(base64)
+add_subdirectory("docs")
 
 if(BUILD_SHARED_LIBS)
     set_target_properties(j-base64 PROPERTIES
