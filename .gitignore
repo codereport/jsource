@@ -136,3 +136,12 @@ compile_commands.json
 *.exe
 *.out
 *.app
+
+# doxygen
+docs/doxygen
+docs/latex
+docs/html
+docs/make.bat
+docs/xml
+docs/_build
+docs/Makefile 
