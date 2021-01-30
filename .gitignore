@@ -119,3 +119,12 @@ build.ninja
 
 # Misc
 compile_commands.json
+
+# doxygen
+docs/doxygen
+docs/latex
+docs/html
+docs/make.bat
+docs/xml
+docs/_build
+docs/Makefile
