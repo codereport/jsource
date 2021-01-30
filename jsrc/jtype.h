@@ -87,37 +87,50 @@ typedef AD *A;
 #define JTFLAGMSK       255  // mask big enough to cover all defined flags
 #define JTALIGNBDY      8192  // jt is aligned on this boundary - all lower bits are 0 (the value is the size of an SDRAM page, to avoid row precharges while accessing jt)
 
-
 struct AD {
- union {
-  I k;
-  A chain;   // used when block is on free chain
-  A globalst;  // for local symbol tables (SYMB types), AK points to the active global symbol table when the current sentence started parsing
- } kchain;
- FLAGT flag;
- union {
-  I m;  // Multi-use field. (1) For NJA/SMM blocks, size of allocation. (2) for blocks coming out of a COUNTITEMS verb, holds the number of items in the
-        // raze of the noun (if the types are identical) (3) for SYMB tables for explicit definitions, the address of the calling symbol table (4) for the block
-        // holding the amend offsets in x u} y, the number of axes of y that are built into the indexes in u (5) for name references, the value of jt->modifiercount when the name was last looked up
-        // (6) in the return from wordil, holds the number of words if any final NB. is discarded; (7) in the result of indexofsub when called for FORKEY, contains the
-        // number of partitions found; (8) in the self block for y L: n and u S: n, the address of the fs block for u; (9) in the call to jtisf (multiple assignment), holds the
-        // address of the symbol table being assigned to (10) in the y block internal to pv.c, used for flags (11) in hashtables in x15.c, the number of entries that have been hashed
-        // (12) in the faux arg to fixa, pointer to the recursive name-list block (13) in file-lock list and file-number list, the # valid files
-  A back; // For VIRTUAL blocks, points to backing block
-  A *zaploc;  // For all blocks, AM initially holds a pointer to the place in the tpop stack (or hijacked tpop stack) that points back to the allocated block.  This value is guaranteed
-        // to remain valid as long as the block is nonvirtual inplaceable and might possibly return as a result to the parser or result assembly  (in cases under m above, the block cannot become such a result)
-} mback;
- union {
-  I t;  // type
-  A proxychain;  // used when block is on free chain
- } tproxy;
- I c;  // usecount
-//  NOTE!! result.h faux cellshape block depends on n, r, and s being in place from here to the end of this struct, with 2 Is from n to s
- I n;        // # atoms - always 1 for sparse arrays
- RANKT r;    // rank
- US h;       // reserved for allocator.  Not used for AFNJA memory
- UI4 fill;   // On 64-bit systems, there will be a padding word here - insert in case compiler doesn't
- I s[1];     // shape starts here.  NOTE!! s[0] is always OK to fetch.  We allocate 8 words minimum and s[0] is the last.
+    union {
+        I k;
+        A chain;     // used when block is on free chain
+        A globalst;  // for local symbol tables (SYMB types), AK points to the active global symbol
+                     // table when the current sentence started parsing
+    } kchain;
+    FLAGT flag;
+    union {
+        I m;  // Multi-use field. (1) For NJA/SMM blocks, size of allocation. (2) for blocks coming
+              // out of a COUNTITEMS verb, holds the number of items in the raze of the noun (if the
+              // types are identical) (3) for SYMB tables for explicit definitions, the address of
+              // the calling symbol table (4) for the block holding the amend offsets in x u} y, the
+              // number of axes of y that are built into the indexes in u (5) for name references,
+              // the value of jt->modifiercount when the name was last looked up (6) in the return
+              // from wordil, holds the number of words if any final NB. is discarded; (7) in the
+              // result of indexofsub when called for FORKEY, contains the number of partitions
+              // found; (8) in the self block for y L: n and u S: n, the address of the fs block for
+              // u; (9) in the call to jtisf (multiple assignment), holds the address of the symbol
+              // table being assigned to (10) in the y block internal to pv.c, used for flags (11)
+              // in hashtables in x15.c, the number of entries that have been hashed (12) in the
+              // faux arg to fixa, pointer to the recursive name-list block (13) in file-lock list
+              // and file-number list, the # valid files
+        A back;     // For VIRTUAL blocks, points to backing block
+        A* zaploc;  // For all blocks, AM initially holds a pointer to the place in the tpop stack
+                    // (or hijacked tpop stack) that points back to the allocated block.  This value
+                    // is guaranteed to remain valid as long as the block is nonvirtual inplaceable
+                    // and might possibly return as a result to the parser or result assembly  (in
+                    // cases under m above, the block cannot become such a result)
+    } mback;
+    union {
+        I t;           // type
+        A proxychain;  // used when block is on free chain
+    } tproxy;
+    I c;  // usecount
+    //  NOTE!! result.h faux cellshape block depends on n, r, and s being in place from here to the
+    //  end of this struct, with 2 Is from n to s
+    I n;       // # atoms - always 1 for sparse arrays
+    RANKT r;   // rank
+    US h;      // reserved for allocator.  Not used for AFNJA memory
+    UI4 fill;  // On 64-bit systems, there will be a padding word here - insert in case compiler
+               // doesn't
+    I s[1];  // shape starts here.  NOTE!! s[0] is always OK to fetch.  We allocate 8 words minimum
+             // and s[0] is the last.
 };
 
 typedef struct {A a,t;}TA;
@@ -136,14 +149,14 @@ typedef I SI;
 
 /* Fields of type A                                                        */
 
-#define AK(x)           ((x)->kchain.k)        /* offset of ravel wrt x           */
-#define AKASA(x)        ((x)->kchain.chain)       // the AK field for synthetic self blocks
-#define AKGST(x)        ((x)->kchain.globalst)        // global symbol table for this local symbol table
-#define AFLAG(x)        ((x)->flag)     /* flag                            */
-#define AM(x)           ((x)->mback.m)        /* Max # bytes in ravel            */
-#define ABACK(x)        ((x)->mback.back)        /* In virtual noun, pointer to backing block            */
-#define AZAPLOC(x)      ((x)->mback.zaploc)    // on allocation, the address of the tstack entry that will free the block
-#define AZAPLOCV(x)     ((A*)((x)->s[(x)->r]))    // for virtual blocks,  the address of the tstack entry that will free the block
+#define AK(x) ((x)->kchain.k)               // offset of ravel wrt x
+#define AKASA(x) ((x)->kchain.chain)        // the AK field for synthetic self blocks
+#define AKGST(x) ((x)->kchain.globalst)     // global symbol table for this local symbol table
+#define AFLAG(x) ((x)->flag)                // flag
+#define AM(x) ((x)->mback.m)                // Max # bytes in ravel
+#define ABACK(x) ((x)->mback.back)          // In virtual noun, pointer to backing block
+#define AZAPLOC(x) ((x)->mback.zaploc)      // on allocation, the address of the tstack entry that will free the block
+#define AZAPLOCV(x) ((A*)((x)->s[(x)->r]))  // for virtual blocks,  the address of the tstack entry that will free the block
 #define AT(x)           ((x)->tproxy.t)        /* Type; one of the #define below  */
 #define AC(x)           ((x)->c)        /* Reference count.                */
 #define AN(x)           ((x)->n)        /* # elements in ravel             */
