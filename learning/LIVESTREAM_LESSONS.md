@@ -70,3 +70,17 @@ palindrome =. (-: |.)    NB. hook version
 * Need to review [Mixing C and C++ Code](https://isocpp.org/wiki/faq/mixing-c-and-cpp)
 * We learned J code base has the egregious local variable seemingly not used but its use is hidden in a macro
 * :star: Learned how to correctly set up repo merge conditions (aka build / reviews - summary: only one, use *)
+
+### Livestream #5 2021-01-30
+* Highlight section of Github Insights
+* How to add an GitHub action 
+* -term (read minus term) emits that term from a Google search
+* J:
+```ijs
+{. NB. Head
+{: NB. Tail
+tally =. {. @ $
+```
+* Regex \w for word (0-9, a-z, A-Z, _ etc) \W is for non-word 
+* `k & ~1` is equivalent to `k != 0 && k != 1`
+* A bunch of doxygen / breathe / sphinx stuff
