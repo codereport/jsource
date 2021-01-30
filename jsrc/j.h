@@ -443,8 +443,10 @@ typedef double float64x2_t __attribute__ ((vector_size (16)));
 #define SETICFR(w,f,r,targ) (targ=(I)(AS(w)+f), targ=(r)?targ:(I)&I1mem, targ=*(I*)targ)
 // Shape item s, but 1 if index is < 0
 #define SHAPEN(w,s,targ) (targ=AS(w)[s], targ=(s)<0?1:targ)
+
 // Item count
 #define SETIC(w,targ)   (targ=AS(w)[0], targ=AR(w)?targ:1)  //   (AR(w) ? *AS(w) : 1L)
+
 #define ICMP(z,w,n)     memcmpne((z),(w),(n)*SZI)
 #define ICPY(z,w,n)     memcpy((z),(w),(n)*SZI)
 #define IFCMPNAME(name,string,len,stmt) if((name)->m==(len))if(!memcmpne((name)->s,string,len))stmt

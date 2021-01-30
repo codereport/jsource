@@ -113,11 +113,11 @@ struct AD {
  } tproxy;
  I c;  // usecount
 //  NOTE!! result.h faux cellshape block depends on n, r, and s being in place from here to the end of this struct, with 2 Is from n to s
- I n;  // # atoms - always 1 for sparse arrays
- RANKT r;  // rank
- US h;   // reserved for allocator.  Not used for AFNJA memory
+ I n;        // # atoms - always 1 for sparse arrays
+ RANKT r;    // rank
+ US h;       // reserved for allocator.  Not used for AFNJA memory
  UI4 fill;   // On 64-bit systems, there will be a padding word here - insert in case compiler doesn't
- I s[1];   // shape starts here.  NOTE!! s[0] is always OK to fetch.  We allocate 8 words minimum and s[0] is the last.
+ I s[1];     // shape starts here.  NOTE!! s[0] is always OK to fetch.  We allocate 8 words minimum and s[0] is the last.
 };
 
 typedef struct {A a,t;}TA;
