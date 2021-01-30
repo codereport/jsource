@@ -2,7 +2,7 @@
 #  uses: kentaro-m/auto-assign-action@v1.1.2
 
 name: 'Auto Assign'
-on: pull_request
+on: pull_request_target
 
 jobs:
   add-reviews:
