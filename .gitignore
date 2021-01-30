@@ -73,3 +73,26 @@ make2/
 cmake-build-*/
 # clion's settings folder. keep or not up to you. can be useful for spellcheck etc.
 .idea
+
+# QtCreator config files
+# A listing of all the files included in the project
+*.files
+
+# Include directories
+*.includes
+
+# Project configuration settings like predefined Macros
+*.config
+
+# Qt Creator settings
+*.creator
+
+# User project settings
+*.creator.user*
+
+# Qt Creator backups
+*.autosave
+
+# Flags for Clang Code Model
+*.cxxflags
+*.cflags
