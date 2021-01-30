@@ -119,3 +119,20 @@ build.ninja
 
 # Misc
 compile_commands.json
+# Prerequisites
+*.d
+
+# Precompiled Headers
+*.gch
+*.pch
+
+# Compiled Static libraries
+*.lai
+*.la
+*.a
+*.lib
+
+# Executables
+*.exe
+*.out
+*.app
