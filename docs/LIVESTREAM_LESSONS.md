@@ -23,7 +23,7 @@
 * Got `git lg` setup
 * Learned the `netdefs` folder can't be deleted (at least for the moment)
 
-### Livestream #4 2021-01-23
+### Livestream #3 2021-01-23
 * Learned about Travis-CI
 * To avoid crazy Travis-CI issues: HOMEBREW_NO_AUTO_UPDATE=1 brew install
 * `filename:` to filter for files on GitHub search
@@ -62,7 +62,7 @@ palindrome =. (-: |.)    NB. hook version
 * We should also look into [Buildkite](https://buildkite.com/)
 * Maybe also [Appveyor](https://www.appveyor.com)
 
-### Livestream #3 2021-01-25
+### Livestream #4 2021-01-25
 * Ctrl+Shift+\ is select to matching brace
 * `git commit -m`
 * `git branch -m oldname newname` to rename branch
