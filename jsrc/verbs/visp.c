@@ -65,7 +65,7 @@ A jtiovsd(J jt,I mode,A a,A w){A ae,ax,ay,p,z;B h,*pv;I at,j,m,n,t,wt,*v,*yv;P*a
 
 
 A jtindexofxx(J jt,I mode,A a,A w){A x;B*b,*c,s;I ar,d,j,m,n,wr;P*p;
- ARGCHK2(a,w);
+ if(!(a && w)) return 0;
  s=1&&SPARSE&AT(a); ar=AR(a); wr=AR(w); d=wr-ar;
  if(s){p=PAV(a); m=ar; n=wr;}
  else {p=PAV(w); m=wr; n=ar;}
@@ -77,7 +77,7 @@ A jtindexofxx(J jt,I mode,A a,A w){A x;B*b,*c,s;I ar,d,j,m,n,wr;P*p;
 }    /* dense i. sparse   or   sparse i. dense;  1<AR(a) */ 
 
 static A jtifdz(J jt, A w){I m;
- ARGCHK1(w);
+ if(!w) return 0;
  m=bplg(AT(w))-LGSZI; AN(w)<<=m; *(1+AS(w))<<=m;
  AT(w)=INT;
  return w;
@@ -148,7 +148,7 @@ static B jtiopart(J jt,A w,I r,I mm,I*zc,A*zi,A*zj,A*zx){A b,f,wx,x,wy,y;B*bv;
 }
 
 A jtindexofss(J jt,I mode,A a,A w){A ai,aj,ax,wi,wj,wx,x,y,z;B aw=a!=w;I ar,c,m,mm,n,r,*u,*v,wr;P*ap,*wp,*zp;
- ARGCHK2(a,w);
+ if(!(a && w)) return 0;
  ar=AR(a); ap=PAV(a);
  wr=AR(w); wp=PAV(w); r=1+wr-ar;
  RZ(ioresparse(aw,&a,&w));
@@ -176,7 +176,7 @@ A jtindexofss(J jt,I mode,A a,A w){A ai,aj,ax,wi,wj,wx,x,y,z;B aw=a!=w;I ar,c,m,
 }    /* sparse i. sparse */
 
  A jtnubsievesp(J jt, A w){A e,x,y,z;I c,j,m,n,r,*s,*u,*v,*vv,wr,*yv;P*p;D rkblk[16];
- ARGCHK1(w);
+ if(!w) return 0;
  wr=AR(w); r=(RANKT)jt->ranks; r=wr<r?wr:r; RESETRANK;
  n=r?*(AS(w)+wr-r):1;
  if(r<wr)return ATOMIC2(jt,IX(n),irs2(w,w,0L,r,r,jtindexof),rkblk,1L,r?1L:0L,CEQ);  // seems to fail

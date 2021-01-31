@@ -16,7 +16,7 @@ static A jtonf1(J jt,    A w,A self){PROLOG(0021);DECLFG;A z;I flag=sv->flag,m=j
 }
 
 static A jtuponf2(J jt,A a,A w,A self){PROLOG(0022);DECLFG;A z;I flag=sv->flag,m=jt->xmode;
- ARGCHK2(a,w);
+ if(!(a && w)) return 0;
  if(primitive(gs))if(flag&VFLR)jt->xmode=XMFLR; else if(flag&VCEIL)jt->xmode=XMCEIL;
  if(RAT&AT(a))RZ(a=pcvt(XNUM,a));
  if(RAT&AT(w))RZ(w=pcvt(XNUM,w));
@@ -112,7 +112,7 @@ CS2IP(static,static,on2, \
 static A on20(J jt,A a,A w,A self){return jtrank2ex0(jt,a,w,self,on2cell);}  // pass inplaceability through
 
 static A atcomp(J jt,A a,A w,A self){AF f;A z;
- ARGCHK2(a,w); 
+ if(!(a && w)) return 0;
  f=atcompf(a,w,self);
  if(f){
   I postflags=jt->workareas.compsc.postflags;
@@ -123,7 +123,7 @@ static A atcomp(J jt,A a,A w,A self){AF f;A z;
 }
 
 static A atcomp0(J jt,A a,A w,A self){A z;AF f;
- ARGCHK2(a,w);
+ if(!(a && w)) return 0;
  f=atcompf(a,w,self);
  PUSHCCT(1.0)
  if(f){
@@ -372,7 +372,7 @@ static A with2(J jt,A a,A w,A self){A z; return df1(z,w,powop(self,a,0));}
 
 // u&v
  A jtamp(J jt,A a,A w){A h=0;AF f1,f2;B b;C c,d=0;I flag,flag2=0,linktype=0,mode=-1,p,r;V*u,*v;
- ARGCHK2(a,w);
+ if(!(a && w)) return 0;
  switch(CONJCASE(a,w)){
  default: ASSERTSYS(0,"amp");
  case NN: ASSERT(0,EVDOMAIN);

@@ -6,7 +6,7 @@
 #include "j.h"
 
 B jtscheck(J jt,A w){A a,e,x,y;I k1,k2,r,*s,t;P*p;D rkblk[16];
- ARGCHK1(w);
+ if(!w) return 0;
  r=AR(w); s=AS(w); t=AT(w);
  if(t&DENSE)return 1;
  ASSERTSYS(r,"scheck rank");
@@ -38,7 +38,7 @@ B jtscheck(J jt,A w){A a,e,x,y;I k1,k2,r,*s,t;P*p;D rkblk[16];
 static A jtselm(J jt,I t){return t&NUMERIC?cvt(t,num(0)):t&BOX?ds(CACE):chrspace;}
 
 A jtpaxis(J jt,I r,A a){A y,z;B*b;I j,*u,*v;
- ARGCHK1(a);
+ if(!a) return 0;
  if(!(INT&AT(a)))RZ(a=cvt(INT,a));
  u=AV(a);
  GATV0(y,B01,r,1); b=BAV(y); 
@@ -155,7 +155,7 @@ A jtsparseit(J jt,A w,A a,A e){PROLOG(0091);A ax,c,x,y,z;B b,*cv;I cm,cn,m,n,r,*
 }
 
  A jtdenseit(J jt, A w){A a,e,q,s1,x,y,z;B b;C*xv,*zv;I an,ck,k,n,r,t,*s,xn,*yv;P*wp;
- ARGCHK1(w);
+ if(!w) return 0;
  r=AR(w); t=AT(w);
  if(!r||t&DENSE)return ca(w);
  t=DTYPE(t);
@@ -172,7 +172,7 @@ A jtsparseit(J jt,A w,A a,A e){PROLOG(0091);A ax,c,x,y,z;B b,*cv;I cm,cn,m,n,r,*
 }    /* $.^:_1 */
 
  A jtreaxis(J jt,A a,A w){A a1,e,p,q,x,y,z;B*b;I c,d,j,k,m,r,*u,*v,*ws,wt;P*wp,*zp;
- ARGCHK2(a,w);
+ if(!(a && w)) return 0;
  wt=AT(w);
  if(wt&DENSE)return sparseit(w,a,selm(wt));
  r=AR(w); ws=AS(w); wp=PAV(w);
@@ -227,7 +227,7 @@ static A jtaxbytes1(J jt,I t,I an,I m,I xr,I*xs){I k,z;
 }
 
 static A jtaxbytes(J jt,A a,A w){A a1,e,p,q,x;B*b;I c,d,j,m,n=0,r,*u,*v,*ws,wt;P*wp;
- ARGCHK2(a,w);
+ if(!(a && w)) return 0;
  r=AR(w); ws=AS(w); wt=AT(w); 
  GATV0(q,INT,r,1); u=AV(q); j=0;
  RZ(a1=vaxis(r,a)); d=AN(a1);  
@@ -252,7 +252,7 @@ static A jtaxbytes(J jt,A a,A w){A a1,e,p,q,x;B*b;I c,d,j,m,n=0,r,*u,*v,*ws,wt;P
 }    /* bytes required for (2;a)$.w */
 
 static A jtaxtally(J jt,A a,A w){A a1,e,p,q,x;B*b;I c,d,j,m,n=0,r,*u,*v,*ws,wt;P*wp;
- ARGCHK2(a,w);
+ if(!(a && w)) return 0;
  r=AR(w); ws=AS(w); wt=AT(w); 
  GATV0(q,INT,r,1); u=AV(q); j=0;
  RZ(a1=vaxis(r,a)); d=AN(a1);  
@@ -275,7 +275,7 @@ static A jtaxtally(J jt,A a,A w){A a1,e,p,q,x;B*b;I c,d,j,m,n=0,r,*u,*v,*ws,wt;P
 }    /* #4$.(2;a)$.w */
 
  A jtrezero(J jt,A a,A w){A x,z;I at,t,wt,zt;P*wp,*zp;
- ARGCHK2(a,w);
+ if(!(a && w)) return 0;
  at=AT(a); wp=PAV(w); x=SPA(wp,x); wt=AT(x);
  ASSERT(!AR(a),EVRANK);
  ASSERT(HOMO(at,wt),EVDOMAIN);
@@ -290,7 +290,7 @@ static A jtaxtally(J jt,A a,A w){A a1,e,p,q,x;B*b;I c,d,j,m,n=0,r,*u,*v,*ws,wt;P
 }    /* respecify the sparse element */
 
  A jtunzero(J jt, A w){A e,q,x,z;I r;P*wp,*zp;
- ARGCHK1(w);
+ if(!w) return 0;
  wp=PAV(w); e=SPA(wp,e); x=SPA(wp,x); r=AR(x)-1;
  GASPARSE(z,AT(w),1,AR(w),AS(w)); zp=PAV(z);
  RZ(q=__not(irs2(x,reshape(vec(INT,r,1+AS(x)),e),0L,r,r,jtmatch)));
@@ -302,14 +302,14 @@ static A jtaxtally(J jt,A a,A w){A a1,e,p,q,x;B*b;I c,d,j,m,n=0,r,*u,*v,*ws,wt;P
 }    /* remove completely sparse cells */
 
 static A jtsparsep1(J jt, A w){A*wv;I n=0;
- ARGCHK1(w);
+ if(!w) return 0;
  ASSERT(1>=AR(w),EVRANK); 
  if(BOX&AT(w)){n=AN(w); wv=AAV(w); ASSERT(1<=n&&n<=3||5==n,EVLENGTH);}
  return sparse1a(0<n?wv[0]:w,1<n?wv[1]:mark,2<n?wv[2]:mark,3<n?wv[3]:mark,4<n?wv[4]:mark);
 }
 
 static A jtsparsen1(J jt, A w){A*u,z;P*p;
- ARGCHK1(w);
+ if(!w) return 0;
  ASSERT(SPARSE&AT(w),EVDOMAIN);
  GAT0(z,BOX,3,1); u=AAV(z); p=PAV(w);
  u[0]=shape(w); u[1]=ca(SPA(p,a)); u[2]=ca(SPA(p,e));
@@ -317,13 +317,13 @@ static A jtsparsen1(J jt, A w){A*u,z;P*p;
 }
 
  A jtsparse1(J jt, A w){
- ARGCHK1(w);
+ if(!w) return 0;
  if(!AR(w)||SPARSE&AT(w))return ca(w);
  return sparseit(w,IX(AR(w)),selm(AT(w)));
 }    /* $. y */
 
  A jtsparse2(J jt,A a,A w){A*av,q=0;B b;I j,k,t,*v;P*p;
- ARGCHK2(a,w);
+ if(!(a && w)) return 0;
  if(BOX&AT(a)){
   ASSERT(1==AR(a),EVRANK);
   ASSERT(2==AN(a),EVLENGTH);

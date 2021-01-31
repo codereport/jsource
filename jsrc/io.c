@@ -235,7 +235,7 @@ void breakclose(J jt)
 
 
  A jtjoff(J jt, A w){I x;
- ARGCHK1(w);
+ if(!w) return 0;
  x=i0(w);
  jt->jerr=0; jt->etxn=0; /* clear old errors */
  if(jt->sesm)jsto(jt, MTYOEXIT,(C*)x); else JFree(jt);
@@ -284,7 +284,7 @@ C* getlocale(J jt){A y=locname(mtv); y=AAV(y)[0]; return CAV(str0(y));}
  A jtwd(J jt,    A w,A self){A z=0;C*p=0;D*pd;I e,*pi,t;V*sv;
   F1PREFIP;
   F1RANK(1,jtwd,self);
-  ARGCHK1(w);
+  if(!w) return 0;
   ASSERT(2>AR(w),EVRANK);
   sv=VAV(self);
   t=i0(sv->fgh[1]);  // the n arg from the original 11!:n

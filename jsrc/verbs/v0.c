@@ -30,7 +30,7 @@ static CFR(jtcfrx,X,XNUM,xplus,xtymes, negate)
 static CFR(jtcfrq,Q,RAT, qplus,qtymes,QNEGATE)
 
 static A jtrsort(J jt, A w){A t,z;
- ARGCHK1(w);
+ if(!w) return 0;
  PUSHCCT(1.0-FUZZ)
  RZ(t=over(mag(w),cant1(rect(w))));
  A tt; RZ(IRS2(t,t,0L,1L,1L,jtindexof,tt));
@@ -260,7 +260,7 @@ static A jtrfc(J jt, A w){A r,w1;I m=0,n,t;
 
 
 static A jtmnomx(J jt,I m,A w){A s,*wv,x,z=w,*zv;I i,n,r;
- ARGCHK1(w);
+ if(!w) return 0;
  if(BOX&AT(w)){
   n=AN(w); wv=AAV(w);  RZ(s=sc(m));
   GATV(z,BOX,n,AR(w),AS(w)); zv=AAV(z);
@@ -277,7 +277,7 @@ static A jtmnomx(J jt,I m,A w){A s,*wv,x,z=w,*zv;I i,n,r;
 }    /* standardize multinomial right arg */
 
 static A jtpoly2a(J jt,A a,A w){A c,e,x;I m;D rkblk[16];
- ARGCHK2(a,w);
+ if(!(a && w)) return 0;
  m=*(1+AS(a))-1;
  ASSERT(AT(a)&NUMERIC,EVDOMAIN);
  ASSERT(2==AR(a),EVRANK);
@@ -290,7 +290,7 @@ static A jtpoly2a(J jt,A a,A w){A c,e,x;I m;D rkblk[16];
 
 // x p. y    Supports IRS on the y argument; supports inplace
  A jtpoly2(J jt,A a,A w,A self){F2PREFIP;A c,za;I b;D*ad,d,p,*x,u,*z;I an,at,j,t,n,wt;Z*az,e,q,*wz,y,*zz;
- ARGCHK2(a,w);
+ if(!(a && w)) return 0;
  { RANK2T jtr=jt->ranks;I acr=jtr>>RANKTX; acr=AR(a)<acr?AR(a):acr; RESETRANK; // cell-rank of a
    if(((1-acr)|(acr-AR(a)))<0){return rank2ex(a,w,self,MIN(acr,1),0,acr,MIN(AR(w),jtr&RMAX),jtpoly2);}  // loop if multiple cells of a
  }

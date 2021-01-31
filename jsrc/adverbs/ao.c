@@ -7,7 +7,7 @@
 
 // This is the derived verb for f/. y
 static A jtoblique(J jt,    A w,A self){A x,y,z;I m,n,r;D rkblk[16];
- F1PREFIP;ARGCHK1(w);
+ F1PREFIP;if(!w) return 0;
  r=AR(w);  // r = rank of w
  // create y= ,/ w - the _2-cells of w arranged in a list (virtual block)
  RZ(y=redcat(w,self)); if(1>=r){m=AN(w); n=1;}else{m=AS(w)[0]; n=AS(w)[1];}
@@ -36,7 +36,7 @@ static A jtoblique(J jt,    A w,A self){A x,y,z;I m,n,r;D rkblk[16];
 
 // Derived verb for f//. y for atomic f
 static A jtobqfslash(J jt,    A w,A self){A y,z;B b=0,p;C er,id,*wv;I c,d,k,m,m1,mn,n,n1,r,*s,wt;
- ARGCHK1(w);
+ if(!w) return 0;
  r=AR(w); s=AS(w); wt=AT(w); wv=CAV(w);
  if((-AN(w)&(1-r)&-(DENSE&wt))>=0)return oblique(w,self);  // revert to default if rank<2, empty, or sparse.  This implies m/n below are non0
  y=FAV(self)->fgh[0]; y=FAV(y)->fgh[0]; id=FAV(y)->id;
@@ -98,7 +98,7 @@ static A jtobqfslash(J jt,    A w,A self){A y,z;B b=0,p;C er,id,*wv;I c,d,k,m,m1
  }}
 
  A jtpolymult(J jt,A a,A w,A self){A f,g,z;B b=0;C*av,c,d,*wv;I at,i,j,k,m,m1,n,p,t,wt,zn;V*v;
- ARGCHK3(a,w,self);
+ if(!(a && w && self)) return 0;
  ASSERT(!((AT(a)|AT(w))&SPARSE),EVNONCE);
  m=AN(a); n=AN(w); m1=m-1; zn=m+n-1; k=MIN(m,n);
  at=AT(a); wt=AT(w); t=maxtyped(at,wt);
@@ -157,7 +157,7 @@ static A jtobqfslash(J jt,    A w,A self){A y,z;B b=0,p;C er,id,*wv;I c,d,k,m,m1
 static A jtkey(J jt,A a,A w,A self);
 
 static A jtkeysp(J jt,A a,A w,A self){PROLOG(0008);A b,by,e,q,x,y,z;I j,k,n,*u,*v;P*p;
- ARGCHK2(a,w);
+ if(!(a && w)) return 0;
  {I t2; ASSERT(SETIC(a,n)==SETIC(w,t2),EVLENGTH);}  // verify agreement.  n is # items of a
  RZ(q=indexof(a,a)); p=PAV(q); 
  x=SPA(p,x); u=AV(x);
@@ -176,7 +176,7 @@ static A jtkeysp(J jt,A a,A w,A self){PROLOG(0008);A b,by,e,q,x,y,z;I j,k,n,*u,*
 
 // a u/. w.  Self-classify a, then rearrange w and call cut.  Includes special cases for f//.
 static A jtkey(J jt,A a,A w,A self){F2PREFIP;PROLOG(0009);A ai,z=0;I nitems;
- ARGCHK2(a,w);
+ if(!(a && w)) return 0;
  if((SPARSE&AT(a))!=0)return keysp(a,w,self);  // if sparse, go handle it
  {I t2; ASSERT(SETIC(a,nitems)==SETIC(w,t2),EVLENGTH);}  // verify agreement.  nitems is # items of a
  RZ(ai=indexofsub(IFORKEY,a,a));   // self-classify the input using ct set before this verb
@@ -489,7 +489,7 @@ static A jtkey(J jt,A a,A w,A self){F2PREFIP;PROLOG(0009);A ai,z=0;I nitems;
 
 // bivalent entry point: a </. w   or  (</. i.@#) w
  A jtkeybox(J jt,A a,A w,A self){F2PREFIP;PROLOG(0009);A ai,z=0;I nitems;
- ARGCHK2(a,w);  // we don't neep ip, but all jtkey dyads must support it
+ if(!(a && w)) return 0;  // we don't neep ip, but all jtkey dyads must support it
  if((SPARSE&AT(a))!=0)return (AT(w)&NOUN?(AF)jtkeysp:(AF)jthook1cell)(jt,a,w,self);  // if sparse, go handle it
  SETIC(a,nitems);   // nitems is # items in a and w
  I cellatoms, celllen;  // number of atoms in an item of w, and the number of bytes therein.  celllen is negative for the monad
@@ -637,7 +637,7 @@ const UI4 shortrange[3][4] = {{0,65536,65536,0}, {0,2,258,0}, {0,256,65536,0}}; 
 static A jtkeytally(J jt,A a,A w,A self);
 
 static A jtkeytallysp(J jt, A w){PROLOG(0015);A b,e,q,x,y,z;I c,d,j,k,*u,*v;P*p;
- ARGCHK1(w);
+ if(!w) return 0;
  RZ(q=indexof(w,w));
  p=PAV(q); 
  x=SPA(p,x); u=AV(x); c=AN(x);
@@ -652,7 +652,7 @@ static A jtkeytallysp(J jt, A w){PROLOG(0015);A b,e,q,x,y,z;I c,d,j,k,*u,*v;P*p;
 }    /* x #/.y , sparse x */
 
 static A jtkeytally(J jt,A a,A w,A self){F2PREFIP;PROLOG(0016);A z,q;I at,j,k,n,r,s,*qv,*u,*v;
- ARGCHK2(a,w);  // we don't neep ip, but all jtkey dyads must support it
+ if(!(a && w)) return 0;  // we don't neep ip, but all jtkey dyads must support it
  SETIC(a,n); at=AT(a);
  ASSERT(n==SETIC(w,k),EVLENGTH);
  if(!AN(a))return vec(INT,!!n,&AS(a)[0]);  // handle case of empties - a must have rank, so use AS[0] as  proxy for n
@@ -696,7 +696,7 @@ static A jtkeytally(J jt,A a,A w,A self){F2PREFIP;PROLOG(0016);A z,q;I at,j,k,n,
 
 //  bivalent entry point for x ({.,#)/.y or x (#,{.)/. y (dyad), or (({.,#)/. i.@#) y or ((#,{.)/. i.@#) y  (monad)
  A jtkeyheadtally(J jt,A a,A w,A self){F2PREFIP;PROLOG(0017);A f,q,x,y,z;I b;I at,*av,k,n,r,*qv,*u,*v,wt,*zv;
- ARGCHK2(a,w);  // we don't neep ip, but all jtkey dyads must support it
+ if(!(a && w)) return 0;  // we don't neep ip, but all jtkey dyads must support it
  SETIC(a,n); wt=AT(w);
  if((AT(w)&NOUN)!=0){
   // dyad: </.
@@ -778,7 +778,7 @@ static A jtkeytally(J jt,A a,A w,A self){F2PREFIP;PROLOG(0016);A z,q;I at,j,k,n,
  A jtsldot(J jt, A w){A h=0;AF f1=jtoblique,f2;C c,d,e;I flag=VJTFLGOK1|VJTFLGOK2;V*v;
 // NOTE: u/. is processed using the code for u;.1 and passing the self for /. into the cut verb.  So, the self produced
 // by /. and ;.1 must be the same as far as flags etc.
- ARGCHK1(w);
+ if(!w) return 0;
  if(NOUN&AT(w)){flag|=VGERL; RZ(h=fxeachv(1L,w));}
  v=VAV(w);
  switch(ID(w)){  // no default for f2: every path must set it

@@ -152,7 +152,7 @@ A jtcstr(J jt,C*s){A z; RZ(z=rifvs(str((I)strlen(s),s))); CAV(z)[AN(z)]=0; retur
 B evoke(A w){V*v=FAV(w); return CTILDE==v->id&&v->fgh[0]&&NAME&AT(v->fgh[0]);}
 
 // Extract the integer value from w, return it.  Set error if non-integral or non-atomic
-I jti0(J jt,A w){ARGCHK1(w);
+I jti0(J jt,A w){if(!w) return 0;
  if(AT(w)&INT+B01){ASSERT(!AR(w),EVRANK); return BIV0(w);}  // INT/B01 quickly
  if(AT(w)&FL){D d=DAV(w)[0]; D e=jround(d); I cval=(I)e;  // FL without call to cvt
   // if an atom is tolerantly equal to integer,  there's a good chance it is exactly equal.
@@ -188,7 +188,7 @@ A jtifb(J jt,I n,B* RESTRICT b){A z;I p,* RESTRICT zv;
 }    /* integer vector from boolean mask */
 
 // i. # w
-static A jtii(J jt, A w){ARGCHK1(w); I j; return IX(SETIC(w,j));}
+static A jtii(J jt, A w){if(!w) return 0; I j; return IX(SETIC(w,j));}
 
 // Return the higher-priority of the types s and t.  s and t are known to be not equal.
 // If either is sparse, convert the result to sparse.
@@ -241,7 +241,7 @@ A jtstr(J jt,I n,C*s){A z; GATV0(z,LIT,n,1); MC(AV(z),s,n); return z;}
 A jtstrq(J jt,I n,C*s){A z; I qc=2; DO(n, qc+=s[i]=='\'';) GATV0(z,LIT,n+qc,1); C *zv=CAV(z); *zv++='\''; DO(n, C c=s[i]; if(c=='\'')*zv++=c; *zv++=c;) *zv='\''; return z;}
 
 // w is a LIT string; result is a new block with the same string, with terminating NUL added
- A jtstr0(J jt, A w){A z;C*x;I n; ARGCHK1(w); ASSERT(LIT&AT(w),EVDOMAIN); n=AN(w); GATV0(z,LIT,n+1,1); x=CAV(z); MC(x,AV(w),n); x[n]=0; return z;}
+ A jtstr0(J jt, A w){A z;C*x;I n; if(!w) return 0; ASSERT(LIT&AT(w),EVDOMAIN); n=AN(w); GATV0(z,LIT,n+1,1); x=CAV(z); MC(x,AV(w),n); x[n]=0; return z;}
 
 // return A-block for a 2-atom integer vector containing a,b
 A jtv2(J jt,I a,I b){A z;I*x; GAT0(z,INT,2,1); x=AV(z); *x++=a; *x=b; return z;}
@@ -271,11 +271,11 @@ for(i=0;i<n<<bplg(t);i++)*p++=!!(*q++);
 #endif
 
 // Convert w to integer if it isn't integer already (the usual conversion errors apply)
- A jtvi(J jt, A w){ARGCHK1(w); return INT&AT(w)?w:cvt(INT,w);}
+ A jtvi(J jt, A w){if(!w) return 0; return INT&AT(w)?w:cvt(INT,w);}
 
 // Audit w to ensure valid integer value(s).  Error if non-integral.  Result is A block for integer array.  Infinities converted to IMAX/-IMAX
  A jtvib(J jt, A w){A z;D d,e,*wv;I i,n,*zv;
- ARGCHK1(w);
+ if(!w) return 0;
  if(AT(w)&INT)return RETARG(w);  // handle common non-failing cases quickly: INT and boolean
  if(AT(w)&B01){if(!AR(w))return zeroionei(BAV(w)[0]); return cvt(INT,w);}
  if(w==ainf)return imax;  // sentence words of _ always use the same block, so catch that too
@@ -302,12 +302,12 @@ for(i=0;i<n<<bplg(t);i++)*p++=!!(*q++);
 }
 
 // Convert w to integer if needed, and verify every atom is nonnegative
- A jtvip(J jt, A w){I*v; ARGCHK1(w); if(!(INT&AT(w)))RZ(w=cvt(INT,w)); v=AV(w); DQ(AN(w), ASSERT(0<=*v++,EVDOMAIN);); return w;}
+ A jtvip(J jt, A w){I*v; if(!w) return 0; if(!(INT&AT(w)))RZ(w=cvt(INT,w)); v=AV(w); DQ(AN(w), ASSERT(0<=*v++,EVDOMAIN);); return w;}
 
 // Convert w to string, verify it is a list or atom
- A jtvs(J jt, A w){ARGCHK1(w); ASSERT(1>=AR(w),EVRANK); return LIT&AT(w)?w:cvt(LIT,w);}
+ A jtvs(J jt, A w){if(!w) return 0; ASSERT(1>=AR(w),EVRANK); return LIT&AT(w)?w:cvt(LIT,w);}
      /* verify string */
 
 // Convert w to utf8 string, verify it is a list or atom
- A jtvslit(J jt, A w){ARGCHK1(w); ASSERT(1>=AR(w),EVRANK); return LIT&AT(w)?w:(C2T+C4T)&AT(w)?toutf8(w):cvt(LIT,w);}
+ A jtvslit(J jt, A w){if(!w) return 0; ASSERT(1>=AR(w),EVRANK); return LIT&AT(w)?w:(C2T+C4T)&AT(w)?toutf8(w):cvt(LIT,w);}
      /* verify string */

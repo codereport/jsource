@@ -214,14 +214,14 @@ A jtnamerefacv(J jt, A a, L* w){A y;V*v;
 // For other types, we build a function ref to 'name~', and fill in the type, rank, and a pointer to the name;
 //  the name will be dereferenced when the function is executed
 A jtnameref(J jt,A w,A locsyms){
- ARGCHK1(w);
+ if(!w) return 0;
  return namerefacv(w,syrd(w,locsyms));  // get the symbol-table slot for the name (don't store the locale-name); return its 'value'
 }    /* argument assumed to be a NAME */
 
 // Create a pseudo-named entity.  a is the name, w is the actual entity
 // Result has type ':' but goes to unquote.  We mark a pseudo-named entity by having f=0, g=name, h=actual entity to execute
  A jtnamerefop(J jt,A a,A w){V*v;
- ARGCHK2(a,w);
+ if(!(a && w)) return 0;
  v=FAV(w);
  return fdef(0,CCOLON,VERB,  jtunquote1,jtunquote, 0L,a,w, VXOPCALL|v->flag, v->mr,lrv(v),rrv(v));
 }    

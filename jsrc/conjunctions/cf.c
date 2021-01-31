@@ -82,7 +82,7 @@ A z;RZ(z=(g2)(jtinplace,fs,hx,gs));
 EPILOG(z);}
 
 static A jtfolkcomp(J jt,A a,A w,A self){F2PREFIP;DECLFGH;PROLOG(0034);A z;AF f;
- ARGCHK2(a,w);
+ if(!(a && w)) return 0;
  f=atcompf(a,w,self);
  if(f){
   I postflags=jt->workareas.compsc.postflags;
@@ -93,7 +93,7 @@ static A jtfolkcomp(J jt,A a,A w,A self){F2PREFIP;DECLFGH;PROLOG(0034);A z;AF f;
 }
 
 static A jtfolkcomp0(J jt,A a,A w,A self){F2PREFIP;DECLFGH;PROLOG(0035);A z;AF f;
- ARGCHK2(a,w);
+ if(!(a && w)) return 0;
  PUSHCCT(1.0)
  f=atcompf(a,w,self);
  if(f){
@@ -231,7 +231,7 @@ RZ(z=(f2)(jtinplace,a,gx,fs)); \
 , 0112)
 
 static A jthkiota(J jt,    A w,A self){DECLFG;A a,e;I n;P*p;
- ARGCHK1(w);
+ if(!w) return 0;
  SETIC(w,n);\
  if(SB01&AT(w)&&1==AR(w)){
   p=PAV(w); a=SPA(p,a); e=SPA(p,e); 
@@ -241,7 +241,7 @@ static A jthkiota(J jt,    A w,A self){DECLFG;A a,e;I n;P*p;
 }    /* special code for (# i.@#) */
 
 static A jthkodom(J jt,    A w,A self){DECLFG;B b=0;I n,*v;
- ARGCHK1(w);
+ if(!w) return 0;
  if(INT&AT(w)&&1==AR(w)){n=AN(w); v=AV(w); DO(n, if(b=0>v[i])break;); if(!b)return odom(2L,n,v);}
  return CALL2(f2,w,CALL1(g1,w,gs),fs);
 }    /* special code for (#: i.@(* /)) */
@@ -255,7 +255,7 @@ static A jthkodom(J jt,    A w,A self){DECLFG;B b=0;I n,*v;
   z=((opt0 comp opt1) || (opt0==opt1&&optx0>=optx1))?2*optx0+1:2*optx1; opt0=opt0  compe opt1?opt0:opt1; z+=n&1; if(n&1&&wv[0] comp opt0)z=0; break;}
 
 static A jthkindexofmaxmin(J jt,    A w,A self){I z=0;
- ARGCHK2(w,self);
+ if(!(w && self)) return 0;
  I n=AN(w);
  if(!(1==AR(w)&&AT(w)&INT+FL))return hook1(w,self);
  if(n>1){
@@ -281,7 +281,7 @@ static A jthklvl2(J jt,A a,A w,A self){
 }
 
  A jthook(J jt,A a,A w){AF f1=0,f2=0;C c,d,e,id;I flag=VFLAGNONE,linktype=0;V*u,*v;
- ARGCHK2(a,w);
+ if(!(a && w)) return 0;
  switch(BD(AT(a),AT(w))){
   default:            ASSERT(0,EVSYNTAX);
   case BD(VERB,VERB):

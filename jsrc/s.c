@@ -120,7 +120,7 @@ extern void jtsymfreeha(J jt, A w){I j,wn=AN(w); LX k,* RESTRICT wv=LXAV0(w);
 static SYMWALK(jtsympoola, I,INT,100,1, 1, *zv++=j;)
 
  A jtsympool(J jt, A w){A aa,q,x,y,*yv,z,*zv;I i,n,*u,*xv;L*pv;LX j,*v;
- ARGCHK1(w); 
+ if(!w) return 0;
  ASSERT(1==AR(w),EVRANK); 
  ASSERT(!AN(w),EVLENGTH);
  GAT0(z,BOX,3,1); zv=AAV(z);
@@ -197,7 +197,7 @@ L*jtprobe(J jt,I l,C*string,UI4 hash,A g){
 // This code is copied in p.c
 L *jtprobelocal(J jt,A a,A locsyms){NM*u;I b,bx;
  // There is always a local symbol table, but it may be empty
- ARGCHK1(a);u=NAV(a);  // u->NM block
+ if(!a) return 0;u=NAV(a);  // u->NM block
  if((b = u->bucket)!=0){
   if(0 > (bx = ~u->bucketx)){
    // positive bucketx (now negative); that means skip that many items and then do name search.  This is set for words that were recognized as names but were not detected as assigned-to in the definition
@@ -229,7 +229,7 @@ L *jtprobelocal(J jt,A a,A locsyms){NM*u;I b,bx;
 // If not found, one is created
 L *jtprobeislocal(J jt,A a){NM*u;I b,bx;L *sympv=LAV0(jt->symp);
  // If there is bucket information, there must be a local symbol table, so search it
- ARGCHK1(a);u=NAV(a);  // u->NM block
+ if(!a) return 0;u=NAV(a);  // u->NM block
  if(b = u->bucket){
   LX lx = LXAV0(jt->locsyms)[b];  // index of first block if any
   if(0 > (bx = ~u->bucketx)){
@@ -362,7 +362,7 @@ A jtsybaseloc(J jt,A a) {I m,n;NM*v;
 // result is symbol-table slot for the name if found, or 0 if not found
 // This code is copied in p.c
 L*jtsyrd(J jt,A a,A locsyms){A g;
- ARGCHK1(a);
+ if(!a) return 0;
  if(!(NAV(a)->flag&(NMLOC|NMILOC))){L *e;
   // If there is a local symbol table, search it first
   if(e = probelocal(a,locsyms)){return e;}  // return flagging the result if local
@@ -372,7 +372,7 @@ L*jtsyrd(J jt,A a,A locsyms){A g;
 }
 // same, but return locale in which found
 A jtsyrdforlocale(J jt,A a){A g;
- ARGCHK1(a);
+ if(!a) return 0;
  if(!(NAV(a)->flag&(NMLOC|NMILOC))){L *e;
   // If there is a local symbol table, search it first
   if(e = probelocal(a,jt->locsyms)){return jt->locsyms;}  // return flagging the result if local
@@ -385,7 +385,7 @@ A jtsyrdforlocale(J jt,A a){A g;
 // result is symbol-table slot for the name if found, or 0 if not found
 // This code is copied in p.c
 L*jtsyrdnobuckets(J jt,A a){A g;
- ARGCHK1(a);
+ if(!a) return 0;
  if(!(NAV(a)->flag&(NMLOC|NMILOC))){L *e;
   // If there is a local symbol table, search it first
   if(!NAV(a)->bucket && (e = probe(NAV(a)->m,NAV(a)->s,NAV(a)->hash,jt->locsyms))){return e;}  // return if found locally from name
@@ -396,7 +396,7 @@ L*jtsyrdnobuckets(J jt,A a){A g;
 
 
 static A jtdllsymaddr(J jt,A w,C flag){A*wv,x,y,z;I i,n,*zv;L*v;
- ARGCHK1(w);
+ if(!w) return 0;
  n=AN(w); wv=AAV(w); 
  ASSERT(!n||BOX&AT(w),EVDOMAIN);
  GATV(z,INT,n,AR(w),AS(w)); zv=AV(z); 
@@ -414,7 +414,7 @@ static A jtdllsymaddr(J jt,A w,C flag){A*wv,x,y,z;I i,n,*zv;L*v;
  A jtdllsymdat(J jt, A w){return dllsymaddr(w,1);}
 
 // look up the name w using full name resolution.  Return the value if found, abort if not found or invalid name
- A jtsymbrd(J jt, A w){L*v; ARGCHK1(w); ASSERTN(v=syrd(w,jt->locsyms),EVVALUE,w); return v->val;}
+ A jtsymbrd(J jt, A w){L*v; if(!w) return 0; ASSERTN(v=syrd(w,jt->locsyms),EVVALUE,w); return v->val;}
 
 // look up name w, return value unless locked or undefined; then return just the name
  A jtsymbrdlocknovalerr(J jt, A w){A y;L *v;
@@ -471,7 +471,7 @@ L* jtprobeisquiet(J jt,A a,A locsyms){A g;  // locsyms is used in the call, but 
 // assign symbol: assign name a in symbol table g to the value w (but g is special if jt->assignsym is nonnull)
 // Result points to the symbol-table block for the assignment
 L* jtsymbis(J jt,A a,A w,A g){A x;I m,n,wn,wr,wt;L*e;
- ARGCHK2(a,w); RZ(g)
+ if(!(a && w)) return 0; RZ(g)
  // If we have an assignsym, we have looked this name up already, so just use the symbol-table entry found then
  // in this case g is the type field of the name being assigned; and jt->locsyms must exist, since it comes from
  // an explicit definition
@@ -572,7 +572,7 @@ L* jtsymbis(J jt,A a,A w,A g){A x;I m,n,wn,wr,wt;L*e;
 // Values awaiting deletion are accumulated within the NVR stack till the sentence ends.  If there is an assignment not in a sentence, such as for for_x. or from sockets or DLLs,
 // we have to finish the deletion immediately so that the NVR stack doesn't overflow
 L* jtsymbisdel(J jt,A a,A w,A g){
- ARGCHK3(a,w,g);
+ if(!(a && w && g)) return 0;
  I nvrtop=jt->parserstackframe.nvrtop;   // save stack before deletion
  L *ret=symbis(a,w,g);  // perform assignment
  I currtop=jt->parserstackframe.nvrtop;

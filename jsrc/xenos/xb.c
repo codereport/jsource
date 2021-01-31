@@ -6,12 +6,12 @@
 #include "j.h"
 #include "x.h"
 
- A jtstype(J jt, A w){ARGCHK1(w); return sc(AT(w)&-AT(w));}
+ A jtstype(J jt, A w){if(!w) return 0; return sc(AT(w)&-AT(w));}
 
 // a is integer atom or list, values indicating the desired result
 // atom values in x: 0=NJA, others reserved
  A jtnouninfo2(J jt,A a,A w){A z;
- ARGCHK2(a,w);
+ if(!(a && w)) return 0;
  RZ(a=vi(a)); // convert to integer, error if can't
  ASSERT(AR(a)<2,EVRANK);  // must be atom or list
  GATV(z,INT,AN(a),AR(a),AS(a));  // allocate result
@@ -178,7 +178,7 @@ static C* jtbrepfill(J jt,B b,B d,A w,C *zv){I klg,kk;
 
 // main entry point for brep.  First calculate the size by a (recursive) call; allocate; then make a (recursive) call to fill in the block
 static A jtbrep(J jt,B b,B d,A w){A y;I t;
- ARGCHK1(w);
+ if(!w) return 0;
  t=UNSAFE(AT(w)); 
  if((t&SPARSE)!=0)return breps(b,d,w);  // sparse separately
  GATV0(y,LIT,bsizer(jt,d,1,w),1);   // allocate entire result
@@ -188,7 +188,7 @@ static A jtbrep(J jt,B b,B d,A w){A y;I t;
 
 
 static A jthrep(J jt,B b,B d,A w){A y;C c,*hex="0123456789abcdef",*u,*v;I n,s[2],t;
- ARGCHK1(w);
+ if(!w) return 0;
  t=UNSAFE(AT(w)); 
  if((t&SPARSE)!=0){A z;  // sparse separately
   RZ(y=breps(b,d,w));
@@ -206,18 +206,18 @@ static A jthrep(J jt,B b,B d,A w){A y;C c,*hex="0123456789abcdef",*u,*v;I n,s[2]
  return y;  // return it
 }
 
- A jtbinrep1(J jt, A w){ARGCHK1(w); ASSERT(NOUN&AT(w),EVDOMAIN); return brep(BU,1,w);}  /* 3!:1 w */
- A jthexrep1(J jt, A w){ARGCHK1(w); ASSERT(NOUN&AT(w),EVDOMAIN); return hrep(BU,1,w);}  /* 3!:3 w */
+ A jtbinrep1(J jt, A w){if(!w) return 0; ASSERT(NOUN&AT(w),EVDOMAIN); return brep(BU,1,w);}  /* 3!:1 w */
+ A jthexrep1(J jt, A w){if(!w) return 0; ASSERT(NOUN&AT(w),EVDOMAIN); return hrep(BU,1,w);}  /* 3!:3 w */
 
  A jtbinrep2(J jt,A a,A w){I k;
- ARGCHK2(a,w);
+ if(!(a && w)) return 0;
  RE(k=i0(a)); if(10<=k)k-=8;
  ASSERT(BETWEENC(k,0,3),EVDOMAIN);
  return brep((B)(k&1),(B)(2<=k),w);
 }    /* a 3!:1 w */
 
  A jthexrep2(J jt,A a,A w){I k;
- ARGCHK2(a,w); 
+ if(!(a && w)) return 0;
  RE(k=i0(a)); if(10<=k)k-=8;
  ASSERT(BETWEENC(k,0,3),EVDOMAIN);
  return hrep((B)(k&1),(B)(2<=k),w);
@@ -231,7 +231,7 @@ static S jtunh(J jt,C c){
 }
 
 static A jtunhex(J jt, A w){A z;C*u;I c,n;UC p,q,*v;
- ARGCHK1(w);
+ if(!w) return 0;
  c=*(1+AS(w));
  ASSERT(c==8||c==16,EVLENGTH);  
  n=AN(w)>>1; u=CAV(w);
@@ -280,7 +280,7 @@ static A jtunbinr(J jt,B b,B d,B pre601,I m,A w){A y,z;C*u=(C*)w,*v;I e,j,kk,n,p
 }    /* b iff reverse the bytes; d iff argument is 64-bits */
 
  A jtunbin(J jt, A w){A q;B b,d;C*v;I c,i,k,m,n,r,t;
- ARGCHK1(w);
+ if(!w) return 0;
  ASSERT(LIT&AT(w),EVDOMAIN);
  if(2==AR(w))RZ(w=unhex(w));
  ASSERT(1==AR(w),EVRANK);
@@ -315,7 +315,7 @@ static A jtunbinr(J jt,B b,B d,B pre601,I m,A w){A y,z;C*u=(C*)w,*v;I e,j,kk,n,p
 
 
  A jtic2(J jt,A a,A w){A z;I j,m,n,p,*v,*x,zt;I4*y;UI4*y1;S*s;U short*u;
- ARGCHK2(a,w);
+ if(!(a && w)) return 0;
  ASSERT(1>=AR(w),EVRANK);
  n=AN(w);
  RE(j=i0(a));
@@ -339,7 +339,7 @@ static A jtunbinr(J jt,B b,B d,B pre601,I m,A w){A y,z;C*u=(C*)w,*v;I e,j,kk,n,p
 }}
 
  A jtfc2(J jt,A a,A w){A z;D*x,*v;I j,m,n,p,zt;float*s;
- ARGCHK2(a,w);
+ if(!(a && w)) return 0;
  ASSERT(1>=AR(w),EVRANK);
  n=AN(w);
  RE(j=i0(a));
@@ -357,7 +357,7 @@ static A jtunbinr(J jt,B b,B d,B pre601,I m,A w){A y,z;C*u=(C*)w,*v;I e,j,kk,n,p
 
 // w is a box, result is 1 if it contains a  NaN
 static B jtisnanq(J jt,A w){
- ARGCHK1(w);
+ if(!w) return 0;
  if(AT(w)&FL+CMPX){D *v=DAV(w); DQ(AN(w)<<((AT(w)>>CMPXX)&1), if(_isnan(v[i]))return 1;);}  // if there might be a NaN, return if there is one
  else if(AT(w)&BOX){A *v=AAV(w); STACKCHKOFL DQ(AN(w), if(isnanq(v[i]))return 1;);}  // if boxed, check each one recursively; ensure no stack overflow
  // other types never have NaN
@@ -366,7 +366,7 @@ static B jtisnanq(J jt,A w){
 
 // 128!:5  Result is boolean with same shape as w
  A jtisnan(J jt, A w){A*wv,z;B*u;D*v;I n,t;
- ARGCHK1(w);
+ if(!w) return 0;
  n=AN(w); t=AT(w);
  ASSERT(t&DENSE,EVNONCE);
  GATV(z,B01,n,AR(w),AS(w)); u=BAV(z);
@@ -379,7 +379,7 @@ static B jtisnanq(J jt,A w){
 
 
  A jtbit1(J jt, A w){A z;B*wv;BT*zv;I c,i,j,n,p,q,r,*s;UI x,y;
- ARGCHK1(w);
+ if(!w) return 0;
  if(!(B01&AT(w)))RZ(w=cvt(B01,w));
  n=AN(w); r=AR(w); wv=BAV(w); s=AS(w);
  GA(z,BIT,n,AR(w),AS(w)); zv=(BT*)AV(z);
@@ -645,7 +645,7 @@ err:
 
 // 6!:14 Convert a block of integer yyyymmddHHMMSS to nanoseconds from year 2000
  A jtinttoe(J jt, A w){A z;I n;
- ARGCHK1(w);
+ if(!w) return 0;
  n=AN(w);
  ASSERT(1,EVNONCE);
  RZ(w=vi(w));  // verify valid integer
@@ -656,7 +656,7 @@ err:
 
 // 6!:15 Convert a block of nanosecond times to Y M D h m s nanosec
  A jtetoint(J jt, A w){
- ARGCHK1(w);
+ if(!w) return 0;
  ASSERT(1,EVNONCE);
  return sfe(jt,w,7*SZI-20,0,0);  // special precision meaning 'store INTs'.  Turns into linelen=56
 }
@@ -666,7 +666,7 @@ err:
 // one for result precision ('d'=date only, '0'-'9' give # fractional digits)
 // Default is '. 0'
  A jtetoiso8601(J jt,A a,A w){UC decimalpt,zuluflag;I prec;
- ARGCHK1(w);
+ if(!w) return 0;
  ASSERT(1,EVNONCE);
  // If monad, supply defaults; if dyad, audit
  if(AT(w)&NOUN){  // dyad
@@ -685,7 +685,7 @@ err:
 // 6!:17 convert a block of iso8601-format strings to nanosecond times.  Result has one INT for each string
 // Bivalent.  left arg is 'd', '0', '3', or '9', like 3d digit of 6!:16, default '9'
  A jtiso8601toe(J jt,A a,A w){A z;I prec;
- ARGCHK1(w);
+ if(!w) return 0;
  ASSERT(1,EVNONCE);
  // If monad, supply defaults; if dyad, audit
  if(AT(w)&NOUN){  // dyad

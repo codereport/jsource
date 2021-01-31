@@ -774,7 +774,7 @@ I jtsumattymesprods(J jt,I it,void *avp, void *wvp,I dplen,I nfro,I nfri,I ndpo,
 
 // +/@:*"1 with IRS
  A jtsumattymes1(J jt,A a,A w,A self){
- ARGCHK2(a,w);
+ if(!(a && w)) return 0;
  I ar=AR(a); I wr=AR(w); I acr=jt->ranks>>RANKTX; I wcr=jt->ranks&RMAX;
  // get the cell-ranks to use 
  acr=ar<acr?ar:acr;   // r=left rank of verb, acr=effective rank
@@ -838,7 +838,7 @@ I jtsumattymesprods(J jt,I it,void *avp, void *wvp,I dplen,I nfro,I nfri,I ndpo,
 
 
 static A jtsumattymes(J jt, A a, A w, I b, I t, I m, I n, I nn, I r, I *s, I zn){A z;
- ARGCHK2(a,w);
+ if(!(a && w)) return 0;
  switch(UNSAFE(t)){
  case B01:  // the aligned cases are handled elsewhere, a word at a time
   {B*av=BAV(a),u,*wv=BAV(w);I*zu,*zv;
@@ -888,7 +888,7 @@ static A jtsumattymes(J jt, A a, A w, I b, I t, I m, I n, I nn, I r, I *s, I zn)
 #define SUMBFLOOP(BF)   SUMBFLOOPW(BF)
 
 static A jtsumatgbool(J jt,A a,A w,C id){A t,z;B* RESTRICTI av,* RESTRICTI wv;I dw,n,p,q,r,*s,zn,* RESTRICT zv;UC* RESTRICT tu;UI* RESTRICTI tv,*u,*v;
- ARGCHK2(a,w);
+ if(!(a && w)) return 0;
  s=AS(w); n=*s;
  zn=AN(w)/n; dw=(zn+SZI-1)>>LGSZI; p=dw*SZI;
  q=n/255; r=n%255;
@@ -916,7 +916,7 @@ static A jtsumatgbool(J jt,A a,A w,C id){A t,z;B* RESTRICTI av,* RESTRICTI wv;I 
 
  A jtfslashatg(J jt,A a,A w,A self){A fs,gs,y,z;B b,sb=0;C*av,c,d,*wv;I ak,an,ar,*as,at,m,
      n,nn,r,rs,*s,t,wk,wn,wr,*ws,wt,yt,zn,zt;VA2 adocv,adocvf;
- ARGCHK3(a,w,self);
+ if(!(a && w && self)) return 0;
  an=AN(a); ar=AR(a); as=AS(a); at=AT(a); at=an?at:B01;
  wn=AN(w); wr=AR(w); ws=AS(w); wt=AT(w); wt=wn?wt:B01;
  b=ar<=wr; r=b?wr:ar; rs=b?ar:wr; s=b?ws:as; nn=s[0]; nn=r?nn:1;  // b='w has higher rank'; r=higher rank rs=lower rank s->longer shape  nn=#items in longer-shape arg
@@ -981,7 +981,7 @@ static A jtsumatgbool(J jt,A a,A w,C id){A t,z;B* RESTRICTI av,* RESTRICTI wv;I 
  A realself=FAV(self)->fgh[0];  // if rank operator, this is nonzero and points to the left arg of rank
  RANK2T selfranks=FAV(self)->lrr;  // get left & right rank from rank/primitive
  self=realself?realself:self;  // if this is a rank block, move to the primitive.  u b. or any atomic primitive has f clear
- F2PREFIP;ARGCHK2(a,w);
+ F2PREFIP;if(!(a && w)) return 0;
  RANK2T jtranks=jt->ranks;  // fetch IRS ranks if any
  UI ar=AR(a), wr=AR(w), awr=(ar<<RANKTX)+wr; I awm1=(AN(a)-1)|(AN(w)-1);
  selfranks=jtranks==(RANK2T)~0?selfranks:jtranks;
@@ -1009,8 +1009,8 @@ static A jtsumatgbool(J jt,A a,A w,C id){A t,z;B* RESTRICTI av,* RESTRICTI wv;I 
  return z=jtva2((J)((I)jtinplace|JTRETRY),a,w,self,(awr<<RANK2TX)+selfranks);  // execute the verb
 }
 
- A jtexpn2  (J jt,A a,A w,A self){F2PREFIP; ARGCHK2(a,w); if(((((I)AR(w)-1)&SGNIF(AT(w),FLX))<0))if(0.5==DAV(w)[0])return sqroot(a);  return jtatomic2(jtinplace,a,w,self);}  // use sqrt hardware for sqrt.  Only for atomic w.
- A jtresidue(J jt,A a,A w,A self){F2PREFIP; ARGCHK2(a,w); I intmod; if(!((AT(a)|AT(w))&(NOUN&~INT)|AR(a))&&(intmod=IAV(a)[0], (intmod&-intmod)+(intmod<=0)==0))return intmod2(w,intmod); return jtatomic2(jtinplace,a,w,self);}
+ A jtexpn2  (J jt,A a,A w,A self){F2PREFIP; if(!(a && w)) return 0; if(((((I)AR(w)-1)&SGNIF(AT(w),FLX))<0))if(0.5==DAV(w)[0])return sqroot(a);  return jtatomic2(jtinplace,a,w,self);}  // use sqrt hardware for sqrt.  Only for atomic w.
+ A jtresidue(J jt,A a,A w,A self){F2PREFIP; if(!(a && w)) return 0; I intmod; if(!((AT(a)|AT(w))&(NOUN&~INT)|AR(a))&&(intmod=IAV(a)[0], (intmod&-intmod)+(intmod<=0)==0))return intmod2(w,intmod); return jtatomic2(jtinplace,a,w,self);}
 
 
 // These are the unary ops that are implemented using a canned argument
@@ -1023,14 +1023,14 @@ static A jtsumatgbool(J jt,A a,A w,C id){A t,z;B* RESTRICTI av,* RESTRICTI wv;I 
 #define SETCONPTR(n) A conptr=num(n); A conptr2=zeroionei(n); A conptr3=numvr(n); conptr=AT(w)&INT?conptr2:conptr; conptr=AT(w)&FL?conptr3:conptr;  // for 0 or 1 only
 #define SETCONPTR2(n) A conptr=num(n); A conptr3=numvr(n); conptr=AT(w)&FL?conptr3:conptr;   // used for 2, when the only options are INT/FL
 
- A jtnot   (J jt, A w){ARGCHK1(w); SETCONPTR(1) return AT(w)&B01+SB01?eq(num(0),w):minus(conptr,w);}
- A jtnegate(J jt, A w){ARGCHK1(w); SETCONPTR(0) return minus(conptr,w);}
- A jtdecrem(J jt, A w){ARGCHK1(w); SETCONPTR(1) IPSHIFTWA; return minus(w,conptr);}
- A jtincrem(J jt, A w){ARGCHK1(w); SETCONPTR(1) return plus(conptr,w);}
- A jtduble (J jt, A w){ARGCHK1(w); SETCONPTR2(2) return tymes(conptr,w);}
- A jtsquare(J jt, A w){ARGCHK1(w); return tymes(w,w);}   // leave inplaceable in w only  ?? never inplaces
- A jtrecip (J jt, A w){ARGCHK1(w); SETCONPTR(1) return divide(conptr,w);}
- A jthalve (J jt, A w){ARGCHK1(w); if(!(AT(w)&XNUM+RAT))return tymes(onehalf,w); IPSHIFTWA; return divide(w,num(2));}
+ A jtnot   (J jt, A w){if(!w) return 0; SETCONPTR(1) return AT(w)&B01+SB01?eq(num(0),w):minus(conptr,w);}
+ A jtnegate(J jt, A w){if(!w) return 0; SETCONPTR(0) return minus(conptr,w);}
+ A jtdecrem(J jt, A w){if(!w) return 0; SETCONPTR(1) IPSHIFTWA; return minus(w,conptr);}
+ A jtincrem(J jt, A w){if(!w) return 0; SETCONPTR(1) return plus(conptr,w);}
+ A jtduble (J jt, A w){if(!w) return 0; SETCONPTR2(2) return tymes(conptr,w);}
+ A jtsquare(J jt, A w){if(!w) return 0; return tymes(w,w);}   // leave inplaceable in w only  ?? never inplaces
+ A jtrecip (J jt, A w){if(!w) return 0; SETCONPTR(1) return divide(conptr,w);}
+ A jthalve (J jt, A w){if(!w) return 0; if(!(AT(w)&XNUM+RAT))return tymes(onehalf,w); IPSHIFTWA; return divide(w,num(2));}
 
 static AHDR2(zeroF,B,void,void){memset(z,C0,m*(n^REPSGN(n)));return EVOK;}
 static AHDR2(oneF,B,void,void){memset(z,C1,m*(n^REPSGN(n)));return EVOK;}

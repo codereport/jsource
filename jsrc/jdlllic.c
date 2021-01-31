@@ -30,7 +30,7 @@ int swapint(int n){C* p,c;
  UC c,c1,c2,k1[SK],k2[SK];    
  int r,len,xlen,maxc1,maxc2,i,j,k;
 
- ARGCHK1(w);
+ if(!w) return 0;
  ASSERT(1==AR(w),EVRANK);
  ASSERT(AT(w)&LIT,EVDOMAIN);
  src=UAV(w);
@@ -72,7 +72,7 @@ int swapint(int n){C* p,c;
  A jtunlock1(J jt, A w){return unlock2(mtv,w);}
 
  A jtunlock2(J jt,A a,A w){int i,j,len,tlen;UC c1,c2,k1[SK],*lp,*sp,*d;
- ARGCHK2(a,w);  
+ if(!(a && w)) return 0;
  d=UAV(w);
  tlen=(int)AN(w);
  if(!tlen || 255!=d[0] || 0 != d[1] || tlen<8+SK) return w; /* not jl */
