@@ -302,7 +302,7 @@ static A jtsscan(J jt,    A w,A self){A y,z;I d,f,m,n,r,t,wn,wr,*ws,wt;
 static A jtomask(J jt,A a,A w){A c,r,x,y;I m,n,p;
  ARGCHK2(a,w);
  RE(m=i0(a)); p=ABS(m); SETIC(w,n);
- r=sc(0>m?(n+p-1)/p:MAX(0,1+n-m)); c=tally(w);
+ r=sc(0>m?(n+p-1)/p:MAX(0,1+n-m)); c=tally(jt, w);
  x=reshape(sc(p),  num(0));
  y=reshape(0>m?c:r,num(1) );
  return reshapeW(over(r,c),over(x,y));

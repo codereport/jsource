@@ -11,7 +11,10 @@
    * Run cmake:
     ```sh
     cd jsource
-    mkdir build && cmake -G "Ninja Multi-Config" -B build
+    mkdir build
+    cmake -G "Ninja Multi-Config" -B build
+    # If you want documentation built, modify your cmake command to:
+    cmake -G "Ninja Multi-Config" -B build -DDOCS:STRING=YES
     ```
    * To build debug:
     ```sh

@@ -332,7 +332,7 @@ extern A jtsysparms(J jt, A w);
 extern A jtsysq(J jt, A w);
 extern A jttable(J jt, A w);
 extern A jttail(J jt, A w);
-extern A jttally(J jt, A w);
+extern A tally(J jt, A w);
 extern A jttco(J jt, A w);
 extern A jttdot(J jt, A w);
 extern A jtthorn1(J jt, A w);

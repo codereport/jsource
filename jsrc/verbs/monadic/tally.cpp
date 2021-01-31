@@ -76,7 +76,7 @@ extended_precision_or_rational() -> int64_t {
 }
 
 /**
- * @brief Tally: #
+ * @brief # :: Tally
  * @details In APL, this is also known as `tally` (≢). Known also as `len`, `length`, `size` and
  * `count`.
  * @param jt
@@ -84,7 +84,7 @@ extended_precision_or_rational() -> int64_t {
  * @return    Output array (always scalar integer)
  */
 [[nodiscard]] auto
-jttally(J jt, array w) -> array {
+tally(J jt, array w) -> array {
     array const z = make_scalar_integer(jt, item_count(w));
     return w->tproxy.t & extended_precision_or_rational() ? xco1(z) : z;  // TODO: xcol
 }

@@ -1126,7 +1126,6 @@
 #define tail(x)                     jttail(jt,(x))    
 #define take(x,y)                   jttake(jt,(x),(y))   
 #define taker(x,y)                  jttaker(jt,(x),(y))   
-#define tally(x)                    jttally(jt,(x))   
 #define tayamp(x0,x1,x2,x3)         jttayamp(jt,(x0),(x1),(x2),(x3))
 #define tayatop(x)                  jttayatop(jt,(x))
 #define tayfolk(x)                  jttayfolk(jt,(x))

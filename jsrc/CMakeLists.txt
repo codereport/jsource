@@ -127,26 +127,18 @@ target_sources(j PRIVATE
         xenos/xu.c
         )
 
-# configure_file( ${CMAKE_CURRENT_SOURCE_DIR}/ COPYONLY)
-
 if (NOT BUILD_SHARED_LIBS)
     return()
 endif ()
 
 add_library(linenoise OBJECT EXCLUDE_FROM_ALL)
 target_compile_definitions(linenoise INTERFACE USE_LINENOISE)
-target_sources(linenoise PRIVATE
-
-        linenoise.c
-        )
+target_sources(linenoise PRIVATE linenoise.c)
 
 add_executable(jconsole)
 target_compile_definitions(jconsole PRIVATE READLINE)
 if (NOT UNIX OR ${CMAKE_SYSTEM_PROCESSOR} MATCHES "^(aarch64|arm)")
     target_link_libraries(jconsole PRIVATE linenoise)
-endif ()
-if ("${CMAKE_C_COMPILER_FRONTEND_VARIANT}" STREQUAL "MSVC")
-    target_link_options(jconsole PRIVATE /STACK:0x1000000)
 endif ()
 target_link_libraries(jconsole PRIVATE ${CMAKE_DL_LIBS})
 target_sources(jconsole PRIVATE
