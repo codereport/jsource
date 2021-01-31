@@ -1,0 +1,6 @@
+
+Verbs
+=====
+.. toctree::
+   monadic
+   dyadic

@@ -33,18 +33,12 @@ find_package(StandardMathLibrary REQUIRED)
 
 set(TARGET_ARCHITECTURE "skylake" CACHE STRING "CPU architecture")
 OptimizeForArchitecture()
-#add_compile_options("$<$<COMPILE_LANGUAGE:C>:${Vc_ARCHITECTURE_FLAGS}>")
 add_compile_options("$<$<COMPILE_LANGUAGE:CXX>:${Vc_ARCHITECTURE_FLAGS}>")
 
 add_compile_options($<$<COMPILE_LANGUAGE:C>:-fno-strict-aliasing>)
 #add_compile_options($<$<COMPILE_LANGUAGE:C,CXX>:-Werror>)
-if("${CMAKE_C_COMPILER_FRONTEND_VARIANT}" STREQUAL "MSVC")
-    add_compile_options($<$<COMPILE_LANGUAGE:C,CXX>:/W3>)
-    add_compile_options($<$<COMPILE_LANGUAGE:C,CXX>:/Zc:strictStrings>)
-else()
-    # add_compile_options($<$<COMPILE_LANGUAGE:C,CXX>:-Wextra>)
-    add_compile_options($<$<COMPILE_LANGUAGE:C,CXX>:-w>)
-endif()
+# add_compile_options($<$<COMPILE_LANGUAGE:C,CXX>:-Wextra>)
+add_compile_options($<$<COMPILE_LANGUAGE:C,CXX>:-w>)
 add_compile_options($<$<COMPILE_LANGUAGE:C,CXX>:-fmax-errors=1>)
 add_compile_options($<$<COMPILE_LANGUAGE:C,CXX>:-fPIE>)
 add_compile_options($<$<COMPILE_LANGUAGE:C,CXX>:-fPIC>)
@@ -83,6 +77,7 @@ add_compile_options($<$<COMPILE_LANG_AND_ID:CXX,AppleClang,Clang>:-Wno-delete-no
 
 add_subdirectory(jsrc)
 add_subdirectory(base64)
+# add_subdirectory(docs) TODO: set up build param to build docs
 
 if(BUILD_SHARED_LIBS)
     set_target_properties(j-base64 PROPERTIES
