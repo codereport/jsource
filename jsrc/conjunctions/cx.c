@@ -960,7 +960,7 @@ A jtclonelocalsyms(J jt, A a){A z;I j;I an=AN(a); LX *av=LXAV0(a),*zv;
 A jtddtokens(J jt,A w,I env){
 // TODO: Use LF for DDSEP, support {{), make nouns work
  PROLOG(000);F1PREFIP;
- ARGCHK1(w);
+ if (!w) return 0;
  // find word boundaries, remember if last word is NB
  A wil; RZ(wil=wordil(w));  // get index to words
  C *wv=CAV(w); I nw=AS(wil)[0]; I (*wilv)[2]=voidAV(wil);  // cv=pointer to chars, nw=#words including final NB   wilv->[][2] array of indexes into wv word start/end

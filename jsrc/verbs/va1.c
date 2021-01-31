@@ -159,7 +159,8 @@ static A jtva1(J jt,A w,A self){A z;I cv,n,t,wt,zt;VA1F ado;
 // Consolidated entry point for ATOMIC1 verbs.
 // This entry point supports inplacing
  A jtatomic1(J jt,    A w,A self){A z;
- F1PREFIP;ARGCHK1(w);
+ F1PREFIP;
+ if(!w) return 0;
  I awm1=AN(w)-1;
  // check for singletons
  if(!(awm1|(AT(w)&(NOUN&UNSAFE(~(B01+INT+FL)))))){  // len=1 andbool/int/float

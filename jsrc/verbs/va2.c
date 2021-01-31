@@ -981,7 +981,8 @@ static A jtsumatgbool(J jt,A a,A w,C id){A t,z;B* RESTRICTI av,* RESTRICTI wv;I 
  A realself=FAV(self)->fgh[0];  // if rank operator, this is nonzero and points to the left arg of rank
  RANK2T selfranks=FAV(self)->lrr;  // get left & right rank from rank/primitive
  self=realself?realself:self;  // if this is a rank block, move to the primitive.  u b. or any atomic primitive has f clear
- F2PREFIP;ARGCHK2(a,w);
+ F2PREFIP;
+ if(!(a && w)) return 0;
  RANK2T jtranks=jt->ranks;  // fetch IRS ranks if any
  UI ar=AR(a), wr=AR(w), awr=(ar<<RANKTX)+wr; I awm1=(AN(a)-1)|(AN(w)-1);
  selfranks=jtranks==(RANK2T)~0?selfranks:jtranks;
@@ -1026,7 +1027,7 @@ static A jtsumatgbool(J jt,A a,A w,C id){A t,z;B* RESTRICTI av,* RESTRICTI wv;I 
  A jtnot   (J jt, A w){ARGCHK1(w); SETCONPTR(1) return AT(w)&B01+SB01?eq(num(0),w):minus(conptr,w);}
  A jtnegate(J jt, A w){ARGCHK1(w); SETCONPTR(0) return minus(conptr,w);}
  A jtdecrem(J jt, A w){ARGCHK1(w); SETCONPTR(1) IPSHIFTWA; return minus(w,conptr);}
- A jtincrem(J jt, A w){ARGCHK1(w); SETCONPTR(1) return plus(conptr,w);}
+ A jtincrem(J jt, A w){if(!w) return 0; SETCONPTR(1) return plus(conptr,w);}
  A jtduble (J jt, A w){ARGCHK1(w); SETCONPTR2(2) return tymes(conptr,w);}
  A jtsquare(J jt, A w){ARGCHK1(w); return tymes(w,w);}   // leave inplaceable in w only  ?? never inplaces
  A jtrecip (J jt, A w){ARGCHK1(w); SETCONPTR(1) return divide(conptr,w);}

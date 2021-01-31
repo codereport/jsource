@@ -79,7 +79,7 @@ I jtxcompare(J jt,X a,X w){I*av,j,m,n,x,y,*wv;int s,t;
 XF1(jtxsgn){I x=XDIG(w); return xc(SGN(x));}
 
 XF2(jtxplus){PROLOG(0094);A z;I an,*av,c,d,m,n,wn,*wv,*zv;
- ARGCHK2(a,w);
+ if(!(a && w)) return 0;
  an=AN(a); av=AV(a); c=av[an-1];
  wn=AN(w); wv=AV(w); d=wv[wn-1];
  if(c==XPINF||c==XNINF||d==XPINF||d==XNINF){

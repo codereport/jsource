@@ -478,7 +478,7 @@ A jtrealize(J jt, A w){A z; I t;
 
 
 A jtgc (J jt,A w,A* old){
- ARGCHK1(w);  // return if no input (could be error or unfilled box)
+ if(!w) return 0;  // return if no input (could be error or unfilled box)
  I c=AC(w);  // remember original usecount/inplaceability
  // We want to avoid realizing w if possible, so we handle virtual w separately
  if(AFLAG(w)&(AFVIRTUAL|AFVIRTUALBOXED)){

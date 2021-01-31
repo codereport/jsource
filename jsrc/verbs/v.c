@@ -92,6 +92,7 @@ static A jtlr2(J jt,RANK2T ranks,A a,A w){I acr,af,ar,wcr,wf,wr;
 
 // i. y
  A jtiota(J jt, A w){A z;I m,n,*v;
+ if (!w) return 0;
  F1RANK(1,jtiota,UNUSED_VALUE);
  if(AT(w)&XNUM+RAT)return cvt(XNUM,iota(vi(w)));
  RZ(w=vi(w)); n=AN(w); v=AV(w);

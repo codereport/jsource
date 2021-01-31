@@ -184,7 +184,7 @@ I cachedmmult(J jt,D* av,D* wv,D* zv,I m,I n,I p,I flgs){D c[(CACHEHEIGHT+1)*CAC
 
 // +/ . *
  A jtpdt(J jt,A a,A w){PROLOG(0038);A z;I ar,at,i,m,n,p,p1,t,wr,wt;
- ARGCHK2(a,w);
+ if(!(a && w)) return 0;
  // ?r = rank, ?t = type (but set Boolean type for an empty argument)
  ar=AR(a); at=AT(a); at=AN(a)?at:B01;
  wr=AR(w); wt=AT(w); wt=AN(w)?wt:B01;

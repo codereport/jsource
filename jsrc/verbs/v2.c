@@ -121,7 +121,7 @@ static void sieved(D n,I m,B*b){I c,d,e,i,q,r,*u,*v;
 }    /* sieve b for n+i.m; n>0; u is mask for primes */
 
 static A jtprime1d(J jt, A w){A d,z;D*wv,x,*zv;I*dv,k,n;
- ARGCHK1(w);
+ if(!w) return 0;
  n=AN(w); wv=DAV(w);
  GATV(z,FL,n,AR(w),AS(w)); zv=DAV(z);
  RZ(d=grade1(ravel(w))); dv=AV(d);

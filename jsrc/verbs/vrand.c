@@ -629,7 +629,7 @@ static A jtrollany(J jt,A w,B*b){A z;D*u;I j,m1,n,sh,*v;UI m,mk,s,t,x=jt->rngM[j
 }    /* ?s$x where x can be anything and 1<#x */
 
  A jtroll(J jt, A w){A z;B b=0;I m,wt;
- ARGCHK1(w);
+ if(!w) return 0;
  wt=AT(w);
  ASSERT(wt&DENSE,EVDOMAIN);
  if(!AN(w)){GATV(z,B01,0,AR(w),AS(w)); return z;}

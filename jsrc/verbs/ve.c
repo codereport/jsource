@@ -369,7 +369,7 @@ static A jtweight(J jt,A a,A w){ARGCHK2(a,w); A z; return df1(z,behead(over(AR(w
 }
 
  A jtabase2(J jt,A a,A w){A z;I an,ar,at,t,wn,wr,wt,zn;
- ARGCHK2(a,w);
+ if(!(a && w)) return 0;
  an=AN(a); ar=AR(a); at=AT(a);
  wn=AN(w); wr=AR(w); wt=AT(w);
  ASSERT(!((at|wt)&SPARSE),EVNONCE);

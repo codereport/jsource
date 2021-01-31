@@ -152,7 +152,8 @@ A jtcstr(J jt,C*s){A z; RZ(z=rifvs(str((I)strlen(s),s))); CAV(z)[AN(z)]=0; retur
 B evoke(A w){V*v=FAV(w); return CTILDE==v->id&&v->fgh[0]&&NAME&AT(v->fgh[0]);}
 
 // Extract the integer value from w, return it.  Set error if non-integral or non-atomic
-I jti0(J jt,A w){ARGCHK1(w);
+I jti0(J jt,A w){
+ if(!w) return 0;
  if(AT(w)&INT+B01){ASSERT(!AR(w),EVRANK); return BIV0(w);}  // INT/B01 quickly
  if(AT(w)&FL){D d=DAV(w)[0]; D e=jround(d); I cval=(I)e;  // FL without call to cvt
   // if an atom is tolerantly equal to integer,  there's a good chance it is exactly equal.
@@ -271,7 +272,7 @@ for(i=0;i<n<<bplg(t);i++)*p++=!!(*q++);
 #endif
 
 // Convert w to integer if it isn't integer already (the usual conversion errors apply)
- A jtvi(J jt, A w){ARGCHK1(w); return INT&AT(w)?w:cvt(INT,w);}
+ A jtvi(J jt, A w){if(!w) return 0; return INT&AT(w)?w:cvt(INT,w);}
 
 // Audit w to ensure valid integer value(s).  Error if non-integral.  Result is A block for integer array.  Infinities converted to IMAX/-IMAX
  A jtvib(J jt, A w){A z;D d,e,*wv;I i,n,*zv;

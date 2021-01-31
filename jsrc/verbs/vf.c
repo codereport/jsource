@@ -213,7 +213,7 @@ static A jtreshapesp(J jt,A a,A w,I wf,I wcr){A a1,e,t,x,y,z;B az,*b,wz;I an,*av
 
  A jtreshape(J jt,A a,A w){A z;B filling;C*wv,*zv;I acr,ar,c,k,m,n,p,q,r,*s,t,* RESTRICT u,wcr,wf,wn,wr,* RESTRICT ws,zn;
  F2PREFIP;
- ARGCHK2(a,w);
+ if(!(a && w)) return 0;
  ar=AR(a); acr=jt->ranks>>RANKTX; acr=ar<acr?ar:acr;
  wr=AR(w); wcr=(RANKT)jt->ranks; wcr=wr<wcr?wr:wcr; wf=wr-wcr; ws=AS(w); RESETRANK;
  if((I )(1<acr)|(I )(acr<ar)){z=rank2ex(a,w,UNUSED_VALUE,MIN(acr,1),wcr,acr,wcr,jtreshape); PRISTCLRF(w) return z;}  // multiple cells - must lose pristinity

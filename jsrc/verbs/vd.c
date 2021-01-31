@@ -179,7 +179,7 @@ static A jtlq(J jt, A w){A l;D c=inf,d=0,x;I n1,n,*s,wr;
 // determinant to integer and then each value to an integer multiple of the determinant.
 // The determinant was calculated when we inverted the matrix
 static A jticor(J jt, A w){D d,*v;
- ARGCHK1(w);
+ if (!w) return 0;
  d=jt->workareas.minv.determ;  // fetch flag/determinant
  if(d==0.0)return w;  // if not enabled or not applicable, return input unchanged
  d=jround(ABS(d));  // force determinant to integer

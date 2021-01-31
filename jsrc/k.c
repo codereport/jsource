@@ -229,7 +229,7 @@ static B jtDXfI(J jt,I p,A w,DX*x){B b;I e,c,d,i,j,n,r,u[XIDIG],*v;
 // 0 if error, 1 if success.  If the conversion loses precision, error is returned
 // Calls through bcvt are tagged with a flag in jt, indicating to set fuzz=0
 B jtccvt(J jt,I tflagged,A w,A*y){F1PREFIP;A d;I n,r,*s,wt; void *wv,*yv;I t=tflagged&NOUN;
- ARGCHK1(w);
+ if (!w) return 0;
  r=AR(w); s=AS(w);
  if(((t|AT(w))&SPARSE)!=0){
   // Handle sparse

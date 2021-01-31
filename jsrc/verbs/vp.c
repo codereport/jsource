@@ -14,6 +14,7 @@ static I jtord(J jt,A w){I j,n,*v,z;
 }  // the order of the permutation w: max element of w (could be negative)
 
  A jtpinv(J jt, A w){I m=-1,n,*v;  // empty perm will set m=0
+ if (!w) return 0;
  F1RANK(1,jtpinv,UNUSED_VALUE);
  RZ(w=vi(w));
  n=AN(w); v=AV(w);

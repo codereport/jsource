@@ -16,7 +16,7 @@ static A jtonf1(J jt,    A w,A self){PROLOG(0021);DECLFG;A z;I flag=sv->flag,m=j
 }
 
 static A jtuponf2(J jt,A a,A w,A self){PROLOG(0022);DECLFG;A z;I flag=sv->flag,m=jt->xmode;
- ARGCHK2(a,w);
+ if(!(a && w)) return 0;
  if(primitive(gs))if(flag&VFLR)jt->xmode=XMFLR; else if(flag&VCEIL)jt->xmode=XMCEIL;
  if(RAT&AT(a))RZ(a=pcvt(XNUM,a));
  if(RAT&AT(w))RZ(w=pcvt(XNUM,w));
@@ -155,6 +155,7 @@ static A atcomp0(J jt,A a,A w,A self){A z;AF f;
 //
 // u@v
  A jtatop(J jt,A a,A w){A f,g,h=0,x;AF f1=on1,f2=jtupon2;B b=0,j;C c,d,e;I flag, flag2=0,m=-1;V*av,*wv;
+ ARGCHK2(a,w);
  ASSERTVVn(a,w);
  av=FAV(a); c=av->id;
  if(AT(w)&NOUN){  // u@n

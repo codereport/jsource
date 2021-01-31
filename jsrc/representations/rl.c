@@ -325,7 +325,7 @@ static A jtlcolon(J jt,A w,A *ltext){F1PREFIP;A*v,x,y;C*s,*s0;I m,n;
 
 // Main routine for () and linear rep.  w is to be represented
 static A jtlrr(J jt,A w,A self,A *ltext){F1PREFIP;A hs,t,*tv;C id;I fl,m;V*v;
- ARGCHK1(w);
+ if(!w) return 0;
  // If name, it must be in ".@'name', or (in debug mode) the function name, which we will discard
  if(AT(w)&NAME){RZ(w=sfn(0,w));}
  if(AT(w)&NOUN)return lnoun(w);
