@@ -50,7 +50,8 @@ pointer_to_values(array x) -> int64_t* {
 }
 
 // TODO: replace with `auto` concepts
-template <typename T> auto
+template <typename T>
+auto
 set_value_at(array x, int32_t index, T const& value) -> void {
     pointer_to_values(x)[index] = value;
 }
