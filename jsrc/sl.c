@@ -151,7 +151,7 @@ B jtsymbinit(J jt){A q;
      /* 9!:38 default locale size query */
 
  A jtlocsizes(J jt, A w){I p,q,*v;
- if(!w) return 0;
+ ARGCHK1(w);
  ASSERT(1==AR(w),EVRANK);
  ASSERT(2==AN(w),EVLENGTH);
  RZ(w=vi(w)); v=AV(w); p=v[0]; q=v[1];
@@ -195,7 +195,7 @@ A jtstfindcre(J jt,I n,C*u,I bucketx){
 
 // b is flags: 1=check name for validity, 2=do not allow numeric locales (whether atomic or not)
 static A jtvlocnl(J jt,I b,A w){A*wv,y;C*s;I i,m,n;
- if(!w) return 0;
+ ARGCHK1(w);
  if(((b-2) & (SGNIF(AT(w),INTX) | (SGNIF(AT(w),B01X) & (AR(w)-1))))<0)return w;  // integer list or scalar boolean is OK
  n=AN(w);
  ASSERT(((n-1)|SGNIF(AT(w),BOXX))<0,EVDOMAIN);
@@ -251,7 +251,7 @@ static A jtlocnlx(J jt, A w){A y,z=mtv;B*wv;I m=0;
     /* 18!:1 locale name list */
 
  A jtlocnl2(J jt,A a,A w){UC*u;
- if(!(a && w)) return 0;
+ ARGCHK2(a,w);
  ASSERT(LIT&AT(a),EVDOMAIN);
  memset(jt->workareas.namelist.nla,C0,256); 
  u=UAV(a); DQ(AN(a),jt->workareas.namelist.nla[*u++]=1;);
@@ -285,7 +285,7 @@ static A jtlocale(J jt,B b,A w){A g=0,*wv,y;
 
 
 static A jtloccre(J jt,A a,A w){A g,y;C*s;I n,p;L*v;
- if(!(a && w)) return 0;
+ ARGCHK2(a,w);
  if(MARK&AT(a))p=jt->locsize[0]; else{RE(p=i0(a)); ASSERT(0<=p,EVDOMAIN); ASSERT(p<14,EVLIMIT);}
  y=AAV(w)[0]; n=AN(y); s=CAV(y);
  if(v=probe(n,s,(UI4)nmhash(n,s),jt->stloc)){   // scaf this is disastrous if the named locale is on the stack
@@ -300,7 +300,7 @@ static A jtloccre(J jt,A a,A w){A g,y;C*s;I n,p;L*v;
 }    /* create a locale named w with hash table size a */
 
 static A jtloccrenum(J jt, A w){C s[20];I k,p;
- if(!w) return 0;
+ ARGCHK1(w);
  if(MARK&AT(w))p=jt->locsize[1]; else{RE(p=i0(w)); ASSERT(0<=p,EVDOMAIN); ASSERT(p<14,EVLIMIT);}
  RE(k=jtgetnl(jt));
  FULLHASHSIZE(1LL<<(p+5),SYMBSIZE,1,SYMLINFOSIZE,p);  // get table, size 2^p+6 minus a little
@@ -310,14 +310,14 @@ static A jtloccrenum(J jt, A w){C s[20];I k,p;
 }    /* create a numbered locale with hash table size n */
 
  A jtloccre1(J jt, A w){
- if(!w) return 0;
+ ARGCHK1(w);
  if(AN(w))return rank2ex0(mark,vlocnl(2+1,w),UNUSED_VALUE,jtloccre);
  ASSERT(1==AR(w),EVRANK);
  return loccrenum(mark);
 }    /* 18!:3  create locale */
 
  A jtloccre2(J jt,A a,A w){
- if(!(a && w)) return 0;
+ ARGCHK2(a,w);
  if(AN(w))return rank2ex0(a,vlocnl(2+1,w),UNUSED_VALUE,jtloccre);
  ASSERT(1==AR(w),EVRANK);
  return rank1ex0(a,UNUSED_VALUE,jtloccrenum);
@@ -325,7 +325,7 @@ static A jtloccrenum(J jt, A w){C s[20];I k,p;
 
 
  A jtlocswitch(J jt, A w){A g;
- if(!w) return 0;
+ ARGCHK1(w);
  ASSERT(!AR(w),EVRANK); 
  RZ(g=locale(1,w));
  // put a marker for the operation on the call stack
@@ -352,7 +352,7 @@ static SYMWALK(jtlocmap1,I,INT,18,3,1,
      *zv++=(I)rifvs(sfn(SFNSIMPLEONLY,d->name));})  // this is going to be put into a box
 
  A jtlocmap(J jt, A w){A g,q,x,y,*yv,z,*zv;I c=-1,d,j=0,m,*qv,*xv;
- if(!w) return 0;
+ ARGCHK1(w);
  ASSERT(!AR(w),EVRANK);
  RE(g=equ(w,zeroionei(0))?jt->stloc:equ(w,zeroionei(1))?jt->locsyms:locale(0,w));
  ASSERT(g!=0,EVLOCALE);

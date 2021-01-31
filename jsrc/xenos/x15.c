@@ -881,7 +881,7 @@ static B jtcdexec1(J jt,CCT*cc,C*zv0,C*wu,I wk,I wt,I wd){A*wv=(A*)wu,x,y,*zv;B 
 
  A jtcd(J jt,A a,A w){A z;C*tv,*wv,*zv;CCT*cc;I k,m,n,p,q,t,wr,*ws,wt;
  F2PREFIP;
- if(!(a && w)) return 0;
+ ARGCHK2(a,w);
  AFLAG(w)&=~AFPRISTINE;  // we transfer boxes from w to the result, thereby letting them escape.  That makes w non-pristine
  if(!jt->cdarg)RZ(cdinit());
  if(1<AR(a)){I rr=AR(w); rr=rr==0?1:rr; return rank2ex(a,w,UNUSED_VALUE,1L,rr,1L,rr,jtcd);}
@@ -941,7 +941,7 @@ void dllquit(J jt){CCT*av;I j,*v;
      /* 15!:4  memory free */
 
  A jtmemr(J jt, A w){C*u;I m,n,t,*v;US*us;C4*c4;
- if(!w) return 0;
+ ARGCHK1(w);
  ASSERT(INT&AT(w),EVDOMAIN);
  ASSERT(1==AR(w),EVRANK);
  n=AN(w); v=AV(w);
@@ -965,7 +965,7 @@ void dllquit(J jt){CCT*av;I j,*v;
 }    /* 15!:1  memory read */
 
  A jtmemw(J jt,A a,A w){C*u;I m,n,t,*v;
- if(!(a && w)) return 0;
+ ARGCHK2(a,w);
  ASSERT(INT&AT(w),EVDOMAIN);
  ASSERT(1==AR(w),EVRANK);
  n=AN(w); v=AV(w);
@@ -983,7 +983,7 @@ void dllquit(J jt){CCT*av;I j,*v;
 
 // 15!:15 memu - make a copy of y if it is not writable (inplaceable and not read-only)
 // We have to check jt in case this usage is in a fork that will use the block later
- A jtmemu(J jt, A w) { F1PREFIP; if(!w) return 0; if(!((I)jtinplace&JTINPLACEW && (AC(w)<(AFLAG(w)<<((BW-1)-AFROX)))))w=ca(w); if(AT(w)&LAST0)*(C4*)&CAV(w)[AN(w)*bp(AT(w))]=0;  return w; }  // append 0 so that calls from cd append NUL termination
+ A jtmemu(J jt, A w) { F1PREFIP; ARGCHK1(w); if(!((I)jtinplace&JTINPLACEW && (AC(w)<(AFLAG(w)<<((BW-1)-AFROX)))))w=ca(w); if(AT(w)&LAST0)*(C4*)&CAV(w)[AN(w)*bp(AT(w))]=0;  return w; }  // append 0 so that calls from cd append NUL termination
  A jtmemu2(J jt,A a,A w) { return ca(w); }  // dyad - force copy willy-nilly
 
  A jtgh15(J jt, A w){A z;I k; RE(k=i0(w)); RZ(z=gah(k,0L)); ACINCR(z); return sc((I)z);}
@@ -992,7 +992,7 @@ void dllquit(J jt){CCT*av;I j,*v;
  A jtfh15(J jt, A w){I k; RE(k=i0(w)); fh((A)k); return num(0);}
      /* 15!:9  free header */
 
- A jtdllsymset(J jt, A w){if(!w) return 0; return (A)i0(w);}      /* do some validation here */
+ A jtdllsymset(J jt, A w){ARGCHK1(w); return (A)i0(w);}      /* do some validation here */
      /* 15!:7 */
 
 /* dll callback routines */
@@ -1055,7 +1055,7 @@ static I cbvx[]={(I)&cbx0,(I)&cbx1,(I)&cbx2,(I)&cbx3,(I)&cbx4,(I)&cbx5,(I)&cbx6,
 
  A jtcallback(J jt, A w){
  cbjt=jt; /* callbacks don't work with multiple instances of j */
- if(!w) return 0;
+ ARGCHK1(w);
  if(LIT&AT(w))
  {
   I cnt,alt;C c;C* s;
@@ -1107,7 +1107,7 @@ static I cbvx[]={(I)&cbx0,(I)&cbx1,(I)&cbx2,(I)&cbx3,(I)&cbx4,(I)&cbx5,(I)&cbx6,
 } /* 15!:19 return jt */
 
  A jtcdlibl(J jt, A w){
- if(!w) return 0;
+ ARGCHK1(w);
  ASSERT(LIT&AT(w),EVDOMAIN);
  ASSERT(1>=AR(w),EVRANK);
  ASSERT(AN(w),EVLENGTH);
@@ -1116,7 +1116,7 @@ static I cbvx[]={(I)&cbx0,(I)&cbx1,(I)&cbx2,(I)&cbx3,(I)&cbx4,(I)&cbx5,(I)&cbx6,
 }    /* 15!:20 return library handle */
 
  A jtcdproc1(J jt, A w){CCT*cc;
- if(!w) return 0;
+ ARGCHK1(w);
  ASSERT(LIT&AT(w),EVDOMAIN);
  ASSERT(1>=AR(w),EVRANK);
  ASSERT(AN(w),EVLENGTH);
@@ -1161,7 +1161,7 @@ static const C* jfntnm[]={
 };
 
  A jtcdproc2(J jt,A a,A w){C*proc;FARPROC f;HMODULE h;
- if(!(a && w)) return 0;
+ ARGCHK2(a,w);
  ASSERT(LIT&AT(w),EVDOMAIN);
  ASSERT(1>=AR(w),EVRANK);
  ASSERT(AN(w),EVLENGTH);

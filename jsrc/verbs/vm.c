@@ -109,7 +109,7 @@ AHDR2(cirDD,D,D,D){I k=(I)jround(*x);
 
 
  A jtlogar2(J jt,A a,A w){A z;I t;
- if(!(a && w)) return 0;
+ ARGCHK2(a,w); 
  RE(t=maxtype(AT(a),AT(w)));
  if(!(t&XNUM)||jt->xmode==XMEXACT){jt->xmode=XMEXACT; return jtatomic2(JTIPAW,logar1(w),logar1(a),ds(CDIV));}  // better to multiply by recip, but not much, & it makes 0 ^. 0 not fail
  z=rank2ex0(cvt(XNUM,a),cvt(XNUM,w),UNUSED_VALUE,jtxlog2a); 
@@ -119,7 +119,7 @@ AHDR2(cirDD,D,D,D){I k=(I)jround(*x);
 }
     
  A jtroot(J jt,A a,A w){A z;I t;
- if(!(a && w)) return 0;
+ ARGCHK2(a,w);
  RE(t=maxtype(AT(a),AT(w)));
  A ma=a; if(TYPESNE(t,AT(a)))RZ(ma=cvt(t,a));
  A mw=w; if(TYPESNE(t,AT(w)))RZ(mw=cvt(t,w));
@@ -138,10 +138,10 @@ AHDR2(cirDD,D,D,D){I k=(I)jround(*x);
  A jtrdot2(J jt,A a,A w){return tymes(a,rdot1(w));}
 
 
- A jtpolar(J jt, A w){if(!w) return 0; A z; return cvt(SPARSE&AT(w)?SFL:FL,df2(z,v2(10L,12L),w,qq(ds(CCIRCLE),v2(1L,0L))));}
+ A jtpolar(J jt, A w){ARGCHK1(w); A z; return cvt(SPARSE&AT(w)?SFL:FL,df2(z,v2(10L,12L),w,qq(ds(CCIRCLE),v2(1L,0L))));}
 
  A jtrect(J jt, A w){A e,z;B b;I r,t;P*wp,*zp;Z c;
- if(!w) return 0;
+ ARGCHK1(w); 
  t=AT(w); r=AR(w); RESETRANK;   // Run as infinite rank
  ASSERT(!AN(w)||t&NUMERIC,EVDOMAIN);
  if(t&CMPX){GATV(z,FL,2*AN(w),1+r,AS(w)); AS(z)[r]=2; MC(AV(z),AV(w),AN(z)*sizeof(D)); return z;}

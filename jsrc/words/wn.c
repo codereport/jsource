@@ -396,7 +396,7 @@ B valueisint; // set if the value we are processing is really an int
 
 // x ". y
  A jtexec2(J jt,A a,A w){A z;B b,p;C d,*v;I at,c,i,k,m,n,r,*s;
- if(!(a && w)) return 0;
+ ARGCHK2(a,w);
  ASSERT(!AR(a),EVRANK);  // x must be an atom
  at=AT(a);
  ASSERT(at&NUMERIC,EVDOMAIN);  // x must be numeric

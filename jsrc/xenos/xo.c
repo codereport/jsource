@@ -42,7 +42,7 @@ I jtfnum(J jt,A w){A y;I h,j;
 }    /* file (number,name) table */
 
 F jtjope(J jt,A w,C*mode){A t;F f;I n;static I nf=25; A z;
- if(!w) return 0;
+ ARGCHK1(w);
  ASSERT(BOX&AT(w),EVDOMAIN);
  RZ(t=str0(vslit(AAV(w)[0])));
  n=AN(t)-1;
@@ -57,7 +57,7 @@ F jtjope(J jt,A w,C*mode){A t;F f;I n;static I nf=25; A z;
 }
 
  A jtjopen(J jt, A w){A z;I h;
- if(!w) return 0;
+ ARGCHK1(w);
  if(!AN(w))return w;
  if(AR(w))return rank1ex0(w,UNUSED_VALUE,jtjopen);
  RE(h=fnum(w));
@@ -83,7 +83,7 @@ B jtadd2(J jt,F f1,F f2,C*cmd){A c,x;
 
 
  A jtjclose(J jt, A w){A*av;I*iv,j;
- if(!w) return 0;
+ ARGCHK1(w);
  if(!AN(w))return w;
  if(AR(w))return rank1ex0(w,UNUSED_VALUE,jtjclose);
  RE(j=i0(indexof(jt->fopf,sc(fnum(w))))); ASSERT(j<AM(jt->fopf),EVFNUM);
@@ -94,7 +94,7 @@ B jtadd2(J jt,F f1,F f2,C*cmd){A c,x;
 }    /* close file# w */
 
 F jtstdf(J jt,A w){A y;F f;I n,r,t;
- if(!w) return 0;
+ ARGCHK1(w);
  ASSERT(AN(w),EVLENGTH);
  ASSERT(!AR(w),EVRANK);
  if(BOX&AT(w)){

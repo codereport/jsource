@@ -62,7 +62,7 @@
 }
 
  A jtts0(J jt, A w){A x,z;C s[9],*u,*v,*zv;D*xv;I n,q;
- if(!w) return 0;
+ ARGCHK1(w);
  ASSERT(1>=AR(w),EVRANK);
  RZ(x=ts(mtv));
  n=AN(w); xv=DAV(x);
@@ -157,7 +157,7 @@ static A jtpmfree(J jt, A w){A x,y;C*c;I m;PM*v;PM0*u;
  A jtpmarea1(J jt, A w){return pmarea2(vec(B01,2L,&zeroZ),w);}  // 6!:10
 
  A jtpmarea2(J jt,A a,A w){A x;B a0,a1,*av;C*v;I an,n=0,s=sizeof(PM),s0=sizeof(PM0),wn;PM0*u;
- if(!(a && w)) return 0;
+ ARGCHK2(a,w);
  RZ(a=cvt(B01,a)); 
  an=AN(a);
  ASSERT(1>=AR(a),EVRANK);
@@ -210,7 +210,7 @@ void jtpmrecord(J jt,A name,A loc,I lc,int val){A x,y;B b;PM*v;PM0*u;
 
 // 6!:12
  A jtpmunpack(J jt, A w){A*au,*av,c,t,x,z,*zv;B*b;D*dv;I*iv,k,k1,m,n,p,q,wn,*wv;PM*v,*v0,*vq;PM0*u;
- if(!w) return 0;
+ ARGCHK1(w);
  ASSERT(jt->pma,EVDOMAIN);
  if(!(INT&AT(w)))RZ(w=cvt(INT,w));
  wn=AN(w); wv=AV(w);
@@ -262,7 +262,7 @@ void jtpmrecord(J jt,A name,A loc,I lc,int val){A x,y;B b;PM*v;PM0*u;
  A jttlimq(J jt, A w){ASSERTMTV(w); return scf(0.001*jt->timelimit);}
 
  A jttlims(J jt, A w){D d;
- if(!w) return 0;
+ ARGCHK1(w);
  ASSERT(!AR(w),EVRANK);
  if(!(FL&AT(w)))RZ(w=cvt(FL,w));
  d=DAV(w)[0];

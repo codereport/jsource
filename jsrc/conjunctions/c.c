@@ -16,7 +16,7 @@ CS2IP(static,static,obv2, z=(f2)(jtinplace,a,w,fs),0104)
 
 // Adverse.  Run f, and if that fails (and not with THROW), run g
 static A ad1(J jt,    A w,A self){DECLFG;A z;
- if(!w) return 0;
+ ARGCHK1(w); 
  WITHDEBUGOFF(z=CALL1(f1,  w,fs);)
  if(EVTHROW==jt->jerr)return 0;
  RESETERR;
@@ -24,7 +24,7 @@ static A ad1(J jt,    A w,A self){DECLFG;A z;
 }
 
 static A ad2(J jt,A a,A w,A self){DECLFG;A z;
- if(!(a && w)) return 0;
+ ARGCHK2(a,w); 
  WITHDEBUGOFF(z=CALL2(f2,a,w,fs);)
  if(EVTHROW==jt->jerr)return 0;
  RESETERR; 

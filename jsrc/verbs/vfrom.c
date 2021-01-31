@@ -44,7 +44,7 @@
 // a is not boxed and not boolean (except when a is an atom, which we pass through here to allow a virtual result)
  A jtifrom(J jt,A a,A w){A z;C*wv,*zv;I acr,an,ar,*av,j,k,m,p,pq,q,wcr,wf,wk,wn,wr,*ws,zn;
  F1PREFIP;
- if(!(a && w)) return 0;
+ ARGCHK2(a,w);
  // IRS supported.  This has implications for empty arguments.
  ar=AR(a); acr=jt->ranks>>RANKTX; acr=ar<acr?ar:acr;
  wr=AR(w); wcr=(RANKT)jt->ranks; wcr=wr<wcr?wr:wcr; wf=wr-wcr; RESETRANK;
@@ -121,7 +121,7 @@
 
 // a is boolean
 static A jtbfrom(J jt,A a,A w){A z;B*av,*b;C*wv,*zv;I acr,an,ar,k,m,p,q,r,*u=0,wcr,wf,wk,wn,wr,*ws,zn;
- if(!(a && w)) return 0;
+ ARGCHK2(a,w);
  ar=AR(a); acr=jt->ranks>>RANKTX; acr=ar<acr?ar:acr;
  wr=AR(w); wcr=(RANKT)jt->ranks; wcr=wr<wcr?wr:wcr; wf=wr-wcr; RESETRANK;
  if(ar>acr)return rank2ex(a,w,UNUSED_VALUE,acr,wcr,acr,wcr,jtbfrom);  // use rank loop if multiple cells of a
@@ -186,7 +186,7 @@ A jtfrombu(J jt,A a,A w,I wf){F1PREFIP;A p,q,z;I ar,*as,h,m,r,*u,*v,wcr,wr,*ws;
 // if the opened boxes have contents with the same item shape (treating atoms as same as singleton lists), create an array of all the indexes; put that into *ind and return 1.
 // otherwise return 0
 B jtaindex(J jt,A a,A w,I wf,A*ind){A*av,q,z;I an,ar,c,j,k,t,*u,*v,*ws;
- if(!(a && w)) return 0;
+ ARGCHK2(a,w);
  an=AN(a); *ind=0;
  if(!an)return 0;
  ws=wf+AS(w); ar=AR(a); av=AAV(a);  q=av[0]; c=AN(q);   // q=addr, c=length of first box
@@ -206,7 +206,7 @@ B jtaindex(J jt,A a,A w,I wf,A*ind){A*av,q,z;I an,ar,c,j,k,t,*u,*v,*ws;
 }    /* <"1 a to a where a is an integer index array */
 
 static B jtaindex1(J jt,A a,A w,I wf,A*ind){A z;I c,i,k,n,t,*v,*ws;
- if(!(a && w)) return 0;
+ ARGCHK2(a,w);
  n=AN(a); t=AT(a); *ind=0; if(AR(a)==0)return 0;  // revert to normal code for atomic a
  ws=wf+AS(w); c=AS(a)[AR(a)-1];   // c = length of 1-cell
  if(((n-1)|(c-1)|SGNIF(t,BOXX))<0)return 0;  // revert to normal code for empty or boxed a
@@ -273,7 +273,7 @@ static A jtafi(J jt,I n,A w){A x;
 
 // general boxed a
 static A jtafrom(J jt,A a,A w){PROLOG(0073);A c,ind,p=0,q,*v,y=w;B bb=1;I acr,ar,i=0,j,m,n,pr,*s,t,wcr,wf,wr;
- if(!(a && w)) return 0;
+ ARGCHK2(a,w);
  ar=AR(a); acr=jt->ranks>>RANKTX; acr=ar<acr?ar:acr;
  wr=AR(w); wcr=(RANKT)jt->ranks; wcr=wr<wcr?wr:wcr; wf=wr-wcr; RESETRANK;
  if(ar){  // if there is an array of boxes
@@ -316,7 +316,7 @@ static A jtafrom(J jt,A a,A w){PROLOG(0073);A c,ind,p=0,q,*v,y=w;B bb=1;I acr,ar
 
  A jtfrom(J jt,A a,A w){I at;A z;
  F2PREFIP;
- if(!(a && w)) return 0;
+ ARGCHK2(a,w);
  at=AT(a);
  if(!((AT(a)|AT(w))&(SPARSE))){
   // if B01|INT|FL atom { INT|FL|BOX array, and no frame, just pluck the value.  If a is inplaceable and not unincorpable, use it
@@ -400,7 +400,7 @@ static A jtmapx(J jt,A a,A w);
 static EVERYFS(mapxself,0,jtmapx,0,VFLAGNONE)
 
 static A jtmapx(J jt,A a,A w){A z1,z2,z3;
- if(!(a && w)) return 0;
+ ARGCHK2(a,w);
  if(!(BOX&AT(w)))return ope(a);
  RZ(z1=catalog(every(shape(w),ds(CIOTA))));  // create index list of each box
  IRS1(z1,0,0,jtbox,z2);

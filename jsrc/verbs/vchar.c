@@ -15,7 +15,7 @@ static AIFX(geC,  B, UC,UC, >= )
 static AIFX(gtC,  B, UC,UC, >  )
 
  A jtcharfn2(J jt,A a,A w,A self){A z;B b;C c;I an,ar,*as,m,n,wn,wr,*ws,zn,zt;V*v;VF ado=0;
- if(!(a && w)) return 0;
+ ARGCHK2(a,w);
  v=FAV(self); c=ID(v->fgh[0]);
  if(CUNDER==v->id)switch(c){
   case CMAX:  zt=LIT; ado=(VF)maxC; break;

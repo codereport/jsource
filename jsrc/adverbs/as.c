@@ -150,13 +150,13 @@ SUFFIXPFX(bw1111sfxI, UI,UI, BW1111, bw1111II,return EVOK;)
 
 
 static A jtsuffix(J jt,    A w,A self){DECLF;I r;
- if(!w) return 0;
+ ARGCHK1(w);
  r=(RANKT)jt->ranks; RESETRANK; if(r<AR(w))return rank1ex(w,self,r,jtsuffix);
  return eachl(IX(SETIC(w,r)),w,atop(fs,ds(CDROP)));
 }    /* f\."r w for general f */
 
 static A jtgsuffix(J jt,    A w,A self){A h,*hv,z,*zv;I m,n,r;
- if(!w) return 0;
+ ARGCHK1(w);
  r=(RANKT)jt->ranks; RESETRANK; if(r<AR(w))return rank1ex(w,self,r,jtgsuffix);
  SETIC(w,n); 
  h=VAV(self)->fgh[2]; hv=AAV(h); m=AN(h);
@@ -167,7 +167,7 @@ static A jtgsuffix(J jt,    A w,A self){A h,*hv,z,*zv;I m,n,r;
 
 
 static A jtssg(J jt,    A w,A self){F1PREFIP;PROLOG(0020);A a,z;I i,n,r,wr;
- if(!w) return 0;
+ ARGCHK1(w);
  ASSERT(DENSE&AT(w),EVNONCE);
  // loop over rank - we claim to handle IRS
  wr=AR(w); r=(RANKT)jt->ranks; r=wr<r?wr:r; RESETRANK; if(r<wr)return rank1ex(w,self,r,jtssg);
@@ -273,7 +273,7 @@ A jtscansp(J jt,A w,A self,AF sf){A e,ee,x,z;B*b;I f,m,j,r,t,wr;P*wp,*zp;
 }    /* f/\"r or f/\."r on sparse w */
 
 static A jtsscan(J jt,    A w,A self){A y,z;I d,f,m,n,r,t,wn,wr,*ws,wt;
- F1PREFIP;if(!w) return 0;
+ F1PREFIP;ARGCHK1(w);
  wt=AT(w);
  if((SPARSE&wt)!=0)return scansp(w,self,jtsscan);
  wn=AN(w); wr=AR(w); r=(RANKT)jt->ranks; r=wr<r?wr:r; f=wr-r; ws=AS(w); RESETRANK;
@@ -293,7 +293,7 @@ static A jtsscan(J jt,    A w,A self){A y,z;I d,f,m,n,r,t,wn,wr,*ws,wt;
 
 
 static A jtomask(J jt,A a,A w){A c,r,x,y;I m,n,p;
- if(!(a && w)) return 0;
+ ARGCHK2(a,w);
  RE(m=i0(a)); p=ABS(m); SETIC(w,n);
  r=sc(0>m?(n+p-1)/p:MAX(0,1+n-m)); c=tally(jt, w);
  x=reshape(sc(p),  num(0));
@@ -357,7 +357,7 @@ static A jtofxassoc(J jt,A a,A w,A self){A f,i,j,p,s,x,z;C id,*zv;I c,d,k,kc,m,r
 static A jtiota1rev(J jt,    A w,A self){I j; SETIC(w,j); return apv(j,j,-1L);}
 
  A jtbsdot(J jt, A w){A f;AF f1=jtsuffix,f2=jtoutfix;I flag=FAV(ds(CBSDOT))->flag;C id;V*v;  // init flag is IRS1
- if(!w) return 0;
+ ARGCHK1(w);
  if(NOUN&AT(w))return fdef(0,CBSLASH,VERB, jtgsuffix,jtgoutfix, w,0L,fxeachv(1L,w), VGERL|VAV(ds(CBSLASH))->flag, RMAX,0L,RMAX);
  v=FAV(w);  // verb info for w
  switch(v->id){

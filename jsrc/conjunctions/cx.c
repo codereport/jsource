@@ -857,7 +857,7 @@ A jtclonelocalsyms(J jt, A a){A z;I j;I an=AN(a); LX *av=LXAV0(a),*zv;
 }
 
  A jtcolon(J jt,A a,A w){A d,h,*hv,m;B b;C*s;I flag=VFLAGNONE,n,p;
- if(!(a && w)) return 0;
+ ARGCHK2(a,w);
  if(VERB&AT(a)&AT(w)){  // v : v case
   // If nested v : v, prune the tree
   if(CCOLON==FAV(a)->id&&FAV(a)->fgh[0]&&VERB&AT(FAV(a)->fgh[0])&&VERB&AT(FAV(a)->fgh[1]))a=FAV(a)->fgh[0];  // look for v : v; don't fail if fgh[0]==0 (namerefop).  Must test fgh[0] first
@@ -960,7 +960,7 @@ A jtclonelocalsyms(J jt, A a){A z;I j;I an=AN(a); LX *av=LXAV0(a),*zv;
 A jtddtokens(J jt,A w,I env){
 // TODO: Use LF for DDSEP, support {{), make nouns work
  PROLOG(000);F1PREFIP;
- if(!w) return 0;
+ ARGCHK1(w);
  // find word boundaries, remember if last word is NB
  A wil; RZ(wil=wordil(w));  // get index to words
  C *wv=CAV(w); I nw=AS(wil)[0]; I (*wilv)[2]=voidAV(wil);  // cv=pointer to chars, nw=#words including final NB   wilv->[][2] array of indexes into wv word start/end

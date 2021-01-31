@@ -16,7 +16,7 @@ BPFX( norBB, NOR ,BNOR, NOR, BNOR, _mm256_xor_pd(bool256,_mm256_or_pd(u256,v256)
 
 
 static A jtebarmat(J jt,A a,A w){A ya,yw,z;B b,*zv;C*au,*av,*u,*v,*v0,*wu,*wv;I*as,c,i,k,m,n,r,s,si,sj,t,*ws;
- if(!(a && w)) return 0;
+ ARGCHK2(a,w);
  as=AS(a);      av=CAV(a);
  ws=AS(w); v=v0=wv=CAV(w);
  si=as[0]; m=1+ws[0]-si;
@@ -38,7 +38,7 @@ static A jtebarmat(J jt,A a,A w){A ya,yw,z;B b,*zv;C*au,*av,*u,*v,*v0,*wu,*wv;I*
 }    /* E. on matrix arguments */
 
 static A jtebarvec(J jt,A a,A w){A y,z;B*zv;C*av,*wv,*yv;I an,k,n,s,t,wn;
- if(!(a && w)) return 0;
+ ARGCHK2(a,w);
  an=AN(a); av=CAV(a); 
  wn=AN(w); wv=CAV(w); n=1+wn-an; 
  t=AT(w); k=bpnoun(t); s=k*an;
@@ -103,7 +103,7 @@ static I jtebarprep(J jt,A a,A w,A*za,A*zw,I*zc){I ar,at,m,n,t,wr,wt,memlimit;CR
    }
 
  A jtebar(J jt,A a,A w){PROLOG(0065);A y,z;B*zv;C*av,*wv;I c,d,i,k=0,m,n,p,*yv;
- if(!(a && w)) return 0;
+ ARGCHK2(a,w);
  ASSERT(!((AT(a) | AT(w)) & SPARSE), EVNONCE);
  ASSERT((AR(a) == AR(w)) || (AR(a) + (AR(w) ^ 1)) == 0, EVRANK);
  if(AN(a)==1)return eq(reshape(mtv,a),w);  // if a is a singleton, just revert to =
@@ -133,7 +133,7 @@ static I jtebarprep(J jt,A a,A w,A*za,A*zw,I*zc){I ar,at,m,n,t,wr,wt,memlimit;CR
 
 
  A jti1ebar(J jt,A a,A w){A y;C*av,*wv;I c,d,i,k=0,m,n,p,*yv;
- if(!(a && w)) return 0;
+ ARGCHK2(a,w);
 
  RE(d=ebarprep(a,w,&a,&w,&c));
  av=CAV(a); m=AN(a);
@@ -157,7 +157,7 @@ static I jtebarprep(J jt,A a,A w,A*za,A*zw,I*zc){I ar,at,m,n,t,wr,wt,memlimit;CR
 }    /* a (E. i. 1:) w where a and w are atoms or lists */
 
  A jtsumebar(J jt,A a,A w){A y;C*av,*wv;I c,d,i,k=0,m,n,p,*yv,z=0;
- if(!(a && w)) return 0;
+ ARGCHK2(a,w);
  RE(d=ebarprep(a,w,&a,&w,&c));
  av=CAV(a); m=AN(a);
  wv=CAV(w); n=AN(w); p=n-m;
@@ -181,7 +181,7 @@ static I jtebarprep(J jt,A a,A w,A*za,A*zw,I*zc){I ar,at,m,n,t,wr,wt,memlimit;CR
 }    /* a ([: +/ E.) w where a and w are atoms or lists */
 
  A jtanyebar(J jt,A a,A w){A y;C*av,*wv;I c,d,i,k=0,m,n,p,*yv;
- if(!(a && w)) return 0;
+ ARGCHK2(a,w);
  RE(d=ebarprep(a,w,&a,&w,&c));
  av=CAV(a); m=AN(a);
  wv=CAV(w); n=AN(w); p=n-m;
@@ -208,7 +208,7 @@ static I jtebarprep(J jt,A a,A w,A*za,A*zw,I*zc){I ar,at,m,n,t,wr,wt,memlimit;CR
  {if(zu==zv){I m=zu-AV(z); RZ(z=ext(0,z)); zv=m+AV(z); zu=AN(z)+AV(z);} *zv++=k;}
 
  A jtifbebar(J jt,A a,A w){A y,z;C*av,*wv;I c,d,i,k=0,m,n,p,*yv,*zu,*zv;
- if(!(a && w)) return 0;
+ ARGCHK2(a,w);
  RE(d=ebarprep(a,w,&a,&w,&c));
  av=CAV(a); m=AN(a);
  wv=CAV(w); n=AN(w); p=n-m;

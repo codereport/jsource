@@ -57,7 +57,7 @@ static const ST state[SDDD+1][16]={
 // AM(z) gives # of words not counting a final comment, ({.$z) - hascomment
 // If there are mismatched quotes, AM(z) is set to -1 and the number of valid tokens is in AS(z)[0]
  A jtwordil(J jt, A w){A z;I s,i,m,n,nv,*x;UC*v;
- if(!w) return 0;  // if no string, could be empty line from keyboard; return null A in that case
+ ARGCHK1(w);  // if no string, could be empty line from keyboard; return null A in that case
  nv=0;    // set not creating numeric constant
  n=AN(w); v=UAV(w); GATV0(z,INT,n+n,3); x=AV(z); AS(z)[1]=2; AS(z)[2]=1;  // get count of characters n and address v; turn into suitable shape for ;.0 (x 2 1)
   // allocate absolute worst-case output area (each char is 1 word); point x to output indexes
@@ -132,7 +132,7 @@ static A jtconstr(J jt,I n,C*s){A z;C b,c,p,*t,*x;I m=0;
 // env is the environment for which this is being parsed: 0=tacit translator, 1=keyboard/immex with no locals, 2=for explicit defn
 // result is a list of parsable words, with types right.  The result is input only to parsing, never to verbs, and thus may be nonrecursive
 A jtenqueue(J jt,A a,A w,I env){A*v,*x,y,z;B b;C d,e,p,*s,*wi;I i,n,*u,wl;UC c;
- if(!(a && w)) return 0;
+ ARGCHK2(a,w);
  s=CAV(w); u=AV(a);
  n=AM(a);  // get # words not including any final NB.
  GATV0(z,BOX,n,1); x=v=AAV(z);   //  allocate list of words; set running word pointer x, and static
@@ -335,7 +335,7 @@ static A jtfsmdo(J jt,I f,A s,A m,I*ijrd,A w,A w0){A x,z;C*cc,*wv0;
 }    /* check left argument of x;:y */
 
 static A jtfsm0(J jt,A a,A w,C chka){PROLOG(0100);A*av,m,s,x,w0=w;B b;I c,f,*ijrd,k,n,p,q,*v;
- if(!(a && w)) return 0;
+ ARGCHK2(a,w);
  if(chka)RZ(a=fsmvfya(a)); 
  av=AAV(a); 
  f=i0(av[0]); s=av[1]; m=av[2]; ijrd=AV(av[3]);
@@ -363,5 +363,5 @@ static A jtfsm0(J jt,A a,A w,C chka){PROLOG(0100);A*av,m,s,x,w0=w;B b;I c,f,*ijr
  A jtfsm(J jt,A a,A w){return fsm0(a,w,1);}
      /* x;:y */
 
- A jtfsmfx(J jt,    A w,A self){if(!(w && self)) return 0; return fsm0(FAV(self)->fgh[0],w,0);}
+ A jtfsmfx(J jt,    A w,A self){ARGCHK2(w,self); return fsm0(FAV(self)->fgh[0],w,0);}
      /* x&;: y */

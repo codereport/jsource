@@ -122,7 +122,7 @@ static A jtred0(J jt,    A w,A self){DECLF;A x,z;I f,r,wr,*s;
 
 // general reduce.  We inplace the results into the next iteration.  This routine cannot inplace its inputs.
 static A jtredg(J jt,    A w,A self){F1PREFIP;PROLOG(0020);DECLF;AD * RESTRICT a;I i,n,r,wr;
- if(!w) return 0;
+ ARGCHK1(w);
  ASSERT(DENSE&AT(w),EVNONCE);
  // loop over rank
  wr=AR(w); r=(RANKT)jt->ranks; r=wr<r?wr:r; RESETRANK;
@@ -193,7 +193,7 @@ static A jtredsp1a(J jt,C id,A z,A e,I n,I r,I*s){A t;B b,p=0;D d=1;
 }}   /* f/w on sparse vector w, post processing */
 
 static A jtredsp1(J jt,A w,A self,C id,VARPSF ado,I cv,I f,I r,I zt){A e,x,z;I m,n;P*wp;
- if(!w) return 0;
+ ARGCHK1(w);
  wp=PAV(w); e=SPA(wp,e); x=SPA(wp,x); n=AN(x); m=*AS(w);
  GA(z,zt,1,0,0);
  if(n){I rc=((AHDRRFN*)ado)(1L,n,1L,AV(x),AV(z),jt); if(255&rc)jsignal(rc); RE(0); if(m==n)return z;}
@@ -202,7 +202,7 @@ static A jtredsp1(J jt,A w,A self,C id,VARPSF ado,I cv,I f,I r,I zt){A e,x,z;I m
 
  A jtredravel(J jt,    A w,A self){A f,x,z;I n;P*wp;
  F1PREFIP;
- if(!w) return 0;
+ ARGCHK1(w);
  f=FAV(self)->fgh[0];  // f/
  if(!(SPARSE&AT(w)))return reduce(jtravel(jtinplace,w),f);
  // The rest is sparse
@@ -218,7 +218,7 @@ static A jtredsp1(J jt,A w,A self,C id,VARPSF ado,I cv,I f,I r,I zt){A e,x,z;I m
 }  /* f/@, w */
 
 static A jtredspd(J jt,A w,A self,C id,VARPSF ado,I cv,I f,I r,I zt){A a,e,x,z,zx;I c,m,n,*s,t,*v,wr,*ws,xf,xr;P*wp,*zp;
- if(!w) return 0;
+ ARGCHK1(w);
  ASSERT(strchr(fca,id),EVNONCE);
  wp=PAV(w); a=SPA(wp,a); e=SPA(wp,e); x=SPA(wp,x); s=AS(x);
  xr=r; v=AV(a); DO(AN(a), if(f<v[i])--xr;); xf=AR(x)-xr;
@@ -289,7 +289,7 @@ static B jtredspse(J jt,C id,I wm,I xt,A e,A zx,A sn,A*ze,A*zzx){A b;B nz;I t,zt
 
 static A jtredsps(J jt,A w,A self,C id,VARPSF ado,I cv,I f,I r,I zt){A a,a1,e,sn,x,x1=0,y,z,zx,zy;B*pv;
      C*xv,*xxv,*zv;I*dv,i,m,n,*qv,*sv,*v,wr,xk,xt,wm,*ws,xc,yc,yr,*yu,*yv,zk;P*wp,*zp;
- if(!w) return 0;
+ ARGCHK1(w);
  ASSERT(strchr(fca,id),EVNONCE);
  wr=AR(w); ws=AS(w); wm=ws[f];
  wp=PAV(w); a=SPA(wp,a); e=SPA(wp,e); 
@@ -320,7 +320,7 @@ static A jtredsps(J jt,A w,A self,C id,VARPSF ado,I cv,I f,I r,I zt){A a,a1,e,sn
 }    /* f/"r w for sparse w, rank > 1, sparse axis */
 
 static A jtreducesp(J jt,    A w,A self){A a,g,z;B b;I f,n,r,*v,wn,wr,*ws,wt,zt;P*wp;
- if(!w) return 0;J jtinplace=jt;
+ ARGCHK1(w);J jtinplace=jt;
  wr=AR(w); r=(RANKT)jt->ranks; r=wr<r?wr:r; f=wr-r;  // no RESETRANK
  wn=AN(w); ws=AS(w); n=r?ws[f]:1;
  wt=AT(w); wt=wn?DTYPE(wt):B01;
@@ -417,7 +417,7 @@ static B jtreduce2(J jt,A w,C id,I f,I r,A*zz){A z=0;B b=0,btab[258],*zv;I c,d,m
 }    /* f/"r for dense w over an axis of length 2 */
 
 static A jtreduce(J jt,    A w,A self){A z;I d,f,m,n,r,t,wr,*ws,zt;
- F1PREFIP;if(!w) return 0;
+ F1PREFIP;ARGCHK1(w);
  if((SPARSE&AT(w))!=0)return reducesp(w,self);  // If sparse, go handle it
  wr=AR(w); ws=AS(w);
  // Create  r: the effective rank; f: length of frame; n: # items in a CELL of w
@@ -499,7 +499,7 @@ static A jtredcatsp(J jt,A w,A z,I r){A a,q,x,y;B*b;I c,d,e,f,j,k,m,n,n1,p,*u,*v
 // ,&.:(<"r)  run together all axes above the last r.  r must not exceed AR(w)-1
 // w must not be sparse or empty
 A jtredcatcell(J jt,A w,I r){A z;
- F1PREFIP;if(!w) return 0;
+ F1PREFIP;ARGCHK1(w);
  I wr=AR(w);  // get original rank, which may change if we inplace into the same block
  if(r>=wr-1)return RETARG(w);  // if only 1 axis left to run together, return the input
  if((ASGNINPLACESGN(SGNIF((I)jtinplace,JTINPLACEWX)&(-r),w) && !(AFLAG(w)&AFUNINCORPABLE))){  // inplace allowed, usecount is right
@@ -517,7 +517,7 @@ A jtredcatcell(J jt,A w,I r){A z;
 
 
  A jtredcat(J jt,    A w,A self){A z;B b;I f,r,*s,*v,wr;
- F1PREFIP;if(!w) return 0;
+ F1PREFIP;ARGCHK1(w);
  wr=AR(w); r=(RANKT)jt->ranks; r=wr<r?wr:r; f=wr-r; s=AS(w); RESETRANK;
  b=1==r&&1==s[f];  // special case: ,/ on last axis which has length 1: in that case, the rules say the axis disappears (because of the way ,/ works on length-1 lists)
  if(2>r&&!b)return w;  // in all OTHER cases, result=input for ranks<2
@@ -534,7 +534,7 @@ A jtredcatcell(J jt,A w,I r){A z;
 }    /* ,/"r w */
 
 static A jtredsemi(J jt,    A w,A self){I f,n,r,*s,wr;
- if(!w) return 0;
+ ARGCHK1(w);
  wr=AR(w); r=(RANKT)jt->ranks; r=wr<r?wr:r; f=wr-r; s=AS(w); SETICFR(w,f,r,n);   // let the rank run into tail   n=#items  in a cell of w
  if(2>n){ASSERT(n!=0,EVDOMAIN); return tail(w);}  // rank still set
  if(BOX&AT(w))return jtredg(jt,w,self);  // the old way failed because it did not mimic scalar replication; revert to the long way.  ranks are still set
@@ -542,7 +542,7 @@ static A jtredsemi(J jt,    A w,A self){I f,n,r,*s,wr;
 }    /* ;/"r w */
 
 static A jtredstitch(J jt,    A w,A self){A c,y;I f,n,r,*s,*v,wr;
- if(!w) return 0;
+ ARGCHK1(w);
  wr=AR(w); r=(RANKT)jt->ranks; r=wr<r?wr:r; f=wr-r; RESETRANK;
  s=AS(w); SETICFR(w,f,r,n);
  ASSERT(n!=0,EVDOMAIN);
@@ -562,7 +562,7 @@ static A jtredstitch(J jt,    A w,A self){A c,y;I f,n,r,*s,*v,wr;
 }}   /* ,./"r w */
 
 static A jtredstiteach(J jt,    A w,A self){A*wv,y;I n,p,r,t;
- if(!w) return 0;
+ ARGCHK1(w);
  n=AN(w);
  if(!(2<n&&1==AR(w)&&BOX&AT(w)))return reduce(w,self);
  wv=AAV(w);  y=wv[0]; SETIC(y,p); t=AT(y);
@@ -571,7 +571,7 @@ static A jtredstiteach(J jt,    A w,A self){A*wv,y;I n,p,r,t;
 }    /* ,.&.>/ w */
 
 static A jtredcateach(J jt,    A w,A self){A*u,*v,*wv,x,*xv,z,*zv;I f,m,mn,n,r,wr,*ws,zm,zn;I n1=0,n2=0;
- if(!w) return 0;
+ ARGCHK1(w);
  wr=AR(w); ws=AS(w); r=(RANKT)jt->ranks; r=wr<r?wr:r; f=wr-r; RESETRANK;
  SETICFR(w,f,r,n);
  if(!r||1>=n)return reshape(repeat(ne(sc(f),IX(wr)),shape(w)),n?w:ds(CACE));
@@ -590,7 +590,7 @@ static A jtoprod(J jt,A a,A w,A self){A z; return df2(z,a,w,FAV(self)->fgh[2]);}
 
 
  A jtslash(J jt, A w){A h;AF f1;C c;V*v;I flag=0;
- if(!w) return 0;
+ ARGCHK1(w);
  if(NOUN&AT(w))return evger(w,sc(GINSERT));  // treat m/ as m;.6.  This means that a node with CSLASH never contains gerund u
  v=FAV(w); 
  switch(v->id){  // select the monadic case
@@ -609,10 +609,10 @@ static A jtoprod(J jt,A a,A w,A self){A z; return df2(z,a,w,FAV(self)->fgh[2]);}
 
 A jtaslash (J jt,C c,    A w){RZ(   w); A z; return df1(z,  w,   slash(ds(c))     );}
 A jtaslash1(J jt,C c,    A w){RZ(   w); A z; return df1(z,  w,qq(slash(ds(c)),zeroionei(1)));}
-A jtatab   (J jt,C c,A a,A w){if(!(a && w)) return 0; A z; return df2(z,a,w,   slash(ds(c))     );}
+A jtatab   (J jt,C c,A a,A w){ARGCHK2(a,w); A z; return df2(z,a,w,   slash(ds(c))     );}
 
  A jtmean(J jt,    A w,A self){
- if(!w) return 0;
+ ARGCHK1(w);
  I wr=AR(w); I r=(RANKT)jt->ranks; r=wr<r?wr:r;
  I n=AS(w)[wr-r]; n=r?n:1;
  // leave jt->ranks unchanged to pass into +/

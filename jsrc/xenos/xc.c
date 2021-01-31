@@ -7,7 +7,7 @@
 
 
  A jtforeignextra(J jt,A a,A w){
- if(!(a && w)) return 0;
+ ARGCHK2(a,w);
  return CDERIV(CIBEAM, 0,0, VFLAGNONE,RMAX,RMAX,RMAX);
 }
 
@@ -17,7 +17,7 @@
 //  1, 2, or 3 to indicate that a piece of the original input has been processed, and any $: found in a name must
 //   be replaced by an explicit equivalent with the indicated valence(s)
  A jtfixrecursive(J jt,A a,A w){A z;
- if(!(a && w)) return 0;
+ ARGCHK2(a,w);
  df1(z,w,eval("1 : 'u y\n:\nx u y'"));
  return z;
 }
