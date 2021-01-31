@@ -246,8 +246,6 @@ jthook2cell(J jt, A a, A w, A self) {
     EPILOG(z);
 }
 
-#undef XCS2IP
-
 static A jthkiota(J jt,    A w,A self){DECLFG;A a,e;I n;P*p;
  SETIC(w,n);\
  if(SB01&AT(w)&&1==AR(w)){

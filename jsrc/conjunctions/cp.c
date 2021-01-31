@@ -215,7 +215,7 @@ static A jtinverr(J jt,    A w,A self){F1PREFIP;ASSERT(0,EVDOMAIN);}  // used fo
 // We catch the special cases 0  & 1 here, mostly for branch-prediction purposes.  All results of g1/g2 will be nouns, while
 // most instances of u^:v (run through powop) have v as verb
 
-#define XCS1IP(f, exp, x)                 \
+#define REFACTORME_CS1IP(f, exp, x)       \
     static A f##cell(J jt, A w, A self) { \
         F1PREFIP;                         \
         DECLFG;                           \
@@ -225,7 +225,7 @@ static A jtinverr(J jt,    A w,A self){F1PREFIP;ASSERT(0,EVDOMAIN);}  // used fo
         EPILOG(z);                        \
     }
 
-#define XCS2IP(f, exp, x)                      \
+#define REFACTORME_CS2IP(f, exp, x)            \
     static A f##cell(J jt, A a, A w, A self) { \
         F2PREFIP;                              \
         DECLFG;                                \
@@ -236,21 +236,21 @@ static A jtinverr(J jt,    A w,A self){F1PREFIP;ASSERT(0,EVDOMAIN);}  // used fo
     }
 
 // here for u^:v y
-XCS1IP(jtpowv1, \
+REFACTORME_CS1IP(jtpowv1, \
 A u; A v; RZ(u=CALL1(g1,  w,gs));  /* execute v */ \
 if(!AR(u) && (v=vib(u)) && !(IAV(v)[0]&~1)){z=IAV(v)[0]?(FAV(fs)->valencefns[0])(FAV(fs)->flag&VJTFLGOK1?jtinplace:jt,w,fs):w;} \
 else{RESETERR; RZ(u = powop(fs,u,(A)1));  \
 z=(FAV(u)->valencefns[0])(FAV(u)->flag&VJTFLGOK1?jtinplace:jt,w,u);} \
 ,0108)
 // here for x u^:v y 
-XCS2IP(jtpowv2, \
+REFACTORME_CS2IP(jtpowv2, \
 A u; A v; RZ(u=CALL2(g2,a,w,gs));  /* execute v */ \
 if(!AR(u) && (v=vib(u)) && !(IAV(v)[0]&~1)){z=IAV(v)[0]?(FAV(fs)->valencefns[1])(FAV(fs)->flag&VJTFLGOK2?jtinplace:jt,a,w,fs):w;} \
 else{RESETERR; RZ(u = powop(fs,u,(A)1));  \
 z=(FAV(u)->valencefns[1])(FAV(u)->flag&VJTFLGOK2?jtinplace:jt,a,w,u);} \
 ,0109)
 // here for x u@:]^:v y and x u@]^:v y
-XCS2IP(jtpowv2a, \
+REFACTORME_CS2IP(jtpowv2a, \
 jtinplace=(J)((I)jtinplace&~JTINPLACEA); /* monads always have IP2 clear */ \
 A u; A v; fs=FAV(fs)->fgh[0]; RZ(u=CALL2(g2,a,w,gs));  /* execute v */ \
 if(!AR(u) && (v=vib(u)) && !(IAV(v)[0]&~1)){z=IAV(v)[0]?(FAV(fs)->valencefns[0])(FAV(fs)->flag&VJTFLGOK1?jtinplace:jt,w,fs):w;} \
@@ -258,8 +258,8 @@ else{RESETERR; RZ(u = powop(fs,u,(A)1));  \
 z=(FAV(u)->valencefns[0])(FAV(u)->flag&VJTFLGOK1?jtinplace:jt,w,u);} \
 ,0110)
 
-#undef XCS1IP
-#undef XCS2IP
+#undef REFACTORME_CS1IP
+#undef REFACTORME_CS2IP
 
 // This executes the conjunction u^:v to produce a derived verb.  If the derived verb
 // contains verb v or gerund v, it executes v on the xy arguments and then calls jtpowop
