@@ -333,7 +333,6 @@ oflo2:
 // c is pseudochar for f, d is pseudochar for g
 static A jtipbx(J jt,A a,A w,C c,C d){A g=0,x0,x1,z;B*av,*av0,b,*v0,*v1,*zv;C c0,c1;
     I ana,i,j,m,n,p,q,r,*uu,*vv,wc;
- ARGCHK2(a,w);
  RZ(z=ipprep(a,w,B01,&m,&n,&p));
  // m=#1-cells of a, n=# bytes in 1-cell of w, p=length of individual inner product creating an atom
  ana=!!AR(a); wc=AR(w)?n:0; q=(n-1)>>LGSZI; r=(-n)&(SZI-1);  // ana = 1 if a is not atomic; wc = stride between items of w; q=#fullwords to proc, r=#bytes of last one NOT to proc
@@ -384,7 +383,6 @@ static A jtipbx(J jt,A a,A w,C c,C d){A g=0,x0,x1,z;B*av,*av0,b,*v0,*v1,*zv;C c0
 }    /* a f/ . g w  where a and w are nonempty and a is boolean */
 
 static A jtdotprod(J jt,A a,A w,A self){A fs,gs;C c;I r;V*sv;
- ARGCHK3(a,w,self);
  sv=FAV(self); fs=sv->fgh[0]; gs=sv->fgh[1];  // op is fs . gs
  if((SGNIF(AT(a)&AT(w),B01X)&-AN(a)&-AN(w)&-(FAV(gs)->flag&VISATOMIC2))<0&&CSLASH==ID(fs)&&  // fs is c/
      (c=FAV(FAV(fs)->fgh[0])->id,c==CSTARDOT||c==CPLUSDOT||c==CNE))return ipbx(a,w,c,FAV(gs)->id);  // [+.*.~:]/ . boolean
@@ -399,7 +397,6 @@ static A jtminors(J jt, A w){A d,z;
 }
 
 static A jtdet(J jt,    A w,A self){DECLFG;A h=sv->fgh[2];I c,r,*s;
- ARGCHK1(w);
  r=AR(w); s=AS(w);
  A z; if(h&&1<r&&2==s[r-1]&&s[r-2]==s[r-1])return df1(z,w,h);
  F1RANK(2,jtdet,self);

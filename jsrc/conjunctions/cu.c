@@ -8,7 +8,6 @@
 
 
 static A jteverysp(J jt,A w,A fs){A*wv,x,z,*zv;P*wp,*zp;
- ARGCHK1(w);
  AF f1=FAV(fs)->valencefns[0];
  ASSERT(SBOX&AT(w),EVNONCE);
  RZ(z=ca(w));
@@ -24,7 +23,7 @@ static A jteverysp(J jt,A w,A fs){A*wv,x,z,*zv;P*wp,*zp;
  A jteveryself(J jt,    A w,A self){return jtevery(jt,w,FAV(self)->fgh[0]);}   // replace u&.> with u and process
 // u&.>, but w may be a gerund, which makes the result a list of functions masquerading as an aray of boxes
 A jtevery(J jt, A w, A fs){A * RESTRICT wv,x,z,* RESTRICT zv;
- F1PREFIP;ARGCHK1(w);RESETRANK;  // we claim to support IRS1 but really there's nothing to do for it
+ F1PREFIP;RESETRANK;  // we claim to support IRS1 but really there's nothing to do for it
  if((SPARSE&AT(w))!=0)return everysp(w,fs);
  AF f1=FAV(fs)->valencefns[0];   // pointer to function to call
  A virtw; I flags;  // flags are: ACINPLACE=pristine result; JTWILLBEOPENED=nonrecursive result; BOX=input was boxed; ACPERMANENT=input was inplaceable pristine, contents can be inplaced
@@ -111,7 +110,7 @@ A jtevery(J jt, A w, A fs){A * RESTRICT wv,x,z,* RESTRICT zv;
  A jtevery2self(J jt,A a,A w,A self){return jtevery2(jt,a,w,FAV(self)->fgh[0]);}   // replace u&.> with u and process
 // u&.>, but w may be a gerund, which makes the result a list of functions masquerading as an aray of boxes
 A jtevery2(J jt, A a, A w, A fs){A*av,*wv,x,z,*zv;
- F2PREFIP;ARGCHK2(a,w);
+ F2PREFIP;
  AF f2=FAV(fs)->valencefns[1];
  // Get the number of atoms, and the number of times to repeat the short side.
  // The repetition is the count of the surplus frame.
@@ -233,7 +232,7 @@ A jtevery2(J jt, A a, A w, A fs){A*av,*wv,x,z,*zv;
 
 // apply f2 on items of a or w against the entirety of the other argument.  Pass on rank of f2 to reduce rank nesting
  A jteachl(J jt,A a,A w,A self){if(!(a && w && self)) return 0; I lcr=AR(a)-1<0?0:AR(a)-1; I lr=lr(self); lr=lcr<lr?lcr:lr; I rr=rr(self); rr=AR(w)<rr?AR(w):rr; return rank2ex(a,w,self,lr,rr,lcr,AR(w),FAV(self)->valencefns[1]);}
- A jteachr(J jt,A a,A w,A self){ARGCHK3(a,w,self); I rcr=AR(w)-1<0?0:AR(w)-1; I rr=rr(self); rr=rcr<rr?rcr:rr; I lr=lr(self); lr=AR(a)<lr?AR(a):lr; return rank2ex(a,w,self,lr,rr,AR(a),rcr,FAV(self)->valencefns[1]);}
+ A jteachr(J jt,A a,A w,A self){ I rcr=AR(w)-1<0?0:AR(w)-1; I rr=rr(self); rr=rcr<rr?rcr:rr; I lr=lr(self); lr=AR(a)<lr?AR(a):lr; return rank2ex(a,w,self,lr,rr,AR(a),rcr,FAV(self)->valencefns[1]);}
 
 // u&.v
 // PUSH/POP ZOMB is performed in atop/amp/ampco
@@ -255,7 +254,6 @@ static A jtunder20(J jt,A a,A w,A self){return jtrank2ex0(jt,a,w,self,jtunder2);
 static A jtunderh20(J jt,A a,A w,A self){return jtrank2ex0(jt,a,w,self,jtunderh2);}  // pass inplaceability through
 
 static A jtunderai1(J jt,    A w,A self){DECLF;A x,y,z;B b;I j,n,*u,*v;UC f[256],*wv,*zv;
- ARGCHK1(w);
  if(b=LIT&AT(w)&&256<AN(w)){  // long w.  run on all bytecodes, as i. 128 2  and i. 8 32
         df1(x,iota(v2(128L, 2L)),fs); b=x&&256==AN(x)&&NUMERIC&AT(x);
   if(b){df1(y,iota(v2(  8L,32L)),fs); b=y&&256==AN(y)&&NUMERIC&AT(y);}
@@ -272,7 +270,6 @@ static A jtunderai1(J jt,    A w,A self){DECLF;A x,y,z;B b;I j,n,*u,*v;UC f[256]
 
 // u&.v
  A jtunder(J jt,A a,A w){A x,wvb=w;AF f1,f2;B b,b1;C c,uid;I gside=-1;V*u,*v;
- ARGCHK2(a,w);
  if(AT(w)&BOX){
   // Must be the gerund form.  Extract v and remember which argument it will apply to
   ASSERT((AR(w)^1)+(AN(w)^2)==0,EVDOMAIN);  // must be 2-element list
@@ -333,7 +330,6 @@ static A jtunderai1(J jt,    A w,A self){DECLF;A x,y,z;B b;I j,n,*u,*v;UC f[256]
 }
 
  A jtundco(J jt,A a,A w){AF f1=0,f2;I gside=-1, flag=0;
- ARGCHK2(a,w);
  A wvb=w;  // the verb we will take the inverse of
  if(AT(w)&BOX){
   // Must be the gerund form.  Extract v and remember which argument it will apply to

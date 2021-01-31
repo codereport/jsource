@@ -24,7 +24,7 @@ static I jtord(J jt,A w){I j,n,*v,z;
 
 // w contains indexes (its shape is immaterial).  n is the length of the axis.  Result is new array, same shape, with equivalent positive indexes
 A jtpind(J jt,I n,A w){A z;I j,*v;
- RE(n); ARGCHK1(w);
+ RE(n);
  RZ(z=AT(w)&INT?w:cvt(INT,w));  // z is now an INT vector, possibly the input argument
  // Make a quick scan to see if all are positive, as they usually are
  for(j=AN(z), v=IAV(z);j;--j)if((UI)*v++>=(UI)n)break;
@@ -48,7 +48,6 @@ A jtpfill(J jt,I n,A w){PROLOG(0081);A b,z;B*bv;I*wv,*zv;
 }
 
 static A jtcfd(J jt, A w){A b,q,x,z,*zv;B*bv;I c,i,j,n,*qv,*u,*v,zn;
- ARGCHK1(w);
  if(c=1&&INT&AT(w)){
   n=AN(w); v=AV(w);
   GATV0(b,B01,1+n,1); bv=BAV(b); memset(bv,C0,n);
@@ -72,7 +71,7 @@ static A jtcfd(J jt, A w){A b,q,x,z,*zv;B*bv;I c,i,j,n,*qv,*u,*v,zn;
 }    /* cycle from direct */
 
 static A jtdfc(J jt,I n,A w){PROLOG(0082);A b,q,*wv,z;B*bv;I c,j,qn,*qv,*x;
- RE(n); ARGCHK1(w);
+ RE(n);
  ASSERT(0<=n,EVINDEX);
  GATV0(b,B01,n,1); bv=BAV(b); memset(bv,C1,n);
  RZ(z=apvwr(n,0L,1L)); x=AV(z);
@@ -138,7 +137,6 @@ static A jtrfd(J jt, A w){A z;I j,k,m,n,r,*s,*x;
 }
 
  A jtadot2(J jt,A a,A w){A m,p;I n;
- ARGCHK2(a,w);
  SETIC(w,n); p=sc(n); if(XNUM&AT(a))p=cvt(XNUM,p); RZ(m=fact(p));
  ASSERT(all1(le(negate(m),a))&&all1(lt(a,m)),EVINDEX);
  if(!AR(w)){RZ(vi(a)); return w;}

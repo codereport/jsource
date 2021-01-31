@@ -9,7 +9,6 @@ static A jttrr(J jt, A w);
 
 
 static A jttrc(J jt, A w){A bot,p,*v,x,y;B b;C*bv,c,ul,ll,*pv;I j,k,m,*s,xn,*xv,yn,*yv;
- ARGCHK1(w);
  s=AS(w); v=AAV(w);
  xn=s[0]; RZ(x=apvwr(xn,0L,0L)); xv=AV(x);
  yn=s[1]; RZ(y=apvwr(yn,0L,0L)); yv=AV(y);
@@ -30,7 +29,6 @@ static A jttrc(J jt, A w){A bot,p,*v,x,y;B b;C*bv,c,ul,ll,*pv;I j,k,m,*s,xn,*xv,
 }
 
 static I jtpad(J jt,A a,A w,C*zv){C dash,*u,*v,*wv;I c,d,r,*s;
- ARGCHK2(a,w);
  s=AV(a); r=s[0]; d=s[1];
  if(AN(w)){
   c=*(1+AS(w)); wv=CAV(w);
@@ -69,7 +67,6 @@ static A jtgraft(J jt, A w){A p,q,t,*u,x,y,z,*zv;C*v;I d,j,k,m,n,*pv,*s,xn,*xv,y
 }
 
 static A jtcenter(J jt,A a,I j,I k,I m){A z;C*x;I n,*s,zn;
- ARGCHK1(a);
  n=AN(a); RE(zn=mult(m,n)); GATV0(z,LIT,zn,2); s=AS(z); *s=m; *++s=n;
  x=CAV(z); memset(x,' ',AN(z)); MC(x+n*(j+((m-(j+k))>>1)),AV(a),n);
  return z;
@@ -87,7 +84,6 @@ static A jttroot(J jt,A a,A w){A t,x;B b;C*u,*v;I j=0,k=0,m,n,*s;
 }
 
 static A jttleaf(J jt, A w){A t,z;C*v;I n,*s;
- ARGCHK1(w);
  n=AN(w);
  GATV0(t,LIT,2+n,2); s=AS(t); s[0]=1; s[1]=2+n;
  v=CAV(t); v[0]=jt->bx[10]; v[1]=' '; MC(2+v,AV(w),n);

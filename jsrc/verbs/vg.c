@@ -691,7 +691,6 @@ static B (*grroutine[])(J,I,I,I,A,I*) = {  // index is [bitx]
 
 // /: and \: with IRS support
  A jtgr1(J jt, A w){PROLOG(0075);A z;I c,f,ai,m,n,r,*s,t,wn,wr,zn;
- ARGCHK1(w);
  t=AT(w); wr=AR(w); r=(RANKT)jt->ranks; r=wr<r?wr:r; RESETRANK;
  f=wr-r; s=AS(w);
  // Calculate m: #cells in w   n: #items in a cell of w   ai: #atoms in an item of a cell of w  c: #atoms in a cell of w  
@@ -715,9 +714,9 @@ static B (*grroutine[])(J,I,I,I,A,I*) = {  // index is [bitx]
  A jtdgrade1(J jt, A w){A z;GBEGIN( 1); RZ(   w); z=SPARSE&AT(w)?grd1sp(  w):gr1(  w); GEND return z;}
 // Since grade2 pulls from a, mark a as non-pristine.  But since there can be no repeats, transfer a's pristinity to result if a is inplaceable
 // We do this in jtgr2 because it has a branch where all boxed values go
- A jtgrade2 (J jt,A a,A w){F2PREFIP;A z;GBEGIN(-1); ARGCHK2(a,w); RZ(z=SPARSE&AT(w)?grd2sp(a,w):jtgr2(jtinplace,a,w)); GEND
+ A jtgrade2 (J jt,A a,A w){F2PREFIP;A z;GBEGIN(-1); RZ(z=SPARSE&AT(w)?grd2sp(a,w):jtgr2(jtinplace,a,w)); GEND
  return z;}
- A jtdgrade2(J jt,A a,A w){F2PREFIP;A z;GBEGIN( 1); ARGCHK2(a,w); RZ(z=SPARSE&AT(w)?grd2sp(a,w):jtgr2(jtinplace,a,w)); GEND
+ A jtdgrade2(J jt,A a,A w){F2PREFIP;A z;GBEGIN( 1); RZ(z=SPARSE&AT(w)?grd2sp(a,w):jtgr2(jtinplace,a,w)); GEND
  return z;}
 
 
@@ -760,7 +759,6 @@ static B (*grroutine[])(J,I,I,I,A,I*) = {  // index is [bitx]
 
  A jtordstat(J jt,A a,A w){A q,t=0;I j,m,m0,m1,n,wt;D *qv;
  I i=NRANDS-1;  // i points to the next random number to draw
- ARGCHK2(a,w);
  n=AN(w); wt=AT(w); RE(j=i0(a));
  if(((4-n)&((AR(a)|(1^AR(w)))-1)&(-(wt&FL+INT)))>=0)return from(a,grade2(w,w));  // if not int/float, or short, or not (atom a and list w), do full grade
  if((UI)j>=(UI)n){j+=n; ASSERT((UI)j<(UI)n,EVINDEX);}
@@ -770,7 +768,6 @@ static B (*grroutine[])(J,I,I,I,A,I*) = {  // index is [bitx]
 }    /* a{/:~w */
 
  A jtordstati(J jt,A a,A w){A t;I n,wt;
- ARGCHK2(a,w);
  n=AN(w); wt=AT(w);
  if(((4-n)&((AR(a)|(1^AR(w)))-1)&(-(wt&FL+INT)))>=0)return from(a,grade1(w));
  RZ(t=ordstat(a,w));   // Get the value of the ath order statistic, then look up its index

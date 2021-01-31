@@ -51,7 +51,6 @@ static A jtovs0(J jt,B p,I r,A a,A w){A a1,e,q,x,y,z;B*b;I at,*av,c,d,j,k,f,m,n,
 }    /* a,"r w (0=p) or w,"r a (1=p) where a is scalar and w is sparse */
 
 static A jtovs(J jt,A a,A w){A ae,ax,ay,q,we,wx,wy,x,y,z,za,ze;B*ab,*wb,*zb;I acr,ar,*as,at,c,m,n,r,t,*v,wcr,wr,*ws,wt,*zs;P*ap,*wp,*zp;
- ARGCHK2(a,w);
  acr=jt->ranks>>RANKTX; ar=AR(a); at=AT(a); acr=ar<acr?ar:acr; 
  wcr=(RANKT)jt->ranks; wr=AR(w); wt=AT(w); wcr=wr<wcr?wr:wcr; RESETRANK; 
  if(!ar)return ovs0(0,wcr,a,w);
@@ -119,7 +118,6 @@ static C*jtovgmove(J jt,I k,I c,I m,A s,A w,C*x,A z){I d,n,p=c*m;
 }    /* move an argument into the result area */
 
 static A jtovg(J jt,A a,A w){A s,z;C*x;I ar,*as,c,k,m,n,r,*sv,t,wr,*ws,zn;
- ARGCHK2(a,w);
  I origwt=AT(w); RZ(w=setfv(a,w));
  if(AT(a)!=(t=AT(w))){t=maxtypedne(AT(a)|(AN(a)==0),t|(((t^origwt)+AN(w))==0)); t&=-t; if(!TYPESEQ(t,AT(a))){RZ(a=cvt(t,a));} else {RZ(w=cvt(t,w));}}  // convert args to compatible precisions, changing a and w if needed.  B01 if both empty.  If fill changed w, don't do B01 for it
  ar=AR(a); wr=AR(w); r=ar+wr?MAX(ar,wr):1;
@@ -270,7 +268,6 @@ static void(*moveawtbl[])() = {moveawVV,moveawVS,moveawSV};
 
  A jtlamin2(J jt,A a,A w){A z;I ar,p,q,wr;
  // Because we don't support inplacing here, the inputs & results will be marked non-pristine.  That's OK because scalar replication might have happened.
- ARGCHK2(a,w); 
  ar=AR(a); p=jt->ranks>>RANKTX; p=ar<p?ar:p;  // p=cell rank of a, q=cell rank of w
  wr=AR(w); q=(RANKT)jt->ranks; q=wr<q?wr:q; RESETRANK;
  if(p)RZ(a=IRS1(a,0L,p,jtlamin1,z));
@@ -282,7 +279,6 @@ static void(*moveawtbl[])() = {moveawVV,moveawVS,moveawSV};
 
 // Append, including tests for append-in-place
 A jtapip(J jt, A a, A w){F2PREFIP;A h;C*av,*wv;I ak,k,p,*u,*v,wk,wm,wn;
- ARGCHK2(a,w);
  // Allow inplacing if we have detected an assignment to a name on the last execution, and the address
  // being assigned is the same as a, and the usecount of a allows inplacing; or
  // the argument a is marked inplaceable.  Usecount of <1 is inplaceable, and for memory-mapped nouns, 2 is also OK since

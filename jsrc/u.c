@@ -189,7 +189,7 @@ A jtifb(J jt,I n,B* RESTRICT b){A z;I p,* RESTRICT zv;
 }    /* integer vector from boolean mask */
 
 // i. # w
-static A jtii(J jt, A w){ARGCHK1(w); I j; return IX(SETIC(w,j));}
+static A jtii(J jt, A w){ I j; return IX(SETIC(w,j));}
 
 // Return the higher-priority of the types s and t.  s and t are known to be not equal.
 // If either is sparse, convert the result to sparse.
@@ -276,7 +276,6 @@ for(i=0;i<n<<bplg(t);i++)*p++=!!(*q++);
 
 // Audit w to ensure valid integer value(s).  Error if non-integral.  Result is A block for integer array.  Infinities converted to IMAX/-IMAX
  A jtvib(J jt, A w){A z;D d,e,*wv;I i,n,*zv;
- ARGCHK1(w);
  if(AT(w)&INT)return RETARG(w);  // handle common non-failing cases quickly: INT and boolean
  if(AT(w)&B01){if(!AR(w))return zeroionei(BAV(w)[0]); return cvt(INT,w);}
  if(w==ainf)return imax;  // sentence words of _ always use the same block, so catch that too
@@ -303,12 +302,12 @@ for(i=0;i<n<<bplg(t);i++)*p++=!!(*q++);
 }
 
 // Convert w to integer if needed, and verify every atom is nonnegative
- A jtvip(J jt, A w){I*v; ARGCHK1(w); if(!(INT&AT(w)))RZ(w=cvt(INT,w)); v=AV(w); DQ(AN(w), ASSERT(0<=*v++,EVDOMAIN);); return w;}
+ A jtvip(J jt, A w){I*v; if(!(INT&AT(w)))RZ(w=cvt(INT,w)); v=AV(w); DQ(AN(w), ASSERT(0<=*v++,EVDOMAIN);); return w;}
 
 // Convert w to string, verify it is a list or atom
- A jtvs(J jt, A w){ARGCHK1(w); ASSERT(1>=AR(w),EVRANK); return LIT&AT(w)?w:cvt(LIT,w);}
+ A jtvs(J jt, A w){ ASSERT(1>=AR(w),EVRANK); return LIT&AT(w)?w:cvt(LIT,w);}
      /* verify string */
 
 // Convert w to utf8 string, verify it is a list or atom
- A jtvslit(J jt, A w){ARGCHK1(w); ASSERT(1>=AR(w),EVRANK); return LIT&AT(w)?w:(C2T+C4T)&AT(w)?toutf8(w):cvt(LIT,w);}
+ A jtvslit(J jt, A w){ ASSERT(1>=AR(w),EVRANK); return LIT&AT(w)?w:(C2T+C4T)&AT(w)?toutf8(w):cvt(LIT,w);}
      /* verify string */

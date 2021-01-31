@@ -83,7 +83,6 @@ static A jtfxchar(J jt,    A w,A self){A y;C c,d,id,*s;I m,n;
 // Convert an AR to an A block.  w is a gerund that has been opened
 // self is normally 0; if nonzero, we return a noun type ('0';<value) as is rather than returning value, and leave adv/conj ARs looking like nouns
  A jtfx(J jt,    A w,A self){A f,fs,g,h,p,q,*wv,y,*yv;C id;I m,n=0;
- ARGCHK1(w);
  // if string, handle that special case (verb/primitive)
  if(LIT&AT(w))return fxchar(w,self);
  // otherwise, it had better be boxed with rank 0 or 1, and 1 or 2 atoms
@@ -279,7 +278,6 @@ static A*jtunparse1a(J jt,I m,A*hv,A*zv){A*v,x,y;CW*u;I i,j,k;
 
 // w is a def.  Return unparsed form
  A jtunparsem(J jt,A a,A w){A h,*hv,dc,ds,mc,ms,z,*zu,*zv;I dn,m,mn,n,p;V*wv;
- ARGCHK2(a,w);
  wv=VAV(w); h=wv->fgh[2]; hv=AAV(h);  // h[2][HN] is preparsed def
  mc=hv[1];    ms=hv[2];    m=mn=AN(mc);  // mc->control words ms->commented text
  dc=hv[1+HN]; ds=hv[2+HN]; n=dn=AN(dc);

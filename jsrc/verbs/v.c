@@ -6,13 +6,13 @@
 #include "j.h"
 
 
- A jtshapex    (J jt, A w) {A z; ARGCHK1(w); z=vec(INT,AR(w),AS(w)); return AT(w)&XNUM+RAT?xco1(z):z;}
- A jtshape     (J jt, A w) {ARGCHK1(w); return vec(INT,AR(w),AS(w));}  // $ y
- A jtisempty   (J jt, A w) {ARGCHK1(w); if((AT(w)&SPARSE)!=0)return eps(zeroionei(0),shape(w)); return num(AN(w)==0);}  // 0 e. $
- A jtisnotempty(J jt, A w) {ARGCHK1(w); if((AT(w)&SPARSE)!=0)return __not(eps(zeroionei(0),shape(w))); return num(AN(w)!=0);}  // *@#@,
- A jtisitems   (J jt, A w) {ARGCHK1(w); return num(!AR(w)|!!AS(w)[0]);}   // *@#   *@:#
- A jtrank      (J jt, A w) {F1PREFIP; ARGCHK1(w); return sc(AR(w));}  // #@$
- A jtnatoms    (J jt, A w) {F1PREFIP; A z; ARGCHK1(w); if((AT(w)&SPARSE)!=0)return df1(z,shape(w),slash(ds(CSTAR))); return sc(AN(w));}   // */@$  #@,
+ A jtshapex    (J jt, A w) {A z; z=vec(INT,AR(w),AS(w)); return AT(w)&XNUM+RAT?xco1(z):z;}
+ A jtshape     (J jt, A w) { return vec(INT,AR(w),AS(w));}  // $ y
+ A jtisempty   (J jt, A w) { if((AT(w)&SPARSE)!=0)return eps(zeroionei(0),shape(w)); return num(AN(w)==0);}  // 0 e. $
+ A jtisnotempty(J jt, A w) { if((AT(w)&SPARSE)!=0)return __not(eps(zeroionei(0),shape(w))); return num(AN(w)!=0);}  // *@#@,
+ A jtisitems   (J jt, A w) { return num(!AR(w)|!!AS(w)[0]);}   // *@#   *@:#
+ A jtrank      (J jt, A w) {F1PREFIP; return sc(AR(w));}  // #@$
+ A jtnatoms    (J jt, A w) {F1PREFIP; A z; if((AT(w)&SPARSE)!=0)return df1(z,shape(w),slash(ds(CSTAR))); return sc(AN(w));}   // */@$  #@,
 
 // ,y and ,"r y - producing virtual blocks
  A jtravel(J jt, A w){A a,c,q,x,y,y0,z;B*b;I f,j,m,r,*u,*v,*yv;P*wp,*zp;
@@ -64,7 +64,7 @@
 }
 
  A jttable(J jt, A w){A z,zz;I r,wr;
- F1PREFIP;ARGCHK1(w);
+ F1PREFIP;
  // We accept the pristine calculations from ravel
  wr=AR(w); r=(RANKT)jt->ranks; r=wr<r?wr:r;  // r=rank to use
  RZ(IRSIP1(w,0L,r-1<0?0:r-1,jtravel,z));  // perform ravel on items
@@ -74,7 +74,6 @@
 // ]"n, dyadic - also ["n, implemented as ] with ranks switched
 // length error has already been detected, in irs
 static A jtlr2(J jt,RANK2T ranks,A a,A w){I acr,af,ar,wcr,wf,wr;
- ARGCHK2(a,w);
  // ?r=rank of ? arg; ?cr= verb-rank for that arg; ?f=frame for ?; ?s->shape
  // We know that jt->rank is nonzero, because the caller checked it
  ar=AR(a); acr=ranks>>RANKTX; acr=ar<acr?ar:acr; af=ar-acr;
@@ -116,14 +115,14 @@ static A jtlr2(J jt,RANK2T ranks,A a,A w){I acr,af,ar,wcr,wf,wr;
  return z;
 }
 
- A jtnum1(J jt,    A w,A self){ARGCHK2(w,self); return FAV(self)->fgh[2];}
- A jtnum2(J jt,A a,A w,A self){ARGCHK3(a,w,self); return FAV(self)->fgh[2];}
+ A jtnum1(J jt,    A w,A self){ return FAV(self)->fgh[2];}
+ A jtnum2(J jt,A a,A w,A self){ return FAV(self)->fgh[2];}
 
- A jtfromr  (J jt,A a,A w){ARGCHK2(a,w); A z; return IRS2(a,w,0, RMAX,1L,jtfrom  ,z);} // no agreement check because left rank is infinite - no frame  {"_ 1
- A jtrepeatr(J jt,A a,A w){ARGCHK2(a,w); A z; return IRS2(a,w,0, RMAX,1L,jtrepeat,z);}  // #"_ 1
+ A jtfromr  (J jt,A a,A w){ A z; return IRS2(a,w,0, RMAX,1L,jtfrom  ,z);} // no agreement check because left rank is infinite - no frame  {"_ 1
+ A jtrepeatr(J jt,A a,A w){ A z; return IRS2(a,w,0, RMAX,1L,jtrepeat,z);}  // #"_ 1
 
-A jttaker(J jt,I n,A w){ARGCHK1(w); A a,z; RZ(a=sc(n)); return IRS2(a,w,0, RMAX,1L,jttake,z);}  // n {."1 w
-A jtdropr(J jt,I n,A w){ARGCHK1(w); A a,z; RZ(a=sc(n)); return IRS2(a,w,0, RMAX,1L,jtdrop,z);}  // n }."1 w
+A jttaker(J jt,I n,A w){ A a,z; RZ(a=sc(n)); return IRS2(a,w,0, RMAX,1L,jttake,z);}  // n {."1 w
+A jtdropr(J jt,I n,A w){ A a,z; RZ(a=sc(n)); return IRS2(a,w,0, RMAX,1L,jtdrop,z);}  // n }."1 w
 
  A jticap(J jt, A w){A a,e;I n;P*p;
  F1RANK(1,jticap,UNUSED_VALUE);

@@ -181,7 +181,6 @@ static B jtmatchsub(J jt,A a,A w,B* RESTRICT x,I af,I wf,I m,I n,I b1){C*av,*wv;
 }
 
 static A jtmatchs(J jt,A a,A w){A ae,ax,p,q,we,wx,x;B*b,*pv,*qv;D d;I acr,an=0,ar,c,j,k,m,n,r,*s,*v,wcr,wn=0,wr;P*ap,*wp;
- ARGCHK2(a,w);
  ar=AR(a); acr=jt->ranks>>RANKTX; acr=ar<acr?ar:acr; r=ar;
  wr=AR(w); wcr=(RANKT)jt->ranks; wcr=wr<wcr?wr:wcr; RESETRANK;
  if(ar>acr||wr>wcr)return rank2ex(a,w,UNUSED_VALUE,acr,wcr,acr,wcr,jtmatchs);
@@ -209,7 +208,6 @@ static A jtmatchs(J jt,A a,A w){A ae,ax,p,q,we,wx,x;B*b,*pv,*qv;D d;I acr,an=0,a
 // x -:"r y or x -.@-:"r y depending on LSB of jt
  A jtmatch(J jt,A a,A w){A z;I af,m,n,mn,wf;
  I eqis0 = (I)jt&1; jt=(J)((I)jt&~1);
- ARGCHK2(a,w);
  I isatoms = (-AN(a))&(-AN(w));  // neg if both args have atoms
  if((SPARSE&(AT(a)|AT(w)))!=0)return ne(num(eqis0),matchs(a,w));
  af=AR(a)-(I)(jt->ranks>>RANKTX); af=af<0?0:af; wf=AR(w)-(I)((RANKT)jt->ranks); wf=wf<0?0:wf; RESETRANK;

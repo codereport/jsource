@@ -165,7 +165,6 @@ B jtspfree(J jt){I i;A p;
 }    /* free unused blocks */
 
 static A jtspfor1(J jt, A w){
- ARGCHK1(w);
  if(BOX&AT(w)){A*wv=AAV(w); DO(AN(w), if(wv[i])spfor1(wv[i]););}
  else if(AT(w)&TRAVERSIBLE)traverse(w,jtspfor1); 
  if(!ACISPERM(AC(w))) {
@@ -186,7 +185,6 @@ static A jtspfor1(J jt, A w){
 }
 
  A jtspfor(J jt, A w){A*wv,x,y,z;C*s;D*v,*zv;I i,m,n;
- ARGCHK1(w);
  n=AN(w); wv=AAV(w);  v=&jt->spfor;
  ASSERT(!n||BOX&AT(w),EVDOMAIN);
  GATV(z,FL,n,AR(w),AS(w)); zv=DAV(z); 
@@ -202,7 +200,6 @@ static A jtspfor1(J jt, A w){
 }    /* 7!:5 space for named object; w is <'name' */
 
  A jtspforloc(J jt, A w){A*wv,x,y,z;C*s;D*v,*zv;I i,j,m,n;L*u;LX *yv,c;
- ARGCHK1(w);
  n=AN(w); wv=AAV(w);  v=&jt->spfor;
  ASSERT(!n||BOX&AT(w),EVDOMAIN);
  GATV(z,FL,n,AR(w),AS(w)); zv=DAV(z);   // zv-> results
@@ -446,7 +443,6 @@ ra(w);   // ensure that the backer is not deleted while it is a backer.
 // Mark the backing block non-PRISTINE, because realize is a form of escaping from the backer
 A jtrealize(J jt, A w){A z; I t;
 // allocate a block of the correct type and size.  Copy the shape
- ARGCHK1(w);
  t=AT(w);
  AFLAG(ABACK(w))&=~AFPRISTINE;  // clear PRISTINE in the backer, since its contents are escaping
  GA(z,t,AN(w),AR(w),AS(w));
@@ -751,12 +747,12 @@ void jttpop(J jt,A *old){A *endingtpushp;
 // If the noun is assigned as part of a named derived verb, protection is not needed (but harmless) because if the same value is
 // assigned to another name, the usecount will be >1 and therefore not inplaceable.  Likewise, the the noun is non-DIRECT we need
 // only protect the top level, because if the named value is incorporated at a lower level its usecount must be >1.
- A jtrat(J jt, A w){ARGCHK1(w); ras(w); tpush(w); return w;}  // recursive.  w can be zero only if explicit definition had a failing sentence
+ A jtrat(J jt, A w){ ras(w); tpush(w); return w;}  // recursive.  w can be zero only if explicit definition had a failing sentence
 
 A jtras(J jt, AD * RESTRICT w) { if(!w) return 0; realizeifvirtual(w); ra(w); return w; }  // subroutine version of ra() to save space
-A jtra00s(J jt, AD * RESTRICT w) { ARGCHK1(w); ra00(w,AT(w)); return w; }  // subroutine version of ra00() to save space
-A jtrifvs(J jt, AD * RESTRICT w) { ARGCHK1(w); realizeifvirtual(w); return w; }  // subroutine version of rifv() to save space and be an rvalue
-A jtmkwris(J jt, AD * RESTRICT w) { ARGCHK1(w); makewritable(w); return w; }  // subroutine version of makewritable() to save space and be an rvalue
+A jtra00s(J jt, AD * RESTRICT w) { ra00(w,AT(w)); return w; }  // subroutine version of ra00() to save space
+A jtrifvs(J jt, AD * RESTRICT w) { realizeifvirtual(w); return w; }  // subroutine version of rifv() to save space and be an rvalue
+A jtmkwris(J jt, AD * RESTRICT w) { makewritable(w); return w; }  // subroutine version of makewritable() to save space and be an rvalue
 
 
 // static auditmodulus = 0;
@@ -981,7 +977,6 @@ B jtspc(J jt){A z; RZ(z=MALLOC(1000)); FREECHK(z); return 1; }  // see if 1000 b
 // if b=1, the result will replace w, so decrement usecount of w and increment usecount of new buffer
 // the itemcount of the result is set as large as will fit evenly, and the atomcount is adjusted accordingly
 A jtext(J jt,B b,A w){A z;I c,k,m,m1,t;
- ARGCHK1(w);                               /* assume AR(w)&&AN(w)    */
  m=AS(w)[0]; PROD(c,AR(w)-1,AS(w)+1); t=AT(w); k=c*bp(t);
  GA(z,t,2*AN(w)+(AN(w)?0:c),AR(w),0);  // ensure we allocate SOMETHING to make progress
  m1=allosize(z)/k;  // start this divide before the copy

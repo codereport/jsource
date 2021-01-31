@@ -195,7 +195,6 @@ static A jtrsh0(J jt, A w){A x,y;I wcr,wf,wr,*ws;
 
  A jthead(J jt, A w){I wcr,wf,wr;
  F1PREFIP;
- ARGCHK1(w);
  wr=AR(w); wcr=(RANKT)jt->ranks; wcr=wr<wcr?wr:wcr; wf=wr-wcr;  // no RESETRANK so that we can pass rank into other code
  if(!wcr||AS(w)[wf]){  // if cell is atom, or cell has items - which means it's safe to calculate the size of a cell
   if(((-wf)|((AT(w)&(DIRECT|RECURSIBLE))-1)|(wr-2))>=0){  // frame=0, and DIRECT|RECURSIBLE, and rank>1.  No gain in virtualizing an atom, and it messes up inplacing and allocation-size counting in the tests
@@ -217,7 +216,6 @@ static A jtrsh0(J jt, A w){A x,y;I wcr,wf,wr,*ws;
 
  A jttail(J jt, A w){I wcr,wf,wr;
  F1PREFIP;
- ARGCHK1(w);
  wr=AR(w); wcr=(RANKT)jt->ranks; wcr=wr<wcr?wr:wcr; wf=wr-wcr;  // no RESETRANK: rank is passed into from/take/rsh0.  Left rank is garbage but that's OK
  return !wcr||AS(w)[wf]?jtfrom(jtinplace,num(-1),w) :  // if cells are atoms, or if the cells are nonempty arrays, result is last cell(s) scaf should generate virtual block here for speed
      SPARSE&AT(w)?irs2(num(0),take(num(-1),w),0L,0L,wcr,jtfrom):rsh0(w);

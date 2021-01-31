@@ -434,7 +434,6 @@ static B jtrngstates1(J jt,I j,I n,UI**vv,I i,I k,A x,B p){D*u;UI*xv;
 }
 
  A jtrngstates(J jt, A w){A*wv;I k;UI**vv=jt->rngV;
- ARGCHK1(w);
  ASSERT(1==AR(w),EVRANK);
  ASSERT(BOX&AT(w),EVDOMAIN);
  ASSERT(2<=AN(w),EVLENGTH);
@@ -529,7 +528,6 @@ static A jtrollksub(J jt,A a,A w){A z;I an,*av,k,m1,n,p,q,r,sh;UI m,mk,s,t,*u,x=
 }
 
  A jtrollk(J jt,A a,A w,A self){A g,z;V*sv;
- ARGCHK3(a,w,self);
  sv=FAV(self); g=sv->fgh[2]?sv->fgh[2]:sv->fgh[1];
  if(AT(w)&XNUM+RAT||!(!AR(w)&&1>=AR(a)&&(g==ds(CDOLLAR)||1==AN(a))))return roll(df2(z,a,w,g));
  return rollksub(a,vi(w));
@@ -643,7 +641,6 @@ static A jtrollany(J jt,A w,B*b){A z;D*u;I j,m1,n,sh,*v;UI m,mk,s,t,x=jt->rngM[j
 }
 
  A jtdeal(J jt,A a,A w){A z;I at,j,k,m,n,wt,*zv;UI c,s,t,x=jt->rngM[jt->rng];UI sq;
- ARGCHK2(a,w);
  at=AT(a); wt=AT(w);
  ASSERT(at&DENSE&at&&wt&DENSE,EVDOMAIN);
  F2RANK(0,0,jtdeal,UNUSED_VALUE);
@@ -716,7 +713,6 @@ static A jtrollksubdot(J jt,A a,A w){A z;I an,*av,k,m1,n,p,q,r,sh;UI j,m,mk,s,t,
 #undef rollk
 #define rollk(a,w,self) jtrollkdot(jt,(a),(w),(self))
  A jtrollkdot(J jt,A a,A w,A self){A g,z;V*sv;
- ARGCHK3(a,w,self);
  sv=FAV(self); g=sv->fgh[2]?sv->fgh[2]:sv->fgh[1];
  if(AT(w)&XNUM+RAT||!(!AR(w)&&1>=AR(a)&&(g==ds(CDOLLAR)||1==AN(a))))return roll(df2(z,a,w,g));
  return rollksub(a,vi(w));
@@ -829,7 +825,6 @@ static A jtrollanydot(J jt,A w,B*b){A z;D*u;I j,m1,n,sh,*v;UI m,mk,s,t,x=jt->rng
 #undef roll
 #define roll(w) jtrolldot(jt,(w))
 static A jtrolldot(J jt, A w){A z;B b=0;I m,wt;
- ARGCHK1(w);
  wt=AT(w);
  ASSERT(wt&DENSE,EVDOMAIN);
  if(!AN(w)){GATV(z,B01,0,AR(w),AS(w)); return z;}
@@ -845,7 +840,6 @@ static A jtrolldot(J jt, A w){A z;B b=0;I m,wt;
 #undef deal
 #define deal(a,w) jtdealdot(jt,(a),(w))
 static A jtdealdot(J jt,A a,A w){A h,y,z;I at,d,*hv,i,i1,j,k,m,n,p,q,*v,wt,*yv,*zv;UI c,s,t,x=jt->rngM[jt->rng];
- ARGCHK2(a,w);
  at=AT(a); wt=AT(w);
  ASSERT(at&DENSE&at&&wt&DENSE,EVDOMAIN);
  F2RANK(0,0,jtdealdot,UNUSED_VALUE);
@@ -880,14 +874,13 @@ static A jtdealdot(J jt,A a,A w){A h,y,z;I at,d,*hv,i,i1,j,k,m,n,p,q,*v,wt,*yv,*
                      jt->rngV[GBI]=jt->rngfxsv; rngselects(sc(GBI)); gb_init(16807);}
 #define FXSOD       {jt->rngV[GBI]=v; jt->rngI[GBI]=jt->rngi=i; rngselects(sc(j));}
 
- A jtrollx  (J jt, A w){FXSDECL; ARGCHK1(w);                 FXSDO; z=roll(w);         FXSOD; return z;}
+ A jtrollx  (J jt, A w){FXSDECL;                 FXSDO; z=roll(w);         FXSOD; return z;}
  A jtdealx  (J jt,A a,A w){FXSDECL; F2RANK(0,0,jtdealx,UNUSED_VALUE); FXSDO; z=deal(a,w);       FXSOD; return z;}
- A jtrollkx(J jt,A a,A w,A self){FXSDECL; ARGCHK3(a,w,self);        FXSDO; z=rollk(a,w,self); FXSOD; return z;}
+ A jtrollkx(J jt,A a,A w,A self){FXSDECL;        FXSDO; z=rollk(a,w,self); FXSOD; return z;}
 
 
 /*
 static A jtroll(J jt, A w){A z;D rl=jt->rl;static D dm=16807,p=2147483647L;I c,n,*v,*x;
- ARGCHK1(w);
  n=AN(w); v=AV(w);
  RZ(z=reshape(shape(w),num(2))); x=AV(z);
  if(ICMP(v,x,n))

@@ -18,7 +18,6 @@ static A jtcut01(J jt,    A w,A self){DECLF;A h,x,z;
 }    /* f;.0 w */
 
 static A jtcut02(J jt,A a,A w,A self){F2PREFIP;A fs,q,qq,*qv,z,zz=0;I*as,c,e,i,ii,j,k,m,n,*u,*ws;PROLOG(876);I cger[128/SZI];
- ARGCHK2(a,w);
 #define ZZFLAGWORD state
  I state=ZZFLAGINITSTATE;  // init flags, including zz flags
 
@@ -127,7 +126,6 @@ static A jtcut02(J jt,A a,A w,A self){F2PREFIP;A fs,q,qq,*qv,z,zz=0;I*as,c,e,i,i
 // self is a compound, using @/@:/&/&:, that we tried to run with special code, but we found that we don't support the arguments
 // here we revert to the non-special code for the compound
  A jtspecialatoprestart(J jt,A a,A w,A self){
-  ARGCHK3(a,w,self);  // return fast if there has been an error
   V *sv=FAV(self);  // point to verb info for the current overall compound
   return a==mark?(sv->id==CFORK?jtcork1:on1)(jt,w,self) : (sv->id==CFORK?jtcork2:jtupon2)(jt,a,w,self);  // figure out the default routine that should process the compound, and transfer to it
 }
@@ -135,7 +133,7 @@ static A jtcut02(J jt,A a,A w,A self){F2PREFIP;A fs,q,qq,*qv,z,zz=0;I*as,c,e,i,i
 // x <;.0 y  and  x (<;.0~ -~/"2)~ y   where _2 { $x is 1 (i. e. 1 dimension of selection)  localuse distinguishes the two cases (relative vs absolute length)
 // We go for minimum overhead in the box allocation and copy
  A jtboxcut0(J jt,A a,A w,A self){A z;
- F2PREFIP;ARGCHK2(a,w);
+ F2PREFIP;
  // NOTE: this routine is called from jtwords.  In that case, self comes from jtwords and is set up with the parm for x (<;.0~ -~/"2)~ y but with no failover routine.
  // Thus, the preliminary tests must not cause a failover.  They don't, because the inputs from jtwords are known to be well-formed
  // We require a have rank >=2, not sparse
@@ -193,7 +191,6 @@ static A jtcut02(J jt,A a,A w,A self){F2PREFIP;A fs,q,qq,*qv,z,zz=0;I*as,c,e,i,i
 // if we encounter a reversal, we abort
 // if it's a case we can't handle, we fail over to the normal code, with BOXATOP etc flags set
  A jtrazecut0(J jt,A a,A w,A self){A z;C*wv,*zv;I ar,*as,(*av)[2],j,k,m,n,wt;
- ARGCHK2(a,w);
  wt=AT(w); wv=CAV(w);
  ar=AR(a); as=AS(a);
  // we need rank of a>2 (otherwise why bother?), rank of w>0, w not sparse, a not empty, w not empty (to make item-size easier)
@@ -217,7 +214,6 @@ static A jtcut02(J jt,A a,A w,A self){F2PREFIP;A fs,q,qq,*qv,z,zz=0;I*as,c,e,i,i
 
 
 static A jtcut2bx(J jt,A a,A w,A self){A*av,b,t,x,*xv,y,*yv;B*bv;I an,bn,i,j,m,p,q,*u,*v,*ws;
- ARGCHK3(a,w,self);
  q=(I)FAV(self)->localuse.lvp[0];  // fetch the n in the original u;.n
  an=AN(a); av=AAV(a);  ws=AS(w);
  ASSERT(an<=AR(w),EVLENGTH);
@@ -795,7 +791,6 @@ static A jtcut1(J jt,    A w,A self){return cut2(mark,w,self);}
 //  This routine produces an extra axis, as if the shape of the boxed result were preserved even when there are no boxed results
  A jtrazecut2(J jt,A a,A w,A self){A fs,gs,y,z=0;B b; I neg,pfx;C id,sep,*u,*v,*wv,*zv;I d,k,m=0,wi,p,q,r,*s,wt;
     V *vv;VARPS adocv;
- ARGCHK2(a,w);
  gs=FAV(self)->fgh[1+(CFORK==FAV(self)->id)]; vv=VAV(gs); y=vv->fgh[0]; fs=VAV(y)->fgh[1];  // self is ;@:(<@(f/\);.1)     gs  gs is <@(f/\);.1   y is <@(f/\)  fs is   f/\  ...
  p=SETIC(w,wi); wt=AT(w); k=(I)vv->localuse.lvp[0]; neg=0>k; pfx=k==1||k==-1; b=neg&&pfx;   // p,wi is # items of w; 
  id=FAV(fs)->id;  // fs is f/id   where id is \ \.
@@ -838,7 +833,6 @@ static A jtcut1(J jt,    A w,A self){return cut2(mark,w,self);}
 // we look at all the axes even if we don't store them all; if any are 0 we set
 // n is the op type (as in u;.n)
 static A jttesos(J jt,A a,A w,I n, I *pv){A p;I*av,c,axisct,k,m,s,*ws;
- ARGCHK2(a,w);
  axisct=c=AS(a)[1]; av=AV(a); ws=AS(w);
  if(pv){c=(c>2)?2:c; p=0; // if more than 2 axes requested, limit the return to that
  }else{GATV0(p,INT,c,1); pv=AV(p); AS(p)[0]=c;}  // all requested, make an A block for it
@@ -849,7 +843,6 @@ static A jttesos(J jt,A a,A w,I n, I *pv){A p;I*av,c,axisct,k,m,s,*ws;
 
 
 static A jttesa(J jt,A a,A w){A x;I*av,ac,c,d,k,r,*s,t,*u,*v;
- ARGCHK2(a,w);
  t=AT(a);
  RZ(a=vib(a));    // convert a to integer (possibly with infinities)
  r=AR(a); s=AS(a); SHAPEN(a,r-1,c);  ac=c; av=AV(a); d=AR(w);  // r = rank of x; s->shape of x; c=#axes specd in x, av->data; d=rank of w
@@ -1064,7 +1057,6 @@ static A jttess2(J jt,A a,A w,A self){A z,zz=0,virtw,strip;I n,rs[3],cellatoms,c
 }
 
 static A jttess1(J jt,    A w,A self){A s;I m,r,*v;
- ARGCHK1(w);
  r=AR(w); RZ(s=shape(w)); RZ(s=mkwris(s)); v=AV(s);
  m=IMAX; DO(r, if(m>v[i])m=v[i];); DO(r, v[i]=m;);  // Get length of long axis; set all axes to that length in a arg to cut
  return tess2(s,w,self);
@@ -1074,7 +1066,6 @@ static A jttess1(J jt,    A w,A self){A s;I m,r,*v;
  A jtcut(J jt,A a,A w){A h=0,z;I flag=0,k;
 // NOTE: u/. is processed using the code for u;.1 and passing the self for /. into the cut verb.  So, the self produced
 // by /. and ;.1 must be the same as far as flags etc.  For the shared case, inplacing is OK
- ARGCHK2(a,w);
  ASSERT(NOUN&AT(w),EVDOMAIN);
  RE(k=i0(w));
  if(NOUN&AT(a)){flag=VGERL; RZ(h=fxeachv(1L,a)); ASSERT(-2<=k&&k<=2,EVNONCE);}
