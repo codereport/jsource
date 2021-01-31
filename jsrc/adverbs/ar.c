@@ -341,28 +341,6 @@ J jtinplace=jt;
  return jt->jerr>=EWOV?IRS1(w,self,r,jtreducesp,z):z;
 }    /* f/"r for sparse w */
 
-#define BR2IFX(T,F)     {T*u=(T*)wv,*v=u+d,x,y;                                           \
-                         GATV(z,B01,wn>>1,wr-1,ws); zv=BAV(z);                               \
-                         if(1<d)DQ(m, DQ(d, x=*u++; y=*v++; *zv++=x F y; ); u+=d; v+=d;)  \
-                         else   DQ(m,       x=*u++; y=*u++; *zv++=x F y;               ); \
-                        }
-#define BR2PFX(T,F)     {T*u=(T*)wv,*v=u+d,x,y;                                           \
-                         GATV(z,B01,wn>>1,wr-1,ws); zv=BAV(z);                               \
-                         if(1<d)DQ(m, DQ(d, x=*u++; y=*v++; *zv++=F(x,y);); u+=d; v+=d;)  \
-                         else   DQ(m,       x=*u++; y=*u++; *zv++=F(x,y);              ); \
-                        }
-#define BTABIFX(F)      {btab[0                        ]=0 F 0;  \
-                         btab[256]=0 F 1;  \
-                         btab[  1]=1 F 0;  \
-                         btab[257                      ]=1 F 1;  \
-                        }
-#define BTABPFX(F)      {btab[0                        ]=F(0,0); \
-                         btab[256]=F(0,1); \
-                         btab[  1]=F(1,0); \
-                         btab[257                      ]=F(1,1); \
-                        }
-#define BR2CASE(t,id)   ((id)+256*(t))
-
 static A jtreduce(J jt,    A w,A self){A z;I d,f,m,n,r,t,wr,*ws,zt;
  F1PREFIP;
  if((SPARSE&AT(w))!=0)return reducesp(w,self);  // If sparse, go handle it
