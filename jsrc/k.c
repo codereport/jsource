@@ -224,24 +224,6 @@ static B jtDXfI(J jt,I p,A w,DX*x){B b;I e,c,d,i,j,n,r,u[XIDIG],*v;
  return !jt->jerr;
 }
 
-/*
-static B jtDXfI(J jt,I p,A w,DX*x){A y;I b,c,d,dd,e,i,m,n,q,r,*wv,*yv;
- n=AN(w); wv=AV(w); m=(p+XBASEN-1)/XBASEN;
- for(i=0;i<n;++i){
-  c=wv[i]; d=dd=c==IMIN?-(1+c):ABS(c); 
-  if(d){e=0; while(d){++e; r=d%10; d=d/10;}}else e=1;
-  GATV0(y,INT,m,1); yv=AV(y);
-  r=p%XBASEN; q=!!r+((e-r)+XBASEN-1)/XBASEN; 
-  if(d=(e-r)%XBASEN){b=1; DQ(XBASEN, b*=10; --d; if(!d)break;);}else b=XBASE;
-  DQ(m-q, *yv++=0;);
-  d=dd/b; r=dd%b; r+=c==IMIN; r*=XBASE/b; 
-  if(0>c){*yv++=-r; DQ(q-1, r=d%XBASE; d=d/XBASE; *yv++=-r;);}
-  else   {*yv++= r; DQ(q-1, r=d%XBASE; d=d/XBASE; *yv++= r;);}
-  x[i].e=e-1; x[i].p=p; x[i].x=y;
- }
- return !jt->jerr;
-} */    /* most significant digit last, decimal point before last digit */
-
 // Convert the data in w to the type t.  w and t must be noun types.  A new buffer is always created (with a
 // copy of the data if w is already of the right type), and returned in *y.  Result is
 // 0 if error, 1 if success.  If the conversion loses precision, error is returned
