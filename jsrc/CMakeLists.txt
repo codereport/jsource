@@ -76,6 +76,7 @@ target_sources(j PRIVATE
         verbs/vt.c
         verbs/vx.c
         verbs/vz.c
+        verbs/monadic/tally.cpp
         debugging/d.c
         debugging/dc.c
         debugging/dss.c

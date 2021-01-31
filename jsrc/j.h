@@ -394,8 +394,10 @@ typedef double float64x2_t __attribute__ ((vector_size (16)));
 #define GA(v,t,n,r,s)   RZ(v=ga(t,(I)(n),(I)(r),(I*)(s)))
 // GAE executes the given expression when there is an error
 #define GAE(v,t,n,r,s,erraction)   if(!(v=ga(t,(I)(n),(I)(r),(I*)(s))))erraction;
-// When the type and all rank/shape are known at compile time, use GAT.  The compiler precalculates almost everything
-// For best results declare name as: AD* RESTRICT name;  The number of bytes, rounded up with overhead added, must not exceed 2^(PMINL+4)
+
+// When the type and all rank/shape are known at compile time, use GAT.  The compiler precalculates
+// almost everything For best results declare name as: AD* RESTRICT name;  The number of bytes,
+// rounded up with overhead added, must not exceed 2^(PMINL+4)
 #define GATS(name,type,atoms,rank,shaape,size,shapecopier,erraction) \
 { ASSERT(!((rank)&~RMAX),EVLIMIT); \
  I bytes = ALLOBYTES(atoms,rank,size,(type)&LAST0,(type)&NAME); \
@@ -409,10 +411,11 @@ typedef double float64x2_t __attribute__ ((vector_size (16)));
     \
  }else{erraction;} \
 }
-#define GAT(name,type,atoms,rank,shaape)  GATS(name,type,atoms,rank,shaape,type##SIZE,GACOPYSHAPE,return 0)
-#define GATR(name,type,atoms,rank,shaape)  GATS(name,type,atoms,rank,shaape,type##SIZE,GACOPYSHAPER,return 0)
-#define GAT0(name,type,atoms,rank)  GATS(name,type,atoms,rank,0,type##SIZE,GACOPYSHAPE0,return 0)
-#define GAT0E(name,type,atoms,rank,erraction)  GATS(name,type,atoms,rank,0,type##SIZE,GACOPYSHAPE0,erraction)
+
+#define GAT(name,type,atoms,rank,shaape)       GATS(name,type,atoms,rank,shaape,type##SIZE,GACOPYSHAPE, return 0)
+#define GATR(name,type,atoms,rank,shaape)      GATS(name,type,atoms,rank,shaape,type##SIZE,GACOPYSHAPER,return 0)
+#define GAT0(name,type,atoms,rank)             GATS(name,type,atoms,rank,0,     type##SIZE,GACOPYSHAPE0,return 0)
+#define GAT0E(name,type,atoms,rank,erraction)  GATS(name,type,atoms,rank,0,     type##SIZE,GACOPYSHAPE0,erraction)
 
 // Used when type is known and something else is variable.  ##SIZE must be applied before type is substituted, so we have GATVS to use inside other macros.  Normally use GATV
 // Note: assigns name before assigning the components of the array, so the components had better not depend on name, i. e. no GATV(z,BOX,AN(z),AR(z),AS(z))
@@ -443,8 +446,10 @@ typedef double float64x2_t __attribute__ ((vector_size (16)));
 #define SETICFR(w,f,r,targ) (targ=(I)(AS(w)+f), targ=(r)?targ:(I)&I1mem, targ=*(I*)targ)
 // Shape item s, but 1 if index is < 0
 #define SHAPEN(w,s,targ) (targ=AS(w)[s], targ=(s)<0?1:targ)
+
 // Item count
 #define SETIC(w,targ)   (targ=AS(w)[0], targ=AR(w)?targ:1)  //   (AR(w) ? *AS(w) : 1L)
+
 #define ICMP(z,w,n)     memcmpne((z),(w),(n)*SZI)
 #define ICPY(z,w,n)     memcpy((z),(w),(n)*SZI)
 #define IFCMPNAME(name,string,len,stmt) if((name)->m==(len))if(!memcmpne((name)->s,string,len))stmt

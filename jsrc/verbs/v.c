@@ -6,14 +6,13 @@
 #include "j.h"
 
 
- A jttally (J jt, A w){A z; I k; ARGCHK1(w); z=sc(SETIC(w,k));            return AT(w)&XNUM+RAT?xco1(z):z;}  //  # y
- A jtshapex(J jt, A w){A z; ARGCHK1(w); z=vec(INT,AR(w),AS(w)); return AT(w)&XNUM+RAT?xco1(z):z;}
- A jtshape(J jt, A w){ARGCHK1(w); return vec(INT,AR(w),AS(w));}  // $ y
- A jtisempty(J jt, A w){ARGCHK1(w); if((AT(w)&SPARSE)!=0)return eps(zeroionei(0),shape(w)); return num(AN(w)==0);}  // 0 e. $
- A jtisnotempty(J jt, A w){ARGCHK1(w); if((AT(w)&SPARSE)!=0)return __not(eps(zeroionei(0),shape(w))); return num(AN(w)!=0);}  // *@#@,
- A jtisitems(J jt, A w){ARGCHK1(w); return num(!AR(w)|!!AS(w)[0]);}   // *@#   *@:#
- A jtrank(J jt, A w){F1PREFIP; ARGCHK1(w); return sc(AR(w));}  // #@$
- A jtnatoms(J jt, A w){F1PREFIP; A z; ARGCHK1(w); if((AT(w)&SPARSE)!=0)return df1(z,shape(w),slash(ds(CSTAR))); return sc(AN(w));}   // */@$  #@,
+ A jtshapex    (J jt, A w) {A z; ARGCHK1(w); z=vec(INT,AR(w),AS(w)); return AT(w)&XNUM+RAT?xco1(z):z;}
+ A jtshape     (J jt, A w) {ARGCHK1(w); return vec(INT,AR(w),AS(w));}  // $ y
+ A jtisempty   (J jt, A w) {ARGCHK1(w); if((AT(w)&SPARSE)!=0)return eps(zeroionei(0),shape(w)); return num(AN(w)==0);}  // 0 e. $
+ A jtisnotempty(J jt, A w) {ARGCHK1(w); if((AT(w)&SPARSE)!=0)return __not(eps(zeroionei(0),shape(w))); return num(AN(w)!=0);}  // *@#@,
+ A jtisitems   (J jt, A w) {ARGCHK1(w); return num(!AR(w)|!!AS(w)[0]);}   // *@#   *@:#
+ A jtrank      (J jt, A w) {F1PREFIP; ARGCHK1(w); return sc(AR(w));}  // #@$
+ A jtnatoms    (J jt, A w) {F1PREFIP; A z; ARGCHK1(w); if((AT(w)&SPARSE)!=0)return df1(z,shape(w),slash(ds(CSTAR))); return sc(AN(w));}   // */@$  #@,
 
 // ,y and ,"r y - producing virtual blocks
  A jtravel(J jt, A w){A a,c,q,x,y,y0,z;B*b;I f,j,m,r,*u,*v,*yv;P*wp,*zp;
