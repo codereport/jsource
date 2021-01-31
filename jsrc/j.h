@@ -561,11 +561,7 @@ if(_i<3){_zzt+=_i; z=(I)&oneone; _zzt=_i>=1?_zzt:(I*)z; z=_i>1?(I)_zzt:z; z=((I*
 #define RNE(exp)        {return jt->jerr?0:(exp);}
 #define RZ(exp)         {if(!(exp))return 0;}
 
-#define DEADARG(x)      0
-#define ARGCHK1D(x)
-#define ARGCHK2D(x,y)
-
-#define ARGCHK1(x)      RZ(x) DEADARG(x);   // bit set in deadbeef
+#define ARGCHK1(x)      RZ(x)   // bit set in deadbeef
 #define ARGCHK2(x,y)    ARGCHK1(x) ARGCHK1(y)
 #define ARGCHK3(x,y,z)  ARGCHK1(x) ARGCHK1(y) ARGCHK1(z)
 
