@@ -21,7 +21,7 @@ replicate_sign(int64_t x) noexcept -> int64_t {
     return x < 0 ? -1 : 0;
 }
 
-// TODO: renamce
+// TODO: rename
 [[nodiscard]] constexpr auto
 xor_replicate_sign(int64_t x) noexcept -> int64_t {
     return x < 0 ? (-1 * x) - 1 : x;
