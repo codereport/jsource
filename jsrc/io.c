@@ -269,8 +269,6 @@ I jdo(J jt, C* lp){I e;A x;
  return e;
 }
 
-#define SZINT             ((I)sizeof(int))
-
 C* getlocale(J jt){A y=locname(mtv); y=AAV(y)[0]; return CAV(str0(y));}
 
 // Front-ends can call any functions exposed by JE, but the callback function for 11!:0 only calls jga to allocate a new literal array for returning result.

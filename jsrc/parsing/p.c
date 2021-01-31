@@ -70,7 +70,6 @@ PT cases[] = {
 #define PR 7
 #define PS 8  // ASGN without ASGNNAME
 #define PSN 9 // ASGN+ASGNNAME
-#define PX 255
 
 // Tables to convert parsing type to mask of matching parse-table rows for each of the stack positions
 // the AND of these gives the matched row (the end-of-table row is always matched)

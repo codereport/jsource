@@ -12,7 +12,6 @@
 
 #define ALIGNTOCACHE 0   // set to 1 to align each block to cache-line boundary.  Will reduce cache usage for headers
 
-#define MEMJMASK 0xf   // these bits of j contain subpool #; higher bits used for computation for subpool entries
 #define SBFREEBLG (14+PMINL)   // lg2(SBFREEB)
 #define SBFREEB (1L<<SBFREEBLG)   // number of bytes that need to be freed before we rescan
 #define MFREEBCOUNTING 1   // When this bit is set in mfreeb[], we keep track of max space usage
@@ -29,8 +28,6 @@
 // (2) the offset of the block from the root, for pool allocations.  The following macros define the field
 #define FHRHPOOLBIN(h) CTTZ(h)     // pool bin# for free (0 means allo of size PMIN, etc).  If this gives PLIML-PMINL+1, the allocation is a system allo
 #define FHRHBINISPOOL(b) ((b)<=(PLIML-PMINL))      // true is this is a pool allo, false if system (b is pool bin #)
-#define ALLOJISPOOL(j) ((j)<=PLIML)     // true if pool allo, false if system (j is lg2(requested size))
-#define ALLOJBIN(j) ((j)-PMINL)   // convert j (=lg2(size)) to pool bin#
 #define FHRHPOOLBINSIZE(b) (PMIN<<(b))        // convert bin# to size for pool bin#
 #define FHRHSYSSIZE(h) (((I)1)<<((h)>>(PLIML-PMINL+2)))        // convert h to size for system alloc
 #define FHRHSIZE(h) ((FHRHBINISPOOL(FHRHPOOLBIN(h)) ? FHRHPOOLBINSIZE(FHRHPOOLBIN(h)) : FHRHSYSSIZE(h)))
@@ -89,9 +86,6 @@ B jtmeminit(J jt){I k,m=MLEN;
 #endif
  return 1;
 }
-
-// Audit all memory chains to detect overrun
-#define AUDITFILL ||(UI4)AFHRH(Wx)!=Wx->fill
 
 void jtauditmemchains(J jt){F1PREFIP;
 }

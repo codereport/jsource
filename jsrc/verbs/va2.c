@@ -722,39 +722,6 @@ static A jtva2(J jt,AD * RESTRICT a,AD * RESTRICT w,AD * RESTRICT self,UI allran
 }    /* scalar fn primitive and f"r main control */
 
 
-// 4-nested loop for dot-products.  Handles repeats for inner and outer frame.  oneprod is the code for calculating a single vector inner product *zv++ = *av++ dot *wv++
-// If there is inner frame, it is the a arg that is repeated
-// LIT is set in it if it is OK to use 2x2 operations (viz a has no inner frame & w has no outer frame)
-#define SUMATLOOP2(ti,to,oneprod2,oneprod1) \
-  {ti * RESTRICT av=avp,* RESTRICT wv=wvp; to * RESTRICT zv=zvp; \
-   _mm256_zeroupper(VOIDARG); \
-   __m256i endmask = _mm256_loadu_si256((__m256i*)(validitymask+((-dplen)&(NPAR-1))));  /* mask for 00=1111, 01=1000, 10=1100, 11=1110 */ \
-   __m256d acc000; __m256d acc010; __m256d acc100; __m256d acc110; \
-   __m256d acc001; __m256d acc011; __m256d acc101; __m256d acc111; \
-   DQ(nfro, I jj=nfri; ti *ov0=it&BOX?av:wv; \
-    while(1){  \
-     DQ(ndpo, I j=ndpi; ti *av0=av; /* i is how many a's are left, j is how many w's*/ \
-      while(1){ \
-       if(it&LIT&&jj>1){ \
-        ti * RESTRICT wv1=wv+dplen; wv1=j==1?wv:wv1; \
-        oneprod2  \
-        if(j>1){--j; _mm_storeu_pd(zv,_mm256_castpd256_pd128 (acc000)); _mm_storeu_pd(zv+ndpi,_mm256_castpd256_pd128 (acc100)); wv+=dplen; zv +=2;} \
-        else{_mm_storel_pd(zv,_mm256_castpd256_pd128 (acc000)); _mm_storel_pd(zv+ndpi,_mm256_castpd256_pd128 (acc100));  zv+=1;} \
-       }else{ \
-        oneprod1  \
-        _mm_storel_pd(zv,_mm256_castpd256_pd128 (acc000)); \
-        zv+=1; \
-       } \
-       if(!--j)break; \
-       av=av0;  \
-      } \
-      if(it&LIT&&jj>1){--i; av+=dplen; zv+=ndpi;} \
-     ) \
-     if((jj-=(((it&LIT)>>1)+1))<=0)break; \
-     if(it&BOX)av=ov0;else wv=ov0; \
-    } \
-   ) \
-  }
 
 #define SUMATLOOP(ti,to,oneprod) \
   {ti * RESTRICT av=avp,* RESTRICT wv=wvp; to * RESTRICT zv=zvp; \
@@ -917,12 +884,6 @@ static A jtsumattymes(J jt, A a, A w, I b, I t, I m, I n, I nn, I r, I *s, I zn)
 #define SUMBFLOOPW(BF)     \
  {DO(q, memset(tv,C0,p); DO(255, DO(dw,tv[i]+=BF(*u,*v); ++u; ++v;);); DO(zn,zv[i]+=tu[i];));  \
         memset(tv,C0,p); DO(r,   DO(dw,tv[i]+=BF(*u,*v); ++u; ++v;);); DO(zn,zv[i]+=tu[i];) ;  \
- }
-#define SUMBFLOOPX(BF)     \
- {DO(q, memset(tv,C0,p); DO(255, DO(dw,tv[i]+=BF(*u,*v); ++u; ++v;);                           \
-                               av+=zn; u=(UI*)av; wv+=zn; v=(UI*)wv;); DO(zn,zv[i]+=tu[i];));  \
-        memset(tv,C0,p); DO(r,   DO(dw,tv[i]+=BF(*u,*v); ++u; ++v;);                           \
-                               av+=zn; u=(UI*)av; wv+=zn; v=(UI*)wv;); DO(zn,zv[i]+=tu[i];) ;  \
  }
 #define SUMBFLOOP(BF)   SUMBFLOOPW(BF)
 

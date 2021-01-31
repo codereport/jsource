@@ -189,7 +189,6 @@ static B jteqa(J jt,I n,A*u,A*v){DQ(n, if(!equ(*u,*v))return 0; ++u; ++v;); retu
 // Misc code to set the shape once we see how many results there are, used for ~. y and x -. y
 #define ZISHAPE    *AS(z)=AN(z)=zi-zv
 #define ZCSHAPE    *AS(z)=(zc-(C*)zv)/k; AN(z)=n**AS(z)
-#define ZUSHAPE(T) *AS(z)= zu-(T*)zv;    AN(z)=n**AS(z)
 
 // Routines to build the hash table from a.  hash calculates the hash function, usually referring to v (the input) and possibly other names.  exp is the comparison routine.  should use _1 for empty?
 #define XDOA(hash,exp,inc)         {v=av;          DO(m,  j=(hash)%pm; FIND(exp); if(m==hj)hv[j]=i; inc;);}

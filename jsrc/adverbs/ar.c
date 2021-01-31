@@ -41,14 +41,6 @@ static void vdone(I m,I n,B*x,B*z,B pc){B b,*u;
    DQ(n-2,       zz=z0; DQ(q, --xx;       --zz; *zz=pfx(*xx,*zz);););  \
  }}  /* non-commutative */
 
-#define RCFXLOOP(T,pfx)  \
- {T* RESTRICT xx=(T*)x,* RESTRICT yy,*z0,* RESTRICT zz=(T*)z;   \
-  q=d/sizeof(T);                  \
-  for(j=0;j<m;++j){               \
-   yy=xx; xx+=q; z0=zz; DQ(q, *zz++=pfx(*yy,*xx); ++xx; ++yy;);    \
-   DQ(n-2,       zz=z0; DQ(q, *zz++=pfx(*zz,*xx); ++xx;      ););  \
- }}  /* commutative */
-
 #define RBFXODDSIZE(pfx,bpfx)  RBFXLOOP(C,bpfx)
 #define REDUCECFX              REDUCEBFX
 

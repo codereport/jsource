@@ -10,8 +10,6 @@
 #define DIVI(u,v)     (u||v ? ddiv2(u,(D)v) : 0.0)
 #define DIVBB(u,v)    (v?u:u?inf:0.0)
 
-#define TYMESBX(u,v)  (u?v:0)
-#define TYMESXB(u,v)  (v?u:0)
 #define TYMESID(u,v)  (u   ?u*v:0)
 #define TYMESDI(u,v)  (   v?u*v:0)
 #define TYMESDD(u,v)  TYMES(u,v)

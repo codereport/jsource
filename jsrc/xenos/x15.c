@@ -98,7 +98,6 @@ typedef float (_cdecl    *ALTCALLF)();
 #define DECOUNT         4       /* too many args or (#args)~:#parms     */
 #define DEDEC           5
 #define DEPARM          6
-#define DELIMIT         7       /* too many float/double args  */
 
 #define NCDARGS         64      /* hardwired max number of arguments    */
 #define NLIBS           100     /* max number of libraries              */

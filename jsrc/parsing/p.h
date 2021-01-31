@@ -5,7 +5,6 @@
 
 
 #define NCASES          9L           /* # of rows in cases parses table    */
-#define ACTION(f)       A*  f(J jt)
 
 typedef TA(*TAF)();
 typedef A*(*ACTF)();

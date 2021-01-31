@@ -417,9 +417,7 @@ static B jtisnanq(J jt,A w){
 #define MAXY  2200  // maximum year allowed
 #define MIND  (I)73048    // number of days from epoch (20000101) to minimum day allowed 18000101
 #define MAXD  (I)73414    // number of days from epoch (20000101) to first day not allowed 22010101 - must be >= MIND for range calculation to be accurate
-#define BASE  946684800
 #define NANOS 1000000000LL
-#define SECS  86400
 
 // e from yyyymmddhhmnss.  The argument is assumed to be well-formed
 static I eft(I n,UI* e,UI* t)

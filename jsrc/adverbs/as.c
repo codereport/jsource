@@ -165,13 +165,6 @@ static A jtgsuffix(J jt,    A w,A self){A h,*hv,z,*zv;I m,n,r;
  return ope(z);
 }    /* g\."r w for gerund g */
 
-#define SSGULOOP(T)  \
- {T*v=(T*)zv;                      \
-  for(i=0;i<n1;++i){               \
-   RZ(q=CALL2(f2,x,y,fs)); if(!(TYPESEQ(t,AT(q))&&!AR(q)))return A0; /* error if error; abort if not compatible scalar */ \
-   *v--=*(T*)AV(q);                \
-   AK(x)-=k; AK(y)-=k; tpop(old);  \
- }}
 
 static A jtssg(J jt,    A w,A self){F1PREFIP;PROLOG(0020);A a,z;I i,n,r,wr;
  ARGCHK1(w);

@@ -26,7 +26,6 @@
 #define SSSTEPOVER  20      /* run curr line; stop at next line in curr fn  */
 #define SSSTEPINTO  21      /* run curr line; stop at next line             */
 #define SSSTEPOUT   22      /* run curr fn to end; stop at next line        */
-#define SSSTEPOVERs 30
 #define SSSTEPINTOs 31
 
 

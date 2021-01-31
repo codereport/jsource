@@ -113,9 +113,6 @@
   return z;
 }    /* a{"r w for numeric a */
 
-#define BSET(x,y0,y1,y2,y3)     *x++=y0; *x++=y1; *x++=y2; *x++=y3;
-#define BSETV(b)                MC(v,wv+b*k,k); v+=k;
-
 
 #define BNNERN(T)       {T*v=(T*)wv,*x=(T*)zv; DQ(m, b=av; DQ(an, *x++=*(v+*b++);); v+=p;);}
 #define BNNERM(T,T1)    BNNERN(T)

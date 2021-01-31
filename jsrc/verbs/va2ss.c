@@ -10,10 +10,6 @@
 
 #define SSRDB(w) (*(B *)CAV(w))
 #define SSRDI(w) (*(I *)CAV(w))
-#define SSRDS(w) (*(SB*)CAV(w))
-#define SSRDC(w) (*(UC*)CAV(w))
-#define SSRDW(w) (*(US*)CAV(w))
-#define SSRDU(w) (*(C4*)CAV(w))
 #define SSRDD(w) (*(D *)CAV(w))
 
 #define SSINGENC(a,w) (3*(UNSAFE(a)>>INTX)+(UNSAFE(w)>>INTX))

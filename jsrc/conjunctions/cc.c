@@ -436,44 +436,6 @@ static C*jtidenv0(J jt,A a,A w,V*sv,I zt,A*zz){A fs,y,z;
 /* v    ptr to a for current cut         */
 /* v1   ptr to w for current cut         */
 
-// the values are 1 byte, either 8 bits or 1 bit
-#define FRETLOOPBYTE(decl,compI,comp) \
-{ \
- UC val=*(UC*)fret, *avv=(UC*)av;  /* compare value, pointer to input */ \
- decl /* other variables needed */ \
- d=-pfx; I nleft=n;  /* if prefix, first omitted fret starts at length 0; set number of items yet to process */ \
- /* The search step finds one fret and consumes it.  For pfx, the first count is the #items BEFORE the first fret, \
- subsequent items are the interfret distance, and the last is the length of the remnant PLUS 1 to account for the \
- final fret which is in the last partition.  For !pfx, the first count INCLUDES the first fret, subsequent items are interfret \
- distance, and the remnant at the end AFTER that last fret is discarded. */ \
- while(nleft){I cmpres=0;  /* =0 for the warning */ \
-  /* for byte-at-a-time searches we can save some time by skipping 4/8 bytes at a time */ \
-  while(nleft>=SZI){I avvI = *(I*)avv; /* read one word */ \
-   compI  /* Code (if any) to convert avvI to a value that is non0 iff there is a match */ \
-   if(avvI!=0){  /* if we can't skip,  exit loop and search byte by byte */ \
-    I skiphalf=((avvI&IHALF0)==0)<<(LGSZI-1); avv+=skiphalf; d+=skiphalf; nleft-=skiphalf;  /* if first half empty, skip over it - remove if unaligned load penalty */ \
-    break; \
-   } \
-   avv+=SZI; d+=SZI; nleft-=SZI;  /* skip the whole 8 bytes */ \
-  } \
-  if(!nleft)break;  /* if we skipped over everything, we're through */ \
-  I testct=BW; testct=(nleft>testct)?testct:nleft;  /* testct=# compares to do, BW max */ \
-  /* rattle off compares; save the number in cmpres, MSB=1st compare.  We keep the count the same for prediction */ \
-  I testi=testct; do{UI match=(comp); ++avv; cmpres=2*cmpres+match;}while(--testi); \
-  /* process them out of cmpres, writing lengths */ \
-  testi=testct;  /* save # cells processed */ \
-  cmpres<<=BW-testct;  /* if we didn't shift in BW bits, move the first one we did shift to the MSB */ \
-  while(cmpres){ \
-   UI4 ctz; CTLZI(cmpres,ctz); I len=BW-ctz; testct-=len; d+=len; /* get # leading bits including the 1; decr count of unprocessed bits; set d=length of next field to output */ \
-   if(d<255)*pd++ = (UC)d; else{*pd++ = 255; *(UI4*)pd=(UI4)d; pd+=SZUI4; m-=SZUI4;}  /* write out encoded length; keep track of # long fields emitted */ \
-   if(pd>=pdend){RZ(pd0=jtgetnewpd(jt,pd,pd0)); pdend=(C*)CUTFRETEND(pd0); pd=CUTFRETFRETS(pd0);}  /* if we filled the current buffer, get a new one */ \
-   cmpres<<=1; cmpres<<=(len-=1); d=0;   /* discard bit up to & incl the fret; clear the carryover of #cells in partition */ \
-  } \
-  d += testct;  /* add in any bits not shifted out of cmpres as going into d */ \
-  nleft -= testi;  /* decr number of cells to do */ \
- } \
-}
-
 // Template for comparisons without byte-wide checks
 #define FRETLOOPNONBYTE(decl, comp) \
 { \

@@ -14,7 +14,6 @@
 
 #define x31         ((UI)0x80000000)
 #define x63         ((UI)0x8000000000000000)
-#define X32         2.32830643653869628906e-10
 #define X52         2.22044604925031308085e-16
 #define X64         5.42101086242752217004e-20
 
@@ -233,7 +232,6 @@ static UI jtmt_next(J jt){UI*mt=jt->rngv,*u,*v,*w,y;
 
 #define DXM  2147483647UL
 #define DXB  1073741362UL
-#define DXBD 1073741362.0
 #define DXN  1597
 
 static UI jtdx_next30(J jt){I j;UI*u,*v,*vv,r,x;

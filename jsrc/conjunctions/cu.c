@@ -18,8 +18,6 @@ static A jteverysp(J jt,A w,A fs){A*wv,x,z,*zv;P*wp,*zp;
  return z;
 }
 
-#define EVERYI(exp)  {RZ(x=exp); INCORP(x); RZ(*zv++=x); ASSERT(!(SPARSE&AT(x)),EVNONCE);}
-     /* note: x can be non-noun */
 
 // NOTE: internal calls to every/every2 use a skeletal fs created by the EVERYFS macro.  It fills in only
 // AK, valencefns, and flag.  If these routines use other fields, EVERYFS will need to fill them in

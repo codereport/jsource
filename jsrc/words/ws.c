@@ -35,7 +35,6 @@ static C spellintab3[][4] = {
 // The spelling is encoded (littleendian) as (graphic) followed by 2 bits of inflection1 followed by 2 bits of inflection2: 00=NUL 01=. 10=: 11=SP
 #define DOT0 0x100
 #define CO0 0x200
-#define SP0 0x300
 #define DOT1 0x400
 #define CO1 0x800
 static US spellouttab[256] = {

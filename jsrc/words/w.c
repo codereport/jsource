@@ -125,9 +125,6 @@ static A jtconstr(J jt,I n,C*s){A z;C b,c,p,*t,*x;I m=0;
 //#define TVERB(i,c)  (y=v[i], c      ==ID(y))  // true if this word is the given verb
 #define TVERB(i,c)  (v[i]==ds(c))  // true if this word is the given verb
 #define TRBRACE(i)  TVERB(i,CRBRACE)  // true if given word is }
-#define TAIA(i,j)   (TASGN(1) && TNAME(j) && AN(v[i])==AN(v[j]) && TNAME(i) && \
-                        !memcmpne(NAV(v[i])->s,NAV(v[j])->s,AN(v[i])))
-  // true if the two words are names, word 1 is assignment, and the names are equal
 
 // Convert text sentence to a sequence of words to be the queue for parsing
 // a MUST BE the result of wordil, which is an integer list of word index & end+1: (i0,e0),(i1,e1)...  # words not including final NB. is in AM(a)

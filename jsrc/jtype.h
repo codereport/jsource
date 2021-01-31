@@ -156,7 +156,6 @@ typedef I SI;
 #define AM(x) ((x)->mback.m)                // Max # bytes in ravel
 #define ABACK(x) ((x)->mback.back)          // In virtual noun, pointer to backing block
 #define AZAPLOC(x) ((x)->mback.zaploc)      // on allocation, the address of the tstack entry that will free the block
-#define AZAPLOCV(x) ((A*)((x)->s[(x)->r]))  // for virtual blocks,  the address of the tstack entry that will free the block
 #define AT(x)           ((x)->tproxy.t)        /* Type; one of the #define below  */
 #define AC(x)           ((x)->c)        /* Reference count.                */
 #define AN(x)           ((x)->n)        /* # elements in ravel             */
@@ -173,7 +172,6 @@ typedef I SI;
 
 #define AKXR(x)         (SZI*(NORMAH+(x)))
 #define WP(t,n,r)       (SMMAH+ r   +(1&&t&LAST0)+(((t&NAME?sizeof(NM):0)+((n)<<bplg(t))+SZI-1)>>LGSZI))  // # I to allocate
-#define AKX(x)          AKXR(AR(x))
 
 #define AV(x)           ( (I*)((C*)(x)+AK(x)))  /* pointer to ravel        */
 #define BAV(x)          (      (B*)(x)+AK(x) )  /* boolean                 */
@@ -183,24 +181,20 @@ typedef I SI;
 #define UCAV(x)         (     (UC*)(x)+AK(x) )  /* unsigned character      */
 #define USAV(x)         ((US*)((C*)(x)+AK(x)))  /* wchar                   */
 #define UAV(x)          (     (UC*)(x)+AK(x) )  /* unsigned character      */
-#define UIAV(x)         ((UI*)((C*)(x)+AK(x)))  /* unsigned integer      */
 #define UI4AV(x)        ((UI4*)((C*)(x)+AK(x)))  /* unsigned 32-bit int      */
 #define C4AV(x)         ((C4*)((C*)(x)+AK(x)))  /* literal4                */
 #define NAV(x)          ((NM*)((C*)(x)+AKXR(1)))  // name, which is always allocated as rank 1, for some reason
 #define IAV(x)          AV(x)                   /* integer                 */
 #define IAV0(x)         ((I*)((C*)(x)+AKXR(0)))  // integer in a stack- or heap-allocated atom (rank 0 - used for internal tables)
-#define IAV1(x)         ((I*)((C*)(x)+AKXR(1)))  // integer in a stack- or heap-allocated list (rank 1 - used for internal tables that need alignment or need AS[0])
 #define BAV0(x)         ( (C*)((C*)(x)+AKXR(0)) )  // Boolean when rank is 0 - fixed position (known to avoid segfault)
 #define LXAV0(x)        ( (LX*)((C*)(x)+AKXR(0)) )  // Symbol when rank is 0 - fixed position (for SYMB hash tables).  Note AK() is used in SYMB tables
 #define LAV0(x)         ( (L*)((C*)(x)+AKXR(0)) )  // Symbol array when rank is 0 - used for the symbol pool
 #define DAV(x)          ( (D*)((C*)(x)+AK(x)))  /* double                  */
-#define DAV0(x)         ( (D*)((C*)(x)+AKXR(0)))  // double atom
 #define DAV2(x)         ( (D*)((C*)(x)+AKXR(2)) )  // Double when rank is 2 - fixed position (for matrix inversion)
 #define ZAV(x)          ( (Z*)((C*)(x)+AK(x)))  /* complex                 */
 #define XAV(x)          ( (X*)((C*)(x)+AK(x)))  /* extended                */
 #define QAV(x)          ( (Q*)((C*)(x)+AK(x)))  /* rational                */
 #define AAV(x)          ( (A*)((C*)(x)+AK(x)))  /* boxed                   */
-#define AAV0(x)         ((A*)((C*)(x)+AKXR(0)))  // A block in a stack- or heap-allocated atom (rank 0 - used for internal tables)
 #define AAV1(x)         ((A*)((C*)(x)+AKXR(1)))  // A block in a stack- or heap-allocated list (rank 1)
 #define VAV(x)          ( (V*)((C*)(x)+AK(x)))  /* verb, adverb, conj      */
 #define FAV(x)          ( (V*)((C*)(x)+AKXR(0)) )  // verb, adverb, conj - always at fixed offset
@@ -334,9 +328,7 @@ typedef I SI;
 // Restriction: MARK must be reserved for use as BOXMULTIASSIGN because of how parser tests for it
 // ** NOTE!! bits 28-30 are used in the call to cvt() (arg only) to override the convsion type for XNUMs
 #define XCVTXNUMORIDEX  LPARX   // in cvt(), indicates that forced precision for result is present
-#define XCVTXNUMORIDE   ((I)1<<XCVTXNUMORIDEX)   // in cvt(), indicates that forced precision for result is present
 #define XCVTXNUMCVX     CONJX
-#define XCVTXNUMCV      ((I)3<<XCVTXNUMCVX)  // in cvt(), the precision for xnum (if XCVTXNUMORIDE is set)
 // ** ADV type can have the following information flag set
 #define NAMELESSMODX    LPARX
 #define NAMELESSMOD     ((I)1<<NAMELESSMODX)  // set in a modifier to indicate that the value contains no names.  Such values are pushed onto the stack by value to save parsing overhead.
@@ -391,12 +383,7 @@ typedef I SI;
 #define TYPEVIPOK       (FL+CMPX+SBT+(SZI==SZD?INT:0))
 // NOUNSAFE flag
 // scaf expunge all the following
-#define SAFE(x)         (x)    // type, current block and descendants safe from tstack
-#define SAFED(x)        (x)    // type, descendants safe from tstack
-#define SAFE0(x)        (x)    // type, current block safe from tstack
 #define UNSAFE(x)       (x)   // type, not safe from tstack
-#define UNSAFED(x)      (x)   // type, descendants not safe from tstack
-#define UNSAFE0(x)      (x)   // type, not safe from tstack
 
 #define TYPESEQ(x,y)    ((x)==(y))  // types are equal, ignoring NOUNSAFE bits
 #define TYPESXOR(x,y)    ((x)^(y))  // types are not equal, ignoring NOUNSAFE bits, using full-word logical
@@ -413,7 +400,6 @@ typedef I SI;
 #define POSIFHOMO(s,t)  ( -(((s)^(t))&(BOX|SBT|JCHAR|MARK)) & -(((s)^(t))&(BOX|SBT|NUMERIC|MARK)) )
 #define NEGIFHOMO(s,t)  ( ~POSIFHOMO(s,t) )
 #define HOMO(s,t)       ( POSIFHOMO(s,t)>=0 )
-#define HOMONE(s,t)     HOMO(s,t)
 #define STYPE(t)        (((t)&(B01|LIT|INT|FL|CMPX|BOX))<<(SB01X-B01X))
 #define DTYPE(t)        (((t)&(SB01|SLIT|SINT|SFL|SCMPX|SBOX))>>(SB01X-B01X))
 
@@ -424,7 +410,6 @@ typedef I SI;
 #define ACPERMANENT     ((I)1<<ACPERMANENTX)  // next-to-top bit, set in blocks that should never modify the AC field
 #define ACUSECOUNT      (I)1  // lower bits used for usecount
 #define ACIPNO(a)       (AC(a)&=~ACINPLACE)
-#define ACIPYES(a)      (AC(a)|=ACINPLACE)
 #define ACIPISOK(a)     (AC(a)<1)  // OK to modify if INPLACE set - set only when usecount=1
 #define ACUC(a)         (AC(a)&(~ACINPLACE))  // just the usecount portion
 #define ACUC1           (ACUSECOUNT*1) // <= this is usecount==1; > is UC>1
@@ -486,9 +471,6 @@ typedef I SI;
 #define AFUPPERTRIX 30      // matches RPAR
 #define AFUPPERTRI  ((I)1<<AFUPPERTRIX)  // (used in cip.c) This is an upper-triangular matrix
 
-#define AFAUDITUCX      32   // this & above is used for auditing the stack (you must run stack audits on a 64-bit system)
-#define AFAUDITUC       ((I)1<<AFAUDITUCX)    // this field is used for auditing the tstack, holds the number of deletes implied on the stack for the block
-
 // Flags in the AR field of local symbol tables
 #define LSYMINUSE 1  // This bit is set in the rank of the original symbol table when it is in use
 #define LNAMEADDED LPERMANENT  // Set in rank when a new name is added to the local symbol table.  We transfer the bit from the L flags to the rank-flag
@@ -541,7 +523,6 @@ typedef DST* DC;
 
 typedef struct {I e,p;X x;} DX;
                                 /* for the p field in DX */
-#define DXIPREC         ((I)-1) /* infinite precision    */
 #define DXINF           ((I)-2) /* _  infinity           */
 #define DXMINF          ((I)-3) /* __ negative infinity  */
 
@@ -583,7 +564,6 @@ typedef struct {A name,val;US flag;S sn;LX next;} L;
 #define LHASNAME        (I)32      // name is nonnull - this value is not used internally; it appears in the result of 18!:31
 #define LHASVALUE       (I)64     // value is nonnull - this value is not used internally; it appears in the result of 18!:31
 // in LINFO entry
-#define LMOD            (I)1          // table has had new entries added (used for local symbol tables only)
 
 
 // Definition of callstack
@@ -742,8 +722,7 @@ typedef struct {AF valencefns[2];A fgh[3];union { D lD; void *lvp[2]; I lI; I4 l
 
 #define ID(f)  FAV(AT(f?f:(A)(validitymask+12))&FUNC?f:(A)validitymask)->id  // can be branchless, if compiler can manage it
 #define VFLAGNONE 0L
-#define VRTNNONE ((A)0)
-  
+
                                         /* type V flag values              */
 // bits 0-7 are used in comparison compounds to encode the type of compound, see vcompsc.c
 // for other types, they are defined as follows:
@@ -759,8 +738,6 @@ typedef struct {AF valencefns[2];A fgh[3];union { D lD; void *lvp[2]; I lI; I4 l
 #define VFUNDERHASINV      (((I)1)<<VFUNDERHASINVX)
 #define VFATOPPOLYX  0  // (in p.) the function to run after p.  0=none, 1=^
 #define VFATOPPOLY      (((I)3)<<VFATOPPOLYX)
-#define VFATOPPOLYNONE  0
-#define VFATOPPOLYEXP  1
 #define VFKEYSLASHTX  0  // (in f/.) set if f is u/ where u is one of + <. >., indicating which types are OK for atoms (can't handle int ovfl)
 #define VFKEYSLASHT      (((I)(2*FL-1))<<VFKEYSLASHTX)
 #define VFKEYSLASHFX  (FLX+1)  // (in f/.) function coded for, 0=<. 1=>. 2=+
@@ -771,7 +748,6 @@ typedef struct {AF valencefns[2];A fgh[3];union { D lD; void *lvp[2]; I lI; I4 l
 #define VGERLX          8
 #define VGERL           (((I)1)<<VGERLX)          /* gerund left  argument           */
 #define VGERR           (I)512          /* gerund right argument           */
-#define VTAYFINITE      (I)1024         /* t. finite polynomial            */
 #define VIRS1           (I)2048         /* 11 monad has integral rank support */
 #define VIRS2X          12
 #define VIRS2           (((I)1)<<VIRS2X)         /* 12 dyad  has integral rank support */

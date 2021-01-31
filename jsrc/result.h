@@ -47,7 +47,6 @@
 #define ZZFLAGVIRTAINPLACEX 11 // set if the virtual block for a can be inplaced, based on the iterator context and inplaceability of the input, but ignoring whether the verb inplaces
 #define ZZFLAGVIRTAINPLACE (((I)1)<<ZZFLAGVIRTAINPLACEX)
 
-#define ZZFLAGPRISTINEX AFPRISTINEX  // 21 set if the result is PRISTINE, i. e. boxed and made up entirely of DIRECT inplaceable results
 #define ZZFLAGPRISTINE AFPRISTINE
 
 

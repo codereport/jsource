@@ -38,14 +38,11 @@ static const C*qq=">)}]";
 
 #define mC  (mods&0x1000)
 #define mL  (mods&0x0800)
-#define mK  (mods&0x0400)
-#define mJ  (mods&0x0200)
 #define mI  (mods&0x0100)
 #define mB  (mods&0x0080)
 #define mD  (mods&0x0040)
 #define mMN (mods&0x0030)
 #define mPQ (mods&0x000c)
-#define mR  (mods&0x0002)
 #define uK  (u[1])  // unused
 #define uJ  (u[2])  // unused
 #define uI  (u[3])
