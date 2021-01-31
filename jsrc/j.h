@@ -561,11 +561,6 @@ if(_i<3){_zzt+=_i; z=(I)&oneone; _zzt=_i>=1?_zzt:(I*)z; z=_i>1?(I)_zzt:z; z=((I*
 #define RNE(exp)        {return jt->jerr?0:(exp);}
 #define RZ(exp)         {if(!(exp))return 0;}
 
-#include <assert.h>
-#define ARGCHK1(x)  assert(x); //    RZ(x)   // bit set in deadbeef
-#define ARGCHK2(x,y)    ARGCHK1(x) ARGCHK1(y)
-#define ARGCHK3(x,y,z)  ARGCHK1(x) ARGCHK1(y) ARGCHK1(z)
-
 // Input is a byte.  It is replicated to all lanes of a UI
 #define REPLBYTETOW(in,out) (out=(UC)(in),out|=out<<8,out|=out<<16,out|=out<<32)
 // Output is pointer, Input is I/UI, count is # bytes to NOT store to output pointer (0-7).
