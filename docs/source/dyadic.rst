@@ -1,0 +1,4 @@
+
+Dyadic
+======
+.. toctree::

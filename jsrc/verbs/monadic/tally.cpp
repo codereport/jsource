@@ -3,6 +3,8 @@ extern "C" {
 #include "j.h"
 }
 
+/** @file */
+
 using array = A;  // potentially rename to j_array?
 
 // TODO: will targ be a int64_t in all cases
@@ -73,7 +75,14 @@ extended_precision_or_rational() -> int64_t {
     return XNUM + RAT;
 }
 
-// # y TODO: add doxygen support
+/**
+ * @brief Tally: #
+ * @details In APL, this is also known as `tally` (≢). Known also as `len`, `length`, `size` and
+ * `count`.
+ * @param jt
+ * @param w   Input array
+ * @return    Output array (always scalar integer)
+ */
 [[nodiscard]] auto
 jttally(J jt, array w) -> array {
     array const z = make_scalar_integer(jt, item_count(w));
