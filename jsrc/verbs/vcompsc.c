@@ -80,8 +80,6 @@
 
 /* Now define byte-parallel (4 bytes at a time) versions of above  */
 
-#define JNDBR(yy)      if(r&&(y=yy))DO(r, if(yv[r-1-i])return sc(n-1-i););
-
 #define ASSIGNX(v)     {x=*(C*)v; x|=x<<8; x|=x<<16; x|=x<<32; }
 #define INDB3          {n=(UI)n>i*(UI)SZI+(CTTZI(y)>>LGBB)?i*SZI+(CTTZI(y)>>LGBB):n; break;}
 #define JNDB3          {UI4 bitno; CTLZI(y,bitno); n=(i*SZI+(bitno>>LGBB)); break;}
@@ -306,7 +304,6 @@ static AF atcompX[]={   /* table for any vs. any */
 // If no routine found, return 0 to failover to normal path
 // compsc.postflags bits 0-1 indicate postprocessing needed: 00=none, 10=+./ (result is binary 0 if search completed), 11=*./ (result is binary 1 if search completed)
 AF jtatcompf(J jt,A a,A w,A self){I m;
- ARGCHK2(a,w);
  m=FAV(self)->flag&255;
  if((m&6)!=6){   // normal comparison
   // verify rank is OK, based on operation

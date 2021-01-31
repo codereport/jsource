@@ -20,13 +20,11 @@ static B consf(A w){A f;C c;
 }    /* 1 iff w is a constant function */
 
 static A jtfong(J jt,A a,A w){A f;C c;V*v;
- ARGCHK2(a,w);
  v=FAV(a); c=v->id; f=v->fgh[0];
  return c==CRIGHT ? w : c==CFORK&&(NOUN&AT(f)||CCAP==ID(f)) ? folk(f,v->fgh[1],fong(v->fgh[2],w)) : folk(ds(CCAP),a,w);
 }   // [: f g  with simplifications: [: ] w -> w;  [: (N/[: x y) w -> N/[: x [: y w   and y omittrd if ]
 
 static A jtinvfork(J jt, A w){A f,fi,g,gi,h,k;B b,c;V*v;
- ARGCHK1(w);
  v=FAV(w); RZ(f=unname(v->fgh[0])); g=v->fgh[1]; RZ(h=unname(v->fgh[2]));
  if(CCAP==ID(f))return fong(invrecur(h),invrecur(g));
  c=1&&NOUN&AT(f); b=c||consf(f);
@@ -42,17 +40,15 @@ static A jtinvfork(J jt, A w){A f,fi,g,gi,h,k;B b,c;V*v;
  return fong(fi,gi);
 }
 
-static A jtexpandf(J jt,    A w,A self){A f; ARGCHK2(w,self); f=FAV(self)->fgh[0]; return expand(VAV(f)->fgh[0],w);}
+static A jtexpandf(J jt,    A w,A self){A f; f=FAV(self)->fgh[0]; return expand(VAV(f)->fgh[0],w);}
 
 static A jtexpandg(J jt,    A w,A self){A f,g,z;V*v;
- ARGCHK2(w,self);
  f=FAV(self)->fgh[0]; v=FAV(f); g=v->fgh[1];
  jt->fill=FAV(g)->fgh[1]; z=expand(v->fgh[0],w); jt->fill=0;   // elements of FAV cannot be virtual
  return z;
 }
 
 static A jtdiag(J jt,A a,A w){I d,m,p,r,t,*v;
- ARGCHK2(a,w);
  r=AR(w); t=AT(w);
  v=AS(w);   m=0;      DO(r, m=MIN(m,v[i]););
  v=AS(w)+r; p=1; d=0; DQ(r, d+=p; p*=*--v;);
@@ -65,7 +61,6 @@ static A jtdiag(J jt,A a,A w){I d,m,p,r,t,*v;
 }}
 
 static A jtbminv(J jt, A w){A*wv,x,z=w;I i,j,m,r,*s,t=0,*u,**v,*y,wn,wr,*ws;
- ARGCHK1(w);
  ASSERT(0,EVNONCE);
  ASSERT(BOX&AT(w),EVDOMAIN);
  wn=AN(w); wr=AR(w); ws=AS(w); wv=AAV(w); 
@@ -97,7 +92,6 @@ static A jtbminv(J jt, A w){A*wv,x,z=w;I i,j,m,r,*s,t=0,*u,**v,*y,wn,wr,*ws;
 
 
 static A jtinvamp(J jt, A w){A f,ff,g,h,x,y;B nf,ng;C c,d,*yv;I n;V*u,*v;
- ARGCHK1(w);
  v=FAV(w);
  f=v->fgh[0]; nf=!!(NOUN&AT(f));
  g=v->fgh[1]; ng=!!(NOUN&AT(g));
@@ -236,7 +230,8 @@ static const C simpleinv[128] = {
 // Return inverse of monad w.  recur is a recursion indicator, always forced to 0 for the initial call, and
 // set to 1 here for recursive calls
 A jtinv(J jt, A w, I recur){A f,ff,g;B b,nf,ng,vf,vg;C id;I p,q;V*v;
- ARGCHK1(w); STACKCHKOFL  // make sure we don't have a recursion loop through inv
+ if(!w) return 0;
+ STACKCHKOFL  // make sure we don't have a recursion loop through inv
  ASSERT(VERB&AT(w),EVDOMAIN); 
  id=ID(w); v=FAV(w);  // id=pseudochar for w, v->verb info
 #define simpleinvvalues(w) CCM(w,CDIV)+CCM(w,CPLUS)+CCM(w,CMINUS)+CCM(w,CLEFT)+CCM(w,CRIGHT)+CCM(w,CREV)+CCM(w,CCANT)+CCM(w,CPOLY)+ \
@@ -322,7 +317,6 @@ A jtinv(J jt, A w, I recur){A f,ff,g;B b,nf,ng,vf,vg;C id;I p,q;V*v;
 }
 
 static A jtneutral(J jt, A w){A x,y;B b;V*v;
- ARGCHK1(w);
  v=FAV(w);
  ASSERT(!v->lrr,EVDOMAIN);
  RZ(y=v2(0L,1L));

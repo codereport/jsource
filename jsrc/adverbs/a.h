@@ -32,12 +32,9 @@
 // If there are multiple cells, loop over them & call back; otherwise fall through to handle to single cell
 #define PREF1(f)        {I m=mr(self);            F1RANK(  m,f,self);}
 #define PREF2(f)        {I l=lr(self),r=rr(self); F2RANK(l,r,f,self);}
-#define PREF1IP(f)      {I m=mr(self);            F1RANKIP(  m,f,self);}
 #define PREF2IP(f)      {I l=lr(self),r=rr(self); F2RANKIP(l,r,f,self);}
 
-#define AS1(f,exp,x) A f(J jt,    A w,A self){F1PREFIP;PROLOG(x);DECLF ;A z; PREF1(f); z=(exp); EPILOG(z);}
 #define AS2(f,exp,x) A f(J jt,A a,A w,A self){F2PREFIP;PROLOG(x);DECLF ;A z; PREF2(f); z=(exp); EPILOG(z);}
-#define CS1(f,exp,x) A f(J jt,    A w,A self){PROLOG(x);DECLFG;A z; PREF1(f); z=(exp); EPILOG(z);}
 #define CS2(f,exp,x) A f(J jt,A a,A w,A self){PROLOG(x);DECLFG;A z; PREF2(f); z=(exp); EPILOG(z);}
 // implied rank loops.  If the arg has frame, loop over the cells.  f##cell operates on a single cell with no rank check
 // inplaceability is passed through
@@ -50,10 +47,9 @@
 #define ADERIV(id,f1,f2,flag,m,l,r)  fdef(0,id,VERB,(AF)(f1),(AF)(f2),w,0L,0L,(flag),(I)(m),(I)(l),(I)(r))
 #define CDERIV(id,f1,f2,flag,m,l,r)  fdef(0,id,VERB,(AF)(f1),(AF)(f2),a,w ,0L,(flag),(I)(m),(I)(l),(I)(r))
 
-#define ASSERTVV(a,w)   ARGCHK2(a,w); ASSERT(VERB&AT(a)&AT(w),EVDOMAIN)
-#define ASSERTVVn(a,w)  ARGCHK2(a,w); ASSERT(VERB&AT(a),EVDOMAIN)
-#define ASSERTVN(a,w)   ARGCHK2(a,w); ASSERT((VERB&AT(a))>(VERB&AT(w)),EVDOMAIN)
-#define ASSERTNN(a,w)   ARGCHK2(a,w); ASSERT(!(VERB&(AT(a)|AT(w))),EVDOMAIN)
+#define ASSERTVV(a,w) ASSERT(VERB&AT(a)&AT(w),EVDOMAIN)
+#define ASSERTVVn(a,w) ASSERT(VERB&AT(a),EVDOMAIN)
+#define ASSERTVN(a,w) ASSERT((VERB&AT(a))>(VERB&AT(w)),EVDOMAIN)
 
 
 // TRUE if v is c!.0.  This is used for detecting use of special code.

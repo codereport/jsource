@@ -16,14 +16,6 @@
 #define __GNUC_PATCHLEVEL__ 1
 #endif
 
-// for debugging
-#define NANTEST0        (fetestexcept(FE_INVALID))  // test but does not clear
-#define dump_m128i(a,x) {__m128i _b=x;fprintf(stderr,"%s %li %li %li %li \n", a, ((long*)(&_b))[0], ((long*)(&_b))[1], ((long*)(&_b))[2], ((long*)(&_b))[3]);}
-#define dump_m128i64(a,x) {__m128i _b=x;fprintf(stderr,"%s %lli %lli \n", a, ((long long*)(&_b))[0], ((long long*)(&_b))[1]);}
-#define dump_m256i(a,x) {__m256i _b=x;fprintf(stderr,"%s %lli %lli %lli %lli \n", a, ((long long*)(&_b))[0], ((long long*)(&_b))[1], ((long long*)(&_b))[2], ((long long*)(&_b))[3]);}
-#define dump_m256d(a,x) {__m256d _b=x;fprintf(stderr,"%s %f %f %f %f \n", a, ((double*)(&_b))[0], ((double*)(&_b))[1], ((double*)(&_b))[2], ((double*)(&_b))[3]);}
-#define dump_m128d(a,x) {__m128d _b=x;fprintf(stderr,"%s %f %f \n", a, ((double*)(&_b))[0], ((double*)(&_b))[1]);}
-
 #if defined(__aarch64__)||defined(_M_ARM64)
 #include <arm_neon.h>
 #endif
@@ -49,8 +41,6 @@ typedef double float64x2_t __attribute__ ((vector_size (16)));
 // If you are porting to a new compiler or architecture, see the bottom of this file
 // for instructions on defining the CTTZ macros
 
-#define HEAPCHECK
-
 #include <memory.h>
 #include <sys/types.h>
 
@@ -73,29 +63,15 @@ typedef double float64x2_t __attribute__ ((vector_size (16)));
 #include <string.h>  
 
 
-
-
-#if defined(__aarch32__)||defined(__arm__)||defined(_M_ARM)||defined(__aarch64__)||defined(_M_ARM64)
-#ifndef __ARM_FEATURE_UNALIGNED
-#define ALIGNEDMEM
-#endif
-#endif
-
 #define IMAX            9223372036854775807LL
 #define IMIN            (~9223372036854775807LL)   /* ANSI C LONG_MIN is  -LONG_MAX */
 #define FLIMAX          9223372036854775296.     // largest FL value that can be converted to I
-#define FLIMIN          ((D)IMIN)  // smallest FL value that can be converted to I
 #define FMTI            "%lli"
 #define FMTI02          "%02lli"
 #define FMTI04          "%04lli"
 #define FMTI05          "%05lli"
 
 #define strtoI          strtoll
-
-#define NEGATIVE0       0x8000000000000000LL   // IEEE -0 (double precision)
-
-#define C4MAX           0xffffffffUL
-#define C4MIN           0L
 
 #ifndef XINF
 #define XINF            "\000\000\000\000\000\000\360\177"
@@ -195,7 +171,6 @@ typedef double float64x2_t __attribute__ ((vector_size (16)));
 #define IALLEPS         13
 #define IIFBEPS         14
 #define IFORKEY         15  // special key support: like i.~, but add # values mapped to the index
-#define IIMODFIELD      0x70  // bits used to indicate processing options
 #define IIMODPACK       0x10  // modifier for type.  (small-range search except i./i:) In IIDOT/IICO, indicates reflexive application.  In others, indicates that the
                               // bitmask should be stored as packed bits rather than bytes
 
@@ -209,9 +184,6 @@ typedef double float64x2_t __attribute__ ((vector_size (16)));
 #define IPHCALCX        9
 #define IPHCALC         (((I)1)<<IPHCALCX)   // set when we are calculating a prehashed table
 #define IINOTALLOCATED  0x400  // internal flag, set when the block has not been allocated
-#define IIOREPSX        11
-#define IIOREPS         (((I)1)<<IIOREPSX)  // internal flag, set if mode is i./i:/e./key, but not if prehashing
-#define IREVERSED       0x1000   // set if we have decided to reverse the hash in a small-range situation
 #define IPHOFFSET       0x2000              /* offset for prehashed versions - set when we are using a prehashed table   */
 #define IPHIDOT         (IPHOFFSET+IIDOT)
 #define IPHICO          (IPHOFFSET+IICO)
@@ -237,19 +209,9 @@ typedef double float64x2_t __attribute__ ((vector_size (16)));
 #define LGBW (LGSZI+LGBB)  // lg (# bits in a word)
 
 // nominal cache sizes for current processors
-#define L1CACHESIZE (((I)1)<<15)
 #define L2CACHESIZE (((I)1)<<18)
-#define L3CACHESIZE (((I)1)<<22)
 
 #define TOOMANYATOMS 0xFFFFFFFFFFFFLL  // more atoms than this is considered overflow (64-bit).  i.-family can't handle more than 2G cells in array.
-
-// Tuning options for cip.c
-// tuned for linux
-#define IGEMM_THRES  (200*200*200)   // when m*n*p less than this use cached; when higher, use BLAS
-#define DGEMM_THRES  (200*200*200)   // when m*n*p less than this use cached; when higher, use BLAS   _1 means 'never'
-#define ZGEMM_THRES  (60*60*60)      // when m*n*p less than this use cached; when higher, use BLAS  
-#define DCACHED_THRES  (64*64*64)    // when m*n*p less than this use blocked; when higher, use cached
-
 
 // Debugging options
 
@@ -271,10 +233,9 @@ typedef double float64x2_t __attribute__ ((vector_size (16)));
 #define ASSERT(b,e)     {if(!(b)){jsignal(e); return 0;}}
 // version for debugging
 #define ASSERTD(b,s)    {if(!(b)){jsigd((s)); return 0;}}
-#define ASSERTMTV(w)    {ARGCHK1(w); ASSERT(1==AR(w),EVRANK); ASSERT(!AN(w),EVLENGTH);}
+#define ASSERTMTV(w)    { ASSERT(1==AR(w),EVRANK); ASSERT(!AN(w),EVLENGTH);}
 #define ASSERTN(b,e,nm) {if(!(b)){jt->curname=(nm); jsignal(e); return 0;}}  // set name for display (only if error)
 #define ASSERTSYS(b,s)  {if(!(b)){fprintf(stderr,"system error: %s : file %s line %d\n",s,__FILE__,__LINE__); jsignal(EVSYSTEM); jtwri(jt,MTYOSYS,"",(I)strlen(s),s); return 0;}}
-#define ASSERTW(b,e)    {if(!(b)){if((e)<=NEVM)jsignal(e); else jt->jerr=(e); return;}}
 #define ASSERTWR(c,e)   {if(!(c)){return e;}}
 
 #define ASSERTAGREE(x,y,l) \
@@ -292,7 +253,6 @@ typedef double float64x2_t __attribute__ ((vector_size (16)));
   }else{r=memcmp(aaa,aab,aai<<LGSZI)!=0;} \
  }
 
-#define ASSERTAGREESEGFAULT (x,y,l) {I *aaa=(x), *aab=(y), aai=(l)-1; do{aab=aai<0?aaa:aab; if(aaa[aai]!=aab[aai])SEGFAULT; --aai; aab=aai<0?aaa:aab; if(aaa[aai]!=aab[aai])SEGFAULT; --aai;}while(aai>=0); }
 // BETWEENx requires that lo be <= hi
 #define BETWEENC(x,lo,hi) ((UI)((x)-(lo))<=(UI)((hi)-(lo)))   // x is in [lo,hi]
 #define BETWEENO(x,lo,hi) ((UI)((x)-(lo))<(UI)((hi)-(lo)))   // x is in [lo,hi)
@@ -322,20 +282,11 @@ typedef double float64x2_t __attribute__ ((vector_size (16)));
 #define DO(n,stm)       {I i=0,_n=(n); for(;i<_n;i++){stm}}  // i runs from 0 to n-1
 #define DP(n,stm)       {I i=-(n);    for(;i<0;++i){stm}}   // i runs from -n to -1 (faster than DO)
 #define DQ(n,stm)       {I i=(I)(n)-1;    for(;i>=0;--i){stm}}  // i runs from n-1 downto 0 (fastest when you don't need i)
-#define DOU(n,stm)      {I i=0,_n=(n); do{stm}while(++i<_n);}  // i runs from 0 to n-1, always at least once
-#define DPU(n,stm)      {I i=-(n);    do{stm}while(++i<0);}   // i runs from -n to -1 (faster than DO), always at least once
 #define DQU(n,stm)      {I i=(I)(n)-1;  do{stm}while(--i>=0);}  // i runs from n-1 downto 0, always at least once
 // C suffix indicates that the count is one's complement
-#define DOC(n,stm)       {I i=0,_n=~(n); for(;i<_n;i++){stm}}  // i runs from 0 to n-1
-#define DPC(n,stm)       {I i=(n)+1;    for(;i<0;++i){stm}}   // i runs from -n to -1 (faster than DO)
 #define DQC(n,stm)       {I i=-2-(I)(n);    for(;i>=0;--i){stm}}  // i runs from n-1 downto 0 (fastest when you don't need i)
-#define DOUC(n,stm)      {I i=0,_n=~(n); do{stm}while(++i<_n);}  // i runs from 0 to n-1, always at least once
-#define DPUC(n,stm)      {I i=(n)+1;    do{stm}while(++i<0);}   // i runs from -n to -1 (faster than DO), always at least once
-#define DQUC(n,stm)      {I i=-2-(I)(n);  do{stm}while(--i>=0);}  // i runs from n-1 downto 0, always at least once
 #define ds(c)            (A)&primtab[(UC)(c)]
 #define UNUSED_VALUE        ds(CRIGHT)  // harmless value to use for self in calls to rank loops
-// see if value of x is the atom v.  Do INT/B01/FL here, subroutine for exotic cases
-#define EQINTATOM(x,v)  ( (AR(x)==0) && ((AT(x)&(INT+B01)) ? (((*IAV0(x))&(((AT(x)&B01)<<8)-1))==(v)) : (AT(x)&FL) ? *DAV0(x)==(D)(v) : 0!=equ(num(v),x))  )
 // define fs block used in every/every2.  It is the self for the f in f&.>, and contains only function pointers, an optional param in AK, and the flag field
 #define EVERYFS(name,f0,f1,akparm,flg) PRIM name={{akparm,0,0,0,0,0,0},{.primvb={.valencefns={f0,f1},.flag=flg}}};
 
@@ -346,7 +297,6 @@ typedef double float64x2_t __attribute__ ((vector_size (16)));
 #else  // old style counting J recursion levels
 #define FDEPDEC(d)      jt->fdepi-=(I4)(d)  // can be used in conditional expressions
 #define FDEPINC(d)      {ASSERT(jt->fdepn>=jt->fdepi+(I4)(d),EVSTACK); jt->fdepi+=(I4)(d);}
-#define STACKVERIFY
 #endif
 #define FCONS(x)        fdef(0,CFCONS,VERB,jtnum1,jtnum2,0L,0L,(x),VFLAGNONE, RMAX,RMAX,RMAX)
 // fuzzy-equal is used for tolerant comparisons not related to jt->cct; for example testing whether x in x { y is an integer
@@ -354,19 +304,15 @@ typedef double float64x2_t __attribute__ ((vector_size (16)));
 // FFEQ/FFIEQ (fixed fuzz) are used where we know for sure the test should be tolerant
 #define FFEQ(u,v)        (ABS((u)-(v))<=FUZZ*MAX(ABS(u),ABS(v)))
 #define FFIEQ(u,v)       (ABS((u)-(v))<=FUZZ*ABS(v))  // used when v is known to be exact integer.  It's close enough, maybe ULP too small on the high end
-#define FPREF
-#define F1PREF          FPREF
-#define F2PREF          FPREF
 #define FPREFIP         J jtinplace=jt; jt=(J)(intptr_t)((I)jt&~JTFLAGMSK)  // turn off all flag bits in jt, leave them in jtinplace
 #define F1PREFIP        FPREFIP
 #define F2PREFIP        FPREFIP
-#define F1RANK(m,f,self)    {ARGCHK1(w); if(m<AR(w))if(m==0)return rank1ex0(w,(A)self,f);else return rank1ex(  w,(A)self,(I)m,     f);}  // if there is more than one cell, run rank1ex on them.  m=monad rank, f=function to call for monad cell.  Fall through otherwise
-#define F2RANKcommon(l,r,f,self,extra)  {ARGCHK2(a,w); extra if((I)((l-AR(a))|(r-AR(w)))<0)if((l|r)==0)return rank2ex0(a,w,(A)self,f);else{I lr=MIN((I)l,AR(a)); I rr=MIN((I)r,AR(w)); return rank2ex(a,w,(A)self,lr,rr,lr,rr,f);}}  // If there is more than one cell, run rank2ex on them.  l,r=dyad ranks, f=function to call for dyad cell
+#define F1RANK(m,f,self)    { if(m<AR(w))if(m==0)return rank1ex0(w,(A)self,f);else return rank1ex(  w,(A)self,(I)m,     f);}  // if there is more than one cell, run rank1ex on them.  m=monad rank, f=function to call for monad cell.  Fall through otherwise
+#define F2RANKcommon(l,r,f,self,extra)  { extra if((I)((l-AR(a))|(r-AR(w)))<0)if((l|r)==0)return rank2ex0(a,w,(A)self,f);else{I lr=MIN((I)l,AR(a)); I rr=MIN((I)r,AR(w)); return rank2ex(a,w,(A)self,lr,rr,lr,rr,f);}}  // If there is more than one cell, run rank2ex on them.  l,r=dyad ranks, f=function to call for dyad cell
 #define F2RANK(l,r,f,self)  F2RANKcommon(l,r,f,self,)
 // same, but used when the function may pull an address from w.  In that case, we have to turn pristine off since there may be duplicates in the result
 #define F2RANKW(l,r,f,self) F2RANKcommon(l,r,f,self,PRISTCLR(w))
-#define F1RANKIP(m,f,self)    {RZ(   w); if(m<AR(w))return jtrank1ex(jtinplpace,  w,(A)self,(I)m,     f);}  // if there is more than one cell, run rank1ex on them.  m=monad rank, f=function to call for monad cell
-#define F2RANKIP(l,r,f,self)  {ARGCHK2(a,w); if((I)((l-AR(a))|(r-AR(w)))<0){I lr=MIN((I)l,AR(a)); I rr=MIN((I)r,AR(w)); return jtrank2ex(jtinplace,a,w,(A)self,REX2R(lr,rr,lr,rr),f);}}  // If there is more than one cell, run rank2ex on them.  l,r=dyad ranks, f=function to call for dyad cell
+#define F2RANKIP(l,r,f,self)  { if((I)((l-AR(a))|(r-AR(w)))<0){I lr=MIN((I)l,AR(a)); I rr=MIN((I)r,AR(w)); return jtrank2ex(jtinplace,a,w,(A)self,REX2R(lr,rr,lr,rr),f);}}  // If there is more than one cell, run rank2ex on them.  l,r=dyad ranks, f=function to call for dyad cell
 // get # of things of size s, rank r to allocate so as to have an odd number of them at least n, after discarding w items of waste.  Try to fill up a full buffer 
 #define FULLHASHSIZE(n,s,r,w,z) {UI4 zzz;  CTLZI((((n)|1)+(w))*(s) + AKXR(r) - 1,zzz); z = ((((I)1<<(zzz+1)) - AKXR(r)) / (s) - 1) | (1&~(w)); }
 // Memory-allocation macros
@@ -437,7 +383,6 @@ typedef double float64x2_t __attribute__ ((vector_size (16)));
 #define GATVR(name,type,atoms,rank,shaape) GATVS(name,type,atoms,rank,shaape,type##SIZE,GACOPYSHAPER,return 0)
 #define GATV1(name,type,atoms,rank) GATVS(name,type,atoms,rank,0,type##SIZE,GACOPY1,return 0)  // this version copies 1 to the entire shape
 #define GATV0(name,type,atoms,rank) GATVS(name,type,atoms,rank,0,type##SIZE,GACOPYSHAPE0,return 0)  // shape not written unless rank==1
-#define GATV0E(name,type,atoms,rank,erraction) GATVS(name,type,atoms,rank,0,type##SIZE,GACOPYSHAPE0,erraction)  // shape not written unless rank==1
 // use this version when you are allocating a sparse matrix.  It handles the AS[0] field correctly.  ALL sparse allocations must come through here so that AC is set sorrectly
 #define GASPARSE(n,t,a,r,s) {if((r)==1){GA(n,(t),a,1,0); if(s)AS(n)[0]=(s)[0];}else{GA(n,(t),a,r,s)} AC(n)=ACUC1;}
 
@@ -470,7 +415,6 @@ typedef double float64x2_t __attribute__ ((vector_size (16)));
 // Tests for whether a result incorporates its argument.  The originator, who is going to check this, always marks the argument inplaceable,
 // and we signal incorporation either by returning the argument itself or by marking it non-inplaceable (if we box it)
 #define WASINCORP1(z,w)    ((z)==(w)||0<=AC(w))
-#define WASINCORP2(z,a,w)  ((z)==(w)||(z)==(a)||0<=(AC(a)|AC(w)))
 #define INF(x)          ((x)==inf||(x)==infm)
 // true if a has recursive usecount
 #define UCISRECUR(a)    (AFLAG(a)&RECURSIBLE)
@@ -481,8 +425,6 @@ typedef double float64x2_t __attribute__ ((vector_size (16)));
 #define INSTALLBOXRECUR(xv,k,z) rifv(z); {I zzK=(k); {A zzZ=xv[zzK]; ra(z); fa(zzZ);} xv[zzK]=z;}  // Don't test - we know we are installing into a recursive block
 // Same thing for RAT type.  z is a Q, xv[k] is a Q
 #define INSTALLRAT(x,xv,k,z) if((UCISRECUR(x))!=0){Q zzZ=xv[k]; ra(z.n); ra(z.d); fa(zzZ.n); fa(zzZ.d);} xv[k]=z
-#define INSTALLRATNF(x,xv,k,z) if((UCISRECUR(x))!=0){ra(z.n); ra(z.d);} xv[k]=z   // Don't do the free - if we are installing into known 0
-#define INSTALLRATRECUR(xv,k,z) rifv(z.n); rifv(z.d); {I zzK=(k); {Q zzZ=xv[k]; ra(z.n); ra(z.d); fa(zzZ.n); fa(zzZ.d);} xv[zzK]=z;}  // Don't test - we know we are installing into a recursive block
 // Use IRS[12] to call a verb that supports IRS.  Rank is nonnegative; result is assigned to z.  z mustn't be any other arg - it is also used as a temp
 #define IRS1COMMON(j,w,fs,r,f1,z) (z=(A)(r),z=(I)AR(w)>(I)(r)?z:(A)~0,jt->ranks=(RANK2T)(I)z,z=((AF)(f1))(j,(w),(A)(fs)),jt->ranks=(RANK2T)~0,z)  // nonneg rank
 #define IRS1(w,fs,r,f1,z) IRS1COMMON(jt,w,fs,r,f1,z)  // nonneg rank
@@ -490,7 +432,6 @@ typedef double float64x2_t __attribute__ ((vector_size (16)));
 #define IRS2COMMON(j,a,w,fs,l,r,f2,z) (jt->ranks=(RANK2T)(((((I)AR(a)-(l)>0)?(l):RMAX)<<RANKTX)+(((I)AR(w)-(r)>0)?(r):RMAX)),z=((AF)(f2))(j,(a),(w),(A)(fs)),jt->ranks=(RANK2T)~0,z) // nonneg rank
 #define IRS2(a,w,fs,l,r,f2,z) IRS2COMMON(jt,a,w,fs,l,r,f2,z)
 #define IRSIP2(a,w,fs,l,r,f2,z) IRS2COMMON(jtinplace,a,w,fs,l,r,f2,z)
-#define IRS2AGREE(a,w,fs,l,r,f2,z) {I fl=(I)AR(a)-(l); fl=fl<0?0:fl; I fr=(I)AR(w)-(r); fr=fr<0?0:fr; fl=fr<fl?fr:fl; ASSERTAGREE(AS(a),AS(w),fl) IRS2COMMON(jt,(a),(w),fs,(l),(r),(f2),z); } // nonneg rank; check agreement first
 // call to atomic2(), similar to IRS2.  fs is a local block to use to hold the rank (declared as D fs[16]), cxx is the Cxx value of the function to be called
 #define ATOMIC2(jt,a,w,fs,l,r,cxx) (FAV((A)(fs))->fgh[0]=ds(cxx), FAV((A)(fs))->id=CQQ, FAV((A)(fs))->lrr=(RANK2T)((l)<<RANKTX)+(r), jtatomic2(jt,(a),(w),(A)fs))
 
@@ -510,22 +451,11 @@ typedef double float64x2_t __attribute__ ((vector_size (16)));
 #define JTIPW           ((J)((I)jt|JTINPLACEW))
 #define JTIPAtoW        (J)((I)jt+(((I)jtinplace>>JTINPLACEAX)&JTINPLACEW))          // jtinplace, with a' inplaceability transferred to w
 #define JTIPWonly       (J)((I)jtinplace&~(JTINPLACEA+JTWILLBEOPENED+JTCOUNTITEMS))  // dyad jt converted to monad for w
-#define JTIPEX1(name,arg) jt##name(JTIPW,arg)                                        // like name(arg) but inplace
-#define JTIPEX1S(name,arg,self) jt##name(JTIPW,arg,self)                             // like name(arg,self) but inplace
-#define JTIPAEX2(name,arga,argw) jt##name(JTIPA,arga,argw)                           // like name(arga,argw) but inplace on a
-#define JTIPAEX2S(name,arga,argw,self) jt##name(JTIPA,arga,argw,self)                // like name(arga,argw,self) but inplace on a
 // given a unique num, define loop begin and end labels
-#define LOOPBEGIN(num) lp##num
-#define LOOPEND(num) lp##num##e
 #define MAX(a,b)        ((a)>(b)?(a):(b))
 #define MC              memcpy
 #define MCL(dest,src,n) memcpy(dest,src,n)  // use when copy is expected to be long
-#define MCI(dest,src,n) memcpy(dest,src,(n)*sizeof(*src))   // copy items of source
 #define MCIL(dest,src,n) memcpy(dest,src,(n)*sizeof(*src))   // use when copy expected to be long
-#define MCIS(dest,src,n) {I * RESTRICT _d=(dest); I * RESTRICT _s=(src); I _n=~(n); while((_n-=REPSGN(_n))<0)*_d++=*_s++;}  // use for short copies.  the tricky stuff is to confound the compiler so it doesn't produce memcpy
-#define MCISd(dest,src,n) {I * RESTRICT _s=(src); I _n=~(n); while((_n-=REPSGN(_n))<0)*dest++=*_s++;}  // ... this version when d increments through the loop
-#define MCISs(dest,src,n) {I * RESTRICT _d=(dest); I _n=~(n); while((_n-=REPSGN(_n))<0)*_d++=*src++;}  // ... this when s increments through the loop
-#define MCISds(dest,src,n) {I _n=~(n); while((_n-=REPSGN(_n))<0)*dest++=*src++;}  // ...this when both
 // Copy shapes.  Optimized for length <5, subroutine for others
 #define MCISH(dest,src,n) \
  {I *_d=(dest), *_s=(src); I _n=(I)(n); \
@@ -535,8 +465,6 @@ typedef double float64x2_t __attribute__ ((vector_size (16)));
   }else{MC(_d,_s,_n<<LGSZI);} \
  }
 #define MCISHd(dest,src,n) {MCISH(dest,src,n) dest+=(n);}  // ... this version when d increments through the loop
-#define MCISHs(dest,src,n) {MCISH(dest,src,n) src+=(n);}
-#define MCISHds(dest,src,n) {MCISH(dest,src,n) dest+=(n); src+=(n);}
 
 #define MIN(a,b)        ((a)<(b)?(a):(b))
 #define MLEN            (63)
@@ -546,7 +474,6 @@ typedef double float64x2_t __attribute__ ((vector_size (16)));
 // define multiply-add
 #define NAN0            (_clearfp())
 #define NAN1            {if(_SW_INVALID&_clearfp()){jsignal(EVNAN); return 0;}}
-#define NAN1V           {if(_SW_INVALID&_clearfp()){jsignal(EVNAN); return  ;}}
 #define NANTEST         (_SW_INVALID&_clearfp())
 
 #define NUMMAX          9    // largest number represented in num[]
@@ -565,16 +492,11 @@ typedef double float64x2_t __attribute__ ((vector_size (16)));
 #define PRISTCLR(w) I awflg; A awback; PRISTCLRNODCL(w)
 // same, but destroy w in the process
 #define PRISTCLRF(w) PRISTCOMMONF(w,)
-// transfer pristinity of w to z
-#define PRISTXFER(z,w) PRISTCOMMON(w,AFLAG(z)|=awflg&((SGNTO0(AC(w))&((I)jtinplace>>JTINPLACEWX))<<AFPRISTINEX);)
 // transfer pristinity of w to z, destroying w
 #define PRISTXFERF(z,w) PRISTCOMMONF(w,AFLAG(z)|=awflg&((SGNTO0(AC(w))&((I)jtinplace>>JTINPLACEWX))<<AFPRISTINEX);)  // use w bit of jtinplace
 #define PRISTXFERAF(z,a) PRISTCOMMONF(a,AFLAG(z)|=awflg&((SGNTO0(AC(a))&((I)jtinplace>>JTINPLACEAX))<<AFPRISTINEX);)  // use a bit of jtinplace
 // same, but with an added condition (in bit 0)
 #define PRISTXFERFIF(z,w,cond) PRISTCOMMONF(w,AFLAG(z)|=awflg&(((cond)&SGNTO0(AC(w))&((I)jtinplace>>JTINPLACEWX))<<AFPRISTINEX);)
-// transfer pristinity from a AND w to z (not if a==w)
-#define PRISTXFERF2(z,a,w) I aflg=AFLAG(a), wflg=AFLAG(w); AFLAG(z)|=aflg&wflg&(((a!=w)&SGNTO0(AC(a)&AC(w))&((I)jtinplace>>JTINPLACEAX)&((I)jtinplace>>JTINPLACEWX))<<AFPRISTINEX); \
-                           PRISTCOMSETF(a,aflg) PRISTCOMSETF(w,wflg)
 // PROD multiplies a list of numbers, where the product is known not to overflow a signed int (for example, it might be part of the shape of a nonempty dense array)
 // assign length first so we can sneak some computation into ain in va2
 #define PROD(z,length,ain) {I _i=(length); I * RESTRICT _zzt=(ain)-2; \
@@ -582,9 +504,6 @@ if(_i<3){_zzt+=_i; z=(I)&oneone; _zzt=_i>=1?_zzt:(I*)z; z=_i>1?(I)_zzt:z; z=((I*
 // This version ignores bits of length above the low RANKTX bits
 #define PRODRNK(result,length,ain) {I _i=(length); I * RESTRICT _zzt=(ain); \
   if((US)_i<3){_zzt=_i&3?_zzt:iotavec-IOTAVECBEGIN+1; result=*_zzt; ++_zzt; _zzt=_i&2?_zzt:iotavec-IOTAVECBEGIN+1; result*=*_zzt;}else{result=prod((US)_i,_zzt);} }
-// the 3REG version is perfect - too perfect, because the compiler saves a reg and decides to spill acr rather than aaa/aab which are used only in a predictable test
-#define PRODRNK3REG(z,length,ain) {I _i=(length); I * RESTRICT _zzt=(ain)-2; z=(US)_i; \
-if(z<3){_zzt+=z; z=(I)&oneone; _zzt=_i&3?_zzt:(I*)z; z=_i&2?(I)_zzt:z; z=((I*)z)[0]; z*=_zzt[1];}else{z=prod(z,_zzt+2);} }
 
 #define PROD1(result,length,ain) PROD(result,length,ain)  // scaf
 // PRODX replaces CPROD.  It is PROD with a test for overflow included.  To save calls to mult, PRODX takes an initial value
@@ -615,7 +534,6 @@ if(z<3){_zzt+=z; z=(I)&oneone; _zzt=_i&3?_zzt:(I*)z; z=_i&2?(I)_zzt:z; z=((I*)z)
 // by the next-higher-level function.  Thus, when X calls Y inside PROLOG/EPILOG, the result of Y (which is an A block), has the same viability as any other GA executed in X
 // (unless its usecount is > 1 because it was assigned elsewhere)
 #define PROLOG(x)       A *_ttop=jt->tnextpushp
-#define PROLOGNOTREQ(x)   // if nothing is allocated, we don't really need PROLOG
 #define EPILOGNORET(z) (gc(z,_ttop))   // protect z and return its address
 #define EPILOG(z)       return EPILOGNORET(z)   // z is the result block
 #define EPILOGNOVIRT(z)       return rifvsdebug((gc(z,_ttop)))   // use this when the repercussions of allowing virtual result are too severe
@@ -643,14 +561,6 @@ if(z<3){_zzt+=z; z=(I)&oneone; _zzt=_i&3?_zzt:(I*)z; z=_i&2?(I)_zzt:z; z=((I*)z)
 #define RNE(exp)        {return jt->jerr?0:(exp);}
 #define RZ(exp)         {if(!(exp))return 0;}
 
-#define DEADARG(x)      0
-#define ARGCHK1D(x)
-#define ARGCHK2D(x,y)
-
-#define ARGCHK1(x)      RZ(x) DEADARG(x);   // bit set in deadbeef
-#define ARGCHK2(x,y)    ARGCHK1(x) ARGCHK1(y)
-#define ARGCHK3(x,y,z)  ARGCHK1(x) ARGCHK1(y) ARGCHK1(z)
-
 // Input is a byte.  It is replicated to all lanes of a UI
 #define REPLBYTETOW(in,out) (out=(UC)(in),out|=out<<8,out|=out<<16,out|=out<<32)
 // Output is pointer, Input is I/UI, count is # bytes to NOT store to output pointer (0-7).
@@ -670,21 +580,17 @@ if(z<3){_zzt+=z; z=(I)&oneone; _zzt=_i&3?_zzt:(I*)z; z=_i&2?(I)_zzt:z; z=((I*)z)
 // some load instructions sometimes.  AM(local table) points to the previous local table in the stack, looping to self at end
 #define SYMSETGLOBAL(l,g) (jt->global=(g), AKGST(l)=(g))  // l is jt->locsyms, g is new global value
 #define SYMRESTOREFROMLOCAL(l) (jt->locsyms=(l), jt->global=AKGST(l))  // go to stacked local l
-#define SYMSWAPTOLOCAL(l,lsave) (lsave=jt->locsyms, SYMRESTOREFROMLOCAL(l))  // go to stacked local l, save current in lsave
 #define SYMSETLOCAL(l) (AKGST(l)=jt->global, jt->locsyms=(l))  // change the locals to l
 #define SYMPUSHLOCAL(l) (AM(l)=(I)jt->locsyms, SYMSETLOCAL(l))  // push l onto locals stack
 // fa() the value when a symbol is deleted/reassigned.  If the symbol was ABANDONED, don't fa() because there was no ra() - but do revert 1 to 8..1 
 #define SYMVALFA(l) if(((l).flag&LWASABANDONED)!=0){(l).flag&=~LWASABANDONED; AC((l).val)|=ACINPLACE&(AC((l).val)-2);}else{fa((l).val);}
 #define SZA             ((I)sizeof(A))
-#define LGSZA    LGSZI  // we always require A and I to have same size
 #define SZD             ((I)sizeof(D))
 #define SZI             ((I)sizeof(I))
 #define LGSZD    3  // lg(#bytes in a D)
 #define SZI4            ((I)sizeof(I4))
-#define LGSZI4   2  // lg (bytes in an I4)
 #define SZUI4            ((I)sizeof(UI4))
 #define LGSZUI4  2  // lg(#bytes in a UI4)
-#define SZUS            ((I)sizeof(US))
 #define LGSZUS   1  // lg(bytes in a US)
 #define SZS            ((I)sizeof(S))
 #define LGSZS   1  // lg (bytes in an S)
@@ -693,7 +599,6 @@ if(z<3){_zzt+=z; z=(I)&oneone; _zzt=_i&3?_zzt:(I*)z; z=_i&2?(I)_zzt:z; z=((I*)z)
 #define VAL2            '\002'
 #define WITHDEBUGOFF(stmt) {UC d=jt->uflags.us.cx.cx_c.db; jt->uflags.us.cx.cx_c.db=0; stmt jt->uflags.us.cx.cx_c.db=d;}  // execute stmt with debug turned off
 
-#define IHALF0  0x00000000ffffffffLL
 #define B0000   0x00000000
 #define B0001   0x01000000
 #define B0010   0x00010000
@@ -726,12 +631,6 @@ if(z<3){_zzt+=z; z=(I)&oneone; _zzt=_i&3?_zzt:(I*)z; z=_i&2?(I)_zzt:z; z=((I*)z)
 #define FLGWUTRI ((I)1<<FLGWUTRIX)  // left arg is upper-triangular
 #define FLGINTX 3
 #define FLGINT ((I)1<<FLGINTX)  // args are INT
-#define FLGZFIRSTX 4
-#define FLGZFIRST ((I)1<<FLGZFIRSTX)  // first pass of the Z values, use 0
-#define FLGZLASTX 5
-#define FLGZLAST ((I)1<<FLGZLASTX)  // last pass of the Z values, write to output
-#define FLGWMINUSZX 6
-#define FLGWMINUSZ ((I)1<<FLGWMINUSZX)  // calculate z-x*y rather than x*y.  Used by %.
 
 
 #include "ja.h" 
@@ -767,8 +666,6 @@ if(z<3){_zzt+=z; z=(I)&oneone; _zzt=_i&3?_zzt:(I*)z; z=_i&2?(I)_zzt:z; z=((I*)z)
 // for the complete spec for CTTZ and CTTZZ.
 
 
-
-#define NOINLINE __attribute__((noinline))
 #ifndef __forceinline
 #define __forceinline inline __attribute__((inline))
 #endif
@@ -816,7 +713,6 @@ extern I CTLZI_(UI,UI4*);
 #endif
 
 // Set these switches for testing
-#define AUDITBP 0  // Verify that bp() returns expected data
 #define AUDITCOMPILER 0  // Verify compiler features CTTZ, signed >>
 
 

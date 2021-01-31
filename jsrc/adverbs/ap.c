@@ -285,13 +285,11 @@ PREFIXPFX(bw1111pfxI, UI,UI, BW1111, bw1111II,return EVOK;)
 // This old prefix support is needed for sparse matrices
 
 static A jtprefix(J jt,    A w,A self){DECLF;I r;
- ARGCHK1(w);
  r = (RANKT)jt->ranks; RESETRANK; if(r<AR(w)){return rank1ex(w,self,r,jtprefix);}
  return eachl(apv(SETIC(w,r),1L,1L),w,atop(fs,ds(CTAKE)));
 }    /* f\"r w for general f */
 
 static A jtgprefix(J jt,    A w,A self){A h,*hv,z,*zv;I m,n,r;
- ARGCHK1(w);
  ASSERT(DENSE&AT(w),EVNONCE);
  r = (RANKT)jt->ranks; RESETRANK; if(r<AR(w)){return rank1ex(w,self,r,jtgprefix);}
  SETIC(w,n); 
@@ -307,7 +305,6 @@ static A jtgprefix(J jt,    A w,A self){A h,*hv,z,*zv;I m,n,r;
 // block a contains (start,length) of infix.  w is the A for the data.
 // Result is new block containing the extracted infix
 static A jtseg(J jt,A a,A w){A z;I c,k,m,n,*u,zn;
- ARGCHK2(a,w);
  // The (start,length) had better be integers.  Extract them into m,n
  if(INT&AT(a)){u=AV(a); m=*u; n=*(1+u);} else m=n=0;
  c=aii(w); k=c<<bplg(AT(w)); DPMULDE(n,c,zn);  // c=#atoms per item, k=#bytes/item, zn=atoms/infix
@@ -320,7 +317,6 @@ static A jtseg(J jt,A a,A w){A z;I c,k,m,n,*u,zn;
 // m is the infix length (x), w is the array (y)
 // Result is A for an nx2 table of (starting item#,length) for each infix
 static A jtifxi(J jt,I m,A w){A z;I d,j,k,n,p,*x;
- ARGCHK1(w);
  // p=|m, n=#items of w, d=#applications of u (depending on overlapping/nonoverlapping)
  p=ABS(m); SETIC(w,n);
  if(m>=0){d=MAX(0,1+n-m);}else{d=1+(n-1)/p; d=(n==0)?n:d;}
@@ -388,7 +384,6 @@ static A jtginfix(J jt,A a,A w,A self){A h,*hv,x,z,*zv;I d,m,n;
 static A jtinfixprefix2(J jt,A a,A w,A self){F2PREFIP;PROLOG(00202);A fs;I cger[128/SZI];
    I wt;
  
- ARGCHK1(w);
  PREF2IP(jtinfixprefix2);  // handle rank loop if needed
  wt=AT(w);
  if((wt&SPARSE)!=0){
@@ -572,7 +567,7 @@ static A jtinfixprefix1(J jt,    A w,A self){F1PREFIP;
 
 //  f/\"r y    w is y, fs is in self
 static A jtpscan(J jt,    A w,A self){A z;I f,n,r,t,wn,wr,*ws,wt;
- F1PREFIP;ARGCHK1(w);
+ F1PREFIP;
  wt=AT(w);   // get type of w
  if((SPARSE&wt)!=0)return scansp(w,self,jtpscan);  // if sparse, go do it separately
  // wn = #atoms in w, wr=rank of w, r=effective rank, f=length of frame, ws->shape of w
@@ -821,7 +816,7 @@ static A jtiota1(J jt,    A w,A self){I j; return apv(SETIC(w,j),1L,1L);}
 
  A jtbslash(J jt, A w){A f;AF f1=jtinfixprefix1,f2=jtinfixprefix2;V*v;I flag=FAV(ds(CBSLASH))->flag;
 ;
- ARGCHK1(w);
+ if(!w) return 0;
  if(NOUN&AT(w))return fdef(0,CBSLASH,VERB, jtinfixprefix1,jtinfixprefix2, w,0L,fxeachv(1L,w), VGERL|flag, RMAX,0L,RMAX);
  v=FAV(w);  // v is the u in u\ y
  switch(v->id){
@@ -844,4 +839,4 @@ static A jtiota1(J jt,    A w,A self){I j; return apv(SETIC(w,j),1L,1L);}
  return f;
 }
 
-A jtascan(J jt,C c,A w){ARGCHK1(w); A z; return df1(z,w,bslash(slash(ds(c))));}
+A jtascan(J jt,C c,A w){if(!w) return 0; A z; return df1(z,w,bslash(slash(ds(c))));}

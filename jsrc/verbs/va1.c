@@ -96,7 +96,7 @@ static A jtva1s(J jt,A w,A self,I cv,VA1F ado){A e,x,z,ze,zx;B c;I n,oprc,t,zt;P
 
 static A jtva1(J jt,A w,A self){A z;I cv,n,t,wt,zt;VA1F ado;
  UA *u=(UA *)FAV(self)->localuse.lvp[1];
- F1PREFIP;ARGCHK1(w);
+ F1PREFIP;
  wt=AT(w); n=AN(w); wt=(I)jtinplace&JTEMPTY?B01:wt;
  VA1 *p=&u->p1[(0x0321000054032100>>(CTTZ(wt)<<2))&7];  // from MSB, we need xxx 011 010 001 xxx 000 xxx xxx   101 100 xxx 011 010 001 xxx 000
  ASSERT(wt&NUMERIC,EVDOMAIN);
@@ -159,7 +159,8 @@ static A jtva1(J jt,A w,A self){A z;I cv,n,t,wt,zt;VA1F ado;
 // Consolidated entry point for ATOMIC1 verbs.
 // This entry point supports inplacing
  A jtatomic1(J jt,    A w,A self){A z;
- F1PREFIP;ARGCHK1(w);
+ F1PREFIP;
+ if(!w) return 0;
  I awm1=AN(w)-1;
  // check for singletons
  if(!(awm1|(AT(w)&(NOUN&UNSAFE(~(B01+INT+FL)))))){  // len=1 andbool/int/float
@@ -178,4 +179,4 @@ static A jtva1(J jt,A w,A self){A z;I cv,n,t,wt,zt;VA1F ado;
  }
 }
 
- A jtpix   (J jt,    A w,A self){F1PREFIP; ARGCHK1(w); if(XNUM&AT(w)&&(jt->xmode==XMFLR||jt->xmode==XMCEIL))return jtatomic1(jtinplace,w,self); return jtatomic2(jtinplace,pie,w,ds(CSTAR));}
+ A jtpix   (J jt,    A w,A self){F1PREFIP; if(XNUM&AT(w)&&(jt->xmode==XMFLR||jt->xmode==XMCEIL))return jtatomic1(jtinplace,w,self); return jtatomic2(jtinplace,pie,w,ds(CSTAR));}

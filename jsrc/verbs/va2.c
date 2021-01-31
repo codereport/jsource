@@ -722,39 +722,6 @@ static A jtva2(J jt,AD * RESTRICT a,AD * RESTRICT w,AD * RESTRICT self,UI allran
 }    /* scalar fn primitive and f"r main control */
 
 
-// 4-nested loop for dot-products.  Handles repeats for inner and outer frame.  oneprod is the code for calculating a single vector inner product *zv++ = *av++ dot *wv++
-// If there is inner frame, it is the a arg that is repeated
-// LIT is set in it if it is OK to use 2x2 operations (viz a has no inner frame & w has no outer frame)
-#define SUMATLOOP2(ti,to,oneprod2,oneprod1) \
-  {ti * RESTRICT av=avp,* RESTRICT wv=wvp; to * RESTRICT zv=zvp; \
-   _mm256_zeroupper(VOIDARG); \
-   __m256i endmask = _mm256_loadu_si256((__m256i*)(validitymask+((-dplen)&(NPAR-1))));  /* mask for 00=1111, 01=1000, 10=1100, 11=1110 */ \
-   __m256d acc000; __m256d acc010; __m256d acc100; __m256d acc110; \
-   __m256d acc001; __m256d acc011; __m256d acc101; __m256d acc111; \
-   DQ(nfro, I jj=nfri; ti *ov0=it&BOX?av:wv; \
-    while(1){  \
-     DQ(ndpo, I j=ndpi; ti *av0=av; /* i is how many a's are left, j is how many w's*/ \
-      while(1){ \
-       if(it&LIT&&jj>1){ \
-        ti * RESTRICT wv1=wv+dplen; wv1=j==1?wv:wv1; \
-        oneprod2  \
-        if(j>1){--j; _mm_storeu_pd(zv,_mm256_castpd256_pd128 (acc000)); _mm_storeu_pd(zv+ndpi,_mm256_castpd256_pd128 (acc100)); wv+=dplen; zv +=2;} \
-        else{_mm_storel_pd(zv,_mm256_castpd256_pd128 (acc000)); _mm_storel_pd(zv+ndpi,_mm256_castpd256_pd128 (acc100));  zv+=1;} \
-       }else{ \
-        oneprod1  \
-        _mm_storel_pd(zv,_mm256_castpd256_pd128 (acc000)); \
-        zv+=1; \
-       } \
-       if(!--j)break; \
-       av=av0;  \
-      } \
-      if(it&LIT&&jj>1){--i; av+=dplen; zv+=ndpi;} \
-     ) \
-     if((jj-=(((it&LIT)>>1)+1))<=0)break; \
-     if(it&BOX)av=ov0;else wv=ov0; \
-    } \
-   ) \
-  }
 
 #define SUMATLOOP(ti,to,oneprod) \
   {ti * RESTRICT av=avp,* RESTRICT wv=wvp; to * RESTRICT zv=zvp; \
@@ -807,7 +774,6 @@ I jtsumattymesprods(J jt,I it,void *avp, void *wvp,I dplen,I nfro,I nfri,I ndpo,
 
 // +/@:*"1 with IRS
  A jtsumattymes1(J jt,A a,A w,A self){
- ARGCHK2(a,w);
  I ar=AR(a); I wr=AR(w); I acr=jt->ranks>>RANKTX; I wcr=jt->ranks&RMAX;
  // get the cell-ranks to use 
  acr=ar<acr?ar:acr;   // r=left rank of verb, acr=effective rank
@@ -871,7 +837,6 @@ I jtsumattymesprods(J jt,I it,void *avp, void *wvp,I dplen,I nfro,I nfri,I ndpo,
 
 
 static A jtsumattymes(J jt, A a, A w, I b, I t, I m, I n, I nn, I r, I *s, I zn){A z;
- ARGCHK2(a,w);
  switch(UNSAFE(t)){
  case B01:  // the aligned cases are handled elsewhere, a word at a time
   {B*av=BAV(a),u,*wv=BAV(w);I*zu,*zv;
@@ -918,16 +883,9 @@ static A jtsumattymes(J jt, A a, A w, I b, I t, I m, I n, I nn, I r, I *s, I zn)
  {DO(q, memset(tv,C0,p); DO(255, DO(dw,tv[i]+=BF(*u,*v); ++u; ++v;);); DO(zn,zv[i]+=tu[i];));  \
         memset(tv,C0,p); DO(r,   DO(dw,tv[i]+=BF(*u,*v); ++u; ++v;);); DO(zn,zv[i]+=tu[i];) ;  \
  }
-#define SUMBFLOOPX(BF)     \
- {DO(q, memset(tv,C0,p); DO(255, DO(dw,tv[i]+=BF(*u,*v); ++u; ++v;);                           \
-                               av+=zn; u=(UI*)av; wv+=zn; v=(UI*)wv;); DO(zn,zv[i]+=tu[i];));  \
-        memset(tv,C0,p); DO(r,   DO(dw,tv[i]+=BF(*u,*v); ++u; ++v;);                           \
-                               av+=zn; u=(UI*)av; wv+=zn; v=(UI*)wv;); DO(zn,zv[i]+=tu[i];) ;  \
- }
 #define SUMBFLOOP(BF)   SUMBFLOOPW(BF)
 
 static A jtsumatgbool(J jt,A a,A w,C id){A t,z;B* RESTRICTI av,* RESTRICTI wv;I dw,n,p,q,r,*s,zn,* RESTRICT zv;UC* RESTRICT tu;UI* RESTRICTI tv,*u,*v;
- ARGCHK2(a,w);
  s=AS(w); n=*s;
  zn=AN(w)/n; dw=(zn+SZI-1)>>LGSZI; p=dw*SZI;
  q=n/255; r=n%255;
@@ -955,7 +913,6 @@ static A jtsumatgbool(J jt,A a,A w,C id){A t,z;B* RESTRICTI av,* RESTRICTI wv;I 
 
  A jtfslashatg(J jt,A a,A w,A self){A fs,gs,y,z;B b,sb=0;C*av,c,d,*wv;I ak,an,ar,*as,at,m,
      n,nn,r,rs,*s,t,wk,wn,wr,*ws,wt,yt,zn,zt;VA2 adocv,adocvf;
- ARGCHK3(a,w,self);
  an=AN(a); ar=AR(a); as=AS(a); at=AT(a); at=an?at:B01;
  wn=AN(w); wr=AR(w); ws=AS(w); wt=AT(w); wt=wn?wt:B01;
  b=ar<=wr; r=b?wr:ar; rs=b?ar:wr; s=b?ws:as; nn=s[0]; nn=r?nn:1;  // b='w has higher rank'; r=higher rank rs=lower rank s->longer shape  nn=#items in longer-shape arg
@@ -1020,7 +977,8 @@ static A jtsumatgbool(J jt,A a,A w,C id){A t,z;B* RESTRICTI av,* RESTRICTI wv;I 
  A realself=FAV(self)->fgh[0];  // if rank operator, this is nonzero and points to the left arg of rank
  RANK2T selfranks=FAV(self)->lrr;  // get left & right rank from rank/primitive
  self=realself?realself:self;  // if this is a rank block, move to the primitive.  u b. or any atomic primitive has f clear
- F2PREFIP;ARGCHK2(a,w);
+ F2PREFIP;
+ if(!(a && w)) return 0;
  RANK2T jtranks=jt->ranks;  // fetch IRS ranks if any
  UI ar=AR(a), wr=AR(w), awr=(ar<<RANKTX)+wr; I awm1=(AN(a)-1)|(AN(w)-1);
  selfranks=jtranks==(RANK2T)~0?selfranks:jtranks;
@@ -1048,8 +1006,8 @@ static A jtsumatgbool(J jt,A a,A w,C id){A t,z;B* RESTRICTI av,* RESTRICTI wv;I 
  return z=jtva2((J)((I)jtinplace|JTRETRY),a,w,self,(awr<<RANK2TX)+selfranks);  // execute the verb
 }
 
- A jtexpn2  (J jt,A a,A w,A self){F2PREFIP; ARGCHK2(a,w); if(((((I)AR(w)-1)&SGNIF(AT(w),FLX))<0))if(0.5==DAV(w)[0])return sqroot(a);  return jtatomic2(jtinplace,a,w,self);}  // use sqrt hardware for sqrt.  Only for atomic w.
- A jtresidue(J jt,A a,A w,A self){F2PREFIP; ARGCHK2(a,w); I intmod; if(!((AT(a)|AT(w))&(NOUN&~INT)|AR(a))&&(intmod=IAV(a)[0], (intmod&-intmod)+(intmod<=0)==0))return intmod2(w,intmod); return jtatomic2(jtinplace,a,w,self);}
+ A jtexpn2  (J jt,A a,A w,A self){F2PREFIP; if(((((I)AR(w)-1)&SGNIF(AT(w),FLX))<0))if(0.5==DAV(w)[0])return sqroot(a);  return jtatomic2(jtinplace,a,w,self);}  // use sqrt hardware for sqrt.  Only for atomic w.
+ A jtresidue(J jt,A a,A w,A self){F2PREFIP; I intmod; if(!((AT(a)|AT(w))&(NOUN&~INT)|AR(a))&&(intmod=IAV(a)[0], (intmod&-intmod)+(intmod<=0)==0))return intmod2(w,intmod); return jtatomic2(jtinplace,a,w,self);}
 
 
 // These are the unary ops that are implemented using a canned argument
@@ -1062,14 +1020,14 @@ static A jtsumatgbool(J jt,A a,A w,C id){A t,z;B* RESTRICTI av,* RESTRICTI wv;I 
 #define SETCONPTR(n) A conptr=num(n); A conptr2=zeroionei(n); A conptr3=numvr(n); conptr=AT(w)&INT?conptr2:conptr; conptr=AT(w)&FL?conptr3:conptr;  // for 0 or 1 only
 #define SETCONPTR2(n) A conptr=num(n); A conptr3=numvr(n); conptr=AT(w)&FL?conptr3:conptr;   // used for 2, when the only options are INT/FL
 
- A jtnot   (J jt, A w){ARGCHK1(w); SETCONPTR(1) return AT(w)&B01+SB01?eq(num(0),w):minus(conptr,w);}
- A jtnegate(J jt, A w){ARGCHK1(w); SETCONPTR(0) return minus(conptr,w);}
- A jtdecrem(J jt, A w){ARGCHK1(w); SETCONPTR(1) IPSHIFTWA; return minus(w,conptr);}
- A jtincrem(J jt, A w){ARGCHK1(w); SETCONPTR(1) return plus(conptr,w);}
- A jtduble (J jt, A w){ARGCHK1(w); SETCONPTR2(2) return tymes(conptr,w);}
- A jtsquare(J jt, A w){ARGCHK1(w); return tymes(w,w);}   // leave inplaceable in w only  ?? never inplaces
- A jtrecip (J jt, A w){ARGCHK1(w); SETCONPTR(1) return divide(conptr,w);}
- A jthalve (J jt, A w){ARGCHK1(w); if(!(AT(w)&XNUM+RAT))return tymes(onehalf,w); IPSHIFTWA; return divide(w,num(2));}
+ A jtnot   (J jt, A w){ SETCONPTR(1) return AT(w)&B01+SB01?eq(num(0),w):minus(conptr,w);}
+ A jtnegate(J jt, A w){if(!w) return 0; SETCONPTR(0) return minus(conptr,w);}
+ A jtdecrem(J jt, A w){ SETCONPTR(1) IPSHIFTWA; return minus(w,conptr);}
+ A jtincrem(J jt, A w){if(!w) return 0; SETCONPTR(1) return plus(conptr,w);}
+ A jtduble (J jt, A w){if(!w) return 0; SETCONPTR2(2) return tymes(conptr,w);}
+ A jtsquare(J jt, A w){ return tymes(w,w);}   // leave inplaceable in w only  ?? never inplaces
+ A jtrecip (J jt, A w){ SETCONPTR(1) return divide(conptr,w);}
+ A jthalve (J jt, A w){ if(!(AT(w)&XNUM+RAT))return tymes(onehalf,w); IPSHIFTWA; return divide(w,num(2));}
 
 static AHDR2(zeroF,B,void,void){memset(z,C0,m*(n^REPSGN(n)));return EVOK;}
 static AHDR2(oneF,B,void,void){memset(z,C1,m*(n^REPSGN(n)));return EVOK;}

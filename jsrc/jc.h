@@ -102,7 +102,6 @@
 #define CCANT      (C)0x0d  // |:
 #define CBSLASH    (C)0x0e  // \   backslash must be 0x40 from \.
 #define CNOT       (C)0x0f  // -.
-#define CLESS      (C)0x0f  // -.
 #define CICAP      (C)0x10  // I.
 #define CQUERY     (C)0x11  //
 #define CQRYDOT    (C)0x12  // ?.
@@ -203,7 +202,6 @@
 
 #define CUSDOT     (C)0x6c  // _.
 #define CRBRACE    (C)0x6d  // }
-#define CAMEND     (C)0x6d  // }
 
 #define CBW0000    (C)0x70  // bitwise
 #define CBW0001    (C)0x71  // bitwise

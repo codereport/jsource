@@ -12,7 +12,6 @@ static A jtnorm(J jt, A w){return sqroot(pdt(w,conjug(w)));}
 // n is the size of the nxn matrix w; ncomp codes for special processing
 // if n<=ncomp, this is a small FL matrix & we take the inverse inplace
 static A jtrinvip(J jt,A w,I n,I ncomp){PROLOG(0066);A ai,bx,di,z;I m;
- ARGCHK1(w);
  if(n<=ncomp){
   // Handle 2x2 and smaller FL quickly and inplace to avoid recursion and memory-allocation overhead
   // result is 1/w00 w01/(w00*w11)
@@ -55,7 +54,6 @@ static A jtrinvip(J jt,A w,I n,I ncomp){PROLOG(0066);A ai,bx,di,z;I m;
 
 // 128!:1 Invert Upper-triangular matrix return
  A jtrinv(J jt, A w){
- ARGCHK1(w);
  F1RANK(2,jtrinv,UNUSED_VALUE);
  ASSERT(AR(w)==2,EVRANK);  // rank at least 2
  ASSERT(AS(w)[0]==AS(w)[1],EVLENGTH);  // error if not square
@@ -65,7 +63,6 @@ static A jtrinvip(J jt,A w,I n,I ncomp){PROLOG(0066);A ai,bx,di,z;I m;
 
 // recursive subroutine for qr decomposition, returns q;r
 static A jtqrr(J jt, A w){PROLOG(0067);A a1,q,q0,q1,r,r0,r1,t,*tv,t0,t1,y,z;I m,n,p,*s;
- ARGCHK1(w);
  if(2>AR(w)){p=AN(w); n=1;}else{s=AS(w); p=s[0]; n=s[1];}  // p=#rows, n=#columns
  m=n>>1; I tom=(0x01222100>>((n&7)<<2))&3; m=(m+tom<n)?m+tom:m;  // Minimize number of wasted multiply slots, processing in batches of 4
  if(1>=n){  // just 1 col
@@ -95,7 +92,6 @@ static A jtqrr(J jt, A w){PROLOG(0067);A a1,q,q0,q1,r,r0,r1,t,*tv,t0,t1,y,z;I m,
 // q is the ADJOINT of the original q matrix
 // result is adjoint of the L in LQ decomp, therefore upper-triangular
 static A jtltqip(J jt, A w){PROLOG(0067);A l0,l1,y,z;
-ARGCHK1(w);
  A q0; fauxblock(virtwq0); D *w0v=DAV(w);  // q0 & q1 data
  I rw=AS(w)[0]; I cl=AS(w)[1];  // # rows, # columns
   // handle case of 2 rows
@@ -179,7 +175,7 @@ static A jtlq(J jt, A w){A l;D c=inf,d=0,x;I n1,n,*s,wr;
 // determinant to integer and then each value to an integer multiple of the determinant.
 // The determinant was calculated when we inverted the matrix
 static A jticor(J jt, A w){D d,*v;
- ARGCHK1(w);
+ if (!w) return 0;
  d=jt->workareas.minv.determ;  // fetch flag/determinant
  if(d==0.0)return w;  // if not enabled or not applicable, return input unchanged
  d=jround(ABS(d));  // force determinant to integer

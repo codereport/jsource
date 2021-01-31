@@ -52,7 +52,6 @@
  A jtevmq(J jt, A w){ASSERTMTV(w); return behead(jt->evm);}
 
  A jtevms(J jt, A w){A t,*tv,*wv;
- ARGCHK1(w);
  ASSERT(1==AR(w),EVRANK);
  ASSERT(NEVM==AN(w),EVLENGTH);
  ASSERT(BOX&AT(w),EVDOMAIN);
@@ -65,7 +64,6 @@
 }
 
  A jtfxx(J jt, A w){
- ARGCHK1(w);
  ASSERT(AT(w)&LIT+BOX,EVDOMAIN);
  ASSERT(1>=AR(w),EVRANK);
  return fx(ope(w));
@@ -83,7 +81,6 @@
 }
 
  A jtieps(J jt, A w){
- ARGCHK1(w);
  ASSERT(1>=AR(w),EVRANK);
  ASSERT(!AN(w)||AT(w)&LIT,EVDOMAIN);
  fa(jt->iep);
@@ -175,7 +172,6 @@
 }
 
  A jtxeps(J jt, A w){
- ARGCHK1(w);
  ASSERT(1>=AR(w),EVRANK);
  ASSERT(!AN(w)||AT(w)&LIT,EVDOMAIN);
  fa(jt->xep);

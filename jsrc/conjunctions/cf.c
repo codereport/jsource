@@ -11,25 +11,21 @@
 
 
 // handle fork, with support for in-place operations
-#define FOLK1 {PUSHZOMB; ARGCHK1D(w) A protw = (A)(intptr_t)((I)w+((I)jtinplace&JTINPLACEW));  \
+#define FOLK1 {PUSHZOMB; A protw = (A)(intptr_t)((I)w+((I)jtinplace&JTINPLACEW));  \
 /* If any result equals protw, it must not be inplaced: if original w is inplaceable, protw will not match anything */ \
 /* the call to h is not inplaceable, but it may allow WILLOPEN and USESITEMCOUNT */ \
 A hx; RZ(hx=(h1)((J)(intptr_t)(((I)jt) + (REPSGN(SGNIF(FAV(hs)->flag,VJTFLGOK1X)) & (FAV(gs)->flag2>>(VF2WILLOPEN2WX-VF2WILLOPEN1X)) & VF2WILLOPEN1+VF2USESITEMCOUNT1)),w,hs)); \
-ARGCHK1D(hx) \
 /* the call to f is inplaceable if the caller allowed inplacing, and f is inplaceable, and the hx is NOT the same as y.  Here only the LSB of jtinplace is used */ \
 A fx; RZ(fx=(f1)((J)(intptr_t)(((I)jt) + (REPSGN(SGNIF(FAV(fs)->flag,VJTFLGOK1X)) & (((I)jtinplace&(I )(hx!=w)) + ((FAV(gs)->flag2>>(VF2WILLOPEN2AX-VF2WILLOPEN1X)) & VF2WILLOPEN1+VF2USESITEMCOUNT1)))),w,fs)); \
-ARGCHK2D(fx,hx) \
 /* The call to g is inplaceable if g allows it, UNLESS fx or hx is the same as disallowed y.  Pass in WILLOPEN from the input */ \
 POPZOMB; RZ(z=(g2)((J)(intptr_t)((((I)jtinplace&(~(JTINPLACEA+JTINPLACEW)))|((I )(fx!=protw)*JTINPLACEA+(I )(hx!=protw)*JTINPLACEW))&(REPSGN(SGNIF(FAV(gs)->flag,VJTFLGOK2X))|~JTFLAGMSK)),fx,hx,gs));}
 
-#define FOLK2 {PUSHZOMB; ARGCHK2D(a,w) A protw = (A)(intptr_t)((I)w+((I)jtinplace&JTINPLACEW)); A prota = (A)(intptr_t)((I)a+((I)jtinplace&JTINPLACEA)); \
+#define FOLK2 {PUSHZOMB; A protw = (A)(intptr_t)((I)w+((I)jtinplace&JTINPLACEW)); A prota = (A)(intptr_t)((I)a+((I)jtinplace&JTINPLACEA)); \
 /* the call to h is not inplaceable, but it may allow WILLOPEN and USESITEMCOUNT.  Inplace h if f is x@], but not if a==w  Actually we turn off all flags here if a==w, for comp ease */ \
 A hx; RZ(hx=(h2)((J)(intptr_t)(((I)jt) + ((-((FAV(hs)->flag>>VJTFLGOK2X)&(I )(a!=w))) & (((I)jtinplace&sv->flag&(VFATOPL|VFATOPR)) + ((FAV(gs)->flag2>>(VF2WILLOPEN2WX-VF2WILLOPEN1X)) & VF2WILLOPEN1+VF2USESITEMCOUNT1)))),a,w,hs)); \
-ARGCHK1D(hx) \
 /* If any result equals protw/prota, it must not be inplaced: if original w/a is inplaceable, protw/prota will not match anything */ \
 /* the call to f is inplaceable if the caller allowed inplacing, and f is inplaceable; but only where hx is NOT the same as x or y.  Both flags in jtinplace are used */ \
 A fx; RZ(fx=(f2)((J)(intptr_t)(((I)jt) + (REPSGN(SGNIF(FAV(fs)->flag,VJTFLGOK2X)) & (((I)jtinplace&(JTINPLACEA*(I )(hx!=a)+(I )(hx!=w))) + ((FAV(gs)->flag2>>(VF2WILLOPEN2AX-VF2WILLOPEN1X)) & VF2WILLOPEN1+VF2USESITEMCOUNT1)))),a,w,fs)); \
-ARGCHK2D(fx,hx) \
 /* The call to g is inplaceable if g allows it, UNLESS fx or hx is the same as disallowed y.  Pass in WILLOPEN from the input */ \
 POPZOMB; RZ(z=(g2)((J)(intptr_t)((((I)jtinplace&(~(JTINPLACEA+JTINPLACEW)))|(((I )(fx!=protw)&(I )(fx!=prota))*JTINPLACEA+((I )(hx!=protw)&(I )(hx!=prota)*JTINPLACEW)))&(REPSGN(SGNIF(FAV(gs)->flag,VJTFLGOK2X))|~JTFLAGMSK)),fx,hx,gs));}
 
@@ -86,7 +82,6 @@ A z;RZ(z=(g2)(jtinplace,fs,hx,gs));
 EPILOG(z);}
 
 static A jtfolkcomp(J jt,A a,A w,A self){F2PREFIP;DECLFGH;PROLOG(0034);A z;AF f;
- ARGCHK2(a,w);
  f=atcompf(a,w,self);
  if(f){
   I postflags=jt->workareas.compsc.postflags;
@@ -97,7 +92,6 @@ static A jtfolkcomp(J jt,A a,A w,A self){F2PREFIP;DECLFGH;PROLOG(0034);A z;AF f;
 }
 
 static A jtfolkcomp0(J jt,A a,A w,A self){F2PREFIP;DECLFGH;PROLOG(0035);A z;AF f;
- ARGCHK2(a,w);
  PUSHCCT(1.0)
  f=atcompf(a,w,self);
  if(f){
@@ -235,7 +229,6 @@ RZ(z=(f2)(jtinplace,a,gx,fs)); \
 , 0112)
 
 static A jthkiota(J jt,    A w,A self){DECLFG;A a,e;I n;P*p;
- ARGCHK1(w);
  SETIC(w,n);\
  if(SB01&AT(w)&&1==AR(w)){
   p=PAV(w); a=SPA(p,a); e=SPA(p,e); 
@@ -245,7 +238,6 @@ static A jthkiota(J jt,    A w,A self){DECLFG;A a,e;I n;P*p;
 }    /* special code for (# i.@#) */
 
 static A jthkodom(J jt,    A w,A self){DECLFG;B b=0;I n,*v;
- ARGCHK1(w);
  if(INT&AT(w)&&1==AR(w)){n=AN(w); v=AV(w); DO(n, if(b=0>v[i])break;); if(!b)return odom(2L,n,v);}
  return CALL2(f2,w,CALL1(g1,w,gs),fs);
 }    /* special code for (#: i.@(* /)) */
@@ -259,7 +251,6 @@ static A jthkodom(J jt,    A w,A self){DECLFG;B b=0;I n,*v;
   z=((opt0 comp opt1) || (opt0==opt1&&optx0>=optx1))?2*optx0+1:2*optx1; opt0=opt0  compe opt1?opt0:opt1; z+=n&1; if(n&1&&wv[0] comp opt0)z=0; break;}
 
 static A jthkindexofmaxmin(J jt,    A w,A self){I z=0;
- ARGCHK2(w,self);
  I n=AN(w);
  if(!(1==AR(w)&&AT(w)&INT+FL))return hook1(w,self);
  if(n>1){
@@ -285,7 +276,6 @@ static A jthklvl2(J jt,A a,A w,A self){
 }
 
  A jthook(J jt,A a,A w){AF f1=0,f2=0;C c,d,e,id;I flag=VFLAGNONE,linktype=0;V*u,*v;
- ARGCHK2(a,w);
  switch(BD(AT(a),AT(w))){
   default:            ASSERT(0,EVSYNTAX);
   case BD(VERB,VERB):

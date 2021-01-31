@@ -10,8 +10,6 @@
 #define DIVI(u,v)     (u||v ? ddiv2(u,(D)v) : 0.0)
 #define DIVBB(u,v)    (v?u:u?inf:0.0)
 
-#define TYMESBX(u,v)  (u?v:0)
-#define TYMESXB(u,v)  (v?u:0)
 #define TYMESID(u,v)  (u   ?u*v:0)
 #define TYMESDI(u,v)  (   v?u*v:0)
 #define TYMESDD(u,v)  TYMES(u,v)
@@ -285,7 +283,6 @@ APFX(lcmZZ, Z,Z,Z, zlcm ,,HDR1JERR)
 #define INTDIVC(c,d)  (((c^d)<0)?c/d:c%d?c/d+1:c/d)   // c/d + (c^d)>=0 && c%d
 
  A jtintdiv(J jt,A a,A w){A z;B b,flr;I an,ar,*as,*av,c,d,j,k,m,n,p,p1,r,*s,wn,wr,*ws,*wv,*zv;
- ARGCHK2(a,w);
  an=AN(a); ar=AR(a); as=AS(a); av=AV(a);
  wn=AN(w); wr=AR(w); ws=AS(w); wv=AV(w); b=ar>=wr; r=b?wr:ar; s=b?as:ws;
  ASSERTAGREE(as,ws,r);
@@ -312,10 +309,9 @@ APFX(lcmZZ, Z,Z,Z, zlcm ,,HDR1JERR)
 }    /* <.@% or >.@% on integers */
 
 
-static A jtweight(J jt,A a,A w){ARGCHK2(a,w); A z; return df1(z,behead(over(AR(w)?w:reshape(a,w),num(1))),bsdot(slash(ds(CSTAR))));}  // */\. }. (({:$a)$w),1
+static A jtweight(J jt,A a,A w){ A z; return df1(z,behead(over(AR(w)?w:reshape(a,w),num(1))),bsdot(slash(ds(CSTAR))));}  // */\. }. (({:$a)$w),1
 
  A jtbase1(J jt, A w){A z;B*v;I c,m,n,p,r,*s,t,*x;
- ARGCHK1(w);
  n=AN(w); t=AT(w); r=AR(w); s=AS(w); c=AS(w)[r-1]; c=r?c:1;
  ASSERT(t&DENSE,EVNONCE);
  if(((c-BW)&SGNIF(t,B01X))>=0)return pdt(w,weight(sc(c),t&RAT+XNUM?cvt(XNUM,num(2)):num(2)));  //
@@ -327,7 +323,6 @@ static A jtweight(J jt,A a,A w){ARGCHK2(a,w); A z; return df1(z,behead(over(AR(w
 }
 
  A jtbase2(J jt,A a,A w){I ar,*as,at,c,t,wr,*ws,wt;
- ARGCHK2(a,w);
  at=AT(a); ar=AR(a); as=AS(a);
  wt=AT(w); wr=AR(w); ws=AS(w); c=AS(w)[wr-1]; c=wr?c:1;
  ASSERT(!((at|wt)&SPARSE),EVNONCE); t=maxtyped(at,wt);
@@ -338,7 +333,6 @@ static A jtweight(J jt,A a,A w){ARGCHK2(a,w); A z; return df1(z,behead(over(AR(w
 
 // #: y
  A jtabase1(J jt, A w){A d,z;B*zv;I c,n,p,r,t,*v;UI x;
- ARGCHK1(w);
  // n = #atoms, r=rank, t=type
  n=AN(w); r=AR(w); t=AT(w);
  ASSERT(t&DENSE,EVNONCE);
@@ -371,7 +365,7 @@ static A jtweight(J jt,A a,A w){ARGCHK2(a,w); A z; return df1(z,behead(over(AR(w
 }
 
  A jtabase2(J jt,A a,A w){A z;I an,ar,at,t,wn,wr,wt,zn;
- ARGCHK2(a,w);
+ if(!(a && w)) return 0;
  an=AN(a); ar=AR(a); at=AT(a);
  wn=AN(w); wr=AR(w); wt=AT(w);
  ASSERT(!((at|wt)&SPARSE),EVNONCE);
@@ -410,7 +404,7 @@ static A jtweight(J jt,A a,A w){ARGCHK2(a,w); A z; return df1(z,behead(over(AR(w
 
 // Compute power-of-2 | w for INT w, by ANDing.  Result is boolean if mod is 1 or 2
 A jtintmod2(J jt,A w,I mod){A z;B *v;I n,q,r,*u;UI m=0;  // init m for warning
- F1PREFIP;ARGCHK1(w);
+ F1PREFIP;
  if(mod>2)return jtatomic2(jtinplace,sc(mod-1),w,ds(CBW0001));  // INT result, by AND
  // the rest is boolean result
  n=AN(w); v=BAV(w);  // littleendian only

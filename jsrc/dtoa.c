@@ -300,7 +300,6 @@ typedef union { double d; ULong L[2]; } U;
 #define Exp_mask  0x7ff00000
 #define P 53
 #define Bias 1023
-#define Emin (-1022)
 #define Exp_1  0x3ff00000
 #define Exp_11 0x3ff00000
 #define Ebits 11

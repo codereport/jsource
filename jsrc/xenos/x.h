@@ -14,12 +14,6 @@
 #define FUPDATEC_O        "w+b"
 #define FWRITE_O          "wb"
 
-#define FLAPPEND_O         L"ab"
-#define FLREAD_O           L"rb"
-#define FLUPDATE_O         L"r+b"
-#define FLUPDATEC_O        L"w+b"
-#define FLWRITE_O          L"wb"
-
 #ifndef SEEK_SET
 #define SEEK_SET        0
 #endif

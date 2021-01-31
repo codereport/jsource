@@ -38,14 +38,11 @@ static const C*qq=">)}]";
 
 #define mC  (mods&0x1000)
 #define mL  (mods&0x0800)
-#define mK  (mods&0x0400)
-#define mJ  (mods&0x0200)
 #define mI  (mods&0x0100)
 #define mB  (mods&0x0080)
 #define mD  (mods&0x0040)
 #define mMN (mods&0x0030)
 #define mPQ (mods&0x000c)
-#define mR  (mods&0x0002)
 #define uK  (u[1])  // unused
 #define uJ  (u[2])  // unused
 #define uI  (u[3])
@@ -60,7 +57,6 @@ static const C*qq=">)}]";
 
 
 static A jtfmtbfc(J jt, A w){A*u,z;B t;C c,p,q,*s,*wv;I i,j,m,n;
- ARGCHK1(w); 
  if((C2T+C4T)&AT(w))RZ(w=uco2(num(5),w))
  ASSERT(1>=AR(w),EVDOMAIN);
  n=AN(w); wv=CAV(w); t=0; m=1; j=0;
@@ -102,7 +98,7 @@ static I jtdpone(J jt, B bits, D w){D t;
 // returns 0 if error, and sets *w and *d.  If both omitted, return -1/-1; if only www omitted, error;
 //  if no '.', return -1/www; if both given (even if d empty) return www/ddd
 static B jtwidthdp(J jt, A a, I *w, I *d){
- ARGCHK1(a); RZ(w); RZ(d);
+ RZ(w); RZ(d);
  #define digdotvalues(w) CCM(w,'0')+CCM(w,'1')+CCM(w,'2')+CCM(w,'3')+CCM(w,'4')+CCM(w,'5')+CCM(w,'6')+CCM(w,'7')+CCM(w,'8')+CCM(w,'9')+CCM(w,'.')
  CCMWDS(digdot)
  I remchars=AN(a); C *v=CAV(a);  // number of chars left, pointer to current
@@ -134,7 +130,6 @@ static B jtwidthdp(J jt, A a, I *w, I *d){
 
 static A jtfmtparse(J jt, A w){A x,z,*zv;B ml[2+NMODVALS],mod,t;C c,*cu="srqpnmdbijklc",*cu1="?kjibdmnpqrs",d,*s,*wv;
      I fb,i,j,mi,n,n1,p,q,vals[3]={-1,-1,0};
- ARGCHK1(w);
  w=AAV(w)[0]; n=AN(w);
  GAT0(z,BOX,1+NMODVALS,1); zv=AAV(z); 
  DO(NMODVALS, zv[1+i]=mtv;);
@@ -257,7 +252,7 @@ static B jtsprintfeD(J jt, C *x, I m, I dp, D dw, C *subs) {I y,y0;int decpt,sig
 
 static A jtfmtprecomp(J jt,A a,A w) {A*as,base,fb,len,strs,*u,z;B*bits,*bw;D dtmp,*dw;
      I d,i,*ib,imod,*iw,*iv,maxl,mods,n,nB,nD,nMN,nPQ,nI,nc,nf,*s,wr,*ws,wt;
- ARGCHK2(a,w); 
+ if(!(a && w)) return 0;
  nf=AS(a)[0]; nf=1==AR(a)?1:nf; n=AN(w); wt=AT(w); wr=AR(w); ws=AS(w); SHAPEN(w,wr-1,nc);   // nf=#cells, nc=length of 1-cell (# columns)
  ASSERT(wt&B01+INT+FL, EVDOMAIN);
  if(1<nf){GATV0(base,INT,nf*4,2); s=AS(base); *s++=nf; *s=4;}else GATV0(base,INT,3+nc,1);
@@ -394,8 +389,9 @@ static A jtfmtprecomp(J jt,A a,A w) {A*as,base,fb,len,strs,*u,z;B*bits,*bw;D dtm
 static A jtfmtallcol(J jt, A a, A w, I mode) {A *a1v,base,fb,len,strs,*u,v,x;
     B *bits,*bv;C*cB,*cD,*cM,*cN,*cP,*cQ,*cR,*cI,*cJ,*cK,*cv,**cvv,*cx,*subs;D dtmp,*dv;
     I coll,d,g,h,i,*ib,imod,*iv,*il,j,k,l,m,mods,nB,nD,nM,nN,nP,nQ,nR,nI,nJ,nK,n,nc,nf,t,wr,*ws,y,zs[2];
- ARGCHK1(a); u=AAV(a); base=*u++; strs=*u++; len=*u++; fb=*u++; u=0; subs=0;  // extract components: len->lengths of the values
- ARGCHK1(w); n=AN(w); t=AT(w); wr=AR(w); ws=AS(w); SHAPEN(w,wr-1,nc); 
+ if(!a) return 0;
+ u=AAV(a); base=*u++; strs=*u++; len=*u++; fb=*u++; u=0; subs=0;  // extract components: len->lengths of the values
+ n=AN(w); t=AT(w); wr=AR(w); ws=AS(w); SHAPEN(w,wr-1,nc); 
  ASSERT(B01+INT+FL&t, EVDOMAIN);
 
  nf=1==AR(base)?1:AS(base)[0];
@@ -519,7 +515,7 @@ static A jtfmtallcol(J jt, A a, A w, I mode) {A *a1v,base,fb,len,strs,*u,v,x;
 } /* format w */
 
 static A jtfmtxi(J jt, A a, A w, I mode, I *omode){I lvl;
- ARGCHK2(a,w); *omode=0;
+ *omode=0;
  if((SPARSE&AT(w))!=0) RZ(w=denseit(w));
  if(!AN(w))       RZ(w=reshape(shape(w),chrspace));
  if(JCHAR&AT(w))  return df1(a,w,qq(atop(ds(CBOX),ds(CCOMMA)),num(1)));
@@ -547,7 +543,6 @@ static A jtfmtxi(J jt, A a, A w, I mode, I *omode){I lvl;
  A jtfmt02(J jt,A a,A w){I mode; return fmtxi(a,w,0,&mode);} /* 8!:0 dyad */
 
  A jtfmt12(J jt,A a,A w){A z;I mode,r,j;
- ARGCHK2(a,w);
  ASSERT(2>=AR(w), EVRANK);
  RZ(z=fmtxi(a,w,1,&mode));
  if(mode==1)return z;
@@ -557,7 +552,6 @@ static A jtfmtxi(J jt, A a, A w, I mode, I *omode){I lvl;
 } /* 8!:1 dyad */
 
  A jtfmt22(J jt,A a,A w){A z;I mode,r,j;
- ARGCHK2(a,w);
  ASSERT(2>=AR(w), EVRANK);
  RZ(z=fmtxi(a,w,2,&mode));
  if(mode==2)return z;
@@ -567,6 +561,6 @@ static A jtfmtxi(J jt, A a, A w, I mode, I *omode){I lvl;
  return AS(z)[0]?razeh(z):lamin1(z);
 } /* 8!:2 dyad */
 
- A jtfmt01(J jt, A w){ARGCHK1(w); return fmt02(AR(w)?reshape(sc(AS(w)[AR(w)-1]),ds(CACE)):ds(CACE),w);} /* 8!:0 monad */
- A jtfmt11(J jt, A w){ARGCHK1(w); return fmt12(AR(w)?reshape(sc(AS(w)[AR(w)-1]),ds(CACE)):ds(CACE),w);} /* 8!:1 monad */
- A jtfmt21(J jt, A w){ARGCHK1(w); return fmt22(AR(w)?reshape(sc(AS(w)[AR(w)-1]),ds(CACE)):ds(CACE),w);} /* 8!:2 monad */
+ A jtfmt01(J jt, A w){ return fmt02(AR(w)?reshape(sc(AS(w)[AR(w)-1]),ds(CACE)):ds(CACE),w);} /* 8!:0 monad */
+ A jtfmt11(J jt, A w){ return fmt12(AR(w)?reshape(sc(AS(w)[AR(w)-1]),ds(CACE)):ds(CACE),w);} /* 8!:1 monad */
+ A jtfmt21(J jt, A w){ return fmt22(AR(w)?reshape(sc(AS(w)[AR(w)-1]),ds(CACE)):ds(CACE),w);} /* 8!:2 monad */

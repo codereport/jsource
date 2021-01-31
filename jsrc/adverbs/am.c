@@ -8,7 +8,6 @@
 
 /*
 static A jtmerge1(J jt,A w,A ind){PROLOG(0006);A z;C*v,*x;I c,k,r,*s,t,*u;
- ARGCHK2(w,ind);
  RZ(ind=pind(IC(w),ind));
  r=MAX(0,AR(w)-1); s=1+AS(w); t=AT(w); c=aii(w);
  ASSERT(!(t&SPARSE),EVNONCE);
@@ -25,7 +24,6 @@ static A jtmerge1(J jt,A w,A ind){PROLOG(0006);A z;C*v,*x;I c,k,r,*s,t,*u;
 
 // m} y
 static A jtmerge1(J jt,A w,A ind){A z;B*b;C*wc,*zc;D*wd,*zd;I c,it,j,k,m,r,*s,t,*u,*wi,*zi;
- ARGCHK2(w,ind);
  r=MAX(0,AR(w)-1); s=1+AS(w); t=AT(w); k=bpnoun(t); SETIC(w,m); c=aii(w);  // m = # items of w
  ASSERT(!(t&SPARSE),EVNONCE);
  ASSERT(r==AR(ind),EVRANK);
@@ -57,7 +55,6 @@ static A jtmerge1(J jt,A w,A ind){A z;B*b;C*wc,*zc;D*wd,*zd;I c,it,j,k,m,r,*s,t,
 
 // Handle the case statement abc =: pqr} x,...,y,:z, with in-place operation if pqr is Boolean and abc appears on the right
  A jtcasev(J jt, A w){A b,*u,*v,w1,x,y,z;B*bv,p,q;I*aa,c,*iv,j,m,n,r,*s,t;
- ARGCHK1(w);
  RZ(w1=ca(w)); u=AAV(w1);   // make a copy of the input, point to its value
  // the input is a boxed list.  The last 3 values are (name pqr);(index in which abc appeared in the x,y,... or -1 if it didn't);(original sentence queue)
  p=1; m=AN(w)-3; v=AAV(w); c=i0(v[m+1]);   // get # items in list, and index of the matching one
@@ -115,7 +112,7 @@ static A jtmerge1(J jt,A w,A ind){A z;B*b;C*wc,*zc;D*wd,*zd;I c,it,j,k,m,r,*s,t,
 // Handle a ind} w after indices have been converted to integer atoms, dense
 // cellframelen is the number of axes of w that were used in computing the cell indexes
 static A jtmerge2(J jt,A a,A w,A ind,I cellframelen){F2PREFIP;A z;I t;
- ARGCHK3(a,w,ind);
+ if(!(a && w && ind)) return 0;
  ASSERT(HOMO(AT(a),AT(w))||(-AN(a)&-AN(w))>=0,EVDOMAIN);  // error if xy both not empty and not compatible
  ASSERT(AR(a)<=AR(w)+AR(ind)-cellframelen,EVRANK);   // max # axes in a is the axes in w, plus any surplus axes of m that did not go into selecting cells
  //   w w w w w
@@ -190,7 +187,6 @@ static A jtmerge2(J jt,A a,A w,A ind,I cellframelen){F2PREFIP;A z;I t;
 // speed to validate the input, and pdt works well for a large number of short vectors - in particular it avoids the carried dependency between axes that
 // Horner's Rule creates.  This version keeps things in registers and has less setup time; and it is much better if there are negative indexes.
 A jtcelloffset(J jt,AD * RESTRICT w,AD * RESTRICT ind){A z;
- ARGCHK1(w);
  if(AR(ind)<2){RZ(z=pind(AS(w)[0],ind));  // (m}only) treat a list as a list of independent indexes.  pind handles that case quickly and possibly in-place.
  }else if(AS(ind)[AR(ind)-1]==1){RZ(z=pind(AS(w)[0],IRS1(ind,0L,2L,jtravel,z)));  // if rows are 1 long, pind handles that too - remove the last axis
  }else{
@@ -286,7 +282,6 @@ static A jtjstd(J jt,A w,A ind,I *cellframelen){A j=0,k,*v,x;I b;I d,i,n,r,*u,wr
 // Execution of x m} y.  Split on sparse/dense, passing on the dense to merge2, including inplaceability
 static A jtamendn2(J jt,A a,A w,A self){F2PREFIP;PROLOG(0007);A e,z; B b;I atd,wtd,t,t1;P*p;
  AD * RESTRICT ind=VAV(self)->fgh[0];
- ARGCHK3(a,w,ind);
  if(!((AT(w)|AT(ind))&SPARSE)){
   I cellframelen; ind=jstd(w,ind,&cellframelen);   // convert indexes to cell indexes; remember how many were converted
   z=jtmerge2(jtinplace,AT(a)&SPARSE?denseit(a):a,w,ind,cellframelen);  //  dense a if needed; dense amend
@@ -320,7 +315,6 @@ static A jtamendn2(J jt,A a,A w,A self){F2PREFIP;PROLOG(0007);A e,z; B b;I atd,w
 // Execution of x u} y.  Call u to get the indices, then
 // call merge2 to do the merge.  Pass inplaceability into merge2.
 static A amccv2(J jt,A a,A w,A self){F2PREFIP;DECLF; 
- ARGCHK2(a,w); 
  ASSERT(DENSE&AT(w),EVNONCE);  // u} not supported for sparse
  A x;RZ(x=pind(AN(w),CALL2(f2,a,w,fs)));
  A z=jtmerge2(jtinplace,a,w,x,AR(w));   // The atoms of x include all axes of w, since we are addressing atoms
@@ -389,7 +383,6 @@ B jtgerexact(J jt, A w){A*wv;
 
 // u} handling.  This is not inplaceable but the derived verb is
  A jtamend(J jt, A w){
- ARGCHK1(w);
  if(VERB&AT(w)) return ADERIV(CRBRACE,mergv1,amccv2,VASGSAFE|VJTFLGOK2, RMAX,RMAX,RMAX);  // verb}
  else if(ger(w))return gadv(w,CRBRACE);   // v0`v1`v2}
  else           return ADERIV(CRBRACE,mergn1,jtamendn2,VASGSAFE|VJTFLGOK2, RMAX,RMAX,RMAX);  // m}

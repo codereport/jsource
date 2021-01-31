@@ -16,7 +16,7 @@ static A jtonf1(J jt,    A w,A self){PROLOG(0021);DECLFG;A z;I flag=sv->flag,m=j
 }
 
 static A jtuponf2(J jt,A a,A w,A self){PROLOG(0022);DECLFG;A z;I flag=sv->flag,m=jt->xmode;
- ARGCHK2(a,w);
+ if(!(a && w)) return 0;
  if(primitive(gs))if(flag&VFLR)jt->xmode=XMFLR; else if(flag&VCEIL)jt->xmode=XMCEIL;
  if(RAT&AT(a))RZ(a=pcvt(XNUM,a));
  if(RAT&AT(w))RZ(w=pcvt(XNUM,w));
@@ -35,7 +35,6 @@ static X jtxmodpow(J jt,A a,A w,A h){A ox,z;
  RNE(z);
 }
 
-#define DMOD 46340         /* <. %: _1+2^31 */
 #define XMOD 3037000499    /* <. %: _1+2^63 */
 static I dmodpow(D x,I n,D m){D z=1; while(n){if(1&n)z=fmod(z*x,m); x=fmod(x*x,m); n>>=1;} return(I)z;}
 
@@ -67,9 +66,8 @@ static A jtmodpow1(J jt,    A w,A self){A g=FAV(self)->fgh[1]; return rank2ex0(F
 // u@v and u@:v
 // TODO: no  need for protw checking?
 CS1IP(,on1, \
-{PUSHZOMB; ARGCHK1D(w); A protw = (A)(intptr_t)((I)w+((I)jtinplace&JTINPLACEW)); \
+{PUSHZOMB; A protw = (A)(intptr_t)((I)w+((I)jtinplace&JTINPLACEW)); \
 A gx; RZ(gx=(g1)((J)(intptr_t)(((I)jtinplace&(~(JTWILLBEOPENED+JTCOUNTITEMS))) + (REPSGN(SGNIF(FAV(gs)->flag,VJTFLGOK1X)) & FAV(fs)->flag2 & VF2WILLOPEN1+VF2USESITEMCOUNT1)),w,gs));  /* inplace g.  Copy WILLOPEN from f to WILLBEOPENED for g  jtinplace is set for g */ \
-ARGCHK1D(gx) \
 /* inplace gx unless it is protected */ \
 POPZOMB; \
 jtinplace=(J)(intptr_t)(((I)jtinplace&~(JTINPLACEW))+((I )(gx!=protw)*JTINPLACEW));  \
@@ -78,9 +76,8 @@ RZ(z=(f1)(jtinplace,gx,fs));} \
 ,0113)
 
 CS2IP(,,jtupon2, \
-{PUSHZOMB; ARGCHK2D(a,w) A protw = (A)(intptr_t)((I)w+((I)jtinplace&JTINPLACEW)); A prota = (A)(intptr_t)((I)a+((I)jtinplace&JTINPLACEA)); A gx; \
+{PUSHZOMB; A protw = (A)(intptr_t)((I)w+((I)jtinplace&JTINPLACEW)); A prota = (A)(intptr_t)((I)a+((I)jtinplace&JTINPLACEA)); A gx; \
 RZ(gx=(g2)((J)(intptr_t)(((I)jtinplace&(~(JTWILLBEOPENED+JTCOUNTITEMS))) + (REPSGN(SGNIF(FAV(gs)->flag,VJTFLGOK2X)) & FAV(fs)->flag2 & VF2WILLOPEN1+VF2USESITEMCOUNT1)),a,w,gs));  /* inplace g */ \
-ARGCHK1D(gx) \
 /* inplace gx unless it is protected */ \
 POPZOMB; jtinplace=(J)(intptr_t)(((I)jtinplace&~(JTINPLACEW))+(((I )(gx!=prota)&(I )(gx!=protw))*JTINPLACEW));  \
 jtinplace=FAV(fs)->flag&VJTFLGOK1?jtinplace:jt; \
@@ -115,7 +112,6 @@ CS2IP(static,static,on2, \
 static A on20(J jt,A a,A w,A self){return jtrank2ex0(jt,a,w,self,on2cell);}  // pass inplaceability through
 
 static A atcomp(J jt,A a,A w,A self){AF f;A z;
- ARGCHK2(a,w); 
  f=atcompf(a,w,self);
  if(f){
   I postflags=jt->workareas.compsc.postflags;
@@ -126,7 +122,6 @@ static A atcomp(J jt,A a,A w,A self){AF f;A z;
 }
 
 static A atcomp0(J jt,A a,A w,A self){A z;AF f;
- ARGCHK2(a,w);
  f=atcompf(a,w,self);
  PUSHCCT(1.0)
  if(f){
@@ -158,6 +153,7 @@ static A atcomp0(J jt,A a,A w,A self){A z;AF f;
 //
 // u@v
  A jtatop(J jt,A a,A w){A f,g,h=0,x;AF f1=on1,f2=jtupon2;B b=0,j;C c,d,e;I flag, flag2=0,m=-1;V*av,*wv;
+ if(!(a && w)) return 0;
  ASSERTVVn(a,w);
  av=FAV(a); c=av->id;
  if(AT(w)&NOUN){  // u@n
@@ -375,7 +371,6 @@ static A with2(J jt,A a,A w,A self){A z; return df1(z,w,powop(self,a,0));}
 
 // u&v
  A jtamp(J jt,A a,A w){A h=0;AF f1,f2;B b;C c,d=0;I flag,flag2=0,linktype=0,mode=-1,p,r;V*u,*v;
- ARGCHK2(a,w);
  switch(CONJCASE(a,w)){
  default: ASSERTSYS(0,"amp");
  case NN: ASSERT(0,EVDOMAIN);

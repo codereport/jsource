@@ -70,7 +70,6 @@ PT cases[] = {
 #define PR 7
 #define PS 8  // ASGN without ASGNNAME
 #define PSN 9 // ASGN+ASGNNAME
-#define PX 255
 
 // Tables to convert parsing type to mask of matching parse-table rows for each of the stack positions
 // the AND of these gives the matched row (the end-of-table row is always matched)
@@ -245,7 +244,7 @@ void auditblock(A w, I nonrecurok, I virtok) {
 
 // Run parser, creating a new debug frame.  Explicit defs, which make other tests first, then go through jtparsea
  A jtparse(J jt, A w){A z;
- ARGCHK1(w);
+ if(!w) return 0;
  A *queue=AAV(w); I m=AN(w);   // addr and length of sentence
  RZ(deba(DCPARSE,queue,(A)m,0L));  // We don't need a new stack frame if there is one already and debug is off
  z=parsea(queue,m);

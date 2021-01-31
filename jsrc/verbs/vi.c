@@ -189,7 +189,6 @@ static B jteqa(J jt,I n,A*u,A*v){DQ(n, if(!equ(*u,*v))return 0; ++u; ++v;); retu
 // Misc code to set the shape once we see how many results there are, used for ~. y and x -. y
 #define ZISHAPE    *AS(z)=AN(z)=zi-zv
 #define ZCSHAPE    *AS(z)=(zc-(C*)zv)/k; AN(z)=n**AS(z)
-#define ZUSHAPE(T) *AS(z)= zu-(T*)zv;    AN(z)=n**AS(z)
 
 // Routines to build the hash table from a.  hash calculates the hash function, usually referring to v (the input) and possibly other names.  exp is the comparison routine.  should use _1 for empty?
 #define XDOA(hash,exp,inc)         {v=av;          DO(m,  j=(hash)%pm; FIND(exp); if(m==hj)hv[j]=i; inc;);}
@@ -980,7 +979,7 @@ static CR condrange2(US *s,I n,I min,I max,I maxrange){CR ret;I i;US x;
 
 A jtindexofsub(J jt,I mode,A a,A w){PROLOG(0079);A h=0,hi=mtv,z;B mk=w==mark,th;fauxblockINT(zfaux,1,0);
     I ac,acr,af,ak,an,ar,*as,at,datamin,f,f1,k,k1,n,r,*s,t,wc,wcr,wf,wk,wn,wr,*ws,wt,zn;UI c,m,p;
- ARGCHK2(a,w);
+ if(!(a && w)) return 0;
  // ?r=rank of argument, ?cr=rank the verb is applied at, ?f=length of frame, ?s->shape, ?t=type, ?n=#atoms
  // mk is set if w argument is omitted (we are just prehashing the a arg)
  ar=AR(a); acr=jt->ranks>>RANKTX; acr=ar<acr?ar:acr; af=ar-acr;
@@ -1315,7 +1314,6 @@ A jtindexofsub(J jt,I mode,A a,A w){PROLOG(0079);A h=0,hi=mtv,z;B mk=w==mark,th;
 // verb to handle compounds like m&i. e.&n .  m/n has already been hashed and the result saved away
 A jtindexofprehashed(J jt,A a,A w,A hs){A h,hi,*hv,x,z;AF fn;I ar,*as,at,c,f1,k,m,mode,n,
      r,t,*xv,wr,*ws,wt,ztype;
- ARGCHK3(a,w,hs);
  // hv is (info vector);(hashtable);(byte index valididty)
  hv=AAV(hs); x=hv[0]; h=hv[1]; hi=hv[2];  
  // get the info from the info vector
@@ -1365,7 +1363,6 @@ A jtindexofprehashed(J jt,A a,A w,A hs){A h,hi,*hv,x,z;AF fn;I ar,*as,at,c,f1,k,
 
 // ~: y
  A jtnubsieve(J jt, A w){
- ARGCHK1(w);
  if(SPARSE&AT(w))return nubsievesp(w);
  jt->ranks=(RANKT)jt->ranks + ((RANKT)jt->ranks<<RANKTX);  // we process as if dyad; make left rank=right rank
  return indexofsub(INUBSV,w,w);
@@ -1373,7 +1370,7 @@ A jtindexofprehashed(J jt,A a,A w,A hs){A h,hi,*hv,x,z;AF fn;I ar,*as,at,c,f1,k,
 
 // ~. y  - does not have IRS
  A jtnub(J jt, A w){ 
- F1PREFIP;ARGCHK1(w);
+ F1PREFIP;
  if(SPARSE&AT(w)||AFLAG(w)&AFNJA)return repeat(nubsieve(w),w);
  A z; RZ(z=indexofsub(INUB,w,w));
  // We extracted from w, so mark it (or its backer if virtual) non-pristine.  If w was pristine and inplaceable, transfer its pristine status to the result.  We overwrite w because it is no longer in use
@@ -1383,7 +1380,8 @@ A jtindexofprehashed(J jt,A a,A w,A hs){A h,hi,*hv,x,z;AF fn;I ar,*as,at,c,f1,k,
 
 // x -. y.  does not have IRS
  A jtless(J jt,A a,A w){A x=w;I ar,at,k,r,*s,wr,*ws,wt;
- F2PREFIP;ARGCHK2(a,w);
+ F2PREFIP;
+ if(!(a && w)) return 0;
  at=AT(a); ar=AR(a); 
  wt=AT(w); wr=AR(w); r=MAX(1,ar);
  if(ar>1+wr)return a;  // if w's rank is smaller than that of a cell of a, nothing can be removed, return a
@@ -1399,7 +1397,6 @@ A jtindexofprehashed(J jt,A a,A w,A hs){A h,hi,*hv,x,z;AF fn;I ar,*as,at,c,f1,k,
 
 // x e. y
  A jteps(J jt,A a,A w){I l,r;
- ARGCHK2(a,w);
  l=jt->ranks>>RANKTX; l=AR(a)<l?AR(a):l;
  r=(RANKT)jt->ranks; r=AR(w)<r?AR(w):r; RESETRANK;
  if(SPARSE&(AT(a)|AT(w)))return lt(irs2(w,a,0L,r,l,jtindexof),sc(r?*(AS(w)+AR(w)-r):1));  // for sparse, implement as (# cell of y) > y i. x
@@ -1409,20 +1406,17 @@ A jtindexofprehashed(J jt,A a,A w,A hs){A h,hi,*hv,x,z;AF fn;I ar,*as,at,c,f1,k,
 
 // I.@~: y   does not have IRS
  A jtnubind(J jt, A w){
- ARGCHK1(w);
  return SPARSE&AT(w)?icap(nubsieve(w)):indexofsub(INUBI,w,w);
 }    /* I.@~: w */
 
 // i.@(~:!.0) y     does not have IRS
  A jtnubind0(J jt, A w){A z;
- ARGCHK1(w);
  PUSHCCT(1.0) z=SPARSE&AT(w)?icap(nubsieve(w)):indexofsub(INUBI,w,w); POPCCT
  return z;
 }    /* I.@(~:!.0) w */
 
 // = y    
  A jtsclass(J jt, A w){A e,x,xy,y,z;I c,j,m,n,*v;P*p;
- ARGCHK1(w);
  // If w is scalar, return 1 1$1
  if(!AR(w))return reshape(v2(1L,1L),num(1));
  SETIC(w,n);   // n=#items of y
@@ -1499,7 +1493,6 @@ static JOCOLFT(Z,jtjocolz,hid(*(D*)v),hid(tl*x),hid(tr*x),!zeq(*v,av[c*hj]))
 
 // support for a i."1 &.|:w or a i:"1 &.|:w   used only by some sparse-array stuff
 A jtiocol(J jt,I mode,A a,A w){A h,z;I ar,at,c,d,m,p,t,wr,*ws,wt;void(*fn)();
- ARGCHK2(a,w);
  // require ct!=0   why??
  ASSERT(1.0!=jt->cct,EVNONCE);
  at=AT(a); ar=AR(a); m=*AS(a); c=aii(a);  // a: at=type ar=rank m=#items c=#atoms in an item
