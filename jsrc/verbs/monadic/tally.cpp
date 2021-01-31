@@ -45,8 +45,14 @@ refactorme_zeroionei(int64_t n) {
 }
 
 [[nodiscard]] auto
-pointer_to_ravel(array x) {
+pointer_to_values(array x) -> int64_t* {
     return reinterpret_cast<int64_t*>(reinterpret_cast<C*>(x) + x->kchain.k);
+}
+
+// TODO: replace with `auto` concepts
+template <typename T> auto
+set_value_at(array x, int32_t index, T const& value) -> void {
+    pointer_to_values(x)[index] = value;
 }
 
 // this is for "creating an integer atom with value k"
@@ -56,8 +62,8 @@ make_scalar_integer(J jt, int64_t k) -> array {
         return !zero_or_one(k) ? refactorme_num(k) : zeroionei(k);
     }
     array z;
-    GAT0(z, INT, 1, 0);          // TODO: GA -> make_array refactoring
-    pointer_to_ravel(z)[0] = k;  // TODO: set_value(..)
+    GAT0(z, INT, 1, 0);  // TODO: GA -> make_array refactoring
+    set_value_at(z, 0, k);
     return z;
 }
 
