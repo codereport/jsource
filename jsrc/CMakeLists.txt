@@ -53,7 +53,6 @@ target_sources(j PRIVATE
         verbs/vd.c
         verbs/ve.c
         verbs/vf.c
-        verbs/vfft.c
         verbs/vfrom.c
         verbs/vfromsp.c
         verbs/vg.c

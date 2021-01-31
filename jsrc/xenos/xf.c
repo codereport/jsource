@@ -19,7 +19,6 @@
 
 #include <stdlib.h>
 typedef long long INT64;
-static int rmdir2(const char *dir);
 
 
 

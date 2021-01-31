@@ -6,10 +6,6 @@
 #include "j.h"
 
 
-static A jtbtreetest(J jt, A w){ASSERT(0,EVDOMAIN);}
-static A jtbtreedft(J jt, A w){ASSERT(0,EVDOMAIN);}
-
-
 /*
 vm=: 4 : 0     NB. vector +/ .* sparse matrix
  if. dense x do. yy=.   5$.y [ 'i j'=. |:   4$.y

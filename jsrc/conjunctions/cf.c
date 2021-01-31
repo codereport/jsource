@@ -218,15 +218,33 @@ RZ(z=(f2)(jtinplace,w,gx,fs)); \
 , 0111)
 
 // hook2cell is external
-CS2IP(,static,jthook2, \
-{PUSHZOMB; A protw = (A)(intptr_t)((I)w+((I)jtinplace&JTINPLACEW)); A prota = (A)(intptr_t)((I)a+((I)jtinplace&JTINPLACEA)); \
-A gx; RZ(gx=(g1)((J)(intptr_t)((I)jt + ((((I)jtinplace&((a!=w)<<JTINPLACEWX)) + ((FAV(fs)->flag2>>(VF2WILLOPEN2WX-VF2WILLOPEN1X)) & JTWILLBEOPENED+JTCOUNTITEMS)) & REPSGN(SGNIF(FAV(gs)->flag,VJTFLGOK1X)))),w,gs));  /* inplace g unless a=w.  jtinplace is always set */ \
-/* inplace gx unless it is protected */ \
-POPZOMB; jtinplace=(J)(intptr_t)(((I)jtinplace&~(JTINPLACEW))+(((I )(gx!=prota)&(I )(gx!=protw))*JTINPLACEW)); \
-jtinplace=FAV(fs)->flag&VJTFLGOK2?jtinplace:jt; \
-RZ(z=(f2)(jtinplace,a,gx,fs)); \
-} \
-, 0112)
+A
+jthook2cell(J jt, A a, A w, A self) {
+    F2PREFIP;
+    DECLFG;
+    A z;
+    PROLOG(0112);
+    {
+        PUSHZOMB;
+        A protw = (A)(intptr_t)((I)w + ((I)jtinplace & JTINPLACEW));
+        A prota = (A)(intptr_t)((I)a + ((I)jtinplace & JTINPLACEA));
+        A gx;
+        RZ(gx = (g1)((J)(intptr_t)((I)jt + ((((I)jtinplace & ((a != w) << JTINPLACEWX)) +
+                                             ((FAV(fs)->flag2 >> (VF2WILLOPEN2WX - VF2WILLOPEN1X)) &
+                                              JTWILLBEOPENED + JTCOUNTITEMS)) &
+                                            REPSGN(SGNIF(FAV(gs)->flag, VJTFLGOK1X)))),
+                     w,
+                     gs));
+          /* inplace g unless a=w.  jtinplace is always set */ /* inplace gx unless
+                                                                  it is protected */
+        POPZOMB;
+        jtinplace = (J)(intptr_t)(((I)jtinplace & ~(JTINPLACEW)) +
+                                  (((I)(gx != prota) & (I)(gx != protw)) * JTINPLACEW));
+        jtinplace = FAV(fs)->flag & VJTFLGOK2 ? jtinplace : jt;
+        RZ(z = (f2)(jtinplace, a, gx, fs));
+    }
+    EPILOG(z);
+}
 
 static A jthkiota(J jt,    A w,A self){DECLFG;A a,e;I n;P*p;
  SETIC(w,n);\

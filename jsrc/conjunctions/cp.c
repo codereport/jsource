@@ -201,9 +201,6 @@ static A jtinverr(J jt,    A w,A self){F1PREFIP;ASSERT(0,EVDOMAIN);}  // used fo
 // old static CS2(jtply2, df1(z,w,powop(amp(a,fs),gs,0)),0107)  // dyad adds x to make x&u, and then reinterpret the compound.  We could interpret u differently now that it has been changed (x {~^:a: y)
  A jtply2(J jt,A a,A w,A self){PROLOG(107);DECLFG;A z, zz; PREF2(jtply2); z=(df1(zz,w,powop(amp(a,fs),gs,0))); EPILOG(z);}
 
-static A jtpowg1(J jt,    A w,A self){A z,h=FAV(self)->fgh[2]; return df1(z,  w,AAV(h)[0]);}
-static A jtpowg2(J jt,A a,A w,A self){A z,h=FAV(self)->fgh[2]; return df2(z,a,w,AAV(h)[0]);}
-
 // When u^:v is encountered, we replace it with a verb that comes to one of these.
 // This creates a verb, jtpowxx, which calls jtdf1 within a PROLOG/EPILOG pair, after creating several names:
 // sv->self data; fs=sv->fgh[0] (the A block for the f operand); f1=f1 in sv->fgh[0] (0 if sv->fgh[0]==0); f2=f2 in sv->fgh[0] (0 if sv->fgh[0]==0);
@@ -218,28 +215,51 @@ static A jtpowg2(J jt,A a,A w,A self){A z,h=FAV(self)->fgh[2]; return df2(z,a,w,
 // We catch the special cases 0  & 1 here, mostly for branch-prediction purposes.  All results of g1/g2 will be nouns, while
 // most instances of u^:v (run through powop) have v as verb
 
+#define REFACTORME_CS1IP(f, exp, x)       \
+    static A f##cell(J jt, A w, A self) { \
+        F1PREFIP;                         \
+        DECLFG;                           \
+        A z;                              \
+        PROLOG(x);                        \
+        exp;                              \
+        EPILOG(z);                        \
+    }
+
+#define REFACTORME_CS2IP(f, exp, x)            \
+    static A f##cell(J jt, A a, A w, A self) { \
+        F2PREFIP;                              \
+        DECLFG;                                \
+        A z;                                   \
+        PROLOG(x);                             \
+        exp;                                   \
+        EPILOG(z);                             \
+    }
+
 // here for u^:v y
-CS1IP(static,jtpowv1, \
+REFACTORME_CS1IP(jtpowv1, \
 A u; A v; RZ(u=CALL1(g1,  w,gs));  /* execute v */ \
 if(!AR(u) && (v=vib(u)) && !(IAV(v)[0]&~1)){z=IAV(v)[0]?(FAV(fs)->valencefns[0])(FAV(fs)->flag&VJTFLGOK1?jtinplace:jt,w,fs):w;} \
 else{RESETERR; RZ(u = powop(fs,u,(A)1));  \
 z=(FAV(u)->valencefns[0])(FAV(u)->flag&VJTFLGOK1?jtinplace:jt,w,u);} \
 ,0108)
 // here for x u^:v y 
-CS2IP(static,static,jtpowv2, \
+REFACTORME_CS2IP(jtpowv2, \
 A u; A v; RZ(u=CALL2(g2,a,w,gs));  /* execute v */ \
 if(!AR(u) && (v=vib(u)) && !(IAV(v)[0]&~1)){z=IAV(v)[0]?(FAV(fs)->valencefns[1])(FAV(fs)->flag&VJTFLGOK2?jtinplace:jt,a,w,fs):w;} \
 else{RESETERR; RZ(u = powop(fs,u,(A)1));  \
 z=(FAV(u)->valencefns[1])(FAV(u)->flag&VJTFLGOK2?jtinplace:jt,a,w,u);} \
 ,0109)
 // here for x u@:]^:v y and x u@]^:v y
-CS2IP(static,static,jtpowv2a, \
+REFACTORME_CS2IP(jtpowv2a, \
 jtinplace=(J)((I)jtinplace&~JTINPLACEA); /* monads always have IP2 clear */ \
 A u; A v; fs=FAV(fs)->fgh[0]; RZ(u=CALL2(g2,a,w,gs));  /* execute v */ \
 if(!AR(u) && (v=vib(u)) && !(IAV(v)[0]&~1)){z=IAV(v)[0]?(FAV(fs)->valencefns[0])(FAV(fs)->flag&VJTFLGOK1?jtinplace:jt,w,fs):w;} \
 else{RESETERR; RZ(u = powop(fs,u,(A)1));  \
 z=(FAV(u)->valencefns[0])(FAV(u)->flag&VJTFLGOK1?jtinplace:jt,w,u);} \
 ,0110)
+
+#undef REFACTORME_CS1IP
+#undef REFACTORME_CS2IP
 
 // This executes the conjunction u^:v to produce a derived verb.  If the derived verb
 // contains verb v or gerund v, it executes v on the xy arguments and then calls jtpowop

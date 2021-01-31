@@ -143,14 +143,6 @@ void jtwri(J jt,I type,C*p,I m,C*s){C buf[1024],*t=jt->outseq,*v=buf;I c,d,e,n;
 
 }}
 
-static void jtwrf(J jt,I n,C*v,F f){C*u,*x;I j=0,m;
- while(n>j){
-  u=j+v; 
-  m=(x=memchr(u,CLF,n-j))?1+x-u:n-j; 
-  fwrite(u,sizeof(C),m,f);
-  j+=m;
-}}
-
 // input is string *s of length n
 // result is A block for the string
 // if !b (normal except for m : 0), look at the string:

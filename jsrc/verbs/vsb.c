@@ -598,45 +598,6 @@ static A jtsbcheck1(J jt,A una,A sna,A u,A s,A h,A roota,A ff,A gp){PROLOG(0003)
  EPILOG(num(1));
 }
 
-// minimal check for sbsetdata2
-static A jtsbcheck2(J jt,A una,A sna,A u,A s){PROLOG(0000);
-     C*sv;I c,i,sn,un,offset=0;SBU*uv,*v;
- RZ(una&&sna&&u&&s);
- if(1==AN(una)){ASSERTD(!AR(una),"c atom");}            /* cardinality    */
- else {ASSERTD(2==AN(una)&&1==AR(una),"c/offset vector");}
- ASSERTD(INT&AT(una),"c integer");
- c=AV(una)[0];
- ASSERTD(0<=c,"c non-negative");
- if(2==AN(una)){ASSERTD(0<=(offset=*(1+AV(una))),"offset non-negative");}
- if(!offset){ASSERTD(!offset||offset==jt->sbun,"offset contiguous");}
- ASSERTD(!AR(sna),"sn atom");           /* string length */
- ASSERTD(INT&AT(sna),"sn integer");
- sn=AV(sna)[0];
- ASSERTD(0<=sn,"sn non-negative");
- sv=CAV(s);
- un=AS(u)[0]; uv=(SBU*)AV(u);
- ASSERTD(2==AR(u),"u matrix");
- ASSERTD(INT&AT(u),"u integer");
- ASSERTD(*(1+AS(u))==sizeof(SBU)/SZI,"u #columns");
- ASSERTD(c<=un+offset,"c bounded by #u");
- ASSERTD(1==AR(s),"s vector");
- ASSERTD(LIT&AT(s),"s literal");
- ASSERTD(sn<=AN(s),"sn bounded by #s");
- for(i=MAX(offset,1),v=((offset)?0:1)+uv;i<c;++i,++v){S c2;I vi,vn;UC*vc;  // i==0 is sentinel
-  c2=v->flag&SBC2+SBC4;
-  vi=v->i;
-  vn=v->n;
-  vc=(UC*)(sv+vi);
-  ASSERTD(!c2||(c2&SBC2)||(c2&SBC4),"u flag");
-  ASSERTD(!c2||(1&&c2&SBC2)^(1&&c2&SBC4),"u flag");
-  ASSERTD(BETWEENC(vi,0,sn),"u index");
-  ASSERTD(!c2||(c2&SBC2&&!(vi&1))||(c2&SBC4&&!(vi&3)),"u index alignment");
-  ASSERTD(0<=vn&&(!c2||(c2&SBC2&&!(vi&1))||(c2&SBC4&&!(vi&3))),"u length");
-  ASSERTD(sn>=vi+vn,"u index/length");
- }
- EPILOG(num(1));
-}
-
 static A jtsbcheck(J jt, A w){return sbcheck1(sc(jt->sbun),sc(jt->sbsn),jt->sbu,jt->sbs,jt->sbh,sc(ROOT),sc(FILLFACTOR),sc(GAP));}
 
 static A jtsbsetdata(J jt, A w){A h,s,u,*wv,x;
@@ -656,47 +617,6 @@ static A jtsbsetdata(J jt, A w){A h,s,u,*wv,x;
  fa(u); fa(s); fa(h);
  return num(1);
 }
-
-static void resetdata(J jt){
- fa(jt->sbu); fa(jt->sbs); fa(jt->sbh); // free old symbol
- sbtypeinit();                          // initialization routine
- ras(jt->sbu); ras(jt->sbs); ras(jt->sbh); // prevent automatically freed by tpop()
-}    /* re-initialize global symbol table */
-
-static A jtsbsetdata2(J jt, A w){A *wv;I c,i,sn,offset=0;SBU*uv,*v;C*sv;
- ASSERTD(!AN(w)||BOX&AT(w),"arg type");
- ASSERTD(1==AR(w), "arg rank");
- ASSERTD(!AN(w)||4<=AN(w), "arg length");
- if(!AN(w)){resetdata(jt); return num(1); }
- wv=AAV(w); 
- RZ(sbcheck2(wv[0],wv[1],wv[2],wv[3]));
- c=AV(wv[0])[0];                         // cardinality
- if(1<AN(wv[0]))offset=AV(wv[0])[1];// offset
- sn=AV(wv[1])[0];                        // string length
- uv=(SBU*)AV(wv[2]);                   // table of symbols
- sv=CAV(wv[3]);                        // global string table
- if(!offset)resetdata(jt);
- for(i=MAX(offset,1),v=((offset)?0:1)+uv;i<c;++i,++v){I vi,vn;UC*vc;  // i==0 is sentinel
-  vi=v->i;                              // index into sbs
-  vn=v->n;                              // length in bytes
-  vc=(UC*)(sv+vi);                      // symbol string
-  RE(sbprobe((S)v->flag,vn,vc,0));      // insert symbol
- }
- return num(1);
-}
-
-static A jtsbtestbox(J jt, A w){A*wv,x,z;S c2;I i,m,n;B*zv;
- ASSERT(!AN(w)||BOX&AT(w),EVDOMAIN);
- m=AN(w); wv=AAV(w); 
- GATV(z,B01,m,AR(w),AS(w)); zv=BAV(z);
- for(i=0;i<m;++i){
-  x=wv[i]; n=AN(x); c2=AT(x)&C4T?SBC4:AT(x)&C2T?SBC2:0; 
-  ASSERT(!n||AT(x)&LIT+C2T+C4T,EVDOMAIN);
-  ASSERT(1>=AR(x),EVRANK);
-  RE(*zv++=0<=sbprobe(c2,c2&SBC4?(4*n):c2&SBC2?(2*n):n,CAV(x),1));
- }
- return z;
-}    /* test symbol, each element of boxed array w is a string */
 
 static A jtsbgetdata(J jt, A w){A z,*zv;
  GAT0(z,BOX,8,1); zv=AAV(z);

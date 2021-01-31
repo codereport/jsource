@@ -20,9 +20,6 @@
 #define DECLF            V* RESTRICT sv=FAV(self); AD * RESTRICT fs=sv->fgh[0];  \
                         AF f1=fs?FAV(fs)->valencefns[0]:0,f2=fs?FAV(fs)->valencefns[1]:0
 
-#define DECLG           V* RESTRICT sv=FAV(self);AD * RESTRICT gs=sv->fgh[1];  \
-                        AF g1=gs?FAV(gs)->valencefns[0]:0,g2=gs?FAV(gs)->valencefns[1]:0
-
 #define DECLFG          DECLF;         AD * RESTRICT gs=sv->fgh[1];  \
                         AF g1=gs?FAV(gs)->valencefns[0]:0,g2=gs?FAV(gs)->valencefns[1]:0
 

@@ -6,12 +6,6 @@
 #include "j.h"
 
 
-static I jtfdepger(J jt,A w){A*wv;I d=0,k; 
- wv=AAV(w);  
- DO(AN(w), k=fdep(fx(wv[i])); d=MAX(d,k);); 
- return d;
-}
-
 #if !USECSTACK
 I jtfdep(J jt,A w){A f,g;I d=0,k;V*v;
  v=VAV(w);

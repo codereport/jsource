@@ -36,8 +36,6 @@ static X jtxmodpow(J jt,A a,A w,A h){A ox,z;
 }
 
 #define XMOD 3037000499    /* <. %: _1+2^63 */
-static I dmodpow(D x,I n,D m){D z=1; while(n){if(1&n)z=fmod(z*x,m); x=fmod(x*x,m); n>>=1;} return(I)z;}
-
 static I imodpow(I x,I n,I m){I z=1; while(n){if(1&n)z=(z*x)%m;     x=(x*x)%m;     n>>=1;} return   z;}
 
 static A jtmodpow2(J jt,A a,A w,A self){A h;B b,c;I at,m,n,wt,x,z;

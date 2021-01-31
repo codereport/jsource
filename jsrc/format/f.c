@@ -98,10 +98,6 @@ I jtthv(J jt,A w,I n,C*s){A t;B ov=0;C buf[WZ],*x,*y=s;I k,n4=n-4,p,wd,wn,wt;FMT
  *y=0; return y-s;
 }
 
-static A jtthbit(J jt, A w){
-ASSERTSYS(0,"thbit");
-}
-
 static A jtthb(J jt, A w){A z;B*x;C*y;I c,m,n,p,r,*s;
  n=AN(w); r=AR(w); s=AS(w);
   SHAPEN(w,r-1,c); m=n/c; p=2*c-1;
