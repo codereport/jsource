@@ -83,17 +83,6 @@ static DC suspset(DC d){DC e=0;
  return d;
 }    /* find topmost call and set suspension flag */
 
-static B jterrcap(J jt){A y,*yv;
- jt->dbsusact=SUSCLEAR;
- GAT0(y,BOX,4,1); yv=AAV(y);
- RZ(yv[0]=sc(jt->jerr1));
- RZ(yv[1]=str(jt->etxn1,jt->etx));
- RZ(yv[2]=dbcall(mtv));
- RZ(yv[3]=locname(mtv));
- RZ(symbis(nfs(22L,"STACK_ERROR_INFO_base_"),y,mark));
- return 1;
-}    /* error capture */
-
 // suspension.  Loop on keyboard input.  Keep executing sentences until something changes dbsusact.
 static void jtsusp(J jt){B t;DC d;
  // normally we run with an empty stack frame which is always ready to hold the display of the next sentence

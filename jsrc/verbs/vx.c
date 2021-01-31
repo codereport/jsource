@@ -475,20 +475,3 @@ AMONPS( pixX, X,X, , *z=   rifvsdebug(xpi(*x)); , HDR1JERR)
  zv=zv0; v=zv0+n-1; DQ(n>>1, c=*zv; *zv++=*v; *v--=c;); /* reverse in place */
  return z;
 }    /* "."0@": w */
-
-
-#define DXBODY(exp)  DECLG;A y=sv->fgh[2],z;I m=jt->xmode; jt->xmode=XMFLR; z=exp; jt->xmode=m; return z
-#define DX1(f,exp) A f(J jt,    A w,A self){DXBODY(exp);} 
-#define DX2(f,exp) A f(J jt,A a,A w,A self){DXBODY(exp);}
-#define XT(w)        tymes(y,w)
-
-static DX1(postmult1, XT(CALL1(g1,  w,gs)))
-static DX2(postmult2, XT(CALL2(g2,a,w,gs)))
-
-static DX1(premult1, CALL1(g1,      XT(w),gs))
-static DX2(premult2, CALL2(g2,XT(a),XT(w),gs))
-
-static DX1(ydiv1, CALL2(g2,y,    w,gs))
-static DX2(ydiv2, CALL2(g2,XT(a),w,gs))
-
-static DX1(ysqrt, CALL1(g1,tymes(w,XT(y)),gs))

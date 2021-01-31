@@ -631,12 +631,6 @@ static A jtcolon0(J jt, I deftype){A l,z;C*p,*q,*s;A *sb;I m,n;
  return str(n,s);
 }    /* enter nl terminated lines; ) on a line by itself to exit */
 
-// w is character array or list
-// if table, take , w ,. LF    if list take ,&LF^:(LF~:{:) w)
-static A jtlineit(J jt, A w){
- return 1<AR(w)?ravel(stitch(w,scc(CLF))):AN(w)&&CLF==cl(w)?w:over(w,scc(CLF));
-}
-
 // Convert ASCII w to boxed lines.  Create separate lists of boxes for monad and dyad
 // if preparsed it set, we know the lines have gone through wordil already & it is OK
 // to do it again.  This means we are processing 9 :  n

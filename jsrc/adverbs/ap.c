@@ -734,19 +734,6 @@ static A jtmovandor(J jt,I m,A w,A fs,B or){A y,z;B b0,b1,d,e,*s,*t,*u,*v,x,*yv,
  return z;
 }    /* a *./\w (0=or) or a +./\ (1=or); boolean w; 0<m */
 
-static A jtmovbwandor(J jt,I m,A w,A fs,B or){A z;I c,p,*s,*t,*u,x,*zv;
- SETIC(w,p); p-=m; c=aii(w);
- GATV(z,INT,c*(1+p),AR(w),AS(w)); AS(z)[0]=1+p;
- zv=AV(z); u=AV(w);
- if(c)switch(or+(1==c?0:2)){
-  case 0: DQ(1+p, x=*u++; t=u; DQ(m-1, x&=*t++;); *zv++=x;); break;
-  case 1: DQ(1+p, x=*u++; t=u; DQ(m-1, x|=*t++;); *zv++=x;); break;
-  case 2: DQ(1+p, ICPY(zv,u,c); t=u+=c; DQ(m-1, s=zv; DQ(c, *s++&=*t++;);); zv+=c;); break;
-  case 3: DQ(1+p, ICPY(zv,u,c); t=u+=c; DQ(m-1, s=zv; DQ(c, *s++|=*t++;);); zv+=c;); break;
- }
- return z;
-}    /* a 17 b./\w (0=or) or a 23 b./\ (1=or); integer w; 0<m */
-
 static A jtmovneeq(J jt,I m,A w,A fs,B eq){A y,z;B*s,*u,*v,x,*yv,*zv;I c,p;
  SETIC(w,p); p-=m; c=aii(w); x=eq;
  GATV(z,B01,c*(1+p),AR(w),AS(w)); AS(z)[0]=1+p;

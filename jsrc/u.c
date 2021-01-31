@@ -188,9 +188,6 @@ A jtifb(J jt,I n,B* RESTRICT b){A z;I p,* RESTRICT zv;
  return z;
 }    /* integer vector from boolean mask */
 
-// i. # w
-static A jtii(J jt, A w){ I j; return IX(SETIC(w,j));}
-
 // Return the higher-priority of the types s and t.  s and t are known to be not equal.
 // If either is sparse, convert the result to sparse.
 // Error if one argument is sparse and the other is non-sparsable

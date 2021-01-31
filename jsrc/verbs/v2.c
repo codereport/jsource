@@ -103,23 +103,6 @@ static I init4792(J jt) {
  if(!jt->p4792){RZ(jt->p4792=prime1(IX(4792L))); ACX(jt->p4792);} return 1;
 }
 
-static I rem(D x,I d){return (I)jfloor(x-d*jfloor(x/(D)d));}
-
-static void sieved(D n,I m,B*b){I c,d,e,i,q,r,*u,*v;
- static const B t[]={
-  0,1,0,0,0, 0,0,1,0,0, 0,1,0,1,0, 0,0,1,0,1, 0,0,0,1,0, 0,0,0,0,1,
-  0,1,0,0,0, 0,0,1,0,0, 0,1,0,1,0, 0,0,1,0,1, 0,0,0,1,0, 0,0,0,0,1};
- static const I dt[]={1,7,11,13,17,19,23,29};
- c=2*3*5; v=(I*)dt+sizeof(dt)/SZI; q=1+(I)sqrt(n+(D)m);
- mvc(m,b,30L,(B*)t+rem(n,30L));
- for(i=c;i<q;i+=c){
-  u=(I*)dt;
-  while(u<v){
-   d=i+*u++; r=rem(n,d); e=r?d-r:0;
-   while(d<m){b[e]=0; e+=d;}
- }}
-}    /* sieve b for n+i.m; n>0; u is mask for primes */
-
 static A jtprime1d(J jt, A w){A d,z;D*wv,x,*zv;I*dv,k,n;
  if(!w) return 0;
  n=AN(w); wv=DAV(w);
@@ -646,62 +629,4 @@ static A jtxfactor(J jt, A w){PROLOG(0064);A st,z;B b=0;I k,m;X g,*sv,*sv0,x;
  }
  z=grade2(z,z);
  EPILOG(z);
-}
-
-/* ---------------------------------------------------- */
-
-static A test_ecm(J jt, A w){A*wv,z;X*ab,n,*zv;
- RZ(init4792(jt));
- ASSERT(4==AN(w),EVLENGTH);
- ASSERT(BOX&AT(w),EVDOMAIN);
- wv=AAV(w); 
- ASSERT(XNUM&AT(wv[0]),EVDOMAIN); ASSERT(1==AR(wv[0]),EVRANK); ASSERT(2==AN(wv[0]),EVLENGTH);
- ASSERT(XNUM&AT(wv[1]),EVDOMAIN); ASSERT(0==AR(wv[1]),EVRANK);
- ASSERT(INT&AT(wv[2]),EVDOMAIN);
- ASSERT(XNUM&AT(wv[3]),EVDOMAIN);
- n=XAV(wv[1])[0];
- ab=XAV(wv[0]);
- GAT0(z,XNUM,3,1); zv=XAV(z);
- RZ(ecm(n,ab[0],ab[1],i0(wv[2]),XAV(wv[3]),zv));
- return z;
-}
-
-static A test_ecm_s1(J jt, A w){A*wv,z;X*ab,n,*zv;
- RZ(init4792(jt));
- ASSERT(4==AN(w),EVLENGTH);
- ASSERT(BOX&AT(w),EVDOMAIN);
- wv=AAV(w); 
- ASSERT(XNUM&AT(wv[0]),EVDOMAIN); ASSERT(1==AR(wv[0]),EVRANK); ASSERT(2==AN(wv[0]),EVLENGTH);
- ASSERT(XNUM&AT(wv[1]),EVDOMAIN); ASSERT(0==AR(wv[1]),EVRANK);
- ASSERT(INT&AT(wv[2]),EVDOMAIN);
- ASSERT(XNUM&AT(wv[3]),EVDOMAIN);
- n=XAV(wv[1])[0];
- ab=XAV(wv[0]);
- GAT0(z,XNUM,3,1); zv=XAV(z);
- RZ(ecm_s1(n,ab[0],ab[1],i0(wv[2]),XAV(wv[3]),zv));
- return z;
-}
-
-static A test_ecm_s2(J jt, A w){A*wv,z;I*b1b2;X*ab,n,*zv;
- RZ(init4792(jt));
- ASSERT(4==AN(w),EVLENGTH);
- ASSERT(BOX&AT(w),EVDOMAIN);
- wv=AAV(w); 
- ASSERT(XNUM&AT(wv[0]),EVDOMAIN); ASSERT(1==AR(wv[0]),EVRANK); ASSERT(2==AN(wv[0]),EVLENGTH);
- ASSERT(XNUM&AT(wv[1]),EVDOMAIN); ASSERT(0==AR(wv[1]),EVRANK);
- ASSERT(INT &AT(wv[2]),EVDOMAIN); ASSERT(1==AR(wv[2]),EVRANK); ASSERT(2==AN(wv[0]),EVLENGTH);
- ASSERT(XNUM&AT(wv[3]),EVDOMAIN);
- n=XAV(wv[1])[0];
- ab=XAV(wv[0]);
- b1b2=AV(wv[2]);
- GAT0(z,XNUM,3,1); zv=XAV(z);
- RZ(ecm_s2(n,ab[0],ab[1],b1b2[0],b1b2[1],XAV(wv[3]),zv));
- return z;
-}
-
-static A test_fac_ecm(J jt, A w){
- RZ(init4792(jt));
- ASSERT(!AR(w),EVRANK);
- ASSERT(XNUM&AT(w),EVDOMAIN);
- return scx(fac_ecm(XAV(w)[0]));
 }

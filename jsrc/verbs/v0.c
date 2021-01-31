@@ -65,8 +65,6 @@ static A jtcfr(J jt, A w){A c,r,*wv;I t;
 }    /* coefficients from roots */
 
 
-static D jtsummag(J jt,A w){A t=aslash(CPLUS,mag(w)); return t?DAV(t)[0]:0.0;}
-
 /* a is a poly of degree m and x is a root estimate             */
 /* improve root estimate x by applying Newton iteration n times */
 /* x - (a p. x) % (p.. a) p. x                                  */

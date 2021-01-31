@@ -363,54 +363,6 @@ J jtinplace=jt;
                         }
 #define BR2CASE(t,id)   ((id)+256*(t))
 
-static B jtreduce2(J jt,A w,C id,I f,I r,A*zz){A z=0;B b=0,btab[258],*zv;I c,d,m,wn,wr,*ws,*wv;
- wn=AN(w); wr=AR(w); ws=AS(w); wv=AV(w);
- PROD(m,f,ws); PROD(c,r,f+ws); d=c>>1;
- switch(BR2CASE(CTTZ(AT(w)),id)){
-  case BR2CASE(B01X,CEQ     ): if(b=1==r)BTABIFX(==   ); break;
-  case BR2CASE(B01X,CNE     ): if(b=1==r)BTABIFX(!=   ); break;
-  case BR2CASE(B01X,CLT     ): if(b=1==r)BTABIFX(<    ); break;
-  case BR2CASE(B01X,CLE     ): if(b=1==r)BTABIFX(<=   ); break;
-  case BR2CASE(B01X,CGT     ): if(b=1==r)BTABIFX(>    ); break;
-  case BR2CASE(B01X,CGE     ): if(b=1==r)BTABIFX(>=   ); break;
-  case BR2CASE(B01X,CMAX    ):
-  case BR2CASE(B01X,CPLUSDOT): if(b=1==r)BTABIFX(||   ); break;
-  case BR2CASE(B01X,CPLUSCO ): if(b=1==r)BTABPFX(BNOR ); break;
-  case BR2CASE(B01X,CMIN    ):
-  case BR2CASE(B01X,CSTAR   ):
-  case BR2CASE(B01X,CSTARDOT): if(b=1==r)BTABIFX(&&   ); break;
-  case BR2CASE(B01X,CSTARCO ): if(b=1==r)BTABPFX(BNAND); break;
-  case BR2CASE(LITX,CEQ     ): BR2IFX(C,== ); break;
-  case BR2CASE(LITX,CNE     ): BR2IFX(C,!= ); break;
-  case BR2CASE(C2TX,CEQ     ): BR2IFX(US,== ); break;
-  case BR2CASE(C2TX,CNE     ): BR2IFX(US,!= ); break;
-  case BR2CASE(C4TX,CEQ     ): BR2IFX(C4,== ); break;
-  case BR2CASE(C4TX,CNE     ): BR2IFX(C4,!= ); break;
-  case BR2CASE(SBTX,CEQ     ): BR2IFX(SB,== ); break;
-  case BR2CASE(SBTX,CLT     ): BR2PFX(SB,SBLT); break;
-  case BR2CASE(SBTX,CLE     ): BR2PFX(SB,SBLE); break;
-  case BR2CASE(SBTX,CGT     ): BR2PFX(SB,SBGT); break;
-  case BR2CASE(SBTX,CGE     ): BR2PFX(SB,SBGE); break;
-  case BR2CASE(SBTX,CNE     ): BR2IFX(SB,!= ); break;
-  case BR2CASE(INTX,CEQ     ): BR2IFX(I,== ); break;
-  case BR2CASE(INTX,CLT     ): BR2IFX(I,<  ); break;
-  case BR2CASE(INTX,CLE     ): BR2IFX(I,<= ); break;
-  case BR2CASE(INTX,CGT     ): BR2IFX(I,>  ); break;
-  case BR2CASE(INTX,CGE     ): BR2IFX(I,>= ); break;
-  case BR2CASE(INTX,CNE     ): BR2IFX(I,!= ); break;
-  case BR2CASE(FLX, CEQ     ): BR2PFX(D,TEQ); break;
-  case BR2CASE(FLX, CLT     ): BR2PFX(D,TLT); break;
-  case BR2CASE(FLX, CLE     ): BR2PFX(D,TLE); break;
-  case BR2CASE(FLX, CGT     ): BR2PFX(D,TGT); break;
-  case BR2CASE(FLX, CGE     ): BR2PFX(D,TGE); break;
-  case BR2CASE(FLX, CNE     ): BR2PFX(D,TNE); break;
- }
- if(b){S*u=(S*)wv; GATV(z,B01,wn>>1,wr-1,ws); zv=BAV(z); DQ(m, *zv++=btab[*u++];);}
- if(z&&1<r){I*u=f+AS(z),*v=f+1+ws; DQ(r-1, *u++=*v++;);}
- *zz=z;
- return 1;
-}    /* f/"r for dense w over an axis of length 2 */
-
 static A jtreduce(J jt,    A w,A self){A z;I d,f,m,n,r,t,wr,*ws,zt;
  F1PREFIP;
  if((SPARSE&AT(w))!=0)return reducesp(w,self);  // If sparse, go handle it
