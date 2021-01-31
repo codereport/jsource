@@ -412,9 +412,9 @@ typedef double float64x2_t __attribute__ ((vector_size (16)));
  }else{erraction;} \
 }
 
-#define GAT(name,type,atoms,rank,shaape)     GATS(name,type,atoms,rank,shaape,type##SIZE,GACOPYSHAPE, return 0)
-#define GATR(name,type,atoms,rank,shaape)     GATS(name,type,atoms,rank,shaape,type##SIZE,GACOPYSHAPER,return 0)
-#define GAT0(name,type,atoms,rank)            GATS(name,type,atoms,rank,0,     type##SIZE,GACOPYSHAPE0,return 0)
+#define GAT(name,type,atoms,rank,shaape)       GATS(name,type,atoms,rank,shaape,type##SIZE,GACOPYSHAPE, return 0)
+#define GATR(name,type,atoms,rank,shaape)      GATS(name,type,atoms,rank,shaape,type##SIZE,GACOPYSHAPER,return 0)
+#define GAT0(name,type,atoms,rank)             GATS(name,type,atoms,rank,0,     type##SIZE,GACOPYSHAPE0,return 0)
 #define GAT0E(name,type,atoms,rank,erraction)  GATS(name,type,atoms,rank,0,     type##SIZE,GACOPYSHAPE0,erraction)
 
 // Used when type is known and something else is variable.  ##SIZE must be applied before type is substituted, so we have GATVS to use inside other macros.  Normally use GATV
