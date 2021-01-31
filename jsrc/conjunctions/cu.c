@@ -280,6 +280,7 @@ static A jtunderai1(J jt,    A w,A self){DECLF;A x,y,z;B b;I j,n,*u,*v;UC f[256]
   gside=AN(AAV(w)[0])==0;  // the index to the argument v will act on (or -1 if not gerund)
   wvb=fx(AAV(w)[gside]);  // turn the gerund into a verb
  }
+ if(!(a && wvb)) return 0;
  ASSERTVV(a,wvb); v=FAV(wvb);
  c=0; f1=0; f2=0;
  // Set flag with ASGSAFE status of u/v, and inplaceable.  It will stay inplaceable unless we select an uninplaceable processing routine, or we

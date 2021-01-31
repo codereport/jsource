@@ -254,7 +254,7 @@ z=(FAV(u)->valencefns[0])(FAV(u)->flag&VJTFLGOK1?jtinplace:jt,w,u);} \
 // from parse) to 0 in all calls resulting from execution of gerund v.  Then we fail any gerund
 // if self is 0.
  A jtpowop(J jt,A a,A w,A self){A hs;B b;V*v;
- ARGCHK2(a,w);
+ if(!(a && w)) return 0;
  ASSERT(AT(a)&VERB,EVDOMAIN);  // u must be a verb
  if(AT(w)&VERB){
   // u^:v.  Create derived verb to handle it.

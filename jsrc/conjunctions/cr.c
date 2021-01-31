@@ -232,7 +232,7 @@ A jtrank2ex(J jt,AD * RESTRICT a,AD * RESTRICT w,A fs,UI lrrrlcrrcr,AF f2){
  I lrrr=(UI4)lrrrlcrrcr; I lcrrcr=lrrrlcrrcr>>2*RANKTX;  // inner, outer ranks
  F2PREFIP;PROLOG(0042);A virta,virtw,z;I acn,ak,mn,wcn,wk;
  I outerframect, outerrptct, innerframect, innerrptct, aof, wof, sof, lof, sif, lif, *lis, *los;
- ARGCHK2(a,w);
+ if(!(a && w)) return 0;
  if((UI)lrrr==(((UI)AR(a)<<RANKTX)+AR(w))){return CALL2IP(f2,a,w,fs);}  // if there's only one cell and no frame, run on it, that's the result.
  if(((AT(a)|AT(w))&SPARSE)!=0)return sprank2(a,w,fs,(UI)lcrrcr>>RANKTX,lcrrcr&RANKTMSK,f2);  // this needs to be updated to handle multiple ranks
 // lr,rr are the ranks of the underlying verb.  lcr,rcr are the cell-ranks given by u"lcr rcr.
@@ -409,7 +409,8 @@ A jtrank2ex(J jt,AD * RESTRICT a,AD * RESTRICT w,A fs,UI lrrrlcrrcr,AF f2){
 // This code does not set inplaceability on nonrepeated cells - hardly useful at rank 0
 A jtrank2ex0(J jt,AD * RESTRICT a,AD * RESTRICT w,A fs,AF f2){F2PREFIP;PROLOG(0042);A virta,virtw,z;
    I ak,ar,*as,ict,oct,mn,wk,wr,*ws;
- ARGCHK2(a,w); ar=AR(a); wr=AR(w); if(!(ar+wr))return CALL2IP(f2,a,w,fs);   // if no frame, make just 1 call
+ if(!(a && w)) return 0;
+ ar=AR(a); wr=AR(w); if(!(ar+wr))return CALL2IP(f2,a,w,fs);   // if no frame, make just 1 call
  if(((AT(a)|AT(w))&SPARSE)!=0)return sprank2(a,w,fs,0,0,f2);  // this needs to be updated to handle multiple ranks
 #define ZZFLAGWORD state
 

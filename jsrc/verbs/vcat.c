@@ -179,7 +179,8 @@ static void moveawSV(C *zv,C *av,C *wv,I c,I k,I ma,I mw,I arptreset,I wrptreset
 int (*p[4]) (int x, int y);
 static void(*moveawtbl[])() = {moveawVV,moveawVS,moveawSV};
  A jtover(J jt,A a,A w){AD * RESTRICT z;C*zv;I replct,framect,acr,af,ar,*as,k,ma,mw,p,q,r,t,wcr,wf,wr,*ws,zn;
- F2PREFIP;ARGCHK2(a,w);
+ F2PREFIP;
+ if(!(a && w)) return 0;
  UI jtr=jt->ranks;//  fetch early
  if((SPARSE&(AT(a)|AT(w)))!=0){return ovs(a,w);}  // if either arg is sparse, switch to sparse code
  if(AT(a)!=(t=AT(w))){t=maxtypedne(AT(a)|(AN(a)==0),t|(AN(w)==0)); t&=-t; if(!TYPESEQ(t,AT(a))){RZ(a=cvt(t,a));} else {RZ(w=cvt(t,w));}}  // convert args to compatible precisions, changing a and w if needed.  Treat empty arg as boolean
@@ -250,7 +251,8 @@ static void(*moveawtbl[])() = {moveawVV,moveawVS,moveawSV};
 }    /* overall control, and a,w and a,"r w for cell rank <: 2 */
 
  A jtstitch(J jt,A a,A w){I ar,wr; A z;
- F2PREFIP;ARGCHK2(a,w);
+ F2PREFIP;
+ if(!(a && w)) return 0;
  ar=AR(a); wr=AR(w);
  ASSERT((-ar&-wr&-(AS(a)[0]^AS(w)[0]))>=0,EVLENGTH);  // a or w scalar, or same # items    always OK to fetch s[0]
  if((((SPARSE&(AT(a)|AT(w)))-1)&(2-ar)&(2-wr))>=0)return IRSIP2(a,w,0L,(ar-1)&RMAX,(wr-1)&RMAX,jtover,z);  // not sparse or rank>2
@@ -258,7 +260,8 @@ static void(*moveawtbl[])() = {moveawVV,moveawVS,moveawSV};
 }
 
  A jtlamin1(J jt, A w){A x;I* RESTRICT s,* RESTRICT v,wcr,wf,wr; 
- F1PREFIP;ARGCHK1(w);
+ F1PREFIP;
+ if(!w) return 0;
  wr=AR(w); wcr=(RANKT)jt->ranks; wcr=wr<wcr?wr:wcr; RESETRANK; wf=wr-wcr;
  fauxblockINT(wfaux,4,1); fauxINT(x,wfaux,1+wr,1) v=AV(x);
  s=AS(w); MCISH(v,s,wf); v[wf]=1; MCISH(v+wf+1,s+wf,wcr);  // frame, 1, shape - the final shape

@@ -7,7 +7,7 @@
 
 
 static I jtord(J jt,A w){I j,n,*v,z;
- ARGCHK1(w);
+ if(!w) return 0;
  n=AN(w); z=-n;
  if(n){if(!(INT&AT(w)))RZ(w=cvt(INT,w)); v=AV(w); DQ(n, j=*v++; z=z<j?j:z;); ++z;}
  return z;
@@ -112,7 +112,7 @@ static A jtdfc(J jt,I n,A w){PROLOG(0082);A b,q,*wv,z;B*bv;I c,j,qn,*qv,*x;
 
 // reduced form seems to be (>:i.-$y) #: y where y is the permutation number (note there is a redundant 0 at the end)
 static A jtdfr(J jt, A w){A z;I c,d,i,j,m,n,*v,*x;
- ARGCHK1(w);
+ if(!w) return 0;
  n=AS(w)[AR(w)-1]; PROD(m,AR(w)-1,AS(w)); v=AV(w);  // n=length of each permutation, m=#permutations
  GATV(z,INT,AN(w),AR(w),AS(w)); x=AV(z);
  for(i=0;i<m;++i){   // for each permutation

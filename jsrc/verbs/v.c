@@ -16,7 +16,8 @@
 
 // ,y and ,"r y - producing virtual blocks
  A jtravel(J jt, A w){A a,c,q,x,y,y0,z;B*b;I f,j,m,r,*u,*v,*yv;P*wp,*zp;
- F1PREFIP; ARGCHK1(w); 
+ F1PREFIP;
+ if(!w) return 0;
  r=(RANKT)jt->ranks; r=AR(w)<r?AR(w):r; f=AR(w)-r; // r=effective rank (jt->rank is effective rank from irs1), f=frame
  if(!(AT(w)&SPARSE)){
   if(r==1)return RETARG(w);  // if we are enfiling 1-cells, there's nothing to do, return the input (note: AN of sparse array is always 1)

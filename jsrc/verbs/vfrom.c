@@ -316,7 +316,7 @@ static A jtafrom(J jt,A a,A w){PROLOG(0073);A c,ind,p=0,q,*v,y=w;B bb=1;I acr,ar
 
  A jtfrom(J jt,A a,A w){I at;A z;
  F2PREFIP;
- ARGCHK2(a,w);
+ if(!(a && w)) return 0;
  at=AT(a);
  if(!((AT(a)|AT(w))&(SPARSE))){
   // if B01|INT|FL atom { INT|FL|BOX array, and no frame, just pluck the value.  If a is inplaceable and not unincorpable, use it

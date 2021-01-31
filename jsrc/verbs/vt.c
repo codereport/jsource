@@ -76,7 +76,8 @@ static A jttk(J jt,A a,A w){PROLOG(0093);A y,z;B b=0;C*yv,*zv;I c,d,dy,dz,e,i,k,
 
  A jttake(J jt,A a,A w){A s;I acr,af,ar,n,*v,wcr,wf,wr;
  F2PREFIP;
- ARGCHK2(a,w); I wt = AT(w);  // wt=type of w
+ if(!(a && w)) return 0;
+ I wt = AT(w);  // wt=type of w
  if((SPARSE&AT(a))!=0)RZ(a=denseit(a));
  if(!(SPARSE&wt))RZ(w=setfv(w,w));
  ar=AR(a); acr=jt->ranks>>RANKTX; acr=ar<acr?ar:acr; af=ar-acr;  // ?r=rank, ?cr=cell rank, ?f=length of frame

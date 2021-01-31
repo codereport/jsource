@@ -75,7 +75,7 @@ static void sieve(I n,I m,B*b,B*u){I i,j,q;
 }    /* sieve b for n+i.m, but if 0=n then b=. 0 (2 3 5)}b */
 
 static A jtprime1(J jt, A w){A d,t,y,z;B*b,*u;I c,*dv,e,i,j,k,m,n,p,q,*wv,x,*zv;
- ARGCHK1(w);
+ if(!w) return 0;
  k=0; n=AN(w); wv=AV(w); RE(m=sup(n,wv)); RESETRANK; JBREAK0;
  GATV(z,INT,n,AR(w),AS(w)); zv= AV(z);
  RZ(d=grade1(ravel(w)));  dv= AV(d);

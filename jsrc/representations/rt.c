@@ -76,7 +76,7 @@ static A jtcenter(J jt,A a,I j,I k,I m){A z;C*x;I n,*s,zn;
 }
 
 static A jttroot(J jt,A a,A w){A t,x;B b;C*u,*v;I j=0,k=0,m,n,*s;
- ARGCHK2(a,w);
+ if(!(a && w)) return 0;
  m=AN(a); u=CAV(a); b=!m||1==m&&BETWEENC(*u,'0','9');
  GATV0(x,LIT,b?1:4+m,1); v=CAV(x);
  *v=jt->bx[10]; if(!b){v[3+m]=jt->bx[10]; v[1]=v[2+m]=' '; MC(2+v,u,m);}
@@ -96,7 +96,7 @@ static A jttleaf(J jt, A w){A t,z;C*v;I n,*s;
 }
 
 static A jttconnect(J jt, A w){A*wv,x,y,z;B b,d;C c,*u,*xv,*yv,*zv;I e,i,j,m,n,p,q,zn;
- ARGCHK1(w);
+ if(!w) return 0;
  n=AN(w); wv=AAV(w); y=wv[0]; m=AS(y)[0];
  e=0; DO(n,e+=*(1+AS(wv[i])););
  RE(zn=mult(m,e)); GATVR(z,LIT,zn,2,AS(y)); AS(z)[1]=e; zv=CAV(z);
@@ -123,7 +123,7 @@ EVERYFS(trrself,jttrr,0,0,VFLAGNONE)
 static A jttreach(J jt, A w){return troot(scc('0'),graft(ope(every(w,(A)&trrself))));}
 
 static A jttrr(J jt, A w){PROLOG(0058);A hs,s,t,*x,z;B ex,xop;C id;I fl,*hv,m;V*v;
- ARGCHK1(w);
+ if(!w) return 0;
  if(AT(w)&NOUN+NAME){return tleaf(lrep(w));}
  v=FAV(w); id=v->id; fl=v->flag;
  I fndx=(id==CBDOT)&&!v->fgh[0]; A fs=v->fgh[fndx]; A gs=v->fgh[fndx^1];  // In verb for m b., if f is empty look to g for the left arg.  It would be nice to be more general

@@ -362,7 +362,7 @@ A jtsybaseloc(J jt,A a) {I m,n;NM*v;
 // result is symbol-table slot for the name if found, or 0 if not found
 // This code is copied in p.c
 L*jtsyrd(J jt,A a,A locsyms){A g;
- ARGCHK1(a);
+ if(!a) return 0;
  if(!(NAV(a)->flag&(NMLOC|NMILOC))){L *e;
   // If there is a local symbol table, search it first
   if(e = probelocal(a,locsyms)){return e;}  // return flagging the result if local
@@ -414,7 +414,7 @@ static A jtdllsymaddr(J jt,A w,C flag){A*wv,x,y,z;I i,n,*zv;L*v;
  A jtdllsymdat(J jt, A w){return dllsymaddr(w,1);}
 
 // look up the name w using full name resolution.  Return the value if found, abort if not found or invalid name
- A jtsymbrd(J jt, A w){L*v; ARGCHK1(w); ASSERTN(v=syrd(w,jt->locsyms),EVVALUE,w); return v->val;}
+ A jtsymbrd(J jt, A w){L*v; if(!w) return 0; ASSERTN(v=syrd(w,jt->locsyms),EVVALUE,w); return v->val;}
 
 // look up name w, return value unless locked or undefined; then return just the name
  A jtsymbrdlocknovalerr(J jt, A w){A y;L *v;
@@ -471,7 +471,8 @@ L* jtprobeisquiet(J jt,A a,A locsyms){A g;  // locsyms is used in the call, but 
 // assign symbol: assign name a in symbol table g to the value w (but g is special if jt->assignsym is nonnull)
 // Result points to the symbol-table block for the assignment
 L* jtsymbis(J jt,A a,A w,A g){A x;I m,n,wn,wr,wt;L*e;
- ARGCHK2(a,w); RZ(g)
+ if(!(a && w)) return 0;
+ RZ(g)
  // If we have an assignsym, we have looked this name up already, so just use the symbol-table entry found then
  // in this case g is the type field of the name being assigned; and jt->locsyms must exist, since it comes from
  // an explicit definition

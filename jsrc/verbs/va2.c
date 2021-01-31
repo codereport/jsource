@@ -1025,10 +1025,10 @@ static A jtsumatgbool(J jt,A a,A w,C id){A t,z;B* RESTRICTI av,* RESTRICTI wv;I 
 #define SETCONPTR2(n) A conptr=num(n); A conptr3=numvr(n); conptr=AT(w)&FL?conptr3:conptr;   // used for 2, when the only options are INT/FL
 
  A jtnot   (J jt, A w){ARGCHK1(w); SETCONPTR(1) return AT(w)&B01+SB01?eq(num(0),w):minus(conptr,w);}
- A jtnegate(J jt, A w){ARGCHK1(w); SETCONPTR(0) return minus(conptr,w);}
+ A jtnegate(J jt, A w){if(!w) return 0; SETCONPTR(0) return minus(conptr,w);}
  A jtdecrem(J jt, A w){ARGCHK1(w); SETCONPTR(1) IPSHIFTWA; return minus(w,conptr);}
  A jtincrem(J jt, A w){if(!w) return 0; SETCONPTR(1) return plus(conptr,w);}
- A jtduble (J jt, A w){ARGCHK1(w); SETCONPTR2(2) return tymes(conptr,w);}
+ A jtduble (J jt, A w){if(!w) return 0; SETCONPTR2(2) return tymes(conptr,w);}
  A jtsquare(J jt, A w){ARGCHK1(w); return tymes(w,w);}   // leave inplaceable in w only  ?? never inplaces
  A jtrecip (J jt, A w){ARGCHK1(w); SETCONPTR(1) return divide(conptr,w);}
  A jthalve (J jt, A w){ARGCHK1(w); if(!(AT(w)&XNUM+RAT))return tymes(onehalf,w); IPSHIFTWA; return divide(w,num(2));}

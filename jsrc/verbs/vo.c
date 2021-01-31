@@ -26,7 +26,9 @@ I levelle(A w,I l){
  A jtlevel1(J jt, A w){ARGCHK1(w); return sc(level(w));}
 
  A jtbox(J jt, A w){A y,z,*zv;C*wv;I f,k,m,n,r,wr,*ws; 
- F1PREFIP;ARGCHK1(w);I wt=AT(w); FLAGT waf=AFLAG(w);
+ F1PREFIP;
+ if(!w) return 0;
+ I wt=AT(w); FLAGT waf=AFLAG(w);
  ASSERT(!(SPARSE&wt),EVNONCE);
  wr=AR(w); r=(RANKT)jt->ranks; r=wr<r?wr:r; f=wr-r;   // no RESETRANK because we call no primitives
  if(!f){

@@ -337,7 +337,7 @@ A jtcvt(J jt,I t,A w){A y;B b;
 // If mode bit 1 is set, minimum precision is INT; if mode bit 2 is set, minimum precision is FL; if mode bit 3 is set, minimum precision is CMPX 
 // Result is a new buffer, always
 A jtbcvt(J jt,C mode,A w){FPREFIP; A y,z=w;
- ARGCHK1(w);
+ if(!w) return 0;
 #ifdef NANFLAG
  // there may be values (especially b types) that were nominally CMPX but might actually be integers.  Those were
  // stored with the real part being the actual integer value and the imaginary part as the special 'flag' value.  We

@@ -155,7 +155,7 @@ static A atcomp0(J jt,A a,A w,A self){A z;AF f;
 //
 // u@v
  A jtatop(J jt,A a,A w){A f,g,h=0,x;AF f1=on1,f2=jtupon2;B b=0,j;C c,d,e;I flag, flag2=0,m=-1;V*av,*wv;
- ARGCHK2(a,w);
+ if(!(a && w)) return 0;
  ASSERTVVn(a,w);
  av=FAV(a); c=av->id;
  if(AT(w)&NOUN){  // u@n

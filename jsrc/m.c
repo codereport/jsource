@@ -371,7 +371,7 @@ void jtfh(J jt,A w){fr(w);}
 // mf() frees a block.  If what if freed is a symbol table, all the symbols are freed first.
 
 // mark w incorporated, reassigning if necessary.  Return the address of the block.  Used when w is an rvalue
-A jtincorp(J jt, A w) {ARGCHK1(w); INCORP(w); return w;}
+A jtincorp(J jt, A w) {if(!w) return 0; INCORP(w); return w;}
 
 // allocate a virtual block, given the backing block
 // offset is offset in atoms from start of w; r is rank
@@ -753,7 +753,7 @@ void jttpop(J jt,A *old){A *endingtpushp;
 // only protect the top level, because if the named value is incorporated at a lower level its usecount must be >1.
  A jtrat(J jt, A w){ARGCHK1(w); ras(w); tpush(w); return w;}  // recursive.  w can be zero only if explicit definition had a failing sentence
 
-A jtras(J jt, AD * RESTRICT w) { ARGCHK1(w); realizeifvirtual(w); ra(w); return w; }  // subroutine version of ra() to save space
+A jtras(J jt, AD * RESTRICT w) { if(!w) return 0; realizeifvirtual(w); ra(w); return w; }  // subroutine version of ra() to save space
 A jtra00s(J jt, AD * RESTRICT w) { ARGCHK1(w); ra00(w,AT(w)); return w; }  // subroutine version of ra00() to save space
 A jtrifvs(J jt, AD * RESTRICT w) { ARGCHK1(w); realizeifvirtual(w); return w; }  // subroutine version of rifv() to save space and be an rvalue
 A jtmkwris(J jt, AD * RESTRICT w) { ARGCHK1(w); makewritable(w); return w; }  // subroutine version of makewritable() to save space and be an rvalue
@@ -926,7 +926,7 @@ RESTRICTF A jtgah(J jt,I r,A w){A z;
 
 // clone w, returning the address of the cloned area.  Result is NOT recursive, not AFRO, not virtual
  A jtca(J jt, A w){A z;I t;P*wp,*zp;
- ARGCHK1(w);
+ if(!w) return 0;
  t=AT(w);
  if((t&SPARSE)!=0){
   GASPARSE(z,t,AN(w),AR(w),AS(w))

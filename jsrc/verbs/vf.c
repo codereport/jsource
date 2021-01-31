@@ -252,7 +252,7 @@ static A jtreshapesp(J jt,A a,A w,I wf,I wcr){A a1,e,t,x,y,z;B az,*b,wz;I an,*av
 
  A jtreitem(J jt,A a,A w){A y,z;I acr,an,ar,r,*v,wcr,wr;
  F2PREFIP;
- ARGCHK2(a,w);
+ if(!(a && w)) return 0;
  ar=AR(a); acr=jt->ranks>>RANKTX; acr=ar<acr?ar:acr;
  wr=AR(w); wcr=(RANKT)jt->ranks; wcr=wr<wcr?wr:wcr; r=wcr-1; RESETRANK;
  if((I )(1<acr)|(I )(acr<ar)){z=rank2ex(a,w,UNUSED_VALUE,MIN(acr,1),wcr,acr,wcr,jtreitem); PRISTCLRF(w) return z;}  // multiple cells - must lose pristinity  // We handle only single operations here, where a has rank<2

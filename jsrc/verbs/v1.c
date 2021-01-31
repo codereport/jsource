@@ -64,7 +64,8 @@ static B eqv(I af,I wf,I m,I n,I k,C*av,C*wv,B* RESTRICT x,B b1){B b,* RESTRICT 
 
 // Return 1 if a and w match, 0 if not
 B jtequ(J jt,A a,A w){A x;
- F2PREFIP;ARGCHK2(a,w);  // allow inplace request - it has no effect
+ F2PREFIP;
+ if(!(a && w)) return 0;  // allow inplace request - it has no effect
  if(a==w)return 1;
  if((SPARSE&(AT(a)|AT(w)))!=0)if(AR(a)&&AR(w)){RZ(x=matchs(a,w)); return BAV(x)[0];}
  return ((B (*)())jtmatchsub)(jt,a,w,0   MATCHSUBDEFAULTS);  // don't check level - it takes too long for big arrays

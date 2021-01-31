@@ -60,7 +60,7 @@ static A jtlcapco2(J jt,A a,A w,A self){A z;V*v=FAV(self);
 // Result logger for S:   w is the result; we add it to AK(self), reallocating as needed
 // result is 0 for error or a harmless small result (0) which will be collected at higher levels and discarded
 static A jtscfn(J jt,    A w,A self){
- ARGCHK1(w);
+ if(!w) return 0;
  if(AS(AKASA(self))[0]==AN(AKASA(self))){I n=AN(AKASA(self)); RZ(AKASA(self)=ext(1,AKASA(self))); AS(AKASA(self))[0]=n;}  // if current buffer is full, reallocate.  ext resets AS
  AAV(AKASA(self))[AS(AKASA(self))[0]++]=incorp(w);  // copy in new result pointer
  return num(0);  // harmless good return

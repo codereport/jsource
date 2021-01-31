@@ -821,7 +821,7 @@ static A jtiota1(J jt,    A w,A self){I j; return apv(SETIC(w,j),1L,1L);}
 
  A jtbslash(J jt, A w){A f;AF f1=jtinfixprefix1,f2=jtinfixprefix2;V*v;I flag=FAV(ds(CBSLASH))->flag;
 ;
- ARGCHK1(w);
+ if(!w) return 0;
  if(NOUN&AT(w))return fdef(0,CBSLASH,VERB, jtinfixprefix1,jtinfixprefix2, w,0L,fxeachv(1L,w), VGERL|flag, RMAX,0L,RMAX);
  v=FAV(w);  // v is the u in u\ y
  switch(v->id){
@@ -844,4 +844,4 @@ static A jtiota1(J jt,    A w,A self){I j; return apv(SETIC(w,j),1L,1L);}
  return f;
 }
 
-A jtascan(J jt,C c,A w){ARGCHK1(w); A z; return df1(z,w,bslash(slash(ds(c))));}
+A jtascan(J jt,C c,A w){if(!w) return 0; A z; return df1(z,w,bslash(slash(ds(c))));}
