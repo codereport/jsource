@@ -63,8 +63,8 @@ map ((+1) . (*2)) [0..9] -- alternative thanks to Alexandru Dinu
 ```
 **C++**:
 ```c++
-for(int i=0;i<10;i++){
-cout<<(2 * i )+ 1<<"\n";}
+// https://godbolt.org/z/5r7aEo
+iota(0, 10) | transform([](auto e) { return e * 2 + 1; })
 ```
 
 ## Getting started & Building:
