@@ -31,6 +31,7 @@ set(CMAKE_CXX_VISIBILITY_PRESET hidden)
 
 find_package(StandardMathLibrary REQUIRED)
 
+set(DOCS "NO" CACHE STRING "Build documentation")
 set(TARGET_ARCHITECTURE "skylake" CACHE STRING "CPU architecture")
 OptimizeForArchitecture()
 add_compile_options("$<$<COMPILE_LANGUAGE:CXX>:${Vc_ARCHITECTURE_FLAGS}>")
@@ -77,7 +78,9 @@ add_compile_options($<$<COMPILE_LANG_AND_ID:CXX,AppleClang,Clang>:-Wno-delete-no
 
 add_subdirectory(jsrc)
 add_subdirectory(base64)
-# add_subdirectory(docs) TODO: set up build param to build docs
+if(${DOCS} STREQUAL "YES")
+    add_subdirectory(docs)
+endif()
 
 if(BUILD_SHARED_LIBS)
     set_target_properties(j-base64 PROPERTIES

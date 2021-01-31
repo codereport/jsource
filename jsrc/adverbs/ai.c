@@ -180,7 +180,7 @@ static A jtinvamp(J jt, A w){A f,ff,g,h,x,y;B nf,ng;C c,d,*yv;I n;V*u,*v;
    RZ(x=cvt(INT,x));
    RZ(y=eps(v2(-1L,1L),signum(x))); yv=CAV(y);
    f=amp(mag(x),ds(CPLUS));
-   g=1==AN(x)?ds(CPOUND):atop(amp(tally(x),ds(CTAKE)),ds(CDOLLAR));
+   g=1==AN(x)?ds(CPOUND):atop(amp(tally(jt, x),ds(CTAKE)),ds(CDOLLAR));
    h=!yv[1]?f:atop(!yv[0]?ds(CMINUS):amp(negate(signum(x)),ds(CSTAR)),f);
    return obverse(hook(swap(ds(CTAKE)),atop(h,g)),w);
   case CDOMINO:

@@ -3,4 +3,4 @@ Monadic
 =======
 .. toctree::
    :caption: Contents:
-.. doxygenfunction:: jttally
+.. doxygenfunction:: tally
