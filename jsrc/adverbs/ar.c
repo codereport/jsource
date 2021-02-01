@@ -46,7 +46,7 @@ static void vdone(I m,I n,B*x,B*z,B pc){B b,*u;
 
 // no errors possible here
 #define REDUCEBFX(f,pfx,ipfx,spfx,bpfx,vdo)  \
- AHDRP(f,B,B){B*y=0;I j,q;                       \
+ I f(I d,I n,I m,B* RESTRICTI x,B* RESTRICTI z,J jt){B*y=0;I j,q;                       \
   if(d==1){vdo; return EVOK;}                                \
   x+=m*d*n; z+=m*d;                           \
           \
@@ -74,7 +74,7 @@ REDUCCPFX( plusinsO, D, I,  PLUSO)
 REDUCCPFX(minusinsO, D, I, MINUSO) 
 REDUCCPFX(tymesinsO, D, I, TYMESO) 
 
-AHDRR(plusinsD,D,D){I i;D* RESTRICT y;
+ I plusinsD(I d,I n,I m,D* RESTRICTI x,D* RESTRICTI z,J jt){I i;D* RESTRICT y;
   NAN0;
   // latency of add is 4, so use 4 accumulators
   if(d==1){

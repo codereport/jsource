@@ -168,9 +168,9 @@ typedef I AHDRSFN(I d,I n,I m,void* RESTRICTI x,void* RESTRICTI z,J jt);
 #define HDR1JERRNAN I rc=jt->jerr; rc=NANTEST?EVNAN:rc; jt->jerr=0; return rc?rc:EVOK;   // translate no error to no-error value
 
 //#define I f(I n,I m,Tx* RESTRICTI x,Ty* RESTRICTI y,Tz* RESTRICTI z,J jt)       I f(I n,I m,Tx* RESTRICTI x,Ty* RESTRICTI y,Tz* RESTRICTI z,J jt)  // must match VF, AHDR2FN
-#define AHDRP(f,Tz,Tx)          I f(I d,I n,I m,Tx* RESTRICTI x,Tz* RESTRICTI z,J jt)
-#define AHDRR(f,Tz,Tx)          I f(I d,I n,I m,Tx* RESTRICTI x,Tz* RESTRICTI z,J jt)
-#define AHDRS(f,Tz,Tx)          I f(I d,I n,I m,Tx* RESTRICTI x,Tz* RESTRICTI z,J jt)
+//#define I f(I d,I n,I m,Tx* RESTRICTI x,Tz* RESTRICTI z,J jt)          I f(I d,I n,I m,Tx* RESTRICTI x,Tz* RESTRICTI z,J jt)
+//#define I f(I d,I n,I m,Tx* RESTRICTI x,Tz* RESTRICTI z,J jt)          I f(I d,I n,I m,Tx* RESTRICTI x,Tz* RESTRICTI z,J jt)
+//#define I f(I d,I n,I m,Tx* RESTRICTI x,Tz* RESTRICTI z,J jt)          I f(I d,I n,I m,Tx* RESTRICTI x,Tz* RESTRICTI z,J jt)
 
 // value in vaptr[]
 #define VA2CBW0000 1

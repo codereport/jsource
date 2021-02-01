@@ -17,9 +17,9 @@
 
 //#define ADECL1  AHDR1
 //#define ADECL2  AHDR2
-#define ADECLP  AHDRP
-#define ADECLR  AHDRR
-#define ADECLS  AHDRS
+//#define ADECLP  AHDRP
+//#define ADECLR  AHDRR
+//#define ADECLS  AHDRS
 
 extern I   absQ(JST * RESTRICT jt,I n,Q* z,Q* x);
 extern I   absX(JST * RESTRICT jt,I n,X* z,X* x);
@@ -42,65 +42,65 @@ extern I   sgnX(JST * RESTRICT jt,I n,X* z,X* x);
 extern I  sqrtQ(JST * RESTRICT jt,I n,Q* z,Q* x);
 extern I  sqrtX(JST * RESTRICT jt,I n,X* z,X* x);
 
-extern ADECLP(   andpfxB,B, B );  extern ADECLR(   andinsB,B, B );  extern ADECLS(   andsfxB,B, B );
-extern ADECLP(   divpfxD,D, D );  extern ADECLR(   divinsD,D, D );  extern ADECLS(   divsfxD,D, D );
-extern ADECLP(   divpfxZ,Z, Z );  extern ADECLR(   divinsZ,Z, Z );  extern ADECLS(   divsfxZ,Z, Z );
-extern ADECLP(    eqpfxB,B, B );  extern ADECLR(    eqinsB,B, B );  extern ADECLS(    eqsfxB,B, B );
-extern ADECLP(    gepfxB,B, B );  extern ADECLR(    geinsB,B, B );  extern ADECLS(    gesfxB,B, B );
-extern ADECLP(    gtpfxB,B, B );  extern ADECLR(    gtinsB,B, B );  extern ADECLS(    gtsfxB,B, B );
-extern ADECLP(    lepfxB,B, B );  extern ADECLR(    leinsB,B, B );  extern ADECLS(    lesfxB,B, B );
-extern ADECLP(    ltpfxB,B, B );  extern ADECLR(    ltinsB,B, B );  extern ADECLS(    ltsfxB,B, B );
-extern ADECLP(   maxpfxD,D, D );  extern ADECLR(   maxinsD,D, D );  extern ADECLS(   maxsfxD,D, D );
-extern ADECLP(   maxpfxI,I, I );  extern ADECLR(   maxinsI,I, I );  extern ADECLS(   maxsfxI,I, I );
-extern ADECLP(   maxpfxQ,Q, Q );                                    extern ADECLS(   maxsfxQ,Q, Q );
-extern ADECLP(   maxpfxS,SB,SB);  extern ADECLR(   maxinsS,SB,SB);  extern ADECLS(   maxsfxS,SB,SB);
-extern ADECLP(   maxpfxX,X, X );  extern ADECLR(   maxinsX,X, X );  extern ADECLS(   maxsfxX,X, X );
-extern ADECLP(   minpfxD,D, D );  extern ADECLR(   mininsD,D, D );  extern ADECLS(   minsfxD,D, D );
-extern ADECLP(   minpfxI,I, I );  extern ADECLR(   mininsI,I, I );  extern ADECLS(   minsfxI,I, I );
-extern ADECLP(   minpfxQ,Q, Q );                                    extern ADECLS(   minsfxQ,Q, Q );
-extern ADECLP(   minpfxS,SB,SB);  extern ADECLR(   mininsS,SB,SB);  extern ADECLS(   minsfxS,SB,SB);
-extern ADECLP(   minpfxX,X, X );  extern ADECLR(   mininsX,X, X );  extern ADECLS(   minsfxX,X, X );
-extern ADECLP( minuspfxB,I, B );  extern ADECLR( minusinsB,I, B );  extern ADECLS( minussfxB,I, B );
-extern ADECLP( minuspfxD,D, D );  extern ADECLR( minusinsD,D, D );  extern ADECLS( minussfxD,D, D );
-extern ADECLP( minuspfxI,I, I );  extern ADECLR( minusinsI,I, I );  extern ADECLS( minussfxI,I, I );
-extern ADECLP( minuspfxQ,Q, Q );  
-extern ADECLP( minuspfxO,D, I );  extern ADECLR( minusinsO,D, I );  extern ADECLS( minussfxO,D, I );
-extern ADECLP( minuspfxX,X, X );  
-extern ADECLP( minuspfxZ,Z, Z );  extern ADECLR( minusinsZ,Z, Z );  extern ADECLS( minussfxZ,Z, Z );
-extern ADECLP(  nandpfxB,B, B );  extern ADECLR(  nandinsB,B, B );  extern ADECLS(  nandsfxB,B, B );
-extern ADECLP(    nepfxB,B, B );  extern ADECLR(    neinsB,B, B );  extern ADECLS(    nesfxB,B, B );
-extern ADECLP(    orpfxB,B, B );  extern ADECLR(   norinsB,B, B );  extern ADECLS(   norsfxB,B, B );
-extern ADECLP(   norpfxB,B, B );  extern ADECLR(    orinsB,B, B );  extern ADECLS(    orsfxB,B, B );
-extern ADECLP(  pluspfxB,I, B );  extern ADECLR(  plusinsB,I, B );  extern ADECLS(  plussfxB,I, B );
-extern ADECLP(  pluspfxD,D, D );  extern ADECLR(  plusinsD,D, D );  extern ADECLS(  plussfxD,D, D );
-extern ADECLP(  pluspfxI,I, I );  extern ADECLR(  plusinsI,I, I );  extern ADECLS(  plussfxI,I, I );
-extern ADECLP(  pluspfxO,D, I );  extern ADECLR(  plusinsO,D, I );  extern ADECLS(  plussfxO,D, I );
-extern ADECLP(  pluspfxQ,Q, Q );                                    extern ADECLS(  plussfxQ,Q, Q );
-extern ADECLP(  pluspfxX,X, X );                                    extern ADECLS(  plussfxX,X, X );
-extern ADECLP(  pluspfxZ,Z, Z );  extern ADECLR(  plusinsZ,Z, Z );  extern ADECLS(  plussfxZ,Z, Z );
-extern ADECLP( tymespfxD,D, D );  extern ADECLR( tymesinsD,D, D );  extern ADECLS( tymessfxD,D, D );
-extern ADECLP( tymespfxI,I, I );  extern ADECLR( tymesinsI,I, I );  extern ADECLS( tymessfxI,I, I );
-extern ADECLP( tymespfxO,D, I );  extern ADECLR( tymesinsO,D, I );  extern ADECLS( tymessfxO,D, I );
-extern ADECLP( tymespfxQ,Q, Q );                                    extern ADECLS( tymessfxQ,Q, Q );
-extern ADECLP( tymespfxX,X, X );                                    extern ADECLS( tymessfxX,X, X );
-extern ADECLP( tymespfxZ,Z, Z );  extern ADECLR( tymesinsZ,Z, Z );  extern ADECLS( tymessfxZ,Z, Z );
+extern I    andpfxB(I d,I n,I m, B * RESTRICTI x,B* RESTRICTI z,J jt);  extern I    andinsB(I d,I n,I m, B * RESTRICTI x,B* RESTRICTI z,J jt);  extern I    andsfxB(I d,I n,I m, B * RESTRICTI x,B* RESTRICTI z,J jt);
+extern I    divpfxD(I d,I n,I m, D * RESTRICTI x,D* RESTRICTI z,J jt);  extern I    divinsD(I d,I n,I m, D * RESTRICTI x,D* RESTRICTI z,J jt);  extern I    divsfxD(I d,I n,I m, D * RESTRICTI x,D* RESTRICTI z,J jt);
+extern I    divpfxZ(I d,I n,I m, Z * RESTRICTI x,Z* RESTRICTI z,J jt);  extern I    divinsZ(I d,I n,I m, Z * RESTRICTI x,Z* RESTRICTI z,J jt);  extern I    divsfxZ(I d,I n,I m, Z * RESTRICTI x,Z* RESTRICTI z,J jt);
+extern I     eqpfxB(I d,I n,I m, B * RESTRICTI x,B* RESTRICTI z,J jt);  extern I     eqinsB(I d,I n,I m, B * RESTRICTI x,B* RESTRICTI z,J jt);  extern I     eqsfxB(I d,I n,I m, B * RESTRICTI x,B* RESTRICTI z,J jt);
+extern I     gepfxB(I d,I n,I m, B * RESTRICTI x,B* RESTRICTI z,J jt);  extern I     geinsB(I d,I n,I m, B * RESTRICTI x,B* RESTRICTI z,J jt);  extern I     gesfxB(I d,I n,I m, B * RESTRICTI x,B* RESTRICTI z,J jt);
+extern I     gtpfxB(I d,I n,I m, B * RESTRICTI x,B* RESTRICTI z,J jt);  extern I     gtinsB(I d,I n,I m, B * RESTRICTI x,B* RESTRICTI z,J jt);  extern I     gtsfxB(I d,I n,I m, B * RESTRICTI x,B* RESTRICTI z,J jt);
+extern I     lepfxB(I d,I n,I m, B * RESTRICTI x,B* RESTRICTI z,J jt);  extern I     leinsB(I d,I n,I m, B * RESTRICTI x,B* RESTRICTI z,J jt);  extern I     lesfxB(I d,I n,I m, B * RESTRICTI x,B* RESTRICTI z,J jt);
+extern I     ltpfxB(I d,I n,I m, B * RESTRICTI x,B* RESTRICTI z,J jt);  extern I     ltinsB(I d,I n,I m, B * RESTRICTI x,B* RESTRICTI z,J jt);  extern I     ltsfxB(I d,I n,I m, B * RESTRICTI x,B* RESTRICTI z,J jt);
+extern I    maxpfxD(I d,I n,I m, D * RESTRICTI x,D* RESTRICTI z,J jt);  extern I    maxinsD(I d,I n,I m, D * RESTRICTI x,D* RESTRICTI z,J jt);  extern I    maxsfxD(I d,I n,I m, D * RESTRICTI x,D* RESTRICTI z,J jt);
+extern I    maxpfxI(I d,I n,I m, I * RESTRICTI x,I* RESTRICTI z,J jt);  extern I    maxinsI(I d,I n,I m, I * RESTRICTI x,I* RESTRICTI z,J jt);  extern I    maxsfxI(I d,I n,I m, I * RESTRICTI x,I* RESTRICTI z,J jt);
+extern I    maxpfxQ(I d,I n,I m, Q * RESTRICTI x,Q* RESTRICTI z,J jt);                                    extern I    maxsfxQ(I d,I n,I m, Q * RESTRICTI x,Q* RESTRICTI z,J jt);
+extern I    maxpfxS(I d,I n,I m,SB* RESTRICTI x,SB* RESTRICTI z,J jt);  extern I    maxinsS(I d,I n,I m,SB* RESTRICTI x,SB* RESTRICTI z,J jt);  extern I    maxsfxS(I d,I n,I m,SB* RESTRICTI x,SB* RESTRICTI z,J jt);
+extern I    maxpfxX(I d,I n,I m, X * RESTRICTI x,X* RESTRICTI z,J jt);  extern I    maxinsX(I d,I n,I m, X * RESTRICTI x,X* RESTRICTI z,J jt);  extern I    maxsfxX(I d,I n,I m, X * RESTRICTI x,X* RESTRICTI z,J jt);
+extern I    minpfxD(I d,I n,I m, D * RESTRICTI x,D* RESTRICTI z,J jt);  extern I    mininsD(I d,I n,I m, D * RESTRICTI x,D* RESTRICTI z,J jt);  extern I    minsfxD(I d,I n,I m, D * RESTRICTI x,D* RESTRICTI z,J jt);
+extern I    minpfxI(I d,I n,I m, I * RESTRICTI x,I* RESTRICTI z,J jt);  extern I    mininsI(I d,I n,I m, I * RESTRICTI x,I* RESTRICTI z,J jt);  extern I    minsfxI(I d,I n,I m, I * RESTRICTI x,I* RESTRICTI z,J jt);
+extern I    minpfxQ(I d,I n,I m, Q * RESTRICTI x,Q* RESTRICTI z,J jt);                                    extern I    minsfxQ(I d,I n,I m, Q * RESTRICTI x,Q* RESTRICTI z,J jt);
+extern I    minpfxS(I d,I n,I m,SB* RESTRICTI x,SB* RESTRICTI z,J jt);  extern I    mininsS(I d,I n,I m,SB* RESTRICTI x,SB* RESTRICTI z,J jt);  extern I    minsfxS(I d,I n,I m,SB* RESTRICTI x,SB* RESTRICTI z,J jt);
+extern I    minpfxX(I d,I n,I m, X * RESTRICTI x,X* RESTRICTI z,J jt);  extern I    mininsX(I d,I n,I m, X * RESTRICTI x,X* RESTRICTI z,J jt);  extern I    minsfxX(I d,I n,I m, X * RESTRICTI x,X* RESTRICTI z,J jt);
+extern I  minuspfxB(I d,I n,I m, B * RESTRICTI x,I* RESTRICTI z,J jt);  extern I  minusinsB(I d,I n,I m, B * RESTRICTI x,I* RESTRICTI z,J jt);  extern I  minussfxB(I d,I n,I m, B * RESTRICTI x,I* RESTRICTI z,J jt);
+extern I  minuspfxD(I d,I n,I m, D * RESTRICTI x,D* RESTRICTI z,J jt);  extern I  minusinsD(I d,I n,I m, D * RESTRICTI x,D* RESTRICTI z,J jt);  extern I  minussfxD(I d,I n,I m, D * RESTRICTI x,D* RESTRICTI z,J jt);
+extern I  minuspfxI(I d,I n,I m, I * RESTRICTI x,I* RESTRICTI z,J jt);  extern I  minusinsI(I d,I n,I m, I * RESTRICTI x,I* RESTRICTI z,J jt);  extern I  minussfxI(I d,I n,I m, I * RESTRICTI x,I* RESTRICTI z,J jt);
+extern I  minuspfxQ(I d,I n,I m, Q * RESTRICTI x,Q* RESTRICTI z,J jt);  
+extern I  minuspfxO(I d,I n,I m, I * RESTRICTI x,D* RESTRICTI z,J jt);  extern I  minusinsO(I d,I n,I m, I * RESTRICTI x,D* RESTRICTI z,J jt);  extern I  minussfxO(I d,I n,I m, I * RESTRICTI x,D* RESTRICTI z,J jt);
+extern I  minuspfxX(I d,I n,I m, X * RESTRICTI x,X* RESTRICTI z,J jt);  
+extern I  minuspfxZ(I d,I n,I m, Z * RESTRICTI x,Z* RESTRICTI z,J jt);  extern I  minusinsZ(I d,I n,I m, Z * RESTRICTI x,Z* RESTRICTI z,J jt);  extern I  minussfxZ(I d,I n,I m, Z * RESTRICTI x,Z* RESTRICTI z,J jt);
+extern I   nandpfxB(I d,I n,I m, B * RESTRICTI x,B* RESTRICTI z,J jt);  extern I   nandinsB(I d,I n,I m, B * RESTRICTI x,B* RESTRICTI z,J jt);  extern I   nandsfxB(I d,I n,I m, B * RESTRICTI x,B* RESTRICTI z,J jt);
+extern I     nepfxB(I d,I n,I m, B * RESTRICTI x,B* RESTRICTI z,J jt);  extern I     neinsB(I d,I n,I m, B * RESTRICTI x,B* RESTRICTI z,J jt);  extern I     nesfxB(I d,I n,I m, B * RESTRICTI x,B* RESTRICTI z,J jt);
+extern I     orpfxB(I d,I n,I m, B * RESTRICTI x,B* RESTRICTI z,J jt);  extern I    norinsB(I d,I n,I m, B * RESTRICTI x,B* RESTRICTI z,J jt);  extern I    norsfxB(I d,I n,I m, B * RESTRICTI x,B* RESTRICTI z,J jt);
+extern I    norpfxB(I d,I n,I m, B * RESTRICTI x,B* RESTRICTI z,J jt);  extern I     orinsB(I d,I n,I m, B * RESTRICTI x,B* RESTRICTI z,J jt);  extern I     orsfxB(I d,I n,I m, B * RESTRICTI x,B* RESTRICTI z,J jt);
+extern I   pluspfxB(I d,I n,I m, B * RESTRICTI x,I* RESTRICTI z,J jt);  extern I   plusinsB(I d,I n,I m, B * RESTRICTI x,I* RESTRICTI z,J jt);  extern I   plussfxB(I d,I n,I m, B * RESTRICTI x,I* RESTRICTI z,J jt);
+extern I   pluspfxD(I d,I n,I m, D * RESTRICTI x,D* RESTRICTI z,J jt);  extern I   plusinsD(I d,I n,I m, D * RESTRICTI x,D* RESTRICTI z,J jt);  extern I   plussfxD(I d,I n,I m, D * RESTRICTI x,D* RESTRICTI z,J jt);
+extern I   pluspfxI(I d,I n,I m, I * RESTRICTI x,I* RESTRICTI z,J jt);  extern I   plusinsI(I d,I n,I m, I * RESTRICTI x,I* RESTRICTI z,J jt);  extern I   plussfxI(I d,I n,I m, I * RESTRICTI x,I* RESTRICTI z,J jt);
+extern I   pluspfxO(I d,I n,I m, I * RESTRICTI x,D* RESTRICTI z,J jt);  extern I   plusinsO(I d,I n,I m, I * RESTRICTI x,D* RESTRICTI z,J jt);  extern I   plussfxO(I d,I n,I m, I * RESTRICTI x,D* RESTRICTI z,J jt);
+extern I   pluspfxQ(I d,I n,I m, Q * RESTRICTI x,Q* RESTRICTI z,J jt);                                    extern I   plussfxQ(I d,I n,I m, Q * RESTRICTI x,Q* RESTRICTI z,J jt);
+extern I   pluspfxX(I d,I n,I m, X * RESTRICTI x,X* RESTRICTI z,J jt);                                    extern I   plussfxX(I d,I n,I m, X * RESTRICTI x,X* RESTRICTI z,J jt);
+extern I   pluspfxZ(I d,I n,I m, Z * RESTRICTI x,Z* RESTRICTI z,J jt);  extern I   plusinsZ(I d,I n,I m, Z * RESTRICTI x,Z* RESTRICTI z,J jt);  extern I   plussfxZ(I d,I n,I m, Z * RESTRICTI x,Z* RESTRICTI z,J jt);
+extern I  tymespfxD(I d,I n,I m, D * RESTRICTI x,D* RESTRICTI z,J jt);  extern I  tymesinsD(I d,I n,I m, D * RESTRICTI x,D* RESTRICTI z,J jt);  extern I  tymessfxD(I d,I n,I m, D * RESTRICTI x,D* RESTRICTI z,J jt);
+extern I  tymespfxI(I d,I n,I m, I * RESTRICTI x,I* RESTRICTI z,J jt);  extern I  tymesinsI(I d,I n,I m, I * RESTRICTI x,I* RESTRICTI z,J jt);  extern I  tymessfxI(I d,I n,I m, I * RESTRICTI x,I* RESTRICTI z,J jt);
+extern I  tymespfxO(I d,I n,I m, I * RESTRICTI x,D* RESTRICTI z,J jt);  extern I  tymesinsO(I d,I n,I m, I * RESTRICTI x,D* RESTRICTI z,J jt);  extern I  tymessfxO(I d,I n,I m, I * RESTRICTI x,D* RESTRICTI z,J jt);
+extern I  tymespfxQ(I d,I n,I m, Q * RESTRICTI x,Q* RESTRICTI z,J jt);                                    extern I  tymessfxQ(I d,I n,I m, Q * RESTRICTI x,Q* RESTRICTI z,J jt);
+extern I  tymespfxX(I d,I n,I m, X * RESTRICTI x,X* RESTRICTI z,J jt);                                    extern I  tymessfxX(I d,I n,I m, X * RESTRICTI x,X* RESTRICTI z,J jt);
+extern I  tymespfxZ(I d,I n,I m, Z * RESTRICTI x,Z* RESTRICTI z,J jt);  extern I  tymesinsZ(I d,I n,I m, Z * RESTRICTI x,Z* RESTRICTI z,J jt);  extern I  tymessfxZ(I d,I n,I m, Z * RESTRICTI x,Z* RESTRICTI z,J jt);
 
-extern ADECLP(bw0000pfxI,UI,UI);  extern ADECLR(bw0000insI,UI,UI);  extern ADECLS(bw0000sfxI,UI,UI);
-extern ADECLP(bw0001pfxI,UI,UI);  extern ADECLR(bw0001insI,UI,UI);  extern ADECLS(bw0001sfxI,UI,UI);
-                                  extern ADECLR(bw0010insI,UI,UI);  extern ADECLS(bw0010sfxI,UI,UI);
-extern ADECLP(bw0011pfxI,UI,UI);  extern ADECLR(bw0011insI,UI,UI);  extern ADECLS(bw0011sfxI,UI,UI);
-                                  extern ADECLR(bw0100insI,UI,UI);  extern ADECLS(bw0100sfxI,UI,UI);
-extern ADECLP(bw0101pfxI,UI,UI);  extern ADECLR(bw0101insI,UI,UI);  extern ADECLS(bw0101sfxI,UI,UI);
-extern ADECLP(bw0110pfxI,UI,UI);  extern ADECLR(bw0110insI,UI,UI);  extern ADECLS(bw0110sfxI,UI,UI);
-extern ADECLP(bw0111pfxI,UI,UI);  extern ADECLR(bw0111insI,UI,UI);  extern ADECLS(bw0111sfxI,UI,UI);
-                                  extern ADECLR(bw1000insI,UI,UI);  extern ADECLS(bw1000sfxI,UI,UI);
-extern ADECLP(bw1001pfxI,UI,UI);  extern ADECLR(bw1001insI,UI,UI);  extern ADECLS(bw1001sfxI,UI,UI);
-                                  extern ADECLR(bw1010insI,UI,UI);  extern ADECLS(bw1010sfxI,UI,UI);
-                                  extern ADECLR(bw1011insI,UI,UI);  extern ADECLS(bw1011sfxI,UI,UI);
-                                  extern ADECLR(bw1100insI,UI,UI);  extern ADECLS(bw1100sfxI,UI,UI);
-                                  extern ADECLR(bw1101insI,UI,UI);  extern ADECLS(bw1101sfxI,UI,UI);
-                                  extern ADECLR(bw1110insI,UI,UI);  extern ADECLS(bw1110sfxI,UI,UI);
-extern ADECLP(bw1111pfxI,UI,UI);  extern ADECLR(bw1111insI,UI,UI);  extern ADECLS(bw1111sfxI,UI,UI);
+extern I bw0000pfxI(I d,I n,I m,UI* RESTRICTI x,UI* RESTRICTI z,J jt);  extern I bw0000insI(I d,I n,I m,UI* RESTRICTI x,UI* RESTRICTI z,J jt);  extern I bw0000sfxI(I d,I n,I m,UI* RESTRICTI x,UI* RESTRICTI z,J jt);
+extern I bw0001pfxI(I d,I n,I m,UI* RESTRICTI x,UI* RESTRICTI z,J jt);  extern I bw0001insI(I d,I n,I m,UI* RESTRICTI x,UI* RESTRICTI z,J jt);  extern I bw0001sfxI(I d,I n,I m,UI* RESTRICTI x,UI* RESTRICTI z,J jt);
+                                  extern I bw0010insI(I d,I n,I m,UI* RESTRICTI x,UI* RESTRICTI z,J jt);  extern I bw0010sfxI(I d,I n,I m,UI* RESTRICTI x,UI* RESTRICTI z,J jt);
+extern I bw0011pfxI(I d,I n,I m,UI* RESTRICTI x,UI* RESTRICTI z,J jt);  extern I bw0011insI(I d,I n,I m,UI* RESTRICTI x,UI* RESTRICTI z,J jt);  extern I bw0011sfxI(I d,I n,I m,UI* RESTRICTI x,UI* RESTRICTI z,J jt);
+                                  extern I bw0100insI(I d,I n,I m,UI* RESTRICTI x,UI* RESTRICTI z,J jt);  extern I bw0100sfxI(I d,I n,I m,UI* RESTRICTI x,UI* RESTRICTI z,J jt);
+extern I bw0101pfxI(I d,I n,I m,UI* RESTRICTI x,UI* RESTRICTI z,J jt);  extern I bw0101insI(I d,I n,I m,UI* RESTRICTI x,UI* RESTRICTI z,J jt);  extern I bw0101sfxI(I d,I n,I m,UI* RESTRICTI x,UI* RESTRICTI z,J jt);
+extern I bw0110pfxI(I d,I n,I m,UI* RESTRICTI x,UI* RESTRICTI z,J jt);  extern I bw0110insI(I d,I n,I m,UI* RESTRICTI x,UI* RESTRICTI z,J jt);  extern I bw0110sfxI(I d,I n,I m,UI* RESTRICTI x,UI* RESTRICTI z,J jt);
+extern I bw0111pfxI(I d,I n,I m,UI* RESTRICTI x,UI* RESTRICTI z,J jt);  extern I bw0111insI(I d,I n,I m,UI* RESTRICTI x,UI* RESTRICTI z,J jt);  extern I bw0111sfxI(I d,I n,I m,UI* RESTRICTI x,UI* RESTRICTI z,J jt);
+                                  extern I bw1000insI(I d,I n,I m,UI* RESTRICTI x,UI* RESTRICTI z,J jt);  extern I bw1000sfxI(I d,I n,I m,UI* RESTRICTI x,UI* RESTRICTI z,J jt);
+extern I bw1001pfxI(I d,I n,I m,UI* RESTRICTI x,UI* RESTRICTI z,J jt);  extern I bw1001insI(I d,I n,I m,UI* RESTRICTI x,UI* RESTRICTI z,J jt);  extern I bw1001sfxI(I d,I n,I m,UI* RESTRICTI x,UI* RESTRICTI z,J jt);
+                                  extern I bw1010insI(I d,I n,I m,UI* RESTRICTI x,UI* RESTRICTI z,J jt);  extern I bw1010sfxI(I d,I n,I m,UI* RESTRICTI x,UI* RESTRICTI z,J jt);
+                                  extern I bw1011insI(I d,I n,I m,UI* RESTRICTI x,UI* RESTRICTI z,J jt);  extern I bw1011sfxI(I d,I n,I m,UI* RESTRICTI x,UI* RESTRICTI z,J jt);
+                                  extern I bw1100insI(I d,I n,I m,UI* RESTRICTI x,UI* RESTRICTI z,J jt);  extern I bw1100sfxI(I d,I n,I m,UI* RESTRICTI x,UI* RESTRICTI z,J jt);
+                                  extern I bw1101insI(I d,I n,I m,UI* RESTRICTI x,UI* RESTRICTI z,J jt);  extern I bw1101sfxI(I d,I n,I m,UI* RESTRICTI x,UI* RESTRICTI z,J jt);
+                                  extern I bw1110insI(I d,I n,I m,UI* RESTRICTI x,UI* RESTRICTI z,J jt);  extern I bw1110sfxI(I d,I n,I m,UI* RESTRICTI x,UI* RESTRICTI z,J jt);
+extern I bw1111pfxI(I d,I n,I m,UI* RESTRICTI x,UI* RESTRICTI z,J jt);  extern I bw1111insI(I d,I n,I m,UI* RESTRICTI x,UI* RESTRICTI z,J jt);  extern I bw1111sfxI(I d,I n,I m,UI* RESTRICTI x,UI* RESTRICTI z,J jt);
 
 extern I bw0000II(I n,I m,UI* RESTRICTI x,UI* RESTRICTI y,UI* RESTRICTI z,J jt);
 extern I bw0001II(I n,I m,UI* RESTRICTI x,UI* RESTRICTI y,UI* RESTRICTI z,J jt);
