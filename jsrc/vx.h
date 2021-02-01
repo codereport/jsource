@@ -10,7 +10,7 @@
 #define XPINF           (I)99999
 #define XNINF           (I)-99999
 //#define X f(J jt,    X w)          X f(J jt,    X w)
-#define XF2(f)          X f(J jt,X a,X w)
+//#define X f(J jt,X a,X w)          X f(J jt,X a,X w)
 #define XDIG(a)         (AV(a)[AN(a)-1])   /* leading digit              */
 #define XMAX(x,y)       (1==xcompare(x,y)?x:y)
 #define XMIN(x,y)       (1==xcompare(x,y)?y:x)
@@ -33,13 +33,13 @@ extern X jtxsq(J jt,    X w);
 extern X jtxsqrt(J jt,    X w);
 extern X jtxstd(J jt,    X w);
 
-extern XF2(jtxbin);
-extern XF2(jtxgcd);
-extern XF2(jtxlcm);
-extern XF2(jtxminus);
-extern XF2(jtxplus);
-extern XF2(jtxpow);
-extern XF2(jtxtymes);
+extern X jtxbin(J jt,X a,X w);
+extern X jtxgcd(J jt,X a,X w);
+extern X jtxlcm(J jt,X a,X w);
+extern X jtxminus(J jt,X a,X w);
+extern X jtxplus(J jt,X a,X w);
+extern X jtxpow(J jt,X a,X w);
+extern X jtxtymes(J jt,X a,X w);
 
 extern X   jtxc(J,I);
 extern I jtxcompare(J,X,X);
