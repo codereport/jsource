@@ -9,8 +9,6 @@
 #include <stdlib.h>
 #endif
 
-#define NUMH(f)  B f(J jt,I n,C*s,void*vv)
-
 /* numd    floating point number (double)                      */
 /* numj    complex number                                      */
 /* numx    extended precision integer                          */
@@ -24,7 +22,7 @@
 /* converts a single number and assigns into result pointer    */
 /* returns 0 if error, 1 if ok                                 */
 
-static NUMH(jtnumd){C c,*t;D*v,x,y;
+static B jtnumd(J jt,I n,C*s,void*vv){C c,*t;D*v,x,y;
  if(!(n))return 0;
  v=(D*)vv;
  if(((((I)s[0]^'-')-1)&(n-3))<0){   // '-' and n<3
@@ -41,7 +39,7 @@ static NUMH(jtnumd){C c,*t;D*v,x,y;
  return t>=s+n?(*v=x,1):0;
 }
 
-static NUMH(jtnumj){C*t,*ta;D x,y;Z*v;
+static B jtnumj(J jt,I n,C*s,void*vv){C*t,*ta;D x,y;Z*v;
  v=(Z*)vv;
  if(t=memchr(s,'j',n))ta=0; else t=ta=memchr(s,'a',n);
  if(!(numd(t?t-s:n,s,&x)))return 0;
@@ -55,7 +53,7 @@ static NUMH(jtnumj){C*t,*ta;D x,y;Z*v;
  return 1;
 }
 
-static NUMH(jtnumi){I neg;I j;
+static B jtnumi(J jt,I n,C*s,void*vv){I neg;I j;
  neg='-'==s[0]; s+=neg; n-=neg; if(!n)return 0;  // extract & skip sign; exit if no digits
  for(;*s=='0';--n,++s);  // skip leading zeros, even down to nothing, which will be 0 value
  if(!(19>=n))return 0;   // 2^63 is 9223372036854775808.  So a 20-digit input must overflow, and the most a
@@ -65,7 +63,7 @@ static NUMH(jtnumi){I neg;I j;
  return 1+REPSGN(j&(j-neg));  // overflow if negative AND not the case of -2^63, which shows as IMIN with a negative flag
 }     /* called only if 64 bit */
 
-static NUMH(jtnumx){A y;B b,c;C d;I j,k,m,*yv;X*v;
+static B jtnumx(J jt,I n,C*s,void*vv){A y;B b,c;C d;I j,k,m,*yv;X*v;
  v=(X*)vv;
  d=s[n-1]; b='-'==s[0]; c='x'==d||'r'==d; s+=b;
  if('-'==d){if(!(2>=n))return 0; if(!(*v=rifvs(vci(1==n?XPINF:XNINF))))return 0; return 1;}
@@ -84,7 +82,7 @@ static X jtx10(J jt,I e){A z;I c,m,r,*zv;
  return z;
 }     /* 10^e as a rational number */
 
-static NUMH(jtnume){C*t,*td,*te;I e,ne,nf,ni;Q f,i,*v,x,y;
+static B jtnume(J jt,I n,C*s,void*vv){C*t,*td,*te;I e,ne,nf,ni;Q f,i,*v,x,y;
  v=(Q*)vv;
  nf=0; i.d=iv1; f.d=iv1;
  if(te=memchr(s,'e',n)){ne=n-(te-s)-1; e=strtoI(1+te,(char**)&t,10);  if(!(!*t&&10>ne))return 0;}
@@ -97,7 +95,7 @@ static NUMH(jtnume){C*t,*td,*te;I e,ne,nf,ni;Q f,i,*v,x,y;
  return 1;
 }
 
-static NUMH(jtnumr){C c,*t;I m,p,q;Q*v;
+static B jtnumr(J jt,I n,C*s,void*vv){C c,*t;I m,p,q;Q*v;
  v=(Q*)vv;
  m=(t=memchr(s,'r',n))?t-s:n; if(!(numx(m,s,&v->n)))return 0; v->d=iv1;
  if(t){
@@ -110,7 +108,7 @@ static NUMH(jtnumr){C c,*t;I m,p,q;Q*v;
  return 1;
 }
 
-static NUMH(jtnumq){B b=0;C c,*t;
+static B jtnumq(J jt,I n,C*s,void*vv){B b=0;C c,*t;
  t=s; DQ(n, c=*t++; if(c=='e'||c=='.'){b=1; break;});
  return b?nume(n,s,vv):numr(n,s,vv);
 }
@@ -128,7 +126,7 @@ static B jtnumb(J jt,I n,C*s,Z*v,Z b){A c,d,y;I k;
 }
 
 // Convert a constant that is base, p/x-type or complex
-static NUMH(jtnumbpx){B ne,ze;C*t,*u;I k,m;Z b,p,q,*v,x,y;
+static B jtnumbpx(J jt,I n,C*s,void*vv){B ne,ze;C*t,*u;I k,m;Z b,p,q,*v,x,y;
  v=(Z*)vv;
  if(t=memchr(s,'b',n)){
   // base given
