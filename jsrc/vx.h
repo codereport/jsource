@@ -9,7 +9,7 @@
 #define XBASEN          (I)4
 #define XPINF           (I)99999
 #define XNINF           (I)-99999
-#define XF1(f)          X f(J jt,    X w)
+//#define X f(J jt,    X w)          X f(J jt,    X w)
 #define XF2(f)          X f(J jt,X a,X w)
 #define XDIG(a)         (AV(a)[AN(a)-1])   /* leading digit              */
 #define XMAX(x,y)       (1==xcompare(x,y)?x:y)
@@ -27,11 +27,11 @@
 #define XMEXMT          3                    /* exact, empty if impossible */
 
 
-extern XF1(jtxfact);
-extern XF1(jtxsgn);
-extern XF1(jtxsq);
-extern XF1(jtxsqrt);
-extern XF1(jtxstd);
+extern X jtxfact(J jt,    X w);
+extern X jtxsgn(J jt,    X w);
+extern X jtxsq(J jt,    X w);
+extern X jtxsqrt(J jt,    X w);
+extern X jtxstd(J jt,    X w);
 
 extern XF2(jtxbin);
 extern XF2(jtxgcd);

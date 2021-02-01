@@ -43,7 +43,7 @@ I jtxint(J jt,X w){I c,n,*v,z;
  return z;
 }
 
-XF1(jtxstd){A z;B b;I c=0,d,i,j,k,m=XBASE,n,*zv;
+ X jtxstd(J jt,    X w){A z;B b;I c=0,d,i,j,k,m=XBASE,n,*zv;
  n=AN(w); RZ(z=ca(w)); zv=AV(z);
  b=0; j=n; DQ(n, --j; if(zv[j]){b=0<zv[j]; break;});
  if(b) for(i=0;i<n;++i){
@@ -75,7 +75,7 @@ I jtxcompare(J jt,X a,X w){I*av,j,m,n,x,y,*wv;int s,t;
 }    /* _1 0 1 depending on whether a<w, a=w, a>w */
 
 
-XF1(jtxsgn){I x=XDIG(w); return xc(SGN(x));}
+ X jtxsgn(J jt,    X w){I x=XDIG(w); return xc(SGN(x));}
 
 XF2(jtxplus){PROLOG(0094);A z;I an,*av,c,d,m,n,wn,*wv,*zv;
  if(!(a && w)) return 0;
@@ -263,9 +263,9 @@ XF2(jtxpow){PROLOG(0097);I c,d,e,r;X m,t,z;
  EPILOGNOVIRT(z);
 }
 
-XF1(jtxsq){return xtymes(w,w);}
+ X jtxsq(J jt,    X w){return xtymes(w,w);}
 
-XF1(jtxsqrt){I c,m,n,p,q,*wv;X e,x;
+ X jtxsqrt(J jt,    X w){I c,m,n,p,q,*wv;X e,x;
  n=AN(w); wv=AV(w); c=wv[n-1];
  ASSERT(0<=c,EWIMAG);
  if(!(1&n))c=wv[n-2]+c*XBASE;
@@ -315,7 +315,7 @@ D jtxlogabs(J jt,X w){D c;I m,n,*v;
  return log(ABS(c))+XBASEN*(n-m)*2.3025850929940457;
 }
 
-static XF1(jtxlog1){B b;I c;
+static X jtxlog1(J jt,    X w){B b;I c;
  c=XDIG(w); b=1==c&&1==AN(w);
  ASSERT(0<=c,EWIMAG);
  ASSERT(b||jt->xmode!=XMEXACT,EWIRR);
@@ -351,7 +351,7 @@ static XF2(jtxlog2){D c,d,x,y;I an,*av,j,k,m,n,wn,*wv;X p,q;
  A jtxlog2a(J jt,A a,A w){A z; GAT0(z,XNUM,1L,0L); XAV(z)[0]=rifvsdebug(xlog2(XAV(a)[0],XAV(w)[0])); RNE(z);}
  A jtxroota(J jt,A a,A w){A z; GAT0(z,XNUM,1L,0L); XAV(z)[0]=rifvsdebug(xroot(XAV(a)[0],XAV(w)[0])); RNE(z);}
 
-XF1(jtxfact){I n;
+ X jtxfact(J jt,    X w){I n;
  n=AV(w)[0];
  if(n==XPINF||n==XNINF)return vci(XPINF);
  RE(n=xint(w)); 
@@ -411,7 +411,7 @@ static A jtpiev(J jt,I n,X b){A e;I ek,i,n1=n-1;X bi,e0,e1,*ev,t;
  RE(e); return e;
 }
 
-static XF1(jtxpi){A e;B p;I i,n,n1,sk;X a,b,c,d,*ev,k,f,m,q,s,s0,t;
+static X jtxpi(J jt,    X w){A e;B p;I i,n,n1,sk;X a,b,c,d,*ev,k,f,m,q,s,s0,t;
  if(!XDIG(w))return iv0;
  ASSERT(jt->xmode!=XMEXACT,EVDOMAIN);
  RZ(a=xc(545140134L));

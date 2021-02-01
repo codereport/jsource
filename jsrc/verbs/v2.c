@@ -443,7 +443,7 @@ static B jtxprimeq(J jt,I n,X y){A h,om=jt->xmod;B b;I*dv,i,k,*pv;X d,m,t,x,y1;
  jt->xmod=om; return b;
 }    /* y assumed to be not in n{.jt->p4792 */
 
-static XF1(jtpollard_p_1){A om=jt->xmod;D p,m;I e,i,n,*pv;X c,g,z=iv1;
+static X jtpollard_p_1(J jt,    X w){A om=jt->xmod;D p,m;I e,i,n,*pv;X c,g,z=iv1;
  n=MIN(1229,AN(jt->p4792)); pv=AV(jt->p4792); m=log((D)pv[n-1]);
  RZ(c=xc(2L));
  RZ(jt->xmod=scx(w));
@@ -459,7 +459,7 @@ static XF1(jtpollard_p_1){A om=jt->xmod;D p,m;I e,i,n,*pv;X c,g,z=iv1;
  return z;
 }
 
-static XF1(jtpollard_rho){I i,n;X g,y1,y2;
+static X jtpollard_rho(J jt,    X w){I i,n;X g,y1,y2;
  n=10000;
  RZ(y1=y2=xc(2L));
  A *old=jt->tnextpushp;
@@ -588,7 +588,7 @@ static B jtecm_s2(J jt,X n,X a,X b,I b1,I b2,X*q,X*z){A sda,tt;I d,di,i,k,m,p0,*
  return 1;
 }
 
-static XF1(jtfac_ecm){A tt;I b1,b2,*b1b2,i,m;X a,b,g,q[3];
+static X jtfac_ecm(J jt,    X w){A tt;I b1,b2,*b1b2,i,m;X a,b,g,q[3];
  RZ(tt=db1b2(20L,w)); SETIC(tt,m); b1b2=AV(tt);
  A *old=jt->tnextpushp;
  for(i=0;i<m;++i){
