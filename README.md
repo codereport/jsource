@@ -42,6 +42,7 @@ Calculating the first 10 odd numbers:
 
 **Python**:
 ```python
+# https://python.godbolt.org/z/dEqv3s
 [1 + 2 * i for i in range(10)]
 ```
 **Haskell**:
@@ -66,6 +67,11 @@ map ((+1) . (*2)) [0..9] -- alternative thanks to Alexandru Dinu
 // https://godbolt.org/z/5r7aEo
 iota(0, 10) | transform([](auto e) { return e * 2 + 1; })
 ```
+**C#**:
+```c#
+Enumerable.Range(0, 10).Select((int i) => { return i * 2 + 1; })
+```
+
 
 ## Getting started & Building:
 For building this repository, please see [`CONTRIBUTING.md`](https://github.com/codereport/jsource/blob/main/CONTRIBUTING.md).
