@@ -434,7 +434,3 @@ endfunction()
 add_tests(fast_test_cases fast_)
 add_tests(slow_test_cases slow_)
 add_tests(disabled_test_cases disabled_)
-
-add_custom_target(fast_tests COMMAND ${CMAKE_CTEST_COMMAND} -R fast_ -C Debug)
-add_custom_target(slow_tests COMMAND ${CMAKE_CTEST_COMMAND} -R slow_ -C Debug)
-add_custom_target(disabled_tests COMMAND ${CMAKE_CTEST_COMMAND} -R disabled_ -C Debug)
