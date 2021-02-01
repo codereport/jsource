@@ -47,7 +47,7 @@ def main():
     for path, new_data in find_replaced_data():
         with open(path, 'w') as f:
             f.write(new_data)
-            i += 0
+            i += 1
     print(str(i) + " replacements")
     pass
 
