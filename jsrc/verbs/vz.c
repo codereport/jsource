@@ -36,14 +36,14 @@ ZS2(jtzminus, zr=a-c; zi=b-d;)
  return z;
 }
 
-ZF2(jtztymes){D a,b,c,d;Z z;
+ Z jtztymes(J jt,Z u,Z v){D a,b,c,d;Z z;
  a=u.re; b=u.im; c=v.re; d=v.im;
  z.re=TYMES(a,c)-TYMES(b,d);
  z.im=TYMES(a,d)+TYMES(b,c);
  return z;
 }
 
-ZF2(jtzdiv){ZF2DECL;D t;
+ Z jtzdiv(J jt,Z u,Z v){ZF2DECL;D t;
  if(ZNZ(v)){
   if(ABS(c)<ABS(d)){t=a; a=-b; b=t;  t=c; c=-d; d=t;}
   a/=c; b/=c; d/=c; t=1+d*d; zr=(a+TYMES(b,d))/t; zi=(b-TYMES(a,d))/t;
@@ -81,7 +81,7 @@ B jtzeq(J jt,Z u,Z v){D a=u.re,b=u.im,c=v.re,d=v.im,p,q;
  Z jtzceil(J jt,Z v){return znegate(zfloor(znegate(v)));}
 
 // u | v
-ZF2(jtzrem){D a,b,d;Z q;
+ Z jtzrem(J jt,Z u,Z v){D a,b,d;Z q;
  if(ZEZ(u))return v;  // if u=0, return v
  ZASSERT(!ZINF(v),EVNAN);
  if(INF(u.re)&&!u.im&&!v.im){
@@ -100,7 +100,7 @@ ZF2(jtzrem){D a,b,d;Z q;
  return zminus(v,ztymes(u,q));
 }
 
-ZF2(jtzgcd){D a,b;Z t,z;I lim;
+ Z jtzgcd(J jt,Z u,Z v){D a,b;Z t,z;I lim;
  ZASSERT(!(ZINF(u)||ZINF(v)),EVNAN);
  for(lim=2048; lim>0&&ZNZ(u); --lim){t=zrem(u,v); v.re=u.re; v.im=u.im; u.re=t.re; u.im=t.im;}  // max # iters is log(MAXFLOAT)/log(phi)
  if(lim==0)return zeroZ;  // if Euclid failed, return 0j0
@@ -114,7 +114,7 @@ ZF2(jtzgcd){D a,b;Z t,z;I lim;
  return z;
 }
 
-ZF2(jtzlcm){ZASSERT(!(ZINF(u)||ZINF(v)),EVNAN); return ZEZ(u)||ZEZ(v) ? zeroZ : ztymes(u,zdiv(v,zgcd(u,v)));}
+ Z jtzlcm(J jt,Z u,Z v){ZASSERT(!(ZINF(u)||ZINF(v)),EVNAN); return ZEZ(u)||ZEZ(v) ? zeroZ : ztymes(u,zdiv(v,zgcd(u,v)));}
 
  Z jtzexp(J jt,Z v){D a,b,c,s,t;Z z;
  a=v.re; b=v.im;
@@ -137,7 +137,7 @@ ZF2(jtzlcm){ZASSERT(!(ZINF(u)||ZINF(v)),EVNAN); return ZEZ(u)||ZEZ(v) ? zeroZ : 
  ZEPILOG;
 }
 
-ZF2(jtzpow){ZF2DECL;D m;I n;
+ Z jtzpow(J jt,Z u,Z v){ZF2DECL;D m;I n;
  if(!a&&!b){z.re=d?0:0>c?inf:!c; z.im=0; return z;}
  if(!d&&IMIN<c&&c<=FLIMAX&&(n=(I)jfloor(c),c==n)){
   if(0>n){u=zdiv(z1,u); n=-n;}
@@ -234,7 +234,7 @@ static Z jtzarc(J jt,Z v){D x,y;Z t,z;
  return z;
 }
 
-ZF2(jtzcir){D r;I x;Z z;
+ Z jtzcir(J jt,Z u,Z v){D r;I x;Z z;
  z=zeroZ;
  r=u.re;
  x=(I)jround(r);
@@ -289,4 +289,4 @@ B jtztridiag(J jt,I n,A a,A x){I i,j,n1=n-1;Z*av,d,p,*xv;
 
  Z jtznonce1(J jt,Z v){ZASSERT(0,EVNONCE);}
 
-ZF2(jtznonce2){ZASSERT(0,EVNONCE);}
+ Z jtznonce2(J jt,Z u,Z v){ZASSERT(0,EVNONCE);}
