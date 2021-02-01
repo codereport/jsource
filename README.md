@@ -50,6 +50,7 @@ Calculating the first 10 odd numbers:
 |Haskell|`map ((+1) . (*2)) [0..9]`||
 |C++|`transform(iota(0, 10), [](auto e) { return e * 2 + 1; })`|[Godbolt](https://godbolt.org/z/5r7aEo)|
 |C#|`Enumerable.Range(0, 10).Select((int i) => { return i * 2 + 1; })`||
+|Java|`IntStream.range(0, 10).map(x -> x * 2 + 1).toArray();`||
 
 ## Getting started & Building:
 For building this repository, please see [`CONTRIBUTING.md`](https://github.com/codereport/jsource/blob/main/CONTRIBUTING.md).
