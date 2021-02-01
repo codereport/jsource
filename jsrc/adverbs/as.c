@@ -11,7 +11,7 @@
 
 
 #define SUFFIXPFX(f,Tz,Tx,pfx,vecfn,retstmt)  \
- AHDRS(f,Tz,Tx){I i;Tz v;                                     \
+ I f(I d,I n,I m,Tx* RESTRICTI x,Tz* RESTRICTI z,J jt){I i;Tz v;                                     \
   x+=m*d*n; z+=m*d*n;                                              \
   if(d==1)DQ(m, *--z=v=    *--x; DQ(n-1, --x; --z; *z=v=pfx(*x,v);))  \
   else{for(i=0;i<m;++i){                                              \
@@ -20,7 +20,7 @@
  }}retstmt}
 
 #define SUFFIXNAN(f,Tz,Tx,pfx,vecfn)  \
- AHDRS(f,Tz,Tx){I i;Tz v;                                      \
+ I f(I d,I n,I m,Tx* RESTRICTI x,Tz* RESTRICTI z,J jt){I i;Tz v;                                      \
   NAN0;                                                               \
   x+=m*d*n; z+=m*d*n;                                              \
   if(d==1)DQ(m, *--z=v=    *--x; DQ(n-1, --x; --z; *z=v=pfx(*x,v);))  \
@@ -32,7 +32,7 @@
  }
 
 #define SUFFICPFX(f,Tz,Tx,pfx)  \
- AHDRS(f,Tz,Tx){I i;Tz v,*y;                                        \
+ I f(I d,I n,I m,Tx* RESTRICTI x,Tz* RESTRICTI z,J jt){I i;Tz v,*y;                                        \
   x+=m*d*n; z+=m*d*n;                                              \
   if(d==1)DQ(m, *--z=v=(Tz)*--x; DQ(n-1, --x; --z; *z=v=pfx(*x,v);))  \
   else{for(i=0;i<m;++i){                                              \
@@ -41,7 +41,7 @@
  }}return EVOK;}
 
 #define SUFFIXOVF(f,Tz,Tx,fs1,fvv)  \
- AHDRS(f,I,I){C er=0;I i,*xx,*y,*zz;                      \
+ I f(I d,I n,I m,I* RESTRICTI x,I* RESTRICTI z,J jt){C er=0;I i,*xx,*y,*zz;                      \
   xx=x+=m*d*n; zz=z+=m*d*n;                              \
   if(d==1){                                                 \
    if(1==n)DQ(m, *--z=*--x;)                                \
@@ -58,7 +58,7 @@
  }
   
 #define SUFFIXBFX(f,pfx,ipfx,spfx,bpfx,vexp)  \
- AHDRP(f,B,B){B v,* RESTRICT y;I q;                                        \
+ I f(I d,I n,I m,B* RESTRICTI x,B* RESTRICTI z,J jt){B v,* RESTRICT y;I q;                                        \
   x+=m*d*n; z+=m*d*n;                                           \
   if(1==d){DQ(m, *--z=v=*--x; DQ(n-1, --x; --z; *z=v=vexp;)); return EVOK;}  \
   if(0==(d&(sizeof(UI  )-1))){SUFFIXBFXLOOP(UI,   pfx); return EVOK;}              \
@@ -87,7 +87,7 @@ SUFFICPFX(minussfxO, D, I, MINUS )
 SUFFICPFX(tymessfxO, D, I, TYMES )
 
 SUFFIXPFX( plussfxB, I, B, PLUS, plusBI, return EVOK;  )
-AHDRS(plussfxD,D,D){I i;
+ I plussfxD(I d,I n,I m,D* RESTRICTI x,D* RESTRICTI z,J jt){I i;
  NAN0;
  x+=m*d*n; z+=m*d*n;
  if(d==1){

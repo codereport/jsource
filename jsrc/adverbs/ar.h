@@ -10,7 +10,7 @@
 
 
 #define REDUCEPFX(f,Tz,Tx,pfx,vecfn1,vecfnn)  \
- AHDRR(f,Tz,Tx){I i;Tz v;                              \
+ I f(I d,I n,I m,Tx* RESTRICTI x,Tz* RESTRICTI z,J jt){I i;Tz v;                              \
   if(d==1){x += m*n; z+=m; DQ(m, v=*--x; DQ(n-1, --x; v=pfx(*x,v);); *--z=v;)}  \
      \
   else{z+=(m-1)*d; x+=(m*n-1)*d;                                        \
@@ -21,7 +21,7 @@
 
 // used on idempotent verbs, using 2 accumulators
 #define REDUCEPFXIDEM2(f,Tz,Tx,pfx,vecfn)  \
- AHDRR(f,Tz,Tx){I i;                              \
+ I f(I d,I n,I m,Tx* RESTRICTI x,Tz* RESTRICTI z,J jt){I i;                              \
   if(d==1){x += m*n; z+=m; DQ(m, Tz v0=(Tz)*--x; Tz v1=v0; if(!(n&1))v1=*--x;  DQ((n-1)>>1, x-=2; v0=pfx(x[0],v0); v1=pfx(x[1],v1); ); v0=pfx(v0,v1); *--z=v0;)}  \
      \
   else{z+=(m-1)*d; x+=(m*n-1)*d;                                        \
@@ -34,7 +34,7 @@
 #define REDUCEPFXIDEM2PRIM256(f,Tz,Tx,pfx,vecfn,prim,identity) REDUCEPFXIDEM2(f,Tz,Tx,pfx,vecfn)
 
 #define REDUCENAN(f,Tz,Tx,pfx,vecfn)  \
- AHDRR(f,Tz,Tx){I i;Tz v;                              \
+ I f(I d,I n,I m,Tx* RESTRICTI x,Tz* RESTRICTI z,J jt){I i;Tz v;                              \
   NAN0;                                                        \
   if(d==1){x += m*n; z+=m; DQ(m, v=*--x; DQ(n-1, --x; v=pfx(*x,v);); *--z=v;)}  \
      \
@@ -47,7 +47,7 @@
 }
 
 #define REDUCCPFX(f,Tz,Tx,pfx)  \
- AHDRR(f,Tz,Tx){I i;Tx* RESTRICT y;Tz v,* RESTRICT zz;                              \
+ I f(I d,I n,I m,Tx* RESTRICTI x,Tz* RESTRICTI z,J jt){I i;Tx* RESTRICT y;Tz v,* RESTRICT zz;                              \
   if(d==1){x += m*n; z+=m; DQ(m, v=(Tz)*--x; DQ(n-1, --x; v=pfx(*x,v);); *--z=v;)}  \
       \
   else{zz=z+=m*d; x+=m*d*n;                                       \
@@ -61,7 +61,7 @@
 
 
 #define REDUCEOVF(f,Tz,Tx,fr1,fvv,frn)  \
- AHDRR(f,I,I){I er=EVOK;I i,* RESTRICT xx,*y,* RESTRICT zz;                          \
+ I f(I d,I n,I m,I* RESTRICTI x,I* RESTRICTI z,J jt){I er=EVOK;I i,* RESTRICT xx,*y,* RESTRICT zz;                          \
   if(d==1){xx=x; zz=z; DQ(m, z=zz++; x=xx; fr1(n,z,x); xx += n;); return er;}        \
   if(1==n){if(sizeof(Tz)!=sizeof(Tx)){DQ(d, *z++=*x++;)}else{MC((C*)z,(C*)x,d*sizeof(Tz));} return er;}   \
   zz=z+=m*d; xx=x+=m*d*n;                                  \

@@ -22,7 +22,7 @@
 
 // Don't RESTRICT y since function may be called inplace
 #define PREFIXPFX(f,Tz,Tx,pfx,vecfn,retstmt)  \
- AHDRP(f,Tz,Tx){I i;Tz v;                                 \
+ I f(I d,I n,I m,Tx* RESTRICTI x,Tz* RESTRICTI z,J jt){I i;Tz v;                                 \
   if(d==1)DQ(m, *z++=v=    *x++; DQ(n-1, *z=v=pfx(v,*x); ++z; ++x;))  \
   else{for(i=0;i<m;++i){                                              \
    DO(d, z[i]=    x[i];); x+=d;                                        \
@@ -30,7 +30,7 @@
  }}retstmt}  /* for associative functions only */
 
 #define PREFIXNAN(f,Tz,Tx,pfx,vecfn)  \
- AHDRP(f,Tz,Tx){I i;Tz v;                                \
+ I f(I d,I n,I m,Tx* RESTRICTI x,Tz* RESTRICTI z,J jt){I i;Tz v;                                \
   NAN0;                                                               \
   if(d==1)DQ(m, *z++=v=    *x++; DQ(n-1, *z=v=pfx(v,*x); ++z; ++x;))  \
   else{for(i=0;i<m;++i){                                              \
@@ -41,7 +41,7 @@
  }   /* for associative functions only */
 
 #define PREFICPFX(f,Tz,Tx,pfx)  \
- AHDRP(f,Tz,Tx){I i;Tz v,* y;                                    \
+ I f(I d,I n,I m,Tx* RESTRICTI x,Tz* RESTRICTI z,J jt){I i;Tz v,* y;                                    \
   if(d==1)DQ(m, *z++=v=(Tz)*x++; DQ(n-1, *z=v=pfx(v,*x); ++z; ++x;))  \
   else{for(i=0;i<m;++i){                                              \
    y=z; DQ(d, *z++=(Tz)*x++;);                                        \
@@ -49,7 +49,7 @@
  }}return EVOK;}  /* for associative functions only */
 
 #define PREFIXALT(f,Tz,Tx,pfx,retstmt)  \
- AHDRP(f,Tz,Tx){B b;I i;Tz v,* y;                                                 \
+ I f(I d,I n,I m,Tx* RESTRICTI x,Tz* RESTRICTI z,J jt){B b;I i;Tz v,* y;                                                 \
   if(d==1)DQ(m, *z++=v=    *x++; b=0; DQ(n-1, b^=1; pfx(b,*z,v,*x); v=*z; ++z; ++x;))  \
   else{for(i=0;i<m;++i){                                                               \
    y=z; DQ(d, *z++=    *x++;); b=0;                                                    \
@@ -57,7 +57,7 @@
  }}retstmt}
 
 #define PREALTNAN(f,Tz,Tx,pfx)  \
- AHDRP(f,Tz,Tx){B b;I i;Tz v,* y;                                                 \
+ I f(I d,I n,I m,Tx* RESTRICTI x,Tz* RESTRICTI z,J jt){B b;I i;Tz v,* y;                                                 \
   NAN0;                                                                                \
   if(d==1)DQ(m, *z++=v=    *x++; b=0; DQ(n-1, b^=1; pfx(b,*z,v,*x); v=*z; ++z; ++x;))  \
   else{for(i=0;i<m;++i){                                                               \
@@ -68,7 +68,7 @@
  }
 
 #define PREFICALT(f,Tz,Tx,pfx)  \
- AHDRP(f,Tz,Tx){B b;I i;Tz v,* y;                                                 \
+ I f(I d,I n,I m,Tx* RESTRICTI x,Tz* RESTRICTI z,J jt){B b;I i;Tz v,* y;                                                 \
   if(d==1)DQ(m, *z++=v=(Tz)*x++; b=0; DQ(n-1, b^=1; pfx(b,*z,v,*x); v=*z; ++z; ++x;))  \
   else{for(i=0;i<m;++i){                                                               \
    y=z; DQ(d, *z++=(Tz)*x++;); b=0;                                                    \
@@ -76,7 +76,7 @@
  }}return EVOK;}
 
 #define PREFIXOVF(f,Tz,Tx,fp1,fvv)  \
- AHDRP(f,I,I){I i,*xx=x,* y,*zz=z;                      \
+ I f(I d,I n,I m,I* RESTRICTI x,I* RESTRICTI z,J jt){I i,*xx=x,* y,*zz=z;                      \
   if(d==1){                                                         \
    if(1==n)DQ(m, *z++=*x++;)                                        \
    else {I c=d*n;    DQ(m, fp1(n,z,x); z=zz+=c; x=xx+=c;) }               \
@@ -93,7 +93,7 @@
  return EVOK;}
 
 #define PREFIXBFX(f,pfx,ipfx,spfx,bpfx,vexp)          \
- AHDRP(f,B,B){B* y;I j,q;                        \
+ I f(I d,I n,I m,B* RESTRICTI x,B* RESTRICTI z,J jt){B* y;I j,q;                        \
   if(1==d)for(j=0;j<m;++j){vexp}                      \
   else if(0==(d&(sizeof(UI  )-1)))PREFIXBFXLOOP(UI,   pfx)  \
   else if(0==(d&(sizeof(UINT)-1)))PREFIXBFXLOOP(UINT,ipfx)  \
@@ -149,8 +149,8 @@ static B jtpscanlt(J jt,I m,I d,I n,B*z,B*x,B p){A t;B*v;I i;
  return 1;
 }    /* f/\"r w for < and <: */
 
-AHDRP(ltpfxB,B,B){pscanlt(m,d,n,z,x,C1);return EVOK;}
-AHDRP(lepfxB,B,B){pscanlt(m,d,n,z,x,C0);return EVOK;}
+ I ltpfxB(I d,I n,I m,B* RESTRICTI x,B* RESTRICTI z,J jt){pscanlt(m,d,n,z,x,C1);return EVOK;}
+ I lepfxB(I d,I n,I m,B* RESTRICTI x,B* RESTRICTI z,J jt){pscanlt(m,d,n,z,x,C0);return EVOK;}
 
 // result is alternating pp,~pp,... till a is encountered; then one atom from pa,~pa (as if started from 0), then one atom from ~ps,ps,... repeated
 static B jtpscangt(J jt,I m,I d,I n,B*z,B*x,I apas){
@@ -205,15 +205,15 @@ static B jtpscangt(J jt,I m,I d,I n,B*z,B*x,I apas){
  return 1;
 }    /* f/\"r w for > >: +: *: */
 
-AHDRP(  gtpfxB,B,B){pscangt(m,d,n,z,x,0x2);return EVOK;}
-AHDRP(  gepfxB,B,B){pscangt(m,d,n,z,x,0xd);return EVOK;}
-AHDRP( norpfxB,B,B){pscangt(m,d,n,z,x,0x5);return EVOK;}
-AHDRP(nandpfxB,B,B){pscangt(m,d,n,z,x,0xa);return EVOK;}
+ I   gtpfxB(I d,I n,I m,B* RESTRICTI x,B* RESTRICTI z,J jt){pscangt(m,d,n,z,x,0x2);return EVOK;}
+ I   gepfxB(I d,I n,I m,B* RESTRICTI x,B* RESTRICTI z,J jt){pscangt(m,d,n,z,x,0xd);return EVOK;}
+ I  norpfxB(I d,I n,I m,B* RESTRICTI x,B* RESTRICTI z,J jt){pscangt(m,d,n,z,x,0x5);return EVOK;}
+ I nandpfxB(I d,I n,I m,B* RESTRICTI x,B* RESTRICTI z,J jt){pscangt(m,d,n,z,x,0xa);return EVOK;}
 
 PREFIXOVF( pluspfxI, I, I,  PLUSP, PLUSVV)
 PREFIXOVF(tymespfxI, I, I, TYMESP,TYMESVV)
 
-AHDRP(minuspfxI,I,I){C er=0;I i,j,n1=n-1,*xx=x,*y,*zz=z;
+ I minuspfxI(I d,I n,I m,I* RESTRICTI x,I* RESTRICTI z,J jt){C er=0;I i,j,n1=n-1,*xx=x,*y,*zz=z;
  if(1==d){
   if(1==n)DQ(m, *z++=*x++;)
   else    DQ(m, MINUSP(n,z,x); z=zz+=d*n; x=xx+=d*n;);
@@ -228,7 +228,7 @@ PREFICPFX(tymespfxO, D, I,  TYMES  )
 PREFICALT(minuspfxO, D, I,  MINUSPA)
 
 PREFIXPFX( pluspfxB, I, B,  PLUS, plusIB , return EVOK; )
-AHDRP(pluspfxD,D,D){I i;
+ I pluspfxD(I d,I n,I m,D* RESTRICTI x,D* RESTRICTI z,J jt){I i;
  NAN0;
  if(d==1){
   I n3=n/3; I rem=n-n3*3;  // number of triplets, number of extras

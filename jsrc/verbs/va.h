@@ -161,16 +161,10 @@ typedef I AHDRPFN(I d,I n,I m,void* RESTRICTI x,void* RESTRICTI z,J jt);  // the
 typedef I AHDRRFN(I d,I n,I m,void* RESTRICTI x,void* RESTRICTI z,J jt);
 typedef I AHDRSFN(I d,I n,I m,void* RESTRICTI x,void* RESTRICTI z,J jt);
 
-#define AHDR1(f,Tz,Tx)          I f(JST * RESTRICT jt,I n,Tz* z,Tx* x)   // must match VA1F, AHDR1FN
-#define AMON(f,Tz,Tx,stmt)      AHDR1(f,Tz,Tx){DQ(n, {stmt} ++z; ++x;); return EVOK;}
-#define AMONPS(f,Tz,Tx,prefix,stmt,suffix)      AHDR1(f,Tz,Tx){prefix DQ(n, {stmt} ++z; ++x;) suffix}
+#define AMON(f,Tz,Tx,stmt) I f(JST * RESTRICT jt,I n,Tz* z,Tx* x){DQ(n, {stmt} ++z; ++x;); return EVOK;}
+#define AMONPS(f,Tz,Tx,prefix,stmt,suffix) I f(JST * RESTRICT jt,I n,Tz* z,Tx* x){prefix DQ(n, {stmt} ++z; ++x;) suffix}
 #define HDR1JERR I rc=jt->jerr; jt->jerr=0; return rc?rc:EVOK;   // translate no error to no-error value
 #define HDR1JERRNAN I rc=jt->jerr; rc=NANTEST?EVNAN:rc; jt->jerr=0; return rc?rc:EVOK;   // translate no error to no-error value
-
-#define AHDR2(f,Tz,Tx,Ty)       I f(I n,I m,Tx* RESTRICTI x,Ty* RESTRICTI y,Tz* RESTRICTI z,J jt)  // must match VF, AHDR2FN
-#define AHDRP(f,Tz,Tx)          I f(I d,I n,I m,Tx* RESTRICTI x,Tz* RESTRICTI z,J jt)
-#define AHDRR(f,Tz,Tx)          I f(I d,I n,I m,Tx* RESTRICTI x,Tz* RESTRICTI z,J jt)
-#define AHDRS(f,Tz,Tx)          I f(I d,I n,I m,Tx* RESTRICTI x,Tz* RESTRICTI z,J jt)
 
 // value in vaptr[]
 #define VA2CBW0000 1
@@ -233,7 +227,7 @@ typedef I AHDRSFN(I d,I n,I m,void* RESTRICTI x,void* RESTRICTI z,J jt);
 
 
 #define AIFX(f,Tz,Tx,Ty,symb)  \
- AHDR2(f,Tz,Tx,Ty){Tx u;Ty v;                            \
+ I f(I n,I m,Tx* RESTRICTI x,Ty* RESTRICTI y,Tz* RESTRICTI z,J jt){Tx u;Ty v;                            \
   if(n-1==0)  DQ(m,               *z++=*x++ symb *y++; )   \
   else if(n-1<0)DQ(m, u=*x++; DQC(n, *z++=u    symb *y++;))   \
   else      DQ(m, v=*y++; DQ(n, *z++=*x++ symb v;   ));  \
@@ -242,7 +236,7 @@ typedef I AHDRSFN(I d,I n,I m,void* RESTRICTI x,void* RESTRICTI z,J jt);
 
 // suff must return the correct result
 #define APFX(f,Tz,Tx,Ty,pfx,pref,suff)   \
- AHDR2(f,Tz,Tx,Ty){Tx u;Ty v;                                  \
+ I f(I n,I m,Tx* RESTRICTI x,Ty* RESTRICTI y,Tz* RESTRICTI z,J jt){Tx u;Ty v;                                  \
   pref \
   if(n-1==0)  DQ(m,               *z++=pfx(*x,*y); x++; y++; )   \
   else if(n-1<0)DQ(m, u=*x++; DQC(n, *z++=pfx( u,*y);      y++;))   \
@@ -252,7 +246,7 @@ typedef I AHDRSFN(I d,I n,I m,void* RESTRICTI x,void* RESTRICTI z,J jt);
 
 // support intolerant comparisons explicitly
 #define ACMP0(f,Tz,Tx,Ty,pfx,pfx0)   \
- AHDR2(f,B,Tx,Ty){D u,v;                                             \
+ I f(I n,I m,Tx* RESTRICTI x,Ty* RESTRICTI y,B* RESTRICTI z,J jt){D u,v;                                             \
   if(jt->cct!=1.0){ \
    if(n-1==0)  DQ(m, u=(D)*x++;       v=(D)*y++; *z=pfx(u,v); z++; )    \
    else if(n-1<0)DQ(m, u=(D)*x++; DQC(n, v=(D)*y++; *z=pfx(u,v); z++;))    \
@@ -269,7 +263,7 @@ typedef I AHDRSFN(I d,I n,I m,void* RESTRICTI x,void* RESTRICTI z,J jt);
 // n and m are never 0.
 
 #define BPFXNOAVX(f,pfx,bpfx,pfyx,bpfyx,fuv,decls,decls256)  \
-AHDR2(f,void,void,void){ I u,v;       \
+ I f(I n,I m,void* RESTRICTI x,void* RESTRICTI y,void* RESTRICTI z,J jt){ I u,v;       \
  decls \
  if(n-1==0){                                             \
   DQ(((m-1)>>LGSZI), u=*(I*)x; v=*(I*)y; *(I*)z=pfx(u,v); x=(C*)x+SZI; y=(C*)y+SZI; z=(C*)z+SZI;);           \

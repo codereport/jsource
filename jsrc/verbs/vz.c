@@ -12,8 +12,8 @@ static const Z z1={1,0};
 
 static D hypoth(D u,D v){D p,q,t; MMM(u,v); return INF(p)?inf:p?(t=q/p,p*sqrt(1+t*t)):0;}
 
-static ZF1(jtzjx){Z z; z.re=-v.im; z.im= v.re; return z;}
-static ZF1(jtzmj){Z z; z.re= v.im; z.im=-v.re; return z;}
+static Z jtzjx(J jt,Z v){Z z; z.re=-v.im; z.im= v.re; return z;}
+static Z jtzmj(J jt,Z v){Z z; z.re= v.im; z.im=-v.re; return z;}
 
 Z zrj0(D a){Z z; z.re=a; z.im=0.0; return z;}
 
@@ -23,7 +23,7 @@ ZS2(jtzplus,  zr=a+c; zi=b+d;)
 
 ZS2(jtzminus, zr=a-c; zi=b-d;)
 
-ZF1(jtztrend){D a,b,t;Z z;
+ Z jtztrend(J jt,Z v){D a,b,t;Z z;
  a=v.re; b=v.im;
  if(ZOV(v)){a/=2; b/=2;}
  t=hypoth(a,b); 
@@ -36,14 +36,14 @@ ZF1(jtztrend){D a,b,t;Z z;
  return z;
 }
 
-ZF2(jtztymes){D a,b,c,d;Z z;
+ Z jtztymes(J jt,Z u,Z v){D a,b,c,d;Z z;
  a=u.re; b=u.im; c=v.re; d=v.im;
  z.re=TYMES(a,c)-TYMES(b,d);
  z.im=TYMES(a,d)+TYMES(b,c);
  return z;
 }
 
-ZF2(jtzdiv){ZF2DECL;D t;
+ Z jtzdiv(J jt,Z u,Z v){ZF2DECL;D t;
  if(ZNZ(v)){
   if(ABS(c)<ABS(d)){t=a; a=-b; b=t;  t=c; c=-d; d=t;}
   a/=c; b/=c; d/=c; t=1+d*d; zr=(a+TYMES(b,d))/t; zi=(b-TYMES(a,d))/t;
@@ -56,7 +56,7 @@ ZF2(jtzdiv){ZF2DECL;D t;
  ZEPILOG;
 }
 
-ZF1(jtznegate){return zminus(zeroZ,v);}
+ Z jtznegate(J jt,Z v){return zminus(zeroZ,v);}
 
 D zmag(Z v){return hypoth(v.re,v.im);}
 
@@ -70,7 +70,7 @@ B jtzeq(J jt,Z u,Z v){D a=u.re,b=u.im,c=v.re,d=v.im,p,q;
  return p!=inf && q!=inf && hypoth(a-c,b-d)<=(1.0-jt->cct)*MAX(p,q);
 }
 
-ZF1(jtzfloor){D p,q;
+ Z jtzfloor(J jt,Z v){D p,q;
  ZF1DECL;
  zr=jfloor(a); p=a-zr;
  zi=jfloor(b); q=b-zi;
@@ -78,10 +78,10 @@ ZF1(jtzfloor){D p,q;
  ZEPILOG;
 }
 
-ZF1(jtzceil){return znegate(zfloor(znegate(v)));}
+ Z jtzceil(J jt,Z v){return znegate(zfloor(znegate(v)));}
 
 // u | v
-ZF2(jtzrem){D a,b,d;Z q;
+ Z jtzrem(J jt,Z u,Z v){D a,b,d;Z q;
  if(ZEZ(u))return v;  // if u=0, return v
  ZASSERT(!ZINF(v),EVNAN);
  if(INF(u.re)&&!u.im&&!v.im){
@@ -100,7 +100,7 @@ ZF2(jtzrem){D a,b,d;Z q;
  return zminus(v,ztymes(u,q));
 }
 
-ZF2(jtzgcd){D a,b;Z t,z;I lim;
+ Z jtzgcd(J jt,Z u,Z v){D a,b;Z t,z;I lim;
  ZASSERT(!(ZINF(u)||ZINF(v)),EVNAN);
  for(lim=2048; lim>0&&ZNZ(u); --lim){t=zrem(u,v); v.re=u.re; v.im=u.im; u.re=t.re; u.im=t.im;}  // max # iters is log(MAXFLOAT)/log(phi)
  if(lim==0)return zeroZ;  // if Euclid failed, return 0j0
@@ -114,9 +114,9 @@ ZF2(jtzgcd){D a,b;Z t,z;I lim;
  return z;
 }
 
-ZF2(jtzlcm){ZASSERT(!(ZINF(u)||ZINF(v)),EVNAN); return ZEZ(u)||ZEZ(v) ? zeroZ : ztymes(u,zdiv(v,zgcd(u,v)));}
+ Z jtzlcm(J jt,Z u,Z v){ZASSERT(!(ZINF(u)||ZINF(v)),EVNAN); return ZEZ(u)||ZEZ(v) ? zeroZ : ztymes(u,zdiv(v,zgcd(u,v)));}
 
-ZF1(jtzexp){D a,b,c,s,t;Z z;
+ Z jtzexp(J jt,Z v){D a,b,c,s,t;Z z;
  a=v.re; b=v.im;
  if(a<EMIN)z.re=z.im=0.0;
  else{
@@ -130,14 +130,14 @@ ZF1(jtzexp){D a,b,c,s,t;Z z;
  return z;
 }
 
-ZF1(jtzlog){ZF1DECL;
+ Z jtzlog(J jt,Z v){ZF1DECL;
  zr=b?log(hypoth(a,b)):INF(a)?inf:a?log(hypoth(a,b)):-inf;
  zi=a||b?atan2(b,a):0;
 
  ZEPILOG;
 }
 
-ZF2(jtzpow){ZF2DECL;D m;I n;
+ Z jtzpow(J jt,Z u,Z v){ZF2DECL;D m;I n;
  if(!a&&!b){z.re=d?0:0>c?inf:!c; z.im=0; return z;}
  if(!d&&IMIN<c&&c<=FLIMAX&&(n=(I)jfloor(c),c==n)){
   if(0>n){u=zdiv(z1,u); n=-n;}
@@ -154,7 +154,7 @@ ZF2(jtzpow){ZF2DECL;D m;I n;
  return z;
 }
 
-ZF1(jtzsqrt){D p,q,t;
+ Z jtzsqrt(J jt,Z v){D p,q,t;
  ZF1DECL;
  MMM(a,b);
  if(p){
@@ -168,7 +168,7 @@ ZF1(jtzsqrt){D p,q,t;
 /* See Abramowitz & Stegun, Handbook of Mathematical Functions,            */
 /*   National Bureau of Standards, 1964 6.                                 */
 
-static ZF1(jtzsin){D a,b,c,s;Z z;
+static Z jtzsin(J jt,Z v){D a,b,c,s;Z z;
  a=v.re; b=v.im;
  ZASSERT(-THMAX<a&&a<THMAX,EVLIMIT);
  s=sin(a); z.re=s?s*(b<-EMAX2||    EMAX2<b?inf:cosh(b)):0.0; 
@@ -176,7 +176,7 @@ static ZF1(jtzsin){D a,b,c,s;Z z;
  return z;
 }    /* 4.3.55 */
 
-static ZF1(jtzcos){D a,b,c,s;Z z;
+static Z jtzcos(J jt,Z v){D a,b,c,s;Z z;
  a=v.re; b=v.im;
  ZASSERT(-THMAX<a&&a<THMAX,EVLIMIT);
  c=cos(a); z.re=c? c*(b<-EMAX2||    EMAX2<b?inf:cosh(b)):0.0; 
@@ -184,34 +184,34 @@ static ZF1(jtzcos){D a,b,c,s;Z z;
  return z;
 }    /* 4.3.56 */
 
-static ZF1(jtztan){return zdiv(zsin(v),zcos(v));}
+static Z jtztan(J jt,Z v){return zdiv(zsin(v),zcos(v));}
 
 // bug in some versions of Visual Studio
 #pragma auto_inline(off)
-static ZF1(jtzp4){return zsqrt(zplus(z1,ztymes(v,v)));}
+static Z jtzp4(J jt,Z v){return zsqrt(zplus(z1,ztymes(v,v)));}
 #pragma auto_inline(on)
 
-static ZF1(jtzm4){return 1e16<hypoth(v.re,v.im)?v:ztymes(zplus(v,z1),zsqrt(zdiv(zminus(v,z1),zplus(v,z1))));}
+static Z jtzm4(J jt,Z v){return 1e16<hypoth(v.re,v.im)?v:ztymes(zplus(v,z1),zsqrt(zdiv(zminus(v,z1),zplus(v,z1))));}
 
-static ZF1(jtzsinh){return zmj(zsin(zjx(v)));}  /* 4.5.7 */
+static Z jtzsinh(J jt,Z v){return zmj(zsin(zjx(v)));}  /* 4.5.7 */
 
-static ZF1(jtzcosh){return zcos(zjx(v));}       /* 4.5.8 */
+static Z jtzcosh(J jt,Z v){return zcos(zjx(v));}       /* 4.5.8 */
 
-static ZF1(jtztanh){return v.re<-TMAX?zrj0(-1.0):TMAX<v.re?z1:zdiv(zsinh(v),zcosh(v));}
+static Z jtztanh(J jt,Z v){return v.re<-TMAX?zrj0(-1.0):TMAX<v.re?z1:zdiv(zsinh(v),zcosh(v));}
 
-static ZF1(jtzp8){return zsqrt(ztymes(zplus(zj,v),zminus(zj,v)));}
+static Z jtzp8(J jt,Z v){return zsqrt(ztymes(zplus(zj,v),zminus(zj,v)));}
 
-static ZF1(jtzasinh){return 0>v.re ? znegate(zasinh(znegate(v))) : zlog(zplus(v,zp4(v)));}
+static Z jtzasinh(J jt,Z v){return 0>v.re ? znegate(zasinh(znegate(v))) : zlog(zplus(v,zp4(v)));}
 
-static ZF1(jtzacosh){Z z;
+static Z jtzacosh(J jt,Z v){Z z;
  z=zlog(zplus(v,zm4(v))); 
  if(0>=z.re){z.re=0; z.im=ABS(z.im);} 
  return z;
 }
 
-static ZF1(jtzatanh){return ztymes(zrj0((D)0.5),zlog(zdiv(zplus(z1,v),zminus(z1,v))));}
+static Z jtzatanh(J jt,Z v){return ztymes(zrj0((D)0.5),zlog(zdiv(zplus(z1,v),zminus(z1,v))));}
 
-static ZF1(jtzatan){ZF1DECL;
+static Z jtzatan(J jt,Z v){ZF1DECL;
  if(!b&&(a<-1e13||1e13<a))return zrj0(0<a?PI/2.0:-PI/2.0);
  z=zmj(zatanh(zjx(v)));
  if(!b)z.im=0;
@@ -220,11 +220,11 @@ static ZF1(jtzatan){ZF1DECL;
 
 // NaN bug in android asin() _1 o. _1
 
-static ZF1(jtzasin){return !v.im&&-1<=v.re&&v.re<=1?zrj0(asin(v.re)):zmj(zasinh(zjx(v)));}   /* 4.4.20 */
+static Z jtzasin(J jt,Z v){return !v.im&&-1<=v.re&&v.re<=1?zrj0(asin(v.re)):zmj(zasinh(zjx(v)));}   /* 4.4.20 */
 
-static ZF1(jtzacos){return zminus(zrj0(PI/2.0),zasin(v));}
+static Z jtzacos(J jt,Z v){return zminus(zrj0(PI/2.0),zasin(v));}
 
-static ZF1(jtzarc){D x,y;Z t,z;
+static Z jtzarc(J jt,Z v){D x,y;Z t,z;
  z.re=z.im=0;
  t=ztrend(v); x=t.re; y=t.im;
  if(0!=x||0!=y)z.re=atan2(y,x);
@@ -234,7 +234,7 @@ static ZF1(jtzarc){D x,y;Z t,z;
  return z;
 }
 
-ZF2(jtzcir){D r;I x;Z z;
+ Z jtzcir(J jt,Z u,Z v){D r;I x;Z z;
  z=zeroZ;
  r=u.re;
  x=(I)jround(r);
@@ -287,6 +287,6 @@ B jtztridiag(J jt,I n,A a,A x){I i,j,n1=n-1;Z*av,d,p,*xv;
 }    /* special code for ^@o. */
 
 
-ZF1(jtznonce1){ZASSERT(0,EVNONCE);}
+ Z jtznonce1(J jt,Z v){ZASSERT(0,EVNONCE);}
 
-ZF2(jtznonce2){ZASSERT(0,EVNONCE);}
+ Z jtznonce2(J jt,Z u,Z v){ZASSERT(0,EVNONCE);}
