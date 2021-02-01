@@ -21,7 +21,7 @@ def walk_matches():
             if len(matches) == 0:
                 continue
             for name1, v1, v2, name2 in matches:
-                yield r'(^|[ \t]+)' + name1 + r'\(([^,]+?),([^)]+?)\)', name2 + r'(jt,(\2),(\3))'
+                yield r'(^|[ \t]+)' + name1 + r'\(([^,]+?),([^)]+?)\)', ' ' + name2 + r'(jt,(\2),(\3))'
     pass
 
 
@@ -37,7 +37,7 @@ def find_replaced_data():
                 matches = re.search(regular_expression, data)
                 if matches is None:
                     continue
-                print(matches)
+                # print(matches)
                 yield path, re.sub(regular_expression, replace_pattern, data)
     pass
 
