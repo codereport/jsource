@@ -22,9 +22,8 @@
 #define ZF1DECL         Z z;D zr=0.0,zi=0.0,a=v.re,b=v.im
 #define ZF2DECL         Z z;D zr=0.0,zi=0.0,a=u.re,b=u.im,c=v.re,d=v.im
 #define ZEPILOG         z.re=zr; z.im=zi; return z
-#define ZF1(f)          Z f(J jt,Z v)
 #define ZF2(f)          Z f(J jt,Z u,Z v)
-#define ZS1(f,stmts)    ZF1(f){ZF1DECL; stmts; ZEPILOG;}
+#define ZS1(f,stmts) Z f(J jt,Z v){ZF1DECL; stmts; ZEPILOG;}
 #define ZS2(f,stmts)    ZF2(f){ZF2DECL; stmts; ZEPILOG;}
 #define MMM(a,b)        {p=ABS(a); q=ABS(b); if(p<q){D t=p; p=q; q=t;}}
 
@@ -38,15 +37,15 @@
 #define ZRE(x,y)        (TYMES((x).re,(y).re)-TYMES((x).im,(y).im))
 #define ZIM(x,y)        (TYMES((x).re,(y).im)+TYMES((x).im,(y).re))
 
-extern ZF1(jtzceil);
-extern ZF1(jtzconjug);
-extern ZF1(jtzexp);
-extern ZF1(jtzlog);
-extern ZF1(jtznegate);
-extern ZF1(jtznonce1);
-extern ZF1(jtzsqrt);
-extern ZF1(jtztrend);
-extern ZF1(jtzfloor);
+extern Z jtzceil(J jt,Z v);
+extern Z jtzconjug(J jt,Z v);
+extern Z jtzexp(J jt,Z v);
+extern Z jtzlog(J jt,Z v);
+extern Z jtznegate(J jt,Z v);
+extern Z jtznonce1(J jt,Z v);
+extern Z jtzsqrt(J jt,Z v);
+extern Z jtztrend(J jt,Z v);
+extern Z jtzfloor(J jt,Z v);
 
 extern ZF2(jtzcir);
 extern ZF2(jtzdiv);
