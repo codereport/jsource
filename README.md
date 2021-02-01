@@ -40,38 +40,16 @@ This is a fork of [`jsoftware/jsource`](https://github.com/jsoftware/jsource) an
 
 Calculating the first 10 odd numbers:
 
-**Python**:
-```python
-# https://python.godbolt.org/z/dEqv3s
-[1 + 2 * i for i in range(10)]
-```
-**Haskell**:
-```hs 
-map (1+) $ map (2*) [0..9]
-map ((+1) . (*2)) [0..9] -- alternative thanks to Alexandru Dinu
-```
-**R**:
-```R
--1+2*seq(10) # thanks to Roi Barkan
-```
-**APL**:
-```apl
-1+2×⍳10
-```
-**J**:
-```ijs
-1+2*i.10
-```
-**C++**:
-```c++
-// https://godbolt.org/z/5r7aEo
-iota(0, 10) | transform([](auto e) { return e * 2 + 1; })
-```
-**C#**:
-```c#
-Enumerable.Range(0, 10).Select((int i) => { return i * 2 + 1; })
-```
-
+|Language|Code|Runnable Link|
+|:-:|:-:|:-:|
+|**J**|`1+2*i.10`||
+|APL|`1+2×⍳10`||
+|R|`-1+2*seq(10)`||
+|Python|`1 + 2 * i for i in range(10)`|[Godbolt](https://python.godbolt.org/z/dEqv3s)|
+|Haskell|`map (1+) $ map (2*) [0..9]`||
+|Haskell|`map ((+1) . (*2)) [0..9]`||
+|C++|`transform(iota(0, 10), [](auto e) { return e * 2 + 1; })`|[Godbolt](https://godbolt.org/z/5r7aEo)|
+|C#|`Enumerable.Range(0, 10).Select((int i) => { return i * 2 + 1; })`||
 
 ## Getting started & Building:
 For building this repository, please see [`CONTRIBUTING.md`](https://github.com/codereport/jsource/blob/main/CONTRIBUTING.md).
