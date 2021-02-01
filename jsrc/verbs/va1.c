@@ -50,7 +50,7 @@ static AMON(logZ,   Z,Z, *z=zlog(*x);)
 static AMONPS(absI,   I,I, I vtot=0; , I val=*x; val=(val^REPSGN(val))-REPSGN(val); vtot |= val; *z=val; , return vtot<0?EWOV:EVOK;)
 static AMONPS(absZ,   D,Z, , *z=zmag(*x); , HDR1JERR)
 
-static AHDR1(oneB,C,C){memset(z,C1,n); return EVOK;}
+static I oneB(JST * RESTRICT jt,I n,C* z,C* x){memset(z,C1,n); return EVOK;}
 
 extern AHDR1FN expI, expD, logI, logD;
 

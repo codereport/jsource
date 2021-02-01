@@ -15,32 +15,32 @@
 
 
 
-#define ADECL1  AHDR1
+//#define ADECL1  AHDR1
 #define ADECL2  AHDR2
 #define ADECLP  AHDRP
 #define ADECLR  AHDRR
 #define ADECLS  AHDRS
 
-extern ADECL1(  absQ,Q,Q);
-extern ADECL1(  absX,X,X);
-extern ADECL1( ceilQ,X,Q);
-extern ADECL1(  expX,X,X);
-extern ADECL1( factD,D,D);
-extern ADECL1( factI,I,I);
-extern ADECL1( factQ,X,Q);
-extern ADECL1( factX,X,X);
-extern ADECL1( factZ,Z,Z);
-extern ADECL1(floorQ,X,Q);
-extern ADECL1(  logX,X,X);
-extern ADECL1( logQD,D,Q);
-extern ADECL1( logQZ,Z,Q);
-extern ADECL1( logXD,D,X);
-extern ADECL1( logXZ,Z,X);
-extern ADECL1(  pixX,X,X);
-extern ADECL1(  sgnQ,X,Q);
-extern ADECL1(  sgnX,X,X);
-extern ADECL1( sqrtQ,Q,Q);
-extern ADECL1( sqrtX,X,X);
+extern I   absQ(JST * RESTRICT jt,I n,Q* z,Q* x);
+extern I   absX(JST * RESTRICT jt,I n,X* z,X* x);
+extern I  ceilQ(JST * RESTRICT jt,I n,X* z,Q* x);
+extern I   expX(JST * RESTRICT jt,I n,X* z,X* x);
+extern I  factD(JST * RESTRICT jt,I n,D* z,D* x);
+extern I  factI(JST * RESTRICT jt,I n,I* z,I* x);
+extern I  factQ(JST * RESTRICT jt,I n,X* z,Q* x);
+extern I  factX(JST * RESTRICT jt,I n,X* z,X* x);
+extern I  factZ(JST * RESTRICT jt,I n,Z* z,Z* x);
+extern I floorQ(JST * RESTRICT jt,I n,X* z,Q* x);
+extern I   logX(JST * RESTRICT jt,I n,X* z,X* x);
+extern I  logQD(JST * RESTRICT jt,I n,D* z,Q* x);
+extern I  logQZ(JST * RESTRICT jt,I n,Z* z,Q* x);
+extern I  logXD(JST * RESTRICT jt,I n,D* z,X* x);
+extern I  logXZ(JST * RESTRICT jt,I n,Z* z,X* x);
+extern I   pixX(JST * RESTRICT jt,I n,X* z,X* x);
+extern I   sgnQ(JST * RESTRICT jt,I n,X* z,Q* x);
+extern I   sgnX(JST * RESTRICT jt,I n,X* z,X* x);
+extern I  sqrtQ(JST * RESTRICT jt,I n,Q* z,Q* x);
+extern I  sqrtX(JST * RESTRICT jt,I n,X* z,X* x);
 
 extern ADECLP(   andpfxB,B, B );  extern ADECLR(   andinsB,B, B );  extern ADECLS(   andsfxB,B, B );
 extern ADECLP(   divpfxD,D, D );  extern ADECLR(   divinsD,D, D );  extern ADECLS(   divsfxD,D, D );
