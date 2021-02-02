@@ -28,9 +28,10 @@ def walk_matches():
             for full_str, name1, v1, v2, name2 in matches:
                 data.replace(full_str, "")
                 yield re.compile(r'(^|[ \t]+|[^\d\w_])' + name1 + r'\((?=([^,]+?),([^)]+?)\))'), r'\1' + name2 + r'(jt,'
-        if data is not None:
-            with open(path, 'w') as fw:
-                fw.write(data)
+                return
+        # if data is not None:
+        #     with open(path, 'w') as fw:
+        #         fw.write(data)
     pass
 
 
