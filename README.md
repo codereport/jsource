@@ -42,16 +42,16 @@ Calculating the first 10 odd numbers:
 
 |Language|Code|Runnable Link|
 |:-:|:-:|:-:|
-|**J**|`1+2*i.10`||
-|APL|`1+2×⍳10`|[TryAPL](https://tryapl.org/?clear&q=1%2B2%C3%97%E2%8D%B310&run)|
-|R|`-1+2*seq(10)`||
-|Python|`[1 + 2 * i for i in range(10)]`|[Godbolt](https://python.godbolt.org/z/dEqv3s)|
-|Haskell|`map (1+) $ map (2*) [0..9]`|[OneCompiler](https://onecompiler.com/haskell/3wmm2ykqy)|
-|Haskell|`map ((+1) . (*2)) [0..9]`|[OneCompiler](https://onecompiler.com/haskell/3wmm2ykqy)|
-|Haskell|`take 10 [1,3..]`|[OneCompiler](https://onecompiler.com/haskell/3wmm2ykqy)|
-|C++|`transform(iota(0, 10), [](auto e) { return e * 2 + 1; })`|[Godbolt](https://godbolt.org/z/5r7aEo)|
-|C#|`Enumerable.Range(0, 10).Select((int i) => { return i * 2 + 1; })`||
-|Java|`IntStream.range(0, 10).map(x -> x * 2 + 1).toArray();`||
+|**J**|<PRE lang="j">1+2*i.10</PRE>||
+|APL|<PRE lang="apl">1+2×⍳10</PRE>|[TryAPL](https://tryapl.org/?clear&q=1%2B2%C3%97%E2%8D%B310&run)|
+|R|<PRE lang="rust">-1+2*seq(10)</PRE>||
+|Python|<PRE lang="python">[1 + 2 * i for i in range(10)]</PRE>|[Godbolt](https://python.godbolt.org/z/dEqv3s)|
+|Haskell|<PRE lang="haskell">map (1+) $ map (2*) [0..9]</PRE>|[OneCompiler](https://onecompiler.com/haskell/3wmm2ykqy)|
+|Haskell|<PRE lang="haskell">map ((+1) . (*2)) [0..9]</PRE>|[OneCompiler](https://onecompiler.com/haskell/3wmm2ykqy)|
+|Haskell|<PRE lang="haskell">take 10 [1,3..]</PRE>|[OneCompiler](https://onecompiler.com/haskell/3wmm2ykqy)|
+|C++|<PRE lang="cpp">transform(iota(0, 10), [](auto e) { return e * 2 + 1; })</PRE>|[Godbolt](https://godbolt.org/z/5r7aEo)|
+|C#|<PRE lang="c#">Enumerable.Range(0, 10).Select((int i) => { return i * 2 + 1; })</PRE>||
+|Java|<PRE lang="java">IntStream.range(0, 10).map(x -> x * 2 + 1).toArray();</PRE>||
 
 ## Getting started & Building:
 For building this repository, please see [`CONTRIBUTING.md`](https://github.com/codereport/jsource/blob/main/CONTRIBUTING.md).
