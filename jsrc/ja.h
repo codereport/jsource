@@ -10,7 +10,7 @@
 
 
 
-#define C4fromC1(x,y)               jtC4fromC1(jt,(x),(y))
+
 #define C4fromC2(x,y)               jtC4fromC2(jt,(x),(y))
 #define DfromQ(x,y)                 jtDfromQ(jt,(x),(y))
 #define DfromX(x,y)                 jtDfromX(jt,(x),(y))
