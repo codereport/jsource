@@ -80,6 +80,7 @@ def main():
 
     print(str(len(matches)) + " file changes")
     os.system('git commit -m "remove #define ' + oldname + '" -a')
+    os.system('git push')
     pass
 
 
