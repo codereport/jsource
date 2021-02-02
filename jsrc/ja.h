@@ -8,7 +8,7 @@
 #define IfromD(x,y,z)               jtIfromD(jt,(x),(y),(z))
 
 #define QfromD(x,y,z)               jtQfromD(jt,(x),(y),(z))
-#define QfromX(x,y)                 jtQfromX(jt,(x),(y))
+
 #define XfromB(x,y)                 jtXfromB(jt,(x),(y))
 #define XfromD(x,y,z)               jtXfromD(jt,(x),(y),(z))
 #define XfromI(x,y)                 jtXfromI(jt,(x),(y))

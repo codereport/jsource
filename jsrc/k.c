@@ -293,12 +293,12 @@ B jtccvt(J jt,I tflagged,A w,A*y){F1PREFIP;A d;I n,r,*s,wt; void *wv,*yv;I t=tfl
  switch (CVCASE(CTTZ(t),CTTZ(wt))){
   case CVCASE(INTX, B01X): {I*x = yv; B*v = (B*)wv; DQ(n, *x++ = *v++;); } return 1;
   case CVCASE(XNUMX, B01X): return XfromB(w, yv);
-  case CVCASE(RATX, B01X): GATV(d, XNUM, n, r, s); return XfromB(w, AV(d)) && QfromX(d, yv);
+  case CVCASE(RATX, B01X): GATV(d, XNUM, n, r, s); return XfromB(w, AV(d)) && jtQfromX(jt,d, yv);
   case CVCASE(FLX, B01X): {D*x = (D*)yv; B*v = (B*)wv; DQ(n, *x++ = *v++;); } return 1;
   case CVCASE(CMPXX, B01X): {Z*x = (Z*)yv; B*v = (B*)wv; DQ(n, x++->re = *v++;); } return 1;
   case CVCASE(B01X, INTX): return jtBfromI(jt,w, yv);
   case CVCASE(XNUMX, INTX): return XfromI(w, yv);
-  case CVCASE(RATX, INTX): GATV(d, XNUM, n, r, s); return XfromI(w, AV(d)) && QfromX(d, yv);
+  case CVCASE(RATX, INTX): GATV(d, XNUM, n, r, s); return XfromI(w, AV(d)) && jtQfromX(jt,d, yv);
   case CVCASE(FLX, INTX): {D*x = (D*)yv; I*v = wv; DQ(n, *x++ = (D)*v++;); } return 1;
   case CVCASE(CMPXX, INTX): {Z*x = (Z*)yv; I*v = wv; DQ(n, x++->re = (D)*v++;); } return 1;
   case CVCASE(B01X, FLX): return BfromD(w, yv, (I)jtinplace&JTNOFUZZ?0.0:FUZZ);
@@ -313,7 +313,7 @@ B jtccvt(J jt,I tflagged,A w,A*y){F1PREFIP;A d;I n,r,*s,wt; void *wv,*yv;I t=tfl
   case CVCASE(FLX, CMPXX): return DfromZ(w, yv, (I)jtinplace&JTNOFUZZ?0.0:FUZZ);
   case CVCASE(B01X, XNUMX): return jtBfromX(jt,w, yv);
   case CVCASE(INTX, XNUMX): return jtIfromX(jt,w, yv);
-  case CVCASE(RATX, XNUMX): return QfromX(w, yv);
+  case CVCASE(RATX, XNUMX): return jtQfromX(jt,w, yv);
   case CVCASE(FLX, XNUMX): return jtDfromX(jt,w, yv);
   case CVCASE(CMPXX, XNUMX): GATV(d, FL, n, r, s); if(!(jtDfromX(jt,w, AV(d))))return 0; return ZfromD(d, yv);
   case CVCASE(B01X, RATX): GATV(d, XNUM, n, r, s); if(!(XfromQ(w, AV(d))))return 0; return jtBfromX(jt,d, yv);
