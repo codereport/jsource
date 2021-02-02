@@ -44,23 +44,23 @@ REDUCEPFX(bw1101insI, UI,UI, BW1101, bw1101II, bw1101II)   static REDUCEPFX(bw11
 REDUCEPFX(bw1110insI, UI,UI, BW1110, bw1110II, bw1110II)   static REDUCEPFX(bw1110insC, UC,UC, BW1110, bw1110CC, bw1110CC)
 /* see below */                        /* see below */
 
-       AHDRR(bw0000insI,UI,UI){I k=SZI*m*d; memset(z,C0 ,k); return EVOK;}
-static AHDRR(bw0000insC,UC,UC){I k=    m*d; memset(z,C0 ,k); return EVOK;}
+ I bw0000insI(I d,I n,I m,UI* RESTRICTI x,UI* RESTRICTI z,J jt){I k=SZI*m*d; memset(z,C0 ,k); return EVOK;}
+static I bw0000insC(I d,I n,I m,UC* RESTRICTI x,UC* RESTRICTI z,J jt){I k=    m*d; memset(z,C0 ,k); return EVOK;}
 
-       AHDRR(bw1111insI,UI,UI){I k=SZI*m*d; memset(z,CFF,k); return EVOK;}
-static AHDRR(bw1111insC,UC,UC){I k=    m*d; memset(z,CFF,k); return EVOK;}
+ I bw1111insI(I d,I n,I m,UI* RESTRICTI x,UI* RESTRICTI z,J jt){I k=SZI*m*d; memset(z,CFF,k); return EVOK;}
+static I bw1111insC(I d,I n,I m,UC* RESTRICTI x,UC* RESTRICTI z,J jt){I k=    m*d; memset(z,CFF,k); return EVOK;}
 
-       AHDRR(bw0011insI,UI,UI){I k=d*(n-1);                        DQ(m, DQ(d, *z++=  *x++;); x+=k;);return EVOK;}
-static AHDRR(bw0011insC,UC,UC){I k=d*(n-1);                        DQ(m, DQ(d, *z++=  *x++;); x+=k;);return EVOK;}
+ I bw0011insI(I d,I n,I m,UI* RESTRICTI x,UI* RESTRICTI z,J jt){I k=d*(n-1);                        DQ(m, DQ(d, *z++=  *x++;); x+=k;);return EVOK;}
+static I bw0011insC(I d,I n,I m,UC* RESTRICTI x,UC* RESTRICTI z,J jt){I k=d*(n-1);                        DQ(m, DQ(d, *z++=  *x++;); x+=k;);return EVOK;}
 
-       AHDRR(bw1100insI,UI,UI){I k=d*(n-1);                 if(1<n)DQ(m, DQ(d, *z++= ~*x++;); x+=k;) else MC(z,x,SZI*m*d);return EVOK;}
-static AHDRR(bw1100insC,UC,UC){I k=d*(n-1);                 if(1<n)DQ(m, DQ(d, *z++= ~*x++;); x+=k;) else MC(z,x,    m*d);return EVOK;}
+ I bw1100insI(I d,I n,I m,UI* RESTRICTI x,UI* RESTRICTI z,J jt){I k=d*(n-1);                 if(1<n)DQ(m, DQ(d, *z++= ~*x++;); x+=k;) else MC(z,x,SZI*m*d);return EVOK;}
+static I bw1100insC(I d,I n,I m,UC* RESTRICTI x,UC* RESTRICTI z,J jt){I k=d*(n-1);                 if(1<n)DQ(m, DQ(d, *z++= ~*x++;); x+=k;) else MC(z,x,    m*d);return EVOK;}
 
-       AHDRR(bw0101insI,UI,UI){I k=d*(n-1);                  x+=k; DQ(m, DQ(d, *z++=  *x++;); x+=k;);return EVOK;}
-static AHDRR(bw0101insC,UC,UC){I k=d*(n-1);                  x+=k; DQ(m, DQ(d, *z++=  *x++;); x+=k;);return EVOK;}
+ I bw0101insI(I d,I n,I m,UI* RESTRICTI x,UI* RESTRICTI z,J jt){I k=d*(n-1);                  x+=k; DQ(m, DQ(d, *z++=  *x++;); x+=k;);return EVOK;}
+static I bw0101insC(I d,I n,I m,UC* RESTRICTI x,UC* RESTRICTI z,J jt){I k=d*(n-1);                  x+=k; DQ(m, DQ(d, *z++=  *x++;); x+=k;);return EVOK;}
 
-       AHDRR(bw1010insI,UI,UI){I k=d*(n-1);UI t=     (n&1)-1 ; x+=k; DQ(m, DQ(d, *z++=t^*x++;); x+=k;);return EVOK;}
-static AHDRR(bw1010insC,UC,UC){I k=d*(n-1);UC t=(UC)((n&1)-1); x+=k; DQ(m, DQ(d, *z++=t^*x++;); x+=k;);return EVOK;}
+ I bw1010insI(I d,I n,I m,UI* RESTRICTI x,UI* RESTRICTI z,J jt){I k=d*(n-1);UI t=     (n&1)-1 ; x+=k; DQ(m, DQ(d, *z++=t^*x++;); x+=k;);return EVOK;}
+static I bw1010insC(I d,I n,I m,UC* RESTRICTI x,UC* RESTRICTI z,J jt){I k=d*(n-1);UC t=(UC)((n&1)-1); x+=k; DQ(m, DQ(d, *z++=t^*x++;); x+=k;);return EVOK;}
 
 
 

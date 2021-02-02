@@ -97,10 +97,10 @@ static I jtcirx(J jt,I n,I k,D*z,D*x){D p,t;
  return EVOK;
 }
 
-AHDR2(cirBD,D,B,D){ASSERTWR(n<=1&&1==m,EWIMAG); n^=REPSGN(n); return cirx(n,   (I)*x,z,y);}
-AHDR2(cirID,D,I,D){ASSERTWR(n<=1&&1==m,EWIMAG); n^=REPSGN(n); return cirx(n,   *x,z,y);}
+ I cirBD(I n,I m,B* RESTRICTI x,D* RESTRICTI y,D* RESTRICTI z,J jt){ASSERTWR(n<=1&&1==m,EWIMAG); n^=REPSGN(n); return cirx(n,   (I)*x,z,y);}
+ I cirID(I n,I m,I* RESTRICTI x,D* RESTRICTI y,D* RESTRICTI z,J jt){ASSERTWR(n<=1&&1==m,EWIMAG); n^=REPSGN(n); return cirx(n,   *x,z,y);}
 
-AHDR2(cirDD,D,D,D){I k=(I)jround(*x);
+ I cirDD(I n,I m,D* RESTRICTI x,D* RESTRICTI y,D* RESTRICTI z,J jt){I k=(I)jround(*x);
  ASSERTWR(k==*x,EVDOMAIN); 
  ASSERTWR(n<=1&&1==m,EWIMAG); // if more than one x value, retry as general case
  n^=REPSGN(n);   // convert complementary n to nonneg

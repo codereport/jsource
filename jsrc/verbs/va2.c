@@ -1029,8 +1029,8 @@ static A jtsumatgbool(J jt,A a,A w,C id){A t,z;B* RESTRICTI av,* RESTRICTI wv;I 
  A jtrecip (J jt, A w){ SETCONPTR(1) return divide(conptr,w);}
  A jthalve (J jt, A w){ if(!(AT(w)&XNUM+RAT))return tymes(onehalf,w); IPSHIFTWA; return divide(w,num(2));}
 
-static AHDR2(zeroF,B,void,void){memset(z,C0,m*(n^REPSGN(n)));return EVOK;}
-static AHDR2(oneF,B,void,void){memset(z,C1,m*(n^REPSGN(n)));return EVOK;}
+static I zeroF(I n,I m,void* RESTRICTI x,void* RESTRICTI y,B* RESTRICTI z,J jt){memset(z,C0,m*(n^REPSGN(n)));return EVOK;}
+static I oneF(I n,I m,void* RESTRICTI x,void* RESTRICTI y,B* RESTRICTI z,J jt){memset(z,C1,m*(n^REPSGN(n)));return EVOK;}
 
 // table of routines to handle = ~:
 static VF eqnetbl[2][16] = {
