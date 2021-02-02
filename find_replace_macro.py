@@ -28,7 +28,8 @@ def walk_matches():
 
             for full_str, name1, v1, v2, name2 in matches:
                 if name1 in ["bindd",
-                             "binzz"]:
+                             "binzz",
+                             "dgcd"]:
                     continue
                 print("remove " + full_str)
                 data = data.replace(full_str, "")
