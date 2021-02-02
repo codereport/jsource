@@ -109,7 +109,7 @@ static I jtebarprep(J jt,A a,A w,A*za,A*zw,I*zc){I ar,at,m,n,t,wr,wt,memlimit;CR
  wv=CAV(w); n=AN(w); p=n-m;
  switch(d){
   case -1: return reshape(shape(w),num(0));
-  case -2: return ebarmat(a,w);
+  case -2: return jtebarmat(jt,a,w);
   case -3: return df2(z,shape(a),w,jtcut(jt,jtamp(jt,a,ds(CMATCH)),num(3)));
   case -4: return ebarvec(a,w);
  }

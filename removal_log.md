@@ -77,3 +77,4 @@
 |`jsrc\adverbs\as.c` `jsrc\conjunctions\cc.c` `jsrc\conjunctions\cip.c` `jsrc\conjunctions\cp.c` `jsrc\representations\rl.c` `jsrc\verbs\vd.c` `jsrc\verbs\vt.c` `jsrc\xenos\xs.c`|drop|jtdrop|`(^\|[ \t]+\|[^\d\w_])drop\((?=([^,]+?),([^)]+?)\))`|`\1jtdrop(jt,`|
 |`jsrc\conjunctions\crs.c` `jsrc\verbs\v.c` `jsrc\verbs\vf.c` `jsrc\verbs\visp.c`|dropr|jtdropr|`(^\|[ \t]+\|[^\d\w_])dropr\((?=([^,]+?),([^)]+?)\))`|`\1jtdropr(jt,`|
 |`jsrc\verbs\vb.c`|ebar|jtebar|`(^\|[ \t]+\|[^\d\w_])ebar\((?=([^,]+?),([^)]+?)\))`|`\1jtebar(jt,`|
+|`jsrc\verbs\vb.c`|ebarmat|jtebarmat|`(^\|[ \t]+\|[^\d\w_])ebarmat\((?=([^,]+?),([^)]+?)\))`|`\1jtebarmat(jt,`|
