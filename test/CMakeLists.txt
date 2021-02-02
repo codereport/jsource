@@ -100,9 +100,9 @@ set(hare_test_cases #fast
         g1x1      # 0.240 seconds
         g1x11     # 0.180 seconds
         g1x12     # 0.180 seconds
-        g1x2      # 0.170 seconds
+        g1x2      # 0.170 seconds 95 - hare_g1x2 (Failed) rerunning test
         g1x20     # 0.170 seconds
-        g1x3      # 0.180 seconds
+        g1x3      # 0.180 seconds 97 - hare_g1x3 (Failed) rerunning test
         g1x30     # 0.170 seconds
         g1x4      # 0.240 seconds
         g1x43     # 0.160 seconds
