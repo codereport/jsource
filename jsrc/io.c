@@ -52,7 +52,7 @@ and continue through various inputs to see the flow
  
 *** jfe repl (read/execute/print/loop)
  s=input()
- call jdo(s)           ---------> jdo() calls ddtokens(sentence)
+ call jdo(s)           ---------> jdo() calls jtddtokens(jt,sentence)
    input()   (optional) <-------- if DD seen, get more lines if needed by calling jt->sminput
                                   jdo() calls immex(inpl(sentence))
                                    ... 
@@ -85,7 +85,7 @@ and continue through various inputs to see the flow
                                        loop
 *** m : 0
 similar to debug suspension except jgets() lines added  to defn.  m : 0 stops reading
-after encountering ) on a line by itself.  If not 0 : 0, call ddtokens() after each line
+after encountering ) on a line by itself.  If not 0 : 0, call jtddtokens(jt,) after each line
 to see if more lines need to be read to finish the DD; is so, call jgets() to get them
 
 *** script load
@@ -93,7 +93,7 @@ linf() is called first to read in all lines.  It sets jt->dcs to indicate that f
 all calls to jgets() return llies from the file without calling jt->sminput().
 jgets() calls advl() to advance through the lines, returns 0 for EOF.  Error is possible.
 
-The lines are executed one by one.  Before each is executed, ddtokens() is called to see if more lines
+The lines are executed one by one.  Before each is executed, jtddtokens(jt,) is called to see if more lines
 are needed to finish a DD.
 
 *** jwd (11!:x)
@@ -250,7 +250,7 @@ I jdo(J jt, C* lp){I e;A x;
  // BUT: don't do it if the call is recursive.  The user might have set the iep before a prompt, and won't expect it to be executed asynchronously
  if(jt->recurstate<RECSTATEPROMPT)while(jt->iepdo&&jt->iep){jt->iepdo=0; immex(jt->iep); if(savcallstack==0)CALLSTACKRESET MODESRESET jt->jerr=0; tpop(old);}
  // Check for DDs in the input sentence.  If there is one, call jgets() to finish it.  Result is enqueue()d sentence.  If recursive, don't allow call to jgets()
- x=ddtokens(x,(((jt->recurstate&RECSTATEPROMPT)<<(2-1)))+1+(AN(jt->locsyms)>1)); if(!jt->jerr)immex(x);  // allow reads from jgets() if not recursive; return enqueue() result
+ x=jtddtokens(jt,x,(((jt->recurstate&RECSTATEPROMPT)<<(2-1)))+1+(AN(jt->locsyms)>1)); if(!jt->jerr)immex(x);  // allow reads from jgets() if not recursive; return enqueue() result
  e=jt->jerr;
  if(savcallstack==0)CALLSTACKRESET MODESRESET jt->jerr=0;
  if(jt->recurstate<RECSTATEPROMPT)while(jt->iepdo&&jt->iep){jt->iepdo=0; immex(jt->iep); if(savcallstack==0)CALLSTACKRESET MODESRESET jt->jerr=0; tpop(old);}

@@ -33,7 +33,7 @@ A jtevc(J jt,A a,A w,C*s){A z; return df2(z,a,w,jtcolon(jt,num(2),cstr(s)));}
  }else{
   F1RANK(1,jtexec1,UNUSED_VALUE);
   A savself = jt->sf;  // in case we are in a recursion, preserve the restart point
-  STACKCHKOFL FDEPINC(1); z=parse(ddtokens(vs(w),4+1+(AN(jt->locsyms)>1))); jt->asgn=0; FDEPDEC(1);  // replace DDs, but require that they be complete within the string (no jgets)
+  STACKCHKOFL FDEPINC(1); z=parse(jtddtokens(jt,vs(w),4+1+(AN(jt->locsyms)>1))); jt->asgn=0; FDEPDEC(1);  // replace DDs, but require that they be complete within the string (no jgets)
   jt->sf=savself;
  }
  return z&&!(AT(z)&NOUN)?mtv:z;  // if non-noun result, return empty $0
@@ -54,7 +54,7 @@ A jtevc(J jt,A a,A w,C*s){A z; return df2(z,a,w,jtcolon(jt,num(2),cstr(s)));}
 
 // execute for assert: check result for all 1
  A jtimmea(J jt, A w){A t,z,z1;
- RZ(w=ddtokens(w,4+1+(AN(jt->locsyms)>1))); z=immex(w);   // check for DD, but don't allow continuation read
+ RZ(w=jtddtokens(jt,w,4+1+(AN(jt->locsyms)>1))); z=immex(w);   // check for DD, but don't allow continuation read
  ASSERT(jt->asgn||!z||!(AT(z)&NOUN)||(t=eq(num(1),z),
      all1(AT(z)&SPARSE?df1(z1,t,jtatop(jt,slash(ds(CSTARDOT)),ds(CCOMMA))):t)),EVASSERT);  // apply *./@, if sparse
  return z;
