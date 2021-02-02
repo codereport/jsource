@@ -72,15 +72,14 @@ def find_replaced_data():
 def main():
     i = 0
     matches = [i for i in find_replaced_data()]
-    oldname = "" # only doing one name at a time. I maybe not work.
+    oldname = ""  # only doing one name at a time. Maybe not work.
     for path, new_data, oldname in matches:
         with open(path, 'w') as f:
             f.write(new_data)
             i += 1
 
     print(str(len(matches)) + " file changes")
-    os.system("git add --all")
-    os.system("git commit -m remove #define " + oldname)
+    os.system('git commit -m "remove #define ' + oldname + '" -a')
     pass
 
 
