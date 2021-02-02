@@ -13,3 +13,4 @@
 |`jsrc\k.c`|IfromX|jtIfromX|`(^\|[ \t]+\|[^\d\w_])IfromX\((?=([^,]+?),([^)]+?)\))`|`\1jtIfromX(jt,`|
 |`jsrc\k.c`|QfromX|jtQfromX|`(^\|[ \t]+\|[^\d\w_])QfromX\((?=([^,]+?),([^)]+?)\))`|`\1jtQfromX(jt,`|
 |`jsrc\k.c`|XfromB|jtXfromB|`(^\|[ \t]+\|[^\d\w_])XfromB\((?=([^,]+?),([^)]+?)\))`|`\1jtXfromB(jt,`|
+|`jsrc\k.c`|XfromI|jtXfromI|`(^\|[ \t]+\|[^\d\w_])XfromI\((?=([^,]+?),([^)]+?)\))`|`\1jtXfromI(jt,`|

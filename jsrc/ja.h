@@ -11,7 +11,7 @@
 
 
 #define XfromD(x,y,z)               jtXfromD(jt,(x),(y),(z))
-#define XfromI(x,y)                 jtXfromI(jt,(x),(y))
+
 #define XfromQ(x,y)                 jtXfromQ(jt,(x),(y))
 #define ZfromD(x,y)                 jtZfromD(jt,(x),(y))
 #define aaxis(x0,x1,x2,x3,x4,x5,x6,x7)              jtaaxis(jt,(x0),(x1),(x2),(x3),(x4),(x5),(x6),(x7))
