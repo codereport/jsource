@@ -193,7 +193,7 @@
 #define divideAW(x,y)               jtatomic2((J)((I)jt|JTINPLACEA|JTINPLACEW),(x),(y),ds(CDIV)) 
 #define divideW(x,y)                jtatomic2((J)((I)jt|JTINPLACEW),(x),(y),ds(CDIV)) 
 
-#define dllsymaddr(x,y)             jtdllsymaddr(jt,(x),(y)) 
+ 
 #define dloc(x)                     jtdloc(jt,(x))
 #define dolock(x0,x1,x2,x3)         jtdolock(jt,(x0),(x1),(x2),(x3))
 #define dot(x,y)                    jtdot(jt,(x),(y))  

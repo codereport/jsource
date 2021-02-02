@@ -406,8 +406,8 @@ static A jtdllsymaddr(J jt,A w,C flag){A*wv,x,y,z;I i,n,*zv;L*v;
  return z;
 }    /* 15!:6 (0=flag) or 15!:14 (1=flag) */
 
- A jtdllsymget(J jt, A w){return dllsymaddr(w,0);}
- A jtdllsymdat(J jt, A w){return dllsymaddr(w,1);}
+ A jtdllsymget(J jt, A w){return jtdllsymaddr(jt,w,0);}
+ A jtdllsymdat(J jt, A w){return jtdllsymaddr(jt,w,1);}
 
 // look up the name w using full name resolution.  Return the value if found, abort if not found or invalid name
  A jtsymbrd(J jt, A w){L*v; if(!w) return 0; ASSERTN(v=syrd(w,jt->locsyms),EVVALUE,w); return v->val;}
