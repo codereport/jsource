@@ -80,7 +80,7 @@
 #define c2fi(x)                     jtc2fi(jt,(x))
 #define c2j(x,y,z)                  jtc2j(jt,(x),(y),(z))
 #define ca(x)                       jtca(jt,(x))
-#define cancel(x,y)                 jtcancel(jt,(x),(y))
+
 #define cant1(x)                    jtcant1(jt,(x))
 #define cant2(x,y)                  jtcant2(jt,(x),(y)) 
 #define canta(x,y)                  jtcanta(jt,(x),(y))

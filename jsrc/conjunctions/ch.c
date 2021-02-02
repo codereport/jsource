@@ -77,7 +77,7 @@ static A jtcancel(J jt,A a,A w){A c,d,f,x,y;
  wt=AT(w); q=1&&wt&NOUN;
  if(p){c=a; ASSERT(!AN(a)||at&NUMERIC,EVDOMAIN); ASSERT(1>=AR(a),EVRANK);}
  if(q){d=w; ASSERT(!AN(w)||wt&NUMERIC,EVDOMAIN); ASSERT(1>=AR(w),EVRANK);}
- RZ(h=cancel(c,d));
+ RZ(h=jtcancel(jt,c,d));
  return fdef(0,CHGEOM,VERB, jthgeom1,jthgeom2, a,w,h, 0L, 0L,0L,0L);
 }    /* a H. w */
 
