@@ -51,7 +51,8 @@ def find_replaced_data():
 
 def main():
     i = 0
-    for path, new_data in find_replaced_data():
+    matches = [i for i in find_replaced_data()]
+    for path, new_data in matches:
         with open(path, 'w') as f:
             f.write(new_data)
             i += 1
