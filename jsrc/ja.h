@@ -18,7 +18,7 @@
 
 #define ac2(x)                      jtac2(jt,(x))
 #define add2(x,y,z)                 jtadd2(jt,(x),(y),(z))
-#define afi(x,y)                    jtafi(jt,(x),(y))
+
 #define afrom(x,y)                  jtafrom(jt,(x),(y))
 #define afrom2(x0,x1,x2,x3)         jtafrom2(jt,(x0),(x1),(x2),(x3))
 #define afzrndID(x,y)               jtafzrndID(jt,(x),(y))
