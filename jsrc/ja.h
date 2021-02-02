@@ -51,7 +51,7 @@
 #define atcompf(x,y,z)              jtatcompf(jt,(x),(y),(z))
 
 
-#define axbytes(x,y)                jtaxbytes(jt,(x),(y))
+
 #define axbytes1(x0,x1,x2,x3,x4)    jtaxbytes1(jt,(x0),(x1),(x2),(x3),(x4))
 #define axtally(x,y)                jtaxtally(jt,(x),(y))
 #define b0(x)                       jtb0(jt,(x))
