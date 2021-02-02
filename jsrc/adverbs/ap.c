@@ -404,7 +404,7 @@ static A jtinfixprefix2(J jt,A a,A w,A self){F2PREFIP;PROLOG(00202);A fs;I cger[
   // not gerund: OK to test fs
   fs=FAV(self)->fgh[0];  // the verb we will execute
  }else{
-  RZ(fs=createcycliciterator((A)&cger, self));  // use a verb that cycles through the gerunds.  NOTE cger is incompletely filled in & must be read with FAV()
+  RZ(fs=jtcreatecycliciterator(jt,(A)&cger, self));  // use a verb that cycles through the gerunds.  NOTE cger is incompletely filled in & must be read with FAV()
  }
  V *vf=FAV(fs);  // if verb, point to its u operand
  if(vf->mr>=AR(w)){

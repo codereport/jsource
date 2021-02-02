@@ -131,7 +131,7 @@
 #define cps(x)                      jtcps(jt,(x))
 
 #define crccompile(x)               jtcrccompile(jt,(x))
-#define createcycliciterator(x,y)   jtcreatecycliciterator(jt,(x),(y))
+
 #define crcvalidate(x,t)            jtcrcvalidate(jt,(x),(t))
 #define crelocalsyms(x,y,t,v,f)     jtcrelocalsyms(jt,(x),(y),(t),(v),(f))
 #define csize(x,y)                  jtcsize(jt,(x),(y))

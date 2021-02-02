@@ -25,7 +25,7 @@ static A jtcut02(J jt,A a,A w,A self){F2PREFIP;A fs,q,qq,*qv,z,zz=0;I*as,c,e,i,i
  if(!(VGERL&FAV(self)->flag)){
   fs=FAV(self)->fgh[0];  // the verb we will execute
  }else{
-  RZ(fs=createcycliciterator((A)&cger, self));  // use a verb that cycles through the gerunds.
+  RZ(fs=jtcreatecycliciterator(jt,(A)&cger, self));  // use a verb that cycles through the gerunds.
  }
  if(FAV(fs)->mr>=AR(w)){
   // we are going to execute f without any lower rank loop.  Thus we can use the BOXATOP etc flags here.  These flags are used only if we go through the full assemble path
@@ -522,7 +522,7 @@ void copyTT(void *zv, void *wv, I n, I zt, I wt){
   fs=FAV(self)->fgh[0];  // the verb we will execute
   id=FAV(fs)->id;  // fetch its pseudocharacter
  }else{
-  RZ(fs=createcycliciterator((A)&cger, self));  // use a verb that cycles through the gerunds.
+  RZ(fs=jtcreatecycliciterator(jt,(A)&cger, self));  // use a verb that cycles through the gerunds.
   id=0;  // set an invalid pseudochar id for the gerund, to indicate 'not a primitive'
  }
  if(FAV(fs)->mr>=r){

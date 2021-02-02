@@ -606,12 +606,12 @@ static A cons2(J jt,A a,A w,A self){V*sv=FAV(self);
 
 // cyclic-gerund verbs create an iterator from the gerund and pass that into rank processing, looping over cells
 static A cycr1(J jt,    A w,A self){V*sv=FAV(self);I cger[128/SZI];
- RZ(self=createcycliciterator((A)&cger, self));  // fill in an iterator for this gerund
+ RZ(self=jtcreatecycliciterator(jt,(A)&cger, self));  // fill in an iterator for this gerund
  I mr; efr(mr,AR(w),(I)sv->localuse.lI4[0]);
  return rank1ex(w,self,mr,FAV(self)->valencefns[0]);  // callback is to the cyclic-execution function
 }
 static A cycr2(J jt,A a,A w,A self){V*sv=FAV(self);I cger[128/SZI];
- RZ(self=createcycliciterator((A)&cger, self));  // fill in an iterator for this gerund
+ RZ(self=jtcreatecycliciterator(jt,(A)&cger, self));  // fill in an iterator for this gerund
  I lr2,rr2; efr(lr2,AR(a),(I)sv->localuse.lI4[1]); efr(rr2,AR(w),(I)sv->localuse.lI4[2]);
  return rank2ex(a,w,self,lr2,rr2,lr2,rr2,FAV(self)->valencefns[1]);  // callback is to the cyclic-execution function
 }
