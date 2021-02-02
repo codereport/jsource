@@ -41,3 +41,4 @@
 |`jsrc\adverbs\am.c` `jsrc\verbs\vfrom.c`|celloffset|jtcelloffset|`(^\|[ \t]+\|[^\d\w_])celloffset\((?=([^,]+?),([^)]+?)\))`|`\1jtcelloffset(jt,`|
 |`jsrc\px.c` `jsrc\parsing\pv.c`|colon|jtcolon|`(^\|[ \t]+\|[^\d\w_])colon\((?=([^,]+?),([^)]+?)\))`|`\1jtcolon(jt,`|
 |`jsrc\verbs\vgcomp.c` `jsrc\verbs\vi.c` `jsrc\verbs\viix.c`|compare|jtcompare|`(^\|[ \t]+\|[^\d\w_])compare\((?=([^,]+?),([^)]+?)\))`|`\1jtcompare(jt,`|
+|`jsrc\words\wc.c`|conall|jtconall|`(^\|[ \t]+\|[^\d\w_])conall\((?=([^,]+?),([^)]+?)\))`|`\1jtconall(jt,`|

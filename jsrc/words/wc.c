@@ -411,7 +411,7 @@ B jtpreparse(J jt,A w,A*zl,A*zc){PROLOG(0004);A c,l,*lv,*v,w0,w1,*wv,x,y;B b=0,t
  ASSERTCW(!as,p-1);
  ASSERTCW(!b||0>(i=congoto(n,cv,lv)),(i+cv)->source);
  // Audit control structures and point the go line correctly
- ASSERTCW(    0>(i= conall(n,cv   )),(i+cv)->source);
+ ASSERTCW(    0>(i= jtconall(jt,n,cv   )),(i+cv)->source);
  // Install the number of words and cws into the return blocks, and return those blocks
  AN(l)=AS(l)[0]=m; *zl=incorp(l);
  AN(c)=AS(c)[0]=n; *zc=incorp(c);
