@@ -23,3 +23,4 @@
 |`jsrc\adverbs\ai.c` `jsrc\conjunctions\cc.c` `jsrc\conjunctions\cp.c` `jsrc\conjunctions\cu.c` `jsrc\verbs\vb.c` `jsrc\verbs\vfrom.c` `jsrc\xenos\xfmt.c`|amp|jtamp|`(^\|[ \t]+\|[^\d\w_])amp\((?=([^,]+?),([^)]+?)\))`|`\1jtamp(jt,`|
 |`jsrc\conjunctions\cu.c`|ampco|jtampco|`(^\|[ \t]+\|[^\d\w_])ampco\((?=([^,]+?),([^)]+?)\))`|`\1jtampco(jt,`|
 |`jsrc\conjunctions\ch.c` `jsrc\conjunctions\cv.c`|ascan|jtascan|`(^\|[ \t]+\|[^\d\w_])ascan\((?=([^,]+?),([^)]+?)\))`|`\1jtascan(jt,`|
+|`jsrc\conjunctions\ch.c` `jsrc\conjunctions\cv.c` `jsrc\verbs\v0.c` `jsrc\verbs\vb.c` `jsrc\verbs\ve.c` `jsrc\verbs\vrep.c`|aslash|jtaslash|`(^\|[ \t]+\|[^\d\w_])aslash\((?=([^,]+?),([^)]+?)\))`|`\1jtaslash(jt,`|

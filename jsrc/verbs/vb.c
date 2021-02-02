@@ -158,7 +158,7 @@ static I jtebarprep(J jt,A a,A w,A*za,A*zw,I*zc){I ar,at,m,n,t,wr,wt,memlimit;CR
  wv=CAV(w); n=AN(w); p=n-m;
  switch(d){
   case -1: return num(0);
-  case -4: return aslash(CPLUS,ebarvec(a,w));
+  case -4: return jtaslash(jt,CPLUS,ebarvec(a,w));
  }
  if((-m&-n)>=0){return sc(n);}  // empty argument.  If m, it matches everywhere, so use n; if n, it's 0, use it
  GATV0(y,INT,d,1); yv= AV(y); DO(d, yv[i]=1+m;);
@@ -181,7 +181,7 @@ static I jtebarprep(J jt,A a,A w,A*za,A*zw,I*zc){I ar,at,m,n,t,wr,wt,memlimit;CR
  wv=CAV(w); n=AN(w); p=n-m;
  switch(d){
   case -1: return num(0);
-  case -4: return aslash(CPLUSDOT,ebarvec(a,w));
+  case -4: return jtaslash(jt,CPLUSDOT,ebarvec(a,w));
  }
  if((-m&-n)>=0){return num(SGNTO0(-n));}  // empty argument.  If m, it matches everywhere, so use n; if n, it's 0, use it - 0/1 only
  GATV0(y,INT,d,1); yv= AV(y); DO(d, yv[i]=1+m;);

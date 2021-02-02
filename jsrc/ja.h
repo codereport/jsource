@@ -41,7 +41,7 @@
 #define arep(x)                     jtarep(jt,(x))
 #define aro(x)                      jtaro(jt,(x))
 
-#define aslash(x,y)                 jtaslash(jt,(x),(y))
+
 #define aslash1(x,y)                jtaslash1(jt,(x),(y))
 #define assembleresults(x0,x1,x2,x3,x4,x5,x6,x7,x8,x9,x10)   jtassembleresults(jt,(x0),(x1),(x2),(x3),(x4),(x5),(x6),(x7),(x8),(x9),(x10))
 #define astd1(x,y,z)                jtastd1(jt,(x),(y),(z))

@@ -341,7 +341,7 @@ static A jtweight(J jt,A a,A w){ A z; return df1(z,behead(over(AR(w)?w:reshape(a
  if((-n&SGNIFNOT(t,B01X))>=0)return reshape(apip(shape(w),zeroionei(n!=0)),w);
  if(!(t&INT)){
   // Not integer.  Calculate # digits-1 as d = 2 <.@^. >./ | , w  
-  df2(d,num(2),maximum(zeroionei(1),aslash(CMAX,mag(ravel(w)))),atop(ds(CFLOOR),ds(CLOG)));
+  df2(d,num(2),maximum(zeroionei(1),jtaslash(jt,CMAX,mag(ravel(w)))),atop(ds(CFLOOR),ds(CLOG)));
   // Calculate z = ((1+d)$2) #: w
   RZ(z=jtabase2(jt,reshape(increm(d),num(2)),w));
   // If not float, result is exact or complex; either way, keep it
@@ -350,8 +350,8 @@ static A jtweight(J jt,A a,A w){ A z; return df1(z,behead(over(AR(w)?w:reshape(a
   // calculate that as (0 = >./ ({."1 z)).  If so, return }."1 z ,  otherwise z
   // But we can't delete a digit if any of the values were negative - all are significant then
   // We also can't delete a digit if there is only 1 digit in the numbers
-  if(AS(z)[AR(z)-1]<=1 || i0(aslash(CPLUSDOT,ravel(lt(w,zeroionei(0))))))return z;
-  if(0==i0(aslash(CMAX,ravel(IRS1(z,0L,1L,jthead,d)))))return IRS1(z,0L,1L,jtbehead,d);
+  if(AS(z)[AR(z)-1]<=1 || i0(jtaslash(jt,CPLUSDOT,ravel(lt(w,zeroionei(0))))))return z;
+  if(0==i0(jtaslash(jt,CMAX,ravel(IRS1(z,0L,1L,jthead,d)))))return IRS1(z,0L,1L,jtbehead,d);
   return z;
  }
  // Integer.  Calculate x=max magnitude encountered (minimum of 1, to leave 1 output value)

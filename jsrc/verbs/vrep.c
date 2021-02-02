@@ -121,7 +121,7 @@ static A jtrepbsx(J jt,A a,A w,I wf,I wcr){A ai,c,d,e,g,q,x,wa,wx,wy,y,y1,z,zy;B
  wp=PAV(w);
  if(DENSE&AT(w)||all0(eq(sc(wf),SPA(wp,a)))){RZ(q=denseit(a)); return irs2(ifb(AN(q),BAV(q)),w,0L,1L,wcr,jtfrom);}  // here if dense w
  wa=SPA(wp,a); wy=SPA(wp,i); wx=SPA(wp,x);
- RZ(q=aslash(CPLUS,a));
+ RZ(q=jtaslash(jt,CPLUS,a));
  GASPARSE(z,AT(w),1,AR(w),AS(w)); *(wf+AS(z))=m=*AV(q);
  RZ(c=indexof(wa,sc(wf)));
  RZ(y1=fromr(c,wy));
@@ -192,7 +192,7 @@ static A jtrep1d(J jt,A a,A w,I wf,I wcr){A z;C*wv,*zv;I c,k,m,n,p=0,q,t,*ws,zk,
 static B jtrep1sa(J jt,A a,I*c,I*d){A x;B b;I*v;
  b=1&&AT(a)&CMPX;
  if(b)RZ(x=rect(a)) else x=a; 
- if(AR(a)){ASSERT(equ(num(1),aslash(CSTARDOT,le(zeroionei(0),ravel(x)))),EVDOMAIN); RZ(x=aslash(CPLUS,x));} 
+ if(AR(a)){ASSERT(equ(num(1),jtaslash(jt,CSTARDOT,le(zeroionei(0),ravel(x)))),EVDOMAIN); RZ(x=jtaslash(jt,CPLUS,x));} 
  if(!(INT&AT(x)))RZ(x=cvt(INT,x));
  v=AV(x); *c=v[0]; *d=b?v[1]:0;
  ASSERT(0<=*c&&0<=*d,EVDOMAIN);

@@ -7,7 +7,7 @@
 
 
 static A jthparm(J jt,A j,A f,A h){A z;
- if(!(VERB&AT(f)))return shift1(aslash(CSTAR,atab(CPLUS,h,j)));
+ if(!(VERB&AT(f)))return shift1(jtaslash(jt,CSTAR,atab(CPLUS,h,j)));
  RZ(z=CALL1(FAV(f)->valencefns[0],j,f));
  ASSERT(1>=AR(z),EVRANK); 
  ASSERT(!AR(z)||AN(j)==AN(z),EVLENGTH);
@@ -25,7 +25,7 @@ static A jthgv(J jt,B b,I n,A w,A self){A c,d,e,h,*hv,j,y;V*sv=FAV(self);
   case 2: y=divide(tymes(c,jtascan(jt,CSTAR,e)),jtascan(jt,CSTAR,d)); break;
   case 3: y=divide(tymes(c,jtascan(jt,CSTAR,e)),d);
  }
- return b?over(num(0),jtascan(jt,CPLUS,y)):aslash(CPLUS,y);
+ return b?over(num(0),jtascan(jt,CPLUS,y)):jtaslash(jt,CPLUS,y);
 }    /* verb or complex cases */
 
 static A jthgd(J jt,B b,I n,A w,A p,A q){A c,d,e,z;D r,s,t,*u,*v,x,*zv;I j,pn,qn;
