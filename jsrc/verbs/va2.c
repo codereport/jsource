@@ -676,7 +676,7 @@ static A jtva2(J jt,AD * RESTRICT a,AD * RESTRICT w,AD * RESTRICT self,UI allran
    }
 
    // The work has been done.  If there was no error, check for optional conversion-if-possible or -if-necessary
-   if(rc==EVOK){if((I)jtinplace&VRI+VRD)z=cvz((I)jtinplace,z); return z;  // normal return is here.  The rest is error recovery
+   if(rc==EVOK){if((I)jtinplace&VRI+VRD)z=jtcvz(jt,(I)jtinplace,z); return z;  // normal return is here.  The rest is error recovery
    }else if(rc-EWOVIP>=0){A zz;C *zzv;I zzk;
     // Here for overflow that can be corrected in place
 // not yet    if(rc==EVOKCLEANUP){jt->mulofloloc=0; return z;}  // if multiply that did not overflow, clear the oflo position for next time, and return

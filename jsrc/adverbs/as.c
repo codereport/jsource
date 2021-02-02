@@ -286,7 +286,7 @@ static A jtsscan(J jt,    A w,A self){A y,z;I d,f,m,n,r,t,wn,wr,*ws,wt;
  if((t=atype(adocv.cv))&&TYPESNE(t,wt))RZ(w=jtcvt(jt,t,w));
  if(ASGNINPLACESGN(SGNIF((I)jtinplace,JTINPLACEWX)&SGNIF(adocv.cv,VIPOKWX),w))z=w; else GA(z,rtype(adocv.cv),wn,wr,ws);
  I rc=((AHDRSFN*)adocv.f)(d,n,m,AV(w),AV(z),jt);
- if(rc&255){jsignal(rc); return jt->jerr>=EWOV?IRS1(w,self,r,jtsscan,z):0;} else return adocv.cv&VRI+VRD?cvz(adocv.cv,z):z;
+ if(rc&255){jsignal(rc); return jt->jerr>=EWOV?IRS1(w,self,r,jtsscan,z):0;} else return adocv.cv&VRI+VRD?jtcvz(jt,adocv.cv,z):z;
 }    /* f/\."r w main control */
 
 

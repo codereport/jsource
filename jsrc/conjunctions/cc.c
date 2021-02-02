@@ -724,7 +724,7 @@ void copyTT(void *zv, void *wv, I n, I zt, I wt){
     jsignal(rc);
     if(FAV(self)->id!=CCUT)CUTFRETCOUNT(a)=m;  // if we are going to retry, we have to reset the # frets indicator which has been destroyed
     return rc>=EWOV?cut2(a,w,self):0;
-   }else return adocv.cv&VRI+VRD?cvz(adocv.cv,zz):zz;
+   }else return adocv.cv&VRI+VRD?jtcvz(jt,adocv.cv,zz):zz;
    break;
   }
  }
@@ -823,7 +823,7 @@ static A jtcut1(J jt,    A w,A self){return cut2(mark,w,self);}
   }
   p-=q; v=u;  
  }
- AS(z)[0]=m; AN(z)=m*d; return adocv.cv&VRI+VRD?cvz(adocv.cv,z):z;
+ AS(z)[0]=m; AN(z)=m*d; return adocv.cv&VRI+VRD?jtcvz(jt,adocv.cv,z):z;
 }   
 
  A jtrazecut1(J jt,    A w,A self){return razecut2(mark,w,self);}

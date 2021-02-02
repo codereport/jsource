@@ -584,7 +584,7 @@ static A jtpscan(J jt,    A w,A self){A z;I f,n,r,t,wn,wr,*ws,wt;
  // if inplaceable, reuse the input area for the result
  if(ASGNINPLACESGN(SGNIF((I)jtinplace,JTINPLACEWX)&SGNIF(adocv.cv,VIPOKWX),w))z=w; else GA(z,rtype(adocv.cv),wn,wr,ws);
  I rc=((AHDRPFN*)adocv.f)(d,n,m,AV(w),AV(z),jt);
- if(255&rc){jsignal(rc); return (rc>=EWOV)?IRS1(w,self,r,jtpscan,z):0;} else return adocv.cv&VRI+VRD?cvz(adocv.cv,z):z;
+ if(255&rc){jsignal(rc); return (rc>=EWOV)?IRS1(w,self,r,jtpscan,z):0;} else return adocv.cv&VRI+VRD?jtcvz(jt,adocv.cv,z):z;
 }    /* f/\"r w atomic f main control */
 
 static A jtinfixd(J jt,A a,A w,A self){A fs,z;C*x,*y;I c=0,d,k,m,n,p,q,r,*s,wr,*ws,wt,zc; 

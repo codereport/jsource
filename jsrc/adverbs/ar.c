@@ -379,7 +379,7 @@ static A jtreduce(J jt,    A w,A self){A z;I d,f,m,n,r,t,wr,*ws,zt;
   // if return is EWOV, it's an integer overflow and we must restart, after restoring the ranks
   // EWOV1 means that there was an overflow on a single result, which was calculated accurately and stored as a D.  So in that case all we
   // have to do is change the type of the result.
-  if(255&rc){if(jt->jerr==EWOV1){AT(z)=FL;return z;}else {jsignal(rc); return rc>=EWOV?IRS1(w,self,r,jtreduce,z):0;}} else {return adocv.cv&VRI+VRD?cvz(adocv.cv,z):z;}
+  if(255&rc){if(jt->jerr==EWOV1){AT(z)=FL;return z;}else {jsignal(rc); return rc>=EWOV?IRS1(w,self,r,jtreduce,z):0;}} else {return adocv.cv&VRI+VRD?jtcvz(jt,adocv.cv,z):z;}
 
   // special cases:
  }else if(n==1)return head(w);    // reduce on single items - ranks are still set
