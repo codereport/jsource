@@ -127,7 +127,7 @@
 #define consinit()                  jtconsinit(jt)
 
 #define convert0(x0,x1,x2,x3)       jtconvert0(jt,(x0),(x1),(x2),(x3)) 
-#define conword(x,y)                jtconword(jt,(x),(y))
+
 #define cps(x)                      jtcps(jt,(x))
 #define crc2(x,y)                   jtcrc2(jt,(x),(y))
 #define crccompile(x)               jtcrccompile(jt,(x))

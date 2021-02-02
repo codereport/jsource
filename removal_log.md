@@ -45,3 +45,4 @@
 |`jsrc\words\wc.c`|congotoblk|jtcongotoblk|`(^\|[ \t]+\|[^\d\w_])congotoblk\((?=([^,]+?),([^)]+?)\))`|`\1jtcongotoblk(jt,`|
 |`jsrc\words\w.c`|connum|jtconnum|`(^\|[ \t]+\|[^\d\w_])connum\((?=([^,]+?),([^)]+?)\))`|`\1jtconnum(jt,`|
 |`jsrc\words\w.c`|constr|jtconstr|`(^\|[ \t]+\|[^\d\w_])constr\((?=([^,]+?),([^)]+?)\))`|`\1jtconstr(jt,`|
+|`jsrc\words\wc.c`|conword|jtconword|`(^\|[ \t]+\|[^\d\w_])conword\((?=([^,]+?),([^)]+?)\))`|`\1jtconword(jt,`|

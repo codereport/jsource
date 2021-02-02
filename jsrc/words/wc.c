@@ -349,7 +349,7 @@ static A jtgetsen(J jt, A w){A y,z,*z0,*zv;C*s;I i,j,k=-1,m,n,*v;
  for(i=0;i<n;i+=2){     // for each word...
   j=v[i]; m=v[1+i]-j;         // j=index, m=length of word
   if(0>k)k=j;              // k=index of start of sentence, set at start or when we have processed a control word
-  if(conword(m,j+s)){     // when we hit a control word...
+  if(jtconword(jt,m,j+s)){     // when we hit a control word...
    if(k<j)RZ(*zv++=incorp(str(j-k,k+s)));  // if a sentence was in progress, emit it
    RZ(*zv++=incorp(str(m,j+s)));           // then emit the control word
    k=-1;           // reset start-of-sentence search
@@ -383,7 +383,7 @@ B jtpreparse(J jt,A w,A*zl,A*zc){PROLOG(0004);A c,l,*lv,*v,w0,w1,*wv,x,y;B b=0,t
    w0=v[j];                             // w0 is A block for sentence j
    RZ(w1=wordil(w0)); ASSERT(AM(w1)>=0,EVOPENQ)  // w1 is A block for (# words), (index,end+1) pairs
    s=CAV(str0(w0));                           // s->start of sentence after appending final NUL,  why?
-   k=conword(AV(w1)[1]-AV(w1)[0],s);         // classify first word, using its length.  0 means 'not CW', otherwise control type
+   k=jtconword(jt,AV(w1)[1]-AV(w1)[0],s);         // classify first word, using its length.  0 means 'not CW', otherwise control type
    if(k==CTRY)try=1;                    // remember if we see a try.
    if(k==CASSERT){ASSERTCW(!as,i  ); as=1;}   // if assert., verify not preceded by assert.; go to post-assert. state
    else if(1==as){ASSERTCW(!k, i); as=2; --n;}   // verify assert. not followed by cw; back up to overwrite assert. block; go to post-post-assert. state
