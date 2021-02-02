@@ -8,3 +8,4 @@
 |`jsrc\k.c`|C2fromC4|jtC2fromC4|`(^\|[ \t]+\|[^\d\w_])C2fromC4\((?=([^,]+?),([^)]+?)\))`|`\1jtC2fromC4(jt,`|
 |`jsrc\k.c`|C4fromC1|jtC4fromC1|`(^\|[ \t]+\|[^\d\w_])C4fromC1\((?=([^,]+?),([^)]+?)\))`|`\1jtC4fromC1(jt,`|
 |`jsrc\k.c`|C4fromC2|jtC4fromC2|`(^\|[ \t]+\|[^\d\w_])C4fromC2\((?=([^,]+?),([^)]+?)\))`|`\1jtC4fromC2(jt,`|
+|`jsrc\k.c`|DfromQ|jtDfromQ|`(^\|[ \t]+\|[^\d\w_])DfromQ\((?=([^,]+?),([^)]+?)\))`|`\1jtDfromQ(jt,`|

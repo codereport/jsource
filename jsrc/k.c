@@ -319,8 +319,8 @@ B jtccvt(J jt,I tflagged,A w,A*y){F1PREFIP;A d;I n,r,*s,wt; void *wv,*yv;I t=tfl
   case CVCASE(B01X, RATX): GATV(d, XNUM, n, r, s); if(!(XfromQ(w, AV(d))))return 0; return jtBfromX(jt,d, yv);
   case CVCASE(INTX, RATX): GATV(d, XNUM, n, r, s); if(!(XfromQ(w, AV(d))))return 0; return IfromX(d, yv);
   case CVCASE(XNUMX, RATX): return XfromQ(w, yv);
-  case CVCASE(FLX, RATX): return DfromQ(w, yv);
-  case CVCASE(CMPXX, RATX): GATV(d, FL, n, r, s); if(!(DfromQ(w, AV(d))))return 0; return ZfromD(d, yv);
+  case CVCASE(FLX, RATX): return jtDfromQ(jt,w, yv);
+  case CVCASE(CMPXX, RATX): GATV(d, FL, n, r, s); if(!(jtDfromQ(jt,w, AV(d))))return 0; return ZfromD(d, yv);
   default:                ASSERT(0, EVDOMAIN);
  }
 }

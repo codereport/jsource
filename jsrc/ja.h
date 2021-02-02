@@ -12,7 +12,7 @@
 
 
 
-#define DfromQ(x,y)                 jtDfromQ(jt,(x),(y))
+
 #define DfromX(x,y)                 jtDfromX(jt,(x),(y))
 #define DfromZ(x,y,z)               jtDfromZ(jt,(x),(y),(z))
 #define DXfI(x,y,z)                 jtDXfI(jt,(x),(y),(z))
