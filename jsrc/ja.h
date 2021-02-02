@@ -5,7 +5,7 @@
 
 
 #define BfromD(x,y,z)               jtBfromD(jt,(x),(y),(z))
-#define BfromX(x,y)                 jtBfromX(jt,(x),(y))
+
 #define C1fromC2(x,y)               jtC1fromC2(jt,(x),(y))
 #define C2fromC1(x,y)               jtC2fromC1(jt,(x),(y))
 #define C1fromC4(x,y)               jtC1fromC4(jt,(x),(y))

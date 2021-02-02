@@ -311,12 +311,12 @@ B jtccvt(J jt,I tflagged,A w,A*y){F1PREFIP;A d;I n,r,*s,wt; void *wv,*yv;I t=tfl
   case CVCASE(XNUMX, CMPXX): GATV(d, FL, n, r, s); if(!(DfromZ(w, AV(d), (I)jtinplace&JTNOFUZZ?0.0:FUZZ)))return 0; return XfromD(d, yv, (jt->xmode&REPSGN(SGNIFNOT(tflagged,XCVTXNUMORIDEX)))|(tflagged>>XCVTXNUMCVX));
   case CVCASE(RATX, CMPXX): GATV(d, FL, n, r, s); if(!(DfromZ(w, AV(d), (I)jtinplace&JTNOFUZZ?0.0:FUZZ)))return 0; return QfromD(d, yv, (jt->xmode&REPSGN(SGNIFNOT(tflagged,XCVTXNUMORIDEX)))|(tflagged>>XCVTXNUMCVX));
   case CVCASE(FLX, CMPXX): return DfromZ(w, yv, (I)jtinplace&JTNOFUZZ?0.0:FUZZ);
-  case CVCASE(B01X, XNUMX): return BfromX(w, yv);
+  case CVCASE(B01X, XNUMX): return jtBfromX(jt,w, yv);
   case CVCASE(INTX, XNUMX): return IfromX(w, yv);
   case CVCASE(RATX, XNUMX): return QfromX(w, yv);
   case CVCASE(FLX, XNUMX): return DfromX(w, yv);
   case CVCASE(CMPXX, XNUMX): GATV(d, FL, n, r, s); if(!(DfromX(w, AV(d))))return 0; return ZfromD(d, yv);
-  case CVCASE(B01X, RATX): GATV(d, XNUM, n, r, s); if(!(XfromQ(w, AV(d))))return 0; return BfromX(d, yv);
+  case CVCASE(B01X, RATX): GATV(d, XNUM, n, r, s); if(!(XfromQ(w, AV(d))))return 0; return jtBfromX(jt,d, yv);
   case CVCASE(INTX, RATX): GATV(d, XNUM, n, r, s); if(!(XfromQ(w, AV(d))))return 0; return IfromX(d, yv);
   case CVCASE(XNUMX, RATX): return XfromQ(w, yv);
   case CVCASE(FLX, RATX): return DfromQ(w, yv);
