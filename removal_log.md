@@ -81,3 +81,17 @@
 |`jsrc\verbs\vb.c`|ebarvec|jtebarvec|`(^\|[ \t]+\|[^\d\w_])ebarvec\((?=([^,]+?),([^)]+?)\))`|`\1jtebarvec(jt,`|
 |`jsrc\debugging\d.c`|efmt|jtefmt|`(^\|[ \t]+\|[^\d\w_])efmt\((?=([^,]+?),([^)]+?)\))`|`\1jtefmt(jt,`|
 |`jsrc\debugging\d.c`|ep|jtep|`(^\|[ \t]+\|[^\d\w_])ep\((?=([^,]+?),([^)]+?)\))`|`\1jtep(jt,`|
+|`jsrc\adverbs\af.c`|eps|jteps|`(^\|[ \t]+\|[^\d\w_])eps\((?=([^,]+?),([^)]+?)\))`|`\1jteps(jt,`|
+|`jsrc\adverbs\ai.c`|eps|jteps|`(^\|[ \t]+\|[^\d\w_])eps\((?=([^,]+?),([^)]+?)\))`|`\1jteps(jt,`|
+|`jsrc\adverbs\am1.c`|eps|jteps|`(^\|[ \t]+\|[^\d\w_])eps\((?=([^,]+?),([^)]+?)\))`|`\1jteps(jt,`|
+|`jsrc\adverbs\amn.c`|eps|jteps|`(^\|[ \t]+\|[^\d\w_])eps\((?=([^,]+?),([^)]+?)\))`|`\1jteps(jt,`|
+|`jsrc\conjunctions\cc.c`|eps|jteps|`(^\|[ \t]+\|[^\d\w_])eps\((?=([^,]+?),([^)]+?)\))`|`\1jteps(jt,`|
+|`jsrc\conjunctions\cpdtsp.c`|eps|jteps|`(^\|[ \t]+\|[^\d\w_])eps\((?=([^,]+?),([^)]+?)\))`|`\1jteps(jt,`|
+|`jsrc\conjunctions\cx.c`|eps|jteps|`(^\|[ \t]+\|[^\d\w_])eps\((?=([^,]+?),([^)]+?)\))`|`\1jteps(jt,`|
+|`jsrc\verbs\v.c`|eps|jteps|`(^\|[ \t]+\|[^\d\w_])eps\((?=([^,]+?),([^)]+?)\))`|`\1jteps(jt,`|
+|`jsrc\verbs\vfromsp.c`|eps|jteps|`(^\|[ \t]+\|[^\d\w_])eps\((?=([^,]+?),([^)]+?)\))`|`\1jteps(jt,`|
+|`jsrc\verbs\vi.c`|eps|jteps|`(^\|[ \t]+\|[^\d\w_])eps\((?=([^,]+?),([^)]+?)\))`|`\1jteps(jt,`|
+|`jsrc\verbs\vrep.c`|eps|jteps|`(^\|[ \t]+\|[^\d\w_])eps\((?=([^,]+?),([^)]+?)\))`|`\1jteps(jt,`|
+|`jsrc\verbs\vs.c`|eps|jteps|`(^\|[ \t]+\|[^\d\w_])eps\((?=([^,]+?),([^)]+?)\))`|`\1jteps(jt,`|
+|`jsrc\words\wn.c`|eps|jteps|`(^\|[ \t]+\|[^\d\w_])eps\((?=([^,]+?),([^)]+?)\))`|`\1jteps(jt,`|
+|`jsrc\xenos\xa.c`|eps|jteps|`(^\|[ \t]+\|[^\d\w_])eps\((?=([^,]+?),([^)]+?)\))`|`\1jteps(jt,`|

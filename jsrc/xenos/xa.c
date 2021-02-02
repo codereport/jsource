@@ -44,7 +44,7 @@
  n=(UC)AN(w);
  ASSERT(1>=AR(w),EVRANK);
  ASSERT(all1(nubsieve(w)),EVDOMAIN);
- ASSERT(all1(eps(w,eval("1 2 4 5 6"))),EVINDEX);
+ ASSERT(all1(jteps(jt,w,eval("1 2 4 5 6"))),EVINDEX);
  *jt->disp=n; DO(n, jt->disp[1+i]=(UC)IAV(w)[i];);
  return mtv;
 }

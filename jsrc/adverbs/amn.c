@@ -27,7 +27,7 @@ static B jtiaddr(J jt,A z,A ind,A*i1,A*i2){A a,ai,as,ii,jj,q,t,x,y;I c,d,e,h,i,*
  RZ(as=less(IX(AR(z)),a)); u=AV(as); n=AN(as);         /* dense axes                  */
  GATV0(t,INT,n,1); v=AV(t);                             /* shape of indexed dense axes */
  e=0; d=1; DO(n, if(h>u[i])v[e++]=s[i]; else d*=s[i];);
- RZ(*i2=jj=tymes(sc(d),jtbase2(jt,vec(INT,e,v),repeatr(eps(ai,as),ind))));
+ RZ(*i2=jj=tymes(sc(d),jtbase2(jt,vec(INT,e,v),repeatr(jteps(jt,ai,as),ind))));
  c=*(1+AS(y));
  if(!c){
   n=AN(jj);
@@ -35,7 +35,7 @@ static B jtiaddr(J jt,A z,A ind,A*i1,A*i2){A a,ai,as,ii,jj,q,t,x,y;I c,d,e,h,i,*
   RZ(*i2=reshape(sc(m*n),jj));
   return 1;
  }
- RZ(*i1=ii=indexof(y,repeatr(eps(ai,a),ind)));         /* group indices in index mat  */
+ RZ(*i1=ii=indexof(y,repeatr(jteps(jt,ai,a),ind)));         /* group indices in index mat  */
  if(c==AN(a))return 1;
  n=AN(ii); iv=AV(ii); jv=AV(jj);                       /* do progressive iota         */
  GATV0(q,INT,n,1); qv=AV(q);                            /* group sizes                 */
@@ -55,14 +55,14 @@ static A jtzpadn(J jt,A z,A ind,B ip){A a,ai,i1,p,p1,q,t,x,x0,y,y0,y1;B*b;I c,d,
  zp=PAV(z); a=SPA(zp,a); x=x0=SPA(zp,x); y=y0=SPA(zp,i);
  n=1; h=*(AS(ind)+AR(ind)-1);
  RZ(ai=IX(h));
- RZ(t=eps(ai,a)); b=BAV(t); d=0; DO(h, if(b[i])++d;);
+ RZ(t=jteps(jt,ai,a)); b=BAV(t); d=0; DO(h, if(b[i])++d;);
  RZ(i1=d<h?repeatr(t,ind):ind); if(2!=AR(ind))RZ(i1=d?reshape(v2(AN(i1)/d,d),i1):mtm);
  RZ(t=gt(sc(h),a)); RZ(y1=all1(t)?y:repeatr(t,y));
  RZ(p=nub(less(i1,y1)));
  if(c=AN(a)-d){
   RZ(t=from(less(a,ai),shape(z))); RZ(p1=odom(2L,c,AV(t))); n=*AS(p1);
   if(m=*AS(p))RZ(p=stitch(repeat(sc(n),p),reshape(v2(n*m,c),p1)));
-  RZ(t=nub(repeat(eps(y1,i1),y1)));
+  RZ(t=nub(repeat(jteps(jt,y1,i1),y1)));
   RZ(t=stitch(repeat(sc(n),t),reshape(v2(n**AS(t),c),p1)));
   RZ(t=less(t,y));
   if(AN(t))RZ(p=over(p,t));

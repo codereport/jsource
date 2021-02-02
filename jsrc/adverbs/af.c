@@ -121,7 +121,7 @@ static A jtfixa(J jt,A a,A w){A f,g,h,wf,x,y,z=w;V*v;fauxblock(fauxself); A aa; 
   case CTILDE:
    if(f&&NAME&AT(f)){
     RZ(y=sfn(0,f));
-    if(all1(eps(box(y),(A)AM(a))))return w;  // break out of loop if recursive name lookup
+    if(all1(jteps(jt,box(y),(A)AM(a))))return w;  // break out of loop if recursive name lookup
     ASSERT(AN((A)AM(a))<248,EVLIMIT);  // error if too many names in expansion
     // recursion check finished.  Now replace the name with its value
     if(x=symbrdlock(f)){

@@ -8,8 +8,8 @@
 
  A jtshapex    (J jt, A w) {A z; z=vec(INT,AR(w),AS(w)); return AT(w)&XNUM+RAT?xco1(z):z;}
  A jtshape     (J jt, A w) { return vec(INT,AR(w),AS(w));}  // $ y
- A jtisempty   (J jt, A w) { if((AT(w)&SPARSE)!=0)return eps(zeroionei(0),shape(w)); return num(AN(w)==0);}  // 0 e. $
- A jtisnotempty(J jt, A w) { if((AT(w)&SPARSE)!=0)return __not(eps(zeroionei(0),shape(w))); return num(AN(w)!=0);}  // *@#@,
+ A jtisempty   (J jt, A w) { if((AT(w)&SPARSE)!=0)return jteps(jt,zeroionei(0),shape(w)); return num(AN(w)==0);}  // 0 e. $
+ A jtisnotempty(J jt, A w) { if((AT(w)&SPARSE)!=0)return __not(jteps(jt,zeroionei(0),shape(w))); return num(AN(w)!=0);}  // *@#@,
  A jtisitems   (J jt, A w) { return num(!AR(w)|!!AS(w)[0]);}   // *@#   *@:#
  A jtrank      (J jt, A w) {F1PREFIP; return sc(AR(w));}  // #@$
  A jtnatoms    (J jt, A w) {F1PREFIP; A z; if((AT(w)&SPARSE)!=0)return df1(z,shape(w),slash(ds(CSTAR))); return sc(AN(w));}   // */@$  #@,

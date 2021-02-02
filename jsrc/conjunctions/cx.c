@@ -468,7 +468,7 @@ dobblock:
      // if neither t nor cv is boxed, just compare for equality.  Boxed empty goes through the other path
      if(!equ(t,cv->t))i=ci->go;  // should perhaps take the scalar case specially & send it through singleton code
     }else{
-     if(all0(eps(boxopen(cv->t),boxopen(t))))i=ci->go;  // if case tests false, jump around bblock   test is cv +./@:,@:e. boxopen t
+     if(all0(jteps(jt,boxopen(cv->t),boxopen(t))))i=ci->go;  // if case tests false, jump around bblock   test is cv +./@:,@:e. boxopen t
     }
     // Clear t to ensure that the next case./fcase. does not reuse this value
     t=0;

@@ -16,7 +16,7 @@ B jtscheck(J jt,A w){A a,e,x,y;I k1,k2,r,*s,t;P*p;D rkblk[16];
  ASSERTSYS(y,"scheck i missing");
  ASSERTSYS(x,"scheck x missing");
  ASSERTSYS(1==AR(a),"scheck a rank");
- ASSERTSYS(all1(eps(a,IX(r))),"scheck a index");
+ ASSERTSYS(all1(jteps(jt,a,IX(r))),"scheck a index");
  ASSERTSYS(equ(a,nub(a)),"scheck a unique");
  ASSERTSYS(!AR(e),"scheck e rank");
  ASSERTSYS(TYPESEQ(AT(e),DTYPE(t)),"scheck e type");
@@ -176,8 +176,8 @@ A jtsparseit(J jt,A w,A a,A e){PROLOG(0091);A ax,c,x,y,z;B b,*cv;I cm,cn,m,n,r,*
  SPBV(zp,a,a1,vaxis(r,a)); 
  SPBV(zp,e,e,ca(SPA(wp,e)));
  a=SPA(wp,a); x=SPA(wp,x); y=SPA(wp,i); m=*AS(y);
- if(all1(eps(a,a1))){I*s;  /* old is subset of new */
-  RZ(p=eps(jtdaxis(jt,r,a),a1)); b=BAV(p);
+ if(all1(jteps(jt,a,a1))){I*s;  /* old is subset of new */
+  RZ(p=jteps(jt,jtdaxis(jt,r,a),a1)); b=BAV(p);
   GATV0(q,INT,1+r,1); u=AV(q); j=1;
   GATV0(q,INT,1+r,1); v=AV(q); k=0;
   s=AS(x); c=1; DO(AN(p), d=s[1+i]; if(b[i]){c*=d; v[k++]=d;}else u[j++]=d;); *u=c*m;
@@ -190,9 +190,9 @@ A jtsparseit(J jt,A w,A a,A e){PROLOG(0091);A ax,c,x,y,z;B b,*cv;I cm,cn,m,n,r,*
   else{y=fromr(p,repeat(q,y)); q=grade1(y); SPB(zp,i,from(q,y)); SPB(zp,x,from(q,x));}
   return z;
  }
- if(all1(eps(a1,a))){A x1,y1;B*pv;C*s,*t;I g,h,*iv,n;  /* new is subset of old */
+ if(all1(jteps(jt,a1,a))){A x1,y1;B*pv;C*s,*t;I g,h,*iv,n;  /* new is subset of old */
   c=AN(a); d=AN(a1);
-  RZ(p=eps(a,a1));
+  RZ(p=jteps(jt,a,a1));
   RZ(y=fromr(dgrade1(p),y)); 
   RZ(q=grade1(y)); RZ(y=from(q,y)); RZ(x=from(q,x));
   GATV0(q,B01,m,1); b=BAV(q); n=0;
@@ -228,14 +228,14 @@ static A jtaxbytes(J jt,A a,A w){A a1,e,p,q,x;B*b;I c,d,j,m,n=0,r,*u,*v,*ws,wt;P
  RZ(a1=vaxis(r,a)); d=AN(a1);  
  if(wt&SPARSE){wp=PAV(w); a=SPA(wp,a); e=SPA(wp,e);    x=SPA(wp,x); c=1;}
  else         {           a=mtv;       RZ(e=selm(wt)); x=w;         c=0;}
- if(all1(eps(a,a1))){    /* old is subset of new */
-  RZ(p=eps(jtdaxis(jt,r,a),a1)); b=BAV(p);
+ if(all1(jteps(jt,a,a1))){    /* old is subset of new */
+  RZ(p=jteps(jt,jtdaxis(jt,r,a),a1)); b=BAV(p);
   v=c+AS(x); DO(AN(p), if(!b[i])u[j++]=v[i];);
   RZ(q=irs2(jtcant2(jt,plus(sc(c),dgrade1(p)),x),reshape(vec(INT,j,u),e),0L,j,j,jtmatch));
   b=BAV(q); n=AN(q); DQ(n, if(*b++)--n;); 
   return axbytes1(AT(e),d,n,j,u);
  }
- if(all1(eps(a1,a))){A y=SPA(wp,i);   /* new is subset of old */
+ if(all1(jteps(jt,a1,a))){A y=SPA(wp,i);   /* new is subset of old */
   RZ(y=fromr(indexof(a,a1),y)); 
   RZ(y=grade2(y,y));
   if(m=*AS(y)){n=1; u=AV(y); DQ(m-1, if(ICMP(u,u+d,d))++n; u+=d;);} 
@@ -252,14 +252,14 @@ static A jtaxtally(J jt,A a,A w){A a1,e,p,q,x;B*b;I c,d,j,m,n=0,r,*u,*v,*ws,wt;P
  RZ(a1=vaxis(r,a)); d=AN(a1);  
  if(wt&SPARSE){wp=PAV(w); a=SPA(wp,a); e=SPA(wp,e);    x=SPA(wp,x); c=1;}
  else         {           a=mtv;       RZ(e=selm(wt)); x=w;         c=0;}
- if(all1(eps(a,a1))){    /* old is subset of new */
-  RZ(p=eps(jtdaxis(jt,r,a),a1)); b=BAV(p);
+ if(all1(jteps(jt,a,a1))){    /* old is subset of new */
+  RZ(p=jteps(jt,jtdaxis(jt,r,a),a1)); b=BAV(p);
   v=c+AS(x); DO(AN(p), if(!b[i])u[j++]=v[i];);
   RZ(q=irs2(jtcant2(jt,plus(sc(c),dgrade1(p)),x),reshape(vec(INT,j,u),e),0L,j,j,jtmatch));
   b=BAV(q); n=AN(q); DQ(n, if(*b++)--n;); 
   return sc(n);
  }
- if(all1(eps(a1,a))){A y=SPA(wp,i);   /* new is subset of old */
+ if(all1(jteps(jt,a1,a))){A y=SPA(wp,i);   /* new is subset of old */
   RZ(y=fromr(indexof(a,a1),y)); 
   RZ(y=grade2(y,y));
   if(m=*AS(y)){n=1; u=AV(y); DQ(m-1, if(ICMP(u,u+d,d))++n; u+=d;);} 

@@ -226,7 +226,7 @@
 #define enframe(x)                  jtenframe(jt,(x))
 #define enqueue(x,y,z)              jtenqueue(jt,(x),(y),(z))
 
-#define eps(x,y)                    jteps(jt,(x),(y))
+
 #define eputc(x)                    jteputc(jt,(x))
 #define eputl(x)                    jteputl(jt,(x))
 #define eputq(x,y)                  jteputq(jt,(x),(y))
