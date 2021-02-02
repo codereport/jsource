@@ -16,11 +16,11 @@ static void jtep(J jt,I n,C*s){I m;
  if(0<m){MC(jt->etx+jt->etxn,s,m); jt->etxn+=m;}
 }
 
-static void jteputs(J jt,C*s){ep((I)strlen(s),s);}
+static void jteputs(J jt,C*s){jtep(jt,(I)strlen(s),s);}
 
-static void jteputc(J jt,C c){ep(1L,&c);}
+static void jteputc(J jt,C c){jtep(jt,1L,&c);}
 
-static void jteputl(J jt,A w){ep(AN(w),CAV(w)); eputc(CLF);}
+static void jteputl(J jt,A w){jtep(jt,AN(w),CAV(w)); eputc(CLF);}
 
 static void jteputv(J jt,A w){I m=NETX-jt->etxn; if(m>0){jt->etxn+=thv(w,MIN(m,200),jt->etx+jt->etxn);}} // stop writing when there is no room in the buffer
      /* numeric vector w */
@@ -75,7 +75,7 @@ static I jtdisp(J jt,A w,I nflag){B b=1&&AT(w)&NAME+NUMERIC;
   // If this is an array of names, turn it back into a character string with spaces between
   else{w=curtail(raze(every2(every(w,(A)&sfn0overself),chrspace,(A)&sfn0overself)));}  // }: (string&.> names) ,&.> ' '  then fall through to display it
  case LITX:  eputq(w,nflag);                break;
- case NAMEX: ep(AN(w),NAV(w)->s);     break;
+ case NAMEX: jtep(jt,AN(w),NAV(w)->s);     break;
  case LPARX: eputc('(');              break;
  case RPARX: eputc(')');              break;
  case ASGNX: dspell(CAV(w)[0],w,nflag);       break;
@@ -110,14 +110,14 @@ static void jtseeparse(J jt,DC d){A*v;I m;
 
 // Display DCCALL stack frame
 static void jtseecall(J jt,DC d){A a;
- if(a=d->dca)ep(AN(a),NAV(a)->s); 
+ if(a=d->dca)jtep(jt,AN(a),NAV(a)->s); 
  jtefmt(jt,d->dcx&&d->dcy?"[:"FMTI"]":"["FMTI"]",lnumsi(d));
 }    /* display function line */
 
 // display error-message line
 static void jtdhead(J jt,C k,DC d){C s[]="    "; 
  s[0]=d&&d->dcsusp?'*':'|'; 
- ep(k+1L,s);
+ jtep(jt,k+1L,s);
 }    /* preface stack display line */
 
 void jtdebdisp(J jt,DC d){A*x,y;I e,t;
@@ -128,7 +128,7 @@ void jtdebdisp(J jt,DC d){A*x,y;I e,t;
   case DCPARSE:  jtdhead(jt,3,d); seeparse(d); if(NETX==jt->etxn)--jt->etxn; eputc(CLF); break;
   case DCCALL:   jtdhead(jt,0,d); seecall(d);  eputc(CLF); break;
   case DCSCRIPT: jtdhead(jt,0,d); jtefmt(jt,"[-"FMTI"] ", d->dcn-1); 
-                 if(0<=d->dcm){y=*(d->dcm+AAV(jt->slist)); ep(AN(y),CAV(y));}
+                 if(0<=d->dcm){y=*(d->dcm+AAV(jt->slist)); jtep(jt,AN(y),CAV(y));}
                  eputc(CLF); break;
 }}
 
@@ -163,8 +163,8 @@ static void jtjsigstr(J jt,I e,I n,C*s){
  if(e!=EVSTOP)moveparseinfotosi(jt); jt->jerr=(C)e; jt->jerr1=(C)e; jt->etxn=0;  // before we display, move error info from parse variables to si; but if STOP, it's already installed
  jtdhead(jt,0,0L);
  if(jt->uflags.us.cx.cx_c.db&&!spc()){eputs("ws full (can not suspend)"); eputc(CLF); jt->uflags.us.cx.cx_c.db=0;}
- ep(n,s);
- if(jt->curname){if(!jt->uflags.us.cx.cx_c.glock){eputs(": "); ep(AN(jt->curname),NAV(jt->curname)->s);} jt->curname=0;}
+ jtep(jt,n,s);
+ if(jt->curname){if(!jt->uflags.us.cx.cx_c.glock){eputs(": "); jtep(jt,AN(jt->curname),NAV(jt->curname)->s);} jt->curname=0;}
  eputc(CLF);
  if(n&&!jt->uflags.us.cx.cx_c.glock)debsi1(jt->sitop);
  jt->etxn1=jt->etxn;

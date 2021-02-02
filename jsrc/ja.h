@@ -225,7 +225,7 @@
 #define efr(z,ar,r)                 (z = ((r)>(ar)?(ar):(r))+(REPSGN(r)&(ar)), z=(z<0)?0:z)  // effective rank: ar is rank of argument, r is rank of verb (may be negative), z becomes rank of argument cell
 #define enframe(x)                  jtenframe(jt,(x))
 #define enqueue(x,y,z)              jtenqueue(jt,(x),(y),(z))
-#define ep(x,y)                     jtep(jt,(x),(y))
+
 #define eps(x,y)                    jteps(jt,(x),(y))
 #define eputc(x)                    jteputc(jt,(x))
 #define eputl(x)                    jteputl(jt,(x))

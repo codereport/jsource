@@ -80,3 +80,4 @@
 |`jsrc\verbs\vb.c`|ebarmat|jtebarmat|`(^\|[ \t]+\|[^\d\w_])ebarmat\((?=([^,]+?),([^)]+?)\))`|`\1jtebarmat(jt,`|
 |`jsrc\verbs\vb.c`|ebarvec|jtebarvec|`(^\|[ \t]+\|[^\d\w_])ebarvec\((?=([^,]+?),([^)]+?)\))`|`\1jtebarvec(jt,`|
 |`jsrc\debugging\d.c`|efmt|jtefmt|`(^\|[ \t]+\|[^\d\w_])efmt\((?=([^,]+?),([^)]+?)\))`|`\1jtefmt(jt,`|
+|`jsrc\debugging\d.c`|ep|jtep|`(^\|[ \t]+\|[^\d\w_])ep\((?=([^,]+?),([^)]+?)\))`|`\1jtep(jt,`|
