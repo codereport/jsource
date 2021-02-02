@@ -142,7 +142,7 @@ D jtbindd(J jt,D x,D y){B id,ix,iy;D d;
 }}   /* P.C. Berry, Sharp APL Reference Manual, 1979, p. 132 */
 
 static Z jtbinzz(J jt,Z x,Z y){B id,ix,iy;D rd,rx,ry;Z d;
- if(!x.im&&!y.im)return zrj0(bindd(x.re,y.re));
+ if(!x.im&&!y.im)return zrj0(jtbindd(jt,x.re,y.re));
  d=zminus(y,x);
  rd=d.re; id=rd==jfloor(rd)&&0==d.im;
  rx=x.re; ix=rx==jfloor(rx)&&0==x.im; 

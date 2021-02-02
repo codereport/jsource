@@ -62,7 +62,7 @@
 #define beheadW(x)                  jtbehead((J)((I)jt|JTINPLACEW),(x))
 #define bfi(x,y,z)                  jtbfi(jt,(x),(y),(z))
 
-#define bindd(x,y)                  jtbindd(jt,(x),(y))
+
 #define binrep1(x)                  jtbinrep1(jt,(x))
 #define binzz(x,y)                  jtbinzz(jt,(x),(y))
 #define bitmatch(x,y)               jtbitmatch(jt,(x),(y))
