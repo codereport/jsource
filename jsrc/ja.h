@@ -146,7 +146,7 @@
 #define cvt0(x)                     jtcvt0(jt,(x))
 
 
-#define db1b2(x,y)                  jtdb1b2(jt,(x),(y))
+
 #define dbin(x,y)                   jtdbin(jt,(x),(y))
 #define dbjump(x)                   jtdbjump(jt,(x))
 #define dbrr(x,y)                   jtdbrr(jt,(x),(y))

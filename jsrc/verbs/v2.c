@@ -589,7 +589,7 @@ static B jtecm_s2(J jt,X n,X a,X b,I b1,I b2,X*q,X*z){A sda,tt;I d,di,i,k,m,p0,*
 }
 
 static X jtfac_ecm(J jt,    X w){A tt;I b1,b2,*b1b2,i,m;X a,b,g,q[3];
- RZ(tt=db1b2(20L,w)); SETIC(tt,m); b1b2=AV(tt);
+ RZ(tt=jtdb1b2(jt,20L,w)); SETIC(tt,m); b1b2=AV(tt);
  A *old=jt->tnextpushp;
  for(i=0;i<m;++i){
   b1=b1b2[0]; b2=b1b2[1]; b1b2+=2;
