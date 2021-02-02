@@ -316,9 +316,9 @@ B jtccvt(J jt,I tflagged,A w,A*y){F1PREFIP;A d;I n,r,*s,wt; void *wv,*yv;I t=tfl
   case CVCASE(RATX, XNUMX): return jtQfromX(jt,w, yv);
   case CVCASE(FLX, XNUMX): return jtDfromX(jt,w, yv);
   case CVCASE(CMPXX, XNUMX): GATV(d, FL, n, r, s); if(!(jtDfromX(jt,w, AV(d))))return 0; return ZfromD(d, yv);
-  case CVCASE(B01X, RATX): GATV(d, XNUM, n, r, s); if(!(XfromQ(w, AV(d))))return 0; return jtBfromX(jt,d, yv);
-  case CVCASE(INTX, RATX): GATV(d, XNUM, n, r, s); if(!(XfromQ(w, AV(d))))return 0; return jtIfromX(jt,d, yv);
-  case CVCASE(XNUMX, RATX): return XfromQ(w, yv);
+  case CVCASE(B01X, RATX): GATV(d, XNUM, n, r, s); if(!(jtXfromQ(jt,w, AV(d))))return 0; return jtBfromX(jt,d, yv);
+  case CVCASE(INTX, RATX): GATV(d, XNUM, n, r, s); if(!(jtXfromQ(jt,w, AV(d))))return 0; return jtIfromX(jt,d, yv);
+  case CVCASE(XNUMX, RATX): return jtXfromQ(jt,w, yv);
   case CVCASE(FLX, RATX): return jtDfromQ(jt,w, yv);
   case CVCASE(CMPXX, RATX): GATV(d, FL, n, r, s); if(!(jtDfromQ(jt,w, AV(d))))return 0; return ZfromD(d, yv);
   default:                ASSERT(0, EVDOMAIN);
