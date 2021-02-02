@@ -152,7 +152,7 @@
 
 #define dbstack(x)                  jtdbstack(jt,(x))
 
-#define dbsig(x,y)                  jtdbsig(jt,(x),(y))
+
 #define dbunquote(x,y,z,w)          jtdbunquote(jt,(x),(y),(z),(w))
 #define dcase(x,y)                  jtdcase(jt,(x),(y))
 #define dcube(x,y)                  jtdcube(jt,(x),(y))

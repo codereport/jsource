@@ -217,8 +217,8 @@ static A jtdbsig(J jt,A a,A w){I e;
  return 0;
 }    
 
- A jtdbsig1(J jt, A w){return dbsig(0L,w);}   /* 13!:8  signal error */
- A jtdbsig2(J jt,A a,A w){return dbsig(a, w);}
+ A jtdbsig1(J jt, A w){return jtdbsig(jt,0L,w);}   /* 13!:8  signal error */
+ A jtdbsig2(J jt,A a,A w){return jtdbsig(jt,a, w);}
 
 
  A jtdberr(J jt, A w){ASSERTMTV(w); return sc(jt->jerr1);}           /* 13!:11 last error number   */
