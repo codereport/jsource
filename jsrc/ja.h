@@ -104,7 +104,7 @@
   
 
 #define ceil1(x)                    jtatomic1(jt,(x),ds(CCEIL))
-#define celloffset(x,y)             jtcelloffset(jt,(x),(y))
+
 #define center(x0,x1,x2,x3)         jtcenter(jt,(x0),(x1),(x2),(x3))
 #define cex(x,y,z)                  jtcex(jt,(x),(y),(z))
 #define cfd(x)                      jtcfd(jt,(x))

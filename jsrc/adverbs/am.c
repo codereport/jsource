@@ -244,7 +244,7 @@ static A jtjstd(J jt,A w,A ind,I *cellframelen){A j=0,k,*v,x;I b;I d,i,n,r,*u,wr
  }
  if(b>=0){
   // Numeric m.  Each 1-cell is a list of indexes (if m is a list, each atom is a cell index)
-  RZ(j=celloffset(w,ind));  // convert list/table to list of indexes, possibly in place
+  RZ(j=jtcelloffset(jt,w,ind));  // convert list/table to list of indexes, possibly in place
   n=AR(ind)<2?1:AS(ind)[AR(ind)-1];  // n=#axes used: 1, if m is a list; otherwise {:$m
  }else{  // a single box.
   ind=AAV(ind)[0]; n=AN(ind); r=AR(ind);  // ind etc now refer to the CONTENTS of the single box
