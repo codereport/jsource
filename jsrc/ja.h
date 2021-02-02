@@ -179,7 +179,7 @@
 
 #define dfr(x)                      jtdfr(jt,(x))
 #define dfrep(x)                    jtdfrep(jt,(x))
-#define dfs1(x,y)                   jtdfs1(jt,(x),(y)) 
+ 
 #define dfs2(x,y,z)                 jtdfs2(jt,(x),(y),(z)) 
 #define dgamma(x)                   jtdgamma(jt,(x))
 #define dgcd(x,y)                   jtdgcd(jt,(x),(y))
