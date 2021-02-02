@@ -245,7 +245,7 @@
 
 #define eval(x)                     jteval(jt,(x))
 #define evc(x,y,z)                  jtevc(jt,(x),(y),(z))
-#define even(x,y)                   jteven(jt,(x),(y))
+
 #define every(x,y)                  jtevery(jt,(x),(y))
 #define every2(x0,x1,x2)            jtevery2(jt,(x0),(x1),(x2))
 #define everysp(x,y)                jteverysp(jt,(x),(y))
