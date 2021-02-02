@@ -404,7 +404,7 @@ static A jtdet(J jt,    A w,A self){DECLFG;A h=sv->fgh[2];I c,r,*s;
  return !c ? df1(z,mtv,slash(gs)) : 1==c ? CALL1(f1,ravel(w),fs) : h && c==s[0] ? gaussdet(w) : detxm(w,self);
 }
 
- A jtdetxm(J jt,    A w,A self){A z; return dotprod(IRS1(w,0L,1L,jthead,z),det(minors(w),self),self);}
+ A jtdetxm(J jt,    A w,A self){A z; return dotprod(IRS1(w,0L,1L,jthead,z),jtdet(jt,minors(w),self),self);}
      /* determinant via expansion by minors. w is matrix with >1 columns */
 
  A jtdot(J jt,A a,A w){A f,h=0;AF f2=jtdotprod;C c,d;
