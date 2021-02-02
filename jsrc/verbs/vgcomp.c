@@ -47,8 +47,8 @@ I jtcompare(J jt,A a,A w){C*av,*wv;I ar,an,*as,at,c,d,j,m,t,wn,wr,*ws,wt;
   RZ(q=gt(a,w)); v=BAV(q);
   DO(m, if(u[i]|v[i])return (u[i]?1:-1)*jt->workareas.compare.complt;);
  }else{
-  if(TYPESNE(t,at))RZ(a=cvt(t,a));
-  if(TYPESNE(t,wt))RZ(w=cvt(t,w));
+  if(TYPESNE(t,at))RZ(a=jtcvt(jt,t,a));
+  if(TYPESNE(t,wt))RZ(w=jtcvt(jt,t,w));
   av=CAV(a); wv=CAV(w);
   switch(CTTZ(t)){
    case INTX:  COMPLOOQ (I, m  );         break;

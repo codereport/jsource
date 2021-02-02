@@ -301,7 +301,7 @@ typedef I SI;
 // NOTE: VERB must be above all NOUN bits because of CONJCASE
 #define LPARX 28
 #define LPAR            ((I)1L<<LPARX)    /* I  left  parenthesis            */
-// note: LPAR used as flag to cvt() see below
+// note: LPAR used as flag to jtcvt(jt,) see below
 #define LPARSIZE sizeof(I)
 // CONJ must be 1 bit below RPAR, with no parsable type (including any flags that might be set, see below) higher than RPAR
 #define CONJX 29
@@ -330,8 +330,8 @@ typedef I SI;
 #define BOXMULTIASSIGN  ((I)1L<<MARKX)     // set for the target of a direct multiple assignment (i. e. 'x y' =.), which is stored as a boxed list whose contents are NAMEs    aliases with MARK
 // Restriction: CONW must be reserved for use as ASGNTONAME because of how parser tests for it
 // Restriction: MARK must be reserved for use as BOXMULTIASSIGN because of how parser tests for it
-// ** NOTE!! bits 28-30 are used in the call to cvt() (arg only) to override the convsion type for XNUMs
-#define XCVTXNUMORIDEX  LPARX   // in cvt(), indicates that forced precision for result is present
+// ** NOTE!! bits 28-30 are used in the call to jtcvt(jt,) (arg only) to override the convsion type for XNUMs
+#define XCVTXNUMORIDEX  LPARX   // in jtcvt(jt,), indicates that forced precision for result is present
 #define XCVTXNUMCVX     CONJX
 // ** ADV type can have the following information flag set
 #define NAMELESSMODX    LPARX

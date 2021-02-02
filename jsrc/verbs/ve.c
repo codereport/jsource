@@ -314,7 +314,7 @@ static A jtweight(J jt,A a,A w){ A z; return df1(z,behead(over(AR(w)?w:reshape(a
  A jtbase1(J jt, A w){A z;B*v;I c,m,n,p,r,*s,t,*x;
  n=AN(w); t=AT(w); r=AR(w); s=AS(w); c=AS(w)[r-1]; c=r?c:1;
  ASSERT(t&DENSE,EVNONCE);
- if(((c-BW)&SGNIF(t,B01X))>=0)return pdt(w,weight(sc(c),t&RAT+XNUM?cvt(XNUM,num(2)):num(2)));  //
+ if(((c-BW)&SGNIF(t,B01X))>=0)return pdt(w,weight(sc(c),t&RAT+XNUM?jtcvt(jt,XNUM,num(2)):num(2)));  //
  CPROD1(n,m,r-1,s);
  GATV(z,INT,m,r?r-1:0,s); x=AV(z); v=BAV(w);
  if(c)DQ(m, p=0; DQ(c, p=2*p+*v++;); *x++=p;)
@@ -326,8 +326,8 @@ static A jtweight(J jt,A a,A w){ A z; return df1(z,behead(over(AR(w)?w:reshape(a
  at=AT(a); ar=AR(a); as=AS(a);
  wt=AT(w); wr=AR(w); ws=AS(w); c=AS(w)[wr-1]; c=wr?c:1;
  ASSERT(!((at|wt)&SPARSE),EVNONCE); t=maxtyped(at,wt);
- if(!(t&at))RZ(a=cvt(t,a));
- if(!(t&wt))RZ(w=cvt(t,w));
+ if(!(t&at))RZ(a=jtcvt(jt,t,a));
+ if(!(t&wt))RZ(w=jtcvt(jt,t,w));
  return 1>=ar?pdt(w,weight(sc(c),a)):rank2ex(w,rank2ex(sc(c),a,UNUSED_VALUE,0L,MIN(ar,1),0L,MIN(ar,1),jtweight),UNUSED_VALUE,MIN(wr,1),1L,MIN(wr,1),1L,jtpdt);
 }
 
@@ -372,11 +372,11 @@ static A jtweight(J jt,A a,A w){ A z; return df1(z,behead(over(AR(w)?w:reshape(a
  if(1>ar)return residue(a,w);
  if(1==ar&&!((at|wt)&(NOUN-(B01+INT)))){I*av,d,r,*u,*wv,x,*zv;
   // both types are int/boolean, and ar is a list
-  {t=INT; if(!TYPESEQ(t,at)){RZ(a=cvt(t,a));} if(!TYPESEQ(t,wt)){RZ(w=cvt(t,w));}}  // convert args to compatible precisions, changing a and w if needed.  INT if both empty
+  {t=INT; if(!TYPESEQ(t,at)){RZ(a=jtcvt(jt,t,a));} if(!TYPESEQ(t,wt)){RZ(w=jtcvt(jt,t,w));}}  // convert args to compatible precisions, changing a and w if needed.  INT if both empty
   // If a ends with _1 followed by any number of 1, there will be overflow if w contains any imin.  Detect that very rare case
   av=an+AV(a); wv=wn+AV(w);
   for(zv=av, d=an;d&&*--zv==1;--d);
-  if(d&&*zv==-1){zv=wv; DQ(wn, if(*--zv==IMIN){d=0; break;}) if(!d){RZ(a=cvt(FL,a)); return jtabase2(jt,a,w);}}
+  if(d&&*zv==-1){zv=wv; DQ(wn, if(*--zv==IMIN){d=0; break;}) if(!d){RZ(a=jtcvt(jt,FL,a)); return jtabase2(jt,a,w);}}
   DPMULDE(an,wn,zn); GATV(z,INT,zn,1+wr,AS(w)); AS(z)[wr]=an;  // allocate result area
   zv=zn+AV(z);
   if((((2^an)-1)&(av[-2]-1)&-(d=av[-1]))<0){I d1,k;

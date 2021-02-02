@@ -580,7 +580,7 @@ static A jtpscan(J jt,    A w,A self){A z;I f,n,r,t,wn,wr,*ws,wt;
  if(!adocv.f)return IRS1(w,self,r,jtinfixprefix1,z);  // if there is no special function for this type, do general scan
  // Here is the fast special reduce for +/ etc
  I d,m; PROD(m,f,ws); PROD1(d,r-1,ws+f+1);   // m=#scans, d=#atoms in a cell of each scan
- if((t=atype(adocv.cv))&&TYPESNE(t,wt))RZ(w=cvt(t,w));  // convert input if necessary
+ if((t=atype(adocv.cv))&&TYPESNE(t,wt))RZ(w=jtcvt(jt,t,w));  // convert input if necessary
  // if inplaceable, reuse the input area for the result
  if(ASGNINPLACESGN(SGNIF((I)jtinplace,JTINPLACEWX)&SGNIF(adocv.cv,VIPOKWX),w))z=w; else GA(z,rtype(adocv.cv),wn,wr,ws);
  I rc=((AHDRPFN*)adocv.f)(d,n,m,AV(w),AV(z),jt);
@@ -790,13 +790,13 @@ static A jtmovfslash(J jt,A a,A w,A self){A x,z;B b;C id,*wv,*zv;I d,m,m0,p,t,wk
  zt=rtype(adocv.cv); RESETRANK;
  GA(z,zt,d*zi,MAX(1,AR(w)),AS(w)); AS(z)[0]=zi;
  if(d*zi==0){return z;}  // mustn't call adocv on empty arg!
- if((t=atype(adocv.cv))&&TYPESNE(t,wt)){RZ(w=cvt(t,w)); wt=AT(w);}
+ if((t=atype(adocv.cv))&&TYPESNE(t,wt)){RZ(w=jtcvt(jt,t,w)); wt=AT(w);}
  zv=CAV(z); zk=d<<bplg(zt); 
  wv=CAV(w); wk=(0<=m0?d:d*m)<<bplg(wt);
  I rc=EVOK;
  DQ(zi-b, I lrc=((AHDRPFN*)adocv.f)(d,m,(I)1,wv,zv,jt); rc=lrc<rc?lrc:rc; zv+=zk; wv+=wk;);
  if(b){m=p-m*(zi-1); if(m>1){I lrc=((AHDRPFN*)adocv.f)(d,m,(I)1,wv,zv,jt); rc=lrc<rc?lrc:rc;}else{copyTT(zv,wv,d,zt,wt);}}
- if(255&rc){jsignal(rc); if(rc>=EWOV){RESETERR; return movfslash(a,cvt(FL,w),self);}return 0;}else return z;
+ if(255&rc){jsignal(rc); if(rc>=EWOV){RESETERR; return movfslash(a,jtcvt(jt,FL,w),self);}return 0;}else return z;
 }    /* a f/\w */
 
 static A jtiota1(J jt,    A w,A self){I j; return apv(SETIC(w,j),1L,1L);}

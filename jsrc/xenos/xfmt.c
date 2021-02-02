@@ -532,7 +532,7 @@ static A jtfmtxi(J jt, A a, A w, I mode, I *omode){I lvl;
       ASSERT(!(AR(x)&&AT(x)&NUMERIC),EVRANK);});
   A z; return df2(z,reitem(shape(w),a),w,jtamp(jt,foreign(num(8),num(0)), ds(COPE)));
  } else {
-  if(XNUM+RAT+CMPX&AT(w))RZ(w=cvt(FL,w));
+  if(XNUM+RAT+CMPX&AT(w))RZ(w=jtcvt(jt,FL,w));
   *omode=mode;
   return fmtallcol(fmtprecomp(rank1ex0(a,UNUSED_VALUE,jtfmtparse),w),w,mode);
 }} /* 8!:x internals */

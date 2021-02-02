@@ -39,8 +39,8 @@ static A jtvasp0(J jt,A a,A w,VF ado,I cv,I t,I zt){A e,x,xx,y,z,ze,zx;B b;I n;P
  if(b=1&&AR(a)){xx=a; y=w;}else{xx=w; y=a;}
  p=PAV(xx); e=SPA(p,e); x=SPA(p,x); n=AN(x);
  if(t){
-  if(TYPESNE(t,AT(x))){RZ(x=cvt(t,x)); RZ(e=cvt(t,e));} 
-  if(TYPESNE(t,AT(y))) RZ(y=cvt(t,y));
+  if(TYPESNE(t,AT(x))){RZ(x=jtcvt(jt,t,x)); RZ(e=jtcvt(jt,t,e));} 
+  if(TYPESNE(t,AT(y))) RZ(y=jtcvt(jt,t,y));
  }
  GA(ze,zt,1,0,    0    ); I rc;     ASSERT(EVOK==(rc=((AHDR2FN*)ado)((I)1,(I)1,b?AV(e):AV(y),b?AV(y):AV(e),AV(ze),jt)),rc);
  GA(zx,zt,n,AR(x),AS(x)); if(n)ASSERT(EVOK==(rc=((AHDR2FN*)ado)(n^(b-1),(I)1,b?AV(x):AV(y),b?AV(y):AV(x),AV(zx),jt)),rc);  // was !b
@@ -65,8 +65,8 @@ static B jtvaspprep(J jt,A a,A w,I t,I af,I acr,I wf,I wcr,I f,I r,A*ae,A*ay,A*a
  GATV0(x,INT,f+r,1); v=AV(x); n=0; DO(wf, if(b[i])v[n++]=i;); DO(wcr, if(b[f+i])v[n++]=wf+i;); 
  if(!sa||m!=AN(aa)||memcmp(u,AV(aa),m*SZI))RZ(a=reaxis(vec(INT,m,u),a));
  if(!sw||n!=AN(wa)||memcmp(v,AV(wa),n*SZI))RZ(w=reaxis(vec(INT,n,v),w));
- ap=PAV(a); *ae=e=SPA(ap,e); *ay=SPA(ap,i); *ax=x=SPA(ap,x); if(t&&TYPESNE(t,AT(x))){RZ(*ae=cvt(t,e)); RZ(*ax=cvt(t,x));}
- wp=PAV(w); *we=e=SPA(wp,e); *wy=SPA(wp,i); *wx=x=SPA(wp,x); if(t&&TYPESNE(t,AT(x))){RZ(*we=cvt(t,e)); RZ(*wx=cvt(t,x));}
+ ap=PAV(a); *ae=e=SPA(ap,e); *ay=SPA(ap,i); *ax=x=SPA(ap,x); if(t&&TYPESNE(t,AT(x))){RZ(*ae=jtcvt(jt,t,e)); RZ(*ax=jtcvt(jt,t,x));}
+ wp=PAV(w); *we=e=SPA(wp,e); *wy=SPA(wp,i); *wx=x=SPA(wp,x); if(t&&TYPESNE(t,AT(x))){RZ(*we=jtcvt(jt,t,e)); RZ(*wx=jtcvt(jt,t,x));}
  RZ(*za=ifb(f+r,b));
  return 1;
 }
@@ -82,8 +82,8 @@ static B jtvaspeqprep(J jt,A a,A w,I t,I f,I r,A*ae,A*ay,A*ax,A*we,A*wy,A*wx,A*z
  q=ifb(n,b); makewritable(q) *za=q;  // avoid readonly result
  if(!sa||!equ(q,aa))RZ(a=reaxis(q,a));
  if(!sw||!equ(q,wa))RZ(w=reaxis(q,w));
- p=PAV(a); *ae=e=SPA(p,e); *ay=SPA(p,i); *ax=x=SPA(p,x); if(t&&TYPESNE(t,AT(x))){RZ(*ae=cvt(t,e)); RZ(*ax=cvt(t,x));}
- p=PAV(w); *we=e=SPA(p,e); *wy=SPA(p,i); *wx=x=SPA(p,x); if(t&&TYPESNE(t,AT(x))){RZ(*we=cvt(t,e)); RZ(*wx=cvt(t,x));}
+ p=PAV(a); *ae=e=SPA(p,e); *ay=SPA(p,i); *ax=x=SPA(p,x); if(t&&TYPESNE(t,AT(x))){RZ(*ae=jtcvt(jt,t,e)); RZ(*ax=jtcvt(jt,t,x));}
+ p=PAV(w); *we=e=SPA(p,e); *wy=SPA(p,i); *wx=x=SPA(p,x); if(t&&TYPESNE(t,AT(x))){RZ(*we=jtcvt(jt,t,e)); RZ(*wx=jtcvt(jt,t,x));}
  return 1;
 }
 

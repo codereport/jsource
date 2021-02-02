@@ -420,7 +420,7 @@ static A jtsbunbox(J jt, A w){A*wv,x,z;S c2;I i,m,n;SB*zv;
 }    /* each element of boxed array w is a string */
 
 static A jtsbunind(J jt, A w){A z;I j,n,*zv;
- RZ(z=cvt(INT,w));
+ RZ(z=jtcvt(jt,INT,w));
  zv=AV(z); n=jt->sbun;
  DQ(AN(w), j=*zv++; ASSERT((UI)j<(UI)n,EVINDEX););
  AT(z)=SBT;

@@ -15,8 +15,8 @@ static A jtovs0(J jt,B p,I r,A a,A w){A a1,e,q,x,y,z;B*b;I at,*av,c,d,j,k,f,m,n,
  ASSERT(HOMO(at,wt),EVDOMAIN);
  t=maxtype(at,wt);
  ASSERT(t&(B01|INT|FL|CMPX),EVDOMAIN);  // verify supported sparse type
- if(TYPESNE(t,at))RZ(a=cvt(t,a));
- if(TYPESNE(t,wt)){RZ(x=cvt(t,x)); RZ(e=cvt(t,e));}
+ if(TYPESNE(t,at))RZ(a=jtcvt(jt,t,a));
+ if(TYPESNE(t,wt)){RZ(x=jtcvt(jt,t,x)); RZ(e=jtcvt(jt,t,e));}
  j=k=0; DO(f, if(b[i])++j; else ++k;);
  switch(2*b[f]+!equ(a,e)){
   case 0:  /* dense and a equal e */
@@ -72,8 +72,8 @@ static A jtovs(J jt,A a,A w){A ae,ax,ay,q,we,wx,wy,x,y,z,za,ze;B*ab,*wb,*zb;I ac
  *zs=*as; DO(r, if(zs[i]>as[i]){RZ(a=take(q,a)); break;});
  *zs=*ws; DO(r, if(zs[i]>ws[i]){RZ(w=take(q,w)); break;});
  *zs=*as+*ws; t=maxtype(at,wt);
- ap=PAV(a); ay=SPA(ap,i); ax=SPA(ap,x); if(TYPESNE(t,at))RZ(ax=cvt(t,ax));
- wp=PAV(w); wy=SPA(wp,i); wx=SPA(wp,x); if(TYPESNE(t,at))RZ(wx=cvt(t,wx));
+ ap=PAV(a); ay=SPA(ap,i); ax=SPA(ap,x); if(TYPESNE(t,at))RZ(ax=jtcvt(jt,t,ax));
+ wp=PAV(w); wy=SPA(wp,i); wx=SPA(wp,x); if(TYPESNE(t,at))RZ(wx=jtcvt(jt,t,wx));
  GASPARSE(z,STYPE(t),1,r,zs); zp=PAV(z);
  SPB(zp,a,za); SPBV(zp,e,ze,ca(TYPESEQ(t,at)?ae:we));
  if(*zb){
@@ -119,7 +119,7 @@ static C*jtovgmove(J jt,I k,I c,I m,A s,A w,C*x,A z){I d,n,p=c*m;
 
 static A jtovg(J jt,A a,A w){A s,z;C*x;I ar,*as,c,k,m,n,r,*sv,t,wr,*ws,zn;
  I origwt=AT(w); RZ(w=setfv(a,w));
- if(AT(a)!=(t=AT(w))){t=maxtypedne(AT(a)|(AN(a)==0),t|(((t^origwt)+AN(w))==0)); t&=-t; if(!TYPESEQ(t,AT(a))){RZ(a=cvt(t,a));} else {RZ(w=cvt(t,w));}}  // convert args to compatible precisions, changing a and w if needed.  B01 if both empty.  If fill changed w, don't do B01 for it
+ if(AT(a)!=(t=AT(w))){t=maxtypedne(AT(a)|(AN(a)==0),t|(((t^origwt)+AN(w))==0)); t&=-t; if(!TYPESEQ(t,AT(a))){RZ(a=jtcvt(jt,t,a));} else {RZ(w=jtcvt(jt,t,w));}}  // convert args to compatible precisions, changing a and w if needed.  B01 if both empty.  If fill changed w, don't do B01 for it
  ar=AR(a); wr=AR(w); r=ar+wr?MAX(ar,wr):1;
  RZ(s=r?vec(INT,r,AS(r==ar?a:w)):num(2)); sv=AV(s);   // Allocate list for shape of composite item
  // Calculate the shape of the result: the shape of the item, max of input shapes
@@ -181,7 +181,7 @@ static void(*moveawtbl[])() = {moveawVV,moveawVS,moveawSV};
  if(!(a && w)) return 0;
  UI jtr=jt->ranks;//  fetch early
  if((SPARSE&(AT(a)|AT(w)))!=0){return ovs(a,w);}  // if either arg is sparse, switch to sparse code
- if(AT(a)!=(t=AT(w))){t=maxtypedne(AT(a)|(AN(a)==0),t|(AN(w)==0)); t&=-t; if(!TYPESEQ(t,AT(a))){RZ(a=cvt(t,a));} else {RZ(w=cvt(t,w));}}  // convert args to compatible precisions, changing a and w if needed.  Treat empty arg as boolean
+ if(AT(a)!=(t=AT(w))){t=maxtypedne(AT(a)|(AN(a)==0),t|(AN(w)==0)); t&=-t; if(!TYPESEQ(t,AT(a))){RZ(a=jtcvt(jt,t,a));} else {RZ(w=jtcvt(jt,t,w));}}  // convert args to compatible precisions, changing a and w if needed.  Treat empty arg as boolean
  ar=AR(a); wr=AR(w);
  acr=jtr>>RANKTX; acr=ar<acr?ar:acr; af=ar-acr;  // acr=rank of cell, af=len of frame, as->shape
  wcr=(RANKT)jtr; wcr=wr<wcr?wr:wcr; wf=wr-wcr;  // wcr=rank of cell, wf=len of frame, ws->shape
@@ -330,7 +330,7 @@ A jtapip(J jt, A a, A w){F2PREFIP;A h;C*av,*wv;I ak,k,p,*u,*v,wk,wm,wn;
      if(allosize(a)>=ak+wk+(REPSGN((-(at&LAST0))&((aflag&AFNJA)-1))&(SZI-1))){    // SZI-1 if LAST0 && !NJA
       // We have passed all the tests.  Inplacing is OK.
       // If w must change precision, do.  This is where we catch domain errors.
-      if(TYPESGT(at,AT(w)))RZ(w=cvt(at,w));
+      if(TYPESGT(at,AT(w)))RZ(w=jtcvt(jt,at,w));
       // result is pristine if a and w both are, and they are not the same block, and there is no fill, and w is inplaceable (of course we know a is)
       I wprist = (((a!=w)&((I)jtinplace>>JTINPLACEWX)&SGNTO0(AC(w)))<<AFPRISTINEX) & AFLAG(w);  // set if w qualifies as pristine
       // If the items of w must be padded to the result item-size, do so.

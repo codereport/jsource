@@ -1050,8 +1050,8 @@ A jtindexofsub(J jt,I mode,A a,A w){PROLOG(0079);A h=0,hi=mtv,z;B mk=w==mark,th;
  th=HOMO(at,wt); jt->min=0;  // are args compatible? clear return values from irange
  // Indicate if float args need to be canonicalized for -0.  should do this in the hash
  I cvtsneeded = 0;  // 1 means convert a, 2 means convert w
- if(th&&TYPESNE(t,at))RZ(a=cvt(t|VFRCEXMT,a)) else if(t&FL+CMPX      )cvtsneeded=1;
- if(th&&TYPESNE(t,wt))RZ(w=cvt(t|VFRCEXMT,w)) else if(t&FL+CMPX&&a!=w)cvtsneeded|=2;
+ if(th&&TYPESNE(t,at))RZ(a=jtcvt(jt,t|VFRCEXMT,a)) else if(t&FL+CMPX      )cvtsneeded=1;
+ if(th&&TYPESNE(t,wt))RZ(w=jtcvt(jt,t|VFRCEXMT,w)) else if(t&FL+CMPX&&a!=w)cvtsneeded|=2;
 
  // Allocate the result area
  if(mk){fauxINT(z,zfaux,1,0)} // if prehashed, we must create an area that can hold at least one stored result
@@ -1346,7 +1346,7 @@ A jtindexofprehashed(J jt,A a,A w,A hs){A h,hi,*hv,x,z;AF fn;I ar,*as,at,c,f1,k,
  // convert type of w if needed; and if unconverted FL/CMPX, touch to change -0 to 0
  // this is dodgy: if the comparison tolerance doen't change, there should be no need for conversion; but
  // if ct does change, the stored hashtable is invalid.  We should store the ct as part of the hashtable
- if(TYPESNE(t,wt))RZ(w=cvt(t,w)) else if(t&FL+CMPX)RZ(w=cvt0(w));
+ if(TYPESNE(t,wt))RZ(w=jtcvt(jt,t,w)) else if(t&FL+CMPX)RZ(w=cvt0(w));
  // call the action routine
  return fn(jt,mode+IPHOFFSET,m,n,c,k,AR(a),AR(w),(I)1,(I)1,(I)0,(I)0,a,w,&h,z);
 }
@@ -1500,8 +1500,8 @@ A jtiocol(J jt,I mode,A a,A w){A h,z;I ar,at,c,d,m,p,t,wr,*ws,wt;void(*fn)();
  d=1; DO(1+wr-ar, d*=ws[i];);
  // convert to common type
  RE(t=maxtype(at,wt));
- if(TYPESNE(t,at))RZ(a=cvt(t,a));
- if(TYPESNE(t,wt))RZ(w=cvt(t,w));
+ if(TYPESNE(t,at))RZ(a=jtcvt(jt,t,a));
+ if(TYPESNE(t,wt))RZ(w=jtcvt(jt,t,w));
  // allocate hash table and result
  FULLHASHSIZE(m+m,INTSIZE,1,0,p);
  GATV0(h,INT,p,1);

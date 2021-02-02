@@ -97,7 +97,7 @@ static A jtpdtspvm(J jt,A a,A w){A ax,b,g,x,wx,y,yi,yj,z;B*bv;D*av,c,d,*wv,*xv;I
 /* nv - row boundaries in iv             */
 /* xv - ptr to data values               */
 static B jtmmprep(J jt,P*p,I*n,I**iv,I*m,I**nv,D**xv){A x;I j,k,q,*u,*v;
- x=SPA(p,x); if(!(FL&AT(x)))RZ(x=cvt(FL,x)); *xv=DAV(x);
+ x=SPA(p,x); if(!(FL&AT(x)))RZ(x=jtcvt(jt,FL,x)); *xv=DAV(x);
  x=SPA(p,i); *iv=u=AV(x); *n=AN(x);
  if(m&&nv){
   q=*AS(x); k=q?2+u[(q-1)<<1]-*u:1;

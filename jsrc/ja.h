@@ -142,7 +142,7 @@
 #define cut2(x,y,z)                 jtcut2(jt,(x),(y),(z))
 #define cut2bx(x,y,z)               jtcut2bx(jt,(x),(y),(z))
 #define cut2sx(x,y,z)               jtcut2sx(jt,(x),(y),(z))
-#define cvt(x,y)                    jtcvt(jt,(x),(y))
+
 #define cvt0(x)                     jtcvt0(jt,(x))
 #define cvz(x,y)                    jtcvz(jt,(x),(y))
 #define daxis(x,y)                  jtdaxis(jt,(x),(y))

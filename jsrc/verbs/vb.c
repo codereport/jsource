@@ -64,8 +64,8 @@ static I jtebarprep(J jt,A a,A w,A*za,A*zw,I*zc){I ar,at,m,n,t,wr,wt,memlimit;CR
  if(!HOMO(at,wt))if(m&&n)return -1;
  if(1<wr)return 2==wr?-2:-3;
  t=maxtyped(at|(I )(m==0),wt|(I )(n==0)); t&=-t;  // default missing type to B01; if we select one, discard higher bits
- if(TYPESNE(t,at))RZ(a=cvt(t,a));
- if(TYPESNE(t,wt))RZ(w=cvt(t,w));
+ if(TYPESNE(t,at))RZ(a=jtcvt(jt,t,a));
+ if(TYPESNE(t,wt))RZ(w=jtcvt(jt,t,w));
  *za=a; *zw=w;
  // The inputs have been converted to common type
  memlimit = MIN(4*n+1,(I)((jt->mmax-100)>>LGSZI));  // maximum size we will allow our d to reach.  Used only for I type.

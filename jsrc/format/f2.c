@@ -228,7 +228,7 @@ static B jtth2ctrl(J jt,A a,A*ep,A*mp,A*dp,A*sp,I*zkp){A da,ea,ma,s;B b=1,*ev,r,
  // zk holds the total of the field sizes
  // r='non-complex a', init length of conversion area to 500 bytes, convert a to int if it's not complex
  r=!(CMPX&AT(a)); jt->th2bufn=500;
- if(r)RZ(a=cvt(INT,a));  // this detects invalid type for a
+ if(r)RZ(a=jtcvt(jt,INT,a));  // this detects invalid type for a
  an=AN(a); au=ZAV(a); av=AV(a);  // an=#atoms of a, au->a data (if complex), av->a data (if real)
  // Allocate output arrays, set return value, set ?v->first value of output area
  GATV0(ea,B01,an,   1); *ep=ea; ev=BAV(ea);  // exponential flag, Boolean list

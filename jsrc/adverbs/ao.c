@@ -100,8 +100,8 @@ static A jtobqfslash(J jt,    A w,A self){A y,z;B b=0,p;C er,id,*wv;I c,d,k,m,m1
  ASSERT(!((AT(a)|AT(w))&SPARSE),EVNONCE);
  m=AN(a); n=AN(w); m1=m-1; zn=m+n-1; k=MIN(m,n);
  at=AT(a); wt=AT(w); t=maxtyped(at,wt);
- if(TYPESNE(t,at))RZ(a=cvt(t,a)); at=AT(a); av=CAV(a);
- if(TYPESNE(t,wt))RZ(w=cvt(t,w)); wt=AT(w); wv=CAV(w);
+ if(TYPESNE(t,at))RZ(a=jtcvt(jt,t,a)); at=AT(a); av=CAV(a);
+ if(TYPESNE(t,wt))RZ(w=jtcvt(jt,t,w)); wt=AT(w); wv=CAV(w);
  v=FAV(self);  // f//. @ (g/)
  f=v->fgh[0]; g=v->fgh[1];
  c=FAV(FAV(FAV(f)->fgh[0])->fgh[0])->id;   // id of f     f//. f/ f

@@ -68,7 +68,7 @@ A jtcreatecycliciterator(J jt, A z, A w){
 // Similar, but also install the list of gerund results that will select the verb to run
 static A jtcreategerunditerator(J jt, A z, A w, A r){  // z is result area, w is gerunds, r is selector list
  // Convert the selectors to integer/boolean
- if(!(AT(r)&(INT|B01)))RZ(r=cvt(INT,r));
+ if(!(AT(r)&(INT|B01)))RZ(r=jtcvt(jt,INT,r));
  // Create the (skeletal) clone, point it to come to the execution point, set the next-verb number to 0
  AC(z)=ACPERMANENT; AT(z)=VERB; FAV(z)->fgh[2]=FAV(w)->fgh[2]; FAV(z)->fgh[1]=r; FAV(z)->mr=FAV(w)->mr;
  FAV(z)->valencefns[0]=FAV(z)->valencefns[1]=AT(r)&INT?jtexecgerundcellI:jtexecgerundcellB; FAV(z)->localuse.lI=0;
@@ -171,7 +171,7 @@ static A jtcasei12(J jt,A a,A w,A self){A vres,z;I gerit[128/SZI],ZZFLAGWORD;
   mr=MIN(ar,wr); // the smaller
   if(((-mr|~mr)&((AT(w)&SPARSE)-1)&(2*nar-ncells))<0){  // if mr is IMIN or nonneg, and there are enough results compared to # gerunds, reduce # verb executions.  Sparse doesn't do this.
    // Make sure the results are integer or boolean
-   if(!(AT(vres)&(B01|INT)))RZ(vres=cvt(INT,vres));
+   if(!(AT(vres)&(B01|INT)))RZ(vres=jtcvt(jt,INT,vres));
    // grade the results, as a list
    A gradepm; RZ(gradepm=grade1(ravel(vres)));
    // decide how many result boxes to allocate based on min/max result - it's a byte or an int

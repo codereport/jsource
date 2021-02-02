@@ -34,10 +34,10 @@ B jtscheck(J jt,A w){A a,e,x,y;I k1,k2,r,*s,t;P*p;D rkblk[16];
  return 1;
 }    /* assertions on sparse array w */
 
-static A jtselm(J jt,I t){return t&NUMERIC?cvt(t,num(0)):t&BOX?ds(CACE):chrspace;}
+static A jtselm(J jt,I t){return t&NUMERIC?jtcvt(jt,t,num(0)):t&BOX?ds(CACE):chrspace;}
 
 A jtpaxis(J jt,I r,A a){A y,z;B*b;I j,*u,*v;
- if(!(INT&AT(a)))RZ(a=cvt(INT,a));
+ if(!(INT&AT(a)))RZ(a=jtcvt(jt,INT,a));
  u=AV(a);
  GATV0(y,B01,r,1); b=BAV(y); 
  memset(b,C0,r); DO(AN(a), j=u[i]; b[0>j?j+r:j]=1;);
@@ -48,7 +48,7 @@ A jtpaxis(J jt,I r,A a){A y,z;B*b;I j,*u,*v;
 }    /* permuted axes per sparse axes specification a */
 
 static A jtvaxis(J jt,I r,A a){A y;B*b;I j,n,*v;
- RZ(a=cvt(INT,a)); 
+ RZ(a=jtcvt(jt,INT,a)); 
  n=AN(a); v=AV(a); 
  ASSERT(1>=AR(a),EVRANK);
  GATV0(y,B01,r,1); b=BAV(y); memset(b,C0,r);
@@ -80,7 +80,7 @@ static A jtsparse1a(J jt,A s,A a,A e,A y,A x){A z;B*b;I an,*av,et,r,*sv,t,*v;P*p
  }else{A q,x1,y1;C*xu,*xv;I i,j,k,m,n,*qv,*u,*yu,*yv;
   ASSERT(2==AR(y),EVRANK);
   ASSERT(an==*(1+AS(y)),EVLENGTH);
-  if(!(INT&AT(y)))RZ(y=cvt(INT,y));
+  if(!(INT&AT(y)))RZ(y=jtcvt(jt,INT,y));
   GATV0(q,INT,an,1); qv=AV(q); 
   DO(an, qv[i]=sv[av[i]];);
   u=AV(y);
@@ -90,8 +90,8 @@ static A jtsparse1a(J jt,A s,A a,A e,A y,A x){A z;B*b;I an,*av,et,r,*sv,t,*v;P*p
   ASSERT(*AS(x)==*AS(y),EVLENGTH);
   ASSERT(HOMO(et,AT(x)),EVDOMAIN);
   t=maxtype(et,AT(x));
-  if(TYPESNE(t,et)   )RZ(e=cvt(t,e));
-  if(TYPESNE(t,AT(x)))RZ(x=cvt(t,x));
+  if(TYPESNE(t,et)   )RZ(e=jtcvt(jt,t,e));
+  if(TYPESNE(t,AT(x)))RZ(x=jtcvt(jt,t,x));
   n=*AS(y)-1; u=AV(y); v=an+u;
   for(i=0;i<n;++i){
    j=0;
@@ -275,10 +275,10 @@ static A jtaxtally(J jt,A a,A w){A a1,e,p,q,x;B*b;I c,d,j,m,n=0,r,*u,*v,*ws,wt;P
  RE(t=maxtype(at,wt)); zt=STYPE(t);
  ASSERT(zt!=0,EVDOMAIN);
  GASPARSE(z,zt,1,AR(w),AS(w)); zp=PAV(z);
- SPB(zp,e,TYPESEQ(t,at)?ca(a):cvt(t,a));
+ SPB(zp,e,TYPESEQ(t,at)?ca(a):jtcvt(jt,t,a));
  SPB(zp,a,ca(SPA(wp,a)));
  SPB(zp,i,ca(SPA(wp,i)));
- SPB(zp,x,TYPESEQ(t,wt)?ca(x):cvt(t,x));
+ SPB(zp,x,TYPESEQ(t,wt)?ca(x):jtcvt(jt,t,x));
  return z;
 }    /* respecify the sparse element */
 
@@ -317,7 +317,7 @@ static A jtsparsen1(J jt, A w){A*u,z;P*p;
   ASSERT(2==AN(a),EVLENGTH);
   av=AAV(a);  a=av[0]; q=av[1];
  }
- RZ(a=cvt(INT,a));
+ RZ(a=jtcvt(jt,INT,a));
  ASSERT(1>=AR(a),EVRANK);
  v=AV(a); k=*v;
  ASSERT(2==k||!AR(a),EVRANK);

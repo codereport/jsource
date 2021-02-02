@@ -66,7 +66,7 @@
  RZ(x=ts(mtv));
  n=AN(w); xv=DAV(x);
  if(!n)return x;
- if(!(AT(w)&LIT))RZ(w=cvt(LIT,w));
+ if(!(AT(w)&LIT))RZ(w=jtcvt(jt,LIT,w));
  GATV(z,LIT,n,AR(w),AS(w)); zv=CAV(z); MC(zv,CAV(w),n);
  q=0; v=zv; DQ(n, q+='Y'==*v++;); u=2==q?s+2:s;   // if only 2 Y, advance over century
  sprintf(s,FMTI04,(I)xv[0]);             v=zv; DQ(n, if(*v=='Y'){*v=*u++; if(!*u)break;} ++v;);
@@ -119,7 +119,7 @@ __int64 GetMachineCycleCount()
 #define sleepms(i) usleep(i*1000)
 
  A jtdl(J jt, A w){D m,n,*v;UINT ms,s;
- RZ(w=cvt(FL,w));
+ RZ(w=jtcvt(jt,FL,w));
  n=0; v=DAV(w); DQ(AN(w), m=*v++; ASSERT(0<=m,EVDOMAIN); n+=m;);
  s=(UINT)jfloor(n); ms=(UINT)jround(1000*(n-s));
  DQ(s, sleepms(1000); JBREAK0;);
@@ -156,7 +156,7 @@ static A jtpmfree(J jt, A w){A x,y;C*c;I m;PM*v;PM0*u;
  A jtpmarea1(J jt, A w){return pmarea2(vec(B01,2L,&zeroZ),w);}  // 6!:10
 
  A jtpmarea2(J jt,A a,A w){A x;B a0,a1,*av;C*v;I an,n=0,s=sizeof(PM),s0=sizeof(PM0),wn;PM0*u;
- RZ(a=cvt(B01,a)); 
+ RZ(a=jtcvt(jt,B01,a)); 
  an=AN(a);
  ASSERT(1>=AR(a),EVRANK);
  ASSERT(2>=an,EVLENGTH);
@@ -209,7 +209,7 @@ void jtpmrecord(J jt,A name,A loc,I lc,int val){A x,y;B b;PM*v;PM0*u;
 // 6!:12
  A jtpmunpack(J jt, A w){A*au,*av,c,t,x,z,*zv;B*b;D*dv;I*iv,k,k1,m,n,p,q,wn,*wv;PM*v,*v0,*vq;PM0*u;
  ASSERT(jt->pma,EVDOMAIN);
- if(!(INT&AT(w)))RZ(w=cvt(INT,w));
+ if(!(INT&AT(w)))RZ(w=jtcvt(jt,INT,w));
  wn=AN(w); wv=AV(w);
  u=(PM0*)AV(jt->pma); p=u->wrapped?u->n-u->i:0; q=u->i; n=p+q;
  GATV0(x,B01,n,1); b=BAV(x); memset(b,wn?C0:C1,n);
@@ -260,7 +260,7 @@ void jtpmrecord(J jt,A name,A loc,I lc,int val){A x,y;B b;PM*v;PM0*u;
 
  A jttlims(J jt, A w){D d;
  ASSERT(!AR(w),EVRANK);
- if(!(FL&AT(w)))RZ(w=cvt(FL,w));
+ if(!(FL&AT(w)))RZ(w=jtcvt(jt,FL,w));
  d=DAV(w)[0];
  ASSERT(0<=d,EVDOMAIN);
  ASSERT(FLIMAX>1000*d,EVLIMIT);

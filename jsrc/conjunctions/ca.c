@@ -26,9 +26,9 @@ static A jtuponf2(J jt,A a,A w,A self){PROLOG(0022);DECLFG;A z;I flag=sv->flag,m
 }
 
 static X jtxmodpow(J jt,A a,A w,A h){A ox,z;
- if(!(XNUM&AT(a)))RZ(a=cvt(XNUM,a));
- if(!(XNUM&AT(w)))RZ(w=cvt(XNUM,w));
- if(!(XNUM&AT(h)))RZ(h=cvt(XNUM,h));
+ if(!(XNUM&AT(a)))RZ(a=jtcvt(jt,XNUM,a));
+ if(!(XNUM&AT(w)))RZ(w=jtcvt(jt,XNUM,w));
+ if(!(XNUM&AT(h)))RZ(h=jtcvt(jt,XNUM,h));
  ox=jt->xmod; jt->xmod=h;
  GAT0(z,XNUM,1,0); XAV(z)[0]=xpow(XAV(a)[0],XAV(w)[0]);
  jt->xmod=ox;
@@ -51,7 +51,7 @@ static A jtmodpow2(J jt,A a,A w,A self){A h;B b,c;I at,m,n,wt,x,z;
  if(!(INT&at&&INT&wt&&0<=n))return residue(h,expn2(a,w));
  m=AV(h)[0]; x=AV(a)[0];
  if(!m)return expn2(a,w);
- if(XMOD<m||XMOD<-m||m==IMIN||x==IMIN)return cvt(INT,xmodpow(a,w,h));
+ if(XMOD<m||XMOD<-m||m==IMIN||x==IMIN)return jtcvt(jt,INT,xmodpow(a,w,h));
  if(b=0>m)m=-m;
  if(c=0>x)x=-x; x=x%m; if(c)x=m-x;
  z=imodpow(x,n,m);

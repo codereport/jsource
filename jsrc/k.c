@@ -236,14 +236,14 @@ B jtccvt(J jt,I tflagged,A w,A*y){F1PREFIP;A d;I n,r,*s,wt; void *wv,*yv;I t=tfl
   RANK2T oqr=jt->ranks; RESETRANK; 
   switch((t&SPARSE?2:0)+(AT(w)&SPARSE?1:0)){I t1;P*wp,*yp;
   case 1: RZ(w=denseit(w)); break;  // sparse to dense
-  case 2: RZ(*y=sparseit(cvt(DTYPE(t),w),IX(r),cvt(DTYPE(t),num(0)))); jt->ranks=oqr; return 1;  // dense to sparse; convert type first (even if same dtype)
+  case 2: RZ(*y=sparseit(jtcvt(jt,DTYPE(t),w),IX(r),jtcvt(jt,DTYPE(t),num(0)))); jt->ranks=oqr; return 1;  // dense to sparse; convert type first (even if same dtype)
   case 3: // sparse to sparse
    t1=DTYPE(t);
    GASPARSE(*y,t,1,r,s); yp=PAV(*y); wp=PAV(w);
    SPB(yp,a,ca(SPA(wp,a)));
    SPB(yp,i,ca(SPA(wp,i)));
-   SPB(yp,e,cvt(t1,SPA(wp,e)));
-   SPB(yp,x,cvt(t1,SPA(wp,x)));
+   SPB(yp,e,jtcvt(jt,t1,SPA(wp,e)));
+   SPB(yp,x,jtcvt(jt,t1,SPA(wp,x)));
    jt->ranks=oqr; return 1;
   }
   jt->ranks=oqr;
@@ -397,7 +397,7 @@ A jtpcvt(J jt,I t,A w){A y;B b;RANK2T oqr=jt->ranks;
  return w;
 }    /* convert -0 to 0 in place */
 
- A jtxco1(J jt, A w){ ASSERT(AT(w)&DENSE,EVNONCE); return cvt(AT(w)&B01+INT+XNUM?XNUM:RAT,w);}
+ A jtxco1(J jt, A w){ ASSERT(AT(w)&DENSE,EVNONCE); return jtcvt(jt,AT(w)&B01+INT+XNUM?XNUM:RAT,w);}
 
  A jtxco2(J jt,A a,A w){A z;B b;I j,n,r,*s,t,*wv,*zu,*zv;
  n=AN(w); r=AR(w); t=AT(w);
@@ -408,7 +408,7 @@ A jtpcvt(J jt,I t,A w){A y;B b;RANK2T oqr=jt->ranks;
   case -1: return jtbcvt(jt,1,w);
   case  1: return xco1(w);
   case  2: 
-   if(!(t&RAT))RZ(w=cvt(RAT,w));
+   if(!(t&RAT))RZ(w=jtcvt(jt,RAT,w));
    GATV(z,XNUM,2*n,r+1,AS(w)); AS(z)[r]=2;
    MC(AV(z),AV(w),2*n*SZI);
    return z;

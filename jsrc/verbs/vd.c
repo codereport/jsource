@@ -160,7 +160,7 @@ static A jtlq(J jt, A w){A l;D c=inf,d=0,x;I n1,n,*s,wr;
  ASSERT(AT(w)&B01+INT+FL+CMPX,EVDOMAIN);
  wr=AR(w); s=AS(w);
  ASSERT(2>wr||s[0]>=s[1],EVLENGTH);
- if(AT(w)&B01+INT)RZ(w=cvt(FL,w));  // convert boolean/integer to real
+ if(AT(w)&B01+INT)RZ(w=jtcvt(jt,FL,w));  // convert boolean/integer to real
  if(wr==1)w=table(w);  // convert column vector to column matrix
  w=conjug(cant1(w));  // create w*, where the result will be built inplace
  RZ(l=jtltqip(jt,w)); n=AS(l)[0]; n1=1+n;
@@ -192,7 +192,7 @@ static A jticor(J jt, A w){D d,*v;
  if(!AN(w)){ASSERT(1==wr||m>=n,EVLENGTH); return cant1(w);}
  if(AN(w)&&t&RAT+XNUM){
   ASSERT(m>=n,EVLENGTH);
-  if(t&XNUM)RZ(w=cvt(RAT,w));
+  if(t&XNUM)RZ(w=jtcvt(jt,RAT,w));
   if(1<wr&&m==n)y=w; else{q=cant1(w); y=pdt(q,w);}
   z=drop(v2(0L,n),gausselm(stitch(y,reshape(v2(n,n),take(sc(1+n),xco1(scf(1.0)))))));
   if(2>wr)z=tymes(reshape(mtv,z),w); else if(m>n)z=pdt(z,q);
@@ -232,7 +232,7 @@ static A jtmdivsp(J jt,A a,A w){A a1,x,y;I at,d,m,n,t,*v,xt;P*wp;
  ASSERT(m==3*n-2,EVNONCE);
  DQ(m, d=*v++; d-=*v++; ASSERT(-1<=d&&d<=1,EVNONCE););
  at=AT(a); xt=AT(x); RE(t=maxtype(at,xt)); RE(t=maxtype(t,FL));
- RZ(a=cvt(t,a)); RZ(x=cvt(t,x));
+ RZ(a=jtcvt(jt,t,a)); RZ(x=jtcvt(jt,t,x));
  if(t&CMPX)RZ(ztridiag(n,a,x)) else RZ(tridiag(n,a,x));
  return a;
 }    /* currently only handles tridiagonal sparse w */

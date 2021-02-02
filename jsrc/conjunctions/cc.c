@@ -224,7 +224,7 @@ static A jtcut2bx(J jt,A a,A w,A self){A*av,b,t,x,*xv,y,*yv;B*bv;I an,bn,i,j,m,p
   ASSERT(1>=AR(b),EVRANK);
   if(!bn&&m){xv[i]=num(0); RZ(yv[i]=incorp(sc(m)));}
   else{
-   if(!(B01&AT(b)))RZ(b=cvt(B01,b));
+   if(!(B01&AT(b)))RZ(b=jtcvt(jt,B01,b));
    if(!AR(b)){if(BAV(b)[0]){RZ(xv[i]=incorp(IX(m))); RZ(yv[i]=incorp(reshape(sc(m),num(0<q))));}else xv[i]=yv[i]=mtv; continue;}
    ASSERT(bn==m,EVLENGTH);
    bv=BAV(b); p=0; DO(bn, p+=bv[i];); 
@@ -325,7 +325,7 @@ static A jtcut2sx(J jt,A a,A w,A self){PROLOG(0024);DECLF;A h=0,*hv,y,yy;B b,neg
  RZ(a=a==mark?eps(w,take(num(pfx?1:-1),w)):DENSE&AT(a)?sparse1(a):a);
  ASSERT(n==AS(a)[0],EVLENGTH);
  ap=PAV(a);
- if(!(equ(num(0),SPA(ap,e))&&AN(SPA(ap,a))))return cut2(cvt(B01,a),w,self);
+ if(!(equ(num(0),SPA(ap,e))&&AN(SPA(ap,a))))return cut2(jtcvt(jt,B01,a),w,self);
  vf=VAV(fs);
  if(VGERL&sv->flag){h=sv->fgh[2]; hv=AAV(h); hn=AN(h); id=0;}else id=vf->id; 
  y=SPA(ap,i); yn=AN(y); yv=AV(y); u=v=BAV(SPA(ap,x)); e=m=0;
@@ -408,7 +408,7 @@ static C*jtidenv0(J jt,A a,A w,V*sv,I zt,A*zz){A fs,y,z;
  fs=sv->fgh[0];
  RE(df1(y,num(0),iden(VAV(fs)->fgh[0])));
  if(TYPESLT(zt,AT(y))){*zz=df1(z,cut2(a,w,jtcut(jt,ds(CBOX),sv->fgh[1])),jtamp(jt,fs,ds(COPE))); return 0;}  // fgh still has the original A, OK to use
- if(TYPESGT(zt,AT(y)))RE(y=cvt(zt,y)); 
+ if(TYPESGT(zt,AT(y)))RE(y=jtcvt(jt,zt,y)); 
  return CAV(y);
 }    /* pointer to identity element */
 
@@ -541,7 +541,7 @@ void copyTT(void *zv, void *wv, I n, I zt, I wt){
     return CALL1(f1,w,fs);
    }
    if(((-AN(a))&(SGNIF(AT(a),BOXX)))<0)return cut2bx(a,w,self);  // handle boxed a separately if a not empty
-   if(!(B01&AT(a)))RZ(a=cvt(B01,a));  // convert other a to binary, error if impossible
+   if(!(B01&AT(a)))RZ(a=jtcvt(jt,B01,a));  // convert other a to binary, error if impossible
    if(!AR(a))RZ(a=reshape(sc(n),a));   // extend scalar x to length of y
    ak=1; at=B01;  // cell of a is 1 byte, and it's Boolean
   }else{
@@ -715,7 +715,7 @@ void copyTT(void *zv, void *wv, I n, I zt, I wt){
    if(!AN(zz))return zz;  // don't run function on empty arg
    I atomsize=bpnoun(zt);
    zc=CAV(zz); zk=wcn*atomsize;
-   if((t=atype(adocv.cv))&&TYPESNE(t,wt)){RZ(w=cvt(t,w)); wv=CAV(w);}
+   if((t=atype(adocv.cv))&&TYPESNE(t,wt)){RZ(w=jtcvt(jt,t,w)); wv=CAV(w);}
    I rc=EVOK;   // accumulate error code
    EACHCUT(if(d>1){ I lrc=((AHDRRFN*)adocv.f)(wcn,d,(I)1,v1,zc,jt); rc=lrc<rc?lrc:rc;} else if(d==1){copyTT(zc,v1,wcn,zt,wt);} else{if(!z0){z0=idenv0(a,w,FAV(self),zt,&z); // compared to normal reduces, c means d and d means n
        if(!z0){if(z)return z; else{rc=jt->jerr; break;}}} mvc(zk,zc,atomsize,z0);} zc+=zk;
@@ -800,7 +800,7 @@ static A jtcut1(J jt,    A w,A self){return cut2(mark,w,self);}
  if(a!=mark){   // dyadic case
   if((-AN(a)&((AR(a)^1)-1)&-(AT(a)&B01+SB01))>=0)return jtspecialatoprestart(jt,a,w,self);  // if a is not nonempty boolean list, do it the long way.  This handles ;@: when a has rank>1
   // a is nonempty boolean list
-  if(AT(a)&SB01)RZ(a=cvt(B01,a));
+  if(AT(a)&SB01)RZ(a=jtcvt(jt,B01,a));
   v=CAV(a); sep=C1;
  }else if(((AR(w)-2)&-(wt&IS1BYTE))<0){a=w; v=CAV(a); sep=v[(wi-1)&(pfx-1)];}  // monad.  Create char list of frets: here if 1-byte list/atom
  else{RZ(a=wi?eps(w,take(num((pfx<<1)-1),w)):mtv); v=CAV(a); sep=C1;}   // here if other types/shapes
@@ -809,7 +809,7 @@ static A jtcut1(J jt,    A w,A self){return cut2(mark,w,self);}
  r=MAX(1,AR(w)); s=AS(w); wv=CAV(w); PROD(d,AR(w)-1,AS(w)+1) k=d<<bplg(wt);  // d=#atoms in an item of w
  if(pfx){u=v+wi; while(u>v&&sep!=*v)++v; p=u-v;}
  I t,zk,zt;                     /* atomic function f/\ or f/\. */
- if((t=atype(adocv.cv))&&TYPESNE(t,wt)){RZ(w=cvt(t,w)); wv=CAV(w);}
+ if((t=atype(adocv.cv))&&TYPESNE(t,wt)){RZ(w=jtcvt(jt,t,w)); wv=CAV(w);}
  zt=rtype(adocv.cv); zk=d<<bplg(zt);
  GA(z,zt,AN(w),r,s); zv=CAV(z); // allocate size of w, which is as big as it can get if there are no discarded items
  while(p){I n;

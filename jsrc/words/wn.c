@@ -240,7 +240,7 @@ A jtconnum(J jt,I n,C*s){PROLOG(0101);A y,z;B (*f)(J,I,C*,void*),p=1;C c,*v;I d=
   i=0; mc=m*c; u=CAV(w); y=u+n; j=c; uu=u+AN(w); if(mc)*(uu-1)=' ';         \
   r=AR(w)-(I )(1==c); r=MAX(0,r);                                               \
   GA(z,t,mc,r,AS(w)); if(0<r&&1!=c)AS(z)[r-1]=c; zv=(T*)AV(z);            \
-  RZ(a=cvt(t,a)); a0=*(T*)AV(a);                                            \
+  RZ(a=jtcvt(jt,t,a)); a0=*(T*)AV(a);                                            \
   while(i<mc){                                                              \
    while(u<uu&&C0==*u)++u;                                                  \
    while(u>=y){while(i<j)zv[i++]=a0; j+=c; y+=n; if(i==mc)return z;}             \
@@ -325,8 +325,8 @@ B valueisint; // set if the value we are processing is really an int
  if(!mc)return z;  // If no fields at all, exit with empty result (avoids infinite loop below)
  // Convert the default to float, unless we are trying big integers.  We try ints if the default is int or infinite,
  // but only on 64-bit systems where int and float have the same size
- if(!(tryingint = sizeof(D)==sizeof(I) && (AT(a)&B01+INT || (fillreqd>=0 && AT(a)&FL)))){RZ(a=cvt(FL,a));}
- else if(AT(a)&B01)RZ(a=cvt(INT,a));  // If we are trying ints, we must promote Bool to int
+ if(!(tryingint = sizeof(D)==sizeof(I) && (AT(a)&B01+INT || (fillreqd>=0 && AT(a)&FL)))){RZ(a=jtcvt(jt,FL,a));}
+ else if(AT(a)&B01)RZ(a=jtcvt(jt,INT,a));  // If we are trying ints, we must promote Bool to int
  // Get the default value; supposedly a (D) but if we are trying ints it might be really an (I)
  a0=DAV(a)[0];
  // loop till all results have been produced.  Some values require a restart, so we control this field-by-field

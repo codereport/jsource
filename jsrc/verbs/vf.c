@@ -14,10 +14,10 @@
  I t2=REPSGN(-AN(w))&AT(w); t=REPSGN(-AN(a))&AT(a); t=t?t:t2;  // ignoring empties, use type of a then w
  if(AN(q)!=0){ // fill specified
   RE(t=t?maxtype(t,AT(q)):AT(q)); // get type needed for fill
-  if(TYPESNE(t,AT(q)))RZ(q=cvt(t,q));  // convert the user's type if needed
+  if(TYPESNE(t,AT(q)))RZ(q=jtcvt(jt,t,q));  // convert the user's type if needed
   jt->fillv=CAV(q);   // jt->fillv points to the fill atom
  }else{if(!t)t=AT(w); fillv(t,1L,jt->fillv0); jt->fillv=jt->fillv0;}    // empty fill.  move 1 std fill atom to fillv0 and point jt->fillv at it
- return TYPESEQ(t,AT(w))?w:cvt(t,w);  // note if w is boxed and nonempty this won't change it
+ return TYPESEQ(t,AT(w))?w:jtcvt(jt,t,w);  // note if w is boxed and nonempty this won't change it
 }
 
  A jtfiller(J jt, A w){A z; GA(z,AT(w),1,0,0); fillv(AT(w),1L,CAV(z)); return z;}
@@ -177,7 +177,7 @@ static A jtreshapesp0(J jt,A a,A w,I wf,I wcr){A e,p,x,y,z;B*b,*pv;I c,d,r,*v,wr
 }    /* '' ($,)"wcr w for sparse w */
 
 static A jtreshapesp(J jt,A a,A w,I wf,I wcr){A a1,e,t,x,y,z;B az,*b,wz;I an,*av,c,d,j,m,*u,*v,wr,*ws;P*wp,*zp;
- RZ(a=cvt(INT,a)); an=AN(a); av=AV(a); wr=AR(w); ws=AS(w); d=an-wcr;
+ RZ(a=jtcvt(jt,INT,a)); an=AN(a); av=AV(a); wr=AR(w); ws=AS(w); d=an-wcr;
  az=0; DO(an,  if(!av[   i])az=1;);
  wz=0; DO(wcr, if(!ws[wf+i])wz=1;);
  ASSERT(az||!wz,EVLENGTH);
@@ -271,7 +271,7 @@ static A jtreshapesp(J jt,A a,A w,I wf,I wcr){A a1,e,t,x,y,z;B az,*b,wz;I an,*av
   }
 
  A jtexpand(J jt,A a,A w){A z;B*av;C*wv,*wx,*zv;I an,*au,i,k,p,wc,wk,wn,wt,zn;
- if(!(B01&AT(a)))RZ(a=cvt(B01,a));
+ if(!(B01&AT(a)))RZ(a=jtcvt(jt,B01,a));
  ASSERT(1==AR(a),EVRANK);
  RZ(w=setfv(w,w)); 
  if(!AR(w))return from(a,take(num(-2),w));  // atomic w, use a { _2 {. w

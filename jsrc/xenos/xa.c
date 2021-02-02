@@ -30,7 +30,7 @@
 
  A jtcts(J jt, A w){D d;
  ASSERT(!AR(w),EVRANK);
- RZ(w=cvt(FL,w)); d=DAV(w)[0];
+ RZ(w=jtcvt(jt,FL,w)); d=DAV(w)[0];
  ASSERT(0<=d,EVDOMAIN);
  ASSERT(d<=5.820766091e-11,EVDOMAIN);
  jt->cctdefault=jt->cct=1.0-d;

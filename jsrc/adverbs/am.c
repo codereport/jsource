@@ -29,7 +29,7 @@ static A jtmerge1(J jt,A w,A ind){A z;B*b;C*wc,*zc;D*wd,*zd;I c,it,j,k,m,r,*s,t,
  ASSERT(r==AR(ind),EVRANK);
  ASSERTAGREE(s,AS(ind),r);
  GA(z,t,c,r,s);
- if(!(AT(ind)&B01+INT))RZ(ind=cvt(INT,ind));
+ if(!(AT(ind)&B01+INT))RZ(ind=jtcvt(jt,INT,ind));
  it=AT(ind); u=AV(ind); b=(B*)u;
  ASSERT((-c&(m-2))>=0||(!c||(m==1&&!memchr(b,C1,c))),EVINDEX);  // unless items are empty, m must have items.  if m is 1 all selectors must be 0.  INT will be checked individually, so we just look at the first c bytes
  zi=AV(z); zc=(C*)zi; zd=(D*)zc;
@@ -73,7 +73,7 @@ static A jtmerge1(J jt,A w,A ind){A z;B*b;C*wc,*zc;D*wd,*zd;I c,it,j,k,m,r,*s,t,
  fauxblockINT(aafaux,4,1);
  if(q=2==m&&B01&AT(b)){bv=BAV(b); x=u[0]; y=u[1];}  // fast case: exactly two names x and y
  else{   // slow case
-  if(!(INT&AT(b)))RZ(b=cvt(INT,b));  // convert pqr to int if it's not already
+  if(!(INT&AT(b)))RZ(b=jtcvt(jt,INT,b));  // convert pqr to int if it's not already
   iv=AV(b);    // iv points to the input pqr
   fauxINT(b,aafaux,m,1)  aa=AV(b); DO(m, aa[i]=(I)AV(u[i]););  // create b, which is a list of pointers to the values of the names
  }
@@ -122,7 +122,7 @@ static A jtmerge2(J jt,A a,A w,A ind,I cellframelen){F2PREFIP;A z;I t;
  ASSERTAGREE(AS(a)+MAX(0,AR(a)-(AR(w)-cellframelen)),AS(w)+AR(w)-(AR(a)-MAX(0,AR(a)-(AR(w)-cellframelen))),AR(a)-MAX(0,AR(a)-(AR(w)-cellframelen)));  // the rest of the shape of m{y comes from shape of y
  if(!AN(w))return w;  // if y empty, return.  It's small.  Ignore inplacing
  t=AN(a)?maxtyped(AT(a),AT(w)):AT(w);  // get the type of the result: max of types, but if x empty, leave y as is
- if((-AN(a)&-TYPESXOR(t,AT(a)))<0)RZ(a=cvt(t,a));  // if a must change precision, do so
+ if((-AN(a)&-TYPESXOR(t,AT(a)))<0)RZ(a=jtcvt(jt,t,a));  // if a must change precision, do so
  // Keep the original address if the caller allowed it, precision of y is OK, the usecount allows inplacing, and the type is either
  // DIRECT or this is a boxed memory-mapped array; and don't inplace a =: a m} a or a =: x a} a
  // kludge this inplaces boxed mm arrays when usecount>2.  Seems wrong, but that's the way it was done
@@ -141,7 +141,7 @@ static A jtmerge2(J jt,A a,A w,A ind,I cellframelen){F2PREFIP;A z;I t;
  if(ip){ASSERT(!(AFRO&AFLAG(w)),EVRO); z=w;}
  // If not inplaceable, create a new block (cvt always allocates a new block) with the common precision.  Relocate it if necessary.
  // after this, z cannot be virtual unless it is an inplace memory-mapped boxed array
- else{RZ(z=cvt(t,w));}
+ else{RZ(z=jtcvt(jt,t,w));}
  // Could be in-place.  If boxed,
  // a has been forced to be recursive usecount, so any block referred to by a will not be freed by a free of w.
  // If w has recursive usecount, all the blocks referred to in w have had their usecount incremented; we must
@@ -193,7 +193,7 @@ A jtcelloffset(J jt,AD * RESTRICT w,AD * RESTRICT ind){A z;
   // rank of ind>1, and rows of ind are longer than 1. process each row to a cell offset
   I naxes = AS(ind)[AR(ind)-1];
   I nzcells; PROD(nzcells,AR(ind)-1,AS(ind));
-  RZ(ind=AT(ind)&INT?ind:cvt(INT,ind));  // w is now an INT vector, possibly the input argument
+  RZ(ind=AT(ind)&INT?ind:jtcvt(jt,INT,ind));  // w is now an INT vector, possibly the input argument
   ASSERT(naxes<=AR(w),EVLENGTH);  // length of rows of table must not exceed rank of w
   GATV(z,INT,nzcells,AR(ind)-1,AS(ind)); I *zv=IAV(z);  // allocate result area, point to first cell location.
   I *iv=IAV(ind);// point to first row
@@ -297,13 +297,13 @@ static A jtamendn2(J jt,A a,A w,A self){F2PREFIP;PROLOG(0007);A e,z; B b;I atd,w
  // Sparse w.  a and t must be compatible; sparse w must not be boxed
  ASSERT(!(wtd&BOX),EVNONCE); ASSERT(HOMO(atd,wtd),EVDOMAIN);
  // set t to dense precision of result; t1=corresponding sparse precision; convert a if need be.  Change a's type but not its sparseness
- RE(t=maxtyped(atd,wtd)); t1=STYPE(t); RZ(a=TYPESEQ(t,atd)?a:cvt(AT(a)&SPARSE?t1:t,a));
+ RE(t=maxtyped(atd,wtd)); t1=STYPE(t); RZ(a=TYPESEQ(t,atd)?a:jtcvt(jt,AT(a)&SPARSE?t1:t,a));
  // Keep the original address if the caller allowed it, precision of y is OK, the usecount allows inplacing, and the dense type is either
  // DIRECT or this is a boxed memory-mapped array
  B ip=((I)jtinplace&JTINPLACEW) && (ACIPISOK(w) || jt->assignsym&&jt->assignsym->val==w&&(AC(w)<=1||(AFNJA&AFLAG(w)&&AC(w)==2)))
      &&TYPESEQ(t,wtd)&&(t&DIRECT);
  // see if inplaceable.  If not, convert w to correct precision (note that cvt makes a copy if the precision is already right)
- if(ip){ASSERT(!(AFRO&AFLAG(w)),EVRO); z=w;}else RZ(z=cvt(t1,w));
+ if(ip){ASSERT(!(AFRO&AFLAG(w)),EVRO); z=w;}else RZ(z=jtcvt(jt,t1,w));
  // call the routine to handle the sparse amend
  p=PAV(z); e=SPA(p,e); b=!AR(a)&&equ(a,e);
  p=PAV(a); if(AT(a)&SPARSE&&!equ(e,SPA(p,e))){RZ(a=denseit(a)); }

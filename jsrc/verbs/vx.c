@@ -8,16 +8,16 @@
 
 
 X jtxev1(J jt,A w,C*s){A y; 
- RZ(df1(y,cvt(XNUM,w),eval(s)));
+ RZ(df1(y,jtcvt(jt,XNUM,w),eval(s)));
  ASSERTSYS(!AR(y),"xev1");
- if(!(XNUM&AT(y)))RZ(y=cvt(XNUM,y)); 
+ if(!(XNUM&AT(y)))RZ(y=jtcvt(jt,XNUM,y)); 
  return XAV(y)[0];
 }
 
 X jtxev2(J jt,A a,A w,C*s){A y; 
- RZ(df2(y,cvt(XNUM,a),cvt(XNUM,w),eval(s))); 
+ RZ(df2(y,jtcvt(jt,XNUM,a),jtcvt(jt,XNUM,w),eval(s))); 
  ASSERTSYS(!AR(y),"xev2");
- if(!(XNUM&AT(y)))RZ(y=cvt(XNUM,y)); 
+ if(!(XNUM&AT(y)))RZ(y=jtcvt(jt,XNUM,y)); 
  return XAV(y)[0];
 }
 
@@ -294,8 +294,8 @@ static X jtxroot(J jt,X a,X w){A q;D x;I an,*av,c,d,r,wn,*wv;X n,n1,p,t,z;
  r=xint(a); if(jt->jerr){RESETERR; return iv1;}
  if(2==r)return xsqrt(w);
  x=xlogabs(w)/r;
- if(x<709.78){RZ(q=ceil1(cvt(RAT,scf(exp(x))))); z=XAV(q)[0];}
- else        {RZ(q=cvt(XNUM,scf(jceil(x)))); z=xexp(XAV(q)[0],XMCEIL);}
+ if(x<709.78){RZ(q=ceil1(jtcvt(jt,RAT,scf(exp(x))))); z=XAV(q)[0];}
+ else        {RZ(q=jtcvt(jt,XNUM,scf(jceil(x)))); z=xexp(XAV(q)[0],XMCEIL);}
  RZ(n=xc(r)); RZ(n1=xc(r-1));
  RZ(t=xdiv(w,p=xpow(z,n1),XMFLR));
  RZ(z=xdiv(xplus(t,xtymes(z,n1)),n,XMFLR))

@@ -19,7 +19,7 @@ static A jtrepzsx(J jt,A a,A w,I wf,I wcr){A q,x,y;I c,d,j,k=-1,m,p=0,*qv,*xv,*y
  ap=PAV(a); x=SPA(ap,x); m=AN(x);
  if(!AN(SPA(ap,a)))return repzdx(ravel(x),w,wf,wcr);
  y=SPA(ap,i); yv=AV(y);
- RZ(x=cvt(INT,vec(FL,2*m,AV(x)))); xv=AV(x);
+ RZ(x=jtcvt(jt,INT,vec(FL,2*m,AV(x)))); xv=AV(x);
  if(equ(num(0),SPA(ap,e))){
   k=c=*(wf+AS(w));
   if(!wf&&SPARSE&AT(w)){A a,y;I m,n,q,*v;P*wp;
@@ -153,7 +153,7 @@ static A jtrepisx(J jt,A a,A w,I wf,I wcr){A e,q,x,y;I c,j,m,p=0,*qv,*xv,*yv;P*a
  F2PREFIP;
  ap=PAV(a); e=SPA(ap,e); 
  y=SPA(ap,i); yv=AV(y);
- x=SPA(ap,x); if(!(INT&AT(x)))RZ(x=cvt(INT,x)); xv=AV(x);
+ x=SPA(ap,x); if(!(INT&AT(x)))RZ(x=jtcvt(jt,INT,x)); xv=AV(x);
  if(!AN(SPA(ap,a)))return repidx(ravel(x),w,wf,wcr);
  if(!*AV(e)){
   m=AN(x);  
@@ -193,7 +193,7 @@ static B jtrep1sa(J jt,A a,I*c,I*d){A x;B b;I*v;
  b=1&&AT(a)&CMPX;
  if(b)RZ(x=rect(a)) else x=a; 
  if(AR(a)){ASSERT(equ(num(1),jtaslash(jt,CSTARDOT,le(zeroionei(0),ravel(x)))),EVDOMAIN); RZ(x=jtaslash(jt,CPLUS,x));} 
- if(!(INT&AT(x)))RZ(x=cvt(INT,x));
+ if(!(INT&AT(x)))RZ(x=jtcvt(jt,INT,x));
  v=AV(x); *c=v[0]; *d=b?v[1]:0;
  ASSERT(0<=*c&&0<=*d,EVDOMAIN);
  return 1;

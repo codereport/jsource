@@ -618,8 +618,8 @@ static A jtva2(J jt,AD * RESTRICT a,AD * RESTRICT w,AD * RESTRICT self,UI allran
     // Conversions to XNUM use a routine that pushes/sets/pops jt->mode, which controls the
     // type of conversion to XNUM in use.  Any result of the conversion is automatically inplaceable.  If type changes, change the cell-size too, possibly larger or smaller
     // bits 2-3 of jtinplace indicate whether inplaceability is allowed by the op, the ranks, and the addresses
-    if(TYPESNE(t,AT(a))){aawwzk[0]=(aawwzk[0]>>bplg(AT(a)))<<bplg(t); aawwzk[1]=(aawwzk[1]>>bplg(AT(a)))<<bplg(t); RZ(a=cvt(t|((I)jtinplace&VARGCVTMSKF),a)); jtinplace = (J)(intptr_t)((I)jtinplace | (((I)jtinplace>>2)&JTINPLACEA));}
-    if(TYPESNE(t,AT(w))){aawwzk[2]=(aawwzk[2]>>bplg(AT(w)))<<bplg(t); aawwzk[3]=(aawwzk[3]>>bplg(AT(w)))<<bplg(t); RZ(w=cvt(t|((I)jtinplace&VARGCVTMSKF),w)); jtinplace = (J)(intptr_t)((I)jtinplace | (((I)jtinplace>>2)&JTINPLACEW));}
+    if(TYPESNE(t,AT(a))){aawwzk[0]=(aawwzk[0]>>bplg(AT(a)))<<bplg(t); aawwzk[1]=(aawwzk[1]>>bplg(AT(a)))<<bplg(t); RZ(a=jtcvt(jt,t|((I)jtinplace&VARGCVTMSKF),a)); jtinplace = (J)(intptr_t)((I)jtinplace | (((I)jtinplace>>2)&JTINPLACEA));}
+    if(TYPESNE(t,AT(w))){aawwzk[2]=(aawwzk[2]>>bplg(AT(w)))<<bplg(t); aawwzk[3]=(aawwzk[3]>>bplg(AT(w)))<<bplg(t); RZ(w=jtcvt(jt,t|((I)jtinplace&VARGCVTMSKF),w)); jtinplace = (J)(intptr_t)((I)jtinplace | (((I)jtinplace>>2)&JTINPLACEW));}
    }  // It might be better to do the conversion earlier, and defer the error
       // until here.  We will have to look at the generated code when we can use all the registers
 
@@ -798,8 +798,8 @@ I jtsumattymesprods(J jt,I it,void *avp, void *wvp,I dplen,I nfro,I nfri,I ndpo,
  // Convert arguments as required
  I it=MAX(AT(a),AT(w));  // if input types are dissimilar, convert to the larger
  if(it!=(AT(w)|AT(a))){
-  if(TYPESNE(it,AT(a))){RZ(a=cvt(it,a));}  // convert to common input type
-  else if(TYPESNE(it,AT(w))){RZ(w=cvt(it,w));}
+  if(TYPESNE(it,AT(a))){RZ(a=jtcvt(jt,it,a));}  // convert to common input type
+  else if(TYPESNE(it,AT(w))){RZ(w=jtcvt(jt,it,w));}
  }
 
  // Verify inner frames match
@@ -941,8 +941,8 @@ static A jtsumatgbool(J jt,A a,A w,C id){A t,z;B* RESTRICTI av,* RESTRICTI wv;I 
  sb=yt&(c==CPLUS);  // +/@:g where g produces Boolean.
  if(!(sb||TYPESEQ(yt,zt)))return df1(z,df2(y,a,w,gs),fs);
  if(t){
-  if(TYPESNE(t,at))RZ(a=cvt(t|(adocv.cv&VARGCVTMSKF),a));
-  if(TYPESNE(t,wt))RZ(w=cvt(t|(adocv.cv&VARGCVTMSKF),w));
+  if(TYPESNE(t,at))RZ(a=jtcvt(jt,t|(adocv.cv&VARGCVTMSKF),a));
+  if(TYPESNE(t,wt))RZ(w=jtcvt(jt,t|(adocv.cv&VARGCVTMSKF),w));
  }
  ak=b?m:zn; wk=b?zn:m; ak=an<nn?0:ak; wk=wn<nn?0:wk; ak<<=bplg(AT(a));wk<<=bplg(AT(w));
  GA(y,yt,zn,1,0);  // allocate one item for result of g

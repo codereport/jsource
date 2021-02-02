@@ -191,7 +191,7 @@ I cachedmmult(J jt,D* av,D* wv,D* zv,I m,I n,I p,I flgs){D c[(CACHEHEIGHT+1)*CAC
  if(((at|wt)&SPARSE)!=0)return pdtsp(a,w);  // Transfer to sparse code if either arg sparse
  if(((at|wt)&XNUM+RAT)!=0)return df2(z,a,w,jtatop(jt,slash(ds(CPLUS)),qq(ds(CSTAR),v2(1L,AR(w)))));  // On indirect numeric, execute as +/@(*"(1,(wr)))
  if(B01&(at|wt)&&TYPESNE(at,wt)&&((ar-1)|(wr-1)|(AN(a)-1)|(AN(w)-1))>=0)return pdtby(a,w);   // If exactly one arg is boolean, handle separately
- {t=maxtyped(at,wt); if(!TYPESEQ(t,AT(a))){RZ(a=cvt(t,a));} if(!TYPESEQ(t,AT(w))){RZ(w=cvt(t,w));}}  // convert args to compatible precisions, changing a and w if needed.  B01 if both empty
+ {t=maxtyped(at,wt); if(!TYPESEQ(t,AT(a))){RZ(a=jtcvt(jt,t,a));} if(!TYPESEQ(t,AT(w))){RZ(w=jtcvt(jt,t,w));}}  // convert args to compatible precisions, changing a and w if needed.  B01 if both empty
  ASSERT(t&NUMERIC,EVDOMAIN);
  // Allocate result area and calculate loop controls
  // m is # 1-cells of a
@@ -262,7 +262,7 @@ oflo2:
     if(m)RZ(jtsumattymesprods(jt,INT,voidAV(w),voidAV(a),p,1,1,1,m,voidAV(z)));  // use +/@:*"1 .  Exchange w and a because a is the repeated arg in jtsumattymesprods.  If error, clear z (should not happen here)
    }else{
      // full matrix products
-     RZ(a=cvt(FL,a)); RZ(w=cvt(FL,w)); cachedmmult(jt,DAV(a),DAV(w),DAV(z),m,n,p,0);  // Do our matrix multiply - converting   TUNE
+     RZ(a=jtcvt(jt,FL,a)); RZ(w=jtcvt(jt,FL,w)); cachedmmult(jt,DAV(a),DAV(w),DAV(z),m,n,p,0);  // Do our matrix multiply - converting   TUNE
     // If the result has a value that has been truncated, we should keep it as a float.  Unfortunately, there is no way to be sure that some
     // overflow has not occurred.  So we guess.  If the result is much less than the dynamic range of a float integer, convert the result
     // to integer.

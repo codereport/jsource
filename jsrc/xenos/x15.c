@@ -798,7 +798,7 @@ static B jtcdexec1(J jt,CCT*cc,C*zv0,C*wu,I wk,I wt,I wd){A*wv=(A*)wu,x,y,*zv;B 
    x=wv[i]; xt=AT(x); xn=AN(x); xr=AR(x);
    CDASSERT(!xr||star,per);         /* non-pointers must be scalars */
    lit=star&&xt&LIT&&(c=='b'||c=='s'&&0==(xn&1)||c=='f'&&0==(xn&3));
-   if(t&&TYPESNE(t,xt)&&!(lit||star&&!xr&&xt&BOX)){x=cvt(xt=t,x); CDASSERT(x!=0,per);}
+   if(t&&TYPESNE(t,xt)&&!(lit||star&&!xr&&xt&BOX)){x=jtcvt(jt,xt=t,x); CDASSERT(x!=0,per);}
    // We know that x originated in a box, so it can't be PRISTINE.  But it may have been converted, so we have to
    // make sure that what we install into *zv is not inplaceable.  *zv is never recursive.
    xv=AV(x); if(zbx)*zv=incorp(x);
@@ -896,7 +896,7 @@ static B jtcdexec1(J jt,CCT*cc,C*zv0,C*wu,I wk,I wt,I wd){A*wv=(A*)wu,x,y,*zv;B 
  if(m&&n&&!(wt&BOX)){
   t=0; tv=cc->tletter; DQ(n, k=cdjtype(*tv++); t=MAX(t,k););
   CDASSERT(HOMO(t,wt),DEPARM);
-  if(!(wt&B01+INT+FL+LIT+C2T+C4T))RZ(w=cvt(wt=t,w));
+  if(!(wt&B01+INT+FL+LIT+C2T+C4T))RZ(w=jtcvt(jt,wt=t,w));
  }
  wv=CAV(w); zv=CAV(z); k=bpnoun(wt);
  if(1==m)RZ(jtcdexec1(jtinplace,cc,zv,wv,k,wt,0))
@@ -970,8 +970,8 @@ void dllquit(J jt){CCT*av;I j,*v;
  m=v[2]; t=3==n?LIT:v[3]; u=(C*)(v[0]+v[1]);
  ASSERT(t&B01+LIT+C2T+C4T+INT+FL+CMPX+SBT,EVDOMAIN);
  ASSERT(m==AN(a)||t&LIT+C2T+C4T&&1==AR(a)&&(m-1)==AN(a),EVLENGTH);
- if(B01&AT(a)&&t&INT) RZ(a=cvt(INT,a));
- if(INT&AT(a)&&t&B01) RZ(a=cvt(B01,a));
+ if(B01&AT(a)&&t&INT) RZ(a=jtcvt(jt,INT,a));
+ if(INT&AT(a)&&t&B01) RZ(a=jtcvt(jt,B01,a));
  ASSERT(TYPESEQ(t,AT(a)),EVDOMAIN);
 
  MC(u,AV(a),m<<bplg(t));

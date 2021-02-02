@@ -171,8 +171,8 @@ static B jtiixI(J jt,I n,I m,A a,A w,I*zv){A t;B ascend;I*av,j,p,q,*tv,*u,*v,*vv
    break;
   default:
    ASSERT(TYPESNE(at,wt),EVNONCE);
-   if(TYPESNE(t,at))RZ(a=cvt(t,a));
-   if(TYPESNE(t,wt))RZ(w=cvt(t,w));
+   if(TYPESNE(t,at))RZ(a=jtcvt(jt,t,a));
+   if(TYPESNE(t,wt))RZ(w=jtcvt(jt,t,w));
    switch(UNSAFE(t)){
     case CMPX: c+=c;  /* fall thru */ 
     case FL:   BSLOOP(D,D);           break;

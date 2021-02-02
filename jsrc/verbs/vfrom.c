@@ -16,7 +16,7 @@
  GATV0(x,INT,n,1);    qv=AV(x);   // allocate vector of max-indexes for each box - only the address is used  qv->max-index 0
  GATV0(x,BOX,n,1);    pv=(C**)AV(x);  // allocate vector of pointers to each box's data  pv->box-data-base 0
  RZ(x=apvwr(n,0L,0L)); cv=AV(x);   // allocate vector of current indexes, init to 0  cv->current-index 0
- DO(n, x=wv[i]; if(TYPESNE(t,AT(x)))RZ(x=cvt(t,x)); r+=AR(x); qv[i]=p=AN(x); DPMULDE(m,p,m); pv[i]=CAV(x););  // fill in *qv and *pv; calculate r=+/ #@$@> w, m=*/ */@$@> w
+ DO(n, x=wv[i]; if(TYPESNE(t,AT(x)))RZ(x=jtcvt(jt,t,x)); r+=AR(x); qv[i]=p=AN(x); DPMULDE(m,p,m); pv[i]=CAV(x););  // fill in *qv and *pv; calculate r=+/ #@$@> w, m=*/ */@$@> w
  GATV0(z,BOX,m,r);    zv=AAV(z); s=AS(z);   // allocate result area
  // There is no need to turn off pristinity of w, because nothing was copied out by pointer (everything was copied & then cloned)
  // The result is certainly pristine if it is DIRECT
@@ -50,7 +50,7 @@
  if(ar>acr)return rank2ex(a,w,UNUSED_VALUE,acr,wcr,acr,wcr,jtifrom);  // split a into cells if needed.  Only 1 level of rank loop is used
  // From here on, execution on a single cell of a (on matching cell(s) of w, or all w).  The cell of a may have any rank
  an=AN(a); wn=AN(w); ws=AS(w);
- if(!(INT&AT(a)))RZ(a=cvt(INT,a));
+ if(!(INT&AT(a)))RZ(a=jtcvt(jt,INT,a));
  // If a is empty, it needs to simulate execution on a cell of fills.  But that might produce error, if w has no
  // items, where 0 { empty is an index error!  In that case, we set wr to 0, in effect making it an atom (since failing exec on fill-cell produces atomic result)
 // if(an==0 && wn==0 && ws[wf]==0)wcr=wr=0;     defer this pending analysis
@@ -193,7 +193,7 @@ B jtaindex(J jt,A a,A w,I wf,A*ind){A*av,q,z;I an,ar,c,j,k,t,*u,*v,*ws;
  for(j=0;j<an;++j){
   q=av[j]; t=AT(q);
   if(t&BOX)return 0;   // if empty boxed array, error
-  if(!(t&INT))RZ(q=cvt(INT,q));  // if can't convert to INT, error
+  if(!(t&INT))RZ(q=jtcvt(jt,INT,q));  // if can't convert to INT, error
   if((((c^AN(q))-1)&(AR(q)-2))>=0)return 0;   // if not the same length, or rank>1, error
   u=AV(q);
   DO(c, SETNDX(k,u[i],ws[i]) *v++=k;);   // copy in the indexes, with correction for negative indexes
@@ -222,7 +222,7 @@ static B jtaindex1(J jt,A a,A w,I wf,A*ind){A z;I c,i,k,n,t,*v,*ws;
  if(i==0){z=a;  // If all indexes OK, return the original block
  }else{
   // There was a negative index.  Allocate a new block for a and copy to it.
-  RZ(z=t&INT?ca(a):cvt(INT,a));  v=AV(z);
+  RZ(z=t&INT?ca(a):jtcvt(jt,INT,a));  v=AV(z);
   DQ(n, DO(c, SETNDXRW(k,*v,ws[i]) ++v;););  // convert indexes to nonnegative & check for in-range
  }
  *ind=z;

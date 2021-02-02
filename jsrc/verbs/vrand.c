@@ -548,7 +548,7 @@ static X jtxrand(J jt,X x){PROLOG(0090);A q,z;B b=1;I j,m,n,*qv,*xv,*zv;
 }    /* ?x where x is a single strictly positive extended integer */
 
 static A jtrollxnum(J jt, A w){A z;B c=0;I d,n;X*u,*v,x;
- if(!(AT(w)&XNUM))RZ(w=cvt(XNUM,w));  // convert rational to numeric
+ if(!(AT(w)&XNUM))RZ(w=jtcvt(jt,XNUM,w));  // convert rational to numeric
  n=AN(w); v=XAV(w);
  GATV(z,XNUM,n,AR(w),AS(w)); u=XAV(z);
  // deal an extended random for each input number.  Error if number <0; if 0, put in 0 as a placeholder
@@ -556,7 +556,7 @@ static A jtrollxnum(J jt, A w){A z;B c=0;I d,n;X*u,*v,x;
  // If there was a 0, convert the whole result to float, and go back and fill the original 0s with random floats
  if(c){D*d;I mk,sh;
   INITD;
-  RZ(z=cvt(FL,z)); d=DAV(z); v=XAV(w);
+  RZ(z=jtcvt(jt,FL,z)); d=DAV(z); v=XAV(w);
   DQ(n, x=*v++; if(!XDIG(x))*d=sh?NEXTD1:NEXTD0; ++d;);
  } 
  return z;
@@ -737,7 +737,7 @@ static X jtxranddot(J jt,X x){PROLOG(0090);A q,z;B b=1;I j,m,n,*qv,*xv,*zv;
 #undef rollxnum
 #define rollxnum(w) jtrollxnumdot(jt,(w))
 static A jtrollxnumdot(J jt, A w){A z;B c=0;I d,n;X*u,*v,x;
- if(!(AT(w)&XNUM))RZ(w=cvt(XNUM,w));  // convert rational to numeric
+ if(!(AT(w)&XNUM))RZ(w=jtcvt(jt,XNUM,w));  // convert rational to numeric
  n=AN(w); v=XAV(w);
  GATV(z,XNUM,n,AR(w),AS(w)); u=XAV(z);
  // deal an extended random for each input number.  Error if number <0; if 0, put in 0 as a placeholder
@@ -745,7 +745,7 @@ static A jtrollxnumdot(J jt, A w){A z;B c=0;I d,n;X*u,*v,x;
  // If there was a 0, convert the whole result to float, and go back and fill the original 0s with random floats
  if(c){D*d;I mk,sh;
   INITD;
-  RZ(z=cvt(FL,z)); d=DAV(z); v=XAV(w);
+  RZ(z=jtcvt(jt,FL,z)); d=DAV(z); v=XAV(w);
   DQ(n, x=*v++; if(!XDIG(x))*d=sh?NEXTD1:NEXTD0; ++d;);
  } 
  return z;

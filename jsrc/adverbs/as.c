@@ -259,7 +259,7 @@ A jtscansp(J jt,A w,A self,AF sf){A e,ee,x,z;B*b;I f,m,j,r,t,wr;P*wp,*zp;
  }
  wp=PAV(w); e=SPA(wp,e); x=SPA(wp,x);
  RZ(x=IRS1(x,self,m,sf,z));
- t=maxtype(AT(e),AT(x)); RZ(e=cvt(t,e)); if(TYPESNE(t,AT(x)))RZ(x=cvt(t,x));
+ t=maxtype(AT(e),AT(x)); RZ(e=jtcvt(jt,t,e)); if(TYPESNE(t,AT(x)))RZ(x=jtcvt(jt,t,x));
  GASPARSE(z,STYPE(t),1,wr+!m,AS(w)); if(!m)*(wr+AS(z))=1;
  zp=PAV(z); 
  SPB(zp,e,e); 
@@ -283,7 +283,7 @@ static A jtsscan(J jt,    A w,A self){A y,z;I d,f,m,n,r,t,wn,wr,*ws,wt;
  VARPS adocv; varps(adocv,self,wt,2);  // analyze f - get suffix routine
  if(!adocv.f)return IRSIP1(w,self,r,jtssg,z);   // if not supported atomically, go do general suffix
  // The rest handles primitives with fast suffix scans
- if((t=atype(adocv.cv))&&TYPESNE(t,wt))RZ(w=cvt(t,w));
+ if((t=atype(adocv.cv))&&TYPESNE(t,wt))RZ(w=jtcvt(jt,t,w));
  if(ASGNINPLACESGN(SGNIF((I)jtinplace,JTINPLACEWX)&SGNIF(adocv.cv,VIPOKWX),w))z=w; else GA(z,rtype(adocv.cv),wn,wr,ws);
  I rc=((AHDRSFN*)adocv.f)(d,n,m,AV(w),AV(z),jt);
  if(rc&255){jsignal(rc); return jt->jerr>=EWOV?IRS1(w,self,r,jtsscan,z):0;} else return adocv.cv&VRI+VRD?cvz(adocv.cv,z):z;
@@ -346,7 +346,7 @@ static A jtofxassoc(J jt,A a,A w,A self){A f,i,j,p,s,x,z;C id,*zv;I c,d,k,kc,m,r
   // If there was overflow on the ado, we have to redo the operation as a float.
   // We also have to redo if the types of p and s were different (for example, if one overflowed to float and the other didn't)
  }
- if((rc&255)>=EWOV){ return ofxassoc(a,cvt(FL,w),self);}
+ if((rc&255)>=EWOV){ return ofxassoc(a,jtcvt(jt,FL,w),self);}
  if(rc)jsignal(rc);  // if there was an error, signal it
  return z;
 }    /* a f/\. w where f is an atomic associative fn */

@@ -149,8 +149,8 @@ static B jtmatchsub(J jt,A a,A w,B* RESTRICT x,I af,I wf,I m,I n,I b1){C*av,*wv;
  // If the types mismatch, convert as needed to the common (unsafe) type calculated earlier
  if(at!=wt) {
   t=maxtypedne(at,wt);
-  if(at!=t)RZ(a=cvt(t|VFRCEXMT,a));
-  if(wt!=t)RZ(w=cvt(t|VFRCEXMT,w));
+  if(at!=t)RZ(a=jtcvt(jt,t|VFRCEXMT,a));
+  if(wt!=t)RZ(w=jtcvt(jt,t|VFRCEXMT,w));
  }
  // If a has no frame, it might be the shorter frame and therefore repeated; but in that case
  // m will be 1 (1 cell in shorter frame).  So it is safe to increment each address by c in the compare loops

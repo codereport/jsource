@@ -52,7 +52,7 @@ static A jtdiag(J jt,A a,A w){I d,m,p,r,t,*v;
  r=AR(w); t=AT(w);
  v=AS(w);   m=0;      DO(r, m=MIN(m,v[i]););
  v=AS(w)+r; p=1; d=0; DQ(r, d+=p; p*=*--v;);
- if(TYPESNE(t,AT(a)))RZ(a=cvt(t,a));
+ if(TYPESNE(t,AT(a)))RZ(a=jtcvt(jt,t,a));
  if(AR(a)){
   ASSERT(m==AN(a),EVLENGTH);
   ASSERT(0,EVNONCE);
@@ -171,7 +171,7 @@ static A jtinvamp(J jt, A w){A f,ff,g,h,x,y;B nf,ng;C c,d,*yv;I n;V*u,*v;
    if(nf&&AR(x)<=(c==CCYCLE))return obverse(eva(w,"/:@u@(i.@#) { ]"),w); break;
   case CDROP:
    if(!(nf&&1>=AR(x)))break;
-   RZ(x=cvt(INT,x));
+   RZ(x=jtcvt(jt,INT,x));
    RZ(y=eps(v2(-1L,1L),signum(x))); yv=CAV(y);
    f=jtamp(jt,mag(x),ds(CPLUS));
    g=1==AN(x)?ds(CPOUND):jtatop(jt,jtamp(jt,tally(jt, x),ds(CTAKE)),ds(CDOLLAR));

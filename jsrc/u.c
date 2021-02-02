@@ -81,7 +81,7 @@ A jtapvwr(J jt,I n,I b,I m){A z;
 
 
 // w must be 0 or an atom equal to 0 or 1.  Result is its value
-B jtb0(J jt,A w){if(!(w))return 0; ASSERT(!AR(w),EVRANK); if(!(B01&AT(w)))RZ(w=cvt(B01,w)); return BAV(w)[0];}
+B jtb0(J jt,A w){if(!(w))return 0; ASSERT(!AR(w),EVRANK); if(!(B01&AT(w)))RZ(w=jtcvt(jt,B01,w)); return BAV(w)[0];}
 
 // NOTE: the caller modifies this result inplace, so it must not be shared or readonly
 B*jtbfi(J jt,I n,A w,B p){A t;B* RESTRICT b;I* RESTRICT v;
@@ -269,19 +269,19 @@ for(i=0;i<n<<bplg(t);i++)*p++=!!(*q++);
 #endif
 
 // Convert w to integer if it isn't integer already (the usual conversion errors apply)
- A jtvi(J jt, A w){if(!w) return 0; return INT&AT(w)?w:cvt(INT,w);}
+ A jtvi(J jt, A w){if(!w) return 0; return INT&AT(w)?w:jtcvt(jt,INT,w);}
 
 // Audit w to ensure valid integer value(s).  Error if non-integral.  Result is A block for integer array.  Infinities converted to IMAX/-IMAX
  A jtvib(J jt, A w){A z;D d,e,*wv;I i,n,*zv;
  if(AT(w)&INT)return RETARG(w);  // handle common non-failing cases quickly: INT and boolean
- if(AT(w)&B01){if(!AR(w))return zeroionei(BAV(w)[0]); return cvt(INT,w);}
+ if(AT(w)&B01){if(!AR(w))return zeroionei(BAV(w)[0]); return jtcvt(jt,INT,w);}
  if(w==ainf)return imax;  // sentence words of _ always use the same block, so catch that too
  I p=-IMAX,q=IMAX;
  RANK2T oqr=jt->ranks; RESETRANK;
  if((AT(w)&SPARSE)!=0)RZ(w=denseit(w));
  switch(UNSAFE(AT(w))){
  default:
-  if(!(AT(w)&FL))RZ(w=cvt(FL,w));
+  if(!(AT(w)&FL))RZ(w=jtcvt(jt,FL,w));
   n=AN(w); wv=DAV(w);
   GATV(z,INT,n,AR(w),AS(w)); zv=AV(z);
   for(i=0;i<n;++i){
@@ -293,18 +293,18 @@ for(i=0;i<n<<bplg(t);i++)*p++=!!(*q++);
    }
    break;
   case XNUM:
-  case RAT:  z=cvt(INT,maximum(sc(p),minimum(sc(q),w))); break;
+  case RAT:  z=jtcvt(jt,INT,maximum(sc(p),minimum(sc(q),w))); break;
  }
  jt->ranks=oqr; return z;
 }
 
 // Convert w to integer if needed, and verify every atom is nonnegative
- A jtvip(J jt, A w){I*v; if(!(INT&AT(w)))RZ(w=cvt(INT,w)); v=AV(w); DQ(AN(w), ASSERT(0<=*v++,EVDOMAIN);); return w;}
+ A jtvip(J jt, A w){I*v; if(!(INT&AT(w)))RZ(w=jtcvt(jt,INT,w)); v=AV(w); DQ(AN(w), ASSERT(0<=*v++,EVDOMAIN);); return w;}
 
 // Convert w to string, verify it is a list or atom
- A jtvs(J jt, A w){ ASSERT(1>=AR(w),EVRANK); return LIT&AT(w)?w:cvt(LIT,w);}
+ A jtvs(J jt, A w){ ASSERT(1>=AR(w),EVRANK); return LIT&AT(w)?w:jtcvt(jt,LIT,w);}
      /* verify string */
 
 // Convert w to utf8 string, verify it is a list or atom
- A jtvslit(J jt, A w){ ASSERT(1>=AR(w),EVRANK); return LIT&AT(w)?w:(C2T+C4T)&AT(w)?toutf8(w):cvt(LIT,w);}
+ A jtvslit(J jt, A w){ ASSERT(1>=AR(w),EVRANK); return LIT&AT(w)?w:(C2T+C4T)&AT(w)?toutf8(w):jtcvt(jt,LIT,w);}
      /* verify string */

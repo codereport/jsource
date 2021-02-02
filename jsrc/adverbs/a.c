@@ -23,7 +23,7 @@ static A swap2(J jt,A a,A w,A self){DECLF; F2PREFIP; jtinplace = (J)(intptr_t)((
   return fdef(0,CTILDE,VERB,(AF)(swap1),(AF)(swap2),w,0L,0L,flag,(I)(RMAX),(I)(rr(w)),(I)(lr(w)));
  }else{
   // evoke.  Ii must be LIT and convertible to ASCII.
-  if((C2T+C4T)&AT(w))RZ(w=cvt(LIT,w)) else ASSERT(LIT&AT(w),EVDOMAIN);
+  if((C2T+C4T)&AT(w))RZ(w=jtcvt(jt,LIT,w)) else ASSERT(LIT&AT(w),EVDOMAIN);
   ASSERT(1>=AR(w),EVRANK);  // list or atom only
   n=AN(w); s=CAV(w); 
   ASSERT(vnm(n,s),EVILNAME);   // valid name
@@ -37,7 +37,7 @@ static const B booltab[64]={
  1,0,0,0, 1,0,0,1, 1,0,1,0, 1,0,1,1,  1,1,0,0, 1,1,0,1, 1,1,1,0, 1,1,1,1,
 };
 
-static A jtbdot2(J jt,A a,A w,A self){return from(plusA(duble(cvt(B01,a)),cvt(B01,w)),FAV(self)->fgh[2]);}  // dyad b. (2*a + w) { h
+static A jtbdot2(J jt,A a,A w,A self){return from(plusA(duble(jtcvt(jt,B01,a)),jtcvt(jt,B01,w)),FAV(self)->fgh[2]);}  // dyad b. (2*a + w) { h
 
 static A jtbdot1(J jt,    A w,A self){return bdot2(num(0),w,self);}
 

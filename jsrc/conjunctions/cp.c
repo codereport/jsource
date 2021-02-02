@@ -31,7 +31,7 @@ static A jtpowseqlim(J jt,    A w,A self){PROLOG(0039);A x,y,z,*zv;I i,n;
 // AR(a) is 1 and AN(w)!=0
 static A jttclosure(J jt,A a,A w){A z;I an,*av,c,d,i,wn,wr,wt,*wv,*zv,*zz;
  wt=AT(w); wn=AN(w); wr=AR(w);
- if(B01&wt)RZ(w=cvt(INT,w)); wv=AV(w);
+ if(B01&wt)RZ(w=jtcvt(jt,INT,w)); wv=AV(w);
  av=AV(a); an=AN(a);
  RZ(z=exta(INT,1+wr,wn,20L));   // init the expanding result area
  zv=AV(z); zz=zv+AN(z);

@@ -227,13 +227,13 @@ static A jtredspd(J jt,A w,A self,C id,VARPSF ado,I cv,I f,I r,I zt){A a,e,x,z,z
   case CEQ:   ASSERT(B01&AT(x),EVNONCE); if(!BAV(e)[0]&&0==(n&1))e=num(1); break;
   case CNE:   ASSERT(B01&AT(x),EVNONCE); if( BAV(e)[0]&&1==(n&1))e=num(0);
  }
- if(TYPESNE(AT(e),AT(zx))){t=maxtypene(AT(e),AT(zx)); if(TYPESNE(t,AT(zx)))RZ(zx=cvt(t,zx));}
+ if(TYPESNE(AT(e),AT(zx))){t=maxtypene(AT(e),AT(zx)); if(TYPESNE(t,AT(zx)))RZ(zx=jtcvt(jt,t,zx));}
  wr=AR(w); ws=AS(w);
  GASPARSE(z,STYPE(AT(zx)),1,wr-1,ws); if(1<wr)MCISH(f+AS(z),f+1+ws,wr-1);
  zp=PAV(z);
  RZ(a=ca(a)); v=AV(a); DO(AN(a), if(f<v[i])--v[i];);
  SPB(zp,a,a);
- SPB(zp,e,cvt(AT(zx),e));
+ SPB(zp,e,jtcvt(jt,AT(zx),e));
  SPB(zp,i,SPA(wp,i));
  SPB(zp,x,zx);
  return z;
@@ -278,7 +278,7 @@ static B jtredspse(J jt,C id,I wm,I xt,A e,A zx,A sn,A*ze,A*zzx){A b;B nz;I t,zt
   case CEQ:      ASSERT(B01&xt,EVNONCE); if(nz)RZ(zx=eq(zx,eq(num(0),residue(num(2),sn)))); if(!(wm&1))e=num(1);  break;
   case CNE:      ASSERT(B01&xt,EVNONCE); if(nz)RZ(zx=ne(zx,eq(num(1), residue(num(2),sn)))); if(!(wm&1))e=num(0); break;
  }
- if(TYPESNE(AT(e),AT(zx))){t=maxtypene(AT(e),AT(zx)); if(TYPESNE(t,AT(zx)))RZ(zx=cvt(t,zx));}
+ if(TYPESNE(AT(e),AT(zx))){t=maxtypene(AT(e),AT(zx)); if(TYPESNE(t,AT(zx)))RZ(zx=jtcvt(jt,t,zx));}
  *ze=e; *zzx=zx;
  return 1;
 }
@@ -300,7 +300,7 @@ static A jtredsps(J jt,A w,A self,C id,VARPSF ado,I cv,I f,I r,I zt){A a,a1,e,sn
   vv=qv?yv+yc**v:yv; DO(yc-1, *yu++=vv[dv[i]];);
   if(1<n){if(qv){u=xxv; DO(n, MC(u,xv+xk*v[i],xk); u+=xk;);} I rc=((AHDRRFN*)ado)(xc,n,1L,qv?xxv:xv,zv,jt); if(255&rc)jsignal(rc); RE(0);}
   else   if(zk==xk)MC(zv,qv?xv+xk**v:xv,xk);
-  else   {if(!x1)GA(x1,xt,xc,1,0); MC(AV(x1),qv?xv+xk**v:xv,xk); RZ(y=cvt(zt,x1)); MC(zv,AV(y),zk);}
+  else   {if(!x1)GA(x1,xt,xc,1,0); MC(AV(x1),qv?xv+xk**v:xv,xk); RZ(y=jtcvt(jt,zt,x1)); MC(zv,AV(y),zk);}
   zv+=zk; if(qv)v+=n; else{xv+=n*xk; yv+=n*yc;}
  }
  if(sn)RZ(redspse(id,wm,xt,e,zx,sn,&e,&zx));
@@ -308,7 +308,7 @@ static A jtredsps(J jt,A w,A self,C id,VARPSF ado,I cv,I f,I r,I zt){A a,a1,e,sn
  GASPARSE(z,STYPE(AT(zx)),1,wr-1,ws); if(1<r)MCISH(f+AS(z),f+1+ws,r-1);
  zp=PAV(z);
  SPB(zp,a,vec(INT,n,v)); 
- SPB(zp,e,cvt(AT(zx),e));
+ SPB(zp,e,jtcvt(jt,AT(zx),e));
  SPB(zp,x,zx); 
  SPB(zp,i,zy);
  return z;
@@ -373,7 +373,7 @@ static A jtreduce(J jt,    A w,A self){A z;I d,f,m,n,r,t,wr,*ws,zt;
   GA(z,zt,m*d,MAX(0,wr-1),ws); if(1<r)MCISH(f+AS(z),f+1+ws,r-1);  // allocate, and install shape
   if(m*d==0){return z;}  // mustn't call the function on an empty argument!
   // Convert inputs if needed 
-  if((t=atype(adocv.cv))&&TYPESNE(t,wt))RZ(w=cvt(t,w));
+  if((t=atype(adocv.cv))&&TYPESNE(t,wt))RZ(w=jtcvt(jt,t,w));
   // call the selected reduce routine.
   I rc=((AHDRRFN*)adocv.f)(d,n,m,AV(w),AV(z),jt);
   // if return is EWOV, it's an integer overflow and we must restart, after restoring the ranks

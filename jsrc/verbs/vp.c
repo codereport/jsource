@@ -9,7 +9,7 @@
 static I jtord(J jt,A w){I j,n,*v,z;
  if(!w) return 0;
  n=AN(w); z=-n;
- if(n){if(!(INT&AT(w)))RZ(w=cvt(INT,w)); v=AV(w); DQ(n, j=*v++; z=z<j?j:z;); ++z;}
+ if(n){if(!(INT&AT(w)))RZ(w=jtcvt(jt,INT,w)); v=AV(w); DQ(n, j=*v++; z=z<j?j:z;); ++z;}
  return z;
 }  // the order of the permutation w: max element of w (could be negative)
 
@@ -25,7 +25,7 @@ static I jtord(J jt,A w){I j,n,*v,z;
 // w contains indexes (its shape is immaterial).  n is the length of the axis.  Result is new array, same shape, with equivalent positive indexes
 A jtpind(J jt,I n,A w){A z;I j,*v;
  RE(n);
- RZ(z=AT(w)&INT?w:cvt(INT,w));  // z is now an INT vector, possibly the input argument
+ RZ(z=AT(w)&INT?w:jtcvt(jt,INT,w));  // z is now an INT vector, possibly the input argument
  // Make a quick scan to see if all are positive, as they usually are
  for(j=AN(z), v=IAV(z);j;--j)if((UI)*v++>=(UI)n)break;
  if(j==0)return z;  // if all indices in range, keep the original vector
@@ -95,7 +95,7 @@ static A jtdfc(J jt,I n,A w){PROLOG(0082);A b,q,*wv,z;B*bv;I c,j,qn,*qv,*x;
 }
 
  A jtpparity(J jt, A w){A x,y,z;B *u;I i,j,k,m,n,p,r,*s,*v,*zv;
- RZ(x=cvt(INT,w)); makewritable(x);   // we ALWAYS create a copy of w, because we modify it here
+ RZ(x=jtcvt(jt,INT,w)); makewritable(x);   // we ALWAYS create a copy of w, because we modify it here
  r=AR(x); s=AS(x); n=AS(x)[r-1]; n=r?n:1; PRODX(m,r-1,s,1); v=AV(x);
  GATV0(y,B01,n,1); u=BAV(y);
  GATV(z,INT,m,r?r-1:0,s); zv=AV(z);
@@ -133,11 +133,11 @@ static A jtrfd(J jt, A w){A z;I j,k,m,n,r,*s,*x;
  F1RANK(1,jtadot1,UNUSED_VALUE);
  RZ(y=BOX&AT(w)?cdot1(w):pfill(ord(w),w));
  SETIC(y,n);
- return jtbase2(jt,cvt(XNUM,apv(n,n,-1L)),rfd(y));
+ return jtbase2(jt,jtcvt(jt,XNUM,apv(n,n,-1L)),rfd(y));
 }
 
  A jtadot2(J jt,A a,A w){A m,p;I n;
- SETIC(w,n); p=sc(n); if(XNUM&AT(a))p=cvt(XNUM,p); RZ(m=fact(p));
+ SETIC(w,n); p=sc(n); if(XNUM&AT(a))p=jtcvt(jt,XNUM,p); RZ(m=fact(p));
  ASSERT(all1(le(negate(m),a))&&all1(lt(a,m)),EVINDEX);
  if(!AR(w)){RZ(vi(a)); return w;}
  RZ(p=dfr(vi(jtabase2(jt,apv(n,n,-1L),a))));

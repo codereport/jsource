@@ -48,7 +48,7 @@ static A jtcfrz(J jt,A a,A w){A z;B b=0,p;I j,n;Z c,d,*t,*u,*v;
   v[0]=ztymes(d,v[0]);
   if(p&&d.im)if(b^=1)c=u[j]; else if(p=ZCJ(c,u[j])){t=v; DQ(2+j, t++->im=0.0;);}
  }
- return p>b?cvt(FL,z):z;
+ return p>b?jtcvt(jt,FL,z):z;
 }
 
 static A jtcfr(J jt, A w){A c,r,*wv;I t;
@@ -58,8 +58,8 @@ static A jtcfr(J jt, A w){A c,r,*wv;I t;
  ASSERT(((AR(c)-1)&(AR(r)-2))<0,EVRANK);
  ASSERT((-(NUMERIC&AT(c))&((AN(r)-1)|-(NUMERIC&AT(r))))<0,EVDOMAIN);
  t=AT(r); t=AN(r)?t:B01; if(t&B01+INT)t=XNUM; t=maxtyped(t,AT(c));
- if(TYPESNE(t,AT(c)))RZ(c=cvt(t,c));
- if(TYPESNE(t,AT(r)))RZ(r=cvt(t,r));
+ if(TYPESNE(t,AT(c)))RZ(c=jtcvt(jt,t,c));
+ if(TYPESNE(t,AT(r)))RZ(r=jtcvt(jt,t,r));
  AF tf; tf=(AF)jtcfrd; tf=t&CMPX?(AF)jtcfrz:tf; tf=t&XNUM?(AF)jtcfrx:tf; tf=t&RAT?(AF)jtcfrq:tf;
  return (*tf)(jt,c,r);
 }    /* coefficients from roots */
@@ -127,7 +127,7 @@ static Z jtlaguerre(J jt,I m,Z*a,Z x){D ax,e;I i,j;Z b,c,d,dx,g,g2,h,p,q,s,sq,y,
 
 static Q jtmultiple(J jt,D x,Q m){A y;Q q1,q2,q1r2;
  q1r2.n=iv1; q1r2.d=xplus(iv1,iv1);
- QRE(y=cvt(RAT,scf(x)));
+ QRE(y=jtcvt(jt,RAT,scf(x)));
  QRE(q1=qplus(q1r2,qtymes(m,QAV(y)[0])));
  QRE(q2.n=xdiv(q1.n,q1.d,XMFLR)); q2.d=iv1;
  return qdiv(q2,m);
@@ -147,9 +147,9 @@ static B jtrfcq(J jt,I m,A w,A*zz,A*ww){A q,x,y,z;B b;I i,j,wt;Q*qv,rdx,rq,*wv,*
  wt=AT(w);
  ASSERTSYS(wt&B01+INT+FL+XNUM+RAT,"rfcq");
  // Convert w to rational; wv->1st rational coeff
- if(!(wt&RAT))RZ(w=cvt(RAT,w)); wv=QAV(w);
+ if(!(wt&RAT))RZ(w=jtcvt(jt,RAT,w)); wv=QAV(w);
  rdx=maxdenom(1+m,wv);  // rdx = max denominator in the polynomial, in rational form
- RZ(x=cvt(CMPX,w)); xv=ZAV(x); // set x = complex form of w, xv->first complex coeff
+ RZ(x=jtcvt(jt,CMPX,w)); xv=ZAV(x); // set x = complex form of w, xv->first complex coeff
  RZ(y=take(sc(1+m),x)); makewritable(y); yv=ZAV(y);  // y = complex form with degree m, yv->first coeff.  These are modified by deflate[q]() and must not be virtual
  RZ(q=take(sc(1+m),w)); makewritable(q); qv=QAV(q);  // q = rational form with degree m, qv->first coeff
  GATV0(z,RAT,m,1); zv=QAV(z);        // allocate space for exact rational roots, zv->first result location
@@ -174,7 +174,7 @@ static B jtrfcq(J jt,I m,A w,A*zz,A*ww){A q,x,y,z;B b;I i,j,wt;Q*qv,rdx,rq,*wv,*
    rq=qminus(rq,q1); while(deflateq(1,m-j,qv,rq)){*zv++=rq; ++j; b=1;}
   }
   // If we found a root, refresh the copies of the complex versions, and account for the roots we have found
-  if(b){AN(q)=AS(q)[0]=1+m-j; rdx=maxdenom(1+m-j,qv); RZ(y=cvt(CMPX,q)); yv=ZAV(y); i=j;}
+  if(b){AN(q)=AS(q)[0]=1+m-j; rdx=maxdenom(1+m-j,qv); RZ(y=jtcvt(jt,CMPX,q)); yv=ZAV(y); i=j;}
   else{D c,d;
    // No root found!  Turn over the table and shoot out the lights.  If r is near an axis, push it to the axis.
    c=ABS(r.re); d=ABS(r.im); if(d<EPS*c)r.im=0; if(c<EPS*d)r.re=0;
@@ -185,12 +185,12 @@ static B jtrfcq(J jt,I m,A w,A*zz,A*ww){A q,x,y,z;B b;I i,j,wt;Q*qv,rdx,rq,*wv,*
    // We don't use the roots we find here - we just have to make some progress
    // before the next iteration
  }}
- AN(z)=AS(z)[0]=j; *zz=z; RZ(*ww=cvt(FL,q));
+ AN(z)=AS(z)[0]=j; *zz=z; RZ(*ww=jtcvt(jt,FL,q));
  return 1;
 }    /* roots from coefficients, degree m is 2 or more */
 
 static A jtrfcz(J jt,I m,A w){A x,y,z;B bb=0,real;D c,d;I i;Z r,*xv,*yv,*zv;
- real=!(CMPX&AT(w)); RZ(x=cvt(CMPX,w)); xv=ZAV(x); 
+ real=!(CMPX&AT(w)); RZ(x=jtcvt(jt,CMPX,w)); xv=ZAV(x); 
  GATV0(y,CMPX,1+m,1); yv=ZAV(y); MC(yv,xv,(1+m)*sizeof(Z));
  GATV0(z,CMPX,  m,1); zv=ZAV(z);
  if(2==m){Z a2,b,c,d,z2={2,0};
@@ -209,12 +209,12 @@ static A jtrfcz(J jt,I m,A w){A x,y,z;B bb=0,real;D c,d;I i;Z r,*xv,*yv,*zv;
   }
   if(bb){A x1;D*u;
    // If we failed on an iteration, perturb the highest coefficient a little bit and see if we can solve that instead.
-   if(real){RZ(x1=cvt(FL,vec(CMPX,1+m,xv))); u=  DAV(x1)+m-1;      if(*u)*u*=1+1e-12; else *u=1e-12;}
+   if(real){RZ(x1=jtcvt(jt,FL,vec(CMPX,1+m,xv))); u=  DAV(x1)+m-1;      if(*u)*u*=1+1e-12; else *u=1e-12;}
    else    {RZ(x1=       vec(CMPX,1+m,xv) ); u=&(ZAV(x1)+m-1)->re; if(*u)*u*=1+1e-12; else *u=1e-12;}
    RZ(z=rfcz(m,x1)); zv=ZAV(z);
    DO(m, zv[i]=newt(m,xv,zv[i],10L););
  }}
- if(real){B b=1; DO(m, if(zv[i].im){b=0; break;}); if(b)z=cvt(FL,z);}
+ if(real){B b=1; DO(m, if(zv[i].im){b=0; break;}); if(b)z=jtcvt(jt,FL,z);}
  return z;
 }    /* roots from coefficients, degree m is 2 or more */
 
@@ -305,11 +305,11 @@ static A jtpoly2a(J jt,A a,A w){A c,e,x;I m;D rkblk[16];
   ASSERT(1>=AR(a),EVRANK); if(!AR(a))RZ(a=ravel(a));  // treat atomic a as list
  }
  t=maxtyped(at,wt); if(b)t=maxtyped(t,AT(c)); if(!(t&XNUM+RAT))t=maxtyped(t,FL);  // promote B01/INT to FL
- if(TYPESNE(t,at))RZ(a=cvt(t,a)); ad=DAV(a); az=ZAV(a);
- if(TYPESNE(t,wt)){RZ(w=cvt(t,w)); jtinplace=(J)(intptr_t)((I)jtinplace|JTINPLACEW);} x=DAV(w); wz=ZAV(w);
+ if(TYPESNE(t,at))RZ(a=jtcvt(jt,t,a)); ad=DAV(a); az=ZAV(a);
+ if(TYPESNE(t,wt)){RZ(w=jtcvt(jt,t,w)); jtinplace=(J)(intptr_t)((I)jtinplace|JTINPLACEW);} x=DAV(w); wz=ZAV(w);
  if(b){
   // mult/roots: convert and extract the coeff
-  RZ(c=cvt(t,c)); d=DAV(c)[0]; e=ZAV(c)[0];
+  RZ(c=jtcvt(jt,t,c)); d=DAV(c)[0]; e=ZAV(c)[0];
  }else{
   // coeffs: discard trailing 0 coeffs (to avoid 0*_ as our first action), extract high-order coeff.  Leave constant coeff always
   for(;an>1;--an){if(t&CMPX?ad[2*(an-1)]||ad[2*(an-1)+1]:ad[an-1])break;}  // stop on nonzero

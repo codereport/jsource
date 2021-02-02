@@ -618,7 +618,7 @@ static A jtcolon0(J jt, I deftype){A l,z;C*p,*q,*s;A *sb;I m,n;
   while(p<q+m&&' '==*p)++p; if(p<q+m&&')'==*p){while(p<q+m&&' '==*++p); if(p>=m+q)break;}  // if ) with nothing else but blanks, stop
   // There is a new line.  Append it to the growing result.
   if(isboxed){
-   if((C2T+C4T)&AT(l))RZ(l=cvt(LIT,l));  // each line must be LIT
+   if((C2T+C4T)&AT(l))RZ(l=jtcvt(jt,LIT,l));  // each line must be LIT
    while(AN(z)<=n+1){RZ(z=ext(0,z)); sb=AAV(z);}  // extend the result if necessary
    sb[n]=l; ++n; // append the line, increment line number
   }else{
@@ -861,7 +861,7 @@ A jtclonelocalsyms(J jt, A a){A z;I j;I an=AN(a); LX *av=LXAV0(a),*zv;
  I col0;  // set if it was m : 0
  if(col0=equ(w,num(0))){RZ(w=colon0(n)); }   // if m : 0, read up to the ) .  If 0 : n, return the string unedited
  if(!n){ra0(w); return w;}  // noun - return it.  Give it recursive usecount
- if((C2T+C4T)&AT(w))RZ(w=cvt(LIT,w));
+ if((C2T+C4T)&AT(w))RZ(w=jtcvt(jt,LIT,w));
  I splitloc=-1;   // will hold line number of : line
  if(10<n){ASSERT(AT(w)&LIT,EVDOMAIN) s=CAV(w); p=AN(w); if(p&&CLF==s[p-1])RZ(w=str(p-1,s));}  // if tacit form, discard trailing LF
  else{  // not tacit translator - preparse the body

@@ -98,7 +98,7 @@ static A jttk(J jt,A a,A w){PROLOG(0093);A y,z;B b=0;C*yv,*zv;I c,d,dy,dz,e,i,k,
  if(!(AT(a)&B01+INT)){
   I i; for(i=0;i<AN(s);++i){I m=IAV(s)[i]; I ms=REPSGN(m); if((m^ms)-ms == IMAX)break;}  // see if there are infinities.  They are IMAX/-IMAX, so take abc & see if result is IMAX
   if(i<AN(s)){
-   s=ca(s); if(!(AT(a)&FL))RZ(a=cvt(FL,a));  // copy area we are going to change; put a in a form where we can recognize infinity
+   s=ca(s); if(!(AT(a)&FL))RZ(a=jtcvt(jt,FL,a));  // copy area we are going to change; put a in a form where we can recognize infinity
    for(;i<AN(s);++i){if(DAV(a)[i]==IMIN)IAV(s)[i]=IMIN;else if(INF(DAV(a)[i]))IAV(s)[i]=wcr?ws[wf+i]:1;}  // kludge.  The problem is which huge values to consider infinite.  This is how it was done
   }
  }

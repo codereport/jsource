@@ -239,7 +239,7 @@ I strtoI10s(I l,C* p) {I z; strtoI10(p,l,z); return z; }
 }    /* 18!:0 locale name class */
 
 static A jtlocnlx(J jt, A w){A y,z=mtv;B*wv;I m=0;
- RZ(w=cvt(B01,w)); wv=BAV(w); DO(AN(w), m|=1+wv[i];);  // accumulate mask of requested types
+ RZ(w=jtcvt(jt,B01,w)); wv=BAV(w); DO(AN(w), m|=1+wv[i];);  // accumulate mask of requested types
  if(1&m)z=nlsym(jt->stloc);  // named locales
  if(2&m){RZ(y=jtactivenl(jt)); z=over(y,z); }  // get list of active numbered locales
  return grade2(z,ope(z));
@@ -362,7 +362,7 @@ static SYMWALK(jtredefg,B,B01,100,1,1,RZ(redef(mark,d)))
 
  A jtlocexmark(J jt, A w){A g,*wv,y,z;B *zv;C*u;I i,m,n;L*v;
  RZ(vlocnl(1,w));
- if(AT(w)&B01)RZ(w=cvt(INT,w));  // Since we have an array, we must convert b01 to INT
+ if(AT(w)&B01)RZ(w=jtcvt(jt,INT,w));  // Since we have an array, we must convert b01 to INT
  n=AN(w); wv=AAV(w); 
  GATV(z,B01,n,AR(w),AS(w)); zv=BAV(z);
  for(i=0;i<n;++i){

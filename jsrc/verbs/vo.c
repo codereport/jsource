@@ -283,7 +283,7 @@ A jtassembleresults(J jt, I ZZFLAGWORD, A zz, A zzbox, A* zzboxp, I zzcellp, I z
     // cell comes from zzboxp.  Convert if necessary, then move.  Before moving, calculate the rank to use for the fill.
     // Don't convert empties, to make sure we don't have a failure while we are processing boxed results
     if((-AN(zzboxcell)&-TYPESXOR(zft,AT(zzboxcell)))<0){  // not empty and new type
-     if(!(zzboxcell=cvt(zft,zzboxcell))){
+     if(!(zzboxcell=jtcvt(jt,zft,zzboxcell))){
       // error during conversion.  THIS IS THE ONLY PLACE WHERE ERROR IS POSSIBLE DURING THE COPY.
       // If zz and zztemp are the same block, and that block is recursive, it may be in an invalid state: values have been copied
       // from zzcell up the the end of the block and are now duplicated.  To fix it, we have to zero out anything was was copied but
@@ -384,10 +384,10 @@ static B jtopes2(J jt,A*zx,A*zy,B*b,A a,A e,A q,I wcr){A x;B*c;I dt,k,r,*s,t;P*p
    GA(x,t,AN(q),wcr,0); s=AS(x); DQ(k, *s++=1;); MCISH(s,AS(q),r); 
    MC(AV(x),AV(q),AN(q)<<bplg(t)); q=x;
   }
-  RZ(q=sparseit(t&dt?q:cvt(dt,q),a,e));
+  RZ(q=sparseit(t&dt?q:jtcvt(jt,dt,q),a,e));
  }
  p=PAV(q);
- x=SPA(p,x); if(!(dt&AT(x)))RZ(x=cvt(dt,x));
+ x=SPA(p,x); if(!(dt&AT(x)))RZ(x=jtcvt(jt,dt,x));
  *zx=x;         /* data cells              */
  *zy=SPA(p,i);  /* corresp. index matrix   */
  return 1;
@@ -399,7 +399,7 @@ static A jtopes(J jt,I zt,A cs,A w){A a,d,e,sh,t,*wv,x,x1,y,y1,z;B*b;C*xv;I an,*
  RZ(opes1(&b,&a,&e,&m,cs,w)); an=AN(a); av=AV(a);
  GASPARSE(z,zt,1,wr+wcr,(I*)0); zs=AS(z); MCISH(zs,AS(w),wr); MCISH(zs+wr,AV(cs),wcr);
  zp=PAV(z); c=wcr-an; yc=wr+an;
- SPB(zp,e,cvt(dt,e)); e = SPA(zp,e);  // in case of reassignment by SPB
+ SPB(zp,e,jtcvt(jt,dt,e)); e = SPA(zp,e);  // in case of reassignment by SPB
  GATV0(t,INT,yc, 1L); v=AV(t); DO(wr, v[i]=i;); DO(an, v[wr+i]=wr+av[i];); SPB(zp,a,t);
  GATV0(sh,INT,1+c,1L); s=AV(sh); s[0]=m; j=1; DO(wcr, if(!b[i])s[j++]=zs[wr+i];); 
  RE(xc=prod(c,1+s)); xk=xc*dk;
@@ -473,7 +473,7 @@ static A jtopes(J jt,I zt,A cs,A w){A a,d,e,sh,t,*wv,x,x1,y,y1,z;B*b;C*xv;I an,*
 #endif
    if(!nonh)                MC(x,AV(y),AN(y)<<klg);  // homogeneous atomic types: fill only at end, copy the valid part
    else if(TYPESEQ(t,AT(y))&&m==AN(y))MC(x,AV(y),q);   // cell of maximum size: copy it entire
-   else if(AN(y))             RZ(povtake(jt,cs,TYPESEQ(t,AT(y))?y:cvt(t,y),x));  // otherwise add fill
+   else if(AN(y))             RZ(povtake(jt,cs,TYPESEQ(t,AT(y))?y:jtcvt(jt,t,y),x));  // otherwise add fill
    x+=q;
   }
  }
@@ -530,7 +530,7 @@ static A jtrazeg(J jt,A w,I t,I n,I r,A*v,I nonempt){A h,h1,y,z;C*zu;I c=0,i,j,k
  // loop through each contents and copy to the result area
  for(i=0;i<n;++i){
   y=v[i];  // y->address of A block for v[i]
-  if(TYPESNE(t,AT(y)))RZ(y=cvt(t,y));   // convert to result type if needed
+  if(TYPESNE(t,AT(y)))RZ(y=jtcvt(jt,t,y));   // convert to result type if needed
   yr=AR(y); ys=AS(y);    // yr=rank of y, ys->shape of y
   if(!yr){
    // atomic contents; perform atomic replication
@@ -586,7 +586,7 @@ static A jtrazeg(J jt,A w,I t,I n,I r,A*v,I nonempt){A h,h1,y,z;C*zu;I c=0,i,j,k
   zu=CAV(z); zv=AAV(z); klg=bplg(t); // input pointers, depending on type; length of an item
   // loop through the boxes copying
   for(i=0;i<n;++i){
-   y=v[i]; if(AN(y)){if(TYPESNE(t,AT(y)))RZ(y=cvt(t,y)); d=AN(y)<<klg; MC(zu,AV(y),d); zu+=d;}
+   y=v[i]; if(AN(y)){if(TYPESNE(t,AT(y)))RZ(y=jtcvt(jt,t,y)); d=AN(y)<<klg; MC(zu,AV(y),d); zu+=d;}
   }
  }else{
   // special case where the result-assembly code checked to make sure the items were uniform.  In this case the number of items was hidden away in the AM field (otherwise unneeded, since we know the block isn't virtual)

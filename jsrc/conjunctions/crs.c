@@ -53,8 +53,8 @@ static A jtsprz(J jt,A z0,A y,A e,I f,I*s){A a,a0,q,y0,z;B d;I c,et,h,m,n,r,t,*u
  et=AT(e); m=maxtype(et,t); zt=STYPE(m);
  r=AR(z0);
  GASPARSE(z,zt,1,f+r-1,s); ICPY(AS(z)+f,AS(z0)+1,r-1);
- zp=PAV(z); SPB(zp,e,TYPESEQ(m,et)?e:cvt(m,e));
- if(d){SPB(zp,a,apvwr(f,0L,1L)); SPB(zp,i,y); SPB(zp,x,TYPESEQ(m,t)?z0:cvt(m,z0)); return z;}
+ zp=PAV(z); SPB(zp,e,TYPESEQ(m,et)?e:jtcvt(jt,m,e));
+ if(d){SPB(zp,a,apvwr(f,0L,1L)); SPB(zp,i,y); SPB(zp,x,TYPESEQ(m,t)?z0:jtcvt(jt,m,z0)); return z;}
  zq=PAV(z0); y0=SPA(zq,i); v=AS(y0); n=v[0]; c=v[1]; v=AV(y0);
  ASSERT(equ(e,SPA(zq,e)),EVNONCE);
  h=*AS(y); GATV0(q,INT,h,1); u=AV(q); memset(u,C0,h*SZI); 
@@ -64,7 +64,7 @@ static A jtsprz(J jt,A z0,A y,A e,I f,I*s){A a,a0,q,y0,z;B d;I c,et,h,m,n,r,t,*u
  GATV0(a,INT,f+c-1,1); u=AV(a); DO(f, u[i]=i;); DO(c-1, u[f+i]=v[1+i]+f-1;); 
  SPB(zp,a,a);
 // memory leak if(TYPESEQ(m,t))ras(SPA(zq,x));
- SPB(zp,x,TYPESEQ(m,t)?SPA(zq,x):cvt(m,SPA(zq,x)));
+ SPB(zp,x,TYPESEQ(m,t)?SPA(zq,x):jtcvt(jt,m,SPA(zq,x)));
  return z;
 }    /* result processing */
 
