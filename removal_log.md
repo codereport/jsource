@@ -15,3 +15,4 @@
 |`jsrc\k.c`|XfromB|jtXfromB|`(^\|[ \t]+\|[^\d\w_])XfromB\((?=([^,]+?),([^)]+?)\))`|`\1jtXfromB(jt,`|
 |`jsrc\k.c`|XfromI|jtXfromI|`(^\|[ \t]+\|[^\d\w_])XfromI\((?=([^,]+?),([^)]+?)\))`|`\1jtXfromI(jt,`|
 |`jsrc\k.c`|XfromQ|jtXfromQ|`(^\|[ \t]+\|[^\d\w_])XfromQ\((?=([^,]+?),([^)]+?)\))`|`\1jtXfromQ(jt,`|
+|`jsrc\k.c`|ZfromD|jtZfromD|`(^\|[ \t]+\|[^\d\w_])ZfromD\((?=([^,]+?),([^)]+?)\))`|`\1jtZfromD(jt,`|

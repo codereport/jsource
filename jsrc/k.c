@@ -305,7 +305,7 @@ B jtccvt(J jt,I tflagged,A w,A*y){F1PREFIP;A d;I n,r,*s,wt; void *wv,*yv;I t=tfl
   case CVCASE(INTX, FLX): return IfromD(w, yv, (I)jtinplace&JTNOFUZZ?0.0:FUZZ);
   case CVCASE(XNUMX, FLX): return XfromD(w, yv, (jt->xmode&REPSGN(SGNIFNOT(tflagged,XCVTXNUMORIDEX)))|(tflagged>>XCVTXNUMCVX));
   case CVCASE(RATX, FLX): return QfromD(w, yv, (jt->xmode&REPSGN(SGNIFNOT(tflagged,XCVTXNUMORIDEX)))|(tflagged>>XCVTXNUMCVX));
-  case CVCASE(CMPXX, FLX): return ZfromD(w, yv);
+  case CVCASE(CMPXX, FLX): return jtZfromD(jt,w, yv);
   case CVCASE(B01X, CMPXX): GATV(d, FL, n, r, s); if(!(DfromZ(w, AV(d), (I)jtinplace&JTNOFUZZ?0.0:FUZZ)))return 0; return BfromD(d, yv, (I)jtinplace&JTNOFUZZ?0.0:FUZZ);
   case CVCASE(INTX, CMPXX): GATV(d, FL, n, r, s); if(!(DfromZ(w, AV(d), (I)jtinplace&JTNOFUZZ?0.0:FUZZ)))return 0; return IfromD(d, yv, (I)jtinplace&JTNOFUZZ?0.0:FUZZ);
   case CVCASE(XNUMX, CMPXX): GATV(d, FL, n, r, s); if(!(DfromZ(w, AV(d), (I)jtinplace&JTNOFUZZ?0.0:FUZZ)))return 0; return XfromD(d, yv, (jt->xmode&REPSGN(SGNIFNOT(tflagged,XCVTXNUMORIDEX)))|(tflagged>>XCVTXNUMCVX));
@@ -315,12 +315,12 @@ B jtccvt(J jt,I tflagged,A w,A*y){F1PREFIP;A d;I n,r,*s,wt; void *wv,*yv;I t=tfl
   case CVCASE(INTX, XNUMX): return jtIfromX(jt,w, yv);
   case CVCASE(RATX, XNUMX): return jtQfromX(jt,w, yv);
   case CVCASE(FLX, XNUMX): return jtDfromX(jt,w, yv);
-  case CVCASE(CMPXX, XNUMX): GATV(d, FL, n, r, s); if(!(jtDfromX(jt,w, AV(d))))return 0; return ZfromD(d, yv);
+  case CVCASE(CMPXX, XNUMX): GATV(d, FL, n, r, s); if(!(jtDfromX(jt,w, AV(d))))return 0; return jtZfromD(jt,d, yv);
   case CVCASE(B01X, RATX): GATV(d, XNUM, n, r, s); if(!(jtXfromQ(jt,w, AV(d))))return 0; return jtBfromX(jt,d, yv);
   case CVCASE(INTX, RATX): GATV(d, XNUM, n, r, s); if(!(jtXfromQ(jt,w, AV(d))))return 0; return jtIfromX(jt,d, yv);
   case CVCASE(XNUMX, RATX): return jtXfromQ(jt,w, yv);
   case CVCASE(FLX, RATX): return jtDfromQ(jt,w, yv);
-  case CVCASE(CMPXX, RATX): GATV(d, FL, n, r, s); if(!(jtDfromQ(jt,w, AV(d))))return 0; return ZfromD(d, yv);
+  case CVCASE(CMPXX, RATX): GATV(d, FL, n, r, s); if(!(jtDfromQ(jt,w, AV(d))))return 0; return jtZfromD(jt,d, yv);
   default:                ASSERT(0, EVDOMAIN);
  }
 }
