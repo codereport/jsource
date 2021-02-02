@@ -154,7 +154,7 @@
 
 
 #define dbunquote(x,y,z,w)          jtdbunquote(jt,(x),(y),(z),(w))
-#define dcase(x,y)                  jtdcase(jt,(x),(y))
+
 #define dcube(x,y)                  jtdcube(jt,(x),(y))
 #define ddtokens(x,y)               jtddtokens(jt,(x),(y))
 #define deal(x,y)                   jtdeal(jt,(x),(y))

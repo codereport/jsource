@@ -103,8 +103,8 @@ static I jtdcase(J jt,I xi,V*v){
    else if(xr&&yr&&tmonad)z.t=swap(fs);
    else z.t=CFORK==u->id&&primitive(yt)?folk(yt,sf,xt):folk(xt,fs,yt);
  }else{B b,c;I i,j,xj,yj;
-  i=dcase(xi,u); if(u&&CFORK==u->id){xi=tvi(u->fgh[0]); xj=tvi(u->fgh[2]);}else{xi=-1; xj=tvi(xt);}
-  j=dcase(yi,v); if(v&&CFORK==v->id){yi=tvi(v->fgh[0]); yj=tvi(v->fgh[2]);}else{yi=-1; yj=tvi(yt);}
+  i=jtdcase(jt,xi,u); if(u&&CFORK==u->id){xi=tvi(u->fgh[0]); xj=tvi(u->fgh[2]);}else{xi=-1; xj=tvi(xt);}
+  j=jtdcase(jt,yi,v); if(v&&CFORK==v->id){yi=tvi(v->fgh[0]); yj=tvi(v->fgh[2]);}else{yi=-1; yj=tvi(yt);}
   z.t=0; b=xj==yj; c=xj==yi;
   switch(DCASE(i,j)){
    case DCASE(0,2): z.t=folk(x.a,fs,yt); break;
