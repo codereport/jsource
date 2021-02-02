@@ -27,7 +27,7 @@ static UINT jtcrcvalidate(J jt,A w, UINT* crctab){A*wv;B*v;I m;UINT p,x,z=-1;
  n=AN(w); v=UAV(w);
 // ASSERT(!n||AT(w)&LIT+C2T+C4T,EVDOMAIN);
  ASSERT(!n||AT(w)&LIT,EVDOMAIN);
- RE(z=crcvalidate(a,crctab));
+ RE(z=jtcrcvalidate(jt,a,crctab));
  n=AT(w)&C4T?(4*n):AT(w)&C2T?n+n:n;
  DQ(n, z=z>>8^crctab[255&(z^*v++)];);  // do the computation using unsigned z
  return sc((I)(I4)(z^-1L));  // sign-extend result if needed to make 64-bit and 32-bit the same numeric value
@@ -35,7 +35,7 @@ static UINT jtcrcvalidate(J jt,A w, UINT* crctab){A*wv;B*v;I m;UINT p,x,z=-1;
 
  A jtcrccompile(J jt, A w){A h,*hv;UINT z; UINT crctab[256];
  GAT0(h,BOX,2,1); hv=AAV(h);
- RE(z=crcvalidate(w,crctab));
+ RE(z=jtcrcvalidate(jt,w,crctab));
  RZ(hv[0]=rifvs(vec(LIT,sizeof(crctab),crctab)));  // Save the table.  We don't have any other good type to use
  RZ(hv[1]=rifvs(sc((I)z)));
  return h;

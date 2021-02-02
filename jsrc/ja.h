@@ -132,7 +132,7 @@
 
 #define crccompile(x)               jtcrccompile(jt,(x))
 
-#define crcvalidate(x,t)            jtcrcvalidate(jt,(x),(t))
+
 #define crelocalsyms(x,y,t,v,f)     jtcrelocalsyms(jt,(x),(y),(t),(v),(f))
 #define csize(x,y)                  jtcsize(jt,(x),(y))
 #define cstr(x)                     jtcstr(jt,(x))
