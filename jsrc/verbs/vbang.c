@@ -133,7 +133,7 @@ D jtbindd(J jt,D x,D y){B id,ix,iy;D d;
   default: ASSERTSYS(0,"bindd");
   case 5: /* 1 0 1 */  /* Impossible */
   case 0: /* 0 0 0 */
-  case 2: /* 0 1 0 */  return ix&&iy?ibin(x,y):dbin(x,y);
+  case 2: /* 0 1 0 */  return ix&&iy?ibin(x,y):jtdbin(jt,x,y);
   case 3: /* 0 1 1 */  return (MOD2(x)?-1:1)*ibin(x,x-y-1);
   case 6: /* 1 1 0 */  return (MOD2(d)?-1:1)*ibin(-1-y,-1-x);
   case 1: /* 0 0 1 */ 

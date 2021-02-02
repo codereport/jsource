@@ -147,7 +147,7 @@
 
 
 
-#define dbin(x,y)                   jtdbin(jt,(x),(y))
+
 #define dbjump(x)                   jtdbjump(jt,(x))
 #define dbrr(x,y)                   jtdbrr(jt,(x),(y))
 #define dbstack(x)                  jtdbstack(jt,(x))

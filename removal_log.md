@@ -55,3 +55,4 @@
 |`jsrc\adverbs\ap.c` `jsrc\adverbs\ar.c` `jsrc\adverbs\as.c` `jsrc\conjunctions\cc.c` `jsrc\verbs\va1.c` `jsrc\verbs\va2.c` `jsrc\verbs\va2s.c`|cvz|jtcvz|`(^\|[ \t]+\|[^\d\w_])cvz\((?=([^,]+?),([^)]+?)\))`|`\1jtcvz(jt,`|
 |`jsrc\verbs\vs.c`|daxis|jtdaxis|`(^\|[ \t]+\|[^\d\w_])daxis\((?=([^,]+?),([^)]+?)\))`|`\1jtdaxis(jt,`|
 |`jsrc\verbs\v2.c`|db1b2|jtdb1b2|`(^\|[ \t]+\|[^\d\w_])db1b2\((?=([^,]+?),([^)]+?)\))`|`\1jtdb1b2(jt,`|
+|`jsrc\verbs\vbang.c`|dbin|jtdbin|`(^\|[ \t]+\|[^\d\w_])dbin\((?=([^,]+?),([^)]+?)\))`|`\1jtdbin(jt,`|
