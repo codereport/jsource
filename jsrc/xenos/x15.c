@@ -887,7 +887,7 @@ static B jtcdexec1(J jt,CCT*cc,C*zv0,C*wu,I wk,I wt,I wd){A*wv=(A*)wu,x,y,*zv;B 
  wt=AT(w); wr=AR(w); ws=AS(w); PRODX(m,wr-1,ws,1);
  ASSERT(wt&DENSE,EVDOMAIN);
  ASSERT(LIT&AT(a),EVDOMAIN);
- C* enda=&CAV(a)[AN(a)]; C endc=*enda; *enda=0; cc=cdparse(a,0); *enda=endc; RZ(cc); // should do outside rank2 loop?
+ C* enda=&CAV(a)[AN(a)]; C endc=*enda; *enda=0; cc=jtcdparse(jt,a,0); *enda=endc; RZ(cc); // should do outside rank2 loop?
  n=cc->n;
  I nn; CDASSERT(n==SHAPEN(w,wr-1,nn),DECOUNT);
  if(cc->zbx){GATV(z,BOX,m*(1+n),MAX(1,wr),ws); AS(z)[AR(z)-1]=1+n;}
@@ -1115,7 +1115,7 @@ static I cbvx[]={(I)&cbx0,(I)&cbx1,(I)&cbx2,(I)&cbx3,(I)&cbx4,(I)&cbx5,(I)&cbx6,
  ASSERT(1>=AR(w),EVRANK);
  ASSERT(AN(w),EVLENGTH);
  if(!jt->cdarg)RE(cdinit());
- C* enda=&CAV(w)[AN(w)]; C endc=*enda; *enda=0; cc=cdparse(w,1); *enda=endc; RE(cc); // should do outside rank2 loop?
+ C* enda=&CAV(w)[AN(w)]; C endc=*enda; *enda=0; cc=jtcdparse(jt,w,1); *enda=endc; RE(cc); // should do outside rank2 loop?
  return sc((I)cc->fp);
 }    /* 15!:21 return proc address */
 

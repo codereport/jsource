@@ -102,7 +102,7 @@
 #define cdlookupl(x)                jtcdlookupl(jt,(x))   
 #define cdot1(x)                    jtcdot1(jt,(x))   
   
-#define cdparse(x,y)                jtcdparse(jt,(x),(y))
+
 #define ceil1(x)                    jtatomic1(jt,(x),ds(CCEIL))
 #define celloffset(x,y)             jtcelloffset(jt,(x),(y))
 #define center(x0,x1,x2,x3)         jtcenter(jt,(x0),(x1),(x2),(x3))
