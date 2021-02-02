@@ -72,3 +72,4 @@
 |`jsrc\adverbs\ai.c`|diag|jtdiag|`(^\|[ \t]+\|[^\d\w_])diag\((?=([^,]+?),([^)]+?)\))`|`\1jtdiag(jt,`|
 |`jsrc\debugging\d.c`|disp|jtdisp|`(^\|[ \t]+\|[^\d\w_])disp\((?=([^,]+?),([^)]+?)\))`|`\1jtdisp(jt,`|
 |`jsrc\s.c`|dllsymaddr|jtdllsymaddr|`(^\|[ \t]+\|[^\d\w_])dllsymaddr\((?=([^,]+?),([^)]+?)\))`|`\1jtdllsymaddr(jt,`|
+|`jsrc\verbs\v0.c`|dot|jtdot|`(^\|[ \t]+\|[^\d\w_])dot\((?=([^,]+?),([^)]+?)\))`|`\1jtdot(jt,`|

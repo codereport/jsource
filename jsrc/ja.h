@@ -196,7 +196,7 @@
 
 #define dloc(x)                     jtdloc(jt,(x))
 #define dolock(x0,x1,x2,x3)         jtdolock(jt,(x0),(x1),(x2),(x3))
-#define dot(x,y)                    jtdot(jt,(x),(y))
+
 #define dotprod(x,y,z)              jtdotprod(jt,(x),(y),(z))
 #define dpone(x,y)                  jtdpone(jt,(x),(y))
 #define drep(x)                     jtdrep(jt,(x))
