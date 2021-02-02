@@ -111,7 +111,7 @@ static void jtseeparse(J jt,DC d){A*v;I m;
 // Display DCCALL stack frame
 static void jtseecall(J jt,DC d){A a;
  if(a=d->dca)ep(AN(a),NAV(a)->s); 
- efmt(d->dcx&&d->dcy?"[:"FMTI"]":"["FMTI"]",lnumsi(d));
+ jtefmt(jt,d->dcx&&d->dcy?"[:"FMTI"]":"["FMTI"]",lnumsi(d));
 }    /* display function line */
 
 // display error-message line
@@ -127,7 +127,7 @@ void jtdebdisp(J jt,DC d){A*x,y;I e,t;
  switch(t){
   case DCPARSE:  jtdhead(jt,3,d); seeparse(d); if(NETX==jt->etxn)--jt->etxn; eputc(CLF); break;
   case DCCALL:   jtdhead(jt,0,d); seecall(d);  eputc(CLF); break;
-  case DCSCRIPT: jtdhead(jt,0,d); efmt("[-"FMTI"] ", d->dcn-1); 
+  case DCSCRIPT: jtdhead(jt,0,d); jtefmt(jt,"[-"FMTI"] ", d->dcn-1); 
                  if(0<=d->dcm){y=*(d->dcm+AAV(jt->slist)); ep(AN(y),CAV(y));}
                  eputc(CLF); break;
 }}
@@ -197,7 +197,7 @@ void jtjsignal3(J jt,I e,A w,I j){
  if(jt->uflags.us.cx.cx_c.db&&!spc()){eputs("ws full (can not suspend)"); eputc(CLF); jt->uflags.us.cx.cx_c.db=0;}
  eputl(AAV(jt->evm)[jt->jerr]);
  if(!jt->uflags.us.cx.cx_c.glock){
-  if(e==EVCTRL){jtdhead(jt,3,0L); efmt("["FMTI"]",j); eputl(w);}
+  if(e==EVCTRL){jtdhead(jt,3,0L); jtefmt(jt,"["FMTI"]",j); eputl(w);}
   else{
    jtdhead(jt,3,0L); eputl(w);
    jtdhead(jt,3,0L); DQ(j, eputc(' ');); eputc('^'); eputc(CLF);
