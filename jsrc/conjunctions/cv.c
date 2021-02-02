@@ -32,7 +32,7 @@ static A jtfitexp2(J jt,A a,A w,A self){
 
 static A jtfitpoly2(J jt,A a,A w,A self){I j;
  F2RANK(1,0,jtfitpoly2,self);
- A z; return aslash(CPLUS,tymes(a,ascan(CSTAR,shift1(plus(w,df2(z,IX(SETIC(a,j)),FAV(self)->fgh[1],slash(ds(CSTAR))))))));
+ A z; return aslash(CPLUS,tymes(a,jtascan(jt,CSTAR,shift1(plus(w,df2(z,IX(SETIC(a,j)),FAV(self)->fgh[1],slash(ds(CSTAR))))))));
 }    /* a p.!.s w */
 
 static A jtfitfill1(J jt,    A w,A self){DECLFG;F1PREFIP;A z; jt->fill=gs; z=CALL1IP(f1,  w,fs); jt->fill=0; return z;}  // gs cannot be virtual

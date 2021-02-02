@@ -20,12 +20,12 @@ static A jthgv(J jt,B b,I n,A w,A self){A c,d,e,h,*hv,j,y;V*sv=FAV(self);
  RZ(d=hparm(j,sv->fgh[1],hv[1]));
  e=shift1(divide(w,apv(n,1L,1L)));
  switch((VERB&AT(sv->fgh[0])?2:0)+(VERB&AT(sv->fgh[1])?1:0)){
-  case 0: y=ascan(CSTAR,divide(tymes(c,e),d)); break;
-  case 1: y=divide(ascan(CSTAR,tymes(c,e)),d); break;
-  case 2: y=divide(tymes(c,ascan(CSTAR,e)),ascan(CSTAR,d)); break;
-  case 3: y=divide(tymes(c,ascan(CSTAR,e)),d);
+  case 0: y=jtascan(jt,CSTAR,divide(tymes(c,e),d)); break;
+  case 1: y=divide(jtascan(jt,CSTAR,tymes(c,e)),d); break;
+  case 2: y=divide(tymes(c,jtascan(jt,CSTAR,e)),jtascan(jt,CSTAR,d)); break;
+  case 3: y=divide(tymes(c,jtascan(jt,CSTAR,e)),d);
  }
- return b?over(num(0),ascan(CPLUS,y)):aslash(CPLUS,y);
+ return b?over(num(0),jtascan(jt,CPLUS,y)):aslash(CPLUS,y);
 }    /* verb or complex cases */
 
 static A jthgd(J jt,B b,I n,A w,A p,A q){A c,d,e,z;D r,s,t,*u,*v,x,*zv;I j,pn,qn;
@@ -97,9 +97,9 @@ static A jtcancel(J jt,A a,A w){A c,d,f,x,y;
   c=hparm(j,sv->fgh[0],hv[0]);
   d=hparm(j,sv->fgh[1],hv[1]);
   switch((VERB&AT(sv->fgh[0])?2:0)+(VERB&AT(sv->fgh[1])?1:0)){
-   case 0: y=ascan(CSTAR,divide(c,d)); break;
-   case 1: y=divide(ascan(CSTAR,c),d); break;
-   case 2: y=divide(c,ascan(CSTAR,d)); break;
+   case 0: y=jtascan(jt,CSTAR,divide(c,d)); break;
+   case 1: y=divide(jtascan(jt,CSTAR,c),d); break;
+   case 2: y=divide(c,jtascan(jt,CSTAR,d)); break;
    case 3: y=divide(c,d);
  }}
  RZ(z=from(w,over(zeroionei(1),y)));
