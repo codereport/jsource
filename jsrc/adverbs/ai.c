@@ -261,7 +261,7 @@ A jtinv(J jt, A w, I recur){A f,ff,g;B b,nf,ng,vf,vg;C id;I p,q;V*v;
   case CAMP:     if(nf!=ng){A z=invamp(w); if(nf^ng)return z;}  // may fall through... but avoid tail-recursion so we get out of loop
   case CAT:      if(vf&&vg)return atop(invrecur(g),invrecur(f));   break;
   case CAMPCO:
-  case CATCO:    if(vf&&vg)return atco(invrecur(g),invrecur(f));   break;
+  case CATCO:    if(vf&&vg)return jtatco(jt,invrecur(g),invrecur(f));   break;
   case CSLASH:   if(CSTAR==ID(f))return ds(CQCO);        break;
   case CQQ:      if(vf)return qq(invrecur(f),g);              break;
   case COBVERSE: if(vf&&vg)return obverse(g,f);          break;  // if defined obverse, return it

@@ -907,17 +907,17 @@ static A jttess2(J jt,A a,A w,A self){A z,zz=0,virtw,strip;I n,rs[3],cellatoms,c
     DO((axisct>>1)-1, *xpv++ = 4*i+3; *xpv++=4*i+2;) if(axisct&1)*xpv++=2*axisct-4;  // Rn
     DO(axisct>>1, *xpv++ = 4*i+0; *xpv++=4*i+1;) if(axisct&1)*xpv++=2*axisct-3;  // Sn
     DO(wr-axisct, *xpv++=2*axisct+i-2;);  // Wn, all the rest
-    next2=atco(atco(qq(fs,sc(wr)),jtamp(jt,xposearg,ds(CCANT))),next2);  // combine it all
+    next2=jtatco(jt,atco(qq(fs,sc(wr)),jtamp(jt,xposearg,ds(CCANT))),next2);  // combine it all
    }
   }else{
    // ;.3.  The cells coming out of the lower tessellations may have dissimilar shape so we have to box them
    // If the next level is the last, it becomes (0 2}.x)&(<;.n)"_2  - adding one boxing level.  Otherwise use ] instead of < above
    next2=qq(jtamp(jt,drop(v2(0,2),a),cut(ds(CBOX),sc(n^256^(inrecursion>>1)))),num(-2));
    // collect the components that contribute to a single input-to-u, one box for each : (<@:>"2)@:(0 1&|:)@:next2
-   next2=atco(atco(qq(atco(ds(CBOX),ds(COPE)),num(2)),jtamp(jt,v2(0,1),ds(CCANT))),next2);
+   next2=jtatco(jt,atco(qq(jtatco(jt,ds(CBOX),ds(COPE)),num(2)),jtamp(jt,v2(0,1),ds(CCANT))),next2);
    if(!inrecursion){
     // at the top level, add on u@>
-    next2=atco(atop(fs,ds(COPE)),next2);
+    next2=jtatco(jt,atop(fs,ds(COPE)),next2);
    }
   }
   fs=next2; f1=FAV(fs)->valencefns[0];   // get the function corresponding to the new verb

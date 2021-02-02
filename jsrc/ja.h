@@ -47,7 +47,7 @@
 #define astd1(x,y,z)                jtastd1(jt,(x),(y),(z))
 #define astdn(x,y,z)                jtastdn(jt,(x),(y),(z))
 #define atab(x,y,z)                 jtatab(jt,(x),(y),(z))
-#define atco(x,y)                   jtatco(jt,(x),(y))
+
 #define atcompf(x,y,z)              jtatcompf(jt,(x),(y),(z))
 #define atomic(x,y)                 jtatomic(jt,(x),(y))
 #define atop(x,y)                   jtatop(jt,(x),(y))

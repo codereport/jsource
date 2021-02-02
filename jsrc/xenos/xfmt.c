@@ -547,7 +547,7 @@ static A jtfmtxi(J jt, A a, A w, I mode, I *omode){I lvl;
  RZ(z=fmtxi(a,w,1,&mode));
  if(mode==1)return z;
  r=AR(z);
- A t; df1(t,cant1(2==r?z:reshape(v2(1L,SETIC(z,j)),z)), qq(atco(ds(CBOX),ds(COPE)),num(1)));
+ A t; df1(t,cant1(2==r?z:reshape(v2(1L,SETIC(z,j)),z)), qq(jtatco(jt,ds(CBOX),ds(COPE)),num(1)));
  return ravel(t);
 } /* 8!:1 dyad */
 
@@ -556,7 +556,7 @@ static A jtfmtxi(J jt, A a, A w, I mode, I *omode){I lvl;
  RZ(z=fmtxi(a,w,2,&mode));
  if(mode==2)return z;
  r=AR(z);
- A t; df1(t,cant1(2==r?z:reshape(v2(1L,SETIC(z,j)),z)), qq(atco(ds(CBOX),ds(COPE)),num(1)));
+ A t; df1(t,cant1(2==r?z:reshape(v2(1L,SETIC(z,j)),z)), qq(jtatco(jt,ds(CBOX),ds(COPE)),num(1)));
  RZ(z=ravel(t));
  return AS(z)[0]?razeh(z):lamin1(z);
 } /* 8!:2 dyad */

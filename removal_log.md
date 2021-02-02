@@ -25,3 +25,4 @@
 |`jsrc\conjunctions\ch.c` `jsrc\conjunctions\cv.c`|ascan|jtascan|`(^\|[ \t]+\|[^\d\w_])ascan\((?=([^,]+?),([^)]+?)\))`|`\1jtascan(jt,`|
 |`jsrc\conjunctions\ch.c` `jsrc\conjunctions\cv.c` `jsrc\verbs\v0.c` `jsrc\verbs\vb.c` `jsrc\verbs\ve.c` `jsrc\verbs\vrep.c`|aslash|jtaslash|`(^\|[ \t]+\|[^\d\w_])aslash\((?=([^,]+?),([^)]+?)\))`|`\1jtaslash(jt,`|
 |`jsrc\k.c` `jsrc\verbs\visp.c`|aslash1|jtaslash1|`(^\|[ \t]+\|[^\d\w_])aslash1\((?=([^,]+?),([^)]+?)\))`|`\1jtaslash1(jt,`|
+|`jsrc\adverbs\ai.c` `jsrc\conjunctions\cc.c` `jsrc\xenos\xfmt.c`|atco|jtatco|`(^\|[ \t]+\|[^\d\w_])atco\((?=([^,]+?),([^)]+?)\))`|`\1jtatco(jt,`|
