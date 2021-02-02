@@ -235,7 +235,7 @@
 #define eq(x,y)                     jtatomic2(jt,(x),(y),ds(CEQ))
 #define eqa(x0,x1,x2)               jteqa(jt,(x0),(x1),(x2))
 #define eqd(x,y,z)                  jteqd(jt,(x),(y),(z))
-#define eqf(x,y)                    jteqf(jt,(x),(y))
+
 #define eqq(x,y,z)                  jteqq(jt,(x),(y),(z))
 #define eqx(x,y,z)                  jteqx(jt,(x),(y),(z))
 #define equ(x,y)                    jtequ(jt,(x),(y))
