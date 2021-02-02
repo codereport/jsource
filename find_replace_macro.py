@@ -58,7 +58,7 @@ def find_replaced_data():
                     log.write('|' + oldname)
                     log.write('|' + newname)
                     log.write('|`' + unescaped.sub(escaped, regular_expression.pattern) + '`')
-                    log.write('|`' + unescaped.sub(escaped, replace_pattern) + '`|')
+                    log.write('|`' + unescaped.sub(escaped, replace_pattern) + '`|\n')
                 # print(matches)
                 yield path, regular_expression.sub(replace_pattern, data)
     pass
