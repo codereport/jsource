@@ -137,7 +137,7 @@
 
 #define cstr(x)                     jtcstr(jt,(x))
 #define curtail(x)                  jtcurtail(jt,(x))
-#define cut(x,y)                    jtcut(jt,(x),(y))
+
 #define cut02(x,y,z)                jtcut02(jt,(x),(y),(z))
 #define cut2(x,y,z)                 jtcut2(jt,(x),(y),(z))
 #define cut2bx(x,y,z)               jtcut2bx(jt,(x),(y),(z))

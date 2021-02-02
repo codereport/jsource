@@ -154,7 +154,7 @@ static B jtdebsi1(J jt,DC d){I t;
  RE(dbstack(w)); 
  RZ(y=str(jt->etxn,jt->etx)); 
  jt->etxn=0; 
- return df1(z,y,cut(ds(CLEFT),num(-2)));
+ return df1(z,y,jtcut(jt,ds(CLEFT),num(-2)));
 }    /* 13!:18  SI stack as result */
 
 

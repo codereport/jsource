@@ -352,7 +352,7 @@ static A jtqco2x(J jt,I m,A w){A y;I c,*dv,i,*pv,*yv;X d,q,r,x;
  bb=equ(a,ainf);
  if(b&bb){ /* __ q: w */
   RZ(y=ne(q,curtail(over(zeroionei(0),q))));
-  return lamin2(repeat(y,q),df1(z,y,cut(ds(CPOUND),zeroionei(1))));
+  return lamin2(repeat(y,q),df1(z,y,jtcut(jt,ds(CPOUND),zeroionei(1))));
  }
  RZ(y=vi(plt(q))); yv=AV(y);
  k=-1; DO(AN(y), if(k<yv[i])k=yv[i];); ++k;

@@ -50,3 +50,4 @@
 |`jsrc\adverbs\ap.c` `jsrc\conjunctions\cc.c` `jsrc\conjunctions\cr.c`|createcycliciterator|jtcreatecycliciterator|`(^\|[ \t]+\|[^\d\w_])createcycliciterator\((?=([^,]+?),([^)]+?)\))`|`\1jtcreatecycliciterator(jt,`|
 |`jsrc\xenos\xcrc.c`|crcvalidate|jtcrcvalidate|`(^\|[ \t]+\|[^\d\w_])crcvalidate\((?=([^,]+?),([^)]+?)\))`|`\1jtcrcvalidate(jt,`|
 |`jsrc\adverbs\amn.c`|csize|jtcsize|`(^\|[ \t]+\|[^\d\w_])csize\((?=([^,]+?),([^)]+?)\))`|`\1jtcsize(jt,`|
+|`jsrc\io.c` `jsrc\conjunctions\cc.c` `jsrc\debugging\d.c` `jsrc\verbs\v2.c` `jsrc\verbs\vb.c` `jsrc\verbs\visp.c`|cut|jtcut|`(^\|[ \t]+\|[^\d\w_])cut\((?=([^,]+?),([^)]+?)\))`|`\1jtcut(jt,`|
