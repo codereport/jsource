@@ -286,7 +286,7 @@ B jtccvt(J jt,I tflagged,A w,A*y){F1PREFIP;A d;I n,r,*s,wt; void *wv,*yv;I t=tfl
    case CVCASE(C2TX, LITX): return jtC2fromC1(jt,w, yv);
    case CVCASE(C2TX, C4TX): return jtC2fromC4(jt,w, yv);
    case CVCASE(C4TX, LITX): return jtC4fromC1(jt,w, yv);
-   case CVCASE(C4TX, C2TX): return C4fromC2(w, yv);
+   case CVCASE(C4TX, C2TX): return jtC4fromC2(jt,w, yv);
    default:                ASSERT(0, EVDOMAIN);
   }
  }
