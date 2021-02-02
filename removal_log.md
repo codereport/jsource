@@ -73,3 +73,4 @@
 |`jsrc\debugging\d.c`|disp|jtdisp|`(^\|[ \t]+\|[^\d\w_])disp\((?=([^,]+?),([^)]+?)\))`|`\1jtdisp(jt,`|
 |`jsrc\s.c`|dllsymaddr|jtdllsymaddr|`(^\|[ \t]+\|[^\d\w_])dllsymaddr\((?=([^,]+?),([^)]+?)\))`|`\1jtdllsymaddr(jt,`|
 |`jsrc\verbs\v0.c`|dot|jtdot|`(^\|[ \t]+\|[^\d\w_])dot\((?=([^,]+?),([^)]+?)\))`|`\1jtdot(jt,`|
+|`jsrc\xenos\xfmt.c`|dpone|jtdpone|`(^\|[ \t]+\|[^\d\w_])dpone\((?=([^,]+?),([^)]+?)\))`|`\1jtdpone(jt,`|

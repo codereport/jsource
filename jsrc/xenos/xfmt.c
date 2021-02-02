@@ -280,7 +280,7 @@ static A jtfmtprecomp(J jt,A a,A w) {A*as,base,fb,len,strs,*u,z;B*bits,*bw;D dtm
     if(d==-1) *bits |= BITSe * (2000000000L < (UI)ABS(*iw));
     /* BITS_, BITS__, and BITS_d are 0 */
     *bits |= BITSz*!*iw;
-    if(d==-1) *iv = dpone(*bits,(D)*iw);
+    if(d==-1) *iv = jtdpone(jt,*bits,(D)*iw);
     bits++; iw++; iv++;
    }
    imod=1;  // row size counter
@@ -304,7 +304,7 @@ static A jtfmtprecomp(J jt,A a,A w) {A*as,base,fb,len,strs,*u,z;B*bits,*bw;D dtm
     *bits |= BITS_ *!memcmpne(dw, &inf , SZD)+ 
              BITS__*!memcmpne(dw, &infm, SZD)+
              BITS_d*_isnan(*dw); 
-    if(d==-1) *iv = dpone(*bits,*dw);
+    if(d==-1) *iv = jtdpone(jt,*bits,*dw);
     else *bits |= BITSz*(TEQ(*dw, 0) || (!(*bits&BITSf+BITSe) && TLT(dtmp, npwrs[d]/2)));
     bits++; dw++; iv++; 
    }
