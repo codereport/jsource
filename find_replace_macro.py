@@ -27,7 +27,7 @@ def walk_matches():
                 continue
 
             for full_str, name1, v1, v2, name2 in matches:
-                print("removed "+full_str)
+                print("remove "+full_str)
                 data = data.replace(full_str, "")
                 with open(path, 'w') as fw:
                     fw.write(data)
