@@ -186,7 +186,7 @@
 #define dgrade1(x)                  jtdgrade1(jt,(x)) 
 
 
-#define diag(x,y)                   jtdiag(jt,(x),(y))
+
 #define diff(x)                     jtdiff(jt,(x))
 #define disp(x,y)                   jtdisp(jt,(x),(y))
 #define divide(x,y)                 jtatomic2(jt,(x),(y),ds(CDIV)) 
