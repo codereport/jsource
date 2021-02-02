@@ -16,6 +16,7 @@ def walk_path_cpp():
 
 def walk_matches():
     for path in walk_path_cpp():
+        data = None
         with open(path, 'r') as f:
             data = f.read()
             regular_expression = re.compile(
@@ -26,9 +27,10 @@ def walk_matches():
 
             for full_str, name1, v1, v2, name2 in matches:
                 data.replace(full_str, "")
-                with open(path, 'w') as fw:
-                    fw.write(data)
                 yield re.compile(r'(^|[ \t]+|[^\d\w_])' + name1 + r'\((?=([^,]+?),([^)]+?)\))'), r'\1' + name2 + r'(jt,'
+        if data is not None:
+            with open(path, 'w') as fw:
+                fw.write(data)
     pass
 
 
@@ -57,7 +59,7 @@ def main():
             f.write(new_data)
             i += 1
             print('\r' + str(i) + " replacements", '')
-    print('\r' + str(i) + " replacements")
+    print()
     pass
 
 
