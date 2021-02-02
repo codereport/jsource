@@ -380,7 +380,7 @@ set(hare_test_cases #fast
         gthrow    # 0.160 seconds
         gtrain    # 0.170 seconds
         gtry      # 0.160 seconds
-        gu        # 0.350 seconds
+        gu        # 0.350 seconds, Failed on CI before and passed after reran.
         gu0       # 0.590 seconds
         gunderai  # 0.760 seconds
         gwhile    # 0.160 seconds

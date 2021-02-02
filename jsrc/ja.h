@@ -2,18 +2,7 @@
 /* Licensed use only. Any other use is in violation of copyright.          */
 /*                                                                         */
 /* Aliases for jt (JST* - J Syntax Tree)                                   */
-
-
 #define BfromD(x,y,z)               jtBfromD(jt,(x),(y),(z))
-
-
-
-
-
-
-
-
-//rerun test plz 375 - hare_gu (Failed) passed on my pc
 #define DfromZ(x,y,z)               jtDfromZ(jt,(x),(y),(z))
 #define DXfI(x,y,z)                 jtDXfI(jt,(x),(y),(z))
 #define IfromD(x,y,z)               jtIfromD(jt,(x),(y),(z))
