@@ -17,7 +17,7 @@
 
  A jtdirectdefs(J jt, A w){B b; RE(b=b0(w)); jt->directdef=b; return mtm;}  // scaf 9!:63
 
- A jtboxq(J jt, A w){ASSERTMTV(w); return str(sizeof(jt->bx),jt->bx);}
+ A jtboxq(J jt, A w){ASSERTMTV(w); return jtstr(jt,sizeof(jt->bx),jt->bx);}
 
  A jtboxs(J jt, A w){A x;
  RZ(w=vs(w));
@@ -44,7 +44,7 @@
  n=(UC)AN(w);
  ASSERT(1>=AR(w),EVRANK);
  ASSERT(all1(nubsieve(w)),EVDOMAIN);
- ASSERT(all1(eps(w,eval("1 2 4 5 6"))),EVINDEX);
+ ASSERT(all1(jteps(jt,w,eval("1 2 4 5 6"))),EVINDEX);
  *jt->disp=n; DO(n, jt->disp[1+i]=(UC)IAV(w)[i];);
  return mtv;
 }

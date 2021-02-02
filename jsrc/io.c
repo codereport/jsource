@@ -155,7 +155,7 @@ A jtinpl(J jt,B b,I n,C*s){C c;I k=0;
   if(n&&COFF==s[n-1])joff(num(0));
   c=jt->bx[9]; if((UC)c>127)DO(n, if(' '!=s[i]&&c!=s[i]){k=i; break;});
  }
- return str(n-k,s+k);
+ return jtstr(jt,n-k,s+k);
 }
 
 // s->beginning of input, j is starting index of search, n is #characters
@@ -324,7 +324,7 @@ C* getlocale(J jt){A y=locname(mtv); y=AAV(y)[0]; return CAV(str0(y));}
 // literal array will be cut into rank-1 box array here using  <;._2 
 // and then reshape into rank-2  ((n%2),2)$
     A x=z; RZ(df1(z,x,jtcut(jt,ds(CBOX),num(-2))));
-    return reshape(v2(AN(z)>>1,2L),z);
+    return jtreshape(jt,v2(AN(z)>>1,2L),z);
   } else {return z;}
 }
 
@@ -372,7 +372,7 @@ A _stdcall JGetA(J jt, I n, C* name){A x,z=0;
  if(name==0){if(jt->iomalloc){FREE(jt->iomalloc); jt->malloctotal -= jt->iomalloclen; jt->iomalloc=0; jt->iomalloclen=0;} return 0;}
  jt->jerr=0;
  A *old=jt->tnextpushp;
- if(!(x=symbrdlock(nfs(n,name)))){ jsignal(EVILNAME);  // look up the name, error if invalid
+ if(!(x=symbrdlock(jtnfs(jt,n,name)))){ jsignal(EVILNAME);  // look up the name, error if invalid
  }else if(FUNC&AT(x)){ jsignal(EVDOMAIN);   // verify the value is not adv/verb/conj
  }else{
   // name is OK; get the binary rep
@@ -397,7 +397,7 @@ I _stdcall JSetA(J jt,I n,C* name,I dlen,C* d){
  jt->jerr=0;
  if(!vnm(n,name)){ jsignal(EVILNAME); return EVILNAME;}
  A *old=jt->tnextpushp;
- symbisdel(nfs(n,name),jtunbin(jt,str(dlen,d)),jt->global);
+ symbisdel(jtnfs(jt,n,name),jtunbin(jt,jtstr(jt,dlen,d)),jt->global);
  tpop(old);
  return jt->jerr;
 }
@@ -580,7 +580,7 @@ int _stdcall JGetM(J jt, C* name, I* jtype, I* jrank, I* jshape, I* jdata)
  A *old=jt->tnextpushp;
  if(strlen(name) >= sizeof(gn)){ jsignal(z=EVILNAME);
  }else if(valid(name, gn)){ jsignal(z=EVILNAME);
- }else if(!(a=symbrdlock(nfs(strlen(gn),gn)))){ jsignal(z=EVDOMAIN);
+ }else if(!(a=symbrdlock(jtnfs(jt,strlen(gn),gn)))){ jsignal(z=EVDOMAIN);
  }else if(FUNC&AT(a)){ jsignal(z=EVDOMAIN);
  }else{
   *jtype = AT(a);
@@ -638,7 +638,7 @@ static int setterm(J jt, C* name, I* jtype, I* jrank, I* jshape, I* jdata)
  a = ga(*jtype, k, *jrank, (I*)*jshape);
  if(!a) return EVWSFULL;
  MC(AV(a), (void*)*jdata, n*k);
- jset(gn, a);
+ jtjset(jt,gn, a);
  return jt->jerr;
 }
 

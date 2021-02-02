@@ -366,7 +366,7 @@ static B jtopes1(J jt,B**zb,A*za,A*ze,I*zm,A cs,A w){A a,e=0,q,*wv,x;B*b;I i,k,m
    if(!e)e=SPA(p,e); else ASSERT(equ(e,SPA(p,e)),EVSPARSE);
    k=wcr-AR(q); DO(k, b[i]=1;); a=SPA(p,a); v=AV(a); DQ(AN(a), b[k+*v++]=1;);
   }
- A bvec=ifb(wcr,b); makewritable(bvec) RZ(*za=bvec);    /* union of sparse axes           */ // avoid readonly
+ A bvec=jtifb(jt,wcr,b); makewritable(bvec) RZ(*za=bvec);    /* union of sparse axes           */ // avoid readonly
  *zb=b;                 /* mask corresp. to sparse axes   */
  *ze=e?e:num(0);          /* sparse element                 */
  *zm=m;                 /* estimate # of non-sparse cells */
@@ -378,7 +378,7 @@ static B jtopes2(J jt,A*zx,A*zy,B*b,A a,A e,A q,I wcr){A x;B*c;I dt,k,r,*s,t;P*p
  if(t&SPARSE){
   p=PAV(q);
   RZ(c=bfi(r,SPA(p,a),1));
-  DO(r, if(b[k+i]!=c[i]){RZ(q=reaxis(ifb(r,k+b),q)); break;});
+  DO(r, if(b[k+i]!=c[i]){RZ(q=jtreaxis(jt,jtifb(jt,r,k+b),q)); break;});
  }else{
   if(k){
    GA(x,t,AN(q),wcr,0); s=AS(x); DQ(k, *s++=1;); MCISH(s,AS(q),r); 
@@ -402,7 +402,7 @@ static A jtopes(J jt,I zt,A cs,A w){A a,d,e,sh,t,*wv,x,x1,y,y1,z;B*b;C*xv;I an,*
  SPB(zp,e,jtcvt(jt,dt,e)); e = SPA(zp,e);  // in case of reassignment by SPB
  GATV0(t,INT,yc, 1L); v=AV(t); DO(wr, v[i]=i;); DO(an, v[wr+i]=wr+av[i];); SPB(zp,a,t);
  GATV0(sh,INT,1+c,1L); s=AV(sh); s[0]=m; j=1; DO(wcr, if(!b[i])s[j++]=zs[wr+i];); 
- RE(xc=prod(c,1+s)); xk=xc*dk;
+ RE(xc=jtprod(jt,c,1+s)); xk=xc*dk;
  GATV0(d,INT,wr,1); dv=AV(d); memset(dv,C0,wr*SZI);
  RE(i=mult(m,xc)); GA(x,dt, i,1+c,s); xv=CAV(x); mvc(m*xk,xv,dk,AV(e));
  RE(i=mult(m,yc)); GATV0(y,INT,i,2L); v=AS(y); *v=m; v[1]=yc; yv=AV(y); memset(yv,C0,SZI*i);
@@ -410,16 +410,16 @@ static A jtopes(J jt,I zt,A cs,A w){A a,d,e,sh,t,*wv,x,x1,y,y1,z;B*b;C*xv;I an,*
   RZ(opes2(&x1,&y1,b,a,e,wv[i],wcr)); v=AS(y1); m1=v[0]; k=v[1];
   if(m<p+m1){
    j=m; m=(i<n-1?m+m:0)+p+m1;
-   RZ(x=take(sc(m),x)); xv=CAV(x)+p*xk; mvc(xk*(m-j),xv,dk,AV(e));
-   RZ(y=take(sc(m),y)); yv= AV(y)+p*yc;
+   RZ(x=jttake(jt,sc(m),x)); xv=CAV(x)+p*xk; mvc(xk*(m-j),xv,dk,AV(e));
+   RZ(y=jttake(jt,sc(m),y)); yv= AV(y)+p*yc;
   }
   for(j=wr-1;j;--j)if(dv[j]==zs[j]){dv[j]=0; ++dv[j-1];}else break;
   v=AV(y1); DQ(m1, ICPY(yv,dv,wr); ICPY(yv+yc-k,v,k); yv+=yc; v+=k;); 
   if(memcmpne(1+AS(x1),1+s,SZI*c)){*s=m1; povtake(jt,sh,x1,xv);} else MC(xv,AV(x1),m1*xk);
   ++dv[wr-1]; xv+=m1*xk; p+=m1;
  }
- SPB(zp,x,p==m?x:take(sc(p),x));
- SPB(zp,i,p==m?y:take(sc(p),y));
+ SPB(zp,x,p==m?x:jttake(jt,sc(p),x));
+ SPB(zp,i,p==m?y:jttake(jt,sc(p),y));
  return z;
 }  // > w when w contains sparse contents, maxtype=zt
 
@@ -456,7 +456,7 @@ static A jtopes(J jt,I zt,A cs,A w){A a,d,e,sh,t,*wv,x,x1,y,y1,z;B*b;C*xv;I an,*
   ASSERT(!(t&SPARSE&&t&XNUM+RAT),EVDOMAIN);  // don't allow a sparse that requires promotion to indirect
   te=t;  // te holds the type to use
  }
- t=te&-te; while(te&=(te-1)){RE(t=maxtypene(t,te&-te));}  // get highest-priority type (which may be sparse)
+ t=te&-te; while(te&=(te-1)){RE(t=jtmaxtype(jt,t,te&-te));}  // get highest-priority type (which may be sparse)
  // allocate place to build shape of result-cell; initialize to 1s above q, zeros below (this is adding leading 1s to missing leading axes)
  fauxblockINT(csfaux,4,1); fauxINT(cs,csfaux,r,1) u=AV(cs); DO(r-q, u[i]=1;); p=u+r-q; DO(q, p[i]=0;);
  // find the shape of a result-cell
@@ -538,8 +538,8 @@ static A jtrazeg(J jt,A w,I t,I n,I r,A*v,I nonempt){A h,h1,y,z;C*zu;I c=0,i,j,k
   } else {
    // nonatomic contents: rank extension+fill rather than replication
    // if IC(y)==0 this all does nothing, but perhaps not worth checking
-   if(j=r-yr){DO(j,v1[i]=1;); MCISH(j+v1,ys,yr); RZ(y=reshape(h1,y)); }  // if rank extension needed, create rank 1 1...,yr and reshape to that shape
-   for(j=1;j<r;++j)if(s[j]!=AS(y)[j])break; if(j!=r){SETIC(y,*s); RZ(y=take(h,y));}  // if cell of y has different shape from cell of result, install the
+   if(j=r-yr){DO(j,v1[i]=1;); MCISH(j+v1,ys,yr); RZ(y=jtreshape(jt,h1,y)); }  // if rank extension needed, create rank 1 1...,yr and reshape to that shape
+   for(j=1;j<r;++j)if(s[j]!=AS(y)[j])break; if(j!=r){SETIC(y,*s); RZ(y=jttake(jt,h,y));}  // if cell of y has different shape from cell of result, install the
      // #items into s (giving #cell,result-cell shape) and fill to that shape.  This destroys *s (#result items) buts leaves the rest of s
    {j=k*AN(y); MC(zu,AV(y),j); zu+=j;}
   }

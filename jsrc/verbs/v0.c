@@ -33,7 +33,7 @@ static A jtrsort(J jt, A w){A t,z;
  PUSHCCT(1.0-FUZZ)
  RZ(t=over(mag(w),cant1(rect(w))));
  A tt; RZ(IRS2(t,t,0L,1L,1L,jtindexof,tt));
- z=dgrade2(w,cant1(IRS2(tt,t,0L,1L,1L,jtfrom,z)));
+ z=jtdgrade2(jt,w,cant1(IRS2(tt,t,0L,1L,1L,jtfrom,z)));
  POPCCT
  return z;
 }
@@ -148,10 +148,10 @@ static B jtrfcq(J jt,I m,A w,A*zz,A*ww){A q,x,y,z;B b;I i,j,wt;Q*qv,rdx,rq,*wv,*
  ASSERTSYS(wt&B01+INT+FL+XNUM+RAT,"rfcq");
  // Convert w to rational; wv->1st rational coeff
  if(!(wt&RAT))RZ(w=jtcvt(jt,RAT,w)); wv=QAV(w);
- rdx=maxdenom(1+m,wv);  // rdx = max denominator in the polynomial, in rational form
+ rdx=jtmaxdenom(jt,1+m,wv);  // rdx = max denominator in the polynomial, in rational form
  RZ(x=jtcvt(jt,CMPX,w)); xv=ZAV(x); // set x = complex form of w, xv->first complex coeff
- RZ(y=take(sc(1+m),x)); makewritable(y); yv=ZAV(y);  // y = complex form with degree m, yv->first coeff.  These are modified by deflate[q]() and must not be virtual
- RZ(q=take(sc(1+m),w)); makewritable(q); qv=QAV(q);  // q = rational form with degree m, qv->first coeff
+ RZ(y=jttake(jt,sc(1+m),x)); makewritable(y); yv=ZAV(y);  // y = complex form with degree m, yv->first coeff.  These are modified by deflate[q]() and must not be virtual
+ RZ(q=jttake(jt,sc(1+m),w)); makewritable(q); qv=QAV(q);  // q = rational form with degree m, qv->first coeff
  GATV0(z,RAT,m,1); zv=QAV(z);        // allocate space for exact rational roots, zv->first result location
  i=j=0;
  // loop to find each root by Laguerre's method
@@ -161,7 +161,7 @@ static B jtrfcq(J jt,I m,A w,A*zz,A*ww){A q,x,y,z;B b;I i,j,wt;Q*qv,rdx,rq,*wv,*
   if(jt->jerr){RESETERR; break;}
   // Get a rational form, with denominator equal to the largest denominator in the polynomial,
   // that is close to the real part of the root
-  RE(rq=multiple(r.re,rdx));
+  RE(rq=jtmultiple(jt,r.re,rdx));
   b=0;  // set 'no rational root found'
   // If the value found IS a root, divide it from the polynomial repeatedly, and move a copy
   // to the result for each repetition
@@ -174,7 +174,7 @@ static B jtrfcq(J jt,I m,A w,A*zz,A*ww){A q,x,y,z;B b;I i,j,wt;Q*qv,rdx,rq,*wv,*
    rq=qminus(rq,q1); while(deflateq(1,m-j,qv,rq)){*zv++=rq; ++j; b=1;}
   }
   // If we found a root, refresh the copies of the complex versions, and account for the roots we have found
-  if(b){AN(q)=AS(q)[0]=1+m-j; rdx=maxdenom(1+m-j,qv); RZ(y=jtcvt(jt,CMPX,q)); yv=ZAV(y); i=j;}
+  if(b){AN(q)=AS(q)[0]=1+m-j; rdx=jtmaxdenom(jt,1+m-j,qv); RZ(y=jtcvt(jt,CMPX,q)); yv=ZAV(y); i=j;}
   else{D c,d;
    // No root found!  Turn over the table and shoot out the lights.  If r is near an axis, push it to the axis.
    c=ABS(r.re); d=ABS(r.im); if(d<EPS*c)r.im=0; if(c<EPS*d)r.re=0;
@@ -211,7 +211,7 @@ static A jtrfcz(J jt,I m,A w){A x,y,z;B bb=0,real;D c,d;I i;Z r,*xv,*yv,*zv;
    // If we failed on an iteration, perturb the highest coefficient a little bit and see if we can solve that instead.
    if(real){RZ(x1=jtcvt(jt,FL,vec(CMPX,1+m,xv))); u=  DAV(x1)+m-1;      if(*u)*u*=1+1e-12; else *u=1e-12;}
    else    {RZ(x1=       vec(CMPX,1+m,xv) ); u=&(ZAV(x1)+m-1)->re; if(*u)*u*=1+1e-12; else *u=1e-12;}
-   RZ(z=rfcz(m,x1)); zv=ZAV(z);
+   RZ(z=jtrfcz(jt,m,x1)); zv=ZAV(z);
    DO(m, zv[i]=newt(m,xv,zv[i],10L););
  }}
  if(real){B b=1; DO(m, if(zv[i].im){b=0; break;}); if(b)z=jtcvt(jt,FL,z);}
@@ -223,19 +223,19 @@ static A jtrfc(J jt, A w){A r,w1;I m=0,n,t;
  n=AN(w); t=AT(w);  // n=#coeffs, t=type
  if(n){
   ASSERT(t&(DENSE&NUMERIC),EVDOMAIN);  // coeffs must be dense numeric
-  RZ(r=jico2(ne(w,num(0)),num(1))); m=AV(r)[0]; m=(m==n)?0:m;  // r=block for index of last nonzero; m=degree of polynomial (but 0 if all zeros)
+  RZ(r=jtjico2(jt,ne(w,num(0)),num(1))); m=AV(r)[0]; m=(m==n)?0:m;  // r=block for index of last nonzero; m=degree of polynomial (but 0 if all zeros)
   ASSERT(m||equ(num(0),head(w)),EVDOMAIN);  // error if unsolvable constant polynomial
  }
  // switch based on degree of polynomial
  switch(m){
   case 0:  return link(num(0),mtv);  // degree 0 - return 0;''
-  case 1:  r=ravel(negate(jtaslash(jt,CDIV,take(num(2),w)))); break;  // linear - return solution, whatever its type
-  default: if(t&CMPX)r=rfcz(m,w);  // higher order - if complex, go straight to complex solutions
-           else{RZ(rfcq(m,w,&r,&w1)); if(m>AN(r))r=over(r,rfcz(m-AN(r),w1));} // otherwise, find rational solutions in r, and residual polynomial in w1.
+  case 1:  r=ravel(negate(jtaslash(jt,CDIV,jttake(jt,num(2),w)))); break;  // linear - return solution, whatever its type
+  default: if(t&CMPX)r=jtrfcz(jt,m,w);  // higher order - if complex, go straight to complex solutions
+           else{RZ(rfcq(m,w,&r,&w1)); if(m>AN(r))r=over(r,jtrfcz(jt,m-AN(r),w1));} // otherwise, find rational solutions in r, and residual polynomial in w1.
             // if there are residual (complex) solutions, go find them
  }
  // Return result, which is leading nonzero coeff;roots
- return link(from(sc(m),w),rsort(r));
+ return link(jtfrom(jt,sc(m),w),rsort(r));
 }
 
 // entry point for p. y
@@ -264,7 +264,7 @@ static A jtmnomx(J jt,I m,A w){A s,*wv,x,z=w,*zv;I i,n,r;
    x=wv[i]; r=AR(x); 
    ASSERT(1>=r,EVRANK); 
    ASSERT(!r||m==AN(x),EVLENGTH); 
-   zv[i]=incorp(m<=1?x:reshape(s,x));
+   zv[i]=incorp(m<=1?x:jtreshape(jt,s,x));
   }
   RE(z); RZ(z=ope(z));
  }
@@ -279,8 +279,8 @@ static A jtpoly2a(J jt,A a,A w){A c,e,x;I m;D rkblk[16];
  ASSERT(0<m,EVLENGTH);
  RZ(IRS1(a,0L,1L,jthead,c  ) ); 
  RZ(e=cant1(IRS1(a,0L,1L,jtbehead,e)));
- RZ(x=mnomx(m,w));
- if(1==m){A er; RZ(er=ravel(e)); return pdt(ATOMIC2(jt,x,er,rkblk,0L,2L,CEXP),c);}else{A z; return pdt(df2(z,x,e,dot(slash(ds(CSTAR)),ds(CEXP))),c);}  // scaf need agreement check?
+ RZ(x=jtmnomx(jt,m,w));
+ if(1==m){A er; RZ(er=ravel(e)); return jtpdt(jt,ATOMIC2(jt,x,er,rkblk,0L,2L,CEXP),c);}else{A z; return jtpdt(jt,df2(z,x,e,jtdot(jt,slash(ds(CSTAR)),ds(CEXP))),c);}  // scaf need agreement check?
 }    /* multinomial: (<c,.e0,.e1,.e2) p. <x0,x1,x2, left argument opened */
 
 // x p. y    Supports IRS on the y argument; supports inplace
@@ -298,7 +298,7 @@ static A jtpoly2a(J jt,A a,A w){A c,e,x;I m;D rkblk[16];
   if(postfn)return jtupon2cell(jt,a,w,self);  // revert if ^@:p.   must do before a is modified
   ASSERT(2>=an,EVLENGTH);
   c=1==an?num(1):av[0]; a=av[1!=an]; // c=mplr, a=roots
-  if((an^1)+(AR(a)^2)==0)return poly2a(a,w);  // if coeff is 1 and exponent-list is a table, go do multinomial
+  if((an^1)+(AR(a)^2)==0)return jtpoly2a(jt,a,w);  // if coeff is 1 and exponent-list is a table, go do multinomial
   an=AN(a); at=AT(a);
   ASSERT(NUMERIC&(at|AT(c)),EVDOMAIN);
   ASSERT(!AR(c),EVRANK);

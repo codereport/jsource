@@ -268,7 +268,7 @@ static statusEnum insert(J jt, I key) {
 static I jtsbextend(J jt,I n,C*s,UI h,I hi){A x;I c,*hv,j,p;SBU*v;
  c=jt->sbun;
  if(c==AS(jt->sbu)[0]){                   /* extend sbu unique symbols    */
-  RZ(x=ext(1,jt->sbu)); jt->sbu=x; jt->sbuv=(SBU*)AV(x);
+  RZ(x=jtext(jt,1,jt->sbu)); jt->sbu=x; jt->sbuv=(SBU*)AV(x);
  }
  if(AN(jt->sbs)<n+jt->sbsn){            /* extend sbs strings           */
   GATV0(x,LIT,2*(n+jt->sbsn),1); MC(CAV(x),jt->sbsv,jt->sbsn);
@@ -435,7 +435,7 @@ static A jtsbunind(J jt, A w){A z;I j,n,*zv;
   default:  ASSERT(0,EVDOMAIN);
   case C2TX:
   case C4TX:
-  case LITX: abc=(1>=AR(w)?sbunstr(-1L,w):sbunlit(' ',w)); break;
+  case LITX: abc=(1>=AR(w)?jtsbunstr(jt,-1L,w):jtsbunlit(jt,' ',w)); break;
   case BOXX: abc=(sbunbox(w));
  }  
  clo-=clock();
@@ -447,7 +447,7 @@ static A jtsbunind(J jt, A w){A z;I j,n,*zv;
   default:  ASSERT(0,EVDOMAIN);
   case C2TX:
   case C4TX:
-  case LITX: return 1>=AR(w)?sbunstr(-1L,w):sbunlit(' ',w);
+  case LITX: return 1>=AR(w)?jtsbunstr(jt,-1L,w):jtsbunlit(jt,' ',w);
   case BOXX: return sbunbox(w);
 }}   /* monad s: main control */
 #endif
@@ -465,7 +465,7 @@ static A jtsbbox(J jt, A w){A z,*zv;C*s;I n;SB*v;SBU*u;
  n=AN(w); v=SBAV(w);
  ASSERT(!n||SBT&AT(w),EVDOMAIN);
  GATV(z,BOX,n,AR(w),AS(w)); zv=AAV(z);
- DO(n, u=SBUV(*v++); s=SBSV(u->i); RZ(*zv++=incorp(SBC4&u->flag?vec(C4T,u->n>>2,s):SBC2&u->flag?vec(C2T,u->n>>1,s):str(u->n,s))););
+ DO(n, u=SBUV(*v++); s=SBSV(u->i); RZ(*zv++=incorp(SBC4&u->flag?vec(C4T,u->n>>2,s):SBC2&u->flag?vec(C2T,u->n>>1,s):jtstr(jt,u->n,s))););
  return z;
 }    /* boxed strings for symbol array w */
 
@@ -568,7 +568,7 @@ static A jtsbcheck1(J jt,A una,A sna,A u,A s,A h,A roota,A ff,A gp){PROLOG(0003)
  GATV0(x,B01,c,1); dnv=BAV(x); memset(dnv,C0,c);
  GATV0(x,B01,c,1); upv=BAV(x); memset(upv,C0,c);
  GATV0(x,LIT,c,1); ptv=CAV(x); memset(ptv,C0,c); ptv[0]=1;
- GATV0(x,BOX,c,1); xv=AAV(x); RZ(xv[0]=incorp(str(uv->n,sv+uv->i)));
+ GATV0(x,BOX,c,1); xv=AAV(x); RZ(xv[0]=incorp(jtstr(jt,uv->n,sv+uv->i)));
  GATV0(y,INT,c,1); yv= AV(y); yv[0]=uv->order;
  for(i=1,v=1+uv;i<c;++i,++v){S c2;I ord,vi,vn;UC*vc;UI k;
   c2=v->flag&SBC2+SBC4;
@@ -586,7 +586,7 @@ static A jtsbcheck1(J jt,A una,A sna,A u,A s,A h,A roota,A ff,A gp){PROLOG(0003)
   j=k%hn; while(i!=hv[j]&&0<=hv[j])j=(1+j)%hn;
   ASSERTD(i==hv[j],"u/h mismatch");
   ASSERTD(BLACK==v->color||RED==v->color,"u color");
-  RZ(xv[i]=incorp(c2&SBC4?vec(C4T,vn>>2,vc):c2&SBC2?vec(C2T,vn>>1,vc):str(vn,vc)));
+  RZ(xv[i]=incorp(c2&SBC4?vec(C4T,vn>>2,vc):c2&SBC2?vec(C2T,vn>>1,vc):jtstr(jt,vn,vc)));
   yv[i]=ord=v->order;
   j=v->parent; ASSERTD(    BETWEENO(j,0,c)&&2>=++ptv[j],"u parent");                        
   j=v->left;   ASSERTD(!j||BETWEENO(j,0,c)&&1>=++lfv[j]&&     ord>(j+uv)->order ,"u left"       );
@@ -655,14 +655,14 @@ static A jtsbgetdata(J jt, A w){A z,*zv;
     case 11: return sbcheck(num(0));
     case 12: return sbhashstat(num(0));
    }
-  case  1:   return sbstr(1L,w);
-  case -1:   return sbunstr(-1L,w);
-  case  2:   return sbstr(2L,w);
-  case -2:   return sbunstr(-2L,w);
-  case  3:   return sblit(C0,w);
-  case -3:   return sbunlit(C0,w);
-  case  4:   return sblit(' ',w);
-  case -4:   return sbunlit(' ',w);
+  case  1:   return jtsbstr(jt,1L,w);
+  case -1:   return jtsbunstr(jt,-1L,w);
+  case  2:   return jtsbstr(jt,2L,w);
+  case -2:   return jtsbunstr(jt,-2L,w);
+  case  3:   return jtsblit(jt,C0,w);
+  case -3:   return jtsbunlit(jt,C0,w);
+  case  4:   return jtsblit(jt,' ',w);
+  case -4:   return jtsbunlit(jt,' ',w);
   case  5:   return sbbox(w);
   case -5:   return sbunbox(w);
   case  6:   RZ(z=ca(w)); AT(z)=INT; return z;

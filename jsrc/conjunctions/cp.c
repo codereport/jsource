@@ -19,7 +19,7 @@ static A jtpowseqlim(J jt,    A w,A self){PROLOG(0039);A x,y,z,*zv;I i,n;
  RZ(z=exta(BOX,1L,1L,20L)); zv=AAV(z); INCORP(w); *zv++=x=w;
  i=1; n=AN(z);
  while(1){
-  if(n==i){RZ(z=ext(0,z)); zv=i+AAV(z); n=AN(z);}
+  if(n==i){RZ(z=jtext(jt,0,z)); zv=i+AAV(z); n=AN(z);}
   A z0; RZ(x=df1(z0,y=x,self)); INCORP(x); *zv++=x;
   if(equ(x,y)){AN(z)=AS(z)[0]=i; break;}
   ++i;
@@ -38,7 +38,7 @@ static A jttclosure(J jt,A a,A w){A z;I an,*av,c,d,i,wn,wr,wt,*wv,*zv,*zz;
  if(1==wn){   // just 1 result, which will be a list
   *zv++=c=*wv;  // store first selection
   do{
-   if(zv==zz){i=zv-AV(z); ASSERT(i<=an,EVLIMIT) RZ(z=ext(0,z)); zv=AV(z)+i; zz=AV(z)+AN(z);}  // if we have more results than items in a, there must be a cycle - quit
+   if(zv==zz){i=zv-AV(z); ASSERT(i<=an,EVLIMIT) RZ(z=jtext(jt,0,z)); zv=AV(z)+i; zz=AV(z)+AN(z);}  // if we have more results than items in a, there must be a cycle - quit
    d=c; if((UI)c>=(UI)an){c+=an; ASSERT((UI)c<(UI)an,EVINDEX);} *zv++=c=av[c];  // d is prev selection, c is next.  Store c
   }while(c!=d);  // stop when we get a repeated value (normal exit)
   d=(zv-AV(z))-1;
@@ -46,7 +46,7 @@ static A jttclosure(J jt,A a,A w){A z;I an,*av,c,d,i,wn,wr,wt,*wv,*zv,*zz;
   ICPY(zv,wv,wn); zv+=wn;
   I resultdiff;
   do{
-   if(zv==zz){i=zv-AV(z); ASSERT(i<=an*wn,EVLIMIT) RZ(z=ext(0,z)); zv=AV(z)+i; zz=AV(z)+AN(z);}  // break if there is a cycle
+   if(zv==zz){i=zv-AV(z); ASSERT(i<=an*wn,EVLIMIT) RZ(z=jtext(jt,0,z)); zv=AV(z)+i; zz=AV(z)+AN(z);}  // break if there is a cycle
    resultdiff=0; DQ(wn, d=c=zv[-wn]; if((UI)c>=(UI)an){c+=an; ASSERT((UI)c<(UI)an,EVINDEX);} *zv++=c=av[c]; resultdiff|=c^d;);  // set diff if not a steady state
   }while(resultdiff);
   d=(zv-AV(z))/wn-1;
@@ -57,11 +57,11 @@ static A jttclosure(J jt,A a,A w){A z;I an,*av,c,d,i,wn,wr,wt,*wv,*zv,*zz;
 
 static A jtindexseqlim1(J jt,    A w,A self){A fs;
  fs=FAV(self)->fgh[0];  // {&x
- return AN(w)&&AT(w)&B01+INT?tclosure(FAV(fs)->fgh[1],w):powseqlim(w,fs);
+ return AN(w)&&AT(w)&B01+INT?jttclosure(jt,FAV(fs)->fgh[1],w):jtpowseqlim(jt,w,fs);
 }    /* {&x^:(<_) w */
 
 static A jtindexseqlim2(J jt,A a,A w,A self){
- return 1==AR(a)&&AT(a)&INT&&AN(w)&&AT(w)&B01+INT?tclosure(a,w):powseqlim(w,jtamp(jt,ds(CFROM),a));
+ return 1==AR(a)&&AT(a)&INT&&AN(w)&&AT(w)&B01+INT?jttclosure(jt,a,w):jtpowseqlim(jt,w,jtamp(jt,ds(CFROM),a));
 }    /* a {~^:(<_) w */
 
 // u^:(<n) If n negative, take inverse of u; if v infinite, go to routine that checks for no change.  Otherwise convert to u^:(i.|n) and restart
@@ -71,7 +71,7 @@ static A jtpowseq(J jt,    A w,A self){A fs,gs,x;I n=IMAX;V*sv;
  ASSERT(BOX&AT(gs),EVDOMAIN);
  x=AAV(gs)[0]; if(!AR(x))RE(n=i0(vib(x)));
  if(0>n){RZ(fs=inv(fs)); n=-n;}
- if(n==IMAX||1==AR(x)&&!AN(x))return powseqlim(w,fs);
+ if(n==IMAX||1==AR(x)&&!AN(x))return jtpowseqlim(jt,w,fs);
  return df1(gs,w,powop(fs,IX(n),0));
 }    /* f^:(<n) w */
 
@@ -83,7 +83,7 @@ static A jtfpown(J jt,    A w,A self){A fs,z;AF f1;I n;V*sv;A *old;
  fs=sv->fgh[0]; f1=FAV(fs)->valencefns[0];
  z=w; 
  old=jt->tnextpushp; 
- DQ(n, JBREAK0; RZ(z=CALL1IP(f1,z,fs)); z=gc(z,old);); // could force inplace after the first?
+ DQ(n, JBREAK0; RZ(z=CALL1IP(f1,z,fs)); z=jtgc(jt,z,old);); // could force inplace after the first?
  return z;
 // }
 }
@@ -97,7 +97,7 @@ static A jtply1(J jt,    A w,A self){PROLOG(0040);DECLFG;A zz=0;
  I state=ZZFLAGINITSTATE;  // flags for result.h
  // p =. ~. sn=.(gn=./:,n) { ,n   which gives the list of distinct powers
  A n=sv->fgh[2]; A rn; RZ(rn=ravel(n));  // n is powers, rn is ravel of n
- A gn; RZ(gn=grade1(rn)); A p; RZ(p=nub(from(gn,rn)));  // gn is grade of power, p is sorted list of unique powers we want
+ A gn; RZ(gn=grade1(rn)); A p; RZ(p=nub(jtfrom(jt,gn,rn)));  // gn is grade of power, p is sorted list of unique powers we want
  // find index of first nonneg power, remember, set scan pointer, set direction forward.  Set current power to 0.  Indic read of power needed
  I *pv=IAV(p); I np=AN(p);  // base of array of powers, and the number of them
  A z=w;  // the next input/previous result
@@ -166,11 +166,11 @@ static A jtply1(J jt,    A w,A self){PROLOG(0040);DECLFG;A zz=0;
 #include "result.h"
  // Now zz has the result
  // if (there is a negative power) p =. (nnegs }. p) , |. nnegs {. p to match the order in which results were stored
- if(pscan0){A sneg; RZ(sneg=sc(pscan0)); RZ(p=apip(drop(sneg,p),reverse(take(sneg,p))));}
+ if(pscan0){A sneg; RZ(sneg=sc(pscan0)); RZ(p=apip(jtdrop(jt,sneg,p),reverse(jttake(jt,sneg,p))));}
  // result is ($n) $ (p i. ,n) { result - avoid the reshape if n is a list, and avoid the from if (p i. ,n) is an index vector
- RZ(p=indexof(p,rn));  // for each input power, the position of its executed result
- if(!equ(IX(np),p))RZ(zz=from(p,zz));  // order result-cells in order of the input powers
- if(AR(n)!=1)zz=reshape(shape(n),zz);  // if n is an arry, use its shape
+ RZ(p=jtindexof(jt,p,rn));  // for each input power, the position of its executed result
+ if(!equ(IX(np),p))RZ(zz=jtfrom(jt,p,zz));  // order result-cells in order of the input powers
+ if(AR(n)!=1)zz=jtreshape(jt,shape(n),zz);  // if n is an arry, use its shape
  EPILOG(zz);
 }
 
@@ -193,7 +193,7 @@ static A jtpinf12(J jt,A a,A w,A self){PROLOG(0340);A z;  // no reason to inplac
  }
 }
 
-static A jtinv1(J jt,    A w,A self){F1PREFIP;DECLFG;A z;A i; RZ(i=inv((fs))); FDEPINC(1);  z=(FAV(i)->valencefns[0])(FAV(i)->flag&VJTFLGOK1?jtinplace:jt,w,i);       FDEPDEC(1); return z;}  // was invrecur(fix(fs))
+static A jtinv1(J jt,    A w,A self){F1PREFIP;DECLFG;A z;A i; RZ(i=inv((fs))); FDEPINC(1);  z=(FAV(i)->valencefns[0])(FAV(i)->flag&VJTFLGOK1?jtinplace:jt,w,i);       FDEPDEC(1); return z;}  // was invrecur(jtfix(jt,fs))
 static A jtinvh1(J jt,    A w,A self){F1PREFIP;DECLFGH;A z;    FDEPINC(1); z=(FAV(hs)->valencefns[0])(jtinplace,w,hs);        FDEPDEC(1); return z;}
 static A jtinv2(J jt,A a,A w,A self){DECLFG;A z; FDEPINC(1); df1(z,w,inv(jtamp(jt,a,fs))); FDEPDEC(1); STACKCHKOFL return z;}  // the CHKOFL is to avoid tail recursion, which prevents a recursion loop from being broken
 static A jtinverr(J jt,    A w,A self){F1PREFIP;ASSERT(0,EVDOMAIN);}  // used for uninvertible monads

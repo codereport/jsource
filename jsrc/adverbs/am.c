@@ -8,7 +8,7 @@
 
 /*
 static A jtmerge1(J jt,A w,A ind){PROLOG(0006);A z;C*v,*x;I c,k,r,*s,t,*u;
- RZ(ind=pind(IC(w),ind));
+ RZ(ind=jtpind(jt,IC(w),ind));
  r=MAX(0,AR(w)-1); s=1+AS(w); t=AT(w); c=aii(w);
  ASSERT(!(t&SPARSE),EVNONCE);
  ASSERT(r==AR(ind),EVRANK);
@@ -187,8 +187,8 @@ static A jtmerge2(J jt,A a,A w,A ind,I cellframelen){F2PREFIP;A z;I t;
 // speed to validate the input, and pdt works well for a large number of short vectors - in particular it avoids the carried dependency between axes that
 // Horner's Rule creates.  This version keeps things in registers and has less setup time; and it is much better if there are negative indexes.
 A jtcelloffset(J jt,AD * RESTRICT w,AD * RESTRICT ind){A z;
- if(AR(ind)<2){RZ(z=pind(AS(w)[0],ind));  // (m}only) treat a list as a list of independent indexes.  pind handles that case quickly and possibly in-place.
- }else if(AS(ind)[AR(ind)-1]==1){RZ(z=pind(AS(w)[0],IRS1(ind,0L,2L,jtravel,z)));  // if rows are 1 long, pind handles that too - remove the last axis
+ if(AR(ind)<2){RZ(z=jtpind(jt,AS(w)[0],ind));  // (m}only) treat a list as a list of independent indexes.  pind handles that case quickly and possibly in-place.
+ }else if(AS(ind)[AR(ind)-1]==1){RZ(z=jtpind(jt,AS(w)[0],IRS1(ind,0L,2L,jtravel,z)));  // if rows are 1 long, pind handles that too - remove the last axis
  }else{
   // rank of ind>1, and rows of ind are longer than 1. process each row to a cell offset
   I naxes = AS(ind)[AR(ind)-1];
@@ -230,11 +230,11 @@ A jtcelloffset(J jt,AD * RESTRICT w,AD * RESTRICT ind){A z;
 // Result *cellframelen gives the number of axes of w that have been boiled down to indices in the result
 static A jtjstd(J jt,A w,A ind,I *cellframelen){A j=0,k,*v,x;I b;I d,i,n,r,*u,wr,*ws;D rkblk[16];
  wr=AR(w); ws=AS(w); b=-AN(ind)&SGNIF(AT(ind),BOXX);  // b<0 = indexes are boxed and nonempty
- if(!wr){x=from(ind,zeroionei(0)); *cellframelen=0; return x;}  // if w is an atom, the best you can get is indexes of 0.  No axes are used
+ if(!wr){x=jtfrom(jt,ind,zeroionei(0)); *cellframelen=0; return x;}  // if w is an atom, the best you can get is indexes of 0.  No axes are used
  if((b&-AR(ind))<0){   // array of boxed indexes
   RE(aindex(ind,w,0L,&j));  // see if the boxes are homogeneous
   if(!j){  // if not...
-   RZ(x=MODIFIABLE(from(ind,increm(iota(shape(w)))))); u=AV(x); // go back to the original indexes, select from table of all possible incremented indexes; since it is incremented, it is writable
+   RZ(x=MODIFIABLE(jtfrom(jt,ind,increm(iota(shape(w)))))); u=AV(x); // go back to the original indexes, select from table of all possible incremented indexes; since it is incremented, it is writable
    DQ(AN(x), ASSERT(*u,EVDOMAIN); --*u; ++u;);   // if anything required fill, it will leave a 0.  Fail then, and unincrement the indexes
    *cellframelen=AR(w); return x;   // the indexes are what we want, and they include all the axes of w
   }
@@ -260,8 +260,8 @@ static A jtjstd(J jt,A w,A ind,I *cellframelen){A j=0,k,*v,x;I b;I d,i,n,r,*u,wr
    if((-AN(x)&SGNIF(AT(x),BOXX))<0){   // notempty and boxed
     ASSERT(!AR(x),EVINDEX); 
     x=AAV(x)[0]; k=IX(d);
-    if(AN(x))k=less(k,pind(d,1<AR(x)?ravel(x):x));
-   }else k=pind(d,x);
+    if(AN(x))k=jtless(jt,k,jtpind(jt,d,1<AR(x)?ravel(x):x));
+   }else k=jtpind(jt,d,x);
    RZ(x=tymesA(j,sc(d)));
    RZ(j=ATOMIC2(jt,x,k,rkblk,0, RMAX,CPLUS));
   }
@@ -316,7 +316,7 @@ static A jtamendn2(J jt,A a,A w,A self){F2PREFIP;PROLOG(0007);A e,z; B b;I atd,w
 // call merge2 to do the merge.  Pass inplaceability into merge2.
 static A amccv2(J jt,A a,A w,A self){F2PREFIP;DECLF; 
  ASSERT(DENSE&AT(w),EVNONCE);  // u} not supported for sparse
- A x;RZ(x=pind(AN(w),CALL2(f2,a,w,fs)));
+ A x;RZ(x=jtpind(jt,AN(w),CALL2(f2,a,w,fs)));
  A z=jtmerge2(jtinplace,a,w,x,AR(w));   // The atoms of x include all axes of w, since we are addressing atoms
  // We modified w which is now not pristine.
  PRISTCLRF(w)
@@ -324,8 +324,8 @@ static A amccv2(J jt,A a,A w,A self){F2PREFIP;DECLF;
 }
 
 
-static A mergn1(J jt,    A w,A self){       return merge1(w,VAV(self)->fgh[0]);}
-static A mergv1(J jt,    A w,A self){DECLF; return merge1(w,CALL1(f1,w,fs));}
+static A mergn1(J jt,    A w,A self){       return jtmerge1(jt,w,VAV(self)->fgh[0]);}
+static A mergv1(J jt,    A w,A self){DECLF; return jtmerge1(jt,w,CALL1(f1,w,fs));}
 
 // called from m}, m is usually NOT a gerund
 static B ger(A w){A*wv,x;
@@ -384,7 +384,7 @@ B jtgerexact(J jt, A w){A*wv;
 // u} handling.  This is not inplaceable but the derived verb is
  A jtamend(J jt, A w){
  if(VERB&AT(w)) return ADERIV(CRBRACE,mergv1,amccv2,VASGSAFE|VJTFLGOK2, RMAX,RMAX,RMAX);  // verb}
- else if(ger(w))return gadv(w,CRBRACE);   // v0`v1`v2}
+ else if(ger(w))return jtgadv(jt,w,CRBRACE);   // v0`v1`v2}
  else           return ADERIV(CRBRACE,mergn1,jtamendn2,VASGSAFE|VJTFLGOK2, RMAX,RMAX,RMAX);  // m}
 }
 

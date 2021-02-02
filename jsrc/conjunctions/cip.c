@@ -188,9 +188,9 @@ I cachedmmult(J jt,D* av,D* wv,D* zv,I m,I n,I p,I flgs){D c[(CACHEHEIGHT+1)*CAC
  // ?r = rank, ?t = type (but set Boolean type for an empty argument)
  ar=AR(a); at=AT(a); at=AN(a)?at:B01;
  wr=AR(w); wt=AT(w); wt=AN(w)?wt:B01;
- if(((at|wt)&SPARSE)!=0)return pdtsp(a,w);  // Transfer to sparse code if either arg sparse
+ if(((at|wt)&SPARSE)!=0)return jtpdtsp(jt,a,w);  // Transfer to sparse code if either arg sparse
  if(((at|wt)&XNUM+RAT)!=0)return df2(z,a,w,jtatop(jt,slash(ds(CPLUS)),qq(ds(CSTAR),v2(1L,AR(w)))));  // On indirect numeric, execute as +/@(*"(1,(wr)))
- if(B01&(at|wt)&&TYPESNE(at,wt)&&((ar-1)|(wr-1)|(AN(a)-1)|(AN(w)-1))>=0)return pdtby(a,w);   // If exactly one arg is boolean, handle separately
+ if(B01&(at|wt)&&TYPESNE(at,wt)&&((ar-1)|(wr-1)|(AN(a)-1)|(AN(w)-1))>=0)return jtpdtby(jt,a,w);   // If exactly one arg is boolean, handle separately
  {t=maxtyped(at,wt); if(!TYPESEQ(t,AT(a))){RZ(a=jtcvt(jt,t,a));} if(!TYPESEQ(t,AT(w))){RZ(w=jtcvt(jt,t,w));}}  // convert args to compatible precisions, changing a and w if needed.  B01 if both empty
  ASSERT(t&NUMERIC,EVDOMAIN);
  // Allocate result area and calculate loop controls
@@ -204,7 +204,7 @@ I cachedmmult(J jt,D* av,D* wv,D* zv,I m,I n,I p,I flgs){D c[(CACHEHEIGHT+1)*CAC
  if(AN(z)==0)return z;  // return without computing if result is empty
  if(!p){memset(AV(z),C0,AN(z)<<bplg(AT(z))); return z;}  // if dot-products are all 0 length, set them all to 0
  // If either arg is atomic, reshape it to a list
- if(!ar!=!wr){if(ar)RZ(w=reshape(sc(p),w)) else RZ(a=reshape(sc(p),a));}
+ if(!ar!=!wr){if(ar)RZ(w=jtreshape(jt,sc(p),w)) else RZ(a=jtreshape(jt,sc(p),a));}
  p1=p-1;
  // Perform the inner product according to the type
  switch(CTTZNOFLAG(t)){
@@ -347,8 +347,8 @@ static A jtipbx(J jt,A a,A w,C c,C d){A g=0,x0,x1,z;B*av,*av0,b,*v0,*v1,*zv;C c0
   // unsupported g.  Set c0/c1 to invalid and execute g to find x0/x1
   c0=c1=-1; g=ds(d); RZ(df2(x0,num(0),w,g)); RZ(df2(x1,num(0),w,g));
  }else{
-  RZ(x0=c0==IPBX0?reshape(sc(n),num(0)):c0==IPBX1?reshape(sc(c==CNE?AN(w):n),num(1)):c0==IPBXW?w:__not(w));
-  RZ(x1=c1==IPBX0?reshape(sc(n),num(0)):c1==IPBX1?reshape(sc(c==CNE?AN(w):n),num(1)):c1==IPBXW?w:__not(w));
+  RZ(x0=c0==IPBX0?jtreshape(jt,sc(n),num(0)):c0==IPBX1?jtreshape(jt,sc(c==CNE?AN(w):n),num(1)):c0==IPBXW?w:__not(w));
+  RZ(x1=c1==IPBX0?jtreshape(jt,sc(n),num(0)):c1==IPBX1?jtreshape(jt,sc(c==CNE?AN(w):n),num(1)):c1==IPBXW?w:__not(w));
  }
  // av->a arg, zv->result, v0->input for 0, v1->input for 1
  av0=BAV(a); zv=BAV(z); v0=BAV(x0); v1=BAV(x1);
@@ -393,7 +393,7 @@ r=lr(gs);   // left rank of v
 
 static A jtminors(J jt, A w){A d,z;
  RZ(d=apvwr(3L,-1L,1L)); AV(d)[0]=0;
- return drop(d,df2(z,num(1),w,bsdot(ds(CLEFT))));  // 0 0 1 }. 1 [\. w
+ return jtdrop(jt,d,df2(z,num(1),w,bsdot(ds(CLEFT))));  // 0 0 1 }. 1 [\. w
 }
 
 static A jtdet(J jt,    A w,A self){DECLFG;A h=sv->fgh[2];I c,r,*s;

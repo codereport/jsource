@@ -21,21 +21,21 @@ static B jtiaddr(J jt,A z,A ind,A*i1,A*i2){A a,ai,as,ii,jj,q,t,x,y;I c,d,e,h,i,*
  zp=PAV(z); a=SPA(zp,a); x=SPA(zp,x); s=1+AS(x); 
  h=*(AS(ind)+AR(ind)-1);                               /* # axes indexed              */
  RZ(q=gt(sc(h),a)); 
- y=SPA(zp,i); if(!all1(q))RZ(y=repeatr(q,y));          /* indexed cols of index mat   */
+ y=SPA(zp,i); if(!all1(q))RZ(y=jtrepeatr(jt,q,y));          /* indexed cols of index mat   */
  m=*AS(y); yv=AV(y);      
  RZ(ai=IX(h));
- RZ(as=less(IX(AR(z)),a)); u=AV(as); n=AN(as);         /* dense axes                  */
+ RZ(as=jtless(jt,IX(AR(z)),a)); u=AV(as); n=AN(as);         /* dense axes                  */
  GATV0(t,INT,n,1); v=AV(t);                             /* shape of indexed dense axes */
  e=0; d=1; DO(n, if(h>u[i])v[e++]=s[i]; else d*=s[i];);
- RZ(*i2=jj=tymes(sc(d),jtbase2(jt,vec(INT,e,v),repeatr(eps(ai,as),ind))));
+ RZ(*i2=jj=tymes(sc(d),jtbase2(jt,vec(INT,e,v),jtrepeatr(jt,jteps(jt,ai,as),ind))));
  c=*(1+AS(y));
  if(!c){
   n=AN(jj);
-  RZ(*i1=repeat(sc(n),IX(m)));
-  RZ(*i2=reshape(sc(m*n),jj));
+  RZ(*i1=jtrepeat(jt,sc(n),IX(m)));
+  RZ(*i2=jtreshape(jt,sc(m*n),jj));
   return 1;
  }
- RZ(*i1=ii=indexof(y,repeatr(eps(ai,a),ind)));         /* group indices in index mat  */
+ RZ(*i1=ii=jtindexof(jt,y,jtrepeatr(jt,jteps(jt,ai,a),ind)));         /* group indices in index mat  */
  if(c==AN(a))return 1;
  n=AN(ii); iv=AV(ii); jv=AV(jj);                       /* do progressive iota         */
  GATV0(q,INT,n,1); qv=AV(q);                            /* group sizes                 */
@@ -55,21 +55,21 @@ static A jtzpadn(J jt,A z,A ind,B ip){A a,ai,i1,p,p1,q,t,x,x0,y,y0,y1;B*b;I c,d,
  zp=PAV(z); a=SPA(zp,a); x=x0=SPA(zp,x); y=y0=SPA(zp,i);
  n=1; h=*(AS(ind)+AR(ind)-1);
  RZ(ai=IX(h));
- RZ(t=eps(ai,a)); b=BAV(t); d=0; DO(h, if(b[i])++d;);
- RZ(i1=d<h?repeatr(t,ind):ind); if(2!=AR(ind))RZ(i1=d?reshape(v2(AN(i1)/d,d),i1):mtm);
- RZ(t=gt(sc(h),a)); RZ(y1=all1(t)?y:repeatr(t,y));
- RZ(p=nub(less(i1,y1)));
+ RZ(t=jteps(jt,ai,a)); b=BAV(t); d=0; DO(h, if(b[i])++d;);
+ RZ(i1=d<h?jtrepeatr(jt,t,ind):ind); if(2!=AR(ind))RZ(i1=d?jtreshape(jt,v2(AN(i1)/d,d),i1):mtm);
+ RZ(t=gt(sc(h),a)); RZ(y1=all1(t)?y:jtrepeatr(jt,t,y));
+ RZ(p=nub(jtless(jt,i1,y1)));
  if(c=AN(a)-d){
-  RZ(t=from(less(a,ai),shape(z))); RZ(p1=odom(2L,c,AV(t))); n=*AS(p1);
-  if(m=*AS(p))RZ(p=stitch(repeat(sc(n),p),reshape(v2(n*m,c),p1)));
-  RZ(t=nub(repeat(eps(y1,i1),y1)));
-  RZ(t=stitch(repeat(sc(n),t),reshape(v2(n**AS(t),c),p1)));
-  RZ(t=less(t,y));
+  RZ(t=jtfrom(jt,jtless(jt,a,ai),shape(z))); RZ(p1=odom(2L,c,AV(t))); n=*AS(p1);
+  if(m=*AS(p))RZ(p=jtstitch(jt,jtrepeat(jt,sc(n),p),jtreshape(jt,v2(n*m,c),p1)));
+  RZ(t=nub(jtrepeat(jt,jteps(jt,y1,i1),y1)));
+  RZ(t=jtstitch(jt,jtrepeat(jt,sc(n),t),jtreshape(jt,v2(n**AS(t),c),p1)));
+  RZ(t=jtless(jt,t,y));
   if(AN(t))RZ(p=over(p,t));
  }
  if(m=*AS(p)){  /* new cells being added */
-  RZ(y=over(y,p)); RZ(q=grade1(y)); RZ(y=from(q,y));
-  RZ(t=shape(x)); *AV(t)=m; RZ(x=from(q,over(x,reshape(t,SPA(zp,e)))));
+  RZ(y=over(y,p)); RZ(q=grade1(y)); RZ(y=jtfrom(jt,q,y));
+  RZ(t=shape(x)); *AV(t)=m; RZ(x=jtfrom(jt,q,over(x,jtreshape(jt,t,SPA(zp,e)))));
   // if z is assigned to a name, the use counts need to be adjusted: the old ones need to be decremented
   // to remove the assignment, and the new ones need to be incremented to prevent them from being freed
   // until the name is freed.  We detect the case from jt->assignsym being set to the address of z
@@ -87,12 +87,12 @@ static A jtastdn(J jt,A a,A z,A ind){A a1,q,r,s;B*b;I ar,*as,*av,d,ir,n,n1,*v,zr
  ir=AR(ind); n=*(AS(ind)+ir-1); d=(ir-1)+(zr-n); ASSERT(ar<=d,EVRANK);  // n=shape of item of i; d is # unindexed axes
  GATV0(s,INT,d,1); v=AV(s); MCISH(v,AS(ind),ir-1); MCISH(v+ir-1,zs+n,zr-n);
  ASSERTAGREE(as,AV(s)+d-ar,ar);
- if(ar<d)RZ(a=reshape(s,a));
+ if(ar<d)RZ(a=jtreshape(jt,s,a));
  zp=PAV(z); a1=SPA(zp,a); av=AV(a1); n1=n-1;
  GATV0(s,B01,zr,1); b=BAV(s); 
  memset(b,C0,zr); DO(AN(a1), b[av[i]]=1;); memset(b,!memchr(b,C1,n)?C0:C1,n);
  GATV0(r,INT,zr-n1,1); v=AV(r); *v++=ar-(zr-n); DQ(zr-n, *v++=1;);
- RZ(q=dgrade1(repeat(r,vec(B01,zr-n1,b+n1))));
+ RZ(q=dgrade1(jtrepeat(jt,r,vec(B01,zr-n1,b+n1))));
  return equ(q,IX(ar))?a:jtcant2(jt,q,a);
 }    /* convert replacement array a into standard form relative to index array ind */
 
@@ -122,7 +122,7 @@ A jtamna(J jt,A a,A z,A ind,B ip){A i1,i2,x;C*u,*v;I*iv,*jv,k,n,vk,xk;P*zp;
 
 A jtamnsp(J jt,A a,A z,A ind,B ip){A i1,i2,t;C*ev,*u,*v,*vv;I c,*dv,i,*iv,j,*jv,k,m,n,p,q,r,*s,*yv,zk;P*ap,*zp;
  RZ(a&&z&&ind);
- r=AR(a); ap=PAV(a); t=SPA(ap,a); if(r>AN(t))RZ(a=reaxis(IX(r),a));
+ r=AR(a); ap=PAV(a); t=SPA(ap,a); if(r>AN(t))RZ(a=jtreaxis(jt,IX(r),a));
  RZ(a=astdn(a,z,ind));  ap=PAV(a);
  RZ(z=zpadn(z,ind,ip)); zp=PAV(z);
  RZ(iaddr(z,ind,&i1,&i2));

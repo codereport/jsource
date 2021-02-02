@@ -699,12 +699,12 @@ static B (*grroutine[])(J,I,I,I,A,I*) = {  // index is [bitx]
   PROD(m,f,s); PROD1(ai,r-1,f+s+1); c=ai*n; zn=m*n;
  }else{
   // empty w.  The number of cells may overflow, but reshape will catch that
-  RE(zn=mult(prod(f,s),n));
+  RE(zn=mult(jtprod(jt,f,s),n));
  }
  // allocate the entire result area, one int per item in each input cell
  GATV(z,INT,zn,1+f,s); if(!r)AS(z)[f]=1;
  // if there are no atoms, or we are sorting things with 0-1 item, return an index vector of the appropriate shape 
- if(((wn-1)|(n-2))<0)return reshape(shape(z),IX(n));
+ if(((wn-1)|(n-2))<0)return jtreshape(jt,shape(z),IX(n));
  // do the grade, using a special-case routine if possible
  RZ((t&B01&&0==(ai&3)?jtgrb:grroutine[CTTZ(t)])(jt,m,ai,n,w,AV(z)))
  EPILOG(z);
@@ -714,9 +714,9 @@ static B (*grroutine[])(J,I,I,I,A,I*) = {  // index is [bitx]
  A jtdgrade1(J jt, A w){A z;GBEGIN( 1); RZ(   w); z=SPARSE&AT(w)?grd1sp(  w):gr1(  w); GEND return z;}
 // Since grade2 pulls from a, mark a as non-pristine.  But since there can be no repeats, transfer a's pristinity to result if a is inplaceable
 // We do this in jtgr2 because it has a branch where all boxed values go
- A jtgrade2 (J jt,A a,A w){F2PREFIP;A z;GBEGIN(-1); RZ(z=SPARSE&AT(w)?grd2sp(a,w):jtgr2(jtinplace,a,w)); GEND
+ A jtgrade2 (J jt,A a,A w){F2PREFIP;A z;GBEGIN(-1); RZ(z=SPARSE&AT(w)?jtgrd2sp(jt,a,w):jtgr2(jtinplace,a,w)); GEND
  return z;}
- A jtdgrade2(J jt,A a,A w){F2PREFIP;A z;GBEGIN( 1); RZ(z=SPARSE&AT(w)?grd2sp(a,w):jtgr2(jtinplace,a,w)); GEND
+ A jtdgrade2(J jt,A a,A w){F2PREFIP;A z;GBEGIN( 1); RZ(z=SPARSE&AT(w)?jtgrd2sp(jt,a,w):jtgr2(jtinplace,a,w)); GEND
  return z;}
 
 
@@ -760,7 +760,7 @@ static B (*grroutine[])(J,I,I,I,A,I*) = {  // index is [bitx]
  A jtordstat(J jt,A a,A w){A q,t=0;I j,m,m0,m1,n,wt;D *qv;
  I i=NRANDS-1;  // i points to the next random number to draw
  n=AN(w); wt=AT(w); RE(j=i0(a));
- if(((4-n)&((AR(a)|(1^AR(w)))-1)&(-(wt&FL+INT)))>=0)return from(a,grade2(w,w));  // if not int/float, or short, or not (atom a and list w), do full grade
+ if(((4-n)&((AR(a)|(1^AR(w)))-1)&(-(wt&FL+INT)))>=0)return jtfrom(jt,a,jtgrade2(jt,w,w));  // if not int/float, or short, or not (atom a and list w), do full grade
  if((UI)j>=(UI)n){j+=n; ASSERT((UI)j<(UI)n,EVINDEX);}
  // deal a bunch of random floats to provide pivots.  We reuse them if needed
  RZ(df2(q,sc(NRANDS),num(0),jtatop(jt,ds(CQUERY),ds(CDOLLAR)))); qv=DAV(q);
@@ -769,8 +769,8 @@ static B (*grroutine[])(J,I,I,I,A,I*) = {  // index is [bitx]
 
  A jtordstati(J jt,A a,A w){A t;I n,wt;
  n=AN(w); wt=AT(w);
- if(((4-n)&((AR(a)|(1^AR(w)))-1)&(-(wt&FL+INT)))>=0)return from(a,grade1(w));
- RZ(t=ordstat(a,w));   // Get the value of the ath order statistic, then look up its index
+ if(((4-n)&((AR(a)|(1^AR(w)))-1)&(-(wt&FL+INT)))>=0)return jtfrom(jt,a,grade1(w));
+ RZ(t=jtordstat(jt,a,w));   // Get the value of the ath order statistic, then look up its index
  I j=0;  // =0 needed to stifle warning
  if(wt&FL){D p=DAV(t)[0],*v=DAV(w); DO(n, if(p==*v++){j=i; break;});}
  else     {I p=AV(t)[0],*v= AV(w); DO(n, if(p==*v++){j=i; break;});}

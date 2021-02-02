@@ -182,7 +182,7 @@ X jtxdiv(J jt,X a,X w,I mode){PROLOG(0096);B di;I an,*av,c,c0,d,e,k,s,u[2],u1,wn
    k=c0>=e?c0/e:e/c0; 
    k=(k>3)+(k>32)+(k>316)+(k>3162);
    s=XBASEN*(an-yn)+(c0>=e?k:-k); 
-   if(s){q=shift10(s,q); y=shift10(s,y);}
+   if(s){q=jtshift10(jt,s,q); y=jtshift10(jt,s,y);}
    A z=xplus(q,xdiv(xminus(a,y),w,mode));
    EPILOGNOVIRT(z);
   }
@@ -363,11 +363,11 @@ static X jtxbinp(J jt,X a,X w){PROLOG(0098);D m;I i,n;X c,d,p,q,r,s;
  RZ(d=xminus(w,a)); s=1==xcompare(a,d)?d:a; RE(n=xint(s));
  m=xdouble(w);
  if(m<=FLIMAX){
-  RZ(p=less(ravel(factor(apv(n,(I)m,-1L))),zeroionei(0)));
-  RZ(q=less(ravel(factor(apv(n,1L,   1L))),zeroionei(0)));
+  RZ(p=jtless(jt,ravel(factor(apv(n,(I)m,-1L))),zeroionei(0)));
+  RZ(q=jtless(jt,ravel(factor(apv(n,1L,   1L))),zeroionei(0)));
   c=over(p,q);
-  d=repeat(v2(AN(p),AN(q)),v2(1L,-1L));
-  A z=xev1(repeat(ev2(c,d,"+//."),nub(c)),"*/");
+  d=jtrepeat(jt,v2(AN(p),AN(q)),v2(1L,-1L));
+  A z=xev1(jtrepeat(jt,ev2(c,d,"+//."),nub(c)),"*/");
   EPILOGNOVIRT(z);
  }else{
   p=q=iv1; r=w;  
@@ -419,7 +419,7 @@ static X jtxpi(J jt,    X w){A e;B p;I i,n,n1,sk;X a,b,c,d,*ev,k,f,m,q,s,s0,t;
  RZ(c=xc(13591409L));
  RZ(d=xplus(xc(541681608L),xtymes(xc(10L),xc(600000000L))));
  n1=(13+AN(w)*XBASEN)/14; n=1+n1;
- RZ(e=piev(n,b)); ev=XAV(e); m=ev[n1];
+ RZ(e=jtpiev(jt,n,b)); ev=XAV(e); m=ev[n1];
  f=iv0; s0=iv1; sk=1;
  for(i=p=0;;++i,p^=1){
   s=xtymes(s0,xplus(c,xtymes(a,xc(i))));

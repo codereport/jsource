@@ -295,7 +295,7 @@ static A jtgprefix(J jt,    A w,A self){A h,*hv,z,*zv;I m,n,r;
  SETIC(w,n); 
  h=VAV(self)->fgh[2]; hv=AAV(h); m=AN(h);
  GATV0(z,BOX,n,1); zv=AAV(z); I imod=0;
- DO(n, imod=(imod==m)?0:imod; RZ(zv[i]=df1(h,take(sc(1+i),w),hv[imod])); ++imod;);
+ DO(n, imod=(imod==m)?0:imod; RZ(zv[i]=df1(h,jttake(jt,sc(1+i),w),hv[imod])); ++imod;);
  return ope(z);
 }    /* g\"r w for gerund g */
 
@@ -337,7 +337,7 @@ static A jtinfix(J jt,A a,A w,A self){PROLOG(0018);DECLF;A x,z;I m;
  if(a==ainf)m=IMAX;
  else RE(m=i0(vib(a))); // get infix length as an integer
  // Create table of infix positions
- RZ(x=ifxi(m,w));
+ RZ(x=jtifxi(jt,m,w));
  // If there are infixes, apply fs@:jtseg (ac2 creates an A verb for jtseg)
  if(AS(x)[0])z=eachl(x,w,jtatop(jt,fs,ac2(jtseg)));
  else{A s;I r, rr;
@@ -347,9 +347,9 @@ static A jtinfix(J jt,A a,A w,A self){PROLOG(0018);DECLF;A x,z;I m;
   // r = rank of w, rr=rank of list of items of w, s is block for list of length rr; copy shape of r; override #items of infix
   r=AR(w); rr=MAX(1,r); GATV0(s,INT,rr,1); if(r)MCISH(AV(s),AS(w),r); AV(s)[0]=0>m?0:m==IMAX?1+SETIC(w,r):m;
   // Create fill-cell of shape s; apply u to it
-  RZ(df1(x,reshape(s,filler(w)),fs));
+  RZ(df1(x,jtreshape(jt,s,filler(w)),fs));
   // Prepend leading axis of 0 to the result
-  z=reshape(over(zeroionei(0),shape(x)),x);
+  z=jtreshape(jt,over(zeroionei(0),shape(x)),x);
  } 
  EPILOG(z);
 }
@@ -362,16 +362,16 @@ static A jtinfix2(J jt,    A w,A self){PROLOG(0019);A f;
 
 static A jtginfix(J jt,A a,A w,A self){A h,*hv,x,z,*zv;I d,m,n;
  RE(m=i0(vib(a))); 
- RZ(x=ifxi(m,w));
+ RZ(x=jtifxi(jt,m,w));
  h=VAV(self)->fgh[2]; hv=AAV(h); d=AN(h);
  if(SETIC(x,n)){
   GATV0(z,BOX,n,1); zv=AAV(z);
-  DO(n, RZ(zv[i]=df1(h,seg(from(sc(i),x),w),hv[i%d])););
+  DO(n, RZ(zv[i]=df1(h,jtseg(jt,jtfrom(jt,sc(i),x),w),hv[i%d])););
   return ope(z);
  }else{A s;
   RZ(s=AR(w)?shape(w):ca(iv0)); AV(s)[0]=ABS(m);
-  RZ(df1(x,reshape(s,filler(w)),*hv));
-  return reshape(over(zeroionei(0),shape(x)),x);
+  RZ(df1(x,jtreshape(jt,s,filler(w)),*hv));
+  return jtreshape(jt,over(zeroionei(0),shape(x)),x);
 }}
 
 // *** start of non-sparse code ***
@@ -548,10 +548,10 @@ static A jtinfixprefix2(J jt,A a,A w,A self){F2PREFIP;PROLOG(00202);A fs;I cger[
   // for prefix, 0 items of fill
   // for infix +, invabs items of fill
   // for infix -, 0 items of fill
-  RZ(z=reitem(zeroionei(0),w));  // create 0 items of the type of w
-  if(ilnval>=0){ilnval=(ilnval==IMAX)?(wi+1):ilnval; RZ(z=take(sc(ilnval),z));}    // if items needed, create them.  For compatibility, treat _ as 1 more than #items in w
+  RZ(z=jtreitem(jt,zeroionei(0),w));  // create 0 items of the type of w
+  if(ilnval>=0){ilnval=(ilnval==IMAX)?(wi+1):ilnval; RZ(z=jttake(jt,sc(ilnval),z));}    // if items needed, create them.  For compatibility, treat _ as 1 more than #items in w
   WITHDEBUGOFF(zz=CALL1(f1,z,fs);) if(EMSK(jt->jerr)&EXIGENTERROR)RZ(zz); RESETERR;
-  RZ(zz=reshape(over(zeroionei(0),shape(zz?zz:mtv)),zz?zz:zeroionei(0)));
+  RZ(zz=jtreshape(jt,over(zeroionei(0),shape(zz?zz:mtv)),zz?zz:zeroionei(0)));
  }
 
 // result is now in zz
@@ -575,7 +575,7 @@ static A jtpscan(J jt,    A w,A self){A z;I f,n,r,t,wn,wr,*ws,wt;
  // m = #cells, c=#atoms/cell, n = #items per cell
  SETICFR(w,f,r,n);  // wn=0 doesn't matter
  // If there are 0 or 1 items, or w is empty, return the input unchanged, except: if rank 0, return (($w),1)($,)w - if atomic op, do it right here, otherwise call the routine to get the shape of result cell
- if(((1-n)&-wn)>=0){return r?RETARG(w):reshape(apip(shape(w),zeroionei(1)),w);}  // n<2 or wn=0
+ if(((1-n)&-wn)>=0){return r?RETARG(w):jtreshape(jt,apip(shape(w),zeroionei(1)),w);}  // n<2 or wn=0
  VARPS adocv; varps(adocv,self,wt,1);  // fetch info for f/\ and this type of arg
  if(!adocv.f)return IRS1(w,self,r,jtinfixprefix1,z);  // if there is no special function for this type, do general scan
  // Here is the fast special reduce for +/ etc
@@ -804,7 +804,7 @@ static A jtiota1(J jt,    A w,A self){I j; return apv(SETIC(w,j),1L,1L);}
  A jtbslash(J jt, A w){A f;AF f1=jtinfixprefix1,f2=jtinfixprefix2;V*v;I flag=FAV(ds(CBSLASH))->flag;
 ;
  if(!w) return 0;
- if(NOUN&AT(w))return fdef(0,CBSLASH,VERB, jtinfixprefix1,jtinfixprefix2, w,0L,fxeachv(1L,w), VGERL|flag, RMAX,0L,RMAX);
+ if(NOUN&AT(w))return fdef(0,CBSLASH,VERB, jtinfixprefix1,jtinfixprefix2, w,0L,jtfxeachv(jt,1L,w), VGERL|flag, RMAX,0L,RMAX);
  v=FAV(w);  // v is the u in u\ y
  switch(v->id){
   case CPOUND:

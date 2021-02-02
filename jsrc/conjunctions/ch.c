@@ -40,7 +40,7 @@ static A jthgd(J jt,B b,I n,A w,A p,A q){A c,d,e,z;D r,s,t,*u,*v,x,*zv;I j,pn,qn
   r*=x/j; t=s; s+=r; if(z)*zv++=s; JBREAK0;
  }
  NAN1;
- return !b?scf(s):z?take(sc(1+j),z):hgd(b,j,w,p,q);
+ return !b?scf(s):z?jttake(jt,sc(1+j),z):hgd(b,j,w,p,q);
 }    /* real vector p,q; real scalar w; all terms (1=b) or last term (0=b) */
 
 static A jthgeom2(J jt,A a,A w,A self){PROLOG(0036);A h,*hv,t,z;B b;I an,*av,j,n;V*sv=FAV(self);
@@ -57,7 +57,7 @@ static A jthgeom2(J jt,A a,A w,A self){PROLOG(0036);A h,*hv,t,z;B b;I an,*av,j,n
   while(z&&!equ(z,t)){t=z; z=hgv(0,j,w,self); j+=j;} 
   RZ(z); if(1<an)z=hgv(1,j,w,self);
  }
- if(1<an)z=from(minimum(a,sc(SETIC(z,an)-1)),z);
+ if(1<an)z=jtfrom(jt,minimum(a,sc(SETIC(z,an)-1)),z);
  EPILOG(z);
 }
 
@@ -67,8 +67,8 @@ static A jtcancel(J jt,A a,A w){A c,d,f,x,y;
  f=eval("#/.~");   // could call keytally
  a=ravel(a); x=nub(a); df1(c,a,f);
  w=ravel(w); y=nub(w); df1(d,w,f);
- a=repeat(maximum(num(0),minus(c,from(indexof(y,x),over(d,zeroionei(0))))),x);
- w=repeat(maximum(num(0),minus(d,from(indexof(x,y),over(c,zeroionei(0))))),y);
+ a=jtrepeat(jt,maximum(num(0),minus(c,jtfrom(jt,jtindexof(jt,y,x),over(d,zeroionei(0))))),x);
+ w=jtrepeat(jt,maximum(num(0),minus(d,jtfrom(jt,jtindexof(jt,x,y),over(c,zeroionei(0))))),y);
  return link(a,w);
 }
 
@@ -102,6 +102,6 @@ static A jtcancel(J jt,A a,A w){A c,d,f,x,y;
    case 2: y=divide(c,jtascan(jt,CSTAR,d)); break;
    case 3: y=divide(c,d);
  }}
- RZ(z=from(w,over(zeroionei(1),y)));
+ RZ(z=jtfrom(jt,w,over(zeroionei(1),y)));
  EPILOG(z);
 }    /* coefficients indexed by w excluding !j */

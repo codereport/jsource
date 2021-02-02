@@ -604,8 +604,8 @@ static HMODULE jtcdlookupl(J jt,C*av){
 // if the string table or the table of CCTs gets full it is extended
 static CCT*jtcdinsert(J jt,A a,CCT*cc){A x;C*s;CCT*pv,*z;I an,hn,k;
  an=AN(a);
- while(AM(jt->cdstr) > AN(jt->cdstr)-an){I oldm=AM(jt->cdstr); RZ(jt->cdstr=ext(1,jt->cdstr)); AM(jt->cdstr)=oldm;}  // double allocations as needed, keep count
- while(AM(jt->cdarg)==AS(jt->cdarg)[0]){I oldm=AM(jt->cdarg); RZ(jt->cdarg=ext(1,jt->cdarg)); AM(jt->cdarg)=oldm;}
+ while(AM(jt->cdstr) > AN(jt->cdstr)-an){I oldm=AM(jt->cdstr); RZ(jt->cdstr=jtext(jt,1,jt->cdstr)); AM(jt->cdstr)=oldm;}  // double allocations as needed, keep count
+ while(AM(jt->cdarg)==AS(jt->cdarg)[0]){I oldm=AM(jt->cdarg); RZ(jt->cdarg=jtext(jt,1,jt->cdarg)); AM(jt->cdarg)=oldm;}
  s=CAV(jt->cdstr); pv=(CCT*)AV(jt->cdarg);
  cc->ai=AM(jt->cdstr); MC(s+AM(jt->cdstr),CAV(a),an); AM(jt->cdstr)+=an;
  z=pv+AM(jt->cdarg); MC(z,cc,sizeof(CCT)); k=AM(jt->cdarg);
@@ -983,7 +983,7 @@ void dllquit(J jt){CCT*av;I j,*v;
  A jtmemu(J jt, A w) { F1PREFIP; if(!((I)jtinplace&JTINPLACEW && (AC(w)<(AFLAG(w)<<((BW-1)-AFROX)))))w=ca(w); if(AT(w)&LAST0)*(C4*)&CAV(w)[AN(w)*bp(AT(w))]=0;  return w; }  // append 0 so that calls from cd append NUL termination
  A jtmemu2(J jt,A a,A w) { return ca(w); }  // dyad - force copy willy-nilly
 
- A jtgh15(J jt, A w){A z;I k; RE(k=i0(w)); RZ(z=gah(k,0L)); ACINCR(z); return sc((I)z);}
+ A jtgh15(J jt, A w){A z;I k; RE(k=i0(w)); RZ(z=jtgah(jt,k,0L)); ACINCR(z); return sc((I)z);}
      /* 15!:8  get header */
 
  A jtfh15(J jt, A w){I k; RE(k=i0(w)); fh((A)k); return num(0);}

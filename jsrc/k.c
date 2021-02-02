@@ -111,7 +111,7 @@ static X jtxd1(J jt,D p, I mode){PROLOG(0052);A t;D d,e=tfloor(p),q,r;I m,*u;
  GAT0(t,INT,30,1); u=AV(t); m=0; d=ABS(p); 
  while(0<d){
   q=jfloor(d/XBASE); r=d-q*XBASE; u[m++]=(I)r; d=q;
-  if(m==AN(t)){RZ(t=ext(0,t)); u=AV(t);}
+  if(m==AN(t)){RZ(t=jtext(jt,0,t)); u=AV(t);}
  }
  if(!m){u[0]=0; ++m;}else if(0>p)DO(m, u[i]=-u[i];);
  A z=xstd(vec(INT,m,u));
@@ -191,7 +191,7 @@ static B jtDfromQ(J jt,A w,void*yv){D d,f,n,*x,xb=(D)XBASE;I cn,i,k,m,nn,pn,qn,r
    x[i]=n/d;
   }else{
    k=5+qn; if(!x2)if(!(x2=xc(2L)))return 0;
-   if(!(c=xdiv(take(sc(-(k+pn)),p),q,XMFLR)))return 0;
+   if(!(c=xdiv(jttake(jt,sc(-(k+pn)),p),q,XMFLR)))return 0;
    cn=AN(c); m=MIN(cn,5); r=cn-(m+k); v=AV(c)+cn-m; 
    n=0.0; f=1.0; DO(m, n+=f*v[i]; f*=xb;);
    d=1.0; DQ(ABS(r), d*=xb;);

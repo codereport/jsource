@@ -19,7 +19,7 @@ static I jtord(J jt,A w){I j,n,*v,z;
  RZ(w=vi(w));
  n=AN(w); v=AV(w);
  DO(n, I r=v[i]^REPSGN(v[i]); m=r>m?r:m;); ++m;  // take 1s-comp of negative ele#, then find max; add 1 to get #eles
- return indexof(pfill(m,w),IX(m));
+ return jtindexof(jt,jtpfill(jt,m,w),IX(m));
 }    /* permutation inverse */
 
 // w contains indexes (its shape is immaterial).  n is the length of the axis.  Result is new array, same shape, with equivalent positive indexes
@@ -39,7 +39,7 @@ A jtpind(J jt,I n,A w){A z;I j,*v;
 // result is full permutation, with the omitted values coming first, in ascending order, followed by w
 // if w has negative indexes, they are first made positive
 A jtpfill(J jt,I n,A w){PROLOG(0081);A b,z;B*bv;I*wv,*zv;
- RZ(w=pind(n,w));  wv=AV(w);  // convert to positive indexes, wv-> indexes
+ RZ(w=jtpind(jt,n,w));  wv=AV(w);  // convert to positive indexes, wv-> indexes
  GATV0(z,INT,n,1); zv=AV(z);  // allocate result area
  GATV0(b,B01,n,1); bv=BAV(b); memset(bv,C1,n);   // binary vector, init to 1
  DO(AN(w), bv[wv[i]]=0;);  // clear flag in indexes that appear
@@ -53,7 +53,7 @@ static A jtcfd(J jt, A w){A b,q,x,z,*zv;B*bv;I c,i,j,n,*qv,*u,*v,zn;
   GATV0(b,B01,1+n,1); bv=BAV(b); memset(bv,C0,n);
   DO(n, j=v[i]; if((UI)j>=(UI)n||bv[j]){c=0; break;} bv[j]=1;);
  }
- if(!c){n=ord(w); RZ(w=pfill(n,w)); v=AV(w); GATV0(b,B01,1+n,1);}
+ if(!c){n=ord(w); RZ(w=jtpfill(jt,n,w)); v=AV(w); GATV0(b,B01,1+n,1);}
  bv=BAV(b); memset(bv,C0,1+n); ++bv;
  i=0; j=n-1; zn=(I)(log((D)n)+1.6); 
  GATV0(q,INT,n, 1); qv= AV(q);
@@ -62,7 +62,7 @@ static A jtcfd(J jt, A w){A b,q,x,z,*zv;B*bv;I c,i,j,n,*qv,*u,*v,zn;
   while(bv[j])--j; if(0>j)break;
   u=qv; c=j;
   do{bv[c]=1; *u++=c; c=v[c];}while(c!=j);
-  if(i==zn){RZ(z=ext(0,z)); zv=AAV(z); zn=AN(z);}
+  if(i==zn){RZ(z=jtext(jt,0,z)); zv=AAV(z); zn=AN(z);}
   RZ(zv[i++]=incorp(vec(INT,u-qv,qv)));
  }
  AN(z)=AS(z)[0]=zn=i; j=zn-1; DO(zn>>1, x=zv[i]; zv[i]=zv[j]; zv[j]=x; --j;);
@@ -77,7 +77,7 @@ static A jtdfc(J jt,I n,A w){PROLOG(0082);A b,q,*wv,z;B*bv;I c,j,qn,*qv,*x;
  RZ(z=apvwr(n,0L,1L)); x=AV(z);
  wv=AAV(w); 
  for(j=AN(w)-1;0<=j;j--){
-  RZ(q=pind(n,wv[j])); qv=AV(q); qn=AN(q);
+  RZ(q=jtpind(jt,n,wv[j])); qv=AV(q); qn=AN(q);
   if(!qn)continue;
   DO(qn, ASSERT(bv[qv[i]],EVINDEX); bv[qv[i]]=0;); DO(qn,bv[qv[i]]=1;);
   c=x[qv[0]]; DO(qn-1,x[qv[i]]=x[qv[i+1]];); x[qv[qn-1]]=c;
@@ -90,8 +90,8 @@ static A jtdfc(J jt,I n,A w){PROLOG(0082);A b,q,*wv,z;B*bv;I c,j,qn,*qv,*x;
  A jtcdot2(J jt,A a,A w){A p;I k;
  F2RANK(1,RMAX,jtcdot2,UNUSED_VALUE);
  SETIC(w,k);
- RZ(p=BOX&AT(a)?jtdfc(jt,k,a):pfill(k,a));
- return AR(w)?from(p,w):w;
+ RZ(p=BOX&AT(a)?jtdfc(jt,k,a):jtpfill(jt,k,a));
+ return AR(w)?jtfrom(jt,p,w):w;
 }
 
  A jtpparity(J jt, A w){A x,y,z;B *u;I i,j,k,m,n,p,r,*s,*v,*zv;
@@ -131,7 +131,7 @@ static A jtrfd(J jt, A w){A z;I j,k,m,n,r,*s,*x;
 
  A jtadot1(J jt, A w){A y;I n;
  F1RANK(1,jtadot1,UNUSED_VALUE);
- RZ(y=BOX&AT(w)?cdot1(w):pfill(ord(w),w));
+ RZ(y=BOX&AT(w)?cdot1(w):jtpfill(jt,ord(w),w));
  SETIC(y,n);
  return jtbase2(jt,jtcvt(jt,XNUM,apv(n,n,-1L)),rfd(y));
 }
@@ -141,7 +141,7 @@ static A jtrfd(J jt, A w){A z;I j,k,m,n,r,*s,*x;
  ASSERT(all1(le(negate(m),a))&&all1(lt(a,m)),EVINDEX);
  if(!AR(w)){RZ(vi(a)); return w;}
  RZ(p=dfr(vi(jtabase2(jt,apv(n,n,-1L),a))));
- return equ(w,IX(n))?p:from(p,w);  // special case when w is index vector - just return permutation.  Otherwise shuffle items of w
+ return equ(w,IX(n))?p:jtfrom(jt,p,w);  // special case when w is index vector - just return permutation.  Otherwise shuffle items of w
  // pristinity unchanged here: if w boxed, it was set by {
 }
 

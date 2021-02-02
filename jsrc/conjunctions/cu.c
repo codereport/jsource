@@ -24,7 +24,7 @@ static A jteverysp(J jt,A w,A fs){A*wv,x,z,*zv;P*wp,*zp;
 // u&.>, but w may be a gerund, which makes the result a list of functions masquerading as an aray of boxes
 A jtevery(J jt, A w, A fs){A * RESTRICT wv,x,z,* RESTRICT zv;
  F1PREFIP;RESETRANK;  // we claim to support IRS1 but really there's nothing to do for it
- if((SPARSE&AT(w))!=0)return everysp(w,fs);
+ if((SPARSE&AT(w))!=0)return jteverysp(jt,w,fs);
  AF f1=FAV(fs)->valencefns[0];   // pointer to function to call
  A virtw; I flags;  // flags are: ACINPLACE=pristine result; JTWILLBEOPENED=nonrecursive result; BOX=input was boxed; ACPERMANENT=input was inplaceable pristine, contents can be inplaced
  // If the result will be immediately unboxed, we create a NONrecursive result and we can store virtual blocks in it.  This echoes what result.h does.
@@ -237,8 +237,8 @@ A jtevery2(J jt, A a, A w, A fs){A*av,*wv,x,z,*zv;
 // u&.v
 // PUSH/POP ZOMB is performed in atop/amp/ampco
 // under is for when we could not precalculate the inverse.  The verb is in localuse
-static A jtunder1(J jt,    A w,A self){F1PREFIP;DECLFG;A fullf; RZ(fullf=jtatop(jt,invrecur(fix(sv->localuse.lvp[0],sc(FIXASTOPATINV))),sv->fgh[2])); return (FAV(fullf)->valencefns[0])(FAV(fullf)->flag&VJTFLGOK1?jtinplace:jt,w,fullf);}
-static A jtunder2(J jt,A a,A w,A self){F2PREFIP;DECLFG;A fullf; RZ(fullf=jtatop(jt,invrecur(fix(sv->localuse.lvp[0],sc(FIXASTOPATINV))),sv->fgh[2])); return (FAV(fullf)->valencefns[1])(FAV(fullf)->flag&VJTFLGOK2?jtinplace:jt,a,w,fullf);}
+static A jtunder1(J jt,    A w,A self){F1PREFIP;DECLFG;A fullf; RZ(fullf=jtatop(jt,invrecur(jtfix(jt,sv->localuse.lvp[0],sc(FIXASTOPATINV))),sv->fgh[2])); return (FAV(fullf)->valencefns[0])(FAV(fullf)->flag&VJTFLGOK1?jtinplace:jt,w,fullf);}
+static A jtunder2(J jt,A a,A w,A self){F2PREFIP;DECLFG;A fullf; RZ(fullf=jtatop(jt,invrecur(jtfix(jt,sv->localuse.lvp[0],sc(FIXASTOPATINV))),sv->fgh[2])); return (FAV(fullf)->valencefns[1])(FAV(fullf)->flag&VJTFLGOK2?jtinplace:jt,a,w,fullf);}
 // underh has the inverse precalculated, and the inplaceability set from it.  It handles &. and &.: which differ only in rank
 static A jtunderh1(J jt,    A w,A self){F1PREFIP;DECLFGH; return (FAV(hs)->valencefns[0])(jtinplace,w,hs);}
 static A jtunderh2(J jt,A a,A w,A self){F2PREFIP;DECLFGH; return (FAV(hs)->valencefns[1])(jtinplace,a,w,hs);}
@@ -261,7 +261,7 @@ static A jtunderai1(J jt,    A w,A self){DECLF;A x,y,z;B b;I j,n,*u,*v;UC f[256]
   if(b){u=AV(x); v=AV(y); DO(256, j=*u++; if(j==*v++&&BETWEENO(j,-256,256))f[i]=(UC)(j&255); else{b=0; break;});}  // verify both results the same & in bounds
   if(jt->jerr)RESETERR;
  }         
- if(!b)return from(df1(z,indexof(ds(CALP),w),fs),ds(CALP));
+ if(!b)return jtfrom(jt,df1(z,jtindexof(jt,ds(CALP),w),fs),ds(CALP));
  n=AN(w);
  GATV(z,LIT,n,AR(w),AS(w)); zv=UAV(z); wv=UAV(w);
  if(!bitwisecharamp(f,n,wv,zv))DQ(n, *zv++=f[*wv++];); 
@@ -311,8 +311,8 @@ static A jtunderai1(J jt,    A w,A self){DECLF;A x,y,z;B b;I j,n,*u,*v;UC f[256]
  if(gside<0){h=jtamp(jt,a,wvb); rlr=rrr=rmr;  // normal case, f&g"mg
  }else{
   f1=jtdomainerr1;  // monad not allowed with gerund v
-  if(gside==0){rlr=rmr; rrr=(RANKT)FAV(a)->lrr; h=qq(swap(hook(swap(a),wvb)),v2(rlr,rrr));  // (f~ g)~"mw rf
-  }else{rlr=FAV(a)->lrr>>RANKTX; rrr=rmr; h=qq(hook(a,wvb),v2(rlr,rrr));  // (f g)"lf mg
+  if(gside==0){rlr=rmr; rrr=(RANKT)FAV(a)->lrr; h=qq(swap(jthook(jt,swap(a),wvb)),v2(rlr,rrr));  // (f~ g)~"mw rf
+  }else{rlr=FAV(a)->lrr>>RANKTX; rrr=rmr; h=qq(jthook(jt,a,wvb),v2(rlr,rrr));  // (f g)"lf mg
   }
  }
  ASSERT(h!=0,EVDOMAIN);
@@ -347,8 +347,8 @@ static A jtunderai1(J jt,    A w,A self){DECLF;A x,y,z;B b;I j,n,*u,*v;UC f[256]
  if(gside<0){h=jtampco(jt,a,wvb); // normal case, f&:g
  }else{
   f1=jtdomainerr1;  // monad not allowed with gerund v
-  if(gside==0){h=swap(hook(swap(a),wvb));  // (f~ g)~
-  }else{h=hook(a,wvb);  // (f g)
+  if(gside==0){h=swap(jthook(jt,swap(a),wvb));  // (f~ g)~
+  }else{h=jthook(jt,a,wvb);  // (f g)
   }
  }
  ASSERT(h!=0,EVDOMAIN);

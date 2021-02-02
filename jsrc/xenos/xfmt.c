@@ -57,7 +57,7 @@ static const C*qq=">)}]";
 
 
 static A jtfmtbfc(J jt, A w){A*u,z;B t;C c,p,q,*s,*wv;I i,j,m,n;
- if((C2T+C4T)&AT(w))RZ(w=uco2(num(5),w))
+ if((C2T+C4T)&AT(w))RZ(w=jtuco2(jt,num(5),w))
  ASSERT(1>=AR(w),EVDOMAIN);
  n=AN(w); wv=CAV(w); t=0; m=1; j=0;
  for(i=0;i<n;++i){
@@ -71,10 +71,10 @@ static A jtfmtbfc(J jt, A w){A*u,z;B t;C c,p,q,*s,*wv;I i,j,m,n;
  for(i=0;i<n;++i){
   c=wv[i]; 
   if(t){if(c==q)t=0;}
-  else if(c==','){RZ(*u++=incorp(str(i-j,wv+j))); j=i+1;}
+  else if(c==','){RZ(*u++=incorp(jtstr(jt,i-j,wv+j))); j=i+1;}
   else if(s=strchr(pp,c)){t=1; q=qq[s-pp];}
  }
- RZ(*u=incorp(str(n-j,wv+j)));
+ RZ(*u=incorp(jtstr(jt,n-j,wv+j)));
  return z;
 } /* format phrases: boxed from char */
 
@@ -133,7 +133,7 @@ static A jtfmtparse(J jt, A w){A x,z,*zv;B ml[2+NMODVALS],mod,t;C c,*cu="srqpnmd
  w=AAV(w)[0]; n=AN(w);
  GAT0(z,BOX,1+NMODVALS,1); zv=AAV(z); 
  DO(NMODVALS, zv[1+i]=mtv;);
- if(n&&(C2T+C4T)&AT(w))RZ(w=uco2(num(5),w));
+ if(n&&(C2T+C4T)&AT(w))RZ(w=jtuco2(jt,num(5),w));
  ASSERT(1>=AR(w),EVRANK);
  ASSERT(!n||LIT&AT(w),EVDOMAIN); 
  wv=CAV(w); n1=1+n; t=c=0; fb=0; mi=-1; memset(ml,C1,sizeof(ml));
@@ -149,16 +149,16 @@ static A jtfmtparse(J jt, A w){A x,z,*zv;B ml[2+NMODVALS],mod,t;C c,*cu="srqpnmd
    d=wv[mi];
    ASSERT(s=strchr(cu,d),EVDOMAIN);
    j=s-cu; ASSERT(ml[j],EVDOMAIN); ml[j]=0; fb|=(I)1<<j; 
-   if(s=strchr(cu1,d)){if(i-mi>3)RZ(zv[s-cu1]=incorp(str(i-mi-3,wv+mi+2)));}else ASSERT(1==i-mi,EVDOMAIN);
+   if(s=strchr(cu1,d)){if(i-mi>3)RZ(zv[s-cu1]=incorp(jtstr(jt,i-mi-3,wv+mi+2)));}else ASSERT(1==i-mi,EVDOMAIN);
   }
   mi=i;
-  if(BETWEENC(c,'0','9')){RZ(widthdp(str(n-i,wv+i),vals,vals+1)); break;} 
+  if(BETWEENC(c,'0','9')){RZ(widthdp(jtstr(jt,n-i,wv+i),vals,vals+1)); break;} 
  }
  if(mtv!=zv[NMODVALS]){C*cu="e,.-*",*cv,subs[5];
   x=zv[NMODVALS]; n=AN(x); cv=CAV(x); MC(subs,cu,5L); memset(ml,C1,5L);
   ASSERT(0==(n&1)&&10>=n,EVDOMAIN);
   DQ(n>>1, ASSERT(s=strchr(cu,*cv++),EVDOMAIN); j=s-cu; ASSERT(ml[j],EVDOMAIN); ml[j]=0; subs[j]=*cv++;);
-  RZ(zv[NMODVALS]=incorp(str(5L,subs)));
+  RZ(zv[NMODVALS]=incorp(jtstr(jt,5L,subs)));
  }
  vals[2]=fb; RZ(*zv=incorp(vec(INT,3,vals)));
  return z;
@@ -179,7 +179,7 @@ static D jtroundID(J jt,I d,D y){D f,q,c,h;DI8 f8,q8,c8;
  else                         return npwrs[d]*(f-h);
 } /* round a number in not in exponential notation */
 
-static D jtafzrndID(J jt,I dp,D y){return SGN(y)*roundID(dp,ABS(y));}
+static D jtafzrndID(J jt,I dp,D y){return SGN(y)*jtroundID(jt,dp,ABS(y));}
          /* round-to-nearest, solve ties by rounding Away From Zero */
 
 static D jtexprndID(J jt, I d, D y){I e,s;D f,q,c,x1,x2;DI8 f8,y8,c8;
@@ -280,7 +280,7 @@ static A jtfmtprecomp(J jt,A a,A w) {A*as,base,fb,len,strs,*u,z;B*bits,*bw;D dtm
     if(d==-1) *bits |= BITSe * (2000000000L < (UI)ABS(*iw));
     /* BITS_, BITS__, and BITS_d are 0 */
     *bits |= BITSz*!*iw;
-    if(d==-1) *iv = dpone(*bits,(D)*iw);
+    if(d==-1) *iv = jtdpone(jt,*bits,(D)*iw);
     bits++; iw++; iv++;
    }
    imod=1;  // row size counter
@@ -304,7 +304,7 @@ static A jtfmtprecomp(J jt,A a,A w) {A*as,base,fb,len,strs,*u,z;B*bits,*bw;D dtm
     *bits |= BITS_ *!memcmpne(dw, &inf , SZD)+ 
              BITS__*!memcmpne(dw, &infm, SZD)+
              BITS_d*_isnan(*dw); 
-    if(d==-1) *iv = dpone(*bits,*dw);
+    if(d==-1) *iv = jtdpone(jt,*bits,*dw);
     else *bits |= BITSz*(TEQ(*dw, 0) || (!(*bits&BITSf+BITSe) && TLT(dtmp, npwrs[d]/2)));
     bits++; dw++; iv++; 
    }
@@ -365,7 +365,7 @@ static A jtfmtprecomp(J jt,A a,A w) {A*as,base,fb,len,strs,*u,z;B*bits,*bw;D dtm
         if(B01&wt) *iv=1+!!d+d;
         else {
          if(B01&wt) dtmp=1; if(INT&wt) dtmp=(D)*iw; else dtmp=*dw;
-         *iv=(I)jfloor(log10(roundID(d,MAX(ABS(dtmp),1))));
+         *iv=(I)jfloor(log10(jtroundID(jt,d,MAX(ABS(dtmp),1))));
          if(mC) (*iv)+=(*iv)/3;
          (*iv)+=1+!!d+d;
          if(dtmp < 0 && mMN) (*iv)+=nMN;
@@ -409,7 +409,7 @@ static A jtfmtallcol(J jt, A a, A w, I mode) {A *a1v,base,fb,len,strs,*u,v,x;
    );
    break;
   case 1:
-   GATV0(x, BOX, nc, 1); a1v=AAV(x); ib=AV(base); zs[0]=prod(wr-1,ws);
+   GATV0(x, BOX, nc, 1); a1v=AAV(x); ib=AV(base); zs[0]=jtprod(jt,wr-1,ws);
    GATV0(v, LIT, nc*SZA, 1); cvv=(C**)AV(v); 
    DO(nc,
     if(0<ib[0]) zs[1]=ib[0]; 
@@ -425,7 +425,7 @@ static A jtfmtallcol(J jt, A a, A w, I mode) {A *a1v,base,fb,len,strs,*u,v,x;
    coll=0; ib=AV(base);
    DO(nc, if(0<ib[0]) coll+=ib[0]; else coll+=ib[3+(1<nf?0:i)];
           if(1<nf) ib+=4; );
-   zs[0]=prod(wr-1,ws); zs[1]=coll;
+   zs[0]=jtprod(jt,wr-1,ws); zs[1]=coll;
    GATVR(x, LIT, zs[0]*zs[1], 2, zs);
    memset(CAV(x), ' ', AN(x));
    break;
@@ -477,7 +477,7 @@ static A jtfmtallcol(J jt, A a, A w, I mode) {A *a1v,base,fb,len,strs,*u,v,x;
     y=dtmp < 0; g=0;    // y will be length of sign prefix; init to 1 if negative.  g is length of sign suffix9
     if(dtmp < 0 && mMN) { y=nM; g=nN; }   // if value is negative and m<xx> or n<xx> given, set pref/suff length from m/n
     else if(dtmp>=0 && mPQ) { y=nP; g=nQ; }   // if value is nonnegative and p<xx> or q<xx> given, set pref/suff length from p/q
-    RZ(sprintfeD(cv+y,*il-y-g,d,exprndID(d,dtmp),subs));  // format the number, skipping pref/suff
+    RZ(sprintfeD(cv+y,*il-y-g,d,jtexprndID(jt,d,dtmp),subs));  // format the number, skipping pref/suff
     if     (dtmp< 0 && mMN) { MC(cv, cM, nM); MC(cv+*il-nN, cN, nN); }  // if negative & pref/suff given, move them in
     else if(dtmp< 0       ) { *cv=SUBm;                              }   // if other negative, use the specified - sign
     else if(dtmp>=0 && mPQ) { MC(cv, cP, nP); MC(cv+*il-nQ, cQ, nQ); }  // if nonnegative & pref/suff given, move them in
@@ -517,7 +517,7 @@ static A jtfmtallcol(J jt, A a, A w, I mode) {A *a1v,base,fb,len,strs,*u,v,x;
 static A jtfmtxi(J jt, A a, A w, I mode, I *omode){I lvl;
  *omode=0;
  if((SPARSE&AT(w))!=0) RZ(w=denseit(w));
- if(!AN(w))       RZ(w=reshape(shape(w),chrspace));
+ if(!AN(w))       RZ(w=jtreshape(jt,shape(w),chrspace));
  if(JCHAR&AT(w))  return df1(a,w,qq(jtatop(jt,ds(CBOX),ds(CCOMMA)),num(1)));
  ASSERT(1>=AR(a), EVRANK); 
  ASSERT(!AN(a) || JCHAR+BOX&AT(a), EVDOMAIN);
@@ -530,11 +530,11 @@ static A jtfmtxi(J jt, A a, A w, I mode, I *omode){I lvl;
   ASSERT(1>=lvl, EVDOMAIN);
   DO(AN(w), x=wv[i]; ASSERT(1>=AR(x),EVRANK); if(AN(x)){ASSERT(AT(x)&JCHAR+NUMERIC,EVDOMAIN);
       ASSERT(!(AR(x)&&AT(x)&NUMERIC),EVRANK);});
-  A z; return df2(z,reitem(shape(w),a),w,jtamp(jt,foreign(num(8),num(0)), ds(COPE)));
+  A z; return df2(z,jtreitem(jt,shape(w),a),w,jtamp(jt,jtforeign(jt,num(8),num(0)), ds(COPE)));
  } else {
   if(XNUM+RAT+CMPX&AT(w))RZ(w=jtcvt(jt,FL,w));
   *omode=mode;
-  return fmtallcol(fmtprecomp(rank1ex0(a,UNUSED_VALUE,jtfmtparse),w),w,mode);
+  return fmtallcol(jtfmtprecomp(jt,rank1ex0(a,UNUSED_VALUE,jtfmtparse),w),w,mode);
 }} /* 8!:x internals */
   /* mode is the requested mode, *omode is the actual mode computed */
   /* mode is 0, 1, or 2 for 8!:0, 8!:1, or 8!:2                     */
@@ -547,7 +547,7 @@ static A jtfmtxi(J jt, A a, A w, I mode, I *omode){I lvl;
  RZ(z=fmtxi(a,w,1,&mode));
  if(mode==1)return z;
  r=AR(z);
- A t; df1(t,cant1(2==r?z:reshape(v2(1L,SETIC(z,j)),z)), qq(jtatco(jt,ds(CBOX),ds(COPE)),num(1)));
+ A t; df1(t,cant1(2==r?z:jtreshape(jt,v2(1L,SETIC(z,j)),z)), qq(jtatco(jt,ds(CBOX),ds(COPE)),num(1)));
  return ravel(t);
 } /* 8!:1 dyad */
 
@@ -556,11 +556,11 @@ static A jtfmtxi(J jt, A a, A w, I mode, I *omode){I lvl;
  RZ(z=fmtxi(a,w,2,&mode));
  if(mode==2)return z;
  r=AR(z);
- A t; df1(t,cant1(2==r?z:reshape(v2(1L,SETIC(z,j)),z)), qq(jtatco(jt,ds(CBOX),ds(COPE)),num(1)));
+ A t; df1(t,cant1(2==r?z:jtreshape(jt,v2(1L,SETIC(z,j)),z)), qq(jtatco(jt,ds(CBOX),ds(COPE)),num(1)));
  RZ(z=ravel(t));
  return AS(z)[0]?razeh(z):lamin1(z);
 } /* 8!:2 dyad */
 
- A jtfmt01(J jt, A w){ return fmt02(AR(w)?reshape(sc(AS(w)[AR(w)-1]),ds(CACE)):ds(CACE),w);} /* 8!:0 monad */
- A jtfmt11(J jt, A w){ return fmt12(AR(w)?reshape(sc(AS(w)[AR(w)-1]),ds(CACE)):ds(CACE),w);} /* 8!:1 monad */
- A jtfmt21(J jt, A w){ return fmt22(AR(w)?reshape(sc(AS(w)[AR(w)-1]),ds(CACE)):ds(CACE),w);} /* 8!:2 monad */
+ A jtfmt01(J jt, A w){ return jtfmt02(jt,AR(w)?jtreshape(jt,sc(AS(w)[AR(w)-1]),ds(CACE)):ds(CACE),w);} /* 8!:0 monad */
+ A jtfmt11(J jt, A w){ return jtfmt12(jt,AR(w)?jtreshape(jt,sc(AS(w)[AR(w)-1]),ds(CACE)):ds(CACE),w);} /* 8!:1 monad */
+ A jtfmt21(J jt, A w){ return jtfmt22(jt,AR(w)?jtreshape(jt,sc(AS(w)[AR(w)-1]),ds(CACE)):ds(CACE),w);} /* 8!:2 monad */

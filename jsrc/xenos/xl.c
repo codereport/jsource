@@ -46,7 +46,7 @@ B jtxlinit(J jt){A x;I*s;
  return 1;
 }
 
- A jtjlocks(J jt, A w){A y; ASSERTMTV(w); y=take(sc(AM(jt->flkd)),jt->flkd); return grade2(y,y);}
+ A jtjlocks(J jt, A w){A y; ASSERTMTV(w); y=jttake(jt,sc(AM(jt->flkd)),jt->flkd); return jtgrade2(jt,y,y);}
      /* return the locks, a 3-column table of (number,index,length) */
 
  A jtjlock(J jt, A w){B b;I*v;
@@ -54,7 +54,7 @@ B jtxlinit(J jt){A x;I*s;
  RZ(w=vi(w)); 
  ASSERT(LKC==AN(w),EVLENGTH);
  v=AV(w); RE(vfn((F)*v)); ASSERT(0<=v[1]&&0<=v[2],EVDOMAIN); 
- if(AM(jt->flkd)==AS(jt->flkd)[0]){I ct=AM(jt->flkd); RZ(jt->flkd=ext(1,jt->flkd)); AM(jt->flkd)=ct;}
+ if(AM(jt->flkd)==AS(jt->flkd)[0]){I ct=AM(jt->flkd); RZ(jt->flkd=jtext(jt,1,jt->flkd)); AM(jt->flkd)=ct;}
  RE(b=dolock(1,(F)v[0],v[1],v[2]));
  if(!b)return num(0);
  ICPY(AV(jt->flkd)+LKC*AM(jt->flkd),v,LKC); ++AM(jt->flkd);
@@ -80,5 +80,5 @@ B jtunlk(J jt,I x){I j=0,*v=AV(jt->flkd);
  A jtjunlock(J jt, A w){
  F1RANK(1,jtjunlock,UNUSED_VALUE); 
  ASSERT(INT&AT(w),EVDOMAIN); 
- return unlj(i0(indexof(jt->flkd,w)));
+ return unlj(i0(jtindexof(jt,jt->flkd,w)));
 }    /* w is (number,index,length); unlock the specified region */

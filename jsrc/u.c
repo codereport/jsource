@@ -146,7 +146,7 @@ C cf(A w){if(!w)return 0; return CAV(w)[0];}  // first character in a character 
 C cl(A w){if(!w)return 0; return CAV(w)[AN(w)-1];}  // last character in a character array
 
 // A block for null-terminated C string, with a trailing NUL (which is not included in the AN of the string)
-A jtcstr(J jt,C*s){A z; RZ(z=rifvs(str((I)strlen(s),s))); CAV(z)[AN(z)]=0; return z;}  // used only for initialization, so ensure real string returned.  The string has only the non-NUL, but add a trailing NUL.  There's always room.
+A jtcstr(J jt,C*s){A z; RZ(z=rifvs(jtstr(jt,(I)strlen(s),s))); CAV(z)[AN(z)]=0; return z;}  // used only for initialization, so ensure real string returned.  The string has only the non-NUL, but add a trailing NUL.  There's always room.
 
 // Return 1 iff w is the evocation of a name.  w must be a FUNC
 B evoke(A w){V*v=FAV(w); return CTILDE==v->id&&v->fgh[0]&&NAME&AT(v->fgh[0]);}

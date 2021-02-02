@@ -56,7 +56,7 @@ static A jtfolk2(J jt,A a,A w,A self){F2PREFIP;DECLFGH;PROLOG(0029);A z; FOLK2;
 
 // see if f is defined as [:, as a single name
 static B jtcap(J jt,A x){V*v;L *l;
- if(v=VAV(x),CTILDE==v->id&&NAME&AT(v->fgh[0])&&(l=syrd(v->fgh[0],jt->locsyms))&&(x=l->val))v=VAV(x);  // don't go through chain of names, since it might loop (on u) and it's ugly to chase the chain
+ if(v=VAV(x),CTILDE==v->id&&NAME&AT(v->fgh[0])&&(l=jtsyrd(jt,v->fgh[0],jt->locsyms))&&(x=l->val))v=VAV(x);  // don't go through chain of names, since it might loop (on u) and it's ugly to chase the chain
  return CCAP==v->id;
 }
 
@@ -250,9 +250,9 @@ static A jthkiota(J jt,    A w,A self){DECLFG;A a,e;I n;P*p;
  SETIC(w,n);\
  if(SB01&AT(w)&&1==AR(w)){
   p=PAV(w); a=SPA(p,a); e=SPA(p,e); 
-  return BAV(e)[0]||equ(mtv,a) ? repeat(w,IX(n)) : repeat(SPA(p,x),ravel(SPA(p,i)));
+  return BAV(e)[0]||equ(mtv,a) ? jtrepeat(jt,w,IX(n)) : jtrepeat(jt,SPA(p,x),ravel(SPA(p,i)));
  }
- return B01&AT(w)&&1>=AR(w) ? ifb(n,BAV(w)) : repeat(w,IX(n));
+ return B01&AT(w)&&1>=AR(w) ? jtifb(jt,n,BAV(w)) : jtrepeat(jt,w,IX(n));
 }    /* special code for (# i.@#) */
 
 static A jthkodom(J jt,    A w,A self){DECLFG;B b=0;I n,*v;
@@ -270,7 +270,7 @@ static A jthkodom(J jt,    A w,A self){DECLFG;B b=0;I n,*v;
 
 static A jthkindexofmaxmin(J jt,    A w,A self){I z=0;
  I n=AN(w);
- if(!(1==AR(w)&&AT(w)&INT+FL))return hook1(w,self);
+ if(!(1==AR(w)&&AT(w)&INT+FL))return jthook1(jt,w,self);
  if(n>1){
   switch((AT(w)&INT)+(CICO==ID(FAV(self)->fgh[0])?2:0)+(CMAX==ID(FAV(FAV(self)->fgh[1])->fgh[0]))){
   case 0: IDOTSEARCH(D,<,<=)

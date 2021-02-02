@@ -93,7 +93,7 @@ PRIM jtfxself[2]={ {{0,0,0,0,0,0,0},{{{jtfx,0},{0,0,0},0,0,0,0,0,0,0}}} , {{1,0,
 // run jtfx on each box in w, turning AR into an A block
 // self is a parm passed through to jtfx, coming from jtfxself above.  if AK(self) is nonzero, we return nouns as is
 // Result claims to be an array of boxes, but each box holds a function
- A jtfxeach(J jt,    A w,A self){return every(w,self);}
+ A jtfxeach(J jt,    A w,A self){return jtevery(jt,w,self);}
 
 static A jtcon1(J jt,    A w,A self){A h,*hv,*x,z;V*sv;
  PREF1(jtcon1);
@@ -115,9 +115,9 @@ static A jtcon2(J jt,A a,A w,A self){A h,*hv,*x,z;V*sv;
 static A jtinsert(J jt,    A w,A self){A hs,*hv,z;I hfx,j,m,n;A *old;
  SETIC(w,n); j=n-1; hs=FAV(self)->fgh[2]; m=AN(hs); hfx=j%m; hv=AAV(hs);  // m cannot be 0
  if(!n)return df1(z,w,iden(*hv));
- RZ(z=from(num(-1),w));
+ RZ(z=jtfrom(jt,num(-1),w));
  old=jt->tnextpushp;
- --m; DQ(n-1, --j; --hfx; hfx=(hfx<0)?m:hfx; RZ(z=CALL2(FAV(hv[hfx])->valencefns[1],from(sc(j),w),z,hv[hfx])); z=gc(z,old);)
+ --m; DQ(n-1, --j; --hfx; hfx=(hfx<0)?m:hfx; RZ(z=CALL2(FAV(hv[hfx])->valencefns[1],jtfrom(jt,sc(j),w),z,hv[hfx])); z=jtgc(jt,z,old);)
  return z;
 }
 
@@ -125,7 +125,7 @@ static A jtinsert(J jt,    A w,A self){A hs,*hv,z;I hfx,j,m,n;A *old;
  A jtevger(J jt,A a,A w){A hs;I k;
  RE(k=i0(w)); 
  if(k==GTRAIN)return exg(a);
- RZ(hs=fxeachv(RMAX,a));
+ RZ(hs=jtfxeachv(jt,RMAX,a));
  switch(k){
   case GAPPEND:
    return fdef(0,CGRCO,VERB, jtcon1,jtcon2, a,w,hs, VGERL, RMAX,RMAX,RMAX);
@@ -188,7 +188,7 @@ static A jtcasei12(J jt,A a,A w,A self){A vres,z;I gerit[128/SZI],ZZFLAGWORD;
    // omitted a to point to w and not to modify it.
    if(wr>=0){
     RZ(w=jtredcatcell(jtinplace,w,wr));  // inplaceability of original w
-    RZ(sortw=from(gradepm,w));
+    RZ(sortw=jtfrom(jt,gradepm,w));
     // Inplace the virtual block if that is allowed
     ZZFLAGWORD |= SGNTO0((-(AT(sortw)&TYPEVIPOK))&AC(sortw))<<ZZFLAGVIRTWINPLACEX;
     ZZFLAGWORD|=ZZFLAGARRAYW;  // indicate that virtw must be updated between iterations
@@ -205,7 +205,7 @@ static A jtcasei12(J jt,A a,A w,A self){A vres,z;I gerit[128/SZI],ZZFLAGWORD;
    if(ZZFLAGWORD&ZZFLAGISDYAD){   // if we need to repeat for a
     if(ar>=0){
      RZ(a=jtredcatcell((J)((I)jt|(((I)jtinplace>>(JTINPLACEAX-JTINPLACEWX))&JTINPLACEW)),a,ar));  // move inplaceability of original a to w
-     RZ(sorta=from(gradepm,a));
+     RZ(sorta=jtfrom(jt,gradepm,a));
     ZZFLAGWORD |= SGNTO0((-(AT(sorta)&TYPEVIPOK))&AC(sorta))<<ZZFLAGVIRTAINPLACEX;
      ZZFLAGWORD|=ZZFLAGARRAYA;
     }else{
@@ -290,7 +290,7 @@ static A jtcasei12(J jt,A a,A w,A self){A vres,z;I gerit[128/SZI],ZZFLAGWORD;
     zz=ev2(gradepm,zz,"(/:~   >@:;@:((<\"_1)&.>))");  // (> ; <"_1&.> zz) /: gradepm
    }
    // If the original input had structure, rearrange the result to match it
-   if(vr>1)RZ(zz=reitem(shape(vres),zz));
+   if(vr>1)RZ(zz=jtreitem(jt,shape(vres),zz));
   }else{
    // If there are too few values to justify the sort, create an indirect iterator for them and run it
    RZ(z=jtcreategerunditerator(jt,(A)&gerit,self,vres));
@@ -314,19 +314,19 @@ static A jtcasei12(J jt,A a,A w,A self){A vres,z;I gerit[128/SZI],ZZFLAGWORD;
 // @.n
 static A jtgerfrom(J jt,A a,A w){A*av,*v,z;I n;
  ASSERT(1>=AR(a),EVRANK);
- if(NUMERIC&AT(a))return from(a,w);
+ if(NUMERIC&AT(a))return jtfrom(jt,a,w);
  else{
   ASSERT(BOX&AT(a),EVDOMAIN);
   n=AN(a); av=AAV(a); 
   GATV0(z,BOX,n,1); v=AAV(z);
-  DO(n, RZ(*v++=incorp(gerfrom(av[i],w))););
+  DO(n, RZ(*v++=incorp(jtgerfrom(jt,av[i],w))););
   return z;
 }}
 
  A jtagendai(J jt,A a,A w){I flag;
- if(NOUN&AT(w))return exg(gerfrom(w,a));  // noun form, as before
+ if(NOUN&AT(w))return exg(jtgerfrom(jt,w,a));  // noun form, as before
  // verb v.  Create a "BOX" type holding the verb form of each gerund
- A avb; RZ(avb = incorp(fxeachv(1L,a)));
+ A avb; RZ(avb = incorp(jtfxeachv(jt,1L,a)));
   // Calculate ASGSAFE from all of the verbs (both a and w), provided the user can handle it
  flag = VASGSAFE&FAV(w)->flag; A* avbv = AAV(avb); DQ(AN(avb), flag &= FAV(*avbv)->flag; ++avbv;);  // Don't increment inside FAV!
  return fdef(0,CATDOT,VERB, jtcasei12,jtcasei12, a,w,avb, flag+((VGERL|VJTFLGOK1|VJTFLGOK2)|FAV(ds(CATDOT))->flag), RMAX, RMAX, RMAX);
@@ -377,7 +377,7 @@ A jtgconj(J jt,A a,A w,C id){A hs,y;B na;I n;
  ASSERT(1>=AR(y),EVRANK);
  ASSERT((n&-2)==2,EVLENGTH);  // length is 2 or 3
  ASSERT(BOX&AT(y),EVDOMAIN);
- RZ(hs=fxeach(3==n?y:link(scc(CLBKTC),y),(A)&jtfxself[0]));
+ RZ(hs=jtfxeach(jt,3==n?y:link(scc(CLBKTC),y),(A)&jtfxself[0]));
  return fdef(0,id,VERB, na?jtgcl1:jtgcr1,na?jtgcl2:jtgcr2, a,w,hs, na?VGERL:VGERR, RMAX,RMAX,RMAX);
 }
 
@@ -425,7 +425,7 @@ A jtgadv(J jt,A w,C id){A hs;I n;
  ASSERT(1>=AR(w),EVRANK);
  ASSERT(n&&n<=3,EVLENGTH);  // verify 1-3 gerunds
  ASSERT(BOX&AT(w),EVDOMAIN);
- RZ(hs=fxeach(3==n?w:behead(reshape(num(4),w)),(A)(&jtfxself[0])));   // convert to v0`v0`v0, v1`v0`v1, or v0`v1`v2; convert each gerund to verb
+ RZ(hs=jtfxeach(jt,3==n?w:behead(jtreshape(jt,num(4),w)),(A)(&jtfxself[0])));   // convert to v0`v0`v0, v1`v0`v1, or v0`v1`v2; convert each gerund to verb
  // hs is a BOX array, but its elements are ARs
  // The derived verb is ASGSAFE if all the components are; it has gerund left-operand; and it supports inplace operation on the dyad
  // Also set the LSB flags to indicate whether v0 is u@[ or u@]
@@ -441,6 +441,6 @@ static A jtgf2(J jt,A a,A w,A self){A z,h=FAV(self)->fgh[2]; return df2(z,a,w,AA
 A jtvger2(J jt,C id,A a,A w){A h,*hv,x;V*v;
  RZ(x=a?a:w);
  ASSERT(2==AN(x),EVLENGTH);
- RZ(h=fxeachv(1L,x)); hv=AAV(h); v=VAV(*hv);
+ RZ(h=jtfxeachv(jt,1L,x)); hv=AAV(h); v=VAV(*hv);
  return fdef(0,id,VERB, jtgf1,jtgf2, x,a?w:0L, h, VGERL, (I)v->mr,lrv(v),rrv(v));
 }    /* verify and define 2-element gerund */

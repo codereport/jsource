@@ -86,7 +86,7 @@ static void jterasenl(J jt, I n){
 static A jtactivenl(J jt){A y;
  GATV0(y,INT,AN(jt->stnum),1); I *yv=IAV(y);   // allocate place to hold numbers of active locales
  I nloc=0; DO(AN(jt->stnum), if(IAV0(jt->stnum)[i]){yv[nloc]=NAV(LOCNAME((A)IAV0(jt->stnum)[i]))->bucketx; ++nloc;})
- return every(take(sc(nloc),y),ds(CTHORN));  // ":&.> nloc{.y
+ return jtevery(jt,jttake(jt,sc(nloc),y),ds(CTHORN));  // ":&.> nloc{.y
 }
 
 // iterator support.  countnl returns a number of iterations.  indexnl returns the A block (or 0) for 
@@ -106,8 +106,8 @@ A jtstcreate(J jt,C k,I p,I n,C*u){A g,x,xx;C s[20];L*v;
  // The allocation clears all the hash chain bases, including the one used for SYMLINFO
  switch(k){
   case 0:  /* named    locale */
-   RZ(v=symnew(&LXAV0(g)[SYMLINFO],0)); v->flag|=LINFO;    // allocate at head of chain
-   RZ(x=nfs(n,u));  // this fills in the hash for the name
+   RZ(v=jtsymnew(jt,&LXAV0(g)[SYMLINFO],0)); v->flag|=LINFO;    // allocate at head of chain
+   RZ(x=jtnfs(jt,n,u));  // this fills in the hash for the name
    // Install name and path.  Path is 'z' except in z locale itself, which has empty path
    RZ(ras(x)); LOCNAME(g)=x; xx=1==n&&'z'==*u?vec(BOX,0L,0L):zpath; ras(xx); LOCPATH(g) = xx;   // ras() is never VIRTUAL
    // Assign this name in the locales symbol table to point to the allocated SYMB block
@@ -115,8 +115,8 @@ A jtstcreate(J jt,C k,I p,I n,C*u){A g,x,xx;C s[20];L*v;
    symbisdel(x,g,jt->stloc);
    break;
   case 1:  /* numbered locale */
-   RZ(v=symnew(&LXAV0(g)[SYMLINFO],0)); v->flag|=LINFO;    // allocate at head of chain
-   sprintf(s,FMTI,n); RZ(x=nfs(strlen(s),s)); NAV(x)->bucketx=n; // this fills in the hash for the name; we save locale# if numeric
+   RZ(v=jtsymnew(jt,&LXAV0(g)[SYMLINFO],0)); v->flag|=LINFO;    // allocate at head of chain
+   sprintf(s,FMTI,n); RZ(x=jtnfs(jt,strlen(s),s)); NAV(x)->bucketx=n; // this fills in the hash for the name; we save locale# if numeric
    RZ(ras(x)); LOCNAME(g)=x; ras(zpath); LOCPATH(g)=zpath;  // ras() is never virtual
    // Put this locale into the in-use list at an empty location.  ras(g) at that time
    jtinstallnl(jt, g);  // put the locale into the numbered list at the value most recently returned (which must be n)
@@ -206,7 +206,7 @@ static A jtvlocnl(J jt,I b,A w){A*wv,y;C*s;I i,m,n;
   ASSERT(m!=0,EVLENGTH);
   ASSERT(LIT&AT(y),EVDOMAIN);
   ASSERT(((1-b) & (I)((UI)CAV(y)[0]-('9'+1)))>=0,EVDOMAIN);  // numeric locale not allowed except when called for in b
-  if(b&1)ASSERTN(vlocnm(m,s),EVILNAME,nfs(m,s));
+  if(b&1)ASSERTN(vlocnm(m,s),EVILNAME,jtnfs(jt,m,s));
  }
  return w;
 }    /* validate namelist of locale names  Returns list if all valid, else 0 for error */
@@ -242,7 +242,7 @@ static A jtlocnlx(J jt, A w){A y,z=mtv;B*wv;I m=0;
  RZ(w=jtcvt(jt,B01,w)); wv=BAV(w); DO(AN(w), m|=1+wv[i];);  // accumulate mask of requested types
  if(1&m)z=nlsym(jt->stloc);  // named locales
  if(2&m){RZ(y=jtactivenl(jt)); z=over(y,z); }  // get list of active numbered locales
- return grade2(z,ope(z));
+ return jtgrade2(jt,z,ope(z));
 }
 
  A jtlocnl1(J jt, A w){memset(jt->workareas.namelist.nla,C1,256); return locnlx(w);}
@@ -263,7 +263,7 @@ static A jtlocale(J jt,B b,A w){A g=0,*wv,y;
  return g;
 }    /* last locale (symbol table) from boxed locale names; 0 if none or error.  if b=1, create locale */
 
- A jtlocpath1(J jt, A w){AD * RESTRICT g; AD * RESTRICT z; F1RANK(0,jtlocpath1,UNUSED_VALUE); ASSERT(vlocnl(1,w),EVDOMAIN); RZ(g=locale(1,w));
+ A jtlocpath1(J jt, A w){AD * RESTRICT g; AD * RESTRICT z; F1RANK(0,jtlocpath1,UNUSED_VALUE); ASSERT(vlocnl(1,w),EVDOMAIN); RZ(g=jtlocale(jt,1,w));
  g=LOCPATH(g); RZ(z=ca(g)); DO(AN(g), A t; RZ(t=ca(AAV(g)[i])); AS(t)[0]=AN(t); ACIPNO(t); AAV(z)[i]=t;) return z;
 }
  // for paths, the shape holds the bucketx.  We must create a new copy that has the shape restored, and must incorporate it
@@ -271,8 +271,8 @@ static A jtlocale(J jt,B b,A w){A g=0,*wv,y;
 
  A jtlocpath2(J jt,A a,A w){A g; AD * RESTRICT x;
  F2RANK(1,0,jtlocpath2,UNUSED_VALUE);
- if(AN(a))RZ(  locale(1,a)); RZ(x=every(ravel(a),ds(CCOMMA)));  // Don't audit empty a
- RZ(g=locale(1,w));
+ if(AN(a))RZ(  jtlocale(jt,1,a)); RZ(x=jtevery(jt,ravel(a),ds(CCOMMA)));  // Don't audit empty a
+ RZ(g=jtlocale(jt,1,w));
  // paths are special: the shape of each string holds the bucketx for the string.  Install that.
  AD * RESTRICT z; RZ(z=ca(x)); DO(AN(x), A t; RZ(t=ca(AT(AAV(x)[i])&((INT|B01))?thorn1(AAV(x)[i]):AAV(x)[i]));  AS(t)[0]=BUCKETXLOC(AN(t),CAV(t)); AAV(z)[i]=t;)  // ? why so many copies?  test before thorn1 not reqd
  fa(LOCPATH(g)); ras(z); LOCPATH(g)=z;
@@ -319,7 +319,7 @@ static A jtloccrenum(J jt, A w){C s[20];I k,p;
 
  A jtlocswitch(J jt, A w){A g;
  ASSERT(!AR(w),EVRANK); 
- RZ(g=locale(1,w));
+ RZ(g=jtlocale(jt,1,w));
  // put a marker for the operation on the call stack
  // If there is no name executing, there would be nothing to process this push; so don't push for unnamed execs (i. e. from console)
  if(jt->curname)pushcallstack1(CALLSTACKPOPFROM,jt->global);
@@ -332,7 +332,7 @@ static A jtloccrenum(J jt, A w){C s[20];I k,p;
  A jtlocname(J jt, A w){A g=jt->global;
  ASSERTMTV(w);
  ASSERT(g!=0,EVLOCALE);
- return boxW(sfn(0,LOCNAME(g)));
+ return boxW(jtsfn(jt,0,LOCNAME(g)));
 }    /* 18!:5  current locale name */
 
 static SYMWALK(jtlocmap1,I,INT,18,3,1,
@@ -341,11 +341,11 @@ static SYMWALK(jtlocmap1,I,INT,18,3,1,
      I zc=2; zc=((0x20034>>(((t)>>(ADVX-1))&(CONJ+ADV+VERB>>(ADVX-1))))&3);   // C x V A (N) -> 16 x 4 2 0 -> 2 x 3 1 0    10 xx xx xx xx xx 11 01 00
      zc=t==SYMB?6:zc; zc=t&(NOUN|VERB|ADV|CONJ|SYMB)?zc:-2;
      *zv++=zc;
-     *zv++=(I)rifvs(sfn(SFNSIMPLEONLY,d->name));})  // this is going to be put into a box
+     *zv++=(I)rifvs(jtsfn(jt,SFNSIMPLEONLY,d->name));})  // this is going to be put into a box
 
  A jtlocmap(J jt, A w){A g,q,x,y,*yv,z,*zv;I c=-1,d,j=0,m,*qv,*xv;
  ASSERT(!AR(w),EVRANK);
- RE(g=equ(w,zeroionei(0))?jt->stloc:equ(w,zeroionei(1))?jt->locsyms:locale(0,w));
+ RE(g=equ(w,zeroionei(0))?jt->stloc:equ(w,zeroionei(1))?jt->locsyms:jtlocale(jt,0,w));
  ASSERT(g!=0,EVLOCALE);
  RZ(q=locmap1(g)); qv=AV(q);
  m=AS(q)[0];
@@ -357,7 +357,7 @@ static SYMWALK(jtlocmap1,I,INT,18,3,1,
  return z;
 }    /* 18!:30 locale map */
 
-static SYMWALK(jtredefg,B,B01,100,1,1,RZ(redef(mark,d)))
+static SYMWALK(jtredefg,B,B01,100,1,1,RZ(jtredef(jt,mark,d)))
      /* check for redefinition (erasure) of entire symbol table */
 
  A jtlocexmark(J jt, A w){A g,*wv,y,z;B *zv;C*u;I i,m,n;L*v;

@@ -38,8 +38,8 @@ I jtcompare(J jt,A a,A w){C*av,*wv;I ar,an,*as,at,c,d,j,m,t,wn,wr,*ws,wt;
  if(1<ar&&ICMP(1+as,1+ws,ar)){A s;I*v;fauxblockINT(sfaux,4,1);
   fauxINT(s,sfaux,ar,1) v=AV(s);
   DO(ar, v[i]=MAX(as[i],ws[i]);); v[0]=MIN(as[0],ws[0]);
-  RZ(a=take(s,a)); an=wn=AN(a);
-  RZ(w=take(s,w));
+  RZ(a=jttake(jt,s,a)); an=wn=AN(a);
+  RZ(w=jttake(jt,s,w));
  }
  m=MIN(an,wn); 
  if(t&XNUM+RAT&&((at|wt)&FL+CMPX)){A p,q;B*u,*v;  // indirect type vs flt/complex: create boolean vector for each value in turn

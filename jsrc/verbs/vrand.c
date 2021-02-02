@@ -214,7 +214,7 @@ static UI jtmt_next(J jt){UI*mt=jt->rngv,*u,*v,*w,y;
  A jtmt_test(J jt, A w){I j=jt->rng;UI init[4]={0x12345ULL, 0x23456ULL, 0x34567ULL, 0x45678ULL},x;
  ASSERTMTV(w);
  RZ(rngselects(sc(MTI)));
- mt_init_by_array(init,(I)4);
+ jtmt_init_by_array(jt,init,(I)4);
  x=mt_next();
  ASSERTSYS(x==7266447313870364031ULL, "mt_test64 0");
  DQ(998, mt_next(););
@@ -391,11 +391,11 @@ static B jtrngga(J jt,I i,UI**vv){
  jt->rngI[jt->rng]=jt->rngi;
  switch(jt->rng=i){
   case SMI: vv=jt->rngV0;      jt->rngw=64;
-            RZ(rngga(GBI,vv)); RZ(rngga(MTI,vv)); RZ(rngga(DXI,vv)); RZ(rngga(MRI,vv)); break;
-  case GBI: RZ(rngga(i,  vv)); jt->rngw=64; break;
-  case MTI: RZ(rngga(i,  vv)); jt->rngw=64; break; 
-  case DXI: RZ(rngga(i,  vv)); jt->rngw=64; break;
-  case MRI: RZ(rngga(i,  vv)); jt->rngw=64; 
+            RZ(jtrngga(jt,GBI,vv)); RZ(jtrngga(jt,MTI,vv)); RZ(jtrngga(jt,DXI,vv)); RZ(jtrngga(jt,MRI,vv)); break;
+  case GBI: RZ(jtrngga(jt,i,  vv)); jt->rngw=64; break;
+  case MTI: RZ(jtrngga(jt,i,  vv)); jt->rngw=64; break; 
+  case DXI: RZ(jtrngga(jt,i,  vv)); jt->rngw=64; break;
+  case MRI: RZ(jtrngga(jt,i,  vv)); jt->rngw=64; 
  }
  jt->rngf=jt->rngF[jt->rng];
  return mtv;
@@ -467,7 +467,7 @@ static B jtrngstates1(J jt,I j,I n,UI**vv,I i,I k,A x,B p){D*u;UI*xv;
   // w is not an atom.  the RNG had better be Mersenne Twister.  Initialize using w, and save the w list
   ASSERT(1==r&&MTI==jt->rng,EVRANK);
   RZ(ras(w)); fa(jt->rngseed); jt->rngseed=w;   // note ra before fa, in case same buffers
-  mt_init_by_array(AV(w),AN(w));
+  jtmt_init_by_array(jt,AV(w),AN(w));
  }else switch(jt->rng){
   // atomic w.  We can use that for any generator.  Choose the current one.
   case SMI: ASSERT(k!=0,EVDOMAIN); sm_init(k);     break;
@@ -530,7 +530,7 @@ static A jtrollksub(J jt,A a,A w){A z;I an,*av,k,m1,n,p,q,r,sh;UI m,mk,s,t,*u,x=
  A jtrollk(J jt,A a,A w,A self){A g,z;V*sv;
  sv=FAV(self); g=sv->fgh[2]?sv->fgh[2]:sv->fgh[1];
  if(AT(w)&XNUM+RAT||!(!AR(w)&&1>=AR(a)&&(g==ds(CDOLLAR)||1==AN(a))))return roll(df2(z,a,w,g));
- return rollksub(a,vi(w));
+ return jtrollksub(jt,a,vi(w));
 }    /* ?@$ or ?@# or [:?$ or [:?# */
 
 static X jtxrand(J jt,X x){PROLOG(0090);A q,z;B b=1;I j,m,n,*qv,*xv,*zv;
@@ -604,7 +604,7 @@ static A jtroll2(J jt,A w,B*b){A z;I j,n,nslice,p,q,r,*v;UI mk,t,*zv;
 static A jtrollnot0(J jt,A w,B*b){A z;I j,m1,n,*u,*v;UI m,s,t,x=jt->rngM[jt->rng];
  *b=0; n=AN(w);
  if(n){v=AV(w); m1=*v++; j=1; DQ(n-1, if(m1!=*v++){j=0; break;});}
- if(n&&j)RZ(z=rollksub(shape(w),sc(m1)))
+ if(n&&j)RZ(z=jtrollksub(jt,shape(w),sc(m1)))
  else{
   GATV(z,INT,n,AR(w),AS(w));
   v=AV(w); u=AV(z);
@@ -635,7 +635,7 @@ static A jtrollany(J jt,A w,B*b){A z;D*u;I j,m1,n,sh,*v;UI m,mk,s,t,x=jt->rngM[j
  if(wt&XNUM+RAT)return rollxnum(w);
  RZ(w=vi(w)); m=AV(w)[0];
  if(    2==m)RZ(z=roll2   (w,&b));
- if(!b&&0!=m)RZ(z=rollnot0(w,&b));
+ if(!b&&0!=m)RZ(z=jtrollnot0(jt,w,&b));
  if(!b      )RZ(z=rollany (w,&b));
  return z&&!(FL&AT(z))&&wt&XNUM+RAT?xco1(z):z;
 }
@@ -649,7 +649,7 @@ static A jtrollany(J jt,A w,B*b){A z;D*u;I j,m1,n,sh,*v;UI m,mk,s,t,x=jt->rngM[j
  if(0==m)z=mtv;
  else if(m*3.0<n||(x&&x<=(UI)n)){  // TUNE for about m=100000; the cutoff would be higher for smaller n
   // calculate the number of values to deal: m, plus a factor times the expected number of collisions, plus 2 for good measure.  Will never exceed n.  Repeats a little less than 1% of the time for n between 30 and 300
-  A h=sc(m+4+(I)((n<1000?2.4:2.2)*((D)m+(D)n*(pow((((D)(n-1))/(D)n),(D)m)-1)))); do{RZ(z=nub(rollksub(h,w)));}while(AN(z)<m); RZ(z=jttake(JTIPW,a,z));
+  A h=sc(m+4+(I)((n<1000?2.4:2.2)*((D)m+(D)n*(pow((((D)(n-1))/(D)n),(D)m)-1)))); do{RZ(z=nub(jtrollksub(jt,h,w)));}while(AN(z)<m); RZ(z=jttake(JTIPW,a,z));
  }else{
   RZ(z=apvwr(n,0L,1L)); zv=AV(z);
   if(n<(1LL<<50)){
@@ -671,7 +671,7 @@ static A jtrollany(J jt,A w,B*b){A z;D*u;I j,m1,n,sh,*v;UI m,mk,s,t,x=jt->rngM[j
 #define GMOF(m,x)   (            x63+(x63-(2*(x63%m))%m))
 
 #undef rollksub
-#define rollksub(a,w) jtrollksubdot(jt,(a),(w))
+#define jtrollksub(jt,a,w) jtrollksubdot(jt,(a),(w))
 static A jtrollksubdot(J jt,A a,A w){A z;I an,*av,k,m1,n,p,q,r,sh;UI j,m,mk,s,t,*u,x=jt->rngM[jt->rng];
  if(!(a && w)) return 0;
  an=AN(a); RE(m1=i0(w)); ASSERT(0<=m1,EVDOMAIN); m=m1;
@@ -715,7 +715,7 @@ static A jtrollksubdot(J jt,A a,A w){A z;I an,*av,k,m1,n,p,q,r,sh;UI j,m,mk,s,t,
  A jtrollkdot(J jt,A a,A w,A self){A g,z;V*sv;
  sv=FAV(self); g=sv->fgh[2]?sv->fgh[2]:sv->fgh[1];
  if(AT(w)&XNUM+RAT||!(!AR(w)&&1>=AR(a)&&(g==ds(CDOLLAR)||1==AN(a))))return roll(df2(z,a,w,g));
- return rollksub(a,vi(w));
+ return jtrollksub(jt,a,vi(w));
 }    /* ?@$ or ?@# or [:?$ or [:?# */
 
 #undef xrand
@@ -794,11 +794,11 @@ static A jtroll2dot(J jt,A w,B*b){A z;I j,n,nslice,p,q,r,*v;UI mk,t,*zv;
 }    /* ?n$x where x is 2, maybe */
 
 #undef rollnot0
-#define rollnot0(w,b) jtrollnot0dot(jt,(w),(b))
+#define jtrollnot0(jt,w,b) jtrollnot0dot(jt,(w),(b))
 static A jtrollnot0dot(J jt,A w,B*b){A z;I j,m1,n,*u,*v;UI m,s,t,x=jt->rngM[jt->rng];
  *b=0; n=AN(w);
  if(n){v=AV(w); m1=*v++; j=1; DQ(n-1, if(m1!=*v++){j=0; break;});}
- if(n&&j)RZ(z=rollksub(shape(w),sc(m1)))
+ if(n&&j)RZ(z=jtrollksub(jt,shape(w),sc(m1)))
  else{
   GATV(z,INT,n,AR(w),AS(w));
   v=AV(w); u=AV(z);
@@ -832,7 +832,7 @@ static A jtrolldot(J jt, A w){A z;B b=0;I m,wt;
  if(wt&XNUM+RAT)return rollxnum(w);
  RZ(w=vi(w)); m=AV(w)[0];
  if(    2==m)RZ(z=roll2   (w,&b));
- if(!b&&0!=m)RZ(z=rollnot0(w,&b));
+ if(!b&&0!=m)RZ(z=jtrollnot0(jt,w,&b));
  if(!b      )RZ(z=rollany (w,&b));
  return z&&!(FL&AT(z))&&wt&XNUM+RAT?xco1(z):z;
 }
@@ -882,7 +882,7 @@ static A jtdealdot(J jt,A a,A w){A h,y,z;I at,d,*hv,i,i1,j,k,m,n,p,q,*v,wt,*yv,*
 /*
 static A jtroll(J jt, A w){A z;D rl=jt->rl;static D dm=16807,p=2147483647L;I c,n,*v,*x;
  n=AN(w); v=AV(w);
- RZ(z=reshape(shape(w),num(2))); x=AV(z);
+ RZ(z=jtreshape(jt,shape(w),num(2))); x=AV(z);
  if(ICMP(v,x,n))
   DQ(n, c=*v++; ASSERT(0<c,EVDOMAIN); rl=fmod(rl*dm,p); *x++=(I)jfloor(rl*c/p);)
  else{B*x;D q=p/2;
@@ -897,7 +897,7 @@ static A jtroll(J jt, A w){A z;D rl=jt->rl;static D dm=16807,p=2147483647L;I c,n
 static A jtbigdeal(J jt,I m,I n){A t,x,y;
  RZ(x=sc((I)jfloor(1.11*m)));
  RZ(y=sc(n));
- do{RZ(t=nub(roll(reshape(x,y))));}while(m>AN(t));
+ do{RZ(t=nub(roll(jtreshape(jt,x,y))));}while(m>AN(t));
  return vec(INT,m,AV(t));
 } */    /* E.E. McDonnell circa 1966, small m and large n */
 

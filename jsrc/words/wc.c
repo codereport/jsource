@@ -324,7 +324,7 @@ static I jtconword(J jt,I n,C*s){
             if(!strncmp(s,"else.",    n))return CELSE;
             if(!strncmp(s,"elseif.",  n))return CELSEIF;  break;
   case 'f': if(!strncmp(s,"for.",     n))return CFOR;
-            if(!strncmp(s,"for_",    4L)){ASSERTN(vnm(n-5,4+s),EVILNAME,nfs(n-5,4+s)); return CFOR;}
+            if(!strncmp(s,"for_",    4L)){ASSERTN(vnm(n-5,4+s),EVILNAME,jtnfs(jt,n-5,4+s)); return CFOR;}
             if(!strncmp(s,"fcase.",   n))return CFCASE;   break;
   case 'g': if(!strncmp(s,"goto_",   5L))return CGOTO;    break;
   case 'i': if(!strncmp(s,"if.",      n))return CIF;      break;
@@ -350,11 +350,11 @@ static A jtgetsen(J jt, A w){A y,z,*z0,*zv;C*s;I i,j,k=-1,m,n,*v;
   j=v[i]; m=v[1+i]-j;         // j=index, m=length of word
   if(0>k)k=j;              // k=index of start of sentence, set at start or when we have processed a control word
   if(jtconword(jt,m,j+s)){     // when we hit a control word...
-   if(k<j)RZ(*zv++=incorp(str(j-k,k+s)));  // if a sentence was in progress, emit it
-   RZ(*zv++=incorp(str(m,j+s)));           // then emit the control word
+   if(k<j)RZ(*zv++=incorp(jtstr(jt,j-k,k+s)));  // if a sentence was in progress, emit it
+   RZ(*zv++=incorp(jtstr(jt,m,j+s)));           // then emit the control word
    k=-1;           // reset start-of-sentence search
  }}
- if(0<=k)RZ(*zv++=incorp(str(j+m-k,k+s))); // if there was a final sentence in progress, append it
+ if(0<=k)RZ(*zv++=incorp(jtstr(jt,j+m-k,k+s))); // if there was a final sentence in progress, append it
  return vec(BOX,zv-z0,z0);  // keep only the boxes that we used
 }    /* partition by controls */
 
@@ -379,7 +379,7 @@ B jtpreparse(J jt,A w,A*zl,A*zc){PROLOG(0004);A c,l,*lv,*v,w0,w1,*wv,x,y;B b=0,t
   // split the line into a sequence of sentences, splitting on each control word.  Result is a list of boxed strings, each one sentence
   RZ(y=getsen(wv[i])); yn=AN(y); v=AAV(y);  // split string into sentences; yn=#sentences on line, v->block for first sentence
   for(j=0;j<yn;++j){   // for each sentence on the line...
-   if(n==AN(c)){RZ(c=ext(0,c)); cv=(CW*)AV(c);}  // if result buffer is full, reallocate it, reset pointer to first CW
+   if(n==AN(c)){RZ(c=jtext(jt,0,c)); cv=(CW*)AV(c);}  // if result buffer is full, reallocate it, reset pointer to first CW
    w0=v[j];                             // w0 is A block for sentence j
    RZ(w1=wordil(w0)); ASSERT(AM(w1)>=0,EVOPENQ)  // w1 is A block for (# words), (index,end+1) pairs
    s=CAV(str0(w0));                           // s->start of sentence after appending final NUL,  why?
@@ -399,7 +399,7 @@ B jtpreparse(J jt,A w,A*zl,A*zc){PROLOG(0004);A c,l,*lv,*v,w0,w1,*wv,x,y;B b=0,t
    ASSERT(q<SMAX,EVLIMIT);
    // append the words (which are a queue or a cw) to the list of words
    if(x){                               // set unless the control word is not needed (it usually isn't)
-    while(AN(l)<m+q){RZ(l=ext(0,l)); lv=AAV(l);}  // if word buffer filled, extend it & refresh data pointer
+    while(AN(l)<m+q){RZ(l=jtext(jt,0,l)); lv=AAV(l);}  // if word buffer filled, extend it & refresh data pointer
     if(k)lv[m]=incorp(x); else ICPY(m+lv,AAV(x),q);   // install word(s): the cw, or the words of the queue
    }
    // Now that the words have been moved, install the index to them, and their number, into the cw info; step word pointer over the words added (even if empty spaces)

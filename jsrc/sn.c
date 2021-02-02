@@ -78,10 +78,10 @@ A jtnfs(J jt,I n,C*s){A z;C f,*t;I m,p;NM*zv;
 
 // string from name: returns string for the name
 // if b&SFNSIMPLEONLY, return only the simple name
-A jtsfn(J jt,B b,A w){NM*v; v=NAV(w); return str(b&SFNSIMPLEONLY?v->m:AN(w),v->s);}
+A jtsfn(J jt,B b,A w){NM*v; v=NAV(w); return jtstr(jt,b&SFNSIMPLEONLY?v->m:AN(w),v->s);}
 
 // string from name evocation: returns string for name UNLESS the name was an NMDOT type; in that case it returns w f. which will be a verb
-A jtsfne(J jt,A w){ A wn=FAV(w)->fgh[0]; if(AT(wn)&NAMEBYVALUE)return fix(w,zeroionei(0)); return sfn(0,wn);}
+A jtsfne(J jt,A w){ A wn=FAV(w)->fgh[0]; if(AT(wn)&NAMEBYVALUE)return jtfix(jt,w,zeroionei(0)); return jtsfn(jt,0,wn);}
 
 
  A jtnfb(J jt, A w){A y;C*s;I n;
@@ -89,8 +89,8 @@ A jtsfne(J jt,A w){ A wn=FAV(w)->fgh[0]; if(AT(wn)&NAMEBYVALUE)return fix(w,zero
  ASSERT(!AR(w),EVRANK);
  RZ(y=vs(ope(w)));
  n=AN(y); s=CAV(y);
- ASSERTN(vnm(n,s),EVILNAME,nfs(n,s));
- return nfs(n,s);
+ ASSERTN(vnm(n,s),EVILNAME,jtnfs(jt,n,s));
+ return jtnfs(jt,n,s);
 }    /* name from scalar boxed string */
 
 // w is an A for a name string; return NAME block or 0 if error
@@ -101,11 +101,11 @@ static A jtstdnm(J jt, A w){C*s;I j,n,p,q;
  j=0;   DQ(n, if(' '!=s[j++])break;); p=j-1;
  j=n-1; DQ(n, if(' '!=s[j--])break;); q=(n-2)-j;
  if(!(vnm(n-(p+q),p+s)))return 0;   // Validate name
- return nfs(n-(p+q),p+s);   // Create NAME block for name
+ return jtnfs(jt,n-(p+q),p+s);   // Create NAME block for name
 }    /* 0 result means error or invalid name */
 
 // x is a (possibly) boxed string; result is NAME block for name x, error if invalid name
- A jtonm(J jt, A w){A x,y; RZ(x=ope(w)); y=stdnm(x); ASSERTN(y,EVILNAME,nfs(AN(x),CAV(x))); return y;}
+ A jtonm(J jt, A w){A x,y; RZ(x=ope(w)); y=stdnm(x); ASSERTN(y,EVILNAME,jtnfs(jt,AN(x),CAV(x))); return y;}
 
 // w is array of boxed strings; result is name class for each
  A jtnc(J jt, A w){A*wv,x,y,z;I i,n,t,*zv;L*v;
@@ -114,7 +114,7 @@ static A jtstdnm(J jt, A w){C*s;I j,n,p,q;
  GATV(z,INT,n,AR(w),AS(w)); zv=AV(z);   // Allocate z=result, same shape as input; zv->first result
  for(i=0;i<n;++i){   // for each name...
   RE(y=stdnm(wv[i]));  // point to name, audit for validity
-  if(y){if(v=syrd(y,jt->locsyms)){x=v->val; t=AT(x);}else{x=0; if(jt->jerr){y=0; RESETERR;}}}  // If valid, see if the name is defined
+  if(y){if(v=jtsyrd(jt,y,jt->locsyms)){x=v->val; t=AT(x);}else{x=0; if(jt->jerr){y=0; RESETERR;}}}  // If valid, see if the name is defined
   // syrd can fail if a numbered locative is retrograde.  Call that an invalid name, rather than an error, here; thus the RESETERR
   // kludge: if the locale is not defined, syrd will create it.  Better to use a version/parameter to syrd to control that?
   //   If that were done, we could dispense with the error check here (but invalid locale would be treated as undefined rather than invalid).
@@ -128,10 +128,10 @@ static A jtstdnm(J jt, A w){C*s;I j,n,p,q;
 
 
 static SYMWALK(jtnlxxx, A,BOX,20,1, jt->workareas.namelist.nla[*((UC*)NAV(d->name)->s)]&&jt->workareas.namelist.nlt&AT(d->val), 
-    RZ(*zv++=incorp(sfn(SFNSIMPLEONLY,d->name))) )
+    RZ(*zv++=incorp(jtsfn(jt,SFNSIMPLEONLY,d->name))) )
 
        SYMWALK(jtnlsym, A,BOX,20,1, jt->workareas.namelist.nla[*((UC*)NAV(d->name)->s)],
-    RZ(*zv++=incorp(sfn(SFNSIMPLEONLY,d->name))) )
+    RZ(*zv++=incorp(jtsfn(jt,SFNSIMPLEONLY,d->name))) )
 
 static const I nlmask[] = {NOUN,ADV,CONJ,VERB, MARK,MARK,SYMB,MARK};
 
@@ -143,7 +143,7 @@ static A jtnlx(J jt, A w){A z=mtv;B b;I m=0,*v,x;
  if(b           )RZ(z=nlxxx(jt->global));
  if(b&&(AN(jt->locsyms)>1))RZ(z=over(nlxxx(jt->locsyms),z));
  if(m==SYMB     )RZ(z=over(nlsym(jt->stloc),z));
- return nub(grade2(z,ope(z)));
+ return nub(jtgrade2(jt,z,ope(z)));
 }
 
  A jtnl1(J jt, A w){memset(jt->workareas.namelist.nla,C1,256L); return nlx(w);}
@@ -162,7 +162,7 @@ static A jtnlx(J jt, A w){A z=mtv;B b;I m=0,*v,x;
  ASSERT(!n||BOX&AT(w),EVDOMAIN);
  wv=AAV(w); 
  GATV(z,INT,n,AR(w),AS(w)); zv=AV(z);
- DO(n, x=wv[i]; RE(y=stdnm(x)); ASSERTN(y,EVILNAME,nfs(AN(x),CAV(x))); v=syrd(y,jt->locsyms); RESETERR; zv[i]=v?v->sn:-1;);
+ DO(n, x=wv[i]; RE(y=stdnm(x)); ASSERTN(y,EVILNAME,jtnfs(jt,AN(x),CAV(x))); v=jtsyrd(jt,y,jt->locsyms); RESETERR; zv[i]=v?v->sn:-1;);
  return z;
 }    /* 4!:4  script index */
 
@@ -177,7 +177,7 @@ static A jtnch1(J jt,B b,A w,I*pm,A ch){A*v,x,y;C*s,*yv;LX *e;I i,k,m,p,wn;L*d;
    if(LCH&d->flag&&d->name&&d->val){
     d->flag^=LCH;
     if(b){
-     if(m==AN(ch)){RZ(ch=ext(0,ch)); v=m+AAV(ch);}
+     if(m==AN(ch)){RZ(ch=jtext(jt,0,ch)); v=m+AAV(ch);}
      x=d->name; k=NAV(x)->m;
      GATV0(y,LIT,k+2+p,1); yv=CAV(y); 
      MC(yv,NAV(x)->s,k); MC(1+k+yv,s,p); yv[k]=yv[1+k+p]='_';
@@ -208,7 +208,7 @@ static A jtnch1(J jt,B b,A w,I*pm,A ch){A*v,x,y;C*s,*yv;LX *e;I i,k,m,p,wn;L*d;
  }
  jt->stch=b;
  AN(ch)=AS(ch)[0]=m;
- return grade2(ch,ope(ch));
+ return jtgrade2(jt,ch,ope(ch));
 }    /* 4!:5  names changed */
 
 
@@ -222,8 +222,8 @@ static A jtnch1(J jt,B b,A w,I*pm,A ch){A*v,x,y;C*s,*yv;LX *e;I i,k,m,p,wn;L*d;
   // If the name is defined and is an ACV, invalidate all looked-up ACVs
   // If the value is at large in the stacks and not deferred-freed, increment the use count and deferred-free it
   // If the name is assigned in a local symbol table, we ASSUME it is at large in the stacks and incr/deferred-free it.  We sidestep the nvr stack for local nouns
-  if(y&&(v=syrd(y,jt->locsyms))){
-   if(jt->uflags.us.cx.cx_c.db)RZ(redef(mark,v));
+  if(y&&(v=jtsyrd(jt,y,jt->locsyms))){
+   if(jt->uflags.us.cx.cx_c.db)RZ(jtredef(jt,mark,v));
    A locfound=syrdforlocale(y);  // get the locale in which the name is defined
    if((locfound==jt->locsyms)|(AFLAG(v->val)&AFNVRUNFREED)){  // see if local or NVR
     if(!(AFLAG(v->val)&AFNVR)){

@@ -12,7 +12,7 @@ EVERYFS(drrself,jtdrr,0,0,VFLAGNONE)
 static A jtdrr(J jt, A w){PROLOG(0055);A df,dg,hs,*x,z;B b,ex,xop;C c,id;I fl,*hv,m;V*v;
  if(!w) return 0;
  // If the input is a name, it must be from ".@'name' which turned into ".@(name+noun)  - or in debug, but that's discarded
- if(AT(w)&NAME){RZ(w=sfn(0,w));}
+ if(AT(w)&NAME){RZ(w=jtsfn(jt,0,w));}
  // If noun, return the value of the noun.
  if(AT(w)&NOUN)return w;  // no quotes needed
  // Non-nouns and NMDOT names carry on
@@ -25,9 +25,9 @@ static A jtdrr(J jt, A w){PROLOG(0055);A df,dg,hs,*x,z;B b,ex,xop;C c,id;I fl,*h
  m=!!fs+(gs||ex);
  if(!m)return spella(w);
  if(evoke(w))return drr(sfne(w));  // turn nameref into string or verb; then take rep
- if(fs)RZ(df=fl&VGERL?every(fxeach(fs,(A)&jtfxself[0]),(A)&drrself):drr(fs));
- if(gs)RZ(dg=fl&VGERR?every(fxeach(gs,(A)&jtfxself[0]),(A)&drrself):drr(gs));
- if(ex)RZ(dg=unparsem(num(0),w));
+ if(fs)RZ(df=fl&VGERL?jtevery(jt,jtfxeach(jt,fs,(A)&jtfxself[0]),(A)&drrself):drr(fs));
+ if(gs)RZ(dg=fl&VGERR?jtevery(jt,jtfxeach(jt,gs,(A)&jtfxself[0]),(A)&drrself):drr(gs));
+ if(ex)RZ(dg=jtunparsem(jt,num(0),w));
  m+=!b&&!xop||hs&&xop;
  GATV0(z,BOX,m,1); x=AAV(z);
  RZ(x[0]=incorp(df));
@@ -53,12 +53,12 @@ static A jtdrr(J jt, A w){PROLOG(0055);A df,dg,hs,*x,z;B b,ex,xop;C c,id;I fl,*h
   if(evoke(w)){RZ(w=sfne(w)); if(FUNC&AT(w))w=aro(w); return w;}  // keep nameref as a string, UNLESS it is NMDOT, in which case use the (f.'d) verb value
  }
  GAT0(z,BOX,2,1); x=AAV(z);
- if(NOUN&AT(w)){RZ(x[0]=incorp(ravel(scc(CNOUN)))); if(AT(w)&NAME)RZ(w=sfn(0,w)); RZ(x[1]=INCORPNA(w)); return z;}  // if name, must be ".@'name', format name as string
+ if(NOUN&AT(w)){RZ(x[0]=incorp(ravel(scc(CNOUN)))); if(AT(w)&NAME)RZ(w=jtsfn(jt,0,w)); RZ(x[1]=INCORPNA(w)); return z;}  // if name, must be ".@'name', format name as string
  GATV0(y,BOX,m,1); u=AAV(y);
  if(0<m)RZ(u[0]=incorp(aro(fs)));
- if(1<m)RZ(u[1]=incorp(aro(ex?unparsem(num(0),w):xop?hs:gs)));
+ if(1<m)RZ(u[1]=incorp(aro(ex?jtunparsem(jt,num(0),w):xop?hs:gs)));
  if(2<m)RZ(u[2]=incorp(aro(hs)));
- s=xop?aro(gs):VDDOP&v->flag?(hv=AV(hs),aro(foreign(sc(hv[0]),sc(hv[1])))):spellout(id);
+ s=xop?aro(gs):VDDOP&v->flag?(hv=AV(hs),aro(jtforeign(jt,sc(hv[0]),sc(hv[1])))):spellout(id);
  RZ(x[0]=incorp(s)); RZ(x[1]=INCORPNA(y));
  return z;
 }
@@ -84,7 +84,7 @@ static A jtfxchar(J jt,    A w,A self){A y;C c,d,id,*s;I m,n;
 // self is normally 0; if nonzero, we return a noun type ('0';<value) as is rather than returning value, and leave adv/conj ARs looking like nouns
  A jtfx(J jt,    A w,A self){A f,fs,g,h,p,q,*wv,y,*yv;C id;I m,n=0;
  // if string, handle that special case (verb/primitive)
- if(LIT&AT(w))return fxchar(w,self);
+ if(LIT&AT(w))return jtfxchar(jt,w,self);
  // otherwise, it had better be boxed with rank 0 or 1, and 1 or 2 atoms
  m=AN(w);   // m=#atoms
  ASSERT(BOX&AT(w),EVDOMAIN);
@@ -103,7 +103,7 @@ static A jtfxchar(J jt,    A w,A self){A y;C c,d,id,*s;I m,n;
  }
  switch(id){
   case CHOOK: case CADVF:
-   ASSERT(2==n,EVLENGTH); return hook(fx(yv[0]),fx(yv[1]));
+   ASSERT(2==n,EVLENGTH); return jthook(jt,fx(yv[0]),fx(yv[1]));
   case CFORK:
    ASSERT(3==n,EVLENGTH); 
    RZ(f=fx(yv[0])); ASSERT(AT(f)&VERB+NOUN,EVSYNTAX);
@@ -306,7 +306,7 @@ static A jtxrep(J jt,A a,A w){A h,*hv,*v,x,z,*zv;CW*u;I i,j,n,q[3],*s;V*wv;
  RE(j=i0(a)); ASSERT(1==j||2==j,EVDOMAIN); j=1==j?0:HN;
  ASSERT(AT(w)&VERB+ADV+CONJ,EVDOMAIN);
  wv=FAV(w); h=wv->fgh[2];
- if(!(h&&CCOLON==wv->id))return reshape(v2(0L,3L),ds(CACE));
+ if(!(h&&CCOLON==wv->id))return jtreshape(jt,v2(0L,3L),ds(CACE));
  hv=AAV(h);
  x=hv[  j]; v=    AAV(x); 
  x=hv[1+j]; u=(CW*)AV(x); n=AN(x);

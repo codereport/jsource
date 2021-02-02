@@ -167,13 +167,13 @@ A jtfrombu(J jt,A a,A w,I wf){F1PREFIP;A p,q,z;I ar,*as,h,m,r,*u,*v,wcr,wr,*ws;
  fauxblockINT(pfaux,4,1); fauxINT(p,pfaux,h,1) v=AV(p)+h; u=ws+wf+h; m=1; DQ(h, *--v=m; m*=*--u;);  // m is number of items in the block of axes that index into w
  r=wr+1-h;  // rank of intermediate w arg is rank of w, minus h axes that go away and are replaced by 1 axis
  // We will use pdt to create an index to the cell
- A ind; RZ(ind=pdt(a,p));
+ A ind; RZ(ind=jtpdt(jt,a,p));
  PROLOG(777);
  if(r==wr){
   q=w;
  }else{
   //  reshape w to combine the first h axes of each cell.  Be careful with the copying, because w and q may be the same block.  Some axes may be closed up by the copy
-  RZ(q=virtualip(w,0,r)); AN(q)=AN(w); v=AS(q); MCISH(v,ws,wf); v[wf]=m; MCISH(v+wf+1,ws+wf+h,wcr-h);  /* q is reshape(.,w) */
+  RZ(q=virtualip(w,0,r)); AN(q)=AN(w); v=AS(q); MCISH(v,ws,wf); v[wf]=m; MCISH(v+wf+1,ws+wf+h,wcr-h);  /* q is jtreshape(jt,.,w) */
  }
  IRS2(ind,q,0, RMAX,wcr+1-h,jtifrom,z);
  EPILOG(z);  // we have to release the virtual block so that w is inplaceable later on in the sentence
@@ -261,10 +261,10 @@ static A jtafrom2(J jt,A p,A q,A w,I r){A z;C*wv,*zv;I d,e,j,k,m,n,pn,pr,* RESTR
 // n is length of axis, w is doubly-unboxed selector
 // result is list of selectors - complementary if w is boxed, with a: standing for axis taken in full
 static A jtafi(J jt,I n,A w){A x;
- if((-AN(w)&SGNIF(AT(w),BOXX))>=0)return pind(n,w);   // empty or not boxed
+ if((-AN(w)&SGNIF(AT(w),BOXX))>=0)return jtpind(jt,n,w);   // empty or not boxed
  ASSERT(!AR(w),EVINDEX);  // if boxed, must be an atom
  x=AAV(w)[0];
- return AN(x)?less(IX(n),pind(n,x)):ds(CACE);   // complementary
+ return AN(x)?jtless(jt,IX(n),jtpind(jt,n,x)):ds(CACE);   // complementary
 }
 
 // general boxed a
@@ -349,9 +349,9 @@ static A jtafrom(J jt,A a,A w){PROLOG(0073);A c,ind,p=0,q,*v,y=w;B bb=1;I acr,ar
    // Here we transferred out of w.  We must mark w non-pristine.  Since there may have been duplicates, we cannot mark z as pristine.  We overwrite w because it is no longer in use
    PRISTCLRF(w)
   }
- }else if(!((AT(a)|AT(w))&(NOUN&~SPARSE))){z=fromss(a,w);}  // sparse cases
- else if(AT(w)&SPARSE){z=at&BOX?frombs(a,w) : fromis(a,w);}
- else{z=fromsd(a,w);}
+ }else if(!((AT(a)|AT(w))&(NOUN&~SPARSE))){z=jtfromss(jt,a,w);}  // sparse cases
+ else if(AT(w)&SPARSE){z=at&BOX?jtfrombs(jt,a,w) : jtfromis(jt,a,w);}
+ else{z=jtfromsd(jt,a,w);}
  return z;
 }   /* a{"r w main control */
 
@@ -388,7 +388,7 @@ static A jtafrom(J jt,A a,A w){PROLOG(0073);A c,ind,p=0,q,*v,y=w;B bb=1;I acr,ar
   RE(aindex1(a,w,0L,&ind)); if(ind)return frombsn(ind,w,0L);
  }
  // If we couldn't handle it as a special case, do it the hard way
- A z; return from(IRS1(a,0L,1L,jtbox,z),w);
+ A z; return jtfrom(jt,IRS1(a,0L,1L,jtbox,z),w);
 }    /* (<"1 a){w */
 
 static A jtmapx(J jt,A a,A w);
@@ -396,14 +396,14 @@ static EVERYFS(mapxself,0,jtmapx,0,VFLAGNONE)
 
 static A jtmapx(J jt,A a,A w){A z1,z2,z3;
  if(!(BOX&AT(w)))return ope(a);
- RZ(z1=catalog(every(shape(w),ds(CIOTA))));  // create index list of each box
+ RZ(z1=catalog(jtevery(jt,shape(w),ds(CIOTA))));  // create index list of each box
  IRS1(z1,0,0,jtbox,z2);
  RZ(z2=every2(a,z2,(A)&sfn0overself));
  IRS1(z2,0,0,jtbox,z3);
  return every2(z3,w,(A)&mapxself);
 }
 
- A jtmap(J jt, A w){return mapx(ds(CACE),w);}
+ A jtmap(J jt, A w){return jtmapx(jt,ds(CACE),w);}
 
 // extract the single box a from w and open it.  Don't mark it no-inplace.  If w is not boxed, it had better be an atom, and we return it after auditing the index
 static A jtquicksel(J jt,A a,A w){I index;

@@ -113,7 +113,7 @@ __int64 GetMachineCycleCount()
  return scf(n?t/(n*pf):0);
 }
 
- A jttsit1(J jt, A w){return tsit2(num(1),w);}
+ A jttsit1(J jt, A w){return jttsit2(jt,num(1),w);}
 
 
 #define sleepms(i) usleep(i*1000)
@@ -153,7 +153,7 @@ static A jtpmfree(J jt, A w){A x,y;C*c;I m;PM*v;PM0*u;
  return num(1);
 }    /* free old data area */
 
- A jtpmarea1(J jt, A w){return pmarea2(vec(B01,2L,&zeroZ),w);}  // 6!:10
+ A jtpmarea1(J jt, A w){return jtpmarea2(jt,vec(B01,2L,&zeroZ),w);}  // 6!:10
 
  A jtpmarea2(J jt,A a,A w){A x;B a0,a1,*av;C*v;I an,n=0,s=sizeof(PM),s0=sizeof(PM0),wn;PM0*u;
  RZ(a=jtcvt(jt,B01,a)); 
@@ -221,12 +221,12 @@ void jtpmrecord(J jt,A name,A loc,I lc,int val){A x,y;B b;PM*v;PM0*u;
  v0=jt->pmv; vq=q+v0;
  GAT0(z,BOX,1+PMCOL,1); zv=AAV(z);
  GATV0(t,BOX,2*m,1); av=AAV(t); au=m+av;
- v=vq; DO(p, if(b[  i]){RZ(*av++=v->name?incorp(sfn(0,v->name)):mtv); RZ(*au++=v->loc?incorp(sfn(0,v->loc)):mtv);} ++v;); 
- v=v0; DO(q, if(b[p+i]){RZ(*av++=v->name?incorp(sfn(0,v->name)):mtv); RZ(*au++=v->loc?incorp(sfn(0,v->loc)):mtv);} ++v;); 
- RZ(x=indexof(t,t));
+ v=vq; DO(p, if(b[  i]){RZ(*av++=v->name?incorp(jtsfn(jt,0,v->name)):mtv); RZ(*au++=v->loc?incorp(jtsfn(jt,0,v->loc)):mtv);} ++v;); 
+ v=v0; DO(q, if(b[p+i]){RZ(*av++=v->name?incorp(jtsfn(jt,0,v->name)):mtv); RZ(*au++=v->loc?incorp(jtsfn(jt,0,v->loc)):mtv);} ++v;); 
+ RZ(x=jtindexof(jt,t,t));
  RZ(c=eq(x,IX(SETIC(x,k1))));
- RZ(zv[6]=incorp(repeat(c,t)));
- RZ(x=indexof(repeat(c,x),x)); iv=AV(x);
+ RZ(zv[6]=incorp(jtrepeat(jt,c,t)));
+ RZ(x=jtindexof(jt,jtrepeat(jt,c,x),x)); iv=AV(x);
  RZ(zv[0]=incorp(vec(INT,m,  iv)));
  RZ(zv[1]=incorp(vec(INT,m,m+iv)));
  GATV0(t,INT,m,1); zv[2]=incorp(t); iv=AV(t); v=vq; DO(p, if(b[i])*iv++=(I)v->val;  ++v;); v=v0; DO(q, if(b[p+i])*iv++=(I)v->val; ++v;);
