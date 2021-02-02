@@ -134,7 +134,7 @@
 
 
 #define crelocalsyms(x,y,t,v,f)     jtcrelocalsyms(jt,(x),(y),(t),(v),(f))
-#define csize(x,y)                  jtcsize(jt,(x),(y))
+
 #define cstr(x)                     jtcstr(jt,(x))
 #define curtail(x)                  jtcurtail(jt,(x))
 #define cut(x,y)                    jtcut(jt,(x),(y))

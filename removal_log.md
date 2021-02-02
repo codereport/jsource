@@ -49,3 +49,4 @@
 |`jsrc\xenos\xcrc.c`|crc2|jtcrc2|`(^\|[ \t]+\|[^\d\w_])crc2\((?=([^,]+?),([^)]+?)\))`|`\1jtcrc2(jt,`|
 |`jsrc\adverbs\ap.c` `jsrc\conjunctions\cc.c` `jsrc\conjunctions\cr.c`|createcycliciterator|jtcreatecycliciterator|`(^\|[ \t]+\|[^\d\w_])createcycliciterator\((?=([^,]+?),([^)]+?)\))`|`\1jtcreatecycliciterator(jt,`|
 |`jsrc\xenos\xcrc.c`|crcvalidate|jtcrcvalidate|`(^\|[ \t]+\|[^\d\w_])crcvalidate\((?=([^,]+?),([^)]+?)\))`|`\1jtcrcvalidate(jt,`|
+|`jsrc\adverbs\amn.c`|csize|jtcsize|`(^\|[ \t]+\|[^\d\w_])csize\((?=([^,]+?),([^)]+?)\))`|`\1jtcsize(jt,`|
