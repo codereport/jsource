@@ -74,3 +74,4 @@
 |`jsrc\s.c`|dllsymaddr|jtdllsymaddr|`(^\|[ \t]+\|[^\d\w_])dllsymaddr\((?=([^,]+?),([^)]+?)\))`|`\1jtdllsymaddr(jt,`|
 |`jsrc\verbs\v0.c`|dot|jtdot|`(^\|[ \t]+\|[^\d\w_])dot\((?=([^,]+?),([^)]+?)\))`|`\1jtdot(jt,`|
 |`jsrc\xenos\xfmt.c`|dpone|jtdpone|`(^\|[ \t]+\|[^\d\w_])dpone\((?=([^,]+?),([^)]+?)\))`|`\1jtdpone(jt,`|
+|`jsrc\adverbs\as.c` `jsrc\conjunctions\cc.c` `jsrc\conjunctions\cip.c` `jsrc\conjunctions\cp.c` `jsrc\representations\rl.c` `jsrc\verbs\vd.c` `jsrc\verbs\vt.c` `jsrc\xenos\xs.c`|drop|jtdrop|`(^\|[ \t]+\|[^\d\w_])drop\((?=([^,]+?),([^)]+?)\))`|`\1jtdrop(jt,`|

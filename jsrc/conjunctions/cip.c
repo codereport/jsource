@@ -393,7 +393,7 @@ r=lr(gs);   // left rank of v
 
 static A jtminors(J jt, A w){A d,z;
  RZ(d=apvwr(3L,-1L,1L)); AV(d)[0]=0;
- return drop(d,df2(z,num(1),w,bsdot(ds(CLEFT))));  // 0 0 1 }. 1 [\. w
+ return jtdrop(jt,d,df2(z,num(1),w,bsdot(ds(CLEFT))));  // 0 0 1 }. 1 [\. w
 }
 
 static A jtdet(J jt,    A w,A self){DECLFG;A h=sv->fgh[2];I c,r,*s;

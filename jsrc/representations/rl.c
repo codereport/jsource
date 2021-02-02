@@ -129,7 +129,7 @@ static A jtlbox(J jt,A w,A *ltext){F1PREFIP;A p,*v,*vv,*wv,x,y;B b=0;I n;
  return over(lshape(w),raze(y));
 }    /* non-empty boxed array */
 
-A jtdinsert(J jt,A w,A ic,I ix){A l=sc4(INT,ix); return over(over(take(l,w),ic),drop(l,w));}   /* insert ic before position ix in w */
+A jtdinsert(J jt,A w,A ic,I ix){A l=sc4(INT,ix); return over(over(take(l,w),ic),jtdrop(jt,l,w));}   /* insert ic before position ix in w */
 A jtdcapp(J jt,A w,C c,A ap){return (memchr(CAV(w),c,AN(w)))?w:over(w,ap);}  /* conditionally append ap to w if it doesn't contain c */
 
 // Apply decoration as needed to a numeric character string w to give it the correct type t
@@ -206,7 +206,7 @@ static A jtlsparse(J jt,A w,A *ltext){F1PREFIP;A a,e,q,t,x,y,z;B ba,be,bn;I j,r,
  RZ(z=over(t,z));
  RZ(q=grade1(over(less(IX(r),q),q)));
  j=r; v=AV(q); DO(r, if(i!=*v++){j=i; break;});
- return over(lcpx(lnoun(drop(sc(j),q))),over(cstr("|:"),z));
+ return over(lcpx(lnoun(jtdrop(jt,sc(j),q))),over(cstr("|:"),z));
 }    /* sparse array */
 
 static A jtlnoun0(J jt,A w,A *ltext){F1PREFIP;A s,x;B r1;

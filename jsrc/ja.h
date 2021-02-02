@@ -200,7 +200,7 @@
 #define dotprod(x,y,z)              jtdotprod(jt,(x),(y),(z))
 
 #define drep(x)                     jtdrep(jt,(x))
-#define drop(x,y)                   jtdrop(jt,(x),(y))
+
 #define dropr(x,y)                  jtdropr(jt,(x),(y))
 #define drow(x,y,z)                 jtdrow(jt,(x),(y),(z))
 #define drr(x)                      jtdrr(jt,(x))
