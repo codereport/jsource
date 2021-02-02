@@ -344,7 +344,7 @@ static A jtunderai1(J jt,    A w,A self){DECLF;A x,y,z;B b;I j,n,*u,*v;UC f[256]
  // if gerund form, use (f g)"lf mg  for a:`v or (f~ g)~"mg rf for v`a:
  // First, create the part after the inverse
  A h;
- if(gside<0){h=ampco(a,wvb); // normal case, f&:g
+ if(gside<0){h=jtampco(jt,a,wvb); // normal case, f&:g
  }else{
   f1=jtdomainerr1;  // monad not allowed with gerund v
   if(gside==0){h=swap(hook(swap(a),wvb));  // (f~ g)~
