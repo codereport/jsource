@@ -53,7 +53,7 @@
 
 
 #define axbytes1(x0,x1,x2,x3,x4)    jtaxbytes1(jt,(x0),(x1),(x2),(x3),(x4))
-#define axtally(x,y)                jtaxtally(jt,(x),(y))
+
 #define b0(x)                       jtb0(jt,(x))
 #define base2(x,y)                  jtbase2(jt,(x),(y))
 #define bcvt(x,y)                   jtbcvt(jt,(x),(y))

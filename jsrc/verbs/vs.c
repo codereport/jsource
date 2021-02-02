@@ -265,7 +265,7 @@ static A jtaxtally(J jt,A a,A w){A a1,e,p,q,x;B*b;I c,d,j,m,n=0,r,*u,*v,*ws,wt;P
   if(m=*AS(y)){n=1; u=AV(y); DQ(m-1, if(ICMP(u,u+d,d))++n; u+=d;);} 
   return sc(n);
  }
- return axtally(a1,reaxis(over(a,less(a1,a)),w));
+ return jtaxtally(jt,a1,reaxis(over(a,less(a1,a)),w));
 }    /* #4$.(2;a)$.w */
 
  A jtrezero(J jt,A a,A w){A x,z;I at,t,wt,zt;P*wp,*zp;
@@ -329,7 +329,7 @@ static A jtsparsen1(J jt, A w){A*u,z;P*p;
   case 1:  ASSERT(!q,EVDOMAIN); q=sparsep1(w); PRISTCLRF(w); return q;
   case -1: ASSERT(!q,EVDOMAIN); return sparsen1(w);
   case 2:
-   if(AR(a)){j=v[1]; ASSERT(q&&(1==j||2==j),EVDOMAIN); return 1==j?jtaxbytes(jt,q,w):axtally(q,w);}
+   if(AR(a)){j=v[1]; ASSERT(q&&(1==j||2==j),EVDOMAIN); return 1==j?jtaxbytes(jt,q,w):jtaxtally(jt,q,w);}
    if(q)return reaxis(q,w); else if(b)return rat(SPA(p,a)); else{ASSERT(STYPE(t)!=0,EVDOMAIN); return IX(AR(w));}
   case 3:  return q?rezero(q,w):rat(SPA(p,e));  // ? there rat()s don't protect anything?  SPA is as permanent as w
   case 4:  ASSERT(!q,EVDOMAIN); return rat(SPA(p,i));

@@ -28,3 +28,4 @@
 |`jsrc\adverbs\ai.c` `jsrc\conjunctions\cc.c` `jsrc\xenos\xfmt.c`|atco|jtatco|`(^\|[ \t]+\|[^\d\w_])atco\((?=([^,]+?),([^)]+?)\))`|`\1jtatco(jt,`|
 |`jsrc\px.c` `jsrc\adverbs\ai.c` `jsrc\adverbs\ap.c` `jsrc\adverbs\as.c` `jsrc\conjunctions\cc.c` `jsrc\conjunctions\cip.c` `jsrc\conjunctions\cpdtsp.c` `jsrc\conjunctions\cu.c` `jsrc\verbs\ve.c` `jsrc\verbs\vg.c` `jsrc\xenos\xfmt.c`|atop|jtatop|`(^\|[ \t]+\|[^\d\w_])atop\((?=([^,]+?),([^)]+?)\))`|`\1jtatop(jt,`|
 |`jsrc\verbs\vs.c`|axbytes|jtaxbytes|`(^\|[ \t]+\|[^\d\w_])axbytes\((?=([^,]+?),([^)]+?)\))`|`\1jtaxbytes(jt,`|
+|`jsrc\verbs\vs.c`|axtally|jtaxtally|`(^\|[ \t]+\|[^\d\w_])axtally\((?=([^,]+?),([^)]+?)\))`|`\1jtaxtally(jt,`|
