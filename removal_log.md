@@ -70,3 +70,5 @@
 |`jsrc\verbs\v0.c`|dgrade2|jtdgrade2|`(^\|[ \t]+\|[^\d\w_])dgrade2\((?=([^,]+?),([^)]+?)\))`|`\1jtdgrade2(jt,`|
 |`jsrc\debugging\d.c`|dhead|jtdhead|`(^\|[ \t]+\|[^\d\w_])dhead\((?=([^,]+?),([^)]+?)\))`|`\1jtdhead(jt,`|
 |`jsrc\adverbs\ai.c`|diag|jtdiag|`(^\|[ \t]+\|[^\d\w_])diag\((?=([^,]+?),([^)]+?)\))`|`\1jtdiag(jt,`|
+
+|`jsrc\debugging\d.c`|disp|jtdisp|`(^\|[ \t]+\|[^\d\w_])disp\((?=([^,]+?),([^)]+?)\))`|`\1jtdisp(jt,`|

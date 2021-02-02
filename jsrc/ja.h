@@ -188,7 +188,7 @@
 
 
 #define diff(x)                     jtdiff(jt,(x))
-#define disp(x,y)                   jtdisp(jt,(x),(y))
+
 #define divide(x,y)                 jtatomic2(jt,(x),(y),ds(CDIV)) 
 #define divideAW(x,y)               jtatomic2((J)((I)jt|JTINPLACEA|JTINPLACEW),(x),(y),ds(CDIV)) 
 #define divideW(x,y)                jtatomic2((J)((I)jt|JTINPLACEW),(x),(y),ds(CDIV)) 
