@@ -40,32 +40,18 @@ This is a fork of [`jsoftware/jsource`](https://github.com/jsoftware/jsource) an
 
 Calculating the first 10 odd numbers:
 
-**Python**:
-```python
-[1 + 2 * i for i in range(10)]
-```
-**Haskell**:
-```hs 
-map (1+) $ map (2*) [0..9]
-map ((+1) . (*2)) [0..9] -- alternative thanks to Alexandru Dinu
-```
-**R**:
-```R
--1+2*seq(10) # thanks to Roi Barkan
-```
-**APL**:
-```apl
-1+2×⍳10
-```
-**J**:
-```ijs
-1+2*i.10
-```
-**C++**:
-```c++
-// https://godbolt.org/z/5r7aEo
-iota(0, 10) | transform([](auto e) { return e * 2 + 1; })
-```
+|Language|Code|Runnable Link|
+|:-:|:-:|:-:|
+|**J**|`1+2*i.10`||
+|APL|`1+2×⍳10`|[TryAPL](https://tryapl.org/?clear&q=1%2B2%C3%97%E2%8D%B310&run)|
+|R|`-1+2*seq(10)`||
+|Python|`[1 + 2 * i for i in range(10)]`|[Godbolt](https://python.godbolt.org/z/dEqv3s)|
+|Haskell|`map (1+) $ map (2*) [0..9]`|[OneCompiler](https://onecompiler.com/haskell/3wmm2ykqy)|
+|Haskell|`map ((+1) . (*2)) [0..9]`|[OneCompiler](https://onecompiler.com/haskell/3wmm2ykqy)|
+|Haskell|`take 10 [1,3..]`|[OneCompiler](https://onecompiler.com/haskell/3wmm2ykqy)|
+|C++|`transform(iota(0, 10), [](auto e) { return e * 2 + 1; })`|[Godbolt](https://godbolt.org/z/5r7aEo)|
+|C#|`Enumerable.Range(0, 10).Select((int i) => { return i * 2 + 1; })`||
+|Java|`IntStream.range(0, 10).map(x -> x * 2 + 1).toArray();`||
 
 ## Getting started & Building:
 For building this repository, please see [`CONTRIBUTING.md`](https://github.com/codereport/jsource/blob/main/CONTRIBUTING.md).
