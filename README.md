@@ -45,7 +45,7 @@ Calculating the first 10 odd numbers:
 |**J**|`1+2*i.10`||
 |APL|`1+2×⍳10`|[TryAPL](https://tryapl.org/?clear&q=1%2B2%C3%97%E2%8D%B310&run)|
 |R|`-1+2*seq(10)`||
-|Python|`1 + 2 * i for i in range(10)`|[Godbolt](https://python.godbolt.org/z/dEqv3s)|
+|Python|`[1 + 2 * i for i in range(10)]`|[Godbolt](https://python.godbolt.org/z/dEqv3s)|
 |Haskell|`map (1+) $ map (2*) [0..9]`|[OneCompiler](https://onecompiler.com/haskell/3wmm2ykqy)|
 |Haskell|`map ((+1) . (*2)) [0..9]`|[OneCompiler](https://onecompiler.com/haskell/3wmm2ykqy)|
 |Haskell|`take 10 [1,3..]`|[OneCompiler](https://onecompiler.com/haskell/3wmm2ykqy)|
