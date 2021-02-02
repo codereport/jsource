@@ -78,7 +78,7 @@ def main():
             f.write(new_data)
             i += 1
 
-    print(str(len(matches)) + " file changes")
+    print(str(len(matches)+1) + " file changes")
     os.system('git commit -m "remove #define ' + oldname + '" -a')
     os.system('git push')
     pass
