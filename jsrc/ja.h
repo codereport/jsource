@@ -96,7 +96,7 @@
 #define ccvt(x,y,z)                 jtccvt(jt,(x),(y),(z))
 #define cdgahash(x)                 jtcdgahash(jt,(x))   
 #define cdinit()                    jtcdinit(jt)   
-#define cdinsert(x,y)               jtcdinsert(jt,(x),(y))   
+   
 #define cdload(x,y,z)               jtcdload(jt,(x),(y),(z))
 #define cdlookup(x)                 jtcdlookup(jt,(x))   
 #define cdlookupl(x)                jtcdlookupl(jt,(x))   

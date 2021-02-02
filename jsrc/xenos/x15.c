@@ -742,7 +742,7 @@ static CCT*jtcdparse(J jt,A a,I empty){C c,lib[NPATH],*p,proc[NPATH],*s,*s0;CCT*
  MC(lib, s0+li,cc->ln); lib [cc->ln]=0;
  MC(proc,s0+pi,cc->pn); proc[cc->pn]=0;
  RZ(cc=cdload(cc,lib,proc));
- cc->n=1+i; RZ(cc=cdinsert(a,cc)); cc->li=li+cc->ai; cc->pi=pi+cc->ai;
+ cc->n=1+i; RZ(cc=jtcdinsert(jt,a,cc)); cc->li=li+cc->ai; cc->pi=pi+cc->ai;
  return cc;
 }
 
