@@ -39,3 +39,5 @@
 |`jsrc\adverbs\ao.c`|cdot2|jtcdot2|`(^\|[ \t]+\|[^\d\w_])cdot2\((?=([^,]+?),([^)]+?)\))`|`\1jtcdot2(jt,`|
 |`jsrc\xenos\x15.c`|cdparse|jtcdparse|`(^\|[ \t]+\|[^\d\w_])cdparse\((?=([^,]+?),([^)]+?)\))`|`\1jtcdparse(jt,`|
 |`jsrc\adverbs\am.c` `jsrc\verbs\vfrom.c`|celloffset|jtcelloffset|`(^\|[ \t]+\|[^\d\w_])celloffset\((?=([^,]+?),([^)]+?)\))`|`\1jtcelloffset(jt,`|
+|`jsrc\px.c`|colon|jtcolon|`(^\|[ \t]+\|[^\d\w_])colon\((?=([^,]+?),([^)]+?)\))`|`\1jtcolon(jt,`|
+|`jsrc\parsing\pv.c`|colon|jtcolon|`(^\|[ \t]+\|[^\d\w_])colon\((?=([^,]+?),([^)]+?)\))`|`\1jtcolon(jt,`|

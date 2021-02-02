@@ -115,7 +115,7 @@
 #define clonelocalsyms(x)           jtclonelocalsyms(jt,(x))
 #define clonevirtual(z)             jtclonevirtual(jt,(z))
 #define coeff(x)                    jtcoeff(jt,(x))
-#define colon(x,y)                  jtcolon(jt,(x),(y))
+
 #define colon0(x)                   jtcolon0(jt,(x))
 #define compare(x,y)                jtcompare(jt,(x),(y))
 #define conall(x,y)                 jtconall(jt,(x),(y))
