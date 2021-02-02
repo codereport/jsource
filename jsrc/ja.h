@@ -101,7 +101,7 @@
 #define cdlookup(x)                 jtcdlookup(jt,(x))   
 #define cdlookupl(x)                jtcdlookupl(jt,(x))   
 #define cdot1(x)                    jtcdot1(jt,(x))   
-#define cdot2(x,y)                  jtcdot2(jt,(x),(y))  
+  
 #define cdparse(x,y)                jtcdparse(jt,(x),(y))
 #define ceil1(x)                    jtatomic1(jt,(x),ds(CCEIL))
 #define celloffset(x,y)             jtcelloffset(jt,(x),(y))
