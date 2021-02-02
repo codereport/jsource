@@ -19,3 +19,4 @@
 |`jsrc\conjunctions\cc.c` `jsrc\verbs\ve.c` `jsrc\verbs\vf.c` `jsrc\verbs\vp.c` `jsrc\verbs\vs.c`|abase2|jtabase2|`(^\|[ \t]+\|[^\d\w_])abase2\((?=([^,]+?),([^)]+?)\))`|`\1jtabase2(jt,`|
 
 |`jsrc\verbs\vfrom.c`|afi|jtafi|`(^\|[ \t]+\|[^\d\w_])afi\((?=([^,]+?),([^)]+?)\))`|`\1jtafi(jt,`|
+|`jsrc\verbs\vfrom.c`|afrom|jtafrom|`(^\|[ \t]+\|[^\d\w_])afrom\((?=([^,]+?),([^)]+?)\))`|`\1jtafrom(jt,`|
