@@ -6,7 +6,7 @@
 #define DfromZ(x,y,z)               jtDfromZ(jt,(x),(y),(z))
 #define DXfI(x,y,z)                 jtDXfI(jt,(x),(y),(z))
 #define IfromD(x,y,z)               jtIfromD(jt,(x),(y),(z))
-#define IfromX(x,y)                 jtIfromX(jt,(x),(y))
+
 #define QfromD(x,y,z)               jtQfromD(jt,(x),(y),(z))
 #define QfromX(x,y)                 jtQfromX(jt,(x),(y))
 #define XfromB(x,y)                 jtXfromB(jt,(x),(y))

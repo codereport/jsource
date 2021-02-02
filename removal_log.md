@@ -10,3 +10,4 @@
 |`jsrc\k.c`|C4fromC2|jtC4fromC2|`(^\|[ \t]+\|[^\d\w_])C4fromC2\((?=([^,]+?),([^)]+?)\))`|`\1jtC4fromC2(jt,`|
 |`jsrc\k.c`|DfromQ|jtDfromQ|`(^\|[ \t]+\|[^\d\w_])DfromQ\((?=([^,]+?),([^)]+?)\))`|`\1jtDfromQ(jt,`|
 |`jsrc\k.c`|DfromX|jtDfromX|`(^\|[ \t]+\|[^\d\w_])DfromX\((?=([^,]+?),([^)]+?)\))`|`\1jtDfromX(jt,`|
+|`jsrc\k.c`|IfromX|jtIfromX|`(^\|[ \t]+\|[^\d\w_])IfromX\((?=([^,]+?),([^)]+?)\))`|`\1jtIfromX(jt,`|
