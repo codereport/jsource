@@ -27,18 +27,20 @@ def walk_matches():
                 continue
 
             for full_str, name1, v1, v2, name2 in matches:
-                print("remove "+full_str)
+                print("remove " + full_str)
                 data = data.replace(full_str, "")
                 with open(path, 'w') as fw:
                     fw.write(data)
-                yield re.compile(r'(^|[ \t]+|[^\d\w_])' + name1 + r'\((?=([^,]+?),([^)]+?)\))'), r'\1' + name2 + r'(jt,'
+                yield re.compile(
+                    r'(^|[ \t]+|[^\d\w_])' + name1 + r'\((?=([^,]+?),([^)]+?)\))'), r'\1' + name2 + r'(jt,', name1, name2
                 return
 
     pass
 
 
 def find_replaced_data():
-    for regular_expression, replace_pattern in walk_matches():
+    unescaped = re.compile(r'\|')
+    for regular_expression, replace_pattern, oldname, newname in walk_matches():
         # print(regular_expression)
         # print(replace_pattern)
         for path in walk_path_cpp():
@@ -49,6 +51,14 @@ def find_replaced_data():
                 matches = regular_expression.search(data)
                 if matches is None:
                     continue
+
+                with open("removal_log.md", 'a') as log:
+                    escaped = '\\|'
+                    log.write('|' + path)
+                    log.write('|' + oldname)
+                    log.write('|' + newname)
+                    log.write('|`' + unescaped.sub(escaped, regular_expression.pattern) + '`')
+                    log.write('|`' + unescaped.sub(escaped, replace_pattern) + '`|')
                 # print(matches)
                 yield path, regular_expression.sub(replace_pattern, data)
     pass
