@@ -30,7 +30,8 @@ def walk_matches():
                 if name1 in ["bindd",
                              "binzz",
                              "dgcd",
-                             "dlcm"]:
+                             "dlcm",
+                             "equ"]:
                     continue
                 print("remove " + full_str)
                 data = data.replace(full_str, "")
@@ -78,7 +79,8 @@ def main():
             f.write(new_data)
             i += 1
 
-    print(str(len(matches)+1) + " file changes")
+    # print(str(len(matches)+1) + " file changes")
+    print()
     os.system('git commit -m "remove #define ' + oldname + '" -a')
     os.system('git push')
     pass
