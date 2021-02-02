@@ -21,7 +21,7 @@ def walk_matches():
             if len(matches) == 0:
                 continue
             for name1, v1, v2, name2 in matches:
-                yield r'(^|[ \t]+)' + name1 + r'\(([^,]+?),([^)]+?)\)', ' ' + name2 + r'(jt,(\2),(\3))'
+                yield r'(^|[ \t]+|[^\d\w_])' + name1 + r'\((?=([^,]+?),([^)]+?)\))', '\1' + name2 + r'(jt,'
     pass
 
 
