@@ -56,7 +56,7 @@ A jtevc(J jt,A a,A w,C*s){A z; return df2(z,a,w,colon(num(2),cstr(s)));}
  A jtimmea(J jt, A w){A t,z,z1;
  RZ(w=ddtokens(w,4+1+(AN(jt->locsyms)>1))); z=immex(w);   // check for DD, but don't allow continuation read
  ASSERT(jt->asgn||!z||!(AT(z)&NOUN)||(t=eq(num(1),z),
-     all1(AT(z)&SPARSE?df1(z1,t,atop(slash(ds(CSTARDOT)),ds(CCOMMA))):t)),EVASSERT);  // apply *./@, if sparse
+     all1(AT(z)&SPARSE?df1(z1,t,jtatop(jt,slash(ds(CSTARDOT)),ds(CCOMMA))):t)),EVASSERT);  // apply *./@, if sparse
  return z;
 }
 

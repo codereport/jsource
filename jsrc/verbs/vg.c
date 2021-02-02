@@ -763,7 +763,7 @@ static B (*grroutine[])(J,I,I,I,A,I*) = {  // index is [bitx]
  if(((4-n)&((AR(a)|(1^AR(w)))-1)&(-(wt&FL+INT)))>=0)return from(a,grade2(w,w));  // if not int/float, or short, or not (atom a and list w), do full grade
  if((UI)j>=(UI)n){j+=n; ASSERT((UI)j<(UI)n,EVINDEX);}
  // deal a bunch of random floats to provide pivots.  We reuse them if needed
- RZ(df2(q,sc(NRANDS),num(0),atop(ds(CQUERY),ds(CDOLLAR)))); qv=DAV(q);
+ RZ(df2(q,sc(NRANDS),num(0),jtatop(jt,ds(CQUERY),ds(CDOLLAR)))); qv=DAV(q);
  if(wt&FL)OSLOOP(D,scf) else OSLOOP(I,sc);
 }    /* a{/:~w */
 

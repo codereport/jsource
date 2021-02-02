@@ -237,14 +237,14 @@ A jtevery2(J jt, A a, A w, A fs){A*av,*wv,x,z,*zv;
 // u&.v
 // PUSH/POP ZOMB is performed in atop/amp/ampco
 // under is for when we could not precalculate the inverse.  The verb is in localuse
-static A jtunder1(J jt,    A w,A self){F1PREFIP;DECLFG;A fullf; RZ(fullf=atop(invrecur(fix(sv->localuse.lvp[0],sc(FIXASTOPATINV))),sv->fgh[2])); return (FAV(fullf)->valencefns[0])(FAV(fullf)->flag&VJTFLGOK1?jtinplace:jt,w,fullf);}
-static A jtunder2(J jt,A a,A w,A self){F2PREFIP;DECLFG;A fullf; RZ(fullf=atop(invrecur(fix(sv->localuse.lvp[0],sc(FIXASTOPATINV))),sv->fgh[2])); return (FAV(fullf)->valencefns[1])(FAV(fullf)->flag&VJTFLGOK2?jtinplace:jt,a,w,fullf);}
+static A jtunder1(J jt,    A w,A self){F1PREFIP;DECLFG;A fullf; RZ(fullf=jtatop(jt,invrecur(fix(sv->localuse.lvp[0],sc(FIXASTOPATINV))),sv->fgh[2])); return (FAV(fullf)->valencefns[0])(FAV(fullf)->flag&VJTFLGOK1?jtinplace:jt,w,fullf);}
+static A jtunder2(J jt,A a,A w,A self){F2PREFIP;DECLFG;A fullf; RZ(fullf=jtatop(jt,invrecur(fix(sv->localuse.lvp[0],sc(FIXASTOPATINV))),sv->fgh[2])); return (FAV(fullf)->valencefns[1])(FAV(fullf)->flag&VJTFLGOK2?jtinplace:jt,a,w,fullf);}
 // underh has the inverse precalculated, and the inplaceability set from it.  It handles &. and &.: which differ only in rank
 static A jtunderh1(J jt,    A w,A self){F1PREFIP;DECLFGH; return (FAV(hs)->valencefns[0])(jtinplace,w,hs);}
 static A jtunderh2(J jt,A a,A w,A self){F2PREFIP;DECLFGH; return (FAV(hs)->valencefns[1])(jtinplace,a,w,hs);}
 // undco is for when we could not precalculate the inverse
-static A jtundco1(J jt,    A w,A self){F1PREFIP;DECLFG;A fullf; RZ(fullf=atop(inv(sv->localuse.lvp[0]),sv->fgh[2])); return (FAV(fullf)->valencefns[0])(FAV(fullf)->flag&VJTFLGOK1?jtinplace:jt,w,fullf);}
-static A jtundco2(J jt,A a,A w,A self){F2PREFIP;DECLFG;A fullf; RZ(fullf=atop(inv(sv->localuse.lvp[0]),sv->fgh[2])); return (FAV(fullf)->valencefns[1])(FAV(fullf)->flag&VJTFLGOK2?jtinplace:jt,a,w,fullf);}
+static A jtundco1(J jt,    A w,A self){F1PREFIP;DECLFG;A fullf; RZ(fullf=jtatop(jt,inv(sv->localuse.lvp[0]),sv->fgh[2])); return (FAV(fullf)->valencefns[0])(FAV(fullf)->flag&VJTFLGOK1?jtinplace:jt,w,fullf);}
+static A jtundco2(J jt,A a,A w,A self){F2PREFIP;DECLFG;A fullf; RZ(fullf=jtatop(jt,inv(sv->localuse.lvp[0]),sv->fgh[2])); return (FAV(fullf)->valencefns[1])(FAV(fullf)->flag&VJTFLGOK2?jtinplace:jt,a,w,fullf);}
 
 // versions for rank 0 (including each).  Passes inplaceability through
 // if there is only one cell, process it through under[h]1, which understands this type; if more, loop through
@@ -317,7 +317,7 @@ static A jtunderai1(J jt,    A w,A self){DECLF;A x,y,z;B b;I j,n,*u,*v;UC f[256]
  }
  ASSERT(h!=0,EVDOMAIN);
  // If we can calculate the inverse now, do it and so indicate
- if(nameless(wvb)){h=atop(inv(wvb),h); ASSERT(h!=0,EVDOMAIN); flag|=VFUNDERHASINV; } // h must be valid for free.  If no names in w, take the inverse and maek it as done
+ if(nameless(wvb)){h=jtatop(jt,inv(wvb),h); ASSERT(h!=0,EVDOMAIN); flag|=VFUNDERHASINV; } // h must be valid for free.  If no names in w, take the inverse and maek it as done
  // under12 are inplaceable, and pass inplaceability based on the calculated verb.  underh just passes inplaceability through, so we have to transfer the setting from h here,
  // just in case the calculated verb is not inplaceable
  // The standard verbs start with a rank loop; set the flag indicating that
@@ -353,7 +353,7 @@ static A jtunderai1(J jt,    A w,A self){DECLF;A x,y,z;B b;I j,n,*u,*v;UC f[256]
  }
  ASSERT(h!=0,EVDOMAIN);
  // If we can calculate the inverse now, do it and so indicate
- if(nameless(wvb)){h=atop(inv(wvb),h); ASSERT(h!=0,EVDOMAIN); flag|=VFUNDERHASINV; } // h must be valid for free.  If no names in w, take the inverse and maek it as done
+ if(nameless(wvb)){h=jtatop(jt,inv(wvb),h); ASSERT(h!=0,EVDOMAIN); flag|=VFUNDERHASINV; } // h must be valid for free.  If no names in w, take the inverse and maek it as done
  // under12 are inplaceable, and pass inplaceability based on the calculated verb.  underh just passes inplaceability through, so we have to transfer the setting from h here,
  // just in case the calculated verb is not inplaceable
  if(!f1)f1=flag&VFUNDERHASINV?jtunderh1:jtundco1; f2=flag&VFUNDERHASINV?jtunderh2:jtundco2; flag |= (FAV(a)->flag&FAV(wvb)->flag&VASGSAFE) + (FAV(h)->flag&(VJTFLGOK1|VJTFLGOK2));

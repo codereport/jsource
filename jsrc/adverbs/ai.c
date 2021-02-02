@@ -104,8 +104,8 @@ static A jtinvamp(J jt, A w){A f,ff,g,h,x,y;B nf,ng;C c,d,*yv;I n;V*u,*v;
   case CROOT:    return jtamp(jt,ds(nf?CEXP:CLOG),x);
   case CEXP:     return ng&&equ(x,num(2))?ds(CROOT):jtamp(jt,x,ds(nf?CLOG:CROOT));
   case CLOG:     return nf?jtamp(jt,x,ds(CEXP)):jtamp(jt,ds(CROOT),x);
-  case CJDOT:    return nf?atop(invrecur(ds(CJDOT)),jtamp(jt,ds(CMINUS),x)):jtamp(jt,ds(CMINUS),jdot1(x));
-  case CRDOT:    return nf?atop(invrecur(ds(CRDOT)),jtamp(jt,ds(CDIV  ),x)):jtamp(jt,ds(CDIV  ),rdot1(x));
+  case CJDOT:    return nf?jtatop(jt,invrecur(ds(CJDOT)),jtamp(jt,ds(CMINUS),x)):jtamp(jt,ds(CMINUS),jdot1(x));
+  case CRDOT:    return nf?jtatop(jt,invrecur(ds(CRDOT)),jtamp(jt,ds(CDIV  ),x)):jtamp(jt,ds(CDIV  ),rdot1(x));
   case CLBRACE:  return nf?jtamp(jt,pinv(x),h):jtamp(jt,x,ds(CIOTA));
   case COBVERSE: ff=FAV(h)->fgh[1]; return jtamp(jt,nf?x:ff,nf?ff:x);
   case CPDERIV:  if(nf&&!AR(x))return ds(CPDERIV); break;  // only atom&p.. is invertible
@@ -166,7 +166,7 @@ static A jtinvamp(J jt, A w){A f,ff,g,h,x,y;B nf,ng;C c,d,*yv;I n;V*u,*v;
    return AR(x) ? jtamp(jt,x,ds(CABASE)) :
     obverse(evc(x,mag(x),"$&u@>:@(v&(<.@^.))@(1&>.)@(>./)@:|@, #: ]"),w);
   case CATOMIC:
-   if(ng){ASSERT(equ(x,nub(x)),EVDOMAIN); return obverse(atop(f,jtamp(jt,x,ds(CIOTA))),w);}  // fall through to common obverse (?)
+   if(ng){ASSERT(equ(x,nub(x)),EVDOMAIN); return obverse(jtatop(jt,f,jtamp(jt,x,ds(CIOTA))),w);}  // fall through to common obverse (?)
   case CCYCLE:
    if(nf&&AR(x)<=(c==CCYCLE))return obverse(eva(w,"/:@u@(i.@#) { ]"),w); break;
   case CDROP:
@@ -174,13 +174,13 @@ static A jtinvamp(J jt, A w){A f,ff,g,h,x,y;B nf,ng;C c,d,*yv;I n;V*u,*v;
    RZ(x=cvt(INT,x));
    RZ(y=eps(v2(-1L,1L),signum(x))); yv=CAV(y);
    f=jtamp(jt,mag(x),ds(CPLUS));
-   g=1==AN(x)?ds(CPOUND):atop(jtamp(jt,tally(jt, x),ds(CTAKE)),ds(CDOLLAR));
-   h=!yv[1]?f:atop(!yv[0]?ds(CMINUS):jtamp(jt,negate(signum(x)),ds(CSTAR)),f);
-   return obverse(hook(swap(ds(CTAKE)),atop(h,g)),w);
+   g=1==AN(x)?ds(CPOUND):jtatop(jt,jtamp(jt,tally(jt, x),ds(CTAKE)),ds(CDOLLAR));
+   h=!yv[1]?f:jtatop(jt,!yv[0]?ds(CMINUS):jtamp(jt,negate(signum(x)),ds(CSTAR)),f);
+   return obverse(hook(swap(ds(CTAKE)),jtatop(jt,h,g)),w);
   case CDOMINO:
    if(!(2==AR(x)&&*AS(x)==*(1+AS(x))))break;
    ff=eval("+/ .*");
-   return nf?atop(h,jtamp(jt,ff,minv(x))):jtamp(jt,x,ff);
+   return nf?jtatop(jt,h,jtamp(jt,ff,minv(x))):jtamp(jt,x,ff);
   case CDOT:
    if(ip(h,CPLUS,CSTAR)){
     ASSERT(2==AR(x),EVRANK);
@@ -259,7 +259,7 @@ A jtinv(J jt, A w, I recur){A f,ff,g;B b,nf,ng,vf,vg;C id;I p,q;V*v;
   case CUNDER:   return under(invrecur(f),g);
   case CFORK:    return invfork(w);
   case CAMP:     if(nf!=ng){A z=invamp(w); if(nf^ng)return z;}  // may fall through... but avoid tail-recursion so we get out of loop
-  case CAT:      if(vf&&vg)return atop(invrecur(g),invrecur(f));   break;
+  case CAT:      if(vf&&vg)return jtatop(jt,invrecur(g),invrecur(f));   break;
   case CAMPCO:
   case CATCO:    if(vf&&vg)return jtatco(jt,invrecur(g),invrecur(f));   break;
   case CSLASH:   if(CSTAR==ID(f))return ds(CQCO);        break;
@@ -338,10 +338,10 @@ static A jtneutral(J jt, A w){A x,y;B b;V*v;
   default:      RZ(x=neutral(w)); break;
   case CCOMMA:  return eval("i.@(0&,)@(2&}.)@$");
   case CDOT:    if(!(ip(w,CPLUS,CSTAR)||ip(w,CPLUSDOT,CSTARDOT)||ip(w,CNE,CSTARDOT)))break;  // if matrix multiply, fall through to...
-  case CDOMINO: return atop(atop(ds(CEQ),ds(CGRADE)),ds(CHEAD));
+  case CDOMINO: return jtatop(jt,atop(ds(CEQ),ds(CGRADE)),ds(CHEAD));
   case CCYCLE:
-  case CLBRACE: return atop(ds(CGRADE),ds(CHEAD));
-  case CSLASH:  if(VERB&AT(f))return atop(iden(f),ds(CPOUND)); break;
+  case CLBRACE: return jtatop(jt,ds(CGRADE),ds(CHEAD));
+  case CSLASH:  if(VERB&AT(f))return jtatop(jt,iden(f),ds(CPOUND)); break;
   case CPLUS: case CMINUS: case CSTILE:   case CNE:
   case CGT:   case CLT:    case CPLUSDOT: case CJDOT:   case CRDOT:
                 x=num(0); break;
@@ -369,7 +369,7 @@ static A jtneutral(J jt, A w){A x,y;B b;V*v;
    break;
   }
  ASSERT(x!=0,EVDOMAIN);
- return folk(x,swap(ds(CDOLLAR)),atop(ds(CBEHEAD),ds(CDOLLAR)));
+ return folk(x,swap(ds(CDOLLAR)),jtatop(jt,ds(CBEHEAD),ds(CDOLLAR)));
 }
 
  A jtidensb(J jt, A w){A f,g,x=0,w0=w;V*v;
@@ -381,5 +381,5 @@ static A jtneutral(J jt, A w){A x,y;B b;V*v;
   case CMIN:    GATV0(x,SBT,1,0);SBAV(x)[0]=jt->sbuv[0].down; break;
  }
  ASSERT(x!=0,EVDOMAIN);
- return folk(x,swap(ds(CDOLLAR)),atop(ds(CBEHEAD),ds(CDOLLAR)));
+ return folk(x,swap(ds(CDOLLAR)),jtatop(jt,ds(CBEHEAD),ds(CDOLLAR)));
 }

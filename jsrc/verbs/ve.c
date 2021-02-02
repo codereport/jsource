@@ -341,7 +341,7 @@ static A jtweight(J jt,A a,A w){ A z; return df1(z,behead(over(AR(w)?w:reshape(a
  if((-n&SGNIFNOT(t,B01X))>=0)return reshape(apip(shape(w),zeroionei(n!=0)),w);
  if(!(t&INT)){
   // Not integer.  Calculate # digits-1 as d = 2 <.@^. >./ | , w  
-  df2(d,num(2),maximum(zeroionei(1),jtaslash(jt,CMAX,mag(ravel(w)))),atop(ds(CFLOOR),ds(CLOG)));
+  df2(d,num(2),maximum(zeroionei(1),jtaslash(jt,CMAX,mag(ravel(w)))),jtatop(jt,ds(CFLOOR),ds(CLOG)));
   // Calculate z = ((1+d)$2) #: w
   RZ(z=jtabase2(jt,reshape(increm(d),num(2)),w));
   // If not float, result is exact or complex; either way, keep it

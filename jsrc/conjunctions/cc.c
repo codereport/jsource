@@ -917,7 +917,7 @@ static A jttess2(J jt,A a,A w,A self){A z,zz=0,virtw,strip;I n,rs[3],cellatoms,c
    next2=jtatco(jt,atco(qq(jtatco(jt,ds(CBOX),ds(COPE)),num(2)),jtamp(jt,v2(0,1),ds(CCANT))),next2);
    if(!inrecursion){
     // at the top level, add on u@>
-    next2=jtatco(jt,atop(fs,ds(COPE)),next2);
+    next2=jtatco(jt,jtatop(jt,fs,ds(COPE)),next2);
    }
   }
   fs=next2; f1=FAV(fs)->valencefns[0];   // get the function corresponding to the new verb

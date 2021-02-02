@@ -286,7 +286,7 @@ PREFIXPFX(bw1111pfxI, UI,UI, BW1111, bw1111II,return EVOK;)
 
 static A jtprefix(J jt,    A w,A self){DECLF;I r;
  r = (RANKT)jt->ranks; RESETRANK; if(r<AR(w)){return rank1ex(w,self,r,jtprefix);}
- return eachl(apv(SETIC(w,r),1L,1L),w,atop(fs,ds(CTAKE)));
+ return eachl(apv(SETIC(w,r),1L,1L),w,jtatop(jt,fs,ds(CTAKE)));
 }    /* f\"r w for general f */
 
 static A jtgprefix(J jt,    A w,A self){A h,*hv,z,*zv;I m,n,r;
@@ -339,7 +339,7 @@ static A jtinfix(J jt,A a,A w,A self){PROLOG(0018);DECLF;A x,z;I m;
  // Create table of infix positions
  RZ(x=ifxi(m,w));
  // If there are infixes, apply fs@:jtseg (ac2 creates an A verb for jtseg)
- if(AS(x)[0])z=eachl(x,w,atop(fs,ac2(jtseg)));
+ if(AS(x)[0])z=eachl(x,w,jtatop(jt,fs,ac2(jtseg)));
  else{A s;I r, rr;
   // No infixes.  Create a cell of fills, apply fs to it, add a leading axis of 0 to the result
   // create a block containing the shape of the fill-cell.  The fill-cell is a list of items of y,

@@ -151,7 +151,7 @@ SUFFIXPFX(bw1111sfxI, UI,UI, BW1111, bw1111II,return EVOK;)
 
 static A jtsuffix(J jt,    A w,A self){DECLF;I r;
  r=(RANKT)jt->ranks; RESETRANK; if(r<AR(w))return rank1ex(w,self,r,jtsuffix);
- return eachl(IX(SETIC(w,r)),w,atop(fs,ds(CDROP)));
+ return eachl(IX(SETIC(w,r)),w,jtatop(jt,fs,ds(CDROP)));
 }    /* f\."r w for general f */
 
 static A jtgsuffix(J jt,    A w,A self){A h,*hv,z,*zv;I m,n,r;
@@ -307,7 +307,7 @@ static A jtgoutfix(J jt,A a,A w,A self){A h,*hv,x,z,*zv;I m,n;
  return ope(z);
 }
 
-static AS2(jtoutfix, eachl(omask(a,w),w,atop(fs,ds(CPOUND))),0117)
+static AS2(jtoutfix, eachl(omask(a,w),w,jtatop(jt,fs,ds(CPOUND))),0117)
 
 static A jtofxinv(J jt,A a,A w,A self){A f,fs,z;C c;I t;V*v;
  F2RANKW(0,RMAX,jtofxinv,self);

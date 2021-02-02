@@ -518,7 +518,7 @@ static A jtfmtxi(J jt, A a, A w, I mode, I *omode){I lvl;
  *omode=0;
  if((SPARSE&AT(w))!=0) RZ(w=denseit(w));
  if(!AN(w))       RZ(w=reshape(shape(w),chrspace));
- if(JCHAR&AT(w))  return df1(a,w,qq(atop(ds(CBOX),ds(CCOMMA)),num(1)));
+ if(JCHAR&AT(w))  return df1(a,w,qq(jtatop(jt,ds(CBOX),ds(CCOMMA)),num(1)));
  ASSERT(1>=AR(a), EVRANK); 
  ASSERT(!AN(a) || JCHAR+BOX&AT(a), EVDOMAIN);
  if(JCHAR&AT(a)||!AN(a)) RZ(a=fmtbfc(a));
