@@ -176,7 +176,7 @@
 #define df1(r,x,y)                  (r=((r=(y))?(FAV(r)->valencefns[0])(jt,(x),r):r))
 #define df2(r,x,y,z)                (r=((r=(z))?(FAV(r)->valencefns[1])(jt,(x),(y),r):r))
 #define df2ip(r,x,y,z)                (r=((r=(z))?(FAV(r)->valencefns[1])(jtinplace,(x),(y),r):r))
-#define dfc(x,y)                    jtdfc(jt,(x),(y))
+
 #define dfr(x)                      jtdfr(jt,(x))
 #define dfrep(x)                    jtdfrep(jt,(x))
 #define dfs1(x,y)                   jtdfs1(jt,(x),(y)) 

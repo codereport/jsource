@@ -85,12 +85,12 @@ static A jtdfc(J jt,I n,A w){PROLOG(0082);A b,q,*wv,z;B*bv;I c,j,qn,*qv,*x;
  EPILOG(z);
 }    /* direct from cycle */
 
- A jtcdot1(J jt, A w){F1RANK(1,jtcdot1,UNUSED_VALUE); return BOX&AT(w)?dfc(ord(raze(w)),w):cfd(w);}
+ A jtcdot1(J jt, A w){F1RANK(1,jtcdot1,UNUSED_VALUE); return BOX&AT(w)?jtdfc(jt,ord(raze(w)),w):cfd(w);}
 
  A jtcdot2(J jt,A a,A w){A p;I k;
  F2RANK(1,RMAX,jtcdot2,UNUSED_VALUE);
  SETIC(w,k);
- RZ(p=BOX&AT(a)?dfc(k,a):pfill(k,a));
+ RZ(p=BOX&AT(a)?jtdfc(jt,k,a):pfill(k,a));
  return AR(w)?from(p,w):w;
 }
 
