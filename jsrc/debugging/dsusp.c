@@ -179,7 +179,7 @@ A jtpee(J jt,A *queue,CW*ci,I err,I lk,DC c){A z=0;
 
 A jtparsex(J jt,A* queue,I m,CW*ci,DC c){A z;B s;
  movesentencetosi(jt,queue,m,0);  // install sentence-to-be-executed for stop purposes
- if(s=dbstop(c,ci->source)){z=0; jsignal(EVSTOP);}
+ if(s=jtdbstop(jt,c,ci->source)){z=0; jsignal(EVSTOP);}
  else                      {z=parsea(queue,m);     }
  // If we hit a stop, or if we hit an error outside of try./catch., enter debug mode.  But if debug mode is off now, we must have just
  // executed 13!:0]0, and we should continue on outside of debug mode.  Error processing filled the current si line with the info from the parse
@@ -196,7 +196,7 @@ A jtdbunquote(J jt,A a,A w,A self,L *stabent){A t,z;B b=0,s;DC d;V*sv;
   d->dcix=0;  // set a pseudo-line-number for display purposes for the tacit 
   do{
    d->dcnewlineno=0;  // turn off 'reexec requested' flag
-   if(s=dbstop(d,0L)){z=0; jsignal(EVSTOP);}  // if this line is a stop
+   if(s=jtdbstop(jt,d,0L)){z=0; jsignal(EVSTOP);}  // if this line is a stop
    else              {ras(self); z=a?dfs2(a,w,self):dfs1(w,self); fa(self);}
    // If we hit a stop, or if we hit an error outside of try./catch., enter debug mode.  But if debug mode is off now, we must have just
    // executed 13!:8]0, and we should continue on outside of debug mode
