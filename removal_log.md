@@ -63,3 +63,4 @@
 |`jsrc\adverbs\am1.c`|dcube|jtdcube|`(^\|[ \t]+\|[^\d\w_])dcube\((?=([^,]+?),([^)]+?)\))`|`\1jtdcube(jt,`|
 |`jsrc\io.c` `jsrc\px.c` `jsrc\conjunctions\cx.c` `jsrc\xenos\xs.c`|ddtokens|jtddtokens|`(^\|[ \t]+\|[^\d\w_])ddtokens\((?=([^,]+?),([^)]+?)\))`|`\1jtddtokens(jt,`|
 |`jsrc\verbs\vrand.c`|deal|jtdeal|`(^\|[ \t]+\|[^\d\w_])deal\((?=([^,]+?),([^)]+?)\))`|`\1jtdeal(jt,`|
+|`jsrc\representations\rl.c`|decorate|jtdecorate|`(^\|[ \t]+\|[^\d\w_])decorate\((?=([^,]+?),([^)]+?)\))`|`\1jtdecorate(jt,`|

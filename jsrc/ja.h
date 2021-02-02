@@ -162,7 +162,7 @@
 #define debdisp(x)                  jtdebdisp(jt,(x))
 #define debsi1(x)                   jtdebsi1(jt,(x))
 #define debug()                     jtdebug(jt)
-#define decorate(x,y)               jtdecorate(jt,(x),(y))
+
 #define debz()                      jtdebz(jt)
 #define deflate(x0,x1,x2,x3)        jtdeflate(jt,(x0),(x1),(x2),(x3))
 #define deflateq(x0,x1,x2,x3)       jtdeflateq(jt,(x0),(x1),(x2),(x3))
