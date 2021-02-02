@@ -49,7 +49,7 @@
 #define atab(x,y,z)                 jtatab(jt,(x),(y),(z))
 
 #define atcompf(x,y,z)              jtatcompf(jt,(x),(y),(z))
-#define atomic(x,y)                 jtatomic(jt,(x),(y))
+
 #define atop(x,y)                   jtatop(jt,(x),(y))
 #define axbytes(x,y)                jtaxbytes(jt,(x),(y))
 #define axbytes1(x0,x1,x2,x3,x4)    jtaxbytes1(jt,(x0),(x1),(x2),(x3),(x4))
