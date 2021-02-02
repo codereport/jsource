@@ -33,7 +33,7 @@
 #define amna(x0,x1,x2,x3)           jtamna(jt,(x0),(x1),(x2),(x3))
 #define amne(x0,x1,x2,x3)           jtamne(jt,(x0),(x1),(x2),(x3))
 #define amnsp(x0,x1,x2,x3)          jtamnsp(jt,(x0),(x1),(x2),(x3))
-#define amp(x,y)                    jtamp(jt,(x),(y))
+
 #define ampco(x,y)                  jtampco(jt,(x),(y))
 #define apip(x,y)                   jtapip((J)((I)jt|JTINPLACEA),(x),(y))  // use apip instead of over when a is an inplaceable context
 #define apv(x,y,z)                  jtapv(jt,(x),(y),(z))

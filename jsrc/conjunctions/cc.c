@@ -407,7 +407,7 @@ static C*jtidenv0(J jt,A a,A w,V*sv,I zt,A*zz){A fs,y,z;
  *zz=0; 
  fs=sv->fgh[0];
  RE(df1(y,num(0),iden(VAV(fs)->fgh[0])));
- if(TYPESLT(zt,AT(y))){*zz=df1(z,cut2(a,w,cut(ds(CBOX),sv->fgh[1])),amp(fs,ds(COPE))); return 0;}  // fgh still has the original A, OK to use
+ if(TYPESLT(zt,AT(y))){*zz=df1(z,cut2(a,w,cut(ds(CBOX),sv->fgh[1])),jtamp(jt,fs,ds(COPE))); return 0;}  // fgh still has the original A, OK to use
  if(TYPESGT(zt,AT(y)))RE(y=cvt(zt,y)); 
  return CAV(y);
 }    /* pointer to identity element */
@@ -889,7 +889,7 @@ static A jttess2(J jt,A a,A w,A self){A z,zz=0,virtw,strip;I n,rs[3],cellatoms,c
   // the tessellation lacking the first two axes.  Unfortunately this differs considerably between ;.3 and ;._3
   // The ;._3 cut is pretty efficient, moving the data only once per pair of axes added.  The ;.3 cut creates argument cells, which
   // is inefficient; but that case will be very rare
-  next2=qq(amp(drop(v2(0,2),a),cut(ds((((4-axisct)|n)<0)?CRIGHT:CBOX),sc(n^256^(inrecursion>>1)))),num(-2));  // RIGHT if n<0 or axisct>4
+  next2=qq(jtamp(jt,drop(v2(0,2),a),cut(ds((((4-axisct)|n)<0)?CRIGHT:CBOX),sc(n^256^(inrecursion>>1)))),num(-2));  // RIGHT if n<0 or axisct>4
   if(n<0){
    // ;._3, the more usual and faster case
    // we will recur on ((0 2}.x)&(];.n)"_2 to build up _2-cells of the final result.  To save a smidgen, we will suppress the final
@@ -907,14 +907,14 @@ static A jttess2(J jt,A a,A w,A self){A z,zz=0,virtw,strip;I n,rs[3],cellatoms,c
     DO((axisct>>1)-1, *xpv++ = 4*i+3; *xpv++=4*i+2;) if(axisct&1)*xpv++=2*axisct-4;  // Rn
     DO(axisct>>1, *xpv++ = 4*i+0; *xpv++=4*i+1;) if(axisct&1)*xpv++=2*axisct-3;  // Sn
     DO(wr-axisct, *xpv++=2*axisct+i-2;);  // Wn, all the rest
-    next2=atco(atco(qq(fs,sc(wr)),amp(xposearg,ds(CCANT))),next2);  // combine it all
+    next2=atco(atco(qq(fs,sc(wr)),jtamp(jt,xposearg,ds(CCANT))),next2);  // combine it all
    }
   }else{
    // ;.3.  The cells coming out of the lower tessellations may have dissimilar shape so we have to box them
    // If the next level is the last, it becomes (0 2}.x)&(<;.n)"_2  - adding one boxing level.  Otherwise use ] instead of < above
-   next2=qq(amp(drop(v2(0,2),a),cut(ds(CBOX),sc(n^256^(inrecursion>>1)))),num(-2));
+   next2=qq(jtamp(jt,drop(v2(0,2),a),cut(ds(CBOX),sc(n^256^(inrecursion>>1)))),num(-2));
    // collect the components that contribute to a single input-to-u, one box for each : (<@:>"2)@:(0 1&|:)@:next2
-   next2=atco(atco(qq(atco(ds(CBOX),ds(COPE)),num(2)),amp(v2(0,1),ds(CCANT))),next2);
+   next2=atco(atco(qq(atco(ds(CBOX),ds(COPE)),num(2)),jtamp(jt,v2(0,1),ds(CCANT))),next2);
    if(!inrecursion){
     // at the top level, add on u@>
     next2=atco(atop(fs,ds(COPE)),next2);

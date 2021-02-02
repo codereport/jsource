@@ -30,7 +30,7 @@ static A jtinvfork(J jt, A w){A f,fi,g,gi,h,k;B b,c;V*v;
  c=1&&NOUN&AT(f); b=c||consf(f);
  ASSERT(b!=consf(h),EVDOMAIN);
  RZ(k=c?f:df1(gi,num(0),b?f:h));
- RZ(gi=invrecur(b?amp(k,g):amp(g,k)));
+ RZ(gi=invrecur(b?jtamp(jt,k,g):jtamp(jt,g,k)));
  RZ(fi=invrecur(b?h:f));
  if(CAMP==ID(gi)){
   v=FAV(gi); 
@@ -97,36 +97,36 @@ static A jtinvamp(J jt, A w){A f,ff,g,h,x,y;B nf,ng;C c,d,*yv;I n;V*u,*v;
  g=v->fgh[1]; ng=!!(NOUN&AT(g));
  h=nf?g:f; x=nf?f:g; c=ID(h); u=VAV(h);   // h=verb arg, x=noun arg
  switch(c){
-  case CPLUS:    return amp(negate(x),h);
-  case CSTAR:    return amp(recip(x), h);
-  case CMINUS:   return nf?w:amp(x,ds(CPLUS));
-  case CDIV:     return nf?w:amp(x,ds(CSTAR));
-  case CROOT:    return amp(ds(nf?CEXP:CLOG),x);
-  case CEXP:     return ng&&equ(x,num(2))?ds(CROOT):amp(x,ds(nf?CLOG:CROOT));
-  case CLOG:     return nf?amp(x,ds(CEXP)):amp(ds(CROOT),x);
-  case CJDOT:    return nf?atop(invrecur(ds(CJDOT)),amp(ds(CMINUS),x)):amp(ds(CMINUS),jdot1(x));
-  case CRDOT:    return nf?atop(invrecur(ds(CRDOT)),amp(ds(CDIV  ),x)):amp(ds(CDIV  ),rdot1(x));
-  case CLBRACE:  return nf?amp(pinv(x),h):amp(x,ds(CIOTA));
-  case COBVERSE: ff=FAV(h)->fgh[1]; return amp(nf?x:ff,nf?ff:x);
+  case CPLUS:    return jtamp(jt,negate(x),h);
+  case CSTAR:    return jtamp(jt,recip(x), h);
+  case CMINUS:   return nf?w:jtamp(jt,x,ds(CPLUS));
+  case CDIV:     return nf?w:jtamp(jt,x,ds(CSTAR));
+  case CROOT:    return jtamp(jt,ds(nf?CEXP:CLOG),x);
+  case CEXP:     return ng&&equ(x,num(2))?ds(CROOT):jtamp(jt,x,ds(nf?CLOG:CROOT));
+  case CLOG:     return nf?jtamp(jt,x,ds(CEXP)):jtamp(jt,ds(CROOT),x);
+  case CJDOT:    return nf?atop(invrecur(ds(CJDOT)),jtamp(jt,ds(CMINUS),x)):jtamp(jt,ds(CMINUS),jdot1(x));
+  case CRDOT:    return nf?atop(invrecur(ds(CRDOT)),jtamp(jt,ds(CDIV  ),x)):jtamp(jt,ds(CDIV  ),rdot1(x));
+  case CLBRACE:  return nf?jtamp(jt,pinv(x),h):jtamp(jt,x,ds(CIOTA));
+  case COBVERSE: ff=FAV(h)->fgh[1]; return jtamp(jt,nf?x:ff,nf?ff:x);
   case CPDERIV:  if(nf&&!AR(x))return ds(CPDERIV); break;  // only atom&p.. is invertible
   case CXCO:     RE(n=i0(x)); ASSERT(n&&BETWEENC(n,-2,2),EVDOMAIN);  // fall through to create (-x)&u
   case CROT:          // fall through to create (-x)&u
   case CCIRCLE:       // fall through to create (-x)&u
-  case CSPARSE:  if(nf)return amp(negate(x),h);   break;
-  case CABASE:   if(nf)return amp(x,ds(CBASE));   break;
-  case CIOTA:    if(nf)return amp(ds(CLBRACE),x); break;
+  case CSPARSE:  if(nf)return jtamp(jt,negate(x),h);   break;
+  case CABASE:   if(nf)return jtamp(jt,x,ds(CBASE));   break;
+  case CIOTA:    if(nf)return jtamp(jt,ds(CLBRACE),x); break;
   case CTHORN:   if(nf)return ds(CEXEC);          break;
   case CTILDE:   
-   if(ff=FAV(h)->fgh[0],VERB&AT(ff))return invamp(amp(nf?ff:x,nf?x:ff));
-   else{ff=unname(h); return invamp(amp(nf?x:ff,nf?ff:x));}
+   if(ff=FAV(h)->fgh[0],VERB&AT(ff))return invamp(jtamp(jt,nf?ff:x,nf?x:ff));
+   else{ff=unname(h); return invamp(jtamp(jt,nf?x:ff,nf?ff:x));}
   case CSCO:     
    ASSERT(nf!=0,EVDOMAIN); 
    RE(n=i0(x)); ASSERT(n&&BETWEENC(n,-6,6),EVDOMAIN);
-   return amp(sc(-n),h);
+   return jtamp(jt,sc(-n),h);
   case CUCO:
    ASSERT(nf!=0,EVDOMAIN); 
    RE(n=i0(x)); ASSERT(BETWEENC(n,1,8)&!BETWEENC(n,5,6),EVDOMAIN);
-   return amp(sc(-(1^(-n))),h);
+   return jtamp(jt,sc(-(1^(-n))),h);
   case CCANT:    
    ASSERT(nf!=0,EVDOMAIN); 
    return obverse(eva(x,"] |:~ u C.^:_1 i.@#@$"),w);
@@ -134,7 +134,7 @@ static A jtinvamp(J jt, A w){A f,ff,g,h,x,y;B nf,ng;C c,d,*yv;I n;V*u,*v;
    if(nf){
     RE(n=i0(x));
     switch(n){
-     case -4: case 4: return amp(negate(x),h);
+     case -4: case 4: return jtamp(jt,negate(x),h);
      case -1:         return ds(CPCO);
      case  2:         return obverse(eval("*/@(^/)\"2"),w);
      case  3:         return eval("*/");
@@ -156,36 +156,36 @@ static A jtinvamp(J jt, A w){A f,ff,g,h,x,y;B nf,ng;C c,d,*yv;I n;V*u,*v;
    return fdef(0,CPOWOP,VERB, jtexpandf,0L, w,num(-1),0L, VFLAGNONE, RMAX,0L,0L);
    break;
   case CPOWOP:
-   if(VGERL&u->flag){ff=*(1+AAV(u->fgh[2])); return amp(nf?x:ff,nf?ff:x);}
+   if(VGERL&u->flag){ff=*(1+AAV(u->fgh[2])); return jtamp(jt,nf?x:ff,nf?ff:x);}
    break;
   case CCOMMA:  
    SETIC(x,n); 
-   return obverse(1==n?ds(nf?CDROP:CCTAIL):amp(sc(nf?n:-n),ds(CDROP)),w);
+   return obverse(1==n?ds(nf?CDROP:CCTAIL):jtamp(jt,sc(nf?n:-n),ds(CDROP)),w);
   case CBASE:   
    if(!nf)break;
-   return AR(x) ? amp(x,ds(CABASE)) :
+   return AR(x) ? jtamp(jt,x,ds(CABASE)) :
     obverse(evc(x,mag(x),"$&u@>:@(v&(<.@^.))@(1&>.)@(>./)@:|@, #: ]"),w);
   case CATOMIC:
-   if(ng){ASSERT(equ(x,nub(x)),EVDOMAIN); return obverse(atop(f,amp(x,ds(CIOTA))),w);}  // fall through to common obverse (?)
+   if(ng){ASSERT(equ(x,nub(x)),EVDOMAIN); return obverse(atop(f,jtamp(jt,x,ds(CIOTA))),w);}  // fall through to common obverse (?)
   case CCYCLE:
    if(nf&&AR(x)<=(c==CCYCLE))return obverse(eva(w,"/:@u@(i.@#) { ]"),w); break;
   case CDROP:
    if(!(nf&&1>=AR(x)))break;
    RZ(x=cvt(INT,x));
    RZ(y=eps(v2(-1L,1L),signum(x))); yv=CAV(y);
-   f=amp(mag(x),ds(CPLUS));
-   g=1==AN(x)?ds(CPOUND):atop(amp(tally(jt, x),ds(CTAKE)),ds(CDOLLAR));
-   h=!yv[1]?f:atop(!yv[0]?ds(CMINUS):amp(negate(signum(x)),ds(CSTAR)),f);
+   f=jtamp(jt,mag(x),ds(CPLUS));
+   g=1==AN(x)?ds(CPOUND):atop(jtamp(jt,tally(jt, x),ds(CTAKE)),ds(CDOLLAR));
+   h=!yv[1]?f:atop(!yv[0]?ds(CMINUS):jtamp(jt,negate(signum(x)),ds(CSTAR)),f);
    return obverse(hook(swap(ds(CTAKE)),atop(h,g)),w);
   case CDOMINO:
    if(!(2==AR(x)&&*AS(x)==*(1+AS(x))))break;
    ff=eval("+/ .*");
-   return nf?atop(h,amp(ff,minv(x))):amp(x,ff);
+   return nf?atop(h,jtamp(jt,ff,minv(x))):jtamp(jt,x,ff);
   case CDOT:
    if(ip(h,CPLUS,CSTAR)){
     ASSERT(2==AR(x),EVRANK);
     ASSERT(AS(x)[0]==AS(x)[1],EVLENGTH);
-    return nf?amp(ds(CDOMINO),x):amp(h,minv(x));
+    return nf?jtamp(jt,ds(CDOMINO),x):jtamp(jt,h,minv(x));
    }
    break;
   case CQQ:
@@ -198,7 +198,7 @@ static A jtinvamp(J jt, A w){A f,ff,g,h,x,y;B nf,ng;C c,d,*yv;I n;V*u,*v;
    x=FAV(h)->fgh[0]; y=FAV(h)->fgh[1];
    if(NOUN&AT(x)&&equ(x,num(3))&&NOUN&AT(y)){
     RE(n=i0(f));
-    if(all1(eps(y,v2(4L,5L)))){ASSERT(n&&BETWEENC(n,-2,2),EVDOMAIN); return amp(sc(-n),g);}
+    if(all1(eps(y,v2(4L,5L)))){ASSERT(n&&BETWEENC(n,-2,2),EVDOMAIN); return jtamp(jt,sc(-n),g);}
     if(all1(eps(y,v2(1L,3L)))){ASSERT(0==n||1==n||10==n||11==n,EVDOMAIN); return foreign(x,num(2));}
    }
    break;
@@ -208,13 +208,13 @@ static A jtinvamp(J jt, A w){A f,ff,g,h,x,y;B nf,ng;C c,d,*yv;I n;V*u,*v;
     case 22: case 25:          return w;
     case 19: case 28:          if(ng)return w; break;
     case 21: case 26:          if(nf)return w; break;
-    case 32: case 33: case 34: ASSERT(nf!=0,EVDOMAIN); return amp(negate(x),h);
+    case 32: case 33: case 34: ASSERT(nf!=0,EVDOMAIN); return jtamp(jt,negate(x),h);
    }
    break;
   case CPOLY:
    if(nf&&1==AR(x)&&2==AN(x)&&NUMERIC&AT(x)&&!equ(zeroionei(0),tail(x))){  // linear polynomial only
     RZ(y=recip(tail(x)));
-    return amp(apip(tymes(y,negate(head(x))),y),h);
+    return jtamp(jt,apip(tymes(y,negate(head(x))),y),h);
  }}
  ASSERT(0,EVDOMAIN);
 }
@@ -251,11 +251,11 @@ A jtinv(J jt, A w, I recur){A f,ff,g;B b,nf,ng,vf,vg;C id;I p,q;V*v;
   case CDGRADE:  return eval("/:@|.");
   case CWORDS:   return eval("}:@;@(,&' '&.>\"1) :. ;:");
   case CBANG:    return eval("3 : '(-(y -~ !)%0.001&* (0.001%~[:-/[:! 0.001 0 +/ ]) ])^:_<.&170^:(-:+)^.y' :. !");
-  case CXCO:     return amp(num(-1),w);
+  case CXCO:     return jtamp(jt,num(-1),w);
   case CSPARSE:  return fdef(0,CPOWOP,VERB,jtdenseit,0L, w,num(-1),0L, VFLAGNONE, RMAX,RMAX,RMAX);
   case CPCO:     return fdef(0,CPOWOP,VERB,jtplt,    0L, w,num(-1),0L, 0L, 0L,  0L,  0L  );
   case CQCO:     return eval("*/");
-  case CUCO:     return amp(num(3),w);
+  case CUCO:     return jtamp(jt,num(3),w);
   case CUNDER:   return under(invrecur(f),g);
   case CFORK:    return invfork(w);
   case CAMP:     if(nf!=ng){A z=invamp(w); if(nf^ng)return z;}  // may fall through... but avoid tail-recursion so we get out of loop
@@ -265,7 +265,7 @@ A jtinv(J jt, A w, I recur){A f,ff,g;B b,nf,ng,vf,vg;C id;I p,q;V*v;
   case CSLASH:   if(CSTAR==ID(f))return ds(CQCO);        break;
   case CQQ:      if(vf)return qq(invrecur(f),g);              break;
   case COBVERSE: if(vf&&vg)return obverse(g,f);          break;  // if defined obverse, return it
-  case CSCO:     return amp(num(5),w);
+  case CSCO:     return jtamp(jt,num(5),w);
   case CPOWOP:   
    if(vf&&ng){RE(p=i0(g)); return -1==p?f:1==p?invrecur(f):powop(0>p?f:invrecur(f),sc(ABS(p)),0);}
    if(VGERL&v->flag)return*(1+AAV(v->fgh[2]));

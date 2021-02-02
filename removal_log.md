@@ -17,7 +17,7 @@
 |`jsrc\k.c`|XfromQ|jtXfromQ|`(^\|[ \t]+\|[^\d\w_])XfromQ\((?=([^,]+?),([^)]+?)\))`|`\1jtXfromQ(jt,`|
 |`jsrc\k.c`|ZfromD|jtZfromD|`(^\|[ \t]+\|[^\d\w_])ZfromD\((?=([^,]+?),([^)]+?)\))`|`\1jtZfromD(jt,`|
 |`jsrc\conjunctions\cc.c` `jsrc\verbs\ve.c` `jsrc\verbs\vf.c` `jsrc\verbs\vp.c` `jsrc\verbs\vs.c`|abase2|jtabase2|`(^\|[ \t]+\|[^\d\w_])abase2\((?=([^,]+?),([^)]+?)\))`|`\1jtabase2(jt,`|
-
 |`jsrc\verbs\vfrom.c`|afi|jtafi|`(^\|[ \t]+\|[^\d\w_])afi\((?=([^,]+?),([^)]+?)\))`|`\1jtafi(jt,`|
 |`jsrc\verbs\vfrom.c`|afrom|jtafrom|`(^\|[ \t]+\|[^\d\w_])afrom\((?=([^,]+?),([^)]+?)\))`|`\1jtafrom(jt,`|
 |`jsrc\xenos\xfmt.c`|afzrndID|jtafzrndID|`(^\|[ \t]+\|[^\d\w_])afzrndID\((?=([^,]+?),([^)]+?)\))`|`\1jtafzrndID(jt,`|
+|`jsrc\adverbs\ai.c` `jsrc\conjunctions\cc.c` `jsrc\conjunctions\cp.c` `jsrc\conjunctions\cu.c` `jsrc\verbs\vb.c` `jsrc\verbs\vfrom.c` `jsrc\xenos\xfmt.c`|amp|jtamp|`(^\|[ \t]+\|[^\d\w_])amp\((?=([^,]+?),([^)]+?)\))`|`\1jtamp(jt,`|

@@ -530,7 +530,7 @@ static A jtfmtxi(J jt, A a, A w, I mode, I *omode){I lvl;
   ASSERT(1>=lvl, EVDOMAIN);
   DO(AN(w), x=wv[i]; ASSERT(1>=AR(x),EVRANK); if(AN(x)){ASSERT(AT(x)&JCHAR+NUMERIC,EVDOMAIN);
       ASSERT(!(AR(x)&&AT(x)&NUMERIC),EVRANK);});
-  A z; return df2(z,reitem(shape(w),a),w,amp(foreign(num(8),num(0)), ds(COPE)));
+  A z; return df2(z,reitem(shape(w),a),w,jtamp(jt,foreign(num(8),num(0)), ds(COPE)));
  } else {
   if(XNUM+RAT+CMPX&AT(w))RZ(w=cvt(FL,w));
   *omode=mode;

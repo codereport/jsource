@@ -274,7 +274,7 @@ static A jtafrom(J jt,A a,A w){PROLOG(0073);A c,ind,p=0,q,*v,y=w;B bb=1;I acr,ar
  if(ar){  // if there is an array of boxes
   if(((ar^acr)|(wr^wcr))==0){RE(aindex(a,w,wf,&ind)); if(ind)return frombu(ind,w,wf);}  // if boxing doesn't contribute to shape, open the boxes of a and copy the values
   return wr==wcr?rank2ex(a,w,UNUSED_VALUE,0L,wcr,0L,wcr,jtafrom):  // if a has frame, rank-loop over a
-      df2(p,IRS1(a,0L,acr,jtbox,c),IRS1(w,0L,wcr,jtbox,ind),amp(ds(CLBRACE),ds(COPE)));  // (<"0 a) {&> <"0 w
+      df2(p,IRS1(a,0L,acr,jtbox,c),IRS1(w,0L,wcr,jtbox,ind),jtamp(jt,ds(CLBRACE),ds(COPE)));  // (<"0 a) {&> <"0 w
  }
  c=AAV(a)[0]; t=AT(c); SETIC(c,n); v=AAV(c);   // B prob not reqd 
  s=AS(w)+wr-wcr;
