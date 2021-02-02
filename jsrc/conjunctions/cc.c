@@ -13,7 +13,7 @@
 
 
 static A jtcut01(J jt,    A w,A self){DECLF;A h,x,z;
- RZ(x=from(box(every(negate(shape(w)),ds(CIOTA))),w));
+ RZ(x=from(box(jtevery(jt,negate(shape(w)),ds(CIOTA))),w));
  if(VGERL&sv->flag){h=sv->fgh[2]; return df1(z,x,AAV(h)[0]);}else return CALL1(f1,x,fs);
 }    /* f;.0 w */
 

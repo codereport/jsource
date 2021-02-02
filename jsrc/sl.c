@@ -86,7 +86,7 @@ static void jterasenl(J jt, I n){
 static A jtactivenl(J jt){A y;
  GATV0(y,INT,AN(jt->stnum),1); I *yv=IAV(y);   // allocate place to hold numbers of active locales
  I nloc=0; DO(AN(jt->stnum), if(IAV0(jt->stnum)[i]){yv[nloc]=NAV(LOCNAME((A)IAV0(jt->stnum)[i]))->bucketx; ++nloc;})
- return every(take(sc(nloc),y),ds(CTHORN));  // ":&.> nloc{.y
+ return jtevery(jt,take(sc(nloc),y),ds(CTHORN));  // ":&.> nloc{.y
 }
 
 // iterator support.  countnl returns a number of iterations.  indexnl returns the A block (or 0) for 
@@ -271,7 +271,7 @@ static A jtlocale(J jt,B b,A w){A g=0,*wv,y;
 
  A jtlocpath2(J jt,A a,A w){A g; AD * RESTRICT x;
  F2RANK(1,0,jtlocpath2,UNUSED_VALUE);
- if(AN(a))RZ(  locale(1,a)); RZ(x=every(ravel(a),ds(CCOMMA)));  // Don't audit empty a
+ if(AN(a))RZ(  locale(1,a)); RZ(x=jtevery(jt,ravel(a),ds(CCOMMA)));  // Don't audit empty a
  RZ(g=locale(1,w));
  // paths are special: the shape of each string holds the bucketx for the string.  Install that.
  AD * RESTRICT z; RZ(z=ca(x)); DO(AN(x), A t; RZ(t=ca(AT(AAV(x)[i])&((INT|B01))?thorn1(AAV(x)[i]):AAV(x)[i]));  AS(t)[0]=BUCKETXLOC(AN(t),CAV(t)); AAV(z)[i]=t;)  // ? why so many copies?  test before thorn1 not reqd

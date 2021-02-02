@@ -85,3 +85,15 @@
 |`jsrc\debugging\d.c`|eputq|jteputq|`(^\|[ \t]+\|[^\d\w_])eputq\((?=([^,]+?),([^)]+?)\))`|`\1jteputq(jt,`|
 |`jsrc\verbs\v1.c`|eqf|jteqf|`(^\|[ \t]+\|[^\d\w_])eqf\((?=([^,]+?),([^)]+?)\))`|`\1jteqf(jt,`|
 |`jsrc\adverbs\ai.c`|eva|jteva|`(^\|[ \t]+\|[^\d\w_])eva\((?=([^,]+?),([^)]+?)\))`|`\1jteva(jt,`|
+|`jsrc\sl.c`|every|jtevery|`(^\|[ \t]+\|[^\d\w_])every\((?=([^,]+?),([^)]+?)\))`|`\1jtevery(jt,`|
+|`jsrc\adverbs\af.c`|every|jtevery|`(^\|[ \t]+\|[^\d\w_])every\((?=([^,]+?),([^)]+?)\))`|`\1jtevery(jt,`|
+|`jsrc\adverbs\am1.c`|every|jtevery|`(^\|[ \t]+\|[^\d\w_])every\((?=([^,]+?),([^)]+?)\))`|`\1jtevery(jt,`|
+|`jsrc\conjunctions\cc.c`|every|jtevery|`(^\|[ \t]+\|[^\d\w_])every\((?=([^,]+?),([^)]+?)\))`|`\1jtevery(jt,`|
+|`jsrc\conjunctions\cg.c`|every|jtevery|`(^\|[ \t]+\|[^\d\w_])every\((?=([^,]+?),([^)]+?)\))`|`\1jtevery(jt,`|
+|`jsrc\conjunctions\cl.c`|every|jtevery|`(^\|[ \t]+\|[^\d\w_])every\((?=([^,]+?),([^)]+?)\))`|`\1jtevery(jt,`|
+|`jsrc\conjunctions\cx.c`|every|jtevery|`(^\|[ \t]+\|[^\d\w_])every\((?=([^,]+?),([^)]+?)\))`|`\1jtevery(jt,`|
+|`jsrc\debugging\d.c`|every|jtevery|`(^\|[ \t]+\|[^\d\w_])every\((?=([^,]+?),([^)]+?)\))`|`\1jtevery(jt,`|
+|`jsrc\representations\r.c`|every|jtevery|`(^\|[ \t]+\|[^\d\w_])every\((?=([^,]+?),([^)]+?)\))`|`\1jtevery(jt,`|
+|`jsrc\representations\rt.c`|every|jtevery|`(^\|[ \t]+\|[^\d\w_])every\((?=([^,]+?),([^)]+?)\))`|`\1jtevery(jt,`|
+|`jsrc\verbs\vfrom.c`|every|jtevery|`(^\|[ \t]+\|[^\d\w_])every\((?=([^,]+?),([^)]+?)\))`|`\1jtevery(jt,`|
+|`jsrc\verbs\vfromsp.c`|every|jtevery|`(^\|[ \t]+\|[^\d\w_])every\((?=([^,]+?),([^)]+?)\))`|`\1jtevery(jt,`|

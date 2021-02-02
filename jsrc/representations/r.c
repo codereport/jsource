@@ -25,8 +25,8 @@ static A jtdrr(J jt, A w){PROLOG(0055);A df,dg,hs,*x,z;B b,ex,xop;C c,id;I fl,*h
  m=!!fs+(gs||ex);
  if(!m)return spella(w);
  if(evoke(w))return drr(sfne(w));  // turn nameref into string or verb; then take rep
- if(fs)RZ(df=fl&VGERL?every(fxeach(fs,(A)&jtfxself[0]),(A)&drrself):drr(fs));
- if(gs)RZ(dg=fl&VGERR?every(fxeach(gs,(A)&jtfxself[0]),(A)&drrself):drr(gs));
+ if(fs)RZ(df=fl&VGERL?jtevery(jt,fxeach(fs,(A)&jtfxself[0]),(A)&drrself):drr(fs));
+ if(gs)RZ(dg=fl&VGERR?jtevery(jt,fxeach(gs,(A)&jtfxself[0]),(A)&drrself):drr(gs));
  if(ex)RZ(dg=unparsem(num(0),w));
  m+=!b&&!xop||hs&&xop;
  GATV0(z,BOX,m,1); x=AAV(z);

@@ -11,7 +11,7 @@
 // AM(self) is the block for u
 static A jtlev1(J jt,    A w,A self){
  A fs=(A)AM(self); AF fsf=FAV(fs)->valencefns[0];  // fetch verb and routine for leaf nodes.  Do it early
- if(levelle(w,AT(self))){return CALL1(fsf,w,fs);} else{STACKCHKOFL return every(w,self);}  // since this recurs, check stack
+ if(levelle(w,AT(self))){return CALL1(fsf,w,fs);} else{STACKCHKOFL return jtevery(jt,w,self);}  // since this recurs, check stack
 }
 
 // Like monad, but AT(self) is left trigger level, AC(self) is the right trigger level 
@@ -65,7 +65,7 @@ static A jtscfn(J jt,    A w,A self){
 // u S: n - like L: except for calling the logger
 static A jtlevs1(J jt,    A w,A self){
  A fs=(A)AM(self); AF fsf=FAV(fs)->valencefns[0];  // fetch verb and routine for leaf nodes.  Do it early
- if(levelle(w,AT(self))){RZ(scfn(CALL1(fsf,w,fs),self));} else{STACKCHKOFL RZ(every(w,self));}  // since this recurs, check stack
+ if(levelle(w,AT(self))){RZ(scfn(CALL1(fsf,w,fs),self));} else{STACKCHKOFL RZ(jtevery(jt,w,self));}  // since this recurs, check stack
  return num(0);
 }
 

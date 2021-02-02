@@ -106,7 +106,7 @@ static A jtfixa(J jt,A a,A w){A f,g,h,wf,x,y,z=w;V*v;fauxblock(fauxself); A aa; 
   case CATDOT:
   case CGRCO:
    IAV0(aa)[0]=(aif|na);
-   RZ(f=every(every2(aa,h,(A)&arofixaself),(A)&arofixaself)); // full A block required for call
+   RZ(f=jtevery(jt,every2(aa,h,(A)&arofixaself),(A)&arofixaself)); // full A block required for call
    RZ(g=REFIXA(na,g));
    return df2(z,f,g,wf);
   case CIBEAM:

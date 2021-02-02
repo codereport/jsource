@@ -93,7 +93,7 @@ PRIM jtfxself[2]={ {{0,0,0,0,0,0,0},{{{jtfx,0},{0,0,0},0,0,0,0,0,0,0}}} , {{1,0,
 // run jtfx on each box in w, turning AR into an A block
 // self is a parm passed through to jtfx, coming from jtfxself above.  if AK(self) is nonzero, we return nouns as is
 // Result claims to be an array of boxes, but each box holds a function
- A jtfxeach(J jt,    A w,A self){return every(w,self);}
+ A jtfxeach(J jt,    A w,A self){return jtevery(jt,w,self);}
 
 static A jtcon1(J jt,    A w,A self){A h,*hv,*x,z;V*sv;
  PREF1(jtcon1);

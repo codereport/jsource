@@ -116,7 +116,7 @@ static A jttconnect(J jt, A w){A*wv,x,y,z;B b,d;C c,*u,*xv,*yv,*zv;I e,i,j,m,n,p
 
 EVERYFS(trrself,jttrr,0,0,VFLAGNONE)
 
-static A jttreach(J jt, A w){return troot(scc('0'),graft(ope(every(w,(A)&trrself))));}
+static A jttreach(J jt, A w){return troot(scc('0'),graft(ope(jtevery(jt,w,(A)&trrself))));}
 
 static A jttrr(J jt, A w){PROLOG(0058);A hs,s,t,*x,z;B ex,xop;C id;I fl,*hv,m;V*v;
  if(!w) return 0;

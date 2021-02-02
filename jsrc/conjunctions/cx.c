@@ -740,7 +740,7 @@ A jtcrelocalsyms(J jt, A l, A c,I type, I dyad, I flags){A actst,*lv,pfst,t,wds;
   if(AT(lv[j])&ASGN&&AT(t)&LIT&&AN(t)&&CAV(t)[0]!=CGRAVE){
    A neww=words(t);
    if(AN(neww)){  // ignore blank string
-    A newt=every(neww,(A)&onmself);  // convert every word to a NAME block
+    A newt=jtevery(jt,neww,(A)&onmself);  // convert every word to a NAME block
     if(newt){t=lv[j-1]=incorp(newt); AT(t)|=BOXMULTIASSIGN;}else RESETERR  // if no error, mark the block as MULTIASSIGN type and save it in the compiled definition; also set as t for below.  If error, catch it later
    }
   }
