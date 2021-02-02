@@ -74,7 +74,7 @@ B jtequ(J jt,A a,A w){A x;
 // Return 1 if a and w match intolerantly, 0 if not
 B jtequ0(J jt,A a,A w){
  F2PREFIP;  // allow inplace request - it has no effect
- PUSHCCT(1.0) B res=equ(a,w); POPCCT return res;
+ PUSHCCT(1.0) B res=jtequ(jt,a,w); POPCCT return res;
 }
 
 // Test for equality of functions, 1 if they match.  To match, the functions must have the same pseudocharacter and fgh
@@ -89,7 +89,7 @@ static B jteqf(J jt,A a,A w){A p,q;V*u=FAV(a),*v=FAV(w);
 #define EQA(a,w) \
  ((-(a!=w)&((AN(a)^AN(w))-1))>=0?(a==w):((B (*)())jtmatchsub)(jt,a,w,0   MATCHSUBDEFAULTS))
 // compare rationals
-#define EQQ(a,w)  (equ(a.n,w.n)&&equ(a.d,w.d))
+#define EQQ(a,w)  (jtequ(jt,a.n,w.n)&&jtequ(jt,a.d,w.d))
 
 // compare arrays for equality of all values.  f is the compare function
 // m=#cells of shorter frame, n=#times a cell of shorter frame must be repeated
@@ -199,9 +199,9 @@ static A jtmatchs(J jt,A a,A w){A ae,ax,p,q,we,wx,x;B*b,*pv,*qv;D d;I acr,an=0,a
  if(memchr(qv,C1,n)&&!all1(eq(ae,repeat(q,wx))))return num(0);
  j=0; DO(m, if(pv[i])++j;);
  k=0; DO(n, if(qv[i])++k; qv[i]=!qv[i];);
- if(!equ(from(repeat(q,x),ax),repeat(q,wx)))return num(0);
+ if(!jtequ(jt,from(repeat(q,x),ax),repeat(q,wx)))return num(0);
  x=SPA(ap,a); v=AV(x); s=AS(a); d=1.0; DO(AN(x), d*=s[v[i]];);
- return d==m+k&&d==n+j||equ(ae,we)?num(1):num(0);
+ return d==m+k&&d==n+j||jtequ(jt,ae,we)?num(1):num(0);
 }    /* a -:"r w on sparse arrays */
 
 

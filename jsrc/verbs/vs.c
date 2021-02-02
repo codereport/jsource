@@ -17,7 +17,7 @@ B jtscheck(J jt,A w){A a,e,x,y;I k1,k2,r,*s,t;P*p;D rkblk[16];
  ASSERTSYS(x,"scheck x missing");
  ASSERTSYS(1==AR(a),"scheck a rank");
  ASSERTSYS(all1(jteps(jt,a,IX(r))),"scheck a index");
- ASSERTSYS(equ(a,nub(a)),"scheck a unique");
+ ASSERTSYS(jtequ(jt,a,nub(a)),"scheck a unique");
  ASSERTSYS(!AR(e),"scheck e rank");
  ASSERTSYS(TYPESEQ(AT(e),DTYPE(t)),"scheck e type");
  ASSERTSYS(TYPESEQ(AT(e),AT(x)),"scheck e/x type");
@@ -25,12 +25,12 @@ B jtscheck(J jt,A w){A a,e,x,y;I k1,k2,r,*s,t;P*p;D rkblk[16];
  ASSERTSYS(INT&AT(y),"scheck i type");
  ASSERTSYS(SETIC(y,k1)==SETIC(x,k2),"scheck i/x tally");
  ASSERTSYS(*(1+AS(y))==SETIC(a,k1),"scheck i/a length");
- ASSERTSYS(equ(y,nub(y)),"scheck i unique");
+ ASSERTSYS(jtequ(jt,y,nub(y)),"scheck i unique");
  ASSERTSYS(all1(le(num(0),y)),"scheck i negative");
  ASSERTSYS(all1(ATOMIC2(jt,y,from(a,shape(w)),rkblk,1L,1L,CLT)),"scheck i index");
- ASSERTSYS(equ(grade1(y),IX(*AS(y))),"scheck i sorted");
+ ASSERTSYS(jtequ(jt,grade1(y),IX(*AS(y))),"scheck i sorted");
  ASSERTSYS(AR(x)==1+r-AN(a),"scheck x rank");
- ASSERTSYS(equ(behead(shape(x)),from(less(IX(r),a),shape(w))),"scheck x shape");
+ ASSERTSYS(jtequ(jt,behead(shape(x)),from(less(IX(r),a),shape(w))),"scheck x shape");
  return 1;
 }    /* assertions on sparse array w */
 
@@ -132,9 +132,9 @@ A jtsparseit(J jt,A w,A a,A e){PROLOG(0091);A ax,c,x,y,z;B b,*cv;I cm,cn,m,n,r,*
  RZ(ax=paxis(r,a));
  GATV0(y,INT,r,1); s=AV(y);
  u=AV(ax); v=AS(w); DO(r, s[i]=v[u[i]];);
- RE(m=prod(n,s)); b=equ(a,IX(r));
+ RE(m=prod(n,s)); b=jtequ(jt,a,IX(r));
  RZ(x=virtual(b?w:jtcant2(jt,ax,w),0,1+r-n)); AN(x)=AN(w); v=AS(x); *v=m; if(r>n)ICPY(1+v,n+s,r-n);
- b=b&&SB01&AT(z)&&equ(e,num(0)); c=w;
+ b=b&&SB01&AT(z)&&jtequ(jt,e,num(0)); c=w;
  if(!b)RZ(c=__not(irs2(reshape(vec(INT,r-n,n+s),SPA(p,e)),x,VFLAGNONE, RMAX,-1L,jtmatch)));
  cn=AN(c); cv=BAV(c); cm=bsum(cn,cv);
  /* RZ(y=jtabase2(jt,vec(INT,n,s),repeat(c,IX(cn)))); */
@@ -157,7 +157,7 @@ A jtsparseit(J jt,A w,A a,A e){PROLOG(0091);A ax,c,x,y,z;B b,*cv;I cm,cn,m,n,r,*
  if(!r||t&DENSE)return ca(w);
  t=DTYPE(t);
  wp=PAV(w); a=SPA(wp,a); e=SPA(wp,e); x=SPA(wp,x); y=SPA(wp,i); 
- xn=AN(x); an=AN(a); b=equ(a,IX(an));
+ xn=AN(x); an=AN(a); b=jtequ(jt,a,IX(an));
  if(!an||!xn)return reshape(shape(w),xn?x:e);
  if(b)s=AS(w); else{RZ(q=over(a,less(IX(r),a))); RZ(s1=from(q,shape(w))); s=AV(s1);}
  RE(n=prod(r,s));
@@ -186,7 +186,7 @@ A jtsparseit(J jt,A w,A a,A e){PROLOG(0091);A ax,c,x,y,z;B b,*cv;I cm,cn,m,n,r,*
   SPBV(zp,x,x,repeat(q,x));
   RZ(y=stitch(repeat(sc(c),y),reshape(v2(c*m,k),jtabase2(jt,vec(INT,k,v),IX(c)))));
   RZ(p=grade1(over(a,less(a1,a))));
-  if(equ(p,IX(AN(p))))SPB(zp,i,repeat(q,y))
+  if(jtequ(jt,p,IX(AN(p))))SPB(zp,i,repeat(q,y))
   else{y=fromr(p,repeat(q,y)); q=grade1(y); SPB(zp,i,from(q,y)); SPB(zp,x,from(q,x));}
   return z;
  }

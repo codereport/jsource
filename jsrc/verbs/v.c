@@ -111,7 +111,7 @@ static A jtlr2(J jt,RANK2T ranks,A a,A w){I acr,af,ar,wcr,wf,wr;
  n=(I)jround(d); b=FFIEQ(d,n); c=(2*ABS(n))/(m?m:1);   // try as integer
  if(b&&m*c==2*ABS(n))z=apv(1+m,-n,0>d?-c:c);  // if integer works, use it
  else                z=plusW(scf(0>d?d:-d),tymesW(scf(2*ABS(d)/m),apv(1+m,0>d?m:0L,0>d?-1L:1L)));  // otherwise FL
- if(AT(w)&XNUM+RAT)z=jtcvt(jt,AT(w)&XNUM||equ(w,floor1(w))?XNUM:RAT,z);  // cvrt to XNUM as needed
+ if(AT(w)&XNUM+RAT)z=jtcvt(jt,AT(w)&XNUM||jtequ(jt,w,floor1(w))?XNUM:RAT,z);  // cvrt to XNUM as needed
  return z;
 }
 
@@ -129,7 +129,7 @@ A jtdropr(J jt,I n,A w){ A a,z; RZ(a=sc(n)); return IRS2(a,w,0, RMAX,1L,jtdrop,z
  SETIC(w,n);
  if(SB01&AT(w)){
   p=PAV(w); a=SPA(p,a); e=SPA(p,e); 
-  return BAV(e)[0]||equ(mtv,a) ? repeat(w,IX(n)) : repeat(SPA(p,x),ravel(SPA(p,i)));
+  return BAV(e)[0]||jtequ(jt,mtv,a) ? repeat(w,IX(n)) : repeat(SPA(p,x),ravel(SPA(p,i)));
  }
  return B01&AT(w) ? ifb(n,BAV(w)) : repeat(w,IX(n));
 }

@@ -349,7 +349,7 @@ static A jtqco2x(J jt,I m,A w){A y;I c,*dv,i,*pv,*yv;X d,q,r,x;
  if(!b&&xt){RE(m=i0(vib(a))); if(BETWEENO(m,0,1229))return qco2x(m,w);}  /* 1229=p:^:_1 XBASE */
  RZ(q=factor(w)); qv=AV(q);
  if(b)RZ(a=negate(a));
- bb=equ(a,ainf);
+ bb=jtequ(jt,a,ainf);
  if(b&bb){ /* __ q: w */
   RZ(y=ne(q,curtail(over(zeroionei(0),q))));
   return lamin2(repeat(y,q),df1(z,y,jtcut(jt,ds(CPOUND),zeroionei(1))));
@@ -452,7 +452,7 @@ static X jtpollard_p_1(J jt,    X w){A om=jt->xmod;D p,m;I e,i,n,*pv;X c,g,z=iv1
   p=(D)pv[i]; e=(I)pow(p,jfloor(m/log(p)));
   RZ(c=xpow(c,sc(e)));
   RZ(g=xgcd(w,xminus(c,iv1)));
-  if(!equ(g,iv1)&&!equ(g,w)){z=g; break;}
+  if(!jtequ(jt,g,iv1)&&!jtequ(jt,g,w)){z=g; break;}
   c=(X)gc((A)c,old);
  }
  jt->xmod=om; 
@@ -467,7 +467,7 @@ static X jtpollard_rho(J jt,    X w){I i,n;X g,y1,y2;
   RZ(y1=xrem(w,xplus(iv1,xsq(y1))));
   RZ(y2=xrem(w,xplus(iv1,xsq(xplus(iv1,xsq(y2))))));
   RZ(g=xgcd(w,xrem(w,xminus(y2,y1))));
-  if(!equ(g,iv1)&&!equ(g,w))return g;
+  if(!jtequ(jt,g,iv1)&&!jtequ(jt,g,w))return g;
   if(!gc3(&y1,&y2,0L,old))return 0;
  }
  return iv1;

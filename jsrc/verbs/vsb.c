@@ -594,7 +594,7 @@ static A jtsbcheck1(J jt,A una,A sna,A u,A s,A h,A roota,A ff,A gp){PROLOG(0003)
   j=v->down;   ASSERTD(    BETWEENO(j,0,c)&&1>=++dnv[j]&&(!j||ord>(j+uv)->order),"u predecessor");
   j=v->up;     ASSERTD(    BETWEENO(j,0,c)&&1>=++upv[j]&&(!j||ord<(j+uv)->order),"u successor"  );
  }
- ASSERTD(equ(grade1(x),grade1(y)),"u order");
+ ASSERTD(jtequ(jt,grade1(x),grade1(y)),"u order");
  EPILOG(num(1));
 }
 

@@ -282,7 +282,7 @@ static A*jtunparse1a(J jt,I m,A*hv,A*zv){A*v,x,y;CW*u;I i,j,k;
  mc=hv[1];    ms=hv[2];    m=mn=AN(mc);  // mc->control words ms->commented text
  dc=hv[1+HN]; ds=hv[2+HN]; n=dn=AN(dc);
  p=n&&(m||3==i0(wv->fgh[0])||VXOPR&wv->flag);  // p=2 valences present: dyad given, and  it's a verb or an operator referring to x 
- if(equ(mtv,hv[2])&&equ(mtv,hv[2+HN])){
+ if(jtequ(jt,mtv,hv[2])&&jtequ(jt,mtv,hv[2+HN])){
   // no comments: recover the original by unparsing
   if(m)mn=1+((CW*)AV(mc)+m-1)->source;
   if(n)dn=1+((CW*)AV(dc)+n-1)->source;

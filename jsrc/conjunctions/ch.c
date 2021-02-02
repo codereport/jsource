@@ -54,7 +54,7 @@ static A jthgeom2(J jt,A a,A w,A self){PROLOG(0036);A h,*hv,t,z;B b;I an,*av,j,n
  else if(2000>n)z=hgv((B)(1<an),n,w,self);
  else{
   j=10; t=mtv; z=zeroionei(1);
-  while(z&&!equ(z,t)){t=z; z=hgv(0,j,w,self); j+=j;} 
+  while(z&&!jtequ(jt,z,t)){t=z; z=hgv(0,j,w,self); j+=j;} 
   RZ(z); if(1<an)z=hgv(1,j,w,self);
  }
  if(1<an)z=from(minimum(a,sc(SETIC(z,an)-1)),z);

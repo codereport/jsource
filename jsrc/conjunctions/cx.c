@@ -466,7 +466,7 @@ dobblock:
     CHECKNOUN
     if(!((AT(t)|AT(cv->t))&BOX)){
      // if neither t nor cv is boxed, just compare for equality.  Boxed empty goes through the other path
-     if(!equ(t,cv->t))i=ci->go;  // should perhaps take the scalar case specially & send it through singleton code
+     if(!jtequ(jt,t,cv->t))i=ci->go;  // should perhaps take the scalar case specially & send it through singleton code
     }else{
      if(all0(jteps(jt,boxopen(cv->t),boxopen(t))))i=ci->go;  // if case tests false, jump around bblock   test is cv +./@:,@:e. boxopen t
     }
@@ -859,7 +859,7 @@ A jtclonelocalsyms(J jt, A a){A z;I j;I an=AN(a); LX *av=LXAV0(a),*zv;
  }
  RE(n=i0(a));  // m : n; set n=value of a argument
  I col0;  // set if it was m : 0
- if(col0=equ(w,num(0))){RZ(w=colon0(n)); }   // if m : 0, read up to the ) .  If 0 : n, return the string unedited
+ if(col0=jtequ(jt,w,num(0))){RZ(w=colon0(n)); }   // if m : 0, read up to the ) .  If 0 : n, return the string unedited
  if(!n){ra0(w); return w;}  // noun - return it.  Give it recursive usecount
  if((C2T+C4T)&AT(w))RZ(w=jtcvt(jt,LIT,w));
  I splitloc=-1;   // will hold line number of : line

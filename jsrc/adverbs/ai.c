@@ -102,7 +102,7 @@ static A jtinvamp(J jt, A w){A f,ff,g,h,x,y;B nf,ng;C c,d,*yv;I n;V*u,*v;
   case CMINUS:   return nf?w:jtamp(jt,x,ds(CPLUS));
   case CDIV:     return nf?w:jtamp(jt,x,ds(CSTAR));
   case CROOT:    return jtamp(jt,ds(nf?CEXP:CLOG),x);
-  case CEXP:     return ng&&equ(x,num(2))?ds(CROOT):jtamp(jt,x,ds(nf?CLOG:CROOT));
+  case CEXP:     return ng&&jtequ(jt,x,num(2))?ds(CROOT):jtamp(jt,x,ds(nf?CLOG:CROOT));
   case CLOG:     return nf?jtamp(jt,x,ds(CEXP)):jtamp(jt,ds(CROOT),x);
   case CJDOT:    return nf?jtatop(jt,invrecur(ds(CJDOT)),jtamp(jt,ds(CMINUS),x)):jtamp(jt,ds(CMINUS),jdot1(x));
   case CRDOT:    return nf?jtatop(jt,invrecur(ds(CRDOT)),jtamp(jt,ds(CDIV  ),x)):jtamp(jt,ds(CDIV  ),rdot1(x));
@@ -166,7 +166,7 @@ static A jtinvamp(J jt, A w){A f,ff,g,h,x,y;B nf,ng;C c,d,*yv;I n;V*u,*v;
    return AR(x) ? jtamp(jt,x,ds(CABASE)) :
     obverse(evc(x,mag(x),"$&u@>:@(v&(<.@^.))@(1&>.)@(>./)@:|@, #: ]"),w);
   case CATOMIC:
-   if(ng){ASSERT(equ(x,nub(x)),EVDOMAIN); return obverse(jtatop(jt,f,jtamp(jt,x,ds(CIOTA))),w);}  // fall through to common obverse (?)
+   if(ng){ASSERT(jtequ(jt,x,nub(x)),EVDOMAIN); return obverse(jtatop(jt,f,jtamp(jt,x,ds(CIOTA))),w);}  // fall through to common obverse (?)
   case CCYCLE:
    if(nf&&AR(x)<=(c==CCYCLE))return obverse(eva(w,"/:@u@(i.@#) { ]"),w); break;
   case CDROP:
@@ -189,14 +189,14 @@ static A jtinvamp(J jt, A w){A f,ff,g,h,x,y;B nf,ng;C c,d,*yv;I n;V*u,*v;
    }
    break;
   case CQQ:
-   if(ng&&equ(x,num(1))&&equ(f,eval("i.\"1")))return hook(ds(CFROM),ds(CEQ));
+   if(ng&&jtequ(jt,x,num(1))&&jtequ(jt,f,eval("i.\"1")))return hook(ds(CFROM),ds(CEQ));
    break;
   case CBSLASH:
    if(nf&&(n=i0(x),0>n)&&(d=ID(u->fgh[0]),(d&-2)==CLEFT))return slash(ds(CCOMMA));  // LEFT || RIGHT
    break;
   case CIBEAM:
    x=FAV(h)->fgh[0]; y=FAV(h)->fgh[1];
-   if(NOUN&AT(x)&&equ(x,num(3))&&NOUN&AT(y)){
+   if(NOUN&AT(x)&&jtequ(jt,x,num(3))&&NOUN&AT(y)){
     RE(n=i0(f));
     if(all1(jteps(jt,y,v2(4L,5L)))){ASSERT(n&&BETWEENC(n,-2,2),EVDOMAIN); return jtamp(jt,sc(-n),g);}
     if(all1(jteps(jt,y,v2(1L,3L)))){ASSERT(0==n||1==n||10==n||11==n,EVDOMAIN); return foreign(x,num(2));}
@@ -212,7 +212,7 @@ static A jtinvamp(J jt, A w){A f,ff,g,h,x,y;B nf,ng;C c,d,*yv;I n;V*u,*v;
    }
    break;
   case CPOLY:
-   if(nf&&1==AR(x)&&2==AN(x)&&NUMERIC&AT(x)&&!equ(zeroionei(0),tail(x))){  // linear polynomial only
+   if(nf&&1==AR(x)&&2==AN(x)&&NUMERIC&AT(x)&&!jtequ(jt,zeroionei(0),tail(x))){  // linear polynomial only
     RZ(y=recip(tail(x)));
     return jtamp(jt,apip(tymes(y,negate(head(x))),y),h);
  }}
@@ -320,14 +320,14 @@ static A jtneutral(J jt, A w){A x,y;B b;V*v;
  v=FAV(w);
  ASSERT(!v->lrr,EVDOMAIN);
  RZ(y=v2(0L,1L));
- RZ(x=scf(infm)); b=equ(y,CALL2(v->valencefns[1],x,y,w)); RESETERR; if(b)return x;
- x=ainf;          b=equ(y,CALL2(v->valencefns[1],x,y,w)); RESETERR; if(b)return x;
- x=zeroionei(0);          b=equ(y,CALL2(v->valencefns[1],x,y,w)); RESETERR; if(b)return num(0);
- x=zeroionei(1);           b=equ(y,CALL2(v->valencefns[1],x,y,w)); RESETERR; if(b)return num(1);
- RZ(x=scf(infm)); b=equ(y,CALL2(v->valencefns[1],y,x,w)); RESETERR; if(b)return x;
- x=ainf;          b=equ(y,CALL2(v->valencefns[1],y,x,w)); RESETERR; if(b)return x;
- x=zeroionei(0);          b=equ(y,CALL2(v->valencefns[1],y,x,w)); RESETERR; if(b)return num(0);
- x=zeroionei(1);           b=equ(y,CALL2(v->valencefns[1],y,x,w)); RESETERR; if(b)return num(1);
+ RZ(x=scf(infm)); b=jtequ(jt,y,CALL2(v->valencefns[1],x,y,w)); RESETERR; if(b)return x;
+ x=ainf;          b=jtequ(jt,y,CALL2(v->valencefns[1],x,y,w)); RESETERR; if(b)return x;
+ x=zeroionei(0);          b=jtequ(jt,y,CALL2(v->valencefns[1],x,y,w)); RESETERR; if(b)return num(0);
+ x=zeroionei(1);           b=jtequ(jt,y,CALL2(v->valencefns[1],x,y,w)); RESETERR; if(b)return num(1);
+ RZ(x=scf(infm)); b=jtequ(jt,y,CALL2(v->valencefns[1],y,x,w)); RESETERR; if(b)return x;
+ x=ainf;          b=jtequ(jt,y,CALL2(v->valencefns[1],y,x,w)); RESETERR; if(b)return x;
+ x=zeroionei(0);          b=jtequ(jt,y,CALL2(v->valencefns[1],y,x,w)); RESETERR; if(b)return num(0);
+ x=zeroionei(1);           b=jtequ(jt,y,CALL2(v->valencefns[1],y,x,w)); RESETERR; if(b)return num(1);
  ASSERT(0,EVDOMAIN);
 }    /* neutral of arbitrary rank-0 function */
 

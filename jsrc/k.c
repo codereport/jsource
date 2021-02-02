@@ -202,7 +202,7 @@ static B jtDfromQ(J jt,A w,void*yv){D d,f,n,*x,xb=(D)XBASE;I cn,i,k,m,nn,pn,qn,r
 
 static B jtXfromQ(J jt,A w,void*yv){Q*v;X*x;
  v=QAV(w); x=(X*)yv;
- DQ(AN(w), if(!(equ(iv1,v->d)))return 0; *x++=v->n; ++v;);
+ DQ(AN(w), if(!(jtequ(jt,iv1,v->d)))return 0; *x++=v->n; ++v;);
  return !jt->jerr;
 }
 

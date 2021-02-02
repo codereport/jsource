@@ -80,8 +80,8 @@ static B jtvaspeqprep(J jt,A a,A w,I t,I f,I r,A*ae,A*ay,A*ax,A*we,A*wy,A*wx,A*z
  if(sa){p=PAV(a); aa=SPA(p,a); v=AV(aa); DO(AN(aa), b[v[i]]=1;);}
  if(sw){p=PAV(w); wa=SPA(p,a); v=AV(wa); DO(AN(wa), b[v[i]]=1;);}
  q=ifb(n,b); makewritable(q) *za=q;  // avoid readonly result
- if(!sa||!equ(q,aa))RZ(a=reaxis(q,a));
- if(!sw||!equ(q,wa))RZ(w=reaxis(q,w));
+ if(!sa||!jtequ(jt,q,aa))RZ(a=reaxis(q,a));
+ if(!sw||!jtequ(jt,q,wa))RZ(w=reaxis(q,w));
  p=PAV(a); *ae=e=SPA(p,e); *ay=SPA(p,i); *ax=x=SPA(p,x); if(t&&TYPESNE(t,AT(x))){RZ(*ae=jtcvt(jt,t,e)); RZ(*ax=jtcvt(jt,t,x));}
  p=PAV(w); *we=e=SPA(p,e); *wy=SPA(p,i); *wx=x=SPA(p,x); if(t&&TYPESNE(t,AT(x))){RZ(*we=jtcvt(jt,t,e)); RZ(*wx=jtcvt(jt,t,x));}
  return 1;
@@ -107,7 +107,7 @@ static I zcount(A ay,A wy,B ab,B wb){I c,d,i,j,m,n,*u,*v,yc;
 static A jtvaspeq(J jt,A a,A w,C id,VF ado,I cv,I t,I zt,I f,I r){A ae,ax,ay,we,wx,wy,z,za,ze,zx,zy;
      B ab=1,wb=1;C*aev,*axv,*wev,*wxv,*zxv;I ak,c,d,i,j,m,n,*u,*v,wk,xc,yc,zk,*zyv;P*zp;I rc=EVOK;
  RZ(vaspeqprep(a,w,t,f,r,&ae,&ay,&ax,&we,&wy,&wx,&za));
- if(id==CSTAR||id==CSTARDOT){ab=!equ(ae,num(0)); wb=!equ(we,num(0));} 
+ if(id==CSTAR||id==CSTARDOT){ab=!jtequ(jt,ae,num(0)); wb=!jtequ(jt,we,num(0));} 
  v=AS(ay); m=v[0]; yc=v[1]; xc=aii(ax); n=*AS(wy);
  aev=CAV(ae); axv=CAV(ax); ak=xc<<bplg(AT(ax));
  wev=CAV(we); wxv=CAV(wx); wk=xc<<bplg(AT(wx));
