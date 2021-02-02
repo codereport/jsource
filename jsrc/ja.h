@@ -129,7 +129,7 @@
 #define convert0(x0,x1,x2,x3)       jtconvert0(jt,(x0),(x1),(x2),(x3)) 
 
 #define cps(x)                      jtcps(jt,(x))
-#define crc2(x,y)                   jtcrc2(jt,(x),(y))
+
 #define crccompile(x)               jtcrccompile(jt,(x))
 #define createcycliciterator(x,y)   jtcreatecycliciterator(jt,(x),(y))
 #define crcvalidate(x,t)            jtcrcvalidate(jt,(x),(t))

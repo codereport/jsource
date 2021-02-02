@@ -20,7 +20,7 @@ static UINT jtcrcvalidate(J jt,A w, UINT* crctab){A*wv;B*v;I m;UINT p,x,z=-1;
  return z;
 }
 
- A jtcrc1(J jt, A w){return crc2(sc(-306674912),w);}
+ A jtcrc1(J jt, A w){return jtcrc2(jt,sc(-306674912),w);}
 
  A jtcrc2(J jt,A a,A w){I n;UINT z;UC*v; UINT crctab[256];
  ASSERT(1>=AR(a)&&1>=AR(w),EVRANK);

@@ -46,3 +46,4 @@
 |`jsrc\words\w.c`|connum|jtconnum|`(^\|[ \t]+\|[^\d\w_])connum\((?=([^,]+?),([^)]+?)\))`|`\1jtconnum(jt,`|
 |`jsrc\words\w.c`|constr|jtconstr|`(^\|[ \t]+\|[^\d\w_])constr\((?=([^,]+?),([^)]+?)\))`|`\1jtconstr(jt,`|
 |`jsrc\words\wc.c`|conword|jtconword|`(^\|[ \t]+\|[^\d\w_])conword\((?=([^,]+?),([^)]+?)\))`|`\1jtconword(jt,`|
+|`jsrc\xenos\xcrc.c`|crc2|jtcrc2|`(^\|[ \t]+\|[^\d\w_])crc2\((?=([^,]+?),([^)]+?)\))`|`\1jtcrc2(jt,`|
