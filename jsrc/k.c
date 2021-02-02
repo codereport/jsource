@@ -404,7 +404,7 @@ A jtpcvt(J jt,I t,A w){A y;B b;RANK2T oqr=jt->ranks;
  ASSERT(t&DENSE,EVNONCE);
  RE(j=i0(a));
  switch(j){
-  case -2: return aslash1(CDIV,w);
+  case -2: return jtaslash1(jt,CDIV,w);
   case -1: return bcvt(1,w);
   case  1: return xco1(w);
   case  2: 
