@@ -120,7 +120,7 @@
 
 
 #define congoto(x,y,z)              jtcongoto(jt,(x),(y),(z))
-#define congotoblk(x,y)             jtcongotoblk(jt,(x),(y))
+
 #define congotochk(x,y,z)           jtcongotochk(jt,(x),(y),(z))
 #define conjug(x)                   jtatomic1(jt,(x),ds(CPLUS))
 #define connum(x,y)                 jtconnum(jt,(x),(y))

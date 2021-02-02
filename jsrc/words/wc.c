@@ -36,7 +36,7 @@ static I jtcongotochk(J jt,I i,I j,A x){I k,n,*v;
 #define LABELEQU(m,s,e)    (CLABEL==e->type&&(x=lv[e->i],!memcmpne(s,6+CAV(x),m)))
 
 static I jtcongoto(J jt,I n,CW*con,A*lv){A x,z;C*s;CW*d=con,*e;I i,j,k,m;
- RZ(z=congotoblk(n,con));
+ RZ(z=jtcongotoblk(jt,n,con));
  for(i=0;i<n;++i,++d)
   if(CGOTO==d->type){
    x=lv[d->i]; s=5+CAV(x); m=0; while('.'!=s[m])++m; ++m;
