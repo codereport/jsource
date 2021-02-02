@@ -40,8 +40,8 @@
    * Filter tests:
 
     ```sh
-   cd ./build && /usr/bin/ctest --force-new-ctest-process -C Debug -R fast_ && cd ..
-   cd ./build && /usr/bin/ctest --force-new-ctest-process -C Debug -R slow_ && cd ..
+   cd ./build && /usr/bin/ctest --force-new-ctest-process -C Debug -R hare_ && cd .. #fast
+   cd ./build && /usr/bin/ctest --force-new-ctest-process -C Debug -R tortoise_ && cd .. #slow
    # this one requires to uncomment the disabled tests in ./test/CMakeLists.txt
    cd ./build && /usr/bin/ctest --force-new-ctest-process -C Debug -R disabled_ && cd ..
    ```
