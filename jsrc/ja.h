@@ -64,7 +64,7 @@
 
 #define bindd(x,y)                  jtbindd(jt,(x),(y))
 #define binrep1(x)                  jtbinrep1(jt,(x))
-
+#define binzz(x,y)                  jtbinzz(jt,(x),(y))
 #define bitmatch(x,y)               jtbitmatch(jt,(x),(y))
 #define bitwisecharamp(x0,x1,x2,x3) jtbitwisecharamp(jt,(x0),(x1),(x2),(x3))
 #define box(x)                      jtbox(jt,(x))
