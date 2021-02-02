@@ -229,7 +229,7 @@
 
 #define eputc(x)                    jteputc(jt,(x))
 #define eputl(x)                    jteputl(jt,(x))
-#define eputq(x,y)                  jteputq(jt,(x),(y))
+
 #define eputs(x)                    jteputs(jt,(x))
 #define eputv(x)                    jteputv(jt,(x))
 #define eq(x,y)                     jtatomic2(jt,(x),(y),ds(CEQ))
