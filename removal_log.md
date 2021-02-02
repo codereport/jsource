@@ -60,3 +60,4 @@
 |`jsrc\debugging\dsusp.c`|dbstop|jtdbstop|`(^\|[ \t]+\|[^\d\w_])dbstop\((?=([^,]+?),([^)]+?)\))`|`\1jtdbstop(jt,`|
 |`jsrc\debugging\d.c`|dbsig|jtdbsig|`(^\|[ \t]+\|[^\d\w_])dbsig\((?=([^,]+?),([^)]+?)\))`|`\1jtdbsig(jt,`|
 |`jsrc\parsing\pv.c`|dcase|jtdcase|`(^\|[ \t]+\|[^\d\w_])dcase\((?=([^,]+?),([^)]+?)\))`|`\1jtdcase(jt,`|
+|`jsrc\adverbs\am1.c`|dcube|jtdcube|`(^\|[ \t]+\|[^\d\w_])dcube\((?=([^,]+?),([^)]+?)\))`|`\1jtdcube(jt,`|
