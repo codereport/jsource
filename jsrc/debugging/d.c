@@ -123,11 +123,11 @@ static void jtdhead(J jt,C k,DC d){C s[]="    ";
 void jtdebdisp(J jt,DC d){A*x,y;I e,t;
  e=d->dcj;   // error #, or 0 if no error (if DCCALL or DCPARSE frame)
  t=d->dctype;
- if(e&&!jt->etxn&&(t==DCPARSE||t==DCCALL)){x=e+AAV(jt->evm); dhead(0,0L); eputl(*x);}  // if error, display error header
+ if(e&&!jt->etxn&&(t==DCPARSE||t==DCCALL)){x=e+AAV(jt->evm); jtdhead(jt,0,0L); eputl(*x);}  // if error, display error header
  switch(t){
-  case DCPARSE:  dhead(3,d); seeparse(d); if(NETX==jt->etxn)--jt->etxn; eputc(CLF); break;
-  case DCCALL:   dhead(0,d); seecall(d);  eputc(CLF); break;
-  case DCSCRIPT: dhead(0,d); efmt("[-"FMTI"] ", d->dcn-1); 
+  case DCPARSE:  jtdhead(jt,3,d); seeparse(d); if(NETX==jt->etxn)--jt->etxn; eputc(CLF); break;
+  case DCCALL:   jtdhead(jt,0,d); seecall(d);  eputc(CLF); break;
+  case DCSCRIPT: jtdhead(jt,0,d); efmt("[-"FMTI"] ", d->dcn-1); 
                  if(0<=d->dcm){y=*(d->dcm+AAV(jt->slist)); ep(AN(y),CAV(y));}
                  eputc(CLF); break;
 }}
@@ -161,7 +161,7 @@ static B jtdebsi1(J jt,DC d){I t;
 static void jtjsigstr(J jt,I e,I n,C*s){
  if(jt->jerr){jt->curname=0; return;}   // clear error-name indicator
  if(e!=EVSTOP)moveparseinfotosi(jt); jt->jerr=(C)e; jt->jerr1=(C)e; jt->etxn=0;  // before we display, move error info from parse variables to si; but if STOP, it's already installed
- dhead(0,0L);
+ jtdhead(jt,0,0L);
  if(jt->uflags.us.cx.cx_c.db&&!spc()){eputs("ws full (can not suspend)"); eputc(CLF); jt->uflags.us.cx.cx_c.db=0;}
  ep(n,s);
  if(jt->curname){if(!jt->uflags.us.cx.cx_c.glock){eputs(": "); ep(AN(jt->curname),NAV(jt->curname)->s);} jt->curname=0;}
@@ -193,14 +193,14 @@ void jtjsignal(J jt,I e){A x;
 void jtjsignal3(J jt,I e,A w,I j){
  if(jt->jerr)return;
  moveparseinfotosi(jt); jt->jerr=(C)e; jt->jerr1=(C)e; jt->etxn=0;  // before we display, move error info from parse variables to si
- dhead(0,0L);
+ jtdhead(jt,0,0L);
  if(jt->uflags.us.cx.cx_c.db&&!spc()){eputs("ws full (can not suspend)"); eputc(CLF); jt->uflags.us.cx.cx_c.db=0;}
  eputl(AAV(jt->evm)[jt->jerr]);
  if(!jt->uflags.us.cx.cx_c.glock){
-  if(e==EVCTRL){dhead(3,0L); efmt("["FMTI"]",j); eputl(w);}
+  if(e==EVCTRL){jtdhead(jt,3,0L); efmt("["FMTI"]",j); eputl(w);}
   else{
-   dhead(3,0L); eputl(w);
-   dhead(3,0L); DQ(j, eputc(' ');); eputc('^'); eputc(CLF);
+   jtdhead(jt,3,0L); eputl(w);
+   jtdhead(jt,3,0L); DQ(j, eputc(' ');); eputc('^'); eputc(CLF);
   }
   debsi1(jt->sitop);
  }

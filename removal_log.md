@@ -69,3 +69,4 @@
 |`jsrc\verbs\vp.c` `jsrc\debugging\dsusp.c`|dfs1|jtdfs1|`(^\|[ \t]+\|[^\d\w_])dfs1\((?=([^,]+?),([^)]+?)\))`|`\1jtdfs1(jt,`|
 |`jsrc\k.c` `jsrc\verbs\va2ss.c` `jsrc\verbs\ve.c`|dgcd|jtdgcd|`(^\|[ \t]+\|[^\d\w_])dgcd\((?=([^,]+?),([^)]+?)\))`|`\1jtdgcd(jt,`|
 |`jsrc\verbs\v0.c`|dgrade2|jtdgrade2|`(^\|[ \t]+\|[^\d\w_])dgrade2\((?=([^,]+?),([^)]+?)\))`|`\1jtdgrade2(jt,`|
+|`jsrc\debugging\d.c`|dhead|jtdhead|`(^\|[ \t]+\|[^\d\w_])dhead\((?=([^,]+?),([^)]+?)\))`|`\1jtdhead(jt,`|
