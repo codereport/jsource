@@ -17,12 +17,17 @@ def walk_path_cpp():
 def walk_matches():
     for path in walk_path_cpp():
         with open(path, 'r') as f:
+            data = f.read()
             regular_expression = re.compile(
-                r'#define\s+([\w\d]+)\(([^,]+),([^),]+)\)\s+(jt[\d\w]+)\(jt,\(\2\),\(\3\)\)')
-            matches = regular_expression.findall(f.read())
+                r'(#define\s+([\w\d]+)\(([^,]+),([^),]+)\)\s+(jt[\d\w]+)\(jt,\(\3\),\(\4\)\))')
+            matches = regular_expression.findall(data)
             if len(matches) == 0:
                 continue
-            for name1, v1, v2, name2 in matches:
+
+            for full_str, name1, v1, v2, name2 in matches:
+                data.replace(full_str, "")
+                with open(path, 'w') as fw:
+                    fw.write(data)
                 yield re.compile(r'(^|[ \t]+|[^\d\w_])' + name1 + r'\((?=([^,]+?),([^)]+?)\))'), r'\1' + name2 + r'(jt,'
     pass
 
