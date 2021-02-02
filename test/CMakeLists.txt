@@ -287,10 +287,6 @@ set(hare_test_cases #fast
         glocale   # 0.670 seconds
         gmean     # 0.430 seconds
         gmemo     # 0.300 seconds
-        gmmf      # 0.150 seconds, Exception: SegFault, Only on Windows, #bus errors, unstable on CI?
-        gmmf1s    # 0.110 seconds, Exception: SegFault, Only on Windows
-        gmmf1u    # 0.260 seconds, Exception: SegFault, Only on Windows, unstable on CI? I got a failed test.
-        gmmf1w    # 0.110 seconds, Exception: SegFault, Only on Windows
         gmnom     # 0.160 seconds
         gn        # 0.150 seconds
         gnan      # 0.170 seconds
@@ -415,6 +411,11 @@ set(disabled_test_cases # tests that fail on CI. Other tests might fail on other
         g210a     # Exception: SegFault, Both CI and Windows
         g331      # Exception: SegFault, Both CI and Windows
         g420      # Failed Test, Both CI and Windows
+        # tests below are flaky (on Linux)
+        gmmf      # 0.150 seconds, Exception: SegFault, Only on Windows, #bus errors, unstable on CI?
+        gmmf1s    # 0.110 seconds, Exception: SegFault, Only on Windows
+        gmmf1u    # 0.260 seconds, Exception: SegFault, Only on Windows
+        gmmf1w    # 0.110 seconds, Exception: SegFault, Only on Windows
         )
 function(add_tests test_list prefix)
 foreach (test_name IN LISTS ${test_list})
