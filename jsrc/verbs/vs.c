@@ -133,7 +133,7 @@ A jtsparseit(J jt,A w,A a,A e){PROLOG(0091);A ax,c,x,y,z;B b,*cv;I cm,cn,m,n,r,*
  GATV0(y,INT,r,1); s=AV(y);
  u=AV(ax); v=AS(w); DO(r, s[i]=v[u[i]];);
  RE(m=prod(n,s)); b=equ(a,IX(r));
- RZ(x=virtual(b?w:cant2(ax,w),0,1+r-n)); AN(x)=AN(w); v=AS(x); *v=m; if(r>n)ICPY(1+v,n+s,r-n);
+ RZ(x=virtual(b?w:jtcant2(jt,ax,w),0,1+r-n)); AN(x)=AN(w); v=AS(x); *v=m; if(r>n)ICPY(1+v,n+s,r-n);
  b=b&&SB01&AT(z)&&equ(e,num(0)); c=w;
  if(!b)RZ(c=__not(irs2(reshape(vec(INT,r-n,n+s),SPA(p,e)),x,VFLAGNONE, RMAX,-1L,jtmatch)));
  cn=AN(c); cv=BAV(c); cm=bsum(cn,cv);
@@ -165,7 +165,7 @@ A jtsparseit(J jt,A w,A a,A e){PROLOG(0091);A ax,c,x,y,z;B b,*cv;I cm,cn,m,n,r,*
  if(1<an)RZ(y=jtbase2(jt,vec(INT,an,s),y)); yv=AV(y);
  k=bpnoun(t); ck=k*aii(x); mvc(k*n,zv,k,AV(e));
  DQ(SETIC(y,an), MC(zv+ck**yv,xv,ck); ++yv; xv+=ck;);
- return b?z:cant2(pinv(q),z);
+ return b?z:jtcant2(jt,pinv(q),z);
 }    /* $.^:_1 */
 
  A jtreaxis(J jt,A a,A w){A a1,e,p,q,x,y,z;B*b;I c,d,j,k,m,r,*u,*v,*ws,wt;P*wp,*zp;
@@ -181,7 +181,7 @@ A jtsparseit(J jt,A w,A a,A e){PROLOG(0091);A ax,c,x,y,z;B b,*cv;I cm,cn,m,n,r,*
   GATV0(q,INT,1+r,1); u=AV(q); j=1;
   GATV0(q,INT,1+r,1); v=AV(q); k=0;
   s=AS(x); c=1; DO(AN(p), d=s[1+i]; if(b[i]){c*=d; v[k++]=d;}else u[j++]=d;); *u=c*m;
-  RZ(x=reshape(vec(INT,j,u),cant2(increm(dgrade1(p)),x)));
+  RZ(x=reshape(vec(INT,j,u),jtcant2(jt,increm(dgrade1(p)),x)));
   RZ(q=__not(irs2(x,reshape(vec(INT,AR(x)-1,1+AS(x)),e),0L,-1L,RMAX,jtmatch)));
   SPBV(zp,x,x,repeat(q,x));
   RZ(y=stitch(repeat(sc(c),y),reshape(v2(c*m,k),jtabase2(jt,vec(INT,k,v),IX(c)))));
@@ -207,7 +207,7 @@ A jtsparseit(J jt,A w,A a,A e){PROLOG(0091);A ax,c,x,y,z;B b,*cv;I cm,cn,m,n,r,*
   GATV0(y1,INT,n*d,2); *AS(y1)=n; *(1+AS(y1))=d; v= AV(y1); u= AV(y);  
   k=bpnoun(AT(x)); g=k*aii(x); h=k*aii(x1); mvc(k*AN(x1),t,k,AV(e));
   DO(m, MC(t+g*iv[i],s,g); s+=g; if(b[i]){ICPY(v,u+i*c,d); v+=d; t+=h;});
-  SPB(zp,i,y1); SPB(zp,x,cant2(increm(indexof(p,daxis(r,a1))),x1));
+  SPB(zp,i,y1); SPB(zp,x,jtcant2(jt,increm(indexof(p,daxis(r,a1))),x1));
   return z;
  }
  return reaxis(a1,reaxis(over(a,less(a1,a)),w));
@@ -231,7 +231,7 @@ static A jtaxbytes(J jt,A a,A w){A a1,e,p,q,x;B*b;I c,d,j,m,n=0,r,*u,*v,*ws,wt;P
  if(all1(eps(a,a1))){    /* old is subset of new */
   RZ(p=eps(daxis(r,a),a1)); b=BAV(p);
   v=c+AS(x); DO(AN(p), if(!b[i])u[j++]=v[i];);
-  RZ(q=irs2(cant2(plus(sc(c),dgrade1(p)),x),reshape(vec(INT,j,u),e),0L,j,j,jtmatch));
+  RZ(q=irs2(jtcant2(jt,plus(sc(c),dgrade1(p)),x),reshape(vec(INT,j,u),e),0L,j,j,jtmatch));
   b=BAV(q); n=AN(q); DQ(n, if(*b++)--n;); 
   return axbytes1(AT(e),d,n,j,u);
  }
@@ -255,7 +255,7 @@ static A jtaxtally(J jt,A a,A w){A a1,e,p,q,x;B*b;I c,d,j,m,n=0,r,*u,*v,*ws,wt;P
  if(all1(eps(a,a1))){    /* old is subset of new */
   RZ(p=eps(daxis(r,a),a1)); b=BAV(p);
   v=c+AS(x); DO(AN(p), if(!b[i])u[j++]=v[i];);
-  RZ(q=irs2(cant2(plus(sc(c),dgrade1(p)),x),reshape(vec(INT,j,u),e),0L,j,j,jtmatch));
+  RZ(q=irs2(jtcant2(jt,plus(sc(c),dgrade1(p)),x),reshape(vec(INT,j,u),e),0L,j,j,jtmatch));
   b=BAV(q); n=AN(q); DQ(n, if(*b++)--n;); 
   return sc(n);
  }

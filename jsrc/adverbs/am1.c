@@ -44,7 +44,7 @@ static A jtastd1(J jt,A a,A z,A ind){A*iv,q,r,s,s1,*sv,x;B b;I ar,*as,d,j,m,n,*r
  ASSERT(!ICMP(as,AV(s1)+d-ar,ar),EVLENGTH);
  if(ar<d)RZ(a=reshape(s1,a));
  RZ(q=dgrade1(eps(repeat(r,IX(zr)),SPA(zp,a))));
- return equ(q,IX(d))?a:cant2(q,a);
+ return equ(q,IX(d))?a:jtcant2(jt,q,a);
 }    /* convert replacement array a into standard form relative to index list ind */
 
 static A jtssel(J jt,A z,A ind){A a,*iv,p,q,x,y;B*b;I*av,c,i,j,m,n,*u,*v,*yv;P*zp;

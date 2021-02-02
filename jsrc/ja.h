@@ -82,7 +82,7 @@
 #define ca(x)                       jtca(jt,(x))
 
 #define cant1(x)                    jtcant1(jt,(x))
-#define cant2(x,y)                  jtcant2(jt,(x),(y)) 
+ 
 #define canta(x,y)                  jtcanta(jt,(x),(y))
 #define cants(x,y,z)                jtcants(jt,(x),(y),(z)) 
 #define cap(x)                      jtcap(jt,(x))

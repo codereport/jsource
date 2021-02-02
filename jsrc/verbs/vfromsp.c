@@ -158,7 +158,7 @@ static A jtfrombs1(J jt,A ind,A w,I wf){A*iv,x,y,z;I j,m,n,wr,wcr;
  SPB(zp,i,SPA(ap,i));
  if(wf){
   RZ(x=irs2(SPA(ap,x),w,VFLAGNONE, RMAX,wcr,jtifrom));
-  RZ(x=cant2(less(IX(AR(x)),sc(wf)),x));
+  RZ(x=jtcant2(jt,less(IX(AR(x)),sc(wf)),x));
   SPB(zp,x,x);
  }else SPB(zp,x,ifrom(SPA(ap,x),w));
  return z;
