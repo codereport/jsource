@@ -213,7 +213,7 @@
 
 
 #define ebarprep(x0,x1,x2,x3,x4)    jtebarprep(jt,(x0),(x1),(x2),(x3),(x4))
-#define ebarvec(x,y)                jtebarvec(jt,(x),(y))
+
 #define eca(x0,x1,x2,x3,x4,x5)      jteca(jt,(x0),(x1),(x2),(x3),(x4),(x5))
 #define ecd(x0,x1,x2,x3,x4)         jtecd(jt,(x0),(x1),(x2),(x3),(x4))
 #define ecm(x0,x1,x2,x3,x4,x5)      jtecm(jt,(x0),(x1),(x2),(x3),(x4),(x5))

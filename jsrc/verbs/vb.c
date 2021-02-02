@@ -111,7 +111,7 @@ static I jtebarprep(J jt,A a,A w,A*za,A*zw,I*zc){I ar,at,m,n,t,wr,wt,memlimit;CR
   case -1: return reshape(shape(w),num(0));
   case -2: return jtebarmat(jt,a,w);
   case -3: return df2(z,shape(a),w,jtcut(jt,jtamp(jt,a,ds(CMATCH)),num(3)));
-  case -4: return ebarvec(a,w);
+  case -4: return jtebarvec(jt,a,w);
  }
  GATV0(z,B01,n,AR(w)); zv=BAV(z); memset(zv,m==0,n); if((-m&-n)>=0)return z;  // if x empty, return all 1s
  GATV0(y,INT,d,1); yv= AV(y); DO(d, yv[i]=1+m;);
@@ -136,7 +136,7 @@ static I jtebarprep(J jt,A a,A w,A*za,A*zw,I*zc){I ar,at,m,n,t,wr,wt,memlimit;CR
  wv=CAV(w); n=AN(w); p=n-m;
  switch(d){
   case -1: return sc(n);
-  case -4: return indexof(ebarvec(a,w),num(1));
+  case -4: return indexof(jtebarvec(jt,a,w),num(1));
  }
  GATV0(y,INT,d,1); yv= AV(y); DO(d, yv[i]=1+m;);
  switch(CTTZ(AT(w))){
@@ -158,7 +158,7 @@ static I jtebarprep(J jt,A a,A w,A*za,A*zw,I*zc){I ar,at,m,n,t,wr,wt,memlimit;CR
  wv=CAV(w); n=AN(w); p=n-m;
  switch(d){
   case -1: return num(0);
-  case -4: return jtaslash(jt,CPLUS,ebarvec(a,w));
+  case -4: return jtaslash(jt,CPLUS,jtebarvec(jt,a,w));
  }
  if((-m&-n)>=0){return sc(n);}  // empty argument.  If m, it matches everywhere, so use n; if n, it's 0, use it
  GATV0(y,INT,d,1); yv= AV(y); DO(d, yv[i]=1+m;);
@@ -181,7 +181,7 @@ static I jtebarprep(J jt,A a,A w,A*za,A*zw,I*zc){I ar,at,m,n,t,wr,wt,memlimit;CR
  wv=CAV(w); n=AN(w); p=n-m;
  switch(d){
   case -1: return num(0);
-  case -4: return jtaslash(jt,CPLUSDOT,ebarvec(a,w));
+  case -4: return jtaslash(jt,CPLUSDOT,jtebarvec(jt,a,w));
  }
  if((-m&-n)>=0){return num(SGNTO0(-n));}  // empty argument.  If m, it matches everywhere, so use n; if n, it's 0, use it - 0/1 only
  GATV0(y,INT,d,1); yv= AV(y); DO(d, yv[i]=1+m;);
@@ -207,7 +207,7 @@ static I jtebarprep(J jt,A a,A w,A*za,A*zw,I*zc){I ar,at,m,n,t,wr,wt,memlimit;CR
  wv=CAV(w); n=AN(w); p=n-m;
  switch(d){
   case -1: return mtv;
-  case -4: return icap(ebarvec(a,w));
+  case -4: return icap(jtebarvec(jt,a,w));
  }
  if((-m&-n)>=0){return icap(jtebar(jt,a,w));}  // empty argument.
  GATV0(z,INT,MAX(22,n>>7),1); zv=AV(z); zu=zv+AN(z);
