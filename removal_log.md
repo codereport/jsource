@@ -84,3 +84,4 @@
 |`jsrc\adverbs\af.c` `jsrc\adverbs\ai.c` `jsrc\adverbs\am1.c` `jsrc\adverbs\amn.c` `jsrc\conjunctions\cc.c` `jsrc\conjunctions\cpdtsp.c` `jsrc\conjunctions\cx.c` `jsrc\verbs\v.c` `jsrc\verbs\vfromsp.c` `jsrc\verbs\vi.c` `jsrc\verbs\vrep.c` `jsrc\verbs\vs.c` `jsrc\words\wn.c` `jsrc\xenos\xa.c`|eps|jteps|`(^\|[ \t]+\|[^\d\w_])eps\((?=([^,]+?),([^)]+?)\))`|`\1jteps(jt,`|
 |`jsrc\debugging\d.c`|eputq|jteputq|`(^\|[ \t]+\|[^\d\w_])eputq\((?=([^,]+?),([^)]+?)\))`|`\1jteputq(jt,`|
 |`jsrc\verbs\v1.c`|eqf|jteqf|`(^\|[ \t]+\|[^\d\w_])eqf\((?=([^,]+?),([^)]+?)\))`|`\1jteqf(jt,`|
+|`jsrc\adverbs\ai.c`|eva|jteva|`(^\|[ \t]+\|[^\d\w_])eva\((?=([^,]+?),([^)]+?)\))`|`\1jteva(jt,`|

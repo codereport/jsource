@@ -242,7 +242,7 @@
 #define eqz(x,y,z)                  jteqz(jt,(x),(y),(z))
 #define etc(x)                      jtetc(jt,(x))
 #define ev2(x,y,z)                  jtev2(jt,(x),(y),(z))
-#define eva(x,y)                    jteva(jt,(x),(y))
+
 #define eval(x)                     jteval(jt,(x))
 #define evc(x,y,z)                  jtevc(jt,(x),(y),(z))
 #define even(x,y)                   jteven(jt,(x),(y))

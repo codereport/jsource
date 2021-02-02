@@ -129,7 +129,7 @@ static A jtinvamp(J jt, A w){A f,ff,g,h,x,y;B nf,ng;C c,d,*yv;I n;V*u,*v;
    return jtamp(jt,sc(-(1^(-n))),h);
   case CCANT:    
    ASSERT(nf!=0,EVDOMAIN); 
-   return obverse(eva(x,"] |:~ u C.^:_1 i.@#@$"),w);
+   return obverse(jteva(jt,x,"] |:~ u C.^:_1 i.@#@$"),w);
   case CPCO:
    if(nf){
     RE(n=i0(x));
@@ -168,7 +168,7 @@ static A jtinvamp(J jt, A w){A f,ff,g,h,x,y;B nf,ng;C c,d,*yv;I n;V*u,*v;
   case CATOMIC:
    if(ng){ASSERT(equ(x,nub(x)),EVDOMAIN); return obverse(jtatop(jt,f,jtamp(jt,x,ds(CIOTA))),w);}  // fall through to common obverse (?)
   case CCYCLE:
-   if(nf&&AR(x)<=(c==CCYCLE))return obverse(eva(w,"/:@u@(i.@#) { ]"),w); break;
+   if(nf&&AR(x)<=(c==CCYCLE))return obverse(jteva(jt,w,"/:@u@(i.@#) { ]"),w); break;
   case CDROP:
    if(!(nf&&1>=AR(x)))break;
    RZ(x=jtcvt(jt,INT,x));
