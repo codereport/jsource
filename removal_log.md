@@ -67,3 +67,4 @@
 |`jsrc\conjunctions\cip.c`|det|jtdet|`(^\|[ \t]+\|[^\d\w_])det\((?=([^,]+?),([^)]+?)\))`|`\1jtdet(jt,`|
 |`jsrc\conjunctions\cip.c` `jsrc\verbs\vgauss.c`|detxm|jtdetxm|`(^\|[ \t]+\|[^\d\w_])detxm\((?=([^,]+?),([^)]+?)\))`|`\1jtdetxm(jt,`|
 |`jsrc\verbs\vp.c` `jsrc\debugging\dsusp.c`|dfs1|jtdfs1|`(^\|[ \t]+\|[^\d\w_])dfs1\((?=([^,]+?),([^)]+?)\))`|`\1jtdfs1(jt,`|
+|`jsrc\k.c` `jsrc\verbs\va2ss.c` `jsrc\verbs\ve.c`|dgcd|jtdgcd|`(^\|[ \t]+\|[^\d\w_])dgcd\((?=([^,]+?),([^)]+?)\))`|`\1jtdgcd(jt,`|

@@ -163,7 +163,7 @@ static B jtQfromD(J jt,A w,void*yv,I mode){B neg,recip;D c,d,t,*wv;I e,i,n,*v;Q 
   if     (t==inf)q.n=vci(XPINF);
   else if(t==0.0)q.n=iv0;
   else if(1.1102230246251565e-16<t&&t<9.007199254740992e15){
-   d=jround(1/dgcd(1.0,t)); c=jround(d*t); 
+   d=jround(1/jtdgcd(jt,1.0,t)); c=jround(d*t); 
    q.n=xd1(c,mode); q.d=xd1(d,mode); q=qstd(q);
   }else{
    if(recip=1>t)t=1.0/t;

@@ -182,7 +182,7 @@
  
 #define dfs2(x,y,z)                 jtdfs2(jt,(x),(y),(z)) 
 #define dgamma(x)                   jtdgamma(jt,(x))
-#define dgcd(x,y)                   jtdgcd(jt,(x),(y))
+
 #define dgrade1(x)                  jtdgrade1(jt,(x)) 
 #define dgrade2(x,y)                jtdgrade2(jt,(x),(y))
 #define dhead(x,y)                  jtdhead(jt,(x),(y))
