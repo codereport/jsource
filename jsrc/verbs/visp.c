@@ -129,7 +129,7 @@ static B jtiopart(J jt,A w,I r,I mm,I*zc,A*zi,A*zj,A*zx){A b,f,wx,x,wy,y;B*bv;
   GATV0(x,INT,d,1); xv=AV(x); *xv=-1;
   DO(m, bv[i]=0; DO(d, if(xv[i]!=v[i]){bv[i]=1; j=i; DQ(d-j, xv[j]=v[j]; ++j;); break;}); v+=n;)
  }
- if(m){RZ(f=jtcut(jt,ds(CCOMMA),num(1))); RZ(df2(y,b,dropr(d,wy),f)); RZ(df2(x,b,wx,f));}
+ if(m){RZ(f=jtcut(jt,ds(CCOMMA),num(1))); RZ(df2(y,b,jtdropr(jt,d,wy),f)); RZ(df2(x,b,wx,f));}
  else{y=mtm; RZ(x=reshape(v2(0L,prod(r,AS(w)+wr-r)),wx));}
  if(0>c)*zc=c=*(1+AS(y)); 
  else if(c!=*(1+AS(y))){RZ(y=taker(c,y)); RZ(x=taker((c/(n-d))*aii(wx),x));}

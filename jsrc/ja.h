@@ -201,7 +201,7 @@
 
 #define drep(x)                     jtdrep(jt,(x))
 
-#define dropr(x,y)                  jtdropr(jt,(x),(y))
+
 #define drow(x,y,z)                 jtdrow(jt,(x),(y),(z))
 #define drr(x)                      jtdrr(jt,(x))
 #define dspell(x,y,z)               jtdspell(jt,(x),(y),(z))

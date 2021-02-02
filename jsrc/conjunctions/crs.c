@@ -59,7 +59,7 @@ static A jtsprz(J jt,A z0,A y,A e,I f,I*s){A a,a0,q,y0,z;B d;I c,et,h,m,n,r,t,*u
  ASSERT(equ(e,SPA(zq,e)),EVNONCE);
  h=*AS(y); GATV0(q,INT,h,1); u=AV(q); memset(u,C0,h*SZI); 
  if(n){h=-1; DO(n-1, if(*v!=*(v+c)){u[*v]=i-h; h=i;} v+=c;); u[*v]=n-1-h;}
- SPB(zp,i,stitch(repeat(q,y),dropr(1L,y0)));
+ SPB(zp,i,stitch(repeat(q,y),jtdropr(jt,1L,y0)));
  a0=SPA(zq,a); v=AV(a0);
  GATV0(a,INT,f+c-1,1); u=AV(a); DO(f, u[i]=i;); DO(c-1, u[f+i]=v[1+i]+f-1;); 
  SPB(zp,a,a);
@@ -76,7 +76,7 @@ A jtsprank1(J jt,A w,A fs,I mr,AF f1){PROLOG(0043);A q,wx,wy,wy1,ww,z,ze,zi,*zv;
  RZ(w=sprarg(wf,w)); wp=PAV(w); wx=SPA(wp,x); wy=SPA(wp,i); 
  if(mr){
   wt=AT(w); 
-  v=AS(wy); n=v[0]; c=v[1]; wv=AV(wy); RZ(wy1=dropr(wf,wy));
+  v=AS(wy); n=v[0]; c=v[1]; wv=AV(wy); RZ(wy1=jtdropr(jt,wf,wy));
   RZ(wb=spredge(wy,wf,&m));
   RZ(ww=sprinit(wf,wcr,ws,wt,wp)); wq=PAV(ww);
   RZ(ze=CALL1(f1,ww,fs));
@@ -101,7 +101,7 @@ static I jtspradv(J jt,I n,B*b,I f,I r,I j,P*p,A*z){A s,x;I k;P*q;
  if(r){
   q=PAV(*z);
   RZ(s=apv(k,j,1L)); 
-  SPB(q,i,from(s,dropr(f,SPA(p,i)))); 
+  SPB(q,i,from(s,jtdropr(jt,f,SPA(p,i)))); 
   SPB(q,x,from(s,x));
  }else RZ(*z=AN(x)?from(sc(j),x):ca(SPA(p,e)));
  return k;

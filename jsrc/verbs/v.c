@@ -51,7 +51,7 @@
   a=ifb(1+f,b); makewritable(a)   // avoid readonly block
   GATV0(c,INT,r,1L); v=r+AV(c); j=AR(w); m=1; DQ(r, *--v=m; m*=AS(w)[--j];);
   y0=SPA(wp,i); v=AS(y0); m=v[0]; I n=v[1];
-  RZ(q=pdt(dropr(n-r,y0),c));
+  RZ(q=pdt(jtdropr(jt,n-r,y0),c));
   GATV0(y,INT,m*(1+n-r),2); v=AS(y); v[0]=m; v[1]=1+n-r;
   yv=AV(y); u=AV(y0); v=AV(q); j=n-r;
   DQ(m, ICPY(yv,u,j); yv[j]=*v++; yv+=1+j; u+=n;);
