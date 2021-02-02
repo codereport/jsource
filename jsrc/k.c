@@ -281,7 +281,7 @@ B jtccvt(J jt,I tflagged,A w,A*y){F1PREFIP;A d;I n,r,*s,wt; void *wv,*yv;I t=tfl
    // we must account for all NOUN types.  Low 8 bits have most of them, and we know type can't be sparse.  This picks up the others
   ASSERT(!((t|wt)&(SBT+XD+XZ)),EVDOMAIN);  // No conversions for these types
   switch (CVCASE(CTTZ(t),CTTZ(wt))){
-   case CVCASE(LITX, C2TX): return C1fromC2(w, yv);
+   case CVCASE(LITX, C2TX): return jtC1fromC2(jt,w, yv);
    case CVCASE(LITX, C4TX): return C1fromC4(w, yv);
    case CVCASE(C2TX, LITX): return C2fromC1(w, yv);
    case CVCASE(C2TX, C4TX): return C2fromC4(w, yv);
