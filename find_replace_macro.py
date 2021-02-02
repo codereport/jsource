@@ -65,19 +65,22 @@ def find_replaced_data():
                     log.write('|`' + unescaped.sub(escaped, regular_expression.pattern) + '`')
                     log.write('|`' + unescaped.sub(escaped, replace_pattern) + '`|')
                 # print(matches)
-                yield path, regular_expression.sub(replace_pattern, data)
+                yield path, regular_expression.sub(replace_pattern, data), oldname
     pass
 
 
 def main():
     i = 0
     matches = [i for i in find_replaced_data()]
-    for path, new_data in matches:
+    oldname = "" # only doing one name at a time. I maybe not work.
+    for path, new_data, oldname in matches:
         with open(path, 'w') as f:
             f.write(new_data)
             i += 1
-            print('\r' + str(i) + " replacements", '')
-    print()
+
+    print(str(len(matches)) + " file changes")
+    os.system("git add --all")
+    os.system("git commit -C -m remove #define " + oldname)
     pass
 
 
