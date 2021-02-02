@@ -34,3 +34,4 @@
 |`jsrc\verbs\vrand.c`|bigdeal|jtbigdeal|`(^\|[ \t]+\|[^\d\w_])bigdeal\((?=([^,]+?),([^)]+?)\))`|`\1jtbigdeal(jt,`|
 |`jsrc\conjunctions\ch.c`|cancel|jtcancel|`(^\|[ \t]+\|[^\d\w_])cancel\((?=([^,]+?),([^)]+?)\))`|`\1jtcancel(jt,`|
 |`jsrc\adverbs\a.c` `jsrc\adverbs\am1.c` `jsrc\adverbs\amn.c` `jsrc\adverbs\ar.c` `jsrc\conjunctions\cc.c` `jsrc\verbs\vfromsp.c` `jsrc\verbs\vs.c`|cant2|jtcant2|`(^\|[ \t]+\|[^\d\w_])cant2\((?=([^,]+?),([^)]+?)\))`|`\1jtcant2(jt,`|
+|`jsrc\verbs\vcant.c`|canta|jtcanta|`(^\|[ \t]+\|[^\d\w_])canta\((?=([^,]+?),([^)]+?)\))`|`\1jtcanta(jt,`|

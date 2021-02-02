@@ -83,7 +83,7 @@
 
 #define cant1(x)                    jtcant1(jt,(x))
  
-#define canta(x,y)                  jtcanta(jt,(x),(y))
+
 #define cants(x,y,z)                jtcants(jt,(x),(y),(z)) 
 #define cap(x)                      jtcap(jt,(x))
 #define car(x)                      jtcar(jt,(x))

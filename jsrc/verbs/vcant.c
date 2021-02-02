@@ -20,7 +20,7 @@ static A jtcants(J jt,A a,A w,A z){A a1,q,y;B*b,*c;I*u,wr,zr;P*wp,*zp;
  RZ(y=fromr(grade1(indexof(a,a1)),SPA(wp,i)));
  RZ(q=grade1(y));
  SPB(zp,i,from(q,y));
- SPB(zp,x,from(q,canta(over(zeroionei(0),increm(grade1(less(a,a1)))),SPA(wp,x))));
+ SPB(zp,x,from(q,jtcanta(jt,over(zeroionei(0),increm(grade1(less(a,a1)))),SPA(wp,x))));
  return z;
 }    /* w is sparse */
 
@@ -92,7 +92,7 @@ static A jtcanta(J jt,A a,A w){A m,s,t,z;C*wv,*zv;I*av,j,*mv,r,*sv,*tv,wf,wr,*ws
  A jtcant1(J jt, A w){I r; 
  F1PREFIP;
  r=(RANKT)jt->ranks; r=AR(w)<r?AR(w):r;   // no RESETRANK; we pass the rank of w on
- A z=canta(apv(r,r-1,-1L),w); RZ(z);  // rank is set
+ A z=jtcanta(jt,apv(r,r-1,-1L),w); RZ(z);  // rank is set
  // We extracted from w, so mark it (or its backer if virtual) non-pristine.  If w was pristine and inplaceable, transfer its pristine status to the result
  // But if we are returning the input block unchanged, leave pristinity unchanged
  if(z!=w){PRISTXFERF(z,w)}
