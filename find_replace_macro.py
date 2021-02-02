@@ -17,11 +17,13 @@ def walk_path_cpp():
 def walk_matches():
     for path in walk_path_cpp():
         with open(path, 'r') as f:
-            matches = re.findall(r'#define\s+([\w\d]+)\(([^,]+),([^),]+)\)\s+(jt[\d\w]+)\(jt,\(\2\),\(\3\)\)', f.read())
+            regular_expression = re.compile(
+                r'#define\s+([\w\d]+)\(([^,]+),([^),]+)\)\s+(jt[\d\w]+)\(jt,\(\2\),\(\3\)\)')
+            matches = regular_expression.findall(f.read())
             if len(matches) == 0:
                 continue
             for name1, v1, v2, name2 in matches:
-                yield r'(^|[ \t]+|[^\d\w_])' + name1 + r'\((?=([^,]+?),([^)]+?)\))', '\1' + name2 + r'(jt,'
+                yield re.compile(r'(^|[ \t]+|[^\d\w_])' + name1 + r'\((?=([^,]+?),([^)]+?)\))'), r'\1' + name2 + r'(jt,'
     pass
 
 
@@ -34,11 +36,11 @@ def find_replaced_data():
 
             with open(path, 'r') as f:
                 data = f.read()
-                matches = re.search(regular_expression, data)
+                matches = regular_expression.search(data)
                 if matches is None:
                     continue
                 # print(matches)
-                yield path, re.sub(regular_expression, replace_pattern, data)
+                yield path, regular_expression.sub(replace_pattern, data)
     pass
 
 
@@ -48,7 +50,8 @@ def main():
         with open(path, 'w') as f:
             f.write(new_data)
             i += 1
-    print(str(i) + " replacements")
+            print('\r' + str(i) + " replacements", '')
+    print('\r' + str(i) + " replacements")
     pass
 
 
