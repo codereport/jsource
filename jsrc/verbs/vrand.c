@@ -903,7 +903,7 @@ static A jtbigdeal(J jt,I m,I n){A t,x,y;
 
 /*
 static A jtdeal(J jt,I m,I n){A y;D rl=jt->rl;static D dm=16807,p=2147483647L;I j,k,*yv;
- if(m<0.01*n)return bigdeal(m,n);
+ if(m<0.01*n)return jtbigdeal(jt,m,n);
  RZ(y=apv(n,n-1,-1L)); yv=AV(y);
  DO(m, rl=fmod(rl*dm,p); j=i+(I)jfloor(rl*(n-i)/(1+p)); k=yv[i]; yv[i]=yv[j]; yv[j]=k;);
  jt->rl=(I)rl;
