@@ -289,7 +289,7 @@ set(hare_test_cases #fast
         gmemo     # 0.300 seconds
         gmmf      # 0.150 seconds, Exception: SegFault, Only on Windows, #bus errors, unstable on CI?
         gmmf1s    # 0.110 seconds, Exception: SegFault, Only on Windows
-        gmmf1u    # 0.260 seconds, Exception: SegFault, Only on Windows
+        gmmf1u    # 0.260 seconds, Exception: SegFault, Only on Windows, unstable on CI? I got a failed test.
         gmmf1w    # 0.110 seconds, Exception: SegFault, Only on Windows
         gmnom     # 0.160 seconds
         gn        # 0.150 seconds
