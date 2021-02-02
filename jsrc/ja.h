@@ -9,7 +9,7 @@
 
 #define QfromD(x,y,z)               jtQfromD(jt,(x),(y),(z))
 
-#define XfromB(x,y)                 jtXfromB(jt,(x),(y))
+
 #define XfromD(x,y,z)               jtXfromD(jt,(x),(y),(z))
 #define XfromI(x,y)                 jtXfromI(jt,(x),(y))
 #define XfromQ(x,y)                 jtXfromQ(jt,(x),(y))

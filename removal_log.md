@@ -12,3 +12,4 @@
 |`jsrc\k.c`|DfromX|jtDfromX|`(^\|[ \t]+\|[^\d\w_])DfromX\((?=([^,]+?),([^)]+?)\))`|`\1jtDfromX(jt,`|
 |`jsrc\k.c`|IfromX|jtIfromX|`(^\|[ \t]+\|[^\d\w_])IfromX\((?=([^,]+?),([^)]+?)\))`|`\1jtIfromX(jt,`|
 |`jsrc\k.c`|QfromX|jtQfromX|`(^\|[ \t]+\|[^\d\w_])QfromX\((?=([^,]+?),([^)]+?)\))`|`\1jtQfromX(jt,`|
+|`jsrc\k.c`|XfromB|jtXfromB|`(^\|[ \t]+\|[^\d\w_])XfromB\((?=([^,]+?),([^)]+?)\))`|`\1jtXfromB(jt,`|

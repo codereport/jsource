@@ -292,8 +292,8 @@ B jtccvt(J jt,I tflagged,A w,A*y){F1PREFIP;A d;I n,r,*s,wt; void *wv,*yv;I t=tfl
  }
  switch (CVCASE(CTTZ(t),CTTZ(wt))){
   case CVCASE(INTX, B01X): {I*x = yv; B*v = (B*)wv; DQ(n, *x++ = *v++;); } return 1;
-  case CVCASE(XNUMX, B01X): return XfromB(w, yv);
-  case CVCASE(RATX, B01X): GATV(d, XNUM, n, r, s); return XfromB(w, AV(d)) && jtQfromX(jt,d, yv);
+  case CVCASE(XNUMX, B01X): return jtXfromB(jt,w, yv);
+  case CVCASE(RATX, B01X): GATV(d, XNUM, n, r, s); return jtXfromB(jt,w, AV(d)) && jtQfromX(jt,d, yv);
   case CVCASE(FLX, B01X): {D*x = (D*)yv; B*v = (B*)wv; DQ(n, *x++ = *v++;); } return 1;
   case CVCASE(CMPXX, B01X): {Z*x = (Z*)yv; B*v = (B*)wv; DQ(n, x++->re = *v++;); } return 1;
   case CVCASE(B01X, INTX): return jtBfromI(jt,w, yv);
