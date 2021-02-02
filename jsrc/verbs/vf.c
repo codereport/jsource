@@ -198,7 +198,7 @@ static A jtreshapesp(J jt,A a,A w,I wf,I wcr){A a1,e,t,x,y,z;B az,*b,wz;I an,*av
   v=AV(y); DQ(n, if(r<=*v)break; ++q; v+=c;);
   GATV0(t,INT,q,1); u=AV(t); v=v0=AV(y);
   m=j=0; DO(q, u[i]=m+*v; v+=c; ++j; if(j==n){j=0; v=v0; m+=ws[wf];});
-  SPB(zp,i,stitch(abase2(vec(INT,1+d,av),t),reitem(sc(q),dropr(1L,y))));
+  SPB(zp,i,stitch(jtabase2(jt,vec(INT,1+d,av),t),reitem(sc(q),dropr(1L,y))));
   SPB(zp,x,reitem(sc(q),x));
  }else{                   /* dense  */
   GATV0(t,INT,an,1); v=AV(t); MCISH(v,av,d); m=d; j=wf; DO(wcr, if(!b[j++])v[m++]=av[i+d];);

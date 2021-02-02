@@ -15,7 +15,7 @@
 
 
 #define aaxis(x0,x1,x2,x3,x4,x5,x6,x7)              jtaaxis(jt,(x0),(x1),(x2),(x3),(x4),(x5),(x6),(x7))
-#define abase2(x,y)                 jtabase2(jt,(x),(y))
+
 #define ac2(x)                      jtac2(jt,(x))
 #define add2(x,y,z)                 jtadd2(jt,(x),(y),(z))
 #define afi(x,y)                    jtafi(jt,(x),(y))

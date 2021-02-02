@@ -343,7 +343,7 @@ static A jtweight(J jt,A a,A w){ A z; return df1(z,behead(over(AR(w)?w:reshape(a
   // Not integer.  Calculate # digits-1 as d = 2 <.@^. >./ | , w  
   df2(d,num(2),maximum(zeroionei(1),aslash(CMAX,mag(ravel(w)))),atop(ds(CFLOOR),ds(CLOG)));
   // Calculate z = ((1+d)$2) #: w
-  RZ(z=abase2(reshape(increm(d),num(2)),w));
+  RZ(z=jtabase2(jt,reshape(increm(d),num(2)),w));
   // If not float, result is exact or complex; either way, keep it
   if(!(t&FL))return z;
   // If float, see if we had one digit too many (could happen, if the log was too close to an integer)
@@ -376,7 +376,7 @@ static A jtweight(J jt,A a,A w){ A z; return df1(z,behead(over(AR(w)?w:reshape(a
   // If a ends with _1 followed by any number of 1, there will be overflow if w contains any imin.  Detect that very rare case
   av=an+AV(a); wv=wn+AV(w);
   for(zv=av, d=an;d&&*--zv==1;--d);
-  if(d&&*zv==-1){zv=wv; DQ(wn, if(*--zv==IMIN){d=0; break;}) if(!d){RZ(a=cvt(FL,a)); return abase2(a,w);}}
+  if(d&&*zv==-1){zv=wv; DQ(wn, if(*--zv==IMIN){d=0; break;}) if(!d){RZ(a=cvt(FL,a)); return jtabase2(jt,a,w);}}
   DPMULDE(an,wn,zn); GATV(z,INT,zn,1+wr,AS(w)); AS(z)[wr]=an;  // allocate result area
   zv=zn+AV(z);
   if((((2^an)-1)&(av[-2]-1)&-(d=av[-1]))<0){I d1,k;
