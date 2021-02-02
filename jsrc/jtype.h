@@ -210,67 +210,71 @@ typedef I SI;
 
 // NOTE: all noun types must be below all parsable non-nouns
 
-#define B01X 0
-#define B01             ((I)1L<<B01X)           /* B  boolean                      */
-#define B01SIZE         sizeof(B)       // length of 1 atom
-#define LITX 1
-#define LIT             ((I)1L<<LITX)           /* C  literal (character)          */
-#define LITSIZE sizeof(C)
-#define INTX 2
-#define INT             ((I)1L<<INTX)           /* I  integer                      */
-#define INTSIZE sizeof(I)
-#define FLX 3
-#define FL              ((I)1L<<FLX)           /* D  double (IEEE floating point) */
-#define FLSIZE sizeof(D)
-#define CMPXX 4
-#define CMPX            ((I)1L<<CMPXX)          /* Z  complex                      */
-#define CMPXSIZE sizeof(Z)
-#define BOXX 5
-#define BOX             ((I)1L<<BOXX)          /* A  boxed                        */
-#define BOXSIZE sizeof(A)
-#define XNUMX 6
-#define XNUM            ((I)1L<<XNUMX)          /* X  extended precision integer   */
-#define XNUMSIZE sizeof(X)
-#define RATX 7
-#define RAT             ((I)1L<<RATX)         /* Q  rational number              */
-#define RATSIZE sizeof(Q)
-#define BITX 8
-#define BIT             ((I)1L<<BITX)         /* BT bit boolean                  */
-// No size for BIT, since it is fractional
+#define B01X   0
+#define LITX   1
+#define INTX   2
+#define FLX    3
+#define CMPXX  4
+#define BOXX   5
+#define XNUMX  6
+#define RATX   7
+#define BITX   8
 // Bit 9 unused
-#define SB01X 10
-#define SB01            ((I)1L<<SB01X)        /* P  sparse boolean               */
-#define SB01SIZE sizeof(P)
-#define SLITX 11
-#define SLIT            ((I)1L<<SLITX)        /* P  sparse literal (character)   */
-#define SLITSIZE sizeof(P)
-#define SINTX 12
-#define SINT            ((I)1L<<SINTX)        /* P  sparse integer               */
-#define SINTSIZE sizeof(P)
-#define SFLX 13
-#define SFL             ((I)1L<<SFLX)        /* P  sparse floating point        */
-#define SFLSIZE sizeof(P)
+#define SB01X  10
+#define SLITX  11
+#define SINTX  12
+#define SFLX   13
 #define SCMPXX 14
-#define SCMPX           ((I)1L<<SCMPXX)       /* P  sparse complex               */
+#define SBOXX  15
+#define SBTX   16
+#define C2TX   17
+#define C4TX   18
+#define XDX    19
+#define XZX    20
+
+#define B01   ((I)1L<<B01X)           /* B  boolean                      */
+#define LIT   ((I)1L<<LITX)           /* C  literal (character)          */
+#define INT   ((I)1L<<INTX)           /* I  integer                      */
+#define FL    ((I)1L<<FLX)            /* D  double (IEEE floating point) */
+#define CMPX  ((I)1L<<CMPXX)          /* Z  complex                      */
+#define BOX   ((I)1L<<BOXX)           /* A  boxed                        */
+#define XNUM  ((I)1L<<XNUMX)          /* X  extended precision integer   */
+#define RAT   ((I)1L<<RATX)           /* Q  rational number              */
+#define BIT   ((I)1L<<BITX)           /* BT bit boolean                  */
+#define SB01  ((I)1L<<SB01X)          /* P  sparse boolean               */
+#define SLIT  ((I)1L<<SLITX)          /* P  sparse literal (character)   */
+#define SINT  ((I)1L<<SINTX)          /* P  sparse integer               */
+#define SFL   ((I)1L<<SFLX)           /* P  sparse floating point        */
+#define SCMPX ((I)1L<<SCMPXX)         /* P  sparse complex               */
+#define SBOX  ((I)1L<<SBOXX)          /* P  sparse boxed                 */
+#define SBT   ((I)1L<<SBTX)           /* SB symbol                       */
+#define C2T   ((I)1L<<C2TX)           /* C2 unicode (2-byte characters)  */
+#define C4T   ((I)1L<<C4TX)           /* C4 unicode (4-byte characters)  */
+#define XD    ((I)1L<<XDX)            // DX extended floating point   used to represent intolerant compare in jtiosc
+#define XZ    ((I)1L<<XZX)            /* ZX extended complex             */
+
+#define B01SIZE   sizeof(B)       // length of 1 atom
+#define LITSIZE   sizeof(C)
+#define INTSIZE   sizeof(I)
+#define FLSIZE    sizeof(D)
+#define CMPXSIZE  sizeof(Z)
+#define BOXSIZE   sizeof(A)
+#define XNUMSIZE  sizeof(X)
+#define RATSIZE   sizeof(Q)
+// No             size for BIT, since it is fractional
+#define SB01SIZE  sizeof(P)
+#define SLITSIZE  sizeof(P)
+#define SINTSIZE  sizeof(P)
+#define SFLSIZE   sizeof(P)
 #define SCMPXSIZE sizeof(P)
-#define SBOXX 15
-#define SBOX            ((I)1L<<SBOXX)       /* P  sparse boxed                 */
-#define SBOXSIZE sizeof(P)
-#define SBTX 16
-#define SBT             ((I)1L<<SBTX)       /* SB symbol                       */
-#define SBTSIZE sizeof(SB)
-#define C2TX 17
-#define C2T             ((I)1L<<C2TX)      /* C2 unicode (2-byte characters)  */
-#define C2TSIZE sizeof(US)
-#define C4TX 18
-#define C4T             ((I)1L<<C4TX)         /* C4 unicode (4-byte characters)  */
-#define C4TSIZE sizeof(C4)
-#define XDX 19
-#define XD              ((I)1L<<XDX)   // DX extended floating point   used to represent intolerant compare in jtiosc
-#define XDSIZE sizeof(DX)
-#define XZX 20
-#define XZ              ((I)1L<<XZX)   /* ZX extended complex             */
-#define XZSIZE sizeof(ZX)
+#define SBOXSIZE  sizeof(P)
+#define SBTSIZE   sizeof(SB)
+#define C2TSIZE   sizeof(US)
+#define C4TSIZE   sizeof(C4)
+#define XDSIZE    sizeof(DX)
+#define XZSIZE    sizeof(ZX)
+
+
 
 #define LASTNOUNX XZX    // index of last noun bit
 
