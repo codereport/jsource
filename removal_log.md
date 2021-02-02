@@ -20,3 +20,4 @@
 
 |`jsrc\verbs\vfrom.c`|afi|jtafi|`(^\|[ \t]+\|[^\d\w_])afi\((?=([^,]+?),([^)]+?)\))`|`\1jtafi(jt,`|
 |`jsrc\verbs\vfrom.c`|afrom|jtafrom|`(^\|[ \t]+\|[^\d\w_])afrom\((?=([^,]+?),([^)]+?)\))`|`\1jtafrom(jt,`|
+|`jsrc\xenos\xfmt.c`|afzrndID|jtafzrndID|`(^\|[ \t]+\|[^\d\w_])afzrndID\((?=([^,]+?),([^)]+?)\))`|`\1jtafzrndID(jt,`|

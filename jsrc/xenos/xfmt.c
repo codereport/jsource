@@ -500,7 +500,7 @@ static A jtfmtallcol(J jt, A a, A w, I mode) {A *a1v,base,fb,len,strs,*u,v,x;
      if(*dv < 0 && mMN) { y=nM; g=nN; }
      else if(*dv>=0 && mPQ) { y=nP; g=nQ; }
      m=*il-y-g; if(mC) m=m-((m-!!d-d)>>2);
-     RZ(sprintfnD(cv+y, m, d, afzrndID(d,*dv), subs));  // round to the display precision
+     RZ(sprintfnD(cv+y, m, d, jtafzrndID(jt,d,*dv), subs));  // round to the display precision
      if(mC) RZ(fmtcomma(cv+y, *il-y-g, d, subs));
      if     (*dv < 0 && mMN) { MC(cv, cM, nM); MC(cv+*il-nN, cN, nN); }
      else if(*dv < 0       ) { *cv=SUBm;                              }
