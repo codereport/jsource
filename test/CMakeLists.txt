@@ -406,15 +406,15 @@ set(slow_test_cases
         gss  #55.86 seconds
         )
 set(disabled_test_cases
-        # g18x
-        # g210a   #segfault #broken
-        # g331  #segfault #broken
-        # g420
-        # g430
-        # gmmf   #bus errors, unstable
-        # gmmf1s
-        # gmmf1u
-        # gmmf1w
+         g18x
+         g210a   #segfault #broken
+         g331  #segfault #broken
+         g420
+         g430
+         gmmf   #bus errors, unstable
+         gmmf1s
+         gmmf1u
+         gmmf1w
         )
 function(add_tests test_list prefix)
 foreach (test_name IN LISTS ${test_list})
