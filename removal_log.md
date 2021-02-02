@@ -56,3 +56,4 @@
 |`jsrc\verbs\vs.c`|daxis|jtdaxis|`(^\|[ \t]+\|[^\d\w_])daxis\((?=([^,]+?),([^)]+?)\))`|`\1jtdaxis(jt,`|
 |`jsrc\verbs\v2.c`|db1b2|jtdb1b2|`(^\|[ \t]+\|[^\d\w_])db1b2\((?=([^,]+?),([^)]+?)\))`|`\1jtdb1b2(jt,`|
 |`jsrc\verbs\vbang.c`|dbin|jtdbin|`(^\|[ \t]+\|[^\d\w_])dbin\((?=([^,]+?),([^)]+?)\))`|`\1jtdbin(jt,`|
+|`jsrc\debugging\dsusp.c`|dbrr|jtdbrr|`(^\|[ \t]+\|[^\d\w_])dbrr\((?=([^,]+?),([^)]+?)\))`|`\1jtdbrr(jt,`|

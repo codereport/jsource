@@ -257,8 +257,8 @@ static A jtdbrr(J jt,A a,A w){DC d;
  return mtm;
 }
 
- A jtdbrr1 (J jt, A w){return dbrr(0L,w);}   /* 13!:9   re-run with arg(s) */
- A jtdbrr2 (J jt,A a,A w){return dbrr(a, w);}
+ A jtdbrr1 (J jt, A w){return jtdbrr(jt,0L,w);}   /* 13!:9   re-run with arg(s) */
+ A jtdbrr2 (J jt,A a,A w){return jtdbrr(jt,a, w);}
 
  A jtdbtrapq(J jt, A w){ASSERTMTV(w); return jt->dbtrap?jt->dbtrap:mtv;}
      /* 13!:14 query trap */

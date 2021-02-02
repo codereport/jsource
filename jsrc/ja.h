@@ -149,7 +149,7 @@
 
 
 #define dbjump(x)                   jtdbjump(jt,(x))
-#define dbrr(x,y)                   jtdbrr(jt,(x),(y))
+
 #define dbstack(x)                  jtdbstack(jt,(x))
 #define dbstop(x,y)                 jtdbstop(jt,(x),(y))
 #define dbsig(x,y)                  jtdbsig(jt,(x),(y))
