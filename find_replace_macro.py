@@ -19,6 +19,7 @@ def walk_matches():
         data = None
         with open(path, 'r') as f:
             data = f.read()
+        if data is not None:
             regular_expression = re.compile(
                 r'(#define\s+([\w\d]+)\(([^,]+),([^),]+)\)\s+(jt[\d\w]+)\(jt,\(\3\),\(\4\)\))')
             matches = regular_expression.findall(data)
@@ -26,12 +27,13 @@ def walk_matches():
                 continue
 
             for full_str, name1, v1, v2, name2 in matches:
-                data.replace(full_str, "")
+                print("removed "+full_str)
+                data = data.replace(full_str, "")
+                with open(path, 'w') as fw:
+                    fw.write(data)
                 yield re.compile(r'(^|[ \t]+|[^\d\w_])' + name1 + r'\((?=([^,]+?),([^)]+?)\))'), r'\1' + name2 + r'(jt,'
                 return
-        # if data is not None:
-        #     with open(path, 'w') as fw:
-        #         fw.write(data)
+
     pass
 
 
