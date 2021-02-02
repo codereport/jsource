@@ -152,12 +152,12 @@ A jtenqueue(J jt,A a,A w,I env){A*v,*x,y,z;B b;C d,e,p,*s,*wi;I i,n,*u,wl;UC c;
    }
    if(AT(y)&NAME&&(NAV(y)->flag&NMDOT)){RZ(y=ca(y)); if((env==2)&&(NAV(*x)->flag&NMXY)){AT(*x)|=NAMEBYVALUE;}}  // The inflected names are the old-fashioned x. y. etc.  They must be cloned lest we modify the shared copy
    *x=y;   // install the value
-  } else if(e==CFCONS){RZ(*x=FCONS(connum(wl-1,wi)))  // if the inflected form says [_]0-9:, create word for that
+  } else if(e==CFCONS){RZ(*x=FCONS(jtconnum(jt,wl-1,wi)))  // if the inflected form says [_]0-9:, create word for that
   } else {
    p=b?b:p;    // otherwise, it's not a primitive, but data, either numeric, string, or name.  Check first character, but fail if inflected form, which must be invalid.  p must be non0
     // If the name is a call-by-value name (x y u. etc), we mark it as BYVALUE if it is slated for execution in an explicit definition
    if((p&~CA)==0){ASSERTN(vnm(wl,wi),EVILNAME,nfs(wl,wi)); RZ(*x=nfs(wl,wi)); if((env==2)&&(NAV(*x)->flag&NMXY)){AT(*x)|=NAMEBYVALUE;}  // starts with alphabetic, make it a name, error if invalid name
-   }else if(p==C9){if(!(*x=connum(wl,wi))){I lje=jt->jerr; RESETERR; jsignal3(lje,w,u[0]); return 0;}   // starts with numeric, create numeric constant.. If error, give a message showing the bad number
+   }else if(p==C9){if(!(*x=jtconnum(jt,wl,wi))){I lje=jt->jerr; RESETERR; jsignal3(lje,w,u[0]); return 0;}   // starts with numeric, create numeric constant.. If error, give a message showing the bad number
    }else if(p==CQ){ RZ(*x=constr(wl,wi));   // start with ', make string constant
    }else{jsignal3(EVSPELL,w,wi-s); return 0;}   // bad first character or inflection
   }

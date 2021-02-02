@@ -123,7 +123,7 @@
 
 #define congotochk(x,y,z)           jtcongotochk(jt,(x),(y),(z))
 #define conjug(x)                   jtatomic1(jt,(x),ds(CPLUS))
-#define connum(x,y)                 jtconnum(jt,(x),(y))
+
 #define consinit()                  jtconsinit(jt)
 #define constr(x,y)                 jtconstr(jt,(x),(y))
 #define convert0(x0,x1,x2,x3)       jtconvert0(jt,(x0),(x1),(x2),(x3)) 
