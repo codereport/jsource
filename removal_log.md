@@ -71,5 +71,4 @@
 |`jsrc\debugging\d.c`|dhead|jtdhead|`(^\|[ \t]+\|[^\d\w_])dhead\((?=([^,]+?),([^)]+?)\))`|`\1jtdhead(jt,`|
 |`jsrc\adverbs\ai.c`|diag|jtdiag|`(^\|[ \t]+\|[^\d\w_])diag\((?=([^,]+?),([^)]+?)\))`|`\1jtdiag(jt,`|
 |`jsrc\debugging\d.c`|disp|jtdisp|`(^\|[ \t]+\|[^\d\w_])disp\((?=([^,]+?),([^)]+?)\))`|`\1jtdisp(jt,`|
-|`jsrc\verbs\va2ss.c` `jsrc\verbs\ve.c`|dlcm|jtdlcm|`(^\|[ \t]+\|[^\d\w_])dlcm\((?=([^,]+?),([^)]+?)\))`|`\1jtdlcm(jt,`|
 |`jsrc\s.c`|dllsymaddr|jtdllsymaddr|`(^\|[ \t]+\|[^\d\w_])dllsymaddr\((?=([^,]+?),([^)]+?)\))`|`\1jtdllsymaddr(jt,`|
