@@ -184,7 +184,7 @@
 #define dgamma(x)                   jtdgamma(jt,(x))
 
 #define dgrade1(x)                  jtdgrade1(jt,(x)) 
-#define dgrade2(x,y)                jtdgrade2(jt,(x),(y))
+
 #define dhead(x,y)                  jtdhead(jt,(x),(y))
 #define diag(x,y)                   jtdiag(jt,(x),(y))
 #define diff(x)                     jtdiff(jt,(x))

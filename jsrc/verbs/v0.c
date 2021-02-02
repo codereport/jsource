@@ -33,7 +33,7 @@ static A jtrsort(J jt, A w){A t,z;
  PUSHCCT(1.0-FUZZ)
  RZ(t=over(mag(w),cant1(rect(w))));
  A tt; RZ(IRS2(t,t,0L,1L,1L,jtindexof,tt));
- z=dgrade2(w,cant1(IRS2(tt,t,0L,1L,1L,jtfrom,z)));
+ z=jtdgrade2(jt,w,cant1(IRS2(tt,t,0L,1L,1L,jtfrom,z)));
  POPCCT
  return z;
 }
