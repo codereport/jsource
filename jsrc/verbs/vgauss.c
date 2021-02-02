@@ -109,5 +109,5 @@ static A jtdetz(J jt, A w){A t;D g,h;I c,d,e,i,j,k,r,*s;Z p,q,*u,*v,*x,*y,z;
   case XNUMX: z=detr(jtcvt(jt,RAT,w)); break;
   case RATX:  z=detr(ca(w));
  }
- return z==mark?detxm(w,eval("-/ .*")):z;
+ return z==mark?jtdetxm(jt,w,eval("-/ .*")):z;
 }    /* determinant on square matrix */

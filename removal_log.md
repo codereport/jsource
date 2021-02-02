@@ -65,3 +65,4 @@
 |`jsrc\verbs\vrand.c`|deal|jtdeal|`(^\|[ \t]+\|[^\d\w_])deal\((?=([^,]+?),([^)]+?)\))`|`\1jtdeal(jt,`|
 |`jsrc\representations\rl.c`|decorate|jtdecorate|`(^\|[ \t]+\|[^\d\w_])decorate\((?=([^,]+?),([^)]+?)\))`|`\1jtdecorate(jt,`|
 |`jsrc\conjunctions\cip.c`|det|jtdet|`(^\|[ \t]+\|[^\d\w_])det\((?=([^,]+?),([^)]+?)\))`|`\1jtdet(jt,`|
+|`jsrc\conjunctions\cip.c` `jsrc\verbs\vgauss.c`|detxm|jtdetxm|`(^\|[ \t]+\|[^\d\w_])detxm\((?=([^,]+?),([^)]+?)\))`|`\1jtdetxm(jt,`|

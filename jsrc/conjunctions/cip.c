@@ -401,7 +401,7 @@ static A jtdet(J jt,    A w,A self){DECLFG;A h=sv->fgh[2];I c,r,*s;
  A z; if(h&&1<r&&2==s[r-1]&&s[r-2]==s[r-1])return df1(z,w,h);
  F1RANK(2,jtdet,self);
  c=2>r?1:s[1];
- return !c ? df1(z,mtv,slash(gs)) : 1==c ? CALL1(f1,ravel(w),fs) : h && c==s[0] ? gaussdet(w) : detxm(w,self);
+ return !c ? df1(z,mtv,slash(gs)) : 1==c ? CALL1(f1,ravel(w),fs) : h && c==s[0] ? gaussdet(w) : jtdetxm(jt,w,self);
 }
 
  A jtdetxm(J jt,    A w,A self){A z; return dotprod(IRS1(w,0L,1L,jthead,z),jtdet(jt,minors(w),self),self);}
