@@ -263,7 +263,7 @@ I jtilcm(J jt,I a,I b){I z;I d;
 }
 
 #define GCDIO(u,v)      (dgcd((D)u,(D)v))
-#define LCMIO(u,v)      (jtdlcm(jt,(D)u,(D)v))
+#define LCMIO(u,v)      (dlcm((D)u,(D)v))
 
 D jtdlcm(J jt,D a,D b){ASSERT(!(INF(a)||INF(b)),EVNAN); return a&&b?a*(b/dgcd(a,b)):0;}
 

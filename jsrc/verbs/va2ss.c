@@ -348,7 +348,7 @@ A jtssingleton(J jt, A a,A w,A self,RANK2T awr,RANK2T ranks){A z;
  if(jt->jerr<EWOV)return 0;  // If not overflow, what can it be?
  RESETERR; adv=(D)aiv; wdv=(D)wiv;  // Rack em up again; Convert int args to float, and fall through to float case
  lcmflresult:
- zdv=jtdlcm(jt,adv,wdv); if(!jt->jerr){SSSTORE(zdv,z,FL,D) return z;}  // float result is the last fallback
+ zdv=dlcm(adv,wdv); if(!jt->jerr){SSSTORE(zdv,z,FL,D) return z;}  // float result is the last fallback
  return 0;  // if there was an error, fail, jerr is set
 
  nandresult:
