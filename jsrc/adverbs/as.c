@@ -249,7 +249,7 @@ static A jtssg(J jt,    A w,A self){F1PREFIP;PROLOG(0020);A a,z;I i,n,r,wr;
 A jtscansp(J jt,A w,A self,AF sf){A e,ee,x,z;B*b;I f,m,j,r,t,wr;P*wp,*zp;
  wr=AR(w); r=(RANKT)jt->ranks; r=wr<r?wr:r; RESETRANK; f=wr-r;
  wp=PAV(w); e=SPA(wp,e); RZ(ee=over(e,e));
- if(!jtequ(jt,ee,CALL1(sf,ee,self))){
+ if(!equ(ee,CALL1(sf,ee,self))){
   RZ(x=denseit(w));
   return IRS1(x,self,r,sf,z);
  }else{

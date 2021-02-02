@@ -253,7 +253,7 @@ static A jtjstd(J jt,A w,A ind,I *cellframelen){A j=0,k,*v,x;I b;I d,i,n,r,*u,wr
   v=AAV(ind);   // now ind is a atom/list of boxes, one per axis
   ASSERT(1>=r,EVINDEX);  // not a table
   ASSERT(n<=wr,EVINDEX);  // not too many axes
-  DQ(n, if(!jtequ(jt,ds(CACE),v[i]))break; --n;);  // discard trailing (boxed) empty axes
+  DQ(n, if(!equ(ds(CACE),v[i]))break; --n;);  // discard trailing (boxed) empty axes
   j=zeroionei(0);  // init list to a single 0 offset
   for(i=0;i<n;++i){  // for each axis, grow the cartesian product of the specified offsets
    x=v[i]; d=ws[i];
@@ -305,8 +305,8 @@ static A jtamendn2(J jt,A a,A w,A self){F2PREFIP;PROLOG(0007);A e,z; B b;I atd,w
  // see if inplaceable.  If not, convert w to correct precision (note that cvt makes a copy if the precision is already right)
  if(ip){ASSERT(!(AFRO&AFLAG(w)),EVRO); z=w;}else RZ(z=jtcvt(jt,t1,w));
  // call the routine to handle the sparse amend
- p=PAV(z); e=SPA(p,e); b=!AR(a)&&jtequ(jt,a,e);
- p=PAV(a); if(AT(a)&SPARSE&&!jtequ(jt,e,SPA(p,e))){RZ(a=denseit(a)); }
+ p=PAV(z); e=SPA(p,e); b=!AR(a)&&equ(a,e);
+ p=PAV(a); if(AT(a)&SPARSE&&!equ(e,SPA(p,e))){RZ(a=denseit(a)); }
  if(AT(ind)&NUMERIC||!AR(ind))z=(b?jtam1e:AT(a)&SPARSE?jtam1sp:jtam1a)(jt,a,z,AT(ind)&NUMERIC?box(ind):ope(ind),ip);
  else{RE(aindex(ind,z,0L,(A*)&ind)); ASSERT(ind!=0,EVNONCE); z=(b?jtamne:AT(a)&SPARSE?jtamnsp:jtamna)(jt,a,z,ind,ip);}  // A* for the #$&^% type-checking
  EPILOGZOMB(z);   // do the full push/pop since sparse in-place has zombie elements in z

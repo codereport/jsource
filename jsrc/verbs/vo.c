@@ -363,7 +363,7 @@ static B jtopes1(J jt,B**zb,A*za,A*ze,I*zm,A cs,A w){A a,e=0,q,*wv,x;B*b;I i,k,m
  for(i=0;i<n;++i)
   if(q=wv[i],SPARSE&AT(q)){
    p=PAV(q); x=SPA(p,x); m+=*AS(x);
-   if(!e)e=SPA(p,e); else ASSERT(jtequ(jt,e,SPA(p,e)),EVSPARSE);
+   if(!e)e=SPA(p,e); else ASSERT(equ(e,SPA(p,e)),EVSPARSE);
    k=wcr-AR(q); DO(k, b[i]=1;); a=SPA(p,a); v=AV(a); DQ(AN(a), b[k+*v++]=1;);
   }
  A bvec=ifb(wcr,b); makewritable(bvec) RZ(*za=bvec);    /* union of sparse axes           */ // avoid readonly

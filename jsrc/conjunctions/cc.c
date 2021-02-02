@@ -325,7 +325,7 @@ static A jtcut2sx(J jt,A a,A w,A self){PROLOG(0024);DECLF;A h=0,*hv,y,yy;B b,neg
  RZ(a=a==mark?jteps(jt,w,take(num(pfx?1:-1),w)):DENSE&AT(a)?sparse1(a):a);
  ASSERT(n==AS(a)[0],EVLENGTH);
  ap=PAV(a);
- if(!(jtequ(jt,num(0),SPA(ap,e))&&AN(SPA(ap,a))))return cut2(jtcvt(jt,B01,a),w,self);
+ if(!(equ(num(0),SPA(ap,e))&&AN(SPA(ap,a))))return cut2(jtcvt(jt,B01,a),w,self);
  vf=VAV(fs);
  if(VGERL&sv->flag){h=sv->fgh[2]; hv=AAV(h); hn=AN(h); id=0;}else id=vf->id; 
  y=SPA(ap,i); yn=AN(y); yv=AV(y); u=v=BAV(SPA(ap,x)); e=m=0;

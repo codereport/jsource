@@ -34,7 +34,7 @@ A jtiovxs(J jt,I mode,A a,A w){A e,x,z;B h;I at,t,wt;P*ap=0,*wp,*zp;
   ax=SPA(ap,x); if(h&&TYPESNE(t,at))RZ(ax=jtcvt(jt,t,ax)); if(!AN(ay))RZ(ax=ravel(ax));
   m=AN(ax); n=*AS(a);
   j=ioev(mode,a);
-  if(jtequ(jt,ae,e))SPB(zp,e,sc(j))
+  if(equ(ae,e))SPB(zp,e,sc(j))
   else{RE(k=i0(indexofsub(mode,ax,e))); SPB(zp,e,sc(AN(ay)?(m>k?yv[k]:n):k));}
   RZ(q=indexofsub(mode,ax,x)); v=AV(q);
   if(AN(ay)||AN(SPA(ap,a))){
@@ -105,7 +105,7 @@ static B jtioresparse(J jt,B aw,A*za,A*zw){A a,e,w;B*ab,ac=0,*wb,wc=0;I ar,j,wr;
  if(!*ab)*ab=ac=1;
  if(aw){
   w=*zw; wr=AR(w); wp=PAV(w);
-  e=SPA(ap,e); if(!jtequ(jt,e,SPA(wp,e))){RZ(w=rezero(e,w)); wp=PAV(w);}
+  e=SPA(ap,e); if(!equ(e,SPA(wp,e))){RZ(w=rezero(e,w)); wp=PAV(w);}
   RZ(wb=bfi(wr,SPA(wp,a),1));  
   j=wr-ar; DO(ar-1, ++j; if(ab[1+i]<wb[j])ab[1+i]=ac=1; else if(ab[1+i]>wb[j])wb[j]=wc=1;);
   DO(1+wr-ar, if(!wb[i])wb[i]=wc=1;);

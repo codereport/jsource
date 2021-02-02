@@ -56,7 +56,7 @@ static A jtsprz(J jt,A z0,A y,A e,I f,I*s){A a,a0,q,y0,z;B d;I c,et,h,m,n,r,t,*u
  zp=PAV(z); SPB(zp,e,TYPESEQ(m,et)?e:jtcvt(jt,m,e));
  if(d){SPB(zp,a,apvwr(f,0L,1L)); SPB(zp,i,y); SPB(zp,x,TYPESEQ(m,t)?z0:jtcvt(jt,m,z0)); return z;}
  zq=PAV(z0); y0=SPA(zq,i); v=AS(y0); n=v[0]; c=v[1]; v=AV(y0);
- ASSERT(jtequ(jt,e,SPA(zq,e)),EVNONCE);
+ ASSERT(equ(e,SPA(zq,e)),EVNONCE);
  h=*AS(y); GATV0(q,INT,h,1); u=AV(q); memset(u,C0,h*SZI); 
  if(n){h=-1; DO(n-1, if(*v!=*(v+c)){u[*v]=i-h; h=i;} v+=c;); u[*v]=n-1-h;}
  SPB(zp,i,stitch(repeat(q,y),jtdropr(jt,1L,y0)));

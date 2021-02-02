@@ -159,7 +159,7 @@ static I jtdcase(J jt,I xi,V*v){
  if(!(NAME&AT(n)&&CASGN==CAV(stack[1+b].a)[0]))return z;
  t=sfn(0,n); j=*ttabi; u=ttab;
  if(!t||NTTAB==*ttabi)return z;
- DQ(j, if(jtequ(jt,t,u->a))return z; ++u;);
+ DQ(j, if(equ(t,u->a))return z; ++u;);
  ea=stack[e].a; et=stack[e].t;
  symbisdel(n,ea,locsyms);
  ++*ttabi; u->a=t; u->t=et?et:cfn(ea);
@@ -171,7 +171,7 @@ static TA jtvmove(J jt,I b,I e,TA*stack,A locsyms,I tmonad,I tsubst,TA *ttab,I *
  x=stack[MAX(0,e)];
  if(!(NAME&AT(x.a))||ASGN&AT(stack[b].a))return x;
  z.a=nameref(x.a,locsyms); z.t=0; t=sfn(0,x.a); u=ttab;
- DO(*ttabi, if(jtequ(jt,t,u->a)){z.t=tsubst&&ttabi0<=i?qq(sc(TC+i),num(-1)):u->t; break;} ++u;);
+ DO(*ttabi, if(equ(t,u->a)){z.t=tsubst&&ttabi0<=i?qq(sc(TC+i),num(-1)):u->t; break;} ++u;);
  return z;
 }
 
@@ -191,7 +191,7 @@ static A jtvfinal(J jt,A w,I tmonad,I tsubst,TA *ttab,I *ttabi,I ttabi0){I i;V*u
  if(VERB&AT(v->fgh[0])){
   u=FAV(v->fgh[0]); 
   if(CFCONS==u->id)v->fgh[0]=u->fgh[2];  // must be incorped already
-  else if(CQQ==u->id&&NOUN&AT(u->fgh[0])&&jtequ(jt,ainf,u->fgh[1]))v->fgh[0]=u->fgh[0];  // must be incorped already
+  else if(CQQ==u->id&&NOUN&AT(u->fgh[0])&&equ(ainf,u->fgh[1]))v->fgh[0]=u->fgh[0];  // must be incorped already
   if(NOUN&AT(v->fgh[0]))RZ(w=folk(v->fgh[0],v->fgh[1],v->fgh[2]));
  }
  return tine(w);

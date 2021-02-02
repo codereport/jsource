@@ -426,7 +426,7 @@ static A with2(J jt,A a,A w,A self){A z; return df1(z,w,powop(self,a,0));}
   flag = ((FAV(a)->flag&v->flag)&VASGSAFE)+((v->flag&VJTFLGOK1)*((VJTFLGOK2+VJTFLGOK1)/VJTFLGOK1));
   if((c&~4)==CFORK){   // FORK &
    if(c==CFORK)d=ID(v->fgh[2]);
-   if(CIOTA==ID(v->fgh[1])&&(!d||((d&~1)==CLEFT)&&jtequ(jt,ds(CALP),v->fgh[0]))){  // a.&i. or (a. i. ][)
+   if(CIOTA==ID(v->fgh[1])&&(!d||((d&~1)==CLEFT)&&equ(ds(CALP),v->fgh[0]))){  // a.&i. or (a. i. ][)
     u=FAV(a); d=u->id;
     if(BETWEENC(d,CEQ,CGT)){f2=jtcharfn2; flag&=~VJTFLGOK2;}  // any comparison
    }

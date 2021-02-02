@@ -89,7 +89,7 @@ static A jtlchar(J jt,A w,A *ltext){F1PREFIP;A y;B b,p=1,r1;C c,d,*u,*v;I j,k,m,
  if(b){n=1; j=MIN(3,j);}  // if all repeated, back to 1 character, which j=2/3 dep whether it is a quote
  if(!p){  // if the string contains a nonprintable, represent it as nums { a.
   k=(UC)d; RZ(y=indexof(ds(CALP),w));
-  if(r1&&n<m&&(!k||k==m-n)&&jtequ(jt,y,apv(n,k,1L)))return over(thorn1(sc(d?-n:n)),cstr("{.a."));
+  if(r1&&n<m&&(!k||k==m-n)&&equ(y,apv(n,k,1L)))return over(thorn1(sc(d?-n:n)),cstr("{.a."));
   RZ(y=lnum(y));
   return lp(y)?over(cstr("a.{~"),y):over(y,cstr("{a."));
  }
@@ -101,7 +101,7 @@ static A jtlchar(J jt,A w,A *ltext){F1PREFIP;A y;B b,p=1,r1;C c,d,*u,*v;I j,k,m,
 }    /* non-empty character array */
 
 static A jtlbox(J jt,A w,A *ltext){F1PREFIP;A p,*v,*vv,*wv,x,y;B b=0;I n;
- if(jtequ(jt,ds(CACE),w)&&B01&AT(AAV(w)[0]))return cstr("a:");
+ if(equ(ds(CACE),w)&&B01&AT(AAV(w)[0]))return cstr("a:");
  n=AN(w); wv=AAV(w); 
  DO(n, x=wv[i]; if(BOX&AT(x)){b=1; break;}); b|=1==n;
  GATV0(y,BOX,n+n-(1^b),1); v=vv=AAV(y);
@@ -116,7 +116,7 @@ static A jtlbox(J jt,A w,A *ltext){F1PREFIP;A p,*v,*vv,*wv,x,y;B b=0;I n;
   memset(c,1,sizeof(c)); 
   RZ(x=raze(w)); s=UAV(x);
   DQ(AN(x), c[*s++]=0;);
-  if(c[CQUOTE]&&jtequ(jt,w,words(x)))return over(cstr(";:"),lchar(x));
+  if(c[CQUOTE]&&equ(w,words(x)))return over(cstr(";:"),lchar(x));
   if(c[d=' ']||c[d='|']||c[d='/']||c[d=',']||c[d=';']){
    GATV0(y,LIT,n+AN(x),1); t=CAV(y);
    DO(n, x=wv[i]; *t++=d; MC(t,AV(x),AN(x)); t+=AN(x););
@@ -164,14 +164,14 @@ static A jtlnum(J jt,A w,A *ltext){F1PREFIP;A b,d,t,*v,y;B p;I n;
  if(7<n||1<n&&1<AR(w)){
   // see if we can use a clever encoding
   d=minus(from(num(1),t),b=from(num(0),t));
-  p=jtequ(jt,t,plus(b,tymes(d,IX(n))));
+  p=equ(t,plus(b,tymes(d,IX(n))));
   if(p){
-   if(jtequ(jt,d,num(0)))return over(lsh(w),lnum1(b));
+   if(equ(d,num(0)))return over(lsh(w),lnum1(b));
    GAT0(y,BOX,6,1); v=AAV(y); v[0]=v[1]=v[2]=v[3]=mtv;
-   if(p=!(jtequ(jt,b,sc(n-1))&&jtequ(jt,d,num(-1)))){
-    if     (!jtequ(jt,b,num(0)   )){v[0]=lnum1(b); v[1]=spellout(CPLUS);}
-    if     ( jtequ(jt,d,num(-1))) v[1]=spellout(CMINUS);
-    else if(!jtequ(jt,d,num(1)    )){v[2]=lnum1(d); v[3]=spellout(CSTAR);}
+   if(p=!(equ(b,sc(n-1))&&equ(d,num(-1)))){
+    if     (!equ(b,num(0)   )){v[0]=lnum1(b); v[1]=spellout(CPLUS);}
+    if     ( equ(d,num(-1))) v[1]=spellout(CMINUS);
+    else if(!equ(d,num(1)    )){v[2]=lnum1(d); v[3]=spellout(CSTAR);}
    }
    v[4]=spellout(CIOTA); v[5]=thorn1(p?shape(w):negate(shape(w)));
    RE(y); return raze(y);

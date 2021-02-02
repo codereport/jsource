@@ -224,7 +224,7 @@ static A jtrfc(J jt, A w){A r,w1;I m=0,n,t;
  if(n){
   ASSERT(t&(DENSE&NUMERIC),EVDOMAIN);  // coeffs must be dense numeric
   RZ(r=jico2(ne(w,num(0)),num(1))); m=AV(r)[0]; m=(m==n)?0:m;  // r=block for index of last nonzero; m=degree of polynomial (but 0 if all zeros)
-  ASSERT(m||jtequ(jt,num(0),head(w)),EVDOMAIN);  // error if unsolvable constant polynomial
+  ASSERT(m||equ(num(0),head(w)),EVDOMAIN);  // error if unsolvable constant polynomial
  }
  // switch based on degree of polynomial
  switch(m){
@@ -251,7 +251,7 @@ static A jtrfc(J jt, A w){A r,w1;I m=0,n,t;
  ASSERT(2==*(1+AS(x)),EVLENGTH);
  RZ(IRS1(x,0L,1L,jthead,c));  // c = {."1>y = list of coefficients
  RZ(IRS1(x,0L,1L,jttail,e));  // e = {:"1>y = list of exponents
- ASSERT(jtequ(jt,e,floor1(e))&&all1(le(num(0),e)),EVDOMAIN);  // insist on nonnegative integral exponents
+ ASSERT(equ(e,floor1(e))&&all1(le(num(0),e)),EVDOMAIN);  // insist on nonnegative integral exponents
  return evc(c,e,"u v}(1+>./v)$0");  // evaluate c 2 : 'u v}(1+>./v)$0' e
 }
 

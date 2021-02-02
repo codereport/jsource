@@ -9,7 +9,7 @@
 #define QRZ(exp)        {if(!(exp))        return zeroQ;}
 #define QX1(x)          (1==AN(x)&&1==XDIG(x))
 
-#define QEQ(x,y)        (jtequ(jt,(x).n,(y).n)&&jtequ(jt,(x).d,(y).d))
+#define QEQ(x,y)        (equ((x).n,(y).n)&&equ((x).d,(y).d))
 #define QCOMP(x,y)      (xcompare(xtymes((x).n,(y).d),xtymes((y).n,(x).d)))
 #define QLT(x,y)        (0> QCOMP(x,y))
 #define QLE(x,y)        (0>=QCOMP(x,y))

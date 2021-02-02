@@ -20,7 +20,7 @@ static A jtrepzsx(J jt,A a,A w,I wf,I wcr){A q,x,y;I c,d,j,k=-1,m,p=0,*qv,*xv,*y
  if(!AN(SPA(ap,a)))return repzdx(ravel(x),w,wf,wcr);
  y=SPA(ap,i); yv=AV(y);
  RZ(x=jtcvt(jt,INT,vec(FL,2*m,AV(x)))); xv=AV(x);
- if(jtequ(jt,num(0),SPA(ap,e))){
+ if(equ(num(0),SPA(ap,e))){
   k=c=*(wf+AS(w));
   if(!wf&&SPARSE&AT(w)){A a,y;I m,n,q,*v;P*wp;
    wp=PAV(w); a=SPA(wp,a);
@@ -192,7 +192,7 @@ static A jtrep1d(J jt,A a,A w,I wf,I wcr){A z;C*wv,*zv;I c,k,m,n,p=0,q,t,*ws,zk,
 static B jtrep1sa(J jt,A a,I*c,I*d){A x;B b;I*v;
  b=1&&AT(a)&CMPX;
  if(b)RZ(x=rect(a)) else x=a; 
- if(AR(a)){ASSERT(jtequ(jt,num(1),jtaslash(jt,CSTARDOT,le(zeroionei(0),ravel(x)))),EVDOMAIN); RZ(x=jtaslash(jt,CPLUS,x));} 
+ if(AR(a)){ASSERT(equ(num(1),jtaslash(jt,CSTARDOT,le(zeroionei(0),ravel(x)))),EVDOMAIN); RZ(x=jtaslash(jt,CPLUS,x));} 
  if(!(INT&AT(x)))RZ(x=jtcvt(jt,INT,x));
  v=AV(x); *c=v[0]; *d=b?v[1]:0;
  ASSERT(0<=*c&&0<=*d,EVDOMAIN);
