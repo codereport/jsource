@@ -54,11 +54,11 @@ def find_replaced_data():
 
                 with open("removal_log.md", 'a') as log:
                     escaped = '\\|'
-                    log.write('|`' + path + '`')
+                    log.write('\n|`' + path + '`')
                     log.write('|' + oldname)
                     log.write('|' + newname)
                     log.write('|`' + unescaped.sub(escaped, regular_expression.pattern) + '`')
-                    log.write('|`' + unescaped.sub(escaped, replace_pattern) + '`|\n')
+                    log.write('|`' + unescaped.sub(escaped, replace_pattern) + '`|')
                 # print(matches)
                 yield path, regular_expression.sub(replace_pattern, data)
     pass
