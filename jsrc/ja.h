@@ -125,7 +125,7 @@
 #define conjug(x)                   jtatomic1(jt,(x),ds(CPLUS))
 
 #define consinit()                  jtconsinit(jt)
-#define constr(x,y)                 jtconstr(jt,(x),(y))
+
 #define convert0(x0,x1,x2,x3)       jtconvert0(jt,(x0),(x1),(x2),(x3)) 
 #define conword(x,y)                jtconword(jt,(x),(y))
 #define cps(x)                      jtcps(jt,(x))

@@ -44,3 +44,4 @@
 |`jsrc\words\wc.c`|conall|jtconall|`(^\|[ \t]+\|[^\d\w_])conall\((?=([^,]+?),([^)]+?)\))`|`\1jtconall(jt,`|
 |`jsrc\words\wc.c`|congotoblk|jtcongotoblk|`(^\|[ \t]+\|[^\d\w_])congotoblk\((?=([^,]+?),([^)]+?)\))`|`\1jtcongotoblk(jt,`|
 |`jsrc\words\w.c`|connum|jtconnum|`(^\|[ \t]+\|[^\d\w_])connum\((?=([^,]+?),([^)]+?)\))`|`\1jtconnum(jt,`|
+|`jsrc\words\w.c`|constr|jtconstr|`(^\|[ \t]+\|[^\d\w_])constr\((?=([^,]+?),([^)]+?)\))`|`\1jtconstr(jt,`|
