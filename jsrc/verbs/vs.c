@@ -162,7 +162,7 @@ A jtsparseit(J jt,A w,A a,A e){PROLOG(0091);A ax,c,x,y,z;B b,*cv;I cm,cn,m,n,r,*
  if(b)s=AS(w); else{RZ(q=over(a,less(IX(r),a))); RZ(s1=from(q,shape(w))); s=AV(s1);}
  RE(n=prod(r,s));
  GA(z,t,n,r,s); zv=CAV(z); xv=CAV(x); 
- if(1<an)RZ(y=base2(vec(INT,an,s),y)); yv=AV(y);
+ if(1<an)RZ(y=jtbase2(jt,vec(INT,an,s),y)); yv=AV(y);
  k=bpnoun(t); ck=k*aii(x); mvc(k*n,zv,k,AV(e));
  DQ(SETIC(y,an), MC(zv+ck**yv,xv,ck); ++yv; xv+=ck;);
  return b?z:cant2(pinv(q),z);

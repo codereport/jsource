@@ -27,7 +27,7 @@ static B jtiaddr(J jt,A z,A ind,A*i1,A*i2){A a,ai,as,ii,jj,q,t,x,y;I c,d,e,h,i,*
  RZ(as=less(IX(AR(z)),a)); u=AV(as); n=AN(as);         /* dense axes                  */
  GATV0(t,INT,n,1); v=AV(t);                             /* shape of indexed dense axes */
  e=0; d=1; DO(n, if(h>u[i])v[e++]=s[i]; else d*=s[i];);
- RZ(*i2=jj=tymes(sc(d),base2(vec(INT,e,v),repeatr(eps(ai,as),ind))));
+ RZ(*i2=jj=tymes(sc(d),jtbase2(jt,vec(INT,e,v),repeatr(eps(ai,as),ind))));
  c=*(1+AS(y));
  if(!c){
   n=AN(jj);

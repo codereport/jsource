@@ -133,7 +133,7 @@ static A jtrfd(J jt, A w){A z;I j,k,m,n,r,*s,*x;
  F1RANK(1,jtadot1,UNUSED_VALUE);
  RZ(y=BOX&AT(w)?cdot1(w):pfill(ord(w),w));
  SETIC(y,n);
- return base2(cvt(XNUM,apv(n,n,-1L)),rfd(y));
+ return jtbase2(jt,cvt(XNUM,apv(n,n,-1L)),rfd(y));
 }
 
  A jtadot2(J jt,A a,A w){A m,p;I n;

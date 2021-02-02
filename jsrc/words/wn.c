@@ -121,7 +121,7 @@ static B jtnumb(J jt,I n,C*s,Z*v,Z b){A c,d,y;I k;
  if(!(d=indexof(str(m,(C*)dig),str(n,s))))return 0;
  if(!(all0(eps(sc(m),d))))return 0;
  k=sizeof(Z);
- GAT0(c,CMPX,1,0); MC(AV(c),&b,k); if(!(y=base2(c,d)))return 0; MC(v,AV(y),k);
+ GAT0(c,CMPX,1,0); MC(AV(c),&b,k); if(!(y=jtbase2(jt,c,d)))return 0; MC(v,AV(y),k);
  return 1;
 }
 
@@ -141,7 +141,7 @@ static B jtnumbpx(J jt,I n,C*s,void*vv){B ne,ze;C*t,*u;I k,m;Z b,p,q,*v,x,y;
    if(!(d=indexof(str(strlen(dig),(C*)dig),str(m,t))))return 0;  // convert digits to index numbers
    if(!(all0(eps(sc(strlen(dig)),d))))return 0;   // verify only allowed digits in the field
    if(ne)if(!(d=negate(d)))return 0;  // recover negative sign
-   if(!(d=bcvt(0,base2(sc(intbase),d))))return 0;  // d =. base #. d converted to smallest possible precision
+   if(!(d=bcvt(0,jtbase2(jt,sc(intbase),d))))return 0;  // d =. base #. d converted to smallest possible precision
    if(AT(d)&INT){*(I*)&v->re=IAV(d)[0]; *(I*)&v->im=NANFLAG; return 1;}  // if result is INT, keep it at full precision
   }
 #endif
