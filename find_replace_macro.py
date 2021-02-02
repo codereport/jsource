@@ -80,7 +80,7 @@ def main():
 
     print(str(len(matches)) + " file changes")
     os.system("git add --all")
-    os.system("git commit -C -m remove #define " + oldname)
+    os.system("git commit -m remove #define " + oldname)
     pass
 
 
