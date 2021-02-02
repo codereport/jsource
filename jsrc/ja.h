@@ -210,7 +210,7 @@
 #define dx_next()                   jtdx_next(jt)
 #define dx_next30()                 jtdx_next30(jt)
 #define eachl(x,y,z)                jteachl(jt,(x),(y),(z))
-#define ebar(x,y)                   jtebar(jt,(x),(y))
+
 #define ebarmat(x,y)                jtebarmat(jt,(x),(y))
 #define ebarprep(x0,x1,x2,x3,x4)    jtebarprep(jt,(x0),(x1),(x2),(x3),(x4))
 #define ebarvec(x,y)                jtebarvec(jt,(x),(y))

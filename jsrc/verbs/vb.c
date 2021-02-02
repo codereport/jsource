@@ -209,7 +209,7 @@ static I jtebarprep(J jt,A a,A w,A*za,A*zw,I*zc){I ar,at,m,n,t,wr,wt,memlimit;CR
   case -1: return mtv;
   case -4: return icap(ebarvec(a,w));
  }
- if((-m&-n)>=0){return icap(ebar(a,w));}  // empty argument.
+ if((-m&-n)>=0){return icap(jtebar(jt,a,w));}  // empty argument.
  GATV0(z,INT,MAX(22,n>>7),1); zv=AV(z); zu=zv+AN(z);
  GATV0(y,INT,d,1); yv= AV(y); DO(d, yv[i]=1+m;);
  switch(CTTZ(AT(w))){
