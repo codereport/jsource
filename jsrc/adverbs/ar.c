@@ -270,7 +270,7 @@ static B jtredspse(J jt,C id,I wm,I xt,A e,A zx,A sn,A*ze,A*zzx){A b;B nz;I t,zt
  RZ(b=ne(num(0),sn)); nz=!all0(b); zt=AT(zx);
  switch(id){
   case CPLUS:    if(nz)RZ(zx=plus (zx,       tymes(e,sn) )); RZ(e=       tymes(e,sc(wm)) ); break; 
-  case CSTAR:    if(nz)RZ(zx=tymes(zx,bcvt(1,expn2(e,sn)))); RZ(e=bcvt(1,expn2(e,sc(wm)))); break;
+  case CSTAR:    if(nz)RZ(zx=tymes(zx,jtbcvt(jt,1,expn2(e,sn)))); RZ(e=jtbcvt(jt,1,expn2(e,sc(wm)))); break;
   case CPLUSDOT: if(nz)RZ(zx=gcd(zx,from(b,over(num(0),e))));                 break;
   case CSTARDOT: if(nz)RZ(zx=lcm(zx,from(b,over(num(1),e))));                 break;
   case CMIN:     if(nz)RZ(zx=minimum(zx,from(b,over(zt&B01?num(1): zt&INT?sc(IMAX):ainf,     e)))); break;

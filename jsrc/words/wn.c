@@ -141,7 +141,7 @@ static B jtnumbpx(J jt,I n,C*s,void*vv){B ne,ze;C*t,*u;I k,m;Z b,p,q,*v,x,y;
    if(!(d=indexof(str(strlen(dig),(C*)dig),str(m,t))))return 0;  // convert digits to index numbers
    if(!(all0(eps(sc(strlen(dig)),d))))return 0;   // verify only allowed digits in the field
    if(ne)if(!(d=negate(d)))return 0;  // recover negative sign
-   if(!(d=bcvt(0,jtbase2(jt,sc(intbase),d))))return 0;  // d =. base #. d converted to smallest possible precision
+   if(!(d=jtbcvt(jt,0,jtbase2(jt,sc(intbase),d))))return 0;  // d =. base #. d converted to smallest possible precision
    if(AT(d)&INT){*(I*)&v->re=IAV(d)[0]; *(I*)&v->im=NANFLAG; return 1;}  // if result is INT, keep it at full precision
   }
 #endif
@@ -230,7 +230,7 @@ A jtconnum(J jt,I n,C*s){PROLOG(0101);A y,z;B (*f)(J,I,C*,void*),p=1;C c,*v;I d=
   if(t!=INT){f=jtnumd; if(SZI==SZD){AT(z)=FL;}else{GATV0(z,FL,m,1!=m);} v=CAV(z);}  // if there was overflow, repurpose/allocate the input with enough space for floats
  }
  if(t!=INT)DO(m, d=i+i; e=yv[d]; ASSERT(f(jt,yv[1+d]-e,e+s,v),EVILNUM); v+=k;);  // read the values as larger-than-int
- z=bcvt(bcvtmask,z);
+ z=jtbcvt(jt,bcvtmask,z);
  EPILOG(z);
 }
 
@@ -434,5 +434,5 @@ B valueisint; // set if the value we are processing is really an int
  C cvtmask=(~AT(a)&B01)<<1;  // if x is not B01, set mask to suppress conversion to B01
  cvtmask=AT(a)&B01+INT?cvtmask:6;  // if not B01 or INT, suppress conversion to INT (but it may be INT already)
  cvtmask=AT(a)&B01+INT+FL?cvtmask:14;  // if not B01/INT/FL, suppress conversion to FL
- return bcvt(cvtmask,z);
+ return jtbcvt(jt,cvtmask,z);
 }

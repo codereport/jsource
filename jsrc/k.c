@@ -405,7 +405,7 @@ A jtpcvt(J jt,I t,A w){A y;B b;RANK2T oqr=jt->ranks;
  RE(j=i0(a));
  switch(j){
   case -2: return jtaslash1(jt,CDIV,w);
-  case -1: return bcvt(1,w);
+  case -1: return jtbcvt(jt,1,w);
   case  1: return xco1(w);
   case  2: 
    if(!(t&RAT))RZ(w=cvt(RAT,w));

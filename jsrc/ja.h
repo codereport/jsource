@@ -56,7 +56,7 @@
 
 #define b0(x)                       jtb0(jt,(x))
 
-#define bcvt(x,y)                   jtbcvt(jt,(x),(y))
+
 #define bdot2(x,y,z)                jtbdot2(jt,(x),(y),(z))
 #define behead(x)                   jtbehead(jt,(x))
 #define beheadW(x)                  jtbehead((J)((I)jt|JTINPLACEW),(x))

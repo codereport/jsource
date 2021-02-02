@@ -30,3 +30,4 @@
 |`jsrc\verbs\vs.c`|axbytes|jtaxbytes|`(^\|[ \t]+\|[^\d\w_])axbytes\((?=([^,]+?),([^)]+?)\))`|`\1jtaxbytes(jt,`|
 |`jsrc\verbs\vs.c`|axtally|jtaxtally|`(^\|[ \t]+\|[^\d\w_])axtally\((?=([^,]+?),([^)]+?)\))`|`\1jtaxtally(jt,`|
 |`jsrc\adverbs\amn.c` `jsrc\verbs\vp.c` `jsrc\verbs\vs.c` `jsrc\words\wn.c`|base2|jtbase2|`(^\|[ \t]+\|[^\d\w_])base2\((?=([^,]+?),([^)]+?)\))`|`\1jtbase2(jt,`|
+|`jsrc\k.c` `jsrc\adverbs\ar.c` `jsrc\words\wn.c`|bcvt|jtbcvt|`(^\|[ \t]+\|[^\d\w_])bcvt\((?=([^,]+?),([^)]+?)\))`|`\1jtbcvt(jt,`|
