@@ -15,7 +15,7 @@ B compuu(I n, US *a, US *b){do{if(*a!=*b)return *a<*b; if(!--n)break; ++a; ++b;}
 B compud(I n, US *a, US *b){do{if(*a!=*b)return *a>*b; if(!--n)break; ++a; ++b;}while(1); return a<b;}
 B comptu(I n, C4 *a, C4 *b){do{if(*a!=*b)return *a<*b; if(!--n)break; ++a; ++b;}while(1); return a<b;}
 B comptd(I n, C4 *a, C4 *b){do{if(*a!=*b)return *a>*b; if(!--n)break; ++a; ++b;}while(1); return a<b;}
-B compr(I n, A *a, A *b){J jt=(J)n; I j; n=jt->workareas.compare.compn; do{if(j=compare(*a,*b))return SGNTO0(j); if(!--n)break; ++a; ++b;}while(1); return a<b;}  // compare returns compgt value. a<b makes the sort stable
+B compr(I n, A *a, A *b){J jt=(J)n; I j; n=jt->workareas.compare.compn; do{if(j=jtcompare(jt,*a,*b))return SGNTO0(j); if(!--n)break; ++a; ++b;}while(1); return a<b;}  // compare returns compgt value. a<b makes the sort stable
 B compxu(I n, X *a, X *b){J jt=(J)n; I j; n=jt->workareas.compare.compn; do{if(j=xcompare(*a,*b))return SGNTO0(j); if(!--n)break; ++a; ++b;}while(1); return a<b;} // xcompare returns 1/0/-1
 B compxd(I n, X *a, X *b){J jt=(J)n; I j; n=jt->workareas.compare.compn; do{if(j=xcompare(*b,*a))return SGNTO0(j); if(!--n)break; ++a; ++b;}while(1); return a<b;} // xcompare returns 1/0/-1
 B compqu(I n, Q *a, Q *b){J jt=(J)n; I j; n=jt->workareas.compare.compn; do{if(j=QCOMP(*a,*b))return SGNTO0(j); if(!--n)break; ++a; ++b;}while(1); return a<b;} // QCOMP returns 1/0/-1
@@ -60,7 +60,7 @@ I jtcompare(J jt,A a,A w){C*av,*wv;I ar,an,*as,at,c,d,j,m,t,wn,wr,*ws,wt;
    case CMPXX: COMPLOOQ (D, m+m);         break;
    case XNUMX: COMPLOOQG(X, m, xcompare); break;
    case RATX:  COMPLOOQG(Q, m, QCOMP   ); break;
-   case BOXX:  {COMPDCLQ(A);I j; DO(m, if(j=compare(        x[i],           y[i]   ))return j;);} break;
+   case BOXX:  {COMPDCLQ(A);I j; DO(m, if(j=jtcompare(jt,        x[i],           y[i]   ))return j;);} break;
   }
  }
  if(1>=ar)return ((I )(an<wn)-(I )(an>wn))*jt->workareas.compare.complt;

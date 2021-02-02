@@ -764,7 +764,7 @@ static A jtnodupgrade(J jt,A a,I acr,I ac,I acn,I ad,I n,I m,B b,B bk){A*av,h,*u
    p=0; q=m1;                        \
    while(p<=q){                      \
     t=0; j=(p+q)>>1; v=av+n*hu[j];    \
-    DO(n, if(t=compare(u[i],v[i]))break;);  \
+    DO(n, if(t=jtcompare(jt,u[i],v[i]))break;);  \
     if(0<t)p=j+1; else q=t?j-1:-2;   \
    }                                 \
    zstmt;                            \

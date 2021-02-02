@@ -117,7 +117,7 @@
 #define coeff(x)                    jtcoeff(jt,(x))
 
 #define colon0(x)                   jtcolon0(jt,(x))
-#define compare(x,y)                jtcompare(jt,(x),(y))
+
 #define conall(x,y)                 jtconall(jt,(x),(y))
 #define congoto(x,y,z)              jtcongoto(jt,(x),(y),(z))
 #define congotoblk(x,y)             jtcongotoblk(jt,(x),(y))
