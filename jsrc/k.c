@@ -111,7 +111,7 @@ static X jtxd1(J jt,D p, I mode){PROLOG(0052);A t;D d,e=tfloor(p),q,r;I m,*u;
  GAT0(t,INT,30,1); u=AV(t); m=0; d=ABS(p); 
  while(0<d){
   q=jfloor(d/XBASE); r=d-q*XBASE; u[m++]=(I)r; d=q;
-  if(m==AN(t)){RZ(t=ext(0,t)); u=AV(t);}
+  if(m==AN(t)){RZ(t=jtext(jt,0,t)); u=AV(t);}
  }
  if(!m){u[0]=0; ++m;}else if(0>p)DO(m, u[i]=-u[i];);
  A z=xstd(vec(INT,m,u));

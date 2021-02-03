@@ -268,7 +268,7 @@ static statusEnum insert(J jt, I key) {
 static I jtsbextend(J jt,I n,C*s,UI h,I hi){A x;I c,*hv,j,p;SBU*v;
  c=jt->sbun;
  if(c==AS(jt->sbu)[0]){                   /* extend sbu unique symbols    */
-  RZ(x=ext(1,jt->sbu)); jt->sbu=x; jt->sbuv=(SBU*)AV(x);
+  RZ(x=jtext(jt,1,jt->sbu)); jt->sbu=x; jt->sbuv=(SBU*)AV(x);
  }
  if(AN(jt->sbs)<n+jt->sbsn){            /* extend sbs strings           */
   GATV0(x,LIT,2*(n+jt->sbsn),1); MC(CAV(x),jt->sbsv,jt->sbsn);

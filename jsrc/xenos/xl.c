@@ -54,7 +54,7 @@ B jtxlinit(J jt){A x;I*s;
  RZ(w=vi(w)); 
  ASSERT(LKC==AN(w),EVLENGTH);
  v=AV(w); RE(vfn((F)*v)); ASSERT(0<=v[1]&&0<=v[2],EVDOMAIN); 
- if(AM(jt->flkd)==AS(jt->flkd)[0]){I ct=AM(jt->flkd); RZ(jt->flkd=ext(1,jt->flkd)); AM(jt->flkd)=ct;}
+ if(AM(jt->flkd)==AS(jt->flkd)[0]){I ct=AM(jt->flkd); RZ(jt->flkd=jtext(jt,1,jt->flkd)); AM(jt->flkd)=ct;}
  RE(b=dolock(1,(F)v[0],v[1],v[2]));
  if(!b)return num(0);
  ICPY(AV(jt->flkd)+LKC*AM(jt->flkd),v,LKC); ++AM(jt->flkd);

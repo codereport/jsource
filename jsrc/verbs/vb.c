@@ -199,7 +199,7 @@ static I jtebarprep(J jt,A a,A w,A*za,A*zw,I*zc){I ar,at,m,n,t,wr,wt,memlimit;CR
 }    /* a ([: +./ E.) w where a and w are atoms or lists */
 
 #define IFB1  \
- {if(zu==zv){I m=zu-AV(z); RZ(z=ext(0,z)); zv=m+AV(z); zu=AN(z)+AV(z);} *zv++=k;}
+ {if(zu==zv){I m=zu-AV(z); RZ(z=jtext(jt,0,z)); zv=m+AV(z); zu=AN(z)+AV(z);} *zv++=k;}
 
  A jtifbebar(J jt,A a,A w){A y,z;C*av,*wv;I c,d,i,k=0,m,n,p,*yv,*zu,*zv;
  RE(d=ebarprep(a,w,&a,&w,&c));

@@ -62,7 +62,7 @@ static A jtcfd(J jt, A w){A b,q,x,z,*zv;B*bv;I c,i,j,n,*qv,*u,*v,zn;
   while(bv[j])--j; if(0>j)break;
   u=qv; c=j;
   do{bv[c]=1; *u++=c; c=v[c];}while(c!=j);
-  if(i==zn){RZ(z=ext(0,z)); zv=AAV(z); zn=AN(z);}
+  if(i==zn){RZ(z=jtext(jt,0,z)); zv=AAV(z); zn=AN(z);}
   RZ(zv[i++]=incorp(vec(INT,u-qv,qv)));
  }
  AN(z)=AS(z)[0]=zn=i; j=zn-1; DO(zn>>1, x=zv[i]; zv[i]=zv[j]; zv[j]=x; --j;);

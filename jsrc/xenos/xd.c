@@ -107,7 +107,7 @@ static A jtdir1(J jt,struct dirent*f,struct stat *dirstatbuf,C *diratts, C *dirm
  GATV0(z,BOX,n,1); zv=AAV(z);
  while(f){
   if(ismatch(jt,pat,f->d_name,dirstatbuf,diratts,dirmode,dirrwx,dirnamebuf,dirbase)){
-   if(j==n){RZ(z=ext(0,z)); n=AN(z); zv=AAV(z);}
+   if(j==n){RZ(z=jtext(jt,0,z)); n=AN(z); zv=AAV(z);}
    RZ(zv[j++]=jtdir1(jt,f,dirstatbuf,diratts,dirmode,dirrwx));
   }
   f=readdir(DP);

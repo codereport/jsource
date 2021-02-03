@@ -19,7 +19,7 @@ static A jtpowseqlim(J jt,    A w,A self){PROLOG(0039);A x,y,z,*zv;I i,n;
  RZ(z=exta(BOX,1L,1L,20L)); zv=AAV(z); INCORP(w); *zv++=x=w;
  i=1; n=AN(z);
  while(1){
-  if(n==i){RZ(z=ext(0,z)); zv=i+AAV(z); n=AN(z);}
+  if(n==i){RZ(z=jtext(jt,0,z)); zv=i+AAV(z); n=AN(z);}
   A z0; RZ(x=df1(z0,y=x,self)); INCORP(x); *zv++=x;
   if(equ(x,y)){AN(z)=AS(z)[0]=i; break;}
   ++i;
@@ -38,7 +38,7 @@ static A jttclosure(J jt,A a,A w){A z;I an,*av,c,d,i,wn,wr,wt,*wv,*zv,*zz;
  if(1==wn){   // just 1 result, which will be a list
   *zv++=c=*wv;  // store first selection
   do{
-   if(zv==zz){i=zv-AV(z); ASSERT(i<=an,EVLIMIT) RZ(z=ext(0,z)); zv=AV(z)+i; zz=AV(z)+AN(z);}  // if we have more results than items in a, there must be a cycle - quit
+   if(zv==zz){i=zv-AV(z); ASSERT(i<=an,EVLIMIT) RZ(z=jtext(jt,0,z)); zv=AV(z)+i; zz=AV(z)+AN(z);}  // if we have more results than items in a, there must be a cycle - quit
    d=c; if((UI)c>=(UI)an){c+=an; ASSERT((UI)c<(UI)an,EVINDEX);} *zv++=c=av[c];  // d is prev selection, c is next.  Store c
   }while(c!=d);  // stop when we get a repeated value (normal exit)
   d=(zv-AV(z))-1;
@@ -46,7 +46,7 @@ static A jttclosure(J jt,A a,A w){A z;I an,*av,c,d,i,wn,wr,wt,*wv,*zv,*zz;
   ICPY(zv,wv,wn); zv+=wn;
   I resultdiff;
   do{
-   if(zv==zz){i=zv-AV(z); ASSERT(i<=an*wn,EVLIMIT) RZ(z=ext(0,z)); zv=AV(z)+i; zz=AV(z)+AN(z);}  // break if there is a cycle
+   if(zv==zz){i=zv-AV(z); ASSERT(i<=an*wn,EVLIMIT) RZ(z=jtext(jt,0,z)); zv=AV(z)+i; zz=AV(z)+AN(z);}  // break if there is a cycle
    resultdiff=0; DQ(wn, d=c=zv[-wn]; if((UI)c>=(UI)an){c+=an; ASSERT((UI)c<(UI)an,EVINDEX);} *zv++=c=av[c]; resultdiff|=c^d;);  // set diff if not a steady state
   }while(resultdiff);
   d=(zv-AV(z))/wn-1;

@@ -385,7 +385,7 @@ dobblock:
    // for./select. push the stack.  If the stack has not been allocated, start with 9 entries.  After that,
    // if it fills up, double it as required
    if(!r)
-    if(gsfctdl&8){I m=AN(cd)/WCD; BZ(cd=ext(1,cd)); cv=(CDATA*)AV(cd)+m-1; r=AN(cd)/WCD-m;}
+    if(gsfctdl&8){I m=AN(cd)/WCD; BZ(cd=jtext(jt,1,cd)); cv=(CDATA*)AV(cd)+m-1; r=AN(cd)/WCD-m;}
     else  {r=9; GAT0E(cd,INT,9*WCD,1,i=-1; z=0; continue); ras(cd); cv=(CDATA*)AV(cd)-1; gsfctdl|=8;}   // 9=r
 
    ++cv; --r; 
@@ -520,7 +520,7 @@ dobblock:
   ra(locsym);  // protect local syms
   z=EPILOGNORET(z);  // protect return value from being freed when the symbol table is.  Must also be before stack cleanup, in case the return value is xyz_index or the like
   CDATA *cvminus1 = (CDATA*)VAV(cd)-1; while(cv!=cvminus1){unstackcv(cv); --cv;}  // clean up any remnants left on the for/select stack
-  fa(cd);  // have to delete explicitly, because we had to ext() the block and thus protect it with ra()
+  fa(cd);  // have to delete explicitly, because we had to jtext(jt,) the block and thus protect it with ra()
   fa(locsym);  // unprotect local syms.  This deletes them if they were cloned
  }
  // locsym may have been freed now
@@ -619,10 +619,10 @@ static A jtcolon0(J jt, I deftype){A l,z;C*p,*q,*s;A *sb;I m,n;
   // There is a new line.  Append it to the growing result.
   if(isboxed){
    if((C2T+C4T)&AT(l))RZ(l=jtcvt(jt,LIT,l));  // each line must be LIT
-   while(AN(z)<=n+1){RZ(z=ext(0,z)); sb=AAV(z);}  // extend the result if necessary
+   while(AN(z)<=n+1){RZ(z=jtext(jt,0,z)); sb=AAV(z);}  // extend the result if necessary
    sb[n]=l; ++n; // append the line, increment line number
   }else{
-   while(AN(z)<=n+m){RZ(z=ext(0,z)); s=CAV(z);}  // extend the result if necessary
+   while(AN(z)<=n+m){RZ(z=jtext(jt,0,z)); s=CAV(z);}  // extend the result if necessary
    MC(s+n,q,m); n+=m; s[n]=CLF; ++n;  // append LF at end of each line
   }
  }

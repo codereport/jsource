@@ -262,7 +262,7 @@
 #define expn1(x)                    jtatomic1(jt,(x),ds(CEXP))
 #define expn2(x,y)                  jtatomic2(jt,(x),(y),ds(CEXP))   // bypass sqrt test for internal calls
 
-#define ext(x,y)                    jtext(jt,(x),(y))
+
 #define exta(x0,x1,x2,x3)           jtexta(jt,(x0),(x1),(x2),(x3))
 #define extnvr()                    jtextnvr(jt)
 // Handle top level of fa(), which decrements use count and decides whether recursion is needed.  We recur if the contents are traversible and

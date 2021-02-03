@@ -604,8 +604,8 @@ static HMODULE jtcdlookupl(J jt,C*av){
 // if the string table or the table of CCTs gets full it is extended
 static CCT*jtcdinsert(J jt,A a,CCT*cc){A x;C*s;CCT*pv,*z;I an,hn,k;
  an=AN(a);
- while(AM(jt->cdstr) > AN(jt->cdstr)-an){I oldm=AM(jt->cdstr); RZ(jt->cdstr=ext(1,jt->cdstr)); AM(jt->cdstr)=oldm;}  // double allocations as needed, keep count
- while(AM(jt->cdarg)==AS(jt->cdarg)[0]){I oldm=AM(jt->cdarg); RZ(jt->cdarg=ext(1,jt->cdarg)); AM(jt->cdarg)=oldm;}
+ while(AM(jt->cdstr) > AN(jt->cdstr)-an){I oldm=AM(jt->cdstr); RZ(jt->cdstr=jtext(jt,1,jt->cdstr)); AM(jt->cdstr)=oldm;}  // double allocations as needed, keep count
+ while(AM(jt->cdarg)==AS(jt->cdarg)[0]){I oldm=AM(jt->cdarg); RZ(jt->cdarg=jtext(jt,1,jt->cdarg)); AM(jt->cdarg)=oldm;}
  s=CAV(jt->cdstr); pv=(CCT*)AV(jt->cdarg);
  cc->ai=AM(jt->cdstr); MC(s+AM(jt->cdstr),CAV(a),an); AM(jt->cdstr)+=an;
  z=pv+AM(jt->cdarg); MC(z,cc,sizeof(CCT)); k=AM(jt->cdarg);

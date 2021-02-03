@@ -306,7 +306,7 @@ static A virthook(J jtip, A f, A g){
 #define EPZ(x) if(!(x)){FP}   // exit parser if x==0
 
 // extend NVR stack, returning the A block for it
-A jtextnvr(J jt){ASSERT(jt->parserstackframe.nvrtop<32000,EVLIMIT); RZ(jt->nvra = ext(1, jt->nvra));  return jt->nvra;}
+A jtextnvr(J jt){ASSERT(jt->parserstackframe.nvrtop<32000,EVLIMIT); RZ(jt->nvra = jtext(jt,1, jt->nvra));  return jt->nvra;}
 
 #define BACKMARKS 3   // amount of space to leave for marks at the end.  Because we stack 3 words before we start to parse, we will
  // never see 4 marks on the stack - the most we can have is 1 value + 3 marks.

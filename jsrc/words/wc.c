@@ -379,7 +379,7 @@ B jtpreparse(J jt,A w,A*zl,A*zc){PROLOG(0004);A c,l,*lv,*v,w0,w1,*wv,x,y;B b=0,t
   // split the line into a sequence of sentences, splitting on each control word.  Result is a list of boxed strings, each one sentence
   RZ(y=getsen(wv[i])); yn=AN(y); v=AAV(y);  // split string into sentences; yn=#sentences on line, v->block for first sentence
   for(j=0;j<yn;++j){   // for each sentence on the line...
-   if(n==AN(c)){RZ(c=ext(0,c)); cv=(CW*)AV(c);}  // if result buffer is full, reallocate it, reset pointer to first CW
+   if(n==AN(c)){RZ(c=jtext(jt,0,c)); cv=(CW*)AV(c);}  // if result buffer is full, reallocate it, reset pointer to first CW
    w0=v[j];                             // w0 is A block for sentence j
    RZ(w1=wordil(w0)); ASSERT(AM(w1)>=0,EVOPENQ)  // w1 is A block for (# words), (index,end+1) pairs
    s=CAV(str0(w0));                           // s->start of sentence after appending final NUL,  why?
@@ -399,7 +399,7 @@ B jtpreparse(J jt,A w,A*zl,A*zc){PROLOG(0004);A c,l,*lv,*v,w0,w1,*wv,x,y;B b=0,t
    ASSERT(q<SMAX,EVLIMIT);
    // append the words (which are a queue or a cw) to the list of words
    if(x){                               // set unless the control word is not needed (it usually isn't)
-    while(AN(l)<m+q){RZ(l=ext(0,l)); lv=AAV(l);}  // if word buffer filled, extend it & refresh data pointer
+    while(AN(l)<m+q){RZ(l=jtext(jt,0,l)); lv=AAV(l);}  // if word buffer filled, extend it & refresh data pointer
     if(k)lv[m]=incorp(x); else ICPY(m+lv,AAV(x),q);   // install word(s): the cw, or the words of the queue
    }
    // Now that the words have been moved, install the index to them, and their number, into the cw info; step word pointer over the words added (even if empty spaces)

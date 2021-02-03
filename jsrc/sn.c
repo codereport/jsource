@@ -177,7 +177,7 @@ static A jtnch1(J jt,B b,A w,I*pm,A ch){A*v,x,y;C*s,*yv;LX *e;I i,k,m,p,wn;L*d;
    if(LCH&d->flag&&d->name&&d->val){
     d->flag^=LCH;
     if(b){
-     if(m==AN(ch)){RZ(ch=ext(0,ch)); v=m+AAV(ch);}
+     if(m==AN(ch)){RZ(ch=jtext(jt,0,ch)); v=m+AAV(ch);}
      x=d->name; k=NAV(x)->m;
      GATV0(y,LIT,k+2+p,1); yv=CAV(y); 
      MC(yv,NAV(x)->s,k); MC(1+k+yv,s,p); yv[k]=yv[1+k+p]='_';

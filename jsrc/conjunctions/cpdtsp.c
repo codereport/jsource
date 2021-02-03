@@ -117,7 +117,7 @@ static B jtmmprep(J jt,P*p,I*n,I**iv,I*m,I**nv,D**xv){A x;I j,k,q,*u,*v;
 /* zx  - ptr to result value array            */
 static B jtmmharvest(J jt,I ii,I zjn,A zj,D*zyv,I*n,A*zi,A*zx){A x;D*zxv,*zxv0;I j,m,p,*v,*ziv;
  m=MIN(*AS(*zi),*AS(*zx));
- while(m<*n+zjn){RZ(*zi=ext(0,*zi)); RZ(*zx=ext(0,*zx)); m=MIN(*AS(*zi),*AS(*zx));}
+ while(m<*n+zjn){RZ(*zi=jtext(jt,0,*zi)); RZ(*zx=jtext(jt,0,*zx)); m=MIN(*AS(*zi),*AS(*zx));}
  m=AN(zj); AN(zj)=*AS(zj)=zjn; RZ(x=grade2(zj,zj)); AN(zj)=*AS(zj)=m; 
  p=-1; v=AV(x); ziv=AV(*zi)+(*n<<1); zxv=zxv0=DAV(*zx)+*n;
  DQ(zjn, if(p<(j=*v++)){p=j; *ziv++=ii; *ziv++=j; *zxv++=zyv[j]; zyv[j]=0;});
@@ -144,7 +144,7 @@ static A jtpdtspmm(J jt,A a,A w){A z,zi,zj,zx,zy,*old;D*axv,c,d,*dv,*wxv,*zyv;
     while(p<=q){ii=wiv[wnv[k=(p+q)>>1]<<1]; if(j==ii)break; if(j<ii)q=k-1; else p=k+1;}
     if(j==ii){
      p=wnv[1+k]-wnv[k]; dv=wxv+wnv[k]; v=1+wiv+(wnv[k]<<1);
-     q=zjv-zjv0; while(AN(zj)<p+q){RZ(zj=ext(0,zj)); zjv0=AV(zj); zjv=q+zjv0;}
+     q=zjv-zjv0; while(AN(zj)<p+q){RZ(zj=jtext(jt,0,zj)); zjv0=AV(zj); zjv=q+zjv0;}
      DQ(p, if(d=*dv++){if(!zyv[*v])*zjv++=*v; zyv[*v++]+=c*d; v++;});
     }else k=k0;
    }
