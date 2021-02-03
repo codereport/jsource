@@ -150,7 +150,7 @@ static A jtfixa(J jt,A a,A w){A f,g,h,wf,x,y,z=w;V*v;fauxblock(fauxself); A aa; 
      I initn=AN((A)AM(a));  // save name depth coming in
      if(savloc==jt->locsyms){AAV1((A)AM(a))[AN((A)AM(a))]=rifvs(y); AN((A)AM(a))++; AS((A)AM(a))[0]++;} // add name-string to list of visited names for recursion check
      if(z=REFIXA(na,x)){
-      if(ai!=0&&selfq(x))z=fixrecursive(sc(ai),z);  // if a lower name contains $:, replace it with explicit equivalent
+      if(ai!=0&&selfq(x))z=jtfixrecursive(jt,sc(ai),z);  // if a lower name contains $:, replace it with explicit equivalent
      }
      SYMRESTOREFROMLOCAL(savloc);  // make sure we restore current symbols
      AN((A)AM(a))=AS((A)AM(a))[0]=initn;   // restore name count

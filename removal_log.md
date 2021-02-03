@@ -93,3 +93,4 @@
 |`jsrc\k.c` `jsrc\s.h` `jsrc\sn.c` `jsrc\conjunctions\cl.c` `jsrc\conjunctions\cp.c` `jsrc\conjunctions\cpdtsp.c` `jsrc\conjunctions\cx.c` `jsrc\parsing\p.c` `jsrc\verbs\vb.c` `jsrc\verbs\vp.c` `jsrc\verbs\vsb.c` `jsrc\words\w.c` `jsrc\words\wc.c` `jsrc\xenos\x15.c` `jsrc\xenos\xd.c` `jsrc\xenos\xf.c` `jsrc\xenos\xl.c` `jsrc\xenos\xo.c` `jsrc\xenos\xs.c` `jsrc\conjunctions\cv.c` `jsrc\representations\rl.c`|fit|jtfit|`(^\|[ \t]+\|[^\d\w_])fit\((?=([^,]+?),([^)]+?)\))`|`\1jtfit(jt,`|
 |`jsrc\sn.c` `jsrc\adverbs\ai.c` `jsrc\adverbs\au.c` `jsrc\conjunctions\cp.c` `jsrc\conjunctions\cu.c` `jsrc\conjunctions\cv.c` `jsrc\conjunctions\cx.c`|fix|jtfix|`(^\|[ \t]+\|[^\d\w_])fix\((?=([^,]+?),([^)]+?)\))`|`\1jtfix(jt,`|
 |`jsrc\adverbs\af.c`|fixa|jtfixa|`(^\|[ \t]+\|[^\d\w_])fixa\((?=([^,]+?),([^)]+?)\))`|`\1jtfixa(jt,`|
+|`jsrc\adverbs\af.c`|fixrecursive|jtfixrecursive|`(^\|[ \t]+\|[^\d\w_])fixrecursive\((?=([^,]+?),([^)]+?)\))`|`\1jtfixrecursive(jt,`|

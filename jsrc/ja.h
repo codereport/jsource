@@ -311,7 +311,7 @@
 #define fitct(x,y,n)                jtfitct(jt,(x),(y),(n))
 
 
-#define fixrecursive(x,y)           jtfixrecursive(jt,(x),(y))
+
 #define floor1(x)                   jtatomic1(jt,(x),ds(CFLOOR))
 #define fmfill(x0,x1,x2,x3,x4,x5,x6,x7) jtfmfill(jt,(x0),(x1),(x2),(x3),(x4),(x5),(x6),(x7))
 #define fminit(x0,x1,x2,x3,x4,x5,x6)   jtfminit(jt,(x0),(x1),(x2),(x3),(x4),(x5),(x6))
