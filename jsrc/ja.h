@@ -322,7 +322,7 @@
 #define fmtallcol(x,y,z)            jtfmtallcol(jt,(x),(y),(z))
 #define fmtbfc(x)                   jtfmtbfc(jt,(x))
 #define fmtcomma(x0,x1,x2,x3)       jtfmtcomma(jt,(x0),(x1),(x2),(x3))
-#define fmtD(x,y)                   jtfmtD(jt,(x),(y))
+
 #define fmtex(x0,x1,x2,x3,x4,x5,x6,x7)              jtfmtex(jt,(x0),(x1),(x2),(x3),(x4),(x5),(x6),(x7))
 #define fmtprecomp(x,y)             jtfmtprecomp(jt,(x),(y))
 #define fmtq(x0,x1,x2,x3,x4,x5)     jtfmtq(jt,(x0),(x1),(x2),(x3),(x4),(x5))

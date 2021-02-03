@@ -58,7 +58,7 @@ static void jtfmtD(J jt,C*s,D*v){B q;C buf[1+WD],c,*t;D x=*v;I k=0;
   if(k)while(*t=*(k+t))t++;
 }}
 
-static void jtfmtZ(J jt,C*s,Z*v){fmtD(s,&v->re); if(v->im){I k=strlen(s); *(k+s)='j'; fmtD(1+k+s,&v->im);}}
+static void jtfmtZ(J jt,C*s,Z*v){jtfmtD(jt,s,&v->re); if(v->im){I k=strlen(s); *(k+s)='j'; jtfmtD(jt,1+k+s,&v->im);}}
 
 static void thcase(I t,I*wd,FMTFUN *fmt){
  switch(CTTZ(t)){
