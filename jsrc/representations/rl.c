@@ -154,7 +154,7 @@ A jtdecorate(J jt,A w,I t){
 
 static A jtlnum1(J jt,A w,A *ltext){F1PREFIP;A z,z0;I t;
  t=AT(w);
- RZ(z=t&FL+CMPX?df1(z0,w,fit(ds(CTHORN),sc((I)18))):thorn1(w));
+ RZ(z=t&FL+CMPX?df1(z0,w,jtfit(jt,ds(CTHORN),sc((I)18))):thorn1(w));
  return jtdecorate(jt,z,t);
 }    /* dense non-empty numeric vector */
 

@@ -109,3 +109,5 @@
 |`jsrc\xenos\xl.c`|ext|jtext|`(^\|[ \t]+\|[^\d\w_])ext\((?=([^,]+?),([^)]+?)\))`|`\1jtext(jt,`|
 |`jsrc\xenos\xo.c`|ext|jtext|`(^\|[ \t]+\|[^\d\w_])ext\((?=([^,]+?),([^)]+?)\))`|`\1jtext(jt,`|
 |`jsrc\xenos\xs.c`|ext|jtext|`(^\|[ \t]+\|[^\d\w_])ext\((?=([^,]+?),([^)]+?)\))`|`\1jtext(jt,`|
+|`jsrc\conjunctions\cv.c`|fit|jtfit|`(^\|[ \t]+\|[^\d\w_])fit\((?=([^,]+?),([^)]+?)\))`|`\1jtfit(jt,`|
+|`jsrc\representations\rl.c`|fit|jtfit|`(^\|[ \t]+\|[^\d\w_])fit\((?=([^,]+?),([^)]+?)\))`|`\1jtfit(jt,`|
