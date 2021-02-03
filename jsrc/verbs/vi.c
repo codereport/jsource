@@ -369,7 +369,7 @@ static I hashallo(IH * RESTRICT hh,UI p,UI m,I md){
  }
 
 //
-static IOFX(A,jtioax1,hia(t1,*v),!equ(*v,av[hj]),++v,   --v  )  /* boxed exact 1-element item */   
+static IOFX(A,jtioax1,jthia(jt,t1,*v),!equ(*v,av[hj]),++v,   --v  )  /* boxed exact 1-element item */   
 static IOFX(A,jtioau, hiau(*v),  !equ(*v,av[hj]),++v,   --v  )  /* boxed uniform type         */
 static IOFX(X,jtiox,  hix(v),            !eqx(n,v,av+n*hj),               v+=cn, v-=cn)  /* extended integer           */   
 static IOFX(Q,jtioq,  hiq(v),            !eqq(n,v,av+n*hj),               v+=cn, v-=cn)  /* rational number            */   
@@ -390,7 +390,7 @@ static IOFX(I,jtioi,  hicw(v),           *v!=av[hj],                      ++v,  
 #define THASHA(expa)        {x=*(D*)v; MASK(dx,x); j=HID(dx)%pm; FIND(expa); if(m==hj)hv[j]=i;}
 // boxed type.  "hash" the shape only, after performing relative-to-absolute conversion
 // should omit the relative, since only shape is hashed
-#define THASHBX(expa)       {j=hia(t1,*v)%pm;            FIND(expa); if(m==hj)hv[j]=i;}
+#define THASHBX(expa)       {j=jthia(jt,t1,*v)%pm;            FIND(expa); if(m==hj)hv[j]=i;}
 
 // functions for searching the hash table
 
@@ -419,8 +419,8 @@ static IOFX(I,jtioi,  hicw(v),           *v!=av[hj],                      ++v,  
  }
 // here comparing boxes
 #define TFINDBX(expa,expw)   \
- {jx=j=hia(tl,*v)%pm;           FIND(expw); il=ir=hj;   \
-     j=hia(tr,*v)%pm; if(j!=jx){FIND(expw);    ir=hj;}  \
+ {jx=j=jthia(jt,tl,*v)%pm;           FIND(expw); il=ir=hj;   \
+     j=jthia(jt,tr,*v)%pm; if(j!=jx){FIND(expw);    ir=hj;}  \
  }
 
 // loop to search the hash table.  b means self-index, bx means boxed

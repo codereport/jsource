@@ -399,7 +399,7 @@
 #define hgd(x0,x1,x2,x3,x4)         jthgd(jt,(x0),(x1),(x2),(x3),(x4))
 #define hgeom2(x,y,z)               jthgeom2(jt,(x),(y),(z))
 #define hgv(x0,x1,x2,x3)            jthgv(jt,(x0),(x1),(x2),(x3))
-#define hia(x,y)                    jthia(jt,(x),(y))
+
 #define hiau(x)                     jthiau(jt,(x))
 #define hid(x)                      jthid(jt,(x))
 #define hook(x,y)                   jthook(jt,(x),(y))
