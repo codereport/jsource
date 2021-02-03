@@ -333,7 +333,7 @@
 #define fnum(x)                     jtfnum(jt,(x))
 #define folk(x,y,z)                 jtfolk(jt,(x),(y),(z))
 
-#define foreign(x,y)                jtforeign(jt,(x),(y))
+
 #define forinit(x,y)                jtforinit(jt,(x),(y))
 #define fplus(x,y)                  jtfplus(jt,(x),(y))
 #define fr(x)                       {if((x)!=0){I Zs = AC(x); if(!ACISPERM(Zs)){if(--Zs<=0)mf(x);else AC(x)=Zs;}}}

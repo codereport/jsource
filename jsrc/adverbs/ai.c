@@ -199,7 +199,7 @@ static A jtinvamp(J jt, A w){A f,ff,g,h,x,y;B nf,ng;C c,d,*yv;I n;V*u,*v;
    if(NOUN&AT(x)&&equ(x,num(3))&&NOUN&AT(y)){
     RE(n=i0(f));
     if(all1(jteps(jt,y,v2(4L,5L)))){ASSERT(n&&BETWEENC(n,-2,2),EVDOMAIN); return jtamp(jt,sc(-n),g);}
-    if(all1(jteps(jt,y,v2(1L,3L)))){ASSERT(0==n||1==n||10==n||11==n,EVDOMAIN); return foreign(x,num(2));}
+    if(all1(jteps(jt,y,v2(1L,3L)))){ASSERT(0==n||1==n||10==n||11==n,EVDOMAIN); return jtforeign(jt,x,num(2));}
    }
    break;
   case CBDOT:
@@ -300,9 +300,9 @@ A jtinv(J jt, A w, I recur){A f,ff,g;B b,nf,ng,vf,vg;C id;I p,q;V*v;
    break;
   case CIBEAM:
    p=i0(f); q=i0(g);
-   if(3==p&&1==q)return foreign(f,num(2));
-   if(3==p&&2==q)return foreign(f,num(1)   );
-   if(3==p&&3==q)return foreign(f,num(2));
+   if(3==p&&1==q)return jtforeign(jt,f,num(2));
+   if(3==p&&2==q)return jtforeign(jt,f,num(1)   );
+   if(3==p&&3==q)return jtforeign(jt,f,num(2));
    break;
   case CHOOK:
     if(BOTHEQ8(ID(f),ID(g),CFROM,CEQ))return eval("i.\"1&1");

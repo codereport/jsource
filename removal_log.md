@@ -100,3 +100,6 @@
 |`jsrc\format\f.c`|fmtD|jtfmtD|`(^\|[ \t]+\|[^\d\w_])fmtD\((?=([^,]+?),([^)]+?)\))`|`\1jtfmtD(jt,`|
 |`jsrc\xenos\xfmt.c`|fmtprecomp|jtfmtprecomp|`(^\|[ \t]+\|[^\d\w_])fmtprecomp\((?=([^,]+?),([^)]+?)\))`|`\1jtfmtprecomp(jt,`|
 |`jsrc\adverbs\ai.c`|fong|jtfong|`(^\|[ \t]+\|[^\d\w_])fong\((?=([^,]+?),([^)]+?)\))`|`\1jtfong(jt,`|
+|`jsrc\adverbs\ai.c`|foreign|jtforeign|`(^\|[ \t]+\|[^\d\w_])foreign\((?=([^,]+?),([^)]+?)\))`|`\1jtforeign(jt,`|
+|`jsrc\representations\r.c`|foreign|jtforeign|`(^\|[ \t]+\|[^\d\w_])foreign\((?=([^,]+?),([^)]+?)\))`|`\1jtforeign(jt,`|
+|`jsrc\xenos\xfmt.c`|foreign|jtforeign|`(^\|[ \t]+\|[^\d\w_])foreign\((?=([^,]+?),([^)]+?)\))`|`\1jtforeign(jt,`|

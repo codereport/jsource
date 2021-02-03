@@ -58,7 +58,7 @@ static A jtdrr(J jt, A w){PROLOG(0055);A df,dg,hs,*x,z;B b,ex,xop;C c,id;I fl,*h
  if(0<m)RZ(u[0]=incorp(aro(fs)));
  if(1<m)RZ(u[1]=incorp(aro(ex?unparsem(num(0),w):xop?hs:gs)));
  if(2<m)RZ(u[2]=incorp(aro(hs)));
- s=xop?aro(gs):VDDOP&v->flag?(hv=AV(hs),aro(foreign(sc(hv[0]),sc(hv[1])))):spellout(id);
+ s=xop?aro(gs):VDDOP&v->flag?(hv=AV(hs),aro(jtforeign(jt,sc(hv[0]),sc(hv[1])))):spellout(id);
  RZ(x[0]=incorp(s)); RZ(x[1]=INCORPNA(y));
  return z;
 }
