@@ -134,3 +134,4 @@
 |`jsrc\conjunctions\cx.c`|gc|jtgc|`(^\|[ \t]+\|[^\d\w_])gc\((?=([^,]+?),([^)]+?)\))`|`\1jtgc(jt,`|
 |`jsrc\verbs\v2.c`|gc|jtgc|`(^\|[ \t]+\|[^\d\w_])gc\((?=([^,]+?),([^)]+?)\))`|`\1jtgc(jt,`|
 |`jsrc\verbs\vfromsp.c`|gc|jtgc|`(^\|[ \t]+\|[^\d\w_])gc\((?=([^,]+?),([^)]+?)\))`|`\1jtgc(jt,`|
+|`jsrc\conjunctions\cg.c`|gerfrom|jtgerfrom|`(^\|[ \t]+\|[^\d\w_])gerfrom\((?=([^,]+?),([^)]+?)\))`|`\1jtgerfrom(jt,`|

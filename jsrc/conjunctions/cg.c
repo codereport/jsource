@@ -319,12 +319,12 @@ static A jtgerfrom(J jt,A a,A w){A*av,*v,z;I n;
   ASSERT(BOX&AT(a),EVDOMAIN);
   n=AN(a); av=AAV(a); 
   GATV0(z,BOX,n,1); v=AAV(z);
-  DO(n, RZ(*v++=incorp(gerfrom(av[i],w))););
+  DO(n, RZ(*v++=incorp(jtgerfrom(jt,av[i],w))););
   return z;
 }}
 
  A jtagendai(J jt,A a,A w){I flag;
- if(NOUN&AT(w))return exg(gerfrom(w,a));  // noun form, as before
+ if(NOUN&AT(w))return exg(jtgerfrom(jt,w,a));  // noun form, as before
  // verb v.  Create a "BOX" type holding the verb form of each gerund
  A avb; RZ(avb = incorp(jtfxeachv(jt,1L,a)));
   // Calculate ASGSAFE from all of the verbs (both a and w), provided the user can handle it

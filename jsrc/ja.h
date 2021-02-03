@@ -374,7 +374,7 @@
 #define gconj(x,y,z)                jtgconj(jt,(x),(y),(z))
 #define ge(x,y)                     jtatomic2(jt,(x),(y),ds(CGE))
 #define gerexact(x)                 jtgerexact(jt,(x))
-#define gerfrom(x,y)                jtgerfrom(jt,(x),(y))
+
 #define getsen(x)                   jtgetsen(jt,(x))
 #define gr1(x)                      jtgr1(jt,(x))
 #define grade1(x)                   jtgrade1(jt,(x))
