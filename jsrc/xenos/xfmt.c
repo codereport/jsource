@@ -562,5 +562,5 @@ static A jtfmtxi(J jt, A a, A w, I mode, I *omode){I lvl;
 } /* 8!:2 dyad */
 
  A jtfmt01(J jt, A w){ return jtfmt02(jt,AR(w)?reshape(sc(AS(w)[AR(w)-1]),ds(CACE)):ds(CACE),w);} /* 8!:0 monad */
- A jtfmt11(J jt, A w){ return fmt12(AR(w)?reshape(sc(AS(w)[AR(w)-1]),ds(CACE)):ds(CACE),w);} /* 8!:1 monad */
+ A jtfmt11(J jt, A w){ return jtfmt12(jt,AR(w)?reshape(sc(AS(w)[AR(w)-1]),ds(CACE)):ds(CACE),w);} /* 8!:1 monad */
  A jtfmt21(J jt, A w){ return fmt22(AR(w)?reshape(sc(AS(w)[AR(w)-1]),ds(CACE)):ds(CACE),w);} /* 8!:2 monad */

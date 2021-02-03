@@ -95,3 +95,4 @@
 |`jsrc\adverbs\af.c`|fixa|jtfixa|`(^\|[ \t]+\|[^\d\w_])fixa\((?=([^,]+?),([^)]+?)\))`|`\1jtfixa(jt,`|
 |`jsrc\adverbs\af.c`|fixrecursive|jtfixrecursive|`(^\|[ \t]+\|[^\d\w_])fixrecursive\((?=([^,]+?),([^)]+?)\))`|`\1jtfixrecursive(jt,`|
 |`jsrc\xenos\xfmt.c`|fmt02|jtfmt02|`(^\|[ \t]+\|[^\d\w_])fmt02\((?=([^,]+?),([^)]+?)\))`|`\1jtfmt02(jt,`|
+|`jsrc\xenos\xfmt.c`|fmt12|jtfmt12|`(^\|[ \t]+\|[^\d\w_])fmt12\((?=([^,]+?),([^)]+?)\))`|`\1jtfmt12(jt,`|

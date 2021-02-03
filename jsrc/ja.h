@@ -317,7 +317,7 @@
 #define fminit(x0,x1,x2,x3,x4,x5,x6)   jtfminit(jt,(x0),(x1),(x2),(x3),(x4),(x5),(x6))
 
 #define fmt1(x0,x1,x2,x3,x4,x5)     jtfmt1(jt,(x0),(x1),(x2),(x3),(x4),(x5))
-#define fmt12(x,y)                  jtfmt12(jt,(x),(y))
+
 #define fmt22(x,y)                  jtfmt22(jt,(x),(y))
 #define fmtallcol(x,y,z)            jtfmtallcol(jt,(x),(y),(z))
 #define fmtbfc(x)                   jtfmtbfc(jt,(x))
