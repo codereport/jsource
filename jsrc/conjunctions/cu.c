@@ -24,7 +24,7 @@ static A jteverysp(J jt,A w,A fs){A*wv,x,z,*zv;P*wp,*zp;
 // u&.>, but w may be a gerund, which makes the result a list of functions masquerading as an aray of boxes
 A jtevery(J jt, A w, A fs){A * RESTRICT wv,x,z,* RESTRICT zv;
  F1PREFIP;RESETRANK;  // we claim to support IRS1 but really there's nothing to do for it
- if((SPARSE&AT(w))!=0)return everysp(w,fs);
+ if((SPARSE&AT(w))!=0)return jteverysp(jt,w,fs);
  AF f1=FAV(fs)->valencefns[0];   // pointer to function to call
  A virtw; I flags;  // flags are: ACINPLACE=pristine result; JTWILLBEOPENED=nonrecursive result; BOX=input was boxed; ACPERMANENT=input was inplaceable pristine, contents can be inplaced
  // If the result will be immediately unboxed, we create a NONrecursive result and we can store virtual blocks in it.  This echoes what result.h does.
