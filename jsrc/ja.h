@@ -324,7 +324,7 @@
 #define fmtcomma(x0,x1,x2,x3)       jtfmtcomma(jt,(x0),(x1),(x2),(x3))
 
 #define fmtex(x0,x1,x2,x3,x4,x5,x6,x7)              jtfmtex(jt,(x0),(x1),(x2),(x3),(x4),(x5),(x6),(x7))
-#define fmtprecomp(x,y)             jtfmtprecomp(jt,(x),(y))
+
 #define fmtq(x0,x1,x2,x3,x4,x5)     jtfmtq(jt,(x0),(x1),(x2),(x3),(x4),(x5))
 #define fmtx(x0,x1,x2,x3,x4,x5)     jtfmtx(jt,(x0),(x1),(x2),(x3),(x4),(x5))
 #define fmtxi(x0,x1,x2,x3)          jtfmtxi(jt,(x0),(x1),(x2),(x3))

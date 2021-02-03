@@ -534,7 +534,7 @@ static A jtfmtxi(J jt, A a, A w, I mode, I *omode){I lvl;
  } else {
   if(XNUM+RAT+CMPX&AT(w))RZ(w=jtcvt(jt,FL,w));
   *omode=mode;
-  return fmtallcol(fmtprecomp(rank1ex0(a,UNUSED_VALUE,jtfmtparse),w),w,mode);
+  return fmtallcol(jtfmtprecomp(jt,rank1ex0(a,UNUSED_VALUE,jtfmtparse),w),w,mode);
 }} /* 8!:x internals */
   /* mode is the requested mode, *omode is the actual mode computed */
   /* mode is 0, 1, or 2 for 8!:0, 8!:1, or 8!:2                     */
