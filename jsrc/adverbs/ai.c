@@ -312,7 +312,7 @@ A jtinv(J jt, A w, I recur){A f,ff,g;B b,nf,ng,vf,vg;C id;I p,q;V*v;
  // But only fix once, at the top recursion level, (1) to avoid an infinite loop if
  // there is a circular reference that leaves names in the fixed form of w; (2) to avoid
  // repeated fixing of lower branches, which will only be tried again when higher levels are fixed
- if(!recur&&!nameless(w))return invrecur(fix(w,zeroionei(0)));
+ if(!recur&&!nameless(w))return invrecur(jtfix(jt,w,zeroionei(0)));
  ASSERT(0,EVDOMAIN);
 }
 
@@ -332,7 +332,7 @@ static A jtneutral(J jt, A w){A x,y;B b;V*v;
 }    /* neutral of arbitrary rank-0 function */
 
  A jtiden(J jt, A w){A f,g,x=0;V*u,*v;
- RZ(w=fix(w,zeroionei(0))); ASSERT(VERB&AT(w),EVDOMAIN);
+ RZ(w=jtfix(jt,w,zeroionei(0))); ASSERT(VERB&AT(w),EVDOMAIN);
  v=FAV(w); f=v->fgh[0]; g=v->fgh[1];
  switch(v->id){
   default:      RZ(x=neutral(w)); break;
@@ -373,7 +373,7 @@ static A jtneutral(J jt, A w){A x,y;B b;V*v;
 }
 
  A jtidensb(J jt, A w){A f,g,x=0,w0=w;V*v;
- RZ(w=fix(w,zeroionei(0))); ASSERT(VERB&AT(w),EVDOMAIN);
+ RZ(w=jtfix(jt,w,zeroionei(0))); ASSERT(VERB&AT(w),EVDOMAIN);
  v=FAV(w); f=v->fgh[0]; g=v->fgh[1];
  switch(v->id){
   default:      return iden(w0);

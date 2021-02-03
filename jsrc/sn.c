@@ -81,7 +81,7 @@ A jtnfs(J jt,I n,C*s){A z;C f,*t;I m,p;NM*zv;
 A jtsfn(J jt,B b,A w){NM*v; v=NAV(w); return str(b&SFNSIMPLEONLY?v->m:AN(w),v->s);}
 
 // string from name evocation: returns string for name UNLESS the name was an NMDOT type; in that case it returns w f. which will be a verb
-A jtsfne(J jt,A w){ A wn=FAV(w)->fgh[0]; if(AT(wn)&NAMEBYVALUE)return fix(w,zeroionei(0)); return sfn(0,wn);}
+A jtsfne(J jt,A w){ A wn=FAV(w)->fgh[0]; if(AT(wn)&NAMEBYVALUE)return jtfix(jt,w,zeroionei(0)); return sfn(0,wn);}
 
 
  A jtnfb(J jt, A w){A y;C*s;I n;

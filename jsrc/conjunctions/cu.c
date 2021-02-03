@@ -237,8 +237,8 @@ A jtevery2(J jt, A a, A w, A fs){A*av,*wv,x,z,*zv;
 // u&.v
 // PUSH/POP ZOMB is performed in atop/amp/ampco
 // under is for when we could not precalculate the inverse.  The verb is in localuse
-static A jtunder1(J jt,    A w,A self){F1PREFIP;DECLFG;A fullf; RZ(fullf=jtatop(jt,invrecur(fix(sv->localuse.lvp[0],sc(FIXASTOPATINV))),sv->fgh[2])); return (FAV(fullf)->valencefns[0])(FAV(fullf)->flag&VJTFLGOK1?jtinplace:jt,w,fullf);}
-static A jtunder2(J jt,A a,A w,A self){F2PREFIP;DECLFG;A fullf; RZ(fullf=jtatop(jt,invrecur(fix(sv->localuse.lvp[0],sc(FIXASTOPATINV))),sv->fgh[2])); return (FAV(fullf)->valencefns[1])(FAV(fullf)->flag&VJTFLGOK2?jtinplace:jt,a,w,fullf);}
+static A jtunder1(J jt,    A w,A self){F1PREFIP;DECLFG;A fullf; RZ(fullf=jtatop(jt,invrecur(jtfix(jt,sv->localuse.lvp[0],sc(FIXASTOPATINV))),sv->fgh[2])); return (FAV(fullf)->valencefns[0])(FAV(fullf)->flag&VJTFLGOK1?jtinplace:jt,w,fullf);}
+static A jtunder2(J jt,A a,A w,A self){F2PREFIP;DECLFG;A fullf; RZ(fullf=jtatop(jt,invrecur(jtfix(jt,sv->localuse.lvp[0],sc(FIXASTOPATINV))),sv->fgh[2])); return (FAV(fullf)->valencefns[1])(FAV(fullf)->flag&VJTFLGOK2?jtinplace:jt,a,w,fullf);}
 // underh has the inverse precalculated, and the inplaceability set from it.  It handles &. and &.: which differ only in rank
 static A jtunderh1(J jt,    A w,A self){F1PREFIP;DECLFGH; return (FAV(hs)->valencefns[0])(jtinplace,w,hs);}
 static A jtunderh2(J jt,A a,A w,A self){F2PREFIP;DECLFGH; return (FAV(hs)->valencefns[1])(jtinplace,a,w,hs);}

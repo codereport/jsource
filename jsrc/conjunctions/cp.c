@@ -193,7 +193,7 @@ static A jtpinf12(J jt,A a,A w,A self){PROLOG(0340);A z;  // no reason to inplac
  }
 }
 
-static A jtinv1(J jt,    A w,A self){F1PREFIP;DECLFG;A z;A i; RZ(i=inv((fs))); FDEPINC(1);  z=(FAV(i)->valencefns[0])(FAV(i)->flag&VJTFLGOK1?jtinplace:jt,w,i);       FDEPDEC(1); return z;}  // was invrecur(fix(fs))
+static A jtinv1(J jt,    A w,A self){F1PREFIP;DECLFG;A z;A i; RZ(i=inv((fs))); FDEPINC(1);  z=(FAV(i)->valencefns[0])(FAV(i)->flag&VJTFLGOK1?jtinplace:jt,w,i);       FDEPDEC(1); return z;}  // was invrecur(jtfix(jt,fs))
 static A jtinvh1(J jt,    A w,A self){F1PREFIP;DECLFGH;A z;    FDEPINC(1); z=(FAV(hs)->valencefns[0])(jtinplace,w,hs);        FDEPDEC(1); return z;}
 static A jtinv2(J jt,A a,A w,A self){DECLFG;A z; FDEPINC(1); df1(z,w,inv(jtamp(jt,a,fs))); FDEPDEC(1); STACKCHKOFL return z;}  // the CHKOFL is to avoid tail recursion, which prevents a recursion loop from being broken
 static A jtinverr(J jt,    A w,A self){F1PREFIP;ASSERT(0,EVDOMAIN);}  // used for uninvertible monads
