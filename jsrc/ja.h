@@ -332,7 +332,7 @@
 #define fnegate(x)                  jtfnegate(jt,(x))
 #define fnum(x)                     jtfnum(jt,(x))
 #define folk(x,y,z)                 jtfolk(jt,(x),(y),(z))
-#define fong(x,y)                   jtfong(jt,(x),(y))
+
 #define foreign(x,y)                jtforeign(jt,(x),(y))
 #define forinit(x,y)                jtforinit(jt,(x),(y))
 #define fplus(x,y)                  jtfplus(jt,(x),(y))

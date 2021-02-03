@@ -21,12 +21,12 @@ static B consf(A w){A f;C c;
 
 static A jtfong(J jt,A a,A w){A f;C c;V*v;
  v=FAV(a); c=v->id; f=v->fgh[0];
- return c==CRIGHT ? w : c==CFORK&&(NOUN&AT(f)||CCAP==ID(f)) ? folk(f,v->fgh[1],fong(v->fgh[2],w)) : folk(ds(CCAP),a,w);
+ return c==CRIGHT ? w : c==CFORK&&(NOUN&AT(f)||CCAP==ID(f)) ? folk(f,v->fgh[1],jtfong(jt,v->fgh[2],w)) : folk(ds(CCAP),a,w);
 }   // [: f g  with simplifications: [: ] w -> w;  [: (N/[: x y) w -> N/[: x [: y w   and y omittrd if ]
 
 static A jtinvfork(J jt, A w){A f,fi,g,gi,h,k;B b,c;V*v;
  v=FAV(w); RZ(f=unname(v->fgh[0])); g=v->fgh[1]; RZ(h=unname(v->fgh[2]));
- if(CCAP==ID(f))return fong(invrecur(h),invrecur(g));
+ if(CCAP==ID(f))return jtfong(jt,invrecur(h),invrecur(g));
  c=1&&NOUN&AT(f); b=c||consf(f);
  ASSERT(b!=consf(h),EVDOMAIN);
  RZ(k=c?f:df1(gi,num(0),b?f:h));
@@ -37,7 +37,7 @@ static A jtinvfork(J jt, A w){A f,fi,g,gi,h,k;B b,c;V*v;
   if     (NOUN&AT(v->fgh[0]))RZ(gi=folk(v->fgh[0],     v->fgh[1], ds(CRIGHT)))
   else if(NOUN&AT(v->fgh[1]))RZ(gi=folk(v->fgh[1],swap(v->fgh[0]),ds(CRIGHT)));
  }
- return fong(fi,gi);
+ return jtfong(jt,fi,gi);
 }
 
 static A jtexpandf(J jt,    A w,A self){A f; f=FAV(self)->fgh[0]; return jtexpand(jt,VAV(f)->fgh[0],w);}

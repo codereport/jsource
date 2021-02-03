@@ -99,3 +99,4 @@
 |`jsrc\xenos\xfmt.c`|fmt22|jtfmt22|`(^\|[ \t]+\|[^\d\w_])fmt22\((?=([^,]+?),([^)]+?)\))`|`\1jtfmt22(jt,`|
 |`jsrc\format\f.c`|fmtD|jtfmtD|`(^\|[ \t]+\|[^\d\w_])fmtD\((?=([^,]+?),([^)]+?)\))`|`\1jtfmtD(jt,`|
 |`jsrc\xenos\xfmt.c`|fmtprecomp|jtfmtprecomp|`(^\|[ \t]+\|[^\d\w_])fmtprecomp\((?=([^,]+?),([^)]+?)\))`|`\1jtfmtprecomp(jt,`|
+|`jsrc\adverbs\ai.c`|fong|jtfong|`(^\|[ \t]+\|[^\d\w_])fong\((?=([^,]+?),([^)]+?)\))`|`\1jtfong(jt,`|
