@@ -12,13 +12,13 @@ static A jtfromis1(J jt,A ind,A w,A z,I wf){A a,a1,j1,p,q,x,x1,y,y1;C*xu,*xuu,*x
  // figure the axes of the result.  wf is the number of axes before the axis of the selection, i. e. the axis number of the selection.
  // That axis is replaced by axes coming from the shape of ind.  Set h to the index of the sparse axis that is being selected on
  a=SPA(wp,a); an=AN(a); av=AV(a); DO(an, if(wf==av[i]){h=i; break;});  // an=#sparse axes
- y=SPA(wp,i); RZ(q=jteps(jt,fromr(sc(h),y),ravel(ind))); RZ(y=repeat(q,y)); RZ(x=repeat(q,SPA(wp,x)));  // (h{"_ 1 indexes) e. ,ind
+ y=SPA(wp,i); RZ(q=jteps(jt,jtfromr(jt,sc(h),y),ravel(ind))); RZ(y=repeat(q,y)); RZ(x=repeat(q,SPA(wp,x)));  // (h{"_ 1 indexes) e. ,ind
  GATV0(a1,INT,r+an-1,1); v=AV(a1); SPB(zp,a,a1);
  k=av[h]; u=av; DQ(h, *v++=*u++;); DQ(r, *v++=k++;); u++; DQ(an-1-h, *v++=*u+++r-1;);
  if(!r) 
-  if(AR(z)){GATV0(q,INT,an-1,1); v=AV(q); DO(an, if(i!=h)*v++=i;); SPB(zp,i,fromr(q,y)); SPB(zp,x,x); return z;}
+  if(AR(z)){GATV0(q,INT,an-1,1); v=AV(q); DO(an, if(i!=h)*v++=i;); SPB(zp,i,jtfromr(jt,q,y)); SPB(zp,x,x); return z;}
   else return reshape(mtv,AN(x)?x:SPA(zp,e));
- if(h){q=grade1(fromr(sc(h),y)); RZ(y=ifrom(q,y)); RZ(x=ifrom(q,x));}
+ if(h){q=grade1(jtfromr(jt,sc(h),y)); RZ(y=ifrom(q,y)); RZ(x=ifrom(q,x));}
  RZ(q=odom(2L,r,AS(ind))); iv=AV(q);
  m=*AS(y); s=0; j=-1; u=h+AV(y); v=u+an;
  GATV0(p,INT,m,1); pv=AV(p); memset(pv,CFF,SZI*m);
@@ -87,7 +87,7 @@ A jtfrombsn(J jt,A ind,A w,I wf){A a,j1,p,q,x,x1,y,y1,ys,z;C*xu,*xuu,*xv;
  if( !qq){SPB(zp,i,ca(y)); SPB(zp,x,frombu(ind,x,AR(x)-(wr-wf-rr))); return z;}
  if(h>qq){q=nub(over(a,apv(h,wf,1L))); return frombsn(ind,reaxis(grade2(q,q),w),wf);}
  if(1<r)RZ(ind=reshape(v2(n,h),ind)); 
- RZ(ys=fromr(indexof(a,apv(h,wf,1L)),y));
+ RZ(ys=jtfromr(jt,indexof(a,apv(h,wf,1L)),y));
  RZ(q=jteps(jt,ys,ind)); 
  if(!all1(q)){RZ(ys=repeat(q,ys)); RZ(y=repeat(q,y)); RZ(x=repeat(q,x));}
  if(wf){q=grade1(ys); RZ(ys=ifrom(q,ys)); RZ(y=ifrom(q,y)); RZ(x=ifrom(q,x));}

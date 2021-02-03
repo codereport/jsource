@@ -107,3 +107,7 @@
 |`jsrc\adverbs\a.c` `jsrc\adverbs\ab.c` `jsrc\adverbs\am.c` `jsrc\adverbs\am1.c` `jsrc\adverbs\amn.c` `jsrc\adverbs\ao.c` `jsrc\adverbs\ap.c` `jsrc\adverbs\ar.c` `jsrc\adverbs\as.c` `jsrc\conjunctions\cc.c` `jsrc\conjunctions\cg.c` `jsrc\conjunctions\ch.c` `jsrc\conjunctions\cp.c` `jsrc\conjunctions\cpdtsp.c` `jsrc\conjunctions\crs.c` `jsrc\conjunctions\cu.c` `jsrc\conjunctions\cx.c` `jsrc\debugging\dc.c` `jsrc\parsing\p.c` `jsrc\representations\rl.c` `jsrc\verbs\v.c` `jsrc\verbs\v0.c` `jsrc\verbs\v1.c` `jsrc\verbs\v2.c` `jsrc\verbs\vcant.c` `jsrc\verbs\vcat.c` `jsrc\verbs\vf.c` `jsrc\verbs\vfrom.c` `jsrc\verbs\vg.c` `jsrc\verbs\vgsp.c` `jsrc\verbs\vp.c` `jsrc\verbs\vrep.c` `jsrc\verbs\vs.c` `jsrc\verbs\vt.c` `jsrc\words\w.c`|from|jtfrom|`(^\|[ \t]+\|[^\d\w_])from\((?=([^,]+?),([^)]+?)\))`|`\1jtfrom(jt,`|
 |`jsrc\verbs\vfrom.c`|frombs|jtfrombs|`(^\|[ \t]+\|[^\d\w_])frombs\((?=([^,]+?),([^)]+?)\))`|`\1jtfrombs(jt,`|
 |`jsrc\verbs\vfrom.c`|fromis|jtfromis|`(^\|[ \t]+\|[^\d\w_])fromis\((?=([^,]+?),([^)]+?)\))`|`\1jtfromis(jt,`|
+|`jsrc\verbs\vcant.c`|fromr|jtfromr|`(^\|[ \t]+\|[^\d\w_])fromr\((?=([^,]+?),([^)]+?)\))`|`\1jtfromr(jt,`|
+|`jsrc\verbs\vfromsp.c`|fromr|jtfromr|`(^\|[ \t]+\|[^\d\w_])fromr\((?=([^,]+?),([^)]+?)\))`|`\1jtfromr(jt,`|
+|`jsrc\verbs\vrep.c`|fromr|jtfromr|`(^\|[ \t]+\|[^\d\w_])fromr\((?=([^,]+?),([^)]+?)\))`|`\1jtfromr(jt,`|
+|`jsrc\verbs\vs.c`|fromr|jtfromr|`(^\|[ \t]+\|[^\d\w_])fromr\((?=([^,]+?),([^)]+?)\))`|`\1jtfromr(jt,`|

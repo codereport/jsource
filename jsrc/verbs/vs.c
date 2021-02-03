@@ -187,13 +187,13 @@ A jtsparseit(J jt,A w,A a,A e){PROLOG(0091);A ax,c,x,y,z;B b,*cv;I cm,cn,m,n,r,*
   RZ(y=stitch(repeat(sc(c),y),reshape(v2(c*m,k),jtabase2(jt,vec(INT,k,v),IX(c)))));
   RZ(p=grade1(over(a,less(a1,a))));
   if(equ(p,IX(AN(p))))SPB(zp,i,repeat(q,y))
-  else{y=fromr(p,repeat(q,y)); q=grade1(y); SPB(zp,i,jtfrom(jt,q,y)); SPB(zp,x,jtfrom(jt,q,x));}
+  else{y=jtfromr(jt,p,repeat(q,y)); q=grade1(y); SPB(zp,i,jtfrom(jt,q,y)); SPB(zp,x,jtfrom(jt,q,x));}
   return z;
  }
  if(all1(jteps(jt,a1,a))){A x1,y1;B*pv;C*s,*t;I g,h,*iv,n;  /* new is subset of old */
   c=AN(a); d=AN(a1);
   RZ(p=jteps(jt,a,a1));
-  RZ(y=fromr(dgrade1(p),y)); 
+  RZ(y=jtfromr(jt,dgrade1(p),y)); 
   RZ(q=grade1(y)); RZ(y=jtfrom(jt,q,y)); RZ(x=jtfrom(jt,q,x));
   GATV0(q,B01,m,1); b=BAV(q); n=0;
   if(m){b[m-1]=1; n=1; u=AV(y); DO(m-1, if(b[i]=1&&ICMP(u,u+c,d))++n; u+=c;);} 
@@ -236,7 +236,7 @@ static A jtaxbytes(J jt,A a,A w){A a1,e,p,q,x;B*b;I c,d,j,m,n=0,r,*u,*v,*ws,wt;P
   return axbytes1(AT(e),d,n,j,u);
  }
  if(all1(jteps(jt,a1,a))){A y=SPA(wp,i);   /* new is subset of old */
-  RZ(y=fromr(indexof(a,a1),y)); 
+  RZ(y=jtfromr(jt,indexof(a,a1),y)); 
   RZ(y=grade2(y,y));
   if(m=*AS(y)){n=1; u=AV(y); DQ(m-1, if(ICMP(u,u+d,d))++n; u+=d;);} 
   RZ(p=over(less(a,a1),jtdaxis(jt,r,a))); v=AV(p);
@@ -260,7 +260,7 @@ static A jtaxtally(J jt,A a,A w){A a1,e,p,q,x;B*b;I c,d,j,m,n=0,r,*u,*v,*ws,wt;P
   return sc(n);
  }
  if(all1(jteps(jt,a1,a))){A y=SPA(wp,i);   /* new is subset of old */
-  RZ(y=fromr(indexof(a,a1),y)); 
+  RZ(y=jtfromr(jt,indexof(a,a1),y)); 
   RZ(y=grade2(y,y));
   if(m=*AS(y)){n=1; u=AV(y); DQ(m-1, if(ICMP(u,u+d,d))++n; u+=d;);} 
   return sc(n);

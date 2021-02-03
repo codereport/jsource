@@ -124,7 +124,7 @@ static A jtrepbsx(J jt,A a,A w,I wf,I wcr){A ai,c,d,e,g,q,x,wa,wx,wy,y,y1,z,zy;B
  RZ(q=jtaslash(jt,CPLUS,a));
  GASPARSE(z,AT(w),1,AR(w),AS(w)); *(wf+AS(z))=m=*AV(q);
  RZ(c=indexof(wa,sc(wf)));
- RZ(y1=fromr(c,wy));
+ RZ(y1=jtfromr(jt,c,wy));
  RZ(q=__not(jteps(jt,y1,ravel(repeat(__not(x),y)))));
  m=AS(a)[0]-m;
  GATV0(ai,INT,m,1); v=AV(ai); DO(n, if(!*b++)*v++=u[i];);
