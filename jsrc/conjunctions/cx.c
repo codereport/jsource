@@ -302,7 +302,7 @@ tblockcase:
    // execute and parse line as if for B block, except save the result in t
    // If there is a possibility that the previous B result may become the result of this definition,
    // protect it during the frees during the T block.  Otherwise, just free memory
-   if(ci->canend&2)tpop(old);else z=gc(z,old);   // 2 means previous B can't be the result
+   if(ci->canend&2)tpop(old);else z=jtgc(jt,z,old);   // 2 means previous B can't be the result
    parseline(t);
    // Check for assert.  Since this is only for T-blocks we tolerate the test (rather than duplicating code)
    if(ci->type==CASSERT&&jt->assert&&t&&!(NOUN&AT(t)&&all1(eq(num(1),t))))t=pee(line,ci,EVASSERT,gsfctdl<<(BW-2),callframe);  // if assert., signal post-execution error if result not all 1s.  May go into debug; sets to result after debug

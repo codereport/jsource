@@ -117,7 +117,7 @@ static A jtinsert(J jt,    A w,A self){A hs,*hv,z;I hfx,j,m,n;A *old;
  if(!n)return df1(z,w,iden(*hv));
  RZ(z=jtfrom(jt,num(-1),w));
  old=jt->tnextpushp;
- --m; DQ(n-1, --j; --hfx; hfx=(hfx<0)?m:hfx; RZ(z=CALL2(FAV(hv[hfx])->valencefns[1],jtfrom(jt,sc(j),w),z,hv[hfx])); z=gc(z,old);)
+ --m; DQ(n-1, --j; --hfx; hfx=(hfx<0)?m:hfx; RZ(z=CALL2(FAV(hv[hfx])->valencefns[1],jtfrom(jt,sc(j),w),z,hv[hfx])); z=jtgc(jt,z,old);)
  return z;
 }
 

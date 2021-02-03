@@ -161,7 +161,7 @@ static A jtredg(J jt,    A w,A self){F1PREFIP;PROLOG(0020);DECLF;AD * RESTRICT a
   if(--i==0)break;   // stop housekeeping after last iteration
   // if w happens to be the same virtual block that we passed in as x, we have to clone it before we change the pointer
   if(a==wfaux){RZ(wfaux=virtual(wfaux,0,AR(a))); AN(wfaux)=AN(a); MCISH(AS(wfaux),AS(a),AR(a));}
-  if(--freephase==0){wfaux=gc(wfaux,old); freephase=freedist;}   // free the buffers we allocated, except for the result
+  if(--freephase==0){wfaux=jtgc(jt,wfaux,old); freephase=freedist;}   // free the buffers we allocated, except for the result
   // move to next input cell
   AK(a) -= k;
  }

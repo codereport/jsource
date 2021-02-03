@@ -126,3 +126,11 @@
 |`jsrc\conjunctions\cr.c`|fxeachv|jtfxeachv|`(^\|[ \t]+\|[^\d\w_])fxeachv\((?=([^,]+?),([^)]+?)\))`|`\1jtfxeachv(jt,`|
 |`jsrc\adverbs\am.c`|gadv|jtgadv|`(^\|[ \t]+\|[^\d\w_])gadv\((?=([^,]+?),([^)]+?)\))`|`\1jtgadv(jt,`|
 |`jsrc\xenos\x15.c`|gah|jtgah|`(^\|[ \t]+\|[^\d\w_])gah\((?=([^,]+?),([^)]+?)\))`|`\1jtgah(jt,`|
+|`jsrc\j.h`|gc|jtgc|`(^\|[ \t]+\|[^\d\w_])gc\((?=([^,]+?),([^)]+?)\))`|`\1jtgc(jt,`|
+|`jsrc\m.c`|gc|jtgc|`(^\|[ \t]+\|[^\d\w_])gc\((?=([^,]+?),([^)]+?)\))`|`\1jtgc(jt,`|
+|`jsrc\adverbs\ar.c`|gc|jtgc|`(^\|[ \t]+\|[^\d\w_])gc\((?=([^,]+?),([^)]+?)\))`|`\1jtgc(jt,`|
+|`jsrc\conjunctions\cg.c`|gc|jtgc|`(^\|[ \t]+\|[^\d\w_])gc\((?=([^,]+?),([^)]+?)\))`|`\1jtgc(jt,`|
+|`jsrc\conjunctions\cp.c`|gc|jtgc|`(^\|[ \t]+\|[^\d\w_])gc\((?=([^,]+?),([^)]+?)\))`|`\1jtgc(jt,`|
+|`jsrc\conjunctions\cx.c`|gc|jtgc|`(^\|[ \t]+\|[^\d\w_])gc\((?=([^,]+?),([^)]+?)\))`|`\1jtgc(jt,`|
+|`jsrc\verbs\v2.c`|gc|jtgc|`(^\|[ \t]+\|[^\d\w_])gc\((?=([^,]+?),([^)]+?)\))`|`\1jtgc(jt,`|
+|`jsrc\verbs\vfromsp.c`|gc|jtgc|`(^\|[ \t]+\|[^\d\w_])gc\((?=([^,]+?),([^)]+?)\))`|`\1jtgc(jt,`|

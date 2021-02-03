@@ -348,9 +348,9 @@ void jtfh(J jt,A w){fr(w);}
 
 // overview of the usecount routines
 //
-// gc() protects a result, and pops the stack.  It preserves inplacing and virtuality if possible.  It cannot be used on blocks
+// jtgc(jt,) protects a result, and pops the stack.  It preserves inplacing and virtuality if possible.  It cannot be used on blocks
 //   that contain contents younger than the block
-// gc3() is a simple-minded gc() that works on all blocks, and can handle up to 3 at a time.
+// gc3() is a simple-minded jtgc(jt,) that works on all blocks, and can handle up to 3 at a time.
 // virtual() creates a virtual block that refers to a part of another block.  It looks at the inplacing flags to see if it can get away with modifying the
 //    block given rather than creating a new one
 // realize() creates a real block that has the contents referred to by a virtual block
@@ -527,7 +527,7 @@ A jtgc (J jt,A w,A* old){
  // we push it again here.  In any case, if the input was inplaceable, so is the result.
  // If w was virtual, it cannot have been inplaceable, and will always go through the tpush path, whether it was realized or not
  //
- // NOTE: certain functions (ex: rational determinant) perform operations 'in place' on non-direct names and then protect those names using gc().  The protection is
+ // NOTE: certain functions (ex: rational determinant) perform operations 'in place' on non-direct names and then protect those names using jtgc(jt,).  The protection is
  // ineffective if the code goes through the fa() path here, because components that were modified will be freed immediately rather than later.  In those places we
  // must either use gc3() which always does the tpush, or do ACIPNO to force us through the tpush path here.  We generally use gc3().
  // Since w now has recursive usecounts (except for sparse, which is never inplaceable), we don't have to do a full fa() on a block that is returning
@@ -610,7 +610,7 @@ I jtfa(J jt,AD* RESTRICT wd,I t){I n=AN(wd);
 // Result is new value of jt->tnextpushp, or 0 if error
 // Note: wd CANNOT be virtual
 // tpush, the macro parent of this routine, calls here only if a nonrecursive block is pushed.  This never happens for
-// non-sparse nouns, because they always go through ra() somewhere before the tpush().  Pushing is mostly in gc() and on allocation in ga().
+// non-sparse nouns, because they always go through ra() somewhere before the tpush().  Pushing is mostly in jtgc(jt,) and on allocation in ga().
 A *jttpush(J jt,AD* RESTRICT wd,I t,A *pushp){I af=AFLAG(wd); I n=AN(wd);
  if(t&BOX){
 // THIS CODE IS NEVER EXECUTED

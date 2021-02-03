@@ -534,9 +534,9 @@ if(_i<3){_zzt+=_i; z=(I)&oneone; _zzt=_i>=1?_zzt:(I*)z; z=_i>1?(I)_zzt:z; z=((I*
 // by the next-higher-level function.  Thus, when X calls Y inside PROLOG/EPILOG, the result of Y (which is an A block), has the same viability as any other GA executed in X
 // (unless its usecount is > 1 because it was assigned elsewhere)
 #define PROLOG(x)       A *_ttop=jt->tnextpushp
-#define EPILOGNORET(z) (gc(z,_ttop))   // protect z and return its address
+#define EPILOGNORET(z) (jtgc(jt,z,_ttop))   // protect z and return its address
 #define EPILOG(z)       return EPILOGNORET(z)   // z is the result block
-#define EPILOGNOVIRT(z)       return rifvsdebug((gc(z,_ttop)))   // use this when the repercussions of allowing virtual result are too severe
+#define EPILOGNOVIRT(z)       return rifvsdebug((jtgc(jt,z,_ttop)))   // use this when the repercussions of allowing virtual result are too severe
 #define EPILOGZOMB(z)       if(!gc3(&(z),0L,0L,_ttop))return 0; return z;   // z is the result block.  Use this if z may contain inplaceable contents that would free prematurely
 // Routines that do little except call a function that does PROLOG/EPILOG have EPILOGNULL as a placeholder
 // Routines that do not return A

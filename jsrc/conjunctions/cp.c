@@ -83,7 +83,7 @@ static A jtfpown(J jt,    A w,A self){A fs,z;AF f1;I n;V*sv;A *old;
  fs=sv->fgh[0]; f1=FAV(fs)->valencefns[0];
  z=w; 
  old=jt->tnextpushp; 
- DQ(n, JBREAK0; RZ(z=CALL1IP(f1,z,fs)); z=gc(z,old);); // could force inplace after the first?
+ DQ(n, JBREAK0; RZ(z=CALL1IP(f1,z,fs)); z=jtgc(jt,z,old);); // could force inplace after the first?
  return z;
 // }
 }
