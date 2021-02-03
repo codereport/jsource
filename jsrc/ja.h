@@ -318,7 +318,7 @@
 
 #define fmt1(x0,x1,x2,x3,x4,x5)     jtfmt1(jt,(x0),(x1),(x2),(x3),(x4),(x5))
 
-#define fmt22(x,y)                  jtfmt22(jt,(x),(y))
+
 #define fmtallcol(x,y,z)            jtfmtallcol(jt,(x),(y),(z))
 #define fmtbfc(x)                   jtfmtbfc(jt,(x))
 #define fmtcomma(x0,x1,x2,x3)       jtfmtcomma(jt,(x0),(x1),(x2),(x3))
