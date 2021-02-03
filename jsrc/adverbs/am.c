@@ -384,7 +384,7 @@ B jtgerexact(J jt, A w){A*wv;
 // u} handling.  This is not inplaceable but the derived verb is
  A jtamend(J jt, A w){
  if(VERB&AT(w)) return ADERIV(CRBRACE,mergv1,amccv2,VASGSAFE|VJTFLGOK2, RMAX,RMAX,RMAX);  // verb}
- else if(ger(w))return gadv(w,CRBRACE);   // v0`v1`v2}
+ else if(ger(w))return jtgadv(jt,w,CRBRACE);   // v0`v1`v2}
  else           return ADERIV(CRBRACE,mergn1,jtamendn2,VASGSAFE|VJTFLGOK2, RMAX,RMAX,RMAX);  // m}
 }
 

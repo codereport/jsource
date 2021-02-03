@@ -124,3 +124,4 @@
 |`jsrc\conjunctions\cc.c`|fxeachv|jtfxeachv|`(^\|[ \t]+\|[^\d\w_])fxeachv\((?=([^,]+?),([^)]+?)\))`|`\1jtfxeachv(jt,`|
 |`jsrc\conjunctions\cg.c`|fxeachv|jtfxeachv|`(^\|[ \t]+\|[^\d\w_])fxeachv\((?=([^,]+?),([^)]+?)\))`|`\1jtfxeachv(jt,`|
 |`jsrc\conjunctions\cr.c`|fxeachv|jtfxeachv|`(^\|[ \t]+\|[^\d\w_])fxeachv\((?=([^,]+?),([^)]+?)\))`|`\1jtfxeachv(jt,`|
+|`jsrc\adverbs\am.c`|gadv|jtgadv|`(^\|[ \t]+\|[^\d\w_])gadv\((?=([^,]+?),([^)]+?)\))`|`\1jtgadv(jt,`|
