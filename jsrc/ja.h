@@ -402,7 +402,7 @@
 
 #define hiau(x)                     jthiau(jt,(x))
 #define hid(x)                      jthid(jt,(x))
-#define hook(x,y)                   jthook(jt,(x),(y))
+
 #define hook1(x,y)                  jthook1(jt,(x),(y))
 #define hostio(x)                   jthostio(jt,(x))
 #define hparm(x,y,z)                jthparm(jt,(x),(y),(z))

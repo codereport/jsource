@@ -119,7 +119,7 @@ RECURSIVERESULTSCHECK
 }
 
 static PSTK* jtphook(J jt,PSTK *stack){
- A y=hook(stack[1].a,stack[2].a);  // create the hook
+ A y=jthook(jt,stack[1].a,stack[2].a);  // create the hook
 RECURSIVERESULTSCHECK
  RZ(y);  // if error, return 0 stackpointer
  PTFROMTYPE(stack[2].pt,AT(y)) stack[2].t = stack[1].t; stack[2].a = y;  // take err tok from f; save result

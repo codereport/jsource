@@ -176,7 +176,7 @@ static A jtinvamp(J jt, A w){A f,ff,g,h,x,y;B nf,ng;C c,d,*yv;I n;V*u,*v;
    f=jtamp(jt,mag(x),ds(CPLUS));
    g=1==AN(x)?ds(CPOUND):jtatop(jt,jtamp(jt,tally(jt, x),ds(CTAKE)),ds(CDOLLAR));
    h=!yv[1]?f:jtatop(jt,!yv[0]?ds(CMINUS):jtamp(jt,negate(signum(x)),ds(CSTAR)),f);
-   return obverse(hook(swap(ds(CTAKE)),jtatop(jt,h,g)),w);
+   return obverse(jthook(jt,swap(ds(CTAKE)),jtatop(jt,h,g)),w);
   case CDOMINO:
    if(!(2==AR(x)&&*AS(x)==*(1+AS(x))))break;
    ff=eval("+/ .*");
@@ -189,7 +189,7 @@ static A jtinvamp(J jt, A w){A f,ff,g,h,x,y;B nf,ng;C c,d,*yv;I n;V*u,*v;
    }
    break;
   case CQQ:
-   if(ng&&equ(x,num(1))&&equ(f,eval("i.\"1")))return hook(ds(CFROM),ds(CEQ));
+   if(ng&&equ(x,num(1))&&equ(f,eval("i.\"1")))return jthook(jt,ds(CFROM),ds(CEQ));
    break;
   case CBSLASH:
    if(nf&&(n=i0(x),0>n)&&(d=ID(u->fgh[0]),(d&-2)==CLEFT))return slash(ds(CCOMMA));  // LEFT || RIGHT

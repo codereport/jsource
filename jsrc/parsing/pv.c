@@ -150,7 +150,7 @@ static I jtdcase(J jt,I xi,V*v){
 
  TA jtvfolk(J jt,I b,I e,TA*stack,A locsyms,I tmonad,I tsubst,TA *ttab,I *ttabi,I ttabi0){TA z={0,0}; if(CHK3)z.a=folk(stack[b].a,stack[1+b].a,stack[e].a); return z;}
 
- TA jtvhook(J jt,I b,I e,TA*stack,A locsyms,I tmonad,I tsubst,TA *ttab,I *ttabi,I ttabi0){TA z={0,0}; if(CHK2)z.a=hook(stack[b].a,stack[e].a); return z;}
+ TA jtvhook(J jt,I b,I e,TA*stack,A locsyms,I tmonad,I tsubst,TA *ttab,I *ttabi,I ttabi0){TA z={0,0}; if(CHK2)z.a=jthook(jt,stack[b].a,stack[e].a); return z;}
 
  TA jtvpunc(J jt,I b,I e,TA*stack,A locsyms,I tmonad,I tsubst,TA *ttab,I *ttabi,I ttabi0){return stack[e-1];}
 

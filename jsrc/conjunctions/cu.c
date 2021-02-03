@@ -311,8 +311,8 @@ static A jtunderai1(J jt,    A w,A self){DECLF;A x,y,z;B b;I j,n,*u,*v;UC f[256]
  if(gside<0){h=jtamp(jt,a,wvb); rlr=rrr=rmr;  // normal case, f&g"mg
  }else{
   f1=jtdomainerr1;  // monad not allowed with gerund v
-  if(gside==0){rlr=rmr; rrr=(RANKT)FAV(a)->lrr; h=qq(swap(hook(swap(a),wvb)),v2(rlr,rrr));  // (f~ g)~"mw rf
-  }else{rlr=FAV(a)->lrr>>RANKTX; rrr=rmr; h=qq(hook(a,wvb),v2(rlr,rrr));  // (f g)"lf mg
+  if(gside==0){rlr=rmr; rrr=(RANKT)FAV(a)->lrr; h=qq(swap(jthook(jt,swap(a),wvb)),v2(rlr,rrr));  // (f~ g)~"mw rf
+  }else{rlr=FAV(a)->lrr>>RANKTX; rrr=rmr; h=qq(jthook(jt,a,wvb),v2(rlr,rrr));  // (f g)"lf mg
   }
  }
  ASSERT(h!=0,EVDOMAIN);
@@ -347,8 +347,8 @@ static A jtunderai1(J jt,    A w,A self){DECLF;A x,y,z;B b;I j,n,*u,*v;UC f[256]
  if(gside<0){h=jtampco(jt,a,wvb); // normal case, f&:g
  }else{
   f1=jtdomainerr1;  // monad not allowed with gerund v
-  if(gside==0){h=swap(hook(swap(a),wvb));  // (f~ g)~
-  }else{h=hook(a,wvb);  // (f g)
+  if(gside==0){h=swap(jthook(jt,swap(a),wvb));  // (f~ g)~
+  }else{h=jthook(jt,a,wvb);  // (f g)
   }
  }
  ASSERT(h!=0,EVDOMAIN);

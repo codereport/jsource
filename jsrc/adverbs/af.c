@@ -98,9 +98,9 @@ static A jtfixa(J jt,A a,A w){A f,g,h,wf,x,y,z=w;V*v;fauxblock(fauxself); A aa; 
    }
    else{f=REFIXA(1,f); g=REFIXA(2,g); return df2(z,f,g,wf);}  // v : v, similarly
   case CADVF:
-   f=REFIXA(3,f); g=REFIXA(3,g); return hook(f,g);
+   f=REFIXA(3,f); g=REFIXA(3,g); return jthook(jt,f,g);
   case CHOOK:
-   f=REFIXA(2,f); g=REFIXA(1,g); return hook(f,g);
+   f=REFIXA(2,f); g=REFIXA(1,g); return jthook(jt,f,g);
   case CFORK:
    f=REFIXA(na,f); g=REFIXA(ID(f)==CCAP?1:2,g); h=REFIXA(na,h); return folk(f,g,h);  // f first in case it's [:
   case CATDOT:

@@ -149,3 +149,9 @@
 |`jsrc\xenos\xo.c`|grade2|jtgrade2|`(^\|[ \t]+\|[^\d\w_])grade2\((?=([^,]+?),([^)]+?)\))`|`\1jtgrade2(jt,`|
 |`jsrc\verbs\vg.c`|grd2sp|jtgrd2sp|`(^\|[ \t]+\|[^\d\w_])grd2sp\((?=([^,]+?),([^)]+?)\))`|`\1jtgrd2sp(jt,`|
 |`jsrc\verbs\vi.c`|hia|jthia|`(^\|[ \t]+\|[^\d\w_])hia\((?=([^,]+?),([^)]+?)\))`|`\1jthia(jt,`|
+|`jsrc\adverbs\af.c`|hook|jthook|`(^\|[ \t]+\|[^\d\w_])hook\((?=([^,]+?),([^)]+?)\))`|`\1jthook(jt,`|
+|`jsrc\adverbs\ai.c`|hook|jthook|`(^\|[ \t]+\|[^\d\w_])hook\((?=([^,]+?),([^)]+?)\))`|`\1jthook(jt,`|
+|`jsrc\conjunctions\cu.c`|hook|jthook|`(^\|[ \t]+\|[^\d\w_])hook\((?=([^,]+?),([^)]+?)\))`|`\1jthook(jt,`|
+|`jsrc\parsing\p.c`|hook|jthook|`(^\|[ \t]+\|[^\d\w_])hook\((?=([^,]+?),([^)]+?)\))`|`\1jthook(jt,`|
+|`jsrc\parsing\pv.c`|hook|jthook|`(^\|[ \t]+\|[^\d\w_])hook\((?=([^,]+?),([^)]+?)\))`|`\1jthook(jt,`|
+|`jsrc\representations\r.c`|hook|jthook|`(^\|[ \t]+\|[^\d\w_])hook\((?=([^,]+?),([^)]+?)\))`|`\1jthook(jt,`|

@@ -103,7 +103,7 @@ static A jtfxchar(J jt,    A w,A self){A y;C c,d,id,*s;I m,n;
  }
  switch(id){
   case CHOOK: case CADVF:
-   ASSERT(2==n,EVLENGTH); return hook(fx(yv[0]),fx(yv[1]));
+   ASSERT(2==n,EVLENGTH); return jthook(jt,fx(yv[0]),fx(yv[1]));
   case CFORK:
    ASSERT(3==n,EVLENGTH); 
    RZ(f=fx(yv[0])); ASSERT(AT(f)&VERB+NOUN,EVSYNTAX);
