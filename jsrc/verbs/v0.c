@@ -19,8 +19,8 @@
   GATVS(z,TYPE,1+n,1,0,TYPE##SIZE,GACOPYSHAPE0,return 0); v=(T*)AV(z); *v=*(T*)AV(a);  \
   for(j=0;j<n;++j){                              \
    d=fnegate(u[j]); t=j+v; *(1+t)=*t;            \
-   DQ(j, *t=fplus(*(t-1),jtftymes(jt,d,*t)); --t;);   \
-   *v=jtftymes(jt,d,*v);                              \
+   DQ(j, *t=fplus(*(t-1),ftymes(d,*t)); --t;);   \
+   *v=ftymes(d,*v);                              \
   }                                              \
   RE(z); EPILOG(z);                              \
  }
