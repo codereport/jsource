@@ -328,8 +328,8 @@ static A jtlrr(J jt,A w,A self,A *ltext){F1PREFIP;A hs,t,*tv;C id;I fl,m;V*v;
  GATV0(t,BOX,m,1); tv=AAV(t);
  if(2<m)RZ(tv[2]=incorp(lrr(hs)));   // fill in h if present
  // for top-level of gerund (indicated by self!=0), any noun type could not have come from an AR, so return it as is
- if(1<m)RZ(tv[1]=incorp(fl&VGERR?tiefn(jtinplace,fxeach(gs,(A)&jtfxself[!!self]),ltext):lrr(gs)));  // fill in g if present
- if(0<m)RZ(tv[0]=incorp(fl&VGERL?tiefn(jtinplace,fxeach(fs,(A)&jtfxself[!!self]),ltext):lrr(fs)));  // fill in f (always present)
+ if(1<m)RZ(tv[1]=incorp(fl&VGERR?tiefn(jtinplace,jtfxeach(jt,gs,(A)&jtfxself[!!self]),ltext):lrr(gs)));  // fill in g if present
+ if(0<m)RZ(tv[0]=incorp(fl&VGERL?tiefn(jtinplace,jtfxeach(jt,fs,(A)&jtfxself[!!self]),ltext):lrr(fs)));  // fill in f (always present)
  return linsert(t,w);
 }
 

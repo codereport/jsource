@@ -114,3 +114,7 @@
 |`jsrc\verbs\vfrom.c`|fromsd|jtfromsd|`(^\|[ \t]+\|[^\d\w_])fromsd\((?=([^,]+?),([^)]+?)\))`|`\1jtfromsd(jt,`|
 |`jsrc\verbs\vfrom.c`|fromss|jtfromss|`(^\|[ \t]+\|[^\d\w_])fromss\((?=([^,]+?),([^)]+?)\))`|`\1jtfromss(jt,`|
 |`jsrc\representations\r.c`|fxchar|jtfxchar|`(^\|[ \t]+\|[^\d\w_])fxchar\((?=([^,]+?),([^)]+?)\))`|`\1jtfxchar(jt,`|
+|`jsrc\conjunctions\cg.c`|fxeach|jtfxeach|`(^\|[ \t]+\|[^\d\w_])fxeach\((?=([^,]+?),([^)]+?)\))`|`\1jtfxeach(jt,`|
+|`jsrc\representations\r.c`|fxeach|jtfxeach|`(^\|[ \t]+\|[^\d\w_])fxeach\((?=([^,]+?),([^)]+?)\))`|`\1jtfxeach(jt,`|
+|`jsrc\representations\rl.c`|fxeach|jtfxeach|`(^\|[ \t]+\|[^\d\w_])fxeach\((?=([^,]+?),([^)]+?)\))`|`\1jtfxeach(jt,`|
+|`jsrc\representations\rt.c`|fxeach|jtfxeach|`(^\|[ \t]+\|[^\d\w_])fxeach\((?=([^,]+?),([^)]+?)\))`|`\1jtfxeach(jt,`|
