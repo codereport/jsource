@@ -230,11 +230,11 @@ A jtcelloffset(J jt,AD * RESTRICT w,AD * RESTRICT ind){A z;
 // Result *cellframelen gives the number of axes of w that have been boiled down to indices in the result
 static A jtjstd(J jt,A w,A ind,I *cellframelen){A j=0,k,*v,x;I b;I d,i,n,r,*u,wr,*ws;D rkblk[16];
  wr=AR(w); ws=AS(w); b=-AN(ind)&SGNIF(AT(ind),BOXX);  // b<0 = indexes are boxed and nonempty
- if(!wr){x=from(ind,zeroionei(0)); *cellframelen=0; return x;}  // if w is an atom, the best you can get is indexes of 0.  No axes are used
+ if(!wr){x=jtfrom(jt,ind,zeroionei(0)); *cellframelen=0; return x;}  // if w is an atom, the best you can get is indexes of 0.  No axes are used
  if((b&-AR(ind))<0){   // array of boxed indexes
   RE(aindex(ind,w,0L,&j));  // see if the boxes are homogeneous
   if(!j){  // if not...
-   RZ(x=MODIFIABLE(from(ind,increm(iota(shape(w)))))); u=AV(x); // go back to the original indexes, select from table of all possible incremented indexes; since it is incremented, it is writable
+   RZ(x=MODIFIABLE(jtfrom(jt,ind,increm(iota(shape(w)))))); u=AV(x); // go back to the original indexes, select from table of all possible incremented indexes; since it is incremented, it is writable
    DQ(AN(x), ASSERT(*u,EVDOMAIN); --*u; ++u;);   // if anything required fill, it will leave a 0.  Fail then, and unincrement the indexes
    *cellframelen=AR(w); return x;   // the indexes are what we want, and they include all the axes of w
   }

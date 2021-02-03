@@ -33,7 +33,8 @@ def walk_matches():
                                 "binzz",
                                 "dgcd",
                                 "dlcm",
-                                "equ"]:
+                                "equ",
+                                "fplus"]:
                     continue
                 print("remove " + full_str)
                 data = data.replace(full_str, "")

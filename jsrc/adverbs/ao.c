@@ -163,7 +163,7 @@ static A jtkeysp(J jt,A a,A w,A self){PROLOG(0008);A b,by,e,q,x,y,z;I j,k,n,*u,*
  j=0; DO(AN(x), if(k<=u[i])break; if(u[i]==v[i])++j;);
  RZ(b=ne(e,x));
  RZ(by=repeat(b,y));
- RZ(x=key(repeat(b,x),from(ravel(by),w),self));
+ RZ(x=key(repeat(b,x),jtfrom(jt,ravel(by),w),self));
  GASPARSE(q,SB01,1,1,(I*)0); *AS(q)=n;  /* q=: 0 by}1$.n;0;1 */
  p=PAV(q); SPB(p,a,iv0); SPB(p,e,num(1)); SPB(p,i,by); SPB(p,x,reshape(tally(jt, by),num(0)));
  RZ(z=over(df1(b,repeat(q,w),VAV(self)->fgh[0]),x));
@@ -707,7 +707,7 @@ static A jtkeytally(J jt,A a,A w,A self){F2PREFIP;PROLOG(0016);A z,q;I at,j,k,n,
   k=bsum(n,p); m=i+j?1:0;  // k=# 1s  m is 1 if there are 0s and 1s
   GATV0(x,INT,m+1,1); v=AV(x); v[m]=i+j; v[0]=0;  // 0=index of first item (always 0); 1 if it exists is the other
   GATV0(y,INT,m+1,1); v=AV(y); j=n-k; k=i?j:k; k&=-m; v[0]=k; v[m]=n-k;  // if 1st value is 0, complement k; if only 1 value, clear k
-  if(!(wt&VERB))RZ(x=from(x,w)); w=x; x=b?x:y; y=b?y:w; return stitch(x,y);  // select using index (unless i.@#, then keep index); set order & ,.
+  if(!(wt&VERB))RZ(x=jtfrom(jt,x,w)); w=x; x=b?x:y; y=b?y:w; return stitch(x,y);  // select using index (unless i.@#, then keep index); set order & ,.
  }
  // for other types of a, we handle it quickly only if w is B01/INT/FL or i.@# which has type of VERB
  if(wt&B01+INT+FL+VERB){

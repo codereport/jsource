@@ -271,10 +271,10 @@ static B jtredspse(J jt,C id,I wm,I xt,A e,A zx,A sn,A*ze,A*zzx){A b;B nz;I t,zt
  switch(id){
   case CPLUS:    if(nz)RZ(zx=plus (zx,       tymes(e,sn) )); RZ(e=       tymes(e,sc(wm)) ); break; 
   case CSTAR:    if(nz)RZ(zx=tymes(zx,jtbcvt(jt,1,expn2(e,sn)))); RZ(e=jtbcvt(jt,1,expn2(e,sc(wm)))); break;
-  case CPLUSDOT: if(nz)RZ(zx=gcd(zx,from(b,over(num(0),e))));                 break;
-  case CSTARDOT: if(nz)RZ(zx=lcm(zx,from(b,over(num(1),e))));                 break;
-  case CMIN:     if(nz)RZ(zx=minimum(zx,from(b,over(zt&B01?num(1): zt&INT?sc(IMAX):ainf,     e)))); break;
-  case CMAX:     if(nz)RZ(zx=maximum(zx,from(b,over(zt&B01?num(0):zt&INT?sc(IMIN):scf(infm),e)))); break;
+  case CPLUSDOT: if(nz)RZ(zx=gcd(zx,jtfrom(jt,b,over(num(0),e))));                 break;
+  case CSTARDOT: if(nz)RZ(zx=lcm(zx,jtfrom(jt,b,over(num(1),e))));                 break;
+  case CMIN:     if(nz)RZ(zx=minimum(zx,jtfrom(jt,b,over(zt&B01?num(1): zt&INT?sc(IMAX):ainf,     e)))); break;
+  case CMAX:     if(nz)RZ(zx=maximum(zx,jtfrom(jt,b,over(zt&B01?num(0):zt&INT?sc(IMIN):scf(infm),e)))); break;
   case CEQ:      ASSERT(B01&xt,EVNONCE); if(nz)RZ(zx=eq(zx,eq(num(0),residue(num(2),sn)))); if(!(wm&1))e=num(1);  break;
   case CNE:      ASSERT(B01&xt,EVNONCE); if(nz)RZ(zx=ne(zx,eq(num(1), residue(num(2),sn)))); if(!(wm&1))e=num(0); break;
  }
@@ -415,7 +415,7 @@ static A jtredcatsp(J jt,A w,A z,I r){A a,q,x,y;B*b;I c,d,e,f,j,k,m,n,n1,p,*u,*v
   e=ws[f+c]; RZ(y=repeat(sc(e),y)); RZ(y=mkwris(y)); v=j+AV(y);
   if(c)DO(m, k=p**v; DO(e, *v=k+  i; v+=n;);)
   else DO(m, k=  *v; DO(e, *v=k+p*i; v+=n;);); 
-  RZ(q=grade1(y)); RZ(y=from(q,y)); RZ(x=from(q,x));
+  RZ(q=grade1(y)); RZ(y=jtfrom(jt,q,y)); RZ(x=jtfrom(jt,q,x));
   SPB(zp,x,x); SPB(zp,i,y);
  }
  return z;

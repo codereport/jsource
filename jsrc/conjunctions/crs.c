@@ -85,7 +85,7 @@ A jtsprank1(J jt,A w,A fs,I mr,AF f1){PROLOG(0043);A q,wx,wy,wy1,ww,z,ze,zi,*zv;
   for(i=j=0;i<m;++i){
    k=1+(B*)memchr(wb+j,C1,n-j)-(wb+j);
    ICPY(iv,wv+j*c,wf); iv+=wf;
-   RZ(q=apv(k,j,1L)); SPB(wq,i,from(q,wy1)); SPB(wq,x,from(q,wx));
+   RZ(q=apv(k,j,1L)); SPB(wq,i,jtfrom(jt,q,wy1)); SPB(wq,x,jtfrom(jt,q,wx));
    RZ(zv[i]=incorp(CALL1(f1,ww,fs)));
    j+=k;
   }
@@ -101,9 +101,9 @@ static I jtspradv(J jt,I n,B*b,I f,I r,I j,P*p,A*z){A s,x;I k;P*q;
  if(r){
   q=PAV(*z);
   RZ(s=apv(k,j,1L)); 
-  SPB(q,i,from(s,jtdropr(jt,f,SPA(p,i)))); 
-  SPB(q,x,from(s,x));
- }else RZ(*z=AN(x)?from(sc(j),x):ca(SPA(p,e)));
+  SPB(q,i,jtfrom(jt,s,jtdropr(jt,f,SPA(p,i)))); 
+  SPB(q,x,jtfrom(jt,s,x));
+ }else RZ(*z=AN(x)?jtfrom(jt,sc(j),x):ca(SPA(p,e)));
  return k;
 }    /* advance to the next cell */
 

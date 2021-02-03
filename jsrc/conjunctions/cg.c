@@ -115,9 +115,9 @@ static A jtcon2(J jt,A a,A w,A self){A h,*hv,*x,z;V*sv;
 static A jtinsert(J jt,    A w,A self){A hs,*hv,z;I hfx,j,m,n;A *old;
  SETIC(w,n); j=n-1; hs=FAV(self)->fgh[2]; m=AN(hs); hfx=j%m; hv=AAV(hs);  // m cannot be 0
  if(!n)return df1(z,w,iden(*hv));
- RZ(z=from(num(-1),w));
+ RZ(z=jtfrom(jt,num(-1),w));
  old=jt->tnextpushp;
- --m; DQ(n-1, --j; --hfx; hfx=(hfx<0)?m:hfx; RZ(z=CALL2(FAV(hv[hfx])->valencefns[1],from(sc(j),w),z,hv[hfx])); z=gc(z,old);)
+ --m; DQ(n-1, --j; --hfx; hfx=(hfx<0)?m:hfx; RZ(z=CALL2(FAV(hv[hfx])->valencefns[1],jtfrom(jt,sc(j),w),z,hv[hfx])); z=gc(z,old);)
  return z;
 }
 
@@ -188,7 +188,7 @@ static A jtcasei12(J jt,A a,A w,A self){A vres,z;I gerit[128/SZI],ZZFLAGWORD;
    // omitted a to point to w and not to modify it.
    if(wr>=0){
     RZ(w=jtredcatcell(jtinplace,w,wr));  // inplaceability of original w
-    RZ(sortw=from(gradepm,w));
+    RZ(sortw=jtfrom(jt,gradepm,w));
     // Inplace the virtual block if that is allowed
     ZZFLAGWORD |= SGNTO0((-(AT(sortw)&TYPEVIPOK))&AC(sortw))<<ZZFLAGVIRTWINPLACEX;
     ZZFLAGWORD|=ZZFLAGARRAYW;  // indicate that virtw must be updated between iterations
@@ -205,7 +205,7 @@ static A jtcasei12(J jt,A a,A w,A self){A vres,z;I gerit[128/SZI],ZZFLAGWORD;
    if(ZZFLAGWORD&ZZFLAGISDYAD){   // if we need to repeat for a
     if(ar>=0){
      RZ(a=jtredcatcell((J)((I)jt|(((I)jtinplace>>(JTINPLACEAX-JTINPLACEWX))&JTINPLACEW)),a,ar));  // move inplaceability of original a to w
-     RZ(sorta=from(gradepm,a));
+     RZ(sorta=jtfrom(jt,gradepm,a));
     ZZFLAGWORD |= SGNTO0((-(AT(sorta)&TYPEVIPOK))&AC(sorta))<<ZZFLAGVIRTAINPLACEX;
      ZZFLAGWORD|=ZZFLAGARRAYA;
     }else{
@@ -314,7 +314,7 @@ static A jtcasei12(J jt,A a,A w,A self){A vres,z;I gerit[128/SZI],ZZFLAGWORD;
 // @.n
 static A jtgerfrom(J jt,A a,A w){A*av,*v,z;I n;
  ASSERT(1>=AR(a),EVRANK);
- if(NUMERIC&AT(a))return from(a,w);
+ if(NUMERIC&AT(a))return jtfrom(jt,a,w);
  else{
   ASSERT(BOX&AT(a),EVDOMAIN);
   n=AN(a); av=AAV(a); 

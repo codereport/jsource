@@ -350,8 +350,8 @@ static A jtfsm0(J jt,A a,A w,C chka){PROLOG(0100);A*av,m,s,x,w0=w;B b;I c,f,*ijr
   ASSERT((UI)(r-AR(w))<=(UI)1,EVRANK);  // items of m must match rank of w, or the entire w (which will be treated as a single input)
   GATV0(x,INT,1+k,1); v=AV(x); v[k]=c; mv=AAV(m);  // x will hold translated column numbers.  Install 'not found' value at the end
   DO(c, j=i; t=mv[i]; if((-r&((r^AR(t))-1))<0)DQ(AS(t)[0], *v++=j;) else *v++=j;);  // go through m; for each box, install index for that box for each item in that box.
-  if(b){RZ(m=from(indexof(y,ds(CALP)),x)); v=AV(m); DO(AN(ds(CALP)), k=v[i]; ASSERT((UI)k<(UI)q,EVINDEX););}  // for ASCII input, translate & check size
-  else {ASSERT(q>c,EVINDEX); RZ(w=from(indexof(y,w),x));}  // # columns of machine must be at least c+1; look up the rest
+  if(b){RZ(m=jtfrom(jt,indexof(y,ds(CALP)),x)); v=AV(m); DO(AN(ds(CALP)), k=v[i]; ASSERT((UI)k<(UI)q,EVINDEX););}  // for ASCII input, translate & check size
+  else {ASSERT(q>c,EVINDEX); RZ(w=jtfrom(jt,indexof(y,w),x));}  // # columns of machine must be at least c+1; look up the rest
  }
  A z=fsmdo(f,s,m,ijrd,w,w0);
  EPILOG(z);

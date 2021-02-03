@@ -37,7 +37,7 @@ static const B booltab[64]={
  1,0,0,0, 1,0,0,1, 1,0,1,0, 1,0,1,1,  1,1,0,0, 1,1,0,1, 1,1,1,0, 1,1,1,1,
 };
 
-static A jtbdot2(J jt,A a,A w,A self){return from(plusA(duble(jtcvt(jt,B01,a)),jtcvt(jt,B01,w)),FAV(self)->fgh[2]);}  // dyad b. (2*a + w) { h
+static A jtbdot2(J jt,A a,A w,A self){return jtfrom(jt,plusA(duble(jtcvt(jt,B01,a)),jtcvt(jt,B01,w)),FAV(self)->fgh[2]);}  // dyad b. (2*a + w) { h
 
 static A jtbdot1(J jt,    A w,A self){return bdot2(num(0),w,self);}
 
@@ -64,7 +64,7 @@ static A jtbasis1(J jt,    A w,A self){DECLF;A z;D*x;I j;V*v;
  else DQ(n, j=*v++; ASSERT(BETWEENC(j,-16,15),EVINDEX););  // j must be initialized because the loop might not run
  if(j<16){
   GAT0(b,B01,64,2); AS(b)[0]=16; AS(b)[1]=4; MC(AV(b),booltab,64L);
-  RZ(h=rifvs(jtcant2(jt,IX(AR(w)),from(w,b))));  // h is an array representing b.  One cell for each atom of b; cell is 4 values
+  RZ(h=rifvs(jtcant2(jt,IX(AR(w)),jtfrom(jt,w,b))));  // h is an array representing b.  One cell for each atom of b; cell is 4 values
   return fdef(0,CBDOT,VERB, jtbdot1,jtbdot2, 0L,w,h, VFLAGNONE, RMAX,0L,0L);
  }else switch(j){
   case 32: return fdef(0,CBDOT,VERB, jtbitwise1,jtbitwiserotate, 0L,w,0L, VASGSAFE|VJTFLGOK2, 0L,0L,0L);

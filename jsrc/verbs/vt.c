@@ -26,8 +26,8 @@ static A jttks(J jt,A a,A w){PROLOG(0092);A a1,q,x,y,z;B b,c;I an,m,r,*s,*u,*v;P
  zp=PAV(z); wp=PAV(w);
  if(an<=r){RZ(a=vec(INT,r,s)); MCISH(AV(a),u,an);}  // vec is not virtual
  a1=SPA(wp,a); RZ(q=paxis(r,a1)); m=AN(a1);
- RZ(a=from(q,a       )); u=AV(a);
- RZ(y=from(q,shape(w))); s=AV(y);
+ RZ(a=jtfrom(jt,q,a       )); u=AV(a);
+ RZ(y=jtfrom(jt,q,shape(w))); s=AV(y);
  b=0; DO(r-m, if(b=u[i+m]!=s[i+m])break;);
  c=0; DO(m,   if(c=u[i  ]!=s[i  ])break;);
  if(b){jt->fill=SPA(wp,e); x=irs2(vec(INT,r-m,m+u),SPA(wp,x),0L,1L,-1L,jttake); jt->fill=0; RZ(x);}  // fill cannot be virtual

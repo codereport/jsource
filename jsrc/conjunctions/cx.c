@@ -404,7 +404,7 @@ dobblock:
    if(cv->x){A x;  // assign xyz and xyz_index for for_xyz.
     if(!(ci->canend&2))BZ(z=rat(z));   // if z might be the result, protect it over the possible frees during this assignment
     symbisdel(nfs(6+cv->k,cv->xv),x=sc(cv->j),  locsym);  // Assign iteration number.  since there is no sentence, take deletion off nvr stack
-    symbisdel(nfs(  cv->k,cv->iv),cv->j<cv->n?from(x,cv->t):mtv,locsym);
+    symbisdel(nfs(  cv->k,cv->iv),cv->j<cv->n?jtfrom(jt,x,cv->t):mtv,locsym);
    }
    if(cv->j<cv->n){  // if there are more iterations to do...
     ++i; continue;   // advance to next line and process it

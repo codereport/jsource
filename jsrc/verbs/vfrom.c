@@ -388,7 +388,7 @@ static A jtafrom(J jt,A a,A w){PROLOG(0073);A c,ind,p=0,q,*v,y=w;B bb=1;I acr,ar
   RE(aindex1(a,w,0L,&ind)); if(ind)return frombsn(ind,w,0L);
  }
  // If we couldn't handle it as a special case, do it the hard way
- A z; return from(IRS1(a,0L,1L,jtbox,z),w);
+ A z; return jtfrom(jt,IRS1(a,0L,1L,jtbox,z),w);
 }    /* (<"1 a){w */
 
 static A jtmapx(J jt,A a,A w);

@@ -27,10 +27,10 @@ B jtscheck(J jt,A w){A a,e,x,y;I k1,k2,r,*s,t;P*p;D rkblk[16];
  ASSERTSYS(*(1+AS(y))==SETIC(a,k1),"scheck i/a length");
  ASSERTSYS(equ(y,nub(y)),"scheck i unique");
  ASSERTSYS(all1(le(num(0),y)),"scheck i negative");
- ASSERTSYS(all1(ATOMIC2(jt,y,from(a,shape(w)),rkblk,1L,1L,CLT)),"scheck i index");
+ ASSERTSYS(all1(ATOMIC2(jt,y,jtfrom(jt,a,shape(w)),rkblk,1L,1L,CLT)),"scheck i index");
  ASSERTSYS(equ(grade1(y),IX(*AS(y))),"scheck i sorted");
  ASSERTSYS(AR(x)==1+r-AN(a),"scheck x rank");
- ASSERTSYS(equ(behead(shape(x)),from(less(IX(r),a),shape(w))),"scheck x shape");
+ ASSERTSYS(equ(behead(shape(x)),jtfrom(jt,less(IX(r),a),shape(w))),"scheck x shape");
  return 1;
 }    /* assertions on sparse array w */
 
@@ -159,7 +159,7 @@ A jtsparseit(J jt,A w,A a,A e){PROLOG(0091);A ax,c,x,y,z;B b,*cv;I cm,cn,m,n,r,*
  wp=PAV(w); a=SPA(wp,a); e=SPA(wp,e); x=SPA(wp,x); y=SPA(wp,i); 
  xn=AN(x); an=AN(a); b=equ(a,IX(an));
  if(!an||!xn)return reshape(shape(w),xn?x:e);
- if(b)s=AS(w); else{RZ(q=over(a,less(IX(r),a))); RZ(s1=from(q,shape(w))); s=AV(s1);}
+ if(b)s=AS(w); else{RZ(q=over(a,less(IX(r),a))); RZ(s1=jtfrom(jt,q,shape(w))); s=AV(s1);}
  RE(n=prod(r,s));
  GA(z,t,n,r,s); zv=CAV(z); xv=CAV(x); 
  if(1<an)RZ(y=jtbase2(jt,vec(INT,an,s),y)); yv=AV(y);
@@ -187,14 +187,14 @@ A jtsparseit(J jt,A w,A a,A e){PROLOG(0091);A ax,c,x,y,z;B b,*cv;I cm,cn,m,n,r,*
   RZ(y=stitch(repeat(sc(c),y),reshape(v2(c*m,k),jtabase2(jt,vec(INT,k,v),IX(c)))));
   RZ(p=grade1(over(a,less(a1,a))));
   if(equ(p,IX(AN(p))))SPB(zp,i,repeat(q,y))
-  else{y=fromr(p,repeat(q,y)); q=grade1(y); SPB(zp,i,from(q,y)); SPB(zp,x,from(q,x));}
+  else{y=fromr(p,repeat(q,y)); q=grade1(y); SPB(zp,i,jtfrom(jt,q,y)); SPB(zp,x,jtfrom(jt,q,x));}
   return z;
  }
  if(all1(jteps(jt,a1,a))){A x1,y1;B*pv;C*s,*t;I g,h,*iv,n;  /* new is subset of old */
   c=AN(a); d=AN(a1);
   RZ(p=jteps(jt,a,a1));
   RZ(y=fromr(dgrade1(p),y)); 
-  RZ(q=grade1(y)); RZ(y=from(q,y)); RZ(x=from(q,x));
+  RZ(q=grade1(y)); RZ(y=jtfrom(jt,q,y)); RZ(x=jtfrom(jt,q,x));
   GATV0(q,B01,m,1); b=BAV(q); n=0;
   if(m){b[m-1]=1; n=1; u=AV(y); DO(m-1, if(b[i]=1&&ICMP(u,u+c,d))++n; u+=c;);} 
   GATV0(q,INT,1+r,1); u=AV(q);

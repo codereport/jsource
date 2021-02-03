@@ -261,7 +261,7 @@ static A jtunderai1(J jt,    A w,A self){DECLF;A x,y,z;B b;I j,n,*u,*v;UC f[256]
   if(b){u=AV(x); v=AV(y); DO(256, j=*u++; if(j==*v++&&BETWEENO(j,-256,256))f[i]=(UC)(j&255); else{b=0; break;});}  // verify both results the same & in bounds
   if(jt->jerr)RESETERR;
  }         
- if(!b)return from(df1(z,indexof(ds(CALP),w),fs),ds(CALP));
+ if(!b)return jtfrom(jt,df1(z,indexof(ds(CALP),w),fs),ds(CALP));
  n=AN(w);
  GATV(z,LIT,n,AR(w),AS(w)); zv=UAV(z); wv=UAV(w);
  if(!bitwisecharamp(f,n,wv,zv))DQ(n, *zv++=f[*wv++];); 

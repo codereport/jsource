@@ -19,8 +19,8 @@ static A jtcants(J jt,A a,A w,A z){A a1,q,y;B*b,*c;I*u,wr,zr;P*wp,*zp;
  SPB(zp,e,ca(SPA(wp,e)));
  RZ(y=fromr(grade1(indexof(a,a1)),SPA(wp,i)));
  RZ(q=grade1(y));
- SPB(zp,i,from(q,y));
- SPB(zp,x,from(q,jtcanta(jt,over(zeroionei(0),increm(grade1(less(a,a1)))),SPA(wp,x))));
+ SPB(zp,i,jtfrom(jt,q,y));
+ SPB(zp,x,jtfrom(jt,q,jtcanta(jt,over(zeroionei(0),increm(grade1(less(a,a1)))),SPA(wp,x))));
  return z;
 }    /* w is sparse */
 

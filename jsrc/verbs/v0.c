@@ -235,7 +235,7 @@ static A jtrfc(J jt, A w){A r,w1;I m=0,n,t;
             // if there are residual (complex) solutions, go find them
  }
  // Return result, which is leading nonzero coeff;roots
- return link(from(sc(m),w),rsort(r));
+ return link(jtfrom(jt,sc(m),w),rsort(r));
 }
 
 // entry point for p. y

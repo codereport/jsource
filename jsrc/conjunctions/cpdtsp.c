@@ -41,7 +41,7 @@ static A jtpdtspmv(J jt,A a,A w){A ax,b,g,x,wx,y,yi,yj,z;B*bv;I m,n,s[2],*u,*v,*
  if(DENSE&AT(w)){
   GATVR(yi,INT,n,2,s); u=AV(yi); AR(yj)=1; v=AV(yj);
   DQ(n, *u++=*yv++; *v++=*yv++;);
-  ax=SPA(ap,x); RZ(wx=from(yj,w));
+  ax=SPA(ap,x); RZ(wx=jtfrom(jt,yj,w));
  }else{
   v=AV(yj);
   DQ(n, yv++; *v++=*yv++;);
@@ -49,7 +49,7 @@ static A jtpdtspmv(J jt,A a,A w){A ax,b,g,x,wx,y,yi,yj,z;B*bv;I m,n,s[2],*u,*v,*
   AN(yj)=*AS(yj)=*s=m=bsum(n,bv); v=AV(yj); yv=AV(y);
   GATVR(yi,INT,m,2,s); u=AV(yi);
   DQ(n, if(*bv++){*u++=*yv++; *v++=*yv++;}else yv+=2;);
-  RZ(ax=repeat(b,SPA(ap,x))); RZ(wx=from(indexof(SPA(wp,i),yj),SPA(wp,x))); 
+  RZ(ax=repeat(b,SPA(ap,x))); RZ(wx=jtfrom(jt,indexof(SPA(wp,i),yj),SPA(wp,x))); 
  }
  RZ(df2(x,yi,tymes(ax,wx),sldot(slash(ds(CPLUS)))));
  RZ(y=nub(yi));
@@ -57,8 +57,8 @@ static A jtpdtspmv(J jt,A a,A w){A ax,b,g,x,wx,y,yi,yj,z;B*bv;I m,n,s[2],*u,*v,*
  GASPARSE(z,STYPE(AT(x)),1,1,AS(a)); zp=PAV(z);
  SPB(zp,a,iv0);
  SPB(zp,e,scf(0.0));
- SPB(zp,i,from(g,y));
- SPB(zp,x,from(g,x));
+ SPB(zp,i,jtfrom(jt,g,y));
+ SPB(zp,x,jtfrom(jt,g,x));
  return z;
 }    /* (sparse matrix) +/ .* vector; non-complex */
 
@@ -76,7 +76,7 @@ static A jtpdtspvm(J jt,A a,A w){A ax,b,g,x,wx,y,yi,yj,z;B*bv;D*av,c,d,*wv,*xv;I
   AN(yi)=*AS(yi)=*s=m=bsum(n,bv); u=AV(yi); yv=AV(y);
   GATVR(yj,INT,m,2,s); v=AV(yj);
   DQ(n, if(*bv++){*u++=*yv++; *v++=*yv++;}else yv+=2;);
-  RZ(ax=from(indexof(SPA(ap,i),yi),SPA(ap,x))); RZ(wx=repeat(b,SPA(wp,x)));
+  RZ(ax=jtfrom(jt,indexof(SPA(ap,i),yi),SPA(ap,x))); RZ(wx=repeat(b,SPA(wp,x)));
   RZ(x=tymes(ax,wx));
  }
  RZ(df2(y,yj,x,sldot(slash(ds(CPLUS)))));
@@ -85,8 +85,8 @@ static A jtpdtspvm(J jt,A a,A w){A ax,b,g,x,wx,y,yi,yj,z;B*bv;D*av,c,d,*wv,*xv;I
  GASPARSE(z,STYPE(AT(x)),1,1,1+AS(w)); zp=PAV(z);
  SPB(zp,a,iv0);
  SPB(zp,e,scf(0.0));
- SPB(zp,i,from(g,y));
- SPB(zp,x,from(g,x));
+ SPB(zp,i,jtfrom(jt,g,y));
+ SPB(zp,x,jtfrom(jt,g,x));
  return z;
 }    /* vector +/ .* (sparse matrix); non-complex */
 

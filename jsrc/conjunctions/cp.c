@@ -97,7 +97,7 @@ static A jtply1(J jt,    A w,A self){PROLOG(0040);DECLFG;A zz=0;
  I state=ZZFLAGINITSTATE;  // flags for result.h
  // p =. ~. sn=.(gn=./:,n) { ,n   which gives the list of distinct powers
  A n=sv->fgh[2]; A rn; RZ(rn=ravel(n));  // n is powers, rn is ravel of n
- A gn; RZ(gn=grade1(rn)); A p; RZ(p=nub(from(gn,rn)));  // gn is grade of power, p is sorted list of unique powers we want
+ A gn; RZ(gn=grade1(rn)); A p; RZ(p=nub(jtfrom(jt,gn,rn)));  // gn is grade of power, p is sorted list of unique powers we want
  // find index of first nonneg power, remember, set scan pointer, set direction forward.  Set current power to 0.  Indic read of power needed
  I *pv=IAV(p); I np=AN(p);  // base of array of powers, and the number of them
  A z=w;  // the next input/previous result
@@ -169,7 +169,7 @@ static A jtply1(J jt,    A w,A self){PROLOG(0040);DECLFG;A zz=0;
  if(pscan0){A sneg; RZ(sneg=sc(pscan0)); RZ(p=apip(jtdrop(jt,sneg,p),reverse(take(sneg,p))));}
  // result is ($n) $ (p i. ,n) { result - avoid the reshape if n is a list, and avoid the from if (p i. ,n) is an index vector
  RZ(p=indexof(p,rn));  // for each input power, the position of its executed result
- if(!equ(IX(np),p))RZ(zz=from(p,zz));  // order result-cells in order of the input powers
+ if(!equ(IX(np),p))RZ(zz=jtfrom(jt,p,zz));  // order result-cells in order of the input powers
  if(AR(n)!=1)zz=reshape(shape(n),zz);  // if n is an arry, use its shape
  EPILOG(zz);
 }

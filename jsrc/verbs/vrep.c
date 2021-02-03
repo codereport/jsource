@@ -170,7 +170,7 @@ static A jtrep1d(J jt,A a,A w,I wf,I wcr){A z;C*wv,*zv;I c,k,m,n,p=0,q,t,*ws,zk,
  F2PREFIP;
  t=AT(a); m=AN(a); ws=AS(w); SETICFR(w,wf,wcr,n);   // n=length of item axis in input.  If atom, is repeated to length of a
  if(t&CMPX){
-  if(wcr)return repzdx(from(apv(n,0L,0L),a),w,                wf,wcr);
+  if(wcr)return repzdx(jtfrom(jt,apv(n,0L,0L),a),w,                wf,wcr);
   else{A za; RZ(za=apv(m,0L,0L)); return repzdx(a,IRS2(za,w,0L,1L,0L,jtfrom,z),wf,1L );}
  }
  if(t&B01){p=bsum(m,BAV(a)); // bsum in case a is big.  Atomic boolean was handled earlier
@@ -225,8 +225,8 @@ static A jtrep1s(J jt,A a,A w,I wf,I wcr){A ax,e,x,y,z;B*b;I c,d,cd,j,k,m,n,p,q,
       DO(h, DO(c, *v=m+i; v+=q;););
      } 
     RZ(xx=grade1(y));
-    RZ(x=from(xx,x));
-    RZ(y=from(xx,y));
+    RZ(x=jtfrom(jt,xx,x));
+    RZ(y=jtfrom(jt,xx,y));
  }}}else{A xx;      /* along dense  axis */
   j=0; DO(wcr, j+=!b[wf+i];);
   RZ(y=ca(y));

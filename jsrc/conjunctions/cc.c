@@ -13,7 +13,7 @@
 
 
 static A jtcut01(J jt,    A w,A self){DECLF;A h,x,z;
- RZ(x=from(box(jtevery(jt,negate(shape(w)),ds(CIOTA))),w));
+ RZ(x=jtfrom(jt,box(jtevery(jt,negate(shape(w)),ds(CIOTA))),w));
  if(VGERL&sv->flag){h=sv->fgh[2]; return df1(z,x,AAV(h)[0]);}else return CALL1(f1,x,fs);
 }    /* f;.0 w */
 
@@ -108,7 +108,7 @@ static A jtcut02(J jt,A a,A w,A self){F2PREFIP;A fs,q,qq,*qv,z,zz=0;I*as,c,e,i,i
      GAT0(qq,BOX,1,0); AAV(qq)[0]=q;  // enclose that vector of boxes in a box to pass into {
     }
    }while(1);
-   RZ(z=from(qq,w));
+   RZ(z=jtfrom(jt,qq,w));
   }
   RZ(z=CALL1(f1,z,fs));
   if(!(state&STATENEEDSASSEMBLY)){if(AFLAG(z)&AFUNINCORPABLE){z=clonevirtual(z);} EPILOG(z);}  // if we have just 1 input and no frame, return the one result directly (for speed).  If it is UNINCORPABLE, it must not be allowed to escape - realize it

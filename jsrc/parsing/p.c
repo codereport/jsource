@@ -151,7 +151,7 @@ static PSTK* jtis(J jt,PSTK *stack){B ger=0;C *s;
     // True multiple assignment
     ASSERT((-(AR(v))&(-(AN(n)^AS(v)[0])))>=0,EVLENGTH);   // v is atom, or length matches n
     if(((AR(v)^1)+(~AT(v)&BOX))==0){A *nv=AAV(n), *vv=AAV(v); DO(AN(n), symbis(nv[i],vv[i],symtab);)}  // v is boxed list
-    else {A *nv=AAV(n); DO(AN(n), symbis(nv[i],ope(AR(v)?from(sc(i),v):v),symtab);)}  // repeat atomic v for each name, otherwise select item.  Open in either case
+    else {A *nv=AAV(n); DO(AN(n), symbis(nv[i],ope(AR(v)?jtfrom(jt,sc(i),v):v),symtab);)}  // repeat atomic v for each name, otherwise select item.  Open in either case
     goto retstack;
    }
   }

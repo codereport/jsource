@@ -81,7 +81,7 @@ static A jtlchar(J jt,A w,A *ltext){F1PREFIP;A y;B b,p=1,r1;C c,d,*u,*v;I j,k,m,
  }
  if(r1&&m==n&&(y=icap(ne(w,ds(CALP))))&&m>AN(y)){  // if 256-byte string, see where it differs from a.
   if(1==AN(y))RZ(y=head(y));
-  return over(over(cstr("a. "),lcpx(lnum(y))),over(cstr("}~"),lchar(from(y,w))));   // use diff indx} a. or the like
+  return over(over(cstr("a. "),lcpx(lnum(y))),over(cstr("}~"),lchar(jtfrom(jt,y,w))));   // use diff indx} a. or the like
  }
  // we will try for quoted string
  j=2; b=7<n||1<n&&1<AR(w);  // j will be # added chars (init 2 for outer quotes); look for repeated chars if 7 chars or rank>1
@@ -163,7 +163,7 @@ static A jtlnum(J jt,A w,A *ltext){F1PREFIP;A b,d,t,*v,y;B p;I n;
  n=AN(w);
  if(7<n||1<n&&1<AR(w)){
   // see if we can use a clever encoding
-  d=minus(from(num(1),t),b=from(num(0),t));
+  d=minus(jtfrom(jt,num(1),t),b=jtfrom(jt,num(0),t));
   p=equ(t,plus(b,tymes(d,IX(n))));
   if(p){
    if(equ(d,num(0)))return over(lsh(w),lnum1(b));
