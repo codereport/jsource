@@ -135,3 +135,4 @@
 |`jsrc\verbs\v2.c`|gc|jtgc|`(^\|[ \t]+\|[^\d\w_])gc\((?=([^,]+?),([^)]+?)\))`|`\1jtgc(jt,`|
 |`jsrc\verbs\vfromsp.c`|gc|jtgc|`(^\|[ \t]+\|[^\d\w_])gc\((?=([^,]+?),([^)]+?)\))`|`\1jtgc(jt,`|
 |`jsrc\conjunctions\cg.c`|gerfrom|jtgerfrom|`(^\|[ \t]+\|[^\d\w_])gerfrom\((?=([^,]+?),([^)]+?)\))`|`\1jtgerfrom(jt,`|
+|`jsrc\adverbs\ar.c`|grade1p|jtgrade1p|`(^\|[ \t]+\|[^\d\w_])grade1p\((?=([^,]+?),([^)]+?)\))`|`\1jtgrade1p(jt,`|

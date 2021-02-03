@@ -378,7 +378,7 @@
 #define getsen(x)                   jtgetsen(jt,(x))
 #define gr1(x)                      jtgr1(jt,(x))
 #define grade1(x)                   jtgrade1(jt,(x))
-#define grade1p(x,y)                jtgrade1p(jt,(x),(y))
+
 #define grade2(x,y)                 jtgrade2(jt,(x),(y))
 #define graft(x)                    jtgraft(jt,(x))
 #define grd1sp(x)                   jtgrd1sp(jt,(x))
