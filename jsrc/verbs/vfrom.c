@@ -350,7 +350,7 @@ static A jtafrom(J jt,A a,A w){PROLOG(0073);A c,ind,p=0,q,*v,y=w;B bb=1;I acr,ar
    PRISTCLRF(w)
   }
  }else if(!((AT(a)|AT(w))&(NOUN&~SPARSE))){z=fromss(a,w);}  // sparse cases
- else if(AT(w)&SPARSE){z=at&BOX?frombs(a,w) : fromis(a,w);}
+ else if(AT(w)&SPARSE){z=at&BOX?jtfrombs(jt,a,w) : fromis(a,w);}
  else{z=fromsd(a,w);}
  return z;
 }   /* a{"r w main control */

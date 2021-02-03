@@ -139,3 +139,4 @@
 |`jsrc\verbs\vs.c`|from|jtfrom|`(^\|[ \t]+\|[^\d\w_])from\((?=([^,]+?),([^)]+?)\))`|`\1jtfrom(jt,`|
 |`jsrc\verbs\vt.c`|from|jtfrom|`(^\|[ \t]+\|[^\d\w_])from\((?=([^,]+?),([^)]+?)\))`|`\1jtfrom(jt,`|
 |`jsrc\words\w.c`|from|jtfrom|`(^\|[ \t]+\|[^\d\w_])from\((?=([^,]+?),([^)]+?)\))`|`\1jtfrom(jt,`|
+|`jsrc\verbs\vfrom.c`|frombs|jtfrombs|`(^\|[ \t]+\|[^\d\w_])frombs\((?=([^,]+?),([^)]+?)\))`|`\1jtfrombs(jt,`|

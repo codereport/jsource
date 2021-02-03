@@ -339,7 +339,7 @@
 #define fr(x)                       {if((x)!=0){I Zs = AC(x); if(!ACISPERM(Zs)){if(--Zs<=0)mf(x);else AC(x)=Zs;}}}
 #define fram(x0,x1,x2,x3,x4)        jtfram(jt,(x0),(x1),(x2),(x3),(x4))
 
-#define frombs(x,y)                 jtfrombs(jt,(x),(y))
+
 #define frombs1(x,y,z)              jtfrombs1(jt,(x),(y),(z))
 #define frombsn(x,y,z)              jtfrombsn(jt,(x),(y),(z))
 #define frombu(x,y,z)               jtfrombu(jt,(x),(y),(z))
