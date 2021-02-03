@@ -94,3 +94,4 @@
 |`jsrc\sn.c` `jsrc\adverbs\ai.c` `jsrc\adverbs\au.c` `jsrc\conjunctions\cp.c` `jsrc\conjunctions\cu.c` `jsrc\conjunctions\cv.c` `jsrc\conjunctions\cx.c`|fix|jtfix|`(^\|[ \t]+\|[^\d\w_])fix\((?=([^,]+?),([^)]+?)\))`|`\1jtfix(jt,`|
 |`jsrc\adverbs\af.c`|fixa|jtfixa|`(^\|[ \t]+\|[^\d\w_])fixa\((?=([^,]+?),([^)]+?)\))`|`\1jtfixa(jt,`|
 |`jsrc\adverbs\af.c`|fixrecursive|jtfixrecursive|`(^\|[ \t]+\|[^\d\w_])fixrecursive\((?=([^,]+?),([^)]+?)\))`|`\1jtfixrecursive(jt,`|
+|`jsrc\xenos\xfmt.c`|fmt02|jtfmt02|`(^\|[ \t]+\|[^\d\w_])fmt02\((?=([^,]+?),([^)]+?)\))`|`\1jtfmt02(jt,`|
