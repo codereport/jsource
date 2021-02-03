@@ -125,3 +125,4 @@
 |`jsrc\conjunctions\cg.c`|fxeachv|jtfxeachv|`(^\|[ \t]+\|[^\d\w_])fxeachv\((?=([^,]+?),([^)]+?)\))`|`\1jtfxeachv(jt,`|
 |`jsrc\conjunctions\cr.c`|fxeachv|jtfxeachv|`(^\|[ \t]+\|[^\d\w_])fxeachv\((?=([^,]+?),([^)]+?)\))`|`\1jtfxeachv(jt,`|
 |`jsrc\adverbs\am.c`|gadv|jtgadv|`(^\|[ \t]+\|[^\d\w_])gadv\((?=([^,]+?),([^)]+?)\))`|`\1jtgadv(jt,`|
+|`jsrc\xenos\x15.c`|gah|jtgah|`(^\|[ \t]+\|[^\d\w_])gah\((?=([^,]+?),([^)]+?)\))`|`\1jtgah(jt,`|

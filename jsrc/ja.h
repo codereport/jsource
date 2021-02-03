@@ -361,7 +361,7 @@
 #define ga(x0,x1,x2,x3)             jtga(jt,(x0),(x1),(x2),(x3))
 #define gafv(x0)                    jtgafv(jt,(x0))
 
-#define gah(x,y)                    jtgah(jt,(x),(y))
+
 #define gaussdet(x)                 jtgaussdet(jt,(x))
 #define gausselm(x)                 jtgausselm(jt,(x))
 #define gb_flip_cycle()             jtgb_flip_cycle(jt)

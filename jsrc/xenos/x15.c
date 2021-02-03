@@ -983,7 +983,7 @@ void dllquit(J jt){CCT*av;I j,*v;
  A jtmemu(J jt, A w) { F1PREFIP; if(!((I)jtinplace&JTINPLACEW && (AC(w)<(AFLAG(w)<<((BW-1)-AFROX)))))w=ca(w); if(AT(w)&LAST0)*(C4*)&CAV(w)[AN(w)*bp(AT(w))]=0;  return w; }  // append 0 so that calls from cd append NUL termination
  A jtmemu2(J jt,A a,A w) { return ca(w); }  // dyad - force copy willy-nilly
 
- A jtgh15(J jt, A w){A z;I k; RE(k=i0(w)); RZ(z=gah(k,0L)); ACINCR(z); return sc((I)z);}
+ A jtgh15(J jt, A w){A z;I k; RE(k=i0(w)); RZ(z=jtgah(jt,k,0L)); ACINCR(z); return sc((I)z);}
      /* 15!:8  get header */
 
  A jtfh15(J jt, A w){I k; RE(k=i0(w)); fh((A)k); return num(0);}
