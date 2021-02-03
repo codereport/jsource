@@ -249,7 +249,7 @@
 
 #define every2(x0,x1,x2)            jtevery2(jt,(x0),(x1),(x2))
 
-#define evger(x,y)                  jtevger(jt,(x),(y))
+
 #define evinit()                    jtevinit(jt)
 #define ex(x)                       jtex(jt,(x))
 #define exec1(x)                    jtexec1(jt,(x))

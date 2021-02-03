@@ -87,3 +87,4 @@
 |`jsrc\adverbs\ai.c`|eva|jteva|`(^\|[ \t]+\|[^\d\w_])eva\((?=([^,]+?),([^)]+?)\))`|`\1jteva(jt,`|
 |`jsrc\sl.c` `jsrc\adverbs\af.c` `jsrc\adverbs\am1.c` `jsrc\conjunctions\cc.c` `jsrc\conjunctions\cg.c` `jsrc\conjunctions\cl.c` `jsrc\conjunctions\cx.c` `jsrc\debugging\d.c` `jsrc\representations\r.c` `jsrc\representations\rt.c` `jsrc\verbs\vfrom.c` `jsrc\verbs\vfromsp.c`|every|jtevery|`(^\|[ \t]+\|[^\d\w_])every\((?=([^,]+?),([^)]+?)\))`|`\1jtevery(jt,`|
 |`jsrc\conjunctions\cu.c`|everysp|jteverysp|`(^\|[ \t]+\|[^\d\w_])everysp\((?=([^,]+?),([^)]+?)\))`|`\1jteverysp(jt,`|
+|`jsrc\adverbs\ar.c`|evger|jtevger|`(^\|[ \t]+\|[^\d\w_])evger\((?=([^,]+?),([^)]+?)\))`|`\1jtevger(jt,`|

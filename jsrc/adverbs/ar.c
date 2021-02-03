@@ -511,7 +511,7 @@ static A jtoprod(J jt,A a,A w,A self){A z; return df2(z,a,w,FAV(self)->fgh[2]);}
 
 
  A jtslash(J jt, A w){A h;AF f1;C c;V*v;I flag=0;
- if(NOUN&AT(w))return evger(w,sc(GINSERT));  // treat m/ as m;.6.  This means that a node with CSLASH never contains gerund u
+ if(NOUN&AT(w))return jtevger(jt,w,sc(GINSERT));  // treat m/ as m;.6.  This means that a node with CSLASH never contains gerund u
  v=FAV(w); 
  switch(v->id){  // select the monadic case
   case CCOMMA:  f1=jtredcat; flag=VJTFLGOK1;   break;
