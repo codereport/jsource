@@ -125,7 +125,7 @@ static A jtinsert(J jt,    A w,A self){A hs,*hv,z;I hfx,j,m,n;A *old;
  A jtevger(J jt,A a,A w){A hs;I k;
  RE(k=i0(w)); 
  if(k==GTRAIN)return exg(a);
- RZ(hs=fxeachv(RMAX,a));
+ RZ(hs=jtfxeachv(jt,RMAX,a));
  switch(k){
   case GAPPEND:
    return fdef(0,CGRCO,VERB, jtcon1,jtcon2, a,w,hs, VGERL, RMAX,RMAX,RMAX);
@@ -326,7 +326,7 @@ static A jtgerfrom(J jt,A a,A w){A*av,*v,z;I n;
  A jtagendai(J jt,A a,A w){I flag;
  if(NOUN&AT(w))return exg(gerfrom(w,a));  // noun form, as before
  // verb v.  Create a "BOX" type holding the verb form of each gerund
- A avb; RZ(avb = incorp(fxeachv(1L,a)));
+ A avb; RZ(avb = incorp(jtfxeachv(jt,1L,a)));
   // Calculate ASGSAFE from all of the verbs (both a and w), provided the user can handle it
  flag = VASGSAFE&FAV(w)->flag; A* avbv = AAV(avb); DQ(AN(avb), flag &= FAV(*avbv)->flag; ++avbv;);  // Don't increment inside FAV!
  return fdef(0,CATDOT,VERB, jtcasei12,jtcasei12, a,w,avb, flag+((VGERL|VJTFLGOK1|VJTFLGOK2)|FAV(ds(CATDOT))->flag), RMAX, RMAX, RMAX);
@@ -441,6 +441,6 @@ static A jtgf2(J jt,A a,A w,A self){A z,h=FAV(self)->fgh[2]; return df2(z,a,w,AA
 A jtvger2(J jt,C id,A a,A w){A h,*hv,x;V*v;
  RZ(x=a?a:w);
  ASSERT(2==AN(x),EVLENGTH);
- RZ(h=fxeachv(1L,x)); hv=AAV(h); v=VAV(*hv);
+ RZ(h=jtfxeachv(jt,1L,x)); hv=AAV(h); v=VAV(*hv);
  return fdef(0,id,VERB, jtgf1,jtgf2, x,a?w:0L, h, VGERL, (I)v->mr,lrv(v),rrv(v));
 }    /* verify and define 2-element gerund */

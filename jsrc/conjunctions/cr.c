@@ -733,7 +733,7 @@ static A jtrank20(J jt,A a,A w,A self){return jtrank2ex0(jt,a,w,self,jtrank20ato
  // Get the action routines and flags to use for the derived verb
  if(NOUN&AT(a)){  // could be gerund"n or noun"n
   // gerund requires: some rank not RMAX; boxed m; rank of m=1; and then the gerund must be well formed
-  if(((hv[0]^RMAX)|(hv[1]^RMAX)|(hv[2]^RMAX)) && !((AR(a)^1) | (AT(a)&(NOUN&~BOX))) && (ger=fxeachv(1LL,a))){
+  if(((hv[0]^RMAX)|(hv[1]^RMAX)|(hv[2]^RMAX)) && !((AR(a)^1) | (AT(a)&(NOUN&~BOX))) && (ger=jtfxeachv(jt,1LL,a))){
    f1=cycr1; f2=cycr2;  // process this with the cyclic-gerund routines
    vf=VFLAGNONE;   // the cyclic processor does not inplace or IRS and we don't bother figuring out whether it is ASGSAFE
   } else {

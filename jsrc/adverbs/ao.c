@@ -770,7 +770,7 @@ static A jtkeytally(J jt,A a,A w,A self){F2PREFIP;PROLOG(0016);A z,q;I at,j,k,n,
  A jtsldot(J jt, A w){A h=0;AF f1=jtoblique,f2;C c,d,e;I flag=VJTFLGOK1|VJTFLGOK2;V*v;
 // NOTE: u/. is processed using the code for u;.1 and passing the self for /. into the cut verb.  So, the self produced
 // by /. and ;.1 must be the same as far as flags etc.
- if(NOUN&AT(w)){flag|=VGERL; RZ(h=fxeachv(1L,w));}
+ if(NOUN&AT(w)){flag|=VGERL; RZ(h=jtfxeachv(jt,1L,w));}
  v=VAV(w);
  switch(ID(w)){  // no default for f2: every path must set it
   case CPOUND: f2=jtkeytally; break;

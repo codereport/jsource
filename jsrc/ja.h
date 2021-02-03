@@ -357,7 +357,7 @@
 #define fx(x)                       jtfx(jt,(x),0L)
 
 
-#define fxeachv(x,y)                jtfxeachv(jt,(x),(y))
+
 #define ga(x0,x1,x2,x3)             jtga(jt,(x0),(x1),(x2),(x3))
 #define gafv(x0)                    jtgafv(jt,(x0))
 #define gadv(x,y)                   jtgadv(jt,(x),(y))

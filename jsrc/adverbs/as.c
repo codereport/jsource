@@ -354,7 +354,7 @@ static A jtofxassoc(J jt,A a,A w,A self){A f,i,j,p,s,x,z;C id,*zv;I c,d,k,kc,m,r
 static A jtiota1rev(J jt,    A w,A self){I j; SETIC(w,j); return apv(j,j,-1L);}
 
  A jtbsdot(J jt, A w){A f;AF f1=jtsuffix,f2=jtoutfix;I flag=FAV(ds(CBSDOT))->flag;C id;V*v;  // init flag is IRS1
- if(NOUN&AT(w))return fdef(0,CBSLASH,VERB, jtgsuffix,jtgoutfix, w,0L,fxeachv(1L,w), VGERL|VAV(ds(CBSLASH))->flag, RMAX,0L,RMAX);
+ if(NOUN&AT(w))return fdef(0,CBSLASH,VERB, jtgsuffix,jtgoutfix, w,0L,jtfxeachv(jt,1L,w), VGERL|VAV(ds(CBSLASH))->flag, RMAX,0L,RMAX);
  v=FAV(w);  // verb info for w
  switch(v->id){
   case CPOUND: f1=jtiota1rev; break;

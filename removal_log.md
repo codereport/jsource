@@ -118,3 +118,9 @@
 |`jsrc\representations\r.c`|fxeach|jtfxeach|`(^\|[ \t]+\|[^\d\w_])fxeach\((?=([^,]+?),([^)]+?)\))`|`\1jtfxeach(jt,`|
 |`jsrc\representations\rl.c`|fxeach|jtfxeach|`(^\|[ \t]+\|[^\d\w_])fxeach\((?=([^,]+?),([^)]+?)\))`|`\1jtfxeach(jt,`|
 |`jsrc\representations\rt.c`|fxeach|jtfxeach|`(^\|[ \t]+\|[^\d\w_])fxeach\((?=([^,]+?),([^)]+?)\))`|`\1jtfxeach(jt,`|
+|`jsrc\adverbs\ao.c`|fxeachv|jtfxeachv|`(^\|[ \t]+\|[^\d\w_])fxeachv\((?=([^,]+?),([^)]+?)\))`|`\1jtfxeachv(jt,`|
+|`jsrc\adverbs\ap.c`|fxeachv|jtfxeachv|`(^\|[ \t]+\|[^\d\w_])fxeachv\((?=([^,]+?),([^)]+?)\))`|`\1jtfxeachv(jt,`|
+|`jsrc\adverbs\as.c`|fxeachv|jtfxeachv|`(^\|[ \t]+\|[^\d\w_])fxeachv\((?=([^,]+?),([^)]+?)\))`|`\1jtfxeachv(jt,`|
+|`jsrc\conjunctions\cc.c`|fxeachv|jtfxeachv|`(^\|[ \t]+\|[^\d\w_])fxeachv\((?=([^,]+?),([^)]+?)\))`|`\1jtfxeachv(jt,`|
+|`jsrc\conjunctions\cg.c`|fxeachv|jtfxeachv|`(^\|[ \t]+\|[^\d\w_])fxeachv\((?=([^,]+?),([^)]+?)\))`|`\1jtfxeachv(jt,`|
+|`jsrc\conjunctions\cr.c`|fxeachv|jtfxeachv|`(^\|[ \t]+\|[^\d\w_])fxeachv\((?=([^,]+?),([^)]+?)\))`|`\1jtfxeachv(jt,`|

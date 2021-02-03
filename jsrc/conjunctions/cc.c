@@ -1068,7 +1068,7 @@ static A jttess1(J jt,    A w,A self){A s;I m,r,*v;
 // by /. and ;.1 must be the same as far as flags etc.  For the shared case, inplacing is OK
  ASSERT(NOUN&AT(w),EVDOMAIN);
  RE(k=i0(w));
- if(NOUN&AT(a)){flag=VGERL; RZ(h=fxeachv(1L,a)); ASSERT(-2<=k&&k<=2,EVNONCE);}
+ if(NOUN&AT(a)){flag=VGERL; RZ(h=jtfxeachv(jt,1L,a)); ASSERT(-2<=k&&k<=2,EVNONCE);}
  switch(k){
  case 0:          if(FAV(a)->id==CBOX){   // <;.0
   RZ(z=fdef(0,CCUT,VERB, jtcut01,jtboxcut0, a,w,h, flag|VJTFLGOK2, RMAX,2L,RMAX));
