@@ -352,7 +352,7 @@
 #define fsm0(x,y,z)                 jtfsm0(jt,(x),(y),(z))
 #define fsmdo(x0,x1,x2,x3,x4,x5)    jtfsmdo(jt,(x0),(x1),(x2),(x3),(x4),(x5))
 #define fsmvfya(x)                  jtfsmvfya(jt,(x))
-#define ftymes(x,y)                 jtftymes(jt,(x),(y))
+
 #define fullname(x)                 jtfullname(jt,(x))
 #define fx(x)                       jtfx(jt,(x),0L)
 #define fxchar(x,y)                 jtfxchar(jt,(x),(y))
