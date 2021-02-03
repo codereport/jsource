@@ -477,7 +477,7 @@ static A jtfmtallcol(J jt, A a, A w, I mode) {A *a1v,base,fb,len,strs,*u,v,x;
     y=dtmp < 0; g=0;    // y will be length of sign prefix; init to 1 if negative.  g is length of sign suffix9
     if(dtmp < 0 && mMN) { y=nM; g=nN; }   // if value is negative and m<xx> or n<xx> given, set pref/suff length from m/n
     else if(dtmp>=0 && mPQ) { y=nP; g=nQ; }   // if value is nonnegative and p<xx> or q<xx> given, set pref/suff length from p/q
-    RZ(sprintfeD(cv+y,*il-y-g,d,exprndID(d,dtmp),subs));  // format the number, skipping pref/suff
+    RZ(sprintfeD(cv+y,*il-y-g,d,jtexprndID(jt,d,dtmp),subs));  // format the number, skipping pref/suff
     if     (dtmp< 0 && mMN) { MC(cv, cM, nM); MC(cv+*il-nN, cN, nN); }  // if negative & pref/suff given, move them in
     else if(dtmp< 0       ) { *cv=SUBm;                              }   // if other negative, use the specified - sign
     else if(dtmp>=0 && mPQ) { MC(cv, cP, nP); MC(cv+*il-nQ, cQ, nQ); }  // if nonnegative & pref/suff given, move them in

@@ -89,3 +89,4 @@
 |`jsrc\conjunctions\cu.c`|everysp|jteverysp|`(^\|[ \t]+\|[^\d\w_])everysp\((?=([^,]+?),([^)]+?)\))`|`\1jteverysp(jt,`|
 |`jsrc\adverbs\ar.c`|evger|jtevger|`(^\|[ \t]+\|[^\d\w_])evger\((?=([^,]+?),([^)]+?)\))`|`\1jtevger(jt,`|
 |`jsrc\adverbs\ai.c`|expand|jtexpand|`(^\|[ \t]+\|[^\d\w_])expand\((?=([^,]+?),([^)]+?)\))`|`\1jtexpand(jt,`|
+|`jsrc\xenos\xfmt.c`|exprndID|jtexprndID|`(^\|[ \t]+\|[^\d\w_])exprndID\((?=([^,]+?),([^)]+?)\))`|`\1jtexprndID(jt,`|
