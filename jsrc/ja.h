@@ -343,7 +343,7 @@
 #define frombs1(x,y,z)              jtfrombs1(jt,(x),(y),(z))
 #define frombsn(x,y,z)              jtfrombsn(jt,(x),(y),(z))
 #define frombu(x,y,z)               jtfrombu(jt,(x),(y),(z))
-#define fromis(x,y)                 jtfromis(jt,(x),(y))
+
 #define fromis1(x0,x1,x2,x3)        jtfromis1(jt,(x0),(x1),(x2),(x3))
 #define fromr(x,y)                  jtfromr(jt,(x),(y))
 #define fromsd(x,y)                 jtfromsd(jt,(x),(y))
