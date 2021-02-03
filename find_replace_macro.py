@@ -35,7 +35,7 @@ def walk_matches():
                                 "dlcm",
                                 "equ",
                                 "fplus",
-                                "jtftymes"]:
+                                "ftymes"]:
                     continue
                 print("remove " + full_str)
                 data = data.replace(full_str, "")
