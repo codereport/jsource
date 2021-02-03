@@ -347,7 +347,7 @@
 #define fromis1(x0,x1,x2,x3)        jtfromis1(jt,(x0),(x1),(x2),(x3))
 
 
-#define fromss(x,y)                 jtfromss(jt,(x),(y))
+
 #define fslashatg(x,y,z)            jtfslashatg(jt,(x),(y),(z))
 #define fsm0(x,y,z)                 jtfsm0(jt,(x),(y),(z))
 #define fsmdo(x0,x1,x2,x3,x4,x5)    jtfsmdo(jt,(x0),(x1),(x2),(x3),(x4),(x5))

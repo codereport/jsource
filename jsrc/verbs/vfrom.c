@@ -349,7 +349,7 @@ static A jtafrom(J jt,A a,A w){PROLOG(0073);A c,ind,p=0,q,*v,y=w;B bb=1;I acr,ar
    // Here we transferred out of w.  We must mark w non-pristine.  Since there may have been duplicates, we cannot mark z as pristine.  We overwrite w because it is no longer in use
    PRISTCLRF(w)
   }
- }else if(!((AT(a)|AT(w))&(NOUN&~SPARSE))){z=fromss(a,w);}  // sparse cases
+ }else if(!((AT(a)|AT(w))&(NOUN&~SPARSE))){z=jtfromss(jt,a,w);}  // sparse cases
  else if(AT(w)&SPARSE){z=at&BOX?jtfrombs(jt,a,w) : jtfromis(jt,a,w);}
  else{z=jtfromsd(jt,a,w);}
  return z;
