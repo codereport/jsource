@@ -147,3 +147,4 @@
 |`jsrc\verbs\vs.c`|grade2|jtgrade2|`(^\|[ \t]+\|[^\d\w_])grade2\((?=([^,]+?),([^)]+?)\))`|`\1jtgrade2(jt,`|
 |`jsrc\xenos\xl.c`|grade2|jtgrade2|`(^\|[ \t]+\|[^\d\w_])grade2\((?=([^,]+?),([^)]+?)\))`|`\1jtgrade2(jt,`|
 |`jsrc\xenos\xo.c`|grade2|jtgrade2|`(^\|[ \t]+\|[^\d\w_])grade2\((?=([^,]+?),([^)]+?)\))`|`\1jtgrade2(jt,`|
+|`jsrc\verbs\vg.c`|grd2sp|jtgrd2sp|`(^\|[ \t]+\|[^\d\w_])grd2sp\((?=([^,]+?),([^)]+?)\))`|`\1jtgrd2sp(jt,`|

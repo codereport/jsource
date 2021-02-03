@@ -387,7 +387,7 @@
 #define grd1spsd(x,y,z)             jtgrd1spsd(jt,(x),(y),(z))
 #define grd1spss(x,y,z)             jtgrd1spss(jt,(x),(y),(z))
 #define grd1spz(x,y,z)              jtgrd1spz(jt,(x),(y),(z))
-#define grd2sp(x,y)                 jtgrd2sp(jt,(x),(y))
+
 #define grd2spsd(x,y,z)             jtgrd2spsd(jt,(x),(y),(z))
 #define grd2spss(x,y,z)             jtgrd2spss(jt,(x),(y),(z))
 #define gri(x0,x1,x2,x3,x4)         jtgri(jt,(x0),(x1),(x2),(x3),(x4))
