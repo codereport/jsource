@@ -84,7 +84,7 @@ static A jtfxchar(J jt,    A w,A self){A y;C c,d,id,*s;I m,n;
 // self is normally 0; if nonzero, we return a noun type ('0';<value) as is rather than returning value, and leave adv/conj ARs looking like nouns
  A jtfx(J jt,    A w,A self){A f,fs,g,h,p,q,*wv,y,*yv;C id;I m,n=0;
  // if string, handle that special case (verb/primitive)
- if(LIT&AT(w))return fxchar(w,self);
+ if(LIT&AT(w))return jtfxchar(jt,w,self);
  // otherwise, it had better be boxed with rank 0 or 1, and 1 or 2 atoms
  m=AN(w);   // m=#atoms
  ASSERT(BOX&AT(w),EVDOMAIN);

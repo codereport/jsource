@@ -355,7 +355,7 @@
 #define ftymes(x,y)                 jtftymes(jt,(x),(y))
 #define fullname(x)                 jtfullname(jt,(x))
 #define fx(x)                       jtfx(jt,(x),0L)
-#define fxchar(x,y)                 jtfxchar(jt,(x),(y))
+
 #define fxeach(x,y)                 jtfxeach(jt,(x),(y))
 #define fxeachv(x,y)                jtfxeachv(jt,(x),(y))
 #define ga(x0,x1,x2,x3)             jtga(jt,(x0),(x1),(x2),(x3))
