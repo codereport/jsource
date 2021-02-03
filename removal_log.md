@@ -91,10 +91,5 @@
 |`jsrc\adverbs\ai.c`|expand|jtexpand|`(^\|[ \t]+\|[^\d\w_])expand\((?=([^,]+?),([^)]+?)\))`|`\1jtexpand(jt,`|
 |`jsrc\xenos\xfmt.c`|exprndID|jtexprndID|`(^\|[ \t]+\|[^\d\w_])exprndID\((?=([^,]+?),([^)]+?)\))`|`\1jtexprndID(jt,`|
 |`jsrc\k.c` `jsrc\s.h` `jsrc\sn.c` `jsrc\conjunctions\cl.c` `jsrc\conjunctions\cp.c` `jsrc\conjunctions\cpdtsp.c` `jsrc\conjunctions\cx.c` `jsrc\parsing\p.c` `jsrc\verbs\vb.c` `jsrc\verbs\vp.c` `jsrc\verbs\vsb.c` `jsrc\words\w.c` `jsrc\words\wc.c` `jsrc\xenos\x15.c` `jsrc\xenos\xd.c` `jsrc\xenos\xf.c` `jsrc\xenos\xl.c` `jsrc\xenos\xo.c` `jsrc\xenos\xs.c` `jsrc\conjunctions\cv.c` `jsrc\representations\rl.c`|fit|jtfit|`(^\|[ \t]+\|[^\d\w_])fit\((?=([^,]+?),([^)]+?)\))`|`\1jtfit(jt,`|
-|`jsrc\sn.c`|fix|jtfix|`(^\|[ \t]+\|[^\d\w_])fix\((?=([^,]+?),([^)]+?)\))`|`\1jtfix(jt,`|
-|`jsrc\adverbs\ai.c`|fix|jtfix|`(^\|[ \t]+\|[^\d\w_])fix\((?=([^,]+?),([^)]+?)\))`|`\1jtfix(jt,`|
-|`jsrc\adverbs\au.c`|fix|jtfix|`(^\|[ \t]+\|[^\d\w_])fix\((?=([^,]+?),([^)]+?)\))`|`\1jtfix(jt,`|
-|`jsrc\conjunctions\cp.c`|fix|jtfix|`(^\|[ \t]+\|[^\d\w_])fix\((?=([^,]+?),([^)]+?)\))`|`\1jtfix(jt,`|
-|`jsrc\conjunctions\cu.c`|fix|jtfix|`(^\|[ \t]+\|[^\d\w_])fix\((?=([^,]+?),([^)]+?)\))`|`\1jtfix(jt,`|
-|`jsrc\conjunctions\cv.c`|fix|jtfix|`(^\|[ \t]+\|[^\d\w_])fix\((?=([^,]+?),([^)]+?)\))`|`\1jtfix(jt,`|
-|`jsrc\conjunctions\cx.c`|fix|jtfix|`(^\|[ \t]+\|[^\d\w_])fix\((?=([^,]+?),([^)]+?)\))`|`\1jtfix(jt,`|
+|`jsrc\sn.c` `jsrc\adverbs\ai.c` `jsrc\adverbs\au.c` `jsrc\conjunctions\cp.c` `jsrc\conjunctions\cu.c` `jsrc\conjunctions\cv.c` `jsrc\conjunctions\cx.c`|fix|jtfix|`(^\|[ \t]+\|[^\d\w_])fix\((?=([^,]+?),([^)]+?)\))`|`\1jtfix(jt,`|
+|`jsrc\adverbs\af.c`|fixa|jtfixa|`(^\|[ \t]+\|[^\d\w_])fixa\((?=([^,]+?),([^)]+?)\))`|`\1jtfixa(jt,`|

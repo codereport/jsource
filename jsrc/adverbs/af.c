@@ -69,7 +69,7 @@ EVERYFS(arofixaself,jtaro,jtfixa,0,VFLAGNONE)  // create A block to be used in e
 // a has to be an A type because it goes into every2.  It is always an I type with rank 0, but it may be virtual when it comes back from every2
 // AM(a) points to the recursion name-list and must be passed to all recursion levels
 static A jtfixa(J jt,A a,A w){A f,g,h,wf,x,y,z=w;V*v;fauxblock(fauxself); A aa; fauxINT(aa,fauxself,1,0); AM((A)aa)=AM(a);  // place to build recursion parm - make the AK field right, and pass the AM field along
-#define REFIXA(a,x) (IAV0(aa)[0]=(aif|(a)), fixa((A)aa,(x)))
+#define REFIXA(a,x) (IAV0(aa)[0]=(aif|(a)), jtfixa(jt,(A)aa,(x)))
  if(!w) return 0;
  I ai=IAV(a)[0];  // value of a
  I aif=ai&(FIXALOCSONLY|FIXALOCSONLYLOWEST|FIXASTOPATINV); // extract control flags
@@ -181,7 +181,7 @@ static A jtfixa(J jt,A a,A w){A f,g,h,wf,x,y,z=w;V*v;fauxblock(fauxself); A aa; 
  // a faux INT block to hold the value, and use AM in that block to point to the list of names
  A namelist; GAT0(namelist,BOX,248,1); AS(namelist)[0]=AN(namelist)=0;  // allocate 248 slots with rank 1, but initialize to empty
  fauxblock(fauxself); A augself; fauxINT(augself,fauxself,1,0); AM(augself)=(I)namelist; IAV(augself)[0]=IAV(self)[0];  // transfer value to writable block; install empty name array
- RZ(z=fixa(augself,AT(w)&VERB+ADV+CONJ?w:symbrdlock(w)));  // name comes from string a
+ RZ(z=jtfixa(jt,augself,AT(w)&VERB+ADV+CONJ?w:symbrdlock(w)));  // name comes from string a
  // Once a node has been fixed, it doesn't need to be looked at ever again.  This applies even if the node itself carries a name.  To indicate this
  // we set VFIX.  We only do so if the node has descendants (or a name).  We also turn off VNAMED, which is set in named explicit definitions (I don't
   // understand why).  We can do this only if we are sure the entire tree was traversed, i. e. we were not just looking for implicit locatives or inverses.
