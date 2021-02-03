@@ -85,7 +85,7 @@ A jtfrombsn(J jt,A ind,A w,I wf){A a,j1,p,q,x,x1,y,y1,ys,z;C*xu,*xuu,*xv;
  SPB(zp,e,ca(SPA(wp,e))); x=SPA(wp,x); y=SPA(wp,i); 
  a=SPA(wp,a); an=AN(a); SPB(zp,a,aaxis(w,wf,a,r,h,&pp,&qq,&rr));
  if( !qq){SPB(zp,i,ca(y)); SPB(zp,x,frombu(ind,x,AR(x)-(wr-wf-rr))); return z;}
- if(h>qq){q=nub(over(a,apv(h,wf,1L))); return frombsn(ind,reaxis(grade2(q,q),w),wf);}
+ if(h>qq){q=nub(over(a,apv(h,wf,1L))); return frombsn(ind,reaxis(jtgrade2(jt,q,q),w),wf);}
  if(1<r)RZ(ind=reshape(v2(n,h),ind)); 
  RZ(ys=jtfromr(jt,indexof(a,apv(h,wf,1L)),y));
  RZ(q=jteps(jt,ys,ind)); 

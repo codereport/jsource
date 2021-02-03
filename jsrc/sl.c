@@ -242,7 +242,7 @@ static A jtlocnlx(J jt, A w){A y,z=mtv;B*wv;I m=0;
  RZ(w=jtcvt(jt,B01,w)); wv=BAV(w); DO(AN(w), m|=1+wv[i];);  // accumulate mask of requested types
  if(1&m)z=nlsym(jt->stloc);  // named locales
  if(2&m){RZ(y=jtactivenl(jt)); z=over(y,z); }  // get list of active numbered locales
- return grade2(z,ope(z));
+ return jtgrade2(jt,z,ope(z));
 }
 
  A jtlocnl1(J jt, A w){memset(jt->workareas.namelist.nla,C1,256); return locnlx(w);}

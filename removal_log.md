@@ -136,3 +136,14 @@
 |`jsrc\verbs\vfromsp.c`|gc|jtgc|`(^\|[ \t]+\|[^\d\w_])gc\((?=([^,]+?),([^)]+?)\))`|`\1jtgc(jt,`|
 |`jsrc\conjunctions\cg.c`|gerfrom|jtgerfrom|`(^\|[ \t]+\|[^\d\w_])gerfrom\((?=([^,]+?),([^)]+?)\))`|`\1jtgerfrom(jt,`|
 |`jsrc\adverbs\ar.c`|grade1p|jtgrade1p|`(^\|[ \t]+\|[^\d\w_])grade1p\((?=([^,]+?),([^)]+?)\))`|`\1jtgrade1p(jt,`|
+|`jsrc\sl.c`|grade2|jtgrade2|`(^\|[ \t]+\|[^\d\w_])grade2\((?=([^,]+?),([^)]+?)\))`|`\1jtgrade2(jt,`|
+|`jsrc\sn.c`|grade2|jtgrade2|`(^\|[ \t]+\|[^\d\w_])grade2\((?=([^,]+?),([^)]+?)\))`|`\1jtgrade2(jt,`|
+|`jsrc\conjunctions\cpdtsp.c`|grade2|jtgrade2|`(^\|[ \t]+\|[^\d\w_])grade2\((?=([^,]+?),([^)]+?)\))`|`\1jtgrade2(jt,`|
+|`jsrc\debugging\dc.c`|grade2|jtgrade2|`(^\|[ \t]+\|[^\d\w_])grade2\((?=([^,]+?),([^)]+?)\))`|`\1jtgrade2(jt,`|
+|`jsrc\verbs\v2.c`|grade2|jtgrade2|`(^\|[ \t]+\|[^\d\w_])grade2\((?=([^,]+?),([^)]+?)\))`|`\1jtgrade2(jt,`|
+|`jsrc\verbs\vfromsp.c`|grade2|jtgrade2|`(^\|[ \t]+\|[^\d\w_])grade2\((?=([^,]+?),([^)]+?)\))`|`\1jtgrade2(jt,`|
+|`jsrc\verbs\vg.c`|grade2|jtgrade2|`(^\|[ \t]+\|[^\d\w_])grade2\((?=([^,]+?),([^)]+?)\))`|`\1jtgrade2(jt,`|
+|`jsrc\verbs\vi.c`|grade2|jtgrade2|`(^\|[ \t]+\|[^\d\w_])grade2\((?=([^,]+?),([^)]+?)\))`|`\1jtgrade2(jt,`|
+|`jsrc\verbs\vs.c`|grade2|jtgrade2|`(^\|[ \t]+\|[^\d\w_])grade2\((?=([^,]+?),([^)]+?)\))`|`\1jtgrade2(jt,`|
+|`jsrc\xenos\xl.c`|grade2|jtgrade2|`(^\|[ \t]+\|[^\d\w_])grade2\((?=([^,]+?),([^)]+?)\))`|`\1jtgrade2(jt,`|
+|`jsrc\xenos\xo.c`|grade2|jtgrade2|`(^\|[ \t]+\|[^\d\w_])grade2\((?=([^,]+?),([^)]+?)\))`|`\1jtgrade2(jt,`|

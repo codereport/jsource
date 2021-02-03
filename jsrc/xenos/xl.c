@@ -46,7 +46,7 @@ B jtxlinit(J jt){A x;I*s;
  return 1;
 }
 
- A jtjlocks(J jt, A w){A y; ASSERTMTV(w); y=take(sc(AM(jt->flkd)),jt->flkd); return grade2(y,y);}
+ A jtjlocks(J jt, A w){A y; ASSERTMTV(w); y=take(sc(AM(jt->flkd)),jt->flkd); return jtgrade2(jt,y,y);}
      /* return the locks, a 3-column table of (number,index,length) */
 
  A jtjlock(J jt, A w){B b;I*v;

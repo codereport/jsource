@@ -38,7 +38,7 @@ I jtfnum(J jt,A w){A y;I h,j;
  A jtjfiles(J jt, A w){A y,z;
  ASSERTMTV(w);
  RZ(y=vec(INT,AM(jt->fopf),AV(jt->fopf)));
- return grade2(stitch(IRS1(y,0,0,jtbox,z),vec(BOX,AM(jt->fopf),AV(jt->fopa))),y);
+ return jtgrade2(jt,stitch(IRS1(y,0,0,jtbox,z),vec(BOX,AM(jt->fopf),AV(jt->fopa))),y);
 }    /* file (number,name) table */
 
 F jtjope(J jt,A w,C*mode){A t;F f;I n;static I nf=25; A z;

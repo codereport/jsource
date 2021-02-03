@@ -760,7 +760,7 @@ static B (*grroutine[])(J,I,I,I,A,I*) = {  // index is [bitx]
  A jtordstat(J jt,A a,A w){A q,t=0;I j,m,m0,m1,n,wt;D *qv;
  I i=NRANDS-1;  // i points to the next random number to draw
  n=AN(w); wt=AT(w); RE(j=i0(a));
- if(((4-n)&((AR(a)|(1^AR(w)))-1)&(-(wt&FL+INT)))>=0)return jtfrom(jt,a,grade2(w,w));  // if not int/float, or short, or not (atom a and list w), do full grade
+ if(((4-n)&((AR(a)|(1^AR(w)))-1)&(-(wt&FL+INT)))>=0)return jtfrom(jt,a,jtgrade2(jt,w,w));  // if not int/float, or short, or not (atom a and list w), do full grade
  if((UI)j>=(UI)n){j+=n; ASSERT((UI)j<(UI)n,EVINDEX);}
  // deal a bunch of random floats to provide pivots.  We reuse them if needed
  RZ(df2(q,sc(NRANDS),num(0),jtatop(jt,ds(CQUERY),ds(CDOLLAR)))); qv=DAV(q);

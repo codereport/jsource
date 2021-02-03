@@ -627,6 +627,6 @@ static A jtxfactor(J jt, A w){PROLOG(0064);A st,z;B b=0;I k,m;X g,*sv,*sv0,x;
   RZ(g=fac_ecm(x));     if(g!=iv1){*sv++=g; RZ(*sv++=xdiv(x,g,XMFLR)); continue;}
   ASSERT(0,EVNONCE);
  }
- z=grade2(z,z);
+ z=jtgrade2(jt,z,z);
  EPILOG(z);
 }

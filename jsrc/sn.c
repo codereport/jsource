@@ -143,7 +143,7 @@ static A jtnlx(J jt, A w){A z=mtv;B b;I m=0,*v,x;
  if(b           )RZ(z=nlxxx(jt->global));
  if(b&&(AN(jt->locsyms)>1))RZ(z=over(nlxxx(jt->locsyms),z));
  if(m==SYMB     )RZ(z=over(nlsym(jt->stloc),z));
- return nub(grade2(z,ope(z)));
+ return nub(jtgrade2(jt,z,ope(z)));
 }
 
  A jtnl1(J jt, A w){memset(jt->workareas.namelist.nla,C1,256L); return nlx(w);}
@@ -208,7 +208,7 @@ static A jtnch1(J jt,B b,A w,I*pm,A ch){A*v,x,y;C*s,*yv;LX *e;I i,k,m,p,wn;L*d;
  }
  jt->stch=b;
  AN(ch)=AS(ch)[0]=m;
- return grade2(ch,ope(ch));
+ return jtgrade2(jt,ch,ope(ch));
 }    /* 4!:5  names changed */
 
 

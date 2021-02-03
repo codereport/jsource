@@ -118,7 +118,7 @@ static B jtmmprep(J jt,P*p,I*n,I**iv,I*m,I**nv,D**xv){A x;I j,k,q,*u,*v;
 static B jtmmharvest(J jt,I ii,I zjn,A zj,D*zyv,I*n,A*zi,A*zx){A x;D*zxv,*zxv0;I j,m,p,*v,*ziv;
  m=MIN(*AS(*zi),*AS(*zx));
  while(m<*n+zjn){RZ(*zi=jtext(jt,0,*zi)); RZ(*zx=jtext(jt,0,*zx)); m=MIN(*AS(*zi),*AS(*zx));}
- m=AN(zj); AN(zj)=*AS(zj)=zjn; RZ(x=grade2(zj,zj)); AN(zj)=*AS(zj)=m; 
+ m=AN(zj); AN(zj)=*AS(zj)=zjn; RZ(x=jtgrade2(jt,zj,zj)); AN(zj)=*AS(zj)=m; 
  p=-1; v=AV(x); ziv=AV(*zi)+(*n<<1); zxv=zxv0=DAV(*zx)+*n;
  DQ(zjn, if(p<(j=*v++)){p=j; *ziv++=ii; *ziv++=j; *zxv++=zyv[j]; zyv[j]=0;});
  *n+=zxv-zxv0;

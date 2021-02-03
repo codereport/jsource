@@ -379,7 +379,7 @@
 #define gr1(x)                      jtgr1(jt,(x))
 #define grade1(x)                   jtgrade1(jt,(x))
 
-#define grade2(x,y)                 jtgrade2(jt,(x),(y))
+
 #define graft(x)                    jtgraft(jt,(x))
 #define grd1sp(x)                   jtgrd1sp(jt,(x))
 #define grd1spdd(x,y,z)             jtgrd1spdd(jt,(x),(y),(z))

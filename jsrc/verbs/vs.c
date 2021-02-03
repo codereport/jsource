@@ -237,7 +237,7 @@ static A jtaxbytes(J jt,A a,A w){A a1,e,p,q,x;B*b;I c,d,j,m,n=0,r,*u,*v,*ws,wt;P
  }
  if(all1(jteps(jt,a1,a))){A y=SPA(wp,i);   /* new is subset of old */
   RZ(y=jtfromr(jt,indexof(a,a1),y)); 
-  RZ(y=grade2(y,y));
+  RZ(y=jtgrade2(jt,y,y));
   if(m=*AS(y)){n=1; u=AV(y); DQ(m-1, if(ICMP(u,u+d,d))++n; u+=d;);} 
   RZ(p=over(less(a,a1),jtdaxis(jt,r,a))); v=AV(p);
   DQ(AN(p), u[j++]=ws[*v++];);
@@ -261,7 +261,7 @@ static A jtaxtally(J jt,A a,A w){A a1,e,p,q,x;B*b;I c,d,j,m,n=0,r,*u,*v,*ws,wt;P
  }
  if(all1(jteps(jt,a1,a))){A y=SPA(wp,i);   /* new is subset of old */
   RZ(y=jtfromr(jt,indexof(a,a1),y)); 
-  RZ(y=grade2(y,y));
+  RZ(y=jtgrade2(jt,y,y));
   if(m=*AS(y)){n=1; u=AV(y); DQ(m-1, if(ICMP(u,u+d,d))++n; u+=d;);} 
   return sc(n);
  }
