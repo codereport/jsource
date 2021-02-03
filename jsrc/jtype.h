@@ -209,29 +209,31 @@ typedef I SI;
 // NOTE!! the length of NOUN types must be power-of-2 multiples because of jtamend2
 
 // NOTE: all noun types must be below all parsable non-nouns
-
-#define B01X   0
-#define LITX   1
-#define INTX   2
-#define FLX    3
-#define CMPXX  4
-#define BOXX   5
-#define XNUMX  6
-#define RATX   7
-#define BITX   8
-// Bit 9 unused
-#define SB01X  10
-#define SLITX  11
-#define SINTX  12
-#define SFLX   13
-#define SCMPXX 14
-#define SBOXX  15
-#define SBTX   16
-#define C2TX   17
-#define C4TX   18
-#define XDX    19
-#define XZX    20
-
+// shifts
+enum {
+    B01X   = 0,
+    LITX   = 1,
+    INTX   = 2,
+    FLX    = 3,
+    CMPXX  = 4,
+    BOXX   = 5,
+    XNUMX  = 6,
+    RATX   = 7,
+    BITX   = 8,
+    // Bit 9 unused
+    SB01X  = 10,
+    SLITX  = 11,
+    SINTX  = 12,
+    SFLX   = 13,
+    SCMPXX = 14,
+    SBOXX  = 15,
+    SBTX   = 16,
+    C2TX   = 17,
+    C4TX   = 18,
+    XDX    = 19,
+    XZX    = 20,
+};
+// flags do these need to be long longs? only up to 20 bits could be 32 bit.
 #define B01   ((I)1L<<B01X)           /* B  boolean                      */
 #define LIT   ((I)1L<<LITX)           /* C  literal (character)          */
 #define INT   ((I)1L<<INTX)           /* I  integer                      */
