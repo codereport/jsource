@@ -398,7 +398,7 @@ dobblock:
    if(!cv->t){
     BASSERT(t!=0,EVCTRL);   // Error if no sentences in T-block
     CHECKNOUN    // if t is not a noun, signal error on the last line executed in the T block
-    BZ(forinit(cv,t)); t=0;
+    BZ(jtforinit(jt,cv,t)); t=0;
    }
    ++cv->j;  // step to first (or next) iteration
    if(cv->x){A x;  // assign xyz and xyz_index for for_xyz.

@@ -103,3 +103,4 @@
 |`jsrc\adverbs\ai.c`|foreign|jtforeign|`(^\|[ \t]+\|[^\d\w_])foreign\((?=([^,]+?),([^)]+?)\))`|`\1jtforeign(jt,`|
 |`jsrc\representations\r.c`|foreign|jtforeign|`(^\|[ \t]+\|[^\d\w_])foreign\((?=([^,]+?),([^)]+?)\))`|`\1jtforeign(jt,`|
 |`jsrc\xenos\xfmt.c`|foreign|jtforeign|`(^\|[ \t]+\|[^\d\w_])foreign\((?=([^,]+?),([^)]+?)\))`|`\1jtforeign(jt,`|
+|`jsrc\conjunctions\cx.c`|forinit|jtforinit|`(^\|[ \t]+\|[^\d\w_])forinit\((?=([^,]+?),([^)]+?)\))`|`\1jtforinit(jt,`|

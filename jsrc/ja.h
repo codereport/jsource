@@ -334,7 +334,7 @@
 #define folk(x,y,z)                 jtfolk(jt,(x),(y),(z))
 
 
-#define forinit(x,y)                jtforinit(jt,(x),(y))
+
 #define fplus(x,y)                  jtfplus(jt,(x),(y))
 #define fr(x)                       {if((x)!=0){I Zs = AC(x); if(!ACISPERM(Zs)){if(--Zs<=0)mf(x);else AC(x)=Zs;}}}
 #define fram(x0,x1,x2,x3,x4)        jtfram(jt,(x0),(x1),(x2),(x3),(x4))
