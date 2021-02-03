@@ -258,7 +258,7 @@
 #define exec2x(x0,x1,x2,x3,x4)      jtexec2x(jt,(x0),(x1),(x2),(x3),(x4))
 #define exec2z(x0,x1,x2,x3,x4)      jtexec2z(jt,(x0),(x1),(x2),(x3),(x4))
 #define exg(x)                      jtexg(jt,(x))
-#define expand(x,y)                 jtexpand(jt,(x),(y))
+
 #define expn1(x)                    jtatomic1(jt,(x),ds(CEXP))
 #define expn2(x,y)                  jtatomic2(jt,(x),(y),ds(CEXP))   // bypass sqrt test for internal calls
 #define exprndID(x,y)               jtexprndID(jt,(x),(y))

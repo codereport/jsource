@@ -40,11 +40,11 @@ static A jtinvfork(J jt, A w){A f,fi,g,gi,h,k;B b,c;V*v;
  return fong(fi,gi);
 }
 
-static A jtexpandf(J jt,    A w,A self){A f; f=FAV(self)->fgh[0]; return expand(VAV(f)->fgh[0],w);}
+static A jtexpandf(J jt,    A w,A self){A f; f=FAV(self)->fgh[0]; return jtexpand(jt,VAV(f)->fgh[0],w);}
 
 static A jtexpandg(J jt,    A w,A self){A f,g,z;V*v;
  f=FAV(self)->fgh[0]; v=FAV(f); g=v->fgh[1];
- jt->fill=FAV(g)->fgh[1]; z=expand(v->fgh[0],w); jt->fill=0;   // elements of FAV cannot be virtual
+ jt->fill=FAV(g)->fgh[1]; z=jtexpand(jt,v->fgh[0],w); jt->fill=0;   // elements of FAV cannot be virtual
  return z;
 }
 
