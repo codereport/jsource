@@ -111,3 +111,4 @@
 |`jsrc\verbs\vfromsp.c`|fromr|jtfromr|`(^\|[ \t]+\|[^\d\w_])fromr\((?=([^,]+?),([^)]+?)\))`|`\1jtfromr(jt,`|
 |`jsrc\verbs\vrep.c`|fromr|jtfromr|`(^\|[ \t]+\|[^\d\w_])fromr\((?=([^,]+?),([^)]+?)\))`|`\1jtfromr(jt,`|
 |`jsrc\verbs\vs.c`|fromr|jtfromr|`(^\|[ \t]+\|[^\d\w_])fromr\((?=([^,]+?),([^)]+?)\))`|`\1jtfromr(jt,`|
+|`jsrc\verbs\vfrom.c`|fromsd|jtfromsd|`(^\|[ \t]+\|[^\d\w_])fromsd\((?=([^,]+?),([^)]+?)\))`|`\1jtfromsd(jt,`|
