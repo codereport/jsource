@@ -259,7 +259,7 @@ D jtdgcd(J jt,D a,D b){D a1,b1,t;B stop = 0;
  return a;
 }    /* D.L. Forkes 1984; E.E. McDonnell 1992 */
 I jtilcm(J jt,I a,I b){I z;I d;
- if(a&&b){RZ(d=igcd(a,b)); if(0==(z=jtmult(0,a,b/d)))jt->jerr=EWOV; return z;}else return 0;
+ if(a&&b){RZ(d=jtigcd(jt,a,b)); if(0==(z=jtmult(0,a,b/d)))jt->jerr=EWOV; return z;}else return 0;
 }
 
 #define GCDIO(u,v)      (dgcd((D)u,(D)v))

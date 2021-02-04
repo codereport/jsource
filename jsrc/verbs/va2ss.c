@@ -336,7 +336,7 @@ A jtssingleton(J jt, A a,A w,A self,RANK2T awr,RANK2T ranks){A z;
  }
  // The only thing left is exit processing for the different functions
  gcdintresult:
- ziv=igcd(aiv,wiv); if(ziv||!jt->jerr){SSSTORE(ziv,z,INT,I) return z;}  // if no error, store an int
+ ziv=jtigcd(jt,aiv,wiv); if(ziv||!jt->jerr){SSSTORE(ziv,z,INT,I) return z;}  // if no error, store an int
  if(jt->jerr<EWOV)return 0;  // If not overflow, what can it be?
  RESETERR; adv=(D)aiv; wdv=(D)wiv;  // Rack em up again; Convert int args to float, and fall through to float case
  gcdflresult:
