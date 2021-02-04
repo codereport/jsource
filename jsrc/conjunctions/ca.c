@@ -20,7 +20,7 @@ static A jtuponf2(J jt,A a,A w,A self){PROLOG(0022);DECLFG;A z;I flag=sv->flag,m
  if(primitive(gs))if(flag&VFLR)jt->xmode=XMFLR; else if(flag&VCEIL)jt->xmode=XMCEIL;
  if(RAT&AT(a))RZ(a=pcvt(XNUM,a));
  if(RAT&AT(w))RZ(w=pcvt(XNUM,w));
- RZ(z=INT&AT(a)&AT(w)&&CDIV==ID(gs)?intdiv(a,w):CALL1(f1,CALL2(g2,a,w,gs),fs));
+ RZ(z=INT&AT(a)&AT(w)&&CDIV==ID(gs)?jtintdiv(jt,a,w):CALL1(f1,CALL2(g2,a,w,gs),fs));
  jt->xmode=m;
  EPILOG(z);
 }

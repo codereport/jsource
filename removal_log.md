@@ -200,3 +200,4 @@
 |`jsrc\xenos\xo.c`|indexof|jtindexof|`(^\|[ \t]+\|[^\d\w_])indexof\((?=([^,]+?),([^)]+?)\))`|`\1jtindexof(jt,`|
 |`jsrc\xenos\xs.c`|indexof|jtindexof|`(^\|[ \t]+\|[^\d\w_])indexof\((?=([^,]+?),([^)]+?)\))`|`\1jtindexof(jt,`|
 |`jsrc\xenos\xt.c`|indexof|jtindexof|`(^\|[ \t]+\|[^\d\w_])indexof\((?=([^,]+?),([^)]+?)\))`|`\1jtindexof(jt,`|
+|`jsrc\conjunctions\ca.c`|intdiv|jtintdiv|`(^\|[ \t]+\|[^\d\w_])intdiv\((?=([^,]+?),([^)]+?)\))`|`\1jtintdiv(jt,`|

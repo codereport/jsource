@@ -437,7 +437,7 @@
 #define infix(x,y,z)                jtinfix(jt,(x),(y),(z))
 #define inpl(x,y,z)                 jtinpl(jt,(x),(y),(z))
 #define int0(x)                     jtint0(jt,(x))
-#define intdiv(x,y)                 jtintdiv(jt,(x),(y))
+
 #define intmod2(x,y)                jtintmod2(jt,(x),(y))
 #define intpow(x,y)                 jtintpow(jt,(x),(y))
 #define inv(x)                      jtinv(jt,(x),0)
