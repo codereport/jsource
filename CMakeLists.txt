@@ -37,7 +37,7 @@ OptimizeForArchitecture()
 add_compile_options("$<$<COMPILE_LANGUAGE:CXX>:${Vc_ARCHITECTURE_FLAGS}>")
 
 add_compile_options($<$<COMPILE_LANGUAGE:C>:-fno-strict-aliasing>)
-add_compile_options($<$<COMPILE_LANGUAGE:C,CXX>:-Werror>)
+#add_compile_options($<$<COMPILE_LANGUAGE:C,CXX>:-Werror>)
 add_compile_options($<$<COMPILE_LANGUAGE:C,CXX>:-Wall>)
 add_compile_options($<$<COMPILE_LANGUAGE:C,CXX>:-Wextra>)
 add_compile_options($<$<COMPILE_LANG_AND_ID:C,CXX,GNU>:-fmax-errors=1>)
