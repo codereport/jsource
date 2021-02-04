@@ -358,11 +358,11 @@ A jtssingleton(J jt, A a,A w,A self,RANK2T awr,RANK2T ranks){A z;
  SSSTORE((B)(1^(aiv|wiv)),z,B01,B) return z;
 
  outofresult:
- NAN0; zdv=jtbindd(jt,adv,wdv); NAN1;
+ NAN0; zdv=bindd(adv,wdv); NAN1;
  SSSTORE(zdv,z,FL,D) return z;  // Return the value if valid
 
  outofresultcvti:
- NAN0; zdv=jtbindd(jt,adv,wdv); NAN1;
+ NAN0; zdv=bindd(adv,wdv); NAN1;
  if(zdv>=(D)IMIN&&zdv<=(D)IMAX){SSSTORE((I)zdv,z,INT,I)}else{SSSTORE(zdv,z,FL,D)} return z;  // Return the value if valid, as integer if possible
 
  bitwiseresult:
