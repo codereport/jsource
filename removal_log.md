@@ -174,3 +174,4 @@
 |`jsrc\verbs\vfromsp.c`|ifrom|jtifrom|`(^\|[ \t]+\|[^\d\w_])ifrom\((?=([^,]+?),([^)]+?)\))`|`\1jtifrom(jt,`|
 |`jsrc\adverbs\ap.c`|ifxi|jtifxi|`(^\|[ \t]+\|[^\d\w_])ifxi\((?=([^,]+?),([^)]+?)\))`|`\1jtifxi(jt,`|
 |`jsrc\adverbs\am1.c`|iindx|jtiindx|`(^\|[ \t]+\|[^\d\w_])iindx\((?=([^,]+?),([^)]+?)\))`|`\1jtiindx(jt,`|
+|`jsrc\verbs\va2ss.c`|ilcm|jtilcm|`(^\|[ \t]+\|[^\d\w_])ilcm\((?=([^,]+?),([^)]+?)\))`|`\1jtilcm(jt,`|
