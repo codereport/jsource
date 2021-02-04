@@ -1420,7 +1420,7 @@ A jtindexofprehashed(J jt,A a,A w,A hs){A h,hi,*hv,x,z;AF fn;I ar,*as,at,c,f1,k,
  // If w is scalar, return 1 1$1
  if(!AR(w))return reshape(v2(1L,1L),num(1));
  SETIC(w,n);   // n=#items of y
- RZ(x=indexof(w,w));   // x = i.~ y
+ RZ(x=jtindexof(jt,w,w));   // x = i.~ y
  // if w is dense, return ((x = i.n) # x) =/ x
  if(DENSE&AT(w))return atab(CEQ,repeat(eq(IX(n),x),x),x);
  // if x is sparse... ??

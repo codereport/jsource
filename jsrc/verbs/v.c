@@ -136,7 +136,7 @@ A jtdropr(J jt,I n,A w){ A a,z; RZ(a=sc(n)); return IRS2(a,w,0, RMAX,1L,jtdrop,z
 
 A jtcharmap(J jt,A w,A x,A y){A z;B bb[256];I k,n,wn;UC c,*u,*v,zz[256];
  RZ(w&&x&&y);
- if(!(LIT&AT(w)))return jtfrom(jt,indexof(x,w),y);
+ if(!(LIT&AT(w)))return jtfrom(jt,jtindexof(jt,x,w),y);
  wn=AN(w); n=MIN(AN(x),AN(y)); u=n+UAV(x); v=n+UAV(y);
  k=256; memset(bb,C0,256); if(n<AN(y))memset(zz,*(n+UAV(y)),256);  // bb is array telling which input chars are in x; zz is result char to map for given input byte.  If not exact mapping, init z to the 'not found' char
  DQ(n, c=*--u; zz[c]=*--v; k-=(I)bb[c]^1; bb[c]=1;);   // mark characters in x, and count down to see if we hit all 256.  Note earliest mapped character for each

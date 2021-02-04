@@ -25,12 +25,12 @@ I jtfnum(J jt,A w){A y;I h,j;
  y=AAV(w)[0];
  ASSERT(AN(y),EVLENGTH);
  if(AT(y)&B01+INT){ASSERT(h=i0(y),EVFNUM); return h;}
- RE(j=i0(indexof(vec(BOX,AM(jt->fopf),AAV(jt->fopa)),boxW(fullname(vslit(y)))))); 
+ RE(j=i0(jtindexof(jt,vec(BOX,AM(jt->fopf),AAV(jt->fopa)),boxW(fullname(vslit(y)))))); 
  return j<AM(jt->fopf)?*(j+AV(jt->fopf)):0;
 }    /* file# corresp. to standard argument w */
 
  A jtfname(J jt, A w){I j; 
- RE(j=i0(indexof(jt->fopf,w)));
+ RE(j=i0(jtindexof(jt,jt->fopf,w)));
  ASSERT(j<AM(jt->fopf),EVFNUM);
  return ca(*(j+AAV(jt->fopa)));
 }    /* string name corresp. to file# w */
@@ -83,7 +83,7 @@ B jtadd2(J jt,F f1,F f2,C*cmd){A c,x;
  A jtjclose(J jt, A w){A*av;I*iv,j;
  if(!AN(w))return w;
  if(AR(w))return rank1ex0(w,UNUSED_VALUE,jtjclose);
- RE(j=i0(indexof(jt->fopf,sc(fnum(w))))); ASSERT(j<AM(jt->fopf),EVFNUM);
+ RE(j=i0(jtindexof(jt,jt->fopf,sc(fnum(w))))); ASSERT(j<AM(jt->fopf),EVFNUM);
  av=AAV(jt->fopa); iv=IAV(jt->fopf); 
  if(fclose((F)iv[j]))return jerrno();
  --AM(jt->fopf); fa(av[j]); if(j<AM(jt->fopf)){av[j]=av[AM(jt->fopf)]; iv[j]=iv[AM(jt->fopf)];}

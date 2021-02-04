@@ -176,7 +176,7 @@ A jtindexofss(J jt,I mode,A a,A w){A ai,aj,ax,wi,wj,wx,x,y,z;B aw=a!=w;I ar,c,m,
  wr=AR(w); r=(RANKT)jt->ranks; r=wr<r?wr:r; RESETRANK;
  n=r?*(AS(w)+wr-r):1;
  if(r<wr)return ATOMIC2(jt,IX(n),irs2(w,w,0L,r,r,jtindexof),rkblk,1L,r?1L:0L,CEQ);  // seems to fail
- RZ(x=indexof(w,w)); p=PAV(x);
+ RZ(x=jtindexof(jt,w,w)); p=PAV(x);
  y=SPA(p,i); u=AV(y); c=*AS(y);
  x=SPA(p,x); v=AV(x);
  e=SPA(p,e); j=*AV(e); m=j<n;

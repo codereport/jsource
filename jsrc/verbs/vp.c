@@ -19,7 +19,7 @@ static I jtord(J jt,A w){I j,n,*v,z;
  RZ(w=vi(w));
  n=AN(w); v=AV(w);
  DO(n, I r=v[i]^REPSGN(v[i]); m=r>m?r:m;); ++m;  // take 1s-comp of negative ele#, then find max; add 1 to get #eles
- return indexof(pfill(m,w),IX(m));
+ return jtindexof(jt,pfill(m,w),IX(m));
 }    /* permutation inverse */
 
 // w contains indexes (its shape is immaterial).  n is the length of the axis.  Result is new array, same shape, with equivalent positive indexes

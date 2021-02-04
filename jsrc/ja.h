@@ -429,7 +429,7 @@
 #define immex(x)                    jtimmex(jt,(x))
 #define incorp(x)                   jtincorp(jt,(x))
 #define increm(x)                   jtincrem(jt,(x))
-#define indexof(x,y)                jtindexof(jt,(x),(y))
+
 #define indexofprehashed(x,y,z)     jtindexofprehashed(jt,(x),(y),(z))
 #define indexofss(x,y,z)            jtindexofss(jt,(x),(y),(z))
 #define indexofsub(x,y,z)           jtindexofsub(jt,(x),(y),(z))

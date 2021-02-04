@@ -191,7 +191,7 @@ static A jtmatchs(J jt,A a,A w){A ae,ax,p,q,we,wx,x;B*b,*pv,*qv;D d;I acr,an=0,a
  c=0; DO(r, c+=b[i];);
  if(an<c||DENSE&AT(a))RZ(a=reaxis(jtifb(jt,r,b),a)); ap=PAV(a); ae=SPA(ap,e); ax=SPA(ap,x); m=*AS(ax);
  if(wn<c||DENSE&AT(w))RZ(w=reaxis(jtifb(jt,r,b),w)); wp=PAV(w); we=SPA(wp,e); wx=SPA(wp,x); n=*AS(wx);
- RZ(x=indexof(SPA(ap,i),SPA(wp,i))); v=AV(x);
+ RZ(x=jtindexof(jt,SPA(ap,i),SPA(wp,i))); v=AV(x);
  GATV0(p,B01,m,1); pv=BAV(p);
  GATV0(q,B01,n,1); qv=BAV(q); 
  memset(pv,C1,m); DO(n, j=*v++; if(j<m)pv[j]=qv[i]=0; else qv[i]=1;);

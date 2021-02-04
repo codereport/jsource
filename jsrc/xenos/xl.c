@@ -80,5 +80,5 @@ B jtunlk(J jt,I x){I j=0,*v=AV(jt->flkd);
  A jtjunlock(J jt, A w){
  F1RANK(1,jtjunlock,UNUSED_VALUE); 
  ASSERT(INT&AT(w),EVDOMAIN); 
- return unlj(i0(indexof(jt->flkd,w)));
+ return unlj(i0(jtindexof(jt,jt->flkd,w)));
 }    /* w is (number,index,length); unlock the specified region */

@@ -136,7 +136,7 @@ static I jtebarprep(J jt,A a,A w,A*za,A*zw,I*zc){I ar,at,m,n,t,wr,wt,memlimit;CR
  wv=CAV(w); n=AN(w); p=n-m;
  switch(d){
   case -1: return sc(n);
-  case -4: return indexof(jtebarvec(jt,a,w),num(1));
+  case -4: return jtindexof(jt,jtebarvec(jt,a,w),num(1));
  }
  GATV0(y,INT,d,1); yv= AV(y); DO(d, yv[i]=1+m;);
  switch(CTTZ(AT(w))){

@@ -251,7 +251,7 @@ static A jtunbinr(J jt,B b,B d,B pre601,I m,A w){A y,z;C*u=(C*)w,*v;I e,j,kk,n,p
  ASSERT(j==n,EVLENGTH);
  if(t&BOX+XNUM+RAT+SPARSE){GATV0(y,INT,e,1); vv=AV(y); RZ(mvw((C*)vv,v,e,BU,b,1,d));}
  if(t&BOX+XNUM+RAT){A*zv=AAV(z);I i,k=0,*iv;
-  RZ(y=indexof(y,y)); iv=AV(y);
+  RZ(y=jtindexof(jt,y,y)); iv=AV(y);
   for(i=0;i<e;++i){
    j=vv[i]; 
    ASSERT(BETWEENO(j,0,m),EVINDEX);

@@ -88,7 +88,7 @@ static A jtlchar(J jt,A w,A *ltext){F1PREFIP;A y;B b,p=1,r1;C c,d,*u,*v;I j,k,m,
  DQ(n, c=*v++; j+=c==CQUOTE; b&=c==d; p&=(C)(c-32)<(C)(127-32);); // b=1 if all chars the same; p=1 if all printable; add to j for each quote found
  if(b){n=1; j=MIN(3,j);}  // if all repeated, back to 1 character, which j=2/3 dep whether it is a quote
  if(!p){  // if the string contains a nonprintable, represent it as nums { a.
-  k=(UC)d; RZ(y=indexof(ds(CALP),w));
+  k=(UC)d; RZ(y=jtindexof(jt,ds(CALP),w));
   if(r1&&n<m&&(!k||k==m-n)&&equ(y,apv(n,k,1L)))return over(thorn1(sc(d?-n:n)),cstr("{.a."));
   RZ(y=lnum(y));
   return lp(y)?over(cstr("a.{~"),y):over(y,cstr("{a."));

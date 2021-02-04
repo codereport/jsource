@@ -133,10 +133,10 @@ static A jtscube(J jt,A z,A i1,A p){A a,y;P*zp;
 
 static A jtiindx(J jt,A z,A i1){A q,j,j1,y;I c,d,e,h,i,*jv,m,n,*qv,*v,*yv;P*zp;
  c=AN(i1); zp=PAV(z); y=SPA(zp,i); 
- if(c==*(1+AS(y)))return indexof(y,scuba(z,i1,0));
+ if(c==*(1+AS(y)))return jtindexof(jt,y,scuba(z,i1,0));
  /* when y has excess columns, do progressive indexing */
  RZ(y=taker(c,y)); 
- RZ(j=indexof(y,scuba(z,i1,0)));  /* j: group indices           */
+ RZ(j=jtindexof(jt,y,scuba(z,i1,0)));  /* j: group indices           */
  n= AN(j); jv=AV(j);
  m=*AS(y); yv=AV(y);
  GATV0(q,INT,n,1); qv=AV(q);          /* q: # members in each group */

@@ -156,7 +156,7 @@ static A jtkey(J jt,A a,A w,A self);
 
 static A jtkeysp(J jt,A a,A w,A self){PROLOG(0008);A b,by,e,q,x,y,z;I j,k,n,*u,*v;P*p;
  {I t2; ASSERT(SETIC(a,n)==SETIC(w,t2),EVLENGTH);}  // verify agreement.  n is # items of a
- RZ(q=indexof(a,a)); p=PAV(q); 
+ RZ(q=jtindexof(jt,a,a)); p=PAV(q); 
  x=SPA(p,x); u=AV(x);
  y=SPA(p,i); v=AV(y);
  e=SPA(p,e); k=i0(e); 
@@ -632,7 +632,7 @@ const UI4 shortrange[3][4] = {{0,65536,65536,0}, {0,2,258,0}, {0,256,65536,0}}; 
 static A jtkeytally(J jt,A a,A w,A self);
 
 static A jtkeytallysp(J jt, A w){PROLOG(0015);A b,e,q,x,y,z;I c,d,j,k,*u,*v;P*p;
- RZ(q=indexof(w,w));
+ RZ(q=jtindexof(jt,w,w));
  p=PAV(q); 
  x=SPA(p,x); u=AV(x); c=AN(x);
  y=SPA(p,i); v=AV(y);
@@ -761,7 +761,7 @@ static A jtkeytally(J jt,A a,A w,A self){F2PREFIP;PROLOG(0016);A z,q;I at,j,k,n,
    }
   }
  }else{  // no special processing
-  RZ(q=indexof(a,a)); x=repeat(eq(q,IX(n)),w); y=keytally(q,q,0L); z=stitch(b?x:y,b?y:x);  // (((i.~a) = i. # a) # w) ,. (#/.~ i.~ a)   for ({. , #)
+  RZ(q=jtindexof(jt,a,a)); x=repeat(eq(q,IX(n)),w); y=keytally(q,q,0L); z=stitch(b?x:y,b?y:x);  // (((i.~a) = i. # a) # w) ,. (#/.~ i.~ a)   for ({. , #)
  }
  EPILOG(z);
 }    /* x ({.,#)/.y or x (#,{.)/. y */

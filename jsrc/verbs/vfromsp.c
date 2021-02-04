@@ -26,7 +26,7 @@ static A jtfromis1(J jt,A ind,A w,A z,I wf){A a,a1,j1,p,q,x,x1,y,y1;C*xu,*xuu,*x
  GATV0(q,INT,m,1); qv=AV(q);
  DO(m-1, if(*u!=*v){pv[s]=*u; qu[s]=1+j; qv[s++]=i-j; j=i;} u=v; v+=an;); 
  if(m){i=m-1;       pv[s]=*u; qu[s]=1+j; qv[s++]=i-j;}
- RZ(j1=indexof(p,ind)); jv=AV(j1);
+ RZ(j1=jtindexof(jt,p,ind)); jv=AV(j1);
  c=0; DO(n, if(s>jv[i])c+=qv[jv[i]];); i=aii(x); xk=i<<bplg(AT(x)); d=AN(a1);
  GATV0(y1,INT,  c*d,2); v=AS(y1); v[0]=c; v[1]=d; yv= AV(y1); yu= AV(y);
  GA(x1,AT(x),c*i,AR(x),AS(x)); AS(x1)[0]=c;                xv=CAV(x1); xu=CAV(x);
@@ -87,7 +87,7 @@ A jtfrombsn(J jt,A ind,A w,I wf){A a,j1,p,q,x,x1,y,y1,ys,z;C*xu,*xuu,*xv;
  if( !qq){SPB(zp,i,ca(y)); SPB(zp,x,frombu(ind,x,AR(x)-(wr-wf-rr))); return z;}
  if(h>qq){q=nub(over(a,apv(h,wf,1L))); return frombsn(ind,reaxis(jtgrade2(jt,q,q),w),wf);}
  if(1<r)RZ(ind=reshape(v2(n,h),ind)); 
- RZ(ys=jtfromr(jt,indexof(a,apv(h,wf,1L)),y));
+ RZ(ys=jtfromr(jt,jtindexof(jt,a,apv(h,wf,1L)),y));
  RZ(q=jteps(jt,ys,ind)); 
  if(!all1(q)){RZ(ys=repeat(q,ys)); RZ(y=repeat(q,y)); RZ(x=repeat(q,x));}
  if(wf){q=grade1(ys); RZ(ys=jtifrom(jt,q,ys)); RZ(y=jtifrom(jt,q,y)); RZ(x=jtifrom(jt,q,x));}
@@ -96,7 +96,7 @@ A jtfrombsn(J jt,A ind,A w,I wf){A a,j1,p,q,x,x1,y,y1,ys,z;C*xu,*xuu,*xv;
  GATV0(q,INT,m,1); qv=AV(q);
  s=0; j=-1; u=AV(ys); v=u+h;
  DO(m-1, if(ICMP(u,v,h)){pv[s]=1+j; qv[s++]=i-j; j=i;} u=v; v+=h;); if(m){pv[s]=1+j; qv[s++]=m-1-j;}
- RZ(j1=indexof(jtifrom(jt,vec(INT,s,pv),ys),ind)); jv=AV(j1);
+ RZ(j1=jtindexof(jt,jtifrom(jt,vec(INT,s,pv),ys),ind)); jv=AV(j1);
  c=0; DO(n, if(s>jv[i])c+=qv[jv[i]];); 
  i=aii(x); j=AN(SPA(zp,a)); xk=i<<bplg(AT(x));
  GATV0(y1,INT,  c*j,2); v=AS(y1); v[0]=c; v[1]=j; yv= AV(y1); yu= AV(y);

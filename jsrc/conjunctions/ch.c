@@ -67,8 +67,8 @@ static A jtcancel(J jt,A a,A w){A c,d,f,x,y;
  f=eval("#/.~");   // could call keytally
  a=ravel(a); x=nub(a); df1(c,a,f);
  w=ravel(w); y=nub(w); df1(d,w,f);
- a=repeat(maximum(num(0),minus(c,jtfrom(jt,indexof(y,x),over(d,zeroionei(0))))),x);
- w=repeat(maximum(num(0),minus(d,jtfrom(jt,indexof(x,y),over(c,zeroionei(0))))),y);
+ a=repeat(maximum(num(0),minus(c,jtfrom(jt,jtindexof(jt,y,x),over(d,zeroionei(0))))),x);
+ w=repeat(maximum(num(0),minus(d,jtfrom(jt,jtindexof(jt,x,y),over(c,zeroionei(0))))),y);
  return link(a,w);
 }
 

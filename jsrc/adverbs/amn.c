@@ -35,7 +35,7 @@ static B jtiaddr(J jt,A z,A ind,A*i1,A*i2){A a,ai,as,ii,jj,q,t,x,y;I c,d,e,h,i,*
   RZ(*i2=reshape(sc(m*n),jj));
   return 1;
  }
- RZ(*i1=ii=indexof(y,repeatr(jteps(jt,ai,a),ind)));         /* group indices in index mat  */
+ RZ(*i1=ii=jtindexof(jt,y,repeatr(jteps(jt,ai,a),ind)));         /* group indices in index mat  */
  if(c==AN(a))return 1;
  n=AN(ii); iv=AV(ii); jv=AV(jj);                       /* do progressive iota         */
  GATV0(q,INT,n,1); qv=AV(q);                            /* group sizes                 */
