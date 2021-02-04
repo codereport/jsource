@@ -209,51 +209,57 @@ typedef I SI;
 // NOTE!! the length of NOUN types must be power-of-2 multiples because of jtamend2
 
 // NOTE: all noun types must be below all parsable non-nouns
+
 // shifts
 enum {
-    B01X   = 0,
-    LITX   = 1,
-    INTX   = 2,
-    FLX    = 3,
-    CMPXX  = 4,
-    BOXX   = 5,
-    XNUMX  = 6,
-    RATX   = 7,
-    BITX   = 8,
+    B01X      = 0,
+    LITX      = 1,
+    INTX      = 2,
+    FLX       = 3,
+    CMPXX     = 4,
+    BOXX      = 5,
+    XNUMX     = 6,
+    RATX      = 7,
+    BITX      = 8,
     // Bit 9 unused
-    SB01X  = 10,
-    SLITX  = 11,
-    SINTX  = 12,
-    SFLX   = 13,
-    SCMPXX = 14,
-    SBOXX  = 15,
-    SBTX   = 16,
-    C2TX   = 17,
-    C4TX   = 18,
-    XDX    = 19,
-    XZX    = 20,
+    SB01X     = 10,
+    SLITX     = 11,
+    SINTX     = 12,
+    SFLX      = 13,
+    SCMPXX    = 14,
+    SBOXX     = 15,
+    SBTX      = 16,
+    C2TX      = 17,
+    C4TX      = 18,
+    XDX       = 19,
+    XZX       = 20,
+    LASTNOUNX = XZX,  // index of last noun bit
 };
-// flags do these need to be long longs? only up to 20 bits could be 32 bit.
-#define B01   ((I)1L<<B01X)           /* B  boolean                      */
-#define LIT   ((I)1L<<LITX)           /* C  literal (character)          */
-#define INT   ((I)1L<<INTX)           /* I  integer                      */
-#define FL    ((I)1L<<FLX)            /* D  double (IEEE floating point) */
-#define CMPX  ((I)1L<<CMPXX)          /* Z  complex                      */
-#define BOX   ((I)1L<<BOXX)           /* A  boxed                        */
-#define XNUM  ((I)1L<<XNUMX)          /* X  extended precision integer   */
-#define RAT   ((I)1L<<RATX)           /* Q  rational number              */
-#define BIT   ((I)1L<<BITX)           /* BT bit boolean                  */
-#define SB01  ((I)1L<<SB01X)          /* P  sparse boolean               */
-#define SLIT  ((I)1L<<SLITX)          /* P  sparse literal (character)   */
-#define SINT  ((I)1L<<SINTX)          /* P  sparse integer               */
-#define SFL   ((I)1L<<SFLX)           /* P  sparse floating point        */
-#define SCMPX ((I)1L<<SCMPXX)         /* P  sparse complex               */
-#define SBOX  ((I)1L<<SBOXX)          /* P  sparse boxed                 */
-#define SBT   ((I)1L<<SBTX)           /* SB symbol                       */
-#define C2T   ((I)1L<<C2TX)           /* C2 unicode (2-byte characters)  */
-#define C4T   ((I)1L<<C4TX)           /* C4 unicode (4-byte characters)  */
-#define XD    ((I)1L<<XDX)            // DX extended floating point   used to represent intolerant compare in jtiosc
-#define XZ    ((I)1L<<XZX)            /* ZX extended complex             */
+
+// flags
+enum {
+    B01   = ((I)1L << B01X),    // B  boolean
+    LIT   = ((I)1L << LITX),    // C  literal (character)
+    INT   = ((I)1L << INTX),    // I  integer
+    FL    = ((I)1L << FLX),     // D  double (IEEE floating point)
+    CMPX  = ((I)1L << CMPXX),   // Z  complex
+    BOX   = ((I)1L << BOXX),    // A  boxed
+    XNUM  = ((I)1L << XNUMX),   // X  extended precision integer
+    RAT   = ((I)1L << RATX),    // Q  rational number
+    BIT   = ((I)1L << BITX),    // BT bit boolean
+    SB01  = ((I)1L << SB01X),   // P  sparse boolean
+    SLIT  = ((I)1L << SLITX),   // P  sparse literal (character)
+    SINT  = ((I)1L << SINTX),   // P  sparse integer
+    SFL   = ((I)1L << SFLX),    // P  sparse floating point
+    SCMPX = ((I)1L << SCMPXX),  // P  sparse complex
+    SBOX  = ((I)1L << SBOXX),   // P  sparse boxed
+    SBT   = ((I)1L << SBTX),    // SB symbol
+    C2T   = ((I)1L << C2TX),    // C2 unicode (2-byte characters)
+    C4T   = ((I)1L << C4TX),    // C4 unicode (4-byte characters)
+    XD    = ((I)1L << XDX),     // DX extended floating point
+                                //    used to represent intolerant compare in jtiosc
+    XZ    = ((I)1L << XZX),     // ZX extended complex
+};
 
 #define B01SIZE   sizeof(B)       // length of 1 atom
 #define LITSIZE   sizeof(C)
@@ -276,70 +282,98 @@ enum {
 #define XDSIZE    sizeof(DX)
 #define XZSIZE    sizeof(ZX)
 
+//more shifts
+enum {
+    ASGNX = 21,
+    MARKX = 22,
+    NAMEX = 23,
+    SYMBX = 24,
+    CONWX = 25,
+    ADVX  = 26,
+    VERBX = 27,
+    LPARX = 28,
+    CONJX = 29,
+    RPARX = 30,
+    RESVX = 31,  // reserved so types can be I types
+                 // NOTE: maxtype & maybe others require bit 31 to be 0!!
+};
+// more flags
+enum {
+    ASGN = ((I)1L << ASGNX),  // I  assignment
+                              //    ASGN see below
+    MARK = ((I)1L << MARKX),  // I  end-of-stack marker
+    NAME = ((I)1L << NAMEX),  // NM name
+    SYMB = ((I)1L << SYMBX),  // I  locale (symbol table)
+    CONW = ((I)1L << CONWX),  // CW control word
+    ADV  = ((I)1L << ADVX),   // V  adverb
+    VERB = ((I)1L << VERBX),  // V  verb
+                              //    NOTE: VERB must be above all NOUN bits because of CONJCASE
+    LPAR = ((I)1L << LPARX),  // I  left  parenthesis
+                              //    NOTE: LPAR is set in an ADV value to indicate that the value is
+                              //    nameless, see below
+                              //    note: LPAR used as flag to cvt() see below
+    CONJ = ((I)1L << CONJX),  // V  conjunction
+                              //    CONJ must be 1 bit below RPAR, with no parsable type (including
+                              //    any flags that might be set, see below) higher than RPAR
+    RPAR = ((I)1L << RPARX),  // I  right parenthesis
+    RESV = ((I)1L << RESVX),  // used to hold NOUN status sometimes
+};
 
-
-#define LASTNOUNX XZX    // index of last noun bit
-
-// ASGN see below
-#define MARKX 22
-#define MARK            ((I)1L<<MARKX)     /* I  end-of-stack marker          */
+#define ASGNSIZE sizeof(I)  // only 1 byte, but all non-DIRECT are fullword multiples
 #define MARKSIZE sizeof(I)
-#define NAMEX 23
-#define NAME            ((I)1L<<NAMEX)    /* NM name                         */
-#define NAMESIZE sizeof(C)   // when we allocate a NAME type, the length is the length of the name string
-#define SYMBX 24
-#define SYMB            ((I)1L<<SYMBX)     /* I  locale (symbol table)        */
+#define NAMESIZE sizeof(C)  // when we allocate a NAME type, the length is the length of the name string
 #define SYMBSIZE sizeof(LX)
-#define CONWX 25
-#define CONW            ((I)1L<<CONWX)    /* CW control word                 */
 #define CONWSIZE sizeof(CW)
-#define ADVX 26
-#define ADV             ((I)1L<<ADVX)      /* V  adverb                       */
 #define ADVSIZE sizeof(V)
-// NOTE: LPAR is set in an ADV value to indicate that the value is nameless, see below
-#define VERBX 27
-#define VERB            ((I)1L<<VERBX)      /* V  verb                         */
 #define VERBSIZE sizeof(V)  // Note: size of ACV in bp() is INTSIZE because the allocation in fdef() is of INTs
-// NOTE: VERB must be above all NOUN bits because of CONJCASE
-#define LPARX 28
-#define LPAR            ((I)1L<<LPARX)    /* I  left  parenthesis            */
-// note: LPAR used as flag to cvt() see below
 #define LPARSIZE sizeof(I)
-// CONJ must be 1 bit below RPAR, with no parsable type (including any flags that might be set, see below) higher than RPAR
-#define CONJX 29
-#define CONJ            ((I)1L<<CONJX)     /* V  conjunction                  */
 #define CONJSIZE sizeof(V)
-#define RPARX 30
-#define RPAR            ((I)1L<<RPARX)   /* I  right parenthesis            */
 #define RPARSIZE sizeof(I)
-// NOTE maxtype & maybe others require bit 31 to be 0!!
-#define RESVX 31    // reserved so types can be I types
-#define RESV    ((I)1<<RESVX)  // used to hold NOUN status sometimes
 
-#define ASGNX 21
-#define ASGN            ((I)1L<<ASGNX)     /* I  assignment                   */
-#define ASGNSIZE sizeof(I)     // only 1 byte, but all non-DIRECT are fullword multiples
-// ** ASGN type can have the following informational bits set along with ASGN
-#define ASGNLOCALX      SYMBX     // set for =. (but not when assigning to locative)    aliases with SYMB
-#define ASGNLOCAL       ((I)1L<<ASGNLOCALX)     // set for =. (but not when assigning to locative)    aliases with SYMB
-#define ASGNTONAME      ((I)1L<<CONWX)     // set when assignment is to name    aliases with CONW
-// NOTE: The parser assumes that CONW always means ASGNTONAME, so don't use it in any parseable type (such as NAME, NOUN)
-// ** NOUN types can have the following informational bits set
-#define NOUNCVTVALIDCT  ((I)1L<<SYMBX)     // Flag for jtcvt arg only: if set, convert only the #atoms given in the parameter   Aliases with SYMB
-// ** NAME type can have the following information flags set
-#define NAMEBYVALUE     ((I)1L<<SYMBX)     // set if the name is one of x x. m m. etc that is always passed by value, never by name   Aliases with SYMB
-// ** BOX type can have the following informational flags set
-#define BOXMULTIASSIGN  ((I)1L<<MARKX)     // set for the target of a direct multiple assignment (i. e. 'x y' =.), which is stored as a boxed list whose contents are NAMEs    aliases with MARK
-// Restriction: CONW must be reserved for use as ASGNTONAME because of how parser tests for it
-// Restriction: MARK must be reserved for use as BOXMULTIASSIGN because of how parser tests for it
-// ** NOTE!! bits 28-30 are used in the call to cvt() (arg only) to override the convsion type for XNUMs
-#define XCVTXNUMORIDEX  LPARX   // in cvt(), indicates that forced precision for result is present
-#define XCVTXNUMCVX     CONJX
-// ** ADV type can have the following information flag set
-#define NAMELESSMODX    LPARX
-#define NAMELESSMOD     ((I)1<<NAMELESSMODX)  // set in a modifier to indicate that the value contains no names.  Such values are pushed onto the stack by value to save parsing overhead.
-                             // namelessness is detected only when a modifier is assigned, and is supported only for ADV types because of coding details.  It would be nice to support it
-                             // for CONJ too, but a nameless conj would be either primitive or explicit, and users shouldn't cover primitives.  This feature is mostly for every/each/inv
+enum {
+    // ** ASGN type can have the following informational bits set along with ASGN
+    ASGNLOCALX = SYMBX,                 // set for =. (but not when assigning to locative)
+                                        //     aliases with SYMB
+    ASGNLOCAL = ((I)1L << ASGNLOCALX),  // set for =. (but not when assigning to locative)
+                                        //     aliases with SYMB
+    ASGNTONAME = ((I)1L << CONWX),      // set when assignment is to name
+                                        //     aliases with CONW
+    // NOTE: The parser assumes that CONW always means ASGNTONAME, so don't use it in any parseable
+    // type (such as NAME, NOUN)
+    // Restriction: CONW must be reserved for use as ASGNTONAME because of
+    // how parser tests for it
+};
+enum {
+    // ** NOUN types can have the following informational bits set
+    NOUNCVTVALIDCT = ((I)1L << SYMBX),  // Flag for jtcvt arg only: if set, convert only the #atoms
+                                        // given in the parameter   Aliases with SYMB
+    // ** NAME type can have the following information flags set
+    NAMEBYVALUE    = ((I)1L << SYMBX),  // set if the name is one of x x. m m. etc that is always
+                                        // passed by value, never by name   Aliases with SYMB
+    // ** BOX type can have the following informational flags set
+    BOXMULTIASSIGN = ((I)1L << MARKX),  // set for the target of a direct multiple assignment 
+                                        // (i. e. 'x y' =.), which is stored as a boxed list whose 
+                                        // contents are NAMEs   aliases with MARK
+    // Restriction: MARK must be reserved for use as BOXMULTIASSIGN because of how parser tests for
+    // it
+};
+
+enum{
+    // ** NOTE!! bits 28-30 are used in the call to cvt() (arg only) to override the convsion type
+    // for XNUMs
+    XCVTXNUMORIDEX = LPARX,  // in cvt(), indicates that forced precision for result is present
+    XCVTXNUMCVX    = CONJX,
+    // ** ADV type can have the following information flag set
+    NAMELESSMODX   = LPARX,
+    NAMELESSMOD    = ((I)1L << NAMELESSMODX),
+    // set in a modifier to indicate that the value contains no names.  Such
+    // values are pushed onto the stack by value to save parsing overhead.
+    // namelessness is detected only when a modifier is assigned, and is
+    // supported only for ADV types because of coding details.  It would be
+    // nice to support it for CONJ too, but a nameless conj would be either
+    // primitive or explicit, and users shouldn't cover primitives.  This
+    // feature is mostly for every/each/inv
+};
 
 
 
@@ -373,19 +407,26 @@ enum {
 // Allow recursive usecount in one of these types
 #define RECURSIBLE      (BOX|VERB|ADV|CONJ|RAT|XNUM)
 #define RECURSIBLENOUN  (RECURSIBLE&NOUN)
-// Modifiers that operate on subarrays do so with virtual blocks, and those blocks may be marked as inplaceable if the backing block is inplaceable.
-// The inplaceability applies to the data area, but not necessarily to the block header: if UNINCORPORABLE is set, the header must not be modified (we clone the header in that case)
-// For speedy singletons, there is the additional problem that the operation expects always to write a FL value to the result area, which is OK for any
-// real block but not for an inplaced virtual block, whose virtual data may be shorter than a FL.  The pure solution would be for the singleton code
-// to refrain from modifying a virtual block that is shorter than a FL, but that means we would have to test for it for every arithmetic operation.  Thus
-// we take the alternative, which is to not mark a virtual block inplaceable if it is a type shorter than a FL.
+// Modifiers that operate on subarrays do so with virtual blocks, and those blocks may be marked as
+// inplaceable if the backing block is inplaceable. The inplaceability applies to the data area, but
+// not necessarily to the block header: if UNINCORPORABLE is set, the header must not be modified
+// (we clone the header in that case) For speedy singletons, there is the additional problem that
+// the operation expects always to write a FL value to the result area, which is OK for any real
+// block but not for an inplaced virtual block, whose virtual data may be shorter than a FL.  The
+// pure solution would be for the singleton code to refrain from modifying a virtual block that is
+// shorter than a FL, but that means we would have to test for it for every arithmetic operation.
+// Thus we take the alternative, which is to not mark a virtual block inplaceable if it is a type
+// shorter than a FL.
 //
-// BOX type would be OK, as singleton code doesn't touch it and all usecounts are held in the backer, except for the possibility that the backer is recursive and the virtual block isn't.
-// Places that check TYPEVIPOK make an exception when the block is going to be processed by each or each2, because those routines are guaranteed not to disturb the boxes, but only
-// the first level of contents, and that only when the block is pristine.
+// BOX type would be OK, as singleton code doesn't touch it and all usecounts are held in the
+// backer, except for the possibility that the backer is recursive and the virtual block isn't.
+// Places that check TYPEVIPOK make an exception when the block is going to be processed by each or
+// each2, because those routines are guaranteed not to disturb the boxes, but only the first level
+// of contents, and that only when the block is pristine.
 //
-// Note: arithmetic dyads on bytes have similar issues, because the 8-byte-at-a-time operations may execute outside the cell of the array.  We detect
-// those cases inside the atomic-dyad code in va2.c.
+// Note: arithmetic dyads on bytes have similar issues, because the 8-byte-at-a-time operations may
+// execute outside the cell of the array.  We detect those cases inside the atomic-dyad code in
+// va2.c.
 #define TYPEVIPOK       (FL+CMPX+SBT+(SZI==SZD?INT:0))
 // NOUNSAFE flag
 // scaf expunge all the following
