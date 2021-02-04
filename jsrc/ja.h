@@ -421,7 +421,7 @@
 
 
 #define igcd(x,y)                   jtigcd(jt,(x),(y))
-#define iindx(x,y)                  jtiindx(jt,(x),(y))
+
 #define iixBX(x0,x1,x2,x3,x4)       jtiixBX(jt,(x0),(x1),(x2),(x3),(x4))
 #define iixI(x0,x1,x2,x3,x4)        jtiixI(jt,(x0),(x1),(x2),(x3),(x4))
 #define ilcm(x,y)                   jtilcm(jt,(x),(y))

@@ -197,7 +197,7 @@ A jtam1a(J jt,A a,A z,A ind,B ip){A a0=a,a1,e,i1,i2,t,x,y;C*u,*v,*xv;I ar,c,*iv,
  ar=AR(a); n=AN(i2); r=AR(x); s=AS(x);
  k=bpnoun(AT(x)); xk=k*prod(r-1-n,s+1+n); vk=k*prod(r-1,s+1); uk=!ar?k:n?xk:vk;
  u=CAV(a); xv=v=CAV(x);
- RZ(t=iindx(z,i1)); iv=AV(t); m=AN(t);
+ RZ(t=jtiindx(jt,z,i1)); iv=AV(t); m=AN(t);
  if(!n&&!m){a1=SPA(zp,a); return ar?sparseit(a0,a1,e):sparseit(reshape(shape(z),a),a1,a);}
  if(n){RZ(t=jtdcube(jt,z,i2)); jv=AV(t); c=AN(t); v=xv-vk;}
  if(!n)    DO(m,                           mvc(vk,v+vk*iv[i],uk,u); if(ar)u+=uk;  )

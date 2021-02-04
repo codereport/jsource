@@ -173,3 +173,4 @@
 |`jsrc\verbs\vs.c`|ifb|jtifb|`(^\|[ \t]+\|[^\d\w_])ifb\((?=([^,]+?),([^)]+?)\))`|`\1jtifb(jt,`|
 |`jsrc\verbs\vfromsp.c`|ifrom|jtifrom|`(^\|[ \t]+\|[^\d\w_])ifrom\((?=([^,]+?),([^)]+?)\))`|`\1jtifrom(jt,`|
 |`jsrc\adverbs\ap.c`|ifxi|jtifxi|`(^\|[ \t]+\|[^\d\w_])ifxi\((?=([^,]+?),([^)]+?)\))`|`\1jtifxi(jt,`|
+|`jsrc\adverbs\am1.c`|iindx|jtiindx|`(^\|[ \t]+\|[^\d\w_])iindx\((?=([^,]+?),([^)]+?)\))`|`\1jtiindx(jt,`|
