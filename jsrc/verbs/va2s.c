@@ -67,7 +67,7 @@ static B jtvaspprep(J jt,A a,A w,I t,I af,I acr,I wf,I wcr,I f,I r,A*ae,A*ay,A*a
  if(!sw||n!=AN(wa)||memcmp(v,AV(wa),n*SZI))RZ(w=reaxis(vec(INT,n,v),w));
  ap=PAV(a); *ae=e=SPA(ap,e); *ay=SPA(ap,i); *ax=x=SPA(ap,x); if(t&&TYPESNE(t,AT(x))){RZ(*ae=jtcvt(jt,t,e)); RZ(*ax=jtcvt(jt,t,x));}
  wp=PAV(w); *we=e=SPA(wp,e); *wy=SPA(wp,i); *wx=x=SPA(wp,x); if(t&&TYPESNE(t,AT(x))){RZ(*we=jtcvt(jt,t,e)); RZ(*wx=jtcvt(jt,t,x));}
- RZ(*za=ifb(f+r,b));
+ RZ(*za=jtifb(jt,f+r,b));
  return 1;
 }
 */
@@ -79,7 +79,7 @@ static B jtvaspeqprep(J jt,A a,A w,I t,I f,I r,A*ae,A*ay,A*ax,A*we,A*wy,A*wx,A*z
  GATV0(x,B01,n,1); b=BAV(x); memset(b,C0,n);
  if(sa){p=PAV(a); aa=SPA(p,a); v=AV(aa); DO(AN(aa), b[v[i]]=1;);}
  if(sw){p=PAV(w); wa=SPA(p,a); v=AV(wa); DO(AN(wa), b[v[i]]=1;);}
- q=ifb(n,b); makewritable(q) *za=q;  // avoid readonly result
+ q=jtifb(jt,n,b); makewritable(q) *za=q;  // avoid readonly result
  if(!sa||!equ(q,aa))RZ(a=reaxis(q,a));
  if(!sw||!equ(q,wa))RZ(w=reaxis(q,w));
  p=PAV(a); *ae=e=SPA(p,e); *ay=SPA(p,i); *ax=x=SPA(p,x); if(t&&TYPESNE(t,AT(x))){RZ(*ae=jtcvt(jt,t,e)); RZ(*ax=jtcvt(jt,t,x));}

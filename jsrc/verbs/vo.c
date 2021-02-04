@@ -366,7 +366,7 @@ static B jtopes1(J jt,B**zb,A*za,A*ze,I*zm,A cs,A w){A a,e=0,q,*wv,x;B*b;I i,k,m
    if(!e)e=SPA(p,e); else ASSERT(equ(e,SPA(p,e)),EVSPARSE);
    k=wcr-AR(q); DO(k, b[i]=1;); a=SPA(p,a); v=AV(a); DQ(AN(a), b[k+*v++]=1;);
   }
- A bvec=ifb(wcr,b); makewritable(bvec) RZ(*za=bvec);    /* union of sparse axes           */ // avoid readonly
+ A bvec=jtifb(jt,wcr,b); makewritable(bvec) RZ(*za=bvec);    /* union of sparse axes           */ // avoid readonly
  *zb=b;                 /* mask corresp. to sparse axes   */
  *ze=e?e:num(0);          /* sparse element                 */
  *zm=m;                 /* estimate # of non-sparse cells */
@@ -378,7 +378,7 @@ static B jtopes2(J jt,A*zx,A*zy,B*b,A a,A e,A q,I wcr){A x;B*c;I dt,k,r,*s,t;P*p
  if(t&SPARSE){
   p=PAV(q);
   RZ(c=bfi(r,SPA(p,a),1));
-  DO(r, if(b[k+i]!=c[i]){RZ(q=reaxis(ifb(r,k+b),q)); break;});
+  DO(r, if(b[k+i]!=c[i]){RZ(q=reaxis(jtifb(jt,r,k+b),q)); break;});
  }else{
   if(k){
    GA(x,t,AN(q),wcr,0); s=AS(x); DQ(k, *s++=1;); MCISH(s,AS(q),r); 

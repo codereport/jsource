@@ -45,7 +45,7 @@ static A jtovs0(J jt,B p,I r,A a,A w){A a1,e,q,x,y,z;B*b;I at,*av,c,d,j,k,f,m,n,
  }
  GASPARSE(z,STYPE(t),1,zr,ws); 
  if(r)++*(f+AS(z)); else *(wr+AS(z))=2;
- A bvec=ifb(zr,b); makewritable(bvec)  // avoid readonly
+ A bvec=jtifb(jt,zr,b); makewritable(bvec)  // avoid readonly
  zp=PAV(z); SPB(zp,a,bvec); SPB(zp,e,e); SPB(zp,i,y); SPB(zp,x,x);
  return z;
 }    /* a,"r w (0=p) or w,"r a (1=p) where a is scalar and w is sparse */
@@ -65,7 +65,7 @@ static A jtovs(J jt,A a,A w){A ae,ax,ay,q,we,wx,wy,x,y,z,za,ze;B*ab,*wb,*zb;I ac
  ap=PAV(a); RZ(ab=bfi(r,SPA(ap,a),1)); ae=SPA(ap,e); at=AT(ae);
  wp=PAV(w); RZ(wb=bfi(r,SPA(wp,a),1)); we=SPA(wp,e); wt=AT(we);
  ASSERT(equ(ae,we),EVNONCE);
- GATV0(q,B01,r,1); zb=BAV(q); DO(r, zb[i]=ab[i]||wb[i];); za=ifb(r,zb); makewritable(za) c=AN(za);  // avoid readonly
+ GATV0(q,B01,r,1); zb=BAV(q); DO(r, zb[i]=ab[i]||wb[i];); za=jtifb(jt,r,zb); makewritable(za) c=AN(za);  // avoid readonly
  GATV0(q,INT,r,1); zs= AV(q); DO(r, zs[i]=MAX(as[i],ws[i]););
  DO(r, if(zb[i]>ab[i]){RZ(a=reaxis(za,a)); break;});
  DO(r, if(zb[i]>wb[i]){RZ(w=reaxis(za,w)); break;});

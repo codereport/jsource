@@ -14,7 +14,7 @@ static A jtcants(J jt,A a,A w,A z){A a1,q,y;B*b,*c;I*u,wr,zr;P*wp,*zp;
  ASSERT(wr==zr,EVNONCE);
  RZ(b=bfi(wr,a1,1));
  GATV0(q,B01,wr,1); c=BAV(q); u=AV(a); DO(wr, c[i]=b[u[i]];);
- A bvec=ifb(wr,c); makewritable(bvec)
+ A bvec=jtifb(jt,wr,c); makewritable(bvec)
  SPB(zp,a,bvec);  // avoid readonly
  SPB(zp,e,ca(SPA(wp,e)));
  RZ(y=jtfromr(jt,grade1(indexof(a,a1)),SPA(wp,i)));

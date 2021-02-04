@@ -71,7 +71,7 @@ static A jtaaxis(J jt,A w,I wf,A a,I r,I h,I*pp,I*qq,I*rr){A q;B*b,*c,*d;I wr,x,
  x=y=z=0; d=b; DQ(wf, if(*d++)++x;); DQ(h, if(*d++)++y;); DQ(wr-wf-h, if(*d++)++z;);
  *pp=x; *qq=y; *rr=z;
  MC(c,b,wf); memset(c+wf,y?C1:C0,r); MC(c+wf+r,b+wf+h,wr-wf-h);
- A bvec=ifb(zr,c); makewritable(bvec) return bvec;  // avoid readonly
+ A bvec=jtifb(jt,zr,c); makewritable(bvec) return bvec;  // avoid readonly
 }
 
 A jtfrombsn(J jt,A ind,A w,I wf){A a,j1,p,q,x,x1,y,y1,ys,z;C*xu,*xuu,*xv;
@@ -177,7 +177,7 @@ static A jtfrombs1(J jt,A ind,A w,I wf){A*iv,x,y,z;I j,m,n,wr,wcr;
  SPB(zp,e,e);
  x=SPA(ap,a); if(ar>AN(x)){RZ(a=reaxis(IX(ar),a)); ap=PAV(a);}
  x=SPA(wp,a); n=AN(x); RZ(b=bfi(wr,x,1));
- if(wcr&&!b[wf]){b[wf]=1; ++n; RZ(w=reaxis(ifb(wr,b),w)); wp=PAV(w);}
+ if(wcr&&!b[wf]){b[wf]=1; ++n; RZ(w=reaxis(jtifb(jt,wr,b),w)); wp=PAV(w);}
  GATV0(x,INT,ar+n-!!wcr,1); v=AV(x);
  DO(wf, if(b[i])*v++=i;); DO(ar, *v++=wf+i;); DO(wcr-1, if(b[i+wf+1])*v++=wf+ar+i;);
  SPB(zp,a,x);

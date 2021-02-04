@@ -11,7 +11,7 @@ static A jtsprarg(J jt,I f,A x){A q;B*b,c;I r;P*xp;
  if(SPARSE&AT(x)){c=1; RZ(b=bfi(r,SPA(xp,a),1)); DO(f, if(!b[i]){c=0; break;});}
  else{c=0; GATV0(q,B01,r,1); b=BAV(q); memset(b,C0,r);}
  memset(b,C1,f);
- return c||!r?x:reaxis(ifb(r,b),x);
+ return c||!r?x:reaxis(jtifb(jt,r,b),x);
 }    /* ensure frame axes are sparse */
 
 static A jtsprinit(J jt,I f,I r,I*s,I t,P*p){A a,a1,z;I n,*u,*v;P*zp;

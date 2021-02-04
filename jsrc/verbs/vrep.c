@@ -42,7 +42,7 @@ static A jtrepzsx(J jt,A a,A w,I wf,I wcr){A q,x,y;I c,d,j,k=-1,m,p=0,*qv,*xv,*y
 static A jtrepbdx(J jt,A a,A w,I wf,I wcr){A z;I c,k,m,p;
  // wf and wcr are set
  F2PREFIP;
- if(SPARSE&AT(w))return irs2(ifb(AN(a),BAV(a)),w,0L,1L,wcr,jtfrom);
+ if(SPARSE&AT(w))return irs2(jtifb(jt,AN(a),BAV(a)),w,0L,1L,wcr,jtfrom);
  m=AN(a);
  void *zvv; void *wvv=voidAV(w); I n=0; // pointer to output area; pointer to input data; number of prefix bytes to skip in first cell
  p=bsum(m,BAV(a));  // p=# 1s in result, i. e. length of result item axis
@@ -111,7 +111,7 @@ static A jtrepbsx(J jt,A a,A w,I wf,I wcr){A ai,c,d,e,g,q,x,wa,wx,wy,y,y1,z,zy;B
  ap=PAV(a); e=SPA(ap,e); 
  y=SPA(ap,i); u=AV(y);
  x=SPA(ap,x); n=AN(x); b=BAV(x);
- if(!AN(SPA(ap,a)))return irs2(ifb(n,b),w,0L,1L,wcr,jtfrom);
+ if(!AN(SPA(ap,a)))return irs2(jtifb(jt,n,b),w,0L,1L,wcr,jtfrom);
  if(!*BAV(e)){
   GATV0(q,INT,n,1); v=v0=AV(q); 
   DO(n, if(*b++)*v++=u[i];); 
@@ -119,7 +119,7 @@ static A jtrepbsx(J jt,A a,A w,I wf,I wcr){A ai,c,d,e,g,q,x,wa,wx,wy,y,y1,z,zy;B
   return irs2(q,w,0L,1L,wcr,jtfrom);
  }
  wp=PAV(w);
- if(DENSE&AT(w)||all0(eq(sc(wf),SPA(wp,a)))){RZ(q=denseit(a)); return irs2(ifb(AN(q),BAV(q)),w,0L,1L,wcr,jtfrom);}  // here if dense w
+ if(DENSE&AT(w)||all0(eq(sc(wf),SPA(wp,a)))){RZ(q=denseit(a)); return irs2(jtifb(jt,AN(q),BAV(q)),w,0L,1L,wcr,jtfrom);}  // here if dense w
  wa=SPA(wp,a); wy=SPA(wp,i); wx=SPA(wp,x);
  RZ(q=jtaslash(jt,CPLUS,a));
  GASPARSE(z,AT(w),1,AR(w),AS(w)); *(wf+AS(z))=m=*AV(q);

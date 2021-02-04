@@ -152,7 +152,7 @@ static A jtgrd1spdd(J jt,A w,I wf,I wcr){A x,z;I n,*ws;P*wp;
  m=0; j=wr; b=c=0; 
  DO(wf, if(wb[i])++m;); if(1<=m&&m<wf){c=1; memset(wb,C1,wf);}
  DQ(wcr, --j; if(wb[j])b=1; else if(b){c=1; wb[j]=1;});
- if(c)RZ(w=reaxis(ifb(wr,wb),w));
+ if(c)RZ(w=reaxis(jtifb(jt,wr,wb),w));
  switch(2*wb[0]+wb[wf]){
   case 0: /* dense  dense  */ z=grd1spdd(w,wf,wcr); break;
   case 1: /* dense  sparse */ z=grd1spds(w,wf,wcr); break;
@@ -232,7 +232,7 @@ static A jtgrd2spsd(J jt,A w,I wf,I wcr){A x,z;P*zp;
  m=0; j=wr; b=c=0; 
  DO(wf, if(wb[i])++m;); if(1<=m&&m<wf){c=1; memset(wb,C1,wf);}
  DQ(wcr, --j; if(wb[j])b=1; else if(b){c=1; wb[j]=1;});
- if(c){b=a==w; RZ(w=reaxis(ifb(wr,wb),w)); if(b)a=w;}
+ if(c){b=a==w; RZ(w=reaxis(jtifb(jt,wr,wb),w)); if(b)a=w;}
  switch((2*wb[0]+wb[wf])*(a==w&&af==wf&&acr==wcr)){
   default: z=irs2(IRS1(w,0L,wcr,jt->workareas.compare.complt<0?jtgrade1:jtdgrade1,z),a,VFLAGNONE, RMAX,acr,jtfrom); break;
   case 2: /* sparse dense  */ z=grd2spsd(w,wf,wcr); break;
