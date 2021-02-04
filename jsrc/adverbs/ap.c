@@ -337,7 +337,7 @@ static A jtinfix(J jt,A a,A w,A self){PROLOG(0018);DECLF;A x,z;I m;
  if(a==ainf)m=IMAX;
  else RE(m=i0(vib(a))); // get infix length as an integer
  // Create table of infix positions
- RZ(x=ifxi(m,w));
+ RZ(x=jtifxi(jt,m,w));
  // If there are infixes, apply fs@:jtseg (ac2 creates an A verb for jtseg)
  if(AS(x)[0])z=eachl(x,w,jtatop(jt,fs,ac2(jtseg)));
  else{A s;I r, rr;
@@ -362,7 +362,7 @@ static A jtinfix2(J jt,    A w,A self){PROLOG(0019);A f;
 
 static A jtginfix(J jt,A a,A w,A self){A h,*hv,x,z,*zv;I d,m,n;
  RE(m=i0(vib(a))); 
- RZ(x=ifxi(m,w));
+ RZ(x=jtifxi(jt,m,w));
  h=VAV(self)->fgh[2]; hv=AAV(h); d=AN(h);
  if(SETIC(x,n)){
   GATV0(z,BOX,n,1); zv=AAV(z);

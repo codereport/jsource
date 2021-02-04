@@ -419,7 +419,7 @@
 #define ifc2(x)                     jtifc2(jt,(x))
 #define ifdz(x)                     jtifdz(jt,(x))
 
-#define ifxi(x,y)                   jtifxi(jt,(x),(y))
+
 #define igcd(x,y)                   jtigcd(jt,(x),(y))
 #define iindx(x,y)                  jtiindx(jt,(x),(y))
 #define iixBX(x0,x1,x2,x3,x4)       jtiixBX(jt,(x0),(x1),(x2),(x3),(x4))
