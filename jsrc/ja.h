@@ -424,7 +424,7 @@
 
 #define iixBX(x0,x1,x2,x3,x4)       jtiixBX(jt,(x0),(x1),(x2),(x3),(x4))
 #define iixI(x0,x1,x2,x3,x4)        jtiixI(jt,(x0),(x1),(x2),(x3),(x4))
-
+#define ilcm(x,y)                   jtilcm(jt,(x),(y))
 #define immea(x)                    jtimmea(jt,(x))
 #define immex(x)                    jtimmex(jt,(x))
 #define incorp(x)                   jtincorp(jt,(x))
