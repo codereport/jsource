@@ -234,7 +234,19 @@ enum {
     XDX       = 19,
     XZX       = 20,
     LASTNOUNX = XZX,  // index of last noun bit
-};
+    ASGNX     = 21,
+    MARKX     = 22,
+    NAMEX     = 23,
+    SYMBX     = 24,
+    CONWX     = 25,
+    ADVX      = 26,
+    VERBX     = 27,
+    LPARX     = 28,
+    CONJX     = 29,
+    RPARX     = 30,
+    RESVX     = 31,  // reserved so types can be I types
+    // NOTE: maxtype & maybe others require bit 31 to be 0!!
+    };
 
 // flags
 enum {
@@ -258,7 +270,28 @@ enum {
     C4T   = ((I)1L << C4TX),    // C4 unicode (4-byte characters)
     XD    = ((I)1L << XDX),     // DX extended floating point
                                 //    used to represent intolerant compare in jtiosc
-    XZ    = ((I)1L << XZX),     // ZX extended complex
+    XZ   = ((I)1L << XZX),      // ZX extended complex
+    // END of nouns
+
+    ASGN = ((I)1L << ASGNX),    // I  assignment
+                                //    ASGN see below
+    MARK = ((I)1L << MARKX),    // I  end-of-stack marker
+    NAME = ((I)1L << NAMEX),    // NM name
+    SYMB = ((I)1L << SYMBX),    // I  locale (symbol table)
+    CONW = ((I)1L << CONWX),    // CW control word
+    ADV  = ((I)1L << ADVX),     // V  adverb
+    VERB = ((I)1L << VERBX),    // V  verb
+                                //    NOTE: VERB must be above all NOUN bits because of CONJCASE
+    LPAR = ((I)1L << LPARX),    // I  left  parenthesis
+                                //    NOTE: LPAR is set in an ADV value to indicate that the value
+                                //    is nameless, see below
+                                //    note: LPAR used as flag to cvt() see below
+    CONJ = ((I)1L << CONJX),    // V  conjunction
+                                //    CONJ must be 1 bit below RPAR, with no parsable type
+                                //    (including any flags that might be set, see below) higher than
+                                //    RPAR
+    RPAR = ((I)1L << RPARX),    // I  right parenthesis
+    RESV = ((I)1L << RESVX),    // used to hold NOUN status sometimes
 };
 
 #define B01SIZE   sizeof(B)       // length of 1 atom
@@ -281,60 +314,24 @@ enum {
 #define C4TSIZE   sizeof(C4)
 #define XDSIZE    sizeof(DX)
 #define XZSIZE    sizeof(ZX)
+// End of noun sizes
 
-//more shifts
-enum {
-    ASGNX = 21,
-    MARKX = 22,
-    NAMEX = 23,
-    SYMBX = 24,
-    CONWX = 25,
-    ADVX  = 26,
-    VERBX = 27,
-    LPARX = 28,
-    CONJX = 29,
-    RPARX = 30,
-    RESVX = 31,  // reserved so types can be I types
-                 // NOTE: maxtype & maybe others require bit 31 to be 0!!
-};
-// more flags
-enum {
-    ASGN = ((I)1L << ASGNX),  // I  assignment
-                              //    ASGN see below
-    MARK = ((I)1L << MARKX),  // I  end-of-stack marker
-    NAME = ((I)1L << NAMEX),  // NM name
-    SYMB = ((I)1L << SYMBX),  // I  locale (symbol table)
-    CONW = ((I)1L << CONWX),  // CW control word
-    ADV  = ((I)1L << ADVX),   // V  adverb
-    VERB = ((I)1L << VERBX),  // V  verb
-                              //    NOTE: VERB must be above all NOUN bits because of CONJCASE
-    LPAR = ((I)1L << LPARX),  // I  left  parenthesis
-                              //    NOTE: LPAR is set in an ADV value to indicate that the value is
-                              //    nameless, see below
-                              //    note: LPAR used as flag to cvt() see below
-    CONJ = ((I)1L << CONJX),  // V  conjunction
-                              //    CONJ must be 1 bit below RPAR, with no parsable type (including
-                              //    any flags that might be set, see below) higher than RPAR
-    RPAR = ((I)1L << RPARX),  // I  right parenthesis
-    RESV = ((I)1L << RESVX),  // used to hold NOUN status sometimes
-};
-
-#define ASGNSIZE sizeof(I)  // only 1 byte, but all non-DIRECT are fullword multiples
-#define MARKSIZE sizeof(I)
-#define NAMESIZE sizeof(C)  // when we allocate a NAME type, the length is the length of the name string
-#define SYMBSIZE sizeof(LX)
-#define CONWSIZE sizeof(CW)
-#define ADVSIZE sizeof(V)
-#define VERBSIZE sizeof(V)  // Note: size of ACV in bp() is INTSIZE because the allocation in fdef() is of INTs
-#define LPARSIZE sizeof(I)
-#define CONJSIZE sizeof(V)
-#define RPARSIZE sizeof(I)
+#define ASGNSIZE  sizeof(I)  // only 1 byte, but all non-DIRECT are fullword multiples
+#define MARKSIZE  sizeof(I)
+#define NAMESIZE  sizeof(C)  // when we allocate a NAME type, the length is the length of the name string
+#define SYMBSIZE  sizeof(LX)
+#define CONWSIZE  sizeof(CW)
+#define ADVSIZE   sizeof(V)
+#define VERBSIZE  sizeof(V)  // Note: size of ACV in bp() is INTSIZE because the allocation in fdef() is of INTs
+#define LPARSIZE  sizeof(I)
+#define CONJSIZE  sizeof(V)
+#define RPARSIZE  sizeof(I)
 
 enum {
     // ** ASGN type can have the following informational bits set along with ASGN
     ASGNLOCALX = SYMBX,                 // set for =. (but not when assigning to locative)
                                         //     aliases with SYMB
-    ASGNLOCAL = ((I)1L << ASGNLOCALX),  // set for =. (but not when assigning to locative)
+    ASGNLOCAL  = ((I)1L << ASGNLOCALX), // set for =. (but not when assigning to locative)
                                         //     aliases with SYMB
     ASGNTONAME = ((I)1L << CONWX),      // set when assignment is to name
                                         //     aliases with CONW
@@ -342,8 +339,7 @@ enum {
     // type (such as NAME, NOUN)
     // Restriction: CONW must be reserved for use as ASGNTONAME because of
     // how parser tests for it
-};
-enum {
+
     // ** NOUN types can have the following informational bits set
     NOUNCVTVALIDCT = ((I)1L << SYMBX),  // Flag for jtcvt arg only: if set, convert only the #atoms
                                         // given in the parameter   Aliases with SYMB
@@ -356,9 +352,7 @@ enum {
                                         // contents are NAMEs   aliases with MARK
     // Restriction: MARK must be reserved for use as BOXMULTIASSIGN because of how parser tests for
     // it
-};
 
-enum{
     // ** NOTE!! bits 28-30 are used in the call to cvt() (arg only) to override the convsion type
     // for XNUMs
     XCVTXNUMORIDEX = LPARX,  // in cvt(), indicates that forced precision for result is present
