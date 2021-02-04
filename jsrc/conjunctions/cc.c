@@ -785,8 +785,9 @@ void copyTT(void *zv, void *wv, I n, I zt, I wt){
 
 static A jtcut1(J jt,    A w,A self){return cut2(mark,w,self);}
 
-// ;@((<@(f/\));._2 _1 1 2) when  f is atomic   also @: but only when no rank loop required  also \. for \
-// also [: ; (<@(f/\));._2 _1 1 2)  when no rank loop required
+// ;@((<@(f/\));._2 _1 1 2) when  f is atomic   also @: but only when no rank
+// loop required  also \. for \ also [: ; (<@(f/\));._2 _1 1 2)  when no rank
+// loop required
 // NOTE: if there are no cuts, this routine produces different results from the normal routine if the operation is one we recognise.
 //  This routine produces an extra axis, as if the shape of the boxed result were preserved even when there are no boxed results
  A jtrazecut2(J jt,A a,A w,A self){A fs,gs,y,z=0;B b; I neg,pfx;C id,sep,*u,*v,*wv,*zv;I d,k,m=0,wi,p,q,r,*s,wt;
