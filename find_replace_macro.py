@@ -15,6 +15,15 @@ def walk_path_cpp():
     pass
 
 
+def check_excluded_names():
+    with open("excluded_names.txt", 'r') as excluded_names:
+        for line in excluded_names:
+            if line == old_name:
+                return True
+    return False
+    pass
+
+
 def walk_matches():
     global old_name
     for path in walk_path_cpp():
@@ -29,22 +38,14 @@ def walk_matches():
                 continue
 
             for full_str, old_name, v1, v2, new_name in matches:
-                if old_name in ["bindd",
-                                "binzz",
-                                "dgcd",
-                                "dlcm",
-                                "equ",
-                                "fplus",
-                                "ftymes",
-                                "igcd",
-                                "ilcm"]:
-                    continue
+                if check_excluded_names():
+                    continue;
                 print("remove " + full_str)
                 data = data.replace(full_str, "")
                 with open(path, 'w') as fw:
                     fw.write(data)
                 yield re.compile(r'(^|[ \t]+|[^\d\w_])' + old_name + r'\((?=([^,]+?),([^)]+?)\))'), \
-                      r'\1' + new_name + r'(jt,', old_name, new_name
+                    r'\1' + new_name + r'(jt,', old_name, new_name
                 return
 
     pass
