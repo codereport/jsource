@@ -18,7 +18,7 @@ static A jtfromis1(J jt,A ind,A w,A z,I wf){A a,a1,j1,p,q,x,x1,y,y1;C*xu,*xuu,*x
  if(!r) 
   if(AR(z)){GATV0(q,INT,an-1,1); v=AV(q); DO(an, if(i!=h)*v++=i;); SPB(zp,i,jtfromr(jt,q,y)); SPB(zp,x,x); return z;}
   else return reshape(mtv,AN(x)?x:SPA(zp,e));
- if(h){q=grade1(jtfromr(jt,sc(h),y)); RZ(y=ifrom(q,y)); RZ(x=ifrom(q,x));}
+ if(h){q=grade1(jtfromr(jt,sc(h),y)); RZ(y=jtifrom(jt,q,y)); RZ(x=jtifrom(jt,q,x));}
  RZ(q=odom(2L,r,AS(ind))); iv=AV(q);
  m=*AS(y); s=0; j=-1; u=h+AV(y); v=u+an;
  GATV0(p,INT,m,1); pv=AV(p); memset(pv,CFF,SZI*m);
@@ -40,7 +40,7 @@ static A jtfromis1(J jt,A ind,A w,A z,I wf){A a,a1,j1,p,q,x,x1,y,y1;C*xu,*xuu,*x
   }}
   iv+=r;
  }
- if(h){q=grade1(y1); RZ(y1=ifrom(q,y1)); RZ(x1=ifrom(q,x1));}
+ if(h){q=grade1(y1); RZ(y1=jtifrom(jt,q,y1)); RZ(x1=jtifrom(jt,q,x1));}
  SPB(zp,i,y1); SPB(zp,x,x1);
  return z;
 }    /* ind{"r w along a sparse axis  */
@@ -90,13 +90,13 @@ A jtfrombsn(J jt,A ind,A w,I wf){A a,j1,p,q,x,x1,y,y1,ys,z;C*xu,*xuu,*xv;
  RZ(ys=jtfromr(jt,indexof(a,apv(h,wf,1L)),y));
  RZ(q=jteps(jt,ys,ind)); 
  if(!all1(q)){RZ(ys=repeat(q,ys)); RZ(y=repeat(q,y)); RZ(x=repeat(q,x));}
- if(wf){q=grade1(ys); RZ(ys=ifrom(q,ys)); RZ(y=ifrom(q,y)); RZ(x=ifrom(q,x));}
+ if(wf){q=grade1(ys); RZ(ys=jtifrom(jt,q,ys)); RZ(y=jtifrom(jt,q,y)); RZ(x=jtifrom(jt,q,x));}
  m=*AS(y);
  GATV0(p,INT,m,1); pv=AV(p);
  GATV0(q,INT,m,1); qv=AV(q);
  s=0; j=-1; u=AV(ys); v=u+h;
  DO(m-1, if(ICMP(u,v,h)){pv[s]=1+j; qv[s++]=i-j; j=i;} u=v; v+=h;); if(m){pv[s]=1+j; qv[s++]=m-1-j;}
- RZ(j1=indexof(ifrom(vec(INT,s,pv),ys),ind)); jv=AV(j1);
+ RZ(j1=indexof(jtifrom(jt,vec(INT,s,pv),ys),ind)); jv=AV(j1);
  c=0; DO(n, if(s>jv[i])c+=qv[jv[i]];); 
  i=aii(x); j=AN(SPA(zp,a)); xk=i<<bplg(AT(x));
  GATV0(y1,INT,  c*j,2); v=AS(y1); v[0]=c; v[1]=j; yv= AV(y1); yu= AV(y);
@@ -109,7 +109,7 @@ A jtfrombsn(J jt,A ind,A w,I wf){A a,j1,p,q,x,x1,y,y1,ys,z;C*xu,*xuu,*xv;
     MC(xv,xuu,xk); xv+=xk; xuu+=xk;
     DO(pp, *yv++=*u++;); DO(r, *yv++=iv[i];); u+=qq; DQ(rr, *yv++=*u++;);
  }}}
- if(wf){q=grade1(y1); RZ(y1=ifrom(q,y1)); RZ(x1=ifrom(q,x1));}
+ if(wf){q=grade1(y1); RZ(y1=jtifrom(jt,q,y1)); RZ(x1=jtifrom(jt,q,x1));}
  SPB(zp,i,y1); SPB(zp,x,x1); 
  return z;
 }    /* (<"1 ind){w, sparse w and integer array ind */
@@ -160,7 +160,7 @@ static A jtfrombs1(J jt,A ind,A w,I wf){A*iv,x,y,z;I j,m,n,wr,wcr;
   RZ(x=irs2(SPA(ap,x),w,VFLAGNONE, RMAX,wcr,jtifrom));
   RZ(x=jtcant2(jt,less(IX(AR(x)),sc(wf)),x));
   SPB(zp,x,x);
- }else SPB(zp,x,ifrom(SPA(ap,x),w));
+ }else SPB(zp,x,jtifrom(jt,SPA(ap,x),w));
  return z;
 }    /* a{"r w, sparse a, dense w */
 
