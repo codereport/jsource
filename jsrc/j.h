@@ -667,7 +667,7 @@ if(_i<3){_zzt+=_i; z=(I)&oneone; _zzt=_i>=1?_zzt:(I*)z; z=_i>1?(I)_zzt:z; z=((I*
 
 
 #ifndef __forceinline
-#define __forceinline inline __attribute__((inline))
+#define __forceinline inline __attribute__((always_inline))
 #endif
 
 #ifdef __GNUC__
