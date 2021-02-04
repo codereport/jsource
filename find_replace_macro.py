@@ -93,7 +93,7 @@ def main():
         os.system('ninja -C build')
         # current_build = os.popen('ninja -C build').read()
         current_test = os.popen('ninja -C build test').read()
-        with open("known_good_test", 'r') as f:
+        with open("known_good_test.txt", 'r') as f:
             if f.read().strip() != current_test.strip():
                 os.system('git reset --hard')
                 with open("excluded_names.txt", 'a') as excluded_names:
