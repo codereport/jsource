@@ -270,7 +270,7 @@ static A jthkodom(J jt,    A w,A self){DECLFG;B b=0;I n,*v;
 
 static A jthkindexofmaxmin(J jt,    A w,A self){I z=0;
  I n=AN(w);
- if(!(1==AR(w)&&AT(w)&INT+FL))return hook1(w,self);
+ if(!(1==AR(w)&&AT(w)&INT+FL))return jthook1(jt,w,self);
  if(n>1){
   switch((AT(w)&INT)+(CICO==ID(FAV(self)->fgh[0])?2:0)+(CMAX==ID(FAV(FAV(self)->fgh[1])->fgh[0]))){
   case 0: IDOTSEARCH(D,<,<=)

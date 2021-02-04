@@ -155,3 +155,4 @@
 |`jsrc\parsing\p.c`|hook|jthook|`(^\|[ \t]+\|[^\d\w_])hook\((?=([^,]+?),([^)]+?)\))`|`\1jthook(jt,`|
 |`jsrc\parsing\pv.c`|hook|jthook|`(^\|[ \t]+\|[^\d\w_])hook\((?=([^,]+?),([^)]+?)\))`|`\1jthook(jt,`|
 |`jsrc\representations\r.c`|hook|jthook|`(^\|[ \t]+\|[^\d\w_])hook\((?=([^,]+?),([^)]+?)\))`|`\1jthook(jt,`|
+|`jsrc\conjunctions\cf.c`|hook1|jthook1|`(^\|[ \t]+\|[^\d\w_])hook1\((?=([^,]+?),([^)]+?)\))`|`\1jthook1(jt,`|
