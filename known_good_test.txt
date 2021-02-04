@@ -1,0 +1,807 @@
+ninja: Entering directory `build'
+[0/1] Running tests...
+Test project /mnt/d/devwsl/jsource/build
+        Start   1: hare_g0
+  1/397 Test   #1: hare_g0 ..........................   Passed    0.15 sec
+        Start   2: hare_g000
+  2/397 Test   #2: hare_g000 ........................   Passed    0.15 sec
+        Start   3: hare_g000a
+  3/397 Test   #3: hare_g000a .......................   Passed    0.14 sec
+        Start   4: hare_g000i
+  4/397 Test   #4: hare_g000i .......................   Passed    0.16 sec
+        Start   5: hare_g000p
+  5/397 Test   #5: hare_g000p .......................   Passed    0.17 sec
+        Start   6: hare_g000s
+  6/397 Test   #6: hare_g000s .......................   Passed    0.16 sec
+        Start   7: hare_g010
+  7/397 Test   #7: hare_g010 ........................   Passed    0.17 sec
+        Start   8: hare_g010a
+  8/397 Test   #8: hare_g010a .......................   Passed    0.16 sec
+        Start   9: hare_g010i
+  9/397 Test   #9: hare_g010i .......................   Passed    0.16 sec
+        Start  10: hare_g010p
+ 10/397 Test  #10: hare_g010p .......................   Passed    0.16 sec
+        Start  11: hare_g010s
+ 11/397 Test  #11: hare_g010s .......................   Passed    0.15 sec
+        Start  12: hare_g011
+ 12/397 Test  #12: hare_g011 ........................   Passed    0.16 sec
+        Start  13: hare_g011a
+ 13/397 Test  #13: hare_g011a .......................   Passed    0.16 sec
+        Start  14: hare_g011i
+ 14/397 Test  #14: hare_g011i .......................   Passed    0.16 sec
+        Start  15: hare_g011p
+ 15/397 Test  #15: hare_g011p .......................   Passed    0.53 sec
+        Start  16: hare_g011s
+ 16/397 Test  #16: hare_g011s .......................   Passed    0.16 sec
+        Start  17: hare_g012
+ 17/397 Test  #17: hare_g012 ........................   Passed    0.15 sec
+        Start  18: hare_g012a
+ 18/397 Test  #18: hare_g012a .......................   Passed    0.15 sec
+        Start  19: hare_g012i
+ 19/397 Test  #19: hare_g012i .......................   Passed    0.15 sec
+        Start  20: hare_g012p
+ 20/397 Test  #20: hare_g012p .......................   Passed    0.15 sec
+        Start  21: hare_g012s
+ 21/397 Test  #21: hare_g012s .......................   Passed    0.16 sec
+        Start  22: hare_g020
+ 22/397 Test  #22: hare_g020 ........................   Passed    0.14 sec
+        Start  23: hare_g020a
+ 23/397 Test  #23: hare_g020a .......................   Passed    0.16 sec
+        Start  24: hare_g020i
+ 24/397 Test  #24: hare_g020i .......................   Passed    0.16 sec
+        Start  25: hare_g020p
+ 25/397 Test  #25: hare_g020p .......................   Passed    0.15 sec
+        Start  26: hare_g020s
+ 26/397 Test  #26: hare_g020s .......................   Passed    0.16 sec
+        Start  27: hare_g021
+ 27/397 Test  #27: hare_g021 ........................   Passed    0.15 sec
+        Start  28: hare_g021a
+ 28/397 Test  #28: hare_g021a .......................   Passed    0.16 sec
+        Start  29: hare_g021i
+ 29/397 Test  #29: hare_g021i .......................   Passed    0.16 sec
+        Start  30: hare_g021p
+ 30/397 Test  #30: hare_g021p .......................   Passed    0.54 sec
+        Start  31: hare_g021s
+ 31/397 Test  #31: hare_g021s .......................   Passed    0.17 sec
+        Start  32: hare_g022
+ 32/397 Test  #32: hare_g022 ........................   Passed    0.19 sec
+        Start  33: hare_g022a
+ 33/397 Test  #33: hare_g022a .......................   Passed    0.15 sec
+        Start  34: hare_g022i
+ 34/397 Test  #34: hare_g022i .......................   Passed    0.16 sec
+        Start  35: hare_g022p
+ 35/397 Test  #35: hare_g022p .......................   Passed    0.15 sec
+        Start  36: hare_g022s
+ 36/397 Test  #36: hare_g022s .......................   Passed    0.15 sec
+        Start  37: hare_g030
+ 37/397 Test  #37: hare_g030 ........................   Passed    0.15 sec
+        Start  38: hare_g030a
+ 38/397 Test  #38: hare_g030a .......................   Passed    0.16 sec
+        Start  39: hare_g031
+ 39/397 Test  #39: hare_g031 ........................   Passed    0.15 sec
+        Start  40: hare_g032
+ 40/397 Test  #40: hare_g032 ........................   Passed    0.16 sec
+        Start  41: hare_g0a
+ 41/397 Test  #41: hare_g0a .........................   Passed    0.14 sec
+        Start  42: hare_g0x
+ 42/397 Test  #42: hare_g0x .........................   Passed    0.15 sec
+        Start  43: hare_g100
+ 43/397 Test  #43: hare_g100 ........................   Passed    0.17 sec
+        Start  44: hare_g100a
+ 44/397 Test  #44: hare_g100a .......................   Passed    0.14 sec
+        Start  45: hare_g100i
+ 45/397 Test  #45: hare_g100i .......................   Passed    0.20 sec
+        Start  46: hare_g100p
+ 46/397 Test  #46: hare_g100p .......................   Passed    0.15 sec
+        Start  47: hare_g100s
+ 47/397 Test  #47: hare_g100s .......................   Passed    0.15 sec
+        Start  48: hare_g101
+ 48/397 Test  #48: hare_g101 ........................   Passed    0.17 sec
+        Start  49: hare_g101a
+ 49/397 Test  #49: hare_g101a .......................   Passed    0.15 sec
+        Start  50: hare_g101i
+ 50/397 Test  #50: hare_g101i .......................   Passed    0.15 sec
+        Start  51: hare_g101p
+ 51/397 Test  #51: hare_g101p .......................   Passed    0.15 sec
+        Start  52: hare_g101s
+ 52/397 Test  #52: hare_g101s .......................   Passed    0.15 sec
+        Start  53: hare_g102
+ 53/397 Test  #53: hare_g102 ........................   Passed    0.16 sec
+        Start  54: hare_g102a
+ 54/397 Test  #54: hare_g102a .......................   Passed    0.15 sec
+        Start  55: hare_g102i
+ 55/397 Test  #55: hare_g102i .......................   Passed    0.16 sec
+        Start  56: hare_g102p
+ 56/397 Test  #56: hare_g102p .......................   Passed    0.16 sec
+        Start  57: hare_g102s
+ 57/397 Test  #57: hare_g102s .......................   Passed    0.15 sec
+        Start  58: hare_g110
+ 58/397 Test  #58: hare_g110 ........................   Passed    0.23 sec
+        Start  59: hare_g110a
+ 59/397 Test  #59: hare_g110a .......................   Passed    0.16 sec
+        Start  60: hare_g110i
+ 60/397 Test  #60: hare_g110i .......................   Passed    0.16 sec
+        Start  61: hare_g110p
+ 61/397 Test  #61: hare_g110p .......................   Passed    0.16 sec
+        Start  62: hare_g110s
+ 62/397 Test  #62: hare_g110s .......................   Passed    0.16 sec
+        Start  63: hare_g111
+ 63/397 Test  #63: hare_g111 ........................   Passed    0.18 sec
+        Start  64: hare_g111a
+ 64/397 Test  #64: hare_g111a .......................   Passed    0.16 sec
+        Start  65: hare_g111i
+ 65/397 Test  #65: hare_g111i .......................   Passed    0.16 sec
+        Start  66: hare_g111p
+ 66/397 Test  #66: hare_g111p .......................   Passed    0.16 sec
+        Start  67: hare_g111s
+ 67/397 Test  #67: hare_g111s .......................   Passed    0.17 sec
+        Start  68: hare_g112
+ 68/397 Test  #68: hare_g112 ........................   Passed    0.14 sec
+        Start  69: hare_g112a
+ 69/397 Test  #69: hare_g112a .......................   Passed    0.15 sec
+        Start  70: hare_g112i
+ 70/397 Test  #70: hare_g112i .......................   Passed    0.17 sec
+        Start  71: hare_g112p
+ 71/397 Test  #71: hare_g112p .......................   Passed    0.15 sec
+        Start  72: hare_g112s
+ 72/397 Test  #72: hare_g112s .......................   Passed    0.15 sec
+        Start  73: hare_g120
+ 73/397 Test  #73: hare_g120 ........................   Passed    0.15 sec
+        Start  74: hare_g120a
+ 74/397 Test  #74: hare_g120a .......................   Passed    0.15 sec
+        Start  75: hare_g120i
+ 75/397 Test  #75: hare_g120i .......................   Passed    0.17 sec
+        Start  76: hare_g120p
+ 76/397 Test  #76: hare_g120p .......................   Passed    0.16 sec
+        Start  77: hare_g120s
+ 77/397 Test  #77: hare_g120s .......................   Passed    0.16 sec
+        Start  78: hare_g121
+ 78/397 Test  #78: hare_g121 ........................   Passed    0.17 sec
+        Start  79: hare_g122
+ 79/397 Test  #79: hare_g122 ........................   Passed    0.91 sec
+        Start  80: hare_g128x
+ 80/397 Test  #80: hare_g128x .......................   Passed    0.15 sec
+        Start  81: hare_g128x3
+ 81/397 Test  #81: hare_g128x3 ......................   Passed    0.15 sec
+        Start  82: hare_g128x5
+ 82/397 Test  #82: hare_g128x5 ......................   Passed    0.22 sec
+        Start  83: hare_g130
+ 83/397 Test  #83: hare_g130 ........................   Passed    0.16 sec
+        Start  84: hare_g130a
+ 84/397 Test  #84: hare_g130a .......................   Passed    0.15 sec
+        Start  85: hare_g130i
+ 85/397 Test  #85: hare_g130i .......................   Passed    0.16 sec
+        Start  86: hare_g130p
+ 86/397 Test  #86: hare_g130p .......................   Passed    0.16 sec
+        Start  87: hare_g132
+ 87/397 Test  #87: hare_g132 ........................   Passed    0.16 sec
+        Start  88: hare_g13x
+ 88/397 Test  #88: hare_g13x ........................   Passed    0.15 sec
+        Start  89: hare_g15x
+ 89/397 Test  #89: hare_g15x ........................   Passed    0.15 sec
+        Start  90: hare_g1x
+ 90/397 Test  #90: hare_g1x .........................   Passed    0.16 sec
+        Start  91: hare_g1x0
+ 91/397 Test  #91: hare_g1x0 ........................   Passed    0.29 sec
+        Start  92: hare_g1x1
+ 92/397 Test  #92: hare_g1x1 ........................   Passed    0.23 sec
+        Start  93: hare_g1x11
+ 93/397 Test  #93: hare_g1x11 .......................   Passed    0.16 sec
+        Start  94: hare_g1x12
+ 94/397 Test  #94: hare_g1x12 .......................   Passed    0.16 sec
+        Start  95: hare_g1x2
+ 95/397 Test  #95: hare_g1x2 ........................   Passed    0.17 sec
+        Start  96: hare_g1x20
+ 96/397 Test  #96: hare_g1x20 .......................   Passed    0.16 sec
+        Start  97: hare_g1x3
+ 97/397 Test  #97: hare_g1x3 ........................   Passed    0.18 sec
+        Start  98: hare_g1x30
+ 98/397 Test  #98: hare_g1x30 .......................   Passed    0.17 sec
+        Start  99: hare_g1x4
+ 99/397 Test  #99: hare_g1x4 ........................   Passed    0.22 sec
+        Start 100: hare_g1x43
+100/397 Test #100: hare_g1x43 .......................   Passed    0.15 sec
+        Start 101: hare_g1x5
+101/397 Test #101: hare_g1x5 ........................   Passed    0.18 sec
+        Start 102: hare_g1x55
+102/397 Test #102: hare_g1x55 .......................   Passed    0.18 sec
+        Start 103: hare_g1x7
+103/397 Test #103: hare_g1x7 ........................   Passed    0.15 sec
+        Start 104: hare_g200
+104/397 Test #104: hare_g200 ........................   Passed    0.81 sec
+        Start 105: hare_g200a
+105/397 Test #105: hare_g200a .......................   Passed    0.16 sec
+        Start 106: hare_g200i
+106/397 Test #106: hare_g200i .......................   Passed    0.16 sec
+        Start 107: hare_g200m
+107/397 Test #107: hare_g200m .......................   Passed    0.15 sec
+        Start 108: hare_g200p
+108/397 Test #108: hare_g200p .......................   Passed    0.16 sec
+        Start 109: hare_g201
+109/397 Test #109: hare_g201 ........................   Passed    0.15 sec
+        Start 110: hare_g202
+110/397 Test #110: hare_g202 ........................   Passed    0.16 sec
+        Start 111: hare_g202b
+111/397 Test #111: hare_g202b .......................   Passed    0.17 sec
+        Start 112: hare_g210
+112/397 Test #112: hare_g210 ........................   Passed    0.17 sec
+        Start 113: hare_g211
+113/397 Test #113: hare_g211 ........................   Passed    0.27 sec
+        Start 114: hare_g212
+114/397 Test #114: hare_g212 ........................   Passed    0.18 sec
+        Start 115: hare_g220
+115/397 Test #115: hare_g220 ........................   Passed    0.14 sec
+        Start 116: hare_g220t
+116/397 Test #116: hare_g220t .......................   Passed    0.21 sec
+        Start 117: hare_g221
+117/397 Test #117: hare_g221 ........................   Passed    0.59 sec
+        Start 118: hare_g222
+118/397 Test #118: hare_g222 ........................   Passed    1.94 sec
+        Start 119: hare_g222a
+119/397 Test #119: hare_g222a .......................   Passed    0.14 sec
+        Start 120: hare_g222i
+120/397 Test #120: hare_g222i .......................   Passed    0.16 sec
+        Start 121: hare_g222p
+121/397 Test #121: hare_g222p .......................   Passed    0.16 sec
+        Start 122: hare_g222s
+122/397 Test #122: hare_g222s .......................   Passed    0.17 sec
+        Start 123: hare_g230
+123/397 Test #123: hare_g230 ........................   Passed    0.16 sec
+        Start 124: hare_g230a
+124/397 Test #124: hare_g230a .......................   Passed    0.15 sec
+        Start 125: hare_g230i
+125/397 Test #125: hare_g230i .......................   Passed    0.15 sec
+        Start 126: hare_g230p
+126/397 Test #126: hare_g230p .......................   Passed    0.15 sec
+        Start 127: hare_g230s
+127/397 Test #127: hare_g230s .......................   Passed    0.16 sec
+        Start 128: hare_g231
+128/397 Test #128: hare_g231 ........................   Passed    0.15 sec
+        Start 129: hare_g232
+129/397 Test #129: hare_g232 ........................   Passed    2.09 sec
+        Start 130: hare_g2x
+130/397 Test #130: hare_g2x .........................   Passed    0.16 sec
+        Start 131: hare_g300b
+131/397 Test #131: hare_g300b .......................   Passed    0.16 sec
+        Start 132: hare_g300t
+132/397 Test #132: hare_g300t .......................   Passed    0.15 sec
+        Start 133: hare_g301
+133/397 Test #133: hare_g301 ........................   Passed    0.15 sec
+        Start 134: hare_g310
+134/397 Test #134: hare_g310 ........................   Passed    0.18 sec
+        Start 135: hare_g310a
+135/397 Test #135: hare_g310a .......................   Passed    0.15 sec
+        Start 136: hare_g310names
+136/397 Test #136: hare_g310names ...................   Passed    0.16 sec
+        Start 137: hare_g310r
+137/397 Test #137: hare_g310r .......................   Passed    0.16 sec
+        Start 138: hare_g310t
+138/397 Test #138: hare_g310t .......................   Passed    0.15 sec
+        Start 139: hare_g311
+139/397 Test #139: hare_g311 ........................   Passed    0.15 sec
+        Start 140: hare_g312
+140/397 Test #140: hare_g312 ........................   Passed    0.16 sec
+        Start 141: hare_g320
+141/397 Test #141: hare_g320 ........................   Passed    0.16 sec
+        Start 142: hare_g320ip
+142/397 Test #142: hare_g320ip ......................   Passed    0.30 sec
+        Start 143: hare_g321
+143/397 Test #143: hare_g321 ........................   Passed    0.16 sec
+        Start 144: hare_g321t
+144/397 Test #144: hare_g321t .......................   Passed    0.23 sec
+        Start 145: hare_g322
+145/397 Test #145: hare_g322 ........................   Passed    0.17 sec
+        Start 146: hare_g330
+146/397 Test #146: hare_g330 ........................   Passed    0.16 sec
+        Start 147: hare_g330f
+147/397 Test #147: hare_g330f .......................   Passed    0.19 sec
+        Start 148: hare_g330t
+148/397 Test #148: hare_g330t .......................   Passed    0.16 sec
+        Start 149: hare_g331bx
+149/397 Test #149: hare_g331bx ......................   Passed    0.17 sec
+        Start 150: hare_g331col
+150/397 Test #150: hare_g331col .....................   Passed    0.16 sec
+        Start 151: hare_g331ins
+151/397 Test #151: hare_g331ins .....................   Passed    0.26 sec
+        Start 152: hare_g331ps
+152/397 Test #152: hare_g331ps ......................   Passed    0.21 sec
+        Start 153: hare_g331sp
+153/397 Test #153: hare_g331sp ......................   Passed    0.18 sec
+        Start 154: hare_g332
+154/397 Test #154: hare_g332 ........................   Passed    0.16 sec
+        Start 155: hare_g332s
+155/397 Test #155: hare_g332s .......................   Passed    0.16 sec
+        Start 156: hare_g3x
+156/397 Test #156: hare_g3x .........................   Passed    0.87 sec
+        Start 157: hare_g3x4
+157/397 Test #157: hare_g3x4 ........................   Passed    0.15 sec
+        Start 158: hare_g3x5
+158/397 Test #158: hare_g3x5 ........................   Passed    0.15 sec
+        Start 159: hare_g3x6
+159/397 Test #159: hare_g3x6 ........................   Passed    0.16 sec
+        Start 160: hare_g400e
+160/397 Test #160: hare_g400e .......................   Passed    0.17 sec
+        Start 161: hare_g401
+161/397 Test #161: hare_g401 ........................   Passed    0.15 sec
+        Start 162: hare_g402
+162/397 Test #162: hare_g402 ........................   Passed    0.19 sec
+        Start 163: hare_g410
+163/397 Test #163: hare_g410 ........................   Passed    0.23 sec
+        Start 164: hare_g410a
+164/397 Test #164: hare_g410a .......................   Passed    0.15 sec
+        Start 165: hare_g410i
+165/397 Test #165: hare_g410i .......................   Passed    0.16 sec
+        Start 166: hare_g410p
+166/397 Test #166: hare_g410p .......................   Passed    0.15 sec
+        Start 167: hare_g410s
+167/397 Test #167: hare_g410s .......................   Passed    0.16 sec
+        Start 168: hare_g411
+168/397 Test #168: hare_g411 ........................   Passed    0.16 sec
+        Start 169: hare_g412
+169/397 Test #169: hare_g412 ........................   Passed    0.16 sec
+        Start 170: hare_g420ce
+170/397 Test #170: hare_g420ce ......................   Passed    0.17 sec
+        Start 171: hare_g420fg
+171/397 Test #171: hare_g420fg ......................   Passed    0.84 sec
+        Start 172: hare_g420r2
+172/397 Test #172: hare_g420r2 ......................   Passed    0.15 sec
+        Start 173: hare_g420stch
+173/397 Test #173: hare_g420stch ....................   Passed    0.24 sec
+        Start 174: hare_g420t
+174/397 Test #174: hare_g420t .......................   Passed    1.95 sec
+        Start 175: hare_g421
+175/397 Test #175: hare_g421 ........................   Passed    0.37 sec
+        Start 176: hare_g421c
+176/397 Test #176: hare_g421c .......................   Passed    0.29 sec
+        Start 177: hare_g421d
+177/397 Test #177: hare_g421d .......................   Passed    0.21 sec
+        Start 178: hare_g421e
+178/397 Test #178: hare_g421e .......................   Passed    0.28 sec
+        Start 179: hare_g421i
+179/397 Test #179: hare_g421i .......................   Passed    0.55 sec
+        Start 180: hare_g421p
+180/397 Test #180: hare_g421p .......................   Passed    0.16 sec
+        Start 181: hare_g421t
+181/397 Test #181: hare_g421t .......................   Passed    0.19 sec
+        Start 182: hare_g422
+182/397 Test #182: hare_g422 ........................   Passed    1.34 sec
+        Start 183: hare_g422tao
+183/397 Test #183: hare_g422tao .....................   Passed    0.15 sec
+        Start 184: hare_g430
+184/397 Test #184: hare_g430 ........................   Passed    0.52 sec
+        Start 185: hare_g430a2
+185/397 Test #185: hare_g430a2 ......................   Passed    0.17 sec
+        Start 186: hare_g430avg
+186/397 Test #186: hare_g430avg .....................   Passed    0.24 sec
+        Start 187: hare_g430b
+187/397 Test #187: hare_g430b .......................   Passed    0.19 sec
+        Start 188: hare_g430d
+188/397 Test #188: hare_g430d .......................   Passed    0.16 sec
+        Start 189: hare_g430fin
+189/397 Test #189: hare_g430fin .....................   Passed    0.30 sec
+        Start 190: hare_g430inv
+190/397 Test #190: hare_g430inv .....................   Passed    0.16 sec
+        Start 191: hare_g431
+191/397 Test #191: hare_g431 ........................   Passed    1.21 sec
+        Start 192: hare_g431a
+192/397 Test #192: hare_g431a .......................   Passed    0.34 sec
+        Start 193: hare_g432
+193/397 Test #193: hare_g432 ........................   Passed    1.17 sec
+        Start 194: hare_g4x
+194/397 Test #194: hare_g4x .........................   Passed    0.19 sec
+        Start 195: hare_g4x5
+195/397 Test #195: hare_g4x5 ........................   Passed    0.16 sec
+        Start 196: hare_g500
+196/397 Test #196: hare_g500 ........................   Passed    0.17 sec
+        Start 197: hare_g502
+197/397 Test #197: hare_g502 ........................   Passed    0.15 sec
+        Start 198: hare_g510
+198/397 Test #198: hare_g510 ........................   Passed    0.15 sec
+        Start 199: hare_g520
+199/397 Test #199: hare_g520 ........................   Passed    2.17 sec
+        Start 200: hare_g520b
+200/397 Test #200: hare_g520b .......................   Passed    0.15 sec
+        Start 201: hare_g520p
+201/397 Test #201: hare_g520p .......................   Passed    0.41 sec
+        Start 202: hare_g521
+202/397 Test #202: hare_g521 ........................   Passed    0.17 sec
+        Start 203: hare_g522
+203/397 Test #203: hare_g522 ........................   Passed    0.16 sec
+        Start 204: hare_g530
+204/397 Test #204: hare_g530 ........................   Passed    1.00 sec
+        Start 205: hare_g530t
+205/397 Test #205: hare_g530t .......................   Passed    0.34 sec
+        Start 206: hare_g531
+206/397 Test #206: hare_g531 ........................   Passed    0.16 sec
+        Start 207: hare_g532
+207/397 Test #207: hare_g532 ........................   Passed    0.16 sec
+        Start 208: hare_g5x
+208/397 Test #208: hare_g5x .........................   Passed    0.15 sec
+        Start 209: hare_g5x0
+209/397 Test #209: hare_g5x0 ........................   Passed    0.17 sec
+        Start 210: hare_g5x1
+210/397 Test #210: hare_g5x1 ........................   Passed    0.17 sec
+        Start 211: hare_g5x2
+211/397 Test #211: hare_g5x2 ........................   Passed    0.18 sec
+        Start 212: hare_g5x30
+212/397 Test #212: hare_g5x30 .......................   Passed    0.15 sec
+        Start 213: hare_g5x4
+213/397 Test #213: hare_g5x4 ........................   Passed    0.18 sec
+        Start 214: hare_g5x5
+214/397 Test #214: hare_g5x5 ........................   Passed    0.18 sec
+        Start 215: hare_g5x6
+215/397 Test #215: hare_g5x6 ........................   Passed    0.14 sec
+        Start 216: hare_g5x7
+216/397 Test #216: hare_g5x7 ........................   Passed    0.15 sec
+        Start 217: hare_g601
+217/397 Test #217: hare_g601 ........................   Passed    1.62 sec
+        Start 218: hare_g602
+218/397 Test #218: hare_g602 ........................   Passed    0.17 sec
+        Start 219: hare_g610
+219/397 Test #219: hare_g610 ........................   Passed    0.15 sec
+        Start 220: hare_g612
+220/397 Test #220: hare_g612 ........................   Passed    0.15 sec
+        Start 221: hare_g620
+221/397 Test #221: hare_g620 ........................   Passed    0.15 sec
+        Start 222: hare_g620a
+222/397 Test #222: hare_g620a .......................   Passed    0.15 sec
+        Start 223: hare_g621
+223/397 Test #223: hare_g621 ........................   Passed    0.19 sec
+        Start 224: hare_g622
+224/397 Test #224: hare_g622 ........................   Passed    0.15 sec
+        Start 225: hare_g630
+225/397 Test #225: hare_g630 ........................   Passed    0.15 sec
+        Start 226: hare_g631c
+226/397 Test #226: hare_g631c .......................   Passed    0.15 sec
+        Start 227: hare_g632
+227/397 Test #227: hare_g632 ........................   Passed    0.15 sec
+        Start 228: hare_g640k
+228/397 Test #228: hare_g640k .......................   Passed    0.54 sec
+        Start 229: hare_g640r
+229/397 Test #229: hare_g640r .......................   Passed    0.15 sec
+        Start 230: hare_g641
+230/397 Test #230: hare_g641 ........................   Passed    0.16 sec
+        Start 231: hare_g6x
+231/397 Test #231: hare_g6x .........................   Passed    0.15 sec
+        Start 232: hare_g6x0
+232/397 Test #232: hare_g6x0 ........................   Passed    0.15 sec
+        Start 233: hare_g6x14
+233/397 Test #233: hare_g6x14 .......................   Passed    0.16 sec
+        Start 234: hare_g7x
+234/397 Test #234: hare_g7x .........................   Passed    0.15 sec
+        Start 235: hare_g7x5
+235/397 Test #235: hare_g7x5 ........................   Passed    0.18 sec
+        Start 236: hare_g7x6
+236/397 Test #236: hare_g7x6 ........................   Passed    0.15 sec
+        Start 237: hare_g8x
+237/397 Test #237: hare_g8x .........................   Passed    0.18 sec
+        Start 238: hare_g9x
+238/397 Test #238: hare_g9x .........................   Passed    0.14 sec
+        Start 239: hare_g9x40
+239/397 Test #239: hare_g9x40 .......................   Passed    0.16 sec
+        Start 240: hare_ga
+240/397 Test #240: hare_ga ..........................   Passed    0.18 sec
+        Start 241: hare_gassert
+241/397 Test #241: hare_gassert .....................   Passed    0.15 sec
+        Start 242: hare_gb
+242/397 Test #242: hare_gb ..........................   Passed    1.01 sec
+        Start 243: hare_gbpar
+243/397 Test #243: hare_gbpar .......................   Passed    0.19 sec
+        Start 244: hare_gc
+244/397 Test #244: hare_gc ..........................   Passed    0.16 sec
+        Start 245: hare_gchar
+245/397 Test #245: hare_gchar .......................   Passed    0.15 sec
+        Start 246: hare_gct
+246/397 Test #246: hare_gct .........................   Passed    0.16 sec
+        Start 247: hare_gctrl
+247/397 Test #247: hare_gctrl .......................   Passed    0.17 sec
+        Start 248: hare_gd
+248/397 Test #248: hare_gd ..........................   Passed    0.15 sec
+        Start 249: hare_gddot
+249/397 Test #249: hare_gddot .......................   Passed    0.15 sec
+        Start 250: hare_gdll
+250/397 Test #250: hare_gdll ........................   Passed    1.94 sec
+        Start 251: hare_gdll_df
+251/397 Test #251: hare_gdll_df .....................   Passed    0.15 sec
+        Start 252: hare_gebar
+252/397 Test #252: hare_gebar .......................   Passed    1.46 sec
+        Start 253: hare_gesc
+253/397 Test #253: hare_gesc ........................   Passed    0.48 sec
+        Start 254: hare_gf
+254/397 Test #254: hare_gf ..........................   Passed    0.15 sec
+        Start 255: hare_gfor
+255/397 Test #255: hare_gfor ........................   Passed    0.27 sec
+        Start 256: hare_gft
+256/397 Test #256: hare_gft .........................   Passed    0.33 sec
+        Start 257: hare_ggoto
+257/397 Test #257: hare_ggoto .......................   Passed    0.16 sec
+        Start 258: hare_gh
+258/397 Test #258: hare_gh ..........................   Passed    0.20 sec
+        Start 259: hare_gi0
+259/397 Test #259: hare_gi0 .........................   Passed    0.17 sec
+        Start 260: hare_gibs
+260/397 Test #260: hare_gibs ........................   Passed    2.14 sec
+        Start 261: hare_gibst
+261/397 Test #261: hare_gibst .......................   Passed    0.98 sec
+        Start 262: hare_gicap
+262/397 Test #262: hare_gicap .......................   Passed    0.45 sec
+        Start 263: hare_gicap2
+263/397 Test #263: hare_gicap2 ......................   Passed    0.28 sec
+        Start 264: hare_gico
+264/397 Test #264: hare_gico ........................   Passed    0.41 sec
+        Start 265: hare_giconv
+265/397 Test #265: hare_giconv ......................   Passed    0.15 sec
+        Start 266: hare_gif
+266/397 Test #266: hare_gif .........................   Passed    0.64 sec
+        Start 267: hare_gimaxmin
+267/397 Test #267: hare_gimaxmin ....................   Passed    0.17 sec
+        Start 268: hare_gintdiv
+268/397 Test #268: hare_gintdiv .....................   Passed    0.36 sec
+        Start 269: hare_gintg
+269/397 Test #269: hare_gintg .......................   Passed    0.15 sec
+        Start 270: hare_gintovfl
+270/397 Test #270: hare_gintovfl ....................   Passed    0.26 sec
+        Start 271: hare_giph
+271/397 Test #271: hare_giph ........................   Passed    1.06 sec
+        Start 272: hare_gipht
+272/397 Test #272: hare_gipht .......................   Passed    0.94 sec
+        Start 273: hare_giscode
+273/397 Test #273: hare_giscode .....................   Passed    0.15 sec
+        Start 274: hare_git
+274/397 Test #274: hare_git .........................   Passed    1.64 sec
+        Start 275: hare_gix
+275/397 Test #275: hare_gix .........................   Passed    0.17 sec
+        Start 276: hare_gj
+276/397 Test #276: hare_gj ..........................   Passed    0.16 sec
+        Start 277: hare_glco
+277/397 Test #277: hare_glco ........................   Passed    0.15 sec
+        Start 278: hare_gldot
+278/397 Test #278: hare_gldot .......................   Passed    0.52 sec
+        Start 279: hare_glocale
+279/397 Test #279: hare_glocale .....................   Passed    0.65 sec
+        Start 280: hare_gmean
+280/397 Test #280: hare_gmean .......................   Passed    0.43 sec
+        Start 281: hare_gmemo
+281/397 Test #281: hare_gmemo .......................   Passed    0.29 sec
+        Start 282: hare_gmnom
+282/397 Test #282: hare_gmnom .......................   Passed    0.16 sec
+        Start 283: hare_gn
+283/397 Test #283: hare_gn ..........................   Passed    0.15 sec
+        Start 284: hare_gnan
+284/397 Test #284: hare_gnan ........................   Passed    0.18 sec
+        Start 285: hare_gnum
+285/397 Test #285: hare_gnum ........................   Passed    0.16 sec
+        Start 286: hare_gnvv
+286/397 Test #286: hare_gnvv ........................   Passed    0.14 sec
+        Start 287: hare_go
+287/397 Test #287: hare_go ..........................   Passed    0.15 sec
+        Start 288: hare_goi
+288/397 Test #288: hare_goi .........................   Passed    0.15 sec
+        Start 289: hare_goox
+289/397 Test #289: hare_goox ........................   Passed    0.15 sec
+        Start 290: hare_gop
+290/397 Test #290: hare_gop .........................   Passed    0.15 sec
+        Start 291: hare_gos
+291/397 Test #291: hare_gos .........................   Passed    0.15 sec
+        Start 292: hare_gparse
+292/397 Test #292: hare_gparse ......................   Passed    1.62 sec
+        Start 293: hare_gpco
+293/397 Test #293: hare_gpco ........................   Passed    0.37 sec
+        Start 294: hare_gpco2
+294/397 Test #294: hare_gpco2 .......................   Passed    0.90 sec
+        Start 295: hare_gpcoinv
+295/397 Test #295: hare_gpcoinv .....................   Passed    0.65 sec
+        Start 296: hare_gpdd
+296/397 Test #296: hare_gpdd ........................   Passed    0.17 sec
+        Start 297: hare_gpi
+297/397 Test #297: hare_gpi .........................   Passed    0.16 sec
+        Start 298: hare_gpick
+298/397 Test #298: hare_gpick .......................   Passed    0.15 sec
+        Start 299: hare_gpoly
+299/397 Test #299: hare_gpoly .......................   Passed    0.25 sec
+        Start 300: hare_gq
+300/397 Test #300: hare_gq ..........................   Passed    0.29 sec
+        Start 301: hare_gq101
+301/397 Test #301: hare_gq101 .......................   Passed    0.50 sec
+        Start 302: hare_gq132
+302/397 Test #302: hare_gq132 .......................   Passed    0.15 sec
+        Start 303: hare_gq201
+303/397 Test #303: hare_gq201 .......................   Passed    0.22 sec
+        Start 304: hare_gqco
+304/397 Test #304: hare_gqco ........................   Passed    2.62 sec
+        Start 305: hare_gqnonrat
+305/397 Test #305: hare_gqnonrat ....................   Passed    0.23 sec
+        Start 306: hare_gr
+306/397 Test #306: hare_gr ..........................   Passed    0.15 sec
+        Start 307: hare_gr1
+307/397 Test #307: hare_gr1 .........................   Passed    0.16 sec
+        Start 308: hare_grefcount
+308/397 Test #308: hare_grefcount ...................   Passed    0.15 sec
+        Start 309: hare_gs
+309/397 Test #309: hare_gs ..........................   Passed    1.98 sec
+        Start 310: hare_gsco
+310/397 Test #310: hare_gsco ........................   Passed    0.16 sec
+        Start 311: hare_gsco1
+311/397 Test #311: hare_gsco1 .......................   Passed    0.96 sec
+        Start 312: hare_gsco1u
+312/397 Test #312: hare_gsco1u ......................   Passed    0.96 sec
+        Start 313: hare_gsco1w
+313/397 Test #313: hare_gsco1w ......................   Passed    0.86 sec
+        Start 314: hare_gsco2
+314/397 Test #314: hare_gsco2 .......................   Passed    0.17 sec
+        Start 315: hare_gsco2u
+315/397 Test #315: hare_gsco2u ......................   Passed    0.17 sec
+        Start 316: hare_gsco2w
+316/397 Test #316: hare_gsco2w ......................   Passed    0.19 sec
+        Start 317: hare_gscou
+317/397 Test #317: hare_gscou .......................   Passed    0.16 sec
+        Start 318: hare_gsdot
+318/397 Test #318: hare_gsdot .......................   Passed    0.16 sec
+        Start 319: hare_gselect
+319/397 Test #319: hare_gselect .....................   Passed    0.17 sec
+        Start 320: hare_gsp
+320/397 Test #320: hare_gsp .........................   Passed    0.15 sec
+        Start 321: hare_gsp0
+321/397 Test #321: hare_gsp0 ........................   Passed    0.43 sec
+        Start 322: hare_gsp000
+322/397 Test #322: hare_gsp000 ......................   Passed    0.35 sec
+        Start 323: hare_gsp1
+323/397 Test #323: hare_gsp1 ........................   Passed    0.17 sec
+        Start 324: hare_gsp100
+324/397 Test #324: hare_gsp100 ......................   Passed    0.53 sec
+        Start 325: hare_gsp101
+325/397 Test #325: hare_gsp101 ......................   Passed    0.19 sec
+        Start 326: hare_gsp102
+326/397 Test #326: hare_gsp102 ......................   Passed    0.16 sec
+        Start 327: hare_gsp110
+327/397 Test #327: hare_gsp110 ......................   Passed    0.38 sec
+        Start 328: hare_gsp111
+328/397 Test #328: hare_gsp111 ......................   Passed    0.17 sec
+        Start 329: hare_gsp112
+329/397 Test #329: hare_gsp112 ......................   Passed    0.17 sec
+        Start 330: hare_gsp120
+330/397 Test #330: hare_gsp120 ......................   Passed    0.42 sec
+        Start 331: hare_gsp122
+331/397 Test #331: hare_gsp122 ......................   Passed    0.21 sec
+        Start 332: hare_gsp130
+332/397 Test #332: hare_gsp130 ......................   Passed    0.34 sec
+        Start 333: hare_gsp2
+333/397 Test #333: hare_gsp2 ........................   Passed    0.26 sec
+        Start 334: hare_gsp221
+334/397 Test #334: hare_gsp221 ......................   Passed    0.26 sec
+        Start 335: hare_gsp222
+335/397 Test #335: hare_gsp222 ......................   Passed    0.27 sec
+        Start 336: hare_gsp231
+336/397 Test #336: hare_gsp231 ......................   Passed    0.16 sec
+        Start 337: hare_gsp320
+337/397 Test #337: hare_gsp320 ......................   Passed    0.40 sec
+        Start 338: hare_gsp321
+338/397 Test #338: hare_gsp321 ......................   Passed    0.62 sec
+        Start 339: hare_gsp322
+339/397 Test #339: hare_gsp322 ......................   Passed    0.56 sec
+        Start 340: hare_gsp331
+340/397 Test #340: hare_gsp331 ......................   Passed    0.20 sec
+        Start 341: hare_gsp400
+341/397 Test #341: hare_gsp400 ......................   Passed    1.45 sec
+        Start 342: hare_gsp410
+342/397 Test #342: hare_gsp410 ......................   Passed    0.19 sec
+        Start 343: hare_gsp412
+343/397 Test #343: hare_gsp412 ......................   Passed    0.15 sec
+        Start 344: hare_gsp420
+344/397 Test #344: hare_gsp420 ......................   Passed    1.00 sec
+        Start 345: hare_gsp421
+345/397 Test #345: hare_gsp421 ......................   Passed    0.43 sec
+        Start 346: hare_gsp422
+346/397 Test #346: hare_gsp422 ......................   Passed    1.09 sec
+        Start 347: hare_gsp431
+347/397 Test #347: hare_gsp431 ......................   Passed    0.26 sec
+        Start 348: hare_gsp432
+348/397 Test #348: hare_gsp432 ......................   Passed    1.11 sec
+        Start 349: hare_gsp520
+349/397 Test #349: hare_gsp520 ......................   Passed    0.36 sec
+        Start 350: hare_gsp520sd
+350/397 Test #350: hare_gsp520sd ....................   Passed    0.71 sec
+        Start 351: hare_gsp520ss
+351/397 Test #351: hare_gsp520ss ....................   Passed    1.66 sec
+        Start 352: hare_gsp521
+352/397 Test #352: hare_gsp521 ......................   Passed    0.15 sec
+        Start 353: hare_gsp530i
+353/397 Test #353: hare_gsp530i .....................   Passed    0.29 sec
+        Start 354: hare_gsp530l
+354/397 Test #354: hare_gsp530l .....................   Passed    1.06 sec
+        Start 355: hare_gsp530n
+355/397 Test #355: hare_gsp530n .....................   Passed    0.79 sec
+        Start 356: hare_gsp531
+356/397 Test #356: hare_gsp531 ......................   Passed    0.16 sec
+        Start 357: hare_gsp5x5
+357/397 Test #357: hare_gsp5x5 ......................   Passed    0.29 sec
+        Start 358: hare_gsp6
+358/397 Test #358: hare_gsp6 ........................   Passed    0.17 sec
+        Start 359: hare_gsp600
+359/397 Test #359: hare_gsp600 ......................   Passed    0.85 sec
+        Start 360: hare_gsp600a
+360/397 Test #360: hare_gsp600a .....................   Passed    0.40 sec
+        Start 361: hare_gspi
+361/397 Test #361: hare_gspi ........................   Passed    0.83 sec
+        Start 362: hare_gspj
+362/397 Test #362: hare_gspj ........................   Passed    0.20 sec
+        Start 363: hare_gspo
+363/397 Test #363: hare_gspo ........................   Passed    0.21 sec
+        Start 364: hare_gspr
+364/397 Test #364: hare_gspr ........................   Passed    0.21 sec
+        Start 365: hare_gspx
+365/397 Test #365: hare_gspx ........................   Passed    0.22 sec
+        Start 366: hare_gstack
+366/397 Test #366: hare_gstack ......................***Exception: SegFault  0.17 sec
+        Start 367: hare_gt
+367/397 Test #367: hare_gt ..........................   Passed    0.15 sec
+        Start 368: hare_gthrow
+368/397 Test #368: hare_gthrow ......................   Passed    0.15 sec
+        Start 369: hare_gtrain
+369/397 Test #369: hare_gtrain ......................   Passed    0.16 sec
+        Start 370: hare_gtry
+370/397 Test #370: hare_gtry ........................   Passed    0.15 sec
+        Start 371: hare_gu
+371/397 Test #371: hare_gu ..........................   Passed    0.21 sec
+        Start 372: hare_gu0
+372/397 Test #372: hare_gu0 .........................   Passed    0.43 sec
+        Start 373: hare_gunderai
+373/397 Test #373: hare_gunderai ....................   Passed    0.58 sec
+        Start 374: hare_gwhile
+374/397 Test #374: hare_gwhile ......................   Passed    0.17 sec
+        Start 375: hare_gx
+375/397 Test #375: hare_gx ..........................   Passed    0.17 sec
+        Start 376: hare_gx132
+376/397 Test #376: hare_gx132 .......................   Passed    1.27 sec
+        Start 377: hare_gxco
+377/397 Test #377: hare_gxco ........................   Passed    0.68 sec
+        Start 378: hare_gxco1
+378/397 Test #378: hare_gxco1 .......................   Passed    0.69 sec
+        Start 379: hare_gxco2
+379/397 Test #379: hare_gxco2 .......................   Passed    0.24 sec
+        Start 380: hare_gxinf
+380/397 Test #380: hare_gxinf .......................   Passed    0.16 sec
+        Start 381: tortoise_g001
+381/397 Test #381: tortoise_g001 ....................   Passed    5.29 sec
+        Start 382: tortoise_g122a
+382/397 Test #382: tortoise_g122a ...................   Passed   22.46 sec
+        Start 383: tortoise_g131
+383/397 Test #383: tortoise_g131 ....................   Passed    7.30 sec
+        Start 384: tortoise_g300
+384/397 Test #384: tortoise_g300 ....................   Passed    5.00 sec
+        Start 385: tortoise_g320ipt
+385/397 Test #385: tortoise_g320ipt .................   Passed   33.04 sec
+        Start 386: tortoise_g400
+386/397 Test #386: tortoise_g400 ....................   Passed    4.04 sec
+        Start 387: tortoise_g422os
+387/397 Test #387: tortoise_g422os ..................   Passed    3.15 sec
+        Start 388: tortoise_g422rk
+388/397 Test #388: tortoise_g422rk ..................   Passed   13.22 sec
+        Start 389: tortoise_g422sort
+389/397 Test #389: tortoise_g422sort ................   Passed   20.10 sec
+        Start 390: tortoise_g422sort1
+390/397 Test #390: tortoise_g422sort1 ...............   Passed    6.95 sec
+        Start 391: tortoise_g600
+391/397 Test #391: tortoise_g600 ....................   Passed    6.23 sec
+        Start 392: tortoise_g600ip
+392/397 Test #392: tortoise_g600ip ..................   Passed   12.23 sec
+        Start 393: tortoise_g631
+393/397 Test #393: tortoise_g631 ....................   Passed   11.60 sec
+        Start 394: tortoise_gcompsc
+394/397 Test #394: tortoise_gcompsc .................   Passed    3.81 sec
+        Start 395: tortoise_ge
+395/397 Test #395: tortoise_ge ......................   Passed   36.81 sec
+        Start 396: tortoise_gi
+396/397 Test #396: tortoise_gi ......................   Passed   41.71 sec
+        Start 397: tortoise_gss
+397/397 Test #397: tortoise_gss .....................   Passed   58.87 sec
+
+99% tests passed, 1 tests failed out of 397
+
+Total Test time (real) = 414.38 sec
+
+The following tests FAILED:
+	366 - hare_gstack (SEGFAULT)
+FAILED: CMakeFiles/Debug/test.util 
+cd /mnt/d/devwsl/jsource/build && /usr/bin/ctest --force-new-ctest-process -C Debug
+ninja: build stopped: subcommand failed.

@@ -15,6 +15,15 @@ def walk_path_cpp():
     pass
 
 
+def check_excluded_names():
+    with open("excluded_names.txt", 'r') as excluded_names:
+        for line in excluded_names:
+            if line.strip() == old_name:
+                return True
+    return False
+    pass
+
+
 def walk_matches():
     global old_name
     for path in walk_path_cpp():
@@ -29,16 +38,8 @@ def walk_matches():
                 continue
 
             for full_str, old_name, v1, v2, new_name in matches:
-                if old_name in ["bindd",
-                                "binzz",
-                                "dgcd",
-                                "dlcm",
-                                "equ",
-                                "fplus",
-                                "ftymes",
-                                "igcd",
-                                "ilcm"]:
-                    continue
+                if check_excluded_names():
+                    continue;
                 print("remove " + full_str)
                 data = data.replace(full_str, "")
                 with open(path, 'w') as fw:
@@ -78,17 +79,30 @@ def find_replaced_data():
 
 
 def main():
-    global old_name
-    i = 0
-    matches = [i for i in find_replaced_data()]
+    while True:
+        global old_name
+        old_name = ""
+        matches = [i for i in find_replaced_data()]
+        if old_name == "":
+            return
+        for path, new_data, old_name in matches:
+            with open(path, 'w') as f:
+                f.write(new_data)
+        print()
+        os.system('cmake -G "Ninja Multi-Config" -B build')
+        os.system('ninja -C build')
+        # current_build = os.popen('ninja -C build').read()
+        current_test = os.popen('ninja -C build test').read()
+        with open("known_good_test", 'r') as f:
+            if f.read().strip() != current_test.strip():
+                os.system('git reset --hard')
+                with open("excluded_names.txt", 'a') as excluded_names:
+                    excluded_names.write("\n" + old_name)
 
-    for path, new_data, old_name in matches:
-        with open(path, 'w') as f:
-            f.write(new_data)
-            i += 1
-    print()
-    os.system('git commit -m "remove #define ' + old_name + '" -a')
-    os.system('git push')
+                os.system('git commit -m "exclude ' + old_name + '" -a')
+            else:
+                os.system('git commit -m "remove #define ' + old_name + '" -a')
+                # os.system('git push')
     pass
 
 
