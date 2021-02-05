@@ -99,8 +99,7 @@ make_array(J jt, int64_t atoms, rank_t rank) {
 template <typename Type>
 [[nodiscard]] auto
 make_array(J jt, int64_t n, rank_t r, int64_t* s) -> array {
-    auto const t  = to_c_type<Type>();
-    array const v = ga(t, (I)(n), (I)(r), (I*)(s));
+    array const v = ga(to_c_type<Type>(), (I)(n), (I)(r), (I*)(s));
     return v ? v : nullptr;
 }
 
