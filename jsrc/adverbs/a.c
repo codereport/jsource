@@ -28,7 +28,7 @@ static A swap2(J jt,A a,A w,A self){DECLF; F2PREFIP; jtinplace = (J)(intptr_t)((
   n=AN(w); s=CAV(w); 
   ASSERT(vnm(n,s),EVILNAME);   // valid name
   RZ(y=nfs(AN(w),CAV(w)));  // create a NAME block for the string
-  return nameref(y,jt->locsyms);  // Create a name-reference pointing to the name
+  return jtnameref(jt,y,jt->locsyms);  // Create a name-reference pointing to the name
 }}
 
 

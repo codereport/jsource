@@ -29,7 +29,7 @@ A jtevc(J jt,A a,A w,C*s){A z; return df2(z,a,w,jtcolon(jt,num(2),cstr(s)));}
 
 // ". y
  A jtexec1(J jt, A w){A z;
- if(AT(w)&NAME){z=nameref(w,jt->locsyms);  // the case ".@'name' which is the fastest way to refer to a deferred name
+ if(AT(w)&NAME){z=jtnameref(jt,w,jt->locsyms);  // the case ".@'name' which is the fastest way to refer to a deferred name
  }else{
   F1RANK(1,jtexec1,UNUSED_VALUE);
   A savself = jt->sf;  // in case we are in a recursion, preserve the restart point

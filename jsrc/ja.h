@@ -587,7 +587,7 @@
 #define mult(x,y)                   jtmult(jt,(x),(y))
 
 #define mvw(x0,x1,x2,x3,x4,x5,x6)   jtmvw(jt,(x0),(x1),(x2),(x3),(x4),(x5),(x6))
-#define nameref(x,y)                jtnameref(jt,(x),(y))
+
 #define namerefop(x,y)              jtnamerefop(jt,(x),(y))
 #define namerefacv(x,y)             jtnamerefacv(jt,(x),(y))
 #define nch1(x0,x1,x2,x3)           jtnch1(jt,(x0),(x1),(x2),(x3))

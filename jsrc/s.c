@@ -418,17 +418,17 @@ static A jtdllsymaddr(J jt,A w,C flag){A*wv,x,y,z;I i,n,*zv;L*v;
   // no value.  Could be undefined name (no error) or some other error including value error, which means error looking up an indirect locative
   // If error, abort with it; if undefined, return a reference to the undefined name
   RE(0);   // if not simple undefined, error
-  return nameref(w,jt->locsyms);  // return reference to undefined name
+  return jtnameref(jt,w,jt->locsyms);  // return reference to undefined name
  }
  // no error.  Return the value unless locked function
  y=v->val;
- return FUNC&AT(y)&&(jt->uflags.us.cx.cx_c.glock||VLOCK&FAV(y)->flag)?nameref(w,jt->locsyms):y;
+ return FUNC&AT(y)&&(jt->uflags.us.cx.cx_c.glock||VLOCK&FAV(y)->flag)?jtnameref(jt,w,jt->locsyms):y;
 }
 
 // Same, but value error if name not defined
  A jtsymbrdlock(J jt, A w){A y;
  RZ(y=symbrd(w));
- return FUNC&AT(y)&&(jt->uflags.us.cx.cx_c.glock||VLOCK&FAV(y)->flag)?nameref(w,jt->locsyms):y;
+ return FUNC&AT(y)&&(jt->uflags.us.cx.cx_c.glock||VLOCK&FAV(y)->flag)?jtnameref(jt,w,jt->locsyms):y;
 }
 
 

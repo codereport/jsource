@@ -170,7 +170,7 @@ static I jtdcase(J jt,I xi,V*v){
 static TA jtvmove(J jt,I b,I e,TA*stack,A locsyms,I tmonad,I tsubst,TA *ttab,I *ttabi,I ttabi0){A t;TA*u,x,z;
  x=stack[MAX(0,e)];
  if(!(NAME&AT(x.a))||ASGN&AT(stack[b].a))return x;
- z.a=nameref(x.a,locsyms); z.t=0; t=sfn(0,x.a); u=ttab;
+ z.a=jtnameref(jt,x.a,locsyms); z.t=0; t=sfn(0,x.a); u=ttab;
  DO(*ttabi, if(equ(t,u->a)){z.t=tsubst&&ttabi0<=i?qq(sc(TC+i),num(-1)):u->t; break;} ++u;);
  return z;
 }
