@@ -161,7 +161,7 @@ static B jtrfcq(J jt,I m,A w,A*zz,A*ww){A q,x,y,z;B b;I i,j,wt;Q*qv,rdx,rq,*wv,*
   if(jt->jerr){RESETERR; break;}
   // Get a rational form, with denominator equal to the largest denominator in the polynomial,
   // that is close to the real part of the root
-  RE(rq=multiple(r.re,rdx));
+  RE(rq=jtmultiple(jt,r.re,rdx));
   b=0;  // set 'no rational root found'
   // If the value found IS a root, divide it from the polynomial repeatedly, and move a copy
   // to the result for each repetition
