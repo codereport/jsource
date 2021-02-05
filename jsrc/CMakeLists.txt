@@ -16,6 +16,7 @@ target_sources(j PRIVATE
         adverbs/ar.c
         adverbs/as.c
         adverbs/au.c
+        array.hpp
         conjunctions/c.c
         conjunctions/ca.c
         conjunctions/cc.c
