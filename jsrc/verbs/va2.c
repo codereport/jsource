@@ -419,7 +419,7 @@ VA va[]={
 
 A jtcvz(J jt,I cv,A w){I t;
  t=AT(w);
- if(cv&VRD&&!(t&FL) )return pcvt(FL,w);  // convert if possible
+ if(cv&VRD&&!(t&FL) )return jtpcvt(jt,FL,w);  // convert if possible
  if(cv&VRI&&!(t&INT))return icvt(w);  // convert to integer if possible
  return w;
 }    /* convert result */

@@ -9,7 +9,7 @@
 static A jtonf1(J jt,    A w,A self){PROLOG(0021);DECLFG;A z;I flag=sv->flag,m=jt->xmode;
  PREF1(jtonf1);
  if(primitive(gs))if(flag&VFLR)jt->xmode=XMFLR; else if(flag&VCEIL)jt->xmode=XMCEIL;
- if(RAT&AT(w))RZ(w=pcvt(XNUM,w));
+ if(RAT&AT(w))RZ(w=jtpcvt(jt,XNUM,w));
  RZ(z=CALL1(f1,CALL1(g1,w,gs),fs));
  jt->xmode=m;
  EPILOG(z);
@@ -18,8 +18,8 @@ static A jtonf1(J jt,    A w,A self){PROLOG(0021);DECLFG;A z;I flag=sv->flag,m=j
 static A jtuponf2(J jt,A a,A w,A self){PROLOG(0022);DECLFG;A z;I flag=sv->flag,m=jt->xmode;
  if(!(a && w)) return 0;
  if(primitive(gs))if(flag&VFLR)jt->xmode=XMFLR; else if(flag&VCEIL)jt->xmode=XMCEIL;
- if(RAT&AT(a))RZ(a=pcvt(XNUM,a));
- if(RAT&AT(w))RZ(w=pcvt(XNUM,w));
+ if(RAT&AT(a))RZ(a=jtpcvt(jt,XNUM,a));
+ if(RAT&AT(w))RZ(w=jtpcvt(jt,XNUM,w));
  RZ(z=INT&AT(a)&AT(w)&&CDIV==ID(gs)?jtintdiv(jt,a,w):CALL1(f1,CALL2(g2,a,w,gs),fs));
  jt->xmode=m;
  EPILOG(z);
@@ -41,8 +41,8 @@ static I imodpow(I x,I n,I m){I z=1; while(n){if(1&n)z=(z*x)%m;     x=(x*x)%m;  
 static A jtmodpow2(J jt,A a,A w,A self){A h;B b,c;I at,m,n,wt,x,z;
  PREF2(jtmodpow2);
  h=FAV(self)->fgh[2]; 
- if(RAT&AT(a))RZ(a=pcvt(XNUM,a)) else if(!(AT(a)&INT+XNUM))RZ(a=pcvt(INT,a)); 
- if(RAT&AT(w))RZ(w=pcvt(XNUM,w)) else if(!(AT(w)&INT+XNUM))RZ(w=pcvt(INT,w));
+ if(RAT&AT(a))RZ(a=jtpcvt(jt,XNUM,a)) else if(!(AT(a)&INT+XNUM))RZ(a=jtpcvt(jt,INT,a)); 
+ if(RAT&AT(w))RZ(w=jtpcvt(jt,XNUM,w)) else if(!(AT(w)&INT+XNUM))RZ(w=jtpcvt(jt,INT,w));
  at=AT(a); wt=AT(w);
  if(((AT(h)|at|wt)&XNUM)&&!((at|wt)&(NOUN&~(XNUM+INT)))){A z;
   z=xmodpow(a,w,h); if(!jt->jerr)return z; RESETERR; return residue(h,expn2(a,w));
@@ -203,7 +203,7 @@ static A atcomp0(J jt,A a,A w,A self){A z;AF f;
   case CQQ:     if(d==CTHORN&&CEXEC==ID(av->fgh[0])&&av->fgh[1]==num(0)){f1=jtdigits10; flag&=~VJTFLGOK1;} break;  // "."0@":
   case CEXP:    if(d==CCIRCLE){f1=jtexppi; flag&=~VJTFLGOK1;} break;
   case CAMP:
-   x=av->fgh[0]; if(RAT&AT(x))RZ(x=pcvt(XNUM,x));
+   x=av->fgh[0]; if(RAT&AT(x))RZ(x=jtpcvt(jt,XNUM,x));
    if((d==CEXP||d==CAMP&&CEXP==ID(wv->fgh[1]))&&AT(x)&INT+XNUM&&!AR(x)&&CSTILE==ID(av->fgh[1])){
     h=x; flag+=VMOD; 
     if(d==CEXP){f2=jtmodpow2; flag&=~VJTFLGOK2;} else{f1=jtmodpow1; flag&=~VJTFLGOK1;}

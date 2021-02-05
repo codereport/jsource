@@ -121,7 +121,7 @@ static A jtprime1d(J jt, A w){A d,z;D*wv,x,*zv;I*dv,k,n;
  A jtprime(J jt, A w){PROLOG(0061);A z;B b=1;I n,t;
  RZ(init4792(jt));
  n=AN(w); t=AT(w);
- if(!(t&INT))RZ(w=pcvt(INT,w));
+ if(!(t&INT))RZ(w=jtpcvt(jt,INT,w));
  if(INT&AT(w)){
   // if the maximum in the argument is <= PMAX, call prime1.  Force minimum of interval to <=0
   // so that full range compares against PMAX
@@ -373,9 +373,9 @@ static A jtxfactor(J jt, A w);
  RZ(init4792(jt));
  if(AT(w)&XNUM+RAT)return xfactor(w);
  if(AT(w)&FL+CMPX){
-  RZ(y=pcvt(INT,w)); 
+  RZ(y=jtpcvt(jt,INT,w)); 
   if(INT&AT(y))w=y; 
-  else{RZ(y=pcvt(XNUM,xco1(w))); ASSERT(XNUM&AT(y),EVDOMAIN); return pcvt(INT,xfactor(y));}
+  else{RZ(y=jtpcvt(jt,XNUM,xco1(w))); ASSERT(XNUM&AT(y),EVDOMAIN); return jtpcvt(jt,INT,xfactor(y));}
  }
  RZ(w=vi(w));
  wn=AN(w); wv=AV(w);

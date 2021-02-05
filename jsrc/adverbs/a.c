@@ -50,7 +50,7 @@ static A jtbasis1(J jt,    A w,A self){DECLF;A z;D*x;I j;V*v;
    j=v->mr; x[0]=j<=-RMAX?-inf:j>=RMAX?inf:j;
    j=lrv(v); x[1]=j<=-RMAX?-inf:j>=RMAX?inf:j;
    j=rrv(v); x[2]=j<=-RMAX?-inf:j>=RMAX?inf:j;
-   return pcvt(INT,z);
+   return jtpcvt(jt,INT,z);
   case -1: return lrep(inv (fs));
   case  1: return lrep(iden(fs));
   default: ASSERT(0,EVDOMAIN);
@@ -130,7 +130,7 @@ static I jtint0(J jt,A w){A x;
   case B01: return (I)BAV(w)[0];
   case INT: return AV(w)[0];
  }
- x=pcvt(INT,w); 
+ x=jtpcvt(jt,INT,w); 
  return x&&INT&AT(x)?AV(x)[0]:IMIN;
 }
 

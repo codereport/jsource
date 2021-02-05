@@ -273,3 +273,7 @@
 |`jsrc/verbs/vf.c`|paxis|jtpaxis|`(^\|[ \t]+\|[^\d\w_])paxis\((?=([^,]+?),([^)]+?)\))`|`\1jtpaxis(jt,`|
 |`jsrc/verbs/vs.c`|paxis|jtpaxis|`(^\|[ \t]+\|[^\d\w_])paxis\((?=([^,]+?),([^)]+?)\))`|`\1jtpaxis(jt,`|
 |`jsrc/verbs/vt.c`|paxis|jtpaxis|`(^\|[ \t]+\|[^\d\w_])paxis\((?=([^,]+?),([^)]+?)\))`|`\1jtpaxis(jt,`|
+|`jsrc/adverbs/a.c`|pcvt|jtpcvt|`(^\|[ \t]+\|[^\d\w_])pcvt\((?=([^,]+?),([^)]+?)\))`|`\1jtpcvt(jt,`|
+|`jsrc/conjunctions/ca.c`|pcvt|jtpcvt|`(^\|[ \t]+\|[^\d\w_])pcvt\((?=([^,]+?),([^)]+?)\))`|`\1jtpcvt(jt,`|
+|`jsrc/verbs/v2.c`|pcvt|jtpcvt|`(^\|[ \t]+\|[^\d\w_])pcvt\((?=([^,]+?),([^)]+?)\))`|`\1jtpcvt(jt,`|
+|`jsrc/verbs/va2.c`|pcvt|jtpcvt|`(^\|[ \t]+\|[^\d\w_])pcvt\((?=([^,]+?),([^)]+?)\))`|`\1jtpcvt(jt,`|
