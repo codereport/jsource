@@ -838,7 +838,7 @@ A jtclonelocalsyms(J jt, A a){A z;I j;I an=AN(a); LX *av=LXAV0(a),*zv;
  // Go through each hashchain of the model, after the first one
  for(j=SYMLINFOSIZE;j<an;++j) {LX *zhbase=&zv[j]; LX ahx=av[j]; LX ztx=0; // hbase->chain base, hx=index of current element, tx is element to insert after
   while(ahx&&(LAV0(jt->symp))[ahx].flag&LPERMANENT) {L *l;  // for each permanent entry...
-   RZ(l=symnew(zhbase,ztx)); 
+   RZ(l=jtsymnew(jt,zhbase,ztx)); 
    A nm=(LAV0(jt->symp))[ahx].name;
    l->name=nm; ras(l->name);  // point symbol table to the name block, and increment its use count accordingly
    l->flag=(LAV0(jt->symp))[ahx].flag&(LINFO|LPERMANENT);  // clear all but PERMANENT and INFO, in case we try to delete the name (as in for_xyz. or 4!:55)

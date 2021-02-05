@@ -935,7 +935,7 @@
 #define symbrdlocknovalerr(x)       jtsymbrdlocknovalerr(jt,(x))
 #define symext(x)                   jtsymext(jt,(x))
 #define symfreeha(x)                jtsymfreeha(jt,(x))
-#define symnew(x,y)                 jtsymnew(jt,(x),(y))
+
 #define sympoola(x)                 jtsympoola(jt,(x))
 #define sybaseloc(x)                jtsybaseloc(jt,(x))
 #define syrd(x,y)                   jtsyrd(jt,(x),(y))

@@ -480,3 +480,6 @@
 |`jsrc/conjunctions/cx.c`|strq|jtstrq|`(^\|[ \t]+\|[^\d\w_])strq\((?=([^,]+?),([^)]+?)\))`|`\1jtstrq(jt,`|
 |`jsrc/verbs/v2.c`|sup|jtsup|`(^\|[ \t]+\|[^\d\w_])sup\((?=([^,]+?),([^)]+?)\))`|`\1jtsup(jt,`|
 |`jsrc/verbs/v2.c`|suq|jtsuq|`(^\|[ \t]+\|[^\d\w_])suq\((?=([^,]+?),([^)]+?)\))`|`\1jtsuq(jt,`|
+|`jsrc/s.c`|symnew|jtsymnew|`(^\|[ \t]+\|[^\d\w_])symnew\((?=([^,]+?),([^)]+?)\))`|`\1jtsymnew(jt,`|
+|`jsrc/sl.c`|symnew|jtsymnew|`(^\|[ \t]+\|[^\d\w_])symnew\((?=([^,]+?),([^)]+?)\))`|`\1jtsymnew(jt,`|
+|`jsrc/conjunctions/cx.c`|symnew|jtsymnew|`(^\|[ \t]+\|[^\d\w_])symnew\((?=([^,]+?),([^)]+?)\))`|`\1jtsymnew(jt,`|

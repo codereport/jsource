@@ -246,7 +246,7 @@ u=NAV(a);  // u->NM block
     tx = lx; lx = l->next;
    }
    // not found, create new symbol.  If tx is 0, the queue is empty, so adding at the head is OK; otherwise add after tx
-   RZ(l=symnew(&LXAV0(jt->locsyms)[b],tx)); 
+   RZ(l=jtsymnew(jt,&LXAV0(jt->locsyms)[b],tx)); 
    ras(a); l->name=a;  // point symbol table to the name block, and increment its use count accordingly
    AR(jt->locsyms)|=LNAMEADDED;  // Mark that a name has been added beyond what was known at preprocessing time
    return l;
@@ -282,7 +282,7 @@ L*jtprobeis(J jt,A a,A g){C*s;LX *hv,tx;I m;L*v;NM*u;L *sympv=LAV0(jt->symp);
   }
  }
  // not found, create new symbol.  If tx is 0, the queue is empty, so adding at the head is OK; otherwise add after tx
- RZ(v=symnew(hv,tx)); 
+ RZ(v=jtsymnew(jt,hv,tx)); 
  ras(a); v->name=a;  // point symbol table to the name block, and increment its use count accordingly
  return v;
 }    /* probe for assignment */
