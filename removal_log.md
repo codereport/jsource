@@ -483,3 +483,8 @@
 |`jsrc/s.c`|symnew|jtsymnew|`(^\|[ \t]+\|[^\d\w_])symnew\((?=([^,]+?),([^)]+?)\))`|`\1jtsymnew(jt,`|
 |`jsrc/sl.c`|symnew|jtsymnew|`(^\|[ \t]+\|[^\d\w_])symnew\((?=([^,]+?),([^)]+?)\))`|`\1jtsymnew(jt,`|
 |`jsrc/conjunctions/cx.c`|symnew|jtsymnew|`(^\|[ \t]+\|[^\d\w_])symnew\((?=([^,]+?),([^)]+?)\))`|`\1jtsymnew(jt,`|
+|`jsrc/s.c`|syrd|jtsyrd|`(^\|[ \t]+\|[^\d\w_])syrd\((?=([^,]+?),([^)]+?)\))`|`\1jtsyrd(jt,`|
+|`jsrc/sc.c`|syrd|jtsyrd|`(^\|[ \t]+\|[^\d\w_])syrd\((?=([^,]+?),([^)]+?)\))`|`\1jtsyrd(jt,`|
+|`jsrc/sn.c`|syrd|jtsyrd|`(^\|[ \t]+\|[^\d\w_])syrd\((?=([^,]+?),([^)]+?)\))`|`\1jtsyrd(jt,`|
+|`jsrc/conjunctions/cf.c`|syrd|jtsyrd|`(^\|[ \t]+\|[^\d\w_])syrd\((?=([^,]+?),([^)]+?)\))`|`\1jtsyrd(jt,`|
+|`jsrc/parsing/p.c`|syrd|jtsyrd|`(^\|[ \t]+\|[^\d\w_])syrd\((?=([^,]+?),([^)]+?)\))`|`\1jtsyrd(jt,`|

@@ -938,7 +938,7 @@
 
 #define sympoola(x)                 jtsympoola(jt,(x))
 #define sybaseloc(x)                jtsybaseloc(jt,(x))
-#define syrd(x,y)                   jtsyrd(jt,(x),(y))
+
 #define syrd1(x,y,z,w)              jtsyrd1(jt,(x),(y),(z),(w))
 #define syrdforlocale(x)            jtsyrdforlocale(jt,(x))
 #define syrd1forlocale(x,y,z,w)     jtsyrd1forlocale(jt,(x),(y),(z),(w))

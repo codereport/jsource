@@ -397,7 +397,7 @@ static A jtdllsymaddr(J jt,A w,C flag){A*wv,x,y,z;I i,n,*zv;L*v;
  ASSERT(!n||BOX&AT(w),EVDOMAIN);
  GATV(z,INT,n,AR(w),AS(w)); zv=AV(z); 
  for(i=0;i<n;++i){
-  x=wv[i]; v=syrd(jtnfs(jt,AN(x),CAV(x)),jt->locsyms); 
+  x=wv[i]; v=jtsyrd(jt,jtnfs(jt,AN(x),CAV(x)),jt->locsyms); 
   ASSERT(v!=0,EVVALUE);
   y=v->val;
   ASSERT(NOUN&AT(y),EVDOMAIN);
@@ -410,11 +410,11 @@ static A jtdllsymaddr(J jt,A w,C flag){A*wv,x,y,z;I i,n,*zv;L*v;
  A jtdllsymdat(J jt, A w){return jtdllsymaddr(jt,w,1);}
 
 // look up the name w using full name resolution.  Return the value if found, abort if not found or invalid name
- A jtsymbrd(J jt, A w){L*v; if(!w) return 0; ASSERTN(v=syrd(w,jt->locsyms),EVVALUE,w); return v->val;}
+ A jtsymbrd(J jt, A w){L*v; if(!w) return 0; ASSERTN(v=jtsyrd(jt,w,jt->locsyms),EVVALUE,w); return v->val;}
 
 // look up name w, return value unless locked or undefined; then return just the name
  A jtsymbrdlocknovalerr(J jt, A w){A y;L *v;
- if(!(v=syrd(w,jt->locsyms))){
+ if(!(v=jtsyrd(jt,w,jt->locsyms))){
   // no value.  Could be undefined name (no error) or some other error including value error, which means error looking up an indirect locative
   // If error, abort with it; if undefined, return a reference to the undefined name
   RE(0);   // if not simple undefined, error

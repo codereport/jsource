@@ -658,7 +658,7 @@ failparse:  // If there was an error during execution or name-stacking, exit wit
    jt->parserstackframe.parsercurrtok=0;  // error token if error found
    I at=AT(y = queue[0]);  // fetch the word
    if((at&NAME)!=0) {L *s;
-    if((s=syrd(y,jt->locsyms))!=0) {     // Resolve the name.
+    if((s=jtsyrd(jt,y,jt->locsyms))!=0) {     // Resolve the name.
       A sv;  // pointer to value block for the name
       RZ(sv = s->val);  // symbol table entry, but no value.  Must be in an explicit definition, so there is no need to raise an error
       if(((AT(sv)|at)&(NOUN|NAMEBYVALUE))!=0){   // if noun or special name, use value

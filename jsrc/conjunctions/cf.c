@@ -56,7 +56,7 @@ static A jtfolk2(J jt,A a,A w,A self){F2PREFIP;DECLFGH;PROLOG(0029);A z; FOLK2;
 
 // see if f is defined as [:, as a single name
 static B jtcap(J jt,A x){V*v;L *l;
- if(v=VAV(x),CTILDE==v->id&&NAME&AT(v->fgh[0])&&(l=syrd(v->fgh[0],jt->locsyms))&&(x=l->val))v=VAV(x);  // don't go through chain of names, since it might loop (on u) and it's ugly to chase the chain
+ if(v=VAV(x),CTILDE==v->id&&NAME&AT(v->fgh[0])&&(l=jtsyrd(jt,v->fgh[0],jt->locsyms))&&(x=l->val))v=VAV(x);  // don't go through chain of names, since it might loop (on u) and it's ugly to chase the chain
  return CCAP==v->id;
 }
 
