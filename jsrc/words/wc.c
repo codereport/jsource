@@ -350,11 +350,11 @@ static A jtgetsen(J jt, A w){A y,z,*z0,*zv;C*s;I i,j,k=-1,m,n,*v;
   j=v[i]; m=v[1+i]-j;         // j=index, m=length of word
   if(0>k)k=j;              // k=index of start of sentence, set at start or when we have processed a control word
   if(jtconword(jt,m,j+s)){     // when we hit a control word...
-   if(k<j)RZ(*zv++=incorp(str(j-k,k+s)));  // if a sentence was in progress, emit it
-   RZ(*zv++=incorp(str(m,j+s)));           // then emit the control word
+   if(k<j)RZ(*zv++=incorp(jtstr(jt,j-k,k+s)));  // if a sentence was in progress, emit it
+   RZ(*zv++=incorp(jtstr(jt,m,j+s)));           // then emit the control word
    k=-1;           // reset start-of-sentence search
  }}
- if(0<=k)RZ(*zv++=incorp(str(j+m-k,k+s))); // if there was a final sentence in progress, append it
+ if(0<=k)RZ(*zv++=incorp(jtstr(jt,j+m-k,k+s))); // if there was a final sentence in progress, append it
  return vec(BOX,zv-z0,z0);  // keep only the boxes that we used
 }    /* partition by controls */
 

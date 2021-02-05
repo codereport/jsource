@@ -159,7 +159,7 @@ static PSTK* jtis(J jt,PSTK *stack){B ger=0;C *s;
   if((SGNIF(AT(n),LITX)&(AR(n)-2))<0){
    // lhs is ASCII characters, atom or list.  Convert it to words
    s=CAV(n); ger=CGRAVEC==s[0];   // s->1st character; remember if it is `
-   RZ(n=words(ger?str(AN(n)-1,1+s):n));  // convert to words (discarding leading ` if present)
+   RZ(n=words(ger?jtstr(jt,AN(n)-1,1+s):n));  // convert to words (discarding leading ` if present)
    ASSERT(AN(n)||(AR(v)&&!AS(v)[0]),EVILNAME);  // error if namelist empty or multiple assignment with no values, if there is something to be assigned
    if(1==AN(n)){
     // Only one name in the list.  If one-name AR assignment, leave as a list so we go through the AR-assignment path below

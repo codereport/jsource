@@ -155,7 +155,7 @@ A jtinpl(J jt,B b,I n,C*s){C c;I k=0;
   if(n&&COFF==s[n-1])joff(num(0));
   c=jt->bx[9]; if((UC)c>127)DO(n, if(' '!=s[i]&&c!=s[i]){k=i; break;});
  }
- return str(n-k,s+k);
+ return jtstr(jt,n-k,s+k);
 }
 
 // s->beginning of input, j is starting index of search, n is #characters
@@ -397,7 +397,7 @@ I _stdcall JSetA(J jt,I n,C* name,I dlen,C* d){
  jt->jerr=0;
  if(!vnm(n,name)){ jsignal(EVILNAME); return EVILNAME;}
  A *old=jt->tnextpushp;
- symbisdel(jtnfs(jt,n,name),jtunbin(jt,str(dlen,d)),jt->global);
+ symbisdel(jtnfs(jt,n,name),jtunbin(jt,jtstr(jt,dlen,d)),jt->global);
  tpop(old);
  return jt->jerr;
 }

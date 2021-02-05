@@ -17,7 +17,7 @@
 
  A jtdirectdefs(J jt, A w){B b; RE(b=b0(w)); jt->directdef=b; return mtm;}  // scaf 9!:63
 
- A jtboxq(J jt, A w){ASSERTMTV(w); return str(sizeof(jt->bx),jt->bx);}
+ A jtboxq(J jt, A w){ASSERTMTV(w); return jtstr(jt,sizeof(jt->bx),jt->bx);}
 
  A jtboxs(J jt, A w){A x;
  RZ(w=vs(w));

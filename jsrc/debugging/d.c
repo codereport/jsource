@@ -103,7 +103,7 @@ static void jtseeparse(J jt,DC d){A*v;I m;
 
  A jtunparse(J jt, A w){A*v,z;
  jt->etxn=0; I nflag=0;
- v=AAV(w); DO(AN(w), nflag=jtdisp(jt,v[i],nflag);); z=str(jt->etxn,jt->etx);
+ v=AAV(w); DO(AN(w), nflag=jtdisp(jt,v[i],nflag);); z=jtstr(jt,jt->etxn,jt->etx);
  jt->etxn=0;
  return z;
 }
@@ -152,7 +152,7 @@ static B jtdebsi1(J jt,DC d){I t;
 
  A jtdbstackz(J jt, A w){A y,z; 
  RE(dbstack(w)); 
- RZ(y=str(jt->etxn,jt->etx)); 
+ RZ(y=jtstr(jt,jt->etxn,jt->etx)); 
  jt->etxn=0; 
  return df1(z,y,jtcut(jt,ds(CLEFT),num(-2)));
 }    /* 13!:18  SI stack as result */
@@ -222,7 +222,7 @@ static A jtdbsig(J jt,A a,A w){I e;
 
 
  A jtdberr(J jt, A w){ASSERTMTV(w); return sc(jt->jerr1);}           /* 13!:11 last error number   */
- A jtdbetx(J jt, A w){ASSERTMTV(w); return str(jt->etxn1,jt->etx);}  /* 13!:12 last error text     */
+ A jtdbetx(J jt, A w){ASSERTMTV(w); return jtstr(jt,jt->etxn1,jt->etx);}  /* 13!:12 last error text     */
 
 
 A jtjerrno(J jt){

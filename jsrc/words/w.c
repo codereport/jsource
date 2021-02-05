@@ -227,7 +227,7 @@ A jttokens(J jt,A w,I env){A t; RZ(t=wordil(w)); ASSERT(AM(t)>=0,EVOPENQ) return
 #define CHKJ(j)             ASSERT(0<=(j),EVINDEX);
 #define EXTZ(T,p)           while(uu<p+u){k=u-(T*)AV(z); RZ(z=jtext(jt,0,z)); u=k+(T*)AV(z); uu=(T*)AV(z)+AN(z);}
 
-#define EMIT0c(T,j,i,r,c)   {CHKJ(j); p=(i)-(j); EXTZ(T,1); RZ(*u++=rifvsdebug(str(p,(j)+wv)));}
+#define EMIT0c(T,j,i,r,c)   {CHKJ(j); p=(i)-(j); EXTZ(T,1); RZ(*u++=rifvsdebug(jtstr(jt,p,(j)+wv)));}
 #define EMIT0b(T,j,i,r,c)   {CHKJ(j); p=(i)-(j); EXTZ(T,1); RZ(*u++=rifvsdebug(vec(B01,p,(j)+wv)));}
 #define EMIT0x(T,j,i,r,c)   {CHKJ(j); p=(i)-(j); EXTZ(T,1); GA(x,t0,p*wm,wr,AS(w0));  \
                                 AS(x)[0]=p; MC(AV(x),wv0+wk*(j),wk*p); *u++=x;}

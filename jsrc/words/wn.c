@@ -118,7 +118,7 @@ static const C dig[]="0123456789abcdefghijklmnopqrstuvwxyz";
 static B jtnumb(J jt,I n,C*s,Z*v,Z b){A c,d,y;I k;
  I m=strlen(dig);
  if(!n){*v=zeroZ; return 1;}
- if(!(d=jtindexof(jt,str(m,(C*)dig),str(n,s))))return 0;
+ if(!(d=jtindexof(jt,jtstr(jt,m,(C*)dig),jtstr(jt,n,s))))return 0;
  if(!(all0(jteps(jt,sc(m),d))))return 0;
  k=sizeof(Z);
  GAT0(c,CMPX,1,0); MC(AV(c),&b,k); if(!(y=jtbase2(jt,c,d)))return 0; MC(v,AV(y),k);
@@ -138,7 +138,7 @@ static B jtnumbpx(J jt,I n,C*s,void*vv){B ne,ze;C*t,*u;I k,m;Z b,p,q,*v,x,y;
   // if the base is an integer, we can't just do everything in the complex domain because of loss of precision.
   // in that case reproduce the calculation from numb, but with the integer base, and if the result is still integral, flag it
   I intbase=(I)b.re; if(!u && b.im==0.0 && b.re==(D)intbase){A d;
-   if(!(d=jtindexof(jt,str(strlen(dig),(C*)dig),str(m,t))))return 0;  // convert digits to index numbers
+   if(!(d=jtindexof(jt,jtstr(jt,strlen(dig),(C*)dig),jtstr(jt,m,t))))return 0;  // convert digits to index numbers
    if(!(all0(jteps(jt,sc(strlen(dig)),d))))return 0;   // verify only allowed digits in the field
    if(ne)if(!(d=negate(d)))return 0;  // recover negative sign
    if(!(d=jtbcvt(jt,0,jtbase2(jt,sc(intbase),d))))return 0;  // d =. base #. d converted to smallest possible precision
@@ -214,7 +214,7 @@ static I jtnumcase(J jt,I n,C*s){B e;C c;I ret;
 A jtconnum(J jt,I n,C*s){PROLOG(0101);A y,z;B (*f)(J,I,C*,void*),p=1;C c,*v;I d=0,e,k,m,t,*yv;
  if(1==n)                {if(k=s[0]-'0',(UI)k<=(UI)9)return num( k); else return ainf;}  // single digit - a number or _
  else if(2==n&&CSIGN==*s){if(k=s[1]-'0',(UI)k<=(UI)9)return num(-k);}
- RZ(y=mkwris(str(1+n,s))); s=v=CAV(y); s[n]=0;  // s->null-terminated string in new copy, which we will modify
+ RZ(y=mkwris(jtstr(jt,1+n,s))); s=v=CAV(y); s[n]=0;  // s->null-terminated string in new copy, which we will modify
  GATV0(y,INT,1+n,1); yv=AV(y);  // allocate area for start/end positions
  C bcvtmask=0;  // bit 1 set to suppress B01, bit 2 to suppress INT
  DO(n, c=*v; c=c==CSIGN?'-':c; c=(c==CTAB)|(c==' ')?C0:c; *v++=c; B b=C0==c; bcvtmask=bcvtmask|(4*(c=='.')+2*((p|b)^1)); yv[d]=i; d+=p^b; p=b;);  // replace _ with -, whitespace with \0; and record start and end positions

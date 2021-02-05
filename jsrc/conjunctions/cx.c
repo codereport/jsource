@@ -63,7 +63,7 @@ static B jtforinit(J jt,CDATA*cv,A t){A x;C*s,*v;I k;
  cv->x=0;
  k=AN(cv->line)-5; cv->k=(I4)k;                 /* length of item name; -1 if omitted (for.; for_. not allowed) */
  if((-k&-cv->n)<0){                         /* for_xyz.       k>0 and cv->n >0     */
-  s=4+CAV(cv->line); RZ(x=str(6+k,s)); ras(x); cv->x=x;
+  s=4+CAV(cv->line); RZ(x=jtstr(jt,6+k,s)); ras(x); cv->x=x;
   cv->xv=v=CAV(x); MC(k+v,"_index",6L);  /* index name          */
   cv->iv=s;                              /* item name           */
  }
@@ -628,7 +628,7 @@ static A jtcolon0(J jt, I deftype){A l,z;C*p,*q,*s;A *sb;I m,n;
  }
  // Return the string.  No need to trim down the list of boxes, as it's transitory
  if(isboxed){AN(z)=AS(z)[0]=n; return z;}
- return str(n,s);
+ return jtstr(jt,n,s);
 }    /* enter nl terminated lines; ) on a line by itself to exit */
 
 // Convert ASCII w to boxed lines.  Create separate lists of boxes for monad and dyad
@@ -753,7 +753,7 @@ A jtcrelocalsyms(J jt, A l, A c,I type, I dyad, I flags){A actst,*lv,pfst,t,wds;
     // LIT followed by =.  Probe each word.  Now that we support lists of NAMEs, this is used only for AR assignments
     // First, convert string to words
     s=CAV(t);   // s->1st character; remember if it is `
-    if(wds=words(s[0]==CGRAVE?str(AN(t)-1,1+s):t)){I kk;  // convert to words (discarding leading ` if present)
+    if(wds=words(s[0]==CGRAVE?jtstr(jt,AN(t)-1,1+s):t)){I kk;  // convert to words (discarding leading ` if present)
      I wdsn=AN(wds); A *wdsv = AAV(wds), wnm;
      for(kk=0;kk<wdsn;++kk) {
       // Convert word to NAME; if local name, add to symbol table
@@ -776,7 +776,7 @@ A jtcrelocalsyms(J jt, A l, A c,I type, I dyad, I flags){A actst,*lv,pfst,t,wds;
    I cwlen = AN(lv[cwv[j].i]);
    if(cwlen>4){  // for_xyz.
     // for_xyz. found.  Lookup xyz and xyz_index
-    A xyzname = str(cwlen+1,CAV(lv[cwv[j].i])+4);
+    A xyzname = jtstr(jt,cwlen+1,CAV(lv[cwv[j].i])+4);
     RZ(jtprobeis(jt,jtnfs(jt,cwlen-5,CAV(xyzname)),pfst));  // create xyz
     MC(CAV(xyzname)+cwlen-5,"_index",6L);    // append _index to name
     RZ(jtprobeis(jt,jtnfs(jt,cwlen+1,CAV(xyzname)),pfst));  // create xyz_index
@@ -863,7 +863,7 @@ A jtclonelocalsyms(J jt, A a){A z;I j;I an=AN(a); LX *av=LXAV0(a),*zv;
  if(!n){ra0(w); return w;}  // noun - return it.  Give it recursive usecount
  if((C2T+C4T)&AT(w))RZ(w=jtcvt(jt,LIT,w));
  I splitloc=-1;   // will hold line number of : line
- if(10<n){ASSERT(AT(w)&LIT,EVDOMAIN) s=CAV(w); p=AN(w); if(p&&CLF==s[p-1])RZ(w=str(p-1,s));}  // if tacit form, discard trailing LF
+ if(10<n){ASSERT(AT(w)&LIT,EVDOMAIN) s=CAV(w); p=AN(w); if(p&&CLF==s[p-1])RZ(w=jtstr(jt,p-1,s));}  // if tacit form, discard trailing LF
  else{  // not tacit translator - preparse the body
   // we want to get all forms to a common one: a list of boxed strings.  If we went through m : 0, we are in that form
   // already.  Convert strings
@@ -1046,7 +1046,7 @@ A jtddtokens(J jt,A w,I env){
    // We have found the end delimiter, which starts at enddelimx.  We reconstitute the input line: we convert the noun DD to a quoted string
    // and append the unprocessed part of the last line.  For safety, we put spaces around the string.  We rescan the combined line without
    // trying to save the scan pointer, since the case is rare
-   A remnant; RZ(remnant=str(AN(w)-enddelimx-2,CAV(w)+enddelimx+2));  // get a string for the preserved tail of w
+   A remnant; RZ(remnant=jtstr(jt,AN(w)-enddelimx-2,CAV(w)+enddelimx+2));  // get a string for the preserved tail of w
    AS(wil)[0]=ddbgnx; RZ(w=unwordil(wil,w,0));  // take everything up to the {{)n - it may have been put out of order
    A spacea; RZ(spacea=scc(' ')); RZ(w=apip(w,spacea));  // put space before quoted string
    RZ(w=apip(w,strq(enddelimx-nounstart,wv+nounstart)));  // append quoted string
@@ -1063,7 +1063,7 @@ A jtddtokens(J jt,A w,I env){
    A ddqu; RZ(ddqu=strq(wilv[ddendx][0]-wilv[ddbgnx+1][0],wv+wilv[ddbgnx+1][0]));
    // append the string for the start/end of DD
    I bodystart=AN(w), bodylen=AN(ddqu), trailstart=wilv[ddendx][1];  // start/len of body in w, and start of after-DD text
-   RZ(ddqu=jtapip(jtinplace,ddqu,str(7,")( 9 : ")));
+   RZ(ddqu=jtapip(jtinplace,ddqu,jtstr(jt,7,")( 9 : ")));
    // append the new stuff to w
    RZ(w=jtapip(jtinplace,w,ddqu));
    wv=CAV(w);   // refresh data pointer.  Number of words has not changed, nor have indexes

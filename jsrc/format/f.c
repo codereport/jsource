@@ -686,7 +686,7 @@ static A jtjprx(J jt,I ieol,I maxlen,I lb,I la,A w){A y,z;B ch;C e,eov[2],*v,x,*
  if(ieol){m=2; eov[0]=CCR; eov[1]=CLF;}else{m=1; eov[0]=CLF; eov[1]=0;}
  // q=#lines in a 2-cell, c=#chars in a row, n=#2-cells, nq=total # lines (without spacing)
  // if w is empty the values could overflow.  In that case, just display nothing
- SHAPEN(y,r-2,q); SHAPEN(y,r-1,c); nq=jtprod(jt,r-1,s); if(jt->jerr){RESETERR z=str(m+1,eov); makewritable(z) CAV(z)[m]=0; AN(z)=AS(z)[0]=m; return z;}
+ SHAPEN(y,r-2,q); SHAPEN(y,r-1,c); nq=jtprod(jt,r-1,s); if(jt->jerr){RESETERR z=jtstr(jt,m+1,eov); makewritable(z) CAV(z)[m]=0; AN(z)=AS(z)[0]=m; return z;}
  // c1=#characters to put out per line, lba=max # lines to put out
  c1=MIN(c,maxlen); lba=(D)lb+la;
  // calculate p=total # lines of spacing needed, as sum of (#k-cells-1) for k>=2

@@ -917,7 +917,7 @@
 #define stfindcre(x,y,z)            jtstfindcre(jt,(x),(y),(z))
 
 
-#define str(x,y)                    jtstr(jt,(x),(y))
+
 #define strq(x,y)                   jtstrq(jt,(x),(y))
 #define str0(x)                     jtstr0(jt,(x))
 #define suffix(x,y)                 jtsuffix(jt,(x),(y))

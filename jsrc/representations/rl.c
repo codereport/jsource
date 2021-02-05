@@ -76,7 +76,7 @@ static A jtlchar(J jt,A w,A *ltext){F1PREFIP;A y;B b,p=1,r1;C c,d,*u,*v;I j,k,m,
  if(0<=j&&r1&&!memcmpne(v+j,AV(ds(CALP)),m)){
   // string ends with an entire a. sequence
   if(!j)return cstr("a.");  // if that's all there is, use a.
-  RZ(y=lchar(1==j?scc(*v):str(j,v)));  // recur on the rest of the string to get its lr
+  RZ(y=lchar(1==j?scc(*v):jtstr(jt,j,v)));  // recur on the rest of the string to get its lr
   return lp(y)?over(cstr("a.,~"),y):over(y,cstr(",a."));  // use rest,a. or a.,~rest depending on () needs
  }
  if(r1&&m==n&&(y=icap(ne(w,ds(CALP))))&&m>AN(y)){  // if 256-byte string, see where it differs from a.
@@ -243,7 +243,7 @@ static A jtlsymb(J jt,C c,A w,A *ltext){F1PREFIP;A t;C buf[20],d,*s;I*u;V*v=FAV(
  if(VDDOP&v->flag){
   u=AV(v->fgh[2]); s=buf; 
   *s++=' '; *s++='('; s+=sprintf(s,FMTI,*u); spellit(CIBEAM,s); s+=2; s+=sprintf(s,FMTI,u[1]); *s++=')';
-  RZ(t=str(s-buf,buf)); 
+  RZ(t=jtstr(jt,s-buf,buf)); 
  }else{RZ(t=spella(w)); if(AN(t)==1&&(CAV(t)[0]=='{'||CAV(t)[0]=='}')){RZ(t=mkwris(t)); AS(t)[0]=AN(t)=2; CAV(t)[1]=' '; }}  // add trailing space to { } to avoid DD codes
  d=cf(t);
  return d==CESC1||d==CESC2?over(chrspace,t):t;
@@ -273,13 +273,13 @@ static A jtlinsert(J jt,A a,A w,A *ltext){F1PREFIP;A*av,f,g,h,t,t0,t1,t2,*u,y;B 
    GAT0(y,BOX,3,1); u=AAV(y);
    u[0]=f=parfn(jtinplace,ft||lnn(f,g),f);
    u[2]=g=parfn(jtinplace,gt||b,       g);
-   u[1]=str(' '==cf(g)||id==CADVF&&!laa(f,g)&&!(lp(f)&&lp(g))?0L:1L," ");
+   u[1]=jtstr(jt,' '==cf(g)||id==CADVF&&!laa(f,g)&&!(lp(f)&&lp(g))?0L:1L," ");
    RE(0); return raze(y);
   case CFORK:
    GAT0(y,BOX,5,1); u=AAV(y);
    RZ(u[0]=f=parfn(jtinplace,ft||lnn(f,g),   f));
-   RZ(u[2]=g=parfn(jtinplace,gt||lnn(g,h)||b,g)); RZ(u[1]=str(' '==cf(g)?0L:1L," "));
-   RZ(u[4]=h=parfn(jtinplace,ht,             h)); RZ(u[3]=str(' '==cf(h)?0L:1L," "));
+   RZ(u[2]=g=parfn(jtinplace,gt||lnn(g,h)||b,g)); RZ(u[1]=jtstr(jt,' '==cf(g)?0L:1L," "));
+   RZ(u[4]=h=parfn(jtinplace,ht,             h)); RZ(u[3]=jtstr(jt,' '==cf(h)?0L:1L," "));
    return raze(y);
   default:
    t0=parfn(jtinplace,ft||NOUN&AT(fs)&&!(VGERL&v->flag)&&lp(f),f);
@@ -295,19 +295,19 @@ static A jtlcolon(J jt,A w,A *ltext){F1PREFIP;A*v,x,y;C*s,*s0;I m,n;
  RZ(y=unparsem(num(1),w));
  n=AN(y); v=AAV(y); RZ(x=lrr(VAV(w)->fgh[0]));
  if(2>n||2==n&&1==AN(v[0])&&':'==CAV(v[0])[0]){
-  if(!n)return over(x,str(5L," : \'\'"));
+  if(!n)return over(x,jtstr(jt,5L," : \'\'"));
   y=lrr(v[2==n]);
-  if(2==n)y=over(str(5L,"\':\'; "),y);
-  return over(over(x,str(3L," : ")),lcpx(y));
+  if(2==n)y=over(jtstr(jt,5L,"\':\'; "),y);
+  return over(over(x,jtstr(jt,3L," : ")),lcpx(y));
  }
  m=0; DO(n, m+=AN(v[i]););
  GATV0(y,LIT,2+n+m,1);
  s=s0=CAV(y);
  DO(n, *s++=CLF; y=v[i]; m=AN(y); MC(s,CAV(y),m); s+=m;);
  *s++=CLF; *s++=')'; 
- RZ(y=str(s-s0,s0));
+ RZ(y=jtstr(jt,s-s0,s0));
  *ltext=*ltext?over(*ltext,y):y;
- return over(x,str(4L," : 0"));
+ return over(x,jtstr(jt,4L," : 0"));
 }
 
 // Main routine for () and linear rep.  w is to be represented

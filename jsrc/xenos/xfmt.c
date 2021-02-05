@@ -71,10 +71,10 @@ static A jtfmtbfc(J jt, A w){A*u,z;B t;C c,p,q,*s,*wv;I i,j,m,n;
  for(i=0;i<n;++i){
   c=wv[i]; 
   if(t){if(c==q)t=0;}
-  else if(c==','){RZ(*u++=incorp(str(i-j,wv+j))); j=i+1;}
+  else if(c==','){RZ(*u++=incorp(jtstr(jt,i-j,wv+j))); j=i+1;}
   else if(s=strchr(pp,c)){t=1; q=qq[s-pp];}
  }
- RZ(*u=incorp(str(n-j,wv+j)));
+ RZ(*u=incorp(jtstr(jt,n-j,wv+j)));
  return z;
 } /* format phrases: boxed from char */
 
@@ -149,16 +149,16 @@ static A jtfmtparse(J jt, A w){A x,z,*zv;B ml[2+NMODVALS],mod,t;C c,*cu="srqpnmd
    d=wv[mi];
    ASSERT(s=strchr(cu,d),EVDOMAIN);
    j=s-cu; ASSERT(ml[j],EVDOMAIN); ml[j]=0; fb|=(I)1<<j; 
-   if(s=strchr(cu1,d)){if(i-mi>3)RZ(zv[s-cu1]=incorp(str(i-mi-3,wv+mi+2)));}else ASSERT(1==i-mi,EVDOMAIN);
+   if(s=strchr(cu1,d)){if(i-mi>3)RZ(zv[s-cu1]=incorp(jtstr(jt,i-mi-3,wv+mi+2)));}else ASSERT(1==i-mi,EVDOMAIN);
   }
   mi=i;
-  if(BETWEENC(c,'0','9')){RZ(widthdp(str(n-i,wv+i),vals,vals+1)); break;} 
+  if(BETWEENC(c,'0','9')){RZ(widthdp(jtstr(jt,n-i,wv+i),vals,vals+1)); break;} 
  }
  if(mtv!=zv[NMODVALS]){C*cu="e,.-*",*cv,subs[5];
   x=zv[NMODVALS]; n=AN(x); cv=CAV(x); MC(subs,cu,5L); memset(ml,C1,5L);
   ASSERT(0==(n&1)&&10>=n,EVDOMAIN);
   DQ(n>>1, ASSERT(s=strchr(cu,*cv++),EVDOMAIN); j=s-cu; ASSERT(ml[j],EVDOMAIN); ml[j]=0; subs[j]=*cv++;);
-  RZ(zv[NMODVALS]=incorp(str(5L,subs)));
+  RZ(zv[NMODVALS]=incorp(jtstr(jt,5L,subs)));
  }
  vals[2]=fb; RZ(*zv=incorp(vec(INT,3,vals)));
  return z;
