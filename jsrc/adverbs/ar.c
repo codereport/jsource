@@ -320,7 +320,7 @@ J jtinplace=jt;
  wn=AN(w); ws=AS(w); n=r?ws[f]:1;
  wt=AT(w); wt=wn?DTYPE(wt):B01;
  g=VAV(self)->fgh[0];  // g is the f in f/
- if(!n)return red0(w,self);  // red0 uses ranks, and resets them
+ if(!n)return jtred0(jt,w,self);  // red0 uses ranks, and resets them
  C id; if(AT(g)&VERB){id=FAV(g)->id; id=FAV(g)->flag&VISATOMIC2?id:0;}else id=0;
  VARPS adocv; varps(adocv,self,wt,0);
  if(2==n&&!(adocv.f&&strchr(fca,id))){
@@ -383,7 +383,7 @@ static A jtreduce(J jt,    A w,A self){A z;I d,f,m,n,r,t,wr,*ws,zt;
 
   // special cases:
  }else if(n==1)return head(w);    // reduce on single items - ranks are still set
- else return red0(w,self);    // 0 items - neutrals - ranks are still set
+ else return jtred0(jt,w,self);    // 0 items - neutrals - ranks are still set
 
 
 

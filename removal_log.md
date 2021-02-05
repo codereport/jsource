@@ -333,3 +333,4 @@
 |`jsrc/verbs/visp.c`|reaxis|jtreaxis|`(^\|[ \t]+\|[^\d\w_])reaxis\((?=([^,]+?),([^)]+?)\))`|`\1jtreaxis(jt,`|
 |`jsrc/verbs/vo.c`|reaxis|jtreaxis|`(^\|[ \t]+\|[^\d\w_])reaxis\((?=([^,]+?),([^)]+?)\))`|`\1jtreaxis(jt,`|
 |`jsrc/verbs/vs.c`|reaxis|jtreaxis|`(^\|[ \t]+\|[^\d\w_])reaxis\((?=([^,]+?),([^)]+?)\))`|`\1jtreaxis(jt,`|
+|`jsrc/adverbs/ar.c`|red0|jtred0|`(^\|[ \t]+\|[^\d\w_])red0\((?=([^,]+?),([^)]+?)\))`|`\1jtred0(jt,`|
