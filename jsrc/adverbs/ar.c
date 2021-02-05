@@ -201,7 +201,7 @@ static A jtredsp1(J jt,A w,A self,C id,VARPSF ado,I cv,I f,I r,I zt){A e,x,z;I m
  A jtredravel(J jt,    A w,A self){A f,x,z;I n;P*wp;
  F1PREFIP;
  f=FAV(self)->fgh[0];  // f/
- if(!(SPARSE&AT(w)))return reduce(jtravel(jtinplace,w),f);
+ if(!(SPARSE&AT(w)))return jtreduce(jt,jtravel(jtinplace,w),f);
  // The rest is sparse
  wp=PAV(w); x=SPA(wp,x); n=AN(x);
  I rc=EVOK;
@@ -486,9 +486,9 @@ static A jtredstitch(J jt,    A w,A self){A c,y;I f,n,r,*s,*v,wr;
 
 static A jtredstiteach(J jt,    A w,A self){A*wv,y;I n,p,r,t;
  n=AN(w);
- if(!(2<n&&1==AR(w)&&BOX&AT(w)))return reduce(w,self);
+ if(!(2<n&&1==AR(w)&&BOX&AT(w)))return jtreduce(jt,w,self);
  wv=AAV(w);  y=wv[0]; SETIC(y,p); t=AT(y);
- DO(n, y=wv[i]; r=AR(y); if(!((((r-1)&-2)==0)&&p==SETIC(y,n)&&TYPESEQ(t,AT(y))))return reduce(w,self););  // rank 1 or 2, rows match, equal types
+ DO(n, y=wv[i]; r=AR(y); if(!((((r-1)&-2)==0)&&p==SETIC(y,n)&&TYPESEQ(t,AT(y))))return jtreduce(jt,w,self););  // rank 1 or 2, rows match, equal types
  return box(razeh(w));
 }    /* ,.&.>/ w */
 
@@ -535,7 +535,7 @@ A jtatab   (J jt,C c,A a,A w){ A z; return df2(z,a,w,   slash(ds(c))     );}
  I wr=AR(w); I r=(RANKT)jt->ranks; r=wr<r?wr:r;
  I n=AS(w)[wr-r]; n=r?n:1;
  // leave jt->ranks unchanged to pass into +/
-A sum=reduce(w,FAV(self)->fgh[0]);  // calculate +/"r
+A sum=jtreduce(jt,w,FAV(self)->fgh[0]);  // calculate +/"r
  RESETRANK;  // back to infinite rank for the divide
  RZ(sum);
  RZ(w=jtatomic2(JTIPA,sum,sc(n),ds(CDIV)));  // take quotient inplace and return it
