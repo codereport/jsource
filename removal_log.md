@@ -420,3 +420,4 @@
 |`jsrc/verbs/vf.c`|rotsp|jtrotsp|`(^\|[ \t]+\|[^\d\w_])rotsp\((?=([^,]+?),([^)]+?)\))`|`\1jtrotsp(jt,`|
 |`jsrc/xenos/xfmt.c`|roundID|jtroundID|`(^\|[ \t]+\|[^\d\w_])roundID\((?=([^,]+?),([^)]+?)\))`|`\1jtroundID(jt,`|
 |`jsrc/representations/rl.c`|sb2|jtsb2|`(^\|[ \t]+\|[^\d\w_])sb2\((?=([^,]+?),([^)]+?)\))`|`\1jtsb2(jt,`|
+|`jsrc/verbs/vsb.c`|sblit|jtsblit|`(^\|[ \t]+\|[^\d\w_])sblit\((?=([^,]+?),([^)]+?)\))`|`\1jtsblit(jt,`|
