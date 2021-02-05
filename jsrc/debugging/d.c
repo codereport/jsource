@@ -13,7 +13,7 @@
 // add n chars at *s to the error buffer at jt->etxn, increment jt->etxn
 static void jtep(J jt,I n,C*s){I m;
  m=NETX-jt->etxn; m=MIN(n,m); 
- if(0<m){MC(jt->etx+jt->etxn,s,m); jt->etxn+=m;}
+ if(0<m){memcpy(jt->etx+jt->etxn,s,m); jt->etxn+=m;}
 }
 
 static void jteputs(J jt,C*s){ep((I)strlen(s),s);}
@@ -174,8 +174,8 @@ static void jtjsig(J jt,I e,A x){jsigstr(e,AN(x),CAV(x));}
      /* signal error e with error text x */ 
 
 void jtjsigd(J jt,C*s){C buf[100],*d="domain error: ";I m,n,p;
- m=strlen(d); MC(buf,d,m);
- n=strlen(s); p=MIN(n,100-m); MC(buf+m,s,p);
+ m=strlen(d); memcpy(buf,d,m);
+ n=strlen(s); p=MIN(n,100-m); memcpy(buf+m,s,p);
  jsigstr(EVDOMAIN,m+p,buf);
 }
 

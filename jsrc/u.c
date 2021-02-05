@@ -204,7 +204,7 @@ I jtmaxtype(J jt,I s,I t){
 // Copy m bytes from w to z, repeating every n bytes if n<m
 void mvc(I m,void*z,I n,void*w){I p=n,r;static I k=sizeof(D);  // ???
  // first copy n bytes; thereafter p is the number of bytes we have copied; copy that amount again
- MC(z,w,MIN(p,m)); while(m>p){r=m-p; MC(p+(C*)z,z,MIN(p,r)); p+=p;}
+ memcpy(z,w,MIN(p,m)); while(m>p){r=m-p; memcpy(p+(C*)z,z,MIN(p,r)); p+=p;}
 }
 
 // odometer, up to the n numbers s[]
@@ -233,13 +233,13 @@ A jtscf(J jt,D x)    {A z; GAT0(z,FL,  1,0); DAV(z)[0]=x;     return z;}   // sc
 A jtscx(J jt,X x)    {A z; GAT0(z,XNUM,1,0); XAV(z)[0]=ca(x); return z;}  // scalar extended
 
 // return A-block for the string *s with length n
-A jtstr(J jt,I n,C*s){A z; GATV0(z,LIT,n,1); MC(AV(z),s,n); return z;}
+A jtstr(J jt,I n,C*s){A z; GATV0(z,LIT,n,1); memcpy(AV(z),s,n); return z;}
 
 // return A-block for the string *s with length n, enclosed in quotes and quotes doubled
 A jtstrq(J jt,I n,C*s){A z; I qc=2; DO(n, qc+=s[i]=='\'';) GATV0(z,LIT,n+qc,1); C *zv=CAV(z); *zv++='\''; DO(n, C c=s[i]; if(c=='\'')*zv++=c; *zv++=c;) *zv='\''; return z;}
 
 // w is a LIT string; result is a new block with the same string, with terminating NUL added
- A jtstr0(J jt, A w){A z;C*x;I n; if(!w) return 0; ASSERT(LIT&AT(w),EVDOMAIN); n=AN(w); GATV0(z,LIT,n+1,1); x=CAV(z); MC(x,AV(w),n); x[n]=0; return z;}
+ A jtstr0(J jt, A w){A z;C*x;I n; if(!w) return 0; ASSERT(LIT&AT(w),EVDOMAIN); n=AN(w); GATV0(z,LIT,n+1,1); x=CAV(z); memcpy(x,AV(w),n); x[n]=0; return z;}
 
 // return A-block for a 2-atom integer vector containing a,b
 A jtv2(J jt,I a,I b){A z;I*x; GAT0(z,INT,2,1); x=AV(z); *x++=a; *x=b; return z;}
@@ -249,7 +249,7 @@ A jtvci(J jt,I k){A z; GAT0(z,INT,1,1); IAV(z)[0]=k; return z;}
 
 // return A-block for list of type t, length n, and values *v
 // MUST NOT return virtual or fixed block, because we often modify the returned area
-A jtvec(J jt,I t,I n,void*v){A z; GA(z,t,n,1,0); MC(AV(z),v,n<<bplg(t)); return z;}
+A jtvec(J jt,I t,I n,void*v){A z; GA(z,t,n,1,0); memcpy(AV(z),v,n<<bplg(t)); return z;}
 
 // return A-block for list of type t, length n, and values *v
 // with special handling to coerce boolean type
@@ -262,7 +262,7 @@ A jtvecb01(J jt,I t,I n,void*v){A z; I i; GA(z,t,n,1,0);if(t&B01){C*p=(C*)AV(z),
 #pragma clang loop vectorize(enable) interleave_count(4)
 #endif
 for(i=0;i<n<<bplg(t);i++)*p++=!!(*q++);
-}else MC(AV(z),v,n<<bplg(t)); return z;}
+}else memcpy(AV(z),v,n<<bplg(t)); return z;}
 
 #if defined(__GNUC__) && !defined(__clang__)
 #pragma pop_options

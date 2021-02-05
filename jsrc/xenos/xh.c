@@ -28,8 +28,8 @@ return cstr("");
  A t;I b=0;C*fn,*s;F f;I n;
  n=AN(w);
  GATV0(t,LIT,n+5+L_tmpnam+1,1); s=CAV(t);  // +1 for trailing nul
- fn=5+n+s; MC(s,AV(w),n);
- MC(n+s,"   > ",5L);
+ fn=5+n+s; memcpy(s,AV(w),n);
+ memcpy(n+s,"   > ",5L);
  strcpy(fn,"/tmp");
  strcat(fn,"/tmp.XXXXXX");
  {int fd=mkstemp(fn); close(fd);}

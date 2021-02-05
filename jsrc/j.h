@@ -332,7 +332,7 @@ typedef double float64x2_t __attribute__ ((vector_size (16)));
 #define GACOPYSHAPE0(name,type,atoms,rank,shaape) if((rank)==1)AS(name)[0]=(atoms);
 // General shape copy, branchless when rank<3  AS[0] is always written: #atoms if rank=1, 0 if rank=0.  Used in jtga(), which uses the 0 in AS[0] as a pun for nullptr
 #define GACOPYSHAPEG(name,type,atoms,rank,shaape) \
- {I *_d=AS(name); I *_s=(shaape); _s=_s?_s:_d; I cp=*_s; I _r=(rank); cp=_r<1?0:cp; cp=_r==1?(atoms):cp; _s=_r<=1?_d:_s; *_d=cp; ++_d; ++_s; if(_r<3){*_d=*_s;}else{MC(_d,_s,(_r-1)<<LGSZI);}}
+ {I *_d=AS(name); I *_s=(shaape); _s=_s?_s:_d; I cp=*_s; I _r=(rank); cp=_r<1?0:cp; cp=_r==1?(atoms):cp; _s=_r<=1?_d:_s; *_d=cp; ++_d; ++_s; if(_r<3){*_d=*_s;}else{memcpy(_d,_s,(_r-1)<<LGSZI);}}
 // Use when shape is known to be present but rank is not SDT.  One value is always written to shape
 // in this version one value is always written to shape
 #define GACOPYSHAPE(name,type,atoms,rank,shaape)  {I *_s=(I*)(shaape); I *_d=AS(name); *_d=*_s; I _r=1-(rank); do{_s+=SGNTO0(_r); _d+=SGNTO0(_r); *_d=*_s;}while(++_r<0);}
@@ -438,8 +438,8 @@ typedef double float64x2_t __attribute__ ((vector_size (16)));
 // memory copy, for J blocks.  Like memory copy, but knows it can fetch outside the arg boundaries for LIT-type args
 // if bytelen is 1, the arg may be of any length; if 0, must be a multiple of Is and the low bits of length are ignored
 
-#define JMC(d,s,l,lbl,bytelen) MC(d,s,bytelen?(l):(l)&-SZI);
-#define JMCR(d,s,l,lbl,bytelen,maskname) MC(d,s,bytelen?(l):(l)&-SZI);
+#define Jmemcpy(d,s,l,lbl,bytelen) memcpy(d,s,bytelen?(l):(l)&-SZI);
+#define JMCR(d,s,l,lbl,bytelen,maskname) memcpy(d,s,bytelen?(l):(l)&-SZI);
 #define JMCDECL(mskname)
 #define JMCSETMASK(mskname,l,bytelen)
 
@@ -453,7 +453,6 @@ typedef double float64x2_t __attribute__ ((vector_size (16)));
 #define JTIPWonly       (J)((I)jtinplace&~(JTINPLACEA+JTWILLBEOPENED+JTCOUNTITEMS))  // dyad jt converted to monad for w
 // given a unique num, define loop begin and end labels
 #define MAX(a,b)        ((a)>(b)?(a):(b))
-#define MC              memcpy
 #define MCL(dest,src,n) memcpy(dest,src,n)  // use when copy is expected to be long
 #define MCIL(dest,src,n) memcpy(dest,src,(n)*sizeof(*src))   // use when copy expected to be long
 // Copy shapes.  Optimized for length <5, subroutine for others
@@ -462,7 +461,7 @@ typedef double float64x2_t __attribute__ ((vector_size (16)));
   if(_n<=2){ \
    _n-=1; _d=(_n<0)?jt->shapesink+1:_d; _s=(_n<0)?jt->shapesink+1:_s; \
    _d[0]=_s[0]; _d[_n]=_s[_n];  \
-  }else{MC(_d,_s,_n<<LGSZI);} \
+  }else{memcpy(_d,_s,_n<<LGSZI);} \
  }
 #define MCISHd(dest,src,n) {MCISH(dest,src,n) dest+=(n);}  // ... this version when d increments through the loop
 

@@ -201,7 +201,7 @@ static B jteqa(J jt,I n,A*u,A*v){DQ(n, if(!equ(*u,*v))return 0; ++u; ++v;); retu
 // special lookup routines to move the data rather than store its index, used for nub/match
 #define XMV(hash,exp,inc,stmt)      \
  if(k==SZI){XDO(hash,exp,inc,if(m==hj){*zi++=*(I*)v;      stmt;}); zc=(C*)zi;}  \
- else       XDO(hash,exp,inc,if(m==hj){MC(zc,v,k); zc+=k; stmt;});
+ else       XDO(hash,exp,inc,if(m==hj){memcpy(zc,v,k); zc+=k; stmt;});
 
 
 // Routine to allocate sections of the hash tables
@@ -445,9 +445,9 @@ static IOFX(I,jtioi,  hicw(v),           *v!=av[hj],                      ++v,  
 // Version for ~. y and x -. y .  prop is a condition; if true, move the item to *zc++
 #define TMV(FXY,FYY,expa,expw,prop)   \
  switch(4*bx+2*b+(I )(k==sizeof(D))){                                  \
-  default: DO(c, FXY(expa,expw); if(prop){MC(zc,v,k); zc+=k;}; v+=cn;);            break;  \
+  default: DO(c, FXY(expa,expw); if(prop){memcpy(zc,v,k); zc+=k;}; v+=cn;);            break;  \
   case 1:  DO(c, FXY(expa,expw); if(prop)*zd++=*(D*)v;         ++v;  ); zc=(C*)zd; break;  \
-  case 2:  DO(c, FYY(expa,expw); if(prop){MC(zc,v,k); zc+=k;}; v+=cn;);            break;  \
+  case 2:  DO(c, FYY(expa,expw); if(prop){memcpy(zc,v,k); zc+=k;}; v+=cn;);            break;  \
   case 3:  DO(c, FYY(expa,expw); if(prop)*zd++=*(D*)v;         ++v;  ); zc=(C*)zd;         \
  }
 
@@ -797,13 +797,13 @@ static A jtiobs(J jt,I mode,I m,I n,I c,I k,I acr,I wcr,I ac,I wc,I ak,I wk,A a,
    case IICO:         BSLOOPAA(hi--,zv[p]=p,zv[q]=p,zv[q]=p=q); zv+=m;     break;
    case IFORKEY:{I nuniq=0; BSLOOPAA(hi++,++nuniq;zv[p]=p+1,zv[q]=p;zv[p]++,++nuniq;zv[q]=(p=q)+1); zv+=m; AM(h)=nuniq;     break;}
    case INUBSV:       BSLOOPAA(hi++,zb[p]=1,zb[q]=0,zb[q]=1  ); zb+=m;     break;
-   case INUB:         BSLOOPAA(hi++,yb[p]=1,yb[q]=0,yb[q]=1  ); DO(m, if(yb[i]){MC(zc,av+i*n,k); zc+=k;}); ZCSHAPE; break;
+   case INUB:         BSLOOPAA(hi++,yb[p]=1,yb[q]=0,yb[q]=1  ); DO(m, if(yb[i]){memcpy(zc,av+i*n,k); zc+=k;}); ZCSHAPE; break;
    case INUBI:        BSLOOPAA(hi++,yb[p]=1,yb[q]=0,yb[q]=1  ); DO(m, if(yb[i])*zi++=i;);                  ZISHAPE; break;
   }else switch(md){  // searches, by binary search
    case IIDOT:        BSLOOPAW(*zv++=-2==q?hu[j]:m);                       break;
    case IICO:         BSLOOPAW(*zv++=-2==q?hu[j]:m);                       break;
    case IEPS:         BSLOOPAW(*zb++=-2==q);                               break;
-   case ILESS:        BSLOOPAW(if(-2< q){MC(zc,u,k); zc+=k;}); ZCSHAPE;    break;
+   case ILESS:        BSLOOPAW(if(-2< q){memcpy(zc,u,k); zc+=k;}); ZCSHAPE;    break;
    case II0EPS:  s=m; BSLOOPAW(if(-2< q){s=i; break;});        *zi++=s;    break;
    case IJ0EPS:  s=m; BSLOOQAW(if(-2< q){s=i; break;});        *zi++=s;    break;
    case II1EPS:  s=m; BSLOOPAW(if(-2==q){s=i; break;});        *zi++=s;    break;
@@ -1086,7 +1086,7 @@ A jtindexofsub(J jt,I mode,A a,A w){PROLOG(0079);A h=0,hi=mtv,z;B mk=w==mark,th;
   case IICO:    return reshape(shape(z),sc(n?m:m-1));
   case INUBSV:  return reshape(shape(z),take(sc(m),num(1)));
   case INUB:    AN(z)=0; *AS(z)=m?1:0; return z;
-  case ILESS:   if(m)AN(z)=*AS(z)=0; else MC(AV(z),AV(w),k1*AN(w)); return z;
+  case ILESS:   if(m)AN(z)=*AS(z)=0; else memcpy(AV(z),AV(w),k1*AN(w)); return z;
   case IEPS:    return reshape(shape(z),num(m&&(!n||th)) );
   case INUBI:   return m?iv0:mtv;
   // th<0 means that the result of e. would have rank>1 and would never compare against either 0 or 1
