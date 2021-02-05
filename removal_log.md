@@ -460,3 +460,4 @@
 |`jsrc/verbs/vrep.c`|stitch|jtstitch|`(^\|[ \t]+\|[^\d\w_])stitch\((?=([^,]+?),([^)]+?)\))`|`\1jtstitch(jt,`|
 |`jsrc/verbs/vs.c`|stitch|jtstitch|`(^\|[ \t]+\|[^\d\w_])stitch\((?=([^,]+?),([^)]+?)\))`|`\1jtstitch(jt,`|
 |`jsrc/xenos/xo.c`|stitch|jtstitch|`(^\|[ \t]+\|[^\d\w_])stitch\((?=([^,]+?),([^)]+?)\))`|`\1jtstitch(jt,`|
+|`jsrc/verbs/vcat.c`|stitchsp2|jtstitchsp2|`(^\|[ \t]+\|[^\d\w_])stitchsp2\((?=([^,]+?),([^)]+?)\))`|`\1jtstitchsp2(jt,`|

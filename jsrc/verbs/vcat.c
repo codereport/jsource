@@ -254,7 +254,7 @@ static void(*moveawtbl[])() = {moveawVV,moveawVS,moveawSV};
  ar=AR(a); wr=AR(w);
  ASSERT((-ar&-wr&-(AS(a)[0]^AS(w)[0]))>=0,EVLENGTH);  // a or w scalar, or same # items    always OK to fetch s[0]
  if((((SPARSE&(AT(a)|AT(w)))-1)&(2-ar)&(2-wr))>=0)return IRSIP2(a,w,0L,(ar-1)&RMAX,(wr-1)&RMAX,jtover,z);  // not sparse or rank>2
- return stitchsp2(a,w);  // sparse rank <=2 separately
+ return jtstitchsp2(jt,a,w);  // sparse rank <=2 separately
 }
 
  A jtlamin1(J jt, A w){A x;I* RESTRICT s,* RESTRICT v,wcr,wf,wr; 

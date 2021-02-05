@@ -916,7 +916,7 @@
 #define stfind(x,y,z)               jtstfind(jt,(x),(y),(z))
 #define stfindcre(x,y,z)            jtstfindcre(jt,(x),(y),(z))
 
-#define stitchsp2(x,y)              jtstitchsp2(jt,(x),(y))
+
 #define str(x,y)                    jtstr(jt,(x),(y))
 #define strq(x,y)                   jtstrq(jt,(x),(y))
 #define str0(x)                     jtstr0(jt,(x))
