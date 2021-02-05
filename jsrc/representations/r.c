@@ -12,7 +12,7 @@ EVERYFS(drrself,jtdrr,0,0,VFLAGNONE)
 static A jtdrr(J jt, A w){PROLOG(0055);A df,dg,hs,*x,z;B b,ex,xop;C c,id;I fl,*hv,m;V*v;
  if(!w) return 0;
  // If the input is a name, it must be from ".@'name' which turned into ".@(name+noun)  - or in debug, but that's discarded
- if(AT(w)&NAME){RZ(w=sfn(0,w));}
+ if(AT(w)&NAME){RZ(w=jtsfn(jt,0,w));}
  // If noun, return the value of the noun.
  if(AT(w)&NOUN)return w;  // no quotes needed
  // Non-nouns and NMDOT names carry on
@@ -53,7 +53,7 @@ static A jtdrr(J jt, A w){PROLOG(0055);A df,dg,hs,*x,z;B b,ex,xop;C c,id;I fl,*h
   if(evoke(w)){RZ(w=sfne(w)); if(FUNC&AT(w))w=aro(w); return w;}  // keep nameref as a string, UNLESS it is NMDOT, in which case use the (f.'d) verb value
  }
  GAT0(z,BOX,2,1); x=AAV(z);
- if(NOUN&AT(w)){RZ(x[0]=incorp(ravel(scc(CNOUN)))); if(AT(w)&NAME)RZ(w=sfn(0,w)); RZ(x[1]=INCORPNA(w)); return z;}  // if name, must be ".@'name', format name as string
+ if(NOUN&AT(w)){RZ(x[0]=incorp(ravel(scc(CNOUN)))); if(AT(w)&NAME)RZ(w=jtsfn(jt,0,w)); RZ(x[1]=INCORPNA(w)); return z;}  // if name, must be ".@'name', format name as string
  GATV0(y,BOX,m,1); u=AAV(y);
  if(0<m)RZ(u[0]=incorp(aro(fs)));
  if(1<m)RZ(u[1]=incorp(aro(ex?unparsem(num(0),w):xop?hs:gs)));

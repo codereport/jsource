@@ -81,7 +81,7 @@ A jtnfs(J jt,I n,C*s){A z;C f,*t;I m,p;NM*zv;
 A jtsfn(J jt,B b,A w){NM*v; v=NAV(w); return str(b&SFNSIMPLEONLY?v->m:AN(w),v->s);}
 
 // string from name evocation: returns string for name UNLESS the name was an NMDOT type; in that case it returns w f. which will be a verb
-A jtsfne(J jt,A w){ A wn=FAV(w)->fgh[0]; if(AT(wn)&NAMEBYVALUE)return jtfix(jt,w,zeroionei(0)); return sfn(0,wn);}
+A jtsfne(J jt,A w){ A wn=FAV(w)->fgh[0]; if(AT(wn)&NAMEBYVALUE)return jtfix(jt,w,zeroionei(0)); return jtsfn(jt,0,wn);}
 
 
  A jtnfb(J jt, A w){A y;C*s;I n;
@@ -128,10 +128,10 @@ static A jtstdnm(J jt, A w){C*s;I j,n,p,q;
 
 
 static SYMWALK(jtnlxxx, A,BOX,20,1, jt->workareas.namelist.nla[*((UC*)NAV(d->name)->s)]&&jt->workareas.namelist.nlt&AT(d->val), 
-    RZ(*zv++=incorp(sfn(SFNSIMPLEONLY,d->name))) )
+    RZ(*zv++=incorp(jtsfn(jt,SFNSIMPLEONLY,d->name))) )
 
        SYMWALK(jtnlsym, A,BOX,20,1, jt->workareas.namelist.nla[*((UC*)NAV(d->name)->s)],
-    RZ(*zv++=incorp(sfn(SFNSIMPLEONLY,d->name))) )
+    RZ(*zv++=incorp(jtsfn(jt,SFNSIMPLEONLY,d->name))) )
 
 static const I nlmask[] = {NOUN,ADV,CONJ,VERB, MARK,MARK,SYMB,MARK};
 

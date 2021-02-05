@@ -132,7 +132,7 @@ static SYMWALK(jtsympoola, I,INT,100,1, 1, *zv++=j;)
   *xv++=pv->flag+(pv->name?LHASNAME:0)+(pv->val?LHASVALUE:0);  // flag
   *xv++=pv->sn;    
   *xv++=pv->next;
-  RZ(*yv++=(q=pv->name)?incorp(sfn(SFNSIMPLEONLY,q)):mtv);
+  RZ(*yv++=(q=pv->name)?incorp(jtsfn(jt,SFNSIMPLEONLY,q)):mtv);
  }
  // Allocate box 3: locale name
  GATV0(y,BOX,n,1); yv=AAV(y); zv[2]=incorp(y);
@@ -141,13 +141,13 @@ static SYMWALK(jtsympoola, I,INT,100,1, 1, *zv++=j;)
  for(i=0;i<n;++i){  // for each chain-base in locales pool
   for(j=v[i];j;j=LAV0(jt->symp)[j].next){      // j is index to named local entry; process the chain
    x=LAV0(jt->symp)[j].val;  // x->symbol table for locale
-   RZ(yv[j]=yv[LXAV0(x)[0]]=aa=incorp(sfn(SFNSIMPLEONLY,LOCNAME(x))));  // install name in the entry for the locale
+   RZ(yv[j]=yv[LXAV0(x)[0]]=aa=incorp(jtsfn(jt,SFNSIMPLEONLY,LOCNAME(x))));  // install name in the entry for the locale
    RZ(q=sympoola(x)); u=AV(q); DO(AN(q), yv[u[i]]=aa;);
   }
  }
  n=jtcountnl(jt);
  for(i=0;i<n;++i)if(x=jtindexnl(jt,i)){   /* per numbered locales */
-  RZ(      yv[LXAV0(x)[0]]=aa=incorp(sfn(SFNSIMPLEONLY,LOCNAME(x))));
+  RZ(      yv[LXAV0(x)[0]]=aa=incorp(jtsfn(jt,SFNSIMPLEONLY,LOCNAME(x))));
   RZ(q=sympoola(x)); u=AV(q); DO(AN(q), yv[u[i]]=aa;);
  }
  if(AN(x=jt->locsyms)>1){               /* per local table      */

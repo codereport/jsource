@@ -856,7 +856,7 @@
 #define sent12c(x)            jtsent12c(jt,(x))
 #define sesminit()                  jtsesminit(jt)
 
-#define sfn(x,y)                    jtsfn(jt,(x),(y))
+
 #define sfne(x)                     jtsfne(jt,(x))
 #define shape(x)                    jtshape(jt,(x))
 #define shift1(x)                   jtshift1(jt,(x))

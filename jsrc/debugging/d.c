@@ -57,7 +57,7 @@ static void jtdspell(J jt,C id,A w,I nflag){C c,s[5];
   eputs(s+!(c==CESC1||c==CESC2||nflag&&((ctype[(UC)c]&~CA)==0)));
 }}
 
-static A jtsfn0(J jt, A w){return sfn(0,w);}  // return string form of full name for a NAME block
+static A jtsfn0(J jt, A w){return jtsfn(jt,0,w);}  // return string form of full name for a NAME block
 EVERYFS(sfn0overself,jtsfn0,jtover,0,VFLAGNONE)
 
 // print a noun; nflag if space needed before name/numeric; return new value of nflag

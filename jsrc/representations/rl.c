@@ -314,7 +314,7 @@ static A jtlcolon(J jt,A w,A *ltext){F1PREFIP;A*v,x,y;C*s,*s0;I m,n;
 static A jtlrr(J jt,A w,A self,A *ltext){F1PREFIP;A hs,t,*tv;C id;I fl,m;V*v;
  if(!w) return 0;
  // If name, it must be in ".@'name', or (in debug mode) the function name, which we will discard
- if(AT(w)&NAME){RZ(w=sfn(0,w));}
+ if(AT(w)&NAME){RZ(w=jtsfn(jt,0,w));}
  if(AT(w)&NOUN)return lnoun(w);
  v=VAV(w); id=v->id;  // outer verb, & its id
  // if f is 0, we take f from g.  In other words, adverbs can put their left arg in either f or g.  u b. uses g so that it can leave f=0 to allow it to function as an ATOMIC2 op

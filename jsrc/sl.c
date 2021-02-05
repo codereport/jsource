@@ -332,7 +332,7 @@ static A jtloccrenum(J jt, A w){C s[20];I k,p;
  A jtlocname(J jt, A w){A g=jt->global;
  ASSERTMTV(w);
  ASSERT(g!=0,EVLOCALE);
- return boxW(sfn(0,LOCNAME(g)));
+ return boxW(jtsfn(jt,0,LOCNAME(g)));
 }    /* 18!:5  current locale name */
 
 static SYMWALK(jtlocmap1,I,INT,18,3,1,
@@ -341,7 +341,7 @@ static SYMWALK(jtlocmap1,I,INT,18,3,1,
      I zc=2; zc=((0x20034>>(((t)>>(ADVX-1))&(CONJ+ADV+VERB>>(ADVX-1))))&3);   // C x V A (N) -> 16 x 4 2 0 -> 2 x 3 1 0    10 xx xx xx xx xx 11 01 00
      zc=t==SYMB?6:zc; zc=t&(NOUN|VERB|ADV|CONJ|SYMB)?zc:-2;
      *zv++=zc;
-     *zv++=(I)rifvs(sfn(SFNSIMPLEONLY,d->name));})  // this is going to be put into a box
+     *zv++=(I)rifvs(jtsfn(jt,SFNSIMPLEONLY,d->name));})  // this is going to be put into a box
 
  A jtlocmap(J jt, A w){A g,q,x,y,*yv,z,*zv;I c=-1,d,j=0,m,*qv,*xv;
  ASSERT(!AR(w),EVRANK);

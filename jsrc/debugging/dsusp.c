@@ -54,7 +54,7 @@ void jtdebz(J jt){jt->sitop=jt->sitop->dclnk;}
   RZ(zv[3]=d->dctype==DCCALL?sc(lnumsi(d)):mtv);
   switch(d->dctype){
    case DCPARSE:  RZ(zv[4]=unparse(d->dcy)); break;
-   case DCCALL:   RZ(zv[4]=sfn(0,d->dca));   break;
+   case DCCALL:   RZ(zv[4]=jtsfn(jt,0,d->dca));   break;
    case DCSCRIPT: zv[4]=d->dcy;              break;
    case DCJUNK:   zv[4]=mtv;                 break; 
   }

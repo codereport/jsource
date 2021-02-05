@@ -76,7 +76,7 @@ static A jtfixa(J jt,A a,A w){A f,g,h,wf,x,y,z=w;V*v;fauxblock(fauxself); A aa; 
  ai^=aif;   // now ai = state without flags
  // If we are only interested in replacing locatives, and there aren't any, exit fast
  if(aif&FIXALOCSONLY&&!hasimploc(w))return w;  // nothing to fix
- if(NAME&AT(w)){return sfn(0,w);}  // only way a name gets here is by ".@noun which turns into ".@(name+noun) for execution.  Also in debug, but that's discarded
+ if(NAME&AT(w)){return jtsfn(jt,0,w);}  // only way a name gets here is by ".@noun which turns into ".@(name+noun) for execution.  Also in debug, but that's discarded
  if(NOUN&AT(w)||VFIX&VAV(w)->flag)return w;
  v=VAV(w); f=v->fgh[0]; g=v->fgh[1]; h=v->fgh[2]; wf=ds(v->id); I na=ai==0?3:ai;
  if(!(((I)f|(I)g)||((v->id&-2)==CUDOT)))return w;  // combinations always have f or g; and u./v. must be replaced even though it doesn't
@@ -120,7 +120,7 @@ static A jtfixa(J jt,A a,A w){A f,g,h,wf,x,y,z=w;V*v;fauxblock(fauxself); A aa; 
    return REFIXA(ai,jt->implocref[1]);
   case CTILDE:
    if(f&&NAME&AT(f)){
-    RZ(y=sfn(0,f));
+    RZ(y=jtsfn(jt,0,f));
     if(all1(jteps(jt,box(y),(A)AM(a))))return w;  // break out of loop if recursive name lookup
     ASSERT(AN((A)AM(a))<248,EVLIMIT);  // error if too many names in expansion
     // recursion check finished.  Now replace the name with its value

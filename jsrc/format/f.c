@@ -541,7 +541,7 @@ static A jtthorn1main(J jt,A w,A prxthornuni){PROLOG(0001);A z;
    break;
   case BOXX:  z=thbox(w,prxthornuni);                  break;
   case SBTX:  z=thsb(w,prxthornuni);                   break;
-  case NAMEX: z=sfn(0,w);                  break;
+  case NAMEX: z=jtsfn(jt,0,w);                  break;
   case ASGNX: z=spellout(CAV(w)[0]);         break;
   case INTX:  case FLX: case CMPXX:
              z=thn(w);                    break;
