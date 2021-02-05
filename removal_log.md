@@ -234,3 +234,4 @@
 |`jsrc/ja.h`|maxtypene|jtmaxtype|`(^\|[ \t]+\|[^\d\w_])maxtypene\((?=([^,]+?),([^)]+?)\))`|`\1jtmaxtype(jt,`|
 |`jsrc/adverbs/ar.c`|maxtypene|jtmaxtype|`(^\|[ \t]+\|[^\d\w_])maxtypene\((?=([^,]+?),([^)]+?)\))`|`\1jtmaxtype(jt,`|
 |`jsrc/verbs/vo.c`|maxtypene|jtmaxtype|`(^\|[ \t]+\|[^\d\w_])maxtypene\((?=([^,]+?),([^)]+?)\))`|`\1jtmaxtype(jt,`|
+|`jsrc/verbs/vd.c`|mdivsp|jtmdivsp|`(^\|[ \t]+\|[^\d\w_])mdivsp\((?=([^,]+?),([^)]+?)\))`|`\1jtmdivsp(jt,`|

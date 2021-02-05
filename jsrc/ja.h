@@ -551,7 +551,7 @@
 #define maxtypedne(x,y) (jt->typepriority[CTTZ(x)]>jt->typepriority[CTTZ(y)]?(x):(y))
 #define maxtyped(x,y)               (((x)==(y))?(x):maxtypedne(x,y))
 // For sparse types, we encode here the corresponding dense type
-#define mdivsp(x,y)                 jtmdivsp(jt,(x),(y))
+
 #define meminit()                   jtmeminit(jt)
 #define memoget(x,y,z)              jtmemoget(jt,(x),(y),(z))
 #define memoput(x0,x1,x2,x3)        jtmemoput(jt,(x0),(x1),(x2),(x3))

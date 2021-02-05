@@ -243,7 +243,7 @@ static A jtmdivsp(J jt,A a,A w){A a1,x,y;I at,d,m,n,t,*v,xt;P*wp;
  F2RANK(RMAX,2,jtmdiv,UNUSED_VALUE);
  if(AT(a)&SPARSE)RZ(a=denseit(a));
  t=AT(w);
- if(t&SPARSE)return mdivsp(a,w);
+ if(t&SPARSE)return jtmdivsp(jt,a,w);
  z=minv(w);  // take generalized inverse of w, setting up for icor if needed
  z=pdt(2>AR(w)?reshape(shape(w),z):z,a);  // a * w^-1
  if(AT(a)&B01+INT)z=icor(z);  // integer correct if a is not float (& correction is possible)
