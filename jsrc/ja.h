@@ -805,7 +805,7 @@
 
 #define rot(x0,x1,x2,x3,x4,x5,x6,x7)                jtrot(jt,(x0),(x1),(x2),(x3),(x4),(x5),(x6),(x7))
 
-#define rotsp(x,y)                  jtrotsp(jt,(x),(y))
+
 #define roundID(x,y)                jtroundID(jt,(x),(y))
 #define rrv(x)                      ((UI)((x)->lrr)&RANKTMSK)  // rr of V
 #define rr(x)                       rrv(FAV(x))  // rr of A

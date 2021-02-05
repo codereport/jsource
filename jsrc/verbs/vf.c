@@ -92,7 +92,7 @@ static void jtrot(J jt,I m,I d,I n,I atomsize,I p,I*av,C*u,C*v){I dk,e,k,j,r,x,y
 
  A jtrotate(J jt,A a,A w){A origw=w,y,z;B b;C*u,*v;I acr,af,ar,*av,d,k,m,n,p,*s,wcr,wf,wn,wr;
  F2PREFIP;
- if((SPARSE&AT(w))!=0)return rotsp(a,w);
+ if((SPARSE&AT(w))!=0)return jtrotsp(jt,a,w);
  ar=AR(a); acr=jt->ranks>>RANKTX; acr=ar<acr?ar:acr; af=ar-acr; p=acr?*(af+AS(a)):1;
  wr=AR(w); wcr=(RANKT)jt->ranks; wcr=wr<wcr?wr:wcr; wf=wr-wcr; RESETRANK;
  RZ(a=vi(a));
