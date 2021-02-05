@@ -18,3 +18,4 @@ qgcd
 qlcm
 qminus
 qplus
+qpow
