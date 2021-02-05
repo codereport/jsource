@@ -958,7 +958,7 @@
 #define tfloor(x)                   jttfloor(jt,(x))
 #define tg(x)                       jttg(jt,(x))
 #define th2a(x0,x1,x2,x3,x4,x5,x6,x7,x8)            jtth2a(jt,(x0),(x1),(x2),(x3),(x4),(x5),(x6),(x7),(x8))
-#define th2box(x,y)                 jtth2box(jt,(x),(y))
+
 #define th2c(x0,x1,x2,x3,x4,x5,x6,x7,x8,x9)         jtth2c(jt,(x0),(x1),(x2),(x3),(x4),(x5),(x6),(x7),(x8),(x9))
 #define th2ctrl(x0,x1,x2,x3,x4,x5)  jtth2ctrl(jt,(x0),(x1),(x2),(x3),(x4),(x5))
 #define thb(x)                      jtthb(jt,(x))

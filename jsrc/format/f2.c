@@ -264,7 +264,7 @@ static B jtth2ctrl(J jt,A a,A*ep,A*mp,A*dp,A*sp,I*zkp){A da,ea,ma,s;B b=1,*ev,r,
  F2RANK(1,RMAX,jtthorn2,UNUSED_VALUE);  // apply rank 1 _
  // From here on the a arg is rank 0 or 1
  an=AN(a); t=AT(w);  // an=#atoms of a, t=type of w
- if(t&BOX)return th2box(a,w);  // If boxed w, go handle as special case
+ if(t&BOX)return jtth2box(jt,a,w);  // If boxed w, go handle as special case
  ASSERT(t&NUMERIC&&!(t&SPARSE)&&!(AT(a)&SPARSE),EVDOMAIN);  // w must be numeric and dense; a must be dense
  // r=rank of w; ws->shape of w; c=#atoms in 1-cell of w; n = #1-cells of w
  r=AR(w); ws=AS(w); SHAPEN(w,r-1,c);  PRODX(n,r-1,ws,1);
