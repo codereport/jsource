@@ -464,7 +464,7 @@
 #define ixin(x0,x1,x2,x3)           jtixin(jt,(x0),(x1),(x2),(x3))
 #define jclose(x)                   jtjclose(jt,(x))
 #define jdot1(x)                    jtjdot1(jt,(x))
-#define jdot2(x,y)                  jtjdot2(jt,(x),(y))
+
 #define jerrno()                    jtjerrno(jt)
 #define jfread(x)                   jtjfread(jt,(x))
 #define jfwrite(x,y)                jtjfwrite(jt,(x),(y))

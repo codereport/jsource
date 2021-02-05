@@ -203,7 +203,7 @@ static A jtrep1s(J jt,A a,A w,I wf,I wcr){A ax,e,x,y,z;B*b;I c,d,cd,j,k,m,n,p,q,
  F2PREFIP;
  if(AT(a)&SCMPX)return rep1d(denseit(a),w,wf,wcr);
  RE(rep1sa(a,&c,&d)); cd=c+d;
- if(DENSE&AT(w))return rep1d(d?jdot2(sc(c),sc(d)):sc(c),w,wf,wcr);  // here if dense w
+ if(DENSE&AT(w))return rep1d(d?jtjdot2(jt,sc(c),sc(d)):sc(c),w,wf,wcr);  // here if dense w
  wr=AR(w); ws=AS(w); n=wcr?*(wf+ws):1; RE(m=mult(n,cd));
  wp=PAV(w); e=SPA(wp,e); ax=SPA(wp,a); y=SPA(wp,i); x=SPA(wp,x);
  GASPARSE(z,AT(w),1,wr+!wcr,ws); *(wf+AS(z))=m; zp=PAV(z);
@@ -231,7 +231,7 @@ static A jtrep1s(J jt,A a,A w,I wf,I wcr){A ax,e,x,y,z;B*b;I c,d,cd,j,k,m,n,p,q,
   j=0; DO(wcr, j+=!b[wf+i];);
   RZ(y=ca(y));
   if(d){xx=jt->fill; jt->fill=e;}  // e cannot be virtual
-  x=irs2(AR(a)&&CMPX&AT(a)?a:d?jdot2(sc(c),sc(d)):sc(c),x,0L,1L,j,jtrepeat); 
+  x=irs2(AR(a)&&CMPX&AT(a)?a:d?jtjdot2(jt,sc(c),sc(d)):sc(c),x,0L,1L,j,jtrepeat); 
   if(d)jt->fill=xx; 
   RZ(x);
  }
