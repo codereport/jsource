@@ -755,7 +755,7 @@
 #define recip(x)                    jtrecip(jt,(x))
 #define rect(x)                     jtrect(jt,(x))
 
-#define redcat(x,y)                 jtredcat(jt,(x),(y))
+
 #define redcatsp(x,y,z)             jtredcatsp(jt,(x),(y),(z))
 #define redef(x,y)                  jtredef(jt,(x),(y))
 #define redefg(x)                   jtredefg(jt,(x))

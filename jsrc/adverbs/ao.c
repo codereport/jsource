@@ -10,7 +10,7 @@ static A jtoblique(J jt,    A w,A self){A x,y,z;I m,n,r;D rkblk[16];
  F1PREFIP;
  r=AR(w);  // r = rank of w
  // create y= ,/ w - the _2-cells of w arranged in a list (virtual block)
- RZ(y=redcat(w,self)); if(1>=r){m=AN(w); n=1;}else{m=AS(w)[0]; n=AS(w)[1];}
+ RZ(y=jtredcat(jt,w,self)); if(1>=r){m=AN(w); n=1;}else{m=AS(w)[0]; n=AS(w)[1];}
  // Create x=+"0 1&i./ 2 {. $y
  A xm; RZ(xm=IX(m)); A xn; RZ(xn=IX(n));
  RZ(x=ATOMIC2(jt,xm,xn,rkblk,0L,1L,CPLUS)); AR(x)=1; AS(x)[0]=AN(x);
