@@ -335,3 +335,6 @@
 |`jsrc/verbs/vs.c`|reaxis|jtreaxis|`(^\|[ \t]+\|[^\d\w_])reaxis\((?=([^,]+?),([^)]+?)\))`|`\1jtreaxis(jt,`|
 |`jsrc/adverbs/ar.c`|red0|jtred0|`(^\|[ \t]+\|[^\d\w_])red0\((?=([^,]+?),([^)]+?)\))`|`\1jtred0(jt,`|
 |`jsrc/adverbs/ao.c`|redcat|jtredcat|`(^\|[ \t]+\|[^\d\w_])redcat\((?=([^,]+?),([^)]+?)\))`|`\1jtredcat(jt,`|
+|`jsrc/s.c`|redef|jtredef|`(^\|[ \t]+\|[^\d\w_])redef\((?=([^,]+?),([^)]+?)\))`|`\1jtredef(jt,`|
+|`jsrc/sl.c`|redef|jtredef|`(^\|[ \t]+\|[^\d\w_])redef\((?=([^,]+?),([^)]+?)\))`|`\1jtredef(jt,`|
+|`jsrc/sn.c`|redef|jtredef|`(^\|[ \t]+\|[^\d\w_])redef\((?=([^,]+?),([^)]+?)\))`|`\1jtredef(jt,`|

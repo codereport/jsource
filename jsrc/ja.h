@@ -757,7 +757,7 @@
 
 
 #define redcatsp(x,y,z)             jtredcatsp(jt,(x),(y),(z))
-#define redef(x,y)                  jtredef(jt,(x),(y))
+
 #define redefg(x)                   jtredefg(jt,(x))
 #define redg(x,y)                   jtredg(jtinplace,(x),(y))
 #define redsp1(x0,x1,x2,x3,x4,x5,x6,x7)             jtredsp1(jt,(x0),(x1),(x2),(x3),(x4),(x5),(x6),(x7))

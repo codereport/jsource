@@ -357,7 +357,7 @@ static SYMWALK(jtlocmap1,I,INT,18,3,1,
  return z;
 }    /* 18!:30 locale map */
 
-static SYMWALK(jtredefg,B,B01,100,1,1,RZ(redef(mark,d)))
+static SYMWALK(jtredefg,B,B01,100,1,1,RZ(jtredef(jt,mark,d)))
      /* check for redefinition (erasure) of entire symbol table */
 
  A jtlocexmark(J jt, A w){A g,*wv,y,z;B *zv;C*u;I i,m,n;L*v;

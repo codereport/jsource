@@ -223,7 +223,7 @@ static A jtnch1(J jt,B b,A w,I*pm,A ch){A*v,x,y;C*s,*yv;LX *e;I i,k,m,p,wn;L*d;
   // If the value is at large in the stacks and not deferred-freed, increment the use count and deferred-free it
   // If the name is assigned in a local symbol table, we ASSUME it is at large in the stacks and incr/deferred-free it.  We sidestep the nvr stack for local nouns
   if(y&&(v=syrd(y,jt->locsyms))){
-   if(jt->uflags.us.cx.cx_c.db)RZ(redef(mark,v));
+   if(jt->uflags.us.cx.cx_c.db)RZ(jtredef(jt,mark,v));
    A locfound=syrdforlocale(y);  // get the locale in which the name is defined
    if((locfound==jt->locsyms)|(AFLAG(v->val)&AFNVRUNFREED)){  // see if local or NVR
     if(!(AFLAG(v->val)&AFNVR)){

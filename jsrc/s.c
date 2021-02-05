@@ -489,7 +489,7 @@ L* jtsymbis(J jt,A a,A w,A g){A x;I m,n,wn,wr,wt;L*e;
    // kludge  these flags are modified in the input area (w), which means they will be improperly set in the result of the
    // assignment (ex: (nm =: 3 : '...') y).  There seems to be no ill effect, because VNAMED isn't used much.
  }
- if(jt->uflags.us.cx.cx_c.db)RZ(redef(w,e));  // if debug, check for changes to stack
+ if(jt->uflags.us.cx.cx_c.db)RZ(jtredef(jt,w,e));  // if debug, check for changes to stack
  x=e->val;   // if x is 0, this name has not been assigned yet; if nonzero, x points to the incumbent value
  I xaf;  // holder for nvr/free flags
  I xt;  // If not assigned, use empty type
