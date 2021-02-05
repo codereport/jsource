@@ -169,7 +169,7 @@ static A jtpdtspmm(J jt,A a,A w){A z,zi,zj,zx,zy,*old;D*axv,c,d,*dv,*wxv,*zyv;
  }
  if(ab&&1==AR(a)&&wb&&1==AR(w))return pdtspvv(a,w);
  if(ab&&2==AR(a)&&    1==AR(w))return jtpdtspmv(jt,a,w);
- if(    1==AR(a)&&wb&&2==AR(w))return pdtspvm(a,w);
+ if(    1==AR(a)&&wb&&2==AR(w))return jtpdtspvm(jt,a,w);
  if(ab&&2==AR(a)&&wb&&2==AR(w))return jtpdtspmm(jt,a,w);
  return df2(x,a,w,jtatop(jt,slash(ds(CPLUS)),qq(ds(CSTAR),v2(1L,AR(w)))));
 }

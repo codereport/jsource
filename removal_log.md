@@ -287,3 +287,4 @@
 |`jsrc/conjunctions/cip.c`|pdtsp|jtpdtsp|`(^\|[ \t]+\|[^\d\w_])pdtsp\((?=([^,]+?),([^)]+?)\))`|`\1jtpdtsp(jt,`|
 |`jsrc/conjunctions/cpdtsp.c`|pdtspmv|jtpdtspmv|`(^\|[ \t]+\|[^\d\w_])pdtspmv\((?=([^,]+?),([^)]+?)\))`|`\1jtpdtspmv(jt,`|
 |`jsrc/conjunctions/cpdtsp.c`|pdtspmm|jtpdtspmm|`(^\|[ \t]+\|[^\d\w_])pdtspmm\((?=([^,]+?),([^)]+?)\))`|`\1jtpdtspmm(jt,`|
+|`jsrc/conjunctions/cpdtsp.c`|pdtspvm|jtpdtspvm|`(^\|[ \t]+\|[^\d\w_])pdtspvm\((?=([^,]+?),([^)]+?)\))`|`\1jtpdtspvm(jt,`|

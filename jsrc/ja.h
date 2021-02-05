@@ -651,7 +651,7 @@
 
 
 
-#define pdtspvm(x,y)                jtpdtspvm(jt,(x),(y))
+
 #define pdtspvv(x,y)                jtpdtspvv(jt,(x),(y))
 #define pee(a,b,c,d,e    )          jtpee(jt,(a),(b),(c),(d),(e))
 #define pfill(x,y)                  jtpfill(jt,(x),(y))
