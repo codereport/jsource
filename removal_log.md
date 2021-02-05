@@ -260,3 +260,4 @@
 |`jsrc/conjunctions/cx.c`|nfs|jtnfs|`(^\|[ \t]+\|[^\d\w_])nfs\((?=([^,]+?),([^)]+?)\))`|`\1jtnfs(jt,`|
 |`jsrc/words/w.c`|nfs|jtnfs|`(^\|[ \t]+\|[^\d\w_])nfs\((?=([^,]+?),([^)]+?)\))`|`\1jtnfs(jt,`|
 |`jsrc/words/wc.c`|nfs|jtnfs|`(^\|[ \t]+\|[^\d\w_])nfs\((?=([^,]+?),([^)]+?)\))`|`\1jtnfs(jt,`|
+|`jsrc/words/wn.c`|numcase|jtnumcase|`(^\|[ \t]+\|[^\d\w_])numcase\((?=([^,]+?),([^)]+?)\))`|`\1jtnumcase(jt,`|

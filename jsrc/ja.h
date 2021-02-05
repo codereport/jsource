@@ -613,7 +613,7 @@
 #define nubsievesp(x)               jtnubsievesp(jt,(x))
 #define numb(x0,x1,x2,x3)           jtnumb(jt,(x0),(x1),(x2),(x3))
 #define numbpx(x,y,z)               jtnumbpx(jt,(x),(y),(z))
-#define numcase(x0,x1)              jtnumcase(jt,(x0),(x1))
+
 #define numd(x,y,z)                 jtnumd(jt,(x),(y),(z))
 #define nume(x,y,z)                 jtnume(jt,(x),(y),(z))
 #define numi(x,y,z)                 jtnumi(jt,(x),(y),(z))

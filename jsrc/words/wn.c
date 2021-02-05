@@ -220,7 +220,7 @@ A jtconnum(J jt,I n,C*s){PROLOG(0101);A y,z;B (*f)(J,I,C*,void*),p=1;C c,*v;I d=
  DO(n, c=*v; c=c==CSIGN?'-':c; c=(c==CTAB)|(c==' ')?C0:c; *v++=c; B b=C0==c; bcvtmask=bcvtmask|(4*(c=='.')+2*((p|b)^1)); yv[d]=i; d+=p^b; p=b;);  // replace _ with -, whitespace with \0; and record start and end positions
    // if we encounter '.', make sure the result is at least FL; if we encounter two non-whitespace in a row, make sure result is at least INT
  yv[d++]=n; m=d>>1;  // append end for last field in case it is missing; m=#fields.  If end was not missing the extra store is harmless
- I tt=numcase(n,s);   // analyze contents of values; returns type flags for chars, as expected except LIT for b
+ I tt=jtnumcase(jt,n,s);   // analyze contents of values; returns type flags for chars, as expected except LIT for b
  bcvtmask|=(tt&CMPX+LIT)==CMPX?8:0; // flag to force complex if we have j but not b
  f=jtnumd; t=FL;  f=tt&INT?jtnumi:f; t=tt&INT?INT:t;  f=tt&CMPX+LIT?jtnumbpx:f; t=tt&CMPX+LIT?CMPX:t;  f=tt&XNUM?jtnumx:f; t=tt&XNUM?XNUM:t;  f=tt&RAT?jtnumq:f; t=tt&RAT?RAT:t;  // routine to use, and type of result
  k=bpnoun(t);   // size in bytes of 1 result value
@@ -423,7 +423,7 @@ B valueisint; // set if the value we are processing is really an int
  }}
  // c is length of each output list; the list has had _ replaced by - and space/TAB replaced by \0
  // Classify the input y according the types it contains
- I tt=numcase(m*n,CAV(w));
+ I tt=jtnumcase(jt,m*n,CAV(w));
 
  // Select the conversion routine.  We allow -0 in the result now
  if(at&CMPX)                z=exec2z(a,w,n,m,c);  // If x argument is complex, force that mode
