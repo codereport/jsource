@@ -263,7 +263,7 @@ static A jtlocale(J jt,B b,A w){A g=0,*wv,y;
  return g;
 }    /* last locale (symbol table) from boxed locale names; 0 if none or error.  if b=1, create locale */
 
- A jtlocpath1(J jt, A w){AD * RESTRICT g; AD * RESTRICT z; F1RANK(0,jtlocpath1,UNUSED_VALUE); ASSERT(vlocnl(1,w),EVDOMAIN); RZ(g=locale(1,w));
+ A jtlocpath1(J jt, A w){AD * RESTRICT g; AD * RESTRICT z; F1RANK(0,jtlocpath1,UNUSED_VALUE); ASSERT(vlocnl(1,w),EVDOMAIN); RZ(g=jtlocale(jt,1,w));
  g=LOCPATH(g); RZ(z=ca(g)); DO(AN(g), A t; RZ(t=ca(AAV(g)[i])); AS(t)[0]=AN(t); ACIPNO(t); AAV(z)[i]=t;) return z;
 }
  // for paths, the shape holds the bucketx.  We must create a new copy that has the shape restored, and must incorporate it
@@ -271,8 +271,8 @@ static A jtlocale(J jt,B b,A w){A g=0,*wv,y;
 
  A jtlocpath2(J jt,A a,A w){A g; AD * RESTRICT x;
  F2RANK(1,0,jtlocpath2,UNUSED_VALUE);
- if(AN(a))RZ(  locale(1,a)); RZ(x=jtevery(jt,ravel(a),ds(CCOMMA)));  // Don't audit empty a
- RZ(g=locale(1,w));
+ if(AN(a))RZ(  jtlocale(jt,1,a)); RZ(x=jtevery(jt,ravel(a),ds(CCOMMA)));  // Don't audit empty a
+ RZ(g=jtlocale(jt,1,w));
  // paths are special: the shape of each string holds the bucketx for the string.  Install that.
  AD * RESTRICT z; RZ(z=ca(x)); DO(AN(x), A t; RZ(t=ca(AT(AAV(x)[i])&((INT|B01))?thorn1(AAV(x)[i]):AAV(x)[i]));  AS(t)[0]=BUCKETXLOC(AN(t),CAV(t)); AAV(z)[i]=t;)  // ? why so many copies?  test before thorn1 not reqd
  fa(LOCPATH(g)); ras(z); LOCPATH(g)=z;
@@ -319,7 +319,7 @@ static A jtloccrenum(J jt, A w){C s[20];I k,p;
 
  A jtlocswitch(J jt, A w){A g;
  ASSERT(!AR(w),EVRANK); 
- RZ(g=locale(1,w));
+ RZ(g=jtlocale(jt,1,w));
  // put a marker for the operation on the call stack
  // If there is no name executing, there would be nothing to process this push; so don't push for unnamed execs (i. e. from console)
  if(jt->curname)pushcallstack1(CALLSTACKPOPFROM,jt->global);
@@ -345,7 +345,7 @@ static SYMWALK(jtlocmap1,I,INT,18,3,1,
 
  A jtlocmap(J jt, A w){A g,q,x,y,*yv,z,*zv;I c=-1,d,j=0,m,*qv,*xv;
  ASSERT(!AR(w),EVRANK);
- RE(g=equ(w,zeroionei(0))?jt->stloc:equ(w,zeroionei(1))?jt->locsyms:locale(0,w));
+ RE(g=equ(w,zeroionei(0))?jt->stloc:equ(w,zeroionei(1))?jt->locsyms:jtlocale(jt,0,w));
  ASSERT(g!=0,EVLOCALE);
  RZ(q=locmap1(g)); qv=AV(q);
  m=AS(q)[0];

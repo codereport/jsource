@@ -226,3 +226,4 @@
 |`jsrc/verbs/vx.c`|less|jtless|`(^\|[ \t]+\|[^\d\w_])less\((?=([^,]+?),([^)]+?)\))`|`\1jtless(jt,`|
 |`jsrc/conjunctions/cl.c`|lev1|jtlev1|`(^\|[ \t]+\|[^\d\w_])lev1\((?=([^,]+?),([^)]+?)\))`|`\1jtlev1(jt,`|
 |`jsrc/conjunctions/cl.c`|levs1|jtlevs1|`(^\|[ \t]+\|[^\d\w_])levs1\((?=([^,]+?),([^)]+?)\))`|`\1jtlevs1(jt,`|
+|`jsrc/sl.c`|locale|jtlocale|`(^\|[ \t]+\|[^\d\w_])locale\((?=([^,]+?),([^)]+?)\))`|`\1jtlocale(jt,`|

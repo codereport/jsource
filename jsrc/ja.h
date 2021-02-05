@@ -509,7 +509,7 @@
 #define lnoun0(x)                   jtlnoun0(jtinplace,(x),ltext)
 #define lnum(x)                     jtlnum(jtinplace,(x),ltext)
 #define lnum1(x)                    jtlnum1(jtinplace,(x),ltext)
-#define locale(x,y)                 jtlocale(jt,(x),(y))
+
 #define loccrenum(x)                jtloccrenum(jt,(x))
 #define locdestroy(x)               jtlocdestroy(jt,(x))
 #define locindirect(x,y,z)          jtlocindirect(jt,(x),(y),(z))
