@@ -11,3 +11,4 @@ intpow
 mult
 over
 pospow
+qbin
