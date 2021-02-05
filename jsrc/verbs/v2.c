@@ -139,7 +139,7 @@ static I jtsuq(J jt,I n,I*wv){I c=24; DO(n, c=MAX(c,wv[i]););  return c==0x7ffff
  xt=1&&AT(w)&XNUM+RAT;
  if(!(INT&AT(w)))RZ(w=vi(ceil1(w))); wv=AV(w); JBREAK0;
  j=3; k=p=c=0; e=*ptt; n=AN(w); 
- RE(m=suq(n,wv)); ASSERT(m<=0x7fffffff,EVLIMIT); q=1+(I)sqrt((D)m); 
+ RE(m=jtsuq(jt,n,wv)); ASSERT(m<=0x7fffffff,EVLIMIT); q=1+(I)sqrt((D)m); 
  GATV0(t,B01,q,1);         u =BAV(t); sieve(0L,q,u,u);
  GATV0(y,B01,MIN(m,MM),1); b =BAV(y); 
  GATV(z,INT,n,AR(w),AS(w)); zv= AV(z);

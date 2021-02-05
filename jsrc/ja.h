@@ -923,7 +923,7 @@
 
 #define sumatgbool(x,y,z)           jtsumatgbool(jt,(x),(y),(z))
 
-#define suq(x,y)                    jtsuq(jt,(x),(y))
+
 #define susp()                      jtsusp(jt)
 #define swap(x)                     jtswap(jt,(x))
 #define swapc(x)                    jtswapc(jt,(x))
