@@ -190,8 +190,6 @@ static A jthdrinfo(J jt,    A w,A self){A z;
   case XC(9,52):  return CDERIV(CIBEAM, jtasgzombq,   0,            VASGSAFE,RMAX,RMAX,RMAX);
   case XC(9,53):  return CDERIV(CIBEAM, jtasgzombs,   0,            VFLAGNONE,RMAX,RMAX,RMAX);
   case XC(9,57):  return CDERIV(CIBEAM, jtaudittdisab, 0,            VFLAGNONE,RMAX,RMAX,RMAX);
-  case XC(9,60):  return CDERIV(CIBEAM, jtleakblockread, 0,            VFLAGNONE,RMAX,RMAX,RMAX);
-  case XC(9,61):  return CDERIV(CIBEAM, jtleakblockreset, 0,            VFLAGNONE,RMAX,RMAX,RMAX);
   case XC(9,62):  return CDERIV(CIBEAM, jtdirectdefq,    0,            VASGSAFE,RMAX,RMAX,RMAX); // scaf
   case XC(9,63):  return CDERIV(CIBEAM, jtdirectdefs,    0,            VASGSAFE,RMAX,RMAX,RMAX); // scaf
 
