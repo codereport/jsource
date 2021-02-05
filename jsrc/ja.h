@@ -840,7 +840,7 @@
 #define scib(x)                     jtscib(jt,(x))
 #define scind(x)                    jtscind(jt,(x))
 #define scuba(x,y,z)                jtscuba(jt,(x),(y),(z))
-#define scubb(x,y)                  jtscubb(jt,(x),(y))
+
 #define scubc(x,y,z)                jtscubc(jt,(x),(y),(z))
 #define scube(x,y,z)                jtscube(jt,(x),(y),(z))
 #define scx(x)                      jtscx(jt,(x))

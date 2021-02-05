@@ -426,3 +426,4 @@
 |`jsrc/verbs/vsb.c`|sbunstr|jtsbunstr|`(^\|[ \t]+\|[^\d\w_])sbunstr\((?=([^,]+?),([^)]+?)\))`|`\1jtsbunstr(jt,`|
 |`jsrc/representations/rl.c`|sc4|jtsc4|`(^\|[ \t]+\|[^\d\w_])sc4\((?=([^,]+?),([^)]+?)\))`|`\1jtsc4(jt,`|
 |`jsrc/conjunctions/cl.c`|scfn|jtscfn|`(^\|[ \t]+\|[^\d\w_])scfn\((?=([^,]+?),([^)]+?)\))`|`\1jtscfn(jt,`|
+|`jsrc/adverbs/am1.c`|scubb|jtscubb|`(^\|[ \t]+\|[^\d\w_])scubb\((?=([^,]+?),([^)]+?)\))`|`\1jtscubb(jt,`|
