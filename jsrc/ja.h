@@ -555,7 +555,7 @@
 #define meminit()                   jtmeminit(jt)
 #define memoget(x,y,z)              jtmemoget(jt,(x),(y),(z))
 #define memoput(x0,x1,x2,x3)        jtmemoput(jt,(x0),(x1),(x2),(x3))
-#define merge1(x,y)                 jtmerge1(jt,(x),(y))
+
 #define merge2(x0,x1,x2,x3,x4)         jtmerge2(jt,(x0),(x1),(x2),(x3),(x4))
 #define mf(x)                       jtmf(jt,(x))
 #define minimum(x,y)                jtatomic2(jt,(x),(y),ds(CMIN))

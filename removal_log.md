@@ -235,3 +235,4 @@
 |`jsrc/adverbs/ar.c`|maxtypene|jtmaxtype|`(^\|[ \t]+\|[^\d\w_])maxtypene\((?=([^,]+?),([^)]+?)\))`|`\1jtmaxtype(jt,`|
 |`jsrc/verbs/vo.c`|maxtypene|jtmaxtype|`(^\|[ \t]+\|[^\d\w_])maxtypene\((?=([^,]+?),([^)]+?)\))`|`\1jtmaxtype(jt,`|
 |`jsrc/verbs/vd.c`|mdivsp|jtmdivsp|`(^\|[ \t]+\|[^\d\w_])mdivsp\((?=([^,]+?),([^)]+?)\))`|`\1jtmdivsp(jt,`|
+|`jsrc/adverbs/am.c`|merge1|jtmerge1|`(^\|[ \t]+\|[^\d\w_])merge1\((?=([^,]+?),([^)]+?)\))`|`\1jtmerge1(jt,`|

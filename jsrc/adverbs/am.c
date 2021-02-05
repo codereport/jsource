@@ -324,8 +324,8 @@ static A amccv2(J jt,A a,A w,A self){F2PREFIP;DECLF;
 }
 
 
-static A mergn1(J jt,    A w,A self){       return merge1(w,VAV(self)->fgh[0]);}
-static A mergv1(J jt,    A w,A self){DECLF; return merge1(w,CALL1(f1,w,fs));}
+static A mergn1(J jt,    A w,A self){       return jtmerge1(jt,w,VAV(self)->fgh[0]);}
+static A mergv1(J jt,    A w,A self){DECLF; return jtmerge1(jt,w,CALL1(f1,w,fs));}
 
 // called from m}, m is usually NOT a gerund
 static B ger(A w){A*wv,x;
