@@ -664,7 +664,7 @@
 #define plus(x,y)                   jtatomic2(jt,(x),(y),ds(CPLUS))
 #define plusA(x,y)                  jtatomic2((J)((I)jt|JTINPLACEA),(x),(y),ds(CPLUS))
 #define plusW(x,y)                  jtatomic2((J)((I)jt|JTINPLACEW),(x),(y),ds(CPLUS))
-#define pmarea2(x,y)                jtpmarea2(jt,(x),(y))
+
 #define pmfree(x)                   jtpmfree(jt,(x))
 #define pmrecord(x0,x1,x2,x3)       jtpmrecord(jt,(x0),(x1),(x2),(x3))
 #define pollard_p_1(x)              jtpollard_p_1(jt,(x))

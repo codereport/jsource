@@ -153,7 +153,7 @@ static A jtpmfree(J jt, A w){A x,y;C*c;I m;PM*v;PM0*u;
  return num(1);
 }    /* free old data area */
 
- A jtpmarea1(J jt, A w){return pmarea2(vec(B01,2L,&zeroZ),w);}  // 6!:10
+ A jtpmarea1(J jt, A w){return jtpmarea2(jt,vec(B01,2L,&zeroZ),w);}  // 6!:10
 
  A jtpmarea2(J jt,A a,A w){A x;B a0,a1,*av;C*v;I an,n=0,s=sizeof(PM),s0=sizeof(PM0),wn;PM0*u;
  RZ(a=jtcvt(jt,B01,a)); 

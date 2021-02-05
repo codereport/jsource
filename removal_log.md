@@ -297,3 +297,4 @@
 |`jsrc/verbs/vfrom.c`|pind|jtpind|`(^\|[ \t]+\|[^\d\w_])pind\((?=([^,]+?),([^)]+?)\))`|`\1jtpind(jt,`|
 |`jsrc/verbs/vfromsp.c`|pind|jtpind|`(^\|[ \t]+\|[^\d\w_])pind\((?=([^,]+?),([^)]+?)\))`|`\1jtpind(jt,`|
 |`jsrc/verbs/vp.c`|pind|jtpind|`(^\|[ \t]+\|[^\d\w_])pind\((?=([^,]+?),([^)]+?)\))`|`\1jtpind(jt,`|
+|`jsrc/xenos/xt.c`|pmarea2|jtpmarea2|`(^\|[ \t]+\|[^\d\w_])pmarea2\((?=([^,]+?),([^)]+?)\))`|`\1jtpmarea2(jt,`|
