@@ -5,7 +5,6 @@
 
 #include "j.h"
 
- A jtshape     (J jt, A w) { return vec(INT,AR(w),AS(w));}  // $ y
  A jtisempty   (J jt, A w) { if((AT(w)&SPARSE)!=0)return eps(zeroionei(0),shape(w)); return num(AN(w)==0);}  // 0 e. $
  A jtisnotempty(J jt, A w) { if((AT(w)&SPARSE)!=0)return __not(eps(zeroionei(0),shape(w))); return num(AN(w)!=0);}  // *@#@,
  A jtisitems   (J jt, A w) { return num(!AR(w)|!!AS(w)[0]);}   // *@#   *@:#

@@ -10,7 +10,7 @@ using array = A;  // potentially rename to j_array?
 // TODO: will targ be a int64_t in all cases
 // TODO: probably certain uses of the SETIC macro use targ after the function
 //       will need to create second function in that case
-[[nodiscard]] auto
+[[nodiscard]] inline auto
 item_count(array w) {
     // if you have a non-zero rank (aka not a scalar), take first element of shape
     // otherwise, (in the case of scalar) return 1
@@ -18,7 +18,7 @@ item_count(array w) {
 }
 
 // TODO: rename (propogate_sign_bit)
-[[nodiscard]] constexpr auto
+[[nodiscard]] constexpr inline auto
 replicate_sign(int64_t x) noexcept -> int64_t {
     return x < 0 ? -1 : 0;
 }
@@ -35,18 +35,18 @@ zero_or_one(int64_t n) noexcept -> bool {
 }
 
 // TODO: refactor me
-[[nodiscard]] auto
+[[nodiscard]] inline auto
 refactorme_num(int64_t n) {
     return reinterpret_cast<array>(Bnum + 2 + n - NUMMIN);
 }
 
 // TODO: refactor me
-[[nodiscard]] auto
+[[nodiscard]] inline auto
 refactorme_zeroionei(int64_t n) {
     return reinterpret_cast<array>(Bnum + (n));
 }
 
-[[nodiscard]] auto
+[[nodiscard]] inline auto
 pointer_to_values(array x) -> int64_t* {
     return reinterpret_cast<int64_t*>(reinterpret_cast<C*>(x) + x->kchain.k);
 }
@@ -96,8 +96,16 @@ make_array(J jt, int64_t atoms, rank_t rank) {
     return name;
 }
 
-// this is for "creating an integer atom with value k"
+template <typename Type>
 [[nodiscard]] auto
+make_array(J jt, int64_t n, rank_t r, int64_t* s) -> array {
+    auto const t  = to_c_type<Type>();
+    array const v = ga(t, (I)(n), (I)(r), (I*)(s));
+    return v ? v : nullptr;
+}
+
+// this is for "creating an integer atom with value k"
+[[nodiscard]] inline auto
 make_scalar_integer(J jt, int64_t k) -> array {
     if (xor_replicate_sign(k) <= NUMMAX) {
         return !zero_or_one(k) ? refactorme_num(k) : zeroionei(k);
