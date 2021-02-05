@@ -343,7 +343,7 @@ J jtinplace=jt;
 
 static A jtreduce(J jt,    A w,A self){A z;I d,f,m,n,r,t,wr,*ws,zt;
  F1PREFIP;
- if((SPARSE&AT(w))!=0)return reducesp(w,self);  // If sparse, go handle it
+ if((SPARSE&AT(w))!=0)return jtreducesp(jt,w,self);  // If sparse, go handle it
  wr=AR(w); ws=AS(w);
  // Create  r: the effective rank; f: length of frame; n: # items in a CELL of w
  r=(RANKT)jt->ranks; r=wr<r?wr:r; f=wr-r; SETICFR(w,f,r,n);  // no RESETRANK

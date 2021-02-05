@@ -339,3 +339,4 @@
 |`jsrc/sl.c`|redef|jtredef|`(^\|[ \t]+\|[^\d\w_])redef\((?=([^,]+?),([^)]+?)\))`|`\1jtredef(jt,`|
 |`jsrc/sn.c`|redef|jtredef|`(^\|[ \t]+\|[^\d\w_])redef\((?=([^,]+?),([^)]+?)\))`|`\1jtredef(jt,`|
 |`jsrc/adverbs/ar.c`|reduce|jtreduce|`(^\|[ \t]+\|[^\d\w_])reduce\((?=([^,]+?),([^)]+?)\))`|`\1jtreduce(jt,`|
+|`jsrc/adverbs/ar.c`|reducesp|jtreducesp|`(^\|[ \t]+\|[^\d\w_])reducesp\((?=([^,]+?),([^)]+?)\))`|`\1jtreducesp(jt,`|
