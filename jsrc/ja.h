@@ -962,7 +962,7 @@
 #define th2c(x0,x1,x2,x3,x4,x5,x6,x7,x8,x9)         jtth2c(jt,(x0),(x1),(x2),(x3),(x4),(x5),(x6),(x7),(x8),(x9))
 #define th2ctrl(x0,x1,x2,x3,x4,x5)  jtth2ctrl(jt,(x0),(x1),(x2),(x3),(x4),(x5))
 #define thb(x)                      jtthb(jt,(x))
-#define thbox(x,y)                  jtthbox(jt,(x),(y))
+
 #define thdx1(x)                    jtthdx1(jt,(x))
 #define thn(x)                      jtthn(jt,(x))
 #define thorn1(x)                   jtthorn1(jt,(x))

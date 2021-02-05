@@ -539,7 +539,7 @@ static A jtthorn1main(J jt,A w,A prxthornuni){PROLOG(0001);A z;
    // If C2T output not allowed, just convert to UTF-8 bytes
    z=rank2ex(w,prxthornuni,UNUSED_VALUE,MIN(AR(w),1L),0,MIN(AR(w),1L),0,BAV(prxthornuni)[0]&1?RoutineC:jttoutf8a);
    break;
-  case BOXX:  z=thbox(w,prxthornuni);                  break;
+  case BOXX:  z=jtthbox(jt,w,prxthornuni);                  break;
   case SBTX:  z=thsb(w,prxthornuni);                   break;
   case NAMEX: z=jtsfn(jt,0,w);                  break;
   case ASGNX: z=spellout(CAV(w)[0]);         break;
