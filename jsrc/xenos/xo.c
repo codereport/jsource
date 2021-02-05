@@ -62,7 +62,7 @@ F jtjope(J jt,A w,C*mode){A t;F f;I n;static I nf=25; A z;
  if(h){RZ(z=sc(h)); RZ(fname(z)); return z;}
  else{A ww;
   if(AM(jt->fopf)==AN(jt->fopf)){I ct=AM(jt->fopf); RZ(jt->fopa=jtext(jt,1,jt->fopa)); RZ(jt->fopf=jtext(jt,1,jt->fopf)); AM(jt->fopf)=ct;}
-  RZ(*(AM(jt->fopf)+IAV(jt->fopf))=h=(I)jope(w,FUPDATE_O));
+  RZ(*(AM(jt->fopf)+IAV(jt->fopf))=h=(I)jtjope(jt,w,FUPDATE_O));
   RZ(ww=fullname(vslit(AAV(w)[0]))); RZ(ras(ww));
   RZ(*(AM(jt->fopf)+AAV(jt->fopa))=ww);
  

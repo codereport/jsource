@@ -472,7 +472,7 @@
 
 #define jinit3()                    jtjinit3(jt)
 #define joff(x)                     jtjoff(jt,(x))
-#define jope(x,y)                   jtjope(jt,(x),(y))
+
 #define jpr(x)                      jtjpr(jt,(x))
 #define jpr1(x)                     jtjpr1(jt,(x))
 #define jprx(x0,x1,x2,x3,x4)        jtjprx(jt,(x0),(x1),(x2),(x3),(x4))
