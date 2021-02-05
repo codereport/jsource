@@ -180,7 +180,7 @@ static void(*moveawtbl[])() = {moveawVV,moveawVS,moveawSV};
  F2PREFIP;
  if(!(a && w)) return 0;
  UI jtr=jt->ranks;//  fetch early
- if((SPARSE&(AT(a)|AT(w)))!=0){return ovs(a,w);}  // if either arg is sparse, switch to sparse code
+ if((SPARSE&(AT(a)|AT(w)))!=0){return jtovs(jt,a,w);}  // if either arg is sparse, switch to sparse code
  if(AT(a)!=(t=AT(w))){t=maxtypedne(AT(a)|(AN(a)==0),t|(AN(w)==0)); t&=-t; if(!TYPESEQ(t,AT(a))){RZ(a=jtcvt(jt,t,a));} else {RZ(w=jtcvt(jt,t,w));}}  // convert args to compatible precisions, changing a and w if needed.  Treat empty arg as boolean
  ar=AR(a); wr=AR(w);
  acr=jtr>>RANKTX; acr=ar<acr?ar:acr; af=ar-acr;  // acr=rank of cell, af=len of frame, as->shape
