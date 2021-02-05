@@ -173,7 +173,7 @@ static B mtind(A ind){A*iv,x;
 }    /* 1 iff standardized index ind is an empty selection */
 
 A jtam1e(J jt,A a,A z,A ind,B ip){A e,i1,i2,p,x,y;B*pv;C*u,*v;I*iv,k,m,n,r,*s,vk,xk;P*zp;
- RZ(a&&(ind=istd1(z,ind)));
+ RZ(a&&(ind=jtistd1(jt,z,ind)));
  r=AR(z); zp=PAV(z); x=SPA(zp,x); y=SPA(zp,i); e=SPA(zp,e);
  RZ(p=ssel(z,ind)); pv=BAV(p);
  RZ(ipart(z,ind,&i1,&i2));
@@ -188,7 +188,7 @@ A jtam1e(J jt,A a,A z,A ind,B ip){A e,i1,i2,p,x,y;B*pv;C*u,*v;I*iv,k,m,n,r,*s,vk
 }    /* a (<ind)}z; sparse z; ind is index list; sparse element a replacement */
 
 A jtam1a(J jt,A a,A z,A ind,B ip){A a0=a,a1,e,i1,i2,t,x,y;C*u,*v,*xv;I ar,c,*iv,*jv,k,m,n,r,*s,uk,vk,xk;P*zp;
- RZ(a&&(ind=istd1(z,ind)));
+ RZ(a&&(ind=jtistd1(jt,z,ind)));
  RZ(a=astd1(a,z,ind));
  if(mtind(ind))return z;
  RZ(ipart(z,ind,&i1,&i2));
@@ -206,5 +206,5 @@ A jtam1a(J jt,A a,A z,A ind,B ip){A a0=a,a1,e,i1,i2,t,x,y;C*u,*v,*xv;I ar,c,*iv,
  return z;
 }    /* a (<ind)}z; sparse z; ind is index list; arbitrary dense array a replacement */
 
-A jtam1sp(J jt,A a,A z,A ind,B ip){return amnsp(a,z,ope(catalog(istd1(z,ind))),ip);}
+A jtam1sp(J jt,A a,A z,A ind,B ip){return amnsp(a,z,ope(catalog(jtistd1(jt,z,ind))),ip);}
      /* a (<ind)}z; sparse z; ind is index list; arbitrary sparse array a replacement */

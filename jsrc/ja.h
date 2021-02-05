@@ -459,7 +459,7 @@
 #define irs1(x0,x1,x2,x3)           jtirs1(jt,(x0),(x1),(x2),(x3))
 #define irs2(x0,x1,x2,x3,x4,x5)     jtirs2(jt,(x0),(x1),(x2),(x3),(x4),(x5))
 #define isnanq(x)                   jtisnanq(jt,(x))
-#define istd1(x,y)                  jtistd1(jt,(x),(y))
+
 #define ixf(x)                      jtixf(jt,(x))
 #define ixin(x0,x1,x2,x3)           jtixin(jt,(x0),(x1),(x2),(x3))
 #define jclose(x)                   jtjclose(jt,(x))
