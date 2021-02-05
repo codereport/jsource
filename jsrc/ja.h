@@ -499,7 +499,7 @@
 
 
 #define lev2(x,y,z)                 jtlev2(jt,(x),(y),(z))
-#define levs1(x,y)                  jtlevs1(jt,(x),(y))
+
 #define levs2(x,y,z)                jtlevs2(jt,(x),(y),(z))
 #define line(x0,x1,x2,x3)           jtline(jt,(x0),(x1),(x2),(x3))
 #define linf(x0,x1,x2,x3)           jtlinf(jt,(x0),(x1),(x2),(x3))

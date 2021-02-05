@@ -94,7 +94,7 @@ static A jtscapco1(J jt,    A w,A self){PROLOG(555);A x,z=0;I m;V*v=FAV(self);
  // in the middle of processing some other verb, and that verb might EPILOG and free the new buffer allocated by the extension.  Thus, we have to ra() the later buffers, and the easiest way to handle
  // things is to ra() the first one too.  When we fa() at the end we may be freeing a different buffer, but that's OK since all have been raised.
  ras(AKASA(recurself));
- x=levs1(w,recurself);
+ x=jtlevs1(jt,w,recurself);
  if(x){AT(AKASA(recurself))=BOX; AN(AKASA(recurself))=AS(AKASA(recurself))[0]; z=ope(AKASA(recurself)); AT(AKASA(recurself))=INT;} // if no error, turn the extendable list into a list of boxes (fixing AN), and open it
  fa(AKASA(recurself));  // match the ra(), but not necessarily on the same block
  // always returns non-pristine
