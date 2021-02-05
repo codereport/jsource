@@ -649,7 +649,7 @@
 
 
 
-#define pdtspmv(x,y)                jtpdtspmv(jt,(x),(y))
+
 #define pdtspmm(x,y)                jtpdtspmm(jt,(x),(y))
 #define pdtspvm(x,y)                jtpdtspvm(jt,(x),(y))
 #define pdtspvv(x,y)                jtpdtspvv(jt,(x),(y))
