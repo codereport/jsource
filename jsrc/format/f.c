@@ -491,7 +491,7 @@ static A jtths(J jt, A w){A e,i,x,z;C c,*u,*v;I d,m,n,*s;P*p;
  RZ(z=take(e,x)); 
  u=CAV(i)-n;        
  d=aii(z); v=CAV(z)-d; DQ(m, MC(v+=d,u+=n,n););
- if(2<AR(z))RZ(z=matth1(z,zeroionei(0)));  // no prxthornuni
+ if(2<AR(z))RZ(z=jtmatth1(jt,z,zeroionei(0)));  // no prxthornuni
  s=AS(z); d=*(1+s); v=1+CAV(z); c=jt->bx[9]; DQ(*s, *(v+n)=c; v+=d;);
  return z;
 }

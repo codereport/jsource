@@ -229,3 +229,4 @@
 |`jsrc/sl.c`|locale|jtlocale|`(^\|[ \t]+\|[^\d\w_])locale\((?=([^,]+?),([^)]+?)\))`|`\1jtlocale(jt,`|
 |`jsrc/verbs/vfrom.c`|mapx|jtmapx|`(^\|[ \t]+\|[^\d\w_])mapx\((?=([^,]+?),([^)]+?)\))`|`\1jtmapx(jt,`|
 |`jsrc/verbs/v1.c`|matchs|jtmatchs|`(^\|[ \t]+\|[^\d\w_])matchs\((?=([^,]+?),([^)]+?)\))`|`\1jtmatchs(jt,`|
+|`jsrc/format/f.c`|matth1|jtmatth1|`(^\|[ \t]+\|[^\d\w_])matth1\((?=([^,]+?),([^)]+?)\))`|`\1jtmatth1(jt,`|

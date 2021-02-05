@@ -539,7 +539,7 @@
 
 
 #define matchsub(x0,x1,x2,x3,x4,x5,x6,x7)  jtmatchsub(jt,(x0),(x1),(x2),(x3),(x4),(x5),(x6),(x7))
-#define matth1(x,y)                 jtmatth1(jt,(x),(y))
+
 #define maxdenom(x,y)               jtmaxdenom(jt,(x),(y))
 #define maximum(x,y)                jtatomic2(jt,(x),(y),ds(CMAX))
 // typepriority is 0, 1, 4, 9, 10, 5, 6, 7, 8, 2, 3
