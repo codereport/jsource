@@ -211,7 +211,7 @@ static A jtrfcz(J jt,I m,A w){A x,y,z;B bb=0,real;D c,d;I i;Z r,*xv,*yv,*zv;
    // If we failed on an iteration, perturb the highest coefficient a little bit and see if we can solve that instead.
    if(real){RZ(x1=jtcvt(jt,FL,vec(CMPX,1+m,xv))); u=  DAV(x1)+m-1;      if(*u)*u*=1+1e-12; else *u=1e-12;}
    else    {RZ(x1=       vec(CMPX,1+m,xv) ); u=&(ZAV(x1)+m-1)->re; if(*u)*u*=1+1e-12; else *u=1e-12;}
-   RZ(z=rfcz(m,x1)); zv=ZAV(z);
+   RZ(z=jtrfcz(jt,m,x1)); zv=ZAV(z);
    DO(m, zv[i]=newt(m,xv,zv[i],10L););
  }}
  if(real){B b=1; DO(m, if(zv[i].im){b=0; break;}); if(b)z=jtcvt(jt,FL,z);}
@@ -230,8 +230,8 @@ static A jtrfc(J jt, A w){A r,w1;I m=0,n,t;
  switch(m){
   case 0:  return link(num(0),mtv);  // degree 0 - return 0;''
   case 1:  r=ravel(negate(jtaslash(jt,CDIV,take(num(2),w)))); break;  // linear - return solution, whatever its type
-  default: if(t&CMPX)r=rfcz(m,w);  // higher order - if complex, go straight to complex solutions
-           else{RZ(rfcq(m,w,&r,&w1)); if(m>AN(r))r=over(r,rfcz(m-AN(r),w1));} // otherwise, find rational solutions in r, and residual polynomial in w1.
+  default: if(t&CMPX)r=jtrfcz(jt,m,w);  // higher order - if complex, go straight to complex solutions
+           else{RZ(rfcq(m,w,&r,&w1)); if(m>AN(r))r=over(r,jtrfcz(jt,m-AN(r),w1));} // otherwise, find rational solutions in r, and residual polynomial in w1.
             // if there are residual (complex) solutions, go find them
  }
  // Return result, which is leading nonzero coeff;roots

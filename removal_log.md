@@ -412,3 +412,4 @@
 |`jsrc/xenos/xfmt.c`|reshape|jtreshape|`(^\|[ \t]+\|[^\d\w_])reshape\((?=([^,]+?),([^)]+?)\))`|`\1jtreshape(jt,`|
 |`jsrc/verbs/visp.c`|rezero|jtrezero|`(^\|[ \t]+\|[^\d\w_])rezero\((?=([^,]+?),([^)]+?)\))`|`\1jtrezero(jt,`|
 |`jsrc/verbs/vs.c`|rezero|jtrezero|`(^\|[ \t]+\|[^\d\w_])rezero\((?=([^,]+?),([^)]+?)\))`|`\1jtrezero(jt,`|
+|`jsrc/verbs/v0.c`|rfcz|jtrfcz|`(^\|[ \t]+\|[^\d\w_])rfcz\((?=([^,]+?),([^)]+?)\))`|`\1jtrfcz(jt,`|

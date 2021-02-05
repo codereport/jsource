@@ -787,7 +787,7 @@
 
 #define rfc(x)                      jtrfc(jt,(x))
 #define rfcq(x0,x1,x2,x3)           jtrfcq(jt,(x0),(x1),(x2),(x3))
-#define rfcz(x,y)                   jtrfcz(jt,(x),(y))
+
 #define rfd(x)                      jtrfd(jt,(x))
 #define rngga(x,y)                  jtrngga(jt,(x),(y))
 #define rnginit()                   jtrnginit(jt)
