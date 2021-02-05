@@ -57,11 +57,11 @@ static A jttclosure(J jt,A a,A w){A z;I an,*av,c,d,i,wn,wr,wt,*wv,*zv,*zz;
 
 static A jtindexseqlim1(J jt,    A w,A self){A fs;
  fs=FAV(self)->fgh[0];  // {&x
- return AN(w)&&AT(w)&B01+INT?tclosure(FAV(fs)->fgh[1],w):powseqlim(w,fs);
+ return AN(w)&&AT(w)&B01+INT?tclosure(FAV(fs)->fgh[1],w):jtpowseqlim(jt,w,fs);
 }    /* {&x^:(<_) w */
 
 static A jtindexseqlim2(J jt,A a,A w,A self){
- return 1==AR(a)&&AT(a)&INT&&AN(w)&&AT(w)&B01+INT?tclosure(a,w):powseqlim(w,jtamp(jt,ds(CFROM),a));
+ return 1==AR(a)&&AT(a)&INT&&AN(w)&&AT(w)&B01+INT?tclosure(a,w):jtpowseqlim(jt,w,jtamp(jt,ds(CFROM),a));
 }    /* a {~^:(<_) w */
 
 // u^:(<n) If n negative, take inverse of u; if v infinite, go to routine that checks for no change.  Otherwise convert to u^:(i.|n) and restart
@@ -71,7 +71,7 @@ static A jtpowseq(J jt,    A w,A self){A fs,gs,x;I n=IMAX;V*sv;
  ASSERT(BOX&AT(gs),EVDOMAIN);
  x=AAV(gs)[0]; if(!AR(x))RE(n=i0(vib(x)));
  if(0>n){RZ(fs=inv(fs)); n=-n;}
- if(n==IMAX||1==AR(x)&&!AN(x))return powseqlim(w,fs);
+ if(n==IMAX||1==AR(x)&&!AN(x))return jtpowseqlim(jt,w,fs);
  return df1(gs,w,powop(fs,IX(n),0));
 }    /* f^:(<n) w */
 

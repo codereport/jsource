@@ -299,3 +299,4 @@
 |`jsrc/verbs/vp.c`|pind|jtpind|`(^\|[ \t]+\|[^\d\w_])pind\((?=([^,]+?),([^)]+?)\))`|`\1jtpind(jt,`|
 |`jsrc/xenos/xt.c`|pmarea2|jtpmarea2|`(^\|[ \t]+\|[^\d\w_])pmarea2\((?=([^,]+?),([^)]+?)\))`|`\1jtpmarea2(jt,`|
 |`jsrc/verbs/v0.c`|poly2a|jtpoly2a|`(^\|[ \t]+\|[^\d\w_])poly2a\((?=([^,]+?),([^)]+?)\))`|`\1jtpoly2a(jt,`|
+|`jsrc/conjunctions/cp.c`|powseqlim|jtpowseqlim|`(^\|[ \t]+\|[^\d\w_])powseqlim\((?=([^,]+?),([^)]+?)\))`|`\1jtpowseqlim(jt,`|
