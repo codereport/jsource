@@ -39,7 +39,8 @@ def walk_matches():
 
             for full_str, old_name, v1, v2, new_name in matches:
                 if check_excluded_names():
-                    continue;
+                    old_name = ""
+                    continue
                 print("remove " + full_str)
                 data = data.replace(full_str, "")
                 with open(path, 'w') as fw:
@@ -47,7 +48,7 @@ def walk_matches():
                 yield re.compile(r'(^|[ \t]+|[^\d\w_])' + old_name + r'\((?=([^,]+?),([^)]+?)\))'), \
                       r'\1' + new_name + r'(jt,', old_name, new_name
                 return
-
+    old_name = ""
     pass
 
 
