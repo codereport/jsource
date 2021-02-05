@@ -633,7 +633,7 @@
 #define opes1(x0,x1,x2,x3,x4,x5)    jtopes1(jt,(x0),(x1),(x2),(x3),(x4),(x5))
 #define opes2(x0,x1,x2,x3,x4,x5,x6) jtopes2(jt,(x0),(x1),(x2),(x3),(x4),(x5),(x6))
 #define ord(x)                      jtord(jt,(x))
-#define ordstat(x,y)                jtordstat(jt,(x),(y))
+
 #define outfix(x,y,z)               jtoutfix(jt,(x),(y),(z))
 #define over(x,y)                   jtover(jt,(x),(y))
 #define ovgmove(x0,x1,x2,x3,x4,x5,x6)               jtovgmove(jt,(x0),(x1),(x2),(x3),(x4),(x5),(x6))

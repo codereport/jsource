@@ -770,7 +770,7 @@ static B (*grroutine[])(J,I,I,I,A,I*) = {  // index is [bitx]
  A jtordstati(J jt,A a,A w){A t;I n,wt;
  n=AN(w); wt=AT(w);
  if(((4-n)&((AR(a)|(1^AR(w)))-1)&(-(wt&FL+INT)))>=0)return jtfrom(jt,a,grade1(w));
- RZ(t=ordstat(a,w));   // Get the value of the ath order statistic, then look up its index
+ RZ(t=jtordstat(jt,a,w));   // Get the value of the ath order statistic, then look up its index
  I j=0;  // =0 needed to stifle warning
  if(wt&FL){D p=DAV(t)[0],*v=DAV(w); DO(n, if(p==*v++){j=i; break;});}
  else     {I p=AV(t)[0],*v= AV(w); DO(n, if(p==*v++){j=i; break;});}

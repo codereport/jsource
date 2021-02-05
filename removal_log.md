@@ -265,3 +265,4 @@
 |`jsrc/adverbs/ao.c`|obqfslash|jtobqfslash|`(^\|[ \t]+\|[^\d\w_])obqfslash\((?=([^,]+?),([^)]+?)\))`|`\1jtobqfslash(jt,`|
 |`jsrc/adverbs/ai.c`|obverse|jtobverse|`(^\|[ \t]+\|[^\d\w_])obverse\((?=([^,]+?),([^)]+?)\))`|`\1jtobverse(jt,`|
 |`jsrc/adverbs/as.c`|omask|jtomask|`(^\|[ \t]+\|[^\d\w_])omask\((?=([^,]+?),([^)]+?)\))`|`\1jtomask(jt,`|
+|`jsrc/verbs/vg.c`|ordstat|jtordstat|`(^\|[ \t]+\|[^\d\w_])ordstat\((?=([^,]+?),([^)]+?)\))`|`\1jtordstat(jt,`|
