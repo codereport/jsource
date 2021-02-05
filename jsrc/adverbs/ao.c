@@ -106,7 +106,7 @@ static A jtobqfslash(J jt,    A w,A self){A y,z;B b=0,p;C er,id,*wv;I c,d,k,m,m1
  f=v->fgh[0]; g=v->fgh[1];
  c=FAV(FAV(FAV(f)->fgh[0])->fgh[0])->id;   // id of f     f//. f/ f
  d=FAV(FAV(g)->fgh[0])->id;   // id of g     g/ g
- if((-m&(AR(a)-2)&-n&(AR(w)-2))>=0)return obqfslash(df2(z,a,w,g),f);  // if empty, or not atoms/lists, do general code.  Never happens.
+ if((-m&(AR(a)-2)&-n&(AR(w)-2))>=0)return jtobqfslash(jt,df2(z,a,w,g),f);  // if empty, or not atoms/lists, do general code.  Never happens.
  // from here on polymult on nonempty lists
  if(t&FL+CMPX)NAN0;
  switch(PMCASE(CTTZ(t),c,d)){
@@ -147,7 +147,7 @@ static A jtobqfslash(J jt,    A w,A self){A y,z;B b=0,p;C er,id,*wv;I c,d,k,m,m1
   }
  }
  if(t&FL+CMPX)NAN1; RE(0);
- if(!b)return obqfslash(df2(z,a,w,g),f);
+ if(!b)return jtobqfslash(jt,df2(z,a,w,g),f);
  return z;
 }    /* f//.@(g/) for atomic f, g */
 
