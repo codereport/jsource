@@ -534,7 +534,7 @@
 #define mag(x)                      jtatomic1(jt,(x),ds(CSTILE))
 #define makename(x)                 jtmakename(jt,(x))
 #define map(x)                      jtmap(jt,(x))
-#define mapx(x,y)                   jtmapx(jt,(x),(y))
+
 #define mat(x)                      jtmat(jt,(x))
 #define match(x,y)                  jtmatch(jt,(x),(y))
 #define matchs(x,y)                 jtmatchs(jt,(x),(y))

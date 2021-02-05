@@ -403,7 +403,7 @@ static A jtmapx(J jt,A a,A w){A z1,z2,z3;
  return every2(z3,w,(A)&mapxself);
 }
 
- A jtmap(J jt, A w){return mapx(ds(CACE),w);}
+ A jtmap(J jt, A w){return jtmapx(jt,ds(CACE),w);}
 
 // extract the single box a from w and open it.  Don't mark it no-inplace.  If w is not boxed, it had better be an atom, and we return it after auditing the index
 static A jtquicksel(J jt,A a,A w){I index;
