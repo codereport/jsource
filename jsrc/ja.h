@@ -789,7 +789,7 @@
 #define rfcq(x0,x1,x2,x3)           jtrfcq(jt,(x0),(x1),(x2),(x3))
 
 #define rfd(x)                      jtrfd(jt,(x))
-#define rngga(x,y)                  jtrngga(jt,(x),(y))
+
 #define rnginit()                   jtrnginit(jt)
 #define rngseeds(x)                 jtrngseeds(jt,(x))
 #define rngselects(x)               jtrngselects(jt,(x))

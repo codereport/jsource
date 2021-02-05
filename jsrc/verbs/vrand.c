@@ -391,11 +391,11 @@ static B jtrngga(J jt,I i,UI**vv){
  jt->rngI[jt->rng]=jt->rngi;
  switch(jt->rng=i){
   case SMI: vv=jt->rngV0;      jt->rngw=64;
-            RZ(rngga(GBI,vv)); RZ(rngga(MTI,vv)); RZ(rngga(DXI,vv)); RZ(rngga(MRI,vv)); break;
-  case GBI: RZ(rngga(i,  vv)); jt->rngw=64; break;
-  case MTI: RZ(rngga(i,  vv)); jt->rngw=64; break; 
-  case DXI: RZ(rngga(i,  vv)); jt->rngw=64; break;
-  case MRI: RZ(rngga(i,  vv)); jt->rngw=64; 
+            RZ(jtrngga(jt,GBI,vv)); RZ(jtrngga(jt,MTI,vv)); RZ(jtrngga(jt,DXI,vv)); RZ(jtrngga(jt,MRI,vv)); break;
+  case GBI: RZ(jtrngga(jt,i,  vv)); jt->rngw=64; break;
+  case MTI: RZ(jtrngga(jt,i,  vv)); jt->rngw=64; break; 
+  case DXI: RZ(jtrngga(jt,i,  vv)); jt->rngw=64; break;
+  case MRI: RZ(jtrngga(jt,i,  vv)); jt->rngw=64; 
  }
  jt->rngf=jt->rngF[jt->rng];
  return mtv;
