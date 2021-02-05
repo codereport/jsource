@@ -514,3 +514,4 @@
 |`jsrc/verbs/vf.c`|taker|jttaker|`(^\|[ \t]+\|[^\d\w_])taker\((?=([^,]+?),([^)]+?)\))`|`\1jttaker(jt,`|
 |`jsrc/verbs/visp.c`|taker|jttaker|`(^\|[ \t]+\|[^\d\w_])taker\((?=([^,]+?),([^)]+?)\))`|`\1jttaker(jt,`|
 |`jsrc/conjunctions/cp.c`|tclosure|jttclosure|`(^\|[ \t]+\|[^\d\w_])tclosure\((?=([^,]+?),([^)]+?)\))`|`\1jttclosure(jt,`|
+|`jsrc/conjunctions/cc.c`|tesa|jttesa|`(^\|[ \t]+\|[^\d\w_])tesa\((?=([^,]+?),([^)]+?)\))`|`\1jttesa(jt,`|

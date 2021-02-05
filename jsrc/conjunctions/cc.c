@@ -864,7 +864,7 @@ static A jttess2(J jt,A a,A w,A self){A z,zz=0,virtw,strip;I n,rs[3],cellatoms,c
  PROLOG(600); PREF2(jttess2);   // enforce left rank 2
 #define ZZFLAGWORD state
  I state;
- RZ(a=tesa(a,w));   // expand x to canonical form, with trailing axes-in-full deleted
+ RZ(a=jttesa(jt,a,w));   // expand x to canonical form, with trailing axes-in-full deleted
  n=(I)FAV(self)->localuse.lvp[0]; state=ZZFLAGINITSTATE|((~n)&STATETAKE);  // n=op type (as in u;.n); set TAKE bit if code=3: we will shorten out-of-bounds args
  I wr=AR(w); I wt=AT(w); // rank of w, type of w
  I *as=AS(a), *av=IAV(a), axisct=as[1];  // a-> shape of a, axisct=# axes in a, av->mv/size area

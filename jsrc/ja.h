@@ -951,7 +951,7 @@
 
 #define tconnect(x)                 jttconnect(jt,(x))
 
-#define tesa(x,y)                   jttesa(jt,(x),(y))
+
 #define tesos(x,y,z,w)              jttesos(jt,(x),(y),(z),(w))
 #define tess2(x,y,z)                jttess2(jt,(x),(y),(z))
 #define tf()                        jttf(jt)
