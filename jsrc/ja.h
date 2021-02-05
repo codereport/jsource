@@ -623,7 +623,7 @@
 #define numx(x,y,z)                 jtnumx(jt,(x),(y),(z))
 
 
-#define obverse(x,y)                jtobverse(jt,(x),(y))
+
 #define odom(x,y,z)                 jtodom(jt,(x),(y),(z))
 #define ofxassoc(x,y,z)             jtofxassoc(jt,(x),(y),(z))
 #define omask(x,y)                  jtomask(jt,(x),(y))

@@ -129,21 +129,21 @@ static A jtinvamp(J jt, A w){A f,ff,g,h,x,y;B nf,ng;C c,d,*yv;I n;V*u,*v;
    return jtamp(jt,sc(-(1^(-n))),h);
   case CCANT:    
    ASSERT(nf!=0,EVDOMAIN); 
-   return obverse(jteva(jt,x,"] |:~ u C.^:_1 i.@#@$"),w);
+   return jtobverse(jt,jteva(jt,x,"] |:~ u C.^:_1 i.@#@$"),w);
   case CPCO:
    if(nf){
     RE(n=i0(x));
     switch(n){
      case -4: case 4: return jtamp(jt,negate(x),h);
      case -1:         return ds(CPCO);
-     case  2:         return obverse(eval("*/@(^/)\"2"),w);
+     case  2:         return jtobverse(jt,eval("*/@(^/)\"2"),w);
      case  3:         return eval("*/");
    }}
    break;
   case CQCO:     
    if(nf){
     ASSERT(!AR(x),EVRANK);
-    return obverse(eval(all1(lt(x,zeroionei(0)))?"*/@(^/)\"2":"(p:@i.@# */ .^ ])\"1"),w);
+    return jtobverse(jt,eval(all1(lt(x,zeroionei(0)))?"*/@(^/)\"2":"(p:@i.@# */ .^ ])\"1"),w);
    }
    break;
   case CFIT:
@@ -160,15 +160,15 @@ static A jtinvamp(J jt, A w){A f,ff,g,h,x,y;B nf,ng;C c,d,*yv;I n;V*u,*v;
    break;
   case CCOMMA:  
    SETIC(x,n); 
-   return obverse(1==n?ds(nf?CDROP:CCTAIL):jtamp(jt,sc(nf?n:-n),ds(CDROP)),w);
+   return jtobverse(jt,1==n?ds(nf?CDROP:CCTAIL):jtamp(jt,sc(nf?n:-n),ds(CDROP)),w);
   case CBASE:   
    if(!nf)break;
    return AR(x) ? jtamp(jt,x,ds(CABASE)) :
-    obverse(evc(x,mag(x),"$&u@>:@(v&(<.@^.))@(1&>.)@(>./)@:|@, #: ]"),w);
+    jtobverse(jt,evc(x,mag(x),"$&u@>:@(v&(<.@^.))@(1&>.)@(>./)@:|@, #: ]"),w);
   case CATOMIC:
-   if(ng){ASSERT(equ(x,nub(x)),EVDOMAIN); return obverse(jtatop(jt,f,jtamp(jt,x,ds(CIOTA))),w);}  // fall through to common obverse (?)
+   if(ng){ASSERT(equ(x,nub(x)),EVDOMAIN); return jtobverse(jt,jtatop(jt,f,jtamp(jt,x,ds(CIOTA))),w);}  // fall through to common obverse (?)
   case CCYCLE:
-   if(nf&&AR(x)<=(c==CCYCLE))return obverse(jteva(jt,w,"/:@u@(i.@#) { ]"),w); break;
+   if(nf&&AR(x)<=(c==CCYCLE))return jtobverse(jt,jteva(jt,w,"/:@u@(i.@#) { ]"),w); break;
   case CDROP:
    if(!(nf&&1>=AR(x)))break;
    RZ(x=jtcvt(jt,INT,x));
@@ -176,7 +176,7 @@ static A jtinvamp(J jt, A w){A f,ff,g,h,x,y;B nf,ng;C c,d,*yv;I n;V*u,*v;
    f=jtamp(jt,mag(x),ds(CPLUS));
    g=1==AN(x)?ds(CPOUND):jtatop(jt,jtamp(jt,tally(jt, x),ds(CTAKE)),ds(CDOLLAR));
    h=!yv[1]?f:jtatop(jt,!yv[0]?ds(CMINUS):jtamp(jt,negate(signum(x)),ds(CSTAR)),f);
-   return obverse(jthook(jt,swap(ds(CTAKE)),jtatop(jt,h,g)),w);
+   return jtobverse(jt,jthook(jt,swap(ds(CTAKE)),jtatop(jt,h,g)),w);
   case CDOMINO:
    if(!(2==AR(x)&&*AS(x)==*(1+AS(x))))break;
    ff=eval("+/ .*");
@@ -264,7 +264,7 @@ A jtinv(J jt, A w, I recur){A f,ff,g;B b,nf,ng,vf,vg;C id;I p,q;V*v;
   case CATCO:    if(vf&&vg)return jtatco(jt,invrecur(g),invrecur(f));   break;
   case CSLASH:   if(CSTAR==ID(f))return ds(CQCO);        break;
   case CQQ:      if(vf)return qq(invrecur(f),g);              break;
-  case COBVERSE: if(vf&&vg)return obverse(g,f);          break;  // if defined obverse, return it
+  case COBVERSE: if(vf&&vg)return jtobverse(jt,g,f);          break;  // if defined obverse, return it
   case CSCO:     return jtamp(jt,num(5),w);
   case CPOWOP:   
    if(vf&&ng){RE(p=i0(g)); return -1==p?f:1==p?invrecur(f):powop(0>p?f:invrecur(f),sc(ABS(p)),0);}
@@ -287,12 +287,12 @@ A jtinv(J jt, A w, I recur){A f,ff,g;B b,nf,ng,vf,vg;C id;I p,q;V*v;
    if(CSLASH==ID(f)&&(ff=FAV(f)->fgh[0],ff&&VERB&AT(ff))){  //  ff/\  or ff/\.
     b=id==CBSDOT;
     switch(ID(ff)){
-     case CPLUS: return obverse(eval(b?"- 1&(|.!.0)":" - |.!.0"),w);
-     case CSTAR: return obverse(eval(b?"% 1&(|.!.1)":" % |.!.1"),w);
-     case CEQ:   return obverse(eval(b?"= 1&(|.!.1)":" = |.!.1"),w);
-     case CNE:   return obverse(eval(b?"~:1&(|.!.0)":" ~:|.!.0"),w);
-     case CMINUS:return obverse(eval(b?"+ 1&(|.!.0)":"(- |.!.0) *\"_1 $&1 _1@#"),w);
-     case CDIV:  return obverse(eval(b?"* 1&(|.!.1)":"(% |.!.1) ^\"_1 $&1 _1@#"),w);
+     case CPLUS: return jtobverse(jt,eval(b?"- 1&(|.!.0)":" - |.!.0"),w);
+     case CSTAR: return jtobverse(jt,eval(b?"% 1&(|.!.1)":" % |.!.1"),w);
+     case CEQ:   return jtobverse(jt,eval(b?"= 1&(|.!.1)":" = |.!.1"),w);
+     case CNE:   return jtobverse(jt,eval(b?"~:1&(|.!.0)":" ~:|.!.0"),w);
+     case CMINUS:return jtobverse(jt,eval(b?"+ 1&(|.!.0)":"(- |.!.0) *\"_1 $&1 _1@#"),w);
+     case CDIV:  return jtobverse(jt,eval(b?"* 1&(|.!.1)":"(% |.!.1) ^\"_1 $&1 _1@#"),w);
    }}
    break;
   case CCUT:

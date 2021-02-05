@@ -263,3 +263,4 @@
 |`jsrc/words/wn.c`|numcase|jtnumcase|`(^\|[ \t]+\|[^\d\w_])numcase\((?=([^,]+?),([^)]+?)\))`|`\1jtnumcase(jt,`|
 |`jsrc/adverbs/ao.c`|oblique|jtoblique|`(^\|[ \t]+\|[^\d\w_])oblique\((?=([^,]+?),([^)]+?)\))`|`\1jtoblique(jt,`|
 |`jsrc/adverbs/ao.c`|obqfslash|jtobqfslash|`(^\|[ \t]+\|[^\d\w_])obqfslash\((?=([^,]+?),([^)]+?)\))`|`\1jtobqfslash(jt,`|
+|`jsrc/adverbs/ai.c`|obverse|jtobverse|`(^\|[ \t]+\|[^\d\w_])obverse\((?=([^,]+?),([^)]+?)\))`|`\1jtobverse(jt,`|
