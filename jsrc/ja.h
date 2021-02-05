@@ -909,7 +909,7 @@
 #define square(x)                   jtsquare(jt,(x))
 #define ssdo(x,y,z)                 jtssdo(jt,(x),(y),(z))
 
-#define ssnext(x,y)                 jtssnext(jt,(x),(y))
+
 #define stcreate(x0,x1,x2,x3)       jtstcreate(jt,(x0),(x1),(x2),(x3))
 #define stdf(x)                     jtstdf(jt,(x))
 #define stdnm(x)                    jtstdnm(jt,(x))

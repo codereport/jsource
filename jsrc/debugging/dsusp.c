@@ -206,7 +206,7 @@ A jtdbunquote(J jt,A a,A w,A self,L *stabent){A t,z;B b=0,s;DC d;V*sv;
    if(b=jt->dbalpha||jt->dbomega){a=jt->dbalpha; w=jt->dbomega; jt->dbalpha=jt->dbomega=0;}
   }while(d->dcnewlineno&&d->dcix!=-1);  // if suspension tries to reexecute a line other than -1 (which means 'exit'), reexecute the tacit definition
  }
- if(d->dcss)ssnext(d,d->dcss);
+ if(d->dcss)jtssnext(jt,d,d->dcss);
  if(jt->dbss==SSSTEPINTOs)jt->dbss=0;
  debz();
  return z;
