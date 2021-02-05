@@ -827,7 +827,7 @@
 #define sbtypeinit()                jtsbtypeinit(jt)
 #define sbunbox(x)                  jtsbunbox(jt,(x))
 #define sbunind(x)                  jtsbunind(jt,(x))
-#define sbunlit(x,y)                jtsbunlit(jt,(x),(y))
+
 #define sbunstr(x,y)                jtsbunstr(jt,(x),(y))
 #define sc(x)                       jtsc(jt,(x))
 #define sc4(x,y)                    jtsc4(jt,(x),(y))
