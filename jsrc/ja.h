@@ -565,7 +565,7 @@
 #define minv(x)                     jtminv(jt,(x))
 #define mmharvest(x0,x1,x2,x3,x4,x5,x6) jtmmharvest(jt,(x0),(x1),(x2),(x3),(x4),(x5),(x6))
 #define mmprep(x0,x1,x2,x3,x4,x5)   jtmmprep(jt,(x0),(x1),(x2),(x3),(x4),(x5))
-#define mnomx(x,y)                  jtmnomx(jt,(x),(y))
+
 #define move(x,y,z)                 jtmove(jt,(x),(y),(z))
 #define movandor(x0,x1,x2,x3)       jtmovandor(jt,(x0),(x1),(x2),(x3))
 #define movbwneeq(x0,x1,x2,x3)      jtmovbwneeq(jt,(x0),(x1),(x2),(x3))

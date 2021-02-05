@@ -279,7 +279,7 @@ static A jtpoly2a(J jt,A a,A w){A c,e,x;I m;D rkblk[16];
  ASSERT(0<m,EVLENGTH);
  RZ(IRS1(a,0L,1L,jthead,c  ) ); 
  RZ(e=cant1(IRS1(a,0L,1L,jtbehead,e)));
- RZ(x=mnomx(m,w));
+ RZ(x=jtmnomx(jt,m,w));
  if(1==m){A er; RZ(er=ravel(e)); return pdt(ATOMIC2(jt,x,er,rkblk,0L,2L,CEXP),c);}else{A z; return pdt(df2(z,x,e,jtdot(jt,slash(ds(CSTAR)),ds(CEXP))),c);}  // scaf need agreement check?
 }    /* multinomial: (<c,.e0,.e1,.e2) p. <x0,x1,x2, left argument opened */
 
