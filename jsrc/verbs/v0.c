@@ -148,7 +148,7 @@ static B jtrfcq(J jt,I m,A w,A*zz,A*ww){A q,x,y,z;B b;I i,j,wt;Q*qv,rdx,rq,*wv,*
  ASSERTSYS(wt&B01+INT+FL+XNUM+RAT,"rfcq");
  // Convert w to rational; wv->1st rational coeff
  if(!(wt&RAT))RZ(w=jtcvt(jt,RAT,w)); wv=QAV(w);
- rdx=maxdenom(1+m,wv);  // rdx = max denominator in the polynomial, in rational form
+ rdx=jtmaxdenom(jt,1+m,wv);  // rdx = max denominator in the polynomial, in rational form
  RZ(x=jtcvt(jt,CMPX,w)); xv=ZAV(x); // set x = complex form of w, xv->first complex coeff
  RZ(y=take(sc(1+m),x)); makewritable(y); yv=ZAV(y);  // y = complex form with degree m, yv->first coeff.  These are modified by deflate[q]() and must not be virtual
  RZ(q=take(sc(1+m),w)); makewritable(q); qv=QAV(q);  // q = rational form with degree m, qv->first coeff
@@ -174,7 +174,7 @@ static B jtrfcq(J jt,I m,A w,A*zz,A*ww){A q,x,y,z;B b;I i,j,wt;Q*qv,rdx,rq,*wv,*
    rq=qminus(rq,q1); while(deflateq(1,m-j,qv,rq)){*zv++=rq; ++j; b=1;}
   }
   // If we found a root, refresh the copies of the complex versions, and account for the roots we have found
-  if(b){AN(q)=AS(q)[0]=1+m-j; rdx=maxdenom(1+m-j,qv); RZ(y=jtcvt(jt,CMPX,q)); yv=ZAV(y); i=j;}
+  if(b){AN(q)=AS(q)[0]=1+m-j; rdx=jtmaxdenom(jt,1+m-j,qv); RZ(y=jtcvt(jt,CMPX,q)); yv=ZAV(y); i=j;}
   else{D c,d;
    // No root found!  Turn over the table and shoot out the lights.  If r is near an axis, push it to the axis.
    c=ABS(r.re); d=ABS(r.im); if(d<EPS*c)r.im=0; if(c<EPS*d)r.re=0;
