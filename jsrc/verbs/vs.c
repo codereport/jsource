@@ -129,7 +129,7 @@ A jtsparseit(J jt,A w,A a,A e){PROLOG(0091);A ax,c,x,y,z;B b,*cv;I cm,cn,m,n,r,*
  ASSERT(STYPE(t)!=0,EVDOMAIN);  // w must be dense
  if(!r){ASSERT(!AN(a),EVINDEX); return ca(w);}
  RZ(z=sparse1a(shape(w),a,e,mark,mark)); p=PAV(z);
- RZ(ax=paxis(r,a));
+ RZ(ax=jtpaxis(jt,r,a));
  GATV0(y,INT,r,1); s=AV(y);
  u=AV(ax); v=AS(w); DO(r, s[i]=v[u[i]];);
  RE(m=prod(n,s)); b=equ(a,IX(r));

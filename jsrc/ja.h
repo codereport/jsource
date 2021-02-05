@@ -644,7 +644,7 @@
 
 #define parseinit()                 jtparseinit(jt)
 #define parsex(x0,x1,x2,x3)         jtparsex(jt,(x0),(x1),(x2),(x3))
-#define paxis(x,y)                  jtpaxis(jt,(x),(y))
+
 #define pcvt(x,y)                   jtpcvt(jt,(x),(y))
 #define pdt(x,y)                    jtpdt(jt,(x),(y))
 #define pdtby(x,y)                  jtpdtby(jt,(x),(y))

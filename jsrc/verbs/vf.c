@@ -49,7 +49,7 @@ static A jtrotsp(J jt,A a,A w){PROLOG(0071);A q,x,y,z;B bx,by;I acr,af,ar,*av,d,
  RZ(a=vi(a)); v=AV(a); 
  DO(p, k=v[i]; d=s[wf+i]; qv[wf+i]=!d?0:0<k?k%d:k==IMIN?d-(-d-k)%d:d-(-k)%d;);
  wp=PAV(w); a=SPA(wp,a); RZ(y=ca(SPA(wp,i))); SETIC(y,m);
- n=AN(a); RZ(a=paxis(wr,a)); av=AV(a);
+ n=AN(a); RZ(a=jtpaxis(jt,wr,a)); av=AV(a);
  RZ(q=jtfrom(jt,a,q)); qv=AV(q);
  GASPARSE(z,AT(w),1,wr,s); zp=PAV(z);
  by=0; DO(n,    if(qv[  i]){by=1; break;});
@@ -124,7 +124,7 @@ static A jtrevsp(J jt, A w){A a,q,x,y,z;I c,f,k,m,n,r,*v,wr;P*wp,*zp;
  m=*(f+AS(w)); wp=PAV(w);
  GASPARSE(z,AT(w),1,wr,AS(w)); zp=PAV(z);
  a=SPA(wp,a); n=AN(a); RZ(y=ca(SPA(wp,i))); x=SPA(wp,x);
- RZ(q=paxis(wr,a)); v=AV(q); DO(wr, if(f==v[i]){k=i; break;});
+ RZ(q=jtpaxis(jt,wr,a)); v=AV(q); DO(wr, if(f==v[i]){k=i; break;});
  if(!r)       RZ(x=ca(x))
  else if(k>=n)RZ(x=irs2(apv(m,m-1,-1L),x,0L,1L,wr-k,jtfrom))
  else         {v=k+AV(y); c=m-1; DQ(SETIC(y,r), *v=c-*v; v+=n;); q=grade1(y); RZ(y=jtfrom(jt,q,y)); RZ(x=jtfrom(jt,q,x));}

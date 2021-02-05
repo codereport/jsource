@@ -270,3 +270,6 @@
 |`jsrc/conjunctions/cx.c`|parsea|jtparsea|`(^\|[ \t]+\|[^\d\w_])parsea\((?=([^,]+?),([^)]+?)\))`|`\1jtparsea(jt,`|
 |`jsrc/debugging/dsusp.c`|parsea|jtparsea|`(^\|[ \t]+\|[^\d\w_])parsea\((?=([^,]+?),([^)]+?)\))`|`\1jtparsea(jt,`|
 |`jsrc/parsing/p.c`|parsea|jtparsea|`(^\|[ \t]+\|[^\d\w_])parsea\((?=([^,]+?),([^)]+?)\))`|`\1jtparsea(jt,`|
+|`jsrc/verbs/vf.c`|paxis|jtpaxis|`(^\|[ \t]+\|[^\d\w_])paxis\((?=([^,]+?),([^)]+?)\))`|`\1jtpaxis(jt,`|
+|`jsrc/verbs/vs.c`|paxis|jtpaxis|`(^\|[ \t]+\|[^\d\w_])paxis\((?=([^,]+?),([^)]+?)\))`|`\1jtpaxis(jt,`|
+|`jsrc/verbs/vt.c`|paxis|jtpaxis|`(^\|[ \t]+\|[^\d\w_])paxis\((?=([^,]+?),([^)]+?)\))`|`\1jtpaxis(jt,`|
