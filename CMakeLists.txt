@@ -15,7 +15,6 @@ enable_language(C CXX ASM)
 set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 
 include(CTest)
-include(OptimizeForArchitecture)
 
 if(PROJECT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
     set(BUILD_SHARED_LIBS ON)
@@ -30,9 +29,6 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 set(CMAKE_CXX_VISIBILITY_PRESET hidden)
 
 set(DOCS "NO" CACHE STRING "Build documentation")
-set(TARGET_ARCHITECTURE "skylake" CACHE STRING "CPU architecture")
-OptimizeForArchitecture()
-add_compile_options("$<$<COMPILE_LANGUAGE:CXX>:${Vc_ARCHITECTURE_FLAGS}>")
 
 add_compile_options($<$<COMPILE_LANGUAGE:C>:-fno-strict-aliasing>)
 add_compile_options($<$<COMPILE_LANG_AND_ID:C,CXX,GNU>:-fmax-errors=1>)
@@ -90,4 +86,3 @@ if(BUILD_SHARED_LIBS)
     add_subdirectory(test)
 endif()
 target_link_libraries(j PRIVATE j-base64)
-
