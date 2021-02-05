@@ -30,13 +30,13 @@
    NM* thisnameinfo=NAV(thisname);  // the NM block for the current name
    if(!(thisnameinfo->flag&(NMLOC|NMILOC|NMIMPLOC))) {  // simple name, and not u./v.
     explocale=0;  // flag no explicit locale
-    if(!(stabent = probelocal(thisname,jt->locsyms)))stabent=syrd1(thisnameinfo->m,thisnameinfo->s,thisnameinfo->hash,jt->global);  // Try local, then look up the name starting in jt->global
+    if(!(stabent = jtprobelocal(jt,thisname,jt->locsyms)))stabent=syrd1(thisnameinfo->m,thisnameinfo->s,thisnameinfo->hash,jt->global);  // Try local, then look up the name starting in jt->global
    } else {  // locative or u/v
     if(!(thisnameinfo->flag&NMIMPLOC)){  // locative
      RZ(explocale=sybaseloc(thisname));  //  get the explicit locale.  0 if erroneous locale
      stabent=syrd1(thisnameinfo->m,thisnameinfo->s,thisnameinfo->hash,explocale);  // Look up the name starting in the locale of the locative
     }else{  // u./v.  We have to look at the assigned name/value to know whether this is an implied locative (it usually is)
-     if(stabent = probelocal(thisname,jt->locsyms)){
+     if(stabent = jtprobelocal(jt,thisname,jt->locsyms)){
       // u/v, assigned by xdefn.  Implied locative.  Use switching to the local table as a flag for restoring the caller's environment
       explocale=jt->locsyms;  // We have to use this flag trick, rather than stacking the locales here, because errors after the stack is set could corrupt the stack
      }

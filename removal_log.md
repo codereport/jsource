@@ -302,3 +302,6 @@
 |`jsrc/conjunctions/cp.c`|powseqlim|jtpowseqlim|`(^\|[ \t]+\|[^\d\w_])powseqlim\((?=([^,]+?),([^)]+?)\))`|`\1jtpowseqlim(jt,`|
 |`jsrc/s.c`|probeis|jtprobeis|`(^\|[ \t]+\|[^\d\w_])probeis\((?=([^,]+?),([^)]+?)\))`|`\1jtprobeis(jt,`|
 |`jsrc/conjunctions/cx.c`|probeis|jtprobeis|`(^\|[ \t]+\|[^\d\w_])probeis\((?=([^,]+?),([^)]+?)\))`|`\1jtprobeis(jt,`|
+|`jsrc/s.c`|probelocal|jtprobelocal|`(^\|[ \t]+\|[^\d\w_])probelocal\((?=([^,]+?),([^)]+?)\))`|`\1jtprobelocal(jt,`|
+|`jsrc/sc.c`|probelocal|jtprobelocal|`(^\|[ \t]+\|[^\d\w_])probelocal\((?=([^,]+?),([^)]+?)\))`|`\1jtprobelocal(jt,`|
+|`jsrc/adverbs/af.c`|probelocal|jtprobelocal|`(^\|[ \t]+\|[^\d\w_])probelocal\((?=([^,]+?),([^)]+?)\))`|`\1jtprobelocal(jt,`|
