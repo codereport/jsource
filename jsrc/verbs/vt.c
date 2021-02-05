@@ -39,7 +39,7 @@ static A jttks(J jt,A a,A w){PROLOG(0092);A a1,q,x,y,z;B b,c;I an,m,r,*s,*u,*v;P
   GA(y,t,  AN(x),AR(x),AS(x)); yv=CAV(y); xv=CAV(x);
   for(i=0;i<n;++i){
    c=0; DO(m, t=u[i]; if(c=0>t?iv[i]<t+s[i]:iv[i]>=t)break;);
-   if(!c){++d; MC(yv,xv,k); yv+=k; DO(m, t=u[i]; *jv++=0>t?iv[i]-(t+s[i]):iv[i];);}
+   if(!c){++d; memcpy(yv,xv,k); yv+=k; DO(m, t=u[i]; *jv++=0>t?iv[i]-(t+s[i]):iv[i];);}
    iv+=m; xv+=k;
   }
   SPB(zp,i,d<n?take(sc(d),j):j); SPB(zp,x,d<n?take(sc(d),y):y);
@@ -67,7 +67,7 @@ static A jttk(J jt,A a,A w){PROLOG(0093);A y,z;B b=0;C*yv,*zv;I c,d,dy,dz,e,i,k,
    dy=itemsize*q; yv=CAV(y);
    dz=itemsize*m; zv=CAV(z);
    m-=q; I yzdiff=dy-dz; yv+=REPSGN(p&m)&yzdiff; zv-=REPSGN(p&-m)&yzdiff;
-   DQ(c, MC(yv,zv,e); yv+=dy; zv+=dz;);
+   DQ(c, memcpy(yv,zv,e); yv+=dy; zv+=dz;);
    z=y;
   }
  }
@@ -188,7 +188,7 @@ static A jtrsh0(J jt, A w){A x,y;I wcr,wf,wr,*ws;
  wr=AR(w); wcr=(RANKT)jt->ranks; wcr=wr<wcr?wr:wcr; wf=wr-wcr; RESETRANK;
  ws=AS(w);
  RZ(x=vec(INT,wr-1,ws)); MCISH(wf+AV(x),ws+wf+1,wcr-1);
- RZ(w=setfv(w,w)); GA(y,AT(w),1,0,0); MC(AV(y),jt->fillv,bp(AT(w)));
+ RZ(w=setfv(w,w)); GA(y,AT(w),1,0,0); memcpy(AV(y),jt->fillv,bp(AT(w)));
  return reshape(x,y);
  // not pristine
 }

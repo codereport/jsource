@@ -191,7 +191,7 @@ static B jtrfcq(J jt,I m,A w,A*zz,A*ww){A q,x,y,z;B b;I i,j,wt;Q*qv,rdx,rq,*wv,*
 
 static A jtrfcz(J jt,I m,A w){A x,y,z;B bb=0,real;D c,d;I i;Z r,*xv,*yv,*zv;
  real=!(CMPX&AT(w)); RZ(x=cvt(CMPX,w)); xv=ZAV(x); 
- GATV0(y,CMPX,1+m,1); yv=ZAV(y); MC(yv,xv,(1+m)*sizeof(Z));
+ GATV0(y,CMPX,1+m,1); yv=ZAV(y); memcpy(yv,xv,(1+m)*sizeof(Z));
  GATV0(z,CMPX,  m,1); zv=ZAV(z);
  if(2==m){Z a2,b,c,d,z2={2,0};
   a2=ztymes(z2,xv[2]); b=znegate(xv[1]); c=xv[0]; 

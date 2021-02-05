@@ -103,10 +103,10 @@ static A jtsparse1a(J jt,A s,A a,A e,A y,A x){A z;B*b;I an,*av,et,r,*sv,t,*v;P*p
    m=aii(x); k=m<<bplg(t);
    RZ(q=grade1(y)); qv=AV(q);
    GATV(y1,INT,AN(y),AR(y),AS(y)); yv= AV(y1); yu= AV(y); ICPY(yv,yu+an**qv,an);
-   GA(x1,t,  AN(x),AR(x),AS(x)); xv=CAV(x1); xu=CAV(x); MC(xv,xu+k**qv,k);
+   GA(x1,t,  AN(x),AR(x),AS(x)); xv=CAV(x1); xu=CAV(x); memcpy(xv,xu+k**qv,k);
    for(i=0;i<n;++i){
     ++qv; v=yu+an**qv;
-    DO(an, if(yv[i]<v[i]){yv+=an; ICPY(yv,v,an); xv+=k; MC(xv,xu+k**qv,k); break;});
+    DO(an, if(yv[i]<v[i]){yv+=an; ICPY(yv,v,an); xv+=k; memcpy(xv,xu+k**qv,k); break;});
    }
    yv+=an; AN(y1)=yv-AV(y1); *AS(y1)=AN(y1)/an; y=y1;
    xv+=k; *AS(x1)=(xv-CAV(x1))/k; AN(x1)=m**AS(x1); x=x1;
@@ -164,7 +164,7 @@ A jtsparseit(J jt,A w,A a,A e){PROLOG(0091);A ax,c,x,y,z;B b,*cv;I cm,cn,m,n,r,*
  GA(z,t,n,r,s); zv=CAV(z); xv=CAV(x); 
  if(1<an)RZ(y=base2(vec(INT,an,s),y)); yv=AV(y);
  k=bpnoun(t); ck=k*aii(x); mvc(k*n,zv,k,AV(e));
- DQ(SETIC(y,an), MC(zv+ck**yv,xv,ck); ++yv; xv+=ck;);
+ DQ(SETIC(y,an), memcpy(zv+ck**yv,xv,ck); ++yv; xv+=ck;);
  return b?z:cant2(pinv(q),z);
 }    /* $.^:_1 */
 
@@ -206,7 +206,7 @@ A jtsparseit(J jt,A w,A a,A e){PROLOG(0091);A ax,c,x,y,z;B b,*cv;I cm,cn,m,n,r,*
   GA(x1,AT(x),h,1+r-d,u);                       t=CAV(x1); s=CAV(x);
   GATV0(y1,INT,n*d,2); *AS(y1)=n; *(1+AS(y1))=d; v= AV(y1); u= AV(y);  
   k=bpnoun(AT(x)); g=k*aii(x); h=k*aii(x1); mvc(k*AN(x1),t,k,AV(e));
-  DO(m, MC(t+g*iv[i],s,g); s+=g; if(b[i]){ICPY(v,u+i*c,d); v+=d; t+=h;});
+  DO(m, memcpy(t+g*iv[i],s,g); s+=g; if(b[i]){ICPY(v,u+i*c,d); v+=d; t+=h;});
   SPB(zp,i,y1); SPB(zp,x,cant2(increm(indexof(p,daxis(r,a1))),x1));
   return z;
  }

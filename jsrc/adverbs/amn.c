@@ -137,7 +137,7 @@ A jtamnsp(J jt,A a,A z,A ind,B ip){A i1,i2,t;C*ev,*u,*v,*vv;I c,*dv,i,*iv,j,*jv,
   for(j=0;j<c;++j){
    q=r; DQ(r, --q; ++dv[q]; if(dv[q]<s[q])break; dv[q]=0;);
    q=1; while(p<m){DO(r, if(q=yv[i]-dv[i])break;); if(0<=q)break; ++p; yv+=r;}
-   MC(vv,q?ev:u+k*p,k); 
+   memcpy(vv,q?ev:u+k*p,k); 
    vv+=k;
  }}
  return z;

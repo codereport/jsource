@@ -37,7 +37,7 @@ static A jtrdns(J jt,F f){A za,z;I n=1024;size_t r,tr=0;
   tr+=r; if(tr==(U)n){RZ(za=ext(0,za));n*=2;}
  }
  if(tr==(U)n)z=za;
- else {GATV0(z,LIT,(I)tr,1); MC(CAV(z),CAV(za),tr);}
+ else {GATV0(z,LIT,(I)tr,1); memcpy(CAV(z),CAV(za),tr);}
  return z;
 }    /* read entire file stream (non-seekable) */
 
