@@ -16,3 +16,4 @@ qcompare
 qdiv
 qgcd
 qlcm
+qminus
