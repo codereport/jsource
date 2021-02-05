@@ -1371,7 +1371,7 @@ A jtindexofprehashed(J jt,A a,A w,A hs){A h,hi,*hv,x,z;AF fn;I ar,*as,at,c,f1,k,
 // ~. y  - does not have IRS
  A jtnub(J jt, A w){ 
  F1PREFIP;
- if(SPARSE&AT(w)||AFLAG(w)&AFNJA)return repeat(nubsieve(w),w);
+ if(SPARSE&AT(w)||AFLAG(w)&AFNJA)return jtrepeat(jt,nubsieve(w),w);
  A z; RZ(z=indexofsub(INUB,w,w));
  // We extracted from w, so mark it (or its backer if virtual) non-pristine.  If w was pristine and inplaceable, transfer its pristine status to the result.  We overwrite w because it is no longer in use
  PRISTXFERF(z,w)
@@ -1389,7 +1389,7 @@ A jtindexofprehashed(J jt,A a,A w,A hs){A h,hi,*hv,x,z;AF fn;I ar,*as,at,c,f1,k,
  if(wr&&r!=wr){RZ(x=virtual(w,0,r)); AN(x)=AN(w); s=AS(x); ws=AS(w); k=ar>wr?0:1+wr-r; *s=jtprod(jt,k,ws); MCISH(1+s,k+ws,r-1);}  // bug: should test for error on the jtprod(jt,)
  // if nothing special (like sparse, or incompatible types, or x requires conversion) do the fast way; otherwise (-. x e. y) # y
  RZ(x=!(at&SPARSE)&&HOMO(at,wt)&&TYPESEQ(at,maxtype(at,wt))&&!(AFLAG(a)&AFNJA)?indexofsub(ILESS,x,a):
-     repeat(__not(jteps(jt,a,x)),a));
+     jtrepeat(jt,__not(jteps(jt,a,x)),a));
  // We extracted from a, so mark it non-pristine.  If a was pristine and inplaceable, transfer its pristine status to the result
  PRISTXFERAF(x,a)
  return x;
@@ -1422,7 +1422,7 @@ A jtindexofprehashed(J jt,A a,A w,A hs){A h,hi,*hv,x,z;AF fn;I ar,*as,at,c,f1,k,
  SETIC(w,n);   // n=#items of y
  RZ(x=jtindexof(jt,w,w));   // x = i.~ y
  // if w is dense, return ((x = i.n) # x) =/ x
- if(DENSE&AT(w))return atab(CEQ,repeat(eq(IX(n),x),x),x);
+ if(DENSE&AT(w))return atab(CEQ,jtrepeat(jt,eq(IX(n),x),x),x);
  // if x is sparse... ??
  p=PAV(x); e=SPA(p,e); y=SPA(p,i); RZ(xy=stitch(SPA(p,x),y));
  if(n>*AV(e))RZ(xy=over(xy,stitch(e,jtless(jt,IX(n),y))));

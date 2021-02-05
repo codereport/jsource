@@ -195,11 +195,11 @@ static A jtmatchs(J jt,A a,A w){A ae,ax,p,q,we,wx,x;B*b,*pv,*qv;D d;I acr,an=0,a
  GATV0(p,B01,m,1); pv=BAV(p);
  GATV0(q,B01,n,1); qv=BAV(q); 
  memset(pv,C1,m); DO(n, j=*v++; if(j<m)pv[j]=qv[i]=0; else qv[i]=1;);
- if(memchr(pv,C1,m)&&!all1(eq(we,repeat(p,ax))))return num(0);
- if(memchr(qv,C1,n)&&!all1(eq(ae,repeat(q,wx))))return num(0);
+ if(memchr(pv,C1,m)&&!all1(eq(we,jtrepeat(jt,p,ax))))return num(0);
+ if(memchr(qv,C1,n)&&!all1(eq(ae,jtrepeat(jt,q,wx))))return num(0);
  j=0; DO(m, if(pv[i])++j;);
  k=0; DO(n, if(qv[i])++k; qv[i]=!qv[i];);
- if(!equ(jtfrom(jt,repeat(q,x),ax),repeat(q,wx)))return num(0);
+ if(!equ(jtfrom(jt,jtrepeat(jt,q,x),ax),jtrepeat(jt,q,wx)))return num(0);
  x=SPA(ap,a); v=AV(x); s=AS(a); d=1.0; DO(AN(x), d*=s[v[i]];);
  return d==m+k&&d==n+j||equ(ae,we)?num(1):num(0);
 }    /* a -:"r w on sparse arrays */

@@ -303,7 +303,7 @@ static A jtgoutfix(J jt,A a,A w,A self){A h,*hv,x,z,*zv;I m,n;
  SETIC(x,n);
  h=VAV(self)->fgh[2]; hv=AAV(h); m=AN(h);
  GATV0(z,BOX,n,1); zv=AAV(z); I imod=0;
- DO(n, imod=(imod==m)?0:imod; RZ(zv[i]=df1(h,repeat(jtfrom(jt,sc(i),x),w),hv[imod])); ++imod;);
+ DO(n, imod=(imod==m)?0:imod; RZ(zv[i]=df1(h,jtrepeat(jt,jtfrom(jt,sc(i),x),w),hv[imod])); ++imod;);
  return ope(z);
 }
 

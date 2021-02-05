@@ -773,7 +773,7 @@
 #define remid(x,y)                  jtremid(jt,(x),(y))
 #define rep1d(x0,x1,x2,x3)          jtrep1d(jt,(x0),(x1),(x2),(x3))
 #define rep1sa(x,y,z)               jtrep1sa(jt,(x),(y),(z))
-#define repeat(x,y)                 jtrepeat(jt,(x),(y))
+
 #define repeatr(x,y)                jtrepeatr(jt,(x),(y))
 #define repidx(x0,x1,x2,x3)         jtrepidx(jt,(x0),(x1),(x2),(x3))
 #define repzdx(x0,x1,x2,x3)         jtrepzdx(jt,(x0),(x1),(x2),(x3))

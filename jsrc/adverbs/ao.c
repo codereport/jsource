@@ -162,11 +162,11 @@ static A jtkeysp(J jt,A a,A w,A self){PROLOG(0008);A b,by,e,q,x,y,z;I j,k,n,*u,*
  e=SPA(p,e); k=i0(e); 
  j=0; DO(AN(x), if(k<=u[i])break; if(u[i]==v[i])++j;);
  RZ(b=ne(e,x));
- RZ(by=repeat(b,y));
- RZ(x=key(repeat(b,x),jtfrom(jt,ravel(by),w),self));
+ RZ(by=jtrepeat(jt,b,y));
+ RZ(x=key(jtrepeat(jt,b,x),jtfrom(jt,ravel(by),w),self));
  GASPARSE(q,SB01,1,1,(I*)0); *AS(q)=n;  /* q=: 0 by}1$.n;0;1 */
  p=PAV(q); SPB(p,a,iv0); SPB(p,e,num(1)); SPB(p,i,by); SPB(p,x,reshape(tally(jt, by),num(0)));
- RZ(z=over(df1(b,repeat(q,w),VAV(self)->fgh[0]),x));
+ RZ(z=over(df1(b,jtrepeat(jt,q,w),VAV(self)->fgh[0]),x));
  z=j?jtcdot2(jt,box(IX(1+j)),z):z;
  EPILOG(z);
 }
@@ -639,7 +639,7 @@ static A jtkeytallysp(J jt, A w){PROLOG(0015);A b,e,q,x,y,z;I c,d,j,k,*u,*v;P*p;
  e=SPA(p,e); k=i0(e); 
  j=0; DO(c, if(k<=u[i])break; if(u[i]==v[i])++j;);
  RZ(b=ne(e,x));
- RZ(x=repeat(b,x)); RZ(x=keytally(x,x,mark)); u=AV(x); d=AN(x);
+ RZ(x=jtrepeat(jt,b,x)); RZ(x=keytally(x,x,mark)); u=AV(x); d=AN(x);
  GATV0(z,INT,1+d,1); v=AV(z);
  DQ(j, *v++=*u++;); *v++=SETIC(w,k)-bsum(c,BAV(b)); DQ(d-j, *v++=*u++;);
  EPILOG(z);
@@ -761,7 +761,7 @@ static A jtkeytally(J jt,A a,A w,A self){F2PREFIP;PROLOG(0016);A z,q;I at,j,k,n,
    }
   }
  }else{  // no special processing
-  RZ(q=jtindexof(jt,a,a)); x=repeat(eq(q,IX(n)),w); y=keytally(q,q,0L); z=stitch(b?x:y,b?y:x);  // (((i.~a) = i. # a) # w) ,. (#/.~ i.~ a)   for ({. , #)
+  RZ(q=jtindexof(jt,a,a)); x=jtrepeat(jt,eq(q,IX(n)),w); y=keytally(q,q,0L); z=stitch(b?x:y,b?y:x);  // (((i.~a) = i. # a) # w) ,. (#/.~ i.~ a)   for ({. , #)
  }
  EPILOG(z);
 }    /* x ({.,#)/.y or x (#,{.)/. y */

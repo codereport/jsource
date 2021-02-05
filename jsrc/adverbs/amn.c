@@ -31,7 +31,7 @@ static B jtiaddr(J jt,A z,A ind,A*i1,A*i2){A a,ai,as,ii,jj,q,t,x,y;I c,d,e,h,i,*
  c=*(1+AS(y));
  if(!c){
   n=AN(jj);
-  RZ(*i1=repeat(sc(n),IX(m)));
+  RZ(*i1=jtrepeat(jt,sc(n),IX(m)));
   RZ(*i2=reshape(sc(m*n),jj));
   return 1;
  }
@@ -61,9 +61,9 @@ static A jtzpadn(J jt,A z,A ind,B ip){A a,ai,i1,p,p1,q,t,x,x0,y,y0,y1;B*b;I c,d,
  RZ(p=nub(jtless(jt,i1,y1)));
  if(c=AN(a)-d){
   RZ(t=jtfrom(jt,jtless(jt,a,ai),shape(z))); RZ(p1=odom(2L,c,AV(t))); n=*AS(p1);
-  if(m=*AS(p))RZ(p=stitch(repeat(sc(n),p),reshape(v2(n*m,c),p1)));
-  RZ(t=nub(repeat(jteps(jt,y1,i1),y1)));
-  RZ(t=stitch(repeat(sc(n),t),reshape(v2(n**AS(t),c),p1)));
+  if(m=*AS(p))RZ(p=stitch(jtrepeat(jt,sc(n),p),reshape(v2(n*m,c),p1)));
+  RZ(t=nub(jtrepeat(jt,jteps(jt,y1,i1),y1)));
+  RZ(t=stitch(jtrepeat(jt,sc(n),t),reshape(v2(n**AS(t),c),p1)));
   RZ(t=jtless(jt,t,y));
   if(AN(t))RZ(p=over(p,t));
  }
@@ -92,7 +92,7 @@ static A jtastdn(J jt,A a,A z,A ind){A a1,q,r,s;B*b;I ar,*as,*av,d,ir,n,n1,*v,zr
  GATV0(s,B01,zr,1); b=BAV(s); 
  memset(b,C0,zr); DO(AN(a1), b[av[i]]=1;); memset(b,!memchr(b,C1,n)?C0:C1,n);
  GATV0(r,INT,zr-n1,1); v=AV(r); *v++=ar-(zr-n); DQ(zr-n, *v++=1;);
- RZ(q=dgrade1(repeat(r,vec(B01,zr-n1,b+n1))));
+ RZ(q=dgrade1(jtrepeat(jt,r,vec(B01,zr-n1,b+n1))));
  return equ(q,IX(ar))?a:jtcant2(jt,q,a);
 }    /* convert replacement array a into standard form relative to index array ind */
 

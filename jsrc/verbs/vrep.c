@@ -9,7 +9,7 @@ static A jtrepzdx(J jt,A a,A w,I wf,I wcr){A p,q,x;P*wp;
  F2PREFIP;
  if(SPARSE&AT(w)){wp=PAV(w); x=SPA(wp,e);}
  else x=jt->fill&&AN(jt->fill)?jt->fill:filler(w);
- RZ(p=repeat(ravel(rect(a)),ravel(stitch(IX(wcr?*(wf+AS(w)):1),num(-1)))));
+ RZ(p=jtrepeat(jt,ravel(rect(a)),ravel(stitch(IX(wcr?*(wf+AS(w)):1),num(-1)))));
  RZ(IRS2(w,x,0L,wcr,0L,jtover,q));
  return IRS2(p,q,0L,1L,wcr+!wcr,jtfrom,x);
 }    /* (dense complex) # (dense or sparse) */
@@ -125,17 +125,17 @@ static A jtrepbsx(J jt,A a,A w,I wf,I wcr){A ai,c,d,e,g,q,x,wa,wx,wy,y,y1,z,zy;B
  GASPARSE(z,AT(w),1,AR(w),AS(w)); *(wf+AS(z))=m=*AV(q);
  RZ(c=jtindexof(jt,wa,sc(wf)));
  RZ(y1=jtfromr(jt,c,wy));
- RZ(q=__not(jteps(jt,y1,ravel(repeat(__not(x),y)))));
+ RZ(q=__not(jteps(jt,y1,ravel(jtrepeat(jt,__not(x),y)))));
  m=AS(a)[0]-m;
  GATV0(ai,INT,m,1); v=AV(ai); DO(n, if(!*b++)*v++=u[i];);
- RZ(g=grade1(over(ai,repeat(q,y1)))); gv=AV(g);
+ RZ(g=grade1(over(ai,jtrepeat(jt,q,y1)))); gv=AV(g);
  GATV0(d,INT,AN(y1),1); dv=AV(d); j=0; DO(AN(g), if(m>gv[i])++j; else dv[gv[i]-m]=j;);
- RZ(zy=mkwris(repeat(q,wy))); v=AV(zy)+*AV(c); m=AS(zy)[1]; DO(AS(zy)[0], *v-=dv[i]; v+=m;);
+ RZ(zy=mkwris(jtrepeat(jt,q,wy))); v=AV(zy)+*AV(c); m=AS(zy)[1]; DO(AS(zy)[0], *v-=dv[i]; v+=m;);
  zp=PAV(z);
  SPB(zp,a,ca(wa));
  SPB(zp,e,SPA(wp,e));
  SPB(zp,i,zy);
- SPB(zp,x,repeat(q,wx));
+ SPB(zp,x,jtrepeat(jt,q,wx));
  return z;
 }    /* (sparse boolean) #"r (dense or sparse) */
 
@@ -210,8 +210,8 @@ static A jtrep1s(J jt,A a,A w,I wf,I wcr){A ax,e,x,y,z;B*b;I c,d,cd,j,k,m,n,p,q,
  RE(b=bfi(wr,ax,1));
  if(wcr&&b[wf]){    /* along sparse axis */
   u=AS(y); p=u[0]; q=u[1]; u=AV(y);
-  RZ(x=repeat(sc(c),x));
-  RZ(y=mkwris(repeat(sc(c),y)));
+  RZ(x=jtrepeat(jt,sc(c),x));
+  RZ(y=mkwris(jtrepeat(jt,sc(c),y)));
   if(p&&1<c){
    j=0; DO(wf, j+=b[i];); v=j+AV(y);
    if(AN(ax)==1+j){u+=j; DO(p, m=cd**u; u+=q; DO(c, *v=m+i; v+=q;););}

@@ -250,9 +250,9 @@ static A jthkiota(J jt,    A w,A self){DECLFG;A a,e;I n;P*p;
  SETIC(w,n);\
  if(SB01&AT(w)&&1==AR(w)){
   p=PAV(w); a=SPA(p,a); e=SPA(p,e); 
-  return BAV(e)[0]||equ(mtv,a) ? repeat(w,IX(n)) : repeat(SPA(p,x),ravel(SPA(p,i)));
+  return BAV(e)[0]||equ(mtv,a) ? jtrepeat(jt,w,IX(n)) : jtrepeat(jt,SPA(p,x),ravel(SPA(p,i)));
  }
- return B01&AT(w)&&1>=AR(w) ? jtifb(jt,n,BAV(w)) : repeat(w,IX(n));
+ return B01&AT(w)&&1>=AR(w) ? jtifb(jt,n,BAV(w)) : jtrepeat(jt,w,IX(n));
 }    /* special code for (# i.@#) */
 
 static A jthkodom(J jt,    A w,A self){DECLFG;B b=0;I n,*v;

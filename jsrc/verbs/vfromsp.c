@@ -12,7 +12,7 @@ static A jtfromis1(J jt,A ind,A w,A z,I wf){A a,a1,j1,p,q,x,x1,y,y1;C*xu,*xuu,*x
  // figure the axes of the result.  wf is the number of axes before the axis of the selection, i. e. the axis number of the selection.
  // That axis is replaced by axes coming from the shape of ind.  Set h to the index of the sparse axis that is being selected on
  a=SPA(wp,a); an=AN(a); av=AV(a); DO(an, if(wf==av[i]){h=i; break;});  // an=#sparse axes
- y=SPA(wp,i); RZ(q=jteps(jt,jtfromr(jt,sc(h),y),ravel(ind))); RZ(y=repeat(q,y)); RZ(x=repeat(q,SPA(wp,x)));  // (h{"_ 1 indexes) e. ,ind
+ y=SPA(wp,i); RZ(q=jteps(jt,jtfromr(jt,sc(h),y),ravel(ind))); RZ(y=jtrepeat(jt,q,y)); RZ(x=jtrepeat(jt,q,SPA(wp,x)));  // (h{"_ 1 indexes) e. ,ind
  GATV0(a1,INT,r+an-1,1); v=AV(a1); SPB(zp,a,a1);
  k=av[h]; u=av; DQ(h, *v++=*u++;); DQ(r, *v++=k++;); u++; DQ(an-1-h, *v++=*u+++r-1;);
  if(!r) 
@@ -89,7 +89,7 @@ A jtfrombsn(J jt,A ind,A w,I wf){A a,j1,p,q,x,x1,y,y1,ys,z;C*xu,*xuu,*xv;
  if(1<r)RZ(ind=reshape(v2(n,h),ind)); 
  RZ(ys=jtfromr(jt,jtindexof(jt,a,apv(h,wf,1L)),y));
  RZ(q=jteps(jt,ys,ind)); 
- if(!all1(q)){RZ(ys=repeat(q,ys)); RZ(y=repeat(q,y)); RZ(x=repeat(q,x));}
+ if(!all1(q)){RZ(ys=jtrepeat(jt,q,ys)); RZ(y=jtrepeat(jt,q,y)); RZ(x=jtrepeat(jt,q,x));}
  if(wf){q=grade1(ys); RZ(ys=jtifrom(jt,q,ys)); RZ(y=jtifrom(jt,q,y)); RZ(x=jtifrom(jt,q,x));}
  m=*AS(y);
  GATV0(p,INT,m,1); pv=AV(p);

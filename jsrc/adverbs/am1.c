@@ -43,7 +43,7 @@ static A jtastd1(J jt,A a,A z,A ind){A*iv,q,r,s,s1,*sv,x;B b;I ar,*as,d,j,m,n,*r
  RZ(s1=raze(s)); s1v=AV(s1);
  ASSERT(!ICMP(as,AV(s1)+d-ar,ar),EVLENGTH);
  if(ar<d)RZ(a=reshape(s1,a));
- RZ(q=dgrade1(jteps(jt,repeat(r,IX(zr)),SPA(zp,a))));
+ RZ(q=dgrade1(jteps(jt,jtrepeat(jt,r,IX(zr)),SPA(zp,a))));
  return equ(q,IX(d))?a:jtcant2(jt,q,a);
 }    /* convert replacement array a into standard form relative to index list ind */
 
@@ -93,7 +93,7 @@ static A jtscuba(J jt,A z,A i1,B u){A*iv,q=0,x;I c,d,j,n,*s,*v;P*zp;
   x=iv[j];
   if(x==ds(CACE))RZ(x=IX(s[v[j]]))else{if(1<AR(x))RZ(x=ravel(x)); if(u)RZ(x=nub(x));}
   c=AN(x); 
-  if(q){d=*AS(q); RZ(q=stitch(repeat(sc(d),x),jtreitem(jt,sc(c*d),q)));}
+  if(q){d=*AS(q); RZ(q=stitch(jtrepeat(jt,sc(d),x),jtreitem(jt,sc(c*d),q)));}
   else RZ(q=reshape(v2(c,1L),x));
  }
  return q;
@@ -109,7 +109,7 @@ static A jtscubb(J jt,A z,A i1){A a,q,x,y;I c,d,h,j,*s,*v,*xv;P*zp;
  GATV0(x,INT,h,1); xv=AV(x); j=c; DO(h, xv[i]=s[v[j++]];);
  RZ(x=odom(2L,h,xv));
  c=*AS(q); d=*AS(x);
- return stitch(repeat(sc(d),q),jtreitem(jt,sc(c*d),x));
+ return stitch(jtrepeat(jt,sc(d),q),jtreitem(jt,sc(c*d),x));
 }    /* new rows for the index matrix of z for brand new cells */
 
 static A jtscubc(J jt,A z,A i1,A p){A a,q,s,y,y1;B*qv;I c,d,h,j=-1,m,n,*sv,*u,*v;P*zp;
@@ -117,13 +117,13 @@ static A jtscubc(J jt,A z,A i1,A p){A a,q,s,y,y1;B*qv;I c,d,h,j=-1,m,n,*sv,*u,*v
  if(!h)return mtm;
  GATV0(s,INT,h,1); sv=AV(s); 
  d=1; u=AS(z); v=AV(a); DO(h, d*=sv[i]=u[v[n+i]];);
- RZ(y=repeat(p,SPA(zp,i))); m=*AS(y);
+ RZ(y=jtrepeat(jt,p,SPA(zp,i))); m=*AS(y);
  RZ(y1=take(v2(m,n),y)); v=AV(y1);
  GATV0(q,B01,m,1); qv=BAV(q);
  if(m){memset(qv,C0,m); DO(m-1, if(ICMP(v,v+n,n)){if(d>i-j)qv[i]=1; j=i;} v+=n;); if(d>(m-1)-j)qv[m-1]=1;}
- RZ(y1=repeat(q,y1)); c=*AS(y1);
+ RZ(y1=jtrepeat(jt,q,y1)); c=*AS(y1);
  if(!c)return mtm;
- return jtless(jt,stitch(repeat(sc(d),y1),jtreitem(jt,sc(c*d),odom(2L,h,sv))),y);
+ return jtless(jt,stitch(jtrepeat(jt,sc(d),y1),jtreitem(jt,sc(c*d),odom(2L,h,sv))),y);
 }    /* new rows for the index matrix of z for existing cells */
 
 static A jtscube(J jt,A z,A i1,A p){A a,y;P*zp;

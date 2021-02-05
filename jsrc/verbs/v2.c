@@ -352,13 +352,13 @@ static A jtqco2x(J jt,I m,A w){A y;I c,*dv,i,*pv,*yv;X d,q,r,x;
  bb=equ(a,ainf);
  if(b&bb){ /* __ q: w */
   RZ(y=ne(q,curtail(over(zeroionei(0),q))));
-  return jtlamin2(jt,repeat(y,q),df1(z,y,jtcut(jt,ds(CPOUND),zeroionei(1))));
+  return jtlamin2(jt,jtrepeat(jt,y,q),df1(z,y,jtcut(jt,ds(CPOUND),zeroionei(1))));
  }
  RZ(y=vi(plt(q))); yv=AV(y);
  k=-1; DO(AN(y), if(k<yv[i])k=yv[i];); ++k;
  if(bb)m=k; else RE(m=i0(a));
  if(b){
-  q=repeat(ge(y,sc(k-m)),q);
+  q=jtrepeat(jt,ge(y,sc(k-m)),q);
   return jtlamin2(jt,nub(q),df2(z,q,q,sldot(ds(CPOUND))));
  }else{
   GATV(z,INT,wn*m,1+wr,AS(w)); AS(z)[wr]=m; zv=AV(z);

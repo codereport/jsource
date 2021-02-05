@@ -171,8 +171,8 @@ static A jtreshapesp0(J jt,A a,A w,I wf,I wcr){A e,p,x,y,z;B*b,*pv;I c,d,r,*v,wr
  GATV0(p,B01,r,1); pv=BAV(p);
  v=AV(y); 
  DO(r, *pv=1; DO(c-d, if(v[d+i]){*pv=0; break;}); ++pv; v+=c;);
- SPB(zp,i,repeat(p,taker(d,y)));
- SPB(zp,x,irs2(mtv,repeat(p,x),0L,1L,wcr-(c-d),jtreshape));
+ SPB(zp,i,jtrepeat(jt,p,taker(d,y)));
+ SPB(zp,x,irs2(mtv,jtrepeat(jt,p,x),0L,1L,wcr-(c-d),jtreshape));
  return z;
 }    /* '' ($,)"wcr w for sparse w */
 

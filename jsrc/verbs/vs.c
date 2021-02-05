@@ -137,7 +137,7 @@ A jtsparseit(J jt,A w,A a,A e){PROLOG(0091);A ax,c,x,y,z;B b,*cv;I cm,cn,m,n,r,*
  b=b&&SB01&AT(z)&&equ(e,num(0)); c=w;
  if(!b)RZ(c=__not(irs2(reshape(vec(INT,r-n,n+s),SPA(p,e)),x,VFLAGNONE, RMAX,-1L,jtmatch)));
  cn=AN(c); cv=BAV(c); cm=bsum(cn,cv);
- /* RZ(y=jtabase2(jt,vec(INT,n,s),repeat(c,IX(cn)))); */
+ /* RZ(y=jtabase2(jt,vec(INT,n,s),jtrepeat(jt,c,IX(cn)))); */
  GATV0(y,INT,cm*n,2); u=AS(y); *u++=cm; *u=n;
  if(cm){I d,e,k,q,*sn,*yv;
   k=cn-1; cv+=cn; yv=AN(y)+AV(y); sn=s+n; d=*(sn-1); e=*(sn-2);
@@ -148,7 +148,7 @@ A jtsparseit(J jt,A w,A a,A e){PROLOG(0091);A ax,c,x,y,z;B b,*cv;I cm,cn,m,n,r,*
    default: DO(cn, if(*--cv){q=k-i; u=sn; DQ(n, d=*--u; *--yv=q%d; q/=d;);});
  }}
  SPB(p,i,y);
- SPB(p,x,b?reshape(sc(cm),num(1)):repeat(c,x));
+ SPB(p,x,b?reshape(sc(cm),num(1)):jtrepeat(jt,c,x));
  EPILOG(z);
 }
 
@@ -183,11 +183,11 @@ A jtsparseit(J jt,A w,A a,A e){PROLOG(0091);A ax,c,x,y,z;B b,*cv;I cm,cn,m,n,r,*
   s=AS(x); c=1; DO(AN(p), d=s[1+i]; if(b[i]){c*=d; v[k++]=d;}else u[j++]=d;); *u=c*m;
   RZ(x=reshape(vec(INT,j,u),jtcant2(jt,increm(dgrade1(p)),x)));
   RZ(q=__not(irs2(x,reshape(vec(INT,AR(x)-1,1+AS(x)),e),0L,-1L,RMAX,jtmatch)));
-  SPBV(zp,x,x,repeat(q,x));
-  RZ(y=stitch(repeat(sc(c),y),reshape(v2(c*m,k),jtabase2(jt,vec(INT,k,v),IX(c)))));
+  SPBV(zp,x,x,jtrepeat(jt,q,x));
+  RZ(y=stitch(jtrepeat(jt,sc(c),y),reshape(v2(c*m,k),jtabase2(jt,vec(INT,k,v),IX(c)))));
   RZ(p=grade1(over(a,jtless(jt,a1,a))));
-  if(equ(p,IX(AN(p))))SPB(zp,i,repeat(q,y))
-  else{y=jtfromr(jt,p,repeat(q,y)); q=grade1(y); SPB(zp,i,jtfrom(jt,q,y)); SPB(zp,x,jtfrom(jt,q,x));}
+  if(equ(p,IX(AN(p))))SPB(zp,i,jtrepeat(jt,q,y))
+  else{y=jtfromr(jt,p,jtrepeat(jt,q,y)); q=grade1(y); SPB(zp,i,jtfrom(jt,q,y)); SPB(zp,x,jtfrom(jt,q,x));}
   return z;
  }
  if(all1(jteps(jt,a1,a))){A x1,y1;B*pv;C*s,*t;I g,h,*iv,n;  /* new is subset of old */
@@ -286,8 +286,8 @@ static A jtaxtally(J jt,A a,A w){A a1,e,p,q,x;B*b;I c,d,j,m,n=0,r,*u,*v,*ws,wt;P
  wp=PAV(w); e=SPA(wp,e); x=SPA(wp,x); r=AR(x)-1;
  GASPARSE(z,AT(w),1,AR(w),AS(w)); zp=PAV(z);
  RZ(q=__not(irs2(x,reshape(vec(INT,r,1+AS(x)),e),0L,r,r,jtmatch)));
- SPB(zp,x,repeat(q,x));
- SPB(zp,i,repeat(q,SPA(wp,i)));
+ SPB(zp,x,jtrepeat(jt,q,x));
+ SPB(zp,i,jtrepeat(jt,q,SPA(wp,i)));
  SPB(zp,a,ca(SPA(wp,a)));
  SPB(zp,e,ca(e));
  return z;

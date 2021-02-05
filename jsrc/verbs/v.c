@@ -129,9 +129,9 @@ A jtdropr(J jt,I n,A w){ A a,z; RZ(a=sc(n)); return IRS2(a,w,0, RMAX,1L,jtdrop,z
  SETIC(w,n);
  if(SB01&AT(w)){
   p=PAV(w); a=SPA(p,a); e=SPA(p,e); 
-  return BAV(e)[0]||equ(mtv,a) ? repeat(w,IX(n)) : repeat(SPA(p,x),ravel(SPA(p,i)));
+  return BAV(e)[0]||equ(mtv,a) ? jtrepeat(jt,w,IX(n)) : jtrepeat(jt,SPA(p,x),ravel(SPA(p,i)));
  }
- return B01&AT(w) ? jtifb(jt,n,BAV(w)) : repeat(w,IX(n));
+ return B01&AT(w) ? jtifb(jt,n,BAV(w)) : jtrepeat(jt,w,IX(n));
 }
 
 A jtcharmap(J jt,A w,A x,A y){A z;B bb[256];I k,n,wn;UC c,*u,*v,zz[256];
