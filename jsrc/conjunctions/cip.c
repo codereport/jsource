@@ -190,7 +190,7 @@ I cachedmmult(J jt,D* av,D* wv,D* zv,I m,I n,I p,I flgs){D c[(CACHEHEIGHT+1)*CAC
  wr=AR(w); wt=AT(w); wt=AN(w)?wt:B01;
  if(((at|wt)&SPARSE)!=0)return pdtsp(a,w);  // Transfer to sparse code if either arg sparse
  if(((at|wt)&XNUM+RAT)!=0)return df2(z,a,w,jtatop(jt,slash(ds(CPLUS)),qq(ds(CSTAR),v2(1L,AR(w)))));  // On indirect numeric, execute as +/@(*"(1,(wr)))
- if(B01&(at|wt)&&TYPESNE(at,wt)&&((ar-1)|(wr-1)|(AN(a)-1)|(AN(w)-1))>=0)return pdtby(a,w);   // If exactly one arg is boolean, handle separately
+ if(B01&(at|wt)&&TYPESNE(at,wt)&&((ar-1)|(wr-1)|(AN(a)-1)|(AN(w)-1))>=0)return jtpdtby(jt,a,w);   // If exactly one arg is boolean, handle separately
  {t=maxtyped(at,wt); if(!TYPESEQ(t,AT(a))){RZ(a=jtcvt(jt,t,a));} if(!TYPESEQ(t,AT(w))){RZ(w=jtcvt(jt,t,w));}}  // convert args to compatible precisions, changing a and w if needed.  B01 if both empty
  ASSERT(t&NUMERIC,EVDOMAIN);
  // Allocate result area and calculate loop controls

@@ -283,3 +283,4 @@
 |`jsrc/verbs/ve.c`|pdt|jtpdt|`(^\|[ \t]+\|[^\d\w_])pdt\((?=([^,]+?),([^)]+?)\))`|`\1jtpdt(jt,`|
 |`jsrc/verbs/vfrom.c`|pdt|jtpdt|`(^\|[ \t]+\|[^\d\w_])pdt\((?=([^,]+?),([^)]+?)\))`|`\1jtpdt(jt,`|
 |`jsrc/verbs/vs.c`|pdt|jtpdt|`(^\|[ \t]+\|[^\d\w_])pdt\((?=([^,]+?),([^)]+?)\))`|`\1jtpdt(jt,`|
+|`jsrc/conjunctions/cip.c`|pdtby|jtpdtby|`(^\|[ \t]+\|[^\d\w_])pdtby\((?=([^,]+?),([^)]+?)\))`|`\1jtpdtby(jt,`|
