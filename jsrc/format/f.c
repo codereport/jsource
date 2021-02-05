@@ -459,7 +459,7 @@ static A jtenframe(J jt, A w){A x,y,z;C*zv;I ht,m,n,p,q,t,wd,wdb,wr,xn,*xv,yn,*y
 }
 
 // Convert 1 box to character array, then to character table
-static A jtmatth1(J jt,A a,A w){return mat(thorn1main(a,w));}
+static A jtmatth1(J jt,A a,A w){return mat(jtthorn1main(jt,a,w));}
 static EVERYFS(matth1self,0,jtmatth1,0,VFLAGNONE)
 
 // Format boxed array.  Result is table of characters, with space-changing characters (like BS, CR) converted to spaces
@@ -549,11 +549,11 @@ static A jtthorn1main(J jt,A w,A prxthornuni){PROLOG(0001);A z;
              z=ths(w);                    break;
   case VERBX: case ADVX:  case CONJX:
    switch((jt->disp)[1]){
-    case 1: z=thorn1main(arep(w),prxthornuni); break;
-    case 2: z=thorn1main(drep(w),prxthornuni); break;
-    case 4: z=thorn1main(trep(w),prxthornuni); break;
-    case 5: z=thorn1main(lrep(w),prxthornuni); break;
-    case 6: z=thorn1main(prep(w),prxthornuni); break;
+    case 1: z=jtthorn1main(jt,arep(w),prxthornuni); break;
+    case 2: z=jtthorn1main(jt,drep(w),prxthornuni); break;
+    case 4: z=jtthorn1main(jt,trep(w),prxthornuni); break;
+    case 5: z=jtthorn1main(jt,lrep(w),prxthornuni); break;
+    case 6: z=jtthorn1main(jt,prep(w),prxthornuni); break;
  }}
  EPILOG(z);
 }
@@ -561,10 +561,10 @@ static A jtthorn1main(J jt,A w,A prxthornuni){PROLOG(0001);A z;
 // entry point to allow C2T result from thorn1.  But always pass byte arguments unchanged
 // This will enable null insertion/removal for CJK, but that's OK since the result goes to display
 // This is called only from jprx()
- A jtthorn1u(J jt, A w){ A z; z = thorn1main(w,num(2+!(AT(w)&(LIT)))); return z; }  // set prx and prxthornuni flags
+ A jtthorn1u(J jt, A w){ A z; z = jtthorn1main(jt,w,num(2+!(AT(w)&(LIT)))); return z; }  // set prx and prxthornuni flags
 
 // entry point for returning LIT array only.  Allow C2T result, then convert.  But always pass literal arguments unchanged
- A jtthorn1(J jt, A w){ A z; A prxthornuni=zeroionei(!(AT(w)&(LIT+C2T+C4T))); z = thorn1main(w,prxthornuni); if (z&&AT(z)&(C2T+C4T))z = rank2ex(z,prxthornuni,UNUSED_VALUE,MIN(AR(z),1L),0,MIN(AR(z),1L),0, RoutineD); return z; }
+ A jtthorn1(J jt, A w){ A z; A prxthornuni=zeroionei(!(AT(w)&(LIT+C2T+C4T))); z = jtthorn1main(jt,w,prxthornuni); if (z&&AT(z)&(C2T+C4T))z = rank2ex(z,prxthornuni,UNUSED_VALUE,MIN(AR(z),1L),0,MIN(AR(z),1L),0, RoutineD); return z; }
 
 
 #define DDD(v)   {*v++='.'; *v++='.'; *v++='.';}

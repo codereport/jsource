@@ -517,3 +517,4 @@
 |`jsrc/conjunctions/cc.c`|tesa|jttesa|`(^\|[ \t]+\|[^\d\w_])tesa\((?=([^,]+?),([^)]+?)\))`|`\1jttesa(jt,`|
 |`jsrc/format/f2.c`|th2box|jtth2box|`(^\|[ \t]+\|[^\d\w_])th2box\((?=([^,]+?),([^)]+?)\))`|`\1jtth2box(jt,`|
 |`jsrc/format/f.c`|thbox|jtthbox|`(^\|[ \t]+\|[^\d\w_])thbox\((?=([^,]+?),([^)]+?)\))`|`\1jtthbox(jt,`|
+|`jsrc/format/f.c`|thorn1main|jtthorn1main|`(^\|[ \t]+\|[^\d\w_])thorn1main\((?=([^,]+?),([^)]+?)\))`|`\1jtthorn1main(jt,`|
