@@ -598,7 +598,7 @@
 #define newt(x0,x1,x2,x3)           jtnewt(jt,(x0),(x1),(x2),(x3))
 #define nextprime(x)                jtnextprime(jt,(x))
 #define nfb(x)                      jtnfb(jt,(x))
-#define nfs(x,y)                    jtnfs(jt,(x),(y))
+
 #define nlsym(x)                    jtnlsym(jt,(x))
 #define nlx(x)                      jtnlx(jt,(x))
 #define nlxxx(x)                    jtnlxxx(jt,(x))

@@ -107,7 +107,7 @@ A jtstcreate(J jt,C k,I p,I n,C*u){A g,x,xx;C s[20];L*v;
  switch(k){
   case 0:  /* named    locale */
    RZ(v=symnew(&LXAV0(g)[SYMLINFO],0)); v->flag|=LINFO;    // allocate at head of chain
-   RZ(x=nfs(n,u));  // this fills in the hash for the name
+   RZ(x=jtnfs(jt,n,u));  // this fills in the hash for the name
    // Install name and path.  Path is 'z' except in z locale itself, which has empty path
    RZ(ras(x)); LOCNAME(g)=x; xx=1==n&&'z'==*u?vec(BOX,0L,0L):zpath; ras(xx); LOCPATH(g) = xx;   // ras() is never VIRTUAL
    // Assign this name in the locales symbol table to point to the allocated SYMB block
@@ -116,7 +116,7 @@ A jtstcreate(J jt,C k,I p,I n,C*u){A g,x,xx;C s[20];L*v;
    break;
   case 1:  /* numbered locale */
    RZ(v=symnew(&LXAV0(g)[SYMLINFO],0)); v->flag|=LINFO;    // allocate at head of chain
-   sprintf(s,FMTI,n); RZ(x=nfs(strlen(s),s)); NAV(x)->bucketx=n; // this fills in the hash for the name; we save locale# if numeric
+   sprintf(s,FMTI,n); RZ(x=jtnfs(jt,strlen(s),s)); NAV(x)->bucketx=n; // this fills in the hash for the name; we save locale# if numeric
    RZ(ras(x)); LOCNAME(g)=x; ras(zpath); LOCPATH(g)=zpath;  // ras() is never virtual
    // Put this locale into the in-use list at an empty location.  ras(g) at that time
    jtinstallnl(jt, g);  // put the locale into the numbered list at the value most recently returned (which must be n)
@@ -206,7 +206,7 @@ static A jtvlocnl(J jt,I b,A w){A*wv,y;C*s;I i,m,n;
   ASSERT(m!=0,EVLENGTH);
   ASSERT(LIT&AT(y),EVDOMAIN);
   ASSERT(((1-b) & (I)((UI)CAV(y)[0]-('9'+1)))>=0,EVDOMAIN);  // numeric locale not allowed except when called for in b
-  if(b&1)ASSERTN(vlocnm(m,s),EVILNAME,nfs(m,s));
+  if(b&1)ASSERTN(vlocnm(m,s),EVILNAME,jtnfs(jt,m,s));
  }
  return w;
 }    /* validate namelist of locale names  Returns list if all valid, else 0 for error */

@@ -327,21 +327,21 @@ static A jtlocindirect(J jt,I n,C*u,UI4 hash){A x,y;C*s,*v,*xv;I k,xn;
    e=probe(k,v,hash,jt->locsyms);  // look up local first
    if(!e)e=syrd1(k,v,hash,jt->global);
   }else e=syrd1(k,v,(UI4)nmhash(k,v),g);   // look up later indirect locatives, yielding an A block for a locative
-  ASSERTN(e,EVVALUE,nfs(k,v));  // verify found
+  ASSERTN(e,EVVALUE,jtnfs(jt,k,v));  // verify found
   y=e->val;    // y->A block for locale
-  ASSERTN(!AR(y),EVRANK,nfs(k,v));   // verify atomic
+  ASSERTN(!AR(y),EVRANK,jtnfs(jt,k,v));   // verify atomic
   if(AT(y)&(INT|B01)){g=findnl(BIV0(y)); ASSERT(g!=0,EVLOCALE);  // if atomic integer, look it up
   }else{
-   ASSERTN(BOX&AT(y),EVDOMAIN,nfs(k,v));  // verify box
+   ASSERTN(BOX&AT(y),EVDOMAIN,jtnfs(jt,k,v));  // verify box
    x=AAV(y)[0]; if((((I)AR(x)-1)&-(AT(x)&(INT|B01)))<0) {
     // Boxed integer - use that as bucketx
     g=findnl(BIV0(x)); ASSERT(g!=0,EVLOCALE);  // boxed integer, look it up
    }else{
     xn=AN(x); xv=CAV(x);   // x->boxed contents, xn=length, xv->string
-    ASSERTN(1>=AR(x),EVRANK,nfs(k,v));   // verify list (or atom)
-    ASSERTN(xn,EVLENGTH,nfs(k,v));   // verify not empty
-    ASSERTN(LIT&AT(x),EVDOMAIN,nfs(k,v));  // verify string
-    ASSERTN(vlocnm(xn,xv),EVILNAME,nfs(k,v));  // verify legal name
+    ASSERTN(1>=AR(x),EVRANK,jtnfs(jt,k,v));   // verify list (or atom)
+    ASSERTN(xn,EVLENGTH,jtnfs(jt,k,v));   // verify not empty
+    ASSERTN(LIT&AT(x),EVDOMAIN,jtnfs(jt,k,v));  // verify string
+    ASSERTN(vlocnm(xn,xv),EVILNAME,jtnfs(jt,k,v));  // verify legal name
     I bucketx=BUCKETXLOC(xn,xv);
     RZ(g=stfindcre(xn,xv,bucketx));  // find st for the name
    }
@@ -397,7 +397,7 @@ static A jtdllsymaddr(J jt,A w,C flag){A*wv,x,y,z;I i,n,*zv;L*v;
  ASSERT(!n||BOX&AT(w),EVDOMAIN);
  GATV(z,INT,n,AR(w),AS(w)); zv=AV(z); 
  for(i=0;i<n;++i){
-  x=wv[i]; v=syrd(nfs(AN(x),CAV(x)),jt->locsyms); 
+  x=wv[i]; v=syrd(jtnfs(jt,AN(x),CAV(x)),jt->locsyms); 
   ASSERT(v!=0,EVVALUE);
   y=v->val;
   ASSERT(NOUN&AT(y),EVDOMAIN);

@@ -372,7 +372,7 @@ A _stdcall JGetA(J jt, I n, C* name){A x,z=0;
  if(name==0){if(jt->iomalloc){FREE(jt->iomalloc); jt->malloctotal -= jt->iomalloclen; jt->iomalloc=0; jt->iomalloclen=0;} return 0;}
  jt->jerr=0;
  A *old=jt->tnextpushp;
- if(!(x=symbrdlock(nfs(n,name)))){ jsignal(EVILNAME);  // look up the name, error if invalid
+ if(!(x=symbrdlock(jtnfs(jt,n,name)))){ jsignal(EVILNAME);  // look up the name, error if invalid
  }else if(FUNC&AT(x)){ jsignal(EVDOMAIN);   // verify the value is not adv/verb/conj
  }else{
   // name is OK; get the binary rep
@@ -397,7 +397,7 @@ I _stdcall JSetA(J jt,I n,C* name,I dlen,C* d){
  jt->jerr=0;
  if(!vnm(n,name)){ jsignal(EVILNAME); return EVILNAME;}
  A *old=jt->tnextpushp;
- symbisdel(nfs(n,name),jtunbin(jt,str(dlen,d)),jt->global);
+ symbisdel(jtnfs(jt,n,name),jtunbin(jt,str(dlen,d)),jt->global);
  tpop(old);
  return jt->jerr;
 }
@@ -580,7 +580,7 @@ int _stdcall JGetM(J jt, C* name, I* jtype, I* jrank, I* jshape, I* jdata)
  A *old=jt->tnextpushp;
  if(strlen(name) >= sizeof(gn)){ jsignal(z=EVILNAME);
  }else if(valid(name, gn)){ jsignal(z=EVILNAME);
- }else if(!(a=symbrdlock(nfs(strlen(gn),gn)))){ jsignal(z=EVDOMAIN);
+ }else if(!(a=symbrdlock(jtnfs(jt,strlen(gn),gn)))){ jsignal(z=EVDOMAIN);
  }else if(FUNC&AT(a)){ jsignal(z=EVDOMAIN);
  }else{
   *jtype = AT(a);

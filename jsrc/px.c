@@ -75,7 +75,7 @@ static A jtcex(J jt,A w,AF f,A self){A z; RE(w); z=f(jt,w,self); RESETERR; retur
  return parse(z);
 }
 
-L* jtjset(J jt,C*name,A x){return symbisdel(nfs((I)strlen(name),name),x,jt->global);}
+L* jtjset(J jt,C*name,A x){return symbisdel(jtnfs(jt,(I)strlen(name),name),x,jt->global);}
 
  A jtapplystr(J jt,A a,A w){PROLOG(0054);A fs,z;
  F2RANK(1,RMAX,jtapplystr,UNUSED_VALUE);

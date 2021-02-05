@@ -89,8 +89,8 @@ A jtsfne(J jt,A w){ A wn=FAV(w)->fgh[0]; if(AT(wn)&NAMEBYVALUE)return jtfix(jt,w
  ASSERT(!AR(w),EVRANK);
  RZ(y=vs(ope(w)));
  n=AN(y); s=CAV(y);
- ASSERTN(vnm(n,s),EVILNAME,nfs(n,s));
- return nfs(n,s);
+ ASSERTN(vnm(n,s),EVILNAME,jtnfs(jt,n,s));
+ return jtnfs(jt,n,s);
 }    /* name from scalar boxed string */
 
 // w is an A for a name string; return NAME block or 0 if error
@@ -101,11 +101,11 @@ static A jtstdnm(J jt, A w){C*s;I j,n,p,q;
  j=0;   DQ(n, if(' '!=s[j++])break;); p=j-1;
  j=n-1; DQ(n, if(' '!=s[j--])break;); q=(n-2)-j;
  if(!(vnm(n-(p+q),p+s)))return 0;   // Validate name
- return nfs(n-(p+q),p+s);   // Create NAME block for name
+ return jtnfs(jt,n-(p+q),p+s);   // Create NAME block for name
 }    /* 0 result means error or invalid name */
 
 // x is a (possibly) boxed string; result is NAME block for name x, error if invalid name
- A jtonm(J jt, A w){A x,y; RZ(x=ope(w)); y=stdnm(x); ASSERTN(y,EVILNAME,nfs(AN(x),CAV(x))); return y;}
+ A jtonm(J jt, A w){A x,y; RZ(x=ope(w)); y=stdnm(x); ASSERTN(y,EVILNAME,jtnfs(jt,AN(x),CAV(x))); return y;}
 
 // w is array of boxed strings; result is name class for each
  A jtnc(J jt, A w){A*wv,x,y,z;I i,n,t,*zv;L*v;
@@ -162,7 +162,7 @@ static A jtnlx(J jt, A w){A z=mtv;B b;I m=0,*v,x;
  ASSERT(!n||BOX&AT(w),EVDOMAIN);
  wv=AAV(w); 
  GATV(z,INT,n,AR(w),AS(w)); zv=AV(z);
- DO(n, x=wv[i]; RE(y=stdnm(x)); ASSERTN(y,EVILNAME,nfs(AN(x),CAV(x))); v=syrd(y,jt->locsyms); RESETERR; zv[i]=v?v->sn:-1;);
+ DO(n, x=wv[i]; RE(y=stdnm(x)); ASSERTN(y,EVILNAME,jtnfs(jt,AN(x),CAV(x))); v=syrd(y,jt->locsyms); RESETERR; zv[i]=v?v->sn:-1;);
  return z;
 }    /* 4!:4  script index */
 

@@ -156,7 +156,7 @@ A jtenqueue(J jt,A a,A w,I env){A*v,*x,y,z;B b;C d,e,p,*s,*wi;I i,n,*u,wl;UC c;
   } else {
    p=b?b:p;    // otherwise, it's not a primitive, but data, either numeric, string, or name.  Check first character, but fail if inflected form, which must be invalid.  p must be non0
     // If the name is a call-by-value name (x y u. etc), we mark it as BYVALUE if it is slated for execution in an explicit definition
-   if((p&~CA)==0){ASSERTN(vnm(wl,wi),EVILNAME,nfs(wl,wi)); RZ(*x=nfs(wl,wi)); if((env==2)&&(NAV(*x)->flag&NMXY)){AT(*x)|=NAMEBYVALUE;}  // starts with alphabetic, make it a name, error if invalid name
+   if((p&~CA)==0){ASSERTN(vnm(wl,wi),EVILNAME,jtnfs(jt,wl,wi)); RZ(*x=jtnfs(jt,wl,wi)); if((env==2)&&(NAV(*x)->flag&NMXY)){AT(*x)|=NAMEBYVALUE;}  // starts with alphabetic, make it a name, error if invalid name
    }else if(p==C9){if(!(*x=jtconnum(jt,wl,wi))){I lje=jt->jerr; RESETERR; jsignal3(lje,w,u[0]); return 0;}   // starts with numeric, create numeric constant.. If error, give a message showing the bad number
    }else if(p==CQ){ RZ(*x=jtconstr(jt,wl,wi));   // start with ', make string constant
    }else{jsignal3(EVSPELL,w,wi-s); return 0;}   // bad first character or inflection

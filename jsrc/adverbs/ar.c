@@ -550,7 +550,7 @@ static A jtfoldx(J jt,A a,A w,A self){F2PREFIP;  // this stands in place of jtxd
  // get the rest of the flags from the original ID byte, which was moved to lc
  foldflag|=FAV(self)->lc-CFDOT;  // this sets mult fwd rev
  // define the flags as the special global
- RZ(symbis(nfs(11,"Foldtype_j_"),sc(foldflag),jt->locsyms));
+ RZ(symbis(jtnfs(jt,11,"Foldtype_j_"),sc(foldflag),jt->locsyms));
  // execute the Fold.  While it is running, set the flag to allow Z:
  B foldrunning=jt->foldrunning; jt->foldrunning=1; A z=(*(FAV(self)->localuse.lfns[1]))(jt,a,w,self); jt->foldrunning=foldrunning;
  // if there was an error, save the error code and recreate the error at this level, to cover up details inside the script
@@ -565,7 +565,7 @@ static A jtfoldx(J jt,A a,A w,A self){F2PREFIP;  // this stands in place of jtxd
  for(step=0;step<2;++step){
   switch(step){  // try the startup, from the bottom up
   case 1: eval("load'~addons/dev/fold/foldr.ijs'");  // fall through
-  case 0: if((foldconj=jtnameref(jt,nfs(8,"Foldr_j_"),jt->locsyms))&&AT(foldconj)&CONJ)goto found;  // there is always a ref, but it may be to [:
+  case 0: if((foldconj=jtnameref(jt,jtnfs(jt,8,"Foldr_j_"),jt->locsyms))&&AT(foldconj)&CONJ)goto found;  // there is always a ref, but it may be to [:
   }
   RESETERR;  // if we loop back, clear errors
  }
@@ -586,7 +586,7 @@ found: ;
  A jtfoldZ(J jt,A a,A w,A self){
  ASSERT(jt->foldrunning,EVSYNTAX);  // If fold not running, fail.  Should be a semantic error rather than syntax
  // The name FoldZ_j_ should have been loaded at startup.  If not, fail
- A foldvb; RZ(foldvb=jtnameref(jt,nfs(8,"FoldZ_j_"),jt->locsyms)); ASSERT((AT(foldvb)&VERB),EVNONCE);   // error if undefined or not verb
+ A foldvb; RZ(foldvb=jtnameref(jt,jtnfs(jt,8,"FoldZ_j_"),jt->locsyms)); ASSERT((AT(foldvb)&VERB),EVNONCE);   // error if undefined or not verb
  // Apply FoldZ_j_ to the input arguments, creating a derived verb to do the work
  A z=unquote(a,w,foldvb);
  // if there was an error, save the error code and recreate the error at this level, to cover up details inside the script
