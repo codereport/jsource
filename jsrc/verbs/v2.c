@@ -323,7 +323,7 @@ static A jtdetmr(J jt, A w){A z;B*zv;I d,h,i,n,wn,*wv;
   case -1: return plt(w);
   case  0: RZ(z=primetest(w)); b=BAV(z); DQ(AN(z), *b=!*b; ++b;); return z;
   case  1: return primetest(w);
-  case  2: return qco2(scf(infm),w);
+  case  2: return jtqco2(jt,scf(infm),w);
   case  3: return factor(w);
   case  4: return nextprime(w);
   case  5: return totient(w);

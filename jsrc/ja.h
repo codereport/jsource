@@ -694,7 +694,7 @@
 #define pscangt(x0,x1,x2,x3,x4,x5)         jtpscangt(jt,(x0),(x1),(x2),(x3),(x4),(x5))
 #define pscanlt(x0,x1,x2,x3,x4,x5)  jtpscanlt(jt,(x0),(x1),(x2),(x3),(x4),(x5))
 #define qbin(x,y)                   jtqbin(jt,(x),(y))
-#define qco2(x,y)                   jtqco2(jt,(x),(y))
+
 #define qco2x(x,y)                  jtqco2x(jt,(x),(y))
 #define qcompare(x,y)               jtqcompare(jt,(x),(y))
 #define qdiv(x,y)                   jtqdiv(jt,(x),(y))
