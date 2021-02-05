@@ -79,6 +79,24 @@ def find_replaced_data():
     pass
 
 
+def command_test(command_test_pair):
+    (command, test) = command_test_pair
+    current_output = os.popen(command).read()
+    with open(test, 'r') as f:
+        if f.read().strip() not in current_output.strip():
+            print(current_output)
+            return True
+    return False
+    pass
+
+
+def command_tests(command_test_pairs):
+    for command_test_pair in command_test_pairs:
+        if command_test(command_test_pair):
+            return True
+    return False
+
+
 def main():
     while True:
         global old_name
@@ -89,22 +107,19 @@ def main():
         for path, new_data, old_name in matches:
             with open(path, 'w') as f:
                 f.write(new_data)
-        print()
-        os.system('cmake -G "Ninja Multi-Config" -B build')
-        os.system('ninja -C build')
-        # current_build = os.popen('ninja -C build').read()
-        current_test = os.popen('ninja -C build test').read()
-        with open("known_good_test.txt", 'r') as f:
-            if f.read().strip() not in current_test.strip():
-                print(current_test)
-                os.system('git reset --hard')
-                with open("excluded_names.txt", 'a') as excluded_names:
-                    excluded_names.write("\n" + old_name)
+        command_test_pairs = [('cmake -G "Ninja Multi-Config" -B build', "known_good_cmake.txt"),
+                              ('ninja -C build', "known_good_build.txt"),
+                              ('ninja -C build test', "known_good_test.txt")]
 
-                os.system('git commit -m "exclude ' + old_name + '" -a')
-            else:
-                os.system('git commit -m "remove #define ' + old_name + '" -a')
-                # os.system('git push')
+        if command_tests(command_test_pairs):
+            os.system('git reset --hard')
+            with open("excluded_names.txt", 'a') as excluded_names:
+                excluded_names.write("\n" + old_name)
+
+            os.system('git commit -m "exclude ' + old_name + '" -a')
+        else:
+            os.system('git commit -m "remove #define ' + old_name + '" -a')
+            # os.system('git push')
     pass
 
 
