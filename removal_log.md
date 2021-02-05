@@ -289,3 +289,5 @@
 |`jsrc/conjunctions/cpdtsp.c`|pdtspmm|jtpdtspmm|`(^\|[ \t]+\|[^\d\w_])pdtspmm\((?=([^,]+?),([^)]+?)\))`|`\1jtpdtspmm(jt,`|
 |`jsrc/conjunctions/cpdtsp.c`|pdtspvm|jtpdtspvm|`(^\|[ \t]+\|[^\d\w_])pdtspvm\((?=([^,]+?),([^)]+?)\))`|`\1jtpdtspvm(jt,`|
 |`jsrc/conjunctions/cpdtsp.c`|pdtspvv|jtpdtspvv|`(^\|[ \t]+\|[^\d\w_])pdtspvv\((?=([^,]+?),([^)]+?)\))`|`\1jtpdtspvv(jt,`|
+|`jsrc/verbs/vcant.c`|pfill|jtpfill|`(^\|[ \t]+\|[^\d\w_])pfill\((?=([^,]+?),([^)]+?)\))`|`\1jtpfill(jt,`|
+|`jsrc/verbs/vp.c`|pfill|jtpfill|`(^\|[ \t]+\|[^\d\w_])pfill\((?=([^,]+?),([^)]+?)\))`|`\1jtpfill(jt,`|

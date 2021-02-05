@@ -654,7 +654,7 @@
 
 
 #define pee(a,b,c,d,e    )          jtpee(jt,(a),(b),(c),(d),(e))
-#define pfill(x,y)                  jtpfill(jt,(x),(y))
+
 #define piev(x,y)                   jtpiev(jt,(x),(y))
 #define pind(x,y)                   jtpind(jt,(x),(y))
 #define pinit()                     jtpinit(jt)

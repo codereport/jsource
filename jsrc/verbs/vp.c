@@ -19,7 +19,7 @@ static I jtord(J jt,A w){I j,n,*v,z;
  RZ(w=vi(w));
  n=AN(w); v=AV(w);
  DO(n, I r=v[i]^REPSGN(v[i]); m=r>m?r:m;); ++m;  // take 1s-comp of negative ele#, then find max; add 1 to get #eles
- return jtindexof(jt,pfill(m,w),IX(m));
+ return jtindexof(jt,jtpfill(jt,m,w),IX(m));
 }    /* permutation inverse */
 
 // w contains indexes (its shape is immaterial).  n is the length of the axis.  Result is new array, same shape, with equivalent positive indexes
@@ -53,7 +53,7 @@ static A jtcfd(J jt, A w){A b,q,x,z,*zv;B*bv;I c,i,j,n,*qv,*u,*v,zn;
   GATV0(b,B01,1+n,1); bv=BAV(b); memset(bv,C0,n);
   DO(n, j=v[i]; if((UI)j>=(UI)n||bv[j]){c=0; break;} bv[j]=1;);
  }
- if(!c){n=ord(w); RZ(w=pfill(n,w)); v=AV(w); GATV0(b,B01,1+n,1);}
+ if(!c){n=ord(w); RZ(w=jtpfill(jt,n,w)); v=AV(w); GATV0(b,B01,1+n,1);}
  bv=BAV(b); memset(bv,C0,1+n); ++bv;
  i=0; j=n-1; zn=(I)(log((D)n)+1.6); 
  GATV0(q,INT,n, 1); qv= AV(q);
@@ -90,7 +90,7 @@ static A jtdfc(J jt,I n,A w){PROLOG(0082);A b,q,*wv,z;B*bv;I c,j,qn,*qv,*x;
  A jtcdot2(J jt,A a,A w){A p;I k;
  F2RANK(1,RMAX,jtcdot2,UNUSED_VALUE);
  SETIC(w,k);
- RZ(p=BOX&AT(a)?jtdfc(jt,k,a):pfill(k,a));
+ RZ(p=BOX&AT(a)?jtdfc(jt,k,a):jtpfill(jt,k,a));
  return AR(w)?jtfrom(jt,p,w):w;
 }
 
@@ -131,7 +131,7 @@ static A jtrfd(J jt, A w){A z;I j,k,m,n,r,*s,*x;
 
  A jtadot1(J jt, A w){A y;I n;
  F1RANK(1,jtadot1,UNUSED_VALUE);
- RZ(y=BOX&AT(w)?cdot1(w):pfill(ord(w),w));
+ RZ(y=BOX&AT(w)?cdot1(w):jtpfill(jt,ord(w),w));
  SETIC(y,n);
  return jtbase2(jt,jtcvt(jt,XNUM,apv(n,n,-1L)),rfd(y));
 }

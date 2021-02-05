@@ -105,11 +105,11 @@ static A jtcanta(J jt,A a,A w){A m,s,t,z;C*wv,*zv;I*av,j,*mv,r,*sv,*tv,wf,wr,*ws
  q=jt->ranks>>RANKTX; q=AR(a)<q?AR(a):q; RESETRANK;
  if(((q-2)&(AR(a)-q-1))>=0){t=rank2ex(a,w,UNUSED_VALUE,MIN(q,1),r,q,r,jtcant2); PRISTCLRF(w) return t;} // rank loop on a.  Loses pristinity
  if(BOX&AT(a)){
-  RZ(y=pfill(r,t=raze(a))); v=AV(y);
+  RZ(y=jtpfill(jt,r,t=raze(a))); v=AV(y);
   GATV0(p,INT,AN(y),1); pv=AV(p);
   m=AN(a); n=AN(t); av=AAV(a); 
   j=0; DO(r-n,pv[*v++]=j++;); DO(m, k=AN(av[i]); DQ(k,pv[*v++]=j;); j+=(k!=0););
- }else RZ(p=pinv(pfill(r,a)));
+ }else RZ(p=pinv(jtpfill(jt,r,a)));
  A z; IRS2(p,w,0L,1L,r,jtcanta,z); RZ(z);  // Set rank for w in canta.  p is now INT type.  No need to check agreement since a has rank 1
  // We extracted from w, so mark it (or its backer if virtual) non-pristine.  If w was pristine and inplaceable, transfer its pristine status to the result
  PRISTXFERF(z,w)
