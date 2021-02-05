@@ -277,3 +277,9 @@
 |`jsrc/conjunctions/ca.c`|pcvt|jtpcvt|`(^\|[ \t]+\|[^\d\w_])pcvt\((?=([^,]+?),([^)]+?)\))`|`\1jtpcvt(jt,`|
 |`jsrc/verbs/v2.c`|pcvt|jtpcvt|`(^\|[ \t]+\|[^\d\w_])pcvt\((?=([^,]+?),([^)]+?)\))`|`\1jtpcvt(jt,`|
 |`jsrc/verbs/va2.c`|pcvt|jtpcvt|`(^\|[ \t]+\|[^\d\w_])pcvt\((?=([^,]+?),([^)]+?)\))`|`\1jtpcvt(jt,`|
+|`jsrc/verbs/v.c`|pdt|jtpdt|`(^\|[ \t]+\|[^\d\w_])pdt\((?=([^,]+?),([^)]+?)\))`|`\1jtpdt(jt,`|
+|`jsrc/verbs/v0.c`|pdt|jtpdt|`(^\|[ \t]+\|[^\d\w_])pdt\((?=([^,]+?),([^)]+?)\))`|`\1jtpdt(jt,`|
+|`jsrc/verbs/vd.c`|pdt|jtpdt|`(^\|[ \t]+\|[^\d\w_])pdt\((?=([^,]+?),([^)]+?)\))`|`\1jtpdt(jt,`|
+|`jsrc/verbs/ve.c`|pdt|jtpdt|`(^\|[ \t]+\|[^\d\w_])pdt\((?=([^,]+?),([^)]+?)\))`|`\1jtpdt(jt,`|
+|`jsrc/verbs/vfrom.c`|pdt|jtpdt|`(^\|[ \t]+\|[^\d\w_])pdt\((?=([^,]+?),([^)]+?)\))`|`\1jtpdt(jt,`|
+|`jsrc/verbs/vs.c`|pdt|jtpdt|`(^\|[ \t]+\|[^\d\w_])pdt\((?=([^,]+?),([^)]+?)\))`|`\1jtpdt(jt,`|

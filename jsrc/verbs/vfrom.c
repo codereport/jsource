@@ -167,7 +167,7 @@ A jtfrombu(J jt,A a,A w,I wf){F1PREFIP;A p,q,z;I ar,*as,h,m,r,*u,*v,wcr,wr,*ws;
  fauxblockINT(pfaux,4,1); fauxINT(p,pfaux,h,1) v=AV(p)+h; u=ws+wf+h; m=1; DQ(h, *--v=m; m*=*--u;);  // m is number of items in the block of axes that index into w
  r=wr+1-h;  // rank of intermediate w arg is rank of w, minus h axes that go away and are replaced by 1 axis
  // We will use pdt to create an index to the cell
- A ind; RZ(ind=pdt(a,p));
+ A ind; RZ(ind=jtpdt(jt,a,p));
  PROLOG(777);
  if(r==wr){
   q=w;

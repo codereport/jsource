@@ -314,7 +314,7 @@ static A jtweight(J jt,A a,A w){ A z; return df1(z,behead(over(AR(w)?w:reshape(a
  A jtbase1(J jt, A w){A z;B*v;I c,m,n,p,r,*s,t,*x;
  n=AN(w); t=AT(w); r=AR(w); s=AS(w); c=AS(w)[r-1]; c=r?c:1;
  ASSERT(t&DENSE,EVNONCE);
- if(((c-BW)&SGNIF(t,B01X))>=0)return pdt(w,weight(sc(c),t&RAT+XNUM?jtcvt(jt,XNUM,num(2)):num(2)));  //
+ if(((c-BW)&SGNIF(t,B01X))>=0)return jtpdt(jt,w,weight(sc(c),t&RAT+XNUM?jtcvt(jt,XNUM,num(2)):num(2)));  //
  CPROD1(n,m,r-1,s);
  GATV(z,INT,m,r?r-1:0,s); x=AV(z); v=BAV(w);
  if(c)DQ(m, p=0; DQ(c, p=2*p+*v++;); *x++=p;)
@@ -328,7 +328,7 @@ static A jtweight(J jt,A a,A w){ A z; return df1(z,behead(over(AR(w)?w:reshape(a
  ASSERT(!((at|wt)&SPARSE),EVNONCE); t=maxtyped(at,wt);
  if(!(t&at))RZ(a=jtcvt(jt,t,a));
  if(!(t&wt))RZ(w=jtcvt(jt,t,w));
- return 1>=ar?pdt(w,weight(sc(c),a)):rank2ex(w,rank2ex(sc(c),a,UNUSED_VALUE,0L,MIN(ar,1),0L,MIN(ar,1),jtweight),UNUSED_VALUE,MIN(wr,1),1L,MIN(wr,1),1L,jtpdt);
+ return 1>=ar?jtpdt(jt,w,weight(sc(c),a)):rank2ex(w,rank2ex(sc(c),a,UNUSED_VALUE,0L,MIN(ar,1),0L,MIN(ar,1),jtweight),UNUSED_VALUE,MIN(wr,1),1L,MIN(wr,1),1L,jtpdt);
 }
 
 // #: y

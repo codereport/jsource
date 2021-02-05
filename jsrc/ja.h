@@ -646,7 +646,7 @@
 #define parsex(x0,x1,x2,x3)         jtparsex(jt,(x0),(x1),(x2),(x3))
 
 
-#define pdt(x,y)                    jtpdt(jt,(x),(y))
+
 #define pdtby(x,y)                  jtpdtby(jt,(x),(y))
 #define pdtsp(x,y)                  jtpdtsp(jt,(x),(y))
 #define pdtspmv(x,y)                jtpdtspmv(jt,(x),(y))
