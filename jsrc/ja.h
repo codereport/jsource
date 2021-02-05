@@ -650,7 +650,7 @@
 
 
 
-#define pdtspmm(x,y)                jtpdtspmm(jt,(x),(y))
+
 #define pdtspvm(x,y)                jtpdtspvm(jt,(x),(y))
 #define pdtspvv(x,y)                jtpdtspvv(jt,(x),(y))
 #define pee(a,b,c,d,e    )          jtpee(jt,(a),(b),(c),(d),(e))
