@@ -246,3 +246,5 @@
 |`jsrc/parsing/pv.c`|nameref|jtnameref|`(^\|[ \t]+\|[^\d\w_])nameref\((?=([^,]+?),([^)]+?)\))`|`\1jtnameref(jt,`|
 |`jsrc/sc.c`|namerefop|jtnamerefop|`(^\|[ \t]+\|[^\d\w_])namerefop\((?=([^,]+?),([^)]+?)\))`|`\1jtnamerefop(jt,`|
 |`jsrc/conjunctions/cx.c`|namerefop|jtnamerefop|`(^\|[ \t]+\|[^\d\w_])namerefop\((?=([^,]+?),([^)]+?)\))`|`\1jtnamerefop(jt,`|
+|`jsrc/sc.c`|namerefacv|jtnamerefacv|`(^\|[ \t]+\|[^\d\w_])namerefacv\((?=([^,]+?),([^)]+?)\))`|`\1jtnamerefacv(jt,`|
+|`jsrc/parsing/p.c`|namerefacv|jtnamerefacv|`(^\|[ \t]+\|[^\d\w_])namerefacv\((?=([^,]+?),([^)]+?)\))`|`\1jtnamerefacv(jt,`|

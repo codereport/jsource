@@ -454,14 +454,14 @@ rdglob: ;
         if((AT(sv)|at)&(NOUN|NAMEBYVALUE|NAMELESSMOD)){   // use value if noun or special name
          y=sv; at=AT(sv);
         } else {
-         y = namerefacv(y, s);   // Replace other acv with reference
+         y = jtnamerefacv(jt,y, s);   // Replace other acv with reference
          EPZ(y)
          at=AT(y);  // refresh the type with the type of the resolved name
         }
        } else {
          // undefined name.  If special x. u. etc, that's fatal; otherwise create a dummy ref to [: (to have a verb)
          if(at&NAMEBYVALUE){jsignal(EVVALUE);FP}  // Report error (Musn't ASSERT: need to pop all stacks) and quit
-         y = namerefacv(y, s);    // this will create a ref to undefined name as verb [:
+         y = jtnamerefacv(jt,y, s);    // this will create a ref to undefined name as verb [:
          EPZ(y)
            // if syrd gave an error, namerefacv may return 0.  This will have previously signaled an error
          at=AT(y);  // refresh the type with the type of the resolved name
@@ -663,11 +663,11 @@ failparse:  // If there was an error during execution or name-stacking, exit wit
       RZ(sv = s->val);  // symbol table entry, but no value.  Must be in an explicit definition, so there is no need to raise an error
       if(((AT(sv)|at)&(NOUN|NAMEBYVALUE))!=0){   // if noun or special name, use value
        y=sv;
-      } else y = namerefacv(y, s);   // Replace other acv with reference.  Could fail.
+      } else y = jtnamerefacv(jt,y, s);   // Replace other acv with reference.  Could fail.
     } else {
       // undefined name.
       if(at&NAMEBYVALUE){jsignal(EVVALUE); y=0;}  // Error if the unresolved name is x y etc.  Don't ASSERT since we must pop stack
-      else y = namerefacv(y, s);    // this will create a ref to undefined name as verb [: .  Could set y to 0 if error
+      else y = jtnamerefacv(jt,y, s);    // this will create a ref to undefined name as verb [: .  Could set y to 0 if error
     }
    }
    if(y!=0)if(!(AT(y)&CAVN)){jsignal(EVSYNTAX); y=0;}  // if not CAVN result, error

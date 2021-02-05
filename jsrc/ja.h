@@ -589,7 +589,7 @@
 #define mvw(x0,x1,x2,x3,x4,x5,x6)   jtmvw(jt,(x0),(x1),(x2),(x3),(x4),(x5),(x6))
 
 
-#define namerefacv(x,y)             jtnamerefacv(jt,(x),(y))
+
 #define nch1(x0,x1,x2,x3)           jtnch1(jt,(x0),(x1),(x2),(x3))
 #define ne(x,y)                     jtatomic2(jt,(x),(y),ds(CNE))
 #define negate(x)                   jtnegate(jt,(x))
