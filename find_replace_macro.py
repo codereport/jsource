@@ -81,12 +81,13 @@ def find_replaced_data():
 
 def command_test(command_test_pair):
     (command, test, message) = command_test_pair
+    print(message.strip() + " RUNNING...")
     current_output = os.popen(command).read()
     with open(test, 'r') as f:
         if f.read().strip() not in current_output.strip():
             print(current_output)
             return True
-    print(message.strip() + " SUCCESSFUL")
+    print(message.strip() + " SUCCESSFUL!")
     return False
     pass
 
