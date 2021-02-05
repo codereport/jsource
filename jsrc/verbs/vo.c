@@ -402,7 +402,7 @@ static A jtopes(J jt,I zt,A cs,A w){A a,d,e,sh,t,*wv,x,x1,y,y1,z;B*b;C*xv;I an,*
  SPB(zp,e,jtcvt(jt,dt,e)); e = SPA(zp,e);  // in case of reassignment by SPB
  GATV0(t,INT,yc, 1L); v=AV(t); DO(wr, v[i]=i;); DO(an, v[wr+i]=wr+av[i];); SPB(zp,a,t);
  GATV0(sh,INT,1+c,1L); s=AV(sh); s[0]=m; j=1; DO(wcr, if(!b[i])s[j++]=zs[wr+i];); 
- RE(xc=prod(c,1+s)); xk=xc*dk;
+ RE(xc=jtprod(jt,c,1+s)); xk=xc*dk;
  GATV0(d,INT,wr,1); dv=AV(d); memset(dv,C0,wr*SZI);
  RE(i=mult(m,xc)); GA(x,dt, i,1+c,s); xv=CAV(x); mvc(m*xk,xv,dk,AV(e));
  RE(i=mult(m,yc)); GATV0(y,INT,i,2L); v=AS(y); *v=m; v[1]=yc; yv=AV(y); memset(yv,C0,SZI*i);

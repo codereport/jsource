@@ -45,7 +45,7 @@ static B jtspsscell(J jt,A w,I wf,I wcr,A*zc,A*zt){A c,t,y;B b;
 
 static A jtgrd1spz(J jt,A w,I wf,I wcr){A z;I*ws,zn;
  ws=AS(w);
- RE(zn=prod(wf+!!wcr,ws)); 
+ RE(zn=jtprod(jt,wf+!!wcr,ws)); 
  GATV(z,INT,zn,1+wf,ws); if(!wcr)AS(z)[wf]=1;
  return z;
 }    /* allocate result for grd1sp__ */
@@ -120,7 +120,7 @@ static B jtspdscell(J jt,A w,I wf,I wcr,A*zc,A*zt){A c,t,y;I*cv,m,n,p,*s,tn,*tv,
 }    /* frame: all dense; cell: 1 or more sparse, then dense */
 
 static A jtgrd1spds(J jt,A w,I wf,I wcr){A c,t,x,y,z;I*cv,m,n,n1,p,*tv,*ws,wt,*xv,yc,*yv,*zv;P*wp;
- wp=PAV(w); wt=AT(w); ws=AS(w); n=wcr?ws[wf]:1; RE(m=prod(wf,ws));
+ wp=PAV(w); wt=AT(w); ws=AS(w); n=wcr?ws[wf]:1; RE(m=jtprod(jt,wf,ws));
  RZ(z=grd1spz(w,wf,wcr)); zv=AV(z);
  x=SPA(wp,e); jt->workareas.compare.compsev=CAV(x);
  y=SPA(wp,i); jt->workareas.compare.compsyv=yv=AV(y); jt->workareas.compare.compsyc=yc=*(1+AS(y)); 

@@ -409,7 +409,7 @@ static A jtfmtallcol(J jt, A a, A w, I mode) {A *a1v,base,fb,len,strs,*u,v,x;
    );
    break;
   case 1:
-   GATV0(x, BOX, nc, 1); a1v=AAV(x); ib=AV(base); zs[0]=prod(wr-1,ws);
+   GATV0(x, BOX, nc, 1); a1v=AAV(x); ib=AV(base); zs[0]=jtprod(jt,wr-1,ws);
    GATV0(v, LIT, nc*SZA, 1); cvv=(C**)AV(v); 
    DO(nc,
     if(0<ib[0]) zs[1]=ib[0]; 
@@ -425,7 +425,7 @@ static A jtfmtallcol(J jt, A a, A w, I mode) {A *a1v,base,fb,len,strs,*u,v,x;
    coll=0; ib=AV(base);
    DO(nc, if(0<ib[0]) coll+=ib[0]; else coll+=ib[3+(1<nf?0:i)];
           if(1<nf) ib+=4; );
-   zs[0]=prod(wr-1,ws); zs[1]=coll;
+   zs[0]=jtprod(jt,wr-1,ws); zs[1]=coll;
    GATVR(x, LIT, zs[0]*zs[1], 2, zs);
    memset(CAV(x), ' ', AN(x));
    break;

@@ -305,3 +305,17 @@
 |`jsrc/s.c`|probelocal|jtprobelocal|`(^\|[ \t]+\|[^\d\w_])probelocal\((?=([^,]+?),([^)]+?)\))`|`\1jtprobelocal(jt,`|
 |`jsrc/sc.c`|probelocal|jtprobelocal|`(^\|[ \t]+\|[^\d\w_])probelocal\((?=([^,]+?),([^)]+?)\))`|`\1jtprobelocal(jt,`|
 |`jsrc/adverbs/af.c`|probelocal|jtprobelocal|`(^\|[ \t]+\|[^\d\w_])probelocal\((?=([^,]+?),([^)]+?)\))`|`\1jtprobelocal(jt,`|
+|`jsrc/j.h`|prod|jtprod|`(^\|[ \t]+\|[^\d\w_])prod\((?=([^,]+?),([^)]+?)\))`|`\1jtprod(jt,`|
+|`jsrc/adverbs/am1.c`|prod|jtprod|`(^\|[ \t]+\|[^\d\w_])prod\((?=([^,]+?),([^)]+?)\))`|`\1jtprod(jt,`|
+|`jsrc/adverbs/ar.c`|prod|jtprod|`(^\|[ \t]+\|[^\d\w_])prod\((?=([^,]+?),([^)]+?)\))`|`\1jtprod(jt,`|
+|`jsrc/format/f.c`|prod|jtprod|`(^\|[ \t]+\|[^\d\w_])prod\((?=([^,]+?),([^)]+?)\))`|`\1jtprod(jt,`|
+|`jsrc/verbs/v.c`|prod|jtprod|`(^\|[ \t]+\|[^\d\w_])prod\((?=([^,]+?),([^)]+?)\))`|`\1jtprod(jt,`|
+|`jsrc/verbs/vf.c`|prod|jtprod|`(^\|[ \t]+\|[^\d\w_])prod\((?=([^,]+?),([^)]+?)\))`|`\1jtprod(jt,`|
+|`jsrc/verbs/vg.c`|prod|jtprod|`(^\|[ \t]+\|[^\d\w_])prod\((?=([^,]+?),([^)]+?)\))`|`\1jtprod(jt,`|
+|`jsrc/verbs/vgranking.c`|prod|jtprod|`(^\|[ \t]+\|[^\d\w_])prod\((?=([^,]+?),([^)]+?)\))`|`\1jtprod(jt,`|
+|`jsrc/verbs/vgsp.c`|prod|jtprod|`(^\|[ \t]+\|[^\d\w_])prod\((?=([^,]+?),([^)]+?)\))`|`\1jtprod(jt,`|
+|`jsrc/verbs/vi.c`|prod|jtprod|`(^\|[ \t]+\|[^\d\w_])prod\((?=([^,]+?),([^)]+?)\))`|`\1jtprod(jt,`|
+|`jsrc/verbs/visp.c`|prod|jtprod|`(^\|[ \t]+\|[^\d\w_])prod\((?=([^,]+?),([^)]+?)\))`|`\1jtprod(jt,`|
+|`jsrc/verbs/vo.c`|prod|jtprod|`(^\|[ \t]+\|[^\d\w_])prod\((?=([^,]+?),([^)]+?)\))`|`\1jtprod(jt,`|
+|`jsrc/verbs/vs.c`|prod|jtprod|`(^\|[ \t]+\|[^\d\w_])prod\((?=([^,]+?),([^)]+?)\))`|`\1jtprod(jt,`|
+|`jsrc/xenos/xfmt.c`|prod|jtprod|`(^\|[ \t]+\|[^\d\w_])prod\((?=([^,]+?),([^)]+?)\))`|`\1jtprod(jt,`|

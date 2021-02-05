@@ -41,7 +41,7 @@
  }
  // the rest handles sparse matrix enfile
  RESETRANK;   // clear IRS for calls made here
- RE(m=prod(r,f+AS(w)));  // # atoms in cell
+ RE(m=jtprod(jt,r,f+AS(w)));  // # atoms in cell
  GASPARSE(z,AT(w),1,1+f,AS(w)); AS(z)[f]=m;   // allocate result area, shape=frame+1 more to hold size of cell; fill in shape
  wp=PAV(w); zp=PAV(z);
  RZ(b=bfi(AR(w),SPA(wp,a),1)); 

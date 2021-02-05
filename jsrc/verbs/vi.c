@@ -993,7 +993,7 @@ A jtindexofsub(J jt,I mode,A a,A w){PROLOG(0079);A h=0,hi=mtv,z;B mk=w==mark,th;
    // Dyad where shape of an item of a does not match shape of a cell of w.  Return appropriate not-found
    if((wf-af)>0&&af){f1+=wf-af; wf=af;}  // see below for discussion about long frame in w
    I witems = wr>r?ws[0]:1;  // # items of w, in case we are doing i.&0 eg on result of e., which will have that many items
-   m=acr?as[af]:1; f0=MAX(0,f1); RE(zn=mult(prod(f,s),prod(f0,ws+wf)));
+   m=acr?as[af]:1; f0=MAX(0,f1); RE(zn=mult(jtprod(jt,f,s),jtprod(jt,f0,ws+wf)));
    switch(mode){
     case IIDOT:  
     case IICO:    GATV(z,INT,zn,f+f0,s); if(af)MCISH(f+AS(z),ws+wf,f0); v=AV(z); DQ(zn, *v++=m;); return z;
@@ -1040,10 +1040,10 @@ A jtindexofsub(J jt,I mode,A a,A w){PROLOG(0079);A h=0,hi=mtv,z;B mk=w==mark,th;
   if(!af)c=zn;   // if af=0, wc may be >1 if there is w-frame.  In that case, #result/a-cell must include the # w-cells.  This has been included in zn
  }else{
   // An argument is empty.  We must beware of overflow in counting cells.  Just do it the old slow way
-  n=acr?prod(acr-1,as+af+1):1; RE(zn=mult(prod(f,s),prod(f1,ws+wf)));
+  n=acr?jtprod(jt,acr-1,as+af+1):1; RE(zn=mult(jtprod(jt,f,s),jtprod(jt,f1,ws+wf)));
   k=n*k1;
-  ac=prod(af,as); ak=ac?k1*an/ac:0;  // ac = #cells of a
-  wc=prod(wf,ws); wk=wc?k1*wn/wc:0; c=1<ac?wk/k:zn; wk*=1<wc;
+  ac=jtprod(jt,af,as); ak=ac?k1*an/ac:0;  // ac = #cells of a
+  wc=jtprod(jt,wf,ws); wk=wc?k1*wn/wc:0; c=1<ac?wk/k:zn; wk*=1<wc;
  }
 
  // Convert dissimilar types
@@ -1322,7 +1322,7 @@ A jtindexofprehashed(J jt,A a,A w,A hs){A h,hi,*hv,x,z;AF fn;I ar,*as,at,c,f1,k,
  wr=AR(w); ws=AS(w); wt=AT(w);
  r=ar?ar-1:0;
  f1=wr-r;
- RE(c=prod(f1,ws));  // c=#cells of w (and result)
+ RE(c=jtprod(jt,f1,ws));  // c=#cells of w (and result)
  // audit conformance of input shapes.  If there is an error, pass to the main code to get the error result
  // Use c as an error flag
  if(!(r<=ar&&0<=f1))c=0;   // w must have rank big enough to hold a cell of a
@@ -1386,7 +1386,7 @@ A jtindexofprehashed(J jt,A a,A w,A hs){A h,hi,*hv,x,z;AF fn;I ar,*as,at,c,f1,k,
  wt=AT(w); wr=AR(w); r=MAX(1,ar);
  if(ar>1+wr)return a;  // if w's rank is smaller than that of a cell of a, nothing can be removed, return a
  // if w's rank is larger than that of a cell of a, reheader w to look like a list of such cells.  The number of atoms stays the same
- if(wr&&r!=wr){RZ(x=virtual(w,0,r)); AN(x)=AN(w); s=AS(x); ws=AS(w); k=ar>wr?0:1+wr-r; *s=prod(k,ws); MCISH(1+s,k+ws,r-1);}  // bug: should test for error on the prod()
+ if(wr&&r!=wr){RZ(x=virtual(w,0,r)); AN(x)=AN(w); s=AS(x); ws=AS(w); k=ar>wr?0:1+wr-r; *s=jtprod(jt,k,ws); MCISH(1+s,k+ws,r-1);}  // bug: should test for error on the jtprod(jt,)
  // if nothing special (like sparse, or incompatible types, or x requires conversion) do the fast way; otherwise (-. x e. y) # y
  RZ(x=!(at&SPARSE)&&HOMO(at,wt)&&TYPESEQ(at,maxtype(at,wt))&&!(AFLAG(a)&AFNJA)?indexofsub(ILESS,x,a):
      repeat(__not(jteps(jt,a,x)),a));

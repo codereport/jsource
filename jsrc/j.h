@@ -500,10 +500,10 @@ typedef double float64x2_t __attribute__ ((vector_size (16)));
 // PROD multiplies a list of numbers, where the product is known not to overflow a signed int (for example, it might be part of the shape of a nonempty dense array)
 // assign length first so we can sneak some computation into ain in va2
 #define PROD(z,length,ain) {I _i=(length); I * RESTRICT _zzt=(ain)-2; \
-if(_i<3){_zzt+=_i; z=(I)&oneone; _zzt=_i>=1?_zzt:(I*)z; z=_i>1?(I)_zzt:z; z=((I*)z)[0]; z*=_zzt[1];}else{z=prod(_i,_zzt+2);} }
+if(_i<3){_zzt+=_i; z=(I)&oneone; _zzt=_i>=1?_zzt:(I*)z; z=_i>1?(I)_zzt:z; z=((I*)z)[0]; z*=_zzt[1];}else{z=jtprod(jt,_i,_zzt+2);} }
 // This version ignores bits of length above the low RANKTX bits
 #define PRODRNK(result,length,ain) {I _i=(length); I * RESTRICT _zzt=(ain); \
-  if((US)_i<3){_zzt=_i&3?_zzt:iotavec-IOTAVECBEGIN+1; result=*_zzt; ++_zzt; _zzt=_i&2?_zzt:iotavec-IOTAVECBEGIN+1; result*=*_zzt;}else{result=prod((US)_i,_zzt);} }
+  if((US)_i<3){_zzt=_i&3?_zzt:iotavec-IOTAVECBEGIN+1; result=*_zzt; ++_zzt; _zzt=_i&2?_zzt:iotavec-IOTAVECBEGIN+1; result*=*_zzt;}else{result=jtprod(jt,(US)_i,_zzt);} }
 
 #define PROD1(result,length,ain) PROD(result,length,ain)  // scaf
 // PRODX replaces CPROD.  It is PROD with a test for overflow included.  To save calls to mult, PRODX takes an initial value
@@ -516,7 +516,7 @@ if(_i<3){_zzt+=_i; z=(I)&oneone; _zzt=_i>=1?_zzt:(I*)z; z=_i>1?(I)_zzt:z; z=((I*
   if(nn<3){I temp=(init);  /* must use temp because init may depend on z */ \
    I *_zzt=(v); _zzt+=nn-2; z=(I)&oneone; _zzt=nn>=1?_zzt:(I*)z; z=nn>1?(I)_zzt:z;   /* set up pointers to args, and init value */ \
    z=((I*)z)[0]; if(z!=0){DPMULDZ(z,_zzt[1],z); if(_zzt[1]!=0){DPMULDZ(z,temp,z);if(temp!=0){ASSERT(z!=0,EVLIMIT)}}}  /* no error if any nonzero */ \
-  }else{DPMULDE(init,prod(nn,v),z) RE(0)} /* error if error inside prod */ \
+  }else{DPMULDE(init,jtprod(jt,nn,v),z) RE(0)} /* error if error inside prod */ \
  }
 // CPROD is to be used to create a test testing #atoms.  Because empty arrays can have cells that have too many atoms, we can't use PROD if
 // we don't know that the array isn't empty or will be checked later
@@ -567,7 +567,7 @@ if(_i<3){_zzt+=_i; z=(I)&oneone; _zzt=_i>=1?_zzt:(I*)z; z=_i>1?(I)_zzt:z; z=((I*
 #define STOREBYTES(out,in,n) {*(UI*)(out) = (*(UI*)(out)&~((UI)~(I)0 >> ((n)<<3))) | ((in)&((UI)~(I)0 >> ((n)<<3)));}
 // Input is the name of word of bytes.  Result is modified name, 1 bit per input byte, spaced like B01s, with the bit 0 iff the corresponding input byte was all 0.  Non-boolean bits of result are garbage.
 #define ZBYTESTOZBITS(b) (b=b|((b|(~b+VALIDBOOLEAN))>>7))  // for each byte: zero if b0 off, b7 off, and b7 turns on when you subtract 1 or 2
-// to verify gah conversion #define return exp       { A retfff=(exp);  if ((retfff) && ((AT(retfff)&SPARSE && AN(retfff)!=1) || (AT(retfff)&DENSE && AN(retfff)!=prod(AR(retfff),AS(retfff)))))SEGFAULT;; return retfff; } // scaf
+// to verify gah conversion #define return exp       { A retfff=(exp);  if ((retfff) && ((AT(retfff)&SPARSE && AN(retfff)!=1) || (AT(retfff)&DENSE && AN(retfff)!=jtprod(jt,AR(retfff),AS(retfff)))))SEGFAULT;; return retfff; } // scaf
 #define SBSV(x)         (jt->sbsv+(I)(x))
 #define SBUV(x)         (jt->sbuv+(I)(x))
 #define SEGFAULT        (*(volatile I*)0 = 0)

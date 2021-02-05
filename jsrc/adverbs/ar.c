@@ -218,7 +218,7 @@ static A jtredspd(J jt,A w,A self,C id,VARPSF ado,I cv,I f,I r,I zt){A a,e,x,z,z
  ASSERT(strchr(fca,id),EVNONCE);
  wp=PAV(w); a=SPA(wp,a); e=SPA(wp,e); x=SPA(wp,x); s=AS(x);
  xr=r; v=AV(a); DO(AN(a), if(f<v[i])--xr;); xf=AR(x)-xr;
- m=prod(xf,s); c=m?AN(x)/m:0; n=s[xf];
+ m=jtprod(jt,xf,s); c=m?AN(x)/m:0; n=s[xf];
  GA(zx,zt,AN(x)/n,AR(x)-1,s); MCISH(xf+AS(zx),1+xf+s,xr-1); 
  I rc=((AHDRRFN*)ado)(c/n,n,m,AV(x),AV(zx),jt); if(255&rc)jsignal(rc); RE(0);
  switch(id){

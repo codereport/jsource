@@ -132,7 +132,7 @@ A jtsparseit(J jt,A w,A a,A e){PROLOG(0091);A ax,c,x,y,z;B b,*cv;I cm,cn,m,n,r,*
  RZ(ax=jtpaxis(jt,r,a));
  GATV0(y,INT,r,1); s=AV(y);
  u=AV(ax); v=AS(w); DO(r, s[i]=v[u[i]];);
- RE(m=prod(n,s)); b=equ(a,IX(r));
+ RE(m=jtprod(jt,n,s)); b=equ(a,IX(r));
  RZ(x=virtual(b?w:jtcant2(jt,ax,w),0,1+r-n)); AN(x)=AN(w); v=AS(x); *v=m; if(r>n)ICPY(1+v,n+s,r-n);
  b=b&&SB01&AT(z)&&equ(e,num(0)); c=w;
  if(!b)RZ(c=__not(irs2(reshape(vec(INT,r-n,n+s),SPA(p,e)),x,VFLAGNONE, RMAX,-1L,jtmatch)));
@@ -160,7 +160,7 @@ A jtsparseit(J jt,A w,A a,A e){PROLOG(0091);A ax,c,x,y,z;B b,*cv;I cm,cn,m,n,r,*
  xn=AN(x); an=AN(a); b=equ(a,IX(an));
  if(!an||!xn)return reshape(shape(w),xn?x:e);
  if(b)s=AS(w); else{RZ(q=over(a,jtless(jt,IX(r),a))); RZ(s1=jtfrom(jt,q,shape(w))); s=AV(s1);}
- RE(n=prod(r,s));
+ RE(n=jtprod(jt,r,s));
  GA(z,t,n,r,s); zv=CAV(z); xv=CAV(x); 
  if(1<an)RZ(y=jtbase2(jt,vec(INT,an,s),y)); yv=AV(y);
  k=bpnoun(t); ck=k*aii(x); mvc(k*n,zv,k,AV(e));
@@ -199,10 +199,10 @@ A jtsparseit(J jt,A w,A a,A e){PROLOG(0091);A ax,c,x,y,z;B b,*cv;I cm,cn,m,n,r,*
   if(m){b[m-1]=1; n=1; u=AV(y); DO(m-1, if(b[i]=1&&ICMP(u,u+c,d))++n; u+=c;);} 
   GATV0(q,INT,1+r,1); u=AV(q);
   j=0; v=AV(a); pv=BAV(p); DO(AN(p), if(!pv[i])u[j++]=ws[v[i]];); 
-  RE(prod(j,u)); u[j]=k=1; DQ(c-d, --j; u[j]=k*=u[j];);
+  RE(jtprod(jt,j,u)); u[j]=k=1; DQ(c-d, --j; u[j]=k*=u[j];);
   RZ(q=jtpdt(jt,take(v2(m,d-c),y),vec(INT,c-d,1+u))); iv=AV(q);
   RZ(p=over(jtless(jt,a,a1),jtdaxis(jt,r,a))); v=AV(p);
-  *u=n; j=1; DQ(AN(p), u[j++]=ws[*v++];); RE(h=prod(1+r-d,u));
+  *u=n; j=1; DQ(AN(p), u[j++]=ws[*v++];); RE(h=jtprod(jt,1+r-d,u));
   GA(x1,AT(x),h,1+r-d,u);                       t=CAV(x1); s=CAV(x);
   GATV0(y1,INT,n*d,2); *AS(y1)=n; *(1+AS(y1))=d; v= AV(y1); u= AV(y);  
   k=bpnoun(AT(x)); g=k*aii(x); h=k*aii(x1); mvc(k*AN(x1),t,k,AV(e));
@@ -217,7 +217,7 @@ static A jtaxbytes1(J jt,I t,I an,I m,I xr,I*xs){I k,z;
   k=bpnoun(t);
   z =SZI*NORMAH+SZI*(an+xr)+sizeof(P);
   z+=SZI*NORMAH+k;
-  z+=SZI*NORMAH+SZI*(1+xr)+k*m*prod(xr,xs);
+  z+=SZI*NORMAH+SZI*(1+xr)+k*m*jtprod(jt,xr,xs);
   z+=SZI*NORMAH+SZI*2+SZI*m*an;
   return sc(z);
 }
