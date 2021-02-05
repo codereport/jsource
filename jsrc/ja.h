@@ -445,7 +445,7 @@
 #define invamp(x)                   jtinvamp(jt,(x))
 #define invfork(x)                  jtinvfork(jt,(x))
 #define iocol(x,y,z)                jtiocol(jt,(x),(y),(z))
-#define ioe(x,y)                    jtioe(jt,(x),(y))
+
 #define iopart(x0,x1,x2,x3,x4,x5,x6)                jtiopart(jt,(x0),(x1),(x2),(x3),(x4),(x5),(x6))
 #define ioresparse(x,y,z)           jtioresparse(jt,(x),(y),(z))
 #define ioev(x,y)                   jtioev(jt,(x),(y))

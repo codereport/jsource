@@ -202,3 +202,4 @@
 |`jsrc\xenos\xt.c`|indexof|jtindexof|`(^\|[ \t]+\|[^\d\w_])indexof\((?=([^,]+?),([^)]+?)\))`|`\1jtindexof(jt,`|
 |`jsrc\conjunctions\ca.c`|intdiv|jtintdiv|`(^\|[ \t]+\|[^\d\w_])intdiv\((?=([^,]+?),([^)]+?)\))`|`\1jtintdiv(jt,`|
 |`jsrc\verbs\va2.c`|intmod2|jtintmod2|`(^\|[ \t]+\|[^\d\w_])intmod2\((?=([^,]+?),([^)]+?)\))`|`\1jtintmod2(jt,`|
+|`jsrc/verbs/visp.c`|ioe|jtioe|`(^\|[ \t]+\|[^\d\w_])ioe\((?=([^,]+?),([^)]+?)\))`|`\1jtioe(jt,`|

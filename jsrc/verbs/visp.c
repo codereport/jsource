@@ -163,10 +163,10 @@ A jtindexofss(J jt,I mode,A a,A w){A ai,aj,ax,wi,wj,wx,x,y,z;B aw=a!=w;I ar,c,m,
  m=*AS(ai); v=AV(ai); 
  if(aw)DO(AN(x), u[i]=m>u[i]?v[u[i]]:n;)
  else  DO(AN(x), u[i]=v[u[i]];);
- if(!r)return AN(x)?sc(*u):ioe(mode,a);
+ if(!r)return AN(x)?sc(*u):jtioe(jt,mode,a);
  GASPARSE(z,SINT,1,r,AS(w)); zp=PAV(z);
  SPB(zp,a,apvwr(r,0L,1L));
- SPB(zp,e,ioe(mode,a));
+ SPB(zp,e,jtioe(jt,mode,a));
  SPB(zp,i,aw?wi:ai);
  SPB(zp,x,x);
  return z;
