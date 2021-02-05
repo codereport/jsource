@@ -299,7 +299,7 @@ static A jtomask(J jt,A a,A w){A c,r,x,y;I m,n,p;
 }
 
 static A jtgoutfix(J jt,A a,A w,A self){A h,*hv,x,z,*zv;I m,n;
- RZ(x=omask(a,w));
+ RZ(x=jtomask(jt,a,w));
  SETIC(x,n);
  h=VAV(self)->fgh[2]; hv=AAV(h); m=AN(h);
  GATV0(z,BOX,n,1); zv=AAV(z); I imod=0;
@@ -307,7 +307,7 @@ static A jtgoutfix(J jt,A a,A w,A self){A h,*hv,x,z,*zv;I m,n;
  return ope(z);
 }
 
-static AS2(jtoutfix, eachl(omask(a,w),w,jtatop(jt,fs,ds(CPOUND))),0117)
+static AS2(jtoutfix, eachl(jtomask(jt,a,w),w,jtatop(jt,fs,ds(CPOUND))),0117)
 
 static A jtofxinv(J jt,A a,A w,A self){A f,fs,z;C c;I t;V*v;
  F2RANKW(0,RMAX,jtofxinv,self);

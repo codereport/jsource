@@ -626,7 +626,7 @@
 
 #define odom(x,y,z)                 jtodom(jt,(x),(y),(z))
 #define ofxassoc(x,y,z)             jtofxassoc(jt,(x),(y),(z))
-#define omask(x,y)                  jtomask(jt,(x),(y))
+
 #define onm(x)                      jtonm(jt,(x))
 #define ope(x)                      jtope(jt,(x))
 #define opes(x,y,z)                 jtopes(jt,(x),(y),(z))
