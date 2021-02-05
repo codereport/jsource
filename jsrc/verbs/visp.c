@@ -33,7 +33,7 @@ A jtiovxs(J jt,I mode,A a,A w){A e,x,z;B h;I at,t,wt;P*ap=0,*wp,*zp;
   ae=SPA(ap,e); if(h&&TYPESNE(t,at))RZ(ae=jtcvt(jt,t,ae));
   ax=SPA(ap,x); if(h&&TYPESNE(t,at))RZ(ax=jtcvt(jt,t,ax)); if(!AN(ay))RZ(ax=ravel(ax));
   m=AN(ax); n=*AS(a);
-  j=ioev(mode,a);
+  j=jtioev(jt,mode,a);
   if(equ(ae,e))SPB(zp,e,sc(j))
   else{RE(k=i0(indexofsub(mode,ax,e))); SPB(zp,e,sc(AN(ay)?(m>k?yv[k]:n):k));}
   RZ(q=indexofsub(mode,ax,x)); v=AV(q);
@@ -56,7 +56,7 @@ A jtiovsd(J jt,I mode,A a,A w){A ae,ax,ay,p,z;B h,*pv;I at,j,m,n,t,wt,*v,*yv;P*a
  m=AN(ax); n=*AS(a); yv=AV(ay); ae=SPA(ap,e);
  at=DTYPE(AT(a)); wt=AT(w); if(h=HOMO(at,wt))t=maxtype(at,wt);
  if(h&&TYPESNE(t,wt))RZ(w=jtcvt(jt,t,w));
- j=ioev(mode,a); 
+ j=jtioev(jt,mode,a); 
  RZ(z=indexofsub(mode,ax,w)); v=AV(z);
  RZ(p=eq(ae,w)); pv=BAV(p); 
  DO(AN(w), *v=pv[i]?j:m>*v?yv[*v]:n; ++v;);

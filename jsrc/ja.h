@@ -448,7 +448,7 @@
 
 #define iopart(x0,x1,x2,x3,x4,x5,x6)                jtiopart(jt,(x0),(x1),(x2),(x3),(x4),(x5),(x6))
 #define ioresparse(x,y,z)           jtioresparse(jt,(x),(y),(z))
-#define ioev(x,y)                   jtioev(jt,(x),(y))
+
 #define iovsd(x,y,z)                jtiovsd(jt,(x),(y),(z))
 #define iovxs(x,y,z)                jtiovxs(jt,(x),(y),(z))
 #define iota(x)                     jtiota(jt,(x))
