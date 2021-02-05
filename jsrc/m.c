@@ -8,8 +8,6 @@
 
 #include "j.h"
 
-#define LEAKSNIFF 0
-
 #define ALIGNTOCACHE 0   // set to 1 to align each block to cache-line boundary.  Will reduce cache usage for headers
 
 #define SBFREEBLG (14+PMINL)   // lg2(SBFREEB)
@@ -49,12 +47,6 @@
 
 static void jttraverse(J,A,AF);
 
-#if LEAKSNIFF
-static I leakcode;
-static A leakblock;
-static I leaknbufs;
-#endif
-
 // Return the total length of the data area of y, i. e. the number of bytes from start-of-data to end-of-allocation
 // The allocation size depends on the type of allocation
 I allosize(A y) {
@@ -79,11 +71,6 @@ B jtmeminit(J jt){I k,m=MLEN;
  jt->mmax =(I)1<<(m-1);
  for(k=PMINL;k<=PLIML;++k){jt->mfree[-PMINL+k].ballo=SBFREEB;jt->mfree[-PMINL+k].pool=0;}  // init so we garbage-collect after SBFREEB frees
  jt->mfreegenallo=-SBFREEB*(PLIML+1-PMINL);   // balance that with negative general allocation
-#if LEAKSNIFF
- leakblock = 0;
- leaknbufs = 0;
- leakcode = 0;
-#endif
  return 1;
 }
 
@@ -271,32 +258,6 @@ I jtspstarttracking(J jt){I i;
 void jtspendtracking(J jt){I i;
  for(i=PMINL;i<=PLIML;++i){jt->mfree[-PMINL+i].ballo &= ~MFREEBCOUNTING;}
  return;
-}
-
-// Register the value to insert into leak-sniff records
-void jtsetleakcode(J jt, I code) {
-#if LEAKSNIFF
- if(!leakblock)GAT0(leakblock,INT,10000,1); ras(leakblock);
- leakcode = code;
-#endif
-}
-
- A jtleakblockread(J jt, A w){
-#if LEAKSNIFF
-if(!leakblock)return num(0);
-return vec(INT,2*leaknbufs,IAV(leakblock));
-#else
-return num(0);
-#endif
-}
- A jtleakblockreset(J jt, A w){
-#if LEAKSNIFF
-leakcode = 0;
-leaknbufs = 0;
-return num(0);
-#else
-return num(0);
-#endif
 }
 
 // Free all symbols pointed to by the SYMB block w.
@@ -816,16 +777,6 @@ RESTRICTF A jtgaf(J jt,I blockx){A z;I mfreeb;I n=(I)2<<blockx;  // n=size of al
    // we do not attempt to combine the AFLAG write into a 64-bit operation, because as of 2017 Intel processors
    // will properly store-forward any read that is to the same boundary as the write, and we always read the same way we write
   *pushp++=z; if(!((I)pushp&(NTSTACKBLOCK-1)))RZ(pushp=tg(pushp)); jt->tnextpushp=pushp;  // advance to next slot, allocating a new block as needed
-#if LEAKSNIFF
-  if(leakcode>0){  // positive starts logging; set to negative at end to clear out the parser allocations etc
-   if(leaknbufs*2 >= AN(leakblock)){
-   }else{
-    I* lv = IAV(leakblock);
-    lv[2*leaknbufs] = (I)z; lv[2*leaknbufs+1] = leakcode;  // install address , code
-    leaknbufs++;  // account for new value
-   }
-  }
-#endif
   // If the user is keeping track of memory high-water mark with 7!:2, figure it out & keep track of it.  Otherwise save the cycles
   if(((mfreeb&MFREEBCOUNTING)!=0)){
    jt->bytes += n; if(jt->bytes>jt->bytesmax)jt->bytesmax=jt->bytes;
@@ -866,15 +817,6 @@ RESTRICTF A jtga(J jt,I type,I atoms,I rank,I* shaape){A z;
 
 // free a block.  The usecount must make it freeable
 void jtmf(J jt,A w){I mfreeb;
-#if LEAKSNIFF
- if(leakcode){I i;
-  // Remove block from the table if the address matches
-  I *lv=IAV(leakblock);
-  for(i = 0;i<leaknbufs&&lv[2*i]!=(I)w;++i);  // find the match
-  if(i<leaknbufs){while(i+1<leaknbufs){lv[2*i]=lv[2*i+2]; lv[2*i+1]=lv[2*i+3]; ++i;} leaknbufs=i;}  // remove it
- }
-#endif
-
 // audit free list {I Wi,Wj;MS *Wx; for(Wi=PMINL;Wi<=PLIML;++Wi){Wj=0; Wx=(jt->mfree[-PMINL+Wi].pool); while(Wx){Wx=(MS*)(Wx->a); ++Wj;}}}
  I hrh = AFHRH(w);   // the size/offset indicator
  I blockx=FHRHPOOLBIN(hrh);   // pool index, if pool
