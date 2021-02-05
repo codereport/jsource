@@ -167,7 +167,7 @@ static A jtpdtspmm(J jt,A a,A w){A z,zi,zj,zx,zy,*old;D*axv,c,d,*dv,*wxv,*zyv;
   if(SPARSE&AT(a)){p=PAV(a); x=SPA(p,a); ab=AR(a)==AN(x)&&equ(num(0),SPA(p,e));}
   if(SPARSE&AT(w)){p=PAV(w); x=SPA(p,a); wb=AR(w)==AN(x)&&equ(num(0),SPA(p,e));}
  }
- if(ab&&1==AR(a)&&wb&&1==AR(w))return pdtspvv(a,w);
+ if(ab&&1==AR(a)&&wb&&1==AR(w))return jtpdtspvv(jt,a,w);
  if(ab&&2==AR(a)&&    1==AR(w))return jtpdtspmv(jt,a,w);
  if(    1==AR(a)&&wb&&2==AR(w))return jtpdtspvm(jt,a,w);
  if(ab&&2==AR(a)&&wb&&2==AR(w))return jtpdtspmm(jt,a,w);
