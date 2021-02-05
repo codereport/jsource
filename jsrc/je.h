@@ -304,7 +304,6 @@ extern A jtseclevq(J jt, A w);
 extern A jtseclevs(J jt, A w);
 extern A jtself1(J jt, A w);
 extern A jtshape(J jt, A w);
-extern A jtshapex(J jt, A w);
 extern A jtshift1(J jt, A w);
 extern A jtsignum(J jt, A w);
 extern A jtsiinfo(J jt, A w);

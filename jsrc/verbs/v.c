@@ -5,8 +5,6 @@
 
 #include "j.h"
 
-
- A jtshapex    (J jt, A w) {A z; z=vec(INT,AR(w),AS(w)); return AT(w)&XNUM+RAT?xco1(z):z;}
  A jtshape     (J jt, A w) { return vec(INT,AR(w),AS(w));}  // $ y
  A jtisempty   (J jt, A w) { if((AT(w)&SPARSE)!=0)return eps(zeroionei(0),shape(w)); return num(AN(w)==0);}  // 0 e. $
  A jtisnotempty(J jt, A w) { if((AT(w)&SPARSE)!=0)return __not(eps(zeroionei(0),shape(w))); return num(AN(w)!=0);}  // *@#@,
