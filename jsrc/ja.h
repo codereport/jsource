@@ -641,7 +641,7 @@
 #define ovs0(x0,x1,x2,x3)           jtovs0(jt,(x0),(x1),(x2),(x3))
 #define pad(x,y,z)                  jtpad(jt,(x),(y),(z))
 #define parse(x)                    jtparse(jt,(x))
-#define parsea(x,y)                 jtparsea(jt,(x),(y))
+
 #define parseinit()                 jtparseinit(jt)
 #define parsex(x0,x1,x2,x3)         jtparsex(jt,(x0),(x1),(x2),(x3))
 #define paxis(x,y)                  jtpaxis(jt,(x),(y))

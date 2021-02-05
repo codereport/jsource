@@ -267,3 +267,6 @@
 |`jsrc/adverbs/as.c`|omask|jtomask|`(^\|[ \t]+\|[^\d\w_])omask\((?=([^,]+?),([^)]+?)\))`|`\1jtomask(jt,`|
 |`jsrc/verbs/vg.c`|ordstat|jtordstat|`(^\|[ \t]+\|[^\d\w_])ordstat\((?=([^,]+?),([^)]+?)\))`|`\1jtordstat(jt,`|
 |`jsrc/verbs/vcat.c`|ovs|jtovs|`(^\|[ \t]+\|[^\d\w_])ovs\((?=([^,]+?),([^)]+?)\))`|`\1jtovs(jt,`|
+|`jsrc/conjunctions/cx.c`|parsea|jtparsea|`(^\|[ \t]+\|[^\d\w_])parsea\((?=([^,]+?),([^)]+?)\))`|`\1jtparsea(jt,`|
+|`jsrc/debugging/dsusp.c`|parsea|jtparsea|`(^\|[ \t]+\|[^\d\w_])parsea\((?=([^,]+?),([^)]+?)\))`|`\1jtparsea(jt,`|
+|`jsrc/parsing/p.c`|parsea|jtparsea|`(^\|[ \t]+\|[^\d\w_])parsea\((?=([^,]+?),([^)]+?)\))`|`\1jtparsea(jt,`|
