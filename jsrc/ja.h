@@ -950,7 +950,7 @@
 #define tceil(x)                    jttceil(jt,(x))
 
 #define tconnect(x)                 jttconnect(jt,(x))
-#define teq(x,y)                    jtteq(jt,(x),(y))
+
 #define tesa(x,y)                   jttesa(jt,(x),(y))
 #define tesos(x,y,z,w)              jttesos(jt,(x),(y),(z),(w))
 #define tess2(x,y,z)                jttess2(jt,(x),(y),(z))
