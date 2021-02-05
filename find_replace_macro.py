@@ -80,12 +80,13 @@ def find_replaced_data():
 
 
 def command_test(command_test_pair):
-    (command, test) = command_test_pair
+    (command, test, message) = command_test_pair
     current_output = os.popen(command).read()
     with open(test, 'r') as f:
         if f.read().strip() not in current_output.strip():
             print(current_output)
             return True
+    print(message.strip() + " SUCCESSFUL")
     return False
     pass
 
@@ -107,9 +108,9 @@ def main():
         for path, new_data, old_name in matches:
             with open(path, 'w') as f:
                 f.write(new_data)
-        command_test_pairs = [('cmake -G "Ninja Multi-Config" -B build', "known_good_cmake.txt"),
-                              ('ninja -C build', "known_good_build.txt"),
-                              ('ninja -C build test', "known_good_test.txt")]
+        command_test_pairs = [('cmake -G "Ninja Multi-Config" -B build', "known_good_cmake.txt", "CMAKE "),
+                              ('ninja -C build', "known_good_build.txt", "BUILD "),
+                              ('ninja -C build test', "known_good_test.txt", "TEST ")]
 
         if command_tests(command_test_pairs):
             os.system('git reset --hard')
