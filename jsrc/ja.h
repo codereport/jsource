@@ -784,7 +784,7 @@
 #define residue(x,y)                jtresidue(jt,(x),(y),ds(CSTILE))
 #define reverse(x)                  jtreverse(jt,(x))
 #define revsp(x)                    jtrevsp(jt,(x))
-#define rezero(x,y)                 jtrezero(jt,(x),(y))
+
 #define rfc(x)                      jtrfc(jt,(x))
 #define rfcq(x0,x1,x2,x3)           jtrfcq(jt,(x0),(x1),(x2),(x3))
 #define rfcz(x,y)                   jtrfcz(jt,(x),(y))

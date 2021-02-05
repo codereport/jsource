@@ -331,7 +331,7 @@ static A jtsparsen1(J jt, A w){A*u,z;P*p;
   case 2:
    if(AR(a)){j=v[1]; ASSERT(q&&(1==j||2==j),EVDOMAIN); return 1==j?jtaxbytes(jt,q,w):jtaxtally(jt,q,w);}
    if(q)return jtreaxis(jt,q,w); else if(b)return rat(SPA(p,a)); else{ASSERT(STYPE(t)!=0,EVDOMAIN); return IX(AR(w));}
-  case 3:  return q?rezero(q,w):rat(SPA(p,e));  // ? there rat()s don't protect anything?  SPA is as permanent as w
+  case 3:  return q?jtrezero(jt,q,w):rat(SPA(p,e));  // ? there rat()s don't protect anything?  SPA is as permanent as w
   case 4:  ASSERT(!q,EVDOMAIN); return rat(SPA(p,i));
   case 5:  ASSERT(!q,EVDOMAIN); return rat(SPA(p,x));
   case 7:  ASSERT(!q,EVDOMAIN); return sc(SETIC(SPA(p,i),j));

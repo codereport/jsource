@@ -105,7 +105,7 @@ static B jtioresparse(J jt,B aw,A*za,A*zw){A a,e,w;B*ab,ac=0,*wb,wc=0;I ar,j,wr;
  if(!*ab)*ab=ac=1;
  if(aw){
   w=*zw; wr=AR(w); wp=PAV(w);
-  e=SPA(ap,e); if(!equ(e,SPA(wp,e))){RZ(w=rezero(e,w)); wp=PAV(w);}
+  e=SPA(ap,e); if(!equ(e,SPA(wp,e))){RZ(w=jtrezero(jt,e,w)); wp=PAV(w);}
   RZ(wb=bfi(wr,SPA(wp,a),1));  
   j=wr-ar; DO(ar-1, ++j; if(ab[1+i]<wb[j])ab[1+i]=ac=1; else if(ab[1+i]>wb[j])wb[j]=wc=1;);
   DO(1+wr-ar, if(!wb[i])wb[i]=wc=1;);
