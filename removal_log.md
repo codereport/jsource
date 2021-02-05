@@ -340,3 +340,13 @@
 |`jsrc/sn.c`|redef|jtredef|`(^\|[ \t]+\|[^\d\w_])redef\((?=([^,]+?),([^)]+?)\))`|`\1jtredef(jt,`|
 |`jsrc/adverbs/ar.c`|reduce|jtreduce|`(^\|[ \t]+\|[^\d\w_])reduce\((?=([^,]+?),([^)]+?)\))`|`\1jtreduce(jt,`|
 |`jsrc/adverbs/ar.c`|reducesp|jtreducesp|`(^\|[ \t]+\|[^\d\w_])reducesp\((?=([^,]+?),([^)]+?)\))`|`\1jtreducesp(jt,`|
+|`jsrc/adverbs/am1.c`|reitem|jtreitem|`(^\|[ \t]+\|[^\d\w_])reitem\((?=([^,]+?),([^)]+?)\))`|`\1jtreitem(jt,`|
+|`jsrc/adverbs/ao.c`|reitem|jtreitem|`(^\|[ \t]+\|[^\d\w_])reitem\((?=([^,]+?),([^)]+?)\))`|`\1jtreitem(jt,`|
+|`jsrc/adverbs/ap.c`|reitem|jtreitem|`(^\|[ \t]+\|[^\d\w_])reitem\((?=([^,]+?),([^)]+?)\))`|`\1jtreitem(jt,`|
+|`jsrc/adverbs/ar.c`|reitem|jtreitem|`(^\|[ \t]+\|[^\d\w_])reitem\((?=([^,]+?),([^)]+?)\))`|`\1jtreitem(jt,`|
+|`jsrc/conjunctions/cc.c`|reitem|jtreitem|`(^\|[ \t]+\|[^\d\w_])reitem\((?=([^,]+?),([^)]+?)\))`|`\1jtreitem(jt,`|
+|`jsrc/conjunctions/cg.c`|reitem|jtreitem|`(^\|[ \t]+\|[^\d\w_])reitem\((?=([^,]+?),([^)]+?)\))`|`\1jtreitem(jt,`|
+|`jsrc/verbs/v.c`|reitem|jtreitem|`(^\|[ \t]+\|[^\d\w_])reitem\((?=([^,]+?),([^)]+?)\))`|`\1jtreitem(jt,`|
+|`jsrc/verbs/vf.c`|reitem|jtreitem|`(^\|[ \t]+\|[^\d\w_])reitem\((?=([^,]+?),([^)]+?)\))`|`\1jtreitem(jt,`|
+|`jsrc/verbs/vgranking.c`|reitem|jtreitem|`(^\|[ \t]+\|[^\d\w_])reitem\((?=([^,]+?),([^)]+?)\))`|`\1jtreitem(jt,`|
+|`jsrc/xenos/xfmt.c`|reitem|jtreitem|`(^\|[ \t]+\|[^\d\w_])reitem\((?=([^,]+?),([^)]+?)\))`|`\1jtreitem(jt,`|

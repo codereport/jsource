@@ -19,7 +19,7 @@ static A jtoblique(J jt,    A w,A self){A x,y,z;I m,n,r;D rkblk[16];
  // Final tweak: the result should have (0 >. <: +/ 2 {. $y) cells.  It will, as long as
  // m and n are both non0: when one is 0, result has 0 cells (but that cell is the correct result
  // of execution on a fill-cell).  Correct the length of the 0 case, when the result length should be nonzero
-// if((m==0 || n==0) && (m+n>0)){return reitem(sc(m+n-1),x);}  This change withdrawn pending further deliberation
+// if((m==0 || n==0) && (m+n>0)){return jtreitem(jt,sc(m+n-1),x);}  This change withdrawn pending further deliberation
  return z;
 }
 

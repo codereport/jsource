@@ -82,7 +82,7 @@ static A jtlr2(J jt,RANK2T ranks,A a,A w){I acr,af,ar,wcr,wf,wr;
  // is the one being discarded (eg (i. 10 10) ["0 i. 10), the replication doesn't matter, and we
  // simply keep the surviving argument intact.
  if(wf>=af){return w;}  // no replication - quick out
- RESETRANK; return reitem(vec(INT,af-wf,AS(a)),lamin1(w));  // could use virtual block, but this case is so rare...
+ RESETRANK; return jtreitem(jt,vec(INT,af-wf,AS(a)),lamin1(w));  // could use virtual block, but this case is so rare...
 } 
 
  A jtleft2 (J jt,A a,A w){F2PREFIP;RANK2T jtr=jt->ranks; if(jtr==(RANK2T)~0)RETARG(a); return lr2((jtr<<RMAXX)|(jtr>>RMAXX),w,a);}  // swap a & w, and their ranks
