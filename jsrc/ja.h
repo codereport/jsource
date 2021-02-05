@@ -860,7 +860,7 @@
 #define sfne(x)                     jtsfne(jt,(x))
 #define shape(x)                    jtshape(jt,(x))
 #define shift1(x)                   jtshift1(jt,(x))
-#define shift10(x,y)                jtshift10(jt,(x),(y))
+
 #define showerr()                   jtshowerr(jt)
 #define signum(x)                   jtatomic1(jt,(x),ds(CSTAR))
 #define slash(x)                    jtslash(jt,(x))

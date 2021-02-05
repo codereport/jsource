@@ -182,7 +182,7 @@ X jtxdiv(J jt,X a,X w,I mode){PROLOG(0096);B di;I an,*av,c,c0,d,e,k,s,u[2],u1,wn
    k=c0>=e?c0/e:e/c0; 
    k=(k>3)+(k>32)+(k>316)+(k>3162);
    s=XBASEN*(an-yn)+(c0>=e?k:-k); 
-   if(s){q=shift10(s,q); y=shift10(s,y);}
+   if(s){q=jtshift10(jt,s,q); y=jtshift10(jt,s,y);}
    A z=xplus(q,xdiv(xminus(a,y),w,mode));
    EPILOGNOVIRT(z);
   }
