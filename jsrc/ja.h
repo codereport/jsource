@@ -546,8 +546,8 @@
 // prioritytype is B01X, LITX, C2TX, C4TX, INTX, BOXX, XNUMX, RATX, SBTX, FLX, CMPXX
 //                 00000 00001 10001 10010 00010 00101 00110  00111 10000 00011 00100
 // reversed        001 0000 0111 0000 0011 1001 1000 1010 0010 1001 0100 0100 0010 0000
-#define maxtypene(x,y)              jtmaxtype(jt,(x),(y))
-#define maxtype(x,y)                (((x)==(y))?(x):maxtypene(x,y))
+
+#define maxtype(x,y)                (((x)==(y))?(x):jtmaxtype(jt,x,y))
 #define maxtypedne(x,y) (jt->typepriority[CTTZ(x)]>jt->typepriority[CTTZ(y)]?(x):(y))
 #define maxtyped(x,y)               (((x)==(y))?(x):maxtypedne(x,y))
 // For sparse types, we encode here the corresponding dense type

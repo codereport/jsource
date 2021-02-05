@@ -231,3 +231,6 @@
 |`jsrc/verbs/v1.c`|matchs|jtmatchs|`(^\|[ \t]+\|[^\d\w_])matchs\((?=([^,]+?),([^)]+?)\))`|`\1jtmatchs(jt,`|
 |`jsrc/format/f.c`|matth1|jtmatth1|`(^\|[ \t]+\|[^\d\w_])matth1\((?=([^,]+?),([^)]+?)\))`|`\1jtmatth1(jt,`|
 |`jsrc/verbs/v0.c`|maxdenom|jtmaxdenom|`(^\|[ \t]+\|[^\d\w_])maxdenom\((?=([^,]+?),([^)]+?)\))`|`\1jtmaxdenom(jt,`|
+|`jsrc/ja.h`|maxtypene|jtmaxtype|`(^\|[ \t]+\|[^\d\w_])maxtypene\((?=([^,]+?),([^)]+?)\))`|`\1jtmaxtype(jt,`|
+|`jsrc/adverbs/ar.c`|maxtypene|jtmaxtype|`(^\|[ \t]+\|[^\d\w_])maxtypene\((?=([^,]+?),([^)]+?)\))`|`\1jtmaxtype(jt,`|
+|`jsrc/verbs/vo.c`|maxtypene|jtmaxtype|`(^\|[ \t]+\|[^\d\w_])maxtypene\((?=([^,]+?),([^)]+?)\))`|`\1jtmaxtype(jt,`|
