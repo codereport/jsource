@@ -477,3 +477,4 @@
 |`jsrc/words/ws.c`|str|jtstr|`(^\|[ \t]+\|[^\d\w_])str\((?=([^,]+?),([^)]+?)\))`|`\1jtstr(jt,`|
 |`jsrc/xenos/xa.c`|str|jtstr|`(^\|[ \t]+\|[^\d\w_])str\((?=([^,]+?),([^)]+?)\))`|`\1jtstr(jt,`|
 |`jsrc/xenos/xfmt.c`|str|jtstr|`(^\|[ \t]+\|[^\d\w_])str\((?=([^,]+?),([^)]+?)\))`|`\1jtstr(jt,`|
+|`jsrc/conjunctions/cx.c`|strq|jtstrq|`(^\|[ \t]+\|[^\d\w_])strq\((?=([^,]+?),([^)]+?)\))`|`\1jtstrq(jt,`|

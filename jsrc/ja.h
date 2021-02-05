@@ -918,7 +918,7 @@
 
 
 
-#define strq(x,y)                   jtstrq(jt,(x),(y))
+
 #define str0(x)                     jtstr0(jt,(x))
 #define suffix(x,y)                 jtsuffix(jt,(x),(y))
 #define sumatgbool(x,y,z)           jtsumatgbool(jt,(x),(y),(z))

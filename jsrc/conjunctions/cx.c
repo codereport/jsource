@@ -1049,7 +1049,7 @@ A jtddtokens(J jt,A w,I env){
    A remnant; RZ(remnant=jtstr(jt,AN(w)-enddelimx-2,CAV(w)+enddelimx+2));  // get a string for the preserved tail of w
    AS(wil)[0]=ddbgnx; RZ(w=unwordil(wil,w,0));  // take everything up to the {{)n - it may have been put out of order
    A spacea; RZ(spacea=scc(' ')); RZ(w=apip(w,spacea));  // put space before quoted string
-   RZ(w=apip(w,strq(enddelimx-nounstart,wv+nounstart)));  // append quoted string
+   RZ(w=apip(w,jtstrq(jt,enddelimx-nounstart,wv+nounstart)));  // append quoted string
    RZ(w=apip(w,spacea));  // put space after quoted string
    RZ(w=apip(w,remnant));  // install unprocessed chars of original line
    // line is ready.  Process it from the beginning
@@ -1060,7 +1060,7 @@ A jtddtokens(J jt,A w,I env){
    // ********* NORMAL DD *******
    // We have found an innermost non-noun DD, running from ddbgnx to ddendx.  Convert it to ( m : 'string' ) form
    // convert all the chars of the DD to a quoted string block
-   A ddqu; RZ(ddqu=strq(wilv[ddendx][0]-wilv[ddbgnx+1][0],wv+wilv[ddbgnx+1][0]));
+   A ddqu; RZ(ddqu=jtstrq(jt,wilv[ddendx][0]-wilv[ddbgnx+1][0],wv+wilv[ddbgnx+1][0]));
    // append the string for the start/end of DD
    I bodystart=AN(w), bodylen=AN(ddqu), trailstart=wilv[ddendx][1];  // start/len of body in w, and start of after-DD text
    RZ(ddqu=jtapip(jtinplace,ddqu,jtstr(jt,7,")( 9 : ")));
