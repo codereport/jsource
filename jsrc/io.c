@@ -638,7 +638,7 @@ static int setterm(J jt, C* name, I* jtype, I* jrank, I* jshape, I* jdata)
  a = ga(*jtype, k, *jrank, (I*)*jshape);
  if(!a) return EVWSFULL;
  MC(AV(a), (void*)*jdata, n*k);
- jset(gn, a);
+ jtjset(jt,gn, a);
  return jt->jerr;
 }
 

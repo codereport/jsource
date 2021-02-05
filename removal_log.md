@@ -209,3 +209,4 @@
 |`jsrc/verbs/v0.c`|jico2|jtjico2|`(^\|[ \t]+\|[^\d\w_])jico2\((?=([^,]+?),([^)]+?)\))`|`\1jtjico2(jt,`|
 |`jsrc/xenos/xf.c`|jope|jtjope|`(^\|[ \t]+\|[^\d\w_])jope\((?=([^,]+?),([^)]+?)\))`|`\1jtjope(jt,`|
 |`jsrc/xenos/xo.c`|jope|jtjope|`(^\|[ \t]+\|[^\d\w_])jope\((?=([^,]+?),([^)]+?)\))`|`\1jtjope(jt,`|
+|`jsrc/io.c`|jset|jtjset|`(^\|[ \t]+\|[^\d\w_])jset\((?=([^,]+?),([^)]+?)\))`|`\1jtjset(jt,`|
