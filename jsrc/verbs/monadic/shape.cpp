@@ -4,7 +4,7 @@
 /** @file */
 
 /**
- * @brief $ :: Shape
+ * @brief `$` Shape
  * @details In APL, this is also known as `shape` (⍴).
  * @param jt
  * @param w   Input array

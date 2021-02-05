@@ -4,7 +4,7 @@
 /** @file */
 
 /**
- * @brief # :: Tally
+ * @brief `#` Tally
  * @details In APL, this is also known as `tally` (≢). Known also as `len`, `length`, `size` and
  * `count`.
  * @param jt
