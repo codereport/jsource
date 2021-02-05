@@ -621,7 +621,7 @@
 #define numq(x,y,z)                 jtnumq(jt,(x),(y),(z))
 #define numr(x,y,z)                 jtnumr(jt,(x),(y),(z))
 #define numx(x,y,z)                 jtnumx(jt,(x),(y),(z))
-#define oblique(x,y)                jtoblique(jt,(x),(y))
+
 #define obqfslash(x,y)              jtobqfslash(jt,(x),(y))
 #define obverse(x,y)                jtobverse(jt,(x),(y))
 #define odom(x,y,z)                 jtodom(jt,(x),(y),(z))

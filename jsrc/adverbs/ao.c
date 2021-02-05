@@ -37,7 +37,7 @@ static A jtoblique(J jt,    A w,A self){A x,y,z;I m,n,r;D rkblk[16];
 // Derived verb for f//. y for atomic f
 static A jtobqfslash(J jt,    A w,A self){A y,z;B b=0,p;C er,id,*wv;I c,d,k,m,m1,mn,n,n1,r,*s,wt;
  r=AR(w); s=AS(w); wt=AT(w); wv=CAV(w);
- if((-AN(w)&(1-r)&-(DENSE&wt))>=0)return oblique(w,self);  // revert to default if rank<2, empty, or sparse.  This implies m/n below are non0
+ if((-AN(w)&(1-r)&-(DENSE&wt))>=0)return jtoblique(jt,w,self);  // revert to default if rank<2, empty, or sparse.  This implies m/n below are non0
  y=FAV(self)->fgh[0]; y=FAV(y)->fgh[0]; id=FAV(y)->id;
  m=s[0]; m1=m-1;
  n=s[1]; n1=n-1; mn=m*n; d=m+n-1; PROD(c,r-2,2+s);
@@ -78,7 +78,7 @@ static A jtobqfslash(J jt,    A w,A self){A y,z;B b=0,p;C er,id,*wv;I c,d,k,m,m1
    if(er>=EWOV)OBQLOOP(I,D,FL,x=(D)*u, x+=*u);
  }
  if(wt&FL+CMPX)NAN1; RE(0);
- return b?z:oblique(w,self);
+ return b?z:jtoblique(jt,w,self);
 }    /* f//.y for atomic f */
 
 
