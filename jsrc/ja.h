@@ -477,7 +477,7 @@
 #define jpr1(x)                     jtjpr1(jt,(x))
 #define jprx(x0,x1,x2,x3,x4)        jtjprx(jt,(x0),(x1),(x2),(x3),(x4))
 
-#define jsig(x,y)                   jtjsig(jt,(x),(y))
+
 #define jsigd(x)                    jtjsigd(jt,(x))
 #define jsignal(x)                  jtjsignal(jt,(x))
 #define jsignal3(x,y,z)             jtjsignal3(jt,(x),(y),(z))

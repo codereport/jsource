@@ -210,3 +210,4 @@
 |`jsrc/xenos/xf.c`|jope|jtjope|`(^\|[ \t]+\|[^\d\w_])jope\((?=([^,]+?),([^)]+?)\))`|`\1jtjope(jt,`|
 |`jsrc/xenos/xo.c`|jope|jtjope|`(^\|[ \t]+\|[^\d\w_])jope\((?=([^,]+?),([^)]+?)\))`|`\1jtjope(jt,`|
 |`jsrc/io.c`|jset|jtjset|`(^\|[ \t]+\|[^\d\w_])jset\((?=([^,]+?),([^)]+?)\))`|`\1jtjset(jt,`|
+|`jsrc/debugging/d.c`|jsig|jtjsig|`(^\|[ \t]+\|[^\d\w_])jsig\((?=([^,]+?),([^)]+?)\))`|`\1jtjsig(jt,`|

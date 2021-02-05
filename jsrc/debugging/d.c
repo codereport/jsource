@@ -213,7 +213,7 @@ static A jtdbsig(J jt,A a,A w){I e;
  RZ(w=vi(w)); e=AV(w)[0]; 
  ASSERT(1<=e,EVDOMAIN);
  ASSERT(e<=255,EVLIMIT);
- if(a||e>NEVM){if(!a)a=mtv; RZ(a=vs(a)); jsig(e,a);} else jsignal(e);
+ if(a||e>NEVM){if(!a)a=mtv; RZ(a=vs(a)); jtjsig(jt,e,a);} else jsignal(e);
  return 0;
 }    
 
