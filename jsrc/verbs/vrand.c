@@ -214,7 +214,7 @@ static UI jtmt_next(J jt){UI*mt=jt->rngv,*u,*v,*w,y;
  A jtmt_test(J jt, A w){I j=jt->rng;UI init[4]={0x12345ULL, 0x23456ULL, 0x34567ULL, 0x45678ULL},x;
  ASSERTMTV(w);
  RZ(rngselects(sc(MTI)));
- mt_init_by_array(init,(I)4);
+ jtmt_init_by_array(jt,init,(I)4);
  x=mt_next();
  ASSERTSYS(x==7266447313870364031ULL, "mt_test64 0");
  DQ(998, mt_next(););
@@ -467,7 +467,7 @@ static B jtrngstates1(J jt,I j,I n,UI**vv,I i,I k,A x,B p){D*u;UI*xv;
   // w is not an atom.  the RNG had better be Mersenne Twister.  Initialize using w, and save the w list
   ASSERT(1==r&&MTI==jt->rng,EVRANK);
   RZ(ras(w)); fa(jt->rngseed); jt->rngseed=w;   // note ra before fa, in case same buffers
-  mt_init_by_array(AV(w),AN(w));
+  jtmt_init_by_array(jt,AV(w),AN(w));
  }else switch(jt->rng){
   // atomic w.  We can use that for any generator.  Choose the current one.
   case SMI: ASSERT(k!=0,EVDOMAIN); sm_init(k);     break;

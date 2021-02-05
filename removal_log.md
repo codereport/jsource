@@ -237,3 +237,4 @@
 |`jsrc/verbs/vd.c`|mdivsp|jtmdivsp|`(^\|[ \t]+\|[^\d\w_])mdivsp\((?=([^,]+?),([^)]+?)\))`|`\1jtmdivsp(jt,`|
 |`jsrc/adverbs/am.c`|merge1|jtmerge1|`(^\|[ \t]+\|[^\d\w_])merge1\((?=([^,]+?),([^)]+?)\))`|`\1jtmerge1(jt,`|
 |`jsrc/verbs/v0.c`|mnomx|jtmnomx|`(^\|[ \t]+\|[^\d\w_])mnomx\((?=([^,]+?),([^)]+?)\))`|`\1jtmnomx(jt,`|
+|`jsrc/verbs/vrand.c`|mt_init_by_array|jtmt_init_by_array|`(^\|[ \t]+\|[^\d\w_])mt_init_by_array\((?=([^,]+?),([^)]+?)\))`|`\1jtmt_init_by_array(jt,`|
