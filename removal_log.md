@@ -244,3 +244,5 @@
 |`jsrc/adverbs/a.c`|nameref|jtnameref|`(^\|[ \t]+\|[^\d\w_])nameref\((?=([^,]+?),([^)]+?)\))`|`\1jtnameref(jt,`|
 |`jsrc/adverbs/ar.c`|nameref|jtnameref|`(^\|[ \t]+\|[^\d\w_])nameref\((?=([^,]+?),([^)]+?)\))`|`\1jtnameref(jt,`|
 |`jsrc/parsing/pv.c`|nameref|jtnameref|`(^\|[ \t]+\|[^\d\w_])nameref\((?=([^,]+?),([^)]+?)\))`|`\1jtnameref(jt,`|
+|`jsrc/sc.c`|namerefop|jtnamerefop|`(^\|[ \t]+\|[^\d\w_])namerefop\((?=([^,]+?),([^)]+?)\))`|`\1jtnamerefop(jt,`|
+|`jsrc/conjunctions/cx.c`|namerefop|jtnamerefop|`(^\|[ \t]+\|[^\d\w_])namerefop\((?=([^,]+?),([^)]+?)\))`|`\1jtnamerefop(jt,`|

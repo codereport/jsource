@@ -224,7 +224,7 @@ A jtnameref(J jt,A w,A locsyms){
  return fdef(0,CCOLON,VERB,  jtunquote1,jtunquote, 0L,a,w, VXOPCALL|v->flag, v->mr,lrv(v),rrv(v));
 }    
 
-/* namerefop() is used by explicit defined operators when: */
+/* jtnamerefop(jt,) is used by explicit defined operators when: */
 /* - debug is on                                           */
 /* - operator arguments have been supplied                 */
 /* - function arguments have not yet been supplied         */

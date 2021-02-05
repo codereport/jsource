@@ -559,7 +559,7 @@ static A jtxopcall(J jt, A w){return jt->uflags.us.cx.cx_c.db&&DCCALL==jt->sitop
 // Flag the operator with VOPR, and remove VFIX for it so that the compound can be fixed
  A jtxop2(J jt,A a,A w,A self){A ff,x;
  RZ(ff=fdef(0,CCOLON,VERB, xn1,jtxdefn, a,self,w,  (VXOP|VFIX|VJTFLGOK1|VJTFLGOK2)^FAV(self)->flag, RMAX,RMAX,RMAX));
- return (x=xopcall(0))?namerefop(x,ff):ff;
+ return (x=xopcall(0))?jtnamerefop(jt,x,ff):ff;
 }
 static A xop1(J jt,    A w,A self){
  return xop2(w,0,self);
