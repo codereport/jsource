@@ -40,7 +40,7 @@ static A jtlcapco1(J jt,    A w,A self){A z;V*v=FAV(self);
  FAV(recurself)->valencefns[0]=jtlev1;  // fill in function pointer
  AT(recurself)=efflev(0L,v->fgh[2],w);  // fill in the trigger level
  FAV(recurself)->flag=VFLAGNONE;  // fill in the inplaceability flags
- return lev1(w,recurself);
+ return jtlev1(jt,w,recurself);
 }
 
 static A jtlcapco2(J jt,A a,A w,A self){A z;V*v=FAV(self);

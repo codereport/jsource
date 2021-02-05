@@ -497,7 +497,7 @@
 #define lcpx(x)                     jtlcpx(jt,(x))
 #define le(x,y)                     jtatomic2(jt,(x),(y),ds(CLE))
 
-#define lev1(x,y)                   jtlev1(jt,(x),(y))
+
 #define lev2(x,y,z)                 jtlev2(jt,(x),(y),(z))
 #define levs1(x,y)                  jtlevs1(jt,(x),(y))
 #define levs2(x,y,z)                jtlevs2(jt,(x),(y),(z))
