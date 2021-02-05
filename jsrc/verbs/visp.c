@@ -132,14 +132,14 @@ static B jtiopart(J jt,A w,I r,I mm,I*zc,A*zi,A*zj,A*zx){A b,f,wx,x,wy,y;B*bv;
  if(m){RZ(f=jtcut(jt,ds(CCOMMA),num(1))); RZ(df2(y,b,jtdropr(jt,d,wy),f)); RZ(df2(x,b,wx,f));}
  else{y=mtm; RZ(x=jtreshape(jt,v2(0L,jtprod(jt,r,AS(w)+wr-r)),wx));}
  if(0>c)*zc=c=*(1+AS(y)); 
- else if(c!=*(1+AS(y))){RZ(y=taker(c,y)); RZ(x=taker((c/(n-d))*aii(wx),x));}
+ else if(c!=*(1+AS(y))){RZ(y=jttaker(jt,c,y)); RZ(x=jttaker(jt,(c/(n-d))*aii(wx),x));}
  v=AV(y); k=0; q=*AS(y);
  for(i=0;i<q;++i){
   j=k; k=1+j; while(k<m&&!bv[k])++k; p=nd*(k-j); 
   if(c<p)*v=mm; else DO(c-p, v[p+i]=mm;); 
   v+=c;
  }
- RZ(*zi=jtrepeat(jt,b,taker(d,wy)));
+ RZ(*zi=jtrepeat(jt,b,jttaker(jt,d,wy)));
  *zj=y;
  *zx=x;
  return 1;

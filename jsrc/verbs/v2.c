@@ -389,7 +389,7 @@ static A jtxfactor(J jt, A w);
   if(1<n)*v++=n;
   d=v-zv; m=MAX(m,d); zv+=c; while(v<zv)*v++=0; 
  }
- z=c==m?z:taker(m,z);
+ z=c==m?z:jttaker(jt,m,z);
  EPILOG(z);
 }    /* q:"r w */
 

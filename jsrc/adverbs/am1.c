@@ -105,7 +105,7 @@ static A jtscubb(J jt,A z,A i1){A a,q,x,y;I c,d,h,j,*s,*v,*xv;P*zp;
  s=AS(z); zp=PAV(z); y=SPA(zp,i); a=SPA(zp,a); v=AV(a);
  c=*(1+AS(q)); d=*(1+AS(y)); h=d-c;
  if(c==d)return jtless(jt,q,y);
- RZ(q=jtless(jt,q,taker(c,y)));
+ RZ(q=jtless(jt,q,jttaker(jt,c,y)));
  GATV0(x,INT,h,1); xv=AV(x); j=c; DO(h, xv[i]=s[v[j++]];);
  RZ(x=odom(2L,h,xv));
  c=*AS(q); d=*AS(x);
@@ -135,7 +135,7 @@ static A jtiindx(J jt,A z,A i1){A q,j,j1,y;I c,d,e,h,i,*jv,m,n,*qv,*v,*yv;P*zp;
  c=AN(i1); zp=PAV(z); y=SPA(zp,i); 
  if(c==*(1+AS(y)))return jtindexof(jt,y,scuba(z,i1,0));
  /* when y has excess columns, do progressive indexing */
- RZ(y=taker(c,y)); 
+ RZ(y=jttaker(jt,c,y)); 
  RZ(j=jtindexof(jt,y,scuba(z,i1,0)));  /* j: group indices           */
  n= AN(j); jv=AV(j);
  m=*AS(y); yv=AV(y);

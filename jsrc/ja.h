@@ -946,7 +946,7 @@
 #define table(x)                    jttable(jt,(x))
 #define tail(x)                     jttail(jt,(x))
 
-#define taker(x,y)                  jttaker(jt,(x),(y))
+
 #define tceil(x)                    jttceil(jt,(x))
 #define tclosure(x,y)               jttclosure(jt,(x),(y))
 #define tconnect(x)                 jttconnect(jt,(x))

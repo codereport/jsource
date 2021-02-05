@@ -509,3 +509,7 @@
 |`jsrc/verbs/vs.c`|take|jttake|`(^\|[ \t]+\|[^\d\w_])take\((?=([^,]+?),([^)]+?)\))`|`\1jttake(jt,`|
 |`jsrc/verbs/vt.c`|take|jttake|`(^\|[ \t]+\|[^\d\w_])take\((?=([^,]+?),([^)]+?)\))`|`\1jttake(jt,`|
 |`jsrc/xenos/xl.c`|take|jttake|`(^\|[ \t]+\|[^\d\w_])take\((?=([^,]+?),([^)]+?)\))`|`\1jttake(jt,`|
+|`jsrc/adverbs/am1.c`|taker|jttaker|`(^\|[ \t]+\|[^\d\w_])taker\((?=([^,]+?),([^)]+?)\))`|`\1jttaker(jt,`|
+|`jsrc/verbs/v2.c`|taker|jttaker|`(^\|[ \t]+\|[^\d\w_])taker\((?=([^,]+?),([^)]+?)\))`|`\1jttaker(jt,`|
+|`jsrc/verbs/vf.c`|taker|jttaker|`(^\|[ \t]+\|[^\d\w_])taker\((?=([^,]+?),([^)]+?)\))`|`\1jttaker(jt,`|
+|`jsrc/verbs/visp.c`|taker|jttaker|`(^\|[ \t]+\|[^\d\w_])taker\((?=([^,]+?),([^)]+?)\))`|`\1jttaker(jt,`|
