@@ -14,3 +14,4 @@ pospow
 qbin
 qcompare
 qdiv
+qgcd
