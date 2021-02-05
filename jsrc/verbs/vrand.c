@@ -530,7 +530,7 @@ static A jtrollksub(J jt,A a,A w){A z;I an,*av,k,m1,n,p,q,r,sh;UI m,mk,s,t,*u,x=
  A jtrollk(J jt,A a,A w,A self){A g,z;V*sv;
  sv=FAV(self); g=sv->fgh[2]?sv->fgh[2]:sv->fgh[1];
  if(AT(w)&XNUM+RAT||!(!AR(w)&&1>=AR(a)&&(g==ds(CDOLLAR)||1==AN(a))))return roll(df2(z,a,w,g));
- return rollksub(a,vi(w));
+ return jtrollksub(jt,a,vi(w));
 }    /* ?@$ or ?@# or [:?$ or [:?# */
 
 static X jtxrand(J jt,X x){PROLOG(0090);A q,z;B b=1;I j,m,n,*qv,*xv,*zv;
@@ -604,7 +604,7 @@ static A jtroll2(J jt,A w,B*b){A z;I j,n,nslice,p,q,r,*v;UI mk,t,*zv;
 static A jtrollnot0(J jt,A w,B*b){A z;I j,m1,n,*u,*v;UI m,s,t,x=jt->rngM[jt->rng];
  *b=0; n=AN(w);
  if(n){v=AV(w); m1=*v++; j=1; DQ(n-1, if(m1!=*v++){j=0; break;});}
- if(n&&j)RZ(z=rollksub(shape(w),sc(m1)))
+ if(n&&j)RZ(z=jtrollksub(jt,shape(w),sc(m1)))
  else{
   GATV(z,INT,n,AR(w),AS(w));
   v=AV(w); u=AV(z);
@@ -649,7 +649,7 @@ static A jtrollany(J jt,A w,B*b){A z;D*u;I j,m1,n,sh,*v;UI m,mk,s,t,x=jt->rngM[j
  if(0==m)z=mtv;
  else if(m*3.0<n||(x&&x<=(UI)n)){  // TUNE for about m=100000; the cutoff would be higher for smaller n
   // calculate the number of values to deal: m, plus a factor times the expected number of collisions, plus 2 for good measure.  Will never exceed n.  Repeats a little less than 1% of the time for n between 30 and 300
-  A h=sc(m+4+(I)((n<1000?2.4:2.2)*((D)m+(D)n*(pow((((D)(n-1))/(D)n),(D)m)-1)))); do{RZ(z=nub(rollksub(h,w)));}while(AN(z)<m); RZ(z=jttake(JTIPW,a,z));
+  A h=sc(m+4+(I)((n<1000?2.4:2.2)*((D)m+(D)n*(pow((((D)(n-1))/(D)n),(D)m)-1)))); do{RZ(z=nub(jtrollksub(jt,h,w)));}while(AN(z)<m); RZ(z=jttake(JTIPW,a,z));
  }else{
   RZ(z=apvwr(n,0L,1L)); zv=AV(z);
   if(n<(1LL<<50)){
@@ -671,7 +671,7 @@ static A jtrollany(J jt,A w,B*b){A z;D*u;I j,m1,n,sh,*v;UI m,mk,s,t,x=jt->rngM[j
 #define GMOF(m,x)   (            x63+(x63-(2*(x63%m))%m))
 
 #undef rollksub
-#define rollksub(a,w) jtrollksubdot(jt,(a),(w))
+#define jtrollksub(jt,a,w) jtrollksubdot(jt,(a),(w))
 static A jtrollksubdot(J jt,A a,A w){A z;I an,*av,k,m1,n,p,q,r,sh;UI j,m,mk,s,t,*u,x=jt->rngM[jt->rng];
  if(!(a && w)) return 0;
  an=AN(a); RE(m1=i0(w)); ASSERT(0<=m1,EVDOMAIN); m=m1;
@@ -715,7 +715,7 @@ static A jtrollksubdot(J jt,A a,A w){A z;I an,*av,k,m1,n,p,q,r,sh;UI j,m,mk,s,t,
  A jtrollkdot(J jt,A a,A w,A self){A g,z;V*sv;
  sv=FAV(self); g=sv->fgh[2]?sv->fgh[2]:sv->fgh[1];
  if(AT(w)&XNUM+RAT||!(!AR(w)&&1>=AR(a)&&(g==ds(CDOLLAR)||1==AN(a))))return roll(df2(z,a,w,g));
- return rollksub(a,vi(w));
+ return jtrollksub(jt,a,vi(w));
 }    /* ?@$ or ?@# or [:?$ or [:?# */
 
 #undef xrand
@@ -798,7 +798,7 @@ static A jtroll2dot(J jt,A w,B*b){A z;I j,n,nslice,p,q,r,*v;UI mk,t,*zv;
 static A jtrollnot0dot(J jt,A w,B*b){A z;I j,m1,n,*u,*v;UI m,s,t,x=jt->rngM[jt->rng];
  *b=0; n=AN(w);
  if(n){v=AV(w); m1=*v++; j=1; DQ(n-1, if(m1!=*v++){j=0; break;});}
- if(n&&j)RZ(z=rollksub(shape(w),sc(m1)))
+ if(n&&j)RZ(z=jtrollksub(jt,shape(w),sc(m1)))
  else{
   GATV(z,INT,n,AR(w),AS(w));
   v=AV(w); u=AV(z);

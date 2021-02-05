@@ -799,7 +799,7 @@
 #define rollany(x,y)                jtrollany(jt,(x),(y))
 #define rollbool(x)                 jtrollbool(jt,(x))
 #define rollk(x,y,z)                jtrollk(jt,(x),(y),(z))
-#define rollksub(x,y)               jtrollksub(jt,(x),(y))
+
 #define rollnot0(x,y)               jtrollnot0(jt,(x),(y))
 #define rollxnum(x)                 jtrollxnum(jt,(x))
 #define root(x,y)                   jtroot(jt,(x),(y))
