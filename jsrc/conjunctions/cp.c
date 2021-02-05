@@ -57,11 +57,11 @@ static A jttclosure(J jt,A a,A w){A z;I an,*av,c,d,i,wn,wr,wt,*wv,*zv,*zz;
 
 static A jtindexseqlim1(J jt,    A w,A self){A fs;
  fs=FAV(self)->fgh[0];  // {&x
- return AN(w)&&AT(w)&B01+INT?tclosure(FAV(fs)->fgh[1],w):jtpowseqlim(jt,w,fs);
+ return AN(w)&&AT(w)&B01+INT?jttclosure(jt,FAV(fs)->fgh[1],w):jtpowseqlim(jt,w,fs);
 }    /* {&x^:(<_) w */
 
 static A jtindexseqlim2(J jt,A a,A w,A self){
- return 1==AR(a)&&AT(a)&INT&&AN(w)&&AT(w)&B01+INT?tclosure(a,w):jtpowseqlim(jt,w,jtamp(jt,ds(CFROM),a));
+ return 1==AR(a)&&AT(a)&INT&&AN(w)&&AT(w)&B01+INT?jttclosure(jt,a,w):jtpowseqlim(jt,w,jtamp(jt,ds(CFROM),a));
 }    /* a {~^:(<_) w */
 
 // u^:(<n) If n negative, take inverse of u; if v infinite, go to routine that checks for no change.  Otherwise convert to u^:(i.|n) and restart

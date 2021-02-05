@@ -948,7 +948,7 @@
 
 
 #define tceil(x)                    jttceil(jt,(x))
-#define tclosure(x,y)               jttclosure(jt,(x),(y))
+
 #define tconnect(x)                 jttconnect(jt,(x))
 #define teq(x,y)                    jtteq(jt,(x),(y))
 #define tesa(x,y)                   jttesa(jt,(x),(y))
