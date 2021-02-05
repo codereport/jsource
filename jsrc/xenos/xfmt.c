@@ -179,7 +179,7 @@ static D jtroundID(J jt,I d,D y){D f,q,c,h;DI8 f8,q8,c8;
  else                         return npwrs[d]*(f-h);
 } /* round a number in not in exponential notation */
 
-static D jtafzrndID(J jt,I dp,D y){return SGN(y)*roundID(dp,ABS(y));}
+static D jtafzrndID(J jt,I dp,D y){return SGN(y)*jtroundID(jt,dp,ABS(y));}
          /* round-to-nearest, solve ties by rounding Away From Zero */
 
 static D jtexprndID(J jt, I d, D y){I e,s;D f,q,c,x1,x2;DI8 f8,y8,c8;
@@ -365,7 +365,7 @@ static A jtfmtprecomp(J jt,A a,A w) {A*as,base,fb,len,strs,*u,z;B*bits,*bw;D dtm
         if(B01&wt) *iv=1+!!d+d;
         else {
          if(B01&wt) dtmp=1; if(INT&wt) dtmp=(D)*iw; else dtmp=*dw;
-         *iv=(I)jfloor(log10(roundID(d,MAX(ABS(dtmp),1))));
+         *iv=(I)jfloor(log10(jtroundID(jt,d,MAX(ABS(dtmp),1))));
          if(mC) (*iv)+=(*iv)/3;
          (*iv)+=1+!!d+d;
          if(dtmp < 0 && mMN) (*iv)+=nMN;

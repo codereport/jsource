@@ -418,3 +418,4 @@
 |`jsrc/verbs/vrand.c`|rollnot0|jtrollnot0|`(^\|[ \t]+\|[^\d\w_])rollnot0\((?=([^,]+?),([^)]+?)\))`|`\1jtrollnot0(jt,`|
 |`jsrc/verbs/vf.c`|rotate|jtrotate|`(^\|[ \t]+\|[^\d\w_])rotate\((?=([^,]+?),([^)]+?)\))`|`\1jtrotate(jt,`|
 |`jsrc/verbs/vf.c`|rotsp|jtrotsp|`(^\|[ \t]+\|[^\d\w_])rotsp\((?=([^,]+?),([^)]+?)\))`|`\1jtrotsp(jt,`|
+|`jsrc/xenos/xfmt.c`|roundID|jtroundID|`(^\|[ \t]+\|[^\d\w_])roundID\((?=([^,]+?),([^)]+?)\))`|`\1jtroundID(jt,`|
