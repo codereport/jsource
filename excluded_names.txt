@@ -20,3 +20,4 @@ qminus
 qplus
 qpow
 qq
+qrem
