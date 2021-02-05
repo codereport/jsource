@@ -424,3 +424,4 @@
 |`jsrc/verbs/vsb.c`|sbstr|jtsbstr|`(^\|[ \t]+\|[^\d\w_])sbstr\((?=([^,]+?),([^)]+?)\))`|`\1jtsbstr(jt,`|
 |`jsrc/verbs/vsb.c`|sbunlit|jtsbunlit|`(^\|[ \t]+\|[^\d\w_])sbunlit\((?=([^,]+?),([^)]+?)\))`|`\1jtsbunlit(jt,`|
 |`jsrc/verbs/vsb.c`|sbunstr|jtsbunstr|`(^\|[ \t]+\|[^\d\w_])sbunstr\((?=([^,]+?),([^)]+?)\))`|`\1jtsbunstr(jt,`|
+|`jsrc/representations/rl.c`|sc4|jtsc4|`(^\|[ \t]+\|[^\d\w_])sc4\((?=([^,]+?),([^)]+?)\))`|`\1jtsc4(jt,`|

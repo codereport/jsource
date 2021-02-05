@@ -129,7 +129,7 @@ static A jtlbox(J jt,A w,A *ltext){F1PREFIP;A p,*v,*vv,*wv,x,y;B b=0;I n;
  return over(lshape(w),raze(y));
 }    /* non-empty boxed array */
 
-A jtdinsert(J jt,A w,A ic,I ix){A l=sc4(INT,ix); return over(over(take(l,w),ic),jtdrop(jt,l,w));}   /* insert ic before position ix in w */
+A jtdinsert(J jt,A w,A ic,I ix){A l=jtsc4(jt,INT,ix); return over(over(take(l,w),ic),jtdrop(jt,l,w));}   /* insert ic before position ix in w */
 A jtdcapp(J jt,A w,C c,A ap){return (memchr(CAV(w),c,AN(w)))?w:over(w,ap);}  /* conditionally append ap to w if it doesn't contain c */
 
 // Apply decoration as needed to a numeric character string w to give it the correct type t

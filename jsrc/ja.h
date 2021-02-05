@@ -830,7 +830,7 @@
 
 
 #define sc(x)                       jtsc(jt,(x))
-#define sc4(x,y)                    jtsc4(jt,(x),(y))
+
 #define scansp(x,y,z)               jtscansp(jt,(x),(y),(z))
 #define scb(x)                      jtscb(jt,(x))
 #define scc(x)                      jtscc(jt,(x))
