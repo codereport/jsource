@@ -537,7 +537,7 @@
 
 #define mat(x)                      jtmat(jt,(x))
 
-#define matchs(x,y)                 jtmatchs(jt,(x),(y))
+
 #define matchsub(x0,x1,x2,x3,x4,x5,x6,x7)  jtmatchsub(jt,(x0),(x1),(x2),(x3),(x4),(x5),(x6),(x7))
 #define matth1(x,y)                 jtmatth1(jt,(x),(y))
 #define maxdenom(x,y)               jtmaxdenom(jt,(x),(y))

@@ -228,3 +228,4 @@
 |`jsrc/conjunctions/cl.c`|levs1|jtlevs1|`(^\|[ \t]+\|[^\d\w_])levs1\((?=([^,]+?),([^)]+?)\))`|`\1jtlevs1(jt,`|
 |`jsrc/sl.c`|locale|jtlocale|`(^\|[ \t]+\|[^\d\w_])locale\((?=([^,]+?),([^)]+?)\))`|`\1jtlocale(jt,`|
 |`jsrc/verbs/vfrom.c`|mapx|jtmapx|`(^\|[ \t]+\|[^\d\w_])mapx\((?=([^,]+?),([^)]+?)\))`|`\1jtmapx(jt,`|
+|`jsrc/verbs/v1.c`|matchs|jtmatchs|`(^\|[ \t]+\|[^\d\w_])matchs\((?=([^,]+?),([^)]+?)\))`|`\1jtmatchs(jt,`|
