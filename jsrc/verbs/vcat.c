@@ -118,7 +118,7 @@ static C*jtovgmove(J jt,I k,I c,I m,A s,A w,C*x,A z){I d,n,p=c*m;
 }    /* move an argument into the result area */
 
 static A jtovg(J jt,A a,A w){A s,z;C*x;I ar,*as,c,k,m,n,r,*sv,t,wr,*ws,zn;
- I origwt=AT(w); RZ(w=setfv(a,w));
+ I origwt=AT(w); RZ(w=jtsetfv(jt,a,w));
  if(AT(a)!=(t=AT(w))){t=maxtypedne(AT(a)|(AN(a)==0),t|(((t^origwt)+AN(w))==0)); t&=-t; if(!TYPESEQ(t,AT(a))){RZ(a=jtcvt(jt,t,a));} else {RZ(w=jtcvt(jt,t,w));}}  // convert args to compatible precisions, changing a and w if needed.  B01 if both empty.  If fill changed w, don't do B01 for it
  ar=AR(a); wr=AR(w); r=ar+wr?MAX(ar,wr):1;
  RZ(s=r?vec(INT,r,AS(r==ar?a:w)):num(2)); sv=AV(s);   // Allocate list for shape of composite item
@@ -344,7 +344,7 @@ A jtapip(J jt, A a, A w){F2PREFIP;A h;C*av,*wv;I ak,k,p,*u,*v,wk,wm,wn;
       // If an item of a is higher-rank than the entire w (except when w is an atom, which gets replicated),
       // copy fill to the output area.  Start the copy after the area that will be filled in by w
       I wlen = k*AN(w); // the length in bytes of the data in w
-      if((-wr&(1+wr-ar))<0){RZ(setfv(a,w)); mvc(wk-wlen,av+wlen,k,jt->fillv); wprist=0;}  // fill removes pristine status
+      if((-wr&(1+wr-ar))<0){RZ(jtsetfv(jt,a,w)); mvc(wk-wlen,av+wlen,k,jt->fillv); wprist=0;}  // fill removes pristine status
       AFLAG(a)=aflag&=wprist|~AFPRISTINE;  // clear pristine flag in a if w is not also (a must not be virtual)
       // Copy in the actual data, replicating if w is atomic
       if(wr){JMC(av,wv,wlen,loop1,1)} else mvc(wk,av,k,wv);  // no overcopy because there could be fill

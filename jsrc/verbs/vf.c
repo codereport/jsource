@@ -102,7 +102,7 @@ static void jtrot(J jt,I m,I d,I n,I atomsize,I p,I*av,C*u,C*v){I dk,e,k,j,r,x,y
  if(((wcr-1)&(1-p))<0){RZ(w=jtreshape(jt,apip(shape(w),apv(p,1L,0L)),w)); wr=wcr=p;}  // if cell is an atom, extend it up to #axes being rotated   !wcr && p>1
  ASSERT(((-wcr)&(wcr-p))>=0,EVLENGTH);    // !wcr||p<=wcr  !(wcr&&p>wcr)
  av=AV(a);
- RZ(w=setfv(w,w)); u=CAV(w); wn=AN(w); s=AS(w); k=bpnoun(AT(w));  // set fill value if given
+ RZ(w=jtsetfv(jt,w,w)); u=CAV(w); wn=AN(w); s=AS(w); k=bpnoun(AT(w));  // set fill value if given
  GA(z,AT(w),wn,wr,s); v=CAV(z);
  if(!wn)return z;
  PROD(m,wf,s); PROD1(d,wr-wf-1,s+wf+1); SETICFR(w,wf,wcr,n);   // m=#cells of w, n=#items per cell  d=#atoms per item of cell
@@ -233,7 +233,7 @@ static A jtreshapesp(J jt,A a,A w,I wf,I wcr){A a1,e,t,x,y,z;B az,*b,wz;I an,*av
    if((SGNIF(AFLAG(w),AFNJAX)|((t&(DIRECT|RECURSIBLE))-1))>=0){RZ(z=virtual(w,0,r+wf)); AN(z)=m; I * RESTRICT zs=AS(z); MCISH(zs,ws,wf) MCISH(zs+wf,u,r) return z;}  // NJAwhy
    // for NJA/SMM, fall through to nonvirtual code
   }
- }else if(filling=jt->fill!=0){RZ(w=setfv(w,w)); t=AT(w);}   // if fill required, set fill value.  Remember if we need to fill
+ }else if(filling=jt->fill!=0){RZ(w=jtsetfv(jt,w,w)); t=AT(w);}   // if fill required, set fill value.  Remember if we need to fill
  k=bpnoun(t); p=k*m; q=k*n;
  DPMULDE(c,m,zn);
  GA(z,t,zn,r+wf,0); s=AS(z); MCISH(s,ws,wf); MCISH(s+wf,u,r);
@@ -273,7 +273,7 @@ static A jtreshapesp(J jt,A a,A w,I wf,I wcr){A a1,e,t,x,y,z;B az,*b,wz;I an,*av
  A jtexpand(J jt,A a,A w){A z;B*av;C*wv,*wx,*zv;I an,*au,i,k,p,wc,wk,wn,wt,zn;
  if(!(B01&AT(a)))RZ(a=jtcvt(jt,B01,a));
  ASSERT(1==AR(a),EVRANK);
- RZ(w=setfv(w,w)); 
+ RZ(w=jtsetfv(jt,w,w)); 
  if(!AR(w))return jtfrom(jt,a,take(num(-2),w));  // atomic w, use a { _2 {. w
  av=BAV(a); an=AN(a); au=(I*)av;
  ASSERT(bsum(an,av)==AS(w)[0],EVLENGTH);  // each item of w must be used exactly once

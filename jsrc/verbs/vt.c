@@ -79,7 +79,7 @@ static A jttk(J jt,A a,A w){PROLOG(0093);A y,z;B b=0;C*yv,*zv;I c,d,dy,dz,e,i,k,
  if(!(a && w)) return 0;
  I wt = AT(w);  // wt=type of w
  if((SPARSE&AT(a))!=0)RZ(a=denseit(a));
- if(!(SPARSE&wt))RZ(w=setfv(w,w));
+ if(!(SPARSE&wt))RZ(w=jtsetfv(jt,w,w));
  ar=AR(a); acr=jt->ranks>>RANKTX; acr=ar<acr?ar:acr; af=ar-acr;  // ?r=rank, ?cr=cell rank, ?f=length of frame
  wr=AR(w); wcr=(RANKT)jt->ranks; wcr=wr<wcr?wr:wcr; wf=wr-wcr; RESETRANK; 
  if(((af-1)&(acr-2))>=0){
@@ -188,7 +188,7 @@ static A jtrsh0(J jt, A w){A x,y;I wcr,wf,wr,*ws;
  wr=AR(w); wcr=(RANKT)jt->ranks; wcr=wr<wcr?wr:wcr; wf=wr-wcr; RESETRANK;
  ws=AS(w);
  RZ(x=vec(INT,wr-1,ws)); MCISH(wf+AV(x),ws+wf+1,wcr-1);
- RZ(w=setfv(w,w)); GA(y,AT(w),1,0,0); MC(AV(y),jt->fillv,bp(AT(w)));
+ RZ(w=jtsetfv(jt,w,w)); GA(y,AT(w),1,0,0); MC(AV(y),jt->fillv,bp(AT(w)));
  return jtreshape(jt,x,y);
  // not pristine
 }

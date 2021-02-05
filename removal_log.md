@@ -428,3 +428,6 @@
 |`jsrc/conjunctions/cl.c`|scfn|jtscfn|`(^\|[ \t]+\|[^\d\w_])scfn\((?=([^,]+?),([^)]+?)\))`|`\1jtscfn(jt,`|
 |`jsrc/adverbs/am1.c`|scubb|jtscubb|`(^\|[ \t]+\|[^\d\w_])scubb\((?=([^,]+?),([^)]+?)\))`|`\1jtscubb(jt,`|
 |`jsrc/adverbs/ap.c`|seg|jtseg|`(^\|[ \t]+\|[^\d\w_])seg\((?=([^,]+?),([^)]+?)\))`|`\1jtseg(jt,`|
+|`jsrc/verbs/vcat.c`|setfv|jtsetfv|`(^\|[ \t]+\|[^\d\w_])setfv\((?=([^,]+?),([^)]+?)\))`|`\1jtsetfv(jt,`|
+|`jsrc/verbs/vf.c`|setfv|jtsetfv|`(^\|[ \t]+\|[^\d\w_])setfv\((?=([^,]+?),([^)]+?)\))`|`\1jtsetfv(jt,`|
+|`jsrc/verbs/vt.c`|setfv|jtsetfv|`(^\|[ \t]+\|[^\d\w_])setfv\((?=([^,]+?),([^)]+?)\))`|`\1jtsetfv(jt,`|
