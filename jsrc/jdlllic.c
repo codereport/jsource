@@ -78,7 +78,7 @@ int swapint(int n){C* p,c;
  for(i=0;i<(int)sizeof(int);++i) *(i+(UC*)&len) = k1[i] ^ d[4+i];
  c1 = max(33,d[2]);
  c2 = max(33,d[3]);
- if(!tlen == (8+LOCKEXTRA+c1+c2+len+ 2*SK + 2*SERIALNUMSIZE)) return w; /* not jl */
+ if((!tlen) == (8+LOCKEXTRA+c1+c2+len+ 2*SK + 2*SERIALNUMSIZE)) return w; /* not jl */
  lp = d+8+SK+c1+LOCKEXTRA;
  sp = d;
  j=0;
