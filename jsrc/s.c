@@ -257,7 +257,7 @@ u=NAV(a);  // u->NM block
   }
  } else {
   // No bucket information, do full search
-  L *l=probeis(a,jt->locsyms);
+  L *l=jtprobeis(jt,a,jt->locsyms);
   RZ(l);
   AR(jt->locsyms)|=(~l->flag)&LPERMANENT;  // Mark that a name has been added beyond what was known at preprocessing time, if the added name is not PERMANENT
   return l;
@@ -460,7 +460,7 @@ L* jtprobeisquiet(J jt,A a,A locsyms){A g;  // locsyms is used in the call, but 
  I n=AN(a); NM* v=NAV(a); I m=v->m;  // n is length of name, v points to string value of name, m is length of non-locale part of name
  if(n==m){g=jt->global;}   // if not locative, define in default locale
  else{C* s=1+m+v->s; if(!(g=NMILOC&v->flag?locindirect(n-m-2,1+s,(UI4)v->bucketx):stfindcre(n-m-2,s,v->bucketx))){RESETERR; return 0;}}  // if locative, find the locale for the assignment; error is not fatal
- return probeis(a, g);  // return pointer to slot, creating one if not found
+ return jtprobeis(jt,a, g);  // return pointer to slot, creating one if not found
 }
 
 
@@ -483,7 +483,7 @@ L* jtsymbis(J jt,A a,A w,A g){A x;I m,n,wn,wr,wt;L*e;
   else{C*s=1+m+v->s; RZ(g=NMILOC&v->flag?locindirect(n-m-2,1+s,(UI4)v->bucketx):stfindcre(n-m-2,s,v->bucketx));}
     // locative: s is the length of name_.  Find the symbol table to use, creating one if none found
   // Now g has the symbol table to look in
-  RZ(e=g==jtlocal?probeislocal(a) : probeis(a,g));   // set e to symbol-table slot to use
+  RZ(e=g==jtlocal?probeislocal(a) : jtprobeis(jt,a,g));   // set e to symbol-table slot to use
   if(AT(w)&FUNC&&(FAV(w)->fgh[0])){if(FAV(w)->id==CCOLON)FAV(w)->flag|=VNAMED; if(jt->uflags.us.cx.cx_c.glock)FAV(w)->flag|=VLOCK;}
    // If the value is a function created by n : m, this becomes a named function; if running a locked function, this is locked too.
    // kludge  these flags are modified in the input area (w), which means they will be improperly set in the result of the

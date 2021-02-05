@@ -686,7 +686,7 @@
 #define primitive(x)                jtprimitive(jt,(x))
 #define probe(x,y,z,w)              jtprobe(jt,(x),(y),(z),(w))
 #define probedel(x,y,z,w)           jtprobedel(jt,(x),(y),(z),(w))
-#define probeis(x,y)                jtprobeis(jt,(x),(y))
+
 #define probeislocal(x)             jtprobeislocal(jt,(x))
 #define probelocal(x,y)             jtprobelocal(jt,(x),(y))
 #define prod(x,y)                   jtprod(jt,(x),(y))
