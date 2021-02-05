@@ -21,3 +21,4 @@ qplus
 qpow
 qq
 qrem
+qtymes
