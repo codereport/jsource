@@ -435,7 +435,7 @@ static A jtsbunind(J jt, A w){A z;I j,n,*zv;
   default:  ASSERT(0,EVDOMAIN);
   case C2TX:
   case C4TX:
-  case LITX: abc=(1>=AR(w)?sbunstr(-1L,w):jtsbunlit(jt,' ',w)); break;
+  case LITX: abc=(1>=AR(w)?jtsbunstr(jt,-1L,w):jtsbunlit(jt,' ',w)); break;
   case BOXX: abc=(sbunbox(w));
  }  
  clo-=clock();
@@ -447,7 +447,7 @@ static A jtsbunind(J jt, A w){A z;I j,n,*zv;
   default:  ASSERT(0,EVDOMAIN);
   case C2TX:
   case C4TX:
-  case LITX: return 1>=AR(w)?sbunstr(-1L,w):jtsbunlit(jt,' ',w);
+  case LITX: return 1>=AR(w)?jtsbunstr(jt,-1L,w):jtsbunlit(jt,' ',w);
   case BOXX: return sbunbox(w);
 }}   /* monad s: main control */
 #endif
@@ -656,9 +656,9 @@ static A jtsbgetdata(J jt, A w){A z,*zv;
     case 12: return sbhashstat(num(0));
    }
   case  1:   return jtsbstr(jt,1L,w);
-  case -1:   return sbunstr(-1L,w);
+  case -1:   return jtsbunstr(jt,-1L,w);
   case  2:   return jtsbstr(jt,2L,w);
-  case -2:   return sbunstr(-2L,w);
+  case -2:   return jtsbunstr(jt,-2L,w);
   case  3:   return jtsblit(jt,C0,w);
   case -3:   return jtsbunlit(jt,C0,w);
   case  4:   return jtsblit(jt,' ',w);

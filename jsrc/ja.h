@@ -828,7 +828,7 @@
 #define sbunbox(x)                  jtsbunbox(jt,(x))
 #define sbunind(x)                  jtsbunind(jt,(x))
 
-#define sbunstr(x,y)                jtsbunstr(jt,(x),(y))
+
 #define sc(x)                       jtsc(jt,(x))
 #define sc4(x,y)                    jtsc4(jt,(x),(y))
 #define scansp(x,y,z)               jtscansp(jt,(x),(y),(z))

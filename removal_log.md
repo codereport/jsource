@@ -423,3 +423,4 @@
 |`jsrc/verbs/vsb.c`|sblit|jtsblit|`(^\|[ \t]+\|[^\d\w_])sblit\((?=([^,]+?),([^)]+?)\))`|`\1jtsblit(jt,`|
 |`jsrc/verbs/vsb.c`|sbstr|jtsbstr|`(^\|[ \t]+\|[^\d\w_])sbstr\((?=([^,]+?),([^)]+?)\))`|`\1jtsbstr(jt,`|
 |`jsrc/verbs/vsb.c`|sbunlit|jtsbunlit|`(^\|[ \t]+\|[^\d\w_])sbunlit\((?=([^,]+?),([^)]+?)\))`|`\1jtsbunlit(jt,`|
+|`jsrc/verbs/vsb.c`|sbunstr|jtsbunstr|`(^\|[ \t]+\|[^\d\w_])sbunstr\((?=([^,]+?),([^)]+?)\))`|`\1jtsbunstr(jt,`|
