@@ -322,7 +322,7 @@ static A jtsely(J jt,A y,I r,I i,I j){A z;I c,*s,*v;
 static A jtcut2sx(J jt,A a,A w,A self){PROLOG(0024);DECLF;A h=0,*hv,y,yy;B b,neg,pfx,*u,*v;C id;I d,e,hn,m,n,p,t,yn,*yu,*yv;P*ap;V*vf;
  PREF2(jtcut2sx);
  SETIC(w,n); t=AT(w); m=(I)sv->localuse.lvp[0]; neg=0>m; pfx=m==1||m==-1; b=neg&&pfx;  // m = n from u;.n
- RZ(a=a==mark?jteps(jt,w,take(num(pfx?1:-1),w)):DENSE&AT(a)?sparse1(a):a);
+ RZ(a=a==mark?jteps(jt,w,jttake(jt,num(pfx?1:-1),w)):DENSE&AT(a)?sparse1(a):a);
  ASSERT(n==AS(a)[0],EVLENGTH);
  ap=PAV(a);
  if(!(equ(num(0),SPA(ap,e))&&AN(SPA(ap,a))))return cut2(jtcvt(jt,B01,a),w,self);
@@ -548,7 +548,7 @@ void copyTT(void *zv, void *wv, I n, I zt, I wt){
    // monadic forms.  If we can handle the type/length here, leave it; otherwise convert to Boolean.
    // If w is Boolean, we have to pretend it's LIT so we use the correct fret value rather than hardwired 1
    if((((wt&(B01|LIT|INT|FL|C2T|C4T|SBT))-1)|(k-1)|((-1)&((k&-k&(2*SZI-1))-k)))>=0){a=w; ak=k; at=(wt+B01)&~B01;  // monadic forms: if w is an immediate type we can handle, and the length is a machine-word length, use w unchanged
-   }else{RZ(a=n?jteps(jt,w,take(num(pfx?1:-1),w)):mtv); ak=1; at=B01;}  // any other w, replace by w e. {.w (or {: w).  Set ak to the length of a cell of a, in bytes.  Empty cells of w go through here to convert to list
+   }else{RZ(a=n?jteps(jt,w,jttake(jt,num(pfx?1:-1),w)):mtv); ak=1; at=B01;}  // any other w, replace by w e. {.w (or {: w).  Set ak to the length of a cell of a, in bytes.  Empty cells of w go through here to convert to list
   }
   {I x; ASSERT(n==SETIC(a,x),EVLENGTH);}
 
@@ -803,7 +803,7 @@ static A jtcut1(J jt,    A w,A self){return cut2(mark,w,self);}
   if(AT(a)&SB01)RZ(a=jtcvt(jt,B01,a));
   v=CAV(a); sep=C1;
  }else if(((AR(w)-2)&-(wt&IS1BYTE))<0){a=w; v=CAV(a); sep=v[(wi-1)&(pfx-1)];}  // monad.  Create char list of frets: here if 1-byte list/atom
- else{RZ(a=wi?jteps(jt,w,take(num((pfx<<1)-1),w)):mtv); v=CAV(a); sep=C1;}   // here if other types/shapes
+ else{RZ(a=wi?jteps(jt,w,jttake(jt,num((pfx<<1)-1),w)):mtv); v=CAV(a); sep=C1;}   // here if other types/shapes
  // v-> byte list of frets, sep is the fret char
  ASSERT(wi==SETIC(a,r),EVLENGTH);
  r=MAX(1,AR(w)); s=AS(w); wv=CAV(w); PROD(d,AR(w)-1,AS(w)+1) k=d<<bplg(wt);  // d=#atoms in an item of w
@@ -1025,7 +1025,7 @@ static A jttess2(J jt,A a,A w,A self){A z,zz=0,virtw,strip;I n,rs[3],cellatoms,c
    if(state&(STATEREFLECTX|STATEREFLECTY|STATETAKE)){  // something might be truncated/reflected
     I vkeep=vkeep1-(vtrunc-vi)*vmv; vkeep=(vkeep>vsz)?vsz:vkeep; // vertical length to keep
     if(((vkeep-vsz)|(hkeep-hsz))<0){   // if either axis must be shortened...
-     RZ(opcell=take((hkeep-hsz)>=0?sc(vkeep):v2(vkeep,hkeep),virtw));
+     RZ(opcell=jttake(jt,(hkeep-hsz)>=0?sc(vkeep):v2(vkeep,hkeep),virtw));
     }
     if(state&STATEREFLECTY)RZ(opcell=reverse(opcell));  // reverse vertical
     if(state&STATEREFLECTX)RZ(opcell=df1(z,opcell,qq(ds(CREV),num(-1))));  // reverse horizontal

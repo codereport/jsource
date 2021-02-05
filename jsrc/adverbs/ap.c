@@ -295,7 +295,7 @@ static A jtgprefix(J jt,    A w,A self){A h,*hv,z,*zv;I m,n,r;
  SETIC(w,n); 
  h=VAV(self)->fgh[2]; hv=AAV(h); m=AN(h);
  GATV0(z,BOX,n,1); zv=AAV(z); I imod=0;
- DO(n, imod=(imod==m)?0:imod; RZ(zv[i]=df1(h,take(sc(1+i),w),hv[imod])); ++imod;);
+ DO(n, imod=(imod==m)?0:imod; RZ(zv[i]=df1(h,jttake(jt,sc(1+i),w),hv[imod])); ++imod;);
  return ope(z);
 }    /* g\"r w for gerund g */
 
@@ -549,7 +549,7 @@ static A jtinfixprefix2(J jt,A a,A w,A self){F2PREFIP;PROLOG(00202);A fs;I cger[
   // for infix +, invabs items of fill
   // for infix -, 0 items of fill
   RZ(z=jtreitem(jt,zeroionei(0),w));  // create 0 items of the type of w
-  if(ilnval>=0){ilnval=(ilnval==IMAX)?(wi+1):ilnval; RZ(z=take(sc(ilnval),z));}    // if items needed, create them.  For compatibility, treat _ as 1 more than #items in w
+  if(ilnval>=0){ilnval=(ilnval==IMAX)?(wi+1):ilnval; RZ(z=jttake(jt,sc(ilnval),z));}    // if items needed, create them.  For compatibility, treat _ as 1 more than #items in w
   WITHDEBUGOFF(zz=CALL1(f1,z,fs);) if(EMSK(jt->jerr)&EXIGENTERROR)RZ(zz); RESETERR;
   RZ(zz=jtreshape(jt,over(zeroionei(0),shape(zz?zz:mtv)),zz?zz:zeroionei(0)));
  }

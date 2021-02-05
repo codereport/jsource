@@ -30,10 +30,10 @@ static A jtrinvip(J jt,A w,I n,I ncomp){PROLOG(0066);A ai,bx,di,z;I m;
  if(1>=n)return recip(w);  // if an atom, inverse = reciprocal.  Must be CMPX or RAT
  m=n>>1; I tom=(0x01222100>>((n&7)<<2))&3; m=(m+tom<n)?m+tom:m;  // Minimize number of wasted multiply slots, processing in batches of 4
  // construe w as a block-matrix Wij where w00 and w11 are upper-triangular, w10 is 0, and w01 is a full matrix
- ai=jtrinvip(jt,take(v2(m,m),w),m,ncomp);  // take inverse of w00  kludge could use faux block to avoid take overhead esp for 2x2 FL results
+ ai=jtrinvip(jt,jttake(jt,v2(m,m),w),m,ncomp);  // take inverse of w00  kludge could use faux block to avoid take overhead esp for 2x2 FL results
  di=jtrinvip(jt,jtdrop(jt,v2(m,m),w),n-m,ncomp);  // take inverse of w11
- bx=negateW(jtpdt(jt,ai,jtpdt(jt,take(v2(m,m-n),w),di)));  // -w00^_1 mp w01 mp w11^_1
- if(AT(w)&SPARSE){z=over(jtstitch(jt,ai,bx),take(v2(n-m,-n),di));  // should copy this over w, inplace
+ bx=negateW(jtpdt(jt,ai,jtpdt(jt,jttake(jt,v2(m,m-n),w),di)));  // -w00^_1 mp w01 mp w11^_1
+ if(AT(w)&SPARSE){z=over(jtstitch(jt,ai,bx),jttake(jt,v2(n-m,-n),di));  // should copy this over w, inplace
  }else{
   // copy in the pieces, line by line, writing over the input area
   I leftlen = m<<bplg(AT(w)); I rightlen=(n-m)<<bplg(AT(w));
@@ -72,14 +72,14 @@ static A jtqrr(J jt, A w){PROLOG(0067);A a1,q,q0,q1,r,r0,r1,t,*tv,t0,t1,y,z;I m,
   return link(2>AR(q)?table(q):q,jtreshape(jt,v2(n,n),p?t:num(1)));
  }
  // construe w as w0 w1 w0t w1t
- RZ(t0=qrr(take(v2(p,m),w)));  // find QR of w0 pxm   w0t
+ RZ(t0=qrr(jttake(jt,v2(p,m),w)));  // find QR of w0 pxm   w0t
  tv=AAV(t0); q0=*tv++; r0=*tv;  // point to Q and return of w0  pxm mxm  w0t    
  RZ(a1=jtdrop(jt,v2(0L,m),w));  // a1=w1  pxn-m  w1t
  RZ(y=jtpdt(jt,conjug(cant1(q0)),a1));  // q0* w1 mxpxn-m     w1t q0t*   q0t*=/q0      result is mxn-m
  RZ(t1=qrr(minus(a1,jtpdt(jt,q0,y))));  // pxmxn-m  get QR of w1-(q0 q0* w1)    w1t-(w1t q0t* q0t)    
  tv=AAV(t1); q1=*tv++; r1=*tv;  
  RZ(q=jtstitch(jt,q0,q1));  // overall q is q0t    Q of (w1t-(w1t q0t* q0t))
- RZ(r=over(jtstitch(jt,r0,y),take(v2(n-m,-n),r1)));
+ RZ(r=over(jtstitch(jt,r0,y),jttake(jt,v2(n-m,-n),r1)));
  // r is   r0    q0* w1
  //        0     return of w1-(q0 q0* w1)
  // qr is  q0 r0    (q0 q0* w1) + (Q of w1-(q0 q0* w1))(return of w1-(q0 q0* w1))
@@ -194,7 +194,7 @@ static A jticor(J jt, A w){D d,*v;
   ASSERT(m>=n,EVLENGTH);
   if(t&XNUM)RZ(w=jtcvt(jt,RAT,w));
   if(1<wr&&m==n)y=w; else{q=cant1(w); y=jtpdt(jt,q,w);}
-  z=jtdrop(jt,v2(0L,n),gausselm(jtstitch(jt,y,jtreshape(jt,v2(n,n),take(sc(1+n),xco1(scf(1.0)))))));
+  z=jtdrop(jt,v2(0L,n),gausselm(jtstitch(jt,y,jtreshape(jt,v2(n,n),jttake(jt,sc(1+n),xco1(scf(1.0)))))));
   if(2>wr)z=tymes(jtreshape(jt,mtv,z),w); else if(m>n)z=jtpdt(jt,z,q);
  }else{
   // not RAT/XNUM.  Calculate inverse as R^-1 Q^-1 after taking QR decomp & using Q^-1=Q*

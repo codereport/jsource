@@ -110,7 +110,7 @@ static A jtprime1d(J jt, A w){A d,z;D*wv,x,*zv;I*dv,k,n;
  RZ(d=grade1(ravel(w))); dv=AV(d);
  k=0; while(n>k&&(D)PMAX>=wv[dv[k]])++k;
  if(k){A y;I*yv;
-  RZ(y=prime1(jtcvt(jt,INT,jtfrom(jt,take(sc(k),d),ravel(w))))); yv=AV(y);
+  RZ(y=prime1(jtcvt(jt,INT,jtfrom(jt,jttake(jt,sc(k),d),ravel(w))))); yv=AV(y);
   DO(k, zv[dv[i]]=(D)*yv++;);
  }
  if(k==n)return z;

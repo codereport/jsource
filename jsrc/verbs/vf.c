@@ -274,7 +274,7 @@ static A jtreshapesp(J jt,A a,A w,I wf,I wcr){A a1,e,t,x,y,z;B az,*b,wz;I an,*av
  if(!(B01&AT(a)))RZ(a=jtcvt(jt,B01,a));
  ASSERT(1==AR(a),EVRANK);
  RZ(w=jtsetfv(jt,w,w)); 
- if(!AR(w))return jtfrom(jt,a,take(num(-2),w));  // atomic w, use a { _2 {. w
+ if(!AR(w))return jtfrom(jt,a,jttake(jt,num(-2),w));  // atomic w, use a { _2 {. w
  av=BAV(a); an=AN(a); au=(I*)av;
  ASSERT(bsum(an,av)==AS(w)[0],EVLENGTH);  // each item of w must be used exactly once
  wv=CAV(w); wn=AN(w); PROD(wc,AR(w)-1,AS(w)+1) wt=AT(w); k=bpnoun(wt); wk=k*wc; wx=wv+wk*AS(w)[0];  // k=bytes/atom, wk=bytes/item, wx=end+1 of area

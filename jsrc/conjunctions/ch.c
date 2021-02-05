@@ -40,7 +40,7 @@ static A jthgd(J jt,B b,I n,A w,A p,A q){A c,d,e,z;D r,s,t,*u,*v,x,*zv;I j,pn,qn
   r*=x/j; t=s; s+=r; if(z)*zv++=s; JBREAK0;
  }
  NAN1;
- return !b?scf(s):z?take(sc(1+j),z):hgd(b,j,w,p,q);
+ return !b?scf(s):z?jttake(jt,sc(1+j),z):hgd(b,j,w,p,q);
 }    /* real vector p,q; real scalar w; all terms (1=b) or last term (0=b) */
 
 static A jthgeom2(J jt,A a,A w,A self){PROLOG(0036);A h,*hv,t,z;B b;I an,*av,j,n;V*sv=FAV(self);

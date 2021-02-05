@@ -410,16 +410,16 @@ static A jtopes(J jt,I zt,A cs,A w){A a,d,e,sh,t,*wv,x,x1,y,y1,z;B*b;C*xv;I an,*
   RZ(opes2(&x1,&y1,b,a,e,wv[i],wcr)); v=AS(y1); m1=v[0]; k=v[1];
   if(m<p+m1){
    j=m; m=(i<n-1?m+m:0)+p+m1;
-   RZ(x=take(sc(m),x)); xv=CAV(x)+p*xk; mvc(xk*(m-j),xv,dk,AV(e));
-   RZ(y=take(sc(m),y)); yv= AV(y)+p*yc;
+   RZ(x=jttake(jt,sc(m),x)); xv=CAV(x)+p*xk; mvc(xk*(m-j),xv,dk,AV(e));
+   RZ(y=jttake(jt,sc(m),y)); yv= AV(y)+p*yc;
   }
   for(j=wr-1;j;--j)if(dv[j]==zs[j]){dv[j]=0; ++dv[j-1];}else break;
   v=AV(y1); DQ(m1, ICPY(yv,dv,wr); ICPY(yv+yc-k,v,k); yv+=yc; v+=k;); 
   if(memcmpne(1+AS(x1),1+s,SZI*c)){*s=m1; povtake(jt,sh,x1,xv);} else MC(xv,AV(x1),m1*xk);
   ++dv[wr-1]; xv+=m1*xk; p+=m1;
  }
- SPB(zp,x,p==m?x:take(sc(p),x));
- SPB(zp,i,p==m?y:take(sc(p),y));
+ SPB(zp,x,p==m?x:jttake(jt,sc(p),x));
+ SPB(zp,i,p==m?y:jttake(jt,sc(p),y));
  return z;
 }  // > w when w contains sparse contents, maxtype=zt
 
@@ -539,7 +539,7 @@ static A jtrazeg(J jt,A w,I t,I n,I r,A*v,I nonempt){A h,h1,y,z;C*zu;I c=0,i,j,k
    // nonatomic contents: rank extension+fill rather than replication
    // if IC(y)==0 this all does nothing, but perhaps not worth checking
    if(j=r-yr){DO(j,v1[i]=1;); MCISH(j+v1,ys,yr); RZ(y=jtreshape(jt,h1,y)); }  // if rank extension needed, create rank 1 1...,yr and reshape to that shape
-   for(j=1;j<r;++j)if(s[j]!=AS(y)[j])break; if(j!=r){SETIC(y,*s); RZ(y=take(h,y));}  // if cell of y has different shape from cell of result, install the
+   for(j=1;j<r;++j)if(s[j]!=AS(y)[j])break; if(j!=r){SETIC(y,*s); RZ(y=jttake(jt,h,y));}  // if cell of y has different shape from cell of result, install the
      // #items into s (giving #cell,result-cell shape) and fill to that shape.  This destroys *s (#result items) buts leaves the rest of s
    {j=k*AN(y); MC(zu,AV(y),j); zu+=j;}
   }

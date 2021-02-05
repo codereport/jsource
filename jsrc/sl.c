@@ -86,7 +86,7 @@ static void jterasenl(J jt, I n){
 static A jtactivenl(J jt){A y;
  GATV0(y,INT,AN(jt->stnum),1); I *yv=IAV(y);   // allocate place to hold numbers of active locales
  I nloc=0; DO(AN(jt->stnum), if(IAV0(jt->stnum)[i]){yv[nloc]=NAV(LOCNAME((A)IAV0(jt->stnum)[i]))->bucketx; ++nloc;})
- return jtevery(jt,take(sc(nloc),y),ds(CTHORN));  // ":&.> nloc{.y
+ return jtevery(jt,jttake(jt,sc(nloc),y),ds(CTHORN));  // ":&.> nloc{.y
 }
 
 // iterator support.  countnl returns a number of iterations.  indexnl returns the A block (or 0) for 

@@ -42,7 +42,7 @@ static A jttks(J jt,A a,A w){PROLOG(0092);A a1,q,x,y,z;B b,c;I an,m,r,*s,*u,*v;P
    if(!c){++d; MC(yv,xv,k); yv+=k; DO(m, t=u[i]; *jv++=0>t?iv[i]-(t+s[i]):iv[i];);}
    iv+=m; xv+=k;
   }
-  SPB(zp,i,d<n?take(sc(d),j):j); SPB(zp,x,d<n?take(sc(d),y):y);
+  SPB(zp,i,d<n?jttake(jt,sc(d),j):j); SPB(zp,x,d<n?jttake(jt,sc(d),y):y);
  }else{SPB(zp,i,ca(SPA(wp,i))); SPB(zp,x,b?x:ca(x));}
  SPB(zp,a,ca(SPA(wp,a)));
  SPB(zp,e,ca(SPA(wp,e)));
@@ -209,7 +209,7 @@ static A jtrsh0(J jt, A w){A x,y;I wcr,wf,wr,*ws;
    // left rank is garbage, but since zeroionei(0) is an atom it doesn't matter
    return jtfrom(jtinplace,zeroionei(0),w);  // could call jtfromi directly for non-sparse w
   }
- }else{return SPARSE&AT(w)?irs2(num(0),take(num( 1),w),0L,0L,wcr,jtfrom):rsh0(w);  // cell of w is empty - create a cell of fills  jt->ranks is still set for use in take.  Left rank is garbage, but that's OK
+ }else{return SPARSE&AT(w)?irs2(num(0),jttake(jt,num( 1),w),0L,0L,wcr,jtfrom):rsh0(w);  // cell of w is empty - create a cell of fills  jt->ranks is still set for use in take.  Left rank is garbage, but that's OK
  }
  // pristinity from the called verb
 }
@@ -218,6 +218,6 @@ static A jtrsh0(J jt, A w){A x,y;I wcr,wf,wr,*ws;
  F1PREFIP;
  wr=AR(w); wcr=(RANKT)jt->ranks; wcr=wr<wcr?wr:wcr; wf=wr-wcr;  // no RESETRANK: rank is passed into from/take/rsh0.  Left rank is garbage but that's OK
  return !wcr||AS(w)[wf]?jtfrom(jtinplace,num(-1),w) :  // if cells are atoms, or if the cells are nonempty arrays, result is last cell(s) scaf should generate virtual block here for speed
-     SPARSE&AT(w)?irs2(num(0),take(num(-1),w),0L,0L,wcr,jtfrom):rsh0(w);
+     SPARSE&AT(w)?irs2(num(0),jttake(jt,num(-1),w),0L,0L,wcr,jtfrom):rsh0(w);
  // pristinity from other verbs
 }

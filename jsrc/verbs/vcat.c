@@ -69,8 +69,8 @@ static A jtovs(J jt,A a,A w){A ae,ax,ay,q,we,wx,wy,x,y,z,za,ze;B*ab,*wb,*zb;I ac
  GATV0(q,INT,r,1); zs= AV(q); DO(r, zs[i]=MAX(as[i],ws[i]););
  DO(r, if(zb[i]>ab[i]){RZ(a=jtreaxis(jt,za,a)); break;});
  DO(r, if(zb[i]>wb[i]){RZ(w=jtreaxis(jt,za,w)); break;});
- *zs=*as; DO(r, if(zs[i]>as[i]){RZ(a=take(q,a)); break;});
- *zs=*ws; DO(r, if(zs[i]>ws[i]){RZ(w=take(q,w)); break;});
+ *zs=*as; DO(r, if(zs[i]>as[i]){RZ(a=jttake(jt,q,a)); break;});
+ *zs=*ws; DO(r, if(zs[i]>ws[i]){RZ(w=jttake(jt,q,w)); break;});
  *zs=*as+*ws; t=maxtype(at,wt);
  ap=PAV(a); ay=SPA(ap,i); ax=SPA(ap,x); if(TYPESNE(t,at))RZ(ax=jtcvt(jt,t,ax));
  wp=PAV(w); wy=SPA(wp,i); wx=SPA(wp,x); if(TYPESNE(t,at))RZ(wx=jtcvt(jt,t,wx));
@@ -96,7 +96,7 @@ static A jtovs(J jt,A a,A w){A ae,ax,ay,q,we,wx,wy,x,y,z,za,ze;B*ab,*wb,*zb;I ac
    }
    yv+=c; xv+=xk;
   }
-  SPB(zp,i,p?take(sc(mn-p),y):y); SPB(zp,x,p?take(sc(mn-p),x):x);
+  SPB(zp,i,p?jttake(jt,sc(mn-p),y):y); SPB(zp,x,p?jttake(jt,sc(mn-p),x):x);
  }
  return z;
 }    /* a,"r w where a or w or both are sparse */
@@ -108,7 +108,7 @@ static C*jtovgmove(J jt,I k,I c,I m,A s,A w,C*x,A z){I d,n,p=c*m;
   n=AN(w); d=AN(s)-AR(w);
   if((-n&(d-1))>=0)mvc(k*p,x,k,jt->fillv);  // fill required: w empty or shape short (d>0)
   if(n){  // nonempty cell, must copy in the data
-   if(n<p){I *v=AV(s); *v=m; RZ(w=take(d?vec(INT,AR(w),d+v):s,w));}  // incoming cell smaller than result area: take to result-cell size
+   if(n<p){I *v=AV(s); *v=m; RZ(w=jttake(jt,d?vec(INT,AR(w),d+v):s,w));}  // incoming cell smaller than result area: take to result-cell size
    JMC(x,AV(w),k*AN(w),loop1,1);  // copy in the data, now the right cell shape but possibly shorter than the fill  kludge could avoid double copy
   }
  }else{  // scalar replication
@@ -339,7 +339,7 @@ A jtapip(J jt, A a, A w){F2PREFIP;A h;C*av,*wv;I ak,k,p,*u,*v,wk,wm,wn;
       // item of the result, and it is extended to the rank/size of an item of a.  The extra
       // rank is implicit in the shape of a.
       // The take relies on the fill value
-      if(p){h=vec(INT,wr,AS(a)+ar-wr); makewritable(h); if(ar==wr)AV(h)[0]=AS(w)[0]; RZ(w=take(h,w)); wr=AR(w);}  // should use faux block for h
+      if(p){h=vec(INT,wr,AS(a)+ar-wr); makewritable(h); if(ar==wr)AV(h)[0]=AS(w)[0]; RZ(w=jttake(jt,h,w)); wr=AR(w);}  // should use faux block for h
       av=ak+CAV(a); wv=CAV(w);   // av->end of a data, wv->w data
       // If an item of a is higher-rank than the entire w (except when w is an atom, which gets replicated),
       // copy fill to the output area.  Start the copy after the area that will be filled in by w

@@ -488,7 +488,7 @@ static A jtths(J jt, A w){A e,i,x,z;C c,*u,*v;I d,m,n,*s;P*p;
  RZ(i=thorn1(i)); s=AS(i); m=s[0]; n=s[1];
  RZ(x=thorn1(1<AR(x)?x:table(x))); 
  RZ(e=shape(x)); s=AV(e)+AN(e)-1; *s=-(*s+3+n);
- RZ(z=take(e,x)); 
+ RZ(z=jttake(jt,e,x)); 
  u=CAV(i)-n;        
  d=aii(z); v=CAV(z)-d; DQ(m, MC(v+=d,u+=n,n););
  if(2<AR(z))RZ(z=jtmatth1(jt,z,zeroionei(0)));  // no prxthornuni

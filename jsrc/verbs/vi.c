@@ -1082,9 +1082,9 @@ A jtindexofsub(J jt,I mode,A a,A w){PROLOG(0079);A h=0,hi=mtv,z;B mk=w==mark,th;
   // We also handle the case of i.&0@:e. when the rank of w is more than 1 greater than the rank of a cell of a;
   // in that case the search always fails
   case IIDOT:   return jtreshape(jt,shape(z),sc(n?m:0  ));
-  case IFORKEY: {z=jtreshape(jt,shape(z),take(sc(m),sc(m))); RZ(z=mkwris(z)); AM(z)=!!m; return z;}  // all 0 but the first has the total count
+  case IFORKEY: {z=jtreshape(jt,shape(z),jttake(jt,sc(m),sc(m))); RZ(z=mkwris(z)); AM(z)=!!m; return z;}  // all 0 but the first has the total count
   case IICO:    return jtreshape(jt,shape(z),sc(n?m:m-1));
-  case INUBSV:  return jtreshape(jt,shape(z),take(sc(m),num(1)));
+  case INUBSV:  return jtreshape(jt,shape(z),jttake(jt,sc(m),num(1)));
   case INUB:    AN(z)=0; *AS(z)=m?1:0; return z;
   case ILESS:   if(m)AN(z)=*AS(z)=0; else MC(AV(z),AV(w),k1*AN(w)); return z;
   case IEPS:    return jtreshape(jt,shape(z),num(m&&(!n||th)) );

@@ -150,8 +150,8 @@ static B jtrfcq(J jt,I m,A w,A*zz,A*ww){A q,x,y,z;B b;I i,j,wt;Q*qv,rdx,rq,*wv,*
  if(!(wt&RAT))RZ(w=jtcvt(jt,RAT,w)); wv=QAV(w);
  rdx=jtmaxdenom(jt,1+m,wv);  // rdx = max denominator in the polynomial, in rational form
  RZ(x=jtcvt(jt,CMPX,w)); xv=ZAV(x); // set x = complex form of w, xv->first complex coeff
- RZ(y=take(sc(1+m),x)); makewritable(y); yv=ZAV(y);  // y = complex form with degree m, yv->first coeff.  These are modified by deflate[q]() and must not be virtual
- RZ(q=take(sc(1+m),w)); makewritable(q); qv=QAV(q);  // q = rational form with degree m, qv->first coeff
+ RZ(y=jttake(jt,sc(1+m),x)); makewritable(y); yv=ZAV(y);  // y = complex form with degree m, yv->first coeff.  These are modified by deflate[q]() and must not be virtual
+ RZ(q=jttake(jt,sc(1+m),w)); makewritable(q); qv=QAV(q);  // q = rational form with degree m, qv->first coeff
  GATV0(z,RAT,m,1); zv=QAV(z);        // allocate space for exact rational roots, zv->first result location
  i=j=0;
  // loop to find each root by Laguerre's method
@@ -229,7 +229,7 @@ static A jtrfc(J jt, A w){A r,w1;I m=0,n,t;
  // switch based on degree of polynomial
  switch(m){
   case 0:  return link(num(0),mtv);  // degree 0 - return 0;''
-  case 1:  r=ravel(negate(jtaslash(jt,CDIV,take(num(2),w)))); break;  // linear - return solution, whatever its type
+  case 1:  r=ravel(negate(jtaslash(jt,CDIV,jttake(jt,num(2),w)))); break;  // linear - return solution, whatever its type
   default: if(t&CMPX)r=jtrfcz(jt,m,w);  // higher order - if complex, go straight to complex solutions
            else{RZ(rfcq(m,w,&r,&w1)); if(m>AN(r))r=over(r,jtrfcz(jt,m-AN(r),w1));} // otherwise, find rational solutions in r, and residual polynomial in w1.
             // if there are residual (complex) solutions, go find them

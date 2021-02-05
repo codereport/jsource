@@ -888,7 +888,7 @@ A jtclonelocalsyms(J jt, A a){A z;I j;I an=AN(a); LX *av=LXAV0(a),*zv;
     if(st==1){splitloc=wv-AAV(w); break;} ++wv;)
   // split the definition into monad and dyad.
   I mn=splitloc<0?AN(w):splitloc; I nn=splitloc<0?0:AN(w)-splitloc-1;
-  RZ(m=take(sc(mn),w)); RZ(d=take(sc(-nn),w));
+  RZ(m=jttake(jt,sc(mn),w)); RZ(d=jttake(jt,sc(-nn),w));
   INCORP(m); INCORP(d);  // we are incorporating them into hv[]
   if(4==n){if((-AN(m)&(AN(d)-1))<0)d=m; m=mtv;}  //  for 4 :, make the single def given the dyadic one
   GAT0(h,BOX,2*HN,1); hv=AAV(h);

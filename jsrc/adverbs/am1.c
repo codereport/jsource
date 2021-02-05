@@ -118,7 +118,7 @@ static A jtscubc(J jt,A z,A i1,A p){A a,q,s,y,y1;B*qv;I c,d,h,j=-1,m,n,*sv,*u,*v
  GATV0(s,INT,h,1); sv=AV(s); 
  d=1; u=AS(z); v=AV(a); DO(h, d*=sv[i]=u[v[n+i]];);
  RZ(y=jtrepeat(jt,p,SPA(zp,i))); m=*AS(y);
- RZ(y1=take(v2(m,n),y)); v=AV(y1);
+ RZ(y1=jttake(jt,v2(m,n),y)); v=AV(y1);
  GATV0(q,B01,m,1); qv=BAV(q);
  if(m){memset(qv,C0,m); DO(m-1, if(ICMP(v,v+n,n)){if(d>i-j)qv[i]=1; j=i;} v+=n;); if(d>(m-1)-j)qv[m-1]=1;}
  RZ(y1=jtrepeat(jt,q,y1)); c=*AS(y1);
@@ -128,7 +128,7 @@ static A jtscubc(J jt,A z,A i1,A p){A a,q,s,y,y1;B*qv;I c,d,h,j=-1,m,n,*sv,*u,*v
 
 static A jtscube(J jt,A z,A i1,A p){A a,y;P*zp;
  zp=PAV(z); a=SPA(zp,a); y=SPA(zp,i);
- return !AN(a)&&!*AS(y)?take(num(1),mtm):over(jtscubb(jt,z,i1),scubc(z,i1,p));
+ return !AN(a)&&!*AS(y)?jttake(jt,num(1),mtm):over(jtscubb(jt,z,i1),scubc(z,i1,p));
 }    /* new rows for the index matrix of z */
 
 static A jtiindx(J jt,A z,A i1){A q,j,j1,y;I c,d,e,h,i,*jv,m,n,*qv,*v,*yv;P*zp;

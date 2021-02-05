@@ -191,7 +191,7 @@ static B jtDfromQ(J jt,A w,void*yv){D d,f,n,*x,xb=(D)XBASE;I cn,i,k,m,nn,pn,qn,r
    x[i]=n/d;
   }else{
    k=5+qn; if(!x2)if(!(x2=xc(2L)))return 0;
-   if(!(c=xdiv(take(sc(-(k+pn)),p),q,XMFLR)))return 0;
+   if(!(c=xdiv(jttake(jt,sc(-(k+pn)),p),q,XMFLR)))return 0;
    cn=AN(c); m=MIN(cn,5); r=cn-(m+k); v=AV(c)+cn-m; 
    n=0.0; f=1.0; DO(m, n+=f*v[i]; f*=xb;);
    d=1.0; DQ(ABS(r), d*=xb;);
