@@ -835,7 +835,7 @@
 #define scb(x)                      jtscb(jt,(x))
 #define scc(x)                      jtscc(jt,(x))
 #define scf(x)                      jtscf(jt,(x))
-#define scfn(x,y)                   jtscfn(jt,(x),(y))
+
 #define scheck(x)                   jtscheck(jt,(x))
 #define scib(x)                     jtscib(jt,(x))
 #define scind(x)                    jtscind(jt,(x))
