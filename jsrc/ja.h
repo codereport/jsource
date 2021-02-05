@@ -811,7 +811,7 @@
 #define rr(x)                       rrv(FAV(x))  // rr of A
 #define rsh0(x)                     jtrsh0(jt,(x))
 #define rsort(x)                    jtrsort(jt,(x))
-#define sb2(x,y)                    jtsb2(jt,(x),(y))
+
 #define sbbox(x)                    jtsbbox(jt,(x))
 #define sbcheck(x)                  jtsbcheck(jt,(x))
 #define sbcheck1(x0,x1,x2,x3,x4,x5,x6,x7)           jtsbcheck1(jt,(x0),(x1),(x2),(x3),(x4),(x5),(x6),(x7))

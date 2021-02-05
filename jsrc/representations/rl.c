@@ -235,7 +235,7 @@ static A jtlnoun(J jt,A w,A *ltext){F1PREFIP;I t;
   case C2TX: return over(cstr("u: "),lnum(uco2(num(3),w)));
   case C4TX: return over(cstr("10&u: "),lnum(uco2(num(3),w)));
   case BOXX: return lbox(w);
-  case SBTX: return over(cstr("s: "),lbox(sb2(num(5),w)));
+  case SBTX: return over(cstr("s: "),lbox(jtsb2(jt,num(5),w)));
   default:  return lnum(w);
 }}
 
