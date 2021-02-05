@@ -223,7 +223,7 @@ static A jtrfc(J jt, A w){A r,w1;I m=0,n,t;
  n=AN(w); t=AT(w);  // n=#coeffs, t=type
  if(n){
   ASSERT(t&(DENSE&NUMERIC),EVDOMAIN);  // coeffs must be dense numeric
-  RZ(r=jico2(ne(w,num(0)),num(1))); m=AV(r)[0]; m=(m==n)?0:m;  // r=block for index of last nonzero; m=degree of polynomial (but 0 if all zeros)
+  RZ(r=jtjico2(jt,ne(w,num(0)),num(1))); m=AV(r)[0]; m=(m==n)?0:m;  // r=block for index of last nonzero; m=degree of polynomial (but 0 if all zeros)
   ASSERT(m||equ(num(0),head(w)),EVDOMAIN);  // error if unsolvable constant polynomial
  }
  // switch based on degree of polynomial

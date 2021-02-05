@@ -469,7 +469,7 @@
 #define jfread(x)                   jtjfread(jt,(x))
 
 #define jgets(x)                    jtjgets(jt,(x))
-#define jico2(x,y)                  jtjico2(jt,(x),(y))
+
 #define jinit3()                    jtjinit3(jt)
 #define joff(x)                     jtjoff(jt,(x))
 #define jope(x,y)                   jtjope(jt,(x),(y))

@@ -206,3 +206,4 @@
 |`jsrc/verbs/visp.c`|ioev|jtioev|`(^\|[ \t]+\|[^\d\w_])ioev\((?=([^,]+?),([^)]+?)\))`|`\1jtioev(jt,`|
 |`jsrc/adverbs/am1.c`|istd1|jtistd1|`(^\|[ \t]+\|[^\d\w_])istd1\((?=([^,]+?),([^)]+?)\))`|`\1jtistd1(jt,`|
 |`jsrc/verbs/vrep.c`|jdot2|jtjdot2|`(^\|[ \t]+\|[^\d\w_])jdot2\((?=([^,]+?),([^)]+?)\))`|`\1jtjdot2(jt,`|
+|`jsrc/verbs/v0.c`|jico2|jtjico2|`(^\|[ \t]+\|[^\d\w_])jico2\((?=([^,]+?),([^)]+?)\))`|`\1jtjico2(jt,`|
