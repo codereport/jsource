@@ -895,7 +895,7 @@
 #define sprank2(x0,x1,x2,x3,x4,x5)  jtsprank2(jt,(x0),(x1),(x2),(x3),(x4),(x5))
 #define sprank2_0w(x0,x1,x2,x3,x4,x5)               jtsprank2_0w(jt,(x0),(x1),(x2),(x3),(x4),(x5))
 #define sprank2_a0(x0,x1,x2,x3,x4,x5)               jtsprank2_a0(jt,(x0),(x1),(x2),(x3),(x4),(x5))
-#define sprarg(x,y)                 jtsprarg(jt,(x),(y))
+
 #define spredge(x,y,z)              jtspredge(jt,(x),(y),(z))
 #define sprinit(x0,x1,x2,x3,x4)     jtsprinit(jt,(x0),(x1),(x2),(x3),(x4))
 #define sprintfeD(x0,x1,x2,x3,x4)   jtsprintfeD(jt,(x0),(x1),(x2),(x3),(x4))

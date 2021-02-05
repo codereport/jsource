@@ -73,7 +73,7 @@ A jtsprank1(J jt,A w,A fs,I mr,AF f1){PROLOG(0043);A q,wx,wy,wy1,ww,z,ze,zi,*zv;
  wr=AR(w); ws=AS(w); efr(wcr,wr,mr); wf=wr-wcr;
  if(!wf)return CALL1(f1,w,fs);
  DO(wf, ASSERT(ws[i]!=0,EVNONCE););
- RZ(w=sprarg(wf,w)); wp=PAV(w); wx=SPA(wp,x); wy=SPA(wp,i); 
+ RZ(w=jtsprarg(jt,wf,w)); wp=PAV(w); wx=SPA(wp,x); wy=SPA(wp,i); 
  if(mr){
   wt=AT(w); 
   v=AS(wy); n=v[0]; c=v[1]; wv=AV(wy); RZ(wy1=jtdropr(jt,wf,wy));
@@ -110,7 +110,7 @@ static I jtspradv(J jt,I n,B*b,I f,I r,I j,P*p,A*z){A s,x;I k;P*q;
 static A jtsprank2_0w(J jt,A a,A w,A fs,AF f2,I wf,I wcr){PROLOG(0044);A we,ww,y,z,zi,*zv;B*wb;
      I f,*iv,j,*v,wc,wj,wk,wm,wn,*ws,wt,*wv;P*wp;
  f=wf; ws=AS(w);
- RZ(w=sprarg(wf,w)); wt=AT(w); wp=PAV(w);
+ RZ(w=jtsprarg(jt,wf,w)); wt=AT(w); wp=PAV(w);
  y=SPA(wp,i); v=AS(y); wn=v[0]; wc=v[1]; wv=AV(y); RZ(wb=spredge(y,wf,&wm));
  RZ(ww=sprinit(wf,wcr,ws,wt,wp)); RZ(we=wcr?ca(ww):SPA(wp,e));
  GATV0(z,BOX,MAX(1,wm),1); zv=AAV(z);
@@ -129,7 +129,7 @@ static A jtsprank2_0w(J jt,A a,A w,A fs,AF f2,I wf,I wcr){PROLOG(0044);A we,ww,y
 static A jtsprank2_a0(J jt,A a,A w,A fs,AF f2,I af,I acr){PROLOG(0045);A aa,ae,y,z,zi,*zv;B*ab;
      I f,*iv,j,*v,ac,aj,ak,am,an,*as,at,*av;P*ap;
  f=af; as=AS(a);
- RZ(a=sprarg(af,a)); at=AT(a); ap=PAV(a);
+ RZ(a=jtsprarg(jt,af,a)); at=AT(a); ap=PAV(a);
  y=SPA(ap,i); v=AS(y); an=v[0]; ac=v[1]; av=AV(y); RZ(ab=spredge(y,af,&am));
  RZ(aa=sprinit(af,acr,as,at,ap)); RZ(ae=acr?ca(aa):SPA(ap,e));
  GATV0(z,BOX,MAX(1,am),1); zv=AAV(z);
@@ -158,8 +158,8 @@ A jtsprank2(J jt,A a,A w,A fs,I lr,I rr,AF f2){PROLOG(0046);A aa,ae,we,ww,y,zi,z
  f=MIN(af,wf); g=MAX(af,wf); m=1;
  if(f<g){d=g-f; RZ(y=odom(2L,d,f+(af<wf?ws:as))); ii=AV(y); m=*AS(y);}
  ASSERT(!ICMP(as,ws,f),EVLENGTH);
- RZ(a=sprarg(af,a)); at=AT(a); ap=PAV(a);
- RZ(w=sprarg(wf,w)); wt=AT(w); wp=PAV(w);
+ RZ(a=jtsprarg(jt,af,a)); at=AT(a); ap=PAV(a);
+ RZ(w=jtsprarg(jt,wf,w)); wt=AT(w); wp=PAV(w);
  y=SPA(ap,i); v=AS(y); an=v[0]; ac=v[1]; av=an?AV(y):0; RZ(ab=spredge(y,af,&am));
  y=SPA(wp,i); v=AS(y); wn=v[0]; wc=v[1]; wv=wn?AV(y):0; RZ(wb=spredge(y,wf,&wm));
  RZ(aa=sprinit(af,acr,as,at,ap)); RZ(ae=acr?ca(aa):SPA(ap,e));
