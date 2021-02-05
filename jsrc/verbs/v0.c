@@ -298,7 +298,7 @@ static A jtpoly2a(J jt,A a,A w){A c,e,x;I m;D rkblk[16];
   if(postfn)return jtupon2cell(jt,a,w,self);  // revert if ^@:p.   must do before a is modified
   ASSERT(2>=an,EVLENGTH);
   c=1==an?num(1):av[0]; a=av[1!=an]; // c=mplr, a=roots
-  if((an^1)+(AR(a)^2)==0)return poly2a(a,w);  // if coeff is 1 and exponent-list is a table, go do multinomial
+  if((an^1)+(AR(a)^2)==0)return jtpoly2a(jt,a,w);  // if coeff is 1 and exponent-list is a table, go do multinomial
   an=AN(a); at=AT(a);
   ASSERT(NUMERIC&(at|AT(c)),EVDOMAIN);
   ASSERT(!AR(c),EVRANK);

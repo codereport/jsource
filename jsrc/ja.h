@@ -670,7 +670,7 @@
 #define pollard_p_1(x)              jtpollard_p_1(jt,(x))
 #define pollard_rho(x)              jtpollard_rho(jt,(x))
 #define poly1(x)                    jtpoly1(jt,(x))
-#define poly2a(x,y)                 jtpoly2a(jt,(x),(y))
+
 #define polymult(x,y,z)             jtpolymult(jt,(x),(y),(z))
 #define pospow(x,y)                 jtpospow(jt,(x),(y))
 #define powop(x,y,z)                jtpowop(jt,(x),(y),(z))
