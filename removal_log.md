@@ -320,3 +320,4 @@
 |`jsrc/verbs/vs.c`|prod|jtprod|`(^\|[ \t]+\|[^\d\w_])prod\((?=([^,]+?),([^)]+?)\))`|`\1jtprod(jt,`|
 |`jsrc/xenos/xfmt.c`|prod|jtprod|`(^\|[ \t]+\|[^\d\w_])prod\((?=([^,]+?),([^)]+?)\))`|`\1jtprod(jt,`|
 |`jsrc/verbs/v2.c`|qco2|jtqco2|`(^\|[ \t]+\|[^\d\w_])qco2\((?=([^,]+?),([^)]+?)\))`|`\1jtqco2(jt,`|
+|`jsrc/verbs/v2.c`|qco2x|jtqco2x|`(^\|[ \t]+\|[^\d\w_])qco2x\((?=([^,]+?),([^)]+?)\))`|`\1jtqco2x(jt,`|
