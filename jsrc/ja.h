@@ -846,7 +846,7 @@
 #define scx(x)                      jtscx(jt,(x))
 #define seecall(x)                  jtseecall(jt,(x))
 #define seeparse(x)                 jtseeparse(jt,(x))
-#define seg(x,y)                    jtseg(jt,(x),(y))
+
 #define selfq(x)                    jtselfq(jt,(x))
 #define hasimploc(x)                jthasimploc(jt,(x))
 #define selm(x)                     jtselm(jt,(x))

@@ -427,3 +427,4 @@
 |`jsrc/representations/rl.c`|sc4|jtsc4|`(^\|[ \t]+\|[^\d\w_])sc4\((?=([^,]+?),([^)]+?)\))`|`\1jtsc4(jt,`|
 |`jsrc/conjunctions/cl.c`|scfn|jtscfn|`(^\|[ \t]+\|[^\d\w_])scfn\((?=([^,]+?),([^)]+?)\))`|`\1jtscfn(jt,`|
 |`jsrc/adverbs/am1.c`|scubb|jtscubb|`(^\|[ \t]+\|[^\d\w_])scubb\((?=([^,]+?),([^)]+?)\))`|`\1jtscubb(jt,`|
+|`jsrc/adverbs/ap.c`|seg|jtseg|`(^\|[ \t]+\|[^\d\w_])seg\((?=([^,]+?),([^)]+?)\))`|`\1jtseg(jt,`|

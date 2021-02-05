@@ -366,7 +366,7 @@ static A jtginfix(J jt,A a,A w,A self){A h,*hv,x,z,*zv;I d,m,n;
  h=VAV(self)->fgh[2]; hv=AAV(h); d=AN(h);
  if(SETIC(x,n)){
   GATV0(z,BOX,n,1); zv=AAV(z);
-  DO(n, RZ(zv[i]=df1(h,seg(jtfrom(jt,sc(i),x),w),hv[i%d])););
+  DO(n, RZ(zv[i]=df1(h,jtseg(jt,jtfrom(jt,sc(i),x),w),hv[i%d])););
   return ope(z);
  }else{A s;
   RZ(s=AR(w)?shape(w):ca(iv0)); AV(s)[0]=ABS(m);
