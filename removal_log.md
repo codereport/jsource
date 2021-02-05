@@ -211,3 +211,5 @@
 |`jsrc/xenos/xo.c`|jope|jtjope|`(^\|[ \t]+\|[^\d\w_])jope\((?=([^,]+?),([^)]+?)\))`|`\1jtjope(jt,`|
 |`jsrc/io.c`|jset|jtjset|`(^\|[ \t]+\|[^\d\w_])jset\((?=([^,]+?),([^)]+?)\))`|`\1jtjset(jt,`|
 |`jsrc/debugging/d.c`|jsig|jtjsig|`(^\|[ \t]+\|[^\d\w_])jsig\((?=([^,]+?),([^)]+?)\))`|`\1jtjsig(jt,`|
+|`jsrc/conjunctions/cc.c`|lamin2|jtlamin2|`(^\|[ \t]+\|[^\d\w_])lamin2\((?=([^,]+?),([^)]+?)\))`|`\1jtlamin2(jt,`|
+|`jsrc/verbs/v2.c`|lamin2|jtlamin2|`(^\|[ \t]+\|[^\d\w_])lamin2\((?=([^,]+?),([^)]+?)\))`|`\1jtlamin2(jt,`|

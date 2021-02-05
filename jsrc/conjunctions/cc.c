@@ -37,7 +37,7 @@ static A jtcut02(J jt,A a,A w,A self){F2PREFIP;A fs,q,qq,*qv,z,zz=0;I*as,c,e,i,i
 
  I wr=AR(w);  // rank of w
  RZ(a=vib(a));  // audit for valid integers
- if(1>=AR(a))RZ(a=lamin2(zeroionei(0),a));   // default list to be lengths starting at origin
+ if(1>=AR(a))RZ(a=jtlamin2(jt,zeroionei(0),a));   // default list to be lengths starting at origin
  as=AS(a); m=AR(a)-2; PROD(n,m,as); c=as[1+m]; u=AV(a);  // n = # 2-cells in a, c = #axes of subarray given, m is index of next-last axis of a, u->1st atom of a
  ASSERT((-(as[m]^2)|(wr-c))>=0,EVLENGTH);    // shapes must end with 2,c where c does not exceed rank of r
  if(!n){  /* empty result; figure out result type */

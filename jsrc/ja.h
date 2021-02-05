@@ -489,7 +489,7 @@
 #define keytallysp(x)               jtkeytallysp(jt,(x))
 #define laguerre(x,y,z)             jtlaguerre(jt,(x),(y),(z))
 #define lamin1(x)                   jtlamin1(jt,(x))
-#define lamin2(x,y)                 jtlamin2(jt,(x),(y))
+
 #define lbox(x)                     jtlbox(jtinplace,(x),ltext)
 #define lchar(x)                    jtlchar(jtinplace,(x),ltext)
 #define lcm(x,y)                    jtatomic2(jt,(x),(y),ds(CSTARDOT))
