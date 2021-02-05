@@ -922,7 +922,7 @@
 #define str0(x)                     jtstr0(jt,(x))
 
 #define sumatgbool(x,y,z)           jtsumatgbool(jt,(x),(y),(z))
-#define sup(x,y)                    jtsup(jt,(x),(y))
+
 #define suq(x,y)                    jtsuq(jt,(x),(y))
 #define susp()                      jtsusp(jt)
 #define swap(x)                     jtswap(jt,(x))
