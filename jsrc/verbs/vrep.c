@@ -9,7 +9,7 @@ static A jtrepzdx(J jt,A a,A w,I wf,I wcr){A p,q,x;P*wp;
  F2PREFIP;
  if(SPARSE&AT(w)){wp=PAV(w); x=SPA(wp,e);}
  else x=jt->fill&&AN(jt->fill)?jt->fill:filler(w);
- RZ(p=jtrepeat(jt,ravel(rect(a)),ravel(stitch(IX(wcr?*(wf+AS(w)):1),num(-1)))));
+ RZ(p=jtrepeat(jt,ravel(rect(a)),ravel(jtstitch(jt,IX(wcr?*(wf+AS(w)):1),num(-1)))));
  RZ(IRS2(w,x,0L,wcr,0L,jtover,q));
  return IRS2(p,q,0L,1L,wcr+!wcr,jtfrom,x);
 }    /* (dense complex) # (dense or sparse) */

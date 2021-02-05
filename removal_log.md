@@ -448,3 +448,15 @@
 |`jsrc/adverbs/am1.c`|ssel|jtssel|`(^\|[ \t]+\|[^\d\w_])ssel\((?=([^,]+?),([^)]+?)\))`|`\1jtssel(jt,`|
 |`jsrc/debugging/dss.c`|ssnext|jtssnext|`(^\|[ \t]+\|[^\d\w_])ssnext\((?=([^,]+?),([^)]+?)\))`|`\1jtssnext(jt,`|
 |`jsrc/debugging/dsusp.c`|ssnext|jtssnext|`(^\|[ \t]+\|[^\d\w_])ssnext\((?=([^,]+?),([^)]+?)\))`|`\1jtssnext(jt,`|
+|`jsrc/adverbs/am1.c`|stitch|jtstitch|`(^\|[ \t]+\|[^\d\w_])stitch\((?=([^,]+?),([^)]+?)\))`|`\1jtstitch(jt,`|
+|`jsrc/adverbs/amn.c`|stitch|jtstitch|`(^\|[ \t]+\|[^\d\w_])stitch\((?=([^,]+?),([^)]+?)\))`|`\1jtstitch(jt,`|
+|`jsrc/adverbs/ao.c`|stitch|jtstitch|`(^\|[ \t]+\|[^\d\w_])stitch\((?=([^,]+?),([^)]+?)\))`|`\1jtstitch(jt,`|
+|`jsrc/conjunctions/crs.c`|stitch|jtstitch|`(^\|[ \t]+\|[^\d\w_])stitch\((?=([^,]+?),([^)]+?)\))`|`\1jtstitch(jt,`|
+|`jsrc/representations/rt.c`|stitch|jtstitch|`(^\|[ \t]+\|[^\d\w_])stitch\((?=([^,]+?),([^)]+?)\))`|`\1jtstitch(jt,`|
+|`jsrc/verbs/vd.c`|stitch|jtstitch|`(^\|[ \t]+\|[^\d\w_])stitch\((?=([^,]+?),([^)]+?)\))`|`\1jtstitch(jt,`|
+|`jsrc/verbs/vf.c`|stitch|jtstitch|`(^\|[ \t]+\|[^\d\w_])stitch\((?=([^,]+?),([^)]+?)\))`|`\1jtstitch(jt,`|
+|`jsrc/verbs/vi.c`|stitch|jtstitch|`(^\|[ \t]+\|[^\d\w_])stitch\((?=([^,]+?),([^)]+?)\))`|`\1jtstitch(jt,`|
+|`jsrc/verbs/visp.c`|stitch|jtstitch|`(^\|[ \t]+\|[^\d\w_])stitch\((?=([^,]+?),([^)]+?)\))`|`\1jtstitch(jt,`|
+|`jsrc/verbs/vrep.c`|stitch|jtstitch|`(^\|[ \t]+\|[^\d\w_])stitch\((?=([^,]+?),([^)]+?)\))`|`\1jtstitch(jt,`|
+|`jsrc/verbs/vs.c`|stitch|jtstitch|`(^\|[ \t]+\|[^\d\w_])stitch\((?=([^,]+?),([^)]+?)\))`|`\1jtstitch(jt,`|
+|`jsrc/xenos/xo.c`|stitch|jtstitch|`(^\|[ \t]+\|[^\d\w_])stitch\((?=([^,]+?),([^)]+?)\))`|`\1jtstitch(jt,`|

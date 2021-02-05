@@ -93,7 +93,7 @@ static A jtscuba(J jt,A z,A i1,B u){A*iv,q=0,x;I c,d,j,n,*s,*v;P*zp;
   x=iv[j];
   if(x==ds(CACE))RZ(x=IX(s[v[j]]))else{if(1<AR(x))RZ(x=ravel(x)); if(u)RZ(x=nub(x));}
   c=AN(x); 
-  if(q){d=*AS(q); RZ(q=stitch(jtrepeat(jt,sc(d),x),jtreitem(jt,sc(c*d),q)));}
+  if(q){d=*AS(q); RZ(q=jtstitch(jt,jtrepeat(jt,sc(d),x),jtreitem(jt,sc(c*d),q)));}
   else RZ(q=jtreshape(jt,v2(c,1L),x));
  }
  return q;
@@ -109,7 +109,7 @@ static A jtscubb(J jt,A z,A i1){A a,q,x,y;I c,d,h,j,*s,*v,*xv;P*zp;
  GATV0(x,INT,h,1); xv=AV(x); j=c; DO(h, xv[i]=s[v[j++]];);
  RZ(x=odom(2L,h,xv));
  c=*AS(q); d=*AS(x);
- return stitch(jtrepeat(jt,sc(d),q),jtreitem(jt,sc(c*d),x));
+ return jtstitch(jt,jtrepeat(jt,sc(d),q),jtreitem(jt,sc(c*d),x));
 }    /* new rows for the index matrix of z for brand new cells */
 
 static A jtscubc(J jt,A z,A i1,A p){A a,q,s,y,y1;B*qv;I c,d,h,j=-1,m,n,*sv,*u,*v;P*zp;
@@ -123,7 +123,7 @@ static A jtscubc(J jt,A z,A i1,A p){A a,q,s,y,y1;B*qv;I c,d,h,j=-1,m,n,*sv,*u,*v
  if(m){memset(qv,C0,m); DO(m-1, if(ICMP(v,v+n,n)){if(d>i-j)qv[i]=1; j=i;} v+=n;); if(d>(m-1)-j)qv[m-1]=1;}
  RZ(y1=jtrepeat(jt,q,y1)); c=*AS(y1);
  if(!c)return mtm;
- return jtless(jt,stitch(jtrepeat(jt,sc(d),y1),jtreitem(jt,sc(c*d),odom(2L,h,sv))),y);
+ return jtless(jt,jtstitch(jt,jtrepeat(jt,sc(d),y1),jtreitem(jt,sc(c*d),odom(2L,h,sv))),y);
 }    /* new rows for the index matrix of z for existing cells */
 
 static A jtscube(J jt,A z,A i1,A p){A a,y;P*zp;

@@ -184,7 +184,7 @@ A jtsparseit(J jt,A w,A a,A e){PROLOG(0091);A ax,c,x,y,z;B b,*cv;I cm,cn,m,n,r,*
   RZ(x=jtreshape(jt,vec(INT,j,u),jtcant2(jt,increm(dgrade1(p)),x)));
   RZ(q=__not(irs2(x,jtreshape(jt,vec(INT,AR(x)-1,1+AS(x)),e),0L,-1L,RMAX,jtmatch)));
   SPBV(zp,x,x,jtrepeat(jt,q,x));
-  RZ(y=stitch(jtrepeat(jt,sc(c),y),jtreshape(jt,v2(c*m,k),jtabase2(jt,vec(INT,k,v),IX(c)))));
+  RZ(y=jtstitch(jt,jtrepeat(jt,sc(c),y),jtreshape(jt,v2(c*m,k),jtabase2(jt,vec(INT,k,v),IX(c)))));
   RZ(p=grade1(over(a,jtless(jt,a1,a))));
   if(equ(p,IX(AN(p))))SPB(zp,i,jtrepeat(jt,q,y))
   else{y=jtfromr(jt,p,jtrepeat(jt,q,y)); q=grade1(y); SPB(zp,i,jtfrom(jt,q,y)); SPB(zp,x,jtfrom(jt,q,x));}

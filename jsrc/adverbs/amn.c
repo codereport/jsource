@@ -61,9 +61,9 @@ static A jtzpadn(J jt,A z,A ind,B ip){A a,ai,i1,p,p1,q,t,x,x0,y,y0,y1;B*b;I c,d,
  RZ(p=nub(jtless(jt,i1,y1)));
  if(c=AN(a)-d){
   RZ(t=jtfrom(jt,jtless(jt,a,ai),shape(z))); RZ(p1=odom(2L,c,AV(t))); n=*AS(p1);
-  if(m=*AS(p))RZ(p=stitch(jtrepeat(jt,sc(n),p),jtreshape(jt,v2(n*m,c),p1)));
+  if(m=*AS(p))RZ(p=jtstitch(jt,jtrepeat(jt,sc(n),p),jtreshape(jt,v2(n*m,c),p1)));
   RZ(t=nub(jtrepeat(jt,jteps(jt,y1,i1),y1)));
-  RZ(t=stitch(jtrepeat(jt,sc(n),t),jtreshape(jt,v2(n**AS(t),c),p1)));
+  RZ(t=jtstitch(jt,jtrepeat(jt,sc(n),t),jtreshape(jt,v2(n**AS(t),c),p1)));
   RZ(t=jtless(jt,t,y));
   if(AN(t))RZ(p=over(p,t));
  }

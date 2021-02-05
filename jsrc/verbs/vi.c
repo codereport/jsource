@@ -1424,8 +1424,8 @@ A jtindexofprehashed(J jt,A a,A w,A hs){A h,hi,*hv,x,z;AF fn;I ar,*as,at,c,f1,k,
  // if w is dense, return ((x = i.n) # x) =/ x
  if(DENSE&AT(w))return atab(CEQ,jtrepeat(jt,eq(IX(n),x),x),x);
  // if x is sparse... ??
- p=PAV(x); e=SPA(p,e); y=SPA(p,i); RZ(xy=stitch(SPA(p,x),y));
- if(n>*AV(e))RZ(xy=over(xy,stitch(e,jtless(jt,IX(n),y))));
+ p=PAV(x); e=SPA(p,e); y=SPA(p,i); RZ(xy=jtstitch(jt,SPA(p,x),y));
+ if(n>*AV(e))RZ(xy=over(xy,jtstitch(jt,e,jtless(jt,IX(n),y))));
  RZ(xy=jtgrade2(jt,xy,xy)); v=AV(xy);
  c=*AS(xy);
  m=j=-1; DQ(c, if(j!=*v){j=*v; ++m;} *v=m; v+=2;);

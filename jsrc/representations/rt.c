@@ -62,7 +62,7 @@ static A jtgraft(J jt, A w){A p,q,t,*u,x,y,z,*zv;C*v;I d,j,k,m,n,*pv,*s,xn,*xv,y
   GATV0(p,LIT,m,1); v=CAV(p); memset(v,' ',m);
   if(1==d)*(v+j)=jt->bx[10]; else{memset(v+j,jt->bx[9],d); *(v+j)=*jt->bx; *(v+k-1)=jt->bx[6];}
  }
- RZ(zv[0]=incorp(stitch(p,t)));
+ RZ(zv[0]=incorp(jtstitch(jt,p,t)));
  return z;
 }
 
