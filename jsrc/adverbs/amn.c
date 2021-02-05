@@ -21,13 +21,13 @@ static B jtiaddr(J jt,A z,A ind,A*i1,A*i2){A a,ai,as,ii,jj,q,t,x,y;I c,d,e,h,i,*
  zp=PAV(z); a=SPA(zp,a); x=SPA(zp,x); s=1+AS(x); 
  h=*(AS(ind)+AR(ind)-1);                               /* # axes indexed              */
  RZ(q=gt(sc(h),a)); 
- y=SPA(zp,i); if(!all1(q))RZ(y=repeatr(q,y));          /* indexed cols of index mat   */
+ y=SPA(zp,i); if(!all1(q))RZ(y=jtrepeatr(jt,q,y));          /* indexed cols of index mat   */
  m=*AS(y); yv=AV(y);      
  RZ(ai=IX(h));
  RZ(as=jtless(jt,IX(AR(z)),a)); u=AV(as); n=AN(as);         /* dense axes                  */
  GATV0(t,INT,n,1); v=AV(t);                             /* shape of indexed dense axes */
  e=0; d=1; DO(n, if(h>u[i])v[e++]=s[i]; else d*=s[i];);
- RZ(*i2=jj=tymes(sc(d),jtbase2(jt,vec(INT,e,v),repeatr(jteps(jt,ai,as),ind))));
+ RZ(*i2=jj=tymes(sc(d),jtbase2(jt,vec(INT,e,v),jtrepeatr(jt,jteps(jt,ai,as),ind))));
  c=*(1+AS(y));
  if(!c){
   n=AN(jj);
@@ -35,7 +35,7 @@ static B jtiaddr(J jt,A z,A ind,A*i1,A*i2){A a,ai,as,ii,jj,q,t,x,y;I c,d,e,h,i,*
   RZ(*i2=reshape(sc(m*n),jj));
   return 1;
  }
- RZ(*i1=ii=jtindexof(jt,y,repeatr(jteps(jt,ai,a),ind)));         /* group indices in index mat  */
+ RZ(*i1=ii=jtindexof(jt,y,jtrepeatr(jt,jteps(jt,ai,a),ind)));         /* group indices in index mat  */
  if(c==AN(a))return 1;
  n=AN(ii); iv=AV(ii); jv=AV(jj);                       /* do progressive iota         */
  GATV0(q,INT,n,1); qv=AV(q);                            /* group sizes                 */
@@ -56,8 +56,8 @@ static A jtzpadn(J jt,A z,A ind,B ip){A a,ai,i1,p,p1,q,t,x,x0,y,y0,y1;B*b;I c,d,
  n=1; h=*(AS(ind)+AR(ind)-1);
  RZ(ai=IX(h));
  RZ(t=jteps(jt,ai,a)); b=BAV(t); d=0; DO(h, if(b[i])++d;);
- RZ(i1=d<h?repeatr(t,ind):ind); if(2!=AR(ind))RZ(i1=d?reshape(v2(AN(i1)/d,d),i1):mtm);
- RZ(t=gt(sc(h),a)); RZ(y1=all1(t)?y:repeatr(t,y));
+ RZ(i1=d<h?jtrepeatr(jt,t,ind):ind); if(2!=AR(ind))RZ(i1=d?reshape(v2(AN(i1)/d,d),i1):mtm);
+ RZ(t=gt(sc(h),a)); RZ(y1=all1(t)?y:jtrepeatr(jt,t,y));
  RZ(p=nub(jtless(jt,i1,y1)));
  if(c=AN(a)-d){
   RZ(t=jtfrom(jt,jtless(jt,a,ai),shape(z))); RZ(p1=odom(2L,c,AV(t))); n=*AS(p1);

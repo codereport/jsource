@@ -370,3 +370,5 @@
 |`jsrc/verbs/vs.c`|repeat|jtrepeat|`(^\|[ \t]+\|[^\d\w_])repeat\((?=([^,]+?),([^)]+?)\))`|`\1jtrepeat(jt,`|
 |`jsrc/verbs/vx.c`|repeat|jtrepeat|`(^\|[ \t]+\|[^\d\w_])repeat\((?=([^,]+?),([^)]+?)\))`|`\1jtrepeat(jt,`|
 |`jsrc/xenos/xt.c`|repeat|jtrepeat|`(^\|[ \t]+\|[^\d\w_])repeat\((?=([^,]+?),([^)]+?)\))`|`\1jtrepeat(jt,`|
+|`jsrc/adverbs/amn.c`|repeatr|jtrepeatr|`(^\|[ \t]+\|[^\d\w_])repeatr\((?=([^,]+?),([^)]+?)\))`|`\1jtrepeatr(jt,`|
+|`jsrc/adverbs/ar.c`|repeatr|jtrepeatr|`(^\|[ \t]+\|[^\d\w_])repeatr\((?=([^,]+?),([^)]+?)\))`|`\1jtrepeatr(jt,`|
