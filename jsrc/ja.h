@@ -804,7 +804,7 @@
 #define rollxnum(x)                 jtrollxnum(jt,(x))
 
 #define rot(x0,x1,x2,x3,x4,x5,x6,x7)                jtrot(jt,(x0),(x1),(x2),(x3),(x4),(x5),(x6),(x7))
-#define rotate(x,y)                 jtrotate(jt,(x),(y))
+
 #define rotsp(x,y)                  jtrotsp(jt,(x),(y))
 #define roundID(x,y)                jtroundID(jt,(x),(y))
 #define rrv(x)                      ((UI)((x)->lrr)&RANKTMSK)  // rr of V

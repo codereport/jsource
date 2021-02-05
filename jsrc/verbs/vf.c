@@ -138,7 +138,7 @@ static A jtrevsp(J jt, A w){A a,q,x,y,z;I c,f,k,m,n,r,*v,wr;P*wp,*zp;
  A jtreverse(J jt, A w){A z;C*wv,*zv;I f,k,m,n,nk,r,*v,*ws,wt,wr;
  F1PREFIP;
  if((SPARSE&AT(w))!=0)return revsp(w);
- if(jt->fill)return rotate(num(-1),w);  // rank is set - not inplaceable because it uses fill
+ if(jt->fill)return jtrotate(jt,num(-1),w);  // rank is set - not inplaceable because it uses fill
  wr=AR(w); r=(RANKT)jt->ranks; r=wr<r?wr:r; f=wr-r;  // no RESETRANK - we don't call any primitive from here on
  if(!(r&&AN(w))){return RETARG(w);}  // no atoms or reversing atoms - keep input unchanged
  wt=AT(w); ws=AS(w); wv=CAV(w);
