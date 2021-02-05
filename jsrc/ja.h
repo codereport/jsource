@@ -800,7 +800,7 @@
 #define rollbool(x)                 jtrollbool(jt,(x))
 #define rollk(x,y,z)                jtrollk(jt,(x),(y),(z))
 
-#define rollnot0(x,y)               jtrollnot0(jt,(x),(y))
+
 #define rollxnum(x)                 jtrollxnum(jt,(x))
 #define root(x,y)                   jtroot(jt,(x),(y))
 #define rot(x0,x1,x2,x3,x4,x5,x6,x7)                jtrot(jt,(x0),(x1),(x2),(x3),(x4),(x5),(x6),(x7))

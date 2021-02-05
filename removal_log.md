@@ -415,3 +415,4 @@
 |`jsrc/verbs/v0.c`|rfcz|jtrfcz|`(^\|[ \t]+\|[^\d\w_])rfcz\((?=([^,]+?),([^)]+?)\))`|`\1jtrfcz(jt,`|
 |`jsrc/verbs/vrand.c`|rngga|jtrngga|`(^\|[ \t]+\|[^\d\w_])rngga\((?=([^,]+?),([^)]+?)\))`|`\1jtrngga(jt,`|
 |`jsrc/verbs/vrand.c`|rollksub|jtrollksub|`(^\|[ \t]+\|[^\d\w_])rollksub\((?=([^,]+?),([^)]+?)\))`|`\1jtrollksub(jt,`|
+|`jsrc/verbs/vrand.c`|rollnot0|jtrollnot0|`(^\|[ \t]+\|[^\d\w_])rollnot0\((?=([^,]+?),([^)]+?)\))`|`\1jtrollnot0(jt,`|
