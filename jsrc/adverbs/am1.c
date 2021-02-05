@@ -175,7 +175,7 @@ static B mtind(A ind){A*iv,x;
 A jtam1e(J jt,A a,A z,A ind,B ip){A e,i1,i2,p,x,y;B*pv;C*u,*v;I*iv,k,m,n,r,*s,vk,xk;P*zp;
  RZ(a&&(ind=jtistd1(jt,z,ind)));
  r=AR(z); zp=PAV(z); x=SPA(zp,x); y=SPA(zp,i); e=SPA(zp,e);
- RZ(p=ssel(z,ind)); pv=BAV(p);
+ RZ(p=jtssel(jt,z,ind)); pv=BAV(p);
  RZ(ipart(z,ind,&i1,&i2));
  m=AN(p); n=AN(i2); u=CAV(e); v=CAV(x);
  r=AR(x); s=AS(x); k=bpnoun(AT(x)); xk=k*jtprod(jt,r-(n+1),s+(n+1)); vk=k*jtprod(jt,r-1,s+1);
@@ -192,7 +192,7 @@ A jtam1a(J jt,A a,A z,A ind,B ip){A a0=a,a1,e,i1,i2,t,x,y;C*u,*v,*xv;I ar,c,*iv,
  RZ(a=astd1(a,z,ind));
  if(mtind(ind))return z;
  RZ(ipart(z,ind,&i1,&i2));
- RZ(z=zpad1(z,scube(z,i1,ssel(z,ind)),ip));
+ RZ(z=zpad1(z,scube(z,i1,jtssel(jt,z,ind)),ip));
  zp=PAV(z); x=SPA(zp,x); y=SPA(zp,i); e=SPA(zp,e);
  ar=AR(a); n=AN(i2); r=AR(x); s=AS(x);
  k=bpnoun(AT(x)); xk=k*jtprod(jt,r-1-n,s+1+n); vk=k*jtprod(jt,r-1,s+1); uk=!ar?k:n?xk:vk;

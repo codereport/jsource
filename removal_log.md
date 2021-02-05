@@ -445,3 +445,4 @@
 |`jsrc/xenos/xt.c`|sfn|jtsfn|`(^\|[ \t]+\|[^\d\w_])sfn\((?=([^,]+?),([^)]+?)\))`|`\1jtsfn(jt,`|
 |`jsrc/verbs/vx.c`|shift10|jtshift10|`(^\|[ \t]+\|[^\d\w_])shift10\((?=([^,]+?),([^)]+?)\))`|`\1jtshift10(jt,`|
 |`jsrc/conjunctions/crs.c`|sprarg|jtsprarg|`(^\|[ \t]+\|[^\d\w_])sprarg\((?=([^,]+?),([^)]+?)\))`|`\1jtsprarg(jt,`|
+|`jsrc/adverbs/am1.c`|ssel|jtssel|`(^\|[ \t]+\|[^\d\w_])ssel\((?=([^,]+?),([^)]+?)\))`|`\1jtssel(jt,`|
