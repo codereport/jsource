@@ -9,7 +9,7 @@ jpathsep=: '/'&(('\' I.@:= ])})
 winpathsep=: '\'&(('/' I.@:= ])})
 PATHJSEP_j_=: '/'
 IFDEF=: 3 : '0=4!:0<''DEF'',y,''_z_'''
-IF64=: 16={:$3!:3[2
+IF64=: 1
 IFBE=: 'a'~:{.2 (3!:4) a.i.'a'
 'IFUNIX IFWIN IFWINCE'=: 5 6 7 = 9!:12''
 IFJHS=: 0

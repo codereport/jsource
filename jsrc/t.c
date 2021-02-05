@@ -102,7 +102,7 @@ PRIM primtab[256] = {
  /*  ^  */  PRIMATOMIC12(CEXP,    VERB, jtatomic1,   jtexpn2,  0,   0,   0   ,VISATOMIC1|VFUSEDOK2|VIRS2|VASGSAFE|VJTFLGOK1|VJTFLGOK2,VF2NONE),
  /*  ^. */  PRIMATOMIC1(CLOG,    VERB, jtatomic1,  jtlogar2, 0,   0,   0   ,VISATOMIC1|VASGSAFE|VJTFLGOK1,VF2NONE),
  /*  ^: */  PRIMACV(CPOWOP,  CONJ, jtdomainerr1, jtpowop,  0,   0,   0   ,VFLAGNONE,VF2NONE),
- /*  $  */  PRIMACV(CDOLLAR, VERB, jtshapex,  jtreitem, RMAX,1,   RMAX,VASGSAFE|VIRS2|VJTFLGOK2,VF2NONE),
+ /*  $  */  PRIMACV(CDOLLAR, VERB, jtshape,  jtreitem, RMAX,1,   RMAX,VASGSAFE|VIRS2|VJTFLGOK2,VF2NONE),
  /*  $. */  PRIMACV(CSPARSE, VERB, jtsparse1, jtsparse2,RMAX,RMAX,RMAX,VASGSAFE,VF2NONE),
  /*  $: */  PRIMACV(CSELF,   VERB, jtself1,   jtself2,  RMAX,RMAX,RMAX,VFLAGNONE,VF2NONE),
  /*  ~  */  PRIMACV(CTILDE,  ADV,  jtswap,    jtdomainerr2,  0,   0,   0   ,VFLAGNONE,VF2NONE),

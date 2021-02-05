@@ -18,15 +18,15 @@
 
 ### Refactoring Translations
 
-|         From          |                     To                     |
-| :-------------------: | :----------------------------------------: |
-|          `A`          |                  `array`                   |
-|       `SETIC` 1       |               `item_count()`               |
-|       `REPSGN`        |             `replicate_sign` 2             |
-|         `AV`          |            `pointer_to_values`             |
-|         `IAV`         |            `pointer_to_values`             |
-|    `IAV(w)[i] = k`    |          `set_value_at(w, i, k)`           |
-|       `k & ~1`        |             `!zero_or_one(k)`              |
+|         From          |                       To                       |
+| :-------------------: | :--------------------------------------------: |
+|          `A`          |                    `array`                     |
+|       `SETIC` 1       |                 `item_count()`                 |
+|       `REPSGN`        |               `replicate_sign` 2               |
+|         `AV`          |              `pointer_to_values`               |
+|         `IAV`         |              `pointer_to_values`               |
+|    `IAV(w)[i] = k`    |            `set_value_at(w, i, k)`             |
+|       `k & ~1`        |               `!zero_or_one(k)`                |
 | `GAT0(z, TYPE, x, y)` | `z = make_array<TYPE, copy_shape_0>(jt, x, y)` |
 
 1. There could be exceptions where this doesn't work
