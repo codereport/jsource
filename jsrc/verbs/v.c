@@ -46,7 +46,7 @@
  wp=PAV(w); zp=PAV(z);
  RZ(b=bfi(AR(w),SPA(wp,a),1)); 
  if(memchr(b+f,C1,r)){
-  if(memchr(b+f,C0,r)){memset(b+f,C1,r); RZ(w=reaxis(jtifb(jt,AR(w),b),w)); wp=PAV(w); x=SPA(wp,x);}
+  if(memchr(b+f,C0,r)){memset(b+f,C1,r); RZ(w=jtreaxis(jt,jtifb(jt,AR(w),b),w)); wp=PAV(w); x=SPA(wp,x);}
   else RZ(x=ca(SPA(wp,x)));
   a=jtifb(jt,1+f,b); makewritable(a)   // avoid readonly block
   GATV0(c,INT,r,1L); v=r+AV(c); j=AR(w); m=1; DQ(r, *--v=m; m*=AS(w)[--j];);

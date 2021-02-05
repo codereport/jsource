@@ -67,8 +67,8 @@ static A jtovs(J jt,A a,A w){A ae,ax,ay,q,we,wx,wy,x,y,z,za,ze;B*ab,*wb,*zb;I ac
  ASSERT(equ(ae,we),EVNONCE);
  GATV0(q,B01,r,1); zb=BAV(q); DO(r, zb[i]=ab[i]||wb[i];); za=jtifb(jt,r,zb); makewritable(za) c=AN(za);  // avoid readonly
  GATV0(q,INT,r,1); zs= AV(q); DO(r, zs[i]=MAX(as[i],ws[i]););
- DO(r, if(zb[i]>ab[i]){RZ(a=reaxis(za,a)); break;});
- DO(r, if(zb[i]>wb[i]){RZ(w=reaxis(za,w)); break;});
+ DO(r, if(zb[i]>ab[i]){RZ(a=jtreaxis(jt,za,a)); break;});
+ DO(r, if(zb[i]>wb[i]){RZ(w=jtreaxis(jt,za,w)); break;});
  *zs=*as; DO(r, if(zs[i]>as[i]){RZ(a=take(q,a)); break;});
  *zs=*ws; DO(r, if(zs[i]>ws[i]){RZ(w=take(q,w)); break;});
  *zs=*as+*ws; t=maxtype(at,wt);

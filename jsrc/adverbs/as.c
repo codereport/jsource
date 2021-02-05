@@ -254,7 +254,7 @@ A jtscansp(J jt,A w,A self,AF sf){A e,ee,x,z;B*b;I f,m,j,r,t,wr;P*wp,*zp;
   return IRS1(x,self,r,sf,z);
  }else{
   RZ(b=bfi(wr,SPA(wp,a),1));
-  if(r&&b[f]){b[f]=0; RZ(w=reaxis(jtifb(jt,wr,b),w));}
+  if(r&&b[f]){b[f]=0; RZ(w=jtreaxis(jt,jtifb(jt,wr,b),w));}
   j=f; m=0; DQ(wr-f, m+=!b[j++];);
  }
  wp=PAV(w); e=SPA(wp,e); x=SPA(wp,x);

@@ -72,7 +72,7 @@ A jtindexofxx(J jt,I mode,A a,A w){A x;B*b,*c,s;I ar,d,j,m,n,wr;P*p;
  GATV0(x,B01,n,1); c=BAV(x);
  DO(ABS(d), c[i]=s;);  // initialize unfilled part of c
  j=0; DQ(MIN(ar,wr), ++j; c[n-j]=b[m-j];);
- return indexofss(mode,s?a:reaxis(jtifb(jt,n,c),a),s?reaxis(jtifb(jt,n,c),w):w);
+ return indexofss(mode,s?a:jtreaxis(jt,jtifb(jt,n,c),a),s?jtreaxis(jt,jtifb(jt,n,c),w):w);
 }    /* dense i. sparse   or   sparse i. dense;  1<AR(a) */ 
 
 static A jtifdz(J jt, A w){I m;
@@ -110,8 +110,8 @@ static B jtioresparse(J jt,B aw,A*za,A*zw){A a,e,w;B*ab,ac=0,*wb,wc=0;I ar,j,wr;
   j=wr-ar; DO(ar-1, ++j; if(ab[1+i]<wb[j])ab[1+i]=ac=1; else if(ab[1+i]>wb[j])wb[j]=wc=1;);
   DO(1+wr-ar, if(!wb[i])wb[i]=wc=1;);
  }
- if(    ac)RZ(*za=reaxis(jtifb(jt,ar,ab),a));
- if(aw&&wc)RZ(*zw=reaxis(jtifb(jt,wr,wb),w));
+ if(    ac)RZ(*za=jtreaxis(jt,jtifb(jt,ar,ab),a));
+ if(aw&&wc)RZ(*zw=jtreaxis(jt,jtifb(jt,wr,wb),w));
  return 1;
 }    /* harmonize sparse elements and sparse axes for a and w */
 

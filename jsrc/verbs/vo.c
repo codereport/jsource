@@ -378,7 +378,7 @@ static B jtopes2(J jt,A*zx,A*zy,B*b,A a,A e,A q,I wcr){A x;B*c;I dt,k,r,*s,t;P*p
  if(t&SPARSE){
   p=PAV(q);
   RZ(c=bfi(r,SPA(p,a),1));
-  DO(r, if(b[k+i]!=c[i]){RZ(q=reaxis(jtifb(jt,r,k+b),q)); break;});
+  DO(r, if(b[k+i]!=c[i]){RZ(q=jtreaxis(jt,jtifb(jt,r,k+b),q)); break;});
  }else{
   if(k){
    GA(x,t,AN(q),wcr,0); s=AS(x); DQ(k, *s++=1;); MCISH(s,AS(q),r); 

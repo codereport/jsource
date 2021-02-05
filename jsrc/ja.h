@@ -751,7 +751,7 @@
 #else
 #define rifvsdebug(x)               (x)
 #endif
-#define reaxis(x,y)                 jtreaxis(jt,(x),(y))
+
 #define recip(x)                    jtrecip(jt,(x))
 #define rect(x)                     jtrect(jt,(x))
 #define red0(x,y)                   jtred0(jt,(x),(y))

@@ -85,7 +85,7 @@ A jtfrombsn(J jt,A ind,A w,I wf){A a,j1,p,q,x,x1,y,y1,ys,z;C*xu,*xuu,*xv;
  SPB(zp,e,ca(SPA(wp,e))); x=SPA(wp,x); y=SPA(wp,i); 
  a=SPA(wp,a); an=AN(a); SPB(zp,a,aaxis(w,wf,a,r,h,&pp,&qq,&rr));
  if( !qq){SPB(zp,i,ca(y)); SPB(zp,x,frombu(ind,x,AR(x)-(wr-wf-rr))); return z;}
- if(h>qq){q=nub(over(a,apv(h,wf,1L))); return frombsn(ind,reaxis(jtgrade2(jt,q,q),w),wf);}
+ if(h>qq){q=nub(over(a,apv(h,wf,1L))); return frombsn(ind,jtreaxis(jt,jtgrade2(jt,q,q),w),wf);}
  if(1<r)RZ(ind=reshape(v2(n,h),ind)); 
  RZ(ys=jtfromr(jt,jtindexof(jt,a,apv(h,wf,1L)),y));
  RZ(q=jteps(jt,ys,ind)); 
@@ -175,9 +175,9 @@ static A jtfrombs1(J jt,A ind,A w,I wf){A*iv,x,y,z;I j,m,n,wr,wcr;
  RZ(x=irs2(SPA(ap,e),w,0L,0L,wcr,jtfrom)); RZ(e=reshape(mtv,x));
  ASSERT(all1(denseit(eq(e,x))),EVSPARSE);
  SPB(zp,e,e);
- x=SPA(ap,a); if(ar>AN(x)){RZ(a=reaxis(IX(ar),a)); ap=PAV(a);}
+ x=SPA(ap,a); if(ar>AN(x)){RZ(a=jtreaxis(jt,IX(ar),a)); ap=PAV(a);}
  x=SPA(wp,a); n=AN(x); RZ(b=bfi(wr,x,1));
- if(wcr&&!b[wf]){b[wf]=1; ++n; RZ(w=reaxis(jtifb(jt,wr,b),w)); wp=PAV(w);}
+ if(wcr&&!b[wf]){b[wf]=1; ++n; RZ(w=jtreaxis(jt,jtifb(jt,wr,b),w)); wp=PAV(w);}
  GATV0(x,INT,ar+n-!!wcr,1); v=AV(x);
  DO(wf, if(b[i])*v++=i;); DO(ar, *v++=wf+i;); DO(wcr-1, if(b[i+wf+1])*v++=wf+ar+i;);
  SPB(zp,a,x);

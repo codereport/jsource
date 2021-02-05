@@ -122,7 +122,7 @@ A jtamna(J jt,A a,A z,A ind,B ip){A i1,i2,x;C*u,*v;I*iv,*jv,k,n,vk,xk;P*zp;
 
 A jtamnsp(J jt,A a,A z,A ind,B ip){A i1,i2,t;C*ev,*u,*v,*vv;I c,*dv,i,*iv,j,*jv,k,m,n,p,q,r,*s,*yv,zk;P*ap,*zp;
  RZ(a&&z&&ind);
- r=AR(a); ap=PAV(a); t=SPA(ap,a); if(r>AN(t))RZ(a=reaxis(IX(r),a));
+ r=AR(a); ap=PAV(a); t=SPA(ap,a); if(r>AN(t))RZ(a=jtreaxis(jt,IX(r),a));
  RZ(a=astdn(a,z,ind));  ap=PAV(a);
  RZ(z=zpadn(z,ind,ip)); zp=PAV(z);
  RZ(iaddr(z,ind,&i1,&i2));

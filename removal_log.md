@@ -321,3 +321,15 @@
 |`jsrc/xenos/xfmt.c`|prod|jtprod|`(^\|[ \t]+\|[^\d\w_])prod\((?=([^,]+?),([^)]+?)\))`|`\1jtprod(jt,`|
 |`jsrc/verbs/v2.c`|qco2|jtqco2|`(^\|[ \t]+\|[^\d\w_])qco2\((?=([^,]+?),([^)]+?)\))`|`\1jtqco2(jt,`|
 |`jsrc/verbs/v2.c`|qco2x|jtqco2x|`(^\|[ \t]+\|[^\d\w_])qco2x\((?=([^,]+?),([^)]+?)\))`|`\1jtqco2x(jt,`|
+|`jsrc/adverbs/amn.c`|reaxis|jtreaxis|`(^\|[ \t]+\|[^\d\w_])reaxis\((?=([^,]+?),([^)]+?)\))`|`\1jtreaxis(jt,`|
+|`jsrc/adverbs/as.c`|reaxis|jtreaxis|`(^\|[ \t]+\|[^\d\w_])reaxis\((?=([^,]+?),([^)]+?)\))`|`\1jtreaxis(jt,`|
+|`jsrc/conjunctions/crs.c`|reaxis|jtreaxis|`(^\|[ \t]+\|[^\d\w_])reaxis\((?=([^,]+?),([^)]+?)\))`|`\1jtreaxis(jt,`|
+|`jsrc/verbs/v.c`|reaxis|jtreaxis|`(^\|[ \t]+\|[^\d\w_])reaxis\((?=([^,]+?),([^)]+?)\))`|`\1jtreaxis(jt,`|
+|`jsrc/verbs/v1.c`|reaxis|jtreaxis|`(^\|[ \t]+\|[^\d\w_])reaxis\((?=([^,]+?),([^)]+?)\))`|`\1jtreaxis(jt,`|
+|`jsrc/verbs/va2s.c`|reaxis|jtreaxis|`(^\|[ \t]+\|[^\d\w_])reaxis\((?=([^,]+?),([^)]+?)\))`|`\1jtreaxis(jt,`|
+|`jsrc/verbs/vcat.c`|reaxis|jtreaxis|`(^\|[ \t]+\|[^\d\w_])reaxis\((?=([^,]+?),([^)]+?)\))`|`\1jtreaxis(jt,`|
+|`jsrc/verbs/vfromsp.c`|reaxis|jtreaxis|`(^\|[ \t]+\|[^\d\w_])reaxis\((?=([^,]+?),([^)]+?)\))`|`\1jtreaxis(jt,`|
+|`jsrc/verbs/vgsp.c`|reaxis|jtreaxis|`(^\|[ \t]+\|[^\d\w_])reaxis\((?=([^,]+?),([^)]+?)\))`|`\1jtreaxis(jt,`|
+|`jsrc/verbs/visp.c`|reaxis|jtreaxis|`(^\|[ \t]+\|[^\d\w_])reaxis\((?=([^,]+?),([^)]+?)\))`|`\1jtreaxis(jt,`|
+|`jsrc/verbs/vo.c`|reaxis|jtreaxis|`(^\|[ \t]+\|[^\d\w_])reaxis\((?=([^,]+?),([^)]+?)\))`|`\1jtreaxis(jt,`|
+|`jsrc/verbs/vs.c`|reaxis|jtreaxis|`(^\|[ \t]+\|[^\d\w_])reaxis\((?=([^,]+?),([^)]+?)\))`|`\1jtreaxis(jt,`|

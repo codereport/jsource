@@ -210,7 +210,7 @@ A jtsparseit(J jt,A w,A a,A e){PROLOG(0091);A ax,c,x,y,z;B b,*cv;I cm,cn,m,n,r,*
   SPB(zp,i,y1); SPB(zp,x,jtcant2(jt,increm(jtindexof(jt,p,jtdaxis(jt,r,a1))),x1));
   return z;
  }
- return reaxis(a1,reaxis(over(a,jtless(jt,a1,a)),w));
+ return jtreaxis(jt,a1,jtreaxis(jt,over(a,jtless(jt,a1,a)),w));
 }    /* (2;a)$.w */
 
 static A jtaxbytes1(J jt,I t,I an,I m,I xr,I*xs){I k,z;
@@ -243,7 +243,7 @@ static A jtaxbytes(J jt,A a,A w){A a1,e,p,q,x;B*b;I c,d,j,m,n=0,r,*u,*v,*ws,wt;P
   DQ(AN(p), u[j++]=ws[*v++];);
   return axbytes1(AT(e),d,n,j,u);
  }
- return jtaxbytes(jt,a1,reaxis(over(a,jtless(jt,a1,a)),w));
+ return jtaxbytes(jt,a1,jtreaxis(jt,over(a,jtless(jt,a1,a)),w));
 }    /* bytes required for (2;a)$.w */
 
 static A jtaxtally(J jt,A a,A w){A a1,e,p,q,x;B*b;I c,d,j,m,n=0,r,*u,*v,*ws,wt;P*wp;
@@ -265,7 +265,7 @@ static A jtaxtally(J jt,A a,A w){A a1,e,p,q,x;B*b;I c,d,j,m,n=0,r,*u,*v,*ws,wt;P
   if(m=*AS(y)){n=1; u=AV(y); DQ(m-1, if(ICMP(u,u+d,d))++n; u+=d;);} 
   return sc(n);
  }
- return jtaxtally(jt,a1,reaxis(over(a,jtless(jt,a1,a)),w));
+ return jtaxtally(jt,a1,jtreaxis(jt,over(a,jtless(jt,a1,a)),w));
 }    /* #4$.(2;a)$.w */
 
  A jtrezero(J jt,A a,A w){A x,z;I at,t,wt,zt;P*wp,*zp;
@@ -330,7 +330,7 @@ static A jtsparsen1(J jt, A w){A*u,z;P*p;
   case -1: ASSERT(!q,EVDOMAIN); return sparsen1(w);
   case 2:
    if(AR(a)){j=v[1]; ASSERT(q&&(1==j||2==j),EVDOMAIN); return 1==j?jtaxbytes(jt,q,w):jtaxtally(jt,q,w);}
-   if(q)return reaxis(q,w); else if(b)return rat(SPA(p,a)); else{ASSERT(STYPE(t)!=0,EVDOMAIN); return IX(AR(w));}
+   if(q)return jtreaxis(jt,q,w); else if(b)return rat(SPA(p,a)); else{ASSERT(STYPE(t)!=0,EVDOMAIN); return IX(AR(w));}
   case 3:  return q?rezero(q,w):rat(SPA(p,e));  // ? there rat()s don't protect anything?  SPA is as permanent as w
   case 4:  ASSERT(!q,EVDOMAIN); return rat(SPA(p,i));
   case 5:  ASSERT(!q,EVDOMAIN); return rat(SPA(p,x));
