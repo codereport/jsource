@@ -467,7 +467,7 @@
 
 #define jerrno()                    jtjerrno(jt)
 #define jfread(x)                   jtjfread(jt,(x))
-#define jfwrite(x,y)                jtjfwrite(jt,(x),(y))
+
 #define jgets(x)                    jtjgets(jt,(x))
 #define jico2(x,y)                  jtjico2(jt,(x),(y))
 #define jinit3()                    jtjinit3(jt)
