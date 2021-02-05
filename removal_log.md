@@ -291,3 +291,4 @@
 |`jsrc/conjunctions/cpdtsp.c`|pdtspvv|jtpdtspvv|`(^\|[ \t]+\|[^\d\w_])pdtspvv\((?=([^,]+?),([^)]+?)\))`|`\1jtpdtspvv(jt,`|
 |`jsrc/verbs/vcant.c`|pfill|jtpfill|`(^\|[ \t]+\|[^\d\w_])pfill\((?=([^,]+?),([^)]+?)\))`|`\1jtpfill(jt,`|
 |`jsrc/verbs/vp.c`|pfill|jtpfill|`(^\|[ \t]+\|[^\d\w_])pfill\((?=([^,]+?),([^)]+?)\))`|`\1jtpfill(jt,`|
+|`jsrc/verbs/vx.c`|piev|jtpiev|`(^\|[ \t]+\|[^\d\w_])piev\((?=([^,]+?),([^)]+?)\))`|`\1jtpiev(jt,`|

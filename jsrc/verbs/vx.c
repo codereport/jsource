@@ -419,7 +419,7 @@ static X jtxpi(J jt,    X w){A e;B p;I i,n,n1,sk;X a,b,c,d,*ev,k,f,m,q,s,s0,t;
  RZ(c=xc(13591409L));
  RZ(d=xplus(xc(541681608L),xtymes(xc(10L),xc(600000000L))));
  n1=(13+AN(w)*XBASEN)/14; n=1+n1;
- RZ(e=piev(n,b)); ev=XAV(e); m=ev[n1];
+ RZ(e=jtpiev(jt,n,b)); ev=XAV(e); m=ev[n1];
  f=iv0; s0=iv1; sk=1;
  for(i=p=0;;++i,p^=1){
   s=xtymes(s0,xplus(c,xtymes(a,xc(i))));
