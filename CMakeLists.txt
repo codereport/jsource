@@ -29,8 +29,6 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 set(CMAKE_CXX_VISIBILITY_PRESET hidden)
 
-find_package(StandardMathLibrary REQUIRED)
-
 set(DOCS "NO" CACHE STRING "Build documentation")
 set(TARGET_ARCHITECTURE "skylake" CACHE STRING "CPU architecture")
 OptimizeForArchitecture()
