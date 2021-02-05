@@ -105,7 +105,7 @@ static A jtmemoput(J jt,I x,I y,A self,A z){A*cv,h,*hv,q;I *jv,k,m,*mv,*v;
  // If the buffer must be extended, allocate a new one
  if(m<=2**mv){A cc,*cu=cv,jj;I i,*ju=jv,n=m,*u;A* _ttop=jt->tnextpushp;
   FULLHASHSIZE(2**mv,BOXSIZE,1,0,m);  // # boxes to allocate to get at least 2**mv slots
-  RZ(jj=mkwris(reshape(v2(m,2L),sc(IMIN)))); jv= AV(jj);  // init arg table to IMIN
+  RZ(jj=mkwris(jtreshape(jt,v2(m,2L),sc(IMIN)))); jv= AV(jj);  // init arg table to IMIN
   GATV0(cc,BOX,m,1);                  cv=AAV(cc);
   for(i=0,u=ju;i<n;++i,u+=2){if(IMIN!=*u){  // copy the hash - does this lose the buffer for an arg of IMIN?
    // the current slot in the memo table is filled.  Rehash it, and move the args into *jv and the values into *cv
@@ -156,7 +156,7 @@ static A jtmemo2(J jt,A a,A w,A self){DECLF;A z;I x,y;
  v=FAV(w); FULLHASHSIZE(30,BOXSIZE,1,0,m);  // m = # items to allocate
  GAT0(h,BOX,3,1); hv=AAV(h);
  GAT0(q,INT,1,0); AV(q)[0]=0;        hv[0]=q;  // is modified; musn't use sc()
- RZ(q=reshape(v2(m,2L),sc(IMIN)));  RZ(hv[1]=mkwris(q));
+ RZ(q=jtreshape(jt,v2(m,2L),sc(IMIN)));  RZ(hv[1]=mkwris(q));
  GATV0(q,BOX,m,1);                 hv[2]=q;
  EPILOG(fdef(0,CMCAP,VERB,jtmemo1,jtmemo2,w,0L,h,0L,v->mr,lrv(v),rrv(v)));
  // Now we have converted the verb result to recursive usecount, and gotten rid of the pending tpops for the components of h

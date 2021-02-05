@@ -97,7 +97,7 @@ static A jtlr2(J jt,RANK2T ranks,A a,A w){I acr,af,ar,wcr,wf,wr;
  if(AT(w)&XNUM+RAT)return jtcvt(jt,XNUM,iota(vi(w)));
  RZ(w=vi(w)); n=AN(w); v=AV(w);
  if(1==n){m=*v; return 0>m?apv(-m,-m-1,-1L):IX(m);}
- A mg; RZ(mg=mag(w)); PRODX(m,n,IAV(mg),1); RZ(z=IX(m)); RZ(z=reshape(mag(w),z));
+ A mg; RZ(mg=mag(w)); PRODX(m,n,IAV(mg),1); RZ(z=IX(m)); RZ(z=jtreshape(jt,mag(w),z));
  DO(n, A zz; if(0>v[i])z=IRS1(z,0L,n-i,jtreverse,zz););
  return z;
 }

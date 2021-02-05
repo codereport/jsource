@@ -39,7 +39,7 @@ static A jtsprz(J jt,A z0,A y,A e,I f,I*s){A a,a0,q,y0,z;B d;I c,et,h,m,n,r,t,*u
  RZ(z0&&y&&e);
  ASSERT(AN(e),EVDOMAIN);
  if(SPARSE&AT(e)){ep=PAV(e); ASSERT(all1(eq(SPA(ep,e),SPA(ep,x))),EVSPARSE); q=SPA(ep,e);}
- else{RZ(q=reshape(mtv,e)); ASSERT(all1(eq(q,e)),EVSPARSE);}
+ else{RZ(q=jtreshape(jt,mtv,e)); ASSERT(all1(eq(q,e)),EVSPARSE);}
  if(!*AS(z0)){
   t=AT(q); zt=STYPE(t);
   GASPARSE(z,zt,1L,f+AR(e),s); ICPY(f+AS(z),AS(e),AR(e));

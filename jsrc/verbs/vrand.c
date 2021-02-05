@@ -882,7 +882,7 @@ static A jtdealdot(J jt,A a,A w){A h,y,z;I at,d,*hv,i,i1,j,k,m,n,p,q,*v,wt,*yv,*
 /*
 static A jtroll(J jt, A w){A z;D rl=jt->rl;static D dm=16807,p=2147483647L;I c,n,*v,*x;
  n=AN(w); v=AV(w);
- RZ(z=reshape(shape(w),num(2))); x=AV(z);
+ RZ(z=jtreshape(jt,shape(w),num(2))); x=AV(z);
  if(ICMP(v,x,n))
   DQ(n, c=*v++; ASSERT(0<c,EVDOMAIN); rl=fmod(rl*dm,p); *x++=(I)jfloor(rl*c/p);)
  else{B*x;D q=p/2;
@@ -897,7 +897,7 @@ static A jtroll(J jt, A w){A z;D rl=jt->rl;static D dm=16807,p=2147483647L;I c,n
 static A jtbigdeal(J jt,I m,I n){A t,x,y;
  RZ(x=sc((I)jfloor(1.11*m)));
  RZ(y=sc(n));
- do{RZ(t=nub(roll(reshape(x,y))));}while(m>AN(t));
+ do{RZ(t=nub(roll(jtreshape(jt,x,y))));}while(m>AN(t));
  return vec(INT,m,AV(t));
 } */    /* E.E. McDonnell circa 1966, small m and large n */
 

@@ -294,7 +294,7 @@ static B jtth2ctrl(J jt,A a,A*ep,A*mp,A*dp,A*sp,I*zkp){A da,ea,ma,s;B b=1,*ev,r,
   if(2<r||1==n&&2!=r){
    if(!r)r=1;   // change atomic r to a list
    RZ(h=vec(INT,r,ws)); AV(h)[r-1]=AS(z)[1];  // Create a vector out of the shape of w; replace length of 1-cell with length of a row of result 
-   RZ(z=reshape(h,z));   // reshape the result table to that shape
+   RZ(z=jtreshape(jt,h,z));   // reshape the result table to that shape
  }}
  EPILOG(z);
 }

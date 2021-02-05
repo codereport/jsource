@@ -1081,13 +1081,13 @@ A jtindexofsub(J jt,I mode,A a,A w){PROLOG(0079);A h=0,hi=mtv,z;B mk=w==mark,th;
   // If empty argument or result, or inhomogeneous arguments, return an appropriate empty or not-found
   // We also handle the case of i.&0@:e. when the rank of w is more than 1 greater than the rank of a cell of a;
   // in that case the search always fails
-  case IIDOT:   return reshape(shape(z),sc(n?m:0  ));
-  case IFORKEY: {z=reshape(shape(z),take(sc(m),sc(m))); RZ(z=mkwris(z)); AM(z)=!!m; return z;}  // all 0 but the first has the total count
-  case IICO:    return reshape(shape(z),sc(n?m:m-1));
-  case INUBSV:  return reshape(shape(z),take(sc(m),num(1)));
+  case IIDOT:   return jtreshape(jt,shape(z),sc(n?m:0  ));
+  case IFORKEY: {z=jtreshape(jt,shape(z),take(sc(m),sc(m))); RZ(z=mkwris(z)); AM(z)=!!m; return z;}  // all 0 but the first has the total count
+  case IICO:    return jtreshape(jt,shape(z),sc(n?m:m-1));
+  case INUBSV:  return jtreshape(jt,shape(z),take(sc(m),num(1)));
   case INUB:    AN(z)=0; *AS(z)=m?1:0; return z;
   case ILESS:   if(m)AN(z)=*AS(z)=0; else MC(AV(z),AV(w),k1*AN(w)); return z;
-  case IEPS:    return reshape(shape(z),num(m&&(!n||th)) );
+  case IEPS:    return jtreshape(jt,shape(z),num(m&&(!n||th)) );
   case INUBI:   return m?iv0:mtv;
   // th<0 means that the result of e. would have rank>1 and would never compare against either 0 or 1
   case II0EPS:  return sc(n&&zn?0L        :witems         );
@@ -1418,7 +1418,7 @@ A jtindexofprehashed(J jt,A a,A w,A hs){A h,hi,*hv,x,z;AF fn;I ar,*as,at,c,f1,k,
 // = y    
  A jtsclass(J jt, A w){A e,x,xy,y,z;I c,j,m,n,*v;P*p;
  // If w is scalar, return 1 1$1
- if(!AR(w))return reshape(v2(1L,1L),num(1));
+ if(!AR(w))return jtreshape(jt,v2(1L,1L),num(1));
  SETIC(w,n);   // n=#items of y
  RZ(x=jtindexof(jt,w,w));   // x = i.~ y
  // if w is dense, return ((x = i.n) # x) =/ x
@@ -1434,7 +1434,7 @@ A jtindexofprehashed(J jt,A a,A w,A hs){A h,hi,*hv,x,z;AF fn;I ar,*as,at,c,f1,k,
  SPB(p,a,v2(0L,1L));
  SPB(p,e,num(0));
  SPB(p,i,xy);
- SPB(p,x,reshape(sc(c),num(1)));
+ SPB(p,x,jtreshape(jt,sc(c),num(1)));
  return z;
 }
 

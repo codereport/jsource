@@ -306,7 +306,7 @@ static A jtxrep(J jt,A a,A w){A h,*hv,*v,x,z,*zv;CW*u;I i,j,n,q[3],*s;V*wv;
  RE(j=i0(a)); ASSERT(1==j||2==j,EVDOMAIN); j=1==j?0:HN;
  ASSERT(AT(w)&VERB+ADV+CONJ,EVDOMAIN);
  wv=FAV(w); h=wv->fgh[2];
- if(!(h&&CCOLON==wv->id))return reshape(v2(0L,3L),ds(CACE));
+ if(!(h&&CCOLON==wv->id))return jtreshape(jt,v2(0L,3L),ds(CACE));
  hv=AAV(h);
  x=hv[  j]; v=    AAV(x); 
  x=hv[1+j]; u=(CW*)AV(x); n=AN(x);

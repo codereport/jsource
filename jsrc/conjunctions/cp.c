@@ -170,7 +170,7 @@ static A jtply1(J jt,    A w,A self){PROLOG(0040);DECLFG;A zz=0;
  // result is ($n) $ (p i. ,n) { result - avoid the reshape if n is a list, and avoid the from if (p i. ,n) is an index vector
  RZ(p=jtindexof(jt,p,rn));  // for each input power, the position of its executed result
  if(!equ(IX(np),p))RZ(zz=jtfrom(jt,p,zz));  // order result-cells in order of the input powers
- if(AR(n)!=1)zz=reshape(shape(n),zz);  // if n is an arry, use its shape
+ if(AR(n)!=1)zz=jtreshape(jt,shape(n),zz);  // if n is an arry, use its shape
  EPILOG(zz);
 }
 

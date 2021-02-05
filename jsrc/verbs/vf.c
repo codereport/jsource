@@ -42,7 +42,7 @@ static A jtrotsp(J jt,A a,A w){PROLOG(0071);A q,x,y,z;B bx,by;I acr,af,ar,*av,d,
  ar=AR(a); acr=jt->ranks>>RANKTX; acr=ar<acr?ar:acr; af=ar-acr; p=acr?*(af+AS(a)):1;
  wr=AR(w); wcr=(RANKT)jt->ranks; wcr=wr<wcr?wr:wcr; wf=wr-wcr; RESETRANK;
  if(1<acr||af)return df2(z,a,w,qq(qq(ds(CROT),v2(1L,RMAX)),v2(acr,wcr)));
- if(!wcr&&1<p){RZ(w=reshape(over(shape(w),apv(p,1L,0L)),w)); wr=wcr=p;}
+ if(!wcr&&1<p){RZ(w=jtreshape(jt,over(shape(w),apv(p,1L,0L)),w)); wr=wcr=p;}
  ASSERT(!wcr||p<=wcr,EVLENGTH);
  s=AS(w);
  GATV0(q,INT,wr,1L); qv=AV(q); memset(qv,C0,wr*SZI); 
@@ -99,7 +99,7 @@ static void jtrot(J jt,I m,I d,I n,I atomsize,I p,I*av,C*u,C*v){I dk,e,k,j,r,x,y
  // special case: if a is atomic 0, and cells of w are not atomic
  if((wcr!=0)&(((ar|IAV(a)[0])==0)))return RETARG(w);   // 0 |. y, return y
  if(((1-acr)|((-af)&(-acr|(wf-1))))<0)return df2(z,a,w,qq(qq(ds(CROT),v2(1L,RMAX)),v2(acr,wcr)));  // if multiple a-lists per cell, or a has frame and (a cell is not an atom or w has frame) handle rank by using " for it
- if(((wcr-1)&(1-p))<0){RZ(w=reshape(apip(shape(w),apv(p,1L,0L)),w)); wr=wcr=p;}  // if cell is an atom, extend it up to #axes being rotated   !wcr && p>1
+ if(((wcr-1)&(1-p))<0){RZ(w=jtreshape(jt,apip(shape(w),apv(p,1L,0L)),w)); wr=wcr=p;}  // if cell is an atom, extend it up to #axes being rotated   !wcr && p>1
  ASSERT(((-wcr)&(wcr-p))>=0,EVLENGTH);    // !wcr||p<=wcr  !(wcr&&p>wcr)
  av=AV(a);
  RZ(w=setfv(w,w)); u=CAV(w); wn=AN(w); s=AS(w); k=bpnoun(AT(w));  // set fill value if given
@@ -165,7 +165,7 @@ static A jtreshapesp0(J jt,A a,A w,I wf,I wcr){A e,p,x,y,z;B*b,*pv;I c,d,r,*v,wr
  wp=PAV(w); RZ(b=bfi(wr,SPA(wp,a),1));
  RZ(e=ca(SPA(wp,e))); x=SPA(wp,x); y=SPA(wp,i);
  v=AS(y); r=v[0]; c=v[1]; d=0; DO(wf, if(b[i])++d;);
- if(!wf){if(r&&c){v=AV(y); DO(c, if(v[i])return e;);} return AN(x)?reshape(mtv,x):e;}
+ if(!wf){if(r&&c){v=AV(y); DO(c, if(v[i])return e;);} return AN(x)?jtreshape(jt,mtv,x):e;}
  GASPARSE(z,AT(w),1,wf,ws);
  zp=PAV(z); SPB(zp,e,e); A bvec=jtifb(jt,wf,b); makewritable(bvec) SPB(zp,a,bvec);  // avoid readonly
  GATV0(p,B01,r,1); pv=BAV(p);

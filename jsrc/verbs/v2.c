@@ -209,7 +209,7 @@ static A jtxprimetest(J jt, A w){A z;B*b,rat;I d,j,q,n,*pv,*v,wn,wt,*yv;X r,*wv,
 
 static A jtprimetest(J jt, A w){A x;I t;
  t=AT(w);
- if((UI)SGNIF(t,B01X)>=(UI)AN(w))return reshape(shape(w),num(0));  // AN is 0, or t is boolean
+ if((UI)SGNIF(t,B01X)>=(UI)AN(w))return jtreshape(jt,shape(w),num(0));  // AN is 0, or t is boolean
  switch(CTTZ(t)){
   default:             ASSERT(0,EVDOMAIN);
   case INTX:            return iprimetest(w);
@@ -222,7 +222,7 @@ static A jtprimetest(J jt, A w){A x;I t;
 
 static A jtnextprime(J jt, A w){A b,fs,x,y;B*bv;I k,n,*xv,*yv;X*wv;
  n=AN(w);
- if((UI)SGNIF(AT(w),B01X)>=(UI)AN(w))return reshape(shape(w),num(2));
+ if((UI)SGNIF(AT(w),B01X)>=(UI)AN(w))return jtreshape(jt,shape(w),num(2));
  ASSERT(NUMERIC&AT(w),EVDOMAIN);
  RZ(fs=eval("2&+^:(0&p:)^:_"));
  GATV(x,INT,n,AR(w),AS(w)); xv=AV(x);
@@ -474,7 +474,7 @@ static X jtpollard_rho(J jt,    X w){I i,n;X g,y1,y2;
 }
 
 static B jtranec(J jt,X w,X*zg,X*za,X*zb,X*zx,X*zy){A mm,t;I*tv;X a,aa,b,bb,g,x,y;
- g=w; RZ(mm=reshape(sc(3L),sc(IMAX)));
+ g=w; RZ(mm=jtreshape(jt,sc(3L),sc(IMAX)));
  while(!xcompare(g,w)){
   RZ(t=roll(mm)); tv=AV(t); 
   RZ(x=xc(tv[0])); 

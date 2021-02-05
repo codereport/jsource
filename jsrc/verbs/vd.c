@@ -69,7 +69,7 @@ static A jtqrr(J jt, A w){PROLOG(0067);A a1,q,q0,q1,r,r0,r1,t,*tv,t0,t1,y,z;I m,
   t=norm(ravel(w));  // norm of col 
   ASSERT(!AN(w)||!equ(t,num(0)),EVDOMAIN);  // norm must not be 0 unless column is empty
   RZ(q=tymes(w,recip(t)));
-  return link(2>AR(q)?table(q):q,reshape(v2(n,n),p?t:num(1)));
+  return link(2>AR(q)?table(q):q,jtreshape(jt,v2(n,n),p?t:num(1)));
  }
  // construe w as w0 w1 w0t w1t
  RZ(t0=qrr(take(v2(p,m),w)));  // find QR of w0 pxm   w0t
@@ -194,14 +194,14 @@ static A jticor(J jt, A w){D d,*v;
   ASSERT(m>=n,EVLENGTH);
   if(t&XNUM)RZ(w=jtcvt(jt,RAT,w));
   if(1<wr&&m==n)y=w; else{q=cant1(w); y=jtpdt(jt,q,w);}
-  z=jtdrop(jt,v2(0L,n),gausselm(stitch(y,reshape(v2(n,n),take(sc(1+n),xco1(scf(1.0)))))));
-  if(2>wr)z=tymes(reshape(mtv,z),w); else if(m>n)z=jtpdt(jt,z,q);
+  z=jtdrop(jt,v2(0L,n),gausselm(stitch(y,jtreshape(jt,v2(n,n),take(sc(1+n),xco1(scf(1.0)))))));
+  if(2>wr)z=tymes(jtreshape(jt,mtv,z),w); else if(m>n)z=jtpdt(jt,z,q);
  }else{
   // not RAT/XNUM.  Calculate inverse as R^-1 Q^-1 after taking QR decomp & using Q^-1=Q*
   if(t&B01+INT&&2==wr&&m==n)jt->workareas.minv.determ=1.0;  // if taking inverse of square int, allow setting up for correction afterward
   z=jtlq(jt,w);
   z=icor(z);  // if integer correction called for, do it
-  z=2==wr?z:reshape(shape(w),z);
+  z=2==wr?z:jtreshape(jt,shape(w),z);
  }
  EPILOG(z);
 }
@@ -245,7 +245,7 @@ static A jtmdivsp(J jt,A a,A w){A a1,x,y;I at,d,m,n,t,*v,xt;P*wp;
  t=AT(w);
  if(t&SPARSE)return jtmdivsp(jt,a,w);
  z=minv(w);  // take generalized inverse of w, setting up for icor if needed
- z=jtpdt(jt,2>AR(w)?reshape(shape(w),z):z,a);  // a * w^-1
+ z=jtpdt(jt,2>AR(w)?jtreshape(jt,shape(w),z):z,a);  // a * w^-1
  if(AT(a)&B01+INT)z=icor(z);  // integer correct if a is not float (& correction is possible)
  EPILOG(z);
 }

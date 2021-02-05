@@ -225,7 +225,7 @@ static A jtcut2bx(J jt,A a,A w,A self){A*av,b,t,x,*xv,y,*yv;B*bv;I an,bn,i,j,m,p
   if(!bn&&m){xv[i]=num(0); RZ(yv[i]=incorp(sc(m)));}
   else{
    if(!(B01&AT(b)))RZ(b=jtcvt(jt,B01,b));
-   if(!AR(b)){if(BAV(b)[0]){RZ(xv[i]=incorp(IX(m))); RZ(yv[i]=incorp(reshape(sc(m),num(0<q))));}else xv[i]=yv[i]=mtv; continue;}
+   if(!AR(b)){if(BAV(b)[0]){RZ(xv[i]=incorp(IX(m))); RZ(yv[i]=incorp(jtreshape(jt,sc(m),num(0<q))));}else xv[i]=yv[i]=mtv; continue;}
    ASSERT(bn==m,EVLENGTH);
    bv=BAV(b); p=0; DO(bn, p+=bv[i];); 
    GATV0(t,INT,p,1); u=AV(t); xv[i]=incorp(t);
@@ -542,7 +542,7 @@ void copyTT(void *zv, void *wv, I n, I zt, I wt){
    }
    if(((-AN(a))&(SGNIF(AT(a),BOXX)))<0)return cut2bx(a,w,self);  // handle boxed a separately if a not empty
    if(!(B01&AT(a)))RZ(a=jtcvt(jt,B01,a));  // convert other a to binary, error if impossible
-   if(!AR(a))RZ(a=reshape(sc(n),a));   // extend scalar x to length of y
+   if(!AR(a))RZ(a=jtreshape(jt,sc(n),a));   // extend scalar x to length of y
    ak=1; at=B01;  // cell of a is 1 byte, and it's Boolean
   }else{
    // monadic forms.  If we can handle the type/length here, leave it; otherwise convert to Boolean.
@@ -776,7 +776,7 @@ void copyTT(void *zv, void *wv, I n, I zt, I wt){
    // No frets.  Apply the operand to 0 items; return (0,$result) $ result (or $,'' if error on fill-cell).  The call is non-inplaceable
    RZ(z=jtreitem(jt,zeroionei(0),w));  // create 0 items of the type of w
   WITHDEBUGOFF(zz=CALL1(f1,z,fs);) if(EMSK(jt->jerr)&EXIGENTERROR)RZ(zz); RESETERR;
-   RZ(zz=reshape(over(zeroionei(0),shape(zz?zz:mtv)),zz?zz:zeroionei(0)));
+   RZ(zz=jtreshape(jt,over(zeroionei(0),shape(zz?zz:mtv)),zz?zz:zeroionei(0)));
   }
  }
  EPILOG(zz);

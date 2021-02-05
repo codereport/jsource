@@ -347,9 +347,9 @@ static A jtinfix(J jt,A a,A w,A self){PROLOG(0018);DECLF;A x,z;I m;
   // r = rank of w, rr=rank of list of items of w, s is block for list of length rr; copy shape of r; override #items of infix
   r=AR(w); rr=MAX(1,r); GATV0(s,INT,rr,1); if(r)MCISH(AV(s),AS(w),r); AV(s)[0]=0>m?0:m==IMAX?1+SETIC(w,r):m;
   // Create fill-cell of shape s; apply u to it
-  RZ(df1(x,reshape(s,filler(w)),fs));
+  RZ(df1(x,jtreshape(jt,s,filler(w)),fs));
   // Prepend leading axis of 0 to the result
-  z=reshape(over(zeroionei(0),shape(x)),x);
+  z=jtreshape(jt,over(zeroionei(0),shape(x)),x);
  } 
  EPILOG(z);
 }
@@ -370,8 +370,8 @@ static A jtginfix(J jt,A a,A w,A self){A h,*hv,x,z,*zv;I d,m,n;
   return ope(z);
  }else{A s;
   RZ(s=AR(w)?shape(w):ca(iv0)); AV(s)[0]=ABS(m);
-  RZ(df1(x,reshape(s,filler(w)),*hv));
-  return reshape(over(zeroionei(0),shape(x)),x);
+  RZ(df1(x,jtreshape(jt,s,filler(w)),*hv));
+  return jtreshape(jt,over(zeroionei(0),shape(x)),x);
 }}
 
 // *** start of non-sparse code ***
@@ -551,7 +551,7 @@ static A jtinfixprefix2(J jt,A a,A w,A self){F2PREFIP;PROLOG(00202);A fs;I cger[
   RZ(z=jtreitem(jt,zeroionei(0),w));  // create 0 items of the type of w
   if(ilnval>=0){ilnval=(ilnval==IMAX)?(wi+1):ilnval; RZ(z=take(sc(ilnval),z));}    // if items needed, create them.  For compatibility, treat _ as 1 more than #items in w
   WITHDEBUGOFF(zz=CALL1(f1,z,fs);) if(EMSK(jt->jerr)&EXIGENTERROR)RZ(zz); RESETERR;
-  RZ(zz=reshape(over(zeroionei(0),shape(zz?zz:mtv)),zz?zz:zeroionei(0)));
+  RZ(zz=jtreshape(jt,over(zeroionei(0),shape(zz?zz:mtv)),zz?zz:zeroionei(0)));
  }
 
 // result is now in zz
@@ -575,7 +575,7 @@ static A jtpscan(J jt,    A w,A self){A z;I f,n,r,t,wn,wr,*ws,wt;
  // m = #cells, c=#atoms/cell, n = #items per cell
  SETICFR(w,f,r,n);  // wn=0 doesn't matter
  // If there are 0 or 1 items, or w is empty, return the input unchanged, except: if rank 0, return (($w),1)($,)w - if atomic op, do it right here, otherwise call the routine to get the shape of result cell
- if(((1-n)&-wn)>=0){return r?RETARG(w):reshape(apip(shape(w),zeroionei(1)),w);}  // n<2 or wn=0
+ if(((1-n)&-wn)>=0){return r?RETARG(w):jtreshape(jt,apip(shape(w),zeroionei(1)),w);}  // n<2 or wn=0
  VARPS adocv; varps(adocv,self,wt,1);  // fetch info for f/\ and this type of arg
  if(!adocv.f)return IRS1(w,self,r,jtinfixprefix1,z);  // if there is no special function for this type, do general scan
  // Here is the fast special reduce for +/ etc

@@ -17,7 +17,7 @@ static A jtfromis1(J jt,A ind,A w,A z,I wf){A a,a1,j1,p,q,x,x1,y,y1;C*xu,*xuu,*x
  k=av[h]; u=av; DQ(h, *v++=*u++;); DQ(r, *v++=k++;); u++; DQ(an-1-h, *v++=*u+++r-1;);
  if(!r) 
   if(AR(z)){GATV0(q,INT,an-1,1); v=AV(q); DO(an, if(i!=h)*v++=i;); SPB(zp,i,jtfromr(jt,q,y)); SPB(zp,x,x); return z;}
-  else return reshape(mtv,AN(x)?x:SPA(zp,e));
+  else return jtreshape(jt,mtv,AN(x)?x:SPA(zp,e));
  if(h){q=grade1(jtfromr(jt,sc(h),y)); RZ(y=jtifrom(jt,q,y)); RZ(x=jtifrom(jt,q,x));}
  RZ(q=odom(2L,r,AS(ind))); iv=AV(q);
  m=*AS(y); s=0; j=-1; u=h+AV(y); v=u+an;
@@ -61,7 +61,7 @@ static A jtfromis1(J jt,A ind,A w,A z,I wf){A a,a1,j1,p,q,x,x1,y,y1;C*xu,*xuu,*x
  m=wcr; DO(wcr, m-=b[wf+i];); RZ(x=irs2(ind,SPA(wp,x),0L,ar,m,jtifrom));
  if(k=ar-1)DO(an, if(av[i]>=wf)av[i]+=k;);
  if(AR(z)){SPB(zp,a,a); SPB(zp,x,x); SPB(zp,i,ca(SPA(wp,i))); return z;}
- else return AN(x)?reshape(mtv,x):ca(SPA(wp,e));
+ else return AN(x)?jtreshape(jt,mtv,x):ca(SPA(wp,e));
 }    /* a{"r w for numeric a and sparse w */
 
 static A jtaaxis(J jt,A w,I wf,A a,I r,I h,I*pp,I*qq,I*rr){A q;B*b,*c,*d;I wr,x,y,z,zr;
@@ -86,7 +86,7 @@ A jtfrombsn(J jt,A ind,A w,I wf){A a,j1,p,q,x,x1,y,y1,ys,z;C*xu,*xuu,*xv;
  a=SPA(wp,a); an=AN(a); SPB(zp,a,aaxis(w,wf,a,r,h,&pp,&qq,&rr));
  if( !qq){SPB(zp,i,ca(y)); SPB(zp,x,frombu(ind,x,AR(x)-(wr-wf-rr))); return z;}
  if(h>qq){q=nub(over(a,apv(h,wf,1L))); return frombsn(ind,jtreaxis(jt,jtgrade2(jt,q,q),w),wf);}
- if(1<r)RZ(ind=reshape(v2(n,h),ind)); 
+ if(1<r)RZ(ind=jtreshape(jt,v2(n,h),ind)); 
  RZ(ys=jtfromr(jt,jtindexof(jt,a,apv(h,wf,1L)),y));
  RZ(q=jteps(jt,ys,ind)); 
  if(!all1(q)){RZ(ys=jtrepeat(jt,q,ys)); RZ(y=jtrepeat(jt,q,y)); RZ(x=jtrepeat(jt,q,x));}
@@ -151,7 +151,7 @@ static A jtfrombs1(J jt,A ind,A w,I wf){A*iv,x,y,z;I j,m,n,wr,wcr;
  ap=PAV(a); ws=AS(w);
  GASPARSE(z,STYPE(AT(w)),1L,ar+wr-(I )(0<wcr),ws); zp=PAV(z);
  v=AS(z); ICPY(v+wf,AS(a),ar); if(wcr)ICPY(v+wf+ar,1+wf+ws,wcr-1);
- RZ(x=irs2(SPA(ap,e),w,0L,0L,wcr,jtifrom)); RZ(e=reshape(mtv,x));
+ RZ(x=irs2(SPA(ap,e),w,0L,0L,wcr,jtifrom)); RZ(e=jtreshape(jt,mtv,x));
  ASSERT(all1(eq(e,x)),EVSPARSE);
  SPB(zp,e,e);
  SPB(zp,a,wf?plus(sc(wf),SPA(ap,a)):SPA(ap,a));
@@ -172,7 +172,7 @@ static A jtfrombs1(J jt,A ind,A w,I wf){A*iv,x,y,z;I j,m,n,wr,wcr;
  ap=PAV(a); wp=PAV(w); ws=AS(w);
  GASPARSE(z,AT(w),1,ar+wr-(I )(0<wcr),ws); zp=PAV(z);
  v=AS(z); ICPY(v+wf,AS(a),ar); if(wcr)ICPY(v+wf+ar,1+wf+ws,wcr-1);
- RZ(x=irs2(SPA(ap,e),w,0L,0L,wcr,jtfrom)); RZ(e=reshape(mtv,x));
+ RZ(x=irs2(SPA(ap,e),w,0L,0L,wcr,jtfrom)); RZ(e=jtreshape(jt,mtv,x));
  ASSERT(all1(denseit(eq(e,x))),EVSPARSE);
  SPB(zp,e,e);
  x=SPA(ap,a); if(ar>AN(x)){RZ(a=jtreaxis(jt,IX(ar),a)); ap=PAV(a);}

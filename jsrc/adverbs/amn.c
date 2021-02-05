@@ -32,7 +32,7 @@ static B jtiaddr(J jt,A z,A ind,A*i1,A*i2){A a,ai,as,ii,jj,q,t,x,y;I c,d,e,h,i,*
  if(!c){
   n=AN(jj);
   RZ(*i1=jtrepeat(jt,sc(n),IX(m)));
-  RZ(*i2=reshape(sc(m*n),jj));
+  RZ(*i2=jtreshape(jt,sc(m*n),jj));
   return 1;
  }
  RZ(*i1=ii=jtindexof(jt,y,jtrepeatr(jt,jteps(jt,ai,a),ind)));         /* group indices in index mat  */
@@ -56,20 +56,20 @@ static A jtzpadn(J jt,A z,A ind,B ip){A a,ai,i1,p,p1,q,t,x,x0,y,y0,y1;B*b;I c,d,
  n=1; h=*(AS(ind)+AR(ind)-1);
  RZ(ai=IX(h));
  RZ(t=jteps(jt,ai,a)); b=BAV(t); d=0; DO(h, if(b[i])++d;);
- RZ(i1=d<h?jtrepeatr(jt,t,ind):ind); if(2!=AR(ind))RZ(i1=d?reshape(v2(AN(i1)/d,d),i1):mtm);
+ RZ(i1=d<h?jtrepeatr(jt,t,ind):ind); if(2!=AR(ind))RZ(i1=d?jtreshape(jt,v2(AN(i1)/d,d),i1):mtm);
  RZ(t=gt(sc(h),a)); RZ(y1=all1(t)?y:jtrepeatr(jt,t,y));
  RZ(p=nub(jtless(jt,i1,y1)));
  if(c=AN(a)-d){
   RZ(t=jtfrom(jt,jtless(jt,a,ai),shape(z))); RZ(p1=odom(2L,c,AV(t))); n=*AS(p1);
-  if(m=*AS(p))RZ(p=stitch(jtrepeat(jt,sc(n),p),reshape(v2(n*m,c),p1)));
+  if(m=*AS(p))RZ(p=stitch(jtrepeat(jt,sc(n),p),jtreshape(jt,v2(n*m,c),p1)));
   RZ(t=nub(jtrepeat(jt,jteps(jt,y1,i1),y1)));
-  RZ(t=stitch(jtrepeat(jt,sc(n),t),reshape(v2(n**AS(t),c),p1)));
+  RZ(t=stitch(jtrepeat(jt,sc(n),t),jtreshape(jt,v2(n**AS(t),c),p1)));
   RZ(t=jtless(jt,t,y));
   if(AN(t))RZ(p=over(p,t));
  }
  if(m=*AS(p)){  /* new cells being added */
   RZ(y=over(y,p)); RZ(q=grade1(y)); RZ(y=jtfrom(jt,q,y));
-  RZ(t=shape(x)); *AV(t)=m; RZ(x=jtfrom(jt,q,over(x,reshape(t,SPA(zp,e)))));
+  RZ(t=shape(x)); *AV(t)=m; RZ(x=jtfrom(jt,q,over(x,jtreshape(jt,t,SPA(zp,e)))));
   // if z is assigned to a name, the use counts need to be adjusted: the old ones need to be decremented
   // to remove the assignment, and the new ones need to be incremented to prevent them from being freed
   // until the name is freed.  We detect the case from jt->assignsym being set to the address of z
@@ -87,7 +87,7 @@ static A jtastdn(J jt,A a,A z,A ind){A a1,q,r,s;B*b;I ar,*as,*av,d,ir,n,n1,*v,zr
  ir=AR(ind); n=*(AS(ind)+ir-1); d=(ir-1)+(zr-n); ASSERT(ar<=d,EVRANK);  // n=shape of item of i; d is # unindexed axes
  GATV0(s,INT,d,1); v=AV(s); MCISH(v,AS(ind),ir-1); MCISH(v+ir-1,zs+n,zr-n);
  ASSERTAGREE(as,AV(s)+d-ar,ar);
- if(ar<d)RZ(a=reshape(s,a));
+ if(ar<d)RZ(a=jtreshape(jt,s,a));
  zp=PAV(z); a1=SPA(zp,a); av=AV(a1); n1=n-1;
  GATV0(s,B01,zr,1); b=BAV(s); 
  memset(b,C0,zr); DO(AN(a1), b[av[i]]=1;); memset(b,!memchr(b,C1,n)?C0:C1,n);

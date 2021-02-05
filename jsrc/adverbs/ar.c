@@ -411,7 +411,7 @@ static A jtredcatsp(J jt,A w,A z,I r){A a,q,x,y;B*b;I c,d,e,f,j,k,m,n,n1,p,*u,*v
  }else{             /* other */
   GATV0(q,INT,xr,1); v=AV(q); 
   if(1!=k){*v++=0; *v++=k; e=0; DQ(xr-1, ++e; if(e!=k)*v++=e;); RZ(x=jtcant2(jt,q,x));}
-  v=AV(q); u=AS(x); *v=u[0]*u[1]; MCISH(1+v,2+u,xr-1); RZ(x=reshape(vec(INT,xr-1,v),x));
+  v=AV(q); u=AS(x); *v=u[0]*u[1]; MCISH(1+v,2+u,xr-1); RZ(x=jtreshape(jt,vec(INT,xr-1,v),x));
   e=ws[f+c]; RZ(y=jtrepeat(jt,sc(e),y)); RZ(y=mkwris(y)); v=j+AV(y);
   if(c)DO(m, k=p**v; DO(e, *v=k+  i; v+=n;);)
   else DO(m, k=  *v; DO(e, *v=k+p*i; v+=n;);); 
@@ -476,7 +476,7 @@ static A jtredstitch(J jt,    A w,A self){A c,y;I f,n,r,*s,*v,wr;
  if((SPARSE&AT(w))!=0){A x;
   GATV0(x,INT,f+r-1,1); v=AV(x); MCISH(v,AS(y),f+1);
   DPMULDE(s[f],s[f+2],v[f+1]); MCISH(v+f+2,s+3+f,r-3);
-  return reshape(x,y);
+  return jtreshape(jt,x,y);
  }else{
   v=AS(y); 
   DPMULDE(s[f],s[f+2],v[f+1]); MCISH(v+f+2,s+3+f,r-3);
@@ -495,7 +495,7 @@ static A jtredstiteach(J jt,    A w,A self){A*wv,y;I n,p,r,t;
 static A jtredcateach(J jt,    A w,A self){A*u,*v,*wv,x,*xv,z,*zv;I f,m,mn,n,r,wr,*ws,zm,zn;I n1=0,n2=0;
  wr=AR(w); ws=AS(w); r=(RANKT)jt->ranks; r=wr<r?wr:r; f=wr-r; RESETRANK;
  SETICFR(w,f,r,n);
- if(!r||1>=n)return reshape(jtrepeat(jt,ne(sc(f),IX(wr)),shape(w)),n?w:ds(CACE));
+ if(!r||1>=n)return jtreshape(jt,jtrepeat(jt,ne(sc(f),IX(wr)),shape(w)),n?w:ds(CACE));
  if(!(BOX&AT(w)))return df1(z,jtcant2(jt,sc(f),w),qq(ds(CBOX),zeroionei(1)));  // handle unboxed args
 // bug: ,&.>/ y does scalar replication wrong
 // wv=AN(w)+AAV(w); DQ(AN(w), if(AN(*--wv)&&AR(*wv)&&n1&&n2) ASSERT(0,EVNONCE); if((!AR(*wv))&&n1)n2=1; if(AN(*wv)&&1<AR(*wv))n1=1;);

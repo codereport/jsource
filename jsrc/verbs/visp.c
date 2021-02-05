@@ -119,7 +119,7 @@ static B jtiopart(J jt,A w,I r,I mm,I*zc,A*zi,A*zj,A*zx){A b,f,wx,x,wy,y;B*bv;
      I c=*zc,d,i,j,k,m,n,nd,p,q,wr,*v,*xv;P*wp;
  wr=AR(w); d=wr-r;
  wp=PAV(w); wy=SPA(wp,i); wx=SPA(wp,x); n=AR(wx)-1;
- RZ(b=__not(irs2(wx,reshape(vec(INT,n,1+AS(wx)),SPA(wp,e)),0L,n,n,jtmatch)));
+ RZ(b=__not(irs2(wx,jtreshape(jt,vec(INT,n,1+AS(wx)),SPA(wp,e)),0L,n,n,jtmatch)));
  if(!all1(b)){RZ(wx=jtrepeat(jt,b,wx)); RZ(wy=jtrepeat(jt,b,wy));}
  v=AV(wy); m=*AS(wy); n=*(1+AS(wy)); nd=n-d;
  GATV0(b,B01,m,1); bv=BAV(b);
@@ -130,7 +130,7 @@ static B jtiopart(J jt,A w,I r,I mm,I*zc,A*zi,A*zj,A*zx){A b,f,wx,x,wy,y;B*bv;
   DO(m, bv[i]=0; DO(d, if(xv[i]!=v[i]){bv[i]=1; j=i; DQ(d-j, xv[j]=v[j]; ++j;); break;}); v+=n;)
  }
  if(m){RZ(f=jtcut(jt,ds(CCOMMA),num(1))); RZ(df2(y,b,jtdropr(jt,d,wy),f)); RZ(df2(x,b,wx,f));}
- else{y=mtm; RZ(x=reshape(v2(0L,jtprod(jt,r,AS(w)+wr-r)),wx));}
+ else{y=mtm; RZ(x=jtreshape(jt,v2(0L,jtprod(jt,r,AS(w)+wr-r)),wx));}
  if(0>c)*zc=c=*(1+AS(y)); 
  else if(c!=*(1+AS(y))){RZ(y=taker(c,y)); RZ(x=taker((c/(n-d))*aii(wx),x));}
  v=AV(y); k=0; q=*AS(y);
@@ -188,6 +188,6 @@ A jtindexofss(J jt,I mode,A a,A w){A ai,aj,ax,wi,wj,wx,x,y,z;B aw=a!=w;I ar,c,m,
  SPB(p,a,iv0);
  SPB(p,e,num(0));
  SPB(p,i,y);
- SPB(p,x,reshape(sc(m),num(1)));
+ SPB(p,x,jtreshape(jt,sc(m),num(1)));
  return z;
 }

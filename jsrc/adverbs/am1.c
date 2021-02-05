@@ -42,7 +42,7 @@ static A jtastd1(J jt,A a,A z,A ind){A*iv,q,r,s,s1,*sv,x;B b;I ar,*as,d,j,m,n,*r
  d=m+zr-n; ASSERT(ar<=d,EVRANK);
  RZ(s1=raze(s)); s1v=AV(s1);
  ASSERT(!ICMP(as,AV(s1)+d-ar,ar),EVLENGTH);
- if(ar<d)RZ(a=reshape(s1,a));
+ if(ar<d)RZ(a=jtreshape(jt,s1,a));
  RZ(q=dgrade1(jteps(jt,jtrepeat(jt,r,IX(zr)),SPA(zp,a))));
  return equ(q,IX(d))?a:jtcant2(jt,q,a);
 }    /* convert replacement array a into standard form relative to index list ind */
@@ -94,7 +94,7 @@ static A jtscuba(J jt,A z,A i1,B u){A*iv,q=0,x;I c,d,j,n,*s,*v;P*zp;
   if(x==ds(CACE))RZ(x=IX(s[v[j]]))else{if(1<AR(x))RZ(x=ravel(x)); if(u)RZ(x=nub(x));}
   c=AN(x); 
   if(q){d=*AS(q); RZ(q=stitch(jtrepeat(jt,sc(d),x),jtreitem(jt,sc(c*d),q)));}
-  else RZ(q=reshape(v2(c,1L),x));
+  else RZ(q=jtreshape(jt,v2(c,1L),x));
  }
  return q;
 }    /* index cube relative to sparse axes; 1=u iff unique (remove duplicates) */
@@ -155,7 +155,7 @@ static A jtzpad1(J jt,A z,A t,B ip){A q,s,x,x0,y,y0;I m;P*zp;
  if(m=*AS(t)){  /* new cells being added */
   zp=PAV(z);  
   y0=SPA(zp,i); RZ(y=over(y0,t)); RZ(q=grade1(y)); RZ(y=jtfrom(jt,q,y));
-  x0=SPA(zp,x); RZ(s=shape(x0)); *AV(s)=m; RZ(x=jtfrom(jt,q,over(x0,reshape(s,SPA(zp,e)))));
+  x0=SPA(zp,x); RZ(s=shape(x0)); *AV(s)=m; RZ(x=jtfrom(jt,q,over(x0,jtreshape(jt,s,SPA(zp,e)))));
   // if z is assigned to a name, the use counts need to be adjusted: the old ones need to be decremented
   // to remove the assignment, and the new ones need to be incremented to prevent them from being freed
   // until the name is freed.  We detect the case from jt->assignsym being set to the address of z
@@ -198,7 +198,7 @@ A jtam1a(J jt,A a,A z,A ind,B ip){A a0=a,a1,e,i1,i2,t,x,y;C*u,*v,*xv;I ar,c,*iv,
  k=bpnoun(AT(x)); xk=k*jtprod(jt,r-1-n,s+1+n); vk=k*jtprod(jt,r-1,s+1); uk=!ar?k:n?xk:vk;
  u=CAV(a); xv=v=CAV(x);
  RZ(t=jtiindx(jt,z,i1)); iv=AV(t); m=AN(t);
- if(!n&&!m){a1=SPA(zp,a); return ar?sparseit(a0,a1,e):sparseit(reshape(shape(z),a),a1,a);}
+ if(!n&&!m){a1=SPA(zp,a); return ar?sparseit(a0,a1,e):sparseit(jtreshape(jt,shape(z),a),a1,a);}
  if(n){RZ(t=jtdcube(jt,z,i2)); jv=AV(t); c=AN(t); v=xv-vk;}
  if(!n)    DO(m,                           mvc(vk,v+vk*iv[i],uk,u); if(ar)u+=uk;  )
  else if(m)DO(m,      v=xv+vk*iv[i]; DO(c, mvc(xk,v+xk*jv[i],uk,u); if(ar)u+=uk;);)

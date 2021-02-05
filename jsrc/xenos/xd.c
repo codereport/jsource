@@ -98,7 +98,7 @@ static A jtdir1(J jt,struct dirent*f,struct stat *dirstatbuf,C *diratts, C *dirm
  RZ(w=str0(vslit(!AR(w)&&BOX&AT(w)?ope(w):w)));
  s=CAV(w);
  if(x=strrchr(s,'/')){dir=s==x?(C*)"/":s; pat=x+1; *x=0;}else{dir="."; pat=s;}
- if(NULL==(DP=opendir(dir)))return reshape(v2(0L,6L),ds(CACE));
+ if(NULL==(DP=opendir(dir)))return jtreshape(jt,v2(0L,6L),ds(CACE));
  /*
   * SYSV and BSD have different return types for sprintf(),
   * so we use less efficient but portable code.
@@ -113,7 +113,7 @@ static A jtdir1(J jt,struct dirent*f,struct stat *dirstatbuf,C *diratts, C *dirm
   f=readdir(DP);
  }
  closedir(DP);
- z=j?ope(j<n?vec(BOX,j,zv):z):reshape(v2(0L,6L),ds(CACE));
+ z=j?ope(j<n?vec(BOX,j,zv):z):jtreshape(jt,v2(0L,6L),ds(CACE));
  EPILOG(z);
 }
 

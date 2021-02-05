@@ -777,7 +777,7 @@
 
 #define repidx(x0,x1,x2,x3)         jtrepidx(jt,(x0),(x1),(x2),(x3))
 #define repzdx(x0,x1,x2,x3)         jtrepzdx(jt,(x0),(x1),(x2),(x3))
-#define reshape(x,y)                jtreshape(jt,(x),(y))
+
 #define reshapeW(x,y)               jtreshape((J)((I)jt|JTINPLACEW),(x),(y))
 #define reshapesp(x0,x1,x2,x3)      jtreshapesp(jt,(x0),(x1),(x2),(x3))
 #define reshapesp0(x0,x1,x2,x3)     jtreshapesp0(jt,(x0),(x1),(x2),(x3))

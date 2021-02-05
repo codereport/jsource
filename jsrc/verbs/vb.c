@@ -103,12 +103,12 @@ static I jtebarprep(J jt,A a,A w,A*za,A*zw,I*zc){I ar,at,m,n,t,wr,wt,memlimit;CR
  A jtebar(J jt,A a,A w){PROLOG(0065);A y,z;B*zv;C*av,*wv;I c,d,i,k=0,m,n,p,*yv;
  ASSERT(!((AT(a) | AT(w)) & SPARSE), EVNONCE);
  ASSERT((AR(a) == AR(w)) || (AR(a) + (AR(w) ^ 1)) == 0, EVRANK);
- if(AN(a)==1)return eq(reshape(mtv,a),w);  // if a is a singleton, just revert to =
+ if(AN(a)==1)return eq(jtreshape(jt,mtv,a),w);  // if a is a singleton, just revert to =
  RE(d=ebarprep(a,w,&a,&w,&c));
  av=CAV(a); m=AN(a);
  wv=CAV(w); n=AN(w); p=n-m;
  switch(d){
-  case -1: return reshape(shape(w),num(0));
+  case -1: return jtreshape(jt,shape(w),num(0));
   case -2: return jtebarmat(jt,a,w);
   case -3: return df2(z,shape(a),w,jtcut(jt,jtamp(jt,a,ds(CMATCH)),num(3)));
   case -4: return jtebarvec(jt,a,w);
