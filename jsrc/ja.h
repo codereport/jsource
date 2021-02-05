@@ -823,7 +823,7 @@
 #define sborder(x)                  jtsborder(jt,(x))
 #define sbprobe(x0,x1,x2,x3)        jtsbprobe(jt,(x0),(x1),(x2),(x3))
 #define sbsetdata(x)                jtsbsetdata(jt,(x))
-#define sbstr(x,y)                  jtsbstr(jt,(x),(y))
+
 #define sbtypeinit()                jtsbtypeinit(jt)
 #define sbunbox(x)                  jtsbunbox(jt,(x))
 #define sbunind(x)                  jtsbunind(jt,(x))

@@ -655,9 +655,9 @@ static A jtsbgetdata(J jt, A w){A z,*zv;
     case 11: return sbcheck(num(0));
     case 12: return sbhashstat(num(0));
    }
-  case  1:   return sbstr(1L,w);
+  case  1:   return jtsbstr(jt,1L,w);
   case -1:   return sbunstr(-1L,w);
-  case  2:   return sbstr(2L,w);
+  case  2:   return jtsbstr(jt,2L,w);
   case -2:   return sbunstr(-2L,w);
   case  3:   return jtsblit(jt,C0,w);
   case -3:   return sbunlit(C0,w);
