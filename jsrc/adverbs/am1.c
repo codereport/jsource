@@ -23,8 +23,8 @@ static A jtistd1(J jt,A z,A ind){A*iv,j,*jv,x;I d,i,n,r,*s;
   if(BOX&AT(x)){
    ASSERT(!AR(x),EVINDEX); 
    x=AAV(x)[0]; r=AR(x);
-   RZ(jv[i]=!AN(x)&&1==r?ds(CACE):jtless(jt,IX(d),pind(d,x)));
-  }else {RZ(x=pind(d,x)); jv[i]=x;}  // INCORP not needed probably, since this use is transient
+   RZ(jv[i]=!AN(x)&&1==r?ds(CACE):jtless(jt,IX(d),jtpind(jt,d,x)));
+  }else {RZ(x=jtpind(jt,d,x)); jv[i]=x;}  // INCORP not needed probably, since this use is transient
  }
  return j;
 }    /* convert index list ind into standard form */

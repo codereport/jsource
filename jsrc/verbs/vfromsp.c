@@ -50,7 +50,7 @@ static A jtfromis1(J jt,A ind,A w,A z,I wf){A a,a1,j1,p,q,x,x1,y,y1;C*xu,*xuu,*x
  wr=AR(w); wcr=(RANKT)jt->ranks; wcr=wr<wcr?wr:wcr; wf=wr-wcr; RESETRANK;
  if(af)return rank2ex(a,w,UNUSED_VALUE,acr,wcr,acr,wcr,jtfromis);
  wn=AN(w); ws=AS(w); wt=AT(w);
- RZ(ind=pind(wcr?*(ws+wf):1,a));  // ind is the INT list of indexes being selected
+ RZ(ind=jtpind(jt,wcr?*(ws+wf):1,a));  // ind is the INT list of indexes being selected
  // Allocate the result, which has one axis for each axis of a, and one for each axis of w EXCEPT the selection axis - unless the selection rank is 0, which isn't really an axis
  GASPARSE(z,wt,1,ar+wr-(I )(0<wcr),ws); v=AS(z); ICPY(v+wf,AS(a),ar); if(wcr)ICPY(v+wf+ar,1+wf+ws,wcr-1);
  zp=PAV(z); wp=PAV(w); SPB(zp,e,ca(SPA(wp,e)));
@@ -128,7 +128,7 @@ static A jtfrombs1(J jt,A ind,A w,I wf){A*iv,x,y,z;I j,m,n,wr,wcr;
    ASSERT(!AR(x),EVINDEX);
    x=AAV(x)[0]; m=*(wf+j+AS(w));
    if(!AN(x))continue;
-   RZ(x=jtless(jt,IX(m),pind(m,x)));
+   RZ(x=jtless(jt,IX(m),jtpind(jt,m,x)));
   }
   RZ(z=irs2(x,z,VFLAGNONE, RMAX,wcr-j,jtfromis)); z=jtgc(jt,z,old);
  }

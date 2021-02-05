@@ -8,7 +8,7 @@
 
 /*
 static A jtmerge1(J jt,A w,A ind){PROLOG(0006);A z;C*v,*x;I c,k,r,*s,t,*u;
- RZ(ind=pind(IC(w),ind));
+ RZ(ind=jtpind(jt,IC(w),ind));
  r=MAX(0,AR(w)-1); s=1+AS(w); t=AT(w); c=aii(w);
  ASSERT(!(t&SPARSE),EVNONCE);
  ASSERT(r==AR(ind),EVRANK);
@@ -187,8 +187,8 @@ static A jtmerge2(J jt,A a,A w,A ind,I cellframelen){F2PREFIP;A z;I t;
 // speed to validate the input, and pdt works well for a large number of short vectors - in particular it avoids the carried dependency between axes that
 // Horner's Rule creates.  This version keeps things in registers and has less setup time; and it is much better if there are negative indexes.
 A jtcelloffset(J jt,AD * RESTRICT w,AD * RESTRICT ind){A z;
- if(AR(ind)<2){RZ(z=pind(AS(w)[0],ind));  // (m}only) treat a list as a list of independent indexes.  pind handles that case quickly and possibly in-place.
- }else if(AS(ind)[AR(ind)-1]==1){RZ(z=pind(AS(w)[0],IRS1(ind,0L,2L,jtravel,z)));  // if rows are 1 long, pind handles that too - remove the last axis
+ if(AR(ind)<2){RZ(z=jtpind(jt,AS(w)[0],ind));  // (m}only) treat a list as a list of independent indexes.  pind handles that case quickly and possibly in-place.
+ }else if(AS(ind)[AR(ind)-1]==1){RZ(z=jtpind(jt,AS(w)[0],IRS1(ind,0L,2L,jtravel,z)));  // if rows are 1 long, pind handles that too - remove the last axis
  }else{
   // rank of ind>1, and rows of ind are longer than 1. process each row to a cell offset
   I naxes = AS(ind)[AR(ind)-1];
@@ -260,8 +260,8 @@ static A jtjstd(J jt,A w,A ind,I *cellframelen){A j=0,k,*v,x;I b;I d,i,n,r,*u,wr
    if((-AN(x)&SGNIF(AT(x),BOXX))<0){   // notempty and boxed
     ASSERT(!AR(x),EVINDEX); 
     x=AAV(x)[0]; k=IX(d);
-    if(AN(x))k=jtless(jt,k,pind(d,1<AR(x)?ravel(x):x));
-   }else k=pind(d,x);
+    if(AN(x))k=jtless(jt,k,jtpind(jt,d,1<AR(x)?ravel(x):x));
+   }else k=jtpind(jt,d,x);
    RZ(x=tymesA(j,sc(d)));
    RZ(j=ATOMIC2(jt,x,k,rkblk,0, RMAX,CPLUS));
   }
@@ -316,7 +316,7 @@ static A jtamendn2(J jt,A a,A w,A self){F2PREFIP;PROLOG(0007);A e,z; B b;I atd,w
 // call merge2 to do the merge.  Pass inplaceability into merge2.
 static A amccv2(J jt,A a,A w,A self){F2PREFIP;DECLF; 
  ASSERT(DENSE&AT(w),EVNONCE);  // u} not supported for sparse
- A x;RZ(x=pind(AN(w),CALL2(f2,a,w,fs)));
+ A x;RZ(x=jtpind(jt,AN(w),CALL2(f2,a,w,fs)));
  A z=jtmerge2(jtinplace,a,w,x,AR(w));   // The atoms of x include all axes of w, since we are addressing atoms
  // We modified w which is now not pristine.
  PRISTCLRF(w)

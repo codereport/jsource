@@ -656,7 +656,7 @@
 #define pee(a,b,c,d,e    )          jtpee(jt,(a),(b),(c),(d),(e))
 
 
-#define pind(x,y)                   jtpind(jt,(x),(y))
+
 #define pinit()                     jtpinit(jt)
 #define pinv(x)                     jtpinv(jt,(x))
 #define pix(x)                      jtpix(jt,(x),ds(CCIRCLE))

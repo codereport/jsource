@@ -261,10 +261,10 @@ static A jtafrom2(J jt,A p,A q,A w,I r){A z;C*wv,*zv;I d,e,j,k,m,n,pn,pr,* RESTR
 // n is length of axis, w is doubly-unboxed selector
 // result is list of selectors - complementary if w is boxed, with a: standing for axis taken in full
 static A jtafi(J jt,I n,A w){A x;
- if((-AN(w)&SGNIF(AT(w),BOXX))>=0)return pind(n,w);   // empty or not boxed
+ if((-AN(w)&SGNIF(AT(w),BOXX))>=0)return jtpind(jt,n,w);   // empty or not boxed
  ASSERT(!AR(w),EVINDEX);  // if boxed, must be an atom
  x=AAV(w)[0];
- return AN(x)?jtless(jt,IX(n),pind(n,x)):ds(CACE);   // complementary
+ return AN(x)?jtless(jt,IX(n),jtpind(jt,n,x)):ds(CACE);   // complementary
 }
 
 // general boxed a

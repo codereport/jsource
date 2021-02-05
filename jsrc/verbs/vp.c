@@ -39,7 +39,7 @@ A jtpind(J jt,I n,A w){A z;I j,*v;
 // result is full permutation, with the omitted values coming first, in ascending order, followed by w
 // if w has negative indexes, they are first made positive
 A jtpfill(J jt,I n,A w){PROLOG(0081);A b,z;B*bv;I*wv,*zv;
- RZ(w=pind(n,w));  wv=AV(w);  // convert to positive indexes, wv-> indexes
+ RZ(w=jtpind(jt,n,w));  wv=AV(w);  // convert to positive indexes, wv-> indexes
  GATV0(z,INT,n,1); zv=AV(z);  // allocate result area
  GATV0(b,B01,n,1); bv=BAV(b); memset(bv,C1,n);   // binary vector, init to 1
  DO(AN(w), bv[wv[i]]=0;);  // clear flag in indexes that appear
@@ -77,7 +77,7 @@ static A jtdfc(J jt,I n,A w){PROLOG(0082);A b,q,*wv,z;B*bv;I c,j,qn,*qv,*x;
  RZ(z=apvwr(n,0L,1L)); x=AV(z);
  wv=AAV(w); 
  for(j=AN(w)-1;0<=j;j--){
-  RZ(q=pind(n,wv[j])); qv=AV(q); qn=AN(q);
+  RZ(q=jtpind(jt,n,wv[j])); qv=AV(q); qn=AN(q);
   if(!qn)continue;
   DO(qn, ASSERT(bv[qv[i]],EVINDEX); bv[qv[i]]=0;); DO(qn,bv[qv[i]]=1;);
   c=x[qv[0]]; DO(qn-1,x[qv[i]]=x[qv[i+1]];); x[qv[qn-1]]=c;

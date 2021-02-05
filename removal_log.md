@@ -292,3 +292,8 @@
 |`jsrc/verbs/vcant.c`|pfill|jtpfill|`(^\|[ \t]+\|[^\d\w_])pfill\((?=([^,]+?),([^)]+?)\))`|`\1jtpfill(jt,`|
 |`jsrc/verbs/vp.c`|pfill|jtpfill|`(^\|[ \t]+\|[^\d\w_])pfill\((?=([^,]+?),([^)]+?)\))`|`\1jtpfill(jt,`|
 |`jsrc/verbs/vx.c`|piev|jtpiev|`(^\|[ \t]+\|[^\d\w_])piev\((?=([^,]+?),([^)]+?)\))`|`\1jtpiev(jt,`|
+|`jsrc/adverbs/am.c`|pind|jtpind|`(^\|[ \t]+\|[^\d\w_])pind\((?=([^,]+?),([^)]+?)\))`|`\1jtpind(jt,`|
+|`jsrc/adverbs/am1.c`|pind|jtpind|`(^\|[ \t]+\|[^\d\w_])pind\((?=([^,]+?),([^)]+?)\))`|`\1jtpind(jt,`|
+|`jsrc/verbs/vfrom.c`|pind|jtpind|`(^\|[ \t]+\|[^\d\w_])pind\((?=([^,]+?),([^)]+?)\))`|`\1jtpind(jt,`|
+|`jsrc/verbs/vfromsp.c`|pind|jtpind|`(^\|[ \t]+\|[^\d\w_])pind\((?=([^,]+?),([^)]+?)\))`|`\1jtpind(jt,`|
+|`jsrc/verbs/vp.c`|pind|jtpind|`(^\|[ \t]+\|[^\d\w_])pind\((?=([^,]+?),([^)]+?)\))`|`\1jtpind(jt,`|
