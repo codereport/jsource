@@ -27,7 +27,7 @@ static A jtovs0(J jt,B p,I r,A a,A w){A a1,e,q,x,y,z;B*b;I at,*av,c,d,j,k,f,m,n,
    GATV0(q,INT,c,1); v=AV(q); DO(c, v[i]=ws[av[i]];); RZ(q=odom(2L,c,v));
    if(AN(q)>=AN(y)){
     RZ(z=shape(x)); *AV(z)=*AS(q); 
-    RZ(x=jtfrom(jt,grade1(over(y,less(q,y))),over(x,reshape(z,e))));
+    RZ(x=jtfrom(jt,grade1(over(y,jtless(jt,q,y))),over(x,reshape(z,e))));
     y=q;
    }
    RZ(x=p?irs2(x,a,0L,AR(x)-(1+k),0L,jtover):irs2(a,x,0L,0L,AR(x)-(1+k),jtover));

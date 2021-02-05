@@ -201,10 +201,10 @@ static A jtlsparse(J jt,A w,A *ltext){F1PREFIP;A a,e,q,t,x,y,z;B ba,be,bn;I j,r,
  }else RZ(t=over(lcpx(lnoun(head(x))),cstr(" a:}"))); 
  ba=0; v=AV(a); DO(AN(a), if(i!=*v++){ba=1; break;});
  if(!ba)return over(t,z);
- RZ(q=less(IX(r),a));
+ RZ(q=jtless(jt,IX(r),a));
  RZ(z=over(over(lcpx(lnoun(q)),cstr("|:")),z));
  RZ(z=over(t,z));
- RZ(q=grade1(over(less(IX(r),q),q)));
+ RZ(q=grade1(over(jtless(jt,IX(r),q),q)));
  j=r; v=AV(q); DO(r, if(i!=*v++){j=i; break;});
  return over(lcpx(lnoun(jtdrop(jt,sc(j),q))),over(cstr("|:"),z));
 }    /* sparse array */

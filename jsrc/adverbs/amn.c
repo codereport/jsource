@@ -24,7 +24,7 @@ static B jtiaddr(J jt,A z,A ind,A*i1,A*i2){A a,ai,as,ii,jj,q,t,x,y;I c,d,e,h,i,*
  y=SPA(zp,i); if(!all1(q))RZ(y=repeatr(q,y));          /* indexed cols of index mat   */
  m=*AS(y); yv=AV(y);      
  RZ(ai=IX(h));
- RZ(as=less(IX(AR(z)),a)); u=AV(as); n=AN(as);         /* dense axes                  */
+ RZ(as=jtless(jt,IX(AR(z)),a)); u=AV(as); n=AN(as);         /* dense axes                  */
  GATV0(t,INT,n,1); v=AV(t);                             /* shape of indexed dense axes */
  e=0; d=1; DO(n, if(h>u[i])v[e++]=s[i]; else d*=s[i];);
  RZ(*i2=jj=tymes(sc(d),jtbase2(jt,vec(INT,e,v),repeatr(jteps(jt,ai,as),ind))));
@@ -58,13 +58,13 @@ static A jtzpadn(J jt,A z,A ind,B ip){A a,ai,i1,p,p1,q,t,x,x0,y,y0,y1;B*b;I c,d,
  RZ(t=jteps(jt,ai,a)); b=BAV(t); d=0; DO(h, if(b[i])++d;);
  RZ(i1=d<h?repeatr(t,ind):ind); if(2!=AR(ind))RZ(i1=d?reshape(v2(AN(i1)/d,d),i1):mtm);
  RZ(t=gt(sc(h),a)); RZ(y1=all1(t)?y:repeatr(t,y));
- RZ(p=nub(less(i1,y1)));
+ RZ(p=nub(jtless(jt,i1,y1)));
  if(c=AN(a)-d){
-  RZ(t=jtfrom(jt,less(a,ai),shape(z))); RZ(p1=odom(2L,c,AV(t))); n=*AS(p1);
+  RZ(t=jtfrom(jt,jtless(jt,a,ai),shape(z))); RZ(p1=odom(2L,c,AV(t))); n=*AS(p1);
   if(m=*AS(p))RZ(p=stitch(repeat(sc(n),p),reshape(v2(n*m,c),p1)));
   RZ(t=nub(repeat(jteps(jt,y1,i1),y1)));
   RZ(t=stitch(repeat(sc(n),t),reshape(v2(n**AS(t),c),p1)));
-  RZ(t=less(t,y));
+  RZ(t=jtless(jt,t,y));
   if(AN(t))RZ(p=over(p,t));
  }
  if(m=*AS(p)){  /* new cells being added */

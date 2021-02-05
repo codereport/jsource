@@ -128,7 +128,7 @@ static A jtfrombs1(J jt,A ind,A w,I wf){A*iv,x,y,z;I j,m,n,wr,wcr;
    ASSERT(!AR(x),EVINDEX);
    x=AAV(x)[0]; m=*(wf+j+AS(w));
    if(!AN(x))continue;
-   RZ(x=less(IX(m),pind(m,x)));
+   RZ(x=jtless(jt,IX(m),pind(m,x)));
   }
   RZ(z=irs2(x,z,VFLAGNONE, RMAX,wcr-j,jtfromis)); z=jtgc(jt,z,old);
  }
@@ -158,7 +158,7 @@ static A jtfrombs1(J jt,A ind,A w,I wf){A*iv,x,y,z;I j,m,n,wr,wcr;
  SPB(zp,i,SPA(ap,i));
  if(wf){
   RZ(x=irs2(SPA(ap,x),w,VFLAGNONE, RMAX,wcr,jtifrom));
-  RZ(x=jtcant2(jt,less(IX(AR(x)),sc(wf)),x));
+  RZ(x=jtcant2(jt,jtless(jt,IX(AR(x)),sc(wf)),x));
   SPB(zp,x,x);
  }else SPB(zp,x,jtifrom(jt,SPA(ap,x),w));
  return z;

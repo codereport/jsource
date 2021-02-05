@@ -213,3 +213,14 @@
 |`jsrc/debugging/d.c`|jsig|jtjsig|`(^\|[ \t]+\|[^\d\w_])jsig\((?=([^,]+?),([^)]+?)\))`|`\1jtjsig(jt,`|
 |`jsrc/conjunctions/cc.c`|lamin2|jtlamin2|`(^\|[ \t]+\|[^\d\w_])lamin2\((?=([^,]+?),([^)]+?)\))`|`\1jtlamin2(jt,`|
 |`jsrc/verbs/v2.c`|lamin2|jtlamin2|`(^\|[ \t]+\|[^\d\w_])lamin2\((?=([^,]+?),([^)]+?)\))`|`\1jtlamin2(jt,`|
+|`jsrc/adverbs/am.c`|less|jtless|`(^\|[ \t]+\|[^\d\w_])less\((?=([^,]+?),([^)]+?)\))`|`\1jtless(jt,`|
+|`jsrc/adverbs/am1.c`|less|jtless|`(^\|[ \t]+\|[^\d\w_])less\((?=([^,]+?),([^)]+?)\))`|`\1jtless(jt,`|
+|`jsrc/adverbs/amn.c`|less|jtless|`(^\|[ \t]+\|[^\d\w_])less\((?=([^,]+?),([^)]+?)\))`|`\1jtless(jt,`|
+|`jsrc/representations/rl.c`|less|jtless|`(^\|[ \t]+\|[^\d\w_])less\((?=([^,]+?),([^)]+?)\))`|`\1jtless(jt,`|
+|`jsrc/verbs/vcant.c`|less|jtless|`(^\|[ \t]+\|[^\d\w_])less\((?=([^,]+?),([^)]+?)\))`|`\1jtless(jt,`|
+|`jsrc/verbs/vcat.c`|less|jtless|`(^\|[ \t]+\|[^\d\w_])less\((?=([^,]+?),([^)]+?)\))`|`\1jtless(jt,`|
+|`jsrc/verbs/vfrom.c`|less|jtless|`(^\|[ \t]+\|[^\d\w_])less\((?=([^,]+?),([^)]+?)\))`|`\1jtless(jt,`|
+|`jsrc/verbs/vfromsp.c`|less|jtless|`(^\|[ \t]+\|[^\d\w_])less\((?=([^,]+?),([^)]+?)\))`|`\1jtless(jt,`|
+|`jsrc/verbs/vi.c`|less|jtless|`(^\|[ \t]+\|[^\d\w_])less\((?=([^,]+?),([^)]+?)\))`|`\1jtless(jt,`|
+|`jsrc/verbs/vs.c`|less|jtless|`(^\|[ \t]+\|[^\d\w_])less\((?=([^,]+?),([^)]+?)\))`|`\1jtless(jt,`|
+|`jsrc/verbs/vx.c`|less|jtless|`(^\|[ \t]+\|[^\d\w_])less\((?=([^,]+?),([^)]+?)\))`|`\1jtless(jt,`|

@@ -264,7 +264,7 @@ static A jtafi(J jt,I n,A w){A x;
  if((-AN(w)&SGNIF(AT(w),BOXX))>=0)return pind(n,w);   // empty or not boxed
  ASSERT(!AR(w),EVINDEX);  // if boxed, must be an atom
  x=AAV(w)[0];
- return AN(x)?less(IX(n),pind(n,x)):ds(CACE);   // complementary
+ return AN(x)?jtless(jt,IX(n),pind(n,x)):ds(CACE);   // complementary
 }
 
 // general boxed a

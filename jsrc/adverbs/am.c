@@ -260,7 +260,7 @@ static A jtjstd(J jt,A w,A ind,I *cellframelen){A j=0,k,*v,x;I b;I d,i,n,r,*u,wr
    if((-AN(x)&SGNIF(AT(x),BOXX))<0){   // notempty and boxed
     ASSERT(!AR(x),EVINDEX); 
     x=AAV(x)[0]; k=IX(d);
-    if(AN(x))k=less(k,pind(d,1<AR(x)?ravel(x):x));
+    if(AN(x))k=jtless(jt,k,pind(d,1<AR(x)?ravel(x):x));
    }else k=pind(d,x);
    RZ(x=tymesA(j,sc(d)));
    RZ(j=ATOMIC2(jt,x,k,rkblk,0, RMAX,CPLUS));

@@ -23,7 +23,7 @@ static A jtistd1(J jt,A z,A ind){A*iv,j,*jv,x;I d,i,n,r,*s;
   if(BOX&AT(x)){
    ASSERT(!AR(x),EVINDEX); 
    x=AAV(x)[0]; r=AR(x);
-   RZ(jv[i]=!AN(x)&&1==r?ds(CACE):less(IX(d),pind(d,x)));
+   RZ(jv[i]=!AN(x)&&1==r?ds(CACE):jtless(jt,IX(d),pind(d,x)));
   }else {RZ(x=pind(d,x)); jv[i]=x;}  // INCORP not needed probably, since this use is transient
  }
  return j;
@@ -104,8 +104,8 @@ static A jtscubb(J jt,A z,A i1){A a,q,x,y;I c,d,h,j,*s,*v,*xv;P*zp;
  if(!*AS(q))return mtm;
  s=AS(z); zp=PAV(z); y=SPA(zp,i); a=SPA(zp,a); v=AV(a);
  c=*(1+AS(q)); d=*(1+AS(y)); h=d-c;
- if(c==d)return less(q,y);
- RZ(q=less(q,taker(c,y)));
+ if(c==d)return jtless(jt,q,y);
+ RZ(q=jtless(jt,q,taker(c,y)));
  GATV0(x,INT,h,1); xv=AV(x); j=c; DO(h, xv[i]=s[v[j++]];);
  RZ(x=odom(2L,h,xv));
  c=*AS(q); d=*AS(x);
@@ -123,7 +123,7 @@ static A jtscubc(J jt,A z,A i1,A p){A a,q,s,y,y1;B*qv;I c,d,h,j=-1,m,n,*sv,*u,*v
  if(m){memset(qv,C0,m); DO(m-1, if(ICMP(v,v+n,n)){if(d>i-j)qv[i]=1; j=i;} v+=n;); if(d>(m-1)-j)qv[m-1]=1;}
  RZ(y1=repeat(q,y1)); c=*AS(y1);
  if(!c)return mtm;
- return less(stitch(repeat(sc(d),y1),reitem(sc(c*d),odom(2L,h,sv))),y);
+ return jtless(jt,stitch(repeat(sc(d),y1),reitem(sc(c*d),odom(2L,h,sv))),y);
 }    /* new rows for the index matrix of z for existing cells */
 
 static A jtscube(J jt,A z,A i1,A p){A a,y;P*zp;
