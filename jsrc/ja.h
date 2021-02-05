@@ -690,7 +690,7 @@
 #define probeislocal(x)             jtprobeislocal(jt,(x))
 
 
-#define pscan(x,y)                  jtpscan(jt,(x),(y))
+
 #define pscangt(x0,x1,x2,x3,x4,x5)         jtpscangt(jt,(x0),(x1),(x2),(x3),(x4),(x5))
 #define pscanlt(x0,x1,x2,x3,x4,x5)  jtpscanlt(jt,(x0),(x1),(x2),(x3),(x4),(x5))
 #define qbin(x,y)                   jtqbin(jt,(x),(y))
