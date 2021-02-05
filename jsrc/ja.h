@@ -675,7 +675,7 @@
 #define pospow(x,y)                 jtpospow(jt,(x),(y))
 #define powop(x,y,z)                jtpowop(jt,(x),(y),(z))
 
-#define prefix(x,y)                 jtprefix(jt,(x),(y))
+
 #define prep(x)                     jtprep(jt,(x))
 #define preparse(x,y,z)             jtpreparse(jt,(x),(y),(z))
 #define prevprime(x)                jtprevprime(jt,(x))
