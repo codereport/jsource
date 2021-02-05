@@ -802,7 +802,7 @@
 
 
 #define rollxnum(x)                 jtrollxnum(jt,(x))
-#define root(x,y)                   jtroot(jt,(x),(y))
+
 #define rot(x0,x1,x2,x3,x4,x5,x6,x7)                jtrot(jt,(x0),(x1),(x2),(x3),(x4),(x5),(x6),(x7))
 #define rotate(x,y)                 jtrotate(jt,(x),(y))
 #define rotsp(x,y)                  jtrotsp(jt,(x),(y))
