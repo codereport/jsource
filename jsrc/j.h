@@ -31,9 +31,6 @@ typedef double float64x2_t __attribute__ ((vector_size (16)));
 #endif
 #endif
 
-#undef VOIDARG
-#define VOIDARG
-
 #ifndef SYS // include js.h only once - dtoa.c
 #include "js.h"
 #endif
