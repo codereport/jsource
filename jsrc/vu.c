@@ -85,11 +85,11 @@ static A jtc2fi(J jt, A w){A z;I j,n,*v;US*zv;
  A jtuco2(J jt,A a,A w){I j;
  RE(j=i0(a));
  switch(j){
-  case 1: return toc1(1,w);
+  case 1: return jttoc1(jt,1,w);
   case 2: return toc2(w);
   case 3: return ifc2(w);
   case 4: return c2fi(w);
-  case 5: return toc1(0,w);
+  case 5: return jttoc1(jt,0,w);
   case 6: return toc2e(w);
   case 7: return toutf16(w);
   case 8: return toutf8(w);

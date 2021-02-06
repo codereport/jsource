@@ -397,7 +397,7 @@ B valueisint; // set if the value we are processing is really an int
  ASSERT(!AR(a),EVRANK);  // x must be an atom
  at=AT(a);
  ASSERT(at&NUMERIC,EVDOMAIN);  // x must be numeric
- if(!(LIT&AT(w)))RZ(w=toc1(0,w));  // convert y to ASCII if it isn't already; error if there are non-ASCII characters; error if not character type
+ if(!(LIT&AT(w)))RZ(w=jttoc1(jt,0,w));  // convert y to ASCII if it isn't already; error if there are non-ASCII characters; error if not character type
  m=n=c=0; r=AR(w);   // get rank of y argument
 
  // process each list of the input to see how many numbers it contains.  We will

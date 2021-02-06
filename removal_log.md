@@ -522,3 +522,5 @@
 |`jsrc/verbs/vt.c`|tk|jttk|`(^\|[ \t]+\|[^\d\w_])tk\((?=([^,]+?),([^)]+?)\))`|`\1jttk(jt,`|
 |`jsrc/verbs/vt.c`|tks|jttks|`(^\|[ \t]+\|[^\d\w_])tks\((?=([^,]+?),([^)]+?)\))`|`\1jttks(jt,`|
 |`jsrc/verbs/vcomp.h`|tlt|jttlt|`(^\|[ \t]+\|[^\d\w_])tlt\((?=([^,]+?),([^)]+?)\))`|`\1jttlt(jt,`|
+|`jsrc/vu.c`|toc1|jttoc1|`(^\|[ \t]+\|[^\d\w_])toc1\((?=([^,]+?),([^)]+?)\))`|`\1jttoc1(jt,`|
+|`jsrc/words/wn.c`|toc1|jttoc1|`(^\|[ \t]+\|[^\d\w_])toc1\((?=([^,]+?),([^)]+?)\))`|`\1jttoc1(jt,`|
