@@ -52,7 +52,7 @@ static A jttks(J jt,A a,A w){PROLOG(0092);A a1,q,x,y,z;B b,c;I an,m,r,*s,*u,*v;P
 // general take routine.  a is result frame followed by signed take values i. e. shape of result, w is array
 static A jttk(J jt,A a,A w){PROLOG(0093);A y,z;B b=0;C*yv,*zv;I c,d,dy,dz,e,i,k,m,n,p,q,r,*s,t,*u;
  n=AN(a); u=AV(a); r=AR(w); s=AS(w); t=AT(w);
- if((t&SPARSE)!=0)return tks(a,w);
+ if((t&SPARSE)!=0)return jttks(jt,a,w);
  DO(n, if(!u[i]){b=1; break;}); if(!b)DO(r-n, if(!s[n+i]){b=1; break;});  // if empty take, or take from empty cell, set b
  if(((b-1)&AN(w))==0)return tk0(b,a,w);   // this handles empty w, so PROD OK below   b||!AN(w)
  k=bpnoun(t); z=w; c=q=1;  // c will be #cells for this axis

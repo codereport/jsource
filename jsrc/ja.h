@@ -977,7 +977,7 @@
 #define tine(x)                     jttine(jt,(x),tmonad)
 
 #define tk0(x,y,z)                  jttk0(jt,(x),(y),(z))
-#define tks(x,y)                    jttks(jt,(x),(y))
+
 #define tleaf(x)                    jttleaf(jt,(x))
 #define tlt(x,y)                    jttlt(jt,(x),(y))
 #define toc1(x,y)                   jttoc1(jt,(x),(y))

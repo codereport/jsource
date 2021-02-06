@@ -520,3 +520,4 @@
 |`jsrc/format/f.c`|thorn1main|jtthorn1main|`(^\|[ \t]+\|[^\d\w_])thorn1main\((?=([^,]+?),([^)]+?)\))`|`\1jtthorn1main(jt,`|
 |`jsrc/format/f.c`|thsb|jtthsb|`(^\|[ \t]+\|[^\d\w_])thsb\((?=([^,]+?),([^)]+?)\))`|`\1jtthsb(jt,`|
 |`jsrc/verbs/vt.c`|tk|jttk|`(^\|[ \t]+\|[^\d\w_])tk\((?=([^,]+?),([^)]+?)\))`|`\1jttk(jt,`|
+|`jsrc/verbs/vt.c`|tks|jttks|`(^\|[ \t]+\|[^\d\w_])tks\((?=([^,]+?),([^)]+?)\))`|`\1jttks(jt,`|
