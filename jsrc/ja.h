@@ -1023,7 +1023,7 @@
 #define unh(x)                      jtunh(jt,(x))
 #define unhex(x)                    jtunhex(jt,(x))
 #define unlj(x)                     jtunlj(jt,(x))
-#define unlock2(x,y)                jtunlock2(jt,(x),(y))
+
 #define unname(x)                   jtunname(jt,(x))
 #define unparse(x)                  jtunparse(jt,(x))
 #define unparse1(x0,x1,x2,x3)       jtunparse1(jt,(x0),(x1),(x2),(x3))

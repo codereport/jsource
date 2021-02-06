@@ -42,7 +42,7 @@ static A jtline(J jt,A w,I si,C ce,B tso){A x=mtv,z;B xt=jt->tostdout;DC d,xd=jt
  // We do not inherit the lock from higher levels, per the original design
  C oldk=jt->uflags.us.cx.cx_c.glock; // incoming lock status
  if((jt->uflags.us.cx.cx_c.glock=(AN(w)&&CFF==CAV(w)[0]))){
-  RZ(w=unlock2(mtm,w));
+  RZ(w=jtunlock2(jt,mtm,w));
   ASSERT(CFF!=CAV(w)[0],EVDOMAIN);
   si=-1; tso=0;  // if locked, keep shtum about internals
  }

@@ -535,3 +535,5 @@
 |`jsrc/representations/rl.c`|uco2|jtuco2|`(^\|[ \t]+\|[^\d\w_])uco2\((?=([^,]+?),([^)]+?)\))`|`\1jtuco2(jt,`|
 |`jsrc/xenos/xfmt.c`|uco2|jtuco2|`(^\|[ \t]+\|[^\d\w_])uco2\((?=([^,]+?),([^)]+?)\))`|`\1jtuco2(jt,`|
 |`jsrc/adverbs/ai.c`|under|jtunder|`(^\|[ \t]+\|[^\d\w_])under\((?=([^,]+?),([^)]+?)\))`|`\1jtunder(jt,`|
+|`jsrc/jdlllic.c`|unlock2|jtunlock2|`(^\|[ \t]+\|[^\d\w_])unlock2\((?=([^,]+?),([^)]+?)\))`|`\1jtunlock2(jt,`|
+|`jsrc/xenos/xs.c`|unlock2|jtunlock2|`(^\|[ \t]+\|[^\d\w_])unlock2\((?=([^,]+?),([^)]+?)\))`|`\1jtunlock2(jt,`|
