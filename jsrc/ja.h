@@ -1037,7 +1037,7 @@
 #define usebs(x,y,z)                jtusebs(jt,(x),(y),(z))
 
 
-#define va1(x,y)                    jtva1(jt,(x),(y))
+
 #define va1s(x0,x1,x2,x3)           jtva1s(jt,(x0),(x1),(x2),(x3))
 #define var(x0,x1,x2)               jtvar(jt,(x0),(x1),(x2))
 // fetch adocv for an rps function (i. e. f/ f/\ f/\.) in self.  rps is 0-2 for / /\ /\.   t is the type of the input.  Assign result to z, which is a VARPS
