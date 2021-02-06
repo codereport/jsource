@@ -246,14 +246,6 @@ static A jtsorti1(J jt,I m,I n,A w){A x,y,z;I*wv;I i,*xv,*zv;void *yv;
 #define SORTQNAME sortiq1
 #define SORTQTYPE I
 #define SORTQSCOPE
-#define SORTQSET256 _mm256_set_epi64x
-#define SORTQTYPE256 __m256i
-#define SORTQCASTTOPD _mm256_castsi256_pd
-#define SORTQCMP256 _mm256_cmpgt_epi64
-#define SORTQCMPTYPE 
-#define SORTQMASKLOAD _mm256_maskload_epi64
-#define SORTQULOAD _mm256_loadu_si256
-#define SORTQULOADTYPE __m256i*
 #include "vgsortq.h"
 
 static A jtsortiq(J jt,I m,I n,A w){FPREFIP;  // m=#sorts, n=#items in each sort, w is block
@@ -340,14 +332,6 @@ static A jtsortu1(J jt,I m,I n,A w){A x,y,z;C4 *xu,*wv,*zu;I i;void *yv;
 #define SORTQNAME sortdq1
 #define SORTQTYPE D
 #define SORTQSCOPE static
-#define SORTQCASTTOPD 
-#define SORTQSET256 _mm256_set_pd
-#define SORTQTYPE256 __m256d
-#define SORTQCMP256(a,b) _mm256_cmp_pd(a,b)
-#define SORTQCMPTYPE ,_CMP_GT_OQ
-#define SORTQMASKLOAD _mm256_maskload_pd
-#define SORTQULOAD _mm256_loadu_pd
-#define SORTQULOADTYPE D*
 #include "vgsortq.h"
 
 static A jtsortdq(J jt,I m,I n,A w){FPREFIP;  // m=#sorts, n=#items in each sort, w is block

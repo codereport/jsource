@@ -24,7 +24,6 @@
 /* merge sort with special code for n<:5                                */
 /*                                                                      */
 /************************************************************************/
-#define VS(i,j)          (0<CALL1(jt->workareas.compare.comp,u[i],u[j]))
 #define XC(i,j)          {q=u[i]; u[i]=u[j]; u[j]=q;}
 #define P3(i,j,k)        {ui=u[i]; uj=u[j]; uk=u[k]; u[0]=ui; u[1]=uj; u[2]=uk;}
 

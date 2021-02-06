@@ -49,6 +49,8 @@ add_compile_options($<$<COMPILE_LANG_AND_ID:C,GNU>:-Wno-error=logical-not-parent
 # Enable warnings
 add_compile_options($<$<COMPILE_LANGUAGE:C,CXX>:-Wall>)
 add_compile_options($<$<COMPILE_LANGUAGE:C,CXX>:-Wextra>)
+add_compile_options($<$<COMPILE_LANGUAGE:C,CXX>:-Wunused-macros>)
+add_compile_options($<$<COMPILE_LANGUAGE:C,CXX>:-Wno-error=unused-macros>) # Some false positives / only cover current build configuration
 
 # Exclude some warnings
 add_compile_options($<$<COMPILE_LANG_AND_ID:C,GNU>:-Wno-misleading-indentation>)

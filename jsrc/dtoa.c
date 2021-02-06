@@ -302,18 +302,13 @@ typedef union { double d; ULong L[2]; } U;
 #define Bias 1023
 #define Exp_1  0x3ff00000
 #define Exp_11 0x3ff00000
-#define Ebits 11
 #define Frac_mask  0xfffff
 #define Frac_mask1 0xfffff
 #define Ten_pmax 22
 #define Bletch 0x10
 #define Bndry_mask  0xfffff
-#define Bndry_mask1 0xfffff
-#define LSB 1
 #define Sign_bit 0x80000000
 #define Log2P 1
-#define Tiny0 0
-#define Tiny1 1
 #define Quick_max 14
 #define Int_max 14
 #ifndef NO_IEEE_Scale
@@ -323,31 +318,11 @@ typedef union { double d; ULong L[2]; } U;
 #endif
 #endif
 
-#ifndef Flt_Rounds
-#ifdef FLT_ROUNDS
-#define Flt_Rounds FLT_ROUNDS
-#else
-#define Flt_Rounds 1
-#endif
-#endif /*Flt_Rounds*/
-
-#ifdef Honor_FLT_ROUNDS
-#define Rounding rounding
-#undef Check_FLT_ROUNDS
-#define Check_FLT_ROUNDS
-#else
-#define Rounding Flt_Rounds
-#endif
-
 #else /* ifndef IEEE_Arith */
-#undef Check_FLT_ROUNDS
-#undef Honor_FLT_ROUNDS
 #undef SET_INEXACT
 #undef  Sudden_Underflow
 #define Sudden_Underflow
 #ifdef IBM
-#undef Flt_Rounds
-#define Flt_Rounds 0
 #define Exp_shift  24
 #define Exp_shift1 24
 #define Exp_msk1   0x1000000
@@ -357,23 +332,16 @@ typedef union { double d; ULong L[2]; } U;
 #define Bias 65
 #define Exp_1  0x41000000
 #define Exp_11 0x41000000
-#define Ebits 8 /* exponent has 7 bits, but 8 is the right value in b2d */
 #define Frac_mask  0xffffff
 #define Frac_mask1 0xffffff
 #define Bletch 4
 #define Ten_pmax 22
 #define Bndry_mask  0xefffff
-#define Bndry_mask1 0xffffff
-#define LSB 1
 #define Sign_bit 0x80000000
 #define Log2P 4
-#define Tiny0 0x100000
-#define Tiny1 0
 #define Quick_max 14
 #define Int_max 15
 #else /* VAX */
-#undef Flt_Rounds
-#define Flt_Rounds 1
 #define Exp_shift  23
 #define Exp_shift1 7
 #define Exp_msk1    0x80
@@ -383,18 +351,13 @@ typedef union { double d; ULong L[2]; } U;
 #define Bias 129
 #define Exp_1  0x40800000
 #define Exp_11 0x4080
-#define Ebits 8
 #define Frac_mask  0x7fffff
 #define Frac_mask1 0xffff007f
 #define Ten_pmax 24
 #define Bletch 2
 #define Bndry_mask  0xffff007f
-#define Bndry_mask1 0xffff007f
-#define LSB 0x10000
 #define Sign_bit 0x8000
 #define Log2P 1
-#define Tiny0 0x80
-#define Tiny1 0
 #define Quick_max 15
 #define Int_max 15
 #endif /* IBM, VAX */
@@ -405,20 +368,12 @@ typedef union { double d; ULong L[2]; } U;
 #endif
 
 #ifdef RND_PRODQUOT
-#define rounded_product(a,b) a = rnd_prod(a, b)
-#define rounded_quotient(a,b) a = rnd_quot(a, b)
 #ifdef KR_headers
 extern double rnd_prod(), rnd_quot();
 #else
 extern double rnd_prod(double, double), rnd_quot(double, double);
 #endif
-#else
-#define rounded_product(a,b) a *= b
-#define rounded_quotient(a,b) a /= b
 #endif
-
-#define Big0 (Frac_mask1 | Exp_msk1*(DBL_MAX_EXP+Bias-1))
-#define Big1 0xffffffff
 
 #ifndef Pack_32
 #define Pack_32
@@ -1225,7 +1180,6 @@ static CONSTANT double tinytens[] = { 1e-16, 1e-32, 1e-64, 1e-128,
   };
 /* The factor of 2^53 in tinytens[4] helps us avoid setting the underflow */
 /* flag unnecessarily.  It leads to a song and dance at the end of strtod. */
-#define Scale_Bit 0x10
 #define n_bigtens 5
 #else
 #ifdef IBM
@@ -1591,9 +1545,6 @@ d2a_dtoa
  Bigint *b, *b1, *delta, *mlo, *mhi, *S;
  double d2, ds, eps;
  char *s, *s0;
-#ifdef Honor_FLT_ROUNDS
- int rounding;
-#endif
 #ifdef SET_INEXACT
  int inexact, oldinexact;
 #endif
@@ -1640,15 +1591,6 @@ d2a_dtoa
 #ifdef SET_INEXACT
  try_quick = oldinexact = get_inexact();
  inexact = 1;
-#endif
-#ifdef Honor_FLT_ROUNDS
- if ((rounding = Flt_Rounds) >= 2) {
-  if (*sign)
-   rounding = rounding == 2 ? 0 : 2;
-  else
-   if (rounding != 2)
-    rounding = 0;
-  }
 #endif
 
  b = d2b(dval(d), &be, &bbits);
@@ -1740,11 +1682,7 @@ d2a_dtoa
   mode = 0;
 
 #ifndef SET_INEXACT
-#ifdef Check_FLT_ROUNDS
- try_quick = Rounding == 1;
-#else
  try_quick = 1;
-#endif
 #endif /*SET_INEXACT*/
 
  if (mode > 5) {
@@ -1778,11 +1716,6 @@ d2a_dtoa
     i = 1;
   }
  s = s0 = rv_alloc(i);
-
-#ifdef Honor_FLT_ROUNDS
- if (mode > 1 && rounding != 1)
-  leftright = 0;
-#endif
 
  if (ilim >= 0 && ilim <= Quick_max && try_quick) {
 
@@ -1900,13 +1833,6 @@ d2a_dtoa
   for(i = 1;; i++, dval(d) *= 10.) {
    L = (Long)(dval(d) / ds);
    dval(d) -= L*ds;
-#ifdef Check_FLT_ROUNDS
-   /* If FLT_ROUNDS == 2, L will usually be high by 1 */
-   if (dval(d) < 0) {
-    L--;
-    dval(d) += ds;
-    }
-#endif
    *s++ = '0' + (int)L;
    if (!dval(d)) {
 #ifdef SET_INEXACT
@@ -1915,13 +1841,6 @@ d2a_dtoa
     break;
     }
    if (i == ilim) {
-#ifdef Honor_FLT_ROUNDS
-    if (mode > 1)
-    switch(rounding) {
-      case 0: goto ret1;
-      case 2: goto bump_up;
-      }
-#endif
     dval(d) += dval(d);
     if (dval(d) > ds || dval(d) == ds && L & 1) {
  bump_up:
@@ -1984,9 +1903,6 @@ d2a_dtoa
 
  spec_case = 0;
  if ((mode < 2 || leftright)
-#ifdef Honor_FLT_ROUNDS
-   && rounding == 1
-#endif
     ) {
   if (!word1(d) && !(word0(d) & Bndry_mask)
 #ifndef Sudden_Underflow
@@ -2077,9 +1993,6 @@ d2a_dtoa
    Bfree(delta);
 #ifndef ROUND_BIASED
    if (j1 == 0 && mode != 1 && !(word1(d) & 1)
-#ifdef Honor_FLT_ROUNDS
-    && rounding >= 1
-#endif
            ) {
     if (dig == '9')
      goto round_9_up;
@@ -2104,13 +2017,6 @@ d2a_dtoa
 #endif
      goto accept_dig;
      }
-#ifdef Honor_FLT_ROUNDS
-    if (mode > 1)
-     switch(rounding) {
-      case 0: goto accept_dig;
-      case 2: goto keep_dig;
-      }
-#endif /*Honor_FLT_ROUNDS*/
     if (j1 > 0) {
      b = lshift(b, 1);
      j1 = cmp(b, S);
@@ -2123,10 +2029,6 @@ d2a_dtoa
     goto ret;
     }
    if (j1 > 0) {
-#ifdef Honor_FLT_ROUNDS
-    if (!rounding)
-     goto accept_dig;
-#endif
     if (dig == '9') { /* possible if i == 1 */
  round_9_up:
      *s++ = '9';
@@ -2135,9 +2037,6 @@ d2a_dtoa
     *s++ = dig + 1;
     goto ret;
     }
-#ifdef Honor_FLT_ROUNDS
- keep_dig:
-#endif
    *s++ = dig;
    if (i == ilim)
     break;
@@ -2165,13 +2064,6 @@ d2a_dtoa
    }
 
  /* Round off last digit */
-
-#ifdef Honor_FLT_ROUNDS
- switch(rounding) {
-   case 0: goto trimzeros;
-   case 2: goto roundoff;
-   }
-#endif
  b = lshift(b, 1);
  j = cmp(b, S);
  if (j > 0 || j == 0 && dig & 1) {
