@@ -593,3 +593,4 @@
 |`jsrc/verbs/vx.c`|xlog2sub|jtxlog2sub|`(^\|[ \t]+\|[^\d\w_])xlog2sub\((?=([^,]+?),([^)]+?)\))`|`\1jtxlog2sub(jt,`|
 |`jsrc/verbs/v2.c`|xprimeq|jtxprimeq|`(^\|[ \t]+\|[^\d\w_])xprimeq\((?=([^,]+?),([^)]+?)\))`|`\1jtxprimeq(jt,`|
 |`jsrc/representations/r.c`|xrep|jtxrep|`(^\|[ \t]+\|[^\d\w_])xrep\((?=([^,]+?),([^)]+?)\))`|`\1jtxrep(jt,`|
+|`jsrc/verbs/vx.c`|xroot|jtxroot|`(^\|[ \t]+\|[^\d\w_])xroot\((?=([^,]+?),([^)]+?)\))`|`\1jtxroot(jt,`|
