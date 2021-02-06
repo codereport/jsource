@@ -16,21 +16,6 @@
 #define __GNUC_PATCHLEVEL__ 1
 #endif
 
-#if defined(__aarch64__)||defined(_M_ARM64)
-#include <arm_neon.h>
-#endif
-
-#if defined(__arm__)
-#if defined(__ARM_NEON)
-#include <arm_neon.h>
-typedef double float64x2_t __attribute__ ((vector_size (16)));
-#else
-#include <stdint.h>
-typedef int64_t int64x2_t __attribute__ ((vector_size (16)));
-typedef double float64x2_t __attribute__ ((vector_size (16)));
-#endif
-#endif
-
 #ifndef SYS // include js.h only once - dtoa.c
 #include "js.h"
 #endif
