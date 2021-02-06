@@ -540,7 +540,7 @@ static A jtthorn1main(J jt,A w,A prxthornuni){PROLOG(0001);A z;
    z=rank2ex(w,prxthornuni,UNUSED_VALUE,MIN(AR(w),1L),0,MIN(AR(w),1L),0,BAV(prxthornuni)[0]&1?RoutineC:jttoutf8a);
    break;
   case BOXX:  z=jtthbox(jt,w,prxthornuni);                  break;
-  case SBTX:  z=thsb(w,prxthornuni);                   break;
+  case SBTX:  z=jtthsb(jt,w,prxthornuni);                   break;
   case NAMEX: z=jtsfn(jt,0,w);                  break;
   case ASGNX: z=spellout(CAV(w)[0]);         break;
   case INTX:  case FLX: case CMPXX:

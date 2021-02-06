@@ -970,7 +970,7 @@
 #define thorn1u(x)                  jtthorn1u(jt,(x))
 #define thq1(x)                     jtthq1(jt,(x))
 #define ths(x)                      jtths(jt,(x))
-#define thsb(x,y)                   jtthsb(jt,(x),(y))
+
 #define thv(x,y,z)                  jtthv(jt,(x),(y),(z))
 #define thx1(x)                     jtthx1(jt,(x))
 #define thxqe(x)                    jtthxqe(jt,(x))
