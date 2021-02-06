@@ -327,4 +327,4 @@ static A jtxrep(J jt,A a,A w){A h,*hv,*v,x,z,*zv;CW*u;I i,j,n,q[3],*s;V*wv;
  A jtlrx(J jt, A w){F1RANK(0,  jtlrx,UNUSED_VALUE); return lrep(  symbrdlocknovalerr(nfb(w)));}
  A jtprx(J jt, A w){F1RANK(0,  jtprx,UNUSED_VALUE); return prep(  symbrdlocknovalerr(nfb(w)));}
 
- A jtxrx(J jt,A a,A w){F2RANK(0,0,jtxrx,UNUSED_VALUE); return xrep(a,symbrdlock(nfb(w)));}  // 5!:7
+ A jtxrx(J jt,A a,A w){F2RANK(0,0,jtxrx,UNUSED_VALUE); return jtxrep(jt,a,symbrdlock(nfb(w)));}  // 5!:7
