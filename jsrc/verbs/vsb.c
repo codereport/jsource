@@ -31,7 +31,6 @@ typedef enum {
 #define LEFT(a)         NODEM(a,left)
 #define RIGHT(a)        NODEM(a,right)
 #define ORDER(a)        NODEM(a,order)
-#define INDEX(a)        NODEM(a,i)
 #define COLOR(a)        NODEM(a,color)
 #define DOWN(a)         NODEM(a,down)
 #define UP(a)           NODEM(a,up)

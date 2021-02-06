@@ -81,10 +81,6 @@ static A jtobqfslash(J jt,    A w,A self){A y,z;B b=0,p;C er,id,*wv;I c,d,k,m,m1
  return b?z:oblique(w,self);
 }    /* f//.y for atomic f */
 
-
-#define TYMESF(x)       {LD t=*u--*(LD)*v++; x=(I)t; BOV(t<IMIN||IMAX<t);}
-#define ACCUMF          {B p;I y; TYMESF(y); p=0>x; x+=y; BOV(p==0>y&&p!=0>x);}
-
 #define PMCASE(t,c,d)   (65536*(c)+256*(d)+(t))
 
 #define PMLOOP(Tw,Tz,zt,expr0,expr)  \
@@ -126,9 +122,7 @@ static A jtobqfslash(J jt,    A w,A self){A y,z;B b=0,p;C er,id,*wv;I c,d,k,m,m1
   case PMCASE(RATX, CPLUS,  CSTAR   ): PMLOOP(Q,Q,RAT,  x=qtymes(*u--,*v++), x=qplus(x,qtymes(*u--,*v++))); break;
   case PMCASE(INTX, CBW0110,CBW0001 ): PMLOOP(I,I,INT,  x=*u--&*v++, x^=*u--&*v++); break;
   case PMCASE(INTX, CPLUS,  CSTAR   ): 
-/*
-   er=0; PMLOOP(I,I,INT, TYMESF(x), ACCUMF);
-*/
+
   // here for +//.@(*/)
   {A a1,y;I*aa,i,*u,*ww=(I*)wv,*v,*yv,*zv;VA2 adocv; VARPS adocvsum;
    b=1;

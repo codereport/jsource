@@ -160,12 +160,4 @@ finmedxchg:  // exchanges if any are done, and xchgx0/xchgx1 are set
 #undef SORTQSCOPE
 #undef SORTQNAME
 #undef SORTQTYPE
-#undef SORTQSET256
-#undef SORTQTYPE256
-#undef SORTQCASTTOPD
 #undef SORTQAND256
-#undef SORTQCMP256
-#undef SORTQCMPTYPE 
-#undef SORTQMASKLOAD
-#undef SORTQULOAD
-#undef SORTQULOADTYPE

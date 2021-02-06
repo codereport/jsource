@@ -4,8 +4,6 @@
 /* Memory Management                                                       */
 
 
-#define __cdecl
-
 #include "j.h"
 
 #define ALIGNTOCACHE 0   // set to 1 to align each block to cache-line boundary.  Will reduce cache usage for headers
@@ -940,4 +938,3 @@ A jtexta(J jt,I t,I r,I c,I m){A z;I m1;
 
 // forcetomemory does nothing, but it does take an array as argument.  This will spook the compiler out of trying to assign parts of the array to registers.
 void forcetomemory(void * w){return; }
-
