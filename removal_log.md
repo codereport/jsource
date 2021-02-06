@@ -519,3 +519,4 @@
 |`jsrc/format/f.c`|thbox|jtthbox|`(^\|[ \t]+\|[^\d\w_])thbox\((?=([^,]+?),([^)]+?)\))`|`\1jtthbox(jt,`|
 |`jsrc/format/f.c`|thorn1main|jtthorn1main|`(^\|[ \t]+\|[^\d\w_])thorn1main\((?=([^,]+?),([^)]+?)\))`|`\1jtthorn1main(jt,`|
 |`jsrc/format/f.c`|thsb|jtthsb|`(^\|[ \t]+\|[^\d\w_])thsb\((?=([^,]+?),([^)]+?)\))`|`\1jtthsb(jt,`|
+|`jsrc/verbs/vt.c`|tk|jttk|`(^\|[ \t]+\|[^\d\w_])tk\((?=([^,]+?),([^)]+?)\))`|`\1jttk(jt,`|
