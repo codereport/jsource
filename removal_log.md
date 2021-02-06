@@ -537,3 +537,6 @@
 |`jsrc/adverbs/ai.c`|under|jtunder|`(^\|[ \t]+\|[^\d\w_])under\((?=([^,]+?),([^)]+?)\))`|`\1jtunder(jt,`|
 |`jsrc/jdlllic.c`|unlock2|jtunlock2|`(^\|[ \t]+\|[^\d\w_])unlock2\((?=([^,]+?),([^)]+?)\))`|`\1jtunlock2(jt,`|
 |`jsrc/xenos/xs.c`|unlock2|jtunlock2|`(^\|[ \t]+\|[^\d\w_])unlock2\((?=([^,]+?),([^)]+?)\))`|`\1jtunlock2(jt,`|
+|`jsrc/representations/r.c`|unparsem|jtunparsem|`(^\|[ \t]+\|[^\d\w_])unparsem\((?=([^,]+?),([^)]+?)\))`|`\1jtunparsem(jt,`|
+|`jsrc/representations/rl.c`|unparsem|jtunparsem|`(^\|[ \t]+\|[^\d\w_])unparsem\((?=([^,]+?),([^)]+?)\))`|`\1jtunparsem(jt,`|
+|`jsrc/representations/rt.c`|unparsem|jtunparsem|`(^\|[ \t]+\|[^\d\w_])unparsem\((?=([^,]+?),([^)]+?)\))`|`\1jtunparsem(jt,`|

@@ -1028,7 +1028,7 @@
 #define unparse(x)                  jtunparse(jt,(x))
 #define unparse1(x0,x1,x2,x3)       jtunparse1(jt,(x0),(x1),(x2),(x3))
 #define unparse1a(x,y,z)            jtunparse1a(jt,(x),(y),(z))
-#define unparsem(x,y)               jtunparsem(jt,(x),(y))
+
 #define unquote(x,y,z)              jtunquote(jt,(x),(y),(z))
 #define unstackcv(x)                jtunstackcv(jt,(x))
 #define unwordil(x,y,z)             jtunwordil(jt,(x),(y),(z))

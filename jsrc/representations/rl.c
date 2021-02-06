@@ -292,7 +292,7 @@ static A jtlinsert(J jt,A a,A w,A *ltext){F1PREFIP;A*av,f,g,h,t,t0,t1,t2,*u,y;B 
 
 // create linear rep for m : n
 static A jtlcolon(J jt,A w,A *ltext){F1PREFIP;A*v,x,y;C*s,*s0;I m,n;
- RZ(y=unparsem(num(1),w));
+ RZ(y=jtunparsem(jt,num(1),w));
  n=AN(y); v=AAV(y); RZ(x=lrr(VAV(w)->fgh[0]));
  if(2>n||2==n&&1==AN(v[0])&&':'==CAV(v[0])[0]){
   if(!n)return over(x,jtstr(jt,5L," : \'\'"));
