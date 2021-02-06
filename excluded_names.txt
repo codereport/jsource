@@ -27,3 +27,4 @@ remid
 roll2
 rollany
 xbin
+xcompare
