@@ -1072,7 +1072,7 @@
 #define words(x)                    jtwords(jt,(x),ds(CWORDS))
 #define x10(x)                      jtx10(jt,(x))
 #define xbin(x,y)                   jtxbin(jt,(x),(y))
-#define xbinp(x,y)                  jtxbinp(jt,(x),(y))
+
 #define xc(x)                       jtxc(jt,(x))
 #define xco1(x)                     jtxco1(jt,(x))
 #define xcompare(x,y)               jtxcompare(jt,(x),(y))

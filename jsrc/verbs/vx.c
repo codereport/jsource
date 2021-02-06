@@ -389,11 +389,11 @@ static X jtxbinp(J jt,X a,X w){PROLOG(0098);D m;I i,n;X c,d,p,q,r,s;
   case 1: /* 0 0 1 */ 
   case 4: /* 1 0 0 */ 
   case 7: /* 1 1 1 */  return iv0;
-  case 0: /* 0 0 0 */  return rifvsdebug(xbinp(a,w));
+  case 0: /* 0 0 0 */  return rifvsdebug(jtxbinp(jt,a,w));
   case 3: /* 0 1 1 */  
-   z=xbinp(a,xminus(a,xplus(w,iv1)));           return rifvsdebug(AV(a)[0]&1?negate(z):z);
+   z=jtxbinp(jt,a,xminus(a,xplus(w,iv1)));           return rifvsdebug(AV(a)[0]&1?negate(z):z);
   case 6: /* 1 1 0 */  
-   z=xbinp(xminus(xc(-1L),w),xminus(xc(-1L),a)); return rifvsdebug(AV(d)[0]&1?negate(z):z);
+   z=jtxbinp(jt,xminus(xc(-1L),w),xminus(xc(-1L),a)); return rifvsdebug(AV(d)[0]&1?negate(z):z);
  }
 }
 
