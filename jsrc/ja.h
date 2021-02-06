@@ -1122,7 +1122,7 @@
 #define zasinh(x)                   jtzasinh(jt,(x))
 #define zatan(x)                    jtzatan(jt,(x))
 #define zatanh(x)                   jtzatanh(jt,(x))
-#define zbin(x,y)                   jtzbin(jt,(x),(y))
+
 #define zceil(x)                    jtzceil(jt,(x))
 #define zcir(x,y)                   jtzcir(jt,(x),(y))
 #define zconjug(x)                  jtzconjug(jt,(x))

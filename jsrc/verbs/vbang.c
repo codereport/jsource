@@ -151,7 +151,7 @@ static Z jtbinzz(J jt,Z x,Z y){B id,ix,iy;D rd,rx,ry;Z d;
   default: ZASSERT(0,EVSYSTEM);
   case 5: /* 1 0 1 */  /* Impossible */
   case 0: /* 0 0 0 */
-  case 2: /* 0 1 0 */  return zbin(x,y);
+  case 2: /* 0 1 0 */  return jtzbin(jt,x,y);
   case 3: /* 0 1 1 */  return zrj0((MOD2(rx)?-1:1)*ibin(rx,rx-ry-1));
   case 6: /* 1 1 0 */  return zrj0((MOD2(rd)?-1:1)*ibin(-1-ry,-1-rx));
   case 1: /* 0 0 1 */ 
