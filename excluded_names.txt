@@ -38,3 +38,4 @@ xtymes
 zcir
 zdiv
 zeq
+zgcd
