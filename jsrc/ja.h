@@ -1008,7 +1008,7 @@
 #define treach(x)                   jttreach(jt,(x))
 #define trep(x)                     jttrep(jt,(x))
 #define tridiag(x,y,z)              jttridiag(jt,(x),(y),(z))
-#define troot(x,y)                  jttroot(jt,(x),(y))
+
 #define trr(x)                      jttrr(jt,(x))
 #define tryinit(x,y,z)              jttryinit(jt,(x),(y),(z))
 #define ts(x)                       jtts(jt,(x))

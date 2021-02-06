@@ -530,3 +530,4 @@
 |`jsrc/parsing/pv.c`|tokens|jttokens|`(^\|[ \t]+\|[^\d\w_])tokens\((?=([^,]+?),([^)]+?)\))`|`\1jttokens(jt,`|
 |`jsrc/xenos/xu.c`|toutf8a|jttoutf8a|`(^\|[ \t]+\|[^\d\w_])toutf8a\((?=([^,]+?),([^)]+?)\))`|`\1jttoutf8a(jt,`|
 |`jsrc/m.c`|traverse|jttraverse|`(^\|[ \t]+\|[^\d\w_])traverse\((?=([^,]+?),([^)]+?)\))`|`\1jttraverse(jt,`|
+|`jsrc/representations/rt.c`|troot|jttroot|`(^\|[ \t]+\|[^\d\w_])troot\((?=([^,]+?),([^)]+?)\))`|`\1jttroot(jt,`|

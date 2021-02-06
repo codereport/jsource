@@ -116,7 +116,7 @@ static A jttconnect(J jt, A w){A*wv,x,y,z;B b,d;C c,*u,*xv,*yv,*zv;I e,i,j,m,n,p
 
 EVERYFS(trrself,jttrr,0,0,VFLAGNONE)
 
-static A jttreach(J jt, A w){return troot(scc('0'),graft(ope(jtevery(jt,w,(A)&trrself))));}
+static A jttreach(J jt, A w){return jttroot(jt,scc('0'),graft(ope(jtevery(jt,w,(A)&trrself))));}
 
 static A jttrr(J jt, A w){PROLOG(0058);A hs,s,t,*x,z;B ex,xop;C id;I fl,*hv,m;V*v;
  if(!w) return 0;
@@ -134,8 +134,8 @@ static A jttrr(J jt, A w){PROLOG(0058);A hs,s,t,*x,z;B ex,xop;C id;I fl,*hv,m;V*
  if(1<m)RZ(x[1]=incorp(fl&VGERR?treach(jtfxeach(jt,gs,(A)&jtfxself[0])):ex?trr(unparsem(num(0),w)):trr(gs)));
  if(2<m)RZ(x[2]=incorp(trr(hs)));
  s=xop?spellout('0'):fl&VDDOP?(hv=AV(hs),over(thorn1(sc(hv[0])),over(spellout(id),thorn1(sc(hv[1]))))):spellout(id);
- z=troot(s,graft(ope(t)));
+ z=jttroot(jt,s,graft(ope(t)));
  EPILOG(z);
 }
 
- A jttrep(J jt, A w){PROLOG(0059); A z=tconnect(troot(mtv,trr(w))); EPILOG(z);}
+ A jttrep(J jt, A w){PROLOG(0059); A z=tconnect(jttroot(jt,mtv,trr(w))); EPILOG(z);}
