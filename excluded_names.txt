@@ -44,3 +44,4 @@ zminus
 zplus
 zpow
 zrem
+ztymes
