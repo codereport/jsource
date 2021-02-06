@@ -122,7 +122,7 @@
  return mtv;
 }
 
- A jtposq(J jt, A w){ASSERTMTV(w); return v2(jt->pos[0],jt->pos[1]);}
+ A jtposq(J jt, A w){ASSERTMTV(w); return jtv2(jt,jt->pos[0],jt->pos[1]);}
 
  A jtposs(J jt, A w){I n,p,q,*v;
  RZ(w=vi(w));

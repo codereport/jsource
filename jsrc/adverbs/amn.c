@@ -56,14 +56,14 @@ static A jtzpadn(J jt,A z,A ind,B ip){A a,ai,i1,p,p1,q,t,x,x0,y,y0,y1;B*b;I c,d,
  n=1; h=*(AS(ind)+AR(ind)-1);
  RZ(ai=IX(h));
  RZ(t=jteps(jt,ai,a)); b=BAV(t); d=0; DO(h, if(b[i])++d;);
- RZ(i1=d<h?jtrepeatr(jt,t,ind):ind); if(2!=AR(ind))RZ(i1=d?jtreshape(jt,v2(AN(i1)/d,d),i1):mtm);
+ RZ(i1=d<h?jtrepeatr(jt,t,ind):ind); if(2!=AR(ind))RZ(i1=d?jtreshape(jt,jtv2(jt,AN(i1)/d,d),i1):mtm);
  RZ(t=gt(sc(h),a)); RZ(y1=all1(t)?y:jtrepeatr(jt,t,y));
  RZ(p=nub(jtless(jt,i1,y1)));
  if(c=AN(a)-d){
   RZ(t=jtfrom(jt,jtless(jt,a,ai),shape(z))); RZ(p1=odom(2L,c,AV(t))); n=*AS(p1);
-  if(m=*AS(p))RZ(p=jtstitch(jt,jtrepeat(jt,sc(n),p),jtreshape(jt,v2(n*m,c),p1)));
+  if(m=*AS(p))RZ(p=jtstitch(jt,jtrepeat(jt,sc(n),p),jtreshape(jt,jtv2(jt,n*m,c),p1)));
   RZ(t=nub(jtrepeat(jt,jteps(jt,y1,i1),y1)));
-  RZ(t=jtstitch(jt,jtrepeat(jt,sc(n),t),jtreshape(jt,v2(n**AS(t),c),p1)));
+  RZ(t=jtstitch(jt,jtrepeat(jt,sc(n),t),jtreshape(jt,jtv2(jt,n**AS(t),c),p1)));
   RZ(t=jtless(jt,t,y));
   if(AN(t))RZ(p=over(p,t));
  }

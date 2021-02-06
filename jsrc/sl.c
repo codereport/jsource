@@ -147,7 +147,7 @@ B jtsymbinit(J jt){A q;
 }
 
 
- A jtlocsizeq(J jt, A w){C*v; ASSERTMTV(w); v=jt->locsize; return v2(v[0],v[1]);}
+ A jtlocsizeq(J jt, A w){C*v; ASSERTMTV(w); v=jt->locsize; return jtv2(jt,v[0],v[1]);}
      /* 9!:38 default locale size query */
 
  A jtlocsizes(J jt, A w){I p,q,*v;

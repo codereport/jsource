@@ -1036,7 +1036,7 @@
 #define upon2(x,y,z)                jtupon2(jt,(x),(y),(z))
 #define usebs(x,y,z)                jtusebs(jt,(x),(y),(z))
 
-#define v2(x,y)                     jtv2(jt,(x),(y))
+
 #define va1(x,y)                    jtva1(jt,(x),(y))
 #define va1s(x0,x1,x2,x3)           jtva1s(jt,(x0),(x1),(x2),(x3))
 #define var(x0,x1,x2)               jtvar(jt,(x0),(x1),(x2))

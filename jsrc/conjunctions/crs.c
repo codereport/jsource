@@ -19,7 +19,7 @@ static A jtsprinit(J jt,I f,I r,I*s,I t,P*p){A a,a1,z;I n,*u,*v;P*zp;
  a=SPA(p,a); n=AN(a)-f; u=f+AV(a); GATV0(a1,INT,n,1); v=AV(a1); DO(n, v[i]=u[i]-f;);
  SPB(zp,a,a1);
  SPB(zp,e,ca(SPA(p,e)));
- SPB(zp,i,iota(v2(0L,n)));  // empty so cannot be readonly
+ SPB(zp,i,iota(jtv2(jt,0L,n)));  // empty so cannot be readonly
  SPB(zp,x,jtrepeat(jt,num(0),SPA(p,x)));
  return z;
 }    /* initialize an argument cell */

@@ -44,7 +44,7 @@ static A jtgraft(J jt, A w){A p,q,t,*u,x,y,z,*zv;C*v;I d,j,k,m,n,*pv,*s,xn,*xv,y
  RZ(t=trc(w)); u=AAV(t);
  x=u[0]; xn=AN(x); xv=AV(x); m=0; DO(xn,m+=xv[i];);
  y=u[1]; yn=AN(y); yv=AV(y);
- RZ(p=v2(0L,0L));  pv=AV(p);
+ RZ(p=jtv2(jt,0L,0L));  pv=AV(p);
  GATV0(z,BOX,yn,1); zv=AAV(z);
  u=AAV(w);
  for(j=0;j<yn;++j){

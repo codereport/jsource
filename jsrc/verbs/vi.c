@@ -1418,7 +1418,7 @@ A jtindexofprehashed(J jt,A a,A w,A hs){A h,hi,*hv,x,z;AF fn;I ar,*as,at,c,f1,k,
 // = y    
  A jtsclass(J jt, A w){A e,x,xy,y,z;I c,j,m,n,*v;P*p;
  // If w is scalar, return 1 1$1
- if(!AR(w))return jtreshape(jt,v2(1L,1L),num(1));
+ if(!AR(w))return jtreshape(jt,jtv2(jt,1L,1L),num(1));
  SETIC(w,n);   // n=#items of y
  RZ(x=jtindexof(jt,w,w));   // x = i.~ y
  // if w is dense, return ((x = i.n) # x) =/ x
@@ -1431,7 +1431,7 @@ A jtindexofprehashed(J jt,A a,A w,A hs){A h,hi,*hv,x,z;AF fn;I ar,*as,at,c,f1,k,
  m=j=-1; DQ(c, if(j!=*v){j=*v; ++m;} *v=m; v+=2;);
  GASPARSE(z,SB01,1,2,(I*)0);  v=AS(z); v[0]=1+m; v[1]=n;
  p=PAV(z); 
- SPB(p,a,v2(0L,1L));
+ SPB(p,a,jtv2(jt,0L,1L));
  SPB(p,e,num(0));
  SPB(p,i,xy);
  SPB(p,x,jtreshape(jt,sc(c),num(1)));

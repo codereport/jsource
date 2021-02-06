@@ -184,7 +184,7 @@ A jtsparseit(J jt,A w,A a,A e){PROLOG(0091);A ax,c,x,y,z;B b,*cv;I cm,cn,m,n,r,*
   RZ(x=jtreshape(jt,vec(INT,j,u),jtcant2(jt,increm(dgrade1(p)),x)));
   RZ(q=__not(irs2(x,jtreshape(jt,vec(INT,AR(x)-1,1+AS(x)),e),0L,-1L,RMAX,jtmatch)));
   SPBV(zp,x,x,jtrepeat(jt,q,x));
-  RZ(y=jtstitch(jt,jtrepeat(jt,sc(c),y),jtreshape(jt,v2(c*m,k),jtabase2(jt,vec(INT,k,v),IX(c)))));
+  RZ(y=jtstitch(jt,jtrepeat(jt,sc(c),y),jtreshape(jt,jtv2(jt,c*m,k),jtabase2(jt,vec(INT,k,v),IX(c)))));
   RZ(p=grade1(over(a,jtless(jt,a1,a))));
   if(equ(p,IX(AN(p))))SPB(zp,i,jtrepeat(jt,q,y))
   else{y=jtfromr(jt,p,jtrepeat(jt,q,y)); q=grade1(y); SPB(zp,i,jtfrom(jt,q,y)); SPB(zp,x,jtfrom(jt,q,x));}
@@ -200,7 +200,7 @@ A jtsparseit(J jt,A w,A a,A e){PROLOG(0091);A ax,c,x,y,z;B b,*cv;I cm,cn,m,n,r,*
   GATV0(q,INT,1+r,1); u=AV(q);
   j=0; v=AV(a); pv=BAV(p); DO(AN(p), if(!pv[i])u[j++]=ws[v[i]];); 
   RE(jtprod(jt,j,u)); u[j]=k=1; DQ(c-d, --j; u[j]=k*=u[j];);
-  RZ(q=jtpdt(jt,jttake(jt,v2(m,d-c),y),vec(INT,c-d,1+u))); iv=AV(q);
+  RZ(q=jtpdt(jt,jttake(jt,jtv2(jt,m,d-c),y),vec(INT,c-d,1+u))); iv=AV(q);
   RZ(p=over(jtless(jt,a,a1),jtdaxis(jt,r,a))); v=AV(p);
   *u=n; j=1; DQ(AN(p), u[j++]=ws[*v++];); RE(h=jtprod(jt,1+r-d,u));
   GA(x1,AT(x),h,1+r-d,u);                       t=CAV(x1); s=CAV(x);

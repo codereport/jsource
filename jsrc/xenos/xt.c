@@ -31,7 +31,7 @@
  A jtsphwmk(J jt, A w){
   I curr = jt->malloctotal; I hwmk = jt->malloctotalhwmk;
   if(AN(w)){I new; RE(new=i0(w)); jt->malloctotalhwmk=new;}
-  return v2(curr,hwmk);
+  return jtv2(jt,curr,hwmk);
 }
 
  A jtspit(J jt, A w){A z;I k; 

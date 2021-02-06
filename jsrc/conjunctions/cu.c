@@ -255,8 +255,8 @@ static A jtunderh20(J jt,A a,A w,A self){return jtrank2ex0(jt,a,w,self,jtunderh2
 
 static A jtunderai1(J jt,    A w,A self){DECLF;A x,y,z;B b;I j,n,*u,*v;UC f[256],*wv,*zv;
  if(b=LIT&AT(w)&&256<AN(w)){  // long w.  run on all bytecodes, as i. 128 2  and i. 8 32
-        df1(x,iota(v2(128L, 2L)),fs); b=x&&256==AN(x)&&NUMERIC&AT(x);
-  if(b){df1(y,iota(v2(  8L,32L)),fs); b=y&&256==AN(y)&&NUMERIC&AT(y);}
+        df1(x,iota(jtv2(jt,128L, 2L)),fs); b=x&&256==AN(x)&&NUMERIC&AT(x);
+  if(b){df1(y,iota(jtv2(jt,  8L,32L)),fs); b=y&&256==AN(y)&&NUMERIC&AT(y);}
   if(b){x=vi(x); y=vi(y); b=x&&y;} 
   if(b){u=AV(x); v=AV(y); DO(256, j=*u++; if(j==*v++&&BETWEENO(j,-256,256))f[i]=(UC)(j&255); else{b=0; break;});}  // verify both results the same & in bounds
   if(jt->jerr)RESETERR;
@@ -311,8 +311,8 @@ static A jtunderai1(J jt,    A w,A self){DECLF;A x,y,z;B b;I j,n,*u,*v;UC f[256]
  if(gside<0){h=jtamp(jt,a,wvb); rlr=rrr=rmr;  // normal case, f&g"mg
  }else{
   f1=jtdomainerr1;  // monad not allowed with gerund v
-  if(gside==0){rlr=rmr; rrr=(RANKT)FAV(a)->lrr; h=qq(swap(jthook(jt,swap(a),wvb)),v2(rlr,rrr));  // (f~ g)~"mw rf
-  }else{rlr=FAV(a)->lrr>>RANKTX; rrr=rmr; h=qq(jthook(jt,a,wvb),v2(rlr,rrr));  // (f g)"lf mg
+  if(gside==0){rlr=rmr; rrr=(RANKT)FAV(a)->lrr; h=qq(swap(jthook(jt,swap(a),wvb)),jtv2(jt,rlr,rrr));  // (f~ g)~"mw rf
+  }else{rlr=FAV(a)->lrr>>RANKTX; rrr=rmr; h=qq(jthook(jt,a,wvb),jtv2(jt,rlr,rrr));  // (f g)"lf mg
   }
  }
  ASSERT(h!=0,EVDOMAIN);

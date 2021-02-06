@@ -366,7 +366,7 @@ static X jtxbinp(J jt,X a,X w){PROLOG(0098);D m;I i,n;X c,d,p,q,r,s;
   RZ(p=jtless(jt,ravel(factor(apv(n,(I)m,-1L))),zeroionei(0)));
   RZ(q=jtless(jt,ravel(factor(apv(n,1L,   1L))),zeroionei(0)));
   c=over(p,q);
-  d=jtrepeat(jt,v2(AN(p),AN(q)),v2(1L,-1L));
+  d=jtrepeat(jt,jtv2(jt,AN(p),AN(q)),jtv2(jt,1L,-1L));
   A z=xev1(jtrepeat(jt,ev2(c,d,"+//."),nub(c)),"*/");
   EPILOGNOVIRT(z);
  }else{

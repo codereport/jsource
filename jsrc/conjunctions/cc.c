@@ -240,7 +240,7 @@ static A jtcut2bx(J jt,A a,A w,A self){A*av,b,t,x,*xv,y,*yv;B*bv;I an,bn,i,j,m,p
  }
  RZ(x=ope(catalog(x)));
  RZ(y=ope(catalog(y)));
- if(AN(x)){RZ(IRS2(x,y,0L,1L,1L,jtlamin2,t));}else{RZ(t=iota(apip(shape(x),v2(2L,0L))));}
+ if(AN(x)){RZ(IRS2(x,y,0L,1L,1L,jtlamin2,t));}else{RZ(t=iota(apip(shape(x),jtv2(jt,2L,0L))));}
  return cut02(t,w,self);
 }    /* a f;.n w for boxed a, with special code for matrix w */
 
@@ -889,7 +889,7 @@ static A jttess2(J jt,A a,A w,A self){A z,zz=0,virtw,strip;I n,rs[3],cellatoms,c
   // the tessellation lacking the first two axes.  Unfortunately this differs considerably between ;.3 and ;._3
   // The ;._3 cut is pretty efficient, moving the data only once per pair of axes added.  The ;.3 cut creates argument cells, which
   // is inefficient; but that case will be very rare
-  next2=qq(jtamp(jt,jtdrop(jt,v2(0,2),a),jtcut(jt,ds((((4-axisct)|n)<0)?CRIGHT:CBOX),sc(n^256^(inrecursion>>1)))),num(-2));  // RIGHT if n<0 or axisct>4
+  next2=qq(jtamp(jt,jtdrop(jt,jtv2(jt,0,2),a),jtcut(jt,ds((((4-axisct)|n)<0)?CRIGHT:CBOX),sc(n^256^(inrecursion>>1)))),num(-2));  // RIGHT if n<0 or axisct>4
   if(n<0){
    // ;._3, the more usual and faster case
    // we will recur on ((0 2}.x)&(];.n)"_2 to build up _2-cells of the final result.  To save a smidgen, we will suppress the final
@@ -912,9 +912,9 @@ static A jttess2(J jt,A a,A w,A self){A z,zz=0,virtw,strip;I n,rs[3],cellatoms,c
   }else{
    // ;.3.  The cells coming out of the lower tessellations may have dissimilar shape so we have to box them
    // If the next level is the last, it becomes (0 2}.x)&(<;.n)"_2  - adding one boxing level.  Otherwise use ] instead of < above
-   next2=qq(jtamp(jt,jtdrop(jt,v2(0,2),a),jtcut(jt,ds(CBOX),sc(n^256^(inrecursion>>1)))),num(-2));
+   next2=qq(jtamp(jt,jtdrop(jt,jtv2(jt,0,2),a),jtcut(jt,ds(CBOX),sc(n^256^(inrecursion>>1)))),num(-2));
    // collect the components that contribute to a single input-to-u, one box for each : (<@:>"2)@:(0 1&|:)@:next2
-   next2=jtatco(jt,atco(qq(jtatco(jt,ds(CBOX),ds(COPE)),num(2)),jtamp(jt,v2(0,1),ds(CCANT))),next2);
+   next2=jtatco(jt,atco(qq(jtatco(jt,ds(CBOX),ds(COPE)),num(2)),jtamp(jt,jtv2(jt,0,1),ds(CCANT))),next2);
    if(!inrecursion){
     // at the top level, add on u@>
     next2=jtatco(jt,jtatop(jt,fs,ds(COPE)),next2);
@@ -1025,7 +1025,7 @@ static A jttess2(J jt,A a,A w,A self){A z,zz=0,virtw,strip;I n,rs[3],cellatoms,c
    if(state&(STATEREFLECTX|STATEREFLECTY|STATETAKE)){  // something might be truncated/reflected
     I vkeep=vkeep1-(vtrunc-vi)*vmv; vkeep=(vkeep>vsz)?vsz:vkeep; // vertical length to keep
     if(((vkeep-vsz)|(hkeep-hsz))<0){   // if either axis must be shortened...
-     RZ(opcell=jttake(jt,(hkeep-hsz)>=0?sc(vkeep):v2(vkeep,hkeep),virtw));
+     RZ(opcell=jttake(jt,(hkeep-hsz)>=0?sc(vkeep):jtv2(jt,vkeep,hkeep),virtw));
     }
     if(state&STATEREFLECTY)RZ(opcell=reverse(opcell));  // reverse vertical
     if(state&STATEREFLECTX)RZ(opcell=df1(z,opcell,qq(ds(CREV),num(-1))));  // reverse horizontal

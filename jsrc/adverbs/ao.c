@@ -650,7 +650,7 @@ static A jtkeytally(J jt,A a,A w,A self){F2PREFIP;PROLOG(0016);A z,q;I at,j,k,n,
  ASSERT(n==SETIC(w,k),EVLENGTH);
  if(!AN(a))return vec(INT,!!n,&AS(a)[0]);  // handle case of empties - a must have rank, so use AS[0] as  proxy for n
  if((at&SPARSE)!=0)return keytallysp(a);
- if((-n&SGNIF(at,B01X)&(AR(a)-2))<0){B*b=BAV(a); k=bsum(n,b); return BETWEENO(k,1,n)?v2(*b?k:n-k,*b?n-k:k):vci(n);}  // nonempty rank<2 boolean a, just add the 1s
+ if((-n&SGNIF(at,B01X)&(AR(a)-2))<0){B*b=BAV(a); k=bsum(n,b); return BETWEENO(k,1,n)?jtv2(jt,*b?k:n-k,*b?n-k:k):vci(n);}  // nonempty rank<2 boolean a, just add the 1s
  A ai;  // result from classifying a
  RZ(ai=indexofsub(IFORKEY,a,a));   // self-classify the input using ct set before this verb
  // indexofsub has 2 returns: most of the time, it returns a normal i.-family result, but with each slot holding the index PLUS the number of values

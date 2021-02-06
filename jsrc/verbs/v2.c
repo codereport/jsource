@@ -570,7 +570,7 @@ static B jtecm_s1(J jt,X n,X a,X b,I b1,X*q,X*z){A tt;D d,lg;I dd,m,*pv;X x[3];
 }
 
 static B jtecm_s2(J jt,X n,X a,X b,I b1,I b2,X*q,X*z){A sda,tt;I d,di,i,k,m,p0,*pd,*v;X*s1,*sd,*sd0,*sdd,*t,x[3];
- RZ(tt=plt(v2(b1,b2))); v=AV(tt); m=(v[1]-v[0])-1;
+ RZ(tt=plt(jtv2(jt,b1,b2))); v=AV(tt); m=(v[1]-v[0])-1;
  RZ(tt=prime1(apv(1+m,v[0],1L))); pd=v=AV(tt); p0=*v;
  d=0; DQ(m, v[0]=k=-1+((v[1]-v[0])>>1); ++v; d=MAX(d,k);); ++d; d=MIN(100,d);
  GATV0(sda,XNUM,3*d,2); sd0=sd=XAV(sda); v=AS(sda); v[0]=d; v[1]=3;
@@ -623,7 +623,7 @@ static A jtxfactor(J jt, A w){PROLOG(0064);A st,z;B b=0;I k,m;X g,*sv,*sv0,x;
   if(xprimeq(100L,x)){RZ(z=apip(z,scx(x))); continue;}
   RZ(g=pollard_p_1(x)); if(g!=iv1){*sv++=g; RZ(*sv++=xdiv(x,g,XMFLR)); continue;}
   RZ(g=pollard_rho(x)); if(g!=iv1){*sv++=g; RZ(*sv++=xdiv(x,g,XMFLR)); continue;}
-  if(!b){b=1; RZ(rngseeds(sc(jt->rngS[jt->rng]))); RZ(roll(v2(m,m*m)));} 
+  if(!b){b=1; RZ(rngseeds(sc(jt->rngS[jt->rng]))); RZ(roll(jtv2(jt,m,m*m)));} 
   RZ(g=fac_ecm(x));     if(g!=iv1){*sv++=g; RZ(*sv++=xdiv(x,g,XMFLR)); continue;}
   ASSERT(0,EVNONCE);
  }

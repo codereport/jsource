@@ -922,7 +922,7 @@ void dllquit(J jt){CCT*av;I j,*v;
      /* 15!:5 */
 
 /* return error info from last cd domain error - resets to DEOK */
- A jtcder(J jt, A w){I t; ASSERTMTV(w); t=jt->dlllasterror; jt->dlllasterror=DEOK; return v2(t&0xff,t>>8);}
+ A jtcder(J jt, A w){I t; ASSERTMTV(w); t=jt->dlllasterror; jt->dlllasterror=DEOK; return jtv2(jt,t&0xff,t>>8);}
      /* 15!:10 */
 
 /* return errno info from last cd with errno not equal to 0 - resets to 0 */

@@ -94,7 +94,7 @@ static A jtscuba(J jt,A z,A i1,B u){A*iv,q=0,x;I c,d,j,n,*s,*v;P*zp;
   if(x==ds(CACE))RZ(x=IX(s[v[j]]))else{if(1<AR(x))RZ(x=ravel(x)); if(u)RZ(x=nub(x));}
   c=AN(x); 
   if(q){d=*AS(q); RZ(q=jtstitch(jt,jtrepeat(jt,sc(d),x),jtreitem(jt,sc(c*d),q)));}
-  else RZ(q=jtreshape(jt,v2(c,1L),x));
+  else RZ(q=jtreshape(jt,jtv2(jt,c,1L),x));
  }
  return q;
 }    /* index cube relative to sparse axes; 1=u iff unique (remove duplicates) */
@@ -118,7 +118,7 @@ static A jtscubc(J jt,A z,A i1,A p){A a,q,s,y,y1;B*qv;I c,d,h,j=-1,m,n,*sv,*u,*v
  GATV0(s,INT,h,1); sv=AV(s); 
  d=1; u=AS(z); v=AV(a); DO(h, d*=sv[i]=u[v[n+i]];);
  RZ(y=jtrepeat(jt,p,SPA(zp,i))); m=*AS(y);
- RZ(y1=jttake(jt,v2(m,n),y)); v=AV(y1);
+ RZ(y1=jttake(jt,jtv2(jt,m,n),y)); v=AV(y1);
  GATV0(q,B01,m,1); qv=BAV(q);
  if(m){memset(qv,C0,m); DO(m-1, if(ICMP(v,v+n,n)){if(d>i-j)qv[i]=1; j=i;} v+=n;); if(d>(m-1)-j)qv[m-1]=1;}
  RZ(y1=jtrepeat(jt,q,y1)); c=*AS(y1);

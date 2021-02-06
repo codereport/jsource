@@ -41,7 +41,7 @@ static A jtrotsp(J jt,A a,A w){PROLOG(0071);A q,x,y,z;B bx,by;I acr,af,ar,*av,d,
  ASSERT(!jt->fill,EVNONCE);
  ar=AR(a); acr=jt->ranks>>RANKTX; acr=ar<acr?ar:acr; af=ar-acr; p=acr?*(af+AS(a)):1;
  wr=AR(w); wcr=(RANKT)jt->ranks; wcr=wr<wcr?wr:wcr; wf=wr-wcr; RESETRANK;
- if(1<acr||af)return df2(z,a,w,qq(qq(ds(CROT),v2(1L,RMAX)),v2(acr,wcr)));
+ if(1<acr||af)return df2(z,a,w,qq(qq(ds(CROT),jtv2(jt,1L,RMAX)),jtv2(jt,acr,wcr)));
  if(!wcr&&1<p){RZ(w=jtreshape(jt,over(shape(w),apv(p,1L,0L)),w)); wr=wcr=p;}
  ASSERT(!wcr||p<=wcr,EVLENGTH);
  s=AS(w);
@@ -98,7 +98,7 @@ static void jtrot(J jt,I m,I d,I n,I atomsize,I p,I*av,C*u,C*v){I dk,e,k,j,r,x,y
  RZ(a=vi(a));
  // special case: if a is atomic 0, and cells of w are not atomic
  if((wcr!=0)&(((ar|IAV(a)[0])==0)))return RETARG(w);   // 0 |. y, return y
- if(((1-acr)|((-af)&(-acr|(wf-1))))<0)return df2(z,a,w,qq(qq(ds(CROT),v2(1L,RMAX)),v2(acr,wcr)));  // if multiple a-lists per cell, or a has frame and (a cell is not an atom or w has frame) handle rank by using " for it
+ if(((1-acr)|((-af)&(-acr|(wf-1))))<0)return df2(z,a,w,qq(qq(ds(CROT),jtv2(jt,1L,RMAX)),jtv2(jt,acr,wcr)));  // if multiple a-lists per cell, or a has frame and (a cell is not an atom or w has frame) handle rank by using " for it
  if(((wcr-1)&(1-p))<0){RZ(w=jtreshape(jt,apip(shape(w),apv(p,1L,0L)),w)); wr=wcr=p;}  // if cell is an atom, extend it up to #axes being rotated   !wcr && p>1
  ASSERT(((-wcr)&(wcr-p))>=0,EVLENGTH);    // !wcr||p<=wcr  !(wcr&&p>wcr)
  av=AV(a);
