@@ -26,7 +26,7 @@ static const TA zz={0,0};
 
 // Returns AM(z) 1 if monad, 0 if dyad
 static A jtvtokens(J jt, A w){A t,*y,z;I n,*s;TA*x;
- RZ(t=tokens(vs(w),0)); n=AN(t); y=AAV(t);
+ RZ(t=jttokens(jt,vs(w),0)); n=AN(t); y=AAV(t);
  I tmonad=1; 
  GATV0(z,BOX,WTA*(5+n),2); s=AS(z); *s++=5+n; *s=WTA;
  x=(TA*)AV(z);

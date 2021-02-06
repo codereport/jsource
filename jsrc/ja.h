@@ -983,7 +983,7 @@
 
 #define toc2(x)                     jttoc2(jt,(x))
 #define toc2e(x)                    jttoc2e(jt,(x))
-#define tokens(x,y)                 jttokens(jt,(x),(y))
+
 #define totient(x)                  jttotient(jt,(x))
 #define toutf8(x)                   jttoutf8(jt,(x))
 #define toutf8a(x,y)                jttoutf8a(jt,(x),(y))

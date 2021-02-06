@@ -937,7 +937,7 @@ A jtclonelocalsyms(J jt, A a){A z;I j;I an=AN(a); LX *av=LXAV0(a),*zv;
 }
 
 // input reader for direct definition
-// This is a drop-in for tokens().  It takes a string and env, and returns tokens created by enqueue().  Can optionally return string
+// This is a drop-in for jttokens(jt,).  It takes a string and env, and returns tokens created by enqueue().  Can optionally return string
 //
 // Any DDs found are collected and converted into ( m : string ).  This is done recursively.  If an unterminated
 // DD is found, we call jgets() to get the next line, taking as many lines as needed to leave with a valid line.
@@ -1093,6 +1093,6 @@ A jtddtokens(J jt,A w,I env){
  if(ddschbgnx<nw){wilv[ddschbgnx][1]=wilv[nw-1][1]; AN(wil)=2*(AS(wil)[0]=ddschbgnx+1);}  // make one word of the last part
 
  w=unwordil(wil,w,0);  // the word list is where everything is.  Collect to string
- if(!(env&8))w=tokens(w,env&3);  // enqueue if called for
+ if(!(env&8))w=jttokens(jt,w,env&3);  // enqueue if called for
  EPILOG(w);
 }

@@ -524,3 +524,7 @@
 |`jsrc/verbs/vcomp.h`|tlt|jttlt|`(^\|[ \t]+\|[^\d\w_])tlt\((?=([^,]+?),([^)]+?)\))`|`\1jttlt(jt,`|
 |`jsrc/vu.c`|toc1|jttoc1|`(^\|[ \t]+\|[^\d\w_])toc1\((?=([^,]+?),([^)]+?)\))`|`\1jttoc1(jt,`|
 |`jsrc/words/wn.c`|toc1|jttoc1|`(^\|[ \t]+\|[^\d\w_])toc1\((?=([^,]+?),([^)]+?)\))`|`\1jttoc1(jt,`|
+|`jsrc/px.c`|tokens|jttokens|`(^\|[ \t]+\|[^\d\w_])tokens\((?=([^,]+?),([^)]+?)\))`|`\1jttokens(jt,`|
+|`jsrc/conjunctions/ca.c`|tokens|jttokens|`(^\|[ \t]+\|[^\d\w_])tokens\((?=([^,]+?),([^)]+?)\))`|`\1jttokens(jt,`|
+|`jsrc/conjunctions/cx.c`|tokens|jttokens|`(^\|[ \t]+\|[^\d\w_])tokens\((?=([^,]+?),([^)]+?)\))`|`\1jttokens(jt,`|
+|`jsrc/parsing/pv.c`|tokens|jttokens|`(^\|[ \t]+\|[^\d\w_])tokens\((?=([^,]+?),([^)]+?)\))`|`\1jttokens(jt,`|

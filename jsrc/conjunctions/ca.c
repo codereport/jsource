@@ -160,7 +160,7 @@ static A atcomp0(J jt,A a,A w,A self){A z;AF f;
    // We can't lex a general sentence because lexing requires context to know how to treat assignments.  And,
    // there's no use for ".@const besides delayed name resolution
    // We give the w the strange flagging of NAME AND ALSO LIT - it will be handled as a name when executed, but as a noun for representations
-   if(AR(w)<=1 && (g=tokens(vs(w),1)) && AN(g)==1 && AT(AAV(g)[0])&NAME){w=rifvs(AAV(g)[0]); AT(w)|=LIT;}
+   if(AR(w)<=1 && (g=jttokens(jt,vs(w),1)) && AN(g)==1 && AT(AAV(g)[0])&NAME){w=rifvs(AAV(g)[0]); AT(w)|=LIT;}
   }
   return fdef(0,CAT,VERB, onconst1,onconst2, a,w,h, VFLAGNONE, RMAX,RMAX,RMAX);
  }
