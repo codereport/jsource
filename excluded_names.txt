@@ -37,3 +37,4 @@ xrem
 xtymes
 zcir
 zdiv
+zeq
