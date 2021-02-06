@@ -1017,7 +1017,7 @@
 #define tymesA(x,y)                 jtatomic2((J)((I)jt|JTINPLACEA),(x),(y),ds(CSTAR))
 #define tymesW(x,y)                 jtatomic2((J)((I)jt|JTINPLACEW),(x),(y),ds(CSTAR))
 #define uco1(x)                     jtuco1(jt,(x))
-#define uco2(x,y)                   jtuco2(jt,(x),(y))
+
 #define unbinr(x0,x1,x2,x3,x4)      jtunbinr(jt,(x0),(x1),(x2),(x3),(x4))
 #define under(x,y)                  jtunder(jt,(x),(y))
 #define unh(x)                      jtunh(jt,(x))

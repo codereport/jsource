@@ -532,3 +532,5 @@
 |`jsrc/m.c`|traverse|jttraverse|`(^\|[ \t]+\|[^\d\w_])traverse\((?=([^,]+?),([^)]+?)\))`|`\1jttraverse(jt,`|
 |`jsrc/representations/rt.c`|troot|jttroot|`(^\|[ \t]+\|[^\d\w_])troot\((?=([^,]+?),([^)]+?)\))`|`\1jttroot(jt,`|
 |`jsrc/xenos/xt.c`|tsit2|jttsit2|`(^\|[ \t]+\|[^\d\w_])tsit2\((?=([^,]+?),([^)]+?)\))`|`\1jttsit2(jt,`|
+|`jsrc/representations/rl.c`|uco2|jtuco2|`(^\|[ \t]+\|[^\d\w_])uco2\((?=([^,]+?),([^)]+?)\))`|`\1jtuco2(jt,`|
+|`jsrc/xenos/xfmt.c`|uco2|jtuco2|`(^\|[ \t]+\|[^\d\w_])uco2\((?=([^,]+?),([^)]+?)\))`|`\1jtuco2(jt,`|
