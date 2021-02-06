@@ -40,3 +40,4 @@ zdiv
 zeq
 zgcd
 zlcm
+zminus
