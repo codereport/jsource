@@ -43,3 +43,4 @@ zlcm
 zminus
 zplus
 zpow
+zrem
