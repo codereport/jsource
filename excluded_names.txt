@@ -36,3 +36,4 @@ xpow
 xrem
 xtymes
 zcir
+zdiv
