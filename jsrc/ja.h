@@ -986,7 +986,7 @@
 
 #define totient(x)                  jttotient(jt,(x))
 #define toutf8(x)                   jttoutf8(jt,(x))
-#define toutf8a(x,y)                jttoutf8a(jt,(x),(y))
+
 #define toutf8x(x)                  jttoutf8x(jt,(x))
 #define toutf16(x)                  jttoutf16(jt,(x))
 #define toutf32(x)                  jttoutf32(jt,(x))
