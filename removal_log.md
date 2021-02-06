@@ -584,3 +584,4 @@
 |`jsrc/representations/rl.c`|vnm|jtvnm|`(^\|[ \t]+\|[^\d\w_])vnm\((?=([^,]+?),([^)]+?)\))`|`\1jtvnm(jt,`|
 |`jsrc/words/w.c`|vnm|jtvnm|`(^\|[ \t]+\|[^\d\w_])vnm\((?=([^,]+?),([^)]+?)\))`|`\1jtvnm(jt,`|
 |`jsrc/words/wc.c`|vnm|jtvnm|`(^\|[ \t]+\|[^\d\w_])vnm\((?=([^,]+?),([^)]+?)\))`|`\1jtvnm(jt,`|
+|`jsrc/verbs/ve.c`|weight|jtweight|`(^\|[ \t]+\|[^\d\w_])weight\((?=([^,]+?),([^)]+?)\))`|`\1jtweight(jt,`|

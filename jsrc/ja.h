@@ -1066,7 +1066,7 @@
 #define vtokens(x)                  jtvtokens(jt,(x))
 #define vtrans(x)                   jtvtrans(jt,(x))
 #define wa(x,y,z)                   jtwa(jt,(x),(y),(z))
-#define weight(x,y)                 jtweight(jt,(x),(y))
+
 #define widthdp(x,y,z)              jtwidthdp(jt,(x),(y),(z))
 #define wordil(x)                   jtwordil(jt,(x))
 #define words(x)                    jtwords(jt,(x),ds(CWORDS))
