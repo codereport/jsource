@@ -295,7 +295,7 @@ static X jtxroot(J jt,X a,X w){A q;D x;I an,*av,c,d,r,wn,*wv;X n,n1,p,t,z;
  if(2==r)return xsqrt(w);
  x=xlogabs(w)/r;
  if(x<709.78){RZ(q=ceil1(jtcvt(jt,RAT,scf(exp(x))))); z=XAV(q)[0];}
- else        {RZ(q=jtcvt(jt,XNUM,scf(jceil(x)))); z=xexp(XAV(q)[0],XMCEIL);}
+ else        {RZ(q=jtcvt(jt,XNUM,scf(jceil(x)))); z=jtxexp(jt,XAV(q)[0],XMCEIL);}
  RZ(n=xc(r)); RZ(n1=xc(r-1));
  RZ(t=xdiv(w,p=xpow(z,n1),XMFLR));
  RZ(z=xdiv(xplus(t,xtymes(z,n1)),n,XMFLR))
@@ -448,7 +448,7 @@ APFX(  binXX, X,X,X, xbin  ,,HDR1JERR)
 
 AMON( sgnX, X,X, *z=  rifvsdebug(xsgn(*x));)
 AMONPS(sqrtX, X,X, , *z= rifvsdebug(xsqrt(*x)); , HDR1JERR)
-AMONPS( expX, X,X, , *z=  rifvsdebug(xexp(*x,jt->xmode)); , HDR1JERR)
+AMONPS( expX, X,X, , *z=  rifvsdebug(jtxexp(jt,*x,jt->xmode)); , HDR1JERR)
 AMONPS( logX, X,X, , *z= rifvsdebug(xlog1(*x)); , HDR1JERR)
 AMONPS(logXD, D,X, , *z=xlogd1(*x); , HDR1JERR)
 AMON(logXZ, Z,X, *z=xlogz1(*x);)

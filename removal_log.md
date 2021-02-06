@@ -588,3 +588,4 @@
 |`jsrc/verbs/vx.c`|xbinp|jtxbinp|`(^\|[ \t]+\|[^\d\w_])xbinp\((?=([^,]+?),([^)]+?)\))`|`\1jtxbinp(jt,`|
 |`jsrc/k.c`|xd1|jtxd1|`(^\|[ \t]+\|[^\d\w_])xd1\((?=([^,]+?),([^)]+?)\))`|`\1jtxd1(jt,`|
 |`jsrc/verbs/vx.c`|xev1|jtxev1|`(^\|[ \t]+\|[^\d\w_])xev1\((?=([^,]+?),([^)]+?)\))`|`\1jtxev1(jt,`|
+|`jsrc/verbs/vx.c`|xexp|jtxexp|`(^\|[ \t]+\|[^\d\w_])xexp\((?=([^,]+?),([^)]+?)\))`|`\1jtxexp(jt,`|
