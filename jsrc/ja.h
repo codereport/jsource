@@ -1019,7 +1019,7 @@
 #define uco1(x)                     jtuco1(jt,(x))
 
 #define unbinr(x0,x1,x2,x3,x4)      jtunbinr(jt,(x0),(x1),(x2),(x3),(x4))
-#define under(x,y)                  jtunder(jt,(x),(y))
+
 #define unh(x)                      jtunh(jt,(x))
 #define unhex(x)                    jtunhex(jt,(x))
 #define unlj(x)                     jtunlj(jt,(x))

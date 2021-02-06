@@ -534,3 +534,4 @@
 |`jsrc/xenos/xt.c`|tsit2|jttsit2|`(^\|[ \t]+\|[^\d\w_])tsit2\((?=([^,]+?),([^)]+?)\))`|`\1jttsit2(jt,`|
 |`jsrc/representations/rl.c`|uco2|jtuco2|`(^\|[ \t]+\|[^\d\w_])uco2\((?=([^,]+?),([^)]+?)\))`|`\1jtuco2(jt,`|
 |`jsrc/xenos/xfmt.c`|uco2|jtuco2|`(^\|[ \t]+\|[^\d\w_])uco2\((?=([^,]+?),([^)]+?)\))`|`\1jtuco2(jt,`|
+|`jsrc/adverbs/ai.c`|under|jtunder|`(^\|[ \t]+\|[^\d\w_])under\((?=([^,]+?),([^)]+?)\))`|`\1jtunder(jt,`|
