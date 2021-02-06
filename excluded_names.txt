@@ -39,3 +39,4 @@ zcir
 zdiv
 zeq
 zgcd
+zlcm
