@@ -1049,7 +1049,7 @@
 #define vaspeqprep(x0,x1,x2,x3,x4,x5,x6,x7,x8,x9,x10,x11)   jtvaspeqprep(jt,(x0),(x1),(x2),(x3),(x4),(x5),(x6),(x7),(x8),(x9),(x10),(x11))
 #define vaspz(x)                    jtvaspz(jt,(x))
 
-#define vc1(x,y)                    jtvc1(jt,(x),(y))
+
 #define vci(x)                      jtvci(jt,(x))
 #define vec(x,y,z)                  jtvec(jt,(x),(y),(z))
 #define vecb01(x,y,z)               jtvecb01(jt,(x),(y),(z))

@@ -97,7 +97,7 @@ F jtstdf(J jt,A w){A y;F f;I n,r,t;
   y=AAV(w)[0]; t=AT(y); n=AN(y); r=AR(y);
   if(t&(LIT+C2T+C4T)){ASSERT(1>=r,EVRANK); ASSERT(n!=0,EVLENGTH); return 0;}
 /*!
-  if(t&C2T){ASSERT(1>=r,EVRANK); ASSERT(n!=0,EVLENGTH); ASSERT(vc1(n,USAV(y)),EVDOMAIN); return 0;}
+  if(t&C2T){ASSERT(1>=r,EVRANK); ASSERT(n!=0,EVLENGTH); ASSERT(jtvc1(jt,n,USAV(y)),EVDOMAIN); return 0;}
      vc1 can now be killed off
 */
   if(t&B01+INT)return stdf(y);
