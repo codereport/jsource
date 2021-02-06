@@ -576,3 +576,11 @@
 |`jsrc/verbs/vs.c`|vaxis|jtvaxis|`(^\|[ \t]+\|[^\d\w_])vaxis\((?=([^,]+?),([^)]+?)\))`|`\1jtvaxis(jt,`|
 |`jsrc/xenos/xo.c`|vc1|jtvc1|`(^\|[ \t]+\|[^\d\w_])vc1\((?=([^,]+?),([^)]+?)\))`|`\1jtvc1(jt,`|
 |`jsrc/sl.c`|vlocnl|jtvlocnl|`(^\|[ \t]+\|[^\d\w_])vlocnl\((?=([^,]+?),([^)]+?)\))`|`\1jtvlocnl(jt,`|
+|`jsrc/io.c`|vnm|jtvnm|`(^\|[ \t]+\|[^\d\w_])vnm\((?=([^,]+?),([^)]+?)\))`|`\1jtvnm(jt,`|
+|`jsrc/m.c`|vnm|jtvnm|`(^\|[ \t]+\|[^\d\w_])vnm\((?=([^,]+?),([^)]+?)\))`|`\1jtvnm(jt,`|
+|`jsrc/sn.c`|vnm|jtvnm|`(^\|[ \t]+\|[^\d\w_])vnm\((?=([^,]+?),([^)]+?)\))`|`\1jtvnm(jt,`|
+|`jsrc/adverbs/a.c`|vnm|jtvnm|`(^\|[ \t]+\|[^\d\w_])vnm\((?=([^,]+?),([^)]+?)\))`|`\1jtvnm(jt,`|
+|`jsrc/adverbs/am.c`|vnm|jtvnm|`(^\|[ \t]+\|[^\d\w_])vnm\((?=([^,]+?),([^)]+?)\))`|`\1jtvnm(jt,`|
+|`jsrc/representations/rl.c`|vnm|jtvnm|`(^\|[ \t]+\|[^\d\w_])vnm\((?=([^,]+?),([^)]+?)\))`|`\1jtvnm(jt,`|
+|`jsrc/words/w.c`|vnm|jtvnm|`(^\|[ \t]+\|[^\d\w_])vnm\((?=([^,]+?),([^)]+?)\))`|`\1jtvnm(jt,`|
+|`jsrc/words/wc.c`|vnm|jtvnm|`(^\|[ \t]+\|[^\d\w_])vnm\((?=([^,]+?),([^)]+?)\))`|`\1jtvnm(jt,`|

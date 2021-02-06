@@ -324,7 +324,7 @@ static I jtconword(J jt,I n,C*s){
             if(!strncmp(s,"else.",    n))return CELSE;
             if(!strncmp(s,"elseif.",  n))return CELSEIF;  break;
   case 'f': if(!strncmp(s,"for.",     n))return CFOR;
-            if(!strncmp(s,"for_",    4L)){ASSERTN(vnm(n-5,4+s),EVILNAME,jtnfs(jt,n-5,4+s)); return CFOR;}
+            if(!strncmp(s,"for_",    4L)){ASSERTN(jtvnm(jt,n-5,4+s),EVILNAME,jtnfs(jt,n-5,4+s)); return CFOR;}
             if(!strncmp(s,"fcase.",   n))return CFCASE;   break;
   case 'g': if(!strncmp(s,"goto_",   5L))return CGOTO;    break;
   case 'i': if(!strncmp(s,"if.",      n))return CIF;      break;

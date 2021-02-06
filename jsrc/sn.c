@@ -89,7 +89,7 @@ A jtsfne(J jt,A w){ A wn=FAV(w)->fgh[0]; if(AT(wn)&NAMEBYVALUE)return jtfix(jt,w
  ASSERT(!AR(w),EVRANK);
  RZ(y=vs(ope(w)));
  n=AN(y); s=CAV(y);
- ASSERTN(vnm(n,s),EVILNAME,jtnfs(jt,n,s));
+ ASSERTN(jtvnm(jt,n,s),EVILNAME,jtnfs(jt,n,s));
  return jtnfs(jt,n,s);
 }    /* name from scalar boxed string */
 
@@ -100,7 +100,7 @@ static A jtstdnm(J jt, A w){C*s;I j,n,p,q;
  if(!(n))return 0;
  j=0;   DQ(n, if(' '!=s[j++])break;); p=j-1;
  j=n-1; DQ(n, if(' '!=s[j--])break;); q=(n-2)-j;
- if(!(vnm(n-(p+q),p+s)))return 0;   // Validate name
+ if(!(jtvnm(jt,n-(p+q),p+s)))return 0;   // Validate name
  return jtnfs(jt,n-(p+q),p+s);   // Create NAME block for name
 }    /* 0 result means error or invalid name */
 

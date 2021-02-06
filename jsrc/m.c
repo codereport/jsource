@@ -192,7 +192,7 @@ static A jtspfor1(J jt, A w){
   x=wv[i]; m=AN(x); s=CAV(x);
   ASSERT(LIT&AT(x),EVDOMAIN);
   ASSERT(1>=AR(x),EVRANK);
-  ASSERT(vnm(m,s),EVILNAME);
+  ASSERT(jtvnm(jt,m,s),EVILNAME);
   RZ(y=symbrd(jtnfs(jt,m,s))); 
   *v=0.0; spfor1(y); zv[i]=*v;
  }

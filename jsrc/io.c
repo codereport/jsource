@@ -395,7 +395,7 @@ A _stdcall JGetA(J jt, I n, C* name){A x,z=0;
 /* socket protocol CMDSET */
 I _stdcall JSetA(J jt,I n,C* name,I dlen,C* d){
  jt->jerr=0;
- if(!vnm(n,name)){ jsignal(EVILNAME); return EVILNAME;}
+ if(!jtvnm(jt,n,name)){ jsignal(EVILNAME); return EVILNAME;}
  A *old=jt->tnextpushp;
  symbisdel(jtnfs(jt,n,name),jtunbin(jt,jtstr(jt,dlen,d)),jt->global);
  tpop(old);

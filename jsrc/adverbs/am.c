@@ -342,7 +342,7 @@ static B gerar(J jt, A w){A x; C c;
  // literal contents are OK if a valid name or a primitive
  if(AT(w)&LIT) {
   C *stg = CAV(w);
-  if(!vnm(n,stg)){
+  if(!jtvnm(jt,n,stg)){
    // not name, see if valid primitive
    UC p = spellin(n,stg);
    return (p>>7)|!!ds(p);  // return if valid primitive (all non-ASCII are valid primitives, but 0: is not in pst[] so force that in)

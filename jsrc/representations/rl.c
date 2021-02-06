@@ -17,7 +17,7 @@ static A jtlrr(J jt,A w,A self,A *ltext);
 
 static B jtlp(J jt,A w){F1PREFIP;B b=1,p=0;C c,d,q=CQUOTE,*v;I j=0,n;
  n=AN(w); v=CAV(w); c=*v; d=*(v+n-1);
- if(1==n||(2==n||3>=n&&' '==c)&&(d==CESC1||d==CESC2)||vnm(n,v))return 0;
+ if(1==n||(2==n||3>=n&&' '==c)&&(d==CESC1||d==CESC2)||jtvnm(jt,n,v))return 0;
  if(C9==ctype[(UC)c])DQ(n-1, d=c; c=ctype[(UC)*++v]; if(b=!NUMV(c)||d==CS&&c!=C9)break;)
  else if(c==q)   DQ(n-1, c=*v++; p^=(c==q); if(b=(p^1)&(c!=q)){break;})
  else if(c=='(') DQ(n-1, c=*v++; j+=c=='('?1:c==')'?-1:0; if(b=!j)break;)
@@ -36,7 +36,7 @@ static A jtlcpb(J jt,B b,A w){F1PREFIP;A z=w;B p;C c,*v,*wv,*zv;I n;
   if     (c==CQ)DQ(n-1, c=ctype[(UC)*++v]; p^=(c==CQ); if(p&(c!=CQ)){b=1; break;})
   else if(c==C9)DQ(n-1, c=ctype[(UC)*++v]; if(!(c==C9   ||c==CS   )){b=1; break;})
   else          DQ(n-1, c=      *++v ; if(!(c==CESC1||c==CESC2)){b=1; break;});
-  if(b&&vnm(n,wv))b=0;
+  if(b&&jtvnm(jt,n,wv))b=0;
  }
  if(b){GATV0(z,LIT,2+n,1); zv=CAV(z); *zv='('; MC(1+zv,wv,n); zv[1+n]=')';}
  return z;

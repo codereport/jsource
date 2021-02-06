@@ -1060,7 +1060,7 @@
 #define virtual(x,y,z)              jtvirtual(jt,(x),(y),(z))
 #define virtualip(x,y,z)            jtvirtual(jtinplace,(x),(y),(z))
 
-#define vnm(x,y)                    jtvnm(jt,(x),(y))
+
 #define vs(x)                       jtvs(jt,(x))
 #define vslit(x)                    jtvslit(jt,(x))
 #define vtokens(x)                  jtvtokens(jt,(x))

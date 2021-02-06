@@ -26,7 +26,7 @@ static A swap2(J jt,A a,A w,A self){DECLF; F2PREFIP; jtinplace = (J)(intptr_t)((
   if((C2T+C4T)&AT(w))RZ(w=jtcvt(jt,LIT,w)) else ASSERT(LIT&AT(w),EVDOMAIN);
   ASSERT(1>=AR(w),EVRANK);  // list or atom only
   n=AN(w); s=CAV(w); 
-  ASSERT(vnm(n,s),EVILNAME);   // valid name
+  ASSERT(jtvnm(jt,n,s),EVILNAME);   // valid name
   RZ(y=jtnfs(jt,AN(w),CAV(w)));  // create a NAME block for the string
   return jtnameref(jt,y,jt->locsyms);  // Create a name-reference pointing to the name
 }}
