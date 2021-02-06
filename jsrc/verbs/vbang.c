@@ -64,7 +64,7 @@ static Z jtzstirling(J jt,Z z){Z p,q;
 }    /* Abramowitz & Stegun, 6.1.37 */
 
 static Z jtzgamma(J jt,Z z){D y=ABS(z.im);
- return !y?zrj0(dgamma(z.re)):20<y?zstirling(z):zgauss(jceil(y/0.8660254),z);
+ return !y?zrj0(dgamma(z.re)):20<y?zstirling(z):jtzgauss(jt,jceil(y/0.8660254),z);
 }
 
 AMONPS(factI,  D,I, , *z=dgamma(1.0+(D)*x); , HDR1JERR)

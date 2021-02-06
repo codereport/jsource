@@ -595,3 +595,4 @@
 |`jsrc/representations/r.c`|xrep|jtxrep|`(^\|[ \t]+\|[^\d\w_])xrep\((?=([^,]+?),([^)]+?)\))`|`\1jtxrep(jt,`|
 |`jsrc/verbs/vx.c`|xroot|jtxroot|`(^\|[ \t]+\|[^\d\w_])xroot\((?=([^,]+?),([^)]+?)\))`|`\1jtxroot(jt,`|
 |`jsrc/verbs/vbang.c`|zbin|jtzbin|`(^\|[ \t]+\|[^\d\w_])zbin\((?=([^,]+?),([^)]+?)\))`|`\1jtzbin(jt,`|
+|`jsrc/verbs/vbang.c`|zgauss|jtzgauss|`(^\|[ \t]+\|[^\d\w_])zgauss\((?=([^,]+?),([^)]+?)\))`|`\1jtzgauss(jt,`|
