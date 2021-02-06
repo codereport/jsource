@@ -42,3 +42,4 @@ zgcd
 zlcm
 zminus
 zplus
+zpow
