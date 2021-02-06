@@ -226,7 +226,7 @@ static X jtxexp(J jt,X w,I mode){I k,m;X s,y;
  if(0>k)return rifvsdebug(xc(mode));
  m=(I)(2.718281828*xint(w)); k=2; s=xplus(iv1,w); y=w;
  DQ(m, y=xtymes(y,w); s=xplus(xtymes(s,xc(k)),y); ++k;);
- return rifvsdebug(xdiv(s,xev1(apv(1+m,1L,1L),"*/"),mode));
+ return rifvsdebug(xdiv(s,jtxev1(jt,apv(1+m,1L,1L),"*/"),mode));
 }
 
  X jtxpow(J jt,X a,X w){PROLOG(0097);I c,d,e,r;X m,t,z;
@@ -356,7 +356,7 @@ static X jtxlog2(J jt,X a,X w){D c,d,x,y;I an,*av,j,k,m,n,wn,*wv;X p,q;
  if(n==XPINF||n==XNINF)return vci(XPINF);
  RE(n=xint(w)); 
  if(0>n)return rifvsdebug(vci(n&1?XPINF:XNINF));
- return rifvsdebug(xev1(apv(n,1L,1L),"*/"));
+ return rifvsdebug(jtxev1(jt,apv(n,1L,1L),"*/"));
 }
 
 static X jtxbinp(J jt,X a,X w){PROLOG(0098);D m;I i,n;X c,d,p,q,r,s;
@@ -367,7 +367,7 @@ static X jtxbinp(J jt,X a,X w){PROLOG(0098);D m;I i,n;X c,d,p,q,r,s;
   RZ(q=jtless(jt,ravel(factor(apv(n,1L,   1L))),zeroionei(0)));
   c=over(p,q);
   d=jtrepeat(jt,jtv2(jt,AN(p),AN(q)),jtv2(jt,1L,-1L));
-  A z=xev1(jtrepeat(jt,ev2(c,d,"+//."),nub(c)),"*/");
+  A z=jtxev1(jt,jtrepeat(jt,ev2(c,d,"+//."),nub(c)),"*/");
   EPILOGNOVIRT(z);
  }else{
   p=q=iv1; r=w;  

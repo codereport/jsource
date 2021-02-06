@@ -1080,7 +1080,7 @@
 
 #define xdiv(x,y,z)                 jtxdiv(jt,(x),(y),(z))
 #define xdivrem(x0,x1,x2,x3)        jtxdivrem(jt,(x0),(x1),(x2),(x3))
-#define xev1(x,y)                   jtxev1(jt,(x),(y))
+
 #define xev2(x,y,z)                 jtxev2(jt,(x),(y),(z))
 #define xexp(x,y)                   jtxexp(jt,(x),(y))
 #define xfact(x)                    jtxfact(jt,(x))
