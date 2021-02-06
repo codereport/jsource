@@ -31,3 +31,4 @@ xcompare
 xgcd
 xlcm
 xminus
+xplus
