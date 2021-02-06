@@ -540,3 +540,4 @@
 |`jsrc/representations/r.c`|unparsem|jtunparsem|`(^\|[ \t]+\|[^\d\w_])unparsem\((?=([^,]+?),([^)]+?)\))`|`\1jtunparsem(jt,`|
 |`jsrc/representations/rl.c`|unparsem|jtunparsem|`(^\|[ \t]+\|[^\d\w_])unparsem\((?=([^,]+?),([^)]+?)\))`|`\1jtunparsem(jt,`|
 |`jsrc/representations/rt.c`|unparsem|jtunparsem|`(^\|[ \t]+\|[^\d\w_])unparsem\((?=([^,]+?),([^)]+?)\))`|`\1jtunparsem(jt,`|
+|`jsrc/verbs/vi.c`|utype|jtutype|`(^\|[ \t]+\|[^\d\w_])utype\((?=([^,]+?),([^)]+?)\))`|`\1jtutype(jt,`|

@@ -1116,7 +1116,7 @@ A jtindexofsub(J jt,I mode,A a,A w){PROLOG(0079);A h=0,hi=mtv,z;B mk=w==mark,th;
   p = (UI)MIN(FLIMAX,(2.1*MAX(m,c)));  // length we will use for hashtable, if small-range not used.
   if(!b&&t&BOX+FL+CMPX)ctmask(jt);
   if     (t&BOX)          fn=b&&(1<n||usebs(a,ac,m))?jtiobs:1<n?jtioa:b?jtioax1:
-                              (t1=utype(a,ac))&&(mk||a==w||TYPESEQ(t1,utype(w,wc)))?jtioau:jtioa1;
+                              (t1=jtutype(jt,a,ac))&&(mk||a==w||TYPESEQ(t1,jtutype(jt,w,wc)))?jtioau:jtioa1;
   else if(t&XNUM)         fn=jtiox;
   else if(t&RAT )         fn=jtioq;
   else if(1==k)           {p=t&B01?2:256;datamin=0; mode|=IIMODFULL; fn=jtio12;}   // 1-byte ops, just use small-range code: checking takes too much time
