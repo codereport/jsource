@@ -1089,7 +1089,7 @@
 #define xint(x)                     jtxint(jt,(x))
 #define xlcm(x,y)                   jtxlcm(jt,(x),(y))
 #define xlog1(x)                    jtxlog1(jt,(x))
-#define xlog2(x,y)                  jtxlog2(jt,(x),(y))
+
 #define xlog2sub(x,y)               jtxlog2sub(jt,(x),(y))
 #define xlogabs(x)                  jtxlogabs(jt,(x))
 #define xlogd1(x)                   jtxlogd1(jt,(x))

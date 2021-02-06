@@ -348,7 +348,7 @@ static X jtxlog2(J jt,X a,X w){D c,d,x,y;I an,*av,j,k,m,n,wn,*wv;X p,q;
  return rifvsdebug(xc(!j?m:!k?n:jt->xmode==XMCEIL?n:m));
 }
 
- A jtxlog2a(J jt,A a,A w){A z; GAT0(z,XNUM,1L,0L); XAV(z)[0]=rifvsdebug(xlog2(XAV(a)[0],XAV(w)[0])); RNE(z);}
+ A jtxlog2a(J jt,A a,A w){A z; GAT0(z,XNUM,1L,0L); XAV(z)[0]=rifvsdebug(jtxlog2(jt,XAV(a)[0],XAV(w)[0])); RNE(z);}
  A jtxroota(J jt,A a,A w){A z; GAT0(z,XNUM,1L,0L); XAV(z)[0]=rifvsdebug(xroot(XAV(a)[0],XAV(w)[0])); RNE(z);}
 
  X jtxfact(J jt,    X w){I n;
