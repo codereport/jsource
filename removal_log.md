@@ -590,3 +590,4 @@
 |`jsrc/verbs/vx.c`|xev1|jtxev1|`(^\|[ \t]+\|[^\d\w_])xev1\((?=([^,]+?),([^)]+?)\))`|`\1jtxev1(jt,`|
 |`jsrc/verbs/vx.c`|xexp|jtxexp|`(^\|[ \t]+\|[^\d\w_])xexp\((?=([^,]+?),([^)]+?)\))`|`\1jtxexp(jt,`|
 |`jsrc/verbs/vx.c`|xlog2|jtxlog2|`(^\|[ \t]+\|[^\d\w_])xlog2\((?=([^,]+?),([^)]+?)\))`|`\1jtxlog2(jt,`|
+|`jsrc/verbs/vx.c`|xlog2sub|jtxlog2sub|`(^\|[ \t]+\|[^\d\w_])xlog2sub\((?=([^,]+?),([^)]+?)\))`|`\1jtxlog2sub(jt,`|
