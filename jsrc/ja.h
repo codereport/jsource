@@ -1103,7 +1103,7 @@
 #define xpi(x)                      jtxpi(jt,(x))
 #define xplus(x,y)                  jtxplus(jt,(x),(y))
 #define xpow(x,y)                   jtxpow(jt,(x),(y))
-#define xprimeq(x,y)                jtxprimeq(jt,(x),(y))
+
 #define xprimetest(x)               jtxprimetest(jt,(x))
 #define xrand(x)                    jtxrand(jt,(x))
 #define xrem(x,y)                   jtxrem(jt,(x),(y))

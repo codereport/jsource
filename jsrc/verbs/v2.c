@@ -197,7 +197,7 @@ static A jtxprimetest(J jt, A w){A z;B*b,rat;I d,j,q,n,*pv,*v,wn,wt,*yv;X r,*wv,
   else if(1==xcompare(x,xmaxint)){
    A *old=jt->tnextpushp;
    DQ(100, *yv=*v++; RZ(r=xrem(y,x)); if(!AV(r)[0]){b[j]=0; break;});
-   if(b[j])RE(b[j]=xprimeq(100L,x));
+   if(b[j])RE(b[j]=jtxprimeq(jt,100L,x));
    tpop(old);
   }else{
    n=xint(x); v=pv;
@@ -620,7 +620,7 @@ static A jtxfactor(J jt, A w){PROLOG(0064);A st,z;B b=0;I k,m;X g,*sv,*sv0,x;
   x=*--sv; 
   if(2>(k=sv-sv0)){A stsav = st; GATV0(st,XNUM,2*AN(stsav),1); MC(XAV(st),sv0,k*sizeof(A)); sv0=XAV(st); sv=k+sv0;}
   if(1>xcompare(x,xc(2147483647L))){RZ(z=apip(z,factor(sc(xint(x))))); continue;}
-  if(xprimeq(100L,x)){RZ(z=apip(z,scx(x))); continue;}
+  if(jtxprimeq(jt,100L,x)){RZ(z=apip(z,scx(x))); continue;}
   RZ(g=pollard_p_1(x)); if(g!=iv1){*sv++=g; RZ(*sv++=xdiv(x,g,XMFLR)); continue;}
   RZ(g=pollard_rho(x)); if(g!=iv1){*sv++=g; RZ(*sv++=xdiv(x,g,XMFLR)); continue;}
   if(!b){b=1; RZ(rngseeds(sc(jt->rngS[jt->rng]))); RZ(roll(jtv2(jt,m,m*m)));} 
