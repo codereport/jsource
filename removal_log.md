@@ -575,3 +575,4 @@
 |`jsrc/xenos/xt.c`|v2|jtv2|`(^\|[ \t]+\|[^\d\w_])v2\((?=([^,]+?),([^)]+?)\))`|`\1jtv2(jt,`|
 |`jsrc/verbs/vs.c`|vaxis|jtvaxis|`(^\|[ \t]+\|[^\d\w_])vaxis\((?=([^,]+?),([^)]+?)\))`|`\1jtvaxis(jt,`|
 |`jsrc/xenos/xo.c`|vc1|jtvc1|`(^\|[ \t]+\|[^\d\w_])vc1\((?=([^,]+?),([^)]+?)\))`|`\1jtvc1(jt,`|
+|`jsrc/sl.c`|vlocnl|jtvlocnl|`(^\|[ \t]+\|[^\d\w_])vlocnl\((?=([^,]+?),([^)]+?)\))`|`\1jtvlocnl(jt,`|
