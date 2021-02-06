@@ -457,7 +457,7 @@ static A jtenframe(J jt, A w){A x,y,z;C*zv;I ht,m,n,p,q,t,wd,wdb,wr,xn,*xv,yn,*y
  // (this could be better: just copy the gap, as part of ENGAP; check k above in case of leading unit axes)
  if(2<r)fillv(t,zn,x);
  // for each 2-cell, leave a gap if required, then copy in the 2-cell.  Change c to size in bytes; qc=size of 2-cell
- if(zn){c<<=bplg(t); DPMULDE(q,c,qc); DO(m, ENGAP(i*q,r,s,x+=c;); MC(x,v,qc); x+=qc; v+=qc;);}
+ if(zn){c<<=bplg(t); DPMULDE(q,c,qc); DO(m, ENGAP(i*q,r,s,x+=c;); memcpy(x,v,qc); x+=qc; v+=qc;);}
  return z;
 }
 

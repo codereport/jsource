@@ -172,7 +172,7 @@ static A jtcut02(J jt,A a,A w,A self){F2PREFIP;A fs,q,qq,*qv,z,zz=0;I*as,c,e,i,i
    GAE(y,t,(I)jtinplace&JTWILLBEOPENED?0:substratoms,wr,AS(w),break); AS(y)[0]=endorlen;  // allocate, but don't grow the tstack. Fix up the shape
    if(!((I)jtinplace&JTWILLBEOPENED)){
     // Normal case.  Set usecount of cell to 1 since z is recursive usecount and y is not on the stack.  ra0() if recursible.  Put allocated addr into *jt->tnextpushp++.
-    MC(CAV(y),wv+start*(cellsize<<k),substratoms<<k); AC(y)=ACUC1; if(t&RECURSIBLE){AFLAG(y)=t; jtra(y,t);}
+    memcpy(CAV(y),wv+start*(cellsize<<k),substratoms<<k); AC(y)=ACUC1; if(t&RECURSIBLE){AFLAG(y)=t; jtra(y,t);}
    }else{
     // WILLBEOPENED case.  We must make the block virtual so we can avoid the copy
     jtexpostvirtual(jt,y,w,start*(cellsize<<k)); AN(y)=substratoms;
