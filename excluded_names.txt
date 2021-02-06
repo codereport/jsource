@@ -29,3 +29,4 @@ rollany
 xbin
 xcompare
 xgcd
+xlcm
