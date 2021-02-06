@@ -32,3 +32,4 @@ xgcd
 xlcm
 xminus
 xplus
+xpow
