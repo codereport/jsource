@@ -35,3 +35,4 @@ xplus
 xpow
 xrem
 xtymes
+zcir
