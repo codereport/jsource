@@ -1012,7 +1012,7 @@
 #define trr(x)                      jttrr(jt,(x))
 #define tryinit(x,y,z)              jttryinit(jt,(x),(y),(z))
 #define ts(x)                       jtts(jt,(x))
-#define tsit2(x,y)                  jttsit2(jt,(x),(y))
+
 #define tymes(x,y)                  jtatomic2(jt,(x),(y),ds(CSTAR))
 #define tymesA(x,y)                 jtatomic2((J)((I)jt|JTINPLACEA),(x),(y),ds(CSTAR))
 #define tymesW(x,y)                 jtatomic2((J)((I)jt|JTINPLACEW),(x),(y),ds(CSTAR))

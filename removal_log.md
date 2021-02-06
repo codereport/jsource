@@ -531,3 +531,4 @@
 |`jsrc/xenos/xu.c`|toutf8a|jttoutf8a|`(^\|[ \t]+\|[^\d\w_])toutf8a\((?=([^,]+?),([^)]+?)\))`|`\1jttoutf8a(jt,`|
 |`jsrc/m.c`|traverse|jttraverse|`(^\|[ \t]+\|[^\d\w_])traverse\((?=([^,]+?),([^)]+?)\))`|`\1jttraverse(jt,`|
 |`jsrc/representations/rt.c`|troot|jttroot|`(^\|[ \t]+\|[^\d\w_])troot\((?=([^,]+?),([^)]+?)\))`|`\1jttroot(jt,`|
+|`jsrc/xenos/xt.c`|tsit2|jttsit2|`(^\|[ \t]+\|[^\d\w_])tsit2\((?=([^,]+?),([^)]+?)\))`|`\1jttsit2(jt,`|

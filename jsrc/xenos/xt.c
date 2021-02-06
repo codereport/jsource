@@ -113,7 +113,7 @@ __int64 GetMachineCycleCount()
  return scf(n?t/(n*pf):0);
 }
 
- A jttsit1(J jt, A w){return tsit2(num(1),w);}
+ A jttsit1(J jt, A w){return jttsit2(jt,num(1),w);}
 
 
 #define sleepms(i) usleep(i*1000)
