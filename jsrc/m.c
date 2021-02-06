@@ -448,7 +448,7 @@ A jtrealize(J jt, A w){A z; I t;
  GA(z,t,AN(w),AR(w),AS(w));
  // new block is not VIRTUAL, not RECURSIBLE
 // copy the contents.
- MC(AV(z),AV(w),AN(w)<<bplg(t));
+ memcpy(AV(z),AV(w),AN(w)<<bplg(t));
  return z;
 }
 
@@ -934,7 +934,7 @@ RESTRICTF A jtgah(J jt,I r,A w){A z;
  }else{
   if(t&NAME){GATV(z,NAME,AN(w),AR(w),AS(w));AT(z)=t;}  // GA does not allow NAME type, for speed
   else GA(z,t,AN(w),AR(w),AS(w));
-  MC(AV(z),AV(w),(AN(w)*bp(t))+(t&NAME?sizeof(NM):0));}
+  memcpy(AV(z),AV(w),(AN(w)*bp(t))+(t&NAME?sizeof(NM):0));}
  return z;
 }
 // clone block only if it is read-only
@@ -980,7 +980,7 @@ A jtext(J jt,B b,A w){A z;I c,k,m,m1,t;
  m=AS(w)[0]; PROD(c,AR(w)-1,AS(w)+1); t=AT(w); k=c*bp(t);
  GA(z,t,2*AN(w)+(AN(w)?0:c),AR(w),0);  // ensure we allocate SOMETHING to make progress
  m1=allosize(z)/k;  // start this divide before the copy
- MC(AV(z),AV(w),AN(w)*bp(t));                 /* copy old contents      */
+ memcpy(AV(z),AV(w),AN(w)*bp(t));                 /* copy old contents      */
  MCISH(&AS(z)[1],&AS(w)[1],AR(w)-1);
  if(b){RZ(ras(z)); fa(w);}                 /* 1=b iff w is permanent.  This frees up the old space */
  AS(z)[0]=m1; AN(z)=m1*c;       /* "optimal" use of space */

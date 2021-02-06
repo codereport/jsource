@@ -33,8 +33,8 @@
  I f(I d,I n,I m,Tx* RESTRICTI x,Tz* RESTRICTI z,J jt){I i;Tz v;                                \
   NAN0;                                                               \
   if(d==1)DQ(m, *z++=v=    *x++; DQ(n-1, *z=v=pfx(v,*x); ++z; ++x;))  \
-  else{for(i=0;i<m;++i){                                              \
-   MC(z,x,d*sizeof(Tx)); x+=d;                                        \
+  else{for(i=0;i<m;++i){                                         \
+                memcpy(z,x,d*sizeof(Tx)); x+=d;                                        \
    DQ(n-1, vecfn(1,d,z,x,z+d,jt); z+=d; x+=d; ); z+=d;                     \
   }}                                                                   \
   return NANTEST?EVNAN:EVOK;                                                             \
@@ -236,8 +236,8 @@ PREFIXPFX( pluspfxB, I, B,  PLUS, plusIB , return EVOK; )
     DQ(n3, t0+=*x++; *z++ =t0+t12; t1+=*x++; t01=t0+t1; *z++ =t01+t2; t2+=*x++; *z++ =t2+t01; t12=t1+t2;)
   )
  }else{
-  for(i=0;i<m;++i){                                              
-   MC(z,x,d*sizeof(D)); x+=d; 
+  for(i=0;i<m;++i){
+      memcpy(z,x,d*sizeof(D)); x+=d;
    DQ(n-1, plusDD(1,d,z,x,z+d,jt); z+=d; x+=d;); z+=d;
   }
  }
@@ -310,7 +310,7 @@ static A jtseg(J jt,A a,A w){A z;I c,k,m,n,*u,zn;
  c=aii(w); k=c<<bplg(AT(w)); DPMULDE(n,c,zn);  // c=#atoms per item, k=#bytes/item, zn=atoms/infix
  GA(z,AT(w),zn,MAX(1,AR(w)),AS(w)); AS(z)[0]=n;  // Allocate array of items, move in shape, override # items
  // Copy the selected items to the new block and return the new block
- MC(AV(z),CAV(w)+m*k,n*k);
+ memcpy(AV(z),CAV(w)+m*k,n*k);
  return z;
 }
 
@@ -598,8 +598,9 @@ static A jtinfixd(J jt,A a,A w,A self){A fs,z;C*x,*y;I c=0,d,k,m,n,p,q,r,*s,wr,*
  s=AS(z); s[0]=d; s[1]=zc; MCISH(s+2,1+ws,r-2);
  k=c<<bplg(wt); 
  if(AN(z)){
-  if(m>=0){ q=p*k; DQ(d, MC(x,y,q);    x+=q; y+=k;);
-  }else{ MC(x,y,n*k);  if(q=d*p-n)fillv(wt,q*c,x+n*k);
+  if(m>=0){ q=p*k; DQ(d, memcpy(x,y,q);    x+=q; y+=k;);
+  }else{
+      memcpy(x,y,n*k);  if(q=d*p-n)fillv(wt,q*c,x+n*k);
   }
  }
  return z;

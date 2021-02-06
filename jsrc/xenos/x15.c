@@ -607,8 +607,10 @@ static CCT*jtcdinsert(J jt,A a,CCT*cc){A x;C*s;CCT*pv,*z;I an,hn,k;
  while(AM(jt->cdstr) > AN(jt->cdstr)-an){I oldm=AM(jt->cdstr); RZ(jt->cdstr=jtext(jt,1,jt->cdstr)); AM(jt->cdstr)=oldm;}  // double allocations as needed, keep count
  while(AM(jt->cdarg)==AS(jt->cdarg)[0]){I oldm=AM(jt->cdarg); RZ(jt->cdarg=jtext(jt,1,jt->cdarg)); AM(jt->cdarg)=oldm;}
  s=CAV(jt->cdstr); pv=(CCT*)AV(jt->cdarg);
- cc->ai=AM(jt->cdstr); MC(s+AM(jt->cdstr),CAV(a),an); AM(jt->cdstr)+=an;
- z=pv+AM(jt->cdarg); MC(z,cc,sizeof(CCT)); k=AM(jt->cdarg);
+ cc->ai=AM(jt->cdstr);
+ memcpy(s+AM(jt->cdstr),CAV(a),an); AM(jt->cdstr)+=an;
+ z=pv+AM(jt->cdarg);
+ memcpy(z,cc,sizeof(CCT)); k=AM(jt->cdarg);
  if(AN(jt->cdarg)<=2*AM(jt->cdarg)){RZ(x=cdgahash(2*AM(jt->cdarg))); fa(jt->cdhash); jt->cdhash=x; AM(jt->cdarg)=k; AM(jt->cdhash)=0; k=0;}  // reallo if needed, and signal to rehash all
  // insert the last k elements of pv into the table.  This will be either all of them (on a rehash) or just the last 1.
  ++AM(jt->cdarg); DQ(AM(jt->cdarg)-k, HASHINSERT(jt->cdhash,pv[k].an,s+pv[k].ai,k) ++k;);  // add 1 ele to cdarg, and all or 1 to cdhash
@@ -739,8 +741,8 @@ static CCT*jtcdparse(J jt,A a,I empty){C c,lib[NPATH],*p,proc[NPATH],*s,*s0;CCT*
   if('l'==c){CDASSERT(1,der); cc->tletter[i]='x';}
  }
  CDASSERT(0<=i||'1'!=cc->cc,DEDEC+256);
- MC(lib, s0+li,cc->ln); lib [cc->ln]=0;
- MC(proc,s0+pi,cc->pn); proc[cc->pn]=0;
+ memcpy(lib, s0+li,cc->ln); lib [cc->ln]=0;
+ memcpy(proc,s0+pi,cc->pn); proc[cc->pn]=0;
  RZ(cc=cdload(cc,lib,proc));
  cc->n=1+i; RZ(cc=jtcdinsert(jt,a,cc)); cc->li=li+cc->ai; cc->pi=pi+cc->ai;
  return cc;
@@ -805,7 +807,8 @@ static B jtcdexec1(J jt,CCT*cc,C*zv0,C*wu,I wk,I wt,I wd){A*wv=(A*)wu,x,y,*zv;B 
   }else{
    xv=convert0(t,cv0,wt,u); xt=t; u+=wk;
    CDASSERT(xv!=0,per);
-   if(zbx){GA(y,t,1,0,0); MC(AV(y),xv,bp(t)); *zv=incorp(y);}  // must never install inplaceable block
+   if(zbx){GA(y,t,1,0,0);
+       memcpy(AV(y),xv,bp(t)); *zv=incorp(y);}  // must never install inplaceable block
   }
   // now xv points to the actual arg data for arg i, and an A-block for same has been installed into *zv
   // if wt&BOX only, x is an A-block for arg i
@@ -974,7 +977,7 @@ void dllquit(J jt){CCT*av;I j,*v;
  if(INT&AT(a)&&t&B01) RZ(a=jtcvt(jt,B01,a));
  ASSERT(TYPESEQ(t,AT(a)),EVDOMAIN);
 
- MC(u,AV(a),m<<bplg(t));
+ memcpy(u,AV(a),m<<bplg(t));
  return mtm;
 }    /* 15!:2  memory write */
 

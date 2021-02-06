@@ -73,7 +73,7 @@ static A jtrepbdx(J jt,A a,A w,I wf,I wcr){A z;I c,k,m,p;
  AS(z)[wf]=p;  // move in length of item axis, #bytes per item of cell
  if(!zn)return z;  // If no atoms to process, return empty
 
-// original  DO(c, DO(m, if(b[i]){MC(zv,wv,k); zv+=k;} wv+=k;);); break;
+// original  DO(c, DO(m, if(b[i]){memcpy(zv,wv,k); zv+=k;} wv+=k;);); break;
 
  
  while(--c>=0){
@@ -93,7 +93,8 @@ static A jtrepbdx(J jt,A a,A w,I wf,I wcr){A z;I c,k,m,p;
    case sizeof(US): while(bitstack){I bitx=CTTZI(bitstack); *(US*)zvv=((US*)wvv)[bitx]; zvv=(C*)zvv+k; bitstack&=bitstack-1;} break;
    case sizeof(UI4): while(bitstack){I bitx=CTTZI(bitstack); *(UI4*)zvv=((UI4*)wvv)[bitx]; zvv=(C*)zvv+k; bitstack&=bitstack-1;} break;
    case sizeof(UI): while(bitstack){I bitx=CTTZI(bitstack); *(UI*)zvv=((UI*)wvv)[bitx]; zvv=(C*)zvv+k; bitstack&=bitstack-1;} break;
-   default: while(bitstack){I bitx=CTTZI(bitstack); MC(zvv,(C*)wvv+k*bitx,k); zvv=(C*)zvv+k; bitstack&=bitstack-1;} break;
+   default: while(bitstack){I bitx=CTTZI(bitstack);
+           memcpy(zvv,(C*)wvv+k*bitx,k); zvv=(C*)zvv+k; bitstack&=bitstack-1;} break;
    }
 
    wvv=(C*)wvv+(k<<LGBW);  // advance base to next batch of 64

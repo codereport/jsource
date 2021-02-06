@@ -84,7 +84,7 @@ static A jtcanta(J jt,A a,A w){A m,s,t,z;C*wv,*zv;I*av,j,*mv,r,*sv,*tv,wf,wr,*ws
  case sizeof(S): CANTA(S, *u++=*(S*)v;); break;
  case sizeof(I4): CANTA(I4, *u++=*(I4*)v;); break;
 
- default:        CANTA(C, MC(u,v,cellsizeb); u+=cellsizeb;); break;
+ default:        CANTA(C, memcpy(u,v,cellsizeb); u+=cellsizeb;); break;
  }     
  return z;  // should EPILOG?
 }    /* dyadic transpose in APL\360, a f"(1,r) w where 1>:#$a  */

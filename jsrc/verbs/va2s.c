@@ -25,7 +25,8 @@ static A jtvaspc(J jt,A a,A w,C id,VF ado,I cv,I t,I zt,I af,I acr,I wf,I wcr,I 
  while(u=memchr(xv+xc*j,c,xc*(n-j))){
   j=(u-xv)/xc; v=yv+yc*j;
   if(v==yu){yu+=yc; xu+=xc;}
-  else{DQ(yc, *yu++=*v++;); if(1<xc){MC(xu,xv+xc*j,xc); xu+=xc;}}
+  else{DQ(yc, *yu++=*v++;); if(1<xc){
+          memcpy(xu,xv+xc*j,xc); xu+=xc;}}
   ++j;
  }
  n=(yu-yv)/yc;

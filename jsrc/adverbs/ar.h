@@ -63,7 +63,8 @@
 #define REDUCEOVF(f,Tz,Tx,fr1,fvv,frn)  \
  I f(I d,I n,I m,I* RESTRICTI x,I* RESTRICTI z,J jt){I er=EVOK;I i,* RESTRICT xx,*y,* RESTRICT zz;                          \
   if(d==1){xx=x; zz=z; DQ(m, z=zz++; x=xx; fr1(n,z,x); xx += n;); return er;}        \
-  if(1==n){if(sizeof(Tz)!=sizeof(Tx)){DQ(d, *z++=*x++;)}else{MC((C*)z,(C*)x,d*sizeof(Tz));} return er;}   \
+  if(1==n){if(sizeof(Tz)!=sizeof(Tx)){DQ(d, *z++=*x++;)}else{                                           \
+                memcpy((C*)z,(C*)x,d*sizeof(Tz));} return er;}   \
   zz=z+=m*d; xx=x+=m*d*n;                                  \
   xx-=d; zz-=d;                                                 \
   for(i=0;i<m;++i,xx-=d,zz-=d){                                 \

@@ -410,7 +410,7 @@ A jtpcvt(J jt,I t,A w){A y;B b;RANK2T oqr=jt->ranks;
   case  2: 
    if(!(t&RAT))RZ(w=jtcvt(jt,RAT,w));
    GATV(z,XNUM,2*n,r+1,AS(w)); AS(z)[r]=2;
-   MC(AV(z),AV(w),2*n*SZI);
+   memcpy(AV(z),AV(w),2*n*SZI);
    return z;
   case  3:
    ASSERT(t&XD+XZ,EVDOMAIN);

@@ -18,7 +18,7 @@
 // BI add, noting overflow and leaving it, possibly in place.  If we add 0, copy the numbers (or leave unchanged, if in place)
  I plusBI(I n,I m,B* RESTRICTI x,I* RESTRICTI y,I* RESTRICTI z,J jt){I u;I v;I oflo=0;
  if(n-1==0)  DQ(m, u=(I)*x; v=*y; if(v==IMAX)oflo+=u; v=u+v; *z++=v; x++; y++; )
- else if(n-1<0){n=~n; DQ(m, u=(I)*x++; if(u){DQ(n, v=*y; if(v==IMAX)oflo=1; v=v+1; *z++=v; y++;)}else{if(z!=y)MC(z,y,n<<LGSZI); z+=n; y+=n;})}
+ else if(n-1<0){n=~n; DQ(m, u=(I)*x++; if(u){DQ(n, v=*y; if(v==IMAX)oflo=1; v=v+1; *z++=v; y++;)}else{if(z!=y) memcpy(z,y,n<<LGSZI); z+=n; y+=n;})}
  else      DQ(m, v=*y++; DQ(n, u=(I)*x; if(v==IMAX)oflo+=u; u=u+v; *z++=u; x++;))
  return oflo?EWOVIP+EWOVIPPLUSBI:EVOK;
 }
@@ -27,7 +27,7 @@
  I plusIB(I n,I m,I* RESTRICTI x,B* RESTRICTI y,I* RESTRICTI z,J jt){I u;I v;I oflo=0;
  if(n-1==0)  DQ(m, u=*x; v=(I)*y; if(u==IMAX)oflo+=v; u=u+v; *z++=u; x++; y++; )
  else if(n-1<0)DQ(m, u=*x++; DQC(n, v=(I)*y; if(u==IMAX)oflo+=v; v=u+v; *z++=v; y++;))
- else      DQ(m, v=(I)*y++; if(v){DQ(n, u=*x; if(u==IMAX)oflo=1; u=u+1; *z++=u; x++;)}else{if(z!=x)MC(z,x,n<<LGSZI); z+=n; x+=n;})
+ else      DQ(m, v=(I)*y++; if(v){DQ(n, u=*x; if(u==IMAX)oflo=1; u=u+1; *z++=u; x++;)}else{if(z!=x) memcpy(z,x,n<<LGSZI); z+=n; x+=n;})
  return oflo?EWOVIP+EWOVIPPLUSIB:EVOK;
 }
 
@@ -74,7 +74,7 @@ APFX(  maxII, I,I,I, MAX,,return EVOK;)
  I minusIB(I n,I m,I* RESTRICTI x,B* RESTRICTI y,I* RESTRICTI z,J jt){I u;I v;I w;I oflo=0;
  if(n-1==0)  DQ(m, u=*x; v=(I)*y; if(u==IMIN)oflo+=v; u=u-v; *z++=u; x++; y++; )
  else if(n-1<0)DQ(m, u=*x++; DQC(n, v=(I)*y; if(u==IMIN)oflo+=v; w=u-v; *z++=w; y++;))
- else      DQ(m, v=(I)*y++; if(v){DQ(n, u=*x; if(u==IMIN)oflo=1; u=u-1; *z++=u; x++;)}else{if(z!=x)MC(z,x,n<<LGSZI); z+=n; x+=n;})
+ else      DQ(m, v=(I)*y++; if(v){DQ(n, u=*x; if(u==IMIN)oflo=1; u=u-1; *z++=u; x++;)}else{if(z!=x) memcpy(z,x,n<<LGSZI); z+=n; x+=n;})
  
  return oflo?EWOVIP+EWOVIPMINUSIB:EVOK;
 }
@@ -91,7 +91,7 @@ oflo: *x=u; *y=v; jt->mulofloloc = ~(jt->mulofloloc + z-zi);return EWOVIP+EWOVIP
 // BI multiply, using clear/copy
  I tymesBI(I n,I m,B* RESTRICTI x,I* RESTRICTI y,I* RESTRICTI z,J jt){I v;
  if(n-1==0)  DQ(m, I u=*x; *z++=*y&-u; x++; y++; )
- else if(n-1<0){n=~n; DQ(m, B u=*x++; if(u){if(z!=y)MC(z,y,n<<LGSZI);}else{memset(z,0,n<<LGSZI);} z+=n; y+=n;)}
+ else if(n-1<0){n=~n; DQ(m, B u=*x++; if(u){if(z!=y) memcpy(z,y,n<<LGSZI);}else{memset(z,0,n<<LGSZI);} z+=n; y+=n;)}
  else DQ(m, v=*y++; DQ(n, I u=*x; *z++=v&-u; x++;))
  return EVOK;
 }
@@ -100,14 +100,14 @@ oflo: *x=u; *y=v; jt->mulofloloc = ~(jt->mulofloloc + z-zi);return EWOVIP+EWOVIP
  I tymesIB(I n,I m,I* RESTRICTI x,B* RESTRICTI y,I* RESTRICTI z,J jt){I u;
  if(n-1==0)  DQ(m, I v=*y; *z++=*x&-v; x++; y++; )
  else if(n-1<0)DQ(m, u=*x++; DQC(n, I v=*y; *z++=u&-v; y++;))
- else DQ(m, B v=*y++; if(v){if(z!=x)MC(z,x,n<<LGSZI);}else{memset(z,0,n<<LGSZI);} z+=n; x+=n;)
+ else DQ(m, B v=*y++; if(v){if(z!=x) memcpy(z,x,n<<LGSZI);}else{memset(z,0,n<<LGSZI);} z+=n; x+=n;)
  return EVOK;
 }
 
 // BD multiply, using clear/copy
  I tymesBD(I n,I m,B* RESTRICTI x,D* RESTRICTI y,D* RESTRICTI z,J jt){
  if(n-1==0)  DQ(m, D *yv=(D*)&dzero; yv=*x?y:yv; *z++=*yv; x++; y++; )
- else if(n-1<0){n=~n; DQ(m, B u=*x++; if(u){if(z!=y)MC(z,y,n*sizeof(D));}else{memset(z,0,n*sizeof(D));} z+=n; y+=n;)}
+ else if(n-1<0){n=~n; DQ(m, B u=*x++; if(u){if(z!=y) memcpy(z,y,n*sizeof(D));}else{memset(z,0,n*sizeof(D));} z+=n; y+=n;)}
  else DQ(m, DQ(n, D *yv=(D*)&dzero; yv=*x?y:yv; *z++=*yv; x++;) ++y;)
  return EVOK;
 }
@@ -116,7 +116,7 @@ oflo: *x=u; *y=v; jt->mulofloloc = ~(jt->mulofloloc + z-zi);return EWOVIP+EWOVIP
  I tymesDB(I n,I m,D* RESTRICTI x,B* RESTRICTI y,D* RESTRICTI z,J jt){
  if(n-1==0)  DQ(m, D *yv=(D*)&dzero; yv=*y?x:yv; *z++=*yv; x++; y++; )
  else if(n-1<0)DQ(m, DQC(n, D *yv=(D*)&dzero; yv=*y?x:yv; *z++=*yv; y++;) ++x;)
- else DQ(m, B v=*y++; if(v){if(z!=x)MC(z,x,n*sizeof(D));}else{memset(z,0,n*sizeof(D));} z+=n; x+=n;)
+ else DQ(m, B v=*y++; if(v){if(z!=x) memcpy(z,x,n*sizeof(D));}else{memset(z,0,n*sizeof(D));} z+=n; x+=n;)
  return EVOK;
 }
 
@@ -397,7 +397,7 @@ static A jtweight(J jt,A a,A w){ A z; return df1(z,behead(over(AR(w)?w:jtreshape
   k=bpnoun(at); u=an*k+CAV(a);
   GA(y,at, 1, 0,0); yv=CAV(y);
   GATV0(z,BOX,an,1); zv=an+AAV(z);
-  DQ(an, MC(yv,u-=k,k); A tt; RZ(w=divide(minus(w,tt=residue(y,w)),y)); INCORP(tt); *--zv=tt;);
+  DQ(an, memcpy(yv,u-=k,k); A tt; RZ(w=divide(minus(w,tt=residue(y,w)),y)); INCORP(tt); *--zv=tt;);
   z=ope(z);
   EPILOG(z);
 }}

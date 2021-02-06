@@ -72,7 +72,8 @@ F jtjope(J jt,A w,C*mode){A t;F f;I n;static I nf=25; A z;
 
 B jtadd2(J jt,F f1,F f2,C*cmd){A c,x;
  if(f1==NULL) {AM(jt->fopf)+=2;return 1;};
- GATV0(c,LIT,1+strlen(cmd),1);MC(CAV(c)+1,cmd,AN(c)-1);cmd=CAV(c);
+ GATV0(c,LIT,1+strlen(cmd),1);
+ memcpy(CAV(c)+1,cmd,AN(c)-1);cmd=CAV(c);
  if(AM(jt->fopf)+1>=AN(jt->fopf)){I ct=AM(jt->fopf); RZ(jt->fopa=jtext(jt,1,jt->fopa)); RZ(jt->fopf=jtext(jt,1,jt->fopf)); AM(jt->fopf)=ct;}
  *cmd='<';x=cstr(cmd); RZ(ras(x)); RZ(*(AM(jt->fopf)+AAV(jt->fopa)  )=x); RZ(*(AM(jt->fopf)+IAV(jt->fopf)  )=(I)f1);
  *cmd='>';x=cstr(cmd); RZ(ras(x)); RZ(*(AM(jt->fopf)+AAV(jt->fopa)+1)=x); RZ(*(AM(jt->fopf)+IAV(jt->fopf)+1)=(I)f2);

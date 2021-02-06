@@ -87,10 +87,10 @@ static I bsizer(J jt,B d,B tb,A w){A *wv=AAV(w);
 /* du: 1 iff u is 64-bit         */
 static B jtmvw(J jt,C*v,C*u,I n,B bv,B bu,B dv,B du){C c;
  switch((dv?8:0)+(du?4:0)+(bv?2:0)+bu){
-  case MVCS(0,0,0,0): MC(v,u,n*4);                             break;
+  case MVCS(0,0,0,0): memcpy(v,u,n*4);                             break;
   case MVCS(0,0,0,1): DO(n, DO(4, v[3-i]=u[i];); v+=4; u+=4;); break;
   case MVCS(0,0,1,0): DO(n, DO(4, v[3-i]=u[i];); v+=4; u+=4;); break;
-  case MVCS(0,0,1,1): MC(v,u,n*4);                             break;
+  case MVCS(0,0,1,1): memcpy(v,u,n*4);                             break;
   case MVCS(0,1,0,0): DO(n, c=127<(UC)u[0]?CFF:C0; DO(4, ASSERT(c==u[  i],EVLIMIT); v[i]=u[4+i];); v+=4; u+=8;); break;
   case MVCS(0,1,0,1): DO(n, c=127<(UC)u[7]?CFF:C0; DO(4, ASSERT(c==u[7-i],EVLIMIT); v[i]=u[3-i];); v+=4; u+=8;); break;
   case MVCS(0,1,1,0): DO(n, c=127<(UC)u[0]?CFF:C0; DO(4, ASSERT(c==u[3-i],EVLIMIT); v[i]=u[7-i];); v+=4; u+=8;); break;
@@ -99,10 +99,10 @@ static B jtmvw(J jt,C*v,C*u,I n,B bv,B bu,B dv,B du){C c;
   case MVCS(1,0,0,1): DO(n, c=127<(UC)u[3]?CFF:C0; DO(4, v[3-i]=c; v[7-i]=u[i];); v+=8; u+=4;); break;
   case MVCS(1,0,1,0): DO(n, c=127<(UC)u[0]?CFF:C0; DO(4, v[7-i]=c; v[3-i]=u[i];); v+=8; u+=4;); break;
   case MVCS(1,0,1,1): DO(n, c=127<(UC)u[3]?CFF:C0; DO(4, v[4+i]=c; v[  i]=u[i];); v+=8; u+=4;); break;
-  case MVCS(1,1,0,0): MC(v,u,n*8);                             break;
+  case MVCS(1,1,0,0): memcpy(v,u,n*8);                             break;
   case MVCS(1,1,0,1): DO(n, DO(8, v[7-i]=u[i];); v+=8; u+=8;); break;
   case MVCS(1,1,1,0): DO(n, DO(8, v[7-i]=u[i];); v+=8; u+=8;); break;
-  case MVCS(1,1,1,1): MC(v,u,n*8);                             break;
+  case MVCS(1,1,1,1): memcpy(v,u,n*8);                             break;
  }
  return 1;
 }    /* move n words from u to v */
@@ -159,7 +159,7 @@ static C* jtbrepfill(J jt,B b,B d,A w,C *zv){I klg,kk;
    // Make sure there is a zero byte if the string is empty
    {I suffsize = MIN(4*SZI,origzv+blksize-zv);  // len of area to clear to 0 
    memset((origzv+blksize)-suffsize,C0,suffsize);   // clear suffix
-   MC(zv,u,n<<klg); break;}      // copy the valid part of the data
+   memcpy(zv,u,n<<klg); break;}      // copy the valid part of the data
   }
   return origzv+blksize;  // return next output position
  }
@@ -268,7 +268,8 @@ static A jtunbinr(J jt,B b,B d,B pre601,I m,A w){A y,z;C*u=(C*)w,*v;I e,j,kk,n,p
   case INTX:  RZ(mvw(CAV(z),v,n,  BU,b,1,d)); break;
   case FLX:   RZ(mvw(CAV(z),v,n,  BU,b,1,1)); break;
   case CMPXX: RZ(mvw(CAV(z),v,n+n,BU,b,1,1)); break;
-  default:   e=n<<bplg(t); ASSERTSYS(e<=allosize(z),"unbinr"); MC(CAV(z),v,e);
+  default:   e=n<<bplg(t); ASSERTSYS(e<=allosize(z),"unbinr");
+      memcpy(CAV(z),v,e);
  }
  RE(z); return z;
 }    /* b iff reverse the bytes; d iff argument is 64-bits */
@@ -322,7 +323,8 @@ static A jtunbinr(J jt,B b,B d,B pre601,I m,A w){A y,z;C*u=(C*)w,*v;I e,j,kk,n,p
   case -4: y1=(UI4*)x;    DQ(m, *v++=    *y1++;); {return z;}
   case  4: y1=(UI4*)v;    DQ(n, *y1++=(UI4)*x++;); {return z;}
   case -3: ICPY(v,x,m); {return z;}
-  case  3: MC(v,x,m);   {return z;}
+  case  3:
+      memcpy(v,x,m);   {return z;}
   case -2: y=(I4*)x;      DQ(m, *v++=    *y++;); {return z;}
   case  2: y=(I4*)v;      DQ(n, *y++=(I4)*x++;); {return z;}
   case -1: s=(S*)x;       DQ(m, *v++=    *s++;); {return z;}
@@ -340,8 +342,10 @@ static A jtunbinr(J jt,B b,B d,B pre601,I m,A w){A y,z;C*u=(C*)w,*v;I e,j,kk,n,p
  GA(z,zt,m,1,0); v=DAV(z); x=DAV(w);
  switch(j){
   default: ASSERT(0,EVDOMAIN);
-  case -2: MC(v,x,n); {return z;}
-  case  2: MC(v,x,m); {return z;}
+  case -2:
+      memcpy(v,x,n); {return z;}
+  case  2:
+      memcpy(v,x,m); {return z;}
   case -1: s=(float*)x; DQ(m, *v++=       *s++;); {return z;}
   case  1: s=(float*)v; DQ(n, *s++=(float)*x++;); {return z;}
 }}

@@ -73,11 +73,15 @@ static A jtrotsp(J jt,A a,A w){PROLOG(0071);A q,x,y,z;B bx,by;I acr,af,ar,*av,d,
 static void jtrot(J jt,I m,I d,I n,I atomsize,I p,I*av,C*u,C*v){I dk,e,k,j,r,x,y;
  e=n*d*atomsize; dk=d*atomsize; // e=#bytes per cell  dk=bytes per item
  if(jt->fill){
-  if(p<=1){r=p?*av:0;     ROF(r); DQ(m, if(r<0){mvc(k,v,atomsize,jt->fillv); MC(k+v,u,j);}else{MC(v,j+u,k); mvc(j,k+v,atomsize,jt->fillv);}        u+=e; v+=e;);}
-  else{DO(m, r=av[i]; ROF(r);       if(r<0){mvc(k,v,atomsize,jt->fillv); MC(k+v,u,j);}else{MC(v,j+u,k); mvc(j,k+v,atomsize,jt->fillv);}            u+=e; v+=e;);}
+  if(p<=1){r=p?*av:0;     ROF(r); DQ(m, if(r<0){mvc(k,v,atomsize,jt->fillv);
+            memcpy(k+v,u,j);}else{
+            memcpy(v,j+u,k); mvc(j,k+v,atomsize,jt->fillv);}        u+=e; v+=e;);}
+  else{DO(m, r=av[i]; ROF(r);       if(r<0){mvc(k,v,atomsize,jt->fillv);
+            memcpy(k+v,u,j);}else{
+            memcpy(v,j+u,k); mvc(j,k+v,atomsize,jt->fillv);}            u+=e; v+=e;);}
  }else{
-  if(p<=1){r=p?*av:0;     ROT(r); DQ(m, MC(v,j+u,k); MC(k+v,u,j); u+=e; v+=e;);}
-  else{DO(m, r=av[i]; ROT(r);       MC(v,j+u,k); MC(k+v,u,j); u+=e; v+=e;);}
+  if(p<=1){r=p?*av:0;     ROT(r); DQ(m, memcpy(v,j+u,k); memcpy(k+v,u,j); u+=e; v+=e;);}
+  else{DO(m, r=av[i]; ROT(r); memcpy(v,j+u,k); memcpy(k+v,u,j); u+=e; v+=e;);}
  }
 }
 
@@ -150,7 +154,7 @@ static A jtrevsp(J jt, A w){A a,q,x,y,z;I c,f,k,m,n,r,*v,wr;P*wp,*zp;
  PRISTXFERF(z,w)
  // w has been destroyed
  switch(k){
-  default:        {C*s=wv-k,*t; DQ(m, t=s+=nk; DQ(n, MC(zv,t,k); zv+=k; t-=k;););} break;
+  default:        {C*s=wv-k,*t; DQ(m, t=s+=nk; DQ(n, memcpy(zv,t,k); zv+=k; t-=k;););} break;
   case sizeof(C): {C*s=    wv,*t,*u=    zv; DQ(m, t=s+=n; DQ(n, *u++=*--t;););} break;
   case sizeof(S): {S*s=(S*)wv,*t,*u=(S*)zv; DQ(m, t=s+=n; DQ(n, *u++=*--t;););} break;
   case sizeof(int):{int*s=(int*)wv,*t,*u=(int*)zv; DQ(m, t=s+=n; DQ(n, *u++=*--t;););} break;
@@ -288,11 +292,12 @@ static A jtreshapesp(J jt,A a,A w,I wf,I wcr){A a1,e,t,x,y,z;B az,*b,wz;I an,*av
   case sizeof(int): EXPAND(int); break;
   case sizeof(I): EXPAND(I); break;
   default:  
-   mvc(k*zn,zv,k,jt->fillv); // here we are trying to minimize calls to MC
+   mvc(k*zn,zv,k,jt->fillv); // here we are trying to minimize calls to memcpy
    for(i=p=0;i<an;++i)
     if(*av++)p+=wk; 
-    else{if(p){MC(zv,wv,p); wv+=p; zv+=p; p=0;} zv+=wk;}
-   if(p){MC(zv,wv,p);}
+    else{if(p){
+            memcpy(zv,wv,p); wv+=p; zv+=p; p=0;} zv+=wk;}
+   if(p){ memcpy(zv,wv,p);}
  }
  return z;
 }    /* a&#^:_1 w or a&#^:_1!.f w */

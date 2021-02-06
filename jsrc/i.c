@@ -34,7 +34,7 @@ B01X, LITX, C2TX, C4TX, INTX, BOXX, XNUMX, RATX, SBTX, FLX, CMPXX};
 static A jtmakename(J jt,C*s){A z;I m;NM*zv;
  m=strlen(s);
  GATV0(z,NAME,m,1); zv=NAV(z);  // Use GATV because GA doesn't support NAME type
- MC(zv->s,s,m); *(m+zv->s)=0;
+ memcpy(zv->s,s,m); *(m+zv->s)=0;
  zv->m   =(UC)m; 
  zv->bucket=0;
  zv->bucketx=0;
@@ -67,9 +67,9 @@ J gjt=0; // JPF debug - convenience debug single process
 // thread-safe/one-time initialization of all global constants
 // Use GA for all these initializations, to save space since they're done only once
 B jtglobinit(J jt){A x,y;A *oldpushx=jt->tnextpushp;
- MC(jt->typesizes,typesizes,sizeof(jt->typesizes));  // required for ma.  Repeated for each thread in jtinit3
- MC(jt->typepriority,typepriority,sizeof(jt->typepriority));  // may not be needed
- MC(jt->prioritytype,prioritytype,sizeof(jt->prioritytype));  // may not be needed
+    memcpy(jt->typesizes,typesizes,sizeof(jt->typesizes));  // required for ma.  Repeated for each thread in jtinit3
+    memcpy(jt->typepriority,typepriority,sizeof(jt->typepriority));  // may not be needed
+    memcpy(jt->prioritytype,prioritytype,sizeof(jt->prioritytype));  // may not be needed
  jt->adbreakr=jt->adbreak=&breakdata; /* required for ma to work */
  meminit();  /* required for ma to work */
  RZ(y=rifvs(jtstr(jt,1L,"z")));     ACX(y); AS(y)[0]=BUCKETXLOC(1,"z");   // for paths, the shape holds the bucketx
@@ -150,7 +150,7 @@ if(((-1) >> 1) != -1)*(I *)4 = 104;
 jt->asgzomblevel = 1;  // allow premature change to zombie names, but not data-dependent errors
 jt->assert = 1;
 jt->directdef = 1;  // scaf
- MC(jt->bx,"+++++++++|-",sizeof(jt->bx));
+memcpy(jt->bx,"+++++++++|-",sizeof(jt->bx));
  jt->cctdefault=jt->cct= 1.0-FUZZ;
  jt->disp[0]=1; jt->disp[1]=5;
  jt->fcalln=NFCALL;
@@ -169,7 +169,7 @@ jt->directdef = 1;  // scaf
  jt->transposeflag=1;
 // jt->int64rflag=0;
  jt->xmode=XMEXACT;
- MC(jt->baselocale,"base",sizeof(jt->baselocale));   // establish value & hash of "base"
+ memcpy(jt->baselocale,"base",sizeof(jt->baselocale));   // establish value & hash of "base"
  jt->baselocalehash=(UI4)nmhash(sizeof(jt->baselocale),jt->baselocale);
  RESETRANK;  // init both ranks to RMAX
   // Init for u./v.
@@ -184,9 +184,9 @@ jt->directdef = 1;  // scaf
 static C jtjinit3(J jt){S t;
 /* required for jdll and doesn't hurt others */
  gjt=jt; // global jt for JPF debug
- MC(jt->typesizes,typesizes,sizeof(jt->typesizes));  // required for ma.
- MC(jt->typepriority,typepriority,sizeof(jt->typepriority));  // required for ma.  Repeated for each thread in jtinit3
- MC(jt->prioritytype,prioritytype,sizeof(jt->prioritytype));  // required for ma.  Repeated for each thread in jtinit3
+ memcpy(jt->typesizes,typesizes,sizeof(jt->typesizes));  // required for ma.
+ memcpy(jt->typepriority,typepriority,sizeof(jt->typepriority));  // required for ma.  Repeated for each thread in jtinit3
+ memcpy(jt->prioritytype,prioritytype,sizeof(jt->prioritytype));  // required for ma.  Repeated for each thread in jtinit3
  jt->tssbase=tod();
  meminit();
  sesminit();

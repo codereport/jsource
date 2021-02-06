@@ -121,7 +121,9 @@ static B jtnumb(J jt,I n,C*s,Z*v,Z b){A c,d,y;I k;
  if(!(d=jtindexof(jt,jtstr(jt,m,(C*)dig),jtstr(jt,n,s))))return 0;
  if(!(all0(jteps(jt,sc(m),d))))return 0;
  k=sizeof(Z);
- GAT0(c,CMPX,1,0); MC(AV(c),&b,k); if(!(y=jtbase2(jt,c,d)))return 0; MC(v,AV(y),k);
+ GAT0(c,CMPX,1,0);
+ memcpy(AV(c),&b,k); if(!(y=jtbase2(jt,c,d)))return 0;
+ memcpy(v,AV(y),k);
  return 1;
 }
 

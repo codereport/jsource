@@ -57,7 +57,7 @@ A jtnfs(J jt,I n,C*s){A z;C f,*t;I m,p;NM*zv;
  }
  // The name may not be valid, but we will allocate a NAME block for it anyway
  GATV0(z,NAME,n,1); zv=NAV(z);   // the block is cleared to 0
- MC(zv->s,s,n); *(n+zv->s)=0;  // should copy locally, with special dispensation for <4 chars
+ memcpy(zv->s,s,n); *(n+zv->s)=0;  // should copy locally, with special dispensation for <4 chars
 // no because sources may be short  MCISH(zv->s,s,(n+SZI-1)>>LGSZI); *(n+zv->s)=0;  // copy in the name in fullwords (OK because NAMEs are passed, null-terminate it
  f=0; m=n; p=0;
  // Split name into simplename and locale, verify length of each; set flag and hash for locative/indirect locative
@@ -179,8 +179,9 @@ static A jtnch1(J jt,B b,A w,I*pm,A ch){A*v,x,y;C*s,*yv;LX *e;I i,k,m,p,wn;L*d;
     if(b){
      if(m==AN(ch)){RZ(ch=jtext(jt,0,ch)); v=m+AAV(ch);}
      x=d->name; k=NAV(x)->m;
-     GATV0(y,LIT,k+2+p,1); yv=CAV(y); 
-     MC(yv,NAV(x)->s,k); MC(1+k+yv,s,p); yv[k]=yv[1+k+p]='_';
+     GATV0(y,LIT,k+2+p,1); yv=CAV(y);
+     memcpy(yv,NAV(x)->s,k);
+     memcpy(1+k+yv,s,p); yv[k]=yv[1+k+p]='_';
      *v++=incorp(y); ++m;
    }}
    if(!d->next)break;

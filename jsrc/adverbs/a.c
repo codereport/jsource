@@ -63,7 +63,8 @@ static A jtbasis1(J jt,    A w,A self){DECLF;A z;D*x;I j;V*v;
  if(1==n){j=*v; ASSERT(BETWEENC(j,-16,34),EVINDEX);}
  else DQ(n, j=*v++; ASSERT(BETWEENC(j,-16,15),EVINDEX););  // j must be initialized because the loop might not run
  if(j<16){
-  GAT0(b,B01,64,2); AS(b)[0]=16; AS(b)[1]=4; MC(AV(b),booltab,64L);
+  GAT0(b,B01,64,2); AS(b)[0]=16; AS(b)[1]=4;
+  memcpy(AV(b),booltab,64L);
   RZ(h=rifvs(jtcant2(jt,IX(AR(w)),jtfrom(jt,w,b))));  // h is an array representing b.  One cell for each atom of b; cell is 4 values
   return fdef(0,CBDOT,VERB, jtbdot1,jtbdot2, 0L,w,h, VFLAGNONE, RMAX,0L,0L);
  }else switch(j){

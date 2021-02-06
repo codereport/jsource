@@ -64,7 +64,8 @@ static B jtforinit(J jt,CDATA*cv,A t){A x;C*s,*v;I k;
  k=AN(cv->line)-5; cv->k=(I4)k;                 /* length of item name; -1 if omitted (for.; for_. not allowed) */
  if((-k&-cv->n)<0){                         /* for_xyz.       k>0 and cv->n >0     */
   s=4+CAV(cv->line); RZ(x=jtstr(jt,6+k,s)); ras(x); cv->x=x;
-  cv->xv=v=CAV(x); MC(k+v,"_index",6L);  /* index name          */
+  cv->xv=v=CAV(x);
+  memcpy(k+v,"_index",6L);  /* index name          */
   cv->iv=s;                              /* item name           */
  }
  return 1;
@@ -623,7 +624,7 @@ static A jtcolon0(J jt, I deftype){A l,z;C*p,*q,*s;A *sb;I m,n;
    sb[n]=l; ++n; // append the line, increment line number
   }else{
    while(AN(z)<=n+m){RZ(z=jtext(jt,0,z)); s=CAV(z);}  // extend the result if necessary
-   MC(s+n,q,m); n+=m; s[n]=CLF; ++n;  // append LF at end of each line
+   memcpy(s+n,q,m); n+=m; s[n]=CLF; ++n;  // append LF at end of each line
   }
  }
  // Return the string.  No need to trim down the list of boxes, as it's transitory
@@ -778,7 +779,7 @@ A jtcrelocalsyms(J jt, A l, A c,I type, I dyad, I flags){A actst,*lv,pfst,t,wds;
     // for_xyz. found.  Lookup xyz and xyz_index
     A xyzname = jtstr(jt,cwlen+1,CAV(lv[cwv[j].i])+4);
     RZ(jtprobeis(jt,jtnfs(jt,cwlen-5,CAV(xyzname)),pfst));  // create xyz
-    MC(CAV(xyzname)+cwlen-5,"_index",6L);    // append _index to name
+    memcpy(CAV(xyzname)+cwlen-5,"_index",6L);    // append _index to name
     RZ(jtprobeis(jt,jtnfs(jt,cwlen+1,CAV(xyzname)),pfst));  // create xyz_index
    }
   }

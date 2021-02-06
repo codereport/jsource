@@ -40,10 +40,11 @@ static A jtrinvip(J jt,A w,I n,I ncomp){PROLOG(0066);A ai,bx,di,z;I m;
   z=w; void *zr=voidAV(z);  // reuse input area, set pointer to output
   // copy top part: ai,.bx
   void *leftr=voidAV(ai), *rightr=voidAV(bx);  // input pointers
-  DQ(m, MC(zr,leftr,leftlen); zr=(C*)zr+leftlen; leftr=(C*)leftr+leftlen; MC(zr,rightr,rightlen); zr=(C*)zr+rightlen; rightr=(C*)rightr+rightlen;)
+  DQ(m, memcpy(zr,leftr,leftlen); zr=(C*)zr+leftlen; leftr=(C*)leftr+leftlen;
+     memcpy(zr,rightr,rightlen); zr=(C*)zr+rightlen; rightr=(C*)rightr+rightlen;)
   // copy bottom part: 0,.di
   rightr=voidAV(di);
-  DQ(n-m, memset(zr,C0,leftlen); zr=(C*)zr+leftlen; MC(zr,rightr,rightlen); zr=(C*)zr+rightlen; rightr=(C*)rightr+rightlen;)
+  DQ(n-m, memset(zr,C0,leftlen); zr=(C*)zr+leftlen; memcpy(zr,rightr,rightlen); zr=(C*)zr+rightlen; rightr=(C*)rightr+rightlen;)
   AFLAG(z)|=AFUPPERTRI; // Mark result as upper-triangular in case we multiply a matrix by it
  }
  //  w00^_1     -w00^_1 mp w01 mp w11^_1
@@ -87,7 +88,7 @@ static A jtqrr(J jt, A w){PROLOG(0067);A a1,q,q0,q1,r,r0,r1,t,*tv,t0,t1,y,z;I m,
  z=link(q,r); EPILOG(z);
 }
 
-#define verifyinplace(to,from) if(to!=from){MC(CAV(to),CAV(from),AN(to)<<bplg(AT(to)));}
+#define verifyinplace(to,from) if(to!=from){ memcpy(CAV(to),CAV(from),AN(to)<<bplg(AT(to)));}
 // this version operates on rows, inplace.  w is not empty
 // q is the ADJOINT of the original q matrix
 // result is adjoint of the L in LQ decomp, therefore upper-triangular
@@ -124,10 +125,11 @@ static A jtltqip(J jt, A w){PROLOG(0067);A l0,l1,y,z;
  GA(z,AT(w),rw*rw,2,AS(w)); AS(z)[1]=rw; void *zr=voidAV(z);  // allocate result, set pointer to output
  // copy top part: l0*,. (w1 q0*)*
  void *leftr=voidAV(l0), *rightr=voidAV(conjug(cant1(y)));  // input pointers
- DQ(m, MC(zr,leftr,leftlen); zr=(C*)zr+leftlen; leftr=(C*)leftr+leftlen; MC(zr,rightr,rightlen); zr=(C*)zr+rightlen; rightr=(C*)rightr+rightlen;)
+ DQ(m, memcpy(zr,leftr,leftlen); zr=(C*)zr+leftlen; leftr=(C*)leftr+leftlen;
+    memcpy(zr,rightr,rightlen); zr=(C*)zr+rightlen; rightr=(C*)rightr+rightlen;)
  // copy bottom part: 0,.(L of w1 - (w1 q0*) q0)*
  rightr=voidAV(l1);
- DQ(rw-m, memset(zr,C0,leftlen); zr=(C*)zr+leftlen; MC(zr,rightr,rightlen); zr=(C*)zr+rightlen; rightr=(C*)rightr+rightlen;)
+ DQ(rw-m, memset(zr,C0,leftlen); zr=(C*)zr+leftlen; memcpy(zr,rightr,rightlen); zr=(C*)zr+rightlen; rightr=(C*)rightr+rightlen;)
  // q is    q0     (Q of w1 - (w1 q0*) q0)
  // l* is   l0*    (w1 q0*)*
  //         0      (L of w1 - (w1 q0*) q0)*

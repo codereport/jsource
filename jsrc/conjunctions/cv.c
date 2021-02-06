@@ -39,9 +39,10 @@ static A jtfitfill1(J jt,    A w,A self){DECLFG;F1PREFIP;A z; jt->fill=gs; z=CAL
 static A jtfitfill2(J jt,A a,A w,A self){DECLFG;F2PREFIP;A z; jt->fill=gs; z=CALL2IP(f2,a,w,fs); jt->fill=0; return z;}
 
 static A jtfitpp1(J jt,    A w,A self){DECLFG;A z;C d[8],*s=3+jt->pp;
- MC(d,s,8L); 
+    memcpy(d,s,8L);
  sprintf(s,FMTI"g",AV(gs)[0]); 
- z=CALL1(f1,w,fs); MC(s,d,8L);
+ z=CALL1(f1,w,fs);
+ memcpy(s,d,8L);
  return z;
 }
 

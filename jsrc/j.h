@@ -453,7 +453,6 @@ typedef double float64x2_t __attribute__ ((vector_size (16)));
 #define JTIPWonly       (J)((I)jtinplace&~(JTINPLACEA+JTWILLBEOPENED+JTCOUNTITEMS))  // dyad jt converted to monad for w
 // given a unique num, define loop begin and end labels
 #define MAX(a,b)        ((a)>(b)?(a):(b))
-#define MC              memcpy
 #define MCL(dest,src,n) memcpy(dest,src,n)  // use when copy is expected to be long
 #define MCIL(dest,src,n) memcpy(dest,src,(n)*sizeof(*src))   // use when copy expected to be long
 // Copy shapes.  Optimized for length <5, subroutine for others
@@ -462,7 +461,8 @@ typedef double float64x2_t __attribute__ ((vector_size (16)));
   if(_n<=2){ \
    _n-=1; _d=(_n<0)?jt->shapesink+1:_d; _s=(_n<0)?jt->shapesink+1:_s; \
    _d[0]=_s[0]; _d[_n]=_s[_n];  \
-  }else{MC(_d,_s,_n<<LGSZI);} \
+  }else{                                        \
+            memcpy(_d,_s,_n<<LGSZI);} \
  }
 #define MCISHd(dest,src,n) {MCISH(dest,src,n) dest+=(n);}  // ... this version when d increments through the loop
 

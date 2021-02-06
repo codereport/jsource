@@ -271,7 +271,8 @@ static I jtsbextend(J jt,I n,C*s,UI h,I hi){A x;I c,*hv,j,p;SBU*v;
   RZ(x=jtext(jt,1,jt->sbu)); jt->sbu=x; jt->sbuv=(SBU*)AV(x);
  }
  if(AN(jt->sbs)<n+jt->sbsn){            /* extend sbs strings           */
-  GATV0(x,LIT,2*(n+jt->sbsn),1); MC(CAV(x),jt->sbsv,jt->sbsn);
+  GATV0(x,LIT,2*(n+jt->sbsn),1);
+  memcpy(CAV(x),jt->sbsv,jt->sbsn);
   fa(jt->sbs); ras(x); jt->sbs=x; jt->sbsv=CAV(x);
  }
  if(AN(jt->sbh)<2*c){                   /* extend sbh hash table        */
@@ -296,7 +297,7 @@ static SB jtsbinsert(J jt,S c2,S c0,I n,C*s,UI h,UI hi){I c,m,p;SBU*u;
  p=c2&SBC4?((-m)&3):c2&SBC2?(m&1):0;    /* pad for alignment            */
  RE(hi=sbextend(n+p,s,h,hi));           /* extend global tables as req'd*/
  if(c2==c0)
-  MC(SBSV(m+p),s,n);                    /* copy string into sbs         */
+     memcpy(SBSV(m+p),s,n);                    /* copy string into sbs         */
  else{
   if     (c0&SBC4&& c2&SBC2){C4*ss=(C4*)s; US*s0=(US*)SBSV(m+p); DQ(n>>1, *s0++=(US)*ss++;);}
   else if(c0&SBC4&&!c2&SBC2){C4*ss=(C4*)s; UC*s0=(UC*)SBSV(m+p); DQ(n,   *s0++=(UC)*ss++;);}
@@ -471,7 +472,8 @@ static A jtsbbox(J jt, A w){A z,*zv;C*s;I n;SB*v;SBU*u;
 
 #define C2FSB(zv,u,q,m,c)  \
  {UC*s=SBSV(u->i);I k=u->n;US*us=(US*)s;                            \
-  if(SBC4&u->flag){MC(zv,s,k); zv+=k>>=2;}                          \
+  if(SBC4&u->flag){        \
+            memcpy(zv,s,k); zv+=k>>=2;}                          \
   else if(SBC2&u->flag){k>>=1; DQ(k, *zv++=*us++;);}else DQ(k, *zv++=*s++;);  \
   if(2==q)*zv++=c; else if(3==q)DQ(m-k, *zv++=c;);                 \
  }
@@ -496,8 +498,9 @@ static A jtsbstr(J jt,I q,A w){A z;S c2=0;C c;I m,n;SB*v,*v0;SBU*u;
  }else{C*zv;
   zv=CAV(z); 
   if(1==q)*zv++=c;
-  DO(n-1, u=SBUV(*v++); MC(zv,SBSV(u->i),u->n); zv+=u->n; *zv++=c;); 
-  if(n){  u=SBUV(*v++); MC(zv,SBSV(u->i),u->n); zv+=u->n; if(2==q)*zv=c;}
+  DO(n-1, u=SBUV(*v++); memcpy(zv,SBSV(u->i),u->n); zv+=u->n; *zv++=c;);
+  if(n){  u=SBUV(*v++);
+      memcpy(zv,SBSV(u->i),u->n); zv+=u->n; if(2==q)*zv=c;}
  }
  return z;
 }    /* leading (1=q) or trailing (2=q) separated string for symbol array w */
@@ -511,7 +514,7 @@ static A jtsblit(J jt,C c,A w){A z;S c2=0;I k,m=0,n;SB*v,*v0;SBU*u;
  GA(z,c2&SBC4?C4T:c2&SBC2?C2T:LIT,n*m,1+AR(w),AS(w)); *(AR(w)+AS(z))=m;
  if(c2&SBC4){C4*zv=C4AV(z); DQ(n, u=SBUV(*v++); C2FSB(zv,u,3,m,c););}
  else if(c2&SBC2){US*zv=USAV(z); DQ(n, u=SBUV(*v++); C2FSB(zv,u,3,m,c););}
- else  {C*zv=CAV(z); memset(zv,c,n*m); DO(n, u=SBUV(*v++); MC(zv,SBSV(u->i),u->n); zv+=m;);}
+ else  {C*zv=CAV(z); memset(zv,c,n*m); DO(n, u=SBUV(*v++); memcpy(zv,SBSV(u->i),u->n); zv+=m;);}
  return z;
 }    /* literal array for symbol array w padded with c */
 

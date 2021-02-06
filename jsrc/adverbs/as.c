@@ -340,9 +340,9 @@ static A jtofxassoc(J jt,A a,A w,A self){A f,i,j,p,s,x,z;C id,*zv;I c,d,k,kc,m,r
   adocv=var(x,t,t); // analyze the u operand
   ASSERTSYS(adocv.f,"ofxassoc");  // scaf
   GA(z,t,c*(1+d),r,AS(p)); AS(z)[0]=1+d; zv=CAV(z);  // allocate result assuming no overflow
-  MC(zv,     AV(s),          kc);                     // first cell is {.s, i. e. all but the first infix
+  memcpy(zv,     AV(s),          kc);                     // first cell is {.s, i. e. all but the first infix
   rc=(1<d)?((AHDR2FN*)adocv.f)((I)1,c*(d-1),AV(p),kc+CAV(s),zv+kc,jt):EVOK;  /* (}:p) f (}.s), with result stored into the result area */  // don't call with 0 length!
-  MC(zv+kc*d,CAV(p)+kc*(d-1),kc);                     // last cell is {:p, i. e. all but the last infix
+  memcpy(zv+kc*d,CAV(p)+kc*(d-1),kc);                     // last cell is {:p, i. e. all but the last infix
   // If there was overflow on the ado, we have to redo the operation as a float.
   // We also have to redo if the types of p and s were different (for example, if one overflowed to float and the other didn't)
  }

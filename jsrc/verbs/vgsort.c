@@ -70,7 +70,8 @@ static __forceinline B compdd(I n, D *a, D *b){COMPGRADE(D,>)}
 #define COMPFN (*comp)
 #define T void
 #define PTRADD(p,item) ((void *)((C*)p+(item)*bpi))
-#define MVITEMS(dest,src,nitems) {MC(dest,src,(nitems)*bpi); dest=PTRADD(dest,nitems); src=PTRADD(src,nitems);}
+#define MVITEMS(dest,src,nitems) {                                    \
+        memcpy(dest,src,(nitems)*bpi); dest=PTRADD(dest,nitems); src=PTRADD(src,nitems);}
 #include "vgsort.h"
 
 // Sorts with inline comparisons

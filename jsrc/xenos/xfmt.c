@@ -155,7 +155,8 @@ static A jtfmtparse(J jt, A w){A x,z,*zv;B ml[2+NMODVALS],mod,t;C c,*cu="srqpnmd
   if(BETWEENC(c,'0','9')){RZ(widthdp(jtstr(jt,n-i,wv+i),vals,vals+1)); break;} 
  }
  if(mtv!=zv[NMODVALS]){C*cu="e,.-*",*cv,subs[5];
-  x=zv[NMODVALS]; n=AN(x); cv=CAV(x); MC(subs,cu,5L); memset(ml,C1,5L);
+  x=zv[NMODVALS]; n=AN(x); cv=CAV(x);
+  memcpy(subs,cu,5L); memset(ml,C1,5L);
   ASSERT(0==(n&1)&&10>=n,EVDOMAIN);
   DQ(n>>1, ASSERT(s=strchr(cu,*cv++),EVDOMAIN); j=s-cu; ASSERT(ml[j],EVDOMAIN); ml[j]=0; subs[j]=*cv++;);
   RZ(zv[NMODVALS]=incorp(jtstr(jt,5L,subs)));
@@ -261,8 +262,9 @@ static A jtfmtprecomp(J jt,A a,A w) {A*as,base,fb,len,strs,*u,z;B*bits,*bw;D dtm
  GATV(fb,  B01,n,wr,ws); memset(BAV(fb),C0,n);
  GAT0(z,BOX,4,1); u=AAV(z); *u++=incorp(base); *u++=incorp(strs); *u++=incorp(len); *u++=incorp(fb); 
  ib=AV(base); as=AAV(strs); u=AAV(a);
- if(1==nf){MC(ib,AV(*u),SZI*3); memset(ib+3,C0,SZI*nc); DO(NMODVALS, *as++=incorp(u[i+1]);)}
- else DQ(nf, MC(ib,AV(*u),SZI*3); ib[3]=0; ib+=4; DO(NMODVALS, *as++=incorp(*(u++ +1));) ++u; )
+ if(1==nf){
+     memcpy(ib,AV(*u),SZI*3); memset(ib+3,C0,SZI*nc); DO(NMODVALS, *as++=incorp(u[i+1]);)}
+ else DQ(nf, memcpy(ib,AV(*u),SZI*3); ib[3]=0; ib+=4; DO(NMODVALS, *as++=incorp(*(u++ +1));) ++u; )
  bits=BAV(fb);
  switch(CTTZNOFLAG(wt)) {
   case B01X:
@@ -460,27 +462,37 @@ static A jtfmtallcol(J jt, A a, A w, I mode) {A *a1v,base,fb,len,strs,*u,v,x;
    else if(0<=l) {if(nR)mvc(k,cv,nR,cR); else memset(cv, ' ', l-*il); cv+=l-*il;}
    // format the value.
    if(*bits&BITSf) {  // value is _ __ _. (and therefore FL type)
-    if(mI && *bits&BITS__)MC(cv, cI, nI);  // NULL has priority i<xx>
-    else if(mD) MC(cv, cD, nD);  // if d<xx> given, use it
+    if(mI && *bits&BITS__)
+           memcpy(cv, cI, nI);  // NULL has priority i<xx>
+    else if(mD)
+        memcpy(cv, cD, nD);  // if d<xx> given, use it
     else if(*bits&BITS_ ) { cv[0]='_'; }  // otherwise, use the visual representation of the value
     else if(*bits&BITS__) { cv[0]='_'; cv[1]='_'; }
     else                  { cv[0]='_'; cv[1]='.'; }
    } else if(*bits&BITSz) {  // not infinity; is 0?  (could be B01, INT, or FL)
-    if(mB) MC(cv, cB, nB);  // if b<xx> given, use it
+    if(mB)
+        memcpy(cv, cB, nB);  // if b<xx> given, use it
     else {
-     if(mPQ) { MC(cv, cP, nP); MC(cv+*il-nQ, cQ, nQ); }  // if p<xx> or q<xx> given, move in those fields
+     if(mPQ) {
+         memcpy(cv, cP, nP);
+         memcpy(cv+*il-nQ, cQ, nQ); }  // if p<xx> or q<xx> given, move in those fields
      RZ(sprintfI(cv+nP,*il-nP-nQ,d,0,subs));  // format 0 into the field, skipping p/q
     }
-   } else if(mI && t&INT && *iv==IMIN){MC(cv, cI, nI);  // if we are checking for NULL, that overrides exponential
+   } else if(mI && t&INT && *iv==IMIN){
+       memcpy(cv, cI, nI);  // if we are checking for NULL, that overrides exponential
    } else if(*bits&BITSe) {  // is nonzero to be displayed in exponential notation?  (must be INT or FL)
     dtmp=t&FL?*dv:(D)*iv;  // get value, as a float
     y=dtmp < 0; g=0;    // y will be length of sign prefix; init to 1 if negative.  g is length of sign suffix9
     if(dtmp < 0 && mMN) { y=nM; g=nN; }   // if value is negative and m<xx> or n<xx> given, set pref/suff length from m/n
     else if(dtmp>=0 && mPQ) { y=nP; g=nQ; }   // if value is nonnegative and p<xx> or q<xx> given, set pref/suff length from p/q
     RZ(sprintfeD(cv+y,*il-y-g,d,jtexprndID(jt,d,dtmp),subs));  // format the number, skipping pref/suff
-    if     (dtmp< 0 && mMN) { MC(cv, cM, nM); MC(cv+*il-nN, cN, nN); }  // if negative & pref/suff given, move them in
+    if     (dtmp< 0 && mMN) {
+        memcpy(cv, cM, nM);
+        memcpy(cv+*il-nN, cN, nN); }  // if negative & pref/suff given, move them in
     else if(dtmp< 0       ) { *cv=SUBm;                              }   // if other negative, use the specified - sign
-    else if(dtmp>=0 && mPQ) { MC(cv, cP, nP); MC(cv+*il-nQ, cQ, nQ); }  // if nonnegative & pref/suff given, move them in
+    else if(dtmp>=0 && mPQ) {
+        memcpy(cv, cP, nP);
+        memcpy(cv+*il-nQ, cQ, nQ); }  // if nonnegative & pref/suff given, move them in
    } else {
     if(UNSAFE(t)==INT){  // integer to be displayed in fixed-point
      y=*iv < 0; g=0; 
@@ -489,11 +501,17 @@ static A jtfmtallcol(J jt, A a, A w, I mode) {A *a1v,base,fb,len,strs,*u,v,x;
      m=*il-y-g; if(mC) m=m-((m-!!d-d)>>2);  // m=length left for value after pref/suff, and any added commas
      RZ(sprintfI(cv+y, m, d, *iv, subs));  // format as integer
      if(mC) RZ(fmtcomma(cv+y, *il-y-g, d, subs));  // insert commas if called for
-     if     (*iv < 0 && mMN) { MC(cv, cM, nM); MC(cv+*il-nN, cN, nN); }  // install pref/suff as above
+     if     (*iv < 0 && mMN) {
+         memcpy(cv, cM, nM);
+         memcpy(cv+*il-nN, cN, nN); }  // install pref/suff as above
      else if(*iv < 0       ) { *cv=SUBm;                              }
-     else if(*iv>= 0 && mPQ) { MC(cv, cP, nP); MC(cv+*il-nQ, cQ, nQ); }
+     else if(*iv>= 0 && mPQ) {
+         memcpy(cv, cP, nP);
+         memcpy(cv+*il-nQ, cQ, nQ); }
     }else if(UNSAFE(t)<INT){  // B01
-     if(mPQ) { MC(cv, cP, nP); MC(cv+*il-nQ, cQ, nQ); }
+     if(mPQ) {
+         memcpy(cv, cP, nP);
+         memcpy(cv+*il-nQ, cQ, nQ); }
      RZ(sprintfI(cv+nP, *il-nP-nQ, d, *bv, subs));
     }else{  // FL to be displayed in fixed point, as above but with decimal places
      y=*dv < 0; g=0;
@@ -502,9 +520,13 @@ static A jtfmtallcol(J jt, A a, A w, I mode) {A *a1v,base,fb,len,strs,*u,v,x;
      m=*il-y-g; if(mC) m=m-((m-!!d-d)>>2);
      RZ(sprintfnD(cv+y, m, d, jtafzrndID(jt,d,*dv), subs));  // round to the display precision
      if(mC) RZ(fmtcomma(cv+y, *il-y-g, d, subs));
-     if     (*dv < 0 && mMN) { MC(cv, cM, nM); MC(cv+*il-nN, cN, nN); }
+     if     (*dv < 0 && mMN) {
+         memcpy(cv, cM, nM);
+         memcpy(cv+*il-nN, cN, nN); }
      else if(*dv < 0       ) { *cv=SUBm;                              }
-     else if(*dv>= 0 && mPQ) { MC(cv, cP, nP); MC(cv+*il-nQ, cQ, nQ); }
+     else if(*dv>= 0 && mPQ) {
+         memcpy(cv, cP, nP);
+         memcpy(cv+*il-nQ, cQ, nQ); }
     }
    }
   }

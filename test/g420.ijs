@@ -710,10 +710,10 @@ NB. +/ Magic Cubes -----------------------------------------------------
 
 NB. by Professor James G. Mauldon via Ken Iverson
 
-MC=: #. ] | (#: i.)@(3&#) +/ .* (3 3{.3 5$3 5 4)"_
+memcpy=: #. ] | (#: i.)@(3&#) +/ .* (3 3{.3 5$3 5 4)"_
 
 test=: 3 : 0
- c=: MC y
+ c=: memcpy y
  s=: {. , +/ c
  assert. s = (+/ , +/"1) c
  assert. s = (+/ , +/"1) (<0 1)|:c
@@ -828,7 +828,7 @@ t -: 1000  NB. quit after 1000 tries
 
 9!:19 ct
 
-4!:55 ;:'A adot1 adot2 sdot0 a c ct f g i insert iota k MC n p pl q '
+4!:55 ;:'A adot1 adot2 sdot0 a c ct f g i insert iota k memcpy n p pl q '
 4!:55 ;:'rand s t test x y z'
 randfini''
 

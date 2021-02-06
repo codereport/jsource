@@ -22,7 +22,7 @@
  A jtboxs(J jt, A w){A x;
  RZ(w=vs(w));
  ASSERT(sizeof(jt->bx)==AS(w)[0],EVLENGTH);
- MC(jt->bx,CAV(w),sizeof(jt->bx));
+ memcpy(jt->bx,CAV(w),sizeof(jt->bx));
  return mtv;
 }  // box-display characters
 

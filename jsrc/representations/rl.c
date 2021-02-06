@@ -25,7 +25,8 @@ static B jtlp(J jt,A w){F1PREFIP;B b=1,p=0;C c,d,q=CQUOTE,*v;I j=0,n;
 }    /* 1 iff put parens around w */
 
 static A jtlcpa(J jt,B b,A w){F1PREFIP;A z=w;C*zv;I n;
- if(b){n=AN(w); GATV0(z,LIT,2+n,1); zv=CAV(z); *zv='('; MC(1+zv,AV(w),n); zv[1+n]=')';}
+ if(b){n=AN(w); GATV0(z,LIT,2+n,1); zv=CAV(z); *zv='(';
+     memcpy(1+zv,AV(w),n); zv[1+n]=')';}
  return z;
 }    /* if b then (w) otherwise just w */
 
@@ -38,7 +39,8 @@ static A jtlcpb(J jt,B b,A w){F1PREFIP;A z=w;B p;C c,*v,*wv,*zv;I n;
   else          DQ(n-1, c=      *++v ; if(!(c==CESC1||c==CESC2)){b=1; break;});
   if(b&&jtvnm(jt,n,wv))b=0;
  }
- if(b){GATV0(z,LIT,2+n,1); zv=CAV(z); *zv='('; MC(1+zv,wv,n); zv[1+n]=')';}
+ if(b){GATV0(z,LIT,2+n,1); zv=CAV(z); *zv='(';
+     memcpy(1+zv,wv,n); zv[1+n]=')';}
  return z;
 }
 
@@ -96,7 +98,8 @@ static A jtlchar(J jt,A w,A *ltext){F1PREFIP;A y;B b,p=1,r1;C c,d,*u,*v;I j,k,m,
  // out the enquoted string, preceded the the shape if repeated or not a list
  GATV0(y,LIT,n+j,1); v=CAV(y);
  *v=*(v+n+j-1)=CQUOTE; ++v;
- if(2==j)MC(v,u,n); else DQ(n, *v++=c=*u++; if(c==CQUOTE)*v++=c;);
+ if(2==j)
+     memcpy(v,u,n); else DQ(n, *v++=c=*u++; if(c==CQUOTE)*v++=c;);
  return over(b?lsh(w):lshape(w),y);
 }    /* non-empty character array */
 
@@ -119,7 +122,7 @@ static A jtlbox(J jt,A w,A *ltext){F1PREFIP;A p,*v,*vv,*wv,x,y;B b=0;I n;
   if(c[CQUOTE]&&equ(w,words(x)))return over(cstr(";:"),lchar(x));
   if(c[d=' ']||c[d='|']||c[d='/']||c[d=',']||c[d=';']){
    GATV0(y,LIT,n+AN(x),1); t=CAV(y);
-   DO(n, x=wv[i]; *t++=d; MC(t,AV(x),AN(x)); t+=AN(x););
+   DO(n, x=wv[i]; *t++=d; memcpy(t,AV(x),AN(x)); t+=AN(x););
    RZ(y=lchar(y));
    return over(lshape(w),over(cstr(isdigit(CAV(y)[0])?"<;.(_1) ":"<;._1 "),y));
  }}
@@ -303,7 +306,7 @@ static A jtlcolon(J jt,A w,A *ltext){F1PREFIP;A*v,x,y;C*s,*s0;I m,n;
  m=0; DO(n, m+=AN(v[i]););
  GATV0(y,LIT,2+n+m,1);
  s=s0=CAV(y);
- DO(n, *s++=CLF; y=v[i]; m=AN(y); MC(s,CAV(y),m); s+=m;);
+ DO(n, *s++=CLF; y=v[i]; m=AN(y); memcpy(s,CAV(y),m); s+=m;);
  *s++=CLF; *s++=')'; 
  RZ(y=jtstr(jt,s-s0,s0));
  *ltext=*ltext?over(*ltext,y):y;
