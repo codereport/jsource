@@ -1048,7 +1048,7 @@
 #define vaspeq(x0,x1,x2,x3,x4,x5,x6,x7,x8)                  jtvaspeq(jt,(x0),(x1),(x2),(x3),(x4),(x5),(x6),(x7),(x8))
 #define vaspeqprep(x0,x1,x2,x3,x4,x5,x6,x7,x8,x9,x10,x11)   jtvaspeqprep(jt,(x0),(x1),(x2),(x3),(x4),(x5),(x6),(x7),(x8),(x9),(x10),(x11))
 #define vaspz(x)                    jtvaspz(jt,(x))
-#define vaxis(x,y)                  jtvaxis(jt,(x),(y))
+
 #define vc1(x,y)                    jtvc1(jt,(x),(y))
 #define vci(x)                      jtvci(jt,(x))
 #define vec(x,y,z)                  jtvec(jt,(x),(y),(z))

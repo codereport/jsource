@@ -67,7 +67,7 @@ static A jtsparse1a(J jt,A s,A a,A e,A y,A x){A z;B*b;I an,*av,et,r,*sv,t,*v;P*p
  ASSERT(r!=0,EVLENGTH);
  ASSERT(r<=RMAX,EVLIMIT);
  DO(r, ASSERT(0<=sv[i],EVDOMAIN););
- RZ(a=vaxis(r,a==mark?IX(r):a)); an=AN(a); av=AV(a);
+ RZ(a=jtvaxis(jt,r,a==mark?IX(r):a)); an=AN(a); av=AV(a);
  if(e==mark)RZ(e=scf(0.0));
  ASSERT(!AR(e),EVRANK);   // e must be an atom
  et=AT(e);
@@ -173,7 +173,7 @@ A jtsparseit(J jt,A w,A a,A e){PROLOG(0091);A ax,c,x,y,z;B b,*cv;I cm,cn,m,n,r,*
  if(wt&DENSE)return sparseit(w,a,selm(wt));
  r=AR(w); ws=AS(w); wp=PAV(w);
  GASPARSE(z,wt,1L,r,ws); zp=PAV(z); 
- SPBV(zp,a,a1,vaxis(r,a)); 
+ SPBV(zp,a,a1,jtvaxis(jt,r,a)); 
  SPBV(zp,e,e,ca(SPA(wp,e)));
  a=SPA(wp,a); x=SPA(wp,x); y=SPA(wp,i); m=*AS(y);
  if(all1(jteps(jt,a,a1))){I*s;  /* old is subset of new */
@@ -225,7 +225,7 @@ static A jtaxbytes1(J jt,I t,I an,I m,I xr,I*xs){I k,z;
 static A jtaxbytes(J jt,A a,A w){A a1,e,p,q,x;B*b;I c,d,j,m,n=0,r,*u,*v,*ws,wt;P*wp;
  r=AR(w); ws=AS(w); wt=AT(w); 
  GATV0(q,INT,r,1); u=AV(q); j=0;
- RZ(a1=vaxis(r,a)); d=AN(a1);  
+ RZ(a1=jtvaxis(jt,r,a)); d=AN(a1);  
  if(wt&SPARSE){wp=PAV(w); a=SPA(wp,a); e=SPA(wp,e);    x=SPA(wp,x); c=1;}
  else         {           a=mtv;       RZ(e=selm(wt)); x=w;         c=0;}
  if(all1(jteps(jt,a,a1))){    /* old is subset of new */
@@ -249,7 +249,7 @@ static A jtaxbytes(J jt,A a,A w){A a1,e,p,q,x;B*b;I c,d,j,m,n=0,r,*u,*v,*ws,wt;P
 static A jtaxtally(J jt,A a,A w){A a1,e,p,q,x;B*b;I c,d,j,m,n=0,r,*u,*v,*ws,wt;P*wp;
  r=AR(w); ws=AS(w); wt=AT(w); 
  GATV0(q,INT,r,1); u=AV(q); j=0;
- RZ(a1=vaxis(r,a)); d=AN(a1);  
+ RZ(a1=jtvaxis(jt,r,a)); d=AN(a1);  
  if(wt&SPARSE){wp=PAV(w); a=SPA(wp,a); e=SPA(wp,e);    x=SPA(wp,x); c=1;}
  else         {           a=mtv;       RZ(e=selm(wt)); x=w;         c=0;}
  if(all1(jteps(jt,a,a1))){    /* old is subset of new */

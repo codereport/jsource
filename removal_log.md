@@ -573,3 +573,4 @@
 |`jsrc/xenos/xd.c`|v2|jtv2|`(^\|[ \t]+\|[^\d\w_])v2\((?=([^,]+?),([^)]+?)\))`|`\1jtv2(jt,`|
 |`jsrc/xenos/xfmt.c`|v2|jtv2|`(^\|[ \t]+\|[^\d\w_])v2\((?=([^,]+?),([^)]+?)\))`|`\1jtv2(jt,`|
 |`jsrc/xenos/xt.c`|v2|jtv2|`(^\|[ \t]+\|[^\d\w_])v2\((?=([^,]+?),([^)]+?)\))`|`\1jtv2(jt,`|
+|`jsrc/verbs/vs.c`|vaxis|jtvaxis|`(^\|[ \t]+\|[^\d\w_])vaxis\((?=([^,]+?),([^)]+?)\))`|`\1jtvaxis(jt,`|
