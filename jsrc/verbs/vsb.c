@@ -17,24 +17,6 @@
 // The hash field is filled in at initialization, but that's OK because it's always set to the same value
 static SBU       sentinel = {0,0,0,BLACK,0,0,0,IMIN,0,0,0};
 
-/* #define TMP */
-#ifdef TMP
-#include <time.h>
-static int              tmp_lr=0; 
-static int              tmp_rr=0; 
-static int              tmp_lt=0; 
-static int              tmp_while=0; 
-static int              tmp_node=0; 
-static int              tmp_reorder=0; 
-static int              tmp_moves=0; 
-static int              tmp_imax=0; 
-static int              tmp_rhit=0; 
-static int              tmp_lhit=0;
-static clock_t          clo;
-static D                tickk=1.0/CLOCKS_PER_SEC;
-#endif
-
-
 /* implementation dependend declarations */
 typedef enum {
     STATUS_OK,
@@ -44,12 +26,7 @@ typedef enum {
 } statusEnum;
 
 
-#ifdef TMP
-#define NODE(a)         (tmp_node++,a+jt->sbuv)
-#else
 #define NODE(a)         (a+jt->sbuv)
-#endif
-
 #define NODEM(a,b)      (jt->sbuv[a].b)
 #define LEFT(a)         NODEM(a,left)
 #define RIGHT(a)        NODEM(a,right)
@@ -65,29 +42,7 @@ typedef enum {
 #define compLT(a,b)     Vcompare(jt,a,b)
 #define compEQ(a,b)     ( a == b )
 
-
-
-#ifdef TMP
-static void showdepth(J jt, I node, int **ptr, I* size, I depth)
-{
-  if(LEFT(node) == 0) {
-    (*ptr) = realloc((*ptr), sizeof(I)*((*size)+1));
-    (*ptr)[(*size)++]=depth;
-  }
-  else             showdepth(jt,  LEFT(node), ptr, size, depth+1);
-
-  if(RIGHT(node) == 0) {
-    (*ptr) = realloc((*ptr), sizeof(I)*((*size)+1));
-    (*ptr)[(*size)++]=depth;
-  }
-  else             showdepth(jt, RIGHT(node), ptr, size, depth+1);
-}
-#endif
-
 static __inline int Vcompare(J jt,I a,I b){I m,n;SBU*u,*v;UC*s,*t;US*p,*q;C4*f,*g;
-#ifdef TMP
- tmp_lt++;
-#endif
  u=a+jt->sbuv; m=u->n; s=(UC*)(jt->sbsv+u->i);
  v=b+jt->sbuv; n=v->n; t=(UC*)(jt->sbsv+v->i);
 // string comparison ignores storage type
@@ -110,9 +65,6 @@ static __inline int Vcompare(J jt,I a,I b){I m,n;SBU*u,*v;UC*s,*t;US*p,*q;C4*f,*
 }
 
 static __inline void rotateLeft(J jt, I x) {I y;
-#ifdef TMP
-    tmp_lr++;
-#endif
    /***************************
     *  rotate node x to left  *
     ***************************/
@@ -127,9 +79,6 @@ static __inline void rotateLeft(J jt, I x) {I y;
 
 
 static __inline void rotateRight(J jt, I x) {I y;
-#ifdef TMP
-    tmp_rr++;
-#endif
    /***************************
     *  rotate node x to right *
     ***************************/
@@ -152,9 +101,6 @@ static __inline void insertFixup(J jt, I x) {B b;I y;
     /* check Red-Black properties                                  */
     /* the repositioning is necessary to propogate the rebalancing */
     while (x != ROOT && COLOR(PARENT(x)) == RED) {
-#ifdef TMP
-        tmp_while++;
-#endif
         if (ISLEFTCHILD(PARENT(x))) {           /* we have a violation          */
             y = RIGHT(GRANDPARENT(x));          /* uncle                        */
             b = COLOR(y)==BLACK;                /* uncle is BLACK               */
@@ -177,9 +123,6 @@ static __inline void insertFixup(J jt, I x) {B b;I y;
 
 static statusEnum insert(J jt, I key) {
     I current,dist,i,keep1,keep2,lorder,parent,rorder,to_the_left,to_the_right;SBU *x;
-#ifdef TMP
-    static I icount=0;
-#endif
 
     if (key < 0) return STATUS_KEY_NOT_FOUND;
 
@@ -198,18 +141,6 @@ static statusEnum insert(J jt, I key) {
         else                    {to_the_left =current; current=RIGHT(current);}
     }
 
-#ifdef TMP
-    icount++;
-    if (icount==10000&&0) {I corder,running;
-     icount=running=corder=0;
-     do {
-      ORDER(running)=corder;
-      corder+=FILLFACTOR;
-      running=UP(running);
-     } while(running);
-    }
-#endif
-
     /* get the new node */
 
     lorder = to_the_left  ? ORDER(to_the_left)  : 0;
@@ -223,16 +154,8 @@ static statusEnum insert(J jt, I key) {
        keep2=to_the_right; to_the_right=UP  (to_the_right);
       }
 
-#ifdef TMP
-      if(!to_the_left )UP(0)  =keep1,i++,tmp_lhit++ ;
-      if(!to_the_right)DOWN(0)=keep2,i++,tmp_rhit++;
-      tmp_imax=__max(i,tmp_imax);
-      tmp_moves+=2*i;
-      tmp_reorder++;
-#else
       if(!to_the_left )UP(0)  =keep1,i++;
       if(!to_the_right)DOWN(0)=keep2,i++;
-#endif
 
       lorder= to_the_left  ? ORDER(to_the_left ) : rorder-2*i*FILLFACTOR;
       rorder= to_the_right ? ORDER(to_the_right) : lorder+2*i*FILLFACTOR;
@@ -427,21 +350,6 @@ static A jtsbunind(J jt, A w){A z;I j,n,*zv;
  return z;
 }    /* w is a numeric array of symbol indices */
 
-#ifdef TMP
- A jtsb1(J jt, A w){
- A abc;
- clo=clock();
- switch(CTTZ(AT(w))){
-  default:  ASSERT(0,EVDOMAIN);
-  case C2TX:
-  case C4TX:
-  case LITX: abc=(1>=AR(w)?sbunstr(-1L,w):sbunlit(' ',w)); break;
-  case BOXX: abc=(sbunbox(w));
- }  
- clo-=clock();
- return abc;
-}
-#else
  A jtsb1(J jt, A w){
  switch(CTTZ(AT(w))){
   default:  ASSERT(0,EVDOMAIN);
@@ -450,8 +358,6 @@ static A jtsbunind(J jt, A w){A z;I j,n,*zv;
   case LITX: return 1>=AR(w)?sbunstr(-1L,w):sbunlit(' ',w);
   case BOXX: return sbunbox(w);
 }}   /* monad s: main control */
-#endif
-
 
  A jtsborder(J jt, A w){A z;I n,*zv;SB*v;
  n=AN(w); v=SBAV(w);
@@ -632,9 +538,6 @@ static A jtsbgetdata(J jt, A w){A z,*zv;
 }
 
  A jtsb2(J jt,A a,A w){A z;I j,k,n;
-#ifdef TMP
- I*zv;
-#endif
  RE(j=i0(a)); n=AN(w);
  ASSERT(!BETWEENC(j,1,7)||!n||SBT&AT(w),EVDOMAIN);
  switch(j){
@@ -675,36 +578,6 @@ static A jtsbgetdata(J jt, A w){A z,*zv;
   case 19:   FILLFACTOR=1024;                               return sc(FILLFACTOR);
   case 20:   FILLFACTOR*=2;                                 return sc(FILLFACTOR);
   case 21:   FILLFACTOR>>=1; ASSERT(FILLFACTOR>GAP,EVLIMIT); return sc(FILLFACTOR);
-#ifdef TMP
-  case 22:
-    GAT0(z,INT,10,1); zv=AV(z);
-    zv[0] = tmp_lr      = 0;
-    zv[1] = tmp_rr      = 0;
-    zv[2] = tmp_lt      = 0;
-    zv[3] = tmp_while   = 0;
-    zv[4] = tmp_node    = 0;
-    zv[5] = tmp_reorder = 0;
-    zv[6] = tmp_moves   = 0;
-    zv[7] = tmp_imax    = 0;
-    zv[8] = tmp_lhit;
-    zv[9] = tmp_rhit;
-    return z;
-  case 23:
-    GAT0(z,INT,10,1);
-    zv[0] = tmp_lr;
-    zv[1] = tmp_rr;
-    zv[2] = tmp_lt;
-    zv[3] = tmp_while;
-    zv[4] = tmp_node;
-    zv[5] = tmp_reorder;
-    zv[6] = tmp_moves;
-    zv[7] = tmp_imax;
-    zv[8] = tmp_lhit;
-    zv[9] = tmp_rhit;
-    return z;
-  case 24:   return sc((I)clo);
-  case 25:   return scf(tickk);
-#endif
  }
 }
 
@@ -726,4 +599,3 @@ B jtsbtypeinit(J jt){A x;I c=sizeof(SBU)/SZI,s[2],p;
  jt->sbhv[hash0%AN(jt->sbh)]=0;  // clear symbol-table entry for empty symbol
  return 1;
 }    /* initialize global data for SBT datatype */
-
