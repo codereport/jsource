@@ -34,3 +34,4 @@ xminus
 xplus
 xpow
 xrem
+xtymes
