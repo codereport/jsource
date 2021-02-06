@@ -166,7 +166,7 @@ B jtspfree(J jt){I i;A p;
 
 static A jtspfor1(J jt, A w){
  if(BOX&AT(w)){A*wv=AAV(w); DO(AN(w), if(wv[i])spfor1(wv[i]););}
- else if(AT(w)&TRAVERSIBLE)traverse(w,jtspfor1); 
+ else if(AT(w)&TRAVERSIBLE)jttraverse(jt,w,jtspfor1); 
  if(!ACISPERM(AC(w))) {
   // for NJA allocations with contiguous header, the size is the header size (7+64 words) plus the data size
   // for NJA allocations with separate header, the size is the data size plus the size of the base block

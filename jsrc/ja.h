@@ -1003,7 +1003,7 @@
 #define tpushi(x)                   {if(!ACISPERM(AC(x))){I tt=AT(x); *pushp++=(x); if(!((I)pushp&(NTSTACKBLOCK-1))){RZ(pushp=tg(pushp));} if(((tt^AFLAG(x))&TRAVERSIBLE!=0))RZ(pushp=jttpush(jt,(x),tt,pushp)); }}
 // tpush1 is like tpush, but it does not recur to lower levels.  Used only for virtual block (which cannot be PERMANENT)
 #define tpush1(x)                   {A *pushp=jt->tnextpushp; *pushp++=(x); if(!((I)pushp&(NTSTACKBLOCK-1))){RZ(pushp=tg(pushp));} jt->tnextpushp=pushp; }
-#define traverse(x,y)               jttraverse(jt,(x),(y))
+
 #define trc(x)                      jttrc(jt,(x))
 #define treach(x)                   jttreach(jt,(x))
 #define trep(x)                     jttrep(jt,(x))
