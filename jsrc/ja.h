@@ -979,7 +979,7 @@
 #define tk0(x,y,z)                  jttk0(jt,(x),(y),(z))
 
 #define tleaf(x)                    jttleaf(jt,(x))
-#define tlt(x,y)                    jttlt(jt,(x),(y))
+
 #define toc1(x,y)                   jttoc1(jt,(x),(y))
 #define toc2(x)                     jttoc2(jt,(x))
 #define toc2e(x)                    jttoc2e(jt,(x))
