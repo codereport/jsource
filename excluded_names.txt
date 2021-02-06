@@ -41,3 +41,4 @@ zeq
 zgcd
 zlcm
 zminus
+zplus
