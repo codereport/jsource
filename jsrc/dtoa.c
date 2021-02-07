@@ -264,24 +264,6 @@ typedef union { double d; ULong L[2]; } U;
 #define dval(x) ((U*)&x)->d
 #endif
 
-/* The following definition of Storeinc is appropriate for MIPS processors.
- * An alternative that might be better on some machines is
- * #define Storeinc(a,b,c) (*a++ = b << 16 | c & 0xffff)
- */
-#if defined(IEEE_8087) + defined(VAX)
-#define Storeinc(a,b,c) (((unsigned short *)a)[1] = (unsigned short)b, \
-((unsigned short *)a)[0] = (unsigned short)c, a++)
-#else
-#define Storeinc(a,b,c) (((unsigned short *)a)[0] = (unsigned short)b, \
-((unsigned short *)a)[1] = (unsigned short)c, a++)
-#endif
-
-/* #define P DBL_MANT_DIG */
-/* Ten_pmax = floor(P*log(2)/log(5)) */
-/* Bletch = (highest power of 2 < DBL_MAX_10_EXP) / 16 */
-/* Quick_max = floor((P-1)*log(FLT_RADIX)/log(10) - 1) */
-/* Int_max = floor(P*log(FLT_RADIX)/log(10) - 1) */
-
 #ifdef IEEE_Arith
 #define Exp_shift  20
 #define Exp_shift1 20
@@ -289,7 +271,6 @@ typedef union { double d; ULong L[2]; } U;
 #define Exp_mask  0x7ff00000
 #define P 53
 #define Bias 1023
-#define Exp_1  0x3ff00000
 #define Exp_11 0x3ff00000
 #define Frac_mask  0xfffff
 #define Frac_mask1 0xfffff
@@ -318,7 +299,6 @@ typedef union { double d; ULong L[2]; } U;
 #define Exp_mask  0x7f000000
 #define P 14
 #define Bias 65
-#define Exp_1  0x41000000
 #define Exp_11 0x41000000
 #define Frac_mask  0xffffff
 #define Frac_mask1 0xffffff
@@ -336,7 +316,6 @@ typedef union { double d; ULong L[2]; } U;
 #define Exp_mask  0x7f80
 #define P 56
 #define Bias 129
-#define Exp_1  0x40800000
 #define Exp_11 0x4080
 #define Frac_mask  0x7fffff
 #define Frac_mask1 0xffff007f
@@ -716,7 +695,6 @@ d2a_mult
     carry = z >> 16;
     z2 = (*x++ >> 16) * y + (*xc >> 16) + carry;
     carry = z2 >> 16;
-    Storeinc(xc, z2, z);
     }
     while(x < xae);
    *xc = carry;
@@ -729,8 +707,7 @@ d2a_mult
    do {
     z = (*x & 0xffff) * y + (*xc >> 16) + carry;
     carry = z >> 16;
-    Storeinc(xc, z, z2);
-    z2 = (*x++ >> 16) * y + (*xc & 0xffff) + carry;
+        z2 = (*x++ >> 16) * y + (*xc & 0xffff) + carry;
     carry = z2 >> 16;
     }
     while(x < xae);
@@ -960,7 +937,6 @@ d2a_diff
   borrow = (y & 0x10000) >> 16;
   z = (*xa++ >> 16) - (*xb++ >> 16) - borrow;
   borrow = (z & 0x10000) >> 16;
-  Storeinc(xc, z, y);
   }
   while(xb < xbe);
  while(xa < xae) {
@@ -968,7 +944,6 @@ d2a_diff
   borrow = (y & 0x10000) >> 16;
   z = (*xa++ >> 16) - borrow;
   borrow = (z & 0x10000) >> 16;
-  Storeinc(xc, z, y);
   }
 #else
  do {
@@ -1298,7 +1273,6 @@ quorem
    borrow = (y & 0x10000) >> 16;
    z = (*bx >> 16) - (zs & 0xffff) - borrow;
    borrow = (z & 0x10000) >> 16;
-   Storeinc(bx, z, y);
 #else
    ys = *sx++ * q + carry;
    carry = ys >> 16;
@@ -1339,7 +1313,6 @@ quorem
    borrow = (y & 0x10000) >> 16;
    z = (*bx >> 16) - (zs & 0xffff) - borrow;
    borrow = (z & 0x10000) >> 16;
-   Storeinc(bx, z, y);
 #else
    ys = *sx++ + carry;
    carry = ys >> 16;
@@ -2032,7 +2005,6 @@ d2a_dtoa
 #ifdef SET_INEXACT
  if (inexact) {
   if (!oldinexact) {
-   word0(d) = Exp_1 + (70 << Exp_shift);
    word1(d) = 0;
    dval(d) += 1.;
    }
