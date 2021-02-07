@@ -296,7 +296,6 @@ typedef union { double d; ULong L[2]; } U;
 #define Exp_shift  20
 #define Exp_shift1 20
 #define Exp_msk1    0x100000
-#define Exp_msk11   0x100000
 #define Exp_mask  0x7ff00000
 #define P 53
 #define Bias 1023
@@ -326,7 +325,6 @@ typedef union { double d; ULong L[2]; } U;
 #define Exp_shift  24
 #define Exp_shift1 24
 #define Exp_msk1   0x1000000
-#define Exp_msk11  0x1000000
 #define Exp_mask  0x7f000000
 #define P 14
 #define Bias 65
@@ -345,7 +343,6 @@ typedef union { double d; ULong L[2]; } U;
 #define Exp_shift  23
 #define Exp_shift1 7
 #define Exp_msk1    0x80
-#define Exp_msk11   0x800000
 #define Exp_mask  0x7f80
 #define P 56
 #define Bias 129
@@ -1056,9 +1053,6 @@ d2a_d2b
  d0 &= 0x7fffffff; /* clear sign bit, which we ignore */
 #ifdef Sudden_Underflow
  de = (int)(d0 >> Exp_shift);
-#ifndef IBM
- z |= Exp_msk11;
-#endif
 #else
  if (de = (int)(d0 >> Exp_shift))
   z |= Exp_msk1;
