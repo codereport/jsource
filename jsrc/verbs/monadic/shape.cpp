@@ -14,4 +14,4 @@
 [[nodiscard]] auto
 shape(J jt, array w) -> array {
     return make_vector<int64_t>(jt, AR(w), AS(w));
-}  // $ y
+}
