@@ -8,7 +8,6 @@
  A jtisempty   (J jt, A w) { if((AT(w)&SPARSE)!=0)return eps(zeroionei(0),shape(jt,w)); return num(AN(w)==0);}  // 0 e. $
  A jtisnotempty(J jt, A w) { if((AT(w)&SPARSE)!=0)return __not(eps(zeroionei(0),shape(jt,w))); return num(AN(w)!=0);}  // *@#@,
  A jtisitems   (J jt, A w) { return num(!AR(w)|!!AS(w)[0]);}   // *@#   *@:#
- A jtrank      (J jt, A w) {F1PREFIP; return sc(AR(w));}  // #@$
  A jtnatoms    (J jt, A w) {F1PREFIP; A z; if((AT(w)&SPARSE)!=0)return df1(z,shape(jt,w),slash(ds(CSTAR))); return sc(AN(w));}   // */@$  #@,
 
 // ,y and ,"r y - producing virtual blocks

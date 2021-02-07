@@ -7,6 +7,7 @@ extern "C" {
 
 using array   = A;           // potentially rename to j_array?
 using shape_t = long long*;  // TODO figure out how to turn this into int64_t
+using rank_t  = unsigned short;
 
 // TODO: will targ be a int64_t in all cases
 // TODO: probably certain uses of the SETIC macro use targ after the function
@@ -69,8 +70,6 @@ to_c_type() {
     return INT;
 }
 
-using rank_t = unsigned short;
-
 struct copy_shape_0 {
     auto
     operator()(array name, int64_t atoms, rank_t rank) -> void {
@@ -104,10 +103,11 @@ make_array(J jt, int64_t n, rank_t r, shape_t s) -> array {
 }
 
 // this is for "creating an integer atom with value k"
+template <typename T>
 [[nodiscard]] inline auto
-make_scalar_integer(J jt, int64_t k) -> array {
+make_scalar_integer(J jt, T k) -> array {
     if (xor_replicate_sign(k) <= NUMMAX) return !zero_or_one(k) ? refactorme_num(k) : zeroionei(k);
-    array z = make_array<int64_t, copy_shape_0>(jt, 1, 0);
+    array z = make_array<T, copy_shape_0>(jt, 1, 0);
     set_value_at(z, 0, k);
     return z;
 }
