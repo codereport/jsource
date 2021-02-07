@@ -127,15 +127,6 @@
  * white space ignored; but if this results in none of the 52
  * fraction bits being on (an IEEE Infinity symbol), then NAN_WORD0
  * and NAN_WORD1 are used instead.
- * #define MULTIPLE_THREADS if the system offers preemptively scheduled
- * multiple threads.  In this case, you must provide (or suitably
- * #define) two locks, acquired by ACQUIRE_DTOA_LOCK(n) and freed
- * by FREE_DTOA_LOCK(n) for n = 0 or 1.  (The second lock, accessed
- * in pow5mult, ensures lazy evaluation of only one copy of high
- * powers of 5; omitting this lock would introduce a small
- * probability of wasting memory, but would otherwise be harmless.)
- * You must also invoke freedtoa(s) to free the value s returned by
- * dtoa.  You may do so whether or not MULTIPLE_THREADS is #defined.
  * #define NO_IEEE_Scale to disable new (Feb. 1997) logic in strtod that
  * avoids underflows on inputs whose result does not underflow.
  * If you #define NO_IEEE_Scale on a machine that uses IEEE-format
@@ -170,7 +161,6 @@
 #include "js.h"
 #define Long int
 #define IEEE_8087
-#define MULTIPLE_THREADS
 #define ACQUIRE_DTOA_LOCK(n) /* handled by using jt */
 #define FREE_DTOA_LOCK(n)    /* handled by using jt */
 /* #define Omit_Private_Memory */
@@ -274,33 +264,13 @@ typedef union { double d; ULong L[2]; } U;
 #define dval(x) ((U*)&x)->d
 #endif
 
-/* The following definition of Storeinc is appropriate for MIPS processors.
- * An alternative that might be better on some machines is
- * #define Storeinc(a,b,c) (*a++ = b << 16 | c & 0xffff)
- */
-#if defined(IEEE_8087) + defined(VAX)
-#define Storeinc(a,b,c) (((unsigned short *)a)[1] = (unsigned short)b, \
-((unsigned short *)a)[0] = (unsigned short)c, a++)
-#else
-#define Storeinc(a,b,c) (((unsigned short *)a)[0] = (unsigned short)b, \
-((unsigned short *)a)[1] = (unsigned short)c, a++)
-#endif
-
-/* #define P DBL_MANT_DIG */
-/* Ten_pmax = floor(P*log(2)/log(5)) */
-/* Bletch = (highest power of 2 < DBL_MAX_10_EXP) / 16 */
-/* Quick_max = floor((P-1)*log(FLT_RADIX)/log(10) - 1) */
-/* Int_max = floor(P*log(FLT_RADIX)/log(10) - 1) */
-
 #ifdef IEEE_Arith
 #define Exp_shift  20
 #define Exp_shift1 20
 #define Exp_msk1    0x100000
-#define Exp_msk11   0x100000
 #define Exp_mask  0x7ff00000
 #define P 53
 #define Bias 1023
-#define Exp_1  0x3ff00000
 #define Exp_11 0x3ff00000
 #define Frac_mask  0xfffff
 #define Frac_mask1 0xfffff
@@ -326,11 +296,9 @@ typedef union { double d; ULong L[2]; } U;
 #define Exp_shift  24
 #define Exp_shift1 24
 #define Exp_msk1   0x1000000
-#define Exp_msk11  0x1000000
 #define Exp_mask  0x7f000000
 #define P 14
 #define Bias 65
-#define Exp_1  0x41000000
 #define Exp_11 0x41000000
 #define Frac_mask  0xffffff
 #define Frac_mask1 0xffffff
@@ -345,11 +313,9 @@ typedef union { double d; ULong L[2]; } U;
 #define Exp_shift  23
 #define Exp_shift1 7
 #define Exp_msk1    0x80
-#define Exp_msk11   0x800000
 #define Exp_mask  0x7f80
 #define P 56
 #define Bias 129
-#define Exp_1  0x40800000
 #define Exp_11 0x4080
 #define Frac_mask  0x7fffff
 #define Frac_mask1 0xffff007f
@@ -404,11 +370,6 @@ extern double rnd_prod(double, double), rnd_quot(double, double);
 #endif
 #endif /* NO_LONG_LONG */
 
-#ifndef MULTIPLE_THREADS
-#define ACQUIRE_DTOA_LOCK(n) /*nothing*/
-#define FREE_DTOA_LOCK(n) /*nothing*/
-#endif
-
 #define Kmax 15
 
 #ifdef __cplusplus
@@ -446,7 +407,6 @@ static void d2a_Bfree(struct dtoa_info *d2a, Bigint *v);
 #define mult(a,b)      d2a_mult(d2a, a, b)
 #define nrv_alloc(s,rve,n) d2a_nrv_alloc(d2a,s,rve,n)
 #define rv_alloc(n) d2a_rv_alloc(d2a, n)
-#define freedtoa(x) d2a_freedtoa(d2a, x)
 #define d2b(d,e,b)  d2a_d2b(d2a,d,e,b)
 #define pow5mult(b,k) d2a_pow5mult(d2a,b,k)
 #define diff(x,y) d2a_diff(d2a,x,y)
@@ -735,7 +695,6 @@ d2a_mult
     carry = z >> 16;
     z2 = (*x++ >> 16) * y + (*xc >> 16) + carry;
     carry = z2 >> 16;
-    Storeinc(xc, z2, z);
     }
     while(x < xae);
    *xc = carry;
@@ -748,8 +707,7 @@ d2a_mult
    do {
     z = (*x & 0xffff) * y + (*xc >> 16) + carry;
     carry = z >> 16;
-    Storeinc(xc, z, z2);
-    z2 = (*x++ >> 16) * y + (*xc & 0xffff) + carry;
+        z2 = (*x++ >> 16) * y + (*xc & 0xffff) + carry;
     carry = z2 >> 16;
     }
     while(x < xae);
@@ -801,17 +759,8 @@ d2a_pow5mult
   return b;
  if (!(p5 = p5s)) {
   /* first time */
-#ifdef MULTIPLE_THREADS
-  ACQUIRE_DTOA_LOCK(1);
-  if (!(p5 = p5s)) {
-   p5 = p5s = i2b(625);
-   p5->next = 0;
-   }
-  FREE_DTOA_LOCK(1);
-#else
   p5 = p5s = i2b(625);
   p5->next = 0;
-#endif
   }
  for(;;) {
   if (k & 1) {
@@ -822,17 +771,8 @@ d2a_pow5mult
   if (!(k >>= 1))
    break;
   if (!(p51 = p5->next)) {
-#ifdef MULTIPLE_THREADS
-   ACQUIRE_DTOA_LOCK(1);
-   if (!(p51 = p5->next)) {
-    p51 = p5->next = mult(p5,p5);
-    p51->next = 0;
-    }
-   FREE_DTOA_LOCK(1);
-#else
    p51 = p5->next = mult(p5,p5);
    p51->next = 0;
-#endif
    }
   p5 = p51;
   }
@@ -997,7 +937,6 @@ d2a_diff
   borrow = (y & 0x10000) >> 16;
   z = (*xa++ >> 16) - (*xb++ >> 16) - borrow;
   borrow = (z & 0x10000) >> 16;
-  Storeinc(xc, z, y);
   }
   while(xb < xbe);
  while(xa < xae) {
@@ -1005,7 +944,6 @@ d2a_diff
   borrow = (y & 0x10000) >> 16;
   z = (*xa++ >> 16) - borrow;
   borrow = (z & 0x10000) >> 16;
-  Storeinc(xc, z, y);
   }
 #else
  do {
@@ -1056,9 +994,6 @@ d2a_d2b
  d0 &= 0x7fffffff; /* clear sign bit, which we ignore */
 #ifdef Sudden_Underflow
  de = (int)(d0 >> Exp_shift);
-#ifndef IBM
- z |= Exp_msk11;
-#endif
 #else
  if (de = (int)(d0 >> Exp_shift))
   z |= Exp_msk1;
@@ -1338,7 +1273,6 @@ quorem
    borrow = (y & 0x10000) >> 16;
    z = (*bx >> 16) - (zs & 0xffff) - borrow;
    borrow = (z & 0x10000) >> 16;
-   Storeinc(bx, z, y);
 #else
    ys = *sx++ * q + carry;
    carry = ys >> 16;
@@ -1379,7 +1313,6 @@ quorem
    borrow = (y & 0x10000) >> 16;
    z = (*bx >> 16) - (zs & 0xffff) - borrow;
    borrow = (z & 0x10000) >> 16;
-   Storeinc(bx, z, y);
 #else
    ys = *sx++ + carry;
    carry = ys >> 16;
@@ -1401,10 +1334,6 @@ quorem
  return q;
  }
 
-#ifndef MULTIPLE_THREADS
- static char *dtoa_result;
-#endif
-
  static char *
 #ifdef KR_headers
 rv_alloc(i) int i;
@@ -1424,9 +1353,6 @@ d2a_rv_alloc(struct dtoa_info *d2a, int i)
  r = (int*)Balloc(k);
  *r = k;
  return
-#ifndef MULTIPLE_THREADS
- dtoa_result =
-#endif
   (char *)(r+1);
 #else
  if(i>d2a->ndp) longjmp(d2a->_env, 2); /* this shouldn't happen? */
@@ -1450,12 +1376,6 @@ d2a_nrv_alloc(struct dtoa_info *d2a, char *s, char **rve, int n)
   *rve = t;
  return rv;
  }
-
-/* freedtoa(s) must be used to free values s returned by dtoa
- * when MULTIPLE_THREADS is #defined.  It should be used in all cases,
- * but for consistency with earlier versions of dtoa, it is optional
- * when MULTIPLE_THREADS is not defined.
- */
 
 /* dtoa for IEEE arithmetic (dmg): convert double to ASCII string.
  *
@@ -1547,13 +1467,6 @@ d2a_dtoa
  char *s, *s0;
 #ifdef SET_INEXACT
  int inexact, oldinexact;
-#endif
-
-#ifndef MULTIPLE_THREADS
- if (dtoa_result) {
-  freedtoa(dtoa_result);
-  dtoa_result = 0;
-  }
 #endif
 
  if (word0(d) & Sign_bit) {
@@ -2092,7 +2005,6 @@ d2a_dtoa
 #ifdef SET_INEXACT
  if (inexact) {
   if (!oldinexact) {
-   word0(d) = Exp_1 + (70 << Exp_shift);
    word1(d) = 0;
    dval(d) += 1.;
    }
