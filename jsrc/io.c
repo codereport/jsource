@@ -120,7 +120,6 @@ A recursive JDo may use a DD, but only if it is fully contained in the string
 #include <ctype.h>
 #include <unistd.h>
 #include <sys/mman.h>
-#define _stdcall
 #include <stdint.h>
 
 #include "j.h"

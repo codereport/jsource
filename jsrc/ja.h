@@ -158,7 +158,6 @@
 #define cvt0(x)                     jtcvt0(jt,(x))
 #define cvz(x,y)                    jtcvz(jt,(x),(y))
 #define daxis(x,y)                  jtdaxis(jt,(x),(y))
-#define db1b2(x,y)                  jtdb1b2(jt,(x),(y))
 #define dbin(x,y)                   jtdbin(jt,(x),(y))
 #define dbjump(x)                   jtdbjump(jt,(x))
 #define dbrr(x,y)                   jtdbrr(jt,(x),(y))
@@ -226,11 +225,6 @@
 #define ebarmat(x,y)                jtebarmat(jt,(x),(y))
 #define ebarprep(x0,x1,x2,x3,x4)    jtebarprep(jt,(x0),(x1),(x2),(x3),(x4))
 #define ebarvec(x,y)                jtebarvec(jt,(x),(y))
-#define eca(x0,x1,x2,x3,x4,x5)      jteca(jt,(x0),(x1),(x2),(x3),(x4),(x5))
-#define ecd(x0,x1,x2,x3,x4)         jtecd(jt,(x0),(x1),(x2),(x3),(x4))
-#define ecm(x0,x1,x2,x3,x4,x5)      jtecm(jt,(x0),(x1),(x2),(x3),(x4),(x5))
-#define ecm_s1(x0,x1,x2,x3,x4,x5)   jtecm_s1(jt,(x0),(x1),(x2),(x3),(x4),(x5))
-#define ecm_s2(x0,x1,x2,x3,x4,x5,x6)                jtecm_s2(jt,(x0),(x1),(x2),(x3),(x4),(x5),(x6))
 #define ecvt(x0,x1,x2,x3,x4)        jtecvt(jt,(x0),(x1),(x2),(x3),(x4))
 #define efflev(x,y,z)               jtefflev(jt,(x),(y),(z))
 #define efmt(x,y)                   jtefmt(jt,(x),(y))
@@ -290,7 +284,6 @@
 #define fanano0(x)                  faaction((x),)
 // Within tpop, no need to check ACISPERM; Zczero is (i. e. usecount has gone to 0) ~0; and we should recur only if flag indicates RECURSIBLE.  In that case we can reconstruct the type from the flag
 #define fanapop(x,flg)              {if(((flg)&RECURSIBLE)!=0)jtfa(jt,(x),(flg)&RECURSIBLE); jtmf(jt,x);}
-#define fac_ecm(x)                  jtfac_ecm(jt,(x))
 #define fact(x)                     jtatomic1(jt,(x),ds(CBANG))
 #define factor(x)                   jtfactor(jt,(x))
 #define fauxblock(z) I z[NORMAH+4]  // define a block that can be passed in to fauxvirtual.  The 4 is the max rank, and must match fauxvirtual and fauxplain
@@ -678,8 +671,6 @@
 #define pmarea2(x,y)                jtpmarea2(jt,(x),(y))
 #define pmfree(x)                   jtpmfree(jt,(x))
 #define pmrecord(x0,x1,x2,x3)       jtpmrecord(jt,(x0),(x1),(x2),(x3))
-#define pollard_p_1(x)              jtpollard_p_1(jt,(x))
-#define pollard_rho(x)              jtpollard_rho(jt,(x))
 #define poly1(x)                    jtpoly1(jt,(x))   
 #define poly2a(x,y)                 jtpoly2a(jt,(x),(y))
 #define polymult(x,y,z)             jtpolymult(jt,(x),(y),(z))
@@ -731,7 +722,6 @@
 #define ra0(x)                      {I tt=AT(x); FLAGT flg=AFLAG(x); if(((tt^flg)&RECURSIBLE)!=0){if((flg&AFVIRTUAL)!=0){RZ((x)=realize(x)); flg=AFLAG(x);} AFLAG(x)=flg|=(tt&RECURSIBLE); jtra((x),tt);}}
 // make this block recursive, used when x has just been allocated & thus is known to be nonrecursive & nonvirtual.  We may know the type t, too (otherwise use AT(x))
 #define ra00(x,tt)                   {if(((tt)&RECURSIBLE)!=0){AFLAG(x)|=(tt)&RECURSIBLE; jtra((x),(tt));}}
-#define ranec(x0,x1,x2,x3,x4,x5)    jtranec(jt,(x0),(x1),(x2),(x3),(x4),(x5))
 #define rank1ex(x0,x1,x2,x3)        jtrank1ex(jt,(x0),(x1),(x2),(x3))
 #define rank1ex0(x0,x1,x2)          jtrank1ex0(jt,(x0),(x1),(x2))
 #define REX2R(lr,rr,lcr,rcr)        (((I)(lr)<<RANKTX)+(I)(rr)+((((I)(lcr)<<RANKTX)+(I)(rcr))<<2*RANKTX))
@@ -876,7 +866,6 @@
 #define slash(x)                    jtslash(jt,(x))   
 #define sldot(x)                    jtsldot(jt,(x))
 #define sm_init(x)                  jtsm_init(jt,(x))
-#define smallprimes(x0,x1,x2,x3)    jtsmallprimes(jt,(x0),(x1),(x2),(x3))
 #define snl(x)                      jtsnl(jt,(x))
 #define sortb2(x0,x1,x2)            jtsortb2(jt,(x0),(x1),(x2))
 #define sortb4(x0,x1,x2)            jtsortb4(jt,(x0),(x1),(x2))
@@ -1091,7 +1080,6 @@
 #define xev2(x,y,z)                 jtxev2(jt,(x),(y),(z))
 #define xexp(x,y)                   jtxexp(jt,(x),(y))
 #define xfact(x)                    jtxfact(jt,(x))
-#define xfactor(x)                  jtxfactor(jt,(x))
 #define xgcd(x,y)                   jtxgcd(jt,(x),(y))
 #define xint(x)                     jtxint(jt,(x))
 #define xlcm(x,y)                   jtxlcm(jt,(x),(y))
