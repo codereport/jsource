@@ -26,7 +26,7 @@ static A jtovs0(J jt,B p,I r,A a,A w){A a1,e,q,x,y,z;B*b;I at,*av,c,d,j,k,f,m,n,
   case 1:  /* dense and a not equal to e */
    GATV0(q,INT,c,1); v=AV(q); DO(c, v[i]=ws[av[i]];); RZ(q=odom(2L,c,v));
    if(AN(q)>=AN(y)){
-    RZ(z=shape(x)); *AV(z)=*AS(q); 
+    RZ(z=shape(jt,x)); *AV(z)=*AS(q); 
     RZ(x=from(grade1(over(y,less(q,y))),over(x,reshape(z,e))));
     y=q;
    }
@@ -40,7 +40,7 @@ static A jtovs0(J jt,B p,I r,A a,A w){A a1,e,q,x,y,z;B*b;I at,*av,c,d,j,k,f,m,n,
    GATV0(q,INT,c,1); v=AV(q); DO(c, v[i]=ws[av[i]];); v[j]=1; RZ(q=odom(2L,c,v)); n=*AS(q);
    if(p){RZ(y=over(y,q)); v=AV(y)+j+m*c; d=ws[f]; DQ(n, *v=d; v+=c;);}
    else {RZ(y=over(q,y)); v=AV(y)+j+n*c;          DQ(m, ++*v; v+=c;);}
-   RZ(q=shape(x)); *AV(q)=n; RZ(q=reshape(q,a)); RZ(x=p?over(x,q):over(q,x));
+   RZ(q=shape(jt,x)); *AV(q)=n; RZ(q=reshape(q,a)); RZ(x=p?over(x,q):over(q,x));
    if(f){RZ(q=grade1(y)); RZ(y=from(q,y)); RZ(x=from(q,x));}
  }
  GASPARSE(z,STYPE(t),1,zr,ws); 
@@ -57,8 +57,8 @@ static A jtovs(J jt,A a,A w){A ae,ax,ay,q,we,wx,wy,x,y,z,za,ze;B*ab,*wb,*zb;I ac
  if(!wr)return ovs0(1,acr,w,a);
  if(ar>acr||wr>wcr)return sprank2(a,w,0L,acr,wcr,jtover);
  r=MAX(ar,wr);
- if(r>ar)RZ(a=reshape(over(apv(r-ar,1L,0L),shape(a)),a)); as=AS(a);
- if(r>wr)RZ(w=reshape(over(apv(r-wr,1L,0L),shape(w)),w)); ws=AS(w);
+ if(r>ar)RZ(a=reshape(over(apv(r-ar,1L,0L),shape(jt,a)),a)); as=AS(a);
+ if(r>wr)RZ(w=reshape(over(apv(r-wr,1L,0L),shape(jt,w)),w)); ws=AS(w);
  ASSERT(*as<IMAX-*ws,EVLIMIT);
  if(!(at&SPARSE)){wp=PAV(w); RZ(a=sparseit(a,SPA(wp,a),SPA(wp,e)));}
  if(!(wt&SPARSE)){ap=PAV(a); RZ(w=sparseit(w,SPA(ap,a),SPA(ap,e)));}

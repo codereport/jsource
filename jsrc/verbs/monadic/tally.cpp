@@ -4,7 +4,7 @@
 /** @file */
 
 /**
- * @brief # :: Tally
+ * @brief `#` Tally
  * @param jt
  * @param w   Input array
  * @return    Output array (always scalar integer)

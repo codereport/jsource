@@ -149,9 +149,10 @@ static A jtredg(J jt,    A w,A self){F1PREFIP;PROLOG(0020);DECLF;AD * RESTRICT a
  AC(wfaux)=aipok;   // first cell is inplaceable if second is
  jtinplace = (J)(intptr_t)(((I)jt) + (JTINPLACEW+JTINPLACEA)*((FAV(fs)->flag>>(VJTFLGOK2X-JTINPLACEWX)) & JTINPLACEW));  // all items are used only once
 
- // We need to free memory in case the called routine leaves it unfreed (that's bad form & we shouldn't expect it), and also to free the result of the
- // previous iteration.  We don't want to free every time, though, because that does ra() on w which could be a costly traversal if it's a nonrecusive recursible type.
- // As a compromise we free every few iterations: at least one per 8 iterations, and at least 8 times through the process
+ // We need to free memory in case the called routine leaves it unfreed (that's bad form & we shouldn't expect it), and
+ // also to free the result of the previous iteration.  We don't want to free every time, though, because that does ra()
+ // on w which could be a costly traversal if it's a nonrecusive recursible type. As a compromise we free every few
+ // iterations: at least one per 8 iterations, and at least 8 times through the process
 #define LGMINGCS 3  // lg2 of minimum number of times we call gc
 #define MINGCINTERVAL 8  // max spacing between frees
  I freedist=MIN((n+((1<<LGMINGCS)-1))>>LGMINGCS,MINGCINTERVAL); I freephase=freedist;
@@ -495,7 +496,7 @@ static A jtredstiteach(J jt,    A w,A self){A*wv,y;I n,p,r,t;
 static A jtredcateach(J jt,    A w,A self){A*u,*v,*wv,x,*xv,z,*zv;I f,m,mn,n,r,wr,*ws,zm,zn;I n1=0,n2=0;
  wr=AR(w); ws=AS(w); r=(RANKT)jt->ranks; r=wr<r?wr:r; f=wr-r; RESETRANK;
  SETICFR(w,f,r,n);
- if(!r||1>=n)return reshape(repeat(ne(sc(f),IX(wr)),shape(w)),n?w:ds(CACE));
+ if(!r||1>=n)return reshape(repeat(ne(sc(f),IX(wr)),shape(jt, w)),n?w:ds(CACE));
  if(!(BOX&AT(w)))return df1(z,cant2(sc(f),w),qq(ds(CBOX),zeroionei(1)));  // handle unboxed args
 // bug: ,&.>/ y does scalar replication wrong
 // wv=AN(w)+AAV(w); DQ(AN(w), if(AN(*--wv)&&AR(*wv)&&n1&&n2) ASSERT(0,EVNONCE); if((!AR(*wv))&&n1)n2=1; if(AN(*wv)&&1<AR(*wv))n1=1;);

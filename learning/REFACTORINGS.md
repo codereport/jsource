@@ -11,7 +11,7 @@
 | :---: | :----------------: | :---: |
 | CON.4 |    Use `const`     |   1   |
 | ES.21 |    Reduce scope    |   3   |
-| ES.22 |  Decl-Init Split   |   1   |
+| ES.22 |  Decl-Init Split   |   2   |
 | ES.30 |   No Text Macros   |   4   |
 | ES.49 | Use explicit casts |   4   |
 | E.12  |   Use `noexcept`   |   3   |
@@ -28,6 +28,7 @@
 |    `IAV(w)[i] = k`    |            `set_value_at(w, i, k)`             |
 |       `k & ~1`        |               `!zero_or_one(k)`                |
 | `GAT0(z, TYPE, x, y)` | `z = make_array<TYPE, copy_shape_0>(jt, x, y)` |
+|       `GA(...)`       |                  `make_array`                  |
 
 1. There could be exceptions where this doesn't work
 2. Will probably be renamed

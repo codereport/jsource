@@ -5,12 +5,13 @@ extern "C" {
 #include "j.h"
 }
 
-using array = A;  // potentially rename to j_array?
+using array   = A;           // potentially rename to j_array?
+using shape_t = long long*;  // TODO figure out how to turn this into int64_t
 
 // TODO: will targ be a int64_t in all cases
 // TODO: probably certain uses of the SETIC macro use targ after the function
 //       will need to create second function in that case
-[[nodiscard]] auto
+[[nodiscard]] inline auto
 item_count(array w) {
     // if you have a non-zero rank (aka not a scalar), take first element of shape
     // otherwise, (in the case of scalar) return 1
@@ -18,7 +19,7 @@ item_count(array w) {
 }
 
 // TODO: rename (propogate_sign_bit)
-[[nodiscard]] constexpr auto
+[[nodiscard]] constexpr inline auto
 replicate_sign(int64_t x) noexcept -> int64_t {
     return x < 0 ? -1 : 0;
 }
@@ -35,18 +36,18 @@ zero_or_one(int64_t n) noexcept -> bool {
 }
 
 // TODO: refactor me
-[[nodiscard]] auto
+[[nodiscard]] inline auto
 refactorme_num(int64_t n) {
     return reinterpret_cast<array>(Bnum + 2 + n - NUMMIN);
 }
 
 // TODO: refactor me
-[[nodiscard]] auto
+[[nodiscard]] inline auto
 refactorme_zeroionei(int64_t n) {
     return reinterpret_cast<array>(Bnum + (n));
 }
 
-[[nodiscard]] auto
+[[nodiscard]] inline auto
 pointer_to_values(array x) -> int64_t* {
     return reinterpret_cast<int64_t*>(reinterpret_cast<C*>(x) + x->kchain.k);
 }
@@ -96,12 +97,16 @@ make_array(J jt, int64_t atoms, rank_t rank) {
     return name;
 }
 
+template <typename Type>
+[[nodiscard]] inline auto
+make_array(J jt, int64_t n, rank_t r, shape_t s) -> array {
+    return ga(to_c_type<Type>(), n, r, s);
+}
+
 // this is for "creating an integer atom with value k"
-[[nodiscard]] auto
+[[nodiscard]] inline auto
 make_scalar_integer(J jt, int64_t k) -> array {
-    if (xor_replicate_sign(k) <= NUMMAX) {
-        return !zero_or_one(k) ? refactorme_num(k) : zeroionei(k);
-    }
+    if (xor_replicate_sign(k) <= NUMMAX) return !zero_or_one(k) ? refactorme_num(k) : zeroionei(k);
     array z = make_array<int64_t, copy_shape_0>(jt, 1, 0);
     set_value_at(z, 0, k);
     return z;

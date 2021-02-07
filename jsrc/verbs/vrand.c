@@ -604,7 +604,7 @@ static A jtroll2(J jt,A w,B*b){A z;I j,n,nslice,p,q,r,*v;UI mk,t,*zv;
 static A jtrollnot0(J jt,A w,B*b){A z;I j,m1,n,*u,*v;UI m,s,t,x=jt->rngM[jt->rng];
  *b=0; n=AN(w);
  if(n){v=AV(w); m1=*v++; j=1; DQ(n-1, if(m1!=*v++){j=0; break;});}
- if(n&&j)RZ(z=rollksub(shape(w),sc(m1)))
+ if(n&&j)RZ(z=rollksub(shape(jt,w),sc(m1)))
  else{
   GATV(z,INT,n,AR(w),AS(w));
   v=AV(w); u=AV(z);
@@ -798,7 +798,7 @@ static A jtroll2dot(J jt,A w,B*b){A z;I j,n,nslice,p,q,r,*v;UI mk,t,*zv;
 static A jtrollnot0dot(J jt,A w,B*b){A z;I j,m1,n,*u,*v;UI m,s,t,x=jt->rngM[jt->rng];
  *b=0; n=AN(w);
  if(n){v=AV(w); m1=*v++; j=1; DQ(n-1, if(m1!=*v++){j=0; break;});}
- if(n&&j)RZ(z=rollksub(shape(w),sc(m1)))
+ if(n&&j)RZ(z=rollksub(shape(jt,w),sc(m1)))
  else{
   GATV(z,INT,n,AR(w),AS(w));
   v=AV(w); u=AV(z);
@@ -882,7 +882,7 @@ static A jtdealdot(J jt,A a,A w){A h,y,z;I at,d,*hv,i,i1,j,k,m,n,p,q,*v,wt,*yv,*
 /*
 static A jtroll(J jt, A w){A z;D rl=jt->rl;static D dm=16807,p=2147483647L;I c,n,*v,*x;
  n=AN(w); v=AV(w);
- RZ(z=reshape(shape(w),num(2))); x=AV(z);
+ RZ(z=reshape(shape(jt,w),num(2))); x=AV(z);
  if(ICMP(v,x,n))
   DQ(n, c=*v++; ASSERT(0<c,EVDOMAIN); rl=fmod(rl*dm,p); *x++=(I)jfloor(rl*c/p);)
  else{B*x;D q=p/2;

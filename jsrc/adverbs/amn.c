@@ -60,7 +60,7 @@ static A jtzpadn(J jt,A z,A ind,B ip){A a,ai,i1,p,p1,q,t,x,x0,y,y0,y1;B*b;I c,d,
  RZ(t=gt(sc(h),a)); RZ(y1=all1(t)?y:repeatr(t,y));
  RZ(p=nub(less(i1,y1)));
  if(c=AN(a)-d){
-  RZ(t=from(less(a,ai),shape(z))); RZ(p1=odom(2L,c,AV(t))); n=*AS(p1);
+  RZ(t=from(less(a,ai),shape(jt,z))); RZ(p1=odom(2L,c,AV(t))); n=*AS(p1);
   if(m=*AS(p))RZ(p=stitch(repeat(sc(n),p),reshape(v2(n*m,c),p1)));
   RZ(t=nub(repeat(eps(y1,i1),y1)));
   RZ(t=stitch(repeat(sc(n),t),reshape(v2(n**AS(t),c),p1)));
@@ -69,7 +69,7 @@ static A jtzpadn(J jt,A z,A ind,B ip){A a,ai,i1,p,p1,q,t,x,x0,y,y0,y1;B*b;I c,d,
  }
  if(m=*AS(p)){  /* new cells being added */
   RZ(y=over(y,p)); RZ(q=grade1(y)); RZ(y=from(q,y));
-  RZ(t=shape(x)); *AV(t)=m; RZ(x=from(q,over(x,reshape(t,SPA(zp,e)))));
+  RZ(t=shape(jt,x)); *AV(t)=m; RZ(x=from(q,over(x,reshape(t,SPA(zp,e)))));
   // if z is assigned to a name, the use counts need to be adjusted: the old ones need to be decremented
   // to remove the assignment, and the new ones need to be incremented to prevent them from being freed
   // until the name is freed.  We detect the case from jt->assignsym being set to the address of z

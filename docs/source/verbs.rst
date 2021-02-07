@@ -13,6 +13,11 @@ Tally
 
 .. doxygenfunction:: tally
 
+Shape
+#####
+
+.. doxygenfunction:: shape
+
 ******
 Dyadic
 ******

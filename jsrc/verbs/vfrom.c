@@ -396,7 +396,7 @@ static EVERYFS(mapxself,0,jtmapx,0,VFLAGNONE)
 
 static A jtmapx(J jt,A a,A w){A z1,z2,z3;
  if(!(BOX&AT(w)))return ope(a);
- RZ(z1=catalog(every(shape(w),ds(CIOTA))));  // create index list of each box
+ RZ(z1=catalog(every(shape(jt,w),ds(CIOTA))));  // create index list of each box
  IRS1(z1,0,0,jtbox,z2);
  RZ(z2=every2(a,z2,(A)&sfn0overself));
  IRS1(z2,0,0,jtbox,z3);

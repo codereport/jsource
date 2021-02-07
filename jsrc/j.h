@@ -540,7 +540,7 @@ if(_i<3){_zzt+=_i; z=(I)&oneone; _zzt=_i>=1?_zzt:(I*)z; z=_i>1?(I)_zzt:z; z=((I*
 #define RESETERRANDMSG  {jt->etxn1=jt->etxn=jt->jerr=0;}
 #define RESETRANK       (jt->ranks=(RANK2T)~0)
 #define RNE(exp)        {return jt->jerr?0:(exp);}
-#define RZ(exp)         {if(!(exp))return 0;}
+#define RZ(exp)         {if(!(exp))return 0;} // Return Zero
 
 // Input is a byte.  It is replicated to all lanes of a UI
 #define REPLBYTETOW(in,out) (out=(UC)(in),out|=out<<8,out|=out<<16,out|=out<<32)

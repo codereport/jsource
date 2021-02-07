@@ -27,10 +27,10 @@ B jtscheck(J jt,A w){A a,e,x,y;I k1,k2,r,*s,t;P*p;D rkblk[16];
  ASSERTSYS(*(1+AS(y))==SETIC(a,k1),"scheck i/a length");
  ASSERTSYS(equ(y,nub(y)),"scheck i unique");
  ASSERTSYS(all1(le(num(0),y)),"scheck i negative");
- ASSERTSYS(all1(ATOMIC2(jt,y,from(a,shape(w)),rkblk,1L,1L,CLT)),"scheck i index");
+ ASSERTSYS(all1(ATOMIC2(jt,y,from(a,shape(jt,w)),rkblk,1L,1L,CLT)),"scheck i index");
  ASSERTSYS(equ(grade1(y),IX(*AS(y))),"scheck i sorted");
  ASSERTSYS(AR(x)==1+r-AN(a),"scheck x rank");
- ASSERTSYS(equ(behead(shape(x)),from(less(IX(r),a),shape(w))),"scheck x shape");
+ ASSERTSYS(equ(behead(shape(jt,x)),from(less(IX(r),a),shape(jt,w))),"scheck x shape");
  return 1;
 }    /* assertions on sparse array w */
 
@@ -128,7 +128,7 @@ A jtsparseit(J jt,A w,A a,A e){PROLOG(0091);A ax,c,x,y,z;B b,*cv;I cm,cn,m,n,r,*
  ASSERT(!(t&LIT+BOX),EVNONCE);  // must not be LIT or BOX
  ASSERT(STYPE(t)!=0,EVDOMAIN);  // w must be dense
  if(!r){ASSERT(!AN(a),EVINDEX); return ca(w);}
- RZ(z=sparse1a(shape(w),a,e,mark,mark)); p=PAV(z);
+ RZ(z=sparse1a(shape(jt,w),a,e,mark,mark)); p=PAV(z);
  RZ(ax=paxis(r,a));
  GATV0(y,INT,r,1); s=AV(y);
  u=AV(ax); v=AS(w); DO(r, s[i]=v[u[i]];);
@@ -158,8 +158,8 @@ A jtsparseit(J jt,A w,A a,A e){PROLOG(0091);A ax,c,x,y,z;B b,*cv;I cm,cn,m,n,r,*
  t=DTYPE(t);
  wp=PAV(w); a=SPA(wp,a); e=SPA(wp,e); x=SPA(wp,x); y=SPA(wp,i); 
  xn=AN(x); an=AN(a); b=equ(a,IX(an));
- if(!an||!xn)return reshape(shape(w),xn?x:e);
- if(b)s=AS(w); else{RZ(q=over(a,less(IX(r),a))); RZ(s1=from(q,shape(w))); s=AV(s1);}
+ if(!an||!xn)return reshape(shape(jt,w),xn?x:e);
+ if(b)s=AS(w); else{RZ(q=over(a,less(IX(r),a))); RZ(s1=from(q,shape(jt,w))); s=AV(s1);}
  RE(n=prod(r,s));
  GA(z,t,n,r,s); zv=CAV(z); xv=CAV(x); 
  if(1<an)RZ(y=base2(vec(INT,an,s),y)); yv=AV(y);
@@ -302,7 +302,7 @@ static A jtsparsep1(J jt, A w){A*wv;I n=0;
 static A jtsparsen1(J jt, A w){A*u,z;P*p;
  ASSERT(SPARSE&AT(w),EVDOMAIN);
  GAT0(z,BOX,3,1); u=AAV(z); p=PAV(w);
- u[0]=shape(w); u[1]=ca(SPA(p,a)); u[2]=ca(SPA(p,e));
+ u[0]=shape(jt,w); u[1]=ca(SPA(p,a)); u[2]=ca(SPA(p,e));
  RE(0); return z;
 }
 

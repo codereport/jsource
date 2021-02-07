@@ -517,7 +517,7 @@ static A jtfmtallcol(J jt, A a, A w, I mode) {A *a1v,base,fb,len,strs,*u,v,x;
 static A jtfmtxi(J jt, A a, A w, I mode, I *omode){I lvl;
  *omode=0;
  if((SPARSE&AT(w))!=0) RZ(w=denseit(w));
- if(!AN(w))       RZ(w=reshape(shape(w),chrspace));
+ if(!AN(w))       RZ(w=reshape(shape(jt,w),chrspace));
  if(JCHAR&AT(w))  return df1(a,w,qq(atop(ds(CBOX),ds(CCOMMA)),num(1)));
  ASSERT(1>=AR(a), EVRANK); 
  ASSERT(!AN(a) || JCHAR+BOX&AT(a), EVDOMAIN);
@@ -530,7 +530,7 @@ static A jtfmtxi(J jt, A a, A w, I mode, I *omode){I lvl;
   ASSERT(1>=lvl, EVDOMAIN);
   DO(AN(w), x=wv[i]; ASSERT(1>=AR(x),EVRANK); if(AN(x)){ASSERT(AT(x)&JCHAR+NUMERIC,EVDOMAIN);
       ASSERT(!(AR(x)&&AT(x)&NUMERIC),EVRANK);});
-  A z; return df2(z,reitem(shape(w),a),w,amp(foreign(num(8),num(0)), ds(COPE)));
+  A z; return df2(z,reitem(shape(jt,w),a),w,amp(foreign(num(8),num(0)), ds(COPE)));
  } else {
   if(XNUM+RAT+CMPX&AT(w))RZ(w=cvt(FL,w));
   *omode=mode;

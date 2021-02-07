@@ -1081,13 +1081,13 @@ A jtindexofsub(J jt,I mode,A a,A w){PROLOG(0079);A h=0,hi=mtv,z;B mk=w==mark,th;
   // If empty argument or result, or inhomogeneous arguments, return an appropriate empty or not-found
   // We also handle the case of i.&0@:e. when the rank of w is more than 1 greater than the rank of a cell of a;
   // in that case the search always fails
-  case IIDOT:   return reshape(shape(z),sc(n?m:0  ));
-  case IFORKEY: {z=reshape(shape(z),take(sc(m),sc(m))); RZ(z=mkwris(z)); AM(z)=!!m; return z;}  // all 0 but the first has the total count
-  case IICO:    return reshape(shape(z),sc(n?m:m-1));
-  case INUBSV:  return reshape(shape(z),take(sc(m),num(1)));
+  case IIDOT:   return reshape(shape(jt,z),sc(n?m:0  ));
+  case IFORKEY: {z=reshape(shape(jt,z),take(sc(m),sc(m))); RZ(z=mkwris(z)); AM(z)=!!m; return z;}  // all 0 but the first has the total count
+  case IICO:    return reshape(shape(jt,z),sc(n?m:m-1));
+  case INUBSV:  return reshape(shape(jt,z),take(sc(m),num(1)));
   case INUB:    AN(z)=0; *AS(z)=m?1:0; return z;
   case ILESS:   if(m)AN(z)=*AS(z)=0; else memcpy(AV(z),AV(w),k1*AN(w)); return z;
-  case IEPS:    return reshape(shape(z),num(m&&(!n||th)) );
+  case IEPS:    return reshape(shape(jt,z),num(m&&(!n||th)) );
   case INUBI:   return m?iv0:mtv;
   // th<0 means that the result of e. would have rank>1 and would never compare against either 0 or 1
   case II0EPS:  return sc(n&&zn?0L        :witems         );

@@ -251,7 +251,6 @@ A jtvci(J jt,I k){A z; GAT0(z,INT,1,1); IAV(z)[0]=k; return z;}
 // MUST NOT return virtual or fixed block, because we often modify the returned area
 A jtvec(J jt,I t,I n,void*v){A z; GA(z,t,n,1,0); memcpy(AV(z),v,n<<bplg(t)); return z;}
 
-// return A-block for list of type t, length n, and values *v
 // with special handling to coerce boolean type
 #if defined(__GNUC__) && !defined(__clang__)
 #pragma push_options
