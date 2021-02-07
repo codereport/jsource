@@ -11,6 +11,6 @@
  * @return   Output array 
  */
 [[nodiscard]] auto 
-jtrank(J jt, array w) -> array{
+rank(J jt, array w) -> array{
     return make_scalar_integer(jt, AR(w));
 }

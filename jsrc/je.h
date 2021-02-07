@@ -175,7 +175,7 @@ extern A jtnatoms(J jt, A w);
 extern A jtjoff(J jt, A w);
 extern A jtjopen(J jt, A w);
 extern A jtjpr(J jt, A w);
-extern A jtrank(J jt, A w);
+extern A rank(J jt, A w);
 extern A jtjregcomp(J jt, A w);
 extern A jtjregerror(J jt, A w);
 extern A jtjregfree(J jt, A w);
