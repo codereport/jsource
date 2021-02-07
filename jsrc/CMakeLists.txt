@@ -105,7 +105,7 @@ target_sources(j PRIVATE
         sn.c
         t.c
         u.c
-        interpreter_utilities.cpp
+        interpreter_utilities.hpp
         vu.c
         words/w.c
         words/wc.c

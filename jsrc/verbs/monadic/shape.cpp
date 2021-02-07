@@ -1,5 +1,6 @@
 
 #include "array.hpp"
+#include "interpreter_utilities.hpp"
 
 /** @file */
 
@@ -12,5 +13,5 @@
  */
 [[nodiscard]] auto
 shape(J jt, array w) -> array {
-    return vec(INT, AR(w), AS(w));
+    return make_vector<int64_t>(jt, AR(w), AS(w));
 }  // $ y
