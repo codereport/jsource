@@ -127,15 +127,6 @@
  * white space ignored; but if this results in none of the 52
  * fraction bits being on (an IEEE Infinity symbol), then NAN_WORD0
  * and NAN_WORD1 are used instead.
- * #define MULTIPLE_THREADS if the system offers preemptively scheduled
- * multiple threads.  In this case, you must provide (or suitably
- * #define) two locks, acquired by ACQUIRE_DTOA_LOCK(n) and freed
- * by FREE_DTOA_LOCK(n) for n = 0 or 1.  (The second lock, accessed
- * in pow5mult, ensures lazy evaluation of only one copy of high
- * powers of 5; omitting this lock would introduce a small
- * probability of wasting memory, but would otherwise be harmless.)
- * You must also invoke freedtoa(s) to free the value s returned by
- * dtoa.  You may do so whether or not MULTIPLE_THREADS is #defined.
  * #define NO_IEEE_Scale to disable new (Feb. 1997) logic in strtod that
  * avoids underflows on inputs whose result does not underflow.
  * If you #define NO_IEEE_Scale on a machine that uses IEEE-format
@@ -170,7 +161,6 @@
 #include "js.h"
 #define Long int
 #define IEEE_8087
-#define MULTIPLE_THREADS
 #define ACQUIRE_DTOA_LOCK(n) /* handled by using jt */
 #define FREE_DTOA_LOCK(n)    /* handled by using jt */
 /* #define Omit_Private_Memory */
@@ -400,11 +390,6 @@ extern double rnd_prod(double, double), rnd_quot(double, double);
 #define ULLong unsigned Llong
 #endif
 #endif /* NO_LONG_LONG */
-
-#ifndef MULTIPLE_THREADS
-#define ACQUIRE_DTOA_LOCK(n) /*nothing*/
-#define FREE_DTOA_LOCK(n) /*nothing*/
-#endif
 
 #define Kmax 15
 
@@ -797,17 +782,8 @@ d2a_pow5mult
   return b;
  if (!(p5 = p5s)) {
   /* first time */
-#ifdef MULTIPLE_THREADS
-  ACQUIRE_DTOA_LOCK(1);
-  if (!(p5 = p5s)) {
-   p5 = p5s = i2b(625);
-   p5->next = 0;
-   }
-  FREE_DTOA_LOCK(1);
-#else
   p5 = p5s = i2b(625);
   p5->next = 0;
-#endif
   }
  for(;;) {
   if (k & 1) {
@@ -818,17 +794,8 @@ d2a_pow5mult
   if (!(k >>= 1))
    break;
   if (!(p51 = p5->next)) {
-#ifdef MULTIPLE_THREADS
-   ACQUIRE_DTOA_LOCK(1);
-   if (!(p51 = p5->next)) {
-    p51 = p5->next = mult(p5,p5);
-    p51->next = 0;
-    }
-   FREE_DTOA_LOCK(1);
-#else
    p51 = p5->next = mult(p5,p5);
    p51->next = 0;
-#endif
    }
   p5 = p51;
   }
@@ -1394,10 +1361,6 @@ quorem
  return q;
  }
 
-#ifndef MULTIPLE_THREADS
- static char *dtoa_result;
-#endif
-
  static char *
 #ifdef KR_headers
 rv_alloc(i) int i;
@@ -1417,9 +1380,6 @@ d2a_rv_alloc(struct dtoa_info *d2a, int i)
  r = (int*)Balloc(k);
  *r = k;
  return
-#ifndef MULTIPLE_THREADS
- dtoa_result =
-#endif
   (char *)(r+1);
 #else
  if(i>d2a->ndp) longjmp(d2a->_env, 2); /* this shouldn't happen? */
