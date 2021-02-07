@@ -100,7 +100,7 @@ static Q jtqpow(J jt,Q a,Q w){PROLOG(0089);B c;I p,q,s;Q t,z;X d;
 
 I jtqcompare(J jt,Q a,Q w){return QCOMP(a,w);}
 
-static X jtqbin(J jt,Q a,Q w){ASSERT(QX1(a.d)&&QX1(w.d),EWIRR); return rifvsdebug(xbin(a.n,w.n));}
+static X jtqbin(J jt,Q a,Q w){ASSERT(QX1(a.d)&&QX1(w.d),EWIRR); return 0; }
 
 static D jtqlogd1(J jt,Q w){ASSERT(0<=XDIG(w.n),EWIMAG); return xlogabs(w.n)-xlogabs(w.d);}
 

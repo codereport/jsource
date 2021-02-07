@@ -336,44 +336,6 @@ static Z jtxlogz1(J jt,X w){Z z; z.re=xlogabs(w); z.im=0>XDIG(w)?PI:0.0; return 
  return rifvsdebug(xev1(apv(n,1L,1L),"*/"));
 }
 
-static X jtxbinp(J jt,X a,X w){PROLOG(0098);D m;I i,n;X c,d,p,q,r,s;
- RZ(d=xminus(w,a)); s=1==xcompare(a,d)?d:a; RE(n=xint(s));
- m=xdouble(w);
- if(m<=FLIMAX){
-  RZ(p=less(ravel(factor(apv(n,(I)m,-1L))),zeroionei(0)));
-  RZ(q=less(ravel(factor(apv(n,1L,   1L))),zeroionei(0)));
-  c=over(p,q);
-  d=repeat(v2(AN(p),AN(q)),v2(1L,-1L));
-  A z=xev1(repeat(ev2(c,d,"+//."),nub(c)),"*/");
-  EPILOGNOVIRT(z);
- }else{
-  p=q=iv1; r=w;  
-  for(i=0;i<n;++i){
-   p=xtymes(p,r); r=xminus(r,iv1);  
-   q=xtymes(q,s); s=xminus(s,iv1);
-   d=xgcd(p,q); p=xdiv(p,d,XMEXACT); q=xdiv(q,d,XMEXACT);
-   if(jt->jerr)return 0;
-  }
-  EPILOGNOVIRT(p);
-}}   /* non-negative x,y; x<=y */
-
- X jtxbin(J jt,X a,X w){X d,z;
- RZ(d=xminus(w,a));
- switch(4*(I )(0>XDIG(a))+2*(I )(0>XDIG(w))+(I )(0>XDIG(d))){
-  default:             ASSERTSYS(0,"xbin");
-  case 2: /* 0 1 0 */  /* Impossible */
-  case 5: /* 1 0 1 */  /* Impossible */
-  case 1: /* 0 0 1 */ 
-  case 4: /* 1 0 0 */ 
-  case 7: /* 1 1 1 */  return iv0;
-  case 0: /* 0 0 0 */  return rifvsdebug(xbinp(a,w));
-  case 3: /* 0 1 1 */  
-   z=xbinp(a,xminus(a,xplus(w,iv1)));           return rifvsdebug(AV(a)[0]&1?negate(z):z);
-  case 6: /* 1 1 0 */  
-   z=xbinp(xminus(xc(-1L),w),xminus(xc(-1L),a)); return rifvsdebug(AV(d)[0]&1?negate(z):z);
- }
-}
-
 static A jtpiev(J jt,I n,X b){A e;I ek,i,n1=n-1;X bi,e0,e1,*ev,t;
  GATV0(e,XNUM,n,1); ev=XAV(e);
  bi=e0=e1=iv1;
@@ -421,7 +383,6 @@ APFX(  lcmXX, X,X,X, xlcm  ,,HDR1JERR)
 APFX(  minXX, X,X,X, XMIN  ,,HDR1JERR)
 APFX(  maxXX, X,X,X, XMAX  ,,HDR1JERR)
 APFX(  powXX, X,X,X, xpow  ,,HDR1JERR)
-APFX(  binXX, X,X,X, xbin  ,,HDR1JERR)
 
 AMON( sgnX, X,X, *z=  rifvsdebug(xsgn(*x));)
 AMONPS(sqrtX, X,X, , *z= rifvsdebug(xsqrt(*x)); , HDR1JERR)

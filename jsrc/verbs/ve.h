@@ -208,7 +208,6 @@ extern I bw1111II(I n, I m, UI* RESTRICTI x, UI* RESTRICTI y, UI* RESTRICTI z, J
 extern I andBB(I n, I m, void* RESTRICTI x, void* RESTRICTI y, void* RESTRICTI z, J jt);
 extern I binDD(I n, I m, D* RESTRICTI x, D* RESTRICTI y, D* RESTRICTI z, J jt);
 extern I binQQ(I n, I m, Q* RESTRICTI x, Q* RESTRICTI y, X* RESTRICTI z, J jt);
-extern I binXX(I n, I m, X* RESTRICTI x, X* RESTRICTI y, X* RESTRICTI z, J jt);
 extern I binZZ(I n, I m, Z* RESTRICTI x, Z* RESTRICTI y, Z* RESTRICTI z, J jt);
 extern I cirBD(I n, I m, B* RESTRICTI x, D* RESTRICTI y, D* RESTRICTI z, J jt);
 extern I cirID(I n, I m, I* RESTRICTI x, D* RESTRICTI y, D* RESTRICTI z, J jt);

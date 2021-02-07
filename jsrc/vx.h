@@ -30,8 +30,6 @@ extern X jtxsgn(J jt,    X w);
 extern X jtxsq(J jt,    X w);
 extern X jtxsqrt(J jt,    X w);
 extern X jtxstd(J jt,    X w);
-
-extern X jtxbin(J jt,X a,X w);
 extern X jtxgcd(J jt,X a,X w);
 extern X jtxlcm(J jt,X a,X w);
 extern X jtxminus(J jt,X a,X w);

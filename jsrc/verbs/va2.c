@@ -406,7 +406,7 @@ VA va[]={
  {{(VF)leBB,VCVTIP+VB+VIP            }, {(VF)binDD,VCVTIP+VD+VDD+VRI+VIP}, {(VF)binDD,VCVTIP+VD+VDD+VIP}, 
   {(VF)binDD,VCVTIP+VD+VDD+VRI+VIP}, {(VF)binDD,VCVTIP+VD+VDD+VRI+VIP}, {(VF)binDD,VCVTIP+VD+VDD+VIP}, 
   {(VF)binDD,VCVTIP+VD+VDD+VIP    }, {(VF)binDD,VCVTIP+VD+VDD+VIP    }, {(VF)binDD,VCVTIP+VD+VIP    }, 
-  {(VF)binZZ,VCVTIP+VZ+VZZ}, {(VF)binXX,VCVTIP+VX+VXX}, {(VF)binQQ,VCVTIP+VX+VQQ}, {0,0}}, 
+  {(VF)binZZ,VCVTIP+VZ+VZZ}, {(VF)0,VCVTIP+VX+VXX}, {(VF)binQQ,VCVTIP+VX+VQQ}, {0,0}}, 
   &rpsle},
 
 /* d1 o. */ {
