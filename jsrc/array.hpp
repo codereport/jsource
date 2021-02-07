@@ -6,6 +6,7 @@ extern "C" {
 }
 
 using array = A;  // potentially rename to j_array?
+using shape_t = long long*; // TODO figure out how to turn this into int64_t
 
 // TODO: will targ be a int64_t in all cases
 // TODO: probably certain uses of the SETIC macro use targ after the function
@@ -96,11 +97,9 @@ make_array(J jt, int64_t atoms, rank_t rank) {
     return name;
 }
 
-template <typename Type>
-[[nodiscard]] auto
-make_array(J jt, int64_t n, rank_t r, int64_t* s) -> array {
-    array const v = ga(to_c_type<Type>(), (I)(n), (I)(r), (I*)(s));
-    return v ? v : nullptr;
+[[nodiscard]] inline auto
+make_array(J jt, int64_t t, int64_t n, rank_t r, shape_t s) -> array {
+    return ga(t, n, r, s);
 }
 
 // this is for "creating an integer atom with value k"
