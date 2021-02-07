@@ -2,5 +2,24 @@
 Verbs
 =====
 .. toctree::
-   monadic
-   dyadic
+.. contents::
+   
+*******
+Monadic
+*******
+
+Tally
+#####
+
+.. doxygenfunction:: tally
+
+Shape
+#####
+
+.. doxygenfunction:: jtshape
+
+******
+Dyadic
+******
+
+

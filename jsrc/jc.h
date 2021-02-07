@@ -66,7 +66,7 @@
 
 // Current primitive order:
 // fills with inverses to populate the area near 0
-// !. ^: #. }: }. !: p. ^. |. o. |: \
+// !. ^: #. }: }. !: p. ^. |. o. |: \    #prevent multiline comment
 // seldom-used verbs
 // -. ? ?. I. 0:
 // structural

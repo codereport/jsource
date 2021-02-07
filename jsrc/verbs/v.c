@@ -32,7 +32,7 @@
 
   // If we have to allocate a new block, do so.  In that rare case, revoke pristinity of w
   GA(z,AT(w),AN(w),1+f,AS(w)); AS(z)[f]=m;   // allocate result area, shape=frame+1 more to hold size of cell; fill in shape
-  MC(AV(z),AV(w),AN(w)<<bplg(AT(w)));
+  memcpy(AV(z),AV(w),AN(w)<<bplg(AT(w)));
   PRISTCLRF(w)
   return z; // if dense, move the data and relocate it as needed
  }

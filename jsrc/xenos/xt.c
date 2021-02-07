@@ -67,7 +67,7 @@
  n=AN(w); xv=DAV(x);
  if(!n)return x;
  if(!(AT(w)&LIT))RZ(w=cvt(LIT,w));
- GATV(z,LIT,n,AR(w),AS(w)); zv=CAV(z); MC(zv,CAV(w),n);
+ GATV(z,LIT,n,AR(w),AS(w)); zv=CAV(z); memcpy(zv,CAV(w),n);
  q=0; v=zv; DQ(n, q+='Y'==*v++;); u=2==q?s+2:s;   // if only 2 Y, advance over century
  sprintf(s,FMTI04,(I)xv[0]);             v=zv; DQ(n, if(*v=='Y'){*v=*u++; if(!*u)break;} ++v;);
  sprintf(s,FMTI02,(I)xv[1]);        u=s; v=zv; DQ(n, if(*v=='M'){*v=*u++; if(!*u)break;} ++v;);
@@ -203,7 +203,7 @@ void jtpmrecord(J jt,A name,A loc,I lc,int val){A x,y;B b;PM*v;PM0*u;
  v->s=jt->bytesmax-u->s;
  u->s=jt->bytesmax=jt->bytes;
 
- {D d=tod(); MC(v->t,&d,sizeof(D));}
+ {D d=tod(); memcpy(v->t,&d,sizeof(D));}
 }
 
 // 6!:12
@@ -234,8 +234,8 @@ void jtpmrecord(J jt,A name,A loc,I lc,int val){A x,y;B b;PM*v;PM0*u;
  GATV0(t,INT,m,1); zv[4]=incorp(t); iv=AV(t); v=vq; DO(p, if(b[i])*iv++=v->s;  ++v;); v=v0; DO(q, if(b[p+i])*iv++=v->s;  ++v;); 
  GATV0(t,FL, m,1); zv[5]=incorp(t); dv=DAV(t);
 
- v=vq; DO(p, if(b[i]  ){MC(dv,v->t,sizeof(D)); ++dv;} ++v;); 
- v=v0; DO(q, if(b[p+i]){MC(dv,v->t,sizeof(D)); ++dv;} ++v;); 
+ v=vq; DO(p, if(b[i]  ){memcpy(dv,v->t,sizeof(D)); ++dv;} ++v;); 
+ v=v0; DO(q, if(b[p+i]){memcpy(dv,v->t,sizeof(D)); ++dv;} ++v;); 
  return z;
 }
 

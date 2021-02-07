@@ -220,15 +220,15 @@ A jtunDD(J jt, A w){F1PREFIP;
     // We could try to reduce number of copies, but this just isn't very common.  Unfortunately the nounDD form is bigger than the quoted form
     // length of the revised string is 6 ({{)n}}) plus len+finalLF-2-numqu
     A neww; GATV0(neww,LIT,AN(w)+6-2-numqu+finalLF,1); C *newwv=CAV(neww);
-    MC(newwv,wv,stringstartx); newwv+=stringstartx;  // pre-string, moving newwv to start of dequoted section
-    MC(newwv,"{{)n\n",5); newwv+=4+finalLF;  // write the header of the nounDD, possibly starting with LF
+    memcpy(newwv,wv,stringstartx); newwv+=stringstartx;  // pre-string, moving newwv to start of dequoted section
+    memcpy(newwv,"{{)n\n",5); newwv+=4+finalLF;  // write the header of the nounDD, possibly starting with LF
     for(++stringstartx;stringstartx<scan;++stringstartx){  // skip the leading quote
      *newwv++=wv[stringstartx];
      if(stringstartx+1<scan&&wv[stringstartx+1]=='\'')++stringstartx;  // dedouble quote
     }  // move the quoted part
     ++scan;  // advance past the final quote
-    MC(newwv,"}}",2); newwv+=2;  // trailer of nounDD
-    MC(newwv,wv+scan,AN(w)-scan); // the rest of the input
+    memcpy(newwv,"}}",2); newwv+=2;  // trailer of nounDD
+    memcpy(newwv,wv+scan,AN(w)-scan); // the rest of the input
     scan=newwv-CAV(neww);  // adjust input pointer to the correct position in the new string
     w=neww; wv=CAV(w); // pick up processing the modified string
    }
@@ -243,7 +243,7 @@ static A jtunparse1(J jt,CW*c,A x,I j,A y){A q,z;C*s;I t;
  switch(t=c->type){
   case CBBLOCK: case CBBLOCKEND: case CTBLOCK: RZ(z=unparse(x));  break;
   case CASSERT:               RZ(q=unparse(x)); GATV0(z,LIT,8+AN(q),1); s=CAV(z); 
-                              MC(s,"assert. ",8L); MC(8+s,CAV(q),AN(q)); break;
+                              memcpy(s,"assert. ",8L); memcpy(8+s,CAV(q),AN(q)); break;
   case CLABEL:  case CGOTO:   RZ(z=ca(AAV(x)[0])); break;
   case CFOR:                  RZ(z=c->n?AAV(x)[0]:spellcon(t)); break;
   default:                    RZ(z=spellcon(t));
@@ -251,7 +251,7 @@ static A jtunparse1(J jt,CW*c,A x,I j,A y){A q,z;C*s;I t;
  // if the CW we processed comes from the same source lime, append it and return the combination; ootherwise return the new
  if(j==c->source){
   GATV0(q,LIT,1+AN(y)+AN(z),1); s=CAV(q); 
-  MC(s,CAV(y),AN(y)); s+=AN(y); *s++=' '; MC(s,CAV(z),AN(z)); 
+  memcpy(s,CAV(y),AN(y)); s+=AN(y); *s++=' '; memcpy(s,CAV(z),AN(z)); 
   z=q;
  }
  return z;

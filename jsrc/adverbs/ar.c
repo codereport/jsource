@@ -189,7 +189,7 @@ static A jtredsp1a(J jt,C id,A z,A e,I n,I r,I*s){A t;B b,p=0;D d=1;
    ASSERT(B01&AT(e),EVNONCE); 
    if(!n)BAV(z)[0]=p; 
    b=1; DO(r, if(!(s[i]&1)){b=0; break;}); 
-   return !p==*BAV(e)&&b!=(n&1)?__not(z):z;
+   return (!p)==*BAV(e)&&b!=(n&1)?__not(z):z;
 }}   /* f/w on sparse vector w, post processing */
 
 static A jtredsp1(J jt,A w,A self,C id,VARPSF ado,I cv,I f,I r,I zt){A e,x,z;I m,n;P*wp;
@@ -299,9 +299,9 @@ static A jtredsps(J jt,A w,A self,C id,VARPSF ado,I cv,I f,I r,I zt){A a,a1,e,sn
  for(i=0;i<m;++i){A y;B*p1;C*u;I*vv;
   p1=1+(B*)memchr(pv,C1,yr); n=p1-pv; if(sn)sv[i]=wm-n; pv=p1;
   vv=qv?yv+yc**v:yv; DO(yc-1, *yu++=vv[dv[i]];);
-  if(1<n){if(qv){u=xxv; DO(n, MC(u,xv+xk*v[i],xk); u+=xk;);} I rc=((AHDRRFN*)ado)(xc,n,1L,qv?xxv:xv,zv,jt); if(255&rc)jsignal(rc); RE(0);}
-  else   if(zk==xk)MC(zv,qv?xv+xk**v:xv,xk);
-  else   {if(!x1)GA(x1,xt,xc,1,0); MC(AV(x1),qv?xv+xk**v:xv,xk); RZ(y=cvt(zt,x1)); MC(zv,AV(y),zk);}
+  if(1<n){if(qv){u=xxv; DO(n, memcpy(u,xv+xk*v[i],xk); u+=xk;);} I rc=((AHDRRFN*)ado)(xc,n,1L,qv?xxv:xv,zv,jt); if(255&rc)jsignal(rc); RE(0);}
+  else   if(zk==xk)memcpy(zv,qv?xv+xk**v:xv,xk);
+  else   {if(!x1)GA(x1,xt,xc,1,0); memcpy(AV(x1),qv?xv+xk**v:xv,xk); RZ(y=cvt(zt,x1)); memcpy(zv,AV(y),zk);}
   zv+=zk; if(qv)v+=n; else{xv+=n*xk; yv+=n*yc;}
  }
  if(sn)RZ(redspse(id,wm,xt,e,zx,sn,&e,&zx));
@@ -407,7 +407,7 @@ static A jtredcatsp(J jt,A w,A z,I r){A a,q,x,y;B*b;I c,d,e,f,j,k,m,n,n1,p,*u,*v
   DQ(m, *v=p*u[0]+u[1]; v+=n1; u+=n;);
  }else if(!c&&!d){  /* dense dense */
   u=AS(x); GA(q,AT(x),AN(x),xr-1,u); v=k+AS(q); *v=u[k]*u[1+k]; MCISH(1+v,2+k+u,xr-k-2);
-  MC(AV(q),AV(x),AN(x)<<bplg(AT(x)));
+  memcpy(AV(q),AV(x),AN(x)<<bplg(AT(x)));
   SPB(zp,x,q); SPB(zp,i,ca(y));
  }else{             /* other */
   GATV0(q,INT,xr,1); v=AV(q); 

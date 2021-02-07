@@ -60,16 +60,6 @@ PT cases[] = {
  NAME+NOUN, ASGN,      CAVN, ANY,       0,      jtvis,    0,2,1,
  LPAR,      CAVN,      RPAR, ANY,       0,    jtvpunc,  0,2,0,
 };
-#define PN 0
-#define PA 1
-#define PC 2
-#define PV 3
-#define PM 4  // MARK
-#define PNM 5  // NAME
-#define PL 6
-#define PR 7
-#define PS 8  // ASGN without ASGNNAME
-#define PSN 9 // ASGN+ASGNNAME
 
 // Tables to convert parsing type to mask of matching parse-table rows for each of the stack positions
 // the AND of these gives the matched row (the end-of-table row is always matched)
@@ -677,4 +667,3 @@ failparse:  // If there was an error during execution or name-stacking, exit wit
  }
 
 }
-

@@ -47,7 +47,7 @@ int swapint(int n){C* p,c;
  for(i=0;i<SK;++i) k2[i] = lobyte(rand());
  *p++=(UC)255; *p++=0; *p++=c1; *p++=c2;
  for(i=0;i<4;++i) *p++= k1[i] ^ *(i+(UC*)&xlen);
- MC(p,k1,SK);
+ memcpy(p,k1,SK);
  p+=SK;
  k=LOCKEXTRA+maxc1;
  for(i=0;i<k;++i) *p++= lobyte(rand());
@@ -59,7 +59,7 @@ int swapint(int n){C* p,c;
   if(++j==SK) j=0;
   *p++=c;
  }
- MC(p,k2,SK);
+ memcpy(p,k2,SK);
  p+=SK;
  for(i=0;i<maxc2;++i) *p++= lobyte(rand());
  for(i=0;i<2*SERIALNUMSIZE;++i) *p++= lobyte(rand());
@@ -74,11 +74,11 @@ int swapint(int n){C* p,c;
  d=UAV(w);
  tlen=(int)AN(w);
  if(!tlen || 255!=d[0] || 0 != d[1] || tlen<8+SK) return w; /* not jl */
- MC(k1, d+8, SK);
+ memcpy(k1, d+8, SK);
  for(i=0;i<(int)sizeof(int);++i) *(i+(UC*)&len) = k1[i] ^ d[4+i];
  c1 = max(33,d[2]);
  c2 = max(33,d[3]);
- if(!tlen == (8+LOCKEXTRA+c1+c2+len+ 2*SK + 2*SERIALNUMSIZE)) return w; /* not jl */
+ if((!tlen) == (8+LOCKEXTRA+c1+c2+len+ 2*SK + 2*SERIALNUMSIZE)) return w; /* not jl */
  lp = d+8+SK+c1+LOCKEXTRA;
  sp = d;
  j=0;

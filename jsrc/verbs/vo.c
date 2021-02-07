@@ -121,7 +121,7 @@ F2PREFIP;
   if(AK(w)==AKXR(1)){A neww;   // no space at the beginning of w
    I neededn=AN(w)+4+8; CTLZI(neededn,neededn); neededn=(2LL<<neededn)-8;  // number of atoms needed in larger block: room for at least 4 more, rounded up to power of 2 after header
    GATV0(neww,BOX,neededn,1); AN(neww)=AS(neww)[0]=AN(w); AK(neww)+=(neededn-(AN(w)+4))*SZI;  // allocate and position AK to put AN(w) atoms at end, with several spaces extra in case user wants to append in place
-   MC(AAV(neww),AAV(w),AN(w)*SZI);  // copy the atoms from old to new
+   memcpy(AAV(neww),AAV(w),AN(w)*SZI);  // copy the atoms from old to new
    AFLAG(neww)=AFLAG(w); AFLAG(w)&=~RECURSIBLE;  // Transfer ownership of old blocks to new, making neww recursive (& maybe PRISTINE) and w nonrecursive
    w=neww;  // start adding to the new block
   }
@@ -174,7 +174,7 @@ static C *copyresultcell(J jt, C *z, C *w, I *sizes, I rf, I *s){I wadv;I r=rf>>
   // r=0   This can only happen if lower r was 0 originally, since we stop recursion at r=1.  r=0 means that
   // the entire r matched the suffix of the shape of zcell, and we can copy the entire cell
   wadv=sizes[0];
-  if(rf&1){DO(wadv>>LGSZI, A a=((A*)w)[i]; ra(a); ((A*)z)[i]=a;)}else{MC(z,w,wadv);}
+  if(rf&1){DO(wadv>>LGSZI, A a=((A*)w)[i]; ra(a); ((A*)z)[i]=a;)}else{memcpy(z,w,wadv);}
   return wadv+w;
  }
  // otherwise there will be fill
@@ -182,7 +182,7 @@ static C *copyresultcell(J jt, C *z, C *w, I *sizes, I rf, I *s){I wadv;I r=rf>>
  if(r==1){
   // r=1 (after r1 exhausted).  Lower cells are taken in full, so we can copy the cells en bloc
   wadv = s[0]*sizes[1]; // number of bytes to move
-  if(rf&1){DO(wadv>>LGSZI, A a=((A*)w)[i]; ra(a); ((A*)z)[i]=a;)}else{MC(z,w,wadv);}
+  if(rf&1){DO(wadv>>LGSZI, A a=((A*)w)[i]; ra(a); ((A*)z)[i]=a;)}else{memcpy(z,w,wadv);}
   w+=wadv; z+=wadv; // move the valid data, and advance pointers
  }else if(r<1){
   // There is a leading 1 axis.  Recur once to copy the one cell
@@ -343,16 +343,16 @@ A jtassembleresults(J jt, I ZZFLAGWORD, A zz, A zzbox, A* zzboxp, I zzcellp, I z
 static B povtake(J jt,A a,A w,C*x){B b;C*v;I d,i,j,k,m,n,p,q,r,*s,*ss,*u,*uu,y;
  if(!w)return 0;
  r=AR(w); n=AN(w); k=bpnoun(AT(w)); v=CAV(w);
- if(1>=r){MC(x,v,k*n); return 1;}
+ if(1>=r){memcpy(x,v,k*n); return 1;}
  m=AN(a); u=AV(a); s=AS(w);
  p=0; d=1; DO(r, if(u[m-1-i]==s[r-1-i]){d*=s[r-1-i]; ++p;}else break;);
  b=0; DO(r-p, if(b=1<s[i])break;);
- if(!b){MC(x,v,k*n); return 1;}
+ if(!b){memcpy(x,v,k*n); return 1;}
  k*=d; n/=d; ss=s+r-p; uu=u+m-p;
  for(i=0;i<n;++i){
   y=0; d=1; q=i; /* y=.a#.((-$a){.(($a)$1),$w)#:i */
   s=ss; u=uu; DQ(r-p, j=*--s; y+=q%j*d; d*=*--u; q/=j;);
-  MC(x+y*k,v,k); v+=k;
+  memcpy(x+y*k,v,k); v+=k;
  }
  return 1;
 }
@@ -382,7 +382,7 @@ static B jtopes2(J jt,A*zx,A*zy,B*b,A a,A e,A q,I wcr){A x;B*c;I dt,k,r,*s,t;P*p
  }else{
   if(k){
    GA(x,t,AN(q),wcr,0); s=AS(x); DQ(k, *s++=1;); MCISH(s,AS(q),r); 
-   MC(AV(x),AV(q),AN(q)<<bplg(t)); q=x;
+   memcpy(AV(x),AV(q),AN(q)<<bplg(t)); q=x;
   }
   RZ(q=sparseit(t&dt?q:cvt(dt,q),a,e));
  }
@@ -415,7 +415,7 @@ static A jtopes(J jt,I zt,A cs,A w){A a,d,e,sh,t,*wv,x,x1,y,y1,z;B*b;C*xv;I an,*
   }
   for(j=wr-1;j;--j)if(dv[j]==zs[j]){dv[j]=0; ++dv[j-1];}else break;
   v=AV(y1); DQ(m1, ICPY(yv,dv,wr); ICPY(yv+yc-k,v,k); yv+=yc; v+=k;); 
-  if(memcmpne(1+AS(x1),1+s,SZI*c)){*s=m1; povtake(jt,sh,x1,xv);} else MC(xv,AV(x1),m1*xk);
+  if(memcmpne(1+AS(x1),1+s,SZI*c)){*s=m1; povtake(jt,sh,x1,xv);} else memcpy(xv,AV(x1),m1*xk);
   ++dv[wr-1]; xv+=m1*xk; p+=m1;
  }
  SPB(zp,x,p==m?x:take(sc(p),x));
@@ -471,8 +471,8 @@ static A jtopes(J jt,I zt,A cs,A w){A a,d,e,sh,t,*wv,x,x1,y,y1,z;B*b;C*xv;I an,*
 #if AUDITBOXAC
    if(!(AFLAG(w)&AFVIRTUALBOXED)&&AC(y)<0)SEGFAULT;
 #endif
-   if(!nonh)                MC(x,AV(y),AN(y)<<klg);  // homogeneous atomic types: fill only at end, copy the valid part
-   else if(TYPESEQ(t,AT(y))&&m==AN(y))MC(x,AV(y),q);   // cell of maximum size: copy it entire
+   if(!nonh)                memcpy(x,AV(y),AN(y)<<klg);  // homogeneous atomic types: fill only at end, copy the valid part
+   else if(TYPESEQ(t,AT(y))&&m==AN(y))memcpy(x,AV(y),q);   // cell of maximum size: copy it entire
    else if(AN(y))             RZ(povtake(jt,cs,TYPESEQ(t,AT(y))?y:cvt(t,y),x));  // otherwise add fill
    x+=q;
   }
@@ -541,7 +541,7 @@ static A jtrazeg(J jt,A w,I t,I n,I r,A*v,I nonempt){A h,h1,y,z;C*zu;I c=0,i,j,k
    if(j=r-yr){DO(j,v1[i]=1;); MCISH(j+v1,ys,yr); RZ(y=reshape(h1,y)); }  // if rank extension needed, create rank 1 1...,yr and reshape to that shape
    for(j=1;j<r;++j)if(s[j]!=AS(y)[j])break; if(j!=r){SETIC(y,*s); RZ(y=take(h,y));}  // if cell of y has different shape from cell of result, install the
      // #items into s (giving #cell,result-cell shape) and fill to that shape.  This destroys *s (#result items) buts leaves the rest of s
-   {j=k*AN(y); MC(zu,AV(y),j); zu+=j;}
+   {j=k*AN(y); memcpy(zu,AV(y),j); zu+=j;}
   }
  }
  return z;
@@ -586,7 +586,7 @@ static A jtrazeg(J jt,A w,I t,I n,I r,A*v,I nonempt){A h,h1,y,z;C*zu;I c=0,i,j,k
   zu=CAV(z); zv=AAV(z); klg=bplg(t); // input pointers, depending on type; length of an item
   // loop through the boxes copying
   for(i=0;i<n;++i){
-   y=v[i]; if(AN(y)){if(TYPESNE(t,AT(y)))RZ(y=cvt(t,y)); d=AN(y)<<klg; MC(zu,AV(y),d); zu+=d;}
+   y=v[i]; if(AN(y)){if(TYPESNE(t,AT(y)))RZ(y=cvt(t,y)); d=AN(y)<<klg; memcpy(zu,AV(y),d); zu+=d;}
   }
  }else{
   // special case where the result-assembly code checked to make sure the items were uniform.  In this case the number of items was hidden away in the AM field (otherwise unneeded, since we know the block isn't virtual)
@@ -597,7 +597,7 @@ static A jtrazeg(J jt,A w,I t,I n,I r,A*v,I nonempt){A h,h1,y,z;C*zu;I c=0,i,j,k
   GA(z,t,m*nitems,r,wws); AS(z)[0]=nitems; // allocate the result area; finish shape
   zu=CAV(z); zv=AAV(z); klg=bplg(t); // input pointers, depending on type; length of an item
   // loop through the boxes copying the data into sequential output positions
-  DO(n, y=v[i]; d=AN(y)<<klg; MC(zu,AV(y),d); zu+=d;)
+  DO(n, y=v[i]; d=AN(y)<<klg; memcpy(zu,AV(y),d); zu+=d;)
  }
 
  return z;
@@ -622,7 +622,7 @@ static A jtrazeg(J jt,A w,I t,I n,I r,A*v,I nonempt){A h,h1,y,z;C*zu;I c=0,i,j,k
    case sizeof(int):{int*u,*v=(int*)yv; DQ(p, u=(int*)xv; *u=*v++; xv+=ck;);} break;
    case sizeof(S): {S*u,*v=(S*)yv; DQ(p, u=(S*)xv; *u=*v++;    xv+=ck;);} break;
    case sizeof(C):                 DQ(p, *xv=*yv++;            xv+=ck;);  break;
-   default:                        DQ(p, MC(xv,yv,dk); yv+=dk; xv+=ck;); 
+   default:                        DQ(p, memcpy(xv,yv,dk); yv+=dk; xv+=ck;); 
  }}
  return z;
 }    /* >,.&.>/,w */

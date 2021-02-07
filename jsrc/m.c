@@ -4,11 +4,7 @@
 /* Memory Management                                                       */
 
 
-#define __cdecl
-
 #include "j.h"
-
-#define LEAKSNIFF 0
 
 #define ALIGNTOCACHE 0   // set to 1 to align each block to cache-line boundary.  Will reduce cache usage for headers
 
@@ -49,12 +45,6 @@
 
 static void jttraverse(J,A,AF);
 
-#if LEAKSNIFF
-static I leakcode;
-static A leakblock;
-static I leaknbufs;
-#endif
-
 // Return the total length of the data area of y, i. e. the number of bytes from start-of-data to end-of-allocation
 // The allocation size depends on the type of allocation
 I allosize(A y) {
@@ -79,11 +69,6 @@ B jtmeminit(J jt){I k,m=MLEN;
  jt->mmax =(I)1<<(m-1);
  for(k=PMINL;k<=PLIML;++k){jt->mfree[-PMINL+k].ballo=SBFREEB;jt->mfree[-PMINL+k].pool=0;}  // init so we garbage-collect after SBFREEB frees
  jt->mfreegenallo=-SBFREEB*(PLIML+1-PMINL);   // balance that with negative general allocation
-#if LEAKSNIFF
- leakblock = 0;
- leaknbufs = 0;
- leakcode = 0;
-#endif
  return 1;
 }
 
@@ -273,32 +258,6 @@ void jtspendtracking(J jt){I i;
  return;
 }
 
-// Register the value to insert into leak-sniff records
-void jtsetleakcode(J jt, I code) {
-#if LEAKSNIFF
- if(!leakblock)GAT0(leakblock,INT,10000,1); ras(leakblock);
- leakcode = code;
-#endif
-}
-
- A jtleakblockread(J jt, A w){
-#if LEAKSNIFF
-if(!leakblock)return num(0);
-return vec(INT,2*leaknbufs,IAV(leakblock));
-#else
-return num(0);
-#endif
-}
- A jtleakblockreset(J jt, A w){
-#if LEAKSNIFF
-leakcode = 0;
-leaknbufs = 0;
-return num(0);
-#else
-return num(0);
-#endif
-}
-
 // Free all symbols pointed to by the SYMB block w.
 static void freesymb(J jt, A w){I j,wn=AN(w); LX k,kt,* RESTRICT wv=LXAV0(w);
  L *jtsympv=LAV0(jt->symp);  // Move base of symbol block to a register.  Block 0 is the base of the free chain.  MUST NOT move the base of the free queue to a register,
@@ -448,7 +407,7 @@ A jtrealize(J jt, A w){A z; I t;
  GA(z,t,AN(w),AR(w),AS(w));
  // new block is not VIRTUAL, not RECURSIBLE
 // copy the contents.
- MC(AV(z),AV(w),AN(w)<<bplg(t));
+ memcpy(AV(z),AV(w),AN(w)<<bplg(t));
  return z;
 }
 
@@ -816,16 +775,6 @@ RESTRICTF A jtgaf(J jt,I blockx){A z;I mfreeb;I n=(I)2<<blockx;  // n=size of al
    // we do not attempt to combine the AFLAG write into a 64-bit operation, because as of 2017 Intel processors
    // will properly store-forward any read that is to the same boundary as the write, and we always read the same way we write
   *pushp++=z; if(!((I)pushp&(NTSTACKBLOCK-1)))RZ(pushp=tg(pushp)); jt->tnextpushp=pushp;  // advance to next slot, allocating a new block as needed
-#if LEAKSNIFF
-  if(leakcode>0){  // positive starts logging; set to negative at end to clear out the parser allocations etc
-   if(leaknbufs*2 >= AN(leakblock)){
-   }else{
-    I* lv = IAV(leakblock);
-    lv[2*leaknbufs] = (I)z; lv[2*leaknbufs+1] = leakcode;  // install address , code
-    leaknbufs++;  // account for new value
-   }
-  }
-#endif
   // If the user is keeping track of memory high-water mark with 7!:2, figure it out & keep track of it.  Otherwise save the cycles
   if(((mfreeb&MFREEBCOUNTING)!=0)){
    jt->bytes += n; if(jt->bytes>jt->bytesmax)jt->bytesmax=jt->bytes;
@@ -866,15 +815,6 @@ RESTRICTF A jtga(J jt,I type,I atoms,I rank,I* shaape){A z;
 
 // free a block.  The usecount must make it freeable
 void jtmf(J jt,A w){I mfreeb;
-#if LEAKSNIFF
- if(leakcode){I i;
-  // Remove block from the table if the address matches
-  I *lv=IAV(leakblock);
-  for(i = 0;i<leaknbufs&&lv[2*i]!=(I)w;++i);  // find the match
-  if(i<leaknbufs){while(i+1<leaknbufs){lv[2*i]=lv[2*i+2]; lv[2*i+1]=lv[2*i+3]; ++i;} leaknbufs=i;}  // remove it
- }
-#endif
-
 // audit free list {I Wi,Wj;MS *Wx; for(Wi=PMINL;Wi<=PLIML;++Wi){Wj=0; Wx=(jt->mfree[-PMINL+Wi].pool); while(Wx){Wx=(MS*)(Wx->a); ++Wj;}}}
  I hrh = AFHRH(w);   // the size/offset indicator
  I blockx=FHRHPOOLBIN(hrh);   // pool index, if pool
@@ -934,7 +874,7 @@ RESTRICTF A jtgah(J jt,I r,A w){A z;
  }else{
   if(t&NAME){GATV(z,NAME,AN(w),AR(w),AS(w));AT(z)=t;}  // GA does not allow NAME type, for speed
   else GA(z,t,AN(w),AR(w),AS(w));
-  MC(AV(z),AV(w),(AN(w)*bp(t))+(t&NAME?sizeof(NM):0));}
+  memcpy(AV(z),AV(w),(AN(w)*bp(t))+(t&NAME?sizeof(NM):0));}
  return z;
 }
 // clone block only if it is read-only
@@ -980,7 +920,7 @@ A jtext(J jt,B b,A w){A z;I c,k,m,m1,t;
  m=AS(w)[0]; PROD(c,AR(w)-1,AS(w)+1); t=AT(w); k=c*bp(t);
  GA(z,t,2*AN(w)+(AN(w)?0:c),AR(w),0);  // ensure we allocate SOMETHING to make progress
  m1=allosize(z)/k;  // start this divide before the copy
- MC(AV(z),AV(w),AN(w)*bp(t));                 /* copy old contents      */
+ memcpy(AV(z),AV(w),AN(w)*bp(t));                 /* copy old contents      */
  MCISH(&AS(z)[1],&AS(w)[1],AR(w)-1);
  if(b){RZ(ras(z)); fa(w);}                 /* 1=b iff w is permanent.  This frees up the old space */
  AS(z)[0]=m1; AN(z)=m1*c;       /* "optimal" use of space */
@@ -998,4 +938,3 @@ A jtexta(J jt,I t,I r,I c,I m){A z;I m1;
 
 // forcetomemory does nothing, but it does take an array as argument.  This will spook the compiler out of trying to assign parts of the array to registers.
 void forcetomemory(void * w){return; }
-

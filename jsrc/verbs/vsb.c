@@ -17,24 +17,6 @@
 // The hash field is filled in at initialization, but that's OK because it's always set to the same value
 static SBU       sentinel = {0,0,0,BLACK,0,0,0,IMIN,0,0,0};
 
-/* #define TMP */
-#ifdef TMP
-#include <time.h>
-static int              tmp_lr=0; 
-static int              tmp_rr=0; 
-static int              tmp_lt=0; 
-static int              tmp_while=0; 
-static int              tmp_node=0; 
-static int              tmp_reorder=0; 
-static int              tmp_moves=0; 
-static int              tmp_imax=0; 
-static int              tmp_rhit=0; 
-static int              tmp_lhit=0;
-static clock_t          clo;
-static D                tickk=1.0/CLOCKS_PER_SEC;
-#endif
-
-
 /* implementation dependend declarations */
 typedef enum {
     STATUS_OK,
@@ -44,17 +26,11 @@ typedef enum {
 } statusEnum;
 
 
-#ifdef TMP
-#define NODE(a)         (tmp_node++,a+jt->sbuv)
-#else
 #define NODE(a)         (a+jt->sbuv)
-#endif
-
 #define NODEM(a,b)      (jt->sbuv[a].b)
 #define LEFT(a)         NODEM(a,left)
 #define RIGHT(a)        NODEM(a,right)
 #define ORDER(a)        NODEM(a,order)
-#define INDEX(a)        NODEM(a,i)
 #define COLOR(a)        NODEM(a,color)
 #define DOWN(a)         NODEM(a,down)
 #define UP(a)           NODEM(a,up)
@@ -65,29 +41,7 @@ typedef enum {
 #define compLT(a,b)     Vcompare(jt,a,b)
 #define compEQ(a,b)     ( a == b )
 
-
-
-#ifdef TMP
-static void showdepth(J jt, I node, int **ptr, I* size, I depth)
-{
-  if(LEFT(node) == 0) {
-    (*ptr) = realloc((*ptr), sizeof(I)*((*size)+1));
-    (*ptr)[(*size)++]=depth;
-  }
-  else             showdepth(jt,  LEFT(node), ptr, size, depth+1);
-
-  if(RIGHT(node) == 0) {
-    (*ptr) = realloc((*ptr), sizeof(I)*((*size)+1));
-    (*ptr)[(*size)++]=depth;
-  }
-  else             showdepth(jt, RIGHT(node), ptr, size, depth+1);
-}
-#endif
-
 static __inline int Vcompare(J jt,I a,I b){I m,n;SBU*u,*v;UC*s,*t;US*p,*q;C4*f,*g;
-#ifdef TMP
- tmp_lt++;
-#endif
  u=a+jt->sbuv; m=u->n; s=(UC*)(jt->sbsv+u->i);
  v=b+jt->sbuv; n=v->n; t=(UC*)(jt->sbsv+v->i);
 // string comparison ignores storage type
@@ -110,9 +64,6 @@ static __inline int Vcompare(J jt,I a,I b){I m,n;SBU*u,*v;UC*s,*t;US*p,*q;C4*f,*
 }
 
 static __inline void rotateLeft(J jt, I x) {I y;
-#ifdef TMP
-    tmp_lr++;
-#endif
    /***************************
     *  rotate node x to left  *
     ***************************/
@@ -127,9 +78,6 @@ static __inline void rotateLeft(J jt, I x) {I y;
 
 
 static __inline void rotateRight(J jt, I x) {I y;
-#ifdef TMP
-    tmp_rr++;
-#endif
    /***************************
     *  rotate node x to right *
     ***************************/
@@ -152,9 +100,6 @@ static __inline void insertFixup(J jt, I x) {B b;I y;
     /* check Red-Black properties                                  */
     /* the repositioning is necessary to propogate the rebalancing */
     while (x != ROOT && COLOR(PARENT(x)) == RED) {
-#ifdef TMP
-        tmp_while++;
-#endif
         if (ISLEFTCHILD(PARENT(x))) {           /* we have a violation          */
             y = RIGHT(GRANDPARENT(x));          /* uncle                        */
             b = COLOR(y)==BLACK;                /* uncle is BLACK               */
@@ -177,9 +122,6 @@ static __inline void insertFixup(J jt, I x) {B b;I y;
 
 static statusEnum insert(J jt, I key) {
     I current,dist,i,keep1,keep2,lorder,parent,rorder,to_the_left,to_the_right;SBU *x;
-#ifdef TMP
-    static I icount=0;
-#endif
 
     if (key < 0) return STATUS_KEY_NOT_FOUND;
 
@@ -198,18 +140,6 @@ static statusEnum insert(J jt, I key) {
         else                    {to_the_left =current; current=RIGHT(current);}
     }
 
-#ifdef TMP
-    icount++;
-    if (icount==10000&&0) {I corder,running;
-     icount=running=corder=0;
-     do {
-      ORDER(running)=corder;
-      corder+=FILLFACTOR;
-      running=UP(running);
-     } while(running);
-    }
-#endif
-
     /* get the new node */
 
     lorder = to_the_left  ? ORDER(to_the_left)  : 0;
@@ -223,16 +153,8 @@ static statusEnum insert(J jt, I key) {
        keep2=to_the_right; to_the_right=UP  (to_the_right);
       }
 
-#ifdef TMP
-      if(!to_the_left )UP(0)  =keep1,i++,tmp_lhit++ ;
-      if(!to_the_right)DOWN(0)=keep2,i++,tmp_rhit++;
-      tmp_imax=__max(i,tmp_imax);
-      tmp_moves+=2*i;
-      tmp_reorder++;
-#else
       if(!to_the_left )UP(0)  =keep1,i++;
       if(!to_the_right)DOWN(0)=keep2,i++;
-#endif
 
       lorder= to_the_left  ? ORDER(to_the_left ) : rorder-2*i*FILLFACTOR;
       rorder= to_the_right ? ORDER(to_the_right) : lorder+2*i*FILLFACTOR;
@@ -271,7 +193,7 @@ static I jtsbextend(J jt,I n,C*s,UI h,I hi){A x;I c,*hv,j,p;SBU*v;
   RZ(x=ext(1,jt->sbu)); jt->sbu=x; jt->sbuv=(SBU*)AV(x);
  }
  if(AN(jt->sbs)<n+jt->sbsn){            /* extend sbs strings           */
-  GATV0(x,LIT,2*(n+jt->sbsn),1); MC(CAV(x),jt->sbsv,jt->sbsn);
+  GATV0(x,LIT,2*(n+jt->sbsn),1); memcpy(CAV(x),jt->sbsv,jt->sbsn);
   fa(jt->sbs); ras(x); jt->sbs=x; jt->sbsv=CAV(x);
  }
  if(AN(jt->sbh)<2*c){                   /* extend sbh hash table        */
@@ -296,7 +218,7 @@ static SB jtsbinsert(J jt,S c2,S c0,I n,C*s,UI h,UI hi){I c,m,p;SBU*u;
  p=c2&SBC4?((-m)&3):c2&SBC2?(m&1):0;    /* pad for alignment            */
  RE(hi=sbextend(n+p,s,h,hi));           /* extend global tables as req'd*/
  if(c2==c0)
-  MC(SBSV(m+p),s,n);                    /* copy string into sbs         */
+  memcpy(SBSV(m+p),s,n);                    /* copy string into sbs         */
  else{
   if     (c0&SBC4&& c2&SBC2){C4*ss=(C4*)s; US*s0=(US*)SBSV(m+p); DQ(n>>1, *s0++=(US)*ss++;);}
   else if(c0&SBC4&&!c2&SBC2){C4*ss=(C4*)s; UC*s0=(UC*)SBSV(m+p); DQ(n,   *s0++=(UC)*ss++;);}
@@ -427,21 +349,6 @@ static A jtsbunind(J jt, A w){A z;I j,n,*zv;
  return z;
 }    /* w is a numeric array of symbol indices */
 
-#ifdef TMP
- A jtsb1(J jt, A w){
- A abc;
- clo=clock();
- switch(CTTZ(AT(w))){
-  default:  ASSERT(0,EVDOMAIN);
-  case C2TX:
-  case C4TX:
-  case LITX: abc=(1>=AR(w)?sbunstr(-1L,w):sbunlit(' ',w)); break;
-  case BOXX: abc=(sbunbox(w));
- }  
- clo-=clock();
- return abc;
-}
-#else
  A jtsb1(J jt, A w){
  switch(CTTZ(AT(w))){
   default:  ASSERT(0,EVDOMAIN);
@@ -450,8 +357,6 @@ static A jtsbunind(J jt, A w){A z;I j,n,*zv;
   case LITX: return 1>=AR(w)?sbunstr(-1L,w):sbunlit(' ',w);
   case BOXX: return sbunbox(w);
 }}   /* monad s: main control */
-#endif
-
 
  A jtsborder(J jt, A w){A z;I n,*zv;SB*v;
  n=AN(w); v=SBAV(w);
@@ -471,7 +376,7 @@ static A jtsbbox(J jt, A w){A z,*zv;C*s;I n;SB*v;SBU*u;
 
 #define C2FSB(zv,u,q,m,c)  \
  {UC*s=SBSV(u->i);I k=u->n;US*us=(US*)s;                            \
-  if(SBC4&u->flag){MC(zv,s,k); zv+=k>>=2;}                          \
+  if(SBC4&u->flag){memcpy(zv,s,k); zv+=k>>=2;}                          \
   else if(SBC2&u->flag){k>>=1; DQ(k, *zv++=*us++;);}else DQ(k, *zv++=*s++;);  \
   if(2==q)*zv++=c; else if(3==q)DQ(m-k, *zv++=c;);                 \
  }
@@ -496,8 +401,8 @@ static A jtsbstr(J jt,I q,A w){A z;S c2=0;C c;I m,n;SB*v,*v0;SBU*u;
  }else{C*zv;
   zv=CAV(z); 
   if(1==q)*zv++=c;
-  DO(n-1, u=SBUV(*v++); MC(zv,SBSV(u->i),u->n); zv+=u->n; *zv++=c;); 
-  if(n){  u=SBUV(*v++); MC(zv,SBSV(u->i),u->n); zv+=u->n; if(2==q)*zv=c;}
+  DO(n-1, u=SBUV(*v++); memcpy(zv,SBSV(u->i),u->n); zv+=u->n; *zv++=c;); 
+  if(n){  u=SBUV(*v++); memcpy(zv,SBSV(u->i),u->n); zv+=u->n; if(2==q)*zv=c;}
  }
  return z;
 }    /* leading (1=q) or trailing (2=q) separated string for symbol array w */
@@ -511,7 +416,7 @@ static A jtsblit(J jt,C c,A w){A z;S c2=0;I k,m=0,n;SB*v,*v0;SBU*u;
  GA(z,c2&SBC4?C4T:c2&SBC2?C2T:LIT,n*m,1+AR(w),AS(w)); *(AR(w)+AS(z))=m;
  if(c2&SBC4){C4*zv=C4AV(z); DQ(n, u=SBUV(*v++); C2FSB(zv,u,3,m,c););}
  else if(c2&SBC2){US*zv=USAV(z); DQ(n, u=SBUV(*v++); C2FSB(zv,u,3,m,c););}
- else  {C*zv=CAV(z); memset(zv,c,n*m); DO(n, u=SBUV(*v++); MC(zv,SBSV(u->i),u->n); zv+=m;);}
+ else  {C*zv=CAV(z); memset(zv,c,n*m); DO(n, u=SBUV(*v++); memcpy(zv,SBSV(u->i),u->n); zv+=m;);}
  return z;
 }    /* literal array for symbol array w padded with c */
 
@@ -632,9 +537,6 @@ static A jtsbgetdata(J jt, A w){A z,*zv;
 }
 
  A jtsb2(J jt,A a,A w){A z;I j,k,n;
-#ifdef TMP
- I*zv;
-#endif
  RE(j=i0(a)); n=AN(w);
  ASSERT(!BETWEENC(j,1,7)||!n||SBT&AT(w),EVDOMAIN);
  switch(j){
@@ -675,36 +577,6 @@ static A jtsbgetdata(J jt, A w){A z,*zv;
   case 19:   FILLFACTOR=1024;                               return sc(FILLFACTOR);
   case 20:   FILLFACTOR*=2;                                 return sc(FILLFACTOR);
   case 21:   FILLFACTOR>>=1; ASSERT(FILLFACTOR>GAP,EVLIMIT); return sc(FILLFACTOR);
-#ifdef TMP
-  case 22:
-    GAT0(z,INT,10,1); zv=AV(z);
-    zv[0] = tmp_lr      = 0;
-    zv[1] = tmp_rr      = 0;
-    zv[2] = tmp_lt      = 0;
-    zv[3] = tmp_while   = 0;
-    zv[4] = tmp_node    = 0;
-    zv[5] = tmp_reorder = 0;
-    zv[6] = tmp_moves   = 0;
-    zv[7] = tmp_imax    = 0;
-    zv[8] = tmp_lhit;
-    zv[9] = tmp_rhit;
-    return z;
-  case 23:
-    GAT0(z,INT,10,1);
-    zv[0] = tmp_lr;
-    zv[1] = tmp_rr;
-    zv[2] = tmp_lt;
-    zv[3] = tmp_while;
-    zv[4] = tmp_node;
-    zv[5] = tmp_reorder;
-    zv[6] = tmp_moves;
-    zv[7] = tmp_imax;
-    zv[8] = tmp_lhit;
-    zv[9] = tmp_rhit;
-    return z;
-  case 24:   return sc((I)clo);
-  case 25:   return scf(tickk);
-#endif
  }
 }
 
@@ -726,4 +598,3 @@ B jtsbtypeinit(J jt){A x;I c=sizeof(SBU)/SZI,s[2],p;
  jt->sbhv[hash0%AN(jt->sbh)]=0;  // clear symbol-table entry for empty symbol
  return 1;
 }    /* initialize global data for SBT datatype */
-

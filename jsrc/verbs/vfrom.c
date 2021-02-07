@@ -24,7 +24,7 @@
  DO(n, x=wv[i]; u=AS(x); DQ(AR(x),*s++=*u++;););   // fill in shape: ; $&.> w
  for(i=0;i<m;i++){  // fill in each box
   bu=bv-k;
-  DO(n, MC(bu+=k,pv[i]+k*cv[i],k););  // move in each atom  (we could stop after moving the lowest)
+  DO(n, memcpy(bu+=k,pv[i]+k*cv[i],k););  // move in each atom  (we could stop after moving the lowest)
   DO(n, j=n-1-i; if(qv[j]>++cv[j])break; cv[j]=0;);  // increment and roll over the odometer
   RZ(*zv++=ca(b));  // clone the items and move pointer to the result
  }
@@ -145,9 +145,9 @@ static A jtbfrom(J jt,A a,A w){A z;B*av,*b;C*wv,*zv;I acr,an,ar,k,m,p,q,r,*u=0,w
   case 1+2*sizeof(int): INNER1B(int);  break;
   case 1+2*sizeof(I): INNER1B(I);  break;
   default:
-   if(1==an){wv+=k**av; DQ(m, MC(zv,wv,k); zv+=k; wv+=wk;);}
+   if(1==an){wv+=k**av; DQ(m, memcpy(zv,wv,k); zv+=k; wv+=wk;);}
 
-   else DQ(m, b=av; DQ(an, MC(zv,wv+k**b++,k); zv+=k;); wv+=wk;);
+   else DQ(m, b=av; DQ(an, memcpy(zv,wv+k**b++,k); zv+=k;); wv+=wk;);
  }
  return z;
 }    /* a{"r w for boolean a */

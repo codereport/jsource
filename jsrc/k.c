@@ -8,8 +8,7 @@
 
 #define CVCASE(a,b)     (((a)<<3)+(b))   // The main cases fit in low 8 bits of mask
 
-// FEQ/FIEQ are used in bcvt, where FUZZ may be set to 0 to ensure only exact values are demoted to lower precision
-#define FEQ(u,v,fuzz)    (ABS((u)-(v))<=fuzz*MAX(ABS(u),ABS(v)))
+// FIEQ are used in bcvt, where FUZZ may be set to 0 to ensure only exact values are demoted to lower precision
 #define FIEQ(u,v,fuzz)   (ABS((u)-(v))<=fuzz*ABS(v))  // used when v is known to be exact integer.  It's close enough, maybe ULP too small on the high end
 
 static B jtC1fromC2(J jt,A w,void*yv){UC*x;US c,*v;
@@ -410,7 +409,7 @@ A jtpcvt(J jt,I t,A w){A y;B b;RANK2T oqr=jt->ranks;
   case  2: 
    if(!(t&RAT))RZ(w=cvt(RAT,w));
    GATV(z,XNUM,2*n,r+1,AS(w)); AS(z)[r]=2;
-   MC(AV(z),AV(w),2*n*SZI);
+   memcpy(AV(z),AV(w),2*n*SZI);
    return z;
   case  3:
    ASSERT(t&XD+XZ,EVDOMAIN);

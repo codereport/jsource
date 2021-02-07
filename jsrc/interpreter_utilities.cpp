@@ -7,6 +7,6 @@ A
 jtvec(J jt, I t, I n, void* v) {
     A z;
     GA(z, t, n, 1, 0);
-    MC(AV(z), v, n << bplg(t));
+    memcpy(AV(z), v, n << bplg(t));
     return z;
 }

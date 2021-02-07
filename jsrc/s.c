@@ -556,7 +556,7 @@ L* jtsymbis(J jt,A a,A w,A g){A x;I m,n,wn,wr,wt;L*e;
    wt=AT(w); wn=AN(w); wr=AR(w); m=wn<<bplg(wt);
    ASSERT(wt&DIRECT,EVDOMAIN);  // boxed, extended, etc can't be assigned to memory-mapped array
    ASSERT(allosize(x)>=m,EVALLOC);  // ensure the file area can hold the data
-   AT(x)=wt; AN(x)=wn; AR(x)=(RANKT)wr; MCISH(AS(x),AS(w),wr); MC(AV(x),AV(w),m);  // copy in the data
+   AT(x)=wt; AN(x)=wn; AR(x)=(RANKT)wr; MCISH(AS(x),AS(w),wr); memcpy(AV(x),AV(w),m);  // copy in the data
   }
  }
  e->sn=jt->slisti;  // Save the script in which this name was defined

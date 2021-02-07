@@ -51,7 +51,7 @@ static void jtfmtD(J jt,C*s,D*v){B q;C buf[1+WD],c,*t;D x=*v;I k=0;
  sprintf(buf,jt->pp,x);
  c=*buf; if(q=c=='-')*s++=CSIGN; q=q|(c=='+');
  if('.'==buf[q])*s++='0';
- MC(s,buf+q,WD+1-q);
+ memcpy(s,buf+q,WD+1-q);
  if(t=strchr(s,'e')){
   if('-'==*++t)*t++=CSIGN;
   while(c=*(k+t),c=='0'||c=='+')k++;
@@ -74,7 +74,7 @@ I jtthv(J jt,A w,I n,C*s){A t;B ov=0;C buf[WZ],*x,*y=s;I k,n4=n-4,p,wd,wn,wt;FMT
  wn=AN(w); wt=AT(w); x=CAV(w); thcase(wt,&wd,&fmt);
  switch(CTTZNOFLAG(wt)){
  case XNUMX: case RATX:
-  RZ(t=thxqe(w)); p=AN(t); if(ov=n<p)p=n4; MC(y,AV(t),p); y+=p; break;
+  RZ(t=thxqe(w)); p=AN(t); if(ov=n<p)p=n4; memcpy(y,AV(t),p); y+=p; break;
  case B01X:
   if(ov=n<2*wn)p=n4>>1; else p=wn; DQ(p, *y++=*x++?'1':'0'; *y++=' ';); break;
  case INTX:
@@ -119,7 +119,7 @@ static A jtthn(J jt, A w){A d,t,z;C*tv,*x,*y,*zv;I c,*dv,k,m,n,p,r,*s,wd;FMTFUN 
   DO(m, DO(c, fmt(jt,y+=wd,x+=k); p=strlen(y); dv[i]=MAX(dv[i],p);););
   --dv[c-1]; p=0; DO(c, p+=++dv[i];);
   GATV(z,LIT,m*p,r+!r,s); AS(z)[AR(z)-1]=p; zv=CAV(z); memset(zv,' ',AN(z));
-  y=tv; DO(m, DO(c, zv+=dv[i]; p=strlen(y); MC(zv-p-(I )(c>1+i),y,p); y+=wd;););
+  y=tv; DO(m, DO(c, zv+=dv[i]; p=strlen(y); memcpy(zv-p-(I )(c>1+i),y,p); y+=wd;););
  }
  return z;
 }
@@ -149,7 +149,7 @@ static void sbtou8(J jt,SBU*u,C*s){
  else if(u->flag&SBC2)
   wtom((US*)SBSV(u->i),u->n>>1,s);
  else
-  MC(s,SBSV(u->i),u->n);
+  memcpy(s,SBSV(u->i),u->n);
 }
 
 static A jtthsb(J jt,A w,A prxthornuni){A d,z;C*zv;I c,*dv,m,n,p,q,r,*s;SB*x,*y;SBU*u;
@@ -212,7 +212,7 @@ static A jtthx1(J jt, A w){A z;B b;C*s,s1[2+XBASEN];I n,p,p1,*v;
  sprintf(s1,FMTI,*v); p1=strlen(s1);
  p=p1+XBASEN*(n-1);
  GATV0(z,LIT,p,1); s=CAV(z); 
- MC(s,s1,p1); if(b)s[0]=CSIGN; s+=p1; 
+ memcpy(s,s1,p1); if(b)s[0]=CSIGN; s+=p1; 
  DQ(n-1, --v; I j=*v; j=b?-j:j; sprintf(s,FMTI04,j); s+=XBASEN;);
  return z;
 }
@@ -222,7 +222,7 @@ static A jtthq1(J jt,Q y){A c,d,z;B b;C*zv;I m,n=-1;
  d=y.d;
  if(b=1<AN(d)||1!=AV(d)[0]){RZ(d=thx1(y.d)); n=AN(d);}
  GATV0(z,LIT,m+n+1,1); zv=CAV(z);
- MC(zv,AV(c),m); if(b){*(zv+m)='r'; MC(zv+m+1,AV(d),n);}
+ memcpy(zv,AV(c),m); if(b){*(zv+m)='r'; memcpy(zv+m+1,AV(d),n);}
  return z;
 }
 
@@ -233,9 +233,9 @@ static A jtthdx1(J jt,DX y){A x,z;B b;C*s,s1[2+XBASEN],s2[20];I e,n,p,p1,p2,*v;
  sprintf(s1,FMTI,b?-*v:*v); p1=strlen(s1);
  if(e&&*v){s=s2; *s++='e'; if(0>e)*s++=CSIGN; sprintf(s,FMTI,0<e?e:-e); p2=strlen(s2);}else p2=0; 
  GATV0(z,LIT,b+p1+(I )(1<p1)+XBASEN*(n-1)+p2,1); s=CAV(z);
- if(b)*s++=CSIGN; *s++=*s1; if(1<p1){*s++='.'; MC(s,1+s1,p1-1); s+=p1-1;}
+ if(b)*s++=CSIGN; *s++=*s1; if(1<p1){*s++='.'; memcpy(s,1+s1,p1-1); s+=p1-1;}
  DQ(n-1, --v; I j=*v; j=b?-j:j; sprintf(s,FMTI04,j); s+=XBASEN;);
- MC(s,s2,p2);
+ memcpy(s,s2,p2);
  return z;
 }
 
@@ -260,7 +260,7 @@ static A jtthxqe(J jt, A w){A d,t,*tv,*v,y,z;C*zv;I c,*dv,m,n,p,r,*s,*wv;
  --dv[c-1];
  p=0; DO(c, p+=++dv[i];);
  GATV(z,LIT,m*p,r+!r,s); AS(z)[AR(z)-1]=p; zv=CAV(z); memset(zv,' ',AN(z));
- v=tv; DO(m, DO(c, zv+=dv[i]; y=*v++; p=AN(y); MC(zv-p-(I )(c>1+i),AV(y),p);));
+ v=tv; DO(m, DO(c, zv+=dv[i]; y=*v++; p=AN(y); memcpy(zv-p-(I )(c>1+i),AV(y),p);));
  return z;
 }
 
@@ -331,17 +331,17 @@ static void jtfminit(J jt,I m,I ht,I wd,A x,A y,C*zv, I cw){C*u,*v;I p,xn,*xv,yn
  // First, install the characters for cells containing data.  We start in the first
  // row of the result, even though this can never keep these characters.
  // Then we propagate this row through all rows except the last.
- fram(9L,yn,yv,zv,cw); u=zv; DQ(ht-2, MC(u+=wd,zv,wd););
+ fram(9L,yn,yv,zv,cw); u=zv; DQ(ht-2, memcpy(u+=wd,zv,wd););
  // Fill in the first interior divider row, whose row index is the height of the first row
  // Then copy this row over all the other interior-divider rows, xn-1 times, which
  //  finishes by writing over the bottom row of the result
- fram(3L,yn,yv,u=v=zv+wd**xv,cw); DO(xn-1, MC(u+=wd*xv[1+i],v,wd););
+ fram(3L,yn,yv,u=v=zv+wd**xv,cw); DO(xn-1, memcpy(u+=wd*xv[1+i],v,wd););
  // Install the first row, overwriting the data row first put there
  fram(0L,yn,yv,zv,cw);
  // Install the last row, overwriting the interior-divider row first copied there
  fram(6L,yn,yv,zv+p-wd,cw);
  // First 2-cell is complete.  Copy it over all the others
- u=zv; DQ(m-1, MC(u+=p,zv,p););
+ u=zv; DQ(m-1, memcpy(u+=p,zv,p););
 }    /* Initialize with box-drawing characters */
 
 // Copy character data into the boxed result array
@@ -379,7 +379,7 @@ static void jtfmfill(J jt,I p,I q,I wd,A w,A x,A y,C*zv,I cw){A e,*wv;
     f = xp?(d + wd*((xv[j]-1-r)>>(2-xp))) : d;
     if(yp)f = f + cw*((yv[k]-1-c)>>(2-yp));
     // Move in the data.  If sizes are dissimilar, the target must be larger; do length conversion then
-    if(cw==bpnoun(AT(e))){C* v=CAV(e); C* u=zv+f; DQ(r, MC(u,v,c*cw); u+=wd; v+=c*cw;)}
+    if(cw==bpnoun(AT(e))){C* v=CAV(e); C* u=zv+f; DQ(r, memcpy(u,v,c*cw); u+=wd; v+=c*cw;)}
     else{  // conversion required
      if(bp(AT(e))==1){UC *v=UAV(e);   // source is bytes
       if(cw==2){   // dest is C2T
@@ -454,7 +454,7 @@ static A jtenframe(J jt, A w){A x,y,z;C*zv;I ht,m,n,p,q,t,wd,wdb,wr,xn,*xv,yn,*y
  // (this could be better: just copy the gap, as part of ENGAP; check k above in case of leading unit axes)
  if(2<r)fillv(t,zn,x);
  // for each 2-cell, leave a gap if required, then copy in the 2-cell.  Change c to size in bytes; qc=size of 2-cell
- if(zn){c<<=bplg(t); DPMULDE(q,c,qc); DO(m, ENGAP(i*q,r,s,x+=c;); MC(x,v,qc); x+=qc; v+=qc;);}
+ if(zn){c<<=bplg(t); DPMULDE(q,c,qc); DO(m, ENGAP(i*q,r,s,x+=c;); memcpy(x,v,qc); x+=qc; v+=qc;);}
  return z;
 }
 
@@ -490,7 +490,7 @@ static A jtths(J jt, A w){A e,i,x,z;C c,*u,*v;I d,m,n,*s;P*p;
  RZ(e=shape(x)); s=AV(e)+AN(e)-1; *s=-(*s+3+n);
  RZ(z=take(e,x)); 
  u=CAV(i)-n;        
- d=aii(z); v=CAV(z)-d; DQ(m, MC(v+=d,u+=n,n););
+ d=aii(z); v=CAV(z)-d; DQ(m, memcpy(v+=d,u+=n,n););
  if(2<AR(z))RZ(z=matth1(z,zeroionei(0)));  // no prxthornuni
  s=AS(z); d=*(1+s); v=1+CAV(z); c=jt->bx[9]; DQ(*s, *(v+n)=c; v+=d;);
  return z;
@@ -775,7 +775,7 @@ static A jtjprx(J jt,I ieol,I maxlen,I lb,I la,A w){A y,z;B ch;C e,eov[2],*v,x,*
     // No need to suppress NULs - if the result is LIT, all boxes must have converted to LIT, and would have had NUL converted to space
     if(nbx){DQ(c1, x=*v++; BDC(zv,x);); if(c1<c){v+=c-c1; DDD(zv);}}
     // Otherwise just move fast
-    else {MC(zv,v,c1); zv+=c1; v+=c1;    if(c1<c){v+=c-c1; DDD(zv);}}
+    else {memcpy(zv,v,c1); zv+=c1; v+=c1;    if(c1<c){v+=c-c1; DDD(zv);}}
     break;
    default: {C4 *u=(C4*)v,x;
     // C4T result.  There may be zero-width NULs about - suppress them

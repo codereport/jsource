@@ -14,7 +14,7 @@ static A jtmerge1(J jt,A w,A ind){PROLOG(0006);A z;C*v,*x;I c,k,r,*s,t,*u;
  ASSERT(r==AR(ind),EVRANK);
  ASSERT(!ICMP(s,AS(ind),r),EVLENGTH);
  GA(z,t,c,r,s); x=CAV(z); v=CAV(w); u=AV(ind); k=bpnoun(t);
- DO(c, MC(x+k*i,v+k*(i+c*u[i]),k););
+ DO(c, memcpy(x+k*i,v+k*(i+c*u[i]),k););
  EPILOG(z);
 }
 */
@@ -39,8 +39,8 @@ static A jtmerge1(J jt,A w,A ind){A z;B*b;C*wc,*zc;D*wd,*zd;I c,it,j,k,m,r,*s,t,
   case MCASE(B01X,sizeof(I)): DO(c,         *zi++=wi[i+c*(I)*b++];); break;
   case MCASE(INTX,sizeof(C)): DO(c, MINDEX; *zc++=wc[i+c*j];); break;
   case MCASE(INTX,sizeof(I)): DO(c, MINDEX; *zi++=wi[i+c*j];); break;
-  default: if(it&B01)DO(c,         MC(zc,wc+k*(i+c*(I)*b++),k); zc+=k;)
-           else      DO(c, MINDEX; MC(zc,wc+k*(i+c*j     ),k); zc+=k;); break;
+  default: if(it&B01)DO(c,         memcpy(zc,wc+k*(i+c*(I)*b++),k); zc+=k;)
+           else      DO(c, MINDEX; memcpy(zc,wc+k*(i+c*j     ),k); zc+=k;); break;
  }
  // We modified w which is now not pristine.
  PRISTCLRF(w)

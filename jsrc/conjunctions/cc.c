@@ -172,7 +172,7 @@ static A jtcut02(J jt,A a,A w,A self){F2PREFIP;A fs,q,qq,*qv,z,zz=0;I*as,c,e,i,i
    GAE(y,t,(I)jtinplace&JTWILLBEOPENED?0:substratoms,wr,AS(w),break); AS(y)[0]=endorlen;  // allocate, but don't grow the tstack. Fix up the shape
    if(!((I)jtinplace&JTWILLBEOPENED)){
     // Normal case.  Set usecount of cell to 1 since z is recursive usecount and y is not on the stack.  ra0() if recursible.  Put allocated addr into *jt->tnextpushp++.
-    MC(CAV(y),wv+start*(cellsize<<k),substratoms<<k); AC(y)=ACUC1; if(t&RECURSIBLE){AFLAG(y)=t; jtra(y,t);}
+    memcpy(CAV(y),wv+start*(cellsize<<k),substratoms<<k); AC(y)=ACUC1; if(t&RECURSIBLE){AFLAG(y)=t; jtra(y,t);}
    }else{
     // WILLBEOPENED case.  We must make the block virtual so we can avoid the copy
     jtexpostvirtual(jt,y,w,start*(cellsize<<k)); AN(y)=substratoms;
@@ -208,7 +208,7 @@ static A jtcut02(J jt,A a,A w,A self){F2PREFIP;A fs,q,qq,*qv,z,zz=0;I*as,c,e,i,i
  GA(z,wt,zn,AR(w),AS(w)); AS(z)[0]=nitems; zv=CAV(z);  // allocate a list of items of w, fill in length.  zv is running output pointer
  // copy em in.  We use MC because the strings are probably long and unpredictable - think HTML parsing
  I wcb=wcn<<bplg(wt);  // number of bytes in a cell of w
- DO(m, j=av[i][0]; k=av[i][1]; I jj=j+n; jj=(j>=0)?j:jj; j=n-jj; k=k>j?j:k; k*=wcb; MC(zv,wv+jj*wcb,k); zv+=k;)
+ DO(m, j=av[i][0]; k=av[i][1]; I jj=j+n; jj=(j>=0)?j:jj; j=n-jj; k=k>j?j:k; k*=wcb; memcpy(zv,wv+jj*wcb,k); zv+=k;)
  return z;
 }    /* a ;@:(<;.0) vector */
 
@@ -254,11 +254,11 @@ static A jtcut2bx(J jt,A a,A w,A self){A*av,b,t,x,*xv,y,*yv;B*bv;I an,bn,i,j,m,p
    A zz,zw; RZ(zw=vec(INT,MAX(0,r-1),1+s)); IRS2(z,zw,0L,0L,1L,jtover,zz); return zz;  \
   case CHEAD:                                                                \
    GA(z,t,m*c,r,s); zc=CAV(z); AS(z)[0]=m;                                     \
-   EACHC(ASSERT(d!=0,EVINDEX); MC(zc,v1,k); zc+=k;);                            \
+   EACHC(ASSERT(d!=0,EVINDEX); memcpy(zc,v1,k); zc+=k;);                            \
    return z;                                                                      \
   case CTAIL:                                                                \
    GA(z,t,m*c,r,s); zc=CAV(z); AS(z)[0]=m;                                     \
-   EACHC(ASSERT(d!=0,EVINDEX); MC(zc,v1+k*(d-1),k); zc+=k;);                    \
+   EACHC(ASSERT(d!=0,EVINDEX); memcpy(zc,v1+k*(d-1),k); zc+=k;);                    \
    return z;                                                                      \
   case CCOMMA:                                                               \
   case CLEFT:                                                                \
@@ -266,24 +266,24 @@ static A jtcut2bx(J jt,A a,A w,A self){A*av,b,t,x,*xv,y,*yv;B*bv;I an,bn,i,j,m,p
    e-=e&&neg; DPMULDE(m*c,e,d);                                             \
    GA(z,t,d,id==CCOMMA?2:1+r,s-1); zc=CAV(z); fillv(t,d,zc);                 \
    zs=AS(z); zs[0]=m; zs[1]=id==CCOMMA?e*c:e; ke=k*e;                        \
-   EACHC(MC(zc,v1,d*k);  zc+=ke;);                                           \
+   EACHC(memcpy(zc,v1,d*k);  zc+=ke;);                                           \
    return z;                                                                      \
   case CBOX:                                                                 \
    GA(z,m?BOX:B01,m,1,0); za=AAV(z);                                         \
-   EACHC(GA(y,t,d*c,r,s); AS(y)[0]=d; MC(AV(y),v1,d*k); *za++=incorp(y););             \
+   EACHC(GA(y,t,d*c,r,s); AS(y)[0]=d; memcpy(AV(y),v1,d*k); *za++=incorp(y););             \
    return z;                                                                      \
   case CAT: case CATCO: case CAMP: case CAMPCO:                              \
    if(CBOX==ID(vf->fgh[0])&&(id1=ID(vf->fgh[1]),((id1&~1)==CBEHEAD))){           \
     GA(z,m?BOX:B01,m,1,0); za=AAV(z);                                        \
-    EACHC(d=d?d-1:0; GA(y,t,d*c,r,s); AS(y)[0]=d; MC(AV(y),id1==CBEHEAD?v1+k:v1,d*k); *za++=incorp(y););               \
+    EACHC(d=d?d-1:0; GA(y,t,d*c,r,s); AS(y)[0]=d; memcpy(AV(y),id1==CBEHEAD?v1+k:v1,d*k); *za++=incorp(y););               \
     return z;                                                                     \
    }                                                                         \
    /* note: fall through */                                                  \
   default:                                                                   \
    if(!m){y=reitem(zeroionei(0),w); return iota(over(zeroionei(0),shape(h?df1(z,y,*hv):CALL1(f1,y,fs))));}                            \
    GATV0(z,BOX,m,1); za=AAV(z); j=0;                                          \
-   if(h){EACHC(GA(y,t,d*c,r,s); AS(y)[0]=d; MC(AV(y),v1,d*k); A Zz; RZ (df1(Zz,y,hv[j])); j=(1+j)%hn; incorp(Zz); *za++=Zz;); \
-   }else{EACHC(GA(y,t,d*c,r,s); AS(y)[0]=d; MC(AV(y),v1,d*k); A Zz; RZ(Zz = CALL1(f1,y,fs)); incorp(Zz); *za++=Zz; ); \
+   if(h){EACHC(GA(y,t,d*c,r,s); AS(y)[0]=d; memcpy(AV(y),v1,d*k); A Zz; RZ (df1(Zz,y,hv[j])); j=(1+j)%hn; incorp(Zz); *za++=Zz;); \
+   }else{EACHC(GA(y,t,d*c,r,s); AS(y)[0]=d; memcpy(AV(y),v1,d*k); A Zz; RZ(Zz = CALL1(f1,y,fs)); incorp(Zz); *za++=Zz; ); \
    }                                                                         \
    z=ope(z);                                                                 \
    {EPILOG(z);}                                                                \
@@ -306,7 +306,7 @@ static A jtcps(J jt, A w){A z;P*wp,*zp;
 static A jtselx(J jt,A x,I r,I i){A z;I c,k;
  PROD(c,AR(x)-1,AS(x)+1) k=c<<bplg(AT(x));
  GA(z,AT(x),r*c,AR(x),AS(x)); AS(z)[0]=r;
- MC(CAV(z),CAV(x)+i*k,r*k);
+ memcpy(CAV(z),CAV(x)+i*k,r*k);
  return z;
 }    /* (i+i.r){x */
 
@@ -502,7 +502,7 @@ static A jtgetnewpd(J jt, UC* pd, A pd0){A new;
 
 // copy n atoms of type wt to type zt
 void copyTT(void *zv, void *wv, I n, I zt, I wt){
-  if(TYPESEQ(zt,wt))MC(zv,wv,n<<bplg(zt));
+  if(TYPESEQ(zt,wt))memcpy(zv,wv,n<<bplg(zt));
   else if(zt&INT){I *targ=zv; B *src=wv; DQ(n, *targ++ = *src++;)}  // B01-> int promotion
   else {D *targ=zv; I *src=wv; DQ(n, *targ++ = (D)*src++;)}
 }
@@ -684,7 +684,7 @@ void copyTT(void *zv, void *wv, I n, I zt, I wt){
     // boxes will be in AAV(z), in order.  Details of hijacking tnextpushp are discussed in jtbox().
     A *pushxsave = jt->tnextpushp; jt->tnextpushp=AAV(zz);  // save tstack info before allocation
     // **** MUST NOT FAIL FROM HERE UNTIL THE END, WHERE THE ALLOCATION SYSTEM CAN BE RESTORED ****
-    EACHCUT(GAE(z,wt,d*wcn,r,AS(w),break); AS(z)[0]=d; AC(z)=ACUC1; JMC(CAV(z),v1,d*k+(SZI-1),lp000,0) ra00(z,wt););    // allocate, but don't grow the tstack.  Set usecount of cell to 1.  make recursive.  Put allocated addr into *jt->tnextpushp++
+    EACHCUT(GAE(z,wt,d*wcn,r,AS(w),break); AS(z)[0]=d; AC(z)=ACUC1; Jmemcpy(CAV(z),v1,d*k+(SZI-1),lp000,0) ra00(z,wt););    // allocate, but don't grow the tstack.  Set usecount of cell to 1.  make recursive.  Put allocated addr into *jt->tnextpushp++
     // restore the allocation system
     jt->tnextpushp=pushxsave;   // restore tstack pointer
     // remove pristinity from w since a contents is escaping
@@ -704,7 +704,7 @@ void copyTT(void *zv, void *wv, I n, I zt, I wt){
   // remove pristinity from w since a contents is escaping
   PRISTCLRF(w)   // destroys w
   GA(zz,wt,m*wcn,r,AS(w)); zc=CAV(zz); AS(zz)[0]=m;
-  EACHCUT(if(d)MC(zc,id==CHEAD?v1:v1+k*(d-1),k); else fillv(wt,wcn,zc); zc+=k;);
+  EACHCUT(if(d)memcpy(zc,id==CHEAD?v1:v1+k*(d-1),k); else fillv(wt,wcn,zc); zc+=k;);
   break;
  case CSLASH: ;
   // no need to turn off pristinity in w, because we handle only DIRECT types here
@@ -785,8 +785,9 @@ void copyTT(void *zv, void *wv, I n, I zt, I wt){
 
 static A jtcut1(J jt,    A w,A self){return cut2(mark,w,self);}
 
-// ;@((<@(f/\));._2 _1 1 2) when  f is atomic   also @: but only when no rank loop required  also \. for \
-// also [: ; (<@(f/\));._2 _1 1 2)  when no rank loop required
+// ;@((<@(f/\));._2 _1 1 2) when  f is atomic   also @: but only when no rank
+// loop required  also \. for \ also [: ; (<@(f/\));._2 _1 1 2)  when no rank
+// loop required
 // NOTE: if there are no cuts, this routine produces different results from the normal routine if the operation is one we recognise.
 //  This routine produces an extra axis, as if the shape of the boxed result were preserved even when there are no boxed results
  A jtrazecut2(J jt,A a,A w,A self){A fs,gs,y,z=0;B b; I neg,pfx;C id,sep,*u,*v,*wv,*zv;I d,k,m=0,wi,p,q,r,*s,wt;
@@ -983,10 +984,10 @@ static A jttess2(J jt,A a,A w,A self){A z,zz=0,virtw,strip;I n,rs[3],cellatoms,c
   C *svb=svh; C *dvb=dvh;  // running pointers used to fill the strip
   // Start with the first cell, above the bottom part.  Copy the left-hand side (length vds1-lrchsiz).
   vtrc=vsz-vlrc;  // number of lines to copy in top half
-  DQ(vtrc, I sh=sdataend-(svb+vds1-lrchsiz); sh=(sh>=0)?0:sh; sh+=vds1-lrchsiz; sh=(sh<0)?0:sh; MC(dvb,svb,sh); svb+=vss1; dvb+=vds1;);  // copies to dest are all sequential; sequential rows of src
+  DQ(vtrc, I sh=sdataend-(svb+vds1-lrchsiz); sh=(sh>=0)?0:sh; sh+=vds1-lrchsiz; sh=(sh<0)?0:sh; memcpy(dvb,svb,sh); svb+=vss1; dvb+=vds1;);  // copies to dest are all sequential; sequential rows of src
   // copy the bottom-left part of the first cell, and of all cells if the cells overlap (i. e. vds!=0) (length vds1-lrchsiz)
   I looppct=rs[0]; looppct=vds?looppct:1;
-  DQ(looppct, C *svb1=svb; DQ(vlrc, I sh=sdataend-(svb1+vds1-lrchsiz); sh=(sh>=0)?0:sh; sh+=vds1-lrchsiz; sh=(sh<0)?0:sh; MC(dvb,svb1,sh); svb1+=vss1; dvb+=vds1;); svb+=vss;);  // sequential to dest; hop to cells of src
+  DQ(looppct, C *svb1=svb; DQ(vlrc, I sh=sdataend-(svb1+vds1-lrchsiz); sh=(sh>=0)?0:sh; sh+=vds1-lrchsiz; sh=(sh<0)?0:sh; memcpy(dvb,svb1,sh); svb1+=vss1; dvb+=vds1;); svb+=vss;);  // sequential to dest; hop to cells of src
   // advance the horiz pointers, which now point to the top-left of the top cell, to the top-left of the top-right area of that cell
   svh+=(vds1-lrchsiz); dvh+=(vds1-lrchsiz);
  }
@@ -1011,7 +1012,7 @@ static A jttess2(J jt,A a,A w,A self){A z,zz=0,virtw,strip;I n,rs[3],cellatoms,c
  for(hi=rs[1];hi;--hi){C *svv, *dvv;  // pointers within the lower-right corner, starting at the top-left of the corner.  Before that we use them to advance through top-right
   // move in the top-right part of top cell, stopping before the lower-right corner.
   svv=svh; dvv=dvh; // init to top-left of right edge (length=lcrhsiz)
-  DQ(vtrc, I sh=sdataend-(svv+lrchsiz); sh=(sh>=0)?0:sh; sh+=lrchsiz; sh=(sh<0)?0:sh; MC(dvv,svv,sh); svv+=vss1; dvv+=vds1;);
+  DQ(vtrc, I sh=sdataend-(svv+lrchsiz); sh=(sh>=0)?0:sh; sh+=lrchsiz; sh=(sh<0)?0:sh; memcpy(dvv,svv,sh); svv+=vss1; dvv+=vds1;);
   // now ?vv points to top-left of lower-right quadrant of top cell
   // point the virtual-block pointer to the top of the row
   AK(virtw)=hvirtofst;
@@ -1020,7 +1021,7 @@ static A jttess2(J jt,A a,A w,A self){A z,zz=0,virtw,strip;I n,rs[3],cellatoms,c
   // for each cell in the vertical strip, move in the lower-right corner and execute
   for(vi=rs[0];vi;--vi){A opcell=virtw;
    // move in the lower-right corner.  Avoid overrun, and detect if there was overrun.  Watch out for addresses wrapping around the end of memory (length=lcrhsiz)
-   C *dvlrc=dvv, *svlrc=svv; DQ(vlrc, I sh=sdataend-(svlrc+lrchsiz); sh=(sh>=0)?0:sh; sh+=lrchsiz; sh=(sh<0)?0:sh; MC(dvlrc,svlrc,sh); svlrc+=vss1; dvlrc+=vds1;);
+   C *dvlrc=dvv, *svlrc=svv; DQ(vlrc, I sh=sdataend-(svlrc+lrchsiz); sh=(sh>=0)?0:sh; sh+=lrchsiz; sh=(sh<0)?0:sh; memcpy(dvlrc,svlrc,sh); svlrc+=vss1; dvlrc+=vds1;);
    // If a copy was truncated, take only the valid elements.
    if(state&(STATEREFLECTX|STATEREFLECTY|STATETAKE)){  // something might be truncated/reflected
     I vkeep=vkeep1-(vtrunc-vi)*vmv; vkeep=(vkeep>vsz)?vsz:vkeep; // vertical length to keep
