@@ -5,8 +5,6 @@
 
 /**
  * @brief # :: Tally
- * @details In APL, this is also known as `tally` (≢). Known also as `len`, `length`, `size` and
- * `count`.
  * @param jt
  * @param w   Input array
  * @return    Output array (always scalar integer)
