@@ -108,13 +108,11 @@ static I jtcirx(J jt,I n,I k,D*z,D*x){D p,t;
 }
 
 
- A jtlogar2(J jt,A a,A w){A z;I t;
- RE(t=maxtype(AT(a),AT(w)));
- if(!(t&XNUM)||jt->xmode==XMEXACT){jt->xmode=XMEXACT; return jtatomic2(JTIPAW,logar1(w),logar1(a),ds(CDIV));}  // better to multiply by recip, but not much, & it makes 0 ^. 0 not fail
- z=rank2ex0(cvt(XNUM,a),cvt(XNUM,w),UNUSED_VALUE,jtxlog2a); 
- if(z)return z;
- if(jt->jerr==EWIMAG||jt->jerr==EWIRR){RESETERR; jt->xmode=XMEXACT; return divideAW(logar1(w),logar1(a));}
- return 0;
+A jtlogar2(J jt,A a,A w){
+  A z;I t;
+  RE(t=maxtype(AT(a),AT(w)));
+  jt->xmode=XMEXACT; 
+  return jtatomic2(JTIPAW,logar1(w),logar1(a),ds(CDIV));  // better to multiply by recip, but not much, & it makes 0 ^. 0 not fail
 }
     
  A jtroot(J jt,A a,A w){A z;I t;

@@ -1,16 +1,12 @@
 1:@:(dbr bind Debug)@:(9!:19)2^_44[(echo^:ECHOFILENAME) './gq201.ijs'
 NB. ^. on extended integers and rational numbers ------------------------
 
-NB. test failed on small ct
+NB. test failed on small ct (comparison tolerance)
 ct   =: 9!:18''
 9!:19[2^_40
 
 test=: 4 : 0
  assert. y -: x ^. x ^ x: y
- assert. (<:y)= x <.@^. <: x^ x: y
- assert.    y = x <.@^. >: x^ x: y
- assert.    y = x >.@^. <: x^ x: y
- assert. (>:y)= x >.@^. >: x^ x: y
  1
 )
 
