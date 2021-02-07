@@ -8,6 +8,11 @@ Verbs
 Monadic
 *******
 
+Rank
+####
+
+.. doxygenfunction:: rank
+
 Tally
 #####
 
