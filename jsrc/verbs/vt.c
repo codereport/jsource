@@ -27,7 +27,7 @@ static A jttks(J jt,A a,A w){PROLOG(0092);A a1,q,x,y,z;B b,c;I an,m,r,*s,*u,*v;P
  if(an<=r){RZ(a=vec(INT,r,s)); MCISH(AV(a),u,an);}  // vec is not virtual
  a1=SPA(wp,a); RZ(q=paxis(r,a1)); m=AN(a1);
  RZ(a=from(q,a       )); u=AV(a);
- RZ(y=from(q,shape(w))); s=AV(y);
+ RZ(y=from(q,shape(jt,w))); s=AV(y);
  b=0; DO(r-m, if(b=u[i+m]!=s[i+m])break;);
  c=0; DO(m,   if(c=u[i  ]!=s[i  ])break;);
  if(b){jt->fill=SPA(wp,e); x=irs2(vec(INT,r-m,m+u),SPA(wp,x),0L,1L,-1L,jttake); jt->fill=0; RZ(x);}  // fill cannot be virtual
@@ -174,7 +174,7 @@ static A jttk(J jt,A a,A w){PROLOG(0093);A y,z;B b=0;C*yv,*zv;I c,d,dy,dz,e,i,k,
 
    // length error if too many axes
  fauxblockINT(sfaux,4,1);
- if(wcr){ASSERT(n<=wcr,EVLENGTH);RZ(s=shape(w)); v=wf+AV(s); DO(n, d=u[i]; m=v[i]; m=d<0?m:-m; m+=d; v[i]=m&=REPSGN(m^d););}  // nonatomic w-cell: s is (w frame),(values of a clamped to within size), then convert to equivalent take
+ if(wcr){ASSERT(n<=wcr,EVLENGTH);RZ(s=shape(jt,w)); v=wf+AV(s); DO(n, d=u[i]; m=v[i]; m=d<0?m:-m; m+=d; v[i]=m&=REPSGN(m^d););}  // nonatomic w-cell: s is (w frame),(values of a clamped to within size), then convert to equivalent take
  else{fauxINT(s,sfaux,wr+n,1) v=AV(s); MCISH(v,AS(w),wf); v+=wf; DO(n, v[i]=!u[i];); RZ(w=reshape(s,w));}  // atomic w-cell: reshape w-cell  to result-cell shape, with axis length 0 or 1 as will be in result
  RZ(s=tk(s,w));
  // We extracted from w, so mark it (or its backer if virtual) non-pristine.  If w was pristine and inplaceable, transfer its pristine status to the result.  We overwrite w because it is no longer in use

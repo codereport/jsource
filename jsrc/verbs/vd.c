@@ -201,7 +201,7 @@ static A jticor(J jt, A w){D d,*v;
   if(t&B01+INT&&2==wr&&m==n)jt->workareas.minv.determ=1.0;  // if taking inverse of square int, allow setting up for correction afterward
   z=jtlq(jt,w);
   z=icor(z);  // if integer correction called for, do it
-  z=2==wr?z:reshape(shape(w),z);
+  z=2==wr?z:reshape(shape(jt,w),z);
  }
  EPILOG(z);
 }
@@ -245,7 +245,7 @@ static A jtmdivsp(J jt,A a,A w){A a1,x,y;I at,d,m,n,t,*v,xt;P*wp;
  t=AT(w);
  if(t&SPARSE)return mdivsp(a,w);
  z=minv(w);  // take generalized inverse of w, setting up for icor if needed
- z=pdt(2>AR(w)?reshape(shape(w),z):z,a);  // a * w^-1
+ z=pdt(2>AR(w)?reshape(shape(jt,w),z):z,a);  // a * w^-1
  if(AT(a)&B01+INT)z=icor(z);  // integer correct if a is not float (& correction is possible)
  EPILOG(z);
 }

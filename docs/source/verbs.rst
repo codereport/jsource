@@ -16,7 +16,7 @@ Tally
 Shape
 #####
 
-.. doxygenfunction:: jtshape
+.. doxygenfunction:: shape
 
 ******
 Dyadic

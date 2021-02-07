@@ -62,7 +62,7 @@ static A jtltieb(J jt,A w,A *ltext){F1PREFIP;A pt,t,*v,*wv,x,y;B b;C c,*s;I n;
 }
 
 // return string for the shape: 's$'
-static A jtlsh(J jt,A w,A *ltext){F1PREFIP;return apip(thorn1(shape(w)),spellout(CDOLLAR));}
+static A jtlsh(J jt,A w,A *ltext){F1PREFIP;return apip(thorn1(shape(jt,w)),spellout(CDOLLAR));}
 
 // return something to turn a list into the shape:
 static A jtlshape(J jt,A w,A *ltext){F1PREFIP;I r,*s;
@@ -173,7 +173,7 @@ static A jtlnum(J jt,A w,A *ltext){F1PREFIP;A b,d,t,*v,y;B p;I n;
     if     ( equ(d,num(-1))) v[1]=spellout(CMINUS);
     else if(!equ(d,num(1)    )){v[2]=lnum1(d); v[3]=spellout(CSTAR);}
    }
-   v[4]=spellout(CIOTA); v[5]=thorn1(p?shape(w):negate(shape(w)));
+   v[4]=spellout(CIOTA); v[5]=thorn1(p?shape(jt,w):negate(shape(jt,w)));
    RE(y); return raze(y);
   }
   RESETERR;   // if there was an error getting to p, clear it
@@ -190,8 +190,8 @@ static A jtlsparse(J jt,A w,A *ltext){F1PREFIP;A a,e,q,t,x,y,z;B ba,be,bn;I j,r,
  if(be)RZ(z=over(lnoun(e),cstr(SB01&AT(w)?"":SINT&AT(w)?"+-~2":SFL&AT(w)?"+-~2.1":"+-~2j1")));
  if(be||ba){
   RZ(z=be?over(lcpx(lnoun(a)),       over(scc(';'),z)):lnoun(a));
-  RZ(z=   over(lcpx(lnoun(shape(w))),over(scc(';'),z))         );
- }else RZ(z=lnoun(shape(w))); 
+  RZ(z=   over(lcpx(lnoun(shape(jt,w))),over(scc(';'),z))         );
+ }else RZ(z=lnoun(shape(jt,w))); 
  RZ(z=over(cstr("1$."),z));
  if(bn||!AS(y)[0])return z;
  if(AN(a)){
@@ -210,7 +210,7 @@ static A jtlsparse(J jt,A w,A *ltext){F1PREFIP;A a,e,q,t,x,y,z;B ba,be,bn;I j,r,
 }    /* sparse array */
 
 static A jtlnoun0(J jt,A w,A *ltext){F1PREFIP;A s,x;B r1;
- r1=1==AR(w); RZ(s=thorn1(shape(w)));
+ r1=1==AR(w); RZ(s=thorn1(shape(jt,w)));
  switch(CTTZ(AT(w))){
   default:    return apip(s,cstr("$00"    ));  // over(cstr("i."),s);
   case LITX:  x=cstr(   "''"); return r1?x:apip(apip(s,scc('$')),x);

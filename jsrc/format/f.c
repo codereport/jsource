@@ -487,7 +487,7 @@ static A jtths(J jt, A w){A e,i,x,z;C c,*u,*v;I d,m,n,*s;P*p;
  p=PAV(w); e=SPA(p,e); i=SPA(p,i); x=SPA(p,x); 
  RZ(i=thorn1(i)); s=AS(i); m=s[0]; n=s[1];
  RZ(x=thorn1(1<AR(x)?x:table(x))); 
- RZ(e=shape(x)); s=AV(e)+AN(e)-1; *s=-(*s+3+n);
+ RZ(e=shape(jt,x)); s=AV(e)+AN(e)-1; *s=-(*s+3+n);
  RZ(z=take(e,x)); 
  u=CAV(i)-n;        
  d=aii(z); v=CAV(z)-d; DQ(m, memcpy(v+=d,u+=n,n););

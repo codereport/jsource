@@ -703,7 +703,7 @@ static B (*grroutine[])(J,I,I,I,A,I*) = {  // index is [bitx]
  // allocate the entire result area, one int per item in each input cell
  GATV(z,INT,zn,1+f,s); if(!r)AS(z)[f]=1;
  // if there are no atoms, or we are sorting things with 0-1 item, return an index vector of the appropriate shape 
- if(((wn-1)|(n-2))<0)return reshape(shape(z),IX(n));
+ if(((wn-1)|(n-2))<0)return reshape(shape(jt,z),IX(n));
  // do the grade, using a special-case routine if possible
  RZ((t&B01&&0==(ai&3)?jtgrb:grroutine[CTTZ(t)])(jt,m,ai,n,w,AV(z)))
  EPILOG(z);

@@ -870,7 +870,6 @@
 #define setfv(x,y)                  jtsetfv(jt,(x),(y))
 #define sfn(x,y)                    jtsfn(jt,(x),(y))
 #define sfne(x)                     jtsfne(jt,(x))
-#define shape(x)                    jtshape(jt,(x))   
 #define shift1(x)                   jtshift1(jt,(x))
 #define shift10(x,y)                jtshift10(jt,(x),(y))
 #define showerr()                   jtshowerr(jt)

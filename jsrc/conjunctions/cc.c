@@ -13,7 +13,7 @@
 
 
 static A jtcut01(J jt,    A w,A self){DECLF;A h,x,z;
- RZ(x=from(box(every(negate(shape(w)),ds(CIOTA))),w));
+ RZ(x=from(box(every(negate(shape(jt,w)),ds(CIOTA))),w));
  if(VGERL&sv->flag){h=sv->fgh[2]; return df1(z,x,AAV(h)[0]);}else return CALL1(f1,x,fs);
 }    /* f;.0 w */
 
@@ -240,7 +240,7 @@ static A jtcut2bx(J jt,A a,A w,A self){A*av,b,t,x,*xv,y,*yv;B*bv;I an,bn,i,j,m,p
  }
  RZ(x=ope(catalog(x)));
  RZ(y=ope(catalog(y)));
- if(AN(x)){RZ(IRS2(x,y,0L,1L,1L,jtlamin2,t));}else{RZ(t=iota(apip(shape(x),v2(2L,0L))));}
+ if(AN(x)){RZ(IRS2(x,y,0L,1L,1L,jtlamin2,t));}else{RZ(t=iota(apip(shape(jt,x),v2(2L,0L))));}
  return cut02(t,w,self);
 }    /* a f;.n w for boxed a, with special code for matrix w */
 
@@ -280,7 +280,7 @@ static A jtcut2bx(J jt,A a,A w,A self){A*av,b,t,x,*xv,y,*yv;B*bv;I an,bn,i,j,m,p
    }                                                                         \
    /* note: fall through */                                                  \
   default:                                                                   \
-   if(!m){y=reitem(zeroionei(0),w); return iota(over(zeroionei(0),shape(h?df1(z,y,*hv):CALL1(f1,y,fs))));}                            \
+   if(!m){y=reitem(zeroionei(0),w); return iota(over(zeroionei(0),shape(jt,h?df1(z,y,*hv):CALL1(f1,y,fs))));}                            \
    GATV0(z,BOX,m,1); za=AAV(z); j=0;                                          \
    if(h){EACHC(GA(y,t,d*c,r,s); AS(y)[0]=d; memcpy(AV(y),v1,d*k); A Zz; RZ (df1(Zz,y,hv[j])); j=(1+j)%hn; incorp(Zz); *za++=Zz;); \
    }else{EACHC(GA(y,t,d*c,r,s); AS(y)[0]=d; memcpy(AV(y),v1,d*k); A Zz; RZ(Zz = CALL1(f1,y,fs)); incorp(Zz); *za++=Zz; ); \
@@ -776,7 +776,7 @@ void copyTT(void *zv, void *wv, I n, I zt, I wt){
    // No frets.  Apply the operand to 0 items; return (0,$result) $ result (or $,'' if error on fill-cell).  The call is non-inplaceable
    RZ(z=reitem(zeroionei(0),w));  // create 0 items of the type of w
   WITHDEBUGOFF(zz=CALL1(f1,z,fs);) if(EMSK(jt->jerr)&EXIGENTERROR)RZ(zz); RESETERR;
-   RZ(zz=reshape(over(zeroionei(0),shape(zz?zz:mtv)),zz?zz:zeroionei(0)));
+   RZ(zz=reshape(over(zeroionei(0),shape(jt,zz?zz:mtv)),zz?zz:zeroionei(0)));
   }
  }
  EPILOG(zz);
@@ -1058,7 +1058,7 @@ static A jttess2(J jt,A a,A w,A self){A z,zz=0,virtw,strip;I n,rs[3],cellatoms,c
 }
 
 static A jttess1(J jt,    A w,A self){A s;I m,r,*v;
- r=AR(w); RZ(s=shape(w)); RZ(s=mkwris(s)); v=AV(s);
+ r=AR(w); RZ(s=shape(jt,w)); RZ(s=mkwris(s)); v=AV(s);
  m=IMAX; DO(r, if(m>v[i])m=v[i];); DO(r, v[i]=m;);  // Get length of long axis; set all axes to that length in a arg to cut
  return tess2(s,w,self);
 }

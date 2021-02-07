@@ -108,9 +108,9 @@ static I jtebarprep(J jt,A a,A w,A*za,A*zw,I*zc){I ar,at,m,n,t,wr,wt,memlimit;CR
  av=CAV(a); m=AN(a);
  wv=CAV(w); n=AN(w); p=n-m;
  switch(d){
-  case -1: return reshape(shape(w),num(0));
+  case -1: return reshape(shape(jt,w),num(0));
   case -2: return ebarmat(a,w);
-  case -3: return df2(z,shape(a),w,cut(amp(a,ds(CMATCH)),num(3)));
+  case -3: return df2(z,shape(jt,a),w,cut(amp(a,ds(CMATCH)),num(3)));
   case -4: return ebarvec(a,w);
  }
  GATV0(z,B01,n,AR(w)); zv=BAV(z); memset(zv,m==0,n); if((-m&-n)>=0)return z;  // if x empty, return all 1s

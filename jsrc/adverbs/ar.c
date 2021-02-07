@@ -496,7 +496,7 @@ static A jtredstiteach(J jt,    A w,A self){A*wv,y;I n,p,r,t;
 static A jtredcateach(J jt,    A w,A self){A*u,*v,*wv,x,*xv,z,*zv;I f,m,mn,n,r,wr,*ws,zm,zn;I n1=0,n2=0;
  wr=AR(w); ws=AS(w); r=(RANKT)jt->ranks; r=wr<r?wr:r; f=wr-r; RESETRANK;
  SETICFR(w,f,r,n);
- if(!r||1>=n)return reshape(repeat(ne(sc(f),IX(wr)),shape(w)),n?w:ds(CACE));
+ if(!r||1>=n)return reshape(repeat(ne(sc(f),IX(wr)),shape(jt, w)),n?w:ds(CACE));
  if(!(BOX&AT(w)))return df1(z,cant2(sc(f),w),qq(ds(CBOX),zeroionei(1)));  // handle unboxed args
 // bug: ,&.>/ y does scalar replication wrong
 // wv=AN(w)+AAV(w); DQ(AN(w), if(AN(*--wv)&&AR(*wv)&&n1&&n2) ASSERT(0,EVNONCE); if((!AR(*wv))&&n1)n2=1; if(AN(*wv)&&1<AR(*wv))n1=1;);

@@ -11,6 +11,6 @@
  * @return    Output array
  */
 [[nodiscard]] auto
-jtshape(J jt, array w) -> array {
+shape(J jt, array w) -> array {
     return vec(INT, AR(w), AS(w));
 }  // $ y

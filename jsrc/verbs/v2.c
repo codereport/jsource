@@ -209,7 +209,7 @@ static A jtxprimetest(J jt, A w){A z;B*b,rat;I d,j,q,n,*pv,*v,wn,wt,*yv;X r,*wv,
 
 static A jtprimetest(J jt, A w){A x;I t;
  t=AT(w);
- if((UI)SGNIF(t,B01X)>=(UI)AN(w))return reshape(shape(w),num(0));  // AN is 0, or t is boolean
+ if((UI)SGNIF(t,B01X)>=(UI)AN(w))return reshape(shape(jt,w),num(0));  // AN is 0, or t is boolean
  switch(CTTZ(t)){
   default:             ASSERT(0,EVDOMAIN);
   case INTX:            return iprimetest(w);
@@ -222,7 +222,7 @@ static A jtprimetest(J jt, A w){A x;I t;
 
 static A jtnextprime(J jt, A w){A b,fs,x,y;B*bv;I k,n,*xv,*yv;X*wv;
  n=AN(w);
- if((UI)SGNIF(AT(w),B01X)>=(UI)AN(w))return reshape(shape(w),num(2));
+ if((UI)SGNIF(AT(w),B01X)>=(UI)AN(w))return reshape(shape(jt,w),num(2));
  ASSERT(NUMERIC&AT(w),EVDOMAIN);
  RZ(fs=eval("2&+^:(0&p:)^:_"));
  GATV(x,INT,n,AR(w),AS(w)); xv=AV(x);

@@ -290,7 +290,7 @@ static A jtcasei12(J jt,A a,A w,A self){A vres,z;I gerit[128/SZI],ZZFLAGWORD;
     zz=ev2(gradepm,zz,"(/:~   >@:;@:((<\"_1)&.>))");  // (> ; <"_1&.> zz) /: gradepm
    }
    // If the original input had structure, rearrange the result to match it
-   if(vr>1)RZ(zz=reitem(shape(vres),zz));
+   if(vr>1)RZ(zz=reitem(shape(jt,vres),zz));
   }else{
    // If there are too few values to justify the sort, create an indirect iterator for them and run it
    RZ(z=jtcreategerunditerator(jt,(A)&gerit,self,vres));
