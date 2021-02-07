@@ -84,3 +84,16 @@ tally =. {. @ $
 * Regex \w for word (0-9, a-z, A-Z, _ etc) \W is for non-word 
 * `k & ~1` is equivalent to `k != 0 && k != 1`
 * A bunch of doxygen / breathe / sphinx stuff
+
+### Livestream #6 2021-02-06
+
+* `x:` [Converts number y to extended precision, either extended integer or rational.](https://code.jsoftware.com/wiki/Vocabulary/xco)
+* To get custom TOC in sphinx RST files, just use `.. contents::` + markdown
+* :star: `Alt + R` to toggle between regex search (on both local and global)
+* :star: `\b` is regex word boundary (helpful for avoiding need for captures)
+* countIf is ALSO THE BLACKBIRD!!!
+```hs
+Prelude> let countIf      = blackbird length filter
+Prelude> let innerProduct = blackbird sum (zipWith (*))
+```
+* Learned about partial application in J: `add5 =. 5&+`
