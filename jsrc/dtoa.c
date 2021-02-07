@@ -443,7 +443,6 @@ static void d2a_Bfree(struct dtoa_info *d2a, Bigint *v);
 #define mult(a,b)      d2a_mult(d2a, a, b)
 #define nrv_alloc(s,rve,n) d2a_nrv_alloc(d2a,s,rve,n)
 #define rv_alloc(n) d2a_rv_alloc(d2a, n)
-#define freedtoa(x) d2a_freedtoa(d2a, x)
 #define d2b(d,e,b)  d2a_d2b(d2a,d,e,b)
 #define pow5mult(b,k) d2a_pow5mult(d2a,b,k)
 #define diff(x,y) d2a_diff(d2a,x,y)
@@ -1445,12 +1444,6 @@ d2a_nrv_alloc(struct dtoa_info *d2a, char *s, char **rve, int n)
  return rv;
  }
 
-/* freedtoa(s) must be used to free values s returned by dtoa
- * when MULTIPLE_THREADS is #defined.  It should be used in all cases,
- * but for consistency with earlier versions of dtoa, it is optional
- * when MULTIPLE_THREADS is not defined.
- */
-
 /* dtoa for IEEE arithmetic (dmg): convert double to ASCII string.
  *
  * Inspired by "How to Print Floating-Point Numbers Accurately" by
@@ -1541,13 +1534,6 @@ d2a_dtoa
  char *s, *s0;
 #ifdef SET_INEXACT
  int inexact, oldinexact;
-#endif
-
-#ifndef MULTIPLE_THREADS
- if (dtoa_result) {
-  freedtoa(dtoa_result);
-  dtoa_result = 0;
-  }
 #endif
 
  if (word0(d) & Sign_bit) {
