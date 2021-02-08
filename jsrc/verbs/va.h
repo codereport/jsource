@@ -41,10 +41,6 @@ enum {
     VXCVTYPEX    = 29,                   // bit position for VX conversion type
     VXCVTYPEMSK  = ((I)3 << VXCVTYPEX),  // mask for bit-positions hold XNUM conversion type - leave here where they
                                          // don't overlap noun types
-    VXX         = (Vxx | VXCHASVTYPE | ((I)XMEXACT << VXCVTYPEX)),  // exact conversion
-    VXEQ        = (Vxx | VXCHASVTYPE | ((I)XMEXMT << VXCVTYPEX)),   /* convert to XNUM for = ~:            */
-    VXCF        = (Vxx | VXCHASVTYPE | ((I)XMCEIL << VXCVTYPEX)),   /* convert to XNUM ceiling/floor       */
-    VXFC        = (Vxx | VXCHASVTYPE | ((I)XMFLR << VXCVTYPEX)),    /* convert to XNUM floor/ceiling       */
     VIPWCRLONGX = 31,                                               // internal use in va2, must be sign bit
     VIPWCRLONG  = ((I)1 << VIPWCRLONGX),
     // bit 31 must not be used - it may be a sign bit, which has a meaning
@@ -57,6 +53,12 @@ enum {
     VIPOKRNKAX = 32,  // filled by va2 if the ranks allow inplacing a
     VIPOKRNKA  = ((I)1 << VIPOKRNKAX),
 };
+
+#define VXX  (Vxx | VXCHASVTYPE | ((I)XMEXACT << VXCVTYPEX))  // exact conversion
+#define VXEQ (Vxx | VXCHASVTYPE | ((I)XMEXMT << VXCVTYPEX))   // convert to XNUM for = ~:
+#define VXCF (Vxx | VXCHASVTYPE | ((I)XMCEIL << VXCVTYPEX))   // convert to XNUM ceiling/floor
+#define VXFC (Vxx | VXCHASVTYPE | ((I)XMFLR << VXCVTYPEX))    // convert to XNUM floor/ceiling
+
 // Extract the argument-conversion type from cv coming from the table
 #define atype(x) (((x)&VARGMSK)>>VARGX)
 
