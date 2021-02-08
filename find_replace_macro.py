@@ -4,6 +4,28 @@ import re
 rootdir = r"jsrc"
 old_name = ""  # only doing one name at a time. Maybe not work.
 
+def write_log_header
+    with open("removal_log.md", 'w') as logw:
+                logw.write("|Path|Macro Name|Function|Regex|Replace|\n|---|---|---|---|---|")
+                
+
+def check_log_empty
+    if os.path.exists("removal_log.md"):
+        with open("removal_log.md", 'r') as log:
+            if log.read().strip() == "":
+                return True
+    return False
+    pass
+
+def write_log_entry
+    check_log_empty()
+    with open("removal_log.md", 'a') as log:
+                    escaped = '\\|'
+                    log.write('\n|`' + path + '`')
+                    log.write('|' + old_name)
+                    log.write('|' + new_name)
+                    log.write('|`' + unescaped.sub(escaped, regular_expression.pattern) + '`')
+                    log.write('|`' + unescaped.sub(escaped, replace_pattern) + '`|')
 
 def walk_path_cpp():
     for root, subdirs, files in os.walk(rootdir):
