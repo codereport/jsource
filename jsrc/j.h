@@ -117,7 +117,6 @@
 // Now we are trying to watch the C stack directly
 #define CSTACKSIZE      (12000000)  // size we allocate in the calling function
 #define CSTACKRESERVE   100000  // amount we allow for slop before we sample the stackpointer, and after the last check
-#define USECSTACK       1   // 0 to go back to counting J recursions    
 
 // start and length for the stored vector of ascending integers
 #define IOTAVECBEGIN (-20)
@@ -261,14 +260,9 @@
 // define fs block used in every/every2.  It is the self for the f in f&.>, and contains only function pointers, an optional param in AK, and the flag field
 #define EVERYFS(name,f0,f1,akparm,flg) PRIM name={{akparm,0,0,0,0,0,0},{.primvb={.valencefns={f0,f1},.flag=flg}}};
 
-#if USECSTACK
 #define FDEPDEC(d)
 #define FDEPINC(d)
 #define STACKCHKOFL {D stackpos; ASSERT((uintptr_t)&stackpos>=jt->cstackmin,EVSTACK);}
-#else  // old style counting J recursion levels
-#define FDEPDEC(d)      jt->fdepi-=(I4)(d)  // can be used in conditional expressions
-#define FDEPINC(d)      {ASSERT(jt->fdepn>=jt->fdepi+(I4)(d),EVSTACK); jt->fdepi+=(I4)(d);}
-#endif
 #define FCONS(x)        fdef(0,CFCONS,VERB,jtnum1,jtnum2,0L,0L,(x),VFLAGNONE, RMAX,RMAX,RMAX)
 // fuzzy-equal is used for tolerant comparisons not related to jt->cct; for example testing whether x in x { y is an integer
 #define FUZZ            0.000000000000056843418860808015   // tolerance

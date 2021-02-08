@@ -307,11 +307,7 @@
 #define fauxvirtual(z,v,w,r,c) {if((r)<=4){z=ABACK(w); AK((A)(v))=(CAV(w)-(C*)(v)); AT((A)(v))=AT(w); AR((A)(v))=(RANKT)(r); z=AFLAG(w)&AFVIRTUAL?z:(w); AFLAG((A)(v))=AFVIRTUAL|AFUNINCORPABLE|(AFLAG(z)&AFPRISTINE)|(AT(w)&TRAVERSIBLE); ABACK((A)(v))=z; z=(A)(v); AC(z)=(c);} \
                               else{RZ(z=virtual((w),0,(r))); AFLAG(z)|=AFUNINCORPABLE; if((c)!=ACUC1)AC(z)=(c);} }
 #define fdef(x0,x1,x2,x3,x4,x5,x6,x7,x8,x9,x10,x11)     jtfdef(jt,(x0),(x1),(x2),(x3),(x4),(x5),(x6),(x7),(x8),(x9),(x10),(x11))
-#if !USECSTACK
-#define fdep(x)                     jtfdep(jt,(x))
-#else
 #define fdep(x)                     0
-#endif
 #define fdepger(x)                  jtfdepger(jt,(x))
 #define fh(x)                       jtfh(jt,(x))
 #define filler(x)                   jtfiller(jt,(x))  

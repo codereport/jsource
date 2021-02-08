@@ -95,11 +95,7 @@ static void jtsusp(J jt){B t;DC d;
  A *old=jt->tnextpushp;  // fence must be after we have allocated out stack block
  d=jt->dcs; t=jt->tostdout;
  jt->dcs=0; jt->tostdout=1;
-#if USECSTACK
  jt->cstackmin=MAX(jt->cstackinit-(CSTACKSIZE-CSTACKRESERVE),jt->cstackmin-CSTACKSIZE/10);
-#else
- jt->fdepn =MIN(NFDEP ,jt->fdepn +NFDEP /10);
-#endif
  jt->fcalln=MIN(NFCALL,jt->fcalln+NFCALL/10);
  if     (jt->dbssexec){RESETERR; immex(jt->dbssexec); tpop(old);}
  else if(jt->dbtrap  ){RESETERR; immex(jt->dbtrap  ); tpop(old);}
@@ -110,18 +106,10 @@ static void jtsusp(J jt){B t;DC d;
   tpop(old);
  }
  if(jt->dbuser){
-#if USECSTACK
   jt->cstackmin+=CSTACKSIZE/10;
-#else
-  jt->fdepn-=NFDEP/10;
-#endif
   jt->fcalln-=NFCALL/10;
  } else {
-#if USECSTACK
   jt->cstackmin=jt->cstackinit-(CSTACKSIZE-CSTACKRESERVE);
-#else
-  jt->fdepn =NFDEP;
-#endif
   jt->fcalln =NFCALL;
  }
  debz(); 
@@ -222,11 +210,7 @@ A jtdbunquote(J jt,A a,A w,A self,L *stabent){A t,z;B b=0,s;DC d;V*sv;
  jt->redefined=0;
  if(AN(w)){
   jt->uflags.us.cx.cx_c.db=jt->dbuser=k; jt->cxspecials=1;
-#if USECSTACK
   jt->cstackmin=jt->cstackinit-((CSTACKSIZE-CSTACKRESERVE)>>k);
-#else
-  jt->fdepn=NFDEP>>k;
-#endif
   jt->fcalln=NFCALL/(k?2:1);
  }
  jt->dbsusact=SUSCLEAR; 

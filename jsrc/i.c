@@ -145,12 +145,8 @@ jt->directdef = 1;  // scaf
  jt->cctdefault=jt->cct= 1.0-FUZZ;
  jt->disp[0]=1; jt->disp[1]=5;
  jt->fcalln=NFCALL;
-#if USECSTACK
  jt->cstackinit=(uintptr_t)&y;  // use a static variable to get the stack address
  jt->cstackmin=jt->cstackinit-(CSTACKSIZE-CSTACKRESERVE);
-#else
- jt->fdepn=NFDEP;
-#endif
  jt->outmaxafter=222;
  jt->outmaxlen=256;
  strcpy(jt->outseq,"\x0a");
