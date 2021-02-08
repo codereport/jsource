@@ -158,9 +158,11 @@ static Z jtbinzz(J jt,Z x,Z y){B id,ix,iy;D rd,rx,ry;Z d;
   case 4: /* 1 0 0 */ 
   case 7: /* 1 1 1 */  return zeroZ;
 }}
-
+// TODO: remove bindd and binzz
 #define bindd(x,y)                  jtbindd(jt,(x),(y))
 APFX(binDD, D,D,D, bindd,NAN0;,HDR1JERRNAN)
 #undef bindd
+#define binzz(x,y)                  jtbinzz(jt,(x),(y))
 APFX(binZZ, Z,Z,Z, binzz,NAN0;,HDR1JERRNAN)
+#undef binzz
 
