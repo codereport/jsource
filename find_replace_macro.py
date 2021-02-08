@@ -1,31 +1,51 @@
 import os
 import re
-
+SKIPTESTS = True
 rootdir = r"jsrc"
+LOG_FILE_NAME = "removal_log.md"
 old_name = ""  # only doing one name at a time. Maybe not work.
 
-def write_log_header
-    with open("removal_log.md", 'w') as logw:
-                logw.write("|Path|Macro Name|Function|Regex|Replace|\n|---|---|---|---|---|")
-                
 
-def check_log_empty
-    if os.path.exists("removal_log.md"):
-        with open("removal_log.md", 'r') as log:
-            if log.read().strip() == "":
+def write_log_header():
+    with open(LOG_FILE_NAME, 'w') as logw:
+        logw.write("|Path|Macro Name|Function|Regex|Replace|\n|---|---|---|---|---|")
+
+
+def check_log_empty():
+    if os.path.exists(LOG_FILE_NAME):
+        with open(LOG_FILE_NAME, 'r') as log:
+            if log.read().strip().rstrip('\n') == "":
                 return True
     return False
     pass
 
-def write_log_entry
-    check_log_empty()
-    with open("removal_log.md", 'a') as log:
-                    escaped = '\\|'
-                    log.write('\n|`' + path + '`')
-                    log.write('|' + old_name)
-                    log.write('|' + new_name)
-                    log.write('|`' + unescaped.sub(escaped, regular_expression.pattern) + '`')
-                    log.write('|`' + unescaped.sub(escaped, replace_pattern) + '`|')
+
+def write_log_entry(paths, local_old_name, new_name, regular_expression, replace_pattern):
+    if check_log_empty():
+        write_log_header()
+    unescaped = re.compile(r'\|')
+    escaped = '\\|'
+    with open(LOG_FILE_NAME, 'a') as log:
+        log.write('\n|')
+        log.write(' '.join(['`' + path + '`' for path in paths]))
+        log.write('|' + local_old_name)
+        log.write('|' + new_name)
+        log.write('|`' + unescaped.sub(escaped, regular_expression.pattern) + '`')
+        log.write('|`' + unescaped.sub(escaped, replace_pattern) + '`|')
+
+
+def combine_log_entries():
+    log_entry_regexp = re.compile(r'^\|([^|]+)\|(.+)$')
+
+    result = {}
+    with open(LOG_FILE_NAME, 'r') as log:
+        for path, key in log_entry_regexp.findall(log.read()):
+            result.setdefault(key.strip().rstrip('\n'), []).append(path.strip())
+    with open(LOG_FILE_NAME, 'w') as log:
+        for key, paths in result:
+            log.write('|'+' '.join(['`' + path + '`' for path in paths])+'|'+key)
+    pass
+
 
 def walk_path_cpp():
     for root, subdirs, files in os.walk(rootdir):
@@ -65,6 +85,7 @@ def walk_matches():
                     continue
                 print("remove " + full_str)
                 data = data.replace(full_str, "")
+                write_log_entry([path], full_str, "", regular_expression, "")
                 with open(path, 'w') as fw:
                     fw.write(data)
                 yield re.compile(r'(^|[ \t]+|[^\d\w_])' + old_name + r'\((?=([^,]+?),([^)]+?)\))'), \
@@ -76,7 +97,6 @@ def walk_matches():
 
 def find_replaced_data():
     global old_name
-    unescaped = re.compile(r'\|')
     for regular_expression, replace_pattern, old_name, new_name in walk_matches():
         # print(regular_expression)
         # print(replace_pattern)
@@ -88,15 +108,7 @@ def find_replaced_data():
                 matches = regular_expression.search(data)
                 if matches is None:
                     continue
-
-                with open("removal_log.md", 'a') as log:
-                    escaped = '\\|'
-                    log.write('\n|`' + path + '`')
-                    log.write('|' + old_name)
-                    log.write('|' + new_name)
-                    log.write('|`' + unescaped.sub(escaped, regular_expression.pattern) + '`')
-                    log.write('|`' + unescaped.sub(escaped, replace_pattern) + '`|')
-                # print(matches)
+                write_log_entry([path], old_name, new_name, regular_expression, replace_pattern)
                 yield path, regular_expression.sub(replace_pattern, data), old_name
     pass
 
@@ -135,13 +147,14 @@ def main():
                               ('ninja -C build', "known_good_build.txt", "BUILD "),
                               ('ninja -C build test', "known_good_test.txt", "TEST ")]
 
-        if command_tests(command_test_pairs):
+        if (not SKIPTESTS) and command_tests(command_test_pairs):
             os.system('git reset --hard')
             with open("excluded_names.txt", 'a') as excluded_names:
                 excluded_names.write("\n" + old_name)
 
             os.system('git commit -m "exclude ' + old_name + '" -a')
         else:
+            combine_log_entries()
             os.system('git commit -m "remove #define ' + old_name + '" -a')
             # os.system('git push')
     pass
