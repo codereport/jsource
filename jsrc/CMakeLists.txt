@@ -135,7 +135,6 @@ if (NOT BUILD_SHARED_LIBS)
 endif ()
 
 add_executable(jconsole)
-target_compile_definitions(jconsole PRIVATE READLINE)
 target_link_libraries(jconsole PRIVATE ${CMAKE_DL_LIBS})
 target_sources(jconsole PRIVATE
         jconsole.c

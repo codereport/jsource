@@ -1,7 +1,6 @@
 /* Copyright 1990-2007, Jsoftware Inc.  All rights reserved.               */
 /* Licensed use only. Any other use is in violation of copyright.          */
 /* J console */
-/* #define READLINE for Unix readline support */
 
 #include <unistd.h>
 #include <sys/resource.h>
@@ -32,7 +31,6 @@ static char input[30000];
 
 /* J calls for keyboard input (debug suspension and 1!:1[1) */
 /* we call to get next input */
-#ifdef READLINE
 /* readlin.h */
 /* if not working properly, export TERM=dumb */
 typedef int (*ADD_HISTORY) (const char *);
@@ -101,7 +99,6 @@ if(hist)
 	if(*line) add_history(line); 
 	return line;
 }
-#endif
 
 char* Jinput_stdio(char* prompt)
 {
@@ -119,11 +116,9 @@ char* Jinput_stdio(char* prompt)
 }
 
 C* _stdcall Jinput(J jt,C* prompt){
-#ifdef READLINE
     if(!norl&&_isatty(_fileno(stdin))){
 		return (C*)Jinput_rl((char*)prompt);
     } else 
-#endif
 	return (C*)Jinput_stdio((char*)prompt);
 }
 
@@ -133,9 +128,7 @@ void _stdcall Joutput(J jt,int type, C* s)
  if(MTYOEXIT==type)
  {
   jefree();
-#ifdef READLINE
   if(!norl)rlexit((int)(intptr_t)s);
-#endif
   exit((int)(intptr_t)s);
  }
  fputs((char*)s,stdout);
@@ -211,11 +204,9 @@ int main(int argc, char* argv[])
   }
  }
 
-#ifdef READLINE
   norl|=!_isatty(_fileno(stdin));    // readline works on tty only
   if(!norl&&_isatty(_fileno(stdin)))
    breadline=readlineinit();
-#endif
 
  jt=jeload(callbacks);
  if(!jt)
@@ -231,11 +222,9 @@ int main(int argc, char* argv[])
  }else
   signal(SIGINT,sigint);
  
-#ifdef READLINE
  if(!norl){
  rl_readline_name="jconsole"; /* argv[0] varies too much*/
  }
-#endif
 
  if(argc==2&&!strcmp(argv[1],"-jprofile"))
 	 type=3;
