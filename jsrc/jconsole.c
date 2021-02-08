@@ -35,9 +35,6 @@ static char input[30000];
 #ifdef READLINE
 /* readlin.h */
 /* if not working properly, export TERM=dumb */
-#if defined(USE_LINENOISE)
-#include "linenoise.h"
-#endif
 typedef int (*ADD_HISTORY) (const char *);
 typedef int (*READ_HISTORY) (const char *);
 typedef int (*WRITE_HISTORY) (const char *);
@@ -65,15 +62,7 @@ static int readlineinit()
 #else
  if(!(hreadline=dlopen("libedit.dylib",RTLD_LAZY))){
 #endif
-#if defined(USE_LINENOISE)
-    add_history=linenoiseHistoryAdd;
-    read_history=linenoiseHistoryLoad;
-    write_history=linenoiseHistorySave;
-    readline=linenoise;
-    return 2;
-#else
     return 0;
-#endif
    }
  add_history=(ADD_HISTORY)GETPROCADDRESS(hreadline,"add_history");
  read_history=(READ_HISTORY)GETPROCADDRESS(hreadline,"read_history");
@@ -224,19 +213,6 @@ int main(int argc, char* argv[])
 
 #ifdef READLINE
   norl|=!_isatty(_fileno(stdin));    // readline works on tty only
-#if defined(USE_LINENOISE)
-  if(!norl){
-   char *term;
-   term=getenv("TERM");
-   if(term){
-    static const char *unsupported_term[] = {"dumb","cons25","emacs",NULL};
-    int j;
-    for(j=0; unsupported_term[j]; j++)
-     if (strcmp(term, unsupported_term[j]) == 0) {norl=1; break; }
-   }
-  }
-
-#endif
   if(!norl&&_isatty(_fileno(stdin)))
    breadline=readlineinit();
 #endif
@@ -258,9 +234,6 @@ int main(int argc, char* argv[])
 #ifdef READLINE
  if(!norl){
  rl_readline_name="jconsole"; /* argv[0] varies too much*/
-#if defined(USE_LINENOISE)
- if(2==breadline)linenoiseSetMultiLine(1);
-#endif
  }
 #endif
 
