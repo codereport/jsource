@@ -629,9 +629,6 @@ if(_i<3){_zzt+=_i; z=(I)&oneone; _zzt=_i>=1?_zzt:(I*)z; z=_i>1?(I)_zzt:z; z=((I*
 // you should use the compiler intrinsic to create this instruction, and define the CTTZ and CTTZZ
 // macros to use the instruction inline.  It is used enough in the J engine to make a difference.
 
-// If you set AUDITCOMPILER to 1, i.c will include code to test CTTZ (and signed shift) on startup and crash if it
-// does not perform properly, as a debugging aid.
-
 // If CTTZ is not defined, the default routine defined in u.c will be used.  You can look there
 // for the complete spec for CTTZ and CTTZZ.
 
@@ -681,10 +678,6 @@ extern I CTTZZ(I);
 extern I CTLZI_(UI,UI4*);
 #define CTLZI(in,out) CTLZI_(in,&(out))
 #endif
-
-// Set these switches for testing
-#define AUDITCOMPILER 0  // Verify compiler features CTTZ, signed >>
-
 
 // JPFX("here we are\n")
 // JPF("size is %i\n", v)
