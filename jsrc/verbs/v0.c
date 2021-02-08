@@ -12,19 +12,33 @@
 #define dtymes(x,y)    (x*y)
 #define dnegate(x)     (-x)
 #define QNEGATE(x)     (qminus(zeroQ,x))
-#define fplus(x,y)     jtfplus(jt,(x),(y)) //this macro uses fplus as an argument.
-#define CFR(f,T,TYPE,fplus,ftymes,fnegate)  \
- A f(J jt,A a,A w){PROLOG(0060);A z;I j,n;T d,*t,*u,*v;            \
-  n=AN(w); u=(T*)AV(w);                          \
-  GATVS(z,TYPE,1+n,1,0,TYPE##SIZE,GACOPYSHAPE0,return 0); v=(T*)AV(z); *v=*(T*)AV(a);  \
-  for(j=0;j<n;++j){                              \
-   d=fnegate(u[j]); t=j+v; *(1+t)=*t;            \
-   DQ(j, *t=fplus(*(t-1),jtftymes(jt,d,*t)); --t;);   \
-   *v=jtftymes(jt,d,*v);                              \
-  }                                              \
-  RE(z); EPILOG(z);                              \
- }
+
+//CFR macro uses fplus, ftymes, fnegate and as an argument.
+#define ftymes(x,y)    jtftymes(jt,(x),(y))
+#define fplus(x,y)     jtfplus(jt,(x),(y))
+#define CFR(f, T, TYPE, fplus, ftymes, fnegate)                          \
+    A f(J jt, A a, A w) {                                                \
+        PROLOG(0060);                                                    \
+        A z;                                                             \
+        I j, n;                                                          \
+        T d, *t, *u, *v;                                                 \
+        n = AN(w);                                                       \
+        u = (T*)AV(w);                                                   \
+        GATVS(z, TYPE, 1 + n, 1, 0, TYPE##SIZE, GACOPYSHAPE0, return 0); \
+        v  = (T*)AV(z);                                                  \
+        *v = *(T*)AV(a);                                                 \
+        for (j = 0; j < n; ++j) {                                        \
+            d        = fnegate(u[j]);                                    \
+            t        = j + v;                                            \
+            *(1 + t) = *t;                                               \
+            DQ(j, *t = fplus(*(t - 1), ftymes(d, *t)); --t;);            \
+            *v = ftymes(d, *v);                                          \
+        }                                                                \
+        RE(z);                                                           \
+        EPILOG(z);                                                       \
+    }
 #undef fplus
+#undef ftymes
 
 static CFR(jtcfrd,D,FL,  dplus,dtymes,dnegate)
 static CFR(jtcfrx,X,XNUM,xplus,xtymes, negate)
