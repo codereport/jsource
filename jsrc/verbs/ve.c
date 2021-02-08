@@ -268,7 +268,9 @@ I jtilcm(J jt,I a,I b){I z;I d;
 D jtdlcm(J jt,D a,D b){ASSERT(!(INF(a)||INF(b)),EVNAN); return a&&b?a*(b/jtdgcd(jt,a,b)):0;}
 
 APFX(gcdIO, D,I,I, GCDIO,,HDR1JERR)
+#define igcd(x,y)                   jtigcd(jt,(x),(y))
 APFX(gcdII, I,I,I, igcd ,,HDR1JERR)
+#undef igcd
 #define dgcd(x,y)                   jtdgcd(jt,(x),(y))
 APFX(gcdDD, D,D,D, dgcd ,,HDR1JERR)
 #undef gdcd
