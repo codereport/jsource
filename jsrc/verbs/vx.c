@@ -285,30 +285,6 @@ static X jtxexp(J jt,X w,I mode){I k,m;X s,y;
    return rifvsdebug(x);
 }}
 
-static X jtxroot(J jt,X a,X w){A q;D x;I an,*av,c,d,r,wn,*wv;X n,n1,p,t,z;
- an=AN(a); av=AV(a); c=av[an-1];
- wn=AN(w); wv=AV(w); d=wv[wn-1]; 
- ASSERT(0<=d,EWIMAG);
- if(1==wn&&((d&~1)==0))return 1==d?iv1:0<=c?iv0:vci(XPINF);
- if(!c&&0<d)return rifvsdebug(vci(XPINF));
- r=xint(a); if(jt->jerr){RESETERR; return iv1;}
- if(2==r)return xsqrt(w);
- x=xlogabs(w)/r;
- if(x<709.78){RZ(q=ceil1(cvt(RAT,scf(exp(x))))); z=XAV(q)[0];}
- else        {RZ(q=cvt(XNUM,scf(jceil(x)))); z=xexp(XAV(q)[0],XMCEIL);}
- RZ(n=xc(r)); RZ(n1=xc(r-1));
- RZ(t=xdiv(w,p=xpow(z,n1),XMFLR));
- RZ(z=xdiv(xplus(t,xtymes(z,n1)),n,XMFLR))
- while(1){
-  RZ(t=xdiv(w,p=xpow(z,n1),XMFLR));
-  if(1>xcompare(z,t))break;
-  RZ(z=xdiv(xplus(t,xtymes(z,n1)),n,XMFLR))
- }
- if(XMFLR==jt->xmode||!xcompare(w,xtymes(z,p)))return rifvsdebug(z);
- if(XMCEIL==jt->xmode)return rifvsdebug(xplus(z,iv1));
- ASSERT(0,EWIRR);
-}
-
 D jtxlogabs(J jt,X w){D c;I m,n,*v;
  n=AN(w); m=MIN(n,20/XBASEN); v=n+AV(w);
  c=0.0; DQ(m, c=c*XBASE+(D)*--v;);
@@ -324,8 +300,6 @@ static X jtxlog1(J jt,    X w){B b;I c;
 
 static D jtxlogd1(J jt,X w){ASSERT(0<=XDIG(w),EWIMAG); return xlogabs(w);}
 static Z jtxlogz1(J jt,X w){Z z; z.re=xlogabs(w); z.im=0>XDIG(w)?PI:0.0; return z;}
-
-A jtxroota(J jt,A a,A w){A z; GAT0(z,XNUM,1L,0L); XAV(z)[0]=rifvsdebug(xroot(XAV(a)[0],XAV(w)[0])); RNE(z);}
 
 APFX( plusXX, X,X,X, xplus ,,HDR1JERR)
 APFX(minusXX, X,X,X, xminus,,HDR1JERR)

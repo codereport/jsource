@@ -544,7 +544,6 @@ extern A jtupon2(J jt,A a,A w,A self);
 extern A jtupon2cell(J jt,A a,A w,A self);
 extern A jtxco2(J jt,A a,A w);
 extern A jtxdefn(J jt,A a,A w,A self);
-extern A jtxroota(J jt,A a,A w);
 extern A jtxrx(J jt,A a,A w);
 
 extern A jtamend(J jt, A w);
