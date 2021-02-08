@@ -118,7 +118,12 @@ def find_replaced_data():
                 if matches is None:
                     continue
                 write_log_entry([path], old_name, new_name, regular_expression, replace_pattern)
-                yield path, regular_expression.sub(replace_pattern, data), old_name
+                while True:  # check to see if there still are matches. one pass fails if two matches on same line.
+                    data = regular_expression.sub(replace_pattern, data)
+                    matches = regular_expression.search(data)
+                    if matches is None:
+                        break
+                yield path, data, old_name
     pass
 
 
