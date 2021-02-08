@@ -78,7 +78,6 @@ def check_excluded_names():
 def walk_matches():
     global old_name
     for path in walk_path_cpp():
-        data = None
         with open(path, 'r') as f:
             data = f.read()
         if data is not None:
@@ -95,10 +94,11 @@ def walk_matches():
                 print("remove " + full_str)
                 data = data.replace(full_str, "")
                 write_log_entry([path], full_str, "", regular_expression, "")
+                time.sleep(.25)  # race condition?
                 with open(path, 'w') as fw:
                     fw.write(data)
                 yield re.compile(r'(^|[ \t]+|[^\d\w_])' + old_name + r'\((?=([^,]+?),([^)]+?)\))'), \
-                      r'\1' + new_name + r'(jt,', old_name, new_name
+                    r'\1' + new_name + r'(jt,', old_name, new_name
                 return
     old_name = ""
     pass
