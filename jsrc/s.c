@@ -132,7 +132,7 @@ static SYMWALK(jtsympoola, I,INT,100,1, 1, *zv++=j;)
   *xv++=pv->flag+(pv->name?LHASNAME:0)+(pv->val?LHASVALUE:0);  // flag
   *xv++=pv->sn;    
   *xv++=pv->next;
-  RZ(*yv++=(q=pv->name)?incorp(sfn(SFNSIMPLEONLY,q)):mtv);
+  RZ(*yv++=(q=pv->name)?incorp(jtsfn(jt,SFNSIMPLEONLY,q)):mtv);
  }
  // Allocate box 3: locale name
  GATV0(y,BOX,n,1); yv=AAV(y); zv[2]=incorp(y);
@@ -141,13 +141,13 @@ static SYMWALK(jtsympoola, I,INT,100,1, 1, *zv++=j;)
  for(i=0;i<n;++i){  // for each chain-base in locales pool
   for(j=v[i];j;j=LAV0(jt->symp)[j].next){      // j is index to named local entry; process the chain
    x=LAV0(jt->symp)[j].val;  // x->symbol table for locale
-   RZ(yv[j]=yv[LXAV0(x)[0]]=aa=incorp(sfn(SFNSIMPLEONLY,LOCNAME(x))));  // install name in the entry for the locale
+   RZ(yv[j]=yv[LXAV0(x)[0]]=aa=incorp(jtsfn(jt,SFNSIMPLEONLY,LOCNAME(x))));  // install name in the entry for the locale
    RZ(q=sympoola(x)); u=AV(q); DO(AN(q), yv[u[i]]=aa;);
   }
  }
  n=jtcountnl(jt);
  for(i=0;i<n;++i)if(x=jtindexnl(jt,i)){   /* per numbered locales */
-  RZ(      yv[LXAV0(x)[0]]=aa=incorp(sfn(SFNSIMPLEONLY,LOCNAME(x))));
+  RZ(      yv[LXAV0(x)[0]]=aa=incorp(jtsfn(jt,SFNSIMPLEONLY,LOCNAME(x))));
   RZ(q=sympoola(x)); u=AV(q); DO(AN(q), yv[u[i]]=aa;);
  }
  if(AN(x=jt->locsyms)>1){               /* per local table      */
@@ -246,7 +246,7 @@ u=NAV(a);  // u->NM block
     tx = lx; lx = l->next;
    }
    // not found, create new symbol.  If tx is 0, the queue is empty, so adding at the head is OK; otherwise add after tx
-   RZ(l=symnew(&LXAV0(jt->locsyms)[b],tx)); 
+   RZ(l=jtsymnew(jt,&LXAV0(jt->locsyms)[b],tx)); 
    ras(a); l->name=a;  // point symbol table to the name block, and increment its use count accordingly
    AR(jt->locsyms)|=LNAMEADDED;  // Mark that a name has been added beyond what was known at preprocessing time
    return l;
@@ -257,7 +257,7 @@ u=NAV(a);  // u->NM block
   }
  } else {
   // No bucket information, do full search
-  L *l=probeis(a,jt->locsyms);
+  L *l=jtprobeis(jt,a,jt->locsyms);
   RZ(l);
   AR(jt->locsyms)|=(~l->flag)&LPERMANENT;  // Mark that a name has been added beyond what was known at preprocessing time, if the added name is not PERMANENT
   return l;
@@ -282,7 +282,7 @@ L*jtprobeis(J jt,A a,A g){C*s;LX *hv,tx;I m;L*v;NM*u;L *sympv=LAV0(jt->symp);
   }
  }
  // not found, create new symbol.  If tx is 0, the queue is empty, so adding at the head is OK; otherwise add after tx
- RZ(v=symnew(hv,tx)); 
+ RZ(v=jtsymnew(jt,hv,tx)); 
  ras(a); v->name=a;  // point symbol table to the name block, and increment its use count accordingly
  return v;
 }    /* probe for assignment */
@@ -327,21 +327,21 @@ static A jtlocindirect(J jt,I n,C*u,UI4 hash){A x,y;C*s,*v,*xv;I k,xn;
    e=probe(k,v,hash,jt->locsyms);  // look up local first
    if(!e)e=syrd1(k,v,hash,jt->global);
   }else e=syrd1(k,v,(UI4)nmhash(k,v),g);   // look up later indirect locatives, yielding an A block for a locative
-  ASSERTN(e,EVVALUE,nfs(k,v));  // verify found
+  ASSERTN(e,EVVALUE,jtnfs(jt,k,v));  // verify found
   y=e->val;    // y->A block for locale
-  ASSERTN(!AR(y),EVRANK,nfs(k,v));   // verify atomic
+  ASSERTN(!AR(y),EVRANK,jtnfs(jt,k,v));   // verify atomic
   if(AT(y)&(INT|B01)){g=findnl(BIV0(y)); ASSERT(g!=0,EVLOCALE);  // if atomic integer, look it up
   }else{
-   ASSERTN(BOX&AT(y),EVDOMAIN,nfs(k,v));  // verify box
+   ASSERTN(BOX&AT(y),EVDOMAIN,jtnfs(jt,k,v));  // verify box
    x=AAV(y)[0]; if((((I)AR(x)-1)&-(AT(x)&(INT|B01)))<0) {
     // Boxed integer - use that as bucketx
     g=findnl(BIV0(x)); ASSERT(g!=0,EVLOCALE);  // boxed integer, look it up
    }else{
     xn=AN(x); xv=CAV(x);   // x->boxed contents, xn=length, xv->string
-    ASSERTN(1>=AR(x),EVRANK,nfs(k,v));   // verify list (or atom)
-    ASSERTN(xn,EVLENGTH,nfs(k,v));   // verify not empty
-    ASSERTN(LIT&AT(x),EVDOMAIN,nfs(k,v));  // verify string
-    ASSERTN(vlocnm(xn,xv),EVILNAME,nfs(k,v));  // verify legal name
+    ASSERTN(1>=AR(x),EVRANK,jtnfs(jt,k,v));   // verify list (or atom)
+    ASSERTN(xn,EVLENGTH,jtnfs(jt,k,v));   // verify not empty
+    ASSERTN(LIT&AT(x),EVDOMAIN,jtnfs(jt,k,v));  // verify string
+    ASSERTN(vlocnm(xn,xv),EVILNAME,jtnfs(jt,k,v));  // verify legal name
     I bucketx=BUCKETXLOC(xn,xv);
     RZ(g=stfindcre(xn,xv,bucketx));  // find st for the name
    }
@@ -364,7 +364,7 @@ L*jtsyrd(J jt,A a,A locsyms){A g;
  if(!a) return 0;
  if(!(NAV(a)->flag&(NMLOC|NMILOC))){L *e;
   // If there is a local symbol table, search it first
-  if(e = probelocal(a,locsyms)){return e;}  // return flagging the result if local
+  if(e = jtprobelocal(jt,a,locsyms)){return e;}  // return flagging the result if local
   g=jt->global;  // Continue with the current locale
  } else RZ(g=sybaseloc(a));
  return syrd1(NAV(a)->m,NAV(a)->s,NAV(a)->hash,g);  // Not local: look up the name starting in locale g
@@ -373,7 +373,7 @@ L*jtsyrd(J jt,A a,A locsyms){A g;
 A jtsyrdforlocale(J jt,A a){A g;
  if(!(NAV(a)->flag&(NMLOC|NMILOC))){L *e;
   // If there is a local symbol table, search it first
-  if(e = probelocal(a,jt->locsyms)){return jt->locsyms;}  // return flagging the result if local
+  if(e = jtprobelocal(jt,a,jt->locsyms)){return jt->locsyms;}  // return flagging the result if local
   g=jt->global;  // Start with the current locale
  } else RZ(g=sybaseloc(a));
  return syrd1forlocale(NAV(a)->m,NAV(a)->s,NAV(a)->hash,g);  // Not local: look up the name starting in locale g
@@ -397,7 +397,7 @@ static A jtdllsymaddr(J jt,A w,C flag){A*wv,x,y,z;I i,n,*zv;L*v;
  ASSERT(!n||BOX&AT(w),EVDOMAIN);
  GATV(z,INT,n,AR(w),AS(w)); zv=AV(z); 
  for(i=0;i<n;++i){
-  x=wv[i]; v=syrd(nfs(AN(x),CAV(x)),jt->locsyms); 
+  x=wv[i]; v=jtsyrd(jt,jtnfs(jt,AN(x),CAV(x)),jt->locsyms); 
   ASSERT(v!=0,EVVALUE);
   y=v->val;
   ASSERT(NOUN&AT(y),EVDOMAIN);
@@ -406,29 +406,29 @@ static A jtdllsymaddr(J jt,A w,C flag){A*wv,x,y,z;I i,n,*zv;L*v;
  return z;
 }    /* 15!:6 (0=flag) or 15!:14 (1=flag) */
 
- A jtdllsymget(J jt, A w){return dllsymaddr(w,0);}
- A jtdllsymdat(J jt, A w){return dllsymaddr(w,1);}
+ A jtdllsymget(J jt, A w){return jtdllsymaddr(jt,w,0);}
+ A jtdllsymdat(J jt, A w){return jtdllsymaddr(jt,w,1);}
 
 // look up the name w using full name resolution.  Return the value if found, abort if not found or invalid name
- A jtsymbrd(J jt, A w){L*v; if(!w) return 0; ASSERTN(v=syrd(w,jt->locsyms),EVVALUE,w); return v->val;}
+ A jtsymbrd(J jt, A w){L*v; if(!w) return 0; ASSERTN(v=jtsyrd(jt,w,jt->locsyms),EVVALUE,w); return v->val;}
 
 // look up name w, return value unless locked or undefined; then return just the name
  A jtsymbrdlocknovalerr(J jt, A w){A y;L *v;
- if(!(v=syrd(w,jt->locsyms))){
+ if(!(v=jtsyrd(jt,w,jt->locsyms))){
   // no value.  Could be undefined name (no error) or some other error including value error, which means error looking up an indirect locative
   // If error, abort with it; if undefined, return a reference to the undefined name
   RE(0);   // if not simple undefined, error
-  return nameref(w,jt->locsyms);  // return reference to undefined name
+  return jtnameref(jt,w,jt->locsyms);  // return reference to undefined name
  }
  // no error.  Return the value unless locked function
  y=v->val;
- return FUNC&AT(y)&&(jt->uflags.us.cx.cx_c.glock||VLOCK&FAV(y)->flag)?nameref(w,jt->locsyms):y;
+ return FUNC&AT(y)&&(jt->uflags.us.cx.cx_c.glock||VLOCK&FAV(y)->flag)?jtnameref(jt,w,jt->locsyms):y;
 }
 
 // Same, but value error if name not defined
  A jtsymbrdlock(J jt, A w){A y;
  RZ(y=symbrd(w));
- return FUNC&AT(y)&&(jt->uflags.us.cx.cx_c.glock||VLOCK&FAV(y)->flag)?nameref(w,jt->locsyms):y;
+ return FUNC&AT(y)&&(jt->uflags.us.cx.cx_c.glock||VLOCK&FAV(y)->flag)?jtnameref(jt,w,jt->locsyms):y;
 }
 
 
@@ -460,7 +460,7 @@ L* jtprobeisquiet(J jt,A a,A locsyms){A g;  // locsyms is used in the call, but 
  I n=AN(a); NM* v=NAV(a); I m=v->m;  // n is length of name, v points to string value of name, m is length of non-locale part of name
  if(n==m){g=jt->global;}   // if not locative, define in default locale
  else{C* s=1+m+v->s; if(!(g=NMILOC&v->flag?locindirect(n-m-2,1+s,(UI4)v->bucketx):stfindcre(n-m-2,s,v->bucketx))){RESETERR; return 0;}}  // if locative, find the locale for the assignment; error is not fatal
- return probeis(a, g);  // return pointer to slot, creating one if not found
+ return jtprobeis(jt,a, g);  // return pointer to slot, creating one if not found
 }
 
 
@@ -473,23 +473,23 @@ L* jtsymbis(J jt,A a,A w,A g){A x;I m,n,wn,wr,wt;L*e;
  // in this case g is the type field of the name being assigned; and jt->locsyms must exist, since it comes from
  // an explicit definition
  if(jt->assignsym) {
-  ASSERT(((I)g&ASGNLOCAL||NAV(a)->flag&(NMLOC|NMILOC)||!probelocal(a,jt->locsyms)),EVDOMAIN)  //  if global assignment not to locative, verify non locally defined
+  ASSERT(((I)g&ASGNLOCAL||NAV(a)->flag&(NMLOC|NMILOC)||!jtprobelocal(jt,a,jt->locsyms)),EVDOMAIN)  //  if global assignment not to locative, verify non locally defined
   e = jt->assignsym;   // point to the symbol-table entry being assigned
   CLEARZOMBIE   // clear until next use.
  } else {A jtlocal=jt->locsyms;
   n=AN(a); NM *v=NAV(a); m=v->m;  // n is length of name, v points to string value of name, m is length of non-locale part of name
-  if(n==m)ASSERT(!(g==jt->global&&probelocal(a,jtlocal)),EVDOMAIN)  // if non-locative, give error if there is a local
+  if(n==m)ASSERT(!(g==jt->global&&jtprobelocal(jt,a,jtlocal)),EVDOMAIN)  // if non-locative, give error if there is a local
     // symbol table, and we are assigning to the global symbol table, and the name is defined in the local table
   else{C*s=1+m+v->s; RZ(g=NMILOC&v->flag?locindirect(n-m-2,1+s,(UI4)v->bucketx):stfindcre(n-m-2,s,v->bucketx));}
     // locative: s is the length of name_.  Find the symbol table to use, creating one if none found
   // Now g has the symbol table to look in
-  RZ(e=g==jtlocal?probeislocal(a) : probeis(a,g));   // set e to symbol-table slot to use
+  RZ(e=g==jtlocal?probeislocal(a) : jtprobeis(jt,a,g));   // set e to symbol-table slot to use
   if(AT(w)&FUNC&&(FAV(w)->fgh[0])){if(FAV(w)->id==CCOLON)FAV(w)->flag|=VNAMED; if(jt->uflags.us.cx.cx_c.glock)FAV(w)->flag|=VLOCK;}
    // If the value is a function created by n : m, this becomes a named function; if running a locked function, this is locked too.
    // kludge  these flags are modified in the input area (w), which means they will be improperly set in the result of the
    // assignment (ex: (nm =: 3 : '...') y).  There seems to be no ill effect, because VNAMED isn't used much.
  }
- if(jt->uflags.us.cx.cx_c.db)RZ(redef(w,e));  // if debug, check for changes to stack
+ if(jt->uflags.us.cx.cx_c.db)RZ(jtredef(jt,w,e));  // if debug, check for changes to stack
  x=e->val;   // if x is 0, this name has not been assigned yet; if nonzero, x points to the incumbent value
  I xaf;  // holder for nvr/free flags
  I xt;  // If not assigned, use empty type

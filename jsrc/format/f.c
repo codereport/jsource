@@ -58,7 +58,7 @@ static void jtfmtD(J jt,C*s,D*v){B q;C buf[1+WD],c,*t;D x=*v;I k=0;
   if(k)while(*t=*(k+t))t++;
 }}
 
-static void jtfmtZ(J jt,C*s,Z*v){fmtD(s,&v->re); if(v->im){I k=strlen(s); *(k+s)='j'; fmtD(1+k+s,&v->im);}}
+static void jtfmtZ(J jt,C*s,Z*v){jtfmtD(jt,s,&v->re); if(v->im){I k=strlen(s); *(k+s)='j'; jtfmtD(jt,1+k+s,&v->im);}}
 
 static void thcase(I t,I*wd,FMTFUN *fmt){
  switch(CTTZ(t)){
@@ -459,7 +459,7 @@ static A jtenframe(J jt, A w){A x,y,z;C*zv;I ht,m,n,p,q,t,wd,wdb,wr,xn,*xv,yn,*y
 }
 
 // Convert 1 box to character array, then to character table
-static A jtmatth1(J jt,A a,A w){return mat(thorn1main(a,w));}
+static A jtmatth1(J jt,A a,A w){return mat(jtthorn1main(jt,a,w));}
 static EVERYFS(matth1self,0,jtmatth1,0,VFLAGNONE)
 
 // Format boxed array.  Result is table of characters, with space-changing characters (like BS, CR) converted to spaces
@@ -488,10 +488,10 @@ static A jtths(J jt, A w){A e,i,x,z;C c,*u,*v;I d,m,n,*s;P*p;
  RZ(i=thorn1(i)); s=AS(i); m=s[0]; n=s[1];
  RZ(x=thorn1(1<AR(x)?x:table(x))); 
  RZ(e=shape(jt,x)); s=AV(e)+AN(e)-1; *s=-(*s+3+n);
- RZ(z=take(e,x)); 
+ RZ(z=jttake(jt,e,x)); 
  u=CAV(i)-n;        
  d=aii(z); v=CAV(z)-d; DQ(m, memcpy(v+=d,u+=n,n););
- if(2<AR(z))RZ(z=matth1(z,zeroionei(0)));  // no prxthornuni
+ if(2<AR(z))RZ(z=jtmatth1(jt,z,zeroionei(0)));  // no prxthornuni
  s=AS(z); d=*(1+s); v=1+CAV(z); c=jt->bx[9]; DQ(*s, *(v+n)=c; v+=d;);
  return z;
 }
@@ -539,9 +539,9 @@ static A jtthorn1main(J jt,A w,A prxthornuni){PROLOG(0001);A z;
    // If C2T output not allowed, just convert to UTF-8 bytes
    z=rank2ex(w,prxthornuni,UNUSED_VALUE,MIN(AR(w),1L),0,MIN(AR(w),1L),0,BAV(prxthornuni)[0]&1?RoutineC:jttoutf8a);
    break;
-  case BOXX:  z=thbox(w,prxthornuni);                  break;
-  case SBTX:  z=thsb(w,prxthornuni);                   break;
-  case NAMEX: z=sfn(0,w);                  break;
+  case BOXX:  z=jtthbox(jt,w,prxthornuni);                  break;
+  case SBTX:  z=jtthsb(jt,w,prxthornuni);                   break;
+  case NAMEX: z=jtsfn(jt,0,w);                  break;
   case ASGNX: z=spellout(CAV(w)[0]);         break;
   case INTX:  case FLX: case CMPXX:
              z=thn(w);                    break;
@@ -549,11 +549,11 @@ static A jtthorn1main(J jt,A w,A prxthornuni){PROLOG(0001);A z;
              z=ths(w);                    break;
   case VERBX: case ADVX:  case CONJX:
    switch((jt->disp)[1]){
-    case 1: z=thorn1main(arep(w),prxthornuni); break;
-    case 2: z=thorn1main(drep(w),prxthornuni); break;
-    case 4: z=thorn1main(trep(w),prxthornuni); break;
-    case 5: z=thorn1main(lrep(w),prxthornuni); break;
-    case 6: z=thorn1main(prep(w),prxthornuni); break;
+    case 1: z=jtthorn1main(jt,arep(w),prxthornuni); break;
+    case 2: z=jtthorn1main(jt,drep(w),prxthornuni); break;
+    case 4: z=jtthorn1main(jt,trep(w),prxthornuni); break;
+    case 5: z=jtthorn1main(jt,lrep(w),prxthornuni); break;
+    case 6: z=jtthorn1main(jt,prep(w),prxthornuni); break;
  }}
  EPILOG(z);
 }
@@ -561,10 +561,10 @@ static A jtthorn1main(J jt,A w,A prxthornuni){PROLOG(0001);A z;
 // entry point to allow C2T result from thorn1.  But always pass byte arguments unchanged
 // This will enable null insertion/removal for CJK, but that's OK since the result goes to display
 // This is called only from jprx()
- A jtthorn1u(J jt, A w){ A z; z = thorn1main(w,num(2+!(AT(w)&(LIT)))); return z; }  // set prx and prxthornuni flags
+ A jtthorn1u(J jt, A w){ A z; z = jtthorn1main(jt,w,num(2+!(AT(w)&(LIT)))); return z; }  // set prx and prxthornuni flags
 
 // entry point for returning LIT array only.  Allow C2T result, then convert.  But always pass literal arguments unchanged
- A jtthorn1(J jt, A w){ A z; A prxthornuni=zeroionei(!(AT(w)&(LIT+C2T+C4T))); z = thorn1main(w,prxthornuni); if (z&&AT(z)&(C2T+C4T))z = rank2ex(z,prxthornuni,UNUSED_VALUE,MIN(AR(z),1L),0,MIN(AR(z),1L),0, RoutineD); return z; }
+ A jtthorn1(J jt, A w){ A z; A prxthornuni=zeroionei(!(AT(w)&(LIT+C2T+C4T))); z = jtthorn1main(jt,w,prxthornuni); if (z&&AT(z)&(C2T+C4T))z = rank2ex(z,prxthornuni,UNUSED_VALUE,MIN(AR(z),1L),0,MIN(AR(z),1L),0, RoutineD); return z; }
 
 
 #define DDD(v)   {*v++='.'; *v++='.'; *v++='.';}
@@ -686,7 +686,7 @@ static A jtjprx(J jt,I ieol,I maxlen,I lb,I la,A w){A y,z;B ch;C e,eov[2],*v,x,*
  if(ieol){m=2; eov[0]=CCR; eov[1]=CLF;}else{m=1; eov[0]=CLF; eov[1]=0;}
  // q=#lines in a 2-cell, c=#chars in a row, n=#2-cells, nq=total # lines (without spacing)
  // if w is empty the values could overflow.  In that case, just display nothing
- SHAPEN(y,r-2,q); SHAPEN(y,r-1,c); nq=prod(r-1,s); if(jt->jerr){RESETERR z=str(m+1,eov); makewritable(z) CAV(z)[m]=0; AN(z)=AS(z)[0]=m; return z;}
+ SHAPEN(y,r-2,q); SHAPEN(y,r-1,c); nq=jtprod(jt,r-1,s); if(jt->jerr){RESETERR z=jtstr(jt,m+1,eov); makewritable(z) CAV(z)[m]=0; AN(z)=AS(z)[0]=m; return z;}
  // c1=#characters to put out per line, lba=max # lines to put out
  c1=MIN(c,maxlen); lba=(D)lb+la;
  // calculate p=total # lines of spacing needed, as sum of (#k-cells-1) for k>=2

@@ -52,7 +52,7 @@ and continue through various inputs to see the flow
  
 *** jfe repl (read/execute/print/loop)
  s=input()
- call jdo(s)           ---------> jdo() calls ddtokens(sentence)
+ call jdo(s)           ---------> jdo() calls jtddtokens(jt,sentence)
    input()   (optional) <-------- if DD seen, get more lines if needed by calling jt->sminput
                                   jdo() calls immex(inpl(sentence))
                                    ... 
@@ -85,7 +85,7 @@ and continue through various inputs to see the flow
                                        loop
 *** m : 0
 similar to debug suspension except jgets() lines added  to defn.  m : 0 stops reading
-after encountering ) on a line by itself.  If not 0 : 0, call ddtokens() after each line
+after encountering ) on a line by itself.  If not 0 : 0, call jtddtokens(jt,) after each line
 to see if more lines need to be read to finish the DD; is so, call jgets() to get them
 
 *** script load
@@ -93,7 +93,7 @@ linf() is called first to read in all lines.  It sets jt->dcs to indicate that f
 all calls to jgets() return llies from the file without calling jt->sminput().
 jgets() calls advl() to advance through the lines, returns 0 for EOF.  Error is possible.
 
-The lines are executed one by one.  Before each is executed, ddtokens() is called to see if more lines
+The lines are executed one by one.  Before each is executed, jtddtokens(jt,) is called to see if more lines
 are needed to finish a DD.
 
 *** jwd (11!:x)
@@ -155,7 +155,7 @@ A jtinpl(J jt,B b,I n,C*s){C c;I k=0;
   if(n&&COFF==s[n-1])joff(num(0));
   c=jt->bx[9]; if((UC)c>127)DO(n, if(' '!=s[i]&&c!=s[i]){k=i; break;});
  }
- return str(n-k,s+k);
+ return jtstr(jt,n-k,s+k);
 }
 
 // s->beginning of input, j is starting index of search, n is #characters
@@ -250,7 +250,7 @@ I jdo(J jt, C* lp){I e;A x;
  // BUT: don't do it if the call is recursive.  The user might have set the iep before a prompt, and won't expect it to be executed asynchronously
  if(jt->recurstate<RECSTATEPROMPT)while(jt->iepdo&&jt->iep){jt->iepdo=0; immex(jt->iep); if(savcallstack==0)CALLSTACKRESET MODESRESET jt->jerr=0; tpop(old);}
  // Check for DDs in the input sentence.  If there is one, call jgets() to finish it.  Result is enqueue()d sentence.  If recursive, don't allow call to jgets()
- x=ddtokens(x,(((jt->recurstate&RECSTATEPROMPT)<<(2-1)))+1+(AN(jt->locsyms)>1)); if(!jt->jerr)immex(x);  // allow reads from jgets() if not recursive; return enqueue() result
+ x=jtddtokens(jt,x,(((jt->recurstate&RECSTATEPROMPT)<<(2-1)))+1+(AN(jt->locsyms)>1)); if(!jt->jerr)immex(x);  // allow reads from jgets() if not recursive; return enqueue() result
  e=jt->jerr;
  if(savcallstack==0)CALLSTACKRESET MODESRESET jt->jerr=0;
  if(jt->recurstate<RECSTATEPROMPT)while(jt->iepdo&&jt->iep){jt->iepdo=0; immex(jt->iep); if(savcallstack==0)CALLSTACKRESET MODESRESET jt->jerr=0; tpop(old);}
@@ -323,8 +323,8 @@ C* getlocale(J jt){A y=locname(mtv); y=AAV(y)[0]; return CAV(str0(y));}
 // callback result z is a rank-1 literal array 
 // literal array will be cut into rank-1 box array here using  <;._2 
 // and then reshape into rank-2  ((n%2),2)$
-    A x=z; RZ(df1(z,x,cut(ds(CBOX),num(-2))));
-    return reshape(v2(AN(z)>>1,2L),z);
+    A x=z; RZ(df1(z,x,jtcut(jt,ds(CBOX),num(-2))));
+    return jtreshape(jt,jtv2(jt,AN(z)>>1,2L),z);
   } else {return z;}
 }
 
@@ -372,7 +372,7 @@ A _stdcall JGetA(J jt, I n, C* name){A x,z=0;
  if(name==0){if(jt->iomalloc){FREE(jt->iomalloc); jt->malloctotal -= jt->iomalloclen; jt->iomalloc=0; jt->iomalloclen=0;} return 0;}
  jt->jerr=0;
  A *old=jt->tnextpushp;
- if(!(x=symbrdlock(nfs(n,name)))){ jsignal(EVILNAME);  // look up the name, error if invalid
+ if(!(x=symbrdlock(jtnfs(jt,n,name)))){ jsignal(EVILNAME);  // look up the name, error if invalid
  }else if(FUNC&AT(x)){ jsignal(EVDOMAIN);   // verify the value is not adv/verb/conj
  }else{
   // name is OK; get the binary rep
@@ -395,9 +395,9 @@ A _stdcall JGetA(J jt, I n, C* name){A x,z=0;
 /* socket protocol CMDSET */
 I _stdcall JSetA(J jt,I n,C* name,I dlen,C* d){
  jt->jerr=0;
- if(!vnm(n,name)){ jsignal(EVILNAME); return EVILNAME;}
+ if(!jtvnm(jt,n,name)){ jsignal(EVILNAME); return EVILNAME;}
  A *old=jt->tnextpushp;
- symbisdel(nfs(n,name),jtunbin(jt,str(dlen,d)),jt->global);
+ symbisdel(jtnfs(jt,n,name),jtunbin(jt,jtstr(jt,dlen,d)),jt->global);
  tpop(old);
  return jt->jerr;
 }
@@ -580,7 +580,7 @@ int _stdcall JGetM(J jt, C* name, I* jtype, I* jrank, I* jshape, I* jdata)
  A *old=jt->tnextpushp;
  if(strlen(name) >= sizeof(gn)){ jsignal(z=EVILNAME);
  }else if(valid(name, gn)){ jsignal(z=EVILNAME);
- }else if(!(a=symbrdlock(nfs(strlen(gn),gn)))){ jsignal(z=EVDOMAIN);
+ }else if(!(a=symbrdlock(jtnfs(jt,strlen(gn),gn)))){ jsignal(z=EVDOMAIN);
  }else if(FUNC&AT(a)){ jsignal(z=EVDOMAIN);
  }else{
   *jtype = AT(a);
@@ -638,7 +638,7 @@ static int setterm(J jt, C* name, I* jtype, I* jrank, I* jshape, I* jdata)
  a = ga(*jtype, k, *jrank, (I*)*jshape);
  if(!a) return EVWSFULL;
  memcpy(AV(a), (void*)*jdata, n*k);
- jset(gn, a);
+ jtjset(jt,gn, a);
  return jt->jerr;
 }
 

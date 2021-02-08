@@ -31,7 +31,7 @@
  A jtsphwmk(J jt, A w){
   I curr = jt->malloctotal; I hwmk = jt->malloctotalhwmk;
   if(AN(w)){I new; RE(new=i0(w)); jt->malloctotalhwmk=new;}
-  return v2(curr,hwmk);
+  return jtv2(jt,curr,hwmk);
 }
 
  A jtspit(J jt, A w){A z;I k; 
@@ -66,7 +66,7 @@
  RZ(x=ts(mtv));
  n=AN(w); xv=DAV(x);
  if(!n)return x;
- if(!(AT(w)&LIT))RZ(w=cvt(LIT,w));
+ if(!(AT(w)&LIT))RZ(w=jtcvt(jt,LIT,w));
  GATV(z,LIT,n,AR(w),AS(w)); zv=CAV(z); memcpy(zv,CAV(w),n);
  q=0; v=zv; DQ(n, q+='Y'==*v++;); u=2==q?s+2:s;   // if only 2 Y, advance over century
  sprintf(s,FMTI04,(I)xv[0]);             v=zv; DQ(n, if(*v=='Y'){*v=*u++; if(!*u)break;} ++v;);
@@ -113,13 +113,13 @@ __int64 GetMachineCycleCount()
  return scf(n?t/(n*pf):0);
 }
 
- A jttsit1(J jt, A w){return tsit2(num(1),w);}
+ A jttsit1(J jt, A w){return jttsit2(jt,num(1),w);}
 
 
 #define sleepms(i) usleep(i*1000)
 
  A jtdl(J jt, A w){D m,n,*v;UINT ms,s;
- RZ(w=cvt(FL,w));
+ RZ(w=jtcvt(jt,FL,w));
  n=0; v=DAV(w); DQ(AN(w), m=*v++; ASSERT(0<=m,EVDOMAIN); n+=m;);
  s=(UINT)jfloor(n); ms=(UINT)jround(1000*(n-s));
  DQ(s, sleepms(1000); JBREAK0;);
@@ -153,10 +153,10 @@ static A jtpmfree(J jt, A w){A x,y;C*c;I m;PM*v;PM0*u;
  return num(1);
 }    /* free old data area */
 
- A jtpmarea1(J jt, A w){return pmarea2(vec(B01,2L,&zeroZ),w);}  // 6!:10
+ A jtpmarea1(J jt, A w){return jtpmarea2(jt,vec(B01,2L,&zeroZ),w);}  // 6!:10
 
  A jtpmarea2(J jt,A a,A w){A x;B a0,a1,*av;C*v;I an,n=0,s=sizeof(PM),s0=sizeof(PM0),wn;PM0*u;
- RZ(a=cvt(B01,a)); 
+ RZ(a=jtcvt(jt,B01,a)); 
  an=AN(a);
  ASSERT(1>=AR(a),EVRANK);
  ASSERT(2>=an,EVLENGTH);
@@ -209,7 +209,7 @@ void jtpmrecord(J jt,A name,A loc,I lc,int val){A x,y;B b;PM*v;PM0*u;
 // 6!:12
  A jtpmunpack(J jt, A w){A*au,*av,c,t,x,z,*zv;B*b;D*dv;I*iv,k,k1,m,n,p,q,wn,*wv;PM*v,*v0,*vq;PM0*u;
  ASSERT(jt->pma,EVDOMAIN);
- if(!(INT&AT(w)))RZ(w=cvt(INT,w));
+ if(!(INT&AT(w)))RZ(w=jtcvt(jt,INT,w));
  wn=AN(w); wv=AV(w);
  u=(PM0*)AV(jt->pma); p=u->wrapped?u->n-u->i:0; q=u->i; n=p+q;
  GATV0(x,B01,n,1); b=BAV(x); memset(b,wn?C0:C1,n);
@@ -221,12 +221,12 @@ void jtpmrecord(J jt,A name,A loc,I lc,int val){A x,y;B b;PM*v;PM0*u;
  v0=jt->pmv; vq=q+v0;
  GAT0(z,BOX,1+PMCOL,1); zv=AAV(z);
  GATV0(t,BOX,2*m,1); av=AAV(t); au=m+av;
- v=vq; DO(p, if(b[  i]){RZ(*av++=v->name?incorp(sfn(0,v->name)):mtv); RZ(*au++=v->loc?incorp(sfn(0,v->loc)):mtv);} ++v;); 
- v=v0; DO(q, if(b[p+i]){RZ(*av++=v->name?incorp(sfn(0,v->name)):mtv); RZ(*au++=v->loc?incorp(sfn(0,v->loc)):mtv);} ++v;); 
- RZ(x=indexof(t,t));
+ v=vq; DO(p, if(b[  i]){RZ(*av++=v->name?incorp(jtsfn(jt,0,v->name)):mtv); RZ(*au++=v->loc?incorp(jtsfn(jt,0,v->loc)):mtv);} ++v;); 
+ v=v0; DO(q, if(b[p+i]){RZ(*av++=v->name?incorp(jtsfn(jt,0,v->name)):mtv); RZ(*au++=v->loc?incorp(jtsfn(jt,0,v->loc)):mtv);} ++v;); 
+ RZ(x=jtindexof(jt,t,t));
  RZ(c=eq(x,IX(SETIC(x,k1))));
- RZ(zv[6]=incorp(repeat(c,t)));
- RZ(x=indexof(repeat(c,x),x)); iv=AV(x);
+ RZ(zv[6]=incorp(jtrepeat(jt,c,t)));
+ RZ(x=jtindexof(jt,jtrepeat(jt,c,x),x)); iv=AV(x);
  RZ(zv[0]=incorp(vec(INT,m,  iv)));
  RZ(zv[1]=incorp(vec(INT,m,m+iv)));
  GATV0(t,INT,m,1); zv[2]=incorp(t); iv=AV(t); v=vq; DO(p, if(b[i])*iv++=(I)v->val;  ++v;); v=v0; DO(q, if(b[p+i])*iv++=(I)v->val; ++v;);
@@ -260,7 +260,7 @@ void jtpmrecord(J jt,A name,A loc,I lc,int val){A x,y;B b;PM*v;PM0*u;
 
  A jttlims(J jt, A w){D d;
  ASSERT(!AR(w),EVRANK);
- if(!(FL&AT(w)))RZ(w=cvt(FL,w));
+ if(!(FL&AT(w)))RZ(w=jtcvt(jt,FL,w));
  d=DAV(w)[0];
  ASSERT(0<=d,EVDOMAIN);
  ASSERT(FLIMAX>1000*d,EVLIMIT);

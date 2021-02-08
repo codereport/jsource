@@ -5,8 +5,8 @@
 
 #include "j.h"
 
- A jtisempty   (J jt, A w) { if((AT(w)&SPARSE)!=0)return eps(zeroionei(0),shape(jt,w)); return num(AN(w)==0);}  // 0 e. $
- A jtisnotempty(J jt, A w) { if((AT(w)&SPARSE)!=0)return __not(eps(zeroionei(0),shape(jt,w))); return num(AN(w)!=0);}  // *@#@,
+ A jtisempty   (J jt, A w) { if((AT(w)&SPARSE)!=0)return jteps(jt,zeroionei(0),shape(jt,w)); return num(AN(w)==0);}  // 0 e. $
+ A jtisnotempty(J jt, A w) { if((AT(w)&SPARSE)!=0)return __not(jteps(jt,zeroionei(0),shape(jt,w))); return num(AN(w)!=0);}  // *@#@,
  A jtisitems   (J jt, A w) { return num(!AR(w)|!!AS(w)[0]);}   // *@#   *@:#
  A jtnatoms    (J jt, A w) {F1PREFIP; A z; if((AT(w)&SPARSE)!=0)return df1(z,shape(jt,w),slash(ds(CSTAR))); return sc(AN(w));}   // */@$  #@,
 
@@ -37,17 +37,17 @@
  }
  // the rest handles sparse matrix enfile
  RESETRANK;   // clear IRS for calls made here
- RE(m=prod(r,f+AS(w)));  // # atoms in cell
+ RE(m=jtprod(jt,r,f+AS(w)));  // # atoms in cell
  GASPARSE(z,AT(w),1,1+f,AS(w)); AS(z)[f]=m;   // allocate result area, shape=frame+1 more to hold size of cell; fill in shape
  wp=PAV(w); zp=PAV(z);
  RZ(b=bfi(AR(w),SPA(wp,a),1)); 
  if(memchr(b+f,C1,r)){
-  if(memchr(b+f,C0,r)){memset(b+f,C1,r); RZ(w=reaxis(ifb(AR(w),b),w)); wp=PAV(w); x=SPA(wp,x);}
+  if(memchr(b+f,C0,r)){memset(b+f,C1,r); RZ(w=jtreaxis(jt,jtifb(jt,AR(w),b),w)); wp=PAV(w); x=SPA(wp,x);}
   else RZ(x=ca(SPA(wp,x)));
-  a=ifb(1+f,b); makewritable(a)   // avoid readonly block
+  a=jtifb(jt,1+f,b); makewritable(a)   // avoid readonly block
   GATV0(c,INT,r,1L); v=r+AV(c); j=AR(w); m=1; DQ(r, *--v=m; m*=AS(w)[--j];);
   y0=SPA(wp,i); v=AS(y0); m=v[0]; I n=v[1];
-  RZ(q=pdt(dropr(n-r,y0),c));
+  RZ(q=jtpdt(jt,jtdropr(jt,n-r,y0),c));
   GATV0(y,INT,m*(1+n-r),2); v=AS(y); v[0]=m; v[1]=1+n-r;
   yv=AV(y); u=AV(y0); v=AV(q); j=n-r;
   DQ(m, ICPY(yv,u,j); yv[j]=*v++; yv+=1+j; u+=n;);
@@ -78,7 +78,7 @@ static A jtlr2(J jt,RANK2T ranks,A a,A w){I acr,af,ar,wcr,wf,wr;
  // is the one being discarded (eg (i. 10 10) ["0 i. 10), the replication doesn't matter, and we
  // simply keep the surviving argument intact.
  if(wf>=af){return w;}  // no replication - quick out
- RESETRANK; return reitem(vec(INT,af-wf,AS(a)),lamin1(w));  // could use virtual block, but this case is so rare...
+ RESETRANK; return jtreitem(jt,vec(INT,af-wf,AS(a)),lamin1(w));  // could use virtual block, but this case is so rare...
 } 
 
  A jtleft2 (J jt,A a,A w){F2PREFIP;RANK2T jtr=jt->ranks; if(jtr==(RANK2T)~0)RETARG(a); return lr2((jtr<<RMAXX)|(jtr>>RMAXX),w,a);}  // swap a & w, and their ranks
@@ -90,10 +90,10 @@ static A jtlr2(J jt,RANK2T ranks,A a,A w){I acr,af,ar,wcr,wf,wr;
  A jtiota(J jt, A w){A z;I m,n,*v;
  if (!w) return 0;
  F1RANK(1,jtiota,UNUSED_VALUE);
- if(AT(w)&XNUM+RAT)return cvt(XNUM,iota(vi(w)));
+ if(AT(w)&XNUM+RAT)return jtcvt(jt,XNUM,iota(vi(w)));
  RZ(w=vi(w)); n=AN(w); v=AV(w);
  if(1==n){m=*v; return 0>m?apv(-m,-m-1,-1L):IX(m);}
- A mg; RZ(mg=mag(w)); PRODX(m,n,IAV(mg),1); RZ(z=IX(m)); RZ(z=reshape(mag(w),z));
+ A mg; RZ(mg=mag(w)); PRODX(m,n,IAV(mg),1); RZ(z=IX(m)); RZ(z=jtreshape(jt,mag(w),z));
  DO(n, A zz; if(0>v[i])z=IRS1(z,0L,n-i,jtreverse,zz););
  return z;
 }
@@ -101,13 +101,13 @@ static A jtlr2(J jt,RANK2T ranks,A a,A w){I acr,af,ar,wcr,wf,wr;
 // i: w
  A jtjico1(J jt, A w){A y,z;B b;D d,*v;I c,m,n; 
  F1RANK(0,jtjico1,UNUSED_VALUE);
- RZ(y=cvt(FL,rect(w))); v=DAV(y); d=*v;  // convert to complex, d=real part of value
- RE(m=v[1]?i0(cvt(INT,tail(y))):i0(tymes(mag(w),num(2))));  // m=#steps: imaginary part if nonzero; otherwise 2*|w
+ RZ(y=jtcvt(jt,FL,rect(w))); v=DAV(y); d=*v;  // convert to complex, d=real part of value
+ RE(m=v[1]?i0(jtcvt(jt,INT,tail(y))):i0(tymes(mag(w),num(2))));  // m=#steps: imaginary part if nonzero; otherwise 2*|w
  ASSERT(0<m||!m&&0==d,EVDOMAIN);  // error if imag part was negative, or 0 unless d is also 0
  n=(I)jround(d); b=FFIEQ(d,n); c=(2*ABS(n))/(m?m:1);   // try as integer
  if(b&&m*c==2*ABS(n))z=apv(1+m,-n,0>d?-c:c);  // if integer works, use it
  else                z=plusW(scf(0>d?d:-d),tymesW(scf(2*ABS(d)/m),apv(1+m,0>d?m:0L,0>d?-1L:1L)));  // otherwise FL
- if(AT(w)&XNUM+RAT)z=cvt(AT(w)&XNUM||equ(w,floor1(w))?XNUM:RAT,z);  // cvrt to XNUM as needed
+ if(AT(w)&XNUM+RAT)z=jtcvt(jt,AT(w)&XNUM||equ(w,floor1(w))?XNUM:RAT,z);  // cvrt to XNUM as needed
  return z;
 }
 
@@ -125,14 +125,14 @@ A jtdropr(J jt,I n,A w){ A a,z; RZ(a=sc(n)); return IRS2(a,w,0, RMAX,1L,jtdrop,z
  SETIC(w,n);
  if(SB01&AT(w)){
   p=PAV(w); a=SPA(p,a); e=SPA(p,e); 
-  return BAV(e)[0]||equ(mtv,a) ? repeat(w,IX(n)) : repeat(SPA(p,x),ravel(SPA(p,i)));
+  return BAV(e)[0]||equ(mtv,a) ? jtrepeat(jt,w,IX(n)) : jtrepeat(jt,SPA(p,x),ravel(SPA(p,i)));
  }
- return B01&AT(w) ? ifb(n,BAV(w)) : repeat(w,IX(n));
+ return B01&AT(w) ? jtifb(jt,n,BAV(w)) : jtrepeat(jt,w,IX(n));
 }
 
 A jtcharmap(J jt,A w,A x,A y){A z;B bb[256];I k,n,wn;UC c,*u,*v,zz[256];
  RZ(w&&x&&y);
- if(!(LIT&AT(w)))return from(indexof(x,w),y);
+ if(!(LIT&AT(w)))return jtfrom(jt,jtindexof(jt,x,w),y);
  wn=AN(w); n=MIN(AN(x),AN(y)); u=n+UAV(x); v=n+UAV(y);
  k=256; memset(bb,C0,256); if(n<AN(y))memset(zz,*(n+UAV(y)),256);  // bb is array telling which input chars are in x; zz is result char to map for given input byte.  If not exact mapping, init z to the 'not found' char
  DQ(n, c=*--u; zz[c]=*--v; k-=(I)bb[c]^1; bb[c]=1;);   // mark characters in x, and count down to see if we hit all 256.  Note earliest mapped character for each

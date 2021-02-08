@@ -151,7 +151,7 @@ SUFFIXPFX(bw1111sfxI, UI,UI, BW1111, bw1111II,return EVOK;)
 
 static A jtsuffix(J jt,    A w,A self){DECLF;I r;
  r=(RANKT)jt->ranks; RESETRANK; if(r<AR(w))return rank1ex(w,self,r,jtsuffix);
- return eachl(IX(SETIC(w,r)),w,atop(fs,ds(CDROP)));
+ return eachl(IX(SETIC(w,r)),w,jtatop(jt,fs,ds(CDROP)));
 }    /* f\."r w for general f */
 
 static A jtgsuffix(J jt,    A w,A self){A h,*hv,z,*zv;I m,n,r;
@@ -159,7 +159,7 @@ static A jtgsuffix(J jt,    A w,A self){A h,*hv,z,*zv;I m,n,r;
  SETIC(w,n); 
  h=VAV(self)->fgh[2]; hv=AAV(h); m=AN(h);
  GATV0(z,BOX,n,1); zv=AAV(z); I imod=0;
- DO(n, imod=(imod==m)?0:imod; RZ(zv[i]=df1(h,drop(sc(i),w),hv[imod])); ++imod;);
+ DO(n, imod=(imod==m)?0:imod; RZ(zv[i]=df1(h,jtdrop(jt,sc(i),w),hv[imod])); ++imod;);
  return ope(z);
 }    /* g\."r w for gerund g */
 
@@ -254,12 +254,12 @@ A jtscansp(J jt,A w,A self,AF sf){A e,ee,x,z;B*b;I f,m,j,r,t,wr;P*wp,*zp;
   return IRS1(x,self,r,sf,z);
  }else{
   RZ(b=bfi(wr,SPA(wp,a),1));
-  if(r&&b[f]){b[f]=0; RZ(w=reaxis(ifb(wr,b),w));}
+  if(r&&b[f]){b[f]=0; RZ(w=jtreaxis(jt,jtifb(jt,wr,b),w));}
   j=f; m=0; DQ(wr-f, m+=!b[j++];);
  }
  wp=PAV(w); e=SPA(wp,e); x=SPA(wp,x);
  RZ(x=IRS1(x,self,m,sf,z));
- t=maxtype(AT(e),AT(x)); RZ(e=cvt(t,e)); if(TYPESNE(t,AT(x)))RZ(x=cvt(t,x));
+ t=maxtype(AT(e),AT(x)); RZ(e=jtcvt(jt,t,e)); if(TYPESNE(t,AT(x)))RZ(x=jtcvt(jt,t,x));
  GASPARSE(z,STYPE(t),1,wr+!m,AS(w)); if(!m)*(wr+AS(z))=1;
  zp=PAV(z); 
  SPB(zp,e,e); 
@@ -277,37 +277,37 @@ static A jtsscan(J jt,    A w,A self){A y,z;I d,f,m,n,r,t,wn,wr,*ws,wt;
  wn=AN(w); wr=AR(w); r=(RANKT)jt->ranks; r=wr<r?wr:r; f=wr-r; ws=AS(w); RESETRANK;
  PROD(m,f,ws); PROD1(d,r-1,f+ws+1); I *nn=&ws[f]; nn=r?nn:&I1mem; n=*nn;   // will not be used if WN==0, so PROD ok.  n is # items along the selected rank
  y=FAV(self)->fgh[0]; // y is f/
- if(((n-2)|(wn-1))<0){if(FAV(FAV(y)->fgh[0])->flag&VISATOMIC2){return r?RETARG(w):reshape(apip(shape(jt,w),zeroionei(1)),w);}else return IRS1(w,self,r,jtsuffix,z);}  // if empty arg, or just 1 cell in selected axis, convert to f/\ which handles the short arg
+ if(((n-2)|(wn-1))<0){if(FAV(FAV(y)->fgh[0])->flag&VISATOMIC2){return r?RETARG(w):jtreshape(jt,apip(shape(jt,w),zeroionei(1)),w);}else return IRS1(w,self,r,jtsuffix,z);}  // if empty arg, or just 1 cell in selected axis, convert to f/\ which handles the short arg
 
    // note that the above line always takes the r==0 case
  VARPS adocv; varps(adocv,self,wt,2);  // analyze f - get suffix routine
  if(!adocv.f)return IRSIP1(w,self,r,jtssg,z);   // if not supported atomically, go do general suffix
  // The rest handles primitives with fast suffix scans
- if((t=atype(adocv.cv))&&TYPESNE(t,wt))RZ(w=cvt(t,w));
+ if((t=atype(adocv.cv))&&TYPESNE(t,wt))RZ(w=jtcvt(jt,t,w));
  if(ASGNINPLACESGN(SGNIF((I)jtinplace,JTINPLACEWX)&SGNIF(adocv.cv,VIPOKWX),w))z=w; else GA(z,rtype(adocv.cv),wn,wr,ws);
  I rc=((AHDRSFN*)adocv.f)(d,n,m,AV(w),AV(z),jt);
- if(rc&255){jsignal(rc); return jt->jerr>=EWOV?IRS1(w,self,r,jtsscan,z):0;} else return adocv.cv&VRI+VRD?cvz(adocv.cv,z):z;
+ if(rc&255){jsignal(rc); return jt->jerr>=EWOV?IRS1(w,self,r,jtsscan,z):0;} else return adocv.cv&VRI+VRD?jtcvz(jt,adocv.cv,z):z;
 }    /* f/\."r w main control */
 
 
 static A jtomask(J jt,A a,A w){A c,r,x,y;I m,n,p;
  RE(m=i0(a)); p=ABS(m); SETIC(w,n);
  r=sc(0>m?(n+p-1)/p:MAX(0,1+n-m)); c=tally(jt, w);
- x=reshape(sc(p),  num(0));
- y=reshape(0>m?c:r,num(1) );
+ x=jtreshape(jt,sc(p),  num(0));
+ y=jtreshape(jt,0>m?c:r,num(1) );
  return reshapeW(over(r,c),over(x,y));
 }
 
 static A jtgoutfix(J jt,A a,A w,A self){A h,*hv,x,z,*zv;I m,n;
- RZ(x=omask(a,w));
+ RZ(x=jtomask(jt,a,w));
  SETIC(x,n);
  h=VAV(self)->fgh[2]; hv=AAV(h); m=AN(h);
  GATV0(z,BOX,n,1); zv=AAV(z); I imod=0;
- DO(n, imod=(imod==m)?0:imod; RZ(zv[i]=df1(h,repeat(from(sc(i),x),w),hv[imod])); ++imod;);
+ DO(n, imod=(imod==m)?0:imod; RZ(zv[i]=df1(h,jtrepeat(jt,jtfrom(jt,sc(i),x),w),hv[imod])); ++imod;);
  return ope(z);
 }
 
-static AS2(jtoutfix, eachl(omask(a,w),w,atop(fs,ds(CPOUND))),0117)
+static AS2(jtoutfix, eachl(jtomask(jt,a,w),w,jtatop(jt,fs,ds(CPOUND))),0117)
 
 static A jtofxinv(J jt,A a,A w,A self){A f,fs,z;C c;I t;V*v;
  F2RANKW(0,RMAX,jtofxinv,self);
@@ -326,8 +326,8 @@ static A jtofxassoc(J jt,A a,A w,A self){A f,i,j,p,s,x,z;C id,*zv;I c,d,k,kc,m,r
  else     {d=(m-1)/c; RZ(i=apv(d,c-1,c )); RZ(j=apv(d,c,c ));}
  // d is (number of result cells)-1; i is indexes of last item of the excluded infix for cells AFTER the first
  // j is indexes of first item AFTER the excluded infix for cells BEFORE the last
- RZ(p=from(i,df1(z,w,bslash(f)))); // p is i { u\ w; that is, the totals of the prefixes after the first
- RZ(s=from(j,df1(z,w,bsdot(f))));  // s is j { u\. w; totals of suffixes except the last
+ RZ(p=jtfrom(jt,i,df1(z,w,bslash(f)))); // p is i { u\ w; that is, the totals of the prefixes after the first
+ RZ(s=jtfrom(jt,j,df1(z,w,bsdot(f))));  // s is j { u\. w; totals of suffixes except the last
  // We need to make sure that p, s, and (p f s) all have the same type.  This is problematic, since we don't actually see
  // the type of (p f s) which is encoded in cv below.  But since this case is limited to atomic associative verbs, we
  // know that if p and s have the same type, p f s will also, except that it might overflow, which we will detect after we
@@ -346,7 +346,7 @@ static A jtofxassoc(J jt,A a,A w,A self){A f,i,j,p,s,x,z;C id,*zv;I c,d,k,kc,m,r
   // If there was overflow on the ado, we have to redo the operation as a float.
   // We also have to redo if the types of p and s were different (for example, if one overflowed to float and the other didn't)
  }
- if((rc&255)>=EWOV){ return ofxassoc(a,cvt(FL,w),self);}
+ if((rc&255)>=EWOV){ return ofxassoc(a,jtcvt(jt,FL,w),self);}
  if(rc)jsignal(rc);  // if there was an error, signal it
  return z;
 }    /* a f/\. w where f is an atomic associative fn */
@@ -354,7 +354,7 @@ static A jtofxassoc(J jt,A a,A w,A self){A f,i,j,p,s,x,z;C id,*zv;I c,d,k,kc,m,r
 static A jtiota1rev(J jt,    A w,A self){I j; SETIC(w,j); return apv(j,j,-1L);}
 
  A jtbsdot(J jt, A w){A f;AF f1=jtsuffix,f2=jtoutfix;I flag=FAV(ds(CBSDOT))->flag;C id;V*v;  // init flag is IRS1
- if(NOUN&AT(w))return fdef(0,CBSLASH,VERB, jtgsuffix,jtgoutfix, w,0L,fxeachv(1L,w), VGERL|VAV(ds(CBSLASH))->flag, RMAX,0L,RMAX);
+ if(NOUN&AT(w))return fdef(0,CBSLASH,VERB, jtgsuffix,jtgoutfix, w,0L,jtfxeachv(jt,1L,w), VGERL|VAV(ds(CBSLASH))->flag, RMAX,0L,RMAX);
  v=FAV(w);  // verb info for w
  switch(v->id){
   case CPOUND: f1=jtiota1rev; break;

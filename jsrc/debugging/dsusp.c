@@ -54,7 +54,7 @@ void jtdebz(J jt){jt->sitop=jt->sitop->dclnk;}
   RZ(zv[3]=d->dctype==DCCALL?sc(lnumsi(d)):mtv);
   switch(d->dctype){
    case DCPARSE:  RZ(zv[4]=unparse(d->dcy)); break;
-   case DCCALL:   RZ(zv[4]=sfn(0,d->dca));   break;
+   case DCCALL:   RZ(zv[4]=jtsfn(jt,0,d->dca));   break;
    case DCSCRIPT: zv[4]=d->dcy;              break;
    case DCJUNK:   zv[4]=mtv;                 break; 
   }
@@ -179,8 +179,8 @@ A jtpee(J jt,A *queue,CW*ci,I err,I lk,DC c){A z=0;
 
 A jtparsex(J jt,A* queue,I m,CW*ci,DC c){A z;B s;
  movesentencetosi(jt,queue,m,0);  // install sentence-to-be-executed for stop purposes
- if(s=dbstop(c,ci->source)){z=0; jsignal(EVSTOP);}
- else                      {z=parsea(queue,m);     }
+ if(s=jtdbstop(jt,c,ci->source)){z=0; jsignal(EVSTOP);}
+ else                      {z=jtparsea(jt,queue,m);     }
  // If we hit a stop, or if we hit an error outside of try./catch., enter debug mode.  But if debug mode is off now, we must have just
  // executed 13!:0]0, and we should continue on outside of debug mode.  Error processing filled the current si line with the info from the parse
  if(!z&&jt->uflags.us.cx.cx_c.db){DC t=jt->sitop->dclnk; t->dcj=jt->sitop->dcj=jt->jerr; z=debug(); t->dcj=0;} //  d is PARSE type; set d->dcj=err#; d->dcn must remain # tokens
@@ -191,13 +191,13 @@ A jtdbunquote(J jt,A a,A w,A self,L *stabent){A t,z;B b=0,s;DC d;V*sv;
  sv=FAV(self); t=sv->fgh[0]; 
  RZ(d=deba(DCCALL,a,w,self)); d->dcn=(I)stabent;
  if(CCOLON==sv->id&&(sv->flag&VXOP||t&&NOUN&AT(t))){  // : and executable body: either OP (adv/conj now with noun operands) or m : n
-  ras(self); z=a?dfs2(a,w,self):dfs1(w,self); fa(self);
+  ras(self); z=a?dfs2(a,w,self):jtdfs1(jt,w,self); fa(self);
  }else{                              /* tacit    */
   d->dcix=0;  // set a pseudo-line-number for display purposes for the tacit 
   do{
    d->dcnewlineno=0;  // turn off 'reexec requested' flag
-   if(s=dbstop(d,0L)){z=0; jsignal(EVSTOP);}  // if this line is a stop
-   else              {ras(self); z=a?dfs2(a,w,self):dfs1(w,self); fa(self);}
+   if(s=jtdbstop(jt,d,0L)){z=0; jsignal(EVSTOP);}  // if this line is a stop
+   else              {ras(self); z=a?dfs2(a,w,self):jtdfs1(jt,w,self); fa(self);}
    // If we hit a stop, or if we hit an error outside of try./catch., enter debug mode.  But if debug mode is off now, we must have just
    // executed 13!:8]0, and we should continue on outside of debug mode
    if(!z&&jt->uflags.us.cx.cx_c.db){d->dcj=jt->jerr; movecurrtoktosi(jt); z=debug(); if(self!=jt->sitop->dcf)self=jt->sitop->dcf;}
@@ -206,7 +206,7 @@ A jtdbunquote(J jt,A a,A w,A self,L *stabent){A t,z;B b=0,s;DC d;V*sv;
    if(b=jt->dbalpha||jt->dbomega){a=jt->dbalpha; w=jt->dbomega; jt->dbalpha=jt->dbomega=0;}
   }while(d->dcnewlineno&&d->dcix!=-1);  // if suspension tries to reexecute a line other than -1 (which means 'exit'), reexecute the tacit definition
  }
- if(d->dcss)ssnext(d,d->dcss);
+ if(d->dcss)jtssnext(jt,d,d->dcss);
  if(jt->dbss==SSSTEPINTOs)jt->dbss=0;
  debz();
  return z;
@@ -257,8 +257,8 @@ static A jtdbrr(J jt,A a,A w){DC d;
  return mtm;
 }
 
- A jtdbrr1 (J jt, A w){return dbrr(0L,w);}   /* 13!:9   re-run with arg(s) */
- A jtdbrr2 (J jt,A a,A w){return dbrr(a, w);}
+ A jtdbrr1 (J jt, A w){return jtdbrr(jt,0L,w);}   /* 13!:9   re-run with arg(s) */
+ A jtdbrr2 (J jt,A a,A w){return jtdbrr(jt,a, w);}
 
  A jtdbtrapq(J jt, A w){ASSERTMTV(w); return jt->dbtrap?jt->dbtrap:mtv;}
      /* 13!:14 query trap */

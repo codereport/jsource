@@ -228,7 +228,7 @@ static B jtth2ctrl(J jt,A a,A*ep,A*mp,A*dp,A*sp,I*zkp){A da,ea,ma,s;B b=1,*ev,r,
  // zk holds the total of the field sizes
  // r='non-complex a', init length of conversion area to 500 bytes, convert a to int if it's not complex
  r=!(CMPX&AT(a)); jt->th2bufn=500;
- if(r)RZ(a=cvt(INT,a));  // this detects invalid type for a
+ if(r)RZ(a=jtcvt(jt,INT,a));  // this detects invalid type for a
  an=AN(a); au=ZAV(a); av=AV(a);  // an=#atoms of a, au->a data (if complex), av->a data (if real)
  // Allocate output arrays, set return value, set ?v->first value of output area
  GATV0(ea,B01,an,   1); *ep=ea; ev=BAV(ea);  // exponential flag, Boolean list
@@ -264,7 +264,7 @@ static B jtth2ctrl(J jt,A a,A*ep,A*mp,A*dp,A*sp,I*zkp){A da,ea,ma,s;B b=1,*ev,r,
  F2RANK(1,RMAX,jtthorn2,UNUSED_VALUE);  // apply rank 1 _
  // From here on the a arg is rank 0 or 1
  an=AN(a); t=AT(w);  // an=#atoms of a, t=type of w
- if(t&BOX)return th2box(a,w);  // If boxed w, go handle as special case
+ if(t&BOX)return jtth2box(jt,a,w);  // If boxed w, go handle as special case
  ASSERT(t&NUMERIC&&!(t&SPARSE)&&!(AT(a)&SPARSE),EVDOMAIN);  // w must be numeric and dense; a must be dense
  // r=rank of w; ws->shape of w; c=#atoms in 1-cell of w; n = #1-cells of w
  r=AR(w); ws=AS(w); SHAPEN(w,r-1,c);  PRODX(n,r-1,ws,1);
@@ -294,7 +294,7 @@ static B jtth2ctrl(J jt,A a,A*ep,A*mp,A*dp,A*sp,I*zkp){A da,ea,ma,s;B b=1,*ev,r,
   if(2<r||1==n&&2!=r){
    if(!r)r=1;   // change atomic r to a list
    RZ(h=vec(INT,r,ws)); AV(h)[r-1]=AS(z)[1];  // Create a vector out of the shape of w; replace length of 1-cell with length of a row of result 
-   RZ(z=reshape(h,z));   // reshape the result table to that shape
+   RZ(z=jtreshape(jt,h,z));   // reshape the result table to that shape
  }}
  EPILOG(z);
 }

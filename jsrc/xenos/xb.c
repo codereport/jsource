@@ -251,7 +251,7 @@ static A jtunbinr(J jt,B b,B d,B pre601,I m,A w){A y,z;C*u=(C*)w,*v;I e,j,kk,n,p
  ASSERT(j==n,EVLENGTH);
  if(t&BOX+XNUM+RAT+SPARSE){GATV0(y,INT,e,1); vv=AV(y); RZ(mvw((C*)vv,v,e,BU,b,1,d));}
  if(t&BOX+XNUM+RAT){A*zv=AAV(z);I i,k=0,*iv;
-  RZ(y=indexof(y,y)); iv=AV(y);
+  RZ(y=jtindexof(jt,y,y)); iv=AV(y);
   for(i=0;i<e;++i){
    j=vv[i]; 
    ASSERT(BETWEENO(j,0,m),EVINDEX);
@@ -314,7 +314,7 @@ static A jtunbinr(J jt,B b,B d,B pre601,I m,A w){A y,z;C*u=(C*)w,*v;I e,j,kk,n,p
  ASSERT(ABS(j)<=4,EVDOMAIN);
 // long way p=4==j||-4==j?4:3==j||-3==j?8:2==j||-2==j?4:2;
  p=ABS(j); p+=(I )(p==0)-((p&4)>>1);   // p becomes (|j){1 1 2 3 2
- if(0<j){m=n<<p; zt=LIT; if(!(INT&AT(w)))RZ(w=cvt(INT,w));}
+ if(0<j){m=n<<p; zt=LIT; if(!(INT&AT(w)))RZ(w=jtcvt(jt,INT,w));}
  else   {m=n>>p; zt=INT; ASSERT(!n||LIT&AT(w),EVDOMAIN); ASSERT(!(n&((((I)1)<<p)-1)),EVLENGTH);} 
  GA(z,zt,m,1,0); v=AV(z); x=AV(w); 
  switch(j){
@@ -335,7 +335,7 @@ static A jtunbinr(J jt,B b,B d,B pre601,I m,A w){A y,z;C*u=(C*)w,*v;I e,j,kk,n,p
  n=AN(w);
  RE(j=i0(a));
  p=2==j||-2==j?LGSZD:2;
- if(0<j){m=n<<p; zt=LIT; if(!(FL&AT(w)))RZ(w=cvt(FL,w));}
+ if(0<j){m=n<<p; zt=LIT; if(!(FL&AT(w)))RZ(w=jtcvt(jt,FL,w));}
  else   {m=n>>p; zt=FL; ASSERT(!n||LIT&AT(w),EVDOMAIN); ASSERT(!(n&((((I)1)<<p)-1)),EVLENGTH);} 
  GA(z,zt,m,1,0); v=DAV(z); x=DAV(w);
  switch(j){
@@ -368,7 +368,7 @@ static B jtisnanq(J jt,A w){
 
 
  A jtbit1(J jt, A w){A z;B*wv;BT*zv;I c,i,j,n,p,q,r,*s;UI x,y;
- if(!(B01&AT(w)))RZ(w=cvt(B01,w));
+ if(!(B01&AT(w)))RZ(w=jtcvt(jt,B01,w));
  n=AN(w); r=AR(w); wv=BAV(w); s=AS(w);
  GA(z,BIT,n,AR(w),AS(w)); zv=(BT*)AV(z);
  if(!r)*zv=*wv?'\200':0;

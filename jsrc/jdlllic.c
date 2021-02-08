@@ -68,7 +68,7 @@ int swapint(int n){C* p,c;
 
  A jtlock2(J jt,A a,A w){ASSERT(0,EVDOMAIN);}
 
- A jtunlock1(J jt, A w){return unlock2(mtv,w);}
+ A jtunlock1(J jt, A w){return jtunlock2(jt,mtv,w);}
 
  A jtunlock2(J jt,A a,A w){int i,j,len,tlen;UC c1,c2,k1[SK],*lp,*sp,*d;
  d=UAV(w);
