@@ -754,11 +754,7 @@
 // We have used rifvs liberally through the code to guarantee that all functions can deal with virtual blocks returned.
 // In some cases, the call is to an internal routine that we know will not return a virtual block normally, and is in an
 // important performance path.  We use rifvsdebug for these places.  rifvs is called only during debugging.  Review them from time to time.
-#if FORCEVIRTUALINPUTS==2
-#define rifvsdebug(x)               rifvs(x)
-#else
 #define rifvsdebug(x)               (x)
-#endif
 #define reaxis(x,y)                 jtreaxis(jt,(x),(y))
 #define recip(x)                    jtrecip(jt,(x))   
 #define rect(x)                     jtrect(jt,(x))

@@ -186,8 +186,6 @@
 // Debugging options
 
 #define AUDITEXECRESULTS 0  // When set, we go through all execution results to verify recursive and virtual bits are OK
-#define FORCEVIRTUALINPUTS 0  // When 1 set, we make all non-inplaceable noun inputs to executions VIRTUAL.  Tests should still run
-                           // When 2 set, make all outputs from return  virtual.  Tests for inplacing will fail; that's OK if nothing crashes
 
 #define ALTBYTES 0x00ff00ff00ff00ffLL
 // t has totals per byte-lane, result combines them into single total.  t must be an lvalue

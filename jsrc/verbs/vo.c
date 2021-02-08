@@ -72,20 +72,6 @@ I levelle(A w,I l){
 // x ; y, with options for x (,<) y   x (;<) y   x ,&< y
  A jtlink(J jt,A a,A w,A self){
 F2PREFIP;
-#if FORCEVIRTUALINPUTS
- // to allow mapped-boxed tests to run, we detect when the virtual block being realized is at offset 0 from its
- // base block, and has the same atomsct/rank/shape.  Then we just return the base block, since the virtual block
- // is a complete alias for it.  This gets the flags right for mapped boxes, and doesn't require recopying a lot of memory for others
- // We also need this for DLL code that inplaces.
- // It's OK to revert to the original block, since we are mainly trying to see whether a virtual block is incorporated
- // We do this only for NJA base blocks, because otherwise would defeat the purpose of virtualizing everything
- if(AFLAG(w)&AFVIRTUAL && CAV(w)==CAV(ABACK(w)) && AN(w)==AN(ABACK(w)) && AR(w)==AR(ABACK(w))){
-  I i; for(i=AR(w)-1; i>=0&&AS(w)[i]==AS(ABACK(w))[i];--i); if(i<0)w = ABACK(w);
- }
- if(AFLAG(a)&AFVIRTUAL && CAV(a)==CAV(ABACK(a)) && AN(a)==AN(ABACK(a)) && AR(a)==AR(ABACK(a))){
-  I i; for(i=AR(a)-1; i>=0&&AS(a)[i]==AS(ABACK(a))[i];--i); if(i<0)a = ABACK(a);
- }
-#endif
  ASSERT(!((AT(a)|AT(w))&SPARSE),EVNONCE);   // can't box sparse values
  I optype=FAV(self)->localuse.lclr[0];  // flag: sign set if (,<) or ,&< or (;<) which will always box w; bit 0 set if (,<)
  realizeifvirtual(w); realizeifvirtual(a);  // it's going into an array, so realize it
