@@ -51,8 +51,7 @@ def combine_log_entries():
 
     time.sleep(.25)  # race condition between close log and open log.
     with open(LOG_FILE_NAME, 'w') as log:
-        for key, paths in result.items():
-            log.write('|' + ' '.join(['`' + path + '`' for path in paths]) + '|' + key)
+        log.write('\n'.join(['|' + ' '.join(['`' + path + '`' for path in paths]) + '|' + key for key, paths in result.items()]))
     pass
 
 
