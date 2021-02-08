@@ -16,17 +16,9 @@
 #define __GNUC_PATCHLEVEL__ 1
 #endif
 
-#ifndef SYS // include js.h only once - dtoa.c
-#include "js.h"
-#endif
-
-// If you are porting to a new compiler or architecture, see the bottom of this file
-// for instructions on defining the CTTZ macros
-
 #include <memory.h>
 #include <sys/types.h>
 
-#if 1
 #include <stdint.h>
 #include <float.h>
 #include <limits.h>
@@ -35,9 +27,6 @@
 #include <stdlib.h>
 #undef link
 #undef qdiv
-#else
-#define const /*nothing*/   /* blame rx.h */
-#endif
 
 #include <errno.h>
 #include <stdio.h>
@@ -128,7 +117,6 @@
 // Now we are trying to watch the C stack directly
 #define CSTACKSIZE      (12000000)  // size we allocate in the calling function
 #define CSTACKRESERVE   100000  // amount we allow for slop before we sample the stackpointer, and after the last check
-#define USECSTACK       1   // 0 to go back to counting J recursions    
 
 // start and length for the stored vector of ascending integers
 #define IOTAVECBEGIN (-20)
@@ -194,12 +182,6 @@
 #define L2CACHESIZE (((I)1)<<18)
 
 #define TOOMANYATOMS 0xFFFFFFFFFFFFLL  // more atoms than this is considered overflow (64-bit).  i.-family can't handle more than 2G cells in array.
-
-// Debugging options
-
-#define AUDITEXECRESULTS 0  // When set, we go through all execution results to verify recursive and virtual bits are OK
-#define FORCEVIRTUALINPUTS 0  // When 1 set, we make all non-inplaceable noun inputs to executions VIRTUAL.  Tests should still run
-                           // When 2 set, make all outputs from return  virtual.  Tests for inplacing will fail; that's OK if nothing crashes
 
 #define ALTBYTES 0x00ff00ff00ff00ffLL
 // t has totals per byte-lane, result combines them into single total.  t must be an lvalue
@@ -272,14 +254,9 @@
 // define fs block used in every/every2.  It is the self for the f in f&.>, and contains only function pointers, an optional param in AK, and the flag field
 #define EVERYFS(name,f0,f1,akparm,flg) PRIM name={{akparm,0,0,0,0,0,0},{.primvb={.valencefns={f0,f1},.flag=flg}}};
 
-#if USECSTACK
 #define FDEPDEC(d)
 #define FDEPINC(d)
 #define STACKCHKOFL {D stackpos; ASSERT((uintptr_t)&stackpos>=jt->cstackmin,EVSTACK);}
-#else  // old style counting J recursion levels
-#define FDEPDEC(d)      jt->fdepi-=(I4)(d)  // can be used in conditional expressions
-#define FDEPINC(d)      {ASSERT(jt->fdepn>=jt->fdepi+(I4)(d),EVSTACK); jt->fdepi+=(I4)(d);}
-#endif
 #define FCONS(x)        fdef(0,CFCONS,VERB,jtnum1,jtnum2,0L,0L,(x),VFLAGNONE, RMAX,RMAX,RMAX)
 // fuzzy-equal is used for tolerant comparisons not related to jt->cct; for example testing whether x in x { y is an integer
 #define FUZZ            0.000000000000056843418860808015   // tolerance
@@ -640,9 +617,6 @@ if(_i<3){_zzt+=_i; z=(I)&oneone; _zzt=_i>=1?_zzt:(I*)z; z=_i>1?(I)_zzt:z; z=((I*
 // you should use the compiler intrinsic to create this instruction, and define the CTTZ and CTTZZ
 // macros to use the instruction inline.  It is used enough in the J engine to make a difference.
 
-// If you set AUDITCOMPILER to 1, i.c will include code to test CTTZ (and signed shift) on startup and crash if it
-// does not perform properly, as a debugging aid.
-
 // If CTTZ is not defined, the default routine defined in u.c will be used.  You can look there
 // for the complete spec for CTTZ and CTTZZ.
 
@@ -692,10 +666,6 @@ extern I CTTZZ(I);
 extern I CTLZI_(UI,UI4*);
 #define CTLZI(in,out) CTLZI_(in,&(out))
 #endif
-
-// Set these switches for testing
-#define AUDITCOMPILER 0  // Verify compiler features CTTZ, signed >>
-
 
 // JPFX("here we are\n")
 // JPF("size is %i\n", v)

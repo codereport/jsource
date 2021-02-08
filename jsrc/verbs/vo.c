@@ -72,21 +72,6 @@ I levelle(A w,I l){
 // x ; y, with options for x (,<) y   x (;<) y   x ,&< y
  A jtlink(J jt,A a,A w,A self){
 F2PREFIP;
-#if FORCEVIRTUALINPUTS
- // to allow mapped-boxed tests to run, we detect when the virtual block being realized is at offset 0 from its
- // base block, and has the same atomsct/rank/shape.  Then we just return the base block, since the virtual block
- // is a complete alias for it.  This gets the flags right for mapped boxes, and doesn't require recopying a lot of memory for others
- // We also need this for DLL code that inplaces.
- // It's OK to revert to the original block, since we are mainly trying to see whether a virtual block is incorporated
- // We do this only for NJA base blocks, because otherwise would defeat the purpose of virtualizing everything
- if(AFLAG(w)&AFVIRTUAL && CAV(w)==CAV(ABACK(w)) && AN(w)==AN(ABACK(w)) && AR(w)==AR(ABACK(w))){
-  I i; for(i=AR(w)-1; i>=0&&AS(w)[i]==AS(ABACK(w))[i];--i); if(i<0)w = ABACK(w);
- }
- if(AFLAG(a)&AFVIRTUAL && CAV(a)==CAV(ABACK(a)) && AN(a)==AN(ABACK(a)) && AR(a)==AR(ABACK(a))){
-  I i; for(i=AR(a)-1; i>=0&&AS(a)[i]==AS(ABACK(a))[i];--i); if(i<0)a = ABACK(a);
- }
-#endif
-#if 1 // obsolete
  ASSERT(!((AT(a)|AT(w))&SPARSE),EVNONCE);   // can't box sparse values
  I optype=FAV(self)->localuse.lclr[0];  // flag: sign set if (,<) or ,&< or (;<) which will always box w; bit 0 set if (,<)
  realizeifvirtual(w); realizeifvirtual(a);  // it's going into an array, so realize it
@@ -144,7 +129,6 @@ F2PREFIP;
   AK(w)-=SZI; AN(w)=AS(w)[0]=AN(w)+1; AAV(w)[0]=a;  // install a at front, add to counts
   return w;  // return the augmented result
  }
-#endif
  // else fall through to handle general case
  if((-AN(w)&SGNIF(AT(w),BOXX))>=0){w = jtbox(JTIPWonly,w);}
  return jtover(jtinplace,jtbox(JTIPAtoW,a),w);  // box empty or unboxed w, join to boxed a
@@ -433,9 +417,6 @@ static A jtopes(J jt,I zt,A cs,A w){A a,d,e,sh,t,*wv,x,x1,y,y1,z;B*b;C*xv;I an,*
  if(!AR(w)){
   // scalar box: Turn off pristine in w since we are pulling an address from it.  Contents must not be inplaceable
   z=*v;
-#if AUDITBOXAC
-  if(!(AFLAG(w)&AFVIRTUALBOXED)&&AC(z)<0)SEGFAULT;
-#endif
   PRISTCLRF(w) return z;
  }
  // Here we have an array of boxes.  We will create a new block with the concatenated contents (even if there is only one box), and thus we don't need to turn of pristine in w
@@ -468,9 +449,6 @@ static A jtopes(J jt,I zt,A cs,A w){A a,d,e,sh,t,*wv,x,x1,y,y1,z;B*b;C*xv;I an,*
   GA(z,t,zn,r+AR(w),AS(w)); MCISH(AS(z)+AR(w),u,r); x=CAV(z); fillv(t,zn,x);  // init to a:  fills  bug copy shape could overrun w
   for(i=0;i<n;++i){
    y=v[i];   // get pointer to contents
-#if AUDITBOXAC
-   if(!(AFLAG(w)&AFVIRTUALBOXED)&&AC(y)<0)SEGFAULT;
-#endif
    if(!nonh)                memcpy(x,AV(y),AN(y)<<klg);  // homogeneous atomic types: fill only at end, copy the valid part
    else if(TYPESEQ(t,AT(y))&&m==AN(y))memcpy(x,AV(y),q);   // cell of maximum size: copy it entire
    else if(AN(y))             RZ(povtake(jt,cs,TYPESEQ(t,AT(y))?y:cvt(t,y),x));  // otherwise add fill
@@ -626,4 +604,3 @@ static A jtrazeg(J jt,A w,I t,I n,I r,A*v,I nonempt){A h,h1,y,z;C*zu;I c=0,i,j,k
  }}
  return z;
 }    /* >,.&.>/,w */
-

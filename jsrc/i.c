@@ -138,15 +138,6 @@ static B jtevinit(J jt){A q,*v;
 static B jtconsinit(J jt){D y;
 // This is an initialization routine, so memory allocations performed here are NOT
 // automatically freed by tpop()
-#if AUDITCOMPILER
-// verify that CTLZ works correctly, and that all calls to BP return what they used to
-if (CTTZ(0x1000LL) != 12)*(I *)0 = 100;   // Create program check if error
-if (CTTZZ(0x80000000LL) != 31)*(I *)1 = 101;   // Create program check if error
-if (CTTZZ(0x100000002LL) != 1)*(I *)2 = 102;   // Create program check if error
-if (CTTZZ(0x140000000LL) != 30)*(I *)3 = 103;   // Create program check if error
-// verify that (I)x >> does sign-extension.  jtmult relies on that
-if(((-1) >> 1) != -1)*(I *)4 = 104;
-#endif
 jt->asgzomblevel = 1;  // allow premature change to zombie names, but not data-dependent errors
 jt->assert = 1;
 jt->directdef = 1;  // scaf
@@ -154,12 +145,8 @@ jt->directdef = 1;  // scaf
  jt->cctdefault=jt->cct= 1.0-FUZZ;
  jt->disp[0]=1; jt->disp[1]=5;
  jt->fcalln=NFCALL;
-#if USECSTACK
  jt->cstackinit=(uintptr_t)&y;  // use a static variable to get the stack address
  jt->cstackmin=jt->cstackinit-(CSTACKSIZE-CSTACKRESERVE);
-#else
- jt->fdepn=NFDEP;
-#endif
  jt->outmaxafter=222;
  jt->outmaxlen=256;
  strcpy(jt->outseq,"\x0a");
