@@ -38,7 +38,7 @@
 #define behead(x)                   jtbehead(jt,(x))
 #define beheadW(x)                  jtbehead((J)((I)jt|JTINPLACEW),(x))
 #define bfi(x,y,z)                  jtbfi(jt,(x),(y),(z))
-#define bindd(x,y)                  jtbindd(jt,(x),(y))
+
 #define binrep1(x)                  jtbinrep1(jt,(x))
 #define binzz(x,y)                  jtbinzz(jt,(x),(y))
 #define bitwisecharamp(x0,x1,x2,x3) jtbitwisecharamp(jt,(x0),(x1),(x2),(x3))
