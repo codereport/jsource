@@ -501,9 +501,6 @@ I jtgc3(J jt,A *x,A *y,A *z,A* old){
 
 // subroutine version of ra without rifv to save space
 static A raonlys(AD * RESTRICT w) { RZ(w);
-#if AUDITEXECRESULTS
- if(AFLAG(w)&(AFVIRTUAL|AFUNINCORPABLE))SEGFAULT;
-#endif
  ra(w); return w; }
 
 // This routine handles the recursion for ra().  ra() itself does the top level, this routine handles the contents

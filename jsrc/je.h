@@ -583,9 +583,6 @@ extern A jtrollk(J jt,A a,A w,A self);
 extern A jtrollkx(J jt,A a,A w,A self);
 extern A jtsumattymes1(J jt,A a,A w,A self);
 extern A jtxop2(J jt,A a,A w,A self);
-#if AUDITEXECRESULTS
-extern void auditblock(A w, I nonrecurok, I virtok);
-#endif
 extern A        jtassembleresults(J,I, A, A,A*,I,I,I,A,I,I,I);
 extern I        cachedmmult(J,D*,D*,D*,I,I,I,I);
 extern void     copyTT(void *, void *, I, I,I);
