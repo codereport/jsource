@@ -179,7 +179,6 @@ A jtfrombu(J jt,A a,A w,I wf){F1PREFIP;A p,q,z;I ar,*as,h,m,r,*u,*v,wcr,wr,*ws;
  EPILOG(z);  // we have to release the virtual block so that w is inplaceable later on in the sentence
 }    /* (<"1 a){"r w, dense w, integer array a */
 
-#define AUDITPOSINDEX(x,lim) if(!BETWEENO((x),0,(lim))){if((x)<0)break; ASSERT(0,EVINDEX);}
 // a is boxed list, w is array, wf is frame of operation, *ind will hold the result
 // if the opened boxes have contents with the same item shape (treating atoms as same as singleton lists), create an array of all the indexes; put that into *ind and return 1.
 // otherwise return 0
@@ -212,11 +211,11 @@ static B jtaindex1(J jt,A a,A w,I wf,A*ind){A z;I c,i,k,n,t,*v,*ws;
  if(t&INT){  // if it's INT already, we don't need to move it.
   switch(c){I c0,c1,c2;
   case 2:
-   c0=ws[0], c1=ws[1]; for(i=n;i>0;--i){AUDITPOSINDEX(v[0],c0) AUDITPOSINDEX(v[1],c1)  v+=2;} break;
+   c0=ws[0], c1=ws[1]; break;
   case 3:
-   c0=ws[0], c1=ws[1], c2=ws[2]; for(i=n;i>0;--i){AUDITPOSINDEX(v[0],c0) AUDITPOSINDEX(v[1],c1) AUDITPOSINDEX(v[2],c2) v+=3;} break;
+   c0=ws[0], c1=ws[1], c2=ws[2]; break;
   default:
-   for(i=n;i>0;--i){DO(c, k=*v; AUDITPOSINDEX(k,ws[i]) ++v;); if(k<0)break;} break; 
+   for(i=n;i>0;--i){DO(c, k=*v; ++v;); if(k<0)break;} break; 
   }
  }else i=1;  // if not INT to begin with, we must convert
  if(i==0){z=a;  // If all indexes OK, return the original block
