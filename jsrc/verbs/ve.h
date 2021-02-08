@@ -26,7 +26,6 @@ extern I logQD(JST* RESTRICT jt, I n, D* z, Q* x);
 extern I logQZ(JST* RESTRICT jt, I n, Z* z, Q* x);
 extern I logXD(JST* RESTRICT jt, I n, D* z, X* x);
 extern I logXZ(JST* RESTRICT jt, I n, Z* z, X* x);
-extern I pixX(JST* RESTRICT jt, I n, X* z, X* x);
 extern I sgnQ(JST* RESTRICT jt, I n, X* z, Q* x);
 extern I sgnX(JST* RESTRICT jt, I n, X* z, X* x);
 extern I sqrtQ(JST* RESTRICT jt, I n, Q* z, Q* x);

@@ -325,44 +325,7 @@ static X jtxlog1(J jt,    X w){B b;I c;
 static D jtxlogd1(J jt,X w){ASSERT(0<=XDIG(w),EWIMAG); return xlogabs(w);}
 static Z jtxlogz1(J jt,X w){Z z; z.re=xlogabs(w); z.im=0>XDIG(w)?PI:0.0; return z;}
 
- A jtxroota(J jt,A a,A w){A z; GAT0(z,XNUM,1L,0L); XAV(z)[0]=rifvsdebug(xroot(XAV(a)[0],XAV(w)[0])); RNE(z);}
-
-static A jtpiev(J jt,I n,X b){A e;I ek,i,n1=n-1;X bi,e0,e1,*ev,t;
- GATV0(e,XNUM,n,1); ev=XAV(e);
- bi=e0=e1=iv1;
- for(i=0,ek=1;i<n1;++i,ek+=3){
-  ev[i]=xtymes(e0,xtymes(XCUBE(e1),bi));
-  t=xtymes(xc(ek),xtymes(xc(1+ek),xc(2+ek)));
-  e0=xtymes(e0,t);        /* e0 = ! 3*i */
-  e1=xtymes(e1,xc(1+i));  /* e1 = ! i   */
-  bi=xtymes(bi,b);        /* bi = b^i   */
- }
- ev[i]=rifvsdebug(xtymes(e0,xtymes(XCUBE(e1),bi)));
- RE(e); return e;
-}
-
-static X jtxpi(J jt,    X w){A e;B p;I i,n,n1,sk;X a,b,c,d,*ev,k,f,m,q,s,s0,t;
- if(!XDIG(w))return iv0;
- ASSERT(jt->xmode!=XMEXACT,EVDOMAIN);
- RZ(a=xc(545140134L));
- RZ(b=XCUBE(xc(640320L)));
- RZ(c=xc(13591409L));
- RZ(d=xplus(xc(541681608L),xtymes(xc(10L),xc(600000000L))));
- n1=(13+AN(w)*XBASEN)/14; n=1+n1;
- RZ(e=piev(n,b)); ev=XAV(e); m=ev[n1];
- f=iv0; s0=iv1; sk=1;
- for(i=p=0;;++i,p^=1){
-  s=xtymes(s0,xplus(c,xtymes(a,xc(i))));
-  t=xdiv(xtymes(s,m),ev[i],XMEXACT);
-  f=p?xminus(f,t):xplus(f,t);
-  if(i==n1)break;
-  DO(6, s0=xtymes(s0,xc(sk++));); RE(s0);  /* s0 = ! 6*i */
- }
- f=xtymes(d,f);
- q=xpow(xc(10L),xc(14*n1));
- k=xtymes(xtymes(a,m),xsqrt(xtymes(b,xsq(q))));
- return rifvsdebug(xdiv(xtymes(k,w),xtymes(f,q),jt->xmode));
-}    /* Chudnovsky Bros. */
+A jtxroota(J jt,A a,A w){A z; GAT0(z,XNUM,1L,0L); XAV(z)[0]=rifvsdebug(xroot(XAV(a)[0],XAV(w)[0])); RNE(z);}
 
 APFX( plusXX, X,X,X, xplus ,,HDR1JERR)
 APFX(minusXX, X,X,X, xminus,,HDR1JERR)
@@ -382,8 +345,6 @@ AMONPS( logX, X,X, , *z= rifvsdebug(xlog1(*x)); , HDR1JERR)
 AMONPS(logXD, D,X, , *z=xlogd1(*x); , HDR1JERR)
 AMON(logXZ, Z,X, *z=xlogz1(*x);)
 AMONPS( absX, X,X, , *z=   rifvs(mag(*x)); , HDR1JERR)
-AMONPS( pixX, X,X, , *z=   rifvsdebug(xpi(*x)); , HDR1JERR)
-
 
  A jtdigits10(J jt, A w){A z;B b=0;I c,m,n,*v,*zv,*zv0;X x;
  if(!AR(w))switch(CTTZ(AT(w))){
