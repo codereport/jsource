@@ -1092,7 +1092,6 @@
 #define xoinit()                    jtxoinit(jt)
 #define xop(x)                      jtxop(jt,(x))
 #define xop2(x,y,z)                 jtxop2(jt,(x),(y),(z))
-#define xopcall(x)                  jtxopcall(jt,(x))
 #define xplus(x,y)                  jtxplus(jt,(x),(y))
 #define xpow(x,y)                   jtxpow(jt,(x),(y))
 #define xprimeq(x,y)                jtxprimeq(jt,(x),(y)) 

@@ -545,13 +545,8 @@ dobblock:
 // execution of u : v, selecting the version of self to use based on  valence
 static A xv1(J jt,    A w,A self){A z; return df1(z,  w,FAV(self)->fgh[0]);}
 static A xv2(J jt,A a,A w,A self){A z; return df2(z,a,w,FAV(self)->fgh[1]);}
-
 static A xn1 (J jt,    A w,A self){return xdefn(0L,w, self);}  // Transfer monadic xdef to the common code - inplaceable
 static A xadv(J jt,    A w,A self){return xdefn(w, 0L,self);}  // inplaceable
-
-// Nilad.  See if an anonymous verb needs to be named.  If so, result is the name, otherwise 0
-static A jtxopcall(J jt, A w){return jt->uflags.us.cx.cx_c.db&&DCCALL==jt->sitop->dctype?jt->sitop->dca:0;}
-
 
 // This handles adverbs/conjs that refer to x/y.  Install a[/w] into the derived verb as f/h, and copy the flags
 // point g in the derived verb to the original self
@@ -559,7 +554,7 @@ static A jtxopcall(J jt, A w){return jt->uflags.us.cx.cx_c.db&&DCCALL==jt->sitop
 // Flag the operator with VOPR, and remove VFIX for it so that the compound can be fixed
  A jtxop2(J jt,A a,A w,A self){A ff,x;
  RZ(ff=fdef(0,CCOLON,VERB, xn1,jtxdefn, a,self,w,  (VXOP|VFIX|VJTFLGOK1|VJTFLGOK2)^FAV(self)->flag, RMAX,RMAX,RMAX));
- return (x=xopcall(0))?namerefop(x,ff):ff;
+ return ff;
 }
 static A xop1(J jt,    A w,A self){
  return xop2(w,0,self);
