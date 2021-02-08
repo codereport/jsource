@@ -1,5 +1,7 @@
 import os
 import re
+import time
+
 SKIPTESTS = True
 rootdir = r"jsrc"
 LOG_FILE_NAME = "removal_log.md"
@@ -27,7 +29,7 @@ def write_log_entry(paths, local_old_name, new_name, regular_expression, replace
     escaped = '\\|'
     with open(LOG_FILE_NAME, 'a') as log:
         log.write('\n|')
-        log.write(' '.join(['`' + path + '`' for path in paths]))
+        log.write(' '.join([path.strip() for path in paths]))
         log.write('|' + local_old_name)
         log.write('|' + new_name)
         log.write('|`' + unescaped.sub(escaped, regular_expression.pattern) + '`')
@@ -35,15 +37,22 @@ def write_log_entry(paths, local_old_name, new_name, regular_expression, replace
 
 
 def combine_log_entries():
-    log_entry_regexp = re.compile(r'^\|([^|]+)\|(.+)$')
+    log_entry_regexp = re.compile(r'^\|([^|]+)\|(.+)$', re.M)
 
     result = {}
     with open(LOG_FILE_NAME, 'r') as log:
-        for path, key in log_entry_regexp.findall(log.read()):
+        findall = log_entry_regexp.findall(log.read())
+        # print(findall)
+        for path, key in findall:
             result.setdefault(key.strip().rstrip('\n'), []).append(path.strip())
+        # print()
+        # print("{" + "\n".join("{!r}: {!r},".format(k, v) for k, v in result.items()) + "}")
+        # print()
+
+    time.sleep(.25)  # race condition between close log and open log.
     with open(LOG_FILE_NAME, 'w') as log:
-        for key, paths in result:
-            log.write('|'+' '.join(['`' + path + '`' for path in paths])+'|'+key)
+        for key, paths in result.items():
+            log.write('|' + ' '.join(['`' + path + '`' for path in paths]) + '|' + key)
     pass
 
 
