@@ -45,6 +45,7 @@ add_compile_options($<$<COMPILE_LANGUAGE:C,CXX>:-Werror>)
 add_compile_options($<$<COMPILE_LANG_AND_ID:C,GNU>:-Wno-error=sequence-point>)
 add_compile_options($<$<COMPILE_LANG_AND_ID:C,GNU>:-Wno-error=strict-overflow>)
 add_compile_options($<$<COMPILE_LANG_AND_ID:C,GNU>:-Wno-error=logical-not-parentheses>)
+add_compile_options($<$<COMPILE_LANG_AND_ID:C,GNU>:-Wno-error=cast-function-type>)
 
 # Enable warnings
 add_compile_options($<$<COMPILE_LANGUAGE:C,CXX>:-Wall>)
