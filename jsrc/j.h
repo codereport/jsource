@@ -16,13 +16,6 @@
 #define __GNUC_PATCHLEVEL__ 1
 #endif
 
-#ifndef SYS // include js.h only once - dtoa.c
-#include "js.h"
-#endif
-
-// If you are porting to a new compiler or architecture, see the bottom of this file
-// for instructions on defining the CTTZ macros
-
 #include <memory.h>
 #include <sys/types.h>
 

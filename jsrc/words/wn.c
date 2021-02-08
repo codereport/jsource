@@ -5,9 +5,7 @@
 
 #include "j.h"
 
-#if (SYS & SYS_LINUX)
 #include <stdlib.h>
-#endif
 
 /* numd    floating point number (double)                      */
 /* numj    complex number                                      */
