@@ -38,10 +38,6 @@
  */
 
 /* #include <sys/cdefs.h> */
-#if defined(LIBC_SCCS) && !defined(lint)
-__RCSID("$NetBSD: fnmatch.c,v 1.13 1997/07/21 14:06:58 jtc Exp $");
-#endif /* LIBC_SCCS and not lint */
-
 /*
  * Function fnmatch() as specified in POSIX 1003.2-1992, section B.6.
  * Compares a filename or pathname to a pattern.
