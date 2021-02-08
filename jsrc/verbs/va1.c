@@ -73,8 +73,8 @@ static A jtva1(J,A,A);
 static A jtva1s(J jt,A w,A self,I cv,VA1F ado){A e,x,z,ze,zx;B c;I n,oprc,t,zt;P*wp,*zp;
  t=atype(cv); zt=rtype(cv);
  wp=PAV(w); e=SPA(wp,e); x=SPA(wp,x); c=t&&TYPESNE(t,AT(e));
- if(c)RZ(e=cvt(t,e));          GA(ze,zt,1,0,    0    ); oprc=((AHDR1FN*)ado)(jt,1L,AV(ze),AV(e));
- if(c)RZ(e=cvt(t,x)); n=AN(x); if(oprc==EVOK){GA(zx,zt,n,AR(x),AS(x)); if(n)oprc=((AHDR1FN*)ado)(jt,n, AV(zx),AV(x));}
+ if(c)RZ(e=jtcvt(jt,t,e));          GA(ze,zt,1,0,    0    ); oprc=((AHDR1FN*)ado)(jt,1L,AV(ze),AV(e));
+ if(c)RZ(e=jtcvt(jt,t,x)); n=AN(x); if(oprc==EVOK){GA(zx,zt,n,AR(x),AS(x)); if(n)oprc=((AHDR1FN*)ado)(jt,n, AV(zx),AV(x));}
  // sparse does not do inplace repair.  Always retry, and never inplace.
  oprc=oprc<0?EWOV:oprc;  //   If a restart is required, turn the result to EWOV (must be floor/ceil)
  if(oprc!=EVOK){
@@ -83,7 +83,7 @@ static A jtva1s(J jt,A w,A self,I cv,VA1F ado){A e,x,z,ze,zx;B c;I n,oprc,t,zt;P
   J jtinplace=(J)((I)jt+JTRETRY);  // tell va1 it's a retry
   RZ(ze=jtva1(jtinplace,e,self)); 
   jt->jerr=(UC)oprc; RZ(zx=jtva1(jtinplace,x,self));   // restore restart signal for the main data too
- }else if(cv&VRI+VRD){RZ(ze=cvz(cv,ze)); RZ(zx=cvz(cv,zx));}
+ }else if(cv&VRI+VRD){RZ(ze=jtcvz(jt,cv,ze)); RZ(zx=jtcvz(jt,cv,zx));}
  GASPARSE(z,STYPE(AT(ze)),1,AR(w),AS(w)); zp=PAV(z);
  SPB(zp,a,ca(SPA(wp,a)));
  SPB(zp,i,ca(SPA(wp,i)));
@@ -123,11 +123,11 @@ static A jtva1(J jt,A w,A self){A z;I cv,n,t,wt,zt;VA1F ado;
  if((-(AT(w)&SPARSE)&-n)<0)return va1s(w,self,cv,ado);  // branch off to do sparse
  // from here on is dense va1
  t=atype(cv); zt=rtype(cv);  // extract required type of input and result
- if(UNSAFE(t&~wt)){RZ(w=cvt(t,w)); jtinplace=(J)((I)jtinplace|JTINPLACEW);}  // convert input if necessary; if we converted, converted result is ipso facto inplaceable.  t is usually 0
+ if(UNSAFE(t&~wt)){RZ(w=jtcvt(jt,t,w)); jtinplace=(J)((I)jtinplace|JTINPLACEW);}  // convert input if necessary; if we converted, converted result is ipso facto inplaceable.  t is usually 0
  if(ASGNINPLACESGN(SGNIF((I)jtinplace,JTINPLACEWX)&SGNIF(cv,VIPOKWX),w)){z=w; if(TYPESNE(AT(w),zt))MODBLOCKTYPE(z,zt)}else{GA(z,zt,n,AR(w),AS(w));}
  if(!n){return z;}
  I oprc = ((AHDR1FN*)ado)(jt,n,AV(z),AV(w));  // perform the operation on all the atoms, save result status.  If an error was signaled it will be reported here, but not necessarily vice versa
- if(oprc==EVOK){return cv&VRI+VRD?cvz(cv,z):z;}  // Normal return point: if no error, convert the result if necessary (rare)
+ if(oprc==EVOK){return cv&VRI+VRD?jtcvz(jt,cv,z):z;}  // Normal return point: if no error, convert the result if necessary (rare)
  else{
   // There was an error.  If it is recoverable in place, handle the cases here
   // positive result gives error type to use for retrying the operation; negative is 1's complement of the restart point (first value NOT stored)

@@ -67,7 +67,7 @@ B jtequ(J jt,A a,A w){A x;
  F2PREFIP;
  if(!(a && w)) return 0;  // allow inplace request - it has no effect
  if(a==w)return 1;
- if((SPARSE&(AT(a)|AT(w)))!=0)if(AR(a)&&AR(w)){RZ(x=matchs(a,w)); return BAV(x)[0];}
+ if((SPARSE&(AT(a)|AT(w)))!=0)if(AR(a)&&AR(w)){RZ(x=jtmatchs(jt,a,w)); return BAV(x)[0];}
  return ((B (*)())jtmatchsub)(jt,a,w,0   MATCHSUBDEFAULTS);  // don't check level - it takes too long for big arrays
 }
 
@@ -145,12 +145,12 @@ static B jtmatchsub(J jt,A a,A w,B* RESTRICT x,I af,I wf,I m,I n,I b1){C*av,*wv;
 
  // If we're comparing functions, return that result
  t=at;  //  in case types identical, pick one
- if(t&FUNC)return (!eqf(a,w))^(x==0?1:b1);  // true value, but switch if return is not 'match'
+ if(t&FUNC)return (!jteqf(jt,a,w))^(x==0?1:b1);  // true value, but switch if return is not 'match'
  // If the types mismatch, convert as needed to the common (unsafe) type calculated earlier
  if(at!=wt) {
   t=maxtypedne(at,wt);
-  if(at!=t)RZ(a=cvt(t|VFRCEXMT,a));
-  if(wt!=t)RZ(w=cvt(t|VFRCEXMT,w));
+  if(at!=t)RZ(a=jtcvt(jt,t|VFRCEXMT,a));
+  if(wt!=t)RZ(w=jtcvt(jt,t|VFRCEXMT,w));
  }
  // If a has no frame, it might be the shorter frame and therefore repeated; but in that case
  // m will be 1 (1 cell in shorter frame).  So it is safe to increment each address by c in the compare loops
@@ -189,17 +189,17 @@ static A jtmatchs(J jt,A a,A w){A ae,ax,p,q,we,wx,x;B*b,*pv,*qv;D d;I acr,an=0,a
  if(SPARSE&AT(a)){ap=PAV(a); x=SPA(ap,a); v=AV(x); an=AN(x); DO(an, b[v[i]]=1;);}
  if(SPARSE&AT(w)){wp=PAV(w); x=SPA(wp,a); v=AV(x); wn=AN(x); DO(wn, b[v[i]]=1;);} 
  c=0; DO(r, c+=b[i];);
- if(an<c||DENSE&AT(a))RZ(a=reaxis(ifb(r,b),a)); ap=PAV(a); ae=SPA(ap,e); ax=SPA(ap,x); m=*AS(ax);
- if(wn<c||DENSE&AT(w))RZ(w=reaxis(ifb(r,b),w)); wp=PAV(w); we=SPA(wp,e); wx=SPA(wp,x); n=*AS(wx);
- RZ(x=indexof(SPA(ap,i),SPA(wp,i))); v=AV(x);
+ if(an<c||DENSE&AT(a))RZ(a=jtreaxis(jt,jtifb(jt,r,b),a)); ap=PAV(a); ae=SPA(ap,e); ax=SPA(ap,x); m=*AS(ax);
+ if(wn<c||DENSE&AT(w))RZ(w=jtreaxis(jt,jtifb(jt,r,b),w)); wp=PAV(w); we=SPA(wp,e); wx=SPA(wp,x); n=*AS(wx);
+ RZ(x=jtindexof(jt,SPA(ap,i),SPA(wp,i))); v=AV(x);
  GATV0(p,B01,m,1); pv=BAV(p);
  GATV0(q,B01,n,1); qv=BAV(q); 
  memset(pv,C1,m); DO(n, j=*v++; if(j<m)pv[j]=qv[i]=0; else qv[i]=1;);
- if(memchr(pv,C1,m)&&!all1(eq(we,repeat(p,ax))))return num(0);
- if(memchr(qv,C1,n)&&!all1(eq(ae,repeat(q,wx))))return num(0);
+ if(memchr(pv,C1,m)&&!all1(eq(we,jtrepeat(jt,p,ax))))return num(0);
+ if(memchr(qv,C1,n)&&!all1(eq(ae,jtrepeat(jt,q,wx))))return num(0);
  j=0; DO(m, if(pv[i])++j;);
  k=0; DO(n, if(qv[i])++k; qv[i]=!qv[i];);
- if(!equ(from(repeat(q,x),ax),repeat(q,wx)))return num(0);
+ if(!equ(jtfrom(jt,jtrepeat(jt,q,x),ax),jtrepeat(jt,q,wx)))return num(0);
  x=SPA(ap,a); v=AV(x); s=AS(a); d=1.0; DO(AN(x), d*=s[v[i]];);
  return d==m+k&&d==n+j||equ(ae,we)?num(1):num(0);
 }    /* a -:"r w on sparse arrays */
@@ -209,7 +209,7 @@ static A jtmatchs(J jt,A a,A w){A ae,ax,p,q,we,wx,x;B*b,*pv,*qv;D d;I acr,an=0,a
  A jtmatch(J jt,A a,A w){A z;I af,m,n,mn,wf;
  I eqis0 = (I)jt&1; jt=(J)((I)jt&~1);
  I isatoms = (-AN(a))&(-AN(w));  // neg if both args have atoms
- if((SPARSE&(AT(a)|AT(w)))!=0)return ne(num(eqis0),matchs(a,w));
+ if((SPARSE&(AT(a)|AT(w)))!=0)return ne(num(eqis0),jtmatchs(jt,a,w));
  af=AR(a)-(I)(jt->ranks>>RANKTX); af=af<0?0:af; wf=AR(w)-(I)((RANKT)jt->ranks); wf=wf<0?0:wf; RESETRANK;
  // exchange a and w as needed to ensure a has the shorter frame, i. e. is the repeated argument
  {A ta=a; I ti=af; I afhi=af-wf; a=afhi>=0?w:a; w=afhi>=0?ta:w; af=afhi>=0?wf:af; wf=afhi>=0?ti:wf;} 

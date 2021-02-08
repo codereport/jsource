@@ -47,7 +47,7 @@
 #define VIPWCRLONG      ((I)1<<VIPWCRLONGX)
 // bit 31 must not be used - it may be a sign bit, which has a meaning
 #define VARGCVTMSKF     (VXCHASVTYPE|VXCVTYPEMSK)  // mask for type to pass into XCVT, includes XNUM override
-#define VFRCEXMT        (VXCHASVTYPE|((I)XMEXMT<<VXCVTYPEX))   // set in arg to cvt() to do rounding for = ~:, if the conversion happens to be to XNUM
+#define VFRCEXMT        (VXCHASVTYPE|((I)XMEXMT<<VXCVTYPEX))   // set in arg to jtcvt(jt,) to do rounding for = ~:, if the conversion happens to be to XNUM
 // upper bits for 64-bit va2
 #define VIPOKRNKWX         30      // filled by va2 if the ranks allow inplacing w
 #define VIPOKRNKW          ((I)1<<VIPOKRNKWX)

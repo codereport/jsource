@@ -15,8 +15,8 @@ static A jtovs0(J jt,B p,I r,A a,A w){A a1,e,q,x,y,z;B*b;I at,*av,c,d,j,k,f,m,n,
  ASSERT(HOMO(at,wt),EVDOMAIN);
  t=maxtype(at,wt);
  ASSERT(t&(B01|INT|FL|CMPX),EVDOMAIN);  // verify supported sparse type
- if(TYPESNE(t,at))RZ(a=cvt(t,a));
- if(TYPESNE(t,wt)){RZ(x=cvt(t,x)); RZ(e=cvt(t,e));}
+ if(TYPESNE(t,at))RZ(a=jtcvt(jt,t,a));
+ if(TYPESNE(t,wt)){RZ(x=jtcvt(jt,t,x)); RZ(e=jtcvt(jt,t,e));}
  j=k=0; DO(f, if(b[i])++j; else ++k;);
  switch(2*b[f]+!equ(a,e)){
   case 0:  /* dense and a equal e */
@@ -27,7 +27,7 @@ static A jtovs0(J jt,B p,I r,A a,A w){A a1,e,q,x,y,z;B*b;I at,*av,c,d,j,k,f,m,n,
    GATV0(q,INT,c,1); v=AV(q); DO(c, v[i]=ws[av[i]];); RZ(q=odom(2L,c,v));
    if(AN(q)>=AN(y)){
     RZ(z=shape(jt,x)); *AV(z)=*AS(q); 
-    RZ(x=from(grade1(over(y,less(q,y))),over(x,reshape(z,e))));
+    RZ(x=jtfrom(jt,grade1(over(y,jtless(jt,q,y))),over(x,jtreshape(jt,z,e))));
     y=q;
    }
    RZ(x=p?irs2(x,a,0L,AR(x)-(1+k),0L,jtover):irs2(a,x,0L,0L,AR(x)-(1+k),jtover));
@@ -40,12 +40,12 @@ static A jtovs0(J jt,B p,I r,A a,A w){A a1,e,q,x,y,z;B*b;I at,*av,c,d,j,k,f,m,n,
    GATV0(q,INT,c,1); v=AV(q); DO(c, v[i]=ws[av[i]];); v[j]=1; RZ(q=odom(2L,c,v)); n=*AS(q);
    if(p){RZ(y=over(y,q)); v=AV(y)+j+m*c; d=ws[f]; DQ(n, *v=d; v+=c;);}
    else {RZ(y=over(q,y)); v=AV(y)+j+n*c;          DQ(m, ++*v; v+=c;);}
-   RZ(q=shape(jt,x)); *AV(q)=n; RZ(q=reshape(q,a)); RZ(x=p?over(x,q):over(q,x));
-   if(f){RZ(q=grade1(y)); RZ(y=from(q,y)); RZ(x=from(q,x));}
+   RZ(q=shape(jt,x)); *AV(q)=n; RZ(q=jtreshape(jt,q,a)); RZ(x=p?over(x,q):over(q,x));
+   if(f){RZ(q=grade1(y)); RZ(y=jtfrom(jt,q,y)); RZ(x=jtfrom(jt,q,x));}
  }
  GASPARSE(z,STYPE(t),1,zr,ws); 
  if(r)++*(f+AS(z)); else *(wr+AS(z))=2;
- A bvec=ifb(zr,b); makewritable(bvec)  // avoid readonly
+ A bvec=jtifb(jt,zr,b); makewritable(bvec)  // avoid readonly
  zp=PAV(z); SPB(zp,a,bvec); SPB(zp,e,e); SPB(zp,i,y); SPB(zp,x,x);
  return z;
 }    /* a,"r w (0=p) or w,"r a (1=p) where a is scalar and w is sparse */
@@ -57,23 +57,23 @@ static A jtovs(J jt,A a,A w){A ae,ax,ay,q,we,wx,wy,x,y,z,za,ze;B*ab,*wb,*zb;I ac
  if(!wr)return ovs0(1,acr,w,a);
  if(ar>acr||wr>wcr)return sprank2(a,w,0L,acr,wcr,jtover);
  r=MAX(ar,wr);
- if(r>ar)RZ(a=reshape(over(apv(r-ar,1L,0L),shape(jt,a)),a)); as=AS(a);
- if(r>wr)RZ(w=reshape(over(apv(r-wr,1L,0L),shape(jt,w)),w)); ws=AS(w);
+ if(r>ar)RZ(a=jtreshape(jt,over(apv(r-ar,1L,0L),shape(jt,a)),a)); as=AS(a);
+ if(r>wr)RZ(w=jtreshape(jt,over(apv(r-wr,1L,0L),shape(jt,w)),w)); ws=AS(w);
  ASSERT(*as<IMAX-*ws,EVLIMIT);
  if(!(at&SPARSE)){wp=PAV(w); RZ(a=sparseit(a,SPA(wp,a),SPA(wp,e)));}
  if(!(wt&SPARSE)){ap=PAV(a); RZ(w=sparseit(w,SPA(ap,a),SPA(ap,e)));}
  ap=PAV(a); RZ(ab=bfi(r,SPA(ap,a),1)); ae=SPA(ap,e); at=AT(ae);
  wp=PAV(w); RZ(wb=bfi(r,SPA(wp,a),1)); we=SPA(wp,e); wt=AT(we);
  ASSERT(equ(ae,we),EVNONCE);
- GATV0(q,B01,r,1); zb=BAV(q); DO(r, zb[i]=ab[i]||wb[i];); za=ifb(r,zb); makewritable(za) c=AN(za);  // avoid readonly
+ GATV0(q,B01,r,1); zb=BAV(q); DO(r, zb[i]=ab[i]||wb[i];); za=jtifb(jt,r,zb); makewritable(za) c=AN(za);  // avoid readonly
  GATV0(q,INT,r,1); zs= AV(q); DO(r, zs[i]=MAX(as[i],ws[i]););
- DO(r, if(zb[i]>ab[i]){RZ(a=reaxis(za,a)); break;});
- DO(r, if(zb[i]>wb[i]){RZ(w=reaxis(za,w)); break;});
- *zs=*as; DO(r, if(zs[i]>as[i]){RZ(a=take(q,a)); break;});
- *zs=*ws; DO(r, if(zs[i]>ws[i]){RZ(w=take(q,w)); break;});
+ DO(r, if(zb[i]>ab[i]){RZ(a=jtreaxis(jt,za,a)); break;});
+ DO(r, if(zb[i]>wb[i]){RZ(w=jtreaxis(jt,za,w)); break;});
+ *zs=*as; DO(r, if(zs[i]>as[i]){RZ(a=jttake(jt,q,a)); break;});
+ *zs=*ws; DO(r, if(zs[i]>ws[i]){RZ(w=jttake(jt,q,w)); break;});
  *zs=*as+*ws; t=maxtype(at,wt);
- ap=PAV(a); ay=SPA(ap,i); ax=SPA(ap,x); if(TYPESNE(t,at))RZ(ax=cvt(t,ax));
- wp=PAV(w); wy=SPA(wp,i); wx=SPA(wp,x); if(TYPESNE(t,at))RZ(wx=cvt(t,wx));
+ ap=PAV(a); ay=SPA(ap,i); ax=SPA(ap,x); if(TYPESNE(t,at))RZ(ax=jtcvt(jt,t,ax));
+ wp=PAV(w); wy=SPA(wp,i); wx=SPA(wp,x); if(TYPESNE(t,at))RZ(wx=jtcvt(jt,t,wx));
  GASPARSE(z,STYPE(t),1,r,zs); zp=PAV(z);
  SPB(zp,a,za); SPBV(zp,e,ze,ca(TYPESEQ(t,at)?ae:we));
  if(*zb){
@@ -96,7 +96,7 @@ static A jtovs(J jt,A a,A w){A ae,ax,ay,q,we,wx,wy,x,y,z,za,ze;B*ab,*wb,*zb;I ac
    }
    yv+=c; xv+=xk;
   }
-  SPB(zp,i,p?take(sc(mn-p),y):y); SPB(zp,x,p?take(sc(mn-p),x):x);
+  SPB(zp,i,p?jttake(jt,sc(mn-p),y):y); SPB(zp,x,p?jttake(jt,sc(mn-p),x):x);
  }
  return z;
 }    /* a,"r w where a or w or both are sparse */
@@ -108,7 +108,7 @@ static C*jtovgmove(J jt,I k,I c,I m,A s,A w,C*x,A z){I d,n,p=c*m;
   n=AN(w); d=AN(s)-AR(w);
   if((-n&(d-1))>=0)mvc(k*p,x,k,jt->fillv);  // fill required: w empty or shape short (d>0)
   if(n){  // nonempty cell, must copy in the data
-   if(n<p){I *v=AV(s); *v=m; RZ(w=take(d?vec(INT,AR(w),d+v):s,w));}  // incoming cell smaller than result area: take to result-cell size
+   if(n<p){I *v=AV(s); *v=m; RZ(w=jttake(jt,d?vec(INT,AR(w),d+v):s,w));}  // incoming cell smaller than result area: take to result-cell size
    Jmemcpy(x,AV(w),k*AN(w),loop1,1);  // copy in the data, now the right cell shape but possibly shorter than the fill  kludge could avoid double copy
   }
  }else{  // scalar replication
@@ -118,8 +118,8 @@ static C*jtovgmove(J jt,I k,I c,I m,A s,A w,C*x,A z){I d,n,p=c*m;
 }    /* move an argument into the result area */
 
 static A jtovg(J jt,A a,A w){A s,z;C*x;I ar,*as,c,k,m,n,r,*sv,t,wr,*ws,zn;
- I origwt=AT(w); RZ(w=setfv(a,w));
- if(AT(a)!=(t=AT(w))){t=maxtypedne(AT(a)|(AN(a)==0),t|(((t^origwt)+AN(w))==0)); t&=-t; if(!TYPESEQ(t,AT(a))){RZ(a=cvt(t,a));} else {RZ(w=cvt(t,w));}}  // convert args to compatible precisions, changing a and w if needed.  B01 if both empty.  If fill changed w, don't do B01 for it
+ I origwt=AT(w); RZ(w=jtsetfv(jt,a,w));
+ if(AT(a)!=(t=AT(w))){t=maxtypedne(AT(a)|(AN(a)==0),t|(((t^origwt)+AN(w))==0)); t&=-t; if(!TYPESEQ(t,AT(a))){RZ(a=jtcvt(jt,t,a));} else {RZ(w=jtcvt(jt,t,w));}}  // convert args to compatible precisions, changing a and w if needed.  B01 if both empty.  If fill changed w, don't do B01 for it
  ar=AR(a); wr=AR(w); r=ar+wr?MAX(ar,wr):1;
  RZ(s=r?vec(INT,r,AS(r==ar?a:w)):num(2)); sv=AV(s);   // Allocate list for shape of composite item
  // Calculate the shape of the result: the shape of the item, max of input shapes
@@ -180,8 +180,8 @@ static void(*moveawtbl[])() = {moveawVV,moveawVS,moveawSV};
  F2PREFIP;
  if(!(a && w)) return 0;
  UI jtr=jt->ranks;//  fetch early
- if((SPARSE&(AT(a)|AT(w)))!=0){return ovs(a,w);}  // if either arg is sparse, switch to sparse code
- if(AT(a)!=(t=AT(w))){t=maxtypedne(AT(a)|(AN(a)==0),t|(AN(w)==0)); t&=-t; if(!TYPESEQ(t,AT(a))){RZ(a=cvt(t,a));} else {RZ(w=cvt(t,w));}}  // convert args to compatible precisions, changing a and w if needed.  Treat empty arg as boolean
+ if((SPARSE&(AT(a)|AT(w)))!=0){return jtovs(jt,a,w);}  // if either arg is sparse, switch to sparse code
+ if(AT(a)!=(t=AT(w))){t=maxtypedne(AT(a)|(AN(a)==0),t|(AN(w)==0)); t&=-t; if(!TYPESEQ(t,AT(a))){RZ(a=jtcvt(jt,t,a));} else {RZ(w=jtcvt(jt,t,w));}}  // convert args to compatible precisions, changing a and w if needed.  Treat empty arg as boolean
  ar=AR(a); wr=AR(w);
  acr=jtr>>RANKTX; acr=ar<acr?ar:acr; af=ar-acr;  // acr=rank of cell, af=len of frame, as->shape
  wcr=(RANKT)jtr; wcr=wr<wcr?wr:wcr; wf=wr-wcr;  // wcr=rank of cell, wf=len of frame, ws->shape
@@ -254,7 +254,7 @@ static void(*moveawtbl[])() = {moveawVV,moveawVS,moveawSV};
  ar=AR(a); wr=AR(w);
  ASSERT((-ar&-wr&-(AS(a)[0]^AS(w)[0]))>=0,EVLENGTH);  // a or w scalar, or same # items    always OK to fetch s[0]
  if((((SPARSE&(AT(a)|AT(w)))-1)&(2-ar)&(2-wr))>=0)return IRSIP2(a,w,0L,(ar-1)&RMAX,(wr-1)&RMAX,jtover,z);  // not sparse or rank>2
- return stitchsp2(a,w);  // sparse rank <=2 separately
+ return jtstitchsp2(jt,a,w);  // sparse rank <=2 separately
 }
 
  A jtlamin1(J jt, A w){A x;I* RESTRICT s,* RESTRICT v,wcr,wf,wr; 
@@ -330,7 +330,7 @@ A jtapip(J jt, A a, A w){F2PREFIP;A h;C*av,*wv;I ak,k,p,*u,*v,wk,wm,wn;
      if(allosize(a)>=ak+wk+(REPSGN((-(at&LAST0))&((aflag&AFNJA)-1))&(SZI-1))){    // SZI-1 if LAST0 && !NJA
       // We have passed all the tests.  Inplacing is OK.
       // If w must change precision, do.  This is where we catch domain errors.
-      if(TYPESGT(at,AT(w)))RZ(w=cvt(at,w));
+      if(TYPESGT(at,AT(w)))RZ(w=jtcvt(jt,at,w));
       // result is pristine if a and w both are, and they are not the same block, and there is no fill, and w is inplaceable (of course we know a is)
       I wprist = (((a!=w)&((I)jtinplace>>JTINPLACEWX)&SGNTO0(AC(w)))<<AFPRISTINEX) & AFLAG(w);  // set if w qualifies as pristine
       // If the items of w must be padded to the result item-size, do so.
@@ -339,12 +339,12 @@ A jtapip(J jt, A a, A w){F2PREFIP;A h;C*av,*wv;I ak,k,p,*u,*v,wk,wm,wn;
       // item of the result, and it is extended to the rank/size of an item of a.  The extra
       // rank is implicit in the shape of a.
       // The take relies on the fill value
-      if(p){h=vec(INT,wr,AS(a)+ar-wr); makewritable(h); if(ar==wr)AV(h)[0]=AS(w)[0]; RZ(w=take(h,w)); wr=AR(w);}  // should use faux block for h
+      if(p){h=vec(INT,wr,AS(a)+ar-wr); makewritable(h); if(ar==wr)AV(h)[0]=AS(w)[0]; RZ(w=jttake(jt,h,w)); wr=AR(w);}  // should use faux block for h
       av=ak+CAV(a); wv=CAV(w);   // av->end of a data, wv->w data
       // If an item of a is higher-rank than the entire w (except when w is an atom, which gets replicated),
       // copy fill to the output area.  Start the copy after the area that will be filled in by w
       I wlen = k*AN(w); // the length in bytes of the data in w
-      if((-wr&(1+wr-ar))<0){RZ(setfv(a,w)); mvc(wk-wlen,av+wlen,k,jt->fillv); wprist=0;}  // fill removes pristine status
+      if((-wr&(1+wr-ar))<0){RZ(jtsetfv(jt,a,w)); mvc(wk-wlen,av+wlen,k,jt->fillv); wprist=0;}  // fill removes pristine status
       AFLAG(a)=aflag&=wprist|~AFPRISTINE;  // clear pristine flag in a if w is not also (a must not be virtual)
       // Copy in the actual data, replicating if w is atomic
       if(wr){Jmemcpy(av,wv,wlen,loop1,1)} else mvc(wk,av,k,wv);  // no overcopy because there could be fill

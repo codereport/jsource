@@ -20,26 +20,26 @@
 #include "parsing/p.h"
 
 
-A jteval(J jt,C*s){return parse(tokens(cstr(s),1+(AN(jt->locsyms)>1)));}
+A jteval(J jt,C*s){return parse(jttokens(jt,cstr(s),1+(AN(jt->locsyms)>1)));}
 
 A jtev1(J jt,    A w,C*s){A z; return df1(z,  w,eval(s));}  // parse *s and apply to w
 A jtev2(J jt,A a,A w,C*s){A z; return df2(z,a,w,eval(s));}  // parse *s and apply to a and w
-A jteva(J jt,    A w,C*s){A z; return df1(z,  w,colon(num(1),   cstr(s)));}
-A jtevc(J jt,A a,A w,C*s){A z; return df2(z,a,w,colon(num(2),cstr(s)));}
+A jteva(J jt,    A w,C*s){A z; return df1(z,  w,jtcolon(jt,num(1),   cstr(s)));}
+A jtevc(J jt,A a,A w,C*s){A z; return df2(z,a,w,jtcolon(jt,num(2),cstr(s)));}
 
 // ". y
  A jtexec1(J jt, A w){A z;
- if(AT(w)&NAME){z=nameref(w,jt->locsyms);  // the case ".@'name' which is the fastest way to refer to a deferred name
+ if(AT(w)&NAME){z=jtnameref(jt,w,jt->locsyms);  // the case ".@'name' which is the fastest way to refer to a deferred name
  }else{
   F1RANK(1,jtexec1,UNUSED_VALUE);
   A savself = jt->sf;  // in case we are in a recursion, preserve the restart point
-  STACKCHKOFL FDEPINC(1); z=parse(ddtokens(vs(w),4+1+(AN(jt->locsyms)>1))); jt->asgn=0; FDEPDEC(1);  // replace DDs, but require that they be complete within the string (no jgets)
+  STACKCHKOFL FDEPINC(1); z=parse(jtddtokens(jt,vs(w),4+1+(AN(jt->locsyms)>1))); jt->asgn=0; FDEPDEC(1);  // replace DDs, but require that they be complete within the string (no jgets)
   jt->sf=savself;
  }
  return z&&!(AT(z)&NOUN)?mtv:z;  // if non-noun result, return empty $0
 }
 
-// execute w, which is either a string or the boxed words of a string (as if from tokens())
+// execute w, which is either a string or the boxed words of a string (as if from jttokens(jt,))
  A jtimmex(J jt, A w){A z;
  if(!w)return A0;  // if no string, return error
  // When we start a sentence, we need to establish AKGST in locsyms as a shadow of jt->global, because that's
@@ -47,16 +47,16 @@ A jtevc(J jt,A a,A w,C*s){A z; return df2(z,a,w,colon(num(2),cstr(s)));}
  // because if AKGST has been set it will already hold jt->global.  Of course, any event code must restore everything
  // to its previous state, including locales
  AKGST(jt->locsyms)=jt->global; // in case the sentence has operators, set a locale for it
- STACKCHKOFL FDEPINC(1); z=parse(AT(w)&BOX?w:tokens(w,1+(AN(jt->locsyms)>1))); FDEPDEC(1);
+ STACKCHKOFL FDEPINC(1); z=parse(AT(w)&BOX?w:jttokens(jt,w,1+(AN(jt->locsyms)>1))); FDEPDEC(1);
  if(z&&!jt->asgn)jpr(z);
  return z;
 }
 
 // execute for assert: check result for all 1
  A jtimmea(J jt, A w){A t,z,z1;
- RZ(w=ddtokens(w,4+1+(AN(jt->locsyms)>1))); z=immex(w);   // check for DD, but don't allow continuation read
+ RZ(w=jtddtokens(jt,w,4+1+(AN(jt->locsyms)>1))); z=immex(w);   // check for DD, but don't allow continuation read
  ASSERT(jt->asgn||!z||!(AT(z)&NOUN)||(t=eq(num(1),z),
-     all1(AT(z)&SPARSE?df1(z1,t,atop(slash(ds(CSTARDOT)),ds(CCOMMA))):t)),EVASSERT);  // apply *./@, if sparse
+     all1(AT(z)&SPARSE?df1(z1,t,jtatop(jt,slash(ds(CSTARDOT)),ds(CCOMMA))):t)),EVASSERT);  // apply *./@, if sparse
  return z;
 }
 
@@ -75,11 +75,11 @@ static A jtcex(J jt,A w,AF f,A self){A z; RE(w); z=f(jt,w,self); RESETERR; retur
  return parse(z);
 }
 
-L* jtjset(J jt,C*name,A x){return symbisdel(nfs((I)strlen(name),name),x,jt->global);}
+L* jtjset(J jt,C*name,A x){return symbisdel(jtnfs(jt,(I)strlen(name),name),x,jt->global);}
 
  A jtapplystr(J jt,A a,A w){PROLOG(0054);A fs,z;
  F2RANK(1,RMAX,jtapplystr,UNUSED_VALUE);
- RZ(fs=parse(tokens(vs(a),1+(AN(jt->locsyms)>1))));
+ RZ(fs=parse(jttokens(jt,vs(a),1+(AN(jt->locsyms)>1))));
  ASSERT(VERB&AT(fs),EVSYNTAX);
  STACKCHKOFL FDEPINC(d=fdep(fs)); z=CALL1(FAV(fs)->valencefns[0],w,fs); FDEPDEC(d);
  EPILOG(z); 

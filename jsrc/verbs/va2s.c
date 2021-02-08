@@ -39,12 +39,12 @@ static A jtvasp0(J jt,A a,A w,VF ado,I cv,I t,I zt){A e,x,xx,y,z,ze,zx;B b;I n;P
  if(b=1&&AR(a)){xx=a; y=w;}else{xx=w; y=a;}
  p=PAV(xx); e=SPA(p,e); x=SPA(p,x); n=AN(x);
  if(t){
-  if(TYPESNE(t,AT(x))){RZ(x=cvt(t,x)); RZ(e=cvt(t,e));} 
-  if(TYPESNE(t,AT(y))) RZ(y=cvt(t,y));
+  if(TYPESNE(t,AT(x))){RZ(x=jtcvt(jt,t,x)); RZ(e=jtcvt(jt,t,e));} 
+  if(TYPESNE(t,AT(y))) RZ(y=jtcvt(jt,t,y));
  }
  GA(ze,zt,1,0,    0    ); I rc;     ASSERT(EVOK==(rc=((AHDR2FN*)ado)((I)1,(I)1,b?AV(e):AV(y),b?AV(y):AV(e),AV(ze),jt)),rc);
  GA(zx,zt,n,AR(x),AS(x)); if(n)ASSERT(EVOK==(rc=((AHDR2FN*)ado)(n^(b-1),(I)1,b?AV(x):AV(y),b?AV(y):AV(x),AV(zx),jt)),rc);  // was !b
- if(cv&VRI+VRD){RZ(ze=cvz(cv,ze)); RZ(zx=cvz(cv,zx));}
+ if(cv&VRI+VRD){RZ(ze=jtcvz(jt,cv,ze)); RZ(zx=jtcvz(jt,cv,zx));}
  GASPARSE(z,STYPE(AT(zx)),1,AR(xx),AS(xx)); zp=PAV(z);
  SPB(zp,a,ca(SPA(p,a)));
  SPB(zp,i,ca(SPA(p,i)));
@@ -63,11 +63,11 @@ static B jtvaspprep(J jt,A a,A w,I t,I af,I acr,I wf,I wcr,I f,I r,A*ae,A*ay,A*a
  if(sw){wp=PAV(w); wa=SPA(wp,a); v=AV(wa); d=f-wf; DO(AN(wa), c=v[i]; if(wf<=c)b[c+d]=1;);}
  GATV0(x,INT,f+r,1); u=AV(x); m=0; DO(af, if(b[i])u[m++]=i;); DO(acr, if(b[f+i])u[m++]=af+i;); 
  GATV0(x,INT,f+r,1); v=AV(x); n=0; DO(wf, if(b[i])v[n++]=i;); DO(wcr, if(b[f+i])v[n++]=wf+i;); 
- if(!sa||m!=AN(aa)||memcmp(u,AV(aa),m*SZI))RZ(a=reaxis(vec(INT,m,u),a));
- if(!sw||n!=AN(wa)||memcmp(v,AV(wa),n*SZI))RZ(w=reaxis(vec(INT,n,v),w));
- ap=PAV(a); *ae=e=SPA(ap,e); *ay=SPA(ap,i); *ax=x=SPA(ap,x); if(t&&TYPESNE(t,AT(x))){RZ(*ae=cvt(t,e)); RZ(*ax=cvt(t,x));}
- wp=PAV(w); *we=e=SPA(wp,e); *wy=SPA(wp,i); *wx=x=SPA(wp,x); if(t&&TYPESNE(t,AT(x))){RZ(*we=cvt(t,e)); RZ(*wx=cvt(t,x));}
- RZ(*za=ifb(f+r,b));
+ if(!sa||m!=AN(aa)||memcmp(u,AV(aa),m*SZI))RZ(a=jtreaxis(jt,vec(INT,m,u),a));
+ if(!sw||n!=AN(wa)||memcmp(v,AV(wa),n*SZI))RZ(w=jtreaxis(jt,vec(INT,n,v),w));
+ ap=PAV(a); *ae=e=SPA(ap,e); *ay=SPA(ap,i); *ax=x=SPA(ap,x); if(t&&TYPESNE(t,AT(x))){RZ(*ae=jtcvt(jt,t,e)); RZ(*ax=jtcvt(jt,t,x));}
+ wp=PAV(w); *we=e=SPA(wp,e); *wy=SPA(wp,i); *wx=x=SPA(wp,x); if(t&&TYPESNE(t,AT(x))){RZ(*we=jtcvt(jt,t,e)); RZ(*wx=jtcvt(jt,t,x));}
+ RZ(*za=jtifb(jt,f+r,b));
  return 1;
 }
 */
@@ -79,11 +79,11 @@ static B jtvaspeqprep(J jt,A a,A w,I t,I f,I r,A*ae,A*ay,A*ax,A*we,A*wy,A*wx,A*z
  GATV0(x,B01,n,1); b=BAV(x); memset(b,C0,n);
  if(sa){p=PAV(a); aa=SPA(p,a); v=AV(aa); DO(AN(aa), b[v[i]]=1;);}
  if(sw){p=PAV(w); wa=SPA(p,a); v=AV(wa); DO(AN(wa), b[v[i]]=1;);}
- q=ifb(n,b); makewritable(q) *za=q;  // avoid readonly result
- if(!sa||!equ(q,aa))RZ(a=reaxis(q,a));
- if(!sw||!equ(q,wa))RZ(w=reaxis(q,w));
- p=PAV(a); *ae=e=SPA(p,e); *ay=SPA(p,i); *ax=x=SPA(p,x); if(t&&TYPESNE(t,AT(x))){RZ(*ae=cvt(t,e)); RZ(*ax=cvt(t,x));}
- p=PAV(w); *we=e=SPA(p,e); *wy=SPA(p,i); *wx=x=SPA(p,x); if(t&&TYPESNE(t,AT(x))){RZ(*we=cvt(t,e)); RZ(*wx=cvt(t,x));}
+ q=jtifb(jt,n,b); makewritable(q) *za=q;  // avoid readonly result
+ if(!sa||!equ(q,aa))RZ(a=jtreaxis(jt,q,a));
+ if(!sw||!equ(q,wa))RZ(w=jtreaxis(jt,q,w));
+ p=PAV(a); *ae=e=SPA(p,e); *ay=SPA(p,i); *ax=x=SPA(p,x); if(t&&TYPESNE(t,AT(x))){RZ(*ae=jtcvt(jt,t,e)); RZ(*ax=jtcvt(jt,t,x));}
+ p=PAV(w); *we=e=SPA(p,e); *wy=SPA(p,i); *wx=x=SPA(p,x); if(t&&TYPESNE(t,AT(x))){RZ(*we=jtcvt(jt,t,e)); RZ(*wx=jtcvt(jt,t,x));}
  return 1;
 }
 
@@ -126,7 +126,7 @@ static A jtvaspeq(J jt,A a,A w,C id,VF ado,I cv,I t,I zt,I f,I r){A ae,ax,ay,we,
  else if(ab&&n>j){c=n-j; ICPY(zyv,v,c*yc); I lrc=((AHDR2FN*)ado)(~(c*xc),(I)1,aev,wxv,zxv,jt); rc=lrc<rc?lrc:rc;}
  GA(ze,zt,1,0,0); I lrc=((AHDR2FN*)ado)((I)1,(I)1,aev,wev,AV(ze),jt); rc=lrc<rc?lrc:rc;
  ASSERT((rc&255)==0,rc);
- if(cv&VRI+VRD){A e,x; RZ(e=cvz(cv,ze)); RZ(x=cvz(cv,zx)); if(TYPESEQ(AT(e),AT(x))){ze=e; zx=x;}}
+ if(cv&VRI+VRD){A e,x; RZ(e=jtcvz(jt,cv,ze)); RZ(x=jtcvz(jt,cv,zx)); if(TYPESEQ(AT(e),AT(x))){ze=e; zx=x;}}
  GASPARSE(z,STYPE(AT(zx)),1,AR(a),AS(a));
  zp=PAV(z); 
  SPB(zp,a,za); SPB(zp,e,ze); SPB(zp,i,zy); SPB(zp,x,zx);

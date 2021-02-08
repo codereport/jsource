@@ -11,7 +11,7 @@
 // AM(self) is the block for u
 static A jtlev1(J jt,    A w,A self){
  A fs=(A)AM(self); AF fsf=FAV(fs)->valencefns[0];  // fetch verb and routine for leaf nodes.  Do it early
- if(levelle(w,AT(self))){return CALL1(fsf,w,fs);} else{STACKCHKOFL return every(w,self);}  // since this recurs, check stack
+ if(levelle(w,AT(self))){return CALL1(fsf,w,fs);} else{STACKCHKOFL return jtevery(jt,w,self);}  // since this recurs, check stack
 }
 
 // Like monad, but AT(self) is left trigger level, AC(self) is the right trigger level 
@@ -40,7 +40,7 @@ static A jtlcapco1(J jt,    A w,A self){A z;V*v=FAV(self);
  FAV(recurself)->valencefns[0]=jtlev1;  // fill in function pointer
  AT(recurself)=efflev(0L,v->fgh[2],w);  // fill in the trigger level
  FAV(recurself)->flag=VFLAGNONE;  // fill in the inplaceability flags
- return lev1(w,recurself);
+ return jtlev1(jt,w,recurself);
 }
 
 static A jtlcapco2(J jt,A a,A w,A self){A z;V*v=FAV(self);
@@ -57,7 +57,7 @@ static A jtlcapco2(J jt,A a,A w,A self){A z;V*v=FAV(self);
 // result is 0 for error or a harmless small result (0) which will be collected at higher levels and discarded
 static A jtscfn(J jt,    A w,A self){
  if(!w) return 0;
- if(AS(AKASA(self))[0]==AN(AKASA(self))){I n=AN(AKASA(self)); RZ(AKASA(self)=ext(1,AKASA(self))); AS(AKASA(self))[0]=n;}  // if current buffer is full, reallocate.  ext resets AS
+ if(AS(AKASA(self))[0]==AN(AKASA(self))){I n=AN(AKASA(self)); RZ(AKASA(self)=jtext(jt,1,AKASA(self))); AS(AKASA(self))[0]=n;}  // if current buffer is full, reallocate.  ext resets AS
  AAV(AKASA(self))[AS(AKASA(self))[0]++]=incorp(w);  // copy in new result pointer
  return num(0);  // harmless good return
 }
@@ -65,7 +65,7 @@ static A jtscfn(J jt,    A w,A self){
 // u S: n - like L: except for calling the logger
 static A jtlevs1(J jt,    A w,A self){
  A fs=(A)AM(self); AF fsf=FAV(fs)->valencefns[0];  // fetch verb and routine for leaf nodes.  Do it early
- if(levelle(w,AT(self))){RZ(scfn(CALL1(fsf,w,fs),self));} else{STACKCHKOFL RZ(every(w,self));}  // since this recurs, check stack
+ if(levelle(w,AT(self))){RZ(jtscfn(jt,CALL1(fsf,w,fs),self));} else{STACKCHKOFL RZ(jtevery(jt,w,self));}  // since this recurs, check stack
  return num(0);
 }
 
@@ -75,7 +75,7 @@ static A jtlevs2(J jt,A a,A w,A self){
  // If both args are ready to process, do so.  Otherwise, drop down a level and try again.  If one arg is ready but the other isn't,
  // add a boxing level before we drop down so that when it is processed it will be the first level at which it became active.  This result could
  // be achieved by altering the left/right levels, but Roger did it this way.
- if(aready&wready){RZ(scfn(CALL2(fsf,a,w,fs),self));
+ if(aready&wready){RZ(jtscfn(jt,CALL2(fsf,a,w,fs),self));
  }else{STACKCHKOFL RZ(every2(aready?box(a):a,wready?box(w):w,self));}  // since this recurs, check stack
  // We do this with the if statement rather than a computed branch in the hope that the CPU can detect patterns in the conditions.
  // There may be a structure in the user's data that could be detected for branch prediction.
@@ -94,7 +94,7 @@ static A jtscapco1(J jt,    A w,A self){PROLOG(555);A x,z=0;I m;V*v=FAV(self);
  // in the middle of processing some other verb, and that verb might EPILOG and free the new buffer allocated by the extension.  Thus, we have to ra() the later buffers, and the easiest way to handle
  // things is to ra() the first one too.  When we fa() at the end we may be freeing a different buffer, but that's OK since all have been raised.
  ras(AKASA(recurself));
- x=levs1(w,recurself);
+ x=jtlevs1(jt,w,recurself);
  if(x){AT(AKASA(recurself))=BOX; AN(AKASA(recurself))=AS(AKASA(recurself))[0]; z=ope(AKASA(recurself)); AT(AKASA(recurself))=INT;} // if no error, turn the extendable list into a list of boxes (fixing AN), and open it
  fa(AKASA(recurself));  // match the ra(), but not necessarily on the same block
  // always returns non-pristine

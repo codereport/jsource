@@ -286,7 +286,7 @@ PREFIXPFX(bw1111pfxI, UI,UI, BW1111, bw1111II,return EVOK;)
 
 static A jtprefix(J jt,    A w,A self){DECLF;I r;
  r = (RANKT)jt->ranks; RESETRANK; if(r<AR(w)){return rank1ex(w,self,r,jtprefix);}
- return eachl(apv(SETIC(w,r),1L,1L),w,atop(fs,ds(CTAKE)));
+ return eachl(apv(SETIC(w,r),1L,1L),w,jtatop(jt,fs,ds(CTAKE)));
 }    /* f\"r w for general f */
 
 static A jtgprefix(J jt,    A w,A self){A h,*hv,z,*zv;I m,n,r;
@@ -295,7 +295,7 @@ static A jtgprefix(J jt,    A w,A self){A h,*hv,z,*zv;I m,n,r;
  SETIC(w,n); 
  h=VAV(self)->fgh[2]; hv=AAV(h); m=AN(h);
  GATV0(z,BOX,n,1); zv=AAV(z); I imod=0;
- DO(n, imod=(imod==m)?0:imod; RZ(zv[i]=df1(h,take(sc(1+i),w),hv[imod])); ++imod;);
+ DO(n, imod=(imod==m)?0:imod; RZ(zv[i]=df1(h,jttake(jt,sc(1+i),w),hv[imod])); ++imod;);
  return ope(z);
 }    /* g\"r w for gerund g */
 
@@ -337,9 +337,9 @@ static A jtinfix(J jt,A a,A w,A self){PROLOG(0018);DECLF;A x,z;I m;
  if(a==ainf)m=IMAX;
  else RE(m=i0(vib(a))); // get infix length as an integer
  // Create table of infix positions
- RZ(x=ifxi(m,w));
+ RZ(x=jtifxi(jt,m,w));
  // If there are infixes, apply fs@:jtseg (ac2 creates an A verb for jtseg)
- if(AS(x)[0])z=eachl(x,w,atop(fs,ac2(jtseg)));
+ if(AS(x)[0])z=eachl(x,w,jtatop(jt,fs,ac2(jtseg)));
  else{A s;I r, rr;
   // No infixes.  Create a cell of fills, apply fs to it, add a leading axis of 0 to the result
   // create a block containing the shape of the fill-cell.  The fill-cell is a list of items of y,
@@ -347,9 +347,9 @@ static A jtinfix(J jt,A a,A w,A self){PROLOG(0018);DECLF;A x,z;I m;
   // r = rank of w, rr=rank of list of items of w, s is block for list of length rr; copy shape of r; override #items of infix
   r=AR(w); rr=MAX(1,r); GATV0(s,INT,rr,1); if(r)MCISH(AV(s),AS(w),r); AV(s)[0]=0>m?0:m==IMAX?1+SETIC(w,r):m;
   // Create fill-cell of shape s; apply u to it
-  RZ(df1(x,reshape(s,filler(w)),fs));
+  RZ(df1(x,jtreshape(jt,s,filler(w)),fs));
   // Prepend leading axis of 0 to the result
-  z=reshape(over(zeroionei(0),shape(jt,x)),x);
+  z=jtreshape(jt,over(zeroionei(0),shape(jt,x)),x);
  } 
  EPILOG(z);
 }
@@ -362,16 +362,16 @@ static A jtinfix2(J jt,    A w,A self){PROLOG(0019);A f;
 
 static A jtginfix(J jt,A a,A w,A self){A h,*hv,x,z,*zv;I d,m,n;
  RE(m=i0(vib(a))); 
- RZ(x=ifxi(m,w));
+ RZ(x=jtifxi(jt,m,w));
  h=VAV(self)->fgh[2]; hv=AAV(h); d=AN(h);
  if(SETIC(x,n)){
   GATV0(z,BOX,n,1); zv=AAV(z);
-  DO(n, RZ(zv[i]=df1(h,seg(from(sc(i),x),w),hv[i%d])););
+  DO(n, RZ(zv[i]=df1(h,jtseg(jt,jtfrom(jt,sc(i),x),w),hv[i%d])););
   return ope(z);
  }else{A s;
   RZ(s=AR(w)?shape(jt,w):ca(iv0)); AV(s)[0]=ABS(m);
-  RZ(df1(x,reshape(s,filler(w)),*hv));
-  return reshape(over(zeroionei(0),shape(jt,x)),x);
+  RZ(df1(x,jtreshape(jt,s,filler(w)),*hv));
+  return jtreshape(jt,over(zeroionei(0),shape(jt,x)),x);
 }}
 
 // *** start of non-sparse code ***
@@ -404,7 +404,7 @@ static A jtinfixprefix2(J jt,A a,A w,A self){F2PREFIP;PROLOG(00202);A fs;I cger[
   // not gerund: OK to test fs
   fs=FAV(self)->fgh[0];  // the verb we will execute
  }else{
-  RZ(fs=createcycliciterator((A)&cger, self));  // use a verb that cycles through the gerunds.  NOTE cger is incompletely filled in & must be read with FAV()
+  RZ(fs=jtcreatecycliciterator(jt,(A)&cger, self));  // use a verb that cycles through the gerunds.  NOTE cger is incompletely filled in & must be read with FAV()
  }
  V *vf=FAV(fs);  // if verb, point to its u operand
  if(vf->mr>=AR(w)){
@@ -548,10 +548,10 @@ static A jtinfixprefix2(J jt,A a,A w,A self){F2PREFIP;PROLOG(00202);A fs;I cger[
   // for prefix, 0 items of fill
   // for infix +, invabs items of fill
   // for infix -, 0 items of fill
-  RZ(z=reitem(zeroionei(0),w));  // create 0 items of the type of w
-  if(ilnval>=0){ilnval=(ilnval==IMAX)?(wi+1):ilnval; RZ(z=take(sc(ilnval),z));}    // if items needed, create them.  For compatibility, treat _ as 1 more than #items in w
+  RZ(z=jtreitem(jt,zeroionei(0),w));  // create 0 items of the type of w
+  if(ilnval>=0){ilnval=(ilnval==IMAX)?(wi+1):ilnval; RZ(z=jttake(jt,sc(ilnval),z));}    // if items needed, create them.  For compatibility, treat _ as 1 more than #items in w
   WITHDEBUGOFF(zz=CALL1(f1,z,fs);) if(EMSK(jt->jerr)&EXIGENTERROR)RZ(zz); RESETERR;
-  RZ(zz=reshape(over(zeroionei(0),shape(jt,zz?zz:mtv)),zz?zz:zeroionei(0)));
+  RZ(zz=jtreshape(jt,over(zeroionei(0),shape(jt,zz?zz:mtv)),zz?zz:zeroionei(0)));
  }
 
 // result is now in zz
@@ -575,16 +575,16 @@ static A jtpscan(J jt,    A w,A self){A z;I f,n,r,t,wn,wr,*ws,wt;
  // m = #cells, c=#atoms/cell, n = #items per cell
  SETICFR(w,f,r,n);  // wn=0 doesn't matter
  // If there are 0 or 1 items, or w is empty, return the input unchanged, except: if rank 0, return (($w),1)($,)w - if atomic op, do it right here, otherwise call the routine to get the shape of result cell
- if(((1-n)&-wn)>=0){return r?RETARG(w):reshape(apip(shape(jt,w),zeroionei(1)),w);}  // n<2 or wn=0
+ if(((1-n)&-wn)>=0){return r?RETARG(w):jtreshape(jt,apip(shape(jt,w),zeroionei(1)),w);}  // n<2 or wn=0
  VARPS adocv; varps(adocv,self,wt,1);  // fetch info for f/\ and this type of arg
  if(!adocv.f)return IRS1(w,self,r,jtinfixprefix1,z);  // if there is no special function for this type, do general scan
  // Here is the fast special reduce for +/ etc
  I d,m; PROD(m,f,ws); PROD1(d,r-1,ws+f+1);   // m=#scans, d=#atoms in a cell of each scan
- if((t=atype(adocv.cv))&&TYPESNE(t,wt))RZ(w=cvt(t,w));  // convert input if necessary
+ if((t=atype(adocv.cv))&&TYPESNE(t,wt))RZ(w=jtcvt(jt,t,w));  // convert input if necessary
  // if inplaceable, reuse the input area for the result
  if(ASGNINPLACESGN(SGNIF((I)jtinplace,JTINPLACEWX)&SGNIF(adocv.cv,VIPOKWX),w))z=w; else GA(z,rtype(adocv.cv),wn,wr,ws);
  I rc=((AHDRPFN*)adocv.f)(d,n,m,AV(w),AV(z),jt);
- if(255&rc){jsignal(rc); return (rc>=EWOV)?IRS1(w,self,r,jtpscan,z):0;} else return adocv.cv&VRI+VRD?cvz(adocv.cv,z):z;
+ if(255&rc){jsignal(rc); return (rc>=EWOV)?IRS1(w,self,r,jtpscan,z):0;} else return adocv.cv&VRI+VRD?jtcvz(jt,adocv.cv,z):z;
 }    /* f/\"r w atomic f main control */
 
 static A jtinfixd(J jt,A a,A w,A self){A fs,z;C*x,*y;I c=0,d,k,m,n,p,q,r,*s,wr,*ws,wt,zc; 
@@ -790,13 +790,13 @@ static A jtmovfslash(J jt,A a,A w,A self){A x,z;B b;C id,*wv,*zv;I d,m,m0,p,t,wk
  zt=rtype(adocv.cv); RESETRANK;
  GA(z,zt,d*zi,MAX(1,AR(w)),AS(w)); AS(z)[0]=zi;
  if(d*zi==0){return z;}  // mustn't call adocv on empty arg!
- if((t=atype(adocv.cv))&&TYPESNE(t,wt)){RZ(w=cvt(t,w)); wt=AT(w);}
+ if((t=atype(adocv.cv))&&TYPESNE(t,wt)){RZ(w=jtcvt(jt,t,w)); wt=AT(w);}
  zv=CAV(z); zk=d<<bplg(zt); 
  wv=CAV(w); wk=(0<=m0?d:d*m)<<bplg(wt);
  I rc=EVOK;
  DQ(zi-b, I lrc=((AHDRPFN*)adocv.f)(d,m,(I)1,wv,zv,jt); rc=lrc<rc?lrc:rc; zv+=zk; wv+=wk;);
  if(b){m=p-m*(zi-1); if(m>1){I lrc=((AHDRPFN*)adocv.f)(d,m,(I)1,wv,zv,jt); rc=lrc<rc?lrc:rc;}else{copyTT(zv,wv,d,zt,wt);}}
- if(255&rc){jsignal(rc); if(rc>=EWOV){RESETERR; return movfslash(a,cvt(FL,w),self);}return 0;}else return z;
+ if(255&rc){jsignal(rc); if(rc>=EWOV){RESETERR; return movfslash(a,jtcvt(jt,FL,w),self);}return 0;}else return z;
 }    /* a f/\w */
 
 static A jtiota1(J jt,    A w,A self){I j; return apv(SETIC(w,j),1L,1L);}
@@ -804,7 +804,7 @@ static A jtiota1(J jt,    A w,A self){I j; return apv(SETIC(w,j),1L,1L);}
  A jtbslash(J jt, A w){A f;AF f1=jtinfixprefix1,f2=jtinfixprefix2;V*v;I flag=FAV(ds(CBSLASH))->flag;
 ;
  if(!w) return 0;
- if(NOUN&AT(w))return fdef(0,CBSLASH,VERB, jtinfixprefix1,jtinfixprefix2, w,0L,fxeachv(1L,w), VGERL|flag, RMAX,0L,RMAX);
+ if(NOUN&AT(w))return fdef(0,CBSLASH,VERB, jtinfixprefix1,jtinfixprefix2, w,0L,jtfxeachv(jt,1L,w), VGERL|flag, RMAX,0L,RMAX);
  v=FAV(w);  // v is the u in u\ y
  switch(v->id){
   case CPOUND:
