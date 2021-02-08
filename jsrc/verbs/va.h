@@ -2,7 +2,6 @@
 /* Licensed use only. Any other use is in violation of copyright.          */
 /*                                                                         */
 /* Verbs: Macros and Defined Constants for Atomic (Scalar) Verbs           */
-
                                     /*   cv - control vector               */
 // bits 0-1 kept open for jtflags
 // bits 2-3 should be forced to 1 jtflags;
@@ -51,25 +50,19 @@ enum {
     VIPOKRNKAX = 32,  // filled by va2 if the ranks allow inplacing a
     VIPOKRNKA  = ((I)1 << VIPOKRNKAX),
 };
-
 #define VXX  (Vxx | VXCHASVTYPE | ((I)XMEXACT << VXCVTYPEX)) // exact conversion
 #define VXEQ (Vxx | VXCHASVTYPE | ((I)XMEXMT << VXCVTYPEX))  // convert to XNUM for = ~:
 #define VXCF (Vxx | VXCHASVTYPE | ((I)XMCEIL << VXCVTYPEX))  // convert to XNUM ceiling/floor
 #define VXFC (Vxx | VXCHASVTYPE | ((I)XMFLR << VXCVTYPEX))   // convert to XNUM floor/ceiling
 #define VFRCEXMT (VXCHASVTYPE | ((I)XMEXMT << VXCVTYPEX))    // set in arg to jtcvt(jt,) to do rounding for = ~:,
                                                              // if the conversion happens to be to XNUM
-
 // Extract the argument-conversion type from cv coming from the table
 #define atype(x) (((x)&VARGMSK)>>VARGX)
-
 // Extract the result type from cv coming from the table
 #define rtype(x) (((x)&VRESMSK)>>VRESX)
-
 #define NOT(v)          ((v)^0x0101010101010101)
-
 #define SNOT(v)         ((v)^0x0101)
 #define INOT(v)         ((v)^0x01010101)
-
 #define AND(u,v)        ( u &  v)
 #define GT(u,v)         ( u & ~v)
 #define LT(u,v)         (~u &  v)
@@ -80,7 +73,6 @@ enum {
 #define EQ(u,v)         NOT( NE(u,v))
 #define NOR(u,v)        NOT( OR(u,v))
 #define NAND(u,v)       NOT(AND(u,v))
-
 #define IAND            AND
 #define IGT             GT
 #define ILT             LT
@@ -91,7 +83,6 @@ enum {
 #define IEQ(u,v)        INOT(INE(u,v))
 #define INOR(u,v)       INOT(IOR(u,v))
 #define INAND(u,v)      INOT(IAND(u,v))
-
 #define SAND            AND
 #define SGT             GT
 #define SLT             LT
@@ -102,7 +93,6 @@ enum {
 #define SEQ(u,v)        SNOT(INE(u,v))
 #define SNOR(u,v)       SNOT(IOR(u,v))
 #define SNAND(u,v)      SNOT(IAND(u,v))
-
 // comparisons one value at a time
 #define BAND(u,v)       (u && v)
 #define BGT(u,v)        (u >  v)
@@ -114,11 +104,9 @@ enum {
 #define BEQ(u,v)        (u == v)
 #define BNOR(u,v)       (!(u||v))
 #define BNAND(u,v)      (!(u&&v))
-
 // comparisons between LIT types, one word at a time producing bits in v.  work is destroyed
 #define CMPEQCC(u,v)    (work=(u)^(v), ZBYTESTOZBITS(work), work=~work, work&=VALIDBOOLEAN)
 #define CMPNECC(u,v)    (work=(u)^(v), ZBYTESTOZBITS(work), work&=VALIDBOOLEAN)
-
 #define PLUS(u,v)       ((u)+   (v))
 #define PLUSO(u,v)      ((u)+(D)(v))
 #define MINUS(u,v)      ((u)-   (v))
@@ -126,51 +114,40 @@ enum {
 #define TYMES(u,v)      ((u)&&(v)?dmul2(u,v):0)
 #define TYMESO(u,v)     ((u)&&(v)?dmul2(u,(D)v):0)
 #define DIV(u,v)        ((u)||(v)?ddiv2(u,v):0)
-
 #define SBORDER(v)      (SBUV(v)->order)
-
 #define SBNE(u,v)       (SBORDER(u)!=SBORDER(v))
 #define SBLT(u,v)       (SBORDER(u)< SBORDER(v))
 #define SBLE(u,v)       (SBORDER(u)<=SBORDER(v))
 #define SBGT(u,v)       (SBORDER(u)> SBORDER(v))
 #define SBGE(u,v)       (SBORDER(u)>=SBORDER(v))
-
 #define SBMIN(u,v)      (SBORDER(u)<=SBORDER(v)?(u):(v))
 #define SBMAX(u,v)      (SBORDER(u)>=SBORDER(v)?(u):(v))
-
 #define BOV(exp)        if(exp){er=EWOV; break;}
-
 #define BW0000(x,y)     (0)
 #define BW0001(x,y)     (   (x)& (y) )
 #define BW0010(x,y)     (   (x)&~(y) )
 #define BW0011(x,y)     (x)
-
 #define BW0100(x,y)     (  ~(x)& (y) )
 #define BW0101(x,y)     (y)
 #define BW0110(x,y)     (   (x)^ (y) )
 #define BW0111(x,y)     (   (x)| (y) )
-
 #define BW1000(x,y)     (~( (x)| (y)))
 #define BW1001(x,y)     (~( (x)^ (y)))
 #define BW1010(x,y)     (       ~(y) )
 #define BW1011(x,y)     (   (x)|~(y) )
-
 #define BW1100(x,y)     (  ~(x)      )
 #define BW1101(x,y)     (  ~(x)| (y) )
 #define BW1110(x,y)     (~( (x)& (y)))
 #define BW1111(x,y)     (-1)
-
 typedef I AHDR1FN(JST * RESTRICT jt,I n,void* z,void* x);
 typedef I AHDR2FN(I n,I m,void* RESTRICTI x,void* RESTRICTI y,void* RESTRICTI z,J jt);
 typedef I AHDRPFN(I d,I n,I m,void* RESTRICTI x,void* RESTRICTI z,J jt);  // these 3 must be the same for now, for VARPS
 typedef I AHDRRFN(I d,I n,I m,void* RESTRICTI x,void* RESTRICTI z,J jt);
 typedef I AHDRSFN(I d,I n,I m,void* RESTRICTI x,void* RESTRICTI z,J jt);
-
 #define AMON(f,Tz,Tx,stmt) I f(JST * RESTRICT jt,I n,Tz* z,Tx* x){DQ(n, {stmt} ++z; ++x;); return EVOK;}
 #define AMONPS(f,Tz,Tx,prefix,stmt,suffix) I f(JST * RESTRICT jt,I n,Tz* z,Tx* x){prefix DQ(n, {stmt} ++z; ++x;) suffix}
 #define HDR1JERR I rc=jt->jerr; jt->jerr=0; return rc?rc:EVOK;   // translate no error to no-error value
 #define HDR1JERRNAN I rc=jt->jerr; rc=NANTEST?EVNAN:rc; jt->jerr=0; return rc?rc:EVOK;   // translate no error to no-error value
-
 enum {
     // value in vaptr[]
     VA2CBW0000  = 1,
@@ -221,7 +198,6 @@ enum {
     VA1CROOT   = 37,
     VA1CLOG    = 38,
 };
-
 /*
  b    1 iff cell rank of a <= cell rank of w
  m    # atoms of in the cell with the smaller rank
@@ -230,7 +206,6 @@ enum {
  x    pointer to a      atoms
  y    pointer to w      atoms
 */
-
 #define AIFX(f, Tz, Tx, Ty, symb)                                            \
     I f(I n, I m, Tx* RESTRICTI x, Ty* RESTRICTI y, Tz* RESTRICTI z, J jt) { \
         Tx u;                                                                \
@@ -243,7 +218,6 @@ enum {
             DQ(m, v = *y++; DQ(n, *z++ = *x++ symb v;));                     \
         return EVOK;                                                         \
     }
-
 // suff must return the correct result
 #define APFX(f, Tz, Tx, Ty, pfx, pref, suff)                                                                     \
     I f(I n, I m, Tx* RESTRICTI x, Ty* RESTRICTI y, Tz* RESTRICTI z, J jt) {                                     \
@@ -253,7 +227,6 @@ enum {
           DQ(m, u = *x++; DQC(n, *z++ = pfx(u, *y); y++;)) else DQ(m, v = *y++; DQ(n, *z++ = pfx(*x, v); x++;)); \
         suff                                                                                                     \
     }
-
 // support intolerant comparisons explicitly
 #define ACMP0(f, Tz, Tx, Ty, pfx, pfx0)                                       \
     I f(I n, I m, Tx* RESTRICTI x, Ty* RESTRICTI y, B* RESTRICTI z, J jt) {   \
@@ -275,9 +248,7 @@ enum {
         }                                                                     \
         return EVOK;                                                          \
     }
-
 // n and m are never 0.
-
 #define BPFXNOAVX(f, pfx, bpfx, pfyx, bpfyx, fuv, decls, decls256)                                                      \
     I f(I n, I m, void* RESTRICTI x, void* RESTRICTI y, void* RESTRICTI z, J jt) {                                      \
         I u, v;                                                                                                         \
@@ -308,6 +279,5 @@ enum {
         }                                                                                                               \
         return EVOK;                                                                                                    \
     }
-
 #define BPFXAVX2(f,pfx,bpfx,pfyx,bpfyx,fuv,decls,decls256) BPFXNOAVX(f,pfx,bpfx,pfyx,bpfyx,fuv,decls,decls256)
 #define BPFX(f,pfx,bpfx,pfyx,bpfyx,fuv,decls,decls256) BPFXNOAVX(f,pfx,bpfx,pfyx,bpfyx,fuv,decls,decls256)
