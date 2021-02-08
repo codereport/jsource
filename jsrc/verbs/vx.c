@@ -323,18 +323,9 @@ static X jtxlog1(J jt,    X w){B b;I c;
 }
 
 static D jtxlogd1(J jt,X w){ASSERT(0<=XDIG(w),EWIMAG); return xlogabs(w);}
-
 static Z jtxlogz1(J jt,X w){Z z; z.re=xlogabs(w); z.im=0>XDIG(w)?PI:0.0; return z;}
 
  A jtxroota(J jt,A a,A w){A z; GAT0(z,XNUM,1L,0L); XAV(z)[0]=rifvsdebug(xroot(XAV(a)[0],XAV(w)[0])); RNE(z);}
-
- X jtxfact(J jt,    X w){I n;
- n=AV(w)[0];
- if(n==XPINF||n==XNINF)return vci(XPINF);
- RE(n=xint(w)); 
- if(0>n)return rifvsdebug(vci(n&1?XPINF:XNINF));
- return rifvsdebug(xev1(apv(n,1L,1L),"*/"));
-}
 
 static A jtpiev(J jt,I n,X b){A e;I ek,i,n1=n-1;X bi,e0,e1,*ev,t;
  GATV0(e,XNUM,n,1); ev=XAV(e);
@@ -391,7 +382,6 @@ AMONPS( logX, X,X, , *z= rifvsdebug(xlog1(*x)); , HDR1JERR)
 AMONPS(logXD, D,X, , *z=xlogd1(*x); , HDR1JERR)
 AMON(logXZ, Z,X, *z=xlogz1(*x);)
 AMONPS( absX, X,X, , *z=   rifvs(mag(*x)); , HDR1JERR)
-AMONPS(factX, X,X, , *z= rifvsdebug(xfact(*x)); , HDR1JERR)
 AMONPS( pixX, X,X, , *z=   rifvsdebug(xpi(*x)); , HDR1JERR)
 
 

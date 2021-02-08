@@ -1079,7 +1079,6 @@
 #define xev1(x,y)                   jtxev1(jt,(x),(y))
 #define xev2(x,y,z)                 jtxev2(jt,(x),(y),(z))
 #define xexp(x,y)                   jtxexp(jt,(x),(y))
-#define xfact(x)                    jtxfact(jt,(x))
 #define xgcd(x,y)                   jtxgcd(jt,(x),(y))
 #define xint(x)                     jtxint(jt,(x))
 #define xlcm(x,y)                   jtxlcm(jt,(x),(y))

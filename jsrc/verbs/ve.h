@@ -19,8 +19,6 @@ extern I ceilQ(JST* RESTRICT jt, I n, X* z, Q* x);
 extern I expX(JST* RESTRICT jt, I n, X* z, X* x);
 extern I factD(JST* RESTRICT jt, I n, D* z, D* x);
 extern I factI(JST* RESTRICT jt, I n, I* z, I* x);
-extern I factQ(JST* RESTRICT jt, I n, X* z, Q* x);
-extern I factX(JST* RESTRICT jt, I n, X* z, X* x);
 extern I factZ(JST* RESTRICT jt, I n, Z* z, Z* x);
 extern I floorQ(JST* RESTRICT jt, I n, X* z, Q* x);
 extern I logX(JST* RESTRICT jt, I n, X* z, X* x);

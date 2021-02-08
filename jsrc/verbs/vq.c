@@ -101,21 +101,16 @@ static Q jtqpow(J jt,Q a,Q w){PROLOG(0089);B c;I p,q,s;Q t,z;X d;
 I jtqcompare(J jt,Q a,Q w){return QCOMP(a,w);}
 
 static X jtqbin(J jt,Q a,Q w){ASSERT(QX1(a.d)&&QX1(w.d),EWIRR); return 0; }
-
 static D jtqlogd1(J jt,Q w){ASSERT(0<=XDIG(w.n),EWIMAG); return xlogabs(w.n)-xlogabs(w.d);}
-
 static Z jtqlogz1(J jt,Q w){Z z; z.re=xlogabs(w.n)-xlogabs(w.d); z.im=0>XDIG(w.n)?PI:0.0; return z;}
 
-
 #define QSQRT(x)    z->n=rifvsdebug(xsqrt(x->n)); z->d=rifvsdebug(xsqrt(x->d)); {I rc; if(rc=jt->jerr){RESETERR; return rc;}}
-#define QFACT(x)    ASSERTWR(QX1(x->d),EWIRR); *z=xfact(x->n);
 
 AMON(floorQ, X,Q, *z=rifvsdebug(xdiv(x->n,x->d,XMFLR ));)
 AMON( ceilQ, X,Q, *z=rifvsdebug(xdiv(x->n,x->d,XMCEIL));)
 AMON(  sgnQ, X,Q, *z=rifvsdebug(xsgn(x->n));            )
 AMON(  absQ, Q,Q, z->n=rifvs(mag(x->n)); z->d=x->d;)
 AMONPS( sqrtQ, Q,Q, , QSQRT(x) , HDR1JERR)
-AMONPS( factQ, X,Q, , QFACT(x) , HDR1JERR)
 AMONPS( logQD, D,Q, , *z=qlogd1(*x); , HDR1JERR)
 AMONPS( logQZ, Z,Q, , *z=qlogz1(*x); , HDR1JERR)
 
