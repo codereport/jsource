@@ -67,8 +67,8 @@ static I bw1010insC(I d,I n,I m,UC* RESTRICTI x,UC* RESTRICTI z,J jt){I k=d*(n-1
 #define BITWISE(f,T,op)  \
  A f(J jt,A a,A w){A z;I *av,k=0,x;T*wv,y,*zv;             \
   F2PREFIP;  /* kludge we allow inplace call but we don't honor it yet */ \
-  if(!(INT&AT(a)))RZ(a=jtcvt(jt,INT,a));                                    \
-  if(!(INT&AT(w)))RZ(w=jtcvt(jt,INT,w));                                    \
+  if(!(INT&AT(a)))RZ(a=cvt(INT,a));                                    \
+  if(!(INT&AT(w)))RZ(w=cvt(INT,w));                                    \
   av=(I*)AV(a);                          \
   wv=(T*)AV(w);                 \
   ASSERTAGREE(AS(a),AS(w),MIN(AR(a),AR(w)));                      \
@@ -104,7 +104,7 @@ static AHDR2FN* bwI[16]={(AHDR2FN*)bw0000II,(AHDR2FN*)bw0001II,(AHDR2FN*)bw0010I
  A jtbitwisechar(J jt,A a,A w,A self){DECLFG;A*p,x,y,z;B b;I j,m,n,zn;AHDR2FN* ado;
  x=a;
  y=w;
- if((-AN(a)&-AN(w)&-(AT(a)&AT(w))&LIT)>=0)return jtfrom(jt,df2(z,jtindexof(jt,ds(CALP),a),jtindexof(jt,ds(CALP),w),fs),ds(CALP));  // empty or not LIT
+ if((-AN(a)&-AN(w)&-(AT(a)&AT(w))&LIT)>=0)return from(df2(z,indexof(ds(CALP),a),indexof(ds(CALP),w),fs),ds(CALP));  // empty or not LIT
  b=AR(a)<=AR(w); zn=AN(b?w:a); m=AN(b?a:w); n=zn/m;
  ASSERTAGREE(AS(a),AS(w),MIN(AR(a),AR(w)));
  j=i0(VAV(fs)->fgh[1])-16;
@@ -149,7 +149,7 @@ static AHDRRFN* bwinsI[16]={(AHDRRFN*)bw0000insI,(AHDRRFN*)bw0001insI,(AHDRRFN*)
 
  A jtbitwiseinsertchar(J jt,    A w,A self){A fs,z;I d,j,n,r,wn,wr,zatoms;UC*u,*v,*wv,x,*zv;AHDRRFN* ado;
  wr=AR(w); wn=AN(w); SETIC(w,n); z=VAV(self)->fgh[0]; fs=VAV(z)->fgh[0];
- if((-(wn)&(SZI-n)&SGNIF(AT(w),LITX))>=0)return jtfrom(jt,df1(z,jtindexof(jt,ds(CALP),w),fs),ds(CALP));  // revert if not wn!=0 & n>SZI & LIT
+ if((-(wn)&(SZI-n)&SGNIF(AT(w),LITX))>=0)return from(df1(z,indexof(ds(CALP),w),fs),ds(CALP));  // revert if not wn!=0 & n>SZI & LIT
  PROD(d,wr-1,AS(w)+1); zatoms=d; wv=CAV(w); j=i0(VAV(fs)->fgh[1])-16; ado=(AHDRRFN*)bwinsC[j];  // d=#atoms in an item of a cell.  There is only 1 cell here (rank _)
  if(1==wr)switch(j){   // d==1 here
   case  0: return scc(0);

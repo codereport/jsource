@@ -17,7 +17,7 @@
 
  A jtdirectdefs(J jt, A w){B b; RE(b=b0(w)); jt->directdef=b; return mtm;}  // scaf 9!:63
 
- A jtboxq(J jt, A w){ASSERTMTV(w); return jtstr(jt,sizeof(jt->bx),jt->bx);}
+ A jtboxq(J jt, A w){ASSERTMTV(w); return str(sizeof(jt->bx),jt->bx);}
 
  A jtboxs(J jt, A w){A x;
  RZ(w=vs(w));
@@ -30,7 +30,7 @@
 
  A jtcts(J jt, A w){D d;
  ASSERT(!AR(w),EVRANK);
- RZ(w=jtcvt(jt,FL,w)); d=DAV(w)[0];
+ RZ(w=cvt(FL,w)); d=DAV(w)[0];
  ASSERT(0<=d,EVDOMAIN);
  ASSERT(d<=5.820766091e-11,EVDOMAIN);
  jt->cctdefault=jt->cct=1.0-d;
@@ -44,7 +44,7 @@
  n=(UC)AN(w);
  ASSERT(1>=AR(w),EVRANK);
  ASSERT(all1(nubsieve(w)),EVDOMAIN);
- ASSERT(all1(jteps(jt,w,eval("1 2 4 5 6"))),EVINDEX);
+ ASSERT(all1(eps(w,eval("1 2 4 5 6"))),EVINDEX);
  *jt->disp=n; DO(n, jt->disp[1+i]=(UC)IAV(w)[i];);
  return mtv;
 }
@@ -122,7 +122,7 @@
  return mtv;
 }
 
- A jtposq(J jt, A w){ASSERTMTV(w); return jtv2(jt,jt->pos[0],jt->pos[1]);}
+ A jtposq(J jt, A w){ASSERTMTV(w); return v2(jt->pos[0],jt->pos[1]);}
 
  A jtposs(J jt, A w){I n,p,q,*v;
  RZ(w=vi(w));

@@ -285,7 +285,7 @@ enum {
     LPAR = ((I)1L << LPARX),    // I  left  parenthesis
                                 //    NOTE: LPAR is set in an ADV value to indicate that the value
                                 //    is nameless, see below
-                                //    note: LPAR used as flag to jtcvt(jt,) see below
+                                //    note: LPAR used as flag to cvt() see below
     CONJ = ((I)1L << CONJX),    // V  conjunction
                                 //    CONJ must be 1 bit below RPAR, with no parsable type
                                 //    (including any flags that might be set, see below) higher than
@@ -353,9 +353,9 @@ enum {
     // Restriction: MARK must be reserved for use as BOXMULTIASSIGN because of how parser tests for
     // it
 
-    // ** NOTE!! bits 28-30 are used in the call to jtcvt(jt,) (arg only) to override the convsion type
+    // ** NOTE!! bits 28-30 are used in the call to cvt() (arg only) to override the convsion type
     // for XNUMs
-    XCVTXNUMORIDEX = LPARX,  // in jtcvt(jt,), indicates that forced precision for result is present
+    XCVTXNUMORIDEX = LPARX,  // in cvt(), indicates that forced precision for result is present
     XCVTXNUMCVX    = CONJX,
     // ** ADV type can have the following information flag set
     NAMELESSMODX   = LPARX,

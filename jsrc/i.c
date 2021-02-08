@@ -72,7 +72,7 @@ B jtglobinit(J jt){A x,y;A *oldpushx=jt->tnextpushp;
  memcpy(jt->prioritytype,prioritytype,sizeof(jt->prioritytype));  // may not be needed
  jt->adbreakr=jt->adbreak=&breakdata; /* required for ma to work */
  meminit();  /* required for ma to work */
- RZ(y=rifvs(jtstr(jt,1L,"z")));     ACX(y); AS(y)[0]=BUCKETXLOC(1,"z");   // for paths, the shape holds the bucketx
+ RZ(y=rifvs(str(1L,"z")));     ACX(y); AS(y)[0]=BUCKETXLOC(1,"z");   // for paths, the shape holds the bucketx
  GA(x,BOX, 1,1,0     ); ACX(x); AAV(x)[0]=y;                zpath      =x;  AFLAG(zpath) |= (AT(zpath)&TRAVERSIBLE);  // ensure that traversible types in pst are marked traversible, so tpush/ra/fa will not recur on them
  RZ(mnuvxynam[0]=makename("m"));
  RZ(mnuvxynam[1]=makename("n"));

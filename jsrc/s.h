@@ -29,7 +29,7 @@
    d=j+LAV0(jt->symp);                                            \
    k=d->next;                                                \
    if((d->name)&&(d->val)&&(SELECT)){                        \
-    if(m==AS(z)[0]){RZ(z=jtext(jt,0,z)); zv=(m*(COL))+(T*)AV(z);}   \
+    if(m==AS(z)[0]){RZ(z=ext(0,z)); zv=(m*(COL))+(T*)AV(z);}   \
     {PROCESS;}                                               \
     ++m;                                                     \
   }}}                                                         \

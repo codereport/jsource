@@ -18,7 +18,7 @@ static A jtfitct(J jt,A a,A w,I cno){V*sv;
  ASSERT(!AR(w),EVRANK);
  sv=FAV(a);
  // Get the tolerance, as a float
- D d; if(w==num(0))d=0.0; else{if(!(AT(w)&FL))RZ(w=jtcvt(jt,FL,w)); d=DAV(w)[0];}  // 0 is usual; otherwise it better be FL, but convert in case its value is 0
+ D d; if(w==num(0))d=0.0; else{if(!(AT(w)&FL))RZ(w=cvt(FL,w)); d=DAV(w)[0];}  // 0 is usual; otherwise it better be FL, but convert in case its value is 0
  ASSERT(0<=d&&d<5.82076609134675e-11,EVDOMAIN);  // can't be greater than 2^_34
  A fn = fdef(0,CFIT,VERB,(AF)(jtfitct1),aff2[cno],a,w ,0L,sv->flag&(VIRS1|VIRS2|VJTFLGOK1|VJTFLGOK2|VISATOMIC1),(I)(sv->mr),lrv(sv),rrv(sv));  // preserve INPLACE flags
  RZ(fn); FAV(fn)->localuse.lD = 1.0-d; return fn;  // save the fit value in this verb
@@ -27,12 +27,12 @@ static A jtfitct(J jt,A a,A w,I cno){V*sv;
 static A jtfitexp2(J jt,A a,A w,A self){
  F2RANK(0,0,jtfitexp2,self);
  ASSERT(0<=i0(w)&&!jt->jerr,EVDOMAIN);
- A z; return jtaslash(jt,CSTAR,plus(a,df2(z,iota(w),FAV(self)->fgh[1],slash(ds(CSTAR)))));
+ A z; return aslash(CSTAR,plus(a,df2(z,iota(w),FAV(self)->fgh[1],slash(ds(CSTAR)))));
 }    /* a ^!.s w */
 
 static A jtfitpoly2(J jt,A a,A w,A self){I j;
  F2RANK(1,0,jtfitpoly2,self);
- A z; return jtaslash(jt,CPLUS,tymes(a,jtascan(jt,CSTAR,shift1(plus(w,df2(z,IX(SETIC(a,j)),FAV(self)->fgh[1],slash(ds(CSTAR))))))));
+ A z; return aslash(CPLUS,tymes(a,ascan(CSTAR,shift1(plus(w,df2(z,IX(SETIC(a,j)),FAV(self)->fgh[1],slash(ds(CSTAR))))))));
 }    /* a p.!.s w */
 
 static A jtfitfill1(J jt,    A w,A self){DECLFG;F1PREFIP;A z; jt->fill=gs; z=CALL1IP(f1,  w,fs); jt->fill=0; return z;}  // gs cannot be virtual
@@ -45,8 +45,8 @@ static A jtfitpp1(J jt,    A w,A self){DECLFG;A z;C d[8],*s=3+jt->pp;
  return z;
 }
 
-static A jtfitf1(J jt,    A w,A self){V*sv=FAV(self); A z; return df1(z,  w,jtfit(jt,jtfix(jt,sv->fgh[0],zeroionei(0)),sv->fgh[1]));}
-static A jtfitf2(J jt,A a,A w,A self){V*sv=FAV(self); A z; return df2(z,a,w,jtfit(jt,jtfix(jt,sv->fgh[0],zeroionei(0)),sv->fgh[1]));}
+static A jtfitf1(J jt,    A w,A self){V*sv=FAV(self); A z; return df1(z,  w,fit(fix(sv->fgh[0],zeroionei(0)),sv->fgh[1]));}
+static A jtfitf2(J jt,A a,A w,A self){V*sv=FAV(self); A z; return df2(z,a,w,fit(fix(sv->fgh[0],zeroionei(0)),sv->fgh[1]));}
 
 // Fit conjunction u!.n
 // Preserve IRS1/IRS2 from u in result verb (exception: CEXP)

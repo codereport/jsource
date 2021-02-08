@@ -140,7 +140,7 @@ do{
       // nonempty cells. we must convert the actual data.  See which we have to change
       if(zt==zzt){
        // Here the type of z must change.  Just convert it to type zt
-       ASSERT(z=jtcvt(jt,zt,z),EVDOMAIN);
+       ASSERT(z=cvt(zt,z),EVDOMAIN);
       }else{I zzatomshift=CTTZ(bp(zzt)); I zexpshift = CTTZ(bp(zt))-zzatomshift;  // convert zz from type zzt to type zt.  shift for size of atom; expansion factor of the conversion, as shift amount
        // here the old values in zz must change.  Convert them.  Use the special flag to cvt that converts only as many atoms as given
 #if !ZZSTARTATEND

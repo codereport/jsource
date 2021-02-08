@@ -16,11 +16,11 @@ static void jtep(J jt,I n,C*s){I m;
  if(0<m){memcpy(jt->etx+jt->etxn,s,m); jt->etxn+=m;}
 }
 
-static void jteputs(J jt,C*s){jtep(jt,(I)strlen(s),s);}
+static void jteputs(J jt,C*s){ep((I)strlen(s),s);}
 
-static void jteputc(J jt,C c){jtep(jt,1L,&c);}
+static void jteputc(J jt,C c){ep(1L,&c);}
 
-static void jteputl(J jt,A w){jtep(jt,AN(w),CAV(w)); eputc(CLF);}
+static void jteputl(J jt,A w){ep(AN(w),CAV(w)); eputc(CLF);}
 
 static void jteputv(J jt,A w){I m=NETX-jt->etxn; if(m>0){jt->etxn+=thv(w,MIN(m,200),jt->etx+jt->etxn);}} // stop writing when there is no room in the buffer
      /* numeric vector w */
@@ -57,7 +57,7 @@ static void jtdspell(J jt,C id,A w,I nflag){C c,s[5];
   eputs(s+!(c==CESC1||c==CESC2||nflag&&((ctype[(UC)c]&~CA)==0)));
 }}
 
-static A jtsfn0(J jt, A w){return jtsfn(jt,0,w);}  // return string form of full name for a NAME block
+static A jtsfn0(J jt, A w){return sfn(0,w);}  // return string form of full name for a NAME block
 EVERYFS(sfn0overself,jtsfn0,jtover,0,VFLAGNONE)
 
 // print a noun; nflag if space needed before name/numeric; return new value of nflag
@@ -73,9 +73,9 @@ static I jtdisp(J jt,A w,I nflag){B b=1&&AT(w)&NAME+NUMERIC;
  case BOXX:
   if(!(AT(w)&BOXMULTIASSIGN)){eputs(" a:"+!nflag); break;}
   // If this is an array of names, turn it back into a character string with spaces between
-  else{w=curtail(raze(every2(jtevery(jt,w,(A)&sfn0overself),chrspace,(A)&sfn0overself)));}  // }: (string&.> names) ,&.> ' '  then fall through to display it
- case LITX:  jteputq(jt,w,nflag);                break;
- case NAMEX: jtep(jt,AN(w),NAV(w)->s);     break;
+  else{w=curtail(raze(every2(every(w,(A)&sfn0overself),chrspace,(A)&sfn0overself)));}  // }: (string&.> names) ,&.> ' '  then fall through to display it
+ case LITX:  eputq(w,nflag);                break;
+ case NAMEX: ep(AN(w),NAV(w)->s);     break;
  case LPARX: eputc('(');              break;
  case RPARX: eputc(')');              break;
  case ASGNX: dspell(CAV(w)[0],w,nflag);       break;
@@ -91,7 +91,7 @@ static void jtseeparse(J jt,DC d){A*v;I m;
  m=d->dcix-1;         /* index of active token when error found */
  I nflag=0;
  I m1=jt->etxn;  // starting index of sentence text
- DO(d->dcn, if(i==m)eputs("    "); nflag=jtdisp(jt,v[i],nflag););  // display tokens with spaces before error
+ DO(d->dcn, if(i==m)eputs("    "); nflag=disp(v[i],nflag););  // display tokens with spaces before error
  if(jt->etxn<NETX){  // if we overran the buffer, don't reformat it.  Reformatting requires splitting to words
   // We displayed the sentence.  See if it contains (9 :'string'); if so, replace with {{ string }}
   fauxblock(fauxw); A z=(A)&fauxw;
@@ -103,32 +103,32 @@ static void jtseeparse(J jt,DC d){A*v;I m;
 
  A jtunparse(J jt, A w){A*v,z;
  jt->etxn=0; I nflag=0;
- v=AAV(w); DO(AN(w), nflag=jtdisp(jt,v[i],nflag);); z=jtstr(jt,jt->etxn,jt->etx);
+ v=AAV(w); DO(AN(w), nflag=disp(v[i],nflag);); z=str(jt->etxn,jt->etx);
  jt->etxn=0;
  return z;
 }
 
 // Display DCCALL stack frame
 static void jtseecall(J jt,DC d){A a;
- if(a=d->dca)jtep(jt,AN(a),NAV(a)->s); 
- jtefmt(jt,d->dcx&&d->dcy?"[:"FMTI"]":"["FMTI"]",lnumsi(d));
+ if(a=d->dca)ep(AN(a),NAV(a)->s); 
+ efmt(d->dcx&&d->dcy?"[:"FMTI"]":"["FMTI"]",lnumsi(d));
 }    /* display function line */
 
 // display error-message line
 static void jtdhead(J jt,C k,DC d){C s[]="    "; 
  s[0]=d&&d->dcsusp?'*':'|'; 
- jtep(jt,k+1L,s);
+ ep(k+1L,s);
 }    /* preface stack display line */
 
 void jtdebdisp(J jt,DC d){A*x,y;I e,t;
  e=d->dcj;   // error #, or 0 if no error (if DCCALL or DCPARSE frame)
  t=d->dctype;
- if(e&&!jt->etxn&&(t==DCPARSE||t==DCCALL)){x=e+AAV(jt->evm); jtdhead(jt,0,0L); eputl(*x);}  // if error, display error header
+ if(e&&!jt->etxn&&(t==DCPARSE||t==DCCALL)){x=e+AAV(jt->evm); dhead(0,0L); eputl(*x);}  // if error, display error header
  switch(t){
-  case DCPARSE:  jtdhead(jt,3,d); seeparse(d); if(NETX==jt->etxn)--jt->etxn; eputc(CLF); break;
-  case DCCALL:   jtdhead(jt,0,d); seecall(d);  eputc(CLF); break;
-  case DCSCRIPT: jtdhead(jt,0,d); jtefmt(jt,"[-"FMTI"] ", d->dcn-1); 
-                 if(0<=d->dcm){y=*(d->dcm+AAV(jt->slist)); jtep(jt,AN(y),CAV(y));}
+  case DCPARSE:  dhead(3,d); seeparse(d); if(NETX==jt->etxn)--jt->etxn; eputc(CLF); break;
+  case DCCALL:   dhead(0,d); seecall(d);  eputc(CLF); break;
+  case DCSCRIPT: dhead(0,d); efmt("[-"FMTI"] ", d->dcn-1); 
+                 if(0<=d->dcm){y=*(d->dcm+AAV(jt->slist)); ep(AN(y),CAV(y));}
                  eputc(CLF); break;
 }}
 
@@ -152,19 +152,19 @@ static B jtdebsi1(J jt,DC d){I t;
 
  A jtdbstackz(J jt, A w){A y,z; 
  RE(dbstack(w)); 
- RZ(y=jtstr(jt,jt->etxn,jt->etx)); 
+ RZ(y=str(jt->etxn,jt->etx)); 
  jt->etxn=0; 
- return df1(z,y,jtcut(jt,ds(CLEFT),num(-2)));
+ return df1(z,y,cut(ds(CLEFT),num(-2)));
 }    /* 13!:18  SI stack as result */
 
 
 static void jtjsigstr(J jt,I e,I n,C*s){
  if(jt->jerr){jt->curname=0; return;}   // clear error-name indicator
  if(e!=EVSTOP)moveparseinfotosi(jt); jt->jerr=(C)e; jt->jerr1=(C)e; jt->etxn=0;  // before we display, move error info from parse variables to si; but if STOP, it's already installed
- jtdhead(jt,0,0L);
+ dhead(0,0L);
  if(jt->uflags.us.cx.cx_c.db&&!spc()){eputs("ws full (can not suspend)"); eputc(CLF); jt->uflags.us.cx.cx_c.db=0;}
- jtep(jt,n,s);
- if(jt->curname){if(!jt->uflags.us.cx.cx_c.glock){eputs(": "); jtep(jt,AN(jt->curname),NAV(jt->curname)->s);} jt->curname=0;}
+ ep(n,s);
+ if(jt->curname){if(!jt->uflags.us.cx.cx_c.glock){eputs(": "); ep(AN(jt->curname),NAV(jt->curname)->s);} jt->curname=0;}
  eputc(CLF);
  if(n&&!jt->uflags.us.cx.cx_c.glock)debsi1(jt->sitop);
  jt->etxn1=jt->etxn;
@@ -193,14 +193,14 @@ void jtjsignal(J jt,I e){A x;
 void jtjsignal3(J jt,I e,A w,I j){
  if(jt->jerr)return;
  moveparseinfotosi(jt); jt->jerr=(C)e; jt->jerr1=(C)e; jt->etxn=0;  // before we display, move error info from parse variables to si
- jtdhead(jt,0,0L);
+ dhead(0,0L);
  if(jt->uflags.us.cx.cx_c.db&&!spc()){eputs("ws full (can not suspend)"); eputc(CLF); jt->uflags.us.cx.cx_c.db=0;}
  eputl(AAV(jt->evm)[jt->jerr]);
  if(!jt->uflags.us.cx.cx_c.glock){
-  if(e==EVCTRL){jtdhead(jt,3,0L); jtefmt(jt,"["FMTI"]",j); eputl(w);}
+  if(e==EVCTRL){dhead(3,0L); efmt("["FMTI"]",j); eputl(w);}
   else{
-   jtdhead(jt,3,0L); eputl(w);
-   jtdhead(jt,3,0L); DQ(j, eputc(' ');); eputc('^'); eputc(CLF);
+   dhead(3,0L); eputl(w);
+   dhead(3,0L); DQ(j, eputc(' ');); eputc('^'); eputc(CLF);
   }
   debsi1(jt->sitop);
  }
@@ -213,16 +213,16 @@ static A jtdbsig(J jt,A a,A w){I e;
  RZ(w=vi(w)); e=AV(w)[0]; 
  ASSERT(1<=e,EVDOMAIN);
  ASSERT(e<=255,EVLIMIT);
- if(a||e>NEVM){if(!a)a=mtv; RZ(a=vs(a)); jtjsig(jt,e,a);} else jsignal(e);
+ if(a||e>NEVM){if(!a)a=mtv; RZ(a=vs(a)); jsig(e,a);} else jsignal(e);
  return 0;
 }    
 
- A jtdbsig1(J jt, A w){return jtdbsig(jt,0L,w);}   /* 13!:8  signal error */
- A jtdbsig2(J jt,A a,A w){return jtdbsig(jt,a, w);}
+ A jtdbsig1(J jt, A w){return dbsig(0L,w);}   /* 13!:8  signal error */
+ A jtdbsig2(J jt,A a,A w){return dbsig(a, w);}
 
 
  A jtdberr(J jt, A w){ASSERTMTV(w); return sc(jt->jerr1);}           /* 13!:11 last error number   */
- A jtdbetx(J jt, A w){ASSERTMTV(w); return jtstr(jt,jt->etxn1,jt->etx);}  /* 13!:12 last error text     */
+ A jtdbetx(J jt, A w){ASSERTMTV(w); return str(jt->etxn1,jt->etx);}  /* 13!:12 last error text     */
 
 
 A jtjerrno(J jt){

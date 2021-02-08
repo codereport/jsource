@@ -35,8 +35,8 @@ static A jtssdo(J jt,A a,A w,C c){DC d,e;I n;
  switch(c){
   case SSSTEPOVER: DGOTO(d,a?n:d->dcix) jt->dbss=d->dcss=c; jt->dbssd=d;   break;
   case SSSTEPINTO: DGOTO(d,a?n:d->dcix) jt->dbss=d->dcss=c; jt->dbssd=d;   break;
-  case SSSTEPOUT:  DGOTO(d,a?n:d->dcix) jt->dbss=d->dcss=0;   jtssnext(jt,d,c); break;
-  case SSCUTBACK:  DGOTO(d,-1) jt->dbss=d->dcss=0; e=jtssnext(jt,d,c); if(e)DGOTO(e,e->dcix) break;  // terminate current verb and back up in caller
+  case SSSTEPOUT:  DGOTO(d,a?n:d->dcix) jt->dbss=d->dcss=0;   ssnext(d,c); break;
+  case SSCUTBACK:  DGOTO(d,-1) jt->dbss=d->dcss=0; e=ssnext(d,c); if(e)DGOTO(e,e->dcix) break;  // terminate current verb and back up in caller
  }
  fa(jt->dbssexec); if(AN(w)){RZ(ras(w)); jt->dbssexec=w;}else jt->dbssexec=0;
  return mtm;                                     /* 0 return to terminate call      */

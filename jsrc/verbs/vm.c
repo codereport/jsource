@@ -117,14 +117,14 @@ A jtlogar2(J jt,A a,A w){
     
  A jtroot(J jt,A a,A w){A z;I t;
  RE(t=maxtype(AT(a),AT(w)));
- A ma=a; if(TYPESNE(t,AT(a)))RZ(ma=jtcvt(jt,t,a));
- A mw=w; if(TYPESNE(t,AT(w)))RZ(mw=jtcvt(jt,t,w));
+ A ma=a; if(TYPESNE(t,AT(a)))RZ(ma=cvt(t,a));
+ A mw=w; if(TYPESNE(t,AT(w)))RZ(mw=cvt(t,w));
  if(!(t&XNUM))return expn2(mw,recip(ma));  // not inplaceable - could be IMAG
  z=rank2ex0(ma,mw,UNUSED_VALUE,jtxroota);
  switch(jt->jerr){
-  case EWIMAG: RESETERR; return expn2(jtcvt(jt,CMPX,w),recip(jtcvt(jt,CMPX,a)));
+  case EWIMAG: RESETERR; return expn2(cvt(CMPX,w),recip(cvt(CMPX,a)));
   case EWRAT: 
-  case EWIRR:  RESETERR; return expn2(jtcvt(jt,FL,  w),recip(jtcvt(jt,FL,  a)));
+  case EWIRR:  RESETERR; return expn2(cvt(FL,  w),recip(cvt(FL,  a)));
   default:     return z;
 }}
 
@@ -134,7 +134,7 @@ A jtlogar2(J jt,A a,A w){
  A jtrdot2(J jt,A a,A w){return tymes(a,rdot1(w));}
 
 
- A jtpolar(J jt, A w){ A z; return jtcvt(jt,SPARSE&AT(w)?SFL:FL,df2(z,jtv2(jt,10L,12L),w,qq(ds(CCIRCLE),jtv2(jt,1L,0L))));}
+ A jtpolar(J jt, A w){ A z; return cvt(SPARSE&AT(w)?SFL:FL,df2(z,v2(10L,12L),w,qq(ds(CCIRCLE),v2(1L,0L))));}
 
  A jtrect(J jt, A w){A e,z;B b;I r,t;P*wp,*zp;Z c;
  t=AT(w); r=AR(w); RESETRANK;   // Run as infinite rank

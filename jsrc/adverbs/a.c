@@ -23,12 +23,12 @@ static A swap2(J jt,A a,A w,A self){DECLF; F2PREFIP; jtinplace = (J)(intptr_t)((
   return fdef(0,CTILDE,VERB,(AF)(swap1),(AF)(swap2),w,0L,0L,flag,(I)(RMAX),(I)(rr(w)),(I)(lr(w)));
  }else{
   // evoke.  Ii must be LIT and convertible to ASCII.
-  if((C2T+C4T)&AT(w))RZ(w=jtcvt(jt,LIT,w)) else ASSERT(LIT&AT(w),EVDOMAIN);
+  if((C2T+C4T)&AT(w))RZ(w=cvt(LIT,w)) else ASSERT(LIT&AT(w),EVDOMAIN);
   ASSERT(1>=AR(w),EVRANK);  // list or atom only
   n=AN(w); s=CAV(w); 
-  ASSERT(jtvnm(jt,n,s),EVILNAME);   // valid name
-  RZ(y=jtnfs(jt,AN(w),CAV(w)));  // create a NAME block for the string
-  return jtnameref(jt,y,jt->locsyms);  // Create a name-reference pointing to the name
+  ASSERT(vnm(n,s),EVILNAME);   // valid name
+  RZ(y=nfs(AN(w),CAV(w)));  // create a NAME block for the string
+  return nameref(y,jt->locsyms);  // Create a name-reference pointing to the name
 }}
 
 
@@ -37,7 +37,7 @@ static const B booltab[64]={
  1,0,0,0, 1,0,0,1, 1,0,1,0, 1,0,1,1,  1,1,0,0, 1,1,0,1, 1,1,1,0, 1,1,1,1,
 };
 
-static A jtbdot2(J jt,A a,A w,A self){return jtfrom(jt,plusA(duble(jtcvt(jt,B01,a)),jtcvt(jt,B01,w)),FAV(self)->fgh[2]);}  // dyad b. (2*a + w) { h
+static A jtbdot2(J jt,A a,A w,A self){return from(plusA(duble(cvt(B01,a)),cvt(B01,w)),FAV(self)->fgh[2]);}  // dyad b. (2*a + w) { h
 
 static A jtbdot1(J jt,    A w,A self){return bdot2(num(0),w,self);}
 
@@ -50,7 +50,7 @@ static A jtbasis1(J jt,    A w,A self){DECLF;A z;D*x;I j;V*v;
    j=v->mr; x[0]=j<=-RMAX?-inf:j>=RMAX?inf:j;
    j=lrv(v); x[1]=j<=-RMAX?-inf:j>=RMAX?inf:j;
    j=rrv(v); x[2]=j<=-RMAX?-inf:j>=RMAX?inf:j;
-   return jtpcvt(jt,INT,z);
+   return pcvt(INT,z);
   case -1: return lrep(inv (fs));
   case  1: return lrep(iden(fs));
   default: ASSERT(0,EVDOMAIN);
@@ -64,7 +64,7 @@ static A jtbasis1(J jt,    A w,A self){DECLF;A z;D*x;I j;V*v;
  else DQ(n, j=*v++; ASSERT(BETWEENC(j,-16,15),EVINDEX););  // j must be initialized because the loop might not run
  if(j<16){
   GAT0(b,B01,64,2); AS(b)[0]=16; AS(b)[1]=4; memcpy(AV(b),booltab,64L);
-  RZ(h=rifvs(jtcant2(jt,IX(AR(w)),jtfrom(jt,w,b))));  // h is an array representing b.  One cell for each atom of b; cell is 4 values
+  RZ(h=rifvs(cant2(IX(AR(w)),from(w,b))));  // h is an array representing b.  One cell for each atom of b; cell is 4 values
   return fdef(0,CBDOT,VERB, jtbdot1,jtbdot2, 0L,w,h, VFLAGNONE, RMAX,0L,0L);
  }else switch(j){
   case 32: return fdef(0,CBDOT,VERB, jtbitwise1,jtbitwiserotate, 0L,w,0L, VASGSAFE|VJTFLGOK2, 0L,0L,0L);
@@ -105,7 +105,7 @@ static A jtmemoput(J jt,I x,I y,A self,A z){A*cv,h,*hv,q;I *jv,k,m,*mv,*v;
  // If the buffer must be extended, allocate a new one
  if(m<=2**mv){A cc,*cu=cv,jj;I i,*ju=jv,n=m,*u;A* _ttop=jt->tnextpushp;
   FULLHASHSIZE(2**mv,BOXSIZE,1,0,m);  // # boxes to allocate to get at least 2**mv slots
-  RZ(jj=mkwris(jtreshape(jt,jtv2(jt,m,2L),sc(IMIN)))); jv= AV(jj);  // init arg table to IMIN
+  RZ(jj=mkwris(reshape(v2(m,2L),sc(IMIN)))); jv= AV(jj);  // init arg table to IMIN
   GATV0(cc,BOX,m,1);                  cv=AAV(cc);
   for(i=0,u=ju;i<n;++i,u+=2){if(IMIN!=*u){  // copy the hash - does this lose the buffer for an arg of IMIN?
    // the current slot in the memo table is filled.  Rehash it, and move the args into *jv and the values into *cv
@@ -130,7 +130,7 @@ static I jtint0(J jt,A w){A x;
   case B01: return (I)BAV(w)[0];
   case INT: return AV(w)[0];
  }
- x=jtpcvt(jt,INT,w); 
+ x=pcvt(INT,w); 
  return x&&INT&AT(x)?AV(x)[0]:IMIN;
 }
 
@@ -156,7 +156,7 @@ static A jtmemo2(J jt,A a,A w,A self){DECLF;A z;I x,y;
  v=FAV(w); FULLHASHSIZE(30,BOXSIZE,1,0,m);  // m = # items to allocate
  GAT0(h,BOX,3,1); hv=AAV(h);
  GAT0(q,INT,1,0); AV(q)[0]=0;        hv[0]=q;  // is modified; musn't use sc()
- RZ(q=jtreshape(jt,jtv2(jt,m,2L),sc(IMIN)));  RZ(hv[1]=mkwris(q));
+ RZ(q=reshape(v2(m,2L),sc(IMIN)));  RZ(hv[1]=mkwris(q));
  GATV0(q,BOX,m,1);                 hv[2]=q;
  EPILOG(fdef(0,CMCAP,VERB,jtmemo1,jtmemo2,w,0L,h,0L,v->mr,lrv(v),rrv(v)));
  // Now we have converted the verb result to recursive usecount, and gotten rid of the pending tpops for the components of h

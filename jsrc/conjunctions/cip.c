@@ -188,10 +188,10 @@ I cachedmmult(J jt,D* av,D* wv,D* zv,I m,I n,I p,I flgs){D c[(CACHEHEIGHT+1)*CAC
  // ?r = rank, ?t = type (but set Boolean type for an empty argument)
  ar=AR(a); at=AT(a); at=AN(a)?at:B01;
  wr=AR(w); wt=AT(w); wt=AN(w)?wt:B01;
- if(((at|wt)&SPARSE)!=0)return jtpdtsp(jt,a,w);  // Transfer to sparse code if either arg sparse
- if(((at|wt)&XNUM+RAT)!=0)return df2(z,a,w,jtatop(jt,slash(ds(CPLUS)),qq(ds(CSTAR),jtv2(jt,1L,AR(w)))));  // On indirect numeric, execute as +/@(*"(1,(wr)))
- if(B01&(at|wt)&&TYPESNE(at,wt)&&((ar-1)|(wr-1)|(AN(a)-1)|(AN(w)-1))>=0)return jtpdtby(jt,a,w);   // If exactly one arg is boolean, handle separately
- {t=maxtyped(at,wt); if(!TYPESEQ(t,AT(a))){RZ(a=jtcvt(jt,t,a));} if(!TYPESEQ(t,AT(w))){RZ(w=jtcvt(jt,t,w));}}  // convert args to compatible precisions, changing a and w if needed.  B01 if both empty
+ if(((at|wt)&SPARSE)!=0)return pdtsp(a,w);  // Transfer to sparse code if either arg sparse
+ if(((at|wt)&XNUM+RAT)!=0)return df2(z,a,w,atop(slash(ds(CPLUS)),qq(ds(CSTAR),v2(1L,AR(w)))));  // On indirect numeric, execute as +/@(*"(1,(wr)))
+ if(B01&(at|wt)&&TYPESNE(at,wt)&&((ar-1)|(wr-1)|(AN(a)-1)|(AN(w)-1))>=0)return pdtby(a,w);   // If exactly one arg is boolean, handle separately
+ {t=maxtyped(at,wt); if(!TYPESEQ(t,AT(a))){RZ(a=cvt(t,a));} if(!TYPESEQ(t,AT(w))){RZ(w=cvt(t,w));}}  // convert args to compatible precisions, changing a and w if needed.  B01 if both empty
  ASSERT(t&NUMERIC,EVDOMAIN);
  // Allocate result area and calculate loop controls
  // m is # 1-cells of a
@@ -204,7 +204,7 @@ I cachedmmult(J jt,D* av,D* wv,D* zv,I m,I n,I p,I flgs){D c[(CACHEHEIGHT+1)*CAC
  if(AN(z)==0)return z;  // return without computing if result is empty
  if(!p){memset(AV(z),C0,AN(z)<<bplg(AT(z))); return z;}  // if dot-products are all 0 length, set them all to 0
  // If either arg is atomic, reshape it to a list
- if(!ar!=!wr){if(ar)RZ(w=jtreshape(jt,sc(p),w)) else RZ(a=jtreshape(jt,sc(p),a));}
+ if(!ar!=!wr){if(ar)RZ(w=reshape(sc(p),w)) else RZ(a=reshape(sc(p),a));}
  p1=p-1;
  // Perform the inner product according to the type
  switch(CTTZNOFLAG(t)){
@@ -262,7 +262,7 @@ oflo2:
     if(m)RZ(jtsumattymesprods(jt,INT,voidAV(w),voidAV(a),p,1,1,1,m,voidAV(z)));  // use +/@:*"1 .  Exchange w and a because a is the repeated arg in jtsumattymesprods.  If error, clear z (should not happen here)
    }else{
      // full matrix products
-     RZ(a=jtcvt(jt,FL,a)); RZ(w=jtcvt(jt,FL,w)); cachedmmult(jt,DAV(a),DAV(w),DAV(z),m,n,p,0);  // Do our matrix multiply - converting   TUNE
+     RZ(a=cvt(FL,a)); RZ(w=cvt(FL,w)); cachedmmult(jt,DAV(a),DAV(w),DAV(z),m,n,p,0);  // Do our matrix multiply - converting   TUNE
     // If the result has a value that has been truncated, we should keep it as a float.  Unfortunately, there is no way to be sure that some
     // overflow has not occurred.  So we guess.  If the result is much less than the dynamic range of a float integer, convert the result
     // to integer.
@@ -347,8 +347,8 @@ static A jtipbx(J jt,A a,A w,C c,C d){A g=0,x0,x1,z;B*av,*av0,b,*v0,*v1,*zv;C c0
   // unsupported g.  Set c0/c1 to invalid and execute g to find x0/x1
   c0=c1=-1; g=ds(d); RZ(df2(x0,num(0),w,g)); RZ(df2(x1,num(0),w,g));
  }else{
-  RZ(x0=c0==IPBX0?jtreshape(jt,sc(n),num(0)):c0==IPBX1?jtreshape(jt,sc(c==CNE?AN(w):n),num(1)):c0==IPBXW?w:__not(w));
-  RZ(x1=c1==IPBX0?jtreshape(jt,sc(n),num(0)):c1==IPBX1?jtreshape(jt,sc(c==CNE?AN(w):n),num(1)):c1==IPBXW?w:__not(w));
+  RZ(x0=c0==IPBX0?reshape(sc(n),num(0)):c0==IPBX1?reshape(sc(c==CNE?AN(w):n),num(1)):c0==IPBXW?w:__not(w));
+  RZ(x1=c1==IPBX0?reshape(sc(n),num(0)):c1==IPBX1?reshape(sc(c==CNE?AN(w):n),num(1)):c1==IPBXW?w:__not(w));
  }
  // av->a arg, zv->result, v0->input for 0, v1->input for 1
  av0=BAV(a); zv=BAV(z); v0=BAV(x0); v1=BAV(x1);
@@ -387,13 +387,13 @@ static A jtdotprod(J jt,A a,A w,A self){A fs,gs;C c;I r;V*sv;
  if((SGNIF(AT(a)&AT(w),B01X)&-AN(a)&-AN(w)&-(FAV(gs)->flag&VISATOMIC2))<0&&CSLASH==ID(fs)&&  // fs is c/
      (c=FAV(FAV(fs)->fgh[0])->id,c==CSTARDOT||c==CPLUSDOT||c==CNE))return ipbx(a,w,c,FAV(gs)->id);  // [+.*.~:]/ . boolean
 r=lr(gs);   // left rank of v
- A z; return df2(z,a,w,jtatop(jt,fs,qq(gs,jtv2(jt,r==RMAX?r:1+r,RMAX))));  // inner product according to the Dic
+ A z; return df2(z,a,w,atop(fs,qq(gs,v2(r==RMAX?r:1+r,RMAX))));  // inner product according to the Dic
 }
 
 
 static A jtminors(J jt, A w){A d,z;
  RZ(d=apvwr(3L,-1L,1L)); AV(d)[0]=0;
- return jtdrop(jt,d,df2(z,num(1),w,bsdot(ds(CLEFT))));  // 0 0 1 }. 1 [\. w
+ return drop(d,df2(z,num(1),w,bsdot(ds(CLEFT))));  // 0 0 1 }. 1 [\. w
 }
 
 static A jtdet(J jt,    A w,A self){DECLFG;A h=sv->fgh[2];I c,r,*s;
@@ -401,10 +401,10 @@ static A jtdet(J jt,    A w,A self){DECLFG;A h=sv->fgh[2];I c,r,*s;
  A z; if(h&&1<r&&2==s[r-1]&&s[r-2]==s[r-1])return df1(z,w,h);
  F1RANK(2,jtdet,self);
  c=2>r?1:s[1];
- return !c ? df1(z,mtv,slash(gs)) : 1==c ? CALL1(f1,ravel(w),fs) : h && c==s[0] ? gaussdet(w) : jtdetxm(jt,w,self);
+ return !c ? df1(z,mtv,slash(gs)) : 1==c ? CALL1(f1,ravel(w),fs) : h && c==s[0] ? gaussdet(w) : detxm(w,self);
 }
 
- A jtdetxm(J jt,    A w,A self){A z; return dotprod(IRS1(w,0L,1L,jthead,z),jtdet(jt,minors(w),self),self);}
+ A jtdetxm(J jt,    A w,A self){A z; return dotprod(IRS1(w,0L,1L,jthead,z),det(minors(w),self),self);}
      /* determinant via expansion by minors. w is matrix with >1 columns */
 
  A jtdot(J jt,A a,A w){A f,h=0;AF f2=jtdotprod;C c,d;

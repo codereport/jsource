@@ -118,8 +118,8 @@ A jtspella(J jt,A w){C c,s[3];V*v;
  v=FAV(w); c=v->id;
  if(c==CFCONS)return apip(thorn1(v->fgh[2]),chrcolon);
  spellit(c,s); 
- return jtstr(jt,1+!!s[1]+!!s[2],s);
+ return str(1+!!s[1]+!!s[2],s);
 }
 
 // returns the string for primitive whose pseudochar is c - 1, 2, or 3 characters long
-A jtspellout(J jt,C c){C s[3]; spellit(c,s); return jtstr(jt,1+!!s[1]+!!s[2],s);}
+A jtspellout(J jt,C c){C s[3]; spellit(c,s); return str(1+!!s[1]+!!s[2],s);}

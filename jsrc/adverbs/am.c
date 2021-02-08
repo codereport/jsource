@@ -8,7 +8,7 @@
 
 /*
 static A jtmerge1(J jt,A w,A ind){PROLOG(0006);A z;C*v,*x;I c,k,r,*s,t,*u;
- RZ(ind=jtpind(jt,IC(w),ind));
+ RZ(ind=pind(IC(w),ind));
  r=MAX(0,AR(w)-1); s=1+AS(w); t=AT(w); c=aii(w);
  ASSERT(!(t&SPARSE),EVNONCE);
  ASSERT(r==AR(ind),EVRANK);
@@ -29,7 +29,7 @@ static A jtmerge1(J jt,A w,A ind){A z;B*b;C*wc,*zc;D*wd,*zd;I c,it,j,k,m,r,*s,t,
  ASSERT(r==AR(ind),EVRANK);
  ASSERTAGREE(s,AS(ind),r);
  GA(z,t,c,r,s);
- if(!(AT(ind)&B01+INT))RZ(ind=jtcvt(jt,INT,ind));
+ if(!(AT(ind)&B01+INT))RZ(ind=cvt(INT,ind));
  it=AT(ind); u=AV(ind); b=(B*)u;
  ASSERT((-c&(m-2))>=0||(!c||(m==1&&!memchr(b,C1,c))),EVINDEX);  // unless items are empty, m must have items.  if m is 1 all selectors must be 0.  INT will be checked individually, so we just look at the first c bytes
  zi=AV(z); zc=(C*)zi; zd=(D*)zc;
@@ -73,7 +73,7 @@ static A jtmerge1(J jt,A w,A ind){A z;B*b;C*wc,*zc;D*wd,*zd;I c,it,j,k,m,r,*s,t,
  fauxblockINT(aafaux,4,1);
  if(q=2==m&&B01&AT(b)){bv=BAV(b); x=u[0]; y=u[1];}  // fast case: exactly two names x and y
  else{   // slow case
-  if(!(INT&AT(b)))RZ(b=jtcvt(jt,INT,b));  // convert pqr to int if it's not already
+  if(!(INT&AT(b)))RZ(b=cvt(INT,b));  // convert pqr to int if it's not already
   iv=AV(b);    // iv points to the input pqr
   fauxINT(b,aafaux,m,1)  aa=AV(b); DO(m, aa[i]=(I)AV(u[i]););  // create b, which is a list of pointers to the values of the names
  }
@@ -122,7 +122,7 @@ static A jtmerge2(J jt,A a,A w,A ind,I cellframelen){F2PREFIP;A z;I t;
  ASSERTAGREE(AS(a)+MAX(0,AR(a)-(AR(w)-cellframelen)),AS(w)+AR(w)-(AR(a)-MAX(0,AR(a)-(AR(w)-cellframelen))),AR(a)-MAX(0,AR(a)-(AR(w)-cellframelen)));  // the rest of the shape of m{y comes from shape of y
  if(!AN(w))return w;  // if y empty, return.  It's small.  Ignore inplacing
  t=AN(a)?maxtyped(AT(a),AT(w)):AT(w);  // get the type of the result: max of types, but if x empty, leave y as is
- if((-AN(a)&-TYPESXOR(t,AT(a)))<0)RZ(a=jtcvt(jt,t,a));  // if a must change precision, do so
+ if((-AN(a)&-TYPESXOR(t,AT(a)))<0)RZ(a=cvt(t,a));  // if a must change precision, do so
  // Keep the original address if the caller allowed it, precision of y is OK, the usecount allows inplacing, and the type is either
  // DIRECT or this is a boxed memory-mapped array; and don't inplace a =: a m} a or a =: x a} a
  // kludge this inplaces boxed mm arrays when usecount>2.  Seems wrong, but that's the way it was done
@@ -141,7 +141,7 @@ static A jtmerge2(J jt,A a,A w,A ind,I cellframelen){F2PREFIP;A z;I t;
  if(ip){ASSERT(!(AFRO&AFLAG(w)),EVRO); z=w;}
  // If not inplaceable, create a new block (cvt always allocates a new block) with the common precision.  Relocate it if necessary.
  // after this, z cannot be virtual unless it is an inplace memory-mapped boxed array
- else{RZ(z=jtcvt(jt,t,w));}
+ else{RZ(z=cvt(t,w));}
  // Could be in-place.  If boxed,
  // a has been forced to be recursive usecount, so any block referred to by a will not be freed by a free of w.
  // If w has recursive usecount, all the blocks referred to in w have had their usecount incremented; we must
@@ -187,13 +187,13 @@ static A jtmerge2(J jt,A a,A w,A ind,I cellframelen){F2PREFIP;A z;I t;
 // speed to validate the input, and pdt works well for a large number of short vectors - in particular it avoids the carried dependency between axes that
 // Horner's Rule creates.  This version keeps things in registers and has less setup time; and it is much better if there are negative indexes.
 A jtcelloffset(J jt,AD * RESTRICT w,AD * RESTRICT ind){A z;
- if(AR(ind)<2){RZ(z=jtpind(jt,AS(w)[0],ind));  // (m}only) treat a list as a list of independent indexes.  pind handles that case quickly and possibly in-place.
- }else if(AS(ind)[AR(ind)-1]==1){RZ(z=jtpind(jt,AS(w)[0],IRS1(ind,0L,2L,jtravel,z)));  // if rows are 1 long, pind handles that too - remove the last axis
+ if(AR(ind)<2){RZ(z=pind(AS(w)[0],ind));  // (m}only) treat a list as a list of independent indexes.  pind handles that case quickly and possibly in-place.
+ }else if(AS(ind)[AR(ind)-1]==1){RZ(z=pind(AS(w)[0],IRS1(ind,0L,2L,jtravel,z)));  // if rows are 1 long, pind handles that too - remove the last axis
  }else{
   // rank of ind>1, and rows of ind are longer than 1. process each row to a cell offset
   I naxes = AS(ind)[AR(ind)-1];
   I nzcells; PROD(nzcells,AR(ind)-1,AS(ind));
-  RZ(ind=AT(ind)&INT?ind:jtcvt(jt,INT,ind));  // w is now an INT vector, possibly the input argument
+  RZ(ind=AT(ind)&INT?ind:cvt(INT,ind));  // w is now an INT vector, possibly the input argument
   ASSERT(naxes<=AR(w),EVLENGTH);  // length of rows of table must not exceed rank of w
   GATV(z,INT,nzcells,AR(ind)-1,AS(ind)); I *zv=IAV(z);  // allocate result area, point to first cell location.
   I *iv=IAV(ind);// point to first row
@@ -230,11 +230,11 @@ A jtcelloffset(J jt,AD * RESTRICT w,AD * RESTRICT ind){A z;
 // Result *cellframelen gives the number of axes of w that have been boiled down to indices in the result
 static A jtjstd(J jt,A w,A ind,I *cellframelen){A j=0,k,*v,x;I b;I d,i,n,r,*u,wr,*ws;D rkblk[16];
  wr=AR(w); ws=AS(w); b=-AN(ind)&SGNIF(AT(ind),BOXX);  // b<0 = indexes are boxed and nonempty
- if(!wr){x=jtfrom(jt,ind,zeroionei(0)); *cellframelen=0; return x;}  // if w is an atom, the best you can get is indexes of 0.  No axes are used
+ if(!wr){x=from(ind,zeroionei(0)); *cellframelen=0; return x;}  // if w is an atom, the best you can get is indexes of 0.  No axes are used
  if((b&-AR(ind))<0){   // array of boxed indexes
   RE(aindex(ind,w,0L,&j));  // see if the boxes are homogeneous
   if(!j){  // if not...
-   RZ(x=MODIFIABLE(jtfrom(jt,ind,increm(iota(shape(jt,w)))))); u=AV(x); // go back to the original indexes, select from table of all possible incremented indexes; since it is incremented, it is writable
+   RZ(x=MODIFIABLE(from(ind,increm(iota(shape(jt,w)))))); u=AV(x); // go back to the original indexes, select from table of all possible incremented indexes; since it is incremented, it is writable
    DQ(AN(x), ASSERT(*u,EVDOMAIN); --*u; ++u;);   // if anything required fill, it will leave a 0.  Fail then, and unincrement the indexes
    *cellframelen=AR(w); return x;   // the indexes are what we want, and they include all the axes of w
   }
@@ -244,7 +244,7 @@ static A jtjstd(J jt,A w,A ind,I *cellframelen){A j=0,k,*v,x;I b;I d,i,n,r,*u,wr
  }
  if(b>=0){
   // Numeric m.  Each 1-cell is a list of indexes (if m is a list, each atom is a cell index)
-  RZ(j=jtcelloffset(jt,w,ind));  // convert list/table to list of indexes, possibly in place
+  RZ(j=celloffset(w,ind));  // convert list/table to list of indexes, possibly in place
   n=AR(ind)<2?1:AS(ind)[AR(ind)-1];  // n=#axes used: 1, if m is a list; otherwise {:$m
  }else{  // a single box.
   ind=AAV(ind)[0]; n=AN(ind); r=AR(ind);  // ind etc now refer to the CONTENTS of the single box
@@ -260,8 +260,8 @@ static A jtjstd(J jt,A w,A ind,I *cellframelen){A j=0,k,*v,x;I b;I d,i,n,r,*u,wr
    if((-AN(x)&SGNIF(AT(x),BOXX))<0){   // notempty and boxed
     ASSERT(!AR(x),EVINDEX); 
     x=AAV(x)[0]; k=IX(d);
-    if(AN(x))k=jtless(jt,k,jtpind(jt,d,1<AR(x)?ravel(x):x));
-   }else k=jtpind(jt,d,x);
+    if(AN(x))k=less(k,pind(d,1<AR(x)?ravel(x):x));
+   }else k=pind(d,x);
    RZ(x=tymesA(j,sc(d)));
    RZ(j=ATOMIC2(jt,x,k,rkblk,0, RMAX,CPLUS));
   }
@@ -297,13 +297,13 @@ static A jtamendn2(J jt,A a,A w,A self){F2PREFIP;PROLOG(0007);A e,z; B b;I atd,w
  // Sparse w.  a and t must be compatible; sparse w must not be boxed
  ASSERT(!(wtd&BOX),EVNONCE); ASSERT(HOMO(atd,wtd),EVDOMAIN);
  // set t to dense precision of result; t1=corresponding sparse precision; convert a if need be.  Change a's type but not its sparseness
- RE(t=maxtyped(atd,wtd)); t1=STYPE(t); RZ(a=TYPESEQ(t,atd)?a:jtcvt(jt,AT(a)&SPARSE?t1:t,a));
+ RE(t=maxtyped(atd,wtd)); t1=STYPE(t); RZ(a=TYPESEQ(t,atd)?a:cvt(AT(a)&SPARSE?t1:t,a));
  // Keep the original address if the caller allowed it, precision of y is OK, the usecount allows inplacing, and the dense type is either
  // DIRECT or this is a boxed memory-mapped array
  B ip=((I)jtinplace&JTINPLACEW) && (ACIPISOK(w) || jt->assignsym&&jt->assignsym->val==w&&(AC(w)<=1||(AFNJA&AFLAG(w)&&AC(w)==2)))
      &&TYPESEQ(t,wtd)&&(t&DIRECT);
  // see if inplaceable.  If not, convert w to correct precision (note that cvt makes a copy if the precision is already right)
- if(ip){ASSERT(!(AFRO&AFLAG(w)),EVRO); z=w;}else RZ(z=jtcvt(jt,t1,w));
+ if(ip){ASSERT(!(AFRO&AFLAG(w)),EVRO); z=w;}else RZ(z=cvt(t1,w));
  // call the routine to handle the sparse amend
  p=PAV(z); e=SPA(p,e); b=!AR(a)&&equ(a,e);
  p=PAV(a); if(AT(a)&SPARSE&&!equ(e,SPA(p,e))){RZ(a=denseit(a)); }
@@ -316,7 +316,7 @@ static A jtamendn2(J jt,A a,A w,A self){F2PREFIP;PROLOG(0007);A e,z; B b;I atd,w
 // call merge2 to do the merge.  Pass inplaceability into merge2.
 static A amccv2(J jt,A a,A w,A self){F2PREFIP;DECLF; 
  ASSERT(DENSE&AT(w),EVNONCE);  // u} not supported for sparse
- A x;RZ(x=jtpind(jt,AN(w),CALL2(f2,a,w,fs)));
+ A x;RZ(x=pind(AN(w),CALL2(f2,a,w,fs)));
  A z=jtmerge2(jtinplace,a,w,x,AR(w));   // The atoms of x include all axes of w, since we are addressing atoms
  // We modified w which is now not pristine.
  PRISTCLRF(w)
@@ -324,8 +324,8 @@ static A amccv2(J jt,A a,A w,A self){F2PREFIP;DECLF;
 }
 
 
-static A mergn1(J jt,    A w,A self){       return jtmerge1(jt,w,VAV(self)->fgh[0]);}
-static A mergv1(J jt,    A w,A self){DECLF; return jtmerge1(jt,w,CALL1(f1,w,fs));}
+static A mergn1(J jt,    A w,A self){       return merge1(w,VAV(self)->fgh[0]);}
+static A mergv1(J jt,    A w,A self){DECLF; return merge1(w,CALL1(f1,w,fs));}
 
 // called from m}, m is usually NOT a gerund
 static B ger(A w){A*wv,x;
@@ -342,7 +342,7 @@ static B gerar(J jt, A w){A x; C c;
  // literal contents are OK if a valid name or a primitive
  if(AT(w)&LIT) {
   C *stg = CAV(w);
-  if(!jtvnm(jt,n,stg)){
+  if(!vnm(n,stg)){
    // not name, see if valid primitive
    UC p = spellin(n,stg);
    return (p>>7)|!!ds(p);  // return if valid primitive (all non-ASCII are valid primitives, but 0: is not in pst[] so force that in)
@@ -384,7 +384,7 @@ B jtgerexact(J jt, A w){A*wv;
 // u} handling.  This is not inplaceable but the derived verb is
  A jtamend(J jt, A w){
  if(VERB&AT(w)) return ADERIV(CRBRACE,mergv1,amccv2,VASGSAFE|VJTFLGOK2, RMAX,RMAX,RMAX);  // verb}
- else if(ger(w))return jtgadv(jt,w,CRBRACE);   // v0`v1`v2}
+ else if(ger(w))return gadv(w,CRBRACE);   // v0`v1`v2}
  else           return ADERIV(CRBRACE,mergn1,jtamendn2,VASGSAFE|VJTFLGOK2, RMAX,RMAX,RMAX);  // m}
 }
 

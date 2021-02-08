@@ -604,8 +604,8 @@ static HMODULE jtcdlookupl(J jt,C*av){
 // if the string table or the table of CCTs gets full it is extended
 static CCT*jtcdinsert(J jt,A a,CCT*cc){A x;C*s;CCT*pv,*z;I an,hn,k;
  an=AN(a);
- while(AM(jt->cdstr) > AN(jt->cdstr)-an){I oldm=AM(jt->cdstr); RZ(jt->cdstr=jtext(jt,1,jt->cdstr)); AM(jt->cdstr)=oldm;}  // double allocations as needed, keep count
- while(AM(jt->cdarg)==AS(jt->cdarg)[0]){I oldm=AM(jt->cdarg); RZ(jt->cdarg=jtext(jt,1,jt->cdarg)); AM(jt->cdarg)=oldm;}
+ while(AM(jt->cdstr) > AN(jt->cdstr)-an){I oldm=AM(jt->cdstr); RZ(jt->cdstr=ext(1,jt->cdstr)); AM(jt->cdstr)=oldm;}  // double allocations as needed, keep count
+ while(AM(jt->cdarg)==AS(jt->cdarg)[0]){I oldm=AM(jt->cdarg); RZ(jt->cdarg=ext(1,jt->cdarg)); AM(jt->cdarg)=oldm;}
  s=CAV(jt->cdstr); pv=(CCT*)AV(jt->cdarg);
  cc->ai=AM(jt->cdstr); memcpy(s+AM(jt->cdstr),CAV(a),an); AM(jt->cdstr)+=an;
  z=pv+AM(jt->cdarg); memcpy(z,cc,sizeof(CCT)); k=AM(jt->cdarg);
@@ -742,7 +742,7 @@ static CCT*jtcdparse(J jt,A a,I empty){C c,lib[NPATH],*p,proc[NPATH],*s,*s0;CCT*
  memcpy(lib, s0+li,cc->ln); lib [cc->ln]=0;
  memcpy(proc,s0+pi,cc->pn); proc[cc->pn]=0;
  RZ(cc=cdload(cc,lib,proc));
- cc->n=1+i; RZ(cc=jtcdinsert(jt,a,cc)); cc->li=li+cc->ai; cc->pi=pi+cc->ai;
+ cc->n=1+i; RZ(cc=cdinsert(a,cc)); cc->li=li+cc->ai; cc->pi=pi+cc->ai;
  return cc;
 }
 
@@ -798,7 +798,7 @@ static B jtcdexec1(J jt,CCT*cc,C*zv0,C*wu,I wk,I wt,I wd){A*wv=(A*)wu,x,y,*zv;B 
    x=wv[i]; xt=AT(x); xn=AN(x); xr=AR(x);
    CDASSERT(!xr||star,per);         /* non-pointers must be scalars */
    lit=star&&xt&LIT&&(c=='b'||c=='s'&&0==(xn&1)||c=='f'&&0==(xn&3));
-   if(t&&TYPESNE(t,xt)&&!(lit||star&&!xr&&xt&BOX)){x=jtcvt(jt,xt=t,x); CDASSERT(x!=0,per);}
+   if(t&&TYPESNE(t,xt)&&!(lit||star&&!xr&&xt&BOX)){x=cvt(xt=t,x); CDASSERT(x!=0,per);}
    // We know that x originated in a box, so it can't be PRISTINE.  But it may have been converted, so we have to
    // make sure that what we install into *zv is not inplaceable.  *zv is never recursive.
    xv=AV(x); if(zbx)*zv=incorp(x);
@@ -887,7 +887,7 @@ static B jtcdexec1(J jt,CCT*cc,C*zv0,C*wu,I wk,I wt,I wd){A*wv=(A*)wu,x,y,*zv;B 
  wt=AT(w); wr=AR(w); ws=AS(w); PRODX(m,wr-1,ws,1);
  ASSERT(wt&DENSE,EVDOMAIN);
  ASSERT(LIT&AT(a),EVDOMAIN);
- C* enda=&CAV(a)[AN(a)]; C endc=*enda; *enda=0; cc=jtcdparse(jt,a,0); *enda=endc; RZ(cc); // should do outside rank2 loop?
+ C* enda=&CAV(a)[AN(a)]; C endc=*enda; *enda=0; cc=cdparse(a,0); *enda=endc; RZ(cc); // should do outside rank2 loop?
  n=cc->n;
  I nn; CDASSERT(n==SHAPEN(w,wr-1,nn),DECOUNT);
  if(cc->zbx){GATV(z,BOX,m*(1+n),MAX(1,wr),ws); AS(z)[AR(z)-1]=1+n;}
@@ -896,7 +896,7 @@ static B jtcdexec1(J jt,CCT*cc,C*zv0,C*wu,I wk,I wt,I wd){A*wv=(A*)wu,x,y,*zv;B 
  if(m&&n&&!(wt&BOX)){
   t=0; tv=cc->tletter; DQ(n, k=cdjtype(*tv++); t=MAX(t,k););
   CDASSERT(HOMO(t,wt),DEPARM);
-  if(!(wt&B01+INT+FL+LIT+C2T+C4T))RZ(w=jtcvt(jt,wt=t,w));
+  if(!(wt&B01+INT+FL+LIT+C2T+C4T))RZ(w=cvt(wt=t,w));
  }
  wv=CAV(w); zv=CAV(z); k=bpnoun(wt);
  if(1==m)RZ(jtcdexec1(jtinplace,cc,zv,wv,k,wt,0))
@@ -922,7 +922,7 @@ void dllquit(J jt){CCT*av;I j,*v;
      /* 15!:5 */
 
 /* return error info from last cd domain error - resets to DEOK */
- A jtcder(J jt, A w){I t; ASSERTMTV(w); t=jt->dlllasterror; jt->dlllasterror=DEOK; return jtv2(jt,t&0xff,t>>8);}
+ A jtcder(J jt, A w){I t; ASSERTMTV(w); t=jt->dlllasterror; jt->dlllasterror=DEOK; return v2(t&0xff,t>>8);}
      /* 15!:10 */
 
 /* return errno info from last cd with errno not equal to 0 - resets to 0 */
@@ -970,8 +970,8 @@ void dllquit(J jt){CCT*av;I j,*v;
  m=v[2]; t=3==n?LIT:v[3]; u=(C*)(v[0]+v[1]);
  ASSERT(t&B01+LIT+C2T+C4T+INT+FL+CMPX+SBT,EVDOMAIN);
  ASSERT(m==AN(a)||t&LIT+C2T+C4T&&1==AR(a)&&(m-1)==AN(a),EVLENGTH);
- if(B01&AT(a)&&t&INT) RZ(a=jtcvt(jt,INT,a));
- if(INT&AT(a)&&t&B01) RZ(a=jtcvt(jt,B01,a));
+ if(B01&AT(a)&&t&INT) RZ(a=cvt(INT,a));
+ if(INT&AT(a)&&t&B01) RZ(a=cvt(B01,a));
  ASSERT(TYPESEQ(t,AT(a)),EVDOMAIN);
 
  memcpy(u,AV(a),m<<bplg(t));
@@ -983,7 +983,7 @@ void dllquit(J jt){CCT*av;I j,*v;
  A jtmemu(J jt, A w) { F1PREFIP; if(!((I)jtinplace&JTINPLACEW && (AC(w)<(AFLAG(w)<<((BW-1)-AFROX)))))w=ca(w); if(AT(w)&LAST0)*(C4*)&CAV(w)[AN(w)*bp(AT(w))]=0;  return w; }  // append 0 so that calls from cd append NUL termination
  A jtmemu2(J jt,A a,A w) { return ca(w); }  // dyad - force copy willy-nilly
 
- A jtgh15(J jt, A w){A z;I k; RE(k=i0(w)); RZ(z=jtgah(jt,k,0L)); ACINCR(z); return sc((I)z);}
+ A jtgh15(J jt, A w){A z;I k; RE(k=i0(w)); RZ(z=gah(k,0L)); ACINCR(z); return sc((I)z);}
      /* 15!:8  get header */
 
  A jtfh15(J jt, A w){I k; RE(k=i0(w)); fh((A)k); return num(0);}
@@ -1115,7 +1115,7 @@ static I cbvx[]={(I)&cbx0,(I)&cbx1,(I)&cbx2,(I)&cbx3,(I)&cbx4,(I)&cbx5,(I)&cbx6,
  ASSERT(1>=AR(w),EVRANK);
  ASSERT(AN(w),EVLENGTH);
  if(!jt->cdarg)RE(cdinit());
- C* enda=&CAV(w)[AN(w)]; C endc=*enda; *enda=0; cc=jtcdparse(jt,w,1); *enda=endc; RE(cc); // should do outside rank2 loop?
+ C* enda=&CAV(w)[AN(w)]; C endc=*enda; *enda=0; cc=cdparse(w,1); *enda=endc; RE(cc); // should do outside rank2 loop?
  return sc((I)cc->fp);
 }    /* 15!:21 return proc address */
 

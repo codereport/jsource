@@ -40,7 +40,7 @@ static A jtdetr(J jt, A w){A z;I c,e,g=1,i,j,k,r,*s;Q d,p,*u,*v,*x;
  for(j=0;j<r;++j){
   v=QAV(w); 
   e=-1; u=v+c*j+j; DO(r-j, if(XDIG(u->n)){e=i+j; break;} u+=c;);  /* find pivot row */
-  if(0>e)return jtcvt(jt,RAT,num(0));
+  if(0>e)return cvt(RAT,num(0));
   x=v+c*j;
   if(j!=e){u=v+c*e; DO(c, Q t1=u[i]; u[i]=x[i]; x[i]=t1;); g=-g;}  /* interchange rows e and j */
   i=XDIG(x[j].n); if(i==XPINF||i==XNINF)return mark;
@@ -103,11 +103,11 @@ static A jtdetz(J jt, A w){A t;D g,h;I c,d,e,i,j,k,r,*s;Z p,q,*u,*v,*x,*y,z;
  switch(CTTZNOFLAG(AT(w))){
   default:   ASSERT(0,EVDOMAIN);
   case B01X:
-  case INTX:  return detd(jtcvt(jt,FL,w));
+  case INTX:  return detd(cvt(FL,w));
   case FLX:   z=detd(ca(w));      break;
   case CMPXX: z=detz(ca(w));      break;
-  case XNUMX: z=detr(jtcvt(jt,RAT,w)); break;
+  case XNUMX: z=detr(cvt(RAT,w)); break;
   case RATX:  z=detr(ca(w));
  }
- return z==mark?jtdetxm(jt,w,eval("-/ .*")):z;
+ return z==mark?detxm(w,eval("-/ .*")):z;
 }    /* determinant on square matrix */

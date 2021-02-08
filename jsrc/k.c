@@ -110,14 +110,14 @@ static X jtxd1(J jt,D p, I mode){PROLOG(0052);A t;D d,e=tfloor(p),q,r;I m,*u;
  GAT0(t,INT,30,1); u=AV(t); m=0; d=ABS(p); 
  while(0<d){
   q=jfloor(d/XBASE); r=d-q*XBASE; u[m++]=(I)r; d=q;
-  if(m==AN(t)){RZ(t=jtext(jt,0,t)); u=AV(t);}
+  if(m==AN(t)){RZ(t=ext(0,t)); u=AV(t);}
  }
  if(!m){u[0]=0; ++m;}else if(0>p)DO(m, u[i]=-u[i];);
  A z=xstd(vec(INT,m,u));
  EPILOG(z);
 }
 
-static B jtXfromD(J jt,A w,void*yv,I mode){D*v=DAV(w);X*x=(X*)yv; DO(AN(w), x[i]=rifvsdebug(jtxd1(jt,v[i],mode));); return !jt->jerr;}
+static B jtXfromD(J jt,A w,void*yv,I mode){D*v=DAV(w);X*x=(X*)yv; DO(AN(w), x[i]=rifvsdebug(xd1(v[i],mode));); return !jt->jerr;}
 
 static B jtBfromX(J jt,A w,void*yv){A q;B*x;I e;X*v;
  v=XAV(w); x=(B*)yv;
@@ -163,12 +163,12 @@ static B jtQfromD(J jt,A w,void*yv,I mode){B neg,recip;D c,d,t,*wv;I e,i,n,*v;Q 
   else if(t==0.0)q.n=iv0;
   else if(1.1102230246251565e-16<t&&t<9.007199254740992e15){
    d=jround(1/dgcd(1.0,t)); c=jround(d*t); 
-   q.n=jtxd1(jt,c,mode); q.d=jtxd1(jt,d,mode); q=qstd(q);
+   q.n=xd1(c,mode); q.d=xd1(d,mode); q=qstd(q);
   }else{
    if(recip=1>t)t=1.0/t;
    e=(I)(0xfff0&*tv); e>>=4; e-=1023;
-   if(recip){q.d=xtymes(jtxd1(jt,t/pow(2.0,e-53.0),mode),xpow(xc(2L),xc(e-53))); q.n=ca(iv1);}
-   else     {q.n=xtymes(jtxd1(jt,t/pow(2.0,e-53.0),mode),xpow(xc(2L),xc(e-53))); q.d=ca(iv1);}
+   if(recip){q.d=xtymes(xd1(t/pow(2.0,e-53.0),mode),xpow(xc(2L),xc(e-53))); q.n=ca(iv1);}
+   else     {q.n=xtymes(xd1(t/pow(2.0,e-53.0),mode),xpow(xc(2L),xc(e-53))); q.d=ca(iv1);}
   }
   q.n=rifvsdebug(q.n); q.d=rifvsdebug(q.d);
   if(neg){v=AV(q.n); DQ(AN(q.n), *v=-*v; ++v;);}
@@ -190,7 +190,7 @@ static B jtDfromQ(J jt,A w,void*yv){D d,f,n,*x,xb=(D)XBASE;I cn,i,k,m,nn,pn,qn,r
    x[i]=n/d;
   }else{
    k=5+qn; if(!x2)if(!(x2=xc(2L)))return 0;
-   if(!(c=xdiv(jttake(jt,sc(-(k+pn)),p),q,XMFLR)))return 0;
+   if(!(c=xdiv(take(sc(-(k+pn)),p),q,XMFLR)))return 0;
    cn=AN(c); m=MIN(cn,5); r=cn-(m+k); v=AV(c)+cn-m; 
    n=0.0; f=1.0; DO(m, n+=f*v[i]; f*=xb;);
    d=1.0; DQ(ABS(r), d*=xb;);
@@ -235,14 +235,14 @@ B jtccvt(J jt,I tflagged,A w,A*y){F1PREFIP;A d;I n,r,*s,wt; void *wv,*yv;I t=tfl
   RANK2T oqr=jt->ranks; RESETRANK; 
   switch((t&SPARSE?2:0)+(AT(w)&SPARSE?1:0)){I t1;P*wp,*yp;
   case 1: RZ(w=denseit(w)); break;  // sparse to dense
-  case 2: RZ(*y=sparseit(jtcvt(jt,DTYPE(t),w),IX(r),jtcvt(jt,DTYPE(t),num(0)))); jt->ranks=oqr; return 1;  // dense to sparse; convert type first (even if same dtype)
+  case 2: RZ(*y=sparseit(cvt(DTYPE(t),w),IX(r),cvt(DTYPE(t),num(0)))); jt->ranks=oqr; return 1;  // dense to sparse; convert type first (even if same dtype)
   case 3: // sparse to sparse
    t1=DTYPE(t);
    GASPARSE(*y,t,1,r,s); yp=PAV(*y); wp=PAV(w);
    SPB(yp,a,ca(SPA(wp,a)));
    SPB(yp,i,ca(SPA(wp,i)));
-   SPB(yp,e,jtcvt(jt,t1,SPA(wp,e)));
-   SPB(yp,x,jtcvt(jt,t1,SPA(wp,x)));
+   SPB(yp,e,cvt(t1,SPA(wp,e)));
+   SPB(yp,x,cvt(t1,SPA(wp,x)));
    jt->ranks=oqr; return 1;
   }
   jt->ranks=oqr;
@@ -280,46 +280,46 @@ B jtccvt(J jt,I tflagged,A w,A*y){F1PREFIP;A d;I n,r,*s,wt; void *wv,*yv;I t=tfl
    // we must account for all NOUN types.  Low 8 bits have most of them, and we know type can't be sparse.  This picks up the others
   ASSERT(!((t|wt)&(SBT+XD+XZ)),EVDOMAIN);  // No conversions for these types
   switch (CVCASE(CTTZ(t),CTTZ(wt))){
-   case CVCASE(LITX, C2TX): return jtC1fromC2(jt,w, yv);
-   case CVCASE(LITX, C4TX): return jtC1fromC4(jt,w, yv);
-   case CVCASE(C2TX, LITX): return jtC2fromC1(jt,w, yv);
-   case CVCASE(C2TX, C4TX): return jtC2fromC4(jt,w, yv);
-   case CVCASE(C4TX, LITX): return jtC4fromC1(jt,w, yv);
-   case CVCASE(C4TX, C2TX): return jtC4fromC2(jt,w, yv);
+   case CVCASE(LITX, C2TX): return C1fromC2(w, yv);
+   case CVCASE(LITX, C4TX): return C1fromC4(w, yv);
+   case CVCASE(C2TX, LITX): return C2fromC1(w, yv);
+   case CVCASE(C2TX, C4TX): return C2fromC4(w, yv);
+   case CVCASE(C4TX, LITX): return C4fromC1(w, yv);
+   case CVCASE(C4TX, C2TX): return C4fromC2(w, yv);
    default:                ASSERT(0, EVDOMAIN);
   }
  }
  switch (CVCASE(CTTZ(t),CTTZ(wt))){
   case CVCASE(INTX, B01X): {I*x = yv; B*v = (B*)wv; DQ(n, *x++ = *v++;); } return 1;
-  case CVCASE(XNUMX, B01X): return jtXfromB(jt,w, yv);
-  case CVCASE(RATX, B01X): GATV(d, XNUM, n, r, s); return jtXfromB(jt,w, AV(d)) && jtQfromX(jt,d, yv);
+  case CVCASE(XNUMX, B01X): return XfromB(w, yv);
+  case CVCASE(RATX, B01X): GATV(d, XNUM, n, r, s); return XfromB(w, AV(d)) && QfromX(d, yv);
   case CVCASE(FLX, B01X): {D*x = (D*)yv; B*v = (B*)wv; DQ(n, *x++ = *v++;); } return 1;
   case CVCASE(CMPXX, B01X): {Z*x = (Z*)yv; B*v = (B*)wv; DQ(n, x++->re = *v++;); } return 1;
-  case CVCASE(B01X, INTX): return jtBfromI(jt,w, yv);
-  case CVCASE(XNUMX, INTX): return jtXfromI(jt,w, yv);
-  case CVCASE(RATX, INTX): GATV(d, XNUM, n, r, s); return jtXfromI(jt,w, AV(d)) && jtQfromX(jt,d, yv);
+  case CVCASE(B01X, INTX): return BfromI(w, yv);
+  case CVCASE(XNUMX, INTX): return XfromI(w, yv);
+  case CVCASE(RATX, INTX): GATV(d, XNUM, n, r, s); return XfromI(w, AV(d)) && QfromX(d, yv);
   case CVCASE(FLX, INTX): {D*x = (D*)yv; I*v = wv; DQ(n, *x++ = (D)*v++;); } return 1;
   case CVCASE(CMPXX, INTX): {Z*x = (Z*)yv; I*v = wv; DQ(n, x++->re = (D)*v++;); } return 1;
   case CVCASE(B01X, FLX): return BfromD(w, yv, (I)jtinplace&JTNOFUZZ?0.0:FUZZ);
   case CVCASE(INTX, FLX): return IfromD(w, yv, (I)jtinplace&JTNOFUZZ?0.0:FUZZ);
   case CVCASE(XNUMX, FLX): return XfromD(w, yv, (jt->xmode&REPSGN(SGNIFNOT(tflagged,XCVTXNUMORIDEX)))|(tflagged>>XCVTXNUMCVX));
   case CVCASE(RATX, FLX): return QfromD(w, yv, (jt->xmode&REPSGN(SGNIFNOT(tflagged,XCVTXNUMORIDEX)))|(tflagged>>XCVTXNUMCVX));
-  case CVCASE(CMPXX, FLX): return jtZfromD(jt,w, yv);
+  case CVCASE(CMPXX, FLX): return ZfromD(w, yv);
   case CVCASE(B01X, CMPXX): GATV(d, FL, n, r, s); if(!(DfromZ(w, AV(d), (I)jtinplace&JTNOFUZZ?0.0:FUZZ)))return 0; return BfromD(d, yv, (I)jtinplace&JTNOFUZZ?0.0:FUZZ);
   case CVCASE(INTX, CMPXX): GATV(d, FL, n, r, s); if(!(DfromZ(w, AV(d), (I)jtinplace&JTNOFUZZ?0.0:FUZZ)))return 0; return IfromD(d, yv, (I)jtinplace&JTNOFUZZ?0.0:FUZZ);
   case CVCASE(XNUMX, CMPXX): GATV(d, FL, n, r, s); if(!(DfromZ(w, AV(d), (I)jtinplace&JTNOFUZZ?0.0:FUZZ)))return 0; return XfromD(d, yv, (jt->xmode&REPSGN(SGNIFNOT(tflagged,XCVTXNUMORIDEX)))|(tflagged>>XCVTXNUMCVX));
   case CVCASE(RATX, CMPXX): GATV(d, FL, n, r, s); if(!(DfromZ(w, AV(d), (I)jtinplace&JTNOFUZZ?0.0:FUZZ)))return 0; return QfromD(d, yv, (jt->xmode&REPSGN(SGNIFNOT(tflagged,XCVTXNUMORIDEX)))|(tflagged>>XCVTXNUMCVX));
   case CVCASE(FLX, CMPXX): return DfromZ(w, yv, (I)jtinplace&JTNOFUZZ?0.0:FUZZ);
-  case CVCASE(B01X, XNUMX): return jtBfromX(jt,w, yv);
-  case CVCASE(INTX, XNUMX): return jtIfromX(jt,w, yv);
-  case CVCASE(RATX, XNUMX): return jtQfromX(jt,w, yv);
-  case CVCASE(FLX, XNUMX): return jtDfromX(jt,w, yv);
-  case CVCASE(CMPXX, XNUMX): GATV(d, FL, n, r, s); if(!(jtDfromX(jt,w, AV(d))))return 0; return jtZfromD(jt,d, yv);
-  case CVCASE(B01X, RATX): GATV(d, XNUM, n, r, s); if(!(jtXfromQ(jt,w, AV(d))))return 0; return jtBfromX(jt,d, yv);
-  case CVCASE(INTX, RATX): GATV(d, XNUM, n, r, s); if(!(jtXfromQ(jt,w, AV(d))))return 0; return jtIfromX(jt,d, yv);
-  case CVCASE(XNUMX, RATX): return jtXfromQ(jt,w, yv);
-  case CVCASE(FLX, RATX): return jtDfromQ(jt,w, yv);
-  case CVCASE(CMPXX, RATX): GATV(d, FL, n, r, s); if(!(jtDfromQ(jt,w, AV(d))))return 0; return jtZfromD(jt,d, yv);
+  case CVCASE(B01X, XNUMX): return BfromX(w, yv);
+  case CVCASE(INTX, XNUMX): return IfromX(w, yv);
+  case CVCASE(RATX, XNUMX): return QfromX(w, yv);
+  case CVCASE(FLX, XNUMX): return DfromX(w, yv);
+  case CVCASE(CMPXX, XNUMX): GATV(d, FL, n, r, s); if(!(DfromX(w, AV(d))))return 0; return ZfromD(d, yv);
+  case CVCASE(B01X, RATX): GATV(d, XNUM, n, r, s); if(!(XfromQ(w, AV(d))))return 0; return BfromX(d, yv);
+  case CVCASE(INTX, RATX): GATV(d, XNUM, n, r, s); if(!(XfromQ(w, AV(d))))return 0; return IfromX(d, yv);
+  case CVCASE(XNUMX, RATX): return XfromQ(w, yv);
+  case CVCASE(FLX, RATX): return DfromQ(w, yv);
+  case CVCASE(CMPXX, RATX): GATV(d, FL, n, r, s); if(!(DfromQ(w, AV(d))))return 0; return ZfromD(d, yv);
   default:                ASSERT(0, EVDOMAIN);
  }
 }
@@ -396,18 +396,18 @@ A jtpcvt(J jt,I t,A w){A y;B b;RANK2T oqr=jt->ranks;
  return w;
 }    /* convert -0 to 0 in place */
 
- A jtxco1(J jt, A w){ ASSERT(AT(w)&DENSE,EVNONCE); return jtcvt(jt,AT(w)&B01+INT+XNUM?XNUM:RAT,w);}
+ A jtxco1(J jt, A w){ ASSERT(AT(w)&DENSE,EVNONCE); return cvt(AT(w)&B01+INT+XNUM?XNUM:RAT,w);}
 
  A jtxco2(J jt,A a,A w){A z;B b;I j,n,r,*s,t,*wv,*zu,*zv;
  n=AN(w); r=AR(w); t=AT(w);
  ASSERT(t&DENSE,EVNONCE);
  RE(j=i0(a));
  switch(j){
-  case -2: return jtaslash1(jt,CDIV,w);
-  case -1: return jtbcvt(jt,1,w);
+  case -2: return aslash1(CDIV,w);
+  case -1: return bcvt(1,w);
   case  1: return xco1(w);
   case  2: 
-   if(!(t&RAT))RZ(w=jtcvt(jt,RAT,w));
+   if(!(t&RAT))RZ(w=cvt(RAT,w));
    GATV(z,XNUM,2*n,r+1,AS(w)); AS(z)[r]=2;
    memcpy(AV(z),AV(w),2*n*SZI);
    return z;

@@ -15,7 +15,7 @@ B compuu(I n, US *a, US *b){do{if(*a!=*b)return *a<*b; if(!--n)break; ++a; ++b;}
 B compud(I n, US *a, US *b){do{if(*a!=*b)return *a>*b; if(!--n)break; ++a; ++b;}while(1); return a<b;}
 B comptu(I n, C4 *a, C4 *b){do{if(*a!=*b)return *a<*b; if(!--n)break; ++a; ++b;}while(1); return a<b;}
 B comptd(I n, C4 *a, C4 *b){do{if(*a!=*b)return *a>*b; if(!--n)break; ++a; ++b;}while(1); return a<b;}
-B compr(I n, A *a, A *b){J jt=(J)n; I j; n=jt->workareas.compare.compn; do{if(j=jtcompare(jt,*a,*b))return SGNTO0(j); if(!--n)break; ++a; ++b;}while(1); return a<b;}  // compare returns compgt value. a<b makes the sort stable
+B compr(I n, A *a, A *b){J jt=(J)n; I j; n=jt->workareas.compare.compn; do{if(j=compare(*a,*b))return SGNTO0(j); if(!--n)break; ++a; ++b;}while(1); return a<b;}  // compare returns compgt value. a<b makes the sort stable
 B compxu(I n, X *a, X *b){J jt=(J)n; I j; n=jt->workareas.compare.compn; do{if(j=xcompare(*a,*b))return SGNTO0(j); if(!--n)break; ++a; ++b;}while(1); return a<b;} // xcompare returns 1/0/-1
 B compxd(I n, X *a, X *b){J jt=(J)n; I j; n=jt->workareas.compare.compn; do{if(j=xcompare(*b,*a))return SGNTO0(j); if(!--n)break; ++a; ++b;}while(1); return a<b;} // xcompare returns 1/0/-1
 B compqu(I n, Q *a, Q *b){J jt=(J)n; I j; n=jt->workareas.compare.compn; do{if(j=QCOMP(*a,*b))return SGNTO0(j); if(!--n)break; ++a; ++b;}while(1); return a<b;} // QCOMP returns 1/0/-1
@@ -38,8 +38,8 @@ I jtcompare(J jt,A a,A w){C*av,*wv;I ar,an,*as,at,c,d,j,m,t,wn,wr,*ws,wt;
  if(1<ar&&ICMP(1+as,1+ws,ar)){A s;I*v;fauxblockINT(sfaux,4,1);
   fauxINT(s,sfaux,ar,1) v=AV(s);
   DO(ar, v[i]=MAX(as[i],ws[i]);); v[0]=MIN(as[0],ws[0]);
-  RZ(a=jttake(jt,s,a)); an=wn=AN(a);
-  RZ(w=jttake(jt,s,w));
+  RZ(a=take(s,a)); an=wn=AN(a);
+  RZ(w=take(s,w));
  }
  m=MIN(an,wn); 
  if(t&XNUM+RAT&&((at|wt)&FL+CMPX)){A p,q;B*u,*v;  // indirect type vs flt/complex: create boolean vector for each value in turn
@@ -47,8 +47,8 @@ I jtcompare(J jt,A a,A w){C*av,*wv;I ar,an,*as,at,c,d,j,m,t,wn,wr,*ws,wt;
   RZ(q=gt(a,w)); v=BAV(q);
   DO(m, if(u[i]|v[i])return (u[i]?1:-1)*jt->workareas.compare.complt;);
  }else{
-  if(TYPESNE(t,at))RZ(a=jtcvt(jt,t,a));
-  if(TYPESNE(t,wt))RZ(w=jtcvt(jt,t,w));
+  if(TYPESNE(t,at))RZ(a=cvt(t,a));
+  if(TYPESNE(t,wt))RZ(w=cvt(t,w));
   av=CAV(a); wv=CAV(w);
   switch(CTTZ(t)){
    case INTX:  COMPLOOQ (I, m  );         break;
@@ -60,7 +60,7 @@ I jtcompare(J jt,A a,A w){C*av,*wv;I ar,an,*as,at,c,d,j,m,t,wn,wr,*ws,wt;
    case CMPXX: COMPLOOQ (D, m+m);         break;
    case XNUMX: COMPLOOQG(X, m, xcompare); break;
    case RATX:  COMPLOOQG(Q, m, QCOMP   ); break;
-   case BOXX:  {COMPDCLQ(A);I j; DO(m, if(j=jtcompare(jt,        x[i],           y[i]   ))return j;);} break;
+   case BOXX:  {COMPDCLQ(A);I j; DO(m, if(j=compare(        x[i],           y[i]   ))return j;);} break;
   }
  }
  if(1>=ar)return ((I )(an<wn)-(I )(an>wn))*jt->workareas.compare.complt;

@@ -34,7 +34,7 @@ static I fsize(F f){
 static A jtrdns(J jt,F f){A za,z;I n=1024;size_t r,tr=0;
  GAT0(za,LIT,1024,1); clearerr(f);
  while(!feof(f) && (r=fread(CAV(za)+tr,sizeof(C),n-tr,f))){
-  tr+=r; if(tr==(U)n){RZ(za=jtext(jt,0,za));n*=2;}
+  tr+=r; if(tr==(U)n){RZ(za=ext(0,za));n*=2;}
  }
  if(tr==(U)n)z=za;
  else {GATV0(z,LIT,(I)tr,1); memcpy(CAV(z),CAV(za),tr);}
@@ -75,7 +75,7 @@ static B jtwa(J jt,F f,I j,A w){C*x;I n,p=0;size_t q=1;
  F1RANK(0,jtjfread,UNUSED_VALUE);
  RE(f=stdf(w));  // f=file#, or 0 if w is a filename
  if(f)return 1==(I)f?jgets("\001"):3==(I)f?rdns(stdin):rd(vfn(f),0L,-1L);  // if special file, read it all, possibly with error
- RZ(f=jtjope(jt,w,FREAD_O)); z=rd(f,0L,-1L); fclose(f);  // otherwise open/read/close named file
+ RZ(f=jope(w,FREAD_O)); z=rd(f,0L,-1L); fclose(f);  // otherwise open/read/close named file
  return z;
 }
 
@@ -86,7 +86,7 @@ static B jtwa(J jt,F f,I j,A w){C*x;I n,p=0;size_t q=1;
  if(2==(I)f){b=jt->tostdout; jt->tostdout=1; jt->mtyo=MTYOFILE; jpr(a); jt->mtyo=0; jt->tostdout=b; return a;}
  if(4==(I)f){return (U)AN(a)!=fwrite(CAV(a),sizeof(C),AN(a),stdout)?jerrno():a;}
  if(5==(I)f){return (U)AN(a)!=fwrite(CAV(a),sizeof(C),AN(a),stderr)?jerrno():a;}
- if(b=!f)RZ(f=jtjope(jt,w,FWRITE_O)) else RE(vfn(f)); 
+ if(b=!f)RZ(f=jope(w,FWRITE_O)) else RE(vfn(f)); 
  wa(f,0L,a); 
  if(b)fclose(f);else fflush(f);
  RNE(mtm);
@@ -98,7 +98,7 @@ static B jtwa(J jt,F f,I j,A w){C*x;I n,p=0;size_t q=1;
  if(2==(I)f){B b=jt->tostdout; jt->tostdout=1; jpr(a); jt->tostdout=b; return a;}
  ASSERT(!AN(a)||AT(a)&LIT+C2T+C4T,EVDOMAIN);
  ASSERT(1>=AR(a),EVRANK);
- if(b=!f)RZ(f=jtjope(jt,w,FAPPEND_O)) else RE(vfn(f));
+ if(b=!f)RZ(f=jope(w,FAPPEND_O)) else RE(vfn(f));
  wa(f,fsize(f),a);
  if(b)fclose(f);else fflush(f);
  RNE(mtm);
@@ -107,7 +107,7 @@ static B jtwa(J jt,F f,I j,A w){C*x;I n,p=0;size_t q=1;
  A jtjfsize(J jt, A w){B b;F f;I m;
  F1RANK(0,jtjfsize,UNUSED_VALUE);
  RE(f=stdf(w));
- if(b=!f)RZ(f=jtjope(jt,w,FREAD_O)) else RE(vfn(f)); 
+ if(b=!f)RZ(f=jope(w,FREAD_O)) else RE(vfn(f)); 
  m=fsize(f); 
  if(b)fclose(f);else fflush(f);
  RNE(sc(m));
@@ -137,7 +137,7 @@ static B jtixin(J jt,A w,I s,I*i,I*n){A in,*wv;I j,k,m,*u;
 
  A jtjiread(J jt, A w){A z=0;B b;F f;I i,n;
  F1RANK(1,jtjiread,UNUSED_VALUE);
- RE(f=ixf(w)); if(b=!f)RZ(f=jtjope(jt,w,FREAD_O));
+ RE(f=ixf(w)); if(b=!f)RZ(f=jope(w,FREAD_O));
  if(ixin(w,fsize(f),&i,&n))z=rd(f,i,n);
  if(b)fclose(f);else fflush(f);
  return z;
@@ -147,7 +147,7 @@ static B jtixin(J jt,A w,I s,I*i,I*n){A in,*wv;I j,k,m,*u;
  F2RANK(RMAX,1,jtjiwrite,UNUSED_VALUE);
  ASSERT(!AN(a)||AT(a)&LIT+C2T+C4T,EVDOMAIN);
  ASSERT(1>=AR(a),EVRANK);
- RE(f=ixf(w)); if(b=!f)RZ(f=jtjope(jt,w,FUPDATE_O));
+ RE(f=ixf(w)); if(b=!f)RZ(f=jope(w,FUPDATE_O));
  if(ixin(w,fsize(f),&i,0L))wa(f,i,a); 
  if(b)fclose(f);else fflush(f);
  RNE(mtm);

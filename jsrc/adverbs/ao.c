@@ -10,7 +10,7 @@ static A jtoblique(J jt,    A w,A self){A x,y,z;I m,n,r;D rkblk[16];
  F1PREFIP;
  r=AR(w);  // r = rank of w
  // create y= ,/ w - the _2-cells of w arranged in a list (virtual block)
- RZ(y=jtredcat(jt,w,self)); if(1>=r){m=AN(w); n=1;}else{m=AS(w)[0]; n=AS(w)[1];}
+ RZ(y=redcat(w,self)); if(1>=r){m=AN(w); n=1;}else{m=AS(w)[0]; n=AS(w)[1];}
  // Create x=+"0 1&i./ 2 {. $y
  A xm; RZ(xm=IX(m)); A xn; RZ(xn=IX(n));
  RZ(x=ATOMIC2(jt,xm,xn,rkblk,0L,1L,CPLUS)); AR(x)=1; AS(x)[0]=AN(x);
@@ -19,7 +19,7 @@ static A jtoblique(J jt,    A w,A self){A x,y,z;I m,n,r;D rkblk[16];
  // Final tweak: the result should have (0 >. <: +/ 2 {. $y) cells.  It will, as long as
  // m and n are both non0: when one is 0, result has 0 cells (but that cell is the correct result
  // of execution on a fill-cell).  Correct the length of the 0 case, when the result length should be nonzero
-// if((m==0 || n==0) && (m+n>0)){return jtreitem(jt,sc(m+n-1),x);}  This change withdrawn pending further deliberation
+// if((m==0 || n==0) && (m+n>0)){return reitem(sc(m+n-1),x);}  This change withdrawn pending further deliberation
  return z;
 }
 
@@ -37,7 +37,7 @@ static A jtoblique(J jt,    A w,A self){A x,y,z;I m,n,r;D rkblk[16];
 // Derived verb for f//. y for atomic f
 static A jtobqfslash(J jt,    A w,A self){A y,z;B b=0,p;C er,id,*wv;I c,d,k,m,m1,mn,n,n1,r,*s,wt;
  r=AR(w); s=AS(w); wt=AT(w); wv=CAV(w);
- if((-AN(w)&(1-r)&-(DENSE&wt))>=0)return jtoblique(jt,w,self);  // revert to default if rank<2, empty, or sparse.  This implies m/n below are non0
+ if((-AN(w)&(1-r)&-(DENSE&wt))>=0)return oblique(w,self);  // revert to default if rank<2, empty, or sparse.  This implies m/n below are non0
  y=FAV(self)->fgh[0]; y=FAV(y)->fgh[0]; id=FAV(y)->id;
  m=s[0]; m1=m-1;
  n=s[1]; n1=n-1; mn=m*n; d=m+n-1; PROD(c,r-2,2+s);
@@ -78,7 +78,7 @@ static A jtobqfslash(J jt,    A w,A self){A y,z;B b=0,p;C er,id,*wv;I c,d,k,m,m1
    if(er>=EWOV)OBQLOOP(I,D,FL,x=(D)*u, x+=*u);
  }
  if(wt&FL+CMPX)NAN1; RE(0);
- return b?z:jtoblique(jt,w,self);
+ return b?z:oblique(w,self);
 }    /* f//.y for atomic f */
 
 #define PMCASE(t,c,d)   (65536*(c)+256*(d)+(t))
@@ -96,13 +96,13 @@ static A jtobqfslash(J jt,    A w,A self){A y,z;B b=0,p;C er,id,*wv;I c,d,k,m,m1
  ASSERT(!((AT(a)|AT(w))&SPARSE),EVNONCE);
  m=AN(a); n=AN(w); m1=m-1; zn=m+n-1; k=MIN(m,n);
  at=AT(a); wt=AT(w); t=maxtyped(at,wt);
- if(TYPESNE(t,at))RZ(a=jtcvt(jt,t,a)); at=AT(a); av=CAV(a);
- if(TYPESNE(t,wt))RZ(w=jtcvt(jt,t,w)); wt=AT(w); wv=CAV(w);
+ if(TYPESNE(t,at))RZ(a=cvt(t,a)); at=AT(a); av=CAV(a);
+ if(TYPESNE(t,wt))RZ(w=cvt(t,w)); wt=AT(w); wv=CAV(w);
  v=FAV(self);  // f//. @ (g/)
  f=v->fgh[0]; g=v->fgh[1];
  c=FAV(FAV(FAV(f)->fgh[0])->fgh[0])->id;   // id of f     f//. f/ f
  d=FAV(FAV(g)->fgh[0])->id;   // id of g     g/ g
- if((-m&(AR(a)-2)&-n&(AR(w)-2))>=0)return jtobqfslash(jt,df2(z,a,w,g),f);  // if empty, or not atoms/lists, do general code.  Never happens.
+ if((-m&(AR(a)-2)&-n&(AR(w)-2))>=0)return obqfslash(df2(z,a,w,g),f);  // if empty, or not atoms/lists, do general code.  Never happens.
  // from here on polymult on nonempty lists
  if(t&FL+CMPX)NAN0;
  switch(PMCASE(CTTZ(t),c,d)){
@@ -141,7 +141,7 @@ static A jtobqfslash(J jt,    A w,A self){A y,z;B b=0,p;C er,id,*wv;I c,d,k,m,m1
   }
  }
  if(t&FL+CMPX)NAN1; RE(0);
- if(!b)return jtobqfslash(jt,df2(z,a,w,g),f);
+ if(!b)return obqfslash(df2(z,a,w,g),f);
  return z;
 }    /* f//.@(g/) for atomic f, g */
 
@@ -150,18 +150,18 @@ static A jtkey(J jt,A a,A w,A self);
 
 static A jtkeysp(J jt,A a,A w,A self){PROLOG(0008);A b,by,e,q,x,y,z;I j,k,n,*u,*v;P*p;
  {I t2; ASSERT(SETIC(a,n)==SETIC(w,t2),EVLENGTH);}  // verify agreement.  n is # items of a
- RZ(q=jtindexof(jt,a,a)); p=PAV(q); 
+ RZ(q=indexof(a,a)); p=PAV(q); 
  x=SPA(p,x); u=AV(x);
  y=SPA(p,i); v=AV(y);
  e=SPA(p,e); k=i0(e); 
  j=0; DO(AN(x), if(k<=u[i])break; if(u[i]==v[i])++j;);
  RZ(b=ne(e,x));
- RZ(by=jtrepeat(jt,b,y));
- RZ(x=key(jtrepeat(jt,b,x),jtfrom(jt,ravel(by),w),self));
+ RZ(by=repeat(b,y));
+ RZ(x=key(repeat(b,x),from(ravel(by),w),self));
  GASPARSE(q,SB01,1,1,(I*)0); *AS(q)=n;  /* q=: 0 by}1$.n;0;1 */
- p=PAV(q); SPB(p,a,iv0); SPB(p,e,num(1)); SPB(p,i,by); SPB(p,x,jtreshape(jt,tally(jt, by),num(0)));
- RZ(z=over(df1(b,jtrepeat(jt,q,w),VAV(self)->fgh[0]),x));
- z=j?jtcdot2(jt,box(IX(1+j)),z):z;
+ p=PAV(q); SPB(p,a,iv0); SPB(p,e,num(1)); SPB(p,i,by); SPB(p,x,reshape(tally(jt, by),num(0)));
+ RZ(z=over(df1(b,repeat(q,w),VAV(self)->fgh[0]),x));
+ z=j?cdot2(box(IX(1+j)),z):z;
  EPILOG(z);
 }
 
@@ -626,14 +626,14 @@ const UI4 shortrange[3][4] = {{0,65536,65536,0}, {0,2,258,0}, {0,256,65536,0}}; 
 static A jtkeytally(J jt,A a,A w,A self);
 
 static A jtkeytallysp(J jt, A w){PROLOG(0015);A b,e,q,x,y,z;I c,d,j,k,*u,*v;P*p;
- RZ(q=jtindexof(jt,w,w));
+ RZ(q=indexof(w,w));
  p=PAV(q); 
  x=SPA(p,x); u=AV(x); c=AN(x);
  y=SPA(p,i); v=AV(y);
  e=SPA(p,e); k=i0(e); 
  j=0; DO(c, if(k<=u[i])break; if(u[i]==v[i])++j;);
  RZ(b=ne(e,x));
- RZ(x=jtrepeat(jt,b,x)); RZ(x=keytally(x,x,mark)); u=AV(x); d=AN(x);
+ RZ(x=repeat(b,x)); RZ(x=keytally(x,x,mark)); u=AV(x); d=AN(x);
  GATV0(z,INT,1+d,1); v=AV(z);
  DQ(j, *v++=*u++;); *v++=SETIC(w,k)-bsum(c,BAV(b)); DQ(d-j, *v++=*u++;);
  EPILOG(z);
@@ -644,7 +644,7 @@ static A jtkeytally(J jt,A a,A w,A self){F2PREFIP;PROLOG(0016);A z,q;I at,j,k,n,
  ASSERT(n==SETIC(w,k),EVLENGTH);
  if(!AN(a))return vec(INT,!!n,&AS(a)[0]);  // handle case of empties - a must have rank, so use AS[0] as  proxy for n
  if((at&SPARSE)!=0)return keytallysp(a);
- if((-n&SGNIF(at,B01X)&(AR(a)-2))<0){B*b=BAV(a); k=bsum(n,b); return BETWEENO(k,1,n)?jtv2(jt,*b?k:n-k,*b?n-k:k):vci(n);}  // nonempty rank<2 boolean a, just add the 1s
+ if((-n&SGNIF(at,B01X)&(AR(a)-2))<0){B*b=BAV(a); k=bsum(n,b); return BETWEENO(k,1,n)?v2(*b?k:n-k,*b?n-k:k):vci(n);}  // nonempty rank<2 boolean a, just add the 1s
  A ai;  // result from classifying a
  RZ(ai=indexofsub(IFORKEY,a,a));   // self-classify the input using ct set before this verb
  // indexofsub has 2 returns: most of the time, it returns a normal i.-family result, but with each slot holding the index PLUS the number of values
@@ -701,7 +701,7 @@ static A jtkeytally(J jt,A a,A w,A self){F2PREFIP;PROLOG(0016);A z,q;I at,j,k,n,
   k=bsum(n,p); m=i+j?1:0;  // k=# 1s  m is 1 if there are 0s and 1s
   GATV0(x,INT,m+1,1); v=AV(x); v[m]=i+j; v[0]=0;  // 0=index of first item (always 0); 1 if it exists is the other
   GATV0(y,INT,m+1,1); v=AV(y); j=n-k; k=i?j:k; k&=-m; v[0]=k; v[m]=n-k;  // if 1st value is 0, complement k; if only 1 value, clear k
-  if(!(wt&VERB))RZ(x=jtfrom(jt,x,w)); w=x; x=b?x:y; y=b?y:w; return jtstitch(jt,x,y);  // select using index (unless i.@#, then keep index); set order & ,.
+  if(!(wt&VERB))RZ(x=from(x,w)); w=x; x=b?x:y; y=b?y:w; return stitch(x,y);  // select using index (unless i.@#, then keep index); set order & ,.
  }
  // for other types of a, we handle it quickly only if w is B01/INT/FL or i.@# which has type of VERB
  if(wt&B01+INT+FL+VERB){
@@ -755,7 +755,7 @@ static A jtkeytally(J jt,A a,A w,A self){F2PREFIP;PROLOG(0016);A z,q;I at,j,k,n,
    }
   }
  }else{  // no special processing
-  RZ(q=jtindexof(jt,a,a)); x=jtrepeat(jt,eq(q,IX(n)),w); y=keytally(q,q,0L); z=jtstitch(jt,b?x:y,b?y:x);  // (((i.~a) = i. # a) # w) ,. (#/.~ i.~ a)   for ({. , #)
+  RZ(q=indexof(a,a)); x=repeat(eq(q,IX(n)),w); y=keytally(q,q,0L); z=stitch(b?x:y,b?y:x);  // (((i.~a) = i. # a) # w) ,. (#/.~ i.~ a)   for ({. , #)
  }
  EPILOG(z);
 }    /* x ({.,#)/.y or x (#,{.)/. y */
@@ -764,7 +764,7 @@ static A jtkeytally(J jt,A a,A w,A self){F2PREFIP;PROLOG(0016);A z,q;I at,j,k,n,
  A jtsldot(J jt, A w){A h=0;AF f1=jtoblique,f2;C c,d,e;I flag=VJTFLGOK1|VJTFLGOK2;V*v;
 // NOTE: u/. is processed using the code for u;.1 and passing the self for /. into the cut verb.  So, the self produced
 // by /. and ;.1 must be the same as far as flags etc.
- if(NOUN&AT(w)){flag|=VGERL; RZ(h=jtfxeachv(jt,1L,w));}
+ if(NOUN&AT(w)){flag|=VGERL; RZ(h=fxeachv(1L,w));}
  v=VAV(w);
  switch(ID(w)){  // no default for f2: every path must set it
   case CPOUND: f2=jtkeytally; break;

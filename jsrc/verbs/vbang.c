@@ -64,7 +64,7 @@ static Z jtzstirling(J jt,Z z){Z p,q;
 }    /* Abramowitz & Stegun, 6.1.37 */
 
 static Z jtzgamma(J jt,Z z){D y=ABS(z.im);
- return !y?zrj0(dgamma(z.re)):20<y?zstirling(z):jtzgauss(jt,jceil(y/0.8660254),z);
+ return !y?zrj0(dgamma(z.re)):20<y?zstirling(z):zgauss(jceil(y/0.8660254),z);
 }
 
 AMONPS(factI,  D,I, , *z=dgamma(1.0+(D)*x); , HDR1JERR)
@@ -133,7 +133,7 @@ D jtbindd(J jt,D x,D y){B id,ix,iy;D d;
   default: ASSERTSYS(0,"bindd");
   case 5: /* 1 0 1 */  /* Impossible */
   case 0: /* 0 0 0 */
-  case 2: /* 0 1 0 */  return ix&&iy?ibin(x,y):jtdbin(jt,x,y);
+  case 2: /* 0 1 0 */  return ix&&iy?ibin(x,y):dbin(x,y);
   case 3: /* 0 1 1 */  return (MOD2(x)?-1:1)*ibin(x,x-y-1);
   case 6: /* 1 1 0 */  return (MOD2(d)?-1:1)*ibin(-1-y,-1-x);
   case 1: /* 0 0 1 */ 
@@ -151,7 +151,7 @@ static Z jtbinzz(J jt,Z x,Z y){B id,ix,iy;D rd,rx,ry;Z d;
   default: ZASSERT(0,EVSYSTEM);
   case 5: /* 1 0 1 */  /* Impossible */
   case 0: /* 0 0 0 */
-  case 2: /* 0 1 0 */  return jtzbin(jt,x,y);
+  case 2: /* 0 1 0 */  return zbin(x,y);
   case 3: /* 0 1 1 */  return zrj0((MOD2(rx)?-1:1)*ibin(rx,rx-ry-1));
   case 6: /* 1 1 0 */  return zrj0((MOD2(rd)?-1:1)*ibin(-1-ry,-1-rx));
   case 1: /* 0 0 1 */ 

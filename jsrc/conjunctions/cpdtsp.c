@@ -41,15 +41,15 @@ static A jtpdtspmv(J jt,A a,A w){A ax,b,g,x,wx,y,yi,yj,z;B*bv;I m,n,s[2],*u,*v,*
  if(DENSE&AT(w)){
   GATVR(yi,INT,n,2,s); u=AV(yi); AR(yj)=1; v=AV(yj);
   DQ(n, *u++=*yv++; *v++=*yv++;);
-  ax=SPA(ap,x); RZ(wx=jtfrom(jt,yj,w));
+  ax=SPA(ap,x); RZ(wx=from(yj,w));
  }else{
   v=AV(yj);
   DQ(n, yv++; *v++=*yv++;);
-  wp=PAV(w); RZ(b=jteps(jt,yj,SPA(wp,i))); bv=BAV(b); 
+  wp=PAV(w); RZ(b=eps(yj,SPA(wp,i))); bv=BAV(b); 
   AN(yj)=*AS(yj)=*s=m=bsum(n,bv); v=AV(yj); yv=AV(y);
   GATVR(yi,INT,m,2,s); u=AV(yi);
   DQ(n, if(*bv++){*u++=*yv++; *v++=*yv++;}else yv+=2;);
-  RZ(ax=jtrepeat(jt,b,SPA(ap,x))); RZ(wx=jtfrom(jt,jtindexof(jt,SPA(wp,i),yj),SPA(wp,x))); 
+  RZ(ax=repeat(b,SPA(ap,x))); RZ(wx=from(indexof(SPA(wp,i),yj),SPA(wp,x))); 
  }
  RZ(df2(x,yi,tymes(ax,wx),sldot(slash(ds(CPLUS)))));
  RZ(y=nub(yi));
@@ -57,8 +57,8 @@ static A jtpdtspmv(J jt,A a,A w){A ax,b,g,x,wx,y,yi,yj,z;B*bv;I m,n,s[2],*u,*v,*
  GASPARSE(z,STYPE(AT(x)),1,1,AS(a)); zp=PAV(z);
  SPB(zp,a,iv0);
  SPB(zp,e,scf(0.0));
- SPB(zp,i,jtfrom(jt,g,y));
- SPB(zp,x,jtfrom(jt,g,x));
+ SPB(zp,i,from(g,y));
+ SPB(zp,x,from(g,x));
  return z;
 }    /* (sparse matrix) +/ .* vector; non-complex */
 
@@ -72,11 +72,11 @@ static A jtpdtspvm(J jt,A a,A w){A ax,b,g,x,wx,y,yi,yj,z;B*bv;D*av,c,d,*wv,*xv;I
  }else{
   GATVR(yi,INT,n,2,s); u=AV(yi);
   DQ(n, *u++=*yv++; yv++;);
-  ap=PAV(a); RZ(b=jteps(jt,yi,SPA(ap,i))); bv=BAV(b); 
+  ap=PAV(a); RZ(b=eps(yi,SPA(ap,i))); bv=BAV(b); 
   AN(yi)=*AS(yi)=*s=m=bsum(n,bv); u=AV(yi); yv=AV(y);
   GATVR(yj,INT,m,2,s); v=AV(yj);
   DQ(n, if(*bv++){*u++=*yv++; *v++=*yv++;}else yv+=2;);
-  RZ(ax=jtfrom(jt,jtindexof(jt,SPA(ap,i),yi),SPA(ap,x))); RZ(wx=jtrepeat(jt,b,SPA(wp,x)));
+  RZ(ax=from(indexof(SPA(ap,i),yi),SPA(ap,x))); RZ(wx=repeat(b,SPA(wp,x)));
   RZ(x=tymes(ax,wx));
  }
  RZ(df2(y,yj,x,sldot(slash(ds(CPLUS)))));
@@ -85,8 +85,8 @@ static A jtpdtspvm(J jt,A a,A w){A ax,b,g,x,wx,y,yi,yj,z;B*bv;D*av,c,d,*wv,*xv;I
  GASPARSE(z,STYPE(AT(x)),1,1,1+AS(w)); zp=PAV(z);
  SPB(zp,a,iv0);
  SPB(zp,e,scf(0.0));
- SPB(zp,i,jtfrom(jt,g,y));
- SPB(zp,x,jtfrom(jt,g,x));
+ SPB(zp,i,from(g,y));
+ SPB(zp,x,from(g,x));
  return z;
 }    /* vector +/ .* (sparse matrix); non-complex */
 
@@ -97,7 +97,7 @@ static A jtpdtspvm(J jt,A a,A w){A ax,b,g,x,wx,y,yi,yj,z;B*bv;D*av,c,d,*wv,*xv;I
 /* nv - row boundaries in iv             */
 /* xv - ptr to data values               */
 static B jtmmprep(J jt,P*p,I*n,I**iv,I*m,I**nv,D**xv){A x;I j,k,q,*u,*v;
- x=SPA(p,x); if(!(FL&AT(x)))RZ(x=jtcvt(jt,FL,x)); *xv=DAV(x);
+ x=SPA(p,x); if(!(FL&AT(x)))RZ(x=cvt(FL,x)); *xv=DAV(x);
  x=SPA(p,i); *iv=u=AV(x); *n=AN(x);
  if(m&&nv){
   q=*AS(x); k=q?2+u[(q-1)<<1]-*u:1;
@@ -117,8 +117,8 @@ static B jtmmprep(J jt,P*p,I*n,I**iv,I*m,I**nv,D**xv){A x;I j,k,q,*u,*v;
 /* zx  - ptr to result value array            */
 static B jtmmharvest(J jt,I ii,I zjn,A zj,D*zyv,I*n,A*zi,A*zx){A x;D*zxv,*zxv0;I j,m,p,*v,*ziv;
  m=MIN(*AS(*zi),*AS(*zx));
- while(m<*n+zjn){RZ(*zi=jtext(jt,0,*zi)); RZ(*zx=jtext(jt,0,*zx)); m=MIN(*AS(*zi),*AS(*zx));}
- m=AN(zj); AN(zj)=*AS(zj)=zjn; RZ(x=jtgrade2(jt,zj,zj)); AN(zj)=*AS(zj)=m; 
+ while(m<*n+zjn){RZ(*zi=ext(0,*zi)); RZ(*zx=ext(0,*zx)); m=MIN(*AS(*zi),*AS(*zx));}
+ m=AN(zj); AN(zj)=*AS(zj)=zjn; RZ(x=grade2(zj,zj)); AN(zj)=*AS(zj)=m; 
  p=-1; v=AV(x); ziv=AV(*zi)+(*n<<1); zxv=zxv0=DAV(*zx)+*n;
  DQ(zjn, if(p<(j=*v++)){p=j; *ziv++=ii; *ziv++=j; *zxv++=zyv[j]; zyv[j]=0;});
  *n+=zxv-zxv0;
@@ -144,7 +144,7 @@ static A jtpdtspmm(J jt,A a,A w){A z,zi,zj,zx,zy,*old;D*axv,c,d,*dv,*wxv,*zyv;
     while(p<=q){ii=wiv[wnv[k=(p+q)>>1]<<1]; if(j==ii)break; if(j<ii)q=k-1; else p=k+1;}
     if(j==ii){
      p=wnv[1+k]-wnv[k]; dv=wxv+wnv[k]; v=1+wiv+(wnv[k]<<1);
-     q=zjv-zjv0; while(AN(zj)<p+q){RZ(zj=jtext(jt,0,zj)); zjv0=AV(zj); zjv=q+zjv0;}
+     q=zjv-zjv0; while(AN(zj)<p+q){RZ(zj=ext(0,zj)); zjv0=AV(zj); zjv=q+zjv0;}
      DQ(p, if(d=*dv++){if(!zyv[*v])*zjv++=*v; zyv[*v++]+=c*d; v++;});
     }else k=k0;
    }
@@ -167,9 +167,9 @@ static A jtpdtspmm(J jt,A a,A w){A z,zi,zj,zx,zy,*old;D*axv,c,d,*dv,*wxv,*zyv;
   if(SPARSE&AT(a)){p=PAV(a); x=SPA(p,a); ab=AR(a)==AN(x)&&equ(num(0),SPA(p,e));}
   if(SPARSE&AT(w)){p=PAV(w); x=SPA(p,a); wb=AR(w)==AN(x)&&equ(num(0),SPA(p,e));}
  }
- if(ab&&1==AR(a)&&wb&&1==AR(w))return jtpdtspvv(jt,a,w);
- if(ab&&2==AR(a)&&    1==AR(w))return jtpdtspmv(jt,a,w);
- if(    1==AR(a)&&wb&&2==AR(w))return jtpdtspvm(jt,a,w);
- if(ab&&2==AR(a)&&wb&&2==AR(w))return jtpdtspmm(jt,a,w);
- return df2(x,a,w,jtatop(jt,slash(ds(CPLUS)),qq(ds(CSTAR),jtv2(jt,1L,AR(w)))));
+ if(ab&&1==AR(a)&&wb&&1==AR(w))return pdtspvv(a,w);
+ if(ab&&2==AR(a)&&    1==AR(w))return pdtspmv(a,w);
+ if(    1==AR(a)&&wb&&2==AR(w))return pdtspvm(a,w);
+ if(ab&&2==AR(a)&&wb&&2==AR(w))return pdtspmm(a,w);
+ return df2(x,a,w,atop(slash(ds(CPLUS)),qq(ds(CSTAR),v2(1L,AR(w)))));
 }

@@ -26,7 +26,7 @@ static const TA zz={0,0};
 
 // Returns AM(z) 1 if monad, 0 if dyad
 static A jtvtokens(J jt, A w){A t,*y,z;I n,*s;TA*x;
- RZ(t=jttokens(jt,vs(w),0)); n=AN(t); y=AAV(t);
+ RZ(t=tokens(vs(w),0)); n=AN(t); y=AAV(t);
  I tmonad=1; 
  GATV0(z,BOX,WTA*(5+n),2); s=AS(z); *s++=5+n; *s=WTA;
  x=(TA*)AV(z);
@@ -103,8 +103,8 @@ static I jtdcase(J jt,I xi,V*v){
    else if(xr&&yr&&tmonad)z.t=swap(fs);
    else z.t=CFORK==u->id&&primitive(yt)?folk(yt,sf,xt):folk(xt,fs,yt);
  }else{B b,c;I i,j,xj,yj;
-  i=jtdcase(jt,xi,u); if(u&&CFORK==u->id){xi=tvi(u->fgh[0]); xj=tvi(u->fgh[2]);}else{xi=-1; xj=tvi(xt);}
-  j=jtdcase(jt,yi,v); if(v&&CFORK==v->id){yi=tvi(v->fgh[0]); yj=tvi(v->fgh[2]);}else{yi=-1; yj=tvi(yt);}
+  i=dcase(xi,u); if(u&&CFORK==u->id){xi=tvi(u->fgh[0]); xj=tvi(u->fgh[2]);}else{xi=-1; xj=tvi(xt);}
+  j=dcase(yi,v); if(v&&CFORK==v->id){yi=tvi(v->fgh[0]); yj=tvi(v->fgh[2]);}else{yi=-1; yj=tvi(yt);}
   z.t=0; b=xj==yj; c=xj==yi;
   switch(DCASE(i,j)){
    case DCASE(0,2): z.t=folk(x.a,fs,yt); break;
@@ -150,14 +150,14 @@ static I jtdcase(J jt,I xi,V*v){
 
  TA jtvfolk(J jt,I b,I e,TA*stack,A locsyms,I tmonad,I tsubst,TA *ttab,I *ttabi,I ttabi0){TA z={0,0}; if(CHK3)z.a=folk(stack[b].a,stack[1+b].a,stack[e].a); return z;}
 
- TA jtvhook(J jt,I b,I e,TA*stack,A locsyms,I tmonad,I tsubst,TA *ttab,I *ttabi,I ttabi0){TA z={0,0}; if(CHK2)z.a=jthook(jt,stack[b].a,stack[e].a); return z;}
+ TA jtvhook(J jt,I b,I e,TA*stack,A locsyms,I tmonad,I tsubst,TA *ttab,I *ttabi,I ttabi0){TA z={0,0}; if(CHK2)z.a=hook(stack[b].a,stack[e].a); return z;}
 
  TA jtvpunc(J jt,I b,I e,TA*stack,A locsyms,I tmonad,I tsubst,TA *ttab,I *ttabi,I ttabi0){return stack[e-1];}
 
  TA jtvis(J jt,I b,I e,TA*stack,A locsyms,I tmonad,I tsubst,TA *ttab,I *ttabi,I ttabi0){A ea,et,n,t;I j;TA*u,z={0,0};
  n=stack[b].a;
  if(!(NAME&AT(n)&&CASGN==CAV(stack[1+b].a)[0]))return z;
- t=jtsfn(jt,0,n); j=*ttabi; u=ttab;
+ t=sfn(0,n); j=*ttabi; u=ttab;
  if(!t||NTTAB==*ttabi)return z;
  DQ(j, if(equ(t,u->a))return z; ++u;);
  ea=stack[e].a; et=stack[e].t;
@@ -170,7 +170,7 @@ static I jtdcase(J jt,I xi,V*v){
 static TA jtvmove(J jt,I b,I e,TA*stack,A locsyms,I tmonad,I tsubst,TA *ttab,I *ttabi,I ttabi0){A t;TA*u,x,z;
  x=stack[MAX(0,e)];
  if(!(NAME&AT(x.a))||ASGN&AT(stack[b].a))return x;
- z.a=jtnameref(jt,x.a,locsyms); z.t=0; t=jtsfn(jt,0,x.a); u=ttab;
+ z.a=nameref(x.a,locsyms); z.t=0; t=sfn(0,x.a); u=ttab;
  DO(*ttabi, if(equ(t,u->a)){z.t=tsubst&&ttabi0<=i?qq(sc(TC+i),num(-1)):u->t; break;} ++u;);
  return z;
 }
@@ -231,7 +231,7 @@ static A jttparse(J jt,A w,A locsyms,I tmonad,I tsubst,TA *ttab,I *ttabi,I ttabi
   RZ(locsyms=stcreate(2,40,0L,0L));  // not necessary to set global pointers
   symbis(mnuvxynam[5],num(1),locsyms); if(!tmonad)symbis(mnuvxynam[4],num(1),locsyms); 
   z=jttparse(jt,y,locsyms,tmonad,0==i,ttab,&ttabi,c); RESETERR;
-  if(i&&!z)z=jtcolon(jt,num(4-tmonad),w);
+  if(i&&!z)z=colon(num(4-tmonad),w);
  }
  
  EPILOG(z);

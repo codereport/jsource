@@ -309,12 +309,12 @@ APFX(lcmZZ, Z,Z,Z, zlcm ,,HDR1JERR)
 }    /* <.@% or >.@% on integers */
 
 
-static A jtweight(J jt,A a,A w){ A z; return df1(z,behead(over(AR(w)?w:jtreshape(jt,a,w),num(1))),bsdot(slash(ds(CSTAR))));}  // */\. }. (({:$a)$w),1
+static A jtweight(J jt,A a,A w){ A z; return df1(z,behead(over(AR(w)?w:reshape(a,w),num(1))),bsdot(slash(ds(CSTAR))));}  // */\. }. (({:$a)$w),1
 
  A jtbase1(J jt, A w){A z;B*v;I c,m,n,p,r,*s,t,*x;
  n=AN(w); t=AT(w); r=AR(w); s=AS(w); c=AS(w)[r-1]; c=r?c:1;
  ASSERT(t&DENSE,EVNONCE);
- if(((c-BW)&SGNIF(t,B01X))>=0)return jtpdt(jt,w,jtweight(jt,sc(c),t&RAT+XNUM?jtcvt(jt,XNUM,num(2)):num(2)));  //
+ if(((c-BW)&SGNIF(t,B01X))>=0)return pdt(w,weight(sc(c),t&RAT+XNUM?cvt(XNUM,num(2)):num(2)));  //
  CPROD1(n,m,r-1,s);
  GATV(z,INT,m,r?r-1:0,s); x=AV(z); v=BAV(w);
  if(c)DQ(m, p=0; DQ(c, p=2*p+*v++;); *x++=p;)
@@ -326,9 +326,9 @@ static A jtweight(J jt,A a,A w){ A z; return df1(z,behead(over(AR(w)?w:jtreshape
  at=AT(a); ar=AR(a); as=AS(a);
  wt=AT(w); wr=AR(w); ws=AS(w); c=AS(w)[wr-1]; c=wr?c:1;
  ASSERT(!((at|wt)&SPARSE),EVNONCE); t=maxtyped(at,wt);
- if(!(t&at))RZ(a=jtcvt(jt,t,a));
- if(!(t&wt))RZ(w=jtcvt(jt,t,w));
- return 1>=ar?jtpdt(jt,w,jtweight(jt,sc(c),a)):rank2ex(w,rank2ex(sc(c),a,UNUSED_VALUE,0L,MIN(ar,1),0L,MIN(ar,1),jtweight),UNUSED_VALUE,MIN(wr,1),1L,MIN(wr,1),1L,jtpdt);
+ if(!(t&at))RZ(a=cvt(t,a));
+ if(!(t&wt))RZ(w=cvt(t,w));
+ return 1>=ar?pdt(w,weight(sc(c),a)):rank2ex(w,rank2ex(sc(c),a,UNUSED_VALUE,0L,MIN(ar,1),0L,MIN(ar,1),jtweight),UNUSED_VALUE,MIN(wr,1),1L,MIN(wr,1),1L,jtpdt);
 }
 
 // #: y
@@ -338,20 +338,20 @@ static A jtweight(J jt,A a,A w){ A z; return df1(z,behead(over(AR(w)?w:jtreshape
  ASSERT(t&DENSE,EVNONCE);
  // Result has rank one more than the input.  If there are no atoms,
  // return (($w),0)($,)w; if Boolean, return (($w),1)($,)w
- if((-n&SGNIFNOT(t,B01X))>=0)return jtreshape(jt,apip(shape(jt,w),zeroionei(n!=0)),w);
+ if((-n&SGNIFNOT(t,B01X))>=0)return reshape(apip(shape(jt,w),zeroionei(n!=0)),w);
  if(!(t&INT)){
   // Not integer.  Calculate # digits-1 as d = 2 <.@^. >./ | , w  
-  df2(d,num(2),maximum(zeroionei(1),jtaslash(jt,CMAX,mag(ravel(w)))),jtatop(jt,ds(CFLOOR),ds(CLOG)));
+  df2(d,num(2),maximum(zeroionei(1),aslash(CMAX,mag(ravel(w)))),atop(ds(CFLOOR),ds(CLOG)));
   // Calculate z = ((1+d)$2) #: w
-  RZ(z=jtabase2(jt,jtreshape(jt,increm(d),num(2)),w));
+  RZ(z=abase2(reshape(increm(d),num(2)),w));
   // If not float, result is exact or complex; either way, keep it
   if(!(t&FL))return z;
   // If float, see if we had one digit too many (could happen, if the log was too close to an integer)
   // calculate that as (0 = >./ ({."1 z)).  If so, return }."1 z ,  otherwise z
   // But we can't delete a digit if any of the values were negative - all are significant then
   // We also can't delete a digit if there is only 1 digit in the numbers
-  if(AS(z)[AR(z)-1]<=1 || i0(jtaslash(jt,CPLUSDOT,ravel(lt(w,zeroionei(0))))))return z;
-  if(0==i0(jtaslash(jt,CMAX,ravel(IRS1(z,0L,1L,jthead,d)))))return IRS1(z,0L,1L,jtbehead,d);
+  if(AS(z)[AR(z)-1]<=1 || i0(aslash(CPLUSDOT,ravel(lt(w,zeroionei(0))))))return z;
+  if(0==i0(aslash(CMAX,ravel(IRS1(z,0L,1L,jthead,d)))))return IRS1(z,0L,1L,jtbehead,d);
   return z;
  }
  // Integer.  Calculate x=max magnitude encountered (minimum of 1, to leave 1 output value)
@@ -372,11 +372,11 @@ static A jtweight(J jt,A a,A w){ A z; return df1(z,behead(over(AR(w)?w:jtreshape
  if(1>ar)return residue(a,w);
  if(1==ar&&!((at|wt)&(NOUN-(B01+INT)))){I*av,d,r,*u,*wv,x,*zv;
   // both types are int/boolean, and ar is a list
-  {t=INT; if(!TYPESEQ(t,at)){RZ(a=jtcvt(jt,t,a));} if(!TYPESEQ(t,wt)){RZ(w=jtcvt(jt,t,w));}}  // convert args to compatible precisions, changing a and w if needed.  INT if both empty
+  {t=INT; if(!TYPESEQ(t,at)){RZ(a=cvt(t,a));} if(!TYPESEQ(t,wt)){RZ(w=cvt(t,w));}}  // convert args to compatible precisions, changing a and w if needed.  INT if both empty
   // If a ends with _1 followed by any number of 1, there will be overflow if w contains any imin.  Detect that very rare case
   av=an+AV(a); wv=wn+AV(w);
   for(zv=av, d=an;d&&*--zv==1;--d);
-  if(d&&*zv==-1){zv=wv; DQ(wn, if(*--zv==IMIN){d=0; break;}) if(!d){RZ(a=jtcvt(jt,FL,a)); return jtabase2(jt,a,w);}}
+  if(d&&*zv==-1){zv=wv; DQ(wn, if(*--zv==IMIN){d=0; break;}) if(!d){RZ(a=cvt(FL,a)); return abase2(a,w);}}
   DPMULDE(an,wn,zn); GATV(z,INT,zn,1+wr,AS(w)); AS(z)[wr]=an;  // allocate result area
   zv=zn+AV(z);
   if((((2^an)-1)&(av[-2]-1)&-(d=av[-1]))<0){I d1,k;

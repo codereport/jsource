@@ -42,7 +42,7 @@ B jthasimploc(J jt,A w){A hs,*u;V*v;
    if(AT(thisname)&NOUN)return 0;   // if noun~, leave as is
    NM* thisnameinfo=NAV(thisname);  // the NM block for the current name
    if(!(thisnameinfo->flag&NMIMPLOC))return 0; // not NMDOT
-   if(!(stabent = jtprobelocal(jt,thisname,jt->locsyms)))return 0;  // assigned value does not exist
+   if(!(stabent = probelocal(thisname,jt->locsyms)))return 0;  // assigned value does not exist
    return 1;
   case CATDOT:
   case CGRCO:
@@ -69,14 +69,14 @@ EVERYFS(arofixaself,jtaro,jtfixa,0,VFLAGNONE)  // create A block to be used in e
 // a has to be an A type because it goes into every2.  It is always an I type with rank 0, but it may be virtual when it comes back from every2
 // AM(a) points to the recursion name-list and must be passed to all recursion levels
 static A jtfixa(J jt,A a,A w){A f,g,h,wf,x,y,z=w;V*v;fauxblock(fauxself); A aa; fauxINT(aa,fauxself,1,0); AM((A)aa)=AM(a);  // place to build recursion parm - make the AK field right, and pass the AM field along
-#define REFIXA(a,x) (IAV0(aa)[0]=(aif|(a)), jtfixa(jt,(A)aa,(x)))
+#define REFIXA(a,x) (IAV0(aa)[0]=(aif|(a)), fixa((A)aa,(x)))
  if(!w) return 0;
  I ai=IAV(a)[0];  // value of a
  I aif=ai&(FIXALOCSONLY|FIXALOCSONLYLOWEST|FIXASTOPATINV); // extract control flags
  ai^=aif;   // now ai = state without flags
  // If we are only interested in replacing locatives, and there aren't any, exit fast
  if(aif&FIXALOCSONLY&&!hasimploc(w))return w;  // nothing to fix
- if(NAME&AT(w)){return jtsfn(jt,0,w);}  // only way a name gets here is by ".@noun which turns into ".@(name+noun) for execution.  Also in debug, but that's discarded
+ if(NAME&AT(w)){return sfn(0,w);}  // only way a name gets here is by ".@noun which turns into ".@(name+noun) for execution.  Also in debug, but that's discarded
  if(NOUN&AT(w)||VFIX&VAV(w)->flag)return w;
  v=VAV(w); f=v->fgh[0]; g=v->fgh[1]; h=v->fgh[2]; wf=ds(v->id); I na=ai==0?3:ai;
  if(!(((I)f|(I)g)||((v->id&-2)==CUDOT)))return w;  // combinations always have f or g; and u./v. must be replaced even though it doesn't
@@ -98,15 +98,15 @@ static A jtfixa(J jt,A a,A w){A f,g,h,wf,x,y,z=w;V*v;fauxblock(fauxself); A aa; 
    }
    else{f=REFIXA(1,f); g=REFIXA(2,g); return df2(z,f,g,wf);}  // v : v, similarly
   case CADVF:
-   f=REFIXA(3,f); g=REFIXA(3,g); return jthook(jt,f,g);
+   f=REFIXA(3,f); g=REFIXA(3,g); return hook(f,g);
   case CHOOK:
-   f=REFIXA(2,f); g=REFIXA(1,g); return jthook(jt,f,g);
+   f=REFIXA(2,f); g=REFIXA(1,g); return hook(f,g);
   case CFORK:
    f=REFIXA(na,f); g=REFIXA(ID(f)==CCAP?1:2,g); h=REFIXA(na,h); return folk(f,g,h);  // f first in case it's [:
   case CATDOT:
   case CGRCO:
    IAV0(aa)[0]=(aif|na);
-   RZ(f=jtevery(jt,every2(aa,h,(A)&arofixaself),(A)&arofixaself)); // full A block required for call
+   RZ(f=every(every2(aa,h,(A)&arofixaself),(A)&arofixaself)); // full A block required for call
    RZ(g=REFIXA(na,g));
    return df2(z,f,g,wf);
   case CIBEAM:
@@ -120,8 +120,8 @@ static A jtfixa(J jt,A a,A w){A f,g,h,wf,x,y,z=w;V*v;fauxblock(fauxself); A aa; 
    return REFIXA(ai,jt->implocref[1]);
   case CTILDE:
    if(f&&NAME&AT(f)){
-    RZ(y=jtsfn(jt,0,f));
-    if(all1(jteps(jt,box(y),(A)AM(a))))return w;  // break out of loop if recursive name lookup
+    RZ(y=sfn(0,f));
+    if(all1(eps(box(y),(A)AM(a))))return w;  // break out of loop if recursive name lookup
     ASSERT(AN((A)AM(a))<248,EVLIMIT);  // error if too many names in expansion
     // recursion check finished.  Now replace the name with its value
     if(x=symbrdlock(f)){
@@ -132,7 +132,7 @@ static A jtfixa(J jt,A a,A w){A f,g,h,wf,x,y,z=w;V*v;fauxblock(fauxself); A aa; 
      if(thisname){ // name given
       NM* thisnameinfo=NAV(thisname);  // the NM block for the current name
       if(thisnameinfo->flag&NMIMPLOC){ L *stabent; //  implicit locative
-       if((stabent = jtprobelocal(jt,thisname,jt->locsyms))){  // name is defined
+       if((stabent = probelocal(thisname,jt->locsyms))){  // name is defined
         // If our ONLY mission is to replace implicit locatives, we are finished after replacing this locative IF
         // (1) we want to replace only first-level locatives; (2) there are no more locatives in this branch after the replacement
         if(aif&FIXALOCSONLYLOWEST)return x;  // return looked-up value once we hit one
@@ -150,7 +150,7 @@ static A jtfixa(J jt,A a,A w){A f,g,h,wf,x,y,z=w;V*v;fauxblock(fauxself); A aa; 
      I initn=AN((A)AM(a));  // save name depth coming in
      if(savloc==jt->locsyms){AAV1((A)AM(a))[AN((A)AM(a))]=rifvs(y); AN((A)AM(a))++; AS((A)AM(a))[0]++;} // add name-string to list of visited names for recursion check
      if(z=REFIXA(na,x)){
-      if(ai!=0&&selfq(x))z=jtfixrecursive(jt,sc(ai),z);  // if a lower name contains $:, replace it with explicit equivalent
+      if(ai!=0&&selfq(x))z=fixrecursive(sc(ai),z);  // if a lower name contains $:, replace it with explicit equivalent
      }
      SYMRESTOREFROMLOCAL(savloc);  // make sure we restore current symbols
      AN((A)AM(a))=AS((A)AM(a))[0]=initn;   // restore name count
@@ -173,7 +173,7 @@ static A jtfixa(J jt,A a,A w){A f,g,h,wf,x,y,z=w;V*v;fauxblock(fauxself); A aa; 
 
 // On internal calls, self is an integer whose value contains flags.  Otherwise zeroionei is used
  A jtfix(J jt,    A w,A self){PROLOG(0005);A z;
- if(LIT&AT(w)){ASSERT(1>=AR(w),EVRANK); RZ(w=jtnfs(jt,AN(w),CAV(w)));}
+ if(LIT&AT(w)){ASSERT(1>=AR(w),EVRANK); RZ(w=nfs(AN(w),CAV(w)));}
  // only verbs/noun can get in through the parser, but internally we also vet adv/conj
  ASSERT(AT(w)&NAME+VERB+ADV+CONJ,EVDOMAIN);
  self=AT(self)&NOUN?self:zeroionei(0);  // default to 0 if noun not given
@@ -181,7 +181,7 @@ static A jtfixa(J jt,A a,A w){A f,g,h,wf,x,y,z=w;V*v;fauxblock(fauxself); A aa; 
  // a faux INT block to hold the value, and use AM in that block to point to the list of names
  A namelist; GAT0(namelist,BOX,248,1); AS(namelist)[0]=AN(namelist)=0;  // allocate 248 slots with rank 1, but initialize to empty
  fauxblock(fauxself); A augself; fauxINT(augself,fauxself,1,0); AM(augself)=(I)namelist; IAV(augself)[0]=IAV(self)[0];  // transfer value to writable block; install empty name array
- RZ(z=jtfixa(jt,augself,AT(w)&VERB+ADV+CONJ?w:symbrdlock(w)));  // name comes from string a
+ RZ(z=fixa(augself,AT(w)&VERB+ADV+CONJ?w:symbrdlock(w)));  // name comes from string a
  // Once a node has been fixed, it doesn't need to be looked at ever again.  This applies even if the node itself carries a name.  To indicate this
  // we set VFIX.  We only do so if the node has descendants (or a name).  We also turn off VNAMED, which is set in named explicit definitions (I don't
   // understand why).  We can do this only if we are sure the entire tree was traversed, i. e. we were not just looking for implicit locatives or inverses.
