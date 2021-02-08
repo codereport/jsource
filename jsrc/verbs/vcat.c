@@ -18,7 +18,7 @@ static A jtovs0(J jt,B p,I r,A a,A w){A a1,e,q,x,y,z;B*b;I at,*av,c,d,j,k,f,m,n,
  if(TYPESNE(t,at))RZ(a=jtcvt(jt,t,a));
  if(TYPESNE(t,wt)){RZ(x=jtcvt(jt,t,x)); RZ(e=jtcvt(jt,t,e));}
  j=k=0; DO(f, if(b[i])++j; else ++k;);
- switch(2*b[f]+!equ(a,e)){
+ switch(2*b[f]+!jtequ(jt,a,e)){
   case 0:  /* dense and a equal e */
    RZ(y=ca(y)); 
    RZ(x=p?irs2(x,a,0L,AR(x)-(1+k),0L,jtover):irs2(a,x,0L,0L,AR(x)-(1+k),jtover)); 
@@ -64,7 +64,7 @@ static A jtovs(J jt,A a,A w){A ae,ax,ay,q,we,wx,wy,x,y,z,za,ze;B*ab,*wb,*zb;I ac
  if(!(wt&SPARSE)){ap=PAV(a); RZ(w=sparseit(w,SPA(ap,a),SPA(ap,e)));}
  ap=PAV(a); RZ(ab=bfi(r,SPA(ap,a),1)); ae=SPA(ap,e); at=AT(ae);
  wp=PAV(w); RZ(wb=bfi(r,SPA(wp,a),1)); we=SPA(wp,e); wt=AT(we);
- ASSERT(equ(ae,we),EVNONCE);
+ ASSERT(jtequ(jt,ae,we),EVNONCE);
  GATV0(q,B01,r,1); zb=BAV(q); DO(r, zb[i]=ab[i]||wb[i];); za=jtifb(jt,r,zb); makewritable(za) c=AN(za);  // avoid readonly
  GATV0(q,INT,r,1); zs= AV(q); DO(r, zs[i]=MAX(as[i],ws[i]););
  DO(r, if(zb[i]>ab[i]){RZ(a=jtreaxis(jt,za,a)); break;});

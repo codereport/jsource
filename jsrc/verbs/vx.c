@@ -324,7 +324,7 @@ AMONPS( absX, X,X, , *z=   rifvs(mag(*x)); , HDR1JERR)
  if(!AR(w))switch(CTTZ(AT(w))){
   case INTX:  b=0<=AV(w)[0]; break;
   case XNUMX: x=XAV(w)[0]; n=AN(x); v=AV(x); b=0<=v[n-1]; break;
-  case RATX:  x=XAV(w)[0]; n=AN(x); v=AV(x); b=0<=v[n-1]&&equ(iv1,QAV(w)->d);
+  case RATX:  x=XAV(w)[0]; n=AN(x); v=AV(x); b=0<=v[n-1]&&jtequ(jt,iv1,QAV(w)->d);
  }
  if(!b)return rank1ex0(thorn1(w),UNUSED_VALUE,jtexec1);
  m=INT&AT(w)?(19):XBASEN*AN(x);

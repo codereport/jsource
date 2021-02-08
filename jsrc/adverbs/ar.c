@@ -182,8 +182,8 @@ static A jtredsp1a(J jt,C id,A z,A e,I n,I r,I*s){A t;B b,p=0;D d=1;
   case CSTARDOT: return n?lcm(z,e):ca(e);
   case CMIN:     return n?minimum(z,e):ca(e);
   case CMAX:     return n?maximum(z,e):ca(e);
-  case CPLUS:    if(n&&equ(e,num(0)))return z; DO(r, d*=s[i];); t=tymes(e,d>=FLIMAX?scf(d-n):sc((I)d-n)); return n?plus(z,t):t;
-  case CSTAR:    if(n&&equ(e,num(1) ))return z; DO(r, d*=s[i];); t=expn2(e,d>=FLIMAX?scf(d-n):sc((I)d-n)); return n?tymes(z,t):t;
+  case CPLUS:    if(n&&jtequ(jt,e,num(0)))return z; DO(r, d*=s[i];); t=tymes(e,d>=FLIMAX?scf(d-n):sc((I)d-n)); return n?plus(z,t):t;
+  case CSTAR:    if(n&&jtequ(jt,e,num(1) ))return z; DO(r, d*=s[i];); t=expn2(e,d>=FLIMAX?scf(d-n):sc((I)d-n)); return n?tymes(z,t):t;
   case CEQ:      p=1;  /* fall thru */
   case CNE:
    ASSERT(B01&AT(e),EVNONCE); 
@@ -223,8 +223,8 @@ static A jtredspd(J jt,A w,A self,C id,VARPSF ado,I cv,I f,I r,I zt){A a,e,x,z,z
  GA(zx,zt,AN(x)/n,AR(x)-1,s); MCISH(xf+AS(zx),1+xf+s,xr-1); 
  I rc=((AHDRRFN*)ado)(c/n,n,m,AV(x),AV(zx),jt); if(255&rc)jsignal(rc); RE(0);
  switch(id){
-  case CPLUS: if(!equ(e,num(0)))RZ(e=tymes(e,sc(n))); break; 
-  case CSTAR: if(!equ(e,num(1) )&&!equ(e,num(0)))RZ(e=expn2(e,sc(n))); break;
+  case CPLUS: if(!jtequ(jt,e,num(0)))RZ(e=tymes(e,sc(n))); break; 
+  case CSTAR: if(!jtequ(jt,e,num(1) )&&!jtequ(jt,e,num(0)))RZ(e=expn2(e,sc(n))); break;
   case CEQ:   ASSERT(B01&AT(x),EVNONCE); if(!BAV(e)[0]&&0==(n&1))e=num(1); break;
   case CNE:   ASSERT(B01&AT(x),EVNONCE); if( BAV(e)[0]&&1==(n&1))e=num(0);
  }
@@ -255,10 +255,10 @@ static B jtredspsprep(J jt,C id,I f,I zt,A a,A e,A x,A y,I*zm,I**zdv,B**zpv,I**z
  if(yr){++m; pv[yr1]=1; mm=MAX(mm,yr1-j);}
  if(qv){j=mm*aii(x); GA(xx,AT(x),j,1,0); xxv=CAV(xx);}
  switch(id){
-  case CPLUS: case CPLUSDOT: j=!equ(e,num(0)); break;
-  case CSTAR: case CSTARDOT: j=!equ(e,num(1));  break;
-  case CMIN:                 j=!equ(e,zt&B01?num(1) :zt&INT?sc(IMAX):ainf     ); break;
-  case CMAX:                 j=!equ(e,zt&B01?num(0):zt&INT?sc(IMIN):scf(infm)); break;
+  case CPLUS: case CPLUSDOT: j=!jtequ(jt,e,num(0)); break;
+  case CSTAR: case CSTARDOT: j=!jtequ(jt,e,num(1));  break;
+  case CMIN:                 j=!jtequ(jt,e,zt&B01?num(1) :zt&INT?sc(IMAX):ainf     ); break;
+  case CMAX:                 j=!jtequ(jt,e,zt&B01?num(0):zt&INT?sc(IMIN):scf(infm)); break;
   case CEQ:                  j=!*BAV(e);     break;
   case CNE:                  j= *BAV(e);     break;
  }

@@ -26,7 +26,7 @@ static void jteputv(J jt,A w){I m=NETX-jt->etxn; if(m>0){jt->etxn+=thv(w,MIN(m,2
      /* numeric vector w */
 
 static void jteputq(J jt,A w,I nflag){C q=CQUOTE,*s;
- if(equ(ds(CALP),w))eputs(" a."+!nflag);
+ if(jtequ(jt,ds(CALP),w))eputs(" a."+!nflag);
  else{
   eputc(q);
   s=CAV(w); DO(AN(w), eputc(s[i]); if(q==s[i])eputc(q););

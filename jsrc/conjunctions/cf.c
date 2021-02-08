@@ -146,7 +146,7 @@ A jtfolk(J jt,A f,A g,A h){A p,q,x,y;AF f1=jtfolk1,f2=jtfolk2;B b;C c,fi,gi,hi;I
   case CSLASH: if(BOTHEQ8(gi,hi,CDIV,CPOUND)&&CPLUS==ID(fv->fgh[0])){f1=jtmean; flag|=VIRS1; flag &=~(VJTFLGOK1);} break;  /* +/%# */
   case CAMP:   /* x&i.     { y"_ */
   case CFORK:  /* (x i. ]) { y"_ */
-   if(hi==CQQ&&(y=hv->fgh[0],LIT&AT(y)&&1==AR(y))&&equ(ainf,hv->fgh[1])&&
+   if(hi==CQQ&&(y=hv->fgh[0],LIT&AT(y)&&1==AR(y))&&jtequ(jt,ainf,hv->fgh[1])&&
        (x=fv->fgh[0],LIT&AT(x)&&1==AR(x))&&CIOTA==ID(fv->fgh[1])&&
        (fi==CAMP||CRIGHT==ID(fv->fgh[2]))){f1=jtcharmapb; flag &=~(VJTFLGOK1);} break;
   case CAT:    /* <"1@[ { ] */
@@ -250,7 +250,7 @@ static A jthkiota(J jt,    A w,A self){DECLFG;A a,e;I n;P*p;
  SETIC(w,n);\
  if(SB01&AT(w)&&1==AR(w)){
   p=PAV(w); a=SPA(p,a); e=SPA(p,e); 
-  return BAV(e)[0]||equ(mtv,a) ? jtrepeat(jt,w,IX(n)) : jtrepeat(jt,SPA(p,x),ravel(SPA(p,i)));
+  return BAV(e)[0]||jtequ(jt,mtv,a) ? jtrepeat(jt,w,IX(n)) : jtrepeat(jt,SPA(p,x),ravel(SPA(p,i)));
  }
  return B01&AT(w)&&1>=AR(w) ? jtifb(jt,n,BAV(w)) : jtrepeat(jt,w,IX(n));
 }    /* special code for (# i.@#) */

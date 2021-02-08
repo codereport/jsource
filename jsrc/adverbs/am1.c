@@ -16,7 +16,7 @@ static A jtistd1(J jt,A z,A ind){A*iv,j,*jv,x;I d,i,n,r,*s;
  if(AN(ind)&&!(BOX&AT(ind))){ASSERT(NUMERIC&AT(ind),EVINDEX); RZ(ind=jtevery(jt,ind,ds(CRIGHT)));}
  s=AS(z); n=AN(ind); iv=AAV(ind); 
  ASSERT(n<=AR(z),EVINDEX);
- DQ(n, x=iv[i]; if(!equ(x,ds(CACE)))break;--n;);
+ DQ(n, x=iv[i]; if(!jtequ(jt,x,ds(CACE)))break;--n;);
  GATV0(j,BOX,n,1); jv=AAV(j);
  for(i=0;i<n;++i){
   x=iv[i]; d=s[i];
@@ -44,7 +44,7 @@ static A jtastd1(J jt,A a,A z,A ind){A*iv,q,r,s,s1,*sv,x;B b;I ar,*as,d,j,m,n,*r
  ASSERT(!ICMP(as,AV(s1)+d-ar,ar),EVLENGTH);
  if(ar<d)RZ(a=jtreshape(jt,s1,a));
  RZ(q=dgrade1(jteps(jt,jtrepeat(jt,r,IX(zr)),SPA(zp,a))));
- return equ(q,IX(d))?a:jtcant2(jt,q,a);
+ return jtequ(jt,q,IX(d))?a:jtcant2(jt,q,a);
 }    /* convert replacement array a into standard form relative to index list ind */
 
 static A jtssel(J jt,A z,A ind){A a,*iv,p,q,x,y;B*b;I*av,c,i,j,m,n,*u,*v,*yv;P*zp;

@@ -159,7 +159,7 @@
 #define eqd(x,y,z)                  jteqd(jt,(x),(y),(z))
 #define eqq(x,y,z)                  jteqq(jt,(x),(y),(z))
 #define eqx(x,y,z)                  jteqx(jt,(x),(y),(z))
-#define equ(x,y)                    jtequ(jt,(x),(y))
+
 #define eqz(x,y,z)                  jteqz(jt,(x),(y),(z))
 #define etc(x)                      jtetc(jt,(x))
 #define ev2(x,y,z)                  jtev2(jt,(x),(y),(z))

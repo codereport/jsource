@@ -21,7 +21,7 @@ static A jtpowseqlim(J jt,    A w,A self){PROLOG(0039);A x,y,z,*zv;I i,n;
  while(1){
   if(n==i){RZ(z=jtext(jt,0,z)); zv=i+AAV(z); n=AN(z);}
   A z0; RZ(x=df1(z0,y=x,self)); INCORP(x); *zv++=x;
-  if(equ(x,y)){AN(z)=AS(z)[0]=i; break;}
+  if(jtequ(jt,x,y)){AN(z)=AS(z)[0]=i; break;}
   ++i;
  }
  z=ope(z);
@@ -143,7 +143,7 @@ static A jtply1(J jt,    A w,A self){PROLOG(0040);DECLFG;A zz=0;
    // else execute verb, increment current power.  If there is an infinite power, see if result matches input, set current power to infinite if so
    A oldz=z; RZ(z=CALL1(f1,z,fs));  // run the verb
    zpow+=state&STATEPOSITIVEPOW?1:-1;  // increment the power corresponding to z
-   if(state&STATEINFINITEPOW){if(equ(oldz,z))zpow=state&STATEPOSITIVEPOW?IMAX:-IMAX;}  // if no change, make z apply to everything.  Don't check unless _ power given
+   if(state&STATEINFINITEPOW){if(jtequ(jt,oldz,z))zpow=state&STATEPOSITIVEPOW?IMAX:-IMAX;}  // if no change, make z apply to everything.  Don't check unless _ power given
    if(!(zpow&7)){
     // Since we are not popping inside the loop (because each result must be reused even after its values have been moved), we
     // have to pop explicitly.  We protect the components of the overall result and the most recent result
@@ -169,7 +169,7 @@ static A jtply1(J jt,    A w,A self){PROLOG(0040);DECLFG;A zz=0;
  if(pscan0){A sneg; RZ(sneg=sc(pscan0)); RZ(p=apip(jtdrop(jt,sneg,p),reverse(jttake(jt,sneg,p))));}
  // result is ($n) $ (p i. ,n) { result - avoid the reshape if n is a list, and avoid the from if (p i. ,n) is an index vector
  RZ(p=jtindexof(jt,p,rn));  // for each input power, the position of its executed result
- if(!equ(IX(np),p))RZ(zz=jtfrom(jt,p,zz));  // order result-cells in order of the input powers
+ if(!jtequ(jt,IX(np),p))RZ(zz=jtfrom(jt,p,zz));  // order result-cells in order of the input powers
  if(AR(n)!=1)zz=jtreshape(jt,shape(jt,n),zz);  // if n is an arry, use its shape
  EPILOG(zz);
 }
@@ -183,7 +183,7 @@ static A jtpinf12(J jt,A a,A w,A self){PROLOG(0340);A z;  // no reason to inplac
  while(1){
   RZ(z=CALL2(f,a,w,fs));  // call the fn, either monadic or dyadic
   A oldw=w; oldw=ismonad?a:oldw; w=ismonad?w:z; a=ismonad?z:a;  // oldw=input w to f; save result for next loop overwriting a(monad) or w(dyad)
-  I isend=equ(z,oldw);  // remember if result is same an input
+  I isend=jtequ(jt,z,oldw);  // remember if result is same an input
   if(!((isend-1)&++i&7)) {  // every so often, but always when we leave...
    JBREAK0;   // check for user interrupt, in case the function doesn't allocate memory
    RZ(z=EPILOGNORET(z));  // free up allocated blocks, but keep z.  If z is virtual it will be realized
