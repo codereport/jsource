@@ -45,6 +45,12 @@ add_compile_options($<$<COMPILE_LANGUAGE:C,CXX>:-Werror>)
 add_compile_options($<$<COMPILE_LANG_AND_ID:C,GNU>:-Wno-error=sequence-point>)
 add_compile_options($<$<COMPILE_LANG_AND_ID:C,GNU>:-Wno-error=strict-overflow>)
 add_compile_options($<$<COMPILE_LANG_AND_ID:C,GNU>:-Wno-error=logical-not-parentheses>)
+if (CMAKE_COMPILER_IS_GNUCC AND CMAKE_CXX_COMPILER_VERSION VERSION_GREATER 8.0)
+    # this warning was added in gcc 8 https://debarshiray.wordpress.com/2019/04/01/about-wextra-and-wcast-function-type/
+
+    add_compile_options($<$<COMPILE_LANG_AND_ID:C,GNU>:-Wno-cast-function-type>) #disable warning
+    # add_compile_options($<$<COMPILE_LANG_AND_ID:C,GNU>:-Wno-error=cast-function-type>) #disable errors from warning
+endif ()
 
 # Enable warnings
 add_compile_options($<$<COMPILE_LANGUAGE:C,CXX>:-Wall>)
