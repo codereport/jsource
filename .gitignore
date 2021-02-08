@@ -150,9 +150,9 @@ docs/Makefile
 venv/*
 
 # Robert's python code
-#excluded_names.txt    #excluded names from the script
-#find_replace_macro.py #python script
-known_good_build.txt   #string that shows in good builds
-known_good_cmake.txt   #string that shows in good cmake build file generations
-known_good_test.txt    #string that shows in good test passing.
-#removal_log.md        #log of all macros removed.
+#excluded_names.txt
+#find_replace_macro.py
+known_good_build.txt
+known_good_cmake.txt
+known_good_test.txt
+#removal_log.md
