@@ -6,8 +6,6 @@
 
 #include "j.h"
 
-#define ALIGNTOCACHE 0   // set to 1 to align each block to cache-line boundary.  Will reduce cache usage for headers
-
 #define SBFREEBLG (14+PMINL)   // lg2(SBFREEB)
 #define SBFREEB (1L<<SBFREEBLG)   // number of bytes that need to be freed before we rescan
 #define MFREEBCOUNTING 1   // When this bit is set in mfreeb[], we keep track of max space usage
@@ -123,13 +121,8 @@ B jtspfree(J jt){I i;A p;
    for(p=baseblockproxyroot;p;){A np = AFPROXYCHAIN(p);  // next-in-chain
     A baseblock = FHRHROOTADDR(p,offsetmask);  // get address of corresponding base block
     if(FHRHISROOTALLOFREE(AFHRH(baseblock))){ // Free fully-unused base blocks;
-#if 1 || ALIGNTOCACHE   // with short headers, always align to cache bdy
      FREECHK(((I**)baseblock)[-1]);  // If aligned, the word before the block points to the original block address
      jt->malloctotal-=PSIZE+CACHELINESIZE;  // return storage+bdy
-#else
-     FREECHK(baseblock);
-     jt->malloctotal-=PSIZE;  // return storage
-#endif
     }else{AFHRH(baseblock) = virginbase;}   // restore the count to 0 in the rest
     p=np;   //  step to next base block
    } 
@@ -731,18 +724,12 @@ RESTRICTF A jtgaf(J jt,I blockx){A z;I mfreeb;I n=(I)2<<blockx;  // n=size of al
    if(z){         // allocate from a chain of free blocks
     jt->mfree[-PMINL+1+blockx].pool = AFCHAIN(z);  // remove & use the head of the free chain
    }else{A u,chn; US hrh; I nt=jt->malloctotal;                   // small block, but chain is empty.  Alloc PSIZE and split it into blocks
-#if 1 || ALIGNTOCACHE   // with smaller headers, always align pool allo to cache bdy
     // align the buffer list on a cache-line boundary
     I *v;
     ASSERT(v=MALLOC(PSIZE+CACHELINESIZE),EVWSFULL);
     z=(A)(((I)v+CACHELINESIZE)&-CACHELINESIZE);   // get cache-aligned section
     ((I**)z)[-1] = v;   // save address of entire allocation in the word before the aligned section
     nt += PSIZE+CACHELINESIZE;  // add to total allocated
-#else
-    // allocate without alignment
-    ASSERT(av=MALLOC(PSIZE),EVWSFULL);
-    nt += PSIZE;  // add to total allocated
-#endif
     {I ot=jt->malloctotalhwmk; ot=ot>nt?ot:nt; jt->malloctotal=nt; jt->malloctotalhwmk=ot;}
     // split the allocation into blocks.  Chain them together, and flag the base.  We chain them in ascending order (the order doesn't matter), but
     // we visit them in back-to-front order so the first-allocated headers are in cache
@@ -755,18 +742,9 @@ RESTRICTF A jtgaf(J jt,I blockx){A z;I mfreeb;I n=(I)2<<blockx;  // n=size of al
    jt->mfree[-PMINL+1+blockx].ballo=mfreeb+=n;
   } else { I nt=jt->malloctotal;  // here for non-pool allocs...
    mfreeb=jt->mfreegenallo;    // bytes in large allocations
-#if ALIGNTOCACHE
-   // Allocate the block, and start it on a cache-line boundary
-   I *v;
-   ASSERT(v=MALLOC(n+CACHELINESIZE),EVWSFULL);
-   z=(MS *)(((I)v+CACHELINESIZE)&-CACHELINESIZE);   // get cache-aligned section
-   ((I**)z)[-1] = v;    // save address of original allocation
-   nt += n+CACHELINESIZE;
-#else
    // Allocate without alignment
    ASSERT(z=MALLOC(n),EVWSFULL);
    nt += n;
-#endif
    {I ot=jt->malloctotalhwmk; ot=ot>nt?ot:nt; jt->malloctotal=nt; jt->malloctotalhwmk=ot;}
    AFHRH(z) = (US)FHRHSYSJHDR(1+blockx);    // Save the size of the allocation so we know how to free it and how big it was
    jt->mfreegenallo=mfreeb+=n;    // mfreegenallo is the byte count allocated for large blocks
@@ -834,13 +812,8 @@ void jtmf(J jt,A w){I mfreeb;
  }else{                // buffer allocated from subpool.
   mfreeb = jt->mfreegenallo;
   allocsize = FHRHSYSSIZE(hrh);
-#if ALIGNTOCACHE
-  FREECHK(((I**)w)[-1]);  // point to initial allocation and free it
-  jt->malloctotal-=allocsize+CACHELINESIZE;
-#else
   FREECHK(w);  // point to initial allocation and free it
   jt->malloctotal-=allocsize;
-#endif
   jt->mfreegenallo = mfreeb-allocsize;
  }
  if(mfreeb&MFREEBCOUNTING){jt->bytes -= allocsize;}  // keep track of total allocation only if asked to
