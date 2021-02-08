@@ -45,8 +45,6 @@ enum {
     VIPWCRLONG  = ((I)1 << VIPWCRLONGX),
     // bit 31 must not be used - it may be a sign bit, which has a meaning
     VARGCVTMSKF = (VXCHASVTYPE | VXCVTYPEMSK),               // mask for type to pass into XCVT, includes XNUM override
-    VFRCEXMT    = (VXCHASVTYPE | ((I)XMEXMT << VXCVTYPEX)),  // set in arg to jtcvt(jt,) to do rounding for = ~:, if the
-                                                             // conversion happens to be to XNUM
     // upper bits for 64-bit va2
     VIPOKRNKWX = 30,  // filled by va2 if the ranks allow inplacing w
     VIPOKRNKW  = ((I)1 << VIPOKRNKWX),
@@ -54,10 +52,12 @@ enum {
     VIPOKRNKA  = ((I)1 << VIPOKRNKAX),
 };
 
-#define VXX  (Vxx | VXCHASVTYPE | ((I)XMEXACT << VXCVTYPEX))  // exact conversion
-#define VXEQ (Vxx | VXCHASVTYPE | ((I)XMEXMT << VXCVTYPEX))   // convert to XNUM for = ~:
-#define VXCF (Vxx | VXCHASVTYPE | ((I)XMCEIL << VXCVTYPEX))   // convert to XNUM ceiling/floor
-#define VXFC (Vxx | VXCHASVTYPE | ((I)XMFLR << VXCVTYPEX))    // convert to XNUM floor/ceiling
+#define VXX  (Vxx | VXCHASVTYPE | ((I)XMEXACT << VXCVTYPEX)) // exact conversion
+#define VXEQ (Vxx | VXCHASVTYPE | ((I)XMEXMT << VXCVTYPEX))  // convert to XNUM for = ~:
+#define VXCF (Vxx | VXCHASVTYPE | ((I)XMCEIL << VXCVTYPEX))  // convert to XNUM ceiling/floor
+#define VXFC (Vxx | VXCHASVTYPE | ((I)XMFLR << VXCVTYPEX))   // convert to XNUM floor/ceiling
+#define VFRCEXMT (VXCHASVTYPE | ((I)XMEXMT << VXCVTYPEX))    // set in arg to jtcvt(jt,) to do rounding for = ~:,
+                                                             // if the conversion happens to be to XNUM
 
 // Extract the argument-conversion type from cv coming from the table
 #define atype(x) (((x)&VARGMSK)>>VARGX)
