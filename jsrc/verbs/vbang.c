@@ -130,7 +130,7 @@ D jtbindd(J jt,D x,D y){B id,ix,iy;D d;
  ix=x==jfloor(x); 
  iy=y==jfloor(y);
  switch(4*(I )(ix&&0>x)+2*(I )(iy&&0>y)+(I )(id&&0>d)){
-  default: ASSERTSYS(0,"bindd");
+  default: ASSERTSYS(0,"bindd"); //jtbindd(jt,(x),(y))
   case 5: /* 1 0 1 */  /* Impossible */
   case 0: /* 0 0 0 */
   case 2: /* 0 1 0 */  return ix&&iy?ibin(x,y):jtdbin(jt,x,y);
@@ -159,6 +159,8 @@ static Z jtbinzz(J jt,Z x,Z y){B id,ix,iy;D rd,rx,ry;Z d;
   case 7: /* 1 1 1 */  return zeroZ;
 }}
 
-
+#define bindd(x,y)                  jtbindd(jt,(x),(y))
 APFX(binDD, D,D,D, bindd,NAN0;,HDR1JERRNAN)
+#undef bindd
 APFX(binZZ, Z,Z,Z, binzz,NAN0;,HDR1JERRNAN)
+
