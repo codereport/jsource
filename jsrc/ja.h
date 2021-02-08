@@ -40,7 +40,7 @@
 #define bfi(x,y,z)                  jtbfi(jt,(x),(y),(z))
 
 #define binrep1(x)                  jtbinrep1(jt,(x))
-#define binzz(x,y)                  jtbinzz(jt,(x),(y))
+
 #define bitwisecharamp(x0,x1,x2,x3) jtbitwisecharamp(jt,(x0),(x1),(x2),(x3))
 #define box(x)                      jtbox(jt,(x))
 #define boxW(x)                     jtbox((J)((I)jt|JTINPLACEW),(x))
