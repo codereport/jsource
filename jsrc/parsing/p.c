@@ -189,49 +189,6 @@ retstack:  // return, but 0 if error
 
 static PSTK * (*(lines58[]))() = {jtpfork,jtphook,jtis,jtpparen};  // handlers for parse lines 5-8
 
-#if AUDITEXECRESULTS
-// go through a block to make sure that the descendants of a recursive block are all recursive, and that no descendant is virtual/unincorpable
-// and that any block marked PRISTINE, if boxed, has DIRECT descendants with usecount 1
-// Initial call has nonrecurok and virtok both set
-
-void auditblock(A w, I nonrecurok, I virtok) {
- if(!w)return;
- I nonrecur = (AT(w)&RECURSIBLE) && ((AT(w)^AFLAG(w))&RECURSIBLE);  // recursible type, but not marked recursive
- if(AFLAG(w)&AFVIRTUAL && !(AFLAG(w)&AFUNINCORPABLE))if(AFLAG(ABACK(w))&AFVIRTUAL)SEGFAULT;  // make sure e real backer is valid and not virtual
- if(nonrecur&&!nonrecurok)SEGFAULT;
- if(AFLAG(w)&(AFVIRTUAL|AFUNINCORPABLE)&&!virtok)SEGFAULT;
- if(AT(w)==0xdeadbeefdeadbeef)SEGFAULT;
- switch(CTTZ(AT(w))){
-  case RATX:  
-   {A*v=AAV(w); DO(2*AN(w), if(v[i])if(!(((AT(v[i])&NOUN)==INT) && !(AFLAG(v[i])&AFVIRTUAL)))SEGFAULT;);} break;
-  case XNUMX:
-   {A*v=AAV(w); DO(AN(w), if(v[i])if(!(((AT(v[i])&NOUN)==INT) && !(AFLAG(v[i])&AFVIRTUAL)))SEGFAULT;);} break;
-  case BOXX:
-   if(!(AFLAG(w)&AFNJA)){A*wv=AAV(w);
-   DO(AN(w), if(wv[i]&&(AC(wv[i])<0))SEGFAULT;)
-   I acbias=(AFLAG(w)&BOX)!=0;  // subtract 1 if recursive
-   if(AFLAG(w)&AFPRISTINE){DO(AN(w), if(wv[i]&&(AC(w)-acbias)>1||!(AT(wv[i])&DIRECT))SEGFAULT;)}
-   {DO(AN(w), auditblock(wv[i],nonrecur,0););}
-   }
-   break;
-  case VERBX: case ADVX:  case CONJX: 
-   {V*v=VAV(w); auditblock(v->fgh[0],nonrecur,0);
-    auditblock(v->fgh[1],nonrecur,0);
-    auditblock(v->fgh[2],nonrecur,0);} break;
-  case SB01X: case SINTX: case SFLX: case SCMPXX: case SLITX: case SBOXX:
-   {P*v=PAV(w);  A x;
-   x = SPA(v,a); if(!(AT(x)&DIRECT))SEGFAULT; x = SPA(v,e); if(!(AT(x)&DIRECT))SEGFAULT; x = SPA(v,i); if(!(AT(x)&DIRECT))SEGFAULT; x = SPA(v,x); if(!(AT(x)&DIRECT))SEGFAULT;
-   auditblock(SPA(v,a),nonrecur,0); auditblock(SPA(v,e),nonrecur,0); auditblock(SPA(v,i),nonrecur,0); auditblock(SPA(v,x),nonrecur,0);} break;
-  case B01X: case INTX: case FLX: case CMPXX: case LITX: case C2TX: case C4TX: case SBTX: case NAMEX: case SYMBX: case CONWX: if(NOUN & (AT(w) ^ (AT(w) & -AT(w))))SEGFAULT; break;
-  case ASGNX: break;
-  default: break; SEGFAULT;
- }
-}
-#endif
-
-
-
-
 // Run parser, creating a new debug frame.  Explicit defs, which make other tests first, then go through jtparsea
  A jtparse(J jt, A w){A z;
  if(!w) return 0;
@@ -553,9 +510,6 @@ rdglob: ;
       // jt is OK again
 RECURSIVERESULTSCHECK
       EPZ(y);  // fail parse if error
-#if AUDITEXECRESULTS
-      auditblock(y,1,1);
-#endif
       stackfs[1].a=y;  // save result 2 3 3 2 3; parsetype is unchanged, token# is immaterial
       // free up inputs that are no longer used.  These will be inputs that are still inplaceable and were not themselves returned by the execution.
       // We free them right here, and zap their tpop entry to avoid an extra free later.
@@ -594,9 +548,6 @@ RECURSIVERESULTSCHECK
       A y=(*actionfn)(jt,arg1,arg2,fs);
 RECURSIVERESULTSCHECK
       EPZ(y);  // fail parse if error
-#if AUDITEXECRESULTS
-      auditblock(y,1,1);
-#endif
       PTFROMTYPE(stack[1].pt,AT(y)) stack[1].t=restok; stack[1].a=y;   // save result, move token#, recalc parsetype
      }
     }else{
@@ -604,9 +555,6 @@ RECURSIVERESULTSCHECK
      // It will run its function, and return the new stackpointer to use, with the stack all filled in.  If there is an error, the returned stackpointer will be 0.
      stack=(*lines58[pline-5])(jt,stack);  // run it
      EPZ(stack)  // fail if error
-#if AUDITEXECRESULTS
-     if(pline<=6)auditblock(stack[1].a,1,1);  // () and asgn have already been audited
-#endif
      stack0pt=stack[0].pt;  // bottom of stack was modified, so refresh the type for it (lines 0-6 don't change it)
     }
    }

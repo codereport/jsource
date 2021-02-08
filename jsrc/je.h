@@ -586,9 +586,6 @@ extern A jtrollk(J jt,A a,A w,A self);
 extern A jtrollkx(J jt,A a,A w,A self);
 extern A jtsumattymes1(J jt,A a,A w,A self);
 extern A jtxop2(J jt,A a,A w,A self);
-#if AUDITEXECRESULTS
-extern void auditblock(A w, I nonrecurok, I virtok);
-#endif
 #if FORCEVIRTUALINPUTS
 extern A virtifnonip(J jt, I ipok, A buf);
 #endif

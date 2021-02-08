@@ -418,10 +418,6 @@ static A jtquicksel(J jt,A a,A w){I index;
   // look for the common special case scalar { boxed vector.  This path doesn't run EPILOG
   if(((AT(w)>>BOXX)&1)>=(2*AR(a)+AR(w))){  // a is an atom, w is atom or list of boxes   AR(a)==0 && (AR(w)==0 || (AR(w)==1 && AT(w)&BOX))
    RZ(z=jtquicksel(jt,a,w));  // fetch selected box, opened.  If not a box, just return w
-   // if the result is w, leave its inplaceability.  If contents, it will perforce be uninplaceable
-#if AUDITBOXAC
-   if(!(AFLAG(w)&AFVIRTUALBOXED)&&AC(z)<0)SEGFAULT;
-#endif
    // Since the whole purpose of fetch is to copy one contents by address, we turn off pristinity of w
    PRISTCLRF(w)
    return z;   // turn off inplace if w not inplaceable, or jt not inplaceable.
