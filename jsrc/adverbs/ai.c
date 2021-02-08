@@ -338,7 +338,7 @@ static A jtneutral(J jt, A w){A x,y;B b;V*v;
   default:      RZ(x=neutral(w)); break;
   case CCOMMA:  return eval("i.@(0&,)@(2&}.)@$");
   case CDOT:    if(!(ip(w,CPLUS,CSTAR)||ip(w,CPLUSDOT,CSTARDOT)||ip(w,CNE,CSTARDOT)))break;  // if matrix multiply, fall through to...
-  case CDOMINO: return jtatop(jt,atop(ds(CEQ),ds(CGRADE)),ds(CHEAD));
+  case CDOMINO: return jtatop(jt,jtatop(jt,ds(CEQ),ds(CGRADE)),ds(CHEAD));
   case CCYCLE:
   case CLBRACE: return jtatop(jt,ds(CGRADE),ds(CHEAD));
   case CSLASH:  if(VERB&AT(f))return jtatop(jt,iden(f),ds(CPOUND)); break;
