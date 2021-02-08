@@ -417,9 +417,6 @@ static A jtopes(J jt,I zt,A cs,A w){A a,d,e,sh,t,*wv,x,x1,y,y1,z;B*b;C*xv;I an,*
  if(!AR(w)){
   // scalar box: Turn off pristine in w since we are pulling an address from it.  Contents must not be inplaceable
   z=*v;
-#if AUDITBOXAC
-  if(!(AFLAG(w)&AFVIRTUALBOXED)&&AC(z)<0)SEGFAULT;
-#endif
   PRISTCLRF(w) return z;
  }
  // Here we have an array of boxes.  We will create a new block with the concatenated contents (even if there is only one box), and thus we don't need to turn of pristine in w
@@ -452,9 +449,6 @@ static A jtopes(J jt,I zt,A cs,A w){A a,d,e,sh,t,*wv,x,x1,y,y1,z;B*b;C*xv;I an,*
   GA(z,t,zn,r+AR(w),AS(w)); MCISH(AS(z)+AR(w),u,r); x=CAV(z); fillv(t,zn,x);  // init to a:  fills  bug copy shape could overrun w
   for(i=0;i<n;++i){
    y=v[i];   // get pointer to contents
-#if AUDITBOXAC
-   if(!(AFLAG(w)&AFVIRTUALBOXED)&&AC(y)<0)SEGFAULT;
-#endif
    if(!nonh)                memcpy(x,AV(y),AN(y)<<klg);  // homogeneous atomic types: fill only at end, copy the valid part
    else if(TYPESEQ(t,AT(y))&&m==AN(y))memcpy(x,AV(y),q);   // cell of maximum size: copy it entire
    else if(AN(y))             RZ(povtake(jt,cs,TYPESEQ(t,AT(y))?y:cvt(t,y),x));  // otherwise add fill
