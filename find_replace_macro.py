@@ -29,7 +29,7 @@ def write_log_entry(paths, local_old_name, new_name, regular_expression, replace
     escaped = '\\|'
     with open(LOG_FILE_NAME, 'a') as log:
         log.write('\n|')
-        log.write(' '.join([path.strip() for path in paths]))
+        log.write(' '.join(['`' + path + '`' for path in paths]))
         log.write('|' + local_old_name)
         log.write('|' + new_name)
         log.write('|`' + unescaped.sub(escaped, regular_expression.pattern) + '`')
@@ -98,7 +98,7 @@ def walk_matches():
                 with open(path, 'w') as fw:
                     fw.write(data)
                 yield re.compile(r'(^|[ \t]+|[^\d\w_])' + old_name + r'\((?=([^,]+?),([^)]+?)\))'), \
-                      r'\1' + new_name + r'(jt,', old_name, new_name
+                    r'\1' + new_name + r'(jt,', old_name, new_name
                 return
     old_name = ""
     pass
