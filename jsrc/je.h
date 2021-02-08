@@ -101,9 +101,6 @@ extern A jtexg(J jt, A w);
 extern A jtexpn1(J jt, A w);
 extern A jtfact(J jt, A w);
 extern A jtfactor(J jt, A w);
-#if !USECSTACK
-extern A jtfdepadv(J jt, A w);
-#endif
 extern A jtfh15(J jt, A w);
 extern A jtfiller(J jt, A w);
 extern A jtfix(J jt,    A w,A self);
@@ -585,9 +582,6 @@ extern A jtrollk(J jt,A a,A w,A self);
 extern A jtrollkx(J jt,A a,A w,A self);
 extern A jtsumattymes1(J jt,A a,A w,A self);
 extern A jtxop2(J jt,A a,A w,A self);
-#if FORCEVIRTUALINPUTS
-extern A virtifnonip(J jt, I ipok, A buf);
-#endif
 extern A        jtassembleresults(J,I, A, A,A*,I,I,I,A,I,I,I);
 extern I        cachedmmult(J,D*,D*,D*,I,I,I,I);
 extern void     copyTT(void *, void *, I, I,I);
@@ -664,9 +658,6 @@ extern A        jtexta(J,I,I,I,I);
 extern A        jtextnvr(J);
 extern I        jtfa(J,AD * RESTRICT,I);
 extern A        jtfdef(J,I,C,I,AF,AF,A,A,A,I,I,I,I);
-#if !USECSTACK
-extern I        jtfdep(J,A);
-#endif
 extern void     jtfh(J,A);
 extern void     jtfillv(J,I,I,C*);        /* "fill" name conflict on Mac             */
 extern A        jtfindnl(J,I);

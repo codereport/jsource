@@ -65,10 +65,6 @@
  }
  I dyadex = w!=self;   // if we were called with w,fs,fs, we are a monad.  Otherwise (a,w,fs) dyad
  v=FAV(fs);  // repurpose v to point to the resolved verb block
-#if !USECSTACK
- I d=v->fdep; if(!d)RE(d=fdep(fs));  // get stack depth of this function, for overrun prevention
- FDEPINC(d);  // verify sufficient stack space - NO ERRORS until FDEPDEC below
-#endif
  STACKCHKOFL
  if(explocale!=0){  // there is a locative or implied locative
   // locative. switch to it, stacking the prev value.  If the switch is to the current local symbol table, that means 'switch to caller's environment'
@@ -111,9 +107,6 @@
   if(PMCTRBPMON&jt->uflags.us.uq.uq_c.pmctrbstk)pmrecord(thisname,jt->global?LOCNAME(jt->global):0,-2L,dyadex?VAL2:VAL1);  // record the return from call
   if(jt->uflags.us.uq.uq_c.spfreeneeded)spfree();   // if garbage collection required, do it
  }
-#if !USECSTACK
- FDEPDEC(d);
-#endif
 
  // Now pop the stack.  Execution may have added entries, but our stack frame always starts in the same place.
  // We may add entries to the end of the caller's stack frame

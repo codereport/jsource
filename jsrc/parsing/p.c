@@ -158,13 +158,6 @@ static PSTK* jtis(J jt,PSTK *stack){B ger=0;C *s;
   }
   // if simple assignment to a name (normal case), do it
   if((NAME&AT(n))!=0){
-#if FORCEVIRTUALINPUTS
-   // When forcing everything virtual, there is a problem with jtcasev, which converts its sentence to an inplace special.
-   // The problem is that when the result is set to virtual, its backer does not appear in the NVR stack, and when the reassignment is
-   // made the virtual block is dangling.  The workaround is to replace the block on the stack with the final value that was assigned:
-   // not allowed in general because of (verb1 x verb2) name =: virtual - if verb2 assigns the name, the value going into verb1 will be freed before use
-   stack[2].a=
-#endif
    symbis(n,v,symtab);
   }else{
    // computed name(s)
@@ -198,55 +191,6 @@ static PSTK * (*(lines58[]))() = {jtpfork,jtphook,jtis,jtpparen};  // handlers f
  debz();
  return z;
 }
-
-
-#if FORCEVIRTUALINPUTS
-// For wringing out places where virtual blocks are incorporated into results, we make virtual blocks show up all over
-// any noun block that is not in-placeable and enabled for inplacing in jt will be replaced by a virtual block.  Then the audit of the
-// result will catch any virtual blocks that slipped through into an incorporating entity.  sparse blocks cannot be virtualized.
-// if ipok is set, inplaceable blocks WILL NOT be virtualized
-A virtifnonip(J jt, I ipok, A buf) {
- RZ(buf);
- if(AT(buf)&NOUN && !(ipok && ACIPISOK(buf)) && !(AT(buf)&SPARSE) && !(AFLAG(buf)&(AFNJA))) {A oldbuf=buf;
-  buf=virtual(buf,0,AR(buf)); if(!buf && jt->jerr!=EVATTN && jt->jerr!=EVBREAK)SEGFAULT;  // replace non-inplaceable w with virtual block; shouldn't fail except for break testing
-  I* RESTRICT s=AS(buf); I* RESTRICT os=AS(oldbuf); DO(AR(oldbuf), s[i]=os[i];);  // shape of virtual matches shape of w except for #items
-    AN(buf)=AN(oldbuf);  // install # atoms
- }
- return buf;
-}
-
-// We intercept all the function calls, for this file only
-static A virtdfs1(J jtip, A w, A self){
- J jt = (J)(intptr_t)((I)jtip&-4);  // estab legit jt
- w = virtifnonip(jt,(I)jtip&JTINPLACEW,w);
- return jtdfs1(jtip,w,self);
-}
-static A virtdfs2(J jtip, A a, A w, A self){
- J jt = (J)(intptr_t)((I)jtip&-4);  // estab legit jt
- a = virtifnonip(jt,(I)jtip&JTINPLACEA,a);
- w = virtifnonip(jt,(I)jtip&JTINPLACEW,w);
- return jtdfs2(jtip,a,w,self);
-}
-static A virtfolk(J jtip, A f, A g, A h){
- J jt = (J)(intptr_t)((I)jtip&-4);  // estab legit jt
- f = virtifnonip(jt,0,f);
- g = virtifnonip(jt,0,g);
- h = virtifnonip(jt,0,h);
- return jtfolk(jtip,f,g,h);
-}
-static A virthook(J jtip, A f, A g){
- J jt = (J)(intptr_t)((I)jtip&-4);  // estab legit jt
- f = virtifnonip(jt,0,f);
- g = virtifnonip(jt,0,g);
- return jthook(jtip,f,g);
-}
-
-// redefine the names for when they are used below
-#define jtdfs1 virtdfs1
-#define jtdfs2 virtdfs2
-#define jtfolk virtfolk
-#define jthook virthook
-#endif
 
 #define FP goto failparse;   // indicate parse failure and exit
 #define EP goto exitparse;   // exit parser, preserving current status

@@ -40,34 +40,8 @@ static void** MERGEFNNAME(CMP comp, I compn, void * * RESTRICT lo, I lon, void *
  // Perform the merge into wk[].
  void *loaddr=*lo, *hiaddr=*hi;  //loaddr and hiaddr contain the addresses of the next values to merge
  do{
-#if 1
   if(COMPFN(compn,loaddr,hiaddr)){++lo; *wkptr++=loaddr; if(lo!=loend)loaddr=*lo;else{if(wkptr!=hi)MCIL(wkptr,hi,hiend-hi); break;}}
   else{++hi; *wkptr++=hiaddr; if(hi!=hiend)hiaddr=*hi;else{MCIL(wkptr,lo,loend-lo); break;}}
-#else  // this version does not requires prediction of the test but runs slower - odd, since it does just a fetch + test + branch extra
-  // We keep processing until one of the lists has been exhausted.  At that point, we copy the other list
-  // to the output and return.
-  if(lo!=loend){
-   if(hi!=hiend){
-    // Normal case. compare the leading keys, moving and incrementing the lower.  We do the address arithmetic
-    // without branches to avoid misprediction
-    void *loaddr=*lo, *hiaddr=*hi;  // adresses of items to compare
-    I lomove = COMPFN(compn,loaddr,hiaddr);  // 1 if we should move lo
-    lo+=lomove;  // increment lo if we're moving it
-    loaddr=(lomove=-lomove)?loaddr:hiaddr; hi+=lomove+1;  // increment hi if we're moving it, create store value in loaddr
-    *wkptr++=loaddr;   // move the selected value
-   }else{
-    // hi[] was exhausted.  Copy the remnant of lo
-    DQ(loend-lo, *wkptr++=*lo++;);
-    break;  // all finished
-   }
-  }else{
-   // lo[] was exhausted.  Copy the remnant of hi. But
-   // if hi[] is occupying the last part of wk[], and lo[] is exhausted first, the remaining part of hi[] is
-   // already in place and doesn't need to be copied.
-   if(wkptr!=hi)DQ(hiend-hi, *wkptr++=*hi++;);
-   break;  // all finished
-  }
-#endif
  }while(1);
  return wk;  // We have merged into the workarea
 }

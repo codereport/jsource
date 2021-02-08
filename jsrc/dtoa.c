@@ -158,7 +158,6 @@
  */
 
 /* Options for use with J */
-#include "js.h"
 #define Long int
 #define IEEE_8087
 #define ACQUIRE_DTOA_LOCK(n) /* handled by using jt */

@@ -339,12 +339,10 @@ int _stdcall JDo(J jt, C* lp){int r; UI savcstackmin, savcstackinit, savqtstacki
   ASSERT(!(jt->recurstate&(RECSTATEBUSY&RECSTATERECUR)),EVCTRL)  // fail if BUSY or RECUR
   CLEARZOMBIE   // since we are executing a surprise call, the verb that is prompting might have set assignsym, which is about to be invalidated.  Clear that.
  }
-#if USECSTACK
  if(jt->cstacktype==2){
   jt->qtstackinit = (uintptr_t)&jt;
   if(jt->cstackmin)jt->cstackmin=(jt->cstackinit=jt->qtstackinit)-(CSTACKSIZE-CSTACKRESERVE);
  }
-#endif
  ++jt->recurstate;  // advance, to BUSY or RECUR state
  r=(int)jdo(jt,lp);
  if(--jt->recurstate>RECSTATEIDLE){  // return to IDLE or PROMPT state

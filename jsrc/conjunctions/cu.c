@@ -92,9 +92,7 @@ A jtevery(J jt, A w, A fs){A * RESTRICT wv,x,z,* RESTRICT zv;
    AFLAG(w)&=~(((AC(virtw)!=wcpre)|(x==virtw))<<AFPRISTINEX);
   }
   // Restore usecount to virtw.  We can't just store back what it was, because it may have been modified in the verb.
-#if 1  // scaf should not be required
   AC(virtw)&=~ACINPLACE;
-#endif
   ASSERT(!(SPARSE&AT(x)),EVNONCE);
   // Store result & advance to next cell
   *zv++=x;
@@ -214,9 +212,7 @@ A jtevery2(J jt, A a, A w, A fs){A*av,*wv,x,z,*zv;
    AFLAG(a)&=~(((AC(virta)!=acpre)|(x==virta))<<AFPRISTINEX); flags&=~(((((AC(virtw)!=wcpre)|(x==virtw))&flags)|(((AC(virtw)!=wcpre)|(x==virtw))&(flags>>1)))<<ACINPLACEX);
   }
   // Restore usecount to virta and virtw.  We can't just store back what it was, because it may have been modified in the verb.
-#if 1  // scaf should not be required
   AC(virtw)&=~ACINPLACE; AC(virta)&=~ACINPLACE;
-#endif
   ASSERT(!(SPARSE&AT(x)),EVNONCE);
   // Store result & advance to next cell
   *zv++=x;
