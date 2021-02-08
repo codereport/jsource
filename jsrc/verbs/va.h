@@ -6,54 +6,57 @@
                                     /*   cv - control vector               */
 // bits 0-1 kept open for jtflags
 // bits 2-3 should be forced to 1 jtflags;
-#define VCVTIP          0xc  // bits 2-3 should always be set, indicating that a converted argument can be inplaced
-#define VARGX           4           // bit position for arg flags
-#define VBB             (B01<<VARGX)         /* convert arguments to B              */
-#define VII             (INT<<VARGX)         /* convert arguments to I              */
-#define VDD             (FL<<VARGX)          /* convert arguments to D              */
-#define VZZ             (CMPX<<VARGX)        /* convert arguments to Z              */
-#define Vxx             (XNUM<<VARGX)        /* convert arguments to XNUM           */
-#define VQQ             (RAT<<VARGX)         /* convert arguments to RAT            */
-#define VARGMSK         (VBB|VII|VDD|VZZ|Vxx|VQQ)  // mask for argument requested type
-#define VRESX           12           // bit position for result flags
-#define VB              (B01<<VRESX)/* result type B  bit 12                     */
-#define VI              (INT<<VRESX)/* result type I  bit 14                     */
-#define VD              (FL<<VRESX) /* result type D  bit 15                     */
-#define VZ              (CMPX<<VRESX)/* result type Z bit 16                      */
-#define VX              (XNUM<<VRESX)/* result type XNUM  bit 18                  */
-#define VQ              (RAT<<VRESX) /* result type RAT  bit 19                   */
-#define VSB             (SBT<<VRESX) /* result type SBT bit 28                    */
-#define VRESMSK         (VB|VI|VD|VZ|VX|VQ|VSB)  // mask for result-type
-#define VRD             (SLIT<<VRESX)// convert result to D if possible - unused code point
-#define VRI             (SBOX<<VRESX)// convert result to I if possible - unused code point
-// bits VRESX+ 1 10 11 12 are free
-#define VIPWFLONGX     (63)  // (must be >RANKTX) internal use in va2.  We use sign bit where possible
-#define VIPWFLONG      ((I)1<<VIPWFLONGX)
-#define VIPOKWX         20      // This routine can put its result over W
-#define VIPOKW          ((I)1<<VIPOKWX)
-#define VIPOKAX         21      // This routine can put its result over A
-#define VIPOKA          ((I)1<<VIPOKAX)
-#define VCANHALTX       25    // This routine can generate an error after it has started
-#define VCANHALT        ((I)1<<VCANHALTX)
-#define VXCHASVTYPEX    26  // set if there is forced conversion to XNUM
-#define VXCHASVTYPE     ((I)1<<VXCHASVTYPEX)
-#define VXCVTYPEX       29          // bit position for VX conversion type
-#define VXCVTYPEMSK     ((I)3<<VXCVTYPEX)  // mask for bit-positions hold XNUM conversion type - leave here where they don't overlap noun types
-#define VXX             (Vxx|VXCHASVTYPE|((I)XMEXACT<<VXCVTYPEX))  // exact conversion
-#define VXEQ            (Vxx|VXCHASVTYPE|((I)XMEXMT<<VXCVTYPEX))   /* convert to XNUM for = ~:            */
-#define VXCF            (Vxx|VXCHASVTYPE|((I)XMCEIL<<VXCVTYPEX))   /* convert to XNUM ceiling/floor       */
-#define VXFC            (Vxx|VXCHASVTYPE|((I)XMFLR<<VXCVTYPEX))  /* convert to XNUM floor/ceiling       */
-#define VIPWCRLONGX     31  // internal use in va2, must be sign bit
-#define VIPWCRLONG      ((I)1<<VIPWCRLONGX)
-// bit 31 must not be used - it may be a sign bit, which has a meaning
-#define VARGCVTMSKF     (VXCHASVTYPE|VXCVTYPEMSK)  // mask for type to pass into XCVT, includes XNUM override
-#define VFRCEXMT        (VXCHASVTYPE|((I)XMEXMT<<VXCVTYPEX))   // set in arg to cvt() to do rounding for = ~:, if the conversion happens to be to XNUM
-// upper bits for 64-bit va2
-#define VIPOKRNKWX         30      // filled by va2 if the ranks allow inplacing w
-#define VIPOKRNKW          ((I)1<<VIPOKRNKWX)
-#define VIPOKRNKAX         32      // filled by va2 if the ranks allow inplacing a
-#define VIPOKRNKA          ((I)1<<VIPOKRNKAX)
-
+enum {
+    VCVTIP  = 0xc,             // bits 2-3 should always be set, indicating that a converted argument can be inplaced
+    VARGX   = 4,               // bit position for arg flags
+    VBB     = (B01 << VARGX),  // convert arguments to B
+    VII     = (INT << VARGX),  // convert arguments to I
+    VDD     = (FL << VARGX),   // convert arguments to D
+    VZZ     = (CMPX << VARGX), // convert arguments to Z
+    Vxx     = (XNUM << VARGX), // convert arguments to XNUM
+    VQQ     = (RAT << VARGX),  // convert arguments to RAT
+    VARGMSK = (VBB | VII | VDD | VZZ | Vxx | VQQ),  // mask for argument requested type
+    VRESX   = 12,                                   // bit position for result flags
+    VB      = (B01 << VRESX),                       // result type B  bit 12
+    VI      = (INT << VRESX),                       // result type I  bit 14
+    VD      = (FL << VRESX),                        // result type D  bit 15
+    VZ      = (CMPX << VRESX),                      // result type Z bit 16
+    VX      = (XNUM << VRESX),                      // result type XNUM  bit 18
+    VQ      = (RAT << VRESX),                       // result type RAT  bit 19
+    VSB     = (SBT << VRESX),                       // result type SBT bit 28
+    VRESMSK = (VB | VI | VD | VZ | VX | VQ | VSB),  // mask for result-type
+    VRD     = (SLIT << VRESX),                      // convert result to D if possible - unused code point
+    VRI     = (SBOX << VRESX),                      // convert result to I if possible - unused code point
+    // bits VRESX+ 1 10 11 12 are free
+    VIPWFLONGX   = (63),  // (must be >RANKTX) internal use in va2.  We use sign bit where possible
+    VIPWFLONG    = ((I)1 << VIPWFLONGX),
+    VIPOKWX      = 20,  // This routine can put its result over W
+    VIPOKW       = ((I)1 << VIPOKWX),
+    VIPOKAX      = 21,  // This routine can put its result over A
+    VIPOKA       = ((I)1 << VIPOKAX),
+    VCANHALTX    = 25,  // This routine can generate an error after it has started
+    VCANHALT     = ((I)1 << VCANHALTX),
+    VXCHASVTYPEX = 26,  // set if there is forced conversion to XNUM
+    VXCHASVTYPE  = ((I)1 << VXCHASVTYPEX),
+    VXCVTYPEX    = 29,                   // bit position for VX conversion type
+    VXCVTYPEMSK  = ((I)3 << VXCVTYPEX),  // mask for bit-positions hold XNUM conversion type - leave here where they
+                                         // don't overlap noun types
+    VXX         = (Vxx | VXCHASVTYPE | ((I)XMEXACT << VXCVTYPEX)),  // exact conversion
+    VXEQ        = (Vxx | VXCHASVTYPE | ((I)XMEXMT << VXCVTYPEX)),   /* convert to XNUM for = ~:            */
+    VXCF        = (Vxx | VXCHASVTYPE | ((I)XMCEIL << VXCVTYPEX)),   /* convert to XNUM ceiling/floor       */
+    VXFC        = (Vxx | VXCHASVTYPE | ((I)XMFLR << VXCVTYPEX)),    /* convert to XNUM floor/ceiling       */
+    VIPWCRLONGX = 31,                                               // internal use in va2, must be sign bit
+    VIPWCRLONG  = ((I)1 << VIPWCRLONGX),
+    // bit 31 must not be used - it may be a sign bit, which has a meaning
+    VARGCVTMSKF = (VXCHASVTYPE | VXCVTYPEMSK),               // mask for type to pass into XCVT, includes XNUM override
+    VFRCEXMT    = (VXCHASVTYPE | ((I)XMEXMT << VXCVTYPEX)),  // set in arg to jtcvt(jt,) to do rounding for = ~:, if the
+                                                             // conversion happens to be to XNUM
+    // upper bits for 64-bit va2
+    VIPOKRNKWX = 30,  // filled by va2 if the ranks allow inplacing w
+    VIPOKRNKW  = ((I)1 << VIPOKRNKWX),
+    VIPOKRNKAX = 32,  // filled by va2 if the ranks allow inplacing a
+    VIPOKRNKA  = ((I)1 << VIPOKRNKAX),
+};
 // Extract the argument-conversion type from cv coming from the table
 #define atype(x) (((x)&VARGMSK)>>VARGX)
 
@@ -166,55 +169,56 @@ typedef I AHDRSFN(I d,I n,I m,void* RESTRICTI x,void* RESTRICTI z,J jt);
 #define HDR1JERR I rc=jt->jerr; jt->jerr=0; return rc?rc:EVOK;   // translate no error to no-error value
 #define HDR1JERRNAN I rc=jt->jerr; rc=NANTEST?EVNAN:rc; jt->jerr=0; return rc?rc:EVOK;   // translate no error to no-error value
 
-// value in vaptr[]
-#define VA2CBW0000 1
-#define VA2CBW0001 2
-#define VA2CBW0010 3
-#define VA2CBW0011 4
-#define VA2CBW0100 5
-#define VA2CBW0101 6
-#define VA2CBW0110 7
-#define VA2CBW0111 8
-#define VA2CBW1000 9
-#define VA2CBW1001 10
-#define VA2CBW1010 11
-#define VA2CBW1011 12
-#define VA2CBW1100 13
-#define VA2CBW1101 14
-#define VA2CBW1110 15
-#define VA2CBW1111 16
-#define VA2CNE 17 // 35
-#define VA2CDIV 18
-#define VA2CPLUSCO 19 // 32
-#define VA2CPLUSDOT 20 // 31
-#define VA2CMINUS 21
-#define VA2CLT 22
-#define VA2CEQ 23
-#define VA2CGT 24
-#define VA2CSTARDOT 25 // 33
-#define VA2CSTARCO 26 // 34
-#define VA2CGE 27 // 30
-#define VA2CLE 28
-// the following are in the same order in va1
-#define VA2CMIN 29 // 27
-#define VA2CMAX 30 // 29
-#define VA2CPLUS 31 // 20
-#define VA2CSTAR 32 // 19
-#define VA2CEXP 33 // 25
-#define VA2CSTILE 34 // 26
-#define VA2CBANG 35 // 17
-#define VA2CCIRCLE 36
-#define VA1CMIN 29 // 27
-#define VA1CMAX 30 // 29
-#define VA1CPLUS 31 // 20
-#define VA1CSTAR 32 // 19
-#define VA1CEXP 33 // 25
-#define VA1CSTILE 34 // 26
-#define VA1CBANG 35 // 17
-#define VA1CCIRCLE 36
-#define VA1CROOT 37
-#define VA1CLOG 38
-
+enum {
+    // value in vaptr[]
+    VA2CBW0000  = 1,
+    VA2CBW0001  = 2,
+    VA2CBW0010  = 3,
+    VA2CBW0011  = 4,
+    VA2CBW0100  = 5,
+    VA2CBW0101  = 6,
+    VA2CBW0110  = 7,
+    VA2CBW0111  = 8,
+    VA2CBW1000  = 9,
+    VA2CBW1001  = 10,
+    VA2CBW1010  = 11,
+    VA2CBW1011  = 12,
+    VA2CBW1100  = 13,
+    VA2CBW1101  = 14,
+    VA2CBW1110  = 15,
+    VA2CBW1111  = 16,
+    VA2CNE      = 17,  // 35
+    VA2CDIV     = 18,
+    VA2CPLUSCO  = 19,  // 32
+    VA2CPLUSDOT = 20,  // 31
+    VA2CMINUS   = 21,
+    VA2CLT      = 22,
+    VA2CEQ      = 23,
+    VA2CGT      = 24,
+    VA2CSTARDOT = 25,  // 33
+    VA2CSTARCO  = 26,  // 34
+    VA2CGE      = 27,  // 30
+    VA2CLE      = 28,
+    // the following are in the same order in va1
+    VA2CMIN    = 29,  // 27
+    VA2CMAX    = 30,  // 29
+    VA2CPLUS   = 31,  // 20
+    VA2CSTAR   = 32,  // 19
+    VA2CEXP    = 33,  // 25
+    VA2CSTILE  = 34,  // 26
+    VA2CBANG   = 35,  // 17
+    VA2CCIRCLE = 36,
+    VA1CMIN    = 29,  // 27
+    VA1CMAX    = 30,  // 29
+    VA1CPLUS   = 31,  // 20
+    VA1CSTAR   = 32,  // 19
+    VA1CEXP    = 33,  // 25
+    VA1CSTILE  = 34,  // 26
+    VA1CBANG   = 35,  // 17
+    VA1CCIRCLE = 36,
+    VA1CROOT   = 37,
+    VA1CLOG    = 38,
+};
 
 /*
  b    1 iff cell rank of a <= cell rank of w
@@ -225,64 +229,83 @@ typedef I AHDRSFN(I d,I n,I m,void* RESTRICTI x,void* RESTRICTI z,J jt);
  y    pointer to w      atoms
 */
 
-
-#define AIFX(f,Tz,Tx,Ty,symb)  \
- I f(I n,I m,Tx* RESTRICTI x,Ty* RESTRICTI y,Tz* RESTRICTI z,J jt){Tx u;Ty v;                            \
-  if(n-1==0)  DQ(m,               *z++=*x++ symb *y++; )   \
-  else if(n-1<0)DQ(m, u=*x++; DQC(n, *z++=u    symb *y++;))   \
-  else      DQ(m, v=*y++; DQ(n, *z++=*x++ symb v;   ));  \
-  return EVOK; \
- }
+#define AIFX(f, Tz, Tx, Ty, symb)                                            \
+    I f(I n, I m, Tx* RESTRICTI x, Ty* RESTRICTI y, Tz* RESTRICTI z, J jt) { \
+        Tx u;                                                                \
+        Ty v;                                                                \
+        if (n - 1 == 0)                                                      \
+            DQ(m, *z++ = *x++ symb * y++;)                                   \
+        else if (n - 1 < 0)                                                  \
+            DQ(m, u = *x++; DQC(n, *z++ = u symb * y++;))                    \
+        else                                                                 \
+            DQ(m, v = *y++; DQ(n, *z++ = *x++ symb v;));                     \
+        return EVOK;                                                         \
+    }
 
 // suff must return the correct result
-#define APFX(f,Tz,Tx,Ty,pfx,pref,suff)   \
- I f(I n,I m,Tx* RESTRICTI x,Ty* RESTRICTI y,Tz* RESTRICTI z,J jt){Tx u;Ty v;                                  \
-  pref \
-  if(n-1==0)  DQ(m,               *z++=pfx(*x,*y); x++; y++; )   \
-  else if(n-1<0)DQ(m, u=*x++; DQC(n, *z++=pfx( u,*y);      y++;))   \
-  else      DQ(m, v=*y++; DQ(n, *z++=pfx(*x, v); x++;     ));  \
-  suff \
- }
+#define APFX(f, Tz, Tx, Ty, pfx, pref, suff)                                                                     \
+    I f(I n, I m, Tx* RESTRICTI x, Ty* RESTRICTI y, Tz* RESTRICTI z, J jt) {                                     \
+        Tx u;                                                                                                    \
+        Ty v;                                                                                                    \
+        pref if (n - 1 == 0) DQ(m, *z++ = pfx(*x, *y); x++; y++;) else if (n - 1 < 0)                            \
+          DQ(m, u = *x++; DQC(n, *z++ = pfx(u, *y); y++;)) else DQ(m, v = *y++; DQ(n, *z++ = pfx(*x, v); x++;)); \
+        suff                                                                                                     \
+    }
 
 // support intolerant comparisons explicitly
-#define ACMP0(f,Tz,Tx,Ty,pfx,pfx0)   \
- I f(I n,I m,Tx* RESTRICTI x,Ty* RESTRICTI y,B* RESTRICTI z,J jt){D u,v;                                             \
-  if(jt->cct!=1.0){ \
-   if(n-1==0)  DQ(m, u=(D)*x++;       v=(D)*y++; *z=pfx(u,v); z++; )    \
-   else if(n-1<0)DQ(m, u=(D)*x++; DQC(n, v=(D)*y++; *z=pfx(u,v); z++;))    \
-   else      DQ(m, v=(D)*y++; DQ(n, u=(D)*x++; *z=pfx(u,v); z++;));   \
-  }else{ \
-   if(n-1==0)  DQ(m, u=(D)*x++;       v=(D)*y++; *z=u pfx0 v; z++; )    \
-   else if(n-1<0)DQ(m, u=(D)*x++; DQC(n, v=(D)*y++; *z=u pfx0 v; z++;))    \
-   else      DQ(m, v=(D)*y++; DQ(n, u=(D)*x++; *z=u pfx0 v; z++;));   \
-  } \
-  return EVOK; \
- }
-
+#define ACMP0(f, Tz, Tx, Ty, pfx, pfx0)                                       \
+    I f(I n, I m, Tx* RESTRICTI x, Ty* RESTRICTI y, B* RESTRICTI z, J jt) {   \
+        D u, v;                                                               \
+        if (jt->cct != 1.0) {                                                 \
+            if (n - 1 == 0)                                                   \
+                DQ(m, u = (D)*x++; v = (D)*y++; *z = pfx(u, v); z++;)         \
+            else if (n - 1 < 0)                                               \
+                DQ(m, u = (D)*x++; DQC(n, v = (D)*y++; *z = pfx(u, v); z++;)) \
+            else                                                              \
+                DQ(m, v = (D)*y++; DQ(n, u = (D)*x++; *z = pfx(u, v); z++;)); \
+        } else {                                                              \
+            if (n - 1 == 0)                                                   \
+                DQ(m, u = (D)*x++; v = (D)*y++; *z = u pfx0 v; z++;)          \
+            else if (n - 1 < 0)                                               \
+                DQ(m, u = (D)*x++; DQC(n, v = (D)*y++; *z = u pfx0 v; z++;))  \
+            else                                                              \
+                DQ(m, v = (D)*y++; DQ(n, u = (D)*x++; *z = u pfx0 v; z++;));  \
+        }                                                                     \
+        return EVOK;                                                          \
+    }
 
 // n and m are never 0.
 
-#define BPFXNOAVX(f,pfx,bpfx,pfyx,bpfyx,fuv,decls,decls256)  \
- I f(I n,I m,void* RESTRICTI x,void* RESTRICTI y,void* RESTRICTI z,J jt){ I u,v;       \
- decls \
- if(n-1==0){                                             \
-  DQ(((m-1)>>LGSZI), u=*(I*)x; v=*(I*)y; *(I*)z=pfx(u,v); x=(C*)x+SZI; y=(C*)y+SZI; z=(C*)z+SZI;);           \
-  u=*(I*)x; v=*(I*)y; u=pfx(u,v); STOREBYTES(z,u,(-m)&(SZI-1));  \
- }else if(n-1<0){n=~n;                      \
-  DQ(m, \
-   REPLBYTETOW(*(C*)x,u); x=(C*)x+1; \
-   DQ(((n-1)>>LGSZI), v=*(I*)y; *(I*)z=pfx(u,v); y=(C*)y+SZI; z=(C*)z+SZI;)           \
-   v=*(I*)y; u=pfx(u,v); STOREBYTES(z,u,(-n)&(SZI-1)); y=(I*)((UC*)y+(((n-1)&(SZI-1))+1)); z=(I*)((UC*)z+(((n-1)&(SZI-1))+1)); \
-  ) \
- }else{  \
-  DQ(m, \
-   REPLBYTETOW(*(C*)y,v); y=(C*)y+1; \
-   DQ(((n-1)>>LGSZI), u=*(I*)x; *(I*)z=pfx(u,v); x=(C*)x+SZI; z=(C*)z+SZI;)         \
-   u=*(I*)x; u=pfx(u,v); STOREBYTES(z,u,(-n)&(SZI-1)); x=(I*)((UC*)x+(((n-1)&(SZI-1))+1)); z=(I*)((UC*)z+(((n-1)&(SZI-1))+1)); \
-  ) \
- } \
- return EVOK; \
-}
+#define BPFXNOAVX(f, pfx, bpfx, pfyx, bpfyx, fuv, decls, decls256)                                                      \
+    I f(I n, I m, void* RESTRICTI x, void* RESTRICTI y, void* RESTRICTI z, J jt) {                                      \
+        I u, v;                                                                                                         \
+        decls if (n - 1 == 0) {                                                                                         \
+            DQ(((m - 1) >> LGSZI), u = *(I*)x; v = *(I*)y; *(I*)z = pfx(u, v); x = (C*)x + SZI; y = (C*)y + SZI;        \
+               z = (C*)z + SZI;);                                                                                       \
+            u = *(I*)x;                                                                                                 \
+            v = *(I*)y;                                                                                                 \
+            u = pfx(u, v);                                                                                              \
+            STOREBYTES(z, u, (-m) & (SZI - 1));                                                                         \
+        }                                                                                                               \
+        else if (n - 1 < 0) {                                                                                           \
+            n = ~n;                                                                                                     \
+            DQ(m, REPLBYTETOW(*(C*)x, u); x = (C*)x + 1;                                                                \
+               DQ(((n - 1) >> LGSZI), v = *(I*)y; *(I*)z = pfx(u, v); y = (C*)y + SZI; z = (C*)z + SZI;) v = *(I*)y;    \
+               u                                                                                           = pfx(u, v); \
+               STOREBYTES(z, u, (-n) & (SZI - 1));                                                                      \
+               y = (I*)((UC*)y + (((n - 1) & (SZI - 1)) + 1));                                                          \
+               z = (I*)((UC*)z + (((n - 1) & (SZI - 1)) + 1));)                                                         \
+        }                                                                                                               \
+        else {                                                                                                          \
+            DQ(m, REPLBYTETOW(*(C*)y, v); y = (C*)y + 1;                                                                \
+               DQ(((n - 1) >> LGSZI), u = *(I*)x; *(I*)z = pfx(u, v); x = (C*)x + SZI; z = (C*)z + SZI;) u = *(I*)x;    \
+               u                                                                                           = pfx(u, v); \
+               STOREBYTES(z, u, (-n) & (SZI - 1));                                                                      \
+               x = (I*)((UC*)x + (((n - 1) & (SZI - 1)) + 1));                                                          \
+               z = (I*)((UC*)z + (((n - 1) & (SZI - 1)) + 1));)                                                         \
+        }                                                                                                               \
+        return EVOK;                                                                                                    \
+    }
 
 #define BPFXAVX2(f,pfx,bpfx,pfyx,bpfyx,fuv,decls,decls256) BPFXNOAVX(f,pfx,bpfx,pfyx,bpfyx,fuv,decls,decls256)
 #define BPFX(f,pfx,bpfx,pfyx,bpfyx,fuv,decls,decls256) BPFXNOAVX(f,pfx,bpfx,pfyx,bpfyx,fuv,decls,decls256)
