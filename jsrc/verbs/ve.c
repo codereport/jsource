@@ -262,10 +262,10 @@ I jtilcm(J jt,I a,I b){I z;I d;
  if(a&&b){RZ(d=igcd(a,b)); if(0==(z=jtmult(0,a,b/d)))jt->jerr=EWOV; return z;}else return 0;
 }
 
-#define GCDIO(u,v)      (dgcd((D)u,(D)v))
+#define GCDIO(u,v)      (jtdgcd(jt,(D)u,(D)v))
 #define LCMIO(u,v)      (dlcm((D)u,(D)v))
 
-D jtdlcm(J jt,D a,D b){ASSERT(!(INF(a)||INF(b)),EVNAN); return a&&b?a*(b/dgcd(a,b)):0;}
+D jtdlcm(J jt,D a,D b){ASSERT(!(INF(a)||INF(b)),EVNAN); return a&&b?a*(b/jtdgcd(jt,a,b)):0;}
 
 APFX(gcdIO, D,I,I, GCDIO,,HDR1JERR)
 APFX(gcdII, I,I,I, igcd ,,HDR1JERR)

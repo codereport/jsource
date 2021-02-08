@@ -124,7 +124,7 @@
 #define dfrep(x)                    jtdfrep(jt,(x))
 #define dfs2(x,y,z)                 jtdfs2(jt,(x),(y),(z))
 #define dgamma(x)                   jtdgamma(jt,(x))
-#define dgcd(x,y)                   jtdgcd(jt,(x),(y))
+
 #define dgrade1(x)                  jtdgrade1(jt,(x))
 #define diff(x)                     jtdiff(jt,(x))
 #define divide(x,y)                 jtatomic2(jt,(x),(y),ds(CDIV))
