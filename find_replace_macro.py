@@ -51,7 +51,8 @@ def combine_log_entries():
 
     time.sleep(.25)  # race condition between close log and open log.
     with open(LOG_FILE_NAME, 'w') as log:
-        log.write('\n'.join(['|' + ' '.join(['`' + path + '`' for path in paths]) + '|' + key for key, paths in result.items()]))
+        log.write('\n'.join(['|' + ' '.join(['`' + path + '`' for path in paths]) + '|' +
+                             key for key, paths in result.items()]))
     pass
 
 
@@ -97,7 +98,7 @@ def walk_matches():
                 with open(path, 'w') as fw:
                     fw.write(data)
                 yield re.compile(r'(^|[ \t]+|[^\d\w_])' + old_name + r'\((?=([^,]+?),([^)]+?)\))'), \
-                    r'\1' + new_name + r'(jt,', old_name, new_name
+                      r'\1' + new_name + r'(jt,', old_name, new_name
                 return
     old_name = ""
     pass
