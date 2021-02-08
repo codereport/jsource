@@ -86,7 +86,6 @@ F2PREFIP;
   I i; for(i=AR(a)-1; i>=0&&AS(a)[i]==AS(ABACK(a))[i];--i); if(i<0)a = ABACK(a);
  }
 #endif
-#if 1 // obsolete
  ASSERT(!((AT(a)|AT(w))&SPARSE),EVNONCE);   // can't box sparse values
  I optype=FAV(self)->localuse.lclr[0];  // flag: sign set if (,<) or ,&< or (;<) which will always box w; bit 0 set if (,<)
  realizeifvirtual(w); realizeifvirtual(a);  // it's going into an array, so realize it
@@ -144,7 +143,6 @@ F2PREFIP;
   AK(w)-=SZI; AN(w)=AS(w)[0]=AN(w)+1; AAV(w)[0]=a;  // install a at front, add to counts
   return w;  // return the augmented result
  }
-#endif
  // else fall through to handle general case
  if((-AN(w)&SGNIF(AT(w),BOXX))>=0){w = jtbox(JTIPWonly,w);}
  return jtover(jtinplace,jtbox(JTIPAtoW,a),w);  // box empty or unboxed w, join to boxed a
@@ -626,4 +624,3 @@ static A jtrazeg(J jt,A w,I t,I n,I r,A*v,I nonempt){A h,h1,y,z;C*zu;I c=0,i,j,k
  }}
  return z;
 }    /* >,.&.>/,w */
-

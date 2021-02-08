@@ -19,7 +19,6 @@
 #include <memory.h>
 #include <sys/types.h>
 
-#if 1
 #include <stdint.h>
 #include <float.h>
 #include <limits.h>
@@ -28,9 +27,6 @@
 #include <stdlib.h>
 #undef link
 #undef qdiv
-#else
-#define const /*nothing*/   /* blame rx.h */
-#endif
 
 #include <errno.h>
 #include <stdio.h>
