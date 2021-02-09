@@ -248,7 +248,7 @@ static A jtssg(J jt,    A w,A self){F1PREFIP;PROLOG(0020);A a,z;I i,n,r,wr;
 
 A jtscansp(J jt,A w,A self,AF sf){A e,ee,x,z;B*b;I f,m,j,r,t,wr;P*wp,*zp;
  wr=AR(w); r=(RANKT)jt->ranks; r=wr<r?wr:r; RESETRANK; f=wr-r;
- wp=PAV(w); e=SPA(wp,e); RZ(ee=over(e,e));
+ wp=PAV(w); e=SPA(wp,e); RZ(ee=jtover(jt,e,e));
  if(!jtequ(jt,ee,CALL1(sf,ee,self))){
   RZ(x=denseit(w));
   return IRS1(x,self,r,sf,z);
@@ -295,7 +295,7 @@ static A jtomask(J jt,A a,A w){A c,r,x,y;I m,n,p;
  r=sc(0>m?(n+p-1)/p:MAX(0,1+n-m)); c=tally(jt, w);
  x=jtreshape(jt,sc(p),  num(0));
  y=jtreshape(jt,0>m?c:r,num(1) );
- return reshapeW(over(r,c),over(x,y));
+ return reshapeW(jtover(jt,r,c),jtover(jt,x,y));
 }
 
 static A jtgoutfix(J jt,A a,A w,A self){A h,*hv,x,z,*zv;I m,n;

@@ -128,7 +128,7 @@ static A jtscubc(J jt,A z,A i1,A p){A a,q,s,y,y1;B*qv;I c,d,h,j=-1,m,n,*sv,*u,*v
 
 static A jtscube(J jt,A z,A i1,A p){A a,y;P*zp;
  zp=PAV(z); a=SPA(zp,a); y=SPA(zp,i);
- return !AN(a)&&!*AS(y)?jttake(jt,num(1),mtm):over(jtscubb(jt,z,i1),scubc(z,i1,p));
+ return !AN(a)&&!*AS(y)?jttake(jt,num(1),mtm):jtover(jt,jtscubb(jt,z,i1),scubc(z,i1,p));
 }    /* new rows for the index matrix of z */
 
 static A jtiindx(J jt,A z,A i1){A q,j,j1,y;I c,d,e,h,i,*jv,m,n,*qv,*v,*yv;P*zp;
@@ -154,8 +154,8 @@ static A jtzpad1(J jt,A z,A t,B ip){A q,s,x,x0,y,y0;I m;P*zp;
  RZ(z&&t);
  if(m=*AS(t)){  /* new cells being added */
   zp=PAV(z);  
-  y0=SPA(zp,i); RZ(y=over(y0,t)); RZ(q=grade1(y)); RZ(y=jtfrom(jt,q,y));
-  x0=SPA(zp,x); RZ(s=shape(jt,x0)); *AV(s)=m; RZ(x=jtfrom(jt,q,over(x0,jtreshape(jt,s,SPA(zp,e)))));
+  y0=SPA(zp,i); RZ(y=jtover(jt,y0,t)); RZ(q=grade1(y)); RZ(y=jtfrom(jt,q,y));
+  x0=SPA(zp,x); RZ(s=shape(jt,x0)); *AV(s)=m; RZ(x=jtfrom(jt,q,jtover(jt,x0,jtreshape(jt,s,SPA(zp,e)))));
   // if z is assigned to a name, the use counts need to be adjusted: the old ones need to be decremented
   // to remove the assignment, and the new ones need to be incremented to prevent them from being freed
   // until the name is freed.  We detect the case from jt->assignsym being set to the address of z

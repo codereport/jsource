@@ -46,7 +46,7 @@ static CFR(jtcfrq,Q,RAT, qplus,qtymes,QNEGATE)
 
 static A jtrsort(J jt, A w){A t,z;
  PUSHCCT(1.0-FUZZ)
- RZ(t=over(mag(w),cant1(rect(w))));
+ RZ(t=jtover(jt,mag(w),cant1(rect(w))));
  A tt; RZ(IRS2(t,t,0L,1L,1L,jtindexof,tt));
  z=jtdgrade2(jt,w,cant1(IRS2(tt,t,0L,1L,1L,jtfrom,z)));
  POPCCT
@@ -246,7 +246,7 @@ static A jtrfc(J jt, A w){A r,w1;I m=0,n,t;
   case 0:  return link(num(0),mtv);  // degree 0 - return 0;''
   case 1:  r=ravel(negate(jtaslash(jt,CDIV,jttake(jt,num(2),w)))); break;  // linear - return solution, whatever its type
   default: if(t&CMPX)r=jtrfcz(jt,m,w);  // higher order - if complex, go straight to complex solutions
-           else{RZ(rfcq(m,w,&r,&w1)); if(m>AN(r))r=over(r,jtrfcz(jt,m-AN(r),w1));} // otherwise, find rational solutions in r, and residual polynomial in w1.
+           else{RZ(rfcq(m,w,&r,&w1)); if(m>AN(r))r=jtover(jt,r,jtrfcz(jt,m-AN(r),w1));} // otherwise, find rational solutions in r, and residual polynomial in w1.
             // if there are residual (complex) solutions, go find them
  }
  // Return result, which is leading nonzero coeff;roots
@@ -378,7 +378,7 @@ static A jtpoly2a(J jt,A a,A w){A c,e,x;I m;D rkblk[16];
  F2RANK(0,1,jtpderiv2,UNUSED_VALUE);
  if(!(NUMERIC&AT(w)))RZ(w=poly1(w));
  ASSERT(NUMERIC&AT(a),EVDOMAIN);
- return over(a,divideW(w,apv(AN(w),1L,1L)));
+ return jtover(jt,a,divideW(w,apv(AN(w),1L,1L)));
 }    /* a p.. w */
 
 

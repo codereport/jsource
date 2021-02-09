@@ -128,7 +128,7 @@ static A jtrepbsx(J jt,A a,A w,I wf,I wcr){A ai,c,d,e,g,q,x,wa,wx,wy,y,y1,z,zy;B
  RZ(q=__not(jteps(jt,y1,ravel(jtrepeat(jt,__not(x),y)))));
  m=AS(a)[0]-m;
  GATV0(ai,INT,m,1); v=AV(ai); DO(n, if(!*b++)*v++=u[i];);
- RZ(g=grade1(over(ai,jtrepeat(jt,q,y1)))); gv=AV(g);
+ RZ(g=grade1(jtover(jt,ai,jtrepeat(jt,q,y1)))); gv=AV(g);
  GATV0(d,INT,AN(y1),1); dv=AV(d); j=0; DO(AN(g), if(m>gv[i])++j; else dv[gv[i]-m]=j;);
  RZ(zy=mkwris(jtrepeat(jt,q,wy))); v=AV(zy)+*AV(c); m=AS(zy)[1]; DO(AS(zy)[0], *v-=dv[i]; v+=m;);
  zp=PAV(z);

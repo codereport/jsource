@@ -316,7 +316,7 @@ APFX(lcmZZ, Z,Z,Z, zlcm ,,HDR1JERR)
 }    /* <.@% or >.@% on integers */
 
 
-static A jtweight(J jt,A a,A w){ A z; return df1(z,behead(over(AR(w)?w:jtreshape(jt,a,w),num(1))),bsdot(slash(ds(CSTAR))));}  // */\. }. (({:$a)$w),1
+static A jtweight(J jt,A a,A w){ A z; return df1(z,behead(jtover(jt,AR(w)?w:jtreshape(jt,a,w),num(1))),bsdot(slash(ds(CSTAR))));}  // */\. }. (({:$a)$w),1
 
  A jtbase1(J jt, A w){A z;B*v;I c,m,n,p,r,*s,t,*x;
  n=AN(w); t=AT(w); r=AR(w); s=AS(w); c=AS(w)[r-1]; c=r?c:1;

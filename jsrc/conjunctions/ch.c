@@ -25,7 +25,7 @@ static A jthgv(J jt,B b,I n,A w,A self){A c,d,e,h,*hv,j,y;V*sv=FAV(self);
   case 2: y=divide(tymes(c,jtascan(jt,CSTAR,e)),jtascan(jt,CSTAR,d)); break;
   case 3: y=divide(tymes(c,jtascan(jt,CSTAR,e)),d);
  }
- return b?over(num(0),jtascan(jt,CPLUS,y)):jtaslash(jt,CPLUS,y);
+ return b?jtover(jt,num(0),jtascan(jt,CPLUS,y)):jtaslash(jt,CPLUS,y);
 }    /* verb or complex cases */
 
 static A jthgd(J jt,B b,I n,A w,A p,A q){A c,d,e,z;D r,s,t,*u,*v,x,*zv;I j,pn,qn;
@@ -67,8 +67,8 @@ static A jtcancel(J jt,A a,A w){A c,d,f,x,y;
  f=eval("#/.~");   // could call keytally
  a=ravel(a); x=nub(a); df1(c,a,f);
  w=ravel(w); y=nub(w); df1(d,w,f);
- a=jtrepeat(jt,maximum(num(0),minus(c,jtfrom(jt,jtindexof(jt,y,x),over(d,zeroionei(0))))),x);
- w=jtrepeat(jt,maximum(num(0),minus(d,jtfrom(jt,jtindexof(jt,x,y),over(c,zeroionei(0))))),y);
+ a=jtrepeat(jt,maximum(num(0),minus(c,jtfrom(jt,jtindexof(jt,y,x),jtover(jt,d,zeroionei(0))))),x);
+ w=jtrepeat(jt,maximum(num(0),minus(d,jtfrom(jt,jtindexof(jt,x,y),jtover(jt,c,zeroionei(0))))),y);
  return link(a,w);
 }
 
@@ -102,6 +102,6 @@ static A jtcancel(J jt,A a,A w){A c,d,f,x,y;
    case 2: y=divide(c,jtascan(jt,CSTAR,d)); break;
    case 3: y=divide(c,d);
  }}
- RZ(z=jtfrom(jt,w,over(zeroionei(1),y)));
+ RZ(z=jtfrom(jt,w,jtover(jt,zeroionei(1),y)));
  EPILOG(z);
 }    /* coefficients indexed by w excluding !j */

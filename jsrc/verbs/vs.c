@@ -159,7 +159,7 @@ A jtsparseit(J jt,A w,A a,A e){PROLOG(0091);A ax,c,x,y,z;B b,*cv;I cm,cn,m,n,r,*
  wp=PAV(w); a=SPA(wp,a); e=SPA(wp,e); x=SPA(wp,x); y=SPA(wp,i); 
  xn=AN(x); an=AN(a); b=jtequ(jt,a,IX(an));
  if(!an||!xn)return jtreshape(jt,shape(jt,w),xn?x:e);
- if(b)s=AS(w); else{RZ(q=over(a,jtless(jt,IX(r),a))); RZ(s1=jtfrom(jt,q,shape(jt,w))); s=AV(s1);}
+ if(b)s=AS(w); else{RZ(q=jtover(jt,a,jtless(jt,IX(r),a))); RZ(s1=jtfrom(jt,q,shape(jt,w))); s=AV(s1);}
  RE(n=jtprod(jt,r,s));
  GA(z,t,n,r,s); zv=CAV(z); xv=CAV(x); 
  if(1<an)RZ(y=jtbase2(jt,vec(INT,an,s),y)); yv=AV(y);
@@ -185,7 +185,7 @@ A jtsparseit(J jt,A w,A a,A e){PROLOG(0091);A ax,c,x,y,z;B b,*cv;I cm,cn,m,n,r,*
   RZ(q=__not(irs2(x,jtreshape(jt,vec(INT,AR(x)-1,1+AS(x)),e),0L,-1L,RMAX,jtmatch)));
   SPBV(zp,x,x,jtrepeat(jt,q,x));
   RZ(y=jtstitch(jt,jtrepeat(jt,sc(c),y),jtreshape(jt,jtv2(jt,c*m,k),jtabase2(jt,vec(INT,k,v),IX(c)))));
-  RZ(p=grade1(over(a,jtless(jt,a1,a))));
+  RZ(p=grade1(jtover(jt,a,jtless(jt,a1,a))));
   if(jtequ(jt,p,IX(AN(p))))SPB(zp,i,jtrepeat(jt,q,y))
   else{y=jtfromr(jt,p,jtrepeat(jt,q,y)); q=grade1(y); SPB(zp,i,jtfrom(jt,q,y)); SPB(zp,x,jtfrom(jt,q,x));}
   return z;
@@ -201,7 +201,7 @@ A jtsparseit(J jt,A w,A a,A e){PROLOG(0091);A ax,c,x,y,z;B b,*cv;I cm,cn,m,n,r,*
   j=0; v=AV(a); pv=BAV(p); DO(AN(p), if(!pv[i])u[j++]=ws[v[i]];); 
   RE(jtprod(jt,j,u)); u[j]=k=1; DQ(c-d, --j; u[j]=k*=u[j];);
   RZ(q=jtpdt(jt,jttake(jt,jtv2(jt,m,d-c),y),vec(INT,c-d,1+u))); iv=AV(q);
-  RZ(p=over(jtless(jt,a,a1),jtdaxis(jt,r,a))); v=AV(p);
+  RZ(p=jtover(jt,jtless(jt,a,a1),jtdaxis(jt,r,a))); v=AV(p);
   *u=n; j=1; DQ(AN(p), u[j++]=ws[*v++];); RE(h=jtprod(jt,1+r-d,u));
   GA(x1,AT(x),h,1+r-d,u);                       t=CAV(x1); s=CAV(x);
   GATV0(y1,INT,n*d,2); *AS(y1)=n; *(1+AS(y1))=d; v= AV(y1); u= AV(y);  
@@ -210,7 +210,7 @@ A jtsparseit(J jt,A w,A a,A e){PROLOG(0091);A ax,c,x,y,z;B b,*cv;I cm,cn,m,n,r,*
   SPB(zp,i,y1); SPB(zp,x,jtcant2(jt,increm(jtindexof(jt,p,jtdaxis(jt,r,a1))),x1));
   return z;
  }
- return jtreaxis(jt,a1,jtreaxis(jt,over(a,jtless(jt,a1,a)),w));
+ return jtreaxis(jt,a1,jtreaxis(jt,jtover(jt,a,jtless(jt,a1,a)),w));
 }    /* (2;a)$.w */
 
 static A jtaxbytes1(J jt,I t,I an,I m,I xr,I*xs){I k,z;
@@ -239,11 +239,11 @@ static A jtaxbytes(J jt,A a,A w){A a1,e,p,q,x;B*b;I c,d,j,m,n=0,r,*u,*v,*ws,wt;P
   RZ(y=jtfromr(jt,jtindexof(jt,a,a1),y)); 
   RZ(y=jtgrade2(jt,y,y));
   if(m=*AS(y)){n=1; u=AV(y); DQ(m-1, if(ICMP(u,u+d,d))++n; u+=d;);} 
-  RZ(p=over(jtless(jt,a,a1),jtdaxis(jt,r,a))); v=AV(p);
+  RZ(p=jtover(jt,jtless(jt,a,a1),jtdaxis(jt,r,a))); v=AV(p);
   DQ(AN(p), u[j++]=ws[*v++];);
   return axbytes1(AT(e),d,n,j,u);
  }
- return jtaxbytes(jt,a1,jtreaxis(jt,over(a,jtless(jt,a1,a)),w));
+ return jtaxbytes(jt,a1,jtreaxis(jt,jtover(jt,a,jtless(jt,a1,a)),w));
 }    /* bytes required for (2;a)$.w */
 
 static A jtaxtally(J jt,A a,A w){A a1,e,p,q,x;B*b;I c,d,j,m,n=0,r,*u,*v,*ws,wt;P*wp;
@@ -265,7 +265,7 @@ static A jtaxtally(J jt,A a,A w){A a1,e,p,q,x;B*b;I c,d,j,m,n=0,r,*u,*v,*ws,wt;P
   if(m=*AS(y)){n=1; u=AV(y); DQ(m-1, if(ICMP(u,u+d,d))++n; u+=d;);} 
   return sc(n);
  }
- return jtaxtally(jt,a1,jtreaxis(jt,over(a,jtless(jt,a1,a)),w));
+ return jtaxtally(jt,a1,jtreaxis(jt,jtover(jt,a,jtless(jt,a1,a)),w));
 }    /* #4$.(2;a)$.w */
 
  A jtrezero(J jt,A a,A w){A x,z;I at,t,wt,zt;P*wp,*zp;

@@ -349,7 +349,7 @@ static A jtinfix(J jt,A a,A w,A self){PROLOG(0018);DECLF;A x,z;I m;
   // Create fill-cell of shape s; apply u to it
   RZ(df1(x,jtreshape(jt,s,filler(w)),fs));
   // Prepend leading axis of 0 to the result
-  z=jtreshape(jt,over(zeroionei(0),shape(jt,x)),x);
+  z=jtreshape(jt,jtover(jt,zeroionei(0),shape(jt,x)),x);
  } 
  EPILOG(z);
 }
@@ -371,7 +371,7 @@ static A jtginfix(J jt,A a,A w,A self){A h,*hv,x,z,*zv;I d,m,n;
  }else{A s;
   RZ(s=AR(w)?shape(jt,w):ca(iv0)); AV(s)[0]=ABS(m);
   RZ(df1(x,jtreshape(jt,s,filler(w)),*hv));
-  return jtreshape(jt,over(zeroionei(0),shape(jt,x)),x);
+  return jtreshape(jt,jtover(jt,zeroionei(0),shape(jt,x)),x);
 }}
 
 // *** start of non-sparse code ***
@@ -551,7 +551,7 @@ static A jtinfixprefix2(J jt,A a,A w,A self){F2PREFIP;PROLOG(00202);A fs;I cger[
   RZ(z=jtreitem(jt,zeroionei(0),w));  // create 0 items of the type of w
   if(ilnval>=0){ilnval=(ilnval==IMAX)?(wi+1):ilnval; RZ(z=jttake(jt,sc(ilnval),z));}    // if items needed, create them.  For compatibility, treat _ as 1 more than #items in w
   WITHDEBUGOFF(zz=CALL1(f1,z,fs);) if(EMSK(jt->jerr)&EXIGENTERROR)RZ(zz); RESETERR;
-  RZ(zz=jtreshape(jt,over(zeroionei(0),shape(jt,zz?zz:mtv)),zz?zz:zeroionei(0)));
+  RZ(zz=jtreshape(jt,jtover(jt,zeroionei(0),shape(jt,zz?zz:mtv)),zz?zz:zeroionei(0)));
  }
 
 // result is now in zz

@@ -42,7 +42,7 @@ static A jtrotsp(J jt,A a,A w){PROLOG(0071);A q,x,y,z;B bx,by;I acr,af,ar,*av,d,
  ar=AR(a); acr=jt->ranks>>RANKTX; acr=ar<acr?ar:acr; af=ar-acr; p=acr?*(af+AS(a)):1;
  wr=AR(w); wcr=(RANKT)jt->ranks; wcr=wr<wcr?wr:wcr; wf=wr-wcr; RESETRANK;
  if(1<acr||af)return df2(z,a,w,qq(qq(ds(CROT),jtv2(jt,1L,RMAX)),jtv2(jt,acr,wcr)));
- if(!wcr&&1<p){RZ(w=jtreshape(jt,over(shape(jt,w),apv(p,1L,0L)),w)); wr=wcr=p;}
+ if(!wcr&&1<p){RZ(w=jtreshape(jt,jtover(jt,shape(jt,w),apv(p,1L,0L)),w)); wr=wcr=p;}
  ASSERT(!wcr||p<=wcr,EVLENGTH);
  s=AS(w);
  GATV0(q,INT,wr,1L); qv=AV(q); memset(qv,C0,wr*SZI); 

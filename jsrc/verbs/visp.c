@@ -90,7 +90,7 @@ static A jtioe(J jt,I mode,A w){A b,j,p,y;I c,jn,*jv,k,n;P*wp;
  if(1<AR(b))RZ(b=jtaslash1(jt,CSTARDOT,b));  /* b=. *./@,"_1 (3$.w)=5$.w */
  RZ(y=irs2(num(0),y,0L,0L,1L,jtfrom));
  RZ(df2(p,y,b,sldot(slash(ds(CSTARDOT)))));
- RZ(j=jtrepeat(jt,__not(p),jtrepeat(jt,ne(y,curtail(over(num(-1),y))),y)));
+ RZ(j=jtrepeat(jt,__not(p),jtrepeat(jt,ne(y,curtail(jtover(jt,num(-1),y))),y)));
  jn=AN(j); jv=AV(j);
  if(n==jn)k=n;
  else{

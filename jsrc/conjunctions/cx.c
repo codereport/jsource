@@ -635,7 +635,7 @@ static A jtsent12c(J jt,A w){C*p,*q,*r,*s,*x;A z;
  if(AR(w)>1)return IRS1(w,0L,1,jtbox,z);  // table, just box lines individually
 
  // otherwise we have a single string.  Could be from 9 : string
- if(!(AN(w)&&DDSEP==cl(w)))RZ(w=over(w,scc(DDSEP)));  // add LF if missing
+ if(!(AN(w)&&DDSEP==cl(w)))RZ(w=jtover(jt,w,scc(DDSEP)));  // add LF if missing
  // Lines are separated by DDSEP, and there may be DDSEP embedded in strings.  Convert the whole thing to words, which will
  // leave the embedded DDSEP embedded; then split on the individual DDSEP tokens
  // tokenize the lines.  Each LF is its own token.

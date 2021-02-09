@@ -185,7 +185,7 @@ static A jtth2a(J jt,B e,I m,I d,C*s,I n,I t,I wk,C*wv,B first){PROLOG(0049);A y
  b = e;  // init no negative exponential values (if field is exponential).  0 if nonexponential field
  for(i=q=0;i<n;++i){
   fmt1(e,m0,d,s,t,wv);  // Create the (null-terminated) string in th2buf.  m0=0
-  while(p<q+(I)strlen(jt->th2buf)+1){RZ(z=over(z,z)); p+=p; zv=CAV(z);}  // If new string overflows output area, double the output-area size
+  while(p<q+(I)strlen(jt->th2buf)+1){RZ(z=jtover(jt,z,z)); p+=p; zv=CAV(z);}  // If new string overflows output area, double the output-area size
    // u->place to put string; convert th2buf to j form in *u; k=length of string; update string pointer & null-terminate string; advance to next input value
    u=q+zv; q+=k=c2j(e,0L,u); zv[q++]=0; wv+=wk;
    // Exponential-field sign spacing:

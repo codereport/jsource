@@ -241,7 +241,7 @@ I strtoI10s(I l,C* p) {I z; strtoI10(p,l,z); return z; }
 static A jtlocnlx(J jt, A w){A y,z=mtv;B*wv;I m=0;
  RZ(w=jtcvt(jt,B01,w)); wv=BAV(w); DO(AN(w), m|=1+wv[i];);  // accumulate mask of requested types
  if(1&m)z=nlsym(jt->stloc);  // named locales
- if(2&m){RZ(y=jtactivenl(jt)); z=over(y,z); }  // get list of active numbered locales
+ if(2&m){RZ(y=jtactivenl(jt)); z=jtover(jt,y,z); }  // get list of active numbered locales
  return jtgrade2(jt,z,ope(z));
 }
 

@@ -351,7 +351,7 @@ static A jtqco2x(J jt,I m,A w){A y;I c,*dv,i,*pv,*yv;X d,q,r,x;
  if(b)RZ(a=negate(a));
  bb=jtequ(jt,a,ainf);
  if(b&bb){ /* __ q: w */
-  RZ(y=ne(q,curtail(over(zeroionei(0),q))));
+  RZ(y=ne(q,curtail(jtover(jt,zeroionei(0),q))));
   return jtlamin2(jt,jtrepeat(jt,y,q),df1(z,y,jtcut(jt,ds(CPOUND),zeroionei(1))));
  }
  RZ(y=vi(plt(q))); yv=AV(y);

@@ -1389,7 +1389,7 @@ A jtindexofprehashed(J jt,A a,A w,A hs){A h,hi,*hv,x,z;AF fn;I ar,*as,at,c,f1,k,
  if(DENSE&AT(w))return atab(CEQ,jtrepeat(jt,eq(IX(n),x),x),x);
  // if x is sparse... ??
  p=PAV(x); e=SPA(p,e); y=SPA(p,i); RZ(xy=jtstitch(jt,SPA(p,x),y));
- if(n>*AV(e))RZ(xy=over(xy,jtstitch(jt,e,jtless(jt,IX(n),y))));
+ if(n>*AV(e))RZ(xy=jtover(jt,xy,jtstitch(jt,e,jtless(jt,IX(n),y))));
  RZ(xy=jtgrade2(jt,xy,xy)); v=AV(xy);
  c=*AS(xy);
  m=j=-1; DQ(c, if(j!=*v){j=*v; ++m;} *v=m; v+=2;);
