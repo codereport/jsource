@@ -710,8 +710,8 @@ static A jtrollksubdot(J jt,A a,A w){A z;I an,*av,k,m1,n,p,q,r,sh;UI j,m,mk,s,t,
  return z;
 }
 
-#undef rollk
-#define rollk(a,w,self) jtrollkdot(jt,(a),(w),(self))
+
+
  A jtrollkdot(J jt,A a,A w,A self){A g,z;V*sv;
  sv=FAV(self); g=sv->fgh[2]?sv->fgh[2]:sv->fgh[1];
  if(AT(w)&XNUM+RAT||!(!AR(w)&&1>=AR(a)&&(g==ds(CDOLLAR)||1==AN(a))))return roll(df2(z,a,w,g));
@@ -876,7 +876,7 @@ static A jtdealdot(J jt,A a,A w){A h,y,z;I at,d,*hv,i,i1,j,k,m,n,p,q,*v,wt,*yv,*
 
  A jtrollx  (J jt, A w){FXSDECL;                 FXSDO; z=roll(w);         FXSOD; return z;}
  A jtdealx  (J jt,A a,A w){FXSDECL; F2RANK(0,0,jtdealx,UNUSED_VALUE); FXSDO; z=jtdealdot(jt,a,w);       FXSOD; return z;}
- A jtrollkx(J jt,A a,A w,A self){FXSDECL;        FXSDO; z=rollk(a,w,self); FXSOD; return z;}
+ A jtrollkx(J jt,A a,A w,A self){FXSDECL;        FXSDO; z=rollkdot(a,w,self); FXSOD; return z;}
 
 
 /*
