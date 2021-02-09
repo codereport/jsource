@@ -114,7 +114,7 @@ B jtzeq(J jt,Z u,Z v){D a=u.re,b=u.im,c=v.re,d=v.im,p,q;
  return z;
 }
 
- Z jtzlcm(J jt,Z u,Z v){ZASSERT(!(ZINF(u)||ZINF(v)),EVNAN); return ZEZ(u)||ZEZ(v) ? zeroZ : ztymes(u,jtzdiv(jt,v,zgcd(u,v)));}
+ Z jtzlcm(J jt,Z u,Z v){ZASSERT(!(ZINF(u)||ZINF(v)),EVNAN); return ZEZ(u)||ZEZ(v) ? zeroZ : ztymes(u,jtzdiv(jt,v,jtzgcd(jt,u,v)));}
 
  Z jtzexp(J jt,Z v){D a,b,c,s,t;Z z;
  a=v.re; b=v.im;

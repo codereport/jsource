@@ -855,7 +855,7 @@
 #define zexp(x)                     jtzexp(jt,(x))
 #define zfloor(x)                   jtzfloor(jt,(x))
 #define zgamma(x)                   jtzgamma(jt,(x))
-#define zgcd(x,y)                   jtzgcd(jt,(x),(y))
+
 #define zgps(x)                     jtzgps(jt,(x))
 #define zgrecur(x)                  jtzgrecur(jt,(x))
 #define zhorner(x,y,z)              jtzhorner(jt,(x),(y),(z))
