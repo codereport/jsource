@@ -822,7 +822,6 @@
 #define xlogd1(x)                   jtxlogd1(jt,(x))
 #define xlogz1(x)                   jtxlogz1(jt,(x))
 #define xminus(x,y)                 jtxminus(jt,(x),(y))
-#define xmodpow(x,y,z)              jtxmodpow(jt,(x),(y),(z))
 #define xoinit()                    jtxoinit(jt)
 #define xop(x)                      jtxop(jt,(x))
 #define xop2(x,y,z)                 jtxop2(jt,(x),(y),(z))
