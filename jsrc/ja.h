@@ -518,7 +518,7 @@
 #define qlogd1(x)                   jtqlogd1(jt,(x))
 #define qlogz1(x)                   jtqlogz1(jt,(x))
 
-#define qplus(x,y)                  jtqplus(jt,(x),(y))
+
 #define qpow(x,y)                   jtqpow(jt,(x),(y))
 #define qq(x,y)                     jtqq(jt,(x),(y))
 #define qr(x)                       jtqr(jt,(x))

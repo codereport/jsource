@@ -97,9 +97,9 @@ static Z jtnewt(J jt,I m,Z*a,Z x,I n){I i,j;D e=EPS/1024.0;Z c,p,q,*v;
 }    
 
 static B jtdeflateq(J jt,B k,I m,Q*v,Q x){Q q,r,*u;
- u=v+m; q=*u--; DQ(m, r=*u--;       q=qplus(r,qtymes(q,x)););
+ u=v+m; q=*u--; DQ(m, r=*u--;       q=jtqplus(jt,r,qtymes(q,x)););
  RE(0); if(!(QEQ(q,zeroQ)))return 0;
- u=v+m; q=*u--; DQ(m, r=*u; *u--=q; q=qplus(r,qtymes(q,x)););
+ u=v+m; q=*u--; DQ(m, r=*u; *u--=q; q=jtqplus(jt,r,qtymes(q,x)););
  return 1;
 }    /* deflate by x which may or may not be a root. result is 1 iff x is a root. k is ignored. */
 
@@ -143,7 +143,7 @@ static Z jtlaguerre(J jt,I m,Z*a,Z x){D ax,e;I i,j;Z b,c,d,dx,g,g2,h,p,q,s,sq,y,
 static Q jtmultiple(J jt,D x,Q m){A y;Q q1,q2,q1r2;
  q1r2.n=iv1; q1r2.d=xplus(iv1,iv1);
  QRE(y=jtcvt(jt,RAT,scf(x)));
- QRE(q1=qplus(q1r2,qtymes(m,QAV(y)[0])));
+ QRE(q1=jtqplus(jt,q1r2,qtymes(m,QAV(y)[0])));
  QRE(q2.n=xdiv(q1.n,q1.d,XMFLR)); q2.d=iv1;
  return jtqdiv(jt,q2,m);
 }    /* nearest multiple of m to x */
