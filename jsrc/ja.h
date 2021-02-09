@@ -809,7 +809,7 @@
 #define xco1(x)                     jtxco1(jt,(x))
 #define xcompare(x,y)               jtxcompare(jt,(x),(y))
 #define xdefn(x,y,z)                jtxdefn(jt,(x),(y),(z))
-#define xd1(x,y)                    jtxd1(jt,(x),(y))
+
 #define xdiv(x,y,z)                 jtxdiv(jt,(x),(y),(z))
 #define xdivrem(x0,x1,x2,x3)        jtxdivrem(jt,(x0),(x1),(x2),(x3))
 #define xev2(x,y,z)                 jtxev2(jt,(x),(y),(z))
