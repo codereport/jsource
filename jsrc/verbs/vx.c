@@ -316,7 +316,9 @@ APFX(  lcmXX, X,X,X, xlcm  ,,HDR1JERR)
 #undef xlcm
 APFX(  minXX, X,X,X, XMIN  ,,HDR1JERR)
 APFX(  maxXX, X,X,X, XMAX  ,,HDR1JERR)
+#define xpow(x,y)                   jtxpow(jt,(x),(y))
 APFX(  powXX, X,X,X, xpow  ,,HDR1JERR)
+#undef xpow
 
 AMON( sgnX, X,X, *z=  rifvsdebug(xsgn(*x));)
 AMONPS(sqrtX, X,X, , *z= rifvsdebug(xsqrt(*x)); , HDR1JERR)
