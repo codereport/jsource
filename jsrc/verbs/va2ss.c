@@ -220,12 +220,12 @@ A jtssingleton(J jt, A a,A w,A self,RANK2T awr,RANK2T ranks){A z;
  case SSINGCASE(VA2CEXP-VA2CBW1111,SSINGBB): SSSTORENV((I)SSRDB(a)|(I)!SSRDB(w),z,B01,B) return z;
  case SSINGCASE(VA2CEXP-VA2CBW1111,SSINGBD): SSSTORE(SSRDB(a)?1.0:(zdv=SSRDD(w))<0?inf:zdv==0?1:0,z,FL,D) return z;
  case SSINGCASE(VA2CEXP-VA2CBW1111,SSINGDB): SSSTORE(SSRDB(w)?SSRDD(a):1.0,z,FL,D) return z;
- case SSINGCASE(VA2CEXP-VA2CBW1111,SSINGID): RE(zdv=pospow((D)SSRDI(a),SSRDD(w))) SSSTORE(zdv,z,FL,D) return z;
+ case SSINGCASE(VA2CEXP-VA2CBW1111,SSINGID): RE(zdv=jtpospow(jt,(D)SSRDI(a),SSRDD(w))) SSSTORE(zdv,z,FL,D) return z;
  case SSINGCASE(VA2CEXP-VA2CBW1111,SSINGDI): RE(zdv=jtintpow(jt,SSRDD(a),SSRDI(w))) SSSTORE(zdv,z,FL,D) return z;
  case SSINGCASE(VA2CEXP-VA2CBW1111,SSINGBI): SSSTORE(SSRDB(a)?1.0:(zdv=(D)SSRDI(w))<0?inf:zdv==0?1:0,z,FL,D) return z;
  case SSINGCASE(VA2CEXP-VA2CBW1111,SSINGIB): SSSTORE(SSRDB(w)?SSRDI(a):1,z,INT,I) return z;
  case SSINGCASE(VA2CEXP-VA2CBW1111,SSINGII): RE(zdv=jtintpow(jt,(D)SSRDI(a),SSRDI(w))) SSSTORE(zdv,z,FL,D) return z;
- case SSINGCASE(VA2CEXP-VA2CBW1111,SSINGDD): RE(zdv=pospow(SSRDD(a),SSRDD(w))) SSSTORENVFL(zdv,z,FL,D) return z;
+ case SSINGCASE(VA2CEXP-VA2CBW1111,SSINGDD): RE(zdv=jtpospow(jt,SSRDD(a),SSRDD(w))) SSSTORENVFL(zdv,z,FL,D) return z;
 
 
  case SSINGCASE(VA2CBW1111-VA2CBW1111,SSINGBB): aiv=SSRDB(a); wiv=SSRDB(w); goto bitwiseresult;

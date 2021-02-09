@@ -492,7 +492,7 @@
 #define poly1(x)                    jtpoly1(jt,(x))   
 #define poly2a(x,y)                 jtpoly2a(jt,(x),(y))
 #define polymult(x,y,z)             jtpolymult(jt,(x),(y),(z))
-#define pospow(x,y)                 jtpospow(jt,(x),(y))
+
 #define powop(x,y,z)                jtpowop(jt,(x),(y),(z))
 #define prep(x)                     jtprep(jt,(x))
 #define preparse(x,y,z)             jtpreparse(jt,(x),(y),(z))
