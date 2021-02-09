@@ -860,7 +860,7 @@
 #define zgrecur(x)                  jtzgrecur(jt,(x))
 #define zhorner(x,y,z)              jtzhorner(jt,(x),(y),(z))
 #define zjx(x)                      jtzjx(jt,(x))
-#define zlcm(x,y)                   jtzlcm(jt,(x),(y))
+
 #define zlog(x)                     jtzlog(jt,(x))
 #define zm4(x)                      jtzm4(jt,(x))
 #define zminus(x,y)                 jtzminus(jt,(x),(y))
