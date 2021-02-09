@@ -40,9 +40,9 @@ APFX(powDB, D,D,B, POWXB ,,return EVOK;)
 APFX(powZZ, Z,Z,Z, zpow  ,,HDR1JERR)
 
 
-
+#define zcir(x,y)                   jtzcir(jt,(x),(y))
 APFX(cirZZ, Z,Z,Z, zcir  ,NAN0;,HDR1JERRNAN)
-
+#undef zcir
 
 AMON(expD,   D,D, *z=*x<EMIN?0.0:EMAX<*x?inf:exp(   *x);)
 AMON(logD,   D,D, ASSERTWR(0<=*x,EWIMAG); *z=log(   *x);)
