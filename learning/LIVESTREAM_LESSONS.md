@@ -105,4 +105,4 @@ Prelude> let innerProduct = blackbird sum (zipWith (*))
 0!:2 <'./test/g___.ijs' [ 0!:0 <'./test/tsu.ijs'
 ```
 * You can treat the `[` (see :arrow_up:) as a statement separator
-* `3!:0` will get you the type of a array/pronoun ([docs](https://www.jsoftware.com/help/dictionary/dx003.htm))
+* `3!:0 ]` will get you the type of a array/pronoun ([docs](https://www.jsoftware.com/help/dictionary/dx003.htm))
