@@ -309,7 +309,9 @@ APFX(  remXX, X,X,X, xrem  ,,HDR1JERR)
 #define xgcd(x,y)                   jtxgcd(jt,(x),(y))
 APFX(  gcdXX, X,X,X, xgcd  ,,HDR1JERR)
 #undef xgcd
+#define xlcm(x,y)                   jtxlcm(jt,(x),(y))
 APFX(  lcmXX, X,X,X, xlcm  ,,HDR1JERR)
+#undef xlcm
 APFX(  minXX, X,X,X, XMIN  ,,HDR1JERR)
 APFX(  maxXX, X,X,X, XMAX  ,,HDR1JERR)
 APFX(  powXX, X,X,X, xpow  ,,HDR1JERR)
