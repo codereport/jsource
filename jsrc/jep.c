@@ -1,7 +1,6 @@
 /* Copyright 1990-2005, Jsoftware Inc.  All rights reserved.               */
 /* Licensed use only. Any other use is in violation of copyright.          */
 /* J console */
-/* #define READLINE for Unix readline support */
 
 #include "jsockos.h" 
 #include "j.h"

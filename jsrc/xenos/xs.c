@@ -34,7 +34,6 @@ B jtxsinit(J jt){A x;
 /*        do not display error                  */
 /* tso: echo to stdout                          */
 
-#define SEEKLEAK 0
 static A jtline(J jt,A w,I si,C ce,B tso){A x=mtv,z;B xt=jt->tostdout;DC d,xd=jt->dcs;
  if(equ(w,num(1)))return mtm;
  RZ(w=vs(w));
@@ -56,14 +55,8 @@ static A jtline(J jt,A w,I si,C ce,B tso){A x=mtv,z;B xt=jt->tostdout;DC d,xd=jt
  case 1: while(x           ){if(!jt->seclev)showerr(); jt->jerr=0; immex(x=jtddtokens(jt,jgets("   "),1+(AN(jt->locsyms)>1))); tpop(old);} break;
  case 2:
  case 3: {
-#if SEEKLEAK
-  I stbytes = spbytesinuse();
-#endif
   while(x&&!jt->jerr){jt->etxn=0;                           immea(x=jgets("   ")); tpop(old);}
   jt->asgn=0;
-#if SEEKLEAK
-  I endbytes=spbytesinuse(); if(endbytes-stbytes > 1000)printf("%lld bytes lost\n",endbytes-stbytes);
-#endif
   }
  }
  jt->dcs=xd; jt->tostdout=xt;

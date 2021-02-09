@@ -6,21 +6,6 @@
 #include "j.h"
 
 
-#if !USECSTACK
-I jtfdep(J jt,A w){A f,g;I d=0,k;V*v;
- v=VAV(w);
- if(v->fdep)return v->fdep;  // for speed, use previous value if it has been calculated
- if(f=v->fgh[0]) d=VERB&AT(f)?fdep(f):NOUN&AT(f)&&VGERL&v->flag?fdepger(f):0;
- if(g=v->fgh[1]){k=VERB&AT(g)?fdep(g):NOUN&AT(g)&&VGERR&v->flag?fdepger(g):0; d=MAX(d,k);}
- if(CFORK==v->id){k=fdep(v->fgh[2]); d=MAX(d,k);}
- if(!jt->jerr)v->fdep=(UI4)(1+d);  //Save computed value for next time, but not if error; that would lose the error next time
- return 1+d;
-}    /* function depth:  1 + max depth of components */
-
- A jtfdepadv(J jt, A w){ ASSERT(VERB&AT(w),EVDOMAIN); return sc(fdep(w));}
-#endif
-
-
  A jtdfs1(J jt,    A w,A self){F1PREFIP;A s=jt->sf,z; RZ(self); z=CALL1IP(FAV(self)->valencefns[0],  w,jt->sf=self); jt->sf=s; return z;}
  A jtdfs2(J jt,A a,A w,A self){F2PREFIP;
 A s=jt->sf,z; 
@@ -54,9 +39,6 @@ A jtfdef(J jt,I flag2,C id,I t,AF f1,AF f2,A fs,A gs,A hs,I flag,I m,I l,I r){A 
  v->fgh[1]     =gs;                  /* dyad             */      
  v->fgh[2]     =hs;                  /* fork right tine or other auxiliary stuff */
  v->flag  =(UI4)flag;
-#if !USECSTACK
- v->fdep  =0;                   /* function depth   */
-#endif
  v->flag2 = (UI4)flag2;         // more flags
  v->mr    =(RANKT)m;                   /* monadic rank     */
  v->lrr=(RANK2T)((l<<RANKTX)+r);

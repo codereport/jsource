@@ -827,7 +827,6 @@ static I jtutype(J jt,A w,I c){A*wv,x;I m,t;
 // The return is a CR struct holding max and range+1.  But if the range+1 is >= maxrange,
 // we abort and return 0 range.
 // min and max are initial values for min/max
-#if 1
 // We keep this version, using CMOV, because on Ivy Bridge CMOVs execute at one per clock (latency 2) and thus cannot update a
 // single min/max every 2 cycles - and there is no other way to update faster than one per clock.  On Broadwell, CMOVs execute 2
 // per clock with latency 1 and thus just can update both min and max each clock with 2 copies.  This is faster than taken branches
@@ -928,41 +927,6 @@ CR condrange2(US *s,I n,I min,I max,I maxrange){CR ret;I i; US min0,min1,max0,ma
  return ret;
 fail: ret.min=ret.range=0; return ret;
 }
-#else  // the simpler non-unrolled version
-static CR condrange(I *s,I n,I min,I max,I maxrange){CR ret;I i;I x;
- if(!n){ret.range=0; return ret;}; // return failure if no data
- if(min>max){min=max=*s++; --n;}  // init min & max to valid, so that only one changes at a time
- while(n){
-  --n;i=n&63; n&=~63;  // do a block of compares
-  do{x=*s++;
-   // Use Conditional ops, which have latency of 2 but throughput of 1, so should result in 1 compare per cycle, which
-   // is the best we can do, and doesn't rely on branch prediction.  Reassess if conditional ops get 2 ports (more likely,
-   // use wide instructions)
-   min=(x<min)?x:min; max=(x>max)?x:max;
-  }while(--i>=0);
-  if((UI)(max-min)>=(UI)maxrange){ret.range=0; return ret;}
- }
- ret.min=min; ret.range=1+max-min;  // 1+p-q can never be < 0, from the previous test
- return ret;
-}
-// Same for US types
-static CR condrange2(US *s,I n,I min,I max,I maxrange){CR ret;I i;US x;
- if(!n){ret.range=0; return ret;}; // return failure if no data
- if(min>max){min=max=*s++; --n;}  // init min & max to valid, so that only one changes at a time
- while(n){
-  --n;i=n&63; n&=~63;  // do a block of compares
-  do{x=*s++;
-   // Use Conditional ops, which have latency of 2 but throughout of 1, so should result in 1 compare per cycle, which
-   // is the best we can do, and doesn't rely on barch prediction.  Reassess if conditional ops get 2 ports (more likely,
-   // use wide instructions)
-   min=(x<min)?x:min; max=(x>max)?x:max;
-  }while(--i>=0);
-  if((UI)(max-min)>=(UI)maxrange){ret.range=0; return ret;}
- }
- ret.min=min; ret.range=1+max-min;  // 1+p-q can never be < 0, from the previous test
- return ret;
-}
-#endif
 
 // This is the routine that analyzes the input, allocates result area and hashtable, and vectors to the correct action routine
 
@@ -1515,4 +1479,3 @@ A jtiocol(J jt,I mode,A a,A w){A h,z;I ar,at,c,d,m,p,t,wr,*ws,wt;void(*fn)();
  fn(jt,m,c,d,a,w,z,h);
  return z;
 }    /* a i."1 &.|:w or a i:"1 &.|:w */
-

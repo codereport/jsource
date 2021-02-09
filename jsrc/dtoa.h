@@ -3,10 +3,12 @@
 /* Jsoftware Copyright applies only to changes made by Jsoftware           */
 #include <setjmp.h>
 
-#if SYS & SYS_MACOSX
+#ifdef __MACH__
+#ifdef __GNUC__
 /* Use the non-signal restoring pair */
 #define setjmp _setjmp
 #define longjmp _longjmp
+#endif
 #endif
 
 #ifndef HAVE_BIGINT

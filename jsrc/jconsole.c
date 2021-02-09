@@ -1,7 +1,6 @@
 /* Copyright 1990-2007, Jsoftware Inc.  All rights reserved.               */
 /* Licensed use only. Any other use is in violation of copyright.          */
 /* J console */
-/* #define READLINE for Unix readline support */
 
 #include <unistd.h>
 #include <sys/resource.h>
@@ -32,12 +31,8 @@ static char input[30000];
 
 /* J calls for keyboard input (debug suspension and 1!:1[1) */
 /* we call to get next input */
-#ifdef READLINE
 /* readlin.h */
 /* if not working properly, export TERM=dumb */
-#if defined(USE_LINENOISE)
-#include "linenoise.h"
-#endif
 typedef int (*ADD_HISTORY) (const char *);
 typedef int (*READ_HISTORY) (const char *);
 typedef int (*WRITE_HISTORY) (const char *);
@@ -65,15 +60,7 @@ static int readlineinit()
 #else
  if(!(hreadline=dlopen("libedit.dylib",RTLD_LAZY))){
 #endif
-#if defined(USE_LINENOISE)
-    add_history=linenoiseHistoryAdd;
-    read_history=linenoiseHistoryLoad;
-    write_history=linenoiseHistorySave;
-    readline=linenoise;
-    return 2;
-#else
     return 0;
-#endif
    }
  add_history=(ADD_HISTORY)GETPROCADDRESS(hreadline,"add_history");
  read_history=(READ_HISTORY)GETPROCADDRESS(hreadline,"read_history");
@@ -112,7 +99,6 @@ if(hist)
 	if(*line) add_history(line); 
 	return line;
 }
-#endif
 
 char* Jinput_stdio(char* prompt)
 {
@@ -130,11 +116,9 @@ char* Jinput_stdio(char* prompt)
 }
 
 C* _stdcall Jinput(J jt,C* prompt){
-#ifdef READLINE
     if(!norl&&_isatty(_fileno(stdin))){
 		return (C*)Jinput_rl((char*)prompt);
     } else 
-#endif
 	return (C*)Jinput_stdio((char*)prompt);
 }
 
@@ -144,9 +128,7 @@ void _stdcall Joutput(J jt,int type, C* s)
  if(MTYOEXIT==type)
  {
   jefree();
-#ifdef READLINE
   if(!norl)rlexit((int)(intptr_t)s);
-#endif
   exit((int)(intptr_t)s);
  }
  fputs((char*)s,stdout);
@@ -222,24 +204,9 @@ int main(int argc, char* argv[])
   }
  }
 
-#ifdef READLINE
   norl|=!_isatty(_fileno(stdin));    // readline works on tty only
-#if defined(USE_LINENOISE)
-  if(!norl){
-   char *term;
-   term=getenv("TERM");
-   if(term){
-    static const char *unsupported_term[] = {"dumb","cons25","emacs",NULL};
-    int j;
-    for(j=0; unsupported_term[j]; j++)
-     if (strcmp(term, unsupported_term[j]) == 0) {norl=1; break; }
-   }
-  }
-
-#endif
   if(!norl&&_isatty(_fileno(stdin)))
    breadline=readlineinit();
-#endif
 
  jt=jeload(callbacks);
  if(!jt)
@@ -255,14 +222,9 @@ int main(int argc, char* argv[])
  }else
   signal(SIGINT,sigint);
  
-#ifdef READLINE
  if(!norl){
  rl_readline_name="jconsole"; /* argv[0] varies too much*/
-#if defined(USE_LINENOISE)
- if(2==breadline)linenoiseSetMultiLine(1);
-#endif
  }
-#endif
 
  if(argc==2&&!strcmp(argv[1],"-jprofile"))
 	 type=3;
