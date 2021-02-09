@@ -131,7 +131,9 @@ APFX(  gcdQQ, Q,Q,Q, qgcd  ,,HDR1JERR)
 APFX(  lcmQQ, Q,Q,Q, qlcm  ,,HDR1JERR)
 #undef qlcm
 APFX(  remQQ, Q,Q,Q, qrem  ,,HDR1JERR)
+#define qpow(x,y)                   jtqpow(jt,(x),(y))
 APFX(  powQQ, Q,Q,Q, qpow  ,,HDR1JERR)
+#undef qpow
 #define qbin(x,y)                   jtqbin(jt,(x),(y))
 APFX(  binQQ, X,Q,Q, qbin  ,,HDR1JERR)
 #undef qbin
