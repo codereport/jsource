@@ -150,7 +150,7 @@ static Q jtmultiple(J jt,D x,Q m){A y;Q q1,q2,q1r2;
 
 static Q jtmaxdenom(J jt,I n,Q*v){Q z;X*u,x,y;
  u=1+(X*)v; x=*u;  // u-> &1st denominator, x=&1st denominator
- DQ(n-1, u+=2; y=*u; if(-1==xcompare(x,y))x=y;);  // x=&largest denominator
+ DQ(n-1, u+=2; y=*u; if(-1==jtxcompare(jt,x,y))x=y;);  // x=&largest denominator
  z.n=x; z.d=iv1; return z;  // set denominator as a rational number
 }    /* maximum denominator in rational vector v */
 

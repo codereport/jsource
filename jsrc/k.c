@@ -129,7 +129,7 @@ static B jtIfromX(J jt,A w,void*yv){I a,i,m,n,*u,*x;X c,p,q,*v;
  v=XAV(w); x=(I*)yv; n=AN(w);
  if(!(p=xc(IMAX)))return 0; if(!(q=xminus(negate(p),xc(1L))))return 0;
  for(i=0;i<n;++i){
-  c=v[i]; if(!(1!=xcompare(q,c)&&1!=xcompare(c,p)))return 0;
+  c=v[i]; if(!(1!=jtxcompare(jt,q,c)&&1!=jtxcompare(jt,c,p)))return 0;
   m=AN(c); u=AV(c)+m-1; a=0; DO(m, a=*u--+a*XBASE;); x[i]=a;
  }
  return 1;

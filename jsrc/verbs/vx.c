@@ -169,7 +169,7 @@ X jtxdiv(J jt,X a,X w,I mode){PROLOG(0096);B di;I an,*av,c,c0,d,e,k,s,u[2],u1,wn
   case 1: return rifvsdebug(negate(xdiv(negate(a),w,mode==XMFLR?XMCEIL:mode==XMCEIL?XMFLR:mode)));
   case 2: return rifvsdebug(negate(xdiv(a,negate(w),mode==XMFLR?XMCEIL:mode==XMCEIL?XMFLR:mode)));
   default:
-   if(1!=(e=xcompare(a,w))){
+   if(1!=(e=jtxcompare(jt,a,w))){
     ASSERT(!(c&&e&&mode==XMEXACT),EWRAT);
     d=c&&(mode||!e);
     return rifvsdebug(vec(INT,1L,&d));
@@ -197,9 +197,9 @@ X jtxdiv(J jt,X a,X w,I mode){PROLOG(0096);B di;I an,*av,c,c0,d,e,k,s,u[2],u1,wn
  if(1==AN(a)&&c){RZ(xdivrem(w,a,&q,&r)); return rifvsdebug(r);}
  switch((0<=c?2:0)+(I )(0<=d)){
   case 0:  return rifvsdebug(negate(xrem(negate(a),negate(w))));
-  case 1:  y=xrem(negate(a),w); return rifvsdebug(xcompare(y,iv0)? xplus(a,y):y);
-  case 2:  y=xrem(a,negate(w)); return rifvsdebug(xcompare(y,iv0)?xminus(a,y):y);
-  default: return rifvsdebug(0<=(e=xcompare(a,w)) ? (e?w:iv0) : xminus(w,xtymes(a,xdiv(w,a,XMFLR))));
+  case 1:  y=xrem(negate(a),w); return rifvsdebug(jtxcompare(jt,y,iv0)? xplus(a,y):y);
+  case 2:  y=xrem(a,negate(w)); return rifvsdebug(jtxcompare(jt,y,iv0)?xminus(a,y):y);
+  default: return rifvsdebug(0<=(e=jtxcompare(jt,a,w)) ? (e?w:iv0) : xminus(w,xtymes(a,xdiv(w,a,XMFLR))));
 }}
 
  X jtxgcd(J jt,X a,X w){I c,d;X p,q,t;
@@ -247,7 +247,7 @@ static X jtxexp(J jt,X w,I mode){I k,m;X s,y;
   r=jt->xmode==XMCEIL; return rifvsdebug(xc(0<c?r:1&e?r-1:r));
  }
  t=a; z=iv1; m=jt->xmod?XAV(jt->xmod)[0]:0;
- if(!m||1>xcompare(w,xc(IMAX))){
+ if(!m||1>jtxcompare(jt,w,xc(IMAX))){
   ASSERT(m||2>=AN(w),EVLIMIT);
   RE(e=xint(w));
   if(m)while(e){if(1&e)RZ(z=xrem(m,xtymes(z,t))); RZ(t=xrem(m,xsq(t))); e>>=1;}
@@ -273,7 +273,7 @@ static X jtxexp(J jt,X w,I mode){I k,m;X s,y;
  RZ(e=xc(2L));
  p=m*XBASEN; q=0; while(p){++q; p>>=1;}
  DQ(1+q, RZ(x=xdiv(xplus(x,xdiv(w,x,XMFLR)),e,XMFLR)););
- p=xcompare(w,xsq(x));
+ p=jtxcompare(jt,w,xsq(x));
  switch(jt->xmode){
   default:     ASSERTSYS(0,"xsqrt");
   case XMFLR:  if(-1==p){--AV(x)[0]; return xstd(x);}else return rifvsdebug(x);
@@ -281,7 +281,7 @@ static X jtxexp(J jt,X w,I mode){I k,m;X s,y;
   case XMEXACT:
    if(!p)return rifvsdebug(x);
    AV(x)[0]+=p; RZ(x=xstd(x));
-   ASSERT(!xcompare(w,xsq(x)),EWIRR);
+   ASSERT(!jtxcompare(jt,w,xsq(x)),EWIRR);
    return rifvsdebug(x);
 }}
 

@@ -102,11 +102,11 @@ static B jtfmtq(J jt,B e,I m,I d,C*s,I t,Q*wv){B b;C*v=jt->th2buf;I c,ex=0,k,n,p
  y=*wv; x=y.n; c=XDIG(x); b=0>c; if(b)x=negate(x);
  if(c==XPINF||c==XNINF){if(e)*v++=' '; if(e>b)*v++=' '; if(b)*v++='_'; *v++='_'; *v=0; return 1;}
  RZ(a=xpow(xc(10L),xc(1+d)));
- if(e&&c&&0>xcompare(x,y.d)){
+ if(e&&c&&0>jtxcompare(jt,x,y.d)){
   ex=XBASEN*(AN(y.n)-AN(y.d));
   g=xtymes(x,xpow(xc(10L),xc(1+d-ex)));
   RZ(x=xdiv(g,y.d,XMFLR));
-  while(1==xcompare(a,x)){--ex; g=xtymes(xc(10L),g); RZ(x=xdiv(g,y.d,XMFLR));}
+  while(1==jtxcompare(jt,a,x)){--ex; g=xtymes(xc(10L),g); RZ(x=xdiv(g,y.d,XMFLR));}
   if(b)x=negate(x);
  }else x=xdiv(xtymes(y.n,a),y.d,XMFLR);
  RZ(x=xdiv(xplus(x,xc(5L)),xc(10L),XMFLR));

@@ -807,7 +807,7 @@
 #define words(x)                    jtwords(jt,(x),ds(CWORDS)) 
 #define xc(x)                       jtxc(jt,(x))
 #define xco1(x)                     jtxco1(jt,(x))
-#define xcompare(x,y)               jtxcompare(jt,(x),(y))
+
 #define xdefn(x,y,z)                jtxdefn(jt,(x),(y),(z))
 
 #define xdiv(x,y,z)                 jtxdiv(jt,(x),(y),(z))

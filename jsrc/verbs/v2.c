@@ -191,10 +191,10 @@ static A jtxprimetest(J jt, A w){A z;B*b,rat;I d,j,q,n,*pv,*v,wn,wt,*yv;X r,*wv,
  GATV(z,B01,wn,AR(w),AS(w)); b=BAV(z);
  for(j=0;j<wn;++j){
   x=*wv++; d=AV(x)[AN(x)-1]; b[j]=1; v=pv;
-  if(rat&&xcompare(iv1,*wv++)){b[j]=0; continue;}
+  if(rat&&jtxcompare(jt,iv1,*wv++)){b[j]=0; continue;}
   ASSERT(d!=XPINF&&d!=XNINF,EVDOMAIN);
   if(0>=d)b[j]=0;
-  else if(1==xcompare(x,xmaxint)){
+  else if(1==jtxcompare(jt,x,xmaxint)){
    A *old=jt->tnextpushp;
    DQ(100, *yv=*v++; RZ(r=xrem(y,x)); if(!AV(r)[0]){b[j]=0; break;});
    if(b[j])RE(b[j]=jtxprimeq(jt,100L,x));
@@ -401,7 +401,7 @@ static B jtxprimeq(J jt,I n,X y){A h,om=jt->xmod;B b;I*dv,i,k,*pv;X d,m,t,x,y1;
  A *old=jt->tnextpushp;
  for(i=0;i<n;++i){
   dv[0]=pv[i]; RZ(x=xpow(d,m)); b=1==AN(x)&&1==AV(x)[0];
-  DQ(k*!b, if(!xcompare(x,y1)){b=1; break;} RZ(x=xrem(y,xsq(x))););
+  DQ(k*!b, if(!jtxcompare(jt,x,y1)){b=1; break;} RZ(x=xrem(y,xsq(x))););
   tpop(old);
   if(!b)break;
  }

@@ -77,7 +77,7 @@ static Q jtqpow(J jt,Q a,Q w){PROLOG(0089);B c;I p,q,s;Q t,z;X d;
   return z;
  }
  if(q==XPINF||q==XNINF){
-  s=xcompare(mag(a.n),a.d);
+  s=jtxcompare(jt,mag(a.n),a.d);
   QASSERT(0<=p||0>s&&q==XPINF||0<s&&q==XNINF,EVDOMAIN); 
   z.n=rifvs(vci(!s?1L:!p&&0>q||0<s&&p&&0<q||0>s&&0>q?XPINF:0L));
   return z;
@@ -85,7 +85,7 @@ static Q jtqpow(J jt,Q a,Q w){PROLOG(0089);B c;I p,q,s;Q t,z;X d;
  QASSERT(c||0<=p,EWIMAG);
  QASSERT(c||QX1(a.d)&&1==AN(a.n)&&(0==p||1==p),EWIRR);
  if(0>XDIG(d)){QRE(d=negate(d)); QRE(t=jtqdiv(jt,z,t));}
- if(1>xcompare(d,xc(IMAX))){I e;
+ if(1>jtxcompare(jt,d,xc(IMAX))){I e;
   QRE(e=xint(d));  
   while(e){if(1&e)QRE(z=jtqtymes(jt,z,t)); QRE(t=jtqtymes(jt,t,t)); e>>=1;}
  }else{X e=d,x2;

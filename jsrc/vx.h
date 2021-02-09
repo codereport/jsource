@@ -10,8 +10,8 @@
 #define XPINF           (I)99999
 #define XNINF           (I)-99999
 #define XDIG(a)         (AV(a)[AN(a)-1])   /* leading digit              */
-#define XMAX(x,y)       (1==xcompare(x,y)?x:y)
-#define XMIN(x,y)       (1==xcompare(x,y)?y:x)
+#define XMAX(x,y)       (1==jtxcompare(jt,x,y)?x:y)
+#define XMIN(x,y)       (1==jtxcompare(jt,x,y)?y:x)
 #define XDIV(x,y)       xdiv(x,y,jt->xmode)
 #define XCUBE(x)        xtymes(x,xtymes(x,x))
 
