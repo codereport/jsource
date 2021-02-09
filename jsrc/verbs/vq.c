@@ -53,7 +53,7 @@ static Q jtqrem(J jt,Q a,Q w){PROLOG(0087);I c,d;Q m,q,z;
  QASSERT(!(d==XPINF||d==XNINF),EVNAN);
  if(c==XPINF)return 0<=d?w:a;
  if(c==XNINF)return 0>=d?w:a;
- q=qdiv(w,a);
+ q=jtqdiv(jt,w,a);
  m.n=xtymes(a.n,xdiv(q.n,q.d,XMFLR)); m.d=a.d;
  z=qminus(w,m);
  QEPILOG(z);
@@ -65,7 +65,7 @@ static Q jtqgcd(J jt,Q a,Q w){PROLOG(0088);Q z;
  QEPILOG(z);
 }
 
-static Q jtqlcm(J jt,Q a,Q w){return qtymes(a,qdiv(w,qgcd(a,w)));}
+static Q jtqlcm(J jt,Q a,Q w){return qtymes(a,jtqdiv(jt,w,qgcd(a,w)));}
 
 static Q jtqpow(J jt,Q a,Q w){PROLOG(0089);B c;I p,q,s;Q t,z;X d;
  QRE(1);
@@ -84,7 +84,7 @@ static Q jtqpow(J jt,Q a,Q w){PROLOG(0089);B c;I p,q,s;Q t,z;X d;
  }
  QASSERT(c||0<=p,EWIMAG);
  QASSERT(c||QX1(a.d)&&1==AN(a.n)&&(0==p||1==p),EWIRR);
- if(0>XDIG(d)){QRE(d=negate(d)); QRE(t=qdiv(z,t));}
+ if(0>XDIG(d)){QRE(d=negate(d)); QRE(t=jtqdiv(jt,z,t));}
  if(1>xcompare(d,xc(IMAX))){I e;
   QRE(e=xint(d));  
   while(e){if(1&e)QRE(z=qtymes(z,t)); QRE(t=qtymes(t,t)); e>>=1;}

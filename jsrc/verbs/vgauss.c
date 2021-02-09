@@ -22,7 +22,7 @@
   ASSERT(0<=e,EVDOMAIN);
   x=v+c*j; 
   if(j!=e){u=v+c*e; DO(c, Q t1=u[i]; u[i]=x[i]; x[i]=t1;);} /* interchange rows e and j */
-  p=x[j]; ra(p.n); ra(p.d); DO(c, Q z=qdiv(x[i],p); INSTALLRAT(w,x,i,z);); fa(p.n); fa(p.d);
+  p=x[j]; ra(p.n); ra(p.d); DO(c, Q z=jtqdiv(jt,x[i],p); INSTALLRAT(w,x,i,z);); fa(p.n); fa(p.d);
   for(i=0;i<r;++i){
    if(i==j)continue;
    u=v+c*i; p=u[j];  /* pivot */
@@ -46,7 +46,7 @@ static A jtdetr(J jt, A w){A z;I c,e,g=1,i,j,k,r,*s;Q d,p,*u,*v,*x;
   i=XDIG(x[j].n); if(i==XPINF||i==XNINF)return mark;
   for(i=j+1;i<r;++i){
    u=v+c*i;
-   if(XDIG(u[j].n)){p=qdiv(u[j],x[j]); ra(p.n); ra(p.d); for(k=j+1;k<r;++k){Q z=qminus(u[k],qtymes(p,x[k]));INSTALLRAT(w,u,k,z);} fa(p.n); fa(p.d);}
+   if(XDIG(u[j].n)){p=jtqdiv(jt,u[j],x[j]); ra(p.n); ra(p.d); for(k=j+1;k<r;++k){Q z=qminus(u[k],qtymes(p,x[k]));INSTALLRAT(w,u,k,z);} fa(p.n); fa(p.d);}
   }
   if(!gc3(&w,0L,0L,old))return 0;  // use simple gc3 to ensure all changes use the stack, since w is modified inplace.  Alternatively could turn off inplacing here
  }

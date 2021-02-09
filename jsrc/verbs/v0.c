@@ -145,7 +145,7 @@ static Q jtmultiple(J jt,D x,Q m){A y;Q q1,q2,q1r2;
  QRE(y=jtcvt(jt,RAT,scf(x)));
  QRE(q1=qplus(q1r2,qtymes(m,QAV(y)[0])));
  QRE(q2.n=xdiv(q1.n,q1.d,XMFLR)); q2.d=iv1;
- return qdiv(q2,m);
+ return jtqdiv(jt,q2,m);
 }    /* nearest multiple of m to x */
 
 static Q jtmaxdenom(J jt,I n,Q*v){Q z;X*u,x,y;
