@@ -218,7 +218,7 @@ X jtxdiv(J jt,X a,X w,I mode){PROLOG(0096);B di;I an,*av,c,c0,d,e,k,s,u[2],u1,wn
  return rifvsdebug(q);
 }
 
- X jtxlcm(J jt,X a,X w){return rifvsdebug(xtymes(a,xdiv(w,xgcd(a,w),XMEXACT)));}
+ X jtxlcm(J jt,X a,X w){return rifvsdebug(xtymes(a,xdiv(w,jtxgcd(jt,a,w),XMEXACT)));}
 
 static X jtxexp(J jt,X w,I mode){I k,m;X s,y;
  k=XDIG(w);

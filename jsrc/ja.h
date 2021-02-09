@@ -814,7 +814,7 @@
 #define xdivrem(x0,x1,x2,x3)        jtxdivrem(jt,(x0),(x1),(x2),(x3))
 #define xev2(x,y,z)                 jtxev2(jt,(x),(y),(z))
 #define xcompare(x,y)               jtxcompare(jt,(x),(y)) // used in multiple macros in multiple files.
-#define xgcd(x,y)                   jtxgcd(jt,(x),(y))
+
 #define xint(x)                     jtxint(jt,(x))
 #define xlcm(x,y)                   jtxlcm(jt,(x),(y))
 #define xlog1(x)                    jtxlog1(jt,(x))

@@ -15,7 +15,7 @@
  if(!d){z.n=rifvsdebug(vci(0<n?XPINF:XNINF)); return z;}
  if(d==XPINF){QASSERT(n!=XPINF&&n!=XNINF,EVNAN); return zeroQ;}
  if(n==XPINF||n==XNINF){z.n=rifvsdebug(w.n); return z;}
- QRE(g=xgcd(w.n,w.d));
+ QRE(g=jtxgcd(jt,w.n,w.d));
  if(QX1(g))return w;
  z.n=rifvsdebug(xdiv(w.n,g,XMEXACT));
  z.d=rifvsdebug(xdiv(w.d,g,XMEXACT));
@@ -60,7 +60,7 @@ static Q jtqrem(J jt,Q a,Q w){PROLOG(0087);I c,d;Q m,q,z;
 }
 
 static Q jtqgcd(J jt,Q a,Q w){PROLOG(0088);Q z;
- QRE(z.n=rifvsdebug(xgcd(a.n,w.n)));
+ QRE(z.n=rifvsdebug(jtxgcd(jt,a.n,w.n)));
  QRE(z.d=rifvsdebug(xlcm(a.d,w.d)));
  QEPILOG(z);
 }
