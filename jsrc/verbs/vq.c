@@ -122,7 +122,9 @@ APFX(tymesQQ, Q,Q,Q, qtymes,,HDR1JERR)
 #define qdiv(x,y)                   jtqdiv(jt,(x),(y))
 APFX(  divQQ, Q,Q,Q, qdiv  ,,HDR1JERR)
 #undef qdiv
+#define qgcd(x,y)                   jtqgcd(jt,(x),(y))
 APFX(  gcdQQ, Q,Q,Q, qgcd  ,,HDR1JERR)
+#undef ggcd
 APFX(  lcmQQ, Q,Q,Q, qlcm  ,,HDR1JERR)
 APFX(  remQQ, Q,Q,Q, qrem  ,,HDR1JERR)
 APFX(  powQQ, Q,Q,Q, qpow  ,,HDR1JERR)
