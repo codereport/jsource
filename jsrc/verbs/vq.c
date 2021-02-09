@@ -23,7 +23,7 @@
 }
 
  Q jtqplus(J jt,Q a,Q w){PROLOG(0083);Q z;
- z.n=rifvsdebug(xplus(xtymes(a.n,w.d),xtymes(w.n,a.d)));
+ z.n=rifvsdebug(jtxplus(jt,xtymes(a.n,w.d),xtymes(w.n,a.d)));
  z.d=rifvsdebug(xtymes(a.d,w.d));
  QEPILOG(z);
 }

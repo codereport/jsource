@@ -14,7 +14,7 @@
 
 #define MINUSPA(b,r,u,v)  r=b?u-v:u+v;
 #define MINUSPZ(b,r,u,v)  if(b)r=zminus(u,v); else r=zplus(u,v);
-#define MINUSPX(b,r,u,v)  if(b)r=jtxminus(jt,u,v); else r=xplus(u,v);
+#define MINUSPX(b,r,u,v)  if(b)r=jtxminus(jt,u,v); else r=jtxplus(jt,u,v);
 #define MINUSPQ(b,r,u,v)  if(b)r=jtqminus(jt,u,v); else r=jtqplus(jt,u,v);
 
 #define DIVPA(b,r,u,v)    r=b?(DIV(u,(D)v)):TYMES(u,v);

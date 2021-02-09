@@ -141,7 +141,7 @@ static Z jtlaguerre(J jt,I m,Z*a,Z x){D ax,e;I i,j;Z b,c,d,dx,g,g2,h,p,q,s,sq,y,
 }}   // Press et al., "Numerical Recipes in C" with additions from 2d edition
 
 static Q jtmultiple(J jt,D x,Q m){A y;Q q1,q2,q1r2;
- q1r2.n=iv1; q1r2.d=xplus(iv1,iv1);
+ q1r2.n=iv1; q1r2.d=jtxplus(jt,iv1,iv1);
  QRE(y=jtcvt(jt,RAT,scf(x)));
  QRE(q1=jtqplus(jt,q1r2,jtqtymes(jt,m,QAV(y)[0])));
  QRE(q2.n=xdiv(q1.n,q1.d,XMFLR)); q2.d=iv1;
