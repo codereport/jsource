@@ -275,7 +275,9 @@ APFX(gcdII, I,I,I, igcd ,,HDR1JERR)
 #define dgcd(x,y)                   jtdgcd(jt,(x),(y))
 APFX(gcdDD, D,D,D, dgcd ,,HDR1JERR)
 #undef gdcd
+#define zgcd(x,y)                   jtzgcd(jt,(x),(y))
 APFX(gcdZZ, Z,Z,Z, zgcd ,,HDR1JERR)
+#undef zgcd
 #define ilcm(x,y)                   jtilcm(jt,(x),(y))
 APFX(lcmII, I,I,I, ilcm ,,HDR1JERR)
 #undef ilcm
