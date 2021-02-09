@@ -511,7 +511,7 @@
 #define pscangt(x0,x1,x2,x3,x4,x5)  jtpscangt(jt,(x0),(x1),(x2),(x3),(x4),(x5))
 #define pscanlt(x0,x1,x2,x3,x4,x5)  jtpscanlt(jt,(x0),(x1),(x2),(x3),(x4),(x5))
 
-#define qcompare(x,y)               jtqcompare(jt,(x),(y))
+
 #define qdiv(x,y)                   jtqdiv(jt,(x),(y))
 #define qgcd(x,y)                   jtqgcd(jt,(x),(y))
 #define qlcm(x,y)                   jtqlcm(jt,(x),(y))
