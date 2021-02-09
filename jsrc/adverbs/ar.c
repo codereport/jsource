@@ -497,7 +497,7 @@ static A jtredcateach(J jt,    A w,A self){A*u,*v,*wv,x,*xv,z,*zv;I f,m,mn,n,r,w
  wr=AR(w); ws=AS(w); r=(RANKT)jt->ranks; r=wr<r?wr:r; f=wr-r; RESETRANK;
  SETICFR(w,f,r,n);
  if(!r||1>=n)return jtreshape(jt,jtrepeat(jt,ne(sc(f),IX(wr)),shape(jt, w)),n?w:ds(CACE));
- if(!(BOX&AT(w)))return df1(z,jtcant2(jt,sc(f),w),qq(ds(CBOX),zeroionei(1)));  // handle unboxed args
+ if(!(BOX&AT(w)))return df1(z,jtcant2(jt,sc(f),w),jtqq(jt,ds(CBOX),zeroionei(1)));  // handle unboxed args
 // bug: ,&.>/ y does scalar replication wrong
 // wv=AN(w)+AAV(w); DQ(AN(w), if(AN(*--wv)&&AR(*wv)&&n1&&n2) ASSERT(0,EVNONCE); if((!AR(*wv))&&n1)n2=1; if(AN(*wv)&&1<AR(*wv))n1=1;);
  zn=AN(w)/n; PROD(zm,f,ws); PROD(m,r-1,ws+f+1); mn=m*n;
@@ -521,7 +521,7 @@ static A jtoprod(J jt,A a,A w,A self){A z; return df2(z,a,w,FAV(self)->fgh[2]);}
   case CUNDER:  f1=jtreduce; if(COPE==ID(v->fgh[1])){c=ID(v->fgh[0]); if(c==CCOMMA)f1=jtredcateach; else if(c==CCOMDOT)f1=jtredstiteach;} flag=0; break;
   default: f1=jtreduce; flag=(v->flag&VJTFLGOK2)>>(VJTFLGOK2X-VJTFLGOK1X); break;  // monad is inplaceable if the dyad for u is
  }
- RZ(h=qq(w,jtv2(jt,lr(w),RMAX)));  // create the rank compound to use if dyad
+ RZ(h=jtqq(jt,w,jtv2(jt,lr(w),RMAX)));  // create the rank compound to use if dyad
  RZ(h=fdef(0,CSLASH,VERB, f1,jtoprod, w,0L,h, flag|FAV(ds(CSLASH))->flag, RMAX,RMAX,RMAX));
  // set lvp[1] to point to the VARPSA block for w if w is atomic dyad; otherwise to the null VARPSA block
  FAV(h)->localuse.lvp[1]=v->flag&VISATOMIC2?((VA*)v->localuse.lvp[0])->rps:&rpsnull;
@@ -529,7 +529,7 @@ static A jtoprod(J jt,A a,A w,A self){A z; return df2(z,a,w,FAV(self)->fgh[2]);}
 }
 
 A jtaslash (J jt,C c,    A w){RZ(   w); A z; return df1(z,  w,   slash(ds(c))     );}
-A jtaslash1(J jt,C c,    A w){RZ(   w); A z; return df1(z,  w,qq(slash(ds(c)),zeroionei(1)));}
+A jtaslash1(J jt,C c,    A w){RZ(   w); A z; return df1(z,  w,jtqq(jt,slash(ds(c)),zeroionei(1)));}
 A jtatab   (J jt,C c,A a,A w){ A z; return df2(z,a,w,   slash(ds(c))     );}
 
  A jtmean(J jt,    A w,A self){

@@ -131,7 +131,7 @@ A jtlogar2(J jt,A a,A w){
  A jtrdot2(J jt,A a,A w){return tymes(a,rdot1(w));}
 
 
- A jtpolar(J jt, A w){ A z; return jtcvt(jt,SPARSE&AT(w)?SFL:FL,df2(z,jtv2(jt,10L,12L),w,qq(ds(CCIRCLE),jtv2(jt,1L,0L))));}
+ A jtpolar(J jt, A w){ A z; return jtcvt(jt,SPARSE&AT(w)?SFL:FL,df2(z,jtv2(jt,10L,12L),w,jtqq(jt,ds(CCIRCLE),jtv2(jt,1L,0L))));}
 
  A jtrect(J jt, A w){A e,z;B b;I r,t;P*wp,*zp;Z c;
  t=AT(w); r=AR(w); RESETRANK;   // Run as infinite rank
@@ -147,5 +147,5 @@ A jtlogar2(J jt,A a,A w){
   SPB(zp,i,ca(SPA(wp,i)));
   SPB(zp,x,rect(SPA(wp,x)));
   return z;
- }else return df2(z,w,num(0),qq(ds(CCOMMA),zeroionei(0)));
+ }else return df2(z,w,num(0),jtqq(jt,ds(CCOMMA),zeroionei(0)));
 }

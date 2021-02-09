@@ -520,7 +520,7 @@
 
 #define qplus(x,y)                  jtqplus(jt,(x),(y)) //used by 2 macros in 2 different files.
 
-#define qq(x,y)                     jtqq(jt,(x),(y))
+
 #define qr(x)                       jtqr(jt,(x))
 #define qrem(x,y)                   jtqrem(jt,(x),(y))
 #define qrr(x)                      jtqrr(jt,(x))

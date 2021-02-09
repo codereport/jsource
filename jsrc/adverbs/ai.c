@@ -86,7 +86,7 @@ static A jtbminv(J jt, A w){A*wv,x,z=w;I i,j,m,r,*s,t=0,*u,**v,*y,wn,wr,*ws;
    if(2>AR(x)){DO(wr, hv[i]=*(v[i]+u[i]);); RZ(zv[i]=jtdiag(jt,x,jtreshape(jt,h,f)));}
    j=wr-1; while(1){--j; ++u[j]; if(ws[j]>u[j])break; u[j]=0;}
  }}
- DO(wr, A t=z; RZ(df1(z,t,slash(jtunder(jt,qq(ds(CCOMMA),sc(wr-i)),ds(COPE))))););
+ DO(wr, A t=z; RZ(df1(z,t,slash(jtunder(jt,jtqq(jt,ds(CCOMMA),sc(wr-i)),ds(COPE))))););
  return ope(z);
 }    /* <;.1 or <;.2 inverse on matrix argument */
 
@@ -263,7 +263,7 @@ A jtinv(J jt, A w, I recur){A f,ff,g;B b,nf,ng,vf,vg;C id;I p,q;V*v;
   case CAMPCO:
   case CATCO:    if(vf&&vg)return jtatco(jt,invrecur(g),invrecur(f));   break;
   case CSLASH:   if(CSTAR==ID(f))return ds(CQCO);        break;
-  case CQQ:      if(vf)return qq(invrecur(f),g);              break;
+  case CQQ:      if(vf)return jtqq(jt,invrecur(f),g);              break;
   case COBVERSE: if(vf&&vg)return jtobverse(jt,g,f);          break;  // if defined obverse, return it
   case CSCO:     return jtamp(jt,num(5),w);
   case CPOWOP:   

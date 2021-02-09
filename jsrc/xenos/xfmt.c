@@ -518,7 +518,7 @@ static A jtfmtxi(J jt, A a, A w, I mode, I *omode){I lvl;
  *omode=0;
  if((SPARSE&AT(w))!=0) RZ(w=denseit(w));
  if(!AN(w))       RZ(w=jtreshape(jt,shape(jt,w),chrspace));
- if(JCHAR&AT(w))  return df1(a,w,qq(jtatop(jt,ds(CBOX),ds(CCOMMA)),num(1)));
+ if(JCHAR&AT(w))  return df1(a,w,jtqq(jt,jtatop(jt,ds(CBOX),ds(CCOMMA)),num(1)));
  ASSERT(1>=AR(a), EVRANK); 
  ASSERT(!AN(a) || JCHAR+BOX&AT(a), EVDOMAIN);
  if(JCHAR&AT(a)||!AN(a)) RZ(a=fmtbfc(a));
@@ -547,7 +547,7 @@ static A jtfmtxi(J jt, A a, A w, I mode, I *omode){I lvl;
  RZ(z=fmtxi(a,w,1,&mode));
  if(mode==1)return z;
  r=AR(z);
- A t; df1(t,cant1(2==r?z:jtreshape(jt,jtv2(jt,1L,SETIC(z,j)),z)), qq(jtatco(jt,ds(CBOX),ds(COPE)),num(1)));
+ A t; df1(t,cant1(2==r?z:jtreshape(jt,jtv2(jt,1L,SETIC(z,j)),z)), jtqq(jt,jtatco(jt,ds(CBOX),ds(COPE)),num(1)));
  return ravel(t);
 } /* 8!:1 dyad */
 
@@ -556,7 +556,7 @@ static A jtfmtxi(J jt, A a, A w, I mode, I *omode){I lvl;
  RZ(z=fmtxi(a,w,2,&mode));
  if(mode==2)return z;
  r=AR(z);
- A t; df1(t,cant1(2==r?z:jtreshape(jt,jtv2(jt,1L,SETIC(z,j)),z)), qq(jtatco(jt,ds(CBOX),ds(COPE)),num(1)));
+ A t; df1(t,cant1(2==r?z:jtreshape(jt,jtv2(jt,1L,SETIC(z,j)),z)), jtqq(jt,jtatco(jt,ds(CBOX),ds(COPE)),num(1)));
  RZ(z=ravel(t));
  return AS(z)[0]?razeh(z):lamin1(z);
 } /* 8!:2 dyad */

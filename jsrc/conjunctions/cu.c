@@ -307,8 +307,8 @@ static A jtunderai1(J jt,    A w,A self){DECLF;A x,y,z;B b;I j,n,*u,*v;UC f[256]
  if(gside<0){h=jtamp(jt,a,wvb); rlr=rrr=rmr;  // normal case, f&g"mg
  }else{
   f1=jtdomainerr1;  // monad not allowed with gerund v
-  if(gside==0){rlr=rmr; rrr=(RANKT)FAV(a)->lrr; h=qq(swap(jthook(jt,swap(a),wvb)),jtv2(jt,rlr,rrr));  // (f~ g)~"mw rf
-  }else{rlr=FAV(a)->lrr>>RANKTX; rrr=rmr; h=qq(jthook(jt,a,wvb),jtv2(jt,rlr,rrr));  // (f g)"lf mg
+  if(gside==0){rlr=rmr; rrr=(RANKT)FAV(a)->lrr; h=jtqq(jt,swap(jthook(jt,swap(a),wvb)),jtv2(jt,rlr,rrr));  // (f~ g)~"mw rf
+  }else{rlr=FAV(a)->lrr>>RANKTX; rrr=rmr; h=jtqq(jt,jthook(jt,a,wvb),jtv2(jt,rlr,rrr));  // (f g)"lf mg
   }
  }
  ASSERT(h!=0,EVDOMAIN);

@@ -40,7 +40,7 @@ static A jtvtokens(J jt, A w){A t,*y,z;I n,*s;TA*x;
  return z;
 }    /* build string sentence into queue suitable for parsing */
 
-static A jtcfn(J jt, A w){I j; return !AR(w)&&INT&AT(w)&&(j=AV(w)[0],-9<=j&&j<=9)?FCONS(w):qq(w,ainf);}
+static A jtcfn(J jt, A w){I j; return !AR(w)&&INT&AT(w)&&(j=AV(w)[0],-9<=j&&j<=9)?FCONS(w):jtqq(jt,w,ainf);}
      /* constant function with value w */
 
 static A jttine(J jt,A w,I tmonad){V*v; return w&&tmonad&&(v=FAV(w),CP==v->fgh[0]&&RT==v->fgh[2])?v->fgh[1]:w;}
@@ -163,7 +163,7 @@ static I jtdcase(J jt,I xi,V*v){
  ea=stack[e].a; et=stack[e].t;
  symbisdel(n,ea,locsyms);
  ++*ttabi; u->a=t; u->t=et?et:cfn(ea);
- z.a=ea;  z.t=tsubst?qq(sc(TC+j),num(-1)):et;
+ z.a=ea;  z.t=tsubst?jtqq(jt,sc(TC+j),num(-1)):et;
  return z;
 }
 
@@ -171,7 +171,7 @@ static TA jtvmove(J jt,I b,I e,TA*stack,A locsyms,I tmonad,I tsubst,TA *ttab,I *
  x=stack[MAX(0,e)];
  if(!(NAME&AT(x.a))||ASGN&AT(stack[b].a))return x;
  z.a=jtnameref(jt,x.a,locsyms); z.t=0; t=jtsfn(jt,0,x.a); u=ttab;
- DO(*ttabi, if(jtequ(jt,t,u->a)){z.t=tsubst&&ttabi0<=i?qq(sc(TC+i),num(-1)):u->t; break;} ++u;);
+ DO(*ttabi, if(jtequ(jt,t,u->a)){z.t=tsubst&&ttabi0<=i?jtqq(jt,sc(TC+i),num(-1)):u->t; break;} ++u;);
  return z;
 }
 

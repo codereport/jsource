@@ -189,7 +189,7 @@ I cachedmmult(J jt,D* av,D* wv,D* zv,I m,I n,I p,I flgs){D c[(CACHEHEIGHT+1)*CAC
  ar=AR(a); at=AT(a); at=AN(a)?at:B01;
  wr=AR(w); wt=AT(w); wt=AN(w)?wt:B01;
  if(((at|wt)&SPARSE)!=0)return jtpdtsp(jt,a,w);  // Transfer to sparse code if either arg sparse
- if(((at|wt)&XNUM+RAT)!=0)return df2(z,a,w,jtatop(jt,slash(ds(CPLUS)),qq(ds(CSTAR),jtv2(jt,1L,AR(w)))));  // On indirect numeric, execute as +/@(*"(1,(wr)))
+ if(((at|wt)&XNUM+RAT)!=0)return df2(z,a,w,jtatop(jt,slash(ds(CPLUS)),jtqq(jt,ds(CSTAR),jtv2(jt,1L,AR(w)))));  // On indirect numeric, execute as +/@(*"(1,(wr)))
  if(B01&(at|wt)&&TYPESNE(at,wt)&&((ar-1)|(wr-1)|(AN(a)-1)|(AN(w)-1))>=0)return jtpdtby(jt,a,w);   // If exactly one arg is boolean, handle separately
  {t=maxtyped(at,wt); if(!TYPESEQ(t,AT(a))){RZ(a=jtcvt(jt,t,a));} if(!TYPESEQ(t,AT(w))){RZ(w=jtcvt(jt,t,w));}}  // convert args to compatible precisions, changing a and w if needed.  B01 if both empty
  ASSERT(t&NUMERIC,EVDOMAIN);
@@ -387,7 +387,7 @@ static A jtdotprod(J jt,A a,A w,A self){A fs,gs;C c;I r;V*sv;
  if((SGNIF(AT(a)&AT(w),B01X)&-AN(a)&-AN(w)&-(FAV(gs)->flag&VISATOMIC2))<0&&CSLASH==ID(fs)&&  // fs is c/
      (c=FAV(FAV(fs)->fgh[0])->id,c==CSTARDOT||c==CPLUSDOT||c==CNE))return ipbx(a,w,c,FAV(gs)->id);  // [+.*.~:]/ . boolean
 r=lr(gs);   // left rank of v
- A z; return df2(z,a,w,jtatop(jt,fs,qq(gs,jtv2(jt,r==RMAX?r:1+r,RMAX))));  // inner product according to the Dic
+ A z; return df2(z,a,w,jtatop(jt,fs,jtqq(jt,gs,jtv2(jt,r==RMAX?r:1+r,RMAX))));  // inner product according to the Dic
 }
 
 
