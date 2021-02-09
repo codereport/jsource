@@ -91,7 +91,7 @@ static Z jtnewt(J jt,I m,Z*a,Z x,I n){I i,j;D e=EPS/1024.0;Z c,p,q,*v;
   DQ(m, p=zplus(*v,ztymes(x,p)); c.re=(D)j--; q=zplus(ztymes(c,*v),ztymes(x,q)); --v;);
   p=zplus(*a,ztymes(x,p));
   if(e>zmag(p)||e>zmag(q))break;
-  x=zminus(x,zdiv(p,q));
+  x=zminus(x,jtzdiv(jt,p,q));
  }
  return x;
 }    
@@ -126,13 +126,13 @@ static Z jtlaguerre(J jt,I m,Z*a,Z x){D ax,e;I i,j;Z b,c,d,dx,g,g2,h,p,q,s,sq,y,
    e=zmag(b)+ax*e;
   }
   if(zmag(b)<=EPS*e)return x;
-  g=zdiv(c,b);
+  g=jtzdiv(jt,c,b);
   g2=ztymes(g,g);
-  h=zminus(g2,zdiv(zplus(d,d),b));
+  h=zminus(g2,jtzdiv(jt,zplus(d,d),b));
   sq=zsqrt(ztymes(zm1,zminus(ztymes(zm,h),g2)));
   p=zplus(g,sq); q=zminus(g,sq); s=zmag(p)>zmag(q)?p:q; 
   y=x;
-  dx=ZNZ(s)?zdiv(zm,s):zpow(znegate(zdiv(a[0],a[m])),zrj0(1.0/(D)m));  // Normal step if s!=0; random step if s=0
+  dx=ZNZ(s)?jtzdiv(jt,zm,s):zpow(znegate(jtzdiv(jt,a[0],a[m])),zrj0(1.0/(D)m));  // Normal step if s!=0; random step if s=0
   x=zminus(x,dx);  // advance to new position
   if(zmag(zminus(x,y))<=EPS*zmag(x))return x;  // if we didn't move much, call it converged.  We hope it's a root.
   // This algorithm is subject to hitting limit cycles (_48 1 0 0 0 1 is an example)
@@ -211,8 +211,8 @@ static A jtrfcz(J jt,I m,A w){A x,y,z;B bb=0,real;D c,d;I i;Z r,*xv,*yv,*zv;
  if(2==m){Z a2,b,c,d,z2={2,0};
   a2=ztymes(z2,xv[2]); b=znegate(xv[1]); c=xv[0]; 
   d=zsqrt(zminus(ztymes(b,b),ztymes(z2,ztymes(a2,c))));
-  r=zdiv(zplus (b,d),a2); zv[0]=newt(m,xv,r,10L);
-  r=zdiv(zminus(b,d),a2); zv[1]=newt(m,xv,r,10L);
+  r=jtzdiv(jt,zplus (b,d),a2); zv[0]=newt(m,xv,r,10L);
+  r=jtzdiv(jt,zminus(b,d),a2); zv[1]=newt(m,xv,r,10L);
  }else{
   for(i=0;i<m;++i){
    r=laguerre(m,xv,laguerre(m-i,yv,zeroZ));

@@ -18,7 +18,7 @@
 #define MINUSPQ(b,r,u,v)  if(b)r=jtqminus(jt,u,v); else r=jtqplus(jt,u,v);
 
 #define DIVPA(b,r,u,v)    r=b?(DIV(u,(D)v)):TYMES(u,v);
-#define DIVPZ(b,r,u,v)    if(b)r=zdiv(u,v); else r=ztymes(u,v);
+#define DIVPZ(b,r,u,v)    if(b)r=jtzdiv(jt,u,v); else r=ztymes(u,v);
 
 // Don't RESTRICT y since function may be called inplace
 #define PREFIXPFX(f,Tz,Tx,pfx,vecfn,retstmt)  \

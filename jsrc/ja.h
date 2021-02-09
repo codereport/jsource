@@ -850,7 +850,7 @@
 #define zconjug(x)                  jtzconjug(jt,(x))
 #define zcos(x)                     jtzcos(jt,(x))
 #define zcosh(x)                    jtzcosh(jt,(x))
-#define zdiv(x,y)                   jtzdiv(jt,(x),(y))
+
 #define zeq(x,y)                    jtzeq(jt,(x),(y))
 #define zexp(x)                     jtzexp(jt,(x))
 #define zfloor(x)                   jtzfloor(jt,(x))

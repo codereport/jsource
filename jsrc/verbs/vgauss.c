@@ -90,7 +90,7 @@ static A jtdetz(J jt, A w){A t;D g,h;I c,d,e,i,j,k,r,*s;Z p,q,*u,*v,*x,*y,z;
   q=x[j]; z=ztymes(z,q);
   for(i=j+1;i<r;++i){
    u=v+c*i;
-   if(ZNZ(u[j])){p=zdiv(u[j],q); for(k=j+1;k<r;++k)u[k]=zminus(u[k],ztymes(p,x[k]));}
+   if(ZNZ(u[j])){p=jtzdiv(jt,u[j],q); for(k=j+1;k<r;++k)u[k]=zminus(u[k],ztymes(p,x[k]));}
  }}
  NAN1; RE(0);
  GAT0(t,CMPX,1,0); ZAV(t)[0]=z; return t;
