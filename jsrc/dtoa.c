@@ -403,7 +403,7 @@ static void d2a_Bfree(struct dtoa_info *d2a, Bigint *v);
 #define Bfree(v)       d2a_Bfree(d2a, v)
 #define multadd(b,m,a) d2a_multadd(d2a, b, m, a)
 #define i2b(i)         d2a_i2b(d2a, i)
-#define jtmult(jt,a,b)      d2a_mult(d2a, a, b)
+#define mult(a,b)      d2a_mult(d2a, a, b)
 #define nrv_alloc(s,rve,n) d2a_nrv_alloc(d2a,s,rve,n)
 #define rv_alloc(n) d2a_rv_alloc(d2a, n)
 #define d2b(d,e,b)  d2a_d2b(d2a,d,e,b)
@@ -763,14 +763,14 @@ d2a_pow5mult
   }
  for(;;) {
   if (k & 1) {
-   b1 = jtmult(jt,b, p5);
+   b1 = mult(b, p5);
    Bfree(b);
    b = b1;
    }
   if (!(k >>= 1))
    break;
   if (!(p51 = p5->next)) {
-   p51 = p5->next = jtmult(jt,p5,p5);
+   p51 = p5->next = mult(p5,p5);
    p51->next = 0;
    }
   p5 = p51;
@@ -1797,7 +1797,7 @@ d2a_dtoa
   if (leftright) {
    if (m5 > 0) {
     mhi = pow5mult(mhi, m5);
-    b1 = jtmult(jt,mhi, b);
+    b1 = mult(mhi, b);
     Bfree(b);
     b = b1;
     }

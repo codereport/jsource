@@ -957,7 +957,7 @@ A jtindexofsub(J jt,I mode,A a,A w){PROLOG(0079);A h=0,hi=mtv,z;B mk=w==mark,th;
    // Dyad where shape of an item of a does not match shape of a cell of w.  Return appropriate not-found
    if((wf-af)>0&&af){f1+=wf-af; wf=af;}  // see below for discussion about long frame in w
    I witems = wr>r?ws[0]:1;  // # items of w, in case we are doing i.&0 eg on result of e., which will have that many items
-   m=acr?as[af]:1; f0=MAX(0,f1); RE(zn=jtmult(jt,jtprod(jt,f,s),jtprod(jt,f0,ws+wf)));
+   m=acr?as[af]:1; f0=MAX(0,f1); RE(zn=mult(jtprod(jt,f,s),jtprod(jt,f0,ws+wf)));
    switch(mode){
     case IIDOT:  
     case IICO:    GATV(z,INT,zn,f+f0,s); if(af)MCISH(f+AS(z),ws+wf,f0); v=AV(z); DQ(zn, *v++=m;); return z;
@@ -999,12 +999,12 @@ A jtindexofsub(J jt,I mode,A a,A w){PROLOG(0079);A h=0,hi=mtv,z;B mk=w==mark,th;
   // Neither arg is empty.  We can safely count the number of cells
   PROD(n,acr-1,as+af+1); k=n*k1; // n=number of atoms in a target item; k=number of bytes in a target item
   PROD(ac,af,as); PROD(wc,wf,ws); PROD(c,f1,ws+wf);  // ?c=#cells in a & w;  c=#target items (and therefore #result values) in a result-cell
-  RE(zn=jtmult(jt,af?ac:wc,c));   // #results is results/cell * number of cells; number of cells comes from ac if a has frame, otherwise w.  If both have frame, a's must be longer, use it
+  RE(zn=mult(af?ac:wc,c));   // #results is results/cell * number of cells; number of cells comes from ac if a has frame, otherwise w.  If both have frame, a's must be longer, use it
   ak=(acr?as[af]*k:k)&REPSGN(1-ac); wk=(c*k)&REPSGN(1-wc);   // # bytes in a cell, but 0 if there are 0 or 1 cells
   if(!af)c=zn;   // if af=0, wc may be >1 if there is w-frame.  In that case, #result/a-cell must include the # w-cells.  This has been included in zn
  }else{
   // An argument is empty.  We must beware of overflow in counting cells.  Just do it the old slow way
-  n=acr?jtprod(jt,acr-1,as+af+1):1; RE(zn=jtmult(jt,jtprod(jt,f,s),jtprod(jt,f1,ws+wf)));
+  n=acr?jtprod(jt,acr-1,as+af+1):1; RE(zn=mult(jtprod(jt,f,s),jtprod(jt,f1,ws+wf)));
   k=n*k1;
   ac=jtprod(jt,af,as); ak=ac?k1*an/ac:0;  // ac = #cells of a
   wc=jtprod(jt,wf,ws); wk=wc?k1*wn/wc:0; c=1<ac?wk/k:zn; wk*=1<wc;
@@ -1023,7 +1023,7 @@ A jtindexofsub(J jt,I mode,A a,A w){PROLOG(0079);A h=0,hi=mtv,z;B mk=w==mark,th;
   case IIDOT: case IFORKEY:
   case IICO:    GATV(z,INT,zn,f+f1,     s); if(af)MCISH(f+AS(z),ws+wf,f1); break;
   case INUBSV:  GATV(z,B01,zn,f+f1+!acr,s); if(af)MCISH(f+AS(z),ws+wf,f1); if(!acr)*(AS(z)+AR(z)-1)=1; break;
-  case INUB:    q=m+1; GA(z,t,jtmult(jt,q,aii(a)),MAX(1,wr),ws); *AS(z)=q; break;  // +1 because we speculatively overwrite.  Was MIN(m,p) but we don't have the range yet
+  case INUB:    q=m+1; GA(z,t,mult(q,aii(a)),MAX(1,wr),ws); *AS(z)=q; break;  // +1 because we speculatively overwrite.  Was MIN(m,p) but we don't have the range yet
   case ILESS:   GA(z,t,AN(w),MAX(1,wr),ws); break;
   case IEPS:    GATV(z,B01,zn,f+f1,     s); if(af)MCISH(f+AS(z),ws+wf,f1); break;
   case INUBI:   q=m+1; GATV0(z,INT,q,1); break;  // +1 because we speculatively overwrite  Was MIN(m,p) but we don't have the range yet

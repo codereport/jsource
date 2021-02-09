@@ -698,7 +698,7 @@ static B (*grroutine[])(J,I,I,I,A,I*) = {  // index is [bitx]
   PROD(m,f,s); PROD1(ai,r-1,f+s+1); c=ai*n; zn=m*n;
  }else{
   // empty w.  The number of cells may overflow, but reshape will catch that
-  RE(zn=jtmult(jt,jtprod(jt,f,s),n));
+  RE(zn=mult(jtprod(jt,f,s),n));
  }
  // allocate the entire result area, one int per item in each input cell
  GATV(z,INT,zn,1+f,s); if(!r)AS(z)[f]=1;
