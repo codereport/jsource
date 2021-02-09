@@ -11,7 +11,7 @@
 #define dplus(x,y)     (x+y)
 #define dtymes(x,y)    (x*y)
 #define dnegate(x)     (-x)
-#define QNEGATE(x)     (qminus(zeroQ,x))
+#define QNEGATE(x)     (jtqminus(jt,zeroQ,x))
 
 //CFR macro uses fplus, ftymes, fnegate and as an argument.
 #define ftymes(x,y)    jtftymes(jt,(x),(y))
@@ -186,7 +186,7 @@ static B jtrfcq(J jt,I m,A w,A*zz,A*ww){A q,x,y,z;B b;I i,j,wt;Q*qv,rdx,rq,*wv,*
    // Try adjusting the numerator of the Laguerre result by +-1, and see if they work
    q1=rq; q1.n=iv1;
    rq=qplus (rq,q1); while(deflateq(1,m-j,qv,rq)){*zv++=rq; ++j; b=1;}
-   rq=qminus(rq,q1); while(deflateq(1,m-j,qv,rq)){*zv++=rq; ++j; b=1;}
+   rq=jtqminus(jt,rq,q1); while(deflateq(1,m-j,qv,rq)){*zv++=rq; ++j; b=1;}
   }
   // If we found a root, refresh the copies of the complex versions, and account for the roots we have found
   if(b){AN(q)=AS(q)[0]=1+m-j; rdx=jtmaxdenom(jt,1+m-j,qv); RZ(y=jtcvt(jt,CMPX,q)); yv=ZAV(y); i=j;}

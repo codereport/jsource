@@ -55,7 +55,7 @@ static Q jtqrem(J jt,Q a,Q w){PROLOG(0087);I c,d;Q m,q,z;
  if(c==XNINF)return 0>=d?w:a;
  q=jtqdiv(jt,w,a);
  m.n=xtymes(a.n,xdiv(q.n,q.d,XMFLR)); m.d=a.d;
- z=qminus(w,m);
+ z=jtqminus(jt,w,m);
  QEPILOG(z);
 }
 
