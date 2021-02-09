@@ -215,8 +215,9 @@ D jtremdd(J jt,D a,D b){D q,x,y;
 #define remdd(x,y)                  jtremdd(jt,(x),(y))
 APFX(remDD, D,D,D, remdd,,HDR1JERR)
 #undef remdd
+#define zrem(x,y)                   jtzrem(jt,(x),(y))
 APFX(remZZ, Z,Z,Z, zrem ,,HDR1JERR)
-
+#undef zrem
 I jtremid(J jt,I a,D b){D r;I k;
  ASSERT(a&&-9e15<b&&b<9e15,EWOV);
  r=b-a*jfloor(b/a); k=(I)r;
