@@ -816,7 +816,7 @@
 #define xcompare(x,y)               jtxcompare(jt,(x),(y)) // used in multiple macros in multiple files.
 
 #define xint(x)                     jtxint(jt,(x))
-#define xlcm(x,y)                   jtxlcm(jt,(x),(y))
+
 #define xlog1(x)                    jtxlog1(jt,(x))
 #define xlogabs(x)                  jtxlogabs(jt,(x))
 #define xlogd1(x)                   jtxlogd1(jt,(x))

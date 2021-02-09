@@ -61,7 +61,7 @@ static Q jtqrem(J jt,Q a,Q w){PROLOG(0087);I c,d;Q m,q,z;
 
 static Q jtqgcd(J jt,Q a,Q w){PROLOG(0088);Q z;
  QRE(z.n=rifvsdebug(jtxgcd(jt,a.n,w.n)));
- QRE(z.d=rifvsdebug(xlcm(a.d,w.d)));
+ QRE(z.d=rifvsdebug(jtxlcm(jt,a.d,w.d)));
  QEPILOG(z);
 }
 
