@@ -16,8 +16,6 @@
 #define __GNUC_PATCHLEVEL__ 1
 #endif
 
-#include <memory.h>
-#include <sys/types.h>
 
 #include <stdint.h>
 #include <float.h>

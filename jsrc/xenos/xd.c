@@ -4,7 +4,6 @@
 /* Xenos: file directory, attributes, & permission                         */
 
 
-#include <sys/types.h>
 #include <unistd.h>
 
 #include "j.h"

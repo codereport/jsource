@@ -3,9 +3,6 @@
 /*                                                                         */
 /* Xenos aka Foreign: External, Experimental, & Extra                      */
 
-#include <sys/types.h>
-#include <unistd.h>
-
 #include "j.h"
 #include "x.h"
 
