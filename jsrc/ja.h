@@ -99,7 +99,7 @@
 #define cut2bx(x,y,z)               jtcut2bx(jt,(x),(y),(z))
 #define cut2sx(x,y,z)               jtcut2sx(jt,(x),(y),(z))
 #define cvt0(x)                     jtcvt0(jt,(x))
-#define cvz(x,y)                    jtcvz(jt,(x),(y))
+
 #define daxis(x,y)                  jtdaxis(jt,(x),(y))
 #define dbin(x,y)                   jtdbin(jt,(x),(y))
 #define dbjump(x)                   jtdbjump(jt,(x))
