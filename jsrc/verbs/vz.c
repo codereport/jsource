@@ -102,7 +102,7 @@ B jtzeq(J jt,Z u,Z v){D a=u.re,b=u.im,c=v.re,d=v.im,p,q;
 
  Z jtzgcd(J jt,Z u,Z v){D a,b;Z t,z;I lim;
  ZASSERT(!(ZINF(u)||ZINF(v)),EVNAN);
- for(lim=2048; lim>0&&ZNZ(u); --lim){t=zrem(u,v); v.re=u.re; v.im=u.im; u.re=t.re; u.im=t.im;}  // max # iters is log(MAXFLOAT)/log(phi)
+ for(lim=2048; lim>0&&ZNZ(u); --lim){t=jtzrem(jt,u,v); v.re=u.re; v.im=u.im; u.re=t.re; u.im=t.im;}  // max # iters is log(MAXFLOAT)/log(phi)
  if(lim==0)return zeroZ;  // if Euclid failed, return 0j0
  z.re=a=v.re; z.im=b=v.im;
  switch(2*(I )(0>a)+(I )(0>b)){
