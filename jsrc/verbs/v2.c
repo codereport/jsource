@@ -295,7 +295,7 @@ static B jtspspx(J jt,I b,I n,I d,I h){I ai,n1;X a,ox,xn;
  ai=xint(a);
  if(ai==1||ai==n1)return 1;
  xn=xc(n);
- DQ(h-1, a=jtxrem(jt,xn,xtymes(a,a)); if(xint(a)==n1)return 1;);
+ DQ(h-1, a=jtxrem(jt,xn,jtxtymes(jt,a,a)); if(xint(a)==n1)return 1;);
  return 0;
 }
 

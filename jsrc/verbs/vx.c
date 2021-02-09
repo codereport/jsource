@@ -178,7 +178,7 @@ X jtxdiv(J jt,X a,X w,I mode){PROLOG(0096);B di;I an,*av,c,c0,d,e,k,s,u[2],u1,wn
    if(1<wn)d=wv[wn-2]+d*XBASE;
    e=c>=d?c/d:(I)((XBASE*(D)c)/d); u[0]=e%XBASE; u[1]=u1=e/XBASE;
    RZ(q=vec(INT,u1?2L:1L,u));
-   RZ(y=xtymes(w,q)); yn=AN(y); e=AV(y)[yn-1];
+   RZ(y=jtxtymes(jt,w,q)); yn=AN(y); e=AV(y)[yn-1];
    k=c0>=e?c0/e:e/c0;
    k=(k>3)+(k>32)+(k>316)+(k>3162);
    s=XBASEN*(an-yn)+(c0>=e?k:-k);
@@ -199,7 +199,7 @@ X jtxdiv(J jt,X a,X w,I mode){PROLOG(0096);B di;I an,*av,c,c0,d,e,k,s,u[2],u1,wn
   case 0:  return rifvsdebug(negate(jtxrem(jt,negate(a),negate(w))));
   case 1:  y=jtxrem(jt,negate(a),w); return rifvsdebug(jtxcompare(jt,y,iv0)? jtxplus(jt,a,y):y);
   case 2:  y=jtxrem(jt,a,negate(w)); return rifvsdebug(jtxcompare(jt,y,iv0)?jtxminus(jt,a,y):y);
-  default: return rifvsdebug(0<=(e=jtxcompare(jt,a,w)) ? (e?w:iv0) : jtxminus(jt,w,xtymes(a,xdiv(w,a,XMFLR))));
+  default: return rifvsdebug(0<=(e=jtxcompare(jt,a,w)) ? (e?w:iv0) : jtxminus(jt,w,jtxtymes(jt,a,xdiv(w,a,XMFLR))));
 }}
 
  X jtxgcd(J jt,X a,X w){I c,d;X p,q,t;
@@ -218,14 +218,14 @@ X jtxdiv(J jt,X a,X w,I mode){PROLOG(0096);B di;I an,*av,c,c0,d,e,k,s,u[2],u1,wn
  return rifvsdebug(q);
 }
 
- X jtxlcm(J jt,X a,X w){return rifvsdebug(xtymes(a,xdiv(w,jtxgcd(jt,a,w),XMEXACT)));}
+ X jtxlcm(J jt,X a,X w){return rifvsdebug(jtxtymes(jt,a,xdiv(w,jtxgcd(jt,a,w),XMEXACT)));}
 
 static X jtxexp(J jt,X w,I mode){I k,m;X s,y;
  k=XDIG(w);
  ASSERT(!k||mode!=XMEXACT,EWIRR);
  if(0>k)return rifvsdebug(xc(mode));
  m=(I)(2.718281828*xint(w)); k=2; s=jtxplus(jt,iv1,w); y=w;
- DQ(m, y=xtymes(y,w); s=jtxplus(jt,xtymes(s,xc(k)),y); ++k;);
+ DQ(m, y=jtxtymes(jt,y,w); s=jtxplus(jt,jtxtymes(jt,s,xc(k)),y); ++k;);
  return rifvsdebug(xdiv(s,jtxev1(jt,apv(1+m,1L,1L),"*/"),mode));
 }
 
@@ -250,20 +250,20 @@ static X jtxexp(J jt,X w,I mode){I k,m;X s,y;
  if(!m||1>jtxcompare(jt,w,xc(IMAX))){
   ASSERT(m||2>=AN(w),EVLIMIT);
   RE(e=xint(w));
-  if(m)while(e){if(1&e)RZ(z=jtxrem(jt,m,xtymes(z,t))); RZ(t=jtxrem(jt,m,xsq(t))); e>>=1;}
-  else while(e){if(1&e)RZ(z=       xtymes(z,t) ); RZ(t=       xsq(t) ); e>>=1;}
+  if(m)while(e){if(1&e)RZ(z=jtxrem(jt,m,jtxtymes(jt,z,t))); RZ(t=jtxrem(jt,m,xsq(t))); e>>=1;}
+  else while(e){if(1&e)RZ(z=       jtxtymes(jt,z,t) ); RZ(t=       xsq(t) ); e>>=1;}
  }else{B b;I n,*u,*v;X e;
   RZ(e=ca(w)); n=AN(e); v=AV(e);
   while(n){
-   if(1&*v)RZ(z=jtxrem(jt,m,xtymes(z,t)));
-   RZ(t=jtxrem(jt,m,xtymes(t,t)));
+   if(1&*v)RZ(z=jtxrem(jt,m,jtxtymes(jt,z,t)));
+   RZ(t=jtxrem(jt,m,jtxtymes(jt,t,t)));
    b=1; c=0; u=v+n;
    DQ(n, d=c+*--u; c=1&d?XBASE:0; *u=d>>1; if(b&=!*u)--n;);  /* e=.<.e%2 */
  }}
  EPILOGNOVIRT(z);
 }
 
- X jtxsq(J jt,    X w){return xtymes(w,w);}
+ X jtxsq(J jt,    X w){return jtxtymes(jt,w,w);}
 
  X jtxsqrt(J jt,    X w){I c,m,n,p,q,*wv;X e,x;
  n=AN(w); wv=AV(w); c=wv[n-1];

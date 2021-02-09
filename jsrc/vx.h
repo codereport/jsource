@@ -13,7 +13,7 @@
 #define XMAX(x,y)       (1==jtxcompare(jt,x,y)?x:y)
 #define XMIN(x,y)       (1==jtxcompare(jt,x,y)?y:x)
 #define XDIV(x,y)       xdiv(x,y,jt->xmode)
-#define XCUBE(x)        xtymes(x,xtymes(x,x))
+#define XCUBE(x)        jtxtymes(jt,x,jtxtymes(jt,x,x))
 
 /* values for jt->xmode */
 

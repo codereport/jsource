@@ -23,26 +23,26 @@
 }
 
  Q jtqplus(J jt,Q a,Q w){PROLOG(0083);Q z;
- z.n=rifvsdebug(jtxplus(jt,xtymes(a.n,w.d),xtymes(w.n,a.d)));
- z.d=rifvsdebug(xtymes(a.d,w.d));
+ z.n=rifvsdebug(jtxplus(jt,jtxtymes(jt,a.n,w.d),jtxtymes(jt,w.n,a.d)));
+ z.d=rifvsdebug(jtxtymes(jt,a.d,w.d));
  QEPILOG(z);
 }
 
  Q jtqminus(J jt,Q a,Q w){PROLOG(0084);Q z;
- z.n=rifvsdebug(jtxminus(jt,xtymes(a.n,w.d),xtymes(w.n,a.d)));
- z.d=rifvsdebug(xtymes(a.d,w.d));
+ z.n=rifvsdebug(jtxminus(jt,jtxtymes(jt,a.n,w.d),jtxtymes(jt,w.n,a.d)));
+ z.d=rifvsdebug(jtxtymes(jt,a.d,w.d));
  QEPILOG(z);
 }
 
  Q jtqtymes(J jt,Q a,Q w){PROLOG(0085);Q z;
- z.n=rifvsdebug(xtymes(a.n,w.n));
- z.d=rifvsdebug(xtymes(a.d,w.d));
+ z.n=rifvsdebug(jtxtymes(jt,a.n,w.n));
+ z.d=rifvsdebug(jtxtymes(jt,a.d,w.d));
  QEPILOG(z);
 }
 
  Q jtqdiv(J jt,Q a,Q w){PROLOG(0086);Q z;
- z.n=rifvsdebug(xtymes(a.n,w.d)); 
- z.d=rifvsdebug(xtymes(a.d,w.n));
+ z.n=rifvsdebug(jtxtymes(jt,a.n,w.d)); 
+ z.d=rifvsdebug(jtxtymes(jt,a.d,w.n));
  QEPILOG(z);
 }
 
@@ -54,7 +54,7 @@ static Q jtqrem(J jt,Q a,Q w){PROLOG(0087);I c,d;Q m,q,z;
  if(c==XPINF)return 0<=d?w:a;
  if(c==XNINF)return 0>=d?w:a;
  q=jtqdiv(jt,w,a);
- m.n=xtymes(a.n,xdiv(q.n,q.d,XMFLR)); m.d=a.d;
+ m.n=jtxtymes(jt,a.n,xdiv(q.n,q.d,XMFLR)); m.d=a.d;
  z=jtqminus(jt,w,m);
  QEPILOG(z);
 }

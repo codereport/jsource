@@ -837,7 +837,7 @@
 #define xsq(x)                      jtxsq(jt,(x))
 #define xsqrt(x)                    jtxsqrt(jt,(x))
 #define xstd(x)                     jtxstd(jt,(x))/*  */
-#define xtymes(x,y)                 jtxtymes(jt,(x),(y))
+
 #define zacos(x)                    jtzacos(jt,(x))
 #define zacosh(x)                   jtzacosh(jt,(x))
 #define zarc(x)                     jtzarc(jt,(x))
