@@ -514,7 +514,7 @@
 
 
 
-#define qlcm(x,y)                   jtqlcm(jt,(x),(y))
+
 #define qlogd1(x)                   jtqlogd1(jt,(x))
 #define qlogz1(x)                   jtqlogz1(jt,(x))
 #define qminus(x,y)                 jtqminus(jt,(x),(y))
