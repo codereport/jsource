@@ -734,8 +734,8 @@ static X jtxranddot(J jt,X x){PROLOG(0090);A q,z;B b=1;I j,m,n,*qv,*xv,*zv;
  EPILOG(z);
 }    /* ?x where x is a single strictly positive extended integer */
 
-#undef rollxnum
-#define rollxnum(w) jtrollxnumdot(jt,(w))
+
+
 static A jtrollxnumdot(J jt, A w){A z;B c=0;I d,n;X*u,*v,x;
  if(!(AT(w)&XNUM))RZ(w=jtcvt(jt,XNUM,w));  // convert rational to numeric
  n=AN(w); v=XAV(w);
@@ -822,14 +822,14 @@ static A jtrollanydot(J jt,A w,B*b){A z;D*u;I j,m1,n,sh,*v;UI m,mk,s,t,x=jt->rng
  *b=1; return z;
 }    /* ?s$x where x can be anything and 1<#x */
 
-#undef roll
-#define roll(w) jtrolldot(jt,(w))
+
+
 static A jtrolldot(J jt, A w){A z;B b=0;I m,wt;
  wt=AT(w);
  ASSERT(wt&DENSE,EVDOMAIN);
  if(!AN(w)){GATV(z,B01,0,AR(w),AS(w)); return z;}
  if(wt&B01)return rollbool(w);
- if(wt&XNUM+RAT)return rollxnum(w);
+ if(wt&XNUM+RAT)return jtrollxnumdot(jt,w);
  RZ(w=vi(w)); m=AV(w)[0];
  if(    2==m)RZ(z=jtroll2dot(jt,w,&b));
  if(!b&&0!=m)RZ(z=jtrollnot0(jt,w,&b));
@@ -874,9 +874,9 @@ static A jtdealdot(J jt,A a,A w){A h,y,z;I at,d,*hv,i,i1,j,k,m,n,p,q,*v,wt,*yv,*
                      jt->rngV[GBI]=jt->rngfxsv; rngselects(sc(GBI)); gb_init(16807);}
 #define FXSOD       {jt->rngV[GBI]=v; jt->rngI[GBI]=jt->rngi=i; rngselects(sc(j));}
 
- A jtrollx  (J jt, A w){FXSDECL;                 FXSDO; z=roll(w);         FXSOD; return z;}
+ A jtrollx  (J jt, A w){FXSDECL;                 FXSDO; z=jtrolldot(jt,w);         FXSOD; return z;}
  A jtdealx  (J jt,A a,A w){FXSDECL; F2RANK(0,0,jtdealx,UNUSED_VALUE); FXSDO; z=jtdealdot(jt,a,w);       FXSOD; return z;}
- A jtrollkx(J jt,A a,A w,A self){FXSDECL;        FXSDO; z=rollkdot(a,w,self); FXSOD; return z;}
+ A jtrollkx(J jt,A a,A w,A self){FXSDECL;        FXSDO; z=jtrollkdot(jt,a,w,self); FXSOD; return z;}
 
 
 /*
