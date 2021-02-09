@@ -49,8 +49,9 @@ AMON(logD,   D,D, ASSERTWR(0<=*x,EWIMAG); *z=log(   *x);)
 #define intpow(x,y)                 jtintpow(jt,(x),(y))
 APFX(powDI, D,D,I, intpow,,HDR1JERR)
 #undef intpow
+#define pospow(x,y)                 jtpospow(jt,(x),(y))
 APFX(powDD, D,D,D, pospow,,HDR1JERR)
-
+#undef pospow
 AMON(expI,   D,I, *z=*x<EMIN?0.0:EMAX<*x?inf:exp((D)*x);)
 AMON(logI,   D,I, ASSERTWR(0<=*x,EWIMAG); *z=log((D)*x);)
 
