@@ -636,7 +636,7 @@ static A jtrollany(J jt,A w,B*b){A z;D*u;I j,m1,n,sh,*v;UI m,mk,s,t,x=jt->rngM[j
  RZ(w=vi(w)); m=AV(w)[0];
  if(    2==m)RZ(z=jtroll2(jt,w,&b));
  if(!b&&0!=m)RZ(z=jtrollnot0(jt,w,&b));
- if(!b      )RZ(z=rollany (w,&b));
+ if(!b      )RZ(z=jtrollany(jt,w,&b));
  return z&&!(FL&AT(z))&&wt&XNUM+RAT?xco1(z):z;
 }
 
@@ -810,7 +810,7 @@ static A jtrollnot0dot(J jt,A w,B*b){A z;I j,m1,n,*u,*v;UI m,s,t,x=jt->rngM[jt->
 }    /* ?n$x where x is not 0, maybe */
 
 #undef rollany
-#define rollany(w,b) jtrollanydot(jt,(w),(b))
+#define jtrollany(jt,w,b) jtrollanydot(jt,(w),(b))
 static A jtrollanydot(J jt,A w,B*b){A z;D*u;I j,m1,n,sh,*v;UI m,mk,s,t,x=jt->rngM[jt->rng];
  *b=0; n=AN(w); v=AV(w); INITD;
  GATV(z,FL,n,AR(w),AS(w)); u=DAV(z);
@@ -833,7 +833,7 @@ static A jtrolldot(J jt, A w){A z;B b=0;I m,wt;
  RZ(w=vi(w)); m=AV(w)[0];
  if(    2==m)RZ(z=jtroll2dot(jt,w,&b));
  if(!b&&0!=m)RZ(z=jtrollnot0(jt,w,&b));
- if(!b      )RZ(z=rollany (w,&b));
+ if(!b      )RZ(z=jtrollany(jt,w,&b));
  return z&&!(FL&AT(z))&&wt&XNUM+RAT?xco1(z):z;
 }
 
