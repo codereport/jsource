@@ -3,8 +3,6 @@
 /*                                                                         */
 /* Definitions for jt ("jthis")                                            */
 
-#include <sys/stat.h>
-
 /*
 All allocated and variable data for a J instance is accessed through its JST structure.
 
