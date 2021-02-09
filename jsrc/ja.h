@@ -144,7 +144,7 @@
 #define dx_next30()                 jtdx_next30(jt)
 #define eachl(x,y,z)                jteachl(jt,(x),(y),(z))
 #define ebarprep(x0,x1,x2,x3,x4)    jtebarprep(jt,(x0),(x1),(x2),(x3),(x4))
-#define ebarvec(x,y)                jtebarvec(jt,(x),(y))
+
 #define ecvt(x0,x1,x2,x3,x4)        jtecvt(jt,(x0),(x1),(x2),(x3),(x4))
 #define efflev(x,y,z)               jtefflev(jt,(x),(y),(z))
 #define efr(z,ar,r)                 (z = ((r)>(ar)?(ar):(r))+(REPSGN(r)&(ar)), z=(z<0)?0:z)  // effective rank: ar is rank of argument, r is rank of verb (may be negative), z becomes rank of argument cell
