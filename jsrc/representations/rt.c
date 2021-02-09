@@ -48,7 +48,7 @@ static A jtgraft(J jt, A w){A p,q,t,*u,x,y,z,*zv;C*v;I d,j,k,m,n,*pv,*s,xn,*xv,y
  GATV0(z,BOX,yn,1); zv=AAV(z);
  u=AAV(w);
  for(j=0;j<yn;++j){
-  RE(k=mult(m,yv[j])); GATV0(q,LIT,k,2); s=AS(q); *s=m; *++s=yv[j];
+  RE(k=jtmult(jt,m,yv[j])); GATV0(q,LIT,k,2); s=AS(q); *s=m; *++s=yv[j];
   v=CAV(q); memset(v,' ',AN(q));
   pv[1]=yv[j]; k=j-yn; DO(xn, *pv=xv[i]; RE(v+=pad(p,u[k+=yn],v)););
   zv[j]=incorp(q);
@@ -67,7 +67,7 @@ static A jtgraft(J jt, A w){A p,q,t,*u,x,y,z,*zv;C*v;I d,j,k,m,n,*pv,*s,xn,*xv,y
 }
 
 static A jtcenter(J jt,A a,I j,I k,I m){A z;C*x;I n,*s,zn;
- n=AN(a); RE(zn=mult(m,n)); GATV0(z,LIT,zn,2); s=AS(z); *s=m; *++s=n;
+ n=AN(a); RE(zn=jtmult(jt,m,n)); GATV0(z,LIT,zn,2); s=AS(z); *s=m; *++s=n;
  x=CAV(z); memset(x,' ',AN(z)); memcpy(x+n*(j+((m-(j+k))>>1)),AV(a),n);
  return z;
 }
@@ -95,7 +95,7 @@ static A jttconnect(J jt, A w){A*wv,x,y,z;B b,d;C c,*u,*xv,*yv,*zv;I e,i,j,m,n,p
  if(!w) return 0;
  n=AN(w); wv=AAV(w); y=wv[0]; m=AS(y)[0];
  e=0; DO(n,e+=*(1+AS(wv[i])););
- RE(zn=mult(m,e)); GATVR(z,LIT,zn,2,AS(y)); AS(z)[1]=e; zv=CAV(z);
+ RE(zn=jtmult(jt,m,e)); GATVR(z,LIT,zn,2,AS(y)); AS(z)[1]=e; zv=CAV(z);
  for(i=0;i<n;++i){
   y=wv[i]; q=*(1+AS(y)); yv=CAV(y);
   if(i){

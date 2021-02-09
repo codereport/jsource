@@ -204,7 +204,7 @@ static A jtrep1s(J jt,A a,A w,I wf,I wcr){A ax,e,x,y,z;B*b;I c,d,cd,j,k,m,n,p,q,
  if(AT(a)&SCMPX)return rep1d(denseit(a),w,wf,wcr);
  RE(rep1sa(a,&c,&d)); cd=c+d;
  if(DENSE&AT(w))return rep1d(d?jtjdot2(jt,sc(c),sc(d)):sc(c),w,wf,wcr);  // here if dense w
- wr=AR(w); ws=AS(w); n=wcr?*(wf+ws):1; RE(m=mult(n,cd));
+ wr=AR(w); ws=AS(w); n=wcr?*(wf+ws):1; RE(m=jtmult(jt,n,cd));
  wp=PAV(w); e=SPA(wp,e); ax=SPA(wp,a); y=SPA(wp,i); x=SPA(wp,x);
  GASPARSE(z,AT(w),1,wr+!wcr,ws); *(wf+AS(z))=m; zp=PAV(z);
  RE(b=bfi(wr,ax,1));
