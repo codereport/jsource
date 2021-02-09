@@ -15,8 +15,6 @@
 #define XDIV(x,y)       xdiv(x,y,jt->xmode)
 #define XCUBE(x)        xtymes(x,xtymes(x,x))
 
-
-
 /* values for jt->xmode */
 
 #define XMFLR           0                    /* floor,   round down        */
@@ -24,14 +22,10 @@
 #define XMEXACT         2                    /* exact, error if impossible */
 #define XMEXMT          3                    /* exact, empty if impossible */
 
-
-extern X jtxfact(J jt,    X w);
 extern X jtxsgn(J jt,    X w);
 extern X jtxsq(J jt,    X w);
 extern X jtxsqrt(J jt,    X w);
 extern X jtxstd(J jt,    X w);
-
-extern X jtxbin(J jt,X a,X w);
 extern X jtxgcd(J jt,X a,X w);
 extern X jtxlcm(J jt,X a,X w);
 extern X jtxminus(J jt,X a,X w);

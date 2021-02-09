@@ -169,9 +169,6 @@ NB. funny business if moved as doubles
 (3 2$_834524)    -: 1 0 1 0 1 # 5 2$_834524
 (3 8$240 255{a.) -: 1 0 1 0 1 # 5 8$240 255{a.
 
-(<'NaN error') = ! etx&.>/~ pinf
-(<'NaN error') = ! etx&.>/~ ninf
-
 8  -: (3!:0) _.
 16 -: (3!:0) _. 3j4
 

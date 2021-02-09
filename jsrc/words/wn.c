@@ -10,9 +10,8 @@
 /* numd    floating point number (double)                      */
 /* numj    complex number                                      */
 /* numx    extended precision integer                          */
-/* nume    extended precision floating point number (not used) */
 /* numr    rational number                                     */
-/* numq    nume or numr                                        */
+/* numq    nume (extended) or numr                             */
 /* numbpx  3b12 or 3p12 or 3x12 number                         */
 /*                                                             */
 /* numb    subfunction of numbpx                               */
@@ -72,27 +71,6 @@ static B jtnumx(J jt,I n,C*s,void*vv){A y;B b,c;C d;I j,k,m,*yv;X*v;
  return 1;
 }
 
-static X jtx10(J jt,I e){A z;I c,m,r,*zv;
- m=1+e/XBASEN; r=e%XBASEN;
- GATV0(z,INT,m,1); zv=AV(z);
- DQ(m-1, *zv++=0;);
- c=1; DQ(r, c*=10;); *zv=c;
- return z;
-}     /* 10^e as a rational number */
-
-static B jtnume(J jt,I n,C*s,void*vv){C*t,*td,*te;I e,ne,nf,ni;Q f,i,*v,x,y;
- v=(Q*)vv;
- nf=0; i.d=iv1; f.d=iv1;
- if(te=memchr(s,'e',n)){ne=n-(te-s)-1; e=strtoI(1+te,(char**)&t,10);  if(!(!*t&&10>ne))return 0;}
- if(td=memchr(s,'.',n)){nf=te?(te-td)-1:n-(td-s)-1; if(nf)if(!(numx(nf,td+1,&f.n)))return 0;}
- ni=td?td-s:te?te-s:n; if(!(numx(ni,s,&i.n)))return 0;
- x=i;
- if(nf){y.n=iv1; y.d=x10(nf); RE(x='-'==*s?qminus(x,qtymes(f,y)):qplus(x,qtymes(f,y)));}
- if(te){if(0>e){y.n=iv1; y.d=x10(-e);}else{y.n=x10(e); y.d=iv1;} RE(x=qtymes(x,y));}
- *v=x;
- return 1;
-}
-
 static B jtnumr(J jt,I n,C*s,void*vv){C c,*t;I m,p,q;Q*v;
  v=(Q*)vv;
  m=(t=memchr(s,'r',n))?t-s:n; if(!(numx(m,s,&v->n)))return 0; v->d=iv1;
@@ -106,9 +84,10 @@ static B jtnumr(J jt,I n,C*s,void*vv){C c,*t;I m,p,q;Q*v;
  return 1;
 }
 
-static B jtnumq(J jt,I n,C*s,void*vv){B b=0;C c,*t;
- t=s; DQ(n, c=*t++; if(c=='e'||c=='.'){b=1; break;});
- return b?nume(n,s,vv):numr(n,s,vv);
+static B jtnumq(J jt,I n,C*s,void*vv){
+  B b=0;C c,*t;
+ t=s; DQ(n, c=*t++; );
+ return numr(n,s,vv);
 }
 
 static const Z zpi={PI,0};

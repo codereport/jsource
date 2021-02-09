@@ -117,16 +117,10 @@ A jtlogar2(J jt,A a,A w){
     
  A jtroot(J jt,A a,A w){A z;I t;
  RE(t=maxtype(AT(a),AT(w)));
- A ma=a; if(TYPESNE(t,AT(a)))RZ(ma=jtcvt(jt,t,a));
- A mw=w; if(TYPESNE(t,AT(w)))RZ(mw=jtcvt(jt,t,w));
- if(!(t&XNUM))return expn2(mw,recip(ma));  // not inplaceable - could be IMAG
- z=rank2ex0(ma,mw,UNUSED_VALUE,jtxroota);
- switch(jt->jerr){
-  case EWIMAG: RESETERR; return expn2(jtcvt(jt,CMPX,w),recip(jtcvt(jt,CMPX,a)));
-  case EWRAT: 
-  case EWIRR:  RESETERR; return expn2(jtcvt(jt,FL,  w),recip(jtcvt(jt,FL,  a)));
-  default:     return z;
-}}
+ A ma=a; if(TYPESNE(t,AT(a)))RZ(ma=jtcvt(jt, t,a));
+ A mw=w; if(TYPESNE(t,AT(w)))RZ(mw=jtcvt(jt, t,w));
+ return expn2(mw,recip(ma));  // not inplaceable - could be IMAG
+}
 
  A jtjdot1(J jt, A w){return tymes(a0j1,w);}
  A jtjdot2(J jt,A a,A w){return plus(a,tymes(a0j1,w));}
