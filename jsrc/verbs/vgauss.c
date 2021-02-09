@@ -85,12 +85,12 @@ static A jtdetz(J jt, A w){A t;D g,h;I c,d,e,i,j,k,r,*s;Z p,q,*u,*v,*x,*y,z;
   DO(r-j, k=i; DO(c-j, g=ZABT(*u); if(h<g){h=g; d=j+k; e=j+i;} ++u;); u+=j;);  /* find pivot, maximum abs element */
   if(h==inf)return mark;
   if(0==h)return scf(0.0);
-  if(j!=d){u=v+c*d;              DO(c-j, q=u[j+i]; u[j+i]=x[j+i]; x[j+i]=q;); z=zminus(zeroZ,z);}  /* interchange rows j and d */
-  if(j!=e){u=v+c*j+e; y=v+c*j+j; DQ(r-j, q=*u; *u=*y; *y=q; u+=c; y+=c;);     z=zminus(zeroZ,z);}  /* interchange cols j and e */
+  if(j!=d){u=v+c*d;              DO(c-j, q=u[j+i]; u[j+i]=x[j+i]; x[j+i]=q;); z=jtzminus(jt,zeroZ,z);}  /* interchange rows j and d */
+  if(j!=e){u=v+c*j+e; y=v+c*j+j; DQ(r-j, q=*u; *u=*y; *y=q; u+=c; y+=c;);     z=jtzminus(jt,zeroZ,z);}  /* interchange cols j and e */
   q=x[j]; z=ztymes(z,q);
   for(i=j+1;i<r;++i){
    u=v+c*i;
-   if(ZNZ(u[j])){p=jtzdiv(jt,u[j],q); for(k=j+1;k<r;++k)u[k]=zminus(u[k],ztymes(p,x[k]));}
+   if(ZNZ(u[j])){p=jtzdiv(jt,u[j],q); for(k=j+1;k<r;++k)u[k]=jtzminus(jt,u[k],ztymes(p,x[k]));}
  }}
  NAN1; RE(0);
  GAT0(t,CMPX,1,0); ZAV(t)[0]=z; return t;

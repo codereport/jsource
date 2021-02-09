@@ -50,7 +50,7 @@ static Z jtzgrecur(J jt,Z z){Z t;
 
 static Z jtzgauss(J jt,D n,Z z){D d=1/n;Z p,t;
  if(1>=n)return zgrecur(z);
- p=ztymes(zpow(zrj0(2*PI),zrj0((1-n)/2)),zpow(zrj0(n),zminus(z,zrj0(0.5))));
+ p=ztymes(zpow(zrj0(2*PI),zrj0((1-n)/2)),zpow(zrj0(n),jtzminus(jt,z,zrj0(0.5))));
  t=jtzdiv(jt,z,zrj0(n));
  DQ((I)n, p=ztymes(p,zgrecur(t)); t.re+=d;);
  return p;
@@ -117,7 +117,7 @@ static D ibin(D x,D y){D d=MIN(x,y-x),p=1;
 static Z jtzbin(J jt,Z x,Z y){Z a,b,c;
  a=zgamma(zplus(z1,y));
  b=zgamma(zplus(z1,x));
- c=zgamma(zplus(z1,zminus(y,x)));
+ c=zgamma(zplus(z1,jtzminus(jt,y,x)));
  return jtzdiv(jt,a,ztymes(b,c));
 }
 
@@ -143,7 +143,7 @@ D jtbindd(J jt,D x,D y){B id,ix,iy;D d;
 
 static Z jtbinzz(J jt,Z x,Z y){B id,ix,iy;D rd,rx,ry;Z d;
  if(!x.im&&!y.im)return zrj0(jtbindd(jt,x.re,y.re));
- d=zminus(y,x);
+ d=jtzminus(jt,y,x);
  rd=d.re; id=rd==jfloor(rd)&&0==d.im;
  rx=x.re; ix=rx==jfloor(rx)&&0==x.im; 
  ry=y.re; iy=ry==jfloor(ry)&&0==y.im;

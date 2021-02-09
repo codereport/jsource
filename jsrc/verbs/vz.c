@@ -56,7 +56,7 @@ ZS2(jtzminus, zr=a-c; zi=b-d;)
  ZEPILOG;
 }
 
- Z jtznegate(J jt,Z v){return zminus(zeroZ,v);}
+ Z jtznegate(J jt,Z v){return jtzminus(jt,zeroZ,v);}
 
 D zmag(Z v){return hypoth(v.re,v.im);}
 
@@ -97,7 +97,7 @@ B jtzeq(J jt,Z u,Z v){D a=u.re,b=u.im,c=v.re,d=v.im,p,q;
  b=u.re*v.im-u.im*v.re;
  q.re=a/d; q.im=b/d;
  q=zfloor(q);  // do proper complex floor
- return zminus(v,ztymes(u,q));
+ return jtzminus(jt,v,ztymes(u,q));
 }
 
  Z jtzgcd(J jt,Z u,Z v){D a,b;Z t,z;I lim;
@@ -191,7 +191,7 @@ static Z jtztan(J jt,Z v){return jtzdiv(jt,zsin(v),zcos(v));}
 static Z jtzp4(J jt,Z v){return zsqrt(zplus(z1,ztymes(v,v)));}
 #pragma auto_inline(on)
 
-static Z jtzm4(J jt,Z v){return 1e16<hypoth(v.re,v.im)?v:ztymes(zplus(v,z1),zsqrt(jtzdiv(jt,zminus(v,z1),zplus(v,z1))));}
+static Z jtzm4(J jt,Z v){return 1e16<hypoth(v.re,v.im)?v:ztymes(zplus(v,z1),zsqrt(jtzdiv(jt,jtzminus(jt,v,z1),zplus(v,z1))));}
 
 static Z jtzsinh(J jt,Z v){return zmj(zsin(zjx(v)));}  /* 4.5.7 */
 
@@ -199,7 +199,7 @@ static Z jtzcosh(J jt,Z v){return zcos(zjx(v));}       /* 4.5.8 */
 
 static Z jtztanh(J jt,Z v){return v.re<-TMAX?zrj0(-1.0):TMAX<v.re?z1:jtzdiv(jt,zsinh(v),zcosh(v));}
 
-static Z jtzp8(J jt,Z v){return zsqrt(ztymes(zplus(zj,v),zminus(zj,v)));}
+static Z jtzp8(J jt,Z v){return zsqrt(ztymes(zplus(zj,v),jtzminus(jt,zj,v)));}
 
 static Z jtzasinh(J jt,Z v){return 0>v.re ? znegate(zasinh(znegate(v))) : zlog(zplus(v,zp4(v)));}
 
@@ -209,7 +209,7 @@ static Z jtzacosh(J jt,Z v){Z z;
  return z;
 }
 
-static Z jtzatanh(J jt,Z v){return ztymes(zrj0((D)0.5),zlog(jtzdiv(jt,zplus(z1,v),zminus(z1,v))));}
+static Z jtzatanh(J jt,Z v){return ztymes(zrj0((D)0.5),zlog(jtzdiv(jt,zplus(z1,v),jtzminus(jt,z1,v))));}
 
 static Z jtzatan(J jt,Z v){ZF1DECL;
  if(!b&&(a<-1e13||1e13<a))return zrj0(0<a?PI/2.0:-PI/2.0);
@@ -222,7 +222,7 @@ static Z jtzatan(J jt,Z v){ZF1DECL;
 
 static Z jtzasin(J jt,Z v){return !v.im&&-1<=v.re&&v.re<=1?zrj0(asin(v.re)):zmj(zasinh(zjx(v)));}   /* 4.4.20 */
 
-static Z jtzacos(J jt,Z v){return zminus(zrj0(PI/2.0),zasin(v));}
+static Z jtzacos(J jt,Z v){return jtzminus(jt,zrj0(PI/2.0),zasin(v));}
 
 static Z jtzarc(J jt,Z v){D x,y;Z t,z;
  z.re=z.im=0;
@@ -241,7 +241,7 @@ static Z jtzarc(J jt,Z v){D x,y;Z t,z;
  ZASSERT(BETWEENC(x,-12,12)&&FFEQ(x,r)&&!u.im,EVDOMAIN);  // x must be integer
  switch(x){
   default: ZASSERT(0,EVDOMAIN);
-  case  0: return zsqrt(ztymes(zplus(z1,v),zminus(z1,v)));
+  case  0: return zsqrt(ztymes(zplus(z1,v),jtzminus(jt,z1,v)));
   case  1: return zsin(v);           case  -1: return zasin(v);
   case  2: return zcos(v);           case  -2: return zacos(v);
   case  3: return ztan(v);           case  -3: return zatan(v);
@@ -261,13 +261,13 @@ B jtztridiag(J jt,I n,A a,A x){I i,j,n1=n-1;Z*av,d,p,*xv;
  for(i=j=0;i<n1;++i){
   ASSERT(ZNZ(d),EVDOMAIN);
   p=jtzdiv(jt,xv[j+2],d); 
-  xv[j+3]=d=zminus(xv[j+3],ztymes(p,xv[j+1]));
-  av[i+1]=  zminus(av[i+1],ztymes(p,av[i]  ));
+  xv[j+3]=d=jtzminus(jt,xv[j+3],ztymes(p,xv[j+1]));
+  av[i+1]=  jtzminus(jt,av[i+1],ztymes(p,av[i]  ));
   j+=3;
  }
  ASSERT(ZNZ(d),EVDOMAIN);
  i=n-1; j=AN(x)-1; av[i]=jtzdiv(jt,av[i],d);
- for(i=n-2;i>=0;--i){j-=3; av[i]=jtzdiv(jt,zminus(av[i],ztymes(xv[j+1],av[i+1])),xv[j]);}
+ for(i=n-2;i>=0;--i){j-=3; av[i]=jtzdiv(jt,jtzminus(jt,av[i],ztymes(xv[j+1],av[i+1])),xv[j]);}
  return 1;
 }
 

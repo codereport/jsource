@@ -863,7 +863,7 @@
 
 #define zlog(x)                     jtzlog(jt,(x))
 #define zm4(x)                      jtzm4(jt,(x))
-#define zminus(x,y)                 jtzminus(jt,(x),(y))
+
 #define zmj(x)                      jtzmj(jt,(x))
 #define znegate(x)                  jtznegate(jt,(x))
 #define zp4(x)                      jtzp4(jt,(x))
