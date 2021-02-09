@@ -525,7 +525,7 @@
 
 #define qrr(x)                      jtqrr(jt,(x))
 #define qstd(x)                     jtqstd(jt,(x))
-#define qtymes(x,y)                 jtqtymes(jt,(x),(y))
+
 // Handle top level of ra().  Increment usecount.  Set usecount recursive usecount if recursible type; recur on contents if original usecount is not recursive
 // We can have an inplaceable but recursible block, if it was gc'd or created that way
 // ra() DOES NOT realize a virtual block, so that it can be used in places where virtual blocks are not possible.  ras() does include rifv

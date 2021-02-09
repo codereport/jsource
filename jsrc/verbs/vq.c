@@ -65,7 +65,7 @@ static Q jtqgcd(J jt,Q a,Q w){PROLOG(0088);Q z;
  QEPILOG(z);
 }
 
-static Q jtqlcm(J jt,Q a,Q w){return qtymes(a,jtqdiv(jt,w,jtqgcd(jt,a,w)));}
+static Q jtqlcm(J jt,Q a,Q w){return jtqtymes(jt,a,jtqdiv(jt,w,jtqgcd(jt,a,w)));}
 
 static Q jtqpow(J jt,Q a,Q w){PROLOG(0089);B c;I p,q,s;Q t,z;X d;
  QRE(1);
@@ -87,12 +87,12 @@ static Q jtqpow(J jt,Q a,Q w){PROLOG(0089);B c;I p,q,s;Q t,z;X d;
  if(0>XDIG(d)){QRE(d=negate(d)); QRE(t=jtqdiv(jt,z,t));}
  if(1>xcompare(d,xc(IMAX))){I e;
   QRE(e=xint(d));  
-  while(e){if(1&e)QRE(z=qtymes(z,t)); QRE(t=qtymes(t,t)); e>>=1;}
+  while(e){if(1&e)QRE(z=jtqtymes(jt,z,t)); QRE(t=jtqtymes(jt,t,t)); e>>=1;}
  }else{X e=d,x2;
   QRE(x2=xc(2L));
   while(XDIG(e)){
-   if(1&AV(e)[0])QRE(z=qtymes(z,t)); 
-   QRE(t=qtymes(t,t)); 
+   if(1&AV(e)[0])QRE(z=jtqtymes(jt,z,t)); 
+   QRE(t=jtqtymes(jt,t,t)); 
    QRE(e=xdiv(e,x2,XMFLR));
  }}
  QEPILOG(z);
