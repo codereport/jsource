@@ -209,11 +209,10 @@ static B jtaindex1(J jt,A a,A w,I wf,A*ind){A z;I c,i,k,n,t,*v,*ws;
  PROD(n,AR(a)-1,AS(a));  v=AV(a); // n now=number of 1-cells of a   v=running pointer through a
  // Go through a fast verification pass.  If all values nonnegative and valid, return original a
  if(t&INT){  // if it's INT already, we don't need to move it.
-  switch(c){I c0,c1,c2;
+  switch(c){
   case 2:
-   c0=ws[0], c1=ws[1]; break;
   case 3:
-   c0=ws[0], c1=ws[1], c2=ws[2]; break;
+   i = 0; break;
   default:
    for(i=n;i>0;--i){DO(c, k=*v; ++v;); if(k<0)break;} break; 
   }
