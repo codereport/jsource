@@ -830,7 +830,7 @@
 
 #define xprimetest(x)               jtxprimetest(jt,(x))
 #define xrand(x)                    jtxrand(jt,(x))
-#define xrem(x,y)                   jtxrem(jt,(x),(y))
+
 
 #define xsgn(x)                     jtxsgn(jt,(x))
 #define xsinit()                    jtxsinit(jt)

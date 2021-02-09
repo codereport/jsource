@@ -196,9 +196,9 @@ X jtxdiv(J jt,X a,X w,I mode){PROLOG(0096);B di;I an,*av,c,c0,d,e,k,s,u[2],u1,wn
  if(c==XNINF)return 0>=d?w:a;
  if(1==AN(a)&&c){RZ(xdivrem(w,a,&q,&r)); return rifvsdebug(r);}
  switch((0<=c?2:0)+(I )(0<=d)){
-  case 0:  return rifvsdebug(negate(xrem(negate(a),negate(w))));
-  case 1:  y=xrem(negate(a),w); return rifvsdebug(jtxcompare(jt,y,iv0)? jtxplus(jt,a,y):y);
-  case 2:  y=xrem(a,negate(w)); return rifvsdebug(jtxcompare(jt,y,iv0)?jtxminus(jt,a,y):y);
+  case 0:  return rifvsdebug(negate(jtxrem(jt,negate(a),negate(w))));
+  case 1:  y=jtxrem(jt,negate(a),w); return rifvsdebug(jtxcompare(jt,y,iv0)? jtxplus(jt,a,y):y);
+  case 2:  y=jtxrem(jt,a,negate(w)); return rifvsdebug(jtxcompare(jt,y,iv0)?jtxminus(jt,a,y):y);
   default: return rifvsdebug(0<=(e=jtxcompare(jt,a,w)) ? (e?w:iv0) : jtxminus(jt,w,xtymes(a,xdiv(w,a,XMFLR))));
 }}
 
@@ -211,7 +211,7 @@ X jtxdiv(J jt,X a,X w,I mode){PROLOG(0096);B di;I an,*av,c,c0,d,e,k,s,u[2],u1,wn
  p=a; q=w; A *old=jt->tnextpushp;
  while(XDIG(p)){
   t=p;
-  RZ(p=xrem(p,q));
+  RZ(p=jtxrem(jt,p,q));
   q=t;
   if(!gc3(&p,&q,0L,old))return 0;
  }
@@ -250,13 +250,13 @@ static X jtxexp(J jt,X w,I mode){I k,m;X s,y;
  if(!m||1>jtxcompare(jt,w,xc(IMAX))){
   ASSERT(m||2>=AN(w),EVLIMIT);
   RE(e=xint(w));
-  if(m)while(e){if(1&e)RZ(z=xrem(m,xtymes(z,t))); RZ(t=xrem(m,xsq(t))); e>>=1;}
+  if(m)while(e){if(1&e)RZ(z=jtxrem(jt,m,xtymes(z,t))); RZ(t=jtxrem(jt,m,xsq(t))); e>>=1;}
   else while(e){if(1&e)RZ(z=       xtymes(z,t) ); RZ(t=       xsq(t) ); e>>=1;}
  }else{B b;I n,*u,*v;X e;
   RZ(e=ca(w)); n=AN(e); v=AV(e);
   while(n){
-   if(1&*v)RZ(z=xrem(m,xtymes(z,t)));
-   RZ(t=xrem(m,xtymes(t,t)));
+   if(1&*v)RZ(z=jtxrem(jt,m,xtymes(z,t)));
+   RZ(t=jtxrem(jt,m,xtymes(t,t)));
    b=1; c=0; u=v+n;
    DQ(n, d=c+*--u; c=1&d?XBASE:0; *u=d>>1; if(b&=!*u)--n;);  /* e=.<.e%2 */
  }}
