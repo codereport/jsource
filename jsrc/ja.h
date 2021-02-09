@@ -519,7 +519,7 @@
 #define qlogz1(x)                   jtqlogz1(jt,(x))
 
 #define qplus(x,y)                  jtqplus(jt,(x),(y)) //used by 2 macros in 2 different files.
-#define qpow(x,y)                   jtqpow(jt,(x),(y))
+
 #define qq(x,y)                     jtqq(jt,(x),(y))
 #define qr(x)                       jtqr(jt,(x))
 #define qrem(x,y)                   jtqrem(jt,(x),(y))
