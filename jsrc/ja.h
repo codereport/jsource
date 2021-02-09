@@ -813,7 +813,7 @@
 #define xdiv(x,y,z)                 jtxdiv(jt,(x),(y),(z))
 #define xdivrem(x0,x1,x2,x3)        jtxdivrem(jt,(x0),(x1),(x2),(x3))
 #define xev2(x,y,z)                 jtxev2(jt,(x),(y),(z))
-#define xexp(x,y)                   jtxexp(jt,(x),(y))
+
 #define xgcd(x,y)                   jtxgcd(jt,(x),(y))
 #define xint(x)                     jtxint(jt,(x))
 #define xlcm(x,y)                   jtxlcm(jt,(x),(y))
