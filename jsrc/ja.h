@@ -478,7 +478,7 @@
 #define parseinit()                 jtparseinit(jt)
 #define parsex(x0,x1,x2,x3)         jtparsex(jt,(x0),(x1),(x2),(x3))
 #define pee(a,b,c,d,e    )          jtpee(jt,(a),(b),(c),(d),(e))
-#define pfill(x,y)                  jtpfill(jt,(x),(y))
+
 #define pind(x,y)                   jtpind(jt,(x),(y))
 #define pinit()                     jtpinit(jt)
 #define pinv(x)                     jtpinv(jt,(x))
