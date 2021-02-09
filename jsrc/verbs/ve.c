@@ -212,8 +212,9 @@ D jtremdd(J jt,D a,D b){D q,x,y;
  if(a==infm)return 0>=b?b:a;
  q=b/a; x=tfloor(q); y=tceil(q); return TEQ(x,y)?0:b-a*x;
 }
-
+#define remdd(x,y)                  jtremdd(jt,(x),(y))
 APFX(remDD, D,D,D, remdd,,HDR1JERR)
+#undef remdd
 APFX(remZZ, Z,Z,Z, zrem ,,HDR1JERR)
 
 I jtremid(J jt,I a,D b){D r;I k;
