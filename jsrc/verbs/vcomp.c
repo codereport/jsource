@@ -60,8 +60,10 @@ APFX(neAA, B,A,A, !equ,, return EVOK;)
 
                           APFX(ltBI, B,B,I, CMPLT,, return EVOK;)  ACMP0(ltBD, B,B,D, TLT, <  )
 APFX(ltIB, B,I,B, CMPLT,, return EVOK;)    ACMP0(ltID, B,I,D, TLT, <  )
-ACMP0(ltDB, B,D,B, TLT, <  )  ACMP0(ltDI, B,D,I, TLT, <  )  
+ACMP0(ltDB, B,D,B, TLT, <  )  ACMP0(ltDI, B,D,I, TLT, <  )
+#define xcompare(x,y)               jtxcompare(jt,(x),(y))
 APFX(ltXX, B,X,X, -1==xcompare,, return EVOK;)
+#undef xcompare
 APFX(ltQQ, B,Q,Q, QLT,, return EVOK;)
 APFX(ltSS, B,SB,SB, SBLT,, return EVOK;)
 
