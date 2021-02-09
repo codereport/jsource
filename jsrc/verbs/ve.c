@@ -255,7 +255,7 @@ D jtdgcd(J jt,D a,D b){D a1,b1,t;B stop = 0;
  ASSERT(inf!=b,EVNAN);
  if(!a)return b;
  a1=a; b1=b;
- while(remdd(a1/jround(a1/a),b1)){t=a; if((a=remdd(a,b))==0)break; b=t;}  // avoid infinite loop if a goes to 0
+ while(jtremdd(jt,a1/jround(a1/a),b1)){t=a; if((a=jtremdd(jt,a,b))==0)break; b=t;}  // avoid infinite loop if a goes to 0
  return a;
 }    /* D.L. Forkes 1984; E.E. McDonnell 1992 */
 I jtilcm(J jt,I a,I b){I z;I d;
