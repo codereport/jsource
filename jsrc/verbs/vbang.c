@@ -24,7 +24,7 @@ static I terms=sizeof(coeff)/sizeof(D);
 
 static Z jtzhorner(J jt,I n,D*c,Z v){Z s;D*d=n+c;
  s=zeroZ;
- DQ(n, s=jtzplus(jt,zrj0(*--d),ztymes(v,s));); 
+ DQ(n, s=jtzplus(jt,zrj0(*--d),jtztymes(jt,v,s));); 
  return s;
 }
 
@@ -43,24 +43,24 @@ D jtdgamma(J jt,D x){B b;D t;
 
 static Z jtzgrecur(J jt,Z z){Z t;
  t=z1;
- if(0<=z.re) while( 0.5<z.re){--z.re; t=ztymes(t,z); if(t.re==inf)return t;    }
- else       {while(-0.5>z.re){t=ztymes(t,z); ++z.re; if(t.re==inf)return zeroZ;} t=jtzdiv(jt,z1,t);}
- return ztymes(t,zgps(z));
+ if(0<=z.re) while( 0.5<z.re){--z.re; t=jtztymes(jt,t,z); if(t.re==inf)return t;    }
+ else       {while(-0.5>z.re){t=jtztymes(jt,t,z); ++z.re; if(t.re==inf)return zeroZ;} t=jtzdiv(jt,z1,t);}
+ return jtztymes(jt,t,zgps(z));
 }    /* gamma(z) using recurrence formula */
 
 static Z jtzgauss(J jt,D n,Z z){D d=1/n;Z p,t;
  if(1>=n)return zgrecur(z);
- p=ztymes(jtzpow(jt,zrj0(2*PI),zrj0((1-n)/2)),jtzpow(jt,zrj0(n),jtzminus(jt,z,zrj0(0.5))));
+ p=jtztymes(jt,jtzpow(jt,zrj0(2*PI),zrj0((1-n)/2)),jtzpow(jt,zrj0(n),jtzminus(jt,z,zrj0(0.5))));
  t=jtzdiv(jt,z,zrj0(n));
- DQ((I)n, p=ztymes(p,zgrecur(t)); t.re+=d;);
+ DQ((I)n, p=jtztymes(jt,p,zgrecur(t)); t.re+=d;);
  return p;
 }    /* Abramowitz & Stegun, 6.1.20 */
  
 static D c[]={1.0, 1.0/12, 1.0/288, -139.0/51840, -571.0/2488320};
 static Z jtzstirling(J jt,Z z){Z p,q;
- p=ztymes(zsqrt(jtzdiv(jt,zrj0(2*PI),z)),jtzpow(jt,jtzdiv(jt,z,zrj0(2.718281828459045235360287)),z));
+ p=jtztymes(jt,zsqrt(jtzdiv(jt,zrj0(2*PI),z)),jtzpow(jt,jtzdiv(jt,z,zrj0(2.718281828459045235360287)),z));
  q=zhorner(5L,c,jtzdiv(jt,z1,z));
- return ztymes(p,q);
+ return jtztymes(jt,p,q);
 }    /* Abramowitz & Stegun, 6.1.37 */
 
 static Z jtzgamma(J jt,Z z){D y=ABS(z.im);
@@ -118,7 +118,7 @@ static Z jtzbin(J jt,Z x,Z y){Z a,b,c;
  a=zgamma(jtzplus(jt,z1,y));
  b=zgamma(jtzplus(jt,z1,x));
  c=zgamma(jtzplus(jt,z1,jtzminus(jt,y,x)));
- return jtzdiv(jt,a,ztymes(b,c));
+ return jtzdiv(jt,a,jtztymes(jt,b,c));
 }
 
 #define MOD2(x) ((x)-2*jfloor(0.5*(x)))
