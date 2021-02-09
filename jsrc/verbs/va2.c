@@ -419,7 +419,7 @@ VA va[]={
 
 A jtcvz(J jt,I cv,A w){I t;
  t=AT(w);
- if(cv&VRD&&!(t&FL) )return pcvt(FL,w);  // convert if possible
+ if(cv&VRD&&!(t&FL) )return jtpcvt(jt,FL,w);  // convert if possible
  if(cv&VRI&&!(t&INT))return icvt(w);  // convert to integer if possible
  return w;
 }    /* convert result */
@@ -618,8 +618,8 @@ static A jtva2(J jt,AD * RESTRICT a,AD * RESTRICT w,AD * RESTRICT self,UI allran
     // Conversions to XNUM use a routine that pushes/sets/pops jt->mode, which controls the
     // type of conversion to XNUM in use.  Any result of the conversion is automatically inplaceable.  If type changes, change the cell-size too, possibly larger or smaller
     // bits 2-3 of jtinplace indicate whether inplaceability is allowed by the op, the ranks, and the addresses
-    if(TYPESNE(t,AT(a))){aawwzk[0]=(aawwzk[0]>>bplg(AT(a)))<<bplg(t); aawwzk[1]=(aawwzk[1]>>bplg(AT(a)))<<bplg(t); RZ(a=cvt(t|((I)jtinplace&VARGCVTMSKF),a)); jtinplace = (J)(intptr_t)((I)jtinplace | (((I)jtinplace>>2)&JTINPLACEA));}
-    if(TYPESNE(t,AT(w))){aawwzk[2]=(aawwzk[2]>>bplg(AT(w)))<<bplg(t); aawwzk[3]=(aawwzk[3]>>bplg(AT(w)))<<bplg(t); RZ(w=cvt(t|((I)jtinplace&VARGCVTMSKF),w)); jtinplace = (J)(intptr_t)((I)jtinplace | (((I)jtinplace>>2)&JTINPLACEW));}
+    if(TYPESNE(t,AT(a))){aawwzk[0]=(aawwzk[0]>>bplg(AT(a)))<<bplg(t); aawwzk[1]=(aawwzk[1]>>bplg(AT(a)))<<bplg(t); RZ(a=jtcvt(jt,t|((I)jtinplace&VARGCVTMSKF),a)); jtinplace = (J)(intptr_t)((I)jtinplace | (((I)jtinplace>>2)&JTINPLACEA));}
+    if(TYPESNE(t,AT(w))){aawwzk[2]=(aawwzk[2]>>bplg(AT(w)))<<bplg(t); aawwzk[3]=(aawwzk[3]>>bplg(AT(w)))<<bplg(t); RZ(w=jtcvt(jt,t|((I)jtinplace&VARGCVTMSKF),w)); jtinplace = (J)(intptr_t)((I)jtinplace | (((I)jtinplace>>2)&JTINPLACEW));}
    }  // It might be better to do the conversion earlier, and defer the error
       // until here.  We will have to look at the generated code when we can use all the registers
 
@@ -676,7 +676,7 @@ static A jtva2(J jt,AD * RESTRICT a,AD * RESTRICT w,AD * RESTRICT self,UI allran
    }
 
    // The work has been done.  If there was no error, check for optional conversion-if-possible or -if-necessary
-   if(rc==EVOK){if((I)jtinplace&VRI+VRD)z=cvz((I)jtinplace,z); return z;  // normal return is here.  The rest is error recovery
+   if(rc==EVOK){if((I)jtinplace&VRI+VRD)z=jtcvz(jt,(I)jtinplace,z); return z;  // normal return is here.  The rest is error recovery
    }else if(rc-EWOVIP>=0){A zz;C *zzv;I zzk;
     // Here for overflow that can be corrected in place
 // not yet    if(rc==EVOKCLEANUP){jt->mulofloloc=0; return z;}  // if multiply that did not overflow, clear the oflo position for next time, and return
@@ -798,8 +798,8 @@ I jtsumattymesprods(J jt,I it,void *avp, void *wvp,I dplen,I nfro,I nfri,I ndpo,
  // Convert arguments as required
  I it=MAX(AT(a),AT(w));  // if input types are dissimilar, convert to the larger
  if(it!=(AT(w)|AT(a))){
-  if(TYPESNE(it,AT(a))){RZ(a=cvt(it,a));}  // convert to common input type
-  else if(TYPESNE(it,AT(w))){RZ(w=cvt(it,w));}
+  if(TYPESNE(it,AT(a))){RZ(a=jtcvt(jt,it,a));}  // convert to common input type
+  else if(TYPESNE(it,AT(w))){RZ(w=jtcvt(jt,it,w));}
  }
 
  // Verify inner frames match
@@ -941,8 +941,8 @@ static A jtsumatgbool(J jt,A a,A w,C id){A t,z;B* RESTRICTI av,* RESTRICTI wv;I 
  sb=yt&(c==CPLUS);  // +/@:g where g produces Boolean.
  if(!(sb||TYPESEQ(yt,zt)))return df1(z,df2(y,a,w,gs),fs);
  if(t){
-  if(TYPESNE(t,at))RZ(a=cvt(t|(adocv.cv&VARGCVTMSKF),a));
-  if(TYPESNE(t,wt))RZ(w=cvt(t|(adocv.cv&VARGCVTMSKF),w));
+  if(TYPESNE(t,at))RZ(a=jtcvt(jt,t|(adocv.cv&VARGCVTMSKF),a));
+  if(TYPESNE(t,wt))RZ(w=jtcvt(jt,t|(adocv.cv&VARGCVTMSKF),w));
  }
  ak=b?m:zn; wk=b?zn:m; ak=an<nn?0:ak; wk=wn<nn?0:wk; ak<<=bplg(AT(a));wk<<=bplg(AT(w));
  GA(y,yt,zn,1,0);  // allocate one item for result of g
@@ -1007,7 +1007,7 @@ static A jtsumatgbool(J jt,A a,A w,C id){A t,z;B* RESTRICTI av,* RESTRICTI wv;I 
 }
 
  A jtexpn2  (J jt,A a,A w,A self){F2PREFIP; if(((((I)AR(w)-1)&SGNIF(AT(w),FLX))<0))if(0.5==DAV(w)[0])return sqroot(a);  return jtatomic2(jtinplace,a,w,self);}  // use sqrt hardware for sqrt.  Only for atomic w.
- A jtresidue(J jt,A a,A w,A self){F2PREFIP; I intmod; if(!((AT(a)|AT(w))&(NOUN&~INT)|AR(a))&&(intmod=IAV(a)[0], (intmod&-intmod)+(intmod<=0)==0))return intmod2(w,intmod); return jtatomic2(jtinplace,a,w,self);}
+ A jtresidue(J jt,A a,A w,A self){F2PREFIP; I intmod; if(!((AT(a)|AT(w))&(NOUN&~INT)|AR(a))&&(intmod=IAV(a)[0], (intmod&-intmod)+(intmod<=0)==0))return jtintmod2(jt,w,intmod); return jtatomic2(jtinplace,a,w,self);}
 
 
 // These are the unary ops that are implemented using a canned argument
