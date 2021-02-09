@@ -307,7 +307,9 @@ APFX(minusXX, X,X,X, xminus,,HDR1JERR)
 #undef xminus
 APFX(tymesXX, X,X,X, xtymes,,HDR1JERR)
 APFX(  divXX, X,X,X, XDIV  ,,HDR1JERR)
+#define xrem(x,y)                   jtxrem(jt,(x),(y))
 APFX(  remXX, X,X,X, xrem  ,,HDR1JERR)
+#undef xrem
 #define xgcd(x,y)                   jtxgcd(jt,(x),(y))
 APFX(  gcdXX, X,X,X, xgcd  ,,HDR1JERR)
 #undef xgcd
