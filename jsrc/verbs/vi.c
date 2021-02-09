@@ -109,7 +109,7 @@ static UI hiq(Q*v){A y=v->n; return hic(AN(y)*SZI,UAV(y));}
 static B jteqx(J jt,I n,X*u,X*v){DQ(n, if(!jtequ(jt,*u,*v))return 0; ++u; ++v;); return 1;}
 static B jteqq(J jt,I n,Q*u,Q*v){DQ(n, if(!QEQ(*u,*v))return 0; ++u; ++v;); return 1;}
 static B jteqd(J jt,I n,D*u,D*v){DQ(n, if(!TEQ(*u,*v))return 0; ++u; ++v;); return 1;}
-static B jteqz(J jt,I n,Z*u,Z*v){DQ(n, if(!zeq(*u,*v))return 0; ++u; ++v;); return 1;}
+static B jteqz(J jt,I n,Z*u,Z*v){DQ(n, if(!jtzeq(jt,*u,*v))return 0; ++u; ++v;); return 1;}
 
 // test a subset of two boxed arrays for match.  u/v point to pointers to contants, c and d are the relative flags
 // We test n subboxes
@@ -493,7 +493,7 @@ static IOFX(I,jtioi,  hicw(v),           *v!=av[hj],                      ++v,  
 // CMPLX array
 static IOFT(Z,jtioz, THASHA, TFINDXY,TFINDYY,memcmp(v,av+n*hj,n*2*sizeof(D)), !eqz(n,v,av+n*hj)               )
 // CMPLX list
-static IOFT(Z,jtioz1,THASHA, TFINDXY,TFINDYY,memcmp(v,av+n*hj,  2*sizeof(D)), !zeq( *v,av[hj] )               )
+static IOFT(Z,jtioz1,THASHA, TFINDXY,TFINDYY,memcmp(v,av+n*hj,  2*sizeof(D)), !jtzeq(jt, *v,av[hj] )               )
 // FL array
 static IOFT(D,jtiod, THASHA, TFINDXY,TFINDYY,memcmp(v,av+n*hj,n*  sizeof(D)), !eqd(n,v,av+n*hj)               )
 // FL list
@@ -688,7 +688,7 @@ static void jtiosc(J jt,I mode,I m,I c,I ac,I wc,A a,A w,A z){B*zb;I j,p,q,*u,*v
   default:                SCDO(C, *wv,x!=av[j]      ); break;
   case C2TX:               SCDO(S, *wv,x!=av[j]      ); break;
   case C4TX:               SCDO(C4,*wv,x!=av[j]      ); break;
-  case CMPXX:              SCDO(Z, *wv,!zeq(x, av[j])); break;
+  case CMPXX:              SCDO(Z, *wv,!jtzeq(jt,x, av[j])); break;
   case XNUMX:              SCDO(A, *wv,!jtequ(jt,x, av[j])); break;
   case RATX:               SCDO(Q, *wv,!QEQ(x, av[j])); break;
   case INTX:               SCDO(I, *wv,x!=av[j]      ); break;
@@ -1450,10 +1450,10 @@ A jtindexofprehashed(J jt,A a,A w,A hs){A h,hi,*hv,x,z;AF fn;I ar,*as,at,c,f1,k,
 
 // create the index-of routines.  These hash just the real part of a complex value
 static IOCOLFT(D,jtiocold,hid(*v),    hid(tl*x),hid(tr*x),!TEQ(*v,av[c*hj]))
-static IOCOLFT(Z,jtiocolz,hid(*(D*)v),hid(tl*x),hid(tr*x),!zeq(*v,av[c*hj]))
+static IOCOLFT(Z,jtiocolz,hid(*(D*)v),hid(tl*x),hid(tr*x),!jtzeq(jt,*v,av[c*hj]))
 
 static JOCOLFT(D,jtjocold,hid(*v),    hid(tl*x),hid(tr*x),!TEQ(*v,av[c*hj]))
-static JOCOLFT(Z,jtjocolz,hid(*(D*)v),hid(tl*x),hid(tr*x),!zeq(*v,av[c*hj]))
+static JOCOLFT(Z,jtjocolz,hid(*(D*)v),hid(tl*x),hid(tr*x),!jtzeq(jt,*v,av[c*hj]))
 
 // support for a i."1 &.|:w or a i:"1 &.|:w   used only by some sparse-array stuff
 A jtiocol(J jt,I mode,A a,A w){A h,z;I ar,at,c,d,m,p,t,wr,*ws,wt;void(*fn)();

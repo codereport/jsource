@@ -851,7 +851,7 @@
 #define zcos(x)                     jtzcos(jt,(x))
 #define zcosh(x)                    jtzcosh(jt,(x))
 #define zdiv(x,y)                   jtzdiv(jt,(x),(y)) // 3 files use this in macros
-#define zeq(x,y)                    jtzeq(jt,(x),(y))
+
 #define zexp(x)                     jtzexp(jt,(x))
 #define zfloor(x)                   jtzfloor(jt,(x))
 #define zgamma(x)                   jtzgamma(jt,(x))
