@@ -15,9 +15,6 @@ typedef long long INT64;
 #define LOCK 1
 #include <unistd.h>
 #include <fcntl.h>
-#include <sys/file.h>
-
-// extern int _locking(int,int,long);
 
 static B jtdolock(J jt,B lk,F f,I i,I n){I e;long c;fpos_t v; fpos_t q;
  c=fgetpos(f,(fpos_t*)&q);
