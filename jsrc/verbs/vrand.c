@@ -718,8 +718,8 @@ static A jtrollksubdot(J jt,A a,A w){A z;I an,*av,k,m1,n,p,q,r,sh;UI j,m,mk,s,t,
  return jtrollksubdot(jt,a,vi(w));
 }    /* ?@$ or ?@# or [:?$ or [:?# */
 
-#undef xrand
-#define xrand(w) jtxranddot(jt,(w))
+
+
 static X jtxranddot(J jt,X x){PROLOG(0090);A q,z;B b=1;I j,m,n,*qv,*xv,*zv;
  n=AN(x); xv=AV(x);  // number of Digits in x, &first digit
  m=n;  // m is number of result digits, same as input.  If input is 10000... this will always be 1 digit too many, but that's not worth checking for
@@ -741,7 +741,7 @@ static A jtrollxnumdot(J jt, A w){A z;B c=0;I d,n;X*u,*v,x;
  n=AN(w); v=XAV(w);
  GATV(z,XNUM,n,AR(w),AS(w)); u=XAV(z);
  // deal an extended random for each input number.  Error if number <0; if 0, put in 0 as a placeholder
- DQ(n, x=*v++; d=XDIG(x); ASSERT(0<=d,EVDOMAIN); if(d)RZ(*u++=rifvs(xrand(x))) else{*u++=iv0; c=1;});
+ DQ(n, x=*v++; d=XDIG(x); ASSERT(0<=d,EVDOMAIN); if(d)RZ(*u++=rifvs(jtxranddot(jt,x))) else{*u++=iv0; c=1;});
  // If there was a 0, convert the whole result to float, and go back and fill the original 0s with random floats
  if(c){D*d;I mk,sh;
   INITD;
