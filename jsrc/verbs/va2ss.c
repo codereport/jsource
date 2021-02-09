@@ -344,7 +344,7 @@ A jtssingleton(J jt, A a,A w,A self,RANK2T awr,RANK2T ranks){A z;
  return 0;  // if there was an error, fail, jerr is set
 
  lcmintresult:
- ziv=ilcm(aiv,wiv); if(!jt->jerr){SSSTORE(ziv,z,INT,I) return z;}  // if no error, store an int
+ ziv=jtilcm(jt,aiv,wiv); if(!jt->jerr){SSSTORE(ziv,z,INT,I) return z;}  // if no error, store an int
  if(jt->jerr<EWOV)return 0;  // If not overflow, what can it be?
  RESETERR; adv=(D)aiv; wdv=(D)wiv;  // Rack em up again; Convert int args to float, and fall through to float case
  lcmflresult:
