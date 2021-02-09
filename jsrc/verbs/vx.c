@@ -183,7 +183,7 @@ X jtxdiv(J jt,X a,X w,I mode){PROLOG(0096);B di;I an,*av,c,c0,d,e,k,s,u[2],u1,wn
    k=(k>3)+(k>32)+(k>316)+(k>3162);
    s=XBASEN*(an-yn)+(c0>=e?k:-k);
    if(s){q=jtshift10(jt,s,q); y=jtshift10(jt,s,y);}
-   A z=xplus(q,xdiv(xminus(a,y),w,mode));
+   A z=xplus(q,xdiv(jtxminus(jt,a,y),w,mode));
    EPILOGNOVIRT(z);
   }
 }   /* <.a%w (mode=XMFLR) or >.a%w (mode=XMCEIL) or a%w (mode=XMEXACT) */
@@ -198,8 +198,8 @@ X jtxdiv(J jt,X a,X w,I mode){PROLOG(0096);B di;I an,*av,c,c0,d,e,k,s,u[2],u1,wn
  switch((0<=c?2:0)+(I )(0<=d)){
   case 0:  return rifvsdebug(negate(xrem(negate(a),negate(w))));
   case 1:  y=xrem(negate(a),w); return rifvsdebug(jtxcompare(jt,y,iv0)? xplus(a,y):y);
-  case 2:  y=xrem(a,negate(w)); return rifvsdebug(jtxcompare(jt,y,iv0)?xminus(a,y):y);
-  default: return rifvsdebug(0<=(e=jtxcompare(jt,a,w)) ? (e?w:iv0) : xminus(w,xtymes(a,xdiv(w,a,XMFLR))));
+  case 2:  y=xrem(a,negate(w)); return rifvsdebug(jtxcompare(jt,y,iv0)?jtxminus(jt,a,y):y);
+  default: return rifvsdebug(0<=(e=jtxcompare(jt,a,w)) ? (e?w:iv0) : jtxminus(jt,w,xtymes(a,xdiv(w,a,XMFLR))));
 }}
 
  X jtxgcd(J jt,X a,X w){I c,d;X p,q,t;

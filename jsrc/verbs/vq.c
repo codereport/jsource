@@ -29,7 +29,7 @@
 }
 
  Q jtqminus(J jt,Q a,Q w){PROLOG(0084);Q z;
- z.n=rifvsdebug(xminus(xtymes(a.n,w.d),xtymes(w.n,a.d)));
+ z.n=rifvsdebug(jtxminus(jt,xtymes(a.n,w.d),xtymes(w.n,a.d)));
  z.d=rifvsdebug(xtymes(a.d,w.d));
  QEPILOG(z);
 }

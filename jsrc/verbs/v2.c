@@ -395,7 +395,7 @@ static B jtxprimeq(J jt,I n,X y){A h,om=jt->xmod;B b;I*dv,i,k,*pv;X d,m,t,x,y1;
  ASSERT(n<=AN(jt->p4792),EVLIMIT);
  pv=AV(jt->p4792);
  GAT0(h,XNUM,1,0); XAV(h)[0]=y; jt->xmod=h;
- k=0; RZ(t=xc(2L)); RZ(m=y1=xminus(y,iv1));
+ k=0; RZ(t=xc(2L)); RZ(m=y1=jtxminus(jt,y,iv1));
  while(0==(AV(m)[0]&1)){++k; RZ(m=xdiv(m,t,XMFLR));}
  GAT0(d,INT,1,1); dv=AV(d);  // could use faux block
  A *old=jt->tnextpushp;
