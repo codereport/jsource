@@ -140,7 +140,7 @@ static B jtnumbpx(J jt,I n,C*s,void*vv){B ne,ze;C*t,*u;I k,m;Z b,p,q,*v,x,y;
  // the input area is writable.  The exponent part ends with a natural NUL.
  C savpx = *t; *t=0; B rc = numj(t-s,s,&x); *t = savpx; RZ(rc);
  ++t; if(!(numj(n+s-t,t,&y)))return 0;  // if p- or x-type, get x=mantissa y=exponent
- y = u ? zexp(y) : zpow(zpi,y);  // ^y or pi^y
+ y = u ? zexp(y) : jtzpow(jt,zpi,y);  // ^y or pi^y
  *v = ztymes(x,y);   // calculate x*^y or x*pi^y
  return 1;
 }

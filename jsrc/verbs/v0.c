@@ -132,7 +132,7 @@ static Z jtlaguerre(J jt,I m,Z*a,Z x){D ax,e;I i,j;Z b,c,d,dx,g,g2,h,p,q,s,sq,y,
   sq=zsqrt(ztymes(zm1,jtzminus(jt,ztymes(zm,h),g2)));
   p=jtzplus(jt,g,sq); q=jtzminus(jt,g,sq); s=zmag(p)>zmag(q)?p:q; 
   y=x;
-  dx=ZNZ(s)?jtzdiv(jt,zm,s):zpow(znegate(jtzdiv(jt,a[0],a[m])),zrj0(1.0/(D)m));  // Normal step if s!=0; random step if s=0
+  dx=ZNZ(s)?jtzdiv(jt,zm,s):jtzpow(jt,znegate(jtzdiv(jt,a[0],a[m])),zrj0(1.0/(D)m));  // Normal step if s!=0; random step if s=0
   x=jtzminus(jt,x,dx);  // advance to new position
   if(zmag(jtzminus(jt,x,y))<=EPS*zmag(x))return x;  // if we didn't move much, call it converged.  We hope it's a root.
   // This algorithm is subject to hitting limit cycles (_48 1 0 0 0 1 is an example)
