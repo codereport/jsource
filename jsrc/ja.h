@@ -850,8 +850,8 @@
 #define zconjug(x)                  jtzconjug(jt,(x))
 #define zcos(x)                     jtzcos(jt,(x))
 #define zcosh(x)                    jtzcosh(jt,(x))
-#define zdiv(x,y)                   jtzdiv(jt,(x),(y)) // 3 files use this in macros
-#define zeq(x,y)                    jtzeq(jt,(x),(y)) // 3 files use this in macros
+#define zdiv(x,y)                   jtzdiv(jt,(x),(y)) // 3 files' use this in macros
+#define zeq(x,y)                    jtzeq(jt,(x),(y)) // 3 files' use this in macros
 #define zexp(x)                     jtzexp(jt,(x))
 #define zfloor(x)                   jtzfloor(jt,(x))
 #define zgamma(x)                   jtzgamma(jt,(x))
@@ -863,7 +863,7 @@
 
 #define zlog(x)                     jtzlog(jt,(x))
 #define zm4(x)                      jtzm4(jt,(x))
-
+#define zminus(x,y)                 jtzminus(jt,(x),(y)) // 3 files' use this in macros
 #define zmj(x)                      jtzmj(jt,(x))
 #define znegate(x)                  jtznegate(jt,(x))
 #define zp4(x)                      jtzp4(jt,(x))
