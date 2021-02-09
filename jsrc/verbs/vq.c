@@ -130,7 +130,9 @@ APFX(  gcdQQ, Q,Q,Q, qgcd  ,,HDR1JERR)
 #define qlcm(x,y)                   jtqlcm(jt,(x),(y))
 APFX(  lcmQQ, Q,Q,Q, qlcm  ,,HDR1JERR)
 #undef qlcm
+#define qrem(x,y)                   jtqrem(jt,(x),(y))
 APFX(  remQQ, Q,Q,Q, qrem  ,,HDR1JERR)
+#undef grem
 #define qpow(x,y)                   jtqpow(jt,(x),(y))
 APFX(  powQQ, Q,Q,Q, qpow  ,,HDR1JERR)
 #undef qpow
