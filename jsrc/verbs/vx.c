@@ -302,7 +302,9 @@ static D jtxlogd1(J jt,X w){ASSERT(0<=XDIG(w),EWIMAG); return xlogabs(w);}
 static Z jtxlogz1(J jt,X w){Z z; z.re=xlogabs(w); z.im=0>XDIG(w)?PI:0.0; return z;}
 
 APFX( plusXX, X,X,X, xplus ,,HDR1JERR)
+#define xminus(x,y)                 jtxminus(jt,(x),(y))
 APFX(minusXX, X,X,X, xminus,,HDR1JERR)
+#undef xminus
 APFX(tymesXX, X,X,X, xtymes,,HDR1JERR)
 APFX(  divXX, X,X,X, XDIV  ,,HDR1JERR)
 APFX(  remXX, X,X,X, xrem  ,,HDR1JERR)
