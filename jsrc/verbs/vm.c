@@ -28,7 +28,7 @@ D jtpospow(J jt,D x,D y){
 
 #define POWXB(u,v)  (v?u:1)
 #define POWBX(u,v)  (u?1.0:v<0?inf:!v)
-#define POWII(u,v)  intpow((D)u,v)
+#define POWII(u,v)  jtintpow(jt,(D)u,v)
 #define POWID(u,v)  pospow((D)u,v)
 
 APFX(powBI, D,B,I, POWBX ,,return EVOK;)

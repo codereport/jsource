@@ -310,7 +310,7 @@
 #define infix(x,y,z)                jtinfix(jt,(x),(y),(z))
 #define inpl(x,y,z)                 jtinpl(jt,(x),(y),(z))
 #define int0(x)                     jtint0(jt,(x))
-#define intpow(x,y)                 jtintpow(jt,(x),(y))
+
 #define inv(x)                      jtinv(jt,(x),0)
 #define invrecur(x)                 jtinv(jt,(x),1)  // call inv(), indicating recursive call
 #define invamp(x)                   jtinvamp(jt,(x))
