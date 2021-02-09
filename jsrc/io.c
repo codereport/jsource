@@ -114,7 +114,6 @@ A recursive JDo may use a DD, but only if it is fully contained in the string
 
 #include <stdlib.h>
 #include <stdio.h>
-#include <sys/types.h>
 #include <fcntl.h>
 #include <ctype.h>
 #include <unistd.h>
