@@ -5,7 +5,7 @@
 
 /**
  * @brief `#` Tally
- * @param jt
+ * @param jt  JST (J Syntax Tree)
  * @param w   Input array
  * @return    Output array (always scalar integer)
  */

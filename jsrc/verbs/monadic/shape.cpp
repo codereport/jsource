@@ -6,9 +6,9 @@
 
 /**
  * @brief `$` Shape
- * @param jt
- * @param w   Input array
- * @return    Output array
+ * @param jt JST (J Syntax Tree)
+ * @param w  Input array
+ * @return   Output array
  */
 [[nodiscard]] auto
 shape(J jt, array w) -> array {
