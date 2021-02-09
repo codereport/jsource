@@ -846,7 +846,7 @@
 #define zatan(x)                    jtzatan(jt,(x))
 #define zatanh(x)                   jtzatanh(jt,(x))
 #define zceil(x)                    jtzceil(jt,(x))
-#define zcir(x,y)                   jtzcir(jt,(x),(y))
+
 #define zconjug(x)                  jtzconjug(jt,(x))
 #define zcos(x)                     jtzcos(jt,(x))
 #define zcosh(x)                    jtzcosh(jt,(x))
