@@ -522,7 +522,7 @@
 
 
 #define qr(x)                       jtqr(jt,(x))
-#define qrem(x,y)                   jtqrem(jt,(x),(y))
+
 #define qrr(x)                      jtqrr(jt,(x))
 #define qstd(x)                     jtqstd(jt,(x))
 #define qtymes(x,y)                 jtqtymes(jt,(x),(y))
