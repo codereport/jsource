@@ -670,8 +670,8 @@ static A jtrollany(J jt,A w,B*b){A z;D*u;I j,m1,n,sh,*v;UI m,mk,s,t,x=jt->rngM[j
            /* m<x, greatest multiple of m less than x */
 #define GMOF(m,x)   (            x63+(x63-(2*(x63%m))%m))
 
-#undef rollksub
-#define jtrollksub(jt,a,w) jtrollksubdot(jt,(a),(w))
+
+
 static A jtrollksubdot(J jt,A a,A w){A z;I an,*av,k,m1,n,p,q,r,sh;UI j,m,mk,s,t,*u,x=jt->rngM[jt->rng];
  if(!(a && w)) return 0;
  an=AN(a); RE(m1=i0(w)); ASSERT(0<=m1,EVDOMAIN); m=m1;
@@ -715,7 +715,7 @@ static A jtrollksubdot(J jt,A a,A w){A z;I an,*av,k,m1,n,p,q,r,sh;UI j,m,mk,s,t,
  A jtrollkdot(J jt,A a,A w,A self){A g,z;V*sv;
  sv=FAV(self); g=sv->fgh[2]?sv->fgh[2]:sv->fgh[1];
  if(AT(w)&XNUM+RAT||!(!AR(w)&&1>=AR(a)&&(g==ds(CDOLLAR)||1==AN(a))))return roll(df2(z,a,w,g));
- return jtrollksub(jt,a,vi(w));
+ return jtrollksubdot(jt,a,vi(w));
 }    /* ?@$ or ?@# or [:?$ or [:?# */
 
 #undef xrand
@@ -798,7 +798,7 @@ static A jtroll2dot(J jt,A w,B*b){A z;I j,n,nslice,p,q,r,*v;UI mk,t,*zv;
 static A jtrollnot0dot(J jt,A w,B*b){A z;I j,m1,n,*u,*v;UI m,s,t,x=jt->rngM[jt->rng];
  *b=0; n=AN(w);
  if(n){v=AV(w); m1=*v++; j=1; DQ(n-1, if(m1!=*v++){j=0; break;});}
- if(n&&j)RZ(z=jtrollksub(jt,shape(jt,w),sc(m1)))
+ if(n&&j)RZ(z=jtrollksubdot(jt,shape(jt,w),sc(m1)))
  else{
   GATV(z,INT,n,AR(w),AS(w));
   v=AV(w); u=AV(z);
