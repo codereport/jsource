@@ -11,9 +11,6 @@
 #include <signal.h>
 #include <stdint.h>
 #include <locale.h>
-#ifdef __MACH__
-#include <xlocale.h>
-#endif
 
 #include "j.h"
 #include "jeload.h"
