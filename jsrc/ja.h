@@ -292,7 +292,7 @@
 #define iden(x)                     jtiden(jt,(x)) 
 #define idensb(x)                   jtidensb(jt,(x)) 
 #define idenv0(x0,x1,x2,x3,x4)      jtidenv0(jt,(x0),(x1),(x2),(x3),(x4)) 
-#define ifb(x,y)                    jtifb(jt,(x),(y))
+
 #define ifc2(x)                     jtifc2(jt,(x))
 #define ifdz(x)                     jtifdz(jt,(x))
 
