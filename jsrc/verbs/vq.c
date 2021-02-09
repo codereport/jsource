@@ -65,7 +65,7 @@ static Q jtqgcd(J jt,Q a,Q w){PROLOG(0088);Q z;
  QEPILOG(z);
 }
 
-static Q jtqlcm(J jt,Q a,Q w){return qtymes(a,jtqdiv(jt,w,qgcd(a,w)));}
+static Q jtqlcm(J jt,Q a,Q w){return qtymes(a,jtqdiv(jt,w,jtqgcd(jt,a,w)));}
 
 static Q jtqpow(J jt,Q a,Q w){PROLOG(0089);B c;I p,q,s;Q t,z;X d;
  QRE(1);
