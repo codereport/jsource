@@ -765,7 +765,7 @@ static A jtrollbooldot(J jt, A w){A z;B*v;D*u;I n,sh;UINT mk;
 // Result is Boolean array, or mark if w is not all 2
 // *b=0 if w contained non-2, 1 otherwise (i. e. result is valid if *b=1)
 #undef roll2
-#define jtroll2(jt,w,b) jtroll2dot(jt,(w),(b))
+#define roll2(w,b) jtroll2dot(jt,(w),(b))
 static A jtroll2dot(J jt,A w,B*b){A z;I j,n,nslice,p,q,r,*v;UI mk,t,*zv;
  *b=0; n=AN(w); v=AV(w);  // init failure return; n=#atoms of w, v->first atom
  // If w contains non-2, return with error

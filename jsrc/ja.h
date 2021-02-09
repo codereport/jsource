@@ -592,7 +592,7 @@
 #define rngselects(x)               jtrngselects(jt,(x))
 #define rngstates1(x0,x1,x2,x3,x4,x5,x6)         jtrngstates1(jt,(x0),(x1),(x2),(x3),(x4),(x5),(x6))
 #define roll(x)                     jtroll(jt,(x))
-
+#define roll2(x,y)                  jtroll2(jt,(x),(y))
 #define rollany(x,y)                jtrollany(jt,(x),(y))
 #define rollbool(x)                 jtrollbool(jt,(x))
 #define rollk(x,y,z)                jtrollk(jt,(x),(y),(z))
