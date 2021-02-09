@@ -490,7 +490,7 @@
 #define pmfree(x)                   jtpmfree(jt,(x))
 #define pmrecord(x0,x1,x2,x3)       jtpmrecord(jt,(x0),(x1),(x2),(x3))
 #define poly1(x)                    jtpoly1(jt,(x))   
-#define poly2a(x,y)                 jtpoly2a(jt,(x),(y))
+
 #define polymult(x,y,z)             jtpolymult(jt,(x),(y),(z))
 
 #define powop(x,y,z)                jtpowop(jt,(x),(y),(z))
