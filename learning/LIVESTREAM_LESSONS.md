@@ -104,3 +104,4 @@ Prelude> let innerProduct = blackbird sum (zipWith (*))
 ```ijs
 0!:2 <'./test/g___.ijs' [ 0!:0 <'./test/tsu.ijs'
 ```
+* You can treat the `[` (see :arrow_up:) as a statement separator
