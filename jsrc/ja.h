@@ -870,7 +870,7 @@
 #define zp8(x)                      jtzp8(jt,(x))
 #define zpad1(x,y,z)                jtzpad1(jt,(x),(y),(z))
 #define zpadn(x,y,z)                jtzpadn(jt,(x),(y),(z))
-
+#define zplus(x,y)                  jtzplus(jt,(x),(y)) // 4 files' use this in macros
 #define zpow(x,y)                   jtzpow(jt,(x),(y))
 #define zrem(x,y)                   jtzrem(jt,(x),(y))
 #define zsin(x)                     jtzsin(jt,(x))
