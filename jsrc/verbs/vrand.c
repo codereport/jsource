@@ -634,7 +634,7 @@ static A jtrollany(J jt,A w,B*b){A z;D*u;I j,m1,n,sh,*v;UI m,mk,s,t,x=jt->rngM[j
  if(wt&B01)return rollbool(w);
  if(wt&XNUM+RAT)return rollxnum(w);
  RZ(w=vi(w)); m=AV(w)[0];
- if(    2==m)RZ(z=roll2   (w,&b));
+ if(    2==m)RZ(z=jtroll2(jt,w,&b));
  if(!b&&0!=m)RZ(z=jtrollnot0(jt,w,&b));
  if(!b      )RZ(z=rollany (w,&b));
  return z&&!(FL&AT(z))&&wt&XNUM+RAT?xco1(z):z;
@@ -765,7 +765,7 @@ static A jtrollbooldot(J jt, A w){A z;B*v;D*u;I n,sh;UINT mk;
 // Result is Boolean array, or mark if w is not all 2
 // *b=0 if w contained non-2, 1 otherwise (i. e. result is valid if *b=1)
 #undef roll2
-#define roll2(w,b) jtroll2dot(jt,(w),(b))
+#define jtroll2(jt,w,b) jtroll2dot(jt,(w),(b))
 static A jtroll2dot(J jt,A w,B*b){A z;I j,n,nslice,p,q,r,*v;UI mk,t,*zv;
  *b=0; n=AN(w); v=AV(w);  // init failure return; n=#atoms of w, v->first atom
  // If w contains non-2, return with error
@@ -831,7 +831,7 @@ static A jtrolldot(J jt, A w){A z;B b=0;I m,wt;
  if(wt&B01)return rollbool(w);
  if(wt&XNUM+RAT)return rollxnum(w);
  RZ(w=vi(w)); m=AV(w)[0];
- if(    2==m)RZ(z=roll2   (w,&b));
+ if(    2==m)RZ(z=jtroll2(jt,w,&b));
  if(!b&&0!=m)RZ(z=jtrollnot0(jt,w,&b));
  if(!b      )RZ(z=rollany (w,&b));
  return z&&!(FL&AT(z))&&wt&XNUM+RAT?xco1(z):z;
