@@ -41,7 +41,6 @@ otherwise the regs may be used and the parameter lost.
 
 
 #include <stdlib.h>
-#include <unistd.h>
 typedef unsigned char       BYTE;
 #define CALLBACK
 #include <stdint.h>
