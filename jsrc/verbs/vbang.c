@@ -24,7 +24,7 @@ static I terms=sizeof(coeff)/sizeof(D);
 
 static Z jtzhorner(J jt,I n,D*c,Z v){Z s;D*d=n+c;
  s=zeroZ;
- DQ(n, s=zplus(zrj0(*--d),ztymes(v,s));); 
+ DQ(n, s=jtzplus(jt,zrj0(*--d),ztymes(v,s));); 
  return s;
 }
 
@@ -69,7 +69,7 @@ static Z jtzgamma(J jt,Z z){D y=ABS(z.im);
 
 AMONPS(factI,  D,I, , *z=dgamma(1.0+(D)*x); , HDR1JERR)
 AMONPS(factD,  D,D, , *z=_isnan(*x)?*x:dgamma(1.0+*x); , HDR1JERR)
-AMONPS(factZ,  Z,Z, , *z=zgamma(zplus(z1,*x)); , HDR1JERR)
+AMONPS(factZ,  Z,Z, , *z=zgamma(jtzplus(jt,z1,*x)); , HDR1JERR)
 
 
 #define PQLOOP(expr) while(n&&h&&h!=inf&&h!=infm){h*=expr; --n;}
@@ -115,9 +115,9 @@ static D ibin(D x,D y){D d=MIN(x,y-x),p=1;
 }    /* x and y are non-negative integers; x<=y */
 
 static Z jtzbin(J jt,Z x,Z y){Z a,b,c;
- a=zgamma(zplus(z1,y));
- b=zgamma(zplus(z1,x));
- c=zgamma(zplus(z1,jtzminus(jt,y,x)));
+ a=zgamma(jtzplus(jt,z1,y));
+ b=zgamma(jtzplus(jt,z1,x));
+ c=zgamma(jtzplus(jt,z1,jtzminus(jt,y,x)));
  return jtzdiv(jt,a,ztymes(b,c));
 }
 

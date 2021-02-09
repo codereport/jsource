@@ -188,10 +188,10 @@ static Z jtztan(J jt,Z v){return jtzdiv(jt,zsin(v),zcos(v));}
 
 // bug in some versions of Visual Studio
 #pragma auto_inline(off)
-static Z jtzp4(J jt,Z v){return zsqrt(zplus(z1,ztymes(v,v)));}
+static Z jtzp4(J jt,Z v){return zsqrt(jtzplus(jt,z1,ztymes(v,v)));}
 #pragma auto_inline(on)
 
-static Z jtzm4(J jt,Z v){return 1e16<hypoth(v.re,v.im)?v:ztymes(zplus(v,z1),zsqrt(jtzdiv(jt,jtzminus(jt,v,z1),zplus(v,z1))));}
+static Z jtzm4(J jt,Z v){return 1e16<hypoth(v.re,v.im)?v:ztymes(jtzplus(jt,v,z1),zsqrt(jtzdiv(jt,jtzminus(jt,v,z1),jtzplus(jt,v,z1))));}
 
 static Z jtzsinh(J jt,Z v){return zmj(zsin(zjx(v)));}  /* 4.5.7 */
 
@@ -199,17 +199,17 @@ static Z jtzcosh(J jt,Z v){return zcos(zjx(v));}       /* 4.5.8 */
 
 static Z jtztanh(J jt,Z v){return v.re<-TMAX?zrj0(-1.0):TMAX<v.re?z1:jtzdiv(jt,zsinh(v),zcosh(v));}
 
-static Z jtzp8(J jt,Z v){return zsqrt(ztymes(zplus(zj,v),jtzminus(jt,zj,v)));}
+static Z jtzp8(J jt,Z v){return zsqrt(ztymes(jtzplus(jt,zj,v),jtzminus(jt,zj,v)));}
 
-static Z jtzasinh(J jt,Z v){return 0>v.re ? znegate(zasinh(znegate(v))) : zlog(zplus(v,zp4(v)));}
+static Z jtzasinh(J jt,Z v){return 0>v.re ? znegate(zasinh(znegate(v))) : zlog(jtzplus(jt,v,zp4(v)));}
 
 static Z jtzacosh(J jt,Z v){Z z;
- z=zlog(zplus(v,zm4(v))); 
+ z=zlog(jtzplus(jt,v,zm4(v))); 
  if(0>=z.re){z.re=0; z.im=ABS(z.im);} 
  return z;
 }
 
-static Z jtzatanh(J jt,Z v){return ztymes(zrj0((D)0.5),zlog(jtzdiv(jt,zplus(z1,v),jtzminus(jt,z1,v))));}
+static Z jtzatanh(J jt,Z v){return ztymes(zrj0((D)0.5),zlog(jtzdiv(jt,jtzplus(jt,z1,v),jtzminus(jt,z1,v))));}
 
 static Z jtzatan(J jt,Z v){ZF1DECL;
  if(!b&&(a<-1e13||1e13<a))return zrj0(0<a?PI/2.0:-PI/2.0);
@@ -241,7 +241,7 @@ static Z jtzarc(J jt,Z v){D x,y;Z t,z;
  ZASSERT(BETWEENC(x,-12,12)&&FFEQ(x,r)&&!u.im,EVDOMAIN);  // x must be integer
  switch(x){
   default: ZASSERT(0,EVDOMAIN);
-  case  0: return zsqrt(ztymes(zplus(z1,v),jtzminus(jt,z1,v)));
+  case  0: return zsqrt(ztymes(jtzplus(jt,z1,v),jtzminus(jt,z1,v)));
   case  1: return zsin(v);           case  -1: return zasin(v);
   case  2: return zcos(v);           case  -2: return zacos(v);
   case  3: return ztan(v);           case  -3: return zatan(v);

@@ -127,7 +127,7 @@ static B jtnumbpx(J jt,I n,C*s,void*vv){B ne,ze;C*t,*u;I k,m;Z b,p,q,*v,x,y;
    k=m-(1+k);
    if(ze=!(b.re||b.im))b.re=1;
    if(!(numb(k,1+u,&q,b)))return 0;
-   if(ze){if(q.re)p.re=inf;} else{DQ(k,q=jtzdiv(jt,q,b);); p=zplus(p,q);}
+   if(ze){if(q.re)p.re=inf;} else{DQ(k,q=jtzdiv(jt,q,b);); p=jtzplus(jt,p,q);}
   }
   *v=p; if(ne){v->re=-v->re; v->im=-v->im;}
   return 1;

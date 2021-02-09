@@ -59,7 +59,7 @@ static A jtcfrz(J jt,A a,A w){A z;B b=0,p;I j,n;Z c,d,*t,*u,*v;
  GATV0(z,CMPX,1+n,1); v=ZAV(z); v[0]=c=ZAV(a)[0]; p=!c.im;
  for(j=0;j<n;++j){
   d=znegate(u[j]); t=j+v; t[1]=t[0]; 
-  DQ(j, t[0]=zplus(t[-1],ztymes(d,t[0])); --t;); 
+  DQ(j, t[0]=jtzplus(jt,t[-1],ztymes(d,t[0])); --t;); 
   v[0]=ztymes(d,v[0]);
   if(p&&d.im)if(b^=1)c=u[j]; else if(p=ZCJ(c,u[j])){t=v; DQ(2+j, t++->im=0.0;);}
  }
@@ -88,8 +88,8 @@ static Z jtnewt(J jt,I m,Z*a,Z x,I n){I i,j;D e=EPS/1024.0;Z c,p,q,*v;
  c.im=0.0;
  for(i=0;i<n;++i){
   p=q=zeroZ; v=a+m; j=m;
-  DQ(m, p=zplus(*v,ztymes(x,p)); c.re=(D)j--; q=zplus(ztymes(c,*v),ztymes(x,q)); --v;);
-  p=zplus(*a,ztymes(x,p));
+  DQ(m, p=jtzplus(jt,*v,ztymes(x,p)); c.re=(D)j--; q=jtzplus(jt,ztymes(c,*v),ztymes(x,q)); --v;);
+  p=jtzplus(jt,*a,ztymes(x,p));
   if(e>zmag(p)||e>zmag(q))break;
   x=jtzminus(jt,x,jtzdiv(jt,p,q));
  }
@@ -104,7 +104,7 @@ static B jtdeflateq(J jt,B k,I m,Q*v,Q x){Q q,r,*u;
 }    /* deflate by x which may or may not be a root. result is 1 iff x is a root. k is ignored. */
 
 static void jtdeflate(J jt,B k,I m,Z*v,Z x){
- if(k){Z q,r; v+=m; q=*v--; DQ(m, r=*v; *v--=q; q=zplus(r,ztymes(q,x)););}
+ if(k){Z q,r; v+=m; q=*v--; DQ(m, r=*v; *v--=q; q=jtzplus(jt,r,ztymes(q,x)););}
  else{D a,b,d,p,q,r;
   a=2*x.re; b=-(x.re*x.re+x.im*x.im);
   v+=m; p=v--->re; q=v--->re;
@@ -120,24 +120,24 @@ static Z jtlaguerre(J jt,I m,Z*a,Z x){D ax,e;I i,j;Z b,c,d,dx,g,g2,h,p,q,s,sq,y,
   ZASSERT(i<400,EVLIMIT);
   c=d=zeroZ; b=a[m]; e=zmag(b); ax=zmag(x);
   for(j=0;j<m;++j){
-   d=zplus(ztymes(x,d),c);         /* 2*d is 2nd derivative */
-   c=zplus(ztymes(x,c),b);         /* c   is 1st derivative */
-   b=zplus(ztymes(x,b),a[m-j-1]);  /* b   is poly at x      */
+   d=jtzplus(jt,ztymes(x,d),c);         /* 2*d is 2nd derivative */
+   c=jtzplus(jt,ztymes(x,c),b);         /* c   is 1st derivative */
+   b=jtzplus(jt,ztymes(x,b),a[m-j-1]);  /* b   is poly at x      */
    e=zmag(b)+ax*e;
   }
   if(zmag(b)<=EPS*e)return x;
   g=jtzdiv(jt,c,b);
   g2=ztymes(g,g);
-  h=jtzminus(jt,g2,jtzdiv(jt,zplus(d,d),b));
+  h=jtzminus(jt,g2,jtzdiv(jt,jtzplus(jt,d,d),b));
   sq=zsqrt(ztymes(zm1,jtzminus(jt,ztymes(zm,h),g2)));
-  p=zplus(g,sq); q=jtzminus(jt,g,sq); s=zmag(p)>zmag(q)?p:q; 
+  p=jtzplus(jt,g,sq); q=jtzminus(jt,g,sq); s=zmag(p)>zmag(q)?p:q; 
   y=x;
   dx=ZNZ(s)?jtzdiv(jt,zm,s):zpow(znegate(jtzdiv(jt,a[0],a[m])),zrj0(1.0/(D)m));  // Normal step if s!=0; random step if s=0
   x=jtzminus(jt,x,dx);  // advance to new position
   if(zmag(jtzminus(jt,x,y))<=EPS*zmag(x))return x;  // if we didn't move much, call it converged.  We hope it's a root.
   // This algorithm is subject to hitting limit cycles (_48 1 0 0 0 1 is an example)
   // To prevent that, every so often we make a partial move
-  if(!--kicktimer){kicktimer=CSZ1; x=zplus(x,ztymes(dx,zrj0(cyclefracs[(i>>3)&8])));}
+  if(!--kicktimer){kicktimer=CSZ1; x=jtzplus(jt,x,ztymes(dx,zrj0(cyclefracs[(i>>3)&8])));}
 }}   // Press et al., "Numerical Recipes in C" with additions from 2d edition
 
 static Q jtmultiple(J jt,D x,Q m){A y;Q q1,q2,q1r2;
@@ -211,7 +211,7 @@ static A jtrfcz(J jt,I m,A w){A x,y,z;B bb=0,real;D c,d;I i;Z r,*xv,*yv,*zv;
  if(2==m){Z a2,b,c,d,z2={2,0};
   a2=ztymes(z2,xv[2]); b=znegate(xv[1]); c=xv[0]; 
   d=zsqrt(jtzminus(jt,ztymes(b,b),ztymes(z2,ztymes(a2,c))));
-  r=jtzdiv(jt,zplus (b,d),a2); zv[0]=newt(m,xv,r,10L);
+  r=jtzdiv(jt,jtzplus(jt,b,d),a2); zv[0]=newt(m,xv,r,10L);
   r=jtzdiv(jt,jtzminus(jt,b,d),a2); zv[1]=newt(m,xv,r,10L);
  }else{
   for(i=0;i<m;++i){
@@ -358,7 +358,7 @@ static A jtpoly2a(J jt,A a,A w){A c,e,x;I m;D rkblk[16];
    DO(n, p=ad[an-1]; u=*x++; DQ(an-1,p=ad[i]+u*p;); *z++=p;); break;
   }
   NAN1; break;  // Horner's rule.  First multiply is never 0*_
- case 2: NAN0; DQ(n, q=zeroZ; y=*wz++; j=an; DQ(an,q=zplus(az[--j],ztymes(y,q));); *zz++=q;); NAN1; break;  // CMPX
+ case 2: NAN0; DQ(n, q=zeroZ; y=*wz++; j=an; DQ(an,q=jtzplus(jt,az[--j],ztymes(y,q));); *zz++=q;); NAN1; break;  // CMPX
  // mult/roots: d/e are set
  case 3: return tymes(c,df2(za,negate(a),w,eval("*/@(+/)")));
  case 4: NAN0; DO(n, p=d; u=*x++; DO(an,p*=u-ad[i];); *z++=p;); NAN1;                  break;
