@@ -8,16 +8,16 @@
 
 
 X jtxev1(J jt,A w,C*s){A y; 
- RZ(df1(y,cvt(XNUM,w),eval(s)));
+ RZ(df1(y,jtcvt(jt,XNUM,w),eval(s)));
  ASSERTSYS(!AR(y),"xev1");
- if(!(XNUM&AT(y)))RZ(y=cvt(XNUM,y)); 
+ if(!(XNUM&AT(y)))RZ(y=jtcvt(jt,XNUM,y)); 
  return XAV(y)[0];
 }
 
 X jtxev2(J jt,A a,A w,C*s){A y; 
- RZ(df2(y,cvt(XNUM,a),cvt(XNUM,w),eval(s))); 
+ RZ(df2(y,jtcvt(jt,XNUM,a),jtcvt(jt,XNUM,w),eval(s))); 
  ASSERTSYS(!AR(y),"xev2");
- if(!(XNUM&AT(y)))RZ(y=cvt(XNUM,y)); 
+ if(!(XNUM&AT(y)))RZ(y=jtcvt(jt,XNUM,y)); 
  return XAV(y)[0];
 }
 
@@ -182,7 +182,7 @@ X jtxdiv(J jt,X a,X w,I mode){PROLOG(0096);B di;I an,*av,c,c0,d,e,k,s,u[2],u1,wn
    k=c0>=e?c0/e:e/c0; 
    k=(k>3)+(k>32)+(k>316)+(k>3162);
    s=XBASEN*(an-yn)+(c0>=e?k:-k); 
-   if(s){q=shift10(s,q); y=shift10(s,y);}
+   if(s){q=jtshift10(jt,s,q); y=jtshift10(jt,s,y);}
    A z=xplus(q,xdiv(xminus(a,y),w,mode));
    EPILOGNOVIRT(z);
   }
@@ -226,7 +226,7 @@ static X jtxexp(J jt,X w,I mode){I k,m;X s,y;
  if(0>k)return rifvsdebug(xc(mode));
  m=(I)(2.718281828*xint(w)); k=2; s=xplus(iv1,w); y=w;
  DQ(m, y=xtymes(y,w); s=xplus(xtymes(s,xc(k)),y); ++k;);
- return rifvsdebug(xdiv(s,xev1(apv(1+m,1L,1L),"*/"),mode));
+ return rifvsdebug(xdiv(s,jtxev1(jt,apv(1+m,1L,1L),"*/"),mode));
 }
 
  X jtxpow(J jt,X a,X w){PROLOG(0097);I c,d,e,r;X m,t,z;
@@ -314,7 +314,7 @@ APFX(  powXX, X,X,X, xpow  ,,HDR1JERR)
 
 AMON( sgnX, X,X, *z=  rifvsdebug(xsgn(*x));)
 AMONPS(sqrtX, X,X, , *z= rifvsdebug(xsqrt(*x)); , HDR1JERR)
-AMONPS( expX, X,X, , *z=  rifvsdebug(xexp(*x,jt->xmode)); , HDR1JERR)
+AMONPS( expX, X,X, , *z=  rifvsdebug(jtxexp(jt,*x,jt->xmode)); , HDR1JERR)
 AMONPS( logX, X,X, , *z= rifvsdebug(xlog1(*x)); , HDR1JERR)
 AMONPS(logXD, D,X, , *z=xlogd1(*x); , HDR1JERR)
 AMON(logXZ, Z,X, *z=xlogz1(*x);)

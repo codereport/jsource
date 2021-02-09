@@ -16,7 +16,7 @@
  GATV0(x,INT,n,1);    qv=AV(x);   // allocate vector of max-indexes for each box - only the address is used  qv->max-index 0
  GATV0(x,BOX,n,1);    pv=(C**)AV(x);  // allocate vector of pointers to each box's data  pv->box-data-base 0
  RZ(x=apvwr(n,0L,0L)); cv=AV(x);   // allocate vector of current indexes, init to 0  cv->current-index 0
- DO(n, x=wv[i]; if(TYPESNE(t,AT(x)))RZ(x=cvt(t,x)); r+=AR(x); qv[i]=p=AN(x); DPMULDE(m,p,m); pv[i]=CAV(x););  // fill in *qv and *pv; calculate r=+/ #@$@> w, m=*/ */@$@> w
+ DO(n, x=wv[i]; if(TYPESNE(t,AT(x)))RZ(x=jtcvt(jt,t,x)); r+=AR(x); qv[i]=p=AN(x); DPMULDE(m,p,m); pv[i]=CAV(x););  // fill in *qv and *pv; calculate r=+/ #@$@> w, m=*/ */@$@> w
  GATV0(z,BOX,m,r);    zv=AAV(z); s=AS(z);   // allocate result area
  // There is no need to turn off pristinity of w, because nothing was copied out by pointer (everything was copied & then cloned)
  // The result is certainly pristine if it is DIRECT
@@ -50,7 +50,7 @@
  if(ar>acr)return rank2ex(a,w,UNUSED_VALUE,acr,wcr,acr,wcr,jtifrom);  // split a into cells if needed.  Only 1 level of rank loop is used
  // From here on, execution on a single cell of a (on matching cell(s) of w, or all w).  The cell of a may have any rank
  an=AN(a); wn=AN(w); ws=AS(w);
- if(!(INT&AT(a)))RZ(a=cvt(INT,a));
+ if(!(INT&AT(a)))RZ(a=jtcvt(jt,INT,a));
  // If a is empty, it needs to simulate execution on a cell of fills.  But that might produce error, if w has no
  // items, where 0 { empty is an index error!  In that case, we set wr to 0, in effect making it an atom (since failing exec on fill-cell produces atomic result)
 // if(an==0 && wn==0 && ws[wf]==0)wcr=wr=0;     defer this pending analysis
@@ -167,13 +167,13 @@ A jtfrombu(J jt,A a,A w,I wf){F1PREFIP;A p,q,z;I ar,*as,h,m,r,*u,*v,wcr,wr,*ws;
  fauxblockINT(pfaux,4,1); fauxINT(p,pfaux,h,1) v=AV(p)+h; u=ws+wf+h; m=1; DQ(h, *--v=m; m*=*--u;);  // m is number of items in the block of axes that index into w
  r=wr+1-h;  // rank of intermediate w arg is rank of w, minus h axes that go away and are replaced by 1 axis
  // We will use pdt to create an index to the cell
- A ind; RZ(ind=pdt(a,p));
+ A ind; RZ(ind=jtpdt(jt,a,p));
  PROLOG(777);
  if(r==wr){
   q=w;
  }else{
   //  reshape w to combine the first h axes of each cell.  Be careful with the copying, because w and q may be the same block.  Some axes may be closed up by the copy
-  RZ(q=virtualip(w,0,r)); AN(q)=AN(w); v=AS(q); MCISH(v,ws,wf); v[wf]=m; MCISH(v+wf+1,ws+wf+h,wcr-h);  /* q is reshape(.,w) */
+  RZ(q=virtualip(w,0,r)); AN(q)=AN(w); v=AS(q); MCISH(v,ws,wf); v[wf]=m; MCISH(v+wf+1,ws+wf+h,wcr-h);  /* q is jtreshape(jt,.,w) */
  }
  IRS2(ind,q,0, RMAX,wcr+1-h,jtifrom,z);
  EPILOG(z);  // we have to release the virtual block so that w is inplaceable later on in the sentence
@@ -192,7 +192,7 @@ B jtaindex(J jt,A a,A w,I wf,A*ind){A*av,q,z;I an,ar,c,j,k,t,*u,*v,*ws;
  for(j=0;j<an;++j){
   q=av[j]; t=AT(q);
   if(t&BOX)return 0;   // if empty boxed array, error
-  if(!(t&INT))RZ(q=cvt(INT,q));  // if can't convert to INT, error
+  if(!(t&INT))RZ(q=jtcvt(jt,INT,q));  // if can't convert to INT, error
   if((((c^AN(q))-1)&(AR(q)-2))>=0)return 0;   // if not the same length, or rank>1, error
   u=AV(q);
   DO(c, SETNDX(k,u[i],ws[i]) *v++=k;);   // copy in the indexes, with correction for negative indexes
@@ -221,7 +221,7 @@ static B jtaindex1(J jt,A a,A w,I wf,A*ind){A z;I c,i,k,n,t,*v,*ws;
  if(i==0){z=a;  // If all indexes OK, return the original block
  }else{
   // There was a negative index.  Allocate a new block for a and copy to it.
-  RZ(z=t&INT?ca(a):cvt(INT,a));  v=AV(z);
+  RZ(z=t&INT?ca(a):jtcvt(jt,INT,a));  v=AV(z);
   DQ(n, DO(c, SETNDXRW(k,*v,ws[i]) ++v;););  // convert indexes to nonnegative & check for in-range
  }
  *ind=z;
@@ -260,10 +260,10 @@ static A jtafrom2(J jt,A p,A q,A w,I r){A z;C*wv,*zv;I d,e,j,k,m,n,pn,pr,* RESTR
 // n is length of axis, w is doubly-unboxed selector
 // result is list of selectors - complementary if w is boxed, with a: standing for axis taken in full
 static A jtafi(J jt,I n,A w){A x;
- if((-AN(w)&SGNIF(AT(w),BOXX))>=0)return pind(n,w);   // empty or not boxed
+ if((-AN(w)&SGNIF(AT(w),BOXX))>=0)return jtpind(jt,n,w);   // empty or not boxed
  ASSERT(!AR(w),EVINDEX);  // if boxed, must be an atom
  x=AAV(w)[0];
- return AN(x)?less(IX(n),pind(n,x)):ds(CACE);   // complementary
+ return AN(x)?jtless(jt,IX(n),jtpind(jt,n,x)):ds(CACE);   // complementary
 }
 
 // general boxed a
@@ -273,7 +273,7 @@ static A jtafrom(J jt,A a,A w){PROLOG(0073);A c,ind,p=0,q,*v,y=w;B bb=1;I acr,ar
  if(ar){  // if there is an array of boxes
   if(((ar^acr)|(wr^wcr))==0){RE(aindex(a,w,wf,&ind)); if(ind)return frombu(ind,w,wf);}  // if boxing doesn't contribute to shape, open the boxes of a and copy the values
   return wr==wcr?rank2ex(a,w,UNUSED_VALUE,0L,wcr,0L,wcr,jtafrom):  // if a has frame, rank-loop over a
-      df2(p,IRS1(a,0L,acr,jtbox,c),IRS1(w,0L,wcr,jtbox,ind),amp(ds(CLBRACE),ds(COPE)));  // (<"0 a) {&> <"0 w
+      df2(p,IRS1(a,0L,acr,jtbox,c),IRS1(w,0L,wcr,jtbox,ind),jtamp(jt,ds(CLBRACE),ds(COPE)));  // (<"0 a) {&> <"0 w
  }
  c=AAV(a)[0]; t=AT(c); SETIC(c,n); v=AAV(c);   // B prob not reqd 
  s=AS(w)+wr-wcr;
@@ -282,7 +282,7 @@ static A jtafrom(J jt,A a,A w){PROLOG(0073);A c,ind,p=0,q,*v,y=w;B bb=1;I acr,ar
  if((-n&SGNIFNOT(t,BOXX))<0){RE(aindex(a,w,wf,&ind)); if(ind)return frombu(ind,w,wf);}  // not empty and not boxed, handle as 1 index list
  if(wcr==wr){
   for(i=m=pr=0;i<n;++i){
-   p=afi(s[i],v[i]);
+   p=jtafi(jt,s[i],v[i]);
    if(!(p&&(((AN(p)^1)-1)&-(AT(p)&NUMERIC))<0))break;  // if 1 selection from numeric axis, do selection here, by adding offset to selected cell
    pr+=AR(p); 
    RANKT rsav=AR(p); AR(p)=0; I px; PRODX(px,wcr-i-1,1+i+s,i0(p)) m+=px; AR(p)=rsav;  // kludge but easier than creating a fauxvirtual block
@@ -295,7 +295,7 @@ static A jtafrom(J jt,A a,A w){PROLOG(0073);A c,ind,p=0,q,*v,y=w;B bb=1;I acr,ar
  }
  // take remaining axes 2 at a time, properly handling omitted axes (ds(CACE)).  First time through p is set if there has been no error
  for(;i<n;i+=2){
-  j=1+i; if(!p)p=afi(s[i],v[i]); q=j<n?afi(s[j],v[j]):ds(CACE); if(!(p&&q))break;  // pq are 0 if error.  Result of ds(CACE)=axis in full
+  j=1+i; if(!p)p=jtafi(jt,s[i],v[i]); q=j<n?jtafi(jt,s[j],v[j]):ds(CACE); if(!(p&&q))break;  // pq are 0 if error.  Result of ds(CACE)=axis in full
   if(p!=ds(CACE)&&q!=ds(CACE)){y=afrom2(p,q,y,wcr-i);}
   else{
    if(q==ds(CACE)){q=p; j=i;}
@@ -348,9 +348,9 @@ static A jtafrom(J jt,A a,A w){PROLOG(0073);A c,ind,p=0,q,*v,y=w;B bb=1;I acr,ar
    // Here we transferred out of w.  We must mark w non-pristine.  Since there may have been duplicates, we cannot mark z as pristine.  We overwrite w because it is no longer in use
    PRISTCLRF(w)
   }
- }else if(!((AT(a)|AT(w))&(NOUN&~SPARSE))){z=fromss(a,w);}  // sparse cases
- else if(AT(w)&SPARSE){z=at&BOX?frombs(a,w) : fromis(a,w);}
- else{z=fromsd(a,w);}
+ }else if(!((AT(a)|AT(w))&(NOUN&~SPARSE))){z=jtfromss(jt,a,w);}  // sparse cases
+ else if(AT(w)&SPARSE){z=at&BOX?jtfrombs(jt,a,w) : jtfromis(jt,a,w);}
+ else{z=jtfromsd(jt,a,w);}
  return z;
 }   /* a{"r w main control */
 
@@ -359,7 +359,7 @@ static A jtafrom(J jt,A a,A w){PROLOG(0073);A c,ind,p=0,q,*v,y=w;B bb=1;I acr,ar
   // Not sparse.  Verify the indexes are numeric and not empty
   if(((AN(a)-1)|(AR(a)-2)|((AT(a)&NUMERIC)-1))>=0){A ind;   // a is an array with rank>1 and numeric.  Rank 1 is unusual & unimportant & we'll ignore it
    // Check indexes for validity; if valid, turn each row into a cell offset
-   if(ind=celloffset(w,a)){
+   if(ind=jtcelloffset(jt,w,a)){
     // Fetch the cells and return.  ind is now an array of cell indexes.  View w as an array of those cells
     // We could do this with ifrom, but it validates the input and checks for virtual, neither of which is germane here.  Also, we would have
     // to reshape w into an array of cells.  Easier just to copy the data right here
@@ -387,7 +387,7 @@ static A jtafrom(J jt,A a,A w){PROLOG(0073);A c,ind,p=0,q,*v,y=w;B bb=1;I acr,ar
   RE(aindex1(a,w,0L,&ind)); if(ind)return frombsn(ind,w,0L);
  }
  // If we couldn't handle it as a special case, do it the hard way
- A z; return from(IRS1(a,0L,1L,jtbox,z),w);
+ A z; return jtfrom(jt,IRS1(a,0L,1L,jtbox,z),w);
 }    /* (<"1 a){w */
 
 static A jtmapx(J jt,A a,A w);
@@ -395,14 +395,14 @@ static EVERYFS(mapxself,0,jtmapx,0,VFLAGNONE)
 
 static A jtmapx(J jt,A a,A w){A z1,z2,z3;
  if(!(BOX&AT(w)))return ope(a);
- RZ(z1=catalog(every(shape(jt,w),ds(CIOTA))));  // create index list of each box
+ RZ(z1=catalog(jtevery(jt,shape(jt,w),ds(CIOTA))));  // create index list of each box
  IRS1(z1,0,0,jtbox,z2);
  RZ(z2=every2(a,z2,(A)&sfn0overself));
  IRS1(z2,0,0,jtbox,z3);
  return every2(z3,w,(A)&mapxself);
 }
 
- A jtmap(J jt, A w){return mapx(ds(CACE),w);}
+ A jtmap(J jt, A w){return jtmapx(jt,ds(CACE),w);}
 
 // extract the single box a from w and open it.  Don't mark it no-inplace.  If w is not boxed, it had better be an atom, and we return it after auditing the index
 static A jtquicksel(J jt,A a,A w){I index;
@@ -427,7 +427,7 @@ static A jtquicksel(J jt,A a,A w){I index;
  n=AN(a); av=AAV(a); 
  if(!n)return w; z=w;
  DO(n, A next=av[i]; if(((AT(z)>>BOXX)&1)>=(2*(AR(next)+(AT(next)&BOX))+AR(z))){RZ(z=jtquicksel(jt,next,z))}  // next is unboxed atom, z is boxed atom or list, use fast indexing  AR(next)==0 && !(AT(next)&BOX) && (AR(z)==0 || (AR(z)==1 && AT(z)&BOX))
-      else{RZ(z=afrom(box(next),z)); ASSERT(((i+1-n)&-AR(z))>=0,EVRANK); if(((AR(z)-1)&SGNIF(AT(z),BOXX))<0)RZ(z=ope(z));}  // Rank must be 0 unless last; open if boxed atom
+      else{RZ(z=jtafrom(jt,box(next),z)); ASSERT(((i+1-n)&-AR(z))>=0,EVRANK); if(((AR(z)-1)&SGNIF(AT(z),BOXX))<0)RZ(z=ope(z));}  // Rank must be 0 unless last; open if boxed atom
    );
  // Since the whole purpose of fetch is to copy one contents by address, we turn off pristinity of w
  PRISTCLRF(w)

@@ -369,7 +369,7 @@ static I hashallo(IH * RESTRICT hh,UI p,UI m,I md){
  }
 
 //
-static IOFX(A,jtioax1,hia(t1,*v),!equ(*v,av[hj]),++v,   --v  )  /* boxed exact 1-element item */   
+static IOFX(A,jtioax1,jthia(jt,t1,*v),!equ(*v,av[hj]),++v,   --v  )  /* boxed exact 1-element item */   
 static IOFX(A,jtioau, hiau(*v),  !equ(*v,av[hj]),++v,   --v  )  /* boxed uniform type         */
 static IOFX(X,jtiox,  hix(v),            !eqx(n,v,av+n*hj),               v+=cn, v-=cn)  /* extended integer           */   
 static IOFX(Q,jtioq,  hiq(v),            !eqq(n,v,av+n*hj),               v+=cn, v-=cn)  /* rational number            */   
@@ -390,7 +390,7 @@ static IOFX(I,jtioi,  hicw(v),           *v!=av[hj],                      ++v,  
 #define THASHA(expa)        {x=*(D*)v; MASK(dx,x); j=HID(dx)%pm; FIND(expa); if(m==hj)hv[j]=i;}
 // boxed type.  "hash" the shape only, after performing relative-to-absolute conversion
 // should omit the relative, since only shape is hashed
-#define THASHBX(expa)       {j=hia(t1,*v)%pm;            FIND(expa); if(m==hj)hv[j]=i;}
+#define THASHBX(expa)       {j=jthia(jt,t1,*v)%pm;            FIND(expa); if(m==hj)hv[j]=i;}
 
 // functions for searching the hash table
 
@@ -419,8 +419,8 @@ static IOFX(I,jtioi,  hicw(v),           *v!=av[hj],                      ++v,  
  }
 // here comparing boxes
 #define TFINDBX(expa,expw)   \
- {jx=j=hia(tl,*v)%pm;           FIND(expw); il=ir=hj;   \
-     j=hia(tr,*v)%pm; if(j!=jx){FIND(expw);    ir=hj;}  \
+ {jx=j=jthia(jt,tl,*v)%pm;           FIND(expw); il=ir=hj;   \
+     j=jthia(jt,tr,*v)%pm; if(j!=jx){FIND(expw);    ir=hj;}  \
  }
 
 // loop to search the hash table.  b means self-index, bx means boxed
@@ -764,7 +764,7 @@ static A jtnodupgrade(J jt,A a,I acr,I ac,I acn,I ad,I n,I m,B b,B bk){A*av,h,*u
    p=0; q=m1;                        \
    while(p<=q){                      \
     t=0; j=(p+q)>>1; v=av+n*hu[j];    \
-    DO(n, if(t=compare(u[i],v[i]))break;);  \
+    DO(n, if(t=jtcompare(jt,u[i],v[i]))break;);  \
     if(0<t)p=j+1; else q=t?j-1:-2;   \
    }                                 \
    zstmt;                            \
@@ -957,7 +957,7 @@ A jtindexofsub(J jt,I mode,A a,A w){PROLOG(0079);A h=0,hi=mtv,z;B mk=w==mark,th;
    // Dyad where shape of an item of a does not match shape of a cell of w.  Return appropriate not-found
    if((wf-af)>0&&af){f1+=wf-af; wf=af;}  // see below for discussion about long frame in w
    I witems = wr>r?ws[0]:1;  // # items of w, in case we are doing i.&0 eg on result of e., which will have that many items
-   m=acr?as[af]:1; f0=MAX(0,f1); RE(zn=mult(prod(f,s),prod(f0,ws+wf)));
+   m=acr?as[af]:1; f0=MAX(0,f1); RE(zn=mult(jtprod(jt,f,s),jtprod(jt,f0,ws+wf)));
    switch(mode){
     case IIDOT:  
     case IICO:    GATV(z,INT,zn,f+f0,s); if(af)MCISH(f+AS(z),ws+wf,f0); v=AV(z); DQ(zn, *v++=m;); return z;
@@ -1004,18 +1004,18 @@ A jtindexofsub(J jt,I mode,A a,A w){PROLOG(0079);A h=0,hi=mtv,z;B mk=w==mark,th;
   if(!af)c=zn;   // if af=0, wc may be >1 if there is w-frame.  In that case, #result/a-cell must include the # w-cells.  This has been included in zn
  }else{
   // An argument is empty.  We must beware of overflow in counting cells.  Just do it the old slow way
-  n=acr?prod(acr-1,as+af+1):1; RE(zn=mult(prod(f,s),prod(f1,ws+wf)));
+  n=acr?jtprod(jt,acr-1,as+af+1):1; RE(zn=mult(jtprod(jt,f,s),jtprod(jt,f1,ws+wf)));
   k=n*k1;
-  ac=prod(af,as); ak=ac?k1*an/ac:0;  // ac = #cells of a
-  wc=prod(wf,ws); wk=wc?k1*wn/wc:0; c=1<ac?wk/k:zn; wk*=1<wc;
+  ac=jtprod(jt,af,as); ak=ac?k1*an/ac:0;  // ac = #cells of a
+  wc=jtprod(jt,wf,ws); wk=wc?k1*wn/wc:0; c=1<ac?wk/k:zn; wk*=1<wc;
  }
 
  // Convert dissimilar types
  th=HOMO(at,wt); jt->min=0;  // are args compatible? clear return values from irange
  // Indicate if float args need to be canonicalized for -0.  should do this in the hash
  I cvtsneeded = 0;  // 1 means convert a, 2 means convert w
- if(th&&TYPESNE(t,at))RZ(a=cvt(t|VFRCEXMT,a)) else if(t&FL+CMPX      )cvtsneeded=1;
- if(th&&TYPESNE(t,wt))RZ(w=cvt(t|VFRCEXMT,w)) else if(t&FL+CMPX&&a!=w)cvtsneeded|=2;
+ if(th&&TYPESNE(t,at))RZ(a=jtcvt(jt,t|VFRCEXMT,a)) else if(t&FL+CMPX      )cvtsneeded=1;
+ if(th&&TYPESNE(t,wt))RZ(w=jtcvt(jt,t|VFRCEXMT,w)) else if(t&FL+CMPX&&a!=w)cvtsneeded|=2;
 
  // Allocate the result area
  if(mk){fauxINT(z,zfaux,1,0)} // if prehashed, we must create an area that can hold at least one stored result
@@ -1045,13 +1045,13 @@ A jtindexofsub(J jt,I mode,A a,A w){PROLOG(0079);A h=0,hi=mtv,z;B mk=w==mark,th;
   // If empty argument or result, or inhomogeneous arguments, return an appropriate empty or not-found
   // We also handle the case of i.&0@:e. when the rank of w is more than 1 greater than the rank of a cell of a;
   // in that case the search always fails
-  case IIDOT:   return reshape(shape(jt,z),sc(n?m:0  ));
-  case IFORKEY: {z=reshape(shape(jt,z),take(sc(m),sc(m))); RZ(z=mkwris(z)); AM(z)=!!m; return z;}  // all 0 but the first has the total count
-  case IICO:    return reshape(shape(jt,z),sc(n?m:m-1));
-  case INUBSV:  return reshape(shape(jt,z),take(sc(m),num(1)));
+  case IIDOT:   return jtreshape(jt,shape(jt,z),sc(n?m:0  ));
+  case IFORKEY: {z=jtreshape(jt,shape(jt,z),jttake(jt,sc(m),sc(m))); RZ(z=mkwris(z)); AM(z)=!!m; return z;}  // all 0 but the first has the total count
+  case IICO:    return jtreshape(jt,shape(jt,z),sc(n?m:m-1));
+  case INUBSV:  return jtreshape(jt,shape(jt,z),jttake(jt,sc(m),num(1)));
   case INUB:    AN(z)=0; *AS(z)=m?1:0; return z;
   case ILESS:   if(m)AN(z)=*AS(z)=0; else memcpy(AV(z),AV(w),k1*AN(w)); return z;
-  case IEPS:    return reshape(shape(jt,z),num(m&&(!n||th)) );
+  case IEPS:    return jtreshape(jt,shape(jt,z),num(m&&(!n||th)) );
   case INUBI:   return m?iv0:mtv;
   // th<0 means that the result of e. would have rank>1 and would never compare against either 0 or 1
   case II0EPS:  return sc(n&&zn?0L        :witems         );
@@ -1080,7 +1080,7 @@ A jtindexofsub(J jt,I mode,A a,A w){PROLOG(0079);A h=0,hi=mtv,z;B mk=w==mark,th;
   p = (UI)MIN(FLIMAX,(2.1*MAX(m,c)));  // length we will use for hashtable, if small-range not used.
   if(!b&&t&BOX+FL+CMPX)ctmask(jt);
   if     (t&BOX)          fn=b&&(1<n||usebs(a,ac,m))?jtiobs:1<n?jtioa:b?jtioax1:
-                              (t1=utype(a,ac))&&(mk||a==w||TYPESEQ(t1,utype(w,wc)))?jtioau:jtioa1;
+                              (t1=jtutype(jt,a,ac))&&(mk||a==w||TYPESEQ(t1,jtutype(jt,w,wc)))?jtioau:jtioa1;
   else if(t&XNUM)         fn=jtiox;
   else if(t&RAT )         fn=jtioq;
   else if(1==k)           {p=t&B01?2:256;datamin=0; mode|=IIMODFULL; fn=jtio12;}   // 1-byte ops, just use small-range code: checking takes too much time
@@ -1286,7 +1286,7 @@ A jtindexofprehashed(J jt,A a,A w,A hs){A h,hi,*hv,x,z;AF fn;I ar,*as,at,c,f1,k,
  wr=AR(w); ws=AS(w); wt=AT(w);
  r=ar?ar-1:0;
  f1=wr-r;
- RE(c=prod(f1,ws));  // c=#cells of w (and result)
+ RE(c=jtprod(jt,f1,ws));  // c=#cells of w (and result)
  // audit conformance of input shapes.  If there is an error, pass to the main code to get the error result
  // Use c as an error flag
  if(!(r<=ar&&0<=f1))c=0;   // w must have rank big enough to hold a cell of a
@@ -1310,7 +1310,7 @@ A jtindexofprehashed(J jt,A a,A w,A hs){A h,hi,*hv,x,z;AF fn;I ar,*as,at,c,f1,k,
  // convert type of w if needed; and if unconverted FL/CMPX, touch to change -0 to 0
  // this is dodgy: if the comparison tolerance doen't change, there should be no need for conversion; but
  // if ct does change, the stored hashtable is invalid.  We should store the ct as part of the hashtable
- if(TYPESNE(t,wt))RZ(w=cvt(t,w)) else if(t&FL+CMPX)RZ(w=cvt0(w));
+ if(TYPESNE(t,wt))RZ(w=jtcvt(jt,t,w)) else if(t&FL+CMPX)RZ(w=cvt0(w));
  // call the action routine
  return fn(jt,mode+IPHOFFSET,m,n,c,k,AR(a),AR(w),(I)1,(I)1,(I)0,(I)0,a,w,&h,z);
 }
@@ -1335,7 +1335,7 @@ A jtindexofprehashed(J jt,A a,A w,A hs){A h,hi,*hv,x,z;AF fn;I ar,*as,at,c,f1,k,
 // ~. y  - does not have IRS
  A jtnub(J jt, A w){ 
  F1PREFIP;
- if(SPARSE&AT(w)||AFLAG(w)&AFNJA)return repeat(nubsieve(w),w);
+ if(SPARSE&AT(w)||AFLAG(w)&AFNJA)return jtrepeat(jt,nubsieve(w),w);
  A z; RZ(z=indexofsub(INUB,w,w));
  // We extracted from w, so mark it (or its backer if virtual) non-pristine.  If w was pristine and inplaceable, transfer its pristine status to the result.  We overwrite w because it is no longer in use
  PRISTXFERF(z,w)
@@ -1350,10 +1350,10 @@ A jtindexofprehashed(J jt,A a,A w,A hs){A h,hi,*hv,x,z;AF fn;I ar,*as,at,c,f1,k,
  wt=AT(w); wr=AR(w); r=MAX(1,ar);
  if(ar>1+wr)return a;  // if w's rank is smaller than that of a cell of a, nothing can be removed, return a
  // if w's rank is larger than that of a cell of a, reheader w to look like a list of such cells.  The number of atoms stays the same
- if(wr&&r!=wr){RZ(x=virtual(w,0,r)); AN(x)=AN(w); s=AS(x); ws=AS(w); k=ar>wr?0:1+wr-r; *s=prod(k,ws); MCISH(1+s,k+ws,r-1);}  // bug: should test for error on the prod()
+ if(wr&&r!=wr){RZ(x=virtual(w,0,r)); AN(x)=AN(w); s=AS(x); ws=AS(w); k=ar>wr?0:1+wr-r; *s=jtprod(jt,k,ws); MCISH(1+s,k+ws,r-1);}  // bug: should test for error on the jtprod(jt,)
  // if nothing special (like sparse, or incompatible types, or x requires conversion) do the fast way; otherwise (-. x e. y) # y
  RZ(x=!(at&SPARSE)&&HOMO(at,wt)&&TYPESEQ(at,maxtype(at,wt))&&!(AFLAG(a)&AFNJA)?indexofsub(ILESS,x,a):
-     repeat(__not(eps(a,x)),a));
+     jtrepeat(jt,__not(jteps(jt,a,x)),a));
  // We extracted from a, so mark it non-pristine.  If a was pristine and inplaceable, transfer its pristine status to the result
  PRISTXFERAF(x,a)
  return x;
@@ -1382,23 +1382,23 @@ A jtindexofprehashed(J jt,A a,A w,A hs){A h,hi,*hv,x,z;AF fn;I ar,*as,at,c,f1,k,
 // = y    
  A jtsclass(J jt, A w){A e,x,xy,y,z;I c,j,m,n,*v;P*p;
  // If w is scalar, return 1 1$1
- if(!AR(w))return reshape(v2(1L,1L),num(1));
+ if(!AR(w))return jtreshape(jt,jtv2(jt,1L,1L),num(1));
  SETIC(w,n);   // n=#items of y
- RZ(x=indexof(w,w));   // x = i.~ y
+ RZ(x=jtindexof(jt,w,w));   // x = i.~ y
  // if w is dense, return ((x = i.n) # x) =/ x
- if(DENSE&AT(w))return atab(CEQ,repeat(eq(IX(n),x),x),x);
+ if(DENSE&AT(w))return atab(CEQ,jtrepeat(jt,eq(IX(n),x),x),x);
  // if x is sparse... ??
- p=PAV(x); e=SPA(p,e); y=SPA(p,i); RZ(xy=stitch(SPA(p,x),y));
- if(n>*AV(e))RZ(xy=over(xy,stitch(e,less(IX(n),y))));
- RZ(xy=grade2(xy,xy)); v=AV(xy);
+ p=PAV(x); e=SPA(p,e); y=SPA(p,i); RZ(xy=jtstitch(jt,SPA(p,x),y));
+ if(n>*AV(e))RZ(xy=over(xy,jtstitch(jt,e,jtless(jt,IX(n),y))));
+ RZ(xy=jtgrade2(jt,xy,xy)); v=AV(xy);
  c=*AS(xy);
  m=j=-1; DQ(c, if(j!=*v){j=*v; ++m;} *v=m; v+=2;);
  GASPARSE(z,SB01,1,2,(I*)0);  v=AS(z); v[0]=1+m; v[1]=n;
  p=PAV(z); 
- SPB(p,a,v2(0L,1L));
+ SPB(p,a,jtv2(jt,0L,1L));
  SPB(p,e,num(0));
  SPB(p,i,xy);
- SPB(p,x,reshape(sc(c),num(1)));
+ SPB(p,x,jtreshape(jt,sc(c),num(1)));
  return z;
 }
 
@@ -1464,8 +1464,8 @@ A jtiocol(J jt,I mode,A a,A w){A h,z;I ar,at,c,d,m,p,t,wr,*ws,wt;void(*fn)();
  d=1; DO(1+wr-ar, d*=ws[i];);
  // convert to common type
  RE(t=maxtype(at,wt));
- if(TYPESNE(t,at))RZ(a=cvt(t,a));
- if(TYPESNE(t,wt))RZ(w=cvt(t,w));
+ if(TYPESNE(t,at))RZ(a=jtcvt(jt,t,a));
+ if(TYPESNE(t,wt))RZ(w=jtcvt(jt,t,w));
  // allocate hash table and result
  FULLHASHSIZE(m+m,INTSIZE,1,0,p);
  GATV0(h,INT,p,1);

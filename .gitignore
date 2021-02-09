@@ -148,3 +148,11 @@ docs/Makefile
 
 #python in clion
 venv/*
+
+# Robert's python code
+excluded_names.txt
+find_replace_macro.py
+known_good_build.txt
+known_good_cmake.txt
+known_good_test.txt
+removal_log.md

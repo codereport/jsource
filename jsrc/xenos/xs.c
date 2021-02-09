@@ -41,7 +41,7 @@ static A jtline(J jt,A w,I si,C ce,B tso){A x=mtv,z;B xt=jt->tostdout;DC d,xd=jt
  // We do not inherit the lock from higher levels, per the original design
  C oldk=jt->uflags.us.cx.cx_c.glock; // incoming lock status
  if((jt->uflags.us.cx.cx_c.glock=(AN(w)&&CFF==CAV(w)[0]))){
-  RZ(w=unlock2(mtm,w));
+  RZ(w=jtunlock2(jt,mtm,w));
   ASSERT(CFF!=CAV(w)[0],EVDOMAIN);
   si=-1; tso=0;  // if locked, keep shtum about internals
  }
@@ -51,8 +51,8 @@ static A jtline(J jt,A w,I si,C ce,B tso){A x=mtv,z;B xt=jt->tostdout;DC d,xd=jt
  A *old=jt->tnextpushp;
  switch(ce){
  // loop over the lines.  jgets may fail, in which case we leave that as the error code for the sentence.
- case 0: while(x&&!jt->jerr){jt->etxn=0;                           immex(x=ddtokens(jgets("   "),1+(AN(jt->locsyms)>1))); tpop(old);} break;  // lgets returns 0 for error or EOF
- case 1: while(x           ){if(!jt->seclev)showerr(); jt->jerr=0; immex(x=ddtokens(jgets("   "),1+(AN(jt->locsyms)>1))); tpop(old);} break;
+ case 0: while(x&&!jt->jerr){jt->etxn=0;                           immex(x=jtddtokens(jt,jgets("   "),1+(AN(jt->locsyms)>1))); tpop(old);} break;  // lgets returns 0 for error or EOF
+ case 1: while(x           ){if(!jt->seclev)showerr(); jt->jerr=0; immex(x=jtddtokens(jt,jgets("   "),1+(AN(jt->locsyms)>1))); tpop(old);} break;
  case 2:
  case 3: {
   while(x&&!jt->jerr){jt->etxn=0;                           immea(x=jgets("   ")); tpop(old);}
@@ -67,9 +67,9 @@ static A jtline(J jt,A w,I si,C ce,B tso){A x=mtv,z;B xt=jt->tostdout;DC d,xd=jt
 }
 
 static A jtaddscriptname(J jt, A w){I i;
- RE(i=i0(indexof(vec(BOX,jt->slistn,AAV(jt->slist)),box(ravel(w)))));  // look up only in the defined names
+ RE(i=i0(jtindexof(jt,vec(BOX,jt->slistn,AAV(jt->slist)),box(ravel(w)))));  // look up only in the defined names
  if(jt->slistn==i){
-  if(jt->slistn==AN(jt->slist)){RZ(jt->slist=ext(1,jt->slist));RZ(jt->sclist=ext(1,jt->sclist));}
+  if(jt->slistn==AN(jt->slist)){RZ(jt->slist=jtext(jt,1,jt->slist));RZ(jt->sclist=jtext(jt,1,jt->sclist));}
   RZ(ras(w)); RZ(*(jt->slistn+AAV(jt->slist))=w); *(jt->slistn+IAV(jt->sclist))=jt->slisti;
   ++jt->slistn;
  }
@@ -87,7 +87,7 @@ static A jtlinf(J jt,A a,A w,C ce,B tso){A x,y,z;B lk=0;C*s;I i=-1,n,oldi=jt->sl
  }
  RZ(x=jfread(w));
  // Remove UTF8 BOM if present - commented out pending resolution.  Other BOMs should not occur
- // if(!memcmp(CAV(x),"\357\273\277",3L))RZ(x=drop(num(3),x))
+ // if(!memcmp(CAV(x),"\357\273\277",3L))RZ(x=jtdrop(jt,num(3),x))
  // if this is a new file, record it in the list of scripts
  RZ(y=fullname(AAV(w)[0]));
  A scripti; RZ(scripti=jtaddscriptname(jt,y)); i=IAV(scripti)[0];

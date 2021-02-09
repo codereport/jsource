@@ -109,7 +109,7 @@ RECURSIVERESULTSCHECK
 }
 
 static PSTK* jtphook(J jt,PSTK *stack){
- A y=hook(stack[1].a,stack[2].a);  // create the hook
+ A y=jthook(jt,stack[1].a,stack[2].a);  // create the hook
 RECURSIVERESULTSCHECK
  RZ(y);  // if error, return 0 stackpointer
  PTFROMTYPE(stack[2].pt,AT(y)) stack[2].t = stack[1].t; stack[2].a = y;  // take err tok from f; save result
@@ -141,7 +141,7 @@ static PSTK* jtis(J jt,PSTK *stack){B ger=0;C *s;
     // True multiple assignment
     ASSERT((-(AR(v))&(-(AN(n)^AS(v)[0])))>=0,EVLENGTH);   // v is atom, or length matches n
     if(((AR(v)^1)+(~AT(v)&BOX))==0){A *nv=AAV(n), *vv=AAV(v); DO(AN(n), symbis(nv[i],vv[i],symtab);)}  // v is boxed list
-    else {A *nv=AAV(n); DO(AN(n), symbis(nv[i],ope(AR(v)?from(sc(i),v):v),symtab);)}  // repeat atomic v for each name, otherwise select item.  Open in either case
+    else {A *nv=AAV(n); DO(AN(n), symbis(nv[i],ope(AR(v)?jtfrom(jt,sc(i),v):v),symtab);)}  // repeat atomic v for each name, otherwise select item.  Open in either case
     goto retstack;
    }
   }
@@ -149,7 +149,7 @@ static PSTK* jtis(J jt,PSTK *stack){B ger=0;C *s;
   if((SGNIF(AT(n),LITX)&(AR(n)-2))<0){
    // lhs is ASCII characters, atom or list.  Convert it to words
    s=CAV(n); ger=CGRAVEC==s[0];   // s->1st character; remember if it is `
-   RZ(n=words(ger?str(AN(n)-1,1+s):n));  // convert to words (discarding leading ` if present)
+   RZ(n=words(ger?jtstr(jt,AN(n)-1,1+s):n));  // convert to words (discarding leading ` if present)
    ASSERT(AN(n)||(AR(v)&&!AS(v)[0]),EVILNAME);  // error if namelist empty or multiple assignment with no values, if there is something to be assigned
    if(1==AN(n)){
     // Only one name in the list.  If one-name AR assignment, leave as a list so we go through the AR-assignment path below
@@ -187,7 +187,7 @@ static PSTK * (*(lines58[]))() = {jtpfork,jtphook,jtis,jtpparen};  // handlers f
  if(!w) return 0;
  A *queue=AAV(w); I m=AN(w);   // addr and length of sentence
  RZ(deba(DCPARSE,queue,(A)m,0L));  // We don't need a new stack frame if there is one already and debug is off
- z=parsea(queue,m);
+ z=jtparsea(jt,queue,m);
  debz();
  return z;
 }
@@ -197,7 +197,7 @@ static PSTK * (*(lines58[]))() = {jtpfork,jtphook,jtis,jtpparen};  // handlers f
 #define EPZ(x) if(!(x)){FP}   // exit parser if x==0
 
 // extend NVR stack, returning the A block for it
-A jtextnvr(J jt){ASSERT(jt->parserstackframe.nvrtop<32000,EVLIMIT); RZ(jt->nvra = ext(1, jt->nvra));  return jt->nvra;}
+A jtextnvr(J jt){ASSERT(jt->parserstackframe.nvrtop<32000,EVLIMIT); RZ(jt->nvra = jtext(jt,1, jt->nvra));  return jt->nvra;}
 
 #define BACKMARKS 3   // amount of space to leave for marks at the end.  Because we stack 3 words before we start to parse, we will
  // never see 4 marks on the stack - the most we can have is 1 value + 3 marks.
@@ -345,14 +345,14 @@ rdglob: ;
         if((AT(sv)|at)&(NOUN|NAMEBYVALUE|NAMELESSMOD)){   // use value if noun or special name
          y=sv; at=AT(sv);
         } else {
-         y = namerefacv(y, s);   // Replace other acv with reference
+         y = jtnamerefacv(jt,y, s);   // Replace other acv with reference
          EPZ(y)
          at=AT(y);  // refresh the type with the type of the resolved name
         }
        } else {
          // undefined name.  If special x. u. etc, that's fatal; otherwise create a dummy ref to [: (to have a verb)
          if(at&NAMEBYVALUE){jsignal(EVVALUE);FP}  // Report error (Musn't ASSERT: need to pop all stacks) and quit
-         y = namerefacv(y, s);    // this will create a ref to undefined name as verb [:
+         y = jtnamerefacv(jt,y, s);    // this will create a ref to undefined name as verb [:
          EPZ(y)
            // if syrd gave an error, namerefacv may return 0.  This will have previously signaled an error
          at=AT(y);  // refresh the type with the type of the resolved name
@@ -540,16 +540,16 @@ failparse:  // If there was an error during execution or name-stacking, exit wit
    jt->parserstackframe.parsercurrtok=0;  // error token if error found
    I at=AT(y = queue[0]);  // fetch the word
    if((at&NAME)!=0) {L *s;
-    if((s=syrd(y,jt->locsyms))!=0) {     // Resolve the name.
+    if((s=jtsyrd(jt,y,jt->locsyms))!=0) {     // Resolve the name.
       A sv;  // pointer to value block for the name
       RZ(sv = s->val);  // symbol table entry, but no value.  Must be in an explicit definition, so there is no need to raise an error
       if(((AT(sv)|at)&(NOUN|NAMEBYVALUE))!=0){   // if noun or special name, use value
        y=sv;
-      } else y = namerefacv(y, s);   // Replace other acv with reference.  Could fail.
+      } else y = jtnamerefacv(jt,y, s);   // Replace other acv with reference.  Could fail.
     } else {
       // undefined name.
       if(at&NAMEBYVALUE){jsignal(EVVALUE); y=0;}  // Error if the unresolved name is x y etc.  Don't ASSERT since we must pop stack
-      else y = namerefacv(y, s);    // this will create a ref to undefined name as verb [: .  Could set y to 0 if error
+      else y = jtnamerefacv(jt,y, s);    // this will create a ref to undefined name as verb [: .  Could set y to 0 if error
     }
    }
    if(y!=0)if(!(AT(y)&CAVN)){jsignal(EVSYNTAX); y=0;}  // if not CAVN result, error

@@ -12,7 +12,7 @@ BPFX(nandBB, NAND,BNAND,NAND,BNAND, _mm256_xor_pd(bool256,_mm256_and_pd(u256,v25
 BPFX( norBB, NOR ,BNOR, NOR, BNOR, _mm256_xor_pd(bool256,_mm256_or_pd(u256,v256)) , , __m256d bool256=_mm256_castsi256_pd(_mm256_set1_epi64x(0x0101010101010101)); )
 
 
- A jtrazein(J jt, A w){A z; return df2(z,w,box(raze(w)),amp(swap(ds(CEPS)),ds(COPE)));}
+ A jtrazein(J jt, A w){A z; return df2(z,w,box(raze(w)),jtamp(jt,swap(ds(CEPS)),ds(COPE)));}
 
 
 static A jtebarmat(J jt,A a,A w){A ya,yw,z;B b,*zv;C*au,*av,*u,*v,*v0,*wu,*wv;I*as,c,i,k,m,n,r,s,si,sj,t,*ws;
@@ -64,8 +64,8 @@ static I jtebarprep(J jt,A a,A w,A*za,A*zw,I*zc){I ar,at,m,n,t,wr,wt,memlimit;CR
  if(!HOMO(at,wt))if(m&&n)return -1;
  if(1<wr)return 2==wr?-2:-3;
  t=maxtyped(at|(I )(m==0),wt|(I )(n==0)); t&=-t;  // default missing type to B01; if we select one, discard higher bits
- if(TYPESNE(t,at))RZ(a=cvt(t,a));
- if(TYPESNE(t,wt))RZ(w=cvt(t,w));
+ if(TYPESNE(t,at))RZ(a=jtcvt(jt,t,a));
+ if(TYPESNE(t,wt))RZ(w=jtcvt(jt,t,w));
  *za=a; *zw=w;
  // The inputs have been converted to common type
  memlimit = MIN(4*n+1,(I)((jt->mmax-100)>>LGSZI));  // maximum size we will allow our d to reach.  Used only for I type.
@@ -103,15 +103,15 @@ static I jtebarprep(J jt,A a,A w,A*za,A*zw,I*zc){I ar,at,m,n,t,wr,wt,memlimit;CR
  A jtebar(J jt,A a,A w){PROLOG(0065);A y,z;B*zv;C*av,*wv;I c,d,i,k=0,m,n,p,*yv;
  ASSERT(!((AT(a) | AT(w)) & SPARSE), EVNONCE);
  ASSERT((AR(a) == AR(w)) || (AR(a) + (AR(w) ^ 1)) == 0, EVRANK);
- if(AN(a)==1)return eq(reshape(mtv,a),w);  // if a is a singleton, just revert to =
+ if(AN(a)==1)return eq(jtreshape(jt,mtv,a),w);  // if a is a singleton, just revert to =
  RE(d=ebarprep(a,w,&a,&w,&c));
  av=CAV(a); m=AN(a);
  wv=CAV(w); n=AN(w); p=n-m;
  switch(d){
-  case -1: return reshape(shape(jt,w),num(0));
-  case -2: return ebarmat(a,w);
-  case -3: return df2(z,shape(jt,a),w,cut(amp(a,ds(CMATCH)),num(3)));
-  case -4: return ebarvec(a,w);
+  case -1: return jtreshape(jt,shape(jt,w),num(0));
+  case -2: return jtebarmat(jt,a,w);
+  case -3: return df2(z,shape(jt,a),w,jtcut(jt,jtamp(jt,a,ds(CMATCH)),num(3)));
+  case -4: return jtebarvec(jt,a,w);
  }
  GATV0(z,B01,n,AR(w)); zv=BAV(z); memset(zv,m==0,n); if((-m&-n)>=0)return z;  // if x empty, return all 1s
  GATV0(y,INT,d,1); yv= AV(y); DO(d, yv[i]=1+m;);
@@ -136,7 +136,7 @@ static I jtebarprep(J jt,A a,A w,A*za,A*zw,I*zc){I ar,at,m,n,t,wr,wt,memlimit;CR
  wv=CAV(w); n=AN(w); p=n-m;
  switch(d){
   case -1: return sc(n);
-  case -4: return indexof(ebarvec(a,w),num(1));
+  case -4: return jtindexof(jt,jtebarvec(jt,a,w),num(1));
  }
  GATV0(y,INT,d,1); yv= AV(y); DO(d, yv[i]=1+m;);
  switch(CTTZ(AT(w))){
@@ -158,7 +158,7 @@ static I jtebarprep(J jt,A a,A w,A*za,A*zw,I*zc){I ar,at,m,n,t,wr,wt,memlimit;CR
  wv=CAV(w); n=AN(w); p=n-m;
  switch(d){
   case -1: return num(0);
-  case -4: return aslash(CPLUS,ebarvec(a,w));
+  case -4: return jtaslash(jt,CPLUS,jtebarvec(jt,a,w));
  }
  if((-m&-n)>=0){return sc(n);}  // empty argument.  If m, it matches everywhere, so use n; if n, it's 0, use it
  GATV0(y,INT,d,1); yv= AV(y); DO(d, yv[i]=1+m;);
@@ -181,7 +181,7 @@ static I jtebarprep(J jt,A a,A w,A*za,A*zw,I*zc){I ar,at,m,n,t,wr,wt,memlimit;CR
  wv=CAV(w); n=AN(w); p=n-m;
  switch(d){
   case -1: return num(0);
-  case -4: return aslash(CPLUSDOT,ebarvec(a,w));
+  case -4: return jtaslash(jt,CPLUSDOT,jtebarvec(jt,a,w));
  }
  if((-m&-n)>=0){return num(SGNTO0(-n));}  // empty argument.  If m, it matches everywhere, so use n; if n, it's 0, use it - 0/1 only
  GATV0(y,INT,d,1); yv= AV(y); DO(d, yv[i]=1+m;);
@@ -199,7 +199,7 @@ static I jtebarprep(J jt,A a,A w,A*za,A*zw,I*zc){I ar,at,m,n,t,wr,wt,memlimit;CR
 }    /* a ([: +./ E.) w where a and w are atoms or lists */
 
 #define IFB1  \
- {if(zu==zv){I m=zu-AV(z); RZ(z=ext(0,z)); zv=m+AV(z); zu=AN(z)+AV(z);} *zv++=k;}
+ {if(zu==zv){I m=zu-AV(z); RZ(z=jtext(jt,0,z)); zv=m+AV(z); zu=AN(z)+AV(z);} *zv++=k;}
 
  A jtifbebar(J jt,A a,A w){A y,z;C*av,*wv;I c,d,i,k=0,m,n,p,*yv,*zu,*zv;
  RE(d=ebarprep(a,w,&a,&w,&c));
@@ -207,9 +207,9 @@ static I jtebarprep(J jt,A a,A w,A*za,A*zw,I*zc){I ar,at,m,n,t,wr,wt,memlimit;CR
  wv=CAV(w); n=AN(w); p=n-m;
  switch(d){
   case -1: return mtv;
-  case -4: return icap(ebarvec(a,w));
+  case -4: return icap(jtebarvec(jt,a,w));
  }
- if((-m&-n)>=0){return icap(ebar(a,w));}  // empty argument.
+ if((-m&-n)>=0){return icap(jtebar(jt,a,w));}  // empty argument.
  GATV0(z,INT,MAX(22,n>>7),1); zv=AV(z); zu=zv+AN(z);
  GATV0(y,INT,d,1); yv= AV(y); DO(d, yv[i]=1+m;);
  switch(CTTZ(AT(w))){

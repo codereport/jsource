@@ -97,7 +97,7 @@ A jtrank1ex(J jt,AD * RESTRICT w,A fs,I rr,AF f1){F1PREFIP;PROLOG(0041);A z,virt
 
  }else{I *zzs;
   // no cells - execute on a cell of fills
-  RZ(virtw=reshape(vec(INT,rr,AS(w)+wf),filler(w)));  // The cell of fills
+  RZ(virtw=jtreshape(jt,vec(INT,rr,AS(w)+wf),filler(w)));  // The cell of fills
   // Do this quietly, because
   // if there is an error, we just want to use a value of 0 for the result; thus debug
   // mode off and RESETERR on failure.
@@ -329,13 +329,13 @@ A jtrank2ex(J jt,AD * RESTRICT a,AD * RESTRICT w,A fs,UI lrrrlcrrcr,AF f2){
   // Init the inplaceability of virtw.  We do this here because in the loop we handle it only for low rank (i. e. virt[aw]faux) so as to avoid inplacing fill.
   // Thus, for higher rank we set it only this once.  It will stay right unless it gets virtualed
   AC(virta)=ACUC1 + ((state&ZZFLAGVIRTAINPLACE)<<(ACINPLACEX-ZZFLAGVIRTAINPLACEX));
- }else{RZ(virta=reshape(vec(INT,(UI)lrrr>>RANKTX,AS(a)+(afwf>>RANKTX)),filler(a)));}
+ }else{RZ(virta=jtreshape(jt,vec(INT,(UI)lrrr>>RANKTX,AS(a)+(afwf>>RANKTX)),filler(a)));}
 
  if((mn|(state&STATEWNOTEMPTY))!=0){  // repeat for w
   state |= (UI)(SGNIF((a!=w)&(outerrptct==1),0)&SGNIF((I)jtinplace,JTINPLACEWX)&AC(w)&~(((AT(w)&TYPEVIPOK)-(f2!=jtevery2self))|SGNIF(state,STATEINNERREPEATWX)))>>(BW-1-ZZFLAGVIRTWINPLACEX);   // requires JTINPLACEWX==0.  Single flag bit  sign=0 if (VIPOK or &.>) 
   fauxvirtual(virtw,virtwfaux,w,lrrr&RANKTMSK,ACUC1) MCISH(AS(virtw),AS(w)+(afwf&RANKTMSK),lrrr&RANKTMSK); AN(virtw)=wcn;
   AC(virtw)=ACUC1 + ((state&ZZFLAGVIRTWINPLACE)<<(ACINPLACEX-ZZFLAGVIRTWINPLACEX));
- }else{RZ(virtw=reshape(vec(INT,lrrr&RANKTMSK,AS(w)+(afwf&RANKTMSK)),filler(w)));}
+ }else{RZ(virtw=jtreshape(jt,vec(INT,lrrr&RANKTMSK,AS(w)+(afwf&RANKTMSK)),filler(w)));}
  // Allow inplacing if the verb supports it, but with the raze flags removed.  We can be loose here because we must be strict about the virt inplaceability to get pristinity right.
  jtinplace = (J)(intptr_t)((I)jtinplace & (~(JTWILLBEOPENED+JTCOUNTITEMS)));
 
@@ -606,12 +606,12 @@ static A cons2(J jt,A a,A w,A self){V*sv=FAV(self);
 
 // cyclic-gerund verbs create an iterator from the gerund and pass that into rank processing, looping over cells
 static A cycr1(J jt,    A w,A self){V*sv=FAV(self);I cger[128/SZI];
- RZ(self=createcycliciterator((A)&cger, self));  // fill in an iterator for this gerund
+ RZ(self=jtcreatecycliciterator(jt,(A)&cger, self));  // fill in an iterator for this gerund
  I mr; efr(mr,AR(w),(I)sv->localuse.lI4[0]);
  return rank1ex(w,self,mr,FAV(self)->valencefns[0]);  // callback is to the cyclic-execution function
 }
 static A cycr2(J jt,A a,A w,A self){V*sv=FAV(self);I cger[128/SZI];
- RZ(self=createcycliciterator((A)&cger, self));  // fill in an iterator for this gerund
+ RZ(self=jtcreatecycliciterator(jt,(A)&cger, self));  // fill in an iterator for this gerund
  I lr2,rr2; efr(lr2,AR(a),(I)sv->localuse.lI4[1]); efr(rr2,AR(w),(I)sv->localuse.lI4[2]);
  return rank2ex(a,w,self,lr2,rr2,lr2,rr2,FAV(self)->valencefns[1]);  // callback is to the cyclic-execution function
 }
@@ -733,7 +733,7 @@ static A jtrank20(J jt,A a,A w,A self){return jtrank2ex0(jt,a,w,self,jtrank20ato
  // Get the action routines and flags to use for the derived verb
  if(NOUN&AT(a)){  // could be gerund"n or noun"n
   // gerund requires: some rank not RMAX; boxed m; rank of m=1; and then the gerund must be well formed
-  if(((hv[0]^RMAX)|(hv[1]^RMAX)|(hv[2]^RMAX)) && !((AR(a)^1) | (AT(a)&(NOUN&~BOX))) && (ger=fxeachv(1LL,a))){
+  if(((hv[0]^RMAX)|(hv[1]^RMAX)|(hv[2]^RMAX)) && !((AR(a)^1) | (AT(a)&(NOUN&~BOX))) && (ger=jtfxeachv(jt,1LL,a))){
    f1=cycr1; f2=cycr2;  // process this with the cyclic-gerund routines
    vf=VFLAGNONE;   // the cyclic processor does not inplace or IRS and we don't bother figuring out whether it is ASGSAFE
   } else {
