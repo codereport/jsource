@@ -837,8 +837,8 @@ static A jtrolldot(J jt, A w){A z;B b=0;I m,wt;
  return z&&!(FL&AT(z))&&wt&XNUM+RAT?xco1(z):z;
 }
 
-#undef deal
-#define jtdeal(jt,a,w) jtdealdot(jt,(a),(w))
+
+
 static A jtdealdot(J jt,A a,A w){A h,y,z;I at,d,*hv,i,i1,j,k,m,n,p,q,*v,wt,*yv,*zv;UI c,s,t,x=jt->rngM[jt->rng];
  at=AT(a); wt=AT(w);
  ASSERT(at&DENSE&at&&wt&DENSE,EVDOMAIN);
@@ -875,7 +875,7 @@ static A jtdealdot(J jt,A a,A w){A h,y,z;I at,d,*hv,i,i1,j,k,m,n,p,q,*v,wt,*yv,*
 #define FXSOD       {jt->rngV[GBI]=v; jt->rngI[GBI]=jt->rngi=i; rngselects(sc(j));}
 
  A jtrollx  (J jt, A w){FXSDECL;                 FXSDO; z=roll(w);         FXSOD; return z;}
- A jtdealx  (J jt,A a,A w){FXSDECL; F2RANK(0,0,jtdealx,UNUSED_VALUE); FXSDO; z=jtdeal(jt,a,w);       FXSOD; return z;}
+ A jtdealx  (J jt,A a,A w){FXSDECL; F2RANK(0,0,jtdealx,UNUSED_VALUE); FXSDO; z=jtdealdot(jt,a,w);       FXSOD; return z;}
  A jtrollkx(J jt,A a,A w,A self){FXSDECL;        FXSDO; z=rollk(a,w,self); FXSOD; return z;}
 
 
