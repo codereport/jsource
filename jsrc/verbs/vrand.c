@@ -751,8 +751,8 @@ static A jtrollxnumdot(J jt, A w){A z;B c=0;I d,n;X*u,*v,x;
  return z;
 }    /* ?n$x where x is extended integer */
 
-#undef rollbool
-#define rollbool(w) jtrollbooldot(jt,(w))
+
+
 static A jtrollbooldot(J jt, A w){A z;B*v;D*u;I n,sh;UINT mk;
  n=AN(w); v=BAV(w); INITD;
  GATV(z,FL,n,AR(w),AS(w)); u=DAV(z);
@@ -828,7 +828,7 @@ static A jtrolldot(J jt, A w){A z;B b=0;I m,wt;
  wt=AT(w);
  ASSERT(wt&DENSE,EVDOMAIN);
  if(!AN(w)){GATV(z,B01,0,AR(w),AS(w)); return z;}
- if(wt&B01)return rollbool(w);
+ if(wt&B01)return jtrollbooldot(jt,w);
  if(wt&XNUM+RAT)return jtrollxnumdot(jt,w);
  RZ(w=vi(w)); m=AV(w)[0];
  if(    2==m)RZ(z=jtroll2dot(jt,w,&b));
