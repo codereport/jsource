@@ -101,7 +101,7 @@
 #define cvt0(x)                     jtcvt0(jt,(x))
 
 
-#define dbin(x,y)                   jtdbin(jt,(x),(y))
+
 #define dbjump(x)                   jtdbjump(jt,(x))
 #define dbstack(x)                  jtdbstack(jt,(x))
 #define dbunquote(x,y,z,w)          jtdbunquote(jt,(x),(y),(z),(w))
