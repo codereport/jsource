@@ -5,6 +5,7 @@
 
 #include "j.h"
 
+#define qcompare(x,y)               jtqcompare(jt,(x),(y)) // three macros use this in this file.
 
 #define BXLOOP(T)  \
  {T*wv=(T*)AV(w),x;                                                  \
@@ -182,3 +183,4 @@ static B jtiixI(J jt,I n,I m,A a,A w,I*zv){A t;B ascend;I*av,j,p,q,*tv,*u,*v,*vv
  }}
  return z;
 }    /* a I. w */
+#undef qcompare
