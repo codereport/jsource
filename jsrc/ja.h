@@ -827,7 +827,7 @@
 #define xop(x)                      jtxop(jt,(x))
 #define xop2(x,y,z)                 jtxop2(jt,(x),(y),(z))
 #define xplus(x,y)                  jtxplus(jt,(x),(y)) // 5 files use this in macros.
-#define xpow(x,y)                   jtxpow(jt,(x),(y))
+
 #define xprimetest(x)               jtxprimetest(jt,(x))
 #define xrand(x)                    jtxrand(jt,(x))
 #define xrem(x,y)                   jtxrem(jt,(x),(y))

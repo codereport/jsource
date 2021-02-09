@@ -167,8 +167,8 @@ static B jtQfromD(J jt,A w,void*yv,I mode){B neg,recip;D c,d,t,*wv;I e,i,n,*v;Q 
   }else{
    if(recip=1>t)t=1.0/t;
    e=(I)(0xfff0&*tv); e>>=4; e-=1023;
-   if(recip){q.d=xtymes(jtxd1(jt,t/pow(2.0,e-53.0),mode),xpow(xc(2L),xc(e-53))); q.n=ca(iv1);}
-   else     {q.n=xtymes(jtxd1(jt,t/pow(2.0,e-53.0),mode),xpow(xc(2L),xc(e-53))); q.d=ca(iv1);}
+   if(recip){q.d=xtymes(jtxd1(jt,t/pow(2.0,e-53.0),mode),jtxpow(jt,xc(2L),xc(e-53))); q.n=ca(iv1);}
+   else     {q.n=xtymes(jtxd1(jt,t/pow(2.0,e-53.0),mode),jtxpow(jt,xc(2L),xc(e-53))); q.d=ca(iv1);}
   }
   q.n=rifvsdebug(q.n); q.d=rifvsdebug(q.d);
   if(neg){v=AV(q.n); DQ(AN(q.n), *v=-*v; ++v;);}

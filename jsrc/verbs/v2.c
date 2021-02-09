@@ -291,7 +291,7 @@ static B jtspspd(J jt,I b,I n,I d,I h){D a,n1,nn,x;
 static B jtspspx(J jt,I b,I n,I d,I h){I ai,n1;X a,ox,xn;
  if(b==n)return 1;
  n1=n-1;
- ox=jt->xmod; jt->xmod=jtcvt(jt,XNUM,sc(n)); a=xpow(xc(b),xc(d)); jt->xmod=ox;
+ ox=jt->xmod; jt->xmod=jtcvt(jt,XNUM,sc(n)); a=jtxpow(jt,xc(b),xc(d)); jt->xmod=ox;
  ai=xint(a);
  if(ai==1||ai==n1)return 1;
  xn=xc(n);
@@ -400,7 +400,7 @@ static B jtxprimeq(J jt,I n,X y){A h,om=jt->xmod;B b;I*dv,i,k,*pv;X d,m,t,x,y1;
  GAT0(d,INT,1,1); dv=AV(d);  // could use faux block
  A *old=jt->tnextpushp;
  for(i=0;i<n;++i){
-  dv[0]=pv[i]; RZ(x=xpow(d,m)); b=1==AN(x)&&1==AV(x)[0];
+  dv[0]=pv[i]; RZ(x=jtxpow(jt,d,m)); b=1==AN(x)&&1==AV(x)[0];
   DQ(k*!b, if(!jtxcompare(jt,x,y1)){b=1; break;} RZ(x=xrem(y,xsq(x))););
   tpop(old);
   if(!b)break;
