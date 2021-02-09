@@ -285,8 +285,9 @@ APFX(lcmIO, D,I,I, LCMIO,,HDR1JERR)
 #define dlcm(x,y)                   jtdlcm(jt,(x),(y))
 APFX(lcmDD, D,D,D, dlcm ,,HDR1JERR)
 #undef dlcm
+#define zlcm(x,y)                   jtzlcm(jt,(x),(y))
 APFX(lcmZZ, Z,Z,Z, zlcm ,,HDR1JERR)
-
+#undef zlcm
 
 #define GETD          {d=*wv++; if(!d){z=0; break;}}
 #define INTDIVF(c,d)  (((c^d)>=0)?c/d:c%d?c/d-1:c/d)  // c/d - (c^d)<0 && c%d
