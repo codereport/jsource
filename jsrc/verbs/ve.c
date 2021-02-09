@@ -223,9 +223,9 @@ I jtremid(J jt,I a,D b){D r;I k;
  ASSERT(k==r,EWOV);   // not really overflow - just has a fractional part
  return k;
 }
-
+#define remid(x,y)                  jtremid(jt,(x),(y))
 APFX(remID, I,I,D, remid,,HDR1JERR)
-
+#undef remid
 I remii(I a,I b){I r; return (a!=REPSGN(a))?(r=b%a,0<a?r+(a&REPSGN(r)):r+(a&REPSGN(-r))):a?0:b;}  // must handle IMIN/-1, which overflows.  If a=0, return b.
 
  I remII(I n,I m,I* RESTRICTI x,I* RESTRICTI y,I* RESTRICTI z,J jt){I u,v;
