@@ -77,6 +77,7 @@ target_sources(j PRIVATE
         verbs/vx.c
         verbs/vz.c
         verbs/monadic/rank.cpp
+        verbs/monadic/same.cpp
         verbs/monadic/shape.cpp
         verbs/monadic/tally.cpp
         debugging/d.c
