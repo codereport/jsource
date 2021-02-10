@@ -32,7 +32,6 @@ target_sources(j PRIVATE
         conjunctions/cu.c
         conjunctions/cv.c
         conjunctions/cx.c
-        verbs/crc32c.c
         verbs/v.c
         verbs/v0.c
         verbs/v1.c
