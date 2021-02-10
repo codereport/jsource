@@ -881,4 +881,4 @@
 #define ztanh(x)                    jtztanh(jt,(x))
 #define ztrend(x)                   jtztrend(jt,(x))
 #define ztridiag(x,y,z)             jtztridiag(jt,(x),(y),(z))
-
+#define ztymes(x,y)                 jtztymes(jt,(x),(y)) // 4 files' use this in macros
