@@ -725,30 +725,5 @@ static inline UINT _clearfp(void){
 #endif
 // end of addition builtins
 
-// aligned memory allocation, assume align is power of 2
-static __forceinline void* aligned_malloc(size_t size, size_t align) {
- void *result;
- align = (align>=sizeof(void*))?align:sizeof(void*);
-#if defined(__LP64__)
- if(posix_memalign(&result, align, size)) result = 0;
-#else
- void *mem = malloc(size+(align-1)+sizeof(void*));
- if(mem){
-  result = (void*)((uintptr_t)(mem+(align-1)+sizeof(void*)) & ~(align-1));
-  ((void**)result)[-1] = mem;
- } else result = 0;
-#endif
- return result;
-}
-
-static __forceinline void aligned_free(void *ptr) {
-#if defined(__LP64__)
- free(ptr);
-#else
- free(((void**)ptr)[-1]);
-#endif
-}
-
 // Create (x&y) where x and y are signed, so we can test for overflow.
-
 #define XANDY(x,y) ((I)((UI)(x)&(UI)(y)))
