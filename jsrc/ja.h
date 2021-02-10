@@ -38,9 +38,7 @@
 #define behead(x)                   jtbehead(jt,(x))
 #define beheadW(x)                  jtbehead((J)((I)jt|JTINPLACEW),(x))
 #define bfi(x,y,z)                  jtbfi(jt,(x),(y),(z))
-
 #define binrep1(x)                  jtbinrep1(jt,(x))
-
 #define bitwisecharamp(x0,x1,x2,x3) jtbitwisecharamp(jt,(x0),(x1),(x2),(x3))
 #define box(x)                      jtbox(jt,(x))
 #define boxW(x)                     jtbox((J)((I)jt|JTINPLACEW),(x))
@@ -99,9 +97,6 @@
 #define cut2bx(x,y,z)               jtcut2bx(jt,(x),(y),(z))
 #define cut2sx(x,y,z)               jtcut2sx(jt,(x),(y),(z))
 #define cvt0(x)                     jtcvt0(jt,(x))
-
-
-
 #define dbjump(x)                   jtdbjump(jt,(x))
 #define dbstack(x)                  jtdbstack(jt,(x))
 #define dbunquote(x,y,z,w)          jtdbunquote(jt,(x),(y),(z),(w))
@@ -124,13 +119,11 @@
 #define dfrep(x)                    jtdfrep(jt,(x))
 #define dfs2(x,y,z)                 jtdfs2(jt,(x),(y),(z))
 #define dgamma(x)                   jtdgamma(jt,(x))
-
 #define dgrade1(x)                  jtdgrade1(jt,(x))
 #define diff(x)                     jtdiff(jt,(x))
 #define divide(x,y)                 jtatomic2(jt,(x),(y),ds(CDIV))
 #define divideAW(x,y)               jtatomic2((J)((I)jt|JTINPLACEA|JTINPLACEW),(x),(y),ds(CDIV))
 #define divideW(x,y)                jtatomic2((J)((I)jt|JTINPLACEW),(x),(y),ds(CDIV))
-
 #define dloc(x)                     jtdloc(jt,(x))
 #define dolock(x0,x1,x2,x3)         jtdolock(jt,(x0),(x1),(x2),(x3))
 #define dotprod(x,y,z)              jtdotprod(jt,(x),(y),(z))
@@ -144,7 +137,6 @@
 #define dx_next30()                 jtdx_next30(jt)
 #define eachl(x,y,z)                jteachl(jt,(x),(y),(z))
 #define ebarprep(x0,x1,x2,x3,x4)    jtebarprep(jt,(x0),(x1),(x2),(x3),(x4))
-
 #define ecvt(x0,x1,x2,x3,x4)        jtecvt(jt,(x0),(x1),(x2),(x3),(x4))
 #define efflev(x,y,z)               jtefflev(jt,(x),(y),(z))
 #define efr(z,ar,r)                 (z = ((r)>(ar)?(ar):(r))+(REPSGN(r)&(ar)), z=(z<0)?0:z)  // effective rank: ar is rank of argument, r is rank of verb (may be negative), z becomes rank of argument cell
@@ -231,7 +223,6 @@
 #define fnegate(x)                  jtfnegate(jt,(x))
 #define fnum(x)                     jtfnum(jt,(x))
 #define folk(x,y,z)                 jtfolk(jt,(x),(y),(z))
-
 #define fr(x)                       {if((x)!=0){I Zs = AC(x); if(!ACISPERM(Zs)){if(--Zs<=0)mf(x);else AC(x)=Zs;}}}
 #define fram(x0,x1,x2,x3,x4)        jtfram(jt,(x0),(x1),(x2),(x3),(x4))
 #define frombs1(x,y,z)              jtfrombs1(jt,(x),(y),(z))
@@ -242,7 +233,6 @@
 #define fsm0(x,y,z)                 jtfsm0(jt,(x),(y),(z))
 #define fsmdo(x0,x1,x2,x3,x4,x5)    jtfsmdo(jt,(x0),(x1),(x2),(x3),(x4),(x5))
 #define fsmvfya(x)                  jtfsmvfya(jt,(x))
-
 #define fullname(x)                 jtfullname(jt,(x))
 #define fx(x)                       jtfx(jt,(x),0L)
 #define ga(x0,x1,x2,x3)             jtga(jt,(x0),(x1),(x2),(x3))
@@ -287,18 +277,15 @@
 #define i0(x)                       jti0(jt,(x))
 #define iaddr(x0,x1,x2,x3)          jtiaddr(jt,(x0),(x1),(x2),(x3))
 #define icap(x)                     jticap(jt,(x))
-#define icor(x)                     jticor(jt,(x))  
-#define icvt(x)                     jticvt(jt,(x))    
-#define iden(x)                     jtiden(jt,(x)) 
-#define idensb(x)                   jtidensb(jt,(x)) 
-#define idenv0(x0,x1,x2,x3,x4)      jtidenv0(jt,(x0),(x1),(x2),(x3),(x4)) 
-
+#define icor(x)                     jticor(jt,(x))
+#define icvt(x)                     jticvt(jt,(x))
+#define iden(x)                     jtiden(jt,(x))
+#define idensb(x)                   jtidensb(jt,(x))
+#define idenv0(x0,x1,x2,x3,x4)      jtidenv0(jt,(x0),(x1),(x2),(x3),(x4))
 #define ifc2(x)                     jtifc2(jt,(x))
 #define ifdz(x)                     jtifdz(jt,(x))
-
 #define iixBX(x0,x1,x2,x3,x4)       jtiixBX(jt,(x0),(x1),(x2),(x3),(x4))
 #define iixI(x0,x1,x2,x3,x4)        jtiixI(jt,(x0),(x1),(x2),(x3),(x4))
-
 #define immea(x)                    jtimmea(jt,(x))
 #define immex(x)                    jtimmex(jt,(x))
 #define incorp(x)                   jtincorp(jt,(x))
@@ -310,7 +297,6 @@
 #define infix(x,y,z)                jtinfix(jt,(x),(y),(z))
 #define inpl(x,y,z)                 jtinpl(jt,(x),(y),(z))
 #define int0(x)                     jtint0(jt,(x))
-
 #define inv(x)                      jtinv(jt,(x),0)
 #define invrecur(x)                 jtinv(jt,(x),1)  // call inv(), indicating recursive call
 #define invamp(x)                   jtinvamp(jt,(x))
@@ -470,7 +456,6 @@
 #define opes2(x0,x1,x2,x3,x4,x5,x6) jtopes2(jt,(x0),(x1),(x2),(x3),(x4),(x5),(x6))
 #define ord(x)                      jtord(jt,(x))
 #define outfix(x,y,z)               jtoutfix(jt,(x),(y),(z))
-
 #define ovgmove(x0,x1,x2,x3,x4,x5,x6)               jtovgmove(jt,(x0),(x1),(x2),(x3),(x4),(x5),(x6))
 #define ovs0(x0,x1,x2,x3)           jtovs0(jt,(x0),(x1),(x2),(x3))
 #define pad(x,y,z)                  jtpad(jt,(x),(y),(z))
@@ -478,8 +463,6 @@
 #define parseinit()                 jtparseinit(jt)
 #define parsex(x0,x1,x2,x3)         jtparsex(jt,(x0),(x1),(x2),(x3))
 #define pee(a,b,c,d,e    )          jtpee(jt,(a),(b),(c),(d),(e))
-
-
 #define pinit()                     jtpinit(jt)
 #define pinv(x)                     jtpinv(jt,(x))
 #define pix(x)                      jtpix(jt,(x),ds(CCIRCLE))
@@ -489,10 +472,8 @@
 #define plusW(x,y)                  jtatomic2((J)((I)jt|JTINPLACEW),(x),(y),ds(CPLUS))
 #define pmfree(x)                   jtpmfree(jt,(x))
 #define pmrecord(x0,x1,x2,x3)       jtpmrecord(jt,(x0),(x1),(x2),(x3))
-#define poly1(x)                    jtpoly1(jt,(x))   
-
+#define poly1(x)                    jtpoly1(jt,(x))
 #define polymult(x,y,z)             jtpolymult(jt,(x),(y),(z))
-
 #define powop(x,y,z)                jtpowop(jt,(x),(y),(z))
 #define prep(x)                     jtprep(jt,(x))
 #define preparse(x,y,z)             jtpreparse(jt,(x),(y),(z))
@@ -505,24 +486,12 @@
 #define probe(x,y,z,w)              jtprobe(jt,(x),(y),(z),(w))
 #define probedel(x,y,z,w)           jtprobedel(jt,(x),(y),(z),(w))
 #define probeislocal(x)             jtprobeislocal(jt,(x))
-
-
-
 #define pscangt(x0,x1,x2,x3,x4,x5)  jtpscangt(jt,(x0),(x1),(x2),(x3),(x4),(x5))
 #define pscanlt(x0,x1,x2,x3,x4,x5)  jtpscanlt(jt,(x0),(x1),(x2),(x3),(x4),(x5))
-
-
-
-
-
 #define qlogd1(x)                   jtqlogd1(jt,(x))
 #define qlogz1(x)                   jtqlogz1(jt,(x))
-
 #define qplus(x,y)                  jtqplus(jt,(x),(y)) //used by 2 macros in 2 different files.
-
-
 #define qr(x)                       jtqr(jt,(x))
-
 #define qrr(x)                      jtqrr(jt,(x))
 #define qstd(x)                     jtqstd(jt,(x))
 #define qtymes(x,y)                 jtqtymes(jt,(x),(y)) //used by 3 macros in 3 different files.
@@ -572,8 +541,6 @@
 #define redsps(x0,x1,x2,x3,x4,x5,x6,x7)             jtredsps(jt,(x0),(x1),(x2),(x3),(x4),(x5),(x6),(x7))
 #define redspse(x0,x1,x2,x3,x4,x5,x6,x7)            jtredspse(jt,(x0),(x1),(x2),(x3),(x4),(x5),(x6),(x7))
 #define redspsprep(x0,x1,x2,x3,x4,x5,x6,x7,x8,x9,x10,x11,x12)  jtredspsprep(jt,(x0),(x1),(x2),(x3),(x4),(x5),(x6),(x7),(x8),(x9),(x10),(x11),(x12))
-
-
 #define rep1d(x0,x1,x2,x3)          jtrep1d(jt,(x0),(x1),(x2),(x3))
 #define rep1sa(x,y,z)               jtrep1sa(jt,(x),(y),(z))
 #define repidx(x0,x1,x2,x3)         jtrepidx(jt,(x0),(x1),(x2),(x3))
@@ -592,8 +559,6 @@
 #define rngselects(x)               jtrngselects(jt,(x))
 #define rngstates1(x0,x1,x2,x3,x4,x5,x6)         jtrngstates1(jt,(x0),(x1),(x2),(x3),(x4),(x5),(x6))
 #define roll(x)                     jtroll(jt,(x))
-
-
 #define rollbool(x)                 jtrollbool(jt,(x))
 #define rollk(x,y,z)                jtrollk(jt,(x),(y),(z))
 #define rollxnum(x)                 jtrollxnum(jt,(x))
@@ -804,34 +769,26 @@
 #define wa(x,y,z)                   jtwa(jt,(x),(y),(z))
 #define widthdp(x,y,z)              jtwidthdp(jt,(x),(y),(z))
 #define wordil(x)                   jtwordil(jt,(x))
-#define words(x)                    jtwords(jt,(x),ds(CWORDS)) 
+#define words(x)                    jtwords(jt,(x),ds(CWORDS))
 #define xc(x)                       jtxc(jt,(x))
 #define xco1(x)                     jtxco1(jt,(x))
-
 #define xdefn(x,y,z)                jtxdefn(jt,(x),(y),(z))
-
 #define xdiv(x,y,z)                 jtxdiv(jt,(x),(y),(z))
 #define xdivrem(x0,x1,x2,x3)        jtxdivrem(jt,(x0),(x1),(x2),(x3))
 #define xev2(x,y,z)                 jtxev2(jt,(x),(y),(z))
 #define xcompare(x,y)               jtxcompare(jt,(x),(y)) // used in multiple macros in multiple files.
-
 #define xint(x)                     jtxint(jt,(x))
-
 #define xlog1(x)                    jtxlog1(jt,(x))
 #define xlogabs(x)                  jtxlogabs(jt,(x))
 #define xlogd1(x)                   jtxlogd1(jt,(x))
 #define xlogz1(x)                   jtxlogz1(jt,(x))
-
 #define xmodpow(x,y,z)              jtxmodpow(jt,(x),(y),(z))
 #define xoinit()                    jtxoinit(jt)
 #define xop(x)                      jtxop(jt,(x))
 #define xop2(x,y,z)                 jtxop2(jt,(x),(y),(z))
 #define xplus(x,y)                  jtxplus(jt,(x),(y)) // 5 files use this in macros.
-
 #define xprimetest(x)               jtxprimetest(jt,(x))
 #define xrand(x)                    jtxrand(jt,(x))
-
-
 #define xsgn(x)                     jtxsgn(jt,(x))
 #define xsinit()                    jtxsinit(jt)
 #define xsq(x)                      jtxsq(jt,(x))
@@ -846,7 +803,6 @@
 #define zatan(x)                    jtzatan(jt,(x))
 #define zatanh(x)                   jtzatanh(jt,(x))
 #define zceil(x)                    jtzceil(jt,(x))
-
 #define zconjug(x)                  jtzconjug(jt,(x))
 #define zcos(x)                     jtzcos(jt,(x))
 #define zcosh(x)                    jtzcosh(jt,(x))
@@ -855,12 +811,10 @@
 #define zexp(x)                     jtzexp(jt,(x))
 #define zfloor(x)                   jtzfloor(jt,(x))
 #define zgamma(x)                   jtzgamma(jt,(x))
-
 #define zgps(x)                     jtzgps(jt,(x))
 #define zgrecur(x)                  jtzgrecur(jt,(x))
 #define zhorner(x,y,z)              jtzhorner(jt,(x),(y),(z))
 #define zjx(x)                      jtzjx(jt,(x))
-
 #define zlog(x)                     jtzlog(jt,(x))
 #define zm4(x)                      jtzm4(jt,(x))
 #define zminus(x,y)                 jtzminus(jt,(x),(y)) // 3 files' use this in macros
@@ -872,7 +826,6 @@
 #define zpadn(x,y,z)                jtzpadn(jt,(x),(y),(z))
 #define zplus(x,y)                  jtzplus(jt,(x),(y)) // 4 files' use this in macros
 #define zpow(x,y)                   jtzpow(jt,(x),(y)) // 2 files' use this in macros
-
 #define zsin(x)                     jtzsin(jt,(x))
 #define zsinh(x)                    jtzsinh(jt,(x))
 #define zsqrt(x)                    jtzsqrt(jt,(x))
