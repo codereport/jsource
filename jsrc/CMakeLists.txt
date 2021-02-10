@@ -116,7 +116,6 @@ target_sources(j PRIVATE
         xenos/xa.c
         xenos/xb.c
         xenos/xc.c
-        xenos/xcrc.c
         xenos/xd.c
         xenos/xf.c
         xenos/xfmt.c
