@@ -273,7 +273,7 @@ extern A jtrect(J jt, A w);
 extern A jtretcommq(J jt, A w);
 extern A jtretcomms(J jt, A w);
 extern A jtreverse(J jt, A w);
-extern A jtright1(J jt, A w);
+extern A same(J jt, A w);
 extern A jtrinv(J jt, A w);
 extern A jtrngraw(J jt, A w);
 extern A jtrngseedq(J jt, A w);
