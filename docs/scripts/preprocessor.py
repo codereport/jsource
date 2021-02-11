@@ -41,7 +41,7 @@ def get_markdown_row_data(row):
     data
         ['apples', 'red', 'a']
     """
-    return [e.strip() for e in row.split("|")[1:-1] if e.strip()]
+    return [e.strip() for e in row.split("|")[1:-1]]
 
 
 def convert_table(table, in_format="md", out_format="rst-2"):
@@ -125,11 +125,7 @@ if __name__ == "__main__":
     parser.add_argument("--output", help="Output Sphinx source directory")
     args = parser.parse_args()
 
-    try:
-        shutil.rmtree(args.output)
-    except:
-        pass
-
+    shutil.rmtree(args.output, ignore_errors=True)
     shutil.copytree(args.input, args.output)
 
     for root, dirs, files in os.walk(args.output):
