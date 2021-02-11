@@ -106,3 +106,16 @@ Prelude> let innerProduct = blackbird sum (zipWith (*))
 ```
 * You can treat the `[` (see :arrow_up:) as a statement separator
 * `3!:0 ]` will get you the type of a array/pronoun ([docs](https://www.jsoftware.com/help/dictionary/dx003.htm))
+
+### Livestream #7 2021-02-10
+
+* :star: `datatype` is a builtin function that gives us a English type of an array
+* Need to use `*` in the global VSCode search
+* :star: Learned you can't use `x` and `y` in script if you are going to invoke them from a explicitly defined verb
+   * And therefore it probably should be best practice not to
+* Learned `names ''` to get a local list of verbs defined
+* Learned about raze `;` (similar to ravel `,` but only one level of structure)
+* Learned when searching on J for functions, search for `verbs` (technically the correct terminology in J speak)
+* Learned that MicroAPL refers to "tack" as pass (and Dyalog APL refers to it as same)
+* Learned about the [P Programming Language](https://github.com/p-org/P)
+* Learned for a multi-line J function to use `f =. 3 : 0` or `g =. 4 : 0`
