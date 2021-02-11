@@ -4,7 +4,7 @@
 /** @file */
 
 /**
- * @brief '[' Same
+ * @brief `[` Same
  * @param jt J Syntax Tree
  * @param w  Input array
  * @return   Output array 
