@@ -596,7 +596,6 @@
 #define rollany(x,y)                jtrollany(jt,(x),(y))
 #define rollbool(x)                 jtrollbool(jt,(x))
 #define rollk(x,y,z)                jtrollk(jt,(x),(y),(z))
-#define rollxnum(x)                 jtrollxnum(jt,(x))
 #define rot(x0,x1,x2,x3,x4,x5,x6,x7)                jtrot(jt,(x0),(x1),(x2),(x3),(x4),(x5),(x6),(x7))
 #define rrv(x)                      ((UI)((x)->lrr)&RANKTMSK)  // rr of V
 #define rr(x)                       rrv(FAV(x))  // rr of A
