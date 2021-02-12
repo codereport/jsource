@@ -31,8 +31,6 @@ NB. LeVeque, Fundamentals of Number Theory, Addison-Wesley, 1977, p. 5.
 
 4  = 3!:0 p: 100
 4  = 3!:0 p: {.100 4.5
-64 = 3!:0 p: 100x
-64 = 3!:0 p: 100r1
 
 'domain error' -: p: etx _1
 'domain error' -: p: etx <.-2^31
@@ -42,7 +40,7 @@ NB. LeVeque, Fundamentals of Number Theory, Addison-Wesley, 1977, p. 5.
 'domain error' -: p: etx 3j4
 
 'limit error'  -: p: etx 1e30
-'limit error'  -: p: etx 10^30x
+'limit error'  -: p: etx 10^30
 
 P100   =: 2 3 5 7 11 13 17 19 23 29 31 37 41 43 47 53 59 61 67 71 73 79 83 89 97
 plt100 =: P100&< # P100"_

@@ -247,7 +247,7 @@ testa=: 4 : 0
 (i.NRNG) testa"0/ 2^28 30 , IF64#32 33 34 53 62
 (i.NRNG) testa"0/10^7 8 9 , IF64#16 17 18
 (i.NRNG) testa"0/13^6 7 8 , IF64#16 17
-2        testa"0 x: 5 55
+2        testa"0 5 55
 )
 
 NB. serial test: chi-square test on successive k-tuples
@@ -272,7 +272,7 @@ testb=: 4 : 0
 
 0 $ 0 : 0
 (i.NRNG) testb"0/ 2 6 10
-2        testb"0 x: 2 22
+2        testb"0 2 22
 )
 
 NB. gap test: chi-square test on successive k-tuples

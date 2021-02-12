@@ -56,14 +56,12 @@ x -: a__k [ k=: <'huh'
 'locale error'    -: ex 'ab__k' [ k=: 1e6
 'domain error'    -: ex 'ab__k' [ k=: 5.4
 'domain error'    -: ex 'ab__k' [ k=: 5j4
-'domain error'    -: ex 'ab__k' [ k=: 5x
 'domain error'    -: ex 'ab__k' [ k=: 5r4
 
 'domain error'    -: ex 'ab__k' [ k=: <0 1 0
 'domain error'    -: ex 'ab__k' [ k=: <i.5
 'domain error'    -: ex 'ab__k' [ k=: <3.4 5
 'domain error'    -: ex 'ab__k' [ k=: <3j4 5
-'domain error'    -: ex 'ab__k' [ k=: <3 4 5x
 'domain error'    -: ex 'ab__k' [ k=: <3r4 5
 'domain error'    -: ex 'ab__k' [ k=: <<'abc'
 
@@ -125,14 +123,12 @@ ldestroy {:x
 NB. OK 'domain error'  -: lnc etx 1 2 3
 'domain error'  -: lnc etx 1 2.3
 'domain error'  -: lnc etx 1 2j3
-'domain error'  -: lnc etx 1 2 3x
 'domain error'  -: lnc etx 1 2r3
 
 'domain error'  -: lnc etx 'ab';0 1 0
 'domain error'  -: lnc etx 'ab';1 2 3
 'domain error'  -: lnc etx 'ab';1 2.3
 'domain error'  -: lnc etx 'ab';1 2j3
-'domain error'  -: lnc etx 'ab';1 2 3x
 'domain error'  -: lnc etx 'ab';1 2r3
 
 'domain error'  -: 2 lnc etx <'base'
@@ -160,7 +156,6 @@ x -: /~x
 (lnl 0) -: lnl -~2
 (lnl 0) -: lnl -~2.5
 (lnl 0) -: lnl -~2j5
-(lnl 0) -: lnl -~2x
 (lnl 0) -: lnl -~2r5
 
 (lnl $0) -: lnl ''
@@ -174,7 +169,6 @@ x=: lnl 0 [ y =: lnl 1
 'domain error'  -: lnl etx 'abc'
 'domain error'  -: lnl etx 1 2.3
 'domain error'  -: lnl etx 1 2j3
-'domain error'  -: lnl etx 1 2 3x
 'domain error'  -: lnl etx 1 2r3
 'domain error'  -: lnl etx 0;1
 
@@ -182,7 +176,6 @@ x=: lnl 0 [ y =: lnl 1
 'domain error'  -: 2 3 4   lnl etx 0
 'domain error'  -: 2 3.4   lnl etx 0
 'domain error'  -: 2 3j4   lnl etx 0
-'domain error'  -: 2 3 4x  lnl etx 0
 'domain error'  -: 2 3r4   lnl etx 0
 'domain error'  -: (<'abc')lnl etx 0
 
@@ -258,7 +251,6 @@ after  =. 7!:0 ''
 'domain error'    -: lpath etx 'abc'
 'domain error'    -: lpath etx 2 3.4
 'domain error'    -: lpath etx 2 3j4
-'domain error'    -: lpath etx 2 3x
 'domain error'    -: lpath etx 2 3r4
 'locale error'    -: lpath etx 200000;3 4
 'domain error'    -: lpath etx 3 4;2
@@ -267,7 +259,6 @@ after  =. 7!:0 ''
 'domain error'    -: lpath etx <2 3 4
 'domain error'    -: lpath etx <2 3.4
 'domain error'    -: lpath etx <2 3j4
-'domain error'    -: lpath etx <2 3 4x
 'domain error'    -: lpath etx <2 3r4
 'domain error'    -: lpath etx <<'abc'
 'domain error'    -: lpath etx <<'234'
@@ -289,14 +280,12 @@ after  =. 7!:0 ''
 'locale error'    -: 100000 200000 300000   lpath etx <'z'
 'domain error'    -: 1 2.3            lpath etx <'z'
 'domain error'    -: 1 2j3            lpath etx <'z'
-'domain error'    -: 1 2 3x           lpath etx <'z'
 'domain error'    -: 1 2r3            lpath etx <'z'
 
 'domain error'    -: ('base';0 1 0)   lpath etx <'z'
 'domain error'    -: ('base';1 2 3)   lpath etx <'z'
 'domain error'    -: ('base';1 2.3)   lpath etx <'z'
 'domain error'    -: ('base';1 2j3)   lpath etx <'z'
-'domain error'    -: ('base';1 2x )   lpath etx <'z'
 'domain error'    -: ('base';1 2r3)   lpath etx <'z'
 
 'length error'    -: ('base';''   )   lpath etx <'z'
@@ -345,7 +334,6 @@ x_asdf_=: i.1e4
 'domain error'  -: lcreate etx 2.4
 'domain error'  -: lcreate etx 2j4
 'domain error'  -: lcreate etx 2r4
-'domain error'  -: lcreate etx 23x
 
 'domain error'  -: lcreate etx <0 1
 'domain error'  -: lcreate etx < 1 + 0 ". > e =: lcreate ''  NB. Can't create numeric locale explicitly, even if number is high enough
@@ -353,7 +341,6 @@ x_asdf_=: i.1e4
 'domain error'  -: lcreate etx <2.4
 'domain error'  -: lcreate etx <2j4
 'domain error'  -: lcreate etx <2r4
-'domain error'  -: lcreate etx <23x
 
 'domain error'  -: _34 lcreate etx <'asdf'
 'domain error'  -: 3.4 lcreate etx <'asdf'
@@ -449,14 +436,12 @@ _1 -: 4!:0 <'a'
 'locale error'    -: lswitch etx 15000
 'domain error'    -: lswitch etx 2.3
 'domain error'    -: lswitch etx 2j3
-'domain error'    -: lswitch etx 2x
 'domain error'    -: lswitch etx 2r3
 
 'domain error'    -: lswitch etx <0 1 0
 'domain error'    -: lswitch etx <2 3 4
 'domain error'    -: lswitch etx <2 3.4
 'domain error'    -: lswitch etx <2 3j4
-'domain error'    -: lswitch etx <2 3x
 'domain error'    -: lswitch etx <2 3r4
 'domain error'    -: lswitch etx <<'abc'
 
@@ -585,7 +570,6 @@ ldestroy (0&".@>) (lcreate'') , (lcreate'')
 'domain error'    -: ldestroy etx 'abc'
 'domain error'    -: ldestroy etx 2 3.4
 'domain error'    -: ldestroy etx 2 3j4
-'domain error'    -: ldestroy etx 2 3x
 'domain error'    -: ldestroy etx 2 3r4
 'domain error'    -: ldestroy etx 2;3 4
 
@@ -593,7 +577,6 @@ ldestroy (0&".@>) (lcreate'') , (lcreate'')
 'domain error'    -: ldestroy etx <2 3 4
 'domain error'    -: ldestroy etx <2 3.4
 'domain error'    -: ldestroy etx <2 3j4
-'domain error'    -: ldestroy etx <2 3 4x
 'domain error'    -: ldestroy etx <2 3r4
 'domain error'    -: ldestroy etx <<'abc'
 'domain error'    -: ldestroy etx <<'234'

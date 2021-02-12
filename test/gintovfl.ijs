@@ -4,7 +4,7 @@ NB. integer operations --------------------------------------------------
 B =: IF64{31 63
 
 V =: 1 : 'u ;  u& x:'
-E =: 1 : 'u -: u&.x:'
+E =: 1 : 'u -: u'
 EI=: 1 : 'u E *. 4&=@type@:u'
 C =: 1 : 'u E *. u E~'
 CI=: 1 : 'u C *. 4&=@type@:u'
@@ -19,7 +19,7 @@ NB. integers remain as integers  ----------------------------------------
 >:   EI imin
 
 f=: 3 : 0
- xx=: y $ xi imax <.@% x: y
+ xx=: y $ xi imax <.@% y
  assert. +/   EI  xx
  assert. +/\  EI  xx
  assert. +/\. EI  xx
@@ -45,8 +45,8 @@ f 3
 f 4
 f"0 >: 5 ?@$ 100
 
-+: EI x=: xi imax <.@% 2x
-+: EI x=: xi imin >.@% 2x
++: EI x=: xi imax <.@% 2
++: EI x=: xi imin >.@% 2
 
 f=: 3 : 0
  n=: <. (0=(2^.yy)|B) -~ yy ^. imax [ yy=: y
@@ -131,12 +131,12 @@ x      -  EI imin [ x=: - 1 + 10 ?@$ 1e6
 
 0 1 _1 *  CI imax
 0 1    *  CI imin
-2      *  CI xi imax <.@% 2x
-x      *  CI xi imax <.@% x: x=: 1+20 ?@$ 10
-x      *  CI xi imax <.@% x: x=: 1+100 ?@$ 100
-2      *  CI xi imin >.@% 2x
-x      *  CI xi imin >.@% x: x=: 1+20 ?@$ 10
-x      *  CI xi imin >.@% x: x=: 1+100 ?@$ 100
+2      *  CI xi imax <.@% 2
+x      *  CI xi imax <.@% x=: 1+20 ?@$ 10
+x      *  CI xi imax <.@% x=: 1+100 ?@$ 100
+2      *  CI xi imin >.@% 2
+x      *  CI xi imin >.@% x=: 1+20 ?@$ 10
+x      *  CI xi imin >.@% x=: 1+100 ?@$ 100
 
 imax   *. CI 1,q: imax 
 imin   *. CI <. 1 (33 b.)~ 10 ?@$ IF64{30 62  NB. ^ did not always produce an exact power of 2
@@ -150,15 +150,14 @@ n      #. EI 1 $~ <. n ^. 1 + imax * _1 + n=: 4
 n      #. EI 1 $~ <. n ^. 1 + imax * _1 + n=: 5
 n (#. $&1:)"0 EI x=: <.n^.1+imax*_1+n=: 2+10 ?@$ 100
 
-x   +/ .* CI y  [ x=: 2$1 [ y=: 2$xi imax <.@% 2x
-x   +/ .* CI y  [ x=: 3$1 [ y=: 3$xi imax <.@% 3x
+x   +/ .* CI y  [ x=: 2$1 [ y=: 2$xi imax <.@% 2
+x   +/ .* CI y  [ x=: 3$1 [ y=: 3$xi imax <.@% 3
 1 1 +/ .* CI y=: 1,imax-1
 1 1 +/ .* CI y=: 1,imax-2
 1 1 +/ .* CI y=: 1,imax-3
 
 (2 - 1 1) +/@:* CI 1,imax-1
 (2 - 1 1) +/@:* CI 1,imax-2
-_1 2      +/@:* CI 1,x:^:_1 <.imax%2x
 
 
 NB. integers overflowing into doubles -----------------------------------
@@ -209,7 +208,7 @@ imin   *  C x=: _50 + 10 ?@$ 100
 
 -/ .* E x=: (=i.2) * >. 2 %: imax
 NB. -/ .* (1 : 'x (-: +. (IF64{0 1e15) > |@])  x&.x:') x=: 10 2 2 ?@$ <. 2^IF64{17 33  NB. If determinant is too small, its relative error can be
--/ .* (1 : 'u -:  u&.x:') x=: 10 2 2 ?@$ <. 2^17  NB. still failure for the above guard for J64
+-/ .* (1 : 'u -:  u') x=: 10 2 2 ?@$ <. 2^17  NB. still failure for the above guard for J64
 
 x   +/ .* C y  [ x=: 4 1 1 1  1 [ y=: 0 _1 0  1,imax
 x   +/ .* C y  [ x=: 4 1 1 1  2 [ y=: 0  0 0  0,imax

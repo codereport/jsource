@@ -139,7 +139,7 @@ f=: 1 : 0  NB. boxed arrays
  assert. test x=: t{~?3 5     $#t
  assert. test x=: t{~?3 5 7   $#t
  assert. test x=: t{~?3 5 7 11$#t
- assert. test x=: t{~?3       $#t=. (?20$2);(?2 3 4$1e6);(o.?2 3$1e6);(j./?2 3 4$1e6);(x:?17$1e6);%/?2 3 4 5$100000
+ assert. test x=: t{~?3       $#t=. (?20$2);(?2 3 4$1e6);(o.?2 3$1e6);(j./?2 3 4$1e6);(?17$1e6);%/?2 3 4 5$100000
  assert. test x=: t{~?3 5     $#t
  assert. test x=: t{~?3 5 7   $#t
  assert. test x=: t{~?3 5 7 11$#t
@@ -442,8 +442,8 @@ test y=: <s:''
 test y=: {:: <s:''
 test y=: 5!:1 <'binrep_pre601'
 test y=: {:: 5!:1 <'binrep_pre601'
-test y=: !i.10x
-test y=: % >: +/~ i.4x
+test y=: !i.10
+test y=: % >: +/~ i.4
 test y=: $. (3 4 ?@$ 2) * 3 4 5 ?@$ 1e5
 
 
@@ -511,8 +511,8 @@ NB. (-:!.0 rx@xr) <"0@s: ;:'Cogito, ergo sum.'
 NB. (-:!.0 rx@xr) 0.07 ; (j./i.2 3 4) ; ,. s:@<"0&.> ;:'Cogito, ergo sum.'
 NB. (-:!.0 rx@xr) 0.07 ; (j./i.2 3 4) ; ,. <"0@s: ;:'Cogito, ergo sum.'
 (-:!.0 rx@xr) !100x
-(-:!.0 rx@xr) +/ .*~^:(10) 2 2$0 1 1 1x
-(-:!.0 rx@xr) (+%)/\44$1x
+(-:!.0 rx@xr) +/ .*~^:(10) 2 2$0 1 1 1
+(-:!.0 rx@xr) (+%)/\44$1
 (-:!.0 rx@xr) 5!:1 <'xrh'
 
 NB. 0 : string or box

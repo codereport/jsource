@@ -62,8 +62,8 @@ test2=: 4 : 0
 0 1 test2~0.1 * 200 ?@$ 250
 t   test2 0.5 * t=: 200 ?@$ 250
 t   test2~0.5 * t
-t   test2 x: t=: 200 ?@$ 250
-t   test2~x: t
+t   test2  t=: 200 ?@$ 250
+t   test2~ t
 t   test2 1r2 * t=: 200 ?@$ 250
 t   test2~1r2 * t
 t   test2 (500?1000){ t=: u: 1000 ?@$ 65536
@@ -105,7 +105,7 @@ test3=: 3 : 0
 
 test3 -~0.5
 test3 -~0j5
-test3 x: 0
+test3 0
 test3 -~1r5
 
 

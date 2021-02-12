@@ -338,17 +338,5 @@ v=:1+10^-i
 
 'rank error'   -: ex '>:!.1e_14 0'
 
-
-NB. x v!.f y where x is extended and v requires fill --------------------
-
-(8x         {.!.17 y) -: 8 {.!.17 y=: 1 2
-((17r2-1r2) {.!.17 y) -: 8 {.!.17 y
-(8x         $ !.17 y) -: 8 $ !.17 y=: 1 2
-((17r2-1r2) $ !.17 y) -: 8 $ !.17 y
-(8x         |.!.17 y) -: 8 |.!.17 y=: i.20
-((17r2-1r2) |.!.17 y) -: 8 |.!.17 y
-
-
 4!:55 ;:'adot1 adot2 sdot0 f i k n p v x y'
 randfini''
-

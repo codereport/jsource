@@ -58,7 +58,7 @@ tip =: tbase -~ 6!:2 '(<1) ,~ (<2) ,~ (<3) ,~ (<4) ,~ (<5) ,~ (<6) ,~ (<7) ,~ <"
 tnip =: tbase -~ 6!:2 '(<1) , (<2) , (<3) , (<4) , (<5) , (<6) , (<7) , <"0 i. 1e6'
 THRESHOLD +. tip < 0.25 * tnip
 
-0!:0 <testpath,'gmbx.ijs'
+NB. 0!:0 <testpath,'gmbx.ijs'
 
 g=: 3 : 0
  q=: i.0
@@ -74,8 +74,8 @@ y =: timer 'g ',"1 ":,.x
 y1=: (1,.x) +/ .*y %. 1,.x
 THRESHOLD +. threshold < y rsq y1
 
-1 [ unmap_jmf_ 'q'
-1 [ unmap_jmf_ 'r'
+NB. 1 [ unmap_jmf_ 'q'
+NB. 1 [ unmap_jmf_ 'r'
 
 NB. Verify that AFNOSMREL is propagated through structural verbs
 f =: 1 : 0
