@@ -33,9 +33,9 @@ NB. +*-% ----------------------------------------------------------------
 (<'NaN error') = inf +.etx&.>/~ x
 (<'NaN error') = inf +.etx&.>/  x=: 0, r. _5e3+20 ?@$ 1e4
 (<'NaN error') = inf +.etx&.>/~ x
-(<'NaN error') = inf +.etx&.>/  x=: 0,  _5000 +20 ?@$ 10000x
+(<'NaN error') = inf +.etx&.>/  x=: 0,  _5000 +20 ?@$ 10000
 (<'NaN error') = inf +.etx&.>/~ x
-(<'NaN error') = inf +.etx&.>/  x=: 0, 4%~_5000 +20 ?@$ 10000x
+(<'NaN error') = inf +.etx&.>/  x=: 0, 4%~_5000 +20 ?@$ 10000
 (<'NaN error') = inf +.etx&.>/~ x
 
 'domain error' -: _. +: etx 1
@@ -63,9 +63,9 @@ NB. (<0) = zero *&.> /~ y
 (<'NaN error') = inf *.etx&.>/~ x
 (<'NaN error') = inf *.etx&.>/  x=: 0, r. _5e3+20 ?@$ 1e4
 (<'NaN error') = inf *.etx&.>/~ x
-(<'NaN error') = inf *.etx&.>/  x=: 0,  _5000 +20 ?@$ 10000x
+(<'NaN error') = inf *.etx&.>/  x=: 0,  _5000 +20 ?@$ 10000
 (<'NaN error') = inf *.etx&.>/~ x
-(<'NaN error') = inf *.etx&.>/  x=: 0, 4%~_5000 +20 ?@$ 10000x
+(<'NaN error') = inf *.etx&.>/  x=: 0, 4%~_5000 +20 ?@$ 10000
 (<'NaN error') = inf *.etx&.>/~ x
 
 'domain error' -: _. *: etx 1
@@ -98,35 +98,23 @@ NB. funny business if moved as doubles
 
 (($zero)$,:inf) -: zero |&.>/ inf
 
-(<'NaN error') = inf | etx&.>/~ x=:        1+7 ?@$ 40 
-(<'NaN error') = inf | etx&.>/~ x=:      - 1+7 ?@$ 40 
-(<'NaN error') = inf | etx&.>/~ x=:  100%~ 1+7 ?@$ 40 
-(<'NaN error') = inf | etx&.>/~ x=: _100%~ 1+7 ?@$ 40 
-(<'NaN error') = inf | etx&.>/~ x=:       r. 7 ?@$ 40 
-(<'NaN error') = inf | etx&.>/~ x=:        1+7 ?@$ 40x
-(<'NaN error') = inf | etx&.>/~ x=:      - 1+7 ?@$ 40x
-(<'NaN error') = inf | etx&.>/~ x=:  100%~ 1+7 ?@$ 40x
-(<'NaN error') = inf | etx&.>/~ x=: _100%~ 1+7 ?@$ 40x
+(<'NaN error') = inf | etx&.>/~ x=:        1+7 ?@$ 40
+(<'NaN error') = inf | etx&.>/~ x=:       r. 7 ?@$ 40
+(<'NaN error') = inf | etx&.>/~ x=:      - 1+7 ?@$ 40
+(<'NaN error') = inf | etx&.>/~ x=:  100%~ 1+7 ?@$ 40
+(<'NaN error') = inf | etx&.>/~ x=: _100%~ 1+7 ?@$ 40
 
-x ="1 pinf |&>/  x=:         1+7 ?@$ 40 
+x ="1 pinf |&>/  x=:         1+7 ?@$ 40
 x ="1 pinf |&>/  x=:   100%~ 1+7 ?@$ 40
-x ="1 pinf |&>/  x=:         1+7 ?@$ 40x 
-x ="1 pinf |&>/  x=:   100%~ 1+7 ?@$ 40x 
 
 pinf = pinf |&.>/ x=:      - 1+7 ?@$ 40
 pinf = pinf |&.>/ x=: _100%~ 1+7 ?@$ 40
-pinf = pinf |&.>/ x=:      - 1+7 ?@$ 40x 
-pinf = pinf |&.>/ x=: _100%~ 1+7 ?@$ 40x 
 
 ninf = ninf |&.>/ x=:        1+7 ?@$ 40
 ninf = ninf |&.>/ x=:  100%~ 1+7 ?@$ 40
-ninf = ninf |&.>/ x=:        1+7 ?@$ 40x 
-ninf = ninf |&.>/ x=:  100%~ 1+7 ?@$ 40x 
 
 x ="1 ninf |&>/ x=:       - 1+7 ?@$ 40
 x ="1 ninf |&>/ x=:  _100%~ 1+7 ?@$ 40
-x ="1 ninf |&>/ x=:       - 1+7 ?@$ 40x 
-x ="1 ninf |&>/ x=:  _100%~ 1+7 ?@$ 40x 
 
 
 NB. .:,; ----------------------------------------------------------------
