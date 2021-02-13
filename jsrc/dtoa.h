@@ -13,17 +13,17 @@
 
 #ifndef HAVE_BIGINT
 struct dtoa_info {
-	jmp_buf _env;
+    jmp_buf _env;
 };
 #else
 struct dtoa_info {
-	jmp_buf _env;
-	Bigint *_p5s;
-	double *_pmem_next;
-	double _private_mem[PRIVATE_mem];
-	Bigint *_freelist[Kmax+1];
-	void *jt;
-	int ndp;
-	char *result;
+    jmp_buf _env;
+    Bigint *_p5s;
+    double *_pmem_next;
+    double _private_mem[PRIVATE_mem];
+    Bigint *_freelist[Kmax + 1];
+    void *jt;
+    int ndp;
+    char *result;
 };
 #endif
