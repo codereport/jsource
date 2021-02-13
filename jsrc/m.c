@@ -139,7 +139,7 @@ B jtspfree(J jt){I i;A p;
 }    /* free unused blocks */
 
 static A jtspfor1(J jt, A w){
- if(BOX&AT(w)){A*wv=AAV(w); DO(AN(w), if(wv[i])spfor1(wv[i]););}
+ if(BOX&AT(w)){A*wv=AAV(w); DO(AN(w), if(wv[i])jtspfor1(jt,wv[i]););}
  else if(AT(w)&TRAVERSIBLE)jttraverse(jt,w,jtspfor1); 
  if(!ACISPERM(AC(w))) {
   // for NJA allocations with contiguous header, the size is the header size (7+64 words) plus the data size
@@ -167,8 +167,8 @@ static A jtspfor1(J jt, A w){
   ASSERT(LIT&AT(x),EVDOMAIN);
   ASSERT(1>=AR(x),EVRANK);
   ASSERT(jtvnm(jt,m,s),EVILNAME);
-  RZ(y=symbrd(jtnfs(jt,m,s))); 
-  *v=0.0; spfor1(y); zv[i]=*v;
+  RZ(y=jtsymbrd(jt,jtnfs(jt,m,s))); 
+  *v=0.0; jtspfor1(jt,y); zv[i]=*v;
  }
  return z;
 }    /* 7!:5 space for named object; w is <'name' */
@@ -193,11 +193,11 @@ static A jtspfor1(J jt, A w){
   y=stfind(m,s,bucketx);   // y is the block for the locale
   ASSERT(y!=0,EVLOCALE);
   *v=(D)(FHRHSIZE(AFHRH(y)));  // start with the size of the locale block (always a normal block)
-  spfor1(LOCPATH(y)); spfor1(LOCNAME(y));  // add in the size of the path and name
+  jtspfor1(jt,LOCPATH(y)); jtspfor1(jt,LOCNAME(y));  // add in the size of the path and name
   m=AN(y); yv=LXAV0(y); 
   for(j=SYMLINFOSIZE;j<m;++j){  // for each name in the locale
    c=yv[j];
-   while(c){*v+=sizeof(L); u=c+LAV0(jt->symp); spfor1(u->name); spfor1(u->val); c=u->next;}  // add in the size of the name itself and the value, and the L block for the name
+   while(c){*v+=sizeof(L); u=c+LAV0(jt->symp); jtspfor1(jt,u->name); jtspfor1(jt,u->val); c=u->next;}  // add in the size of the name itself and the value, and the L block for the name
   }
   zv[i]=*v;
  }
@@ -205,11 +205,11 @@ static A jtspfor1(J jt, A w){
 }    /* 7!:6 space for a locale */
 
 
- A jtmmaxq(J jt, A w){ASSERTMTV(w); return sc(jt->mmax);}
+ A jtmmaxq(J jt, A w){ASSERTMTV(w); return jtsc(jt,jt->mmax);}
      /* 9!:20 space limit query */
 
  A jtmmaxs(J jt, A w){I j,m=MLEN,n;
- RE(n=i0(vib(w)));
+ RE(n=jti0(jt,jtvib(jt,w)));
  ASSERT(1E5<=n,EVLIMIT);
  j=m-1; DO(m, if(n<=(I)1<<i){j=i; break;});
  jt->mmax=(I)1<<j;
@@ -301,19 +301,19 @@ void jtfh(J jt,A w){fr(w);}
 // gc3() is a simple-minded jtgc(jt,) that works on all blocks, and can handle up to 3 at a time.
 // virtual() creates a virtual block that refers to a part of another block.  It looks at the inplacing flags to see if it can get away with modifying the
 //    block given rather than creating a new one
-// realize() creates a real block that has the contents referred to by a virtual block
+// jtrealize(jt,) creates a real block that has the contents referred to by a virtual block
 // realizeifvirtual() does what its name implies.
 // ra(x) raises the usecount of a block and its descendants.  It traverses, stopping a path when it becomes recursible.  It marks its result recursible.  x may not be 0, and may be modified.
 // ras() does realizeifvirtual() followed by ra().  x may be 0, and may be modified
-// rat() does ras() followed by tpush().  It is used to protect a result over some operation other than tpop()
-// fa() lowers the usecount of a block and its descendants.  It traverses and stops a path that is recursible and has usecount going in > 1.  If the usecount is reduced to 0, the block is freed with mf()
+// jtrat(jt,) does ras() followed by tpush().  It is used to protect a result over some operation other than jttpop(jt,)
+// fa() lowers the usecount of a block and its descendants.  It traverses and stops a path that is recursible and has usecount going in > 1.  If the usecount is reduced to 0, the block is freed with jtmf(jt,)
 // tpush() puts a block and its descendants onto the stack.  In effect this is a call for a later fa().  It traverses, stopping a path when it becomes recursible.  Every block allocated
 //   by ga*() starts out with a tpush already performed, which is how blocks are normally freed.
 // tpush1() puts the block onto the stack, but does not recur to descendants.  Used for virtual blocks only
-// tpop() processes the stack up to a given point.  The usecount is decremented; if it goes to 0 the block is freed by mf() if not recursible, or by fa() if recursible.
+// jttpop(jt,) processes the stack up to a given point.  The usecount is decremented; if it goes to 0 the block is freed by jtmf(jt,) if not recursible, or by fa() if recursible.
 //       The fa() will free the descendants.
 // ga*() allocates a block and does an initial tpush()
-// mf() frees a block.  If what if freed is a symbol table, all the symbols are freed first.
+// jtmf(jt,) frees a block.  If what if freed is a symbol table, all the symbols are freed first.
 
 // mark w incorporated, reassigning if necessary.  Return the address of the block.  Used when w is an rvalue
 A jtincorp(J jt, A w) {if(!w) return 0; INCORP(w); return w;}
@@ -344,7 +344,7 @@ RESTRICTF A jtvirtual(J jtip, AD *RESTRICT w, I offset, I r){AD* RESTRICT z;
   return w;
  }else{
   // not self-virtual block: allocate a new one
-  RZ(z=gafv(SZI*(NORMAH+r)-1));  // allocate the block
+  RZ(z=jtgafv(jt,SZI*(NORMAH+r)-1));  // allocate the block
   AK(z)=(CAV(w)-(C*)z)+offset;
   AFLAG(z)=AFVIRTUAL | (wf & ((UI)wip>>(BW-1-AFPRISTINEX))) | (t&TRAVERSIBLE);  // flags: recursive, not UNINCORPABLE, not NJA.  If w is inplaceable, inherit its PRISTINE status
   A wback=ABACK(w); A *wtpop=(A*)wback; wback=wf&AFVIRTUAL?wback:w; ABACK(z)=wback;  // wtpop is AZAPLOC(w) in case it is to be zapped
@@ -440,10 +440,10 @@ A jtgc (J jt,A w,A* old){
    // (backer count is now 1)
    I bc=AC(b);  // backer count before tpop
    AC(w)=2;  // protect w from being freed.  Safe to use 2, since any higher value implies the backer is protected
-   tpop(old);  // delete everything allocated on the stack, except for w and b which were protected
+   jttpop(jt,old);  // delete everything allocated on the stack, except for w and b which were protected
    // if the block backing w must be deleted, we must realize w to protect it; and we must also ra() w to protect its contents.  When this is
    // finished, we have a brand-new w with usecount necessarily 1, so we can make it in-placeable.  Setting the usecount to inplaceable will undo the ra() for the top block only
-   if(((AC(b)-2)&(AC(b)-bc))<0){A origw = w; RZ(w=realize(w)); ra(w); AC(w)=ACUC1|ACINPLACE; fa(b); mf(origw); }  // if b is about to be deleted, get w out of the way.  Since we
+   if(((AC(b)-2)&(AC(b)-bc))<0){A origw = w; RZ(w=jtrealize(jt,w)); ra(w); AC(w)=ACUC1|ACINPLACE; fa(b); jtmf(jt,origw); }  // if b is about to be deleted, get w out of the way.  Since we
                                       // raised the usecount of w only, we use mf rather than fa to free just the virtual block
                                       // fa the backer to undo the ra when the virtual block was created
    else{
@@ -457,14 +457,14 @@ A jtgc (J jt,A w,A* old){
    // w was UNINCORPABLE.  That happens only if it is returned from a function called by the function in which it was created.  Therefore, w must not be on the stack
    // and we don't have to go through the trouble of protecting it.  And good thing, too, because if w is a faux block its backer has not had its usecount incremented, and
    // we would end up trying to free the faux block in the code above.  All we need to do is free the stack.
-   tpop(old);
+   jttpop(jt,old);
   }
-  return w;  // if realize() failed, this could be returning 0
+  return w;  // if jtrealize(jt,) failed, this could be returning 0
  }
  // non-VIRTUAL path
  ra(w);  // protect w and its descendants from tpop; also converts w to recursive usecount (unless sparse).
   // if we are turning w to recursive, this is the last pass through all of w incrementing usecounts.  All currently-on-stack pointers to blocks are compatible with the increment
- tpop(old);  // delete everything allocated on the stack, except for w which was protected
+ jttpop(jt,old);  // delete everything allocated on the stack, except for w which was protected
  // Now we need to undo the effect of the initial ra and get the usecount back to its original value, with a matching tpush on the stack.
  // We could just do a tpush of the new block, but (1) we would just as soon do fa() rather than tpush() to save the overhead; (2) if the block was originally inplaceable
  // we would like to continue with it inplaceable.  The interesting case is when the block was NOT freed during the tpop.  That means that
@@ -490,7 +490,7 @@ A jtgc (J jt,A w,A* old){
 // If the arguments are virtual, they will be realized
 I jtgc3(J jt,A *x,A *y,A *z,A* old){
  if(x)RZ(ras(*x)); if(y)RZ(ras(*y)); if(z)RZ(ras(*z));
- tpop(old);
+ jttpop(jt,old);
  if(x)tpush(*x); if(y)tpush(*y); if(z)tpush(*z);
  return 1;  // good return
 }
@@ -569,7 +569,7 @@ A *jttpush(J jt,AD* RESTRICT wd,I t,A *pushp){I af=AFLAG(wd); I n=AN(wd);
       // Don't bother to prefetch, since we do so little with the fetched word
     if(!((I)pushp&(NTSTACKBLOCK-1))){
      // pushx has crossed the block boundary.  Allocate a new block.
-     RZ(pushp=tg(pushp));    // If error, abort with values set; if not, pushp points after the chain field
+     RZ(pushp=jttg(jt,pushp));    // If error, abort with values set; if not, pushp points after the chain field
     } // if the buffer ran out, allocate another, save its address
     if(!ACISPERM(AC(np))&&(tp^flg)&TRAVERSIBLE){RZ(pushp=jttpush(jt,np,tp,pushp)); }  // if NOT recursive usecount, recur, and restore stack pointers after recursion
    }
@@ -653,12 +653,12 @@ void jttpop(J jt,A *old){A *endingtpushp;
    if(np){
     I c=AC(np);  // fetch usecount
     // We never tpush a PERMANENT block so we needn't check for it.
-    // If count goes to 0: if the usercount is marked recursive, do the recursive fa(), otherwise just free using mf().  If virtual, the backer must be recursive, so fa() it
+    // If count goes to 0: if the usercount is marked recursive, do the recursive fa(), otherwise just free using jtmf(jt,).  If virtual, the backer must be recursive, so fa() it
     // Otherwise just decrement the count
     if(--c<=0){
      I flg=AFLAG(np);  // fetch flags
      // The block is going to be destroyed.  See if there are further ramifications
-     if(flg&AFVIRTUAL){A b=ABACK(np); fanano0(b); mf(np);}  // if virtual block going away, reduce usecount in backer, ignore the flagged recursiveness just free the virt block
+     if(flg&AFVIRTUAL){A b=ABACK(np); fanano0(b); jtmf(jt,np);}  // if virtual block going away, reduce usecount in backer, ignore the flagged recursiveness just free the virt block
       // NOTE that ALL non-faux virtual blocks, even self-virtual ones, are on the tpop stack & are deleted here
      else fanapop(np,flg);  // do the recursive POP only if RECURSIBLE block; then free np
     }else AC(np)=c;
@@ -745,13 +745,13 @@ RESTRICTF A jtgaf(J jt,I blockx){A z;I mfreeb;I n=(I)2<<blockx;  // n=size of al
   AFLAG(z)=0; AZAPLOC(z)=pushp; AC(z)=ACUC1|ACINPLACE;  // all blocks are born inplaceable, and point to their deletion entry in tpop
    // we do not attempt to combine the AFLAG write into a 64-bit operation, because as of 2017 Intel processors
    // will properly store-forward any read that is to the same boundary as the write, and we always read the same way we write
-  *pushp++=z; if(!((I)pushp&(NTSTACKBLOCK-1)))RZ(pushp=tg(pushp)); jt->tnextpushp=pushp;  // advance to next slot, allocating a new block as needed
+  *pushp++=z; if(!((I)pushp&(NTSTACKBLOCK-1)))RZ(pushp=jttg(jt,pushp)); jt->tnextpushp=pushp;  // advance to next slot, allocating a new block as needed
   // If the user is keeping track of memory high-water mark with 7!:2, figure it out & keep track of it.  Otherwise save the cycles
   if(((mfreeb&MFREEBCOUNTING)!=0)){
    jt->bytes += n; if(jt->bytes>jt->bytesmax)jt->bytesmax=jt->bytes;
   }
   return z;
- }else{jsignal(EVBREAK); return 0;}  // If there was a break event, take it
+ }else{jtjsignal(jt,EVBREAK); return 0;}  // If there was a break event, take it
 }
 
 // bytes is total #bytes needed including headers, -1
@@ -762,7 +762,7 @@ RESTRICTF A jtgafv(J jt, I bytes){UI4 j;
  CTLZI((UI)bytes,j);  // 3 or 4 should return 2; 5 should return 3
  if((UI)bytes<=(UI)jt->mmax){
   return jtgaf(jt,(I)j);
- }else{jsignal(EVLIMIT); return 0;}  // do it this way for branch-prediction
+ }else{jtjsignal(jt,EVLIMIT); return 0;}  // do it this way for branch-prediction
 }
 
 RESTRICTF A jtga(J jt,I type,I atoms,I rank,I* shaape){A z;
@@ -781,7 +781,7 @@ RESTRICTF A jtga(J jt,I type,I atoms,I rank,I* shaape){A z;
    // Tricky point: if rank=0, GACOPYSHAPEG stores 0 in AS[0] so we don't have to do that in the DIRECT path
     // All non-DIRECT types have items that are multiples of I, so no need to round the length
   return z;
- }else{jsignal(EVLIMIT); return 0;}  // do it this way for branch-prediction
+ }else{jtjsignal(jt,EVLIMIT); return 0;}  // do it this way for branch-prediction
 }
 
 // free a block.  The usecount must make it freeable
@@ -817,7 +817,7 @@ void jtmf(J jt,A w){I mfreeb;
 // as a backer for a virtual block
 RESTRICTF A jtgah(J jt,I r,A w){A z;
  ASSERT(RMAX>=r,EVLIMIT); 
- RZ(z=gafv(SZI*(NORMAH+r)-1));
+ RZ(z=jtgafv(jt,SZI*(NORMAH+r)-1));
  AT(z)=0;
  if(w){
   AT(z)=AT(w); AN(z)=AN(w); AR(z)=(RANKT)r; AK(z)=CAV(w)-(C*)z;
@@ -833,10 +833,10 @@ RESTRICTF A jtgah(J jt,I r,A w){A z;
  if((t&SPARSE)!=0){
   GASPARSE(z,t,AN(w),AR(w),AS(w))
   wp=PAV(w); zp=PAV(z);
-  SPB(zp,a,ca(SPA(wp,a)));
-  SPB(zp,e,ca(SPA(wp,e)));
-  SPB(zp,i,ca(SPA(wp,i)));
-  SPB(zp,x,ca(SPA(wp,x)));
+  SPB(zp,a,jtca(jt,SPA(wp,a)));
+  SPB(zp,e,jtca(jt,SPA(wp,e)));
+  SPB(zp,i,jtca(jt,SPA(wp,i)));
+  SPB(zp,x,jtca(jt,SPA(wp,x)));
  }else{
   if(t&NAME){GATV(z,NAME,AN(w),AR(w),AS(w));AT(z)=t;}  // GA does not allow NAME type, for speed
   else GA(z,t,AN(w),AR(w),AS(w));
@@ -844,28 +844,28 @@ RESTRICTF A jtgah(J jt,I r,A w){A z;
  return z;
 }
 // clone block only if it is read-only
- A jtcaro(J jt, A w){ if(AFLAG(w)&AFRO){return ca(w);} return w; }
+ A jtcaro(J jt, A w){ if(AFLAG(w)&AFRO){return jtca(jt,w);} return w; }
 
 // clone recursive.
  A jtcar(J jt, A w){A*u,*wv,z;I n;P*p;V*v;
- RZ(z=ca(w));
+ RZ(z=jtca(jt,w));
  n=AN(w);
  switch(CTTZ(AT(w))){
   case RATX:  n+=n;
   case XNUMX:
-  case BOXX:  u=AAV(z); wv=AAV(w);  DO(n, RZ(*u++=car(wv[i]));); break;
+  case BOXX:  u=AAV(z); wv=AAV(w);  DO(n, RZ(*u++=jtcar(jt,wv[i]));); break;
   case SB01X: case SLITX: case SINTX: case SFLX: case SCMPXX: case SBOXX:
    p=PAV(z); 
-   SPB(p,a,car(SPA(p,a)));
-   SPB(p,e,car(SPA(p,e)));
-   SPB(p,i,car(SPA(p,i)));
-   SPB(p,x,car(SPA(p,x)));
+   SPB(p,a,jtcar(jt,SPA(p,a)));
+   SPB(p,e,jtcar(jt,SPA(p,e)));
+   SPB(p,i,jtcar(jt,SPA(p,i)));
+   SPB(p,x,jtcar(jt,SPA(p,x)));
    break;
   case VERBX: case ADVX: case CONJX: 
    v=FAV(z); 
-   if(v->fgh[0])RZ(v->fgh[0]=car(v->fgh[0])); // no need to INCORP these, since no one will look and they aren't virtual
-   if(v->fgh[1])RZ(v->fgh[1]=car(v->fgh[1])); 
-   if(v->fgh[2])RZ(v->fgh[2]=car(v->fgh[2]));
+   if(v->fgh[0])RZ(v->fgh[0]=jtcar(jt,v->fgh[0])); // no need to INCORP these, since no one will look and they aren't virtual
+   if(v->fgh[1])RZ(v->fgh[1]=jtcar(jt,v->fgh[1])); 
+   if(v->fgh[2])RZ(v->fgh[2]=jtcar(jt,v->fgh[2]));
  }
  return z;
 }

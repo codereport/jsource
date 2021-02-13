@@ -32,7 +32,7 @@ static A jtpdtspvv(J jt,A a,A w){A x;D*av,s,t,*wv,z;I i,*u,*u0,*uu,*v,*v0,*vv;P*
   if(i==*u){s=av[u-u0]; t=wv[v-v0]; z+=s&&t?s*t:0; ++u; ++v; continue;}
  }
  NAN1;
- return scf(z);
+ return jtscf(jt,z);
 }
 
 static A jtpdtspmv(J jt,A a,A w){A ax,b,g,x,wx,y,yi,yj,z;B*bv;I m,n,s[2],*u,*v,*yv;P*ap,*wp,*zp;
@@ -51,12 +51,12 @@ static A jtpdtspmv(J jt,A a,A w){A ax,b,g,x,wx,y,yi,yj,z;B*bv;I m,n,s[2],*u,*v,*
   DQ(n, if(*bv++){*u++=*yv++; *v++=*yv++;}else yv+=2;);
   RZ(ax=jtrepeat(jt,b,SPA(ap,x))); RZ(wx=jtfrom(jt,jtindexof(jt,SPA(wp,i),yj),SPA(wp,x))); 
  }
- RZ(df2(x,yi,tymes(ax,wx),sldot(slash(ds(CPLUS)))));
- RZ(y=nub(yi));
- RZ(g=grade1(y));
+ RZ(df2(x,yi,tymes(ax,wx),jtsldot(jt,jtslash(jt,ds(CPLUS)))));
+ RZ(y=jtnub(jt,yi));
+ RZ(g=jtgrade1(jt,y));
  GASPARSE(z,STYPE(AT(x)),1,1,AS(a)); zp=PAV(z);
  SPB(zp,a,iv0);
- SPB(zp,e,scf(0.0));
+ SPB(zp,e,jtscf(jt,0.0));
  SPB(zp,i,jtfrom(jt,g,y));
  SPB(zp,x,jtfrom(jt,g,x));
  return z;
@@ -79,12 +79,12 @@ static A jtpdtspvm(J jt,A a,A w){A ax,b,g,x,wx,y,yi,yj,z;B*bv;D*av,c,d,*wv,*xv;I
   RZ(ax=jtfrom(jt,jtindexof(jt,SPA(ap,i),yi),SPA(ap,x))); RZ(wx=jtrepeat(jt,b,SPA(wp,x)));
   RZ(x=tymes(ax,wx));
  }
- RZ(df2(y,yj,x,sldot(slash(ds(CPLUS)))));
- RZ(y=nub(yj));
- RZ(g=grade1(y));
+ RZ(df2(y,yj,x,jtsldot(jt,jtslash(jt,ds(CPLUS)))));
+ RZ(y=jtnub(jt,yj));
+ RZ(g=jtgrade1(jt,y));
  GASPARSE(z,STYPE(AT(x)),1,1,1+AS(w)); zp=PAV(z);
  SPB(zp,a,iv0);
- SPB(zp,e,scf(0.0));
+ SPB(zp,e,jtscf(jt,0.0));
  SPB(zp,i,jtfrom(jt,g,y));
  SPB(zp,x,jtfrom(jt,g,x));
  return z;
@@ -156,7 +156,7 @@ static A jtpdtspmm(J jt,A a,A w){A z,zi,zj,zx,zy,*old;D*axv,c,d,*dv,*wxv,*zyv;
  NAN1;
  *AS(zx)=AN(zx)=*AS(zi)=n; AN(zi)=n<<1;
  GASPARSE(z,SFL,1,2,AS(a)); *(1+AS(z))=*(1+AS(w));
- zp=PAV(z); SPB(zp,a,apvwr(2,0L,1L)); SPB(zp,e,scf(0.0)); SPB(zp,i,zi); SPB(zp,x,zx);
+ zp=PAV(z); SPB(zp,a,apvwr(2,0L,1L)); SPB(zp,e,jtscf(jt,0.0)); SPB(zp,i,zi); SPB(zp,x,zx);
  return z;
 }
 
@@ -171,5 +171,5 @@ static A jtpdtspmm(J jt,A a,A w){A z,zi,zj,zx,zy,*old;D*axv,c,d,*dv,*wxv,*zyv;
  if(ab&&2==AR(a)&&    1==AR(w))return jtpdtspmv(jt,a,w);
  if(    1==AR(a)&&wb&&2==AR(w))return jtpdtspvm(jt,a,w);
  if(ab&&2==AR(a)&&wb&&2==AR(w))return jtpdtspmm(jt,a,w);
- return df2(x,a,w,jtatop(jt,slash(ds(CPLUS)),jtqq(jt,ds(CSTAR),jtv2(jt,1L,AR(w)))));
+ return df2(x,a,w,jtatop(jt,jtslash(jt,ds(CPLUS)),jtqq(jt,ds(CSTAR),jtv2(jt,1L,AR(w)))));
 }

@@ -57,7 +57,7 @@ B jtsymext(J jt,B b){A x,y;I j,m,n/*obsolete ,s[2]*/,*v,xn,yn;L*u;
 // if tailx==0, append at head (immediately after *hv); if tailx!=0, append to tail.  If queue is empty, tail is always 0
 // result is new symbol
 L* jtsymnew(J jt,LX*hv, LX tailx){LX j;L*u,*v;
- while(!(j=LAV0(jt->symp)->next))RZ(symext(1));  /* extend pool if req'd        */
+ while(!(j=LAV0(jt->symp)->next))RZ(jtsymext(jt,1));  /* extend pool if req'd        */
  LAV0(jt->symp)->next=(j+LAV0(jt->symp))->next;       /* new top of stack            */
  u=j+LAV0(jt->symp);  // the new symbol.  u points to it, j is its index
  if(tailx) {L *t=tailx+LAV0(jt->symp);
@@ -124,35 +124,35 @@ static SYMWALK(jtsympoola, I,INT,100,1, 1, *zv++=j;)
  ASSERT(!AN(w),EVLENGTH);
  GAT0(z,BOX,3,1); zv=AAV(z);
  n=AN(jt->symp)/symcol; pv=LAV0(jt->symp);
- GATV0(x,INT,n*5,2); AS(x)[0]=n; AS(x)[1]=5; xv= AV(x); zv[0]=incorp(x);
- GATV0(y,BOX,n,  1);                         yv=AAV(y); zv[1]=incorp(y);
+ GATV0(x,INT,n*5,2); AS(x)[0]=n; AS(x)[1]=5; xv= AV(x); zv[0]=jtincorp(jt,x);
+ GATV0(y,BOX,n,  1);                         yv=AAV(y); zv[1]=jtincorp(jt,y);
  for(i=0;i<n;++i,++pv){         /* per pool entry       */
   *xv++=i;   // sym number
   *xv++=(q=pv->val)?LOWESTBIT(AT(pv->val)):0;  // type: only the lowest bit.  Must allow SYMB through
   *xv++=pv->flag+(pv->name?LHASNAME:0)+(pv->val?LHASVALUE:0);  // flag
   *xv++=pv->sn;    
   *xv++=pv->next;
-  RZ(*yv++=(q=pv->name)?incorp(jtsfn(jt,SFNSIMPLEONLY,q)):mtv);
+  RZ(*yv++=(q=pv->name)?jtincorp(jt,jtsfn(jt,SFNSIMPLEONLY,q)):mtv);
  }
  // Allocate box 3: locale name
- GATV0(y,BOX,n,1); yv=AAV(y); zv[2]=incorp(y);
+ GATV0(y,BOX,n,1); yv=AAV(y); zv[2]=jtincorp(jt,y);
  DO(n, yv[i]=mtv;);
  n=AN(jt->stloc); v=LXAV0(jt->stloc); 
  for(i=0;i<n;++i){  // for each chain-base in locales pool
   for(j=v[i];j;j=LAV0(jt->symp)[j].next){      // j is index to named local entry; process the chain
    x=LAV0(jt->symp)[j].val;  // x->symbol table for locale
-   RZ(yv[j]=yv[LXAV0(x)[0]]=aa=incorp(jtsfn(jt,SFNSIMPLEONLY,LOCNAME(x))));  // install name in the entry for the locale
-   RZ(q=sympoola(x)); u=AV(q); DO(AN(q), yv[u[i]]=aa;);
+   RZ(yv[j]=yv[LXAV0(x)[0]]=aa=jtincorp(jt,jtsfn(jt,SFNSIMPLEONLY,LOCNAME(x))));  // install name in the entry for the locale
+   RZ(q=jtsympoola(jt,x)); u=AV(q); DO(AN(q), yv[u[i]]=aa;);
   }
  }
  n=jtcountnl(jt);
  for(i=0;i<n;++i)if(x=jtindexnl(jt,i)){   /* per numbered locales */
-  RZ(      yv[LXAV0(x)[0]]=aa=incorp(jtsfn(jt,SFNSIMPLEONLY,LOCNAME(x))));
-  RZ(q=sympoola(x)); u=AV(q); DO(AN(q), yv[u[i]]=aa;);
+  RZ(      yv[LXAV0(x)[0]]=aa=jtincorp(jt,jtsfn(jt,SFNSIMPLEONLY,LOCNAME(x))));
+  RZ(q=jtsympoola(jt,x)); u=AV(q); DO(AN(q), yv[u[i]]=aa;);
  }
  if(AN(x=jt->locsyms)>1){               /* per local table      */
-  RZ(aa=incorp(cstr("**local**")));
-  RZ(q=sympoola(x)); u=AV(q); DO(AN(q), yv[u[i]]=aa;);
+  RZ(aa=jtincorp(jt,jtcstr(jt,"**local**")));
+  RZ(q=jtsympoola(jt,x)); u=AV(q); DO(AN(q), yv[u[i]]=aa;);
  }
  return z;
 }    /* 18!:31 symbol pool */
@@ -330,12 +330,12 @@ static A jtlocindirect(J jt,I n,C*u,UI4 hash){A x,y;C*s,*v,*xv;I k,xn;
   ASSERTN(e,EVVALUE,jtnfs(jt,k,v));  // verify found
   y=e->val;    // y->A block for locale
   ASSERTN(!AR(y),EVRANK,jtnfs(jt,k,v));   // verify atomic
-  if(AT(y)&(INT|B01)){g=findnl(BIV0(y)); ASSERT(g!=0,EVLOCALE);  // if atomic integer, look it up
+  if(AT(y)&(INT|B01)){g=jtfindnl(jt,BIV0(y)); ASSERT(g!=0,EVLOCALE);  // if atomic integer, look it up
   }else{
    ASSERTN(BOX&AT(y),EVDOMAIN,jtnfs(jt,k,v));  // verify box
    x=AAV(y)[0]; if((((I)AR(x)-1)&-(AT(x)&(INT|B01)))<0) {
     // Boxed integer - use that as bucketx
-    g=findnl(BIV0(x)); ASSERT(g!=0,EVLOCALE);  // boxed integer, look it up
+    g=jtfindnl(jt,BIV0(x)); ASSERT(g!=0,EVLOCALE);  // boxed integer, look it up
    }else{
     xn=AN(x); xv=CAV(x);   // x->boxed contents, xn=length, xv->string
     ASSERTN(1>=AR(x),EVRANK,jtnfs(jt,k,v));   // verify list (or atom)
@@ -366,7 +366,7 @@ L*jtsyrd(J jt,A a,A locsyms){A g;
   // If there is a local symbol table, search it first
   if(e = jtprobelocal(jt,a,locsyms)){return e;}  // return flagging the result if local
   g=jt->global;  // Continue with the current locale
- } else RZ(g=sybaseloc(a));
+ } else RZ(g=jtsybaseloc(jt,a));
  return syrd1(NAV(a)->m,NAV(a)->s,NAV(a)->hash,g);  // Not local: look up the name starting in locale g
 }
 // same, but return locale in which found
@@ -375,7 +375,7 @@ A jtsyrdforlocale(J jt,A a){A g;
   // If there is a local symbol table, search it first
   if(e = jtprobelocal(jt,a,jt->locsyms)){return jt->locsyms;}  // return flagging the result if local
   g=jt->global;  // Start with the current locale
- } else RZ(g=sybaseloc(a));
+ } else RZ(g=jtsybaseloc(jt,a));
  return syrd1forlocale(NAV(a)->m,NAV(a)->s,NAV(a)->hash,g);  // Not local: look up the name starting in locale g
 }
 // same as syrd, but we have already checked for buckets
@@ -387,7 +387,7 @@ L*jtsyrdnobuckets(J jt,A a){A g;
   // If there is a local symbol table, search it first
   if(!NAV(a)->bucket && (e = probe(NAV(a)->m,NAV(a)->s,NAV(a)->hash,jt->locsyms))){return e;}  // return if found locally from name
   g=jt->global;  // Start with the current locale
- } else RZ(g=sybaseloc(a));  // if locative, start in locative locale
+ } else RZ(g=jtsybaseloc(jt,a));  // if locative, start in locative locale
  return syrd1(NAV(a)->m,NAV(a)->s,NAV(a)->hash,g);  // Not local: look up the name starting in locale g
 }
 
@@ -427,7 +427,7 @@ static A jtdllsymaddr(J jt,A w,C flag){A*wv,x,y,z;I i,n,*zv;L*v;
 
 // Same, but value error if name not defined
  A jtsymbrdlock(J jt, A w){A y;
- RZ(y=symbrd(w));
+ RZ(y=jtsymbrd(jt,w));
  return FUNC&AT(y)&&(jt->uflags.us.cx.cx_c.glock||VLOCK&FAV(y)->flag)?jtnameref(jt,w,jt->locsyms):y;
 }
 
@@ -483,7 +483,7 @@ L* jtsymbis(J jt,A a,A w,A g){A x;I m,n,wn,wr,wt;L*e;
   else{C*s=1+m+v->s; RZ(g=NMILOC&v->flag?locindirect(n-m-2,1+s,(UI4)v->bucketx):stfindcre(n-m-2,s,v->bucketx));}
     // locative: s is the length of name_.  Find the symbol table to use, creating one if none found
   // Now g has the symbol table to look in
-  RZ(e=g==jtlocal?probeislocal(a) : jtprobeis(jt,a,g));   // set e to symbol-table slot to use
+  RZ(e=g==jtlocal?jtprobeislocal(jt,a) : jtprobeis(jt,a,g));   // set e to symbol-table slot to use
   if(AT(w)&FUNC&&(FAV(w)->fgh[0])){if(FAV(w)->id==CCOLON)FAV(w)->flag|=VNAMED; if(jt->uflags.us.cx.cx_c.glock)FAV(w)->flag|=VLOCK;}
    // If the value is a function created by n : m, this becomes a named function; if running a locked function, this is locked too.
    // kludge  these flags are modified in the input area (w), which means they will be improperly set in the result of the

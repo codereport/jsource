@@ -20,19 +20,19 @@ F jtvfn(J jt,F x){I*v=AV(jt->fopf); DQ(AM(jt->fopf),if(x==(F)*v++)return x;); AS
      /* check that x is in table of file#s */
 
 I jtfnum(J jt,A w){A y;I h,j;
- if(AT(w)&B01+INT){ASSERT(h=i0(w),EVFNUM); return h;}
+ if(AT(w)&B01+INT){ASSERT(h=jti0(jt,w),EVFNUM); return h;}
  ASSERT(AT(w)&BOX,EVDOMAIN);
  y=AAV(w)[0];
  ASSERT(AN(y),EVLENGTH);
- if(AT(y)&B01+INT){ASSERT(h=i0(y),EVFNUM); return h;}
- RE(j=i0(jtindexof(jt,vec(BOX,AM(jt->fopf),AAV(jt->fopa)),boxW(fullname(vslit(y)))))); 
+ if(AT(y)&B01+INT){ASSERT(h=jti0(jt,y),EVFNUM); return h;}
+ RE(j=jti0(jt,jtindexof(jt,vec(BOX,AM(jt->fopf),AAV(jt->fopa)),boxW(jtfullname(jt,jtvslit(jt,y)))))); 
  return j<AM(jt->fopf)?*(j+AV(jt->fopf)):0;
 }    /* file# corresp. to standard argument w */
 
  A jtfname(J jt, A w){I j; 
- RE(j=i0(jtindexof(jt,jt->fopf,w)));
+ RE(j=jti0(jt,jtindexof(jt,jt->fopf,w)));
  ASSERT(j<AM(jt->fopf),EVFNUM);
- return ca(*(j+AAV(jt->fopa)));
+ return jtca(jt,*(j+AAV(jt->fopa)));
 }    /* string name corresp. to file# w */
 
  A jtjfiles(J jt, A w){A y,z;
@@ -43,7 +43,7 @@ I jtfnum(J jt,A w){A y;I h,j;
 
 F jtjope(J jt,A w,C*mode){A t;F f;I n;static I nf=25; A z;
  ASSERT(BOX&AT(w),EVDOMAIN);
- RZ(t=str0(vslit(AAV(w)[0])));
+ RZ(t=jtstr0(jt,jtvslit(jt,AAV(w)[0])));
  n=AN(t)-1;
  ASSERT(n!=0,EVLENGTH);
 {
@@ -58,24 +58,24 @@ F jtjope(J jt,A w,C*mode){A t;F f;I n;static I nf=25; A z;
  A jtjopen(J jt, A w){A z;I h;
  if(!AN(w))return w;
  if(AR(w))return rank1ex0(w,UNUSED_VALUE,jtjopen);
- RE(h=fnum(w));
- if(h){RZ(z=sc(h)); RZ(fname(z)); return z;}
+ RE(h=jtfnum(jt,w));
+ if(h){RZ(z=jtsc(jt,h)); RZ(jtfname(jt,z)); return z;}
  else{A ww;
   if(AM(jt->fopf)==AN(jt->fopf)){I ct=AM(jt->fopf); RZ(jt->fopa=jtext(jt,1,jt->fopa)); RZ(jt->fopf=jtext(jt,1,jt->fopf)); AM(jt->fopf)=ct;}
   RZ(*(AM(jt->fopf)+IAV(jt->fopf))=h=(I)jtjope(jt,w,FUPDATE_O));
-  RZ(ww=fullname(vslit(AAV(w)[0]))); RZ(ras(ww));
+  RZ(ww=jtfullname(jt,jtvslit(jt,AAV(w)[0]))); RZ(ras(ww));
   RZ(*(AM(jt->fopf)+AAV(jt->fopa))=ww);
  
   ++AM(jt->fopf);
-  return sc(h);
+  return jtsc(jt,h);
 }}   /* open the file named w if necessary; return file# */
 
 B jtadd2(J jt,F f1,F f2,C*cmd){A c,x;
  if(f1==NULL) {AM(jt->fopf)+=2;return 1;};
  GATV0(c,LIT,1+strlen(cmd),1);memcpy(CAV(c)+1,cmd,AN(c)-1);cmd=CAV(c);
  if(AM(jt->fopf)+1>=AN(jt->fopf)){I ct=AM(jt->fopf); RZ(jt->fopa=jtext(jt,1,jt->fopa)); RZ(jt->fopf=jtext(jt,1,jt->fopf)); AM(jt->fopf)=ct;}
- *cmd='<';x=cstr(cmd); RZ(ras(x)); RZ(*(AM(jt->fopf)+AAV(jt->fopa)  )=x); RZ(*(AM(jt->fopf)+IAV(jt->fopf)  )=(I)f1);
- *cmd='>';x=cstr(cmd); RZ(ras(x)); RZ(*(AM(jt->fopf)+AAV(jt->fopa)+1)=x); RZ(*(AM(jt->fopf)+IAV(jt->fopf)+1)=(I)f2);
+ *cmd='<';x=jtcstr(jt,cmd); RZ(ras(x)); RZ(*(AM(jt->fopf)+AAV(jt->fopa)  )=x); RZ(*(AM(jt->fopf)+IAV(jt->fopf)  )=(I)f1);
+ *cmd='>';x=jtcstr(jt,cmd); RZ(ras(x)); RZ(*(AM(jt->fopf)+AAV(jt->fopa)+1)=x); RZ(*(AM(jt->fopf)+IAV(jt->fopf)+1)=(I)f2);
  fa(c); return 1;
 }   /* add 2 entries to AM(jt->fopf) table (for hostio); null arg commits entries */
 
@@ -83,7 +83,7 @@ B jtadd2(J jt,F f1,F f2,C*cmd){A c,x;
  A jtjclose(J jt, A w){A*av;I*iv,j;
  if(!AN(w))return w;
  if(AR(w))return rank1ex0(w,UNUSED_VALUE,jtjclose);
- RE(j=i0(jtindexof(jt,jt->fopf,sc(fnum(w))))); ASSERT(j<AM(jt->fopf),EVFNUM);
+ RE(j=jti0(jt,jtindexof(jt,jt->fopf,jtsc(jt,jtfnum(jt,w))))); ASSERT(j<AM(jt->fopf),EVFNUM);
  av=AAV(jt->fopa); iv=IAV(jt->fopf); 
  if(fclose((F)iv[j]))return jtjerrno(jt);
  --AM(jt->fopf); fa(av[j]); if(j<AM(jt->fopf)){av[j]=av[AM(jt->fopf)]; iv[j]=iv[AM(jt->fopf)];}
@@ -100,10 +100,10 @@ F jtstdf(J jt,A w){A y;F f;I n,r,t;
   if(t&C2T){ASSERT(1>=r,EVRANK); ASSERT(n!=0,EVLENGTH); ASSERT(jtvc1(jt,n,USAV(y)),EVDOMAIN); return 0;}
      vc1 can now be killed off
 */
-  if(t&B01+INT)return stdf(y);
+  if(t&B01+INT)return jtstdf(jt,y);
   ASSERT(0,EVDOMAIN);
  }
- f=(F)i0(w); 
+ f=(F)jti0(jt,w); 
  ASSERT(f!=0,EVFNUM); 
  return f;
 }    /* 0 if w is a boxed file name; n if w is integer or boxed integer */

@@ -12,7 +12,7 @@ BPFX(nandBB, NAND,BNAND,NAND,BNAND, _mm256_xor_pd(bool256,_mm256_and_pd(u256,v25
 BPFX( norBB, NOR ,BNOR, NOR, BNOR, _mm256_xor_pd(bool256,_mm256_or_pd(u256,v256)) , , __m256d bool256=_mm256_castsi256_pd(_mm256_set1_epi64x(0x0101010101010101)); )
 
 
- A jtrazein(J jt, A w){A z; return df2(z,w,box(raze(w)),jtamp(jt,swap(ds(CEPS)),ds(COPE)));}
+ A jtrazein(J jt, A w){A z; return df2(z,w,jtbox(jt,jtraze(jt,w)),jtamp(jt,jtswap(jt,ds(CEPS)),ds(COPE)));}
 
 
 static A jtebarmat(J jt,A a,A w){A ya,yw,z;B b,*zv;C*au,*av,*u,*v,*v0,*wu,*wv;I*as,c,i,k,m,n,r,s,si,sj,t,*ws;
@@ -135,21 +135,21 @@ static I jtebarprep(J jt,A a,A w,A*za,A*zw,I*zc){I ar,at,m,n,t,wr,wt,memlimit;CR
  av=CAV(a); m=AN(a);
  wv=CAV(w); n=AN(w); p=n-m;
  switch(d){
-  case -1: return sc(n);
+  case -1: return jtsc(jt,n);
   case -4: return jtindexof(jt,jtebarvec(jt,a,w),num(1));
  }
  GATV0(y,INT,d,1); yv= AV(y); DO(d, yv[i]=1+m;);
  switch(CTTZ(AT(w))){
-  case INTX: if(c)EBLOOP(I, u[i]-c,v[k+m]-c, if(i==m)return sc(k))
-             else EBLOOP(I, u[i],  v[k+m],   if(i==m)return sc(k)); break;
-  case SBTX: if(c)EBLOOP(SB,u[i]-c,v[k+m]-c, if(i==m)return sc(k))
-             else EBLOOP(SB,u[i],  v[k+m],   if(i==m)return sc(k)); break;
-  case C2TX:      EBLOOP(US,u[i],  v[k+m],   if(i==m)return sc(k)); break;
-  case C4TX: if(c)EBLOOP(C4,u[i]-c,v[k+m]-c, if(i==m)return sc(k))
-             else EBLOOP(C4,u[i],  v[k+m],   if(i==m)return sc(k)); break;
-  default:        EBLOOP(UC,u[i],  v[k+m],   if(i==m)return sc(k));
+  case INTX: if(c)EBLOOP(I, u[i]-c,v[k+m]-c, if(i==m)return jtsc(jt,k))
+             else EBLOOP(I, u[i],  v[k+m],   if(i==m)return jtsc(jt,k)); break;
+  case SBTX: if(c)EBLOOP(SB,u[i]-c,v[k+m]-c, if(i==m)return jtsc(jt,k))
+             else EBLOOP(SB,u[i],  v[k+m],   if(i==m)return jtsc(jt,k)); break;
+  case C2TX:      EBLOOP(US,u[i],  v[k+m],   if(i==m)return jtsc(jt,k)); break;
+  case C4TX: if(c)EBLOOP(C4,u[i]-c,v[k+m]-c, if(i==m)return jtsc(jt,k))
+             else EBLOOP(C4,u[i],  v[k+m],   if(i==m)return jtsc(jt,k)); break;
+  default:        EBLOOP(UC,u[i],  v[k+m],   if(i==m)return jtsc(jt,k));
  }
- return sc(n);
+ return jtsc(jt,n);
 }    /* a (E. i. 1:) w where a and w are atoms or lists */
 
  A jtsumebar(J jt,A a,A w){A y;C*av,*wv;I c,d,i,k=0,m,n,p,*yv,z=0;
@@ -160,7 +160,7 @@ static I jtebarprep(J jt,A a,A w,A*za,A*zw,I*zc){I ar,at,m,n,t,wr,wt,memlimit;CR
   case -1: return num(0);
   case -4: return jtaslash(jt,CPLUS,jtebarvec(jt,a,w));
  }
- if((-m&-n)>=0){return sc(n);}  // empty argument.  If m, it matches everywhere, so use n; if n, it's 0, use it
+ if((-m&-n)>=0){return jtsc(jt,n);}  // empty argument.  If m, it matches everywhere, so use n; if n, it's 0, use it
  GATV0(y,INT,d,1); yv= AV(y); DO(d, yv[i]=1+m;);
  switch(CTTZ(AT(w))){
   case INTX: if(c)EBLOOP(I, u[i]-c,v[k+m]-c, if(i==m)++z) 
@@ -172,7 +172,7 @@ static I jtebarprep(J jt,A a,A w,A*za,A*zw,I*zc){I ar,at,m,n,t,wr,wt,memlimit;CR
              else EBLOOP(C4,u[i],  v[k+m],   if(i==m)++z); break;
   default:        EBLOOP(UC,u[i],  v[k+m],   if(i==m)++z);
  }
- return sc(z);
+ return jtsc(jt,z);
 }    /* a ([: +/ E.) w where a and w are atoms or lists */
 
  A jtanyebar(J jt,A a,A w){A y;C*av,*wv;I c,d,i,k=0,m,n,p,*yv;
@@ -207,9 +207,9 @@ static I jtebarprep(J jt,A a,A w,A*za,A*zw,I*zc){I ar,at,m,n,t,wr,wt,memlimit;CR
  wv=CAV(w); n=AN(w); p=n-m;
  switch(d){
   case -1: return mtv;
-  case -4: return icap(jtebarvec(jt,a,w));
+  case -4: return jticap(jt,jtebarvec(jt,a,w));
  }
- if((-m&-n)>=0){return icap(jtebar(jt,a,w));}  // empty argument.
+ if((-m&-n)>=0){return jticap(jt,jtebar(jt,a,w));}  // empty argument.
  GATV0(z,INT,MAX(22,n>>7),1); zv=AV(z); zu=zv+AN(z);
  GATV0(y,INT,d,1); yv= AV(y); DO(d, yv[i]=1+m;);
  switch(CTTZ(AT(w))){

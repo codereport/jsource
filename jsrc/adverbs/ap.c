@@ -295,8 +295,8 @@ static A jtgprefix(J jt,    A w,A self){A h,*hv,z,*zv;I m,n,r;
  SETIC(w,n); 
  h=VAV(self)->fgh[2]; hv=AAV(h); m=AN(h);
  GATV0(z,BOX,n,1); zv=AAV(z); I imod=0;
- DO(n, imod=(imod==m)?0:imod; RZ(zv[i]=df1(h,jttake(jt,sc(1+i),w),hv[imod])); ++imod;);
- return ope(z);
+ DO(n, imod=(imod==m)?0:imod; RZ(zv[i]=df1(h,jttake(jt,jtsc(jt,1+i),w),hv[imod])); ++imod;);
+ return jtope(jt,z);
 }    /* g\"r w for gerund g */
 
 
@@ -307,7 +307,7 @@ static A jtgprefix(J jt,    A w,A self){A h,*hv,z,*zv;I m,n,r;
 static A jtseg(J jt,A a,A w){A z;I c,k,m,n,*u,zn;
  // The (start,length) had better be integers.  Extract them into m,n
  if(INT&AT(a)){u=AV(a); m=*u; n=*(1+u);} else m=n=0;
- c=aii(w); k=c<<bplg(AT(w)); DPMULDE(n,c,zn);  // c=#atoms per item, k=#bytes/item, zn=atoms/infix
+ c=jtaii(jt,w); k=c<<bplg(AT(w)); DPMULDE(n,c,zn);  // c=#atoms per item, k=#bytes/item, zn=atoms/infix
  GA(z,AT(w),zn,MAX(1,AR(w)),AS(w)); AS(z)[0]=n;  // Allocate array of items, move in shape, override # items
  // Copy the selected items to the new block and return the new block
  memcpy(AV(z),CAV(w)+m*k,n*k);
@@ -335,11 +335,11 @@ static A jtinfix(J jt,A a,A w,A self){PROLOG(0018);DECLF;A x,z;I m;
  // If length is infinite, convert to large integer
  // kludge - test for ==ainf should be replaced with a test for value; will fail if _ is result of expression like {._
  if(a==ainf)m=IMAX;
- else RE(m=i0(vib(a))); // get infix length as an integer
+ else RE(m=jti0(jt,jtvib(jt,a))); // get infix length as an integer
  // Create table of infix positions
  RZ(x=jtifxi(jt,m,w));
  // If there are infixes, apply fs@:jtseg (ac2 creates an A verb for jtseg)
- if(AS(x)[0])z=eachl(x,w,jtatop(jt,fs,ac2(jtseg)));
+ if(AS(x)[0])z=eachl(x,w,jtatop(jt,fs,jtac2(jt,jtseg)));
  else{A s;I r, rr;
   // No infixes.  Create a cell of fills, apply fs to it, add a leading axis of 0 to the result
   // create a block containing the shape of the fill-cell.  The fill-cell is a list of items of y,
@@ -347,7 +347,7 @@ static A jtinfix(J jt,A a,A w,A self){PROLOG(0018);DECLF;A x,z;I m;
   // r = rank of w, rr=rank of list of items of w, s is block for list of length rr; copy shape of r; override #items of infix
   r=AR(w); rr=MAX(1,r); GATV0(s,INT,rr,1); if(r)MCISH(AV(s),AS(w),r); AV(s)[0]=0>m?0:m==IMAX?1+SETIC(w,r):m;
   // Create fill-cell of shape s; apply u to it
-  RZ(df1(x,jtreshape(jt,s,filler(w)),fs));
+  RZ(df1(x,jtreshape(jt,s,jtfiller(jt,w)),fs));
   // Prepend leading axis of 0 to the result
   z=jtreshape(jt,jtover(jt,zeroionei(0),shape(jt,x)),x);
  } 
@@ -356,21 +356,21 @@ static A jtinfix(J jt,A a,A w,A self){PROLOG(0018);DECLF;A x,z;I m;
 
 static A jtinfix2(J jt,    A w,A self){PROLOG(0019);A f; 
  f=FAV(self)->fgh[0]; f=FAV(f)->fgh[0];  // f=u in u/\ y
- A l=curtail(w), r=behead(w), z; IRS2(l,r,f,AR(w)-1,AR(w)-1,FAV(f)->valencefns[1],z); // (}: u"_1 }.) y
+ A l=jtcurtail(jt,w), r=jtbehead(jt,w), z; IRS2(l,r,f,AR(w)-1,AR(w)-1,FAV(f)->valencefns[1],z); // (}: u"_1 }.) y
  EPILOG(z);
 }    /* 2 f/\w, where f supports IRS */
 
 static A jtginfix(J jt,A a,A w,A self){A h,*hv,x,z,*zv;I d,m,n;
- RE(m=i0(vib(a))); 
+ RE(m=jti0(jt,jtvib(jt,a))); 
  RZ(x=jtifxi(jt,m,w));
  h=VAV(self)->fgh[2]; hv=AAV(h); d=AN(h);
  if(SETIC(x,n)){
   GATV0(z,BOX,n,1); zv=AAV(z);
-  DO(n, RZ(zv[i]=df1(h,jtseg(jt,jtfrom(jt,sc(i),x),w),hv[i%d])););
-  return ope(z);
+  DO(n, RZ(zv[i]=df1(h,jtseg(jt,jtfrom(jt,jtsc(jt,i),x),w),hv[i%d])););
+  return jtope(jt,z);
  }else{A s;
-  RZ(s=AR(w)?shape(jt,w):ca(iv0)); AV(s)[0]=ABS(m);
-  RZ(df1(x,jtreshape(jt,s,filler(w)),*hv));
+  RZ(s=AR(w)?shape(jt,w):jtca(jt,iv0)); AV(s)[0]=ABS(m);
+  RZ(df1(x,jtreshape(jt,s,jtfiller(jt,w)),*hv));
   return jtreshape(jt,jtover(jt,zeroionei(0),shape(jt,x)),x);
 }}
 
@@ -428,8 +428,8 @@ static A jtinfixprefix2(J jt,A a,A w,A self){FPREFIP;PROLOG(00202);A fs;I cger[1
  // set up for prefix/infix.  Calculate # result slots
  if(a!=mark){
   // infix.
-//  ilnval; RE(ilnval=i0(vib(a))); // ilnval=infix # (error if nonintegral; convert inf to HIGH_VALUE)
-  RE(ilnval=i0(vib(a))); // ilnval=infix # (error if nonintegral; convert inf to HIGH_VALUE)
+//  ilnval; RE(ilnval=jti0(jt,jtvib(jt,a))); // ilnval=infix # (error if nonintegral; convert inf to HIGH_VALUE)
+  RE(ilnval=jti0(jt,jtvib(jt,a))); // ilnval=infix # (error if nonintegral; convert inf to HIGH_VALUE)
   if(ilnval>=0){
    // positive infix.  Stride is 1 cell.
    ilnabs=ilnval;
@@ -549,7 +549,7 @@ static A jtinfixprefix2(J jt,A a,A w,A self){FPREFIP;PROLOG(00202);A fs;I cger[1
   // for infix +, invabs items of fill
   // for infix -, 0 items of fill
   RZ(z=jtreitem(jt,zeroionei(0),w));  // create 0 items of the type of w
-  if(ilnval>=0){ilnval=(ilnval==IMAX)?(wi+1):ilnval; RZ(z=jttake(jt,sc(ilnval),z));}    // if items needed, create them.  For compatibility, treat _ as 1 more than #items in w
+  if(ilnval>=0){ilnval=(ilnval==IMAX)?(wi+1):ilnval; RZ(z=jttake(jt,jtsc(jt,ilnval),z));}    // if items needed, create them.  For compatibility, treat _ as 1 more than #items in w
   WITHDEBUGOFF(zz=CALL1(f1,z,fs);) if(EMSK(jt->jerr)&EXIGENTERROR)RZ(zz); RESETERR;
   RZ(zz=jtreshape(jt,jtover(jt,zeroionei(0),shape(jt,zz?zz:mtv)),zz?zz:zeroionei(0)));
  }
@@ -584,16 +584,16 @@ static A jtpscan(J jt,    A w,A self){A z;I f,n,r,t,wn,wr,*ws,wt;
  // if inplaceable, reuse the input area for the result
  if(ASGNINPLACESGN(SGNIF((I)jtinplace,JTINPLACEWX)&SGNIF(adocv.cv,VIPOKWX),w))z=w; else GA(z,rtype(adocv.cv),wn,wr,ws);
  I rc=((AHDRPFN*)adocv.f)(d,n,m,AV(w),AV(z),jt);
- if(255&rc){jsignal(rc); return (rc>=EWOV)?IRS1(w,self,r,jtpscan,z):0;} else return adocv.cv&VRI+VRD?jtcvz(jt,adocv.cv,z):z;
+ if(255&rc){jtjsignal(jt,rc); return (rc>=EWOV)?IRS1(w,self,r,jtpscan,z):0;} else return adocv.cv&VRI+VRD?jtcvz(jt,adocv.cv,z):z;
 }    /* f/\"r w atomic f main control */
 
 static A jtinfixd(J jt,A a,A w,A self){A fs,z;C*x,*y;I c=0,d,k,m,n,p,q,r,*s,wr,*ws,wt,zc; 
  F2RANKW(0,RMAX,jtinfixd,self);
  wr=AR(w); ws=AS(w); wt=AT(w); SETIC(w,n);
- RE(m=i0(vib(a))); if(m==IMAX){m=n+1;} p=m==IMIN?IMAX:ABS(m);
+ RE(m=jti0(jt,jtvib(jt,a))); if(m==IMAX){m=n+1;} p=m==IMIN?IMAX:ABS(m);
  if(0>m){p=MIN(p,n); d=p?(n+p-1)/p:0;}else{ASSERT(IMAX-1>n-m,EVDOMAIN); d=MAX(0,1+n-m);}
- if(fs=FAV(self)->fgh[0],CCOMMA==ID(fs)){RE(c=aii(w)); DPMULDE(p,c,zc) r=2;}
- else{if(n)RE(c=aii(w)); zc=p; r=wr?1+wr:2;}
+ if(fs=FAV(self)->fgh[0],CCOMMA==ID(fs)){RE(c=jtaii(jt,w)); DPMULDE(p,c,zc) r=2;}
+ else{if(n)RE(c=jtaii(jt,w)); zc=p; r=wr?1+wr:2;}
  GA(z,wt,d*p*c,r,0); x=CAV(z); y=CAV(w);
  s=AS(z); s[0]=d; s[1]=zc; MCISH(s+2,1+ws,r-2);
  k=c<<bplg(wt); 
@@ -623,7 +623,7 @@ static A jtinfixd(J jt,A a,A w,A self){A fs,z;C*x,*y;I c=0,d,k,m,n,p,q,r,*s,wr,*
  }}
 
 static A jtmovsumavg1(J jt,I m,A w,A fs,B avg){A y,z;D d=(D)m;I c,p,wt;
- SETIC(w,p); p-=m; wt=AT(w); c=aii(w);
+ SETIC(w,p); p-=m; wt=AT(w); c=jtaii(jt,w);
  switch(((wt>>(INTX-1))&6)+avg){
   case 0:       MOVSUMAVG(B,I,INT,I,INT,x,  SETZ ); break;
   case 1:       MOVSUMAVG(B,I,INT,D,FL, x/d,SETZD); break;
@@ -644,12 +644,12 @@ static A jtmovsumavg1(J jt,I m,A w,A fs,B avg){A y,z;D d=(D)m;I c,p,wt;
 static A jtmovsumavg(J jt,I m,A w,A fs,B avg){A z;
  z=movsumavg1(m,w,fs,avg);
  if(jt->jerr==EVNAN)RESETERR else return z;
- return jtinfixprefix2(jt,sc(m),w,fs);
+ return jtinfixprefix2(jt,jtsc(jt,m),w,fs);
 }
 
 static A jtmovavg(J jt,A a,A w,A self){I m,j;
  PREF2(jtmovavg);
- RE(m=i0(vib(a)));SETIC(w,j);
+ RE(m=jti0(jt,jtvib(jt,a)));SETIC(w,j);
  if(0<m&&m<=j&&AT(w)&B01+FL+INT)return movsumavg(m,w,self,1);   // j may be 0
  return jtinfixprefix2(jt,a,w,self);
 }    /* a (+/ % #)\w */
@@ -697,7 +697,7 @@ static A jtmovavg(J jt,A a,A w,A self){I m,j;
  }}}
 
 static A jtmovminmax(J jt,I m,A w,A fs,B max){A y,z;I c,i,j,p,wt;
- SETIC(w,p); p-=m; wt=AT(w); c=aii(w);
+ SETIC(w,p); p-=m; wt=AT(w); c=jtaii(jt,w);
  GA(z,AT(w),c*(1+p),AR(w),AS(w)); AS(z)[0]=1+p;
  switch(max + ((wt>>(INTX-1))&6)){
   case 0: MOVMINMAXS(SB,SBT,jt->sbuv[0].down,SBLE); break;
@@ -711,7 +711,7 @@ static A jtmovminmax(J jt,I m,A w,A fs,B max){A y,z;I c,i,j,p,wt;
 }    /* a <./\w (0=max) or a >./\ (1=max); vector w; integer/float/symbol; 0<m */
 
 static A jtmovandor(J jt,I m,A w,A fs,B or){A y,z;B b0,b1,d,e,*s,*t,*u,*v,x,*yv,*zv;I c,i,j,p;
- SETIC(w,p); p-=m; c=aii(w); x=b0=or^1; b1=or;
+ SETIC(w,p); p-=m; c=jtaii(jt,w); x=b0=or^1; b1=or;
  GATV(z,B01,c*(1+p),AR(w),AS(w)); AS(z)[0]=1+p;
  zv=BAV(z); u=v=BAV(w);
  if(1==c){
@@ -735,7 +735,7 @@ static A jtmovandor(J jt,I m,A w,A fs,B or){A y,z;B b0,b1,d,e,*s,*t,*u,*v,x,*yv,
 }    /* a *./\w (0=or) or a +./\ (1=or); boolean w; 0<m */
 
 static A jtmovneeq(J jt,I m,A w,A fs,B eq){A y,z;B*s,*u,*v,x,*yv,*zv;I c,p;
- SETIC(w,p); p-=m; c=aii(w); x=eq;
+ SETIC(w,p); p-=m; c=jtaii(jt,w); x=eq;
  GATV(z,B01,c*(1+p),AR(w),AS(w)); AS(z)[0]=1+p;
  zv=BAV(z); u=v=BAV(w);
  if(1<c){GATV0(y,B01,c,1); s=yv=BAV(y); DQ(c, *s++=eq;);}
@@ -749,7 +749,7 @@ static A jtmovneeq(J jt,I m,A w,A fs,B eq){A y,z;B*s,*u,*v,x,*yv,*zv;I c,p;
 }    /* m ~:/\w (0=eq) or m =/\ (1=eq); boolean w; 0<m */
 
 static A jtmovbwneeq(J jt,I m,A w,A fs,B eq){A y,z;I c,p,*s,*u,*v,x,*yv,*zv;
- SETIC(w,p); p-=m; c=aii(w); x=eq?-1:0;
+ SETIC(w,p); p-=m; c=jtaii(jt,w); x=eq?-1:0;
  GATV(z,INT,c*(1+p),AR(w),AS(w)); AS(z)[0]=1+p;
  zv=AV(z); u=v=AV(w);
  if(1<c){GATV0(y,INT,c,1); s=yv=AV(y); DQ(c, *s++=x;);}
@@ -765,8 +765,8 @@ static A jtmovbwneeq(J jt,I m,A w,A fs,B eq){A y,z;I c,p,*s,*u,*v,x,*yv,*zv;
 static A jtmovfslash(J jt,A a,A w,A self){A x,z;B b;C id,*wv,*zv;I d,m,m0,p,t,wk,wt,zi,zk,zt;
  PREF2(jtmovfslash);
  SETIC(w,p); wt=AT(w);   // p=#items of w
- RE(m0=i0(vib(a))); m=REPSGN(m0); m=(m^m0)-m; m^=REPSGN(m);  // m0=infx x,  m=abs(m0), handling IMIN
- if(m==1)return AR(w)?w:ravel(w);  // 1 f/\ w is always w, except on an atom
+ RE(m0=jti0(jt,jtvib(jt,a))); m=REPSGN(m0); m=(m^m0)-m; m^=REPSGN(m);  // m0=infx x,  m=abs(m0), handling IMIN
+ if(m==1)return AR(w)?w:jtravel(jt,w);  // 1 f/\ w is always w, except on an atom
  if((SGNIF((m0==2)&FAV(self)->flag,VFSCANIRSX)&-(wt&DENSE)&(1-p))<0)return jtinfix2(jt,w,self);  // if  2 u/\ y supports IRS, go do (}: u }.) y - faster than cells - if >1 cell and dense  uses VFSCANIRSX=0
  if((((2^m)-1)|(m-1)|(p-m))<0)return jtinfixprefix2(jt,a,w,self);  // If m is 0 or 2, or if there is just 1 infix, go to general case
  x=FAV(self)->fgh[0]; x=FAV(x)->fgh[0]; id=ID(x); 
@@ -796,7 +796,7 @@ static A jtmovfslash(J jt,A a,A w,A self){A x,z;B b;C id,*wv,*zv;I d,m,m0,p,t,wk
  I rc=EVOK;
  DQ(zi-b, I lrc=((AHDRPFN*)adocv.f)(d,m,(I)1,wv,zv,jt); rc=lrc<rc?lrc:rc; zv+=zk; wv+=wk;);
  if(b){m=p-m*(zi-1); if(m>1){I lrc=((AHDRPFN*)adocv.f)(d,m,(I)1,wv,zv,jt); rc=lrc<rc?lrc:rc;}else{copyTT(zv,wv,d,zt,wt);}}
- if(255&rc){jsignal(rc); if(rc>=EWOV){RESETERR; return movfslash(a,jtcvt(jt,FL,w),self);}return 0;}else return z;
+ if(255&rc){jtjsignal(jt,rc); if(rc>=EWOV){RESETERR; return movfslash(a,jtcvt(jt,FL,w),self);}return 0;}else return z;
 }    /* a f/\w */
 
 static A jtiota1(J jt,    A w,A self){I j; return apv(SETIC(w,j),1L,1L);}
@@ -826,4 +826,4 @@ static A jtiota1(J jt,    A w,A self){I j; return apv(SETIC(w,j),1L,1L);}
  return f;
 }
 
-A jtascan(J jt,C c,A w){if(!w) return 0; A z; return df1(z,w,bslash(slash(ds(c))));}
+A jtascan(J jt,C c,A w){if(!w) return 0; A z; return df1(z,w,jtbslash(jt,jtslash(jt,ds(c))));}

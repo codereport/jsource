@@ -36,7 +36,7 @@ B jtxsinit(J jt){A x;
 
 static A jtline(J jt,A w,I si,C ce,B tso){A x=mtv,z;B xt=jt->tostdout;DC d,xd=jt->dcs;
  if(jtequ(jt,w,num(1)))return mtm;
- RZ(w=vs(w));
+ RZ(w=jtvs(jt,w));
  // Handle locking.  Global glock has lock status for higher levels.  We see if this text is locked; if so, we mark lock status for this level
  // We do not inherit the lock from higher levels, per the original design
  C oldk=jt->uflags.us.cx.cx_c.glock; // incoming lock status
@@ -51,11 +51,11 @@ static A jtline(J jt,A w,I si,C ce,B tso){A x=mtv,z;B xt=jt->tostdout;DC d,xd=jt
  A *old=jt->tnextpushp;
  switch(ce){
  // loop over the lines.  jgets may fail, in which case we leave that as the error code for the sentence.
- case 0: while(x&&!jt->jerr){jt->etxn=0;                           immex(x=jtddtokens(jt,jgets("   "),1+(AN(jt->locsyms)>1))); tpop(old);} break;  // lgets returns 0 for error or EOF
- case 1: while(x           ){if(!jt->seclev)jtshowerr(jt); jt->jerr=0; immex(x=jtddtokens(jt,jgets("   "),1+(AN(jt->locsyms)>1))); tpop(old);} break;
+ case 0: while(x&&!jt->jerr){jt->etxn=0;                           jtimmex(jt,x=jtddtokens(jt,jtjgets(jt,"   "),1+(AN(jt->locsyms)>1))); jttpop(jt,old);} break;  // lgets returns 0 for error or EOF
+ case 1: while(x           ){if(!jt->seclev)jtshowerr(jt); jt->jerr=0; jtimmex(jt,x=jtddtokens(jt,jtjgets(jt,"   "),1+(AN(jt->locsyms)>1))); jttpop(jt,old);} break;
  case 2:
  case 3: {
-  while(x&&!jt->jerr){jt->etxn=0;                           immea(x=jgets("   ")); tpop(old);}
+  while(x&&!jt->jerr){jt->etxn=0;                           jtimmea(jt,x=jtjgets(jt,"   ")); jttpop(jt,old);}
   jt->asgn=0;
   }
  }
@@ -67,13 +67,13 @@ static A jtline(J jt,A w,I si,C ce,B tso){A x=mtv,z;B xt=jt->tostdout;DC d,xd=jt
 }
 
 static A jtaddscriptname(J jt, A w){I i;
- RE(i=i0(jtindexof(jt,vec(BOX,jt->slistn,AAV(jt->slist)),box(ravel(w)))));  // look up only in the defined names
+ RE(i=jti0(jt,jtindexof(jt,vec(BOX,jt->slistn,AAV(jt->slist)),jtbox(jt,jtravel(jt,w)))));  // look up only in the defined names
  if(jt->slistn==i){
   if(jt->slistn==AN(jt->slist)){RZ(jt->slist=jtext(jt,1,jt->slist));RZ(jt->sclist=jtext(jt,1,jt->sclist));}
   RZ(ras(w)); RZ(*(jt->slistn+AAV(jt->slist))=w); *(jt->slistn+IAV(jt->sclist))=jt->slisti;
   ++jt->slistn;
  }
- return sc(i);
+ return jtsc(jt,i);
 }
 
 
@@ -85,11 +85,11 @@ static A jtlinf(J jt,A a,A w,C ce,B tso){A x,y,z;B lk=0;C*s;I i=-1,n,oldi=jt->sl
   ASSERT(LIT&AT(y),EVDOMAIN); 
   ASSERT(3<n&&!memcmpne(s+n-3,".js",3L)||4<n&&!memcmpne(s+n-4,".ijs",4L),EVSECURE);
  }
- RZ(x=jfread(w));
+ RZ(x=jtjfread(jt,w));
  // Remove UTF8 BOM if present - commented out pending resolution.  Other BOMs should not occur
  // if(!memcmp(CAV(x),"\357\273\277",3L))RZ(x=jtdrop(jt,num(3),x))
  // if this is a new file, record it in the list of scripts
- RZ(y=fullname(AAV(w)[0]));
+ RZ(y=jtfullname(jt,AAV(w)[0]));
  A scripti; RZ(scripti=jtaddscriptname(jt,y)); i=IAV(scripti)[0];
 
  // set the current script number
@@ -108,9 +108,9 @@ static A jtlinf(J jt,A a,A w,C ce,B tso){A x,y,z;B lk=0;C*s;I i=-1,n,oldi=jt->sl
 
 // 4!:7 set script name to use and return previous value
  A jtscriptnum(J jt, A w){
- I i=i0(w);  // fetch index
+ I i=jti0(jt,w);  // fetch index
  ASSERT(BETWEENO(i,-1,jt->slistn),EVINDEX);  // make sure it's _1 or valid index
- A rv=sc(jt->slisti);  // save the old value
+ A rv=jtsc(jt,jt->slisti);  // save the old value
  RZ(rv); jt->slisti=(UI4)i;  // set the new value (if no error)
  return rv;  // return prev value
 }

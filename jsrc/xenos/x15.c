@@ -561,8 +561,8 @@ static A jtcdgahash(J jt,I n){A z;I hn;
 static B jtcdinit(J jt){A x;
  RZ(x=exta(LIT,2L,sizeof(CCT),100L )); ras(x); memset(AV(x),C0,AN(x)); jt->cdarg=x;
  RZ(x=exta(LIT,1L,1L,         5000L)); ras(x); memset(AV(x),C0,AN(x)); jt->cdstr=x;
- RZ(jt->cdhash =cdgahash(4*AS(jt->cdarg)[0]));
- RZ(jt->cdhashl=cdgahash(NLIBS+16           ));  // will round up to power of 2 - we allow 100 libraries, which will almost never be used, so we don't get the usual 2x
+ RZ(jt->cdhash =jtcdgahash(jt,4*AS(jt->cdarg)[0]));
+ RZ(jt->cdhashl=jtcdgahash(jt,NLIBS+16           ));  // will round up to power of 2 - we allow 100 libraries, which will almost never be used, so we don't get the usual 2x
  AM(jt->cdarg)=AM(jt->cdstr)=AM(jt->cdhash)=AM(jt->cdhashl)=0;  // init all tables to empty
  return 1;
 }
@@ -607,7 +607,7 @@ static CCT*jtcdinsert(J jt,A a,CCT*cc){A x;C*s;CCT*pv,*z;I an,hn,k;
  s=CAV(jt->cdstr); pv=(CCT*)AV(jt->cdarg);
  cc->ai=AM(jt->cdstr); memcpy(s+AM(jt->cdstr),CAV(a),an); AM(jt->cdstr)+=an;
  z=pv+AM(jt->cdarg); memcpy(z,cc,sizeof(CCT)); k=AM(jt->cdarg);
- if(AN(jt->cdarg)<=2*AM(jt->cdarg)){RZ(x=cdgahash(2*AM(jt->cdarg))); fa(jt->cdhash); jt->cdhash=x; AM(jt->cdarg)=k; AM(jt->cdhash)=0; k=0;}  // reallo if needed, and signal to rehash all
+ if(AN(jt->cdarg)<=2*AM(jt->cdarg)){RZ(x=jtcdgahash(jt,2*AM(jt->cdarg))); fa(jt->cdhash); jt->cdhash=x; AM(jt->cdarg)=k; AM(jt->cdhash)=0; k=0;}  // reallo if needed, and signal to rehash all
  // insert the last k elements of pv into the table.  This will be either all of them (on a rehash) or just the last 1.
  ++AM(jt->cdarg); DQ(AM(jt->cdarg)-k, HASHINSERT(jt->cdhash,pv[k].an,s+pv[k].ai,k) ++k;);  // add 1 ele to cdarg, and all or 1 to cdhash
  return z;
@@ -628,7 +628,7 @@ static CCT*jtcdload(J jt,CCT*cc,C*lib,C*proc){B ha=0;FARPROC f;HMODULE h;
   cc->fp=(FARPROC)k;
   return cc;
  }
- if(h=cdlookupl(lib))cc->h=h;  // if lib is in hash table, use the handle for it.  Save the handle to match other hasshes later
+ if(h=jtcdlookupl(jt,lib))cc->h=h;  // if lib is in hash table, use the handle for it.  Save the handle to match other hasshes later
  else{
   CDASSERT(AM(jt->cdhashl)<NLIBS,DETOOMANY);    /* too many dlls loaded */
 
@@ -688,8 +688,8 @@ static CCT*jtcdparse(J jt,A a,I empty){C c,lib[NPATH],*p,proc[NPATH],*s,*s0;CCT*
  ASSERT(LIT&AT(a),EVDOMAIN);
  ASSERT(1>=AR(a),EVRANK);
  ASSERT(NLEFTARG>=AN(a),EVLIMIT);
- if(cc=cdlookup(a))return cc;
- cc=&cct; cc->an=an=AN(a); s=s0=CAV(str0(a));
+ if(cc=jtcdlookup(jt,a))return cc;
+ cc=&cct; cc->an=an=AN(a); s=s0=CAV(jtstr0(jt,a));
  /* library (module, file) name */
  while(*s==' ')++s; p=*s=='"'?strchr(++s,'"'):strchr(s,' '); li=s-s0; cc->ln=p?p-s:0;
  CDASSERT(p&&NPATH>cc->ln,DEBADLIB);
@@ -799,11 +799,11 @@ static B jtcdexec1(J jt,CCT*cc,C*zv0,C*wu,I wk,I wt,I wd){A*wv=(A*)wu,x,y,*zv;B 
    if(t&&TYPESNE(t,xt)&&!(lit||star&&!xr&&xt&BOX)){x=jtcvt(jt,xt=t,x); CDASSERT(x!=0,per);}
    // We know that x originated in a box, so it can't be PRISTINE.  But it may have been converted, so we have to
    // make sure that what we install into *zv is not inplaceable.  *zv is never recursive.
-   xv=AV(x); if(zbx)*zv=incorp(x);
+   xv=AV(x); if(zbx)*zv=jtincorp(jt,x);
   }else{
    xv=convert0(t,cv0,wt,u); xt=t; u+=wk;
    CDASSERT(xv!=0,per);
-   if(zbx){GA(y,t,1,0,0); memcpy(AV(y),xv,bp(t)); *zv=incorp(y);}  // must never install inplaceable block
+   if(zbx){GA(y,t,1,0,0); memcpy(AV(y),xv,bp(t)); *zv=jtincorp(jt,y);}  // must never install inplaceable block
   }
   // now xv points to the actual arg data for arg i, and an A-block for same has been installed into *zv
   // if wt&BOX only, x is an A-block for arg i
@@ -814,7 +814,7 @@ static B jtcdexec1(J jt,CCT*cc,C*zv0,C*wu,I wk,I wt,I wd){A*wv=(A*)wu,x,y,*zv;B 
   }else if(star){
    CDASSERT(xr&&(xt&DIRECT),per);                /* pointer can't point at scalar, and it must point to direct values */
    // if type is * (not &), make a safe copy.
-   if(star&1){RZ(x=jtmemu(jtinplace,x)); if(zbx)*zv=incorp(x); xv=AV(x);}  // what we install must not be inplaceable
+   if(star&1){RZ(x=jtmemu(jtinplace,x)); if(zbx)*zv=jtincorp(jt,x); xv=AV(x);}  // what we install must not be inplaceable
    *dv++=(I)xv;                     /* pointer to J array memory     */
    CDASSERT(xt&LIT+C2T+C4T+INT+FL+CMPX,per);
    if(!lit&&(c=='b'||c=='s'||c=='f'||c=='z'||c=='i')){
@@ -862,7 +862,7 @@ static B jtcdexec1(J jt,CCT*cc,C*zv0,C*wu,I wk,I wt,I wd){A*wv=(A*)wu,x,y,*zv;B 
 
  DO(cipcount, convertdown(cipv[i],cipn[i],cipt[i]););  /* convert I to s and int and d to f as required */
  // allocate the result area
- if(zbx){GA(x,cc->zt,1,0,0); xv=AV(x); *(A*)zv0=incorp(x);}else xv=(I*)zv0;  // must not box an inplaceable
+ if(zbx){GA(x,cc->zt,1,0,0); xv=AV(x); *(A*)zv0=jtincorp(jt,x);}else xv=(I*)zv0;  // must not box an inplaceable
  // get the address of the function
  if('1'==cc->cc){fp=(FARPROC)*((I)cc->fp+(I*)*(I*)*data); CDASSERT(fp!=0,DEBADFN);}else fp=cc->fp;
  // call it.  This is a safe recursion point.  Back up to IDLE
@@ -928,13 +928,13 @@ void dllquit(J jt){CCT*av;I j,*v;
  ASSERTMTV(w); t=jt->getlasterror; jt->getlasterror=0;
 
  {const char *e = dlerror(); strcpy (buf, e?e:"");}
- return link(sc(t),cstr(buf));
+ return link(jtsc(jt,t),jtcstr(jt,buf));
 }    /* 15!:11  GetLastError information */
 
- A jtmema(J jt, A w){I k; RE(k=i0(w)); return sc((I)MALLOC(k));} /* ce */
+ A jtmema(J jt, A w){I k; RE(k=jti0(jt,w)); return jtsc(jt,(I)MALLOC(k));} /* ce */
      /* 15!:3  memory allocate */
 
- A jtmemf(J jt, A w){I k; RE(k=i0(w)); FREE((void*)k); return num(0);}
+ A jtmemf(J jt, A w){I k; RE(k=jti0(jt,w)); FREE((void*)k); return num(0);}
      /* 15!:4  memory free */
 
  A jtmemr(J jt, A w){C*u;I m,n,t,*v;US*us;C4*c4;
@@ -978,16 +978,16 @@ void dllquit(J jt){CCT*av;I j,*v;
 
 // 15!:15 memu - make a copy of y if it is not writable (inplaceable and not read-only)
 // We have to check jt in case this usage is in a fork that will use the block later
- A jtmemu(J jt, A w) { FPREFIP; if(!((I)jtinplace&JTINPLACEW && (AC(w)<(AFLAG(w)<<((BW-1)-AFROX)))))w=ca(w); if(AT(w)&LAST0)*(C4*)&CAV(w)[AN(w)*bp(AT(w))]=0;  return w; }  // append 0 so that calls from cd append NUL termination
- A jtmemu2(J jt,A a,A w) { return ca(w); }  // dyad - force copy willy-nilly
+ A jtmemu(J jt, A w) { FPREFIP; if(!((I)jtinplace&JTINPLACEW && (AC(w)<(AFLAG(w)<<((BW-1)-AFROX)))))w=jtca(jt,w); if(AT(w)&LAST0)*(C4*)&CAV(w)[AN(w)*bp(AT(w))]=0;  return w; }  // append 0 so that calls from cd append NUL termination
+ A jtmemu2(J jt,A a,A w) { return jtca(jt,w); }  // dyad - force copy willy-nilly
 
- A jtgh15(J jt, A w){A z;I k; RE(k=i0(w)); RZ(z=jtgah(jt,k,0L)); ACINCR(z); return sc((I)z);}
+ A jtgh15(J jt, A w){A z;I k; RE(k=jti0(jt,w)); RZ(z=jtgah(jt,k,0L)); ACINCR(z); return jtsc(jt,(I)z);}
      /* 15!:8  get header */
 
- A jtfh15(J jt, A w){I k; RE(k=i0(w)); fh((A)k); return num(0);}
+ A jtfh15(J jt, A w){I k; RE(k=jti0(jt,w)); jtfh(jt,(A)k); return num(0);}
      /* 15!:9  free header */
 
- A jtdllsymset(J jt, A w){ return (A)i0(w);}      /* do some validation here */
+ A jtdllsymset(J jt, A w){ return (A)jti0(jt,w);}      /* do some validation here */
      /* 15!:7 */
 
 /* dll callback routines */
@@ -1000,7 +1000,7 @@ static I cbold(I n,I *pi){char d[256],*p;A r;I i;
  for(i=0;i<n;++i){sprintf(p,FMTI,pi[i]); *p=(*p=='-' ? '_':*p);p+=strlen(p);*p++=' ';}
  if (!n) { *p++='\''; *p++='\''; }
  *p=0;
- r=exec1(cstr(d));
+ r=jtexec1(jt,jtcstr(jt,d));
  if(!r||AR(r)) return 0;
  if(INT&AT(r)) return AV(r)[0];
  if(B01&AT(r)) return ((BYTE*)AV(r))[0];
@@ -1009,7 +1009,7 @@ static I cbold(I n,I *pi){char d[256],*p;A r;I i;
 
 static I cbnew(){A r;
  J jt=cbjt;
- r=exec1(cstr("cdcallback''"));
+ r=jtexec1(jt,jtcstr(jt,"cdcallback''"));
  if(!r||AR(r)) return 0;
  if(INT&AT(r)) return AV(r)[0];
  if(B01&AT(r)) return ((BYTE*)AV(r))[0];
@@ -1054,7 +1054,7 @@ static I cbvx[]={(I)&cbx0,(I)&cbx1,(I)&cbx2,(I)&cbx3,(I)&cbx4,(I)&cbx5,(I)&cbx6,
  {
   I cnt,alt;C c;C* s;
   ASSERT(1>=AR(w),EVRANK);
-  s=CAV(str0(w));
+  s=CAV(jtstr0(jt,w));
   alt=0; while(*s==' ')++s; if('+'==*s){alt=1; ++s;}
 
   cnt=0; /* count x's in type declaration (including result) */
@@ -1066,22 +1066,22 @@ static I cbvx[]={(I)&cbx0,(I)&cbx1,(I)&cbx2,(I)&cbx3,(I)&cbx4,(I)&cbx5,(I)&cbx6,
   }
   ASSERT(cnt>0&&cnt<CBTYPESMAX,EVDOMAIN);
 
-  return sc(cbvx[--cnt]); /* select callback based on alt * args */
+  return jtsc(jt,cbvx[--cnt]); /* select callback based on alt * args */
  }
  else
  {
   I k;
-  RE(k=i0(w));
+  RE(k=jti0(jt,w));
   ASSERT((UI)k<(UI)sizeof(cbv)/SZI, EVINDEX);
-  return sc(cbv[k]);
+  return jtsc(jt,cbv[k]);
  }
 }    /* 15!:13 */
 
  A jtnfes(J jt, A w){I k;I r;
- RE(k=i0(w));
+ RE(k=jti0(jt,w));
  r=jt->nfe;
  jt->nfe=k;
- return sc(r);
+ return jtsc(jt,r);
 } /* 15!:16 toggle native front end (nfe) state */
 
  A jtcallbackx(J jt, A w){
@@ -1090,14 +1090,14 @@ static I cbvx[]={(I)&cbx0,(I)&cbx1,(I)&cbx2,(I)&cbx3,(I)&cbx4,(I)&cbx5,(I)&cbx6,
 } /* 15!:17 return x callback arguments */
 
  A jtnfeoutstr(J jt, A w){I k;
- RE(k=i0(w));
+ RE(k=jti0(jt,w));
  ASSERT(0==k,EVDOMAIN);
- return cstr(jt->mtyostr?jt->mtyostr:(C*)"");
+ return jtcstr(jt,jt->mtyostr?jt->mtyostr:(C*)"");
 } /* 15!:18 return last jsto output */
 
  A jtcdjt(J jt, A w){
  ASSERTMTV(w);
- return sc((I)(intptr_t)jt);
+ return jtsc(jt,(I)(intptr_t)jt);
 } /* 15!:19 return jt */
 
  A jtcdlibl(J jt, A w){
@@ -1105,7 +1105,7 @@ static I cbvx[]={(I)&cbx0,(I)&cbx1,(I)&cbx2,(I)&cbx3,(I)&cbx4,(I)&cbx5,(I)&cbx6,
  ASSERT(1>=AR(w),EVRANK);
  ASSERT(AN(w),EVLENGTH);
  if(!jt->cdarg)return num(0);
- return sc((I)cdlookupl(CAV(w)));
+ return jtsc(jt,(I)jtcdlookupl(jt,CAV(w)));
 }    /* 15!:20 return library handle */
 
  A jtcdproc1(J jt, A w){CCT*cc;
@@ -1114,7 +1114,7 @@ static I cbvx[]={(I)&cbx0,(I)&cbx1,(I)&cbx2,(I)&cbx3,(I)&cbx4,(I)&cbx5,(I)&cbx6,
  ASSERT(AN(w),EVLENGTH);
  if(!jt->cdarg)RE(jtcdinit(jt));
  C* enda=&CAV(w)[AN(w)]; C endc=*enda; *enda=0; cc=jtcdparse(jt,w,1); *enda=endc; RE(cc); // should do outside rank2 loop?
- return sc((I)cc->fp);
+ return jtsc(jt,(I)cc->fp);
 }    /* 15!:21 return proc address */
 
 // procedures in jlib.h
@@ -1157,7 +1157,7 @@ static const C* jfntnm[]={
  ASSERT(1>=AR(w),EVRANK);
  ASSERT(AN(w),EVLENGTH);
  proc=CAV(w);
- RE(h=(HMODULE)i0(a));
+ RE(h=(HMODULE)jti0(jt,a));
  if(!h){I k=-1;
   DO(sizeof(jfntnm)/sizeof(C*), if(((I)strlen(jfntnm[i])==AN(w))&&!strncmp(jfntnm[i],proc,AN(w))){k=i; break;});
   f=(k==-1)?(FARPROC)0:(FARPROC)jfntaddr[k];
@@ -1166,5 +1166,5 @@ static const C* jfntnm[]={
   f=(FARPROC)dlsym(h,proc);
  }
  CDASSERT(f!=0,DEBADFN);
- return sc((I)f);
+ return jtsc(jt,(I)f);
 }    /* 15!:21 return proc address */

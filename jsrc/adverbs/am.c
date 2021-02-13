@@ -9,7 +9,7 @@
 /*
 static A jtmerge1(J jt,A w,A ind){PROLOG(0006);A z;C*v,*x;I c,k,r,*s,t,*u;
  RZ(ind=jtpind(jt,IC(w),ind));
- r=MAX(0,AR(w)-1); s=1+AS(w); t=AT(w); c=aii(w);
+ r=MAX(0,AR(w)-1); s=1+AS(w); t=AT(w); c=jtaii(jt,w);
  ASSERT(!(t&SPARSE),EVNONCE);
  ASSERT(r==AR(ind),EVRANK);
  ASSERT(!ICMP(s,AS(ind),r),EVLENGTH);
@@ -24,7 +24,7 @@ static A jtmerge1(J jt,A w,A ind){PROLOG(0006);A z;C*v,*x;I c,k,r,*s,t,*u;
 
 // m} y
 static A jtmerge1(J jt,A w,A ind){A z;B*b;C*wc,*zc;D*wd,*zd;I c,it,j,k,m,r,*s,t,*u,*wi,*zi;
- r=MAX(0,AR(w)-1); s=1+AS(w); t=AT(w); k=bpnoun(t); SETIC(w,m); c=aii(w);  // m = # items of w
+ r=MAX(0,AR(w)-1); s=1+AS(w); t=AT(w); k=bpnoun(t); SETIC(w,m); c=jtaii(jt,w);  // m = # items of w
  ASSERT(!(t&SPARSE),EVNONCE);
  ASSERT(r==AR(ind),EVRANK);
  ASSERTAGREE(s,AS(ind),r);
@@ -55,19 +55,19 @@ static A jtmerge1(J jt,A w,A ind){A z;B*b;C*wc,*zc;D*wd,*zd;I c,it,j,k,m,r,*s,t,
 
 // Handle the case statement abc =: pqr} x,...,y,:z, with in-place operation if pqr is Boolean and abc appears on the right
  A jtcasev(J jt, A w){A b,*u,*v,w1,x,y,z;B*bv,p,q;I*aa,c,*iv,j,m,n,r,*s,t;
- RZ(w1=ca(w)); u=AAV(w1);   // make a copy of the input, point to its value
+ RZ(w1=jtca(jt,w)); u=AAV(w1);   // make a copy of the input, point to its value
  // the input is a boxed list.  The last 3 values are (name pqr);(index in which abc appeared in the x,y,... or -1 if it didn't);(original sentence queue)
- p=1; m=AN(w)-3; v=AAV(w); c=i0(v[m+1]);   // get # items in list, and index of the matching one
+ p=1; m=AN(w)-3; v=AAV(w); c=jti0(jt,v[m+1]);   // get # items in list, and index of the matching one
  // Now audit the input names (including pqr), since we haven't properly stacked them & checked them etc.
  // p is set to 0 if an audit fails
- DO(m+1, x=symbrd(v[i]); if(!x){p=0; RESETERR; break;} u[i]=x; p=p&!!(NOUN&AT(x)););  // verify names defined, and are nouns
+ DO(m+1, x=jtsymbrd(jt,v[i]); if(!x){p=0; RESETERR; break;} u[i]=x; p=p&!!(NOUN&AT(x)););  // verify names defined, and are nouns
  if(p){
   b=u[m]; n=AN(b); r=AR(b); s=AS(b); t=AT(*u);  // length, rank, shape, of pqr; type of first value in list
   p=t&DIRECT&&AT(b)&NUMERIC;    // fail if first value in list is indirect or pqr is not numeric
   if(p)DO(m, y=u[i]; if(!(TYPESEQ(t,AT(y))&&r==AR(y)&&!ICMP(s,AS(y),r))){p=0; break;});  // fail if list is not homogeneous in type, rank, and shape
  }
  // If the audit failed, the sentence might work, but we won't be doing it here.  Go run the original sentence
- if(!p)return parse(v[m+2]);   // NOTE this will end up assigning the value twice: once in the parse, and again when we return.  Should we whack off the first two words?
+ if(!p)return jtparse(jt,v[m+2]);   // NOTE this will end up assigning the value twice: once in the parse, and again when we return.  Should we whack off the first two words?
  // We can do it here!  We split into two cases: Boolean pqr with two names in the list, which can never fail;
  // and all other, which may produce index error
  fauxblockINT(aafaux,4,1);
@@ -234,7 +234,7 @@ static A jtjstd(J jt,A w,A ind,I *cellframelen){A j=0,k,*v,x;I b;I d,i,n,r,*u,wr
  if((b&-AR(ind))<0){   // array of boxed indexes
   RE(aindex(ind,w,0L,&j));  // see if the boxes are homogeneous
   if(!j){  // if not...
-   RZ(x=MODIFIABLE(jtfrom(jt,ind,increm(iota(shape(jt,w)))))); u=AV(x); // go back to the original indexes, select from table of all possible incremented indexes; since it is incremented, it is writable
+   RZ(x=MODIFIABLE(jtfrom(jt,ind,jtincrem(jt,jtiota(jt,shape(jt,w)))))); u=AV(x); // go back to the original indexes, select from table of all possible incremented indexes; since it is incremented, it is writable
    DQ(AN(x), ASSERT(*u,EVDOMAIN); --*u; ++u;);   // if anything required fill, it will leave a 0.  Fail then, and unincrement the indexes
    *cellframelen=AR(w); return x;   // the indexes are what we want, and they include all the axes of w
   }
@@ -260,9 +260,9 @@ static A jtjstd(J jt,A w,A ind,I *cellframelen){A j=0,k,*v,x;I b;I d,i,n,r,*u,wr
    if((-AN(x)&SGNIF(AT(x),BOXX))<0){   // notempty and boxed
     ASSERT(!AR(x),EVINDEX); 
     x=AAV(x)[0]; k=IX(d);
-    if(AN(x))k=jtless(jt,k,jtpind(jt,d,1<AR(x)?ravel(x):x));
+    if(AN(x))k=jtless(jt,k,jtpind(jt,d,1<AR(x)?jtravel(jt,x):x));
    }else k=jtpind(jt,d,x);
-   RZ(x=tymesA(j,sc(d)));
+   RZ(x=tymesA(j,jtsc(jt,d)));
    RZ(j=ATOMIC2(jt,x,k,rkblk,0, RMAX,CPLUS));
   }
  }
@@ -284,7 +284,7 @@ static A jtamendn2(J jt,A a,A w,A self){FPREFIP;PROLOG(0007);A e,z; B b;I atd,wt
  AD * RESTRICT ind=VAV(self)->fgh[0];
  if(!((AT(w)|AT(ind))&SPARSE)){
   I cellframelen; ind=jstd(w,ind,&cellframelen);   // convert indexes to cell indexes; remember how many were converted
-  z=jtmerge2(jtinplace,AT(a)&SPARSE?denseit(a):a,w,ind,cellframelen);  //  dense a if needed; dense amend
+  z=jtmerge2(jtinplace,AT(a)&SPARSE?jtdenseit(jt,a):a,w,ind,cellframelen);  //  dense a if needed; dense amend
   // We modified w which is now not pristine.
   PRISTCLRF(w)
   EPILOG(z);
@@ -306,8 +306,8 @@ static A jtamendn2(J jt,A a,A w,A self){FPREFIP;PROLOG(0007);A e,z; B b;I atd,wt
  if(ip){ASSERT(!(AFRO&AFLAG(w)),EVRO); z=w;}else RZ(z=jtcvt(jt,t1,w));
  // call the routine to handle the sparse amend
  p=PAV(z); e=SPA(p,e); b=!AR(a)&&jtequ(jt,a,e);
- p=PAV(a); if(AT(a)&SPARSE&&!jtequ(jt,e,SPA(p,e))){RZ(a=denseit(a)); }
- if(AT(ind)&NUMERIC||!AR(ind))z=(b?jtam1e:AT(a)&SPARSE?jtam1sp:jtam1a)(jt,a,z,AT(ind)&NUMERIC?box(ind):ope(ind),ip);
+ p=PAV(a); if(AT(a)&SPARSE&&!jtequ(jt,e,SPA(p,e))){RZ(a=jtdenseit(jt,a)); }
+ if(AT(ind)&NUMERIC||!AR(ind))z=(b?jtam1e:AT(a)&SPARSE?jtam1sp:jtam1a)(jt,a,z,AT(ind)&NUMERIC?jtbox(jt,ind):jtope(jt,ind),ip);
  else{RE(aindex(ind,z,0L,(A*)&ind)); ASSERT(ind!=0,EVNONCE); z=(b?jtamne:AT(a)&SPARSE?jtamnsp:jtamna)(jt,a,z,ind,ip);}  // A* for the #$&^% type-checking
  EPILOGZOMB(z);   // do the full push/pop since sparse in-place has zombie elements in z
 }
@@ -367,7 +367,7 @@ static B gerar(J jt, A w){A x; C c;
   x = wv[1];   // point to second box
   if((SGNIF(AT(x),BOXX) & ((AR(x)^1)-1))>=0)return 0;   // verify it contains a list of boxes
   if(!BETWEENC(AN(x),bmin,bmax))return 0;  // verify correct number of boxes
-  return gerexact(x);  // recursively audit the other ARs in the second box
+  return jtgerexact(jt,x);  // recursively audit the other ARs in the second box
  } else return 0;
  return 1;
 }

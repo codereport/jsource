@@ -46,21 +46,21 @@ static A jtrotsp(J jt,A a,A w){PROLOG(0071);A q,x,y,z;B bx,by;I acr,af,ar,*av,d,
  ASSERT(!wcr||p<=wcr,EVLENGTH);
  s=AS(w);
  GATV0(q,INT,wr,1L); qv=AV(q); memset(qv,C0,wr*SZI); 
- RZ(a=vi(a)); v=AV(a); 
+ RZ(a=jtvi(jt,a)); v=AV(a); 
  DO(p, k=v[i]; d=s[wf+i]; qv[wf+i]=!d?0:0<k?k%d:k==IMIN?d-(-d-k)%d:d-(-k)%d;);
- wp=PAV(w); a=SPA(wp,a); RZ(y=ca(SPA(wp,i))); SETIC(y,m);
+ wp=PAV(w); a=SPA(wp,a); RZ(y=jtca(jt,SPA(wp,i))); SETIC(y,m);
  n=AN(a); RZ(a=jtpaxis(jt,wr,a)); av=AV(a);
  RZ(q=jtfrom(jt,a,q)); qv=AV(q);
  GASPARSE(z,AT(w),1,wr,s); zp=PAV(z);
  by=0; DO(n,    if(qv[  i]){by=1; break;});
  bx=0; DO(wr-n, if(qv[n+i]){bx=1; break;});
- RZ(x=!bx?ca(SPA(wp,x)):irs2(vec(INT,wr-n,n+qv),SPA(wp,x),0L,1L,-1L,jtrotate));
+ RZ(x=!bx?jtca(jt,SPA(wp,x)):irs2(vec(INT,wr-n,n+qv),SPA(wp,x),0L,1L,-1L,jtrotate));
  if(by){
   DO(n, if(k=qv[i]){d=s[av[i]]-k; v=i+AV(y); DQ(m, *v<k?(*v+=d):(*v-=k); v+=n;);});
-  RZ(q=grade1(y)); RZ(y=jtfrom(jt,q,y)); RZ(x=jtfrom(jt,q,x));
+  RZ(q=jtgrade1(jt,y)); RZ(y=jtfrom(jt,q,y)); RZ(x=jtfrom(jt,q,x));
  }
- SPB(zp,a,ca(SPA(wp,a))); 
- SPB(zp,e,ca(SPA(wp,e))); 
+ SPB(zp,a,jtca(jt,SPA(wp,a))); 
+ SPB(zp,e,jtca(jt,SPA(wp,e))); 
  SPB(zp,x,x);
  SPB(zp,i,y);
  EPILOG(z);
@@ -95,7 +95,7 @@ static void jtrot(J jt,I m,I d,I n,I atomsize,I p,I*av,C*u,C*v){I dk,e,k,j,r,x,y
  if((SPARSE&AT(w))!=0)return jtrotsp(jt,a,w);
  ar=AR(a); acr=jt->ranks>>RANKTX; acr=ar<acr?ar:acr; af=ar-acr; p=acr?*(af+AS(a)):1;
  wr=AR(w); wcr=(RANKT)jt->ranks; wcr=wr<wcr?wr:wcr; wf=wr-wcr; RESETRANK;
- RZ(a=vi(a));
+ RZ(a=jtvi(jt,a));
  // special case: if a is atomic 0, and cells of w are not atomic
  if((wcr!=0)&(((ar|IAV(a)[0])==0)))return w;   // 0 |. y, return y
  if(((1-acr)|((-af)&(-acr|(wf-1))))<0)return df2(z,a,w,jtqq(jt,jtqq(jt,ds(CROT),jtv2(jt,1L,RMAX)),jtv2(jt,acr,wcr)));  // if multiple a-lists per cell, or a has frame and (a cell is not an atom or w has frame) handle rank by using " for it
@@ -123,13 +123,13 @@ static A jtrevsp(J jt, A w){A a,q,x,y,z;I c,f,k,m,n,r,*v,wr;P*wp,*zp;
  wr=AR(w); r=(RANKT)jt->ranks; r=wr<r?wr:r; f=wr-r; RESETRANK;
  m=*(f+AS(w)); wp=PAV(w);
  GASPARSE(z,AT(w),1,wr,AS(w)); zp=PAV(z);
- a=SPA(wp,a); n=AN(a); RZ(y=ca(SPA(wp,i))); x=SPA(wp,x);
+ a=SPA(wp,a); n=AN(a); RZ(y=jtca(jt,SPA(wp,i))); x=SPA(wp,x);
  RZ(q=jtpaxis(jt,wr,a)); v=AV(q); DO(wr, if(f==v[i]){k=i; break;});
- if(!r)       RZ(x=ca(x))
+ if(!r)       RZ(x=jtca(jt,x))
  else if(k>=n)RZ(x=irs2(apv(m,m-1,-1L),x,0L,1L,wr-k,jtfrom))
- else         {v=k+AV(y); c=m-1; DQ(SETIC(y,r), *v=c-*v; v+=n;); q=grade1(y); RZ(y=jtfrom(jt,q,y)); RZ(x=jtfrom(jt,q,x));}
- SPB(zp,a,ca(a)); 
- SPB(zp,e,ca(SPA(wp,e))); 
+ else         {v=k+AV(y); c=m-1; DQ(SETIC(y,r), *v=c-*v; v+=n;); q=jtgrade1(jt,y); RZ(y=jtfrom(jt,q,y)); RZ(x=jtfrom(jt,q,x));}
+ SPB(zp,a,jtca(jt,a)); 
+ SPB(zp,e,jtca(jt,SPA(wp,e))); 
  SPB(zp,i,y); 
  SPB(zp,x,x);
  return z;
@@ -137,7 +137,7 @@ static A jtrevsp(J jt, A w){A a,q,x,y,z;I c,f,k,m,n,r,*v,wr;P*wp,*zp;
 
  A jtreverse(J jt, A w){A z;C*wv,*zv;I f,k,m,n,nk,r,*v,*ws,wt,wr;
  FPREFIP;
- if((SPARSE&AT(w))!=0)return revsp(w);
+ if((SPARSE&AT(w))!=0)return jtrevsp(jt,w);
  if(jt->fill)return jtrotate(jt,num(-1),w);  // rank is set - not inplaceable because it uses fill
  wr=AR(w); r=(RANKT)jt->ranks; r=wr<r?wr:r; f=wr-r;  // no RESETRANK - we don't call any primitive from here on
  if(!(r&&AN(w))){return w;}  // no atoms or reversing atoms - keep input unchanged
@@ -163,7 +163,7 @@ static A jtrevsp(J jt, A w){A a,q,x,y,z;I c,f,k,m,n,r,*v,wr;P*wp,*zp;
 static A jtreshapesp0(J jt,A a,A w,I wf,I wcr){A e,p,x,y,z;B*b,*pv;I c,d,r,*v,wr,*ws;P*wp,*zp;
  wr=AR(w); ws=AS(w);
  wp=PAV(w); RZ(b=bfi(wr,SPA(wp,a),1));
- RZ(e=ca(SPA(wp,e))); x=SPA(wp,x); y=SPA(wp,i);
+ RZ(e=jtca(jt,SPA(wp,e))); x=SPA(wp,x); y=SPA(wp,i);
  v=AS(y); r=v[0]; c=v[1]; d=0; DO(wf, if(b[i])++d;);
  if(!wf){if(r&&c){v=AV(y); DO(c, if(v[i])return e;);} return AN(x)?jtreshape(jt,mtv,x):e;}
  GASPARSE(z,AT(w),1,wf,ws);
@@ -183,7 +183,7 @@ static A jtreshapesp(J jt,A a,A w,I wf,I wcr){A a1,e,t,x,y,z;B az,*b,wz;I an,*av
  ASSERT(az||!wz,EVLENGTH);
  if(!an)return reshapesp0(a,w,wf,wcr);
  wp=PAV(w); a1=SPA(wp,a); c=AN(a1); RZ(b=bfi(wr,a1,1));  // b=bitmask, length wr, with 1s for each value in a1
- RZ(e=ca(SPA(wp,e))); x=SPA(wp,x); y=SPA(wp,i);
+ RZ(e=jtca(jt,SPA(wp,e))); x=SPA(wp,x); y=SPA(wp,i);
  u=av+an; v=ws+wr; m=0; DQ(MIN(an,wcr-1), if(*--u!=*--v){m=1; break;});
  if(m||an<wcr) return reshapesp(a,IRS1(w,0L,wcr,jtravel,z),wf,1L);
  ASSERT(!jt->fill,EVDOMAIN);
@@ -198,11 +198,11 @@ static A jtreshapesp(J jt,A a,A w,I wf,I wcr){A a1,e,t,x,y,z;B az,*b,wz;I an,*av
   v=AV(y); DQ(n, if(r<=*v)break; ++q; v+=c;);
   GATV0(t,INT,q,1); u=AV(t); v=v0=AV(y);
   m=j=0; DO(q, u[i]=m+*v; v+=c; ++j; if(j==n){j=0; v=v0; m+=ws[wf];});
-  SPB(zp,i,jtstitch(jt,jtabase2(jt,vec(INT,1+d,av),t),jtreitem(jt,sc(q),jtdropr(jt,1L,y))));
-  SPB(zp,x,jtreitem(jt,sc(q),x));
+  SPB(zp,i,jtstitch(jt,jtabase2(jt,vec(INT,1+d,av),t),jtreitem(jt,jtsc(jt,q),jtdropr(jt,1L,y))));
+  SPB(zp,x,jtreitem(jt,jtsc(jt,q),x));
  }else{                   /* dense  */
   GATV0(t,INT,an,1); v=AV(t); MCISH(v,av,d); m=d; j=wf; DO(wcr, if(!b[j++])v[m++]=av[i+d];);
-  SPB(zp,i,ca(y));
+  SPB(zp,i,jtca(jt,y));
   SPB(zp,x,irs2(vec(INT,m,v),x,0L,1L,wcr-(an-m),jtreshape));
  }
  return z;
@@ -215,7 +215,7 @@ static A jtreshapesp(J jt,A a,A w,I wf,I wcr){A a1,e,t,x,y,z;B az,*b,wz;I an,*av
  wr=AR(w); wcr=(RANKT)jt->ranks; wcr=wr<wcr?wr:wcr; wf=wr-wcr; ws=AS(w); RESETRANK;
  if((I )(1<acr)|(I )(acr<ar)){z=rank2ex(a,w,UNUSED_VALUE,MIN(acr,1),wcr,acr,wcr,jtreshape); PRISTCLRF(w) return z;}  // multiple cells - must lose pristinity
  // now a is an atom or a list.  w can have any rank
- RZ(a=vip(a)); r=AN(a); u=AV(a);   // r=length of a   u->values of a
+ RZ(a=jtvip(jt,a)); r=AN(a); u=AV(a);   // r=length of a   u->values of a
  if((SPARSE&AT(w))!=0){return reshapesp(a,w,wf,wcr);}
  wn=AN(w); PRODX(m,r,u,1) CPROD(wn,c,wf,ws); CPROD(wn,n,wcr,wf+ws);  // m=*/a (#atoms in result)  c=#cells of w  n=#atoms/cell of w
  ASSERT(n||!m||jt->fill,EVLENGTH);  // error if attempt to extend array of no items to some items without fill
@@ -257,7 +257,7 @@ static A jtreshapesp(J jt,A a,A w,I wf,I wcr){A a1,e,t,x,y,z;B az,*b,wz;I an,*av
  fauxblockINT(yfaux,4,1);
  if(1>=wcr)y=a;  // y is atom or list: $ is the same as ($,)
  else{   // rank y > 1: append the shape of an item of y to x
-  RZ(a=vi(a)); an=AN(a); acr=1;  // if a was an atom, now it is a list
+  RZ(a=jtvi(jt,a)); an=AN(a); acr=1;  // if a was an atom, now it is a list
   fauxINT(y,yfaux,an+r,1) v=AV(y);
   MCISH(v,AV(a),an); MCISH(v+an,AS(w)+wr-r,r);
  }

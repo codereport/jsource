@@ -105,8 +105,8 @@ A jtunwordil(J jt, A wil, A w, I opts){A z;
 // ;: y
  A jtwords(J jt,    A w,A self){A t,*x,z;C*s;I k,n,*y;
  F1RANK(1,jtwords,self);
- RZ(w=vs(w));  // convert w to LIT if it's not already
- RZ(t=wordil(w)); ASSERT(AM(t)>=0,EVOPENQ)
+ RZ(w=jtvs(jt,w));  // convert w to LIT if it's not already
+ RZ(t=jtwordil(jt,w)); ASSERT(AM(t)>=0,EVOPENQ)
  return jtboxcut0(jt,t,w,self);  // result of wordil has shape suitable for <;.0, so we use that
 }
 
@@ -150,7 +150,7 @@ A jtenqueue(J jt,A a,A w,I env){A*v,*x,y,z;B b;C d,e,p,*s,*wi;I i,n,*u,wl;UC c;
     if(e==CASGN && (env==1 || (i && AT(x[-1])&NAME && (NAV(x[-1])->flag&(NMLOC|NMILOC))))){y=asgnforceglo;}   // sentence is NOT for explicit definition, or preceding word is a locative.  Convert to a global assignment.  This will make the display show =:
     if(i&& AT(x[-1])&NAME){y= y==asgnforceglo?asgnforcegloname:y==ds(CGASGN)?asgngloname:asgnlocsimp;}  // if ASGN preceded by NAME, flag it thus, by switching to the block with the ASGNTONAME flag set
    }
-   if(AT(y)&NAME&&(NAV(y)->flag&NMDOT)){RZ(y=ca(y)); if((env==2)&&(NAV(*x)->flag&NMXY)){AT(*x)|=NAMEBYVALUE;}}  // The inflected names are the old-fashioned x. y. etc.  They must be cloned lest we modify the shared copy
+   if(AT(y)&NAME&&(NAV(y)->flag&NMDOT)){RZ(y=jtca(jt,y)); if((env==2)&&(NAV(*x)->flag&NMXY)){AT(*x)|=NAMEBYVALUE;}}  // The inflected names are the old-fashioned x. y. etc.  They must be cloned lest we modify the shared copy
    *x=y;   // install the value
   } else if(e==CFCONS){RZ(*x=FCONS(jtconnum(jt,wl-1,wi)))  // if the inflected form says [_]0-9:, create word for that
   } else {
@@ -192,7 +192,7 @@ A jtenqueue(J jt,A a,A w,I env){A*v,*x,y,z;B b;C d,e,p,*s,*wi;I i,n,*u,wl;UC c;
     GATV0(y,BOX,m+3,1); yv=AAV(y);   // Allocate the argument
     c=-1; k=AN(v[0]); s=NAV(v[0])->s;   // get length and address of abc
     j=4; DO(m, yv[i]=p=v[j]; j+=2; if(AN(p)==k&&!memcmpne(s,NAV(p)->s,k))c=i;);  // move name into argument, remember if matched abc
-    yv[m]=v[2]; RZ(yv[m+1]=rifvs(sc(c))); yv[m+2]=z;    // add the 3 ending elements
+    yv[m]=v[2]; RZ(yv[m+1]=jtrifvs(jt,jtsc(jt,c))); yv[m+2]=z;    // add the 3 ending elements
     x[0]=v[0]; x[1]=v[1]; x[2]=ds(CCASEV); x[3]=y;  // build the sentence
     return z1;  // that's what we'll execute
    }
@@ -220,7 +220,7 @@ A jtenqueue(J jt,A a,A w,I env){A*v,*x,y,z;B b;C d,e,p,*s,*wi;I i,n,*u,wl;UC c;
 
 // env is the environment: 0=tacit translator, 1=keyboard/immex with no local symbol, 2=explicit definition running
 // w is either a string block or a string block that has been processed into words in wordil format, with AM set
-A jttokens(J jt,A w,I env){A t; RZ(t=wordil(w)); ASSERT(AM(t)>=0,EVOPENQ) return enqueue(t,w,env);}
+A jttokens(J jt,A w,I env){A t; RZ(t=jtwordil(jt,w)); ASSERT(AM(t)>=0,EVOPENQ) return enqueue(t,w,env);}
 // enqueue produces nonrecursive result, and so does tokens.  This is OK because the result is always parsed and is never an argument to a verb
 
 
@@ -263,7 +263,7 @@ A jttokens(J jt,A w,I env){A t; RZ(t=wordil(w)); ASSERT(AM(t)>=0,EVOPENQ) return
     if((-(r!=vr)&~j)<0)EMIT(T,j,n,r,c);    /*  r!=vr and j>=0 */                                     \
   }}                                                                        \
   if(5==f)u=(T*)zv;                                                         \
-  i=AN(z); AN(z)=j=(u-(T*)AV(z))/zk; AS(z)[0]=j/(zm); if(i>3*j)RZ(z=ca(z));        \
+  i=AN(z); AN(z)=j=(u-(T*)AV(z))/zk; AS(z)[0]=j/(zm); if(i>3*j)RZ(z=jtca(jt,z));        \
  }
 
 static A jtfsmdo(J jt,I f,A s,A m,I*ijrd,A w,A w0){A x,z;C*cc,*wv0;
@@ -304,15 +304,15 @@ static A jtfsmdo(J jt,I f,A s,A m,I*ijrd,A w,A w0){A x,z;C*cc,*wv0;
  ASSERT(BOX&AT(a),EVDOMAIN);
  an=AN(a); av=AAV(a); 
  ASSERT(BETWEENC(an,2,4),EVLENGTH);
- RE(f=i0(av[0]));
+ RE(f=jti0(jt,av[0]));
  ASSERT((UI)f<=(UI)5,EVINDEX);
- RZ(s=vi(av[1])); sv=AV(s);
+ RZ(s=jtvi(jt,av[1])); sv=AV(s);
  ASSERT(3==AR(s),EVRANK);
  v=AS(s); p=v[0]; q=v[1]; ASSERT(2==v[2],EVLENGTH);
  v=sv; DQ(p*q, k=*v++; e=*v++; ASSERT((UI)k<(UI)p&&(UI)e<=(UI)7,EVINDEX););
  ijrd[0]=0; ijrd[1]=-1; ijrd[2]=0; ijrd[3]=-1;
  if(4==an){I d,i,j,n,r;
-  RZ(x=vi(av[3])); n=AN(x); v=AV(x);
+  RZ(x=jtvi(jt,av[3])); n=AN(x); v=AV(x);
   ASSERT(1==AR(x),EVRANK);
   ASSERT(4>=n,EVLENGTH);
   if(1<=n) ijrd[0]=i=*v++;
@@ -325,28 +325,28 @@ static A jtfsmdo(J jt,I f,A s,A m,I*ijrd,A w,A w0){A x,z;C*cc,*wv0;
  if(!c&&1==AR(m)){   /* m is empty; w must be integer vector */  }
  else if(NUMERIC&AT(m)){
   ASSERT(c==AN(ds(CALP)),EVLENGTH);
-  RZ(m=vi(m)); v=AV(m); DO(c, k=v[i]; ASSERT((UI)k<(UI)q,EVINDEX););
+  RZ(m=jtvi(jt,m)); v=AV(m); DO(c, k=v[i]; ASSERT((UI)k<(UI)q,EVINDEX););
  }else ASSERT(BOX&AT(m),EVDOMAIN);
  GAT0(z,BOX,4,1); zv=AAV(z);
- RZ(zv[0]=rifvs(sc(f))); RZ(zv[1]=rifvs(s)); RZ(zv[2]=rifvs(m)); RZ(zv[3]=rifvs(vec(INT,4L,ijrd)));
+ RZ(zv[0]=jtrifvs(jt,jtsc(jt,f))); RZ(zv[1]=jtrifvs(jt,s)); RZ(zv[2]=jtrifvs(jt,m)); RZ(zv[3]=jtrifvs(jt,vec(INT,4L,ijrd)));
  EPILOG(z);
 }    /* check left argument of x;:y */
 
 static A jtfsm0(J jt,A a,A w,C chka){PROLOG(0100);A*av,m,s,x,w0=w;B b;I c,f,*ijrd,k,n,p,q,*v;
- if(chka)RZ(a=fsmvfya(a)); 
+ if(chka)RZ(a=jtfsmvfya(jt,a)); 
  av=AAV(a); 
- f=i0(av[0]); s=av[1]; m=av[2]; ijrd=AV(av[3]);
+ f=jti0(jt,av[0]); s=av[1]; m=av[2]; ijrd=AV(av[3]);
  n=AN(w); v=AS(s); p=v[0]; q=v[1];
  ASSERT((UI)ijrd[0]<(UI)n,EVINDEX);
  b=1>=AR(w)&&(!n||LIT&AT(w)); c=AN(m);  // b=w is atom/list, either literal or empty; c is # columns mapped to input through m
  if(((c-1)&((AR(m)^1)-1))<0){  // m is omitted or empty, use column numbers in y; audit them first   m is empty list
   ASSERT(1>=AR(w),EVRANK);
-  if(!(B01&AT(w))){RZ(w=w0=vi(w)); v=AV(w); DO(n, k=v[i]; ASSERT((UI)k<(UI)q,EVINDEX););}
+  if(!(B01&AT(w))){RZ(w=w0=jtvi(jt,w)); v=AV(w); DO(n, k=v[i]; ASSERT((UI)k<(UI)q,EVINDEX););}
  }else if(NUMERIC&AT(m)){  // m is numeric list
   ASSERT(b!=0,EVDOMAIN);   // w must be ASCII
  }else{A*mv,t,y;I j,r;
   ASSERT(BOX&AT(m),EVDOMAIN);  // otherwise m must be boxes
-  RZ(y=raze(m)); r=AR(y); k=AS(y)[0];  // y = all the input values run together, k=# input values
+  RZ(y=jtraze(jt,m)); r=AR(y); k=AS(y)[0];  // y = all the input values run together, k=# input values
   ASSERT((UI)(r-AR(w))<=(UI)1,EVRANK);  // items of m must match rank of w, or the entire w (which will be treated as a single input)
   GATV0(x,INT,1+k,1); v=AV(x); v[k]=c; mv=AAV(m);  // x will hold translated column numbers.  Install 'not found' value at the end
   DO(c, j=i; t=mv[i]; if((-r&((r^AR(t))-1))<0)DQ(AS(t)[0], *v++=j;) else *v++=j;);  // go through m; for each box, install index for that box for each item in that box.

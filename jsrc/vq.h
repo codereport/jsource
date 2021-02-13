@@ -3,8 +3,8 @@
 /*                                                                         */
 /* Rational Numbers                                                        */
 
-#define QASSERT(b,e)    {if(!(b)){jsignal(e); return zeroQ;}}
-#define QEPILOG(q)      {Q z9; z9=(qstd(q)); if(!gc3(&z9.n,&z9.d,0L,_ttop))return zeroQ; return z9;}
+#define QASSERT(b,e)    {if(!(b)){jtjsignal(jt,e); return zeroQ;}}
+#define QEPILOG(q)      {Q z9; z9=(jtqstd(jt,q)); if(!gc3(&z9.n,&z9.d,0L,_ttop))return zeroQ; return z9;}
 #define QRE(exp)        {if((exp),jt->jerr)return zeroQ;}
 #define QRZ(exp)        {if(!(exp))        return zeroQ;}
 #define QX1(x)          (1==AN(x)&&1==XDIG(x))

@@ -12,8 +12,8 @@
 /*   tle(u,v)   (u<=v)||TEQ(u,v)                                           */
 /*   tge(u,v)   (u>=v)||TEQ(u,v)                                           */
 /*   tgt(u,v)   (u> v)&&tne(u,v)                                           */
-/*   tfloor(v)  x=floor(0.5+v), x-tgt(x,v)                                 */
-/*   tceil(v)   x=floor(0.5+v), x+jttlt(jt,x,v)                                 */
+/*   jttfloor(jt,v)  x=floor(0.5+v), x-tgt(x,v)                                 */
+/*   jttceil(jt,v)   x=floor(0.5+v), x+jttlt(jt,x,v)                                 */
 
 // cct is complementary comp tolerance (jt->cct).  Result is 1 if tolerantly equal
 // If a==b with ct!=0 the comparisons will have opposite results: if a,b are positive,

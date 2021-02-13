@@ -20,19 +20,19 @@ static I jtcsize(J jt,A z,A ind){B*b;I h,j,m,r,*s;P*zp;
 static B jtiaddr(J jt,A z,A ind,A*i1,A*i2){A a,ai,as,ii,jj,q,t,x,y;I c,d,e,h,i,*iv,*jv,m,n,p,*qv,*s,*u,*v,*yv;P*zp;
  zp=PAV(z); a=SPA(zp,a); x=SPA(zp,x); s=1+AS(x); 
  h=*(AS(ind)+AR(ind)-1);                               /* # axes indexed              */
- RZ(q=gt(sc(h),a)); 
+ RZ(q=gt(jtsc(jt,h),a)); 
  y=SPA(zp,i); if(!all1(q))RZ(y=jtrepeatr(jt,q,y));          /* indexed cols of index mat   */
  m=*AS(y); yv=AV(y);      
  RZ(ai=IX(h));
  RZ(as=jtless(jt,IX(AR(z)),a)); u=AV(as); n=AN(as);         /* dense axes                  */
  GATV0(t,INT,n,1); v=AV(t);                             /* shape of indexed dense axes */
  e=0; d=1; DO(n, if(h>u[i])v[e++]=s[i]; else d*=s[i];);
- RZ(*i2=jj=tymes(sc(d),jtbase2(jt,vec(INT,e,v),jtrepeatr(jt,jteps(jt,ai,as),ind))));
+ RZ(*i2=jj=tymes(jtsc(jt,d),jtbase2(jt,vec(INT,e,v),jtrepeatr(jt,jteps(jt,ai,as),ind))));
  c=*(1+AS(y));
  if(!c){
   n=AN(jj);
-  RZ(*i1=jtrepeat(jt,sc(n),IX(m)));
-  RZ(*i2=jtreshape(jt,sc(m*n),jj));
+  RZ(*i1=jtrepeat(jt,jtsc(jt,n),IX(m)));
+  RZ(*i2=jtreshape(jt,jtsc(jt,m*n),jj));
   return 1;
  }
  RZ(*i1=ii=jtindexof(jt,y,jtrepeatr(jt,jteps(jt,ai,a),ind)));         /* group indices in index mat  */
@@ -57,18 +57,18 @@ static A jtzpadn(J jt,A z,A ind,B ip){A a,ai,i1,p,p1,q,t,x,x0,y,y0,y1;B*b;I c,d,
  RZ(ai=IX(h));
  RZ(t=jteps(jt,ai,a)); b=BAV(t); d=0; DO(h, if(b[i])++d;);
  RZ(i1=d<h?jtrepeatr(jt,t,ind):ind); if(2!=AR(ind))RZ(i1=d?jtreshape(jt,jtv2(jt,AN(i1)/d,d),i1):mtm);
- RZ(t=gt(sc(h),a)); RZ(y1=all1(t)?y:jtrepeatr(jt,t,y));
- RZ(p=nub(jtless(jt,i1,y1)));
+ RZ(t=gt(jtsc(jt,h),a)); RZ(y1=all1(t)?y:jtrepeatr(jt,t,y));
+ RZ(p=jtnub(jt,jtless(jt,i1,y1)));
  if(c=AN(a)-d){
   RZ(t=jtfrom(jt,jtless(jt,a,ai),shape(jt,z))); RZ(p1=odom(2L,c,AV(t))); n=*AS(p1);
-  if(m=*AS(p))RZ(p=jtstitch(jt,jtrepeat(jt,sc(n),p),jtreshape(jt,jtv2(jt,n*m,c),p1)));
-  RZ(t=nub(jtrepeat(jt,jteps(jt,y1,i1),y1)));
-  RZ(t=jtstitch(jt,jtrepeat(jt,sc(n),t),jtreshape(jt,jtv2(jt,n**AS(t),c),p1)));
+  if(m=*AS(p))RZ(p=jtstitch(jt,jtrepeat(jt,jtsc(jt,n),p),jtreshape(jt,jtv2(jt,n*m,c),p1)));
+  RZ(t=jtnub(jt,jtrepeat(jt,jteps(jt,y1,i1),y1)));
+  RZ(t=jtstitch(jt,jtrepeat(jt,jtsc(jt,n),t),jtreshape(jt,jtv2(jt,n**AS(t),c),p1)));
   RZ(t=jtless(jt,t,y));
   if(AN(t))RZ(p=jtover(jt,p,t));
  }
  if(m=*AS(p)){  /* new cells being added */
-  RZ(y=jtover(jt,y,p)); RZ(q=grade1(y)); RZ(y=jtfrom(jt,q,y));
+  RZ(y=jtover(jt,y,p)); RZ(q=jtgrade1(jt,y)); RZ(y=jtfrom(jt,q,y));
   RZ(t=shape(jt,x)); *AV(t)=m; RZ(x=jtfrom(jt,q,jtover(jt,x,jtreshape(jt,t,SPA(zp,e)))));
   // if z is assigned to a name, the use counts need to be adjusted: the old ones need to be decremented
   // to remove the assignment, and the new ones need to be incremented to prevent them from being freed
@@ -92,7 +92,7 @@ static A jtastdn(J jt,A a,A z,A ind){A a1,q,r,s;B*b;I ar,*as,*av,d,ir,n,n1,*v,zr
  GATV0(s,B01,zr,1); b=BAV(s); 
  memset(b,C0,zr); DO(AN(a1), b[av[i]]=1;); memset(b,!memchr(b,C1,n)?C0:C1,n);
  GATV0(r,INT,zr-n1,1); v=AV(r); *v++=ar-(zr-n); DQ(zr-n, *v++=1;);
- RZ(q=dgrade1(jtrepeat(jt,r,vec(B01,zr-n1,b+n1))));
+ RZ(q=jtdgrade1(jt,jtrepeat(jt,r,vec(B01,zr-n1,b+n1))));
  return jtequ(jt,q,IX(ar))?a:jtcant2(jt,q,a);
 }    /* convert replacement array a into standard form relative to index array ind */
 
@@ -101,7 +101,7 @@ A jtamne(J jt,A a,A z,A ind,B ip){A i1,i2,x,y;C*u,*v;I*iv,*jv,k,m,n,vk,xk;P*zp;
  RZ(iaddr(z,ind,&i1,&i2));
  zp=PAV(z); x=SPA(zp,x); y=SPA(zp,i);
  m=*AS(y); n=AN(i1);
- k=bpnoun(AT(x)); xk=k*aii(x); vk=k*jtcsize(jt,z,ind);
+ k=bpnoun(AT(x)); xk=k*jtaii(jt,x); vk=k*jtcsize(jt,z,ind);
  u=CAV(a); v=CAV(x); iv=AV(i1); jv=AV(i2);
  DO(n, if(m>iv[i])mvc(vk,v+xk*iv[i]+k*jv[i],k,u););
  return z;
@@ -113,7 +113,7 @@ A jtamna(J jt,A a,A z,A ind,B ip){A i1,i2,x;C*u,*v;I*iv,*jv,k,n,vk,xk;P*zp;
  RZ(a=astdn(a,z,ind));
  RZ(iaddr(z,ind,&i1,&i2));
  zp=PAV(z); x=SPA(zp,x); n=AN(i1);
- k=bpnoun(AT(x)); xk=k*aii(x); vk=k*jtcsize(jt,z,ind);
+ k=bpnoun(AT(x)); xk=k*jtaii(jt,x); vk=k*jtcsize(jt,z,ind);
  u=CAV(a); v=CAV(x); iv=AV(i1); jv=AV(i2); 
  if(AR(a))DO(n, mvc(vk,v+xk*iv[i]+k*jv[i],vk,u); u+=vk;)
  else     DO(n, mvc(vk,v+xk*iv[i]+k*jv[i],k,u););
@@ -130,7 +130,7 @@ A jtamnsp(J jt,A a,A z,A ind,B ip){A i1,i2,t;C*ev,*u,*v,*vv;I c,*dv,i,*iv,j,*jv,
  t=SPA(ap,i); yv= AV(t); m=*AS(t); p=0;
  t=SPA(ap,e); ev=CAV(t);
  t=SPA(ap,x); u =CAV(t);
- t=SPA(zp,x); v =CAV(t); k=bpnoun(AT(t)); zk=k*aii(t);
+ t=SPA(zp,x); v =CAV(t); k=bpnoun(AT(t)); zk=k*jtaii(jt,t);
  GATV0(t,INT,r,1); dv=AV(t); memset(dv,C0,SZI*r); dv[r-1]=-1;
  for(i=0;i<n;++i){
   vv=v+zk*iv[i]+k*jv[i];

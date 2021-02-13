@@ -8,7 +8,7 @@
 
  A jtunname(J jt, A w){A x;V*v;
  v=VAV(w);
- if(CTILDE==v->id&&!jt->uflags.us.cx.cx_c.glock&&!(VLOCK&v->flag)){x=v->fgh[0]; if(NAME&AT(x))return symbrd(x);}
+ if(CTILDE==v->id&&!jt->uflags.us.cx.cx_c.glock&&!(VLOCK&v->flag)){x=v->fgh[0]; if(NAME&AT(x))return jtsymbrd(jt,x);}
  return w;
 }
 
@@ -20,10 +20,10 @@ static B jtselfq(J jt,A w){A hs,*u;V*v;
    return 1;
   case CATDOT:
   case CGRCO:
-   if(hs=v->fgh[2]){u=AAV(hs); DO(AN(hs), if(selfq(u[i]))return 1;);}
+   if(hs=v->fgh[2]){u=AAV(hs); DO(AN(hs), if(jtselfq(jt,u[i]))return 1;);}
    return 0;
   default:
-   DO(3, if(v->fgh[i]&&selfq(v->fgh[i]))return 1;)
+   DO(3, if(v->fgh[i]&&jtselfq(jt,v->fgh[i]))return 1;)
  }
  return 0;
 }    /* 1 iff w contains $: */
@@ -38,7 +38,7 @@ B jthasimploc(J jt,A w){A hs,*u;V*v;
   case CTILDE: ;
    A thisname=v->fgh[0]; L *stabent;// the A block for the name of the function (holding an NM) - unless it's a pseudo-name
    if(!thisname)return 0;  // no name
-   if(AT(thisname)&VERB)return hasimploc(thisname);  // if v~, go look at v
+   if(AT(thisname)&VERB)return jthasimploc(jt,thisname);  // if v~, go look at v
    if(AT(thisname)&NOUN)return 0;   // if noun~, leave as is
    NM* thisnameinfo=NAV(thisname);  // the NM block for the current name
    if(!(thisnameinfo->flag&NMIMPLOC))return 0; // not NMDOT
@@ -46,10 +46,10 @@ B jthasimploc(J jt,A w){A hs,*u;V*v;
    return 1;
   case CATDOT:
   case CGRCO:
-   if(hs=v->fgh[2]){u=AAV(hs); DO(AN(hs), if(hasimploc(u[i]))return 1;);}
+   if(hs=v->fgh[2]){u=AAV(hs); DO(AN(hs), if(jthasimploc(jt,u[i]))return 1;);}
    return 0;
   default:     
-   DO(3, if(v->fgh[i]&&hasimploc(v->fgh[i]))return 1;)
+   DO(3, if(v->fgh[i]&&jthasimploc(jt,v->fgh[i]))return 1;)
  }
  return 0;
 }
@@ -75,7 +75,7 @@ static A jtfixa(J jt,A a,A w){A f,g,h,wf,x,y,z=w;V*v;fauxblock(fauxself); A aa; 
  I aif=ai&(FIXALOCSONLY|FIXALOCSONLYLOWEST|FIXASTOPATINV); // extract control flags
  ai^=aif;   // now ai = state without flags
  // If we are only interested in replacing locatives, and there aren't any, exit fast
- if(aif&FIXALOCSONLY&&!hasimploc(w))return w;  // nothing to fix
+ if(aif&FIXALOCSONLY&&!jthasimploc(jt,w))return w;  // nothing to fix
  if(NAME&AT(w)){return jtsfn(jt,0,w);}  // only way a name gets here is by ".@noun which turns into ".@(name+noun) for execution.  Also in debug, but that's discarded
  if(NOUN&AT(w)||VFIX&VAV(w)->flag)return w;
  v=VAV(w); f=v->fgh[0]; g=v->fgh[1]; h=v->fgh[2]; wf=ds(v->id); I na=ai==0?3:ai;
@@ -112,8 +112,8 @@ static A jtfixa(J jt,A a,A w){A f,g,h,wf,x,y,z=w;V*v;fauxblock(fauxself); A aa; 
   case CIBEAM:
    if(f)RZ(f=REFIXA(na,f));
    if(g)RZ(g=REFIXA(na,g));
-   return f&&g ? (VDDOP&v->flag?df2(z,f,g,df2(x,head(h),tail(h),wf)):df2(z,f,g,wf)) :
-            (VDDOP&v->flag?df1(z,f,  df2(x,head(h),tail(h),wf)):df1(z,f,  wf)) ;
+   return f&&g ? (VDDOP&v->flag?df2(z,f,g,df2(x,jthead(jt,h),jttail(jt,h),wf)):df2(z,f,g,wf)) :
+            (VDDOP&v->flag?df1(z,f,  df2(x,jthead(jt,h),jttail(jt,h),wf)):df1(z,f,  wf)) ;
   case CUDOT:
    return REFIXA(ai,jt->implocref[0]);  // u. is equivalent to 'u.'~ for fix purposes
   case CVDOT:
@@ -121,10 +121,10 @@ static A jtfixa(J jt,A a,A w){A f,g,h,wf,x,y,z=w;V*v;fauxblock(fauxself); A aa; 
   case CTILDE:
    if(f&&NAME&AT(f)){
     RZ(y=jtsfn(jt,0,f));
-    if(all1(jteps(jt,box(y),(A)AM(a))))return w;  // break out of loop if recursive name lookup
+    if(all1(jteps(jt,jtbox(jt,y),(A)AM(a))))return w;  // break out of loop if recursive name lookup
     ASSERT(AN((A)AM(a))<248,EVLIMIT);  // error if too many names in expansion
     // recursion check finished.  Now replace the name with its value
-    if(x=symbrdlock(f)){
+    if(x=jtsymbrdlock(jt,f)){
      // if this is an implicit locative, we have to switch the environment before we recur on the name for subsequent lookups
      // The value we get from the lookup must be interpreted in the environment of the higher level
      A savloc=jt->locsyms;  // initial locales
@@ -148,9 +148,9 @@ static A jtfixa(J jt,A a,A w){A f,g,h,wf,x,y,z=w;V*v;fauxblock(fauxself); A aa; 
      // add the name to the table in that case.  NOTE bug: an indirect locative a__b, if it appeared twice, would be detected as a loop even
      // if it evaluated to different locales
      I initn=AN((A)AM(a));  // save name depth coming in
-     if(savloc==jt->locsyms){AAV1((A)AM(a))[AN((A)AM(a))]=rifvs(y); AN((A)AM(a))++; AS((A)AM(a))[0]++;} // add name-string to list of visited names for recursion check
+     if(savloc==jt->locsyms){AAV1((A)AM(a))[AN((A)AM(a))]=jtrifvs(jt,y); AN((A)AM(a))++; AS((A)AM(a))[0]++;} // add name-string to list of visited names for recursion check
      if(z=REFIXA(na,x)){
-      if(ai!=0&&selfq(x))z=jtfixrecursive(jt,sc(ai),z);  // if a lower name contains $:, replace it with explicit equivalent
+      if(ai!=0&&jtselfq(jt,x))z=jtfixrecursive(jt,jtsc(jt,ai),z);  // if a lower name contains $:, replace it with explicit equivalent
      }
      SYMRESTOREFROMLOCAL(savloc);  // make sure we restore current symbols
      AN((A)AM(a))=AS((A)AM(a))[0]=initn;   // restore name count
@@ -181,7 +181,7 @@ static A jtfixa(J jt,A a,A w){A f,g,h,wf,x,y,z=w;V*v;fauxblock(fauxself); A aa; 
  // a faux INT block to hold the value, and use AM in that block to point to the list of names
  A namelist; GAT0(namelist,BOX,248,1); AS(namelist)[0]=AN(namelist)=0;  // allocate 248 slots with rank 1, but initialize to empty
  fauxblock(fauxself); A augself; fauxINT(augself,fauxself,1,0); AM(augself)=(I)namelist; IAV(augself)[0]=IAV(self)[0];  // transfer value to writable block; install empty name array
- RZ(z=jtfixa(jt,augself,AT(w)&VERB+ADV+CONJ?w:symbrdlock(w)));  // name comes from string a
+ RZ(z=jtfixa(jt,augself,AT(w)&VERB+ADV+CONJ?w:jtsymbrdlock(jt,w)));  // name comes from string a
  // Once a node has been fixed, it doesn't need to be looked at ever again.  This applies even if the node itself carries a name.  To indicate this
  // we set VFIX.  We only do so if the node has descendants (or a name).  We also turn off VNAMED, which is set in named explicit definitions (I don't
   // understand why).  We can do this only if we are sure the entire tree was traversed, i. e. we were not just looking for implicit locatives or inverses.

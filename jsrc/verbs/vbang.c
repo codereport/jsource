@@ -45,31 +45,31 @@ static Z jtzgrecur(J jt,Z z){Z t;
  t=z1;
  if(0<=z.re) while( 0.5<z.re){--z.re; t=jtztymes(jt,t,z); if(t.re==inf)return t;    }
  else       {while(-0.5>z.re){t=jtztymes(jt,t,z); ++z.re; if(t.re==inf)return zeroZ;} t=jtzdiv(jt,z1,t);}
- return jtztymes(jt,t,zgps(z));
+ return jtztymes(jt,t,jtzgps(jt,z));
 }    /* gamma(z) using recurrence formula */
 
 static Z jtzgauss(J jt,D n,Z z){D d=1/n;Z p,t;
- if(1>=n)return zgrecur(z);
+ if(1>=n)return jtzgrecur(jt,z);
  p=jtztymes(jt,jtzpow(jt,zrj0(2*PI),zrj0((1-n)/2)),jtzpow(jt,zrj0(n),jtzminus(jt,z,zrj0(0.5))));
  t=jtzdiv(jt,z,zrj0(n));
- DQ((I)n, p=jtztymes(jt,p,zgrecur(t)); t.re+=d;);
+ DQ((I)n, p=jtztymes(jt,p,jtzgrecur(jt,t)); t.re+=d;);
  return p;
 }    /* Abramowitz & Stegun, 6.1.20 */
  
 static D c[]={1.0, 1.0/12, 1.0/288, -139.0/51840, -571.0/2488320};
 static Z jtzstirling(J jt,Z z){Z p,q;
- p=jtztymes(jt,zsqrt(jtzdiv(jt,zrj0(2*PI),z)),jtzpow(jt,jtzdiv(jt,z,zrj0(2.718281828459045235360287)),z));
+ p=jtztymes(jt,jtzsqrt(jt,jtzdiv(jt,zrj0(2*PI),z)),jtzpow(jt,jtzdiv(jt,z,zrj0(2.718281828459045235360287)),z));
  q=zhorner(5L,c,jtzdiv(jt,z1,z));
  return jtztymes(jt,p,q);
 }    /* Abramowitz & Stegun, 6.1.37 */
 
 static Z jtzgamma(J jt,Z z){D y=ABS(z.im);
- return !y?zrj0(dgamma(z.re)):20<y?zstirling(z):jtzgauss(jt,ceil(y/0.8660254),z);
+ return !y?zrj0(jtdgamma(jt,z.re)):20<y?jtzstirling(jt,z):jtzgauss(jt,ceil(y/0.8660254),z);
 }
 
-AMONPS(factI,  D,I, , *z=dgamma(1.0+(D)*x); , HDR1JERR)
-AMONPS(factD,  D,D, , *z=_isnan(*x)?*x:dgamma(1.0+*x); , HDR1JERR)
-AMONPS(factZ,  Z,Z, , *z=zgamma(jtzplus(jt,z1,*x)); , HDR1JERR)
+AMONPS(factI,  D,I, , *z=jtdgamma(jt,1.0+(D)*x); , HDR1JERR)
+AMONPS(factD,  D,D, , *z=_isnan(*x)?*x:jtdgamma(jt,1.0+*x); , HDR1JERR)
+AMONPS(factZ,  Z,Z, , *z=jtzgamma(jt,jtzplus(jt,z1,*x)); , HDR1JERR)
 
 
 #define PQLOOP(expr) while(n&&h&&h!=inf&&h!=infm){h*=expr; --n;}
@@ -104,7 +104,7 @@ static D jtdbin(J jt,D x,D y){D c,d,e,h=1.0,p,q,r;I k=0;
  }
  if(!h)return 0;
  if(h==inf||h==infm)return inf*signf(x)*signf(y)*signf(y-x);
- return h*dgamma(1+c)/(dgamma(1+d)*dgamma(1+e));
+ return h*jtdgamma(jt,1+c)/(jtdgamma(jt,1+d)*jtdgamma(jt,1+e));
 }    /* x and y-x are not negative integers */
 
 static D ibin(D x,D y){D d=MIN(x,y-x),p=1;
@@ -115,9 +115,9 @@ static D ibin(D x,D y){D d=MIN(x,y-x),p=1;
 }    /* x and y are non-negative integers; x<=y */
 
 static Z jtzbin(J jt,Z x,Z y){Z a,b,c;
- a=zgamma(jtzplus(jt,z1,y));
- b=zgamma(jtzplus(jt,z1,x));
- c=zgamma(jtzplus(jt,z1,jtzminus(jt,y,x)));
+ a=jtzgamma(jt,jtzplus(jt,z1,y));
+ b=jtzgamma(jt,jtzplus(jt,z1,x));
+ c=jtzgamma(jt,jtzplus(jt,z1,jtzminus(jt,y,x)));
  return jtzdiv(jt,a,jtztymes(jt,b,c));
 }
 

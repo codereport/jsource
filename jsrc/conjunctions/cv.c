@@ -26,13 +26,13 @@ static A jtfitct(J jt,A a,A w,I cno){V*sv;
 
 static A jtfitexp2(J jt,A a,A w,A self){
  F2RANK(0,0,jtfitexp2,self);
- ASSERT(0<=i0(w)&&!jt->jerr,EVDOMAIN);
- A z; return jtaslash(jt,CSTAR,plus(a,df2(z,iota(w),FAV(self)->fgh[1],slash(ds(CSTAR)))));
+ ASSERT(0<=jti0(jt,w)&&!jt->jerr,EVDOMAIN);
+ A z; return jtaslash(jt,CSTAR,plus(a,df2(z,jtiota(jt,w),FAV(self)->fgh[1],jtslash(jt,ds(CSTAR)))));
 }    /* a ^!.s w */
 
 static A jtfitpoly2(J jt,A a,A w,A self){I j;
  F2RANK(1,0,jtfitpoly2,self);
- A z; return jtaslash(jt,CPLUS,tymes(a,jtascan(jt,CSTAR,shift1(plus(w,df2(z,IX(SETIC(a,j)),FAV(self)->fgh[1],slash(ds(CSTAR))))))));
+ A z; return jtaslash(jt,CPLUS,tymes(a,jtascan(jt,CSTAR,jtshift1(jt,plus(w,df2(z,IX(SETIC(a,j)),FAV(self)->fgh[1],jtslash(jt,ds(CSTAR))))))));
 }    /* a p.!.s w */
 
 static A jtfitfill1(J jt,    A w,A self){DECLFG;FPREFIP;A z; jt->fill=gs; z=CALL1IP(f1,  w,fs); jt->fill=0; return z;}  // gs cannot be virtual
@@ -80,12 +80,12 @@ static A jtfitf2(J jt,A a,A w,A self){V*sv=FAV(self); A z; return df2(z,a,w,jtfi
    ASSERT(!AR(w)||!AN(w),EVLENGTH);
    return CDERIV(CFIT,jtfitfill1,jtfitfill2,sv->flag&(VIRS1|VIRS2|VJTFLGOK1|VJTFLGOK2),m,l,r); // preserve INPLACE flags
   case CTHORN:
-   RE(w=sc(k=i0(w)));
+   RE(w=jtsc(jt,k=jti0(jt,w)));
    ASSERT(0<k,EVDOMAIN);
    ASSERT(k<=NPP,EVLIMIT); 
    return CDERIV(CFIT,jtfitpp1,sv->valencefns[1],0L,m,l,r);  // CTHORN lacks VIRS
   case CCYCLE:
-   RE(k=i0(w)); ASSERT(2==k,EVDOMAIN); RZ(w=sc(k));
+   RE(k=jti0(jt,w)); ASSERT(2==k,EVDOMAIN); RZ(w=jtsc(jt,k));
    return CDERIV(CFIT,jtpparity,0L,0L,m,RMAX,RMAX);  // CCYCLE lacks VIRS
   case CTILDE:
    ASSERT(NOUN&AT(sv->fgh[0]),EVDOMAIN);

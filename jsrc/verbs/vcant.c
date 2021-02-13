@@ -8,7 +8,7 @@
 static A jtcanta(J jt,A a,A w);
 
 static A jtcants(J jt,A a,A w,A z){A a1,q,y;B*b,*c;I*u,wr,zr;P*wp,*zp;
- RZ(a=grade1(a));
+ RZ(a=jtgrade1(jt,a));
  wr=AR(w); wp=PAV(w); a1=SPA(wp,a);
  zr=AR(z); zp=PAV(z);
  ASSERT(wr==zr,EVNONCE);
@@ -16,11 +16,11 @@ static A jtcants(J jt,A a,A w,A z){A a1,q,y;B*b,*c;I*u,wr,zr;P*wp,*zp;
  GATV0(q,B01,wr,1); c=BAV(q); u=AV(a); DO(wr, c[i]=b[u[i]];);
  A bvec=jtifb(jt,wr,c); makewritable(bvec)
  SPB(zp,a,bvec);  // avoid readonly
- SPB(zp,e,ca(SPA(wp,e)));
- RZ(y=jtfromr(jt,grade1(jtindexof(jt,a,a1)),SPA(wp,i)));
- RZ(q=grade1(y));
+ SPB(zp,e,jtca(jt,SPA(wp,e)));
+ RZ(y=jtfromr(jt,jtgrade1(jt,jtindexof(jt,a,a1)),SPA(wp,i)));
+ RZ(q=jtgrade1(jt,y));
  SPB(zp,i,jtfrom(jt,q,y));
- SPB(zp,x,jtfrom(jt,q,jtcanta(jt,jtover(jt,zeroionei(0),increm(grade1(jtless(jt,a,a1)))),SPA(wp,x))));
+ SPB(zp,x,jtfrom(jt,q,jtcanta(jt,jtover(jt,zeroionei(0),jtincrem(jt,jtgrade1(jt,jtless(jt,a,a1)))),SPA(wp,x))));
  return z;
 }    /* w is sparse */
 
@@ -105,11 +105,11 @@ static A jtcanta(J jt,A a,A w){A m,s,t,z;C*wv,*zv;I*av,j,*mv,r,*sv,*tv,wf,wr,*ws
  q=jt->ranks>>RANKTX; q=AR(a)<q?AR(a):q; RESETRANK;
  if(((q-2)&(AR(a)-q-1))>=0){t=rank2ex(a,w,UNUSED_VALUE,MIN(q,1),r,q,r,jtcant2); PRISTCLRF(w) return t;} // rank loop on a.  Loses pristinity
  if(BOX&AT(a)){
-  RZ(y=jtpfill(jt,r,t=raze(a))); v=AV(y);
+  RZ(y=jtpfill(jt,r,t=jtraze(jt,a))); v=AV(y);
   GATV0(p,INT,AN(y),1); pv=AV(p);
   m=AN(a); n=AN(t); av=AAV(a); 
   j=0; DO(r-n,pv[*v++]=j++;); DO(m, k=AN(av[i]); DQ(k,pv[*v++]=j;); j+=(k!=0););
- }else RZ(p=pinv(jtpfill(jt,r,a)));
+ }else RZ(p=jtpinv(jt,jtpfill(jt,r,a)));
  A z; IRS2(p,w,0L,1L,r,jtcanta,z); RZ(z);  // Set rank for w in canta.  p is now INT type.  No need to check agreement since a has rank 1
  // We extracted from w, so mark it (or its backer if virtual) non-pristine.  If w was pristine and inplaceable, transfer its pristine status to the result
  PRISTXFERF(z,w)

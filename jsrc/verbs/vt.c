@@ -33,7 +33,7 @@ static A jttks(J jt,A a,A w){PROLOG(0092);A a1,q,x,y,z;B b,c;I an,m,r,*s,*u,*v;P
  if(b){jt->fill=SPA(wp,e); x=irs2(vec(INT,r-m,m+u),SPA(wp,x),0L,1L,-1L,jttake); jt->fill=0; RZ(x);}  // fill cannot be virtual
  else x=SPA(wp,x);
  if(c){A j;C*xv,*yv;I d,i,*iv,*jv,k,n,t;
-  d=0; t=AT(x); k=aii(x)<<bplg(t);
+  d=0; t=AT(x); k=jtaii(jt,x)<<bplg(t);
   q=SPA(wp,i); SETIC(q,n);
   GATV(j,INT,AN(q),AR(q),AS(q)); jv= AV(j); iv= AV(q);
   GA(y,t,  AN(x),AR(x),AS(x)); yv=CAV(y); xv=CAV(x);
@@ -42,10 +42,10 @@ static A jttks(J jt,A a,A w){PROLOG(0092);A a1,q,x,y,z;B b,c;I an,m,r,*s,*u,*v;P
    if(!c){++d; memcpy(yv,xv,k); yv+=k; DO(m, t=u[i]; *jv++=0>t?iv[i]-(t+s[i]):iv[i];);}
    iv+=m; xv+=k;
   }
-  SPB(zp,i,d<n?jttake(jt,sc(d),j):j); SPB(zp,x,d<n?jttake(jt,sc(d),y):y);
- }else{SPB(zp,i,ca(SPA(wp,i))); SPB(zp,x,b?x:ca(x));}
- SPB(zp,a,ca(SPA(wp,a)));
- SPB(zp,e,ca(SPA(wp,e)));
+  SPB(zp,i,d<n?jttake(jt,jtsc(jt,d),j):j); SPB(zp,x,d<n?jttake(jt,jtsc(jt,d),y):y);
+ }else{SPB(zp,i,jtca(jt,SPA(wp,i))); SPB(zp,x,b?x:jtca(jt,x));}
+ SPB(zp,a,jtca(jt,SPA(wp,a)));
+ SPB(zp,e,jtca(jt,SPA(wp,e)));
  EPILOG(z);
 }    /* take on sparse array w */
 
@@ -78,7 +78,7 @@ static A jttk(J jt,A a,A w){PROLOG(0093);A y,z;B b=0;C*yv,*zv;I c,d,dy,dz,e,i,k,
  FPREFIP;
  if(!(a && w)) return 0;
  I wt = AT(w);  // wt=type of w
- if((SPARSE&AT(a))!=0)RZ(a=denseit(a));
+ if((SPARSE&AT(a))!=0)RZ(a=jtdenseit(jt,a));
  if(!(SPARSE&wt))RZ(w=jtsetfv(jt,w,w));
  ar=AR(a); acr=jt->ranks>>RANKTX; acr=ar<acr?ar:acr; af=ar-acr;  // ?r=rank, ?cr=cell rank, ?f=length of frame
  wr=AR(w); wcr=(RANKT)jt->ranks; wcr=wr<wcr?wr:wcr; wf=wr-wcr; RESETRANK; 
@@ -92,13 +92,13 @@ static A jttk(J jt,A a,A w){PROLOG(0093);A y,z;B b=0;C*yv,*zv;I c,d,dy,dz,e,i,k,
  n=AN(a);    // n = #axes in a
  ASSERT(BETWEENC(n,1,wcr),EVLENGTH);  // if y is not atomic, a must not have extra axes  wcr==0 is always true
  I * RESTRICT ws=AS(w);  // ws->shape of w
- RZ(s=vib(a));  // convert input to integer, auditing for illegal values; and convert infinities to IMAX/-IMAX
+ RZ(s=jtvib(jt,a));  // convert input to integer, auditing for illegal values; and convert infinities to IMAX/-IMAX
  // if the input was not INT/bool, we go through and replace any infinities with the length of the axis.  If we do this, we have
  // to clone the area, because vib might return a canned value
  if(!(AT(a)&B01+INT)){
   I i; for(i=0;i<AN(s);++i){I m=IAV(s)[i]; I ms=REPSGN(m); if((m^ms)-ms == IMAX)break;}  // see if there are infinities.  They are IMAX/-IMAX, so take abc & see if result is IMAX
   if(i<AN(s)){
-   s=ca(s); if(!(AT(a)&FL))RZ(a=jtcvt(jt,FL,a));  // copy area we are going to change; put a in a form where we can recognize infinity
+   s=jtca(jt,s); if(!(AT(a)&FL))RZ(a=jtcvt(jt,FL,a));  // copy area we are going to change; put a in a form where we can recognize infinity
    for(;i<AN(s);++i){if(DAV(a)[i]==IMIN)IAV(s)[i]=IMIN;else if(INF(DAV(a)[i]))IAV(s)[i]=wcr?ws[wf+i]:1;}  // kludge.  The problem is which huge values to consider infinite.  This is how it was done
   }
  }
@@ -139,7 +139,7 @@ static A jttk(J jt,A a,A w){PROLOG(0093);A y,z;B b=0;C*yv,*zv;I c,d,dy,dz,e,i,k,
 
  A jtdrop(J jt,A a,A w){A s;I acr,af,ar,d,m,n,*u,*v,wcr,wf,wr;
  FPREFIP;
- RZ((a=vib(a))&&w);  // convert & audit a
+ RZ((a=jtvib(jt,a))&&w);  // convert & audit a
  ar=AR(a); acr=jt->ranks>>RANKTX; acr=ar<acr?ar:acr; af=ar-acr;  // ?r=rank, ?cr=cell rank, ?f=length of frame
  wr=AR(w); wcr=(RANKT)jt->ranks; wcr=wr<wcr?wr:wcr; wf=wr-wcr; RESETRANK; I wt=AT(w);
  // special case: if a is atomic 0, and cells of w are not atomic
@@ -209,7 +209,7 @@ static A jtrsh0(J jt, A w){A x,y;I wcr,wf,wr,*ws;
    // left rank is garbage, but since zeroionei(0) is an atom it doesn't matter
    return jtfrom(jtinplace,zeroionei(0),w);  // could call jtfromi directly for non-sparse w
   }
- }else{return SPARSE&AT(w)?irs2(num(0),jttake(jt,num( 1),w),0L,0L,wcr,jtfrom):rsh0(w);  // cell of w is empty - create a cell of fills  jt->ranks is still set for use in take.  Left rank is garbage, but that's OK
+ }else{return SPARSE&AT(w)?irs2(num(0),jttake(jt,num( 1),w),0L,0L,wcr,jtfrom):jtrsh0(jt,w);  // cell of w is empty - create a cell of fills  jt->ranks is still set for use in take.  Left rank is garbage, but that's OK
  }
  // pristinity from the called verb
 }
@@ -218,6 +218,6 @@ static A jtrsh0(J jt, A w){A x,y;I wcr,wf,wr,*ws;
  FPREFIP;
  wr=AR(w); wcr=(RANKT)jt->ranks; wcr=wr<wcr?wr:wcr; wf=wr-wcr;  // no RESETRANK: rank is passed into from/take/rsh0.  Left rank is garbage but that's OK
  return !wcr||AS(w)[wf]?jtfrom(jtinplace,num(-1),w) :  // if cells are atoms, or if the cells are nonempty arrays, result is last cell(s) scaf should generate virtual block here for speed
-     SPARSE&AT(w)?irs2(num(0),jttake(jt,num(-1),w),0L,0L,wcr,jtfrom):rsh0(w);
+     SPARSE&AT(w)?irs2(num(0),jttake(jt,num(-1),w),0L,0L,wcr,jtfrom):jtrsh0(jt,w);
  // pristinity from other verbs
 }

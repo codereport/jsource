@@ -15,11 +15,11 @@ static A jtoblique(J jt,    A w,A self){A x,y,z;I m,n,r;D rkblk[16];
  A xm; RZ(xm=IX(m)); A xn; RZ(xn=IX(n));
  RZ(x=ATOMIC2(jt,xm,xn,rkblk,0L,1L,CPLUS)); AR(x)=1; AS(x)[0]=AN(x);
  // perform x f/. y, which does the requested operation, collecting the identical keys
- RZ(df2ip(z,x,y,sldot(VAV(self)->fgh[0])));
+ RZ(df2ip(z,x,y,jtsldot(jt,VAV(self)->fgh[0])));
  // Final tweak: the result should have (0 >. <: +/ 2 {. $y) cells.  It will, as long as
  // m and n are both non0: when one is 0, result has 0 cells (but that cell is the correct result
  // of execution on a fill-cell).  Correct the length of the 0 case, when the result length should be nonzero
-// if((m==0 || n==0) && (m+n>0)){return jtreitem(jt,sc(m+n-1),x);}  This change withdrawn pending further deliberation
+// if((m==0 || n==0) && (m+n>0)){return jtreitem(jt,jtsc(jt,m+n-1),x);}  This change withdrawn pending further deliberation
  return z;
 }
 
@@ -133,7 +133,7 @@ static A jtobqfslash(J jt,    A w,A self){A y,z;B b=0,p;C er,id,*wv;I c,d,k,m,m1
    for(i=0;i<zn;++i){
     j=MIN(i,m1); u=aa+m1-j; v=ww+i-j;
     p=MIN(1+i,zn-i); p=MIN(p,k);
-    I rc=((AHDR2FN*)adocv.f)((I)1,p,u,v,yv,jt); if(rc&255)jsignal(rc); if(255&(rc=((AHDRRFN*)adocvsum.f)((I)1,p,(I)1,yv,zv,jt)))jsignal(rc);
+    I rc=((AHDR2FN*)adocv.f)((I)1,p,u,v,yv,jt); if(rc&255)jtjsignal(jt,rc); if(255&(rc=((AHDRRFN*)adocvsum.f)((I)1,p,(I)1,yv,zv,jt)))jtjsignal(jt,rc);
     ++zv;
    }
    if(EWOV<=jt->jerr){RESETERR; PMLOOP(I,D,FL, x=*u--*(D)*v++, x+=*u--*(D)*v++);}  // erroneous fa(z) removed; any error >= EWOV will be an overflow
@@ -153,15 +153,15 @@ static A jtkeysp(J jt,A a,A w,A self){PROLOG(0008);A b,by,e,q,x,y,z;I j,k,n,*u,*
  RZ(q=jtindexof(jt,a,a)); p=PAV(q); 
  x=SPA(p,x); u=AV(x);
  y=SPA(p,i); v=AV(y);
- e=SPA(p,e); k=i0(e); 
+ e=SPA(p,e); k=jti0(jt,e); 
  j=0; DO(AN(x), if(k<=u[i])break; if(u[i]==v[i])++j;);
  RZ(b=ne(e,x));
  RZ(by=jtrepeat(jt,b,y));
- RZ(x=key(jtrepeat(jt,b,x),jtfrom(jt,ravel(by),w),self));
+ RZ(x=key(jtrepeat(jt,b,x),jtfrom(jt,jtravel(jt,by),w),self));
  GASPARSE(q,SB01,1,1,(I*)0); *AS(q)=n;  /* q=: 0 by}1$.n;0;1 */
  p=PAV(q); SPB(p,a,iv0); SPB(p,e,num(1)); SPB(p,i,by); SPB(p,x,jtreshape(jt,tally(jt, by),num(0)));
  RZ(z=jtover(jt,df1(b,jtrepeat(jt,q,w),VAV(self)->fgh[0]),x));
- z=j?jtcdot2(jt,box(IX(1+j)),z):z;
+ z=j?jtcdot2(jt,jtbox(jt,IX(1+j)),z):z;
  EPILOG(z);
 }
 
@@ -628,7 +628,7 @@ static A jtkeytallysp(J jt, A w){PROLOG(0015);A b,e,q,x,y,z;I c,d,j,k,*u,*v;P*p;
  p=PAV(q); 
  x=SPA(p,x); u=AV(x); c=AN(x);
  y=SPA(p,i); v=AV(y);
- e=SPA(p,e); k=i0(e); 
+ e=SPA(p,e); k=jti0(jt,e); 
  j=0; DO(c, if(k<=u[i])break; if(u[i]==v[i])++j;);
  RZ(b=ne(e,x));
  RZ(x=jtrepeat(jt,b,x)); RZ(x=keytally(x,x,mark)); u=AV(x); d=AN(x);
@@ -641,8 +641,8 @@ static A jtkeytally(J jt,A a,A w,A self){FPREFIP;PROLOG(0016);A z,q;I at,j,k,n,r
  SETIC(a,n); at=AT(a);
  ASSERT(n==SETIC(w,k),EVLENGTH);
  if(!AN(a))return vec(INT,!!n,&AS(a)[0]);  // handle case of empties - a must have rank, so use AS[0] as  proxy for n
- if((at&SPARSE)!=0)return keytallysp(a);
- if((-n&SGNIF(at,B01X)&(AR(a)-2))<0){B*b=BAV(a); k=bsum(n,b); return BETWEENO(k,1,n)?jtv2(jt,*b?k:n-k,*b?n-k:k):vci(n);}  // nonempty rank<2 boolean a, just add the 1s
+ if((at&SPARSE)!=0)return jtkeytallysp(jt,a);
+ if((-n&SGNIF(at,B01X)&(AR(a)-2))<0){B*b=BAV(a); k=bsum(n,b); return BETWEENO(k,1,n)?jtv2(jt,*b?k:n-k,*b?n-k:k):jtvci(jt,n);}  // nonempty rank<2 boolean a, just add the 1s
  A ai;  // result from classifying a
  RZ(ai=indexofsub(IFORKEY,a,a));   // self-classify the input using ct set before this verb
  // indexofsub has 2 returns: most of the time, it returns a normal i.-family result, but with each slot holding the index PLUS the number of values

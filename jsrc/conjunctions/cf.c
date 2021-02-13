@@ -87,7 +87,7 @@ static A jtfolkcomp(J jt,A a,A w,A self){FPREFIP;DECLFGH;PROLOG(0034);A z;AF f;
   I postflags=jt->workareas.compsc.postflags;
   z=f(jt,a,w,self);
   if(z){if(postflags&2){z=num((IAV(z)[0]!=AN(AR(a)>=AR(w)?a:w))^(postflags&1));}}
- }else if(cap(fs))CAP2 else FOLK2;
+ }else if(jtcap(jt,fs))CAP2 else FOLK2;
  EPILOG(z);
 }
 
@@ -98,7 +98,7 @@ static A jtfolkcomp0(J jt,A a,A w,A self){FPREFIP;DECLFGH;PROLOG(0035);A z;AF f;
   I postflags=jt->workareas.compsc.postflags;
   z=f(jt,a,w,self);
   if(z){if(postflags&2){z=num((IAV(z)[0]!=AN(AR(a)>=AR(w)?a:w))^(postflags&1));}}
- }else if(cap(fs))CAP2 else FOLK2;
+ }else if(jtcap(jt,fs))CAP2 else FOLK2;
  POPCCT  //  bug: if we RZd early we leave ct unpopped
  EPILOG(z);
 }
@@ -125,7 +125,7 @@ A jtfolk(J jt,A f,A g,A h){A p,q,x,y;AF f1=jtfolk1,f2=jtfolk2;B b;C c,fi,gi,hi;I
   }
   return fdef(0,CFORK,VERB, f1,jtnvv2, f,g,h, flag, RMAX,RMAX,RMAX);
  }
- fv=FAV(f); fi=cap(f)?CCAP:fv->id; // if f is a name defined as [:, detect that now & treat it as if capped fork
+ fv=FAV(f); fi=jtcap(jt,f)?CCAP:fv->id; // if f is a name defined as [:, detect that now & treat it as if capped fork
  if(fi!=CCAP){
   // nvv or vvv fork.  inplace if f or h can handle it, ASGSAFE only if all 3 verbs can
   flag=((fv->flag|hv->flag)&(VJTFLGOK1|VJTFLGOK2))+((fv->flag&gv->flag&hv->flag)&VASGSAFE);  // We accumulate the flags for the derived verb.  Start with ASGSAFE if all descendants are.
@@ -167,7 +167,7 @@ A jtfolk(J jt,A f,A g,A h){A p,q,x,y;AF f1=jtfolk1,f2=jtfolk2;B b;C c,fi,gi,hi;I
   case CRAZE:   if(hi==CCUT){
                  j=hv->localuse.lI;
                  if(hv->valencefns[1]==jtboxcut0){f2=jtrazecut0; flag &=~(VJTFLGOK2);}
-                 else if(boxatop(h)){  // h is <@g;.j   detect ;@:(<@(f/\);._2 _1 1 2
+                 else if(jtboxatop(jt,h)){  // h is <@g;.j   detect ;@:(<@(f/\);._2 _1 1 2
                   if((((I)1)<<(j+3))&0x36) { // fbits are 3 2 1 0 _1 _2 _3; is 1/2-cut?
                    A wf=hv->fgh[0]; V *wfv=FAV(wf); A hg=wfv->fgh[1]; V *hgv=FAV(hg);  // w is <@g;.k  find g
                    if((I)(((hgv->id^CBSLASH)-1)|((hgv->id^CBSDOT)-1))<0) {  // g is gf\ or gf\.
@@ -250,7 +250,7 @@ static A jthkiota(J jt,    A w,A self){DECLFG;A a,e;I n;P*p;
  SETIC(w,n);\
  if(SB01&AT(w)&&1==AR(w)){
   p=PAV(w); a=SPA(p,a); e=SPA(p,e); 
-  return BAV(e)[0]||jtequ(jt,mtv,a) ? jtrepeat(jt,w,IX(n)) : jtrepeat(jt,SPA(p,x),ravel(SPA(p,i)));
+  return BAV(e)[0]||jtequ(jt,mtv,a) ? jtrepeat(jt,w,IX(n)) : jtrepeat(jt,SPA(p,x),jtravel(jt,SPA(p,i)));
  }
  return B01&AT(w)&&1>=AR(w) ? jtifb(jt,n,BAV(w)) : jtrepeat(jt,w,IX(n));
 }    /* special code for (# i.@#) */
@@ -283,13 +283,13 @@ static A jthkindexofmaxmin(J jt,    A w,A self){I z=0;
   case 7: ICOSEARCH(I,>,>=)
   }
  }
- return sc(z);
+ return jtsc(jt,z);
 }    /* special code for (i.<./) (i.>./) (i:<./) (i:>./) */
 
 // (compare L.) dyadic
 static A jthklvl2(J jt,A a,A w,A self){
  F2RANK(0,RMAX,jthklvl2,self);
- I comparand; RE(comparand=i0(a));  // get value to compare against
+ I comparand; RE(comparand=jti0(jt,a));  // get value to compare against
  return num(((VAV(self)->flag>>VFHKLVLGTX)&1)^levelle(w,comparand-(VAV(self)->flag&VFHKLVLDEC)));  // decrement for < or >:; complement for > >:
 }
 
@@ -330,12 +330,12 @@ static A jthklvl2(J jt,A a,A w,A self){
   case BD(NOUN,CONJ):
   case BD(VERB,CONJ):
    f1=tvc; id=ID(w);
-   if(BOX&AT(a)&&(id==CATDOT||id==CGRAVE||id==CGRCO)&&gerexact(a))flag+=VGERL;
+   if(BOX&AT(a)&&(id==CATDOT||id==CGRAVE||id==CGRCO)&&jtgerexact(jt,a))flag+=VGERL;
    break;
   case BD(CONJ,NOUN):
   case BD(CONJ,VERB):
    f1=tcv; id=ID(a);
-   if(BOX&AT(w)&&(id==CGRAVE||id==CPOWOP&&1<AN(w))&&gerexact(w))flag+=VGERR;
+   if(BOX&AT(w)&&(id==CGRAVE||id==CPOWOP&&1<AN(w))&&jtgerexact(jt,w))flag+=VGERR;
  }
  return fdef(0,CADVF, ADV, f1,0L, a,w,0L, flag, 0L,0L,0L);
 }

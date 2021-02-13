@@ -210,7 +210,7 @@ D jtremdd(J jt,D a,D b){D q,x,y;
  ASSERT(!INF(b),EVNAN);
  if(a==inf )return 0<=b?b:a;
  if(a==infm)return 0>=b?b:a;
- q=b/a; x=tfloor(q); y=tceil(q); return TEQ(x,y)?0:b-a*x;
+ q=b/a; x=jttfloor(jt,q); y=jttceil(jt,q); return TEQ(x,y)?0:b-a*x;
 }
 #define remdd(x,y)                  jtremdd(jt,(x),(y))
 APFX(remDD, D,D,D, remdd,,HDR1JERR)
@@ -321,12 +321,12 @@ APFX(lcmZZ, Z,Z,Z, zlcm ,,HDR1JERR)
 }    /* <.@% or >.@% on integers */
 
 
-static A jtweight(J jt,A a,A w){ A z; return df1(z,behead(jtover(jt,AR(w)?w:jtreshape(jt,a,w),num(1))),bsdot(slash(ds(CSTAR))));}  // */\. }. (({:$a)$w),1
+static A jtweight(J jt,A a,A w){ A z; return df1(z,jtbehead(jt,jtover(jt,AR(w)?w:jtreshape(jt,a,w),num(1))),jtbsdot(jt,jtslash(jt,ds(CSTAR))));}  // */\. }. (({:$a)$w),1
 
  A jtbase1(J jt, A w){A z;B*v;I c,m,n,p,r,*s,t,*x;
  n=AN(w); t=AT(w); r=AR(w); s=AS(w); c=AS(w)[r-1]; c=r?c:1;
  ASSERT(t&DENSE,EVNONCE);
- if(((c-BW)&SGNIF(t,B01X))>=0)return jtpdt(jt,w,jtweight(jt,sc(c),t&RAT+XNUM?jtcvt(jt,XNUM,num(2)):num(2)));  //
+ if(((c-BW)&SGNIF(t,B01X))>=0)return jtpdt(jt,w,jtweight(jt,jtsc(jt,c),t&RAT+XNUM?jtcvt(jt,XNUM,num(2)):num(2)));  //
  CPROD(n,m,r-1,s);
  GATV(z,INT,m,r?r-1:0,s); x=AV(z); v=BAV(w);
  if(c)DQ(m, p=0; DQ(c, p=2*p+*v++;); *x++=p;)
@@ -340,7 +340,7 @@ static A jtweight(J jt,A a,A w){ A z; return df1(z,behead(jtover(jt,AR(w)?w:jtre
  ASSERT(!((at|wt)&SPARSE),EVNONCE); t=maxtyped(at,wt);
  if(!(t&at))RZ(a=jtcvt(jt,t,a));
  if(!(t&wt))RZ(w=jtcvt(jt,t,w));
- return 1>=ar?jtpdt(jt,w,jtweight(jt,sc(c),a)):rank2ex(w,rank2ex(sc(c),a,UNUSED_VALUE,0L,MIN(ar,1),0L,MIN(ar,1),jtweight),UNUSED_VALUE,MIN(wr,1),1L,MIN(wr,1),1L,jtpdt);
+ return 1>=ar?jtpdt(jt,w,jtweight(jt,jtsc(jt,c),a)):rank2ex(w,rank2ex(jtsc(jt,c),a,UNUSED_VALUE,0L,MIN(ar,1),0L,MIN(ar,1),jtweight),UNUSED_VALUE,MIN(wr,1),1L,MIN(wr,1),1L,jtpdt);
 }
 
 // #: y
@@ -353,17 +353,17 @@ static A jtweight(J jt,A a,A w){ A z; return df1(z,behead(jtover(jt,AR(w)?w:jtre
  if((-n&SGNIFNOT(t,B01X))>=0)return jtreshape(jt,apip(shape(jt,w),zeroionei(n!=0)),w);
  if(!(t&INT)){
   // Not integer.  Calculate # digits-1 as d = 2 <.@^. >./ | , w  
-  df2(d,num(2),maximum(zeroionei(1),jtaslash(jt,CMAX,mag(ravel(w)))),jtatop(jt,ds(CFLOOR),ds(CLOG)));
+  df2(d,num(2),maximum(zeroionei(1),jtaslash(jt,CMAX,mag(jtravel(jt,w)))),jtatop(jt,ds(CFLOOR),ds(CLOG)));
   // Calculate z = ((1+d)$2) #: w
-  RZ(z=jtabase2(jt,jtreshape(jt,increm(d),num(2)),w));
+  RZ(z=jtabase2(jt,jtreshape(jt,jtincrem(jt,d),num(2)),w));
   // If not float, result is exact or complex; either way, keep it
   if(!(t&FL))return z;
   // If float, see if we had one digit too many (could happen, if the log was too close to an integer)
   // calculate that as (0 = >./ ({."1 z)).  If so, return }."1 z ,  otherwise z
   // But we can't delete a digit if any of the values were negative - all are significant then
   // We also can't delete a digit if there is only 1 digit in the numbers
-  if(AS(z)[AR(z)-1]<=1 || i0(jtaslash(jt,CPLUSDOT,ravel(lt(w,zeroionei(0))))))return z;
-  if(0==i0(jtaslash(jt,CMAX,ravel(IRS1(z,0L,1L,jthead,d)))))return IRS1(z,0L,1L,jtbehead,d);
+  if(AS(z)[AR(z)-1]<=1 || jti0(jt,jtaslash(jt,CPLUSDOT,jtravel(jt,lt(w,zeroionei(0))))))return z;
+  if(0==jti0(jt,jtaslash(jt,CMAX,jtravel(jt,IRS1(z,0L,1L,jthead,d)))))return IRS1(z,0L,1L,jtbehead,d);
   return z;
  }
  // Integer.  Calculate x=max magnitude encountered (minimum of 1, to leave 1 output value)
@@ -410,14 +410,14 @@ static A jtweight(J jt,A a,A w){ A z; return df1(z,behead(jtover(jt,AR(w)?w:jtre
   GA(y,at, 1, 0,0); yv=CAV(y);
   GATV0(z,BOX,an,1); zv=an+AAV(z);
   DQ(an, memcpy(yv,u-=k,k); A tt; RZ(w=divide(minus(w,tt=residue(y,w)),y)); INCORP(tt); *--zv=tt;);
-  z=ope(z);
+  z=jtope(jt,z);
   EPILOG(z);
 }}
 
 // Compute power-of-2 | w for INT w, by ANDing.  Result is boolean if mod is 1 or 2
 A jtintmod2(J jt,A w,I mod){A z;B *v;I n,q,r,*u;UI m=0;  // init m for warning
  FPREFIP;
- if(mod>2)return jtatomic2(jtinplace,sc(mod-1),w,ds(CBW0001));  // INT result, by AND
+ if(mod>2)return jtatomic2(jtinplace,jtsc(jt,mod-1),w,ds(CBW0001));  // INT result, by AND
  // the rest is boolean result
  n=AN(w); v=BAV(w);  // littleendian only
  GATV(z,B01,n,AR(w),AS(w)); RZ(n);  // loops below can't handle empty

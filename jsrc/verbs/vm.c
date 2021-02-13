@@ -122,13 +122,13 @@ A jtlogar2(J jt,A a,A w){
  RE(t=maxtype(AT(a),AT(w)));
  A ma=a; if(TYPESNE(t,AT(a)))RZ(ma=jtcvt(jt, t,a));
  A mw=w; if(TYPESNE(t,AT(w)))RZ(mw=jtcvt(jt, t,w));
- return expn2(mw,recip(ma));  // not inplaceable - could be IMAG
+ return expn2(mw,jtrecip(jt,ma));  // not inplaceable - could be IMAG
 }
 
  A jtjdot1(J jt, A w){return tymes(a0j1,w);}
  A jtjdot2(J jt,A a,A w){return plus(a,tymes(a0j1,w));}
- A jtrdot1(J jt, A w){return expn1(jdot1(w));}
- A jtrdot2(J jt,A a,A w){return tymes(a,rdot1(w));}
+ A jtrdot1(J jt, A w){return expn1(jtjdot1(jt,w));}
+ A jtrdot2(J jt,A a,A w){return tymes(a,jtrdot1(jt,w));}
 
 
  A jtpolar(J jt, A w){ A z; return jtcvt(jt,SPARSE&AT(w)?SFL:FL,df2(z,jtv2(jt,10L,12L),w,jtqq(jt,ds(CCIRCLE),jtv2(jt,1L,0L))));}
@@ -141,11 +141,11 @@ A jtlogar2(J jt,A a,A w){
   b=1&&t&SCMPX;
   GASPARSE(z,b?SFL:t,1,1+r,AS(w)); AS(z)[r]=2;
   wp=PAV(w); zp=PAV(z);
-  if(b){e=SPA(wp,e); c=*ZAV(e); ASSERT(FFEQ(c.re,c.im),EVSPARSE); SPB(zp,e,scf(c.re));}
-  else SPB(zp,e,ca(SPA(wp,e)));
-  SPB(zp,a,ca(SPA(wp,a)));
-  SPB(zp,i,ca(SPA(wp,i)));
-  SPB(zp,x,rect(SPA(wp,x)));
+  if(b){e=SPA(wp,e); c=*ZAV(e); ASSERT(FFEQ(c.re,c.im),EVSPARSE); SPB(zp,e,jtscf(jt,c.re));}
+  else SPB(zp,e,jtca(jt,SPA(wp,e)));
+  SPB(zp,a,jtca(jt,SPA(wp,a)));
+  SPB(zp,i,jtca(jt,SPA(wp,i)));
+  SPB(zp,x,jtrect(jt,SPA(wp,x)));
   return z;
  }else return df2(z,w,num(0),jtqq(jt,ds(CCOMMA),zeroionei(0)));
 }

@@ -41,7 +41,7 @@ static A jthdrinfo(J jt,    A w,A self){A z;
 }
 
  A jtforeign(J jt,A a,A w){I p,q;
- p=i0(a); q=i0(w); RE(0);
+ p=jti0(jt,a); q=jti0(jt,w); RE(0);
  if(11==p)return fdef(0,CIBEAM,VERB, jtwd,0L, a,w,0L, VASGSAFE, 1L,RMAX,RMAX);
  ASSERT((UI)p<=(UI)128 && (UI)q<XCC,EVDOMAIN);
  switch(XC(p,q)){

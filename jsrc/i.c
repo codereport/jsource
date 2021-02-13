@@ -70,14 +70,14 @@ B jtglobinit(J jt){A x,y;A *oldpushx=jt->tnextpushp;
  memcpy(jt->prioritytype,prioritytype,sizeof(jt->prioritytype));  // may not be needed
  jt->adbreakr=jt->adbreak=&breakdata; /* required for ma to work */
  jtmeminit(jt);  /* required for ma to work */
- RZ(y=rifvs(jtstr(jt,1L,"z")));     ACX(y); AS(y)[0]=BUCKETXLOC(1,"z");   // for paths, the shape holds the bucketx
+ RZ(y=jtrifvs(jt,jtstr(jt,1L,"z")));     ACX(y); AS(y)[0]=BUCKETXLOC(1,"z");   // for paths, the shape holds the bucketx
  GA(x,BOX, 1,1,0     ); ACX(x); AAV(x)[0]=y;                zpath      =x;  AFLAG(zpath) |= (AT(zpath)&TRAVERSIBLE);  // ensure that traversible types in pst are marked traversible, so tpush/ra/fa will not recur on them
- RZ(mnuvxynam[0]=makename("m"));
- RZ(mnuvxynam[1]=makename("n"));
- RZ(mnuvxynam[2]=makename("u"));
- RZ(mnuvxynam[3]=makename("v"));
- RZ(mnuvxynam[4]=makename("x"));
- RZ(mnuvxynam[5]=makename("y"));
+ RZ(mnuvxynam[0]=jtmakename(jt,"m"));
+ RZ(mnuvxynam[1]=jtmakename(jt,"n"));
+ RZ(mnuvxynam[2]=jtmakename(jt,"u"));
+ RZ(mnuvxynam[3]=jtmakename(jt,"v"));
+ RZ(mnuvxynam[4]=jtmakename(jt,"x"));
+ RZ(mnuvxynam[5]=jtmakename(jt,"y"));
  // can be left at initial value v00[0]=v00[1]=0;   // vector 0 0, for rank
  pf=qpf();
  jtpinit(jt);
@@ -92,50 +92,50 @@ B jtglobinit(J jt){A x,y;A *oldpushx=jt->tnextpushp;
 static B jtevinit(J jt){A q,*v;
  GA(q,BOX,1+NEVM,1,0); v=AAV(q);
  DO(AN(q), v[i]=mtv;);
- v[EVALLOC  ]=cstr("allocation error"           );
- v[EVASSERT ]=cstr("assertion failure"          );
- v[EVATTN   ]=cstr("attention interrupt"        );
- v[EVBREAK  ]=cstr("break"                      );
- v[EVCTRL   ]=cstr("control error"              );
- v[EVDOMAIN ]=cstr("domain error"               );
- v[EVFACCESS]=cstr("file access error"          );
- v[EVFNAME  ]=cstr("file name error"            );
- v[EVFOLDLIMIT]=cstr("fold limit"            );
- v[EVFNUM   ]=cstr("file number error"          );
- v[EVILNAME ]=cstr("ill-formed name"            );
- v[EVILNUM  ]=cstr("ill-formed number"          );
- v[EVINDEX  ]=cstr("index error"                );
- v[EVINPRUPT]=cstr("input interrupt"            );
- v[EVFACE   ]=cstr("interface error"            );
- v[EVLENGTH ]=cstr("length error"               );
- v[EVLIMIT  ]=cstr("limit error"                );
- v[EVLOCALE ]=cstr("locale error"               );
- v[EVNAN    ]=cstr("NaN error"                  );
- v[EVNONCE  ]=cstr("nonce error"                );
- v[EVNONNOUN]=cstr("noun result was required"   );
- v[EVSPARSE ]=cstr("non-unique sparse elements" );
- v[EVOPENQ  ]=cstr("open quote"                 );
- v[EVWSFULL ]=cstr("out of memory"              );
- v[EVRANK   ]=cstr("rank error"                 );
- v[EVRO     ]=cstr("read-only data"             );
- v[EVSECURE ]=cstr("security violation"         );
- v[EVSPELL  ]=cstr("spelling error"             );
- v[EVSTACK  ]=cstr("stack error"                );
- v[EVSTOP   ]=cstr("stop"                       );
- v[EVSYNTAX ]=cstr("syntax error"               );
- v[EVSYSTEM ]=cstr("system error"               );
- v[EVTHROW  ]=cstr("uncaught throw."            );
- v[EVTIME   ]=cstr("time limit"                 );
- v[EVVALUE  ]=cstr("value error"                );
+ v[EVALLOC  ]=jtcstr(jt,"allocation error"           );
+ v[EVASSERT ]=jtcstr(jt,"assertion failure"          );
+ v[EVATTN   ]=jtcstr(jt,"attention interrupt"        );
+ v[EVBREAK  ]=jtcstr(jt,"break"                      );
+ v[EVCTRL   ]=jtcstr(jt,"control error"              );
+ v[EVDOMAIN ]=jtcstr(jt,"domain error"               );
+ v[EVFACCESS]=jtcstr(jt,"file access error"          );
+ v[EVFNAME  ]=jtcstr(jt,"file name error"            );
+ v[EVFOLDLIMIT]=jtcstr(jt,"fold limit"            );
+ v[EVFNUM   ]=jtcstr(jt,"file number error"          );
+ v[EVILNAME ]=jtcstr(jt,"ill-formed name"            );
+ v[EVILNUM  ]=jtcstr(jt,"ill-formed number"          );
+ v[EVINDEX  ]=jtcstr(jt,"index error"                );
+ v[EVINPRUPT]=jtcstr(jt,"input interrupt"            );
+ v[EVFACE   ]=jtcstr(jt,"interface error"            );
+ v[EVLENGTH ]=jtcstr(jt,"length error"               );
+ v[EVLIMIT  ]=jtcstr(jt,"limit error"                );
+ v[EVLOCALE ]=jtcstr(jt,"locale error"               );
+ v[EVNAN    ]=jtcstr(jt,"NaN error"                  );
+ v[EVNONCE  ]=jtcstr(jt,"nonce error"                );
+ v[EVNONNOUN]=jtcstr(jt,"noun result was required"   );
+ v[EVSPARSE ]=jtcstr(jt,"non-unique sparse elements" );
+ v[EVOPENQ  ]=jtcstr(jt,"open quote"                 );
+ v[EVWSFULL ]=jtcstr(jt,"out of memory"              );
+ v[EVRANK   ]=jtcstr(jt,"rank error"                 );
+ v[EVRO     ]=jtcstr(jt,"read-only data"             );
+ v[EVSECURE ]=jtcstr(jt,"security violation"         );
+ v[EVSPELL  ]=jtcstr(jt,"spelling error"             );
+ v[EVSTACK  ]=jtcstr(jt,"stack error"                );
+ v[EVSTOP   ]=jtcstr(jt,"stop"                       );
+ v[EVSYNTAX ]=jtcstr(jt,"syntax error"               );
+ v[EVSYSTEM ]=jtcstr(jt,"system error"               );
+ v[EVTHROW  ]=jtcstr(jt,"uncaught throw."            );
+ v[EVTIME   ]=jtcstr(jt,"time limit"                 );
+ v[EVVALUE  ]=jtcstr(jt,"value error"                );
  ras(q); jt->evm=q;
  if(jt->jerr){printf("evinit failed; error %hhi\n", jt->jerr); return 0;} else return 1;
 }
 
-/* static void sigflpe(int k){jsignal(EVDOMAIN); signal(SIGFPE,sigflpe);} */
+/* static void sigflpe(int k){jtjsignal(jt,EVDOMAIN); signal(SIGFPE,sigflpe);} */
 
 static B jtconsinit(J jt){D y;
 // This is an initialization routine, so memory allocations performed here are NOT
-// automatically freed by tpop()
+// automatically freed by jttpop(jt,)
 jt->asgzomblevel = 1;  // allow premature change to zombie names, but not data-dependent errors
 jt->assert = 1;
 jt->directdef = 1;  // scaf
@@ -158,9 +158,9 @@ jt->directdef = 1;  // scaf
  jt->baselocalehash=(UI4)nmhash(sizeof(jt->baselocale),jt->baselocale);
  RESETRANK;  // init both ranks to RMAX
   // Init for u./v.
- A uimp=ca(mnuvxynam[2]); NAV(uimp)->flag|=NMIMPLOC;  // create the name for u.
+ A uimp=jtca(jt,mnuvxynam[2]); NAV(uimp)->flag|=NMIMPLOC;  // create the name for u.
  jt->implocref[0] = fdef(0,CTILDE,VERB, 0,0, uimp,0L,0L, 0, RMAX,RMAX,RMAX);  //create 'u.'~
- A vimp=ca(mnuvxynam[3]); NAV(vimp)->flag|=NMIMPLOC;
+ A vimp=jtca(jt,mnuvxynam[3]); NAV(vimp)->flag|=NMIMPLOC;
  jt->implocref[1] = fdef(0,CTILDE,VERB, 0,0, vimp,0L,0L, 0, RMAX,RMAX,RMAX);  //create 'v.'~
 
  return 1;
@@ -184,7 +184,7 @@ static C jtjinit3(J jt){
  jtrnginit(jt);
  jtecvtinit(jt);
  // We have completed initial allocation.  Everything allocated so far will not be freed by a tpop, because
- // tpop() isn't called during initialization.  So, to keep the memory auditor happy, we reset ttop so that it doesn't
+ // jttpop(jt,) isn't called during initialization.  So, to keep the memory auditor happy, we reset ttop so that it doesn't
  // look like those symbols have a free outstanding.
  jt->tnextpushp=(A*)(((I)jt->tstackcurr+NTSTACKBLOCK)&(-NTSTACKBLOCK))+1;  // first store is to entry 1 of the first block
  return !jt->jerr;

@@ -24,7 +24,7 @@ static A jtpowseqlim(J jt,    A w,A self){PROLOG(0039);A x,y,z,*zv;I i,n;
   if(jtequ(jt,x,y)){AN(z)=AS(z)[0]=i; break;}
   ++i;
  }
- z=ope(z);
+ z=jtope(jt,z);
  EPILOG(z);
 }    /* f^:(<_) w */
 
@@ -69,7 +69,7 @@ static A jtpowseq(J jt,    A w,A self){A fs,gs,x;I n=IMAX;V*sv;
  sv=FAV(self); fs=sv->fgh[0]; gs=sv->fgh[1];
  ASSERT(!AR(gs),EVRANK);
  ASSERT(BOX&AT(gs),EVDOMAIN);
- x=AAV(gs)[0]; if(!AR(x))RE(n=i0(vib(x)));
+ x=AAV(gs)[0]; if(!AR(x))RE(n=jti0(jt,jtvib(jt,x)));
  if(0>n){RZ(fs=inv(fs)); n=-n;}
  if(n==IMAX||1==AR(x)&&!AN(x))return jtpowseqlim(jt,w,fs);
  return df1(gs,w,powop(fs,IX(n),0));
@@ -96,8 +96,8 @@ static A jtply1(J jt,    A w,A self){PROLOG(0040);DECLFG;A zz=0;
 #include "result.h"
  I state=ZZFLAGINITSTATE;  // flags for result.h
  // p =. ~. sn=.(gn=./:,n) { ,n   which gives the list of distinct powers
- A n=sv->fgh[2]; A rn; RZ(rn=ravel(n));  // n is powers, rn is ravel of n
- A gn; RZ(gn=grade1(rn)); A p; RZ(p=nub(jtfrom(jt,gn,rn)));  // gn is grade of power, p is sorted list of unique powers we want
+ A n=sv->fgh[2]; A rn; RZ(rn=jtravel(jt,n));  // n is powers, rn is ravel of n
+ A gn; RZ(gn=jtgrade1(jt,rn)); A p; RZ(p=jtnub(jt,jtfrom(jt,gn,rn)));  // gn is grade of power, p is sorted list of unique powers we want
  // find index of first nonneg power, remember, set scan pointer, set direction forward.  Set current power to 0.  Indic read of power needed
  I *pv=IAV(p); I np=AN(p);  // base of array of powers, and the number of them
  A z=w;  // the next input/previous result
@@ -166,7 +166,7 @@ static A jtply1(J jt,    A w,A self){PROLOG(0040);DECLFG;A zz=0;
 #include "result.h"
  // Now zz has the result
  // if (there is a negative power) p =. (nnegs }. p) , |. nnegs {. p to match the order in which results were stored
- if(pscan0){A sneg; RZ(sneg=sc(pscan0)); RZ(p=apip(jtdrop(jt,sneg,p),reverse(jttake(jt,sneg,p))));}
+ if(pscan0){A sneg; RZ(sneg=jtsc(jt,pscan0)); RZ(p=apip(jtdrop(jt,sneg,p),jtreverse(jt,jttake(jt,sneg,p))));}
  // result is ($n) $ (p i. ,n) { result - avoid the reshape if n is a list, and avoid the from if (p i. ,n) is an index vector
  RZ(p=jtindexof(jt,p,rn));  // for each input power, the position of its executed result
  if(!jtequ(jt,IX(np),p))RZ(zz=jtfrom(jt,p,zz));  // order result-cells in order of the input powers
@@ -238,14 +238,14 @@ static A jtinverr(J jt,    A w,A self){FPREFIP;ASSERT(0,EVDOMAIN);}  // used for
 // here for u^:v y
 REFACTORME_CS1IP(jtpowv1, \
 A u; A v; RZ(u=CALL1(g1,  w,gs));  /* execute v */ \
-if(!AR(u) && (v=vib(u)) && !(IAV(v)[0]&~1)){z=IAV(v)[0]?(FAV(fs)->valencefns[0])(FAV(fs)->flag&VJTFLGOK1?jtinplace:jt,w,fs):w;} \
+if(!AR(u) && (v=jtvib(jt,u)) && !(IAV(v)[0]&~1)){z=IAV(v)[0]?(FAV(fs)->valencefns[0])(FAV(fs)->flag&VJTFLGOK1?jtinplace:jt,w,fs):w;} \
 else{RESETERR; RZ(u = powop(fs,u,(A)1));  \
 z=(FAV(u)->valencefns[0])(FAV(u)->flag&VJTFLGOK1?jtinplace:jt,w,u);} \
 ,0108)
 // here for x u^:v y 
 REFACTORME_CS2IP(jtpowv2, \
 A u; A v; RZ(u=CALL2(g2,a,w,gs));  /* execute v */ \
-if(!AR(u) && (v=vib(u)) && !(IAV(v)[0]&~1)){z=IAV(v)[0]?(FAV(fs)->valencefns[1])(FAV(fs)->flag&VJTFLGOK2?jtinplace:jt,a,w,fs):w;} \
+if(!AR(u) && (v=jtvib(jt,u)) && !(IAV(v)[0]&~1)){z=IAV(v)[0]?(FAV(fs)->valencefns[1])(FAV(fs)->flag&VJTFLGOK2?jtinplace:jt,a,w,fs):w;} \
 else{RESETERR; RZ(u = powop(fs,u,(A)1));  \
 z=(FAV(u)->valencefns[1])(FAV(u)->flag&VJTFLGOK2?jtinplace:jt,a,w,u);} \
 ,0109)
@@ -253,7 +253,7 @@ z=(FAV(u)->valencefns[1])(FAV(u)->flag&VJTFLGOK2?jtinplace:jt,a,w,u);} \
 REFACTORME_CS2IP(jtpowv2a, \
 jtinplace=(J)((I)jtinplace&~JTINPLACEA); /* monads always have IP2 clear */ \
 A u; A v; fs=FAV(fs)->fgh[0]; RZ(u=CALL2(g2,a,w,gs));  /* execute v */ \
-if(!AR(u) && (v=vib(u)) && !(IAV(v)[0]&~1)){z=IAV(v)[0]?(FAV(fs)->valencefns[0])(FAV(fs)->flag&VJTFLGOK1?jtinplace:jt,w,fs):w;} \
+if(!AR(u) && (v=jtvib(jt,u)) && !(IAV(v)[0]&~1)){z=IAV(v)[0]?(FAV(fs)->valencefns[0])(FAV(fs)->flag&VJTFLGOK1?jtinplace:jt,w,fs):w;} \
 else{RESETERR; RZ(u = powop(fs,u,(A)1));  \
 z=(FAV(u)->valencefns[0])(FAV(u)->flag&VJTFLGOK1?jtinplace:jt,w,u);} \
 ,0110)
@@ -296,7 +296,7 @@ z=(FAV(u)->valencefns[0])(FAV(u)->flag&VJTFLGOK1?jtinplace:jt,w,u);} \
  // fall through for unboxed n.
  // handle the very important case of scalar   int/boolean   n of 0/1
  if(((-(AT(w)&B01+INT))&((AR(w)|((UI)BIV0(w)>>1))-1))<0)return a=BIV0(w)?a:ds(CRIGHT);  //  u^:0 is like ],  u^:1 is like u   AR(w)==0 and B01|INT and BAV0=0 or 1
- RZ(hs=vib(w));   // hs=n coerced to integer
+ RZ(hs=jtvib(jt,w));   // hs=n coerced to integer
  AF f1=jtply1;  // default routine for general array.  no reason to inplace this, since it has to keep the old value to check for changes
  I flag=0;  // flags for the verb we build
  if(!AR(w)){  // input is an atom

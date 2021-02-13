@@ -123,7 +123,7 @@ static PSTK* jtpparen(J jt,PSTK *stack){
 }
 
 // multiple assignment.  self has parms.  ABACK(self) is the symbol table to assign to, valencefns[0] is preconditioning routine to open value or convert it to AR
-static A jtisf(J jt,A a,A w,A self){RZ(symbis(onm(a),CALL1(FAV(self)->valencefns[0],w,0L),ABACK(self))); return num(0);}
+static A jtisf(J jt,A a,A w,A self){RZ(symbis(jtonm(jt,a),CALL1(FAV(self)->valencefns[0],w,0L),ABACK(self))); return num(0);}
 
 // assignment, single or multiple
 static PSTK* jtis(J jt,PSTK *stack){B ger=0;C *s;
@@ -141,7 +141,7 @@ static PSTK* jtis(J jt,PSTK *stack){B ger=0;C *s;
     // True multiple assignment
     ASSERT((-(AR(v))&(-(AN(n)^AS(v)[0])))>=0,EVLENGTH);   // v is atom, or length matches n
     if(((AR(v)^1)+(~AT(v)&BOX))==0){A *nv=AAV(n), *vv=AAV(v); DO(AN(n), symbis(nv[i],vv[i],symtab);)}  // v is boxed list
-    else {A *nv=AAV(n); DO(AN(n), symbis(nv[i],ope(AR(v)?jtfrom(jt,sc(i),v):v),symtab);)}  // repeat atomic v for each name, otherwise select item.  Open in either case
+    else {A *nv=AAV(n); DO(AN(n), symbis(nv[i],jtope(jt,AR(v)?jtfrom(jt,jtsc(jt,i),v):v),symtab);)}  // repeat atomic v for each name, otherwise select item.  Open in either case
     goto retstack;
    }
   }
@@ -153,7 +153,7 @@ static PSTK* jtis(J jt,PSTK *stack){B ger=0;C *s;
    ASSERT(AN(n)||(AR(v)&&!AS(v)[0]),EVILNAME);  // error if namelist empty or multiple assignment with no values, if there is something to be assigned
    if(1==AN(n)){
     // Only one name in the list.  If one-name AR assignment, leave as a list so we go through the AR-assignment path below
-    if(!ger){RZ(n=head(n));}   // One-name normal assignment: make it a scalar, so we go through the name-assignment path & avoid unboxing
+    if(!ger){RZ(n=jthead(jt,n));}   // One-name normal assignment: make it a scalar, so we go through the name-assignment path & avoid unboxing
    }
   }
   // if simple assignment to a name (normal case), do it
@@ -163,7 +163,7 @@ static PSTK* jtis(J jt,PSTK *stack){B ger=0;C *s;
    // computed name(s)
    ASSERT(AN(n)||(AR(v)&&!AS(v)[0]),EVILNAME);  // error if namelist empty or multiple assignment to no names, if there is something to be assigned
    // otherwise, if it's an assignment to an atomic computed name, convert the string to a name and do the single assignment
-   if(!AR(n))symbis(onm(n),v,symtab);
+   if(!AR(n))symbis(jtonm(jt,n),v,symtab);
    else {
     // otherwise it's multiple assignment (could have just 1 name to assign, if it is AR assignment).
     // Verify rank 1.  For each lhs-rhs pair, do the assignment (in jtisf).
@@ -319,7 +319,7 @@ A jtparsea(J jt, A *queue, I m){PSTK * RESTRICT stack;A z,*v;I es;
         // No bucket info.  Usually this is a locative/global, but it could be an explicit modifier, console level, or ".
 rdglob: ;
         jt->parserstackframe.parsercurrtok = (I4)(m+1);  // syrd can fail, so we have to set the error-word number (before it was decremented) before calling
-        s=syrdnobuckets(y);  // do full symbol lookup, knowing that we have checked for buckets already
+        s=jtsyrdnobuckets(jt,y);  // do full symbol lookup, knowing that we have checked for buckets already
          // In case the name is assigned during this sentence (including subroutines), remember the data block that the name created
          // NOTE: the nvr stack may have been relocated by action routines, so we must refer to the global value of the base pointer
          // Stack a named value only once.  This is needed only for names whose VALUE is put onto the stack (i. e. a noun); if we stack a REFERENCE
@@ -351,7 +351,7 @@ rdglob: ;
         }
        } else {
          // undefined name.  If special x. u. etc, that's fatal; otherwise create a dummy ref to [: (to have a verb)
-         if(at&NAMEBYVALUE){jsignal(EVVALUE);FP}  // Report error (Musn't ASSERT: need to pop all stacks) and quit
+         if(at&NAMEBYVALUE){jtjsignal(jt,EVVALUE);FP}  // Report error (Musn't ASSERT: need to pop all stacks) and quit
          y = jtnamerefacv(jt,y, s);    // this will create a ref to undefined name as verb [:
          EPZ(y)
            // if syrd gave an error, namerefacv may return 0.  This will have previously signaled an error
@@ -510,7 +510,7 @@ RECURSIVERESULTSCHECK
    // before we exited, we backed the stack to before the initial mark entry.  At this point stack[0] is invalid,
    // stack[1] is the initial mark, stack[2] is the result, and stack[3] had better be the first ending mark
    z=stack[2].a;   // stack[1..2] are the mark; this is the sentence result, if there is no error
-   if(!(PTOKEND(stack[2],stack[3]))){jt->parserstackframe.parsercurrtok = 0; jsignal(EVSYNTAX); z=0;}  // OK if 0 or 1 words left (0 should not occur)
+   if(!(PTOKEND(stack[2],stack[3]))){jt->parserstackframe.parsercurrtok = 0; jtjsignal(jt,EVSYNTAX); z=0;}  // OK if 0 or 1 words left (0 should not occur)
   }else{
 failparse:  // If there was an error during execution or name-stacking, exit with failure.  Error has already been signaled.  Remove zombiesym
    CLEARZOMBIE z=0;
@@ -548,11 +548,11 @@ failparse:  // If there was an error during execution or name-stacking, exit wit
       } else y = jtnamerefacv(jt,y, s);   // Replace other acv with reference.  Could fail.
     } else {
       // undefined name.
-      if(at&NAMEBYVALUE){jsignal(EVVALUE); y=0;}  // Error if the unresolved name is x y etc.  Don't ASSERT since we must pop stack
+      if(at&NAMEBYVALUE){jtjsignal(jt,EVVALUE); y=0;}  // Error if the unresolved name is x y etc.  Don't ASSERT since we must pop stack
       else y = jtnamerefacv(jt,y, s);    // this will create a ref to undefined name as verb [: .  Could set y to 0 if error
     }
    }
-   if(y!=0)if(!(AT(y)&CAVN)){jsignal(EVSYNTAX); y=0;}  // if not CAVN result, error
+   if(y!=0)if(!(AT(y)&CAVN)){jtjsignal(jt,EVSYNTAX); y=0;}  // if not CAVN result, error
   }else y=mark;  // empty input - return with 'mark' as the value, which means nothing to parse.  This result must not be passed into a sentence
   jt->parserstackframe = oframe;
   return y;

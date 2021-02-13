@@ -280,34 +280,34 @@ static I jtconall(J jt,I n,CW*con){A y;CW*b=0,*c=0,*d=0;I e,i,j,k,p=0,q,r,*stack
 A jtspellcon(J jt,I c){
  switch(c){
   default:      ASSERTSYS(0,"spellcon");
-  case CASSERT: return cstr("assert.");
-  case CBBLOCK: case CBBLOCKEND: return cstr("bblock.");
-  case CBREAK: case CBREAKF:  case CBREAKS: return cstr("break.");
-  case CCASE:   return cstr("case.");
-  case CCATCH:  return cstr("catch.");
-  case CCATCHD: return cstr("catchd.");
-  case CCATCHT: return cstr("catcht.");
-  case CCONT: case CCONTS: return cstr("continue.");
+  case CASSERT: return jtcstr(jt,"assert.");
+  case CBBLOCK: case CBBLOCKEND: return jtcstr(jt,"bblock.");
+  case CBREAK: case CBREAKF:  case CBREAKS: return jtcstr(jt,"break.");
+  case CCASE:   return jtcstr(jt,"case.");
+  case CCATCH:  return jtcstr(jt,"catch.");
+  case CCATCHD: return jtcstr(jt,"catchd.");
+  case CCATCHT: return jtcstr(jt,"catcht.");
+  case CCONT: case CCONTS: return jtcstr(jt,"continue.");
   case CDO:
   case CDOF:    
-  case CDOSEL:  return cstr("do.");
-  case CELSE:   return cstr("else.");
-  case CELSEIF: return cstr("elseif.");
+  case CDOSEL:  return jtcstr(jt,"do.");
+  case CELSE:   return jtcstr(jt,"else.");
+  case CELSEIF: return jtcstr(jt,"elseif.");
   case CEND:    
-  case CENDSEL: return cstr("end.");
-  case CFCASE:  return cstr("fcase.");
-  case CFOR:    return cstr("for.");
-  case CGOTO:   return cstr("goto_.");
-  case CIF:     return cstr("if.");
-  case CLABEL:  return cstr("label_.");
-  case CRETURN: return cstr("return.");
+  case CENDSEL: return jtcstr(jt,"end.");
+  case CFCASE:  return jtcstr(jt,"fcase.");
+  case CFOR:    return jtcstr(jt,"for.");
+  case CGOTO:   return jtcstr(jt,"goto_.");
+  case CIF:     return jtcstr(jt,"if.");
+  case CLABEL:  return jtcstr(jt,"label_.");
+  case CRETURN: return jtcstr(jt,"return.");
   case CSELECTN:
-  case CSELECT: return cstr("select.");
-  case CTBLOCK: return cstr("tblock.");
-  case CTHROW:  return cstr("throw.");
-  case CTRY:    return cstr("try.");
-  case CWHILE:  return cstr("while.");
-  case CWHILST: return cstr("whilst.");
+  case CSELECT: return jtcstr(jt,"select.");
+  case CTBLOCK: return jtcstr(jt,"tblock.");
+  case CTHROW:  return jtcstr(jt,"throw.");
+  case CTRY:    return jtcstr(jt,"try.");
+  case CWHILE:  return jtcstr(jt,"while.");
+  case CWHILST: return jtcstr(jt,"whilst.");
 }}
 
 static I jtconword(J jt,I n,C*s){
@@ -341,7 +341,7 @@ static I jtconword(J jt,I n,C*s){
 
 // w is string, result is list of boxed strings, one per sentence in string (delimited by control words)
 static A jtgetsen(J jt, A w){A y,z,*z0,*zv;C*s;I i,j,k=-1,m,n,*v;
- RZ(y=wordil(w)); ASSERT(AM(y)>=0,EVOPENQ) // split string into words - result block has special format
+ RZ(y=jtwordil(jt,w)); ASSERT(AM(y)>=0,EVOPENQ) // split string into words - result block has special format
  v=AV(y);   // v-> (index,end+1) for each word; #words neg if last is NB.
  n=AM(y)<<1;  // number of words not including any final NB., times 2 to get  # start/end+1 slots
  GATV0(z,BOX,n>>1,1); z0=zv=AAV(z);  // allocate one box per word
@@ -350,11 +350,11 @@ static A jtgetsen(J jt, A w){A y,z,*z0,*zv;C*s;I i,j,k=-1,m,n,*v;
   j=v[i]; m=v[1+i]-j;         // j=index, m=length of word
   if(0>k)k=j;              // k=index of start of sentence, set at start or when we have processed a control word
   if(jtconword(jt,m,j+s)){     // when we hit a control word...
-   if(k<j)RZ(*zv++=incorp(jtstr(jt,j-k,k+s)));  // if a sentence was in progress, emit it
-   RZ(*zv++=incorp(jtstr(jt,m,j+s)));           // then emit the control word
+   if(k<j)RZ(*zv++=jtincorp(jt,jtstr(jt,j-k,k+s)));  // if a sentence was in progress, emit it
+   RZ(*zv++=jtincorp(jt,jtstr(jt,m,j+s)));           // then emit the control word
    k=-1;           // reset start-of-sentence search
  }}
- if(0<=k)RZ(*zv++=incorp(jtstr(jt,j+m-k,k+s))); // if there was a final sentence in progress, append it
+ if(0<=k)RZ(*zv++=jtincorp(jt,jtstr(jt,j+m-k,k+s))); // if there was a final sentence in progress, append it
  return vec(BOX,zv-z0,z0);  // keep only the boxes that we used
 }    /* partition by controls */
 
@@ -377,12 +377,12 @@ B jtpreparse(J jt,A w,A*zl,A*zc){PROLOG(0004);A c,l,*lv,*v,w0,w1,*wv,x,y;B b=0,t
  RZ(l=exta(BOX, 1L,1L,5*p)); lv=    AAV(l); m=0;  // allocate list of boxed words, lv->&A for first word; m=#words
  for(i=0;i<p;++i){   // loop for each line
   // split the line into a sequence of sentences, splitting on each control word.  Result is a list of boxed strings, each one sentence
-  RZ(y=getsen(wv[i])); yn=AN(y); v=AAV(y);  // split string into sentences; yn=#sentences on line, v->block for first sentence
+  RZ(y=jtgetsen(jt,wv[i])); yn=AN(y); v=AAV(y);  // split string into sentences; yn=#sentences on line, v->block for first sentence
   for(j=0;j<yn;++j){   // for each sentence on the line...
    if(n==AN(c)){RZ(c=jtext(jt,0,c)); cv=(CW*)AV(c);}  // if result buffer is full, reallocate it, reset pointer to first CW
    w0=v[j];                             // w0 is A block for sentence j
-   RZ(w1=wordil(w0)); ASSERT(AM(w1)>=0,EVOPENQ)  // w1 is A block for (# words), (index,end+1) pairs
-   s=CAV(str0(w0));                           // s->start of sentence after appending final NUL,  why?
+   RZ(w1=jtwordil(jt,w0)); ASSERT(AM(w1)>=0,EVOPENQ)  // w1 is A block for (# words), (index,end+1) pairs
+   s=CAV(jtstr0(jt,w0));                           // s->start of sentence after appending final NUL,  why?
    k=jtconword(jt,AV(w1)[1]-AV(w1)[0],s);         // classify first word, using its length.  0 means 'not CW', otherwise control type
    if(k==CTRY)try=1;                    // remember if we see a try.
    if(k==CASSERT){ASSERTCW(!as,i  ); as=1;}   // if assert., verify not preceded by assert.; go to post-assert. state
@@ -400,7 +400,7 @@ B jtpreparse(J jt,A w,A*zl,A*zc){PROLOG(0004);A c,l,*lv,*v,w0,w1,*wv,x,y;B b=0,t
    // append the words (which are a queue or a cw) to the list of words
    if(x){                               // set unless the control word is not needed (it usually isn't)
     while(AN(l)<m+q){RZ(l=jtext(jt,0,l)); lv=AAV(l);}  // if word buffer filled, extend it & refresh data pointer
-    if(k)lv[m]=incorp(x); else ICPY(m+lv,AAV(x),q);   // install word(s): the cw, or the words of the queue
+    if(k)lv[m]=jtincorp(jt,x); else ICPY(m+lv,AAV(x),q);   // install word(s): the cw, or the words of the queue
    }
    // Now that the words have been moved, install the index to them, and their number, into the cw info; step word pointer over the words added (even if empty spaces)
    d->i=m; d->n=(US)q; m+=q;
@@ -413,7 +413,7 @@ B jtpreparse(J jt,A w,A*zl,A*zc){PROLOG(0004);A c,l,*lv,*v,w0,w1,*wv,x,y;B b=0,t
  // Audit control structures and point the go line correctly
  ASSERTCW(    0>(i= jtconall(jt,n,cv   )),(i+cv)->source);
  // Install the number of words and cws into the return blocks, and return those blocks
- AN(l)=AS(l)[0]=m; *zl=incorp(l);
- AN(c)=AS(c)[0]=n; *zc=incorp(c);
+ AN(l)=AS(l)[0]=m; *zl=jtincorp(jt,l);
+ AN(c)=AS(c)[0]=n; *zc=jtincorp(jt,c);
  return try;
 }

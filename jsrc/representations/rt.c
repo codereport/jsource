@@ -41,7 +41,7 @@ static I jtpad(J jt,A a,A w,C*zv){C dash,*u,*v,*wv;I c,d,r,*s;
 }
 
 static A jtgraft(J jt, A w){A p,q,t,*u,x,y,z,*zv;C*v;I d,j,k,m,n,*pv,*s,xn,*xv,yn,*yv;
- RZ(t=trc(w)); u=AAV(t);
+ RZ(t=jttrc(jt,w)); u=AAV(t);
  x=u[0]; xn=AN(x); xv=AV(x); m=0; DO(xn,m+=xv[i];);
  y=u[1]; yn=AN(y); yv=AV(y);
  RZ(p=jtv2(jt,0L,0L));  pv=AV(p);
@@ -51,10 +51,10 @@ static A jtgraft(J jt, A w){A p,q,t,*u,x,y,z,*zv;C*v;I d,j,k,m,n,*pv,*s,xn,*xv,y
   RE(k=mult(m,yv[j])); GATV0(q,LIT,k,2); s=AS(q); *s=m; *++s=yv[j];
   v=CAV(q); memset(v,' ',AN(q));
   pv[1]=yv[j]; k=j-yn; DO(xn, *pv=xv[i]; RE(v+=pad(p,u[k+=yn],v)););
-  zv[j]=incorp(q);
+  zv[j]=jtincorp(jt,q);
  }
  t=zv[0]; n=yv[0];
- if(1==m)RZ(p=scc(jt->bx[10]))
+ if(1==m)RZ(p=jtscc(jt,jt->bx[10]))
  else{
   v=CAV(t);         DO(m, if(' '!=*v){j=i;   break;} v+=n;);
   v=CAV(t)+AN(t)-n; DO(m, if(' '!=*v){k=m-i; break;} v-=n;);
@@ -62,7 +62,7 @@ static A jtgraft(J jt, A w){A p,q,t,*u,x,y,z,*zv;C*v;I d,j,k,m,n,*pv,*s,xn,*xv,y
   GATV0(p,LIT,m,1); v=CAV(p); memset(v,' ',m);
   if(1==d)*(v+j)=jt->bx[10]; else{memset(v+j,jt->bx[9],d); *(v+j)=*jt->bx; *(v+k-1)=jt->bx[6];}
  }
- RZ(zv[0]=incorp(jtstitch(jt,p,t)));
+ RZ(zv[0]=jtincorp(jt,jtstitch(jt,p,t)));
  return z;
 }
 
@@ -87,7 +87,7 @@ static A jttleaf(J jt, A w){A t,z;C*v;I n,*s;
  n=AN(w);
  GATV0(t,LIT,2+n,2); s=AS(t); s[0]=1; s[1]=2+n;
  v=CAV(t); v[0]=jt->bx[10]; v[1]=' '; memcpy(2+v,AV(w),n);
- GAT0(z,BOX,1,1); AAV(z)[0]=incorp(t);
+ GAT0(z,BOX,1,1); AAV(z)[0]=jtincorp(jt,t);
  return z;
 }
 
@@ -116,26 +116,26 @@ static A jttconnect(J jt, A w){A*wv,x,y,z;B b,d;C c,*u,*xv,*yv,*zv;I e,i,j,m,n,p
 
 EVERYFS(trrself,jttrr,0,0,VFLAGNONE)
 
-static A jttreach(J jt, A w){return jttroot(jt,scc('0'),graft(ope(jtevery(jt,w,(A)&trrself))));}
+static A jttreach(J jt, A w){return jttroot(jt,jtscc(jt,'0'),jtgraft(jt,jtope(jt,jtevery(jt,w,(A)&trrself))));}
 
 static A jttrr(J jt, A w){PROLOG(0058);A hs,s,t,*x,z;B ex,xop;C id;I fl,*hv,m;V*v;
  if(!w) return 0;
- if(AT(w)&NOUN+NAME){return tleaf(lrep(w));}
+ if(AT(w)&NOUN+NAME){return jttleaf(jt,jtlrep(jt,w));}
  v=FAV(w); id=v->id; fl=v->flag;
  I fndx=(id==CBDOT)&&!v->fgh[0]; A fs=v->fgh[fndx]; A gs=v->fgh[fndx^1];  // In verb for m b., if f is empty look to g for the left arg.  It would be nice to be more general
  hs=v->fgh[2]; if(id==CBOX)gs=0;  // ignore gs field in BOX, there to simulate BOXATOP
- if(fl&VXOPCALL){return trr(hs);}
+ if(fl&VXOPCALL){return jttrr(jt,hs);}
  xop=1&&VXOP&fl; ex=id==CCOLON&&hs&&!xop;
  m=(I )!!fs+(I )(gs||ex)+(I )(id==CFORK||xop&&hs);
- if(!m){return tleaf(spella(w));}
- if(evoke(w)){RZ(w=sfne(w)); return (AT(w)&FUNC?jttrr:jttleaf)(jt,w);}
+ if(!m){return jttleaf(jt,jtspella(jt,w));}
+ if(evoke(w)){RZ(w=jtsfne(jt,w)); return (AT(w)&FUNC?jttrr:jttleaf)(jt,w);}
  GATV0(t,BOX,m,1); x=AAV(t);
- if(0<m)RZ(x[0]=incorp(fl&VGERL?treach(jtfxeach(jt,fs,(A)&jtfxself[0])):trr(fs)));
- if(1<m)RZ(x[1]=incorp(fl&VGERR?treach(jtfxeach(jt,gs,(A)&jtfxself[0])):ex?trr(jtunparsem(jt,num(0),w)):trr(gs)));
- if(2<m)RZ(x[2]=incorp(trr(hs)));
- s=xop?spellout('0'):fl&VDDOP?(hv=AV(hs),jtover(jt,thorn1(sc(hv[0])),jtover(jt,spellout(id),thorn1(sc(hv[1]))))):spellout(id);
- z=jttroot(jt,s,graft(ope(t)));
+ if(0<m)RZ(x[0]=jtincorp(jt,fl&VGERL?jttreach(jt,jtfxeach(jt,fs,(A)&jtfxself[0])):jttrr(jt,fs)));
+ if(1<m)RZ(x[1]=jtincorp(jt,fl&VGERR?jttreach(jt,jtfxeach(jt,gs,(A)&jtfxself[0])):ex?jttrr(jt,jtunparsem(jt,num(0),w)):jttrr(jt,gs)));
+ if(2<m)RZ(x[2]=jtincorp(jt,jttrr(jt,hs)));
+ s=xop?jtspellout(jt,'0'):fl&VDDOP?(hv=AV(hs),jtover(jt,jtthorn1(jt,jtsc(jt,hv[0])),jtover(jt,jtspellout(jt,id),jtthorn1(jt,jtsc(jt,hv[1]))))):jtspellout(jt,id);
+ z=jttroot(jt,s,jtgraft(jt,jtope(jt,t)));
  EPILOG(z);
 }
 
- A jttrep(J jt, A w){PROLOG(0059); A z=tconnect(jttroot(jt,mtv,trr(w))); EPILOG(z);}
+ A jttrep(J jt, A w){PROLOG(0059); A z=jttconnect(jt,jttroot(jt,mtv,jttrr(jt,w))); EPILOG(z);}

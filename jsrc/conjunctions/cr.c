@@ -97,7 +97,7 @@ A jtrank1ex(J jt,AD * RESTRICT w,A fs,I rr,AF f1){FPREFIP;PROLOG(0041);A z,virtw
 
  }else{I *zzs;
   // no cells - execute on a cell of fills
-  RZ(virtw=jtreshape(jt,vec(INT,rr,AS(w)+wf),filler(w)));  // The cell of fills
+  RZ(virtw=jtreshape(jt,vec(INT,rr,AS(w)+wf),jtfiller(jt,w)));  // The cell of fills
   // Do this quietly, because
   // if there is an error, we just want to use a value of 0 for the result; thus debug
   // mode off and RESETERR on failure.
@@ -203,7 +203,7 @@ A jtrank1ex0(J jt,AD * RESTRICT w,A fs,AF f1){FPREFIP;PROLOG(0041);A z,virtw;
 
  }else{I *zzs;
   // no cells - execute on a cell of fills
-  RZ(virtw=filler(w));  // The cell of fills
+  RZ(virtw=jtfiller(jt,w));  // The cell of fills
   // Do this quietly, because
   // if there is an error, we just want to use a value of 0 for the result; thus debug
   // mode off and RESETERR on failure.
@@ -329,13 +329,13 @@ A jtrank2ex(J jt,AD * RESTRICT a,AD * RESTRICT w,A fs,UI lrrrlcrrcr,AF f2){
   // Init the inplaceability of virtw.  We do this here because in the loop we handle it only for low rank (i. e. virt[aw]faux) so as to avoid inplacing fill.
   // Thus, for higher rank we set it only this once.  It will stay right unless it gets virtualed
   AC(virta)=ACUC1 + ((state&ZZFLAGVIRTAINPLACE)<<(ACINPLACEX-ZZFLAGVIRTAINPLACEX));
- }else{RZ(virta=jtreshape(jt,vec(INT,(UI)lrrr>>RANKTX,AS(a)+(afwf>>RANKTX)),filler(a)));}
+ }else{RZ(virta=jtreshape(jt,vec(INT,(UI)lrrr>>RANKTX,AS(a)+(afwf>>RANKTX)),jtfiller(jt,a)));}
 
  if((mn|(state&STATEWNOTEMPTY))!=0){  // repeat for w
   state |= (UI)(SGNIF((a!=w)&(outerrptct==1),0)&SGNIF((I)jtinplace,JTINPLACEWX)&AC(w)&~(((AT(w)&TYPEVIPOK)-(f2!=jtevery2self))|SGNIF(state,STATEINNERREPEATWX)))>>(BW-1-ZZFLAGVIRTWINPLACEX);   // requires JTINPLACEWX==0.  Single flag bit  sign=0 if (VIPOK or &.>) 
   fauxvirtual(virtw,virtwfaux,w,lrrr&RANKTMSK,ACUC1) MCISH(AS(virtw),AS(w)+(afwf&RANKTMSK),lrrr&RANKTMSK); AN(virtw)=wcn;
   AC(virtw)=ACUC1 + ((state&ZZFLAGVIRTWINPLACE)<<(ACINPLACEX-ZZFLAGVIRTWINPLACEX));
- }else{RZ(virtw=jtreshape(jt,vec(INT,lrrr&RANKTMSK,AS(w)+(afwf&RANKTMSK)),filler(w)));}
+ }else{RZ(virtw=jtreshape(jt,vec(INT,lrrr&RANKTMSK,AS(w)+(afwf&RANKTMSK)),jtfiller(jt,w)));}
  // Allow inplacing if the verb supports it, but with the raze flags removed.  We can be loose here because we must be strict about the virt inplaceability to get pristinity right.
  jtinplace = (J)(intptr_t)((I)jtinplace & (~(JTWILLBEOPENED+JTCOUNTITEMS)));
 
@@ -529,8 +529,8 @@ A jtrank2ex0(J jt,AD * RESTRICT a,AD * RESTRICT w,A fs,AF f2){FPREFIP;PROLOG(004
   // indication that anything unusual happened.  So fail then
 
   if(!(FAV(fs)->flag2&VF2BOXATOP2)){
-   if(!AN(a)){RZ(virta=filler(a));}else{virta = virtual(a,0,0); AN(virta)=1;}  // if there are cells, use first atom; else fill atom
-   if(!AN(w)){RZ(virtw=filler(w));}else{virtw = virtual(w,0,0); AN(virtw)=1;}
+   if(!AN(a)){RZ(virta=jtfiller(jt,a));}else{virta = virtual(a,0,0); AN(virta)=1;}  // if there are cells, use first atom; else fill atom
+   if(!AN(w)){RZ(virtw=jtfiller(jt,w));}else{virtw = virtual(w,0,0); AN(virtw)=1;}
    WITHDEBUGOFF(z=CALL2(f2,virta,virtw,fs);)   // normal execution on fill-cell
    if(jt->jerr){if(EMSK(jt->jerr)&EXIGENTERROR)RZ(z); z=num(0); RESETERR;}  // use 0 as result if error encountered
   }else{
@@ -723,7 +723,7 @@ static A jtrank20(J jt,A a,A w,A self){return jtrank2ex0(jt,a,w,self,jtrank20ato
   n=AN(w);
   ASSERT(1>=AR(w),EVRANK);
   ASSERT((UI)(n-1)<3,EVLENGTH);
-  RZ(t=vib(w)); v=AV(t);
+  RZ(t=jtvib(jt,w)); v=AV(t);
   hv[0]=v[2==n]; hv[0]=hv[0]>RMAX?RMAX:hv[0]; hv[0]=hv[0]<-RMAX?-RMAX:hv[0]; r[0]=DR(hv[0]);
   hv[1]=v[3==n]; hv[1]=hv[1]>RMAX?RMAX:hv[1]; hv[1]=hv[1]<-RMAX?-RMAX:hv[1]; r[1]=DR(hv[1]);
   hv[2]=v[n-1];  hv[2]=hv[2]>RMAX?RMAX:hv[2]; hv[2]=hv[2]<-RMAX?-RMAX:hv[2]; r[2]=DR(hv[2]);

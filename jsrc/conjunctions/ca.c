@@ -8,7 +8,7 @@
 
 static A jtonf1(J jt,    A w,A self){PROLOG(0021);DECLFG;A z;I flag=sv->flag,m=jt->xmode;
  PREF1(jtonf1);
- if(primitive(gs))if(flag&VFLR)jt->xmode=XMFLR; else if(flag&VCEIL)jt->xmode=XMCEIL;
+ if(jtprimitive(jt,gs))if(flag&VFLR)jt->xmode=XMFLR; else if(flag&VCEIL)jt->xmode=XMCEIL;
  if(RAT&AT(w))RZ(w=jtpcvt(jt,XNUM,w));
  RZ(z=CALL1(f1,CALL1(g1,w,gs),fs));
  jt->xmode=m;
@@ -17,7 +17,7 @@ static A jtonf1(J jt,    A w,A self){PROLOG(0021);DECLFG;A z;I flag=sv->flag,m=j
 
 static A jtuponf2(J jt,A a,A w,A self){PROLOG(0022);DECLFG;A z;I flag=sv->flag,m=jt->xmode;
  if(!(a && w)) return 0;
- if(primitive(gs))if(flag&VFLR)jt->xmode=XMFLR; else if(flag&VCEIL)jt->xmode=XMCEIL;
+ if(jtprimitive(jt,gs))if(flag&VFLR)jt->xmode=XMFLR; else if(flag&VCEIL)jt->xmode=XMCEIL;
  if(RAT&AT(a))RZ(a=jtpcvt(jt,XNUM,a));
  if(RAT&AT(w))RZ(w=jtpcvt(jt,XNUM,w));
  RZ(z=INT&AT(a)&AT(w)&&CDIV==ID(gs)?jtintdiv(jt,a,w):CALL1(f1,CALL2(g2,a,w,gs),fs));
@@ -40,7 +40,7 @@ static A jtmodpow2(J jt,A a,A w,A self){A h;B b,c;I at,m,n,wt,x,z;
  if(b=0>m)m=-m;
  if(c=0>x)x=-x; x=x%m; if(c)x=m-x;
  z=imodpow(x,n,m);
- return sc(b?z-m:z);
+ return jtsc(jt,b?z-m:z);
 }    /* a m&|@^ w ; m guaranteed to be INT or XNUM */
 
 static A jtmodpow1(J jt,    A w,A self){A g=FAV(self)->fgh[1]; return rank2ex0(FAV(g)->fgh[0],w,self,jtmodpow2);}  // m must be an atom; I think n can have shape.  But we treat w as atomic
@@ -145,7 +145,7 @@ static A atcomp0(J jt,A a,A w,A self){A z;AF f;
    // We can't lex a general sentence because lexing requires context to know how to treat assignments.  And,
    // there's no use for ".@const besides delayed name resolution
    // We give the w the strange flagging of NAME AND ALSO LIT - it will be handled as a name when executed, but as a noun for representations
-   if(AR(w)<=1 && (g=jttokens(jt,vs(w),1)) && AN(g)==1 && AT(AAV(g)[0])&NAME){w=rifvs(AAV(g)[0]); AT(w)|=LIT;}
+   if(AR(w)<=1 && (g=jttokens(jt,jtvs(jt,w),1)) && AN(g)==1 && AT(AAV(g)[0])&NAME){w=jtrifvs(jt,AAV(g)[0]); AT(w)|=LIT;}
   }
   return fdef(0,CAT,VERB, onconst1,onconst2, a,w,h, VFLAGNONE, RMAX,RMAX,RMAX);
  }
@@ -172,7 +172,7 @@ static A atcomp0(J jt,A a,A w,A self){A z;AF f;
   case CQUERY:  if((d&-2)==CPOUND){f2=jtrollk; flag&=~VJTFLGOK2;} break;  // # $
   case CQRYDOT: if((d&-2)==CPOUND){f2=jtrollkx; flag&=~VJTFLGOK2;} break;  // # $
   case CRAZE:  // detect ;@(<@(f/\));.
-   if(d==CCUT&&boxatop(w)){  // w is <@g;.k
+   if(d==CCUT&&jtboxatop(jt,w)){  // w is <@g;.k
     if((((I)1)<<(wv->localuse.lI+3))&0x36) { // fetch k (cut type); bits are 3 2 1 0 _1 _2 _3; is 1/2-cut?
      A wf=wv->fgh[0]; V *wfv=FAV(wf); A g=wfv->fgh[1]; V *gv=FAV(g);  // w is <@g;.k  find g
      if((gv->id&~(CBSLASH^CBSDOT))==CBSLASH) {  // g is gf\ or gf\.
@@ -261,7 +261,7 @@ static A atcomp0(J jt,A a,A w,A self){A z;AF f;
    if(d==CCUT){I j;
     j=wv->localuse.lI;   // cut type, valid EXCEPT for <;.0 which is detected by function:
     if(wv->valencefns[1]==jtboxcut0){f2=jtrazecut0; flag&=~VJTFLGOK2;}  // detect ;@:(<;.0), used for substring extraction
-    else if(boxatop(w)){  // w is <@g;.j   detect ;@:(<@(f/\);._2 _1 1 2
+    else if(jtboxatop(jt,w)){  // w is <@g;.j   detect ;@:(<@(f/\);._2 _1 1 2
      if((((I)1)<<(j+3))&0x36) { // fbits are 3 2 1 0 _1 _2 _3; is 1/2-cut?
       A wf=wv->fgh[0]; V *wfv=FAV(wf); A g=wfv->fgh[1]; V *gv=FAV(g);  // w is <@g;.k  find g
        if((gv->id&~(CBSLASH^CBSDOT))==CBSLASH) {  // g is gf\ or gf\.
@@ -302,7 +302,7 @@ static A atcomp0(J jt,A a,A w,A self){A z;AF f;
  flag = ((FAV(a)->flag&wv->flag)&VASGSAFE)+((wv->flag&VJTFLGOK1)*((VJTFLGOK2+VJTFLGOK1)/VJTFLGOK1));
  if(c==CBOX){flag2 |= VF2BOXATOP1;}  // mark this as <@f - monad only
  else if(BOTHEQ8(c,d,CSLASH,CCOMMA)){f1=jtredravel;}    // f/&:, y
- else if(BOTHEQ8(c,d,CRAZE,CCUT)&&boxatop(w)){  // w is <@g;.k    detect ;&:(<@(f/\));._2 _1 1 2 y
+ else if(BOTHEQ8(c,d,CRAZE,CCUT)&&jtboxatop(jt,w)){  // w is <@g;.k    detect ;&:(<@(f/\));._2 _1 1 2 y
   if((((I)1)<<(wv->localuse.lI+3))&0x36) { // fetch k (cut type); bits are 3 2 1 0 _1 _2 _3; is 1/2-cut?
    A wf=wv->fgh[0]; V *wfv=FAV(wf); A g=wfv->fgh[1]; V *gv=FAV(g);  // w is <@g;.k  find g
    if((gv->id&~(CBSLASH^CBSDOT))==CBSLASH) {  // g is gf\ or gf\.
@@ -377,8 +377,8 @@ static A with2(J jt,A a,A w,A self){A z; return df1(z,w,powop(self,a,0));}
    if(b){PUSHCCT(1.0) h=indexofsub(mode,a,mark); POPCCT f1=ixfixedleft0; flag&=~VJTFLGOK1;}
    else {            h=indexofsub(mode,a,mark);             f1=ixfixedleft ; flag&=~VJTFLGOK1;}
   }else switch(c){
-   case CWORDS: RZ(a=fsmvfya(a)); f1=jtfsmfx; flag&=~VJTFLGOK1; break;
-   case CIBEAM: if(v->fgh[0]&&v->fgh[1]&&128==i0(v->fgh[0])&&3==i0(v->fgh[1])){RZ(h=crccompile(a)); f1=jtcrcfixedleft; flag&=~VJTFLGOK1;}
+   case CWORDS: RZ(a=jtfsmvfya(jt,a)); f1=jtfsmfx; flag&=~VJTFLGOK1; break;
+   case CIBEAM: if(v->fgh[0]&&v->fgh[1]&&128==jti0(jt,v->fgh[0])&&3==jti0(jt,v->fgh[1])){RZ(h=jtcrccompile(jt,a)); f1=jtcrcfixedleft; flag&=~VJTFLGOK1;}
   }
   return fdef(0,CAMP,VERB, f1,with2, a,w,h, flag, RMAX,RMAX,RMAX);
  case VN:
@@ -424,7 +424,7 @@ static A with2(J jt,A a,A w,A self){A z; return df1(z,w,powop(self,a,0));}
   case CCEIL:  f1=jtonf1; flag+=VCEIL; flag&=~VJTFLGOK1; break;  // >.@g
   case CFLOOR: f1=jtonf1; flag+=VFLR; flag&=~VJTFLGOK1; break;   // <.@g
   case CRAZE:  // detect ;@(<@(f/\));.
-   if(c==CCUT&&boxatop(w)){  // w is <@g;.k
+   if(c==CCUT&&jtboxatop(jt,w)){  // w is <@g;.k
     if((((I)1)<<(v->localuse.lI+3))&0x36) { // fetch k (cut type); bits are 3 2 1 0 _1 _2 _3; is 1/2-cut?
      A wf=v->fgh[0]; V *wfv=FAV(wf); A g=wfv->fgh[1]; V *gv=FAV(g);  // w is <@g;.k  find g
      if((gv->id&~(CBSLASH^CBSDOT))==CBSLASH) {  // g is gf\ or gf\.

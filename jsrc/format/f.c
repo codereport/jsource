@@ -74,7 +74,7 @@ I jtthv(J jt,A w,I n,C*s){A t;B ov=0;C buf[WZ],*x,*y=s;I k,n4=n-4,p,wd,wn,wt;FMT
  wn=AN(w); wt=AT(w); x=CAV(w); thcase(wt,&wd,&fmt);
  switch(CTTZNOFLAG(wt)){
  case XNUMX: case RATX:
-  RZ(t=thxqe(w)); p=AN(t); if(ov=n<p)p=n4; memcpy(y,AV(t),p); y+=p; break;
+  RZ(t=jtthxqe(jt,w)); p=AN(t); if(ov=n<p)p=n4; memcpy(y,AV(t),p); y+=p; break;
  case B01X:
   if(ov=n<2*wn)p=n4>>1; else p=wn; DQ(p, *y++=*x++?'1':'0'; *y++=' ';); break;
  case INTX:
@@ -208,7 +208,7 @@ static A jtthsb(J jt,A w,A prxthornuni){A d,z;C*zv;I c,*dv,m,n,p,q,r,*s;SB*x,*y;
 
 static A jtthx1(J jt, A w){A z;B b;C*s,s1[2+XBASEN];I n,p,p1,*v;
  n=AN(w); v=AV(w)+n-1; b=0>*v; 
- p=*v; if(p==XPINF)return cstr("_"); else if(p==XNINF)return cstr("__");
+ p=*v; if(p==XPINF)return jtcstr(jt,"_"); else if(p==XNINF)return jtcstr(jt,"__");
  sprintf(s1,FMTI,*v); p1=strlen(s1);
  p=p1+XBASEN*(n-1);
  GATV0(z,LIT,p,1); s=CAV(z); 
@@ -218,9 +218,9 @@ static A jtthx1(J jt, A w){A z;B b;C*s,s1[2+XBASEN];I n,p,p1,*v;
 }
 
 static A jtthq1(J jt,Q y){A c,d,z;B b;C*zv;I m,n=-1;
- RZ(c=thx1(y.n)); m=AN(c);
+ RZ(c=jtthx1(jt,y.n)); m=AN(c);
  d=y.d;
- if(b=1<AN(d)||1!=AV(d)[0]){RZ(d=thx1(y.d)); n=AN(d);}
+ if(b=1<AN(d)||1!=AV(d)[0]){RZ(d=jtthx1(jt,y.d)); n=AN(d);}
  GATV0(z,LIT,m+n+1,1); zv=CAV(z);
  memcpy(zv,AV(c),m); if(b){*(zv+m)='r'; memcpy(zv+m+1,AV(d),n);}
  return z;
@@ -229,7 +229,7 @@ static A jtthq1(J jt,Q y){A c,d,z;B b;C*zv;I m,n=-1;
 static A jtthdx1(J jt,DX y){A x,z;B b;C*s,s1[2+XBASEN],s2[20];I e,n,p,p1,p2,*v;
  e=y.e-1; x=y.x; p=y.p;
  n=AN(x); v=AV(x)+n-1; b=0>*v; 
- if(p==DXINF)return cstr("_"); else if(p==DXMINF)return cstr("__");
+ if(p==DXINF)return jtcstr(jt,"_"); else if(p==DXMINF)return jtcstr(jt,"__");
  sprintf(s1,FMTI,b?-*v:*v); p1=strlen(s1);
  if(e&&*v){s=s2; *s++='e'; if(0>e)*s++=CSIGN; sprintf(s,FMTI,0<e?e:-e); p2=strlen(s2);}else p2=0; 
  GATV0(z,LIT,b+p1+(I )(1<p1)+XBASEN*(n-1)+p2,1); s=CAV(z);
@@ -245,15 +245,15 @@ static A jtthxqe(J jt, A w){A d,t,*tv,*v,y,z;C*zv;I c,*dv,m,n,p,r,*s,*wv;
  GATV0(t,BOX,n,1); tv=AAV(t);
  RZ(d=apvwr(c,1L,0L)); dv=AV(d); v=tv;
  switch(CTTZ(AT(w))){
-  case XNUMX: {X*u =(X*) wv; DO(m, DO(c, RZ(*v++=y=thx1(*u++));  dv[i]=MAX(dv[i],AN(y));));} break;
-  case RATX:  {Q*u =(Q*) wv; DO(m, DO(c, RZ(*v++=y=thq1(*u++));  dv[i]=MAX(dv[i],AN(y));));} break;
+  case XNUMX: {X*u =(X*) wv; DO(m, DO(c, RZ(*v++=y=jtthx1(jt,*u++));  dv[i]=MAX(dv[i],AN(y));));} break;
+  case RATX:  {Q*u =(Q*) wv; DO(m, DO(c, RZ(*v++=y=jtthq1(jt,*u++));  dv[i]=MAX(dv[i],AN(y));));} break;
 #ifdef UNDER_CE
   default: 
-   if (AT(w)&XD){DX*u=(DX*)wv; DO(m, DO(c, RZ(*v++=y=thdx1(*u++)); dv[i]=MAX(dv[i],AN(y));));}
+   if (AT(w)&XD){DX*u=(DX*)wv; DO(m, DO(c, RZ(*v++=y=jtthdx1(jt,*u++)); dv[i]=MAX(dv[i],AN(y));));}
    else          {ZX*u=(ZX*)wv; ASSERT(0,EVNONCE);}
    break;
 #else
-  case XDX:   {DX*u=(DX*)wv; DO(m, DO(c, RZ(*v++=y=thdx1(*u++)); dv[i]=MAX(dv[i],AN(y));));} break;
+  case XDX:   {DX*u=(DX*)wv; DO(m, DO(c, RZ(*v++=y=jtthdx1(jt,*u++)); dv[i]=MAX(dv[i],AN(y));));} break;
   case XZX:   {ZX*u=(ZX*)wv; ASSERT(0,EVNONCE);} break;
 #endif
  }
@@ -459,7 +459,7 @@ static A jtenframe(J jt, A w){A x,y,z;C*zv;I ht,m,n,p,q,t,wd,wdb,wr,xn,*xv,yn,*y
 }
 
 // Convert 1 box to character array, then to character table
-static A jtmatth1(J jt,A a,A w){return mat(jtthorn1main(jt,a,w));}
+static A jtmatth1(J jt,A a,A w){return jtmat(jt,jtthorn1main(jt,a,w));}
 static EVERYFS(matth1self,0,jtmatth1,0,VFLAGNONE)
 
 // Format boxed array.  Result is table of characters, with space-changing characters (like BS, CR) converted to spaces
@@ -467,7 +467,7 @@ static A jtthbox(J jt,A w,A prxthornuni){A z;static UC ctrl[]=" \001\002\003\004
  // Format the contents of each box; form into a table.  every returns an array of boxes,
  // with the same shape as w, where the contents have been replaced by a table of characters
  // Then call enframe to assemble all the tables into the result table
- RZ(z=enframe(every2(w,prxthornuni,(A)&matth1self)));
+ RZ(z=jtenframe(jt,every2(w,prxthornuni,(A)&matth1self)));
  // Go through each byte of the result, replacing ASCII codes 0, 8, 9, 10, and 13
  // (NUL, BS, TAB, LF, CR) with space
  // Three versions of replacement, depending on datatype of the array
@@ -483,14 +483,14 @@ static A jtthbox(J jt,A w,A prxthornuni){A z;static UC ctrl[]=" \001\002\003\004
 
 // format sparse array
 static A jtths(J jt, A w){A e,i,x,z;C c,*u,*v;I d,m,n,*s;P*p;
- RZ(scheck(w));
+ RZ(jtscheck(jt,w));
  p=PAV(w); e=SPA(p,e); i=SPA(p,i); x=SPA(p,x); 
- RZ(i=thorn1(i)); s=AS(i); m=s[0]; n=s[1];
- RZ(x=thorn1(1<AR(x)?x:table(x))); 
+ RZ(i=jtthorn1(jt,i)); s=AS(i); m=s[0]; n=s[1];
+ RZ(x=jtthorn1(jt,1<AR(x)?x:jttable(jt,x))); 
  RZ(e=shape(jt,x)); s=AV(e)+AN(e)-1; *s=-(*s+3+n);
  RZ(z=jttake(jt,e,x)); 
  u=CAV(i)-n;        
- d=aii(z); v=CAV(z)-d; DQ(m, memcpy(v+=d,u+=n,n););
+ d=jtaii(jt,z); v=CAV(z)-d; DQ(m, memcpy(v+=d,u+=n,n););
  if(2<AR(z))RZ(z=jtmatth1(jt,z,zeroionei(0)));  // no prxthornuni
  s=AS(z); d=*(1+s); v=1+CAV(z); c=jt->bx[9]; DQ(*s, *(v+n)=c; v+=d;);
  return z;
@@ -502,15 +502,15 @@ static A jtthorn1main(J jt,A w,A prxthornuni){PROLOG(0001);A z;
  if(!AN(w))GATV(z,LIT,0,AR(w),AS(w))
  else switch(CTTZ(AT(w))){
 #ifdef UNDER_CE
-  default:   if(AT(w)&XD+XZ)z=thxqe(w); else return 0; break;
+  default:   if(AT(w)&XD+XZ)z=jtthxqe(jt,w); else return 0; break;
   case XNUMX: case RATX:
-             z=thxqe(w);                  break;
+             z=jtthxqe(jt,w);                  break;
 #else
   default:   return 0;
   case XNUMX: case RATX: case XDX: case XZX:
-             z=thxqe(w);                  break;
+             z=jtthxqe(jt,w);                  break;
 #endif
-  case B01X:  z=thb(w);                    break;
+  case B01X:  z=jtthb(jt,w);                    break;
   case LITX:
    // If we are producing byte output, we simply return the input.
     // If we are allowed to produce C2T output, do so if the string is a list.  An array of
@@ -542,18 +542,18 @@ static A jtthorn1main(J jt,A w,A prxthornuni){PROLOG(0001);A z;
   case BOXX:  z=jtthbox(jt,w,prxthornuni);                  break;
   case SBTX:  z=jtthsb(jt,w,prxthornuni);                   break;
   case NAMEX: z=jtsfn(jt,0,w);                  break;
-  case ASGNX: z=spellout(CAV(w)[0]);         break;
+  case ASGNX: z=jtspellout(jt,CAV(w)[0]);         break;
   case INTX:  case FLX: case CMPXX:
-             z=thn(w);                    break;
+             z=jtthn(jt,w);                    break;
   case SB01X: case SINTX: case SFLX: case SCMPXX: case SLITX: case SBOXX:
-             z=ths(w);                    break;
+             z=jtths(jt,w);                    break;
   case VERBX: case ADVX:  case CONJX:
    switch((jt->disp)[1]){
-    case 1: z=jtthorn1main(jt,arep(w),prxthornuni); break;
-    case 2: z=jtthorn1main(jt,drep(w),prxthornuni); break;
-    case 4: z=jtthorn1main(jt,trep(w),prxthornuni); break;
-    case 5: z=jtthorn1main(jt,lrep(w),prxthornuni); break;
-    case 6: z=jtthorn1main(jt,prep(w),prxthornuni); break;
+    case 1: z=jtthorn1main(jt,jtarep(jt,w),prxthornuni); break;
+    case 2: z=jtthorn1main(jt,jtdrep(jt,w),prxthornuni); break;
+    case 4: z=jtthorn1main(jt,jttrep(jt,w),prxthornuni); break;
+    case 5: z=jtthorn1main(jt,jtlrep(jt,w),prxthornuni); break;
+    case 6: z=jtthorn1main(jt,jtprep(jt,w),prxthornuni); break;
  }}
  EPILOG(z);
 }
@@ -677,7 +677,7 @@ static A jtjprx(J jt,I ieol,I maxlen,I lb,I la,A w){A y,z;B ch;C e,eov[2],*v,x,*
      I c,c1,h,i,j,k,lc,m,nbx,nq,p,q,r,*s,t,zn;
      static C bdc[]="123456789_123456\214\254\220\234\274\244\224\264\230\202\200";
  // Convert w to a character array; set t=1 if it's LIT, t=2 if C2T, 4 if C4T
- RZ(y=thorn1u(w)); t=bpnoun(AT(y));
+ RZ(y=jtthorn1u(jt,w)); t=bpnoun(AT(y));
  // set ch iff input w is a character type.
  ch=1&&AT(w)&LIT+C2T+C4T+SBT;
  // r=rank of result (could be anything), s->shape, v->1st char
@@ -804,7 +804,7 @@ static A jtjprx(J jt,I ieol,I maxlen,I lb,I la,A w){A y,z;B ch;C e,eov[2],*v,x,*
 // w is any noun
 // Result is the UTF-8 byte string that would be displayed
  A jtoutstr(J jt,A a,A w){I*v;
- RZ(a=vib(a));
+ RZ(a=jtvib(jt,a));
  ASSERT(1==AR(a), EVRANK);
  ASSERT(4==AN(a), EVLENGTH);
  ASSERT(INT&AT(a),EVDOMAIN);
@@ -835,20 +835,20 @@ static A jtjpr1(J jt, A w){PROLOG(0002);A z;
  A jtjpr(J jt, A w){A y;I i,n,t; UC *v;
  t=AT(w);
   // if w is a noun, format it and output it
- if(t&NOUN&&jt->tostdout)RZ(jpr1(w))
+ if(t&NOUN&&jt->tostdout)RZ(jtjpr1(jt,w))
  else if(t&VERB+ADV+CONJ){
   // function result.  If it is the evocation of a name, evaluate the name (unless it is locked - then
   // just use the name)
-  RZ(y=evoke(w)?symbrdlock(FAV(w)->fgh[0]):w);
+  RZ(y=evoke(w)?jtsymbrdlock(jt,FAV(w)->fgh[0]):w);
   if(jt->tostdout){
    // for each representation selected by the user, create the representation and type it
    n=*jt->disp; v=1+jt->disp;
    for(i=0;i<n;++i)switch(*v++){
-    case 1: RZ(jpr1(arep(y))); break;
-    case 2: RZ(jpr1(drep(y))); break;
-    case 4: RZ(jpr1(trep(y))); break;
-    case 5: RZ(jpr1(lrep(y))); break;
-    case 6: RZ(jpr1(prep(y))); break;
+    case 1: RZ(jtjpr1(jt,jtarep(jt,y))); break;
+    case 2: RZ(jtjpr1(jt,jtdrep(jt,y))); break;
+    case 4: RZ(jtjpr1(jt,jttrep(jt,y))); break;
+    case 5: RZ(jtjpr1(jt,jtlrep(jt,y))); break;
+    case 6: RZ(jtjpr1(jt,jtprep(jt,y))); break;
  }}}
  return mtm;
 }

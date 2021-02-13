@@ -659,7 +659,7 @@ static B jtgrc(J jt,I m,I ai,I n,A w,I*zv){A x;B b,q,up;I e,i,p,ps,*xv,yv[256];U
  return 1;
 }    /* grade"r w on boolean or char or unicode w */
 
-static B jtgrs(J jt,I m,I ai,I n,A w,I*zv){return gri(m,ai,n,sborder(w),zv);}
+static B jtgrs(J jt,I m,I ai,I n,A w,I*zv){return gri(m,ai,n,jtsborder(jt,w),zv);}
      /* grade"r w on symbols w */
 
  A jtgrade1p(J jt,A a,A w){PROLOG(0074);A x,z;I n,*s,*xv,*zv;
@@ -709,8 +709,8 @@ static B (*grroutine[])(J,I,I,I,A,I*) = {  // index is [bitx]
  EPILOG(z);
 }    /*   grade"r w main control for dense w */
 
- A jtgrade1 (J jt, A w){A z;GBEGIN(-1); RZ(   w); z=SPARSE&AT(w)?grd1sp(  w):gr1(  w); GEND return z;}
- A jtdgrade1(J jt, A w){A z;GBEGIN( 1); RZ(   w); z=SPARSE&AT(w)?grd1sp(  w):gr1(  w); GEND return z;}
+ A jtgrade1 (J jt, A w){A z;GBEGIN(-1); RZ(   w); z=SPARSE&AT(w)?jtgrd1sp(jt,  w):jtgr1(jt,  w); GEND return z;}
+ A jtdgrade1(J jt, A w){A z;GBEGIN( 1); RZ(   w); z=SPARSE&AT(w)?jtgrd1sp(jt,  w):jtgr1(jt,  w); GEND return z;}
 // Since grade2 pulls from a, mark a as non-pristine.  But since there can be no repeats, transfer a's pristinity to result if a is inplaceable
 // We do this in jtgr2 because it has a branch where all boxed values go
  A jtgrade2 (J jt,A a,A w){FPREFIP;A z;GBEGIN(-1); RZ(z=SPARSE&AT(w)?jtgrd2sp(jt,a,w):jtgr2(jtinplace,a,w)); GEND
@@ -742,7 +742,7 @@ static B (*grroutine[])(J,I,I,I,A,I*) = {  // index is [bitx]
 {T p0,p1,q,*tv,*u,ui,uj,uk,*v,*wv;                                                     \
   tv=wv=(T*)AV(w);                                                                     \
   while(1){                                                                            \
-   if(4>=n){u=tv; SORT4; return ATOMF(tv[j]);}        /* stop loop on small partition */       \
+   if(4>=n){u=tv; SORT4; return ATOMF(jt, tv[j]);}        /* stop loop on small partition */       \
    p0=tv[(I)(qv[i]*n)]; --i;                                                  \
    p1=tv[(I)(qv[i]*n)]; --i; i=(i<0)?NRANDS-1:i; if(p0>p1){q=p0; p0=p1; p1=q;}       /* create pivots p0, p1 selected from input, with p0 <= p1  */             \
    {m0=m1=0; v=tv; DQ(n, m0+=*v<p0; m1+=*v<p1; ++v;);}  /* count m0: # < p0; and m1: # < p1  */         \
@@ -751,27 +751,27 @@ static B (*grroutine[])(J,I,I,I,A,I*) = {  // index is [bitx]
    if     (j<m0){       DQ(n, *u=*v; u+=*v<p0; ++v;);}                   \
    else if(j<m1 ){DQ(n, *u=*v; u+=(p0<=*v)&(*v<p1); ++v;); j-=m0;}                   \
    else if(m1   ){DQ(n, *u=*v; u+=p1<=*v; ++v;); j-=m1;}                   \
-   else{DQ(n, *u=*v; u+=*v>p1; ++v;); m=u-tv; n-=m; if(j<n)return ATOMF(p1); j-=n;} /* pivots both low; use > to split */ \
+   else{DQ(n, *u=*v; u+=*v>p1; ++v;); m=u-tv; n-=m; if(j<n)return ATOMF(jt, p1); j-=n;} /* pivots both low; use > to split */ \
    n=m; \
   }  \
  }
 
  A jtordstat(J jt,A a,A w){A q,t=0;I j,m,m0,m1,n,wt;D *qv;
  I i=NRANDS-1;  // i points to the next random number to draw
- n=AN(w); wt=AT(w); RE(j=i0(a));
+ n=AN(w); wt=AT(w); RE(j=jti0(jt,a));
  if(((4-n)&((AR(a)|(1^AR(w)))-1)&(-(wt&FL+INT)))>=0)return jtfrom(jt,a,jtgrade2(jt,w,w));  // if not int/float, or short, or not (atom a and list w), do full grade
  if((UI)j>=(UI)n){j+=n; ASSERT((UI)j<(UI)n,EVINDEX);}
  // deal a bunch of random floats to provide pivots.  We reuse them if needed
- RZ(df2(q,sc(NRANDS),num(0),jtatop(jt,ds(CQUERY),ds(CDOLLAR)))); qv=DAV(q);
- if(wt&FL)OSLOOP(D,scf) else OSLOOP(I,sc);
+ RZ(df2(q,jtsc(jt,NRANDS),num(0),jtatop(jt,ds(CQUERY),ds(CDOLLAR)))); qv=DAV(q);
+ if(wt&FL)OSLOOP(D,jtscf) else OSLOOP(I,jtsc);
 }    /* a{/:~w */
 
  A jtordstati(J jt,A a,A w){A t;I n,wt;
  n=AN(w); wt=AT(w);
- if(((4-n)&((AR(a)|(1^AR(w)))-1)&(-(wt&FL+INT)))>=0)return jtfrom(jt,a,grade1(w));
+ if(((4-n)&((AR(a)|(1^AR(w)))-1)&(-(wt&FL+INT)))>=0)return jtfrom(jt,a,jtgrade1(jt,w));
  RZ(t=jtordstat(jt,a,w));   // Get the value of the ath order statistic, then look up its index
  I j=0;  // =0 needed to stifle warning
  if(wt&FL){D p=DAV(t)[0],*v=DAV(w); DO(n, if(p==*v++){j=i; break;});}
  else     {I p=AV(t)[0],*v= AV(w); DO(n, if(p==*v++){j=i; break;});}
- return sc(j);
+ return jtsc(jt,j);
 }    /* a {/:w */

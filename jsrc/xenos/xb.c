@@ -6,12 +6,12 @@
 #include "j.h"
 #include "x.h"
 
- A jtstype(J jt, A w){ return sc(AT(w)&-AT(w));}
+ A jtstype(J jt, A w){ return jtsc(jt,AT(w)&-AT(w));}
 
 // a is integer atom or list, values indicating the desired result
 // atom values in x: 0=NJA, others reserved
  A jtnouninfo2(J jt,A a,A w){A z;
- RZ(a=vi(a)); // convert to integer, error if can't
+ RZ(a=jtvi(jt,a)); // convert to integer, error if can't
  ASSERT(AR(a)<2,EVRANK);  // must be atom or list
  GATV(z,INT,AN(a),AR(a),AS(a));  // allocate result
  I *av=IAV(a), *zv=IAV(z);
@@ -128,12 +128,12 @@ static A jtbreps(J jt,B b,B d,A w){A q,y,z,*zv;C*v;I c=0,kk,m,n;P*wp;
  GATV0(y,LIT,bsize(jt,d,1,INT,n,AR(w),AS(w)),1);
  v=brephdr(b,d,w,y);
  RZ(mvw(v,(C*)&c,1L,BU,b,d,1));  /* reserved for flag */
- zv[0]=incorp(y); m=AN(y);
- RZ(zv[1]=q=incorp(brep(b,d,SPA(wp,a)))); RZ(mvw(v+  kk,(C*)&m,1L,b,BU,d,1)); m+=AN(q);
- RZ(zv[2]=q=incorp(brep(b,d,SPA(wp,e)))); RZ(mvw(v+2*kk,(C*)&m,1L,b,BU,d,1)); m+=AN(q);
- RZ(zv[3]=q=incorp(brep(b,d,SPA(wp,i)))); RZ(mvw(v+3*kk,(C*)&m,1L,b,BU,d,1)); m+=AN(q);
- RZ(zv[4]=q=incorp(brep(b,d,SPA(wp,x)))); RZ(mvw(v+4*kk,(C*)&m,1L,b,BU,d,1));
- return raze(z);
+ zv[0]=jtincorp(jt,y); m=AN(y);
+ RZ(zv[1]=q=jtincorp(jt,brep(b,d,SPA(wp,a)))); RZ(mvw(v+  kk,(C*)&m,1L,b,BU,d,1)); m+=AN(q);
+ RZ(zv[2]=q=jtincorp(jt,brep(b,d,SPA(wp,e)))); RZ(mvw(v+2*kk,(C*)&m,1L,b,BU,d,1)); m+=AN(q);
+ RZ(zv[3]=q=jtincorp(jt,brep(b,d,SPA(wp,i)))); RZ(mvw(v+3*kk,(C*)&m,1L,b,BU,d,1)); m+=AN(q);
+ RZ(zv[4]=q=jtincorp(jt,brep(b,d,SPA(wp,x)))); RZ(mvw(v+4*kk,(C*)&m,1L,b,BU,d,1));
+ return jtraze(jt,z);
 }    /* 3!:1 w for sparse w */
 
 
@@ -207,13 +207,13 @@ static A jthrep(J jt,B b,B d,A w){A y;C c,*hex="0123456789abcdef",*u,*v;I n,s[2]
  A jthexrep1(J jt, A w){ ASSERT(NOUN&AT(w),EVDOMAIN); return hrep(BU,1,w);}  /* 3!:3 w */
 
  A jtbinrep2(J jt,A a,A w){I k;
- RE(k=i0(a)); if(10<=k)k-=8;
+ RE(k=jti0(jt,a)); if(10<=k)k-=8;
  ASSERT(BETWEENC(k,0,3),EVDOMAIN);
  return brep((B)(k&1),(B)(2<=k),w);
 }    /* a 3!:1 w */
 
  A jthexrep2(J jt,A a,A w){I k;
- RE(k=i0(a)); if(10<=k)k-=8;
+ RE(k=jti0(jt,a)); if(10<=k)k-=8;
  ASSERT(BETWEENC(k,0,3),EVDOMAIN);
  return hrep((B)(k&1),(B)(2<=k),w);
 }    /* a 3!:3 w */
@@ -230,7 +230,7 @@ static A jtunhex(J jt, A w){A z;C*u;I c,n;UC p,q,*v;
  ASSERT(c==8||c==16,EVLENGTH);  
  n=AN(w)>>1; u=CAV(w);
  GATV0(z,LIT,n,1); v=UAV(z);
- DQ(n, p=*u++; q=*u++; *v++=16*unh(p)+unh(q););
+ DQ(n, p=*u++; q=*u++; *v++=16*jtunh(jt,p)+jtunh(jt,q););
  RE(z); return z;
 }
 
@@ -256,7 +256,7 @@ static A jtunbinr(J jt,B b,B d,B pre601,I m,A w){A y,z;C*u=(C*)w,*v;I e,j,kk,n,p
    j=vv[i]; 
    ASSERT(BETWEENO(j,0,m),EVINDEX);
    if(i>iv[i])zv[i]=zv[iv[i]];
-   else{while(k<e&&j>=vv[k])++k; zv[i]=incorp(unbinr(b,d,pre601,k<e?vv[k]-j:m-j,(A)(u+j)));}
+   else{while(k<e&&j>=vv[k])++k; zv[i]=jtincorp(jt,unbinr(b,d,pre601,k<e?vv[k]-j:m-j,(A)(u+j)));}
  }}else if((t&SPARSE)!=0){P*zp=PAV(z);
   j=vv[1]; ASSERT(BETWEENO(j,0,m),EVINDEX); SPB(zp,a,unbinr(b,d,pre601,vv[2]-j,(A)(u+j)));
   j=vv[2]; ASSERT(BETWEENO(j,0,m),EVINDEX); SPB(zp,e,unbinr(b,d,pre601,vv[3]-j,(A)(u+j)));
@@ -275,7 +275,7 @@ static A jtunbinr(J jt,B b,B d,B pre601,I m,A w){A y,z;C*u=(C*)w,*v;I e,j,kk,n,p
 
  A jtunbin(J jt, A w){A q;B b,d;C*v;I c,i,k,m,n,r,t;
  ASSERT(LIT&AT(w),EVDOMAIN);
- if(2==AR(w))RZ(w=unhex(w));
+ if(2==AR(w))RZ(w=jtunhex(jt,w));
  ASSERT(1==AR(w),EVRANK);
  m=AN(w);
  ASSERT(m>=8,EVLENGTH);
@@ -310,7 +310,7 @@ static A jtunbinr(J jt,B b,B d,B pre601,I m,A w){A y,z;C*u=(C*)w,*v;I e,j,kk,n,p
  A jtic2(J jt,A a,A w){A z;I j,m,n,p,*v,*x,zt;I4*y;UI4*y1;S*s;U short*u;
  ASSERT(1>=AR(w),EVRANK);
  n=AN(w);
- RE(j=i0(a));
+ RE(j=jti0(jt,a));
  ASSERT(ABS(j)<=4,EVDOMAIN);
 // long way p=4==j||-4==j?4:3==j||-3==j?8:2==j||-2==j?4:2;
  p=ABS(j); p+=(I )(p==0)-((p&4)>>1);   // p becomes (|j){1 1 2 3 2
@@ -333,7 +333,7 @@ static A jtunbinr(J jt,B b,B d,B pre601,I m,A w){A y,z;C*u=(C*)w,*v;I e,j,kk,n,p
  A jtfc2(J jt,A a,A w){A z;D*x,*v;I j,m,n,p,zt;float*s;
  ASSERT(1>=AR(w),EVRANK);
  n=AN(w);
- RE(j=i0(a));
+ RE(j=jti0(jt,a));
  p=2==j||-2==j?LGSZD:2;
  if(0<j){m=n<<p; zt=LIT; if(!(FL&AT(w)))RZ(w=jtcvt(jt,FL,w));}
  else   {m=n>>p; zt=FL; ASSERT(!n||LIT&AT(w),EVDOMAIN); ASSERT(!(n&((((I)1)<<p)-1)),EVLENGTH);} 
@@ -349,7 +349,7 @@ static A jtunbinr(J jt,B b,B d,B pre601,I m,A w){A y,z;C*u=(C*)w,*v;I e,j,kk,n,p
 // w is a box, result is 1 if it contains a  NaN
 static B jtisnanq(J jt,A w){
  if(AT(w)&FL+CMPX){D *v=DAV(w); DQ(AN(w)<<((AT(w)>>CMPXX)&1), if(_isnan(v[i]))return 1;);}  // if there might be a NaN, return if there is one
- else if(AT(w)&BOX){A *v=AAV(w); STACKCHKOFL DQ(AN(w), if(isnanq(v[i]))return 1;);}  // if boxed, check each one recursively; ensure no stack overflow
+ else if(AT(w)&BOX){A *v=AAV(w); STACKCHKOFL DQ(AN(w), if(jtisnanq(jt,v[i]))return 1;);}  // if boxed, check each one recursively; ensure no stack overflow
  // other types never have NaN
  return 0;  // if we get here, there must be no NaN
 }
@@ -361,7 +361,7 @@ static B jtisnanq(J jt,A w){
  GATV(z,B01,n,AR(w),AS(w)); u=BAV(z);
  if (t&FL){v=DAV(w); DQ(n, *u++=_isnan(*v++););}  // float - check each atom
  else if(t&CMPX){v=DAV(w); DQ(n, *u++=_isnan(v[0])|_isnan(v[1]); v+=2;);}  // complex - check each half
- else if(t&BOX){wv=AAV(w); DO(n, *u++=isnanq(wv[i]);); RE(0);}  // boxed - check contents
+ else if(t&BOX){wv=AAV(w); DO(n, *u++=jtisnanq(jt,wv[i]);); RE(0);}  // boxed - check contents
  else memset(u,C0,n);  // other types are never NaN
  return z;
 }
@@ -463,7 +463,7 @@ static const I nanopowers[9] = {100000000, 10000000, 1000000, 100000, 10000, 100
 static A sfe(J jt,A w,I prec,UC decimalpt,UC zuluflag){
 	UI k; UI4 ymd,E,N,M,HMS,d,j,g,m,t,y;I i;A z;  // unsigned for faster / %
  // Validate input.  We will accept FL input, but it's not going to have nanosecond precision
- RZ(w=vi(w));  // convert to INT
+ RZ(w=jtvi(jt,w));  // convert to INT
  // Figure out size of result. 10 for date, 9 for time, 1 for binary point (opt), 1 for each fractional digit (opt), 1 for timezone
  I linelen=(10+9)-(REPSGN(prec)&9)+prec+(prec!=0)+(zuluflag=='Z');  // bytes per line of result: 20, but 10 if no date, plus one per frac digit, plus decimal point if any frac digits, 1 if Z
    // if we are running for 6!:15, linelen will come out 56 and the store will be 7 INTs
@@ -635,7 +635,7 @@ err:
  A jtinttoe(J jt, A w){A z;I n;
  n=AN(w);
  ASSERT(1,EVNONCE);
- RZ(w=vi(w));  // verify valid integer
+ RZ(w=jtvi(jt,w));  // verify valid integer
  GATV(z,INT,n,AR(w),AS(w));
  eft(n,IAV(z),IAV(w));
  return z;
@@ -683,6 +683,6 @@ err:
  }
  ASSERT(AT(w)&LIT,EVDOMAIN);  // must be LIT
  ASSERT(AR(w),EVRANK);    // must not be an atom
- if(!AN(w)){return df1(z,w,jtqq(jt,sc(IMIN),zeroionei(1)));}   // return _"1 w on empty w - equivalent
+ if(!AN(w)){return df1(z,w,jtqq(jt,jtsc(jt,IMIN),zeroionei(1)));}   // return _"1 w on empty w - equivalent
  return efs(jt,w,prec);
 }

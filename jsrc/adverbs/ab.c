@@ -107,10 +107,10 @@ static AHDR2FN* bwI[16]={(AHDR2FN*)bw0000II,(AHDR2FN*)bw0001II,(AHDR2FN*)bw0010I
  if((-AN(a)&-AN(w)&-(AT(a)&AT(w))&LIT)>=0)return jtfrom(jt,df2(z,jtindexof(jt,ds(CALP),a),jtindexof(jt,ds(CALP),w),fs),ds(CALP));  // empty or not LIT
  b=AR(a)<=AR(w); zn=AN(b?w:a); m=AN(b?a:w); n=zn/m;
  ASSERTAGREE(AS(a),AS(w),MIN(AR(a),AR(w)));
- j=i0(VAV(fs)->fgh[1])-16;
+ j=jti0(jt,VAV(fs)->fgh[1])-16;
  GATV(z,LIT,zn,MAX(AR(a),AR(w)),AS(b?w:a));   // d is fixed; was d==SZI?LIT:C2T; would need GA then
  if(1==n)                 {ado=bwI[j]; m=(m+SZI-1)>>LGSZI;}
- else if((-AR(a)&-AR(w)&-(n&(SZI-1)))>=0){ado=bwI[j]; n=(n+SZI-1)>>LGSZI; p=b?&x:&y; A zz; RZ(*p=IRS2(sc(SZI),*p,0L,0L,0L,jtrepeat,zz));} // a atom, w atom, or multiple of SZI
+ else if((-AR(a)&-AR(w)&-(n&(SZI-1)))>=0){ado=bwI[j]; n=(n+SZI-1)>>LGSZI; p=b?&x:&y; A zz; RZ(*p=IRS2(jtsc(jt,SZI),*p,0L,0L,0L,jtrepeat,zz));} // a atom, w atom, or multiple of SZI
  else                      ado=bwC[j];
  n^=-b; n=(n==~1)?1:n;  // encode b flag in sign of n
  ado(n,m,AV(x),AV(y),AV(z),jt); 
@@ -150,14 +150,14 @@ static AHDRRFN* bwinsI[16]={(AHDRRFN*)bw0000insI,(AHDRRFN*)bw0001insI,(AHDRRFN*)
  A jtbitwiseinsertchar(J jt,    A w,A self){A fs,z;I d,j,n,r,wn,wr,zatoms;UC*u,*v,*wv,x,*zv;AHDRRFN* ado;
  wr=AR(w); wn=AN(w); SETIC(w,n); z=VAV(self)->fgh[0]; fs=VAV(z)->fgh[0];
  if((-(wn)&(SZI-n)&SGNIF(AT(w),LITX))>=0)return jtfrom(jt,df1(z,jtindexof(jt,ds(CALP),w),fs),ds(CALP));  // revert if not wn!=0 & n>SZI & LIT
- PROD(d,wr-1,AS(w)+1); zatoms=d; wv=CAV(w); j=i0(VAV(fs)->fgh[1])-16; ado=(AHDRRFN*)bwinsC[j];  // d=#atoms in an item of a cell.  There is only 1 cell here (rank _)
+ PROD(d,wr-1,AS(w)+1); zatoms=d; wv=CAV(w); j=jti0(jt,VAV(fs)->fgh[1])-16; ado=(AHDRRFN*)bwinsC[j];  // d=#atoms in an item of a cell.  There is only 1 cell here (rank _)
  if(1==wr)switch(j){   // d==1 here
-  case  0: return scc(0);
-  case  3: return scc(*wv);
-  case  5: return scc(*(wv+wn-1));
-  case 10: x=*(wv+wn-1); return scc((UC)(((wn&1)-1))^x);
-  case 12: return scc((UC)~*wv);
-  case 15: return scc((UC)255);
+  case  0: return jtscc(jt,0);
+  case  3: return jtscc(jt,*wv);
+  case  5: return jtscc(jt,*(wv+wn-1));
+  case 10: x=*(wv+wn-1); return jtscc(jt,(UC)(((wn&1)-1))^x);
+  case 12: return jtscc(jt,(UC)~*wv);
+  case 15: return jtscc(jt,(UC)255);
   case  1: case 6: case 7: case 9: ado=(AHDRRFN*)bwinsI[j]; n=n>>LGSZI;  // this gets # full words in the list arg.  Handle as ints.  Remnant handled below
  }else if(0==(d&(SZI-1))){ado=(AHDRRFN*)bwinsI[j]; d>>=LGSZI;}  //if #atoms are a word multiple, switch to handling ints
  GATV(z,LIT,zatoms,wr-1,1+AS(w)); zv=CAV(z);

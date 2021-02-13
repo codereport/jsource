@@ -48,12 +48,12 @@ void jtdebz(J jt){jt->sitop=jt->sitop->dclnk;}
  GATV0(z,BOX,c*n,2); s=AS(z); s[0]=n; s[1]=c; zv=AAV(z);
  d=jt->sitop;
  while(d){
-  RZ(zv[0]=sc(d->dctype));
-  RZ(zv[1]=d->dcsusp?scc('*'):scc(' '));
-  RZ(zv[2]=sc((I)d->dcss));
-  RZ(zv[3]=d->dctype==DCCALL?sc(lnumsi(d)):mtv);
+  RZ(zv[0]=jtsc(jt,d->dctype));
+  RZ(zv[1]=d->dcsusp?jtscc(jt,'*'):jtscc(jt,' '));
+  RZ(zv[2]=jtsc(jt,(I)d->dcss));
+  RZ(zv[3]=d->dctype==DCCALL?jtsc(jt,lnumsi(d)):mtv);
   switch(d->dctype){
-   case DCPARSE:  RZ(zv[4]=unparse(d->dcy)); break;
+   case DCPARSE:  RZ(zv[4]=jtunparse(jt,d->dcy)); break;
    case DCCALL:   RZ(zv[4]=jtsfn(jt,0,d->dca));   break;
    case DCSCRIPT: zv[4]=d->dcy;              break;
    case DCJUNK:   zv[4]=mtv;                 break; 
@@ -97,13 +97,13 @@ static void jtsusp(J jt){B t;DC d;
  jt->dcs=0; jt->tostdout=1;
  jt->cstackmin=MAX(jt->cstackinit-(CSTACKSIZE-CSTACKRESERVE),jt->cstackmin-CSTACKSIZE/10);
  jt->fcalln=MIN(NFCALL,jt->fcalln+NFCALL/10);
- if     (jt->dbssexec){RESETERR; immex(jt->dbssexec); tpop(old);}
- else if(jt->dbtrap  ){RESETERR; immex(jt->dbtrap  ); tpop(old);}
+ if     (jt->dbssexec){RESETERR; jtimmex(jt,jt->dbssexec); jttpop(jt,old);}
+ else if(jt->dbtrap  ){RESETERR; jtimmex(jt,jt->dbtrap  ); jttpop(jt,old);}
  while(jt->dbsusact==SUSCONT){A  inp;
   jt->jerr=0;
-  if(jt->iepdo&&jt->iep){jt->iepdo=0; immex(jt->iep); tpop(old);}
-  if((inp=jgets("      "))==0)jt->dbsusact==SUSCLEAR;else immex(inp); // read and execute a line, but exit debug if error reading line
-  tpop(old);
+  if(jt->iepdo&&jt->iep){jt->iepdo=0; jtimmex(jt,jt->iep); jttpop(jt,old);}
+  if((inp=jtjgets(jt,"      "))==0)jt->dbsusact==SUSCLEAR;else jtimmex(jt,inp); // read and execute a line, but exit debug if error reading line
+  jttpop(jt,old);
  }
  if(jt->dbuser){
   jt->cstackmin+=CSTACKSIZE/10;
@@ -152,7 +152,7 @@ static A jtdebug(J jt){A z=0;C e;DC c,d;
 A jtpee(J jt,A *queue,CW*ci,I err,I lk,DC c){A z=0;
  ASSERT(lk<=0,err);  //  locked fn is totally opaque, with no stack.  Exit with 0 result, indicating error
  jt->parserstackframe.parserqueue=queue+ci->i; jt->parserstackframe.parserqueuelen=(I4)ci->n; jt->parserstackframe.parsercurrtok=1;  // unless locked, indicate failing-sentence info
- jsignal(err);   // signal the requested error
+ jtjsignal(jt,err);   // signal the requested error
  // enter debug mode if that is enabled
  if(c&&jt->uflags.us.cx.cx_c.db){jt->sitop->dcj=jt->jerr; z=jtdebug(jt); jt->sitop->dcj=0;} //  d is PARSE type; set d->dcj=err#; d->dcn must remain # tokens jtdebz(jt);  not sure why we change previous frame
  if(jt->jerr)z=0; return z;  // if we entered debug, the error may have been cleared.  If not, clear the result.  Return debug result, which is result to use or 0 to indicate jump
@@ -167,7 +167,7 @@ A jtpee(J jt,A *queue,CW*ci,I err,I lk,DC c){A z=0;
 
 A jtparsex(J jt,A* queue,I m,CW*ci,DC c){A z;B s;
  movesentencetosi(jt,queue,m,0);  // install sentence-to-be-executed for stop purposes
- if(s=jtdbstop(jt,c,ci->source)){z=0; jsignal(EVSTOP);}
+ if(s=jtdbstop(jt,c,ci->source)){z=0; jtjsignal(jt,EVSTOP);}
  else                      {z=jtparsea(jt,queue,m);     }
  // If we hit a stop, or if we hit an error outside of try./catch., enter debug mode.  But if debug mode is off now, we must have just
  // executed 13!:0]0, and we should continue on outside of debug mode.  Error processing filled the current si line with the info from the parse
@@ -184,7 +184,7 @@ A jtdbunquote(J jt,A a,A w,A self,L *stabent){A t,z;B b=0,s;DC d;V*sv;
   d->dcix=0;  // set a pseudo-line-number for display purposes for the tacit 
   do{
    d->dcnewlineno=0;  // turn off 'reexec requested' flag
-   if(s=jtdbstop(jt,d,0L)){z=0; jsignal(EVSTOP);}  // if this line is a stop
+   if(s=jtdbstop(jt,d,0L)){z=0; jtjsignal(jt,EVSTOP);}  // if this line is a stop
    else              {ras(self); z=a?dfs2(a,w,self):jtdfs1(jt,w,self); fa(self);}
    // If we hit a stop, or if we hit an error outside of try./catch., enter debug mode.  But if debug mode is off now, we must have just
    // executed 13!:8]0, and we should continue on outside of debug mode
@@ -203,7 +203,7 @@ A jtdbunquote(J jt,A a,A w,A self,L *stabent){A t,z;B b=0,s;DC d;V*sv;
 
  A jtdbc(J jt, A w){UC k;
  if(AN(w)){
-  RE(k=(UC)i0(w));
+  RE(k=(UC)jti0(jt,w));
   ASSERT(!(k&~1),EVDOMAIN);
   ASSERT(!k||!jt->uflags.us.cx.cx_c.glock,EVDOMAIN);
  }
@@ -217,7 +217,7 @@ A jtdbunquote(J jt,A a,A w,A self,L *stabent){A t,z;B b=0,s;DC d;V*sv;
  return mtm;
 }    /* 13!:0  clear stack; enable/disable suspension */
 
- A jtdbq(J jt, A w){ASSERTMTV(w); return sc(jt->dbuser);}
+ A jtdbq(J jt, A w){ASSERTMTV(w); return jtsc(jt,jt->dbuser);}
      /* 13!:17 debug flag */
 
  A jtdbrun (J jt, A w){ASSERTMTV(w); jt->dbsusact=SUSRUN;  return mtm;}
@@ -229,7 +229,7 @@ A jtdbunquote(J jt,A a,A w,A self,L *stabent){A t,z;B b=0,s;DC d;V*sv;
  A jtdbret (J jt, A w){ jt->dbsusact=SUSRET; ras(w); jt->dbresult=w; return mtm;}
      /* 13!:6  exit with result */
 
- A jtdbjump(J jt, A w){RE(jt->dbjump=i0(w)); jt->dbsusact=SUSJUMP; return mtm;}
+ A jtdbjump(J jt, A w){RE(jt->dbjump=jti0(jt,w)); jt->dbsusact=SUSJUMP; return mtm;}
      /* 13!:7  resume at line n (return result error if out of range) */
 
 static A jtdbrr(J jt,A a,A w){DC d;
@@ -247,5 +247,5 @@ static A jtdbrr(J jt,A a,A w){DC d;
  A jtdbtrapq(J jt, A w){ASSERTMTV(w); return jt->dbtrap?jt->dbtrap:mtv;}
      /* 13!:14 query trap */
 
- A jtdbtraps(J jt, A w){RZ(w=vs(w)); fa(jt->dbtrap); if(AN(w)){RZ(ras(w)); jt->dbtrap=w;}else jt->dbtrap=0L; return mtm;}
+ A jtdbtraps(J jt, A w){RZ(w=jtvs(jt,w)); fa(jt->dbtrap); if(AN(w)){RZ(ras(w)); jt->dbtrap=w;}else jt->dbtrap=0L; return mtm;}
      /* 13!:15 set trap */

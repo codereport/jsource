@@ -96,9 +96,9 @@ A jtssingleton1(J jt, A w,A self){A z;
 
  case SSINGCASE(VA2CBANG-VA2CMIN,SSINGENC(B01)): SSSTORENV(1,z,B01,B) return z;
  case SSINGCASE(VA2CBANG-VA2CMIN,SSINGENC(INT)):
-    SSSTORE(dgamma(1.0+(D)SSRDI(w)),z,FL,D) RE(0) return z;
+    SSSTORE(jtdgamma(jt,1.0+(D)SSRDI(w)),z,FL,D) RE(0) return z;
  case SSINGCASE(VA2CBANG-VA2CMIN,SSINGENC(FL)):
-    wdv = SSRDD(w); SSSTORENVFL(_isnan(wdv)?wdv:dgamma(1.0+wdv),z,FL,D) RE(0) return z;
+    wdv = SSRDD(w); SSSTORENVFL(_isnan(wdv)?wdv:jtdgamma(jt,1.0+wdv),z,FL,D) RE(0) return z;
 
 
  case SSINGCASE(VA2CCIRCLE-VA2CMIN,SSINGENC(B01)): SSSTORENV(SSRDB(w)?PI:0.0,z,FL,D) return z;

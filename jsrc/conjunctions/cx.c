@@ -22,7 +22,7 @@
 #define DDEND (US)('}'+256*'}')  // digraph for end DD
 #define DDSEP 0xa  // ASCII value used to mark line separator inside 9 : string.  Must have class CU so that it ends a final comment
 
-#define BASSERT(b,e)   {if(!(b)){jsignal(e); i=-1; z=0; continue;}}
+#define BASSERT(b,e)   {if(!(b)){jtjsignal(jt,e); i=-1; z=0; continue;}}
 #define BZ(e)          if(!(e)){i=-1; z=0; continue;}
 
 // sv->h is the A block for the [2][4] array of saved info for the definition; hv->[4] boxes of info for the current valence;
@@ -34,7 +34,7 @@
 // Parse/execute a line, result in z.  If locked, reveal nothing.  Save current line number in case we reexecute
 // If the sentence passes a u/v into an operator, the current symbol table will become the prev and will have the u/v environment info
 // If the sentence fails, we go into debug mode and don't return until the user releases us
-#define parseline(z) {C attnval=*jt->adbreakr; A *queue=line+ci->i; I m=ci->n; if(!attnval){if(!(gsfctdl&16))z=jtparsea(jt,queue,m);else {thisframe->dclnk->dcix=i; z=parsex(queue,m,ci,callframe);}}else{jsignal(EVATTN); z=0;} }
+#define parseline(z) {C attnval=*jt->adbreakr; A *queue=line+ci->i; I m=ci->n; if(!attnval){if(!(gsfctdl&16))z=jtparsea(jt,queue,m);else {thisframe->dclnk->dcix=i; z=parsex(queue,m,ci,callframe);}}else{jtjsignal(jt,EVATTN); z=0;} }
 
 typedef struct{A t,x,line;C*iv,*xv;I j,n; I4 k,w;} CDATA;
 /* for_xyz. t do. control data   */
@@ -152,7 +152,7 @@ static I debugnewi(I i, DC thisframe, A self){
    locsym=hv[3];  // fetch pointer to preallocated symbol table
    ASSERT(locsym!=0,EVDOMAIN);  // if the valence is not defined, give valence error
    if(!(AR(locsym)&LSYMINUSE)){AR(locsym)|=LSYMINUSE;gsfctdl|=32;}  // remember if we are using the original symtab
-   else{RZ(locsym=clonelocalsyms(locsym));}
+   else{RZ(locsym=jtclonelocalsyms(jt,locsym));}
   } else {  // something special required
    // If this is a modifier-verb referring to x or y, set u, v to the modifier operands, and sv to the saved modifier (f=type, g=compiled text).  The flags don't change
    if(sflg&VXOP){u=sv->fgh[0]; v=sv->fgh[2]; sv=VAV(sv->fgh[1]);}
@@ -161,7 +161,7 @@ static I debugnewi(I i, DC thisframe, A self){
    locsym=hv[3];  // fetch pointer to preallocated symbol table
    ASSERT(locsym!=0,EVDOMAIN);  // if the valence is not defined, give valence error
    if(!(AR(locsym)&LSYMINUSE)){AR(locsym)|=LSYMINUSE;gsfctdl|=32;}  // remember if we are using the original symtab
-   else{RZ(locsym=clonelocalsyms(locsym));}
+   else{RZ(locsym=jtclonelocalsyms(jt,locsym));}
 
    gsfctdl|=jt->uflags.us.cx.cx_c.glock||sv->flag&VLOCK;  // 1=lock bit
    // if we are in debug mode, the call to this defn should be on the stack (unless debug was entered under program control).  If it is, point to its
@@ -302,7 +302,7 @@ tblockcase:
    // execute and parse line as if for B block, except save the result in t
    // If there is a possibility that the previous B result may become the result of this definition,
    // protect it during the frees during the T block.  Otherwise, just free memory
-   if(ci->canend&2)tpop(old);else z=jtgc(jt,z,old);   // 2 means previous B can't be the result
+   if(ci->canend&2)jttpop(jt,old);else z=jtgc(jt,z,old);   // 2 means previous B can't be the result
    parseline(t);
    // Check for assert.  Since this is only for T-blocks we tolerate the test (rather than duplicating code)
    if(ci->type==CASSERT&&jt->assert&&t&&!(NOUN&AT(t)&&all1(eq(num(1),t))))t=pee(line,ci,EVASSERT,gsfctdl<<(BW-2),callframe);  // if assert., signal post-execution error if result not all 1s.  May go into debug; sets to result after debug
@@ -331,7 +331,7 @@ docase:
      if(!(AT(tt)&NOUN)){CHECKNOUN}  // will take error
      // other types test true, which is how i is set
      if(!(SPARSE&AT(tt)))break;
-     BZ(tt=denseit(tt)); if(AN(tt)==0)break;  // convert sparse to dense - this could make the length go to 0, in which case true
+     BZ(tt=jtdenseit(jt,tt)); if(AN(tt)==0)break;  // convert sparse to dense - this could make the length go to 0, in which case true
     }
    }
    }
@@ -342,7 +342,7 @@ docase:
 dobblock:
    // B-block (present on every sentence in the B-block)
    // run the sentence
-   tpop(old); parseline(z);
+   jttpop(jt,old); parseline(z);
    // if there is no error, or ?? debug mode, step to next line
    if(z!=0){bi=i; i+=(cwtype>>5)+1;  // go to next sentence, or to the one after that if it's harmless end.
     if((UI)i<(UI)n&&!((((cwtype=(ci=i+cw)->type)&31)^CBBLOCK)+jt->cxspecials))goto dobblock;  // avoid indirect-branch overhead on the likely case
@@ -402,8 +402,8 @@ dobblock:
    }
    ++cv->j;  // step to first (or next) iteration
    if(cv->x){A x;  // assign xyz and xyz_index for for_xyz.
-    if(!(ci->canend&2))BZ(z=rat(z));   // if z might be the result, protect it over the possible frees during this assignment
-    symbisdel(jtnfs(jt,6+cv->k,cv->xv),x=sc(cv->j),  locsym);  // Assign iteration number.  since there is no sentence, take deletion off nvr stack
+    if(!(ci->canend&2))BZ(z=jtrat(jt,z));   // if z might be the result, protect it over the possible frees during this assignment
+    symbisdel(jtnfs(jt,6+cv->k,cv->xv),x=jtsc(jt,cv->j),  locsym);  // Assign iteration number.  since there is no sentence, take deletion off nvr stack
     symbisdel(jtnfs(jt,  cv->k,cv->iv),cv->j<cv->n?jtfrom(jt,x,cv->t):mtv,locsym);
    }
    if(cv->j<cv->n){  // if there are more iterations to do...
@@ -412,17 +412,17 @@ dobblock:
    // if there are no more iterations, fall through...
   case CENDSEL:
    // end. for select., and do. for for. after the last iteration, must pop the stack - just once
-   // Must rat() if the current result might be final result, in case it includes the variables we will delete in unstack
+   // Must jtrat(jt,) if the current result might be final result, in case it includes the variables we will delete in unstack
    // (this includes ONLY xyz_index, so perhaps we should avoid rat if stack empty or xyz_index not used)
-   if(!(ci->canend&2))BZ(z=rat(z)); unstackcv(cv); --cv; ++r; 
+   if(!(ci->canend&2))BZ(z=jtrat(jt,z)); jtunstackcv(jt,cv); --cv; ++r; 
    i=ci->go;    // continue at new location
    break;
   case CBREAKS:
   case CCONTS:
    // break./continue-in-while. must pop the stack if there is a select. nested in the loop.  These are
    // any number of SELECTN, up to the SELECT 
-   if(!(ci->canend&2))BZ(z=rat(z));   // protect possible result from pop, if it might be the final result
-   do{I fin=cv->w==CSELECT; unstackcv(cv); --cv; ++r; if(fin)break;}while(1);
+   if(!(ci->canend&2))BZ(z=jtrat(jt,z));   // protect possible result from pop, if it might be the final result
+   do{I fin=cv->w==CSELECT; jtunstackcv(jt,cv); --cv; ++r; if(fin)break;}while(1);
     // fall through to...
   case CBREAK:
   case CCONT:  // break./continue. in while., outside of select.
@@ -433,9 +433,9 @@ dobblock:
   case CBREAKF:
    // break. in a for. must first pop any active select., and then pop the for.
    // We just pop till we have popped a non-select.
-   // Must rat() if the current result might be final result, in case it includes the variables we will delete in unstack
-   if(!(ci->canend&2))BZ(z=rat(z));   // protect possible result from pop
-   do{I fin=cv->w!=CSELECT&&cv->w!=CSELECTN; unstackcv(cv); --cv; ++r; if(fin)break;}while(1);
+   // Must jtrat(jt,) if the current result might be final result, in case it includes the variables we will delete in unstack
+   if(!(ci->canend&2))BZ(z=jtrat(jt,z));   // protect possible result from pop
+   do{I fin=cv->w!=CSELECT&&cv->w!=CSELECTN; jtunstackcv(jt,cv); --cv; ++r; if(fin)break;}while(1);
    i=ci->go;     // continue at new location
    // It must also pop the try. stack, if the destination is outside the try.-end. range
    if(gsfctdl&4){tdi=trypopgoto(tdv,tdi,i); gsfctdl^=tdi?0:4;}
@@ -468,7 +468,7 @@ dobblock:
      // if neither t nor cv is boxed, just compare for equality.  Boxed empty goes through the other path
      if(!jtequ(jt,t,cv->t))i=ci->go;  // should perhaps take the scalar case specially & send it through singleton code
     }else{
-     if(all0(jteps(jt,boxopen(cv->t),boxopen(t))))i=ci->go;  // if case tests false, jump around bblock   test is cv +./@:,@:e. boxopen t
+     if(all0(jteps(jt,jtboxopen(jt,cv->t),jtboxopen(jt,t))))i=ci->go;  // if case tests false, jump around bblock   test is cv +./@:,@:e. boxopen t
     }
     // Clear t to ensure that the next case./fcase. does not reuse this value
     t=0;
@@ -492,7 +492,7 @@ dobblock:
   // If it isn't, generate a post-execution error for the non-noun
   if(AT(z)&NOUN){
    // If we are returning a virtual block, we are going to have to realize it.  This is because it might be (indeed, probably is) backed by a local symbol that
-   // is going to be summarily freed by the symfreeha() below.  We could modify symfreeha to recognize when we are freeing z, but the case is not common enough
+   // is going to be summarily freed by the jtsymfreeha(jt,) below.  We could modify symfreeha to recognize when we are freeing z, but the case is not common enough
    // to be worth the trouble
    realizeifvirtual(z);
   }else if(AT(self)&ADV+CONJ){  // non-noun result, but OK from adv/conj
@@ -500,7 +500,7 @@ dobblock:
    // It is OK to refer to other symbol tables, since they will be removed if they try to escape at higher lavels and in the meantime can be executed; but
    // there is no way we could have a reference to such an implied locative unless we also had a reference to the current table; so we replace only the
    // first locative in eqch branch
-   z=jtfix(jt,z,sc(FIXALOCSONLY|FIXALOCSONLYLOWEST));
+   z=jtfix(jt,z,jtsc(jt,FIXALOCSONLY|FIXALOCSONLYLOWEST));
   }else {pee(line,&cw[bi],EVNONNOUN,gsfctdl<<(BW-2),callframe); z=0;}  // signal error, set z to 'no result'
  }else{
   // No result.  Must be an error
@@ -519,7 +519,7 @@ dobblock:
   // table that we need to pop from.  So we protect the symbol table during the cleanup of the result and stack.
   ra(locsym);  // protect local syms
   z=EPILOGNORET(z);  // protect return value from being freed when the symbol table is.  Must also be before stack cleanup, in case the return value is xyz_index or the like
-  CDATA *cvminus1 = (CDATA*)VAV(cd)-1; while(cv!=cvminus1){unstackcv(cv); --cv;}  // clean up any remnants left on the for/select stack
+  CDATA *cvminus1 = (CDATA*)VAV(cd)-1; while(cv!=cvminus1){jtunstackcv(jt,cv); --cv;}  // clean up any remnants left on the for/select stack
   fa(cd);  // have to delete explicitly, because we had to jtext(jt,) the block and thus protect it with ra()
   fa(locsym);  // unprotect local syms.  This deletes them if they were cloned
  }
@@ -528,7 +528,7 @@ dobblock:
  // If we are using the original local symbol table, clear it (free all values, free non-permanent names) for next use.  We know it hasn't been freed yet
  // We detect original symbol table by rank LSYMINUSE - other symbol tables are assigned rank 0.
  // Tables are born with NAMEADDED off.  It gets set when a name is added.  Setting back to initial state here, we clear NAMEADDED
- if(gsfctdl&32){AR(locsym)=LLOCALTABLE; symfreeha(locsym);}
+ if(gsfctdl&32){AR(locsym)=LLOCALTABLE; jtsymfreeha(jt,locsym);}
  // Pop the private-area stack; set no assignment (to call for result display)
  SYMSETLOCAL(prevlocsyms);
  jt->asgn=0;
@@ -605,9 +605,9 @@ static A jtcolon0(J jt, I deftype){A l,z;C*p,*q,*s;A *sb;I m,n;
  if(isboxed){RZ(z=exta(BOX,1L,1L,20L)); sb=AAV(z);}
  else{RZ(z=exta(LIT,1L,1L,300L)); s=CAV(z);}
  while(1){
-  RE(l=jgets("\001"));   // abort if error on input
+  RE(l=jtjgets(jt,"\001"));   // abort if error on input
   if(!l)break;  // exit loop if EOF.  The incomplete definition will be processed
-  if(deftype!=0)RZ(l=jtddtokens(jt,l,8+2));  // if non-noun def, handle DDs, for explicit def, return string, allow jgets().  Leave noun contents untouched
+  if(deftype!=0)RZ(l=jtddtokens(jt,l,8+2));  // if non-noun def, handle DDs, for explicit def, return string, allow jtjgets(jt,).  Leave noun contents untouched
   // check for end: ) by itself, possibly with spaces
   m=AN(l); p=q=CAV(l); 
   while(p<q+m&&' '==*p)++p; if(p<q+m&&')'==*p){while(p<q+m&&' '==*++p); if(p>=m+q)break;}  // if ) with nothing else but blanks, stop
@@ -635,11 +635,11 @@ static A jtsent12c(J jt,A w){C*p,*q,*r,*s,*x;A z;
  if(AR(w)>1)return IRS1(w,0L,1,jtbox,z);  // table, just box lines individually
 
  // otherwise we have a single string.  Could be from 9 : string
- if(!(AN(w)&&DDSEP==cl(w)))RZ(w=jtover(jt,w,scc(DDSEP)));  // add LF if missing
+ if(!(AN(w)&&DDSEP==cl(w)))RZ(w=jtover(jt,w,jtscc(jt,DDSEP)));  // add LF if missing
  // Lines are separated by DDSEP, and there may be DDSEP embedded in strings.  Convert the whole thing to words, which will
  // leave the embedded DDSEP embedded; then split on the individual DDSEP tokens
  // tokenize the lines.  Each LF is its own token.
- A wil; RZ(wil=wordil(w)); ASSERT(AM(wil)>=0,EVOPENQ) makewritable(wil); I wiln=AS(wil)[0]; I (*wilv)[2]=voidAV(wil); // line index, and number of lines; array of (start,end+1) for each line
+ A wil; RZ(wil=jtwordil(jt,w)); ASSERT(AM(wil)>=0,EVOPENQ) makewritable(wil); I wiln=AS(wil)[0]; I (*wilv)[2]=voidAV(wil); // line index, and number of lines; array of (start,end+1) for each line
  // Compact the word-list to a line-list.  Go through the words looking for LF.  For each line, add an entry to the line-list with all the characters except the LF
  I i=0;  // start of dyad, input pointer through wilv
  I currlinest=0;  // character# at which current line (ending in next LF) starts
@@ -664,7 +664,7 @@ static A jtsent12b(J jt,A w){A t,*wv,y,*yv;I j,*v;
  ASSERT(1>=AR(w),EVRANK);
  wv=AAV(w); 
  GATV(y,BOX,AN(w),AR(w),AS(w)); yv=AAV(y);
- DO(AN(w), RZ(yv[i]=vs(wv[i])););
+ DO(AN(w), RZ(yv[i]=jtvs(jt,wv[i])););
  return y;
 }    /* boxed sentences into monad/dyad */
 
@@ -736,7 +736,7 @@ A jtcrelocalsyms(J jt, A l, A c,I type, I dyad, I flags){A actst,*lv,pfst,t,wds;
    A neww=words(t);
    if(AN(neww)){  // ignore blank string
     A newt=jtevery(jt,neww,(A)&onmself);  // convert every word to a NAME block
-    if(newt){t=lv[j-1]=incorp(newt); AT(t)|=BOXMULTIASSIGN;}else RESETERR  // if no error, mark the block as MULTIASSIGN type and save it in the compiled definition; also set as t for below.  If error, catch it later
+    if(newt){t=lv[j-1]=jtincorp(jt,newt); AT(t)|=BOXMULTIASSIGN;}else RESETERR  // if no error, mark the block as MULTIASSIGN type and save it in the compiled definition; also set as t for below.  If error, catch it later
    }
   }
 
@@ -752,7 +752,7 @@ A jtcrelocalsyms(J jt, A l, A c,I type, I dyad, I flags){A actst,*lv,pfst,t,wds;
      I wdsn=AN(wds); A *wdsv = AAV(wds), wnm;
      for(kk=0;kk<wdsn;++kk) {
       // Convert word to NAME; if local name, add to symbol table
-      if((wnm=onm(wdsv[kk]))) {
+      if((wnm=jtonm(jt,wdsv[kk]))) {
        if(!(NAV(wnm)->flag&(NMLOC|NMILOC)))RZ(jtprobeis(jt,wnm,pfst));
       } else RESETERR
      }
@@ -852,9 +852,9 @@ A jtclonelocalsyms(J jt, A a){A z;I j;I an=AN(a); LX *av=LXAV0(a),*zv;
   if(CCOLON==FAV(w)->id&&FAV(w)->fgh[0]&&VERB&AT(FAV(w)->fgh[0])&&VERB&AT(FAV(w)->fgh[1]))w=FAV(w)->fgh[1];
   return fdef(0,CCOLON,VERB,xv1,xv2,a,w,0L,((FAV(a)->flag&FAV(w)->flag)&VASGSAFE),mr(a),lr(w),rr(w));  // derived verb is ASGSAFE if both parents are
  }
- RE(n=i0(a));  // m : n; set n=value of a argument
+ RE(n=jti0(jt,a));  // m : n; set n=value of a argument
  I col0;  // set if it was m : 0
- if(col0=jtequ(jt,w,num(0))){RZ(w=colon0(n)); }   // if m : 0, read up to the ) .  If 0 : n, return the string unedited
+ if(col0=jtequ(jt,w,num(0))){RZ(w=jtcolon0(jt,n)); }   // if m : 0, read up to the ) .  If 0 : n, return the string unedited
  if(!n){ra0(w); return w;}  // noun - return it.  Give it recursive usecount
  if((C2T+C4T)&AT(w))RZ(w=jtcvt(jt,LIT,w));
  I splitloc=-1;   // will hold line number of : line
@@ -862,11 +862,11 @@ A jtclonelocalsyms(J jt, A a){A z;I j;I an=AN(a); LX *av=LXAV0(a),*zv;
  else{  // not tacit translator - preparse the body
   // we want to get all forms to a common one: a list of boxed strings.  If we went through m : 0, we are in that form
   // already.  Convert strings
-  if(!col0)if(BOX&AT(w)){RZ(w=sent12b(w))}else{RZ(w=sent12c(w))}  // convert to list of boxes
+  if(!col0)if(BOX&AT(w)){RZ(w=jtsent12b(jt,w))}else{RZ(w=jtsent12c(jt,w))}  // convert to list of boxes
   // If there is a control line )x at the top of the definition, parse it now and discard it from m
   if(AN(w)!=0)if(AN(AAV(w)[0])&&CAV(AAV(w)[0])[0]==')'){
    // there is a control line.  parse it.  Cut to words
-   A cwds=wordil(AAV(w)[0]); RZ(cwds); ASSERT(AM(cwds)==2,EVDOMAIN);  // must be exactly 2 words: ) and type
+   A cwds=jtwordil(jt,AAV(w)[0]); RZ(cwds); ASSERT(AM(cwds)==2,EVDOMAIN);  // must be exactly 2 words: ) and type
    ASSERT(((IAV(cwds)[1]-IAV(cwds)[0])|(IAV(cwds)[3]-IAV(cwds)[2]))==1,EVDOMAIN);  // the ) and the next char must be 1-letter words  
    C ctltype=CAV(AAV(w)[0])[IAV(cwds)[2]];  // look at the second char, which must be one of acmdv*  (n is handled in ddtokens)
    I newn=-1; newn=ctltype=='a'?1:newn; newn=ctltype=='c'?2:newn; newn=ctltype=='m'?3:newn; newn=ctltype=='d'?4:newn; newn=ctltype=='v'?3:newn; newn=ctltype=='*'?9:newn;  // choose type based on char
@@ -883,11 +883,11 @@ A jtclonelocalsyms(J jt, A a){A z;I j;I an=AN(a); LX *av=LXAV0(a),*zv;
     if(st==1){splitloc=wv-AAV(w); break;} ++wv;)
   // split the definition into monad and dyad.
   I mn=splitloc<0?AN(w):splitloc; I nn=splitloc<0?0:AN(w)-splitloc-1;
-  RZ(m=jttake(jt,sc(mn),w)); RZ(d=jttake(jt,sc(-nn),w));
+  RZ(m=jttake(jt,jtsc(jt,mn),w)); RZ(d=jttake(jt,jtsc(jt,-nn),w));
   INCORP(m); INCORP(d);  // we are incorporating them into hv[]
   if(4==n){if((-AN(m)&(AN(d)-1))<0)d=m; m=mtv;}  //  for 4 :, make the single def given the dyadic one
   GAT0(h,BOX,2*HN,1); hv=AAV(h);
-  if(n){  // if not noun, audit the valences as valid sentences and convert to a queue to send into parse()
+  if(n){  // if not noun, audit the valences as valid sentences and convert to a queue to send into jtparse(jt,)
    RE(b=preparse(m,hv,hv+1)); if(b)flag|=VTRY1; hv[2]=jt->retcomm?m:mtv;
    RE(b=preparse(d,hv+HN,hv+HN+1)); if(b)flag|=VTRY2; hv[2+HN]=jt->retcomm?d:mtv;
   }
@@ -895,7 +895,7 @@ A jtclonelocalsyms(J jt, A a){A z;I j;I an=AN(a); LX *av=LXAV0(a),*zv;
  // The h argument is logically h[2][HN] where the boxes hold (parsed words, in a row);(info for each control word);(original commented text (optional));(local symbol table)
  // Non-noun results cannot become inputs to verbs, so we do not force them to be recursive
  if((1LL<<n)&0x206){  // types 1, 2, 9
-  I fndflag=xop(hv[0])|xop(hv[0+HN]);   // 4=mnuv 2=x 1=y, combined for both valences
+  I fndflag=jtxop(jt,hv[0])|jtxop(jt,hv[0+HN]);   // 4=mnuv 2=x 1=y, combined for both valences
   // for 9 : n, figure out best type after looking at n
   if(n==9){
    I defflg=(fndflag&((splitloc>>(BW-1))|-4))|1; CTLZI(defflg,n); n=(0x2143>>(n<<2))&0xf; // replace 9 by value depending on what was seen; if : seen, ignore x
@@ -918,15 +918,15 @@ A jtclonelocalsyms(J jt, A a){A z;I j;I an=AN(a); LX *av=LXAV0(a),*zv;
  // the components of the explicit def, we'd better do it now, so that the usecounts are all identical
  if(4>=n) {
   // Don't bother to create a symbol table for an empty definition, since it is a domain error
-  if(AN(hv[1]))RZ(hv[3] = incorp(crelocalsyms(hv[0],hv[1],n,0,flag)));  // wordss,cws,type,monad,flag
-  if(AN(hv[HN+1]))RZ(hv[HN+3] = incorp(crelocalsyms(hv[HN+0], hv[HN+1],n,1,flag)));  // words,cws,type,dyad,flag
+  if(AN(hv[1]))RZ(hv[3] = jtincorp(jt,crelocalsyms(hv[0],hv[1],n,0,flag)));  // wordss,cws,type,monad,flag
+  if(AN(hv[HN+1]))RZ(hv[HN+3] = jtincorp(jt,crelocalsyms(hv[HN+0], hv[HN+1],n,1,flag)));  // words,cws,type,dyad,flag
  }
  switch(n){
   case 3:  return fdef(0,CCOLON, VERB, xn1,jtxdefn,       num(n),0L,h, flag|VJTFLGOK1|VJTFLGOK2, RMAX,RMAX,RMAX);
   case 1:  return fdef(0,CCOLON, ADV,  b?xop1:xadv,0L,    num(n),0L,h, flag, RMAX,RMAX,RMAX);
   case 2:  return fdef(0,CCOLON, CONJ, 0L,b?jtxop2:jtxdefn, num(n),0L,h, flag, RMAX,RMAX,RMAX);
   case 4:  return fdef(0,CCOLON, VERB, xn1,jtxdefn,       num(n),0L,h, flag|VJTFLGOK1|VJTFLGOK2, RMAX,RMAX,RMAX);
-  case 13: return vtrans(w);
+  case 13: return jtvtrans(jt,w);
   default: ASSERT(0,EVDOMAIN);
  }
 }
@@ -935,22 +935,22 @@ A jtclonelocalsyms(J jt, A a){A z;I j;I an=AN(a); LX *av=LXAV0(a),*zv;
 // This is a drop-in for jttokens(jt,).  It takes a string and env, and returns tokens created by enqueue().  Can optionally return string
 //
 // Any DDs found are collected and converted into ( m : string ).  This is done recursively.  If an unterminated
-// DD is found, we call jgets() to get the next line, taking as many lines as needed to leave with a valid line.
+// DD is found, we call jtjgets(jt,) to get the next line, taking as many lines as needed to leave with a valid line.
 // The string for a DD will contain a trailing LF plus one LF for each LF found inside the DD.
 //
-// Bit 2 of env suppresses the call to jgets().  It will be set if it is known that there is no way to get more
+// Bit 2 of env suppresses the call to jtjgets(jt,).  It will be set if it is known that there is no way to get more
 // input, for example if the string comes from (". y) or from an event.  If an unterminated DD is found when bit 2 is set,
 // the call fails with control error
 //
 // Bit 3 of env is set if the caller wants the returned value as a string rather than as enqueued words
 //
-// If the call to jgets() returns EOF, indicating end-of-script, that is also a control error
+// If the call to jtjgets(jt,) returns EOF, indicating end-of-script, that is also a control error
 A jtddtokens(J jt,A w,I env){
 // TODO: Use LF for DDSEP, support {{), make nouns work
  PROLOG(000);FPREFIP;
  if (!w) return 0;
  // find word boundaries, remember if last word is NB
- A wil; RZ(wil=wordil(w));  // get index to words
+ A wil; RZ(wil=jtwordil(jt,w));  // get index to words
  C *wv=CAV(w); I nw=AS(wil)[0]; I (*wilv)[2]=voidAV(wil);  // cv=pointer to chars, nw=#words including final NB   wilv->[][2] array of indexes into wv word start/end
  // scan for start of DD/end of DD.
  I firstddbgnx;  // index of first/last start of DD, and end of DD
@@ -986,10 +986,10 @@ A jtddtokens(J jt,A w,I env){
    ASSERT(AM(wil)>=0,EVOPENQ);  // if the line didn't contain noun DD, we have to give error if open quote
    ASSERT(!(env&4),EVCTRL);   // Abort if we are not allowed to continue (as for an event or ". y)
    scanstart=AM(wil);  // Get # words, not including final NB.  We have looked at em all, so start next look after all of them
-   A neww=jgets("\001");  // fetch next line, in raw mode
+   A neww=jtjgets(jt,"\001");  // fetch next line, in raw mode
    RE(0); ASSERT(neww!=0,EVCTRL); // fail if jgets failed, or if it returned EOF - problem either way
    // join the new line onto the end of the old one (after discarding trailing NB in the old).  Must add an LF character and a word for it
-   w=jtapip(jtinplace,w,scc(DDSEP));   // append a separator, which is all that remains of the original line   scaf use faux or constant block
+   w=jtapip(jtinplace,w,jtscc(jt,DDSEP));   // append a separator, which is all that remains of the original line   scaf use faux or constant block
    jtinplace=(J)((I)jtinplace|JTINPLACEW);  // after the first one, we can certainly inplace on top of w
    I oldchn=AN(w);  // len after adding LF, before adding new line
    RZ(w=jtapip(jtinplace,w,neww));   // join the new character list onto the old, inplace if possible
@@ -999,7 +999,7 @@ A jtddtokens(J jt,A w,I env){
    A lfwd; fauxblockINT(lffaux,2,2); fauxINT(lfwd,lffaux,2,2)  AS(lfwd)[0]=2; AS(lfwd)[1]=1; IAV(lfwd)[0]=oldchn-1; IAV(lfwd)[1]=oldchn; 
    RZ(wil=jtapip(jtinplace,wil,lfwd));  // add a new word for added LF.  # words in wil is now scanstart+1
    ++scanstart;  // update count of words already examined so we start after the added LF word
-   A newwil; RZ(newwil=wordil(neww));  // get index to new words
+   A newwil; RZ(newwil=jtwordil(jt,neww));  // get index to new words
    I savam=AM(newwil);  // save AM for insertion in final new string block
    makewritable(newwil);  // We will modify the block rather than adding to it
    I *nwv=IAV(newwil); DO(AN(newwil), *nwv++ += oldchn;)  // relocate all the new words so that they point to chars after the added LF
@@ -1023,11 +1023,11 @@ A jtddtokens(J jt,A w,I env){
     while(1){
      // append the LF for the previous line (unless an empty first line), then the new line itself, to w
      if(enddelimx<wn){
-      w=jtapip(jtinplace,w,scc(DDSEP));   // append a separator   scaf use faux or constant block
+      w=jtapip(jtinplace,w,jtscc(jt,DDSEP));   // append a separator   scaf use faux or constant block
       jtinplace=(J)((I)jtinplace|JTINPLACEW);  // after the first one, we can certainly inplace on top of w
      }
      enddelimx=0;   // after the first line, we always install the LF
-     A neww=jgets("\001");  // fetch next line, in raw mode
+     A neww=jtjgets(jt,"\001");  // fetch next line, in raw mode
      RE(0); ASSERT(neww!=0,EVCTRL); // fail if jgets failed, or if it returned EOF - problem either way
      // join the new line onto the end of the old one
      I oldchn=AN(w);  // len after adding LF, before adding new line
@@ -1043,12 +1043,12 @@ A jtddtokens(J jt,A w,I env){
    // trying to save the scan pointer, since the case is rare
    A remnant; RZ(remnant=jtstr(jt,AN(w)-enddelimx-2,CAV(w)+enddelimx+2));  // get a string for the preserved tail of w
    AS(wil)[0]=ddbgnx; RZ(w=unwordil(wil,w,0));  // take everything up to the {{)n - it may have been put out of order
-   A spacea; RZ(spacea=scc(' ')); RZ(w=apip(w,spacea));  // put space before quoted string
+   A spacea; RZ(spacea=jtscc(jt,' ')); RZ(w=apip(w,spacea));  // put space before quoted string
    RZ(w=apip(w,jtstrq(jt,enddelimx-nounstart,wv+nounstart)));  // append quoted string
    RZ(w=apip(w,spacea));  // put space after quoted string
    RZ(w=apip(w,remnant));  // install unprocessed chars of original line
    // line is ready.  Process it from the beginning
-   RZ(wil=wordil(w));  // get index to words
+   RZ(wil=jtwordil(jt,w));  // get index to words
    wv=CAV(w); nw=AS(wil)[0]; wilv=voidAV(wil);  // cv=pointer to chars, nw=#words including final NB   wilv->[][2] array of indexes into wv word start/end
    ddschbgnx=0;  // start scan back at the beginning
   }else{
@@ -1072,7 +1072,7 @@ A jtddtokens(J jt,A w,I env){
     // the user's spacing by grouping them.  We must run the ending lines together, to save their spacing, and then
     // refresh w and wil to get the characters in order
     if(++ddendx<nw){wilv[ddendx][0]=trailstart; wilv[ddendx][1]=bodystart; AN(wil)=2*(AS(wil)[0]=ddendx+1);}  // make one string of DDEND to end of string
-    RZ(w=unwordil(wil,w,0)); RZ(wil=wordil(w));  // run chars in order; get index to words
+    RZ(w=unwordil(wil,w,0)); RZ(wil=jtwordil(jt,w));  // run chars in order; get index to words
     wv=CAV(w); nw=AS(wil)[0]; wilv=voidAV(wil);  // cv=pointer to chars, nw=#words including final NB   wilv->[][2] array of indexes into wv word start/end
     ddschbgnx=0;  // start scan back at the beginning
    }

@@ -11,11 +11,10 @@
 #define dplus(x,y)     (x+y)
 #define dtymes(x,y)    (x*y)
 #define dnegate(x)     (-x)
+#define negate(x)      jtnegate(jt,(x))
 #define QNEGATE(x)     (jtqminus(jt,zeroQ,x))
 
 //CFR macro uses fplus, ftymes, fnegate and as an argument.
-#define ftymes(x,y)    jtftymes(jt,(x),(y))
-#define fplus(x,y)     jtfplus(jt,(x),(y))
 #define CFR(f, T, TYPE, fplus, ftymes, fnegate)                          \
     A f(J jt, A a, A w) {                                                \
         PROLOG(0060);                                                    \
@@ -46,19 +45,19 @@ static CFR(jtcfrq,Q,RAT, qplus,qtymes,QNEGATE)
 
 static A jtrsort(J jt, A w){A t,z;
  PUSHCCT(1.0-FUZZ)
- RZ(t=jtover(jt,mag(w),cant1(rect(w))));
+ RZ(t=jtover(jt,mag(w),jtcant1(jt,jtrect(jt,w))));
  A tt; RZ(IRS2(t,t,0L,1L,1L,jtindexof,tt));
- z=jtdgrade2(jt,w,cant1(IRS2(tt,t,0L,1L,1L,jtfrom,z)));
+ z=jtdgrade2(jt,w,jtcant1(jt,IRS2(tt,t,0L,1L,1L,jtfrom,z)));
  POPCCT
  return z;
 }
 
 static A jtcfrz(J jt,A a,A w){A z;B b=0,p;I j,n;Z c,d,*t,*u,*v;
- RZ(w=rsort(w)); 
+ RZ(w=jtrsort(jt,w)); 
  n=AN(w); u=ZAV(w); 
  GATV0(z,CMPX,1+n,1); v=ZAV(z); v[0]=c=ZAV(a)[0]; p=!c.im;
  for(j=0;j<n;++j){
-  d=znegate(u[j]); t=j+v; t[1]=t[0]; 
+  d=jtznegate(jt,u[j]); t=j+v; t[1]=t[0]; 
   DQ(j, t[0]=jtzplus(jt,t[-1],jtztymes(jt,d,t[0])); --t;); 
   v[0]=jtztymes(jt,d,v[0]);
   if(p&&d.im)if(b^=1)c=u[j]; else if(p=ZCJ(c,u[j])){t=v; DQ(2+j, t++->im=0.0;);}
@@ -129,10 +128,10 @@ static Z jtlaguerre(J jt,I m,Z*a,Z x){D ax,e;I i,j;Z b,c,d,dx,g,g2,h,p,q,s,sq,y,
   g=jtzdiv(jt,c,b);
   g2=jtztymes(jt,g,g);
   h=jtzminus(jt,g2,jtzdiv(jt,jtzplus(jt,d,d),b));
-  sq=zsqrt(jtztymes(jt,zm1,jtzminus(jt,jtztymes(jt,zm,h),g2)));
+  sq=jtzsqrt(jt,jtztymes(jt,zm1,jtzminus(jt,jtztymes(jt,zm,h),g2)));
   p=jtzplus(jt,g,sq); q=jtzminus(jt,g,sq); s=zmag(p)>zmag(q)?p:q; 
   y=x;
-  dx=ZNZ(s)?jtzdiv(jt,zm,s):jtzpow(jt,znegate(jtzdiv(jt,a[0],a[m])),zrj0(1.0/(D)m));  // Normal step if s!=0; random step if s=0
+  dx=ZNZ(s)?jtzdiv(jt,zm,s):jtzpow(jt,jtznegate(jt,jtzdiv(jt,a[0],a[m])),zrj0(1.0/(D)m));  // Normal step if s!=0; random step if s=0
   x=jtzminus(jt,x,dx);  // advance to new position
   if(zmag(jtzminus(jt,x,y))<=EPS*zmag(x))return x;  // if we didn't move much, call it converged.  We hope it's a root.
   // This algorithm is subject to hitting limit cycles (_48 1 0 0 0 1 is an example)
@@ -142,7 +141,7 @@ static Z jtlaguerre(J jt,I m,Z*a,Z x){D ax,e;I i,j;Z b,c,d,dx,g,g2,h,p,q,s,sq,y,
 
 static Q jtmultiple(J jt,D x,Q m){A y;Q q1,q2,q1r2;
  q1r2.n=iv1; q1r2.d=jtxplus(jt,iv1,iv1);
- QRE(y=jtcvt(jt,RAT,scf(x)));
+ QRE(y=jtcvt(jt,RAT,jtscf(jt,x)));
  QRE(q1=jtqplus(jt,q1r2,jtqtymes(jt,m,QAV(y)[0])));
  QRE(q2.n=xdiv(q1.n,q1.d,XMFLR)); q2.d=iv1;
  return jtqdiv(jt,q2,m);
@@ -165,8 +164,8 @@ static B jtrfcq(J jt,I m,A w,A*zz,A*ww){A q,x,y,z;B b;I i,j,wt;Q*qv,rdx,rq,*wv,*
  if(!(wt&RAT))RZ(w=jtcvt(jt,RAT,w)); wv=QAV(w);
  rdx=jtmaxdenom(jt,1+m,wv);  // rdx = max denominator in the polynomial, in rational form
  RZ(x=jtcvt(jt,CMPX,w)); xv=ZAV(x); // set x = complex form of w, xv->first complex coeff
- RZ(y=jttake(jt,sc(1+m),x)); makewritable(y); yv=ZAV(y);  // y = complex form with degree m, yv->first coeff.  These are modified by deflate[q]() and must not be virtual
- RZ(q=jttake(jt,sc(1+m),w)); makewritable(q); qv=QAV(q);  // q = rational form with degree m, qv->first coeff
+ RZ(y=jttake(jt,jtsc(jt,1+m),x)); makewritable(y); yv=ZAV(y);  // y = complex form with degree m, yv->first coeff.  These are modified by deflate[q]() and must not be virtual
+ RZ(q=jttake(jt,jtsc(jt,1+m),w)); makewritable(q); qv=QAV(q);  // q = rational form with degree m, qv->first coeff
  GATV0(z,RAT,m,1); zv=QAV(z);        // allocate space for exact rational roots, zv->first result location
  i=j=0;
  // loop to find each root by Laguerre's method
@@ -209,8 +208,8 @@ static A jtrfcz(J jt,I m,A w){A x,y,z;B bb=0,real;D c,d;I i;Z r,*xv,*yv,*zv;
  GATV0(y,CMPX,1+m,1); yv=ZAV(y); memcpy(yv,xv,(1+m)*sizeof(Z));
  GATV0(z,CMPX,  m,1); zv=ZAV(z);
  if(2==m){Z a2,b,c,d,z2={2,0};
-  a2=jtztymes(jt,z2,xv[2]); b=znegate(xv[1]); c=xv[0]; 
-  d=zsqrt(jtzminus(jt,jtztymes(jt,b,b),jtztymes(jt,z2,jtztymes(jt,a2,c))));
+  a2=jtztymes(jt,z2,xv[2]); b=jtznegate(jt,xv[1]); c=xv[0]; 
+  d=jtzsqrt(jt,jtzminus(jt,jtztymes(jt,b,b),jtztymes(jt,z2,jtztymes(jt,a2,c))));
   r=jtzdiv(jt,jtzplus(jt,b,d),a2); zv[0]=newt(m,xv,r,10L);
   r=jtzdiv(jt,jtzminus(jt,b,d),a2); zv[1]=newt(m,xv,r,10L);
  }else{
@@ -239,28 +238,28 @@ static A jtrfc(J jt, A w){A r,w1;I m=0,n,t;
  if(n){
   ASSERT(t&(DENSE&NUMERIC),EVDOMAIN);  // coeffs must be dense numeric
   RZ(r=jtjico2(jt,ne(w,num(0)),num(1))); m=AV(r)[0]; m=(m==n)?0:m;  // r=block for index of last nonzero; m=degree of polynomial (but 0 if all zeros)
-  ASSERT(m||jtequ(jt,num(0),head(w)),EVDOMAIN);  // error if unsolvable constant polynomial
+  ASSERT(m||jtequ(jt,num(0),jthead(jt,w)),EVDOMAIN);  // error if unsolvable constant polynomial
  }
  // switch based on degree of polynomial
  switch(m){
   case 0:  return link(num(0),mtv);  // degree 0 - return 0;''
-  case 1:  r=ravel(negate(jtaslash(jt,CDIV,jttake(jt,num(2),w)))); break;  // linear - return solution, whatever its type
+  case 1:  r=jtravel(jt,jtnegate(jt,jtaslash(jt,CDIV,jttake(jt,num(2),w)))); break;  // linear - return solution, whatever its type
   default: if(t&CMPX)r=jtrfcz(jt,m,w);  // higher order - if complex, go straight to complex solutions
            else{RZ(rfcq(m,w,&r,&w1)); if(m>AN(r))r=jtover(jt,r,jtrfcz(jt,m-AN(r),w1));} // otherwise, find rational solutions in r, and residual polynomial in w1.
             // if there are residual (complex) solutions, go find them
  }
  // Return result, which is leading nonzero coeff;roots
- return link(jtfrom(jt,sc(m),w),rsort(r));
+ return link(jtfrom(jt,jtsc(jt,m),w),jtrsort(jt,r));
 }
 
 // entry point for p. y
  A jtpoly1(J jt, A w){A c,e,x;
  F1RANK(1L,jtpoly1,UNUSED_VALUE);
  // If y is not boxed, it's a list of coefficients.  Get the roots
- if((-AN(w)&SGNIF(AT(w),BOXX))>=0)return rfc(w);
+ if((-AN(w)&SGNIF(AT(w),BOXX))>=0)return jtrfc(jt,w);
  x=AAV(w)[0];
  // If there is more than one box, or the first box has rank <= 1, it's scale;roots form - go handle it
- if(((AN(w)-2)&(1-AR(x)))>=0)return cfr(w);
+ if(((AN(w)-2)&(1-AR(x)))>=0)return jtcfr(jt,w);
  // Must be exponent form: a single box containing a table with 2-atom rows
  ASSERT(2==AR(x),EVRANK);
  ASSERT(2==*(1+AS(x)),EVLENGTH);
@@ -273,15 +272,15 @@ static A jtrfc(J jt, A w){A r,w1;I m=0,n,t;
 
 static A jtmnomx(J jt,I m,A w){A s,*wv,x,z=w,*zv;I i,n,r;
  if(BOX&AT(w)){
-  n=AN(w); wv=AAV(w);  RZ(s=sc(m));
+  n=AN(w); wv=AAV(w);  RZ(s=jtsc(jt,m));
   GATV(z,BOX,n,AR(w),AS(w)); zv=AAV(z);
   for(i=0;i<n;++i){
    x=wv[i]; r=AR(x); 
    ASSERT(1>=r,EVRANK); 
    ASSERT(!r||m==AN(x),EVLENGTH); 
-   zv[i]=incorp(m<=1?x:jtreshape(jt,s,x));
+   zv[i]=jtincorp(jt,m<=1?x:jtreshape(jt,s,x));
   }
-  RE(z); RZ(z=ope(z));
+  RE(z); RZ(z=jtope(jt,z));
  }
  ASSERT(NUMERIC&AT(z),EVDOMAIN);
  return z;
@@ -293,9 +292,9 @@ static A jtpoly2a(J jt,A a,A w){A c,e,x;I m;D rkblk[16];
  ASSERT(2==AR(a),EVRANK);
  ASSERT(0<m,EVLENGTH);
  RZ(IRS1(a,0L,1L,jthead,c  ) ); 
- RZ(e=cant1(IRS1(a,0L,1L,jtbehead,e)));
+ RZ(e=jtcant1(jt,IRS1(a,0L,1L,jtbehead,e)));
  RZ(x=jtmnomx(jt,m,w));
- if(1==m){A er; RZ(er=ravel(e)); return jtpdt(jt,ATOMIC2(jt,x,er,rkblk,0L,2L,CEXP),c);}else{A z; return jtpdt(jt,df2(z,x,e,jtdot(jt,slash(ds(CSTAR)),ds(CEXP))),c);}  // scaf need agreement check?
+ if(1==m){A er; RZ(er=jtravel(jt,e)); return jtpdt(jt,ATOMIC2(jt,x,er,rkblk,0L,2L,CEXP),c);}else{A z; return jtpdt(jt,df2(z,x,e,jtdot(jt,jtslash(jt,ds(CSTAR)),ds(CEXP))),c);}  // scaf need agreement check?
 }    /* multinomial: (<c,.e0,.e1,.e2) p. <x0,x1,x2, left argument opened */
 
 // x p. y    Supports IRS on the y argument; supports inplace
@@ -317,7 +316,7 @@ static A jtpoly2a(J jt,A a,A w){A c,e,x;I m;D rkblk[16];
   an=AN(a); at=AT(a);
   ASSERT(NUMERIC&(at|AT(c)),EVDOMAIN);
   ASSERT(!AR(c),EVRANK);
-  ASSERT(1>=AR(a),EVRANK); if(!AR(a))RZ(a=ravel(a));  // treat atomic a as list
+  ASSERT(1>=AR(a),EVRANK); if(!AR(a))RZ(a=jtravel(jt,a));  // treat atomic a as list
  }
  t=maxtyped(at,wt); if(b)t=maxtyped(t,AT(c)); if(!(t&XNUM+RAT))t=maxtyped(t,FL);  // promote B01/INT to FL
  if(TYPESNE(t,at))RZ(a=jtcvt(jt,t,a)); ad=DAV(a); az=ZAV(a);
@@ -345,7 +344,7 @@ static A jtpoly2a(J jt,A a,A w){A c,e,x;I m;D rkblk[16];
  }
  switch(b){
  // coeffs: d/e are not set
- case 0: return df2(za,w,a,eval("(^/i.@#) +/ .* ]"));  // XNUM/RAT/SPARSE
+ case 0: return df2(za,w,a,jteval(jt,"(^/i.@#) +/ .* ]"));  // XNUM/RAT/SPARSE
  case 1: NAN0;  // FL
   switch(an){  // special cases for linear, quadratic, cubic
   case 2:
@@ -360,7 +359,7 @@ static A jtpoly2a(J jt,A a,A w){A c,e,x;I m;D rkblk[16];
   NAN1; break;  // Horner's rule.  First multiply is never 0*_
  case 2: NAN0; DQ(n, q=zeroZ; y=*wz++; j=an; DQ(an,q=jtzplus(jt,az[--j],jtztymes(jt,y,q));); *zz++=q;); NAN1; break;  // CMPX
  // mult/roots: d/e are set
- case 3: return tymes(c,df2(za,negate(a),w,eval("*/@(+/)")));
+ case 3: return tymes(c,df2(za,jtnegate(jt,a),w,jteval(jt,"*/@(+/)")));
  case 4: NAN0; DO(n, p=d; u=*x++; DO(an,p*=u-ad[i];); *z++=p;); NAN1;                  break;
  case 5: NAN0; DO(n, q=e; y=*wz++; DO(an,q=jtztymes(jt,q,jtzminus(jt,y,az[i]));); *zz++=q;); NAN1; break;
  }
@@ -370,13 +369,13 @@ static A jtpoly2a(J jt,A a,A w){A c,e,x;I m;D rkblk[16];
 
  A jtpderiv1(J jt, A w){
  F1RANK(1,jtpderiv1,UNUSED_VALUE);
- if(AN(w)&&!(NUMERIC&AT(w)))RZ(w=poly1(w));
- return 1>=AN(w) ? apv(1L,0L,0L) : tymes(behead(w),apv(AN(w)-1,1L,1L));
+ if(AN(w)&&!(NUMERIC&AT(w)))RZ(w=jtpoly1(jt,w));
+ return 1>=AN(w) ? apv(1L,0L,0L) : tymes(jtbehead(jt,w),apv(AN(w)-1,1L,1L));
 }    /* p.. w */
 
  A jtpderiv2(J jt,A a,A w){
  F2RANK(0,1,jtpderiv2,UNUSED_VALUE);
- if(!(NUMERIC&AT(w)))RZ(w=poly1(w));
+ if(!(NUMERIC&AT(w)))RZ(w=jtpoly1(jt,w));
  ASSERT(NUMERIC&AT(a),EVDOMAIN);
  return jtover(jt,a,divideW(w,apv(AN(w),1L,1L)));
 }    /* a p.. w */

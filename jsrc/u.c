@@ -9,19 +9,19 @@
 // If jt is 0, don't call jsignal when there is an error
 // Returns x*y, or 0 if there is an error (and in that case jsignal might have been called)
 #ifdef DPMULD
-I jtmult(J jt, I x, I y){I z; DPMULDDECLS DPMULD(x,y,z,{if(jt)jsignal(EVLIMIT);return 0;}) return z;}
+I jtmult(J jt, I x, I y){I z; DPMULDDECLS DPMULD(x,y,z,{if(jt)jtjsignal(jt,EVLIMIT);return 0;}) return z;}
 #else
 I jtmult(J jt, I x, I y){I z;I const lm = 0x00000000ffffffffLL; I const hm = 0xffffffff00000000LL;
   I const lmsb = 0x0000000080000000LL; I const hlsb = 0x0000000100000000;
  // if each argument fits in unsigned-32, do unsigned multiply (normal case); make sure result doesn't overflow
- if(!(hm &(x|y))){if(0 > (z = (I)((UI)x * (UI)y))){if(jt)jsignal(EVLIMIT);return 0;}}
+ if(!(hm &(x|y))){if(0 > (z = (I)((UI)x * (UI)y))){if(jt)jtjsignal(jt,EVLIMIT);return 0;}}
  // if each argument fits in signed-32, do signed multiply; no overflow possible
  else if (!(hm &((x+0x80000000LL)|(y+0x80000000LL))))z = x * y;
  else {
    // if x and y BOTH have signed significance in high 32 bits, that's too big; and
    // MAXNEG32*MAXNEG32 is as well, because it needs 65 bits to be represented.
    // all the low 32 bits of x/y are unsigned data
-  if(((hm & (x + (x & hlsb))) && (hm & (y + (y & hlsb)))) || ((x == hm) && (y == hm))){if(jt)jsignal(EVLIMIT); return 0;}
+  if(((hm & (x + (x & hlsb))) && (hm & (y + (y & hlsb)))) || ((x == hm) && (y == hm))){if(jt)jtjsignal(jt,EVLIMIT); return 0;}
 
   // otherwise, do full 64-bit multiply.  Don't convert neg to pos, because the audit for positive fails on MAXNEG * 1
   I xh = x>>32, xl = x&lm, yh = y>>32, yl = y&lm;
@@ -32,7 +32,7 @@ I jtmult(J jt, I x, I y){I z;I const lm = 0x00000000ffffffffLL; I const hm = 0xf
   // We need all 4 partial products, but we can calculate xh*yh and xh*yl at the same time,
   // by multiplying xh by the entire y.
   z = xh*y+yh*xl+((UI)xlyl>>32);
-  if ((hm & (z + lmsb))){if(jt)jsignal(EVLIMIT); return 0;}
+  if ((hm & (z + lmsb))){if(jt)jtjsignal(jt,EVLIMIT); return 0;}
   // Combine bits 32..63 with 0..31 to produce the result
   z = (z<<32) + (xlyl&lm);
  }
@@ -146,7 +146,7 @@ C cf(A w){if(!w)return 0; return CAV(w)[0];}  // first character in a character 
 C cl(A w){if(!w)return 0; return CAV(w)[AN(w)-1];}  // last character in a character array
 
 // A block for null-terminated C string, with a trailing NUL (which is not included in the AN of the string)
-A jtcstr(J jt,C*s){A z; RZ(z=rifvs(jtstr(jt,(I)strlen(s),s))); CAV(z)[AN(z)]=0; return z;}  // used only for initialization, so ensure real string returned.  The string has only the non-NUL, but add a trailing NUL.  There's always room.
+A jtcstr(J jt,C*s){A z; RZ(z=jtrifvs(jt,jtstr(jt,(I)strlen(s),s))); CAV(z)[AN(z)]=0; return z;}  // used only for initialization, so ensure real string returned.  The string has only the non-NUL, but add a trailing NUL.  There's always room.
 
 // Return 1 iff w is the evocation of a name.  w must be a FUNC
 B evoke(A w){V*v=FAV(w); return CTILDE==v->id&&v->fgh[0]&&NAME&AT(v->fgh[0]);}
@@ -163,7 +163,7 @@ I jti0(J jt,A w){
   ASSERT(!AR(w),EVRANK);
   return cval;  // too-large values don't convert, handle separately
  }
- if(!(w=vi(w)))return 0; ASSERT(!AR(w),EVRANK);
+ if(!(w=jtvi(jt,w)))return 0; ASSERT(!AR(w),EVRANK);
  return IAV(w)[0];
 }  // can't move the ASSERT earlier without breaking a lot of tests
 
@@ -222,7 +222,7 @@ A jtodom(J jt,I r,I n,I* RESTRICT s){A z;I m,mn,*u,*zv;
  return z;
 }
 
- A jtrankle(J jt, A w){return!w||AR(w)?w:ravel(w);}
+ A jtrankle(J jt, A w){return!w||AR(w)?w:jtravel(jt,w);}
 
 A jtsc(J jt,I k)     {A z; if((k^REPSGN(k))<=NUMMAX){z=num(k); z=k&~1?z:zeroionei(k); return z;} GAT0(z,INT, 1,0); IAV(z)[0]=k;     return z;}  // always return I
 A jtscib(J jt,I k)   {A z; if((k^REPSGN(k))<=NUMMAX)return num(k); GAT0(z,INT, 1,0); IAV(z)[0]=k;     return z;}  // return b if 0 or 1, else I
@@ -230,7 +230,7 @@ A jtsc4(J jt,I t,I v){A z; GA(z,t,   1,0,0); IAV(z)[0]=v;     return z;}  // ret
 A jtscb(J jt,B b)    {return num(b);}   // A block for boolean
 A jtscc(J jt,C c)    {A z; GAT0(z,LIT, 1,0); CAV(z)[0]=c;     return z;}  // create scalar character
 A jtscf(J jt,D x)    {A z; GAT0(z,FL,  1,0); DAV(z)[0]=x;     return z;}   // scalar float
-A jtscx(J jt,X x)    {A z; GAT0(z,XNUM,1,0); XAV(z)[0]=ca(x); return z;}  // scalar extended
+A jtscx(J jt,X x)    {A z; GAT0(z,XNUM,1,0); XAV(z)[0]=jtca(jt,x); return z;}  // scalar extended
 
 // return A-block for the string *s with length n
 A jtstr(J jt,I n,C*s){A z; GATV0(z,LIT,n,1); memcpy(AV(z),s,n); return z;}
@@ -277,7 +277,7 @@ for(i=0;i<n<<bplg(t);i++)*p++=!!(*q++);
  if(w==ainf)return imax;  // sentence words of _ always use the same block, so catch that too
  I p=-IMAX,q=IMAX;
  RANK2T oqr=jt->ranks; RESETRANK;
- if((AT(w)&SPARSE)!=0)RZ(w=denseit(w));
+ if((AT(w)&SPARSE)!=0)RZ(w=jtdenseit(jt,w));
  switch(UNSAFE(AT(w))){
  default:
   if(!(AT(w)&FL))RZ(w=jtcvt(jt,FL,w));
@@ -292,7 +292,7 @@ for(i=0;i<n<<bplg(t);i++)*p++=!!(*q++);
    }
    break;
   case XNUM:
-  case RAT:  z=jtcvt(jt,INT,maximum(sc(p),minimum(sc(q),w))); break;
+  case RAT:  z=jtcvt(jt,INT,maximum(jtsc(jt,p),minimum(jtsc(jt,q),w))); break;
  }
  jt->ranks=oqr; return z;
 }
@@ -305,5 +305,5 @@ for(i=0;i<n<<bplg(t);i++)*p++=!!(*q++);
      /* verify string */
 
 // Convert w to utf8 string, verify it is a list or atom
- A jtvslit(J jt, A w){ ASSERT(1>=AR(w),EVRANK); return LIT&AT(w)?w:(C2T+C4T)&AT(w)?toutf8(w):jtcvt(jt,LIT,w);}
+ A jtvslit(J jt, A w){ ASSERT(1>=AR(w),EVRANK); return LIT&AT(w)?w:(C2T+C4T)&AT(w)?jttoutf8(jt,w):jtcvt(jt,LIT,w);}
      /* verify string */
