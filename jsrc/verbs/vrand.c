@@ -85,7 +85,7 @@ static void jtgb_init(J jt,UI s){I*A;register I i,next=1,prev,seed;
   A[i]=next;
   next=mod_diff(prev,next);
   if(seed&1)seed=0x40000000+(seed>>1); else seed>>=1; /* cyclic shift right 1 */
-  next=mod_diff(next,seed);    
+  next=mod_diff(next,seed);
   prev=A[i];
  }
  gb_flip_cycle();
@@ -115,15 +115,15 @@ static I jtgb_unif_rand(J jt,I m){
 
 
 /* ----------------------------------------------------------------------- */
-/* 
+/*
    A C-program for MT19937, with initialization improved 2002/1/26.
    Coded by Takuji Nishimura and Makoto Matsumoto.
 
-   Before using, initialize the state by using init_genrand(seed)  
+   Before using, initialize the state by using init_genrand(seed)
    or init_by_array(init_key, key_length).
 
    Copyright (C) 1997 - 2002, Makoto Matsumoto and Takuji Nishimura,
-   All rights reserved.                          
+   All rights reserved.
 
    Redistribution and use in source and binary forms, with or without
    modification, are permitted provided that the following conditions
@@ -136,8 +136,8 @@ static I jtgb_unif_rand(J jt,I m){
         notice, this list of conditions and the following disclaimer in the
         documentation and/or other materials provided with the distribution.
 
-     3. The names of its contributors may not be used to endorse or promote 
-        products derived from this software without specific prior written 
+     3. The names of its contributors may not be used to endorse or promote
+        products derived from this software without specific prior written
         permission.
 
    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
@@ -175,7 +175,7 @@ static void jtmt_init(J jt,UI s){I i;UI*mt=jt->rngv;
   /* only MSBs of the array mt[].                        */
   /* 2002/01/09 modified by Makoto Matsumoto             */
  jt->rngi=MTN;
-} 
+}
 
 static void jtmt_init_by_array(J jt,UI init_key[], I key_length){I i,j,k;UI*mt=jt->rngv;
  mt_init((UI)19650218);
@@ -197,7 +197,7 @@ static void jtmt_init_by_array(J jt,UI init_key[], I key_length){I i,j,k;UI*mt=j
 /* generates a random 32-or 64-bit number */
 static UI jtmt_next(J jt){UI*mt=jt->rngv,*u,*v,*w,y;
  if (MTN<=jt->rngi) {  /* generate MTN words at one time */
-  v=1+mt; w=MTM+mt; 
+  v=1+mt; w=MTM+mt;
   u=mt; DQ(MTN-MTM, y=(*u&UM)|(*v++&LM); *u++=*w++^(y>>1)^MATRIX_A*(y&0x1UL););
   w=mt; DQ(MTM-1,   y=(*u&UM)|(*v++&LM); *u++=*w++^(y>>1)^MATRIX_A*(y&0x1UL););
   v=mt;             y=(*u&UM)|(*v++&LM); *u++=*w++^(y>>1)^MATRIX_A*(y&0x1UL);
@@ -237,7 +237,7 @@ static UI jtmt_next(J jt){UI*mt=jt->rngv,*u,*v,*w,y;
 static UI jtdx_next30(J jt){I j;UI*u,*v,*vv,r,x;
  j=jt->rngi; v=vv=j+jt->rngv; u=DXN+jt->rngv;
  r =*v; v+=532; if(v>=u)v-=DXN;
- r+=*v; v+=532; if(v>=u)v-=DXN; 
+ r+=*v; v+=532; if(v>=u)v-=DXN;
  r+=*v; v+=532; if(v>=u)v-=DXN;
  r+=*v;
  *vv=x=(r*DXB)%DXM;
@@ -252,11 +252,11 @@ static UI jtdx_next(J jt){UI a,b,c;
  return a|b<<30|c<<34&0xf000000000000000UL;
 }
 
-static void jtdx_init(J jt,UI s){lcg(DXN,jt->rngv,s); jt->rngi=0;} 
+static void jtdx_init(J jt,UI s){lcg(DXN,jt->rngv,s); jt->rngi=0;}
 
  A jtdx_test(J jt, A w){I j=jt->rng,x;
  ASSERTMTV(w);
- RZ(rngselects(sc(DXI))); dx_init(1UL); 
+ RZ(rngselects(sc(DXI))); dx_init(1UL);
  x=dx_next(); ASSERTSYS(x== 221240004UL, "dx_test 0");
  x=dx_next(); ASSERTSYS(x==2109349384UL, "dx_test 1");
  x=dx_next(); ASSERTSYS(x== 527768079UL, "dx_test 2");
@@ -302,7 +302,7 @@ static void jtmr_init(J jt,UI s){D*v=(D*)jt->rngv;I t[MRN];
  lcg(MRN,t,s);
  DO(MRN, *v++=(D)t[i];);
  jt->rngi=0;
-} 
+}
 
  A jtmr_test(J jt, A w){I j=jt->rng,x;
  ASSERTMTV(w);
@@ -328,7 +328,7 @@ static void jtmr_init(J jt,UI s){D*v=(D*)jt->rngv;I t[MRN];
 
 static UI jtsm_next(J jt){UI x;
  jt->rngi=jt->rngI0[GBI]; jt->rngv=jt->rngV0[GBI]; x =gb_next(); jt->rngI0[GBI]=jt->rngi;
- jt->rngi=jt->rngI0[MTI]; jt->rngv=jt->rngV0[MTI]; x+=mt_next(); jt->rngI0[MTI]=jt->rngi; 
+ jt->rngi=jt->rngI0[MTI]; jt->rngv=jt->rngV0[MTI]; x+=mt_next(); jt->rngI0[MTI]=jt->rngi;
  jt->rngi=jt->rngI0[DXI]; jt->rngv=jt->rngV0[DXI]; x+=dx_next(); jt->rngI0[DXI]=jt->rngi;
  jt->rngi=jt->rngI0[MRI]; jt->rngv=jt->rngV0[MRI]; x+=mr_next(); jt->rngI0[MRI]=jt->rngi;
  return x;
@@ -364,7 +364,7 @@ B jtrnginit(J jt){
  jt->rngM[3]=0;  /*   %   _1+2^31 */  /* fudge; should be _1+2^31 */
  jt->rngM[4]=0;  /*   % _209+2^32 */
  jt->rngI0[GBI]=54;
- rngselects(num(2)); 
+ rngselects(num(2));
  return 1;
 }
 
@@ -372,12 +372,12 @@ B jtrnginit(J jt){
 
 static B jtrngga(J jt,I i,UI**vv){
  if(vv[i]){jt->rngv=vv[i]; jt->rngi=jt->rngI[i];}
- else{A x;I n,t;void(*f)(); 
+ else{A x;I n,t;void(*f)();
   switch(i){
    case GBI: t=INT; n=GBN; f=jtgb_init; break;
    case MTI: t=INT; n=MTN; f=jtmt_init; break;
    case DXI: t=INT; n=DXN; f=jtdx_init; break;
-   case MRI: t=FL;  n=MRN; f=jtmr_init; 
+   case MRI: t=FL;  n=MRN; f=jtmr_init;
   }
   GA(x,t,n,1,0); ras(x); vv[i]=jt->rngv=AV(x);   // x will never be freed, but that's OK, it's inited only once
   f(jt,jt->rngS[i]); jt->rngI[i]=jt->rngi;
@@ -393,9 +393,9 @@ static B jtrngga(J jt,I i,UI**vv){
   case SMI: vv=jt->rngV0;      jt->rngw=64;
             RZ(jtrngga(jt,GBI,vv)); RZ(jtrngga(jt,MTI,vv)); RZ(jtrngga(jt,DXI,vv)); RZ(jtrngga(jt,MRI,vv)); break;
   case GBI: RZ(jtrngga(jt,i,  vv)); jt->rngw=64; break;
-  case MTI: RZ(jtrngga(jt,i,  vv)); jt->rngw=64; break; 
+  case MTI: RZ(jtrngga(jt,i,  vv)); jt->rngw=64; break;
   case DXI: RZ(jtrngga(jt,i,  vv)); jt->rngw=64; break;
-  case MRI: RZ(jtrngga(jt,i,  vv)); jt->rngw=64; 
+  case MRI: RZ(jtrngga(jt,i,  vv)); jt->rngw=64;
  }
  jt->rngf=jt->rngF[jt->rng];
  return mtv;
@@ -404,7 +404,7 @@ static B jtrngga(J jt,I i,UI**vv){
  A jtrngstateq(J jt, A w){A x=0,z,*zv;D*u=0;I n;UI*v;
  ASSERTMTV(w);
  switch(jt->rng){
-  case SMI: 
+  case SMI:
    GAT0(z,BOX,9,1); zv=AAV(z);
    RZ(*zv++=num(0));
    RZ(*zv++=incorp(sc(jt->rngI0[GBI]))); RZ(*zv++=incorp(vec(INT,GBN,jt->rngV0[GBI])));
@@ -425,8 +425,8 @@ static B jtrngga(J jt,I i,UI**vv){
 static B jtrngstates1(J jt,I j,I n,UI**vv,I i,I k,A x,B p){D*u;UI*xv;
  RZ(x=vi(x)); xv=AV(x);
  ASSERT(1==AR(x),EVRANK);
- ASSERT(n==AN(x),EVLENGTH); 
- ASSERT(i<=k&&k<n+(I )(j==MTI),EVINDEX); 
+ ASSERT(n==AN(x),EVLENGTH);
+ ASSERT(i<=k&&k<n+(I )(j==MTI),EVINDEX);
  if(p)DO(n, ASSERT(x31>xv[i],EVDOMAIN););
  ICPY(vv[j],xv,n);
  jt->rngi=k;
@@ -437,7 +437,7 @@ static B jtrngstates1(J jt,I j,I n,UI**vv,I i,I k,A x,B p){D*u;UI*xv;
  ASSERT(1==AR(w),EVRANK);
  ASSERT(BOX&AT(w),EVDOMAIN);
  ASSERT(2<=AN(w),EVLENGTH);
- wv=AAV(w); 
+ wv=AAV(w);
  RZ(rngselects(wv[0]));  /* changes jt->rng */
  ASSERT(AN(w)==(jt->rng?3:9),EVLENGTH);
  switch(jt->rng){
@@ -533,36 +533,6 @@ static A jtrollksub(J jt,A a,A w){A z;I an,*av,k,m1,n,p,q,r,sh;UI m,mk,s,t,*u,x=
  return jtrollksub(jt,a,vi(w));
 }    /* ?@$ or ?@# or [:?$ or [:?# */
 
-static X jtxrand(J jt,X x){PROLOG(0090);A q,z;B b=1;I j,m,n,*qv,*xv,*zv;
- n=AN(x); xv=AV(x);  // number of Digits in x, &first digit
- m=n;  // m is number of result digits, same as input.  If input is 10000... this will always be 1 digit too many, but that's not worth checking for
- GATV0(q,INT,m,1); qv=AV(q);  // allocate place to hold base, qv-> result digits
- DO(m-1, qv[i]=XBASE;); qv[m-1]=xv[n-1]+1;  // init base to the largest possible value in each Digit
- // loop to roll random values until we get one that is less than x
- do{
-  RZ(z=roll(q)); zv=AV(z);  // roll one value in each Digit position
-  DQ(j=m, --j; if(xv[j]!=zv[j]){b=xv[j]<zv[j]; break;});  // MS mismatched Digit tells the tale; if no mismatch, that's too high, keep b=1
- }while(b);  // loop till b=0
- j=m-1; while(0<j&&!zv[j])--j; AN(z)=AS(z)[0]=++j;  // remove leading 0s from (tail of) result
- EPILOG(z);
-}    /* ?x where x is a single strictly positive extended integer */
-
-static A jtrollxnum(J jt, A w){A z;B c=0;I d,n;X*u,*v,x;
- if(!(AT(w)&XNUM))RZ(w=jtcvt(jt,XNUM,w));  // convert rational to numeric
- n=AN(w); v=XAV(w);
- GATV(z,XNUM,n,AR(w),AS(w)); u=XAV(z);
- // deal an extended random for each input number.  Error if number <0; if 0, put in 0 as a placeholder
- DQ(n, x=*v++; d=XDIG(x); ASSERT(0<=d,EVDOMAIN); if(d)RZ(*u++=rifvs(xrand(x))) else{*u++=iv0; c=1;});
- // If there was a 0, convert the whole result to float, and go back and fill the original 0s with random floats
- if(c){D*d;I mk,sh;
-  INITD;
-  RZ(z=jtcvt(jt,FL,z)); d=DAV(z); v=XAV(w);
-  DQ(n, x=*v++; if(!XDIG(x))*d=sh?NEXTD1:NEXTD0; ++d;);
- } 
- return z;
-}    /* ?n$x where x is extended integer */
-
-
 static A jtrollbool(J jt, A w){A z;B*v;D*u;I n,sh;UINT mk;
  n=AN(w); v=BAV(w); INITD;
  GATV(z,FL,n,AR(w),AS(w)); u=DAV(z);
@@ -620,7 +590,7 @@ static A jtrollany(J jt,A w,B*b){A z;D*u;I j,m1,n,sh,*v;UI m,mk,s,t,x=jt->rngM[j
  GATV(z,FL,n,AR(w),AS(w)); u=DAV(z);
  for(j=0;j<n;++j){
   m1=*v++; ASSERT(0<=m1,EVDOMAIN); m=m1;
-  if(0==m)*u++=sh?NEXTD1:NEXTD0; 
+  if(0==m)*u++=sh?NEXTD1:NEXTD0;
   else{s=GMOF(m,x); t=NEXT; if(s)while(s<=t)t=NEXT; *u++=(D)(t%m);}
  }
  *b=1; return z;
@@ -630,14 +600,16 @@ static A jtrollany(J jt,A w,B*b){A z;D*u;I j,m1,n,sh,*v;UI m,mk,s,t,x=jt->rngM[j
  if(!w) return 0;
  wt=AT(w);
  ASSERT(wt&DENSE,EVDOMAIN);
+ ASSERT(!(wt&XNUM+RAT), EVDOMAIN);
+
  if(!AN(w)){GATV(z,B01,0,AR(w),AS(w)); return z;}
  if(wt&B01)return rollbool(w);
- if(wt&XNUM+RAT)return rollxnum(w);
+
  RZ(w=vi(w)); m=AV(w)[0];
  if(    2==m)RZ(z=jtroll2(jt,w,&b));
  if(!b&&0!=m)RZ(z=jtrollnot0(jt,w,&b));
  if(!b      )RZ(z=jtrollany(jt,w,&b));
- return z&&!(FL&AT(z))&&wt&XNUM+RAT?xco1(z):z;
+ return z;
 }
 
  A jtdeal(J jt,A a,A w){A z;I at,j,k,m,n,wt,*zv;UI c,s,t,x=jt->rngM[jt->rng];UI sq;
@@ -658,7 +630,7 @@ static A jtrollany(J jt,A w,B*b){A z;D*u;I j,m1,n,sh,*v;UI m,mk,s,t,x=jt->rngM[j
   }else{
    GMOF2(c,x,s,sq); DO(m, if(s<GMOTHRESH)GMOF2(c,x,s,sq); t=NEXT; if(s)while(s<=t)t=NEXT; s-=sq; j=i+t%c--; k=zv[i]; zv[i]=zv[j]; zv[j]=k;);
   }
-  
+
   AN(z)=AS(z)[0]=m;  // lots of wasted space!
  }
  return at&XNUM+RAT||wt&XNUM+RAT?xco1(z):z;
@@ -717,41 +689,6 @@ static A jtrollksubdot(J jt,A a,A w){A z;I an,*av,k,m1,n,p,q,r,sh;UI j,m,mk,s,t,
  if(AT(w)&XNUM+RAT||!(!AR(w)&&1>=AR(a)&&(g==ds(CDOLLAR)||1==AN(a))))return roll(df2(z,a,w,g));
  return jtrollksubdot(jt,a,vi(w));
 }    /* ?@$ or ?@# or [:?$ or [:?# */
-
-
-
-static X jtxranddot(J jt,X x){PROLOG(0090);A q,z;B b=1;I j,m,n,*qv,*xv,*zv;
- n=AN(x); xv=AV(x);  // number of Digits in x, &first digit
- m=n;  // m is number of result digits, same as input.  If input is 10000... this will always be 1 digit too many, but that's not worth checking for
- GATV0(q,INT,m,1); qv=AV(q);  // allocate place to hold base, qv-> result digits
- DO(m-1, qv[i]=XBASE;); qv[m-1]=xv[n-1]+1;  // init base to the largest possible value in each Digit
- // loop to roll random values until we get one that is less than x
- do{
-  RZ(z=roll(q)); zv=AV(z);  // roll one value in each Digit position
-  DQ(j=m, --j; if(xv[j]!=zv[j]){b=xv[j]<zv[j]; break;});  // MS mismatched Digit tells the tale; if no mismatch, that's too high, keep b=1
- }while(b);  // loop till b=0
- j=m-1; while(0<j&&!zv[j])--j; AN(z)=AS(z)[0]=++j;  // remove leading 0s from (tail of) result
- EPILOG(z);
-}    /* ?x where x is a single strictly positive extended integer */
-
-
-
-static A jtrollxnumdot(J jt, A w){A z;B c=0;I d,n;X*u,*v,x;
- if(!(AT(w)&XNUM))RZ(w=jtcvt(jt,XNUM,w));  // convert rational to numeric
- n=AN(w); v=XAV(w);
- GATV(z,XNUM,n,AR(w),AS(w)); u=XAV(z);
- // deal an extended random for each input number.  Error if number <0; if 0, put in 0 as a placeholder
- DQ(n, x=*v++; d=XDIG(x); ASSERT(0<=d,EVDOMAIN); if(d)RZ(*u++=rifvs(jtxranddot(jt,x))) else{*u++=iv0; c=1;});
- // If there was a 0, convert the whole result to float, and go back and fill the original 0s with random floats
- if(c){D*d;I mk,sh;
-  INITD;
-  RZ(z=jtcvt(jt,FL,z)); d=DAV(z); v=XAV(w);
-  DQ(n, x=*v++; if(!XDIG(x))*d=sh?NEXTD1:NEXTD0; ++d;);
- } 
- return z;
-}    /* ?n$x where x is extended integer */
-
-
 
 static A jtrollbooldot(J jt, A w){A z;B*v;D*u;I n,sh;UINT mk;
  n=AN(w); v=BAV(w); INITD;
@@ -816,7 +753,7 @@ static A jtrollanydot(J jt,A w,B*b){A z;D*u;I j,m1,n,sh,*v;UI m,mk,s,t,x=jt->rng
  GATV(z,FL,n,AR(w),AS(w)); u=DAV(z);
  for(j=0;j<n;++j){
   m1=*v++; ASSERT(0<=m1,EVDOMAIN); m=m1;
-  if(0==m)*u++=sh?NEXTD1:NEXTD0; 
+  if(0==m)*u++=sh?NEXTD1:NEXTD0;
   else{s=GMOF(m,x); t=NEXT; if(s)while(s<=t)t=NEXT; *u++=(D)(t%m);}
  }
  *b=1; return z;
@@ -827,14 +764,17 @@ static A jtrollanydot(J jt,A w,B*b){A z;D*u;I j,m1,n,sh,*v;UI m,mk,s,t,x=jt->rng
 static A jtrolldot(J jt, A w){A z;B b=0;I m,wt;
  wt=AT(w);
  ASSERT(wt&DENSE,EVDOMAIN);
+ ASSERT(!(wt&XNUM+RAT), EVDOMAIN);
+
  if(!AN(w)){GATV(z,B01,0,AR(w),AS(w)); return z;}
+
  if(wt&B01)return jtrollbooldot(jt,w);
- if(wt&XNUM+RAT)return jtrollxnumdot(jt,w);
+
  RZ(w=vi(w)); m=AV(w)[0];
  if(    2==m)RZ(z=jtroll2dot(jt,w,&b));
  if(!b&&0!=m)RZ(z=jtrollnot0dot(jt,w,&b));
  if(!b      )RZ(z=jtrollanydot(jt,w,&b));
- return z&&!(FL&AT(z))&&wt&XNUM+RAT?xco1(z):z;
+ return z;
 }
 
 
@@ -877,35 +817,3 @@ static A jtdealdot(J jt,A a,A w){A h,y,z;I at,d,*hv,i,i1,j,k,m,n,p,q,*v,wt,*yv,*
  A jtrollx  (J jt, A w){FXSDECL;                 FXSDO; z=jtrolldot(jt,w);         FXSOD; return z;}
  A jtdealx  (J jt,A a,A w){FXSDECL; F2RANK(0,0,jtdealx,UNUSED_VALUE); FXSDO; z=jtdealdot(jt,a,w);       FXSOD; return z;}
  A jtrollkx(J jt,A a,A w,A self){FXSDECL;        FXSDO; z=jtrollkdot(jt,a,w,self); FXSOD; return z;}
-
-
-/*
-static A jtroll(J jt, A w){A z;D rl=jt->rl;static D dm=16807,p=2147483647L;I c,n,*v,*x;
- n=AN(w); v=AV(w);
- RZ(z=jtreshape(jt,shape(jt,w),num(2))); x=AV(z);
- if(ICMP(v,x,n))
-  DQ(n, c=*v++; ASSERT(0<c,EVDOMAIN); rl=fmod(rl*dm,p); *x++=(I)jfloor(rl*c/p);)
- else{B*x;D q=p/2;
-  GATV(z,B01,n,AR(w),AS(w)); x=BAV(z);
-  DQ(n, rl=fmod(rl*dm,p); *x++=rl>q;);
- }
- jt->rl=(I)rl;
- return z;
-} */    /* P.C. Berry, Sharp APL Reference Manual, 1979, p. 126. */
-
-/*
-static A jtbigdeal(J jt,I m,I n){A t,x,y;
- RZ(x=sc((I)jfloor(1.11*m)));
- RZ(y=sc(n));
- do{RZ(t=nub(roll(jtreshape(jt,x,y))));}while(m>AN(t));
- return vec(INT,m,AV(t));
-} */    /* E.E. McDonnell circa 1966, small m and large n */
-
-/*
-static A jtdeal(J jt,I m,I n){A y;D rl=jt->rl;static D dm=16807,p=2147483647L;I j,k,*yv;
- if(m<0.01*n)return jtbigdeal(jt,m,n);
- RZ(y=apv(n,n-1,-1L)); yv=AV(y);
- DO(m, rl=fmod(rl*dm,p); j=i+(I)jfloor(rl*(n-i)/(1+p)); k=yv[i]; yv[i]=yv[j]; yv[j]=k;);
- jt->rl=(I)rl;
- return vec(INT,m,yv);
-} */   /* P.C. Berry, Sharp APL Reference Manual, 1979, p. 178. */

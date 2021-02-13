@@ -84,8 +84,6 @@ static A jtlr2(J jt,RANK2T ranks,A a,A w){I acr,af,ar,wcr,wf,wr;
  A jtleft2 (J jt,A a,A w){F2PREFIP;RANK2T jtr=jt->ranks; if(jtr==(RANK2T)~0)RETARG(a); return lr2((jtr<<RMAXX)|(jtr>>RMAXX),w,a);}  // swap a & w, and their ranks
  A jtright2(J jt,A a,A w){F2PREFIP;RANK2T jtr=jt->ranks; if(jtr==(RANK2T)~0)RETARG(w); return lr2(jtr,a,w);}
 
- A jtright1(J jt, A w){return w;}
-
 // i. y
  A jtiota(J jt, A w){A z;I m,n,*v;
  if (!w) return 0;

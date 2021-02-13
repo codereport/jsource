@@ -32,7 +32,6 @@ target_sources(j PRIVATE
         conjunctions/cu.c
         conjunctions/cv.c
         conjunctions/cx.c
-        verbs/crc32c.c
         verbs/v.c
         verbs/v0.c
         verbs/v1.c
@@ -77,6 +76,7 @@ target_sources(j PRIVATE
         verbs/vx.c
         verbs/vz.c
         verbs/monadic/rank.cpp
+        verbs/monadic/same.cpp
         verbs/monadic/shape.cpp
         verbs/monadic/tally.cpp
         debugging/d.c

@@ -7,8 +7,8 @@ isnan=: 128!:5
 (($x)$0) -: isnan x=: 31    3 ?@$ 2e9
 (($x)$0) -: isnan x=: 31      ?@$ 0
 (($x)$0) -: isnan x=: j./2 31 ?@$ 0
-(($x)$0) -: isnan x=: 31 17   ?@$ 200x
-(($x)$0) -: isnan x=: % /2 31 ?@$ 20x
+(($x)$0) -: isnan x=: 31 17   ?@$ 200
+(($x)$0) -: isnan x=: % /2 31 ?@$ 20
 (($x)$0) -: isnan x=: 'Barack Obama vs. Hillary Clinton'
 (($x)$0) -: isnan x=: ;:'John McCain'
 

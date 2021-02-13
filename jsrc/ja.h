@@ -561,7 +561,6 @@
 #define roll(x)                     jtroll(jt,(x))
 #define rollbool(x)                 jtrollbool(jt,(x))
 #define rollk(x,y,z)                jtrollk(jt,(x),(y),(z))
-#define rollxnum(x)                 jtrollxnum(jt,(x))
 #define rot(x0,x1,x2,x3,x4,x5,x6,x7)                jtrot(jt,(x0),(x1),(x2),(x3),(x4),(x5),(x6),(x7))
 #define rrv(x)                      ((UI)((x)->lrr)&RANKTMSK)  // rr of V
 #define rr(x)                       rrv(FAV(x))  // rr of A
@@ -782,7 +781,6 @@
 #define xlogabs(x)                  jtxlogabs(jt,(x))
 #define xlogd1(x)                   jtxlogd1(jt,(x))
 #define xlogz1(x)                   jtxlogz1(jt,(x))
-#define xmodpow(x,y,z)              jtxmodpow(jt,(x),(y),(z))
 #define xoinit()                    jtxoinit(jt)
 #define xop(x)                      jtxop(jt,(x))
 #define xop2(x,y,z)                 jtxop2(jt,(x),(y),(z))

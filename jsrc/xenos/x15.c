@@ -41,7 +41,6 @@ otherwise the regs may be used and the parameter lost.
 
 
 #include <stdlib.h>
-#include <unistd.h>
 typedef unsigned char       BYTE;
 #define CALLBACK
 #include <stdint.h>
@@ -64,10 +63,9 @@ typedef double complex double_complex;
 
 #include <dlfcn.h>
 
-#undef MAX     /* defined in sys/param.h */
-#undef MIN     /* defined in sys/param.h */
-
-#include <sys/param.h>
+I max(I a, I b) {
+  return a > b ? a : b;
+}
 
 typedef void *HMODULE;
 typedef char *LPSTR;
@@ -890,11 +888,11 @@ static B jtcdexec1(J jt,CCT*cc,C*zv0,C*wu,I wk,I wt,I wd){A*wv=(A*)wu,x,y,*zv;B 
  C* enda=&CAV(a)[AN(a)]; C endc=*enda; *enda=0; cc=jtcdparse(jt,a,0); *enda=endc; RZ(cc); // should do outside rank2 loop?
  n=cc->n;
  I nn; CDASSERT(n==SHAPEN(w,wr-1,nn),DECOUNT);
- if(cc->zbx){GATV(z,BOX,m*(1+n),MAX(1,wr),ws); AS(z)[AR(z)-1]=1+n;}
- else{CDASSERT('*'!=cc->zl,DEDEC); GA(z,cc->zt,m,MAX(0,wr-1),ws);}
+ if(cc->zbx){GATV(z,BOX,m*(1+n),max(1,wr),ws); AS(z)[AR(z)-1]=1+n;}
+ else{CDASSERT('*'!=cc->zl,DEDEC); GA(z,cc->zt,m,max(0,wr-1),ws);}
  // z is always nonrecursive
  if(m&&n&&!(wt&BOX)){
-  t=0; tv=cc->tletter; DQ(n, k=cdjtype(*tv++); t=MAX(t,k););
+  t=0; tv=cc->tletter; DQ(n, k=cdjtype(*tv++); t=max(t,k););
   CDASSERT(HOMO(t,wt),DEPARM);
   if(!(wt&B01+INT+FL+LIT+C2T+C4T))RZ(w=jtcvt(jt,wt=t,w));
  }

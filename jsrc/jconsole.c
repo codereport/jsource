@@ -11,9 +11,6 @@
 #include <signal.h>
 #include <stdint.h>
 #include <locale.h>
-#ifdef __MACH__
-#include <xlocale.h>
-#endif
 
 #include "j.h"
 #include "jeload.h"
@@ -164,9 +161,8 @@ int main(int argc, char* argv[])
  printf("Hello YouTube Viewers, all 22 of you!\n");
 
  setlocale(LC_ALL, "");
+ setlocale(LC_NUMERIC, "C");
 
- locale_t loc;
- if ((loc = newlocale(LC_NUMERIC_MASK, "C", (locale_t) 0))) uselocale(loc);
  void* callbacks[] ={Joutput,0,Jinput,0,(void*)SMCON}; int type;
  int i,poslib=0,poslibpath=0,posnorl=0,posprmpt=0; // assume all absent
  for(i=1;i<argc;i++){
@@ -236,6 +232,5 @@ int main(int argc, char* argv[])
  jefirst(type,input);
  while(1){jedo((char*)Jinput(jt,(forceprmpt||_isatty(_fileno(stdin)))?(C*)"   ":(C*)""));}
  jefree();
- if(loc)freelocale(loc);
  return 0;
 }
