@@ -241,7 +241,7 @@ I strtoI10s(I l,C* p) {I z; strtoI10(p,l,z); return z; }
 static A jtlocnlx(J jt, A w){A y,z=mtv;B*wv;I m=0;
  RZ(w=jtcvt(jt,B01,w)); wv=BAV(w); DO(AN(w), m|=1+wv[i];);  // accumulate mask of requested types
  if(1&m)z=nlsym(jt->stloc);  // named locales
- if(2&m){RZ(y=jtactivenl(jt)); z=over(y,z); }  // get list of active numbered locales
+ if(2&m){RZ(y=jtactivenl(jt)); z=jtover(jt,y,z); }  // get list of active numbered locales
  return jtgrade2(jt,z,ope(z));
 }
 
@@ -345,7 +345,7 @@ static SYMWALK(jtlocmap1,I,INT,18,3,1,
 
  A jtlocmap(J jt, A w){A g,q,x,y,*yv,z,*zv;I c=-1,d,j=0,m,*qv,*xv;
  ASSERT(!AR(w),EVRANK);
- RE(g=equ(w,zeroionei(0))?jt->stloc:equ(w,zeroionei(1))?jt->locsyms:jtlocale(jt,0,w));
+ RE(g=jtequ(jt,w,zeroionei(0))?jt->stloc:jtequ(jt,w,zeroionei(1))?jt->locsyms:jtlocale(jt,0,w));
  ASSERT(g!=0,EVLOCALE);
  RZ(q=locmap1(g)); qv=AV(q);
  m=AS(q)[0];

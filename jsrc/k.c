@@ -127,9 +127,9 @@ static B jtBfromX(J jt,A w,void*yv){A q;B*x;I e;X*v;
 
 static B jtIfromX(J jt,A w,void*yv){I a,i,m,n,*u,*x;X c,p,q,*v;
  v=XAV(w); x=(I*)yv; n=AN(w);
- if(!(p=xc(IMAX)))return 0; if(!(q=xminus(negate(p),xc(1L))))return 0;
+ if(!(p=xc(IMAX)))return 0; if(!(q=jtxminus(jt,negate(p),xc(1L))))return 0;
  for(i=0;i<n;++i){
-  c=v[i]; if(!(1!=xcompare(q,c)&&1!=xcompare(c,p)))return 0;
+  c=v[i]; if(!(1!=jtxcompare(jt,q,c)&&1!=jtxcompare(jt,c,p)))return 0;
   m=AN(c); u=AV(c)+m-1; a=0; DO(m, a=*u--+a*XBASE;); x[i]=a;
  }
  return 1;
@@ -162,13 +162,13 @@ static B jtQfromD(J jt,A w,void*yv,I mode){B neg,recip;D c,d,t,*wv;I e,i,n,*v;Q 
   if     (t==inf)q.n=vci(XPINF);
   else if(t==0.0)q.n=iv0;
   else if(1.1102230246251565e-16<t&&t<9.007199254740992e15){
-   d=jround(1/dgcd(1.0,t)); c=jround(d*t); 
+   d=jround(1/jtdgcd(jt,1.0,t)); c=jround(d*t); 
    q.n=jtxd1(jt,c,mode); q.d=jtxd1(jt,d,mode); q=qstd(q);
   }else{
    if(recip=1>t)t=1.0/t;
    e=(I)(0xfff0&*tv); e>>=4; e-=1023;
-   if(recip){q.d=xtymes(jtxd1(jt,t/pow(2.0,e-53.0),mode),xpow(xc(2L),xc(e-53))); q.n=ca(iv1);}
-   else     {q.n=xtymes(jtxd1(jt,t/pow(2.0,e-53.0),mode),xpow(xc(2L),xc(e-53))); q.d=ca(iv1);}
+   if(recip){q.d=jtxtymes(jt,jtxd1(jt,t/pow(2.0,e-53.0),mode),jtxpow(jt,xc(2L),xc(e-53))); q.n=ca(iv1);}
+   else     {q.n=jtxtymes(jt,jtxd1(jt,t/pow(2.0,e-53.0),mode),jtxpow(jt,xc(2L),xc(e-53))); q.d=ca(iv1);}
   }
   q.n=rifvsdebug(q.n); q.d=rifvsdebug(q.d);
   if(neg){v=AV(q.n); DQ(AN(q.n), *v=-*v; ++v;);}
@@ -201,7 +201,7 @@ static B jtDfromQ(J jt,A w,void*yv){D d,f,n,*x,xb=(D)XBASE;I cn,i,k,m,nn,pn,qn,r
 
 static B jtXfromQ(J jt,A w,void*yv){Q*v;X*x;
  v=QAV(w); x=(X*)yv;
- DQ(AN(w), if(!(equ(iv1,v->d)))return 0; *x++=v->n; ++v;);
+ DQ(AN(w), if(!(jtequ(jt,iv1,v->d)))return 0; *x++=v->n; ++v;);
  return !jt->jerr;
 }
 

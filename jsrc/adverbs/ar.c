@@ -182,8 +182,8 @@ static A jtredsp1a(J jt,C id,A z,A e,I n,I r,I*s){A t;B b,p=0;D d=1;
   case CSTARDOT: return n?lcm(z,e):ca(e);
   case CMIN:     return n?minimum(z,e):ca(e);
   case CMAX:     return n?maximum(z,e):ca(e);
-  case CPLUS:    if(n&&equ(e,num(0)))return z; DO(r, d*=s[i];); t=tymes(e,d>=FLIMAX?scf(d-n):sc((I)d-n)); return n?plus(z,t):t;
-  case CSTAR:    if(n&&equ(e,num(1) ))return z; DO(r, d*=s[i];); t=expn2(e,d>=FLIMAX?scf(d-n):sc((I)d-n)); return n?tymes(z,t):t;
+  case CPLUS:    if(n&&jtequ(jt,e,num(0)))return z; DO(r, d*=s[i];); t=tymes(e,d>=FLIMAX?scf(d-n):sc((I)d-n)); return n?plus(z,t):t;
+  case CSTAR:    if(n&&jtequ(jt,e,num(1) ))return z; DO(r, d*=s[i];); t=expn2(e,d>=FLIMAX?scf(d-n):sc((I)d-n)); return n?tymes(z,t):t;
   case CEQ:      p=1;  /* fall thru */
   case CNE:
    ASSERT(B01&AT(e),EVNONCE); 
@@ -223,8 +223,8 @@ static A jtredspd(J jt,A w,A self,C id,VARPSF ado,I cv,I f,I r,I zt){A a,e,x,z,z
  GA(zx,zt,AN(x)/n,AR(x)-1,s); MCISH(xf+AS(zx),1+xf+s,xr-1); 
  I rc=((AHDRRFN*)ado)(c/n,n,m,AV(x),AV(zx),jt); if(255&rc)jsignal(rc); RE(0);
  switch(id){
-  case CPLUS: if(!equ(e,num(0)))RZ(e=tymes(e,sc(n))); break; 
-  case CSTAR: if(!equ(e,num(1) )&&!equ(e,num(0)))RZ(e=expn2(e,sc(n))); break;
+  case CPLUS: if(!jtequ(jt,e,num(0)))RZ(e=tymes(e,sc(n))); break; 
+  case CSTAR: if(!jtequ(jt,e,num(1) )&&!jtequ(jt,e,num(0)))RZ(e=expn2(e,sc(n))); break;
   case CEQ:   ASSERT(B01&AT(x),EVNONCE); if(!BAV(e)[0]&&0==(n&1))e=num(1); break;
   case CNE:   ASSERT(B01&AT(x),EVNONCE); if( BAV(e)[0]&&1==(n&1))e=num(0);
  }
@@ -255,10 +255,10 @@ static B jtredspsprep(J jt,C id,I f,I zt,A a,A e,A x,A y,I*zm,I**zdv,B**zpv,I**z
  if(yr){++m; pv[yr1]=1; mm=MAX(mm,yr1-j);}
  if(qv){j=mm*aii(x); GA(xx,AT(x),j,1,0); xxv=CAV(xx);}
  switch(id){
-  case CPLUS: case CPLUSDOT: j=!equ(e,num(0)); break;
-  case CSTAR: case CSTARDOT: j=!equ(e,num(1));  break;
-  case CMIN:                 j=!equ(e,zt&B01?num(1) :zt&INT?sc(IMAX):ainf     ); break;
-  case CMAX:                 j=!equ(e,zt&B01?num(0):zt&INT?sc(IMIN):scf(infm)); break;
+  case CPLUS: case CPLUSDOT: j=!jtequ(jt,e,num(0)); break;
+  case CSTAR: case CSTARDOT: j=!jtequ(jt,e,num(1));  break;
+  case CMIN:                 j=!jtequ(jt,e,zt&B01?num(1) :zt&INT?sc(IMAX):ainf     ); break;
+  case CMAX:                 j=!jtequ(jt,e,zt&B01?num(0):zt&INT?sc(IMIN):scf(infm)); break;
   case CEQ:                  j=!*BAV(e);     break;
   case CNE:                  j= *BAV(e);     break;
  }
@@ -272,10 +272,10 @@ static B jtredspse(J jt,C id,I wm,I xt,A e,A zx,A sn,A*ze,A*zzx){A b;B nz;I t,zt
  switch(id){
   case CPLUS:    if(nz)RZ(zx=plus (zx,       tymes(e,sn) )); RZ(e=       tymes(e,sc(wm)) ); break; 
   case CSTAR:    if(nz)RZ(zx=tymes(zx,jtbcvt(jt,1,expn2(e,sn)))); RZ(e=jtbcvt(jt,1,expn2(e,sc(wm)))); break;
-  case CPLUSDOT: if(nz)RZ(zx=gcd(zx,jtfrom(jt,b,over(num(0),e))));                 break;
-  case CSTARDOT: if(nz)RZ(zx=lcm(zx,jtfrom(jt,b,over(num(1),e))));                 break;
-  case CMIN:     if(nz)RZ(zx=minimum(zx,jtfrom(jt,b,over(zt&B01?num(1): zt&INT?sc(IMAX):ainf,     e)))); break;
-  case CMAX:     if(nz)RZ(zx=maximum(zx,jtfrom(jt,b,over(zt&B01?num(0):zt&INT?sc(IMIN):scf(infm),e)))); break;
+  case CPLUSDOT: if(nz)RZ(zx=gcd(zx,jtfrom(jt,b,jtover(jt,num(0),e))));                 break;
+  case CSTARDOT: if(nz)RZ(zx=lcm(zx,jtfrom(jt,b,jtover(jt,num(1),e))));                 break;
+  case CMIN:     if(nz)RZ(zx=minimum(zx,jtfrom(jt,b,jtover(jt,zt&B01?num(1): zt&INT?sc(IMAX):ainf,     e)))); break;
+  case CMAX:     if(nz)RZ(zx=maximum(zx,jtfrom(jt,b,jtover(jt,zt&B01?num(0):zt&INT?sc(IMIN):scf(infm),e)))); break;
   case CEQ:      ASSERT(B01&xt,EVNONCE); if(nz)RZ(zx=eq(zx,eq(num(0),residue(num(2),sn)))); if(!(wm&1))e=num(1);  break;
   case CNE:      ASSERT(B01&xt,EVNONCE); if(nz)RZ(zx=ne(zx,eq(num(1), residue(num(2),sn)))); if(!(wm&1))e=num(0); break;
  }
@@ -497,7 +497,7 @@ static A jtredcateach(J jt,    A w,A self){A*u,*v,*wv,x,*xv,z,*zv;I f,m,mn,n,r,w
  wr=AR(w); ws=AS(w); r=(RANKT)jt->ranks; r=wr<r?wr:r; f=wr-r; RESETRANK;
  SETICFR(w,f,r,n);
  if(!r||1>=n)return jtreshape(jt,jtrepeat(jt,ne(sc(f),IX(wr)),shape(jt, w)),n?w:ds(CACE));
- if(!(BOX&AT(w)))return df1(z,jtcant2(jt,sc(f),w),qq(ds(CBOX),zeroionei(1)));  // handle unboxed args
+ if(!(BOX&AT(w)))return df1(z,jtcant2(jt,sc(f),w),jtqq(jt,ds(CBOX),zeroionei(1)));  // handle unboxed args
 // bug: ,&.>/ y does scalar replication wrong
 // wv=AN(w)+AAV(w); DQ(AN(w), if(AN(*--wv)&&AR(*wv)&&n1&&n2) ASSERT(0,EVNONCE); if((!AR(*wv))&&n1)n2=1; if(AN(*wv)&&1<AR(*wv))n1=1;);
  zn=AN(w)/n; PROD(zm,f,ws); PROD(m,r-1,ws+f+1); mn=m*n;
@@ -521,7 +521,7 @@ static A jtoprod(J jt,A a,A w,A self){A z; return df2(z,a,w,FAV(self)->fgh[2]);}
   case CUNDER:  f1=jtreduce; if(COPE==ID(v->fgh[1])){c=ID(v->fgh[0]); if(c==CCOMMA)f1=jtredcateach; else if(c==CCOMDOT)f1=jtredstiteach;} flag=0; break;
   default: f1=jtreduce; flag=(v->flag&VJTFLGOK2)>>(VJTFLGOK2X-VJTFLGOK1X); break;  // monad is inplaceable if the dyad for u is
  }
- RZ(h=qq(w,jtv2(jt,lr(w),RMAX)));  // create the rank compound to use if dyad
+ RZ(h=jtqq(jt,w,jtv2(jt,lr(w),RMAX)));  // create the rank compound to use if dyad
  RZ(h=fdef(0,CSLASH,VERB, f1,jtoprod, w,0L,h, flag|FAV(ds(CSLASH))->flag, RMAX,RMAX,RMAX));
  // set lvp[1] to point to the VARPSA block for w if w is atomic dyad; otherwise to the null VARPSA block
  FAV(h)->localuse.lvp[1]=v->flag&VISATOMIC2?((VA*)v->localuse.lvp[0])->rps:&rpsnull;
@@ -529,7 +529,7 @@ static A jtoprod(J jt,A a,A w,A self){A z; return df2(z,a,w,FAV(self)->fgh[2]);}
 }
 
 A jtaslash (J jt,C c,    A w){RZ(   w); A z; return df1(z,  w,   slash(ds(c))     );}
-A jtaslash1(J jt,C c,    A w){RZ(   w); A z; return df1(z,  w,qq(slash(ds(c)),zeroionei(1)));}
+A jtaslash1(J jt,C c,    A w){RZ(   w); A z; return df1(z,  w,jtqq(jt,slash(ds(c)),zeroionei(1)));}
 A jtatab   (J jt,C c,A a,A w){ A z; return df2(z,a,w,   slash(ds(c))     );}
 
  A jtmean(J jt,    A w,A self){

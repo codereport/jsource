@@ -65,11 +65,11 @@ static A jtzpadn(J jt,A z,A ind,B ip){A a,ai,i1,p,p1,q,t,x,x0,y,y0,y1;B*b;I c,d,
   RZ(t=nub(jtrepeat(jt,jteps(jt,y1,i1),y1)));
   RZ(t=jtstitch(jt,jtrepeat(jt,sc(n),t),jtreshape(jt,jtv2(jt,n**AS(t),c),p1)));
   RZ(t=jtless(jt,t,y));
-  if(AN(t))RZ(p=over(p,t));
+  if(AN(t))RZ(p=jtover(jt,p,t));
  }
  if(m=*AS(p)){  /* new cells being added */
-  RZ(y=over(y,p)); RZ(q=grade1(y)); RZ(y=jtfrom(jt,q,y));
-  RZ(t=shape(jt,x)); *AV(t)=m; RZ(x=jtfrom(jt,q,over(x,jtreshape(jt,t,SPA(zp,e)))));
+  RZ(y=jtover(jt,y,p)); RZ(q=grade1(y)); RZ(y=jtfrom(jt,q,y));
+  RZ(t=shape(jt,x)); *AV(t)=m; RZ(x=jtfrom(jt,q,jtover(jt,x,jtreshape(jt,t,SPA(zp,e)))));
   // if z is assigned to a name, the use counts need to be adjusted: the old ones need to be decremented
   // to remove the assignment, and the new ones need to be incremented to prevent them from being freed
   // until the name is freed.  We detect the case from jt->assignsym being set to the address of z
@@ -93,7 +93,7 @@ static A jtastdn(J jt,A a,A z,A ind){A a1,q,r,s;B*b;I ar,*as,*av,d,ir,n,n1,*v,zr
  memset(b,C0,zr); DO(AN(a1), b[av[i]]=1;); memset(b,!memchr(b,C1,n)?C0:C1,n);
  GATV0(r,INT,zr-n1,1); v=AV(r); *v++=ar-(zr-n); DQ(zr-n, *v++=1;);
  RZ(q=dgrade1(jtrepeat(jt,r,vec(B01,zr-n1,b+n1))));
- return equ(q,IX(ar))?a:jtcant2(jt,q,a);
+ return jtequ(jt,q,IX(ar))?a:jtcant2(jt,q,a);
 }    /* convert replacement array a into standard form relative to index array ind */
 
 A jtamne(J jt,A a,A z,A ind,B ip){A i1,i2,x,y;C*u,*v;I*iv,*jv,k,m,n,vk,xk;P*zp;

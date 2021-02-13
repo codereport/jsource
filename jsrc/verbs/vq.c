@@ -15,7 +15,7 @@
  if(!d){z.n=rifvsdebug(vci(0<n?XPINF:XNINF)); return z;}
  if(d==XPINF){QASSERT(n!=XPINF&&n!=XNINF,EVNAN); return zeroQ;}
  if(n==XPINF||n==XNINF){z.n=rifvsdebug(w.n); return z;}
- QRE(g=xgcd(w.n,w.d));
+ QRE(g=jtxgcd(jt,w.n,w.d));
  if(QX1(g))return w;
  z.n=rifvsdebug(xdiv(w.n,g,XMEXACT));
  z.d=rifvsdebug(xdiv(w.d,g,XMEXACT));
@@ -23,26 +23,26 @@
 }
 
  Q jtqplus(J jt,Q a,Q w){PROLOG(0083);Q z;
- z.n=rifvsdebug(xplus(xtymes(a.n,w.d),xtymes(w.n,a.d)));
- z.d=rifvsdebug(xtymes(a.d,w.d));
+ z.n=rifvsdebug(jtxplus(jt,jtxtymes(jt,a.n,w.d),jtxtymes(jt,w.n,a.d)));
+ z.d=rifvsdebug(jtxtymes(jt,a.d,w.d));
  QEPILOG(z);
 }
 
  Q jtqminus(J jt,Q a,Q w){PROLOG(0084);Q z;
- z.n=rifvsdebug(xminus(xtymes(a.n,w.d),xtymes(w.n,a.d)));
- z.d=rifvsdebug(xtymes(a.d,w.d));
+ z.n=rifvsdebug(jtxminus(jt,jtxtymes(jt,a.n,w.d),jtxtymes(jt,w.n,a.d)));
+ z.d=rifvsdebug(jtxtymes(jt,a.d,w.d));
  QEPILOG(z);
 }
 
  Q jtqtymes(J jt,Q a,Q w){PROLOG(0085);Q z;
- z.n=rifvsdebug(xtymes(a.n,w.n));
- z.d=rifvsdebug(xtymes(a.d,w.d));
+ z.n=rifvsdebug(jtxtymes(jt,a.n,w.n));
+ z.d=rifvsdebug(jtxtymes(jt,a.d,w.d));
  QEPILOG(z);
 }
 
  Q jtqdiv(J jt,Q a,Q w){PROLOG(0086);Q z;
- z.n=rifvsdebug(xtymes(a.n,w.d)); 
- z.d=rifvsdebug(xtymes(a.d,w.n));
+ z.n=rifvsdebug(jtxtymes(jt,a.n,w.d)); 
+ z.d=rifvsdebug(jtxtymes(jt,a.d,w.n));
  QEPILOG(z);
 }
 
@@ -53,19 +53,19 @@ static Q jtqrem(J jt,Q a,Q w){PROLOG(0087);I c,d;Q m,q,z;
  QASSERT(!(d==XPINF||d==XNINF),EVNAN);
  if(c==XPINF)return 0<=d?w:a;
  if(c==XNINF)return 0>=d?w:a;
- q=qdiv(w,a);
- m.n=xtymes(a.n,xdiv(q.n,q.d,XMFLR)); m.d=a.d;
- z=qminus(w,m);
+ q=jtqdiv(jt,w,a);
+ m.n=jtxtymes(jt,a.n,xdiv(q.n,q.d,XMFLR)); m.d=a.d;
+ z=jtqminus(jt,w,m);
  QEPILOG(z);
 }
 
 static Q jtqgcd(J jt,Q a,Q w){PROLOG(0088);Q z;
- QRE(z.n=rifvsdebug(xgcd(a.n,w.n)));
- QRE(z.d=rifvsdebug(xlcm(a.d,w.d)));
+ QRE(z.n=rifvsdebug(jtxgcd(jt,a.n,w.n)));
+ QRE(z.d=rifvsdebug(jtxlcm(jt,a.d,w.d)));
  QEPILOG(z);
 }
 
-static Q jtqlcm(J jt,Q a,Q w){return qtymes(a,qdiv(w,qgcd(a,w)));}
+static Q jtqlcm(J jt,Q a,Q w){return jtqtymes(jt,a,jtqdiv(jt,w,jtqgcd(jt,a,w)));}
 
 static Q jtqpow(J jt,Q a,Q w){PROLOG(0089);B c;I p,q,s;Q t,z;X d;
  QRE(1);
@@ -77,22 +77,22 @@ static Q jtqpow(J jt,Q a,Q w){PROLOG(0089);B c;I p,q,s;Q t,z;X d;
   return z;
  }
  if(q==XPINF||q==XNINF){
-  s=xcompare(mag(a.n),a.d);
+  s=jtxcompare(jt,mag(a.n),a.d);
   QASSERT(0<=p||0>s&&q==XPINF||0<s&&q==XNINF,EVDOMAIN); 
   z.n=rifvs(vci(!s?1L:!p&&0>q||0<s&&p&&0<q||0>s&&0>q?XPINF:0L));
   return z;
  }
  QASSERT(c||0<=p,EWIMAG);
  QASSERT(c||QX1(a.d)&&1==AN(a.n)&&(0==p||1==p),EWIRR);
- if(0>XDIG(d)){QRE(d=negate(d)); QRE(t=qdiv(z,t));}
- if(1>xcompare(d,xc(IMAX))){I e;
+ if(0>XDIG(d)){QRE(d=negate(d)); QRE(t=jtqdiv(jt,z,t));}
+ if(1>jtxcompare(jt,d,xc(IMAX))){I e;
   QRE(e=xint(d));  
-  while(e){if(1&e)QRE(z=qtymes(z,t)); QRE(t=qtymes(t,t)); e>>=1;}
+  while(e){if(1&e)QRE(z=jtqtymes(jt,z,t)); QRE(t=jtqtymes(jt,t,t)); e>>=1;}
  }else{X e=d,x2;
   QRE(x2=xc(2L));
   while(XDIG(e)){
-   if(1&AV(e)[0])QRE(z=qtymes(z,t)); 
-   QRE(t=qtymes(t,t)); 
+   if(1&AV(e)[0])QRE(z=jtqtymes(jt,z,t)); 
+   QRE(t=jtqtymes(jt,t,t)); 
    QRE(e=xdiv(e,x2,XMFLR));
  }}
  QEPILOG(z);
@@ -117,11 +117,25 @@ AMONPS( logQZ, Z,Q, , *z=qlogz1(*x); , HDR1JERR)
 APFX(  maxQQ, Q,Q,Q, QMAX  ,,return EVOK;)
 APFX(  minQQ, Q,Q,Q, QMIN  ,,return EVOK;)
 APFX( plusQQ, Q,Q,Q, qplus ,,HDR1JERR)
+#define qminus(x,y)                 jtqminus(jt,(x),(y))
 APFX(minusQQ, Q,Q,Q, qminus,,HDR1JERR)
+#undef qminus
 APFX(tymesQQ, Q,Q,Q, qtymes,,HDR1JERR)
+#define qdiv(x,y)                   jtqdiv(jt,(x),(y))
 APFX(  divQQ, Q,Q,Q, qdiv  ,,HDR1JERR)
+#undef qdiv
+#define qgcd(x,y)                   jtqgcd(jt,(x),(y))
 APFX(  gcdQQ, Q,Q,Q, qgcd  ,,HDR1JERR)
+#undef ggcd
+#define qlcm(x,y)                   jtqlcm(jt,(x),(y))
 APFX(  lcmQQ, Q,Q,Q, qlcm  ,,HDR1JERR)
+#undef qlcm
+#define qrem(x,y)                   jtqrem(jt,(x),(y))
 APFX(  remQQ, Q,Q,Q, qrem  ,,HDR1JERR)
+#undef grem
+#define qpow(x,y)                   jtqpow(jt,(x),(y))
 APFX(  powQQ, Q,Q,Q, qpow  ,,HDR1JERR)
+#undef qpow
+#define qbin(x,y)                   jtqbin(jt,(x),(y))
 APFX(  binQQ, X,Q,Q, qbin  ,,HDR1JERR)
+#undef qbin

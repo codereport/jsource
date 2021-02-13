@@ -683,6 +683,6 @@ err:
  }
  ASSERT(AT(w)&LIT,EVDOMAIN);  // must be LIT
  ASSERT(AR(w),EVRANK);    // must not be an atom
- if(!AN(w)){return df1(z,w,qq(sc(IMIN),zeroionei(1)));}   // return _"1 w on empty w - equivalent
+ if(!AN(w)){return df1(z,w,jtqq(jt,sc(IMIN),zeroionei(1)));}   // return _"1 w on empty w - equivalent
  return efs(jt,w,prec);
 }

@@ -212,19 +212,21 @@ D jtremdd(J jt,D a,D b){D q,x,y;
  if(a==infm)return 0>=b?b:a;
  q=b/a; x=tfloor(q); y=tceil(q); return TEQ(x,y)?0:b-a*x;
 }
-
+#define remdd(x,y)                  jtremdd(jt,(x),(y))
 APFX(remDD, D,D,D, remdd,,HDR1JERR)
+#undef remdd
+#define zrem(x,y)                   jtzrem(jt,(x),(y))
 APFX(remZZ, Z,Z,Z, zrem ,,HDR1JERR)
-
+#undef zrem
 I jtremid(J jt,I a,D b){D r;I k;
  ASSERT(a&&-9e15<b&&b<9e15,EWOV);
  r=b-a*jfloor(b/a); k=(I)r;
  ASSERT(k==r,EWOV);   // not really overflow - just has a fractional part
  return k;
 }
-
+#define remid(x,y)                  jtremid(jt,(x),(y))
 APFX(remID, I,I,D, remid,,HDR1JERR)
-
+#undef remid
 I remii(I a,I b){I r; return (a!=REPSGN(a))?(r=b%a,0<a?r+(a&REPSGN(r)):r+(a&REPSGN(-r))):a?0:b;}  // must handle IMIN/-1, which overflows.  If a=0, return b.
 
  I remII(I n,I m,I* RESTRICTI x,I* RESTRICTI y,I* RESTRICTI z,J jt){I u,v;
@@ -255,28 +257,38 @@ D jtdgcd(J jt,D a,D b){D a1,b1,t;B stop = 0;
  ASSERT(inf!=b,EVNAN);
  if(!a)return b;
  a1=a; b1=b;
- while(remdd(a1/jround(a1/a),b1)){t=a; if((a=remdd(a,b))==0)break; b=t;}  // avoid infinite loop if a goes to 0
+ while(jtremdd(jt,a1/jround(a1/a),b1)){t=a; if((a=jtremdd(jt,a,b))==0)break; b=t;}  // avoid infinite loop if a goes to 0
  return a;
 }    /* D.L. Forkes 1984; E.E. McDonnell 1992 */
 I jtilcm(J jt,I a,I b){I z;I d;
- if(a&&b){RZ(d=igcd(a,b)); if(0==(z=jtmult(0,a,b/d)))jt->jerr=EWOV; return z;}else return 0;
+ if(a&&b){RZ(d=jtigcd(jt,a,b)); if(0==(z=jtmult(0,a,b/d)))jt->jerr=EWOV; return z;}else return 0;
 }
 
-#define GCDIO(u,v)      (dgcd((D)u,(D)v))
-#define LCMIO(u,v)      (dlcm((D)u,(D)v))
+#define GCDIO(u,v)      (jtdgcd(jt,(D)u,(D)v))
+#define LCMIO(u,v)      (jtdlcm(jt,(D)u,(D)v))
 
-D jtdlcm(J jt,D a,D b){ASSERT(!(INF(a)||INF(b)),EVNAN); return a&&b?a*(b/dgcd(a,b)):0;}
+D jtdlcm(J jt,D a,D b){ASSERT(!(INF(a)||INF(b)),EVNAN); return a&&b?a*(b/jtdgcd(jt,a,b)):0;}
 
 APFX(gcdIO, D,I,I, GCDIO,,HDR1JERR)
+#define igcd(x,y)                   jtigcd(jt,(x),(y))
 APFX(gcdII, I,I,I, igcd ,,HDR1JERR)
+#undef igcd
+#define dgcd(x,y)                   jtdgcd(jt,(x),(y))
 APFX(gcdDD, D,D,D, dgcd ,,HDR1JERR)
+#undef gdcd
+#define zgcd(x,y)                   jtzgcd(jt,(x),(y))
 APFX(gcdZZ, Z,Z,Z, zgcd ,,HDR1JERR)
-
+#undef zgcd
+#define ilcm(x,y)                   jtilcm(jt,(x),(y))
 APFX(lcmII, I,I,I, ilcm ,,HDR1JERR)
+#undef ilcm
 APFX(lcmIO, D,I,I, LCMIO,,HDR1JERR)
+#define dlcm(x,y)                   jtdlcm(jt,(x),(y))
 APFX(lcmDD, D,D,D, dlcm ,,HDR1JERR)
+#undef dlcm
+#define zlcm(x,y)                   jtzlcm(jt,(x),(y))
 APFX(lcmZZ, Z,Z,Z, zlcm ,,HDR1JERR)
-
+#undef zlcm
 
 #define GETD          {d=*wv++; if(!d){z=0; break;}}
 #define INTDIVF(c,d)  (((c^d)>=0)?c/d:c%d?c/d-1:c/d)  // c/d - (c^d)<0 && c%d
@@ -309,7 +321,7 @@ APFX(lcmZZ, Z,Z,Z, zlcm ,,HDR1JERR)
 }    /* <.@% or >.@% on integers */
 
 
-static A jtweight(J jt,A a,A w){ A z; return df1(z,behead(over(AR(w)?w:jtreshape(jt,a,w),num(1))),bsdot(slash(ds(CSTAR))));}  // */\. }. (({:$a)$w),1
+static A jtweight(J jt,A a,A w){ A z; return df1(z,behead(jtover(jt,AR(w)?w:jtreshape(jt,a,w),num(1))),bsdot(slash(ds(CSTAR))));}  // */\. }. (({:$a)$w),1
 
  A jtbase1(J jt, A w){A z;B*v;I c,m,n,p,r,*s,t,*x;
  n=AN(w); t=AT(w); r=AR(w); s=AS(w); c=AS(w)[r-1]; c=r?c:1;

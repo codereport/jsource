@@ -61,13 +61,13 @@ static A jtobqfslash(J jt,    A w,A self){A y,z;B b=0,p;C er,id,*wv;I c,d,k,m,m1
   case OBQCASE(FLX,  CMAX    ): OBQLOOP(D,D,wt,x=*u, x=MAX(x,*u)  ); break;
   case OBQCASE(FLX,  CMIN    ): OBQLOOP(D,D,wt,x=*u, x=MIN(x,*u)  ); break;
   case OBQCASE(FLX,  CPLUS   ): OBQLOOP(D,D,wt,x=*u, x+=*u        ); break;
-  case OBQCASE(CMPXX,CPLUS   ): OBQLOOP(Z,Z,wt,x=*u, x=zplus(x,*u)); break;
-  case OBQCASE(XNUMX,CMAX    ): OBQLOOP(X,X,wt,x=*u, x=1==xcompare(x,*u)? x:*u); break;
-  case OBQCASE(XNUMX,CMIN    ): OBQLOOP(X,X,wt,x=*u, x=1==xcompare(x,*u)?*u: x); break;
-  case OBQCASE(XNUMX,CPLUS   ): OBQLOOP(X,X,wt,x=*u, x=xplus(x,*u)); break;
+  case OBQCASE(CMPXX,CPLUS   ): OBQLOOP(Z,Z,wt,x=*u, x=jtzplus(jt,x,*u)); break;
+  case OBQCASE(XNUMX,CMAX    ): OBQLOOP(X,X,wt,x=*u, x=1==jtxcompare(jt,x,*u)? x:*u); break;
+  case OBQCASE(XNUMX,CMIN    ): OBQLOOP(X,X,wt,x=*u, x=1==jtxcompare(jt,x,*u)?*u: x); break;
+  case OBQCASE(XNUMX,CPLUS   ): OBQLOOP(X,X,wt,x=*u, x=jtxplus(jt,x,*u)); break;
   case OBQCASE(RATX, CMAX    ): OBQLOOP(Q,Q,wt,x=*u, x=1==QCOMP(x,*u)? x:*u); break;
   case OBQCASE(RATX, CMIN    ): OBQLOOP(Q,Q,wt,x=*u, x=1==QCOMP(x,*u)?*u: x); break;
-  case OBQCASE(RATX, CPLUS   ): OBQLOOP(Q,Q,wt,x=*u, x=qplus(x,*u)); break;
+  case OBQCASE(RATX, CPLUS   ): OBQLOOP(Q,Q,wt,x=*u, x=jtqplus(jt,x,*u)); break;
   case OBQCASE(INTX, CBW0001 ): OBQLOOP(I,I,wt,x=*u, x&=*u        ); break;
   case OBQCASE(INTX, CBW0110 ): OBQLOOP(I,I,wt,x=*u, x^=*u        ); break;
   case OBQCASE(INTX, CBW0111 ): OBQLOOP(I,I,wt,x=*u, x|=*u        ); break;
@@ -117,9 +117,9 @@ static A jtobqfslash(J jt,    A w,A self){A y,z;B b=0,p;C er,id,*wv;I c,d,k,m,m1
   case PMCASE(B01X, CPLUS,  CMIN    ): 
   case PMCASE(B01X, CPLUS,  CSTARDOT): PMLOOP(B,I,INT,  x=*u--&*v++, x+=*u--&*v++); break;
   case PMCASE(FLX,  CPLUS,  CSTAR   ): PMLOOP(D,D,FL,   x=*u--**v++, x+=*u--**v++); break;
-  case PMCASE(CMPXX,CPLUS,  CSTAR   ): PMLOOP(Z,Z,CMPX, x=ztymes(*u--,*v++), x=zplus(x,ztymes(*u--,*v++))); break;
-  case PMCASE(XNUMX,CPLUS,  CSTAR   ): PMLOOP(X,X,XNUM, x=xtymes(*u--,*v++), x=xplus(x,xtymes(*u--,*v++))); break;
-  case PMCASE(RATX, CPLUS,  CSTAR   ): PMLOOP(Q,Q,RAT,  x=qtymes(*u--,*v++), x=qplus(x,qtymes(*u--,*v++))); break;
+  case PMCASE(CMPXX,CPLUS,  CSTAR   ): PMLOOP(Z,Z,CMPX, x=jtztymes(jt,*u--,*v++), x=jtzplus(jt,x,jtztymes(jt,*u--,*v++))); break;
+  case PMCASE(XNUMX,CPLUS,  CSTAR   ): PMLOOP(X,X,XNUM, x=jtxtymes(jt,*u--,*v++), x=jtxplus(jt,x,jtxtymes(jt,*u--,*v++))); break;
+  case PMCASE(RATX, CPLUS,  CSTAR   ): PMLOOP(Q,Q,RAT,  x=jtqtymes(jt,*u--,*v++), x=jtqplus(jt,x,jtqtymes(jt,*u--,*v++))); break;
   case PMCASE(INTX, CBW0110,CBW0001 ): PMLOOP(I,I,INT,  x=*u--&*v++, x^=*u--&*v++); break;
   case PMCASE(INTX, CPLUS,  CSTAR   ): 
 
@@ -160,7 +160,7 @@ static A jtkeysp(J jt,A a,A w,A self){PROLOG(0008);A b,by,e,q,x,y,z;I j,k,n,*u,*
  RZ(x=key(jtrepeat(jt,b,x),jtfrom(jt,ravel(by),w),self));
  GASPARSE(q,SB01,1,1,(I*)0); *AS(q)=n;  /* q=: 0 by}1$.n;0;1 */
  p=PAV(q); SPB(p,a,iv0); SPB(p,e,num(1)); SPB(p,i,by); SPB(p,x,jtreshape(jt,tally(jt, by),num(0)));
- RZ(z=over(df1(b,jtrepeat(jt,q,w),VAV(self)->fgh[0]),x));
+ RZ(z=jtover(jt,df1(b,jtrepeat(jt,q,w),VAV(self)->fgh[0]),x));
  z=j?jtcdot2(jt,box(IX(1+j)),z):z;
  EPILOG(z);
 }

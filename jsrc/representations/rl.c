@@ -53,7 +53,7 @@ static A jtltiea(J jt,A w,A *ltext){F1PREFIP;A t,*v,*wv,x,y;B b;C c;I n;
 }
 
 static A jtltieb(J jt,A w,A *ltext){F1PREFIP;A pt,t,*v,*wv,x,y;B b;C c,*s;I n;
- n=AN(w); wv=AAV(w);  RZ(t=spellout(CGRAVE)); RZ(pt=over(scc(')'),t));
+ n=AN(w); wv=AAV(w);  RZ(t=spellout(CGRAVE)); RZ(pt=jtover(jt,scc(')'),t));
  GATV0(y,BOX,n+n,1); v=AAV(y);
  if(1>=n)x=mtv; else{GATV0(x,LIT,n-2,1); s=CAV(x); DQ(n-2, *s++='(';);}
  DO(n, x=i==1?t:x; x=i>1?pt:x; *v++=x; x=wv[i]; c=ID(x); RZ(x=lrr(x)); 
@@ -77,11 +77,11 @@ static A jtlchar(J jt,A w,A *ltext){F1PREFIP;A y;B b,p=1,r1;C c,d,*u,*v;I j,k,m,
   // string ends with an entire a. sequence
   if(!j)return cstr("a.");  // if that's all there is, use a.
   RZ(y=lchar(1==j?scc(*v):jtstr(jt,j,v)));  // recur on the rest of the string to get its lr
-  return lp(y)?over(cstr("a.,~"),y):over(y,cstr(",a."));  // use rest,a. or a.,~rest depending on () needs
+  return lp(y)?jtover(jt,cstr("a.,~"),y):jtover(jt,y,cstr(",a."));  // use rest,a. or a.,~rest depending on () needs
  }
  if(r1&&m==n&&(y=icap(ne(w,ds(CALP))))&&m>AN(y)){  // if 256-byte string, see where it differs from a.
   if(1==AN(y))RZ(y=head(y));
-  return over(over(cstr("a. "),lcpx(lnum(y))),over(cstr("}~"),lchar(jtfrom(jt,y,w))));   // use diff indx} a. or the like
+  return jtover(jt,jtover(jt,cstr("a. "),lcpx(lnum(y))),jtover(jt,cstr("}~"),lchar(jtfrom(jt,y,w))));   // use diff indx} a. or the like
  }
  // we will try for quoted string
  j=2; b=7<n||1<n&&1<AR(w);  // j will be # added chars (init 2 for outer quotes); look for repeated chars if 7 chars or rank>1
@@ -89,19 +89,19 @@ static A jtlchar(J jt,A w,A *ltext){F1PREFIP;A y;B b,p=1,r1;C c,d,*u,*v;I j,k,m,
  if(b){n=1; j=MIN(3,j);}  // if all repeated, back to 1 character, which j=2/3 dep whether it is a quote
  if(!p){  // if the string contains a nonprintable, represent it as nums { a.
   k=(UC)d; RZ(y=jtindexof(jt,ds(CALP),w));
-  if(r1&&n<m&&(!k||k==m-n)&&equ(y,apv(n,k,1L)))return over(thorn1(sc(d?-n:n)),cstr("{.a."));
+  if(r1&&n<m&&(!k||k==m-n)&&jtequ(jt,y,apv(n,k,1L)))return jtover(jt,thorn1(sc(d?-n:n)),cstr("{.a."));
   RZ(y=lnum(y));
-  return lp(y)?over(cstr("a.{~"),y):over(y,cstr("{a."));
+  return lp(y)?jtover(jt,cstr("a.{~"),y):jtover(jt,y,cstr("{a."));
  }
  // out the enquoted string, preceded the the shape if repeated or not a list
  GATV0(y,LIT,n+j,1); v=CAV(y);
  *v=*(v+n+j-1)=CQUOTE; ++v;
  if(2==j)memcpy(v,u,n); else DQ(n, *v++=c=*u++; if(c==CQUOTE)*v++=c;);
- return over(b?lsh(w):lshape(w),y);
+ return jtover(jt,b?lsh(w):lshape(w),y);
 }    /* non-empty character array */
 
 static A jtlbox(J jt,A w,A *ltext){F1PREFIP;A p,*v,*vv,*wv,x,y;B b=0;I n;
- if(equ(ds(CACE),w)&&B01&AT(AAV(w)[0]))return cstr("a:");
+ if(jtequ(jt,ds(CACE),w)&&B01&AT(AAV(w)[0]))return cstr("a:");
  n=AN(w); wv=AAV(w); 
  DO(n, x=wv[i]; if(BOX&AT(x)){b=1; break;}); b|=1==n;
  GATV0(y,BOX,n+n-(1^b),1); v=vv=AAV(y);
@@ -109,28 +109,28 @@ static A jtlbox(J jt,A w,A *ltext){F1PREFIP;A p,*v,*vv,*wv,x,y;B b=0;I n;
   RZ(p=cstr("),(<"));
   DO(n, x=wv[i]; *v++=p; RZ(*v++=lnoun(x)););
   RZ(*vv=cstr(1==n?"<":"(<")); if(1<n)RZ(vv[n+n-2]=cstr("),<"));
-  return over(lshape(w),raze(y));
+  return jtover(jt,lshape(w),raze(y));
  }
  DO(n, x=wv[i]; if((AR(x)^1)|(~AT(x)&LIT)){b=1; break;});
  if(!b){C c[256],d,*t;UC*s;
   memset(c,1,sizeof(c)); 
   RZ(x=raze(w)); s=UAV(x);
   DQ(AN(x), c[*s++]=0;);
-  if(c[CQUOTE]&&equ(w,words(x)))return over(cstr(";:"),lchar(x));
+  if(c[CQUOTE]&&jtequ(jt,w,words(x)))return jtover(jt,cstr(";:"),lchar(x));
   if(c[d=' ']||c[d='|']||c[d='/']||c[d=',']||c[d=';']){
    GATV0(y,LIT,n+AN(x),1); t=CAV(y);
    DO(n, x=wv[i]; *t++=d; memcpy(t,AV(x),AN(x)); t+=AN(x););
    RZ(y=lchar(y));
-   return over(lshape(w),over(cstr(isdigit(CAV(y)[0])?"<;.(_1) ":"<;._1 "),y));
+   return jtover(jt,lshape(w),jtover(jt,cstr(isdigit(CAV(y)[0])?"<;.(_1) ":"<;._1 "),y));
  }}
  RZ(p=cstr(";"));
  DO(n-1, RZ(*v++=lcpx(lnoun(wv[i]))); *v++=p;);
  RZ(*v=lnoun(wv[n-1]));
- return over(lshape(w),raze(y));
+ return jtover(jt,lshape(w),raze(y));
 }    /* non-empty boxed array */
 
-A jtdinsert(J jt,A w,A ic,I ix){A l=jtsc4(jt,INT,ix); return over(over(jttake(jt,l,w),ic),jtdrop(jt,l,w));}   /* insert ic before position ix in w */
-A jtdcapp(J jt,A w,C c,A ap){return (memchr(CAV(w),c,AN(w)))?w:over(w,ap);}  /* conditionally append ap to w if it doesn't contain c */
+A jtdinsert(J jt,A w,A ic,I ix){A l=jtsc4(jt,INT,ix); return jtover(jt,jtover(jt,jttake(jt,l,w),ic),jtdrop(jt,l,w));}   /* insert ic before position ix in w */
+A jtdcapp(J jt,A w,C c,A ap){return (memchr(CAV(w),c,AN(w)))?w:jtover(jt,w,ap);}  /* conditionally append ap to w if it doesn't contain c */
 
 // Apply decoration as needed to a numeric character string w to give it the correct type t
 // Result is A block for decorated string
@@ -140,11 +140,11 @@ A jtdecorate(J jt,A w,I t){
   // float: make sure there is a . somewhere, or infinity/indefinite ('_' followed by space/end/.), else put '.' at end
   B needdot = !memchr(CAV(w),'.',AN(w));  // check for decimal point
   if(needdot){DO(AN(w), if(CAV(w)[i]=='_' && (i==AN(w)-1 || CAV(w)[i+1]==' ')){needdot=0; break;} )}  // check for infinity
-  if(needdot){w=over(w,scc('.')); RZ(w=mkwris(w)); DQ(AN(w) , if(CAV(w)[i]==' ')return w;  if(CAV(w)[i]=='e'){C f='.'; C *s=&CAV(w)[i]; DO(AN(w)-i, C ff=s[i]; s[i]=f; f=ff;)}) }
+  if(needdot){w=jtover(jt,w,scc('.')); RZ(w=mkwris(w)); DQ(AN(w) , if(CAV(w)[i]==' ')return w;  if(CAV(w)[i]=='e'){C f='.'; C *s=&CAV(w)[i]; DO(AN(w)-i, C ff=s[i]; s[i]=f; f=ff;)}) }
  }else if(t&INT){
  // integer: if the string contains nothing but one-digit 0/1 values, insert '0' before last number
   I l=AN(w); C *s=CAV(w); do{if((*s&-2)!='0')break; ++s; if(--l==0)break; if(*s!=' ')break; ++s;}while(--l);
-  if(l==0){I ls=0; DQ(AN(w), if(CAV(w)[i]==' ') ls=i;); w=ls?jtdinsert(jt,w,scc('0'),ls+1):over(scc('0'),w);}
+  if(l==0){I ls=0; DQ(AN(w), if(CAV(w)[i]==' ') ls=i;); w=ls?jtdinsert(jt,w,scc('0'),ls+1):jtover(jt,scc('0'),w);}
  }else if(t&XNUM) w=jtdcapp(jt, w,'x',scc('x')); // extended: make sure there is an x somewhere in the string, else put 'x' at end
  else if(t&RAT) w=jtdcapp(jt, w,'r',cstr("r1")); // rational: make sure there is an r somewhere in the string, else put 'r1' at end
  else if(t&CMPX) w=jtdcapp(jt, w,'j',cstr("j0")); // complex: make sure there is a j somewhere in the string, else put "j0" at end
@@ -164,14 +164,14 @@ static A jtlnum(J jt,A w,A *ltext){F1PREFIP;A b,d,t,*v,y;B p;I n;
  if(7<n||1<n&&1<AR(w)){
   // see if we can use a clever encoding
   d=minus(jtfrom(jt,num(1),t),b=jtfrom(jt,num(0),t));
-  p=equ(t,plus(b,tymes(d,IX(n))));
+  p=jtequ(jt,t,plus(b,tymes(d,IX(n))));
   if(p){
-   if(equ(d,num(0)))return over(lsh(w),lnum1(b));
+   if(jtequ(jt,d,num(0)))return jtover(jt,lsh(w),lnum1(b));
    GAT0(y,BOX,6,1); v=AAV(y); v[0]=v[1]=v[2]=v[3]=mtv;
-   if(p=!(equ(b,sc(n-1))&&equ(d,num(-1)))){
-    if     (!equ(b,num(0)   )){v[0]=lnum1(b); v[1]=spellout(CPLUS);}
-    if     ( equ(d,num(-1))) v[1]=spellout(CMINUS);
-    else if(!equ(d,num(1)    )){v[2]=lnum1(d); v[3]=spellout(CSTAR);}
+   if(p=!(jtequ(jt,b,sc(n-1))&&jtequ(jt,d,num(-1)))){
+    if     (!jtequ(jt,b,num(0)   )){v[0]=lnum1(b); v[1]=spellout(CPLUS);}
+    if     ( jtequ(jt,d,num(-1))) v[1]=spellout(CMINUS);
+    else if(!jtequ(jt,d,num(1)    )){v[2]=lnum1(d); v[3]=spellout(CSTAR);}
    }
    v[4]=spellout(CIOTA); v[5]=thorn1(p?shape(jt,w):negate(shape(jt,w)));
    RE(y); return raze(y);
@@ -179,7 +179,7 @@ static A jtlnum(J jt,A w,A *ltext){F1PREFIP;A b,d,t,*v,y;B p;I n;
   RESETERR;   // if there was an error getting to p, clear it
  }
  // not clever; just out the atoms
- return over(lshape(w),lnum1(t));
+ return jtover(jt,lshape(w),lnum1(t));
 }    /* dense numeric non-empty array */
 
 static A jtlsparse(J jt,A w,A *ltext){F1PREFIP;A a,e,q,t,x,y,z;B ba,be,bn;I j,r,*v;P*p;
@@ -187,32 +187,32 @@ static A jtlsparse(J jt,A w,A *ltext){F1PREFIP;A a,e,q,t,x,y,z;B ba,be,bn;I j,r,
  bn=0; v=AS(w); DQ(r, if(!*v++){bn=1; break;});
  ba=0; if(r==AR(a)){v=AV(a); DO(r, if(i!=*v++){ba=1; break;});}
  be=!(AT(w)&SFL&&0==*DAV(e));
- if(be)RZ(z=over(lnoun(e),cstr(SB01&AT(w)?"":SINT&AT(w)?"+-~2":SFL&AT(w)?"+-~2.1":"+-~2j1")));
+ if(be)RZ(z=jtover(jt,lnoun(e),cstr(SB01&AT(w)?"":SINT&AT(w)?"+-~2":SFL&AT(w)?"+-~2.1":"+-~2j1")));
  if(be||ba){
-  RZ(z=be?over(lcpx(lnoun(a)),       over(scc(';'),z)):lnoun(a));
-  RZ(z=   over(lcpx(lnoun(shape(jt,w))),over(scc(';'),z))         );
+  RZ(z=be?jtover(jt,lcpx(lnoun(a)),       jtover(jt,scc(';'),z)):lnoun(a));
+  RZ(z=   jtover(jt,lcpx(lnoun(shape(jt,w))),jtover(jt,scc(';'),z))         );
  }else RZ(z=lnoun(shape(jt,w))); 
- RZ(z=over(cstr("1$."),z));
+ RZ(z=jtover(jt,cstr("1$."),z));
  if(bn||!AS(y)[0])return z;
  if(AN(a)){
   RZ(x=lcpx(lnoun(x)));
-  RZ(y=1==r?lnoun(ravel(y)):over(cstr("(<\"1)"),lnoun(y)));
-  RZ(t=over(x,over(cstr(" ("),over(y,cstr(")}"))))); 
- }else RZ(t=over(lcpx(lnoun(head(x))),cstr(" a:}"))); 
+  RZ(y=1==r?lnoun(ravel(y)):jtover(jt,cstr("(<\"1)"),lnoun(y)));
+  RZ(t=jtover(jt,x,jtover(jt,cstr(" ("),jtover(jt,y,cstr(")}"))))); 
+ }else RZ(t=jtover(jt,lcpx(lnoun(head(x))),cstr(" a:}"))); 
  ba=0; v=AV(a); DO(AN(a), if(i!=*v++){ba=1; break;});
- if(!ba)return over(t,z);
+ if(!ba)return jtover(jt,t,z);
  RZ(q=jtless(jt,IX(r),a));
- RZ(z=over(over(lcpx(lnoun(q)),cstr("|:")),z));
- RZ(z=over(t,z));
- RZ(q=grade1(over(jtless(jt,IX(r),q),q)));
+ RZ(z=jtover(jt,jtover(jt,lcpx(lnoun(q)),cstr("|:")),z));
+ RZ(z=jtover(jt,t,z));
+ RZ(q=grade1(jtover(jt,jtless(jt,IX(r),q),q)));
  j=r; v=AV(q); DO(r, if(i!=*v++){j=i; break;});
- return over(lcpx(lnoun(jtdrop(jt,sc(j),q))),over(cstr("|:"),z));
+ return jtover(jt,lcpx(lnoun(jtdrop(jt,sc(j),q))),jtover(jt,cstr("|:"),z));
 }    /* sparse array */
 
 static A jtlnoun0(J jt,A w,A *ltext){F1PREFIP;A s,x;B r1;
  r1=1==AR(w); RZ(s=thorn1(shape(jt,w)));
  switch(CTTZ(AT(w))){
-  default:    return apip(s,cstr("$00"    ));  // over(cstr("i."),s);
+  default:    return apip(s,cstr("$00"    ));  // jtover(jt,cstr("i."),s);
   case LITX:  x=cstr(   "''"); return r1?x:apip(apip(s,scc('$')),x);
   case C2TX:  x=cstr("u: ''"); return r1?x:apip(apip(s,scc('$')),x);
   case C4TX:  x=cstr("10&u: ''"); return r1?x:apip(apip(s,scc('$')),x);
@@ -232,10 +232,10 @@ static A jtlnoun(J jt,A w,A *ltext){F1PREFIP;I t;
  if(!AN(w))return lnoun0(w);
  switch(CTTZ(t)){
   case LITX: return lchar(w);
-  case C2TX: return over(cstr("u: "),lnum(jtuco2(jt,num(3),w)));
-  case C4TX: return over(cstr("10&u: "),lnum(jtuco2(jt,num(3),w)));
+  case C2TX: return jtover(jt,cstr("u: "),lnum(jtuco2(jt,num(3),w)));
+  case C4TX: return jtover(jt,cstr("10&u: "),lnum(jtuco2(jt,num(3),w)));
   case BOXX: return lbox(w);
-  case SBTX: return over(cstr("s: "),lbox(jtsb2(jt,num(5),w)));
+  case SBTX: return jtover(jt,cstr("s: "),lbox(jtsb2(jt,num(5),w)));
   default:  return lnum(w);
 }}
 
@@ -246,7 +246,7 @@ static A jtlsymb(J jt,C c,A w,A *ltext){F1PREFIP;A t;C buf[20],d,*s;I*u;V*v=FAV(
   RZ(t=jtstr(jt,s-buf,buf)); 
  }else{RZ(t=spella(w)); if(AN(t)==1&&(CAV(t)[0]=='{'||CAV(t)[0]=='}')){RZ(t=mkwris(t)); AS(t)[0]=AN(t)=2; CAV(t)[1]=' '; }}  // add trailing space to { } to avoid DD codes
  d=cf(t);
- return d==CESC1||d==CESC2?over(chrspace,t):t;
+ return d==CESC1||d==CESC2?jtover(jt,chrspace,t):t;
 }
 
 static B laa(A a,A w){C c,d;
@@ -284,10 +284,10 @@ static A jtlinsert(J jt,A a,A w,A *ltext){F1PREFIP;A*av,f,g,h,t,t0,t1,t2,*u,y;B 
   default:
    t0=parfn(jtinplace,ft||NOUN&AT(fs)&&!(VGERL&v->flag)&&lp(f),f);
    t1=lsymb(id,w);
-   y=over(t0,laa(t0,t1)?over(chrspace,t1):t1);
+   y=jtover(jt,t0,laa(t0,t1)?jtover(jt,chrspace,t1):t1);
    if(1==n)return y;
    t2=lcpx(g);
-   return over(y,laa(y,t2)?over(chrspace,t2):t2);
+   return jtover(jt,y,laa(y,t2)?jtover(jt,chrspace,t2):t2);
 }}
 
 // create linear rep for m : n
@@ -295,10 +295,10 @@ static A jtlcolon(J jt,A w,A *ltext){F1PREFIP;A*v,x,y;C*s,*s0;I m,n;
  RZ(y=jtunparsem(jt,num(1),w));
  n=AN(y); v=AAV(y); RZ(x=lrr(VAV(w)->fgh[0]));
  if(2>n||2==n&&1==AN(v[0])&&':'==CAV(v[0])[0]){
-  if(!n)return over(x,jtstr(jt,5L," : \'\'"));
+  if(!n)return jtover(jt,x,jtstr(jt,5L," : \'\'"));
   y=lrr(v[2==n]);
-  if(2==n)y=over(jtstr(jt,5L,"\':\'; "),y);
-  return over(over(x,jtstr(jt,3L," : ")),lcpx(y));
+  if(2==n)y=jtover(jt,jtstr(jt,5L,"\':\'; "),y);
+  return jtover(jt,jtover(jt,x,jtstr(jt,3L," : ")),lcpx(y));
  }
  m=0; DO(n, m+=AN(v[i]););
  GATV0(y,LIT,2+n+m,1);
@@ -306,8 +306,8 @@ static A jtlcolon(J jt,A w,A *ltext){F1PREFIP;A*v,x,y;C*s,*s0;I m,n;
  DO(n, *s++=CLF; y=v[i]; m=AN(y); memcpy(s,CAV(y),m); s+=m;);
  *s++=CLF; *s++=')'; 
  RZ(y=jtstr(jt,s-s0,s0));
- *ltext=*ltext?over(*ltext,y):y;
- return over(x,jtstr(jt,4L," : 0"));
+ *ltext=*ltext?jtover(jt,*ltext,y):y;
+ return jtover(jt,x,jtstr(jt,4L," : 0"));
 }
 
 // Main routine for () and linear rep.  w is to be represented

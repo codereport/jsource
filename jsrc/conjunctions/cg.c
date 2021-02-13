@@ -136,7 +136,7 @@ static A jtinsert(J jt,    A w,A self){A hs,*hv,z;I hfx,j,m,n;A *old;
    ASSERT(0,EVDOMAIN);
 }}
 
- A jttie(J jt,A a,A w){ return over(VERB&AT(a)?arep(a):a,VERB&AT(w)?arep(w):w);}
+ A jttie(J jt,A a,A w){ return jtover(jt,VERB&AT(a)?arep(a):a,VERB&AT(w)?arep(w):w);}
 
 
 // m@.:v y.  Execute the verbs at high rank if the operands are large

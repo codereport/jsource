@@ -35,7 +35,7 @@ B jtxsinit(J jt){A x;
 /* tso: echo to stdout                          */
 
 static A jtline(J jt,A w,I si,C ce,B tso){A x=mtv,z;B xt=jt->tostdout;DC d,xd=jt->dcs;
- if(equ(w,num(1)))return mtm;
+ if(jtequ(jt,w,num(1)))return mtm;
  RZ(w=vs(w));
  // Handle locking.  Global glock has lock status for higher levels.  We see if this text is locked; if so, we mark lock status for this level
  // We do not inherit the lock from higher levels, per the original design

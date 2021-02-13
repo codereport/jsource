@@ -141,8 +141,8 @@ static A jtnlx(J jt, A w){A z=mtv;B b;I m=0,*v,x;
  jt->workareas.namelist.nlt=m&RHS; b=1&&jt->workareas.namelist.nlt&RHS;
  ASSERT(!(m&MARK),EVDOMAIN);
  if(b           )RZ(z=nlxxx(jt->global));
- if(b&&(AN(jt->locsyms)>1))RZ(z=over(nlxxx(jt->locsyms),z));
- if(m==SYMB     )RZ(z=over(nlsym(jt->stloc),z));
+ if(b&&(AN(jt->locsyms)>1))RZ(z=jtover(jt,nlxxx(jt->locsyms),z));
+ if(m==SYMB     )RZ(z=jtover(jt,nlsym(jt->stloc),z));
  return nub(jtgrade2(jt,z,ope(z)));
 }
 

@@ -33,7 +33,7 @@ static A jtrinvip(J jt,A w,I n,I ncomp){PROLOG(0066);A ai,bx,di,z;I m;
  ai=jtrinvip(jt,jttake(jt,jtv2(jt,m,m),w),m,ncomp);  // take inverse of w00  kludge could use faux block to avoid take overhead esp for 2x2 FL results
  di=jtrinvip(jt,jtdrop(jt,jtv2(jt,m,m),w),n-m,ncomp);  // take inverse of w11
  bx=negateW(jtpdt(jt,ai,jtpdt(jt,jttake(jt,jtv2(jt,m,m-n),w),di)));  // -w00^_1 mp w01 mp w11^_1
- if(AT(w)&SPARSE){z=over(jtstitch(jt,ai,bx),jttake(jt,jtv2(jt,n-m,-n),di));  // should copy this over w, inplace
+ if(AT(w)&SPARSE){z=jtover(jt,jtstitch(jt,ai,bx),jttake(jt,jtv2(jt,n-m,-n),di));  // should copy this over w, inplace
  }else{
   // copy in the pieces, line by line, writing over the input area
   I leftlen = m<<bplg(AT(w)); I rightlen=(n-m)<<bplg(AT(w));
@@ -67,7 +67,7 @@ static A jtqrr(J jt, A w){PROLOG(0067);A a1,q,q0,q1,r,r0,r1,t,*tv,t0,t1,y,z;I m,
  m=n>>1; I tom=(0x01222100>>((n&7)<<2))&3; m=(m+tom<n)?m+tom:m;  // Minimize number of wasted multiply slots, processing in batches of 4
  if(1>=n){  // just 1 col
   t=norm(ravel(w));  // norm of col 
-  ASSERT(!AN(w)||!equ(t,num(0)),EVDOMAIN);  // norm must not be 0 unless column is empty
+  ASSERT(!AN(w)||!jtequ(jt,t,num(0)),EVDOMAIN);  // norm must not be 0 unless column is empty
   RZ(q=tymes(w,recip(t)));
   return link(2>AR(q)?table(q):q,jtreshape(jt,jtv2(jt,n,n),p?t:num(1)));
  }
@@ -79,7 +79,7 @@ static A jtqrr(J jt, A w){PROLOG(0067);A a1,q,q0,q1,r,r0,r1,t,*tv,t0,t1,y,z;I m,
  RZ(t1=qrr(minus(a1,jtpdt(jt,q0,y))));  // pxmxn-m  get QR of w1-(q0 q0* w1)    w1t-(w1t q0t* q0t)    
  tv=AAV(t1); q1=*tv++; r1=*tv;  
  RZ(q=jtstitch(jt,q0,q1));  // overall q is q0t    Q of (w1t-(w1t q0t* q0t))
- RZ(r=over(jtstitch(jt,r0,y),jttake(jt,jtv2(jt,n-m,-n),r1)));
+ RZ(r=jtover(jt,jtstitch(jt,r0,y),jttake(jt,jtv2(jt,n-m,-n),r1)));
  // r is   r0    q0* w1
  //        0     return of w1-(q0 q0* w1)
  // qr is  q0 r0    (q0 q0* w1) + (Q of w1-(q0 q0* w1))(return of w1-(q0 q0* w1))
@@ -101,7 +101,7 @@ static A jtltqip(J jt, A w){PROLOG(0067);A l0,l1,y,z;
    // Use a faux-virtual block to take the norm of w, so that we leave w inplaceable for when we normalize it in place
    fauxvirtual(q0,virtwq0,w,1,ACUC1); AS(q0)[0]=cl; AN(q0)=cl;  // kludge use sumattymesprod to create a table result directly
    A t; RZ(t=norm(q0));  // norm of row
-   ASSERT(!equ(t,num(0)),EVDOMAIN);  // norm must not be 0
+   ASSERT(!jtequ(jt,t,num(0)),EVDOMAIN);  // norm must not be 0
    A z; RZ(z=tymesA(w,recip(t))); verifyinplace(w,z);
    RZ(t=table(t)); realizeifvirtual(t); return t; // this is real, so it is also the adjoint of L
   }

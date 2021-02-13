@@ -106,14 +106,14 @@ static UI hix(X*v){A y=*v;   return hic(AN(y)*SZI,UAV(y));}
 static UI hiq(Q*v){A y=v->n; return hic(AN(y)*SZI,UAV(y));}
 
 // Comparisons for extended/rational/float/complex types.  teq should use the macro
-static B jteqx(J jt,I n,X*u,X*v){DQ(n, if(!equ(*u,*v))return 0; ++u; ++v;); return 1;}
+static B jteqx(J jt,I n,X*u,X*v){DQ(n, if(!jtequ(jt,*u,*v))return 0; ++u; ++v;); return 1;}
 static B jteqq(J jt,I n,Q*u,Q*v){DQ(n, if(!QEQ(*u,*v))return 0; ++u; ++v;); return 1;}
 static B jteqd(J jt,I n,D*u,D*v){DQ(n, if(!TEQ(*u,*v))return 0; ++u; ++v;); return 1;}
-static B jteqz(J jt,I n,Z*u,Z*v){DQ(n, if(!zeq(*u,*v))return 0; ++u; ++v;); return 1;}
+static B jteqz(J jt,I n,Z*u,Z*v){DQ(n, if(!jtzeq(jt,*u,*v))return 0; ++u; ++v;); return 1;}
 
 // test a subset of two boxed arrays for match.  u/v point to pointers to contants, c and d are the relative flags
 // We test n subboxes
-static B jteqa(J jt,I n,A*u,A*v){DQ(n, if(!equ(*u,*v))return 0; ++u; ++v;); return 1;}
+static B jteqa(J jt,I n,A*u,A*v){DQ(n, if(!jtequ(jt,*u,*v))return 0; ++u; ++v;); return 1;}
 
 /*
  mode one of the following:
@@ -369,8 +369,8 @@ static I hashallo(IH * RESTRICT hh,UI p,UI m,I md){
  }
 
 //
-static IOFX(A,jtioax1,jthia(jt,t1,*v),!equ(*v,av[hj]),++v,   --v  )  /* boxed exact 1-element item */   
-static IOFX(A,jtioau, hiau(*v),  !equ(*v,av[hj]),++v,   --v  )  /* boxed uniform type         */
+static IOFX(A,jtioax1,jthia(jt,t1,*v),!jtequ(jt,*v,av[hj]),++v,   --v  )  /* boxed exact 1-element item */   
+static IOFX(A,jtioau, hiau(*v),  !jtequ(jt,*v,av[hj]),++v,   --v  )  /* boxed uniform type         */
 static IOFX(X,jtiox,  hix(v),            !eqx(n,v,av+n*hj),               v+=cn, v-=cn)  /* extended integer           */   
 static IOFX(Q,jtioq,  hiq(v),            !eqq(n,v,av+n*hj),               v+=cn, v-=cn)  /* rational number            */   
 static IOFX(C,jtioc,  hic(k,(UC*)v),     memcmp(v,av+k*hj,k),             v+=cn, v-=cn)  /* boolean, char, or integer  */
@@ -493,7 +493,7 @@ static IOFX(I,jtioi,  hicw(v),           *v!=av[hj],                      ++v,  
 // CMPLX array
 static IOFT(Z,jtioz, THASHA, TFINDXY,TFINDYY,memcmp(v,av+n*hj,n*2*sizeof(D)), !eqz(n,v,av+n*hj)               )
 // CMPLX list
-static IOFT(Z,jtioz1,THASHA, TFINDXY,TFINDYY,memcmp(v,av+n*hj,  2*sizeof(D)), !zeq( *v,av[hj] )               )
+static IOFT(Z,jtioz1,THASHA, TFINDXY,TFINDYY,memcmp(v,av+n*hj,  2*sizeof(D)), !jtzeq(jt, *v,av[hj] )               )
 // FL array
 static IOFT(D,jtiod, THASHA, TFINDXY,TFINDYY,memcmp(v,av+n*hj,n*  sizeof(D)), !eqd(n,v,av+n*hj)               )
 // FL list
@@ -502,7 +502,7 @@ static IOFT(D,jtiod1,THASHA, TFINDXY,TFINDY1,x!=av[hj],                       !T
 // boxed array with more than 1 box
 static IOFT(A,jtioa, THASHBX,TFINDBX,TFINDBX,!eqa(n,v,av+n*hj),          !eqa(n,v,av+n*hj)          )
 // singleton box
-static IOFT(A,jtioa1,THASHBX,TFINDBX,TFINDBX,!equ(*v,av[hj]),!equ(*v,av[hj]))
+static IOFT(A,jtioa1,THASHBX,TFINDBX,TFINDBX,!jtequ(jt,*v,av[hj]),!jtequ(jt,*v,av[hj]))
 
 // ********************* third class: small-range arguments ****************************
 
@@ -688,12 +688,12 @@ static void jtiosc(J jt,I mode,I m,I c,I ac,I wc,A a,A w,A z){B*zb;I j,p,q,*u,*v
   default:                SCDO(C, *wv,x!=av[j]      ); break;
   case C2TX:               SCDO(S, *wv,x!=av[j]      ); break;
   case C4TX:               SCDO(C4,*wv,x!=av[j]      ); break;
-  case CMPXX:              SCDO(Z, *wv,!zeq(x, av[j])); break;
-  case XNUMX:              SCDO(A, *wv,!equ(x, av[j])); break;
+  case CMPXX:              SCDO(Z, *wv,!jtzeq(jt,x, av[j])); break;
+  case XNUMX:              SCDO(A, *wv,!jtequ(jt,x, av[j])); break;
   case RATX:               SCDO(Q, *wv,!QEQ(x, av[j])); break;
   case INTX:               SCDO(I, *wv,x!=av[j]      ); break;
   case SBTX:               SCDO(SB,*wv,x!=av[j]      ); break;
-  case BOXX:  {RDECL;      SCDO(A, *wv,!equ(x,av[j]));} break;
+  case BOXX:  {RDECL;      SCDO(A, *wv,!jtequ(jt,x,av[j]));} break;
   case FLX:   if(1.0==jt->cct)SCDO(D, *wv,x!=av[j]) 
              else{D cct=jt->cct;    SCDO(D, *wv,!TCMPEQ(cct,x,av[j]));} break; 
  }
@@ -1389,7 +1389,7 @@ A jtindexofprehashed(J jt,A a,A w,A hs){A h,hi,*hv,x,z;AF fn;I ar,*as,at,c,f1,k,
  if(DENSE&AT(w))return atab(CEQ,jtrepeat(jt,eq(IX(n),x),x),x);
  // if x is sparse... ??
  p=PAV(x); e=SPA(p,e); y=SPA(p,i); RZ(xy=jtstitch(jt,SPA(p,x),y));
- if(n>*AV(e))RZ(xy=over(xy,jtstitch(jt,e,jtless(jt,IX(n),y))));
+ if(n>*AV(e))RZ(xy=jtover(jt,xy,jtstitch(jt,e,jtless(jt,IX(n),y))));
  RZ(xy=jtgrade2(jt,xy,xy)); v=AV(xy);
  c=*AS(xy);
  m=j=-1; DQ(c, if(j!=*v){j=*v; ++m;} *v=m; v+=2;);
@@ -1450,10 +1450,10 @@ A jtindexofprehashed(J jt,A a,A w,A hs){A h,hi,*hv,x,z;AF fn;I ar,*as,at,c,f1,k,
 
 // create the index-of routines.  These hash just the real part of a complex value
 static IOCOLFT(D,jtiocold,hid(*v),    hid(tl*x),hid(tr*x),!TEQ(*v,av[c*hj]))
-static IOCOLFT(Z,jtiocolz,hid(*(D*)v),hid(tl*x),hid(tr*x),!zeq(*v,av[c*hj]))
+static IOCOLFT(Z,jtiocolz,hid(*(D*)v),hid(tl*x),hid(tr*x),!jtzeq(jt,*v,av[c*hj]))
 
 static JOCOLFT(D,jtjocold,hid(*v),    hid(tl*x),hid(tr*x),!TEQ(*v,av[c*hj]))
-static JOCOLFT(Z,jtjocolz,hid(*(D*)v),hid(tl*x),hid(tr*x),!zeq(*v,av[c*hj]))
+static JOCOLFT(Z,jtjocolz,hid(*(D*)v),hid(tl*x),hid(tr*x),!jtzeq(jt,*v,av[c*hj]))
 
 // support for a i."1 &.|:w or a i:"1 &.|:w   used only by some sparse-array stuff
 A jtiocol(J jt,I mode,A a,A w){A h,z;I ar,at,c,d,m,p,t,wr,*ws,wt;void(*fn)();

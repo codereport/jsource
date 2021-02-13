@@ -220,12 +220,12 @@ A jtssingleton(J jt, A a,A w,A self,RANK2T awr,RANK2T ranks){A z;
  case SSINGCASE(VA2CEXP-VA2CBW1111,SSINGBB): SSSTORENV((I)SSRDB(a)|(I)!SSRDB(w),z,B01,B) return z;
  case SSINGCASE(VA2CEXP-VA2CBW1111,SSINGBD): SSSTORE(SSRDB(a)?1.0:(zdv=SSRDD(w))<0?inf:zdv==0?1:0,z,FL,D) return z;
  case SSINGCASE(VA2CEXP-VA2CBW1111,SSINGDB): SSSTORE(SSRDB(w)?SSRDD(a):1.0,z,FL,D) return z;
- case SSINGCASE(VA2CEXP-VA2CBW1111,SSINGID): RE(zdv=pospow((D)SSRDI(a),SSRDD(w))) SSSTORE(zdv,z,FL,D) return z;
- case SSINGCASE(VA2CEXP-VA2CBW1111,SSINGDI): RE(zdv=intpow(SSRDD(a),SSRDI(w))) SSSTORE(zdv,z,FL,D) return z;
+ case SSINGCASE(VA2CEXP-VA2CBW1111,SSINGID): RE(zdv=jtpospow(jt,(D)SSRDI(a),SSRDD(w))) SSSTORE(zdv,z,FL,D) return z;
+ case SSINGCASE(VA2CEXP-VA2CBW1111,SSINGDI): RE(zdv=jtintpow(jt,SSRDD(a),SSRDI(w))) SSSTORE(zdv,z,FL,D) return z;
  case SSINGCASE(VA2CEXP-VA2CBW1111,SSINGBI): SSSTORE(SSRDB(a)?1.0:(zdv=(D)SSRDI(w))<0?inf:zdv==0?1:0,z,FL,D) return z;
  case SSINGCASE(VA2CEXP-VA2CBW1111,SSINGIB): SSSTORE(SSRDB(w)?SSRDI(a):1,z,INT,I) return z;
- case SSINGCASE(VA2CEXP-VA2CBW1111,SSINGII): RE(zdv=intpow((D)SSRDI(a),SSRDI(w))) SSSTORE(zdv,z,FL,D) return z;
- case SSINGCASE(VA2CEXP-VA2CBW1111,SSINGDD): RE(zdv=pospow(SSRDD(a),SSRDD(w))) SSSTORENVFL(zdv,z,FL,D) return z;
+ case SSINGCASE(VA2CEXP-VA2CBW1111,SSINGII): RE(zdv=jtintpow(jt,(D)SSRDI(a),SSRDI(w))) SSSTORE(zdv,z,FL,D) return z;
+ case SSINGCASE(VA2CEXP-VA2CBW1111,SSINGDD): RE(zdv=jtpospow(jt,SSRDD(a),SSRDD(w))) SSSTORENVFL(zdv,z,FL,D) return z;
 
 
  case SSINGCASE(VA2CBW1111-VA2CBW1111,SSINGBB): aiv=SSRDB(a); wiv=SSRDB(w); goto bitwiseresult;
@@ -336,19 +336,19 @@ A jtssingleton(J jt, A a,A w,A self,RANK2T awr,RANK2T ranks){A z;
  }
  // The only thing left is exit processing for the different functions
  gcdintresult:
- ziv=igcd(aiv,wiv); if(ziv||!jt->jerr){SSSTORE(ziv,z,INT,I) return z;}  // if no error, store an int
+ ziv=jtigcd(jt,aiv,wiv); if(ziv||!jt->jerr){SSSTORE(ziv,z,INT,I) return z;}  // if no error, store an int
  if(jt->jerr<EWOV)return 0;  // If not overflow, what can it be?
  RESETERR; adv=(D)aiv; wdv=(D)wiv;  // Rack em up again; Convert int args to float, and fall through to float case
  gcdflresult:
- if((zdv=dgcd(adv,wdv))||!jt->jerr){SSSTORE(zdv,z,FL,D) return z;}  // float result is the last fallback
+ if((zdv=jtdgcd(jt,adv,wdv))||!jt->jerr){SSSTORE(zdv,z,FL,D) return z;}  // float result is the last fallback
  return 0;  // if there was an error, fail, jerr is set
 
  lcmintresult:
- ziv=ilcm(aiv,wiv); if(!jt->jerr){SSSTORE(ziv,z,INT,I) return z;}  // if no error, store an int
+ ziv=jtilcm(jt,aiv,wiv); if(!jt->jerr){SSSTORE(ziv,z,INT,I) return z;}  // if no error, store an int
  if(jt->jerr<EWOV)return 0;  // If not overflow, what can it be?
  RESETERR; adv=(D)aiv; wdv=(D)wiv;  // Rack em up again; Convert int args to float, and fall through to float case
  lcmflresult:
- zdv=dlcm(adv,wdv); if(!jt->jerr){SSSTORE(zdv,z,FL,D) return z;}  // float result is the last fallback
+ zdv=jtdlcm(jt,adv,wdv); if(!jt->jerr){SSSTORE(zdv,z,FL,D) return z;}  // float result is the last fallback
  return 0;  // if there was an error, fail, jerr is set
 
  nandresult:
@@ -358,11 +358,11 @@ A jtssingleton(J jt, A a,A w,A self,RANK2T awr,RANK2T ranks){A z;
  SSSTORE((B)(1^(aiv|wiv)),z,B01,B) return z;
 
  outofresult:
- NAN0; zdv=bindd(adv,wdv); NAN1;
+ NAN0; zdv=jtbindd(jt,adv,wdv); NAN1;
  SSSTORE(zdv,z,FL,D) return z;  // Return the value if valid
 
  outofresultcvti:
- NAN0; zdv=bindd(adv,wdv); NAN1;
+ NAN0; zdv=jtbindd(jt,adv,wdv); NAN1;
  if(zdv>=(D)IMIN&&zdv<=(D)IMAX){SSSTORE((I)zdv,z,INT,I)}else{SSSTORE(zdv,z,FL,D)} return z;  // Return the value if valid, as integer if possible
 
  bitwiseresult:

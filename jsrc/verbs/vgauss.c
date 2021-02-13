@@ -22,11 +22,11 @@
   ASSERT(0<=e,EVDOMAIN);
   x=v+c*j; 
   if(j!=e){u=v+c*e; DO(c, Q t1=u[i]; u[i]=x[i]; x[i]=t1;);} /* interchange rows e and j */
-  p=x[j]; ra(p.n); ra(p.d); DO(c, Q z=qdiv(x[i],p); INSTALLRAT(w,x,i,z);); fa(p.n); fa(p.d);
+  p=x[j]; ra(p.n); ra(p.d); DO(c, Q z=jtqdiv(jt,x[i],p); INSTALLRAT(w,x,i,z);); fa(p.n); fa(p.d);
   for(i=0;i<r;++i){
    if(i==j)continue;
    u=v+c*i; p=u[j];  /* pivot */
-   ra(p.n); ra(p.d); DO(c, Q z=qminus(u[i],qtymes(p,x[i])); INSTALLRAT(w,u,i,z);); fa(p.n); fa(p.d);
+   ra(p.n); ra(p.d); DO(c, Q z=jtqminus(jt,u[i],jtqtymes(jt,p,x[i])); INSTALLRAT(w,u,i,z);); fa(p.n); fa(p.d);
   }
   if(!gc3(&w,0L,0L,old))return 0;  // use simple gc3 to ensure all changes use the stack, since w is modified inplace.  Alternatively could turn off inplacing here
  }
@@ -46,11 +46,11 @@ static A jtdetr(J jt, A w){A z;I c,e,g=1,i,j,k,r,*s;Q d,p,*u,*v,*x;
   i=XDIG(x[j].n); if(i==XPINF||i==XNINF)return mark;
   for(i=j+1;i<r;++i){
    u=v+c*i;
-   if(XDIG(u[j].n)){p=qdiv(u[j],x[j]); ra(p.n); ra(p.d); for(k=j+1;k<r;++k){Q z=qminus(u[k],qtymes(p,x[k]));INSTALLRAT(w,u,k,z);} fa(p.n); fa(p.d);}
+   if(XDIG(u[j].n)){p=jtqdiv(jt,u[j],x[j]); ra(p.n); ra(p.d); for(k=j+1;k<r;++k){Q z=jtqminus(jt,u[k],jtqtymes(jt,p,x[k]));INSTALLRAT(w,u,k,z);} fa(p.n); fa(p.d);}
   }
   if(!gc3(&w,0L,0L,old))return 0;  // use simple gc3 to ensure all changes use the stack, since w is modified inplace.  Alternatively could turn off inplacing here
  }
- d=0<g?*v:qminus(zeroQ,*v); u=v+1+c; DQ(r-1, d=qtymes(d,*u); u+=1+c;);
+ d=0<g?*v:jtqminus(jt,zeroQ,*v); u=v+1+c; DQ(r-1, d=jtqtymes(jt,d,*u); u+=1+c;);
  RE(0);
  GAT0(z,RAT,1,0); QAV(z)[0]=d; return z;
 }    /* determinant on rational matrix; works in place */
@@ -85,12 +85,12 @@ static A jtdetz(J jt, A w){A t;D g,h;I c,d,e,i,j,k,r,*s;Z p,q,*u,*v,*x,*y,z;
   DO(r-j, k=i; DO(c-j, g=ZABT(*u); if(h<g){h=g; d=j+k; e=j+i;} ++u;); u+=j;);  /* find pivot, maximum abs element */
   if(h==inf)return mark;
   if(0==h)return scf(0.0);
-  if(j!=d){u=v+c*d;              DO(c-j, q=u[j+i]; u[j+i]=x[j+i]; x[j+i]=q;); z=zminus(zeroZ,z);}  /* interchange rows j and d */
-  if(j!=e){u=v+c*j+e; y=v+c*j+j; DQ(r-j, q=*u; *u=*y; *y=q; u+=c; y+=c;);     z=zminus(zeroZ,z);}  /* interchange cols j and e */
-  q=x[j]; z=ztymes(z,q);
+  if(j!=d){u=v+c*d;              DO(c-j, q=u[j+i]; u[j+i]=x[j+i]; x[j+i]=q;); z=jtzminus(jt,zeroZ,z);}  /* interchange rows j and d */
+  if(j!=e){u=v+c*j+e; y=v+c*j+j; DQ(r-j, q=*u; *u=*y; *y=q; u+=c; y+=c;);     z=jtzminus(jt,zeroZ,z);}  /* interchange cols j and e */
+  q=x[j]; z=jtztymes(jt,z,q);
   for(i=j+1;i<r;++i){
    u=v+c*i;
-   if(ZNZ(u[j])){p=zdiv(u[j],q); for(k=j+1;k<r;++k)u[k]=zminus(u[k],ztymes(p,x[k]));}
+   if(ZNZ(u[j])){p=jtzdiv(jt,u[j],q); for(k=j+1;k<r;++k)u[k]=jtzminus(jt,u[k],jtztymes(jt,p,x[k]));}
  }}
  NAN1; RE(0);
  GAT0(t,CMPX,1,0); ZAV(t)[0]=z; return t;

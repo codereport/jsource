@@ -77,7 +77,7 @@ static B jtnumr(J jt,I n,C*s,void*vv){C c,*t;I m,p,q;Q*v;
  if(t){
   c=s[n-1]; if(!('r'!=c&&'x'!=c))return 0;
   if(!(numx(n-m-1,s+m+1,&v->d)))return 0;
-  p=AV(v->n)[0]; q=AV(v->d)[0]; 
+  p=AV(v->n)[0]; q=AV(v->d)[0];
   if(!(p!=XPINF&&p!=XNINF||q!=XPINF&&q!=XNINF))return 0;
   RE(*v=qstd(*v));
  }
@@ -127,7 +127,7 @@ static B jtnumbpx(J jt,I n,C*s,void*vv){B ne,ze;C*t,*u;I k,m;Z b,p,q,*v,x,y;
    k=m-(1+k);
    if(ze=!(b.re||b.im))b.re=1;
    if(!(numb(k,1+u,&q,b)))return 0;
-   if(ze){if(q.re)p.re=inf;} else{DQ(k,q=zdiv(q,b);); p=zplus(p,q);}
+   if(ze){if(q.re)p.re=inf;} else{DQ(k,q=jtzdiv(jt,q,b);); p=jtzplus(jt,p,q);}
   }
   *v=p; if(ne){v->re=-v->re; v->im=-v->im;}
   return 1;
@@ -140,8 +140,8 @@ static B jtnumbpx(J jt,I n,C*s,void*vv){B ne,ze;C*t,*u;I k,m;Z b,p,q,*v,x,y;
  // the input area is writable.  The exponent part ends with a natural NUL.
  C savpx = *t; *t=0; B rc = numj(t-s,s,&x); *t = savpx; RZ(rc);
  ++t; if(!(numj(n+s-t,t,&y)))return 0;  // if p- or x-type, get x=mantissa y=exponent
- y = u ? zexp(y) : zpow(zpi,y);  // ^y or pi^y
- *v = ztymes(x,y);   // calculate x*^y or x*pi^y
+ y = u ? zexp(y) : jtzpow(jt,zpi,y);  // ^y or pi^y
+ *v = jtztymes(jt,x,y);   // calculate x*^y or x*pi^y
  return 1;
 }
 
@@ -296,7 +296,7 @@ B valueisint; // set if the value we are processing is really an int
  // set end-of-result-row counter j
  k=0; mc=m*c; u=CAV(w); y=u+n; j=c; uu=u+AN(w);
  // Rank of result is rank of w, unless the rows have only 1 value; make rows atoms then, removing them from rank
- r=AR(w)-(I )(1==c); r=MAX(0,r); 
+ r=AR(w)-(I )(1==c); r=MAX(0,r);
  // Allocate the result array, as floats.  If the last atom of shape was not removed, replace it with c, the output length per list
  GATV(z,FL,mc,r,AS(w)); if(0<r&&1!=c)AS(z)[r-1]=c; zv=DAV(z);
  if(!mc)return z;  // If no fields at all, exit with empty result (avoids infinite loop below)
@@ -388,7 +388,7 @@ B valueisint; // set if the value we are processing is really an int
    // b is set when the current character is significant (i. e. not whitespace); p when the previous character was significant
    // k counts the number of words on this line
    // c is the max # words found on a line
-   b=0; k=0; 
+   b=0; k=0;
    for(j=0;j<n;++j){
     p=b; d=*v;
     // replace ' ' and TAB with \0; replace _ with -

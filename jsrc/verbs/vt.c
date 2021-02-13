@@ -9,7 +9,7 @@
  A jtbehead (J jt, A w){F1PREFIP; return jtdrop(jtinplace,zeroionei(1),    w);}
  A jtcurtail(J jt, A w){F1PREFIP; return jtdrop(jtinplace,num(-1),w);}
 
- A jtshift1(J jt, A w){return jtdrop(jt,num(-1),over(num(1),w));}
+ A jtshift1(J jt, A w){return jtdrop(jt,num(-1),jtover(jt,num(1),w));}
 
 static A jttk0(J jt,B b,A a,A w){A z;I k,m=0,n,p,r,*s,*u;
  r=AR(w); n=AN(a); u=AV(a); 

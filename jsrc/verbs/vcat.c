@@ -18,7 +18,7 @@ static A jtovs0(J jt,B p,I r,A a,A w){A a1,e,q,x,y,z;B*b;I at,*av,c,d,j,k,f,m,n,
  if(TYPESNE(t,at))RZ(a=jtcvt(jt,t,a));
  if(TYPESNE(t,wt)){RZ(x=jtcvt(jt,t,x)); RZ(e=jtcvt(jt,t,e));}
  j=k=0; DO(f, if(b[i])++j; else ++k;);
- switch(2*b[f]+!equ(a,e)){
+ switch(2*b[f]+!jtequ(jt,a,e)){
   case 0:  /* dense and a equal e */
    RZ(y=ca(y)); 
    RZ(x=p?irs2(x,a,0L,AR(x)-(1+k),0L,jtover):irs2(a,x,0L,0L,AR(x)-(1+k),jtover)); 
@@ -27,7 +27,7 @@ static A jtovs0(J jt,B p,I r,A a,A w){A a1,e,q,x,y,z;B*b;I at,*av,c,d,j,k,f,m,n,
    GATV0(q,INT,c,1); v=AV(q); DO(c, v[i]=ws[av[i]];); RZ(q=odom(2L,c,v));
    if(AN(q)>=AN(y)){
     RZ(z=shape(jt,x)); *AV(z)=*AS(q); 
-    RZ(x=jtfrom(jt,grade1(over(y,jtless(jt,q,y))),over(x,jtreshape(jt,z,e))));
+    RZ(x=jtfrom(jt,grade1(jtover(jt,y,jtless(jt,q,y))),jtover(jt,x,jtreshape(jt,z,e))));
     y=q;
    }
    RZ(x=p?irs2(x,a,0L,AR(x)-(1+k),0L,jtover):irs2(a,x,0L,0L,AR(x)-(1+k),jtover));
@@ -38,9 +38,9 @@ static A jtovs0(J jt,B p,I r,A a,A w){A a1,e,q,x,y,z;B*b;I at,*av,c,d,j,k,f,m,n,
    break;
   case 3:  /* sparse and a not equal to e */
    GATV0(q,INT,c,1); v=AV(q); DO(c, v[i]=ws[av[i]];); v[j]=1; RZ(q=odom(2L,c,v)); n=*AS(q);
-   if(p){RZ(y=over(y,q)); v=AV(y)+j+m*c; d=ws[f]; DQ(n, *v=d; v+=c;);}
-   else {RZ(y=over(q,y)); v=AV(y)+j+n*c;          DQ(m, ++*v; v+=c;);}
-   RZ(q=shape(jt,x)); *AV(q)=n; RZ(q=jtreshape(jt,q,a)); RZ(x=p?over(x,q):over(q,x));
+   if(p){RZ(y=jtover(jt,y,q)); v=AV(y)+j+m*c; d=ws[f]; DQ(n, *v=d; v+=c;);}
+   else {RZ(y=jtover(jt,q,y)); v=AV(y)+j+n*c;          DQ(m, ++*v; v+=c;);}
+   RZ(q=shape(jt,x)); *AV(q)=n; RZ(q=jtreshape(jt,q,a)); RZ(x=p?jtover(jt,x,q):jtover(jt,q,x));
    if(f){RZ(q=grade1(y)); RZ(y=jtfrom(jt,q,y)); RZ(x=jtfrom(jt,q,x));}
  }
  GASPARSE(z,STYPE(t),1,zr,ws); 
@@ -57,14 +57,14 @@ static A jtovs(J jt,A a,A w){A ae,ax,ay,q,we,wx,wy,x,y,z,za,ze;B*ab,*wb,*zb;I ac
  if(!wr)return ovs0(1,acr,w,a);
  if(ar>acr||wr>wcr)return sprank2(a,w,0L,acr,wcr,jtover);
  r=MAX(ar,wr);
- if(r>ar)RZ(a=jtreshape(jt,over(apv(r-ar,1L,0L),shape(jt,a)),a)); as=AS(a);
- if(r>wr)RZ(w=jtreshape(jt,over(apv(r-wr,1L,0L),shape(jt,w)),w)); ws=AS(w);
+ if(r>ar)RZ(a=jtreshape(jt,jtover(jt,apv(r-ar,1L,0L),shape(jt,a)),a)); as=AS(a);
+ if(r>wr)RZ(w=jtreshape(jt,jtover(jt,apv(r-wr,1L,0L),shape(jt,w)),w)); ws=AS(w);
  ASSERT(*as<IMAX-*ws,EVLIMIT);
  if(!(at&SPARSE)){wp=PAV(w); RZ(a=sparseit(a,SPA(wp,a),SPA(wp,e)));}
  if(!(wt&SPARSE)){ap=PAV(a); RZ(w=sparseit(w,SPA(ap,a),SPA(ap,e)));}
  ap=PAV(a); RZ(ab=bfi(r,SPA(ap,a),1)); ae=SPA(ap,e); at=AT(ae);
  wp=PAV(w); RZ(wb=bfi(r,SPA(wp,a),1)); we=SPA(wp,e); wt=AT(we);
- ASSERT(equ(ae,we),EVNONCE);
+ ASSERT(jtequ(jt,ae,we),EVNONCE);
  GATV0(q,B01,r,1); zb=BAV(q); DO(r, zb[i]=ab[i]||wb[i];); za=jtifb(jt,r,zb); makewritable(za) c=AN(za);  // avoid readonly
  GATV0(q,INT,r,1); zs= AV(q); DO(r, zs[i]=MAX(as[i],ws[i]););
  DO(r, if(zb[i]>ab[i]){RZ(a=jtreaxis(jt,za,a)); break;});
@@ -77,8 +77,8 @@ static A jtovs(J jt,A a,A w){A ae,ax,ay,q,we,wx,wy,x,y,z,za,ze;B*ab,*wb,*zb;I ac
  GASPARSE(z,STYPE(t),1,r,zs); zp=PAV(z);
  SPB(zp,a,za); SPBV(zp,e,ze,ca(TYPESEQ(t,at)?ae:we));
  if(*zb){
-  SPB(zp,x,  over(ax,wx));
-  SPBV(zp,i,y,over(ay,wy)); v=AV(y)+AN(ay); m=*as; DQ(*AS(wy), *v+=m; v+=c;);
+  SPB(zp,x,  jtover(jt,ax,wx));
+  SPBV(zp,i,y,jtover(jt,ay,wy)); v=AV(y)+AN(ay); m=*as; DQ(*AS(wy), *v+=m; v+=c;);
  }else{C*av,*wv,*xv;I am,ak,i,j,k,mn,p,*u,wk,wm,xk,*yv;
   i=j=p=0; k=bpnoun(t); 
   m=*AS(ay); u=AV(ay); av=CAV(ax); am=aii(ax); ak=k*am;

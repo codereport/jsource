@@ -29,8 +29,8 @@ static I imodpow(I x,I n,I m){I z=1; while(n){if(1&n)z=(z*x)%m;     x=(x*x)%m;  
 
 static A jtmodpow2(J jt,A a,A w,A self){A h;B b,c;I at,m,n,wt,x,z;
  PREF2(jtmodpow2);
- h=FAV(self)->fgh[2]; 
- if(RAT&AT(a))RZ(a=jtpcvt(jt,XNUM,a)) else if(!(AT(a)&INT+XNUM))RZ(a=jtpcvt(jt,INT,a)); 
+ h=FAV(self)->fgh[2];
+ if(RAT&AT(a))RZ(a=jtpcvt(jt,XNUM,a)) else if(!(AT(a)&INT+XNUM))RZ(a=jtpcvt(jt,INT,a));
  if(RAT&AT(w))RZ(w=jtpcvt(jt,XNUM,w)) else if(!(AT(w)&INT+XNUM))RZ(w=jtpcvt(jt,INT,w));
  at=AT(a); wt=AT(w);
  n=AV(w)[0];
@@ -66,7 +66,7 @@ POPZOMB; jtinplace=(J)(intptr_t)(((I)jtinplace&~(JTINPLACEW))+(((I )(gx!=prota)&
 jtinplace=FAV(fs)->flag&VJTFLGOK1?jtinplace:jt; \
 RZ(z=(f1)(jtinplace,gx,fs));} \
 ,0114)
-// special case for rank 0.  Transfer to loop.  
+// special case for rank 0.  Transfer to loop.
 // if there is only one cell, process it through on1, which understands this type
 static A jton10(J jt,    A w,A self){return jtrank1ex0(jt,w,self,on1cell);}  // pass inplaceability through
 static A jtupon20(J jt,A a,A w,A self){return jtrank2ex0(jt,a,w,self,jtupon2cell);}  // pass inplaceability through
@@ -160,7 +160,7 @@ static A atcomp0(J jt,A a,A w,A self){A z;AF f;
  flag = ((av->flag&wv->flag)&VASGSAFE)+(wv->flag&(VJTFLGOK1|VJTFLGOK2));
  // special cases of u
  switch(c){
-  case CBOX:    flag2 |= (VF2BOXATOP1|VF2BOXATOP2); break;  // mark this as <@f 
+  case CBOX:    flag2 |= (VF2BOXATOP1|VF2BOXATOP2); break;  // mark this as <@f
   case CNOT:    if(d==CMATCH){f2=jtnotmatch; flag+=VIRS2; flag&=~VJTFLGOK2;} break;
   case CGRADE:  if(d==CGRADE){f1=jtranking; flag+=VIRS1; flag&=~VJTFLGOK1;} break;
   case CSLASH:  if(d==CCOMMA)f1=jtredravel; if(d==CDOLLAR&&FAV(av->fgh[0])->id==CSTAR)f1=jtnatoms; break;  // f/@, */@$
@@ -190,7 +190,7 @@ static A atcomp0(J jt,A a,A w,A self){A z;AF f;
   case CAMP:
    x=av->fgh[0]; if(RAT&AT(x))RZ(x=jtpcvt(jt,XNUM,x));
    if((d==CEXP||d==CAMP&&CEXP==ID(wv->fgh[1]))&&AT(x)&INT+XNUM&&!AR(x)&&CSTILE==ID(av->fgh[1])){
-    h=x; flag+=VMOD; 
+    h=x; flag+=VMOD;
     if(d==CEXP){f2=jtmodpow2; flag&=~VJTFLGOK2;} else{f1=jtmodpow1; flag&=~VJTFLGOK1;}
   }
  }
@@ -216,7 +216,7 @@ static A atcomp0(J jt,A a,A w,A self){A z;AF f;
  flag2 |= wv->flag2&(VF2WILLOPEN1|VF2WILLOPEN2W|VF2WILLOPEN2A|VF2USESITEMCOUNT1|VF2USESITEMCOUNT2W|VF2USESITEMCOUNT2A);
 
  // Copy WILLOPEN from u to WILLBEOPENED in v, and COUNTITEMS too if we have an allowable form.  Only if wv is not shared
- // 
+ //
  // Install the flags to indicate that this function starts out with a rank loop, and thus can be subsumed into a higher rank loop
  // If the compound has rank 0, switch to the loop for that; if rank is infinite, avoid the loop
  if(f1==on1){flag2|=VF2RANKATOP1; if(wv->mr==RMAX)f1=on1cell; else{if(wv->mr==0)f1=jton10;}}
@@ -314,13 +314,13 @@ static A atcomp0(J jt,A a,A w,A self){A z;AF f;
   }
  }
  else if(BOTHEQ8(c,d,CGRADE,CGRADE)){f1=jtranking;  flag&=~VJTFLGOK1;flag+=VIRS1;}  // /:&:/: monad
- else if(BOTHEQ8(c,d,CCOMMA,CBOX)){f2=jtlink; linktype=ACINPLACE;}  // x ,&< y   supports IP 
+ else if(BOTHEQ8(c,d,CCOMMA,CBOX)){f2=jtlink; linktype=ACINPLACE;}  // x ,&< y   supports IP
 
  // Copy the monad open/raze status from v into u&:v
  flag2 |= wv->flag2&(VF2WILLOPEN1|VF2USESITEMCOUNT1);
 
  // Install the flags to indicate that this function starts out with a rank loop, and thus can be subsumed into a higher rank loop
- flag2|=(f1==on1cell)<<VF2RANKATOP1X;  flag2|=VF2RANKATOP2; 
+ flag2|=(f1==on1cell)<<VF2RANKATOP1X;  flag2|=VF2RANKATOP2;
  A z; RZ(z=fdef(flag2,CAMPCO,VERB, f1,f2, a,w,0L, flag, RMAX,RMAX,RMAX));
  FAV(z)->localuse.lclr[0]=linktype; return z;
 }
@@ -340,13 +340,13 @@ static A ixfixedleft  (J jt,    A w,A self){V*v=FAV(self); return indexofprehash
 static A ixfixedright (J jt,    A w,A self){V*v=FAV(self); return indexofprehashed(v->fgh[1],w,v->fgh[2]);}
 
 // Here if ct was 0 when the compound was created - we must keep it 0
-static A ixfixedleft0 (J jt,    A w,A self){A z;V*v=FAV(self); 
+static A ixfixedleft0 (J jt,    A w,A self){A z;V*v=FAV(self);
  PUSHCCT(1.0) z=indexofprehashed(v->fgh[0],w,v->fgh[2]); POPCCT
  return z;
 }
 
-static A ixfixedright0(J jt,    A w,A self){A z;V*v=FAV(self); 
- PUSHCCT(1.0) z=indexofprehashed(v->fgh[1],w,v->fgh[2]); POPCCT 
+static A ixfixedright0(J jt,    A w,A self){A z;V*v=FAV(self);
+ PUSHCCT(1.0) z=indexofprehashed(v->fgh[1],w,v->fgh[2]); POPCCT
  return z;
 }
 
@@ -366,11 +366,11 @@ static A with2(J jt,A a,A w,A self){A z; return df1(z,w,powop(self,a,0));}
   // Otherwise, mark the noun as non-inplaceable (so it will not be modified during use).  If the derived verb is used in another sentence, it must first be
   // assigned to a name, which will protect values inside it.
   if(AC(a)>=0){flag &= ~VASGSAFE;}else{ACIPNO(a);}
-  
+
   if((-AN(a)&-AR(a))<0){
     // c holds the pseudochar for the v op.  If v is u!.n, replace c with the pseudochar for n
     // Also set b if the fit is !.0
-   if(b=c==CFIT&&v->fgh[1]==num(0))c=ID(v->fgh[0]); 
+   if(b=c==CFIT&&v->fgh[1]==num(0))c=ID(v->fgh[0]);
    mode=-1; mode=c==CIOTA?IIDOT:mode; mode=c==CICO?IICO:mode;
   }
   if(0<=mode){
@@ -381,9 +381,9 @@ static A with2(J jt,A a,A w,A self){A z; return df1(z,w,powop(self,a,0));}
    case CIBEAM: if(v->fgh[0]&&v->fgh[1]&&128==i0(v->fgh[0])&&3==i0(v->fgh[1])){RZ(h=crccompile(a)); f1=jtcrcfixedleft; flag&=~VJTFLGOK1;}
   }
   return fdef(0,CAMP,VERB, f1,with2, a,w,h, flag, RMAX,RMAX,RMAX);
- case VN: 
+ case VN:
   f1=withr; v=FAV(a);
-  // set flag according to ASGSAFE of verb, and INPLACE and IRS from the dyad of the verb 
+  // set flag according to ASGSAFE of verb, and INPLACE and IRS from the dyad of the verb
   // kludge mark it not ASGSAFE in case it is a name that is being reassigned.  We could use nvr stack to check for that.
   flag=((v->flag&(VJTFLGOK2|VIRS2))>>1)+(v->flag&VASGSAFE);
   // If the noun is not inplaceable now, we have to turn off ASGSAFE, because we may have a form like a =: 5 (a&+)@:+ a which would inplace
@@ -411,7 +411,7 @@ static A with2(J jt,A a,A w,A self){A z; return df1(z,w,powop(self,a,0));}
   flag = ((FAV(a)->flag&v->flag)&VASGSAFE)+((v->flag&VJTFLGOK1)*((VJTFLGOK2+VJTFLGOK1)/VJTFLGOK1));
   if((c&~4)==CFORK){   // FORK &
    if(c==CFORK)d=ID(v->fgh[2]);
-   if(CIOTA==ID(v->fgh[1])&&(!d||((d&~1)==CLEFT)&&equ(ds(CALP),v->fgh[0]))){  // a.&i. or (a. i. ][)
+   if(CIOTA==ID(v->fgh[1])&&(!d||((d&~1)==CLEFT)&&jtequ(jt,ds(CALP),v->fgh[0]))){  // a.&i. or (a. i. ][)
     u=FAV(a); d=u->id;
     if(BETWEENC(d,CEQ,CGT)){f2=jtcharfn2; flag&=~VJTFLGOK2;}  // any comparison
    }
@@ -420,7 +420,7 @@ static A with2(J jt,A a,A w,A self){A z; return df1(z,w,powop(self,a,0));}
   case CBOX:   flag |= VF2BOXATOP1; break;  // mark this as <@f for the monad
   case CGRADE: if(c==CGRADE){f1=jtranking; flag+=VIRS1; flag&=~VJTFLGOK1;} break;  // /:&/: y
   case CSLASH: if(c==CCOMMA){f1=jtredravel; } break;   // f/&, y
-  case CCOMMA: if(c==CBOX){f2=jtlink; linktype=ACINPLACE;} break;  // x ,&< y   supports IP 
+  case CCOMMA: if(c==CBOX){f2=jtlink; linktype=ACINPLACE;} break;  // x ,&< y   supports IP
   case CCEIL:  f1=jtonf1; flag+=VCEIL; flag&=~VJTFLGOK1; break;  // >.@g
   case CFLOOR: f1=jtonf1; flag+=VFLR; flag&=~VJTFLGOK1; break;   // <.@g
   case CRAZE:  // detect ;@(<@(f/\));.

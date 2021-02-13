@@ -101,15 +101,15 @@ static B jtfmtx(J jt,B e,I m,I d,C*s,I t,X*wv){B b;C*v=jt->th2buf;I c,n,p,q,*xv;
 static B jtfmtq(J jt,B e,I m,I d,C*s,I t,Q*wv){B b;C*v=jt->th2buf;I c,ex=0,k,n,p,q,*xv;Q y;X a,g,x;
  y=*wv; x=y.n; c=XDIG(x); b=0>c; if(b)x=negate(x);
  if(c==XPINF||c==XNINF){if(e)*v++=' '; if(e>b)*v++=' '; if(b)*v++='_'; *v++='_'; *v=0; return 1;}
- RZ(a=xpow(xc(10L),xc(1+d)));
- if(e&&c&&0>xcompare(x,y.d)){
+ RZ(a=jtxpow(jt,xc(10L),xc(1+d)));
+ if(e&&c&&0>jtxcompare(jt,x,y.d)){
   ex=XBASEN*(AN(y.n)-AN(y.d));
-  g=xtymes(x,xpow(xc(10L),xc(1+d-ex)));
+  g=jtxtymes(jt,x,jtxpow(jt,xc(10L),xc(1+d-ex)));
   RZ(x=xdiv(g,y.d,XMFLR));
-  while(1==xcompare(a,x)){--ex; g=xtymes(xc(10L),g); RZ(x=xdiv(g,y.d,XMFLR));}
+  while(1==jtxcompare(jt,a,x)){--ex; g=jtxtymes(jt,xc(10L),g); RZ(x=xdiv(g,y.d,XMFLR));}
   if(b)x=negate(x);
- }else x=xdiv(xtymes(y.n,a),y.d,XMFLR);
- RZ(x=xdiv(xplus(x,xc(5L)),xc(10L),XMFLR));
+ }else x=xdiv(jtxtymes(jt,y.n,a),y.d,XMFLR);
+ RZ(x=xdiv(jtxplus(jt,x,xc(5L)),xc(10L),XMFLR));
  n=AN(x); xv=AV(x)+n-1; c=*xv; b=0>c; if(b)c=-c;
  q=c>999?4:c>99?3:c>9?2:1; p=q+XBASEN*(n-1); if(c||!e)ex+=p-d-1;
  if(e)return fmtex(m,d,n,xv,b,c,q,ex);
@@ -185,7 +185,7 @@ static A jtth2a(J jt,B e,I m,I d,C*s,I n,I t,I wk,C*wv,B first){PROLOG(0049);A y
  b = e;  // init no negative exponential values (if field is exponential).  0 if nonexponential field
  for(i=q=0;i<n;++i){
   fmt1(e,m0,d,s,t,wv);  // Create the (null-terminated) string in th2buf.  m0=0
-  while(p<q+(I)strlen(jt->th2buf)+1){RZ(z=over(z,z)); p+=p; zv=CAV(z);}  // If new string overflows output area, double the output-area size
+  while(p<q+(I)strlen(jt->th2buf)+1){RZ(z=jtover(jt,z,z)); p+=p; zv=CAV(z);}  // If new string overflows output area, double the output-area size
    // u->place to put string; convert th2buf to j form in *u; k=length of string; update string pointer & null-terminate string; advance to next input value
    u=q+zv; q+=k=c2j(e,0L,u); zv[q++]=0; wv+=wk;
    // Exponential-field sign spacing:

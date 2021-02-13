@@ -16,7 +16,7 @@ static A jtistd1(J jt,A z,A ind){A*iv,j,*jv,x;I d,i,n,r,*s;
  if(AN(ind)&&!(BOX&AT(ind))){ASSERT(NUMERIC&AT(ind),EVINDEX); RZ(ind=jtevery(jt,ind,ds(CRIGHT)));}
  s=AS(z); n=AN(ind); iv=AAV(ind); 
  ASSERT(n<=AR(z),EVINDEX);
- DQ(n, x=iv[i]; if(!equ(x,ds(CACE)))break;--n;);
+ DQ(n, x=iv[i]; if(!jtequ(jt,x,ds(CACE)))break;--n;);
  GATV0(j,BOX,n,1); jv=AAV(j);
  for(i=0;i<n;++i){
   x=iv[i]; d=s[i];
@@ -44,7 +44,7 @@ static A jtastd1(J jt,A a,A z,A ind){A*iv,q,r,s,s1,*sv,x;B b;I ar,*as,d,j,m,n,*r
  ASSERT(!ICMP(as,AV(s1)+d-ar,ar),EVLENGTH);
  if(ar<d)RZ(a=jtreshape(jt,s1,a));
  RZ(q=dgrade1(jteps(jt,jtrepeat(jt,r,IX(zr)),SPA(zp,a))));
- return equ(q,IX(d))?a:jtcant2(jt,q,a);
+ return jtequ(jt,q,IX(d))?a:jtcant2(jt,q,a);
 }    /* convert replacement array a into standard form relative to index list ind */
 
 static A jtssel(J jt,A z,A ind){A a,*iv,p,q,x,y;B*b;I*av,c,i,j,m,n,*u,*v,*yv;P*zp;
@@ -128,7 +128,7 @@ static A jtscubc(J jt,A z,A i1,A p){A a,q,s,y,y1;B*qv;I c,d,h,j=-1,m,n,*sv,*u,*v
 
 static A jtscube(J jt,A z,A i1,A p){A a,y;P*zp;
  zp=PAV(z); a=SPA(zp,a); y=SPA(zp,i);
- return !AN(a)&&!*AS(y)?jttake(jt,num(1),mtm):over(jtscubb(jt,z,i1),scubc(z,i1,p));
+ return !AN(a)&&!*AS(y)?jttake(jt,num(1),mtm):jtover(jt,jtscubb(jt,z,i1),scubc(z,i1,p));
 }    /* new rows for the index matrix of z */
 
 static A jtiindx(J jt,A z,A i1){A q,j,j1,y;I c,d,e,h,i,*jv,m,n,*qv,*v,*yv;P*zp;
@@ -154,8 +154,8 @@ static A jtzpad1(J jt,A z,A t,B ip){A q,s,x,x0,y,y0;I m;P*zp;
  RZ(z&&t);
  if(m=*AS(t)){  /* new cells being added */
   zp=PAV(z);  
-  y0=SPA(zp,i); RZ(y=over(y0,t)); RZ(q=grade1(y)); RZ(y=jtfrom(jt,q,y));
-  x0=SPA(zp,x); RZ(s=shape(jt,x0)); *AV(s)=m; RZ(x=jtfrom(jt,q,over(x0,jtreshape(jt,s,SPA(zp,e)))));
+  y0=SPA(zp,i); RZ(y=jtover(jt,y0,t)); RZ(q=grade1(y)); RZ(y=jtfrom(jt,q,y));
+  x0=SPA(zp,x); RZ(s=shape(jt,x0)); *AV(s)=m; RZ(x=jtfrom(jt,q,jtover(jt,x0,jtreshape(jt,s,SPA(zp,e)))));
   // if z is assigned to a name, the use counts need to be adjusted: the old ones need to be decremented
   // to remove the assignment, and the new ones need to be incremented to prevent them from being freed
   // until the name is freed.  We detect the case from jt->assignsym being set to the address of z

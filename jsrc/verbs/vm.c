@@ -28,8 +28,8 @@ D jtpospow(J jt,D x,D y){
 
 #define POWXB(u,v)  (v?u:1)
 #define POWBX(u,v)  (u?1.0:v<0?inf:!v)
-#define POWII(u,v)  intpow((D)u,v)
-#define POWID(u,v)  pospow((D)u,v)
+#define POWII(u,v)  jtintpow(jt,(D)u,v)
+#define POWID(u,v)  jtpospow(jt,(D)u,v)
 
 APFX(powBI, D,B,I, POWBX ,,return EVOK;)
 APFX(powBD, D,B,D, POWBX ,,return EVOK;)
@@ -40,15 +40,18 @@ APFX(powDB, D,D,B, POWXB ,,return EVOK;)
 APFX(powZZ, Z,Z,Z, zpow  ,,HDR1JERR)
 
 
-
+#define zcir(x,y)                   jtzcir(jt,(x),(y))
 APFX(cirZZ, Z,Z,Z, zcir  ,NAN0;,HDR1JERRNAN)
-
+#undef zcir
 
 AMON(expD,   D,D, *z=*x<EMIN?0.0:EMAX<*x?inf:exp(   *x);)
 AMON(logD,   D,D, ASSERTWR(0<=*x,EWIMAG); *z=log(   *x);)
+#define intpow(x,y)                 jtintpow(jt,(x),(y))
 APFX(powDI, D,D,I, intpow,,HDR1JERR)
+#undef intpow
+#define pospow(x,y)                 jtpospow(jt,(x),(y))
 APFX(powDD, D,D,D, pospow,,HDR1JERR)
-
+#undef pospow
 AMON(expI,   D,I, *z=*x<EMIN?0.0:EMAX<*x?inf:exp((D)*x);)
 AMON(logI,   D,I, ASSERTWR(0<=*x,EWIMAG); *z=log((D)*x);)
 
@@ -128,7 +131,7 @@ A jtlogar2(J jt,A a,A w){
  A jtrdot2(J jt,A a,A w){return tymes(a,rdot1(w));}
 
 
- A jtpolar(J jt, A w){ A z; return jtcvt(jt,SPARSE&AT(w)?SFL:FL,df2(z,jtv2(jt,10L,12L),w,qq(ds(CCIRCLE),jtv2(jt,1L,0L))));}
+ A jtpolar(J jt, A w){ A z; return jtcvt(jt,SPARSE&AT(w)?SFL:FL,df2(z,jtv2(jt,10L,12L),w,jtqq(jt,ds(CCIRCLE),jtv2(jt,1L,0L))));}
 
  A jtrect(J jt, A w){A e,z;B b;I r,t;P*wp,*zp;Z c;
  t=AT(w); r=AR(w); RESETRANK;   // Run as infinite rank
@@ -144,5 +147,5 @@ A jtlogar2(J jt,A a,A w){
   SPB(zp,i,ca(SPA(wp,i)));
   SPB(zp,x,rect(SPA(wp,x)));
   return z;
- }else return df2(z,w,num(0),qq(ds(CCOMMA),zeroionei(0)));
+ }else return df2(z,w,num(0),jtqq(jt,ds(CCOMMA),zeroionei(0)));
 }

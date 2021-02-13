@@ -291,7 +291,7 @@ static A jtunderai1(J jt,    A w,A self){DECLF;A x,y,z;B b;I j,n,*u,*v;UC f[256]
   u=FAV(a);  // point to a in a&.w.  w is f1&g1 or (f1 g1 h1)
   if(b1=CSLASH==(uid=u->id)){x=u->fgh[0]; if(AT(x)&VERB){u=FAV(x);uid=u->id;}else uid=0;}   // cases: f&.{f1&g1 or (f1 g1 h1)}  b1=0    f/&.{f1&g1 or (f1 g1 h1)}   b1=1
   b=CBDOT==uid&&(x=u->fgh[1],(((AR(x)-1)&SGNIF(AT(x),INTX))<0)&&BETWEENC(IAV(x)[0],16,32));   // b if f=m b. where m is atomic int 16<=m<=32
-  if(CIOTA==ID(v->fgh[1])&&(!c|((c&~1)==CLEFT))&&equ(ds(CALP),v->fgh[0])){   // w is  {a.&i.  or  (a. i. ][)}
+  if(CIOTA==ID(v->fgh[1])&&(!c|((c&~1)==CLEFT))&&jtequ(jt,ds(CALP),v->fgh[0])){   // w is  {a.&i.  or  (a. i. ][)}
    f1=b&b1?jtbitwiseinsertchar:jtunderai1;    // m b./ &. {a.&i.  or  (a. i. ][)}   or  f &. {a.&i.  or  (a. i. ][)}
    f2=((uid==CMAX)|(uid==CMIN))>b1?(AF)jtcharfn2:f2; f2=b>b1?(AF)jtbitwisechar:f2;   // m b. &. {a.&i.  or  (a. i. ][)}   or  >. &. {a.&i.  or  (a. i. ][)}   or f &. {a.&i.  or  (a. i. ][)}
    flag&=~(VJTFLGOK1|VJTFLGOK2);   // not perfect, but ok
@@ -307,8 +307,8 @@ static A jtunderai1(J jt,    A w,A self){DECLF;A x,y,z;B b;I j,n,*u,*v;UC f[256]
  if(gside<0){h=jtamp(jt,a,wvb); rlr=rrr=rmr;  // normal case, f&g"mg
  }else{
   f1=jtdomainerr1;  // monad not allowed with gerund v
-  if(gside==0){rlr=rmr; rrr=(RANKT)FAV(a)->lrr; h=qq(swap(jthook(jt,swap(a),wvb)),jtv2(jt,rlr,rrr));  // (f~ g)~"mw rf
-  }else{rlr=FAV(a)->lrr>>RANKTX; rrr=rmr; h=qq(jthook(jt,a,wvb),jtv2(jt,rlr,rrr));  // (f g)"lf mg
+  if(gside==0){rlr=rmr; rrr=(RANKT)FAV(a)->lrr; h=jtqq(jt,swap(jthook(jt,swap(a),wvb)),jtv2(jt,rlr,rrr));  // (f~ g)~"mw rf
+  }else{rlr=FAV(a)->lrr>>RANKTX; rrr=rmr; h=jtqq(jt,jthook(jt,a,wvb),jtv2(jt,rlr,rrr));  // (f g)"lf mg
   }
  }
  ASSERT(h!=0,EVDOMAIN);

@@ -133,7 +133,7 @@ static A jttrr(J jt, A w){PROLOG(0058);A hs,s,t,*x,z;B ex,xop;C id;I fl,*hv,m;V*
  if(0<m)RZ(x[0]=incorp(fl&VGERL?treach(jtfxeach(jt,fs,(A)&jtfxself[0])):trr(fs)));
  if(1<m)RZ(x[1]=incorp(fl&VGERR?treach(jtfxeach(jt,gs,(A)&jtfxself[0])):ex?trr(jtunparsem(jt,num(0),w)):trr(gs)));
  if(2<m)RZ(x[2]=incorp(trr(hs)));
- s=xop?spellout('0'):fl&VDDOP?(hv=AV(hs),over(thorn1(sc(hv[0])),over(spellout(id),thorn1(sc(hv[1]))))):spellout(id);
+ s=xop?spellout('0'):fl&VDDOP?(hv=AV(hs),jtover(jt,thorn1(sc(hv[0])),jtover(jt,spellout(id),thorn1(sc(hv[1]))))):spellout(id);
  z=jttroot(jt,s,graft(ope(t)));
  EPILOG(z);
 }

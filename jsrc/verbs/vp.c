@@ -141,7 +141,7 @@ static A jtrfd(J jt, A w){A z;I j,k,m,n,r,*s,*x;
  ASSERT(all1(le(negate(m),a))&&all1(lt(a,m)),EVINDEX);
  if(!AR(w)){RZ(vi(a)); return w;}
  RZ(p=dfr(vi(jtabase2(jt,apv(n,n,-1L),a))));
- return equ(w,IX(n))?p:jtfrom(jt,p,w);  // special case when w is index vector - just return permutation.  Otherwise shuffle items of w
+ return jtequ(jt,w,IX(n))?p:jtfrom(jt,p,w);  // special case when w is index vector - just return permutation.  Otherwise shuffle items of w
  // pristinity unchanged here: if w boxed, it was set by {
 }
 
