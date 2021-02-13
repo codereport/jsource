@@ -8,7 +8,7 @@
 static A jtcanta(J jt,A a,A w);
 
 static A jtcants(J jt,A a,A w,A z){A a1,q,y;B*b,*c;I*u,wr,zr;P*wp,*zp;
- RZ(a=grade1(a));
+ RZ(a=jtgrade1(jt,a));
  wr=AR(w); wp=PAV(w); a1=SPA(wp,a);
  zr=AR(z); zp=PAV(z);
  ASSERT(wr==zr,EVNONCE);
@@ -16,11 +16,11 @@ static A jtcants(J jt,A a,A w,A z){A a1,q,y;B*b,*c;I*u,wr,zr;P*wp,*zp;
  GATV0(q,B01,wr,1); c=BAV(q); u=AV(a); DO(wr, c[i]=b[u[i]];);
  A bvec=jtifb(jt,wr,c); makewritable(bvec)
  SPB(zp,a,bvec);  // avoid readonly
- SPB(zp,e,ca(SPA(wp,e)));
- RZ(y=jtfromr(jt,grade1(jtindexof(jt,a,a1)),SPA(wp,i)));
- RZ(q=grade1(y));
+ SPB(zp,e,jtca(jt,SPA(wp,e)));
+ RZ(y=jtfromr(jt,jtgrade1(jt,jtindexof(jt,a,a1)),SPA(wp,i)));
+ RZ(q=jtgrade1(jt,y));
  SPB(zp,i,jtfrom(jt,q,y));
- SPB(zp,x,jtfrom(jt,q,jtcanta(jt,jtover(jt,zeroionei(0),increm(grade1(jtless(jt,a,a1)))),SPA(wp,x))));
+ SPB(zp,x,jtfrom(jt,q,jtcanta(jt,jtover(jt,zeroionei(0),jtincrem(jt,jtgrade1(jt,jtless(jt,a,a1)))),SPA(wp,x))));
  return z;
 }    /* w is sparse */
 
@@ -63,7 +63,7 @@ static A jtcanta(J jt,A a,A w){A m,s,t,z;C*wv,*zv;I*av,j,*mv,r,*sv,*tv,wf,wr,*ws
  // r will hold number of unelided trailing axes of result
  I noelideend=0; I cellsizeb=bpnoun(AT(w)); r=zr; I scanws=1; j=wr;  // cellsizeb is number of bytes in a cell of the transpose, after deleting trailing axes
  DQ(wr, --j; tv[j]=scanws; if(noelideend|=(j^av[j])){scanws*=ws[j];}else{cellsizeb*=ws[j]; --r;});  // tv = */\. ws
- if(!r)return RETARG(w);  // if all the axes are elided, just return the input unchanged
+ if(!r)return w;  // if all the axes are elided, just return the input unchanged
  for(j=0,zn=1;j<zr;++j){  // for each axis of the result...  (must include deleted axes to get the shape of result axis, and total # items)
   UI axislenres=~0; I axislenin=0;  // axislenin will hold length of axis (in the input), axislenres is length of axis in result
   // look at all input axes, and accumulate info for each one that matches the result axis we are working on.
@@ -90,7 +90,7 @@ static A jtcanta(J jt,A a,A w){A m,s,t,z;C*wv,*zv;I*av,j,*mv,r,*sv,*tv,wf,wr,*ws
 }    /* dyadic transpose in APL\360, a f"(1,r) w where 1>:#$a  */
 
  A jtcant1(J jt, A w){I r; 
- F1PREFIP;
+ FPREFIP;
  r=(RANKT)jt->ranks; r=AR(w)<r?AR(w):r;   // no RESETRANK; we pass the rank of w on
  A z=jtcanta(jt,apv(r,r-1,-1L),w); RZ(z);  // rank is set
  // We extracted from w, so mark it (or its backer if virtual) non-pristine.  If w was pristine and inplaceable, transfer its pristine status to the result
@@ -100,16 +100,16 @@ static A jtcanta(J jt,A a,A w){A m,s,t,z;C*wv,*zv;I*av,j,*mv,r,*sv,*tv,wf,wr,*ws
 }    /* |:"r w */
 
  A jtcant2(J jt,A a,A w){A*av,p,t,y;I j,k,m,n,*pv,q,r,*v;
- F2PREFIP;
+ FPREFIP;
  r=(RANKT)jt->ranks; r=AR(w)<r?AR(w):r; 
  q=jt->ranks>>RANKTX; q=AR(a)<q?AR(a):q; RESETRANK;
  if(((q-2)&(AR(a)-q-1))>=0){t=rank2ex(a,w,UNUSED_VALUE,MIN(q,1),r,q,r,jtcant2); PRISTCLRF(w) return t;} // rank loop on a.  Loses pristinity
  if(BOX&AT(a)){
-  RZ(y=jtpfill(jt,r,t=raze(a))); v=AV(y);
+  RZ(y=jtpfill(jt,r,t=jtraze(jt,a))); v=AV(y);
   GATV0(p,INT,AN(y),1); pv=AV(p);
   m=AN(a); n=AN(t); av=AAV(a); 
   j=0; DO(r-n,pv[*v++]=j++;); DO(m, k=AN(av[i]); DQ(k,pv[*v++]=j;); j+=(k!=0););
- }else RZ(p=pinv(jtpfill(jt,r,a)));
+ }else RZ(p=jtpinv(jt,jtpfill(jt,r,a)));
  A z; IRS2(p,w,0L,1L,r,jtcanta,z); RZ(z);  // Set rank for w in canta.  p is now INT type.  No need to check agreement since a has rank 1
  // We extracted from w, so mark it (or its backer if virtual) non-pristine.  If w was pristine and inplaceable, transfer its pristine status to the result
  PRISTXFERF(z,w)

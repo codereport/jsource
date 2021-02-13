@@ -31,12 +31,12 @@ static void* MERGEFNNAME(CMP comp, I compn, I bpi, T * lo, I lon, T * hi, I hin,
   // There is an ordered prefix.  See if the whole pair is presorted.
   if(orderedlen==lon){
    // Presorted list.  If the two lists are contiguous, just return their address.  Otherwise copy to be contiguous
-   if(loend!=hi){MCL(loend,hi,hin*bpi);}
+   if(loend!=hi){memcpy(loend,hi,hin*bpi);}
    return lo;  // return contiguous result
   }
   // Partial presort.  Because the presorted part is larger, leave it in place and copy the shorter remnant at the end
   // to the workarea; then change the pointers so we merge the moved remnant onto the end of the presorted fragment
-  wk=lo; wkptr=PTRADD(wkptr,orderedlen); lo=PTRADD(lo,orderedlen); lon-=orderedlen;MCL(wkptr,lo,lon*bpi);   // move wkptr&lo to end of block; lon=length of remnant; move remnant to wk; point wk to start of original input
+  wk=lo; wkptr=PTRADD(wkptr,orderedlen); lo=PTRADD(lo,orderedlen); lon-=orderedlen;memcpy(wkptr,lo,lon*bpi);   // move wkptr&lo to end of block; lon=length of remnant; move remnant to wk; point wk to start of original input
   T *tmp = wkptr; loend=PTRADD(wkptr,lon); wkptr=lo; lo=tmp;   // lo, loend point into workarea; wkptr-> input area
  }
  T *hiend=PTRADD(hi,hin);  // end+1 of hi
@@ -60,14 +60,14 @@ static void* MERGEFNNAME(CMP comp, I compn, I bpi, T * lo, I lon, T * hi, I hin,
     MVITEMS(wkptr,fromptr,1);  // move, and advance wkptr
    }else{
     // hi[] was exhausted.  Copy the remnant of lo
-    MCL(wkptr,lo,(C*)loend-(C*)lo); 
+    memcpy(wkptr,lo,(C*)loend-(C*)lo); 
     break;  // all finished
    }
   }else{
    // lo[] was exhausted.  Copy the remnant of hi. But
    // if hi[] is occupying the last part of wk[], and lo[] is exhausted first, the remaining part of hi[] is
    // already in place and doesn't need to be copied.
-   if(wkptr!=hi)MCL(wkptr,hi,(C*)hiend-(C*)hi); 
+   if(wkptr!=hi)memcpy(wkptr,hi,(C*)hiend-(C*)hi); 
    break;  // all finished
   }
  }while(1);

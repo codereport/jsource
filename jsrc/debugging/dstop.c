@@ -37,7 +37,7 @@ B jtdbstop(J jt,DC d,I i){A a;B b,c=0,e;C nw[11],*s,*t,*u,*v;I md,n,p,q;
    c=i!=d->dcstop; d->dcstop=i; return c;
  }       
  if(i==d->dcstop){d->dcstop=-2; return 0;}     /* not stopping if already stopped at the same place */
- if(!(jt->dbstops))return 0; s=CAV(str0(jt->dbstops)); sprintf(nw,FMTI,i);
+ if(!(jt->dbstops))return 0; s=CAV(jtstr0(jt,jt->dbstops)); sprintf(nw,FMTI,i);
  a=d->dca; n=d->dcm; t=NAV(a)->s; md=d->dcx&&d->dcy?2:1; 
  while(s){
   while(' '==*s)++s; if(b='~'==*s)++s; while(' '==*s)++s;
@@ -56,5 +56,5 @@ B jtdbstop(J jt,DC d,I i){A a;B b,c=0,e;C nw[11],*s,*t,*u,*v;I md,n,p,q;
  A jtdbstopq(J jt, A w){ASSERTMTV(w); return jt->dbstops?jt->dbstops:mtv;}
      /* 13!:2  query stops */
 
- A jtdbstops(J jt, A w){RZ(w=vs(w)); fa(jt->dbstops); if(AN(w)){RZ(ras(w)); jt->dbstops=w;}else jt->dbstops=0; return mtm;}
+ A jtdbstops(J jt, A w){RZ(w=jtvs(jt,w)); fa(jt->dbstops); if(AN(w)){RZ(ras(w)); jt->dbstops=w;}else jt->dbstops=0; return mtm;}
      /* 13!:3  set stops */

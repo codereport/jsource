@@ -82,7 +82,7 @@ static  B jtDfromZ(J jt,A w,void*yv,D fuzz){D d,*x;I n;Z*v;
 
 static B jtXfromB(J jt,A w,void*yv){B*v;I n,u[1];X*x;
  n=AN(w); v=BAV(w); x=(X*)yv;
- DO(n, *u=v[i]; x[i]=rifvsdebug(vec(INT,1L,u)););           
+ DO(n, *u=v[i]; x[i]=vec(INT,1L,u););
  return !jt->jerr;
 }
 
@@ -93,31 +93,31 @@ static B jtXfromI(J jt,A w,void*yv){B b;I c,d,i,j,n,r,u[XIDIG],*v;X*x;
   DO(XIDIG, u[i]=r=d%XBASE; d=d/XBASE; if(r)j=i;);
   ++j; *u+=b;
   if(0>c)DO(XIDIG, u[i]=-u[i];);
-  x[i]=rifvsdebug(vec(INT,j,u));
+  x[i]=vec(INT,j,u);
  }
  return !jt->jerr;
 }
 
-static X jtxd1(J jt,D p, I mode){PROLOG(0052);A t;D d,e=tfloor(p),q,r;I m,*u;
+static X jtxd1(J jt,D p, I mode){PROLOG(0052);A t;D d,e=jttfloor(jt,p),q,r;I m,*u;
  switch(mode){
   case XMFLR:   p=e;                            break;
-  case XMCEIL:  p=jceil(p);                      break;
+  case XMCEIL:  p=ceil(p);                      break;
   case XMEXACT: ASSERT(TEQ(p,e),EVDOMAIN); p=e; break;
   case XMEXMT:  if(!TEQ(p,e))return vec(INT,0L,&iotavec[-IOTAVECBEGIN]);
  }
- if(p== inf)return vci(XPINF);
- if(p==-inf)return vci(XNINF);
+ if(p== inf)return jtvci(jt,XPINF);
+ if(p==-inf)return jtvci(jt,XNINF);
  GAT0(t,INT,30,1); u=AV(t); m=0; d=ABS(p); 
  while(0<d){
-  q=jfloor(d/XBASE); r=d-q*XBASE; u[m++]=(I)r; d=q;
+  q=floor(d/XBASE); r=d-q*XBASE; u[m++]=(I)r; d=q;
   if(m==AN(t)){RZ(t=jtext(jt,0,t)); u=AV(t);}
  }
  if(!m){u[0]=0; ++m;}else if(0>p)DO(m, u[i]=-u[i];);
- A z=xstd(vec(INT,m,u));
+ A z=jtxstd(jt,vec(INT,m,u));
  EPILOG(z);
 }
 
-static B jtXfromD(J jt,A w,void*yv,I mode){D*v=DAV(w);X*x=(X*)yv; DO(AN(w), x[i]=rifvsdebug(jtxd1(jt,v[i],mode));); return !jt->jerr;}
+static B jtXfromD(J jt,A w,void*yv,I mode){D*v=DAV(w);X*x=(X*)yv; DO(AN(w), x[i]=jtxd1(jt,v[i],mode);); return !jt->jerr;}
 
 static B jtBfromX(J jt,A w,void*yv){A q;B*x;I e;X*v;
  v=XAV(w); x=(B*)yv;
@@ -127,7 +127,7 @@ static B jtBfromX(J jt,A w,void*yv){A q;B*x;I e;X*v;
 
 static B jtIfromX(J jt,A w,void*yv){I a,i,m,n,*u,*x;X c,p,q,*v;
  v=XAV(w); x=(I*)yv; n=AN(w);
- if(!(p=xc(IMAX)))return 0; if(!(q=jtxminus(jt,negate(p),xc(1L))))return 0;
+ if(!(p=jtxc(jt,IMAX)))return 0; if(!(q=jtxminus(jt,jtnegate(jt,p),jtxc(jt,1L))))return 0;
  for(i=0;i<n;++i){
   c=v[i]; if(!(1!=jtxcompare(jt,q,c)&&1!=jtxcompare(jt,c,p)))return 0;
   m=AN(c); u=AV(c)+m-1; a=0; DO(m, a=*u--+a*XBASE;); x[i]=a;
@@ -159,18 +159,17 @@ static B jtQfromD(J jt,A w,void*yv,I mode){B neg,recip;D c,d,t,*wv;I e,i,n,*v;Q 
   t=wv[i]; 
   ASSERT(!_isnan(t),EVNAN);
   if(neg=0>t)t=-t; q.d=iv1;
-  if     (t==inf)q.n=vci(XPINF);
+  if     (t==inf)q.n=jtvci(jt,XPINF);
   else if(t==0.0)q.n=iv0;
   else if(1.1102230246251565e-16<t&&t<9.007199254740992e15){
    d=jround(1/jtdgcd(jt,1.0,t)); c=jround(d*t); 
-   q.n=jtxd1(jt,c,mode); q.d=jtxd1(jt,d,mode); q=qstd(q);
+   q.n=jtxd1(jt,c,mode); q.d=jtxd1(jt,d,mode); q=jtqstd(jt,q);
   }else{
    if(recip=1>t)t=1.0/t;
    e=(I)(0xfff0&*tv); e>>=4; e-=1023;
-   if(recip){q.d=jtxtymes(jt,jtxd1(jt,t/pow(2.0,e-53.0),mode),jtxpow(jt,xc(2L),xc(e-53))); q.n=ca(iv1);}
-   else     {q.n=jtxtymes(jt,jtxd1(jt,t/pow(2.0,e-53.0),mode),jtxpow(jt,xc(2L),xc(e-53))); q.d=ca(iv1);}
+   if(recip){q.d=jtxtymes(jt,jtxd1(jt,t/pow(2.0,e-53.0),mode),jtxpow(jt,jtxc(jt,2L),jtxc(jt,e-53))); q.n=jtca(jt,iv1);}
+   else     {q.n=jtxtymes(jt,jtxd1(jt,t/pow(2.0,e-53.0),mode),jtxpow(jt,jtxc(jt,2L),jtxc(jt,e-53))); q.d=jtca(jt,iv1);}
   }
-  q.n=rifvsdebug(q.n); q.d=rifvsdebug(q.d);
   if(neg){v=AV(q.n); DQ(AN(q.n), *v=-*v; ++v;);}
   *x++=q;
  }
@@ -189,8 +188,8 @@ static B jtDfromQ(J jt,A w,void*yv){D d,f,n,*x,xb=(D)XBASE;I cn,i,k,m,nn,pn,qn,r
    d=0.0; f=1.0; v=AV(q); DO(qn, d+=f*v[i]; f*=xb;);
    x[i]=n/d;
   }else{
-   k=5+qn; if(!x2)if(!(x2=xc(2L)))return 0;
-   if(!(c=xdiv(jttake(jt,sc(-(k+pn)),p),q,XMFLR)))return 0;
+   k=5+qn; if(!x2)if(!(x2=jtxc(jt,2L)))return 0;
+   if(!(c=xdiv(jttake(jt,jtsc(jt,-(k+pn)),p),q,XMFLR)))return 0;
    cn=AN(c); m=MIN(cn,5); r=cn-(m+k); v=AV(c)+cn-m; 
    n=0.0; f=1.0; DO(m, n+=f*v[i]; f*=xb;);
    d=1.0; DQ(ABS(r), d*=xb;);
@@ -227,20 +226,20 @@ static B jtDXfI(J jt,I p,A w,DX*x){B b;I e,c,d,i,j,n,r,u[XIDIG],*v;
 // copy of the data if w is already of the right type), and returned in *y.  Result is
 // 0 if error, 1 if success.  If the conversion loses precision, error is returned
 // Calls through bcvt are tagged with a flag in jt, indicating to set fuzz=0
-B jtccvt(J jt,I tflagged,A w,A*y){F1PREFIP;A d;I n,r,*s,wt; void *wv,*yv;I t=tflagged&NOUN;
+B jtccvt(J jt,I tflagged,A w,A*y){FPREFIP;A d;I n,r,*s,wt; void *wv,*yv;I t=tflagged&NOUN;
  if (!w) return 0;
  r=AR(w); s=AS(w);
  if(((t|AT(w))&SPARSE)!=0){
   // Handle sparse
   RANK2T oqr=jt->ranks; RESETRANK; 
   switch((t&SPARSE?2:0)+(AT(w)&SPARSE?1:0)){I t1;P*wp,*yp;
-  case 1: RZ(w=denseit(w)); break;  // sparse to dense
+  case 1: RZ(w=jtdenseit(jt,w)); break;  // sparse to dense
   case 2: RZ(*y=sparseit(jtcvt(jt,DTYPE(t),w),IX(r),jtcvt(jt,DTYPE(t),num(0)))); jt->ranks=oqr; return 1;  // dense to sparse; convert type first (even if same dtype)
   case 3: // sparse to sparse
    t1=DTYPE(t);
    GASPARSE(*y,t,1,r,s); yp=PAV(*y); wp=PAV(w);
-   SPB(yp,a,ca(SPA(wp,a)));
-   SPB(yp,i,ca(SPA(wp,i)));
+   SPB(yp,a,jtca(jt,SPA(wp,a)));
+   SPB(yp,i,jtca(jt,SPA(wp,i)));
    SPB(yp,e,jtcvt(jt,t1,SPA(wp,e)));
    SPB(yp,x,jtcvt(jt,t1,SPA(wp,x)));
    jt->ranks=oqr; return 1;
@@ -250,8 +249,8 @@ B jtccvt(J jt,I tflagged,A w,A*y){F1PREFIP;A d;I n,r,*s,wt; void *wv,*yv;I t=tfl
  // Now known to be non-sparse
  n=AN(w); wt=AT(w);
  // If type is already correct, return a clone - used to force a copy.  Should get rid of this kludge
- if(TYPESEQ(t,wt)){RZ(*y=ca(w)); return 1;}
- // else if(n&&t&JCHAR){ASSERT(HOMO(t,wt),EVDOMAIN); RZ(*y=uco1(w)); return 1;}
+ if(TYPESEQ(t,wt)){RZ(*y=jtca(jt,w)); return 1;}
+ // else if(n&&t&JCHAR){ASSERT(HOMO(t,wt),EVDOMAIN); RZ(*y=jtuco1(jt,w)); return 1;}
  // Kludge on behalf of result assembly: we want to be able to stop converting after the valid cells.  If NOUNCVTVALIDCT is set in the type,
  // we use the input *y as as override on the # cells to convert.  We use it to replace n (for use here) and yv, and AK(w) and AN(w) for the subroutines.
  // If NOUNCVTVALIDCT is set, w is modified: the caller must restore AN(w) and AK(w) if it needs it
@@ -401,11 +400,11 @@ A jtpcvt(J jt,I t,A w){A y;B b;RANK2T oqr=jt->ranks;
  A jtxco2(J jt,A a,A w){A z;B b;I j,n,r,*s,t,*wv,*zu,*zv;
  n=AN(w); r=AR(w); t=AT(w);
  ASSERT(t&DENSE,EVNONCE);
- RE(j=i0(a));
+ RE(j=jti0(jt,a));
  switch(j){
   case -2: return jtaslash1(jt,CDIV,w);
   case -1: return jtbcvt(jt,1,w);
-  case  1: return xco1(w);
+  case  1: return jtxco1(jt,w);
   case  2: 
    if(!(t&RAT))RZ(w=jtcvt(jt,RAT,w));
    GATV(z,XNUM,2*n,r+1,AS(w)); AS(z)[r]=2;

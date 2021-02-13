@@ -16,7 +16,7 @@ static I jtord(J jt,A w){I j,n,*v,z;
  A jtpinv(J jt, A w){I m=-1,n,*v;  // empty perm will set m=0
  if (!w) return 0;
  F1RANK(1,jtpinv,UNUSED_VALUE);
- RZ(w=vi(w));
+ RZ(w=jtvi(jt,w));
  n=AN(w); v=AV(w);
  DO(n, I r=v[i]^REPSGN(v[i]); m=r>m?r:m;); ++m;  // take 1s-comp of negative ele#, then find max; add 1 to get #eles
  return jtindexof(jt,jtpfill(jt,m,w),IX(m));
@@ -30,7 +30,7 @@ A jtpind(J jt,I n,A w){A z;I j,*v;
  for(j=AN(z), v=IAV(z);j;--j)if((UI)*v++>=(UI)n)break;
  if(j==0)return z;  // if all indices in range, keep the original vector
  // There was an out-of-bounds or negative index.  We may have to modify the index vector.  Reallocate it if we didn't already
- if(z==w)RZ(z=ca(z));  // Create temp area if we don't have one already
+ if(z==w)RZ(z=jtca(jt,z));  // Create temp area if we don't have one already
  for(j=AN(z), v=IAV(z);j;--j){if((UI)*v>=(UI)n){*v+=n; ASSERT((UI)*v<(UI)n,EVINDEX);} ++v;}  // replace negative indexes
  return z;
 }    /* positive indices */
@@ -53,7 +53,7 @@ static A jtcfd(J jt, A w){A b,q,x,z,*zv;B*bv;I c,i,j,n,*qv,*u,*v,zn;
   GATV0(b,B01,1+n,1); bv=BAV(b); memset(bv,C0,n);
   DO(n, j=v[i]; if((UI)j>=(UI)n||bv[j]){c=0; break;} bv[j]=1;);
  }
- if(!c){n=ord(w); RZ(w=jtpfill(jt,n,w)); v=AV(w); GATV0(b,B01,1+n,1);}
+ if(!c){n=jtord(jt,w); RZ(w=jtpfill(jt,n,w)); v=AV(w); GATV0(b,B01,1+n,1);}
  bv=BAV(b); memset(bv,C0,1+n); ++bv;
  i=0; j=n-1; zn=(I)(log((D)n)+1.6); 
  GATV0(q,INT,n, 1); qv= AV(q);
@@ -63,7 +63,7 @@ static A jtcfd(J jt, A w){A b,q,x,z,*zv;B*bv;I c,i,j,n,*qv,*u,*v,zn;
   u=qv; c=j;
   do{bv[c]=1; *u++=c; c=v[c];}while(c!=j);
   if(i==zn){RZ(z=jtext(jt,0,z)); zv=AAV(z); zn=AN(z);}
-  RZ(zv[i++]=incorp(vec(INT,u-qv,qv)));
+  RZ(zv[i++]=jtincorp(jt,vec(INT,u-qv,qv)));
  }
  AN(z)=AS(z)[0]=zn=i; j=zn-1; DO(zn>>1, x=zv[i]; zv[i]=zv[j]; zv[j]=x; --j;);
  AFLAG(z)|=AFPRISTINE;  // what we generated is always pristine
@@ -85,7 +85,7 @@ static A jtdfc(J jt,I n,A w){PROLOG(0082);A b,q,*wv,z;B*bv;I c,j,qn,*qv,*x;
  EPILOG(z);
 }    /* direct from cycle */
 
- A jtcdot1(J jt, A w){F1RANK(1,jtcdot1,UNUSED_VALUE); return BOX&AT(w)?jtdfc(jt,ord(raze(w)),w):cfd(w);}
+ A jtcdot1(J jt, A w){F1RANK(1,jtcdot1,UNUSED_VALUE); return BOX&AT(w)?jtdfc(jt,jtord(jt,jtraze(jt,w)),w):jtcfd(jt,w);}
 
  A jtcdot2(J jt,A a,A w){A p;I k;
  F2RANK(1,RMAX,jtcdot2,UNUSED_VALUE);
@@ -123,7 +123,7 @@ static A jtdfr(J jt, A w){A z;I c,d,i,j,m,n,*v,*x;
 }    /* direct from reduced */
 
 static A jtrfd(J jt, A w){A z;I j,k,m,n,r,*s,*x;
- RZ(z=ca(w)); x=AV(z);
+ RZ(z=jtca(jt,w)); x=AV(z);
  r=AR(w); s=AS(w); PROD(m,r-1,s);
  if(n=s[r-1])DO(m, j=n-1; ++x; DO(n-1, k=0; DO(j--, k+=*x>x[i];); *x++=k;););
  return z;
@@ -131,16 +131,16 @@ static A jtrfd(J jt, A w){A z;I j,k,m,n,r,*s,*x;
 
  A jtadot1(J jt, A w){A y;I n;
  F1RANK(1,jtadot1,UNUSED_VALUE);
- RZ(y=BOX&AT(w)?cdot1(w):jtpfill(jt,ord(w),w));
+ RZ(y=BOX&AT(w)?jtcdot1(jt,w):jtpfill(jt,jtord(jt,w),w));
  SETIC(y,n);
- return jtbase2(jt,jtcvt(jt,XNUM,apv(n,n,-1L)),rfd(y));
+ return jtbase2(jt,jtcvt(jt,XNUM,apv(n,n,-1L)),jtrfd(jt,y));
 }
 
  A jtadot2(J jt,A a,A w){A m,p;I n;
- SETIC(w,n); p=sc(n); if(XNUM&AT(a))p=jtcvt(jt,XNUM,p); RZ(m=fact(p));
- ASSERT(all1(le(negate(m),a))&&all1(lt(a,m)),EVINDEX);
- if(!AR(w)){RZ(vi(a)); return w;}
- RZ(p=dfr(vi(jtabase2(jt,apv(n,n,-1L),a))));
+ SETIC(w,n); p=jtsc(jt,n); if(XNUM&AT(a))p=jtcvt(jt,XNUM,p); RZ(m=fact(p));
+ ASSERT(all1(le(jtnegate(jt,m),a))&&all1(lt(a,m)),EVINDEX);
+ if(!AR(w)){RZ(jtvi(jt,a)); return w;}
+ RZ(p=jtdfr(jt,jtvi(jt,jtabase2(jt,apv(n,n,-1L),a))));
  return jtequ(jt,w,IX(n))?p:jtfrom(jt,p,w);  // special case when w is index vector - just return permutation.  Otherwise shuffle items of w
  // pristinity unchanged here: if w boxed, it was set by {
 }

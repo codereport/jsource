@@ -11,7 +11,7 @@
 // It also handles pseudo-named functions, which are anonymous entities that need to be given a temporary name
 // when they are running under debug.  Pseudo-named functions are created by namerefop.  We need to run them here so they get the debug side-effects of having a name.
  A jtunquote(J jt,A a,A w,A self){A z;
- F2PREFIP;  // We understand inplacing.  We check inplaceability of the called function.
+ FPREFIP;  // We understand inplacing.  We check inplaceability of the called function.
  RE(0);
  JATTN;
  V *v=FAV(self);  // V block for this V/A/C reference
@@ -33,7 +33,7 @@
     if(!(stabent = jtprobelocal(jt,thisname,jt->locsyms)))stabent=syrd1(thisnameinfo->m,thisnameinfo->s,thisnameinfo->hash,jt->global);  // Try local, then look up the name starting in jt->global
    } else {  // locative or u/v
     if(!(thisnameinfo->flag&NMIMPLOC)){  // locative
-     RZ(explocale=sybaseloc(thisname));  //  get the explicit locale.  0 if erroneous locale
+     RZ(explocale=jtsybaseloc(jt,thisname));  //  get the explicit locale.  0 if erroneous locale
      stabent=syrd1(thisnameinfo->m,thisnameinfo->s,thisnameinfo->hash,explocale);  // Look up the name starting in the locale of the locative
     }else{  // u./v.  We have to look at the assigned name/value to know whether this is an implied locative (it usually is)
      if(stabent = jtprobelocal(jt,thisname,jt->locsyms)){
@@ -105,7 +105,7 @@
    fa(fs); 
   }
   if(PMCTRBPMON&jt->uflags.us.uq.uq_c.pmctrbstk)pmrecord(thisname,jt->global?LOCNAME(jt->global):0,-2L,dyadex?VAL2:VAL1);  // record the return from call
-  if(jt->uflags.us.uq.uq_c.spfreeneeded)spfree();   // if garbage collection required, do it
+  if(jt->uflags.us.uq.uq_c.spfreeneeded)jtspfree(jt);   // if garbage collection required, do it
  }
 
  // Now pop the stack.  Execution may have added entries, but our stack frame always starts in the same place.
@@ -141,7 +141,7 @@
    do{
     --i;
     if(jt->callstack[i].type&CALLSTACKDELETE){
-     if(jt->callstack[i].value==jt->global)delcurr=1;else locdestroy(jt->callstack[i].value);  // destroy or mark for later
+     if(jt->callstack[i].value==jt->global)delcurr=1;else jtlocdestroy(jt,jt->callstack[i].value);  // destroy or mark for later
     }
    }while(i!=callstackx);
    jt->callstacknext=(I4)callstackx;  // restore stackpointer for caller.  The following pushes are onto the caller's stack

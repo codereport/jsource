@@ -6,8 +6,8 @@
 #include "j.h"
 
 
- A jtdfs1(J jt,    A w,A self){F1PREFIP;A s=jt->sf,z; RZ(self); z=CALL1IP(FAV(self)->valencefns[0],  w,jt->sf=self); jt->sf=s; return z;}
- A jtdfs2(J jt,A a,A w,A self){F2PREFIP;
+ A jtdfs1(J jt,    A w,A self){FPREFIP;A s=jt->sf,z; RZ(self); z=CALL1IP(FAV(self)->valencefns[0],  w,jt->sf=self); jt->sf=s; return z;}
+ A jtdfs2(J jt,A a,A w,A self){FPREFIP;
 A s=jt->sf,z; 
 RZ(self); 
 z=CALL2IP(FAV(self)->valencefns[1],a,w,jt->sf=self); jt->sf=s; 
@@ -16,8 +16,8 @@ return z;}
 
 
 // $: itself
- A jtself1(J jt, A w){A z; FDEPINC(d=fdep(jt->sf)); STACKCHKOFL df1(z,  w,jt->sf);  FDEPDEC(d); forcetomemory(w); return z;}
- A jtself2(J jt,A a,A w){A z; FDEPINC(d=fdep(jt->sf)); STACKCHKOFL df2(z,a,w,jt->sf);  FDEPDEC(d); forcetomemory(w); return z;}
+ A jtself1(J jt, A w){A z; FDEPINC(d=0); STACKCHKOFL df1(z,  w,jt->sf);  FDEPDEC(d); forcetomemory(w); return z;}
+ A jtself2(J jt,A a,A w){A z; FDEPINC(d=0); STACKCHKOFL df2(z,a,w,jt->sf);  FDEPDEC(d); forcetomemory(w); return z;}
 
 A jtac1(J jt,AF f){return fdef(0,0,VERB, f,0L, 0L,0L,0L, VFLAGNONE, RMAX,RMAX,RMAX);}
 A jtac2(J jt,AF f){return fdef(0,0,VERB, 0L,f, 0L,0L,0L, VFLAGNONE, RMAX,RMAX,RMAX);}

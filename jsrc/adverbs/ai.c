@@ -25,7 +25,7 @@ static A jtfong(J jt,A a,A w){A f;C c;V*v;
 }   // [: f g  with simplifications: [: ] w -> w;  [: (N/[: x y) w -> N/[: x [: y w   and y omittrd if ]
 
 static A jtinvfork(J jt, A w){A f,fi,g,gi,h,k;B b,c;V*v;
- v=FAV(w); RZ(f=unname(v->fgh[0])); g=v->fgh[1]; RZ(h=unname(v->fgh[2]));
+ v=FAV(w); RZ(f=jtunname(jt,v->fgh[0])); g=v->fgh[1]; RZ(h=jtunname(jt,v->fgh[2]));
  if(CCAP==ID(f))return jtfong(jt,invrecur(h),invrecur(g));
  c=1&&NOUN&AT(f); b=c||consf(f);
  ASSERT(b!=consf(h),EVDOMAIN);
@@ -35,7 +35,7 @@ static A jtinvfork(J jt, A w){A f,fi,g,gi,h,k;B b,c;V*v;
  if(CAMP==ID(gi)){
   v=FAV(gi); 
   if     (NOUN&AT(v->fgh[0]))RZ(gi=folk(v->fgh[0],     v->fgh[1], ds(CRIGHT)))
-  else if(NOUN&AT(v->fgh[1]))RZ(gi=folk(v->fgh[1],swap(v->fgh[0]),ds(CRIGHT)));
+  else if(NOUN&AT(v->fgh[1]))RZ(gi=folk(v->fgh[1],jtswap(jt,v->fgh[0]),ds(CRIGHT)));
  }
  return jtfong(jt,fi,gi);
 }
@@ -64,8 +64,8 @@ static A jtbminv(J jt, A w){A*wv,x,z=w;I i,j,m,r,*s,t=0,*u,**v,*y,wn,wr,*ws;
  ASSERT(0,EVNONCE);
  ASSERT(BOX&AT(w),EVDOMAIN);
  wn=AN(w); wr=AR(w); ws=AS(w); wv=AAV(w); 
- if(1>=wr)return raze(w);
- if(!wn)return iota(jtreshape(jt,sc(wr),num(0)));
+ if(1>=wr)return jtraze(jt,w);
+ if(!wn)return jtiota(jt,jtreshape(jt,jtsc(jt,wr),num(0)));
  GATV0(x,INT,wr,1); u=AV(x); memset(u,C0,wr*SZI);
  GATV0(x,INT,wr,1); v=(I**)AV(x);
  DO(wr, m=ws[i]; GATV0(x,INT,m,1); memset(v[i]=AV(x),CFF,m*SZI););
@@ -80,14 +80,14 @@ static A jtbminv(J jt, A w){A*wv,x,z=w;I i,j,m,r,*s,t=0,*u,**v,*y,wn,wr,*ws;
  if(!z){A f,h,*zv;I*hv;
   GATVR(z,BOX,wn,2,ws); zv=AAV(z);
   GATV0(h,INT,wr,1); hv=AV(h);
-  GA(f,t,1,1,0); RZ(f=filler(f)); memset(u,C0,wr*SZI);
+  GA(f,t,1,1,0); RZ(f=jtfiller(jt,f)); memset(u,C0,wr*SZI);
   for(i=0;i<wn;++i){
    zv[i]=x=wv[i];
    if(2>AR(x)){DO(wr, hv[i]=*(v[i]+u[i]);); RZ(zv[i]=jtdiag(jt,x,jtreshape(jt,h,f)));}
    j=wr-1; while(1){--j; ++u[j]; if(ws[j]>u[j])break; u[j]=0;}
  }}
- DO(wr, A t=z; RZ(df1(z,t,slash(jtunder(jt,jtqq(jt,ds(CCOMMA),sc(wr-i)),ds(COPE))))););
- return ope(z);
+ DO(wr, A t=z; RZ(df1(z,t,jtslash(jt,jtunder(jt,jtqq(jt,ds(CCOMMA),jtsc(jt,wr-i)),ds(COPE))))););
+ return jtope(jt,z);
 }    /* <;.1 or <;.2 inverse on matrix argument */
 
 
@@ -97,53 +97,53 @@ static A jtinvamp(J jt, A w){A f,ff,g,h,x,y;B nf,ng;C c,d,*yv;I n;V*u,*v;
  g=v->fgh[1]; ng=!!(NOUN&AT(g));
  h=nf?g:f; x=nf?f:g; c=ID(h); u=VAV(h);   // h=verb arg, x=noun arg
  switch(c){
-  case CPLUS:    return jtamp(jt,negate(x),h);
-  case CSTAR:    return jtamp(jt,recip(x), h);
+  case CPLUS:    return jtamp(jt,jtnegate(jt,x),h);
+  case CSTAR:    return jtamp(jt,jtrecip(jt,x), h);
   case CMINUS:   return nf?w:jtamp(jt,x,ds(CPLUS));
   case CDIV:     return nf?w:jtamp(jt,x,ds(CSTAR));
   case CROOT:    return jtamp(jt,ds(nf?CEXP:CLOG),x);
   case CEXP:     return ng&&jtequ(jt,x,num(2))?ds(CROOT):jtamp(jt,x,ds(nf?CLOG:CROOT));
   case CLOG:     return nf?jtamp(jt,x,ds(CEXP)):jtamp(jt,ds(CROOT),x);
-  case CJDOT:    return nf?jtatop(jt,invrecur(ds(CJDOT)),jtamp(jt,ds(CMINUS),x)):jtamp(jt,ds(CMINUS),jdot1(x));
-  case CRDOT:    return nf?jtatop(jt,invrecur(ds(CRDOT)),jtamp(jt,ds(CDIV  ),x)):jtamp(jt,ds(CDIV  ),rdot1(x));
-  case CLBRACE:  return nf?jtamp(jt,pinv(x),h):jtamp(jt,x,ds(CIOTA));
+  case CJDOT:    return nf?jtatop(jt,invrecur(ds(CJDOT)),jtamp(jt,ds(CMINUS),x)):jtamp(jt,ds(CMINUS),jtjdot1(jt,x));
+  case CRDOT:    return nf?jtatop(jt,invrecur(ds(CRDOT)),jtamp(jt,ds(CDIV  ),x)):jtamp(jt,ds(CDIV  ),jtrdot1(jt,x));
+  case CLBRACE:  return nf?jtamp(jt,jtpinv(jt,x),h):jtamp(jt,x,ds(CIOTA));
   case COBVERSE: ff=FAV(h)->fgh[1]; return jtamp(jt,nf?x:ff,nf?ff:x);
   case CPDERIV:  if(nf&&!AR(x))return ds(CPDERIV); break;  // only atom&p.. is invertible
-  case CXCO:     RE(n=i0(x)); ASSERT(n&&BETWEENC(n,-2,2),EVDOMAIN);  // fall through to create (-x)&u
+  case CXCO:     RE(n=jti0(jt,x)); ASSERT(n&&BETWEENC(n,-2,2),EVDOMAIN);  // fall through to create (-x)&u
   case CROT:          // fall through to create (-x)&u
   case CCIRCLE:       // fall through to create (-x)&u
-  case CSPARSE:  if(nf)return jtamp(jt,negate(x),h);   break;
+  case CSPARSE:  if(nf)return jtamp(jt,jtnegate(jt,x),h);   break;
   case CABASE:   if(nf)return jtamp(jt,x,ds(CBASE));   break;
   case CIOTA:    if(nf)return jtamp(jt,ds(CLBRACE),x); break;
   case CTHORN:   if(nf)return ds(CEXEC);          break;
   case CTILDE:   
-   if(ff=FAV(h)->fgh[0],VERB&AT(ff))return invamp(jtamp(jt,nf?ff:x,nf?x:ff));
-   else{ff=unname(h); return invamp(jtamp(jt,nf?x:ff,nf?ff:x));}
+   if(ff=FAV(h)->fgh[0],VERB&AT(ff))return jtinvamp(jt,jtamp(jt,nf?ff:x,nf?x:ff));
+   else{ff=jtunname(jt,h); return jtinvamp(jt,jtamp(jt,nf?x:ff,nf?ff:x));}
   case CSCO:     
    ASSERT(nf!=0,EVDOMAIN); 
-   RE(n=i0(x)); ASSERT(n&&BETWEENC(n,-6,6),EVDOMAIN);
-   return jtamp(jt,sc(-n),h);
+   RE(n=jti0(jt,x)); ASSERT(n&&BETWEENC(n,-6,6),EVDOMAIN);
+   return jtamp(jt,jtsc(jt,-n),h);
   case CUCO:
    ASSERT(nf!=0,EVDOMAIN); 
-   RE(n=i0(x)); ASSERT(BETWEENC(n,1,8)&!BETWEENC(n,5,6),EVDOMAIN);
-   return jtamp(jt,sc(-(1^(-n))),h);
+   RE(n=jti0(jt,x)); ASSERT(BETWEENC(n,1,8)&!BETWEENC(n,5,6),EVDOMAIN);
+   return jtamp(jt,jtsc(jt,-(1^(-n))),h);
   case CCANT:    
    ASSERT(nf!=0,EVDOMAIN); 
    return jtobverse(jt,jteva(jt,x,"] |:~ u C.^:_1 i.@#@$"),w);
   case CPCO:
    if(nf){
-    RE(n=i0(x));
+    RE(n=jti0(jt,x));
     switch(n){
-     case -4: case 4: return jtamp(jt,negate(x),h);
+     case -4: case 4: return jtamp(jt,jtnegate(jt,x),h);
      case -1:         return ds(CPCO);
-     case  2:         return jtobverse(jt,eval("*/@(^/)\"2"),w);
-     case  3:         return eval("*/");
+     case  2:         return jtobverse(jt,jteval(jt,"*/@(^/)\"2"),w);
+     case  3:         return jteval(jt,"*/");
    }}
    break;
   case CQCO:     
    if(nf){
     ASSERT(!AR(x),EVRANK);
-    return jtobverse(jt,eval(all1(lt(x,zeroionei(0)))?"*/@(^/)\"2":"(p:@i.@# */ .^ ])\"1"),w);
+    return jtobverse(jt,jteval(jt,all1(lt(x,zeroionei(0)))?"*/@(^/)\"2":"(p:@i.@# */ .^ ])\"1"),w);
    }
    break;
   case CFIT:
@@ -160,13 +160,13 @@ static A jtinvamp(J jt, A w){A f,ff,g,h,x,y;B nf,ng;C c,d,*yv;I n;V*u,*v;
    break;
   case CCOMMA:  
    SETIC(x,n); 
-   return jtobverse(jt,1==n?ds(nf?CDROP:CCTAIL):jtamp(jt,sc(nf?n:-n),ds(CDROP)),w);
+   return jtobverse(jt,1==n?ds(nf?CDROP:CCTAIL):jtamp(jt,jtsc(jt,nf?n:-n),ds(CDROP)),w);
   case CBASE:   
    if(!nf)break;
    return AR(x) ? jtamp(jt,x,ds(CABASE)) :
     jtobverse(jt,evc(x,mag(x),"$&u@>:@(v&(<.@^.))@(1&>.)@(>./)@:|@, #: ]"),w);
   case CATOMIC:
-   if(ng){ASSERT(jtequ(jt,x,nub(x)),EVDOMAIN); return jtobverse(jt,jtatop(jt,f,jtamp(jt,x,ds(CIOTA))),w);}  // fall through to common obverse (?)
+   if(ng){ASSERT(jtequ(jt,x,jtnub(jt,x)),EVDOMAIN); return jtobverse(jt,jtatop(jt,f,jtamp(jt,x,ds(CIOTA))),w);}  // fall through to common obverse (?)
   case CCYCLE:
    if(nf&&AR(x)<=(c==CCYCLE))return jtobverse(jt,jteva(jt,w,"/:@u@(i.@#) { ]"),w); break;
   case CDROP:
@@ -175,46 +175,46 @@ static A jtinvamp(J jt, A w){A f,ff,g,h,x,y;B nf,ng;C c,d,*yv;I n;V*u,*v;
    RZ(y=jteps(jt,jtv2(jt,-1L,1L),signum(x))); yv=CAV(y);
    f=jtamp(jt,mag(x),ds(CPLUS));
    g=1==AN(x)?ds(CPOUND):jtatop(jt,jtamp(jt,tally(jt, x),ds(CTAKE)),ds(CDOLLAR));
-   h=!yv[1]?f:jtatop(jt,!yv[0]?ds(CMINUS):jtamp(jt,negate(signum(x)),ds(CSTAR)),f);
-   return jtobverse(jt,jthook(jt,swap(ds(CTAKE)),jtatop(jt,h,g)),w);
+   h=!yv[1]?f:jtatop(jt,!yv[0]?ds(CMINUS):jtamp(jt,jtnegate(jt,signum(x)),ds(CSTAR)),f);
+   return jtobverse(jt,jthook(jt,jtswap(jt,ds(CTAKE)),jtatop(jt,h,g)),w);
   case CDOMINO:
    if(!(2==AR(x)&&*AS(x)==*(1+AS(x))))break;
-   ff=eval("+/ .*");
-   return nf?jtatop(jt,h,jtamp(jt,ff,minv(x))):jtamp(jt,x,ff);
+   ff=jteval(jt,"+/ .*");
+   return nf?jtatop(jt,h,jtamp(jt,ff,jtminv(jt,x))):jtamp(jt,x,ff);
   case CDOT:
    if(ip(h,CPLUS,CSTAR)){
     ASSERT(2==AR(x),EVRANK);
     ASSERT(AS(x)[0]==AS(x)[1],EVLENGTH);
-    return nf?jtamp(jt,ds(CDOMINO),x):jtamp(jt,h,minv(x));
+    return nf?jtamp(jt,ds(CDOMINO),x):jtamp(jt,h,jtminv(jt,x));
    }
    break;
   case CQQ:
-   if(ng&&jtequ(jt,x,num(1))&&jtequ(jt,f,eval("i.\"1")))return jthook(jt,ds(CFROM),ds(CEQ));
+   if(ng&&jtequ(jt,x,num(1))&&jtequ(jt,f,jteval(jt,"i.\"1")))return jthook(jt,ds(CFROM),ds(CEQ));
    break;
   case CBSLASH:
-   if(nf&&(n=i0(x),0>n)&&(d=ID(u->fgh[0]),(d&-2)==CLEFT))return slash(ds(CCOMMA));  // LEFT || RIGHT
+   if(nf&&(n=jti0(jt,x),0>n)&&(d=ID(u->fgh[0]),(d&-2)==CLEFT))return jtslash(jt,ds(CCOMMA));  // LEFT || RIGHT
    break;
   case CIBEAM:
    x=FAV(h)->fgh[0]; y=FAV(h)->fgh[1];
    if(NOUN&AT(x)&&jtequ(jt,x,num(3))&&NOUN&AT(y)){
-    RE(n=i0(f));
-    if(all1(jteps(jt,y,jtv2(jt,4L,5L)))){ASSERT(n&&BETWEENC(n,-2,2),EVDOMAIN); return jtamp(jt,sc(-n),g);}
+    RE(n=jti0(jt,f));
+    if(all1(jteps(jt,y,jtv2(jt,4L,5L)))){ASSERT(n&&BETWEENC(n,-2,2),EVDOMAIN); return jtamp(jt,jtsc(jt,-n),g);}
     if(all1(jteps(jt,y,jtv2(jt,1L,3L)))){ASSERT(0==n||1==n||10==n||11==n,EVDOMAIN); return jtforeign(jt,x,num(2));}
    }
    break;
   case CBDOT:
-   RE(n=i0(x));
-   switch(i0(FAV(h)->fgh[1])){
+   RE(n=jti0(jt,x));
+   switch(jti0(jt,FAV(h)->fgh[1])){
     case 22: case 25:          return w;
     case 19: case 28:          if(ng)return w; break;
     case 21: case 26:          if(nf)return w; break;
-    case 32: case 33: case 34: ASSERT(nf!=0,EVDOMAIN); return jtamp(jt,negate(x),h);
+    case 32: case 33: case 34: ASSERT(nf!=0,EVDOMAIN); return jtamp(jt,jtnegate(jt,x),h);
    }
    break;
   case CPOLY:
-   if(nf&&1==AR(x)&&2==AN(x)&&NUMERIC&AT(x)&&!jtequ(jt,zeroionei(0),tail(x))){  // linear polynomial only
-    RZ(y=recip(tail(x)));
-    return jtamp(jt,apip(tymes(y,negate(head(x))),y),h);
+   if(nf&&1==AR(x)&&2==AN(x)&&NUMERIC&AT(x)&&!jtequ(jt,zeroionei(0),jttail(jt,x))){  // linear polynomial only
+    RZ(y=jtrecip(jt,jttail(jt,x)));
+    return jtamp(jt,apip(tymes(y,jtnegate(jt,jthead(jt,x))),y),h);
  }}
  ASSERT(0,EVDOMAIN);
 }
@@ -243,22 +243,22 @@ A jtinv(J jt, A w, I recur){A f,ff,g;B b,nf,ng,vf,vg;C id;I p,q;V*v;
  f=v->fgh[0]; nf=f&&AT(f)&NOUN+NAME; vf=f&&!nf;
  g=v->fgh[1]; ng=g&&AT(g)&NOUN+NAME; vg=g&&!ng;
  switch(id){
-  case CCIRCLE:  return eval("1p_1&*");
-  case CJDOT:    return eval("0j_1&*");
-  case CRDOT:    return eval("%&0j1@^.");
-  case CPLUSDOT: return eval("j./\"1\"_ :. +.");
-  case CSTARDOT: return eval("r./\"1\"_ :. *.");
-  case CDGRADE:  return eval("/:@|.");
-  case CWORDS:   return eval("}:@;@(,&' '&.>\"1) :. ;:");
-  case CBANG:    return eval("3 : '(-(y -~ !)%0.001&* (0.001%~[:-/[:! 0.001 0 +/ ]) ])^:_<.&170^:(-:+)^.y' :. !");
+  case CCIRCLE:  return jteval(jt,"1p_1&*");
+  case CJDOT:    return jteval(jt,"0j_1&*");
+  case CRDOT:    return jteval(jt,"%&0j1@^.");
+  case CPLUSDOT: return jteval(jt,"j./\"1\"_ :. +.");
+  case CSTARDOT: return jteval(jt,"r./\"1\"_ :. *.");
+  case CDGRADE:  return jteval(jt,"/:@|.");
+  case CWORDS:   return jteval(jt,"}:@;@(,&' '&.>\"1) :. ;:");
+  case CBANG:    return jteval(jt,"3 : '(-(y -~ !)%0.001&* (0.001%~[:-/[:! 0.001 0 +/ ]) ])^:_<.&170^:(-:+)^.y' :. !");
   case CXCO:     return jtamp(jt,num(-1),w);
   case CSPARSE:  return fdef(0,CPOWOP,VERB,jtdenseit,0L, w,num(-1),0L, VFLAGNONE, RMAX,RMAX,RMAX);
   case CPCO:     return fdef(0,CPOWOP,VERB,jtplt,    0L, w,num(-1),0L, 0L, 0L,  0L,  0L  );
-  case CQCO:     return eval("*/");
+  case CQCO:     return jteval(jt,"*/");
   case CUCO:     return jtamp(jt,num(3),w);
   case CUNDER:   return jtunder(jt,invrecur(f),g);
-  case CFORK:    return invfork(w);
-  case CAMP:     if(nf!=ng){A z=invamp(w); if(nf^ng)return z;}  // may fall through... but avoid tail-recursion so we get out of loop
+  case CFORK:    return jtinvfork(jt,w);
+  case CAMP:     if(nf!=ng){A z=jtinvamp(jt,w); if(nf^ng)return z;}  // may fall through... but avoid tail-recursion so we get out of loop
   case CAT:      if(vf&&vg)return jtatop(jt,invrecur(g),invrecur(f));   break;
   case CAMPCO:
   case CATCO:    if(vf&&vg)return jtatco(jt,invrecur(g),invrecur(f));   break;
@@ -267,19 +267,19 @@ A jtinv(J jt, A w, I recur){A f,ff,g;B b,nf,ng,vf,vg;C id;I p,q;V*v;
   case COBVERSE: if(vf&&vg)return jtobverse(jt,g,f);          break;  // if defined obverse, return it
   case CSCO:     return jtamp(jt,num(5),w);
   case CPOWOP:   
-   if(vf&&ng){RE(p=i0(g)); return -1==p?f:1==p?invrecur(f):powop(0>p?f:invrecur(f),sc(ABS(p)),0);}
+   if(vf&&ng){RE(p=jti0(jt,g)); return -1==p?f:1==p?invrecur(f):powop(0>p?f:invrecur(f),jtsc(jt,ABS(p)),0);}
    if(VGERL&v->flag)return*(1+AAV(v->fgh[2]));
    break;
   case CTILDE:
-   if(nf)return invrecur(symbrd(f));  // name~ - resolve name & try again
+   if(nf)return invrecur(jtsymbrd(jt,f));  // name~ - resolve name & try again
    switch(ID(f)){   // inverses for reflexive monads
     case CPLUS:  return ds(CHALVE);
     case CSTAR:  return ds(CSQRT);
-    case CJDOT:  return eval("0.5j_0.5&*");
-    case CLAMIN: return eval("{. :. (,:~)");
-    case CSEMICO:return eval(">@{. :. (;~)");
-    case CCOMMA: return eval("<.@-:@# {. ] :. (,~)");
-    case CEXP:   return eval("3 : '(- -&b@(*^.) % >:@^.)^:_ ]1>.b=.^.y' \" 0 :. (^~)");
+    case CJDOT:  return jteval(jt,"0.5j_0.5&*");
+    case CLAMIN: return jteval(jt,"{. :. (,:~)");
+    case CSEMICO:return jteval(jt,">@{. :. (;~)");
+    case CCOMMA: return jteval(jt,"<.@-:@# {. ] :. (,~)");
+    case CEXP:   return jteval(jt,"3 : '(- -&b@(*^.) % >:@^.)^:_ ]1>.b=.^.y' \" 0 :. (^~)");
    }
    break;
   case CBSLASH:
@@ -287,25 +287,25 @@ A jtinv(J jt, A w, I recur){A f,ff,g;B b,nf,ng,vf,vg;C id;I p,q;V*v;
    if(CSLASH==ID(f)&&(ff=FAV(f)->fgh[0],ff&&VERB&AT(ff))){  //  ff/\  or ff/\.
     b=id==CBSDOT;
     switch(ID(ff)){
-     case CPLUS: return jtobverse(jt,eval(b?"- 1&(|.!.0)":" - |.!.0"),w);
-     case CSTAR: return jtobverse(jt,eval(b?"% 1&(|.!.1)":" % |.!.1"),w);
-     case CEQ:   return jtobverse(jt,eval(b?"= 1&(|.!.1)":" = |.!.1"),w);
-     case CNE:   return jtobverse(jt,eval(b?"~:1&(|.!.0)":" ~:|.!.0"),w);
-     case CMINUS:return jtobverse(jt,eval(b?"+ 1&(|.!.0)":"(- |.!.0) *\"_1 $&1 _1@#"),w);
-     case CDIV:  return jtobverse(jt,eval(b?"* 1&(|.!.1)":"(% |.!.1) ^\"_1 $&1 _1@#"),w);
+     case CPLUS: return jtobverse(jt,jteval(jt,b?"- 1&(|.!.0)":" - |.!.0"),w);
+     case CSTAR: return jtobverse(jt,jteval(jt,b?"% 1&(|.!.1)":" % |.!.1"),w);
+     case CEQ:   return jtobverse(jt,jteval(jt,b?"= 1&(|.!.1)":" = |.!.1"),w);
+     case CNE:   return jtobverse(jt,jteval(jt,b?"~:1&(|.!.0)":" ~:|.!.0"),w);
+     case CMINUS:return jtobverse(jt,jteval(jt,b?"+ 1&(|.!.0)":"(- |.!.0) *\"_1 $&1 _1@#"),w);
+     case CDIV:  return jtobverse(jt,jteval(jt,b?"* 1&(|.!.1)":"(% |.!.1) ^\"_1 $&1 _1@#"),w);
    }}
    break;
   case CCUT:
-   if(CBOX==ID(f)&&ng&&(p=i0(g),1==p||2==p))return fdef(0,CPOWOP,VERB, jtbminv,0L, w,num(-1), 0L,VFLAGNONE, RMAX,RMAX,RMAX);
+   if(CBOX==ID(f)&&ng&&(p=jti0(jt,g),1==p||2==p))return fdef(0,CPOWOP,VERB, jtbminv,0L, w,num(-1), 0L,VFLAGNONE, RMAX,RMAX,RMAX);
    break;
   case CIBEAM:
-   p=i0(f); q=i0(g);
+   p=jti0(jt,f); q=jti0(jt,g);
    if(3==p&&1==q)return jtforeign(jt,f,num(2));
    if(3==p&&2==q)return jtforeign(jt,f,num(1)   );
    if(3==p&&3==q)return jtforeign(jt,f,num(2));
    break;
   case CHOOK:
-    if(BOTHEQ8(ID(f),ID(g),CFROM,CEQ))return eval("i.\"1&1");
+    if(BOTHEQ8(ID(f),ID(g),CFROM,CEQ))return jteval(jt,"i.\"1&1");
    break;
  }
  // Failure - no inverse found.  If there are names in w, try fixing w and try on that.
@@ -320,11 +320,11 @@ static A jtneutral(J jt, A w){A x,y;B b;V*v;
  v=FAV(w);
  ASSERT(!v->lrr,EVDOMAIN);
  RZ(y=jtv2(jt,0L,1L));
- RZ(x=scf(infm)); b=jtequ(jt,y,CALL2(v->valencefns[1],x,y,w)); RESETERR; if(b)return x;
+ RZ(x=jtscf(jt,infm)); b=jtequ(jt,y,CALL2(v->valencefns[1],x,y,w)); RESETERR; if(b)return x;
  x=ainf;          b=jtequ(jt,y,CALL2(v->valencefns[1],x,y,w)); RESETERR; if(b)return x;
  x=zeroionei(0);          b=jtequ(jt,y,CALL2(v->valencefns[1],x,y,w)); RESETERR; if(b)return num(0);
  x=zeroionei(1);           b=jtequ(jt,y,CALL2(v->valencefns[1],x,y,w)); RESETERR; if(b)return num(1);
- RZ(x=scf(infm)); b=jtequ(jt,y,CALL2(v->valencefns[1],y,x,w)); RESETERR; if(b)return x;
+ RZ(x=jtscf(jt,infm)); b=jtequ(jt,y,CALL2(v->valencefns[1],y,x,w)); RESETERR; if(b)return x;
  x=ainf;          b=jtequ(jt,y,CALL2(v->valencefns[1],y,x,w)); RESETERR; if(b)return x;
  x=zeroionei(0);          b=jtequ(jt,y,CALL2(v->valencefns[1],y,x,w)); RESETERR; if(b)return num(0);
  x=zeroionei(1);           b=jtequ(jt,y,CALL2(v->valencefns[1],y,x,w)); RESETERR; if(b)return num(1);
@@ -335,22 +335,22 @@ static A jtneutral(J jt, A w){A x,y;B b;V*v;
  RZ(w=jtfix(jt,w,zeroionei(0))); ASSERT(VERB&AT(w),EVDOMAIN);
  v=FAV(w); f=v->fgh[0]; g=v->fgh[1];
  switch(v->id){
-  default:      RZ(x=neutral(w)); break;
-  case CCOMMA:  return eval("i.@(0&,)@(2&}.)@$");
+  default:      RZ(x=jtneutral(jt,w)); break;
+  case CCOMMA:  return jteval(jt,"i.@(0&,)@(2&}.)@$");
   case CDOT:    if(!(ip(w,CPLUS,CSTAR)||ip(w,CPLUSDOT,CSTARDOT)||ip(w,CNE,CSTARDOT)))break;  // if matrix multiply, fall through to...
   case CDOMINO: return jtatop(jt,jtatop(jt,ds(CEQ),ds(CGRADE)),ds(CHEAD));
   case CCYCLE:
   case CLBRACE: return jtatop(jt,ds(CGRADE),ds(CHEAD));
-  case CSLASH:  if(VERB&AT(f))return jtatop(jt,iden(f),ds(CPOUND)); break;
+  case CSLASH:  if(VERB&AT(f))return jtatop(jt,jtiden(jt,f),ds(CPOUND)); break;
   case CPLUS: case CMINUS: case CSTILE:   case CNE:
   case CGT:   case CLT:    case CPLUSDOT: case CJDOT:   case CRDOT:
                 x=num(0); break;
   case CSTAR: case CDIV:   case CEXP:     case CROOT:   case CBANG:
   case CEQ:   case CGE:    case CLE:      case CSTARDOT:
                 x=num(1); break;
-  case CMAX:    x=scf(infm); break;
+  case CMAX:    x=jtscf(jt,infm); break;
   case CMIN:    x=ainf; break;
-  case CUNDER:  ; A t; df1(x,df1(t,mtv,iden(f)),inv(g)); break;
+  case CUNDER:  ; A t; df1(x,df1(t,mtv,jtiden(jt,f)),inv(g)); break;
   case CAT:
    if(CAMP==ID(f)&&(u=FAV(f),NOUN&AT(u->fgh[0])&&!AR(u->fgh[0])&&CSTILE==ID(u->fgh[1])))switch(ID(g)){
     case CSTAR: case CEXP: x=num(1);  break;
@@ -358,7 +358,7 @@ static A jtneutral(J jt, A w){A x,y;B b;V*v;
    }
    break;
   case CBDOT: ;  // canned inverses for (bt b.)
-   I bt=i0(g);
+   I bt=jti0(jt,g);
 #define INVM1 BMK(25)
 #define INV0 (BMK(2)+BMK(4)+BMK(5)+BMK(6)+BMK(7)+BMK(18)+BMK(20)+BMK(21)+BMK(22)+BMK(23))
 #define INV1 (BMK(1)+BMK(9)+BMK(11)+BMK(13)+BMK(17)+BMK(27)+BMK(29))
@@ -369,17 +369,17 @@ static A jtneutral(J jt, A w){A x,y;B b;V*v;
    break;
   }
  ASSERT(x!=0,EVDOMAIN);
- return folk(x,swap(ds(CDOLLAR)),jtatop(jt,ds(CBEHEAD),ds(CDOLLAR)));
+ return folk(x,jtswap(jt,ds(CDOLLAR)),jtatop(jt,ds(CBEHEAD),ds(CDOLLAR)));
 }
 
  A jtidensb(J jt, A w){A f,g,x=0,w0=w;V*v;
  RZ(w=jtfix(jt,w,zeroionei(0))); ASSERT(VERB&AT(w),EVDOMAIN);
  v=FAV(w); f=v->fgh[0]; g=v->fgh[1];
  switch(v->id){
-  default:      return iden(w0);
+  default:      return jtiden(jt,w0);
   case CMAX:    GATV0(x,SBT,1,0);SBAV(x)[0]=0; break;
   case CMIN:    GATV0(x,SBT,1,0);SBAV(x)[0]=jt->sbuv[0].down; break;
  }
  ASSERT(x!=0,EVDOMAIN);
- return folk(x,swap(ds(CDOLLAR)),jtatop(jt,ds(CBEHEAD),ds(CDOLLAR)));
+ return folk(x,jtswap(jt,ds(CDOLLAR)),jtatop(jt,ds(CBEHEAD),ds(CDOLLAR)));
 }

@@ -19,7 +19,7 @@ static AIFX(gtC,  B, UC,UC, >  )
  if(CUNDER==v->id)switch(c){
   case CMAX:  zt=LIT; ado=(VF)maxC; break;
   case CMIN:  zt=LIT; ado=(VF)minC; break;
-// not used   this was never detected as special  case CAT:   z=VAV(v->fgh[0])->fgh[0]; v=VAV(z); if(CAMP==v->id&&256==i0(v->fgh[0])&&CSTILE==ID(v->fgh[1]));
+// not used   this was never detected as special  case CAT:   z=VAV(v->fgh[0])->fgh[0]; v=VAV(z); if(CAMP==v->id&&256==jti0(jt,v->fgh[0])&&CSTILE==ID(v->fgh[1]));
   default: ASSERTSYS(ado,"charfn2 ado");
  }else switch(c){
   case CEQ:   return eq(a,w);

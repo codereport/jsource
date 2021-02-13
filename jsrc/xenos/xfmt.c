@@ -71,10 +71,10 @@ static A jtfmtbfc(J jt, A w){A*u,z;B t;C c,p,q,*s,*wv;I i,j,m,n;
  for(i=0;i<n;++i){
   c=wv[i]; 
   if(t){if(c==q)t=0;}
-  else if(c==','){RZ(*u++=incorp(jtstr(jt,i-j,wv+j))); j=i+1;}
+  else if(c==','){RZ(*u++=jtincorp(jt,jtstr(jt,i-j,wv+j))); j=i+1;}
   else if(s=strchr(pp,c)){t=1; q=qq[s-pp];}
  }
- RZ(*u=incorp(jtstr(jt,n-j,wv+j)));
+ RZ(*u=jtincorp(jt,jtstr(jt,n-j,wv+j)));
  return z;
 } /* format phrases: boxed from char */
 
@@ -89,7 +89,7 @@ static B jtfmtcomma(J jt, C *x, I l, I d, C *subs) {C *v,*u;I j,n,c;
 static I jtdpone(J jt, B bits, D w){D t;
  if(bits&BITSf) return 0;
  w=ABS(w);
- if(bits&BITSe) w/=pow(10,tfloor(log10(w)));
+ if(bits&BITSe) w/=pow(10,jttfloor(jt,log10(w)));
  DO(10, t=npwrs[i]*jround(ppwrs[i]*w); if(TEQ(t,w)) return i; );
  return 9;
 }
@@ -149,7 +149,7 @@ static A jtfmtparse(J jt, A w){A x,z,*zv;B ml[2+NMODVALS],mod,t;C c,*cu="srqpnmd
    d=wv[mi];
    ASSERT(s=strchr(cu,d),EVDOMAIN);
    j=s-cu; ASSERT(ml[j],EVDOMAIN); ml[j]=0; fb|=(I)1<<j; 
-   if(s=strchr(cu1,d)){if(i-mi>3)RZ(zv[s-cu1]=incorp(jtstr(jt,i-mi-3,wv+mi+2)));}else ASSERT(1==i-mi,EVDOMAIN);
+   if(s=strchr(cu1,d)){if(i-mi>3)RZ(zv[s-cu1]=jtincorp(jt,jtstr(jt,i-mi-3,wv+mi+2)));}else ASSERT(1==i-mi,EVDOMAIN);
   }
   mi=i;
   if(BETWEENC(c,'0','9')){RZ(widthdp(jtstr(jt,n-i,wv+i),vals,vals+1)); break;} 
@@ -158,9 +158,9 @@ static A jtfmtparse(J jt, A w){A x,z,*zv;B ml[2+NMODVALS],mod,t;C c,*cu="srqpnmd
   x=zv[NMODVALS]; n=AN(x); cv=CAV(x); memcpy(subs,cu,5L); memset(ml,C1,5L);
   ASSERT(0==(n&1)&&10>=n,EVDOMAIN);
   DQ(n>>1, ASSERT(s=strchr(cu,*cv++),EVDOMAIN); j=s-cu; ASSERT(ml[j],EVDOMAIN); ml[j]=0; subs[j]=*cv++;);
-  RZ(zv[NMODVALS]=incorp(jtstr(jt,5L,subs)));
+  RZ(zv[NMODVALS]=jtincorp(jt,jtstr(jt,5L,subs)));
  }
- vals[2]=fb; RZ(*zv=incorp(vec(INT,3,vals)));
+ vals[2]=fb; RZ(*zv=jtincorp(jt,vec(INT,3,vals)));
  return z;
 }
 
@@ -170,7 +170,7 @@ typedef union u_DI8_tag { I8 i; D d; } DI8;
 
 static D jtroundID(J jt,I d,D y){D f,q,c,h;DI8 f8,q8,c8;
  q=ppwrs[d]*y; if(q<1) h=2; else h=0; q+=h;
- f=jfloor(q); c=-jfloor(-q); 
+ f=floor(q); c=-floor(-q); 
  if(f==c) return npwrs[d]*(c-h);
  ASSERTSYS(f<=q&&q<=c, "roundID: fqc");
  f8.d=f;q8.d=q;c8.d=c;
@@ -183,14 +183,14 @@ static D jtafzrndID(J jt,I dp,D y){return SGN(y)*jtroundID(jt,dp,ABS(y));}
          /* round-to-nearest, solve ties by rounding Away From Zero */
 
 static D jtexprndID(J jt, I d, D y){I e,s;D f,q,c,x1,x2;DI8 f8,y8,c8;
- s=SGN(y); e=-(I)jfloor(log10(y=ABS(y)));  // s=sign, e=-1-#digits above decimal point
+ s=SGN(y); e=-(I)floor(log10(y=ABS(y)));  // s=sign, e=-1-#digits above decimal point
  // we want to multiply y by 10^-log(y), but that power may overflow.  So we split
  // the power into two halves, and multiply one at a time
  e+=d; x1=pow(2,(D)e); x2=pow(5,(D)e); 
  q=x2*y;
  q*=x1; /* avoid overflow to Infinity */
- f=jfloor( q)/x1; f/=x2;
- c=(-jfloor(-q))/x1; c/=x2;
+ f=floor( q)/x1; f/=x2;
+ c=(-floor(-q))/x1; c/=x2;
 
  if(f==c) return s*c;
  /*ASSERTSYS(f<=y && y<=c, "exprndID: fyc");*/ /* why does this fail? */
@@ -259,10 +259,10 @@ static A jtfmtprecomp(J jt,A a,A w) {A*as,base,fb,len,strs,*u,z;B*bits,*bw;D dtm
  GATV0(strs,BOX,nf*NMODVALS,2); s=AS(strs); *s++=nf; *s=NMODVALS;
  GATV(len, INT,n,wr,ws); 
  GATV(fb,  B01,n,wr,ws); memset(BAV(fb),C0,n);
- GAT0(z,BOX,4,1); u=AAV(z); *u++=incorp(base); *u++=incorp(strs); *u++=incorp(len); *u++=incorp(fb); 
+ GAT0(z,BOX,4,1); u=AAV(z); *u++=jtincorp(jt,base); *u++=jtincorp(jt,strs); *u++=jtincorp(jt,len); *u++=jtincorp(jt,fb); 
  ib=AV(base); as=AAV(strs); u=AAV(a);
- if(1==nf){memcpy(ib,AV(*u),SZI*3); memset(ib+3,C0,SZI*nc); DO(NMODVALS, *as++=incorp(u[i+1]);)}
- else DQ(nf, memcpy(ib,AV(*u),SZI*3); ib[3]=0; ib+=4; DO(NMODVALS, *as++=incorp(*(u++ +1));) ++u; )
+ if(1==nf){memcpy(ib,AV(*u),SZI*3); memset(ib+3,C0,SZI*nc); DO(NMODVALS, *as++=jtincorp(jt,u[i+1]);)}
+ else DQ(nf, memcpy(ib,AV(*u),SZI*3); ib[3]=0; ib+=4; DO(NMODVALS, *as++=jtincorp(jt,*(u++ +1));) ++u; )
  bits=BAV(fb);
  switch(CTTZNOFLAG(wt)) {
   case B01X:
@@ -365,7 +365,7 @@ static A jtfmtprecomp(J jt,A a,A w) {A*as,base,fb,len,strs,*u,z;B*bits,*bw;D dtm
         if(B01&wt) *iv=1+!!d+d;
         else {
          if(B01&wt) dtmp=1; if(INT&wt) dtmp=(D)*iw; else dtmp=*dw;
-         *iv=(I)jfloor(log10(jtroundID(jt,d,MAX(ABS(dtmp),1))));
+         *iv=(I)floor(log10(jtroundID(jt,d,MAX(ABS(dtmp),1))));
          if(mC) (*iv)+=(*iv)/3;
          (*iv)+=1+!!d+d;
          if(dtmp < 0 && mMN) (*iv)+=nMN;
@@ -404,7 +404,7 @@ static A jtfmtallcol(J jt, A a, A w, I mode) {A *a1v,base,fb,len,strs,*u,v,x;
     ib+=4; --imod; ib=(imod==0)?AV(base):ib; imod=(imod==0)?nf:imod;
     if(0<ib[0]) GATV0(*a1v, LIT, ib[0], 1)
     else GATV0(*a1v, LIT, *il, 1) 
-    incorp(*a1v); memset(CAV(*a1v), ' ', AN(*a1v)); 
+    jtincorp(jt,*a1v); memset(CAV(*a1v), ' ', AN(*a1v)); 
     a1v++; il++; 
    );
    break;
@@ -415,7 +415,7 @@ static A jtfmtallcol(J jt, A a, A w, I mode) {A *a1v,base,fb,len,strs,*u,v,x;
     if(0<ib[0]) zs[1]=ib[0]; 
     else zs[1]=ib[3+(1<nf?0:i)]; 
     GATVR(*a1v, LIT, zs[0]*zs[1], 2, zs);
-    incorp(*a1v); memset(CAV(*a1v), ' ', AN(*a1v)); 
+    jtincorp(jt,*a1v); memset(CAV(*a1v), ' ', AN(*a1v)); 
     *cvv++=CAV(*a1v);
     a1v++; if(1<nf) ib+=4; 
    );
@@ -516,12 +516,12 @@ static A jtfmtallcol(J jt, A a, A w, I mode) {A *a1v,base,fb,len,strs,*u,v,x;
 
 static A jtfmtxi(J jt, A a, A w, I mode, I *omode){I lvl;
  *omode=0;
- if((SPARSE&AT(w))!=0) RZ(w=denseit(w));
+ if((SPARSE&AT(w))!=0) RZ(w=jtdenseit(jt,w));
  if(!AN(w))       RZ(w=jtreshape(jt,shape(jt,w),chrspace));
  if(JCHAR&AT(w))  return df1(a,w,jtqq(jt,jtatop(jt,ds(CBOX),ds(CCOMMA)),num(1)));
  ASSERT(1>=AR(a), EVRANK); 
  ASSERT(!AN(a) || JCHAR+BOX&AT(a), EVDOMAIN);
- if(JCHAR&AT(a)||!AN(a)) RZ(a=fmtbfc(a));
+ if(JCHAR&AT(a)||!AN(a)) RZ(a=jtfmtbfc(jt,a));
  ASSERT(1>=AR(a), EVRANK);
  ASSERT(0==AR(a) || AN(a)==AS(w)[AR(w)-1], EVLENGTH);
  /* catch out-of-memory errors from dtoa.c */
@@ -547,8 +547,8 @@ static A jtfmtxi(J jt, A a, A w, I mode, I *omode){I lvl;
  RZ(z=fmtxi(a,w,1,&mode));
  if(mode==1)return z;
  r=AR(z);
- A t; df1(t,cant1(2==r?z:jtreshape(jt,jtv2(jt,1L,SETIC(z,j)),z)), jtqq(jt,jtatco(jt,ds(CBOX),ds(COPE)),num(1)));
- return ravel(t);
+ A t; df1(t,jtcant1(jt,2==r?z:jtreshape(jt,jtv2(jt,1L,SETIC(z,j)),z)), jtqq(jt,jtatco(jt,ds(CBOX),ds(COPE)),num(1)));
+ return jtravel(jt,t);
 } /* 8!:1 dyad */
 
  A jtfmt22(J jt,A a,A w){A z;I mode,r,j;
@@ -556,11 +556,11 @@ static A jtfmtxi(J jt, A a, A w, I mode, I *omode){I lvl;
  RZ(z=fmtxi(a,w,2,&mode));
  if(mode==2)return z;
  r=AR(z);
- A t; df1(t,cant1(2==r?z:jtreshape(jt,jtv2(jt,1L,SETIC(z,j)),z)), jtqq(jt,jtatco(jt,ds(CBOX),ds(COPE)),num(1)));
- RZ(z=ravel(t));
- return AS(z)[0]?razeh(z):lamin1(z);
+ A t; df1(t,jtcant1(jt,2==r?z:jtreshape(jt,jtv2(jt,1L,SETIC(z,j)),z)), jtqq(jt,jtatco(jt,ds(CBOX),ds(COPE)),num(1)));
+ RZ(z=jtravel(jt,t));
+ return AS(z)[0]?jtrazeh(jt,z):jtlamin1(jt,z);
 } /* 8!:2 dyad */
 
- A jtfmt01(J jt, A w){ return jtfmt02(jt,AR(w)?jtreshape(jt,sc(AS(w)[AR(w)-1]),ds(CACE)):ds(CACE),w);} /* 8!:0 monad */
- A jtfmt11(J jt, A w){ return jtfmt12(jt,AR(w)?jtreshape(jt,sc(AS(w)[AR(w)-1]),ds(CACE)):ds(CACE),w);} /* 8!:1 monad */
- A jtfmt21(J jt, A w){ return jtfmt22(jt,AR(w)?jtreshape(jt,sc(AS(w)[AR(w)-1]),ds(CACE)):ds(CACE),w);} /* 8!:2 monad */
+ A jtfmt01(J jt, A w){ return jtfmt02(jt,AR(w)?jtreshape(jt,jtsc(jt,AS(w)[AR(w)-1]),ds(CACE)):ds(CACE),w);} /* 8!:0 monad */
+ A jtfmt11(J jt, A w){ return jtfmt12(jt,AR(w)?jtreshape(jt,jtsc(jt,AS(w)[AR(w)-1]),ds(CACE)):ds(CACE),w);} /* 8!:1 monad */
+ A jtfmt21(J jt, A w){ return jtfmt22(jt,AR(w)?jtreshape(jt,jtsc(jt,AS(w)[AR(w)-1]),ds(CACE)):ds(CACE),w);} /* 8!:2 monad */

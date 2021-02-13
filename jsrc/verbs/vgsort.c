@@ -139,7 +139,7 @@ static A jtsortdirect(J jt,I m,I api,I n,A w){A x,z;I t;
    return (sortres==zv)?z:x;
   }else{
    // If there is more than one cell, we have to make sure all the data migrates to *zv, if it's not there already
-   if(sortres!=zv)MCL(zv,sortres,bps);
+   if(sortres!=zv)memcpy(zv,sortres,bps);
   }
   wv=(void*)((C*)wv+bps); zv=(void*)((C*)zv+bps);
  );
@@ -250,7 +250,7 @@ static A jtsorti1(J jt,I m,I n,A w){A x,y,z;I*wv;I i,*xv,*zv;void *yv;
 
 static A jtsortiq(J jt,I m,I n,A w){FPREFIP;  // m=#sorts, n=#items in each sort, w is block
  A z; 
- if(ASGNINPLACESGN(SGNIF((I)jtinplace,JTINPLACEWX),w))z=w; else RZ(z=ca(w));   // output area, possibly the same as the input
+ if(ASGNINPLACESGN(SGNIF((I)jtinplace,JTINPLACEWX),w))z=w; else RZ(z=jtca(jt,w));   // output area, possibly the same as the input
  I *zv=IAV(z); DQ(m, sortiq1(zv,n); if(jt->workareas.compare.complt>0){I *zv1=zv; I *zv2=zv+n; DQ(n>>1, I t=*zv1; *zv1++=*--zv2; *zv2=t;)} zv+=n;)  // sort each list (ascending); reverse if descending
  return z;
 }
@@ -336,7 +336,7 @@ static A jtsortu1(J jt,I m,I n,A w){A x,y,z;C4 *xu,*wv,*zu;I i;void *yv;
 
 static A jtsortdq(J jt,I m,I n,A w){FPREFIP;  // m=#sorts, n=#items in each sort, w is block
  A z; 
- if(ASGNINPLACESGN(SGNIF((I)jtinplace,JTINPLACEWX),w))z=w; else RZ(z=ca(w));   // output area, possibly the same as the input
+ if(ASGNINPLACESGN(SGNIF((I)jtinplace,JTINPLACEWX),w))z=w; else RZ(z=jtca(jt,w));   // output area, possibly the same as the input
  D *zv=DAV(z); DQ(m, sortdq1(zv,n); if(jt->workareas.compare.complt>0){D *zv1=zv; D *zv2=zv+n; DQ(n>>1, D t=*zv1; *zv1++=*--zv2; *zv2=t;)} zv+=n;)  // sort each list (ascending); reverse if descending
  return z;
 }
@@ -373,7 +373,7 @@ static A jtsortd(J jt,I m,I n,A w){FPREFIP;A x,y,z;B b;D*g,*h,*xu,*wv,*zu;I i,nn
 
 
 // x /:"r y, not sparse
- A jtgr2(J jt,A a,A w){F2PREFIP;PROLOG(0076);A z=0;I acr,api,d,f,m,n,*s,t,wcr; 
+ A jtgr2(J jt,A a,A w){FPREFIP;PROLOG(0076);A z=0;I acr,api,d,f,m,n,*s,t,wcr; 
  // ?cr= rank of the cells being sorted; t= type of w
  acr=jt->ranks>>RANKTX; acr=AR(a)<acr?AR(a):acr; 
  wcr=(RANKT)jt->ranks; wcr=AR(w)<wcr?AR(w):wcr; t=AT(w);
@@ -410,7 +410,7 @@ static A jtsortd(J jt,I m,I n,A w){FPREFIP;A x,y,z;B b;D*g,*h,*xu,*wv,*zu;I i,nn
  // If not a supported reflexive case, grade w and then select those values from a.  jt->ranks is still set
  if(!z){A t;
   I awflg=AFLAG(a);   // Remember original pristinity of a, before calling from which will clear it
-  RZ(t=gr1(w)); IRS2(t,a,0L,1L,acr,jtfrom,z); RZ(z);
+  RZ(t=jtgr1(jt,w)); IRS2(t,a,0L,1L,acr,jtfrom,z); RZ(z);
   // Boxed args will come through here.  Becuase no cell of a is repeated in the result, we know that if a is pristine,
   // the result will be too, as long as the frames have equal length (and thus must be equal).  If from chose to return virtual z,
   // a will now be non-inplaceable and z will be virtual but not inplaceable.

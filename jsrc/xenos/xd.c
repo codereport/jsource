@@ -83,7 +83,7 @@ static A jtdir1(J jt,struct dirent*f,struct stat *dirstatbuf,C *diratts, C *dirm
  RZ(zv[1]=vec(INT,6L,ts));
  sz=dirstatbuf[0].st_size;
  sz=sz<0?-1:sz;
- RZ(zv[2]=sc(sz));
+ RZ(zv[2]=jtsc(jt,sz));
  RZ(zv[3]=vec(LIT,3L, dirrwx ));
  RZ(zv[4]=vec(LIT, 6L,diratts));
  RZ(zv[5]=vec(LIT,10L,dirmode));
@@ -94,7 +94,7 @@ static A jtdir1(J jt,struct dirent*f,struct stat *dirstatbuf,C *diratts, C *dirm
  C diratts[7]; C dirmode[11];  C dirrwx[3];
  struct stat dirstatbuf[3];  // for some reason there were 2 dummy blocks reserved after the buffer for 32-bit Linux.  Preserve that
  C dirnamebuf[NPATH];  // workarea
- RZ(w=str0(vslit(!AR(w)&&BOX&AT(w)?ope(w):w)));
+ RZ(w=jtstr0(jt,jtvslit(jt,!AR(w)&&BOX&AT(w)?jtope(jt,w):w)));
  s=CAV(w);
  if(x=strrchr(s,'/')){dir=s==x?(C*)"/":s; pat=x+1; *x=0;}else{dir="."; pat=s;}
  if(NULL==(DP=opendir(dir)))return jtreshape(jt,jtv2(jt,0L,6L),ds(CACE));
@@ -112,7 +112,7 @@ static A jtdir1(J jt,struct dirent*f,struct stat *dirstatbuf,C *diratts, C *dirm
   f=readdir(DP);
  }
  closedir(DP);
- z=j?ope(j<n?vec(BOX,j,zv):z):jtreshape(jt,jtv2(jt,0L,6L),ds(CACE));
+ z=j?jtope(jt,j<n?vec(BOX,j,zv):z):jtreshape(jt,jtv2(jt,0L,6L),ds(CACE));
  EPILOG(z);
 }
 
@@ -125,8 +125,8 @@ static A jtdir1(J jt,struct dirent*f,struct stat *dirstatbuf,C *diratts, C *dirm
  A jtjfperm1(J jt, A w){A y;F f;C b[11];
  struct stat dirstatbuf[3];
  F1RANK(0,jtjfperm1,UNUSED_VALUE);
- RE(f=stdf(w)); if(f){RZ(y=fname(sc((I)f)));y=str0(y);} else ASSERT(y=str0(vslit(AAV(w)[0])),EVFNUM)
- if(0!=stat(CAV(y),dirstatbuf))return jerrno();
+ RE(f=jtstdf(jt,w)); if(f){RZ(y=jtfname(jt,jtsc(jt,(I)f)));y=jtstr0(jt,y);} else ASSERT(y=jtstr0(jt,jtvslit(jt,AAV(w)[0])),EVFNUM)
+ if(0!=stat(CAV(y),dirstatbuf))return jtjerrno(jt);
  return vec(LIT,9L,1+modebuf(dirstatbuf[0].st_mode,b));
 }
 
@@ -145,12 +145,12 @@ static const struct tperms {C*c;I p[4];} permtab[]=
 
  A jtjfperm2(J jt,A a,A w){A y;C*s;F f;int x=0,i;C*m;
  F2RANK(1,0,jtjfperm2,UNUSED_VALUE);
- RE(f=stdf(w)); if(f){RZ(y=fname(sc((I)f)));y=str0(y);} else ASSERT(y=str0(vslit(AAV(w)[0])),EVFNUM)
- RZ(a=vslit(a)); ASSERT(9==AN(a),EVLENGTH); s=CAV(a);
+ RE(f=jtstdf(jt,w)); if(f){RZ(y=jtfname(jt,jtsc(jt,(I)f)));y=jtstr0(jt,y);} else ASSERT(y=jtstr0(jt,jtvslit(jt,AAV(w)[0])),EVFNUM)
+ RZ(a=jtvslit(jt,a)); ASSERT(9==AN(a),EVLENGTH); s=CAV(a);
  for(i=0;i<9;i++)
     {ASSERT(NULL!=(m=strchr(permtab[i].c,s[i])),EVDOMAIN);
      x|=permtab[i].p[m-permtab[i].c];}
- return chmod(CAV(y),x)?jerrno():mtm;
+ return chmod(CAV(y),x)?jtjerrno(jt):mtm;
 }
 
 

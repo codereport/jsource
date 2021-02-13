@@ -37,13 +37,13 @@ static A jtastd1(J jt,A a,A z,A ind){A*iv,q,r,s,s1,*sv,x;B b;I ar,*as,d,j,m,n,*r
  GATV0(r,INT,zr,1); rv= AV(r);
  GATV0(s,BOX,zr,1); sv=AAV(s);
  m=0; j=n;
- DO(n, x=iv[i]; b=x==ds(CACE); m+=rv[i]=b?1:AR(x); RZ(sv[i]=b?sc(zs[i]):shape(jt,x));); 
- DQ(zr-n, rv[j]=1; RZ(sv[j]=sc(zs[j])); ++j;);
+ DO(n, x=iv[i]; b=x==ds(CACE); m+=rv[i]=b?1:AR(x); RZ(sv[i]=b?jtsc(jt,zs[i]):shape(jt,x));); 
+ DQ(zr-n, rv[j]=1; RZ(sv[j]=jtsc(jt,zs[j])); ++j;);
  d=m+zr-n; ASSERT(ar<=d,EVRANK);
- RZ(s1=raze(s)); s1v=AV(s1);
+ RZ(s1=jtraze(jt,s)); s1v=AV(s1);
  ASSERT(!ICMP(as,AV(s1)+d-ar,ar),EVLENGTH);
  if(ar<d)RZ(a=jtreshape(jt,s1,a));
- RZ(q=dgrade1(jteps(jt,jtrepeat(jt,r,IX(zr)),SPA(zp,a))));
+ RZ(q=jtdgrade1(jt,jteps(jt,jtrepeat(jt,r,IX(zr)),SPA(zp,a))));
  return jtequ(jt,q,IX(d))?a:jtcant2(jt,q,a);
 }    /* convert replacement array a into standard form relative to index list ind */
 
@@ -58,7 +58,7 @@ static A jtssel(J jt,A z,A ind){A a,*iv,p,q,x,y;B*b;I*av,c,i,j,m,n,*u,*v,*yv;P*z
   x=iv[j];
   if(x!=ds(CACE)){
    u=yv+i; DO(m, v[i]=b[i]?*u:-1; u+=c;);
-   RZ(p=jteps(jt,q,1<AR(x)?ravel(x):x)); b=BAV(p);
+   RZ(p=jteps(jt,q,1<AR(x)?jtravel(jt,x):x)); b=BAV(p);
  }}
  return p;
 }    /* which rows of the index matrix of z are selected by index list ind? */
@@ -79,7 +79,7 @@ static A jtdcube(J jt,A z,A i2){A*iv,x,y;I i,m,n,*s;P*zp;D rkblk[16];
  m=1; y=iv[n-1]; if(y==ds(CACE))RZ(y=IX(s[n-1]));
  for(i=n-2;0<=i;--i){
   m*=s[1+i]; x=iv[i];
-  A t; RZ(t=tymes(sc(m),x==ds(CACE)?IX(s[i]):x));
+  A t; RZ(t=tymes(jtsc(jt,m),x==ds(CACE)?IX(s[i]):x));
   RZ(y=ATOMIC2(jt,t,y,rkblk,0L, RMAX,CPLUS));
  }
  return y;
@@ -91,9 +91,9 @@ static A jtscuba(J jt,A z,A i1,B u){A*iv,q=0,x;I c,d,j,n,*s,*v;P*zp;
  iv=AAV(i1);  s=AS(z); zp=PAV(z); x=SPA(zp,a); v=AV(x);
  for(j=n-1;0<=j;--j){
   x=iv[j];
-  if(x==ds(CACE))RZ(x=IX(s[v[j]]))else{if(1<AR(x))RZ(x=ravel(x)); if(u)RZ(x=nub(x));}
+  if(x==ds(CACE))RZ(x=IX(s[v[j]]))else{if(1<AR(x))RZ(x=jtravel(jt,x)); if(u)RZ(x=jtnub(jt,x));}
   c=AN(x); 
-  if(q){d=*AS(q); RZ(q=jtstitch(jt,jtrepeat(jt,sc(d),x),jtreitem(jt,sc(c*d),q)));}
+  if(q){d=*AS(q); RZ(q=jtstitch(jt,jtrepeat(jt,jtsc(jt,d),x),jtreitem(jt,jtsc(jt,c*d),q)));}
   else RZ(q=jtreshape(jt,jtv2(jt,c,1L),x));
  }
  return q;
@@ -109,7 +109,7 @@ static A jtscubb(J jt,A z,A i1){A a,q,x,y;I c,d,h,j,*s,*v,*xv;P*zp;
  GATV0(x,INT,h,1); xv=AV(x); j=c; DO(h, xv[i]=s[v[j++]];);
  RZ(x=odom(2L,h,xv));
  c=*AS(q); d=*AS(x);
- return jtstitch(jt,jtrepeat(jt,sc(d),q),jtreitem(jt,sc(c*d),x));
+ return jtstitch(jt,jtrepeat(jt,jtsc(jt,d),q),jtreitem(jt,jtsc(jt,c*d),x));
 }    /* new rows for the index matrix of z for brand new cells */
 
 static A jtscubc(J jt,A z,A i1,A p){A a,q,s,y,y1;B*qv;I c,d,h,j=-1,m,n,*sv,*u,*v;P*zp;
@@ -123,7 +123,7 @@ static A jtscubc(J jt,A z,A i1,A p){A a,q,s,y,y1;B*qv;I c,d,h,j=-1,m,n,*sv,*u,*v
  if(m){memset(qv,C0,m); DO(m-1, if(ICMP(v,v+n,n)){if(d>i-j)qv[i]=1; j=i;} v+=n;); if(d>(m-1)-j)qv[m-1]=1;}
  RZ(y1=jtrepeat(jt,q,y1)); c=*AS(y1);
  if(!c)return mtm;
- return jtless(jt,jtstitch(jt,jtrepeat(jt,sc(d),y1),jtreitem(jt,sc(c*d),odom(2L,h,sv))),y);
+ return jtless(jt,jtstitch(jt,jtrepeat(jt,jtsc(jt,d),y1),jtreitem(jt,jtsc(jt,c*d),odom(2L,h,sv))),y);
 }    /* new rows for the index matrix of z for existing cells */
 
 static A jtscube(J jt,A z,A i1,A p){A a,y;P*zp;
@@ -154,7 +154,7 @@ static A jtzpad1(J jt,A z,A t,B ip){A q,s,x,x0,y,y0;I m;P*zp;
  RZ(z&&t);
  if(m=*AS(t)){  /* new cells being added */
   zp=PAV(z);  
-  y0=SPA(zp,i); RZ(y=jtover(jt,y0,t)); RZ(q=grade1(y)); RZ(y=jtfrom(jt,q,y));
+  y0=SPA(zp,i); RZ(y=jtover(jt,y0,t)); RZ(q=jtgrade1(jt,y)); RZ(y=jtfrom(jt,q,y));
   x0=SPA(zp,x); RZ(s=shape(jt,x0)); *AV(s)=m; RZ(x=jtfrom(jt,q,jtover(jt,x0,jtreshape(jt,s,SPA(zp,e)))));
   // if z is assigned to a name, the use counts need to be adjusted: the old ones need to be decremented
   // to remove the assignment, and the new ones need to be incremented to prevent them from being freed
@@ -206,5 +206,5 @@ A jtam1a(J jt,A a,A z,A ind,B ip){A a0=a,a1,e,i1,i2,t,x,y;C*u,*v,*xv;I ar,c,*iv,
  return z;
 }    /* a (<ind)}z; sparse z; ind is index list; arbitrary dense array a replacement */
 
-A jtam1sp(J jt,A a,A z,A ind,B ip){return amnsp(a,z,ope(catalog(jtistd1(jt,z,ind))),ip);}
+A jtam1sp(J jt,A a,A z,A ind,B ip){return amnsp(a,z,jtope(jt,jtcatalog(jt,jtistd1(jt,z,ind))),ip);}
      /* a (<ind)}z; sparse z; ind is index list; arbitrary sparse array a replacement */

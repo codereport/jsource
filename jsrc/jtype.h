@@ -379,11 +379,11 @@ enum {
 // ADV    0101
 // VERB   1101
 // ASGN   xy10    x=ASGNLOCAL y=ASGNTONAME
-// CONW   0100    must be allocated by GAF, & not be copied, unless ca() is modified to use length not type
+// CONW   0100    must be allocated by GAF, & not be copied, unless jtca(jt,) is modified to use length not type
 // SYMB   1100
 // NAME   100v    v=NAMEBYVALUE
-// RPAR   0011    must be allocated by GAF, & not be copied, unless ca() is modified to use length not type
-// LPAR   1011    must be allocated by GAF, & not be copied, unless ca() is modified to use length not type
+// RPAR   0011    must be allocated by GAF, & not be copied, unless jtca(jt,) is modified to use length not type
+// LPAR   1011    must be allocated by GAF, & not be copied, unless jtca(jt,) is modified to use length not type
 
 #define ANY             -1L
 #define SPARSE          (SB01+SINT+SFL+SCMPX+SLIT+SBOX)
@@ -459,12 +459,12 @@ enum {
 #define ACISPERM(c)     ((I)((UI)(c)+(UI)(c))<0)  // is PERMANENT bit set?
 #define SGNIFPRISTINABLE(c) ((c)+ACPERMANENT)  // sign is set if this block is OK in a PRISTINE boxed noun
 // same, but s is an expression that is neg if it's OK to inplace
-#define ASGNINPLACESGN(s,w)  (((s)&AC(w))<0 || ((s)&(AC(w)-2))<0 &&jt->assignsym&&jt->assignsym->val==w&&(!(AFLAG(w)&AFRO+AFNVR)||(!(AFLAG(w)&AFRO)&&notonupperstack(w))))  // OK to inplace ordinary operation
-#define ASGNINPLACESGNNJA(s,w)  ( ((s)&AC(w))<0 || (((s)&(AC(w)-2))<0||(((s)&(AC(w)-3)&SGNIF(AFLAG(w),AFNJAX))<0))&&jt->assignsym&&jt->assignsym->val==w&&(!(AFLAG(w)&AFRO+AFNVR)||(!(AFLAG(w)&AFRO)&&notonupperstack(w))))  // OK to inplace ordinary operation
+#define ASGNINPLACESGN(s,w)  (((s)&AC(w))<0 || ((s)&(AC(w)-2))<0 &&jt->assignsym&&jt->assignsym->val==w&&(!(AFLAG(w)&AFRO+AFNVR)||(!(AFLAG(w)&AFRO)&&jtnotonupperstack(jt,w))))  // OK to inplace ordinary operation
+#define ASGNINPLACESGNNJA(s,w)  ( ((s)&AC(w))<0 || (((s)&(AC(w)-2))<0||(((s)&(AC(w)-3)&SGNIF(AFLAG(w),AFNJAX))<0))&&jt->assignsym&&jt->assignsym->val==w&&(!(AFLAG(w)&AFRO+AFNVR)||(!(AFLAG(w)&AFRO)&&jtnotonupperstack(jt,w))))  // OK to inplace ordinary operation
 // define virtreqd and set it to 0 to start   scaf no LIT B01 C2T etc
 // This is used in apip.  We must ALWAYS allow inplacing for NJA types, but for ordinary inplacing we don't bother if the number of atoms of w pushes a over a power-of-2 boundary
 // We don't try to help the non-NVR case because NJAs will always be globals and thus have NVR set
-#define EXTENDINPLACENJA(a,w)  ( ((AC(a)&(((AN(a)+AN(w))^AN(a))-AN(a)))<0) || ((((AC(a)-2)&(((AN(a)+AN(w))^AN(a))-AN(a)))<0)||(AC(a)==2&&AFLAG(a)&AFNJA))&&((jt->assignsym&&jt->assignsym->val==a&&!(AFLAG(a)&AFRO))||(!jt->assignsym&&(virtreqd=1,!(AFLAG(a)&(AFRO|AFVIRTUAL)))))&&notonupperstack(a))  // OK to inplace ordinary operation
+#define EXTENDINPLACENJA(a,w)  ( ((AC(a)&(((AN(a)+AN(w))^AN(a))-AN(a)))<0) || ((((AC(a)-2)&(((AN(a)+AN(w))^AN(a))-AN(a)))<0)||(AC(a)==2&&AFLAG(a)&AFNJA))&&((jt->assignsym&&jt->assignsym->val==a&&!(AFLAG(a)&AFRO))||(!jt->assignsym&&(virtreqd=1,!(AFLAG(a)&(AFRO|AFVIRTUAL)))))&&jtnotonupperstack(jt,a))  // OK to inplace ordinary operation
 
 /* Values for AFLAG(x) field of type A                                     */
 // the flags defined here must be mutually exclusive with TRAVERSIBLE

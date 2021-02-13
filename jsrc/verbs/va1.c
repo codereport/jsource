@@ -12,40 +12,40 @@ static AMONPS(floorDI,I,D,
  {if(((fbits=*(UI*)x)&0x7fffffffffffffff)<0x43c0000000000000){I neg=SGNTO0((*(UI*)x)-SGNTO0(*(UI*)x)); *z=(I)(*x*mplrs[neg])-neg;}  // -0 is NOT neg; take everything up to +-2^61
   // if there is a value above 2^61, encode it by setting bit 62 to the opposite of bit 63 (we know bit 62 was 1 originally).  Remember the fact that we need a correction pass.
   // See if the value must be promoted to floating-point in the correction pass.  Return value of EWOVFLOOR0 if there are values all of which fit in an integer, EWOVFLOOR1 if float is required
-  else{rc|=EWOVFLOOR0; D d=tfloor(*x); *z=fbits^(SGNTO0(fbits)<<(BW-2)); if(d!=(I)d)rc|=EWOVFLOOR1;} } ,  // we use DQ; i is n-1-reali, ~i = (reali-n+1)-1 = i-n
+  else{rc|=EWOVFLOOR0; D d=jttfloor(jt,*x); *z=fbits^(SGNTO0(fbits)<<(BW-2)); if(d!=(I)d)rc|=EWOVFLOOR1;} } ,  // we use DQ; i is n-1-reali, ~i = (reali-n+1)-1 = i-n
   return rc?rc:EVOK;
  ; )  // x100 0011 1100 =>2^61
-static AMON(floorD, D,D, *z=tfloor(*x);)
-static AMON(floorZ, Z,Z, *z=zfloor(*x);)
+static AMON(floorD, D,D, *z=jttfloor(jt,*x);)
+static AMON(floorZ, Z,Z, *z=jtzfloor(jt,*x);)
 
 static AMONPS(ceilDI,I,D,
  I rc=0; UI fbits; D mplrs[2]; mplrs[0]=2.0-jt->cct; mplrs[1]=jt->cct-0.00000000000000011; ,
  {if(((fbits=*(UI*)x)&0x7fffffffffffffff)<0x43c0000000000000){I pos=SGNTO0((0-*(UI*)x)-SGNTO0(0-*(UI*)x)); *z=(I)(*x*mplrs[pos])+pos;}  // 0 is NOT pos; take everything up to +-2^61
   // if there is a value above 2^61, encode it by setting bit 62 to the opposite of bit 63 (we know bit 62 was 1 originally).  Remember the fact that we need a correction pass.
   // See if the value must be promoted to floating-point in the correction pass.  Return value of -2 if there are values all of which fit in an integer, -3 if float is required
-  else{rc|=EWOVFLOOR0; D d=tceil(*x); *z=fbits^(SGNTO0(fbits)<<(BW-2)); if(d!=(I)d)rc|=EWOVFLOOR1;} } ,  // we use DQ; i is n-1-reali, ~i = (reali-n+1)-1 = i-n
+  else{rc|=EWOVFLOOR0; D d=jttceil(jt,*x); *z=fbits^(SGNTO0(fbits)<<(BW-2)); if(d!=(I)d)rc|=EWOVFLOOR1;} } ,  // we use DQ; i is n-1-reali, ~i = (reali-n+1)-1 = i-n
   return rc?rc:EVOK;
  ; )  // x100 0011 1100 =>2^61
-static AMON(ceilD,  D,D, *z=tceil(*x);)
-static AMON(ceilZ,  Z,Z, *z=zceil(*x);)
+static AMON(ceilD,  D,D, *z=jttceil(jt,*x);)
+static AMON(ceilZ,  Z,Z, *z=jtzceil(jt,*x);)
 
-static AMON(cjugZ,  Z,Z, *z=zconjug(*x);)
+static AMON(cjugZ,  Z,Z, *z=jtzconjug(jt,*x);)
 
 static AMON(sgnI,   I,I, I xx=*x; *z=REPSGN(xx)|SGNTO0(-xx);)
 static AMON(sgnD,   I,D, *z=((1.0-jt->cct)<=*x) - (-(1.0-jt->cct)>=*x);)
-static AMONPS(sgnZ,   Z,Z, , if((1.0-jt->cct)>zmag(*x))*z=zeroZ; else *z=ztrend(*x); , HDR1JERR)
+static AMONPS(sgnZ,   Z,Z, , if((1.0-jt->cct)>zmag(*x))*z=zeroZ; else *z=jtztrend(jt,*x); , HDR1JERR)
 
 static AMON(sqrtI,  D,I, ASSERTWR(0<=*x,EWIMAG); *z=sqrt((D)*x);)
 
 static AMONPS(sqrtD,  D,D, I ret=EVOK; , if(*x>=0)*z=sqrt(*x);else{*z=-sqrt(-*x); ret=EWIMAG;}, return ret;)  // if input is negative, leave sqrt as negative
 static AMON(absD,   I,I, *z= *x&0x7fffffffffffffff;)
-static AMON(sqrtZ,  Z,Z, *z=zsqrt(*x);)
+static AMON(sqrtZ,  Z,Z, *z=jtzsqrt(jt,*x);)
 
 static AMON(expB,   D,B, *z=*x?2.71828182845904523536:1;)
-static AMONPS(expZ, Z,Z, , *z=zexp(*x); , HDR1JERR)
+static AMONPS(expZ, Z,Z, , *z=jtzexp(jt,*x); , HDR1JERR)
 
 static AMON(logB,   D,B, *z=*x?0:infm;)
-static AMON(logZ,   Z,Z, *z=zlog(*x);)
+static AMON(logZ,   Z,Z, *z=jtzlog(jt,*x);)
 
 static AMONPS(absI,   I,I, I vtot=0; , I val=*x; val=(val^REPSGN(val))-REPSGN(val); vtot |= val; *z=val; , return vtot<0?EWOV:EVOK;)
 static AMONPS(absZ,   D,Z, , *z=zmag(*x); , HDR1JERR)
@@ -85,8 +85,8 @@ static A jtva1s(J jt,A w,A self,I cv,VA1F ado){A e,x,z,ze,zx;B c;I n,oprc,t,zt;P
   jt->jerr=(UC)oprc; RZ(zx=jtva1(jtinplace,x,self));   // restore restart signal for the main data too
  }else if(cv&VRI+VRD){RZ(ze=jtcvz(jt,cv,ze)); RZ(zx=jtcvz(jt,cv,zx));}
  GASPARSE(z,STYPE(AT(ze)),1,AR(w),AS(w)); zp=PAV(z);
- SPB(zp,a,ca(SPA(wp,a)));
- SPB(zp,i,ca(SPA(wp,i)));
+ SPB(zp,a,jtca(jt,SPA(wp,a)));
+ SPB(zp,i,jtca(jt,SPA(wp,i)));
  SPB(zp,e,ze);
  SPB(zp,x,zx);
  return z;
@@ -96,7 +96,7 @@ static A jtva1s(J jt,A w,A self,I cv,VA1F ado){A e,x,z,ze,zx;B c;I n,oprc,t,zt;P
 
 static A jtva1(J jt,A w,A self){A z;I cv,n,t,wt,zt;VA1F ado;
  UA *u=(UA *)FAV(self)->localuse.lvp[1];
- F1PREFIP;
+ FPREFIP;
  wt=AT(w); n=AN(w); wt=(I)jtinplace&JTEMPTY?B01:wt;
  VA1 *p=&u->p1[(0x0321000054032100>>(CTTZ(wt)<<2))&7];  // from MSB, we need xxx 011 010 001 xxx 000 xxx xxx   101 100 xxx 011 010 001 xxx 000
  ASSERT(wt&NUMERIC,EVDOMAIN);
@@ -138,14 +138,14 @@ static A jtva1(J jt,A w,A self){A z;I cv,n,t,wt,zt;VA1F ado;
   // float floor: unconvertable cases are stored with bit 63 and bit 62 unlike; restore the float value by setting bit 62.
   // if bit 0 of oprc is 1, values must be converted to float; if 0, they can be left as int
   if(VIP64&&ado==floorDI){A zz=z;
-   if(!(oprc&1)){I *zv=IAV(z); DQ(n, I bits=*(I*)zv; if((bits^SGNIF(bits,BW-2))<0){bits|=0x4000000000000000; *zv=(I)tfloor(*(D*)&bits);} ++zv;)}  // convert overflows, turn back to integer
-   else{MODBLOCKTYPE(zz,FL) I *zv=IAV(z); D *zzv=DAV(zz); DQ(n, I bits=*(I*)zv++; if((bits^SGNIF(bits,BW-2))>=0)*zzv=(D)bits;else{bits|=0x4000000000000000; *zzv=tfloor(*(D*)&bits);} ++zzv;)}   // force float conversion
+   if(!(oprc&1)){I *zv=IAV(z); DQ(n, I bits=*(I*)zv; if((bits^SGNIF(bits,BW-2))<0){bits|=0x4000000000000000; *zv=(I)jttfloor(jt,*(D*)&bits);} ++zv;)}  // convert overflows, turn back to integer
+   else{MODBLOCKTYPE(zz,FL) I *zv=IAV(z); D *zzv=DAV(zz); DQ(n, I bits=*(I*)zv++; if((bits^SGNIF(bits,BW-2))>=0)*zzv=(D)bits;else{bits|=0x4000000000000000; *zzv=jttfloor(jt,*(D*)&bits);} ++zzv;)}   // force float conversion
    return zz;
   }
   // float ceil, similarly
   if(VIP64&&ado==ceilDI){A zz=z;
-   if(!(oprc&1)){I *zv=IAV(z); DQ(n, I bits=*(I*)zv; if((bits^SGNIF(bits,BW-2))<0){bits|=0x4000000000000000; *zv=(I)tceil(*(D*)&bits);} ++zv;)}  // convert overflows, turn back to integer
-   else{MODBLOCKTYPE(zz,FL) I *zv=IAV(z); D *zzv=DAV(zz); DQ(n, I bits=*(I*)zv++; if((bits^SGNIF(bits,BW-2))>=0)*zzv=(D)bits;else{bits|=0x4000000000000000; *zzv=tceil(*(D*)&bits);} ++zzv;)}   // force float conversion
+   if(!(oprc&1)){I *zv=IAV(z); DQ(n, I bits=*(I*)zv; if((bits^SGNIF(bits,BW-2))<0){bits|=0x4000000000000000; *zv=(I)jttceil(jt,*(D*)&bits);} ++zv;)}  // convert overflows, turn back to integer
+   else{MODBLOCKTYPE(zz,FL) I *zv=IAV(z); D *zzv=DAV(zz); DQ(n, I bits=*(I*)zv++; if((bits^SGNIF(bits,BW-2))>=0)*zzv=(D)bits;else{bits|=0x4000000000000000; *zzv=jttceil(jt,*(D*)&bits);} ++zzv;)}   // force float conversion
    return zz;
   }
 
@@ -159,7 +159,7 @@ static A jtva1(J jt,A w,A self){A z;I cv,n,t,wt,zt;VA1F ado;
 // Consolidated entry point for ATOMIC1 verbs.
 // This entry point supports inplacing
  A jtatomic1(J jt,    A w,A self){A z;
- F1PREFIP;
+ FPREFIP;
  if(!w) return 0;
  I awm1=AN(w)-1;
  // check for singletons
@@ -179,4 +179,4 @@ static A jtva1(J jt,A w,A self){A z;I cv,n,t,wt,zt;VA1F ado;
  }
 }
 
- A jtpix   (J jt,    A w,A self){F1PREFIP; if(XNUM&AT(w)&&(jt->xmode==XMFLR||jt->xmode==XMCEIL))return jtatomic1(jtinplace,w,self); return jtatomic2(jtinplace,pie,w,ds(CSTAR));}
+ A jtpix   (J jt,    A w,A self){FPREFIP; if(XNUM&AT(w)&&(jt->xmode==XMFLR||jt->xmode==XMCEIL))return jtatomic1(jtinplace,w,self); return jtatomic2(jtinplace,pie,w,ds(CSTAR));}

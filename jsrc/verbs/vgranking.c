@@ -86,8 +86,8 @@ static A jtrankingb(J jt,A w,I wf,I wcr,I m,I n,I k){A z;C*wv;I i,j,p,t,*zv;TTYP
  wt=AT(w); wv=CAV(w); wn=AN(w);
  ws=AS(w); SETICFR(w,wf,wcr,n);   // n=#cells in w; m is number of atoms in w
  if(wn){PROD(m,wf,ws);}  // If there are atoms, calculate result-shape the fast way
- else{RE(m=jtprod(jt,wf,ws)); return m?jtreitem(jt,vec(INT,wf,ws),iota(jtv2(jt,1L,n))):jtreshape(jt,vec(INT,1+wf,ws),num(0));}
- PROD1(icn,wcr-1,ws+wf+1); k=icn<<bplg(wt);  // wk=size of atom in bytes; icn=# atoms in an item of a cell  k = *bytes in an item of a CELL of w
+ else{RE(m=jtprod(jt,wf,ws)); return m?jtreitem(jt,vec(INT,wf,ws),jtiota(jt,jtv2(jt,1L,n))):jtreshape(jt,vec(INT,1+wf,ws),num(0));}
+ PROD(icn,wcr-1,ws+wf+1); k=icn<<bplg(wt);  // wk=size of atom in bytes; icn=# atoms in an item of a cell  k = *bytes in an item of a CELL of w
  // if Boolean 2- or 4-byte, go off to handle that special case
  if(wt&B01&&(k==2||k==sizeof(int)))return rankingb(w,wf,wcr,m,n,k);
  // See if the values qualify for small-range processing

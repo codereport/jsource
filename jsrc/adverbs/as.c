@@ -159,12 +159,12 @@ static A jtgsuffix(J jt,    A w,A self){A h,*hv,z,*zv;I m,n,r;
  SETIC(w,n); 
  h=VAV(self)->fgh[2]; hv=AAV(h); m=AN(h);
  GATV0(z,BOX,n,1); zv=AAV(z); I imod=0;
- DO(n, imod=(imod==m)?0:imod; RZ(zv[i]=df1(h,jtdrop(jt,sc(i),w),hv[imod])); ++imod;);
- return ope(z);
+ DO(n, imod=(imod==m)?0:imod; RZ(zv[i]=df1(h,jtdrop(jt,jtsc(jt,i),w),hv[imod])); ++imod;);
+ return jtope(jt,z);
 }    /* g\."r w for gerund g */
 
 
-static A jtssg(J jt,    A w,A self){F1PREFIP;PROLOG(0020);A a,z;I i,n,r,wr;
+static A jtssg(J jt,    A w,A self){FPREFIP;PROLOG(0020);A a,z;I i,n,r,wr;
  ASSERT(DENSE&AT(w),EVNONCE);
  // loop over rank - we claim to handle IRS
  wr=AR(w); r=(RANKT)jt->ranks; r=wr<r?wr:r; RESETRANK; if(r<wr)return rank1ex(w,self,r,jtssg);
@@ -250,7 +250,7 @@ A jtscansp(J jt,A w,A self,AF sf){A e,ee,x,z;B*b;I f,m,j,r,t,wr;P*wp,*zp;
  wr=AR(w); r=(RANKT)jt->ranks; r=wr<r?wr:r; RESETRANK; f=wr-r;
  wp=PAV(w); e=SPA(wp,e); RZ(ee=jtover(jt,e,e));
  if(!jtequ(jt,ee,CALL1(sf,ee,self))){
-  RZ(x=denseit(w));
+  RZ(x=jtdenseit(jt,w));
   return IRS1(x,self,r,sf,z);
  }else{
   RZ(b=bfi(wr,SPA(wp,a),1));
@@ -264,20 +264,20 @@ A jtscansp(J jt,A w,A self,AF sf){A e,ee,x,z;B*b;I f,m,j,r,t,wr;P*wp,*zp;
  zp=PAV(z); 
  SPB(zp,e,e); 
  SPB(zp,x,x); 
- SPB(zp,i,ca(SPA(wp,i))); 
- SPB(zp,a,ca(SPA(wp,a)));
+ SPB(zp,i,jtca(jt,SPA(wp,i))); 
+ SPB(zp,a,jtca(jt,SPA(wp,a)));
  return z;
 }    /* f/\"r or f/\."r on sparse w */
 
 static A jtsscan(J jt,    A w,A self){A y,z;I d,f,m,n,r,t,wn,wr,*ws,wt;
- F1PREFIP;
+ FPREFIP;
  if(!w) return 0;
  wt=AT(w);
  if((SPARSE&wt)!=0)return scansp(w,self,jtsscan);
  wn=AN(w); wr=AR(w); r=(RANKT)jt->ranks; r=wr<r?wr:r; f=wr-r; ws=AS(w); RESETRANK;
- PROD(m,f,ws); PROD1(d,r-1,f+ws+1); I *nn=&ws[f]; nn=r?nn:&I1mem; n=*nn;   // will not be used if WN==0, so PROD ok.  n is # items along the selected rank
+ PROD(m,f,ws); PROD(d,r-1,f+ws+1); I *nn=&ws[f]; nn=r?nn:&I1mem; n=*nn;   // will not be used if WN==0, so PROD ok.  n is # items along the selected rank
  y=FAV(self)->fgh[0]; // y is f/
- if(((n-2)|(wn-1))<0){if(FAV(FAV(y)->fgh[0])->flag&VISATOMIC2){return r?RETARG(w):jtreshape(jt,apip(shape(jt,w),zeroionei(1)),w);}else return IRS1(w,self,r,jtsuffix,z);}  // if empty arg, or just 1 cell in selected axis, convert to f/\ which handles the short arg
+ if(((n-2)|(wn-1))<0){if(FAV(FAV(y)->fgh[0])->flag&VISATOMIC2){return r?w:jtreshape(jt,apip(shape(jt,w),zeroionei(1)),w);}else return IRS1(w,self,r,jtsuffix,z);}  // if empty arg, or just 1 cell in selected axis, convert to f/\ which handles the short arg
 
    // note that the above line always takes the r==0 case
  VARPS adocv; varps(adocv,self,wt,2);  // analyze f - get suffix routine
@@ -286,14 +286,14 @@ static A jtsscan(J jt,    A w,A self){A y,z;I d,f,m,n,r,t,wn,wr,*ws,wt;
  if((t=atype(adocv.cv))&&TYPESNE(t,wt))RZ(w=jtcvt(jt,t,w));
  if(ASGNINPLACESGN(SGNIF((I)jtinplace,JTINPLACEWX)&SGNIF(adocv.cv,VIPOKWX),w))z=w; else GA(z,rtype(adocv.cv),wn,wr,ws);
  I rc=((AHDRSFN*)adocv.f)(d,n,m,AV(w),AV(z),jt);
- if(rc&255){jsignal(rc); return jt->jerr>=EWOV?IRS1(w,self,r,jtsscan,z):0;} else return adocv.cv&VRI+VRD?jtcvz(jt,adocv.cv,z):z;
+ if(rc&255){jtjsignal(jt,rc); return jt->jerr>=EWOV?IRS1(w,self,r,jtsscan,z):0;} else return adocv.cv&VRI+VRD?jtcvz(jt,adocv.cv,z):z;
 }    /* f/\."r w main control */
 
 
 static A jtomask(J jt,A a,A w){A c,r,x,y;I m,n,p;
- RE(m=i0(a)); p=ABS(m); SETIC(w,n);
- r=sc(0>m?(n+p-1)/p:MAX(0,1+n-m)); c=tally(jt, w);
- x=jtreshape(jt,sc(p),  num(0));
+ RE(m=jti0(jt,a)); p=ABS(m); SETIC(w,n);
+ r=jtsc(jt,0>m?(n+p-1)/p:MAX(0,1+n-m)); c=tally(jt, w);
+ x=jtreshape(jt,jtsc(jt,p),  num(0));
  y=jtreshape(jt,0>m?c:r,num(1) );
  return reshapeW(jtover(jt,r,c),jtover(jt,x,y));
 }
@@ -303,8 +303,8 @@ static A jtgoutfix(J jt,A a,A w,A self){A h,*hv,x,z,*zv;I m,n;
  SETIC(x,n);
  h=VAV(self)->fgh[2]; hv=AAV(h); m=AN(h);
  GATV0(z,BOX,n,1); zv=AAV(z); I imod=0;
- DO(n, imod=(imod==m)?0:imod; RZ(zv[i]=df1(h,jtrepeat(jt,jtfrom(jt,sc(i),x),w),hv[imod])); ++imod;);
- return ope(z);
+ DO(n, imod=(imod==m)?0:imod; RZ(zv[i]=df1(h,jtrepeat(jt,jtfrom(jt,jtsc(jt,i),x),w),hv[imod])); ++imod;);
+ return jtope(jt,z);
 }
 
 static AS2(jtoutfix, eachl(jtomask(jt,a,w),w,jtatop(jt,fs,ds(CPOUND))),0117)
@@ -313,21 +313,21 @@ static A jtofxinv(J jt,A a,A w,A self){A f,fs,z;C c;I t;V*v;
  F2RANKW(0,RMAX,jtofxinv,self);
  fs=FAV(self)->fgh[0]; f=FAV(fs)->fgh[0]; v=FAV(f); c=v->id; t=AT(w);  // self = f/\. fs = f/  f = f  v = verb info for f
  if(!(c==CPLUS||c==CBDOT&&t&INT||((c&-2)==CEQ)&&t&B01))return outfix(a,w,self);  // if not +/\. or m b./\. or =/\. or ~:/\.
- A z0,z1; z=irs2(df1(z0,w,fs),df2(z1,a,w,bslash(fs)),c==CPLUS?ds(CMINUS):f, RMAX,-1L,jtatomic2);
+ A z0,z1; z=irs2(df1(z0,w,fs),df2(z1,a,w,jtbslash(jt,fs)),c==CPLUS?ds(CMINUS):f, RMAX,-1L,jtatomic2);
  if(jt->jerr==EVNAN){RESETERR; return outfix(a,w,self);}else return z;
 }    /* a f/\. w where f has an "undo" */
 
 static A jtofxassoc(J jt,A a,A w,A self){A f,i,j,p,s,x,z;C id,*zv;I c,d,k,kc,m,r,t;V*v;VA2 adocv;
  F2RANKW(0,RMAX,jtofxassoc,self);
- SETIC(w,m); RE(k=i0(a)); c=ABS(k);  // m = # items in w; k is value of a; c is # items per suffix
+ SETIC(w,m); RE(k=jti0(jt,a)); c=ABS(k);  // m = # items in w; k is value of a; c is # items per suffix
  f=FAV(self)->fgh[0]; x=FAV(f)->fgh[0]; v=FAV(x); id=CBDOT==v->id?(C)AV(v->fgh[1])[0]:v->id;  // self = f/\. f = f/  x = f  v = verb info for f
  if(k==IMIN||m<=c||id==CSTARDOT&&!(B01&AT(w)))return outfix(a,w,self);  // if there is not >1 outfix, do general code which handles empties
  if(-1<=k){d=m-c;     RZ(i=IX(d)); RZ(j=apv(d,c,1L));}
  else     {d=(m-1)/c; RZ(i=apv(d,c-1,c )); RZ(j=apv(d,c,c ));}
  // d is (number of result cells)-1; i is indexes of last item of the excluded infix for cells AFTER the first
  // j is indexes of first item AFTER the excluded infix for cells BEFORE the last
- RZ(p=jtfrom(jt,i,df1(z,w,bslash(f)))); // p is i { u\ w; that is, the totals of the prefixes after the first
- RZ(s=jtfrom(jt,j,df1(z,w,bsdot(f))));  // s is j { u\. w; totals of suffixes except the last
+ RZ(p=jtfrom(jt,i,df1(z,w,jtbslash(jt,f)))); // p is i { u\ w; that is, the totals of the prefixes after the first
+ RZ(s=jtfrom(jt,j,df1(z,w,jtbsdot(jt,f))));  // s is j { u\. w; totals of suffixes except the last
  // We need to make sure that p, s, and (p f s) all have the same type.  This is problematic, since we don't actually see
  // the type of (p f s) which is encoded in cv below.  But since this case is limited to atomic associative verbs, we
  // know that if p and s have the same type, p f s will also, except that it might overflow, which we will detect after we
@@ -347,7 +347,7 @@ static A jtofxassoc(J jt,A a,A w,A self){A f,i,j,p,s,x,z;C id,*zv;I c,d,k,kc,m,r
   // We also have to redo if the types of p and s were different (for example, if one overflowed to float and the other didn't)
  }
  if((rc&255)>=EWOV){ return ofxassoc(a,jtcvt(jt,FL,w),self);}
- if(rc)jsignal(rc);  // if there was an error, signal it
+ if(rc)jtjsignal(jt,rc);  // if there was an error, signal it
  return z;
 }    /* a f/\. w where f is an atomic associative fn */
 

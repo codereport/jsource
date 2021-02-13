@@ -23,10 +23,10 @@ I levelle(A w,I l){
  return 1;  // if it never gets big enough, say so, keep looking
 }
 
- A jtlevel1(J jt, A w){ return sc(level(w));}
+ A jtlevel1(J jt, A w){ return jtsc(jt,level(w));}
 
  A jtbox(J jt, A w){A y,z,*zv;C*wv;I f,k,m,n,r,wr,*ws; 
- F1PREFIP;
+ FPREFIP;
  if(!w) return 0;
  I wt=AT(w); FLAGT waf=AFLAG(w);
  ASSERT(!(SPARSE&wt),EVNONCE);
@@ -55,23 +55,22 @@ I levelle(A w,I l){
   // To avoid the tstack overhead, we switch the tpush pointer to our data area, so that blocks are filled in as they are allocated, with nothing put
   // onto the real tpop stack.  If we hit an error, that's OK, because whatever we did get allocated will be freed when the result block is freed.  We use GAE so that we don't abort on error
   A *pushxsave = jt->tnextpushp; jt->tnextpushp=AAV(z);  // save tstack info before allocation
-  JMCDECL(endmask) JMCSETMASK(endmask,k+SZI-1,0)   // set mask for JMCR - OK to copy SZIs
   DQ(n, GAE(y,wt,m,r,f+ws,break); JMCR(CAV(y),wv,k+SZI-1,lp000,0,endmask); wv+=k; AC(y)=ACUC1; if(wt&RECURSIBLE){AFLAG(y)=wt; jtra(y,wt);});   // allocate, but don't grow the tstack.  Set usecount of cell to 1.  ra0() if recursible.  Put allocated addr into *jt->tnextpushp++
 
 
   jt->tnextpushp=pushxsave;   // restore tstack pointer
   //   Since we are copying contents of w, it must lose PRISTINE status if it is boxed
   PRISTCLRF(w);  // destroys w
-  ASSERT(y!=0,EVWSFULL);  // if we broke out an allocation failure, fail.  Since the block is recursive, when it is tpop()d it will recur to delete contents
+  ASSERT(y!=0,EVWSFULL);  // if we broke out an allocation failure, fail.  Since the block is recursive, when it is jttpop(jt,)d it will recur to delete contents
  }
  return z;
 }    /* <"r w */
 
- A jtboxopen(J jt, A w){F1PREFIP; if((-AN(w)&-(AT(w)&BOX+SBOX))>=0){w = jtbox(jtinplace,w);} return w;}
+ A jtboxopen(J jt, A w){FPREFIP; if((-AN(w)&-(AT(w)&BOX+SBOX))>=0){w = jtbox(jtinplace,w);} return w;}
 
 // x ; y, with options for x (,<) y   x (;<) y   x ,&< y
  A jtlink(J jt,A a,A w,A self){
-F2PREFIP;
+FPREFIP;
  ASSERT(!((AT(a)|AT(w))&SPARSE),EVNONCE);   // can't box sparse values
  I optype=FAV(self)->localuse.lclr[0];  // flag: sign set if (,<) or ,&< or (;<) which will always box w; bit 0 set if (,<)
  realizeifvirtual(w); realizeifvirtual(a);  // it's going into an array, so realize it
@@ -319,7 +318,7 @@ A jtassembleresults(J jt, I ZZFLAGWORD, A zz, A zzbox, A* zzboxp, I zzcellp, I z
     tempp-=startatend;   // back/forward to next output location
    }
   }
-  zz=ope(zztemp);  // do the full open on the result 
+  zz=jtope(jt,zztemp);  // do the full open on the result 
  }
  return zz;
 }
@@ -394,16 +393,16 @@ static A jtopes(J jt,I zt,A cs,A w){A a,d,e,sh,t,*wv,x,x1,y,y1,z;B*b;C*xv;I an,*
   RZ(opes2(&x1,&y1,b,a,e,wv[i],wcr)); v=AS(y1); m1=v[0]; k=v[1];
   if(m<p+m1){
    j=m; m=(i<n-1?m+m:0)+p+m1;
-   RZ(x=jttake(jt,sc(m),x)); xv=CAV(x)+p*xk; mvc(xk*(m-j),xv,dk,AV(e));
-   RZ(y=jttake(jt,sc(m),y)); yv= AV(y)+p*yc;
+   RZ(x=jttake(jt,jtsc(jt,m),x)); xv=CAV(x)+p*xk; mvc(xk*(m-j),xv,dk,AV(e));
+   RZ(y=jttake(jt,jtsc(jt,m),y)); yv= AV(y)+p*yc;
   }
   for(j=wr-1;j;--j)if(dv[j]==zs[j]){dv[j]=0; ++dv[j-1];}else break;
   v=AV(y1); DQ(m1, ICPY(yv,dv,wr); ICPY(yv+yc-k,v,k); yv+=yc; v+=k;); 
   if(memcmpne(1+AS(x1),1+s,SZI*c)){*s=m1; povtake(jt,sh,x1,xv);} else memcpy(xv,AV(x1),m1*xk);
   ++dv[wr-1]; xv+=m1*xk; p+=m1;
  }
- SPB(zp,x,p==m?x:jttake(jt,sc(p),x));
- SPB(zp,i,p==m?y:jttake(jt,sc(p),y));
+ SPB(zp,x,p==m?x:jttake(jt,jtsc(jt,p),x));
+ SPB(zp,i,p==m?y:jttake(jt,jtsc(jt,p),y));
  return z;
 }  // > w when w contains sparse contents, maxtype=zt
 
@@ -529,8 +528,8 @@ static A jtrazeg(J jt,A w,I t,I n,I r,A*v,I nonempt){A h,h1,y,z;C*zu;I c=0,i,j,k
  A jtraze(J jt, A w){A*v,y,z,* RESTRICT zv;C* RESTRICT zu;I *wws,d,i,klg,m=0,n,r=1,t=0,te=0;
  n=AN(w); v=AAV(w);  // n=#,w  v->w data
  if(!n)return mtv;   // if empty operand, return boolean empty
- if(!(BOX&AT(w)))return ravel(w);   // if not boxed, just return ,w
- if(1==n){RZ(z=*v); PRISTCLRF(w) return AR(z)?z:ravel(z);}  // if just 1 box, return its contents - except ravel if atomic.  Since these contents are excaping via a pointer, w must lose pristinity
+ if(!(BOX&AT(w)))return jtravel(jt,w);   // if not boxed, just return ,w
+ if(1==n){RZ(z=*v); PRISTCLRF(w) return AR(z)?z:jtravel(jt,z);}  // if just 1 box, return its contents - except ravel if atomic.  Since these contents are excaping via a pointer, w must lose pristinity
  // If there is more than 1 box w can remain pristine, because the (necessarily DIRECT) contents are copied to a new block
  // scan the boxes to create the following values:
  // m = total # items in contents; aim=#atoms per item;  r = maximum rank of contents
@@ -585,7 +584,7 @@ static A jtrazeg(J jt,A w,I t,I n,I r,A*v,I nonempt){A h,h1,y,z;C*zu;I c=0,i,j,k
 
  A jtrazeh(J jt, A w){A*wv,y,z;C*xv,*yv,*zv;I c=0,ck,dk,i,k,n,p,r,*s,t;
  ASSERT(BOX&AT(w),EVDOMAIN);
- if(!AR(w))return ope(w);
+ if(!AR(w))return jtope(jt,w);
  n=AN(w); wv=AAV(w);  y=wv[0]; SETIC(y,p); t=AT(y); k=bpnoun(t);
  DO(n, I l; y=wv[i]; r=AR(y); ASSERT(p==SETIC(y,l),EVLENGTH); ASSERT(r&&r<=2&&TYPESEQ(t,AT(y)),EVNONCE); c+=1==r?1:*(1+AS(y)););
  GA(z,t,p*c,2,0); s=AS(z); s[0]=p; s[1]=c; 
@@ -593,7 +592,7 @@ static A jtrazeg(J jt,A w,I t,I n,I r,A*v,I nonempt){A h,h1,y,z;C*zu;I c=0,i,j,k
  for(i=0;i<n;++i){
   y=wv[i]; dk=1==AR(y)?k:k**(1+AS(y)); xv=zv; zv+=dk;
   if(!dk)continue;
-  if(t&BOX)RZ(y=car(y));
+  if(t&BOX)RZ(y=jtcar(jt,y));
   yv=CAV(y);
   switch(0==(I)xv%dk&&0==ck%dk?dk:0){
    case sizeof(I): {I*u,*v=(I*)yv; DQ(p, u=(I*)xv; *u=*v++;    xv+=ck;);} break;

@@ -19,30 +19,30 @@
 #endif
 
 
- A jtsp(J jt, A w){ASSERTMTV(w); return sc(spbytesinuse());}  //  7!:0
+ A jtsp(J jt, A w){ASSERTMTV(w); return jtsc(jt,jtspbytesinuse(jt));}  //  7!:0
 
 // 7!:1
 // Return (current allo),(max since reset)
 // If arg is an atom, reset to it
  A jtsphwmk(J jt, A w){
   I curr = jt->malloctotal; I hwmk = jt->malloctotalhwmk;
-  if(AN(w)){I new; RE(new=i0(w)); jt->malloctotalhwmk=new;}
+  if(AN(w)){I new; RE(new=jti0(jt,w)); jt->malloctotalhwmk=new;}
   return jtv2(jt,curr,hwmk);
 }
 
  A jtspit(J jt, A w){A z;I k; 
  F1RANK(1,jtspit,UNUSED_VALUE); 
- jt->bytesmax=k=spstarttracking();  // start keeping track of bytesmax
- FDEPINC(1); z=exec1(w); FDEPDEC(1);
- spendtracking();  // end tracking, even if there was an error
+ jt->bytesmax=k=jtspstarttracking(jt);  // start keeping track of bytesmax
+ FDEPINC(1); z=jtexec1(jt,w); FDEPDEC(1);
+ jtspendtracking(jt);  // end tracking, even if there was an error
  RZ(z);
- return sc(jt->bytesmax-k);
+ return jtsc(jt,jt->bytesmax-k);
 }   // 7!:2, calculate max space used
 
- A jtparsercalls(J jt, A w){ASSERTMTV(w); return sc(jt->parsercalls);}
+ A jtparsercalls(J jt, A w){ASSERTMTV(w); return jtsc(jt,jt->parsercalls);}
 
 // 6!:5, window into the running J code
- A jtpeekdata(J jt, A w){ I opeek=jt->peekdata; jt->peekdata = i0(w); return sc(opeek); }
+ A jtpeekdata(J jt, A w){ I opeek=jt->peekdata; jt->peekdata = jti0(jt,w); return jtsc(jt,opeek); }
 
  A jtts(J jt, A w){A z;D*x;struct tm tr,*t=&tr;struct timeval tv;
  ASSERTMTV(w);
@@ -59,7 +59,7 @@
 
  A jtts0(J jt, A w){A x,z;C s[9],*u,*v,*zv;D*xv;I n,q;
  ASSERT(1>=AR(w),EVRANK);
- RZ(x=ts(mtv));
+ RZ(x=jtts(jt,mtv));
  n=AN(w); xv=DAV(x);
  if(!n)return x;
  if(!(AT(w)&LIT))RZ(w=jtcvt(jt,LIT,w));
@@ -95,18 +95,18 @@ __int64 GetMachineCycleCount()
 */
 
 
- A jttss(J jt, A w){ASSERTMTV(w); return scf(tod()-jt->tssbase);}
+ A jttss(J jt, A w){ASSERTMTV(w); return jtscf(jt,tod()-jt->tssbase);}
 
  A jttsit2(J jt,A a,A w){A z;D t;I n;
  F2RANK(0,1,jttsit2,UNUSED_VALUE);
- RE(n=i0(a));
+ RE(n=jti0(jt,a));
  FDEPINC(1);  // No ASSERTs/returns till the DEPDEC below
  t=qpc(); 
- A *old=jt->tnextpushp; DQ(n, z=exec1(w); if(!z)break; tpop(old);); 
+ A *old=jt->tnextpushp; DQ(n, z=jtexec1(jt,w); if(!z)break; jttpop(jt,old);); 
  t=qpc()-t;
  FDEPDEC(1);  // Assert OK now
  RZ(z);
- return scf(n?t/(n*pf):0);
+ return jtscf(jt,n?t/(n*pf):0);
 }
 
  A jttsit1(J jt, A w){return jttsit2(jt,num(1),w);}
@@ -117,25 +117,25 @@ __int64 GetMachineCycleCount()
  A jtdl(J jt, A w){D m,n,*v;UINT ms,s;
  RZ(w=jtcvt(jt,FL,w));
  n=0; v=DAV(w); DQ(AN(w), m=*v++; ASSERT(0<=m,EVDOMAIN); n+=m;);
- s=(UINT)jfloor(n); ms=(UINT)jround(1000*(n-s));
+ s=(UINT)floor(n); ms=(UINT)jround(1000*(n-s));
  DQ(s, sleepms(1000); JBREAK0;);
  sleepms(ms);
  return w;
 }
 
 
- A jtqpfreq(J jt, A w){ASSERTMTV(w); return scf(pf);}
+ A jtqpfreq(J jt, A w){ASSERTMTV(w); return jtscf(jt,pf);}
 
- A jtqpctr (J jt, A w){ASSERTMTV(w); return scf(qpc());}
+ A jtqpctr (J jt, A w){ASSERTMTV(w); return jtscf(jt,qpc());}
 
 // 6!:13
  A jtpmctr(J jt, A w){D x;I q;
- RE(q=i0(w));
+ RE(q=jti0(jt,w));
  ASSERT(jt->pma,EVDOMAIN);
  x=q+(D)jt->pmctr;
  ASSERT(IMIN<=x&&x<FLIMAX,EVDOMAIN);
  jt->pmctr=q=(I)x; jt->cxspecials=1; jt->uflags.us.uq.uq_c.pmctrbstk&=~PMCTRBPMON; jt->uflags.us.uq.uq_c.pmctrbstk|=q?PMCTRBPMON:0;  // tell cx and unquote to look for pm
- return sc(q);
+ return jtsc(jt,q);
 }    /* add w to pmctr */
 
 static A jtpmfree(J jt, A w){A x,y;C*c;I m;PM*v;PM0*u;
@@ -159,14 +159,14 @@ static A jtpmfree(J jt, A w){A x,y;C*c;I m;PM*v;PM0*u;
  av=BAV(a); 
  a0=0<an?av[0]:0;
  a1=1<an?av[1]:0;
- RZ(w=vs(w));
+ RZ(w=jtvs(jt,w));
  wn=AN(w);
  ASSERT(!wn||wn>=s+s0,EVLENGTH);
  x=jt->pma;
  jt->pmctr=0; jt->uflags.us.uq.uq_c.pmctrbstk&=~PMCTRBPMON;  // not sure why pmctr is not a boolean, since its value seems unused
  if(wn){ras(w); jt->pma=w;}else jt->pma=0;
- if(jt->pma)spstarttracking();else spendtracking();  // track whenever PM is running
- RZ(pmfree(x));
+ if(jt->pma)jtspstarttracking(jt);else jtspendtracking(jt);  // track whenever PM is running
+ RZ(jtpmfree(jt,x));
  if(wn){
   v=CAV(w);
   jt->pmu=u=(PM0*)v; 
@@ -174,11 +174,11 @@ static A jtpmfree(J jt, A w){A x,y;C*c;I m;PM*v;PM0*u;
   jt->pmrec=u->rec=a0;
   u->n=n=(wn-s0)/s; 
   u->i=0;
-  u->s=jt->bytesmax=spbytesinuse();
+  u->s=jt->bytesmax=jtspbytesinuse(jt);
   u->trunc=a1; 
   u->wrapped=0;
  }
- return sc(n);
+ return jtsc(jt,n);
 }
 
 // Add an entry to the Performance Monitor area
@@ -217,18 +217,18 @@ void jtpmrecord(J jt,A name,A loc,I lc,int val){A x,y;B b;PM*v;PM0*u;
  v0=jt->pmv; vq=q+v0;
  GAT0(z,BOX,1+PMCOL,1); zv=AAV(z);
  GATV0(t,BOX,2*m,1); av=AAV(t); au=m+av;
- v=vq; DO(p, if(b[  i]){RZ(*av++=v->name?incorp(jtsfn(jt,0,v->name)):mtv); RZ(*au++=v->loc?incorp(jtsfn(jt,0,v->loc)):mtv);} ++v;); 
- v=v0; DO(q, if(b[p+i]){RZ(*av++=v->name?incorp(jtsfn(jt,0,v->name)):mtv); RZ(*au++=v->loc?incorp(jtsfn(jt,0,v->loc)):mtv);} ++v;); 
+ v=vq; DO(p, if(b[  i]){RZ(*av++=v->name?jtincorp(jt,jtsfn(jt,0,v->name)):mtv); RZ(*au++=v->loc?jtincorp(jt,jtsfn(jt,0,v->loc)):mtv);} ++v;); 
+ v=v0; DO(q, if(b[p+i]){RZ(*av++=v->name?jtincorp(jt,jtsfn(jt,0,v->name)):mtv); RZ(*au++=v->loc?jtincorp(jt,jtsfn(jt,0,v->loc)):mtv);} ++v;); 
  RZ(x=jtindexof(jt,t,t));
  RZ(c=eq(x,IX(SETIC(x,k1))));
- RZ(zv[6]=incorp(jtrepeat(jt,c,t)));
+ RZ(zv[6]=jtincorp(jt,jtrepeat(jt,c,t)));
  RZ(x=jtindexof(jt,jtrepeat(jt,c,x),x)); iv=AV(x);
- RZ(zv[0]=incorp(vec(INT,m,  iv)));
- RZ(zv[1]=incorp(vec(INT,m,m+iv)));
- GATV0(t,INT,m,1); zv[2]=incorp(t); iv=AV(t); v=vq; DO(p, if(b[i])*iv++=(I)v->val;  ++v;); v=v0; DO(q, if(b[p+i])*iv++=(I)v->val; ++v;);
- GATV0(t,INT,m,1); zv[3]=incorp(t); iv=AV(t); v=vq; DO(p, if(b[i])*iv++=v->lc; ++v;); v=v0; DO(q, if(b[p+i])*iv++=v->lc; ++v;);
- GATV0(t,INT,m,1); zv[4]=incorp(t); iv=AV(t); v=vq; DO(p, if(b[i])*iv++=v->s;  ++v;); v=v0; DO(q, if(b[p+i])*iv++=v->s;  ++v;); 
- GATV0(t,FL, m,1); zv[5]=incorp(t); dv=DAV(t);
+ RZ(zv[0]=jtincorp(jt,vec(INT,m,  iv)));
+ RZ(zv[1]=jtincorp(jt,vec(INT,m,m+iv)));
+ GATV0(t,INT,m,1); zv[2]=jtincorp(jt,t); iv=AV(t); v=vq; DO(p, if(b[i])*iv++=(I)v->val;  ++v;); v=v0; DO(q, if(b[p+i])*iv++=(I)v->val; ++v;);
+ GATV0(t,INT,m,1); zv[3]=jtincorp(jt,t); iv=AV(t); v=vq; DO(p, if(b[i])*iv++=v->lc; ++v;); v=v0; DO(q, if(b[p+i])*iv++=v->lc; ++v;);
+ GATV0(t,INT,m,1); zv[4]=jtincorp(jt,t); iv=AV(t); v=vq; DO(p, if(b[i])*iv++=v->s;  ++v;); v=v0; DO(q, if(b[p+i])*iv++=v->s;  ++v;); 
+ GATV0(t,FL, m,1); zv[5]=jtincorp(jt,t); dv=DAV(t);
 
  v=vq; DO(p, if(b[i]  ){memcpy(dv,v->t,sizeof(D)); ++dv;} ++v;); 
  v=v0; DO(q, if(b[p+i]){memcpy(dv,v->t,sizeof(D)); ++dv;} ++v;); 
@@ -252,7 +252,7 @@ void jtpmrecord(J jt,A name,A loc,I lc,int val){A x,y;B b;PM*v;PM0*u;
 }
 
 
- A jttlimq(J jt, A w){ASSERTMTV(w); return scf(0.001*jt->timelimit);}
+ A jttlimq(J jt, A w){ASSERTMTV(w); return jtscf(jt,0.001*jt->timelimit);}
 
  A jttlims(J jt, A w){D d;
  ASSERT(!AR(w),EVRANK);

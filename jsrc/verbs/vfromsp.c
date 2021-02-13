@@ -12,13 +12,13 @@ static A jtfromis1(J jt,A ind,A w,A z,I wf){A a,a1,j1,p,q,x,x1,y,y1;C*xu,*xuu,*x
  // figure the axes of the result.  wf is the number of axes before the axis of the selection, i. e. the axis number of the selection.
  // That axis is replaced by axes coming from the shape of ind.  Set h to the index of the sparse axis that is being selected on
  a=SPA(wp,a); an=AN(a); av=AV(a); DO(an, if(wf==av[i]){h=i; break;});  // an=#sparse axes
- y=SPA(wp,i); RZ(q=jteps(jt,jtfromr(jt,sc(h),y),ravel(ind))); RZ(y=jtrepeat(jt,q,y)); RZ(x=jtrepeat(jt,q,SPA(wp,x)));  // (h{"_ 1 indexes) e. ,ind
+ y=SPA(wp,i); RZ(q=jteps(jt,jtfromr(jt,jtsc(jt,h),y),jtravel(jt,ind))); RZ(y=jtrepeat(jt,q,y)); RZ(x=jtrepeat(jt,q,SPA(wp,x)));  // (h{"_ 1 indexes) e. ,ind
  GATV0(a1,INT,r+an-1,1); v=AV(a1); SPB(zp,a,a1);
  k=av[h]; u=av; DQ(h, *v++=*u++;); DQ(r, *v++=k++;); u++; DQ(an-1-h, *v++=*u+++r-1;);
  if(!r) 
   if(AR(z)){GATV0(q,INT,an-1,1); v=AV(q); DO(an, if(i!=h)*v++=i;); SPB(zp,i,jtfromr(jt,q,y)); SPB(zp,x,x); return z;}
   else return jtreshape(jt,mtv,AN(x)?x:SPA(zp,e));
- if(h){q=grade1(jtfromr(jt,sc(h),y)); RZ(y=jtifrom(jt,q,y)); RZ(x=jtifrom(jt,q,x));}
+ if(h){q=jtgrade1(jt,jtfromr(jt,jtsc(jt,h),y)); RZ(y=jtifrom(jt,q,y)); RZ(x=jtifrom(jt,q,x));}
  RZ(q=odom(2L,r,AS(ind))); iv=AV(q);
  m=*AS(y); s=0; j=-1; u=h+AV(y); v=u+an;
  GATV0(p,INT,m,1); pv=AV(p); memset(pv,CFF,SZI*m);
@@ -27,7 +27,7 @@ static A jtfromis1(J jt,A ind,A w,A z,I wf){A a,a1,j1,p,q,x,x1,y,y1;C*xu,*xuu,*x
  DO(m-1, if(*u!=*v){pv[s]=*u; qu[s]=1+j; qv[s++]=i-j; j=i;} u=v; v+=an;); 
  if(m){i=m-1;       pv[s]=*u; qu[s]=1+j; qv[s++]=i-j;}
  RZ(j1=jtindexof(jt,p,ind)); jv=AV(j1);
- c=0; DO(n, if(s>jv[i])c+=qv[jv[i]];); i=aii(x); xk=i<<bplg(AT(x)); d=AN(a1);
+ c=0; DO(n, if(s>jv[i])c+=qv[jv[i]];); i=jtaii(jt,x); xk=i<<bplg(AT(x)); d=AN(a1);
  GATV0(y1,INT,  c*d,2); v=AS(y1); v[0]=c; v[1]=d; yv= AV(y1); yu= AV(y);
  GA(x1,AT(x),c*i,AR(x),AS(x)); AS(x1)[0]=c;                xv=CAV(x1); xu=CAV(x);
  for(i=0;i<n;++i){
@@ -40,7 +40,7 @@ static A jtfromis1(J jt,A ind,A w,A z,I wf){A a,a1,j1,p,q,x,x1,y,y1;C*xu,*xuu,*x
   }}
   iv+=r;
  }
- if(h){q=grade1(y1); RZ(y1=jtifrom(jt,q,y1)); RZ(x1=jtifrom(jt,q,x1));}
+ if(h){q=jtgrade1(jt,y1); RZ(y1=jtifrom(jt,q,y1)); RZ(x1=jtifrom(jt,q,x1));}
  SPB(zp,i,y1); SPB(zp,x,x1);
  return z;
 }    /* ind{"r w along a sparse axis  */
@@ -53,15 +53,15 @@ static A jtfromis1(J jt,A ind,A w,A z,I wf){A a,a1,j1,p,q,x,x1,y,y1;C*xu,*xuu,*x
  RZ(ind=jtpind(jt,wcr?*(ws+wf):1,a));  // ind is the INT list of indexes being selected
  // Allocate the result, which has one axis for each axis of a, and one for each axis of w EXCEPT the selection axis - unless the selection rank is 0, which isn't really an axis
  GASPARSE(z,wt,1,ar+wr-(I )(0<wcr),ws); v=AS(z); ICPY(v+wf,AS(a),ar); if(wcr)ICPY(v+wf+ar,1+wf+ws,wcr-1);
- zp=PAV(z); wp=PAV(w); SPB(zp,e,ca(SPA(wp,e)));
- RZ(a=ca(SPA(wp,a))); av=AV(a); an=AN(a);
+ zp=PAV(z); wp=PAV(w); SPB(zp,e,jtca(jt,SPA(wp,e)));
+ RZ(a=jtca(jt,SPA(wp,a))); av=AV(a); an=AN(a);
  RZ(b=bfi(wr,a,1));  // get boolean mask with a 1 for every axis that is sparse
  if(b[wf])return fromis1(ind,w,z,wf);  // if the selection is along a sparse axis, go do it
  // selection is along a dense axis...
  m=wcr; DO(wcr, m-=b[wf+i];); RZ(x=irs2(ind,SPA(wp,x),0L,ar,m,jtifrom));
  if(k=ar-1)DO(an, if(av[i]>=wf)av[i]+=k;);
- if(AR(z)){SPB(zp,a,a); SPB(zp,x,x); SPB(zp,i,ca(SPA(wp,i))); return z;}
- else return AN(x)?jtreshape(jt,mtv,x):ca(SPA(wp,e));
+ if(AR(z)){SPB(zp,a,a); SPB(zp,x,x); SPB(zp,i,jtca(jt,SPA(wp,i))); return z;}
+ else return AN(x)?jtreshape(jt,mtv,x):jtca(jt,SPA(wp,e));
 }    /* a{"r w for numeric a and sparse w */
 
 static A jtaaxis(J jt,A w,I wf,A a,I r,I h,I*pp,I*qq,I*rr){A q;B*b,*c,*d;I wr,x,y,z,zr;
@@ -82,15 +82,15 @@ A jtfrombsn(J jt,A ind,A w,I wf){A a,j1,p,q,x,x1,y,y1,ys,z;C*xu,*xuu,*xv;
  RZ(q=odom(2L,r,v)); iv=AV(q)-r;
  GASPARSE(z,AT(w),1,wr+r-h,(I*)0); u=AS(z); ICPY(u,ws,wf); ICPY(u+wf,v,r); ICPY(u+wf+r,ws+wf+h,wr-wf-h);
  zp=PAV(z); wp=PAV(w); 
- SPB(zp,e,ca(SPA(wp,e))); x=SPA(wp,x); y=SPA(wp,i); 
+ SPB(zp,e,jtca(jt,SPA(wp,e))); x=SPA(wp,x); y=SPA(wp,i); 
  a=SPA(wp,a); an=AN(a); SPB(zp,a,aaxis(w,wf,a,r,h,&pp,&qq,&rr));
- if( !qq){SPB(zp,i,ca(y)); SPB(zp,x,frombu(ind,x,AR(x)-(wr-wf-rr))); return z;}
- if(h>qq){q=nub(jtover(jt,a,apv(h,wf,1L))); return frombsn(ind,jtreaxis(jt,jtgrade2(jt,q,q),w),wf);}
+ if( !qq){SPB(zp,i,jtca(jt,y)); SPB(zp,x,frombu(ind,x,AR(x)-(wr-wf-rr))); return z;}
+ if(h>qq){q=jtnub(jt,jtover(jt,a,apv(h,wf,1L))); return frombsn(ind,jtreaxis(jt,jtgrade2(jt,q,q),w),wf);}
  if(1<r)RZ(ind=jtreshape(jt,jtv2(jt,n,h),ind)); 
  RZ(ys=jtfromr(jt,jtindexof(jt,a,apv(h,wf,1L)),y));
  RZ(q=jteps(jt,ys,ind)); 
  if(!all1(q)){RZ(ys=jtrepeat(jt,q,ys)); RZ(y=jtrepeat(jt,q,y)); RZ(x=jtrepeat(jt,q,x));}
- if(wf){q=grade1(ys); RZ(ys=jtifrom(jt,q,ys)); RZ(y=jtifrom(jt,q,y)); RZ(x=jtifrom(jt,q,x));}
+ if(wf){q=jtgrade1(jt,ys); RZ(ys=jtifrom(jt,q,ys)); RZ(y=jtifrom(jt,q,y)); RZ(x=jtifrom(jt,q,x));}
  m=*AS(y);
  GATV0(p,INT,m,1); pv=AV(p);
  GATV0(q,INT,m,1); qv=AV(q);
@@ -98,7 +98,7 @@ A jtfrombsn(J jt,A ind,A w,I wf){A a,j1,p,q,x,x1,y,y1,ys,z;C*xu,*xuu,*xv;
  DO(m-1, if(ICMP(u,v,h)){pv[s]=1+j; qv[s++]=i-j; j=i;} u=v; v+=h;); if(m){pv[s]=1+j; qv[s++]=m-1-j;}
  RZ(j1=jtindexof(jt,jtifrom(jt,vec(INT,s,pv),ys),ind)); jv=AV(j1);
  c=0; DO(n, if(s>jv[i])c+=qv[jv[i]];); 
- i=aii(x); j=AN(SPA(zp,a)); xk=i<<bplg(AT(x));
+ i=jtaii(jt,x); j=AN(SPA(zp,a)); xk=i<<bplg(AT(x));
  GATV0(y1,INT,  c*j,2); v=AS(y1); v[0]=c; v[1]=j; yv= AV(y1); yu= AV(y);
  GA(x1,AT(x),c*i,AR(x),AS(x)); AS(x1)[0]=c;                xv=CAV(x1); xu=CAV(x);
  for(i=0;i<n;++i){
@@ -109,7 +109,7 @@ A jtfrombsn(J jt,A ind,A w,I wf){A a,j1,p,q,x,x1,y,y1,ys,z;C*xu,*xuu,*xv;
     memcpy(xv,xuu,xk); xv+=xk; xuu+=xk;
     DO(pp, *yv++=*u++;); DO(r, *yv++=iv[i];); u+=qq; DQ(rr, *yv++=*u++;);
  }}}
- if(wf){q=grade1(y1); RZ(y1=jtifrom(jt,q,y1)); RZ(x1=jtifrom(jt,q,x1));}
+ if(wf){q=jtgrade1(jt,y1); RZ(y1=jtifrom(jt,q,y1)); RZ(x1=jtifrom(jt,q,x1));}
  SPB(zp,i,y1); SPB(zp,x,x1); 
  return z;
 }    /* (<"1 ind){w, sparse w and integer array ind */
@@ -154,11 +154,11 @@ static A jtfrombs1(J jt,A ind,A w,I wf){A*iv,x,y,z;I j,m,n,wr,wcr;
  RZ(x=irs2(SPA(ap,e),w,0L,0L,wcr,jtifrom)); RZ(e=jtreshape(jt,mtv,x));
  ASSERT(all1(eq(e,x)),EVSPARSE);
  SPB(zp,e,e);
- SPB(zp,a,wf?plus(sc(wf),SPA(ap,a)):SPA(ap,a));
+ SPB(zp,a,wf?plus(jtsc(jt,wf),SPA(ap,a)):SPA(ap,a));
  SPB(zp,i,SPA(ap,i));
  if(wf){
   RZ(x=irs2(SPA(ap,x),w,VFLAGNONE, RMAX,wcr,jtifrom));
-  RZ(x=jtcant2(jt,jtless(jt,IX(AR(x)),sc(wf)),x));
+  RZ(x=jtcant2(jt,jtless(jt,IX(AR(x)),jtsc(jt,wf)),x));
   SPB(zp,x,x);
  }else SPB(zp,x,jtifrom(jt,SPA(ap,x),w));
  return z;
@@ -173,7 +173,7 @@ static A jtfrombs1(J jt,A ind,A w,I wf){A*iv,x,y,z;I j,m,n,wr,wcr;
  GASPARSE(z,AT(w),1,ar+wr-(I )(0<wcr),ws); zp=PAV(z);
  v=AS(z); ICPY(v+wf,AS(a),ar); if(wcr)ICPY(v+wf+ar,1+wf+ws,wcr-1);
  RZ(x=irs2(SPA(ap,e),w,0L,0L,wcr,jtfrom)); RZ(e=jtreshape(jt,mtv,x));
- ASSERT(all1(denseit(eq(e,x))),EVSPARSE);
+ ASSERT(all1(jtdenseit(jt,eq(e,x))),EVSPARSE);
  SPB(zp,e,e);
  x=SPA(ap,a); if(ar>AN(x)){RZ(a=jtreaxis(jt,IX(ar),a)); ap=PAV(a);}
  x=SPA(wp,a); n=AN(x); RZ(b=bfi(wr,x,1));

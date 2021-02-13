@@ -189,7 +189,7 @@ I cachedmmult(J jt,D* av,D* wv,D* zv,I m,I n,I p,I flgs){D c[(CACHEHEIGHT+1)*CAC
  ar=AR(a); at=AT(a); at=AN(a)?at:B01;
  wr=AR(w); wt=AT(w); wt=AN(w)?wt:B01;
  if(((at|wt)&SPARSE)!=0)return jtpdtsp(jt,a,w);  // Transfer to sparse code if either arg sparse
- if(((at|wt)&XNUM+RAT)!=0)return df2(z,a,w,jtatop(jt,slash(ds(CPLUS)),jtqq(jt,ds(CSTAR),jtv2(jt,1L,AR(w)))));  // On indirect numeric, execute as +/@(*"(1,(wr)))
+ if(((at|wt)&XNUM+RAT)!=0)return df2(z,a,w,jtatop(jt,jtslash(jt,ds(CPLUS)),jtqq(jt,ds(CSTAR),jtv2(jt,1L,AR(w)))));  // On indirect numeric, execute as +/@(*"(1,(wr)))
  if(B01&(at|wt)&&TYPESNE(at,wt)&&((ar-1)|(wr-1)|(AN(a)-1)|(AN(w)-1))>=0)return jtpdtby(jt,a,w);   // If exactly one arg is boolean, handle separately
  {t=maxtyped(at,wt); if(!TYPESEQ(t,AT(a))){RZ(a=jtcvt(jt,t,a));} if(!TYPESEQ(t,AT(w))){RZ(w=jtcvt(jt,t,w));}}  // convert args to compatible precisions, changing a and w if needed.  B01 if both empty
  ASSERT(t&NUMERIC,EVDOMAIN);
@@ -204,7 +204,7 @@ I cachedmmult(J jt,D* av,D* wv,D* zv,I m,I n,I p,I flgs){D c[(CACHEHEIGHT+1)*CAC
  if(AN(z)==0)return z;  // return without computing if result is empty
  if(!p){memset(AV(z),C0,AN(z)<<bplg(AT(z))); return z;}  // if dot-products are all 0 length, set them all to 0
  // If either arg is atomic, reshape it to a list
- if(!ar!=!wr){if(ar)RZ(w=jtreshape(jt,sc(p),w)) else RZ(a=jtreshape(jt,sc(p),a));}
+ if(!ar!=!wr){if(ar)RZ(w=jtreshape(jt,jtsc(jt,p),w)) else RZ(a=jtreshape(jt,jtsc(jt,p),a));}
  p1=p-1;
  // Perform the inner product according to the type
  switch(CTTZNOFLAG(t)){
@@ -347,8 +347,8 @@ static A jtipbx(J jt,A a,A w,C c,C d){A g=0,x0,x1,z;B*av,*av0,b,*v0,*v1,*zv;C c0
   // unsupported g.  Set c0/c1 to invalid and execute g to find x0/x1
   c0=c1=-1; g=ds(d); RZ(df2(x0,num(0),w,g)); RZ(df2(x1,num(0),w,g));
  }else{
-  RZ(x0=c0==IPBX0?jtreshape(jt,sc(n),num(0)):c0==IPBX1?jtreshape(jt,sc(c==CNE?AN(w):n),num(1)):c0==IPBXW?w:__not(w));
-  RZ(x1=c1==IPBX0?jtreshape(jt,sc(n),num(0)):c1==IPBX1?jtreshape(jt,sc(c==CNE?AN(w):n),num(1)):c1==IPBXW?w:__not(w));
+  RZ(x0=c0==IPBX0?jtreshape(jt,jtsc(jt,n),num(0)):c0==IPBX1?jtreshape(jt,jtsc(jt,c==CNE?AN(w):n),num(1)):c0==IPBXW?w:jtnot(jt,w));
+  RZ(x1=c1==IPBX0?jtreshape(jt,jtsc(jt,n),num(0)):c1==IPBX1?jtreshape(jt,jtsc(jt,c==CNE?AN(w):n),num(1)):c1==IPBXW?w:jtnot(jt,w));
  }
  // av->a arg, zv->result, v0->input for 0, v1->input for 1
  av0=BAV(a); zv=BAV(z); v0=BAV(x0); v1=BAV(x1);
@@ -393,7 +393,7 @@ r=lr(gs);   // left rank of v
 
 static A jtminors(J jt, A w){A d,z;
  RZ(d=apvwr(3L,-1L,1L)); AV(d)[0]=0;
- return jtdrop(jt,d,df2(z,num(1),w,bsdot(ds(CLEFT))));  // 0 0 1 }. 1 [\. w
+ return jtdrop(jt,d,df2(z,num(1),w,jtbsdot(jt,ds(CLEFT))));  // 0 0 1 }. 1 [\. w
 }
 
 static A jtdet(J jt,    A w,A self){DECLFG;A h=sv->fgh[2];I c,r,*s;
@@ -401,10 +401,10 @@ static A jtdet(J jt,    A w,A self){DECLFG;A h=sv->fgh[2];I c,r,*s;
  A z; if(h&&1<r&&2==s[r-1]&&s[r-2]==s[r-1])return df1(z,w,h);
  F1RANK(2,jtdet,self);
  c=2>r?1:s[1];
- return !c ? df1(z,mtv,slash(gs)) : 1==c ? CALL1(f1,ravel(w),fs) : h && c==s[0] ? gaussdet(w) : jtdetxm(jt,w,self);
+ return !c ? df1(z,mtv,jtslash(jt,gs)) : 1==c ? CALL1(f1,jtravel(jt,w),fs) : h && c==s[0] ? jtgaussdet(jt,w) : jtdetxm(jt,w,self);
 }
 
- A jtdetxm(J jt,    A w,A self){A z; return dotprod(IRS1(w,0L,1L,jthead,z),jtdet(jt,minors(w),self),self);}
+ A jtdetxm(J jt,    A w,A self){A z; return dotprod(IRS1(w,0L,1L,jthead,z),jtdet(jt,jtminors(jt,w),self),self);}
      /* determinant via expansion by minors. w is matrix with >1 columns */
 
  A jtdot(J jt,A a,A w){A f,h=0;AF f2=jtdotprod;C c,d;
@@ -413,7 +413,7 @@ static A jtdet(J jt,    A w,A self){DECLFG;A h=sv->fgh[2];I c,r,*s;
   f=FAV(a)->fgh[0]; c=ID(f); d=ID(w);  // op was c/ . d
   if(d==CSTAR){
    if(c==CPLUS )f2=jtpdt;   // +/ . * is a special function
-   if(c==CMINUS)RZ(h=eval("[: -/\"1 {.\"2 * |.\"1@:({:\"2)"));  // -/ . * - calculate some function used by determinant?
+   if(c==CMINUS)RZ(h=jteval(jt,"[: -/\"1 {.\"2 * |.\"1@:({:\"2)"));  // -/ . * - calculate some function used by determinant?
  }}
  return fdef(0,CDOT,VERB, jtdet,f2, a,w,h, 0L, 2L,RMAX,RMAX);
 }

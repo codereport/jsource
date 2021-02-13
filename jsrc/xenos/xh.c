@@ -18,12 +18,12 @@
 // "avx avx2" would run j.dll or javx.dll or javx2.dll
  A jtjgetx(J jt, A w){
 
-return cstr("");
+return jtcstr(jt,"");
 }
 
  A jthost(J jt, A w){A z;
  F1RANK(1,jthost,UNUSED_VALUE);
- RZ(w=vslit(w));
+ RZ(w=jtvslit(jt,w));
 {
  A t;I b=0;C*fn,*s;F f;I n;
  n=AN(w);
@@ -67,9 +67,9 @@ return cstr("");
 
  A jthostne(J jt, A w){
  F1RANK(1,jthostne,UNUSED_VALUE);
- RZ(w=vslit(w));
+ RZ(w=jtvslit(jt,w));
  {
-  I b =system(CAV(str0(w)));
+  I b =system(CAV(jtstr0(jt,w)));
   b=!b;
   ASSERT(b!=0,EVFACE);
  }
@@ -83,8 +83,8 @@ return cstr("");
  if(pipe(fo)==-1){CL(fi); ASSERT(0,EVFACE);}
  fii[0]=fi[0];fii[1]=fi[1];foi[0]=fo[0];foi[1]=fo[1];
  F1RANK(1,jthostio,UNUSED_VALUE);
- RZ(w=vs(w));
- s=CAV(str0(w)); GAT0(z,INT,3,1); pz=(F*)AV(z);
+ RZ(w=jtvs(jt,w));
+ s=CAV(jtstr0(jt,w)); GAT0(z,INT,3,1); pz=(F*)AV(z);
  if((r=pipe(fii))==-1||pipe(foi)==-1){if(r!=-1)CL(fi); ASSERT(0,EVFACE);}
  if(!((pz[1]=fdopen(fi[0],"r"))&&(pz[2]=fdopen(fo[1],"w")))){
   if(pz[1])fclose(pz[1]); CL(fi);CL(fo);}
@@ -101,12 +101,12 @@ return cstr("");
  return z;
 }
 
- A jtjwait(J jt, A w){I k;int s; RE(k=i0(w)); if(-1==waitpid(k,&s,0))jerrno(); return sc(s);}
+ A jtjwait(J jt, A w){I k;int s; RE(k=jti0(jt,w)); if(-1==waitpid(k,&s,0))jtjerrno(jt); return jtsc(jt,s);}
 
 /* return errno info from c library */
  A jtcerrno(J jt, A w){C buf[1024],ermsg[1024];
  ASSERTMTV(w);
 
  if(errno&&!strerror_r(errno,ermsg,1024)) strcpy (buf, ermsg); else strcpy (buf, "");
- return link(sc(errno),cstr(buf));
+ return link(jtsc(jt,errno),jtcstr(jt,buf));
 }    /* 2!:8  errno information */

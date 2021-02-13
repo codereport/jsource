@@ -743,7 +743,7 @@ I utousize(C4* src, I srcn){ C4 w,w1; I r=0;
  ASSERT(t&(NUMERIC+JCHAR), EVDOMAIN);
  if(NUMERIC&t) // u16 from int
  {
-  RZ(w=vi(w));
+  RZ(w=jtvi(jt,w));
   n=AN(w); v=(I*)AV(w);
   GATV0(c4,C4T,n,1); c4v=C4AV(c4);
   DQ(n, j=*v++; ASSERT(BETWEENC(j,0,0x10ffff),EVINDEX); *c4v++=(C4)j;);
@@ -826,7 +826,7 @@ if(t&LIT)return w; // char unchanged
 ASSERT(t&(NUMERIC+JCHAR), EVDOMAIN);
 if(NUMERIC&t)
 {
-RZ(w=vi(w));
+RZ(w=jtvi(jt,w));
 n=AN(w); v=(I*)AV(w);
 GATV0(c4,C4T,n,1); c4v=C4AV(c4);
 DQ(n, j=*v++; ASSERT((UI)j<=(UI)0x10ffff,EVINDEX); *c4v++=(C4)j;);
@@ -879,7 +879,7 @@ EPILOG(z);
 // Similar to jttoutf8a, allow invalid unicode
 // w is C2T C4T or LIT.  Result is U8 string and null-terminate
  A jttoutf8x(J jt, A w){
-return str0(jttoutf8a(jt,w,0));
+return jtstr0(jt,jttoutf8a(jt,w,0));
 }
 
 // External function - just convert wide-char fw[] to U8 in f[], and null-terminate
@@ -897,7 +897,7 @@ f[q]=0;
  ASSERT(t&(NUMERIC+JCHAR), EVDOMAIN);
  if(NUMERIC&t) // u32 from int
  {
-  RZ(w=vi(w));
+  RZ(w=jtvi(jt,w));
   n=AN(w); v=(I*)AV(w);
   GATV(z,C4T,n,AR(w),AS(w)); c4v=C4AV(z);
   DQ(n, j=*v++; *c4v++=(C4)(UI)j;);
@@ -962,7 +962,7 @@ f[q]=0;
  if(!n) {GATV(z,C4T,n,AR(w),AS(w)); return z;}; // empty list
  if(NUMERIC&t)
  {
-  RZ(w=vi(w));
+  RZ(w=jtvi(jt,w));
   n=AN(w); v=(I*)AV(w);
   GATV(z,C4T,n,AR(w),AS(w)); c4v=C4AV(z);
   DQ(n, j=*v++; *c4v++=(C4)(UI)j;);

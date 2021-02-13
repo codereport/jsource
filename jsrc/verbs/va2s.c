@@ -19,7 +19,7 @@ static A jtvaspc(J jt,A a,A w,C id,VF ado,I cv,I t,I zt,I af,I acr,I wf,I wcr,I 
  if(!(SB01&AT(w)))return w;
  wp=PAV(w); 
  e=SPA(wp,e); c=!*BAV(e);
- x=SPA(wp,x); xv=xu=u=BAV(x); xc=aii(x); n=*AS(x); j=0;
+ x=SPA(wp,x); xv=xu=u=BAV(x); xc=jtaii(jt,x); n=*AS(x); j=0;
  y=SPA(wp,i); yv=yu=   AV(y); yc=*(1+AS(y));
  if(!(n&&xc&&yc))return w;
  while(u=memchr(xv+xc*j,c,xc*(n-j))){
@@ -46,11 +46,11 @@ static A jtvasp0(J jt,A a,A w,VF ado,I cv,I t,I zt){A e,x,xx,y,z,ze,zx;B b;I n;P
  GA(zx,zt,n,AR(x),AS(x)); if(n)ASSERT(EVOK==(rc=((AHDR2FN*)ado)(n^(b-1),(I)1,b?AV(x):AV(y),b?AV(y):AV(x),AV(zx),jt)),rc);  // was !b
  if(cv&VRI+VRD){RZ(ze=jtcvz(jt,cv,ze)); RZ(zx=jtcvz(jt,cv,zx));}
  GASPARSE(z,STYPE(AT(zx)),1,AR(xx),AS(xx)); zp=PAV(z);
- SPB(zp,a,ca(SPA(p,a)));
- SPB(zp,i,ca(SPA(p,i)));
+ SPB(zp,a,jtca(jt,SPA(p,a)));
+ SPB(zp,i,jtca(jt,SPA(p,i)));
  SPB(zp,e,ze);
  SPB(zp,x,zx);
- return vaspz(z);
+ return jtvaspz(jt,z);
 }    /* one argument is sparse and the other is scalar */
 
 /*
@@ -108,7 +108,7 @@ static A jtvaspeq(J jt,A a,A w,C id,VF ado,I cv,I t,I zt,I f,I r){A ae,ax,ay,we,
      B ab=1,wb=1;C*aev,*axv,*wev,*wxv,*zxv;I ak,c,d,i,j,m,n,*u,*v,wk,xc,yc,zk,*zyv;P*zp;I rc=EVOK;
  RZ(vaspeqprep(a,w,t,f,r,&ae,&ay,&ax,&we,&wy,&wx,&za));
  if(id==CSTAR||id==CSTARDOT){ab=!jtequ(jt,ae,num(0)); wb=!jtequ(jt,we,num(0));} 
- v=AS(ay); m=v[0]; yc=v[1]; xc=aii(ax); n=*AS(wy);
+ v=AS(ay); m=v[0]; yc=v[1]; xc=jtaii(jt,ax); n=*AS(wy);
  aev=CAV(ae); axv=CAV(ax); ak=xc<<bplg(AT(ax));
  wev=CAV(we); wxv=CAV(wx); wk=xc<<bplg(AT(wx));
  d=zcount(ay,wy,ab,wb);
@@ -130,7 +130,7 @@ static A jtvaspeq(J jt,A a,A w,C id,VF ado,I cv,I t,I zt,I f,I r){A ae,ax,ay,we,
  GASPARSE(z,STYPE(AT(zx)),1,AR(a),AS(a));
  zp=PAV(z); 
  SPB(zp,a,za); SPB(zp,e,ze); SPB(zp,i,zy); SPB(zp,x,zx);
- return vaspz(z);
+ return jtvaspz(jt,z);
 }    /* frames and cell ranks equal */
 
 A jtvasp(J jt,A a,A w,C id,VF ado,I cv,I t,I zt,I af,I acr,I wf,I wcr,I f,I r){A fs,z;

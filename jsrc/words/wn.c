@@ -44,7 +44,7 @@ static B jtnumj(J jt,I n,C*s,void*vv){C*t,*ta;D x,y;Z*v;
  if(ta){C c;
   c=*(1+ta);
   if(!(0<=x&&(c=='d'||c=='r')))return 0;
-  if(c=='d')y*=PI/180; if(y<=-P2||P2<=y)y-=P2*jfloor(y/P2); if(0>y)y+=P2;
+  if(c=='d')y*=PI/180; if(y<=-P2||P2<=y)y-=P2*floor(y/P2); if(0>y)y+=P2;
   v->re=y==0.5*PI||y==1.5*PI?0:x*cos(y); v->im=y==PI?0:x*sin(y);
  }else{v->re=x; v->im=y;}
  return 1;
@@ -63,11 +63,11 @@ static B jtnumi(J jt,I n,C*s,void*vv){I neg;I j;
 static B jtnumx(J jt,I n,C*s,void*vv){A y;B b,c;C d;I j,k,m,*yv;X*v;
  v=(X*)vv;
  d=s[n-1]; b='-'==s[0]; c='x'==d||'r'==d; s+=b;
- if('-'==d){if(!(2>=n))return 0; if(!(*v=rifvs(vci(1==n?XPINF:XNINF))))return 0; return 1;}
+ if('-'==d){if(!(2>=n))return 0; if(!(*v=jtrifvs(jt,jtvci(jt,1==n?XPINF:XNINF))))return 0; return 1;}
  n-=b+c; if(!(m=(n+XBASEN-1)/XBASEN))return 0; k=n-XBASEN*(m-1);
  GATV0(y,INT,m,1); yv=m+AV(y);
  DQ(m, j=0; DQ(k, I dig=*s++; if(!BETWEENC(dig,'0','9'))return 0; j=10*j+(dig-'0');); *--yv=b?-j:j; k=XBASEN;);
- if(!(*v=yv[m-1]?y:mkwris(xstd(y))))return 0;  // this stores into the extended result
+ if(!(*v=yv[m-1]?y:jtmkwris(jt,jtxstd(jt,y))))return 0;  // this stores into the extended result
  return 1;
 }
 
@@ -79,7 +79,7 @@ static B jtnumr(J jt,I n,C*s,void*vv){C c,*t;I m,p,q;Q*v;
   if(!(numx(n-m-1,s+m+1,&v->d)))return 0;
   p=AV(v->n)[0]; q=AV(v->d)[0];
   if(!(p!=XPINF&&p!=XNINF||q!=XPINF&&q!=XNINF))return 0;
-  RE(*v=qstd(*v));
+  RE(*v=jtqstd(jt,*v));
  }
  return 1;
 }
@@ -96,7 +96,7 @@ static B jtnumb(J jt,I n,C*s,Z*v,Z b){A c,d,y;I k;
  I m=strlen(dig);
  if(!n){*v=zeroZ; return 1;}
  if(!(d=jtindexof(jt,jtstr(jt,m,(C*)dig),jtstr(jt,n,s))))return 0;
- if(!(all0(jteps(jt,sc(m),d))))return 0;
+ if(!(all0(jteps(jt,jtsc(jt,m),d))))return 0;
  k=sizeof(Z);
  GAT0(c,CMPX,1,0); memcpy(AV(c),&b,k); if(!(y=jtbase2(jt,c,d)))return 0; memcpy(v,AV(y),k);
  return 1;
@@ -116,9 +116,9 @@ static B jtnumbpx(J jt,I n,C*s,void*vv){B ne,ze;C*t,*u;I k,m;Z b,p,q,*v,x,y;
   // in that case reproduce the calculation from numb, but with the integer base, and if the result is still integral, flag it
   I intbase=(I)b.re; if(!u && b.im==0.0 && b.re==(D)intbase){A d;
    if(!(d=jtindexof(jt,jtstr(jt,strlen(dig),(C*)dig),jtstr(jt,m,t))))return 0;  // convert digits to index numbers
-   if(!(all0(jteps(jt,sc(strlen(dig)),d))))return 0;   // verify only allowed digits in the field
-   if(ne)if(!(d=negate(d)))return 0;  // recover negative sign
-   if(!(d=jtbcvt(jt,0,jtbase2(jt,sc(intbase),d))))return 0;  // d =. base #. d converted to smallest possible precision
+   if(!(all0(jteps(jt,jtsc(jt,strlen(dig)),d))))return 0;   // verify only allowed digits in the field
+   if(ne)if(!(d=jtnegate(jt,d)))return 0;  // recover negative sign
+   if(!(d=jtbcvt(jt,0,jtbase2(jt,jtsc(jt,intbase),d))))return 0;  // d =. base #. d converted to smallest possible precision
    if(AT(d)&INT){*(I*)&v->re=IAV(d)[0]; *(I*)&v->im=NANFLAG; return 1;}  // if result is INT, keep it at full precision
   }
 #endif
@@ -140,7 +140,7 @@ static B jtnumbpx(J jt,I n,C*s,void*vv){B ne,ze;C*t,*u;I k,m;Z b,p,q,*v,x,y;
  // the input area is writable.  The exponent part ends with a natural NUL.
  C savpx = *t; *t=0; B rc = numj(t-s,s,&x); *t = savpx; RZ(rc);
  ++t; if(!(numj(n+s-t,t,&y)))return 0;  // if p- or x-type, get x=mantissa y=exponent
- y = u ? zexp(y) : jtzpow(jt,zpi,y);  // ^y or pi^y
+ y = u ? jtzexp(jt,y) : jtzpow(jt,zpi,y);  // ^y or pi^y
  *v = jtztymes(jt,x,y);   // calculate x*^y or x*pi^y
  return 1;
 }
@@ -191,7 +191,7 @@ static I jtnumcase(J jt,I n,C*s){B e;C c;I ret;
 A jtconnum(J jt,I n,C*s){PROLOG(0101);A y,z;B (*f)(J,I,C*,void*),p=1;C c,*v;I d=0,e,k,m,t,*yv;
  if(1==n)                {if(k=s[0]-'0',(UI)k<=(UI)9)return num( k); else return ainf;}  // single digit - a number or _
  else if(2==n&&CSIGN==*s){if(k=s[1]-'0',(UI)k<=(UI)9)return num(-k);}
- RZ(y=mkwris(jtstr(jt,1+n,s))); s=v=CAV(y); s[n]=0;  // s->null-terminated string in new copy, which we will modify
+ RZ(y=jtmkwris(jt,jtstr(jt,1+n,s))); s=v=CAV(y); s[n]=0;  // s->null-terminated string in new copy, which we will modify
  GATV0(y,INT,1+n,1); yv=AV(y);  // allocate area for start/end positions
  C bcvtmask=0;  // bit 1 set to suppress B01, bit 2 to suppress INT
  DO(n, c=*v; c=c==CSIGN?'-':c; c=(c==CTAB)|(c==' ')?C0:c; *v++=c; B b=C0==c; bcvtmask=bcvtmask|(4*(c=='.')+2*((p|b)^1)); yv[d]=i; d+=p^b; p=b;);  // replace _ with -, whitespace with \0; and record start and end positions

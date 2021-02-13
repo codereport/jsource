@@ -20,7 +20,7 @@ DC jtssnext(J jt,DC d,C c){
 }    /* set dcss for next stack level */
 
 static A jtssdo(J jt,A a,A w,C c){DC d,e;I n;
- RZ(w=vs(w));
+ RZ(w=jtvs(jt,w));
  ASSERT(jt->uflags.us.cx.cx_c.db,EVDOMAIN);
  d=jt->sitop;                               /* cut back to topmost suspension  */
  while(d&&!d->dcsusp){                      /* do until topmost suspension     */
@@ -30,7 +30,7 @@ static A jtssdo(J jt,A a,A w,C c){DC d,e;I n;
  ASSERT(d!=0,EVDOMAIN);                        /* must have a suspension          */
  while(d&&DCCALL!=d->dctype)d=d->dclnk;     /* find topmost call               */
  ASSERT(d!=0,EVDOMAIN);                        /* must have a call                */
- if(a)RE(n=lnumcw(i0(a),d->dcc));           /* source line # to cw line #      */
+ if(a)RE(n=lnumcw(jti0(jt,a),d->dcc));           /* source line # to cw line #      */
  jt->dbsusact=SUSSS;
  switch(c){
   case SSSTEPOVER: DGOTO(d,a?n:d->dcix) jt->dbss=d->dcss=c; jt->dbssd=d;   break;

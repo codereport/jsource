@@ -20,20 +20,20 @@ static A jtovs0(J jt,B p,I r,A a,A w){A a1,e,q,x,y,z;B*b;I at,*av,c,d,j,k,f,m,n,
  j=k=0; DO(f, if(b[i])++j; else ++k;);
  switch(2*b[f]+!jtequ(jt,a,e)){
   case 0:  /* dense and a equal e */
-   RZ(y=ca(y)); 
+   RZ(y=jtca(jt,y)); 
    RZ(x=p?irs2(x,a,0L,AR(x)-(1+k),0L,jtover):irs2(a,x,0L,0L,AR(x)-(1+k),jtover)); 
    break;
   case 1:  /* dense and a not equal to e */
    GATV0(q,INT,c,1); v=AV(q); DO(c, v[i]=ws[av[i]];); RZ(q=odom(2L,c,v));
    if(AN(q)>=AN(y)){
     RZ(z=shape(jt,x)); *AV(z)=*AS(q); 
-    RZ(x=jtfrom(jt,grade1(jtover(jt,y,jtless(jt,q,y))),jtover(jt,x,jtreshape(jt,z,e))));
+    RZ(x=jtfrom(jt,jtgrade1(jt,jtover(jt,y,jtless(jt,q,y))),jtover(jt,x,jtreshape(jt,z,e))));
     y=q;
    }
    RZ(x=p?irs2(x,a,0L,AR(x)-(1+k),0L,jtover):irs2(a,x,0L,0L,AR(x)-(1+k),jtover));
    break;
   case 2:  /* sparse and a equals e */
-   RZ(y=ca(y)); 
+   RZ(y=jtca(jt,y)); 
    if(!p){v=j+AV(y); DQ(m, ++*v; v+=c;);} 
    break;
   case 3:  /* sparse and a not equal to e */
@@ -41,7 +41,7 @@ static A jtovs0(J jt,B p,I r,A a,A w){A a1,e,q,x,y,z;B*b;I at,*av,c,d,j,k,f,m,n,
    if(p){RZ(y=jtover(jt,y,q)); v=AV(y)+j+m*c; d=ws[f]; DQ(n, *v=d; v+=c;);}
    else {RZ(y=jtover(jt,q,y)); v=AV(y)+j+n*c;          DQ(m, ++*v; v+=c;);}
    RZ(q=shape(jt,x)); *AV(q)=n; RZ(q=jtreshape(jt,q,a)); RZ(x=p?jtover(jt,x,q):jtover(jt,q,x));
-   if(f){RZ(q=grade1(y)); RZ(y=jtfrom(jt,q,y)); RZ(x=jtfrom(jt,q,x));}
+   if(f){RZ(q=jtgrade1(jt,y)); RZ(y=jtfrom(jt,q,y)); RZ(x=jtfrom(jt,q,x));}
  }
  GASPARSE(z,STYPE(t),1,zr,ws); 
  if(r)++*(f+AS(z)); else *(wr+AS(z))=2;
@@ -75,14 +75,14 @@ static A jtovs(J jt,A a,A w){A ae,ax,ay,q,we,wx,wy,x,y,z,za,ze;B*ab,*wb,*zb;I ac
  ap=PAV(a); ay=SPA(ap,i); ax=SPA(ap,x); if(TYPESNE(t,at))RZ(ax=jtcvt(jt,t,ax));
  wp=PAV(w); wy=SPA(wp,i); wx=SPA(wp,x); if(TYPESNE(t,at))RZ(wx=jtcvt(jt,t,wx));
  GASPARSE(z,STYPE(t),1,r,zs); zp=PAV(z);
- SPB(zp,a,za); SPBV(zp,e,ze,ca(TYPESEQ(t,at)?ae:we));
+ SPB(zp,a,za); SPBV(zp,e,ze,jtca(jt,TYPESEQ(t,at)?ae:we));
  if(*zb){
   SPB(zp,x,  jtover(jt,ax,wx));
   SPBV(zp,i,y,jtover(jt,ay,wy)); v=AV(y)+AN(ay); m=*as; DQ(*AS(wy), *v+=m; v+=c;);
  }else{C*av,*wv,*xv;I am,ak,i,j,k,mn,p,*u,wk,wm,xk,*yv;
   i=j=p=0; k=bpnoun(t); 
-  m=*AS(ay); u=AV(ay); av=CAV(ax); am=aii(ax); ak=k*am;
-  n=*AS(wy); v=AV(wy); wv=CAV(wx); wm=aii(wx); wk=k*wm; mn=m+n; xk=k*(am+wm);
+  m=*AS(ay); u=AV(ay); av=CAV(ax); am=jtaii(jt,ax); ak=k*am;
+  n=*AS(wy); v=AV(wy); wv=CAV(wx); wm=jtaii(jt,wx); wk=k*wm; mn=m+n; xk=k*(am+wm);
   GATVR(y,INT,mn*c,      2,     AS(ay)); yv= AV(y); AS(y)[0]=mn;                 
   GA(x,t,  mn*(am+wm),AR(ax),AS(ax)); xv=CAV(x); *AS(x)=mn; *(1+AS(x))=*zs; mvc(k*AN(x),xv,k,AV(ze));
   while(i<m||j<n){I cmp;
@@ -96,7 +96,7 @@ static A jtovs(J jt,A a,A w){A ae,ax,ay,q,we,wx,wy,x,y,z,za,ze;B*ab,*wb,*zb;I ac
    }
    yv+=c; xv+=xk;
   }
-  SPB(zp,i,p?jttake(jt,sc(mn-p),y):y); SPB(zp,x,p?jttake(jt,sc(mn-p),x):x);
+  SPB(zp,i,p?jttake(jt,jtsc(jt,mn-p),y):y); SPB(zp,x,p?jttake(jt,jtsc(jt,mn-p),x):x);
  }
  return z;
 }    /* a,"r w where a or w or both are sparse */
@@ -177,7 +177,7 @@ static void moveawSV(C *zv,C *av,C *wv,I c,I k,I ma,I mw,I arptreset,I wrptreset
 int (*p[4]) (int x, int y);
 static void(*moveawtbl[])() = {moveawVV,moveawVS,moveawSV};
  A jtover(J jt,A a,A w){AD * RESTRICT z;C*zv;I replct,framect,acr,af,ar,*as,k,ma,mw,p,q,r,t,wcr,wf,wr,*ws,zn;
- F2PREFIP;
+ FPREFIP;
  if(!(a && w)) return 0;
  UI jtr=jt->ranks;//  fetch early
  if((SPARSE&(AT(a)|AT(w)))!=0){return jtovs(jt,a,w);}  // if either arg is sparse, switch to sparse code
@@ -249,7 +249,7 @@ static void(*moveawtbl[])() = {moveawVV,moveawVS,moveawSV};
 }    /* overall control, and a,w and a,"r w for cell rank <: 2 */
 
  A jtstitch(J jt,A a,A w){I ar,wr; A z;
- F2PREFIP;
+ FPREFIP;
  if(!(a && w)) return 0;
  ar=AR(a); wr=AR(w);
  ASSERT((-ar&-wr&-(AS(a)[0]^AS(w)[0]))>=0,EVLENGTH);  // a or w scalar, or same # items    always OK to fetch s[0]
@@ -258,7 +258,7 @@ static void(*moveawtbl[])() = {moveawVV,moveawVS,moveawSV};
 }
 
  A jtlamin1(J jt, A w){A x;I* RESTRICT s,* RESTRICT v,wcr,wf,wr; 
- F1PREFIP;
+ FPREFIP;
  if(!w) return 0;
  wr=AR(w); wcr=(RANKT)jt->ranks; wcr=wr<wcr?wr:wcr; RESETRANK; wf=wr-wcr;
  fauxblockINT(wfaux,4,1); fauxINT(x,wfaux,1+wr,1) v=AV(x);
@@ -278,7 +278,7 @@ static void(*moveawtbl[])() = {moveawVV,moveawVS,moveawSV};
 }    /* a,:"r w */
 
 // Append, including tests for append-in-place
-A jtapip(J jt, A a, A w){F2PREFIP;A h;C*av,*wv;I ak,k,p,*u,*v,wk,wm,wn;
+A jtapip(J jt, A a, A w){FPREFIP;A h;C*av,*wv;I ak,k,p,*u,*v,wk,wm,wn;
  // Allow inplacing if we have detected an assignment to a name on the last execution, and the address
  // being assigned is the same as a, and the usecount of a allows inplacing; or
  // the argument a is marked inplaceable.  Usecount of <1 is inplaceable, and for memory-mapped nouns, 2 is also OK since

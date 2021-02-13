@@ -9,13 +9,13 @@
 
 static A jtth2box(J jt,A a,A w){A z;I n,p,q,*v,x,y;
  p=jt->pos[0]; q=jt->pos[1];
- RZ(a=vi(a)); n=AN(a); v=AV(a);
+ RZ(a=jtvi(jt,a)); n=AN(a); v=AV(a);
  ASSERT(1>=AR(a),EVRANK);
  ASSERT(1==n||2==n,EVLENGTH);
  x=v[0]; y=2>n?0:v[1]; 
  ASSERT((UI)x<=2&&(UI)y<=2,EVDOMAIN);
  jt->pos[0]=x; jt->pos[1]=y;
- z=thorn1(w); 
+ z=jtthorn1(jt,w); 
  jt->pos[0]=p; jt->pos[1]=q;
  return z;
 }
@@ -99,17 +99,17 @@ static B jtfmtx(J jt,B e,I m,I d,C*s,I t,X*wv){B b;C*v=jt->th2buf;I c,n,p,q,*xv;
 }    /* format one extended integer */
 
 static B jtfmtq(J jt,B e,I m,I d,C*s,I t,Q*wv){B b;C*v=jt->th2buf;I c,ex=0,k,n,p,q,*xv;Q y;X a,g,x;
- y=*wv; x=y.n; c=XDIG(x); b=0>c; if(b)x=negate(x);
+ y=*wv; x=y.n; c=XDIG(x); b=0>c; if(b)x=jtnegate(jt,x);
  if(c==XPINF||c==XNINF){if(e)*v++=' '; if(e>b)*v++=' '; if(b)*v++='_'; *v++='_'; *v=0; return 1;}
- RZ(a=jtxpow(jt,xc(10L),xc(1+d)));
+ RZ(a=jtxpow(jt,jtxc(jt,10L),jtxc(jt,1+d)));
  if(e&&c&&0>jtxcompare(jt,x,y.d)){
   ex=XBASEN*(AN(y.n)-AN(y.d));
-  g=jtxtymes(jt,x,jtxpow(jt,xc(10L),xc(1+d-ex)));
+  g=jtxtymes(jt,x,jtxpow(jt,jtxc(jt,10L),jtxc(jt,1+d-ex)));
   RZ(x=xdiv(g,y.d,XMFLR));
-  while(1==jtxcompare(jt,a,x)){--ex; g=jtxtymes(jt,xc(10L),g); RZ(x=xdiv(g,y.d,XMFLR));}
-  if(b)x=negate(x);
+  while(1==jtxcompare(jt,a,x)){--ex; g=jtxtymes(jt,jtxc(jt,10L),g); RZ(x=xdiv(g,y.d,XMFLR));}
+  if(b)x=jtnegate(jt,x);
  }else x=xdiv(jtxtymes(jt,y.n,a),y.d,XMFLR);
- RZ(x=xdiv(jtxplus(jt,x,xc(5L)),xc(10L),XMFLR));
+ RZ(x=xdiv(jtxplus(jt,x,jtxc(jt,5L)),jtxc(jt,10L),XMFLR));
  n=AN(x); xv=AV(x)+n-1; c=*xv; b=0>c; if(b)c=-c;
  q=c>999?4:c>99?3:c>9?2:1; p=q+XBASEN*(n-1); if(c||!e)ex+=p-d-1;
  if(e)return fmtex(m,d,n,xv,b,c,q,ex);
@@ -240,8 +240,8 @@ static B jtth2ctrl(J jt,A a,A*ep,A*mp,A*dp,A*sp,I*zkp){A da,ea,ma,s;B b=1,*ev,r,
   // Split a into field-width m and #decimal places d, and x as a flag, negative to indicate exponential form
   if(r){m=av[i]; x=m<0; d=0;}  // real a: m= value of a, d=0 (no decimal places), 
   else{
-   y=au[i].re; m=(I)tfloor(y); ASSERT(TEQ(y,(D)m),EVDOMAIN); x=m<0;  // real is field size, audit is integer
-   y=au[i].im; d=(I)tfloor(y); ASSERT(TEQ(y,(D)d),EVDOMAIN); if(0>y)x=1;  // imag is decimal places
+   y=au[i].re; m=(I)jttfloor(jt,y); ASSERT(TEQ(y,(D)m),EVDOMAIN); x=m<0;  // real is field size, audit is integer
+   y=au[i].im; d=(I)jttfloor(jt,y); ASSERT(TEQ(y,(D)d),EVDOMAIN); if(0>y)x=1;  // imag is decimal places
   }
   // Take abs of field sizes
   if(0>m)m=-m; if(0>d)d=-d; ASSERT(0<=(m|d),EVLIMIT);  // verify no overflow
@@ -288,7 +288,7 @@ static B jtth2ctrl(J jt,A a,A*ep,A*mp,A*dp,A*sp,I*zkp){A da,ea,ma,s;B b=1,*ev,r,
   // Format each field into its own box
   DO(c, if(i<an){e=ev[i]; m=mv[i]; d=dv[i];} RZ(yv[i]=th2a(e,m,d,sv+=sk,n,t,wk,wv+=k,(B)!i)););
   // Join the fields of each line to produce an nxc table of characters, one row per 1-cell of w
-  RZ(z=razeh(y));
+  RZ(z=jtrazeh(jt,y));
   // If w has rank > 2, we need to rearrange the rows into an array.  Or, if there is a single 1-cell and
   // r was an atom or a list, we need to change the result from a table to a single list.
   if(2<r||1==n&&2!=r){

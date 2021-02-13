@@ -12,12 +12,12 @@ jfe is a repl (read/execute/print/loop) that uses je as a server
  jfe reads line from kb
  jfe calls jdo() in je to execute line
   je calls jsto() to give string to jfe to print
-  je calls jgets() to get kb input for debug or (1!:2[2) or (n : 0)
+  je calls jtjgets(jt,) to get kb input for debug or (1!:2[2) or (n : 0)
   je jdo() returns
  jfe loop
 
 je can call jsto()  0 or more times in a single repl loop
-je can call jgets() 0 or more times in a single repl loop
+je can call jtjgets(jt,) 0 or more times in a single repl loop
 
 jfe routines (jconsole.c):
  load je shared library
@@ -35,26 +35,26 @@ je routines (io.c):
 
  jsto(type,string) - jt->smoutput() to give jfe output
              
- jgets() - jt->sminput() callback to get jfe kb input
+ jtjgets(jt,) - jt->sminput() callback to get jfe kb input
             or
            advl() to get next script line
 
 
  jtwri()    - write to file - if file is 2, calls jsto()
 
- jtjfread() - read file - if file is 1, calls jgets()
+ jtjfread() - read file - if file is 1, calls jtjgets(jt,)
  
- jtcolon0() - get defn lines with jgets()
+ jtcolon0() - get defn lines with jtjgets(jt,)
 
 *** je debug
-set je debug stops at jsto() and jgets()
+set je debug stops at jsto() and jtjgets(jt,)
 and continue through various inputs to see the flow
  
 *** jfe repl (read/execute/print/loop)
  s=input()
  call jdo(s)           ---------> jdo() calls jtddtokens(jt,sentence)
    input()   (optional) <-------- if DD seen, get more lines if needed by calling jt->sminput
-                                  jdo() calls immex(inpl(sentence))
+                                  jdo() calls jtimmex(jt,inpl(sentence))
                                    ... 
    output(s)           <--------  jsto(type,s) - jt->smoutout(type,s)
    output returns      ---------> ...
@@ -77,21 +77,21 @@ and continue through various inputs to see the flow
 *** repl with debug suspension
  ...
                                      loop as long as suspended
-                                       call jgets()
+                                       call jtjgets(jt,)
    input()            <---------       call jt->sminput()
    return line        --------->
    input()   (optional) <--------      if DD seen, get more lines if needed by calling jt->sminput
-                                       call immex(inpl(line)
+                                       call jtimmex(jt,inpl(line)
                                        loop
 *** m : 0
-similar to debug suspension except jgets() lines added  to defn.  m : 0 stops reading
+similar to debug suspension except jtjgets(jt,) lines added  to defn.  m : 0 stops reading
 after encountering ) on a line by itself.  If not 0 : 0, call jtddtokens(jt,) after each line
-to see if more lines need to be read to finish the DD; is so, call jgets() to get them
+to see if more lines need to be read to finish the DD; is so, call jtjgets(jt,) to get them
 
 *** script load
 linf() is called first to read in all lines.  It sets jt->dcs to indicate that fact.  Thereafter
-all calls to jgets() return llies from the file without calling jt->sminput().
-jgets() calls advl() to advance through the lines, returns 0 for EOF.  Error is possible.
+all calls to jtjgets(jt,) return llies from the file without calling jt->sminput().
+jtjgets(jt,) calls advl() to advance through the lines, returns 0 for EOF.  Error is possible.
 
 The lines are executed one by one.  Before each is executed, jtddtokens(jt,) is called to see if more lines
 are needed to finish a DD.
@@ -149,7 +149,7 @@ A jtinpl(J jt,B b,I n,C*s){C c;I k=0;
  if(n&&(c=s[n-1],CLF==c||CCR==c))--n;  // discard trailing [CR], CRLF, CRCR
  ASSERT(!*jt->adbreak,EVINPRUPT);
  if(!b){ /* 1==b means literal input */
-  if(n&&COFF==s[n-1])joff(num(0));
+  if(n&&COFF==s[n-1])jtjoff(jt,num(0));
   c=jt->bx[9]; if((UC)c>127)DO(n, if(' '!=s[i]&&c!=s[i]){k=i; break;});
  }
  return jtstr(jt,n-k,s+k);
@@ -166,7 +166,7 @@ static I advl(I j,I n,C*s){B b;C c,*v;
 void breakclose(J jt);
 
 static C* nfeinput(J jt,C* s){A y;
- jt->adbreakr=&breakdata; y=exec1(cstr(s)); jt->adbreakr=jt->adbreak;
+ jt->adbreakr=&breakdata; y=jtexec1(jt,jtcstr(jt,s)); jt->adbreakr=jt->adbreak;
  if(!y){breakclose(jt);exit(2);} /* J input verb failed */
  jtwri(jt,MTYOLOG,"",strlen(CAV(y)),CAV(y));
  return CAV(y); /* don't combine with previous line! CAV runs (x) 2 times! */
@@ -195,7 +195,7 @@ A jtjgets(J jt,C*p){A y;B b;C*v;I j,k,m,n;UC*s;
     1!:1[1 read from keyboard */
  // if we are already prompting, a second prompt would be unrecoverable & we fail this request
  ASSERT(jt->recurstate<RECSTATEPROMPT,EVCTRL)
- showerr();  // if there is an error at this point, display it (shouldn't happen)
+ jtshowerr(jt);  // if there is an error at this point, display it (shouldn't happen)
  // read from the front end. This is either through the nfe path or via the callback to the FE
  if(jt->nfe){
   // Native Front End
@@ -224,7 +224,7 @@ void breakclose(J jt)
 
 
  A jtjoff(J jt, A w){I x;
- x=i0(w);
+ x=jti0(jt,w);
  jt->jerr=0; jt->etxn=0; /* clear old errors */
  if(jt->sesm)jsto(jt, MTYOEXIT,(C*)x); else JFree(jt);
 // let front-end to handle exit
@@ -245,19 +245,19 @@ I jdo(J jt, C* lp){I e;A x;
  x=inpl(0,(I)strlen(lp),lp);
  // Run any enabled immex sentences both before & after the line being executed.  I don't understand why we do it before, but it can't hurt since there won't be any.
  // BUT: don't do it if the call is recursive.  The user might have set the iep before a prompt, and won't expect it to be executed asynchronously
- if(jt->recurstate<RECSTATEPROMPT)while(jt->iepdo&&jt->iep){jt->iepdo=0; immex(jt->iep); if(savcallstack==0)CALLSTACKRESET MODESRESET jt->jerr=0; tpop(old);}
- // Check for DDs in the input sentence.  If there is one, call jgets() to finish it.  Result is enqueue()d sentence.  If recursive, don't allow call to jgets()
- x=jtddtokens(jt,x,(((jt->recurstate&RECSTATEPROMPT)<<(2-1)))+1+(AN(jt->locsyms)>1)); if(!jt->jerr)immex(x);  // allow reads from jgets() if not recursive; return enqueue() result
+ if(jt->recurstate<RECSTATEPROMPT)while(jt->iepdo&&jt->iep){jt->iepdo=0; jtimmex(jt,jt->iep); if(savcallstack==0)CALLSTACKRESET MODESRESET jt->jerr=0; jttpop(jt,old);}
+ // Check for DDs in the input sentence.  If there is one, call jtjgets(jt,) to finish it.  Result is enqueue()d sentence.  If recursive, don't allow call to jtjgets(jt,)
+ x=jtddtokens(jt,x,(((jt->recurstate&RECSTATEPROMPT)<<(2-1)))+1+(AN(jt->locsyms)>1)); if(!jt->jerr)jtimmex(jt,x);  // allow reads from jtjgets(jt,) if not recursive; return enqueue() result
  e=jt->jerr;
  if(savcallstack==0)CALLSTACKRESET MODESRESET jt->jerr=0;
- if(jt->recurstate<RECSTATEPROMPT)while(jt->iepdo&&jt->iep){jt->iepdo=0; immex(jt->iep); if(savcallstack==0)CALLSTACKRESET MODESRESET jt->jerr=0; tpop(old);}
- showerr();
- spfree();
- tpop(old);
+ if(jt->recurstate<RECSTATEPROMPT)while(jt->iepdo&&jt->iep){jt->iepdo=0; jtimmex(jt,jt->iep); if(savcallstack==0)CALLSTACKRESET MODESRESET jt->jerr=0; jttpop(jt,old);}
+ jtshowerr(jt);
+ jtspfree(jt);
+ jttpop(jt,old);
  return e;
 }
 
-C* getlocale(J jt){A y=locname(mtv); y=AAV(y)[0]; return CAV(str0(y));}
+C* getlocale(J jt){A y=jtlocname(jt,mtv); y=AAV(y)[0]; return CAV(jtstr0(jt,y));}
 
 // Front-ends can call any functions exposed by JE, but the callback function for 11!:0 only calls jga to allocate a new literal array for returning result.
 // A front-end knows nothing how J memory pool works and it won't try to free or pop memory itself. This was just a design decision. eg,
@@ -270,15 +270,15 @@ C* getlocale(J jt){A y=locname(mtv); y=AAV(y)[0]; return CAV(str0(y));}
 //
 // This may be confusing because the actual callback functions do not appear anywhere inside JE source.
  A jtwd(J jt,    A w,A self){A z=0;C*p=0;D*pd;I e,*pi,t;V*sv;
-  F1PREFIP;
+  FPREFIP;
   F1RANK(1,jtwd,self);
   ASSERT(2>AR(w),EVRANK);
   sv=VAV(self);
-  t=i0(sv->fgh[1]);  // the n arg from the original 11!:n
+  t=jti0(jt,sv->fgh[1]);  // the n arg from the original 11!:n
   if(BETWEENO(t,2000,3000) && AN(w) && !(LIT+C2T+C4T+INT&AT(w))) {  // 2000<=t<3000
     switch(UNSAFE(AT(w))) {
     case B01:
-      RZ(w=vi(w));
+      RZ(w=jtvi(jt,w));
       break;
     case FL:
       pd=DAV(w);
@@ -315,7 +315,7 @@ C* getlocale(J jt){A y=locname(mtv); y=AAV(y)[0]; return CAV(str0(y));}
   if(!e) return mtm;   // e==0 is MTM
   ASSERT(e<=0,e); // e>=0 is EVDOMAIN etc
   if(SMOPTPOLL&jt->smoption){jt->recurstate=RECSTATEPROMPT; z=(A)((polltype)(jt->smpoll))(jt, (int)t, (int)e); jt->recurstate=RECSTATEBUSY; RZ(z);} // alternate way to get result aftercallback, but not yet used in any front-end
-  if(SMOPTNOJGA&jt->smoption) z=ca(z);  // front-end promised not to use Jga to allocate memory, but not yet used in any front-end
+  if(SMOPTNOJGA&jt->smoption) z=jtca(jt,z);  // front-end promised not to use Jga to allocate memory, but not yet used in any front-end
   if(e==-2){      // e==-2 is lit pairs
 // callback result z is a rank-1 literal array 
 // literal array will be cut into rank-1 box array here using  <;._2 
@@ -348,7 +348,7 @@ int _stdcall JDo(J jt, C* lp){int r; UI savcstackmin, savcstackinit, savqtstacki
   jt->cstackmin=savcstackmin, jt->cstackinit=savcstackinit, jt->qtstackinit=savqtstackinit;  // restore stack pointers after recursion
  }
  while(jt->nfe){  // nfe normally loops here forever
-  A *old=jt->tnextpushp; r=(int)jdo(jt,nfeinput(jt,"input_jfe_'   '")); tpop(old);
+  A *old=jt->tnextpushp; r=(int)jdo(jt,nfeinput(jt,"input_jfe_'   '")); jttpop(jt,old);
  }
  return r;
 } 
@@ -367,11 +367,11 @@ A _stdcall JGetA(J jt, I n, C* name){A x,z=0;
  if(name==0){if(jt->iomalloc){FREE(jt->iomalloc); jt->malloctotal -= jt->iomalloclen; jt->iomalloc=0; jt->iomalloclen=0;} return 0;}
  jt->jerr=0;
  A *old=jt->tnextpushp;
- if(!(x=symbrdlock(jtnfs(jt,n,name)))){ jsignal(EVILNAME);  // look up the name, error if invalid
- }else if(FUNC&AT(x)){ jsignal(EVDOMAIN);   // verify the value is not adv/verb/conj
+ if(!(x=jtsymbrdlock(jt,jtnfs(jt,n,name)))){ jtjsignal(jt,EVILNAME);  // look up the name, error if invalid
+ }else if(FUNC&AT(x)){ jtjsignal(jt,EVDOMAIN);   // verify the value is not adv/verb/conj
  }else{
   // name is OK; get the binary rep
-  if(z=binrep1(x)){
+  if(z=jtbinrep1(jt,x)){
    // bin rep was found.  Transfer it to MALLOC memory.  It is a LIT array
    // we transfer the whole thing, header and all.  Fortunately it is relocatable
    I replen = &CAV(z)[AN(z)] - (C*)z;  // length from start of z to end+1 of data
@@ -383,17 +383,17 @@ A _stdcall JGetA(J jt, I n, C* name){A x,z=0;
   }
  }
  // z has the result, which is in MALLOC memory if it exists.  Free any J memory we used
- tpop(old);
+ jttpop(jt,old);
  return z;   // return the allocated (or reused) area
 }
 
 /* socket protocol CMDSET */
 I _stdcall JSetA(J jt,I n,C* name,I dlen,C* d){
  jt->jerr=0;
- if(!jtvnm(jt,n,name)){ jsignal(EVILNAME); return EVILNAME;}
+ if(!jtvnm(jt,n,name)){ jtjsignal(jt,EVILNAME); return EVILNAME;}
  A *old=jt->tnextpushp;
  symbisdel(jtnfs(jt,n,name),jtunbin(jt,jtstr(jt,dlen,d)),jt->global);
- tpop(old);
+ jttpop(jt,old);
  return jt->jerr;
 }
 
@@ -460,7 +460,7 @@ C* _stdcall JGetLocale(J jt){
  if(jt->iomalloc){FREE(jt->iomalloc); jt->malloctotal -= jt->iomalloclen; jt->iomalloc=0; jt->iomalloclen=0;}  // free old block if any
  C* z=getlocale(jt);  // get address of string to return
  if(jt->iomalloc=MALLOC(1+strlen(z))){jt->malloctotal += 1+strlen(z); jt->iomalloclen = 1+strlen(z); strcpy(jt->iomalloc,z); }  // allocate & copy, and account for its space
- tpop(old);  // free allocated blocks
+ jttpop(jt,old);  // free allocated blocks
  return jt->iomalloc;  // return pointer to string
 }
 
@@ -485,7 +485,7 @@ void jsto(J jt,I type,C*s){C e;I ex;
   jt->mtyostr=s;
   e=jt->jerr; ex=jt->etxn;
   jt->jerr=0; jt->etxn=0;
-  jt->adbreakr=&breakdata;exec1(cstr(q));jt->adbreakr=jt->adbreak;
+  jt->adbreakr=&breakdata;jtexec1(jt,jtcstr(jt,q));jt->adbreakr=jt->adbreak;
   jt->jerr=e; jt->etxn=ex; 
  }else{
   // Normal output.  Call the output routine
@@ -529,7 +529,7 @@ int JFree(J jt){
   if(!jt) return 0;
   breakclose(jt);
   jt->jerr=0; jt->etxn=0; /* clear old errors */
-  if(jt->xep&&AN(jt->xep)){A *old=jt->tnextpushp; immex(jt->xep); fa(jt->xep); jt->xep=0; jt->jerr=0; jt->etxn=0; tpop(old); }
+  if(jt->xep&&AN(jt->xep)){A *old=jt->tnextpushp; jtimmex(jt,jt->xep); fa(jt->xep); jt->xep=0; jt->jerr=0; jt->etxn=0; jttpop(jt,old); }
   dllquit(jt);  // clean up call dll
   free(jt->heap);  // free the initial allocation
   return 0;
@@ -537,14 +537,14 @@ int JFree(J jt){
 
  A jtbreakfnq(J jt, A w){
  ASSERTMTV(w);
- return cstr(jt->breakfn);
+ return jtcstr(jt,jt->breakfn);
 }
 
  A jtbreakfns(J jt, A w){A z;I *fh,*mh=0; void* ad;
  ASSERT(1>=AR(w),EVRANK);
  ASSERT(!AN(w)||AT(w)&LIT,EVDOMAIN);
  ASSERT(AN(w)<NPATH,EVDOMAIN);
- w=str0(w);
+ w=jtstr0(jt,w);
  if(!strcmp(jt->breakfn,CAV(w))) return mtm;
  breakclose(jt);
  fh=(I*)(I)open(CAV(w),O_RDWR);
@@ -573,10 +573,10 @@ int _stdcall JGetM(J jt, C* name, I* jtype, I* jrank, I* jshape, I* jdata)
 {
  A a; char gn[256]; int z;
  A *old=jt->tnextpushp;
- if(strlen(name) >= sizeof(gn)){ jsignal(z=EVILNAME);
- }else if(valid(name, gn)){ jsignal(z=EVILNAME);
- }else if(!(a=symbrdlock(jtnfs(jt,strlen(gn),gn)))){ jsignal(z=EVDOMAIN);
- }else if(FUNC&AT(a)){ jsignal(z=EVDOMAIN);
+ if(strlen(name) >= sizeof(gn)){ jtjsignal(jt,z=EVILNAME);
+ }else if(valid(name, gn)){ jtjsignal(jt,z=EVILNAME);
+ }else if(!(a=jtsymbrdlock(jt,jtnfs(jt,strlen(gn),gn)))){ jtjsignal(jt,z=EVDOMAIN);
+ }else if(FUNC&AT(a)){ jtjsignal(jt,z=EVDOMAIN);
  }else{
   *jtype = AT(a);
   *jrank = AR(a);
@@ -584,7 +584,7 @@ int _stdcall JGetM(J jt, C* name, I* jtype, I* jrank, I* jshape, I* jdata)
   *jdata = (I)AV(a);
   z=0;  // good return
  }
- tpop(old);
+ jttpop(jt,old);
  return z;
 }
 
@@ -643,7 +643,7 @@ int _stdcall JSetM(J jt, C* name, I* jtype, I* jrank, I* jshape, I* jdata)
 
  PROLOG(0051);
  er = setterm(jt, name, jtype, jrank, jshape, jdata);
- tpop(_ttop);
+ jttpop(jt,_ttop);
  return er;
 }
 

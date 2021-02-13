@@ -355,7 +355,7 @@ static A jtsbunind(J jt, A w){A z;I j,n,*zv;
   case C2TX:
   case C4TX:
   case LITX: return 1>=AR(w)?jtsbunstr(jt,-1L,w):jtsbunlit(jt,' ',w);
-  case BOXX: return sbunbox(w);
+  case BOXX: return jtsbunbox(jt,w);
 }}   /* monad s: main control */
 
  A jtsborder(J jt, A w){A z;I n,*zv;SB*v;
@@ -370,7 +370,7 @@ static A jtsbbox(J jt, A w){A z,*zv;C*s;I n;SB*v;SBU*u;
  n=AN(w); v=SBAV(w);
  ASSERT(!n||SBT&AT(w),EVDOMAIN);
  GATV(z,BOX,n,AR(w),AS(w)); zv=AAV(z);
- DO(n, u=SBUV(*v++); s=SBSV(u->i); RZ(*zv++=incorp(SBC4&u->flag?vec(C4T,u->n>>2,s):SBC2&u->flag?vec(C2T,u->n>>1,s):jtstr(jt,u->n,s))););
+ DO(n, u=SBUV(*v++); s=SBSV(u->i); RZ(*zv++=jtincorp(jt,SBC4&u->flag?vec(C4T,u->n>>2,s):SBC2&u->flag?vec(C2T,u->n>>1,s):jtstr(jt,u->n,s))););
  return z;
 }    /* boxed strings for symbol array w */
 
@@ -473,7 +473,7 @@ static A jtsbcheck1(J jt,A una,A sna,A u,A s,A h,A roota,A ff,A gp){PROLOG(0003)
  GATV0(x,B01,c,1); dnv=BAV(x); memset(dnv,C0,c);
  GATV0(x,B01,c,1); upv=BAV(x); memset(upv,C0,c);
  GATV0(x,LIT,c,1); ptv=CAV(x); memset(ptv,C0,c); ptv[0]=1;
- GATV0(x,BOX,c,1); xv=AAV(x); RZ(xv[0]=incorp(jtstr(jt,uv->n,sv+uv->i)));
+ GATV0(x,BOX,c,1); xv=AAV(x); RZ(xv[0]=jtincorp(jt,jtstr(jt,uv->n,sv+uv->i)));
  GATV0(y,INT,c,1); yv= AV(y); yv[0]=uv->order;
  for(i=1,v=1+uv;i<c;++i,++v){S c2;I ord,vi,vn;UC*vc;UI k;
   c2=v->flag&SBC2+SBC4;
@@ -491,7 +491,7 @@ static A jtsbcheck1(J jt,A una,A sna,A u,A s,A h,A roota,A ff,A gp){PROLOG(0003)
   j=k%hn; while(i!=hv[j]&&0<=hv[j])j=(1+j)%hn;
   ASSERTD(i==hv[j],"u/h mismatch");
   ASSERTD(BLACK==v->color||RED==v->color,"u color");
-  RZ(xv[i]=incorp(c2&SBC4?vec(C4T,vn>>2,vc):c2&SBC2?vec(C2T,vn>>1,vc):jtstr(jt,vn,vc)));
+  RZ(xv[i]=jtincorp(jt,c2&SBC4?vec(C4T,vn>>2,vc):c2&SBC2?vec(C2T,vn>>1,vc):jtstr(jt,vn,vc)));
   yv[i]=ord=v->order;
   j=v->parent; ASSERTD(    BETWEENO(j,0,c)&&2>=++ptv[j],"u parent");                        
   j=v->left;   ASSERTD(!j||BETWEENO(j,0,c)&&1>=++lfv[j]&&     ord>(j+uv)->order ,"u left"       );
@@ -499,11 +499,11 @@ static A jtsbcheck1(J jt,A una,A sna,A u,A s,A h,A roota,A ff,A gp){PROLOG(0003)
   j=v->down;   ASSERTD(    BETWEENO(j,0,c)&&1>=++dnv[j]&&(!j||ord>(j+uv)->order),"u predecessor");
   j=v->up;     ASSERTD(    BETWEENO(j,0,c)&&1>=++upv[j]&&(!j||ord<(j+uv)->order),"u successor"  );
  }
- ASSERTD(jtequ(jt,grade1(x),grade1(y)),"u order");
+ ASSERTD(jtequ(jt,jtgrade1(jt,x),jtgrade1(jt,y)),"u order");
  EPILOG(num(1));
 }
 
-static A jtsbcheck(J jt, A w){return sbcheck1(sc(jt->sbun),sc(jt->sbsn),jt->sbu,jt->sbs,jt->sbh,sc(ROOT),sc(FILLFACTOR),sc(GAP));}
+static A jtsbcheck(J jt, A w){return sbcheck1(jtsc(jt,jt->sbun),jtsc(jt,jt->sbsn),jt->sbu,jt->sbs,jt->sbh,jtsc(jt,ROOT),jtsc(jt,FILLFACTOR),jtsc(jt,GAP));}
 
 static A jtsbsetdata(J jt, A w){A h,s,u,*wv,x;
  ASSERTD(BOX&AT(w),"arg type");
@@ -513,9 +513,9 @@ static A jtsbsetdata(J jt, A w){A h,s,u,*wv,x;
  RZ(sbcheck1(wv[0],wv[1],wv[2],wv[3],wv[4],wv[5],wv[6],wv[7]));
  jt->sbun=AV(wv[0])[0];
  jt->sbsn=AV(wv[1])[0];
- RZ(x=ca(wv[2])); ras(x); u=jt->sbu; jt->sbu=x; jt->sbuv=(SBU*)AV(x);
- RZ(x=ca(wv[3])); ras(x); s=jt->sbs; jt->sbs=x; jt->sbsv=     CAV(x);
- RZ(x=ca(wv[4])); ras(x); h=jt->sbh; jt->sbh=x; jt->sbhv=      AV(x);
+ RZ(x=jtca(jt,wv[2])); ras(x); u=jt->sbu; jt->sbu=x; jt->sbuv=(SBU*)AV(x);
+ RZ(x=jtca(jt,wv[3])); ras(x); s=jt->sbs; jt->sbs=x; jt->sbsv=     CAV(x);
+ RZ(x=jtca(jt,wv[4])); ras(x); h=jt->sbh; jt->sbh=x; jt->sbhv=      AV(x);
  ROOT      =AV(wv[5])[0];
  FILLFACTOR=AV(wv[6])[0];
  GAP       =AV(wv[7])[0];
@@ -525,37 +525,37 @@ static A jtsbsetdata(J jt, A w){A h,s,u,*wv,x;
 
 static A jtsbgetdata(J jt, A w){A z,*zv;
  GAT0(z,BOX,8,1); zv=AAV(z);
- RZ(zv[0]=incorp(sc(jt->sbun)));
- RZ(zv[1]=incorp(sc(jt->sbsn)));
- RZ(zv[2]=incorp(ca(jt->sbu)));
- RZ(zv[3]=incorp(ca(jt->sbs)));
- RZ(zv[4]=incorp(ca(jt->sbh)));
- RZ(zv[5]=incorp(sc(ROOT)));
- RZ(zv[6]=incorp(sc(FILLFACTOR)));
- RZ(zv[7]=incorp(sc(GAP)));
+ RZ(zv[0]=jtincorp(jt,jtsc(jt,jt->sbun)));
+ RZ(zv[1]=jtincorp(jt,jtsc(jt,jt->sbsn)));
+ RZ(zv[2]=jtincorp(jt,jtca(jt,jt->sbu)));
+ RZ(zv[3]=jtincorp(jt,jtca(jt,jt->sbs)));
+ RZ(zv[4]=jtincorp(jt,jtca(jt,jt->sbh)));
+ RZ(zv[5]=jtincorp(jt,jtsc(jt,ROOT)));
+ RZ(zv[6]=jtincorp(jt,jtsc(jt,FILLFACTOR)));
+ RZ(zv[7]=jtincorp(jt,jtsc(jt,GAP)));
  return z;
 }
 
  A jtsb2(J jt,A a,A w){A z;I j,k,n;
- RE(j=i0(a)); n=AN(w);
+ RE(j=jti0(jt,a)); n=AN(w);
  ASSERT(!BETWEENC(j,1,7)||!n||SBT&AT(w),EVDOMAIN);
  switch(j){
   default:   ASSERT(0,EVDOMAIN);
   case 0:
-   RE(k=i0(w));
+   RE(k=jti0(jt,w));
    switch(k){
     default: ASSERT(0,EVDOMAIN);
-    case 0:  return sc(jt->sbun);
-    case 1:  return sc(jt->sbsn);
-    case 2:  return ca(jt->sbu);
-    case 3:  return ca(jt->sbs);
-    case 4:  return ca(jt->sbh);
-    case 5:  return sc(ROOT);
-    case 6:  return sc(FILLFACTOR);
-    case 7:  return sc(GAP);
-    case 10: return sbgetdata(num(0));
-    case 11: return sbcheck(num(0));
-    case 12: return sbhashstat(num(0));
+    case 0:  return jtsc(jt,jt->sbun);
+    case 1:  return jtsc(jt,jt->sbsn);
+    case 2:  return jtca(jt,jt->sbu);
+    case 3:  return jtca(jt,jt->sbs);
+    case 4:  return jtca(jt,jt->sbh);
+    case 5:  return jtsc(jt,ROOT);
+    case 6:  return jtsc(jt,FILLFACTOR);
+    case 7:  return jtsc(jt,GAP);
+    case 10: return jtsbgetdata(jt,num(0));
+    case 11: return jtsbcheck(jt,num(0));
+    case 12: return jtsbhashstat(jt,num(0));
    }
   case  1:   return jtsbstr(jt,1L,w);
   case -1:   return jtsbunstr(jt,-1L,w);
@@ -565,23 +565,23 @@ static A jtsbgetdata(J jt, A w){A z,*zv;
   case -3:   return jtsbunlit(jt,C0,w);
   case  4:   return jtsblit(jt,' ',w);
   case -4:   return jtsbunlit(jt,' ',w);
-  case  5:   return sbbox(w);
-  case -5:   return sbunbox(w);
-  case  6:   RZ(z=ca(w)); AT(z)=INT; return z;
-  case -6:   return sbunind(w);
-  case  7:   return sborder(w);
-  case 10:   return sbsetdata(w);
-  case 16:   GAP = 4;                                       return sc(GAP);
-  case 17:   GAP++;         ASSERT(FILLFACTOR>GAP,EVLIMIT); return sc(GAP);
-  case 18:   GAP--;                                         return sc(GAP);
-  case 19:   FILLFACTOR=1024;                               return sc(FILLFACTOR);
-  case 20:   FILLFACTOR*=2;                                 return sc(FILLFACTOR);
-  case 21:   FILLFACTOR>>=1; ASSERT(FILLFACTOR>GAP,EVLIMIT); return sc(FILLFACTOR);
+  case  5:   return jtsbbox(jt,w);
+  case -5:   return jtsbunbox(jt,w);
+  case  6:   RZ(z=jtca(jt,w)); AT(z)=INT; return z;
+  case -6:   return jtsbunind(jt,w);
+  case  7:   return jtsborder(jt,w);
+  case 10:   return jtsbsetdata(jt,w);
+  case 16:   GAP = 4;                                       return jtsc(jt,GAP);
+  case 17:   GAP++;         ASSERT(FILLFACTOR>GAP,EVLIMIT); return jtsc(jt,GAP);
+  case 18:   GAP--;                                         return jtsc(jt,GAP);
+  case 19:   FILLFACTOR=1024;                               return jtsc(jt,FILLFACTOR);
+  case 20:   FILLFACTOR*=2;                                 return jtsc(jt,FILLFACTOR);
+  case 21:   FILLFACTOR>>=1; ASSERT(FILLFACTOR>GAP,EVLIMIT); return jtsc(jt,FILLFACTOR);
  }
 }
 
 // This is an initialization routine, so memory allocations performed here are NOT
-// automatically freed by tpop()
+// automatically freed by jttpop(jt,)
 B jtsbtypeinit(J jt){A x;I c=sizeof(SBU)/SZI,s[2],p;
  s[0]=2000; s[1]=c;
  GA(x,LIT,20000,1,0);           jt->sbs=x; jt->sbsv=     CAV(x); jt->sbsn=0;  // size too big for GAT; initialization anyway

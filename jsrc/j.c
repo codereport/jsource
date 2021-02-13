@@ -106,5 +106,5 @@ const char jeversion[]= "je9!:14 j"jversion"/j"bits""hw"/"jplatform"/"jtype"/"jl
  sprintf(p + strlen(p), "%i", __GNUC_MINOR__);
 #endif
 
- return cstr(m);
+ return jtcstr(jt,m);
 }

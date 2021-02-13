@@ -24,38 +24,38 @@
  static A f(J jt,A a,A w){I n;T0*av,x;T1*wv,y;                                      \
   av=(T0*)AV(a);                                                    \
   wv=(T1*)AV(w);             \
-  if     (!AR(a)){x=*av;        DP(n=AN(w),          y=*wv++; if(F(x,y))return sc(n+i););} \
-  else if(!AR(w)){y=*wv;        DP(n=AN(a), x=*av++;          if(F(x,y))return sc(n+i););} \
-  else           {              DP(n=AN(w), x=*av++; y=*wv++; if(F(x,y))return sc(n+i););} \
-  return sc(n);                                                                    \
+  if     (!AR(a)){x=*av;        DP(n=AN(w),          y=*wv++; if(F(x,y))return jtsc(jt,n+i););} \
+  else if(!AR(w)){y=*wv;        DP(n=AN(a), x=*av++;          if(F(x,y))return jtsc(jt,n+i););} \
+  else           {              DP(n=AN(w), x=*av++; y=*wv++; if(F(x,y))return jtsc(jt,n+i););} \
+  return jtsc(jt,n);                                                                    \
  }
 #define INDF0(f,T0,T1,F,C)  \
  static A f(J jt,A a,A w){I n;T0*av,x;T1*wv,y;                                      \
   av=(T0*)AV(a);                                                    \
   wv=(T1*)AV(w);             \
-  if     (!AR(a)){x=*av;        if(1.0==jt->cct)DP(n=AN(w),          y=*wv++; if(C(x,y))return sc(n+i);)else DP(n=AN(w),          y=*wv++; if(F(x,y))return sc(n+i);)} \
-  else if(!AR(w)){y=*wv;        if(1.0==jt->cct)DP(n=AN(a), x=*av++;          if(C(x,y))return sc(n+i);)else DP(n=AN(a), x=*av++;          if(F(x,y))return sc(n+i);)} \
-  else           {              if(1.0==jt->cct)DP(n=AN(w), x=*av++; y=*wv++; if(C(x,y))return sc(n+i);)else DP(n=AN(w), x=*av++; y=*wv++; if(F(x,y))return sc(n+i);)} \
-  return sc(n);                                                                    \
+  if     (!AR(a)){x=*av;        if(1.0==jt->cct)DP(n=AN(w),          y=*wv++; if(C(x,y))return jtsc(jt,n+i);)else DP(n=AN(w),          y=*wv++; if(F(x,y))return jtsc(jt,n+i);)} \
+  else if(!AR(w)){y=*wv;        if(1.0==jt->cct)DP(n=AN(a), x=*av++;          if(C(x,y))return jtsc(jt,n+i);)else DP(n=AN(a), x=*av++;          if(F(x,y))return jtsc(jt,n+i);)} \
+  else           {              if(1.0==jt->cct)DP(n=AN(w), x=*av++; y=*wv++; if(C(x,y))return jtsc(jt,n+i);)else DP(n=AN(w), x=*av++; y=*wv++; if(F(x,y))return jtsc(jt,n+i);)} \
+  return jtsc(jt,n);                                                                    \
  }
 
 #define JNDF(f,T0,T1,F)  \
  static A f(J jt,A a,A w){I n;T0*av,x;T1*wv,y;                                          \
   av=(T0*)AV(a);                                                        \
   wv=(T1*)AV(w);                  \
-  if     (!AR(a)){x=*av; wv+=AN(w); DQ(n=AN(w),          y=*--wv; if(F(x,y))return sc(i););} \
-  else if(!AR(w)){y=*wv; av+=AN(a); DQ(n=AN(a), x=*--av;          if(F(x,y))return sc(i););} \
-  else           {av+=AN(w); wv+=AN(w); DQ(n=AN(w), x=*--av; y=*--wv; if(F(x,y))return sc(i););} \
-  return sc(n);                                                                        \
+  if     (!AR(a)){x=*av; wv+=AN(w); DQ(n=AN(w),          y=*--wv; if(F(x,y))return jtsc(jt,i););} \
+  else if(!AR(w)){y=*wv; av+=AN(a); DQ(n=AN(a), x=*--av;          if(F(x,y))return jtsc(jt,i););} \
+  else           {av+=AN(w); wv+=AN(w); DQ(n=AN(w), x=*--av; y=*--wv; if(F(x,y))return jtsc(jt,i););} \
+  return jtsc(jt,n);                                                                        \
  }
 #define JNDF0(f,T0,T1,F,C)  \
  static A f(J jt,A a,A w){I n;T0*av,x;T1*wv,y;                                          \
   av=(T0*)AV(a);                                                        \
   wv=(T1*)AV(w);                  \
-  if     (!AR(a)){x=*av; wv+=AN(w); if(1.0==jt->cct)DQ(n=AN(w),          y=*--wv; if(C(x,y))return sc(i);)else DQ(n=AN(w),          y=*--wv; if(F(x,y))return sc(i);)} \
-  else if(!AR(w)){y=*wv; av+=AN(a); if(1.0==jt->cct)DQ(n=AN(a), x=*--av;          if(C(x,y))return sc(i);)else DQ(n=AN(a), x=*--av;          if(F(x,y))return sc(i);)} \
-  else           {av+=AN(w); wv+=AN(w); if(1.0==jt->cct)DQ(n=AN(w), x=*--av; y=*--wv; if(C(x,y))return sc(i);)else DQ(n=AN(w), x=*--av; y=*--wv; if(F(x,y))return sc(i);)} \
-  return sc(n);                                                                        \
+  if     (!AR(a)){x=*av; wv+=AN(w); if(1.0==jt->cct)DQ(n=AN(w),          y=*--wv; if(C(x,y))return jtsc(jt,i);)else DQ(n=AN(w),          y=*--wv; if(F(x,y))return jtsc(jt,i);)} \
+  else if(!AR(w)){y=*wv; av+=AN(a); if(1.0==jt->cct)DQ(n=AN(a), x=*--av;          if(C(x,y))return jtsc(jt,i);)else DQ(n=AN(a), x=*--av;          if(F(x,y))return jtsc(jt,i);)} \
+  else           {av+=AN(w); wv+=AN(w); if(1.0==jt->cct)DQ(n=AN(w), x=*--av; y=*--wv; if(C(x,y))return jtsc(jt,i);)else DQ(n=AN(w), x=*--av; y=*--wv; if(F(x,y))return jtsc(jt,i);)} \
+  return jtsc(jt,n);                                                                        \
  }
 
 #define SUMF(f,T0,T1,F)  \
@@ -65,7 +65,7 @@
   if     (!AR(a)){x=*av; DQ(n=AN(w),          y=*wv++; m+=(F(x,y)););} \
   else if(!AR(w)){y=*wv; DQ(n=AN(a), x=*av++;          m+=(F(x,y)););} \
   else           {       DQ(n=AN(w), x=*av++; y=*wv++; m+=(F(x,y)););} \
-  return sc(m);                                                         \
+  return jtsc(jt,m);                                                         \
  }
 #define SUMF0(f,T0,T1,F,C)  \
  static A f(J jt,A a,A w){I m=0,n;T0*av,x;T1*wv,y;                       \
@@ -74,7 +74,7 @@
   if     (!AR(a)){x=*av; if(1.0==jt->cct)DQ(n=AN(w),          y=*wv++; m+=(C(x,y));)else DQ(n=AN(w),          y=*wv++; m+=(F(x,y));)} \
   else if(!AR(w)){y=*wv; if(1.0==jt->cct)DQ(n=AN(a), x=*av++;          m+=(C(x,y));)else DQ(n=AN(a), x=*av++;          m+=(F(x,y));)} \
   else           {       if(1.0==jt->cct)DQ(n=AN(w), x=*av++; y=*wv++; m+=(C(x,y));)else DQ(n=AN(w), x=*av++; y=*wv++; m+=(F(x,y));)} \
-  return sc(m);                                                         \
+  return jtsc(jt,m);                                                         \
  }
 
 
@@ -92,7 +92,7 @@
   if     (!AR(a)){ASSIGNX(av); DO(q, if(y=F(x,    *wv++))INDB3;);}  \
   else if(!AR(w)){ASSIGNX(wv); DO(q, if(y=F(*av++,x    ))INDB3;);}  \
   else           {             DO(q, if(y=F(*av++,*wv++))INDB3;);}  \
-  return sc(n);                                                                        \
+  return jtsc(jt,n);                                                                        \
  }
 
 #define JNDB(f,T0,T1,F)  \
@@ -104,7 +104,7 @@
   if     (!AR(a)){ASSIGNX(av); wv+=q; y=(F(x,*wv))&(((I)0x100<<(r<<3))-1); while(1){if(y)JNDB3; if(--i<0)break; y=F(x,*--wv);} }  \
   else if(!AR(w)){ASSIGNX(wv); av+=q; y=(F(*av,x))&(((I)0x100<<(r<<3))-1); while(1){if(y)JNDB3; if(--i<0)break; y=F(*--av,x);} }  \
   else           {av+=q;       wv+=q; y=(F(*av,*wv))&(((I)0x100<<(r<<3))-1); while(1){if(y)JNDB3; if(--i<0)break; y=F(*--av,*--wv);} }  \
-  return sc(n);                                                                                    \
+  return jtsc(jt,n);                                                                                    \
  }
 
 #define SUMB(f,T0,T1,F)                                                                    \
@@ -125,7 +125,7 @@
          t=0; DQ(p+255,   t+=F(*av++,*wv++);); ADDBYTESINI(t); z+=t; x=F(*av,*wv);         \
   }                                                                                        \
   x &= ((I)1<<(r1<<LGBB))-1; ADDBYTESINI(x); z+=x;                                         \
-  return sc(z);                                                                                 \
+  return jtsc(jt,z);                                                                                 \
  }
 
 INDB( i0eqBB,B,B,NE   )  INDF( i0eqBI,B,I,ANE  )  INDF0( i0eqBD,B,D,TNEXD,NEXD0)  /* =  */

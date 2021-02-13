@@ -7,7 +7,7 @@
 
 
 static A jthparm(J jt,A j,A f,A h){A z;
- if(!(VERB&AT(f)))return shift1(jtaslash(jt,CSTAR,atab(CPLUS,h,j)));
+ if(!(VERB&AT(f)))return jtshift1(jt,jtaslash(jt,CSTAR,atab(CPLUS,h,j)));
  RZ(z=CALL1(FAV(f)->valencefns[0],j,f));
  ASSERT(1>=AR(z),EVRANK); 
  ASSERT(!AR(z)||AN(j)==AN(z),EVLENGTH);
@@ -18,7 +18,7 @@ static A jthgv(J jt,B b,I n,A w,A self){A c,d,e,h,*hv,j,y;V*sv=FAV(self);
  RZ(j=IX(n)); h=sv->fgh[2]; hv=AAV(h);
  RZ(c=hparm(j,sv->fgh[0],hv[0]));
  RZ(d=hparm(j,sv->fgh[1],hv[1]));
- e=shift1(divide(w,apv(n,1L,1L)));
+ e=jtshift1(jt,divide(w,apv(n,1L,1L)));
  switch((VERB&AT(sv->fgh[0])?2:0)+(VERB&AT(sv->fgh[1])?1:0)){
   case 0: y=jtascan(jt,CSTAR,divide(tymes(c,e),d)); break;
   case 1: y=divide(jtascan(jt,CSTAR,tymes(c,e)),d); break;
@@ -40,12 +40,12 @@ static A jthgd(J jt,B b,I n,A w,A p,A q){A c,d,e,z;D r,s,t,*u,*v,x,*zv;I j,pn,qn
   r*=x/j; t=s; s+=r; if(z)*zv++=s; JBREAK0;
  }
  NAN1;
- return !b?scf(s):z?jttake(jt,sc(1+j),z):hgd(b,j,w,p,q);
+ return !b?jtscf(jt,s):z?jttake(jt,jtsc(jt,1+j),z):hgd(b,j,w,p,q);
 }    /* real vector p,q; real scalar w; all terms (1=b) or last term (0=b) */
 
 static A jthgeom2(J jt,A a,A w,A self){PROLOG(0036);A h,*hv,t,z;B b;I an,*av,j,n;V*sv=FAV(self);
  if(AR(w))return rank2ex0(a,w,self,jthgeom2);
- RZ(a=AT(a)&FL+CMPX?vib(a):vi(a));  // kludge just call vib?
+ RZ(a=AT(a)&FL+CMPX?jtvib(jt,a):jtvi(jt,a));  // kludge just call vib?
  an=AN(a); av=AV(a); n=0; DO(an, j=av[i]; ASSERT(0<=j,EVDOMAIN); if(n<j)n=j;);
  if(!n)return tymes(zeroionei(0),a);
  h=sv->fgh[2]; hv=AAV(h);
@@ -57,16 +57,16 @@ static A jthgeom2(J jt,A a,A w,A self){PROLOG(0036);A h,*hv,t,z;B b;I an,*av,j,n
   while(z&&!jtequ(jt,z,t)){t=z; z=hgv(0,j,w,self); j+=j;} 
   RZ(z); if(1<an)z=hgv(1,j,w,self);
  }
- if(1<an)z=jtfrom(jt,minimum(a,sc(SETIC(z,an)-1)),z);
+ if(1<an)z=jtfrom(jt,minimum(a,jtsc(jt,SETIC(z,an)-1)),z);
  EPILOG(z);
 }
 
-static A jthgeom1(J jt,    A w,A self){return hgeom2(sc(IMAX),w,self);}
+static A jthgeom1(J jt,    A w,A self){return hgeom2(jtsc(jt,IMAX),w,self);}
 
 static A jtcancel(J jt,A a,A w){A c,d,f,x,y;
- f=eval("#/.~");   // could call keytally
- a=ravel(a); x=nub(a); df1(c,a,f);
- w=ravel(w); y=nub(w); df1(d,w,f);
+ f=jteval(jt,"#/.~");   // could call keytally
+ a=jtravel(jt,a); x=jtnub(jt,a); df1(c,a,f);
+ w=jtravel(jt,w); y=jtnub(jt,w); df1(d,w,f);
  a=jtrepeat(jt,maximum(num(0),minus(c,jtfrom(jt,jtindexof(jt,y,x),jtover(jt,d,zeroionei(0))))),x);
  w=jtrepeat(jt,maximum(num(0),minus(d,jtfrom(jt,jtindexof(jt,x,y),jtover(jt,c,zeroionei(0))))),y);
  return link(a,w);
@@ -82,7 +82,7 @@ static A jtcancel(J jt,A a,A w){A c,d,f,x,y;
 }    /* a H. w */
 
  A jthgcoeff(J jt,    A w,A self){PROLOG(0037);A c,d,h,*hv,y,z;B b;I j,n,pn,qn,*v;V*sv=FAV(self);
- RZ(w=vi(w)); v=AV(w); 
+ RZ(w=jtvi(jt,w)); v=AV(w); 
  n=0; DO(AN(w), j=v[i]; ASSERT(0<=j,EVDOMAIN); if(n<j)n=j;);
  if(!n)return eq(w,w);
  h=sv->fgh[2]; hv=AAV(h);

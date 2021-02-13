@@ -261,9 +261,9 @@ union {
   I    compsi;           /* comparison: sparse current cell index           */
   I*   compstv;          /* comparison: sparse element item indices         */
   I    compswf;          /* comparison: sparse wf value                     */
-  I    compsxc;          /* comparison: sparse aii(x)                       */
+  I    compsxc;          /* comparison: sparse jtaii(jt,x)                       */
   C*   compsxv;          /* comparison: sparse AV(x)                        */
-  I    compsyc;          /* comparison: sparse aii(y) or *(1+AS(y))         */
+  I    compsyc;          /* comparison: sparse jtaii(jt,y) or *(1+AS(y))         */
   I*   compsyv;          /* comparison: sparse AV(y)                        */
   C*   compv;            /* comparison: beginning of data area              */
  } compare;

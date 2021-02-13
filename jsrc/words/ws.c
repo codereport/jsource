@@ -116,7 +116,7 @@ void spellit(UC c,UC *s){
 
 A jtspella(J jt,A w){C c,s[3];V*v;
  v=FAV(w); c=v->id;
- if(c==CFCONS)return apip(thorn1(v->fgh[2]),chrcolon);
+ if(c==CFCONS)return apip(jtthorn1(jt,v->fgh[2]),chrcolon);
  spellit(c,s); 
  return jtstr(jt,1+!!s[1]+!!s[2],s);
 }

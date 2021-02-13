@@ -18,8 +18,8 @@ static A jtsprinit(J jt,I f,I r,I*s,I t,P*p){A a,a1,z;I n,*u,*v;P*zp;
  GASPARSE(z,t,1,r,f+s); zp=PAV(z); 
  a=SPA(p,a); n=AN(a)-f; u=f+AV(a); GATV0(a1,INT,n,1); v=AV(a1); DO(n, v[i]=u[i]-f;);
  SPB(zp,a,a1);
- SPB(zp,e,ca(SPA(p,e)));
- SPB(zp,i,iota(jtv2(jt,0L,n)));  // empty so cannot be readonly
+ SPB(zp,e,jtca(jt,SPA(p,e)));
+ SPB(zp,i,jtiota(jt,jtv2(jt,0L,n)));  // empty so cannot be readonly
  SPB(zp,x,jtrepeat(jt,num(0),SPA(p,x)));
  return z;
 }    /* initialize an argument cell */
@@ -86,11 +86,11 @@ A jtsprank1(J jt,A w,A fs,I mr,AF f1){PROLOG(0043);A q,wx,wy,wy1,ww,z,ze,zi,*zv;
    k=1+(B*)memchr(wb+j,C1,n-j)-(wb+j);
    ICPY(iv,wv+j*c,wf); iv+=wf;
    RZ(q=apv(k,j,1L)); SPB(wq,i,jtfrom(jt,q,wy1)); SPB(wq,x,jtfrom(jt,q,wx));
-   RZ(zv[i]=incorp(CALL1(f1,ww,fs)));
+   RZ(zv[i]=jtincorp(jt,CALL1(f1,ww,fs)));
    j+=k;
   }
-  RZ(z=ope(z));
- }else{RZ(zi=ca(wy)); RZ(z=rank1ex(wx,fs,mr,f1)); RZ(ze=CALL1(f1,SPA(wp,e),fs));}  // mr is 0
+  RZ(z=jtope(jt,z));
+ }else{RZ(zi=jtca(jt,wy)); RZ(z=rank1ex(wx,fs,mr,f1)); RZ(ze=CALL1(f1,SPA(wp,e),fs));}  // mr is 0
  z=sprz(z,zi,ze,wf,ws);
  EPILOG(z);
 }    /* f"r w on sparse arrays */
@@ -103,7 +103,7 @@ static I jtspradv(J jt,I n,B*b,I f,I r,I j,P*p,A*z){A s,x;I k;P*q;
   RZ(s=apv(k,j,1L)); 
   SPB(q,i,jtfrom(jt,s,jtdropr(jt,f,SPA(p,i)))); 
   SPB(q,x,jtfrom(jt,s,x));
- }else RZ(*z=AN(x)?jtfrom(jt,sc(j),x):ca(SPA(p,e)));
+ }else RZ(*z=AN(x)?jtfrom(jt,jtsc(jt,j),x):jtca(jt,SPA(p,e)));
  return k;
 }    /* advance to the next cell */
 
@@ -112,16 +112,16 @@ static A jtsprank2_0w(J jt,A a,A w,A fs,AF f2,I wf,I wcr){PROLOG(0044);A we,ww,y
  f=wf; ws=AS(w);
  RZ(w=jtsprarg(jt,wf,w)); wt=AT(w); wp=PAV(w);
  y=SPA(wp,i); v=AS(y); wn=v[0]; wc=v[1]; wv=AV(y); RZ(wb=spredge(y,wf,&wm));
- RZ(ww=sprinit(wf,wcr,ws,wt,wp)); RZ(we=wcr?ca(ww):SPA(wp,e));
+ RZ(ww=sprinit(wf,wcr,ws,wt,wp)); RZ(we=wcr?jtca(jt,ww):SPA(wp,e));
  GATV0(z,BOX,MAX(1,wm),1); zv=AAV(z);
  GATV0(zi,INT,f*MAX(1,wm),2); iv=AV(zi); v=AS(zi); v[0]=wm; v[1]=f;
  RE(wj=wk=spradv(wn,wb,wf,wcr,0L,wp,&ww)); j=0;
  while(1){
-  ICPY(iv,wv,f); iv+=f; RZ(zv[j++]=incorp(CALL2(f2,a,ww,fs)));
+  ICPY(iv,wv,f); iv+=f; RZ(zv[j++]=jtincorp(jt,CALL2(f2,a,ww,fs)));
   if(wj==wn)break;
   wv+=wk*wc; RE(wk=spradv(wn,wb,wf,wcr,wj,wp,&ww)); wj+=wk;
  }
- RZ(z=ope(z)); AS(z)[0]=wm;  // we did one cell of aa to get the shape, but now we have to set back to correct # indexes
+ RZ(z=jtope(jt,z)); AS(z)[0]=wm;  // we did one cell of aa to get the shape, but now we have to set back to correct # indexes
  z=sprz(z,zi,CALL2(f2,a,we,fs),f,ws);
  EPILOG(z);
 }
@@ -131,16 +131,16 @@ static A jtsprank2_a0(J jt,A a,A w,A fs,AF f2,I af,I acr){PROLOG(0045);A aa,ae,y
  f=af; as=AS(a);
  RZ(a=jtsprarg(jt,af,a)); at=AT(a); ap=PAV(a);
  y=SPA(ap,i); v=AS(y); an=v[0]; ac=v[1]; av=AV(y); RZ(ab=spredge(y,af,&am));
- RZ(aa=sprinit(af,acr,as,at,ap)); RZ(ae=acr?ca(aa):SPA(ap,e));
+ RZ(aa=sprinit(af,acr,as,at,ap)); RZ(ae=acr?jtca(jt,aa):SPA(ap,e));
  GATV0(z,BOX,MAX(1,am),1); zv=AAV(z);
  GATV0(zi,INT,f*MAX(1,am),2); iv=AV(zi); v=AS(zi); v[0]=am; v[1]=f;
  RE(aj=ak=spradv(an,ab,af,acr,0L,ap,&aa)); j=0;
  while(1){
-  ICPY(iv,av,f); iv+=f; RZ(zv[j++]=incorp(CALL2(f2,aa,w,fs)));
+  ICPY(iv,av,f); iv+=f; RZ(zv[j++]=jtincorp(jt,CALL2(f2,aa,w,fs)));
   if(aj==an)break;
   av+=ak*ac; RE(ak=spradv(an,ab,af,acr,aj,ap,&aa)); aj+=ak;
  }
- RZ(z=ope(z)); AS(z)[0]=am;  // we did one cell of aa to get the shape, but now we have to set back to correct # indexes
+ RZ(z=jtope(jt,z)); AS(z)[0]=am;  // we did one cell of aa to get the shape, but now we have to set back to correct # indexes
  z=sprz(z,zi,CALL2(f2,ae,w,fs),f,as);
  EPILOG(z);
 }
@@ -162,8 +162,8 @@ A jtsprank2(J jt,A a,A w,A fs,I lr,I rr,AF f2){PROLOG(0046);A aa,ae,we,ww,y,zi,z
  RZ(w=jtsprarg(jt,wf,w)); wt=AT(w); wp=PAV(w);
  y=SPA(ap,i); v=AS(y); an=v[0]; ac=v[1]; av=an?AV(y):0; RZ(ab=spredge(y,af,&am));
  y=SPA(wp,i); v=AS(y); wn=v[0]; wc=v[1]; wv=wn?AV(y):0; RZ(wb=spredge(y,wf,&wm));
- RZ(aa=sprinit(af,acr,as,at,ap)); RZ(ae=acr?ca(aa):SPA(ap,e));
- RZ(ww=sprinit(wf,wcr,ws,wt,wp)); RZ(we=wcr?ca(ww):SPA(wp,e));
+ RZ(aa=sprinit(af,acr,as,at,ap)); RZ(ae=acr?jtca(jt,aa):SPA(ap,e));
+ RZ(ww=sprinit(wf,wcr,ws,wt,wp)); RZ(we=wcr?jtca(jt,ww):SPA(wp,e));
  b=af<wf; j=am*(af<wf?m:1)+wm*(af>wf?m:1);
  GATV0(z, BOX,MAX(1,j),  1); zv=AAV(z);
  GATV0(zi,INT,MAX(1,j)*g,2); v=AS(zi); v[0]=j; v[1]=g; iv=AV(zi); 
@@ -171,34 +171,34 @@ A jtsprank2(J jt,A a,A w,A fs,I lr,I rr,AF f2){PROLOG(0046);A aa,ae,we,ww,y,zi,z
  RE(wj=wk=spradv(wn,wb,wf,wcr,0L,wp,&ww)); j=s=k=0; u=ii; y=0; v=0;
  if(af==wf)while(av||wv){
   if(av&&wv)DO(f, if(s=av[i]-wv[i])break;) else s=av?-1:1;
-  if     (0==s){RZ(zv[j++]=incorp(CALL2(f2,aa,ww,fs))); ICPY(iv,av,f); iv+=g;}
-  else if(0> s){RZ(zv[j++]=incorp(CALL2(f2,aa,we,fs))); ICPY(iv,av,f); iv+=g;}
-  else if(0< s){RZ(zv[j++]=incorp(CALL2(f2,ae,ww,fs))); ICPY(iv,wv,f); iv+=g;}
+  if     (0==s){RZ(zv[j++]=jtincorp(jt,CALL2(f2,aa,ww,fs))); ICPY(iv,av,f); iv+=g;}
+  else if(0> s){RZ(zv[j++]=jtincorp(jt,CALL2(f2,aa,we,fs))); ICPY(iv,av,f); iv+=g;}
+  else if(0< s){RZ(zv[j++]=jtincorp(jt,CALL2(f2,ae,ww,fs))); ICPY(iv,wv,f); iv+=g;}
   if(0>=s){if(aj==an)av=0; else{av+=ak*ac; RE(ak=spradv(an,ab,af,acr,aj,ap,&aa)); aj+=ak;}}
   if(0<=s){if(wj==wn)wv=0; else{wv+=wk*wc; RE(wk=spradv(wn,wb,wf,wcr,wj,wp,&ww)); wj+=wk;}}
  }else while(av||wv){
   if(av&&wv&&f)DO(f, if(s=av[i]-wv[i])break;) else s=!f?0:av?-1:1;
-  if(b&&0<s||!b&&0>s){RZ(zv[j++]=incorp(CALL2(f2,b?ae:aa,b?ww:we,fs))); ICPY(iv,b?wv:av,g); iv+=g; k=m;}
+  if(b&&0<s||!b&&0>s){RZ(zv[j++]=jtincorp(jt,CALL2(f2,b?ae:aa,b?ww:we,fs))); ICPY(iv,b?wv:av,g); iv+=g; k=m;}
   else if(s){
-   DQ(m, RZ(zv[j++]=y=incorp(y?ca(y):CALL2(f2,b?aa:ae,b?we:ww,fs))); ICPY(iv,b?av:wv,f); ICPY(iv+f,u,d); iv+=g; u+=d;); 
+   DQ(m, RZ(zv[j++]=y=jtincorp(jt,y?jtca(jt,y):CALL2(f2,b?aa:ae,b?we:ww,fs))); ICPY(iv,b?av:wv,f); ICPY(iv+f,u,d); iv+=g; u+=d;); 
    u=ii; y=0; v=0;
   }else{
    while(ICMP(f+(b?wv:av),u,d)){
-    RZ(zv[j++]=y=incorp(y?ca(y):CALL2(f2,b?aa:ae,b?we:ww,fs))); 
+    RZ(zv[j++]=y=jtincorp(jt,y?jtca(jt,y):CALL2(f2,b?aa:ae,b?we:ww,fs))); 
     ICPY(iv,wv,f); ICPY(iv+f,u,d); iv+=g; u+=d; ++k;
    }
-   RZ(zv[j++]=incorp(CALL2(f2,aa,ww,fs))); ICPY(iv,b?wv:av,g); iv+=g; u+=d; ++k;
+   RZ(zv[j++]=jtincorp(jt,CALL2(f2,aa,ww,fs))); ICPY(iv,b?wv:av,g); iv+=g; u+=d; ++k;
   }
   if     ( b&&0<=s)if(wj==wn)wv=v=0; else{v=wv; wv+=wk*wc; RE(wk=spradv(wn,wb,wf,wcr,wj,wp,&ww)); wj+=wk;}
   else if(!b&&0>=s)if(aj==an)av=v=0; else{v=av; av+=ak*ac; RE(ak=spradv(an,ab,af,acr,aj,ap,&aa)); aj+=ak;}
   if(b&&(!s&&!wv||v&&ICMP(v,wv,f))||!b&&(!s&&!av||v&&ICMP(v,av,f))){
-   DQ(m-k, RZ(zv[j++]=y=incorp(y?ca(y):CALL2(f2,b?aa:ae,b?we:ww,fs))); ICPY(iv,b?av:wv,f); ICPY(iv+f,u,d); iv+=g; u+=d;);
+   DQ(m-k, RZ(zv[j++]=y=jtincorp(jt,y?jtca(jt,y):CALL2(f2,b?aa:ae,b?we:ww,fs))); ICPY(iv,b?av:wv,f); ICPY(iv+f,u,d); iv+=g; u+=d;);
    u=ii; y=0; k=0;
   }
   if     ( b&&0>=s&&(!v||ICMP(v,wv,f)))if(aj==an)av=0; else{av+=ak*ac; RE(ak=spradv(an,ab,af,acr,aj,ap,&aa)); aj+=ak;}
   else if(!b&&0<=s&&(!v||ICMP(v,av,f)))if(wj==wn)wv=0; else{wv+=wk*wc; RE(wk=spradv(wn,wb,wf,wcr,wj,wp,&ww)); wj+=wk;}
  }
  AN(z)=*AS(z)=*AS(zi)=j; AN(zi)=j*g;
- z=sprz(ope(z),zi,CALL2(f2,ae,we,fs),g,g==af?as:ws);
+ z=sprz(jtope(jt,z),zi,CALL2(f2,ae,we,fs),g,g==af?as:ws);
  EPILOG(z);
 }    /* a f"r w on sparse arrays */

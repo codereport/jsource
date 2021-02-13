@@ -32,7 +32,7 @@
 // it calls here, giving a callback; we split the arguments into cells and call the callback,
 // which is often the same original function that called here.
 // rr is the rank at which the verb will be applied: in u"n, the smaller of rank-of-u and n
-A jtrank1ex(J jt,AD * RESTRICT w,A fs,I rr,AF f1){F1PREFIP;PROLOG(0041);A z,virtw;
+A jtrank1ex(J jt,AD * RESTRICT w,A fs,I rr,AF f1){FPREFIP;PROLOG(0041);A z,virtw;
    I mn,wcn,wf,wk;
  wf=AR(w)-rr;
  if(!wf){return CALL1IP(f1,w,fs);}  // if there's only one cell and no frame, run on it, that's the result.
@@ -97,7 +97,7 @@ A jtrank1ex(J jt,AD * RESTRICT w,A fs,I rr,AF f1){F1PREFIP;PROLOG(0041);A z,virt
 
  }else{I *zzs;
   // no cells - execute on a cell of fills
-  RZ(virtw=jtreshape(jt,vec(INT,rr,AS(w)+wf),filler(w)));  // The cell of fills
+  RZ(virtw=jtreshape(jt,vec(INT,rr,AS(w)+wf),jtfiller(jt,w)));  // The cell of fills
   // Do this quietly, because
   // if there is an error, we just want to use a value of 0 for the result; thus debug
   // mode off and RESETERR on failure.
@@ -116,7 +116,7 @@ A jtrank1ex(J jt,AD * RESTRICT w,A fs,I rr,AF f1){F1PREFIP;PROLOG(0041);A z,virt
 
 // Streamlined version when rank is 0.  In this version we look for ATOPOPEN (i. e. each and every)
 // f1 is the function to use if there are no flags, OR if there is just 1 cell with no frame or a cell of fill 
-A jtrank1ex0(J jt,AD * RESTRICT w,A fs,AF f1){F1PREFIP;PROLOG(0041);A z,virtw;
+A jtrank1ex0(J jt,AD * RESTRICT w,A fs,AF f1){FPREFIP;PROLOG(0041);A z,virtw;
    I wk;
  if(!AR(w)){return CALL1IP(f1,w,fs);}  // if there's only one cell and no frame, run on it, that's the result.  Make this as fast as possible.
  // Switch to sparse code if argument is sparse
@@ -203,7 +203,7 @@ A jtrank1ex0(J jt,AD * RESTRICT w,A fs,AF f1){F1PREFIP;PROLOG(0041);A z,virtw;
 
  }else{I *zzs;
   // no cells - execute on a cell of fills
-  RZ(virtw=filler(w));  // The cell of fills
+  RZ(virtw=jtfiller(jt,w));  // The cell of fills
   // Do this quietly, because
   // if there is an error, we just want to use a value of 0 for the result; thus debug
   // mode off and RESETERR on failure.
@@ -228,7 +228,7 @@ A jtrank1ex0(J jt,AD * RESTRICT w,A fs,AF f1){F1PREFIP;PROLOG(0041);A z,virtw;
 
 A jtrank2ex(J jt,AD * RESTRICT a,AD * RESTRICT w,A fs,UI lrrrlcrrcr,AF f2){
  I lrrr=(UI4)lrrrlcrrcr; I lcrrcr=lrrrlcrrcr>>2*RANKTX;  // inner, outer ranks
- F2PREFIP;PROLOG(0042);A virta,virtw,z;I acn,ak,mn,wcn,wk;
+ FPREFIP;PROLOG(0042);A virta,virtw,z;I acn,ak,mn,wcn,wk;
  I outerframect, outerrptct, innerframect, innerrptct, aof, wof, sof, lof, sif, lif, *lis, *los;
  if(!(a && w)) return 0;
  if((UI)lrrr==(((UI)AR(a)<<RANKTX)+AR(w))){return CALL2IP(f2,a,w,fs);}  // if there's only one cell and no frame, run on it, that's the result.
@@ -329,13 +329,13 @@ A jtrank2ex(J jt,AD * RESTRICT a,AD * RESTRICT w,A fs,UI lrrrlcrrcr,AF f2){
   // Init the inplaceability of virtw.  We do this here because in the loop we handle it only for low rank (i. e. virt[aw]faux) so as to avoid inplacing fill.
   // Thus, for higher rank we set it only this once.  It will stay right unless it gets virtualed
   AC(virta)=ACUC1 + ((state&ZZFLAGVIRTAINPLACE)<<(ACINPLACEX-ZZFLAGVIRTAINPLACEX));
- }else{RZ(virta=jtreshape(jt,vec(INT,(UI)lrrr>>RANKTX,AS(a)+(afwf>>RANKTX)),filler(a)));}
+ }else{RZ(virta=jtreshape(jt,vec(INT,(UI)lrrr>>RANKTX,AS(a)+(afwf>>RANKTX)),jtfiller(jt,a)));}
 
  if((mn|(state&STATEWNOTEMPTY))!=0){  // repeat for w
   state |= (UI)(SGNIF((a!=w)&(outerrptct==1),0)&SGNIF((I)jtinplace,JTINPLACEWX)&AC(w)&~(((AT(w)&TYPEVIPOK)-(f2!=jtevery2self))|SGNIF(state,STATEINNERREPEATWX)))>>(BW-1-ZZFLAGVIRTWINPLACEX);   // requires JTINPLACEWX==0.  Single flag bit  sign=0 if (VIPOK or &.>) 
   fauxvirtual(virtw,virtwfaux,w,lrrr&RANKTMSK,ACUC1) MCISH(AS(virtw),AS(w)+(afwf&RANKTMSK),lrrr&RANKTMSK); AN(virtw)=wcn;
   AC(virtw)=ACUC1 + ((state&ZZFLAGVIRTWINPLACE)<<(ACINPLACEX-ZZFLAGVIRTWINPLACEX));
- }else{RZ(virtw=jtreshape(jt,vec(INT,lrrr&RANKTMSK,AS(w)+(afwf&RANKTMSK)),filler(w)));}
+ }else{RZ(virtw=jtreshape(jt,vec(INT,lrrr&RANKTMSK,AS(w)+(afwf&RANKTMSK)),jtfiller(jt,w)));}
  // Allow inplacing if the verb supports it, but with the raze flags removed.  We can be loose here because we must be strict about the virt inplaceability to get pristinity right.
  jtinplace = (J)(intptr_t)((I)jtinplace & (~(JTWILLBEOPENED+JTCOUNTITEMS)));
 
@@ -405,7 +405,7 @@ A jtrank2ex(J jt,AD * RESTRICT a,AD * RESTRICT w,A fs,UI lrrrlcrrcr,AF f2){
 
 // version for rank 0.  We look at ATOPOPEN too.  f2 is the function to use if there is no frame
 // This code does not set inplaceability on nonrepeated cells - hardly useful at rank 0
-A jtrank2ex0(J jt,AD * RESTRICT a,AD * RESTRICT w,A fs,AF f2){F2PREFIP;PROLOG(0042);A virta,virtw,z;
+A jtrank2ex0(J jt,AD * RESTRICT a,AD * RESTRICT w,A fs,AF f2){FPREFIP;PROLOG(0042);A virta,virtw,z;
    I ak,ar,*as,ict,oct,mn,wk,wr,*ws;
  if(!(a && w)) return 0;
  ar=AR(a); wr=AR(w); if(!(ar+wr))return CALL2IP(f2,a,w,fs);   // if no frame, make just 1 call
@@ -529,8 +529,8 @@ A jtrank2ex0(J jt,AD * RESTRICT a,AD * RESTRICT w,A fs,AF f2){F2PREFIP;PROLOG(00
   // indication that anything unusual happened.  So fail then
 
   if(!(FAV(fs)->flag2&VF2BOXATOP2)){
-   if(!AN(a)){RZ(virta=filler(a));}else{virta = virtual(a,0,0); AN(virta)=1;}  // if there are cells, use first atom; else fill atom
-   if(!AN(w)){RZ(virtw=filler(w));}else{virtw = virtual(w,0,0); AN(virtw)=1;}
+   if(!AN(a)){RZ(virta=jtfiller(jt,a));}else{virta = virtual(a,0,0); AN(virta)=1;}  // if there are cells, use first atom; else fill atom
+   if(!AN(w)){RZ(virtw=jtfiller(jt,w));}else{virtw = virtual(w,0,0); AN(virtw)=1;}
    WITHDEBUGOFF(z=CALL2(f2,virta,virtw,fs);)   // normal execution on fill-cell
    if(jt->jerr){if(EMSK(jt->jerr)&EXIGENTERROR)RZ(z); z=num(0); RESETERR;}  // use 0 as result if error encountered
   }else{
@@ -558,7 +558,7 @@ A jtrank2ex0(J jt,AD * RESTRICT a,AD * RESTRICT w,A fs,AF f2){F2PREFIP;PROLOG(00
 // irs1() and irs2() are simply calls to the IRS-savvy function f[12] with the specified rank, faster than creating a verb with rank
 
 A jtirs1(J jt,A w,A fs,I m,AF f1){A z;I wr; 
- F1PREFIP;
+ FPREFIP;
 // Get the rank of w; if the requested rank m is > wr, use ~0 because some verbs test for that as an expedient
 // If m is negative, use wr+m but never < 0
  wr=AR(w); m=m>=wr?(RANK2T)~0:m; wr+=m; wr=wr<0?0:wr; wr=m>=0?m:wr;   // requested rank, after negative resolution, or ~0
@@ -578,7 +578,7 @@ A jtirs1(J jt,A w,A fs,I m,AF f1){A z;I wr;
 // we have it, we call the setup verb, which will go on to do its internal looping and (optionally) call
 // the verb f2 to finish operation on a cell
 A jtirs2(J jt,A a,A w,A fs,I l,I r,AF f2){A z;I ar,wr;
- F2PREFIP;
+ FPREFIP;
  wr=AR(w); r=r>=wr?(RANKT)~0:r; wr+=r; wr=wr<0?0:wr; wr=r>=0?r:wr; r=AR(w)-wr;   // wr=requested rank, after negative resolution, or ~0; r=frame of w, possibly negative if no frame
  ar=AR(a); l=l>=ar?(RANKT)~0:l; ar+=l; ar=ar<0?0:ar; ar=l>=0?l:ar; l=AR(a)-ar;   // ar=requested rank, after negative resolution, or ~0; l=frame of a, possibly negative if no frame
  l=MIN(r,l); l=l<0?0:l;  // get length of frame
@@ -620,19 +620,19 @@ static A cycr2(J jt,A a,A w,A self){V*sv=FAV(self);I cger[128/SZI];
 
 
 // Handle u"n y where u supports irs.  Since the verb may support inplacing even with rank (,"n for example), pass that through.
-static A rank1i(J jt,    A w,A self){F1PREFIP;DECLF;  // this version when requested rank is positive
+static A rank1i(J jt,    A w,A self){FPREFIP;DECLF;  // this version when requested rank is positive
  I m=sv->localuse.lI4[0]; m=m>=AR(w)?~0:m; jt->ranks=(RANK2T)(m);  // install rank for called routine
  A z=CALL1IP(f1,w,fs);
  jt->ranks=(RANK2T)~0;  // reset rank to infinite
  return z;
 }
-static A rank1in(J jt,    A w,A self){F1PREFIP;DECLF;  // this version when requested rank is negative
+static A rank1in(J jt,    A w,A self){FPREFIP;DECLF;  // this version when requested rank is negative
  I m=sv->localuse.lI4[0]+AR(w); m=m<0?0:m; jt->ranks=(RANK2T)(m);  // install rank for called routine
  A z=CALL1IP(f1,w,fs);
  jt->ranks=(RANK2T)~0;  // reset rank to infinite
  return z;
 }
-static A rank2i(J jt,A a,A w,A self){F2PREFIP;DECLF;  // this version when requested rank is positive
+static A rank2i(J jt,A a,A w,A self){FPREFIP;DECLF;  // this version when requested rank is positive
  I ar=sv->localuse.lI4[1]; ar=ar>=AR(a)?(RANKT)~0:ar; I af=AR(a)-ar;   // left rank
  I wr=sv->localuse.lI4[2]; wr=wr>=AR(w)?(RANKT)~0:wr; I wf=AR(w)-wr;   // right rank
  af=wf<af?wf:af; af=af<0?0:af;
@@ -642,7 +642,7 @@ static A rank2i(J jt,A a,A w,A self){F2PREFIP;DECLF;  // this version when reque
  jt->ranks=(RANK2T)~0;  // reset rank to infinite
  return z;
 }
-static A rank2in(J jt,A a,A w,A self){F2PREFIP;DECLF;  // this version when a requested rank is negative
+static A rank2in(J jt,A a,A w,A self){FPREFIP;DECLF;  // this version when a requested rank is negative
  I wr=AR(w); I r=sv->localuse.lI4[2]; r=r>=wr?(RANKT)~0:r; wr+=r; wr=wr<0?0:wr; wr=r>=0?r:wr; I wf=AR(w)-wr;   // right rank
  I ar=AR(a); r=sv->localuse.lI4[1];   r=r>=ar?(RANKT)~0:r; ar+=r; ar=ar<0?0:ar; ar=r>=0?r:ar; I af=AR(a)-ar;   // left rank
  af=wf<af?wf:af; af=af<0?0:af;
@@ -723,7 +723,7 @@ static A jtrank20(J jt,A a,A w,A self){return jtrank2ex0(jt,a,w,self,jtrank20ato
   n=AN(w);
   ASSERT(1>=AR(w),EVRANK);
   ASSERT((UI)(n-1)<3,EVLENGTH);
-  RZ(t=vib(w)); v=AV(t);
+  RZ(t=jtvib(jt,w)); v=AV(t);
   hv[0]=v[2==n]; hv[0]=hv[0]>RMAX?RMAX:hv[0]; hv[0]=hv[0]<-RMAX?-RMAX:hv[0]; r[0]=DR(hv[0]);
   hv[1]=v[3==n]; hv[1]=hv[1]>RMAX?RMAX:hv[1]; hv[1]=hv[1]<-RMAX?-RMAX:hv[1]; r[1]=DR(hv[1]);
   hv[2]=v[n-1];  hv[2]=hv[2]>RMAX?RMAX:hv[2]; hv[2]=hv[2]<-RMAX?-RMAX:hv[2]; r[2]=DR(hv[2]);

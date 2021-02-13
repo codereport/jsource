@@ -12,7 +12,6 @@
  // This routine modifies w in place.  If w is virtual, that causes an error, because the blocks referred to in
  // w are actually in the backer, and the backer has had ra() applied; so blocks in the backer are going to be freed
  // twice: storing a newly-allocated block will produce a double-free.  So we have to realize any virtual block coming in.
- w=rifvsdebug(w);  // must realize before in-place operations, as above
  ASSERT(2==AR(w),EVRANK);
  s=AS(w); r=s[0]; c=s[1]; r1=MIN(r,c);
  A *old=jt->tnextpushp;
@@ -34,7 +33,6 @@
 }    /* Gaussian elimination in place */
 
 static A jtdetr(J jt, A w){A z;I c,e,g=1,i,j,k,r,*s;Q d,p,*u,*v,*x;
- w=rifvsdebug(w);  // must realize before in-place operations, as above
  s=AS(w); r=s[0]; c=s[1];
  A *old=jt->tnextpushp;
  for(j=0;j<r;++j){
@@ -62,7 +60,7 @@ static A jtdetd(J jt, A w){D g,h,p,q,*u,*v,*x,*y,z=1.0;I c,d,e,i,j,k,r,*s;
   x=v+c*j; u=x+j; h=0.0; 
   DO(r-j, k=i; DO(c-j, g=ABS(*u); if(h<g){h=g; d=j+k; e=j+i;} ++u;); u+=j;);  /* find pivot, maximum abs element */
   if(h==inf)return mark;
-  if(0==h)return scf(0.0);
+  if(0==h)return jtscf(jt,0.0);
   if(j!=d){u=v+c*d+j; y=x+j; DQ(c-j, q=*u; *u=*y; *y=q; ++u;  ++y; ); z=-z;}  /* interchange rows j and d */
   if(j!=e){u=x+e;     y=x+j; DQ(r-j, q=*u; *u=*y; *y=q; u+=c; y+=c;); z=-z;}  /* interchange cols j and e */
   q=x[j]; z*=q; JBREAK0;
@@ -71,7 +69,7 @@ static A jtdetd(J jt, A w){D g,h,p,q,*u,*v,*x,*y,z=1.0;I c,d,e,i,j,k,r,*s;
    if(u[j]){p=u[j]/q; for(k=j+1;k<r;++k)u[k]-=p*x[k];}
  }}
  NAN1;
- return scf(z);
+ return jtscf(jt,z);
 }    /* determinant on real     matrix; works in place */
 
 #define ZABT(v)         ((v).re*(v).re+(v).im*(v).im)
@@ -84,7 +82,7 @@ static A jtdetz(J jt, A w){A t;D g,h;I c,d,e,i,j,k,r,*s;Z p,q,*u,*v,*x,*y,z;
   x=v+c*j; u=x+j; h=0.0; 
   DO(r-j, k=i; DO(c-j, g=ZABT(*u); if(h<g){h=g; d=j+k; e=j+i;} ++u;); u+=j;);  /* find pivot, maximum abs element */
   if(h==inf)return mark;
-  if(0==h)return scf(0.0);
+  if(0==h)return jtscf(jt,0.0);
   if(j!=d){u=v+c*d;              DO(c-j, q=u[j+i]; u[j+i]=x[j+i]; x[j+i]=q;); z=jtzminus(jt,zeroZ,z);}  /* interchange rows j and d */
   if(j!=e){u=v+c*j+e; y=v+c*j+j; DQ(r-j, q=*u; *u=*y; *y=q; u+=c; y+=c;);     z=jtzminus(jt,zeroZ,z);}  /* interchange cols j and e */
   q=x[j]; z=jtztymes(jt,z,q);
@@ -103,11 +101,11 @@ static A jtdetz(J jt, A w){A t;D g,h;I c,d,e,i,j,k,r,*s;Z p,q,*u,*v,*x,*y,z;
  switch(CTTZNOFLAG(AT(w))){
   default:   ASSERT(0,EVDOMAIN);
   case B01X:
-  case INTX:  return detd(jtcvt(jt,FL,w));
-  case FLX:   z=detd(ca(w));      break;
-  case CMPXX: z=detz(ca(w));      break;
-  case XNUMX: z=detr(jtcvt(jt,RAT,w)); break;
-  case RATX:  z=detr(ca(w));
+  case INTX:  return jtdetd(jt,jtcvt(jt,FL,w));
+  case FLX:   z=jtdetd(jt,jtca(jt,w));      break;
+  case CMPXX: z=jtdetz(jt,jtca(jt,w));      break;
+  case XNUMX: z=jtdetr(jt,jtcvt(jt,RAT,w)); break;
+  case RATX:  z=jtdetr(jt,jtca(jt,w));
  }
- return z==mark?jtdetxm(jt,w,eval("-/ .*")):z;
+ return z==mark?jtdetxm(jt,w,jteval(jt,"-/ .*")):z;
 }    /* determinant on square matrix */

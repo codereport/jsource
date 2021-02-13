@@ -84,7 +84,6 @@
  I zzncells;   // number of cells in the result (input)
  I zzframelen;  // length of frame of result.
  I zzfauxcellshape[ZZFAUXCELLSHAPEMAXRANK+1+2];  // will be zzcellshape for ranks < 4.  We reserve space only for AN and AS, and don't touch anything earlier.  1 is to leave 1 spare at the end, 2 is the length of AN and AR
- JMCDECL(zzendmask)  // will hold copy mask for copying result cells
 #ifndef ZZWILLBEOPENEDNEVER
 #define ZZWILLBEOPENEDNEVER 0  // user sets to 1 if WILLBEOPENED is not honored
 #endif
@@ -191,7 +190,7 @@ do{
     // We free only the z block itself, not its children: children were incorporated above
     // if the value iz zappable, zap it (it may have become zappable, if it turned recursive above).  Free only the root block
     // We should do this for virtual blocks also, to get the full effect of tpop.  When we can zap virtuals we will
-    if(zzoktozap<0){*AZAPLOC(z)=0; mf(z);}  // free the root block.  If is has descendants their ownership was transferred to zz.
+    if(zzoktozap<0){*AZAPLOC(z)=0; jtmf(jt,z);}  // free the root block.  If is has descendants their ownership was transferred to zz.
 #if !ZZSTARTATEND
     zzcellp+=zzcelllen;  // advance to next cell
 #else
@@ -264,7 +263,7 @@ do{
     // That is, if z is one of the virtual blocks we use to track subarrays, we mustn't incorporate it, so we clone it.  These subarrays can be inputs to functions
     // but never an output from the block it is created in, since it changes during the loop.  Thus, UNINCORPABLEs are found only in the loop that created them.
     // It might be better to keep the result recursive and transfer ownership of the virtual block, but not by much.
-    if(AFLAG(z)&AFUNINCORPABLE){RZ(z=clonevirtual(z));}
+    if(AFLAG(z)&AFUNINCORPABLE){RZ(z=jtclonevirtual(jt,z));}
     // since we are adding the block to a NONrecursive boxed result,  we DO NOT have to raise the usecount of the block, but we do have to mark the block
     // non-inplaceable, because the next thing to open it might be each: each will set the inplaceable flag if the parent is abandoned, so as to allow
     // pristinity of lower results; thus we may not relax the rule that all contents must be non-inplaceable
@@ -307,7 +306,6 @@ do{
   // If result is sparse, allocate 0 atoms; later, change the allocation to something that will never match a result (viz a list with negative shape)
   zzr=(zzt&SPARSE)?1:zzr; natoms=(zzt&SPARSE)?0:natoms;
   zzcelllen=natoms<<bplg(zzt);  // number of bytes in one cell.
-  JMCSETMASK(zzendmask,zzcelllen+(ZZSTARTATEND^1)*(SZI-1),ZZSTARTATEND)   // set mask for JMCR
 
   // # cells in result is passed in as zzncells
   // Get # atoms to allocate

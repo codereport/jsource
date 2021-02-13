@@ -22,7 +22,7 @@ static A jtlev2(J jt,A a,A w,A self){
  // add a boxing level before we drop down so that when it is processed it will be the first level at which it became active.  This result could
  // be achieved by altering the left/right levels, but Roger did it this way.
  if(aready&wready){return CALL2(fsf,a,w,fs);
- }else{STACKCHKOFL return every2(aready?box(a):a,wready?box(w):w,self);}  // since this recurs, check stack
+ }else{STACKCHKOFL return every2(aready?jtbox(jt,a):a,wready?jtbox(jt,w):w,self);}  // since this recurs, check stack
  // We do this with the if statement rather than a computed branch in the hope that the CPU can detect patterns in the conditions.
  // There may be a structure in the user's data that could be detected for branch prediction.
 }
@@ -58,7 +58,7 @@ static A jtlcapco2(J jt,A a,A w,A self){A z;V*v=FAV(self);
 static A jtscfn(J jt,    A w,A self){
  if(!w) return 0;
  if(AS(AKASA(self))[0]==AN(AKASA(self))){I n=AN(AKASA(self)); RZ(AKASA(self)=jtext(jt,1,AKASA(self))); AS(AKASA(self))[0]=n;}  // if current buffer is full, reallocate.  ext resets AS
- AAV(AKASA(self))[AS(AKASA(self))[0]++]=incorp(w);  // copy in new result pointer
+ AAV(AKASA(self))[AS(AKASA(self))[0]++]=jtincorp(jt,w);  // copy in new result pointer
  return num(0);  // harmless good return
 }
 
@@ -76,7 +76,7 @@ static A jtlevs2(J jt,A a,A w,A self){
  // add a boxing level before we drop down so that when it is processed it will be the first level at which it became active.  This result could
  // be achieved by altering the left/right levels, but Roger did it this way.
  if(aready&wready){RZ(jtscfn(jt,CALL2(fsf,a,w,fs),self));
- }else{STACKCHKOFL RZ(every2(aready?box(a):a,wready?box(w):w,self));}  // since this recurs, check stack
+ }else{STACKCHKOFL RZ(every2(aready?jtbox(jt,a):a,wready?jtbox(jt,w):w,self));}  // since this recurs, check stack
  // We do this with the if statement rather than a computed branch in the hope that the CPU can detect patterns in the conditions.
  // There may be a structure in the user's data that could be detected for branch prediction.
   return num(0);
@@ -95,7 +95,7 @@ static A jtscapco1(J jt,    A w,A self){PROLOG(555);A x,z=0;I m;V*v=FAV(self);
  // things is to ra() the first one too.  When we fa() at the end we may be freeing a different buffer, but that's OK since all have been raised.
  ras(AKASA(recurself));
  x=jtlevs1(jt,w,recurself);
- if(x){AT(AKASA(recurself))=BOX; AN(AKASA(recurself))=AS(AKASA(recurself))[0]; z=ope(AKASA(recurself)); AT(AKASA(recurself))=INT;} // if no error, turn the extendable list into a list of boxes (fixing AN), and open it
+ if(x){AT(AKASA(recurself))=BOX; AN(AKASA(recurself))=AS(AKASA(recurself))[0]; z=jtope(jt,AKASA(recurself)); AT(AKASA(recurself))=INT;} // if no error, turn the extendable list into a list of boxes (fixing AN), and open it
  fa(AKASA(recurself));  // match the ra(), but not necessarily on the same block
  // always returns non-pristine
  EPILOG(z);
@@ -114,7 +114,7 @@ static A jtscapco2(J jt,A a,A w,A self){PROLOG(556);A x,z=0;V*v=FAV(self);
  // things is to ra() the first one too.  When we fa() at the end we may be freeing a different buffer, but that's OK since all have been raised.
  ras(AKASA(recurself));
  x=levs2(a,w,recurself);
- if(x){AT(AKASA(recurself))=BOX; AN(AKASA(recurself))=AS(AKASA(recurself))[0]; z=ope(AKASA(recurself)); AT(AKASA(recurself))=INT;} // if no error, turn the extendable list into a list of boxes (fixing AN), and open it
+ if(x){AT(AKASA(recurself))=BOX; AN(AKASA(recurself))=AS(AKASA(recurself))[0]; z=jtope(jt,AKASA(recurself)); AT(AKASA(recurself))=INT;} // if no error, turn the extendable list into a list of boxes (fixing AN), and open it
  fa(AKASA(recurself));  // match the ra(), but not necessarily on the same block
  // always returns non-pristine
  EPILOG(z);
@@ -126,7 +126,7 @@ static A jtlsub(J jt,C id,A a,A w){A h,t;B b=id==CLCAPCO;I*hv,n,*v;
  n=AN(w); 
  ASSERT(1>=AR(w),EVRANK);
  ASSERT(BETWEENO(n,1,4),EVLENGTH);
- RZ(t=vib(w)); v=AV(t);
+ RZ(t=jtvib(jt,w)); v=AV(t);
  GAT0(h,INT,3,1); hv=AV(h);  // save levels in h
  hv[0]=v[2==n]; hv[1]=v[3==n]; hv[2]=v[n-1];  // monad, left, right
  return fdef(0,id,VERB, b?jtlcapco1:jtscapco1,b?jtlcapco2:jtscapco2, a,w,h, VFLAGNONE, RMAX,RMAX,RMAX);

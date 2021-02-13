@@ -6,18 +6,18 @@
 #include "j.h"
 
 static A jtrepzdx(J jt,A a,A w,I wf,I wcr){A p,q,x;P*wp;
- F2PREFIP;
+ FPREFIP;
  if(SPARSE&AT(w)){wp=PAV(w); x=SPA(wp,e);}
- else x=jt->fill&&AN(jt->fill)?jt->fill:filler(w);
- RZ(p=jtrepeat(jt,ravel(rect(a)),ravel(jtstitch(jt,IX(wcr?*(wf+AS(w)):1),num(-1)))));
+ else x=jt->fill&&AN(jt->fill)?jt->fill:jtfiller(jt,w);
+ RZ(p=jtrepeat(jt,jtravel(jt,jtrect(jt,a)),jtravel(jt,jtstitch(jt,IX(wcr?*(wf+AS(w)):1),num(-1)))));
  RZ(IRS2(w,x,0L,wcr,0L,jtover,q));
  return IRS2(p,q,0L,1L,wcr+!wcr,jtfrom,x);
 }    /* (dense complex) # (dense or sparse) */
 
 static A jtrepzsx(J jt,A a,A w,I wf,I wcr){A q,x,y;I c,d,j,k=-1,m,p=0,*qv,*xv,*yv;P*ap;
- F2PREFIP;
+ FPREFIP;
  ap=PAV(a); x=SPA(ap,x); m=AN(x);
- if(!AN(SPA(ap,a)))return repzdx(ravel(x),w,wf,wcr);
+ if(!AN(SPA(ap,a)))return repzdx(jtravel(jt,x),w,wf,wcr);
  y=SPA(ap,i); yv=AV(y);
  RZ(x=jtcvt(jt,INT,vec(FL,2*m,AV(x)))); xv=AV(x);
  if(jtequ(jt,num(0),SPA(ap,e))){
@@ -30,7 +30,7 @@ static A jtrepzsx(J jt,A a,A w,I wf,I wcr){A q,x,y;I c,d,j,k=-1,m,p=0,*qv,*xv,*y
     DQ(m, if(q==*v)++q; else if(q<*v){k=q; break;} v+=n;);
   }}
   ASSERT(k<=IMAX-1,EVLIMIT);
-  if(c==k)RZ(w=irs2(sc(1+k),w,0L,0L,wcr,jttake));
+  if(c==k)RZ(w=irs2(jtsc(jt,1+k),w,0L,0L,wcr,jttake));
   DO(2*m, ASSERT(0<=xv[i],EVDOMAIN); p+=xv[i]; ASSERT(0<=p,EVLIMIT););
   GATV0(q,INT,p,1); qv=AV(q);
   DO(m, c=*xv++; d=*xv++; j=yv[i]; DQ(c, *qv++=j;); DQ(d, *qv++=k;);); 
@@ -41,7 +41,7 @@ static A jtrepzsx(J jt,A a,A w,I wf,I wcr){A q,x,y;I c,d,j,k=-1,m,p=0,*qv,*xv,*y
 
 static A jtrepbdx(J jt,A a,A w,I wf,I wcr){A z;I c,k,m,p;
  // wf and wcr are set
- F2PREFIP;
+ FPREFIP;
  if(SPARSE&AT(w))return irs2(jtifb(jt,AN(a),BAV(a)),w,0L,1L,wcr,jtfrom);
  m=AN(a);
  void *zvv; void *wvv=voidAV(w); I n=0; // pointer to output area; pointer to input data; number of prefix bytes to skip in first cell
@@ -107,7 +107,7 @@ static A jtrepbdx(J jt,A a,A w,I wf,I wcr){A z;I c,k,m,p;
 }    /* (dense boolean)#"r (dense or sparse) */
 
 static A jtrepbsx(J jt,A a,A w,I wf,I wcr){A ai,c,d,e,g,q,x,wa,wx,wy,y,y1,z,zy;B*b;I*dv,*gv,j,m,n,*u,*v,*v0;P*ap,*wp,*zp;
- F2PREFIP;
+ FPREFIP;
  ap=PAV(a); e=SPA(ap,e); 
  y=SPA(ap,i); u=AV(y);
  x=SPA(ap,x); n=AN(x); b=BAV(x);
@@ -119,20 +119,20 @@ static A jtrepbsx(J jt,A a,A w,I wf,I wcr){A ai,c,d,e,g,q,x,wa,wx,wy,y,y1,z,zy;B
   return irs2(q,w,0L,1L,wcr,jtfrom);
  }
  wp=PAV(w);
- if(DENSE&AT(w)||all0(eq(sc(wf),SPA(wp,a)))){RZ(q=denseit(a)); return irs2(jtifb(jt,AN(q),BAV(q)),w,0L,1L,wcr,jtfrom);}  // here if dense w
+ if(DENSE&AT(w)||all0(eq(jtsc(jt,wf),SPA(wp,a)))){RZ(q=jtdenseit(jt,a)); return irs2(jtifb(jt,AN(q),BAV(q)),w,0L,1L,wcr,jtfrom);}  // here if dense w
  wa=SPA(wp,a); wy=SPA(wp,i); wx=SPA(wp,x);
  RZ(q=jtaslash(jt,CPLUS,a));
  GASPARSE(z,AT(w),1,AR(w),AS(w)); *(wf+AS(z))=m=*AV(q);
- RZ(c=jtindexof(jt,wa,sc(wf)));
+ RZ(c=jtindexof(jt,wa,jtsc(jt,wf)));
  RZ(y1=jtfromr(jt,c,wy));
- RZ(q=__not(jteps(jt,y1,ravel(jtrepeat(jt,__not(x),y)))));
+ RZ(q=jtnot(jt,jteps(jt,y1,jtravel(jt,jtrepeat(jt,jtnot(jt,x),y)))));
  m=AS(a)[0]-m;
  GATV0(ai,INT,m,1); v=AV(ai); DO(n, if(!*b++)*v++=u[i];);
- RZ(g=grade1(jtover(jt,ai,jtrepeat(jt,q,y1)))); gv=AV(g);
+ RZ(g=jtgrade1(jt,jtover(jt,ai,jtrepeat(jt,q,y1)))); gv=AV(g);
  GATV0(d,INT,AN(y1),1); dv=AV(d); j=0; DO(AN(g), if(m>gv[i])++j; else dv[gv[i]-m]=j;);
- RZ(zy=mkwris(jtrepeat(jt,q,wy))); v=AV(zy)+*AV(c); m=AS(zy)[1]; DO(AS(zy)[0], *v-=dv[i]; v+=m;);
+ RZ(zy=jtmkwris(jt,jtrepeat(jt,q,wy))); v=AV(zy)+*AV(c); m=AS(zy)[1]; DO(AS(zy)[0], *v-=dv[i]; v+=m;);
  zp=PAV(z);
- SPB(zp,a,ca(wa));
+ SPB(zp,a,jtca(jt,wa));
  SPB(zp,e,SPA(wp,e));
  SPB(zp,i,zy);
  SPB(zp,x,jtrepeat(jt,q,wx));
@@ -140,8 +140,8 @@ static A jtrepbsx(J jt,A a,A w,I wf,I wcr){A ai,c,d,e,g,q,x,wa,wx,wy,y,y1,z,zy;B
 }    /* (sparse boolean) #"r (dense or sparse) */
 
 static A jtrepidx(J jt,A a,A w,I wf,I wcr){A y;I j,m,p=0,*v,*x;
- F2PREFIP;
- RZ(a=vi(a)); x=AV(a);
+ FPREFIP;
+ RZ(a=jtvi(jt,a)); x=AV(a);
  m=AS(a)[0];
  DO(m, ASSERT(0<=x[i],EVDOMAIN); p+=x[i]; ASSERT(0<=p,EVLIMIT););  // add up total # result slots
  GATV0(y,INT,p,1); v=AV(y); 
@@ -150,11 +150,11 @@ static A jtrepidx(J jt,A a,A w,I wf,I wcr){A y;I j,m,p=0,*v,*x;
 }    /* (dense  integer) #"r (dense or sparse) */
 
 static A jtrepisx(J jt,A a,A w,I wf,I wcr){A e,q,x,y;I c,j,m,p=0,*qv,*xv,*yv;P*ap;
- F2PREFIP;
+ FPREFIP;
  ap=PAV(a); e=SPA(ap,e); 
  y=SPA(ap,i); yv=AV(y);
  x=SPA(ap,x); if(!(INT&AT(x)))RZ(x=jtcvt(jt,INT,x)); xv=AV(x);
- if(!AN(SPA(ap,a)))return repidx(ravel(x),w,wf,wcr);
+ if(!AN(SPA(ap,a)))return repidx(jtravel(jt,x),w,wf,wcr);
  if(!*AV(e)){
   m=AN(x);  
   DO(m, ASSERT(0<=xv[i],EVDOMAIN); p+=xv[i]; ASSERT(0<=p,EVLIMIT););
@@ -167,7 +167,7 @@ static A jtrepisx(J jt,A a,A w,I wf,I wcr){A e,q,x,y;I c,j,m,p=0,*qv,*xv,*yv;P*a
 
 
 static A jtrep1d(J jt,A a,A w,I wf,I wcr){A z;C*wv,*zv;I c,k,m,n,p=0,q,t,*ws,zk,zn;
- F2PREFIP;
+ FPREFIP;
  t=AT(a); m=AN(a); ws=AS(w); SETICFR(w,wf,wcr,n);   // n=length of item axis in input.  If atom, is repeated to length of a
  if(t&CMPX){
   if(wcr)return repzdx(jtfrom(jt,apv(n,0L,0L),a),w,                wf,wcr);
@@ -175,7 +175,7 @@ static A jtrep1d(J jt,A a,A w,I wf,I wcr){A z;C*wv,*zv;I c,k,m,n,p=0,q,t,*ws,zk,
  }
  if(t&B01){p=bsum(m,BAV(a)); // bsum in case a is big.  Atomic boolean was handled earlier
  }else{I*x; 
-  RZ(a=vi(a)); x=AV(a); 
+  RZ(a=jtvi(jt,a)); x=AV(a); 
   DO(m, ASSERT(0<=x[i],EVDOMAIN); p+=x[i]; ASSERT(0<=p,EVLIMIT););  // p=#items in result
  }
  DPMULDE(p,n,q);  // q=length of result item  axis.  +/a copies, each of length n
@@ -183,7 +183,7 @@ static A jtrep1d(J jt,A a,A w,I wf,I wcr){A z;C*wv,*zv;I c,k,m,n,p=0,q,t,*ws,zk,
  GA(z,AT(w),zn,AR(w)+!wcr,0); MCISH(AS(z),AS(w),AR(z)) AS(z)[wf]=q;
  if(!zn)return z;
  wv=CAV(w); zv=CAV(z);
- PROD(c,wf+(I )(wcr!=0),ws); PROD1(k,wcr-1,ws+wf+1); k <<=bplg(AT(w));  // c=#cell-items to process  k=#atoms per cell-item
+ PROD(c,wf+(I )(wcr!=0),ws); PROD(k,wcr-1,ws+wf+1); k <<=bplg(AT(w));  // c=#cell-items to process  k=#atoms per cell-item
  zk=p*k;  // # bytes to fill per item
  DQ(c, mvc(zk,zv,k,wv); zv+=zk; wv+=k;);
  return z;
@@ -191,8 +191,8 @@ static A jtrep1d(J jt,A a,A w,I wf,I wcr){A z;C*wv,*zv;I c,k,m,n,p=0,q,t,*ws,zk,
 
 static B jtrep1sa(J jt,A a,I*c,I*d){A x;B b;I*v;
  b=1&&AT(a)&CMPX;
- if(b)RZ(x=rect(a)) else x=a; 
- if(AR(a)){ASSERT(jtequ(jt,num(1),jtaslash(jt,CSTARDOT,le(zeroionei(0),ravel(x)))),EVDOMAIN); RZ(x=jtaslash(jt,CPLUS,x));} 
+ if(b)RZ(x=jtrect(jt,a)) else x=a; 
+ if(AR(a)){ASSERT(jtequ(jt,num(1),jtaslash(jt,CSTARDOT,le(zeroionei(0),jtravel(jt,x)))),EVDOMAIN); RZ(x=jtaslash(jt,CPLUS,x));} 
  if(!(INT&AT(x)))RZ(x=jtcvt(jt,INT,x));
  v=AV(x); *c=v[0]; *d=b?v[1]:0;
  ASSERT(0<=*c&&0<=*d,EVDOMAIN);
@@ -200,18 +200,18 @@ static B jtrep1sa(J jt,A a,I*c,I*d){A x;B b;I*v;
 }    /* process a in a#"0 w */
 
 static A jtrep1s(J jt,A a,A w,I wf,I wcr){A ax,e,x,y,z;B*b;I c,d,cd,j,k,m,n,p,q,*u,*v,wr,*ws;P*wp,*zp;
- F2PREFIP;
- if(AT(a)&SCMPX)return rep1d(denseit(a),w,wf,wcr);
+ FPREFIP;
+ if(AT(a)&SCMPX)return rep1d(jtdenseit(jt,a),w,wf,wcr);
  RE(rep1sa(a,&c,&d)); cd=c+d;
- if(DENSE&AT(w))return rep1d(d?jtjdot2(jt,sc(c),sc(d)):sc(c),w,wf,wcr);  // here if dense w
+ if(DENSE&AT(w))return rep1d(d?jtjdot2(jt,jtsc(jt,c),jtsc(jt,d)):jtsc(jt,c),w,wf,wcr);  // here if dense w
  wr=AR(w); ws=AS(w); n=wcr?*(wf+ws):1; RE(m=mult(n,cd));
  wp=PAV(w); e=SPA(wp,e); ax=SPA(wp,a); y=SPA(wp,i); x=SPA(wp,x);
  GASPARSE(z,AT(w),1,wr+!wcr,ws); *(wf+AS(z))=m; zp=PAV(z);
  RE(b=bfi(wr,ax,1));
  if(wcr&&b[wf]){    /* along sparse axis */
   u=AS(y); p=u[0]; q=u[1]; u=AV(y);
-  RZ(x=jtrepeat(jt,sc(c),x));
-  RZ(y=mkwris(jtrepeat(jt,sc(c),y)));
+  RZ(x=jtrepeat(jt,jtsc(jt,c),x));
+  RZ(y=jtmkwris(jt,jtrepeat(jt,jtsc(jt,c),y)));
   if(p&&1<c){
    j=0; DO(wf, j+=b[i];); v=j+AV(y);
    if(AN(ax)==1+j){u+=j; DO(p, m=cd**u; u+=q; DO(c, *v=m+i; v+=q;););}
@@ -224,14 +224,14 @@ static A jtrep1s(J jt,A a,A w,I wf,I wcr){A ax,e,x,y,z;B*b;I c,d,cd,j,k,m,n,p,q,
       DO(j1, uu[i]=u[i];);
       DO(h, DO(c, *v=m+i; v+=q;););
      } 
-    RZ(xx=grade1(y));
+    RZ(xx=jtgrade1(jt,y));
     RZ(x=jtfrom(jt,xx,x));
     RZ(y=jtfrom(jt,xx,y));
  }}}else{A xx;      /* along dense  axis */
   j=0; DO(wcr, j+=!b[wf+i];);
-  RZ(y=ca(y));
+  RZ(y=jtca(jt,y));
   if(d){xx=jt->fill; jt->fill=e;}  // e cannot be virtual
-  x=irs2(AR(a)&&CMPX&AT(a)?a:d?jtjdot2(jt,sc(c),sc(d)):sc(c),x,0L,1L,j,jtrepeat); 
+  x=irs2(AR(a)&&CMPX&AT(a)?a:d?jtjdot2(jt,jtsc(jt,c),jtsc(jt,d)):jtsc(jt,c),x,0L,1L,j,jtrepeat); 
   if(d)jt->fill=xx; 
   RZ(x);
  }
@@ -244,7 +244,7 @@ static A jtrep1s(J jt,A a,A w,I wf,I wcr){A ax,e,x,y,z;B*b;I c,d,cd,j,k,m,n,p,q,
 
 A (*reptab[])() = {jtrepisx,jtrepidx,jtrepbsx,jtrepbdx,jtrep1s,jtrep1d,jtrepzsx,jtrepzdx};
  A jtrepeat(J jt,A a,A w){A z;I acr,ar,wcr,wf,wr;
- F2PREFIP;
+ FPREFIP;
  ar=AR(a); acr=jt->ranks>>RANKTX; acr=ar<acr?ar:acr;
  wr=AR(w); wcr=(RANKT)jt->ranks; wcr=wr<wcr?wr:wcr; wf=wr-wcr; RESETRANK;
 I adense=-(AT(a)&DENSE);  // sign set if a is dense
@@ -256,7 +256,7 @@ I att=SGNTO0(-(AT(a)&B01+SB01))+((UI)(-(AT(a)&CMPX+SCMPX))>>(BW-1-1));  // 0 if 
  // special case: if a is atomic 1, and cells of w are not atomic.  a=0 is fast in the normal path
  if(((-wcr)&(ar-1)&(-(AT(a)&(B01|INT))))<0){I aval = BIV0(a);  // no fast support for float; take all of INT, or 1 bit of B01
   if(!(aval&-2LL)){  // 0 or 1
-   if(aval==1)return RETARG(w);   // 1 # y, return y
+   if(aval==1)return w;   // 1 # y, return y
    if(!(AT(w)&SPARSE)){GA(z,AT(w),0,AR(w),0); MCISH(AS(z),AS(w),AR(w)) AS(z)[wf]=0; return z;}  // 0 # y, return empty
   }
  }

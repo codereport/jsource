@@ -420,7 +420,7 @@ VA va[]={
 A jtcvz(J jt,I cv,A w){I t;
  t=AT(w);
  if(cv&VRD&&!(t&FL) )return jtpcvt(jt,FL,w);  // convert if possible
- if(cv&VRI&&!(t&INT))return icvt(w);  // convert to integer if possible
+ if(cv&VRI&&!(t&INT))return jticvt(jt,w);  // convert to integer if possible
  return w;
 }    /* convert result */
 
@@ -441,7 +441,7 @@ static VF repairip[4] = {plusBIO, plusIIO, minusBIO, minusIIO};
 static A jtva2(J jt,AD * RESTRICT a,AD * RESTRICT w,AD * RESTRICT self,UI allranks){  // allranks is argranks/ranks
  A z;I m,mf,n,nf,zn;VA2 adocv,*aadocv;UI fr;  // fr will eventually be frame/rank  nf (and mf) change roles during execution  fr/shortr use all bits and shift
  I aawwzk[5];  // a outer/only, a inner, w outer/only, w inner, z
- F2PREFIP;
+ FPREFIP;
  {I at=AT(a);
   I wt=AT(w);
   if(!(((I)jtinplace&(JTRETRY|JTEMPTY))+((UNSAFE(at|wt))&(NOUN&~(B01|INT|FL))))){  // no error, bool/int/fl args, no empties
@@ -715,7 +715,7 @@ static A jtva2(J jt,AD * RESTRICT a,AD * RESTRICT w,AD * RESTRICT self,UI allran
     return zz;  // Return the result after overflow has been corrected
    }
    // retry required, not inplaceable.  Signal the error code to the caller.  If the error is not retryable, set the error message
-   if(rc<=NEVM)jsignal(rc);else jt->jerr=(UC)rc;
+   if(rc<=NEVM)jtjsignal(jt,rc);else jt->jerr=(UC)rc;
   }
  }else{z=vasp(a,w,FAV(self)->id,aadocv->f,aadocv->cv,atype(aadocv->cv),rtype(aadocv->cv),mf,aawwzk[0],nf,aawwzk[1],fr>>RANKTX,(RANKT)fr-(fr>>RANKTX)); if(!jt->jerr)return z;}  // handle sparse arrays separately.
  return 0;  // return to the caller, who will retry any retryable errors
@@ -964,7 +964,7 @@ static A jtsumatgbool(J jt,A a,A w,C id){A t,z;B* RESTRICTI av,* RESTRICTI wv;I 
   I rc;  // accumulate error returns
   rc=((AHDR2FN*)adocv.f)(n,m,av,wv,zv,jt);  // create first result-cell of g
   DQ(nn-1, av-=ak; wv-=wk; I lrc; lrc=((AHDR2FN*)adocv.f)(n,m,av,wv,yv,jt); rc=lrc<rc?lrc:rc; lrc=((AHDR2FN*)adocvf.f)((I)1,zn,yv,p?zu:zv,p?zv:zu,jt); rc=lrc<rc?lrc:rc; p^=1;);  // p==1 means result goes to ping buffer zv
-  if(NEVM<(rc&255)){df1(z,df2(y,a,w,gs),fs);}else{if(rc&255)jsignal(rc); z=p?z1:z;}  // if overflow, revert to old-fashioned way.  If p points to ping, prev result went to pong, make pong the result
+  if(NEVM<(rc&255)){df1(z,df2(y,a,w,gs),fs);}else{if(rc&255)jtjsignal(jt,rc); z=p?z1:z;}  // if overflow, revert to old-fashioned way.  If p points to ping, prev result went to pong, make pong the result
  }
  RE(0); return z;
 }    /* a f/@:g w where f and g are atomic*/
@@ -977,7 +977,7 @@ static A jtsumatgbool(J jt,A a,A w,C id){A t,z;B* RESTRICTI av,* RESTRICTI wv;I 
  A realself=FAV(self)->fgh[0];  // if rank operator, this is nonzero and points to the left arg of rank
  RANK2T selfranks=FAV(self)->lrr;  // get left & right rank from rank/primitive
  self=realself?realself:self;  // if this is a rank block, move to the primitive.  u b. or any atomic primitive has f clear
- F2PREFIP;
+ FPREFIP;
  if(!(a && w)) return 0;
  RANK2T jtranks=jt->ranks;  // fetch IRS ranks if any
  UI ar=AR(a), wr=AR(w), awr=(ar<<RANKTX)+wr; I awm1=(AN(a)-1)|(AN(w)-1);
@@ -1006,8 +1006,8 @@ static A jtsumatgbool(J jt,A a,A w,C id){A t,z;B* RESTRICTI av,* RESTRICTI wv;I 
  return z=jtva2((J)((I)jtinplace|JTRETRY),a,w,self,(awr<<RANK2TX)+selfranks);  // execute the verb
 }
 
- A jtexpn2  (J jt,A a,A w,A self){F2PREFIP; if(((((I)AR(w)-1)&SGNIF(AT(w),FLX))<0))if(0.5==DAV(w)[0])return sqroot(a);  return jtatomic2(jtinplace,a,w,self);}  // use sqrt hardware for sqrt.  Only for atomic w.
- A jtresidue(J jt,A a,A w,A self){F2PREFIP; I intmod; if(!((AT(a)|AT(w))&(NOUN&~INT)|AR(a))&&(intmod=IAV(a)[0], (intmod&-intmod)+(intmod<=0)==0))return jtintmod2(jt,w,intmod); return jtatomic2(jtinplace,a,w,self);}
+ A jtexpn2  (J jt,A a,A w,A self){FPREFIP; if(((((I)AR(w)-1)&SGNIF(AT(w),FLX))<0))if(0.5==DAV(w)[0])return sqroot(a);  return jtatomic2(jtinplace,a,w,self);}  // use sqrt hardware for sqrt.  Only for atomic w.
+ A jtresidue(J jt,A a,A w,A self){FPREFIP; I intmod; if(!((AT(a)|AT(w))&(NOUN&~INT)|AR(a))&&(intmod=IAV(a)[0], (intmod&-intmod)+(intmod<=0)==0))return jtintmod2(jt,w,intmod); return jtatomic2(jtinplace,a,w,self);}
 
 
 // These are the unary ops that are implemented using a canned argument
@@ -1107,7 +1107,7 @@ VA2 jtvar(J jt,A self,I at,I wt){I t;
   case CSTARDOT: if(jt->jerr==EWOV){retva2.f=(VF)lcmIO; retva2.cv=VD+VII;} break;
   case CSTILE: if(jt->jerr==EWOV){retva2.f=(VF)remDD; retva2.cv=VD+VDD+VIP;} break;
   }
-  if(retva2.f){RESETERR}else{if(jt->jerr>NEVM){RESETERR jsignal(EVSYSTEM);}}  // system error if unhandled exception.  Otherwise reset error only if we handled it
+  if(retva2.f){RESETERR}else{if(jt->jerr>NEVM){RESETERR jtjsignal(jt,EVSYSTEM);}}  // system error if unhandled exception.  Otherwise reset error only if we handled it
   return retva2;
  }
 }    /* function and control for rank */

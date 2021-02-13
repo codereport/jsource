@@ -26,7 +26,7 @@
 #define ZS2(f,stmts) Z f(J jt,Z u,Z v){ZF2DECL; stmts; ZEPILOG;}
 #define MMM(a,b)        {p=ABS(a); q=ABS(b); if(p<q){D t=p; p=q; q=t;}}
 
-#define ZASSERT(b,e)    {if(!(b)){jsignal(e); return zeroZ;}}
+#define ZASSERT(b,e)    {if(!(b)){jtjsignal(jt,e); return zeroZ;}}
 #define ZNZ(v)          (  (v).re||(v).im )
 #define ZEZ(v)          (!((v).re||(v).im))
 #define ZINF(v)         (inf==(v).re||inf==(v).im||infm==(v).re||infm==(v).im)

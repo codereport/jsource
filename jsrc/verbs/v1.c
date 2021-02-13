@@ -64,7 +64,7 @@ static B eqv(I af,I wf,I m,I n,I k,C*av,C*wv,B* RESTRICT x,B b1){B b,* RESTRICT 
 
 // Return 1 if a and w match, 0 if not
 B jtequ(J jt,A a,A w){A x;
- F2PREFIP;
+ FPREFIP;
  if(!(a && w)) return 0;  // allow inplace request - it has no effect
  if(a==w)return 1;
  if((SPARSE&(AT(a)|AT(w)))!=0)if(AR(a)&&AR(w)){RZ(x=jtmatchs(jt,a,w)); return BAV(x)[0];}
@@ -73,7 +73,7 @@ B jtequ(J jt,A a,A w){A x;
 
 // Return 1 if a and w match intolerantly, 0 if not
 B jtequ0(J jt,A a,A w){
- F2PREFIP;  // allow inplace request - it has no effect
+ FPREFIP;  // allow inplace request - it has no effect
  PUSHCCT(1.0) B res=jtequ(jt,a,w); POPCCT return res;
 }
 

@@ -39,7 +39,7 @@ static I intforD(J jt, D d){D q;I z;
 
 #define SSINGCASE(id,subtype) (9*(id)+(subtype))   // encode case/args into one branch value
 A jtssingleton(J jt, A a,A w,A self,RANK2T awr,RANK2T ranks){A z;
- F2PREFIP;
+ FPREFIP;
  // Get the address of an inplaceable assignment, if any
  L *asym = jt->assignsym; asym=asym?asym:(L*)(validitymask+12); asym=(L*)asym->val; // pending assignment if any; if non0, fetch address of value (otherwise 0)
  I aiv=FAV(self)->lc;   // temp, but start as function #
@@ -380,7 +380,7 @@ A jtssingleton(J jt, A a,A w,A self,RANK2T awr,RANK2T ranks){A z;
  circleresult: ;
  D cirvals[3]={adv,wdv};  // put ops into memory
  I rc=cirDD(1,1,cirvals,cirvals+1,cirvals+2,jt);  // run the routine
- if(rc==EVOK){SSSTORE(cirvals[2],z,FL,D);}else{jsignal(rc); z=0;} return z;  // Don't change the input block if there is an error.  If there is, post it to the return area
+ if(rc==EVOK){SSSTORE(cirvals[2],z,FL,D);}else{jtjsignal(jt,rc); z=0;} return z;  // Don't change the input block if there is an error.  If there is, post it to the return area
 
 }
 

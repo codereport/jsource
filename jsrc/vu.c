@@ -69,7 +69,7 @@ static A jtifc2(J jt, A w){A z;I n,t,*zv;
 }    /* integers from 1- or 2-byte or 4-byte chars */
 
 static A jtc2fi(J jt, A w){A z;I j,n,*v;US*zv;
- RZ(w=vi(w));
+ RZ(w=jtvi(jt,w));
  n=AN(w); v=AV(w);
  GATV(z,C2T,n,AR(w),AS(w)); zv=USAV(z);
  DQ(n, j=*v++; ASSERT(BETWEENC(j,SMIN,SMAX),EVINDEX); *zv++=(US)j;);
@@ -79,21 +79,21 @@ static A jtc2fi(J jt, A w){A z;I j,n,*v;US*zv;
  A jtuco1(J jt, A w){I t;
  t=AT(w);
  ASSERT(!AN(w)||t&JCHAR+NUMERIC,EVDOMAIN);
- return t&NUMERIC?c2fi(w):t&C2T?w:toc2(w);  // was ca(w)
+ return t&NUMERIC?jtc2fi(jt,w):t&C2T?w:jttoc2(jt,w);  // was jtca(jt,w)
 }    /* return 2-byte chars unchanged; convert 1-byte or 4-byte to 2-byte */
 
  A jtuco2(J jt,A a,A w){I j;
- RE(j=i0(a));
+ RE(j=jti0(jt,a));
  switch(j){
   case 1: return jttoc1(jt,1,w);
-  case 2: return toc2(w);
-  case 3: return ifc2(w);
-  case 4: return c2fi(w);
+  case 2: return jttoc2(jt,w);
+  case 3: return jtifc2(jt,w);
+  case 4: return jtc2fi(jt,w);
   case 5: return jttoc1(jt,0,w);
-  case 6: return toc2e(w);
-  case 7: return toutf16(w);
-  case 8: return toutf8(w);
-  case 9: return toutf32(w);
-  case 10: return tou32(w);
+  case 6: return jttoc2e(jt,w);
+  case 7: return jttoutf16(jt,w);
+  case 8: return jttoutf8(jt,w);
+  case 9: return jttoutf32(jt,w);
+  case 10: return jttou32(jt,w);
   default: ASSERT(0,EVDOMAIN);
 }}

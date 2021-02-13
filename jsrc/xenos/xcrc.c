@@ -13,14 +13,14 @@
 static UINT jtcrcvalidate(J jt,A w, UINT* crctab){A*wv;B*v;I m;UINT p,x,z=-1;
  ASSERT(1>=AR(w),EVRANK);
  m=AN(w);
- if(m&&BOX&AT(w)){ASSERT(2>=m,EVLENGTH); wv=AAV(w);  w=wv[0]; if(2==m)RE(z=(UINT)i0(wv[1]));}
+ if(m&&BOX&AT(w)){ASSERT(2>=m,EVLENGTH); wv=AAV(w);  w=wv[0]; if(2==m)RE(z=(UINT)jti0(jt,wv[1]));}
  if(B01&AT(w)){ASSERT(32==AN(w),EVLENGTH); v=BAV(w); p=0; DQ(32, p<<=1; p|=*v++;);}
- else RE(p=(UINT)i0(w));
+ else RE(p=(UINT)jti0(jt,w));
  DO(256, x=(UINT)i; DO(8, x=(x>>1)^(p&((UINT)-(I4)(x&1)));); crctab[i]=x;); 
  return z;
 }
 
- A jtcrc1(J jt, A w){return jtcrc2(jt,sc(-306674912),w);}
+ A jtcrc1(J jt, A w){return jtcrc2(jt,jtsc(jt,-306674912),w);}
 
  A jtcrc2(J jt,A a,A w){I n;UINT z;UC*v; UINT crctab[256];
  ASSERT(1>=AR(a)&&1>=AR(w),EVRANK);
@@ -30,14 +30,14 @@ static UINT jtcrcvalidate(J jt,A w, UINT* crctab){A*wv;B*v;I m;UINT p,x,z=-1;
  RE(z=jtcrcvalidate(jt,a,crctab));
  n=AT(w)&C4T?(4*n):AT(w)&C2T?n+n:n;
  DQ(n, z=z>>8^crctab[255&(z^*v++)];);  // do the computation using unsigned z
- return sc((I)(I4)(z^-1L));  // sign-extend result if needed to make 64-bit and 32-bit the same numeric value
+ return jtsc(jt,(I)(I4)(z^-1L));  // sign-extend result if needed to make 64-bit and 32-bit the same numeric value
 }
 
  A jtcrccompile(J jt, A w){A h,*hv;UINT z; UINT crctab[256];
  GAT0(h,BOX,2,1); hv=AAV(h);
  RE(z=jtcrcvalidate(jt,w,crctab));
- RZ(hv[0]=rifvs(vec(LIT,sizeof(crctab),crctab)));  // Save the table.  We don't have any other good type to use
- RZ(hv[1]=rifvs(sc((I)z)));
+ RZ(hv[0]=jtrifvs(jt,vec(LIT,sizeof(crctab),crctab)));  // Save the table.  We don't have any other good type to use
+ RZ(hv[1]=jtrifvs(jt,jtsc(jt,(I)z)));
  return h;
 }
 
@@ -47,15 +47,15 @@ static UINT jtcrcvalidate(J jt,A w, UINT* crctab){A*wv;B*v;I m;UINT p,x,z=-1;
  ASSERT(!n||AT(w)&LIT+C2T+C4T,EVDOMAIN);
  n=AT(w)&C4T?(4*n):AT(w)&C2T?n+n:n;
  DQ(n, z=z>>8^t[255&(z^*v++)];);
- return sc((I)(I4)(z^-1L));
+ return jtsc(jt,(I)(I4)(z^-1L));
 }
 
 // CRC-based hash.  Bivalent
 #ifndef CRC32L
 #define CRC32L(acc,in) (0xffffffff&((acc*15015)^(in)))   // if no hardware CRC (rare), mix the bits a little
 #endif
- A jtqhash12(J jt,A a,A w){F2PREFIP; I hsiz; UI crc;
- if(AT(w)&NOUN){RE(hsiz=i0(vib(a)));} else{w=a; hsiz=0;}  // fetch hashtable size; set w=data to hash
+ A jtqhash12(J jt,A a,A w){FPREFIP; I hsiz; UI crc;
+ if(AT(w)&NOUN){RE(hsiz=jti0(jt,jtvib(jt,a)));} else{w=a; hsiz=0;}  // fetch hashtable size; set w=data to hash
  ASSERT(hsiz>=0,EVDOMAIN);
  ASSERT(AT(w)&DENSE,EVNONCE);  // not sparse for now
  if(AT(w)&DIRECT){ // Direct value, calculate CRC of atoms
@@ -64,10 +64,10 @@ static UINT jtcrcvalidate(J jt,A w, UINT* crctab){A*wv;B*v;I m;UINT p,x,z=-1;
   crc=-1;  // where we accumulate CRC
   I lpct=AN(w)<<((AT(w)>>RATX)&1);  // number of component values
   A *av=AAV(w);  // pointer to subvalues
-  DQ(lpct, crc=CRC32L(crc,i0(jtqhash12(jt,zeroionei(0),*av++)));)  // recur
+  DQ(lpct, crc=CRC32L(crc,jti0(jt,jtqhash12(jt,zeroionei(0),*av++)));)  // recur
  }
  if(hsiz)crc=(crc*(UI)hsiz)>>32;   // convert hash to user's range
- return sc((I)(I4)crc);   // make the result a valid integer.  Could reuse the a arg inplace
+ return jtsc(jt,(I)(I4)crc);   // make the result a valid integer.  Could reuse the a arg inplace
 }
 
 // base64 stuff
