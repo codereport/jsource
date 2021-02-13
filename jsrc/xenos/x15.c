@@ -880,7 +880,7 @@ static B jtcdexec1(J jt,CCT*cc,C*zv0,C*wu,I wk,I wt,I wd){A*wv=(A*)wu,x,y,*zv;B 
  A jtcd(J jt,A a,A w){A z;C*tv,*wv,*zv;CCT*cc;I k,m,n,p,q,t,wr,*ws,wt;
  FPREFIP;
  AFLAG(w)&=~AFPRISTINE;  // we transfer boxes from w to the result, thereby letting them escape.  That makes w non-pristine
- if(!jt->cdarg)RZ(cdinit());
+ if(!jt->cdarg)RZ(jtcdinit(jt));
  if(1<AR(a)){I rr=AR(w); rr=rr==0?1:rr; return rank2ex(a,w,UNUSED_VALUE,1L,rr,1L,rr,jtcd);}
  wt=AT(w); wr=AR(w); ws=AS(w); PRODX(m,wr-1,ws,1);
  ASSERT(wt&DENSE,EVDOMAIN);
@@ -1112,7 +1112,7 @@ static I cbvx[]={(I)&cbx0,(I)&cbx1,(I)&cbx2,(I)&cbx3,(I)&cbx4,(I)&cbx5,(I)&cbx6,
  ASSERT(LIT&AT(w),EVDOMAIN);
  ASSERT(1>=AR(w),EVRANK);
  ASSERT(AN(w),EVLENGTH);
- if(!jt->cdarg)RE(cdinit());
+ if(!jt->cdarg)RE(jtcdinit(jt));
  C* enda=&CAV(w)[AN(w)]; C endc=*enda; *enda=0; cc=jtcdparse(jt,w,1); *enda=endc; RE(cc); // should do outside rank2 loop?
  return sc((I)cc->fp);
 }    /* 15!:21 return proc address */

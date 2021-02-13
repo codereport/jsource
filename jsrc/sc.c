@@ -105,7 +105,7 @@
    fa(fs); 
   }
   if(PMCTRBPMON&jt->uflags.us.uq.uq_c.pmctrbstk)pmrecord(thisname,jt->global?LOCNAME(jt->global):0,-2L,dyadex?VAL2:VAL1);  // record the return from call
-  if(jt->uflags.us.uq.uq_c.spfreeneeded)spfree();   // if garbage collection required, do it
+  if(jt->uflags.us.uq.uq_c.spfreeneeded)jtspfree(jt);   // if garbage collection required, do it
  }
 
  // Now pop the stack.  Execution may have added entries, but our stack frame always starts in the same place.

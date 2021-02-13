@@ -71,9 +71,9 @@ static UI jtgb_flip_cycle(J jt){I*A=(I*)jt->rngv;register I*i,*j;
 }
 
 static UI jtgb_next(J jt){UI a,b,c;
- a= jt->rngi ? jt->rngv[jt->rngi--] : gb_flip_cycle();
- b= jt->rngi ? jt->rngv[jt->rngi--] : gb_flip_cycle();
- c= jt->rngi ? jt->rngv[jt->rngi--] : gb_flip_cycle();
+ a= jt->rngi ? jt->rngv[jt->rngi--] : jtgb_flip_cycle(jt);
+ b= jt->rngi ? jt->rngv[jt->rngi--] : jtgb_flip_cycle(jt);
+ c= jt->rngi ? jt->rngv[jt->rngi--] : jtgb_flip_cycle(jt);
  return a+(b<<31)+(c<<33&0xc000000000000000UL);
 }
 
@@ -88,17 +88,17 @@ static void jtgb_init(J jt,UI s){I*A;register I i,next=1,prev,seed;
   next=mod_diff(next,seed);
   prev=A[i];
  }
- gb_flip_cycle();
- gb_flip_cycle();
- gb_flip_cycle();
- gb_flip_cycle();
- gb_flip_cycle();
+ jtgb_flip_cycle(jt);
+ jtgb_flip_cycle(jt);
+ jtgb_flip_cycle(jt);
+ jtgb_flip_cycle(jt);
+ jtgb_flip_cycle(jt);
  jt->rngi=54;
 }
 
 static I jtgb_unif_rand(J jt,I m){
  register UI r,t=two_to_the_31-(two_to_the_31 % m);
- do r=gb_next(); while(t<=r);
+ do r=jtgb_next(jt); while(t<=r);
  return r%m;
 }
 
@@ -106,8 +106,8 @@ static I jtgb_unif_rand(J jt,I m){
  ASSERTMTV(w);
  RZ(rngselects(sc(GBI)));
  gb_init(-314159);
- ASSERTSYS(gb_next()==119318998,"gb_test 0");
- DQ(133, gb_next(););
+ ASSERTSYS(jtgb_next(jt)==119318998,"gb_test 0");
+ DQ(133, jtgb_next(jt););
  ASSERTSYS(gb_unif_rand(0x55555555L)==748103812,"gb_test 1");
  RZ(rngselects(sc(j)));
  return num(1);
@@ -215,10 +215,10 @@ static UI jtmt_next(J jt){UI*mt=jt->rngv,*u,*v,*w,y;
  ASSERTMTV(w);
  RZ(rngselects(sc(MTI)));
  jtmt_init_by_array(jt,init,(I)4);
- x=mt_next();
+ x=jtmt_next(jt);
  ASSERTSYS(x==7266447313870364031ULL, "mt_test64 0");
- DQ(998, mt_next(););
- x=mt_next();
+ DQ(998, jtmt_next(jt););
+ x=jtmt_next(jt);
  ASSERTSYS(x== 994412663058993407ULL, "mt_test64 1");
  RZ(rngselects(sc(j)));
  return num(1);
@@ -246,9 +246,9 @@ static UI jtdx_next30(J jt){I j;UI*u,*v,*vv,r,x;
 }
 
 static UI jtdx_next(J jt){UI a,b,c;
- a=dx_next30()&0x000000003fffffff;
- b=dx_next30()&0x000000003fffffff;;
- c=dx_next30()&0x000000003fffffff;;
+ a=jtdx_next30(jt)&0x000000003fffffff;
+ b=jtdx_next30(jt)&0x000000003fffffff;;
+ c=jtdx_next30(jt)&0x000000003fffffff;;
  return a|b<<30|c<<34&0xf000000000000000UL;
 }
 
@@ -257,11 +257,11 @@ static void jtdx_init(J jt,UI s){lcg(DXN,jt->rngv,s); jt->rngi=0;}
  A jtdx_test(J jt, A w){I j=jt->rng,x;
  ASSERTMTV(w);
  RZ(rngselects(sc(DXI))); dx_init(1UL);
- x=dx_next(); ASSERTSYS(x== 221240004UL, "dx_test 0");
- x=dx_next(); ASSERTSYS(x==2109349384UL, "dx_test 1");
- x=dx_next(); ASSERTSYS(x== 527768079UL, "dx_test 2");
- x=dx_next(); ASSERTSYS(x== 238300266UL, "dx_test 3");
- x=dx_next(); ASSERTSYS(x==1495348915UL, "dx_test 4");
+ x=jtdx_next(jt); ASSERTSYS(x== 221240004UL, "dx_test 0");
+ x=jtdx_next(jt); ASSERTSYS(x==2109349384UL, "dx_test 1");
+ x=jtdx_next(jt); ASSERTSYS(x== 527768079UL, "dx_test 2");
+ x=jtdx_next(jt); ASSERTSYS(x== 238300266UL, "dx_test 3");
+ x=jtdx_next(jt); ASSERTSYS(x==1495348915UL, "dx_test 4");
  RZ(rngselects(sc(j)));
  return num(1);
 }
@@ -290,9 +290,9 @@ static UI jtmr_next31(J jt){I d,j,*v=jt->rngv,x,y;
 }
 
 static UI jtmr_next(J jt){UI a,b,c;
- a=mr_next31()&0x000000007fffffff;
- b=mr_next31()&0x000000007fffffff;
- c=mr_next31()&0x000000007fffffff;
+ a=jtmr_next31(jt)&0x000000007fffffff;
+ b=jtmr_next31(jt)&0x000000007fffffff;
+ c=jtmr_next31(jt)&0x000000007fffffff;
  return a+(b<<31)+(c<<33&0xc000000000000000UL);
 }
 
@@ -307,17 +307,17 @@ static void jtmr_init(J jt,UI s){D*v=(D*)jt->rngv;I t[MRN];
  A jtmr_test(J jt, A w){I j=jt->rng,x;
  ASSERTMTV(w);
  RZ(rngselects(sc(MRI))); mr_init(1UL);
- x=mr_next(); ASSERTSYS(x==(I)3293966663UL, "mr_test 0");
- x=mr_next(); ASSERTSYS(x==(I)3129388991UL, "mr_test 1");
- x=mr_next(); ASSERTSYS(x==(I)2530141948UL, "mr_test 2");
- x=mr_next(); ASSERTSYS(x==(I)1065433470UL, "mr_test 3");
- x=mr_next(); ASSERTSYS(x==(I)1177634463UL, "mr_test 4");
- DQ(40, mr_next(););
- x=mr_next(); ASSERTSYS(x==(I)1134399356UL, "mr_test 45");
- x=mr_next(); ASSERTSYS(x==(I) 630832201UL, "mr_test 46");
- x=mr_next(); ASSERTSYS(x==(I)2411464992UL, "mr_test 47");
- x=mr_next(); ASSERTSYS(x==(I) 762439568UL, "mr_test 48");
- x=mr_next(); ASSERTSYS(x==(I)3245142153UL, "mr_test 49");
+ x=jtmr_next(jt); ASSERTSYS(x==(I)3293966663UL, "mr_test 0");
+ x=jtmr_next(jt); ASSERTSYS(x==(I)3129388991UL, "mr_test 1");
+ x=jtmr_next(jt); ASSERTSYS(x==(I)2530141948UL, "mr_test 2");
+ x=jtmr_next(jt); ASSERTSYS(x==(I)1065433470UL, "mr_test 3");
+ x=jtmr_next(jt); ASSERTSYS(x==(I)1177634463UL, "mr_test 4");
+ DQ(40, jtmr_next(jt););
+ x=jtmr_next(jt); ASSERTSYS(x==(I)1134399356UL, "mr_test 45");
+ x=jtmr_next(jt); ASSERTSYS(x==(I) 630832201UL, "mr_test 46");
+ x=jtmr_next(jt); ASSERTSYS(x==(I)2411464992UL, "mr_test 47");
+ x=jtmr_next(jt); ASSERTSYS(x==(I) 762439568UL, "mr_test 48");
+ x=jtmr_next(jt); ASSERTSYS(x==(I)3245142153UL, "mr_test 49");
  RZ(rngselects(sc(j)));
  return num(1);
 }
@@ -327,10 +327,10 @@ static void jtmr_init(J jt,UI s){D*v=(D*)jt->rngv;I t[MRN];
 /* sum of all RNGs                                                         */
 
 static UI jtsm_next(J jt){UI x;
- jt->rngi=jt->rngI0[GBI]; jt->rngv=jt->rngV0[GBI]; x =gb_next(); jt->rngI0[GBI]=jt->rngi;
- jt->rngi=jt->rngI0[MTI]; jt->rngv=jt->rngV0[MTI]; x+=mt_next(); jt->rngI0[MTI]=jt->rngi;
- jt->rngi=jt->rngI0[DXI]; jt->rngv=jt->rngV0[DXI]; x+=dx_next(); jt->rngI0[DXI]=jt->rngi;
- jt->rngi=jt->rngI0[MRI]; jt->rngv=jt->rngV0[MRI]; x+=mr_next(); jt->rngI0[MRI]=jt->rngi;
+ jt->rngi=jt->rngI0[GBI]; jt->rngv=jt->rngV0[GBI]; x =jtgb_next(jt); jt->rngI0[GBI]=jt->rngi;
+ jt->rngi=jt->rngI0[MTI]; jt->rngv=jt->rngV0[MTI]; x+=jtmt_next(jt); jt->rngI0[MTI]=jt->rngi;
+ jt->rngi=jt->rngI0[DXI]; jt->rngv=jt->rngV0[DXI]; x+=jtdx_next(jt); jt->rngI0[DXI]=jt->rngi;
+ jt->rngi=jt->rngI0[MRI]; jt->rngv=jt->rngV0[MRI]; x+=jtmr_next(jt); jt->rngI0[MRI]=jt->rngi;
  return x;
 }
 

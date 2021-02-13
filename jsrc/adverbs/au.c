@@ -16,8 +16,8 @@ return z;}
 
 
 // $: itself
- A jtself1(J jt, A w){A z; FDEPINC(d=fdep(jt->sf)); STACKCHKOFL df1(z,  w,jt->sf);  FDEPDEC(d); forcetomemory(w); return z;}
- A jtself2(J jt,A a,A w){A z; FDEPINC(d=fdep(jt->sf)); STACKCHKOFL df2(z,a,w,jt->sf);  FDEPDEC(d); forcetomemory(w); return z;}
+ A jtself1(J jt, A w){A z; FDEPINC(d=0); STACKCHKOFL df1(z,  w,jt->sf);  FDEPDEC(d); forcetomemory(w); return z;}
+ A jtself2(J jt,A a,A w){A z; FDEPINC(d=0); STACKCHKOFL df2(z,a,w,jt->sf);  FDEPDEC(d); forcetomemory(w); return z;}
 
 A jtac1(J jt,AF f){return fdef(0,0,VERB, f,0L, 0L,0L,0L, VFLAGNONE, RMAX,RMAX,RMAX);}
 A jtac2(J jt,AF f){return fdef(0,0,VERB, 0L,f, 0L,0L,0L, VFLAGNONE, RMAX,RMAX,RMAX);}

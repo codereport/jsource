@@ -238,7 +238,7 @@ return totalallo;
 I jtspstarttracking(J jt){I i;
  for(i=PMINL;i<=PLIML;++i){jt->mfree[-PMINL+i].ballo |= MFREEBCOUNTING;}
  jt->mfreegenallo |= MFREEBCOUNTING;  // same for non-pool alloc
- return jt->bytes = spbytesinuse();
+ return jt->bytes = jtspbytesinuse(jt);
 }
 
 // Turn off tracking.

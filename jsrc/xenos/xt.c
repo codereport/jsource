@@ -19,7 +19,7 @@
 #endif
 
 
- A jtsp(J jt, A w){ASSERTMTV(w); return sc(spbytesinuse());}  //  7!:0
+ A jtsp(J jt, A w){ASSERTMTV(w); return sc(jtspbytesinuse(jt));}  //  7!:0
 
 // 7!:1
 // Return (current allo),(max since reset)
@@ -32,9 +32,9 @@
 
  A jtspit(J jt, A w){A z;I k; 
  F1RANK(1,jtspit,UNUSED_VALUE); 
- jt->bytesmax=k=spstarttracking();  // start keeping track of bytesmax
+ jt->bytesmax=k=jtspstarttracking(jt);  // start keeping track of bytesmax
  FDEPINC(1); z=exec1(w); FDEPDEC(1);
- spendtracking();  // end tracking, even if there was an error
+ jtspendtracking(jt);  // end tracking, even if there was an error
  RZ(z);
  return sc(jt->bytesmax-k);
 }   // 7!:2, calculate max space used
@@ -165,7 +165,7 @@ static A jtpmfree(J jt, A w){A x,y;C*c;I m;PM*v;PM0*u;
  x=jt->pma;
  jt->pmctr=0; jt->uflags.us.uq.uq_c.pmctrbstk&=~PMCTRBPMON;  // not sure why pmctr is not a boolean, since its value seems unused
  if(wn){ras(w); jt->pma=w;}else jt->pma=0;
- if(jt->pma)spstarttracking();else spendtracking();  // track whenever PM is running
+ if(jt->pma)jtspstarttracking(jt);else jtspendtracking(jt);  // track whenever PM is running
  RZ(pmfree(x));
  if(wn){
   v=CAV(w);
@@ -174,7 +174,7 @@ static A jtpmfree(J jt, A w){A x,y;C*c;I m;PM*v;PM0*u;
   jt->pmrec=u->rec=a0;
   u->n=n=(wn-s0)/s; 
   u->i=0;
-  u->s=jt->bytesmax=spbytesinuse();
+  u->s=jt->bytesmax=jtspbytesinuse(jt);
   u->trunc=a1; 
   u->wrapped=0;
  }

@@ -126,7 +126,7 @@ static A jtdir1(J jt,struct dirent*f,struct stat *dirstatbuf,C *diratts, C *dirm
  struct stat dirstatbuf[3];
  F1RANK(0,jtjfperm1,UNUSED_VALUE);
  RE(f=stdf(w)); if(f){RZ(y=fname(sc((I)f)));y=str0(y);} else ASSERT(y=str0(vslit(AAV(w)[0])),EVFNUM)
- if(0!=stat(CAV(y),dirstatbuf))return jerrno();
+ if(0!=stat(CAV(y),dirstatbuf))return jtjerrno(jt);
  return vec(LIT,9L,1+modebuf(dirstatbuf[0].st_mode,b));
 }
 
@@ -150,7 +150,7 @@ static const struct tperms {C*c;I p[4];} permtab[]=
  for(i=0;i<9;i++)
     {ASSERT(NULL!=(m=strchr(permtab[i].c,s[i])),EVDOMAIN);
      x|=permtab[i].p[m-permtab[i].c];}
- return chmod(CAV(y),x)?jerrno():mtm;
+ return chmod(CAV(y),x)?jtjerrno(jt):mtm;
 }
 
 

@@ -229,7 +229,7 @@ static A jtnch1(J jt,B b,A w,I*pm,A ch){A*v,x,y;C*s,*yv;LX *e;I i,k,m,p,wn;L*d;
     if(!(AFLAG(v->val)&AFNVR)){
      // The symbol is a local symbol not on the NVR stack.  We must put it onto the NVR stack.
      A nvra=jt->nvra;
-     if((I)(jt->parserstackframe.nvrtop+1U) > AN(nvra))RZ(nvra=extnvr());  // Extend nvr stack if necessary.  copied from parser
+     if((I)(jt->parserstackframe.nvrtop+1U) > AN(nvra))RZ(nvra=jtextnvr(jt));  // Extend nvr stack if necessary.  copied from parser
      AAV1(nvra)[jt->parserstackframe.nvrtop++] = v->val;   // record the place where the value was protected; it will be freed when this sentence finishes
      AFLAG(v->val) |= AFNVR|AFNVRUNFREED;  // mark the value as protected
     }

@@ -53,7 +53,7 @@ A jtrd(J jt,F f,I j,I n){A z;C*x;I p=0;size_t q=1;
  GATV0(z,LIT,n,1); x=CAV(z);
  while(q&&n>p){
   p+=q=fread(p+x,sizeof(C),(size_t)(n-p),f);
-  if(ferror(f))return jerrno();
+  if(ferror(f))return jtjerrno(jt);
  }
  return z;
 }    /* read file f for n bytes at j */
@@ -67,7 +67,7 @@ static B jtwa(J jt,F f,I j,A w){C*x;I n,p=0;size_t q=1;
  clearerr(f);
  while(q&&n>p){
   p+=q=fwrite(p+x,sizeof(C),(size_t)(n-p),f); 
-  if(ferror(f))return jerrno()?1:0;
+  if(ferror(f))return jtjerrno(jt)?1:0;
  }
  return 1;
 }    /* write/append string w to file f at j */
@@ -86,8 +86,8 @@ static B jtwa(J jt,F f,I j,A w){C*x;I n,p=0;size_t q=1;
  if(BOX&AT(w)){ASSERT(1>=AR(a),EVRANK); ASSERT(!AN(a)||AT(a)&LIT+C2T+C4T,EVDOMAIN);}
  RE(f=stdf(w));
  if(2==(I)f){b=jt->tostdout; jt->tostdout=1; jt->mtyo=MTYOFILE; jpr(a); jt->mtyo=0; jt->tostdout=b; return a;}
- if(4==(I)f){return (U)AN(a)!=fwrite(CAV(a),sizeof(C),AN(a),stdout)?jerrno():a;}
- if(5==(I)f){return (U)AN(a)!=fwrite(CAV(a),sizeof(C),AN(a),stderr)?jerrno():a;}
+ if(4==(I)f){return (U)AN(a)!=fwrite(CAV(a),sizeof(C),AN(a),stdout)?jtjerrno(jt):a;}
+ if(5==(I)f){return (U)AN(a)!=fwrite(CAV(a),sizeof(C),AN(a),stderr)?jtjerrno(jt):a;}
  if(b=!f)RZ(f=jtjope(jt,w,FWRITE_O)) else RE(vfn(f)); 
  wa(f,0L,a); 
  if(b)fclose(f);else fflush(f);
@@ -159,7 +159,7 @@ static B jtixin(J jt,A w,I s,I*i,I*n){A in,*wv;I j,k,m,*u;
  F1RANK(0,jtjmkdir,UNUSED_VALUE);
  ASSERT(AT(w)&BOX,EVDOMAIN);
  RZ(y=str0(vslit(AAV(w)[0])));
- return mkdir(CAV(y),0775)?jerrno():num(1);
+ return mkdir(CAV(y),0775)?jtjerrno(jt):num(1);
 }
 
  A jtjferase(J jt, A w){A y,fn;US*s;I h;
@@ -167,7 +167,7 @@ static B jtixin(J jt,A w,I s,I*i,I*n){A in,*wv;I j,k,m,*u;
  RE(h=fnum(w));
  if(h) {RZ(y=str0(fname(sc(h))))} else ASSERT(y=vslit(AAV(w)[0]),EVFNUM);
  if(h)RZ(jclose(sc(h)));
- A y0=str0(y); return !unlink(CAV(y0))||!rmdir(CAV(y0))?num(1):jerrno();
+ A y0=str0(y); return !unlink(CAV(y0))||!rmdir(CAV(y0))?num(1):jtjerrno(jt);
 
 }    /* erase file or directory */
 

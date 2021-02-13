@@ -81,6 +81,6 @@ L* jtjset(J jt,C*name,A x){return symbisdel(jtnfs(jt,(I)strlen(name),name),x,jt-
  F2RANK(1,RMAX,jtapplystr,UNUSED_VALUE);
  RZ(fs=parse(jttokens(jt,vs(a),1+(AN(jt->locsyms)>1))));
  ASSERT(VERB&AT(fs),EVSYNTAX);
- STACKCHKOFL FDEPINC(d=fdep(fs)); z=CALL1(FAV(fs)->valencefns[0],w,fs); FDEPDEC(d);
+ STACKCHKOFL FDEPINC(d=0); z=CALL1(FAV(fs)->valencefns[0],w,fs); FDEPDEC(d);
  EPILOG(z); 
 }    /* execute string a on argument w */

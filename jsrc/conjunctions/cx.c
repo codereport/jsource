@@ -508,7 +508,7 @@ dobblock:
   // Since we initialized z to i. 0 0, there's nothing more to do
  }
 
- if((gsfctdl&16)){debz();}   // pair with the deba if we did one
+ if((gsfctdl&16)){jtdebz(jt);}   // pair with the deba if we did one
  A prevlocsyms=(A)AM(locsym);  // get symbol table to return to, before we free the old one
  if(!(gsfctdl&8)){
   // Normal path.  protect the result block and free everything allocated here, possibly including jt->locsyms if it was cloned (it is on the stack now)

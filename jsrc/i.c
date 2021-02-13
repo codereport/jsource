@@ -69,7 +69,7 @@ B jtglobinit(J jt){A x,y;A *oldpushx=jt->tnextpushp;
  memcpy(jt->typepriority,typepriority,sizeof(jt->typepriority));  // may not be needed
  memcpy(jt->prioritytype,prioritytype,sizeof(jt->prioritytype));  // may not be needed
  jt->adbreakr=jt->adbreak=&breakdata; /* required for ma to work */
- meminit();  /* required for ma to work */
+ jtmeminit(jt);  /* required for ma to work */
  RZ(y=rifvs(jtstr(jt,1L,"z")));     ACX(y); AS(y)[0]=BUCKETXLOC(1,"z");   // for paths, the shape holds the bucketx
  GA(x,BOX, 1,1,0     ); ACX(x); AAV(x)[0]=y;                zpath      =x;  AFLAG(zpath) |= (AT(zpath)&TRAVERSIBLE);  // ensure that traversible types in pst are marked traversible, so tpush/ra/fa will not recur on them
  RZ(mnuvxynam[0]=makename("m"));
@@ -80,7 +80,7 @@ B jtglobinit(J jt){A x,y;A *oldpushx=jt->tnextpushp;
  RZ(mnuvxynam[5]=makename("y"));
  // can be left at initial value v00[0]=v00[1]=0;   // vector 0 0, for rank
  pf=qpf();
- pinit();
+ jtpinit(jt);
 
  // take all the permanent blocks off the tpop stack so that we don't decrement their usecount.  All blocks allocated here must be permanent
  jt->tnextpushp=oldpushx;
@@ -172,16 +172,16 @@ static C jtjinit3(J jt){
  memcpy(jt->typepriority,typepriority,sizeof(jt->typepriority));  // required for ma.  Repeated for each thread in jtinit3
  memcpy(jt->prioritytype,prioritytype,sizeof(jt->prioritytype));  // required for ma.  Repeated for each thread in jtinit3
  jt->tssbase=tod();
- meminit();
- sesminit();
- evinit();
- consinit();
- symbinit();  // must be after consinit
- parseinit();
- xoinit();
- xsinit();
- sbtypeinit();
- rnginit();
+ jtmeminit(jt);
+ jtsesminit(jt);
+ jtevinit(jt);
+ jtconsinit(jt);
+ jtsymbinit(jt);  // must be after consinit
+ jtparseinit(jt);
+ jtxoinit(jt);
+ jtxsinit(jt);
+ jtsbtypeinit(jt);
+ jtrnginit(jt);
  jtecvtinit(jt);
  // We have completed initial allocation.  Everything allocated so far will not be freed by a tpop, because
  // tpop() isn't called during initialization.  So, to keep the memory auditor happy, we reset ttop so that it doesn't
@@ -190,4 +190,4 @@ static C jtjinit3(J jt){
  return !jt->jerr;
 }
 
-C jtjinit2(J jt,int dummy0,C**dummy1){jt->sesm=1; return jinit3();}
+C jtjinit2(J jt,int dummy0,C**dummy1){jt->sesm=1; return jtjinit3(jt);}

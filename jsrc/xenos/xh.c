@@ -101,7 +101,7 @@ return cstr("");
  return z;
 }
 
- A jtjwait(J jt, A w){I k;int s; RE(k=i0(w)); if(-1==waitpid(k,&s,0))jerrno(); return sc(s);}
+ A jtjwait(J jt, A w){I k;int s; RE(k=i0(w)); if(-1==waitpid(k,&s,0))jtjerrno(jt); return sc(s);}
 
 /* return errno info from c library */
  A jtcerrno(J jt, A w){C buf[1024],ermsg[1024];

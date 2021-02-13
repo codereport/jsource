@@ -14,12 +14,12 @@ static void movecurrtoktosi(J jt){if(jt->sitop&&jt->sitop->dctype==DCPARSE){jt->
 void moveparseinfotosi(J jt){movesentencetosi(jt,jt->parserstackframe.parserqueue,jt->parserstackframe.parserqueuelen,jt->parserstackframe.parsercurrtok);}
 
 
-/* deba() and debz() must be coded and executed in pairs */
+/* deba() and jtdebz(jt) must be coded and executed in pairs */
 /* in particular, do NOT do error exits between them     */
 /* e.g. the following is a NO NO:                        */
 /*    d=deba(...);                                       */
 /*    ASSERT(blah,EVDOMAIN);                             */
-/*    debz()                                             */
+/*    jtdebz(jt)                                             */
 
 DC jtdeba(J jt,C t,void *x,void *y,A fs){DC d;
  {A q; GAT0(q,LIT,sizeof(DST),1); d=(DC)AV(q);}
@@ -112,7 +112,7 @@ static void jtsusp(J jt){B t;DC d;
   jt->cstackmin=jt->cstackinit-(CSTACKSIZE-CSTACKRESERVE);
   jt->fcalln =NFCALL;
  }
- debz(); 
+ jtdebz(jt); 
  jt->dcs=d; jt->tostdout=t;
 }    /* user keyboard loop while suspended */
 
@@ -126,7 +126,7 @@ static A jtdebug(J jt){A z=0;C e;DC c,d;
  if(d->dcix<0)return 0;  // if the verb has exited, all we can do is return
  e=jt->jerr; jt->jerr=0;
 // pass in & rcv debug state frame
- susp();
+ jtsusp(jt);
  switch(jt->dbsusact){
   case SUSRUN:      
    DGOTO(d,d->dcix); break;
@@ -154,7 +154,7 @@ A jtpee(J jt,A *queue,CW*ci,I err,I lk,DC c){A z=0;
  jt->parserstackframe.parserqueue=queue+ci->i; jt->parserstackframe.parserqueuelen=(I4)ci->n; jt->parserstackframe.parsercurrtok=1;  // unless locked, indicate failing-sentence info
  jsignal(err);   // signal the requested error
  // enter debug mode if that is enabled
- if(c&&jt->uflags.us.cx.cx_c.db){jt->sitop->dcj=jt->jerr; z=debug(); jt->sitop->dcj=0;} //  d is PARSE type; set d->dcj=err#; d->dcn must remain # tokens debz();  not sure why we change previous frame
+ if(c&&jt->uflags.us.cx.cx_c.db){jt->sitop->dcj=jt->jerr; z=jtdebug(jt); jt->sitop->dcj=0;} //  d is PARSE type; set d->dcj=err#; d->dcn must remain # tokens jtdebz(jt);  not sure why we change previous frame
  if(jt->jerr)z=0; return z;  // if we entered debug, the error may have been cleared.  If not, clear the result.  Return debug result, which is result to use or 0 to indicate jump
 }
 
@@ -171,7 +171,7 @@ A jtparsex(J jt,A* queue,I m,CW*ci,DC c){A z;B s;
  else                      {z=jtparsea(jt,queue,m);     }
  // If we hit a stop, or if we hit an error outside of try./catch., enter debug mode.  But if debug mode is off now, we must have just
  // executed 13!:0]0, and we should continue on outside of debug mode.  Error processing filled the current si line with the info from the parse
- if(!z&&jt->uflags.us.cx.cx_c.db){DC t=jt->sitop->dclnk; t->dcj=jt->sitop->dcj=jt->jerr; z=debug(); t->dcj=0;} //  d is PARSE type; set d->dcj=err#; d->dcn must remain # tokens
+ if(!z&&jt->uflags.us.cx.cx_c.db){DC t=jt->sitop->dclnk; t->dcj=jt->sitop->dcj=jt->jerr; z=jtdebug(jt); t->dcj=0;} //  d is PARSE type; set d->dcj=err#; d->dcn must remain # tokens
  return z;
 }
 
@@ -188,7 +188,7 @@ A jtdbunquote(J jt,A a,A w,A self,L *stabent){A t,z;B b=0,s;DC d;V*sv;
    else              {ras(self); z=a?dfs2(a,w,self):jtdfs1(jt,w,self); fa(self);}
    // If we hit a stop, or if we hit an error outside of try./catch., enter debug mode.  But if debug mode is off now, we must have just
    // executed 13!:8]0, and we should continue on outside of debug mode
-   if(!z&&jt->uflags.us.cx.cx_c.db){d->dcj=jt->jerr; movecurrtoktosi(jt); z=debug(); if(self!=jt->sitop->dcf)self=jt->sitop->dcf;}
+   if(!z&&jt->uflags.us.cx.cx_c.db){d->dcj=jt->jerr; movecurrtoktosi(jt); z=jtdebug(jt); if(self!=jt->sitop->dcf)self=jt->sitop->dcf;}
 // look at debug frame for looping scaf
    if(b){fa(a); fa(w);}
    if(b=jt->dbalpha||jt->dbomega){a=jt->dbalpha; w=jt->dbomega; jt->dbalpha=jt->dbomega=0;}
@@ -196,7 +196,7 @@ A jtdbunquote(J jt,A a,A w,A self,L *stabent){A t,z;B b=0,s;DC d;V*sv;
  }
  if(d->dcss)jtssnext(jt,d,d->dcss);
  if(jt->dbss==SSSTEPINTOs)jt->dbss=0;
- debz();
+ jtdebz(jt);
  return z;
 }    /* function call, debug version */
 

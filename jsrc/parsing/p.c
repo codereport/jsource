@@ -188,7 +188,7 @@ static PSTK * (*(lines58[]))() = {jtpfork,jtphook,jtis,jtpparen};  // handlers f
  A *queue=AAV(w); I m=AN(w);   // addr and length of sentence
  RZ(deba(DCPARSE,queue,(A)m,0L));  // We don't need a new stack frame if there is one already and debug is off
  z=jtparsea(jt,queue,m);
- debz();
+ jtdebz(jt);
  return z;
 }
 
@@ -256,7 +256,7 @@ A jtparsea(J jt, A *queue, I m){PSTK * RESTRICT stack;A z,*v;I es;
     DQ(m, maxnvrlen+=(AT(queue[i])>>NAMEX)&1;)
    }
    // extend the nvr stack, doubling its size each time, till it can hold our names.  Don't let it get too big.  This code duplicated in 4!:55
-   while((I)(jt->parserstackframe.nvrtop+maxnvrlen) > AN(jt->nvra))RZ(extnvr());
+   while((I)(jt->parserstackframe.nvrtop+maxnvrlen) > AN(jt->nvra))RZ(jtextnvr(jt));
   }
 
   // We have the initial stack pointer.  Grow the stack down from there

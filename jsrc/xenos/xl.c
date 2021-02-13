@@ -18,20 +18,20 @@ typedef long long INT64;
 
 static B jtdolock(J jt,B lk,F f,I i,I n){I e;long c;fpos_t v; fpos_t q;
  c=fgetpos(f,(fpos_t*)&q);
- if(0!=c)return (B)(intptr_t)jerrno();
+ if(0!=c)return (B)(intptr_t)jtjerrno(jt);
  {INT64 vv; vv=i; v=*(fpos_t*)&vv;}
  c=fsetpos(f,(fpos_t*)&v);
- if(0!=c)return (B)(intptr_t)jerrno();
+ if(0!=c)return (B)(intptr_t)jtjerrno(jt);
 
  e=lockf(fileno(f),lk?F_TLOCK:F_ULOCK,(I)n);
  fsetpos(f,(fpos_t*)&q);
- return !e?1:errno==EACCES?0:(B)(intptr_t)jerrno();
+ return !e?1:errno==EACCES?0:(B)(intptr_t)jtjerrno(jt);
 }
 
 #ifndef LOCK
 static B jtdolock(J jt,B lk,F f,I i,I n){I e;
  e=lk?lock(fileno(f),i,n):unlock(fileno(f),i,n);
- return !e?1:errno==EACCES?0:(intptr_t)jerrno();
+ return !e?1:errno==EACCES?0:(intptr_t)jtjerrno(jt);
 }
 #endif
 

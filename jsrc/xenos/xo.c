@@ -52,7 +52,7 @@ F jtjope(J jt,A w,C*mode){A t;F f;I n;static I nf=25; A z;
  if(!f&&errno==ENOENT&&!strcmp(mode,FUPDATE_O))f=fopen(cs,FUPDATEC_O);
  if(!f&&errno==EACCES&& strcmp(mode,FREAD_O  ))f=fopen(cs,FREAD_O);
 }
- return f?f:(F)jerrno();
+ return f?f:(F)jtjerrno(jt);
 }
 
  A jtjopen(J jt, A w){A z;I h;
@@ -85,7 +85,7 @@ B jtadd2(J jt,F f1,F f2,C*cmd){A c,x;
  if(AR(w))return rank1ex0(w,UNUSED_VALUE,jtjclose);
  RE(j=i0(jtindexof(jt,jt->fopf,sc(fnum(w))))); ASSERT(j<AM(jt->fopf),EVFNUM);
  av=AAV(jt->fopa); iv=IAV(jt->fopf); 
- if(fclose((F)iv[j]))return jerrno();
+ if(fclose((F)iv[j]))return jtjerrno(jt);
  --AM(jt->fopf); fa(av[j]); if(j<AM(jt->fopf)){av[j]=av[AM(jt->fopf)]; iv[j]=iv[AM(jt->fopf)];}
  return num(1);
 }    /* close file# w */

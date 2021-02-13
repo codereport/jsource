@@ -195,7 +195,7 @@ A jtjgets(J jt,C*p){A y;B b;C*v;I j,k,m,n;UC*s;
     1!:1[1 read from keyboard */
  // if we are already prompting, a second prompt would be unrecoverable & we fail this request
  ASSERT(jt->recurstate<RECSTATEPROMPT,EVCTRL)
- showerr();  // if there is an error at this point, display it (shouldn't happen)
+ jtshowerr(jt);  // if there is an error at this point, display it (shouldn't happen)
  // read from the front end. This is either through the nfe path or via the callback to the FE
  if(jt->nfe){
   // Native Front End
@@ -251,8 +251,8 @@ I jdo(J jt, C* lp){I e;A x;
  e=jt->jerr;
  if(savcallstack==0)CALLSTACKRESET MODESRESET jt->jerr=0;
  if(jt->recurstate<RECSTATEPROMPT)while(jt->iepdo&&jt->iep){jt->iepdo=0; immex(jt->iep); if(savcallstack==0)CALLSTACKRESET MODESRESET jt->jerr=0; tpop(old);}
- showerr();
- spfree();
+ jtshowerr(jt);
+ jtspfree(jt);
  tpop(old);
  return e;
 }

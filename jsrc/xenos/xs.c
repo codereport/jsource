@@ -52,7 +52,7 @@ static A jtline(J jt,A w,I si,C ce,B tso){A x=mtv,z;B xt=jt->tostdout;DC d,xd=jt
  switch(ce){
  // loop over the lines.  jgets may fail, in which case we leave that as the error code for the sentence.
  case 0: while(x&&!jt->jerr){jt->etxn=0;                           immex(x=jtddtokens(jt,jgets("   "),1+(AN(jt->locsyms)>1))); tpop(old);} break;  // lgets returns 0 for error or EOF
- case 1: while(x           ){if(!jt->seclev)showerr(); jt->jerr=0; immex(x=jtddtokens(jt,jgets("   "),1+(AN(jt->locsyms)>1))); tpop(old);} break;
+ case 1: while(x           ){if(!jt->seclev)jtshowerr(jt); jt->jerr=0; immex(x=jtddtokens(jt,jgets("   "),1+(AN(jt->locsyms)>1))); tpop(old);} break;
  case 2:
  case 3: {
   while(x&&!jt->jerr){jt->etxn=0;                           immea(x=jgets("   ")); tpop(old);}
@@ -60,7 +60,7 @@ static A jtline(J jt,A w,I si,C ce,B tso){A x=mtv,z;B xt=jt->tostdout;DC d,xd=jt
   }
  }
  jt->dcs=xd; jt->tostdout=xt;
-  debz();
+  jtdebz(jt);
  FDEPDEC(1);  // ASSERT OK now
  jt->uflags.us.cx.cx_c.glock=oldk; // pop lock status
  if(3==ce){z=num(jt->jerr==0); RESETERR; return z;}else RNE(mtm);
