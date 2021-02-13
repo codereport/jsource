@@ -9,61 +9,47 @@
 #include "verbs/ve.h"
 #include "ar.h"
 
-APFX(bw0000II, UI, UI, UI, BW0000, , return EVOK;)
-static APFX(bw0000CC, UC, UC, UC, BW0000, , return EVOK;) APFX(
-  bw0001II, UI, UI, UI, BW0001, , return EVOK;) static APFX(bw0001CC, UC, UC, UC, BW0001, , return EVOK;)
-  APFX(bw0010II, UI, UI, UI, BW0010, , return EVOK;) static APFX(bw0010CC, UC, UC, UC, BW0010, , return EVOK;) APFX(
-    bw0011II, UI, UI, UI, BW0011, , return EVOK;) static APFX(bw0011CC, UC, UC, UC, BW0011, , return EVOK;)
-    APFX(bw0100II, UI, UI, UI, BW0100, , return EVOK;) static APFX(bw0100CC, UC, UC, UC, BW0100, , return EVOK;) APFX(
-      bw0101II, UI, UI, UI, BW0101, , return EVOK;) static APFX(bw0101CC, UC, UC, UC, BW0101, , return EVOK;)
-      APFX(bw0110II, UI, UI, UI, BW0110, , return EVOK;) static APFX(bw0110CC, UC, UC, UC, BW0110, , return EVOK;) APFX(
-        bw0111II, UI, UI, UI, BW0111, , return EVOK;) static APFX(bw0111CC, UC, UC, UC, BW0111, , return EVOK;)
-        APFX(bw1000II, UI, UI, UI, BW1000, , return EVOK;) static APFX(bw1000CC, UC, UC, UC, BW1000, , return EVOK;)
-          APFX(bw1001II, UI, UI, UI, BW1001, , return EVOK;) static APFX(bw1001CC, UC, UC, UC, BW1001, , return EVOK;)
-            APFX(bw1010II, UI, UI, UI, BW1010, , return EVOK;) static APFX(bw1010CC, UC, UC, UC, BW1010, , return EVOK;)
-              APFX(bw1011II, UI, UI, UI, BW1011, , return EVOK;) static APFX(
-                bw1011CC, UC, UC, UC, BW1011, , return EVOK;)
-                APFX(bw1100II, UI, UI, UI, BW1100, , return EVOK;) static APFX(
-                  bw1100CC, UC, UC, UC, BW1100, , return EVOK;)
-                  APFX(bw1101II, UI, UI, UI, BW1101, , return EVOK;) static APFX(
-                    bw1101CC, UC, UC, UC, BW1101, , return EVOK;)
-                    APFX(bw1110II, UI, UI, UI, BW1110, , return EVOK;) static APFX(
-                      bw1110CC, UC, UC, UC, BW1110, , return EVOK;)
-                      APFX(bw1111II, UI, UI, UI, BW1111, , return EVOK;) static APFX(
-                        bw1111CC, UC, UC, UC, BW1111, , return EVOK;)
+APFX(bw0000II, UI, UI, UI, BW0000, , return EVOK;)    static APFX(bw0000CC, UC, UC, UC, BW0000, , return EVOK;)
+APFX(bw0001II, UI, UI, UI, BW0001, , return EVOK;)    static APFX(bw0001CC, UC, UC, UC, BW0001, , return EVOK;)
+APFX(bw0010II, UI, UI, UI, BW0010, , return EVOK;)    static APFX(bw0010CC, UC, UC, UC, BW0010, , return EVOK;)
+APFX(bw0011II, UI, UI, UI, BW0011, , return EVOK;)    static APFX(bw0011CC, UC, UC, UC, BW0011, , return EVOK;)
+APFX(bw0100II, UI, UI, UI, BW0100, , return EVOK;)    static APFX(bw0100CC, UC, UC, UC, BW0100, , return EVOK;)
+APFX(bw0101II, UI, UI, UI, BW0101, , return EVOK;)    static APFX(bw0101CC, UC, UC, UC, BW0101, , return EVOK;)
+APFX(bw0110II, UI, UI, UI, BW0110, , return EVOK;)    static APFX(bw0110CC, UC, UC, UC, BW0110, , return EVOK;)
+APFX(bw0111II, UI, UI, UI, BW0111, , return EVOK;)    static APFX(bw0111CC, UC, UC, UC, BW0111, , return EVOK;)
+APFX(bw1000II, UI, UI, UI, BW1000, , return EVOK;)    static APFX(bw1000CC, UC, UC, UC, BW1000, , return EVOK;)
+APFX(bw1001II, UI, UI, UI, BW1001, , return EVOK;)    static APFX(bw1001CC, UC, UC, UC, BW1001, , return EVOK;)
+APFX(bw1010II, UI, UI, UI, BW1010, , return EVOK;)    static APFX(bw1010CC, UC, UC, UC, BW1010, , return EVOK;)
+APFX(bw1011II, UI, UI, UI, BW1011, , return EVOK;)    static APFX(bw1011CC, UC, UC, UC, BW1011, , return EVOK;)
+APFX(bw1100II, UI, UI, UI, BW1100, , return EVOK;)    static APFX(bw1100CC, UC, UC, UC, BW1100, , return EVOK;)
+APFX(bw1101II, UI, UI, UI, BW1101, , return EVOK;)    static APFX(bw1101CC, UC, UC, UC, BW1101, , return EVOK;)
+APFX(bw1110II, UI, UI, UI, BW1110, , return EVOK;)    static APFX(bw1110CC, UC, UC, UC, BW1110, , return EVOK;)
+APFX(bw1111II, UI, UI, UI, BW1111, , return EVOK;)    static APFX(bw1111CC, UC, UC, UC, BW1111, , return EVOK;)
 
-  /* see below */ /* see below */
-  REDUCEPFX(bw0001insI, UI, UI, BW0001, bw0001II, bw0001II) static REDUCEPFX(
-    bw0001insC, UC, UC, BW0001, bw0001CC, bw0001CC)
-    REDUCEPFX(bw0010insI, UI, UI, BW0010, bw0010II, bw0010II) static REDUCEPFX(
-      bw0010insC, UC, UC, BW0010, bw0010CC, bw0010CC)
-  /* see below */ /* see below */
-  REDUCEPFX(bw0100insI, UI, UI, BW0100, bw0100II, bw0100II) static REDUCEPFX(
-    bw0100insC, UC, UC, BW0100, bw0100CC, bw0100CC)
-  /* see below */ /* see below */
-  REDUCEPFX(bw0110insI, UI, UI, BW0110, bw0110II, bw0110II) static REDUCEPFX(
-    bw0110insC, UC, UC, BW0110, bw0110CC, bw0110CC)
-    REDUCEPFX(bw0111insI, UI, UI, BW0111, bw0111II, bw0111II) static REDUCEPFX(
-      bw0111insC, UC, UC, BW0111, bw0111CC, bw0111CC)
-      REDUCEPFX(bw1000insI, UI, UI, BW1000, bw1000II, bw1000II) static REDUCEPFX(
-        bw1000insC, UC, UC, BW1000, bw1000CC, bw1000CC)
-        REDUCEPFX(bw1001insI, UI, UI, BW1001, bw1001II, bw1001II) static REDUCEPFX(
-          bw1001insC, UC, UC, BW1001, bw1001CC, bw1001CC)
-  /* see below */ /* see below */
-  REDUCEPFX(bw1011insI, UI, UI, BW1011, bw1011II, bw1011II) static REDUCEPFX(
-    bw1011insC, UC, UC, BW1011, bw1011CC, bw1011CC)
-  /* see below */ /* see below */
-  REDUCEPFX(bw1101insI, UI, UI, BW1101, bw1101II, bw1101II) static REDUCEPFX(
-    bw1101insC, UC, UC, BW1101, bw1101CC, bw1101CC)
-    REDUCEPFX(bw1110insI, UI, UI, BW1110, bw1110II, bw1110II) static REDUCEPFX(
-      bw1110insC, UC, UC, BW1110, bw1110CC, bw1110CC)
-  /* see below */ /* see below */
+/* see below */                         /* see below */
+REDUCEPFX(bw0001insI, UI, UI, BW0001, bw0001II, bw0001II)    static REDUCEPFX(bw0001insC, UC, UC, BW0001, bw0001CC, bw0001CC)
+REDUCEPFX(bw0010insI, UI, UI, BW0010, bw0010II, bw0010II)    static REDUCEPFX(bw0010insC, UC, UC, BW0010, bw0010CC, bw0010CC)
+/* see below */                         /* see below */
+REDUCEPFX(bw0100insI, UI, UI, BW0100, bw0100II, bw0100II)    static REDUCEPFX(bw0100insC, UC, UC, BW0100, bw0100CC, bw0100CC)
+/* see below */                         /* see below */
+REDUCEPFX(bw0110insI, UI, UI, BW0110, bw0110II, bw0110II)    static REDUCEPFX(bw0110insC, UC, UC, BW0110, bw0110CC, bw0110CC)
+REDUCEPFX(bw0111insI, UI, UI, BW0111, bw0111II, bw0111II)    static REDUCEPFX(bw0111insC, UC, UC, BW0111, bw0111CC, bw0111CC)
+REDUCEPFX(bw1000insI, UI, UI, BW1000, bw1000II, bw1000II)    static REDUCEPFX(bw1000insC, UC, UC, BW1000, bw1000CC, bw1000CC)
+REDUCEPFX(bw1001insI, UI, UI, BW1001, bw1001II, bw1001II)    static REDUCEPFX(bw1001insC, UC, UC, BW1001, bw1001CC, bw1001CC)
+/* see below */                         /* see below */
+REDUCEPFX(bw1011insI, UI, UI, BW1011, bw1011II, bw1011II)    static REDUCEPFX(bw1011insC, UC, UC, BW1011, bw1011CC, bw1011CC)
+/* see below */                         /* see below */
+REDUCEPFX(bw1101insI, UI, UI, BW1101, bw1101II, bw1101II)    static REDUCEPFX(bw1101insC, UC, UC, BW1101, bw1101CC, bw1101CC)
+REDUCEPFX(bw1110insI, UI, UI, BW1110, bw1110II, bw1110II)    static REDUCEPFX(bw1110insC, UC, UC, BW1110, bw1110CC, bw1110CC)
+/* see below */                         /* see below */
 
-  I bw0000insI(I d, I n, I m, UI* RESTRICTI x, UI* RESTRICTI z, J jt) {
+I
+bw0000insI(I d, I n, I m, UI* RESTRICTI x, UI* RESTRICTI z, J jt) {
     I k = SZI * m * d;
     memset(z, C0, k);
     return EVOK;
 }
+
 static I
 bw0000insC(I d, I n, I m, UC* RESTRICTI x, UC* RESTRICTI z, J jt) {
     I k = m * d;
