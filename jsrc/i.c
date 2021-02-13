@@ -62,8 +62,6 @@ there are only a few globals that have storage not in J
 */
 
 // globals 
-J gjt=0; // JPF debug - convenience debug single process
-
 // thread-safe/one-time initialization of all global constants
 // Use GA for all these initializations, to save space since they're done only once
 B jtglobinit(J jt){A x,y;A *oldpushx=jt->tnextpushp;
@@ -168,9 +166,8 @@ jt->directdef = 1;  // scaf
  return 1;
 }
 
-static C jtjinit3(J jt){S t;
+static C jtjinit3(J jt){
 /* required for jdll and doesn't hurt others */
- gjt=jt; // global jt for JPF debug
  memcpy(jt->typesizes,typesizes,sizeof(jt->typesizes));  // required for ma.
  memcpy(jt->typepriority,typepriority,sizeof(jt->typepriority));  // required for ma.  Repeated for each thread in jtinit3
  memcpy(jt->prioritytype,prioritytype,sizeof(jt->prioritytype));  // required for ma.  Repeated for each thread in jtinit3

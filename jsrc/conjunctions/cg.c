@@ -22,7 +22,7 @@
 // passes inplacing through
 static A jtexeccyclicgerund(J jt,A a,A w,A self){  // call is w,self or a,w,self
  // find the real self, valence-dependent
-  F2PREFIP;
+  FPREFIP;
  I ismonad=(AT(w)>>VERBX)&1; self=ismonad?w:self;
  I nexttoexec=FAV(self)->localuse.lI; A vbtoexec=AAV(FAV(self)->fgh[2])[nexttoexec]; AF fntoexec=FAV(vbtoexec)->valencefns[1-ismonad]; ASSERT(fntoexec!=0,EVDOMAIN); // get fn to exec
  ++nexttoexec; nexttoexec=AN(FAV(self)->fgh[2])==nexttoexec?0:nexttoexec; FAV(self)->localuse.lI=nexttoexec; // cyclically advance exec pointer
@@ -31,7 +31,7 @@ static A jtexeccyclicgerund(J jt,A a,A w,A self){  // call is w,self or a,w,self
 // similar, for executing m@.v.  This for I selectors
 static A jtexecgerundcellI(J jt,A a,A w,A self){  // call is w,self or a,w,self
  // find the real self, valence-dependent
- F2PREFIP;
+ FPREFIP;
  I ismonad=(AT(w)>>VERBX)&1; self=ismonad?w:self;
  I nexttoexec=FAV(self)->localuse.lI;
  I gerx=IAV(FAV(self)->fgh[1])[nexttoexec];
@@ -44,7 +44,7 @@ static A jtexecgerundcellI(J jt,A a,A w,A self){  // call is w,self or a,w,self
 // This for B selectors
 static A jtexecgerundcellB(J jt,A a,A w,A self){  // call is w,self or a,w,self
  // find the real self, valence-dependent
- F2PREFIP;
+ FPREFIP;
  I ismonad=(AT(w)>>VERBX)&1; self=ismonad?w:self;
  I nexttoexec=FAV(self)->localuse.lI;
  I gerx=BAV(FAV(self)->fgh[1])[nexttoexec];
@@ -142,7 +142,7 @@ static A jtinsert(J jt,    A w,A self){A hs,*hv,z;I hfx,j,m,n;A *old;
 // m@.:v y.  Execute the verbs at high rank if the operands are large
 // Bivalent entry point: called as (jt,w,self) or (jt,a,w,self)
 static A jtcasei12(J jt,A a,A w,A self){A vres,z;I gerit[128/SZI],ZZFLAGWORD;
- F1PREFIP;
+ FPREFIP;
  PROLOG(997);
  // see if we were called as monad or dyad.  If monad, fix up w and self
  ZZFLAGWORD=AT(w)&VERB?ZZFLAGINITSTATE|ZZFLAGWILLBEOPENED|ZZFLAGCOUNTITEMS:ZZFLAGINITSTATE|ZZFLAGWILLBEOPENED|ZZFLAGCOUNTITEMS|ZZFLAGISDYAD;  // we collect the results on the cells, but we don't assemble into a result.  To signal this, we force BOXATOP and set WILLBEOPENED
@@ -395,7 +395,7 @@ static A jtgav1(J jt,    A w,A self){DECLF;A ff,ffm,ffx,*hv=AAV(sv->fgh[2]);
  return df1(ffm,ffx,ff);
 }
 
-static A jtgav2(J jt,A a,A w,A self){F2PREFIP;DECLF;A ff,ffm,ffx,ffy,*hv=AAV(sv->fgh[2]);  // hv->gerunds
+static A jtgav2(J jt,A a,A w,A self){FPREFIP;DECLF;A ff,ffm,ffx,ffy,*hv=AAV(sv->fgh[2]);  // hv->gerunds
 A protw = (A)(intptr_t)((I)w+((I)jtinplace&JTINPLACEW)); A prota = (A)(intptr_t)((I)a+((I)jtinplace&JTINPLACEA)); // protected addresses
  // first, get the indexes to use.  Since this is going to call m} again, we protect against
  // stack overflow in the loop in case the generated ff generates a recursive call to }

@@ -19,7 +19,7 @@
 #define SSINGENC(type) (UNSAFE(type)>>INTX)
 #define SSINGCASE(id,subtype) (3*(id)+(subtype))   // encode case/args into one branch value
 A jtssingleton1(J jt, A w,A self){A z;
- F2PREFIP;
+ FPREFIP;
  // Get the address of an inplaceable assignment, if any
  L *asym = jt->assignsym; asym=asym?asym:(L*)(validitymask+12); asym=(L*)asym->val; // pending assignment if any; if non0, fetch address of value (otherwise 0)
  I wiv=FAV(self)->lc;   // temp, but start as function #
@@ -39,7 +39,7 @@ A jtssingleton1(J jt, A w,A self){A z;
  case SSINGCASE(VA2CMIN-VA2CMIN,SSINGENC(B01)): 
  case SSINGCASE(VA2CMIN-VA2CMIN,SSINGENC(INT)): return w;
  case SSINGCASE(VA2CMIN-VA2CMIN,SSINGENC(FL)):
-   {D x=SSRDD(w); wdv=jround(x); D xf=jfloor(x); if(TNE(x,wdv))wdv=xf;}  // do round/floor in parallel
+   {D x=SSRDD(w); wdv=jround(x); D xf=floor(x); if(TNE(x,wdv))wdv=xf;}  // do round/floor in parallel
    if(wdv == (D)(I)wdv) SSSTORE((I)wdv,z,INT,I) else SSSTORENVFL(wdv,z,FL,D)
    return z;
 
@@ -47,7 +47,7 @@ A jtssingleton1(J jt, A w,A self){A z;
  case SSINGCASE(VA2CMAX-VA2CMIN,SSINGENC(B01)):
  case SSINGCASE(VA2CMAX-VA2CMIN,SSINGENC(INT)): return w;
  case SSINGCASE(VA2CMAX-VA2CMIN,SSINGENC(FL)):
-   {D x=SSRDD(w); wdv=jround(x); D xc=jceil(x); if(TNE(x,wdv))wdv=xc;}  // do round/ceil in parallel
+   {D x=SSRDD(w); wdv=jround(x); D xc=ceil(x); if(TNE(x,wdv))wdv=xc;}  // do round/ceil in parallel
    if(wdv == (D)(I)wdv) SSSTORE((I)wdv,z,INT,I) else SSSTORENVFL(wdv,z,FL,D)
    return z;
 

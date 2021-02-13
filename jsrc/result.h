@@ -84,7 +84,6 @@
  I zzncells;   // number of cells in the result (input)
  I zzframelen;  // length of frame of result.
  I zzfauxcellshape[ZZFAUXCELLSHAPEMAXRANK+1+2];  // will be zzcellshape for ranks < 4.  We reserve space only for AN and AS, and don't touch anything earlier.  1 is to leave 1 spare at the end, 2 is the length of AN and AR
- JMCDECL(zzendmask)  // will hold copy mask for copying result cells
 #ifndef ZZWILLBEOPENEDNEVER
 #define ZZWILLBEOPENEDNEVER 0  // user sets to 1 if WILLBEOPENED is not honored
 #endif
@@ -307,7 +306,6 @@ do{
   // If result is sparse, allocate 0 atoms; later, change the allocation to something that will never match a result (viz a list with negative shape)
   zzr=(zzt&SPARSE)?1:zzr; natoms=(zzt&SPARSE)?0:natoms;
   zzcelllen=natoms<<bplg(zzt);  // number of bytes in one cell.
-  JMCSETMASK(zzendmask,zzcelllen+(ZZSTARTATEND^1)*(SZI-1),ZZSTARTATEND)   // set mask for JMCR
 
   // # cells in result is passed in as zzncells
   // Get # atoms to allocate

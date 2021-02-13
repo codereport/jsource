@@ -6,7 +6,7 @@
 #include "j.h"
 
 static A jtrepzdx(J jt,A a,A w,I wf,I wcr){A p,q,x;P*wp;
- F2PREFIP;
+ FPREFIP;
  if(SPARSE&AT(w)){wp=PAV(w); x=SPA(wp,e);}
  else x=jt->fill&&AN(jt->fill)?jt->fill:filler(w);
  RZ(p=jtrepeat(jt,ravel(rect(a)),ravel(jtstitch(jt,IX(wcr?*(wf+AS(w)):1),num(-1)))));
@@ -15,7 +15,7 @@ static A jtrepzdx(J jt,A a,A w,I wf,I wcr){A p,q,x;P*wp;
 }    /* (dense complex) # (dense or sparse) */
 
 static A jtrepzsx(J jt,A a,A w,I wf,I wcr){A q,x,y;I c,d,j,k=-1,m,p=0,*qv,*xv,*yv;P*ap;
- F2PREFIP;
+ FPREFIP;
  ap=PAV(a); x=SPA(ap,x); m=AN(x);
  if(!AN(SPA(ap,a)))return repzdx(ravel(x),w,wf,wcr);
  y=SPA(ap,i); yv=AV(y);
@@ -41,7 +41,7 @@ static A jtrepzsx(J jt,A a,A w,I wf,I wcr){A q,x,y;I c,d,j,k=-1,m,p=0,*qv,*xv,*y
 
 static A jtrepbdx(J jt,A a,A w,I wf,I wcr){A z;I c,k,m,p;
  // wf and wcr are set
- F2PREFIP;
+ FPREFIP;
  if(SPARSE&AT(w))return irs2(jtifb(jt,AN(a),BAV(a)),w,0L,1L,wcr,jtfrom);
  m=AN(a);
  void *zvv; void *wvv=voidAV(w); I n=0; // pointer to output area; pointer to input data; number of prefix bytes to skip in first cell
@@ -107,7 +107,7 @@ static A jtrepbdx(J jt,A a,A w,I wf,I wcr){A z;I c,k,m,p;
 }    /* (dense boolean)#"r (dense or sparse) */
 
 static A jtrepbsx(J jt,A a,A w,I wf,I wcr){A ai,c,d,e,g,q,x,wa,wx,wy,y,y1,z,zy;B*b;I*dv,*gv,j,m,n,*u,*v,*v0;P*ap,*wp,*zp;
- F2PREFIP;
+ FPREFIP;
  ap=PAV(a); e=SPA(ap,e); 
  y=SPA(ap,i); u=AV(y);
  x=SPA(ap,x); n=AN(x); b=BAV(x);
@@ -140,7 +140,7 @@ static A jtrepbsx(J jt,A a,A w,I wf,I wcr){A ai,c,d,e,g,q,x,wa,wx,wy,y,y1,z,zy;B
 }    /* (sparse boolean) #"r (dense or sparse) */
 
 static A jtrepidx(J jt,A a,A w,I wf,I wcr){A y;I j,m,p=0,*v,*x;
- F2PREFIP;
+ FPREFIP;
  RZ(a=vi(a)); x=AV(a);
  m=AS(a)[0];
  DO(m, ASSERT(0<=x[i],EVDOMAIN); p+=x[i]; ASSERT(0<=p,EVLIMIT););  // add up total # result slots
@@ -150,7 +150,7 @@ static A jtrepidx(J jt,A a,A w,I wf,I wcr){A y;I j,m,p=0,*v,*x;
 }    /* (dense  integer) #"r (dense or sparse) */
 
 static A jtrepisx(J jt,A a,A w,I wf,I wcr){A e,q,x,y;I c,j,m,p=0,*qv,*xv,*yv;P*ap;
- F2PREFIP;
+ FPREFIP;
  ap=PAV(a); e=SPA(ap,e); 
  y=SPA(ap,i); yv=AV(y);
  x=SPA(ap,x); if(!(INT&AT(x)))RZ(x=jtcvt(jt,INT,x)); xv=AV(x);
@@ -167,7 +167,7 @@ static A jtrepisx(J jt,A a,A w,I wf,I wcr){A e,q,x,y;I c,j,m,p=0,*qv,*xv,*yv;P*a
 
 
 static A jtrep1d(J jt,A a,A w,I wf,I wcr){A z;C*wv,*zv;I c,k,m,n,p=0,q,t,*ws,zk,zn;
- F2PREFIP;
+ FPREFIP;
  t=AT(a); m=AN(a); ws=AS(w); SETICFR(w,wf,wcr,n);   // n=length of item axis in input.  If atom, is repeated to length of a
  if(t&CMPX){
   if(wcr)return repzdx(jtfrom(jt,apv(n,0L,0L),a),w,                wf,wcr);
@@ -183,7 +183,7 @@ static A jtrep1d(J jt,A a,A w,I wf,I wcr){A z;C*wv,*zv;I c,k,m,n,p=0,q,t,*ws,zk,
  GA(z,AT(w),zn,AR(w)+!wcr,0); MCISH(AS(z),AS(w),AR(z)) AS(z)[wf]=q;
  if(!zn)return z;
  wv=CAV(w); zv=CAV(z);
- PROD(c,wf+(I )(wcr!=0),ws); PROD1(k,wcr-1,ws+wf+1); k <<=bplg(AT(w));  // c=#cell-items to process  k=#atoms per cell-item
+ PROD(c,wf+(I )(wcr!=0),ws); PROD(k,wcr-1,ws+wf+1); k <<=bplg(AT(w));  // c=#cell-items to process  k=#atoms per cell-item
  zk=p*k;  // # bytes to fill per item
  DQ(c, mvc(zk,zv,k,wv); zv+=zk; wv+=k;);
  return z;
@@ -200,7 +200,7 @@ static B jtrep1sa(J jt,A a,I*c,I*d){A x;B b;I*v;
 }    /* process a in a#"0 w */
 
 static A jtrep1s(J jt,A a,A w,I wf,I wcr){A ax,e,x,y,z;B*b;I c,d,cd,j,k,m,n,p,q,*u,*v,wr,*ws;P*wp,*zp;
- F2PREFIP;
+ FPREFIP;
  if(AT(a)&SCMPX)return rep1d(denseit(a),w,wf,wcr);
  RE(rep1sa(a,&c,&d)); cd=c+d;
  if(DENSE&AT(w))return rep1d(d?jtjdot2(jt,sc(c),sc(d)):sc(c),w,wf,wcr);  // here if dense w
@@ -244,7 +244,7 @@ static A jtrep1s(J jt,A a,A w,I wf,I wcr){A ax,e,x,y,z;B*b;I c,d,cd,j,k,m,n,p,q,
 
 A (*reptab[])() = {jtrepisx,jtrepidx,jtrepbsx,jtrepbdx,jtrep1s,jtrep1d,jtrepzsx,jtrepzdx};
  A jtrepeat(J jt,A a,A w){A z;I acr,ar,wcr,wf,wr;
- F2PREFIP;
+ FPREFIP;
  ar=AR(a); acr=jt->ranks>>RANKTX; acr=ar<acr?ar:acr;
  wr=AR(w); wcr=(RANKT)jt->ranks; wcr=wr<wcr?wr:wcr; wf=wr-wcr; RESETRANK;
 I adense=-(AT(a)&DENSE);  // sign set if a is dense
@@ -256,7 +256,7 @@ I att=SGNTO0(-(AT(a)&B01+SB01))+((UI)(-(AT(a)&CMPX+SCMPX))>>(BW-1-1));  // 0 if 
  // special case: if a is atomic 1, and cells of w are not atomic.  a=0 is fast in the normal path
  if(((-wcr)&(ar-1)&(-(AT(a)&(B01|INT))))<0){I aval = BIV0(a);  // no fast support for float; take all of INT, or 1 bit of B01
   if(!(aval&-2LL)){  // 0 or 1
-   if(aval==1)return RETARG(w);   // 1 # y, return y
+   if(aval==1)return w;   // 1 # y, return y
    if(!(AT(w)&SPARSE)){GA(z,AT(w),0,AR(w),0); MCISH(AS(z),AS(w),AR(w)) AS(z)[wf]=0; return z;}  // 0 # y, return empty
   }
  }

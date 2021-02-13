@@ -12,7 +12,6 @@
  // This routine modifies w in place.  If w is virtual, that causes an error, because the blocks referred to in
  // w are actually in the backer, and the backer has had ra() applied; so blocks in the backer are going to be freed
  // twice: storing a newly-allocated block will produce a double-free.  So we have to realize any virtual block coming in.
- w=rifvsdebug(w);  // must realize before in-place operations, as above
  ASSERT(2==AR(w),EVRANK);
  s=AS(w); r=s[0]; c=s[1]; r1=MIN(r,c);
  A *old=jt->tnextpushp;
@@ -34,7 +33,6 @@
 }    /* Gaussian elimination in place */
 
 static A jtdetr(J jt, A w){A z;I c,e,g=1,i,j,k,r,*s;Q d,p,*u,*v,*x;
- w=rifvsdebug(w);  // must realize before in-place operations, as above
  s=AS(w); r=s[0]; c=s[1];
  A *old=jt->tnextpushp;
  for(j=0;j<r;++j){

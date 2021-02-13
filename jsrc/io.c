@@ -270,7 +270,7 @@ C* getlocale(J jt){A y=locname(mtv); y=AAV(y)[0]; return CAV(str0(y));}
 //
 // This may be confusing because the actual callback functions do not appear anywhere inside JE source.
  A jtwd(J jt,    A w,A self){A z=0;C*p=0;D*pd;I e,*pi,t;V*sv;
-  F1PREFIP;
+  FPREFIP;
   F1RANK(1,jtwd,self);
   ASSERT(2>AR(w),EVRANK);
   sv=VAV(self);

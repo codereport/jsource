@@ -47,11 +47,11 @@ RZ(z=(g1)(jtinplace,hx,gs));}
 
 
 
- A jtcork1(J jt,    A w,A self){F1PREFIP;DECLFGH;PROLOG(0026);A z;  CAP1; EPILOG(z);}
- A jtcork2(J jt,A a,A w,A self){F2PREFIP;DECLFGH;PROLOG(0027);A z;  CAP2; EPILOG(z);}
+ A jtcork1(J jt,    A w,A self){FPREFIP;DECLFGH;PROLOG(0026);A z;  CAP1; EPILOG(z);}
+ A jtcork2(J jt,A a,A w,A self){FPREFIP;DECLFGH;PROLOG(0027);A z;  CAP2; EPILOG(z);}
 
-static A jtfolk1(J jt,    A w,A self){F1PREFIP;DECLFGH;PROLOG(0028);A z; FOLK1; EPILOG(z);}
-static A jtfolk2(J jt,A a,A w,A self){F2PREFIP;DECLFGH;PROLOG(0029);A z; FOLK2;
+static A jtfolk1(J jt,    A w,A self){FPREFIP;DECLFGH;PROLOG(0028);A z; FOLK1; EPILOG(z);}
+static A jtfolk2(J jt,A a,A w,A self){FPREFIP;DECLFGH;PROLOG(0029);A z; FOLK2;
  EPILOG(z);}
 
 // see if f is defined as [:, as a single name
@@ -63,7 +63,7 @@ static B jtcap(J jt,A x){V*v;L *l;
 
 // nvv forks.  n must not be inplaced, since the fork may be reused.  hx can be inplaced unless protected by caller.
 // This generally follows the logic for CAP, but with dyad g
-static A jtnvv1(J jt,    A w,A self){F1PREFIP;DECLFGH;PROLOG(0032);
+static A jtnvv1(J jt,    A w,A self){FPREFIP;DECLFGH;PROLOG(0032);
 PUSHZOMB; A protw = (A)(intptr_t)((I)w+((I)jtinplace&JTINPLACEW));
 A hx; RZ(hx=(h1)((J)(intptr_t)(((I)jtinplace&(~(JTWILLBEOPENED+JTCOUNTITEMS))) + (REPSGN(SGNIF(FAV(hs)->flag,VJTFLGOK1X)) & (FAV(gs)->flag2>>(VF2WILLOPEN2WX-VF2WILLOPEN1X)) & JTWILLBEOPENED+JTCOUNTITEMS)),w,hs));  /* inplace g.  jtinplace is set for g */
 /* inplace gx unless it is protected */
@@ -72,7 +72,7 @@ jtinplace=(J)(intptr_t)(((I)jtinplace&~(JTINPLACEA+JTINPLACEW))+((I )(hx!=protw)
 jtinplace=FAV(gs)->flag&VJTFLGOK2?jtinplace:jt;
 A z; RZ(z=(g2)(jtinplace,fs,hx,gs));
 EPILOG(z);}
-static A jtnvv2(J jt,A a,A w,A self){F1PREFIP;DECLFGH;PROLOG(0033);
+static A jtnvv2(J jt,A a,A w,A self){FPREFIP;DECLFGH;PROLOG(0033);
 PUSHZOMB; A protw = (A)(intptr_t)((I)w+((I)jtinplace&JTINPLACEW)); A prota = (A)(intptr_t)((I)a+((I)jtinplace&JTINPLACEA));
 A hx; RZ(hx=(h2)((J)(intptr_t)(((I)jtinplace&(~(JTWILLBEOPENED+JTCOUNTITEMS))) + (REPSGN(SGNIF(FAV(hs)->flag,VJTFLGOK2X)) & (FAV(gs)->flag2>>(VF2WILLOPEN2WX-VF2WILLOPEN1X)) & JTWILLBEOPENED+JTCOUNTITEMS)),a,w,hs));  /* inplace g */
 /* inplace gx unless it is protected */
@@ -81,7 +81,7 @@ jtinplace=FAV(gs)->flag&VJTFLGOK2?jtinplace:jt;
 A z;RZ(z=(g2)(jtinplace,fs,hx,gs));
 EPILOG(z);}
 
-static A jtfolkcomp(J jt,A a,A w,A self){F2PREFIP;DECLFGH;PROLOG(0034);A z;AF f;
+static A jtfolkcomp(J jt,A a,A w,A self){FPREFIP;DECLFGH;PROLOG(0034);A z;AF f;
  f=atcompf(a,w,self);
  if(f){
   I postflags=jt->workareas.compsc.postflags;
@@ -91,7 +91,7 @@ static A jtfolkcomp(J jt,A a,A w,A self){F2PREFIP;DECLFGH;PROLOG(0034);A z;AF f;
  EPILOG(z);
 }
 
-static A jtfolkcomp0(J jt,A a,A w,A self){F2PREFIP;DECLFGH;PROLOG(0035);A z;AF f;
+static A jtfolkcomp0(J jt,A a,A w,A self){FPREFIP;DECLFGH;PROLOG(0035);A z;AF f;
  PUSHCCT(1.0)
  f=atcompf(a,w,self);
  if(f){
@@ -220,7 +220,7 @@ RZ(z=(f2)(jtinplace,w,gx,fs)); \
 // hook2cell is external
 A
 jthook2cell(J jt, A a, A w, A self) {
-    F2PREFIP;
+    FPREFIP;
     DECLFG;
     A z;
     PROLOG(0112);

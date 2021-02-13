@@ -66,7 +66,7 @@ static I bw1010insC(I d,I n,I m,UC* RESTRICTI x,UC* RESTRICTI z,J jt){I k=d*(n-1
 
 #define BITWISE(f,T,op)  \
  A f(J jt,A a,A w){A z;I *av,k=0,x;T*wv,y,*zv;             \
-  F2PREFIP;  /* kludge we allow inplace call but we don't honor it yet */ \
+  FPREFIP;  /* kludge we allow inplace call but we don't honor it yet */ \
   if(!(INT&AT(a)))RZ(a=jtcvt(jt,INT,a));                                    \
   if(!(INT&AT(w)))RZ(w=jtcvt(jt,INT,w));                                    \
   av=(I*)AV(a);                          \

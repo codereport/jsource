@@ -53,13 +53,13 @@ static A jtdrr(J jt, A w){PROLOG(0055);A df,dg,hs,*x,z;B b,ex,xop;C c,id;I fl,*h
   if(evoke(w)){RZ(w=sfne(w)); if(FUNC&AT(w))w=aro(w); return w;}  // keep nameref as a string, UNLESS it is NMDOT, in which case use the (f.'d) verb value
  }
  GAT0(z,BOX,2,1); x=AAV(z);
- if(NOUN&AT(w)){RZ(x[0]=incorp(ravel(scc(CNOUN)))); if(AT(w)&NAME)RZ(w=jtsfn(jt,0,w)); RZ(x[1]=INCORPNA(w)); return z;}  // if name, must be ".@'name', format name as string
+ if(NOUN&AT(w)){RZ(x[0]=incorp(ravel(scc(CNOUN)))); if(AT(w)&NAME)RZ(w=jtsfn(jt,0,w)); RZ(x[1]=incorp(w)); return z;}  // if name, must be ".@'name', format name as string
  GATV0(y,BOX,m,1); u=AAV(y);
  if(0<m)RZ(u[0]=incorp(aro(fs)));
  if(1<m)RZ(u[1]=incorp(aro(ex?jtunparsem(jt,num(0),w):xop?hs:gs)));
  if(2<m)RZ(u[2]=incorp(aro(hs)));
  s=xop?aro(gs):VDDOP&v->flag?(hv=AV(hs),aro(jtforeign(jt,sc(hv[0]),sc(hv[1])))):spellout(id);
- RZ(x[0]=incorp(s)); RZ(x[1]=INCORPNA(y));
+ RZ(x[0]=incorp(s)); RZ(x[1]=incorp(y));
  return z;
 }
 
@@ -126,7 +126,7 @@ static A jtfxchar(J jt,    A w,A self){A y;C c,d,id,*s;I m,n;
 // if JTINPLACEA is set, make sure the result fits on one line for error display: stop copying if we hit LF and emit '...',
 // and don't put spaces before/after the delimiters
 // result is always incorpable
-A jtunDD(J jt, A w){F1PREFIP;
+A jtunDD(J jt, A w){FPREFIP;
  I shortres=(I)jtinplace&JTINPLACEA;  // set for short, one-line result
  C *wv=CAV(w);  // start of word string
  // quick scan for 9, :, '; if not, return the input

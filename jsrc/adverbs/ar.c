@@ -121,7 +121,7 @@ static A jtred0(J jt,    A w,A self){DECLF;A x,z;I f,r,wr,*s;
 }    /* f/"r w identity case */
 
 // general reduce.  We inplace the results into the next iteration.  This routine cannot inplace its inputs.
-static A jtredg(J jt,    A w,A self){F1PREFIP;PROLOG(0020);DECLF;AD * RESTRICT a;I i,n,r,wr;
+static A jtredg(J jt,    A w,A self){FPREFIP;PROLOG(0020);DECLF;AD * RESTRICT a;I i,n,r,wr;
  ASSERT(DENSE&AT(w),EVNONCE);
  // loop over rank
  wr=AR(w); r=(RANKT)jt->ranks; r=wr<r?wr:r; RESETRANK;
@@ -200,7 +200,7 @@ static A jtredsp1(J jt,A w,A self,C id,VARPSF ado,I cv,I f,I r,I zt){A e,x,z;I m
 }    /* f/"r w for sparse vector w */
 
  A jtredravel(J jt,    A w,A self){A f,x,z;I n;P*wp;
- F1PREFIP;
+ FPREFIP;
  f=FAV(self)->fgh[0];  // f/
  if(!(SPARSE&AT(w)))return jtreduce(jt,jtravel(jtinplace,w),f);
  // The rest is sparse
@@ -343,7 +343,7 @@ J jtinplace=jt;
 }    /* f/"r for sparse w */
 
 static A jtreduce(J jt,    A w,A self){A z;I d,f,m,n,r,t,wr,*ws,zt;
- F1PREFIP;
+ FPREFIP;
  if((SPARSE&AT(w))!=0)return jtreducesp(jt,w,self);  // If sparse, go handle it
  wr=AR(w); ws=AS(w);
  // Create  r: the effective rank; f: length of frame; n: # items in a CELL of w
@@ -425,9 +425,9 @@ static A jtredcatsp(J jt,A w,A z,I r){A a,q,x,y;B*b;I c,d,e,f,j,k,m,n,n1,p,*u,*v
 // ,&.:(<"r)  run together all axes above the last r.  r must not exceed AR(w)-1
 // w must not be sparse or empty
 A jtredcatcell(J jt,A w,I r){A z;
- F1PREFIP;
+ FPREFIP;
  I wr=AR(w);  // get original rank, which may change if we inplace into the same block
- if(r>=wr-1)return RETARG(w);  // if only 1 axis left to run together, return the input
+ if(r>=wr-1)return w;  // if only 1 axis left to run together, return the input
  if((ASGNINPLACESGN(SGNIF((I)jtinplace,JTINPLACEWX)&(-r),w) && !(AFLAG(w)&AFUNINCORPABLE))){  // inplace allowed, usecount is right
   // operation is loosely inplaceable.  Just shorten the shape to frame,(#atoms in cell).  We do this here rather than relying on
   // the self-virtual-block code in virtual() because we can do it for indirect types also, since we know we are not changing
@@ -443,7 +443,7 @@ A jtredcatcell(J jt,A w,I r){A z;
 
 
  A jtredcat(J jt,    A w,A self){A z;B b;I f,r,*s,*v,wr;
- F1PREFIP;
+ FPREFIP;
  wr=AR(w); r=(RANKT)jt->ranks; r=wr<r?wr:r; f=wr-r; s=AS(w); RESETRANK;
  b=1==r&&1==s[f];  // special case: ,/ on last axis which has length 1: in that case, the rules say the axis disappears (because of the way ,/ works on length-1 lists)
  if(2>r&&!b)return w;  // in all OTHER cases, result=input for ranks<2
@@ -471,7 +471,7 @@ static A jtredstitch(J jt,    A w,A self){A c,y;I f,n,r,*s,*v,wr;
  s=AS(w); SETICFR(w,f,r,n);
  ASSERT(n!=0,EVDOMAIN);
  if(1==n)return IRS1(w,0L,r,jthead,y);
- if(1==r){if(2==n)return RETARG(w); A z1,z2,z3; RZ(IRS2(num(-2),w,0L,0L,1L,jtdrop,z1)); RZ(IRS2(num(-2),w,0L,0L,1L,jttake,z2)); return IRS2(z1,z2,0L,1L,0L,jtover,z3);}
+ if(1==r){if(2==n)return w; A z1,z2,z3; RZ(IRS2(num(-2),w,0L,0L,1L,jtdrop,z1)); RZ(IRS2(num(-2),w,0L,0L,1L,jttake,z2)); return IRS2(z1,z2,0L,1L,0L,jtover,z3);}
  if(2==r)return IRS1(w,0L,2L,jtcant1,y);
  RZ(c=apvwr(wr,0L,1L)); v=AV(c); v[f]=f+1; v[f+1]=f; RZ(y=jtcant2(jt,c,w));  // transpose last 2 axes
  if((SPARSE&AT(w))!=0){A x;
@@ -544,7 +544,7 @@ A sum=jtreduce(jt,w,FAV(self)->fgh[0]);  // calculate +/"r
 }    // (+/%#)"r w, implemented as +/"r % cell-length
 
 // entry point to execute monad/dyad Fold after the noun arguments are supplied
-static A jtfoldx(J jt,A a,A w,A self){F2PREFIP;  // this stands in place of jtxdefn, which inplaces
+static A jtfoldx(J jt,A a,A w,A self){FPREFIP;  // this stands in place of jtxdefn, which inplaces
  // see if this is monad or dyad
  I foldflag=((~AT(w))>>(VERBX-3))&8;  // flags: dyad mult fwd rev  if w is not conj, this must be a dyad call
  self=foldflag?self:w; w=foldflag?w:a; a=foldflag?a:mtv; // if monad, it's w self garbage,  move to '' w self

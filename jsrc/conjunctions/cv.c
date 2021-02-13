@@ -6,9 +6,9 @@
 #include "j.h"
 
 
-static A jtfitct1(J jt,    A w,A self){DECLFG;F1PREFIP;A z; PUSHCCT(FAV(self)->localuse.lD) z=CALL1IP(f1,  w,fs); POPCCT return z;}  // lD has the complementary ct
+static A jtfitct1(J jt,    A w,A self){DECLFG;FPREFIP;A z; PUSHCCT(FAV(self)->localuse.lD) z=CALL1IP(f1,  w,fs); POPCCT return z;}  // lD has the complementary ct
 
-#define fitctvector(name,vector) static A name(J jt,A a,A w,A self){DECLFG;F2PREFIP;A z; PUSHCCT(FAV(self)->localuse.lD) z=vector; POPCCT return z;}
+#define fitctvector(name,vector) static A name(J jt,A a,A w,A self){DECLFG;FPREFIP;A z; PUSHCCT(FAV(self)->localuse.lD) z=vector; POPCCT return z;}
 fitctvector(jtfitct2,CALL2IP(f2,a,w,fs))
 fitctvector(jtfitcteq,jtatomic2(jtinplace,a,w,fs))
 
@@ -35,8 +35,8 @@ static A jtfitpoly2(J jt,A a,A w,A self){I j;
  A z; return jtaslash(jt,CPLUS,tymes(a,jtascan(jt,CSTAR,shift1(plus(w,df2(z,IX(SETIC(a,j)),FAV(self)->fgh[1],slash(ds(CSTAR))))))));
 }    /* a p.!.s w */
 
-static A jtfitfill1(J jt,    A w,A self){DECLFG;F1PREFIP;A z; jt->fill=gs; z=CALL1IP(f1,  w,fs); jt->fill=0; return z;}  // gs cannot be virtual
-static A jtfitfill2(J jt,A a,A w,A self){DECLFG;F2PREFIP;A z; jt->fill=gs; z=CALL2IP(f2,a,w,fs); jt->fill=0; return z;}
+static A jtfitfill1(J jt,    A w,A self){DECLFG;FPREFIP;A z; jt->fill=gs; z=CALL1IP(f1,  w,fs); jt->fill=0; return z;}  // gs cannot be virtual
+static A jtfitfill2(J jt,A a,A w,A self){DECLFG;FPREFIP;A z; jt->fill=gs; z=CALL2IP(f2,a,w,fs); jt->fill=0; return z;}
 
 static A jtfitpp1(J jt,    A w,A self){DECLFG;A z;C d[8],*s=3+jt->pp;
  memcpy(d,s,8L); 

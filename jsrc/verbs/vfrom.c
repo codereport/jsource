@@ -43,7 +43,7 @@
 
 // a is not boxed and not boolean (except when a is an atom, which we pass through here to allow a virtual result)
  A jtifrom(J jt,A a,A w){A z;C*wv,*zv;I acr,an,ar,*av,j,k,m,p,pq,q,wcr,wf,wk,wn,wr,*ws,zn;
- F1PREFIP;
+ FPREFIP;
  // IRS supported.  This has implications for empty arguments.
  ar=AR(a); acr=jt->ranks>>RANKTX; acr=ar<acr?ar:acr;
  wr=AR(w); wcr=(RANKT)jt->ranks; wcr=wr<wcr?wr:wcr; wf=wr-wcr; RESETRANK;
@@ -62,7 +62,7 @@
  I wflag=AFLAG(w);
  if(wn){
   // For virtual results we need: kn: number of atoms in an item of a cell of w;   
-  PROD1(k, wcr-1, ws+wf+1);  // number of atoms in an item of a cell
+  PROD(k, wcr-1, ws+wf+1);  // number of atoms in an item of a cell
   // Also m: #wcr-cells in w 
   PROD(m,wf,ws); zn=k*m;  DPMULDE(an,zn,zn);
 // correct  if(((zn-2)|-(wf|(wflag&(AFNJA))))>=0){  // zn>1 and not (frame or NJA)
@@ -103,7 +103,6 @@
   // cells are not simple types.  We can safely move full words, since there is always extra buffer space at the end of any type that is not a word-multiple
    {C* RESTRICT u,* RESTRICT v=(C*)wv,* RESTRICT x=(C*)zv;
     pq=p*k;
-    JMCDECL(endmask) JMCSETMASK(endmask,k+(SZI-1),0) 
     if(1==an){v+=j*k; DQ(m,                     u=v;     JMCR(x,u,k+(SZI-1),loop1,0,endmask) x+=k; v+=pq;);}
     else              DQ(m, DO(an, SETJ(av[i]); u=v+j*k; JMCR(x,u,k+(SZI-1),loop2,0,endmask) x+=k;); v+=pq;)
    }
@@ -131,7 +130,7 @@ static A jtbfrom(J jt,A a,A w){A z;B*av,*b;C*wv,*zv;I acr,an,ar,k,m,p,q,r,*u=0,w
  // We always need zn, the number of result atoms
  if(wn){
   // If there is data to move, we also need m: #cells of w   k: #bytes in an items of a cell of w   wk: #bytes in a cell of w
-  PROD(m,wf,ws); PROD1(k, wcr-1, ws+wf+1); zn=k*m; k<<=bplg(AT(w)); wk=k*p; DPMULDE(an,zn,zn);
+  PROD(m,wf,ws); PROD(k, wcr-1, ws+wf+1); zn=k*m; k<<=bplg(AT(w)); wk=k*p; DPMULDE(an,zn,zn);
  }else{zn=0;}
  GA(z,AT(w),zn,ar+wr-(I )(0<wcr),0);
  MCISH(AS(z),AS(w),wf); MCISH(&AS(z)[wf],AS(a),ar); if(wcr)MCISH(&AS(z)[wf+ar],1+wf+ws,wcr-1);
@@ -156,7 +155,7 @@ static A jtbfrom(J jt,A a,A w){A z;B*av,*b;C*wv,*zv;I acr,an,ar,k,m,p,q,r,*u=0,w
 // result is the indexed items
 // the numbers in a have been audited for validity
 // w is length of the frame
-A jtfrombu(J jt,A a,A w,I wf){F1PREFIP;A p,q,z;I ar,*as,h,m,r,*u,*v,wcr,wr,*ws;
+A jtfrombu(J jt,A a,A w,I wf){FPREFIP;A p,q,z;I ar,*as,h,m,r,*u,*v,wcr,wr,*ws;
  ar=AR(a); as=AS(a); h=as[ar-1];  // h is length of the index list, i. e. number of axes of w that disappear during indexing
  wr=AR(w); ws=AS(w); wcr=wr-wf;
  if((-AN(a)&-AN(w))>=0){  // empty array, either a or w
@@ -250,7 +249,6 @@ static A jtafrom2(J jt,A p,A q,A w,I r){A z;C*wv,*zv;I d,e,j,k,m,n,pn,pr,* RESTR
  case sizeof(I4): INNER2(I4);
 
  default:        {C* RESTRICT v=wv,* RESTRICT x=zv-k;n=k*n;   // n=#bytes in a cell of w
-  JMCDECL(endmask) JMCSETMASK(endmask,k+(SZI-1),0) 
   DQ(m, DO(pn, j=e*pv[i]; DO(qn, x+=k; JMCR(x,v+k*(j+qv[i]),k+(SZI-1),loop1,0,endmask);)); v+=n;);} break;
  }
  return z;   // return block
@@ -308,7 +306,7 @@ static A jtafrom(J jt,A a,A w){PROLOG(0073);A c,ind,p=0,q,*v,y=w;B bb=1;I acr,ar
 }    /* a{"r w for boxed index a */
 
  A jtfrom(J jt,A a,A w){I at;A z;
- F2PREFIP;
+ FPREFIP;
  if(!(a && w)) return 0;
  at=AT(a);
  if(!((AT(a)|AT(w))&(SPARSE))){
@@ -374,7 +372,7 @@ static A jtafrom(J jt,A a,A w){PROLOG(0073);A c,ind,p=0,q,*v,y=w;B bb=1;I acr,ar
      {I * RESTRICT zv=IAV(z); I *RESTRICT wv=IAV(w); DQ(AN(ind), *zv++=wv[*iv++];) break;}  // scatter-copy the data, 8-byte chunks
     default: ;
      // It is OK to pad to an I boundary, because any block with cells not a multiple of I is padded to an I
-     C* RESTRICT zv=CAV(z); C *RESTRICT wv=CAV(w);     JMCDECL(endmask) JMCSETMASK(endmask,cellsize+(SZI-1),0) 
+     C* RESTRICT zv=CAV(z); C *RESTRICT wv=CAV(w);
      DQ(AN(ind), JMCR(zv,wv+*iv++*cellsize,cellsize+(SZI-1),loop1,0,endmask); zv+=cellsize;)  // use memcpy
      break;
     }
@@ -410,7 +408,7 @@ static A jtquicksel(J jt,A a,A w){I index;
  return AT(w)&BOX?AAV(w)[index]:w;  // select the box, or return the entire unboxed w
 }
 
- A jtfetch(J jt,A a,A w){A*av, z;I n;F2PREFIP;
+ A jtfetch(J jt,A a,A w){A*av, z;I n;FPREFIP;
  F2RANKW(1,RMAX,jtfetch,UNUSED_VALUE);  // body of verb applies to rank-1 a, and must turn pristine off if used higher, since there may be repetitions.
  if(!(BOX&AT(a))){
   // look for the common special case scalar { boxed vector.  This path doesn't run EPILOG

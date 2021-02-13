@@ -82,7 +82,7 @@ static  B jtDfromZ(J jt,A w,void*yv,D fuzz){D d,*x;I n;Z*v;
 
 static B jtXfromB(J jt,A w,void*yv){B*v;I n,u[1];X*x;
  n=AN(w); v=BAV(w); x=(X*)yv;
- DO(n, *u=v[i]; x[i]=rifvsdebug(vec(INT,1L,u)););           
+ DO(n, *u=v[i]; x[i]=vec(INT,1L,u););
  return !jt->jerr;
 }
 
@@ -93,7 +93,7 @@ static B jtXfromI(J jt,A w,void*yv){B b;I c,d,i,j,n,r,u[XIDIG],*v;X*x;
   DO(XIDIG, u[i]=r=d%XBASE; d=d/XBASE; if(r)j=i;);
   ++j; *u+=b;
   if(0>c)DO(XIDIG, u[i]=-u[i];);
-  x[i]=rifvsdebug(vec(INT,j,u));
+  x[i]=vec(INT,j,u);
  }
  return !jt->jerr;
 }
@@ -101,7 +101,7 @@ static B jtXfromI(J jt,A w,void*yv){B b;I c,d,i,j,n,r,u[XIDIG],*v;X*x;
 static X jtxd1(J jt,D p, I mode){PROLOG(0052);A t;D d,e=tfloor(p),q,r;I m,*u;
  switch(mode){
   case XMFLR:   p=e;                            break;
-  case XMCEIL:  p=jceil(p);                      break;
+  case XMCEIL:  p=ceil(p);                      break;
   case XMEXACT: ASSERT(TEQ(p,e),EVDOMAIN); p=e; break;
   case XMEXMT:  if(!TEQ(p,e))return vec(INT,0L,&iotavec[-IOTAVECBEGIN]);
  }
@@ -109,7 +109,7 @@ static X jtxd1(J jt,D p, I mode){PROLOG(0052);A t;D d,e=tfloor(p),q,r;I m,*u;
  if(p==-inf)return vci(XNINF);
  GAT0(t,INT,30,1); u=AV(t); m=0; d=ABS(p); 
  while(0<d){
-  q=jfloor(d/XBASE); r=d-q*XBASE; u[m++]=(I)r; d=q;
+  q=floor(d/XBASE); r=d-q*XBASE; u[m++]=(I)r; d=q;
   if(m==AN(t)){RZ(t=jtext(jt,0,t)); u=AV(t);}
  }
  if(!m){u[0]=0; ++m;}else if(0>p)DO(m, u[i]=-u[i];);
@@ -117,7 +117,7 @@ static X jtxd1(J jt,D p, I mode){PROLOG(0052);A t;D d,e=tfloor(p),q,r;I m,*u;
  EPILOG(z);
 }
 
-static B jtXfromD(J jt,A w,void*yv,I mode){D*v=DAV(w);X*x=(X*)yv; DO(AN(w), x[i]=rifvsdebug(jtxd1(jt,v[i],mode));); return !jt->jerr;}
+static B jtXfromD(J jt,A w,void*yv,I mode){D*v=DAV(w);X*x=(X*)yv; DO(AN(w), x[i]=jtxd1(jt,v[i],mode);); return !jt->jerr;}
 
 static B jtBfromX(J jt,A w,void*yv){A q;B*x;I e;X*v;
  v=XAV(w); x=(B*)yv;
@@ -170,7 +170,6 @@ static B jtQfromD(J jt,A w,void*yv,I mode){B neg,recip;D c,d,t,*wv;I e,i,n,*v;Q 
    if(recip){q.d=jtxtymes(jt,jtxd1(jt,t/pow(2.0,e-53.0),mode),jtxpow(jt,xc(2L),xc(e-53))); q.n=ca(iv1);}
    else     {q.n=jtxtymes(jt,jtxd1(jt,t/pow(2.0,e-53.0),mode),jtxpow(jt,xc(2L),xc(e-53))); q.d=ca(iv1);}
   }
-  q.n=rifvsdebug(q.n); q.d=rifvsdebug(q.d);
   if(neg){v=AV(q.n); DQ(AN(q.n), *v=-*v; ++v;);}
   *x++=q;
  }
@@ -227,7 +226,7 @@ static B jtDXfI(J jt,I p,A w,DX*x){B b;I e,c,d,i,j,n,r,u[XIDIG],*v;
 // copy of the data if w is already of the right type), and returned in *y.  Result is
 // 0 if error, 1 if success.  If the conversion loses precision, error is returned
 // Calls through bcvt are tagged with a flag in jt, indicating to set fuzz=0
-B jtccvt(J jt,I tflagged,A w,A*y){F1PREFIP;A d;I n,r,*s,wt; void *wv,*yv;I t=tflagged&NOUN;
+B jtccvt(J jt,I tflagged,A w,A*y){FPREFIP;A d;I n,r,*s,wt; void *wv,*yv;I t=tflagged&NOUN;
  if (!w) return 0;
  r=AR(w); s=AS(w);
  if(((t|AT(w))&SPARSE)!=0){

@@ -12,37 +12,37 @@
  n=XDIG(w.n); d=XDIG(w.d); z.d=iv1;
  if(0>d){QRE(w.n=rifvs(negate(w.n))); QRE(w.d=rifvs(negate(w.d))); n=-n; d=-d;}  // w could become the result
  if(!n){z.n=iv0; return z;}
- if(!d){z.n=rifvsdebug(vci(0<n?XPINF:XNINF)); return z;}
+ if(!d){z.n=vci(0<n?XPINF:XNINF); return z;}
  if(d==XPINF){QASSERT(n!=XPINF&&n!=XNINF,EVNAN); return zeroQ;}
- if(n==XPINF||n==XNINF){z.n=rifvsdebug(w.n); return z;}
+ if(n==XPINF||n==XNINF){z.n=w.n; return z;}
  QRE(g=jtxgcd(jt,w.n,w.d));
  if(QX1(g))return w;
- z.n=rifvsdebug(xdiv(w.n,g,XMEXACT));
- z.d=rifvsdebug(xdiv(w.d,g,XMEXACT));
+ z.n=xdiv(w.n,g,XMEXACT);
+ z.d=xdiv(w.d,g,XMEXACT);
  return z;
 }
 
  Q jtqplus(J jt,Q a,Q w){PROLOG(0083);Q z;
- z.n=rifvsdebug(jtxplus(jt,jtxtymes(jt,a.n,w.d),jtxtymes(jt,w.n,a.d)));
- z.d=rifvsdebug(jtxtymes(jt,a.d,w.d));
+ z.n=jtxplus(jt,jtxtymes(jt,a.n,w.d),jtxtymes(jt,w.n,a.d));
+ z.d=jtxtymes(jt,a.d,w.d);
  QEPILOG(z);
 }
 
  Q jtqminus(J jt,Q a,Q w){PROLOG(0084);Q z;
- z.n=rifvsdebug(jtxminus(jt,jtxtymes(jt,a.n,w.d),jtxtymes(jt,w.n,a.d)));
- z.d=rifvsdebug(jtxtymes(jt,a.d,w.d));
+ z.n=jtxminus(jt,jtxtymes(jt,a.n,w.d),jtxtymes(jt,w.n,a.d));
+ z.d=jtxtymes(jt,a.d,w.d);
  QEPILOG(z);
 }
 
  Q jtqtymes(J jt,Q a,Q w){PROLOG(0085);Q z;
- z.n=rifvsdebug(jtxtymes(jt,a.n,w.n));
- z.d=rifvsdebug(jtxtymes(jt,a.d,w.d));
+ z.n=jtxtymes(jt,a.n,w.n);
+ z.d=jtxtymes(jt,a.d,w.d);
  QEPILOG(z);
 }
 
  Q jtqdiv(J jt,Q a,Q w){PROLOG(0086);Q z;
- z.n=rifvsdebug(jtxtymes(jt,a.n,w.d)); 
- z.d=rifvsdebug(jtxtymes(jt,a.d,w.n));
+ z.n=jtxtymes(jt,a.n,w.d); 
+ z.d=jtxtymes(jt,a.d,w.n);
  QEPILOG(z);
 }
 
@@ -60,8 +60,8 @@ static Q jtqrem(J jt,Q a,Q w){PROLOG(0087);I c,d;Q m,q,z;
 }
 
 static Q jtqgcd(J jt,Q a,Q w){PROLOG(0088);Q z;
- QRE(z.n=rifvsdebug(jtxgcd(jt,a.n,w.n)));
- QRE(z.d=rifvsdebug(jtxlcm(jt,a.d,w.d)));
+ QRE(z.n=jtxgcd(jt,a.n,w.n));
+ QRE(z.d=jtxlcm(jt,a.d,w.d));
  QEPILOG(z);
 }
 
@@ -104,11 +104,11 @@ static X jtqbin(J jt,Q a,Q w){ASSERT(QX1(a.d)&&QX1(w.d),EWIRR); return 0; }
 static D jtqlogd1(J jt,Q w){ASSERT(0<=XDIG(w.n),EWIMAG); return xlogabs(w.n)-xlogabs(w.d);}
 static Z jtqlogz1(J jt,Q w){Z z; z.re=xlogabs(w.n)-xlogabs(w.d); z.im=0>XDIG(w.n)?PI:0.0; return z;}
 
-#define QSQRT(x)    z->n=rifvsdebug(xsqrt(x->n)); z->d=rifvsdebug(xsqrt(x->d)); {I rc; if(rc=jt->jerr){RESETERR; return rc;}}
+#define QSQRT(x)    z->n=xsqrt(x->n); z->d=xsqrt(x->d); {I rc; if(rc=jt->jerr){RESETERR; return rc;}}
 
-AMON(floorQ, X,Q, *z=rifvsdebug(xdiv(x->n,x->d,XMFLR ));)
-AMON( ceilQ, X,Q, *z=rifvsdebug(xdiv(x->n,x->d,XMCEIL));)
-AMON(  sgnQ, X,Q, *z=rifvsdebug(xsgn(x->n));            )
+AMON(floorQ, X,Q, *z=xdiv(x->n,x->d,XMFLR );)
+AMON( ceilQ, X,Q, *z=xdiv(x->n,x->d,XMCEIL);)
+AMON(  sgnQ, X,Q, *z=xsgn(x->n);            )
 AMON(  absQ, Q,Q, z->n=rifvs(mag(x->n)); z->d=x->d;)
 AMONPS( sqrtQ, Q,Q, , QSQRT(x) , HDR1JERR)
 AMONPS( logQD, D,Q, , *z=qlogd1(*x); , HDR1JERR)

@@ -6,8 +6,8 @@
 #include "j.h"
 
 
- A jtbehead (J jt, A w){F1PREFIP; return jtdrop(jtinplace,zeroionei(1),    w);}
- A jtcurtail(J jt, A w){F1PREFIP; return jtdrop(jtinplace,num(-1),w);}
+ A jtbehead (J jt, A w){FPREFIP; return jtdrop(jtinplace,zeroionei(1),    w);}
+ A jtcurtail(J jt, A w){FPREFIP; return jtdrop(jtinplace,num(-1),w);}
 
  A jtshift1(J jt, A w){return jtdrop(jt,num(-1),jtover(jt,num(1),w));}
 
@@ -75,7 +75,7 @@ static A jttk(J jt,A a,A w){PROLOG(0093);A y,z;B b=0;C*yv,*zv;I c,d,dy,dz,e,i,k,
 }
 
  A jttake(J jt,A a,A w){A s;I acr,af,ar,n,*v,wcr,wf,wr;
- F2PREFIP;
+ FPREFIP;
  if(!(a && w)) return 0;
  I wt = AT(w);  // wt=type of w
  if((SPARSE&AT(a))!=0)RZ(a=denseit(a));
@@ -138,12 +138,12 @@ static A jttk(J jt,A a,A w){PROLOG(0093);A y,z;B b=0;C*yv,*zv;I c,d,dy,dz,e,i,k,
 }
 
  A jtdrop(J jt,A a,A w){A s;I acr,af,ar,d,m,n,*u,*v,wcr,wf,wr;
- F2PREFIP;
+ FPREFIP;
  RZ((a=vib(a))&&w);  // convert & audit a
  ar=AR(a); acr=jt->ranks>>RANKTX; acr=ar<acr?ar:acr; af=ar-acr;  // ?r=rank, ?cr=cell rank, ?f=length of frame
  wr=AR(w); wcr=(RANKT)jt->ranks; wcr=wr<wcr?wr:wcr; wf=wr-wcr; RESETRANK; I wt=AT(w);
  // special case: if a is atomic 0, and cells of w are not atomic
- if((-wcr&(ar-1))<0&&(IAV(a)[0]==0))return RETARG(w);   // 0 }. y, return y
+ if((-wcr&(ar-1))<0&&(IAV(a)[0]==0))return w;   // 0 }. y, return y
  if(((af-1)&(acr-2))>=0){
   s=rank2ex(a,w,UNUSED_VALUE,MIN(acr,1),wcr,acr,wcr,jtdrop);  // if multiple x values, loop over them  af>0 or acr>1
   // We extracted from w, so mark it (or its backer if virtual) non-pristine.  There may be replication, so we don't pass pristinity through  We overwrite w because it is no longer in use
@@ -194,7 +194,7 @@ static A jtrsh0(J jt, A w){A x,y;I wcr,wf,wr,*ws;
 }
 
  A jthead(J jt, A w){I wcr,wf,wr;
- F1PREFIP;
+ FPREFIP;
  wr=AR(w); wcr=(RANKT)jt->ranks; wcr=wr<wcr?wr:wcr; wf=wr-wcr;  // no RESETRANK so that we can pass rank into other code
  if(!wcr||AS(w)[wf]){  // if cell is atom, or cell has items - which means it's safe to calculate the size of a cell
   if(((-wf)|((AT(w)&(DIRECT|RECURSIBLE))-1)|(wr-2))>=0){  // frame=0, and DIRECT|RECURSIBLE, and rank>1.  No gain in virtualizing an atom, and it messes up inplacing and allocation-size counting in the tests
@@ -215,7 +215,7 @@ static A jtrsh0(J jt, A w){A x,y;I wcr,wf,wr,*ws;
 }
 
  A jttail(J jt, A w){I wcr,wf,wr;
- F1PREFIP;
+ FPREFIP;
  wr=AR(w); wcr=(RANKT)jt->ranks; wcr=wr<wcr?wr:wcr; wf=wr-wcr;  // no RESETRANK: rank is passed into from/take/rsh0.  Left rank is garbage but that's OK
  return !wcr||AS(w)[wf]?jtfrom(jtinplace,num(-1),w) :  // if cells are atoms, or if the cells are nonempty arrays, result is last cell(s) scaf should generate virtual block here for speed
      SPARSE&AT(w)?irs2(num(0),jttake(jt,num(-1),w),0L,0L,wcr,jtfrom):rsh0(w);

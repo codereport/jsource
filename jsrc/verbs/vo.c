@@ -26,7 +26,7 @@ I levelle(A w,I l){
  A jtlevel1(J jt, A w){ return sc(level(w));}
 
  A jtbox(J jt, A w){A y,z,*zv;C*wv;I f,k,m,n,r,wr,*ws; 
- F1PREFIP;
+ FPREFIP;
  if(!w) return 0;
  I wt=AT(w); FLAGT waf=AFLAG(w);
  ASSERT(!(SPARSE&wt),EVNONCE);
@@ -55,7 +55,6 @@ I levelle(A w,I l){
   // To avoid the tstack overhead, we switch the tpush pointer to our data area, so that blocks are filled in as they are allocated, with nothing put
   // onto the real tpop stack.  If we hit an error, that's OK, because whatever we did get allocated will be freed when the result block is freed.  We use GAE so that we don't abort on error
   A *pushxsave = jt->tnextpushp; jt->tnextpushp=AAV(z);  // save tstack info before allocation
-  JMCDECL(endmask) JMCSETMASK(endmask,k+SZI-1,0)   // set mask for JMCR - OK to copy SZIs
   DQ(n, GAE(y,wt,m,r,f+ws,break); JMCR(CAV(y),wv,k+SZI-1,lp000,0,endmask); wv+=k; AC(y)=ACUC1; if(wt&RECURSIBLE){AFLAG(y)=wt; jtra(y,wt);});   // allocate, but don't grow the tstack.  Set usecount of cell to 1.  ra0() if recursible.  Put allocated addr into *jt->tnextpushp++
 
 
@@ -67,11 +66,11 @@ I levelle(A w,I l){
  return z;
 }    /* <"r w */
 
- A jtboxopen(J jt, A w){F1PREFIP; if((-AN(w)&-(AT(w)&BOX+SBOX))>=0){w = jtbox(jtinplace,w);} return w;}
+ A jtboxopen(J jt, A w){FPREFIP; if((-AN(w)&-(AT(w)&BOX+SBOX))>=0){w = jtbox(jtinplace,w);} return w;}
 
 // x ; y, with options for x (,<) y   x (;<) y   x ,&< y
  A jtlink(J jt,A a,A w,A self){
-F2PREFIP;
+FPREFIP;
  ASSERT(!((AT(a)|AT(w))&SPARSE),EVNONCE);   // can't box sparse values
  I optype=FAV(self)->localuse.lclr[0];  // flag: sign set if (,<) or ,&< or (;<) which will always box w; bit 0 set if (,<)
  realizeifvirtual(w); realizeifvirtual(a);  // it's going into an array, so realize it

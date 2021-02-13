@@ -54,7 +54,7 @@ static UINT jtcrcvalidate(J jt,A w, UINT* crctab){A*wv;B*v;I m;UINT p,x,z=-1;
 #ifndef CRC32L
 #define CRC32L(acc,in) (0xffffffff&((acc*15015)^(in)))   // if no hardware CRC (rare), mix the bits a little
 #endif
- A jtqhash12(J jt,A a,A w){F2PREFIP; I hsiz; UI crc;
+ A jtqhash12(J jt,A a,A w){FPREFIP; I hsiz; UI crc;
  if(AT(w)&NOUN){RE(hsiz=i0(vib(a)));} else{w=a; hsiz=0;}  // fetch hashtable size; set w=data to hash
  ASSERT(hsiz>=0,EVDOMAIN);
  ASSERT(AT(w)&DENSE,EVNONCE);  // not sparse for now

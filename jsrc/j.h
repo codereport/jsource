@@ -165,8 +165,6 @@
 #define IPHALLEPS       (IPHOFFSET+IALLEPS)
 #define IPHIFBEPS       (IPHOFFSET+IIFBEPS)
 
-#define jceil(x) ceil(x)
-#define jfloor(x) floor(x)
 #define jround(x) floor(0.5+(x))  // for paranoid compatibility with earlier versions
 
 
@@ -190,7 +188,6 @@
 #define SGNIF(v,bitno) ((I)(v)<<(BW-1-(bitno)))  // Sets sign bit if the numbered bit is set
 #define SGNIFNOT(v,bitno) (~SGNIF((v),(bitno)))  // Clears sign bit if the numbered bit is set
 
-#define A0              0   // a nonexistent A-block
 #define ABS(a)          (0<=(a)?(a):-(a))
 #define ASSERT(b,e)     {if(!(b)){jsignal(e); return 0;}}
 // version for debugging
@@ -225,7 +222,6 @@
 #define CALL2(f,a,w,fs) ((f)(jt,(a),(w),(A)(fs)))
 #define CALL1IP(f,w,fs)   ((f)(jtinplace,    (w),(A)(fs)))
 #define CALL2IP(f,a,w,fs) ((f)(jtinplace,(a),(w),(A)(fs)))
-#define RETARG(z)       (z)   // These places were ca(z) in the original JE
 #define CALLSTACKRESET  {jt->callstacknext=0; jt->uflags.us.uq.uq_c.pmctrbstk &= ~PMCTRBSTKREQD;} // establish initial conditions for things that might not get processed off the stack.  The last things stacked may never be popped
 #define MODESRESET      {jt->xmode=XMEXACT;}  // anything that might get left in a bad state and should be reset on return to immediate mode
 // see if a character matches one of many.  Example in ai.c
@@ -262,8 +258,6 @@
 #define FFEQ(u,v)        (ABS((u)-(v))<=FUZZ*MAX(ABS(u),ABS(v)))
 #define FFIEQ(u,v)       (ABS((u)-(v))<=FUZZ*ABS(v))  // used when v is known to be exact integer.  It's close enough, maybe ULP too small on the high end
 #define FPREFIP         J jtinplace=jt; jt=(J)(intptr_t)((I)jt&~JTFLAGMSK)  // turn off all flag bits in jt, leave them in jtinplace
-#define F1PREFIP        FPREFIP
-#define F2PREFIP        FPREFIP
 #define F1RANK(m,f,self)    { if(m<AR(w))if(m==0)return rank1ex0(w,(A)self,f);else return rank1ex(  w,(A)self,(I)m,     f);}  // if there is more than one cell, run rank1ex on them.  m=monad rank, f=function to call for monad cell.  Fall through otherwise
 #define F2RANKcommon(l,r,f,self,extra)  { extra if((I)((l-AR(a))|(r-AR(w)))<0)if((l|r)==0)return rank2ex0(a,w,(A)self,f);else{I lr=MIN((I)l,AR(a)); I rr=MIN((I)r,AR(w)); return rank2ex(a,w,(A)self,lr,rr,lr,rr,f);}}  // If there is more than one cell, run rank2ex on them.  l,r=dyad ranks, f=function to call for dyad cell
 #define F2RANK(l,r,f,self)  F2RANKcommon(l,r,f,self,)
@@ -359,14 +353,12 @@
 // Mark a block as incorporated by removing its inplaceability.  The blocks that are tested for incorporation are ones that are allocated by partitioning, and they will always start out as inplaceable
 // If a block is virtual, it must be realized before it can be incorporated.  realized blocks always start off inplaceable and non-pristine
 // z is an lvalue
-// Use INCORPNA if you need to tell the caller that the block e sent you has been incorporated.  If you created the block being incorporated,
+// Use incorp if you need to tell the caller that the block e sent you has been incorporated.  If you created the block being incorporated,
 // even by calling a function that returns it, you can be OK just using rifv() or rifvs().  This may leave an incorporated block marked inplaceable,
 // but that's OK as long as you don't pass it to some place where it can become an argument to another function
 // When a block is incorporated it becomes not pristine, because extractions from the parent may compromise it and we don't want to have to go through recursively to find them
 #define INCORP(z) {I af=AFLAG(z); if((af&AFVIRTUAL)!=0){RZ((z)=realize(z))} else{AFLAG(z)=af&~AFPRISTINE;} ACIPNO(z); }
 #define INCORPNV(z) {I af=AFLAG(z); AFLAG(z)=af&~AFPRISTINE; ACIPNO(z);}  // use when z is known nonvirtul
-// same, but for nonassignable argument.  Must remember to check the result for 0
-#define INCORPNA(z) incorp(z)
 // use to incorporate into a known-recursive box.  We raise the usecount of z
 #define INCORPRA(z) {I af=AFLAG(z); if((af&AFVIRTUAL)!=0){RZ((z)=realize(z))} else{AFLAG(z)=af&~AFPRISTINE;} ra(z); }
 // Tests for whether a result incorporates its argument.  The originator, who is going to check this, always marks the argument inplaceable,
@@ -397,8 +389,6 @@
 
 #define Jmemcpy(d,s,l,lbl,bytelen) memcpy(d,s,bytelen?(l):(l)&-SZI);
 #define JMCR(d,s,l,lbl,bytelen,maskname) memcpy(d,s,bytelen?(l):(l)&-SZI);
-#define JMCDECL(mskname)
-#define JMCSETMASK(mskname,l,bytelen)
 
 #define IX(n)           apv((n),0L,1L)
 #define JATTN           {if(*jt->adbreakr!=0){jsignal(EVATTN); return 0;}}
@@ -410,7 +400,6 @@
 #define JTIPWonly       (J)((I)jtinplace&~(JTINPLACEA+JTWILLBEOPENED+JTCOUNTITEMS))  // dyad jt converted to monad for w
 // given a unique num, define loop begin and end labels
 #define MAX(a,b)        ((a)>(b)?(a):(b))
-#define MCL(dest,src,n) memcpy(dest,src,n)  // use when copy is expected to be long
 #define MCIL(dest,src,n) memcpy(dest,src,(n)*sizeof(*src))   // use when copy expected to be long
 // Copy shapes.  Optimized for length <5, subroutine for others
 #define MCISH(dest,src,n) \
@@ -461,7 +450,6 @@ if(_i<3){_zzt+=_i; z=(I)&oneone; _zzt=_i>=1?_zzt:(I*)z; z=_i>1?(I)_zzt:z; z=((I*
 #define PRODRNK(result,length,ain) {I _i=(length); I * RESTRICT _zzt=(ain); \
   if((US)_i<3){_zzt=_i&3?_zzt:iotavec-IOTAVECBEGIN+1; result=*_zzt; ++_zzt; _zzt=_i&2?_zzt:iotavec-IOTAVECBEGIN+1; result*=*_zzt;}else{result=jtprod(jt,(US)_i,_zzt);} }
 
-#define PROD1(result,length,ain) PROD(result,length,ain)  // scaf
 // PRODX replaces CPROD.  It is PROD with a test for overflow included.  To save calls to mult, PRODX takes an initial value
 // PRODX takes the product of init and v[0..n-1], generating error if overflow, but waiting till the end so no error if there is a 0 in the product
 // overflow sets z to the error value of 0; if we see a multiplicand of 0 we stop right away so we can skip the error
@@ -477,7 +465,6 @@ if(_i<3){_zzt+=_i; z=(I)&oneone; _zzt=_i>=1?_zzt:(I*)z; z=_i>1?(I)_zzt:z; z=((I*
 // CPROD is to be used to create a test testing #atoms.  Because empty arrays can have cells that have too many atoms, we can't use PROD if
 // we don't know that the array isn't empty or will be checked later
 #define CPROD(t,z,x,a) PRODX(z,x,a,1)
-#define CPROD1(t,z,x,a) CPROD(t,z,x,a)
 // PROLOG/EPILOG are the main means of memory allocation/free.  jt->tstack contains a pointer to every block that is allocated by GATV(i. e. all blocks).
 // GA causes a pointer to the block to be pushed onto tstack.  PROLOG saves a copy of the stack pointer in _ttop, a local variable in its function.  Later, tpop(_ttop)
 // can be executed to free every block that the function allocated, without requiring bookkeeping in the function.  This may be done from time to time in
@@ -492,7 +479,7 @@ if(_i<3){_zzt+=_i; z=(I)&oneone; _zzt=_i>=1?_zzt:(I*)z; z=_i>1?(I)_zzt:z; z=((I*
 #define PROLOG(x)       A *_ttop=jt->tnextpushp
 #define EPILOGNORET(z) (jtgc(jt,z,_ttop))   // protect z and return its address
 #define EPILOG(z)       return EPILOGNORET(z)   // z is the result block
-#define EPILOGNOVIRT(z)       return rifvsdebug((jtgc(jt,z,_ttop)))   // use this when the repercussions of allowing virtual result are too severe
+#define EPILOGNOVIRT(z)       return (jtgc(jt,z,_ttop))   // use this when the repercussions of allowing virtual result are too severe
 #define EPILOGZOMB(z)       if(!gc3(&(z),0L,0L,_ttop))return 0; return z;   // z is the result block.  Use this if z may contain inplaceable contents that would free prematurely
 // Routines that do little except call a function that does PROLOG/EPILOG have EPILOGNULL as a placeholder
 // Routines that do not return A
@@ -664,13 +651,6 @@ extern I CTTZZ(I);
 extern I CTLZI_(UI,UI4*);
 #define CTLZI(in,out) CTLZI_(in,&(out))
 #endif
-
-// JPFX("here we are\n")
-// JPF("size is %i\n", v)
-// JPF("size and extra: %i %i\n", (v,x))
-#define JPFX(s)  {char b[1000]; sprintf(b, s);    jsto(gjt,MTYOFM,b);}
-#define JPF(s,v) {char b[1000]; sprintf(b, s, v); jsto(gjt,MTYOFM,b);}
-extern J gjt; // global for JPF (procs without jt)
 
 #if (defined(__arm__)||defined(__aarch64__)||defined(_M_ARM64)) && !defined(__MACH__)
 // option -fsigned-char in android and raspberry

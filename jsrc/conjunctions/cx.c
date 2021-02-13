@@ -121,7 +121,7 @@ static I debugnewi(I i, DC thisframe, A self){
 }
 
 // Processing of explicit definitions, line by line
- A jtxdefn(J jt,A a,A w,A self){F2PREFIP;PROLOG(0048);
+ A jtxdefn(J jt,A a,A w,A self){FPREFIP;PROLOG(0048);
  RE(0);
  A *line;   // pointer to the words of the definition.  Filled in by LINE
  I n;  // number of lines in the definition.  Filled in by LINE
@@ -947,7 +947,7 @@ A jtclonelocalsyms(J jt, A a){A z;I j;I an=AN(a); LX *av=LXAV0(a),*zv;
 // If the call to jgets() returns EOF, indicating end-of-script, that is also a control error
 A jtddtokens(J jt,A w,I env){
 // TODO: Use LF for DDSEP, support {{), make nouns work
- PROLOG(000);F1PREFIP;
+ PROLOG(000);FPREFIP;
  if (!w) return 0;
  // find word boundaries, remember if last word is NB
  A wil; RZ(wil=wordil(w));  // get index to words

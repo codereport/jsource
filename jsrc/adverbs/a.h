@@ -31,13 +31,13 @@
 #define PREF2(f)        {I l=lr(self),r=rr(self); F2RANK(l,r,f,self);}
 #define PREF2IP(f)      {I l=lr(self),r=rr(self); F2RANKIP(l,r,f,self);}
 
-#define AS2(f,exp,x) A f(J jt,A a,A w,A self){F2PREFIP;PROLOG(x);DECLF ;A z; PREF2(f); z=(exp); EPILOG(z);}
+#define AS2(f,exp,x) A f(J jt,A a,A w,A self){FPREFIP;PROLOG(x);DECLF ;A z; PREF2(f); z=(exp); EPILOG(z);}
 #define CS2(f,exp,x) A f(J jt,A a,A w,A self){PROLOG(x);DECLFG;A z; PREF2(f); z=(exp); EPILOG(z);}
 // implied rank loops.  If the arg has frame, loop over the cells.  f##cell operates on a single cell with no rank check
 // inplaceability is passed through
 #define CS1IP(lpclass,f,exp,x) CS1IPext(lpclass,static,f,exp,x)
-#define CS1IPext(lpclass,cellclass,f,exp,x) cellclass A f##cell(J jt,    A w,A self){F1PREFIP;DECLFG;A z;PROLOG(x); exp; EPILOG(z);} lpclass A f(J jt,    A w,A self){PREF1(f##cell); return f##cell(jt,w,self);}
-#define CS2IP(cellclass,class,f,exp,x) cellclass A f##cell(J jt,A a,A w,A self){F2PREFIP;DECLFG;A z;PROLOG(x); exp; EPILOG(z);} class A f(J jt,A a,A w,A self){PREF2(f##cell); return f##cell(jt,a,w,self);}
+#define CS1IPext(lpclass,cellclass,f,exp,x) cellclass A f##cell(J jt,    A w,A self){FPREFIP;DECLFG;A z;PROLOG(x); exp; EPILOG(z);} lpclass A f(J jt,    A w,A self){PREF1(f##cell); return f##cell(jt,w,self);}
+#define CS2IP(cellclass,class,f,exp,x) cellclass A f##cell(J jt,A a,A w,A self){FPREFIP;DECLFG;A z;PROLOG(x); exp; EPILOG(z);} class A f(J jt,A a,A w,A self){PREF2(f##cell); return f##cell(jt,a,w,self);}
 
 
 

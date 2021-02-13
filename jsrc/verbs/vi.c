@@ -1334,7 +1334,7 @@ A jtindexofprehashed(J jt,A a,A w,A hs){A h,hi,*hv,x,z;AF fn;I ar,*as,at,c,f1,k,
 
 // ~. y  - does not have IRS
  A jtnub(J jt, A w){ 
- F1PREFIP;
+ FPREFIP;
  if(SPARSE&AT(w)||AFLAG(w)&AFNJA)return jtrepeat(jt,nubsieve(w),w);
  A z; RZ(z=indexofsub(INUB,w,w));
  // We extracted from w, so mark it (or its backer if virtual) non-pristine.  If w was pristine and inplaceable, transfer its pristine status to the result.  We overwrite w because it is no longer in use
@@ -1344,7 +1344,7 @@ A jtindexofprehashed(J jt,A a,A w,A hs){A h,hi,*hv,x,z;AF fn;I ar,*as,at,c,f1,k,
 
 // x -. y.  does not have IRS
  A jtless(J jt,A a,A w){A x=w;I ar,at,k,r,*s,wr,*ws,wt;
- F2PREFIP;
+ FPREFIP;
  if(!(a && w)) return 0;
  at=AT(a); ar=AR(a); 
  wt=AT(w); wr=AR(w); r=MAX(1,ar);

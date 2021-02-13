@@ -220,7 +220,7 @@ APFX(remZZ, Z,Z,Z, zrem ,,HDR1JERR)
 #undef zrem
 I jtremid(J jt,I a,D b){D r;I k;
  ASSERT(a&&-9e15<b&&b<9e15,EWOV);
- r=b-a*jfloor(b/a); k=(I)r;
+ r=b-a*floor(b/a); k=(I)r;
  ASSERT(k==r,EWOV);   // not really overflow - just has a fractional part
  return k;
 }
@@ -327,7 +327,7 @@ static A jtweight(J jt,A a,A w){ A z; return df1(z,behead(jtover(jt,AR(w)?w:jtre
  n=AN(w); t=AT(w); r=AR(w); s=AS(w); c=AS(w)[r-1]; c=r?c:1;
  ASSERT(t&DENSE,EVNONCE);
  if(((c-BW)&SGNIF(t,B01X))>=0)return jtpdt(jt,w,jtweight(jt,sc(c),t&RAT+XNUM?jtcvt(jt,XNUM,num(2)):num(2)));  //
- CPROD1(n,m,r-1,s);
+ CPROD(n,m,r-1,s);
  GATV(z,INT,m,r?r-1:0,s); x=AV(z); v=BAV(w);
  if(c)DQ(m, p=0; DQ(c, p=2*p+*v++;); *x++=p;)
  else memset(x,C0,m*SZI);
@@ -416,7 +416,7 @@ static A jtweight(J jt,A a,A w){ A z; return df1(z,behead(jtover(jt,AR(w)?w:jtre
 
 // Compute power-of-2 | w for INT w, by ANDing.  Result is boolean if mod is 1 or 2
 A jtintmod2(J jt,A w,I mod){A z;B *v;I n,q,r,*u;UI m=0;  // init m for warning
- F1PREFIP;
+ FPREFIP;
  if(mod>2)return jtatomic2(jtinplace,sc(mod-1),w,ds(CBW0001));  // INT result, by AND
  // the rest is boolean result
  n=AN(w); v=BAV(w);  // littleendian only

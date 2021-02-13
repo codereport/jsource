@@ -212,7 +212,7 @@ static A jttparse(J jt,A w,A locsyms,I tmonad,I tsubst,TA *ttab,I *ttabi,I ttabi
    b=cases[i].b; j=n+b;
    e=cases[i].e; k=n+e;
    stack[k]=(cases[i].vf)(jt,j,k,stack,locsyms,tmonad,tsubst,ttab,ttabi,ttabi0);
-   if(!(stack[k].a))return A0;
+   if(!(stack[k].a))return 0;
    DQ(b,stack[--k]=stack[--j];); n=k;
   } else {stack[n-1]=jtvmove(jt,n,m-1,stack,locsyms,tmonad,tsubst,ttab,ttabi,ttabi0); RE(0); n-=0<m--;}
  } while(0<=m);

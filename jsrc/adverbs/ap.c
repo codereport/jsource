@@ -381,7 +381,7 @@ static A jtginfix(J jt,A a,A w,A self){A h,*hv,x,z,*zv;I d,m,n;
 #define STATESLASH2 ((I)1<<STATESLASH2X)
 
 // prefix and infix: prefix if a is mark
-static A jtinfixprefix2(J jt,A a,A w,A self){F2PREFIP;PROLOG(00202);A fs;I cger[128/SZI];
+static A jtinfixprefix2(J jt,A a,A w,A self){FPREFIP;PROLOG(00202);A fs;I cger[128/SZI];
    I wt;
  
  PREF2IP(jtinfixprefix2);  // handle rank loop if needed
@@ -424,7 +424,7 @@ static A jtinfixprefix2(J jt,A a,A w,A self){F2PREFIP;PROLOG(00202);A fs;I cger[
  I stride;  // number of items to advance virtual-arg pointers by between cells
  I strideb;  // stride*number of bytes per cell (not used for prefix)
  I wi; SETIC(w,wi);  // wi=#items of w
- PROD1(wc,AR(w)-1,AS(w)+1);  // #atoms in cell of a.  Overflow possible only if wi==0, which will go to fill
+ PROD(wc,AR(w)-1,AS(w)+1);  // #atoms in cell of a.  Overflow possible only if wi==0, which will go to fill
  // set up for prefix/infix.  Calculate # result slots
  if(a!=mark){
   // infix.
@@ -560,14 +560,14 @@ static A jtinfixprefix2(J jt,A a,A w,A self){F2PREFIP;PROLOG(00202);A fs;I cger[
 }
 
 // prefix, vectors to common processor.  Handles IRS.  Supports inplacing
-static A jtinfixprefix1(J jt,    A w,A self){F1PREFIP;
+static A jtinfixprefix1(J jt,    A w,A self){FPREFIP;
  I r = (RANKT)jt->ranks; RESETRANK; if(r<AR(w)){return jtrank1ex(jtinplace,w,self,r,jtinfixprefix1);}
  return jtinfixprefix2(jtinplace,mark,w,self);
 }
 
 //  f/\"r y    w is y, fs is in self
 static A jtpscan(J jt,    A w,A self){A z;I f,n,r,t,wn,wr,*ws,wt;
- F1PREFIP;
+ FPREFIP;
  wt=AT(w);   // get type of w
  if((SPARSE&wt)!=0)return scansp(w,self,jtpscan);  // if sparse, go do it separately
  // wn = #atoms in w, wr=rank of w, r=effective rank, f=length of frame, ws->shape of w
@@ -575,11 +575,11 @@ static A jtpscan(J jt,    A w,A self){A z;I f,n,r,t,wn,wr,*ws,wt;
  // m = #cells, c=#atoms/cell, n = #items per cell
  SETICFR(w,f,r,n);  // wn=0 doesn't matter
  // If there are 0 or 1 items, or w is empty, return the input unchanged, except: if rank 0, return (($w),1)($,)w - if atomic op, do it right here, otherwise call the routine to get the shape of result cell
- if(((1-n)&-wn)>=0){return r?RETARG(w):jtreshape(jt,apip(shape(jt,w),zeroionei(1)),w);}  // n<2 or wn=0
+ if(((1-n)&-wn)>=0){return r?w:jtreshape(jt,apip(shape(jt,w),zeroionei(1)),w);}  // n<2 or wn=0
  VARPS adocv; varps(adocv,self,wt,1);  // fetch info for f/\ and this type of arg
  if(!adocv.f)return IRS1(w,self,r,jtinfixprefix1,z);  // if there is no special function for this type, do general scan
  // Here is the fast special reduce for +/ etc
- I d,m; PROD(m,f,ws); PROD1(d,r-1,ws+f+1);   // m=#scans, d=#atoms in a cell of each scan
+ I d,m; PROD(m,f,ws); PROD(d,r-1,ws+f+1);   // m=#scans, d=#atoms in a cell of each scan
  if((t=atype(adocv.cv))&&TYPESNE(t,wt))RZ(w=jtcvt(jt,t,w));  // convert input if necessary
  // if inplaceable, reuse the input area for the result
  if(ASGNINPLACESGN(SGNIF((I)jtinplace,JTINPLACEWX)&SGNIF(adocv.cv,VIPOKWX),w))z=w; else GA(z,rtype(adocv.cv),wn,wr,ws);

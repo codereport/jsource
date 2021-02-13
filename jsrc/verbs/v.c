@@ -8,15 +8,15 @@
  A jtisempty   (J jt, A w) { if((AT(w)&SPARSE)!=0)return jteps(jt,zeroionei(0),shape(jt,w)); return num(AN(w)==0);}  // 0 e. $
  A jtisnotempty(J jt, A w) { if((AT(w)&SPARSE)!=0)return __not(jteps(jt,zeroionei(0),shape(jt,w))); return num(AN(w)!=0);}  // *@#@,
  A jtisitems   (J jt, A w) { return num(!AR(w)|!!AS(w)[0]);}   // *@#   *@:#
- A jtnatoms    (J jt, A w) {F1PREFIP; A z; if((AT(w)&SPARSE)!=0)return df1(z,shape(jt,w),slash(ds(CSTAR))); return sc(AN(w));}   // */@$  #@,
+ A jtnatoms    (J jt, A w) {FPREFIP; A z; if((AT(w)&SPARSE)!=0)return df1(z,shape(jt,w),slash(ds(CSTAR))); return sc(AN(w));}   // */@$  #@,
 
 // ,y and ,"r y - producing virtual blocks
  A jtravel(J jt, A w){A a,c,q,x,y,y0,z;B*b;I f,j,m,r,*u,*v,*yv;P*wp,*zp;
- F1PREFIP;
+ FPREFIP;
  if(!w) return 0;
  r=(RANKT)jt->ranks; r=AR(w)<r?AR(w):r; f=AR(w)-r; // r=effective rank (jt->rank is effective rank from irs1), f=frame
  if(!(AT(w)&SPARSE)){
-  if(r==1)return RETARG(w);  // if we are enfiling 1-cells, there's nothing to do, return the input (note: AN of sparse array is always 1)
+  if(r==1)return w;  // if we are enfiling 1-cells, there's nothing to do, return the input (note: AN of sparse array is always 1)
   CPROD(AN(w),m,r,f+AS(w));   // m=#atoms in cell
   if(ASGNINPLACESGN(SGNIF((I)jtinplace,JTINPLACEWX)&(-r),w) && !(AFLAG(w)&AFUNINCORPABLE)){  // inplace allowed, rank not 0 (so shape will fit), usecount is right
    // operation is loosely inplaceable.  Just shorten the shape to frame,(#atoms in cell).  We do this here rather than relying on
@@ -60,7 +60,7 @@
 }
 
  A jttable(J jt, A w){A z,zz;I r,wr;
- F1PREFIP;
+ FPREFIP;
  // We accept the pristine calculations from ravel
  wr=AR(w); r=(RANKT)jt->ranks; r=wr<r?wr:r;  // r=rank to use
  RZ(IRSIP1(w,0L,r-1<0?0:r-1,jtravel,z));  // perform ravel on items
@@ -81,8 +81,8 @@ static A jtlr2(J jt,RANK2T ranks,A a,A w){I acr,af,ar,wcr,wf,wr;
  RESETRANK; return jtreitem(jt,vec(INT,af-wf,AS(a)),lamin1(w));  // could use virtual block, but this case is so rare...
 } 
 
- A jtleft2 (J jt,A a,A w){F2PREFIP;RANK2T jtr=jt->ranks; if(jtr==(RANK2T)~0)RETARG(a); return lr2((jtr<<RMAXX)|(jtr>>RMAXX),w,a);}  // swap a & w, and their ranks
- A jtright2(J jt,A a,A w){F2PREFIP;RANK2T jtr=jt->ranks; if(jtr==(RANK2T)~0)RETARG(w); return lr2(jtr,a,w);}
+ A jtleft2 (J jt,A a,A w){FPREFIP;RANK2T jtr=jt->ranks; if(jtr==(RANK2T)~0)a; return lr2((jtr<<RMAXX)|(jtr>>RMAXX),w,a);}  // swap a & w, and their ranks
+ A jtright2(J jt,A a,A w){FPREFIP;RANK2T jtr=jt->ranks; if(jtr==(RANK2T)~0)w; return lr2(jtr,a,w);}
 
 // i. y
  A jtiota(J jt, A w){A z;I m,n,*v;

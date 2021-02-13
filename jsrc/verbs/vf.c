@@ -91,13 +91,13 @@ static void jtrot(J jt,I m,I d,I n,I atomsize,I p,I*av,C*u,C*v){I dk,e,k,j,r,x,y
    v   target data area      */
 
  A jtrotate(J jt,A a,A w){A origw=w,y,z;B b;C*u,*v;I acr,af,ar,*av,d,k,m,n,p,*s,wcr,wf,wn,wr;
- F2PREFIP;
+ FPREFIP;
  if((SPARSE&AT(w))!=0)return jtrotsp(jt,a,w);
  ar=AR(a); acr=jt->ranks>>RANKTX; acr=ar<acr?ar:acr; af=ar-acr; p=acr?*(af+AS(a)):1;
  wr=AR(w); wcr=(RANKT)jt->ranks; wcr=wr<wcr?wr:wcr; wf=wr-wcr; RESETRANK;
  RZ(a=vi(a));
  // special case: if a is atomic 0, and cells of w are not atomic
- if((wcr!=0)&(((ar|IAV(a)[0])==0)))return RETARG(w);   // 0 |. y, return y
+ if((wcr!=0)&(((ar|IAV(a)[0])==0)))return w;   // 0 |. y, return y
  if(((1-acr)|((-af)&(-acr|(wf-1))))<0)return df2(z,a,w,jtqq(jt,jtqq(jt,ds(CROT),jtv2(jt,1L,RMAX)),jtv2(jt,acr,wcr)));  // if multiple a-lists per cell, or a has frame and (a cell is not an atom or w has frame) handle rank by using " for it
  if(((wcr-1)&(1-p))<0){RZ(w=jtreshape(jt,apip(shape(jt,w),apv(p,1L,0L)),w)); wr=wcr=p;}  // if cell is an atom, extend it up to #axes being rotated   !wcr && p>1
  ASSERT(((-wcr)&(wcr-p))>=0,EVLENGTH);    // !wcr||p<=wcr  !(wcr&&p>wcr)
@@ -105,7 +105,7 @@ static void jtrot(J jt,I m,I d,I n,I atomsize,I p,I*av,C*u,C*v){I dk,e,k,j,r,x,y
  RZ(w=jtsetfv(jt,w,w)); u=CAV(w); wn=AN(w); s=AS(w); k=bpnoun(AT(w));  // set fill value if given
  GA(z,AT(w),wn,wr,s); v=CAV(z);
  if(!wn)return z;
- PROD(m,wf,s); PROD1(d,wr-wf-1,s+wf+1); SETICFR(w,wf,wcr,n);   // m=#cells of w, n=#items per cell  d=#atoms per item of cell
+ PROD(m,wf,s); PROD(d,wr-wf-1,s+wf+1); SETICFR(w,wf,wcr,n);   // m=#cells of w, n=#items per cell  d=#atoms per item of cell
  rot(m,d,n,k,1>=p?AN(a):1L,av,u,v);
  if(1<p){
   GA(y,AT(w),wn,wr,s); u=CAV(y); 
@@ -136,11 +136,11 @@ static A jtrevsp(J jt, A w){A a,q,x,y,z;I c,f,k,m,n,r,*v,wr;P*wp,*zp;
 }    /* |."r w on sparse arrays */
 
  A jtreverse(J jt, A w){A z;C*wv,*zv;I f,k,m,n,nk,r,*v,*ws,wt,wr;
- F1PREFIP;
+ FPREFIP;
  if((SPARSE&AT(w))!=0)return revsp(w);
  if(jt->fill)return jtrotate(jt,num(-1),w);  // rank is set - not inplaceable because it uses fill
  wr=AR(w); r=(RANKT)jt->ranks; r=wr<r?wr:r; f=wr-r;  // no RESETRANK - we don't call any primitive from here on
- if(!(r&&AN(w))){return RETARG(w);}  // no atoms or reversing atoms - keep input unchanged
+ if(!(r&&AN(w))){return w;}  // no atoms or reversing atoms - keep input unchanged
  wt=AT(w); ws=AS(w); wv=CAV(w);
  n=ws[f]; 
  m=1; DO(f, m*=ws[i];);
@@ -209,7 +209,7 @@ static A jtreshapesp(J jt,A a,A w,I wf,I wcr){A a1,e,t,x,y,z;B az,*b,wz;I an,*av
 }    /* a ($,)"wcr w for sparse w and scalar or vector a */
 
  A jtreshape(J jt,A a,A w){A z;B filling;C*wv,*zv;I acr,ar,c,k,m,n,p,q,r,*s,t,* RESTRICT u,wcr,wf,wn,wr,* RESTRICT ws,zn;
- F2PREFIP;
+ FPREFIP;
  if(!(a && w)) return 0;
  ar=AR(a); acr=jt->ranks>>RANKTX; acr=ar<acr?ar:acr;
  wr=AR(w); wcr=(RANKT)jt->ranks; wcr=wr<wcr?wr:wcr; wf=wr-wcr; ws=AS(w); RESETRANK;
@@ -248,7 +248,7 @@ static A jtreshapesp(J jt,A a,A w,I wf,I wcr){A a1,e,t,x,y,z;B az,*b,wz;I an,*av
 }    /* a ($,)"r w */
 
  A jtreitem(J jt,A a,A w){A y,z;I acr,an,ar,r,*v,wcr,wr;
- F2PREFIP;
+ FPREFIP;
  if(!(a && w)) return 0;
  ar=AR(a); acr=jt->ranks>>RANKTX; acr=ar<acr?ar:acr;
  wr=AR(w); wcr=(RANKT)jt->ranks; wcr=wr<wcr?wr:wcr; r=wcr-1; RESETRANK;

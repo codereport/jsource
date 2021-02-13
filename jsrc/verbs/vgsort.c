@@ -139,7 +139,7 @@ static A jtsortdirect(J jt,I m,I api,I n,A w){A x,z;I t;
    return (sortres==zv)?z:x;
   }else{
    // If there is more than one cell, we have to make sure all the data migrates to *zv, if it's not there already
-   if(sortres!=zv)MCL(zv,sortres,bps);
+   if(sortres!=zv)memcpy(zv,sortres,bps);
   }
   wv=(void*)((C*)wv+bps); zv=(void*)((C*)zv+bps);
  );
@@ -373,7 +373,7 @@ static A jtsortd(J jt,I m,I n,A w){FPREFIP;A x,y,z;B b;D*g,*h,*xu,*wv,*zu;I i,nn
 
 
 // x /:"r y, not sparse
- A jtgr2(J jt,A a,A w){F2PREFIP;PROLOG(0076);A z=0;I acr,api,d,f,m,n,*s,t,wcr; 
+ A jtgr2(J jt,A a,A w){FPREFIP;PROLOG(0076);A z=0;I acr,api,d,f,m,n,*s,t,wcr; 
  // ?cr= rank of the cells being sorted; t= type of w
  acr=jt->ranks>>RANKTX; acr=AR(a)<acr?AR(a):acr; 
  wcr=(RANKT)jt->ranks; wcr=AR(w)<wcr?AR(w):wcr; t=AT(w);

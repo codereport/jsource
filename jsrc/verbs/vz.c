@@ -72,8 +72,8 @@ B jtzeq(J jt,Z u,Z v){D a=u.re,b=u.im,c=v.re,d=v.im,p,q;
 
  Z jtzfloor(J jt,Z v){D p,q;
  ZF1DECL;
- zr=jfloor(a); p=a-zr;
- zi=jfloor(b); q=b-zi;
+ zr=floor(a); p=a-zr;
+ zi=floor(b); q=b-zi;
  if(1<=p+q+(1.0-jt->cct))if(p>=q)++zr; else ++zi;   // could improve this test
  ZEPILOG;
 }
@@ -139,7 +139,7 @@ B jtzeq(J jt,Z u,Z v){D a=u.re,b=u.im,c=v.re,d=v.im,p,q;
 
  Z jtzpow(J jt,Z u,Z v){ZF2DECL;D m;I n;
  if(!a&&!b){z.re=d?0:0>c?inf:!c; z.im=0; return z;}
- if(!d&&IMIN<c&&c<=FLIMAX&&(n=(I)jfloor(c),c==n)){
+ if(!d&&IMIN<c&&c<=FLIMAX&&(n=(I)floor(c),c==n)){
   if(0>n){u=jtzdiv(jt,z1,u); n=-n;}
   z=z1;
   while(n){if(1&n)z=jtztymes(jt,z,u); u=jtztymes(jt,u,u); n>>=1;}
@@ -147,7 +147,7 @@ B jtzeq(J jt,Z u,Z v){D a=u.re,b=u.im,c=v.re,d=v.im,p,q;
  }
  z=zexp(jtztymes(jt,v,zlog(u)));
  if(!b&&!d){
-  m=jfloor(c);
+  m=floor(c);
   if(0>a&&c>m&&c==0.5+m)z.re=0;
   if(c==m)z.im=0;
  }

@@ -117,7 +117,7 @@ __int64 GetMachineCycleCount()
  A jtdl(J jt, A w){D m,n,*v;UINT ms,s;
  RZ(w=jtcvt(jt,FL,w));
  n=0; v=DAV(w); DQ(AN(w), m=*v++; ASSERT(0<=m,EVDOMAIN); n+=m;);
- s=(UINT)jfloor(n); ms=(UINT)jround(1000*(n-s));
+ s=(UINT)floor(n); ms=(UINT)jround(1000*(n-s));
  DQ(s, sleepms(1000); JBREAK0;);
  sleepms(ms);
  return w;

@@ -34,8 +34,8 @@ static D dgps(D v){D*d=terms+coeff,s=0.0; DQ(terms, s=*--d+v*s;); return 1/s;}
 static Z jtzgps(J jt,Z z){return jtzdiv(jt,z1,zhorner(terms,coeff,z));}
 
 D jtdgamma(J jt,D x){B b;D t;
- t=1.0; b=x==jfloor(x);
- if(b&&0>=x){ASSERT(x>x-1,EVLIMIT); return x==2*jfloor(x/2)?inf:infm;}
+ t=1.0; b=x==floor(x);
+ if(b&&0>=x){ASSERT(x>x-1,EVLIMIT); return x==2*floor(x/2)?inf:infm;}
  if(0<=x) while(1<x){t*=--x; if(t==inf)return inf;}
  else    {while(0>x){t*=x++; if(t==inf)return 0.0;} t=1.0/t;}
  return b?t:t*dgps(x);
@@ -64,7 +64,7 @@ static Z jtzstirling(J jt,Z z){Z p,q;
 }    /* Abramowitz & Stegun, 6.1.37 */
 
 static Z jtzgamma(J jt,Z z){D y=ABS(z.im);
- return !y?zrj0(dgamma(z.re)):20<y?zstirling(z):jtzgauss(jt,jceil(y/0.8660254),z);
+ return !y?zrj0(dgamma(z.re)):20<y?zstirling(z):jtzgauss(jt,ceil(y/0.8660254),z);
 }
 
 AMONPS(factI,  D,I, , *z=dgamma(1.0+(D)*x); , HDR1JERR)
@@ -78,8 +78,8 @@ static D pq(D h,D m,D*c,D*d){D x=*c,y=*d;I n=(I)MIN(m,FLIMAX);
  if(0>=m)return h;
  switch(2*(I )(0>x)+(I )(0>y)){
   case 0: if(x!= y)PQLOOP(x--/y--); break;
-  case 1: if(x!=-y)PQLOOP(x--/y++)else if(m>2*jfloor(0.5*m))h=-h; break;
-  case 2: if(x!=-y)PQLOOP(x++/y--)else if(m>2*jfloor(0.5*m))h=-h; break;
+  case 1: if(x!=-y)PQLOOP(x--/y++)else if(m>2*floor(0.5*m))h=-h; break;
+  case 2: if(x!=-y)PQLOOP(x++/y--)else if(m>2*floor(0.5*m))h=-h; break;
   case 3: if(x!= y)PQLOOP(x++/y++); break;
  }
  if(0>=*c)*c+=m; else *c-=m;
@@ -87,13 +87,13 @@ static D pq(D h,D m,D*c,D*d){D x=*c,y=*d;I n=(I)MIN(m,FLIMAX);
  return h;
 }
 
-static I signf(D x){return 0<=x||1<=x-2*jfloor(0.5*x)?1:-1;}
+static I signf(D x){return 0<=x||1<=x-2*floor(0.5*x)?1:-1;}
      /* sign of !x */
 
 static D jtdbin(J jt,D x,D y){D c,d,e,h=1.0,p,q,r;I k=0;
- c=y;   if(0<=c)p=jfloor(c); else{k+=4; ++c; p=jfloor(-c);}
- d=y-x; if(0<=d)q=jfloor(d); else{k+=2; ++d; q=jfloor(-d);}
- e=x;   if(0<=e)r=jfloor(e); else{k+=1; ++e; r=jfloor(-e);}
+ c=y;   if(0<=c)p=floor(c); else{k+=4; ++c; p=floor(-c);}
+ d=y-x; if(0<=d)q=floor(d); else{k+=2; ++d; q=floor(-d);}
+ e=x;   if(0<=e)r=floor(e); else{k+=1; ++e; r=floor(-e);}
  switch(k){
   case 0: h=pq(h,q,&c,&d); h=pq(h,r,&c,&e);                break;
   case 1: h=pq(h,p,&c,&d); h=pq(h,r,&e,&d);           --e; break;
@@ -121,14 +121,14 @@ static Z jtzbin(J jt,Z x,Z y){Z a,b,c;
  return jtzdiv(jt,a,jtztymes(jt,b,c));
 }
 
-#define MOD2(x) ((x)-2*jfloor(0.5*(x)))
+#define MOD2(x) ((x)-2*floor(0.5*(x)))
 
 D jtbindd(J jt,D x,D y){B id,ix,iy;D d;
  if(_isnan(x))return x; else if(_isnan(y))return y;
  d=y-x; 
- id=d==jfloor(d);
- ix=x==jfloor(x); 
- iy=y==jfloor(y);
+ id=d==floor(d);
+ ix=x==floor(x); 
+ iy=y==floor(y);
  switch(4*(I )(ix&&0>x)+2*(I )(iy&&0>y)+(I )(id&&0>d)){
   default: ASSERTSYS(0,"bindd"); //jtbindd(jt,(x),(y))
   case 5: /* 1 0 1 */  /* Impossible */
@@ -144,9 +144,9 @@ D jtbindd(J jt,D x,D y){B id,ix,iy;D d;
 static Z jtbinzz(J jt,Z x,Z y){B id,ix,iy;D rd,rx,ry;Z d;
  if(!x.im&&!y.im)return zrj0(jtbindd(jt,x.re,y.re));
  d=jtzminus(jt,y,x);
- rd=d.re; id=rd==jfloor(rd)&&0==d.im;
- rx=x.re; ix=rx==jfloor(rx)&&0==x.im; 
- ry=y.re; iy=ry==jfloor(ry)&&0==y.im;
+ rd=d.re; id=rd==floor(rd)&&0==d.im;
+ rx=x.re; ix=rx==floor(rx)&&0==x.im; 
+ ry=y.re; iy=ry==floor(ry)&&0==y.im;
  switch(4*(I )(ix&&0>rx)+2*(I )(iy&&0>ry)+(I )(id&&0>rd)){
   default: ZASSERT(0,EVSYSTEM);
   case 5: /* 1 0 1 */  /* Impossible */

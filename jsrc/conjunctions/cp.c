@@ -77,7 +77,7 @@ static A jtpowseq(J jt,    A w,A self){A fs,gs,x;I n=IMAX;V*sv;
 
 // u^:n w where n is nonnegative finite integer atom (but never 0 or 1, which are handled as special cases)
 static A jtfpown(J jt,    A w,A self){A fs,z;AF f1;I n;V*sv;A *old;
- F1PREFIP;
+ FPREFIP;
  sv=FAV(self);
  n=AV(sv->fgh[2])[0];
  fs=sv->fgh[0]; f1=FAV(fs)->valencefns[0];
@@ -193,10 +193,10 @@ static A jtpinf12(J jt,A a,A w,A self){PROLOG(0340);A z;  // no reason to inplac
  }
 }
 
-static A jtinv1(J jt,    A w,A self){F1PREFIP;DECLFG;A z;A i; RZ(i=inv((fs))); FDEPINC(1);  z=(FAV(i)->valencefns[0])(FAV(i)->flag&VJTFLGOK1?jtinplace:jt,w,i);       FDEPDEC(1); return z;}  // was invrecur(jtfix(jt,fs))
-static A jtinvh1(J jt,    A w,A self){F1PREFIP;DECLFGH;A z;    FDEPINC(1); z=(FAV(hs)->valencefns[0])(jtinplace,w,hs);        FDEPDEC(1); return z;}
+static A jtinv1(J jt,    A w,A self){FPREFIP;DECLFG;A z;A i; RZ(i=inv((fs))); FDEPINC(1);  z=(FAV(i)->valencefns[0])(FAV(i)->flag&VJTFLGOK1?jtinplace:jt,w,i);       FDEPDEC(1); return z;}  // was invrecur(jtfix(jt,fs))
+static A jtinvh1(J jt,    A w,A self){FPREFIP;DECLFGH;A z;    FDEPINC(1); z=(FAV(hs)->valencefns[0])(jtinplace,w,hs);        FDEPDEC(1); return z;}
 static A jtinv2(J jt,A a,A w,A self){DECLFG;A z; FDEPINC(1); df1(z,w,inv(jtamp(jt,a,fs))); FDEPDEC(1); STACKCHKOFL return z;}  // the CHKOFL is to avoid tail recursion, which prevents a recursion loop from being broken
-static A jtinverr(J jt,    A w,A self){F1PREFIP;ASSERT(0,EVDOMAIN);}  // used for uninvertible monads
+static A jtinverr(J jt,    A w,A self){FPREFIP;ASSERT(0,EVDOMAIN);}  // used for uninvertible monads
 
 // old static CS2(jtply2, df1(z,w,powop(jtamp(jt,a,fs),gs,0)),0107)  // dyad adds x to make x&u, and then reinterpret the compound.  We could interpret u differently now that it has been changed (x {~^:a: y)
  A jtply2(J jt,A a,A w,A self){PROLOG(107);DECLFG;A z, zz; PREF2(jtply2); z=(df1(zz,w,powop(jtamp(jt,a,fs),gs,0))); EPILOG(z);}
@@ -217,7 +217,7 @@ static A jtinverr(J jt,    A w,A self){F1PREFIP;ASSERT(0,EVDOMAIN);}  // used fo
 
 #define REFACTORME_CS1IP(f, exp, x)       \
     static A f##cell(J jt, A w, A self) { \
-        F1PREFIP;                         \
+        FPREFIP;                         \
         DECLFG;                           \
         A z;                              \
         PROLOG(x);                        \
@@ -227,7 +227,7 @@ static A jtinverr(J jt,    A w,A self){F1PREFIP;ASSERT(0,EVDOMAIN);}  // used fo
 
 #define REFACTORME_CS2IP(f, exp, x)            \
     static A f##cell(J jt, A a, A w, A self) { \
-        F2PREFIP;                              \
+        FPREFIP;                              \
         DECLFG;                                \
         A z;                                   \
         PROLOG(x);                             \

@@ -41,7 +41,7 @@ A jtevc(J jt,A a,A w,C*s){A z; return df2(z,a,w,jtcolon(jt,num(2),cstr(s)));}
 
 // execute w, which is either a string or the boxed words of a string (as if from jttokens(jt,))
  A jtimmex(J jt, A w){A z;
- if(!w)return A0;  // if no string, return error
+ if(!w)return 0;  // if no string, return error
  // When we start a sentence, we need to establish AKGST in locsyms as a shadow of jt->global, because that's
  // the normal condition and u./v. will rely on it.  This is not needed for a recursive call, but it doesn't hurt either,
  // because if AKGST has been set it will already hold jt->global.  Of course, any event code must restore everything

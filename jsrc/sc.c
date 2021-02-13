@@ -11,7 +11,7 @@
 // It also handles pseudo-named functions, which are anonymous entities that need to be given a temporary name
 // when they are running under debug.  Pseudo-named functions are created by namerefop.  We need to run them here so they get the debug side-effects of having a name.
  A jtunquote(J jt,A a,A w,A self){A z;
- F2PREFIP;  // We understand inplacing.  We check inplaceability of the called function.
+ FPREFIP;  // We understand inplacing.  We check inplaceability of the called function.
  RE(0);
  JATTN;
  V *v=FAV(self);  // V block for this V/A/C reference

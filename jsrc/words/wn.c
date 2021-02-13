@@ -44,7 +44,7 @@ static B jtnumj(J jt,I n,C*s,void*vv){C*t,*ta;D x,y;Z*v;
  if(ta){C c;
   c=*(1+ta);
   if(!(0<=x&&(c=='d'||c=='r')))return 0;
-  if(c=='d')y*=PI/180; if(y<=-P2||P2<=y)y-=P2*jfloor(y/P2); if(0>y)y+=P2;
+  if(c=='d')y*=PI/180; if(y<=-P2||P2<=y)y-=P2*floor(y/P2); if(0>y)y+=P2;
   v->re=y==0.5*PI||y==1.5*PI?0:x*cos(y); v->im=y==PI?0:x*sin(y);
  }else{v->re=x; v->im=y;}
  return 1;

@@ -111,7 +111,7 @@ static A jtmerge1(J jt,A w,A ind){A z;B*b;C*wc,*zc;D*wd,*zd;I c,it,j,k,m,r,*s,t,
 
 // Handle a ind} w after indices have been converted to integer atoms, dense
 // cellframelen is the number of axes of w that were used in computing the cell indexes
-static A jtmerge2(J jt,A a,A w,A ind,I cellframelen){F2PREFIP;A z;I t;
+static A jtmerge2(J jt,A a,A w,A ind,I cellframelen){FPREFIP;A z;I t;
  if(!(a && w && ind)) return 0;
  ASSERT(HOMO(AT(a),AT(w))||(-AN(a)&-AN(w))>=0,EVDOMAIN);  // error if xy both not empty and not compatible
  ASSERT(AR(a)<=AR(w)+AR(ind)-cellframelen,EVRANK);   // max # axes in a is the axes in w, plus any surplus axes of m that did not go into selecting cells
@@ -164,7 +164,7 @@ static A jtmerge2(J jt,A a,A w,A ind,I cellframelen){F2PREFIP;A z;I t;
    case sizeof(I):  // may include D
     {I * RESTRICT zv=AV(z); I *RESTRICT av=(I*)av0; DO(AN(ind), zv[iv[i]]=*av; ++av; av=(av==(I*)avn)?(I*)av0:av;); break;}  // scatter-copy the data
    default: ;
-     C* RESTRICT zv=CAV(z); C *RESTRICT av=(C*)av0; JMCDECL(endmask) JMCSETMASK(endmask,cellsize,1) DO(AN(ind), JMCR(zv+(iv[i]*cellsize),av,cellsize,loop1,1,endmask); av+=cellsize; av=(av==avn)?av0:av;);  // scatter-copy the data, cyclically.  Don't overwrite
+     C* RESTRICT zv=CAV(z); C *RESTRICT av=(C*)av0; DO(AN(ind), JMCR(zv+(iv[i]*cellsize),av,cellsize,loop1,1,endmask); av+=cellsize; av=(av==avn)?av0:av;);  // scatter-copy the data, cyclically.  Don't overwrite
    }
   }else{
    // the cellsize is bigger than a.  We will have to repeat a within each cell
@@ -280,7 +280,7 @@ static A jtjstd(J jt,A w,A ind,I *cellframelen){A j=0,k,*v,x;I b;I d,i,n,r,*u,wr
 /* 1 jdo     tpop                           */
 
 // Execution of x m} y.  Split on sparse/dense, passing on the dense to merge2, including inplaceability
-static A jtamendn2(J jt,A a,A w,A self){F2PREFIP;PROLOG(0007);A e,z; B b;I atd,wtd,t,t1;P*p;
+static A jtamendn2(J jt,A a,A w,A self){FPREFIP;PROLOG(0007);A e,z; B b;I atd,wtd,t,t1;P*p;
  AD * RESTRICT ind=VAV(self)->fgh[0];
  if(!((AT(w)|AT(ind))&SPARSE)){
   I cellframelen; ind=jstd(w,ind,&cellframelen);   // convert indexes to cell indexes; remember how many were converted
@@ -314,7 +314,7 @@ static A jtamendn2(J jt,A a,A w,A self){F2PREFIP;PROLOG(0007);A e,z; B b;I atd,w
 
 // Execution of x u} y.  Call u to get the indices, then
 // call merge2 to do the merge.  Pass inplaceability into merge2.
-static A amccv2(J jt,A a,A w,A self){F2PREFIP;DECLF; 
+static A amccv2(J jt,A a,A w,A self){FPREFIP;DECLF; 
  ASSERT(DENSE&AT(w),EVNONCE);  // u} not supported for sparse
  A x;RZ(x=jtpind(jt,AN(w),CALL2(f2,a,w,fs)));
  A z=jtmerge2(jtinplace,a,w,x,AR(w));   // The atoms of x include all axes of w, since we are addressing atoms

@@ -70,10 +70,6 @@ B jtmeminit(J jt){I k,m=MLEN;
  return 1;
 }
 
-void jtauditmemchains(J jt){F1PREFIP;
-}
-
-
  A jtspcount(J jt, A w){A z;I c=0,i,j,*v;A x;
  ASSERTMTV(w);
  GATV0(z,INT,2*(-PMINL+PLIML+1),2); v=AV(z);

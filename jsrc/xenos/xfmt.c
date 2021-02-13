@@ -170,7 +170,7 @@ typedef union u_DI8_tag { I8 i; D d; } DI8;
 
 static D jtroundID(J jt,I d,D y){D f,q,c,h;DI8 f8,q8,c8;
  q=ppwrs[d]*y; if(q<1) h=2; else h=0; q+=h;
- f=jfloor(q); c=-jfloor(-q); 
+ f=floor(q); c=-floor(-q); 
  if(f==c) return npwrs[d]*(c-h);
  ASSERTSYS(f<=q&&q<=c, "roundID: fqc");
  f8.d=f;q8.d=q;c8.d=c;
@@ -183,14 +183,14 @@ static D jtafzrndID(J jt,I dp,D y){return SGN(y)*jtroundID(jt,dp,ABS(y));}
          /* round-to-nearest, solve ties by rounding Away From Zero */
 
 static D jtexprndID(J jt, I d, D y){I e,s;D f,q,c,x1,x2;DI8 f8,y8,c8;
- s=SGN(y); e=-(I)jfloor(log10(y=ABS(y)));  // s=sign, e=-1-#digits above decimal point
+ s=SGN(y); e=-(I)floor(log10(y=ABS(y)));  // s=sign, e=-1-#digits above decimal point
  // we want to multiply y by 10^-log(y), but that power may overflow.  So we split
  // the power into two halves, and multiply one at a time
  e+=d; x1=pow(2,(D)e); x2=pow(5,(D)e); 
  q=x2*y;
  q*=x1; /* avoid overflow to Infinity */
- f=jfloor( q)/x1; f/=x2;
- c=(-jfloor(-q))/x1; c/=x2;
+ f=floor( q)/x1; f/=x2;
+ c=(-floor(-q))/x1; c/=x2;
 
  if(f==c) return s*c;
  /*ASSERTSYS(f<=y && y<=c, "exprndID: fyc");*/ /* why does this fail? */
@@ -365,7 +365,7 @@ static A jtfmtprecomp(J jt,A a,A w) {A*as,base,fb,len,strs,*u,z;B*bits,*bw;D dtm
         if(B01&wt) *iv=1+!!d+d;
         else {
          if(B01&wt) dtmp=1; if(INT&wt) dtmp=(D)*iw; else dtmp=*dw;
-         *iv=(I)jfloor(log10(jtroundID(jt,d,MAX(ABS(dtmp),1))));
+         *iv=(I)floor(log10(jtroundID(jt,d,MAX(ABS(dtmp),1))));
          if(mC) (*iv)+=(*iv)/3;
          (*iv)+=1+!!d+d;
          if(dtmp < 0 && mMN) (*iv)+=nMN;

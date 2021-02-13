@@ -7,7 +7,7 @@
 
 // This is the derived verb for f/. y
 static A jtoblique(J jt,    A w,A self){A x,y,z;I m,n,r;D rkblk[16];
- F1PREFIP;
+ FPREFIP;
  r=AR(w);  // r = rank of w
  // create y= ,/ w - the _2-cells of w arranged in a list (virtual block)
  RZ(y=jtredcat(jt,w,self)); if(1>=r){m=AN(w); n=1;}else{m=AS(w)[0]; n=AS(w)[1];}
@@ -166,7 +166,7 @@ static A jtkeysp(J jt,A a,A w,A self){PROLOG(0008);A b,by,e,q,x,y,z;I j,k,n,*u,*
 }
 
 // a u/. w.  Self-classify a, then rearrange w and call cut.  Includes special cases for f//.
-static A jtkey(J jt,A a,A w,A self){F2PREFIP;PROLOG(0009);A ai,z=0;I nitems;
+static A jtkey(J jt,A a,A w,A self){FPREFIP;PROLOG(0009);A ai,z=0;I nitems;
  if((SPARSE&AT(a))!=0)return keysp(a,w,self);  // if sparse, go handle it
  {I t2; ASSERT(SETIC(a,nitems)==SETIC(w,t2),EVLENGTH);}  // verify agreement.  nitems is # items of a
  RZ(ai=indexofsub(IFORKEY,a,a));   // self-classify the input using ct set before this verb
@@ -365,7 +365,6 @@ static A jtkey(J jt,A a,A w,A self){F2PREFIP;PROLOG(0009);A ai,z=0;I nitems;
  UC *fretp;  // where the frets will be stored
  GA(wperm,AT(w),AN(w),AR(w),AS(w)); // Note we could avoid initialization of indirect types, since we are filling it all
  I celllen = cellatoms<<bplg(AT(w));  // length of a cell of w, in bytes
- JMCDECL(endmask) JMCSETMASK(endmask,celllen,1)   // set mask for JMCR
  // Once we know the number of frets, we can allocate the fret area.  If the number is small, we can use the canned area on the C stack.
  // The max # bytes needed is 4*((max # partitions of size>=256) clamped at # frets) + #frets
  // If y is inplaceable we can probably use it to store the frets, since it is copied sequentially.  The requirements are:
@@ -478,7 +477,7 @@ static A jtkey(J jt,A a,A w,A self){F2PREFIP;PROLOG(0009);A ai,z=0;I nitems;
 }    /* a f/. w for dense x & w */
 
 // bivalent entry point: a </. w   or  (</. i.@#) w
- A jtkeybox(J jt,A a,A w,A self){F2PREFIP;PROLOG(0009);A ai,z=0;I nitems;
+ A jtkeybox(J jt,A a,A w,A self){FPREFIP;PROLOG(0009);A ai,z=0;I nitems;
  if((SPARSE&AT(a))!=0)return (AT(w)&NOUN?(AF)jtkeysp:(AF)jthook1cell)(jt,a,w,self);  // if sparse, go handle it
  SETIC(a,nitems);   // nitems is # items in a and w
  I cellatoms, celllen;  // number of atoms in an item of w, and the number of bytes therein.  celllen is negative for the monad
@@ -496,7 +495,6 @@ static A jtkey(J jt,A a,A w,A self){F2PREFIP;PROLOG(0009);A ai,z=0;I nitems;
   w=&fauxw;  // switch to synthetic w
   AK(w)=-(I)w; AT(w)=INT; AR(w)=1;
  }
- JMCDECL(endmask) JMCSETMASK(endmask,celllen,1)   // set mask for JMCR.  Harmless if celllen=-1
 
  // Note: self is invalid from here on
  RZ(ai=indexofsub(IFORKEY,a,a));   // self-classify the input using ct set before this verb
@@ -639,7 +637,7 @@ static A jtkeytallysp(J jt, A w){PROLOG(0015);A b,e,q,x,y,z;I c,d,j,k,*u,*v;P*p;
  EPILOG(z);
 }    /* x #/.y , sparse x */
 
-static A jtkeytally(J jt,A a,A w,A self){F2PREFIP;PROLOG(0016);A z,q;I at,j,k,n,r,s,*qv,*u,*v;
+static A jtkeytally(J jt,A a,A w,A self){FPREFIP;PROLOG(0016);A z,q;I at,j,k,n,r,s,*qv,*u,*v;
  SETIC(a,n); at=AT(a);
  ASSERT(n==SETIC(w,k),EVLENGTH);
  if(!AN(a))return vec(INT,!!n,&AS(a)[0]);  // handle case of empties - a must have rank, so use AS[0] as  proxy for n
@@ -682,7 +680,7 @@ static A jtkeytally(J jt,A a,A w,A self){F2PREFIP;PROLOG(0016);A z,q;I at,j,k,n,
 
 
 //  bivalent entry point for x ({.,#)/.y or x (#,{.)/. y (dyad), or (({.,#)/. i.@#) y or ((#,{.)/. i.@#) y  (monad)
- A jtkeyheadtally(J jt,A a,A w,A self){F2PREFIP;PROLOG(0017);A f,q,x,y,z;I b;I at,*av,k,n,r,*qv,*u,*v,wt,*zv;
+ A jtkeyheadtally(J jt,A a,A w,A self){FPREFIP;PROLOG(0017);A f,q,x,y,z;I b;I at,*av,k,n,r,*qv,*u,*v,wt,*zv;
  SETIC(a,n); wt=AT(w);
  if((AT(w)&NOUN)!=0){
   // dyad: </.

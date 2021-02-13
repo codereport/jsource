@@ -177,7 +177,7 @@ static void moveawSV(C *zv,C *av,C *wv,I c,I k,I ma,I mw,I arptreset,I wrptreset
 int (*p[4]) (int x, int y);
 static void(*moveawtbl[])() = {moveawVV,moveawVS,moveawSV};
  A jtover(J jt,A a,A w){AD * RESTRICT z;C*zv;I replct,framect,acr,af,ar,*as,k,ma,mw,p,q,r,t,wcr,wf,wr,*ws,zn;
- F2PREFIP;
+ FPREFIP;
  if(!(a && w)) return 0;
  UI jtr=jt->ranks;//  fetch early
  if((SPARSE&(AT(a)|AT(w)))!=0){return jtovs(jt,a,w);}  // if either arg is sparse, switch to sparse code
@@ -249,7 +249,7 @@ static void(*moveawtbl[])() = {moveawVV,moveawVS,moveawSV};
 }    /* overall control, and a,w and a,"r w for cell rank <: 2 */
 
  A jtstitch(J jt,A a,A w){I ar,wr; A z;
- F2PREFIP;
+ FPREFIP;
  if(!(a && w)) return 0;
  ar=AR(a); wr=AR(w);
  ASSERT((-ar&-wr&-(AS(a)[0]^AS(w)[0]))>=0,EVLENGTH);  // a or w scalar, or same # items    always OK to fetch s[0]
@@ -258,7 +258,7 @@ static void(*moveawtbl[])() = {moveawVV,moveawVS,moveawSV};
 }
 
  A jtlamin1(J jt, A w){A x;I* RESTRICT s,* RESTRICT v,wcr,wf,wr; 
- F1PREFIP;
+ FPREFIP;
  if(!w) return 0;
  wr=AR(w); wcr=(RANKT)jt->ranks; wcr=wr<wcr?wr:wcr; RESETRANK; wf=wr-wcr;
  fauxblockINT(wfaux,4,1); fauxINT(x,wfaux,1+wr,1) v=AV(x);
@@ -278,7 +278,7 @@ static void(*moveawtbl[])() = {moveawVV,moveawVS,moveawSV};
 }    /* a,:"r w */
 
 // Append, including tests for append-in-place
-A jtapip(J jt, A a, A w){F2PREFIP;A h;C*av,*wv;I ak,k,p,*u,*v,wk,wm,wn;
+A jtapip(J jt, A a, A w){FPREFIP;A h;C*av,*wv;I ak,k,p,*u,*v,wk,wm,wn;
  // Allow inplacing if we have detected an assignment to a name on the last execution, and the address
  // being assigned is the same as a, and the usecount of a allows inplacing; or
  // the argument a is marked inplaceable.  Usecount of <1 is inplaceable, and for memory-mapped nouns, 2 is also OK since

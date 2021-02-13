@@ -521,7 +521,7 @@ static A jtthorn1main(J jt,A w,A prxthornuni){PROLOG(0001);A z;
     // we hit an invalid non-ASCII sequence, abort and keep the original byte string.
     // The conversion to C2T includes appending NUL to double-wide chars, and conversion up to
     // C4T if there are surrogate pairs or codes above U+FFFF
-   z=BAV(prxthornuni)[0]&1?rank2ex(w,prxthornuni,UNUSED_VALUE,MIN(AR(w),1L),0,MIN(AR(w),1L),0,RoutineA) : RETARG(w);  // check list for U8 codes, return LIT or C2T
+   z=BAV(prxthornuni)[0]&1?rank2ex(w,prxthornuni,UNUSED_VALUE,MIN(AR(w),1L),0,MIN(AR(w),1L),0,RoutineA) : w;  // check list for U8 codes, return LIT or C2T
    break;
   case C2TX:
    // If C2T output is allowed, keep it as C2T (it's not worth the time to go through

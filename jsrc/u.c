@@ -61,7 +61,7 @@ B all0(A w){if(!w)return 0; return !memchr(AV(w),C1,AN(w));}
 B all1(A w){if(!w)return 0; return !memchr(AV(w),C0,AN(w));}
 
 // Number of atoms in an item.
-I jtaii(J jt,A w){I m; PROD1(m,AR(w)-1,1+AS(w)); return m;}
+I jtaii(J jt,A w){I m; PROD(m,AR(w)-1,1+AS(w)); return m;}
 
 // return A-block for b+m*i.n
 A jtapv(J jt,I n,I b,I m){A z;
@@ -272,7 +272,7 @@ for(i=0;i<n<<bplg(t);i++)*p++=!!(*q++);
 
 // Audit w to ensure valid integer value(s).  Error if non-integral.  Result is A block for integer array.  Infinities converted to IMAX/-IMAX
  A jtvib(J jt, A w){A z;D d,e,*wv;I i,n,*zv;
- if(AT(w)&INT)return RETARG(w);  // handle common non-failing cases quickly: INT and boolean
+ if(AT(w)&INT)return w;  // handle common non-failing cases quickly: INT and boolean
  if(AT(w)&B01){if(!AR(w))return zeroionei(BAV(w)[0]); return jtcvt(jt,INT,w);}
  if(w==ainf)return imax;  // sentence words of _ always use the same block, so catch that too
  I p=-IMAX,q=IMAX;

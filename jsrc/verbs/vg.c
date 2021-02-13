@@ -695,7 +695,7 @@ static B (*grroutine[])(J,I,I,I,A,I*) = {  // index is [bitx]
  // Calculate m: #cells in w   n: #items in a cell of w   ai: #atoms in an item of a cell of w  c: #atoms in a cell of w  
  SETICFR(w,f,r,n);  if(wn=AN(w)){
   // If w is not empty, it must have an acceptable number of cells
-  PROD(m,f,s); PROD1(ai,r-1,f+s+1); c=ai*n; zn=m*n;
+  PROD(m,f,s); PROD(ai,r-1,f+s+1); c=ai*n; zn=m*n;
  }else{
   // empty w.  The number of cells may overflow, but reshape will catch that
   RE(zn=mult(jtprod(jt,f,s),n));
@@ -713,9 +713,9 @@ static B (*grroutine[])(J,I,I,I,A,I*) = {  // index is [bitx]
  A jtdgrade1(J jt, A w){A z;GBEGIN( 1); RZ(   w); z=SPARSE&AT(w)?grd1sp(  w):gr1(  w); GEND return z;}
 // Since grade2 pulls from a, mark a as non-pristine.  But since there can be no repeats, transfer a's pristinity to result if a is inplaceable
 // We do this in jtgr2 because it has a branch where all boxed values go
- A jtgrade2 (J jt,A a,A w){F2PREFIP;A z;GBEGIN(-1); RZ(z=SPARSE&AT(w)?jtgrd2sp(jt,a,w):jtgr2(jtinplace,a,w)); GEND
+ A jtgrade2 (J jt,A a,A w){FPREFIP;A z;GBEGIN(-1); RZ(z=SPARSE&AT(w)?jtgrd2sp(jt,a,w):jtgr2(jtinplace,a,w)); GEND
  return z;}
- A jtdgrade2(J jt,A a,A w){F2PREFIP;A z;GBEGIN( 1); RZ(z=SPARSE&AT(w)?jtgrd2sp(jt,a,w):jtgr2(jtinplace,a,w)); GEND
+ A jtdgrade2(J jt,A a,A w){FPREFIP;A z;GBEGIN( 1); RZ(z=SPARSE&AT(w)?jtgrd2sp(jt,a,w):jtgr2(jtinplace,a,w)); GEND
  return z;}
 
 
