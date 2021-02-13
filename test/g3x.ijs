@@ -60,14 +60,8 @@ NB. boxed
 32 = type <"0@s: ;:'Cogito, ergo sum.'
 32 = type 0$<''
 
-NB. extended integer
-64 = type 10x
-64 = type !?3 4$10x
-64 = type A. 20?20
-
 NB. rational
 128 = type 3r5
-128 = type %/?2 3 4$100x
 
 
 NB. 3!:1, 3!:2, and 3!:3 ------------------------------------------------
@@ -138,34 +132,6 @@ f=: 1 : 0  NB. empty arrays
 binrep f 1
 hexrep f 1
 
-f=: 1 : 0  NB. extended integer and rational
- test=: (-: unbin@(0&u)) , (-: unbin@(1&u)) , (-: unbin@(10&u)) , (-: unbin@(11&u)) , (-: unbin@u)
- assert. test x=: ?1000x
- assert. test x=: ?3$1000x
- assert. test x=: ?3 5$1000x
- assert. test x=: ?3 5 7$1000x
- assert. test x=: ?3 5 7 11$1000x
- assert. test x=: ?3 5 7 11 13$1000x
- assert. test x=: !?20x
- assert. test x=: !?2$20x
- assert. test x=: !?2 3$20x
- assert. test x=: !?2 3 5$20x
- assert. test x=: !?2 3 5 7$20x
- assert. test x=: !?2 3 5 7 11$20x
- assert. test x=: %/?2$20x
- assert. test x=: %/?2 11$20x
- assert. test x=: %/?2 11 7$20x
- assert. test x=: %/?2 11 7 5$20x
- assert. test x=: %/?2 11 7 5 3$20x
- assert. test x=: %/?2 11 7 5 3 2$20x
- 1 [ y
-:
-''
-)
-
-binrep f 1
-hexrep f 1
-
 f=: 1 : 0  NB. boxed arrays
  test=: (-: unbin@(0&u)) , (-: unbin@(1&u)) , (-: unbin@(10&u)) , (-: unbin@(11&u)) , (-: unbin@u)
  assert. test x=: 5!:1 <'test'
@@ -173,7 +139,7 @@ f=: 1 : 0  NB. boxed arrays
  assert. test x=: t{~?3 5     $#t
  assert. test x=: t{~?3 5 7   $#t
  assert. test x=: t{~?3 5 7 11$#t
- assert. test x=: t{~?3       $#t=. (?20$2);(?2 3 4$1e6);(o.?2 3$1e6);(j./?2 3 4$1e6);(x:?17$1e6);%/?2 3 4 5$100000x
+ assert. test x=: t{~?3       $#t=. (?20$2);(?2 3 4$1e6);(o.?2 3$1e6);(j./?2 3 4$1e6);(x:?17$1e6);%/?2 3 4 5$100000
  assert. test x=: t{~?3 5     $#t
  assert. test x=: t{~?3 5 7   $#t
  assert. test x=: t{~?3 5 7 11$#t
@@ -236,8 +202,8 @@ test (?2 3 4$#a.){a.
 test _4e5+?100$8e5
 test o._4e5+?100$8e5
 test j./_500+?2 100$1000
-test ?4 25$1000x
-test %/?2 4 25$100x
+test ?4 25$1000
+test %/?2 4 25$100
 
 test (?20$2)$0
 test (?1 2 4#4 3 2)$'a'

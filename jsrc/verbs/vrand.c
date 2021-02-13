@@ -533,36 +533,6 @@ static A jtrollksub(J jt,A a,A w){A z;I an,*av,k,m1,n,p,q,r,sh;UI m,mk,s,t,*u,x=
  return jtrollksub(jt,a,vi(w));
 }    /* ?@$ or ?@# or [:?$ or [:?# */
 
-static X jtxrand(J jt,X x){PROLOG(0090);A q,z;B b=1;I j,m,n,*qv,*xv,*zv;
- n=AN(x); xv=AV(x);  // number of Digits in x, &first digit
- m=n;  // m is number of result digits, same as input.  If input is 10000... this will always be 1 digit too many, but that's not worth checking for
- GATV0(q,INT,m,1); qv=AV(q);  // allocate place to hold base, qv-> result digits
- DO(m-1, qv[i]=XBASE;); qv[m-1]=xv[n-1]+1;  // init base to the largest possible value in each Digit
- // loop to roll random values until we get one that is less than x
- do{
-  RZ(z=roll(q)); zv=AV(z);  // roll one value in each Digit position
-  DQ(j=m, --j; if(xv[j]!=zv[j]){b=xv[j]<zv[j]; break;});  // MS mismatched Digit tells the tale; if no mismatch, that's too high, keep b=1
- }while(b);  // loop till b=0
- j=m-1; while(0<j&&!zv[j])--j; AN(z)=AS(z)[0]=++j;  // remove leading 0s from (tail of) result
- EPILOG(z);
-}    /* ?x where x is a single strictly positive extended integer */
-
-static A jtrollxnum(J jt, A w){A z;B c=0;I d,n;X*u,*v,x;
- if(!(AT(w)&XNUM))RZ(w=jtcvt(jt,XNUM,w));  // convert rational to numeric
- n=AN(w); v=XAV(w);
- GATV(z,XNUM,n,AR(w),AS(w)); u=XAV(z);
- // deal an extended random for each input number.  Error if number <0; if 0, put in 0 as a placeholder
- DQ(n, x=*v++; d=XDIG(x); ASSERT(0<=d,EVDOMAIN); if(d)RZ(*u++=rifvs(xrand(x))) else{*u++=iv0; c=1;});
- // If there was a 0, convert the whole result to float, and go back and fill the original 0s with random floats
- if(c){D*d;I mk,sh;
-  INITD;
-  RZ(z=jtcvt(jt,FL,z)); d=DAV(z); v=XAV(w);
-  DQ(n, x=*v++; if(!XDIG(x))*d=sh?NEXTD1:NEXTD0; ++d;);
- } 
- return z;
-}    /* ?n$x where x is extended integer */
-
-
 static A jtrollbool(J jt, A w){A z;B*v;D*u;I n,sh;UINT mk;
  n=AN(w); v=BAV(w); INITD;
  GATV(z,FL,n,AR(w),AS(w)); u=DAV(z);
@@ -630,14 +600,16 @@ static A jtrollany(J jt,A w,B*b){A z;D*u;I j,m1,n,sh,*v;UI m,mk,s,t,x=jt->rngM[j
  if(!w) return 0;
  wt=AT(w);
  ASSERT(wt&DENSE,EVDOMAIN);
+ ASSERT(!(wt&XNUM+RAT), EVDOMAIN);
+
  if(!AN(w)){GATV(z,B01,0,AR(w),AS(w)); return z;}
  if(wt&B01)return rollbool(w);
- if(wt&XNUM+RAT)return rollxnum(w);
+
  RZ(w=vi(w)); m=AV(w)[0];
  if(    2==m)RZ(z=roll2   (w,&b));
  if(!b&&0!=m)RZ(z=jtrollnot0(jt,w,&b));
  if(!b      )RZ(z=rollany (w,&b));
- return z&&!(FL&AT(z))&&wt&XNUM+RAT?xco1(z):z;
+ return z;
 }
 
  A jtdeal(J jt,A a,A w){A z;I at,j,k,m,n,wt,*zv;UI c,s,t,x=jt->rngM[jt->rng];UI sq;
@@ -718,39 +690,6 @@ static A jtrollksubdot(J jt,A a,A w){A z;I an,*av,k,m1,n,p,q,r,sh;UI j,m,mk,s,t,
  return jtrollksub(jt,a,vi(w));
 }    /* ?@$ or ?@# or [:?$ or [:?# */
 
-#undef xrand
-#define xrand(w) jtxranddot(jt,(w))
-static X jtxranddot(J jt,X x){PROLOG(0090);A q,z;B b=1;I j,m,n,*qv,*xv,*zv;
- n=AN(x); xv=AV(x);  // number of Digits in x, &first digit
- m=n;  // m is number of result digits, same as input.  If input is 10000... this will always be 1 digit too many, but that's not worth checking for
- GATV0(q,INT,m,1); qv=AV(q);  // allocate place to hold base, qv-> result digits
- DO(m-1, qv[i]=XBASE;); qv[m-1]=xv[n-1]+1;  // init base to the largest possible value in each Digit
- // loop to roll random values until we get one that is less than x
- do{
-  RZ(z=roll(q)); zv=AV(z);  // roll one value in each Digit position
-  DQ(j=m, --j; if(xv[j]!=zv[j]){b=xv[j]<zv[j]; break;});  // MS mismatched Digit tells the tale; if no mismatch, that's too high, keep b=1
- }while(b);  // loop till b=0
- j=m-1; while(0<j&&!zv[j])--j; AN(z)=AS(z)[0]=++j;  // remove leading 0s from (tail of) result
- EPILOG(z);
-}    /* ?x where x is a single strictly positive extended integer */
-
-#undef rollxnum
-#define rollxnum(w) jtrollxnumdot(jt,(w))
-static A jtrollxnumdot(J jt, A w){A z;B c=0;I d,n;X*u,*v,x;
- if(!(AT(w)&XNUM))RZ(w=jtcvt(jt,XNUM,w));  // convert rational to numeric
- n=AN(w); v=XAV(w);
- GATV(z,XNUM,n,AR(w),AS(w)); u=XAV(z);
- // deal an extended random for each input number.  Error if number <0; if 0, put in 0 as a placeholder
- DQ(n, x=*v++; d=XDIG(x); ASSERT(0<=d,EVDOMAIN); if(d)RZ(*u++=rifvs(xrand(x))) else{*u++=iv0; c=1;});
- // If there was a 0, convert the whole result to float, and go back and fill the original 0s with random floats
- if(c){D*d;I mk,sh;
-  INITD;
-  RZ(z=jtcvt(jt,FL,z)); d=DAV(z); v=XAV(w);
-  DQ(n, x=*v++; if(!XDIG(x))*d=sh?NEXTD1:NEXTD0; ++d;);
- } 
- return z;
-}    /* ?n$x where x is extended integer */
-
 #undef rollbool
 #define rollbool(w) jtrollbooldot(jt,(w))
 static A jtrollbooldot(J jt, A w){A z;B*v;D*u;I n,sh;UINT mk;
@@ -827,14 +766,16 @@ static A jtrollanydot(J jt,A w,B*b){A z;D*u;I j,m1,n,sh,*v;UI m,mk,s,t,x=jt->rng
 static A jtrolldot(J jt, A w){A z;B b=0;I m,wt;
  wt=AT(w);
  ASSERT(wt&DENSE,EVDOMAIN);
+ ASSERT(!(wt&XNUM+RAT), EVDOMAIN);
+
  if(!AN(w)){GATV(z,B01,0,AR(w),AS(w)); return z;}
  if(wt&B01)return rollbool(w);
- if(wt&XNUM+RAT)return rollxnum(w);
+
  RZ(w=vi(w)); m=AV(w)[0];
  if(    2==m)RZ(z=roll2   (w,&b));
  if(!b&&0!=m)RZ(z=jtrollnot0(jt,w,&b));
  if(!b      )RZ(z=rollany (w,&b));
- return z&&!(FL&AT(z))&&wt&XNUM+RAT?xco1(z):z;
+ return z;
 }
 
 #undef deal
@@ -877,35 +818,3 @@ static A jtdealdot(J jt,A a,A w){A h,y,z;I at,d,*hv,i,i1,j,k,m,n,p,q,*v,wt,*yv,*
  A jtrollx  (J jt, A w){FXSDECL;                 FXSDO; z=roll(w);         FXSOD; return z;}
  A jtdealx  (J jt,A a,A w){FXSDECL; F2RANK(0,0,jtdealx,UNUSED_VALUE); FXSDO; z=jtdeal(jt,a,w);       FXSOD; return z;}
  A jtrollkx(J jt,A a,A w,A self){FXSDECL;        FXSDO; z=rollk(a,w,self); FXSOD; return z;}
-
-
-/*
-static A jtroll(J jt, A w){A z;D rl=jt->rl;static D dm=16807,p=2147483647L;I c,n,*v,*x;
- n=AN(w); v=AV(w);
- RZ(z=jtreshape(jt,shape(jt,w),num(2))); x=AV(z);
- if(ICMP(v,x,n))
-  DQ(n, c=*v++; ASSERT(0<c,EVDOMAIN); rl=fmod(rl*dm,p); *x++=(I)jfloor(rl*c/p);)
- else{B*x;D q=p/2;
-  GATV(z,B01,n,AR(w),AS(w)); x=BAV(z);
-  DQ(n, rl=fmod(rl*dm,p); *x++=rl>q;);
- }
- jt->rl=(I)rl;
- return z;
-} */    /* P.C. Berry, Sharp APL Reference Manual, 1979, p. 126. */
-
-/*
-static A jtbigdeal(J jt,I m,I n){A t,x,y;
- RZ(x=sc((I)jfloor(1.11*m)));
- RZ(y=sc(n));
- do{RZ(t=nub(roll(jtreshape(jt,x,y))));}while(m>AN(t));
- return vec(INT,m,AV(t));
-} */    /* E.E. McDonnell circa 1966, small m and large n */
-
-/*
-static A jtdeal(J jt,I m,I n){A y;D rl=jt->rl;static D dm=16807,p=2147483647L;I j,k,*yv;
- if(m<0.01*n)return jtbigdeal(jt,m,n);
- RZ(y=apv(n,n-1,-1L)); yv=AV(y);
- DO(m, rl=fmod(rl*dm,p); j=i+(I)jfloor(rl*(n-i)/(1+p)); k=yv[i]; yv[i]=yv[j]; yv[j]=k;);
- jt->rl=(I)rl;
- return vec(INT,m,yv);
-} */   /* P.C. Berry, Sharp APL Reference Manual, 1979, p. 178. */

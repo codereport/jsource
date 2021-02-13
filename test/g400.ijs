@@ -185,8 +185,8 @@ f1=: 3 : 0
  assert. (b=: 0.95 > ?n$0) (# -: copy) xx=: o.?n$1e9
  assert. (b=: ?n$2) (# -: copy) xx=: j./?(2,n)$1e9
  assert. (b=: ?n$2) (# -: copy) xx=: <"0 ?n$1e9
- assert. (b=: ?n$2) (# -: copy) xx=:    ?   n $100000x
- assert. (b=: ?n$2) (# -: copy) xx=: % /?(2,n)$100000x
+ assert. (b=: ?n$2) (# -: copy) xx=:    ?   n $100000
+ assert. (b=: ?n$2) (# -: copy) xx=: % /?(2,n)$100000
  1
 )
 
@@ -209,8 +209,8 @@ f2=: 3 : 0
  assert. (b=: ?n$2) (#"1 -: copy"1) xx=: o.?(3,n)$1e9
  assert. (b=: ?n$2) (#"1 -: copy"1) xx=: j./?(2 3,n)$1e9
  assert. (b=: ?n$2) (#"1 -: copy"1) xx=: <"0 ?(3,n)$1e9
- assert. (b=: ?n$2) (#"1 -: copy"1) xx=:     ?(3,n) $100000x
- assert. (b=: ?n$2) (#"1 -: copy"1) xx=: % /?(2 3,n)$100000x
+ assert. (b=: ?n$2) (#"1 -: copy"1) xx=:     ?(3,n) $100000
+ assert. (b=: ?n$2) (#"1 -: copy"1) xx=: % /?(2 3,n)$100000
  1
 )
 
