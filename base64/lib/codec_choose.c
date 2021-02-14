@@ -8,11 +8,8 @@
 #include "env.h"
 
 // Function declarations:
-#define BASE64_CODEC_FUNCS(arch)	\
-	BASE64_ENC_FUNCTION(arch);	\
-	BASE64_DEC_FUNCTION(arch);	\
-
-BASE64_CODEC_FUNCS(plain)
+BASE64_ENC_FUNCTION(plain);
+BASE64_DEC_FUNCTION(plain);
 
 void
 codec_choose (struct codec *codec)
