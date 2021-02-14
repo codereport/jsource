@@ -21,7 +21,6 @@ base64_stream_encode_init (struct base64_state *state)
 	state->eof = 0;
 	state->bytes = 0;
 	state->carry = 0;
-	state->flags = BASE64_FORCE_PLAIN;
 }
 
 void
@@ -71,7 +70,6 @@ base64_stream_decode_init (struct base64_state *state)
 	state->eof = 0;
 	state->bytes = 0;
 	state->carry = 0;
-	state->flags = BASE64_FORCE_PLAIN;
 }
 
 int

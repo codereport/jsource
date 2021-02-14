@@ -17,7 +17,6 @@ extern "C" {
 struct base64_state {
 	int eof;
 	int bytes;
-	int flags;
 	unsigned char carry;
 };
 
