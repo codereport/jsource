@@ -4,7 +4,6 @@ target_sources(j-base64 PRIVATE
     include/libbase64.h
     lib/codec.c
     lib/codec.h
-    lib/env.h
     lib/lib.c
     lib/tables/tables.c
     lib/tables/tables.h

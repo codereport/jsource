@@ -5,7 +5,12 @@
 #include "../include/libbase64.h"
 #include "tables/tables.h"
 #include "codec.h"
-#include "env.h"
+
+// End-of-file definitions.
+// Almost end-of-file when waiting for the last '=' character:
+#define BASE64_AEOF 1
+// End-of-file when stream end has been reached or invalid input provided:
+#define BASE64_EOF 2
 
 static inline void
 enc_loop_generic_64_inner (const uint8_t **s, uint8_t **o)
