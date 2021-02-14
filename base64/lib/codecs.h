@@ -33,28 +33,6 @@
 	base64_stream_decode_ ## arch		\
 	BASE64_DEC_PARAMS
 
-// Cast away unused variable, silence compiler:
-#define UNUSED(x)		((void)(x))
-
-// Stub function when encoder arch unsupported:
-#define BASE64_ENC_STUB				\
-	UNUSED(state);				\
-	UNUSED(src);				\
-	UNUSED(srclen);				\
-	UNUSED(out);				\
-						\
-	*outlen = 0;
-
-// Stub function when decoder arch unsupported:
-#define BASE64_DEC_STUB				\
-	UNUSED(state);				\
-	UNUSED(src);				\
-	UNUSED(srclen);				\
-	UNUSED(out);				\
-	UNUSED(outlen);				\
-						\
-	return -1;
-
 // Function declarations:
 BASE64_ENC_FUNCTION(plain);
 BASE64_DEC_FUNCTION(plain);
