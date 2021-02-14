@@ -7,10 +7,6 @@
 #include "codecs.h"
 #include "env.h"
 
-// Function declarations:
-BASE64_ENC_FUNCTION(plain);
-BASE64_DEC_FUNCTION(plain);
-
 void
 codec_choose (struct codec *codec)
 {

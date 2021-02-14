@@ -62,3 +62,7 @@ struct codec
 };
 
 extern void codec_choose (struct codec *);
+
+// Function declarations:
+BASE64_ENC_FUNCTION(plain);
+BASE64_DEC_FUNCTION(plain);
