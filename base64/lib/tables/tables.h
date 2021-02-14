@@ -9,11 +9,7 @@
 extern const uint8_t base64_table_enc_6bit[];
 extern const uint8_t base64_table_dec_8bit[];
 
-// These tables are used for the 32-bit and 64-bit generic decoders:
-#if BASE64_WORDSIZE >= 32
-
 // This table is used by the 32 and 64-bit generic encoders:
 extern const uint16_t base64_table_enc_12bit[];
-#endif
 
 #endif	// BASE64_TABLES_H

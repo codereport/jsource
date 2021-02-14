@@ -34,6 +34,4 @@ base64_table_dec_8bit[] =
 	255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
 };
 
-#if BASE64_WORDSIZE >= 32
-#  include "table_enc_12bit.h"
-#endif
+#include "table_enc_12bit.h"

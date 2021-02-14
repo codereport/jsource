@@ -13,13 +13,6 @@
 #define BASE64_HTOBE32(x)	__builtin_bswap32(x)
 #define BASE64_HTOBE64(x)	__builtin_bswap64(x)
 
-// Detect word size:
-#ifdef _INTEGRAL_MAX_BITS
-#define BASE64_WORDSIZE _INTEGRAL_MAX_BITS
-#else
-#define BASE64_WORDSIZE __WORDSIZE
-#endif
-
 // End-of-file definitions.
 // Almost end-of-file when waiting for the last '=' character:
 #define BASE64_AEOF 1
