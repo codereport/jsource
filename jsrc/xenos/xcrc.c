@@ -7,7 +7,6 @@
 #include "x.h"
 
 #include "../base64/include/libbase64.h"
-#define B64CODEC BASE64_FORCE_PLAIN
 
 // Calculate byte-at-a-time CRC table in *crctab, and return the starting value as the result
 static UINT jtcrcvalidate(J jt,A w, UINT* crctab){A*wv;B*v;I m;UINT p,x,z=-1;
@@ -83,7 +82,7 @@ static C base64tab[64] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz01
  A z; GATV0(z,LIT,zn<<2,1); UI4 *zv=UI4AV(z);  // result block, pointer into it
  C *wv=CAV(w);  // input pointer
 size_t zlen=AN(z);
-base64_encode(wv, AN(w), CAV(z), &zlen, B64CODEC);
+base64_encode(wv, AN(w), CAV(z), &zlen, BASE64_FORCE_PLAIN);
 ASSERT((I)zlen==AN(z),EVDOMAIN);  // make sure length agreed
  return z;
 
@@ -113,7 +112,7 @@ static C base64invtab[256] = {
  // process the input in full 4-byte groups.  We may overread the input AND overwrite the result, but we will always stay in the padding area,
  // which is OK because we allocated the result here
 size_t zlen=AN(z);
-int rc=base64_decode(CAV(w), AN(w), CAV(z), &zlen, B64CODEC);
+int rc=base64_decode(CAV(w), AN(w), CAV(z), &zlen, BASE64_FORCE_PLAIN);
 ASSERT(rc==1&&(I)zlen==AN(z),EVDOMAIN);  // make sure no invalid input bytes
  return z;
 }
