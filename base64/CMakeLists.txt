@@ -8,6 +8,5 @@ target_sources(j-base64 PRIVATE
     lib/lib.c
     lib/tables/tables.c
     lib/tables/tables.h
-    lib/tables/table_dec_32bit.h
     lib/tables/table_enc_12bit.h
 )
