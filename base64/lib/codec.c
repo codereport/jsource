@@ -6,12 +6,6 @@
 #include "tables/tables.h"
 #include "codec.h"
 
-// End-of-file definitions.
-// Almost end-of-file when waiting for the last '=' character:
-#define BASE64_AEOF 1
-// End-of-file when stream end has been reached or invalid input provided:
-#define BASE64_EOF 2
-
 static inline void
 enc_loop_generic_64_inner (const uint8_t **s, uint8_t **o)
 {
@@ -176,7 +170,6 @@ base64_stream_decode
 	size_t olen = 0;
 	size_t slen = srclen;
 	struct base64_state st;
-	st.eof = state->eof;
 	st.bytes = state->bytes;
 	st.carry = state->carry;
 
@@ -196,7 +189,6 @@ base64_stream_decode
 				break;
 			}
 			if ((q = base64_table_dec_8bit[*s++]) >= 254) {
-				st.eof = BASE64_EOF;
 				// Treat character '=' as invalid for byte 0:
 				break;
 			}
@@ -210,7 +202,6 @@ base64_stream_decode
 				break;
 			}
 			if ((q = base64_table_dec_8bit[*s++]) >= 254) {
-				st.eof = BASE64_EOF;
 				// Treat character '=' as invalid for byte 1:
 				break;
 			}
@@ -233,14 +224,12 @@ base64_stream_decode
 					if (slen-- != 0) {
 						st.bytes = 0;
 						// EOF:
-						st.eof = BASE64_EOF;
 						q = base64_table_dec_8bit[*s++];
 						ret = ((q == 254) && (slen == 0)) ? 1 : 0;
 						break;
 					}
 					else {
 						// Almost EOF
-						st.eof = BASE64_AEOF;
 						ret = 1;
 						break;
 					}
@@ -261,7 +250,6 @@ base64_stream_decode
 			}
 			if ((q = base64_table_dec_8bit[*s++]) >= 254) {
 				st.bytes = 0;
-				st.eof = BASE64_EOF;
 				// When q == 254, the input char is '='. Return 1 and EOF.
 				// When q == 255, the input char is invalid. Return 0 and EOF.
 				ret = ((q == 254) && (slen == 0)) ? 1 : 0;
@@ -274,7 +262,6 @@ base64_stream_decode
 		}
 	}
 
-	state->eof = st.eof;
 	state->bytes = st.bytes;
 	state->carry = st.carry;
 	*outlen = olen;

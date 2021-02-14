@@ -8,7 +8,6 @@ extern "C" {
 #endif
 
 struct base64_state {
-	int eof;
 	int bytes;
 	unsigned char carry;
 };
