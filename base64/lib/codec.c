@@ -91,7 +91,7 @@ enc_loop_generic_64 (const uint8_t **s, size_t *slen, uint8_t **o, size_t *olen)
 }
 
 void
-base64_stream_encode_plain
+base64_stream_encode
 	( struct base64_state	*state
 	, const char		*src
 	, size_t		 srclen
@@ -159,7 +159,7 @@ base64_stream_encode_plain
 }
 
 int
-base64_stream_decode_plain
+base64_stream_decode
 	( struct base64_state	*state
 	, const char		*src
 	, size_t		 srclen
