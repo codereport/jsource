@@ -1,10 +1,9 @@
 add_library(j-base64 OBJECT)
-target_compile_definitions(j-base64 PRIVATE HAVE_AVX2=1)
+target_compile_definitions(j-base64 PRIVATE)
 target_sources(j-base64 PRIVATE
     include/libbase64.h
-    lib/arch/generic/codec-generic.c
-    lib/codecs.h
-    lib/codec_choose.c
+    lib/codec.c
+    lib/codec.h
     lib/env.h
     lib/lib.c
     lib/tables/tables.c

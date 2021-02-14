@@ -3,28 +3,25 @@
 
 #include "../include/libbase64.h"
 #include "tables/tables.h"
-#include "codecs.h"
+#include "codec.h"
 #include "env.h"
 
-// These static function pointers are initialized once when the library is
-// first used, and remain in use for the remaining lifetime of the program.
-// The idea being that CPU features don't change at runtime.
-static struct codec codec = { NULL, NULL };
-
-void
-base64_stream_encode_init (struct base64_state *state, int flags)
+/* Call this before calling base64_stream_encode() to init the state. See above
+ */
+static void
+base64_stream_encode_init (struct base64_state *state)
 {
-	// If any of the codec flags are set, redo choice:
-	if (codec.enc == NULL || flags & 0xFF) {
-		codec_choose(&codec, flags);
-	}
 	state->eof = 0;
 	state->bytes = 0;
 	state->carry = 0;
-	state->flags = flags;
 }
 
-void
+/* Encodes the block of data of given length at `src`, into the buffer at
+ * `out`. Caller is responsible for allocating a large enough out-buffer; it
+ * must be at least 4/3 the size of the in-buffer, but take some margin. Places
+ * the number of new bytes written into `outlen` (which is set to zero when the
+ * function starts). Does not zero-terminate or finalize the output. */
+static void
 base64_stream_encode
 	( struct base64_state	*state
 	, const char		*src
@@ -33,10 +30,14 @@ base64_stream_encode
 	, size_t		*outlen
 	)
 {
-	codec.enc(state, src, srclen, out, outlen);
+	base64_stream_encode_plain(state, src, srclen, out, outlen);
 }
 
-void
+/* Finalizes the output begun by previous calls to `base64_stream_encode()`.
+ * Adds the required end-of-stream markers if appropriate. `outlen` is modified
+ * and will contain the number of new bytes written at `out` (which will quite
+ * often be zero). */
+static void
 base64_stream_encode_final
 	( struct base64_state	*state
 	, char			*out
@@ -61,20 +62,25 @@ base64_stream_encode_final
 	*outlen = 0;
 }
 
-void
-base64_stream_decode_init (struct base64_state *state, int flags)
+/* Call this before calling base64_stream_decode() to init the state. See above
+ */
+static void
+base64_stream_decode_init (struct base64_state *state)
 {
-	// If any of the codec flags are set, redo choice:
-	if (codec.dec == NULL || flags & 0xFF) {
-		codec_choose(&codec, flags);
-	}
 	state->eof = 0;
 	state->bytes = 0;
 	state->carry = 0;
-	state->flags = flags;
 }
 
-int
+/* Decodes the block of data of given length at `src`, into the buffer at
+ * `out`. Caller is responsible for allocating a large enough out-buffer; it
+ * must be at least 3/4 the size of the in-buffer, but take some margin. Places
+ * the number of new bytes written into `outlen` (which is set to zero when the
+ * function starts). Does not zero-terminate the output. Returns 1 if all is
+ * well, and 0 if a decoding error was found, such as an invalid character.
+ * Returns -1 if the chosen codec is not included in the current build. Used by
+ * the test harness to check whether a codec is available for testing. */
+static int
 base64_stream_decode
 	( struct base64_state	*state
 	, const char		*src
@@ -83,7 +89,7 @@ base64_stream_decode
 	, size_t		*outlen
 	)
 {
-	return codec.dec(state, src, srclen, out, outlen);
+	return base64_stream_decode_plain(state, src, srclen, out, outlen);
 }
 
 void
@@ -92,7 +98,6 @@ base64_encode
 	, size_t	 srclen
 	, char		*out
 	, size_t	*outlen
-	, int		 flags
 	)
 {
 	size_t s;
@@ -100,7 +105,7 @@ base64_encode
 	struct base64_state state;
 
 	// Init the stream reader:
-	base64_stream_encode_init(&state, flags);
+	base64_stream_encode_init(&state);
 
 	// Feed the whole string to the stream reader:
 	base64_stream_encode(&state, src, srclen, out, &s);
@@ -118,14 +123,13 @@ base64_decode
 	, size_t	 srclen
 	, char		*out
 	, size_t	*outlen
-	, int		 flags
 	)
 {
 	int ret;
 	struct base64_state state;
 
 	// Init the stream reader:
-	base64_stream_decode_init(&state, flags);
+	base64_stream_decode_init(&state);
 
 	// Feed the whole string to the stream reader:
 	ret = base64_stream_decode(&state, src, srclen, out, outlen);
