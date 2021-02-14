@@ -2,10 +2,10 @@
 #include <stddef.h>
 #include <string.h>
 
-#include "../../../include/libbase64.h"
-#include "../../tables/tables.h"
-#include "../../codecs.h"
-#include "../../env.h"
+#include "../include/libbase64.h"
+#include "tables/tables.h"
+#include "codec.h"
+#include "env.h"
 
 static inline void
 enc_loop_generic_64_inner (const uint8_t **s, uint8_t **o)

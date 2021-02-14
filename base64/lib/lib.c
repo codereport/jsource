@@ -3,7 +3,7 @@
 
 #include "../include/libbase64.h"
 #include "tables/tables.h"
-#include "codecs.h"
+#include "codec.h"
 #include "env.h"
 
 void
