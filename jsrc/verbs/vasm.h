@@ -12,8 +12,6 @@
 /* fs   zv=.+/\.xv    1<n */
 
 /* C routines for platforms without asm support */
-#ifndef OVF
-
 #define DI LD
 
 #define PLUSVV(n,z,x,y)   {I u,v,w; DQ(n, u=*x; v=*y; w=~u; u+=v; *z=u; ++x; ++y; ++z; w^=v; v^=u; if(XANDY(w,v)<0)return EWOV;)}
@@ -43,5 +41,3 @@
 // overflow if (~ssign^vsign)&&(resultsign^vsign), i. e. input signs differ and result has different sign from minuend
 #define MINUSS(n,z,x)     {I s=0,u,v; x+=n; z+=n; DQ(n, u=s; v=*--x; s=v-u; u^=v; v^=s; *--z=s; if(XANDY(u,v)<0)return EWOV;);}
 #define TYMESS(n,z,x)      {DPMULDDECLS I s=1; x+=n; z+=n; DQ(n, --x; --z; DPMULD(*x,s,s, return EWOV; *z=s;))}
-
-#endif
