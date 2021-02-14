@@ -15,14 +15,9 @@
 BASE64_CODEC_FUNCS(plain)
 
 void
-codec_choose (struct codec *codec, int flags)
+codec_choose (struct codec *codec)
 {
-	// TODO assert BASE64_FORCE_PLAIN
-	if (flags & BASE64_FORCE_PLAIN) {
-		codec->enc = base64_stream_encode_plain;
-		codec->dec = base64_stream_decode_plain;
-		return;
-	}
-	return;
+	codec->enc = base64_stream_encode_plain;
+	codec->dec = base64_stream_decode_plain;
 }
 
