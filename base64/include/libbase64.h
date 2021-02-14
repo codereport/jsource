@@ -7,13 +7,6 @@
 extern "C" {
 #endif
 
-/* These are the flags that can be passed in the `flags` argument. The values
- * below force the use of a given codec, even if that codec is a no-op in the
- * current build. Used in testing. Set to 0 for the default behavior, which is
- * runtime feature detection on x86, a compile-time fixed codec on ARM, and
- * the plain codec on other platforms: */
-#define BASE64_FORCE_PLAIN	(1 << 3)
-
 struct base64_state {
 	int eof;
 	int bytes;

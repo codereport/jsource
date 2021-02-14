@@ -6,18 +6,9 @@
 #include "codecs.h"
 #include "env.h"
 
-// These static function pointers are initialized once when the library is
-// first used, and remain in use for the remaining lifetime of the program.
-// The idea being that CPU features don't change at runtime.
-static struct codec codec = { NULL, NULL };
-
 void
 base64_stream_encode_init (struct base64_state *state)
 {
-	// If any of the codec flags are set, redo choice:
-	if (codec.enc == NULL || BASE64_FORCE_PLAIN & 0xFF) {
-		codec_choose(&codec);
-	}
 	state->eof = 0;
 	state->bytes = 0;
 	state->carry = 0;
@@ -32,7 +23,7 @@ base64_stream_encode
 	, size_t		*outlen
 	)
 {
-	codec.enc(state, src, srclen, out, outlen);
+	base64_stream_encode_plain(state, src, srclen, out, outlen);
 }
 
 void
@@ -63,10 +54,6 @@ base64_stream_encode_final
 void
 base64_stream_decode_init (struct base64_state *state)
 {
-	// If any of the codec flags are set, redo choice:
-	if (codec.dec == NULL || BASE64_FORCE_PLAIN & 0xFF) {
-		codec_choose(&codec);
-	}
 	state->eof = 0;
 	state->bytes = 0;
 	state->carry = 0;
@@ -81,7 +68,7 @@ base64_stream_decode
 	, size_t		*outlen
 	)
 {
-	return codec.dec(state, src, srclen, out, outlen);
+	return base64_stream_decode_plain(state, src, srclen, out, outlen);
 }
 
 void
