@@ -3,8 +3,6 @@
 
 #include <stdint.h>
 
-#include "../env.h"
-
 // These tables are used by all codecs for fallback plain encoding/decoding:
 extern const uint8_t base64_table_enc_6bit[];
 extern const uint8_t base64_table_dec_8bit[];

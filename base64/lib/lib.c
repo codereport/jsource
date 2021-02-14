@@ -4,7 +4,6 @@
 #include "../include/libbase64.h"
 #include "tables/tables.h"
 #include "codec.h"
-#include "env.h"
 
 /* Call this before calling base64_stream_encode() to init the state. See above
  */

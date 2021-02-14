@@ -4,10 +4,6 @@
 // This header file contains macro definitions that describe certain aspects of
 // the compile-time environment. Compatibility and portability macros go here.
 
-// Define machine endianness. This is for GCC:
-#define BASE64_LITTLE_ENDIAN 1
-#define BASE64_LITTLE_ENDIAN 1
-
 // Endian conversion functions:
 //   GCC and Clang:
 #define BASE64_HTOBE32(x)	__builtin_bswap32(x)
