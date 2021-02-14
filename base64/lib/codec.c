@@ -5,7 +5,6 @@
 #include "../include/libbase64.h"
 #include "tables/tables.h"
 #include "codec.h"
-#include "env.h"
 
 static inline void
 enc_loop_generic_64_inner (const uint8_t **s, uint8_t **o)
@@ -18,7 +17,7 @@ enc_loop_generic_64_inner (const uint8_t **s, uint8_t **o)
 	// Reorder to 64-bit big-endian, if not already in that format. The
 	// workset must be in big-endian, otherwise the shifted bits do not
 	// carry over properly among adjacent bytes:
-	src = BASE64_HTOBE64(src);
+	src = __builtin_bswap64(src);
 
 	// Four indices for the 12-bit lookup table:
 	const size_t index0 = (src >> 52) & 0xFFFU;
@@ -86,7 +85,7 @@ enc_loop_generic_64 (const uint8_t **s, size_t *slen, uint8_t **o, size_t *olen)
 }
 
 void
-base64_stream_encode_plain
+base64_stream_encode
 	( struct base64_state	*state
 	, const char		*src
 	, size_t		 srclen
@@ -154,7 +153,7 @@ base64_stream_encode_plain
 }
 
 int
-base64_stream_decode_plain
+base64_stream_decode
 	( struct base64_state	*state
 	, const char		*src
 	, size_t		 srclen
@@ -171,22 +170,8 @@ base64_stream_decode_plain
 	size_t olen = 0;
 	size_t slen = srclen;
 	struct base64_state st;
-	st.eof = state->eof;
 	st.bytes = state->bytes;
 	st.carry = state->carry;
-
-	// If we previously saw an EOF or an invalid character, bail out:
-	if (st.eof) {
-		*outlen = 0;
-		ret = 0;
-		// If there was a trailing '=' to check, check it:
-		if (slen && (st.eof == BASE64_AEOF)) {
-			state->bytes = 0;
-			state->eof = BASE64_EOF;
-			ret = ((base64_table_dec_8bit[*s++] == 254) && (slen == 1)) ? 1 : 0;
-		}
-		return ret;
-	}
 
 	// Turn four 6-bit numbers into three bytes:
 	// out[0] = 11111122
@@ -204,7 +189,6 @@ base64_stream_decode_plain
 				break;
 			}
 			if ((q = base64_table_dec_8bit[*s++]) >= 254) {
-				st.eof = BASE64_EOF;
 				// Treat character '=' as invalid for byte 0:
 				break;
 			}
@@ -218,7 +202,6 @@ base64_stream_decode_plain
 				break;
 			}
 			if ((q = base64_table_dec_8bit[*s++]) >= 254) {
-				st.eof = BASE64_EOF;
 				// Treat character '=' as invalid for byte 1:
 				break;
 			}
@@ -241,14 +224,12 @@ base64_stream_decode_plain
 					if (slen-- != 0) {
 						st.bytes = 0;
 						// EOF:
-						st.eof = BASE64_EOF;
 						q = base64_table_dec_8bit[*s++];
 						ret = ((q == 254) && (slen == 0)) ? 1 : 0;
 						break;
 					}
 					else {
 						// Almost EOF
-						st.eof = BASE64_AEOF;
 						ret = 1;
 						break;
 					}
@@ -269,7 +250,6 @@ base64_stream_decode_plain
 			}
 			if ((q = base64_table_dec_8bit[*s++]) >= 254) {
 				st.bytes = 0;
-				st.eof = BASE64_EOF;
 				// When q == 254, the input char is '='. Return 1 and EOF.
 				// When q == 255, the input char is invalid. Return 0 and EOF.
 				ret = ((q == 254) && (slen == 0)) ? 1 : 0;
@@ -282,7 +262,6 @@ base64_stream_decode_plain
 		}
 	}
 
-	state->eof = st.eof;
 	state->bytes = st.bytes;
 	state->carry = st.carry;
 	*outlen = olen;
