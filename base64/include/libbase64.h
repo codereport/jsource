@@ -24,13 +24,12 @@ struct base64_state {
 /* Wrapper function to encode a plain string of given length. Output is written
  * to *out without trailing zero. Output length in bytes is written to *outlen.
  * The buffer in `out` has been allocated by the caller and is at least 4/3 the
- * size of the input. See above for `flags`; set to 0 for default operation: */
+ * size of the input. */
 void base64_encode
 	( const char		*src
 	, size_t		 srclen
 	, char			*out
 	, size_t		*outlen
-	, int			 flags
 	) ;
 
 /* Call this before calling base64_stream_encode() to init the state. See above
@@ -66,13 +65,12 @@ void base64_stream_encode_final
 /* Wrapper function to decode a plain string of given length. Output is written
  * to *out without trailing zero. Output length in bytes is written to *outlen.
  * The buffer in `out` has been allocated by the caller and is at least 3/4 the
- * size of the input. See above for `flags`, set to 0 for default operation: */
+ * size of the input. */
 int base64_decode
 	( const char		*src
 	, size_t		 srclen
 	, char			*out
 	, size_t		*outlen
-	, int			 flags
 	) ;
 
 /* Call this before calling base64_stream_decode() to init the state. See above

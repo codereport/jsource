@@ -92,7 +92,6 @@ base64_encode
 	, size_t	 srclen
 	, char		*out
 	, size_t	*outlen
-	, int		 flags
 	)
 {
 	size_t s;
@@ -100,7 +99,7 @@ base64_encode
 	struct base64_state state;
 
 	// Init the stream reader:
-	base64_stream_encode_init(&state, flags);
+	base64_stream_encode_init(&state, BASE64_FORCE_PLAIN);
 
 	// Feed the whole string to the stream reader:
 	base64_stream_encode(&state, src, srclen, out, &s);
@@ -118,14 +117,13 @@ base64_decode
 	, size_t	 srclen
 	, char		*out
 	, size_t	*outlen
-	, int		 flags
 	)
 {
 	int ret;
 	struct base64_state state;
 
 	// Init the stream reader:
-	base64_stream_decode_init(&state, flags);
+	base64_stream_decode_init(&state, BASE64_FORCE_PLAIN);
 
 	// Feed the whole string to the stream reader:
 	ret = base64_stream_decode(&state, src, srclen, out, outlen);
