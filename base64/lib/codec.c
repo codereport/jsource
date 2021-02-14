@@ -18,7 +18,7 @@ enc_loop_generic_64_inner (const uint8_t **s, uint8_t **o)
 	// Reorder to 64-bit big-endian, if not already in that format. The
 	// workset must be in big-endian, otherwise the shifted bits do not
 	// carry over properly among adjacent bytes:
-	src = BASE64_HTOBE64(src);
+	src = __builtin_bswap64(src);
 
 	// Four indices for the 12-bit lookup table:
 	const size_t index0 = (src >> 52) & 0xFFFU;

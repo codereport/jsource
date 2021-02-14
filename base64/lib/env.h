@@ -4,11 +4,6 @@
 // This header file contains macro definitions that describe certain aspects of
 // the compile-time environment. Compatibility and portability macros go here.
 
-// Endian conversion functions:
-//   GCC and Clang:
-#define BASE64_HTOBE32(x)	__builtin_bswap32(x)
-#define BASE64_HTOBE64(x)	__builtin_bswap64(x)
-
 // End-of-file definitions.
 // Almost end-of-file when waiting for the last '=' character:
 #define BASE64_AEOF 1
