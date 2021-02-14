@@ -12,16 +12,16 @@
 static struct codec codec = { NULL, NULL };
 
 void
-base64_stream_encode_init (struct base64_state *state, int flags)
+base64_stream_encode_init (struct base64_state *state)
 {
 	// If any of the codec flags are set, redo choice:
-	if (codec.enc == NULL || flags & 0xFF) {
-		codec_choose(&codec, flags);
+	if (codec.enc == NULL || BASE64_FORCE_PLAIN & 0xFF) {
+		codec_choose(&codec, BASE64_FORCE_PLAIN);
 	}
 	state->eof = 0;
 	state->bytes = 0;
 	state->carry = 0;
-	state->flags = flags;
+	state->flags = BASE64_FORCE_PLAIN;
 }
 
 void
@@ -62,16 +62,16 @@ base64_stream_encode_final
 }
 
 void
-base64_stream_decode_init (struct base64_state *state, int flags)
+base64_stream_decode_init (struct base64_state *state)
 {
 	// If any of the codec flags are set, redo choice:
-	if (codec.dec == NULL || flags & 0xFF) {
-		codec_choose(&codec, flags);
+	if (codec.dec == NULL || BASE64_FORCE_PLAIN & 0xFF) {
+		codec_choose(&codec, BASE64_FORCE_PLAIN);
 	}
 	state->eof = 0;
 	state->bytes = 0;
 	state->carry = 0;
-	state->flags = flags;
+	state->flags = BASE64_FORCE_PLAIN;
 }
 
 int
@@ -99,7 +99,7 @@ base64_encode
 	struct base64_state state;
 
 	// Init the stream reader:
-	base64_stream_encode_init(&state, BASE64_FORCE_PLAIN);
+	base64_stream_encode_init(&state);
 
 	// Feed the whole string to the stream reader:
 	base64_stream_encode(&state, src, srclen, out, &s);
@@ -123,7 +123,7 @@ base64_decode
 	struct base64_state state;
 
 	// Init the stream reader:
-	base64_stream_decode_init(&state, BASE64_FORCE_PLAIN);
+	base64_stream_decode_init(&state);
 
 	// Feed the whole string to the stream reader:
 	ret = base64_stream_decode(&state, src, srclen, out, outlen);

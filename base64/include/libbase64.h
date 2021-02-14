@@ -33,10 +33,9 @@ void base64_encode
 	) ;
 
 /* Call this before calling base64_stream_encode() to init the state. See above
- * for `flags`; set to 0 for default operation: */
+ */
 void base64_stream_encode_init
 	( struct base64_state	*state
-	, int			 flags
 	) ;
 
 /* Encodes the block of data of given length at `src`, into the buffer at
@@ -74,10 +73,9 @@ int base64_decode
 	) ;
 
 /* Call this before calling base64_stream_decode() to init the state. See above
- * for `flags`; set to 0 for default operation: */
+ */
 void base64_stream_decode_init
 	( struct base64_state	*state
-	, int			 flags
 	) ;
 
 /* Decodes the block of data of given length at `src`, into the buffer at
