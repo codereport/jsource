@@ -7,7 +7,6 @@
 #include "x.h"
 
 #include "../base64/include/libbase64.h"
-#define B64CODEC BASE64_FORCE_PLAIN
 
 // Calculate byte-at-a-time CRC table in *crctab, and return the starting value as the result
 static UINT
@@ -121,7 +120,6 @@ jtqhash12(J jt, A a, A w) {
 
 // base64 stuff
 
-static C base64tab[64] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 A
 jttobase64(J jt, A w) {
     F1RANK(1, jttobase64, UNUSED_VALUE);  // here we deal only with rank<= 1
@@ -137,41 +135,10 @@ jttobase64(J jt, A w) {
     UI4 *zv     = UI4AV(z);  // result block, pointer into it
     C *wv       = CAV(w);    // input pointer
     size_t zlen = AN(z);
-    base64_encode(wv, AN(w), CAV(z), &zlen, B64CODEC);
+    base64_encode(wv, AN(w), CAV(z), &zlen);
     ASSERT((I)zlen == AN(z), EVDOMAIN);  // make sure length agreed
     return z;
 }
-
-static C base64invtab[256] = {
-  0xff,       0xff,       0xff,       0xff,       0xff,       0xff,       0xff,       0xff,       0xff,
-  0xff,       0xff,       0xff,       0xff,       0xff,       0xff,       0xff,       0xff,       0xff,
-  0xff,       0xff,       0xff,       0xff,       0xff,       0xff,       0xff,       0xff,       0xff,
-  0xff,       0xff,       0xff,       0xff,       0xff,       0xff,       0xff,       0xff,       0xff,
-  0xff,       0xff,       0xff,       0xff,       0xff,       0xff,       0xff,       ['+'] = 62, 0xff,
-  0xff,       0xff,       ['/'] = 63, ['0'] = 52, ['1'] = 53, ['2'] = 54, ['3'] = 55, ['4'] = 56, ['5'] = 57,
-  ['6'] = 58, ['7'] = 59, ['8'] = 60, ['9'] = 61, 0xff,       0xff,       0xff,       0xff,       0xff,
-  0xff,       0xff,       ['A'] = 0,  ['B'] = 1,  ['C'] = 2,  ['D'] = 3,  ['E'] = 4,  ['F'] = 5,  ['G'] = 6,
-  ['H'] = 7,  ['I'] = 8,  ['J'] = 9,  ['K'] = 10, ['L'] = 11, ['M'] = 12, ['N'] = 13, ['O'] = 14, ['P'] = 15,
-  ['Q'] = 16, ['R'] = 17, ['S'] = 18, ['T'] = 19, ['U'] = 20, ['V'] = 21, ['W'] = 22, ['X'] = 23, ['Y'] = 24,
-  ['Z'] = 25, 0xff,       0xff,       0xff,       0xff,       0xff,       0xff,       ['a'] = 26, ['b'] = 27,
-  ['c'] = 28, ['d'] = 29, ['e'] = 30, ['f'] = 31, ['g'] = 32, ['h'] = 33, ['i'] = 34, ['j'] = 35, ['k'] = 36,
-  ['l'] = 37, ['m'] = 38, ['n'] = 39, ['o'] = 40, ['p'] = 41, ['q'] = 42, ['r'] = 43, ['s'] = 44, ['t'] = 45,
-  ['u'] = 46, ['v'] = 47, ['w'] = 48, ['x'] = 49, ['y'] = 50, ['z'] = 51, 0xff,       0xff,       0xff,
-  0xff,       0xff,       0xff,       0xff,       0xff,       0xff,       0xff,       0xff,       0xff,
-  0xff,       0xff,       0xff,       0xff,       0xff,       0xff,       0xff,       0xff,       0xff,
-  0xff,       0xff,       0xff,       0xff,       0xff,       0xff,       0xff,       0xff,       0xff,
-  0xff,       0xff,       0xff,       0xff,       0xff,       0xff,       0xff,       0xff,       0xff,
-  0xff,       0xff,       0xff,       0xff,       0xff,       0xff,       0xff,       0xff,       0xff,
-  0xff,       0xff,       0xff,       0xff,       0xff,       0xff,       0xff,       0xff,       0xff,
-  0xff,       0xff,       0xff,       0xff,       0xff,       0xff,       0xff,       0xff,       0xff,
-  0xff,       0xff,       0xff,       0xff,       0xff,       0xff,       0xff,       0xff,       0xff,
-  0xff,       0xff,       0xff,       0xff,       0xff,       0xff,       0xff,       0xff,       0xff,
-  0xff,       0xff,       0xff,       0xff,       0xff,       0xff,       0xff,       0xff,       0xff,
-  0xff,       0xff,       0xff,       0xff,       0xff,       0xff,       0xff,       0xff,       0xff,
-  0xff,       0xff,       0xff,       0xff,       0xff,       0xff,       0xff,       0xff,       0xff,
-  0xff,       0xff,       0xff,       0xff,       0xff,       0xff,       0xff,       0xff,       0xff,
-  0xff,       0xff,       0xff,       0xff,       0xff,       0xff,       0xff,       0xff,       0xff,
-  0xff,       0xff,       0xff,       0xff};
 
 A
 jtfrombase64(J jt, A w) {
@@ -189,7 +156,7 @@ jtfrombase64(J jt, A w) {
     // process the input in full 4-byte groups.  We may overread the input AND overwrite the result, but we will always
     // stay in the padding area, which is OK because we allocated the result here
     size_t zlen = AN(z);
-    int rc      = base64_decode(CAV(w), AN(w), CAV(z), &zlen, B64CODEC);
+    int rc      = base64_decode(CAV(w), AN(w), CAV(z), &zlen);
     ASSERT(rc == 1 && (I)zlen == AN(z), EVDOMAIN);  // make sure no invalid input bytes
     return z;
 }

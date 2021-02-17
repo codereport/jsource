@@ -12,8 +12,6 @@
 /* fs   zv=.+/\.xv    1<n */
 
 /* C routines for platforms without asm support */
-#ifndef OVF
-
 #define DI LD
 
 #define PLUSVV(n, z, x, y)                                                           \
@@ -122,5 +120,3 @@
         z += n;                                                 \
         DQ(n, --x; --z; DPMULD(*x, s, s, return EWOV; *z = s;)) \
     }
-
-#endif
