@@ -36,15 +36,15 @@
  *	@(#)fnmatch.h	8.1 (Berkeley) 6/2/93
  */
 
-#ifndef	_FNMATCH_H_
-#define	_FNMATCH_H_
+#ifndef _FNMATCH_H_
+#define _FNMATCH_H_
 
-#define	FNM_NOMATCH	1	/* Match failed. */
+#define FNM_NOMATCH 1 /* Match failed. */
 
-#define	FNM_NOESCAPE	0x01	/* Disable backslash escaping. */
-#define	FNM_PATHNAME	0x02	/* Slash must be matched by slash. */
-#define	FNM_PERIOD	0x04	/* Period must be matched by period. */
+#define FNM_NOESCAPE 0x01 /* Disable backslash escaping. */
+#define FNM_PATHNAME 0x02 /* Slash must be matched by slash. */
+#define FNM_PERIOD 0x04   /* Period must be matched by period. */
 
-int fnmatch (const char *, const char *, int);
+int fnmatch(const char *, const char *, int);
 
 #endif /* !_FNMATCH_H_ */

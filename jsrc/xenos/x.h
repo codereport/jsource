@@ -3,28 +3,27 @@
 /*                                                                         */
 /* Xenos: Macros and Defined Constants for !:                              */
 
-
-#define XCC             127
-#define XC(m,n)         (n+XCC*m)
+#define XCC 127
+#define XC(m, n) (n + XCC * m)
 
 /* adding suffix _O to avoid possible name conflict with fcntl.h */
-#define FAPPEND_O         "ab"
-#define FREAD_O           "rb"
-#define FUPDATE_O         "r+b"
-#define FUPDATEC_O        "w+b"
-#define FWRITE_O          "wb"
+#define FAPPEND_O "ab"
+#define FREAD_O "rb"
+#define FUPDATE_O "r+b"
+#define FUPDATEC_O "w+b"
+#define FWRITE_O "wb"
 
 #ifndef SEEK_SET
-#define SEEK_SET        0
+#define SEEK_SET 0
 #endif
 #ifndef SEEK_CUR
-#define SEEK_CUR        1
+#define SEEK_CUR 1
 #endif
 #ifndef SEEK_END
-#define SEEK_END        2
+#define SEEK_END 2
 #endif
 
 #ifdef L_tmpnam
 #undef L_tmpnam
 #endif
-#define L_tmpnam        300  /* full path name can be very long */
+#define L_tmpnam 300 /* full path name can be very long */

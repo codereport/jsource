@@ -39,9 +39,8 @@ double_trick call must be immediately before SWITCHCALL
 otherwise the regs may be used and the parameter lost.
 */
 
-
 #include <stdlib.h>
-typedef unsigned char       BYTE;
+typedef unsigned char BYTE;
 #define CALLBACK
 #include <stdint.h>
 #include <wchar.h>
@@ -63,8 +62,9 @@ typedef double complex double_complex;
 
 #include <dlfcn.h>
 
-I max(I a, I b) {
-  return a > b ? a : b;
+I
+max(I a, I b) {
+    return a > b ? a : b;
 }
 
 typedef void *HMODULE;
@@ -78,371 +78,2148 @@ typedef I (*FARPROC)();
 /* _cdecl is used by some C DLLs and by Fortran                 */
 /* + flag in cd arg selects the alternate _cdecl convention     */
 
-typedef I     (__stdcall *STDCALLI)();
-typedef I     (_cdecl    *ALTCALLI)();
-typedef D     (__stdcall *STDCALLD)();
-typedef D     (_cdecl    *ALTCALLD)();
+typedef I(__stdcall *STDCALLI)();
+typedef I(_cdecl *ALTCALLI)();
+typedef D(__stdcall *STDCALLD)();
+typedef D(_cdecl *ALTCALLD)();
 
-typedef double             DoF;
+typedef double DoF;
 
-typedef float (__stdcall *STDCALLF)();
-typedef float (_cdecl    *ALTCALLF)();
+typedef float(__stdcall *STDCALLF)();
+typedef float(_cdecl *ALTCALLF)();
 
 /* error return codes */
-#define DEOK            0
-#define DEBADLIB        1
-#define DEBADFN         2
-#define DETOOMANY       3       /* too many dlls loaded                 */
-#define DECOUNT         4       /* too many args or (#args)~:#parms     */
-#define DEDEC           5
-#define DEPARM          6
+#define DEOK 0
+#define DEBADLIB 1
+#define DEBADFN 2
+#define DETOOMANY 3 /* too many dlls loaded                 */
+#define DECOUNT 4   /* too many args or (#args)~:#parms     */
+#define DEDEC 5
+#define DEPARM 6
 
-#define NCDARGS         64      /* hardwired max number of arguments    */
-#define NLIBS           100     /* max number of libraries              */
+#define NCDARGS 64 /* hardwired max number of arguments    */
+#define NLIBS 100  /* max number of libraries              */
 
-#define NLEFTARG        (2*NPATH+4+3*(1+NCDARGS))
-                                /* max length of 15!:0 left argument    */
+#define NLEFTARG (2 * NPATH + 4 + 3 * (1 + NCDARGS))
+/* max length of 15!:0 left argument    */
 
-#define CDASSERT(p,c)   {if(!(p)){jt->dlllasterror=c; ASSERT(0,EVDOMAIN);}}
+#define CDASSERT(p, c)            \
+    {                             \
+        if (!(p)) {               \
+            jt->dlllasterror = c; \
+            ASSERT(0, EVDOMAIN);  \
+        }                         \
+    }
 
 typedef struct {
- FARPROC fp;                    /* proc function address                */
- HMODULE h;                     /* library (module) handle              */
- I ai;                          /* argument string index in cdstr       */
- I an;                          /* argument string length               */
- I li;                          /* library name index in cdstr          */
- I ln;                          /* library name length                  */
- I pi;                          /* proc name index in cdstr             */
- I pn;                          /* proc name length                     */
- I n;                           /* number of arguments (excl. result)   */
- I zt;                          /* result jtype                         */
- C cc;                          /* call class: 0x00 or '0' or '1'       */
- C zl;                          /* result type letter                   */
- B zbx;                         /* > 1 iff result is boxed              */
- B fpreset;                     /* % 1 iff do FPRESET after call        */
- B alternate;                   /* + 1 iff alternate calling convention */
- C star[NCDARGS];               // arguments star or not: 0=not 1=* 2=&
- C tletter[NCDARGS];            /* arguments type letters, cwusi etc.   */
+    FARPROC fp;         /* proc function address                */
+    HMODULE h;          /* library (module) handle              */
+    I ai;               /* argument string index in cdstr       */
+    I an;               /* argument string length               */
+    I li;               /* library name index in cdstr          */
+    I ln;               /* library name length                  */
+    I pi;               /* proc name index in cdstr             */
+    I pn;               /* proc name length                     */
+    I n;                /* number of arguments (excl. result)   */
+    I zt;               /* result jtype                         */
+    C cc;               /* call class: 0x00 or '0' or '1'       */
+    C zl;               /* result type letter                   */
+    B zbx;              /* > 1 iff result is boxed              */
+    B fpreset;          /* % 1 iff do FPRESET after call        */
+    B alternate;        /* + 1 iff alternate calling convention */
+    C star[NCDARGS];    // arguments star or not: 0=not 1=* 2=&
+    C tletter[NCDARGS]; /* arguments type letters, cwusi etc.   */
 } CCT;
 
-
-
-extern void double_trick(D,D,D,D,D,D,D,D);
+extern void double_trick(D, D, D, D, D, D, D, D);
 
 #if defined(__x86_64__)
 /* might be faster */
-  #define dtrick \
-__asm__ ("movq (%0),%%xmm0\n\t"       \
-      "movq  8(%0), %%xmm1\n\t"       \
-      "movq 16(%0), %%xmm2\n\t"       \
-      "movq 24(%0), %%xmm3\n\t"       \
-      "movq 32(%0), %%xmm4\n\t"       \
-      "movq 40(%0), %%xmm5\n\t"       \
-      "movq 48(%0), %%xmm6\n\t"       \
-      "movq 56(%0), %%xmm7\n\t"       \
-      : /* no output operands */      \
-      : "r" (dd)                      \
-      : "xmm0","xmm1","xmm2","xmm3","xmm4","xmm5","xmm6","xmm7","cc");
+#define dtrick                   \
+    __asm__(                     \
+      "movq (%0),%%xmm0\n\t"     \
+      "movq  8(%0), %%xmm1\n\t"  \
+      "movq 16(%0), %%xmm2\n\t"  \
+      "movq 24(%0), %%xmm3\n\t"  \
+      "movq 32(%0), %%xmm4\n\t"  \
+      "movq 40(%0), %%xmm5\n\t"  \
+      "movq 48(%0), %%xmm6\n\t"  \
+      "movq 56(%0), %%xmm7\n\t"  \
+      : /* no output operands */ \
+      : "r"(dd)                  \
+      : "xmm0", "xmm1", "xmm2", "xmm3", "xmm4", "xmm5", "xmm6", "xmm7", "cc");
 #elif defined(__aarch64__)
-  #define dtrick double_trick(dd[0],dd[1],dd[2],dd[3],dd[4],dd[5],dd[6],dd[7]);
+#define dtrick double_trick(dd[0], dd[1], dd[2], dd[3], dd[4], dd[5], dd[6], dd[7]);
 #endif
 
+#define SWITCHCALL                                                                                                   \
+    dtrick switch (cnt) {                                                                                            \
+        case 0: r = fp(); break;                                                                                     \
+        case 1: r = fp(d[0]); break;                                                                                 \
+        case 2: r = fp(d[0], d[1]); break;                                                                           \
+        case 3: r = fp(d[0], d[1], d[2]); break;                                                                     \
+        case 4: r = fp(d[0], d[1], d[2], d[3]); break;                                                               \
+        case 5: r = fp(d[0], d[1], d[2], d[3], d[4]); break;                                                         \
+        case 6: r = fp(d[0], d[1], d[2], d[3], d[4], d[5]); break;                                                   \
+        case 7: r = fp(d[0], d[1], d[2], d[3], d[4], d[5], d[6]); break;                                             \
+        case 8: r = fp(d[0], d[1], d[2], d[3], d[4], d[5], d[6], d[7]); break;                                       \
+        case 9: r = fp(d[0], d[1], d[2], d[3], d[4], d[5], d[6], d[7], d[8]); break;                                 \
+        case 10: r = fp(d[0], d[1], d[2], d[3], d[4], d[5], d[6], d[7], d[8], d[9]); break;                          \
+        case 11: r = fp(d[0], d[1], d[2], d[3], d[4], d[5], d[6], d[7], d[8], d[9], d[10]); break;                   \
+        case 12: r = fp(d[0], d[1], d[2], d[3], d[4], d[5], d[6], d[7], d[8], d[9], d[10], d[11]); break;            \
+        case 13: r = fp(d[0], d[1], d[2], d[3], d[4], d[5], d[6], d[7], d[8], d[9], d[10], d[11], d[12]); break;     \
+        case 14: r = fp(d[0], d[1], d[2], d[3], d[4], d[5], d[6], d[7], d[8], d[9], d[10], d[11], d[12], d[13]);     \
+          break;                                                                                                     \
+        case 15:                                                                                                     \
+            r = fp(d[0], d[1], d[2], d[3], d[4], d[5], d[6], d[7], d[8], d[9], d[10], d[11], d[12], d[13], d[14]);   \
+            break;                                                                                                   \
+        case 16:                                                                                                     \
+            r = fp(                                                                                                  \
+              d[0], d[1], d[2], d[3], d[4], d[5], d[6], d[7], d[8], d[9], d[10], d[11], d[12], d[13], d[14], d[15]); \
+            break;                                                                                                   \
+        case 17:                                                                                                     \
+            r = fp(d[0],                                                                                             \
+                   d[1],                                                                                             \
+                   d[2],                                                                                             \
+                   d[3],                                                                                             \
+                   d[4],                                                                                             \
+                   d[5],                                                                                             \
+                   d[6],                                                                                             \
+                   d[7],                                                                                             \
+                   d[8],                                                                                             \
+                   d[9],                                                                                             \
+                   d[10],                                                                                            \
+                   d[11],                                                                                            \
+                   d[12],                                                                                            \
+                   d[13],                                                                                            \
+                   d[14],                                                                                            \
+                   d[15],                                                                                            \
+                   d[16]);                                                                                           \
+            break;                                                                                                   \
+        case 18:                                                                                                     \
+            r = fp(d[0],                                                                                             \
+                   d[1],                                                                                             \
+                   d[2],                                                                                             \
+                   d[3],                                                                                             \
+                   d[4],                                                                                             \
+                   d[5],                                                                                             \
+                   d[6],                                                                                             \
+                   d[7],                                                                                             \
+                   d[8],                                                                                             \
+                   d[9],                                                                                             \
+                   d[10],                                                                                            \
+                   d[11],                                                                                            \
+                   d[12],                                                                                            \
+                   d[13],                                                                                            \
+                   d[14],                                                                                            \
+                   d[15],                                                                                            \
+                   d[16],                                                                                            \
+                   d[17]);                                                                                           \
+            break;                                                                                                   \
+        case 19:                                                                                                     \
+            r = fp(d[0],                                                                                             \
+                   d[1],                                                                                             \
+                   d[2],                                                                                             \
+                   d[3],                                                                                             \
+                   d[4],                                                                                             \
+                   d[5],                                                                                             \
+                   d[6],                                                                                             \
+                   d[7],                                                                                             \
+                   d[8],                                                                                             \
+                   d[9],                                                                                             \
+                   d[10],                                                                                            \
+                   d[11],                                                                                            \
+                   d[12],                                                                                            \
+                   d[13],                                                                                            \
+                   d[14],                                                                                            \
+                   d[15],                                                                                            \
+                   d[16],                                                                                            \
+                   d[17],                                                                                            \
+                   d[18]);                                                                                           \
+            break;                                                                                                   \
+        case 20:                                                                                                     \
+            r = fp(d[0],                                                                                             \
+                   d[1],                                                                                             \
+                   d[2],                                                                                             \
+                   d[3],                                                                                             \
+                   d[4],                                                                                             \
+                   d[5],                                                                                             \
+                   d[6],                                                                                             \
+                   d[7],                                                                                             \
+                   d[8],                                                                                             \
+                   d[9],                                                                                             \
+                   d[10],                                                                                            \
+                   d[11],                                                                                            \
+                   d[12],                                                                                            \
+                   d[13],                                                                                            \
+                   d[14],                                                                                            \
+                   d[15],                                                                                            \
+                   d[16],                                                                                            \
+                   d[17],                                                                                            \
+                   d[18],                                                                                            \
+                   d[19]);                                                                                           \
+            break;                                                                                                   \
+        case 21:                                                                                                     \
+            r = fp(d[0],                                                                                             \
+                   d[1],                                                                                             \
+                   d[2],                                                                                             \
+                   d[3],                                                                                             \
+                   d[4],                                                                                             \
+                   d[5],                                                                                             \
+                   d[6],                                                                                             \
+                   d[7],                                                                                             \
+                   d[8],                                                                                             \
+                   d[9],                                                                                             \
+                   d[10],                                                                                            \
+                   d[11],                                                                                            \
+                   d[12],                                                                                            \
+                   d[13],                                                                                            \
+                   d[14],                                                                                            \
+                   d[15],                                                                                            \
+                   d[16],                                                                                            \
+                   d[17],                                                                                            \
+                   d[18],                                                                                            \
+                   d[19],                                                                                            \
+                   d[20]);                                                                                           \
+            break;                                                                                                   \
+        case 22:                                                                                                     \
+            r = fp(d[0],                                                                                             \
+                   d[1],                                                                                             \
+                   d[2],                                                                                             \
+                   d[3],                                                                                             \
+                   d[4],                                                                                             \
+                   d[5],                                                                                             \
+                   d[6],                                                                                             \
+                   d[7],                                                                                             \
+                   d[8],                                                                                             \
+                   d[9],                                                                                             \
+                   d[10],                                                                                            \
+                   d[11],                                                                                            \
+                   d[12],                                                                                            \
+                   d[13],                                                                                            \
+                   d[14],                                                                                            \
+                   d[15],                                                                                            \
+                   d[16],                                                                                            \
+                   d[17],                                                                                            \
+                   d[18],                                                                                            \
+                   d[19],                                                                                            \
+                   d[20],                                                                                            \
+                   d[21]);                                                                                           \
+            break;                                                                                                   \
+        case 23:                                                                                                     \
+            r = fp(d[0],                                                                                             \
+                   d[1],                                                                                             \
+                   d[2],                                                                                             \
+                   d[3],                                                                                             \
+                   d[4],                                                                                             \
+                   d[5],                                                                                             \
+                   d[6],                                                                                             \
+                   d[7],                                                                                             \
+                   d[8],                                                                                             \
+                   d[9],                                                                                             \
+                   d[10],                                                                                            \
+                   d[11],                                                                                            \
+                   d[12],                                                                                            \
+                   d[13],                                                                                            \
+                   d[14],                                                                                            \
+                   d[15],                                                                                            \
+                   d[16],                                                                                            \
+                   d[17],                                                                                            \
+                   d[18],                                                                                            \
+                   d[19],                                                                                            \
+                   d[20],                                                                                            \
+                   d[21],                                                                                            \
+                   d[22]);                                                                                           \
+            break;                                                                                                   \
+        case 24:                                                                                                     \
+            r = fp(d[0],                                                                                             \
+                   d[1],                                                                                             \
+                   d[2],                                                                                             \
+                   d[3],                                                                                             \
+                   d[4],                                                                                             \
+                   d[5],                                                                                             \
+                   d[6],                                                                                             \
+                   d[7],                                                                                             \
+                   d[8],                                                                                             \
+                   d[9],                                                                                             \
+                   d[10],                                                                                            \
+                   d[11],                                                                                            \
+                   d[12],                                                                                            \
+                   d[13],                                                                                            \
+                   d[14],                                                                                            \
+                   d[15],                                                                                            \
+                   d[16],                                                                                            \
+                   d[17],                                                                                            \
+                   d[18],                                                                                            \
+                   d[19],                                                                                            \
+                   d[20],                                                                                            \
+                   d[21],                                                                                            \
+                   d[22],                                                                                            \
+                   d[23]);                                                                                           \
+            break;                                                                                                   \
+        case 25:                                                                                                     \
+            r = fp(d[0],                                                                                             \
+                   d[1],                                                                                             \
+                   d[2],                                                                                             \
+                   d[3],                                                                                             \
+                   d[4],                                                                                             \
+                   d[5],                                                                                             \
+                   d[6],                                                                                             \
+                   d[7],                                                                                             \
+                   d[8],                                                                                             \
+                   d[9],                                                                                             \
+                   d[10],                                                                                            \
+                   d[11],                                                                                            \
+                   d[12],                                                                                            \
+                   d[13],                                                                                            \
+                   d[14],                                                                                            \
+                   d[15],                                                                                            \
+                   d[16],                                                                                            \
+                   d[17],                                                                                            \
+                   d[18],                                                                                            \
+                   d[19],                                                                                            \
+                   d[20],                                                                                            \
+                   d[21],                                                                                            \
+                   d[22],                                                                                            \
+                   d[23],                                                                                            \
+                   d[24]);                                                                                           \
+            break;                                                                                                   \
+        case 26:                                                                                                     \
+            r = fp(d[0],                                                                                             \
+                   d[1],                                                                                             \
+                   d[2],                                                                                             \
+                   d[3],                                                                                             \
+                   d[4],                                                                                             \
+                   d[5],                                                                                             \
+                   d[6],                                                                                             \
+                   d[7],                                                                                             \
+                   d[8],                                                                                             \
+                   d[9],                                                                                             \
+                   d[10],                                                                                            \
+                   d[11],                                                                                            \
+                   d[12],                                                                                            \
+                   d[13],                                                                                            \
+                   d[14],                                                                                            \
+                   d[15],                                                                                            \
+                   d[16],                                                                                            \
+                   d[17],                                                                                            \
+                   d[18],                                                                                            \
+                   d[19],                                                                                            \
+                   d[20],                                                                                            \
+                   d[21],                                                                                            \
+                   d[22],                                                                                            \
+                   d[23],                                                                                            \
+                   d[24],                                                                                            \
+                   d[25]);                                                                                           \
+            break;                                                                                                   \
+        case 27:                                                                                                     \
+            r = fp(d[0],                                                                                             \
+                   d[1],                                                                                             \
+                   d[2],                                                                                             \
+                   d[3],                                                                                             \
+                   d[4],                                                                                             \
+                   d[5],                                                                                             \
+                   d[6],                                                                                             \
+                   d[7],                                                                                             \
+                   d[8],                                                                                             \
+                   d[9],                                                                                             \
+                   d[10],                                                                                            \
+                   d[11],                                                                                            \
+                   d[12],                                                                                            \
+                   d[13],                                                                                            \
+                   d[14],                                                                                            \
+                   d[15],                                                                                            \
+                   d[16],                                                                                            \
+                   d[17],                                                                                            \
+                   d[18],                                                                                            \
+                   d[19],                                                                                            \
+                   d[20],                                                                                            \
+                   d[21],                                                                                            \
+                   d[22],                                                                                            \
+                   d[23],                                                                                            \
+                   d[24],                                                                                            \
+                   d[25],                                                                                            \
+                   d[26]);                                                                                           \
+            break;                                                                                                   \
+        case 28:                                                                                                     \
+            r = fp(d[0],                                                                                             \
+                   d[1],                                                                                             \
+                   d[2],                                                                                             \
+                   d[3],                                                                                             \
+                   d[4],                                                                                             \
+                   d[5],                                                                                             \
+                   d[6],                                                                                             \
+                   d[7],                                                                                             \
+                   d[8],                                                                                             \
+                   d[9],                                                                                             \
+                   d[10],                                                                                            \
+                   d[11],                                                                                            \
+                   d[12],                                                                                            \
+                   d[13],                                                                                            \
+                   d[14],                                                                                            \
+                   d[15],                                                                                            \
+                   d[16],                                                                                            \
+                   d[17],                                                                                            \
+                   d[18],                                                                                            \
+                   d[19],                                                                                            \
+                   d[20],                                                                                            \
+                   d[21],                                                                                            \
+                   d[22],                                                                                            \
+                   d[23],                                                                                            \
+                   d[24],                                                                                            \
+                   d[25],                                                                                            \
+                   d[26],                                                                                            \
+                   d[27]);                                                                                           \
+            break;                                                                                                   \
+        case 29:                                                                                                     \
+            r = fp(d[0],                                                                                             \
+                   d[1],                                                                                             \
+                   d[2],                                                                                             \
+                   d[3],                                                                                             \
+                   d[4],                                                                                             \
+                   d[5],                                                                                             \
+                   d[6],                                                                                             \
+                   d[7],                                                                                             \
+                   d[8],                                                                                             \
+                   d[9],                                                                                             \
+                   d[10],                                                                                            \
+                   d[11],                                                                                            \
+                   d[12],                                                                                            \
+                   d[13],                                                                                            \
+                   d[14],                                                                                            \
+                   d[15],                                                                                            \
+                   d[16],                                                                                            \
+                   d[17],                                                                                            \
+                   d[18],                                                                                            \
+                   d[19],                                                                                            \
+                   d[20],                                                                                            \
+                   d[21],                                                                                            \
+                   d[22],                                                                                            \
+                   d[23],                                                                                            \
+                   d[24],                                                                                            \
+                   d[25],                                                                                            \
+                   d[26],                                                                                            \
+                   d[27],                                                                                            \
+                   d[28]);                                                                                           \
+            break;                                                                                                   \
+        case 30:                                                                                                     \
+            r = fp(d[0],                                                                                             \
+                   d[1],                                                                                             \
+                   d[2],                                                                                             \
+                   d[3],                                                                                             \
+                   d[4],                                                                                             \
+                   d[5],                                                                                             \
+                   d[6],                                                                                             \
+                   d[7],                                                                                             \
+                   d[8],                                                                                             \
+                   d[9],                                                                                             \
+                   d[10],                                                                                            \
+                   d[11],                                                                                            \
+                   d[12],                                                                                            \
+                   d[13],                                                                                            \
+                   d[14],                                                                                            \
+                   d[15],                                                                                            \
+                   d[16],                                                                                            \
+                   d[17],                                                                                            \
+                   d[18],                                                                                            \
+                   d[19],                                                                                            \
+                   d[20],                                                                                            \
+                   d[21],                                                                                            \
+                   d[22],                                                                                            \
+                   d[23],                                                                                            \
+                   d[24],                                                                                            \
+                   d[25],                                                                                            \
+                   d[26],                                                                                            \
+                   d[27],                                                                                            \
+                   d[28],                                                                                            \
+                   d[29]);                                                                                           \
+            break;                                                                                                   \
+        case 31:                                                                                                     \
+            r = fp(d[0],                                                                                             \
+                   d[1],                                                                                             \
+                   d[2],                                                                                             \
+                   d[3],                                                                                             \
+                   d[4],                                                                                             \
+                   d[5],                                                                                             \
+                   d[6],                                                                                             \
+                   d[7],                                                                                             \
+                   d[8],                                                                                             \
+                   d[9],                                                                                             \
+                   d[10],                                                                                            \
+                   d[11],                                                                                            \
+                   d[12],                                                                                            \
+                   d[13],                                                                                            \
+                   d[14],                                                                                            \
+                   d[15],                                                                                            \
+                   d[16],                                                                                            \
+                   d[17],                                                                                            \
+                   d[18],                                                                                            \
+                   d[19],                                                                                            \
+                   d[20],                                                                                            \
+                   d[21],                                                                                            \
+                   d[22],                                                                                            \
+                   d[23],                                                                                            \
+                   d[24],                                                                                            \
+                   d[25],                                                                                            \
+                   d[26],                                                                                            \
+                   d[27],                                                                                            \
+                   d[28],                                                                                            \
+                   d[29],                                                                                            \
+                   d[30]);                                                                                           \
+            break;                                                                                                   \
+        case 32:                                                                                                     \
+            r = fp(d[0],                                                                                             \
+                   d[1],                                                                                             \
+                   d[2],                                                                                             \
+                   d[3],                                                                                             \
+                   d[4],                                                                                             \
+                   d[5],                                                                                             \
+                   d[6],                                                                                             \
+                   d[7],                                                                                             \
+                   d[8],                                                                                             \
+                   d[9],                                                                                             \
+                   d[10],                                                                                            \
+                   d[11],                                                                                            \
+                   d[12],                                                                                            \
+                   d[13],                                                                                            \
+                   d[14],                                                                                            \
+                   d[15],                                                                                            \
+                   d[16],                                                                                            \
+                   d[17],                                                                                            \
+                   d[18],                                                                                            \
+                   d[19],                                                                                            \
+                   d[20],                                                                                            \
+                   d[21],                                                                                            \
+                   d[22],                                                                                            \
+                   d[23],                                                                                            \
+                   d[24],                                                                                            \
+                   d[25],                                                                                            \
+                   d[26],                                                                                            \
+                   d[27],                                                                                            \
+                   d[28],                                                                                            \
+                   d[29],                                                                                            \
+                   d[30],                                                                                            \
+                   d[31]);                                                                                           \
+            break;                                                                                                   \
+        case 33:                                                                                                     \
+            r = fp(d[0],                                                                                             \
+                   d[1],                                                                                             \
+                   d[2],                                                                                             \
+                   d[3],                                                                                             \
+                   d[4],                                                                                             \
+                   d[5],                                                                                             \
+                   d[6],                                                                                             \
+                   d[7],                                                                                             \
+                   d[8],                                                                                             \
+                   d[9],                                                                                             \
+                   d[10],                                                                                            \
+                   d[11],                                                                                            \
+                   d[12],                                                                                            \
+                   d[13],                                                                                            \
+                   d[14],                                                                                            \
+                   d[15],                                                                                            \
+                   d[16],                                                                                            \
+                   d[17],                                                                                            \
+                   d[18],                                                                                            \
+                   d[19],                                                                                            \
+                   d[20],                                                                                            \
+                   d[21],                                                                                            \
+                   d[22],                                                                                            \
+                   d[23],                                                                                            \
+                   d[24],                                                                                            \
+                   d[25],                                                                                            \
+                   d[26],                                                                                            \
+                   d[27],                                                                                            \
+                   d[28],                                                                                            \
+                   d[29],                                                                                            \
+                   d[30],                                                                                            \
+                   d[31],                                                                                            \
+                   d[32]);                                                                                           \
+            break;                                                                                                   \
+        case 34:                                                                                                     \
+            r = fp(d[0],                                                                                             \
+                   d[1],                                                                                             \
+                   d[2],                                                                                             \
+                   d[3],                                                                                             \
+                   d[4],                                                                                             \
+                   d[5],                                                                                             \
+                   d[6],                                                                                             \
+                   d[7],                                                                                             \
+                   d[8],                                                                                             \
+                   d[9],                                                                                             \
+                   d[10],                                                                                            \
+                   d[11],                                                                                            \
+                   d[12],                                                                                            \
+                   d[13],                                                                                            \
+                   d[14],                                                                                            \
+                   d[15],                                                                                            \
+                   d[16],                                                                                            \
+                   d[17],                                                                                            \
+                   d[18],                                                                                            \
+                   d[19],                                                                                            \
+                   d[20],                                                                                            \
+                   d[21],                                                                                            \
+                   d[22],                                                                                            \
+                   d[23],                                                                                            \
+                   d[24],                                                                                            \
+                   d[25],                                                                                            \
+                   d[26],                                                                                            \
+                   d[27],                                                                                            \
+                   d[28],                                                                                            \
+                   d[29],                                                                                            \
+                   d[30],                                                                                            \
+                   d[31],                                                                                            \
+                   d[32],                                                                                            \
+                   d[33]);                                                                                           \
+            break;                                                                                                   \
+        case 35:                                                                                                     \
+            r = fp(d[0],                                                                                             \
+                   d[1],                                                                                             \
+                   d[2],                                                                                             \
+                   d[3],                                                                                             \
+                   d[4],                                                                                             \
+                   d[5],                                                                                             \
+                   d[6],                                                                                             \
+                   d[7],                                                                                             \
+                   d[8],                                                                                             \
+                   d[9],                                                                                             \
+                   d[10],                                                                                            \
+                   d[11],                                                                                            \
+                   d[12],                                                                                            \
+                   d[13],                                                                                            \
+                   d[14],                                                                                            \
+                   d[15],                                                                                            \
+                   d[16],                                                                                            \
+                   d[17],                                                                                            \
+                   d[18],                                                                                            \
+                   d[19],                                                                                            \
+                   d[20],                                                                                            \
+                   d[21],                                                                                            \
+                   d[22],                                                                                            \
+                   d[23],                                                                                            \
+                   d[24],                                                                                            \
+                   d[25],                                                                                            \
+                   d[26],                                                                                            \
+                   d[27],                                                                                            \
+                   d[28],                                                                                            \
+                   d[29],                                                                                            \
+                   d[30],                                                                                            \
+                   d[31],                                                                                            \
+                   d[32],                                                                                            \
+                   d[33],                                                                                            \
+                   d[34]);                                                                                           \
+            break;                                                                                                   \
+        case 36:                                                                                                     \
+            r = fp(d[0],                                                                                             \
+                   d[1],                                                                                             \
+                   d[2],                                                                                             \
+                   d[3],                                                                                             \
+                   d[4],                                                                                             \
+                   d[5],                                                                                             \
+                   d[6],                                                                                             \
+                   d[7],                                                                                             \
+                   d[8],                                                                                             \
+                   d[9],                                                                                             \
+                   d[10],                                                                                            \
+                   d[11],                                                                                            \
+                   d[12],                                                                                            \
+                   d[13],                                                                                            \
+                   d[14],                                                                                            \
+                   d[15],                                                                                            \
+                   d[16],                                                                                            \
+                   d[17],                                                                                            \
+                   d[18],                                                                                            \
+                   d[19],                                                                                            \
+                   d[20],                                                                                            \
+                   d[21],                                                                                            \
+                   d[22],                                                                                            \
+                   d[23],                                                                                            \
+                   d[24],                                                                                            \
+                   d[25],                                                                                            \
+                   d[26],                                                                                            \
+                   d[27],                                                                                            \
+                   d[28],                                                                                            \
+                   d[29],                                                                                            \
+                   d[30],                                                                                            \
+                   d[31],                                                                                            \
+                   d[32],                                                                                            \
+                   d[33],                                                                                            \
+                   d[34],                                                                                            \
+                   d[35]);                                                                                           \
+            break;                                                                                                   \
+        case 37:                                                                                                     \
+            r = fp(d[0],                                                                                             \
+                   d[1],                                                                                             \
+                   d[2],                                                                                             \
+                   d[3],                                                                                             \
+                   d[4],                                                                                             \
+                   d[5],                                                                                             \
+                   d[6],                                                                                             \
+                   d[7],                                                                                             \
+                   d[8],                                                                                             \
+                   d[9],                                                                                             \
+                   d[10],                                                                                            \
+                   d[11],                                                                                            \
+                   d[12],                                                                                            \
+                   d[13],                                                                                            \
+                   d[14],                                                                                            \
+                   d[15],                                                                                            \
+                   d[16],                                                                                            \
+                   d[17],                                                                                            \
+                   d[18],                                                                                            \
+                   d[19],                                                                                            \
+                   d[20],                                                                                            \
+                   d[21],                                                                                            \
+                   d[22],                                                                                            \
+                   d[23],                                                                                            \
+                   d[24],                                                                                            \
+                   d[25],                                                                                            \
+                   d[26],                                                                                            \
+                   d[27],                                                                                            \
+                   d[28],                                                                                            \
+                   d[29],                                                                                            \
+                   d[30],                                                                                            \
+                   d[31],                                                                                            \
+                   d[32],                                                                                            \
+                   d[33],                                                                                            \
+                   d[34],                                                                                            \
+                   d[35],                                                                                            \
+                   d[36]);                                                                                           \
+            break;                                                                                                   \
+        case 38:                                                                                                     \
+            r = fp(d[0],                                                                                             \
+                   d[1],                                                                                             \
+                   d[2],                                                                                             \
+                   d[3],                                                                                             \
+                   d[4],                                                                                             \
+                   d[5],                                                                                             \
+                   d[6],                                                                                             \
+                   d[7],                                                                                             \
+                   d[8],                                                                                             \
+                   d[9],                                                                                             \
+                   d[10],                                                                                            \
+                   d[11],                                                                                            \
+                   d[12],                                                                                            \
+                   d[13],                                                                                            \
+                   d[14],                                                                                            \
+                   d[15],                                                                                            \
+                   d[16],                                                                                            \
+                   d[17],                                                                                            \
+                   d[18],                                                                                            \
+                   d[19],                                                                                            \
+                   d[20],                                                                                            \
+                   d[21],                                                                                            \
+                   d[22],                                                                                            \
+                   d[23],                                                                                            \
+                   d[24],                                                                                            \
+                   d[25],                                                                                            \
+                   d[26],                                                                                            \
+                   d[27],                                                                                            \
+                   d[28],                                                                                            \
+                   d[29],                                                                                            \
+                   d[30],                                                                                            \
+                   d[31],                                                                                            \
+                   d[32],                                                                                            \
+                   d[33],                                                                                            \
+                   d[34],                                                                                            \
+                   d[35],                                                                                            \
+                   d[36],                                                                                            \
+                   d[37]);                                                                                           \
+            break;                                                                                                   \
+        case 39:                                                                                                     \
+            r = fp(d[0],                                                                                             \
+                   d[1],                                                                                             \
+                   d[2],                                                                                             \
+                   d[3],                                                                                             \
+                   d[4],                                                                                             \
+                   d[5],                                                                                             \
+                   d[6],                                                                                             \
+                   d[7],                                                                                             \
+                   d[8],                                                                                             \
+                   d[9],                                                                                             \
+                   d[10],                                                                                            \
+                   d[11],                                                                                            \
+                   d[12],                                                                                            \
+                   d[13],                                                                                            \
+                   d[14],                                                                                            \
+                   d[15],                                                                                            \
+                   d[16],                                                                                            \
+                   d[17],                                                                                            \
+                   d[18],                                                                                            \
+                   d[19],                                                                                            \
+                   d[20],                                                                                            \
+                   d[21],                                                                                            \
+                   d[22],                                                                                            \
+                   d[23],                                                                                            \
+                   d[24],                                                                                            \
+                   d[25],                                                                                            \
+                   d[26],                                                                                            \
+                   d[27],                                                                                            \
+                   d[28],                                                                                            \
+                   d[29],                                                                                            \
+                   d[30],                                                                                            \
+                   d[31],                                                                                            \
+                   d[32],                                                                                            \
+                   d[33],                                                                                            \
+                   d[34],                                                                                            \
+                   d[35],                                                                                            \
+                   d[36],                                                                                            \
+                   d[37],                                                                                            \
+                   d[38]);                                                                                           \
+            break;                                                                                                   \
+        case 40:                                                                                                     \
+            r = fp(d[0],                                                                                             \
+                   d[1],                                                                                             \
+                   d[2],                                                                                             \
+                   d[3],                                                                                             \
+                   d[4],                                                                                             \
+                   d[5],                                                                                             \
+                   d[6],                                                                                             \
+                   d[7],                                                                                             \
+                   d[8],                                                                                             \
+                   d[9],                                                                                             \
+                   d[10],                                                                                            \
+                   d[11],                                                                                            \
+                   d[12],                                                                                            \
+                   d[13],                                                                                            \
+                   d[14],                                                                                            \
+                   d[15],                                                                                            \
+                   d[16],                                                                                            \
+                   d[17],                                                                                            \
+                   d[18],                                                                                            \
+                   d[19],                                                                                            \
+                   d[20],                                                                                            \
+                   d[21],                                                                                            \
+                   d[22],                                                                                            \
+                   d[23],                                                                                            \
+                   d[24],                                                                                            \
+                   d[25],                                                                                            \
+                   d[26],                                                                                            \
+                   d[27],                                                                                            \
+                   d[28],                                                                                            \
+                   d[29],                                                                                            \
+                   d[30],                                                                                            \
+                   d[31],                                                                                            \
+                   d[32],                                                                                            \
+                   d[33],                                                                                            \
+                   d[34],                                                                                            \
+                   d[35],                                                                                            \
+                   d[36],                                                                                            \
+                   d[37],                                                                                            \
+                   d[38],                                                                                            \
+                   d[39]);                                                                                           \
+            break;                                                                                                   \
+        case 41:                                                                                                     \
+            r = fp(d[0],                                                                                             \
+                   d[1],                                                                                             \
+                   d[2],                                                                                             \
+                   d[3],                                                                                             \
+                   d[4],                                                                                             \
+                   d[5],                                                                                             \
+                   d[6],                                                                                             \
+                   d[7],                                                                                             \
+                   d[8],                                                                                             \
+                   d[9],                                                                                             \
+                   d[10],                                                                                            \
+                   d[11],                                                                                            \
+                   d[12],                                                                                            \
+                   d[13],                                                                                            \
+                   d[14],                                                                                            \
+                   d[15],                                                                                            \
+                   d[16],                                                                                            \
+                   d[17],                                                                                            \
+                   d[18],                                                                                            \
+                   d[19],                                                                                            \
+                   d[20],                                                                                            \
+                   d[21],                                                                                            \
+                   d[22],                                                                                            \
+                   d[23],                                                                                            \
+                   d[24],                                                                                            \
+                   d[25],                                                                                            \
+                   d[26],                                                                                            \
+                   d[27],                                                                                            \
+                   d[28],                                                                                            \
+                   d[29],                                                                                            \
+                   d[30],                                                                                            \
+                   d[31],                                                                                            \
+                   d[32],                                                                                            \
+                   d[33],                                                                                            \
+                   d[34],                                                                                            \
+                   d[35],                                                                                            \
+                   d[36],                                                                                            \
+                   d[37],                                                                                            \
+                   d[38],                                                                                            \
+                   d[39],                                                                                            \
+                   d[40]);                                                                                           \
+            break;                                                                                                   \
+        case 42:                                                                                                     \
+            r = fp(d[0],                                                                                             \
+                   d[1],                                                                                             \
+                   d[2],                                                                                             \
+                   d[3],                                                                                             \
+                   d[4],                                                                                             \
+                   d[5],                                                                                             \
+                   d[6],                                                                                             \
+                   d[7],                                                                                             \
+                   d[8],                                                                                             \
+                   d[9],                                                                                             \
+                   d[10],                                                                                            \
+                   d[11],                                                                                            \
+                   d[12],                                                                                            \
+                   d[13],                                                                                            \
+                   d[14],                                                                                            \
+                   d[15],                                                                                            \
+                   d[16],                                                                                            \
+                   d[17],                                                                                            \
+                   d[18],                                                                                            \
+                   d[19],                                                                                            \
+                   d[20],                                                                                            \
+                   d[21],                                                                                            \
+                   d[22],                                                                                            \
+                   d[23],                                                                                            \
+                   d[24],                                                                                            \
+                   d[25],                                                                                            \
+                   d[26],                                                                                            \
+                   d[27],                                                                                            \
+                   d[28],                                                                                            \
+                   d[29],                                                                                            \
+                   d[30],                                                                                            \
+                   d[31],                                                                                            \
+                   d[32],                                                                                            \
+                   d[33],                                                                                            \
+                   d[34],                                                                                            \
+                   d[35],                                                                                            \
+                   d[36],                                                                                            \
+                   d[37],                                                                                            \
+                   d[38],                                                                                            \
+                   d[39],                                                                                            \
+                   d[40],                                                                                            \
+                   d[41]);                                                                                           \
+            break;                                                                                                   \
+        case 43:                                                                                                     \
+            r = fp(d[0],                                                                                             \
+                   d[1],                                                                                             \
+                   d[2],                                                                                             \
+                   d[3],                                                                                             \
+                   d[4],                                                                                             \
+                   d[5],                                                                                             \
+                   d[6],                                                                                             \
+                   d[7],                                                                                             \
+                   d[8],                                                                                             \
+                   d[9],                                                                                             \
+                   d[10],                                                                                            \
+                   d[11],                                                                                            \
+                   d[12],                                                                                            \
+                   d[13],                                                                                            \
+                   d[14],                                                                                            \
+                   d[15],                                                                                            \
+                   d[16],                                                                                            \
+                   d[17],                                                                                            \
+                   d[18],                                                                                            \
+                   d[19],                                                                                            \
+                   d[20],                                                                                            \
+                   d[21],                                                                                            \
+                   d[22],                                                                                            \
+                   d[23],                                                                                            \
+                   d[24],                                                                                            \
+                   d[25],                                                                                            \
+                   d[26],                                                                                            \
+                   d[27],                                                                                            \
+                   d[28],                                                                                            \
+                   d[29],                                                                                            \
+                   d[30],                                                                                            \
+                   d[31],                                                                                            \
+                   d[32],                                                                                            \
+                   d[33],                                                                                            \
+                   d[34],                                                                                            \
+                   d[35],                                                                                            \
+                   d[36],                                                                                            \
+                   d[37],                                                                                            \
+                   d[38],                                                                                            \
+                   d[39],                                                                                            \
+                   d[40],                                                                                            \
+                   d[41],                                                                                            \
+                   d[42]);                                                                                           \
+            break;                                                                                                   \
+        case 44:                                                                                                     \
+            r = fp(d[0],                                                                                             \
+                   d[1],                                                                                             \
+                   d[2],                                                                                             \
+                   d[3],                                                                                             \
+                   d[4],                                                                                             \
+                   d[5],                                                                                             \
+                   d[6],                                                                                             \
+                   d[7],                                                                                             \
+                   d[8],                                                                                             \
+                   d[9],                                                                                             \
+                   d[10],                                                                                            \
+                   d[11],                                                                                            \
+                   d[12],                                                                                            \
+                   d[13],                                                                                            \
+                   d[14],                                                                                            \
+                   d[15],                                                                                            \
+                   d[16],                                                                                            \
+                   d[17],                                                                                            \
+                   d[18],                                                                                            \
+                   d[19],                                                                                            \
+                   d[20],                                                                                            \
+                   d[21],                                                                                            \
+                   d[22],                                                                                            \
+                   d[23],                                                                                            \
+                   d[24],                                                                                            \
+                   d[25],                                                                                            \
+                   d[26],                                                                                            \
+                   d[27],                                                                                            \
+                   d[28],                                                                                            \
+                   d[29],                                                                                            \
+                   d[30],                                                                                            \
+                   d[31],                                                                                            \
+                   d[32],                                                                                            \
+                   d[33],                                                                                            \
+                   d[34],                                                                                            \
+                   d[35],                                                                                            \
+                   d[36],                                                                                            \
+                   d[37],                                                                                            \
+                   d[38],                                                                                            \
+                   d[39],                                                                                            \
+                   d[40],                                                                                            \
+                   d[41],                                                                                            \
+                   d[42],                                                                                            \
+                   d[43]);                                                                                           \
+            break;                                                                                                   \
+        case 45:                                                                                                     \
+            r = fp(d[0],                                                                                             \
+                   d[1],                                                                                             \
+                   d[2],                                                                                             \
+                   d[3],                                                                                             \
+                   d[4],                                                                                             \
+                   d[5],                                                                                             \
+                   d[6],                                                                                             \
+                   d[7],                                                                                             \
+                   d[8],                                                                                             \
+                   d[9],                                                                                             \
+                   d[10],                                                                                            \
+                   d[11],                                                                                            \
+                   d[12],                                                                                            \
+                   d[13],                                                                                            \
+                   d[14],                                                                                            \
+                   d[15],                                                                                            \
+                   d[16],                                                                                            \
+                   d[17],                                                                                            \
+                   d[18],                                                                                            \
+                   d[19],                                                                                            \
+                   d[20],                                                                                            \
+                   d[21],                                                                                            \
+                   d[22],                                                                                            \
+                   d[23],                                                                                            \
+                   d[24],                                                                                            \
+                   d[25],                                                                                            \
+                   d[26],                                                                                            \
+                   d[27],                                                                                            \
+                   d[28],                                                                                            \
+                   d[29],                                                                                            \
+                   d[30],                                                                                            \
+                   d[31],                                                                                            \
+                   d[32],                                                                                            \
+                   d[33],                                                                                            \
+                   d[34],                                                                                            \
+                   d[35],                                                                                            \
+                   d[36],                                                                                            \
+                   d[37],                                                                                            \
+                   d[38],                                                                                            \
+                   d[39],                                                                                            \
+                   d[40],                                                                                            \
+                   d[41],                                                                                            \
+                   d[42],                                                                                            \
+                   d[43],                                                                                            \
+                   d[44]);                                                                                           \
+            break;                                                                                                   \
+        case 46:                                                                                                     \
+            r = fp(d[0],                                                                                             \
+                   d[1],                                                                                             \
+                   d[2],                                                                                             \
+                   d[3],                                                                                             \
+                   d[4],                                                                                             \
+                   d[5],                                                                                             \
+                   d[6],                                                                                             \
+                   d[7],                                                                                             \
+                   d[8],                                                                                             \
+                   d[9],                                                                                             \
+                   d[10],                                                                                            \
+                   d[11],                                                                                            \
+                   d[12],                                                                                            \
+                   d[13],                                                                                            \
+                   d[14],                                                                                            \
+                   d[15],                                                                                            \
+                   d[16],                                                                                            \
+                   d[17],                                                                                            \
+                   d[18],                                                                                            \
+                   d[19],                                                                                            \
+                   d[20],                                                                                            \
+                   d[21],                                                                                            \
+                   d[22],                                                                                            \
+                   d[23],                                                                                            \
+                   d[24],                                                                                            \
+                   d[25],                                                                                            \
+                   d[26],                                                                                            \
+                   d[27],                                                                                            \
+                   d[28],                                                                                            \
+                   d[29],                                                                                            \
+                   d[30],                                                                                            \
+                   d[31],                                                                                            \
+                   d[32],                                                                                            \
+                   d[33],                                                                                            \
+                   d[34],                                                                                            \
+                   d[35],                                                                                            \
+                   d[36],                                                                                            \
+                   d[37],                                                                                            \
+                   d[38],                                                                                            \
+                   d[39],                                                                                            \
+                   d[40],                                                                                            \
+                   d[41],                                                                                            \
+                   d[42],                                                                                            \
+                   d[43],                                                                                            \
+                   d[44],                                                                                            \
+                   d[45]);                                                                                           \
+            break;                                                                                                   \
+        case 47:                                                                                                     \
+            r = fp(d[0],                                                                                             \
+                   d[1],                                                                                             \
+                   d[2],                                                                                             \
+                   d[3],                                                                                             \
+                   d[4],                                                                                             \
+                   d[5],                                                                                             \
+                   d[6],                                                                                             \
+                   d[7],                                                                                             \
+                   d[8],                                                                                             \
+                   d[9],                                                                                             \
+                   d[10],                                                                                            \
+                   d[11],                                                                                            \
+                   d[12],                                                                                            \
+                   d[13],                                                                                            \
+                   d[14],                                                                                            \
+                   d[15],                                                                                            \
+                   d[16],                                                                                            \
+                   d[17],                                                                                            \
+                   d[18],                                                                                            \
+                   d[19],                                                                                            \
+                   d[20],                                                                                            \
+                   d[21],                                                                                            \
+                   d[22],                                                                                            \
+                   d[23],                                                                                            \
+                   d[24],                                                                                            \
+                   d[25],                                                                                            \
+                   d[26],                                                                                            \
+                   d[27],                                                                                            \
+                   d[28],                                                                                            \
+                   d[29],                                                                                            \
+                   d[30],                                                                                            \
+                   d[31],                                                                                            \
+                   d[32],                                                                                            \
+                   d[33],                                                                                            \
+                   d[34],                                                                                            \
+                   d[35],                                                                                            \
+                   d[36],                                                                                            \
+                   d[37],                                                                                            \
+                   d[38],                                                                                            \
+                   d[39],                                                                                            \
+                   d[40],                                                                                            \
+                   d[41],                                                                                            \
+                   d[42],                                                                                            \
+                   d[43],                                                                                            \
+                   d[44],                                                                                            \
+                   d[45],                                                                                            \
+                   d[46]);                                                                                           \
+            break;                                                                                                   \
+        case 48:                                                                                                     \
+            r = fp(d[0],                                                                                             \
+                   d[1],                                                                                             \
+                   d[2],                                                                                             \
+                   d[3],                                                                                             \
+                   d[4],                                                                                             \
+                   d[5],                                                                                             \
+                   d[6],                                                                                             \
+                   d[7],                                                                                             \
+                   d[8],                                                                                             \
+                   d[9],                                                                                             \
+                   d[10],                                                                                            \
+                   d[11],                                                                                            \
+                   d[12],                                                                                            \
+                   d[13],                                                                                            \
+                   d[14],                                                                                            \
+                   d[15],                                                                                            \
+                   d[16],                                                                                            \
+                   d[17],                                                                                            \
+                   d[18],                                                                                            \
+                   d[19],                                                                                            \
+                   d[20],                                                                                            \
+                   d[21],                                                                                            \
+                   d[22],                                                                                            \
+                   d[23],                                                                                            \
+                   d[24],                                                                                            \
+                   d[25],                                                                                            \
+                   d[26],                                                                                            \
+                   d[27],                                                                                            \
+                   d[28],                                                                                            \
+                   d[29],                                                                                            \
+                   d[30],                                                                                            \
+                   d[31],                                                                                            \
+                   d[32],                                                                                            \
+                   d[33],                                                                                            \
+                   d[34],                                                                                            \
+                   d[35],                                                                                            \
+                   d[36],                                                                                            \
+                   d[37],                                                                                            \
+                   d[38],                                                                                            \
+                   d[39],                                                                                            \
+                   d[40],                                                                                            \
+                   d[41],                                                                                            \
+                   d[42],                                                                                            \
+                   d[43],                                                                                            \
+                   d[44],                                                                                            \
+                   d[45],                                                                                            \
+                   d[46],                                                                                            \
+                   d[47]);                                                                                           \
+            break;                                                                                                   \
+        case 49:                                                                                                     \
+            r = fp(d[0],                                                                                             \
+                   d[1],                                                                                             \
+                   d[2],                                                                                             \
+                   d[3],                                                                                             \
+                   d[4],                                                                                             \
+                   d[5],                                                                                             \
+                   d[6],                                                                                             \
+                   d[7],                                                                                             \
+                   d[8],                                                                                             \
+                   d[9],                                                                                             \
+                   d[10],                                                                                            \
+                   d[11],                                                                                            \
+                   d[12],                                                                                            \
+                   d[13],                                                                                            \
+                   d[14],                                                                                            \
+                   d[15],                                                                                            \
+                   d[16],                                                                                            \
+                   d[17],                                                                                            \
+                   d[18],                                                                                            \
+                   d[19],                                                                                            \
+                   d[20],                                                                                            \
+                   d[21],                                                                                            \
+                   d[22],                                                                                            \
+                   d[23],                                                                                            \
+                   d[24],                                                                                            \
+                   d[25],                                                                                            \
+                   d[26],                                                                                            \
+                   d[27],                                                                                            \
+                   d[28],                                                                                            \
+                   d[29],                                                                                            \
+                   d[30],                                                                                            \
+                   d[31],                                                                                            \
+                   d[32],                                                                                            \
+                   d[33],                                                                                            \
+                   d[34],                                                                                            \
+                   d[35],                                                                                            \
+                   d[36],                                                                                            \
+                   d[37],                                                                                            \
+                   d[38],                                                                                            \
+                   d[39],                                                                                            \
+                   d[40],                                                                                            \
+                   d[41],                                                                                            \
+                   d[42],                                                                                            \
+                   d[43],                                                                                            \
+                   d[44],                                                                                            \
+                   d[45],                                                                                            \
+                   d[46],                                                                                            \
+                   d[47],                                                                                            \
+                   d[48]);                                                                                           \
+            break;                                                                                                   \
+        case 50:                                                                                                     \
+            r = fp(d[0],                                                                                             \
+                   d[1],                                                                                             \
+                   d[2],                                                                                             \
+                   d[3],                                                                                             \
+                   d[4],                                                                                             \
+                   d[5],                                                                                             \
+                   d[6],                                                                                             \
+                   d[7],                                                                                             \
+                   d[8],                                                                                             \
+                   d[9],                                                                                             \
+                   d[10],                                                                                            \
+                   d[11],                                                                                            \
+                   d[12],                                                                                            \
+                   d[13],                                                                                            \
+                   d[14],                                                                                            \
+                   d[15],                                                                                            \
+                   d[16],                                                                                            \
+                   d[17],                                                                                            \
+                   d[18],                                                                                            \
+                   d[19],                                                                                            \
+                   d[20],                                                                                            \
+                   d[21],                                                                                            \
+                   d[22],                                                                                            \
+                   d[23],                                                                                            \
+                   d[24],                                                                                            \
+                   d[25],                                                                                            \
+                   d[26],                                                                                            \
+                   d[27],                                                                                            \
+                   d[28],                                                                                            \
+                   d[29],                                                                                            \
+                   d[30],                                                                                            \
+                   d[31],                                                                                            \
+                   d[32],                                                                                            \
+                   d[33],                                                                                            \
+                   d[34],                                                                                            \
+                   d[35],                                                                                            \
+                   d[36],                                                                                            \
+                   d[37],                                                                                            \
+                   d[38],                                                                                            \
+                   d[39],                                                                                            \
+                   d[40],                                                                                            \
+                   d[41],                                                                                            \
+                   d[42],                                                                                            \
+                   d[43],                                                                                            \
+                   d[44],                                                                                            \
+                   d[45],                                                                                            \
+                   d[46],                                                                                            \
+                   d[47],                                                                                            \
+                   d[48],                                                                                            \
+                   d[49]);                                                                                           \
+            break;                                                                                                   \
+        case 51:                                                                                                     \
+            r = fp(d[0],                                                                                             \
+                   d[1],                                                                                             \
+                   d[2],                                                                                             \
+                   d[3],                                                                                             \
+                   d[4],                                                                                             \
+                   d[5],                                                                                             \
+                   d[6],                                                                                             \
+                   d[7],                                                                                             \
+                   d[8],                                                                                             \
+                   d[9],                                                                                             \
+                   d[10],                                                                                            \
+                   d[11],                                                                                            \
+                   d[12],                                                                                            \
+                   d[13],                                                                                            \
+                   d[14],                                                                                            \
+                   d[15],                                                                                            \
+                   d[16],                                                                                            \
+                   d[17],                                                                                            \
+                   d[18],                                                                                            \
+                   d[19],                                                                                            \
+                   d[20],                                                                                            \
+                   d[21],                                                                                            \
+                   d[22],                                                                                            \
+                   d[23],                                                                                            \
+                   d[24],                                                                                            \
+                   d[25],                                                                                            \
+                   d[26],                                                                                            \
+                   d[27],                                                                                            \
+                   d[28],                                                                                            \
+                   d[29],                                                                                            \
+                   d[30],                                                                                            \
+                   d[31],                                                                                            \
+                   d[32],                                                                                            \
+                   d[33],                                                                                            \
+                   d[34],                                                                                            \
+                   d[35],                                                                                            \
+                   d[36],                                                                                            \
+                   d[37],                                                                                            \
+                   d[38],                                                                                            \
+                   d[39],                                                                                            \
+                   d[40],                                                                                            \
+                   d[41],                                                                                            \
+                   d[42],                                                                                            \
+                   d[43],                                                                                            \
+                   d[44],                                                                                            \
+                   d[45],                                                                                            \
+                   d[46],                                                                                            \
+                   d[47],                                                                                            \
+                   d[48],                                                                                            \
+                   d[49],                                                                                            \
+                   d[50]);                                                                                           \
+            break;                                                                                                   \
+        case 52:                                                                                                     \
+            r = fp(d[0],                                                                                             \
+                   d[1],                                                                                             \
+                   d[2],                                                                                             \
+                   d[3],                                                                                             \
+                   d[4],                                                                                             \
+                   d[5],                                                                                             \
+                   d[6],                                                                                             \
+                   d[7],                                                                                             \
+                   d[8],                                                                                             \
+                   d[9],                                                                                             \
+                   d[10],                                                                                            \
+                   d[11],                                                                                            \
+                   d[12],                                                                                            \
+                   d[13],                                                                                            \
+                   d[14],                                                                                            \
+                   d[15],                                                                                            \
+                   d[16],                                                                                            \
+                   d[17],                                                                                            \
+                   d[18],                                                                                            \
+                   d[19],                                                                                            \
+                   d[20],                                                                                            \
+                   d[21],                                                                                            \
+                   d[22],                                                                                            \
+                   d[23],                                                                                            \
+                   d[24],                                                                                            \
+                   d[25],                                                                                            \
+                   d[26],                                                                                            \
+                   d[27],                                                                                            \
+                   d[28],                                                                                            \
+                   d[29],                                                                                            \
+                   d[30],                                                                                            \
+                   d[31],                                                                                            \
+                   d[32],                                                                                            \
+                   d[33],                                                                                            \
+                   d[34],                                                                                            \
+                   d[35],                                                                                            \
+                   d[36],                                                                                            \
+                   d[37],                                                                                            \
+                   d[38],                                                                                            \
+                   d[39],                                                                                            \
+                   d[40],                                                                                            \
+                   d[41],                                                                                            \
+                   d[42],                                                                                            \
+                   d[43],                                                                                            \
+                   d[44],                                                                                            \
+                   d[45],                                                                                            \
+                   d[46],                                                                                            \
+                   d[47],                                                                                            \
+                   d[48],                                                                                            \
+                   d[49],                                                                                            \
+                   d[50],                                                                                            \
+                   d[51]);                                                                                           \
+            break;                                                                                                   \
+        case 53:                                                                                                     \
+            r = fp(d[0],                                                                                             \
+                   d[1],                                                                                             \
+                   d[2],                                                                                             \
+                   d[3],                                                                                             \
+                   d[4],                                                                                             \
+                   d[5],                                                                                             \
+                   d[6],                                                                                             \
+                   d[7],                                                                                             \
+                   d[8],                                                                                             \
+                   d[9],                                                                                             \
+                   d[10],                                                                                            \
+                   d[11],                                                                                            \
+                   d[12],                                                                                            \
+                   d[13],                                                                                            \
+                   d[14],                                                                                            \
+                   d[15],                                                                                            \
+                   d[16],                                                                                            \
+                   d[17],                                                                                            \
+                   d[18],                                                                                            \
+                   d[19],                                                                                            \
+                   d[20],                                                                                            \
+                   d[21],                                                                                            \
+                   d[22],                                                                                            \
+                   d[23],                                                                                            \
+                   d[24],                                                                                            \
+                   d[25],                                                                                            \
+                   d[26],                                                                                            \
+                   d[27],                                                                                            \
+                   d[28],                                                                                            \
+                   d[29],                                                                                            \
+                   d[30],                                                                                            \
+                   d[31],                                                                                            \
+                   d[32],                                                                                            \
+                   d[33],                                                                                            \
+                   d[34],                                                                                            \
+                   d[35],                                                                                            \
+                   d[36],                                                                                            \
+                   d[37],                                                                                            \
+                   d[38],                                                                                            \
+                   d[39],                                                                                            \
+                   d[40],                                                                                            \
+                   d[41],                                                                                            \
+                   d[42],                                                                                            \
+                   d[43],                                                                                            \
+                   d[44],                                                                                            \
+                   d[45],                                                                                            \
+                   d[46],                                                                                            \
+                   d[47],                                                                                            \
+                   d[48],                                                                                            \
+                   d[49],                                                                                            \
+                   d[50],                                                                                            \
+                   d[51],                                                                                            \
+                   d[52]);                                                                                           \
+            break;                                                                                                   \
+        case 54:                                                                                                     \
+            r = fp(d[0],                                                                                             \
+                   d[1],                                                                                             \
+                   d[2],                                                                                             \
+                   d[3],                                                                                             \
+                   d[4],                                                                                             \
+                   d[5],                                                                                             \
+                   d[6],                                                                                             \
+                   d[7],                                                                                             \
+                   d[8],                                                                                             \
+                   d[9],                                                                                             \
+                   d[10],                                                                                            \
+                   d[11],                                                                                            \
+                   d[12],                                                                                            \
+                   d[13],                                                                                            \
+                   d[14],                                                                                            \
+                   d[15],                                                                                            \
+                   d[16],                                                                                            \
+                   d[17],                                                                                            \
+                   d[18],                                                                                            \
+                   d[19],                                                                                            \
+                   d[20],                                                                                            \
+                   d[21],                                                                                            \
+                   d[22],                                                                                            \
+                   d[23],                                                                                            \
+                   d[24],                                                                                            \
+                   d[25],                                                                                            \
+                   d[26],                                                                                            \
+                   d[27],                                                                                            \
+                   d[28],                                                                                            \
+                   d[29],                                                                                            \
+                   d[30],                                                                                            \
+                   d[31],                                                                                            \
+                   d[32],                                                                                            \
+                   d[33],                                                                                            \
+                   d[34],                                                                                            \
+                   d[35],                                                                                            \
+                   d[36],                                                                                            \
+                   d[37],                                                                                            \
+                   d[38],                                                                                            \
+                   d[39],                                                                                            \
+                   d[40],                                                                                            \
+                   d[41],                                                                                            \
+                   d[42],                                                                                            \
+                   d[43],                                                                                            \
+                   d[44],                                                                                            \
+                   d[45],                                                                                            \
+                   d[46],                                                                                            \
+                   d[47],                                                                                            \
+                   d[48],                                                                                            \
+                   d[49],                                                                                            \
+                   d[50],                                                                                            \
+                   d[51],                                                                                            \
+                   d[52],                                                                                            \
+                   d[53]);                                                                                           \
+            break;                                                                                                   \
+        case 55:                                                                                                     \
+            r = fp(d[0],                                                                                             \
+                   d[1],                                                                                             \
+                   d[2],                                                                                             \
+                   d[3],                                                                                             \
+                   d[4],                                                                                             \
+                   d[5],                                                                                             \
+                   d[6],                                                                                             \
+                   d[7],                                                                                             \
+                   d[8],                                                                                             \
+                   d[9],                                                                                             \
+                   d[10],                                                                                            \
+                   d[11],                                                                                            \
+                   d[12],                                                                                            \
+                   d[13],                                                                                            \
+                   d[14],                                                                                            \
+                   d[15],                                                                                            \
+                   d[16],                                                                                            \
+                   d[17],                                                                                            \
+                   d[18],                                                                                            \
+                   d[19],                                                                                            \
+                   d[20],                                                                                            \
+                   d[21],                                                                                            \
+                   d[22],                                                                                            \
+                   d[23],                                                                                            \
+                   d[24],                                                                                            \
+                   d[25],                                                                                            \
+                   d[26],                                                                                            \
+                   d[27],                                                                                            \
+                   d[28],                                                                                            \
+                   d[29],                                                                                            \
+                   d[30],                                                                                            \
+                   d[31],                                                                                            \
+                   d[32],                                                                                            \
+                   d[33],                                                                                            \
+                   d[34],                                                                                            \
+                   d[35],                                                                                            \
+                   d[36],                                                                                            \
+                   d[37],                                                                                            \
+                   d[38],                                                                                            \
+                   d[39],                                                                                            \
+                   d[40],                                                                                            \
+                   d[41],                                                                                            \
+                   d[42],                                                                                            \
+                   d[43],                                                                                            \
+                   d[44],                                                                                            \
+                   d[45],                                                                                            \
+                   d[46],                                                                                            \
+                   d[47],                                                                                            \
+                   d[48],                                                                                            \
+                   d[49],                                                                                            \
+                   d[50],                                                                                            \
+                   d[51],                                                                                            \
+                   d[52],                                                                                            \
+                   d[53],                                                                                            \
+                   d[54]);                                                                                           \
+            break;                                                                                                   \
+        case 56:                                                                                                     \
+            r = fp(d[0],                                                                                             \
+                   d[1],                                                                                             \
+                   d[2],                                                                                             \
+                   d[3],                                                                                             \
+                   d[4],                                                                                             \
+                   d[5],                                                                                             \
+                   d[6],                                                                                             \
+                   d[7],                                                                                             \
+                   d[8],                                                                                             \
+                   d[9],                                                                                             \
+                   d[10],                                                                                            \
+                   d[11],                                                                                            \
+                   d[12],                                                                                            \
+                   d[13],                                                                                            \
+                   d[14],                                                                                            \
+                   d[15],                                                                                            \
+                   d[16],                                                                                            \
+                   d[17],                                                                                            \
+                   d[18],                                                                                            \
+                   d[19],                                                                                            \
+                   d[20],                                                                                            \
+                   d[21],                                                                                            \
+                   d[22],                                                                                            \
+                   d[23],                                                                                            \
+                   d[24],                                                                                            \
+                   d[25],                                                                                            \
+                   d[26],                                                                                            \
+                   d[27],                                                                                            \
+                   d[28],                                                                                            \
+                   d[29],                                                                                            \
+                   d[30],                                                                                            \
+                   d[31],                                                                                            \
+                   d[32],                                                                                            \
+                   d[33],                                                                                            \
+                   d[34],                                                                                            \
+                   d[35],                                                                                            \
+                   d[36],                                                                                            \
+                   d[37],                                                                                            \
+                   d[38],                                                                                            \
+                   d[39],                                                                                            \
+                   d[40],                                                                                            \
+                   d[41],                                                                                            \
+                   d[42],                                                                                            \
+                   d[43],                                                                                            \
+                   d[44],                                                                                            \
+                   d[45],                                                                                            \
+                   d[46],                                                                                            \
+                   d[47],                                                                                            \
+                   d[48],                                                                                            \
+                   d[49],                                                                                            \
+                   d[50],                                                                                            \
+                   d[51],                                                                                            \
+                   d[52],                                                                                            \
+                   d[53],                                                                                            \
+                   d[54],                                                                                            \
+                   d[55]);                                                                                           \
+            break;                                                                                                   \
+        case 57:                                                                                                     \
+            r = fp(d[0],                                                                                             \
+                   d[1],                                                                                             \
+                   d[2],                                                                                             \
+                   d[3],                                                                                             \
+                   d[4],                                                                                             \
+                   d[5],                                                                                             \
+                   d[6],                                                                                             \
+                   d[7],                                                                                             \
+                   d[8],                                                                                             \
+                   d[9],                                                                                             \
+                   d[10],                                                                                            \
+                   d[11],                                                                                            \
+                   d[12],                                                                                            \
+                   d[13],                                                                                            \
+                   d[14],                                                                                            \
+                   d[15],                                                                                            \
+                   d[16],                                                                                            \
+                   d[17],                                                                                            \
+                   d[18],                                                                                            \
+                   d[19],                                                                                            \
+                   d[20],                                                                                            \
+                   d[21],                                                                                            \
+                   d[22],                                                                                            \
+                   d[23],                                                                                            \
+                   d[24],                                                                                            \
+                   d[25],                                                                                            \
+                   d[26],                                                                                            \
+                   d[27],                                                                                            \
+                   d[28],                                                                                            \
+                   d[29],                                                                                            \
+                   d[30],                                                                                            \
+                   d[31],                                                                                            \
+                   d[32],                                                                                            \
+                   d[33],                                                                                            \
+                   d[34],                                                                                            \
+                   d[35],                                                                                            \
+                   d[36],                                                                                            \
+                   d[37],                                                                                            \
+                   d[38],                                                                                            \
+                   d[39],                                                                                            \
+                   d[40],                                                                                            \
+                   d[41],                                                                                            \
+                   d[42],                                                                                            \
+                   d[43],                                                                                            \
+                   d[44],                                                                                            \
+                   d[45],                                                                                            \
+                   d[46],                                                                                            \
+                   d[47],                                                                                            \
+                   d[48],                                                                                            \
+                   d[49],                                                                                            \
+                   d[50],                                                                                            \
+                   d[51],                                                                                            \
+                   d[52],                                                                                            \
+                   d[53],                                                                                            \
+                   d[54],                                                                                            \
+                   d[55],                                                                                            \
+                   d[56]);                                                                                           \
+            break;                                                                                                   \
+        case 58:                                                                                                     \
+            r = fp(d[0],                                                                                             \
+                   d[1],                                                                                             \
+                   d[2],                                                                                             \
+                   d[3],                                                                                             \
+                   d[4],                                                                                             \
+                   d[5],                                                                                             \
+                   d[6],                                                                                             \
+                   d[7],                                                                                             \
+                   d[8],                                                                                             \
+                   d[9],                                                                                             \
+                   d[10],                                                                                            \
+                   d[11],                                                                                            \
+                   d[12],                                                                                            \
+                   d[13],                                                                                            \
+                   d[14],                                                                                            \
+                   d[15],                                                                                            \
+                   d[16],                                                                                            \
+                   d[17],                                                                                            \
+                   d[18],                                                                                            \
+                   d[19],                                                                                            \
+                   d[20],                                                                                            \
+                   d[21],                                                                                            \
+                   d[22],                                                                                            \
+                   d[23],                                                                                            \
+                   d[24],                                                                                            \
+                   d[25],                                                                                            \
+                   d[26],                                                                                            \
+                   d[27],                                                                                            \
+                   d[28],                                                                                            \
+                   d[29],                                                                                            \
+                   d[30],                                                                                            \
+                   d[31],                                                                                            \
+                   d[32],                                                                                            \
+                   d[33],                                                                                            \
+                   d[34],                                                                                            \
+                   d[35],                                                                                            \
+                   d[36],                                                                                            \
+                   d[37],                                                                                            \
+                   d[38],                                                                                            \
+                   d[39],                                                                                            \
+                   d[40],                                                                                            \
+                   d[41],                                                                                            \
+                   d[42],                                                                                            \
+                   d[43],                                                                                            \
+                   d[44],                                                                                            \
+                   d[45],                                                                                            \
+                   d[46],                                                                                            \
+                   d[47],                                                                                            \
+                   d[48],                                                                                            \
+                   d[49],                                                                                            \
+                   d[50],                                                                                            \
+                   d[51],                                                                                            \
+                   d[52],                                                                                            \
+                   d[53],                                                                                            \
+                   d[54],                                                                                            \
+                   d[55],                                                                                            \
+                   d[56],                                                                                            \
+                   d[57]);                                                                                           \
+            break;                                                                                                   \
+        case 59:                                                                                                     \
+            r = fp(d[0],                                                                                             \
+                   d[1],                                                                                             \
+                   d[2],                                                                                             \
+                   d[3],                                                                                             \
+                   d[4],                                                                                             \
+                   d[5],                                                                                             \
+                   d[6],                                                                                             \
+                   d[7],                                                                                             \
+                   d[8],                                                                                             \
+                   d[9],                                                                                             \
+                   d[10],                                                                                            \
+                   d[11],                                                                                            \
+                   d[12],                                                                                            \
+                   d[13],                                                                                            \
+                   d[14],                                                                                            \
+                   d[15],                                                                                            \
+                   d[16],                                                                                            \
+                   d[17],                                                                                            \
+                   d[18],                                                                                            \
+                   d[19],                                                                                            \
+                   d[20],                                                                                            \
+                   d[21],                                                                                            \
+                   d[22],                                                                                            \
+                   d[23],                                                                                            \
+                   d[24],                                                                                            \
+                   d[25],                                                                                            \
+                   d[26],                                                                                            \
+                   d[27],                                                                                            \
+                   d[28],                                                                                            \
+                   d[29],                                                                                            \
+                   d[30],                                                                                            \
+                   d[31],                                                                                            \
+                   d[32],                                                                                            \
+                   d[33],                                                                                            \
+                   d[34],                                                                                            \
+                   d[35],                                                                                            \
+                   d[36],                                                                                            \
+                   d[37],                                                                                            \
+                   d[38],                                                                                            \
+                   d[39],                                                                                            \
+                   d[40],                                                                                            \
+                   d[41],                                                                                            \
+                   d[42],                                                                                            \
+                   d[43],                                                                                            \
+                   d[44],                                                                                            \
+                   d[45],                                                                                            \
+                   d[46],                                                                                            \
+                   d[47],                                                                                            \
+                   d[48],                                                                                            \
+                   d[49],                                                                                            \
+                   d[50],                                                                                            \
+                   d[51],                                                                                            \
+                   d[52],                                                                                            \
+                   d[53],                                                                                            \
+                   d[54],                                                                                            \
+                   d[55],                                                                                            \
+                   d[56],                                                                                            \
+                   d[57],                                                                                            \
+                   d[58]);                                                                                           \
+            break;                                                                                                   \
+        case 60:                                                                                                     \
+            r = fp(d[0],                                                                                             \
+                   d[1],                                                                                             \
+                   d[2],                                                                                             \
+                   d[3],                                                                                             \
+                   d[4],                                                                                             \
+                   d[5],                                                                                             \
+                   d[6],                                                                                             \
+                   d[7],                                                                                             \
+                   d[8],                                                                                             \
+                   d[9],                                                                                             \
+                   d[10],                                                                                            \
+                   d[11],                                                                                            \
+                   d[12],                                                                                            \
+                   d[13],                                                                                            \
+                   d[14],                                                                                            \
+                   d[15],                                                                                            \
+                   d[16],                                                                                            \
+                   d[17],                                                                                            \
+                   d[18],                                                                                            \
+                   d[19],                                                                                            \
+                   d[20],                                                                                            \
+                   d[21],                                                                                            \
+                   d[22],                                                                                            \
+                   d[23],                                                                                            \
+                   d[24],                                                                                            \
+                   d[25],                                                                                            \
+                   d[26],                                                                                            \
+                   d[27],                                                                                            \
+                   d[28],                                                                                            \
+                   d[29],                                                                                            \
+                   d[30],                                                                                            \
+                   d[31],                                                                                            \
+                   d[32],                                                                                            \
+                   d[33],                                                                                            \
+                   d[34],                                                                                            \
+                   d[35],                                                                                            \
+                   d[36],                                                                                            \
+                   d[37],                                                                                            \
+                   d[38],                                                                                            \
+                   d[39],                                                                                            \
+                   d[40],                                                                                            \
+                   d[41],                                                                                            \
+                   d[42],                                                                                            \
+                   d[43],                                                                                            \
+                   d[44],                                                                                            \
+                   d[45],                                                                                            \
+                   d[46],                                                                                            \
+                   d[47],                                                                                            \
+                   d[48],                                                                                            \
+                   d[49],                                                                                            \
+                   d[50],                                                                                            \
+                   d[51],                                                                                            \
+                   d[52],                                                                                            \
+                   d[53],                                                                                            \
+                   d[54],                                                                                            \
+                   d[55],                                                                                            \
+                   d[56],                                                                                            \
+                   d[57],                                                                                            \
+                   d[58],                                                                                            \
+                   d[59]);                                                                                           \
+            break;                                                                                                   \
+        case 61:                                                                                                     \
+            r = fp(d[0],                                                                                             \
+                   d[1],                                                                                             \
+                   d[2],                                                                                             \
+                   d[3],                                                                                             \
+                   d[4],                                                                                             \
+                   d[5],                                                                                             \
+                   d[6],                                                                                             \
+                   d[7],                                                                                             \
+                   d[8],                                                                                             \
+                   d[9],                                                                                             \
+                   d[10],                                                                                            \
+                   d[11],                                                                                            \
+                   d[12],                                                                                            \
+                   d[13],                                                                                            \
+                   d[14],                                                                                            \
+                   d[15],                                                                                            \
+                   d[16],                                                                                            \
+                   d[17],                                                                                            \
+                   d[18],                                                                                            \
+                   d[19],                                                                                            \
+                   d[20],                                                                                            \
+                   d[21],                                                                                            \
+                   d[22],                                                                                            \
+                   d[23],                                                                                            \
+                   d[24],                                                                                            \
+                   d[25],                                                                                            \
+                   d[26],                                                                                            \
+                   d[27],                                                                                            \
+                   d[28],                                                                                            \
+                   d[29],                                                                                            \
+                   d[30],                                                                                            \
+                   d[31],                                                                                            \
+                   d[32],                                                                                            \
+                   d[33],                                                                                            \
+                   d[34],                                                                                            \
+                   d[35],                                                                                            \
+                   d[36],                                                                                            \
+                   d[37],                                                                                            \
+                   d[38],                                                                                            \
+                   d[39],                                                                                            \
+                   d[40],                                                                                            \
+                   d[41],                                                                                            \
+                   d[42],                                                                                            \
+                   d[43],                                                                                            \
+                   d[44],                                                                                            \
+                   d[45],                                                                                            \
+                   d[46],                                                                                            \
+                   d[47],                                                                                            \
+                   d[48],                                                                                            \
+                   d[49],                                                                                            \
+                   d[50],                                                                                            \
+                   d[51],                                                                                            \
+                   d[52],                                                                                            \
+                   d[53],                                                                                            \
+                   d[54],                                                                                            \
+                   d[55],                                                                                            \
+                   d[56],                                                                                            \
+                   d[57],                                                                                            \
+                   d[58],                                                                                            \
+                   d[59],                                                                                            \
+                   d[60]);                                                                                           \
+            break;                                                                                                   \
+        case 62:                                                                                                     \
+            r = fp(d[0],                                                                                             \
+                   d[1],                                                                                             \
+                   d[2],                                                                                             \
+                   d[3],                                                                                             \
+                   d[4],                                                                                             \
+                   d[5],                                                                                             \
+                   d[6],                                                                                             \
+                   d[7],                                                                                             \
+                   d[8],                                                                                             \
+                   d[9],                                                                                             \
+                   d[10],                                                                                            \
+                   d[11],                                                                                            \
+                   d[12],                                                                                            \
+                   d[13],                                                                                            \
+                   d[14],                                                                                            \
+                   d[15],                                                                                            \
+                   d[16],                                                                                            \
+                   d[17],                                                                                            \
+                   d[18],                                                                                            \
+                   d[19],                                                                                            \
+                   d[20],                                                                                            \
+                   d[21],                                                                                            \
+                   d[22],                                                                                            \
+                   d[23],                                                                                            \
+                   d[24],                                                                                            \
+                   d[25],                                                                                            \
+                   d[26],                                                                                            \
+                   d[27],                                                                                            \
+                   d[28],                                                                                            \
+                   d[29],                                                                                            \
+                   d[30],                                                                                            \
+                   d[31],                                                                                            \
+                   d[32],                                                                                            \
+                   d[33],                                                                                            \
+                   d[34],                                                                                            \
+                   d[35],                                                                                            \
+                   d[36],                                                                                            \
+                   d[37],                                                                                            \
+                   d[38],                                                                                            \
+                   d[39],                                                                                            \
+                   d[40],                                                                                            \
+                   d[41],                                                                                            \
+                   d[42],                                                                                            \
+                   d[43],                                                                                            \
+                   d[44],                                                                                            \
+                   d[45],                                                                                            \
+                   d[46],                                                                                            \
+                   d[47],                                                                                            \
+                   d[48],                                                                                            \
+                   d[49],                                                                                            \
+                   d[50],                                                                                            \
+                   d[51],                                                                                            \
+                   d[52],                                                                                            \
+                   d[53],                                                                                            \
+                   d[54],                                                                                            \
+                   d[55],                                                                                            \
+                   d[56],                                                                                            \
+                   d[57],                                                                                            \
+                   d[58],                                                                                            \
+                   d[59],                                                                                            \
+                   d[60],                                                                                            \
+                   d[61]);                                                                                           \
+            break;                                                                                                   \
+        case 63:                                                                                                     \
+            r = fp(d[0],                                                                                             \
+                   d[1],                                                                                             \
+                   d[2],                                                                                             \
+                   d[3],                                                                                             \
+                   d[4],                                                                                             \
+                   d[5],                                                                                             \
+                   d[6],                                                                                             \
+                   d[7],                                                                                             \
+                   d[8],                                                                                             \
+                   d[9],                                                                                             \
+                   d[10],                                                                                            \
+                   d[11],                                                                                            \
+                   d[12],                                                                                            \
+                   d[13],                                                                                            \
+                   d[14],                                                                                            \
+                   d[15],                                                                                            \
+                   d[16],                                                                                            \
+                   d[17],                                                                                            \
+                   d[18],                                                                                            \
+                   d[19],                                                                                            \
+                   d[20],                                                                                            \
+                   d[21],                                                                                            \
+                   d[22],                                                                                            \
+                   d[23],                                                                                            \
+                   d[24],                                                                                            \
+                   d[25],                                                                                            \
+                   d[26],                                                                                            \
+                   d[27],                                                                                            \
+                   d[28],                                                                                            \
+                   d[29],                                                                                            \
+                   d[30],                                                                                            \
+                   d[31],                                                                                            \
+                   d[32],                                                                                            \
+                   d[33],                                                                                            \
+                   d[34],                                                                                            \
+                   d[35],                                                                                            \
+                   d[36],                                                                                            \
+                   d[37],                                                                                            \
+                   d[38],                                                                                            \
+                   d[39],                                                                                            \
+                   d[40],                                                                                            \
+                   d[41],                                                                                            \
+                   d[42],                                                                                            \
+                   d[43],                                                                                            \
+                   d[44],                                                                                            \
+                   d[45],                                                                                            \
+                   d[46],                                                                                            \
+                   d[47],                                                                                            \
+                   d[48],                                                                                            \
+                   d[49],                                                                                            \
+                   d[50],                                                                                            \
+                   d[51],                                                                                            \
+                   d[52],                                                                                            \
+                   d[53],                                                                                            \
+                   d[54],                                                                                            \
+                   d[55],                                                                                            \
+                   d[56],                                                                                            \
+                   d[57],                                                                                            \
+                   d[58],                                                                                            \
+                   d[59],                                                                                            \
+                   d[60],                                                                                            \
+                   d[61],                                                                                            \
+                   d[62]);                                                                                           \
+            break;                                                                                                   \
+        case 64:                                                                                                     \
+            r = fp(d[0],                                                                                             \
+                   d[1],                                                                                             \
+                   d[2],                                                                                             \
+                   d[3],                                                                                             \
+                   d[4],                                                                                             \
+                   d[5],                                                                                             \
+                   d[6],                                                                                             \
+                   d[7],                                                                                             \
+                   d[8],                                                                                             \
+                   d[9],                                                                                             \
+                   d[10],                                                                                            \
+                   d[11],                                                                                            \
+                   d[12],                                                                                            \
+                   d[13],                                                                                            \
+                   d[14],                                                                                            \
+                   d[15],                                                                                            \
+                   d[16],                                                                                            \
+                   d[17],                                                                                            \
+                   d[18],                                                                                            \
+                   d[19],                                                                                            \
+                   d[20],                                                                                            \
+                   d[21],                                                                                            \
+                   d[22],                                                                                            \
+                   d[23],                                                                                            \
+                   d[24],                                                                                            \
+                   d[25],                                                                                            \
+                   d[26],                                                                                            \
+                   d[27],                                                                                            \
+                   d[28],                                                                                            \
+                   d[29],                                                                                            \
+                   d[30],                                                                                            \
+                   d[31],                                                                                            \
+                   d[32],                                                                                            \
+                   d[33],                                                                                            \
+                   d[34],                                                                                            \
+                   d[35],                                                                                            \
+                   d[36],                                                                                            \
+                   d[37],                                                                                            \
+                   d[38],                                                                                            \
+                   d[39],                                                                                            \
+                   d[40],                                                                                            \
+                   d[41],                                                                                            \
+                   d[42],                                                                                            \
+                   d[43],                                                                                            \
+                   d[44],                                                                                            \
+                   d[45],                                                                                            \
+                   d[46],                                                                                            \
+                   d[47],                                                                                            \
+                   d[48],                                                                                            \
+                   d[49],                                                                                            \
+                   d[50],                                                                                            \
+                   d[51],                                                                                            \
+                   d[52],                                                                                            \
+                   d[53],                                                                                            \
+                   d[54],                                                                                            \
+                   d[55],                                                                                            \
+                   d[56],                                                                                            \
+                   d[57],                                                                                            \
+                   d[58],                                                                                            \
+                   d[59],                                                                                            \
+                   d[60],                                                                                            \
+                   d[61],                                                                                            \
+                   d[62],                                                                                            \
+                   d[63]);                                                                                           \
+            break;                                                                                                   \
+    }
 
-#define SWITCHCALL                                                         \
-  dtrick                                                                   \
-  switch(cnt){                                                             \
-  case 0:  r = fp(); break;                                                \
-  case 1:  r = fp(d[0]); break;                                            \
-  case 2:  r = fp(d[0], d[1]); break;                                      \
-  case 3:  r = fp(d[0], d[1], d[2]); break;                                \
-  case 4:  r = fp(d[0], d[1], d[2], d[3]); break;                          \
-  case 5:  r = fp(d[0], d[1], d[2], d[3], d[4]); break;                    \
-  case 6:  r = fp(d[0], d[1], d[2], d[3], d[4], d[5]); break;              \
-  case 7:  r = fp(d[0], d[1], d[2], d[3], d[4], d[5], d[6]); break;        \
-  case 8:  r = fp(d[0], d[1], d[2], d[3], d[4], d[5], d[6], d[7]); break;  \
-  case 9:  r = fp(d[0], d[1], d[2], d[3], d[4], d[5], d[6], d[7],          \
-                  d[8]); break;                                            \
-  case 10: r = fp(d[0], d[1], d[2], d[3], d[4], d[5], d[6], d[7],          \
-                  d[8], d[9]); break;                                      \
-  case 11: r = fp(d[0], d[1], d[2], d[3], d[4], d[5], d[6], d[7],          \
-                  d[8], d[9], d[10]); break;                               \
-  case 12: r = fp(d[0], d[1], d[2], d[3], d[4], d[5], d[6], d[7],          \
-                  d[8], d[9], d[10],d[11]); break;                         \
-  case 13: r = fp(d[0], d[1], d[2], d[3], d[4], d[5], d[6], d[7],          \
-                  d[8], d[9], d[10],d[11],d[12]); break;                   \
-  case 14: r = fp(d[0], d[1], d[2], d[3], d[4], d[5], d[6], d[7],          \
-                  d[8], d[9], d[10],d[11],d[12],d[13]); break;             \
-  case 15: r = fp(d[0], d[1], d[2], d[3], d[4], d[5], d[6], d[7],          \
-                  d[8], d[9], d[10],d[11],d[12],d[13],d[14]); break;       \
-  case 16: r = fp(d[0], d[1], d[2], d[3], d[4], d[5], d[6], d[7],          \
-                  d[8], d[9], d[10],d[11],d[12],d[13],d[14],d[15]); break; \
-  case 17: r = fp(d[0], d[1], d[2], d[3], d[4], d[5], d[6], d[7],          \
-                  d[8], d[9], d[10],d[11],d[12],d[13],d[14],d[15],         \
-                  d[16]); break;                                           \
-  case 18: r = fp(d[0], d[1], d[2], d[3], d[4], d[5], d[6], d[7],          \
-                  d[8], d[9], d[10],d[11],d[12],d[13],d[14],d[15],         \
-                  d[16],d[17]); break;                                     \
-  case 19: r = fp(d[0], d[1], d[2], d[3], d[4], d[5], d[6], d[7],          \
-                  d[8], d[9], d[10],d[11],d[12],d[13],d[14],d[15],         \
-                  d[16],d[17],d[18]); break;                               \
-  case 20: r = fp(d[0], d[1], d[2], d[3], d[4], d[5], d[6], d[7],          \
-                  d[8], d[9], d[10],d[11],d[12],d[13],d[14],d[15],         \
-                  d[16],d[17],d[18],d[19]); break;                         \
-  case 21: r = fp(d[0], d[1], d[2], d[3], d[4], d[5], d[6], d[7],          \
-                  d[8], d[9], d[10],d[11],d[12],d[13],d[14],d[15],         \
-                  d[16],d[17],d[18],d[19],d[20]); break;                   \
-  case 22: r = fp(d[0], d[1], d[2], d[3], d[4], d[5], d[6], d[7],          \
-                  d[8], d[9], d[10],d[11],d[12],d[13],d[14],d[15],         \
-                  d[16],d[17],d[18],d[19],d[20],d[21]); break;             \
-  case 23: r = fp(d[0], d[1], d[2], d[3], d[4], d[5], d[6], d[7],          \
-                  d[8], d[9], d[10],d[11],d[12],d[13],d[14],d[15],         \
-                  d[16],d[17],d[18],d[19],d[20],d[21],d[22]); break;       \
-  case 24: r = fp(d[0], d[1], d[2], d[3], d[4], d[5], d[6], d[7],          \
-                  d[8], d[9], d[10],d[11],d[12],d[13],d[14],d[15],         \
-                  d[16],d[17],d[18],d[19],d[20],d[21],d[22],d[23]); break; \
-  case 25: r = fp(d[0], d[1], d[2], d[3], d[4], d[5], d[6], d[7],          \
-                  d[8], d[9], d[10],d[11],d[12],d[13],d[14],d[15],         \
-                  d[16],d[17],d[18],d[19],d[20],d[21],d[22],d[23],         \
-                  d[24]);break;                                            \
-  case 26: r = fp(d[0], d[1], d[2], d[3], d[4], d[5], d[6], d[7],          \
-                  d[8], d[9], d[10],d[11],d[12],d[13],d[14],d[15],         \
-                  d[16],d[17],d[18],d[19],d[20],d[21],d[22],d[23],         \
-                  d[24],d[25]);break;                                      \
-  case 27: r = fp(d[0], d[1], d[2], d[3], d[4], d[5], d[6], d[7],          \
-                  d[8], d[9], d[10],d[11],d[12],d[13],d[14],d[15],         \
-                  d[16],d[17],d[18],d[19],d[20],d[21],d[22],d[23],         \
-                  d[24],d[25],d[26]);break;                                \
-  case 28: r = fp(d[0], d[1], d[2], d[3], d[4], d[5], d[6], d[7],          \
-                  d[8], d[9], d[10],d[11],d[12],d[13],d[14],d[15],         \
-                  d[16],d[17],d[18],d[19],d[20],d[21],d[22],d[23],         \
-                  d[24],d[25],d[26],d[27]);break;                          \
-  case 29: r = fp(d[0], d[1], d[2], d[3], d[4], d[5], d[6], d[7],          \
-                  d[8], d[9], d[10],d[11],d[12],d[13],d[14],d[15],         \
-                  d[16],d[17],d[18],d[19],d[20],d[21],d[22],d[23],         \
-                  d[24],d[25],d[26],d[27],d[28]);break;                    \
-  case 30: r = fp(d[0], d[1], d[2], d[3], d[4], d[5], d[6], d[7],          \
-                  d[8], d[9], d[10],d[11],d[12],d[13],d[14],d[15],         \
-                  d[16],d[17],d[18],d[19],d[20],d[21],d[22],d[23],         \
-                  d[24],d[25],d[26],d[27],d[28],d[29]);break;              \
-  case 31: r = fp(d[0], d[1], d[2], d[3], d[4], d[5], d[6], d[7],          \
-                  d[8], d[9], d[10],d[11],d[12],d[13],d[14],d[15],         \
-                  d[16],d[17],d[18],d[19],d[20],d[21],d[22],d[23],         \
-                  d[24],d[25],d[26],d[27],d[28],d[29],d[30]);break;        \
-  case 32: r = fp(d[0], d[1], d[2], d[3], d[4], d[5], d[6], d[7],          \
-                  d[8], d[9], d[10],d[11],d[12],d[13],d[14],d[15],         \
-                  d[16],d[17],d[18],d[19],d[20],d[21],d[22],d[23],         \
-                  d[24],d[25],d[26],d[27],d[28],d[29],d[30],d[31]);break;  \
-  case 33: r = fp(d[0], d[1], d[2], d[3], d[4], d[5], d[6], d[7],          \
-                  d[8], d[9], d[10],d[11],d[12],d[13],d[14],d[15],         \
-                  d[16],d[17],d[18],d[19],d[20],d[21],d[22],d[23],         \
-                  d[24],d[25],d[26],d[27],d[28],d[29],d[30],d[31],         \
-                  d[32]);break;                                            \
-  case 34: r = fp(d[0], d[1], d[2], d[3], d[4], d[5], d[6], d[7],          \
-                  d[8], d[9], d[10],d[11],d[12],d[13],d[14],d[15],         \
-                  d[16],d[17],d[18],d[19],d[20],d[21],d[22],d[23],         \
-                  d[24],d[25],d[26],d[27],d[28],d[29],d[30],d[31],         \
-                  d[32],d[33]);break;                                      \
-  case 35: r = fp(d[0], d[1], d[2], d[3], d[4], d[5], d[6], d[7],          \
-                  d[8], d[9], d[10],d[11],d[12],d[13],d[14],d[15],         \
-                  d[16],d[17],d[18],d[19],d[20],d[21],d[22],d[23],         \
-                  d[24],d[25],d[26],d[27],d[28],d[29],d[30],d[31],         \
-                  d[32],d[33],d[34]);break;                                \
-  case 36: r = fp(d[0], d[1], d[2], d[3], d[4], d[5], d[6], d[7],          \
-                  d[8], d[9], d[10],d[11],d[12],d[13],d[14],d[15],         \
-                  d[16],d[17],d[18],d[19],d[20],d[21],d[22],d[23],         \
-                  d[24],d[25],d[26],d[27],d[28],d[29],d[30],d[31],         \
-                  d[32],d[33],d[34],d[35]);break;                          \
-  case 37: r = fp(d[0], d[1], d[2], d[3], d[4], d[5], d[6], d[7],          \
-                  d[8], d[9], d[10],d[11],d[12],d[13],d[14],d[15],         \
-                  d[16],d[17],d[18],d[19],d[20],d[21],d[22],d[23],         \
-                  d[24],d[25],d[26],d[27],d[28],d[29],d[30],d[31],         \
-                  d[32],d[33],d[34],d[35],d[36]);break;                    \
-  case 38: r = fp(d[0], d[1], d[2], d[3], d[4], d[5], d[6], d[7],          \
-                  d[8], d[9], d[10],d[11],d[12],d[13],d[14],d[15],         \
-                  d[16],d[17],d[18],d[19],d[20],d[21],d[22],d[23],         \
-                  d[24],d[25],d[26],d[27],d[28],d[29],d[30],d[31],         \
-                  d[32],d[33],d[34],d[35],d[36],d[37]);break;              \
-  case 39: r = fp(d[0], d[1], d[2], d[3], d[4], d[5], d[6], d[7],          \
-                  d[8], d[9], d[10],d[11],d[12],d[13],d[14],d[15],         \
-                  d[16],d[17],d[18],d[19],d[20],d[21],d[22],d[23],         \
-                  d[24],d[25],d[26],d[27],d[28],d[29],d[30],d[31],         \
-                  d[32],d[33],d[34],d[35],d[36],d[37],d[38]);break;        \
-  case 40: r = fp(d[0], d[1], d[2], d[3], d[4], d[5], d[6], d[7],          \
-                  d[8], d[9], d[10],d[11],d[12],d[13],d[14],d[15],         \
-                  d[16],d[17],d[18],d[19],d[20],d[21],d[22],d[23],         \
-                  d[24],d[25],d[26],d[27],d[28],d[29],d[30],d[31],         \
-                  d[32],d[33],d[34],d[35],d[36],d[37],d[38],d[39]);break;  \
-  case 41: r = fp(d[0], d[1], d[2], d[3], d[4], d[5], d[6], d[7],          \
-                  d[8], d[9], d[10],d[11],d[12],d[13],d[14],d[15],         \
-                  d[16],d[17],d[18],d[19],d[20],d[21],d[22],d[23],         \
-                  d[24],d[25],d[26],d[27],d[28],d[29],d[30],d[31],         \
-                  d[32],d[33],d[34],d[35],d[36],d[37],d[38],d[39],         \
-                  d[40]);break;                                            \
-  case 42: r = fp(d[0], d[1], d[2], d[3], d[4], d[5], d[6], d[7],          \
-                  d[8], d[9], d[10],d[11],d[12],d[13],d[14],d[15],         \
-                  d[16],d[17],d[18],d[19],d[20],d[21],d[22],d[23],         \
-                  d[24],d[25],d[26],d[27],d[28],d[29],d[30],d[31],         \
-                  d[32],d[33],d[34],d[35],d[36],d[37],d[38],d[39],         \
-                  d[40],d[41]);break;                                      \
-  case 43: r = fp(d[0], d[1], d[2], d[3], d[4], d[5], d[6], d[7],          \
-                  d[8], d[9], d[10],d[11],d[12],d[13],d[14],d[15],         \
-                  d[16],d[17],d[18],d[19],d[20],d[21],d[22],d[23],         \
-                  d[24],d[25],d[26],d[27],d[28],d[29],d[30],d[31],         \
-                  d[32],d[33],d[34],d[35],d[36],d[37],d[38],d[39],         \
-                  d[40],d[41],d[42]);break;                                \
-  case 44: r = fp(d[0], d[1], d[2], d[3], d[4], d[5], d[6], d[7],          \
-                  d[8], d[9], d[10],d[11],d[12],d[13],d[14],d[15],         \
-                  d[16],d[17],d[18],d[19],d[20],d[21],d[22],d[23],         \
-                  d[24],d[25],d[26],d[27],d[28],d[29],d[30],d[31],         \
-                  d[32],d[33],d[34],d[35],d[36],d[37],d[38],d[39],         \
-                  d[40],d[41],d[42],d[43]);break;                          \
-  case 45: r = fp(d[0], d[1], d[2], d[3], d[4], d[5], d[6], d[7],          \
-                  d[8], d[9], d[10],d[11],d[12],d[13],d[14],d[15],         \
-                  d[16],d[17],d[18],d[19],d[20],d[21],d[22],d[23],         \
-                  d[24],d[25],d[26],d[27],d[28],d[29],d[30],d[31],         \
-                  d[32],d[33],d[34],d[35],d[36],d[37],d[38],d[39],         \
-                  d[40],d[41],d[42],d[43],d[44]);break;                    \
-  case 46: r = fp(d[0], d[1], d[2], d[3], d[4], d[5], d[6], d[7],          \
-                  d[8], d[9], d[10],d[11],d[12],d[13],d[14],d[15],         \
-                  d[16],d[17],d[18],d[19],d[20],d[21],d[22],d[23],         \
-                  d[24],d[25],d[26],d[27],d[28],d[29],d[30],d[31],         \
-                  d[32],d[33],d[34],d[35],d[36],d[37],d[38],d[39],         \
-                  d[40],d[41],d[42],d[43],d[44],d[45]);break;              \
-  case 47: r = fp(d[0], d[1], d[2], d[3], d[4], d[5], d[6], d[7],          \
-                  d[8], d[9], d[10],d[11],d[12],d[13],d[14],d[15],         \
-                  d[16],d[17],d[18],d[19],d[20],d[21],d[22],d[23],         \
-                  d[24],d[25],d[26],d[27],d[28],d[29],d[30],d[31],         \
-                  d[32],d[33],d[34],d[35],d[36],d[37],d[38],d[39],         \
-                  d[40],d[41],d[42],d[43],d[44],d[45],d[46]);break;        \
-  case 48: r = fp(d[0], d[1], d[2], d[3], d[4], d[5], d[6], d[7],          \
-                  d[8], d[9], d[10],d[11],d[12],d[13],d[14],d[15],         \
-                  d[16],d[17],d[18],d[19],d[20],d[21],d[22],d[23],         \
-                  d[24],d[25],d[26],d[27],d[28],d[29],d[30],d[31],         \
-                  d[32],d[33],d[34],d[35],d[36],d[37],d[38],d[39],         \
-                  d[40],d[41],d[42],d[43],d[44],d[45],d[46],d[47]);break;  \
-  case 49: r = fp(d[0], d[1], d[2], d[3], d[4], d[5], d[6], d[7],          \
-                  d[8], d[9], d[10],d[11],d[12],d[13],d[14],d[15],         \
-                  d[16],d[17],d[18],d[19],d[20],d[21],d[22],d[23],         \
-                  d[24],d[25],d[26],d[27],d[28],d[29],d[30],d[31],         \
-                  d[32],d[33],d[34],d[35],d[36],d[37],d[38],d[39],         \
-                  d[40],d[41],d[42],d[43],d[44],d[45],d[46],d[47],         \
-                  d[48]);break;                                            \
-  case 50: r = fp(d[0], d[1], d[2], d[3], d[4], d[5], d[6], d[7],          \
-                  d[8], d[9], d[10],d[11],d[12],d[13],d[14],d[15],         \
-                  d[16],d[17],d[18],d[19],d[20],d[21],d[22],d[23],         \
-                  d[24],d[25],d[26],d[27],d[28],d[29],d[30],d[31],         \
-                  d[32],d[33],d[34],d[35],d[36],d[37],d[38],d[39],         \
-                  d[40],d[41],d[42],d[43],d[44],d[45],d[46],d[47],         \
-                  d[48],d[49]);break;                                      \
-  case 51: r = fp(d[0], d[1], d[2], d[3], d[4], d[5], d[6], d[7],          \
-                  d[8], d[9], d[10],d[11],d[12],d[13],d[14],d[15],         \
-                  d[16],d[17],d[18],d[19],d[20],d[21],d[22],d[23],         \
-                  d[24],d[25],d[26],d[27],d[28],d[29],d[30],d[31],         \
-                  d[32],d[33],d[34],d[35],d[36],d[37],d[38],d[39],         \
-                  d[40],d[41],d[42],d[43],d[44],d[45],d[46],d[47],         \
-                  d[48],d[49],d[50]);break;                                \
-  case 52: r = fp(d[0], d[1], d[2], d[3], d[4], d[5], d[6], d[7],          \
-                  d[8], d[9], d[10],d[11],d[12],d[13],d[14],d[15],         \
-                  d[16],d[17],d[18],d[19],d[20],d[21],d[22],d[23],         \
-                  d[24],d[25],d[26],d[27],d[28],d[29],d[30],d[31],         \
-                  d[32],d[33],d[34],d[35],d[36],d[37],d[38],d[39],         \
-                  d[40],d[41],d[42],d[43],d[44],d[45],d[46],d[47],         \
-                  d[48],d[49],d[50],d[51]);break;                          \
-  case 53: r = fp(d[0], d[1], d[2], d[3], d[4], d[5], d[6], d[7],          \
-                  d[8], d[9], d[10],d[11],d[12],d[13],d[14],d[15],         \
-                  d[16],d[17],d[18],d[19],d[20],d[21],d[22],d[23],         \
-                  d[24],d[25],d[26],d[27],d[28],d[29],d[30],d[31],         \
-                  d[32],d[33],d[34],d[35],d[36],d[37],d[38],d[39],         \
-                  d[40],d[41],d[42],d[43],d[44],d[45],d[46],d[47],         \
-                  d[48],d[49],d[50],d[51],d[52]);break;                    \
-  case 54: r = fp(d[0], d[1], d[2], d[3], d[4], d[5], d[6], d[7],          \
-                  d[8], d[9], d[10],d[11],d[12],d[13],d[14],d[15],         \
-                  d[16],d[17],d[18],d[19],d[20],d[21],d[22],d[23],         \
-                  d[24],d[25],d[26],d[27],d[28],d[29],d[30],d[31],         \
-                  d[32],d[33],d[34],d[35],d[36],d[37],d[38],d[39],         \
-                  d[40],d[41],d[42],d[43],d[44],d[45],d[46],d[47],         \
-                  d[48],d[49],d[50],d[51],d[52],d[53]);break;              \
-  case 55: r = fp(d[0], d[1], d[2], d[3], d[4], d[5], d[6], d[7],          \
-                  d[8], d[9], d[10],d[11],d[12],d[13],d[14],d[15],         \
-                  d[16],d[17],d[18],d[19],d[20],d[21],d[22],d[23],         \
-                  d[24],d[25],d[26],d[27],d[28],d[29],d[30],d[31],         \
-                  d[32],d[33],d[34],d[35],d[36],d[37],d[38],d[39],         \
-                  d[40],d[41],d[42],d[43],d[44],d[45],d[46],d[47],         \
-                  d[48],d[49],d[50],d[51],d[52],d[53],d[54]);break;        \
-  case 56: r = fp(d[0], d[1], d[2], d[3], d[4], d[5], d[6], d[7],          \
-                  d[8], d[9], d[10],d[11],d[12],d[13],d[14],d[15],         \
-                  d[16],d[17],d[18],d[19],d[20],d[21],d[22],d[23],         \
-                  d[24],d[25],d[26],d[27],d[28],d[29],d[30],d[31],         \
-                  d[32],d[33],d[34],d[35],d[36],d[37],d[38],d[39],         \
-                  d[40],d[41],d[42],d[43],d[44],d[45],d[46],d[47],         \
-                  d[48],d[49],d[50],d[51],d[52],d[53],d[54],d[55]);break;  \
-  case 57: r = fp(d[0], d[1], d[2], d[3], d[4], d[5], d[6], d[7],          \
-                  d[8], d[9], d[10],d[11],d[12],d[13],d[14],d[15],         \
-                  d[16],d[17],d[18],d[19],d[20],d[21],d[22],d[23],         \
-                  d[24],d[25],d[26],d[27],d[28],d[29],d[30],d[31],         \
-                  d[32],d[33],d[34],d[35],d[36],d[37],d[38],d[39],         \
-                  d[40],d[41],d[42],d[43],d[44],d[45],d[46],d[47],         \
-                  d[48],d[49],d[50],d[51],d[52],d[53],d[54],d[55],         \
-                  d[56]);break;                                            \
-  case 58: r = fp(d[0], d[1], d[2], d[3], d[4], d[5], d[6], d[7],          \
-                  d[8], d[9], d[10],d[11],d[12],d[13],d[14],d[15],         \
-                  d[16],d[17],d[18],d[19],d[20],d[21],d[22],d[23],         \
-                  d[24],d[25],d[26],d[27],d[28],d[29],d[30],d[31],         \
-                  d[32],d[33],d[34],d[35],d[36],d[37],d[38],d[39],         \
-                  d[40],d[41],d[42],d[43],d[44],d[45],d[46],d[47],         \
-                  d[48],d[49],d[50],d[51],d[52],d[53],d[54],d[55],         \
-                  d[56],d[57]);break;                                      \
-  case 59: r = fp(d[0], d[1], d[2], d[3], d[4], d[5], d[6], d[7],          \
-                  d[8], d[9], d[10],d[11],d[12],d[13],d[14],d[15],         \
-                  d[16],d[17],d[18],d[19],d[20],d[21],d[22],d[23],         \
-                  d[24],d[25],d[26],d[27],d[28],d[29],d[30],d[31],         \
-                  d[32],d[33],d[34],d[35],d[36],d[37],d[38],d[39],         \
-                  d[40],d[41],d[42],d[43],d[44],d[45],d[46],d[47],         \
-                  d[48],d[49],d[50],d[51],d[52],d[53],d[54],d[55],         \
-                  d[56],d[57],d[58]);break;                                \
-  case 60: r = fp(d[0], d[1], d[2], d[3], d[4], d[5], d[6], d[7],          \
-                  d[8], d[9], d[10],d[11],d[12],d[13],d[14],d[15],         \
-                  d[16],d[17],d[18],d[19],d[20],d[21],d[22],d[23],         \
-                  d[24],d[25],d[26],d[27],d[28],d[29],d[30],d[31],         \
-                  d[32],d[33],d[34],d[35],d[36],d[37],d[38],d[39],         \
-                  d[40],d[41],d[42],d[43],d[44],d[45],d[46],d[47],         \
-                  d[48],d[49],d[50],d[51],d[52],d[53],d[54],d[55],         \
-                  d[56],d[57],d[58],d[59]);break;                          \
-  case 61: r = fp(d[0], d[1], d[2], d[3], d[4], d[5], d[6], d[7],          \
-                  d[8], d[9], d[10],d[11],d[12],d[13],d[14],d[15],         \
-                  d[16],d[17],d[18],d[19],d[20],d[21],d[22],d[23],         \
-                  d[24],d[25],d[26],d[27],d[28],d[29],d[30],d[31],         \
-                  d[32],d[33],d[34],d[35],d[36],d[37],d[38],d[39],         \
-                  d[40],d[41],d[42],d[43],d[44],d[45],d[46],d[47],         \
-                  d[48],d[49],d[50],d[51],d[52],d[53],d[54],d[55],         \
-                  d[56],d[57],d[58],d[59],d[60]);break;                    \
-  case 62: r = fp(d[0], d[1], d[2], d[3], d[4], d[5], d[6], d[7],          \
-                  d[8], d[9], d[10],d[11],d[12],d[13],d[14],d[15],         \
-                  d[16],d[17],d[18],d[19],d[20],d[21],d[22],d[23],         \
-                  d[24],d[25],d[26],d[27],d[28],d[29],d[30],d[31],         \
-                  d[32],d[33],d[34],d[35],d[36],d[37],d[38],d[39],         \
-                  d[40],d[41],d[42],d[43],d[44],d[45],d[46],d[47],         \
-                  d[48],d[49],d[50],d[51],d[52],d[53],d[54],d[55],         \
-                  d[56],d[57],d[58],d[59],d[60],d[61]);break;              \
-  case 63: r = fp(d[0], d[1], d[2], d[3], d[4], d[5], d[6], d[7],          \
-                  d[8], d[9], d[10],d[11],d[12],d[13],d[14],d[15],         \
-                  d[16],d[17],d[18],d[19],d[20],d[21],d[22],d[23],         \
-                  d[24],d[25],d[26],d[27],d[28],d[29],d[30],d[31],         \
-                  d[32],d[33],d[34],d[35],d[36],d[37],d[38],d[39],         \
-                  d[40],d[41],d[42],d[43],d[44],d[45],d[46],d[47],         \
-                  d[48],d[49],d[50],d[51],d[52],d[53],d[54],d[55],         \
-                  d[56],d[57],d[58],d[59],d[60],d[61],d[62]);break;        \
-  case 64: r = fp(d[0], d[1], d[2], d[3], d[4], d[5], d[6], d[7],          \
-                  d[8], d[9], d[10],d[11],d[12],d[13],d[14],d[15],         \
-                  d[16],d[17],d[18],d[19],d[20],d[21],d[22],d[23],         \
-                  d[24],d[25],d[26],d[27],d[28],d[29],d[30],d[31],         \
-                  d[32],d[33],d[34],d[35],d[36],d[37],d[38],d[39],         \
-                  d[40],d[41],d[42],d[43],d[44],d[45],d[46],d[47],         \
-                  d[48],d[49],d[50],d[51],d[52],d[53],d[54],d[55],         \
-                  d[56],d[57],d[58],d[59],d[60],d[61],d[62],d[63]);break;  \
-}
-
-#if defined(__clang__) && ( (__clang_major__ > 3) || ((__clang_major__ == 3) && (__clang_minor__ > 5)))
+#if defined(__clang__) && ((__clang_major__ > 3) || ((__clang_major__ == 3) && (__clang_minor__ > 5)))
 /* needed by clang newer versions, no matter double_trick is inline asm or not */
 #define NOOPTIMIZE __attribute__((optnone))
 #elif __GNUC__ > 4 || (__GNUC__ == 4 && (__GNUC_MINOR__ > 3))
@@ -451,30 +2228,42 @@ __asm__ ("movq (%0),%%xmm0\n\t"       \
 #define NOOPTIMIZE
 #endif
 
-static I     NOOPTIMIZE stdcalli(STDCALLI fp,I*d,I cnt,DoF*dd,I dcnt){I r;
- SWITCHCALL;
- return r;
-}  /* I result */
-static I     NOOPTIMIZE altcalli(ALTCALLI fp,I*d,I cnt,DoF*dd,I dcnt){I r;
- SWITCHCALL;
- return r;
+static I NOOPTIMIZE
+stdcalli(STDCALLI fp, I *d, I cnt, DoF *dd, I dcnt) {
+    I r;
+    SWITCHCALL;
+    return r;
+} /* I result */
+static I NOOPTIMIZE
+altcalli(ALTCALLI fp, I *d, I cnt, DoF *dd, I dcnt) {
+    I r;
+    SWITCHCALL;
+    return r;
 }
-static D     NOOPTIMIZE stdcalld(STDCALLD fp,I*d,I cnt,DoF*dd,I dcnt){D r;
- SWITCHCALL;
- return r;
-}  /* D result */
-static D     NOOPTIMIZE altcalld(ALTCALLD fp,I*d,I cnt,DoF*dd,I dcnt){D r;
- SWITCHCALL;
- return r;
+static D NOOPTIMIZE
+stdcalld(STDCALLD fp, I *d, I cnt, DoF *dd, I dcnt) {
+    D r;
+    SWITCHCALL;
+    return r;
+} /* D result */
+static D NOOPTIMIZE
+altcalld(ALTCALLD fp, I *d, I cnt, DoF *dd, I dcnt) {
+    D r;
+    SWITCHCALL;
+    return r;
 }
 
-static float NOOPTIMIZE stdcallf(STDCALLF fp,I*d,I cnt,DoF*dd,I dcnt){float r;
-SWITCHCALL;
-return r;
-}  /* J64 float result */
-static float NOOPTIMIZE altcallf(ALTCALLF fp,I*d,I cnt,DoF*dd,I dcnt){float r;
-  SWITCHCALL;
- return r;
+static float NOOPTIMIZE
+stdcallf(STDCALLF fp, I *d, I cnt, DoF *dd, I dcnt) {
+    float r;
+    SWITCHCALL;
+    return r;
+} /* J64 float result */
+static float NOOPTIMIZE
+altcallf(ALTCALLF fp, I *d, I cnt, DoF *dd, I dcnt) {
+    float r;
+    SWITCHCALL;
+    return r;
 }
 
 /* fp        - function                                    */
@@ -484,54 +2273,100 @@ static float NOOPTIMIZE altcallf(ALTCALLF fp,I*d,I cnt,DoF*dd,I dcnt){float r;
 /* v         - result data area                            */
 /* alternate - whether to use alternate calling convention */
 
-static void docall(FARPROC fp, I*d, I cnt, DoF* dd, I dcnt, C zl, I*v, B alternate){
-#define vdresvalues(w) CCM(w,'c')+CCM(w,'w')+CCM(w,'u')+CCM(w,'b')+CCM(w,'s')+CCM(w,'i')+CCM(w,'l')+CCM(w,'x')+CCM(w,'*')+CCM(w,'n')
- CCMWDS(vdres) CCMCAND(vdres,cand,zl)   // see if zl is one of the direct results, which can be moved into the result directly
+static void
+docall(FARPROC fp, I *d, I cnt, DoF *dd, I dcnt, C zl, I *v, B alternate) {
+#define vdresvalues(w)                                                                                              \
+    CCM(w, 'c') + CCM(w, 'w') + CCM(w, 'u') + CCM(w, 'b') + CCM(w, 's') + CCM(w, 'i') + CCM(w, 'l') + CCM(w, 'x') + \
+      CCM(w, '*') + CCM(w, 'n')
+    CCMWDS(vdres)
+    CCMCAND(vdres, cand, zl)  // see if zl is one of the direct results, which can be moved into the result directly
 
- if(CCMTST(cand,zl)){I r;
-  r= alternate ? altcalli((ALTCALLI)fp,d,cnt,dd,dcnt) : stdcalli((STDCALLI)fp,d,cnt,dd,dcnt);
-  switch(zl&0x1f){   // kludge scaf could do this with shift
-   case 'c'&0x1f: *(C*)v=(C)r;  break;
-   case 'w'&0x1f: *(US*)v=(US)r;break;
-   case 'u'&0x1f: *(C4*)v=(C4)r;break;
-   case 'b'&0x1f: *v=(I)(BYTE)r;break;
-   case 's'&0x1f: *v=(I)(S)r;   break;
-   case 'i'&0x1f: *v=(I)(int)r; break;
-   case 'l'&0x1f:
-   case 'x'&0x1f:
-   case '*'&0x1f: *v=r;         break;
-   case 'n'&0x1f: *v=0;         break;
-  }
- }else {/* the above doesn't work for J64 */
-  if(zl=='d'){D r;
-   r= alternate ? altcalld((ALTCALLD)fp,d,cnt,dd,dcnt) : stdcalld((STDCALLD)fp,d,cnt,dd,dcnt);
-   *(D*)v=r;
-  }else{float r;
-   r= alternate ? altcallf((ALTCALLF)fp,d,cnt,dd,dcnt) : stdcallf((STDCALLF)fp,d,cnt,dd,dcnt);
-   *(D*)v=(D)r;
-  }
- }
+      if (CCMTST(cand, zl)) {
+        I r;
+        r = alternate ? altcalli((ALTCALLI)fp, d, cnt, dd, dcnt) : stdcalli((STDCALLI)fp, d, cnt, dd, dcnt);
+        switch (zl & 0x1f) {  // kludge scaf could do this with shift
+            case 'c' & 0x1f: *(C *)v = (C)r; break;
+            case 'w' & 0x1f: *(US *)v = (US)r; break;
+            case 'u' & 0x1f: *(C4 *)v = (C4)r; break;
+            case 'b' & 0x1f: *v = (I)(BYTE)r; break;
+            case 's' & 0x1f: *v = (I)(S)r; break;
+            case 'i' & 0x1f: *v = (I)(int)r; break;
+            case 'l' & 0x1f:
+            case 'x' & 0x1f:
+            case '*' & 0x1f: *v = r; break;
+            case 'n' & 0x1f: *v = 0; break;
+        }
+    }
+    else { /* the above doesn't work for J64 */
+        if (zl == 'd') {
+            D r;
+            r       = alternate ? altcalld((ALTCALLD)fp, d, cnt, dd, dcnt) : stdcalld((STDCALLD)fp, d, cnt, dd, dcnt);
+            *(D *)v = r;
+        } else {
+            float r;
+            r       = alternate ? altcallf((ALTCALLF)fp, d, cnt, dd, dcnt) : stdcallf((STDCALLF)fp, d, cnt, dd, dcnt);
+            *(D *)v = (D)r;
+        }
+    }
 }
 
-static void convertdown(I*pi,I n,C t){
- if(n)switch(t){
-  case 'b': {BYTE*pt=(BYTE*)pi;               DO(n, pt[i]=(BYTE)pi[i];);} break;
-  case 's': {short*pt=(short*)pi;             DO(n, pt[i]=(short)pi[i];);} break;
-  case 'i': {int  *pt=(int  *)pi;             DO(n, pt[i]=(int)  pi[i];);} break;
-  case 'f': {float*pt=(float*)pi;D*pd=(D*)pi; DO(n, pt[i]=(float)pd[i];);} break;
+static void
+convertdown(I *pi, I n, C t) {
+    if (n) switch (t) {
+            case 'b': {
+                BYTE *pt = (BYTE *)pi;
+                DO(n, pt[i] = (BYTE)pi[i];);
+            } break;
+            case 's': {
+                short *pt = (short *)pi;
+                DO(n, pt[i] = (short)pi[i];);
+            } break;
+            case 'i': {
+                int *pt = (int *)pi;
+                DO(n, pt[i] = (int)pi[i];);
+            } break;
+            case 'f': {
+                float *pt = (float *)pi;
+                D *pd     = (D *)pi;
+                DO(n, pt[i] = (float)pd[i];);
+            } break;
 
-  case 'z': {float_complex*pt=(float_complex*)pi;D*pd=(D*)pi; DO(n, pt[i]=(float)pd[2*i]+_Complex_I*(float)pd[1+2*i];);} break;
-}}   /* convert I in place to s or int and d to f and j to z */
+            case 'z': {
+                float_complex *pt = (float_complex *)pi;
+                D *pd             = (D *)pi;
+                DO(n, pt[i] = (float)pd[2 * i] + _Complex_I * (float)pd[1 + 2 * i];);
+            } break;
+        }
+} /* convert I in place to s or int and d to f and j to z */
 
-static void convertup(I*pi,I n,C t){I j=n;
- if(n)switch(t){
-  case 'b': {BYTE*pt=(BYTE*)pi;               DQ(n, --j; pi[j]=(I)pt[j];);} break;
-  case 's': {short*pt=(short*)pi;             DQ(n, --j; pi[j]=(I)pt[j];);} break;
-  case 'i': {int  *pt=(int  *)pi;             DQ(n, --j; pi[j]=(I)pt[j];);} break;
-  case 'f': {float*pt=(float*)pi;D*pd=(D*)pi; DQ(n, --j; pd[j]=(D)pt[j];);} break;
-  case 'z': {float_complex*pt=(float_complex*)pi;D*pd=(D*)pi; DQ(n, --j; pd[1+2*j]=(D)cimagf(pt[j]); pd[2*j]=(D)crealf(pt[j]););} break;
-}}   /* convert s or int to I and f to d and z to j */
-
+static void
+convertup(I *pi, I n, C t) {
+    I j = n;
+    if (n) switch (t) {
+            case 'b': {
+                BYTE *pt = (BYTE *)pi;
+                DQ(n, --j; pi[j] = (I)pt[j];);
+            } break;
+            case 's': {
+                short *pt = (short *)pi;
+                DQ(n, --j; pi[j] = (I)pt[j];);
+            } break;
+            case 'i': {
+                int *pt = (int *)pi;
+                DQ(n, --j; pi[j] = (I)pt[j];);
+            } break;
+            case 'f': {
+                float *pt = (float *)pi;
+                D *pd     = (D *)pi;
+                DQ(n, --j; pd[j] = (D)pt[j];);
+            } break;
+            case 'z': {
+                float_complex *pt = (float_complex *)pi;
+                D *pd             = (D *)pi;
+                DQ(n, --j; pd[1 + 2 * j] = (D)cimagf(pt[j]); pd[2 * j] = (D)crealf(pt[j]););
+            } break;
+        }
+} /* convert s or int to I and f to d and z to j */
 
 /* cache of 15!:0 parsed left arguments                                 */
 /*                                                                      */
@@ -552,44 +2387,75 @@ static void convertup(I*pi,I n,C t){I j=n;
 // AM(cdhash) is # entries filled, max (NLIBS)
 
 // allocate hashtable, fill with -1
-static A jtcdgahash(J jt,I n){A z;I hn;
- FULLHASHSIZE(n,INTSIZE,0,0,hn);
- GATV0(z,INT,hn,0); memset(AV(z),CFF,hn*SZI);  // no rank - use all words for table
- return ras(z);
+static A
+jtcdgahash(J jt, I n) {
+    A z;
+    I hn;
+    FULLHASHSIZE(n, INTSIZE, 0, 0, hn);
+    GATV0(z, INT, hn, 0);
+    memset(AV(z), CFF, hn * SZI);  // no rank - use all words for table
+    return ras(z);
 }
 
-static B jtcdinit(J jt){A x;
- RZ(x=exta(LIT,2L,sizeof(CCT),100L )); ras(x); memset(AV(x),C0,AN(x)); jt->cdarg=x;
- RZ(x=exta(LIT,1L,1L,         5000L)); ras(x); memset(AV(x),C0,AN(x)); jt->cdstr=x;
- RZ(jt->cdhash =jtcdgahash(jt,4*AS(jt->cdarg)[0]));
- RZ(jt->cdhashl=jtcdgahash(jt,NLIBS+16           ));  // will round up to power of 2 - we allow 100 libraries, which will almost never be used, so we don't get the usual 2x
- AM(jt->cdarg)=AM(jt->cdstr)=AM(jt->cdhash)=AM(jt->cdhashl)=0;  // init all tables to empty
- return 1;
+static B
+jtcdinit(J jt) {
+    A x;
+    RZ(x = exta(LIT, 2L, sizeof(CCT), 100L));
+    ras(x);
+    memset(AV(x), C0, AN(x));
+    jt->cdarg = x;
+    RZ(x = exta(LIT, 1L, 1L, 5000L));
+    ras(x);
+    memset(AV(x), C0, AN(x));
+    jt->cdstr = x;
+    RZ(jt->cdhash = jtcdgahash(jt, 4 * AS(jt->cdarg)[0]));
+    RZ(jt->cdhashl = jtcdgahash(jt, NLIBS + 16));  // will round up to power of 2 - we allow 100 libraries, which will
+                                                   // almost never be used, so we don't get the usual 2x
+    AM(jt->cdarg) = AM(jt->cdstr) = AM(jt->cdhash) = AM(jt->cdhashl) = 0;  // init all tables to empty
+    return 1;
 }
 
 // find the starting index for v->string (length n) in table tbl
-#define HASHINDEX(tbl,n,v) ((hic(n,v)*(UI)AN(tbl))>>32)
+#define HASHINDEX(tbl, n, v) ((hic(n, v) * (UI)AN(tbl)) >> 32)
 
 // see if v->string (length n) is in hashtable tbl.  The hash in tbl contains indexes into cdarg, or -1 for empty slot.
 // return retval, where pv[k] is the address of the found slot in cdarg
-#define HASHLOOKUP(tbl,nn,vv,pvklett,retval) I j=HASHINDEX(tbl,nn,vv); I *hv=IAV0(tbl); C *s=CAV1(jt->cdstr); CCT*pv=(CCT*)CAV2(jt->cdarg); \
- while(1){I k=hv[j]; if(k<0)return 0; if(nn==pv[k].pvklett##n&&!memcmpne(vv,s+pv[k].pvklett##i,nn))return retval; if(--j<0)j+=AN(tbl);}
+#define HASHLOOKUP(tbl, nn, vv, pvklett, retval)                                              \
+    I j     = HASHINDEX(tbl, nn, vv);                                                         \
+    I *hv   = IAV0(tbl);                                                                      \
+    C *s    = CAV1(jt->cdstr);                                                                \
+    CCT *pv = (CCT *)CAV2(jt->cdarg);                                                         \
+    while (1) {                                                                               \
+        I k = hv[j];                                                                          \
+        if (k < 0) return 0;                                                                  \
+        if (nn == pv[k].pvklett##n && !memcmpne(vv, s + pv[k].pvklett##i, nn)) return retval; \
+        if (--j < 0) j += AN(tbl);                                                            \
+    }
 
-// add v->string (length n) to hashtable tbl.  argx is the index to insert into the hashtable.  Increment AM(tbl), which contains the # hashed items
-#define HASHINSERT(tbl,n,v,argx) I j=HASHINDEX(tbl,n,v); I *hv=IAV0(tbl); ++AM(tbl); while(hv[j]>=0)if(--j<0)j+=AN(tbl); hv[j]=argx;
-
+// add v->string (length n) to hashtable tbl.  argx is the index to insert into the hashtable.  Increment AM(tbl), which
+// contains the # hashed items
+#define HASHINSERT(tbl, n, v, argx) \
+    I j   = HASHINDEX(tbl, n, v);   \
+    I *hv = IAV0(tbl);              \
+    ++AM(tbl);                      \
+    while (hv[j] >= 0)              \
+        if (--j < 0) j += AN(tbl);  \
+    hv[j] = argx;
 
 // a is a string block for a cd string
 // result is the address in cdarg of the CCT block for the string, or 0 if not found
-static CCT*jtcdlookup(J jt,A a){
- HASHLOOKUP(jt->cdhash,AN(a),UAV(a),a,&pv[k])
+static CCT *
+jtcdlookup(J jt, A a) {
+    HASHLOOKUP(jt->cdhash, AN(a), UAV(a), a, &pv[k])
 }
 
 // av->null-terminated name of library
-// result is h field of the entry in cdarg for the library.  This entry may come from any CCT that matches the library name
-static HMODULE jtcdlookupl(J jt,C*av){
- I an=strlen(av);
- HASHLOOKUP(jt->cdhashl,an,av,l,pv[k].h)
+// result is h field of the entry in cdarg for the library.  This entry may come from any CCT that matches the library
+// name
+static HMODULE
+jtcdlookupl(J jt, C *av) {
+    I an = strlen(av);
+    HASHLOOKUP(jt->cdhashl, an, av, l, pv[k].h)
 }
 
 // add a hash entry for a cd left arg.  It is known not to be present already
@@ -600,56 +2466,102 @@ static HMODULE jtcdlookupl(J jt,C*av){
 // result is the address of the CCT entry (which is in cdarg)
 // if the hash table gets too full, it is reallocated & rehashed
 // if the string table or the table of CCTs gets full it is extended
-static CCT*jtcdinsert(J jt,A a,CCT*cc){A x;C*s;CCT*pv,*z;I an,hn,k;
- an=AN(a);
- while(AM(jt->cdstr) > AN(jt->cdstr)-an){I oldm=AM(jt->cdstr); RZ(jt->cdstr=jtext(jt,1,jt->cdstr)); AM(jt->cdstr)=oldm;}  // double allocations as needed, keep count
- while(AM(jt->cdarg)==AS(jt->cdarg)[0]){I oldm=AM(jt->cdarg); RZ(jt->cdarg=jtext(jt,1,jt->cdarg)); AM(jt->cdarg)=oldm;}
- s=CAV(jt->cdstr); pv=(CCT*)AV(jt->cdarg);
- cc->ai=AM(jt->cdstr); memcpy(s+AM(jt->cdstr),CAV(a),an); AM(jt->cdstr)+=an;
- z=pv+AM(jt->cdarg); memcpy(z,cc,sizeof(CCT)); k=AM(jt->cdarg);
- if(AN(jt->cdarg)<=2*AM(jt->cdarg)){RZ(x=jtcdgahash(jt,2*AM(jt->cdarg))); fa(jt->cdhash); jt->cdhash=x; AM(jt->cdarg)=k; AM(jt->cdhash)=0; k=0;}  // reallo if needed, and signal to rehash all
- // insert the last k elements of pv into the table.  This will be either all of them (on a rehash) or just the last 1.
- ++AM(jt->cdarg); DQ(AM(jt->cdarg)-k, HASHINSERT(jt->cdhash,pv[k].an,s+pv[k].ai,k) ++k;);  // add 1 ele to cdarg, and all or 1 to cdhash
- return z;
+static CCT *
+jtcdinsert(J jt, A a, CCT *cc) {
+    A x;
+    C *s;
+    CCT *pv, *z;
+    I an, hn, k;
+    an = AN(a);
+    while (AM(jt->cdstr) > AN(jt->cdstr) - an) {
+        I oldm = AM(jt->cdstr);
+        RZ(jt->cdstr = jtext(jt, 1, jt->cdstr));
+        AM(jt->cdstr) = oldm;
+    }  // double allocations as needed, keep count
+    while (AM(jt->cdarg) == AS(jt->cdarg)[0]) {
+        I oldm = AM(jt->cdarg);
+        RZ(jt->cdarg = jtext(jt, 1, jt->cdarg));
+        AM(jt->cdarg) = oldm;
+    }
+    s      = CAV(jt->cdstr);
+    pv     = (CCT *)AV(jt->cdarg);
+    cc->ai = AM(jt->cdstr);
+    memcpy(s + AM(jt->cdstr), CAV(a), an);
+    AM(jt->cdstr) += an;
+    z = pv + AM(jt->cdarg);
+    memcpy(z, cc, sizeof(CCT));
+    k = AM(jt->cdarg);
+    if (AN(jt->cdarg) <= 2 * AM(jt->cdarg)) {
+        RZ(x = jtcdgahash(jt, 2 * AM(jt->cdarg)));
+        fa(jt->cdhash);
+        jt->cdhash     = x;
+        AM(jt->cdarg)  = k;
+        AM(jt->cdhash) = 0;
+        k              = 0;
+    }  // reallo if needed, and signal to rehash all
+    // insert the last k elements of pv into the table.  This will be either all of them (on a rehash) or just the
+    // last 1.
+    ++AM(jt->cdarg);
+    DQ(AM(jt->cdarg) - k,
+       HASHINSERT(jt->cdhash, pv[k].an, s + pv[k].ai, k)++ k;);  // add 1 ele to cdarg, and all or 1 to cdhash
+    return z;
 }
 
+static CCT *
+jtcdload(J jt, CCT *cc, C *lib, C *proc) {
+    B ha = 0;
+    FARPROC f;
+    HMODULE h;
+    /* not all platforms support GetModuleHandle, so we do it ourselves */
+    /* we match on exactly the arg the user supplied                    */
+    /* search path and case can cause us to reload the same dll         */
+    if (cc->cc) {
+        C buf[21];
+        I k, n;
+        n = strlen(proc);
+        CDASSERT(BETWEENO(n, 1, sizeof(buf)), DEBADFN);
+        k = '_' == *proc ? -strtoI(1 + proc, 0L, 10) : strtoI(proc, 0L, 10);
+        CDASSERT(k && '0' == *lib || 0 <= k && '1' == *lib, DEBADFN);
+        sprintf(buf, FMTI, k);
+        if (0 > k) *buf = '_';
+        CDASSERT(!strcmp(proc, buf), DEBADFN);
+        cc->fp = (FARPROC)k;
+        return cc;
+    }
+    if (h = jtcdlookupl(jt, lib))
+        cc->h = h;  // if lib is in hash table, use the handle for it.  Save the handle to match other hasshes later
+    else {
+        CDASSERT(AM(jt->cdhashl) < NLIBS, DETOOMANY); /* too many dlls loaded */
 
-static CCT*jtcdload(J jt,CCT*cc,C*lib,C*proc){B ha=0;FARPROC f;HMODULE h;
- /* not all platforms support GetModuleHandle, so we do it ourselves */
- /* we match on exactly the arg the user supplied                    */
- /* search path and case can cause us to reload the same dll         */
- if(cc->cc){C buf[21];I k,n;
-  n=strlen(proc);
-  CDASSERT(BETWEENO(n,1,sizeof(buf)),DEBADFN);
-  k='_'==*proc?-strtoI(1+proc,0L,10):strtoI(proc,0L,10);
-  CDASSERT(k&&'0'==*lib||0<=k&&'1'==*lib,DEBADFN);
-  sprintf(buf,FMTI,k); if(0>k)*buf='_';
-  CDASSERT(!strcmp(proc,buf),DEBADFN);
-  cc->fp=(FARPROC)k;
-  return cc;
- }
- if(h=jtcdlookupl(jt,lib))cc->h=h;  // if lib is in hash table, use the handle for it.  Save the handle to match other hasshes later
- else{
-  CDASSERT(AM(jt->cdhashl)<NLIBS,DETOOMANY);    /* too many dlls loaded */
+        CDASSERT(h = dlopen((*lib) ? lib : 0, RTLD_LAZY), DEBADLIB);
+        cc->h = h;
+        ha    = 1;
+    }
 
-  CDASSERT(h=dlopen((*lib)?lib:0,RTLD_LAZY),DEBADLIB);
-  cc->h=h; ha=1;
- }
-
- f=(FARPROC)dlsym(h,proc);
- CDASSERT(f!=0,DEBADFN);
- cc->fp=f;
- /* assumes the hash table for libraries (jt->cdhashl) is fixed sized */
- /* assumes cc will be cached as next entry of jt->cdarg              */
- if(ha){
-  // a new lib was loaded and verified.  Add it to the hash
-  HASHINSERT(jt->cdhashl,cc->ln,lib,AM(jt->cdarg))
- }
- return cc;
+    f = (FARPROC)dlsym(h, proc);
+    CDASSERT(f != 0, DEBADFN);
+    cc->fp = f;
+    /* assumes the hash table for libraries (jt->cdhashl) is fixed sized */
+    /* assumes cc will be cached as next entry of jt->cdarg              */
+    if (ha) {
+        // a new lib was loaded and verified.  Add it to the hash
+        HASHINSERT(jt->cdhashl, cc->ln, lib, AM(jt->cdarg))
+    }
+    return cc;
 }
 
-     /* J type from type letter */
-static I cdjtype(C c){I r=INT; r=c=='c'?LIT:r; r=c=='w'?C2T:r; r=c=='u'?C4T:r; r=(c&(C)~('j'^'z'))=='j'?CMPX:r; r=(c&(C)~('d'^'f'))=='d'?FL:r; r=c==0?0:r; return r;}  // d/f and j/z differ by only 1 bit
+/* J type from type letter */
+static I
+cdjtype(C c) {
+    I r = INT;
+    r   = c == 'c' ? LIT : r;
+    r   = c == 'w' ? C2T : r;
+    r   = c == 'u' ? C4T : r;
+    r   = (c & (C) ~('j' ^ 'z')) == 'j' ? CMPX : r;
+    r   = (c & (C) ~('d' ^ 'f')) == 'd' ? FL : r;
+    r   = c == 0 ? 0 : r;
+    return r;
+}  // d/f and j/z differ by only 1 bit
 
 /* See "Calling DLLs" chapter in J User Manual                  */
 /* format of left argument to 15!:0                             */
@@ -684,487 +2596,921 @@ static I cdjtype(C c){I r=INT; r=c=='c'?LIT:r; r=c=='w'?C2T:r; r=c=='u'?C4T:r; r
 /*  &         pointer NOT requiring memu                        */
 /*  n   INT   no result (integer 0)                             */
 
-static CCT*jtcdparse(J jt,A a,I empty){C c,lib[NPATH],*p,proc[NPATH],*s,*s0;CCT*cc,cct;I an,der,i,li,pi;
- ASSERT(LIT&AT(a),EVDOMAIN);
- ASSERT(1>=AR(a),EVRANK);
- ASSERT(NLEFTARG>=AN(a),EVLIMIT);
- if(cc=jtcdlookup(jt,a))return cc;
- cc=&cct; cc->an=an=AN(a); s=s0=CAV(jtstr0(jt,a));
- /* library (module, file) name */
- while(*s==' ')++s; p=*s=='"'?strchr(++s,'"'):strchr(s,' '); li=s-s0; cc->ln=p?p-s:0;
- CDASSERT(p&&NPATH>cc->ln,DEBADLIB);
- cc->cc=1==cc->ln&&('0'==*s||'1'==*s)?*s:0;
- /* procedure name */
- s=p+1+(I )(*p=='"');
- while(*s==' ')++s; p=strchr(s,' '); if(!p)p=s+strlen(s);    pi=s-s0; cc->pn=p-s;
- CDASSERT(NPATH>cc->pn,DEBADFN);
- /* > + % */
- s=p+1;
- cc->zbx      =1; while(*s==' ')++s; if('>'==*s){cc->zbx      =0; ++s;}
- cc->alternate=0; while(*s==' ')++s; if('+'==*s){cc->alternate=1; ++s;}
- cc->fpreset  =0; while(*s==' ')++s; if('%'==*s){cc->fpreset  =1; ++s;}
- /* result type declaration */
- while(*s==' ')++s;
- if(empty&&!*s){
-  cc->zl=c='x'; cc->zt=cdjtype(c);
- }else{
-  CDASSERT(*s,DEDEC);
-  cc->zl=c=*s++; cc->zt=cdjtype(c);
- }
- // verify that result is a valid type
-#define vresvalues(w) CCM(w,'c')+CCM(w,'w')+CCM(w,'u')+CCM(w,'b')+CCM(w,'s')+CCM(w,'i')+CCM(w,'l')+CCM(w,'x')+CCM(w,'f')+CCM(w,'d')+CCM(w,'*')+CCM(w,'n')
- CCMWDS(vres) CCMCAND(vres,cand,c)  // see if zl is one of the allowed types
- CDASSERT(CCMTST(cand,c),DEDEC);
- // if result is * followed by valid arg type, ratify it by advancing the pointer over the type (otherwise fail in next test)
-#define vargtvalues(w) CCM(w,'c')+CCM(w,'w')+CCM(w,'u')+CCM(w,'b')+CCM(w,'s')+CCM(w,'i')+CCM(w,'l')+CCM(w,'x')+CCM(w,'f')+CCM(w,'d')+CCM(w,'z')+CCM(w,'j')
- CCMWDS(vargt)  // set up for comparisons against list of bytes
- if(c=='*' && *s){
-  CCMCAND(vargt,cand,*s) s+=SGNTO0(CCMSGN(cand,*s)); // if *s is valid, skip over it
- }
- CDASSERT((*s&~' ')==0,DEDEC);  // 0 or SP
- /* argument type declarations */
- i=-1;
- while(c=*s++){
-  if(' '==c)continue;
-  ++i; der=DEDEC+256*(1+i);
-  CDASSERT(i<NCDARGS,DECOUNT);
-  cc->tletter[i]=0; cc->star[i]=0;
-  CDASSERT(i||'1'!=cc->cc||'x'==c||'*'==c&&(!*s||' '==*s),der);  // verify result type is allowed
-  if('*'==c||'&'==c){cc->star[i]=1+(I )('&'==c); c=*s++; if(!c)break; if(' '==c)continue;}
-  cc->tletter[i]=c;
-  CCMCAND(vargt,cand,c) CDASSERT(CCMTST(cand,c),der);  // vrgt defined above,list of valid arg bytes
-  CDASSERT((c!='z'&&c!='j')||cc->star[i],der);
-  if('l'==c){CDASSERT(1,der); cc->tletter[i]='x';}
- }
- CDASSERT(0<=i||'1'!=cc->cc,DEDEC+256);
- memcpy(lib, s0+li,cc->ln); lib [cc->ln]=0;
- memcpy(proc,s0+pi,cc->pn); proc[cc->pn]=0;
- RZ(cc=cdload(cc,lib,proc));
- cc->n=1+i; RZ(cc=jtcdinsert(jt,a,cc)); cc->li=li+cc->ai; cc->pi=pi+cc->ai;
- return cc;
+static CCT *
+jtcdparse(J jt, A a, I empty) {
+    C c, lib[NPATH], *p, proc[NPATH], *s, *s0;
+    CCT *cc, cct;
+    I an, der, i, li, pi;
+    ASSERT(LIT & AT(a), EVDOMAIN);
+    ASSERT(1 >= AR(a), EVRANK);
+    ASSERT(NLEFTARG >= AN(a), EVLIMIT);
+    if (cc = jtcdlookup(jt, a)) return cc;
+    cc     = &cct;
+    cc->an = an = AN(a);
+    s = s0 = CAV(jtstr0(jt, a));
+    /* library (module, file) name */
+    while (*s == ' ') ++s;
+    p      = *s == '"' ? strchr(++s, '"') : strchr(s, ' ');
+    li     = s - s0;
+    cc->ln = p ? p - s : 0;
+    CDASSERT(p && NPATH > cc->ln, DEBADLIB);
+    cc->cc = 1 == cc->ln && ('0' == *s || '1' == *s) ? *s : 0;
+    /* procedure name */
+    s = p + 1 + (I)(*p == '"');
+    while (*s == ' ') ++s;
+    p = strchr(s, ' ');
+    if (!p) p = s + strlen(s);
+    pi     = s - s0;
+    cc->pn = p - s;
+    CDASSERT(NPATH > cc->pn, DEBADFN);
+    /* > + % */
+    s       = p + 1;
+    cc->zbx = 1;
+    while (*s == ' ') ++s;
+    if ('>' == *s) {
+        cc->zbx = 0;
+        ++s;
+    }
+    cc->alternate = 0;
+    while (*s == ' ') ++s;
+    if ('+' == *s) {
+        cc->alternate = 1;
+        ++s;
+    }
+    cc->fpreset = 0;
+    while (*s == ' ') ++s;
+    if ('%' == *s) {
+        cc->fpreset = 1;
+        ++s;
+    }
+    /* result type declaration */
+    while (*s == ' ') ++s;
+    if (empty && !*s) {
+        cc->zl = c = 'x';
+        cc->zt     = cdjtype(c);
+    } else {
+        CDASSERT(*s, DEDEC);
+        cc->zl = c = *s++;
+        cc->zt     = cdjtype(c);
+    }
+    // verify that result is a valid type
+#define vresvalues(w)                                                                                               \
+    CCM(w, 'c') + CCM(w, 'w') + CCM(w, 'u') + CCM(w, 'b') + CCM(w, 's') + CCM(w, 'i') + CCM(w, 'l') + CCM(w, 'x') + \
+      CCM(w, 'f') + CCM(w, 'd') + CCM(w, '*') + CCM(w, 'n')
+    CCMWDS(vres)
+    CCMCAND(vres, cand, c)  // see if zl is one of the allowed types
+      CDASSERT(CCMTST(cand, c), DEDEC);
+    // if result is * followed by valid arg type, ratify it by advancing the pointer over the type (otherwise fail in
+    // next test)
+#define vargtvalues(w)                                                                                              \
+    CCM(w, 'c') + CCM(w, 'w') + CCM(w, 'u') + CCM(w, 'b') + CCM(w, 's') + CCM(w, 'i') + CCM(w, 'l') + CCM(w, 'x') + \
+      CCM(w, 'f') + CCM(w, 'd') + CCM(w, 'z') + CCM(w, 'j')
+    CCMWDS(vargt)  // set up for comparisons against list of bytes
+    if (c == '*' && *s) {
+        CCMCAND(vargt, cand, *s) s += SGNTO0(CCMSGN(cand, *s));  // if *s is valid, skip over it
+    }
+    CDASSERT((*s & ~' ') == 0, DEDEC);  // 0 or SP
+    /* argument type declarations */
+    i = -1;
+    while (c = *s++) {
+        if (' ' == c) continue;
+        ++i;
+        der = DEDEC + 256 * (1 + i);
+        CDASSERT(i < NCDARGS, DECOUNT);
+        cc->tletter[i] = 0;
+        cc->star[i]    = 0;
+        CDASSERT(i || '1' != cc->cc || 'x' == c || '*' == c && (!*s || ' ' == *s),
+                 der);  // verify result type is allowed
+        if ('*' == c || '&' == c) {
+            cc->star[i] = 1 + (I)('&' == c);
+            c           = *s++;
+            if (!c) break;
+            if (' ' == c) continue;
+        }
+        cc->tletter[i] = c;
+        CCMCAND(vargt, cand, c) CDASSERT(CCMTST(cand, c), der);  // vrgt defined above,list of valid arg bytes
+        CDASSERT((c != 'z' && c != 'j') || cc->star[i], der);
+        if ('l' == c) {
+            CDASSERT(1, der);
+            cc->tletter[i] = 'x';
+        }
+    }
+    CDASSERT(0 <= i || '1' != cc->cc, DEDEC + 256);
+    memcpy(lib, s0 + li, cc->ln);
+    lib[cc->ln] = 0;
+    memcpy(proc, s0 + pi, cc->pn);
+    proc[cc->pn] = 0;
+    RZ(cc = cdload(cc, lib, proc));
+    cc->n = 1 + i;
+    RZ(cc = jtcdinsert(jt, a, cc));
+    cc->li = li + cc->ai;
+    cc->pi = pi + cc->ai;
+    return cc;
 }
 
-#define CDT(x,y) ((x)+32*(y))  // x runs from B01 to C4T 0-3, 17-18
+#define CDT(x, y) ((x) + 32 * (y))  // x runs from B01 to C4T 0-3, 17-18
 
-static I*jtconvert0(J jt,I zt,I*v,I wt,C*u){D p,q;I k=0;US s;C4 s4;
- switch(CDT(CTTZ(zt),CTTZ(wt))){
-  default:           return 0;
-  case CDT(FLX, B01X): *(D*)v=*(B*)u; break;
-  case CDT(FLX, INTX): *(D*)v=(D)*(I*)u; break;
-  case CDT(FLX, FLX ): *(D*)v=*(D*)u; break;
-  case CDT(C2TX,LITX): *(US*)v=*(UC*)u; break;
-  case CDT(C2TX,C2TX): *(US*)v=*(US*)u; break;
-  case CDT(LITX,LITX): *(UC*)v=*(UC*)u; break;
-  case CDT(LITX,C2TX): s=*(US*)u; if(256<=(US)s)return 0; *(UC*)v=(UC)s; break;
-  case CDT(C4TX,LITX): *(C4*)v=*(UC*)u; break;
-  case CDT(C4TX,C2TX): *(C4*)v=*(US*)u; break;
-  case CDT(C4TX,C4TX): *(C4*)v=*(C4*)u; break;
-  case CDT(LITX,C4TX): s4=*(C4*)u; if(256<=(C4)s4)return 0; *(UC*)v=(UC)s4; break;
-  case CDT(C2TX,C4TX): s4=*(C4*)u; if(65536<=(C4)s4)return 0; *(US*)v=(US)s4; break;
-  case CDT(INTX,B01X): *    v=*(B*)u; break;
-  case CDT(INTX,INTX): *    v=*(I*)u; break;
-  case CDT(INTX,FLX ):
-  p=*(D*)u; q=jround(p); I rq=(I)q;
-  if(!(p==q || FFIEQ(p,q)))return 0;  // must equal int, possibly out of range.  Exact equality is common enough to test for
-  // out-of-range values don't convert, handle separately
-  if(p<(D)IMIN){if(!(p>=IMIN*(1+FUZZ)))return 0; rq=IMIN;}  // if tolerantly < IMIN, error; else take IMIN
-  else if(p>=FLIMAX){if(!(p<=-(IMIN*(1+FUZZ))))return 0; rq=IMAX;}  // if tolerantly > IMAX, error; else take IMAX
-  *v=rq;
- }
- return v;
-}    /* convert a single atom. I from D code adapted from IfromD() in k.c */
+static I *
+jtconvert0(J jt, I zt, I *v, I wt, C *u) {
+    D p, q;
+    I k = 0;
+    US s;
+    C4 s4;
+    switch (CDT(CTTZ(zt), CTTZ(wt))) {
+        default: return 0;
+        case CDT(FLX, B01X): *(D *)v = *(B *)u; break;
+        case CDT(FLX, INTX): *(D *)v = (D) * (I *)u; break;
+        case CDT(FLX, FLX): *(D *)v = *(D *)u; break;
+        case CDT(C2TX, LITX): *(US *)v = *(UC *)u; break;
+        case CDT(C2TX, C2TX): *(US *)v = *(US *)u; break;
+        case CDT(LITX, LITX): *(UC *)v = *(UC *)u; break;
+        case CDT(LITX, C2TX):
+            s = *(US *)u;
+            if (256 <= (US)s) return 0;
+            *(UC *)v = (UC)s;
+            break;
+        case CDT(C4TX, LITX): *(C4 *)v = *(UC *)u; break;
+        case CDT(C4TX, C2TX): *(C4 *)v = *(US *)u; break;
+        case CDT(C4TX, C4TX): *(C4 *)v = *(C4 *)u; break;
+        case CDT(LITX, C4TX):
+            s4 = *(C4 *)u;
+            if (256 <= (C4)s4) return 0;
+            *(UC *)v = (UC)s4;
+            break;
+        case CDT(C2TX, C4TX):
+            s4 = *(C4 *)u;
+            if (65536 <= (C4)s4) return 0;
+            *(US *)v = (US)s4;
+            break;
+        case CDT(INTX, B01X): *v = *(B *)u; break;
+        case CDT(INTX, INTX): *v = *(I *)u; break;
+        case CDT(INTX, FLX):
+            p    = *(D *)u;
+            q    = jround(p);
+            I rq = (I)q;
+            if (!(p == q || FFIEQ(p, q)))
+                return 0;  // must equal int, possibly out of range.  Exact equality is common enough to test for
+            // out-of-range values don't convert, handle separately
+            if (p < (D)IMIN) {
+                if (!(p >= IMIN * (1 + FUZZ))) return 0;
+                rq = IMIN;
+            }  // if tolerantly < IMIN, error; else take IMIN
+            else if (p >= FLIMAX) {
+                if (!(p <= -(IMIN * (1 + FUZZ)))) return 0;
+                rq = IMAX;
+            }  // if tolerantly > IMAX, error; else take IMAX
+            *v = rq;
+    }
+    return v;
+} /* convert a single atom. I from D code adapted from IfromD() in k.c */
 
 // make one call to the DLL.
 // if cc->zbx is true, zv0 points to AAV(z) where z is the block that will hold the list of boxes that
 // will be the result of 15!:0.  z is always nonrecursive
-static B jtcdexec1(J jt,CCT*cc,C*zv0,C*wu,I wk,I wt,I wd){A*wv=(A*)wu,x,y,*zv;B zbx,lit,star;
-    C c,cipt[NCDARGS],*u;FARPROC fp;float f;I cipcount=0,cipn[NCDARGS],*cipv[NCDARGS],cv0[2],
-    data[NCDARGS*2],dcnt=0,fcnt=0,*dv,i,n,per,t,xn,xr,xt,*xv; DoF dd[NCDARGS];
- FPREFIP;  // save inplace flag
- n=cc->n;
- if(n&&!(wt&BOX)){DO(n, CDASSERT(!cc->star[i],DEPARM+256*i));}
- zbx=cc->zbx; zv=1+(A*)zv0; dv=data; u=wu; xr=0;
- for(i=0;i<n;++i,++zv){  // for each input field
+static B
+jtcdexec1(J jt, CCT *cc, C *zv0, C *wu, I wk, I wt, I wd) {
+    A *wv = (A *)wu, x, y, *zv;
+    B zbx, lit, star;
+    C c, cipt[NCDARGS], *u;
+    FARPROC fp;
+    float f;
+    I cipcount = 0, cipn[NCDARGS], *cipv[NCDARGS], cv0[2], data[NCDARGS * 2], dcnt = 0, fcnt = 0, *dv, i, n, per, t, xn,
+      xr, xt, *xv;
+    DoF dd[NCDARGS];
+    FPREFIP;  // save inplace flag
+    n = cc->n;
+    if (n && !(wt & BOX)) { DO(n, CDASSERT(!cc->star[i], DEPARM + 256 * i)); }
+    zbx = cc->zbx;
+    zv  = 1 + (A *)zv0;
+    dv  = data;
+    u   = wu;
+    xr  = 0;
+    for (i = 0; i < n; ++i, ++zv) {  // for each input field
 #if defined(__x86_64__)
-  if(dv-data>=6&&dv-data<dcnt-2)dv=data+dcnt-2;
+        if (dv - data >= 6 && dv - data < dcnt - 2) dv = data + dcnt - 2;
 #elif defined(__aarch64__)
-  if(dcnt>8&&dv-data==8)dv=data+dcnt;    /* v0 to v7 fully filled before x0 to x7 */
+        if (dcnt > 8 && dv - data == 8) dv = data + dcnt; /* v0 to v7 fully filled before x0 to x7 */
 #endif
-  per=DEPARM+i*256; star=cc->star[i]; c=cc->tletter[i]; t=cdjtype(c);  // c is type in the call, t is the J type for that.  star in the *& qualifier
-   // should convert or store c as a bit for comp ease here
-  if(wt&BOX){
-   x=wv[i]; xt=AT(x); xn=AN(x); xr=AR(x);
-   CDASSERT(!xr||star,per);         /* non-pointers must be scalars */
-   lit=star&&xt&LIT&&(c=='b'||c=='s'&&0==(xn&1)||c=='f'&&0==(xn&3));
-   if(t&&TYPESNE(t,xt)&&!(lit||star&&!xr&&xt&BOX)){x=jtcvt(jt,xt=t,x); CDASSERT(x!=0,per);}
-   // We know that x originated in a box, so it can't be PRISTINE.  But it may have been converted, so we have to
-   // make sure that what we install into *zv is not inplaceable.  *zv is never recursive.
-   xv=AV(x); if(zbx)*zv=jtincorp(jt,x);
-  }else{
-   xv=convert0(t,cv0,wt,u); xt=t; u+=wk;
-   CDASSERT(xv!=0,per);
-   if(zbx){GA(y,t,1,0,0); memcpy(AV(y),xv,bp(t)); *zv=jtincorp(jt,y);}  // must never install inplaceable block
-  }
-  // now xv points to the actual arg data for arg i, and an A-block for same has been installed into *zv
-  // if wt&BOX only, x is an A-block for arg i
-  if(star&&!xr&&xt&BOX){           /* scalar boxed integer/boolean scalar is a pointer - NOT memu'd */
-   y=AAV(x)[0];
-   CDASSERT(!AR(y)&&AT(y)&B01+INT,per);
-   if(AT(y)&B01){CDASSERT(0==BAV(y)[0],per); *dv++=0;}else *dv++=AV(y)[0];
-  }else if(star){
-   CDASSERT(xr&&(xt&DIRECT),per);                /* pointer can't point at scalar, and it must point to direct values */
-   // if type is * (not &), make a safe copy.
-   if(star&1){RZ(x=jtmemu(jtinplace,x)); if(zbx)*zv=jtincorp(jt,x); xv=AV(x);}  // what we install must not be inplaceable
-   *dv++=(I)xv;                     /* pointer to J array memory     */
-   CDASSERT(xt&LIT+C2T+C4T+INT+FL+CMPX,per);
-   if(!lit&&(c=='b'||c=='s'||c=='f'||c=='z'||c=='i')){
-    cipv[cipcount]=xv;              /* convert in place arguments */
-    cipn[cipcount]=xn;
-    cipt[cipcount]=c;
-    ++cipcount;
-   }
-  }else switch(c){
-   case 'c': *dv++=*(C*)xv;  break;
-   case 'w': *dv++=*(US*)xv; break;
-   case 'u': *dv++=*(C4*)xv; break;
-   case 'b': *dv++=(BYTE)*xv;break;
-   case 's': *dv++=(S)*xv;   break;
-   case 'i': *dv++=(int)*xv; break;
-   case 'x': *dv++=*xv;      break;
-   case 'f':
-  #if defined(__aarch64__)
-     {f=(float)*(D*)xv; dd[dcnt]=0; *(float*)(dd+dcnt++)=f;
-      if(dcnt>8){
-        if(dv-data>=8)*(float*)(dv++)=f;else *(float*)(data+dcnt-1)=f;}}
-  #elif defined(__x86_64__)
-     {f=(float)*(D*)xv; dd[dcnt]=0; *(float*)(dd+dcnt++)=f;
-      if(dcnt>8){ /* push the 9th F and more on to stack (must be the 7th I onward) */
-        if(dv-data>=6)*(float*)(dv++)=f;else *(float*)(data+dcnt-3)=f;}}
-  #endif
-             break;
-   case 'd':
+        per  = DEPARM + i * 256;
+        star = cc->star[i];
+        c    = cc->tletter[i];
+        t    = cdjtype(c);  // c is type in the call, t is the J type for that.  star in the *& qualifier
+                            // should convert or store c as a bit for comp ease here
+        if (wt & BOX) {
+            x  = wv[i];
+            xt = AT(x);
+            xn = AN(x);
+            xr = AR(x);
+            CDASSERT(!xr || star, per); /* non-pointers must be scalars */
+            lit = star && xt & LIT && (c == 'b' || c == 's' && 0 == (xn & 1) || c == 'f' && 0 == (xn & 3));
+            if (t && TYPESNE(t, xt) && !(lit || star && !xr && xt & BOX)) {
+                x = jtcvt(jt, xt = t, x);
+                CDASSERT(x != 0, per);
+            }
+            // We know that x originated in a box, so it can't be PRISTINE.  But it may have been converted, so we have
+            // to make sure that what we install into *zv is not inplaceable.  *zv is never recursive.
+            xv = AV(x);
+            if (zbx) *zv = jtincorp(jt, x);
+        } else {
+            xv = convert0(t, cv0, wt, u);
+            xt = t;
+            u += wk;
+            CDASSERT(xv != 0, per);
+            if (zbx) {
+                GA(y, t, 1, 0, 0);
+                memcpy(AV(y), xv, bp(t));
+                *zv = jtincorp(jt, y);
+            }  // must never install inplaceable block
+        }
+        // now xv points to the actual arg data for arg i, and an A-block for same has been installed into *zv
+        // if wt&BOX only, x is an A-block for arg i
+        if (star && !xr && xt & BOX) { /* scalar boxed integer/boolean scalar is a pointer - NOT memu'd */
+            y = AAV(x)[0];
+            CDASSERT(!AR(y) && AT(y) & B01 + INT, per);
+            if (AT(y) & B01) {
+                CDASSERT(0 == BAV(y)[0], per);
+                *dv++ = 0;
+            } else
+                *dv++ = AV(y)[0];
+        } else if (star) {
+            CDASSERT(xr && (xt & DIRECT), per); /* pointer can't point at scalar, and it must point to direct values */
+            // if type is * (not &), make a safe copy.
+            if (star & 1) {
+                RZ(x = jtmemu(jtinplace, x));
+                if (zbx) *zv = jtincorp(jt, x);
+                xv = AV(x);
+            }              // what we install must not be inplaceable
+            *dv++ = (I)xv; /* pointer to J array memory     */
+            CDASSERT(xt & LIT + C2T + C4T + INT + FL + CMPX, per);
+            if (!lit && (c == 'b' || c == 's' || c == 'f' || c == 'z' || c == 'i')) {
+                cipv[cipcount] = xv; /* convert in place arguments */
+                cipn[cipcount] = xn;
+                cipt[cipcount] = c;
+                ++cipcount;
+            }
+        } else
+            switch (c) {
+                case 'c': *dv++ = *(C *)xv; break;
+                case 'w': *dv++ = *(US *)xv; break;
+                case 'u': *dv++ = *(C4 *)xv; break;
+                case 'b': *dv++ = (BYTE)*xv; break;
+                case 's': *dv++ = (S)*xv; break;
+                case 'i': *dv++ = (int)*xv; break;
+                case 'x': *dv++ = *xv; break;
+                case 'f':
 #if defined(__aarch64__)
-             dd[dcnt++]=*(D*)xv;
-             if(dcnt>8){
-               if(dv-data>=8)*dv++=*xv;else *(data+dcnt-1)=*xv;}
+                {
+                    f                       = (float)*(D *)xv;
+                    dd[dcnt]                = 0;
+                    *(float *)(dd + dcnt++) = f;
+                    if (dcnt > 8) {
+                        if (dv - data >= 8)
+                            *(float *)(dv++) = f;
+                        else
+                            *(float *)(data + dcnt - 1) = f;
+                    }
+                }
 #elif defined(__x86_64__)
-             dd[dcnt++]=*(D*)xv;
-             if(dcnt>8){ /* push the 9th D and more on to stack (must be the 7th I onward) */
-               if(dv-data>=6)*dv++=*xv;else *(data+dcnt-3)=*xv;}
+                {
+                    f                       = (float)*(D *)xv;
+                    dd[dcnt]                = 0;
+                    *(float *)(dd + dcnt++) = f;
+                    if (dcnt > 8) { /* push the 9th F and more on to stack (must be the 7th I onward) */
+                        if (dv - data >= 6)
+                            *(float *)(dv++) = f;
+                        else
+                            *(float *)(data + dcnt - 3) = f;
+                    }
+                }
 #endif
-  }
- }  // end of loop for each argument
+                break;
+                case 'd':
+#if defined(__aarch64__)
+                    dd[dcnt++] = *(D *)xv;
+                    if (dcnt > 8) {
+                        if (dv - data >= 8)
+                            *dv++ = *xv;
+                        else
+                            *(data + dcnt - 1) = *xv;
+                    }
+#elif defined(__x86_64__)
+                    dd[dcnt++] = *(D *)xv;
+                    if (dcnt > 8) { /* push the 9th D and more on to stack (must be the 7th I onward) */
+                        if (dv - data >= 6)
+                            *dv++ = *xv;
+                        else
+                            *(data + dcnt - 3) = *xv;
+                    }
+#endif
+            }
+    }  // end of loop for each argument
 #if defined(__x86_64__)
- if(dcnt>8&&dv-data<=6)dv=data+dcnt-2; /* update dv to point to the end */
+    if (dcnt > 8 && dv - data <= 6) dv = data + dcnt - 2; /* update dv to point to the end */
 #elif defined(__aarch64__)
- if(dcnt>8&&dv-data<=8)dv=data+dcnt;  /* update dv to point to the end */
+    if (dcnt > 8 && dv - data <= 8) dv = data + dcnt; /* update dv to point to the end */
 #endif
 
- DO(cipcount, convertdown(cipv[i],cipn[i],cipt[i]););  /* convert I to s and int and d to f as required */
- // allocate the result area
- if(zbx){GA(x,cc->zt,1,0,0); xv=AV(x); *(A*)zv0=jtincorp(jt,x);}else xv=(I*)zv0;  // must not box an inplaceable
- // get the address of the function
- if('1'==cc->cc){fp=(FARPROC)*((I)cc->fp+(I*)*(I*)*data); CDASSERT(fp!=0,DEBADFN);}else fp=cc->fp;
- // call it.  This is a safe recursion point.  Back up to IDLE
- jt->recurstate&=~RECSTATEBUSY;  // back to IDLE/PROMPT state
- docall(fp, data, dv-data, dd, dcnt, cc->zl, xv, cc->alternate);  // call the function, set the result
- jt->recurstate|=RECSTATEBUSY;  // cd complete, go back to normal running state, BUSY normally or RECUR if a prompt is pending
+    DO(cipcount, convertdown(cipv[i], cipn[i], cipt[i]);); /* convert I to s and int and d to f as required */
+    // allocate the result area
+    if (zbx) {
+        GA(x, cc->zt, 1, 0, 0);
+        xv        = AV(x);
+        *(A *)zv0 = jtincorp(jt, x);
+    } else
+        xv = (I *)zv0;  // must not box an inplaceable
+    // get the address of the function
+    if ('1' == cc->cc) {
+        fp = (FARPROC) * ((I)cc->fp + (I *)*(I *)*data);
+        CDASSERT(fp != 0, DEBADFN);
+    } else
+        fp = cc->fp;
+    // call it.  This is a safe recursion point.  Back up to IDLE
+    jt->recurstate &= ~RECSTATEBUSY;                                   // back to IDLE/PROMPT state
+    docall(fp, data, dv - data, dd, dcnt, cc->zl, xv, cc->alternate);  // call the function, set the result
+    jt->recurstate |=
+      RECSTATEBUSY;  // cd complete, go back to normal running state, BUSY normally or RECUR if a prompt is pending
 
- DO(cipcount, convertup(cipv[i],cipn[i],cipt[i]);); /* convert s and int to I and f to d as required */
+    DO(cipcount, convertup(cipv[i], cipn[i], cipt[i]);); /* convert s and int to I and f to d as required */
 
- t=errno;
- if(t!=0)jt->getlasterror=t;
- return 1;
+    t = errno;
+    if (t != 0) jt->getlasterror = t;
+    return 1;
 }
 
- A jtcd(J jt,A a,A w){A z;C*tv,*wv,*zv;CCT*cc;I k,m,n,p,q,t,wr,*ws,wt;
- FPREFIP;
- AFLAG(w)&=~AFPRISTINE;  // we transfer boxes from w to the result, thereby letting them escape.  That makes w non-pristine
- if(!jt->cdarg)RZ(jtcdinit(jt));
- if(1<AR(a)){I rr=AR(w); rr=rr==0?1:rr; return rank2ex(a,w,UNUSED_VALUE,1L,rr,1L,rr,jtcd);}
- wt=AT(w); wr=AR(w); ws=AS(w); PRODX(m,wr-1,ws,1);
- ASSERT(wt&DENSE,EVDOMAIN);
- ASSERT(LIT&AT(a),EVDOMAIN);
- C* enda=&CAV(a)[AN(a)]; C endc=*enda; *enda=0; cc=jtcdparse(jt,a,0); *enda=endc; RZ(cc); // should do outside rank2 loop?
- n=cc->n;
- I nn; CDASSERT(n==SHAPEN(w,wr-1,nn),DECOUNT);
- if(cc->zbx){GATV(z,BOX,m*(1+n),max(1,wr),ws); AS(z)[AR(z)-1]=1+n;}
- else{CDASSERT('*'!=cc->zl,DEDEC); GA(z,cc->zt,m,max(0,wr-1),ws);}
- // z is always nonrecursive
- if(m&&n&&!(wt&BOX)){
-  t=0; tv=cc->tletter; DQ(n, k=cdjtype(*tv++); t=max(t,k););
-  CDASSERT(HOMO(t,wt),DEPARM);
-  if(!(wt&B01+INT+FL+LIT+C2T+C4T))RZ(w=jtcvt(jt,wt=t,w));
- }
- wv=CAV(w); zv=CAV(z); k=bpnoun(wt);
- if(1==m)RZ(jtcdexec1(jtinplace,cc,zv,wv,k,wt,0))
- else{p=n*k; q=cc->zbx?sizeof(A)*(1+n):bp(AT(z)); DQ(m, RZ(jtcdexec1(jtinplace,cc,zv,wv,k,wt,0)); wv+=p; zv+=q;);}
- return z;
-}    /* 15!:0 */
-
-
+A
+jtcd(J jt, A a, A w) {
+    A z;
+    C *tv, *wv, *zv;
+    CCT *cc;
+    I k, m, n, p, q, t, wr, *ws, wt;
+    FPREFIP;
+    AFLAG(w) &=
+      ~AFPRISTINE;  // we transfer boxes from w to the result, thereby letting them escape.  That makes w non-pristine
+    if (!jt->cdarg) RZ(jtcdinit(jt));
+    if (1 < AR(a)) {
+        I rr = AR(w);
+        rr   = rr == 0 ? 1 : rr;
+        return rank2ex(a, w, UNUSED_VALUE, 1L, rr, 1L, rr, jtcd);
+    }
+    wt = AT(w);
+    wr = AR(w);
+    ws = AS(w);
+    PRODX(m, wr - 1, ws, 1);
+    ASSERT(wt & DENSE, EVDOMAIN);
+    ASSERT(LIT & AT(a), EVDOMAIN);
+    C *enda = &CAV(a)[AN(a)];
+    C endc  = *enda;
+    *enda   = 0;
+    cc      = jtcdparse(jt, a, 0);
+    *enda   = endc;
+    RZ(cc);  // should do outside rank2 loop?
+    n = cc->n;
+    I nn;
+    CDASSERT(n == SHAPEN(w, wr - 1, nn), DECOUNT);
+    if (cc->zbx) {
+        GATV(z, BOX, m * (1 + n), max(1, wr), ws);
+        AS(z)[AR(z) - 1] = 1 + n;
+    } else {
+        CDASSERT('*' != cc->zl, DEDEC);
+        GA(z, cc->zt, m, max(0, wr - 1), ws);
+    }
+    // z is always nonrecursive
+    if (m && n && !(wt & BOX)) {
+        t  = 0;
+        tv = cc->tletter;
+        DQ(n, k = cdjtype(*tv++); t = max(t, k););
+        CDASSERT(HOMO(t, wt), DEPARM);
+        if (!(wt & B01 + INT + FL + LIT + C2T + C4T)) RZ(w = jtcvt(jt, wt = t, w));
+    }
+    wv = CAV(w);
+    zv = CAV(z);
+    k  = bpnoun(wt);
+    if (1 == m)
+        RZ(jtcdexec1(jtinplace, cc, zv, wv, k, wt, 0))
+    else {
+        p = n * k;
+        q = cc->zbx ? sizeof(A) * (1 + n) : bp(AT(z));
+        DQ(m, RZ(jtcdexec1(jtinplace, cc, zv, wv, k, wt, 0)); wv += p; zv += q;);
+    }
+    return z;
+} /* 15!:0 */
 
 #define FREELIB dlclose
 
-void dllquit(J jt){CCT*av;I j,*v;
- if(!jt->cdarg)return;
- v=AV(jt->cdhashl); av=(CCT*)AV(jt->cdarg);
- DQ(AN(jt->cdhashl), j=*v++; if(0<=j)FREELIB(av[j].h););
- fa(jt->cdarg);   jt->cdarg  =0;
- fa(jt->cdstr);   jt->cdstr  =0;
- fa(jt->cdhash);  jt->cdhash =0;
- fa(jt->cdhashl); jt->cdhashl=0;
-}    /* dllquit - shutdown and cdf clean up dll call resources */
+void
+dllquit(J jt) {
+    CCT *av;
+    I j, *v;
+    if (!jt->cdarg) return;
+    v  = AV(jt->cdhashl);
+    av = (CCT *)AV(jt->cdarg);
+    DQ(AN(jt->cdhashl), j = *v++; if (0 <= j) FREELIB(av[j].h););
+    fa(jt->cdarg);
+    jt->cdarg = 0;
+    fa(jt->cdstr);
+    jt->cdstr = 0;
+    fa(jt->cdhash);
+    jt->cdhash = 0;
+    fa(jt->cdhashl);
+    jt->cdhashl = 0;
+} /* dllquit - shutdown and cdf clean up dll call resources */
 
- A jtcdf(J jt, A w){ASSERTMTV(w); dllquit(jt); return mtm;}
-     /* 15!:5 */
+A
+jtcdf(J jt, A w) {
+    ASSERTMTV(w);
+    dllquit(jt);
+    return mtm;
+}
+/* 15!:5 */
 
 /* return error info from last cd domain error - resets to DEOK */
- A jtcder(J jt, A w){I t; ASSERTMTV(w); t=jt->dlllasterror; jt->dlllasterror=DEOK; return jtv2(jt,t&0xff,t>>8);}
-     /* 15!:10 */
+A
+jtcder(J jt, A w) {
+    I t;
+    ASSERTMTV(w);
+    t                = jt->dlllasterror;
+    jt->dlllasterror = DEOK;
+    return jtv2(jt, t & 0xff, t >> 8);
+}
+/* 15!:10 */
 
 /* return errno info from last cd with errno not equal to 0 - resets to 0 */
- A jtcderx(J jt, A w){I t;C buf[1024];
- ASSERTMTV(w); t=jt->getlasterror; jt->getlasterror=0;
+A
+jtcderx(J jt, A w) {
+    I t;
+    C buf[1024];
+    ASSERTMTV(w);
+    t                = jt->getlasterror;
+    jt->getlasterror = 0;
 
- {const char *e = dlerror(); strcpy (buf, e?e:"");}
- return link(jtsc(jt,t),jtcstr(jt,buf));
-}    /* 15!:11  GetLastError information */
+    {
+        const char *e = dlerror();
+        strcpy(buf, e ? e : "");
+    }
+    return link(jtsc(jt, t), jtcstr(jt, buf));
+} /* 15!:11  GetLastError information */
 
- A jtmema(J jt, A w){I k; RE(k=jti0(jt,w)); return jtsc(jt,(I)MALLOC(k));} /* ce */
-     /* 15!:3  memory allocate */
+A
+jtmema(J jt, A w) {
+    I k;
+    RE(k = jti0(jt, w));
+    return jtsc(jt, (I)MALLOC(k));
+} /* ce */
+/* 15!:3  memory allocate */
 
- A jtmemf(J jt, A w){I k; RE(k=jti0(jt,w)); FREE((void*)k); return num(0);}
-     /* 15!:4  memory free */
+A
+jtmemf(J jt, A w) {
+    I k;
+    RE(k = jti0(jt, w));
+    FREE((void *)k);
+    return num(0);
+}
+/* 15!:4  memory free */
 
- A jtmemr(J jt, A w){C*u;I m,n,t,*v;US*us;C4*c4;
- ASSERT(INT&AT(w),EVDOMAIN);
- ASSERT(1==AR(w),EVRANK);
- n=AN(w); v=AV(w);
- ASSERT(3==n||4==n,EVLENGTH);
- m=v[2]; t=3==n?LIT:v[3]; u=(C*)(v[0]+v[1]);  // m=length in items; t=type to create; u=address to read from
- ASSERT(t&B01+LIT+C2T+C4T+INT+FL+CMPX+SBT,EVDOMAIN);
- if(-1==m){
-  ASSERT(t&LIT+C2T+C4T,EVDOMAIN);
-  if(t&LIT) m=strlen(u);
-  else if(t&C2T) {
-   if(sizeof(US)==sizeof(wchar_t)) m=wcslen((wchar_t*)u);
-   else {m=0; us=(US*)u; while(*us++)m++;}
-  }
-  else {
-   if(sizeof(C4)==sizeof(wchar_t)) m=wcslen((wchar_t*)u);
-   else {m=0; c4=(C4*)u; while(*c4++)m++;}
-  }
- }
+A
+jtmemr(J jt, A w) {
+    C *u;
+    I m, n, t, *v;
+    US *us;
+    C4 *c4;
+    ASSERT(INT & AT(w), EVDOMAIN);
+    ASSERT(1 == AR(w), EVRANK);
+    n = AN(w);
+    v = AV(w);
+    ASSERT(3 == n || 4 == n, EVLENGTH);
+    m = v[2];
+    t = 3 == n ? LIT : v[3];
+    u = (C *)(v[0] + v[1]);  // m=length in items; t=type to create; u=address to read from
+    ASSERT(t & B01 + LIT + C2T + C4T + INT + FL + CMPX + SBT, EVDOMAIN);
+    if (-1 == m) {
+        ASSERT(t & LIT + C2T + C4T, EVDOMAIN);
+        if (t & LIT)
+            m = strlen(u);
+        else if (t & C2T) {
+            if (sizeof(US) == sizeof(wchar_t))
+                m = wcslen((wchar_t *)u);
+            else {
+                m  = 0;
+                us = (US *)u;
+                while (*us++) m++;
+            }
+        } else {
+            if (sizeof(C4) == sizeof(wchar_t))
+                m = wcslen((wchar_t *)u);
+            else {
+                m  = 0;
+                c4 = (C4 *)u;
+                while (*c4++) m++;
+            }
+        }
+    }
 
- return vecb01(t,m,u);
-}    /* 15!:1  memory read */
+    return vecb01(t, m, u);
+} /* 15!:1  memory read */
 
- A jtmemw(J jt,A a,A w){C*u;I m,n,t,*v;
- ASSERT(INT&AT(w),EVDOMAIN);
- ASSERT(1==AR(w),EVRANK);
- n=AN(w); v=AV(w);
- ASSERT(3==n||4==n,EVLENGTH);
- m=v[2]; t=3==n?LIT:v[3]; u=(C*)(v[0]+v[1]);
- ASSERT(t&B01+LIT+C2T+C4T+INT+FL+CMPX+SBT,EVDOMAIN);
- ASSERT(m==AN(a)||t&LIT+C2T+C4T&&1==AR(a)&&(m-1)==AN(a),EVLENGTH);
- if(B01&AT(a)&&t&INT) RZ(a=jtcvt(jt,INT,a));
- if(INT&AT(a)&&t&B01) RZ(a=jtcvt(jt,B01,a));
- ASSERT(TYPESEQ(t,AT(a)),EVDOMAIN);
+A
+jtmemw(J jt, A a, A w) {
+    C *u;
+    I m, n, t, *v;
+    ASSERT(INT & AT(w), EVDOMAIN);
+    ASSERT(1 == AR(w), EVRANK);
+    n = AN(w);
+    v = AV(w);
+    ASSERT(3 == n || 4 == n, EVLENGTH);
+    m = v[2];
+    t = 3 == n ? LIT : v[3];
+    u = (C *)(v[0] + v[1]);
+    ASSERT(t & B01 + LIT + C2T + C4T + INT + FL + CMPX + SBT, EVDOMAIN);
+    ASSERT(m == AN(a) || t & LIT + C2T + C4T && 1 == AR(a) && (m - 1) == AN(a), EVLENGTH);
+    if (B01 & AT(a) && t & INT) RZ(a = jtcvt(jt, INT, a));
+    if (INT & AT(a) && t & B01) RZ(a = jtcvt(jt, B01, a));
+    ASSERT(TYPESEQ(t, AT(a)), EVDOMAIN);
 
- memcpy(u,AV(a),m<<bplg(t));
- return mtm;
-}    /* 15!:2  memory write */
+    memcpy(u, AV(a), m << bplg(t));
+    return mtm;
+} /* 15!:2  memory write */
 
 // 15!:15 memu - make a copy of y if it is not writable (inplaceable and not read-only)
 // We have to check jt in case this usage is in a fork that will use the block later
- A jtmemu(J jt, A w) { FPREFIP; if(!((I)jtinplace&JTINPLACEW && (AC(w)<(AFLAG(w)<<((BW-1)-AFROX)))))w=jtca(jt,w); if(AT(w)&LAST0)*(C4*)&CAV(w)[AN(w)*bp(AT(w))]=0;  return w; }  // append 0 so that calls from cd append NUL termination
- A jtmemu2(J jt,A a,A w) { return jtca(jt,w); }  // dyad - force copy willy-nilly
+A
+jtmemu(J jt, A w) {
+    FPREFIP;
+    if (!((I)jtinplace & JTINPLACEW && (AC(w) < (AFLAG(w) << ((BW - 1) - AFROX))))) w = jtca(jt, w);
+    if (AT(w) & LAST0) *(C4 *)&CAV(w)[AN(w) * bp(AT(w))] = 0;
+    return w;
+}  // append 0 so that calls from cd append NUL termination
+A
+jtmemu2(J jt, A a, A w) {
+    return jtca(jt, w);
+}  // dyad - force copy willy-nilly
 
- A jtgh15(J jt, A w){A z;I k; RE(k=jti0(jt,w)); RZ(z=jtgah(jt,k,0L)); ACINCR(z); return jtsc(jt,(I)z);}
-     /* 15!:8  get header */
+A
+jtgh15(J jt, A w) {
+    A z;
+    I k;
+    RE(k = jti0(jt, w));
+    RZ(z = jtgah(jt, k, 0L));
+    ACINCR(z);
+    return jtsc(jt, (I)z);
+}
+/* 15!:8  get header */
 
- A jtfh15(J jt, A w){I k; RE(k=jti0(jt,w)); jtfh(jt,(A)k); return num(0);}
-     /* 15!:9  free header */
+A
+jtfh15(J jt, A w) {
+    I k;
+    RE(k = jti0(jt, w));
+    jtfh(jt, (A)k);
+    return num(0);
+}
+/* 15!:9  free header */
 
- A jtdllsymset(J jt, A w){ return (A)jti0(jt,w);}      /* do some validation here */
-     /* 15!:7 */
+A
+jtdllsymset(J jt, A w) {
+    return (A)jti0(jt, w);
+} /* do some validation here */
+  /* 15!:7 */
 
 /* dll callback routines */
 static J cbjt; /* callbacks require jt and can only use the one */
 
-static I cbold(I n,I *pi){char d[256],*p;A r;I i;
- J jt=cbjt;
- strcpy(d, "cdcallback ");
- p=d+strlen(d);
- for(i=0;i<n;++i){sprintf(p,FMTI,pi[i]); *p=(*p=='-' ? '_':*p);p+=strlen(p);*p++=' ';}
- if (!n) { *p++='\''; *p++='\''; }
- *p=0;
- r=jtexec1(jt,jtcstr(jt,d));
- if(!r||AR(r)) return 0;
- if(INT&AT(r)) return AV(r)[0];
- if(B01&AT(r)) return ((BYTE*)AV(r))[0];
- return 0;
+static I
+cbold(I n, I *pi) {
+    char d[256], *p;
+    A r;
+    I i;
+    J jt = cbjt;
+    strcpy(d, "cdcallback ");
+    p = d + strlen(d);
+    for (i = 0; i < n; ++i) {
+        sprintf(p, FMTI, pi[i]);
+        *p = (*p == '-' ? '_' : *p);
+        p += strlen(p);
+        *p++ = ' ';
+    }
+    if (!n) {
+        *p++ = '\'';
+        *p++ = '\'';
+    }
+    *p = 0;
+    r  = jtexec1(jt, jtcstr(jt, d));
+    if (!r || AR(r)) return 0;
+    if (INT & AT(r)) return AV(r)[0];
+    if (B01 & AT(r)) return ((BYTE *)AV(r))[0];
+    return 0;
 }
 
-static I cbnew(){A r;
- J jt=cbjt;
- r=jtexec1(jt,jtcstr(jt,"cdcallback''"));
- if(!r||AR(r)) return 0;
- if(INT&AT(r)) return AV(r)[0];
- if(B01&AT(r)) return ((BYTE*)AV(r))[0];
- return 0;
+static I
+cbnew() {
+    A r;
+    J jt = cbjt;
+    r    = jtexec1(jt, jtcstr(jt, "cdcallback''"));
+    if (!r || AR(r)) return 0;
+    if (INT & AT(r)) return AV(r)[0];
+    if (B01 & AT(r)) return ((BYTE *)AV(r))[0];
+    return 0;
 }
 
 /* start of code generated by J script x15_callback.ijs */
 #define CBTYPESMAX 10 /* result and 9 args */
-static I cbx[CBTYPESMAX-1];
-I cbxn=0;
+static I cbx[CBTYPESMAX - 1];
+I cbxn = 0;
 
-static I CALLBACK cb0(){I x[]={0};return cbold(0,x);}
-static I CALLBACK cb1(I a){I x[]={a};return cbold(1,x);}
-static I CALLBACK cb2(I a,I b){I x[]={a,b};return cbold(2,x);}
-static I CALLBACK cb3(I a,I b,I c){I x[]={a,b,c};return cbold(3,x);}
-static I CALLBACK cb4(I a,I b,I c,I d){I x[]={a,b,c,d};return cbold(4,x);}
-static I CALLBACK cb5(I a,I b,I c,I d,I e){I x[]={a,b,c,d,e};return cbold(5,x);}
-static I CALLBACK cb6(I a,I b,I c,I d,I e,I f){I x[]={a,b,c,d,e,f};return cbold(6,x);}
-static I CALLBACK cb7(I a,I b,I c,I d,I e,I f,I g){I x[]={a,b,c,d,e,f,g};return cbold(7,x);}
-static I CALLBACK cb8(I a,I b,I c,I d,I e,I f,I g,I h){I x[]={a,b,c,d,e,f,g,h};return cbold(8,x);}
-static I CALLBACK cb9(I a,I b,I c,I d,I e,I f,I g,I h,I i){I x[]={a,b,c,d,e,f,g,h,i};return cbold(9,x);}
-static I cbv[]={(I)&cb0,(I)&cb1,(I)&cb2,(I)&cb3,(I)&cb4,(I)&cb5,(I)&cb6,(I)&cb7,(I)&cb8,(I)&cb9};
+static I CALLBACK
+cb0() {
+    I x[] = {0};
+    return cbold(0, x);
+}
+static I CALLBACK
+cb1(I a) {
+    I x[] = {a};
+    return cbold(1, x);
+}
+static I CALLBACK
+cb2(I a, I b) {
+    I x[] = {a, b};
+    return cbold(2, x);
+}
+static I CALLBACK
+cb3(I a, I b, I c) {
+    I x[] = {a, b, c};
+    return cbold(3, x);
+}
+static I CALLBACK
+cb4(I a, I b, I c, I d) {
+    I x[] = {a, b, c, d};
+    return cbold(4, x);
+}
+static I CALLBACK
+cb5(I a, I b, I c, I d, I e) {
+    I x[] = {a, b, c, d, e};
+    return cbold(5, x);
+}
+static I CALLBACK
+cb6(I a, I b, I c, I d, I e, I f) {
+    I x[] = {a, b, c, d, e, f};
+    return cbold(6, x);
+}
+static I CALLBACK
+cb7(I a, I b, I c, I d, I e, I f, I g) {
+    I x[] = {a, b, c, d, e, f, g};
+    return cbold(7, x);
+}
+static I CALLBACK
+cb8(I a, I b, I c, I d, I e, I f, I g, I h) {
+    I x[] = {a, b, c, d, e, f, g, h};
+    return cbold(8, x);
+}
+static I CALLBACK
+cb9(I a, I b, I c, I d, I e, I f, I g, I h, I i) {
+    I x[] = {a, b, c, d, e, f, g, h, i};
+    return cbold(9, x);
+}
+static I cbv[] = {(I)&cb0, (I)&cb1, (I)&cb2, (I)&cb3, (I)&cb4, (I)&cb5, (I)&cb6, (I)&cb7, (I)&cb8, (I)&cb9};
 
-static I CALLBACK cbx0(){cbxn=0;return cbnew();}
-static I CALLBACK cbx1(I a){cbxn=1;cbx[0]=a;return cbnew();}
-static I CALLBACK cbx2(I a,I b){cbxn=2;cbx[0]=a;cbx[1]=b;return cbnew();}
-static I CALLBACK cbx3(I a,I b,I c){cbxn=3;cbx[0]=a;cbx[1]=b;cbx[2]=c;return cbnew();}
-static I CALLBACK cbx4(I a,I b,I c,I d){cbxn=4;cbx[0]=a;cbx[1]=b;cbx[2]=c;cbx[3]=d;return cbnew();}
-static I CALLBACK cbx5(I a,I b,I c,I d,I e){cbxn=5;cbx[0]=a;cbx[1]=b;cbx[2]=c;cbx[3]=d;cbx[4]=e;return cbnew();}
-static I CALLBACK cbx6(I a,I b,I c,I d,I e,I f){cbxn=6;cbx[0]=a;cbx[1]=b;cbx[2]=c;cbx[3]=d;cbx[4]=e;cbx[5]=f;return cbnew();}
-static I CALLBACK cbx7(I a,I b,I c,I d,I e,I f,I g){cbxn=7;cbx[0]=a;cbx[1]=b;cbx[2]=c;cbx[3]=d;cbx[4]=e;cbx[5]=f;cbx[6]=g;return cbnew();}
-static I CALLBACK cbx8(I a,I b,I c,I d,I e,I f,I g,I h){cbxn=8;cbx[0]=a;cbx[1]=b;cbx[2]=c;cbx[3]=d;cbx[4]=e;cbx[5]=f;cbx[6]=g;cbx[7]=h;return cbnew();}
-static I CALLBACK cbx9(I a,I b,I c,I d,I e,I f,I g,I h,I i){cbxn=9;cbx[0]=a;cbx[1]=b;cbx[2]=c;cbx[3]=d;cbx[4]=e;cbx[5]=f;cbx[6]=g;cbx[7]=h;cbx[8]=i;return cbnew();}
-static I cbvx[]={(I)&cbx0,(I)&cbx1,(I)&cbx2,(I)&cbx3,(I)&cbx4,(I)&cbx5,(I)&cbx6,(I)&cbx7,(I)&cbx8,(I)&cbx9};
-
+static I CALLBACK
+cbx0() {
+    cbxn = 0;
+    return cbnew();
+}
+static I CALLBACK
+cbx1(I a) {
+    cbxn   = 1;
+    cbx[0] = a;
+    return cbnew();
+}
+static I CALLBACK
+cbx2(I a, I b) {
+    cbxn   = 2;
+    cbx[0] = a;
+    cbx[1] = b;
+    return cbnew();
+}
+static I CALLBACK
+cbx3(I a, I b, I c) {
+    cbxn   = 3;
+    cbx[0] = a;
+    cbx[1] = b;
+    cbx[2] = c;
+    return cbnew();
+}
+static I CALLBACK
+cbx4(I a, I b, I c, I d) {
+    cbxn   = 4;
+    cbx[0] = a;
+    cbx[1] = b;
+    cbx[2] = c;
+    cbx[3] = d;
+    return cbnew();
+}
+static I CALLBACK
+cbx5(I a, I b, I c, I d, I e) {
+    cbxn   = 5;
+    cbx[0] = a;
+    cbx[1] = b;
+    cbx[2] = c;
+    cbx[3] = d;
+    cbx[4] = e;
+    return cbnew();
+}
+static I CALLBACK
+cbx6(I a, I b, I c, I d, I e, I f) {
+    cbxn   = 6;
+    cbx[0] = a;
+    cbx[1] = b;
+    cbx[2] = c;
+    cbx[3] = d;
+    cbx[4] = e;
+    cbx[5] = f;
+    return cbnew();
+}
+static I CALLBACK
+cbx7(I a, I b, I c, I d, I e, I f, I g) {
+    cbxn   = 7;
+    cbx[0] = a;
+    cbx[1] = b;
+    cbx[2] = c;
+    cbx[3] = d;
+    cbx[4] = e;
+    cbx[5] = f;
+    cbx[6] = g;
+    return cbnew();
+}
+static I CALLBACK
+cbx8(I a, I b, I c, I d, I e, I f, I g, I h) {
+    cbxn   = 8;
+    cbx[0] = a;
+    cbx[1] = b;
+    cbx[2] = c;
+    cbx[3] = d;
+    cbx[4] = e;
+    cbx[5] = f;
+    cbx[6] = g;
+    cbx[7] = h;
+    return cbnew();
+}
+static I CALLBACK
+cbx9(I a, I b, I c, I d, I e, I f, I g, I h, I i) {
+    cbxn   = 9;
+    cbx[0] = a;
+    cbx[1] = b;
+    cbx[2] = c;
+    cbx[3] = d;
+    cbx[4] = e;
+    cbx[5] = f;
+    cbx[6] = g;
+    cbx[7] = h;
+    cbx[8] = i;
+    return cbnew();
+}
+static I cbvx[] = {(I)&cbx0, (I)&cbx1, (I)&cbx2, (I)&cbx3, (I)&cbx4, (I)&cbx5, (I)&cbx6, (I)&cbx7, (I)&cbx8, (I)&cbx9};
 
 /* end of code generated by J script x15_callback.ijs */
 
- A jtcallback(J jt, A w){
- cbjt=jt; /* callbacks don't work with multiple instances of j */
- if(LIT&AT(w))
- {
-  I cnt,alt;C c;C* s;
-  ASSERT(1>=AR(w),EVRANK);
-  s=CAV(jtstr0(jt,w));
-  alt=0; while(*s==' ')++s; if('+'==*s){alt=1; ++s;}
+A
+jtcallback(J jt, A w) {
+    cbjt = jt; /* callbacks don't work with multiple instances of j */
+    if (LIT & AT(w)) {
+        I cnt, alt;
+        C c;
+        C *s;
+        ASSERT(1 >= AR(w), EVRANK);
+        s   = CAV(jtstr0(jt, w));
+        alt = 0;
+        while (*s == ' ') ++s;
+        if ('+' == *s) {
+            alt = 1;
+            ++s;
+        }
 
-  cnt=0; /* count x's in type declaration (including result) */
-  while(c=*s++){
-   if(' '==c)continue;
-   ++cnt;
-   ASSERT(c=='x',EVDOMAIN);
-   ASSERT(0==*s||' '==*s,EVDOMAIN);
-  }
-  ASSERT(cnt>0&&cnt<CBTYPESMAX,EVDOMAIN);
+        cnt = 0; /* count x's in type declaration (including result) */
+        while (c = *s++) {
+            if (' ' == c) continue;
+            ++cnt;
+            ASSERT(c == 'x', EVDOMAIN);
+            ASSERT(0 == *s || ' ' == *s, EVDOMAIN);
+        }
+        ASSERT(cnt > 0 && cnt < CBTYPESMAX, EVDOMAIN);
 
-  return jtsc(jt,cbvx[--cnt]); /* select callback based on alt * args */
- }
- else
- {
-  I k;
-  RE(k=jti0(jt,w));
-  ASSERT((UI)k<(UI)sizeof(cbv)/SZI, EVINDEX);
-  return jtsc(jt,cbv[k]);
- }
-}    /* 15!:13 */
+        return jtsc(jt, cbvx[--cnt]); /* select callback based on alt * args */
+    } else {
+        I k;
+        RE(k = jti0(jt, w));
+        ASSERT((UI)k < (UI)sizeof(cbv) / SZI, EVINDEX);
+        return jtsc(jt, cbv[k]);
+    }
+} /* 15!:13 */
 
- A jtnfes(J jt, A w){I k;I r;
- RE(k=jti0(jt,w));
- r=jt->nfe;
- jt->nfe=k;
- return jtsc(jt,r);
+A
+jtnfes(J jt, A w) {
+    I k;
+    I r;
+    RE(k = jti0(jt, w));
+    r       = jt->nfe;
+    jt->nfe = k;
+    return jtsc(jt, r);
 } /* 15!:16 toggle native front end (nfe) state */
 
- A jtcallbackx(J jt, A w){
- ASSERTMTV(w);
- return vec(INT,cbxn,cbx);
+A
+jtcallbackx(J jt, A w) {
+    ASSERTMTV(w);
+    return vec(INT, cbxn, cbx);
 } /* 15!:17 return x callback arguments */
 
- A jtnfeoutstr(J jt, A w){I k;
- RE(k=jti0(jt,w));
- ASSERT(0==k,EVDOMAIN);
- return jtcstr(jt,jt->mtyostr?jt->mtyostr:(C*)"");
+A
+jtnfeoutstr(J jt, A w) {
+    I k;
+    RE(k = jti0(jt, w));
+    ASSERT(0 == k, EVDOMAIN);
+    return jtcstr(jt, jt->mtyostr ? jt->mtyostr : (C *)"");
 } /* 15!:18 return last jsto output */
 
- A jtcdjt(J jt, A w){
- ASSERTMTV(w);
- return jtsc(jt,(I)(intptr_t)jt);
+A
+jtcdjt(J jt, A w) {
+    ASSERTMTV(w);
+    return jtsc(jt, (I)(intptr_t)jt);
 } /* 15!:19 return jt */
 
- A jtcdlibl(J jt, A w){
- ASSERT(LIT&AT(w),EVDOMAIN);
- ASSERT(1>=AR(w),EVRANK);
- ASSERT(AN(w),EVLENGTH);
- if(!jt->cdarg)return num(0);
- return jtsc(jt,(I)jtcdlookupl(jt,CAV(w)));
-}    /* 15!:20 return library handle */
+A
+jtcdlibl(J jt, A w) {
+    ASSERT(LIT & AT(w), EVDOMAIN);
+    ASSERT(1 >= AR(w), EVRANK);
+    ASSERT(AN(w), EVLENGTH);
+    if (!jt->cdarg) return num(0);
+    return jtsc(jt, (I)jtcdlookupl(jt, CAV(w)));
+} /* 15!:20 return library handle */
 
- A jtcdproc1(J jt, A w){CCT*cc;
- ASSERT(LIT&AT(w),EVDOMAIN);
- ASSERT(1>=AR(w),EVRANK);
- ASSERT(AN(w),EVLENGTH);
- if(!jt->cdarg)RE(jtcdinit(jt));
- C* enda=&CAV(w)[AN(w)]; C endc=*enda; *enda=0; cc=jtcdparse(jt,w,1); *enda=endc; RE(cc); // should do outside rank2 loop?
- return jtsc(jt,(I)cc->fp);
-}    /* 15!:21 return proc address */
+A
+jtcdproc1(J jt, A w) {
+    CCT *cc;
+    ASSERT(LIT & AT(w), EVDOMAIN);
+    ASSERT(1 >= AR(w), EVRANK);
+    ASSERT(AN(w), EVLENGTH);
+    if (!jt->cdarg) RE(jtcdinit(jt));
+    C *enda = &CAV(w)[AN(w)];
+    C endc  = *enda;
+    *enda   = 0;
+    cc      = jtcdparse(jt, w, 1);
+    *enda   = endc;
+    RE(cc);  // should do outside rank2 loop?
+    return jtsc(jt, (I)cc->fp);
+} /* 15!:21 return proc address */
 
 // procedures in jlib.h
-static const void* jfntaddr[]={
-JDo,
-JErrorTextM,
-JFree,
-JGetA,
-JGetLocale,
-JGetM,
-JGetR,
-JInit,
-JSM,
-JSMX,
-JSetA,
-JSetM,
-Jga,
+static const void *jfntaddr[] = {
+  JDo,
+  JErrorTextM,
+  JFree,
+  JGetA,
+  JGetLocale,
+  JGetM,
+  JGetR,
+  JInit,
+  JSM,
+  JSMX,
+  JSetA,
+  JSetM,
+  Jga,
 
 };
 
-static const C* jfntnm[]={
-"JDo",
-"JErrorTextM",
-"JFree",
-"JGetA",
-"JGetLocale",
-"JGetM",
-"JGetR",
-"JInit",
-"JSM",
-"JSMX",
-"JSetA",
-"JSetM",
-"Jga",
+static const C *jfntnm[] = {
+  "JDo",
+  "JErrorTextM",
+  "JFree",
+  "JGetA",
+  "JGetLocale",
+  "JGetM",
+  "JGetR",
+  "JInit",
+  "JSM",
+  "JSMX",
+  "JSetA",
+  "JSetM",
+  "Jga",
 
 };
 
- A jtcdproc2(J jt,A a,A w){C*proc;FARPROC f;HMODULE h;
- ASSERT(LIT&AT(w),EVDOMAIN);
- ASSERT(1>=AR(w),EVRANK);
- ASSERT(AN(w),EVLENGTH);
- proc=CAV(w);
- RE(h=(HMODULE)jti0(jt,a));
- if(!h){I k=-1;
-  DO(sizeof(jfntnm)/sizeof(C*), if(((I)strlen(jfntnm[i])==AN(w))&&!strncmp(jfntnm[i],proc,AN(w))){k=i; break;});
-  f=(k==-1)?(FARPROC)0:(FARPROC)jfntaddr[k];
- }else{
-
-  f=(FARPROC)dlsym(h,proc);
- }
- CDASSERT(f!=0,DEBADFN);
- return jtsc(jt,(I)f);
-}    /* 15!:21 return proc address */
+A
+jtcdproc2(J jt, A a, A w) {
+    C *proc;
+    FARPROC f;
+    HMODULE h;
+    ASSERT(LIT & AT(w), EVDOMAIN);
+    ASSERT(1 >= AR(w), EVRANK);
+    ASSERT(AN(w), EVLENGTH);
+    proc = CAV(w);
+    RE(h = (HMODULE)jti0(jt, a));
+    if (!h) {
+        I k = -1;
+        DO(
+          sizeof(jfntnm) / sizeof(C *), if (((I)strlen(jfntnm[i]) == AN(w)) && !strncmp(jfntnm[i], proc, AN(w))) {
+              k = i;
+              break;
+          });
+        f = (k == -1) ? (FARPROC)0 : (FARPROC)jfntaddr[k];
+    } else {
+        f = (FARPROC)dlsym(h, proc);
+    }
+    CDASSERT(f != 0, DEBADFN);
+    return jtsc(jt, (I)f);
+} /* 15!:21 return proc address */

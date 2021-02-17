@@ -3,16 +3,15 @@
 
 #pragma once
 
-
-void jepath(char*,char *);
+void jepath(char*, char*);
 void jesetpath(char*);
-void* jeload(void* callbacks); // returns J
-A jegeta(int,char*);
-I jeseta(I n,char* name,I x,char* d);
-int jedo(char const*); // could be jedi
+void* jeload(void* callbacks);  // returns J
+A jegeta(int, char*);
+I jeseta(I n, char* name, I x, char* d);
+int jedo(char const*);  // could be jedi
 void jefree();
 char* jegetlocale();
 void jefail();
-void* jega(I t, I n, I r, I*s); // returns A
+void* jega(I t, I n, I r, I* s);  // returns A
 void* jehjdll();
-int jefirst(int type,char* arg);
+int jefirst(int type, char* arg);

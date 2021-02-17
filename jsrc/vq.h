@@ -3,26 +3,44 @@
 /*                                                                         */
 /* Rational Numbers                                                        */
 
-#define QASSERT(b,e)    {if(!(b)){jtjsignal(jt,e); return zeroQ;}}
-#define QEPILOG(q)      {Q z9; z9=(jtqstd(jt,q)); if(!gc3(&z9.n,&z9.d,0L,_ttop))return zeroQ; return z9;}
-#define QRE(exp)        {if((exp),jt->jerr)return zeroQ;}
-#define QRZ(exp)        {if(!(exp))        return zeroQ;}
-#define QX1(x)          (1==AN(x)&&1==XDIG(x))
+#define QASSERT(b, e)         \
+    {                         \
+        if (!(b)) {           \
+            jtjsignal(jt, e); \
+            return zeroQ;     \
+        }                     \
+    }
+#define QEPILOG(q)                                       \
+    {                                                    \
+        Q z9;                                            \
+        z9 = (jtqstd(jt, q));                            \
+        if (!gc3(&z9.n, &z9.d, 0L, _ttop)) return zeroQ; \
+        return z9;                                       \
+    }
+#define QRE(exp)                           \
+    {                                      \
+        if ((exp), jt->jerr) return zeroQ; \
+    }
+#define QRZ(exp)                  \
+    {                             \
+        if (!(exp)) return zeroQ; \
+    }
+#define QX1(x) (1 == AN(x) && 1 == XDIG(x))
 
-#define QEQ(x,y)        (jtequ(jt,(x).n,(y).n)&&jtequ(jt,(x).d,(y).d))
-#define QCOMP(x,y)      (jtxcompare(jt,jtxtymes(jt,(x).n,(y).d),jtxtymes(jt,(y).n,(x).d)))
-#define QLT(x,y)        (0> QCOMP(x,y))
-#define QLE(x,y)        (0>=QCOMP(x,y))
-#define QGT(x,y)        (0< QCOMP(x,y))
-#define QGE(x,y)        (0<=QCOMP(x,y))
-#define QMAX(x,y)       (QGE(x,y)?x:y)
-#define QMIN(x,y)       (QLE(x,y)?x:y)
+#define QEQ(x, y) (jtequ(jt, (x).n, (y).n) && jtequ(jt, (x).d, (y).d))
+#define QCOMP(x, y) (jtxcompare(jt, jtxtymes(jt, (x).n, (y).d), jtxtymes(jt, (y).n, (x).d)))
+#define QLT(x, y) (0 > QCOMP(x, y))
+#define QLE(x, y) (0 >= QCOMP(x, y))
+#define QGT(x, y) (0 < QCOMP(x, y))
+#define QGE(x, y) (0 <= QCOMP(x, y))
+#define QMAX(x, y) (QGE(x, y) ? x : y)
+#define QMIN(x, y) (QLE(x, y) ? x : y)
 
-extern Q jtqstd(J jt,   Q  w);
+extern Q jtqstd(J jt, Q w);
 
-extern Q jtqdiv(J jt,Q a,Q w);
-extern Q jtqminus(J jt,Q a,Q w);
-extern Q jtqplus(J jt,Q a,Q w);
-extern Q jtqtymes(J jt,Q a,Q w);
+extern Q jtqdiv(J jt, Q a, Q w);
+extern Q jtqminus(J jt, Q a, Q w);
+extern Q jtqplus(J jt, Q a, Q w);
+extern Q jtqtymes(J jt, Q a, Q w);
 
 extern Q zeroQ;

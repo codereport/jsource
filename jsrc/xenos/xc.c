@@ -5,9 +5,9 @@
 
 #include "j.h"
 
-
- A jtforeignextra(J jt,A a,A w){
- return CDERIV(CIBEAM, 0,0, VFLAGNONE,RMAX,RMAX,RMAX);
+A
+jtforeignextra(J jt, A a, A w) {
+    return CDERIV(CIBEAM, 0, 0, VFLAGNONE, RMAX, RMAX, RMAX);
 }
 
 // create explicit equivalent of verb w
@@ -15,7 +15,9 @@
 //  0 to begin with
 //  1, 2, or 3 to indicate that a piece of the original input has been processed, and any $: found in a name must
 //   be replaced by an explicit equivalent with the indicated valence(s)
- A jtfixrecursive(J jt,A a,A w){A z;
- df1(z,w,jteval(jt,"1 : 'u y\n:\nx u y'"));
- return z;
+A
+jtfixrecursive(J jt, A a, A w) {
+    A z;
+    df1(z, w, jteval(jt, "1 : 'u y\n:\nx u y'"));
+    return z;
 }

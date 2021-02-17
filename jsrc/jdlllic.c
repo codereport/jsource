@@ -3,8 +3,6 @@
 /*                                                                         */
 /* Private Jsoftware encode/decode routines - license keys and ijl         */
 
-
-
 #include <stdlib.h>
 #include <math.h>
 #include <ctype.h>
@@ -12,81 +10,101 @@
 
 #include "j.h"
 
-#define max(a,b)    (((a) > (b)) ? (a) : (b))
+#define max(a, b) (((a) > (b)) ? (a) : (b))
 
-#define SK    133
-#define LOCKEXTRA  5
+#define SK 133
+#define LOCKEXTRA 5
 #define SERIALNUMSIZE 32
-#define lobyte(w)  ((UC)(w))
+#define lobyte(w) ((UC)(w))
 
-int swapint(int n){C* p,c;
- p=(C*)&n;
- c=p[3];p[3]=p[0];p[0]=c;
- c=p[2];p[2]=p[1];p[1]=c;
- return n;
+int
+swapint(int n) {
+    C *p, c;
+    p    = (C*)&n;
+    c    = p[3];
+    p[3] = p[0];
+    p[0] = c;
+    c    = p[2];
+    p[2] = p[1];
+    p[1] = c;
+    return n;
 }
 
- A jtlock1(J jt, A w){A z; C* p; C* src;
- UC c,c1,c2,k1[SK],k2[SK];    
- int r,len,xlen,maxc1,maxc2,i,j,k;
+A
+jtlock1(J jt, A w) {
+    A z;
+    C* p;
+    C* src;
+    UC c, c1, c2, k1[SK], k2[SK];
+    int r, len, xlen, maxc1, maxc2, i, j, k;
 
- ASSERT(1==AR(w),EVRANK);
- ASSERT(AT(w)&LIT,EVDOMAIN);
- src=UAV(w);
- len=(int)AN(w);
- xlen=len;
- srand((UC)time(NULL));
- c1=lobyte(rand());
- c2=lobyte(rand());
- maxc1=max(33,c1);
- maxc2=max(33,c2);
- r=4+4+SK+LOCKEXTRA+maxc1+len+SK+maxc2+2*SERIALNUMSIZE; /* result len */
- GATV0(z,LIT,r,1);
- p=CAV(z);
- for(i=0;i<SK;++i) k1[i] = lobyte(rand());
- for(i=0;i<SK;++i) k2[i] = lobyte(rand());
- *p++=(UC)255; *p++=0; *p++=c1; *p++=c2;
- for(i=0;i<4;++i) *p++= k1[i] ^ *(i+(UC*)&xlen);
- memcpy(p,k1,SK);
- p+=SK;
- k=LOCKEXTRA+maxc1;
- for(i=0;i<k;++i) *p++= lobyte(rand());
- j=0;
- for(i=0;i<len;++i)
- {
-  c=*src++;
-  c= c^k1[j];
-  if(++j==SK) j=0;
-  *p++=c;
- }
- memcpy(p,k2,SK);
- p+=SK;
- for(i=0;i<maxc2;++i) *p++= lobyte(rand());
- for(i=0;i<2*SERIALNUMSIZE;++i) *p++= lobyte(rand());
- return z;
+    ASSERT(1 == AR(w), EVRANK);
+    ASSERT(AT(w) & LIT, EVDOMAIN);
+    src  = UAV(w);
+    len  = (int)AN(w);
+    xlen = len;
+    srand((UC)time(NULL));
+    c1    = lobyte(rand());
+    c2    = lobyte(rand());
+    maxc1 = max(33, c1);
+    maxc2 = max(33, c2);
+    r     = 4 + 4 + SK + LOCKEXTRA + maxc1 + len + SK + maxc2 + 2 * SERIALNUMSIZE; /* result len */
+    GATV0(z, LIT, r, 1);
+    p = CAV(z);
+    for (i = 0; i < SK; ++i) k1[i] = lobyte(rand());
+    for (i = 0; i < SK; ++i) k2[i] = lobyte(rand());
+    *p++ = (UC)255;
+    *p++ = 0;
+    *p++ = c1;
+    *p++ = c2;
+    for (i = 0; i < 4; ++i) *p++ = k1[i] ^ *(i + (UC*)&xlen);
+    memcpy(p, k1, SK);
+    p += SK;
+    k = LOCKEXTRA + maxc1;
+    for (i = 0; i < k; ++i) *p++ = lobyte(rand());
+    j = 0;
+    for (i = 0; i < len; ++i) {
+        c = *src++;
+        c = c ^ k1[j];
+        if (++j == SK) j = 0;
+        *p++ = c;
+    }
+    memcpy(p, k2, SK);
+    p += SK;
+    for (i = 0; i < maxc2; ++i) *p++ = lobyte(rand());
+    for (i = 0; i < 2 * SERIALNUMSIZE; ++i) *p++ = lobyte(rand());
+    return z;
 }
 
- A jtlock2(J jt,A a,A w){ASSERT(0,EVDOMAIN);}
+A
+jtlock2(J jt, A a, A w) {
+    ASSERT(0, EVDOMAIN);
+}
 
- A jtunlock1(J jt, A w){return jtunlock2(jt,mtv,w);}
+A
+jtunlock1(J jt, A w) {
+    return jtunlock2(jt, mtv, w);
+}
 
- A jtunlock2(J jt,A a,A w){int i,j,len,tlen;UC c1,c2,k1[SK],*lp,*sp,*d;
- d=UAV(w);
- tlen=(int)AN(w);
- if(!tlen || 255!=d[0] || 0 != d[1] || tlen<8+SK) return w; /* not jl */
- memcpy(k1, d+8, SK);
- for(i=0;i<(int)sizeof(int);++i) *(i+(UC*)&len) = k1[i] ^ d[4+i];
- c1 = max(33,d[2]);
- c2 = max(33,d[3]);
- if((!tlen) == (8+LOCKEXTRA+c1+c2+len+ 2*SK + 2*SERIALNUMSIZE)) return w; /* not jl */
- lp = d+8+SK+c1+LOCKEXTRA;
- sp = d;
- j=0;
- for(i=0;i<len;++i)
- {
-  *sp++ = *lp++ ^ k1[j];
-  if(++j==SK) j=0;
- }
- while(sp<d+tlen)*sp++=' ';
- return w;
-}    /* ignores left argument */
+A
+jtunlock2(J jt, A a, A w) {
+    int i, j, len, tlen;
+    UC c1, c2, k1[SK], *lp, *sp, *d;
+    d    = UAV(w);
+    tlen = (int)AN(w);
+    if (!tlen || 255 != d[0] || 0 != d[1] || tlen < 8 + SK) return w; /* not jl */
+    memcpy(k1, d + 8, SK);
+    for (i = 0; i < (int)sizeof(int); ++i) *(i + (UC*)&len) = k1[i] ^ d[4 + i];
+    c1 = max(33, d[2]);
+    c2 = max(33, d[3]);
+    if ((!tlen) == (8 + LOCKEXTRA + c1 + c2 + len + 2 * SK + 2 * SERIALNUMSIZE)) return w; /* not jl */
+    lp = d + 8 + SK + c1 + LOCKEXTRA;
+    sp = d;
+    j  = 0;
+    for (i = 0; i < len; ++i) {
+        *sp++ = *lp++ ^ k1[j];
+        if (++j == SK) j = 0;
+    }
+    while (sp < d + tlen) *sp++ = ' ';
+    return w;
+} /* ignores left argument */

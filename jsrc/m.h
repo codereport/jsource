@@ -15,22 +15,23 @@
 /* j: mfree/msize index                                                    */
 /* blkx: distance to go back to get to the first pool buffer from the allocation (0 for first) */
 
-
 // Memory-allocation info
-// PMINL is lg2(size of smallest pool buffer).  It must be big enough to hold at least one I. 
-#define PMINL 6   // ((AH*SZI+mhb+SZI)<=64?6:7) smaller buffers possible on 32-bit, but we don't bother
-#define PMIN (1L<<PMINL)   // size of smallest block
+// PMINL is lg2(size of smallest pool buffer).  It must be big enough to hold at least one I.
+#define PMINL 6             // ((AH*SZI+mhb+SZI)<=64?6:7) smaller buffers possible on 32-bit, but we don't bother
+#define PMIN (1L << PMINL)  // size of smallest block
 // PLIML is lg2(size of largest pool buffer), 10 or 11
-#define PLIML       (4+PMINL)            // lg2(PLIM)
-#define PLIM        (1L<<PLIML)          /* pool allocation is used for blocks <= PLIM   */
+#define PLIML (4 + PMINL)  // lg2(PLIM)
+#define PLIM (1L << PLIML) /* pool allocation is used for blocks <= PLIM   */
 // PSIZEL is lg2(size of allocation when pool buffers are allocated), 16 or 17
-#define PSIZEL      (10+PMINL)            // lg(PSIZE)
-#define PSIZE       (1L<<PSIZEL)      /* size of each pool                    */
-
+#define PSIZEL (10 + PMINL)  // lg(PSIZE)
+#define PSIZE (1L << PSIZEL) /* size of each pool                    */
 
 // bp(type) returns the number of bytes in an atom of the type
 #define bp(i) (jt->typesizes[CTTZ(i)])
 // bplg(type) works for NOUN types and returns the lg of the size
-#define bplg(i) (((I)0x008bb6db408dc6c0>>3*CTTZ(i))&(I)7)  // 010 001 011   101 101 101 101 101 101 000 000   100 011 011 100 011 011 000 000 = 0 1000 1011 1011 0110 1101 1011   0100 0000 1000 1101 1100 0110 1100 0000
+#define bplg(i)                               \
+    (((I)0x008bb6db408dc6c0 >> 3 * CTTZ(i)) & \
+     (I)7)  // 010 001 011   101 101 101 101 101 101 000 000   100 011 011 100 011 011 000 000 = 0 1000 1011 1011 0110
+            // 1101 1011   0100 0000 1000 1101 1100 0110 1100 0000
 // bpnoun is like bp but for NOUN types
-#define bpnoun(i) ((I)1<<bplg(i))
+#define bpnoun(i) ((I)1 << bplg(i))

@@ -22,7 +22,7 @@ This is a fork of [`jsoftware/jsource`](https://github.com/jsoftware/jsource) an
 * [ ] Compile with GCC 10+
 * [ ] Compile with Clang 11+
 * [ ] Remove all (most) of the macros
-* [ ] Clang-format the code base
+* [x] Clang-format the code base
 * [ ] Clang-tidy the code base
 * [x] Set up CI (Buildkite)
 * [ ] Set up Code Coverage
