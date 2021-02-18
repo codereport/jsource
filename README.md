@@ -17,6 +17,10 @@ J is an [array programming language](https://en.wikipedia.org/wiki/Array_program
 
 This is a fork of [`jsoftware/jsource`](https://github.com/jsoftware/jsource) and we will be porting it to [C++20](https://en.cppreference.com/w/cpp/20).
 
+## Try J
+
+If you would like to try J without building from source, check out this site: http://tryj.freeddns.org/
+
 ## Goals
 * [ ] [Reduce complexity of build options](https://github.com/codereport/jsource/issues/13)
 * [ ] Compile with GCC 10+
