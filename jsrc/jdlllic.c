@@ -17,19 +17,6 @@
 #define SERIALNUMSIZE 32
 #define lobyte(w) ((UC)(w))
 
-int
-swapint(int n) {
-    C *p, c;
-    p    = (C*)&n;
-    c    = p[3];
-    p[3] = p[0];
-    p[0] = c;
-    c    = p[2];
-    p[2] = p[1];
-    p[1] = c;
-    return n;
-}
-
 A
 jtlock1(J jt, A w) {
     A z;
@@ -74,11 +61,6 @@ jtlock1(J jt, A w) {
     for (i = 0; i < maxc2; ++i) *p++ = lobyte(rand());
     for (i = 0; i < 2 * SERIALNUMSIZE; ++i) *p++ = lobyte(rand());
     return z;
-}
-
-A
-jtlock2(J jt, A a, A w) {
-    ASSERT(0, EVDOMAIN);
 }
 
 A

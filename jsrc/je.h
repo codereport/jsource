@@ -439,7 +439,6 @@ extern A jtleft2(J jt, A a, A w);
 extern A jtless(J jt, A a, A w);
 extern A jtlink(J jt, A a, A w, A self);
 extern A jtloccre2(J jt, A a, A w);
-extern A jtlock2(J jt, A a, A w);
 extern A jtlocnl2(J jt, A a, A w);
 extern A jtlocpath2(J jt, A a, A w);
 extern A jtlogar2(J jt, A a, A w);
