@@ -19,7 +19,6 @@ extern A jtbase1(J jt, A w);
 extern A jtbdot(J jt, A w);
 extern A jtbehead(J jt, A w);
 extern A jtbinrep1(J jt, A w);
-extern A jtbit1(J jt, A w);
 extern A jtbitadv(J jt, A w);
 extern A jtbox(J jt, A w);
 extern A jtboxopen(J jt, A w);

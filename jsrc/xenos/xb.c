@@ -622,44 +622,6 @@ jtisnan(J jt, A w) {
 }
 
 A
-jtbit1(J jt, A w) {
-    A z;
-    B *wv;
-    BT *zv;
-    I c, i, j, n, p, q, r, *s;
-    UI x, y;
-    if (!(B01 & AT(w))) RZ(w = jtcvt(jt, B01, w));
-    n  = AN(w);
-    r  = AR(w);
-    wv = BAV(w);
-    s  = AS(w);
-    GA(z, BIT, n, AR(w), AS(w));
-    zv = (BT *)AV(z);
-    if (!r)
-        *zv = *wv ? '\200' : 0;
-    else if (n) {
-        c = 8 * SZI;
-        i = s[r - 1];
-        r = p = n / i;
-        q     = i / c;
-        r     = i - c * q;
-        for (i = 0; i < p; ++i) {
-            for (j = 0; j < q; ++j) {
-                x = 0;
-                y = 1 + (UI)IMAX;
-                DQ(c, if (*wv++) x ^= y; y >>= 1;);
-                *zv++ = x;
-            }
-            x = 0;
-            y = 1 + (UI)IMAX;
-            DQ(r, if (*wv++) x ^= y; y >>= 1;);
-            *zv++ = x;
-        }
-    }
-    return z;
-} /* convert byte booleans to bit booleans */
-
-A
 jtbit2(J jt, A a, A w) {
     ASSERT(0, EVNONCE);
 } /* convert byte booleans to bit booleans */
