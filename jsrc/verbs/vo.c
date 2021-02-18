@@ -66,8 +66,8 @@ jtbox(J jt, A w) {
     } else {
         // <"r
         ws = AS(w);
-        CPROD(AN(w), n, f, ws);
-        CPROD(AN(w), m, r, f + ws);
+        CPROD(n, f, ws);
+        CPROD(m, r, f + ws);
         k  = m << bplg(wt);
         wv = CAV(w);
         // Since we are allocating the new boxes, the result will ipso facto be PRIVATE, as long as w is DIRECT.  If w

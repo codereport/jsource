@@ -533,8 +533,9 @@ jtreshape(J jt, A a, A w) {
     u = AV(a);  // r=length of a   u->values of a
     if ((SPARSE & AT(w)) != 0) { return reshapesp(a, w, wf, wcr); }
     wn = AN(w);
-    PRODX(m, r, u, 1) CPROD(wn, c, wf, ws);
-    CPROD(wn, n, wcr, wf + ws);             // m=*/a (#atoms in result)  c=#cells of w  n=#atoms/cell of w
+    PRODX(m, r, u, 1)
+    CPROD(c, wf, ws);
+    CPROD(n, wcr, wf + ws);                 // m=*/a (#atoms in result)  c=#cells of w  n=#atoms/cell of w
     ASSERT(n || !m || jt->fill, EVLENGTH);  // error if attempt to extend array of no items to some items without fill
     t       = AT(w);
     filling = 0;

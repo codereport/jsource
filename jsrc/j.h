@@ -877,7 +877,7 @@
     }
 // CPROD is to be used to create a test testing #atoms.  Because empty arrays can have cells that have too many atoms,
 // we can't use PROD if we don't know that the array isn't empty or will be checked later
-#define CPROD(t, z, x, a) PRODX(z, x, a, 1)
+#define CPROD(z, x, a) PRODX(z, x, a, 1)
 // PROLOG/EPILOG are the main means of memory allocation/free.  jt->tstack contains a pointer to every block that is
 // allocated by GATV(i. e. all blocks). GA causes a pointer to the block to be pushed onto tstack.  PROLOG saves a copy
 // of the stack pointer in _ttop, a local variable in its function.  Later, jttpop(jt,_ttop) can be executed to free

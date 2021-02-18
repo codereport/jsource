@@ -587,7 +587,7 @@ jtbase1(J jt, A w) {
     ASSERT(t & DENSE, EVNONCE);
     if (((c - BW) & SGNIF(t, B01X)) >= 0)
         return jtpdt(jt, w, jtweight(jt, jtsc(jt, c), t & RAT + XNUM ? jtcvt(jt, XNUM, num(2)) : num(2)));  //
-    CPROD(n, m, r - 1, s);
+    CPROD(m, r - 1, s);
     GATV(z, INT, m, r ? r - 1 : 0, s);
     x = AV(z);
     v = BAV(w);

@@ -16,7 +16,6 @@
 #define STATEANOTEMPTYX 17  // set if a arg has atoms
 #define STATEANOTEMPTY ((I)1 << STATEANOTEMPTYX)
 #define STATEAWNOTEMPTYX 18  // set if a and w args both have atoms
-#define STATEAWNOTEMPTY ((I)1 << STATEAWNOTEMPTYX)
 // These bits start where they do to avoid overlap with AFPRISTINE.  Also, they are above where rank significance is
 #define STATEOUTERREPEATAX 22
 #define STATEOUTERREPEATA (((I)1) << STATEOUTERREPEATAX)
@@ -64,7 +63,7 @@ jtrank1ex(J jt, AD *RESTRICT w, A fs, I rr, AF f1) {
     // multiple cells.  Loop through them.
     // Get size of each argument cell in atoms.  If this overflows, there must be a 0 in the frame, & we will have
     // gone through the fill path (& caught the overflow)
-    CPROD(AN(w), mn, wf, AS(w));
+    CPROD(mn, wf, AS(w));
     PROD(wcn, rr, AS(w) + wf);  // number of cells, number of atoms in a cell
     // ?cn=number of atoms in a cell, ?k=#bytes in a cell
     wk = wcn << bplg(AT(w));
@@ -389,9 +388,8 @@ jtrank2ex(J jt, AD *RESTRICT a, AD *RESTRICT w, A fs, UI lrrrlcrrcr, AF f2) {
         los = aof - wof < 0 ? AS(w) : los;
         state |= (aof - wof) & STATEOUTERREPEATA;
         ASSERTAGREE(AS(a), AS(w), sof)  // prefixes must agree
-        CPROD(state & STATEAWNOTEMPTY, outerframect, sof, los);
-        CPROD(
-          state & STATEAWNOTEMPTY, outerrptct, lof - sof, los + sof);  // get # cells in frame, and in unmatched frame
+        CPROD(outerframect, sof, los);
+        CPROD(outerrptct, lof - sof, los + sof);  // get # cells in frame, and in unmatched frame
     }
 
     // Now work on inner frames.  Compare frame lengths after discarding outer frames
@@ -410,8 +408,8 @@ jtrank2ex(J jt, AD *RESTRICT a, AD *RESTRICT w, A fs, UI lrrrlcrrcr, AF f2) {
         state |=
           (ew - ea) & STATEINNERREPEATW;  // make lis the shape pointer for longer; if a is longer, indicate repeating w
     }
-    CPROD(state & STATEAWNOTEMPTY, innerrptct, lif - sif, lis + sif);  // number of repetitions per matched-frame cell
-    CPROD(state & STATEAWNOTEMPTY, innerframect, sif, lis);            // number of cells in matched frame
+    CPROD(innerrptct, lif - sif, lis + sif);  // number of repetitions per matched-frame cell
+    CPROD(innerframect, sif, lis);            // number of cells in matched frame
 
     // Migrate loops with count=1 toward the inner to reduce overhead.  We choose not to promote the outer to the inner
     // if both innerframect & innerrptct are 1, on grounds of rarity
