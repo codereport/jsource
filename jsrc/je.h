@@ -5,7 +5,6 @@
 
 extern A jtabase1(J jt, A w);
 extern A jtadot1(J jt, A w);
-extern A jtaflag1(J jt, A w);
 extern A jtarep(J jt, A w);
 extern A jtaro(J jt, A w);
 extern A jtarx(J jt, A w);
@@ -125,7 +124,6 @@ extern A jtgrade1(J jt, A w);
 extern A jtkeybox(J jt, A a, A w, A self);
 extern A jtkeyheadtally(J jt, A a, A w, A self);
 extern A jthalve(J jt, A w);
-extern A jthash(J jt, A w);
 extern A jthead(J jt, A w);
 extern A jthexrep1(J jt, A w);
 extern A jthgdiff(J jt, A w);
@@ -374,7 +372,6 @@ extern A jtabase2(J jt, A a, A w);
 extern A jtadot2(J jt, A a, A w);
 extern A jtadverse(J jt, A a, A w);
 extern A jtaes2(J jt, A a, A w);
-extern A jtaflag2(J jt, A a, A w);
 extern A jtagenda(J jt, A a, A w);
 extern A jtagendai(J jt, A a, A w);
 extern A jtamp(J jt, A a, A w);
