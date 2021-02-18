@@ -25,11 +25,6 @@ jteval(J jt, C* s) {
 }
 
 A
-jtev1(J jt, A w, C* s) {
-    A z;
-    return df1(z, w, jteval(jt, s));
-}  // parse *s and apply to w
-A
 jtev2(J jt, A a, A w, C* s) {
     A z;
     return df2(z, a, w, jteval(jt, s));

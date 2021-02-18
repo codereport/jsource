@@ -621,11 +621,6 @@ jtisnan(J jt, A w) {
     return z;
 }
 
-A
-jtbit2(J jt, A a, A w) {
-    ASSERT(0, EVNONCE);
-} /* convert byte booleans to bit booleans */
-
 /* Copyright 2014, Jsoftware Inc.  All rights reserved. */
 // datetime epoch routines
 

@@ -1029,11 +1029,7 @@ jtras(J jt, AD* RESTRICT w) {
     ra(w);
     return w;
 }  // subroutine version of ra() to save space
-A
-jtra00s(J jt, AD* RESTRICT w) {
-    ra00(w, AT(w));
-    return w;
-}  // subroutine version of ra00() to save space
+
 A
 jtrifvs(J jt, AD* RESTRICT w) {
     realizeifvirtual(w);
