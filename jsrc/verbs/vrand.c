@@ -40,27 +40,6 @@ lcg(I n, I* v, I seed) {
     DQ(n, x *= c; x -= p * (I)(x / p); *v++ = (I)x;);
 }
 
-A
-jtlcg_test(J jt, A w) {
-    A x;
-    I n = 1597, *v;
-    ASSERTMTV(w);
-    GATV0(x, INT, n, 1);
-    v = AV(x);
-    lcg(n, v, 1L);
-    ASSERTSYS(v[0] == 16807L, "lcg_test 0");
-    ASSERTSYS(v[1] == 282475249L, "lcg_test 1");
-    ASSERTSYS(v[2] == 1622650073L, "lcg_test 2");
-    ASSERTSYS(v[3] == 984943658L, "lcg_test 3");
-    ASSERTSYS(v[4] == 1144108930L, "lcg_test 4");
-    ASSERTSYS(v[1592] == 1476003502L, "lcg_test 1592");
-    ASSERTSYS(v[1593] == 1607251617L, "lcg_test 1593");
-    ASSERTSYS(v[1594] == 2028614953L, "lcg_test 1594");
-    ASSERTSYS(v[1595] == 1481135299L, "lcg_test 1595");
-    ASSERTSYS(v[1596] == 1958017916L, "lcg_test 1596");
-    return num(1);
-}
-
 /* ----------------------------------------------------------------------- */
 /* gb_flip routines from D.E. Knuth's "The Stanford GraphBase"             */
 
@@ -114,27 +93,6 @@ jtgb_init(J jt, UI s) {
     jtgb_flip_cycle(jt);
     jtgb_flip_cycle(jt);
     jt->rngi = 54;
-}
-
-static I
-jtgb_unif_rand(J jt, I m) {
-    register UI r, t = two_to_the_31 - (two_to_the_31 % m);
-    do r = jtgb_next(jt);
-    while (t <= r);
-    return r % m;
-}
-
-A
-jtgb_test(J jt, A w) {
-    I j = jt->rng;
-    ASSERTMTV(w);
-    RZ(jtrngselects(jt, jtsc(jt, GBI)));
-    jtgb_init(jt, -314159);
-    ASSERTSYS(jtgb_next(jt) == 119318998, "gb_test 0");
-    DQ(133, jtgb_next(jt););
-    ASSERTSYS(jtgb_unif_rand(jt, 0x55555555L) == 748103812, "gb_test 1");
-    RZ(jtrngselects(jt, jtsc(jt, j)));
-    return num(1);
 }
 
 /* ----------------------------------------------------------------------- */
@@ -255,22 +213,6 @@ jtmt_next(J jt) {
     return y;
 }
 
-A
-jtmt_test(J jt, A w) {
-    I j        = jt->rng;
-    UI init[4] = {0x12345ULL, 0x23456ULL, 0x34567ULL, 0x45678ULL}, x;
-    ASSERTMTV(w);
-    RZ(jtrngselects(jt, jtsc(jt, MTI)));
-    jtmt_init_by_array(jt, init, (I)4);
-    x = jtmt_next(jt);
-    ASSERTSYS(x == 7266447313870364031ULL, "mt_test64 0");
-    DQ(998, jtmt_next(jt););
-    x = jtmt_next(jt);
-    ASSERTSYS(x == 994412663058993407ULL, "mt_test64 1");
-    RZ(jtrngselects(jt, jtsc(jt, j)));
-    return num(1);
-}
-
 /* ----------------------------------------------------------------------- */
 /* DX-1597-4d                                                              */
 /* Deng, L.Y., Efficient and Portable Multiple Recursive Generators of     */
@@ -319,26 +261,6 @@ static void
 jtdx_init(J jt, UI s) {
     lcg(DXN, jt->rngv, s);
     jt->rngi = 0;
-}
-
-A
-jtdx_test(J jt, A w) {
-    I j = jt->rng, x;
-    ASSERTMTV(w);
-    RZ(jtrngselects(jt, jtsc(jt, DXI)));
-    jtdx_init(jt, 1UL);
-    x = jtdx_next(jt);
-    ASSERTSYS(x == 221240004UL, "dx_test 0");
-    x = jtdx_next(jt);
-    ASSERTSYS(x == 2109349384UL, "dx_test 1");
-    x = jtdx_next(jt);
-    ASSERTSYS(x == 527768079UL, "dx_test 2");
-    x = jtdx_next(jt);
-    ASSERTSYS(x == 238300266UL, "dx_test 3");
-    x = jtdx_next(jt);
-    ASSERTSYS(x == 1495348915UL, "dx_test 4");
-    RZ(jtrngselects(jt, jtsc(jt, j)));
-    return num(1);
 }
 
 /* ----------------------------------------------------------------------- */
@@ -397,37 +319,6 @@ jtmr_init(J jt, UI s) {
     lcg(MRN, t, s);
     DO(MRN, *v++ = (D)t[i];);
     jt->rngi = 0;
-}
-
-A
-jtmr_test(J jt, A w) {
-    I j = jt->rng, x;
-    ASSERTMTV(w);
-    RZ(jtrngselects(jt, jtsc(jt, MRI)));
-    jtmr_init(jt, 1UL);
-    x = jtmr_next(jt);
-    ASSERTSYS(x == (I)3293966663UL, "mr_test 0");
-    x = jtmr_next(jt);
-    ASSERTSYS(x == (I)3129388991UL, "mr_test 1");
-    x = jtmr_next(jt);
-    ASSERTSYS(x == (I)2530141948UL, "mr_test 2");
-    x = jtmr_next(jt);
-    ASSERTSYS(x == (I)1065433470UL, "mr_test 3");
-    x = jtmr_next(jt);
-    ASSERTSYS(x == (I)1177634463UL, "mr_test 4");
-    DQ(40, jtmr_next(jt););
-    x = jtmr_next(jt);
-    ASSERTSYS(x == (I)1134399356UL, "mr_test 45");
-    x = jtmr_next(jt);
-    ASSERTSYS(x == (I)630832201UL, "mr_test 46");
-    x = jtmr_next(jt);
-    ASSERTSYS(x == (I)2411464992UL, "mr_test 47");
-    x = jtmr_next(jt);
-    ASSERTSYS(x == (I)762439568UL, "mr_test 48");
-    x = jtmr_next(jt);
-    ASSERTSYS(x == (I)3245142153UL, "mr_test 49");
-    RZ(jtrngselects(jt, jtsc(jt, j)));
-    return num(1);
 }
 
 /* ----------------------------------------------------------------------- */

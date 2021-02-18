@@ -279,22 +279,6 @@ jtsysq(J jt, A w) {
 }
 
 A
-jtxepq(J jt, A w) {
-    ASSERTMTV(w);
-    return jt->xep ? jt->xep : mtv;
-}
-
-A
-jtxeps(J jt, A w) {
-    ASSERT(1 >= AR(w), EVRANK);
-    ASSERT(!AN(w) || AT(w) & LIT, EVDOMAIN);
-    fa(jt->xep);
-    RZ(ras(w));
-    RZ(jt->xep = w);
-    return mtm;
-}
-
-A
 jtasgzombq(J jt, A w) {
     ASSERTMTV(w);
     return jtsc(jt, jt->asgzomblevel);

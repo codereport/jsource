@@ -345,15 +345,6 @@ jteachl(J jt, A a, A w, A self) {
     rr    = AR(w) < rr ? AR(w) : rr;
     return rank2ex(a, w, self, lr, rr, lcr, AR(w), FAV(self)->valencefns[1]);
 }
-A
-jteachr(J jt, A a, A w, A self) {
-    I rcr = AR(w) - 1 < 0 ? 0 : AR(w) - 1;
-    I rr  = rr(self);
-    rr    = rcr < rr ? rcr : rr;
-    I lr  = lr(self);
-    lr    = AR(a) < lr ? AR(a) : lr;
-    return rank2ex(a, w, self, lr, rr, AR(a), rcr, FAV(self)->valencefns[1]);
-}
 
 // u&.v
 // PUSH/POP ZOMB is performed in atop/amp/ampco

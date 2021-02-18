@@ -423,11 +423,6 @@ jtodom(J jt, I r, I n, I *RESTRICT s) {
 }
 
 A
-jtrankle(J jt, A w) {
-    return !w || AR(w) ? w : jtravel(jt, w);
-}
-
-A
 jtsc(J jt, I k) {
     A z;
     if ((k ^ REPSGN(k)) <= NUMMAX) {
@@ -472,13 +467,6 @@ jtscf(J jt, D x) {
     DAV(z)[0] = x;
     return z;
 }  // scalar float
-A
-jtscx(J jt, X x) {
-    A z;
-    GAT0(z, XNUM, 1, 0);
-    XAV(z)[0] = jtca(jt, x);
-    return z;
-}  // scalar extended
 
 // return A-block for the string *s with length n
 A

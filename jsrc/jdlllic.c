@@ -82,11 +82,6 @@ jtlock2(J jt, A a, A w) {
 }
 
 A
-jtunlock1(J jt, A w) {
-    return jtunlock2(jt, mtv, w);
-}
-
-A
 jtunlock2(J jt, A a, A w) {
     int i, j, len, tlen;
     UC c1, c2, k1[SK], *lp, *sp, *d;

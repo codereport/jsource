@@ -785,36 +785,6 @@ jttoutf8(J jt, A w) {
     EPILOG(z);
 }  // 8 u: x - utf8 from LIT or C2T C4T
 
-// Similar to jttoutf16, but unlike 7&u: this one always returns unicode
-A
-jttoutf16x(J jt, A w) {
-    A z;
-    I n, t, q;
-    PROLOG(0000);
-    ASSERT(1 >= AR(w), EVRANK);
-    n = AN(w);
-    t = AT(w);
-    if (!n) {
-        GATV(z, C2T, n, AR(w), AS(w));
-        return z;
-    };  // empty list
-    if (t & C2T) return w;
-    ASSERT(t & LIT + C4T, EVDOMAIN);
-    if (t & C4T) {
-        q = utowsize(C4AV(w), n);
-        ASSERT(q >= 0, EVDOMAIN);
-        GATV0(z, C2T, q, 1);
-        utow(C4AV(w), n, USAV(z));
-    } else  // u16 from u8
-    {
-        q = mtowsize(UAV(w), n);
-        ASSERT(q >= 0, EVDOMAIN);
-        GATV0(z, C2T, q, 1);
-        mtow(UAV(w), n, USAV(z));
-    }
-    EPILOG(z);
-}
-
 // Similar to jttoutf8a, allow invalid unicode
 // w is C2T C4T or LIT.  Result is U8 string and null-terminate
 A
@@ -952,61 +922,3 @@ jttou32(J jt, A w) {
     }
     EPILOG(z);
 }  // 10 u: x - literal4 similar to monad u: for whcar
-
-// cnull 0: cesu-8  1: modified utf-8
-static A
-tocesu8a(J jt, A w, I cnul) {
-    A z, z1;
-    UC* wv = UAV(w);
-    I n, t, q;
-    C4* c4v;
-    US* c2v;
-    PROLOG(0000);
-    ASSERT(1 >= AR(w), EVRANK);
-    n = AN(w);
-    t = AT(w);
-    if (!n) {
-        GATV(z, LIT, n, AR(w), AS(w));
-        return z;
-    };  // empty list
-    ASSERT(t & LIT, EVDOMAIN);
-    // convert to utf-16
-    q = mtowsize(wv, n);
-    if (q < 0) return w;
-    GATV0(z, C2T, q, 1);
-    c2v = USAV(z);
-    mtow(wv, n, c2v);
-    // promote wchar to literal4
-    // change 0 to its over long version
-    GATV0(z1, C4T, q, 1);
-    c4v = C4AV(z1);
-    if (cnul) {
-        DQ(
-          q, if (*c2v)* c4v++ = (C4)*c2v++; else {
-              *c4v++ = (C4)0xc080;
-              c2v++;
-          });
-    } else {
-        DQ(q, *c4v++ = (C4)*c2v++;);
-    }
-    // convert to utf-8
-    q = utomsize(C4AV(z1), AN(z1));
-    q = (q < 0) ? (-q) : q;
-    GATV0(z, LIT, q, 1);
-    utom(C4AV(z1), AN(z1), UAV(z));
-    EPILOG(z);
-}
-
-// to modified utf-8 assume input is rank-1 LIT
-// nul converted 0xc080
-A
-jttomutf8(J jt, A w) {
-    return tocesu8a(jt, w, 1);
-}
-
-// to cesu-8 assume input is rank-1 LIT
-// to convert backwards, first to utf-16 then to utf-8
-A
-jttocesu8(J jt, A w) {
-    return tocesu8a(jt, w, 0);
-}

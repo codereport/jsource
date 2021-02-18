@@ -5,11 +5,6 @@
 
 #include "j.h"
 
-A
-jtforeignextra(J jt, A a, A w) {
-    return CDERIV(CIBEAM, 0, 0, VFLAGNONE, RMAX, RMAX, RMAX);
-}
-
 // create explicit equivalent of verb w
 // a is flags to handle lower recursions:
 //  0 to begin with

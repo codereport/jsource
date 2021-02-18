@@ -3424,37 +3424,6 @@ jtnfeoutstr(J jt, A w) {
     return jtcstr(jt, jt->mtyostr ? jt->mtyostr : (C *)"");
 } /* 15!:18 return last jsto output */
 
-A
-jtcdjt(J jt, A w) {
-    ASSERTMTV(w);
-    return jtsc(jt, (I)(intptr_t)jt);
-} /* 15!:19 return jt */
-
-A
-jtcdlibl(J jt, A w) {
-    ASSERT(LIT & AT(w), EVDOMAIN);
-    ASSERT(1 >= AR(w), EVRANK);
-    ASSERT(AN(w), EVLENGTH);
-    if (!jt->cdarg) return num(0);
-    return jtsc(jt, (I)jtcdlookupl(jt, CAV(w)));
-} /* 15!:20 return library handle */
-
-A
-jtcdproc1(J jt, A w) {
-    CCT *cc;
-    ASSERT(LIT & AT(w), EVDOMAIN);
-    ASSERT(1 >= AR(w), EVRANK);
-    ASSERT(AN(w), EVLENGTH);
-    if (!jt->cdarg) RE(jtcdinit(jt));
-    C *enda = &CAV(w)[AN(w)];
-    C endc  = *enda;
-    *enda   = 0;
-    cc      = jtcdparse(jt, w, 1);
-    *enda   = endc;
-    RE(cc);  // should do outside rank2 loop?
-    return jtsc(jt, (I)cc->fp);
-} /* 15!:21 return proc address */
-
 // procedures in jlib.h
 static const void *jfntaddr[] = {
   JDo,
@@ -3489,28 +3458,3 @@ static const C *jfntnm[] = {
   "Jga",
 
 };
-
-A
-jtcdproc2(J jt, A a, A w) {
-    C *proc;
-    FARPROC f;
-    HMODULE h;
-    ASSERT(LIT & AT(w), EVDOMAIN);
-    ASSERT(1 >= AR(w), EVRANK);
-    ASSERT(AN(w), EVLENGTH);
-    proc = CAV(w);
-    RE(h = (HMODULE)jti0(jt, a));
-    if (!h) {
-        I k = -1;
-        DO(
-          sizeof(jfntnm) / sizeof(C *), if (((I)strlen(jfntnm[i]) == AN(w)) && !strncmp(jfntnm[i], proc, AN(w))) {
-              k = i;
-              break;
-          });
-        f = (k == -1) ? (FARPROC)0 : (FARPROC)jfntaddr[k];
-    } else {
-        f = (FARPROC)dlsym(h, proc);
-    }
-    CDASSERT(f != 0, DEBADFN);
-    return jtsc(jt, (I)f);
-} /* 15!:21 return proc address */

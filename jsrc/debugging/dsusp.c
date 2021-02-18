@@ -81,41 +81,6 @@ jtdebz(J jt) {
 }
 /* remove     top of si stack */
 
-A
-jtsiinfo(J jt, A w) {
-    A z, *zv;
-    DC d;
-    I c = 5, n, *s;
-    ASSERTMTV(w);
-    n = 0;
-    d = jt->sitop;
-    while (d) {
-        ++n;
-        d = d->dclnk;
-    }
-    GATV0(z, BOX, c * n, 2);
-    s    = AS(z);
-    s[0] = n;
-    s[1] = c;
-    zv   = AAV(z);
-    d    = jt->sitop;
-    while (d) {
-        RZ(zv[0] = jtsc(jt, d->dctype));
-        RZ(zv[1] = d->dcsusp ? jtscc(jt, '*') : jtscc(jt, ' '));
-        RZ(zv[2] = jtsc(jt, (I)d->dcss));
-        RZ(zv[3] = d->dctype == DCCALL ? jtsc(jt, lnumsi(d)) : mtv);
-        switch (d->dctype) {
-            case DCPARSE: RZ(zv[4] = jtunparse(jt, d->dcy)); break;
-            case DCCALL: RZ(zv[4] = jtsfn(jt, 0, d->dca)); break;
-            case DCSCRIPT: zv[4] = d->dcy; break;
-            case DCJUNK: zv[4] = mtv; break;
-        }
-        zv += c;
-        d = d->dclnk;
-    }
-    return z;
-} /* 13!:32 si info */
-
 I
 lnumcw(I j, A w) {
     CW *u;
