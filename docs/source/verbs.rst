@@ -39,14 +39,3 @@ Shape
 ******
 Dyadic
 ******
-
-******
-Tables
-******
-
-Write markdown table in RST file.
-
-| fruit | color | startswith |
-| ----- | ----- | ---------- |
-| apples | red | a |
-| oranges | orange | o |
