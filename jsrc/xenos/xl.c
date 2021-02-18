@@ -48,20 +48,6 @@ jtdolock(J jt, B lk, F f, I i, I n) {
 
 #define LKC 3 /* number of columns in jt->flkd table       */
 
-B
-jtxlinit(J jt) {
-    A x;
-    I* s;
-    GAT0(x, INT, 20 * LKC, 2);
-    ras(x);
-    s            = AS(x);
-    s[0]         = 20;
-    s[1]         = LKC;
-    jt->flkd     = x;
-    AM(jt->flkd) = 0;  // AM holds the # valid entries
-    return 1;
-}
-
 A
 jtjlocks(J jt, A w) {
     A y;
