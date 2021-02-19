@@ -1,9 +1,10 @@
-/* Copyright 1990-2007, Jsoftware Inc.  All rights reserved.               */
-/* Licensed use only. Any other use is in violation of copyright.          */
-/*                                                                         */
-/* Verbs: Take and Drop                                                    */
 
-#include "j.h"
+#include <algorithm>
+#include <iterator>
+
+#include "array.hpp"
+
+/** @file */
 
 A
 jtbehead(J jt, A w) {
@@ -42,12 +43,11 @@ jttk0(J jt, B b, A a, A w) {
     return z;
 }
 
-static A
-jttks(J jt, A a, A w) {
+static array
+jttks(J jt, array a, array w) { // take_sparse
     PROLOG(0092);
-    A a1, q, x, y, z;
-    B b, c;
-    I an, m, r, *s, *u, *v;
+    array x, y, z;
+    I an, r, *s, *u, *v;
     P *wp, *zp;
     an = AN(a);
     u  = AV(a);
@@ -57,31 +57,37 @@ jttks(J jt, A a, A w) {
     v = AS(z);
     DO(an, v[i] = ABS(u[i]););
     zp = PAV(z);
-    wp = PAV(w);
+    wp = PAV(w); // pointer to array values
+
     if (an <= r) {
         RZ(a = vec(INT, r, s));
         MCISH(AV(a), u, an);
     }  // vec is not virtual
-    a1 = SPA(wp, a);
-    RZ(q = jtpaxis(jt, r, a1));
-    m = AN(a1);
+
+    auto [m, q] = [&] {
+        array const a1 = SPA(wp, a);
+        return std::pair{AN(a1), jtpaxis(jt, r, a1)};
+    } ();
+
     RZ(a = jtfrom(jt, q, a));
     u = AV(a);
     RZ(y = jtfrom(jt, q, shape(jt, w)));
     s = AV(y);
-    b = 0;
-    DO(r - m, if (b = u[i + m] != s[i + m]) break;);
-    c = 0;
-    DO(m, if (c = u[i] != s[i]) break;);
+
+    // TODO: rename b when we figure out what it is doing
+    auto const b = std::mismatch(u + m, u + r, s + m).first != u + r; 
+
     if (b) {
         jt->fill = SPA(wp, e);
-        x        = irs2(vec(INT, r - m, m + u), SPA(wp, x), 0L, 1L, -1L, jttake);
+        x        = irs2(vec(INT, r - m, m + u), SPA(wp, x), 0L, 1L, -1L, reinterpret_cast<AF>(jttake));
         jt->fill = 0;
         RZ(x);
     }  // fill cannot be virtual
     else
         x = SPA(wp, x);
-    if (c) {
+    
+    // TODO: rename b when we figure out what it is doing
+    if (auto const c = std::mismatch(u, u + m, s).first != u + m; c) {
         A j;
         C *xv, *yv;
         I d, i, *iv, *jv, k, n, t;
@@ -97,12 +103,22 @@ jttks(J jt, A a, A w) {
         yv = CAV(y);
         xv = CAV(x);
         for (i = 0; i < n; ++i) {
-            c = 0;
-            DO(m, t = u[i]; if (c = 0 > t ? iv[i] < t + s[i] : iv[i] >= t) break;);
-            if (!c) {
+            
+            // this is std::mismatch3 (or std::zip_find3)
+            bool cc = 0;
+            for (int64_t i = 0; i < m; ++i) {
+                t = u[i]; 
+                if (0 > t ? iv[i] < t + s[i] : iv[i] >= t) {
+                    cc = true;
+                    break;
+                }
+            }
+
+            if (!cc) {
                 ++d;
                 memcpy(yv, xv, k);
                 yv += k;
+                // TODO: use algorithm created above
                 DO(m, t = u[i]; *jv++ = 0 > t ? iv[i] - (t + s[i]) : iv[i];);
             }
             iv += m;
@@ -197,7 +213,7 @@ jttake(J jt, A a, A w) {
     wf  = wr - wcr;
     RESETRANK;
     if (((af - 1) & (acr - 2)) >= 0) {
-        s = rank2ex(a, w, UNUSED_VALUE, MIN(acr, 1), wcr, acr, wcr, jttake);  // if multiple x values, loop over them
+        s = rank2ex(a, w, UNUSED_VALUE, MIN(acr, 1), wcr, acr, wcr, reinterpret_cast<AF>(jttake));  // if multiple x values, loop over them
                                                                               // af>0 or acr>1
         // We extracted from w, so mark it (or its backer if virtual) non-pristine.  There may be replication (if there
         // was fill), so we don't pass pristinity through  We overwrite w because it is no longer in use
@@ -212,7 +228,7 @@ jttake(J jt, A a, A w) {
          jtvib(jt, a));  // convert input to integer, auditing for illegal values; and convert infinities to IMAX/-IMAX
     // if the input was not INT/bool, we go through and replace any infinities with the length of the axis.  If we do
     // this, we have to clone the area, because vib might return a canned value
-    if (!(AT(a) & B01 + INT)) {
+    if (!(AT(a) & (B01 + INT))) {
         I i;
         for (i = 0; i < AN(s); ++i) {
             I m  = IAV(s)[i];
@@ -298,7 +314,7 @@ jtdrop(J jt, A a, A w) {
     // special case: if a is atomic 0, and cells of w are not atomic
     if ((-wcr & (ar - 1)) < 0 && (IAV(a)[0] == 0)) return w;  // 0 }. y, return y
     if (((af - 1) & (acr - 2)) >= 0) {
-        s = rank2ex(a, w, UNUSED_VALUE, MIN(acr, 1), wcr, acr, wcr, jtdrop);  // if multiple x values, loop over them
+        s = rank2ex(a, w, UNUSED_VALUE, MIN(acr, 1), wcr, acr, wcr, reinterpret_cast<AF>(jtdrop));  // if multiple x values, loop over them
                                                                               // af>0 or acr>1
         // We extracted from w, so mark it (or its backer if virtual) non-pristine.  There may be replication, so we
         // don't pass pristinity through  We overwrite w because it is no longer in use
@@ -411,7 +427,7 @@ jthead(J jt, A w) {
             return jtfrom(jtinplace, zeroionei(0), w);  // could call jtfromi directly for non-sparse w
         }
     } else {
-        return SPARSE & AT(w) ? irs2(num(0), jttake(jt, num(1), w), 0L, 0L, wcr, jtfrom)
+        return SPARSE & AT(w) ? irs2(num(0), jttake(jt, num(1), w), 0L, 0L, wcr, reinterpret_cast<AF>(jtfrom))
                               : jtrsh0(jt, w);  // cell of w is empty - create a cell of fills  jt->ranks is still set
                                                 // for use in take.  Left rank is garbage, but that's OK
     }
@@ -429,7 +445,7 @@ jttail(J jt, A w) {
     return !wcr || AS(w)[wf] ? jtfrom(jtinplace, num(-1), w)
                              :  // if cells are atoms, or if the cells are nonempty arrays, result is last cell(s) scaf
                                 // should generate virtual block here for speed
-             SPARSE & AT(w) ? irs2(num(0), jttake(jt, num(-1), w), 0L, 0L, wcr, jtfrom)
+             SPARSE & AT(w) ? irs2(num(0), jttake(jt, num(-1), w), 0L, 0L, wcr, reinterpret_cast<AF>(jtfrom))
                             : jtrsh0(jt, w);
     // pristinity from other verbs
 }

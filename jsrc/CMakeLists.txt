@@ -72,13 +72,13 @@ target_sources(j PRIVATE
         verbs/vrep.c
         verbs/vs.c
         verbs/vsb.c
-        verbs/vt.c
         verbs/vx.c
         verbs/vz.c
         verbs/monadic/rank.cpp
         verbs/monadic/same.cpp
         verbs/monadic/shape.cpp
         verbs/monadic/tally.cpp
+        verbs/dyadic/take_drop.cpp
         debugging/d.c
         debugging/dc.c
         debugging/dss.c
