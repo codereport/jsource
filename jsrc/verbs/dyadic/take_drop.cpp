@@ -1,4 +1,7 @@
 
+#include <algorithm>
+#include <iterator>
+
 #include "array.hpp"
 
 /** @file */
@@ -44,7 +47,7 @@ static A
 jttks(J jt, A a, A w) {
     PROLOG(0092);
     A a1, q, x, y, z;
-    B b, c;
+    B c;
     I an, m, r, *s, *u, *v;
     P *wp, *zp;
     an = AN(a);
@@ -67,8 +70,9 @@ jttks(J jt, A a, A w) {
     u = AV(a);
     RZ(y = jtfrom(jt, q, shape(jt, w)));
     s = AV(y);
-    b = 0;
-    DO(r - m, if ((b = (u[i + m] != s[i + m]))) break;);
+
+    auto const b = std::mismatch(u + m, u + r, s + m).first != u + r;
+
     c = 0;
     DO(m, if ((c = (u[i] != s[i]))) break;);
     if (b) {
