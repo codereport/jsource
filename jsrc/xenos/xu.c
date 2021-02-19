@@ -792,16 +792,6 @@ jttoutf8x(J jt, A w) {
     return jtstr0(jt, jttoutf8a(jt, w, 0));
 }
 
-// External function - just convert wide-char fw[] to U8 in f[], and null-terminate
-void
-jttoutf8w(J jt, C* f, I n, US* fw) {
-    I q;
-    q = wtomsize(fw, wcslen((wchar_t*)fw));
-    q = (q < 0) ? (-q) : q;
-    wtom(fw, wcslen((wchar_t*)fw), f);
-    f[q] = 0;
-}
-
 A
 jttoutf32(J jt, A w) {
     A z;

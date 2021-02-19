@@ -188,9 +188,6 @@
 #define fdef(x0, x1, x2, x3, x4, x5, x6, x7, x8, x9, x10, x11) \
     jtfdef(jt, (x0), (x1), (x2), (x3), (x4), (x5), (x6), (x7), (x8), (x9), (x10), (x11))
 #define fillv(x, y, z) jtfillv(jt, (x), (y), (z))
-// x is locale number, result is address of symbol table, or 0 if nonexistent locale
-// only for non-reuse #define findnlz(x,z)                {if((UI)(n)>=jt->numlocsize)z=0; else
-// {z=(A)(jt->numloctbl[n]); z=((UI)((I*)z-jt->numloctbl)<jt->numlocsize)?0:z;}}
 #define fitct(x, y, n) jtfitct(jt, (x), (y), (n))
 #define floor1(x) jtatomic1(jt, (x), ds(CFLOOR))
 #define fmfill(x0, x1, x2, x3, x4, x5, x6, x7) jtfmfill(jt, (x0), (x1), (x2), (x3), (x4), (x5), (x6), (x7))
