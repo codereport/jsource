@@ -49,13 +49,13 @@ palindrome =. (-: |.)    NB. hook version
 * That Travis-CI is not free, you have 10,000 credits which get used per minute per OS 
 * We learned the following about CI pricing:
 
-|    Platform    | Free Linux Minutes |
-| :------------: | :----------------: |
-|   Travis CI    |        1000        |
-| Azure Pipelines|        1800        |
-| Github Actions |        2000        |
-|   Buildkite    |     Infinity?      |
-|   Appveyor     |     Infinity?      |
+|    Platform     | Free Linux Minutes |
+| :-------------: | :----------------: |
+|    Travis CI    |        1000        |
+| Azure Pipelines |        1800        |
+| Github Actions  |        2000        |
+|    Buildkite    |     Infinity?      |
+|    Appveyor     |     Infinity?      |
 
 * We learned for some reason macOS is 5-10x more costly when it comes to CI
 * ~~We should checkout GitHub actions~~
@@ -119,3 +119,11 @@ Prelude> let innerProduct = blackbird sum (zipWith (*))
 * Learned that MicroAPL refers to "tack" as pass (and Dyalog APL refers to it as same)
 * Learned about the [P Programming Language](https://github.com/p-org/P)
 * Learned for a multi-line J function to use `f =. 3 : 0` or `g =. 4 : 0`
+
+### Livestream #8 2021-02-18
+
+* `x y z | value` is the sparse array view
+* We learned `=` has lower precedence that equality comparision in C++
+* IRS = Integral/Integrated Rank Support (optimizations for certain verbs - see [this paper](https://www.jsoftware.com/papers/rank.htm))
+* Discrovered [Try J](http://tryj.freeddns.org/) site set up by Nathan
+* Used our first C++ Standard Algorithm (`std::mismatch` x2)
