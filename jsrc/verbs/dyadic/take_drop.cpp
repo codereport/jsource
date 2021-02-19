@@ -96,7 +96,7 @@ jttks(J jt, A a, A w) {
         xv = CAV(x);
         for (i = 0; i < n; ++i) {
             c = 0;
-            DO(m, t = u[i]; if ((c = 0) > t ? iv[i] < t + s[i] : iv[i] >= t) break;);
+            DO(m, t = u[i]; if ((c = (0 > t ? iv[i] < t + s[i] : iv[i] >= t))) break;);
             if (!c) {
                 ++d;
                 memcpy(yv, xv, k);
