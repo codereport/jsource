@@ -11,6 +11,8 @@
 #endif
 #endif
 
+#define Kmax 15
+
 #ifndef HAVE_BIGINT
 struct dtoa_info {
     jmp_buf _env;

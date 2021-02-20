@@ -130,8 +130,6 @@ extern double rnd_prod(double, double), rnd_quot(double, double);
 
 #define FFFFFFFF 0xffffffffUL
 
-#define Kmax 15
-
 #ifdef __cplusplus
 #endif
 
