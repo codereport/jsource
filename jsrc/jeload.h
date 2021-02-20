@@ -4,7 +4,6 @@
 #pragma once
 
 void jepath(char*, char*);
-void jesetpath(char*);
 void* jeload(void* callbacks);  // returns J
 A jegeta(int, char*);
 I jeseta(I n, char* name, I x, char* d);

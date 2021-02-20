@@ -3,6 +3,7 @@
 // utilities for JFE to load JE, initiallize, and run profile sentence
 // JFEs are jconsole, jwdw, and jwdp
 // TODO: Remove all void* where applicable when other parts of the code start being refactored
+#include <filesystem>
 #include <string>
 #include <stdexcept>
 #include <cstdint>
@@ -30,8 +31,8 @@ static JgaType jga;
 static JGetLocaleType jgetlocale;
 static JGetAType jgeta;
 static JSetAType jseta;
-std::string path;
-std::string pathdll;
+std::filesystem::path path;
+std::filesystem::path pathdll;
 
 auto
 jedo(char const* sentence) -> int {
@@ -101,7 +102,6 @@ jepath(char* arg, char* lib) -> void {
     // C strings need to be used for POSIX APIs and macOS APIs
     auto arg2      = new char[sz];
     auto arg3      = new char[sz];
-    auto path_temp = new char[sz];
     // Return for readlinks
     int n;
 
@@ -127,44 +127,19 @@ jepath(char* arg, char* lib) -> void {
         arg3[n] = 0;
 
     if ('/' == *arg3)
-        strcpy(path_temp, arg3);
-    else {
-        if (!getcwd(path_temp, sizeof(path_temp))) path_temp[0] = 0;
-        strcat(path_temp, "/");
-        strcat(path_temp, arg3);
-    }
+        path = arg3;
+    else
+        path = std::filesystem::current_path() / arg3;
     // Now append path_temp to path, as all POSIX and macOS API calls are done, and free up arg2, arg3, path_temp.
-    path.append(path_temp);
-    delete[] path_temp;
     delete[] arg2;
     delete[] arg3;
 
-    // Remove everything after the last / as that would be the current executables name
-    path.erase(std::next(path.begin(), path.rfind('/')), path.end());
+    path.remove_filename();
 
     // remove ./ and backoff ../
-    util::remove_all_occurrences(path, "../");
-    util::remove_all_occurrences(path, "./");
+    path = path.lexically_normal();
 
-    pathdll.append(path);
-    pathdll.append("/");
-    pathdll.append(JDLLNAME);
-
-    if (*lib) {
-        if ('/' != *lib) {
-            pathdll.append(path);
-            pathdll.append("/");
-        }
-        pathdll.append(lib);
-    }
-}
-
-// called by jwdp (java jnative.c) to set path
-auto
-jesetpath(char* arg) -> void {
-    pathdll.append(arg);
-    path.append(arg);
-    path.erase(std::next(path.begin(), path.rfind('/')), path.end());
+    pathdll = path / (*lib ? lib : JDLLNAME);
 }
 
 // build and run first sentence to set BINPATH, ARGV, and run profile
