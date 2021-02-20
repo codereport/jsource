@@ -93,7 +93,6 @@
  * something other than "long long", #define Llong to be the name,
  * and if "unsigned Llong" does not work as an unsigned version of
  * Llong, #define #ULLong to be the corresponding unsigned type.
- * #define KR_headers for old-style C function headers.
  * #define Bad_float_h if your system lacks a float.h or if it does not
  * define some or all of DBL_DIG, DBL_MAX_10_EXP, DBL_MAX_EXP,
  * FLT_RADIX, FLT_ROUNDS, and DBL_MAX.
@@ -234,11 +233,7 @@ extern "C" {
 #endif
 
 #ifndef CONSTANT
-#ifdef KR_headers
-#define CONSTANT /* blank */
-#else
 #define CONSTANT const
-#endif
 #endif
 
 #if defined(IEEE_8087) + defined(IEEE_MC68k) + defined(VAX) + defined(IBM) != 1
@@ -340,22 +335,15 @@ Exactly one of IEEE_8087, IEEE_MC68k, VAX, or IBM should be defined.
 #endif
 
 #ifdef RND_PRODQUOT
-#ifdef KR_headers
-extern double rnd_prod(), rnd_quot();
 #else
 extern double rnd_prod(double, double), rnd_quot(double, double);
-#endif
 #endif
 
 #ifndef Pack_32
 #define Pack_32
 #endif
 
-#ifdef KR_headers
-#define FFFFFFFF ((((unsigned long)0xffff) << 16) | (unsigned long)0xffff)
-#else
 #define FFFFFFFF 0xffffffffUL
-#endif
 
 #ifdef NO_LONG_LONG
 #undef ULLong
@@ -421,11 +409,7 @@ static void d2a_Bfree(struct dtoa_info *d2a, Bigint *v);
 /* static Bigint *freelist[Kmax+1]; */
 
 static Bigint *d2a_Balloc
-#ifdef KR_headers
-  (k) int k;
-#else
  (struct dtoa_info *d2a, int k)
-#endif
 {
     int x;
     Bigint *rv;
@@ -457,11 +441,7 @@ static Bigint *d2a_Balloc
 }
 
 static void d2a_Bfree
-#ifdef KR_headers
-  (v) Bigint *v;
-#else
  (struct dtoa_info *d2a, Bigint *v)
-#endif
 {
     if (v) {
         ACQUIRE_DTOA_LOCK(0);
@@ -474,12 +454,7 @@ static void d2a_Bfree
 #define Bcopy(x, y) memcpy((char *)&x->sign, (char *)&y->sign, y->wds * sizeof(Long) + 2 * sizeof(int))
 
 static Bigint *d2a_multadd
-#ifdef KR_headers
-  (b, m, a) Bigint *b;
-int m, a;
-#else
  (struct dtoa_info *d2a, Bigint *b, int m, int a) /* multiply by m and add a */
-#endif
 {
     int i, wds;
 #ifdef ULLong
@@ -530,11 +505,7 @@ int m, a;
 }
 
 static int hi0bits
-#ifdef KR_headers
-  (x) register ULong x;
-#else
  (register ULong x)
-#endif
 {
     register int k = 0;
 
@@ -562,11 +533,7 @@ static int hi0bits
 }
 
 static int lo0bits
-#ifdef KR_headers
-  (y) ULong *y;
-#else
  (ULong *y)
-#endif
 {
     register int k;
     register ULong x = *y;
@@ -607,11 +574,7 @@ static int lo0bits
 }
 
 static Bigint *d2a_i2b
-#ifdef KR_headers
-  (i) int i;
-#else
  (struct dtoa_info *d2a, int i)
-#endif
 {
     Bigint *b;
 
@@ -622,12 +585,7 @@ static Bigint *d2a_i2b
 }
 
 static Bigint *d2a_mult
-#ifdef KR_headers
-  (a, b) Bigint *a,
-  *b;
-#else
  (struct dtoa_info *d2a, Bigint *a, Bigint *b)
-#endif
 {
     Bigint *c;
     int k, wa, wb, wc;
@@ -729,12 +687,7 @@ static Bigint *p5s;
 #endif
 
 static Bigint *d2a_pow5mult
-#ifdef KR_headers
-  (b, k) Bigint *b;
-int k;
-#else
  (struct dtoa_info *d2a, Bigint *b, int k)
-#endif
 {
     Bigint *b1, *p5, *p51;
     int i;
@@ -765,12 +718,7 @@ int k;
 }
 
 static Bigint *d2a_lshift
-#ifdef KR_headers
-  (b, k) Bigint *b;
-int k;
-#else
  (struct dtoa_info *d2a, Bigint *b, int k)
-#endif
 {
     int i, k1, n, n1;
     Bigint *b1;
@@ -819,12 +767,7 @@ int k;
 }
 
 static int cmp
-#ifdef KR_headers
-  (a, b) Bigint *a,
-  *b;
-#else
  (Bigint *a, Bigint *b)
-#endif
 {
     ULong *xa, *xa0, *xb, *xb0;
     int i, j;
@@ -848,12 +791,7 @@ static int cmp
 }
 
 static Bigint *d2a_diff
-#ifdef KR_headers
-  (a, b) Bigint *a,
-  *b;
-#else
  (struct dtoa_info *d2a, Bigint *a, Bigint *b)
-#endif
 {
     Bigint *c;
     int i, wa, wb;
@@ -935,12 +873,7 @@ static Bigint *d2a_diff
 }
 
 static Bigint *d2a_d2b
-#ifdef KR_headers
-  (d, e, bits) double d;
-int *e, *bits;
-#else
  (struct dtoa_info *d2a, double d, int *e, int *bits)
-#endif
 {
     Bigint *b;
     int de, k;
@@ -1101,12 +1034,7 @@ static CONSTANT double tinytens[] = {1e-16, 1e-32};
 #endif
 
 static int match
-#ifdef KR_headers
-  (sp, t) char **sp,
-  *t;
-#else
  (CONSTANT char **sp, char *t)
-#endif
 {
     int c, d;
     CONSTANT char *s = *sp;
@@ -1121,12 +1049,7 @@ static int match
 
 #ifndef No_Hex_NaN
 static void hexnan
-#ifdef KR_headers
-  (rvp, sp) double *rvp;
-CONSTANT char **sp;
-#else
  (double *rvp, CONSTANT char **sp)
-#endif
 {
     ULong c, x[2];
     CONSTANT char *s;
@@ -1172,12 +1095,7 @@ CONSTANT char **sp;
 #endif /* INFNAN_CHECK */
 
 static int quorem
-#ifdef KR_headers
-  (b, S) Bigint *b,
-  *S;
-#else
  (Bigint *b, Bigint *S)
-#endif
 {
     int n;
     ULong *bx, *bxe, q, *sx, *sxe;
@@ -1283,11 +1201,7 @@ static int quorem
 }
 
 static char *
-#ifdef KR_headers
-  rv_alloc(i) int i;
-#else
 d2a_rv_alloc(struct dtoa_info *d2a, int i)
-#endif
 /* i is guarenteed i >= 0 by caller so the cast to unsigned below is safe */
 {
 #ifndef Use_J_Memory
@@ -1305,13 +1219,7 @@ d2a_rv_alloc(struct dtoa_info *d2a, int i)
 }
 
 static char *
-#ifdef KR_headers
-  nrv_alloc(s, rve, n) char *s,
-  **rve;
-int n;
-#else
 d2a_nrv_alloc(struct dtoa_info *d2a, char *s, char **rve, int n)
-#endif
 {
     char *rv, *t;
 
@@ -1357,13 +1265,7 @@ d2a_nrv_alloc(struct dtoa_info *d2a, char *s, char **rve, int n)
  */
 
 static char *d2a_dtoa
-#ifdef KR_headers
-  (d, mode, ndigits, decpt, sign, rve) double d;
-int mode, ndigits, *decpt, *sign;
-char **rve;
-#else
  (struct dtoa_info *d2a, double d, int mode, int ndigits, int *decpt, int *sign, char **rve)
-#endif
 {
     /* Arguments ndigits, decpt, sign are similar to those
     of ecvt and fcvt; trailing zeros are suppressed from
@@ -1928,11 +1830,7 @@ return s0;
 #include "j.h"
 
 static void *d2a_Malloc
-#ifdef KR_headers
-  (k) int k;
-#else
  (struct dtoa_info *di, int n)
-#endif
 {
     A z;
     J jt = (J)di->jt;
