@@ -168,8 +168,6 @@ static void d2a_Bfree(struct dtoa_info *d2a, Bigint *v);
 #define diff(x, y) d2a_diff(d2a, x, y)
 #define lshift(x, y) d2a_lshift(d2a, x, y)
 
-/* static Bigint *freelist[Kmax+1]; */
-
 static Bigint *d2a_Balloc
  (struct dtoa_info *d2a, int k)
 {
