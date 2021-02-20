@@ -130,9 +130,6 @@ extern double rnd_prod(double, double), rnd_quot(double, double);
 
 #define FFFFFFFF 0xffffffffUL
 
-#ifdef __cplusplus
-#endif
-
 struct Bigint {
     struct Bigint *next;
     int k, maxwds, sign, wds;
