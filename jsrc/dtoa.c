@@ -109,9 +109,6 @@
 #define FREE_DTOA_LOCK(n)    /* handled by using jt */
 #define PRIVATE_MEM 8000
 
-#ifndef Long
-#define Long long
-#endif
 #ifndef ULong
 typedef unsigned Long ULong;
 #endif
