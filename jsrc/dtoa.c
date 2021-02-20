@@ -71,12 +71,6 @@
  * and Honor_FLT_ROUNDS is not #defined.
  * #define Inaccurate_Divide for IEEE-format with correctly rounded
  * products but inaccurate quotients, e.g., for Intel i860.
- * #define NO_LONG_LONG on machines that do not have a "long long"
- * integer type (of >= 64 bits).  On such machines, you can
- * #define MALLOC your_malloc, where your_malloc(n) acts like malloc(n)
- * if memory is available and otherwise does something you deem
- * appropriate.  If MALLOC is undefined, malloc will be invoked
- * directly -- and assumed always to succeed.
  */
 
 /* Options for use with J */
@@ -136,16 +130,12 @@ extern double rnd_prod(double, double), rnd_quot(double, double);
 
 #define FFFFFFFF 0xffffffffUL
 
-#ifdef NO_LONG_LONG
-#undef ULLong
-#else /* long long available */
 #ifndef Llong
 #define Llong long long
 #endif
 #ifndef ULLong
 #define ULLong unsigned Llong
 #endif
-#endif /* NO_LONG_LONG */
 
 #define Kmax 15
 
