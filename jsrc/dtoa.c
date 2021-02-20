@@ -163,7 +163,6 @@
 #define FREE_DTOA_LOCK(n)    /* handled by using jt */
 /* #define Omit_Private_Memory */
 #define PRIVATE_MEM 8000
-#define Use_J_Memory
 
 #ifndef Long
 #define Long long
@@ -193,9 +192,6 @@ typedef unsigned Long ULong;
 #define PRIVATE_MEM 2304
 #endif
 #define PRIVATE_mem (long)((PRIVATE_MEM + sizeof(double) - 1) / sizeof(double))
-#ifndef Use_J_Memory
-static double private_mem[PRIVATE_mem], *pmem_next = private_mem;
-#endif
 #endif
 
 #undef IEEE_Arith
@@ -374,10 +370,6 @@ struct Bigint {
 typedef struct Bigint Bigint;
 #define HAVE_BIGINT
 #include "dtoa.h"
-
-#ifndef Use_J_Memory
-Error !Code requires Use_J_Memory due to modifications.
-#endif
 
   static void *
   d2a_Malloc(struct dtoa_info * d2a, int k);
@@ -677,10 +669,6 @@ static Bigint *d2a_mult
     c->wds = wc;
     return c;
 }
-
-#ifndef Use_J_Memory
-static Bigint *p5s;
-#endif
 
 static Bigint *d2a_pow5mult
  (struct dtoa_info *d2a, Bigint *b, int k)
@@ -1200,18 +1188,8 @@ static char *
 d2a_rv_alloc(struct dtoa_info *d2a, int i)
 /* i is guarenteed i >= 0 by caller so the cast to unsigned below is safe */
 {
-#ifndef Use_J_Memory
-    int j, k, *r;
-
-    j = sizeof(ULong);
-    for (k = 0; sizeof(Bigint) - sizeof(ULong) - sizeof(int) + j <= (unsigned)i; j <<= 1) k++;
-    r  = (int *)Balloc(k);
-    *r = k;
-    return (char *)(r + 1);
-#else
     if (i > d2a->ndp) longjmp(d2a->_env, 2); /* this shouldn't happen? */
     return d2a->result;
-#endif
 }
 
 static char *
@@ -1818,7 +1796,6 @@ if (rve) *rve = s;
 return s0;
 }
 
-#ifdef Use_J_Memory
 #undef diff
 #undef mult
 #undef P
@@ -1835,8 +1812,6 @@ static void *d2a_Malloc
     if (!z || jt->jerr) longjmp(di->_env, 1);
     return AV(z);
 }
-
-#endif
 
 B
 jtecvtinit(J jt) {
