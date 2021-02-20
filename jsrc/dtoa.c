@@ -652,9 +652,7 @@ static Bigint *d2a_d2b
     Bigint *b;
     int de, k;
     ULong *x, y, z;
-#ifndef Sudden_Underflow
     int i;
-#endif
 
 #define d0 word0(d)
 #define d1 word1(d)
@@ -664,11 +662,7 @@ static Bigint *d2a_d2b
 
     z = d0 & Frac_mask;
     d0 &= 0x7fffffff; /* clear sign bit, which we ignore */
-#ifdef Sudden_Underflow
-    de = (int)(d0 >> Exp_shift);
-#else
     if (de = (int)(d0 >> Exp_shift)) z |= Exp_msk1;
-#endif
     if (y = d1) {
         if (k = lo0bits(&y)) {
             x[0] = y | z << (32 - k);
@@ -691,17 +685,13 @@ static Bigint *d2a_d2b
           b->wds = 1;
         k += 32;
     }
-#ifndef Sudden_Underflow
     if (de) {
-#endif
     *e = de - Bias - (P - 1) + k;
     *bits = P - k;
-#ifndef Sudden_Underflow
     } else {
         *e = de - Bias - (P - 1) + 1 + k;
         *bits = 32 * i - hi0bits(x[i - 1]);
     }
-#endif
     return b;
 }
 #undef d0
@@ -976,10 +966,8 @@ static char *d2a_dtoa
     int bbits, b2, b5, be, dig, i, ieps, ilim, ilim0, ilim1, j, j1, k, k0, k_check, leftright, m2, m5, s2, s5,
       spec_case, try_quick;
     Long L;
-#ifndef Sudden_Underflow
     int denorm;
     ULong x;
-#endif
     Bigint *b, *b1, *delta, *mlo, *mhi, *S;
     double d2, ds, eps;
     char *s, *s0;
@@ -1004,11 +992,7 @@ static char *d2a_dtoa
     }
 
     b = d2b(dval(d), &be, &bbits);
-#ifdef Sudden_Underflow
-    i = (int)(word0(d) >> Exp_shift1 & (Exp_mask >> Exp_shift1));
-#else
     if (i = (int)(word0(d) >> Exp_shift1 & (Exp_mask >> Exp_shift1))) {
-#endif
     dval(d2) = dval(d);
     word0(d2) &= Frac_mask1;
     word0(d2) |= Exp_11;
@@ -1036,7 +1020,6 @@ static char *d2a_dtoa
      */
 
     i -= Bias;
-#ifndef Sudden_Underflow
     denorm = 0;
 }
 else {
@@ -1049,7 +1032,6 @@ else {
     i -= (Bias + (P - 1) - 1) + 1;
     denorm = 1;
 }
-#endif
 ds = (dval(d2) - 1.5) * 0.289529654602168 + 0.1760912590558 + i * 0.301029995663981;
 k  = (int)ds;
 if (ds < 0. && ds != k) k--; /* want k = floor(ds) */
@@ -1242,9 +1224,7 @@ m5  = b5;
 mhi = mlo = 0;
 if (leftright) {
     i =
-#ifndef Sudden_Underflow
       denorm ? be + (Bias + (P - 1) - 1 + 1) :
-#endif
               1 + P - bbits;
     b2 += i;
     s2 += i;
@@ -1276,9 +1256,7 @@ if (s5 > 0) S = pow5mult(S, s5);
 spec_case = 0;
 if ((mode < 2 || leftright)) {
     if (!word1(d) && !(word0(d) & Bndry_mask)
-#ifndef Sudden_Underflow
         && word0(d) & (Exp_mask & ~Exp_msk1)
-#endif
     ) {
         /* The special case */
         b2 += Log2P;
