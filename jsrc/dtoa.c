@@ -91,17 +91,6 @@
  * if memory is available and otherwise does something you deem
  * appropriate.  If MALLOC is undefined, malloc will be invoked
  * directly -- and assumed always to succeed.
- * #define Omit_Private_Memory to omit logic (added Jan. 1998) for making
- * memory allocations from a private pool of memory when possible.
- * When used, the private pool is PRIVATE_MEM bytes long:  2304 bytes,
- * unless #defined to be a different length.  This default length
- * suffices to get rid of MALLOC calls except for unusual cases,
- * such as decimal-to-binary conversion of a very long string of
- * digits.  The longest string dtoa can return is about 751 bytes
- * long.  For conversions by strtod of strings of 800 digits and
- * all dtoa conversions in single-threaded executions with 8-byte
- * pointers, PRIVATE_MEM >= 7400 appears to suffice; with 4-byte
- * pointers, PRIVATE_MEM >= 7112 appears adequate.
  * #define INFNAN_CHECK on IEEE systems to cause strtod to check for
  * Infinity and NaN (case insensitively).  On some systems (e.g.,
  * some HP systems), it may be necessary to #define NAN_WORD0
@@ -131,7 +120,6 @@
 #define Long int
 #define ACQUIRE_DTOA_LOCK(n) /* handled by using jt */
 #define FREE_DTOA_LOCK(n)    /* handled by using jt */
-/* #define Omit_Private_Memory */
 #define PRIVATE_MEM 8000
 
 #ifndef Long
@@ -157,12 +145,10 @@ typedef unsigned Long ULong;
 #include "locale.h"
 #endif
 
-#ifndef Omit_Private_Memory
 #ifndef PRIVATE_MEM
 #define PRIVATE_MEM 2304
 #endif
 #define PRIVATE_mem (long)((PRIVATE_MEM + sizeof(double) - 1) / sizeof(double))
-#endif
 
 #ifdef Bad_float_h
 
@@ -294,25 +280,19 @@ static Bigint *d2a_Balloc
 {
     int x;
     Bigint *rv;
-#ifndef Omit_Private_Memory
     unsigned int len;
-#endif
 
     ACQUIRE_DTOA_LOCK(0);
     if (rv = freelist[k]) {
         freelist[k] = rv->next;
     } else {
         x = 1 << k;
-#ifdef Omit_Private_Memory
-        rv = (Bigint *)MALLOC(sizeof(Bigint) + (x - 1) * sizeof(ULong));
-#else
         len = (sizeof(Bigint) + (x - 1) * sizeof(ULong) + sizeof(double) - 1) / sizeof(double);
         if (pmem_next - private_mem + len <= PRIVATE_mem) {
             rv = (Bigint *)pmem_next;
             pmem_next += len;
         } else
             rv = (Bigint *)MALLOC(len * sizeof(double));
-#endif
         rv->k      = k;
         rv->maxwds = x;
     }
