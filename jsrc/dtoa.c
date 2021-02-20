@@ -34,7 +34,7 @@
  * file.
  */
 
-/* strtod for IEEE-, and VAX-arithmetic machines.
+/* strtod for IEEE-arithmetic machines.
  *
  * This strtod returns a nearest machine number to the input decimal
  * string (or sets errno to ERANGE).  With IEEE arithmetic, ties are
@@ -46,7 +46,7 @@
  *
  * Modifications:
  *
- * 1. We only require IEEE or VAX double-precision
+ * 1. We only require IEEE double-precision
  *  arithmetic (not IEEE double-extended).
  * 2. We get by with floating-point arithmetic in a case that
  *  Clinger missed -- when we're computing d * 10^n
@@ -70,7 +70,6 @@
  * #define IEEE_MC68k for IEEE-arithmetic machines where the most
  * significant byte has the lowest address.
  * #define Long int on machines with 32-bit ints and 64-bit longs.
- * #define VAX for VAX-style floating-point arithmetic (D_floating).
  * #define No_leftright to omit left-right logic in fast floating-point
  * computation of dtoa.
  * #define Honor_FLT_ROUNDS if FLT_ROUNDS can assume the values 2 or 3
@@ -224,8 +223,8 @@ typedef unsigned Long ULong;
 extern "C" {
 #endif
 
-#if defined(IEEE_8087) + defined(IEEE_MC68k) + defined(VAX) != 1
-Exactly one of IEEE_8087, IEEE_MC68k, or VAX should be defined.
+#if defined(IEEE_8087) + defined(IEEE_MC68k) != 1
+Exactly one of IEEE_8087 or IEEE_MC68k should be defined.
 #endif
 
                                               typedef union {
@@ -1259,18 +1258,12 @@ static char *d2a_dtoa
     } else
         *sign = 0;
 
-#if defined(IEEE_Arith) + defined(VAX)
 #ifdef IEEE_Arith
     if ((word0(d) & Exp_mask) == Exp_mask)
-#else
-    if (word0(d) == 0x8000)
-#endif
     {
         /* Infinity or NaN */
         *decpt = 9999;
-#ifdef IEEE_Arith
         if (!word1(d) && !(word0(d) & 0xfffff)) return nrv_alloc("Infinity", rve, 8);
-#endif
         return nrv_alloc("NaN", rve, 3);
     }
 #endif
