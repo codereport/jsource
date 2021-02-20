@@ -117,12 +117,6 @@
  * white space ignored; but if this results in none of the 52
  * fraction bits being on (an IEEE Infinity symbol), then NAN_WORD0
  * and NAN_WORD1 are used instead.
- * #define NO_IEEE_Scale to disable new (Feb. 1997) logic in strtod that
- * avoids underflows on inputs whose result does not underflow.
- * If you #define NO_IEEE_Scale on a machine that uses IEEE-format
- * floating-point numbers and flushes underflows to zero rather
- * than implementing gradual underflow, then you must also #define
- * Sudden_Underflow.
  * #define YES_ALIAS to permit aliasing certain double values with
  * arrays of ULongs.  This leads to slightly better code with
  * some compilers and was always used prior to 19990916, but it
@@ -240,11 +234,9 @@ extern "C" {
 #define Log2P 1
 #define Quick_max 14
 #define Int_max 14
-#ifndef NO_IEEE_Scale
 #define Avoid_Underflow
 #ifdef Flush_Denorm /* debugging option */
 #undef Sudden_Underflow
-#endif
 #endif
 
 extern double rnd_prod(double, double), rnd_quot(double, double);
