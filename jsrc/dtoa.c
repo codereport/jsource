@@ -199,10 +199,6 @@ extern "C" {
 
 extern double rnd_prod(double, double), rnd_quot(double, double);
 
-#ifndef Pack_32
-#define Pack_32
-#endif
-
 #define FFFFFFFF 0xffffffffUL
 
 #ifdef NO_LONG_LONG
@@ -304,9 +300,7 @@ static Bigint *d2a_multadd
     ULLong carry, y;
 #else
     ULong carry, *x, y;
-#ifdef Pack_32
     ULong xi, z;
-#endif
 #endif
     Bigint *b1;
 
@@ -320,17 +314,11 @@ static Bigint *d2a_multadd
         carry = y >> 32;
         *x++  = (ULong)(y & FFFFFFFF);
 #else
-#ifdef Pack_32
         xi = *x;
         y = (xi & 0xffff) * m + carry;
         z = (xi >> 16) * m + (y >> 16);
         carry = z >> 16;
         *x++ = (z << 16) + (y & 0xffff);
-#else
-        y     = *x * m + carry;
-        carry = y >> 16;
-        *x++  = y & 0xffff;
-#endif
 #endif
     } while (++i < wds);
     if (carry) {
@@ -437,9 +425,7 @@ static Bigint *d2a_mult
     ULLong carry, z;
 #else
     ULong carry, z;
-#ifdef Pack_32
     ULong z2;
-#endif
 #endif
 
     if (a->wds < b->wds) {
@@ -474,7 +460,6 @@ static Bigint *d2a_mult
         }
     }
 #else
-#ifdef Pack_32
     for (; xb < xbe; xb++, xc0++) {
         if (y = *xb & 0xffff) {
             x = xa;
@@ -502,21 +487,6 @@ static Bigint *d2a_mult
             *xc = z2;
         }
     }
-#else
-    for (; xb < xbe; xc0++) {
-        if (y = *xb++) {
-            x = xa;
-            xc = xc0;
-            carry = 0;
-            do {
-                z = *x++ * y + *xc + carry;
-                carry = z >> 16;
-                *xc++ = z & 0xffff;
-            } while (x < xae);
-            *xc = carry;
-        }
-    }
-#endif
 #endif
     for (xc0 = c->x, xc = xc0 + wc; wc > 0 && !*--xc; --wc)
         ;
@@ -562,11 +532,7 @@ static Bigint *d2a_lshift
     Bigint *b1;
     ULong *x, *x1, *xe, z;
 
-#ifdef Pack_32
     n = k >> 5;
-#else
-    n = k >> 4;
-#endif
     k1 = b->k;
     n1 = n + b->wds + 1;
     for (i = b->maxwds; n1 > i; i <<= 1) k1++;
@@ -575,7 +541,6 @@ static Bigint *d2a_lshift
     for (i = 0; i < n; i++) *x1++ = 0;
     x  = b->x;
     xe = x + b->wds;
-#ifdef Pack_32
     if (k &= 0x1f) {
         k1 = 32 - k;
         z  = 0;
@@ -585,17 +550,6 @@ static Bigint *d2a_lshift
         } while (x < xe);
         if (*x1 = z) ++n1;
     }
-#else
-    if (k &= 0xf) {
-        k1 = 16 - k;
-        z = 0;
-        do {
-            *x1++ = *x << k & 0xffff | z;
-            z = *x++ >> k1;
-        } while (x < xe);
-        if (*x1 = z) ++n1;
-    }
-#endif
     else
         do *x1++ = *x++;
         while (x < xe);
@@ -638,9 +592,7 @@ static Bigint *d2a_diff
     ULLong borrow, y;
 #else
     ULong borrow, y;
-#ifdef Pack_32
     ULong z;
-#endif
 #endif
 
     i = cmp(a, b);
@@ -679,7 +631,6 @@ static Bigint *d2a_diff
         *xc++  = (ULong)(y & FFFFFFFF);
     }
 #else
-#ifdef Pack_32
     do {
         y = (*xa & 0xffff) - (*xb & 0xffff) - borrow;
         borrow = (y & 0x10000) >> 16;
@@ -692,18 +643,6 @@ static Bigint *d2a_diff
         z = (*xa++ >> 16) - borrow;
         borrow = (z & 0x10000) >> 16;
     }
-#else
-    do {
-        y = *xa++ - *xb++ - borrow;
-        borrow = (y & 0x10000) >> 16;
-        *xc++ = y & 0xffff;
-    } while (xb < xbe);
-    while (xa < xae) {
-        y = *xa++ - borrow;
-        borrow = (y & 0x10000) >> 16;
-        *xc++ = y & 0xffff;
-    }
-#endif
 #endif
     while (!*--xc) wa--;
     c->wds = wa;
@@ -723,11 +662,7 @@ static Bigint *d2a_d2b
 #define d0 word0(d)
 #define d1 word1(d)
 
-#ifdef Pack_32
     b = Balloc(1);
-#else
-    b = Balloc(2);
-#endif
     x = b->x;
 
     z = d0 & Frac_mask;
@@ -737,7 +672,6 @@ static Bigint *d2a_d2b
 #else
     if (de = (int)(d0 >> Exp_shift)) z |= Exp_msk1;
 #endif
-#ifdef Pack_32
     if (y = d1) {
         if (k = lo0bits(&y)) {
             x[0] = y | z << (32 - k);
@@ -760,46 +694,6 @@ static Bigint *d2a_d2b
           b->wds = 1;
         k += 32;
     }
-#else
-    if (y = d1) {
-        if (k = lo0bits(&y))
-            if (k >= 16) {
-                x[0] = y | z << 32 - k & 0xffff;
-                x[1] = z >> k - 16 & 0xffff;
-                x[2] = z >> k;
-                i = 2;
-            } else {
-                x[0] = y & 0xffff;
-                x[1] = y >> 16 | z << 16 - k & 0xffff;
-                x[2] = z >> k & 0xffff;
-                x[3] = z >> k + 16;
-                i = 3;
-            }
-        else {
-            x[0] = y & 0xffff;
-            x[1] = y >> 16;
-            x[2] = z & 0xffff;
-            x[3] = z >> 16;
-            i = 3;
-        }
-    } else {
-#ifdef DEBUG
-        if (!z) Bug("Zero passed to d2b");
-#endif
-        k = lo0bits(&z);
-        if (k >= 16) {
-            x[0] = z;
-            i = 0;
-        } else {
-            x[0] = z & 0xffff;
-            x[1] = z >> 16;
-            i = 1;
-        }
-        k += 32;
-    }
-    while (!x[i]) --i;
-    b->wds = i + 1;
-#endif
 #ifndef Sudden_Underflow
     if (de) {
 #endif
@@ -808,11 +702,7 @@ static Bigint *d2a_d2b
 #ifndef Sudden_Underflow
     } else {
         *e = de - Bias - (P - 1) + 1 + k;
-#ifdef Pack_32
         *bits = 32 * i - hi0bits(x[i - 1]);
-#else
-        *bits = (i + 2) * 16 - hi0bits(x[i]);
-#endif
     }
 #endif
     return b;
@@ -916,9 +806,7 @@ static int quorem
     ULLong borrow, carry, y, ys;
 #else
     ULong borrow, carry, y, ys;
-#ifdef Pack_32
     ULong si, z, zs;
-#endif
 #endif
 
     n = S->wds;
@@ -947,7 +835,6 @@ static int quorem
             borrow = y >> 32 & (ULong)1;
             *bx++  = (ULong)(y & FFFFFFFF);
 #else
-#ifdef Pack_32
             si = *sx++;
             ys = (si & 0xffff) * q + carry;
             zs = (si >> 16) * q + (ys >> 16);
@@ -956,13 +843,6 @@ static int quorem
             borrow = (y & 0x10000) >> 16;
             z = (*bx >> 16) - (zs & 0xffff) - borrow;
             borrow = (z & 0x10000) >> 16;
-#else
-            ys = *sx++ * q + carry;
-            carry = ys >> 16;
-            y = *bx - (ys & 0xffff) - borrow;
-            borrow = (y & 0x10000) >> 16;
-            *bx++ = y & 0xffff;
-#endif
 #endif
         } while (sx <= sxe);
         if (!*bxe) {
@@ -985,7 +865,6 @@ static int quorem
             borrow = y >> 32 & (ULong)1;
             *bx++  = (ULong)(y & FFFFFFFF);
 #else
-#ifdef Pack_32
             si = *sx++;
             ys = (si & 0xffff) + carry;
             zs = (si >> 16) + (ys >> 16);
@@ -994,13 +873,6 @@ static int quorem
             borrow = (y & 0x10000) >> 16;
             z = (*bx >> 16) - (zs & 0xffff) - borrow;
             borrow = (z & 0x10000) >> 16;
-#else
-            ys = *sx++ + carry;
-            carry = ys >> 16;
-            y = *bx - (ys & 0xffff) - borrow;
-            borrow = (y & 0x10000) >> 16;
-            *bx++ = y & 0xffff;
-#endif
 #endif
         } while (sx <= sxe);
         bx  = b->x;
@@ -1425,11 +1297,7 @@ if ((mode < 2 || leftright)) {
  * and for all and pass them and a shift to quorem, so it
  * can do shifts and ors to compute the numerator for q.
  */
-#ifdef Pack_32
 if (i = ((s5 ? 32 - hi0bits(S->x[S->wds - 1]) : 1) + s2) & 0x1f) i = 32 - i;
-#else
-        if (i = ((s5 ? 32 - hi0bits(S->x[S->wds - 1]) : 1) + s2) & 0xf) i = 16 - i;
-#endif
 if (i > 4) {
     i -= 4;
     b2 += i;
