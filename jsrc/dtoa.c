@@ -92,11 +92,6 @@
  * white space ignored; but if this results in none of the 52
  * fraction bits being on (an IEEE Infinity symbol), then NAN_WORD0
  * and NAN_WORD1 are used instead.
- * #define YES_ALIAS to permit aliasing certain double values with
- * arrays of ULongs.  This leads to slightly better code with
- * some compilers and was always used prior to 19990916, but it
- * is not strictly legal and can cause trouble with aggressively
- * optimizing compilers (e.g., gcc 2.95.1 under -O2).
  * #define NO_ERRNO if strtod should not assign errno = ERANGE when
  * the result overflows to +-Infinity or underflows to 0.
  */
@@ -133,15 +128,9 @@ extern "C" {
     unsigned int L[2];
 } U;
 
-#ifdef YES_ALIAS
-#define dval(x) x
-#define word0(x) ((unsigned int*)&x)[1]
-#define word1(x) ((unsigned int*)&x)[0]
-#else
 #define word0(x) ((U *)&x)->L[1]
 #define word1(x) ((U *)&x)->L[0]
 #define dval(x) ((U *)&x)->d
-#endif
 
 #define Exp_shift 20
 #define Exp_shift1 20
