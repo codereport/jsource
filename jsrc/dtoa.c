@@ -78,9 +78,6 @@
  * and strtod and dtoa should round accordingly.
  * #define Check_FLT_ROUNDS if FLT_ROUNDS can assume the values 2 or 3
  * and Honor_FLT_ROUNDS is not #defined.
- * #define RND_PRODQUOT to use rnd_prod and rnd_quot (assembly routines
- * that use extended-precision instructions to compute rounded
- * products and quotients) with IBM.
  * #define ROUND_BIASED for IEEE-format with biased rounding.
  * #define Inaccurate_Divide for IEEE-format with correctly rounded
  * products but inaccurate quotients, e.g., for Intel i860.
@@ -326,10 +323,7 @@ Exactly one of IEEE_8087, IEEE_MC68k, VAX, or IBM should be defined.
 #define ROUND_BIASED
 #endif
 
-#ifdef RND_PRODQUOT
-#else
 extern double rnd_prod(double, double), rnd_quot(double, double);
-#endif
 
 #ifndef Pack_32
 #define Pack_32
