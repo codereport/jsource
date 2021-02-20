@@ -66,8 +66,6 @@
 
 /*
  * #define Long int on machines with 32-bit ints and 64-bit longs.
- * #define No_leftright to omit left-right logic in fast floating-point
- * computation of dtoa.
  * #define Honor_FLT_ROUNDS if FLT_ROUNDS can assume the values 2 or 3
  * and strtod and dtoa should round accordingly.
  * #define Check_FLT_ROUNDS if FLT_ROUNDS can assume the values 2 or 3
@@ -1138,7 +1136,6 @@ if (ilim >= 0 && ilim <= Quick_max && try_quick) {
         if (dval(d) < -dval(eps)) goto no_digits;
         goto fast_failed;
     }
-#ifndef No_leftright
     if (leftright) {
         /* Use Steele & White method of only
          * generating digits needed.
@@ -1155,7 +1152,6 @@ if (ilim >= 0 && ilim <= Quick_max && try_quick) {
             dval(d) *= 10.;
         }
     } else {
-#endif
         /* Generate ilim digits, then fix them up. */
         dval(eps) *= tens[ilim - 1];
         for (i = 1;; i++, dval(d) *= 10.) {
@@ -1174,9 +1170,7 @@ if (ilim >= 0 && ilim <= Quick_max && try_quick) {
                 break;
             }
         }
-#ifndef No_leftright
     }
-#endif
 fast_failed:
     s       = s0;
     dval(d) = dval(d2);
