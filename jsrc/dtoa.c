@@ -118,20 +118,7 @@
 
 #define PRIVATE_mem (long)((PRIVATE_MEM + sizeof(double) - 1) / sizeof(double))
 
-#ifdef Bad_float_h
-
-#define DBL_DIG 15
-#define DBL_MAX_10_EXP 308
-#define DBL_MAX_EXP 1024
-#define FLT_RADIX 2
-
-#ifndef LONG_MAX
-#define LONG_MAX 2147483647
-#endif
-
-#else /* ifndef Bad_float_h */
 #include "float.h"
-#endif /* Bad_float_h */
 
 #ifndef __MATH_H__
 #include "math.h"
