@@ -193,9 +193,6 @@ extern "C" {
 #define Log2P 1
 #define Quick_max 14
 #define Int_max 14
-#ifdef Flush_Denorm /* debugging option */
-#undef Sudden_Underflow
-#endif
 
 extern double rnd_prod(double, double), rnd_quot(double, double);
 
