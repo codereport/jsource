@@ -77,8 +77,6 @@
  * if memory is available and otherwise does something you deem
  * appropriate.  If MALLOC is undefined, malloc will be invoked
  * directly -- and assumed always to succeed.
- * #define NO_ERRNO if strtod should not assign errno = ERANGE when
- * the result overflows to +-Infinity or underflows to 0.
  */
 
 /* Options for use with J */
