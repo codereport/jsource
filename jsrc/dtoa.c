@@ -65,7 +65,6 @@
  */
 
 /*
- * #define Long int on machines with 32-bit ints and 64-bit longs.
  * #define Honor_FLT_ROUNDS if FLT_ROUNDS can assume the values 2 or 3
  * and strtod and dtoa should round accordingly.
  * #define Check_FLT_ROUNDS if FLT_ROUNDS can assume the values 2 or 3
@@ -104,13 +103,12 @@
  */
 
 /* Options for use with J */
-#define Long int
 #define ACQUIRE_DTOA_LOCK(n) /* handled by using jt */
 #define FREE_DTOA_LOCK(n)    /* handled by using jt */
 #define PRIVATE_MEM 8000
 
 #ifndef ULong
-typedef unsigned Long ULong;
+typedef unsigned int ULong;
 #endif
 
 #ifdef DEBUG
@@ -278,7 +276,7 @@ static void d2a_Bfree
     }
 }
 
-#define Bcopy(x, y) memcpy((char *)&x->sign, (char *)&y->sign, y->wds * sizeof(Long) + 2 * sizeof(int))
+#define Bcopy(x, y) memcpy((char *)&x->sign, (char *)&y->sign, y->wds * sizeof(int) + 2 * sizeof(int))
 
 static Bigint *d2a_multadd
  (struct dtoa_info *d2a, Bigint *b, int m, int a) /* multiply by m and add a */
@@ -914,7 +912,7 @@ d2a_nrv_alloc(struct dtoa_info *d2a, char *s, char **rve, int n)
  *    guarantee that the floating-point calculation has given
  *    the correctly rounded result.  For k requested digits and
  *    "uniformly" distributed input, the probability is
- *    something like 10^(k-15) that we must resort to the Long
+ *    something like 10^(k-15) that we must resort to the int
  *    calculation.
  */
 
@@ -957,7 +955,7 @@ static char *d2a_dtoa
 
     int bbits, b2, b5, be, dig, i, ieps, ilim, ilim0, ilim1, j, j1, k, k0, k_check, leftright, m2, m5, s2, s5,
       spec_case, try_quick;
-    Long L;
+    int L;
     int denorm;
     ULong x;
     Bigint *b, *b1, *delta, *mlo, *mhi, *S;
@@ -1136,7 +1134,7 @@ if (ilim >= 0 && ilim <= Quick_max && try_quick) {
          */
         dval(eps) = 0.5 / tens[ilim - 1] - dval(eps);
         for (i = 0;;) {
-            L = (Long)dval(d);
+            L = (int)dval(d);
             dval(d) -= L;
             *s++ = '0' + (int)L;
             if (dval(d) < dval(eps)) goto ret1;
@@ -1149,7 +1147,7 @@ if (ilim >= 0 && ilim <= Quick_max && try_quick) {
         /* Generate ilim digits, then fix them up. */
         dval(eps) *= tens[ilim - 1];
         for (i = 1;; i++, dval(d) *= 10.) {
-            L = (Long)(dval(d));
+            L = (int)(dval(d));
             if (!(dval(d) -= L)) ilim = i;
             *s++ = '0' + (int)L;
             if (i == ilim) {
@@ -1183,7 +1181,7 @@ if (be >= 0 && k <= Int_max) {
         goto one_digit;
     }
     for (i = 1;; i++, dval(d) *= 10.) {
-        L = (Long)(dval(d) / ds);
+        L = (int)(dval(d) / ds);
         dval(d) -= L * ds;
         *s++ = '0' + (int)L;
         if (!dval(d)) {
