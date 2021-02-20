@@ -86,7 +86,7 @@ jttks(J jt, array a, array w) { // take_sparse
     else
         x = SPA(wp, x);
     
-    // TODO: rename b when we figure out what it is doing
+    // TODO: rename c when we figure out what it is doing
     if (auto const c = std::mismatch(u, u + m, s).first != u + m; c) {
         A j;
         C *xv, *yv;
