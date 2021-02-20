@@ -184,18 +184,14 @@ typedef unsigned Long ULong;
 #define PRIVATE_mem (long)((PRIVATE_MEM + sizeof(double) - 1) / sizeof(double))
 #endif
 
-#undef IEEE_Arith
 #undef Avoid_Underflow
-#define IEEE_Arith
 
 #ifdef Bad_float_h
 
-#ifdef IEEE_Arith
 #define DBL_DIG 15
 #define DBL_MAX_10_EXP 308
 #define DBL_MAX_EXP 1024
 #define FLT_RADIX 2
-#endif /*IEEE_Arith*/
 
 #ifndef LONG_MAX
 #define LONG_MAX 2147483647
@@ -228,7 +224,6 @@ extern "C" {
 #define dval(x) ((U *)&x)->d
 #endif
 
-#ifdef IEEE_Arith
 #define Exp_shift 20
 #define Exp_shift1 20
 #define Exp_msk1 0x100000
@@ -250,32 +245,6 @@ extern "C" {
 #ifdef Flush_Denorm /* debugging option */
 #undef Sudden_Underflow
 #endif
-#endif
-
-#else /* ifndef IEEE_Arith */
-#undef SET_INEXACT
-#undef Sudden_Underflow
-#define Sudden_Underflow
-#define Exp_shift 23
-#define Exp_shift1 7
-#define Exp_msk1 0x80
-#define Exp_mask 0x7f80
-#define P 56
-#define Bias 129
-#define Exp_11 0x4080
-#define Frac_mask 0x7fffff
-#define Frac_mask1 0xffff007f
-#define Ten_pmax 24
-#define Bletch 2
-#define Bndry_mask 0xffff007f
-#define Sign_bit 0x8000
-#define Log2P 1
-#define Quick_max 15
-#define Int_max 15
-#endif /* IEEE_Arith */
-
-#ifndef IEEE_Arith
-#define ROUND_BIASED
 #endif
 
 extern double rnd_prod(double, double), rnd_quot(double, double);
@@ -919,7 +888,6 @@ static const double tens[] = {1e0,  1e1,  1e2,  1e3,  1e4,  1e5,  1e6,  1e7,  1e
                                  1e12, 1e13, 1e14, 1e15, 1e16, 1e17, 1e18, 1e19, 1e20, 1e21, 1e22};
 
 static const double
-#ifdef IEEE_Arith
   bigtens[]                       = {1e16, 1e32, 1e64, 1e128, 1e256};
 static const double tinytens[] = {1e-16,
                                      1e-32,
@@ -935,15 +903,6 @@ static const double tinytens[] = {1e-16,
 /* The factor of 2^53 in tinytens[4] helps us avoid setting the underflow */
 /* flag unnecessarily.  It leads to a song and dance at the end of strtod. */
 #define n_bigtens 5
-#else
-  bigtens[] = {1e16, 1e32};
-static const double tinytens[] = {1e-16, 1e-32};
-#define n_bigtens 2
-#endif
-
-#ifndef IEEE_Arith
-#undef INFNAN_CHECK
-#endif
 
 #ifdef INFNAN_CHECK
 
@@ -1234,7 +1193,6 @@ static char *d2a_dtoa
     } else
         *sign = 0;
 
-#ifdef IEEE_Arith
     if ((word0(d) & Exp_mask) == Exp_mask)
     {
         /* Infinity or NaN */
@@ -1242,7 +1200,6 @@ static char *d2a_dtoa
         if (!word1(d) && !(word0(d) & 0xfffff)) return nrv_alloc("Infinity", rve, 8);
         return nrv_alloc("NaN", rve, 3);
     }
-#endif
     if (!dval(d)) {
         *decpt = 1;
         return nrv_alloc("0", rve, 1);
