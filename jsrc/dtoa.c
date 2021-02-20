@@ -65,8 +65,6 @@
  */
 
 /*
- * #define IEEE_8087 for IEEE-arithmetic machines where the least
- * significant byte has the lowest address.
  * #define Long int on machines with 32-bit ints and 64-bit longs.
  * #define No_leftright to omit left-right logic in fast floating-point
  * computation of dtoa.
@@ -151,7 +149,6 @@
 
 /* Options for use with J */
 #define Long int
-#define IEEE_8087
 #define ACQUIRE_DTOA_LOCK(n) /* handled by using jt */
 #define FREE_DTOA_LOCK(n)    /* handled by using jt */
 /* #define Omit_Private_Memory */
@@ -189,9 +186,7 @@ typedef unsigned Long ULong;
 
 #undef IEEE_Arith
 #undef Avoid_Underflow
-#ifdef IEEE_8087
 #define IEEE_Arith
-#endif
 
 #ifdef Bad_float_h
 
@@ -218,10 +213,6 @@ typedef unsigned Long ULong;
 extern "C" {
 #endif
 
-#if defined(IEEE_8087) != 1
-Exactly one of IEEE_8087 should be defined.
-#endif
-
                                               typedef union {
     double d;
     ULong L[2];
@@ -229,21 +220,11 @@ Exactly one of IEEE_8087 should be defined.
 
 #ifdef YES_ALIAS
 #define dval(x) x
-#ifdef IEEE_8087
 #define word0(x) ((ULong *)&x)[1]
 #define word1(x) ((ULong *)&x)[0]
 #else
-#define word0(x) ((ULong *)&x)[0]
-#define word1(x) ((ULong *)&x)[1]
-#endif
-#else
-#ifdef IEEE_8087
 #define word0(x) ((U *)&x)->L[1]
 #define word1(x) ((U *)&x)->L[0]
-#else
-#define word0(x) ((U *)&x)->L[0]
-#define word1(x) ((U *)&x)->L[1]
-#endif
 #define dval(x) ((U *)&x)->d
 #endif
 
