@@ -461,14 +461,14 @@ C* _stdcall JGetR(J jt) {
 
 /* socket protocol CMDGET name */
 // Return the binary rep of the given name
-// We MALLOC a return block so that we don't lose J memory.  We reuse the block for successive calls, or maybe free it,
+// We malloc a return block so that we don't lose J memory.  We reuse the block for successive calls, or maybe free it,
 // so the user must save it before re-calling.  This is a kludge - the user should pass in the address/length of the
 // block to use - but it preserves the interface If the pointer to the name is NULL we just free the block
 A _stdcall JGetA(J jt, I n, C* name) {
     A x, z = 0;
     if (name == 0) {
         if (jt->iomalloc) {
-            FREE(jt->iomalloc);
+            free(jt->iomalloc);
             jt->malloctotal -= jt->iomalloclen;
             jt->iomalloc    = 0;
             jt->iomalloclen = 0;
@@ -484,18 +484,18 @@ A _stdcall JGetA(J jt, I n, C* name) {
     } else {
         // name is OK; get the binary rep
         if (z = jtbinrep1(jt, x)) {
-            // bin rep was found.  Transfer it to MALLOC memory.  It is a LIT array
+            // bin rep was found.  Transfer it to malloc memory.  It is a LIT array
             // we transfer the whole thing, header and all.  Fortunately it is relocatable
             I replen = &CAV(z)[AN(z)] - (C*)z;  // length from start of z to end+1 of data
             // See if we can reuse the block.  We can, if it is big enough.  But if it is twice as big as the return
             // value, don't.  Watch for overflow!
             if (jt->iomalloc && (jt->iomalloclen < replen || (jt->iomalloclen >> 1) > replen)) {
-                FREE(jt->iomalloc);
+                free(jt->iomalloc);
                 jt->malloctotal -= jt->iomalloclen;
                 jt->iomalloc = 0;
             }  // free block if not reusable
             if (!jt->iomalloc) {
-                if (jt->iomalloc = MALLOC(replen)) {
+                if (jt->iomalloc = malloc(replen)) {
                     jt->malloctotal += replen;
                     jt->iomalloclen = replen;
                 }
@@ -511,7 +511,7 @@ A _stdcall JGetA(J jt, I n, C* name) {
             }  // if unable to allocate, return error and indicate block is empty
         }
     }
-    // z has the result, which is in MALLOC memory if it exists.  Free any J memory we used
+    // z has the result, which is in malloc memory if it exists.  Free any J memory we used
     jttpop(jt, old);
     return z;  // return the allocated (or reused) area
 }
@@ -590,13 +590,13 @@ void _stdcall JSMX(J jt, void* out, void* wd, void* in, void* poll, I opts) {
 C* _stdcall JGetLocale(J jt) {
     A* old = jt->tnextpushp;  // set free-back-to point
     if (jt->iomalloc) {
-        FREE(jt->iomalloc);
+        free(jt->iomalloc);
         jt->malloctotal -= jt->iomalloclen;
         jt->iomalloc    = 0;
         jt->iomalloclen = 0;
     }                      // free old block if any
     C* z = getlocale(jt);  // get address of string to return
-    if (jt->iomalloc = MALLOC(1 + strlen(z))) {
+    if (jt->iomalloc = malloc(1 + strlen(z))) {
         jt->malloctotal += 1 + strlen(z);
         jt->iomalloclen = 1 + strlen(z);
         strcpy(jt->iomalloc, z);
@@ -645,7 +645,7 @@ jsto(J jt, I type, C* s) {
         }  // JFE output
         // lazy - malloc failure will crash and should alloc larger when full
         if (!jt->capture) {
-            jt->capture    = MALLOC(capturesize);
+            jt->capture    = malloc(capturesize);
             jt->capture[0] = 0;
         }
         if (capturesize > 2 + strlen(jt->capture) + strlen(s))

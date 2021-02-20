@@ -3,9 +3,6 @@
 /*                                                                         */
 /* Memory Management                                                       */
 
-#define FREE(a) free(a)
-#define MALLOC(n) malloc(n)
-
 // **** main blocks are managed by allocating 16 bits for all blocks, free or allocated
 // when the block is on the free list, AK is a chain pointer
 
