@@ -232,10 +232,6 @@ static double private_mem[PRIVATE_mem], *pmem_next = private_mem;
 extern "C" {
 #endif
 
-#ifndef CONSTANT
-#define CONSTANT const
-#endif
-
 #if defined(IEEE_8087) + defined(IEEE_MC68k) + defined(VAX) + defined(IBM) != 1
 Exactly one of IEEE_8087, IEEE_MC68k, VAX, or IBM should be defined.
 #endif
@@ -987,13 +983,13 @@ static Bigint *d2a_d2b
 #undef d0
 #undef d1
 
-static CONSTANT double tens[] = {1e0,  1e1,  1e2,  1e3,  1e4,  1e5,  1e6,  1e7,  1e8,  1e9,  1e10, 1e11,
+static const double tens[] = {1e0,  1e1,  1e2,  1e3,  1e4,  1e5,  1e6,  1e7,  1e8,  1e9,  1e10, 1e11,
                                  1e12, 1e13, 1e14, 1e15, 1e16, 1e17, 1e18, 1e19, 1e20, 1e21, 1e22};
 
-static CONSTANT double
+static const double
 #ifdef IEEE_Arith
   bigtens[]                       = {1e16, 1e32, 1e64, 1e128, 1e256};
-static CONSTANT double tinytens[] = {1e-16,
+static const double tinytens[] = {1e-16,
                                      1e-32,
                                      1e-64,
                                      1e-128,
@@ -1010,11 +1006,11 @@ static CONSTANT double tinytens[] = {1e-16,
 #else
 #ifdef IBM
   bigtens[] = {1e16, 1e32, 1e64};
-static CONSTANT double tinytens[] = {1e-16, 1e-32, 1e-64};
+static const double tinytens[] = {1e-16, 1e-32, 1e-64};
 #define n_bigtens 3
 #else
   bigtens[] = {1e16, 1e32};
-static CONSTANT double tinytens[] = {1e-16, 1e-32};
+static const double tinytens[] = {1e-16, 1e-32};
 #define n_bigtens 2
 #endif
 #endif
@@ -1034,10 +1030,10 @@ static CONSTANT double tinytens[] = {1e-16, 1e-32};
 #endif
 
 static int match
- (CONSTANT char **sp, char *t)
+ (const char **sp, char *t)
 {
     int c, d;
-    CONSTANT char *s = *sp;
+    const char *s = *sp;
 
     while (d = *t++) {
         if ((c = *++s) >= 'A' && c <= 'Z') c += 'a' - 'A';
@@ -1049,17 +1045,17 @@ static int match
 
 #ifndef No_Hex_NaN
 static void hexnan
- (double *rvp, CONSTANT char **sp)
+ (double *rvp, const char **sp)
 {
     ULong c, x[2];
-    CONSTANT char *s;
+    const char *s;
     int havedig, udx0, xshift;
 
     x[0] = x[1] = 0;
     havedig = xshift = 0;
     udx0             = 1;
     s                = *sp;
-    while (c = *(CONSTANT unsigned char *)++s) {
+    while (c = *(const unsigned char *)++s) {
         if (c >= '0' && c <= '9')
             c -= '0';
         else if (c >= 'a' && c <= 'f')
