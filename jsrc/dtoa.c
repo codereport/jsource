@@ -72,7 +72,6 @@
  * and strtod and dtoa should round accordingly.
  * #define Check_FLT_ROUNDS if FLT_ROUNDS can assume the values 2 or 3
  * and Honor_FLT_ROUNDS is not #defined.
- * #define ROUND_BIASED for IEEE-format with biased rounding.
  * #define Inaccurate_Divide for IEEE-format with correctly rounded
  * products but inaccurate quotients, e.g., for Intel i860.
  * #define NO_LONG_LONG on machines that do not have a "long long"
@@ -1505,18 +1504,14 @@ if (leftright) {
         delta = diff(S, mhi);
         j1    = delta->sign ? 1 : cmp(b, delta);
         Bfree(delta);
-#ifndef ROUND_BIASED
         if (j1 == 0 && mode != 1 && !(word1(d) & 1)) {
             if (dig == '9') goto round_9_up;
             if (j > 0) dig++;
             *s++ = dig;
             goto ret;
         }
-#endif
         if (j < 0 || j == 0 && mode != 1
-#ifndef ROUND_BIASED
                        && !(word1(d) & 1)
-#endif
         ) {
             if (!b->x[0] && b->wds <= 1) {
                 goto accept_dig;
