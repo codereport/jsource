@@ -46,7 +46,6 @@ lcg(I n, I* v, I seed) {
 #define GBN 56
 
 #define mod_diff(x, y) (((x) - (y)) & 0x7fffffffL) /* difference modulo 2^31 */
-#define two_to_the_31 (0x80000000L)
 
 static UI
 jtgb_flip_cycle(J jt) {
