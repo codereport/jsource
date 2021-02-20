@@ -76,16 +76,6 @@
  * products but inaccurate quotients, e.g., for Intel i860.
  * #define NO_LONG_LONG on machines that do not have a "long long"
  * integer type (of >= 64 bits).  On such machines, you can
- * #define Just_16 to store 16 bits per 32-bit Long when doing
- * high-precision integer arithmetic.  Whether this speeds things
- * up or slows things down depends on the machine and the number
- * being converted.  If long long is available and the name is
- * something other than "long long", #define Llong to be the name,
- * and if "unsigned Llong" does not work as an unsigned version of
- * Llong, #define #ULLong to be the corresponding unsigned type.
- * #define Bad_float_h if your system lacks a float.h or if it does not
- * define some or all of DBL_DIG, DBL_MAX_10_EXP, DBL_MAX_EXP,
- * FLT_RADIX, FLT_ROUNDS, and DBL_MAX.
  * #define MALLOC your_malloc, where your_malloc(n) acts like malloc(n)
  * if memory is available and otherwise does something you deem
  * appropriate.  If MALLOC is undefined, malloc will be invoked
@@ -217,14 +207,6 @@ extern double rnd_prod(double, double), rnd_quot(double, double);
 
 #ifdef NO_LONG_LONG
 #undef ULLong
-#ifdef Just_16
-#undef Pack_32
-/* When Pack_32 is not defined, we store 16 bits per 32-bit Long.
- * This makes some inner loops simpler and sometimes saves work
- * during multiplications, but it often seems to make things slightly
- * slower.  Hence the default is now to store 32 bits per Long.
- */
-#endif
 #else /* long long available */
 #ifndef Llong
 #define Llong long long
