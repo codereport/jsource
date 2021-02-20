@@ -97,7 +97,6 @@
  * some compilers and was always used prior to 19990916, but it
  * is not strictly legal and can cause trouble with aggressively
  * optimizing compilers (e.g., gcc 2.95.1 under -O2).
- * #define USE_LOCALE to use the current locale's decimal_point value.
  * #define NO_ERRNO if strtod should not assign errno = ERANGE when
  * the result overflows to +-Infinity or underflows to 0.
  */
@@ -116,10 +115,6 @@
 
 #include "stdlib.h"
 #include "string.h"
-
-#ifdef USE_LOCALE
-#include "locale.h"
-#endif
 
 #define PRIVATE_mem (long)((PRIVATE_MEM + sizeof(double) - 1) / sizeof(double))
 
