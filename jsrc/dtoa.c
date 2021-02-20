@@ -91,7 +91,7 @@
 extern "C" {
 #endif
 
-                                              typedef union {
+typedef union {
     double d;
     unsigned int L[2];
 } U;
@@ -131,8 +131,7 @@ typedef struct Bigint Bigint;
 #define HAVE_BIGINT
 #include "dtoa.h"
 
-  static void *
-  d2a_Malloc(struct dtoa_info * d2a, int k);
+static void *d2a_Malloc(struct dtoa_info *d2a, int k);
 static Bigint *d2a_Balloc(struct dtoa_info *d2a, int k);
 static void d2a_Bfree(struct dtoa_info *d2a, Bigint *v);
 
@@ -154,9 +153,8 @@ static void d2a_Bfree(struct dtoa_info *d2a, Bigint *v);
 #define diff(x, y) d2a_diff(d2a, x, y)
 #define lshift(x, y) d2a_lshift(d2a, x, y)
 
-static Bigint *d2a_Balloc
- (struct dtoa_info *d2a, int k)
-{
+static Bigint *
+d2a_Balloc(struct dtoa_info *d2a, int k) {
     int x;
     Bigint *rv;
     unsigned int len;
@@ -164,7 +162,7 @@ static Bigint *d2a_Balloc
     if (rv = freelist[k]) {
         freelist[k] = rv->next;
     } else {
-        x = 1 << k;
+        x   = 1 << k;
         len = (sizeof(Bigint) + (x - 1) * sizeof(unsigned int) + sizeof(double) - 1) / sizeof(double);
         if (pmem_next - private_mem + len <= PRIVATE_mem) {
             rv = (Bigint *)pmem_next;
@@ -178,9 +176,8 @@ static Bigint *d2a_Balloc
     return rv;
 }
 
-static void d2a_Bfree
- (struct dtoa_info *d2a, Bigint *v)
-{
+static void
+d2a_Bfree(struct dtoa_info *d2a, Bigint *v) {
     if (v) {
         v->next        = freelist[v->k];
         freelist[v->k] = v;
@@ -189,8 +186,8 @@ static void d2a_Bfree
 
 #define Bcopy(x, y) memcpy((char *)&x->sign, (char *)&y->sign, y->wds * sizeof(int) + 2 * sizeof(int))
 
-static Bigint *d2a_multadd
- (struct dtoa_info *d2a, Bigint *b, int m, int a) /* multiply by m and add a */
+static Bigint *
+d2a_multadd(struct dtoa_info *d2a, Bigint *b, int m, int a) /* multiply by m and add a */
 {
     int i, wds;
     unsigned int *x;
@@ -219,9 +216,8 @@ static Bigint *d2a_multadd
     return b;
 }
 
-static int hi0bits
- (register unsigned int x)
-{
+static int
+hi0bits(register unsigned int x) {
     register int k = 0;
 
     if (!(x & 0xffff0000)) {
@@ -247,9 +243,8 @@ static int hi0bits
     return k;
 }
 
-static int lo0bits
- (unsigned int *y)
-{
+static int
+lo0bits(unsigned int *y) {
     register int k;
     register unsigned int x = *y;
 
@@ -288,9 +283,8 @@ static int lo0bits
     return k;
 }
 
-static Bigint *d2a_i2b
- (struct dtoa_info *d2a, int i)
-{
+static Bigint *
+d2a_i2b(struct dtoa_info *d2a, int i) {
     Bigint *b;
 
     b       = Balloc(1);
@@ -299,9 +293,8 @@ static Bigint *d2a_i2b
     return b;
 }
 
-static Bigint *d2a_mult
- (struct dtoa_info *d2a, Bigint *a, Bigint *b)
-{
+static Bigint *
+d2a_mult(struct dtoa_info *d2a, Bigint *a, Bigint *b) {
     Bigint *c;
     int k, wa, wb, wc;
     unsigned int *x, *xa, *xae, *xb, *xbe, *xc, *xc0;
@@ -344,9 +337,8 @@ static Bigint *d2a_mult
     return c;
 }
 
-static Bigint *d2a_pow5mult
- (struct dtoa_info *d2a, Bigint *b, int k)
-{
+static Bigint *
+d2a_pow5mult(struct dtoa_info *d2a, Bigint *b, int k) {
     Bigint *b1, *p5, *p51;
     int i;
     static const int p05[3] = {5, 25, 125};
@@ -375,14 +367,13 @@ static Bigint *d2a_pow5mult
     return b;
 }
 
-static Bigint *d2a_lshift
- (struct dtoa_info *d2a, Bigint *b, int k)
-{
+static Bigint *
+d2a_lshift(struct dtoa_info *d2a, Bigint *b, int k) {
     int i, k1, n, n1;
     Bigint *b1;
     unsigned int *x, *x1, *xe, z;
 
-    n = k >> 5;
+    n  = k >> 5;
     k1 = b->k;
     n1 = n + b->wds + 1;
     for (i = b->maxwds; n1 > i; i <<= 1) k1++;
@@ -399,8 +390,7 @@ static Bigint *d2a_lshift
             z     = *x++ >> k1;
         } while (x < xe);
         if (*x1 = z) ++n1;
-    }
-    else
+    } else
         do *x1++ = *x++;
         while (x < xe);
     b1->wds = n1 - 1;
@@ -408,9 +398,8 @@ static Bigint *d2a_lshift
     return b1;
 }
 
-static int cmp
- (Bigint *a, Bigint *b)
-{
+static int
+cmp(Bigint *a, Bigint *b) {
     unsigned int *xa, *xa0, *xb, *xb0;
     int i, j;
 
@@ -432,9 +421,8 @@ static int cmp
     return 0;
 }
 
-static Bigint *d2a_diff
- (struct dtoa_info *d2a, Bigint *a, Bigint *b)
-{
+static Bigint *
+d2a_diff(struct dtoa_info *d2a, Bigint *a, Bigint *b) {
     Bigint *c;
     int i, wa, wb;
     unsigned int *xa, *xae, *xb, *xbe, *xc;
@@ -479,9 +467,8 @@ static Bigint *d2a_diff
     return c;
 }
 
-static Bigint *d2a_d2b
- (struct dtoa_info *d2a, double d, int *e, int *bits)
-{
+static Bigint *
+d2a_d2b(struct dtoa_info *d2a, double d, int *e, int *bits) {
     Bigint *b;
     int de, k;
     unsigned int *x, y, z;
@@ -519,10 +506,10 @@ static Bigint *d2a_d2b
         k += 32;
     }
     if (de) {
-    *e = de - Bias - (P - 1) + k;
-    *bits = P - k;
+        *e    = de - Bias - (P - 1) + k;
+        *bits = P - k;
     } else {
-        *e = de - Bias - (P - 1) + 1 + k;
+        *e    = de - Bias - (P - 1) + 1 + k;
         *bits = 32 * i - hi0bits(x[i - 1]);
     }
     return b;
@@ -531,24 +518,19 @@ static Bigint *d2a_d2b
 #undef d1
 
 static const double tens[] = {1e0,  1e1,  1e2,  1e3,  1e4,  1e5,  1e6,  1e7,  1e8,  1e9,  1e10, 1e11,
-                                 1e12, 1e13, 1e14, 1e15, 1e16, 1e17, 1e18, 1e19, 1e20, 1e21, 1e22};
+                              1e12, 1e13, 1e14, 1e15, 1e16, 1e17, 1e18, 1e19, 1e20, 1e21, 1e22};
 
-static const double
-  bigtens[]                       = {1e16, 1e32, 1e64, 1e128, 1e256};
-static const double tinytens[] = {1e-16,
-                                     1e-32,
-                                     1e-64,
-                                     1e-128,
-                                     9007199254740992. * 9007199254740992.e-256
-/* = 2^106 * 1e-53 */
+static const double bigtens[]  = {1e16, 1e32, 1e64, 1e128, 1e256};
+static const double tinytens[] = {
+  1e-16, 1e-32, 1e-64, 1e-128, 9007199254740992. * 9007199254740992.e-256
+  /* = 2^106 * 1e-53 */
 };
 /* The factor of 2^53 in tinytens[4] helps us avoid setting the underflow */
 /* flag unnecessarily.  It leads to a song and dance at the end of strtod. */
 #define n_bigtens 5
 
-static int quorem
- (Bigint *b, Bigint *S)
-{
+static int
+quorem(Bigint *b, Bigint *S) {
     int n;
     unsigned int *bx, *bxe, q, *sx, *sxe;
     unsigned long long borrow, carry, y, ys;
@@ -616,8 +598,7 @@ d2a_rv_alloc(struct dtoa_info *d2a, int i)
 }
 
 static char *
-d2a_nrv_alloc(struct dtoa_info *d2a, char *s, char **rve, int n)
-{
+d2a_nrv_alloc(struct dtoa_info *d2a, char *s, char **rve, int n) {
     char *rv, *t;
 
     t = rv = rv_alloc(n);
@@ -661,9 +642,8 @@ d2a_nrv_alloc(struct dtoa_info *d2a, char *s, char **rve, int n)
  *    calculation.
  */
 
-static char *d2a_dtoa
- (struct dtoa_info *d2a, double d, int mode, int ndigits, int *decpt, int *sign, char **rve)
-{
+static char *
+d2a_dtoa(struct dtoa_info *d2a, double d, int mode, int ndigits, int *decpt, int *sign, char **rve) {
     /* Arguments ndigits, decpt, sign are similar to those
     of ecvt and fcvt; trailing zeros are suppressed from
     the returned string.  If not null, *rve is set to point
@@ -711,8 +691,7 @@ static char *d2a_dtoa
     } else
         *sign = 0;
 
-    if ((word0(d) & Exp_mask) == Exp_mask)
-    {
+    if ((word0(d) & Exp_mask) == Exp_mask) {
         /* Infinity or NaN */
         *decpt = 9999;
         if (!word1(d) && !(word0(d) & 0xfffff)) return nrv_alloc("Infinity", rve, 8);
@@ -725,417 +704,405 @@ static char *d2a_dtoa
 
     b = d2b(dval(d), &be, &bbits);
     if (i = (int)(word0(d) >> Exp_shift1 & (Exp_mask >> Exp_shift1))) {
-    dval(d2) = dval(d);
-    word0(d2) &= Frac_mask1;
-    word0(d2) |= Exp_11;
+        dval(d2) = dval(d);
+        word0(d2) &= Frac_mask1;
+        word0(d2) |= Exp_11;
 
-    /* log(x) ~=~ log(1.5) + (x-1.5)/1.5
-     * log10(x)  =  log(x) / log(10)
-     *  ~=~ log(1.5)/log(10) + (x-1.5)/(1.5*log(10))
-     * log10(d) = (i-Bias)*log(2)/log(10) + log10(d2)
-     *
-     * This suggests computing an approximation k to log10(d) by
-     *
-     * k = (i - Bias)*0.301029995663981
-     * + ( (d2-1.5)*0.289529654602168 + 0.176091259055681 );
-     *
-     * We want k to be too large rather than too small.
-     * The error in the first-order Taylor series approximation
-     * is in our favor, so we just round up the constant enough
-     * to compensate for any error in the multiplication of
-     * (i - Bias) by 0.301029995663981; since |i - Bias| <= 1077,
-     * and 1077 * 0.30103 * 2^-52 ~=~ 7.2e-14,
-     * adding 1e-13 to the constant term more than suffices.
-     * Hence we adjust the constant term to 0.1760912590558.
-     * (We could get a more accurate k by invoking log10,
-     *  but this is probably not worthwhile.)
-     */
+        /* log(x) ~=~ log(1.5) + (x-1.5)/1.5
+         * log10(x)  =  log(x) / log(10)
+         *  ~=~ log(1.5)/log(10) + (x-1.5)/(1.5*log(10))
+         * log10(d) = (i-Bias)*log(2)/log(10) + log10(d2)
+         *
+         * This suggests computing an approximation k to log10(d) by
+         *
+         * k = (i - Bias)*0.301029995663981
+         * + ( (d2-1.5)*0.289529654602168 + 0.176091259055681 );
+         *
+         * We want k to be too large rather than too small.
+         * The error in the first-order Taylor series approximation
+         * is in our favor, so we just round up the constant enough
+         * to compensate for any error in the multiplication of
+         * (i - Bias) by 0.301029995663981; since |i - Bias| <= 1077,
+         * and 1077 * 0.30103 * 2^-52 ~=~ 7.2e-14,
+         * adding 1e-13 to the constant term more than suffices.
+         * Hence we adjust the constant term to 0.1760912590558.
+         * (We could get a more accurate k by invoking log10,
+         *  but this is probably not worthwhile.)
+         */
 
-    i -= Bias;
-    denorm = 0;
-}
-else {
-    /* d is denormalized */
+        i -= Bias;
+        denorm = 0;
+    } else {
+        /* d is denormalized */
 
-    i        = bbits + be + (Bias + (P - 1) - 1);
-    x        = i > 32 ? word0(d) << (64 - i) | word1(d) >> (i - 32) : word1(d) << (32 - i);
-    dval(d2) = x;
-    word0(d2) -= 31 * Exp_msk1; /* adjust exponent */
-    i -= (Bias + (P - 1) - 1) + 1;
-    denorm = 1;
-}
-ds = (dval(d2) - 1.5) * 0.289529654602168 + 0.1760912590558 + i * 0.301029995663981;
-k  = (int)ds;
-if (ds < 0. && ds != k) k--; /* want k = floor(ds) */
-k_check = 1;
-if (k >= 0 && k <= Ten_pmax) {
-    if (dval(d) < tens[k]) k--;
-    k_check = 0;
-}
-j = bbits - i - 1;
-if (j >= 0) {
-    b2 = 0;
-    s2 = j;
-} else {
-    b2 = -j;
-    s2 = 0;
-}
-if (k >= 0) {
-    b5 = 0;
-    s5 = k;
-    s2 += k;
-} else {
-    b2 -= k;
-    b5 = -k;
-    s5 = 0;
-}
-if (mode < 0 || mode > 9) mode = 0;
+        i        = bbits + be + (Bias + (P - 1) - 1);
+        x        = i > 32 ? word0(d) << (64 - i) | word1(d) >> (i - 32) : word1(d) << (32 - i);
+        dval(d2) = x;
+        word0(d2) -= 31 * Exp_msk1; /* adjust exponent */
+        i -= (Bias + (P - 1) - 1) + 1;
+        denorm = 1;
+    }
+    ds = (dval(d2) - 1.5) * 0.289529654602168 + 0.1760912590558 + i * 0.301029995663981;
+    k  = (int)ds;
+    if (ds < 0. && ds != k) k--; /* want k = floor(ds) */
+    k_check = 1;
+    if (k >= 0 && k <= Ten_pmax) {
+        if (dval(d) < tens[k]) k--;
+        k_check = 0;
+    }
+    j = bbits - i - 1;
+    if (j >= 0) {
+        b2 = 0;
+        s2 = j;
+    } else {
+        b2 = -j;
+        s2 = 0;
+    }
+    if (k >= 0) {
+        b5 = 0;
+        s5 = k;
+        s2 += k;
+    } else {
+        b2 -= k;
+        b5 = -k;
+        s5 = 0;
+    }
+    if (mode < 0 || mode > 9) mode = 0;
 
-try_quick = 1;
+    try_quick = 1;
 
-if (mode > 5) {
-    mode -= 4;
-    try_quick = 0;
-}
-leftright = 1;
-switch (mode) {
-    case 0:
-    case 1:
-        ilim = ilim1 = -1;
-        i            = 18;
-        ndigits      = 0;
-        break;
-    case 2:
-        leftright = 0;
-        /* no break */
-    case 4:
-        if (ndigits <= 0) ndigits = 1;
-        ilim = ilim1 = i = ndigits;
-        break;
-    case 3:
-        leftright = 0;
-        /* no break */
-    case 5:
-        i     = ndigits + k + 1;
-        ilim  = i;
-        ilim1 = i - 1;
-        if (i <= 0) i = 1;
-}
-s = s0 = rv_alloc(i);
+    if (mode > 5) {
+        mode -= 4;
+        try_quick = 0;
+    }
+    leftright = 1;
+    switch (mode) {
+        case 0:
+        case 1:
+            ilim = ilim1 = -1;
+            i            = 18;
+            ndigits      = 0;
+            break;
+        case 2:
+            leftright = 0;
+            /* no break */
+        case 4:
+            if (ndigits <= 0) ndigits = 1;
+            ilim = ilim1 = i = ndigits;
+            break;
+        case 3:
+            leftright = 0;
+            /* no break */
+        case 5:
+            i     = ndigits + k + 1;
+            ilim  = i;
+            ilim1 = i - 1;
+            if (i <= 0) i = 1;
+    }
+    s = s0 = rv_alloc(i);
 
-if (ilim >= 0 && ilim <= Quick_max && try_quick) {
-    /* Try to get by with floating-point arithmetic. */
+    if (ilim >= 0 && ilim <= Quick_max && try_quick) {
+        /* Try to get by with floating-point arithmetic. */
 
-    i        = 0;
-    dval(d2) = dval(d);
-    k0       = k;
-    ilim0    = ilim;
-    ieps     = 2; /* conservative */
-    if (k > 0) {
-        ds = tens[k & 0xf];
-        j  = k >> 4;
-        if (j & Bletch) {
-            /* prevent overflows */
-            j &= Bletch - 1;
-            dval(d) /= bigtens[n_bigtens - 1];
+        i        = 0;
+        dval(d2) = dval(d);
+        k0       = k;
+        ilim0    = ilim;
+        ieps     = 2; /* conservative */
+        if (k > 0) {
+            ds = tens[k & 0xf];
+            j  = k >> 4;
+            if (j & Bletch) {
+                /* prevent overflows */
+                j &= Bletch - 1;
+                dval(d) /= bigtens[n_bigtens - 1];
+                ieps++;
+            }
+            for (; j; j >>= 1, i++)
+                if (j & 1) {
+                    ieps++;
+                    ds *= bigtens[i];
+                }
+            dval(d) /= ds;
+        } else if (j1 = -k) {
+            dval(d) *= tens[j1 & 0xf];
+            for (j = j1 >> 4; j; j >>= 1, i++)
+                if (j & 1) {
+                    ieps++;
+                    dval(d) *= bigtens[i];
+                }
+        }
+        if (k_check && dval(d) < 1. && ilim > 0) {
+            if (ilim1 <= 0) goto fast_failed;
+            ilim = ilim1;
+            k--;
+            dval(d) *= 10.;
             ieps++;
         }
-        for (; j; j >>= 1, i++)
-            if (j & 1) {
-                ieps++;
-                ds *= bigtens[i];
-            }
-        dval(d) /= ds;
-    } else if (j1 = -k) {
-        dval(d) *= tens[j1 & 0xf];
-        for (j = j1 >> 4; j; j >>= 1, i++)
-            if (j & 1) {
-                ieps++;
-                dval(d) *= bigtens[i];
-            }
-    }
-    if (k_check && dval(d) < 1. && ilim > 0) {
-        if (ilim1 <= 0) goto fast_failed;
-        ilim = ilim1;
-        k--;
-        dval(d) *= 10.;
-        ieps++;
-    }
-    dval(eps) = ieps * dval(d) + 7.;
-    word0(eps) -= (P - 1) * Exp_msk1;
-    if (ilim == 0) {
-        S = mhi = 0;
-        dval(d) -= 5.;
-        if (dval(d) > dval(eps)) goto one_digit;
-        if (dval(d) < -dval(eps)) goto no_digits;
-        goto fast_failed;
-    }
-    if (leftright) {
-        /* Use Steele & White method of only
-         * generating digits needed.
-         */
-        dval(eps) = 0.5 / tens[ilim - 1] - dval(eps);
-        for (i = 0;;) {
-            L = (int)dval(d);
-            dval(d) -= L;
-            *s++ = '0' + (int)L;
-            if (dval(d) < dval(eps)) goto ret1;
-            if (1. - dval(d) < dval(eps)) goto bump_up;
-            if (++i >= ilim) break;
-            dval(eps) *= 10.;
-            dval(d) *= 10.;
+        dval(eps) = ieps * dval(d) + 7.;
+        word0(eps) -= (P - 1) * Exp_msk1;
+        if (ilim == 0) {
+            S = mhi = 0;
+            dval(d) -= 5.;
+            if (dval(d) > dval(eps)) goto one_digit;
+            if (dval(d) < -dval(eps)) goto no_digits;
+            goto fast_failed;
         }
-    } else {
-        /* Generate ilim digits, then fix them up. */
-        dval(eps) *= tens[ilim - 1];
+        if (leftright) {
+            /* Use Steele & White method of only
+             * generating digits needed.
+             */
+            dval(eps) = 0.5 / tens[ilim - 1] - dval(eps);
+            for (i = 0;;) {
+                L = (int)dval(d);
+                dval(d) -= L;
+                *s++ = '0' + (int)L;
+                if (dval(d) < dval(eps)) goto ret1;
+                if (1. - dval(d) < dval(eps)) goto bump_up;
+                if (++i >= ilim) break;
+                dval(eps) *= 10.;
+                dval(d) *= 10.;
+            }
+        } else {
+            /* Generate ilim digits, then fix them up. */
+            dval(eps) *= tens[ilim - 1];
+            for (i = 1;; i++, dval(d) *= 10.) {
+                L = (int)(dval(d));
+                if (!(dval(d) -= L)) ilim = i;
+                *s++ = '0' + (int)L;
+                if (i == ilim) {
+                    if (dval(d) > 0.5 + dval(eps))
+                        goto bump_up;
+                    else if (dval(d) < 0.5 - dval(eps)) {
+                        while (*--s == '0')
+                            ;
+                        s++;
+                        goto ret1;
+                    }
+                    break;
+                }
+            }
+        }
+    fast_failed:
+        s       = s0;
+        dval(d) = dval(d2);
+        k       = k0;
+        ilim    = ilim0;
+    }
+
+    /* Do we have a "small" integer? */
+
+    if (be >= 0 && k <= Int_max) {
+        /* Yes. */
+        ds = tens[k];
+        if (ndigits < 0 && ilim <= 0) {
+            S = mhi = 0;
+            if (ilim < 0 || dval(d) <= 5 * ds) goto no_digits;
+            goto one_digit;
+        }
         for (i = 1;; i++, dval(d) *= 10.) {
-            L = (int)(dval(d));
-            if (!(dval(d) -= L)) ilim = i;
+            L = (int)(dval(d) / ds);
+            dval(d) -= L * ds;
             *s++ = '0' + (int)L;
+            if (!dval(d)) { break; }
             if (i == ilim) {
-                if (dval(d) > 0.5 + dval(eps))
-                    goto bump_up;
-                else if (dval(d) < 0.5 - dval(eps)) {
-                    while (*--s == '0')
-                        ;
-                    s++;
-                    goto ret1;
+                dval(d) += dval(d);
+                if (dval(d) > ds || dval(d) == ds && L & 1) {
+                bump_up:
+                    while (*--s == '9')
+                        if (s == s0) {
+                            k++;
+                            *s = '0';
+                            break;
+                        }
+                    ++*s++;
                 }
                 break;
             }
         }
+        goto ret1;
     }
-fast_failed:
-    s       = s0;
-    dval(d) = dval(d2);
-    k       = k0;
-    ilim    = ilim0;
-}
 
-/* Do we have a "small" integer? */
-
-if (be >= 0 && k <= Int_max) {
-    /* Yes. */
-    ds = tens[k];
-    if (ndigits < 0 && ilim <= 0) {
-        S = mhi = 0;
-        if (ilim < 0 || dval(d) <= 5 * ds) goto no_digits;
-        goto one_digit;
-    }
-    for (i = 1;; i++, dval(d) *= 10.) {
-        L = (int)(dval(d) / ds);
-        dval(d) -= L * ds;
-        *s++ = '0' + (int)L;
-        if (!dval(d)) {
-            break;
-        }
-        if (i == ilim) {
-            dval(d) += dval(d);
-            if (dval(d) > ds || dval(d) == ds && L & 1) {
-            bump_up:
-                while (*--s == '9')
-                    if (s == s0) {
-                        k++;
-                        *s = '0';
-                        break;
-                    }
-                ++*s++;
-            }
-            break;
-        }
-    }
-    goto ret1;
-}
-
-m2  = b2;
-m5  = b5;
-mhi = mlo = 0;
-if (leftright) {
-    i =
-      denorm ? be + (Bias + (P - 1) - 1 + 1) :
-              1 + P - bbits;
-    b2 += i;
-    s2 += i;
-    mhi = i2b(1);
-}
-if (m2 > 0 && s2 > 0) {
-    i = m2 < s2 ? m2 : s2;
-    b2 -= i;
-    m2 -= i;
-    s2 -= i;
-}
-if (b5 > 0) {
+    m2  = b2;
+    m5  = b5;
+    mhi = mlo = 0;
     if (leftright) {
-        if (m5 > 0) {
-            mhi = pow5mult(mhi, m5);
-            b1  = mult(mhi, b);
-            Bfree(b);
-            b = b1;
+        i = denorm ? be + (Bias + (P - 1) - 1 + 1) : 1 + P - bbits;
+        b2 += i;
+        s2 += i;
+        mhi = i2b(1);
+    }
+    if (m2 > 0 && s2 > 0) {
+        i = m2 < s2 ? m2 : s2;
+        b2 -= i;
+        m2 -= i;
+        s2 -= i;
+    }
+    if (b5 > 0) {
+        if (leftright) {
+            if (m5 > 0) {
+                mhi = pow5mult(mhi, m5);
+                b1  = mult(mhi, b);
+                Bfree(b);
+                b = b1;
+            }
+            if (j = b5 - m5) b = pow5mult(b, j);
+        } else
+            b = pow5mult(b, b5);
+    }
+    S = i2b(1);
+    if (s5 > 0) S = pow5mult(S, s5);
+
+    /* Check for special case that d is a normalized power of 2. */
+
+    spec_case = 0;
+    if ((mode < 2 || leftright)) {
+        if (!word1(d) && !(word0(d) & Bndry_mask) && word0(d) & (Exp_mask & ~Exp_msk1)) {
+            /* The special case */
+            b2 += Log2P;
+            s2 += Log2P;
+            spec_case = 1;
         }
-        if (j = b5 - m5) b = pow5mult(b, j);
-    } else
-        b = pow5mult(b, b5);
-}
-S = i2b(1);
-if (s5 > 0) S = pow5mult(S, s5);
-
-/* Check for special case that d is a normalized power of 2. */
-
-spec_case = 0;
-if ((mode < 2 || leftright)) {
-    if (!word1(d) && !(word0(d) & Bndry_mask)
-        && word0(d) & (Exp_mask & ~Exp_msk1)
-    ) {
-        /* The special case */
-        b2 += Log2P;
-        s2 += Log2P;
-        spec_case = 1;
     }
-}
 
-/* Arrange for convenient computation of quotients:
- * shift left if necessary so divisor has 4 leading 0 bits.
- *
- * Perhaps we should just compute leading 28 bits of S once
- * and for all and pass them and a shift to quorem, so it
- * can do shifts and ors to compute the numerator for q.
- */
-if (i = ((s5 ? 32 - hi0bits(S->x[S->wds - 1]) : 1) + s2) & 0x1f) i = 32 - i;
-if (i > 4) {
-    i -= 4;
-    b2 += i;
-    m2 += i;
-    s2 += i;
-} else if (i < 4) {
-    i += 28;
-    b2 += i;
-    m2 += i;
-    s2 += i;
-}
-if (b2 > 0) b = lshift(b, b2);
-if (s2 > 0) S = lshift(S, s2);
-if (k_check) {
-    if (cmp(b, S) < 0) {
-        k--;
-        b = multadd(b, 10, 0); /* we botched the k estimate */
-        if (leftright) mhi = multadd(mhi, 10, 0);
-        ilim = ilim1;
+    /* Arrange for convenient computation of quotients:
+     * shift left if necessary so divisor has 4 leading 0 bits.
+     *
+     * Perhaps we should just compute leading 28 bits of S once
+     * and for all and pass them and a shift to quorem, so it
+     * can do shifts and ors to compute the numerator for q.
+     */
+    if (i = ((s5 ? 32 - hi0bits(S->x[S->wds - 1]) : 1) + s2) & 0x1f) i = 32 - i;
+    if (i > 4) {
+        i -= 4;
+        b2 += i;
+        m2 += i;
+        s2 += i;
+    } else if (i < 4) {
+        i += 28;
+        b2 += i;
+        m2 += i;
+        s2 += i;
     }
-}
-if (ilim <= 0 && (mode == 3 || mode == 5)) {
-    if (ilim < 0 || cmp(b, S = multadd(S, 5, 0)) <= 0) {
-        /* no digits, fcvt style */
-    no_digits:
-        k = -1 - ndigits;
+    if (b2 > 0) b = lshift(b, b2);
+    if (s2 > 0) S = lshift(S, s2);
+    if (k_check) {
+        if (cmp(b, S) < 0) {
+            k--;
+            b = multadd(b, 10, 0); /* we botched the k estimate */
+            if (leftright) mhi = multadd(mhi, 10, 0);
+            ilim = ilim1;
+        }
+    }
+    if (ilim <= 0 && (mode == 3 || mode == 5)) {
+        if (ilim < 0 || cmp(b, S = multadd(S, 5, 0)) <= 0) {
+            /* no digits, fcvt style */
+        no_digits:
+            k = -1 - ndigits;
+            goto ret;
+        }
+    one_digit:
+        *s++ = '1';
+        k++;
         goto ret;
     }
-one_digit:
-    *s++ = '1';
-    k++;
-    goto ret;
-}
-if (leftright) {
-    if (m2 > 0) mhi = lshift(mhi, m2);
+    if (leftright) {
+        if (m2 > 0) mhi = lshift(mhi, m2);
 
-    /* Compute mlo -- check for special case
-     * that d is a normalized power of 2.
-     */
-
-    mlo = mhi;
-    if (spec_case) {
-        mhi = Balloc(mhi->k);
-        Bcopy(mhi, mlo);
-        mhi = lshift(mhi, Log2P);
-    }
-
-    for (i = 1;; i++) {
-        dig = quorem(b, S) + '0';
-        /* Do we yet have the shortest decimal string
-         * that will round to d?
+        /* Compute mlo -- check for special case
+         * that d is a normalized power of 2.
          */
-        j     = cmp(b, mlo);
-        delta = diff(S, mhi);
-        j1    = delta->sign ? 1 : cmp(b, delta);
-        Bfree(delta);
-        if (j1 == 0 && mode != 1 && !(word1(d) & 1)) {
-            if (dig == '9') goto round_9_up;
-            if (j > 0) dig++;
-            *s++ = dig;
-            goto ret;
+
+        mlo = mhi;
+        if (spec_case) {
+            mhi = Balloc(mhi->k);
+            Bcopy(mhi, mlo);
+            mhi = lshift(mhi, Log2P);
         }
-        if (j < 0 || j == 0 && mode != 1
-                       && !(word1(d) & 1)
-        ) {
-            if (!b->x[0] && b->wds <= 1) {
-                goto accept_dig;
+
+        for (i = 1;; i++) {
+            dig = quorem(b, S) + '0';
+            /* Do we yet have the shortest decimal string
+             * that will round to d?
+             */
+            j     = cmp(b, mlo);
+            delta = diff(S, mhi);
+            j1    = delta->sign ? 1 : cmp(b, delta);
+            Bfree(delta);
+            if (j1 == 0 && mode != 1 && !(word1(d) & 1)) {
+                if (dig == '9') goto round_9_up;
+                if (j > 0) dig++;
+                *s++ = dig;
+                goto ret;
+            }
+            if (j < 0 || j == 0 && mode != 1 && !(word1(d) & 1)) {
+                if (!b->x[0] && b->wds <= 1) { goto accept_dig; }
+                if (j1 > 0) {
+                    b  = lshift(b, 1);
+                    j1 = cmp(b, S);
+                    if ((j1 > 0 || j1 == 0 && dig & 1) && dig++ == '9') goto round_9_up;
+                }
+            accept_dig:
+                *s++ = dig;
+                goto ret;
             }
             if (j1 > 0) {
-                b  = lshift(b, 1);
-                j1 = cmp(b, S);
-                if ((j1 > 0 || j1 == 0 && dig & 1) && dig++ == '9') goto round_9_up;
+                if (dig == '9') { /* possible if i == 1 */
+                round_9_up:
+                    *s++ = '9';
+                    goto roundoff;
+                }
+                *s++ = dig + 1;
+                goto ret;
             }
-        accept_dig:
             *s++ = dig;
-            goto ret;
-        }
-        if (j1 > 0) {
-            if (dig == '9') { /* possible if i == 1 */
-            round_9_up:
-                *s++ = '9';
-                goto roundoff;
+            if (i == ilim) break;
+            b = multadd(b, 10, 0);
+            if (mlo == mhi)
+                mlo = mhi = multadd(mhi, 10, 0);
+            else {
+                mlo = multadd(mlo, 10, 0);
+                mhi = multadd(mhi, 10, 0);
             }
-            *s++ = dig + 1;
-            goto ret;
         }
-        *s++ = dig;
-        if (i == ilim) break;
-        b = multadd(b, 10, 0);
-        if (mlo == mhi)
-            mlo = mhi = multadd(mhi, 10, 0);
-        else {
-            mlo = multadd(mlo, 10, 0);
-            mhi = multadd(mhi, 10, 0);
+    } else
+        for (i = 1;; i++) {
+            *s++ = dig = quorem(b, S) + '0';
+            if (!b->x[0] && b->wds <= 1) { goto ret; }
+            if (i >= ilim) break;
+            b = multadd(b, 10, 0);
         }
-    }
-} else
-    for (i = 1;; i++) {
-        *s++ = dig = quorem(b, S) + '0';
-        if (!b->x[0] && b->wds <= 1) {
-            goto ret;
-        }
-        if (i >= ilim) break;
-        b = multadd(b, 10, 0);
-    }
 
-/* Round off last digit */
-b = lshift(b, 1);
-j = cmp(b, S);
-if (j > 0 || j == 0 && dig & 1) {
-roundoff:
-    while (*--s == '9')
-        if (s == s0) {
-            k++;
-            *s++ = '1';
-            goto ret;
-        }
-    ++*s++;
-} else {
-    /* trimzeros: */ /* since it's unreferenced */
-    while (*--s == '0')
-        ;
-    s++;
-}
-ret : Bfree(S);
-if (mhi) {
-    if (mlo && mlo != mhi) Bfree(mlo);
-    Bfree(mhi);
-}
-ret1 :
-Bfree(b);
-/* *s = 0; */ /* don't NUL terminate */
-*decpt = k + 1;
-if (rve) *rve = s;
-return s0;
+    /* Round off last digit */
+    b = lshift(b, 1);
+    j = cmp(b, S);
+    if (j > 0 || j == 0 && dig & 1) {
+    roundoff:
+        while (*--s == '9')
+            if (s == s0) {
+                k++;
+                *s++ = '1';
+                goto ret;
+            }
+        ++*s++;
+    } else {
+        /* trimzeros: */ /* since it's unreferenced */
+        while (*--s == '0')
+            ;
+        s++;
+    }
+ret:
+    Bfree(S);
+    if (mhi) {
+        if (mlo && mlo != mhi) Bfree(mlo);
+        Bfree(mhi);
+    }
+ret1:
+    Bfree(b);
+    /* *s = 0; */ /* don't NUL terminate */
+    *decpt = k + 1;
+    if (rve) *rve = s;
+    return s0;
 }
 
 #undef diff
@@ -1144,9 +1111,8 @@ return s0;
 #undef MALLOC
 #include "j.h"
 
-static void *d2a_Malloc
- (struct dtoa_info *di, int n)
-{
+static void *
+d2a_Malloc(struct dtoa_info *di, int n) {
     A z;
     J jt = (J)di->jt;
 
