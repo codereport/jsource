@@ -82,16 +82,15 @@
  * some HP systems), it may be necessary to #define NAN_WORD0
  * appropriately -- to the most significant word of a quiet NaN.
  * (On HP Series 700/800 machines, -DNAN_WORD0=0x7ff40000 works.)
- * When INFNAN_CHECK is #defined and No_Hex_NaN is not #defined,
- * strtod also accepts (case insensitively) strings of the form
- * NaN(x), where x is a string of hexadecimal digits and spaces;
- * if there is only one string of hexadecimal digits, it is taken
- * for the 52 fraction bits of the resulting NaN; if there are two
- * or more strings of hex digits, the first is for the high 20 bits,
- * the second and subsequent for the low 32 bits, with intervening
- * white space ignored; but if this results in none of the 52
- * fraction bits being on (an IEEE Infinity symbol), then NAN_WORD0
- * and NAN_WORD1 are used instead.
+ * When INFNAN_CHECK is #defined, strtod also accepts (case
+ * insensitively) strings of the form NaN(x), where x is a string of
+ * hexadecimal digits and spaces; if there is only one string of
+ * hexadecimal digits, it is taken for the 52 fraction bits of the
+ * resulting NaN; if there are two or more strings of hex digits,
+ * the first is for the high 20 bits, the second and subsequent for
+ * the low 32 bits, with intervening white space ignored; but if this
+ * results in none of the 52 fraction bits being on (an IEEE Infinity
+ * symbol), then NAN_WORD0 and NAN_WORD1 are used instead.
  * #define NO_ERRNO if strtod should not assign errno = ERANGE when
  * the result overflows to +-Infinity or underflows to 0.
  */
@@ -688,7 +687,6 @@ static int match
     return 1;
 }
 
-#ifndef No_Hex_NaN
 static void hexnan
  (double *rvp, const char **sp)
 {
@@ -732,7 +730,6 @@ static void hexnan
         word1(*rvp) = x[1];
     }
 }
-#endif /*No_Hex_NaN*/
 #endif /* INFNAN_CHECK */
 
 static int quorem
