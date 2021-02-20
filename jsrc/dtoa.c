@@ -64,15 +64,6 @@
  *  for 0 <= k <= 22).
  */
 
-/*
- * #define Honor_FLT_ROUNDS if FLT_ROUNDS can assume the values 2 or 3
- * and strtod and dtoa should round accordingly.
- * #define Check_FLT_ROUNDS if FLT_ROUNDS can assume the values 2 or 3
- * and Honor_FLT_ROUNDS is not #defined.
- * #define Inaccurate_Divide for IEEE-format with correctly rounded
- * products but inaccurate quotients, e.g., for Intel i860.
- */
-
 /* Options for use with J */
 #define PRIVATE_MEM 8000
 
@@ -695,9 +686,6 @@ static char *d2a_dtoa
      4,5 ==> similar to 2 and 3, respectively, but (in
       round-nearest mode) with the tests of mode 0 to
       possibly return a shorter string that rounds to d.
-      With IEEE arithmetic and compilation with
-      -DHonor_FLT_ROUNDS, modes 4 and 5 behave the same
-      as modes 2 and 3 when FLT_ROUNDS != 1.
      6-9 ==> Debugging modes similar to mode - 4:  don't try
       fast floating-point estimate (if applicable).
 
