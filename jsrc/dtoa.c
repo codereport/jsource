@@ -132,9 +132,6 @@ typedef unsigned Long ULong;
 #include "locale.h"
 #endif
 
-#ifndef PRIVATE_MEM
-#define PRIVATE_MEM 2304
-#endif
 #define PRIVATE_mem (long)((PRIVATE_MEM + sizeof(double) - 1) / sizeof(double))
 
 #ifdef Bad_float_h
