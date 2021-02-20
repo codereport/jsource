@@ -67,8 +67,6 @@
 /*
  * #define IEEE_8087 for IEEE-arithmetic machines where the least
  * significant byte has the lowest address.
- * #define IEEE_MC68k for IEEE-arithmetic machines where the most
- * significant byte has the lowest address.
  * #define Long int on machines with 32-bit ints and 64-bit longs.
  * #define No_leftright to omit left-right logic in fast floating-point
  * computation of dtoa.
@@ -191,9 +189,6 @@ typedef unsigned Long ULong;
 
 #undef IEEE_Arith
 #undef Avoid_Underflow
-#ifdef IEEE_MC68k
-#define IEEE_Arith
-#endif
 #ifdef IEEE_8087
 #define IEEE_Arith
 #endif
@@ -223,8 +218,8 @@ typedef unsigned Long ULong;
 extern "C" {
 #endif
 
-#if defined(IEEE_8087) + defined(IEEE_MC68k) != 1
-Exactly one of IEEE_8087 or IEEE_MC68k should be defined.
+#if defined(IEEE_8087) != 1
+Exactly one of IEEE_8087 should be defined.
 #endif
 
                                               typedef union {
