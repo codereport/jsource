@@ -107,10 +107,6 @@
 #define FREE_DTOA_LOCK(n)    /* handled by using jt */
 #define PRIVATE_MEM 8000
 
-#ifndef ULong
-typedef unsigned int ULong;
-#endif
-
 #ifdef DEBUG
 #include "stdio.h"
 #define Bug(x)                      \
@@ -154,13 +150,13 @@ extern "C" {
 
                                               typedef union {
     double d;
-    ULong L[2];
+    unsigned int L[2];
 } U;
 
 #ifdef YES_ALIAS
 #define dval(x) x
-#define word0(x) ((ULong *)&x)[1]
-#define word1(x) ((ULong *)&x)[0]
+#define word0(x) ((unsigned int*)&x)[1]
+#define word1(x) ((unsigned int*)&x)[0]
 #else
 #define word0(x) ((U *)&x)->L[1]
 #define word1(x) ((U *)&x)->L[0]
@@ -207,7 +203,7 @@ extern double rnd_prod(double, double), rnd_quot(double, double);
 struct Bigint {
     struct Bigint *next;
     int k, maxwds, sign, wds;
-    ULong x[1];
+    unsigned int x[1];
 };
 
 typedef struct Bigint Bigint;
@@ -251,7 +247,7 @@ static Bigint *d2a_Balloc
         freelist[k] = rv->next;
     } else {
         x = 1 << k;
-        len = (sizeof(Bigint) + (x - 1) * sizeof(ULong) + sizeof(double) - 1) / sizeof(double);
+        len = (sizeof(Bigint) + (x - 1) * sizeof(unsigned int) + sizeof(double) - 1) / sizeof(double);
         if (pmem_next - private_mem + len <= PRIVATE_mem) {
             rv = (Bigint *)pmem_next;
             pmem_next += len;
@@ -283,11 +279,11 @@ static Bigint *d2a_multadd
 {
     int i, wds;
 #ifdef ULLong
-    ULong *x;
+    unsigned int *x;
     ULLong carry, y;
 #else
-    ULong carry, *x, y;
-    ULong xi, z;
+    unsigned int carry, *x, y;
+    unsigned int xi, z;
 #endif
     Bigint *b1;
 
@@ -299,7 +295,7 @@ static Bigint *d2a_multadd
 #ifdef ULLong
         y     = *x * (ULLong)m + carry;
         carry = y >> 32;
-        *x++  = (ULong)(y & FFFFFFFF);
+        *x++  = (unsigned int)(y & FFFFFFFF);
 #else
         xi = *x;
         y = (xi & 0xffff) * m + carry;
@@ -315,14 +311,14 @@ static Bigint *d2a_multadd
             Bfree(b);
             b = b1;
         }
-        b->x[wds++] = (ULong)carry;
+        b->x[wds++] = (unsigned int)carry;
         b->wds      = wds;
     }
     return b;
 }
 
 static int hi0bits
- (register ULong x)
+ (register unsigned int x)
 {
     register int k = 0;
 
@@ -350,10 +346,10 @@ static int hi0bits
 }
 
 static int lo0bits
- (ULong *y)
+ (unsigned int *y)
 {
     register int k;
-    register ULong x = *y;
+    register unsigned int x = *y;
 
     if (x & 7) {
         if (x & 1) return 0;
@@ -406,13 +402,13 @@ static Bigint *d2a_mult
 {
     Bigint *c;
     int k, wa, wb, wc;
-    ULong *x, *xa, *xae, *xb, *xbe, *xc, *xc0;
-    ULong y;
+    unsigned int *x, *xa, *xae, *xb, *xbe, *xc, *xc0;
+    unsigned int y;
 #ifdef ULLong
     ULLong carry, z;
 #else
-    ULong carry, z;
-    ULong z2;
+    unsigned int carry, z;
+    unsigned int z2;
 #endif
 
     if (a->wds < b->wds) {
@@ -441,9 +437,9 @@ static Bigint *d2a_mult
             do {
                 z     = *x++ * (ULLong)y + *xc + carry;
                 carry = z >> 32;
-                *xc++ = (ULong)(z & FFFFFFFF);
+                *xc++ = (unsigned int)(z & FFFFFFFF);
             } while (x < xae);
-            *xc = (ULong)carry;
+            *xc = (unsigned int)carry;
         }
     }
 #else
@@ -517,7 +513,7 @@ static Bigint *d2a_lshift
 {
     int i, k1, n, n1;
     Bigint *b1;
-    ULong *x, *x1, *xe, z;
+    unsigned int *x, *x1, *xe, z;
 
     n = k >> 5;
     k1 = b->k;
@@ -548,7 +544,7 @@ static Bigint *d2a_lshift
 static int cmp
  (Bigint *a, Bigint *b)
 {
-    ULong *xa, *xa0, *xb, *xb0;
+    unsigned int *xa, *xa0, *xb, *xb0;
     int i, j;
 
     i = a->wds;
@@ -574,12 +570,12 @@ static Bigint *d2a_diff
 {
     Bigint *c;
     int i, wa, wb;
-    ULong *xa, *xae, *xb, *xbe, *xc;
+    unsigned int *xa, *xae, *xb, *xbe, *xc;
 #ifdef ULLong
     ULLong borrow, y;
 #else
-    ULong borrow, y;
-    ULong z;
+    unsigned int borrow, y;
+    unsigned int z;
 #endif
 
     i = cmp(a, b);
@@ -609,13 +605,13 @@ static Bigint *d2a_diff
 #ifdef ULLong
     do {
         y      = (ULLong)*xa++ - *xb++ - borrow;
-        borrow = y >> 32 & (ULong)1;
-        *xc++  = (ULong)(y & FFFFFFFF);
+        borrow = y >> 32 & (unsigned int)1;
+        *xc++  = (unsigned int)(y & FFFFFFFF);
     } while (xb < xbe);
     while (xa < xae) {
         y      = *xa++ - borrow;
-        borrow = y >> 32 & (ULong)1;
-        *xc++  = (ULong)(y & FFFFFFFF);
+        borrow = y >> 32 & (unsigned int)1;
+        *xc++  = (unsigned int)(y & FFFFFFFF);
     }
 #else
     do {
@@ -641,7 +637,7 @@ static Bigint *d2a_d2b
 {
     Bigint *b;
     int de, k;
-    ULong *x, y, z;
+    unsigned int *x, y, z;
     int i;
 
 #define d0 word0(d)
@@ -731,7 +727,7 @@ static int match
 static void hexnan
  (double *rvp, const char **sp)
 {
-    ULong c, x[2];
+    unsigned int c, x[2];
     const char *s;
     int havedig, udx0, xshift;
 
@@ -778,12 +774,12 @@ static int quorem
  (Bigint *b, Bigint *S)
 {
     int n;
-    ULong *bx, *bxe, q, *sx, *sxe;
+    unsigned int *bx, *bxe, q, *sx, *sxe;
 #ifdef ULLong
     ULLong borrow, carry, y, ys;
 #else
-    ULong borrow, carry, y, ys;
-    ULong si, z, zs;
+    unsigned int borrow, carry, y, ys;
+    unsigned int si, z, zs;
 #endif
 
     n = S->wds;
@@ -809,8 +805,8 @@ static int quorem
             ys     = *sx++ * (ULLong)q + carry;
             carry  = ys >> 32;
             y      = *bx - (ys & FFFFFFFF) - borrow;
-            borrow = y >> 32 & (ULong)1;
-            *bx++  = (ULong)(y & FFFFFFFF);
+            borrow = y >> 32 & (unsigned int)1;
+            *bx++  = (unsigned int)(y & FFFFFFFF);
 #else
             si = *sx++;
             ys = (si & 0xffff) * q + carry;
@@ -839,8 +835,8 @@ static int quorem
             ys     = *sx++ + carry;
             carry  = ys >> 32;
             y      = *bx - (ys & FFFFFFFF) - borrow;
-            borrow = y >> 32 & (ULong)1;
-            *bx++  = (ULong)(y & FFFFFFFF);
+            borrow = y >> 32 & (unsigned int)1;
+            *bx++  = (unsigned int)(y & FFFFFFFF);
 #else
             si = *sx++;
             ys = (si & 0xffff) + carry;
@@ -957,7 +953,7 @@ static char *d2a_dtoa
       spec_case, try_quick;
     int L;
     int denorm;
-    ULong x;
+    unsigned int x;
     Bigint *b, *b1, *delta, *mlo, *mhi, *S;
     double d2, ds, eps;
     char *s, *s0;
