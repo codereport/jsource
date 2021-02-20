@@ -141,7 +141,7 @@ struct AD {
 typedef struct {
     A a, t;
 } TA;
-typedef A (*AF)();
+typedef A (*AF)(void);
 typedef UI (*UF)();
 typedef I (*VF)();         // action verb for atomic dyad
 typedef I (*VA1F)();       // action verb for atomic monad
