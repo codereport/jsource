@@ -100,39 +100,34 @@ jepath(char* arg, char* lib) -> void {
     uint32_t const sz = 4000;
 
     // C strings need to be used for POSIX APIs and macOS APIs
-    auto arg2      = new char[sz];
-    auto arg3      = new char[sz];
-    // Return for readlinks
-    int n;
+    auto const arg2 = std::unique_ptr<char[]>(new char[sz]);
+    auto const arg3 = std::unique_ptr<char[]>(new char[sz]);
 
 // try host dependent way to get path to executable
 // use arg if they fail (arg command in PATH won't work)
 #ifdef __MACH__
-    uint32_t len      = sz;  // Cant be const for function call _NSGetExecutablePath
     // Returns 0 if path was copied, otherwise -1 if failed.
-    if (_NSGetExecutablePath(arg2, &len) != 0) strcat(arg2, arg);
+    if (uint32_t len = sz; _NSGetExecutablePath(arg2.get(), &len) != 0) strcat(arg2.get(), arg);
 #else
-    n = readlink("/proc/self/exe", arg2, sz);
-    if (n == -1)
-        strcpy(arg2, arg);
-    else
-        arg2[n] = 0;
+    {
+        auto const n = readlink("/proc/self/exe", arg2, sz);
+        if (n == -1)
+            strcpy(arg2, arg);
+        else
+            arg2[n] = 0;
+    }
 #endif
     // arg2 is path (abs or relative) to executable or soft link
-    n = readlink(arg2, arg3, sz);
-
+    auto const n = readlink(arg2.get(), arg3.get(), sz);
     if (n == -1)
-        strcpy(arg3, arg2);
+        strcpy(arg3.get(), arg2.get());
     else
         arg3[n] = 0;
 
-    if ('/' == *arg3)
-        path = arg3;
+    if ('/' == arg3[0])
+        path = arg3.get();
     else
-        path = std::filesystem::current_path() / arg3;
-    // Now append path_temp to path, as all POSIX and macOS API calls are done, and free up arg2, arg3, path_temp.
-    delete[] arg2;
-    delete[] arg3;
+        path = std::filesystem::current_path() / arg3.get();
 
     path.remove_filename();
 
