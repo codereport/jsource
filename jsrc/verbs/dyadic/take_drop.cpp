@@ -4,6 +4,8 @@
 
 #include "array.hpp"
 
+#include "ja_wrappers.h"
+
 /** @file */
 
 A
@@ -79,7 +81,7 @@ jttks(J jt, array a, array w) { // take_sparse
 
     if (b) {
         jt->fill = SPA(wp, e);
-        x        = jtirs2(jt, jtvec(jt, INT, r - m, m + u), SPA(wp, x), 0L, 1L, -1L, reinterpret_cast<AF>(jttake));
+        x        = jtirs2_wrap_dyadic(jt, jtvec(jt, INT, r - m, m + u), SPA(wp, x), 0L, 1L, -1L, jttake);
         jt->fill = 0;
         RZ(x);
     }  // fill cannot be virtual
@@ -213,7 +215,7 @@ jttake(J jt, A a, A w) {
     wf  = wr - wcr;
     RESETRANK;
     if (((af - 1) & (acr - 2)) >= 0) {
-        s = rank2ex(a, w, UNUSED_VALUE, MIN(acr, 1), wcr, acr, wcr, reinterpret_cast<AF>(jttake));  // if multiple x values, loop over them
+        s = jtrank2ex_wrap_dyadic(jt, a, w, UNUSED_VALUE, MIN(acr, 1), wcr, acr, wcr, jttake);  // if multiple x values, loop over them
                                                                               // af>0 or acr>1
         // We extracted from w, so mark it (or its backer if virtual) non-pristine.  There may be replication (if there
         // was fill), so we don't pass pristinity through  We overwrite w because it is no longer in use
@@ -314,7 +316,7 @@ jtdrop(J jt, A a, A w) {
     // special case: if a is atomic 0, and cells of w are not atomic
     if ((-wcr & (ar - 1)) < 0 && (IAV(a)[0] == 0)) return w;  // 0 }. y, return y
     if (((af - 1) & (acr - 2)) >= 0) {
-        s = rank2ex(a, w, UNUSED_VALUE, MIN(acr, 1), wcr, acr, wcr, reinterpret_cast<AF>(jtdrop));  // if multiple x values, loop over them
+        s = jtrank2ex_wrap_dyadic(jt, a, w, UNUSED_VALUE, MIN(acr, 1), wcr, acr, wcr, jtdrop);  // if multiple x values, loop over them
                                                                               // af>0 or acr>1
         // We extracted from w, so mark it (or its backer if virtual) non-pristine.  There may be replication, so we
         // don't pass pristinity through  We overwrite w because it is no longer in use
@@ -427,7 +429,7 @@ jthead(J jt, A w) {
             return jtfrom(jtinplace, zeroionei(0), w);  // could call jtfromi directly for non-sparse w
         }
     } else {
-        return SPARSE & AT(w) ? jtirs2(jt, num(0), jttake(jt, num(1), w), 0L, 0L, wcr, reinterpret_cast<AF>(jtfrom))
+        return SPARSE & AT(w) ? jtirs2_wrap_dyadic(jt, num(0), jttake(jt, num(1), w), 0L, 0L, wcr, jtfrom)
                               : jtrsh0(jt, w);  // cell of w is empty - create a cell of fills  jt->ranks is still set
                                                 // for use in take.  Left rank is garbage, but that's OK
     }
@@ -445,7 +447,7 @@ jttail(J jt, A w) {
     return !wcr || AS(w)[wf] ? jtfrom(jtinplace, num(-1), w)
                              :  // if cells are atoms, or if the cells are nonempty arrays, result is last cell(s) scaf
                                 // should generate virtual block here for speed
-             SPARSE & AT(w) ? jtirs2(jt, num(0), jttake(jt, num(-1), w), 0L, 0L, wcr, reinterpret_cast<AF>(jtfrom))
+             SPARSE & AT(w) ? jtirs2_wrap_dyadic(jt, num(0), jttake(jt, num(-1), w), 0L, 0L, wcr, jtfrom)
                             : jtrsh0(jt, w);
     // pristinity from other verbs
 }

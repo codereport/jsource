@@ -91,6 +91,7 @@ target_sources(j PRIVATE
         i.c
         io.c
         j.c
+        ja_wrappers.c
         jdlllic.c
         k.c
         m.c
