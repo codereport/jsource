@@ -34,7 +34,7 @@
  * file.
  */
 
-/* strtod for IEEE-, VAX-, and IBM-arithmetic machines.
+/* strtod for IEEE-, and VAX-arithmetic machines.
  *
  * This strtod returns a nearest machine number to the input decimal
  * string (or sets errno to ERANGE).  With IEEE arithmetic, ties are
@@ -46,7 +46,7 @@
  *
  * Modifications:
  *
- * 1. We only require IEEE, IBM, or VAX double-precision
+ * 1. We only require IEEE or VAX double-precision
  *  arithmetic (not IEEE double-extended).
  * 2. We get by with floating-point arithmetic in a case that
  *  Clinger missed -- when we're computing d * 10^n
@@ -70,7 +70,6 @@
  * #define IEEE_MC68k for IEEE-arithmetic machines where the most
  * significant byte has the lowest address.
  * #define Long int on machines with 32-bit ints and 64-bit longs.
- * #define IBM for IBM mainframe-style floating-point arithmetic.
  * #define VAX for VAX-style floating-point arithmetic (D_floating).
  * #define No_leftright to omit left-right logic in fast floating-point
  * computation of dtoa.
@@ -225,8 +224,8 @@ typedef unsigned Long ULong;
 extern "C" {
 #endif
 
-#if defined(IEEE_8087) + defined(IEEE_MC68k) + defined(VAX) + defined(IBM) != 1
-Exactly one of IEEE_8087, IEEE_MC68k, VAX, or IBM should be defined.
+#if defined(IEEE_8087) + defined(IEEE_MC68k) + defined(VAX) != 1
+Exactly one of IEEE_8087, IEEE_MC68k, or VAX should be defined.
 #endif
 
                                               typedef union {
@@ -282,24 +281,6 @@ Exactly one of IEEE_8087, IEEE_MC68k, VAX, or IBM should be defined.
 #undef SET_INEXACT
 #undef Sudden_Underflow
 #define Sudden_Underflow
-#ifdef IBM
-#define Exp_shift 24
-#define Exp_shift1 24
-#define Exp_msk1 0x1000000
-#define Exp_mask 0x7f000000
-#define P 14
-#define Bias 65
-#define Exp_11 0x41000000
-#define Frac_mask 0xffffff
-#define Frac_mask1 0xffffff
-#define Bletch 4
-#define Ten_pmax 22
-#define Bndry_mask 0xefffff
-#define Sign_bit 0x80000000
-#define Log2P 4
-#define Quick_max 14
-#define Int_max 15
-#else /* VAX */
 #define Exp_shift 23
 #define Exp_shift1 7
 #define Exp_msk1 0x80
@@ -316,7 +297,6 @@ Exactly one of IEEE_8087, IEEE_MC68k, VAX, or IBM should be defined.
 #define Log2P 1
 #define Quick_max 15
 #define Int_max 15
-#endif /* IBM, VAX */
 #endif /* IEEE_Arith */
 
 #ifndef IEEE_Arith
@@ -943,13 +923,8 @@ static Bigint *d2a_d2b
 #ifndef Sudden_Underflow
     if (de) {
 #endif
-#ifdef IBM
-        *e    = (de - Bias - (P - 1) << 2) + k;
-        *bits = 4 * P + 8 - k - hi0bits(word0(d) & Frac_mask);
-#else
     *e = de - Bias - (P - 1) + k;
     *bits = P - k;
-#endif
 #ifndef Sudden_Underflow
     } else {
         *e = de - Bias - (P - 1) + 1 + k;
@@ -986,15 +961,9 @@ static const double tinytens[] = {1e-16,
 /* flag unnecessarily.  It leads to a song and dance at the end of strtod. */
 #define n_bigtens 5
 #else
-#ifdef IBM
-  bigtens[] = {1e16, 1e32, 1e64};
-static const double tinytens[] = {1e-16, 1e-32, 1e-64};
-#define n_bigtens 3
-#else
   bigtens[] = {1e16, 1e32};
 static const double tinytens[] = {1e-16, 1e-32};
 #define n_bigtens 2
-#endif
 #endif
 
 #ifndef IEEE_Arith
@@ -1305,9 +1274,6 @@ static char *d2a_dtoa
         return nrv_alloc("NaN", rve, 3);
     }
 #endif
-#ifdef IBM
-    dval(d) += 0; /* normalize */
-#endif
     if (!dval(d)) {
         *decpt = 1;
         return nrv_alloc("0", rve, 1);
@@ -1327,9 +1293,6 @@ static char *d2a_dtoa
     dval(d2) = dval(d);
     word0(d2) &= Frac_mask1;
     word0(d2) |= Exp_11;
-#ifdef IBM
-    if (j = 11 - hi0bits(word0(d2) & Frac_mask)) dval(d2) /= 1 << j;
-#endif
 
     /* log(x) ~=~ log(1.5) + (x-1.5)/1.5
      * log10(x)  =  log(x) / log(10)
@@ -1354,10 +1317,6 @@ static char *d2a_dtoa
      */
 
     i -= Bias;
-#ifdef IBM
-    i <<= 2;
-    i += j;
-#endif
 #ifndef Sudden_Underflow
     denorm = 0;
 }
@@ -1572,11 +1531,7 @@ if (leftright) {
 #ifndef Sudden_Underflow
       denorm ? be + (Bias + (P - 1) - 1 + 1) :
 #endif
-#ifdef IBM
-             1 + 4 * P - 3 - bbits + ((bbits + be - 1) & 3);
-#else
               1 + P - bbits;
-#endif
     b2 += i;
     s2 += i;
     mhi = i2b(1);
