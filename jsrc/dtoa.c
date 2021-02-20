@@ -178,8 +178,6 @@ typedef unsigned Long ULong;
 #define PRIVATE_mem (long)((PRIVATE_MEM + sizeof(double) - 1) / sizeof(double))
 #endif
 
-#undef Avoid_Underflow
-
 #ifdef Bad_float_h
 
 #define DBL_DIG 15
@@ -234,7 +232,6 @@ extern "C" {
 #define Log2P 1
 #define Quick_max 14
 #define Int_max 14
-#define Avoid_Underflow
 #ifdef Flush_Denorm /* debugging option */
 #undef Sudden_Underflow
 #endif
@@ -885,12 +882,8 @@ static const double tinytens[] = {1e-16,
                                      1e-32,
                                      1e-64,
                                      1e-128,
-#ifdef Avoid_Underflow
                                      9007199254740992. * 9007199254740992.e-256
 /* = 2^106 * 1e-53 */
-#else
-                                     1e-256
-#endif
 };
 /* The factor of 2^53 in tinytens[4] helps us avoid setting the underflow */
 /* flag unnecessarily.  It leads to a song and dance at the end of strtod. */
