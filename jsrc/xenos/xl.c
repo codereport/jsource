@@ -88,17 +88,6 @@ jtunlj(J jt, I j) {
     return num(1);
 } /* unlock the j-th entry in jt->flkd */
 
-B
-jtunlk(J jt, I x) {
-    I j = 0, *v = AV(jt->flkd);
-    while (j < AM(jt->flkd)) {
-        while (x == *v) RZ(jtunlj(jt, j));
-        ++j;
-        v += LKC;
-    }
-    return 1;
-} /* unlock all existing locks for file# x */
-
 A
 jtjunlock(J jt, A w) {
     F1RANK(1, jtjunlock, UNUSED_VALUE);

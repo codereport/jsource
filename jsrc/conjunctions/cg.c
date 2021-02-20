@@ -659,26 +659,3 @@ jtgadv(J jt, A w, C id) {
              atoplr(AAV(hs)[0]);
     return fdef(0, id, VERB, jtgav1, jtgav2, w, 0L, hs, flag, RMAX, RMAX, RMAX);  // create the derived verb
 }
-
-static A
-jtgf1(J jt, A w, A self) {
-    A z, h = FAV(self)->fgh[2];
-    return df1(z, w, AAV(h)[0]);
-}
-static A
-jtgf2(J jt, A a, A w, A self) {
-    A z, h = FAV(self)->fgh[2];
-    return df2(z, a, w, AAV(h)[0]);
-}
-
-A
-jtvger2(J jt, C id, A a, A w) {
-    A h, *hv, x;
-    V *v;
-    RZ(x = a ? a : w);
-    ASSERT(2 == AN(x), EVLENGTH);
-    RZ(h = jtfxeachv(jt, 1L, x));
-    hv = AAV(h);
-    v  = VAV(*hv);
-    return fdef(0, id, VERB, jtgf1, jtgf2, x, a ? w : 0L, h, VGERL, (I)v->mr, lrv(v), rrv(v));
-} /* verify and define 2-element gerund */

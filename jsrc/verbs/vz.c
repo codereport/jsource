@@ -590,13 +590,3 @@ jtexppi(J jt, A w, A self) {
     ZAV(z)[0] = t;
     return z;
 } /* special code for ^@o. */
-
-Z
-jtznonce1(J jt, Z v) {
-    ZASSERT(0, EVNONCE);
-}
-
-Z
-jtznonce2(J jt, Z u, Z v) {
-    ZASSERT(0, EVNONCE);
-}

@@ -363,7 +363,6 @@ extern I plusBD(I n, I m, B* RESTRICTI x, D* RESTRICTI y, D* RESTRICTI z, J jt);
 extern I plusDB(I n, I m, D* RESTRICTI x, B* RESTRICTI y, D* RESTRICTI z, J jt);
 extern I plusDD(I n, I m, D* RESTRICTI x, D* RESTRICTI y, D* RESTRICTI z, J jt);
 extern I plusDI(I n, I m, D* RESTRICTI x, I* RESTRICTI y, D* RESTRICTI z, J jt);
-extern I plusDX(I n, I m, DX* RESTRICTI x, DX* RESTRICTI y, DX* RESTRICTI z, J jt);
 extern I plusIB(I n, I m, I* RESTRICTI x, B* RESTRICTI y, I* RESTRICTI z, J jt);
 extern I plusID(I n, I m, I* RESTRICTI x, D* RESTRICTI y, D* RESTRICTI z, J jt);
 extern I plusII(I n, I m, I* RESTRICTI x, I* RESTRICTI y, I* RESTRICTI z, J jt);

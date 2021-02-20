@@ -230,8 +230,8 @@ jticap2(J jt, A a, A w) {
     ASSERTAGREE(as + ar - r, ws + wr - r, r)
     ASSERT((POSIFHOMO(at, wt) & -AN(a) & -AN(w)) >= 0, EVDOMAIN);
     ASSERT(!((at | wt) & SPARSE), EVNONCE);  // if no empties, verify agreement & non-sparse
-    CPROD(AN(w), m, wr - r, ws);
-    CPROD(AN(w), c, r, ws + wr - r);  // m=#atoms in result   c=# atoms in a cell of w
+    CPROD(m, wr - r, ws);
+    CPROD(c, r, ws + wr - r);  // m=#atoms in result   c=# atoms in a cell of w
     GATV(z, INT, m, wr - r, ws);
     zv = AV(z);
     if (((m - 1) | (n - 1) | (c - 1)) < 0) {

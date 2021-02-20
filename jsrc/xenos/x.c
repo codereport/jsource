@@ -141,7 +141,7 @@ jtforeign(J jt, A a, A w) {
         case XC(3, 3): return CDERIV(CIBEAM, jthexrep1, jthexrep2, VASGSAFE, RMAX, RMAX, RMAX);
         case XC(3, 4): return CDERIV(CIBEAM, 0, jtic2, VASGSAFE, RMAX, RMAX, RMAX);
         case XC(3, 5): return CDERIV(CIBEAM, 0, jtfc2, VASGSAFE, RMAX, RMAX, RMAX);
-        case XC(3, 6): return CDERIV(CIBEAM, jtlock1, jtlock2, VASGSAFE, RMAX, RMAX, RMAX);
+        case XC(3, 6): return CDERIV(CIBEAM, jtlock1, 0, VASGSAFE, RMAX, RMAX, RMAX);
         case XC(3, 10): return CDERIV(CIBEAM, jttobase64, 0, VASGSAFE, RMAX, RMAX, RMAX);
         case XC(3, 11): return CDERIV(CIBEAM, jtfrombase64, 0, VASGSAFE, RMAX, RMAX, RMAX);
 

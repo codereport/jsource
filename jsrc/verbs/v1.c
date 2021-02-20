@@ -113,14 +113,6 @@ jtequ(J jt, A a, A w) {
     return ((B(*)())jtmatchsub)(jt, a, w, 0 MATCHSUBDEFAULTS);  // don't check level - it takes too long for big arrays
 }
 
-// Return 1 if a and w match intolerantly, 0 if not
-B
-jtequ0(J jt, A a, A w) {
-    FPREFIP;  // allow inplace request - it has no effect
-    PUSHCCT(1.0) B res = jtequ(jt, a, w);
-    POPCCT return res;
-}
-
 // Test for equality of functions, 1 if they match.  To match, the functions must have the same pseudocharacter and fgh
 static B
 jteqf(J jt, A a, A w) {
