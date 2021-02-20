@@ -130,11 +130,8 @@ extern double rnd_prod(double, double), rnd_quot(double, double);
 
 #define FFFFFFFF 0xffffffffUL
 
-#ifndef Llong
-#define Llong long long
-#endif
 #ifndef ULLong
-#define ULLong unsigned Llong
+#define ULLong unsigned long long
 #endif
 
 #define Kmax 15
