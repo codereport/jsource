@@ -103,8 +103,6 @@
  */
 
 /* Options for use with J */
-#define ACQUIRE_DTOA_LOCK(n) /* handled by using jt */
-#define FREE_DTOA_LOCK(n)    /* handled by using jt */
 #define PRIVATE_MEM 8000
 
 #ifdef DEBUG
@@ -242,7 +240,6 @@ static Bigint *d2a_Balloc
     Bigint *rv;
     unsigned int len;
 
-    ACQUIRE_DTOA_LOCK(0);
     if (rv = freelist[k]) {
         freelist[k] = rv->next;
     } else {
@@ -256,7 +253,6 @@ static Bigint *d2a_Balloc
         rv->k      = k;
         rv->maxwds = x;
     }
-    FREE_DTOA_LOCK(0);
     rv->sign = rv->wds = 0;
     return rv;
 }
@@ -265,10 +261,8 @@ static void d2a_Bfree
  (struct dtoa_info *d2a, Bigint *v)
 {
     if (v) {
-        ACQUIRE_DTOA_LOCK(0);
         v->next        = freelist[v->k];
         freelist[v->k] = v;
-        FREE_DTOA_LOCK(0);
     }
 }
 
