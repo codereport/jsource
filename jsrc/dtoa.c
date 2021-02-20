@@ -130,10 +130,6 @@ extern double rnd_prod(double, double), rnd_quot(double, double);
 
 #define FFFFFFFF 0xffffffffUL
 
-#ifndef ULLong
-#define ULLong unsigned long long
-#endif
-
 #define Kmax 15
 
 #ifdef __cplusplus
@@ -213,13 +209,8 @@ static Bigint *d2a_multadd
  (struct dtoa_info *d2a, Bigint *b, int m, int a) /* multiply by m and add a */
 {
     int i, wds;
-#ifdef ULLong
     unsigned int *x;
-    ULLong carry, y;
-#else
-    unsigned int carry, *x, y;
-    unsigned int xi, z;
-#endif
+    unsigned long long carry, y;
     Bigint *b1;
 
     wds   = b->wds;
@@ -227,17 +218,9 @@ static Bigint *d2a_multadd
     i     = 0;
     carry = a;
     do {
-#ifdef ULLong
-        y     = *x * (ULLong)m + carry;
+        y     = *x * (unsigned long long)m + carry;
         carry = y >> 32;
         *x++  = (unsigned int)(y & FFFFFFFF);
-#else
-        xi = *x;
-        y = (xi & 0xffff) * m + carry;
-        z = (xi >> 16) * m + (y >> 16);
-        carry = z >> 16;
-        *x++ = (z << 16) + (y & 0xffff);
-#endif
     } while (++i < wds);
     if (carry) {
         if (wds >= b->maxwds) {
@@ -339,12 +322,7 @@ static Bigint *d2a_mult
     int k, wa, wb, wc;
     unsigned int *x, *xa, *xae, *xb, *xbe, *xc, *xc0;
     unsigned int y;
-#ifdef ULLong
-    ULLong carry, z;
-#else
-    unsigned int carry, z;
-    unsigned int z2;
-#endif
+    unsigned long long carry, z;
 
     if (a->wds < b->wds) {
         c = a;
@@ -363,49 +341,19 @@ static Bigint *d2a_mult
     xb  = b->x;
     xbe = xb + wb;
     xc0 = c->x;
-#ifdef ULLong
     for (; xb < xbe; xc0++) {
         if (y = *xb++) {
             x     = xa;
             xc    = xc0;
             carry = 0;
             do {
-                z     = *x++ * (ULLong)y + *xc + carry;
+                z     = *x++ * (unsigned long long)y + *xc + carry;
                 carry = z >> 32;
                 *xc++ = (unsigned int)(z & FFFFFFFF);
             } while (x < xae);
             *xc = (unsigned int)carry;
         }
     }
-#else
-    for (; xb < xbe; xb++, xc0++) {
-        if (y = *xb & 0xffff) {
-            x = xa;
-            xc = xc0;
-            carry = 0;
-            do {
-                z = (*x & 0xffff) * y + (*xc & 0xffff) + carry;
-                carry = z >> 16;
-                z2 = (*x++ >> 16) * y + (*xc >> 16) + carry;
-                carry = z2 >> 16;
-            } while (x < xae);
-            *xc = carry;
-        }
-        if (y = *xb >> 16) {
-            x = xa;
-            xc = xc0;
-            carry = 0;
-            z2 = *xc;
-            do {
-                z = (*x & 0xffff) * y + (*xc >> 16) + carry;
-                carry = z >> 16;
-                z2 = (*x++ >> 16) * y + (*xc & 0xffff) + carry;
-                carry = z2 >> 16;
-            } while (x < xae);
-            *xc = z2;
-        }
-    }
-#endif
     for (xc0 = c->x, xc = xc0 + wc; wc > 0 && !*--xc; --wc)
         ;
     c->wds = wc;
@@ -506,12 +454,7 @@ static Bigint *d2a_diff
     Bigint *c;
     int i, wa, wb;
     unsigned int *xa, *xae, *xb, *xbe, *xc;
-#ifdef ULLong
-    ULLong borrow, y;
-#else
-    unsigned int borrow, y;
-    unsigned int z;
-#endif
+    unsigned long long borrow, y;
 
     i = cmp(a, b);
     if (!i) {
@@ -537,9 +480,8 @@ static Bigint *d2a_diff
     xbe     = xb + wb;
     xc      = c->x;
     borrow  = 0;
-#ifdef ULLong
     do {
-        y      = (ULLong)*xa++ - *xb++ - borrow;
+        y      = (unsigned long long)*xa++ - *xb++ - borrow;
         borrow = y >> 32 & (unsigned int)1;
         *xc++  = (unsigned int)(y & FFFFFFFF);
     } while (xb < xbe);
@@ -548,20 +490,6 @@ static Bigint *d2a_diff
         borrow = y >> 32 & (unsigned int)1;
         *xc++  = (unsigned int)(y & FFFFFFFF);
     }
-#else
-    do {
-        y = (*xa & 0xffff) - (*xb & 0xffff) - borrow;
-        borrow = (y & 0x10000) >> 16;
-        z = (*xa++ >> 16) - (*xb++ >> 16) - borrow;
-        borrow = (z & 0x10000) >> 16;
-    } while (xb < xbe);
-    while (xa < xae) {
-        y = (*xa & 0xffff) - borrow;
-        borrow = (y & 0x10000) >> 16;
-        z = (*xa++ >> 16) - borrow;
-        borrow = (z & 0x10000) >> 16;
-    }
-#endif
     while (!*--xc) wa--;
     c->wds = wa;
     return c;
@@ -639,12 +567,7 @@ static int quorem
 {
     int n;
     unsigned int *bx, *bxe, q, *sx, *sxe;
-#ifdef ULLong
-    ULLong borrow, carry, y, ys;
-#else
-    unsigned int borrow, carry, y, ys;
-    unsigned int si, z, zs;
-#endif
+    unsigned long long borrow, carry, y, ys;
 
     n = S->wds;
 #ifdef DEBUG
@@ -665,22 +588,11 @@ static int quorem
         borrow = 0;
         carry  = 0;
         do {
-#ifdef ULLong
-            ys     = *sx++ * (ULLong)q + carry;
+            ys     = *sx++ * (unsigned long long)q + carry;
             carry  = ys >> 32;
             y      = *bx - (ys & FFFFFFFF) - borrow;
             borrow = y >> 32 & (unsigned int)1;
             *bx++  = (unsigned int)(y & FFFFFFFF);
-#else
-            si = *sx++;
-            ys = (si & 0xffff) * q + carry;
-            zs = (si >> 16) * q + (ys >> 16);
-            carry = zs >> 16;
-            y = (*bx & 0xffff) - (ys & 0xffff) - borrow;
-            borrow = (y & 0x10000) >> 16;
-            z = (*bx >> 16) - (zs & 0xffff) - borrow;
-            borrow = (z & 0x10000) >> 16;
-#endif
         } while (sx <= sxe);
         if (!*bxe) {
             bx = b->x;
@@ -695,22 +607,11 @@ static int quorem
         bx     = b->x;
         sx     = S->x;
         do {
-#ifdef ULLong
             ys     = *sx++ + carry;
             carry  = ys >> 32;
             y      = *bx - (ys & FFFFFFFF) - borrow;
             borrow = y >> 32 & (unsigned int)1;
             *bx++  = (unsigned int)(y & FFFFFFFF);
-#else
-            si = *sx++;
-            ys = (si & 0xffff) + carry;
-            zs = (si >> 16) + (ys >> 16);
-            carry = zs >> 16;
-            y = (*bx & 0xffff) - (ys & 0xffff) - borrow;
-            borrow = (y & 0x10000) >> 16;
-            z = (*bx >> 16) - (zs & 0xffff) - borrow;
-            borrow = (z & 0x10000) >> 16;
-#endif
         } while (sx <= sxe);
         bx  = b->x;
         bxe = bx + n;
