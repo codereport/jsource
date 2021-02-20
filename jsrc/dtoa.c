@@ -123,20 +123,6 @@
  * is not strictly legal and can cause trouble with aggressively
  * optimizing compilers (e.g., gcc 2.95.1 under -O2).
  * #define USE_LOCALE to use the current locale's decimal_point value.
- * #define SET_INEXACT if IEEE arithmetic is being used and extra
- * computation should be done to set the inexact flag when the
- * result is inexact and avoid setting inexact when the result
- * is exact.  In this case, dtoa.c must be compiled in
- * an environment, perhaps provided by #include "dtoa.c" in a
- * suitable wrapper, that defines two functions,
- *  int get_inexact(void);
- *  void clear_inexact(void);
- * such that get_inexact() returns a nonzero value if the
- * inexact bit is already set, and clear_inexact() sets the
- * inexact bit to 0.  When SET_INEXACT is #defined, strtod
- * also does extra computations to set the underflow and overflow
- * flags when appropriate (i.e., when the result is tiny and
- * inexact or when it is a numeric value rounded to +-infinity).
  * #define NO_ERRNO if strtod should not assign errno = ERANGE when
  * the result overflows to +-Infinity or underflows to 0.
  */
@@ -1167,9 +1153,6 @@ static char *d2a_dtoa
     Bigint *b, *b1, *delta, *mlo, *mhi, *S;
     double d2, ds, eps;
     char *s, *s0;
-#ifdef SET_INEXACT
-    int inexact, oldinexact;
-#endif
 
     if (word0(d) & Sign_bit) {
         /* set sign for everything, including 0's and NaNs */
@@ -1189,11 +1172,6 @@ static char *d2a_dtoa
         *decpt = 1;
         return nrv_alloc("0", rve, 1);
     }
-
-#ifdef SET_INEXACT
-    try_quick = oldinexact = get_inexact();
-    inexact                = 1;
-#endif
 
     b = d2b(dval(d), &be, &bbits);
 #ifdef Sudden_Underflow
@@ -1269,9 +1247,7 @@ if (k >= 0) {
 }
 if (mode < 0 || mode > 9) mode = 0;
 
-#ifndef SET_INEXACT
 try_quick = 1;
-#endif /*SET_INEXACT*/
 
 if (mode > 5) {
     mode -= 4;
@@ -1411,9 +1387,6 @@ if (be >= 0 && k <= Int_max) {
         dval(d) -= L * ds;
         *s++ = '0' + (int)L;
         if (!dval(d)) {
-#ifdef SET_INEXACT
-            inexact = 0;
-#endif
             break;
         }
         if (i == ilim) {
@@ -1556,10 +1529,6 @@ if (leftright) {
         if (j1 == 0 && mode != 1 && !(word1(d) & 1)) {
             if (dig == '9') goto round_9_up;
             if (j > 0) dig++;
-#ifdef SET_INEXACT
-            else if (!b->x[0] && b->wds <= 1)
-                inexact = 0;
-#endif
             *s++ = dig;
             goto ret;
         }
@@ -1570,9 +1539,6 @@ if (leftright) {
 #endif
         ) {
             if (!b->x[0] && b->wds <= 1) {
-#ifdef SET_INEXACT
-                inexact = 0;
-#endif
                 goto accept_dig;
             }
             if (j1 > 0) {
@@ -1607,9 +1573,6 @@ if (leftright) {
     for (i = 1;; i++) {
         *s++ = dig = quorem(b, S) + '0';
         if (!b->x[0] && b->wds <= 1) {
-#ifdef SET_INEXACT
-            inexact = 0;
-#endif
             goto ret;
         }
         if (i >= ilim) break;
@@ -1640,15 +1603,6 @@ if (mhi) {
     Bfree(mhi);
 }
 ret1 :
-#ifdef SET_INEXACT
-  if (inexact) {
-    if (!oldinexact) {
-        word1(d) = 0;
-        dval(d) += 1.;
-    }
-}
-else if (!oldinexact) clear_inexact();
-#endif
 Bfree(b);
 /* *s = 0; */ /* don't NUL terminate */
 *decpt = k + 1;
