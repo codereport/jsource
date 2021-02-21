@@ -223,8 +223,10 @@ jtconsinit(J jt) {
     return 1;
 }
 
-static C
-jtjinit3(J jt) {
+C
+jtjinit2(J jt) {
+    jt->sesm = 1;
+
     /* required for jdll and doesn't hurt others */
     memcpy(jt->typesizes, typesizes, sizeof(jt->typesizes));  // required for ma.
     memcpy(jt->typepriority,
@@ -250,11 +252,6 @@ jtjinit3(J jt) {
     // doesn't look like those symbols have a free outstanding.
     jt->tnextpushp =
       (A *)(((I)jt->tstackcurr + NTSTACKBLOCK) & (-NTSTACKBLOCK)) + 1;  // first store is to entry 1 of the first block
-    return !jt->jerr;
-}
 
-C
-jtjinit2(J jt) {
-    jt->sesm = 1;
-    return jtjinit3(jt);
+    return !jt->jerr;
 }
