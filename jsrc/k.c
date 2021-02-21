@@ -525,10 +525,10 @@ jtccvt(J jt, I tflagged, A w, A *y) {
     // For branch-table efficiency, we split the C2T and C4T and BIT conversions into one block, and
     // the rest in another
     if ((t | wt) &
-        (C2T + C4T + BIT + SBT + XD + XZ)) {  // there are no SBT+XD+XZ conversions, but we have to show domain error
+        (C2T + C4T + BIT + SBT + XD)) {  // there are no SBT+XD conversions, but we have to show domain error
         // we must account for all NOUN types.  Low 8 bits have most of them, and we know type can't be sparse.  This
         // picks up the others
-        ASSERT(!((t | wt) & (SBT + XD + XZ)), EVDOMAIN);  // No conversions for these types
+        ASSERT(!((t | wt) & (SBT + XD)), EVDOMAIN);  // No conversions for these types
         switch (CVCASE(CTTZ(t), CTTZ(wt))) {
             case CVCASE(LITX, C2TX): return jtC1fromC2(jt, w, yv);
             case CVCASE(LITX, C4TX): return jtC1fromC4(jt, w, yv);
@@ -757,7 +757,7 @@ jtxco2(J jt, A a, A w) {
             memcpy(AV(z), AV(w), 2 * n * SZI);
             return z;
         case 3:
-            ASSERT(t & XD + XZ, EVDOMAIN);
+            ASSERT(t & XD, EVDOMAIN);
             b = (~t >> XDX) & 1;  // b=NOT XD
             GATV0(z, INT, n << b, r + b);
             s = AS(z);
@@ -766,17 +766,12 @@ jtxco2(J jt, A a, A w) {
             zv = AV(z);
             zu = n + zv;
             wv = AV(w);
-            if (t & XD) {
-                DX *v = (DX *)wv;
-                DQ(n, *zv++ = v->p;);
-            } else {
-                ZX *v = (ZX *)wv, y;
-                DQ(n, y = *v++; *zv++ = y.re.p; *zu++ = y.im.p;);
-            }
+            DX *v = (DX *)wv;
+            DQ(n, *zv++ = v->p;);
             return z;
         default:
             ASSERT(20 <= j, EVDOMAIN);
-            GA(z, t & CMPX ? XZ : XD, n, r, AS(w));
+            GA(z, XD, n, r, AS(w));
             if (t & INT) {
                 RZ(DXfI(j, w, (DX *)AV(z)));
                 return z;

@@ -460,6 +460,7 @@ jtthxqe(J jt, A w) {
     dv = AV(d);
     v  = tv;
     switch (CTTZ(AT(w))) {
+        default: ASSERT(0, EVNONCE); break;
         case XNUMX: {
             X *u = (X *)wv;
             DO(m, DO(c, RZ(*v++ = y = jtthx1(jt, *u++)); dv[i] = MAX(dv[i], AN(y));));
@@ -468,26 +469,10 @@ jtthxqe(J jt, A w) {
             Q *u = (Q *)wv;
             DO(m, DO(c, RZ(*v++ = y = jtthq1(jt, *u++)); dv[i] = MAX(dv[i], AN(y));));
         } break;
-#ifdef UNDER_CE
-        default:
-            if (AT(w) & XD) {
-                DX *u = (DX *)wv;
-                DO(m, DO(c, RZ(*v++ = y = jtthdx1(jt, *u++)); dv[i] = MAX(dv[i], AN(y));));
-            } else {
-                ZX *u = (ZX *)wv;
-                ASSERT(0, EVNONCE);
-            }
-            break;
-#else
         case XDX: {
             DX *u = (DX *)wv;
             DO(m, DO(c, RZ(*v++ = y = jtthdx1(jt, *u++)); dv[i] = MAX(dv[i], AN(y));));
         } break;
-        case XZX: {
-            ZX *u = (ZX *)wv;
-            ASSERT(0, EVNONCE);
-        } break;
-#endif
     }
     --dv[c - 1];
     p = 0;
@@ -886,22 +871,10 @@ jtthorn1main(J jt, A w, A prxthornuni) {
         GATV(z, LIT, 0, AR(w), AS(w))
     else
         switch (CTTZ(AT(w))) {
-#ifdef UNDER_CE
-            default:
-                if (AT(w) & XD + XZ)
-                    z = jtthxqe(jt, w);
-                else
-                    return 0;
-                break;
-            case XNUMX:
-            case RATX: z = jtthxqe(jt, w); break;
-#else
             default: return 0;
             case XNUMX:
             case RATX:
-            case XDX:
-            case XZX: z = jtthxqe(jt, w); break;
-#endif
+            case XDX: z = jtthxqe(jt, w); break;
             case B01X: z = jtthb(jt, w); break;
             case LITX:
                 // If we are producing byte output, we simply return the input.
