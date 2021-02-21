@@ -3054,7 +3054,7 @@ A
 jtmema(J jt, A w) {
     I k;
     RE(k = jti0(jt, w));
-    return jtsc(jt, (I)MALLOC(k));
+    return jtsc(jt, (I)malloc(k));
 } /* ce */
 /* 15!:3  memory allocate */
 
@@ -3062,7 +3062,7 @@ A
 jtmemf(J jt, A w) {
     I k;
     RE(k = jti0(jt, w));
-    FREE((void *)k);
+    free((void *)k);
     return num(0);
 }
 /* 15!:4  memory free */

@@ -58,8 +58,6 @@
 // the size of the total allocation of the block for w, always a power of 2
 #define alloroundsize(w) FHRHSIZE(AFHRH(w))
 
-#define FREECHK(x) FREE(x)
-
 static void jttraverse(J, A, AF);
 
 // Return the total length of the data area of y, i. e. the number of bytes from start-of-data to end-of-allocation
@@ -81,7 +79,7 @@ B
 jtmeminit(J jt) {
     I k, m = MLEN;
     if (jt->tstackcurr == 0) {  // meminit gets called twice.  Alloc the block only once
-        jt->tstackcurr    = (A*)MALLOC(NTSTACK + NTSTACKBLOCK);  // save address of first allocation
+        jt->tstackcurr    = (A*)malloc(NTSTACK + NTSTACKBLOCK);  // save address of first allocation
         jt->malloctotal   = NTSTACK + NTSTACKBLOCK;
         jt->tnextpushp    = (A*)(((I)jt->tstackcurr + NTSTACKBLOCK) &
                               (-NTSTACKBLOCK));  // get address of aligned block AFTER the first word
@@ -178,7 +176,7 @@ jtspfree(J jt) {
                 A np        = AFPROXYCHAIN(p);               // next-in-chain
                 A baseblock = FHRHROOTADDR(p, offsetmask);   // get address of corresponding base block
                 if (FHRHISROOTALLOFREE(AFHRH(baseblock))) {  // Free fully-unused base blocks;
-                    FREECHK(
+                    free(
                       ((I**)
                          baseblock)[-1]);  // If aligned, the word before the block points to the original block address
                     jt->malloctotal -= PSIZE + CACHELINESIZE;  // return storage+bdy
@@ -902,7 +900,7 @@ jttg(J jt, A* pushp) {  // Filling last slot; must allocate next page.
             A* v;  // no page to move to - better read one
             // We don't account for the NTSTACK blocks as part of memory space used, because it's so unpredictable and
             // large as to be confusing
-            if (!(v = MALLOC(NTSTACK + NTSTACKBLOCK))) {  // Allocate block, with padding so we can have NTSTACK words
+            if (!(v = malloc(NTSTACK + NTSTACKBLOCK))) {  // Allocate block, with padding so we can have NTSTACK words
                                                           // on a block bdy AFTER the first word (which is a chain)
                 // Unable to allocate a new block.  This is catastrophic, because we have done ra for blocks that we
                 // will now not be able to tpop.  Memory is going to be lost.  The best we can do is prevent a crash.
@@ -991,7 +989,7 @@ jttpop(J jt, A* old) {
             if ((A*)np != pushp - 1) {
                 // if there is another block in this allocation, step to it.  Otherwise:
                 if (jt->tstacknext) {
-                    FREECHK(jt->tstacknext);
+                    free(jt->tstacknext);
                     jt->malloctotal -= NTSTACK + NTSTACKBLOCK;
                 }  // account for malloc'd memory
                 // We will set the block we are vacating as the next-to-use.  We can have only 1 such; if there is one
@@ -1070,7 +1068,7 @@ jtgaf(J jt, I blockx) {
                 I nt = jt->malloctotal;  // small block, but chain is empty.  Alloc PSIZE and split it into blocks
                 // align the buffer list on a cache-line boundary
                 I* v;
-                ASSERT(v = MALLOC(PSIZE + CACHELINESIZE), EVWSFULL);
+                ASSERT(v = malloc(PSIZE + CACHELINESIZE), EVWSFULL);
                 z            = (A)(((I)v + CACHELINESIZE) & -CACHELINESIZE);  // get cache-aligned section
                 ((I**)z)[-1] = v;  // save address of entire allocation in the word before the aligned section
                 nt += PSIZE + CACHELINESIZE;  // add to total allocated
@@ -1100,7 +1098,7 @@ jtgaf(J jt, I blockx) {
             I nt   = jt->malloctotal;   // here for non-pool allocs...
             mfreeb = jt->mfreegenallo;  // bytes in large allocations
             // Allocate without alignment
-            ASSERT(z = MALLOC(n), EVWSFULL);
+            ASSERT(z = malloc(n), EVWSFULL);
             nt += n;
             {
                 I ot                = jt->malloctotalhwmk;
@@ -1207,7 +1205,7 @@ jtmf(J jt, A w) {
     } else {  // buffer allocated from subpool.
         mfreeb    = jt->mfreegenallo;
         allocsize = FHRHSYSSIZE(hrh);
-        FREECHK(w);  // point to initial allocation and free it
+        free(w);  // point to initial allocation and free it
         jt->malloctotal -= allocsize;
         jt->mfreegenallo = mfreeb - allocsize;
     }
@@ -1322,8 +1320,8 @@ jtclonevirtual(J jt, A w) {
 B
 jtspc(J jt) {
     A z;
-    RZ(z = MALLOC(1000));
-    FREECHK(z);
+    RZ(z = malloc(1000));
+    free(z);
     return 1;
 }  // see if 1000 bytes are available before we embark on error display
 
