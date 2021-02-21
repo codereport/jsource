@@ -148,7 +148,7 @@ jttk(J jt, A a, A w) {
     r = AR(w);
     s = AS(w);
     t = AT(w);
-    if ((t & SPARSE) != 0) return jttks(jt, a, w);
+    if (is_sparse(w)) return jttks(jt, a, w);
     DO(
       n, if (!u[i]) {
           b = 1;
@@ -201,8 +201,8 @@ jttake(J jt, A a, A w) {
     FPREFIP;
     if (!(a && w)) return 0;
     I wt = AT(w);  // wt=type of w
-    if ((SPARSE & AT(a)) != 0) RZ(a = jtdenseit(jt, a));
-    if (!(SPARSE & wt)) RZ(w = jtsetfv(jt, w, w));
+    if (is_sparse(a)) RZ(a = jtdenseit(jt, a));
+    if (!is_sparse(w)) RZ(w = jtsetfv(jt, w, w));
     ar  = AR(a);
     acr = jt->ranks >> RANKTX;
     acr = ar < acr ? ar : acr;
@@ -249,8 +249,8 @@ jttake(J jt, A a, A w) {
         }
     }
     a = s;
-    // correct if(!(ar|wf|(SPARSE&wt)|!wcr|(AFLAG(w)&(AFNJA)))){  // if there is only 1 take axis, w has no frame and is
-    // not atomic
+    // correct if(!(ar|wf|is_sparse(w)|!wcr|(AFLAG(w)&(AFNJA)))){  // if there is only 1 take axis, w has no frame and
+    // is not atomic
     if (!(ar | wf | ((NOUN & ~(DIRECT | RECURSIBLE)) & wt) | !wcr |
           (AFLAG(w) & (AFNJA)))) {  // if there is only 1 take axis, w has no frame and is not atomic  NJAwhy
         // if the length of take is within the bounds of the first axis
@@ -324,8 +324,8 @@ jtdrop(J jt, A a, A w) {
     n = AN(a);
     u = AV(a);  // n=#axes to drop, u->1st axis
     // virtual case: scalar a
-    // correct if(!(ar|wf|(SPARSE&wt)|!wcr|(AFLAG(w)&(AFNJA)))){  // if there is only 1 take axis, w has no frame and is
-    // not atomic
+    // correct if(!(ar|wf|is_sparse(w)|!wcr|(AFLAG(w)&(AFNJA)))){  // if there is only 1 take axis, w has no frame and
+    // is not atomic
     if (!(ar | wf | ((NOUN & ~(DIRECT | RECURSIBLE)) & wt) | !wcr |
           (AFLAG(w) & (AFNJA)))) {   // if there is only 1 take axis, w has no frame and is not atomic  BJAwhy
         I* RESTRICT ws = AS(w);      // ws->shape of w
@@ -427,9 +427,9 @@ jthead(J jt, A w) {
             return jtfrom(jtinplace, zeroionei(0), w);  // could call jtfromi directly for non-sparse w
         }
     } else {
-        return SPARSE & AT(w) ? jtirs2(jt, num(0), jttake(jt, num(1), w), 0L, 0L, wcr, reinterpret_cast<AF>(jtfrom))
-                              : jtrsh0(jt, w);  // cell of w is empty - create a cell of fills  jt->ranks is still set
-                                                // for use in take.  Left rank is garbage, but that's OK
+        return is_sparse(w) ? jtirs2(jt, num(0), jttake(jt, num(1), w), 0L, 0L, wcr, reinterpret_cast<AF>(jtfrom))
+                            : jtrsh0(jt, w);  // cell of w is empty - create a cell of fills  jt->ranks is still set
+                                              // for use in take.  Left rank is garbage, but that's OK
     }
     // pristinity from the called verb
 }
@@ -445,7 +445,7 @@ jttail(J jt, A w) {
     return !wcr || AS(w)[wf] ? jtfrom(jtinplace, num(-1), w)
                              :  // if cells are atoms, or if the cells are nonempty arrays, result is last cell(s) scaf
                                 // should generate virtual block here for speed
-             SPARSE & AT(w) ? jtirs2(jt, num(0), jttake(jt, num(-1), w), 0L, 0L, wcr, reinterpret_cast<AF>(jtfrom))
-                            : jtrsh0(jt, w);
+             is_sparse(w) ? jtirs2(jt, num(0), jttake(jt, num(-1), w), 0L, 0L, wcr, reinterpret_cast<AF>(jtfrom))
+                          : jtrsh0(jt, w);
     // pristinity from other verbs
 }
