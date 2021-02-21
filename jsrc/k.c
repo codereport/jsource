@@ -417,35 +417,6 @@ jtZfromD(J jt, A w, void *yv) {
     DQ(AN(w), zv++->re = *wv++;) return 1;
 }
 
-static B
-jtDXfI(J jt, I p, A w, DX *x) {
-    B b;
-    I e, c, d, i, j, n, r, u[XIDIG], *v;
-    n = AN(w);
-    v = AV(w);
-    for (i = 0; i < n; ++i) {
-        c = v[i];
-        b = c == IMIN;
-        d = b ? -(1 + c) : ABS(c);
-        j = 0;
-        DO(XIDIG, u[i] = r = d % XBASE; d /= XBASE; if (r) j = i;);
-        ++j;
-        *u += b;
-        e = XBASEN * (j - 1);
-        d = u[j - 1];
-        while (d) {
-            ++e;
-            d /= 10;
-        }
-        if (0 > c) DO(j, u[i] = -u[i];);
-        x[i].e = e;
-        x[i].p = p;
-        x[i].x = vec(INT, j, u);
-        ;
-    }
-    return !jt->jerr;
-}
-
 // Convert the data in w to the type t.  w and t must be noun types.  A new buffer is always created (with a
 // copy of the data if w is already of the right type), and returned in *y.  Result is
 // 0 if error, 1 if success.  If the conversion loses precision, error is returned
@@ -525,10 +496,10 @@ jtccvt(J jt, I tflagged, A w, A *y) {
     // For branch-table efficiency, we split the C2T and C4T and BIT conversions into one block, and
     // the rest in another
     if ((t | wt) &
-        (C2T + C4T + BIT + SBT + XD + XZ)) {  // there are no SBT+XD+XZ conversions, but we have to show domain error
+        (C2T + C4T + BIT + SBT)) {  // there are no SBT conversions, but we have to show domain error
         // we must account for all NOUN types.  Low 8 bits have most of them, and we know type can't be sparse.  This
         // picks up the others
-        ASSERT(!((t | wt) & (SBT + XD + XZ)), EVDOMAIN);  // No conversions for these types
+        ASSERT(!((t | wt) & SBT), EVDOMAIN);  // No conversions for these types
         switch (CVCASE(CTTZ(t), CTTZ(wt))) {
             case CVCASE(LITX, C2TX): return jtC1fromC2(jt, w, yv);
             case CVCASE(LITX, C4TX): return jtC1fromC4(jt, w, yv);
@@ -756,31 +727,7 @@ jtxco2(J jt, A a, A w) {
             AS(z)[r] = 2;
             memcpy(AV(z), AV(w), 2 * n * SZI);
             return z;
-        case 3:
-            ASSERT(t & XD + XZ, EVDOMAIN);
-            b = (~t >> XDX) & 1;  // b=NOT XD
-            GATV0(z, INT, n << b, r + b);
-            s = AS(z);
-            if (b) *s++ = 2;
-            MCISH(s, AS(w), r);
-            zv = AV(z);
-            zu = n + zv;
-            wv = AV(w);
-            if (t & XD) {
-                DX *v = (DX *)wv;
-                DQ(n, *zv++ = v->p;);
-            } else {
-                ZX *v = (ZX *)wv, y;
-                DQ(n, y = *v++; *zv++ = y.re.p; *zu++ = y.im.p;);
-            }
-            return z;
         default:
-            ASSERT(20 <= j, EVDOMAIN);
-            GA(z, t & CMPX ? XZ : XD, n, r, AS(w));
-            if (t & INT) {
-                RZ(DXfI(j, w, (DX *)AV(z)));
-                return z;
-            }
-            ASSERT(0, EVNONCE);
+            ASSERT(0, EVDOMAIN);
     }
 }

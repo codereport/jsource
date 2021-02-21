@@ -404,46 +404,6 @@ jtthq1(J jt, Q y) {
 }
 
 static A
-jtthdx1(J jt, DX y) {
-    A x, z;
-    B b;
-    C *s, s1[2 + XBASEN], s2[20];
-    I e, n, p, p1, p2, *v;
-    e = y.e - 1;
-    x = y.x;
-    p = y.p;
-    n = AN(x);
-    v = AV(x) + n - 1;
-    b = 0 > *v;
-    if (p == DXINF)
-        return jtcstr(jt, "_");
-    else if (p == DXMINF)
-        return jtcstr(jt, "__");
-    sprintf(s1, FMTI, b ? -*v : *v);
-    p1 = strlen(s1);
-    if (e && *v) {
-        s    = s2;
-        *s++ = 'e';
-        if (0 > e) *s++ = CSIGN;
-        sprintf(s, FMTI, 0 < e ? e : -e);
-        p2 = strlen(s2);
-    } else
-        p2 = 0;
-    GATV0(z, LIT, b + p1 + (I)(1 < p1) + XBASEN * (n - 1) + p2, 1);
-    s = CAV(z);
-    if (b) *s++ = CSIGN;
-    *s++ = *s1;
-    if (1 < p1) {
-        *s++ = '.';
-        memcpy(s, 1 + s1, p1 - 1);
-        s += p1 - 1;
-    }
-    DQ(n - 1, --v; I j = *v; j = b ? -j : j; sprintf(s, FMTI04, j); s += XBASEN;);
-    memcpy(s, s2, p2);
-    return z;
-}
-
-static A
 jtthxqe(J jt, A w) {
     A d, t, *tv, *v, y, z;
     C *zv;
@@ -460,6 +420,7 @@ jtthxqe(J jt, A w) {
     dv = AV(d);
     v  = tv;
     switch (CTTZ(AT(w))) {
+        default: ASSERT(0, EVNONCE); break;
         case XNUMX: {
             X *u = (X *)wv;
             DO(m, DO(c, RZ(*v++ = y = jtthx1(jt, *u++)); dv[i] = MAX(dv[i], AN(y));));
@@ -468,26 +429,6 @@ jtthxqe(J jt, A w) {
             Q *u = (Q *)wv;
             DO(m, DO(c, RZ(*v++ = y = jtthq1(jt, *u++)); dv[i] = MAX(dv[i], AN(y));));
         } break;
-#ifdef UNDER_CE
-        default:
-            if (AT(w) & XD) {
-                DX *u = (DX *)wv;
-                DO(m, DO(c, RZ(*v++ = y = jtthdx1(jt, *u++)); dv[i] = MAX(dv[i], AN(y));));
-            } else {
-                ZX *u = (ZX *)wv;
-                ASSERT(0, EVNONCE);
-            }
-            break;
-#else
-        case XDX: {
-            DX *u = (DX *)wv;
-            DO(m, DO(c, RZ(*v++ = y = jtthdx1(jt, *u++)); dv[i] = MAX(dv[i], AN(y));));
-        } break;
-        case XZX: {
-            ZX *u = (ZX *)wv;
-            ASSERT(0, EVNONCE);
-        } break;
-#endif
     }
     --dv[c - 1];
     p = 0;
@@ -886,22 +827,9 @@ jtthorn1main(J jt, A w, A prxthornuni) {
         GATV(z, LIT, 0, AR(w), AS(w))
     else
         switch (CTTZ(AT(w))) {
-#ifdef UNDER_CE
-            default:
-                if (AT(w) & XD + XZ)
-                    z = jtthxqe(jt, w);
-                else
-                    return 0;
-                break;
-            case XNUMX:
-            case RATX: z = jtthxqe(jt, w); break;
-#else
             default: return 0;
             case XNUMX:
-            case RATX:
-            case XDX:
-            case XZX: z = jtthxqe(jt, w); break;
-#endif
+            case RATX: z = jtthxqe(jt, w); break;
             case B01X: z = jtthb(jt, w); break;
             case LITX:
                 // If we are producing byte output, we simply return the input.
