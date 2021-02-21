@@ -680,7 +680,7 @@ JInit(void) {
     RZ(jtnobdy = malloc(sizeof(JST) + JTALIGNBDY - 1));
     J jt = (J)(((I)jtnobdy + JTALIGNBDY - 1) & -JTALIGNBDY);  // force to SDRAM page boundary
     memset(jt, 0, sizeof(JST));
-    if (!jtjinit2(jt, 0, 0)) {
+    if (!jtjinit2(jt)) {
         free(jtnobdy);
         return 0;
     };
