@@ -254,7 +254,7 @@ jtjinit3(J jt) {
 }
 
 C
-jtjinit2(J jt, int dummy0, C **dummy1) {
+jtjinit2(J jt) {
     jt->sesm = 1;
     return jtjinit3(jt);
 }

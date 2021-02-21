@@ -619,7 +619,7 @@ extern A jtirs1(J, A, A, I, AF);
 extern A jtirs2(J, A, A, A, I, I, AF);
 extern A jtjerrno(J);
 extern A jtjgets(J, C*);
-extern C jtjinit2(J, int, C**);
+extern C jtjinit2(J);
 extern A jtinv(J, A, I);  // second arg is forced to 0 for initial call
 extern F jtjope(J, A, C*);
 extern L* jtjset(J, C*, A);
