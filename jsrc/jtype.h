@@ -256,7 +256,6 @@ enum {
     SBTX      = 16,
     C2TX      = 17,
     C4TX      = 18,
-    XDX       = 19,
     LASTNOUNX = 20,  // index of last noun bit
     ASGNX     = 21,
     MARKX     = 22,
@@ -292,8 +291,6 @@ enum {
     SBT   = ((I)1L << SBTX),    // SB symbol
     C2T   = ((I)1L << C2TX),    // C2 unicode (2-byte characters)
     C4T   = ((I)1L << C4TX),    // C4 unicode (4-byte characters)
-    XD    = ((I)1L << XDX),     // DX extended floating point
-                                //    used to represent intolerant compare in jtiosc
     // END of nouns
 
     ASGN = ((I)1L << ASGNX),  // I  assignment
@@ -335,7 +332,6 @@ enum {
 #define SBTSIZE sizeof(SB)
 #define C2TSIZE sizeof(US)
 #define C4TSIZE sizeof(C4)
-#define XDSIZE sizeof(DX)
 // End of noun sizes
 
 #define ASGNSIZE sizeof(I)  // only 1 byte, but all non-DIRECT are fullword multiples
@@ -621,25 +617,6 @@ typedef struct DS {   /* 1 2 3                                                  
 } DST;
 
 typedef DST* DC;
-
-typedef struct {
-    I e, p;
-    X x;
-} DX;
-/* for the p field in DX */
-#define DXINF ((I)-2)  /* _  infinity           */
-#define DXMINF ((I)-3) /* __ negative infinity  */
-
-/* extended floating point                                                 */
-/* e - exponent                                                            */
-/* p - precision & other codes                                             */
-/*        +ve   # of significant digits                                    */
-/*        _1    infinite precision (with trailing 0s)                      */
-/*        _2    infinity _                                                 */
-/*        _3    negative infinity __                                       */
-/* x - mantissa                                                            */
-/*        least significant digit first                                    */
-/*        decimal point after last digit                                   */
 
 #define SYMLINFO 0  // index of LINFO entry
 #define SYMLINFOSIZE \

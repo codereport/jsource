@@ -52,7 +52,6 @@ jtfillv(J jt, I t, I n, C *v) {
         case INTX:
         case FLX:
         case CMPXX:
-        case XDX:
         case SB01X:
         case SFLX:
         case SCMPXX:

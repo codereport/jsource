@@ -435,10 +435,6 @@ jttraverse(J jt, A wd, AF f) {
             if (v->fgh[1]) CALL1(f, v->fgh[1], 0L);
             if (v->fgh[2]) CALL1(f, v->fgh[2], 0L);
         } break;
-        case XDX: {
-            DX* v = (DX*)AV(wd);
-            DQ(AN(wd), if (v->x) CALL1(f, v->x, 0L); ++v;);
-        } break;
         case RATX: {
             A* v = AAV(wd);
             DQ(2 * AN(wd), if (*v) CALL1(f, *v++, 0L););
@@ -764,7 +760,7 @@ jtra(AD* RESTRICT wd, I t) {
         raonlys(v->fgh[0]);
         raonlys(v->fgh[1]);
         raonlys(v->fgh[2]);
-    } else if (t & (RAT | XNUM | XD)) {
+    } else if (t & (RAT | XNUM)) {
         A* RESTRICT v = AAV(wd);
         // single-level indirect forms.  handle each block
         DQ(t & RAT ? 2 * n : n, if (*v) ACINCR(*v); ++v;);
@@ -808,7 +804,7 @@ jtfa(J jt, AD* RESTRICT wd, I t) {
         fana(v->fgh[0]);
         fana(v->fgh[1]);
         fana(v->fgh[2]);
-    } else if (t & (RAT | XNUM | XD)) {
+    } else if (t & (RAT | XNUM)) {
         A* RESTRICT v = AAV(wd);
         // single-level indirect forms.  handle each block
         DQ(t & RAT ? 2 * n : n, if (*v) fr(*v); ++v;);
@@ -861,7 +857,7 @@ jttpush(J jt, AD* RESTRICT wd, I t, A* pushp) {
         if (v->fgh[0]) tpushi(v->fgh[0]);
         if (v->fgh[1]) tpushi(v->fgh[1]);
         if (v->fgh[2]) tpushi(v->fgh[2]);
-    } else if (t & (RAT | XNUM | XD)) {
+    } else if (t & (RAT | XNUM)) {
         A* RESTRICT v = AAV(wd);
         // single-level indirect forms.  handle each block
         DQ(t & RAT ? 2 * n : n, if (*v) tpushi(*v); ++v;);
