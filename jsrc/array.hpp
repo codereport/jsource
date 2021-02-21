@@ -9,9 +9,8 @@ using array   = A;           // potentially rename to j_array?
 using shape_t = long long*;  // TODO figure out how to turn this into int64_t
 using rank_t  = unsigned short;
 
-// TODO: will targ be a int64_t in all cases
-// TODO: probably certain uses of the SETIC macro use targ after the function
-//       will need to create second function in that case
+// TODO: probably certain uses of the SETIC macro use the second argument after
+//       the function will need to create second function in that case
 [[nodiscard]] inline auto
 item_count(array w) {
     // if you have a non-zero rank (aka not a scalar), take first element of shape
