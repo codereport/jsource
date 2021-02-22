@@ -33,6 +33,11 @@ xor_replicate_sign(int64_t x) noexcept -> int64_t {
     return x < 0 ? (-1 * x) - 1 : x;
 }
 
+[[nodiscard]] constexpr auto
+applicable_for_num(int64_t n) noexcept -> bool {
+    return NUMMIN <= n && n <= NUMMAX;
+}
+
 /**
  * @param n C representation of number, valid range [NUMMIN, NUMMAX]
  * @return  The J representation of the integer
@@ -100,7 +105,7 @@ make_array(J jt, int64_t n, rank_t r, shape_t s) -> array {
 template <typename T>
 [[nodiscard]] inline auto
 make_scalar_integer(J jt, T k) -> array {
-    if (xor_replicate_sign(k) <= NUMMAX) return num(k);
+    if (applicable_for_num(k)) return num(k);
     array z = make_array<T, copy_shape_0>(jt, 1, 0);
     set_value_at(z, 0, k);
     return z;
