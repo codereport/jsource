@@ -30,11 +30,6 @@ xor_replicate_sign(int64_t x) noexcept -> int64_t {
     return x < 0 ? (-1 * x) - 1 : x;
 }
 
-[[nodiscard]] constexpr auto
-zero_or_one(int64_t n) noexcept -> bool {
-    return n == 0 || n == 1;
-}
-
 // TODO: refactor me
 [[nodiscard]] inline auto
 refactorme_num(int64_t n) {
