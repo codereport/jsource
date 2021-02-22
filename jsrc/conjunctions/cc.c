@@ -578,7 +578,7 @@ jtcut2sx(J jt, A a, A w, A self) {
     neg = 0 > m;
     pfx = m == 1 || m == -1;
     b   = neg && pfx;  // m = n from u;.n
-    RZ(a = a == mark ? jteps(jt, w, jttake(jt, num(pfx ? 1 : -1), w)) : DENSE & AT(a) ? jtsparse1(jt, a) : a);
+    RZ(a = a == mark ? jteps(jt, w, jttake(jt, numbool(pfx ? 1 : -1), w)) : DENSE & AT(a) ? jtsparse1(jt, a) : a);
     ASSERT(n == AS(a)[0], EVLENGTH);
     ap = PAV(a);
     if (!(jtequ(jt, num(0), SPA(ap, e)) && AN(SPA(ap, a)))) return jtcut2(jt, jtcvt(jt, B01, a), w, self);
@@ -994,7 +994,7 @@ jtcut2(J jt, A a, A w, A self) {
                 at = (wt + B01) & ~B01;  // monadic forms: if w is an immediate type we can handle, and the length is a
                                          // machine-word length, use w unchanged
             } else {
-                RZ(a = n ? jteps(jt, w, jttake(jt, num(pfx ? 1 : -1), w)) : mtv);
+                RZ(a = n ? jteps(jt, w, jttake(jt, numbool(pfx ? 1 : -1), w)) : mtv);
                 ak = 1;
                 at = B01;
             }  // any other w, replace by w e. {.w (or {: w).  Set ak to the length of a cell of a, in bytes.  Empty
@@ -1477,7 +1477,7 @@ jtrazecut2(J jt, A a, A w, A self) {
         sep = v[(wi - 1) & (pfx - 1)];
     }  // monad.  Create char list of frets: here if 1-byte list/atom
     else {
-        RZ(a = wi ? jteps(jt, w, jttake(jt, num((pfx << 1) - 1), w)) : mtv);
+        RZ(a = wi ? jteps(jt, w, jttake(jt, numbool((pfx << 1) - 1), w)) : mtv);
         v   = CAV(a);
         sep = C1;
     }  // here if other types/shapes

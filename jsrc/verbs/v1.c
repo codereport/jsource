@@ -378,8 +378,8 @@ jtmatch(J jt, A a, A w) {
     // There are atoms.  If there is only 1 cell to compare, do it quickly
     if (wf == 0) {
         I nocall = (-(a != w) & ((AN(a) ^ AN(w)) - 1));
-        return num((nocall >= 0 ? SGNTO0(nocall) + (a == w) : ((B(*)())jtmatchsub)(jt, a, w, 0 MATCHSUBDEFAULTS)) ^
-                   eqis0);  // SGNTO0 to prevent misbranch
+        return numbool((nocall >= 0 ? SGNTO0(nocall) + (a == w) : ((B(*)())jtmatchsub)(jt, a, w, 0 MATCHSUBDEFAULTS)) ^
+                       eqis0);  // SGNTO0 to prevent misbranch
     }
     // Otherwise we are doing match with rank.  Set up for the repetition in matchsub
     // Create m: #cells in shorter (i. e. common) frame  n: # times cell of shorter frame is repeated

@@ -451,7 +451,7 @@ jtvtrans(J jt, A w) {
         if (!tmonad) jtsymbis(jt, mnuvxynam[4], num(1), locsyms);
         z = jttparse(jt, y, locsyms, tmonad, 0 == i, ttab, &ttabi, c);
         RESETERR;
-        if (i && !z) z = jtcolon(jt, num(4 - tmonad), w);
+        if (i && !z) z = jtcolon(jt, numbool(4 - tmonad), w);
     }
 
     EPILOG(z);

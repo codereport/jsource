@@ -840,3 +840,20 @@ extern A zpath;
 extern I iotavec[IOTAVECLEN];  // ascending integers, starting at IOTAVECBEGIN
 extern VARPSA rpsnull;
 extern PRIM sfn0overself;
+
+/**
+ * @brief This is the old implementation of `num`, that may return a boolean.
+ *        Some code depends on this behaviour. This code might be up for
+ *        refactoring, but at this moment we don't know enough about it.
+ *
+ * @param n C representation of number, valid range [NUMMIN, NUMMAX]
+ * @return  The J representation of the integer, unless n is in [0, 1], then
+ *          the boolean (false, true) is returned. Except for the values -12
+ *          and -11, those return 0 and 1 instead.
+ */
+#define numbool(n) (        \
+    (n) == -12 ? num(-12) : \
+    (n) == -11 ? num(-11) : \
+    (n) == 0   ? num(0)   : \
+    (n) == 1   ? num(1)   : \
+               num((n)))

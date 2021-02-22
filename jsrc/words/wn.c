@@ -338,12 +338,12 @@ jtconnum(J jt, I n, C *s) {
     I d = 0, e, k, m, t, *yv;
     if (1 == n) {
         if (k = s[0] - '0', (UI)k <= (UI)9)
-            return num(k);
+            return numbool(k);
         else
             return ainf;
     }  // single digit - a number or _
     else if (2 == n && CSIGN == *s) {
-        if (k = s[1] - '0', (UI)k <= (UI)9) return num(-k);
+        if (k = s[1] - '0', (UI)k <= (UI)9) return numbool(-k);
     }
     RZ(y = jtmkwris(jt, jtstr(jt, 1 + n, s)));
     s = v = CAV(y);

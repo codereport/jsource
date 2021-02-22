@@ -365,7 +365,7 @@ jtanyebar(J jt, A a, A w) {
         case -4: return jtaslash(jt, CPLUSDOT, jtebarvec(jt, a, w));
     }
     if ((-m & -n) >= 0) {
-        return num(SGNTO0(-n));
+        return numbool(SGNTO0(-n));
     }  // empty argument.  If m, it matches everywhere, so use n; if n, it's 0, use it - 0/1 only
     GATV0(y, INT, d, 1);
     yv = AV(y);

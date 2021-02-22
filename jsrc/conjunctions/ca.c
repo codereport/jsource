@@ -201,7 +201,7 @@ atcomp(J jt, A a, A w, A self) {
         I postflags = jt->workareas.compsc.postflags;
         z           = f(jt, a, w, self);
         if (z) {
-            if (postflags & 2) { z = num((IAV(z)[0] != AN(AR(a) >= AR(w) ? a : w)) ^ (postflags & 1)); }
+            if (postflags & 2) { z = numbool((IAV(z)[0] != AN(AR(a) >= AR(w) ? a : w)) ^ (postflags & 1)); }
         }
     } else
         z = jtupon2(jt, a, w, self);
@@ -218,7 +218,7 @@ atcomp0(J jt, A a, A w, A self) {
         I postflags = jt->workareas.compsc.postflags;
         z           = f(jt, a, w, self);
         if (z) {
-            if (postflags & 2) { z = num((IAV(z)[0] != AN(AR(a) >= AR(w) ? a : w)) ^ (postflags & 1)); }
+            if (postflags & 2) { z = numbool((IAV(z)[0] != AN(AR(a) >= AR(w) ? a : w)) ^ (postflags & 1)); }
         }
     } else
         z = jtupon2(jt, a, w, self);

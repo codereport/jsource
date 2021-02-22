@@ -437,7 +437,7 @@ jtsc(J jt, I k) {
 A
 jtscib(J jt, I k) {
     A z;
-    if ((k ^ REPSGN(k)) <= NUMMAX) return num(k);
+    if ((k ^ REPSGN(k)) <= NUMMAX) return numbool(k);
     GAT0(z, INT, 1, 0);
     IAV(z)[0] = k;
     return z;

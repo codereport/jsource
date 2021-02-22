@@ -599,7 +599,7 @@ jtiden(J jt, A w) {
                 bi = -1;
                 bi = INV0 & (1LL << bt) ? 0 : bi;
                 bi = INV1 & (1LL << bt) ? 1 : bi;
-                x  = num(bi);
+                x  = numbool(bi);
             }
             break;
     }

@@ -1484,11 +1484,11 @@ jtcolon(J jt, A a, A w) {
     }
     switch (n) {
         case 3:
-            return jtfdef(jt, 0, CCOLON, VERB, xn1, jtxdefn, num(n), 0L, h, flag | VJTFLGOK1 | VJTFLGOK2, RMAX, RMAX, RMAX);
-        case 1: return jtfdef(jt, 0, CCOLON, ADV, b ? xop1 : xadv, 0L, num(n), 0L, h, flag, RMAX, RMAX, RMAX);
-        case 2: return jtfdef(jt, 0, CCOLON, CONJ, 0L, b ? jtxop2 : jtxdefn, num(n), 0L, h, flag, RMAX, RMAX, RMAX);
+            return jtfdef(jt, 0, CCOLON, VERB, xn1, jtxdefn, numbool(n), 0L, h, flag | VJTFLGOK1 | VJTFLGOK2, RMAX, RMAX, RMAX);
+        case 1: return jtfdef(jt, 0, CCOLON, ADV, b ? xop1 : xadv, 0L, numbool(n), 0L, h, flag, RMAX, RMAX, RMAX);
+        case 2: return jtfdef(jt, 0, CCOLON, CONJ, 0L, b ? jtxop2 : jtxdefn, numbool(n), 0L, h, flag, RMAX, RMAX, RMAX);
         case 4:
-            return jtfdef(jt, 0, CCOLON, VERB, xn1, jtxdefn, num(n), 0L, h, flag | VJTFLGOK1 | VJTFLGOK2, RMAX, RMAX, RMAX);
+            return jtfdef(jt, 0, CCOLON, VERB, xn1, jtxdefn, numbool(n), 0L, h, flag | VJTFLGOK1 | VJTFLGOK2, RMAX, RMAX, RMAX);
         case 13: return jtvtrans(jt, w);
         default: ASSERT(0, EVDOMAIN);
     }
