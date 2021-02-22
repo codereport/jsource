@@ -21,18 +21,6 @@ item_count(array w) {
     return AR(w) ? AS(w)[0] : 1;
 }
 
-// TODO: rename (propogate_sign_bit)
-[[nodiscard]] constexpr inline auto
-replicate_sign(int64_t x) noexcept -> int64_t {
-    return x < 0 ? -1 : 0;
-}
-
-// TODO: rename
-[[nodiscard]] constexpr auto
-xor_replicate_sign(int64_t x) noexcept -> int64_t {
-    return x < 0 ? (-1 * x) - 1 : x;
-}
-
 [[nodiscard]] constexpr auto
 applicable_for_num(int64_t n) noexcept -> bool {
     return NUMMIN <= n && n <= NUMMAX;

@@ -23,7 +23,6 @@
 | :-------------------: | :-------------------------------------------------: |
 |          `A`          |                       `array`                       |
 |       `SETIC` 1       |                   `item_count()`                    |
-|       `REPSGN`        |                 `replicate_sign` 2                  |
 |         `AV`          |                 `pointer_to_values`                 |
 |         `IAV`         |                 `pointer_to_values`                 |
 |    `IAV(w)[i] = k`    |               `set_value_at(w, i, k)`               |
@@ -33,4 +32,3 @@
 |      `DO(m, s)`       | `for (int i = 0; i < m; ++i) m` OR `std::algorithm` |
 
 1. There could be exceptions where this doesn't work
-2. Will probably be renamed
