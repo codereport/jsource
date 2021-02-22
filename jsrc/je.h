@@ -824,10 +824,9 @@ extern void moveparseinfotosi(J);
 extern I Bnum[][8];
 #define zeroionei(n) ((A)(Bnum + (n)))
 #define num(n) ((A)(Bnum + 2 + (n)-NUMMIN))
-// Implementation of jtrue and jfalse is temporary, and should be updated once we
-// extract the booleans from Bnum
-#define jfalse num(0)
-#define jtrue  num(1)
+extern I Bbool[][8];
+#define jfalse ((A)(Bbool[0]))
+#define jtrue  ((A)(Bbool[1]))
 #define I1mem (Bnum[1][7])  // 1 stored in memory
 extern struct Bd1 Bnumvr[];
 #define numvr(n) ((A)(Bnumvr + (n)))

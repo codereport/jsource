@@ -58,6 +58,9 @@ I Bnum[22][8] =
     CBAIVAL(B01, 0),  CBAIVAL(B01, 1),  CBAIVAL(INT, 2),   CBAIVAL(INT, 3),  CBAIVAL(INT, 4),  CBAIVAL(INT, 5),
     CBAIVAL(INT, 6),  CBAIVAL(INT, 7),  CBAIVAL(INT, 8),   CBAIVAL(INT, 9)};
 
+I Bbool[2][8] = { // The booleans
+    CBAIVAL(B01, 0),  CBAIVAL(B01, 1) };
+
 struct Bd1 Bnumvr[3] = {  // floating-point 0, 1, and 2, used for constants
   {{AKXR(0), FL& TRAVERSIBLE, 0, FL, ACPERMANENT, 1, 0}, 0.0},
   {{AKXR(0), FL& TRAVERSIBLE, 0, FL, ACPERMANENT, 1, 0}, 1.0},
