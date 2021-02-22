@@ -30,7 +30,10 @@ xor_replicate_sign(int64_t x) noexcept -> int64_t {
     return x < 0 ? (-1 * x) - 1 : x;
 }
 
-// TODO: refactor me
+/**
+ * @param n C representation of number, valid range [NUMMIN, NUMMAX]
+ * @return  The J representation of the integer
+ */
 [[nodiscard]] inline auto
 refactorme_num(int64_t n) {
     return reinterpret_cast<array>(Bnum + n - NUMMIN);
