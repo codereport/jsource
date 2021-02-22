@@ -555,7 +555,7 @@ static SYMWALK(jtlocmap1,
     A g, q, x, y, *yv, z, *zv;
     I c = -1, d, j = 0, m, *qv, *xv;
     ASSERT(!AR(w), EVRANK);
-    RE(g = jtequ(jt, w, zeroionei(0)) ? jt->stloc : jtequ(jt, w, zeroionei(1)) ? jt->locsyms : jtlocale(jt, 0, w));
+    RE(g = jtequ(jt, w, num(0)) ? jt->stloc : jtequ(jt, w, num(1)) ? jt->locsyms : jtlocale(jt, 0, w));
     ASSERT(g != 0, EVLOCALE);
     RZ(q = jtlocmap1(jt, g));
     qv = AV(q);

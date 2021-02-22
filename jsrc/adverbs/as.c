@@ -438,7 +438,7 @@ jtsscan(J jt, A w, A self) {
     y     = FAV(self)->fgh[0];  // y is f/
     if (((n - 2) | (wn - 1)) < 0) {
         if (FAV(FAV(y)->fgh[0])->flag & VISATOMIC2) {
-            return r ? w : jtreshape(jt, apip(shape(jt, w), zeroionei(1)), w);
+            return r ? w : jtreshape(jt, apip(shape(jt, w), num(1)), w);
         } else
             return IRS1(w, self, r, jtsuffix, z);
     }  // if empty arg, or just 1 cell in selected axis, convert to f/\ which handles the short arg

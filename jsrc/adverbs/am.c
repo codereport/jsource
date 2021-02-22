@@ -431,7 +431,7 @@ jtjstd(J jt, A w, A ind, I *cellframelen) {
     ws = AS(w);
     b  = -AN(ind) & SGNIF(AT(ind), BOXX);  // b<0 = indexes are boxed and nonempty
     if (!wr) {
-        x             = jtfrom(jt, ind, zeroionei(0));
+        x             = jtfrom(jt, ind, num(0));
         *cellframelen = 0;
         return x;
     }                                // if w is an atom, the best you can get is indexes of 0.  No axes are used
@@ -466,7 +466,7 @@ jtjstd(J jt, A w, A ind, I *cellframelen) {
         ASSERT(1 >= r, EVINDEX);                             // not a table
         ASSERT(n <= wr, EVINDEX);                            // not too many axes
         DQ(n, if (!jtequ(jt, ds(CACE), v[i])) break; --n;);  // discard trailing (boxed) empty axes
-        j = zeroionei(0);                                    // init list to a single 0 offset
+        j = num(0);                                          // init list to a single 0 offset
         for (i = 0; i < n; ++i) {  // for each axis, grow the cartesian product of the specified offsets
             x = v[i];
             d = ws[i];

@@ -356,7 +356,7 @@ jtrep1sa(J jt, A a, I *c, I *d) {
     b = 1 && AT(a) & CMPX;
     if (b) RZ(x = jtrect(jt, a)) else x = a;
     if (AR(a)) {
-        ASSERT(jtequ(jt, jtrue, jtaslash(jt, CSTARDOT, le(zeroionei(0), jtravel(jt, x)))), EVDOMAIN);
+        ASSERT(jtequ(jt, jtrue, jtaslash(jt, CSTARDOT, le(num(0), jtravel(jt, x)))), EVDOMAIN);
         RZ(x = jtaslash(jt, CPLUS, x));
     }
     if (!(INT & AT(x))) RZ(x = jtcvt(jt, INT, x));

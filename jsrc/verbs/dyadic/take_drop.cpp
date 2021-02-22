@@ -9,7 +9,7 @@
 A
 jtbehead(J jt, A w) {
     FPREFIP;
-    return jtdrop(jtinplace, zeroionei(1), w);
+    return jtdrop(jtinplace, num(1), w);
 }
 A
 jtcurtail(J jt, A w) {
@@ -422,9 +422,9 @@ jthead(J jt, A w) {
             return z;
         } else {
             // frame not 0, or non-virtualable type, or cell is an atom.  Use from.  Note that jt->ranks is still set,
-            // so this may produce multiple cells left rank is garbage, but since zeroionei(0) is an atom it doesn't
+            // so this may produce multiple cells left rank is garbage, but since num(0) is an atom it doesn't
             // matter
-            return jtfrom(jtinplace, zeroionei(0), w);  // could call jtfromi directly for non-sparse w
+            return jtfrom(jtinplace, num(0), w);  // could call jtfromi directly for non-sparse w
         }
     } else {
         return SPARSE & AT(w) ? jtirs2(jt, jfalse, jttake(jt, jtrue, w), 0L, 0L, wcr, reinterpret_cast<AF>(jtfrom))

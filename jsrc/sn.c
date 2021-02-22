@@ -150,7 +150,7 @@ jtsfn(J jt, B b, A w) {
 A
 jtsfne(J jt, A w) {
     A wn = FAV(w)->fgh[0];
-    if (AT(wn) & NAMEBYVALUE) return jtfix(jt, w, zeroionei(0));
+    if (AT(wn) & NAMEBYVALUE) return jtfix(jt, w, num(0));
     return jtsfn(jt, 0, wn);
 }
 

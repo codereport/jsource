@@ -115,13 +115,13 @@ static A
 jtfitf1(J jt, A w, A self) {
     V* sv = FAV(self);
     A z;
-    return df1(z, w, jtfit(jt, jtfix(jt, sv->fgh[0], zeroionei(0)), sv->fgh[1]));
+    return df1(z, w, jtfit(jt, jtfix(jt, sv->fgh[0], num(0)), sv->fgh[1]));
 }
 static A
 jtfitf2(J jt, A a, A w, A self) {
     V* sv = FAV(self);
     A z;
-    return df2(z, a, w, jtfit(jt, jtfix(jt, sv->fgh[0], zeroionei(0)), sv->fgh[1]));
+    return df2(z, a, w, jtfit(jt, jtfix(jt, sv->fgh[0], num(0)), sv->fgh[1]));
 }
 
 // Fit conjunction u!.n

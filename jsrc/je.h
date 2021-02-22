@@ -822,7 +822,6 @@ extern D jnan; /* "nan" name conflict under Solaris       */
 extern A mnuvxynam[6];
 extern void moveparseinfotosi(J);
 extern I Bnum[][8];
-#define zeroionei(n) ((A)(Bnum + (n)))
 #define num(n) ((A)(Bnum + 2 + (n)-NUMMIN))
 extern I Bbool[][8];
 #define jfalse ((A)(Bbool[0]))

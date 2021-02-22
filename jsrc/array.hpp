@@ -41,12 +41,6 @@ refactorme_num(int64_t n) {
     return reinterpret_cast<array>(Bnum + 2 + n - NUMMIN);
 }
 
-// TODO: refactor me
-[[nodiscard]] inline auto
-refactorme_zeroionei(int64_t n) {
-    return reinterpret_cast<array>(Bnum + (n));
-}
-
 [[nodiscard]] inline auto
 pointer_to_values(array x) -> int64_t* {
     return reinterpret_cast<int64_t*>(reinterpret_cast<C*>(x) + x->kchain.k);
@@ -105,7 +99,7 @@ make_array(J jt, int64_t n, rank_t r, shape_t s) -> array {
 template <typename T>
 [[nodiscard]] inline auto
 make_scalar_integer(J jt, T k) -> array {
-    if (xor_replicate_sign(k) <= NUMMAX) return !zero_or_one(k) ? refactorme_num(k) : zeroionei(k);
+    if (xor_replicate_sign(k) <= NUMMAX) return refactorme_num(k);
     array z = make_array<T, copy_shape_0>(jt, 1, 0);
     set_value_at(z, 0, k);
     return z;

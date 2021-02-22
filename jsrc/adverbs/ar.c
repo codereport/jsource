@@ -1025,7 +1025,7 @@ jtredcateach(J jt, A w, A self) {
     SETICFR(w, f, r, n);
     if (!r || 1 >= n) return jtreshape(jt, jtrepeat(jt, ne(jtsc(jt, f), IX(wr)), shape(jt, w)), n ? w : ds(CACE));
     if (!(BOX & AT(w)))
-        return df1(z, jtcant2(jt, jtsc(jt, f), w), jtqq(jt, ds(CBOX), zeroionei(1)));  // handle unboxed args
+        return df1(z, jtcant2(jt, jtsc(jt, f), w), jtqq(jt, ds(CBOX), num(1)));  // handle unboxed args
     // bug: ,&.>/ y does scalar replication wrong
     // wv=AN(w)+AAV(w); DQ(AN(w), if(AN(*--wv)&&AR(*wv)&&n1&&n2) ASSERT(0,EVNONCE); if((!AR(*wv))&&n1)n2=1;
     // if(AN(*wv)&&1<AR(*wv))n1=1;);
@@ -1107,7 +1107,7 @@ A
 jtaslash1(J jt, C c, A w) {
     RZ(w);
     A z;
-    return df1(z, w, jtqq(jt, jtslash(jt, ds(c)), zeroionei(1)));
+    return df1(z, w, jtqq(jt, jtslash(jt, ds(c)), num(1)));
 }
 A
 jtatab(J jt, C c, A a, A w) {

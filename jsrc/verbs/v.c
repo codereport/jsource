@@ -7,12 +7,12 @@
 
 A
 jtisempty(J jt, A w) {
-    if ((AT(w) & SPARSE) != 0) return jteps(jt, zeroionei(0), shape(jt, w));
+    if ((AT(w) & SPARSE) != 0) return jteps(jt, num(0), shape(jt, w));
     return AN(w) == 0 ? jtrue : jfalse;
 }  // 0 e. $
 A
 jtisnotempty(J jt, A w) {
-    if ((AT(w) & SPARSE) != 0) return jtnot(jt, jteps(jt, zeroionei(0), shape(jt, w)));
+    if ((AT(w) & SPARSE) != 0) return jtnot(jt, jteps(jt, num(0), shape(jt, w)));
     return AN(w) == 0 ? jfalse : jtrue;
 }  // *@#@,
 A

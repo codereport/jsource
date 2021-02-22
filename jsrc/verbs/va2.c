@@ -2147,7 +2147,7 @@ jtresidue(J jt, A a, A w, A self) {
 // We use the right type of singleton so that we engage AVX loops
 #define SETCONPTR(n)                            \
     A conptr  = numbool(n);                     \
-    A conptr2 = zeroionei(n);                   \
+    A conptr2 = num(n);                         \
     A conptr3 = numvr(n);                       \
     conptr    = AT(w) & INT ? conptr2 : conptr; \
     conptr    = AT(w) & FL ? conptr3 : conptr;  // for 0 or 1 only

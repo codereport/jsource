@@ -426,9 +426,7 @@ A
 jtsc(J jt, I k) {
     A z;
     if ((k ^ REPSGN(k)) <= NUMMAX) {
-        z = num(k);
-        z = k & ~1 ? z : zeroionei(k);
-        return z;
+        return num(k);
     }
     GAT0(z, INT, 1, 0);
     IAV(z)[0] = k;
@@ -577,7 +575,7 @@ jtvib(J jt, A w) {
     I i, n, *zv;
     if (AT(w) & INT) return w;  // handle common non-failing cases quickly: INT and boolean
     if (AT(w) & B01) {
-        if (!AR(w)) return zeroionei(BAV(w)[0]);
+        if (!AR(w)) return num(BAV(w)[0]);
         return jtcvt(jt, INT, w);
     }
     if (w == ainf) return imax;  // sentence words of _ always use the same block, so catch that too

@@ -162,7 +162,7 @@ BITWISE(jtbitwiseshifta, I, BWSHIFTA)
 
 A
 jtbitwise1(J jt, A w, A self) {
-    return CALL2(FAV(self)->valencefns[1], zeroionei(0), w, self);
+    return CALL2(FAV(self)->valencefns[1], num(0), w, self);
 }  // inplaceable - don't touch jt
 
 static AHDR2FN* bwC[16] = {(AHDR2FN*)bw0000CC,

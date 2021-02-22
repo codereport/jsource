@@ -52,7 +52,7 @@ jtcut02(J jt, A a, A w, A self) {
 
     I wr = AR(w);                                           // rank of w
     RZ(a = jtvib(jt, a));                                   // audit for valid integers
-    if (1 >= AR(a)) RZ(a = jtlamin2(jt, zeroionei(0), a));  // default list to be lengths starting at origin
+    if (1 >= AR(a)) RZ(a = jtlamin2(jt, num(0), a));        // default list to be lengths starting at origin
     as = AS(a);
     m  = AR(a) - 2;
     PROD(n, m, as);
@@ -61,7 +61,7 @@ jtcut02(J jt, A a, A w, A self) {
     ASSERT((-(as[m] ^ 2) | (wr - c)) >= 0, EVLENGTH);  // shapes must end with 2,c where c does not exceed rank of r
     if (!n) {                                          /* empty result; figure out result type */
         z = CALL1(f1, w, fs);
-        if (z == 0) z = zeroionei(0);  // use zero as fill result if error
+        if (z == 0) z = num(0);  // use zero as fill result if error
         GA(zz, AT(z), n, m + AR(z), 0);
         I *zzs = AS(zz);
         I *zs  = AS(z);
@@ -484,8 +484,8 @@ jtcut2bx(J jt, A a, A w, A self) {
             /* note: fall through */                                                                                 \
         default:                                                                                                     \
             if (!m) {                                                                                                \
-                y = jtreitem(jt, zeroionei(0), w);                                                                   \
-                return jtiota(jt, jtover(jt, zeroionei(0), shape(jt, h ? df1(z, y, *hv) : CALL1(f1, y, fs))));       \
+                y = jtreitem(jt, num(0), w);                                                                         \
+                return jtiota(jt, jtover(jt, num(0), shape(jt, h ? df1(z, y, *hv) : CALL1(f1, y, fs))));             \
             }                                                                                                        \
             GATV0(z, BOX, m, 1);                                                                                     \
             za = AAV(z);                                                                                             \
@@ -1415,10 +1415,10 @@ jtcut2(J jt, A a, A w, A self) {
         } else {
             // No frets.  Apply the operand to 0 items; return (0,$result) $ result (or $,'' if error on fill-cell). The
             // call is non-inplaceable
-            RZ(z = jtreitem(jt, zeroionei(0), w));  // create 0 items of the type of w
+            RZ(z = jtreitem(jt, num(0), w));  // create 0 items of the type of w
             WITHDEBUGOFF(zz = CALL1(f1, z, fs);) if (EMSK(jt->jerr) & EXIGENTERROR) RZ(zz);
             RESETERR;
-            RZ(zz = jtreshape(jt, jtover(jt, zeroionei(0), shape(jt, zz ? zz : mtv)), zz ? zz : zeroionei(0)));
+            RZ(zz = jtreshape(jt, jtover(jt, num(0), shape(jt, zz ? zz : mtv)), zz ? zz : num(0)));
         }
     }
     EPILOG(zz);

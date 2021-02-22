@@ -808,7 +808,7 @@ jtths(J jt, A w) {
     d = jtaii(jt, z);
     v = CAV(z) - d;
     DQ(m, memcpy(v += d, u += n, n););
-    if (2 < AR(z)) RZ(z = jtmatth1(jt, z, zeroionei(0)));  // no prxthornuni
+    if (2 < AR(z)) RZ(z = jtmatth1(jt, z, num(0)));  // no prxthornuni
     s = AS(z);
     d = *(1 + s);
     v = 1 + CAV(z);
@@ -817,7 +817,7 @@ jtths(J jt, A w) {
     return z;
 }
 
-// ": y, returning character array.  If jt->prxthornuni is set, LIT and C2T types return.  prxthornuni is zeroionei[0 or
+// ": y, returning character array.  If jt->prxthornuni is set, LIT and C2T types return.  prxthornuni is num[0 or
 // 1] C2T when there are unicodes present
 static A
 jtthorn1main(J jt, A w, A prxthornuni) {
@@ -917,7 +917,7 @@ jtthorn1u(J jt, A w) {
 A
 jtthorn1(J jt, A w) {
     A z;
-    A prxthornuni = zeroionei(!(AT(w) & (LIT + C2T + C4T)));
+    A prxthornuni = num(!(AT(w) & (LIT + C2T + C4T)));
     z             = jtthorn1main(jt, w, prxthornuni);
     if (z && AT(z) & (C2T + C4T))
         z = rank2ex(z, prxthornuni, UNUSED_VALUE, MIN(AR(z), 1L), 0, MIN(AR(z), 1L), 0, RoutineD);

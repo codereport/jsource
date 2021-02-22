@@ -256,7 +256,7 @@ jtinvamp(J jt, A w) {
         case CQCO:
             if (nf) {
                 ASSERT(!AR(x), EVRANK);
-                return jtobverse(jt, jteval(jt, all1(lt(x, zeroionei(0))) ? "*/@(^/)\"2" : "(p:@i.@# */ .^ ])\"1"), w);
+                return jtobverse(jt, jteval(jt, all1(lt(x, num(0))) ? "*/@(^/)\"2" : "(p:@i.@# */ .^ ])\"1"), w);
             }
             break;
         case CFIT:
@@ -351,7 +351,7 @@ jtinvamp(J jt, A w) {
             break;
         case CPOLY:
             if (nf && 1 == AR(x) && 2 == AN(x) && NUMERIC & AT(x) &&
-                !jtequ(jt, zeroionei(0), jttail(jt, x))) {  // linear polynomial only
+                !jtequ(jt, num(0), jttail(jt, x))) {  // linear polynomial only
                 RZ(y = jtrecip(jt, jttail(jt, x)));
                 return jtamp(jt, apip(tymes(y, jtnegate(jt, jthead(jt, x))), y), h);
             }
@@ -489,7 +489,7 @@ jtinv(J jt, A w, I recur) {
     // But only fix once, at the top recursion level, (1) to avoid an infinite loop if
     // there is a circular reference that leaves names in the fixed form of w; (2) to avoid
     // repeated fixing of lower branches, which will only be tried again when higher levels are fixed
-    if (!recur && !nameless(w)) return invrecur(jtfix(jt, w, zeroionei(0)));
+    if (!recur && !nameless(w)) return invrecur(jtfix(jt, w, num(0)));
     ASSERT(0, EVDOMAIN);
 }
 
@@ -509,11 +509,11 @@ jtneutral(J jt, A w) {
     b = jtequ(jt, y, CALL2(v->valencefns[1], x, y, w));
     RESETERR;
     if (b) return x;
-    x = zeroionei(0);
+    x = num(0);
     b = jtequ(jt, y, CALL2(v->valencefns[1], x, y, w));
     RESETERR;
     if (b) return jfalse;
-    x = zeroionei(1);
+    x = num(1);
     b = jtequ(jt, y, CALL2(v->valencefns[1], x, y, w));
     RESETERR;
     if (b) return jtrue;
@@ -525,11 +525,11 @@ jtneutral(J jt, A w) {
     b = jtequ(jt, y, CALL2(v->valencefns[1], y, x, w));
     RESETERR;
     if (b) return x;
-    x = zeroionei(0);
+    x = num(0);
     b = jtequ(jt, y, CALL2(v->valencefns[1], y, x, w));
     RESETERR;
     if (b) return jfalse;
-    x = zeroionei(1);
+    x = num(1);
     b = jtequ(jt, y, CALL2(v->valencefns[1], y, x, w));
     RESETERR;
     if (b) return jtrue;
@@ -540,7 +540,7 @@ A
 jtiden(J jt, A w) {
     A f, g, x = 0;
     V *u, *v;
-    RZ(w = jtfix(jt, w, zeroionei(0)));
+    RZ(w = jtfix(jt, w, num(0)));
     ASSERT(VERB & AT(w), EVDOMAIN);
     v = FAV(w);
     f = v->fgh[0];
@@ -611,7 +611,7 @@ A
 jtidensb(J jt, A w) {
     A f, g, x = 0, w0 = w;
     V* v;
-    RZ(w = jtfix(jt, w, zeroionei(0)));
+    RZ(w = jtfix(jt, w, num(0)));
     ASSERT(VERB & AT(w), EVDOMAIN);
     v = FAV(w);
     f = v->fgh[0];

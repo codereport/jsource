@@ -221,5 +221,5 @@ jtrect(J jt, A w) {
         SPB(zp, x, jtrect(jt, SPA(wp, x)));
         return z;
     } else
-        return df2(z, w, jfalse, jtqq(jt, ds(CCOMMA), zeroionei(0)));
+        return df2(z, w, jfalse, jtqq(jt, ds(CCOMMA), num(0)));
 }
