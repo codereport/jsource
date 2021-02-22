@@ -51,12 +51,12 @@ A mnuvxynam[6] = {0, 0, 0, 0, 0, 0};  // name blocks for all arg names
 // and &validitymask[0] as a V* with ID of 0
 I validitymask[16] = {-1, -1, 0, 0, -1, -1, 0, 0, -1, -1, 0, 0, 0, 0, 0, 0};  // native ss2/neon register is s64x2
 
-I Bnum[22][8] =
+I Bnum[20][8] =
   {  // the numbers we keep at hand.
-    CBAIVAL(INT, 0),  CBAIVAL(INT, 1),  CBAIVAL(INT, -10), CBAIVAL(INT, -9), CBAIVAL(INT, -8), CBAIVAL(INT, -7),
-    CBAIVAL(INT, -6), CBAIVAL(INT, -5), CBAIVAL(INT, -4),  CBAIVAL(INT, -3), CBAIVAL(INT, -2), CBAIVAL(INT, -1),
-    CBAIVAL(INT, 0),  CBAIVAL(INT, 1),  CBAIVAL(INT, 2),   CBAIVAL(INT, 3),  CBAIVAL(INT, 4),  CBAIVAL(INT, 5),
-    CBAIVAL(INT, 6),  CBAIVAL(INT, 7),  CBAIVAL(INT, 8),   CBAIVAL(INT, 9)};
+    CBAIVAL(INT, -10), CBAIVAL(INT, -9), CBAIVAL(INT, -8), CBAIVAL(INT, -7), CBAIVAL(INT, -6), CBAIVAL(INT, -5),
+    CBAIVAL(INT, -4),  CBAIVAL(INT, -3), CBAIVAL(INT, -2), CBAIVAL(INT, -1), CBAIVAL(INT, 0),  CBAIVAL(INT, 1),
+    CBAIVAL(INT, 2),   CBAIVAL(INT, 3),  CBAIVAL(INT, 4),  CBAIVAL(INT, 5),  CBAIVAL(INT, 6),  CBAIVAL(INT, 7),
+    CBAIVAL(INT, 8),   CBAIVAL(INT, 9)};
 
 I Bbool[2][8] = { // The booleans
     CBAIVAL(B01, 0),  CBAIVAL(B01, 1) };

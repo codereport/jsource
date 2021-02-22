@@ -33,7 +33,7 @@ xor_replicate_sign(int64_t x) noexcept -> int64_t {
 // TODO: refactor me
 [[nodiscard]] inline auto
 refactorme_num(int64_t n) {
-    return reinterpret_cast<array>(Bnum + 2 + n - NUMMIN);
+    return reinterpret_cast<array>(Bnum + n - NUMMIN);
 }
 
 [[nodiscard]] inline auto
