@@ -33,7 +33,7 @@ jtfitct(J jt, A a, A w, I cno) {
     sv = FAV(a);
     // Get the tolerance, as a float
     D d;
-    if (w == num(0))
+    if (w == jfalse)
         d = 0.0;
     else {
         if (!(AT(w) & FL)) RZ(w = jtcvt(jt, FL, w));

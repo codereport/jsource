@@ -349,14 +349,14 @@ jtcut2bx(J jt, A a, A w, A self) {
         m  = ws[i];
         ASSERT(1 >= AR(b), EVRANK);
         if (!bn && m) {
-            xv[i] = num(0);
+            xv[i] = jfalse;
             RZ(yv[i] = jtincorp(jt, jtsc(jt, m)));
         } else {
             if (!(B01 & AT(b))) RZ(b = jtcvt(jt, B01, b));
             if (!AR(b)) {
                 if (BAV(b)[0]) {
                     RZ(xv[i] = jtincorp(jt, IX(m)));
-                    RZ(yv[i] = jtincorp(jt, jtreshape(jt, jtsc(jt, m), num(0 < q))));
+                    RZ(yv[i] = jtincorp(jt, jtreshape(jt, jtsc(jt, m), 0 < q ? jtrue : jfalse)));
                 } else
                     xv[i] = yv[i] = mtv;
                 continue;
@@ -581,7 +581,7 @@ jtcut2sx(J jt, A a, A w, A self) {
     RZ(a = a == mark ? jteps(jt, w, jttake(jt, numbool(pfx ? 1 : -1), w)) : DENSE & AT(a) ? jtsparse1(jt, a) : a);
     ASSERT(n == AS(a)[0], EVLENGTH);
     ap = PAV(a);
-    if (!(jtequ(jt, num(0), SPA(ap, e)) && AN(SPA(ap, a)))) return jtcut2(jt, jtcvt(jt, B01, a), w, self);
+    if (!(jtequ(jt, jfalse, SPA(ap, e)) && AN(SPA(ap, a)))) return jtcut2(jt, jtcvt(jt, B01, a), w, self);
     vf = VAV(fs);
     if (VGERL & sv->flag) {
         h  = sv->fgh[2];
@@ -782,7 +782,7 @@ jtidenv0(J jt, A a, A w, V *sv, I zt, A *zz) {
     A fs, y, z;
     *zz = 0;
     fs  = sv->fgh[0];
-    RE(df1(y, num(0), jtiden(jt, VAV(fs)->fgh[0])));
+    RE(df1(y, jfalse, jtiden(jt, VAV(fs)->fgh[0])));
     if (TYPESLT(zt, AT(y))) {
         *zz = df1(z, jtcut2(jt, a, w, jtcut(jt, ds(CBOX), sv->fgh[1])), jtamp(jt, fs, ds(COPE)));
         return 0;

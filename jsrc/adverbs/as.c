@@ -470,8 +470,8 @@ jtomask(J jt, A a, A w) {
     SETIC(w, n);
     r = jtsc(jt, 0 > m ? (n + p - 1) / p : MAX(0, 1 + n - m));
     c = tally(jt, w);
-    x = jtreshape(jt, jtsc(jt, p), num(0));
-    y = jtreshape(jt, 0 > m ? c : r, num(1));
+    x = jtreshape(jt, jtsc(jt, p), jfalse);
+    y = jtreshape(jt, 0 > m ? c : r, jtrue);
     return reshapeW(jtover(jt, r, c), jtover(jt, x, y));
 }
 

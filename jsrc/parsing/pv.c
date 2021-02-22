@@ -111,7 +111,7 @@ jtswapc(J jt, A w) {
 TA
 jtvmonad(J jt, I b, I e, TA *stack, A locsyms, I tmonad, I tsubst, TA *ttab, I *ttabi, I ttabi0) {
     A fs;
-    TA y, z = {num(1), 0};
+    TA y, z = {jtrue, 0};
     V *v;
     y  = stack[e];
     fs = stack[b].a;
@@ -145,7 +145,7 @@ jtvdyad(J jt, I b, I e, TA *stack, A locsyms, I tmonad, I tsubst, TA *ttab, I *t
     A fs, sf, xt, yt;
     B xl, xr, yl, yr;
     I xi = -1, yi = -1;
-    TA x, y, z = {num(1), 0};
+    TA x, y, z = {jtrue, 0};
     V *u = 0, *v = 0;
     fs = stack[e - 1].a;
     x  = stack[b];
@@ -447,8 +447,8 @@ jtvtrans(J jt, A w) {
         I tmonad = AM(y);
         ttabi    = c;
         RZ(locsyms = jtstcreate(jt, 2, 40, 0L, 0L));  // not necessary to set global pointers
-        jtsymbis(jt, mnuvxynam[5], num(1), locsyms);
-        if (!tmonad) jtsymbis(jt, mnuvxynam[4], num(1), locsyms);
+        jtsymbis(jt, mnuvxynam[5], jtrue, locsyms);
+        if (!tmonad) jtsymbis(jt, mnuvxynam[4], jtrue, locsyms);
         z = jttparse(jt, y, locsyms, tmonad, 0 == i, ttab, &ttabi, c);
         RESETERR;
         if (i && !z) z = jtcolon(jt, numbool(4 - tmonad), w);

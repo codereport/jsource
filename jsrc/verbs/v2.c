@@ -380,7 +380,7 @@ jtprimetest(J jt, A w) {
     A x;
     I t;
     t = AT(w);
-    if ((UI)SGNIF(t, B01X) >= (UI)AN(w)) return jtreshape(jt, shape(jt, w), num(0));  // AN is 0, or t is boolean
+    if ((UI)SGNIF(t, B01X) >= (UI)AN(w)) return jtreshape(jt, shape(jt, w), jfalse);  // AN is 0, or t is boolean
     switch (CTTZ(t)) {
         default: ASSERT(0, EVDOMAIN);
         case INTX: return jtiprimetest(jt, w);

@@ -356,7 +356,7 @@ jtfolk(J jt, A f, A g, A h) {
                 p = fv->fgh[0];
                 q = fv->fgh[1];
                 if (CLEFT == ID(q) && CQQ == ID(p) &&
-                    (v = VAV(p), x = v->fgh[0], CLT == ID(x) && v->fgh[1] == num(1))) {
+                    (v = VAV(p), x = v->fgh[0], CLT == ID(x) && v->fgh[1] == jtrue)) {
                     f2 = jtsfrom;
                     flag &= ~(VJTFLGOK2);
                 }

@@ -283,7 +283,7 @@ jtmatchs(J jt, A a, A w) {
     wcr = wr < wcr ? wr : wcr;
     RESETRANK;
     if (ar > acr || wr > wcr) return rank2ex(a, w, UNUSED_VALUE, acr, wcr, acr, wcr, jtmatchs);
-    if (ar != wr || memcmpne(AS(a), AS(w), r * SZI) || !HOMO(AT(a), AT(w))) return num(0);
+    if (ar != wr || memcmpne(AS(a), AS(w), r * SZI) || !HOMO(AT(a), AT(w))) return jfalse;
     GATV0(x, B01, r, 1L);
     b = BAV(x);
     memset(b, C0, r);
@@ -321,19 +321,19 @@ jtmatchs(J jt, A a, A w) {
     qv = BAV(q);
     memset(pv, C1, m);
     DO(n, j = *v++; if (j < m) pv[j] = qv[i] = 0; else qv[i] = 1;);
-    if (memchr(pv, C1, m) && !all1(eq(we, jtrepeat(jt, p, ax)))) return num(0);
-    if (memchr(qv, C1, n) && !all1(eq(ae, jtrepeat(jt, q, wx)))) return num(0);
+    if (memchr(pv, C1, m) && !all1(eq(we, jtrepeat(jt, p, ax)))) return jfalse;
+    if (memchr(qv, C1, n) && !all1(eq(ae, jtrepeat(jt, q, wx)))) return jfalse;
     j = 0;
     DO(m, if (pv[i])++ j;);
     k = 0;
     DO(n, if (qv[i])++ k; qv[i] = !qv[i];);
-    if (!jtequ(jt, jtfrom(jt, jtrepeat(jt, q, x), ax), jtrepeat(jt, q, wx))) return num(0);
+    if (!jtequ(jt, jtfrom(jt, jtrepeat(jt, q, x), ax), jtrepeat(jt, q, wx))) return jfalse;
     x = SPA(ap, a);
     v = AV(x);
     s = AS(a);
     d = 1.0;
     DO(AN(x), d *= s[v[i]];);
-    return d == m + k && d == n + j || jtequ(jt, ae, we) ? num(1) : num(0);
+    return d == m + k && d == n + j || jtequ(jt, ae, we) ? jtrue : jfalse;
 } /* a -:"r w on sparse arrays */
 
 // x -:"r y or x -.@-:"r y depending on LSB of jt
@@ -344,7 +344,7 @@ jtmatch(J jt, A a, A w) {
     I eqis0   = (I)jt & 1;
     jt        = (J)((I)jt & ~1);
     I isatoms = (-AN(a)) & (-AN(w));  // neg if both args have atoms
-    if ((SPARSE & (AT(a) | AT(w))) != 0) return ne(num(eqis0), jtmatchs(jt, a, w));
+    if ((SPARSE & (AT(a) | AT(w))) != 0) return ne(eqis0 ? jtrue : jfalse, jtmatchs(jt, a, w));
     af = AR(a) - (I)(jt->ranks >> RANKTX);
     af = af < 0 ? 0 : af;
     wf = AR(w) - (I)((RANKT)jt->ranks);

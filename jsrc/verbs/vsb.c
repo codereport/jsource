@@ -938,7 +938,7 @@ jtsbcheck1(J jt, A una, A sna, A u, A s, A h, A roota, A ff, A gp) {
         ASSERTD(BETWEENO(j, 0, c) && 1 >= ++upv[j] && (!j || ord < (j + uv)->order), "u successor");
     }
     ASSERTD(jtequ(jt, jtgrade1(jt, x), jtgrade1(jt, y)), "u order");
-    EPILOG(num(1));
+    EPILOG(jtrue);
 }
 
 static A
@@ -984,7 +984,7 @@ jtsbsetdata(J jt, A w) {
     fa(u);
     fa(s);
     fa(h);
-    return num(1);
+    return jtrue;
 }
 
 static A
@@ -1024,9 +1024,9 @@ jtsb2(J jt, A a, A w) {
                 case 5: return jtsc(jt, ROOT);
                 case 6: return jtsc(jt, FILLFACTOR);
                 case 7: return jtsc(jt, GAP);
-                case 10: return jtsbgetdata(jt, num(0));
-                case 11: return jtsbcheck(jt, num(0));
-                case 12: return jtsbhashstat(jt, num(0));
+                case 10: return jtsbgetdata(jt, jfalse);
+                case 11: return jtsbcheck(jt, jfalse);
+                case 12: return jtsbhashstat(jt, jfalse);
             }
         case 1: return jtsbstr(jt, 1L, w);
         case -1: return jtsbunstr(jt, -1L, w);

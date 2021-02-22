@@ -2158,7 +2158,7 @@ jtresidue(J jt, A a, A w, A self) {
 
 A
 jtnot(J jt, A w) {
-    SETCONPTR(1) return AT(w) & B01 + SB01 ? eq(num(0), w) : minus(conptr, w);
+    SETCONPTR(1) return AT(w) & B01 + SB01 ? eq(jfalse, w) : minus(conptr, w);
 }
 A
 jtnegate(J jt, A w) {

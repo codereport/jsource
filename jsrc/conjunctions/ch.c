@@ -31,7 +31,7 @@ jthgv(J jt, B b, I n, A w, A self) {
         case 2: y = divide(tymes(c, jtascan(jt, CSTAR, e)), jtascan(jt, CSTAR, d)); break;
         case 3: y = divide(tymes(c, jtascan(jt, CSTAR, e)), d);
     }
-    return b ? jtover(jt, num(0), jtascan(jt, CPLUS, y)) : jtaslash(jt, CPLUS, y);
+    return b ? jtover(jt, jfalse, jtascan(jt, CPLUS, y)) : jtaslash(jt, CPLUS, y);
 } /* verb or complex cases */
 
 static A
@@ -122,8 +122,8 @@ jtcancel(J jt, A a, A w) {
     w = jtravel(jt, w);
     y = jtnub(jt, w);
     df1(d, w, f);
-    a = jtrepeat(jt, maximum(num(0), minus(c, jtfrom(jt, jtindexof(jt, y, x), jtover(jt, d, zeroionei(0))))), x);
-    w = jtrepeat(jt, maximum(num(0), minus(d, jtfrom(jt, jtindexof(jt, x, y), jtover(jt, c, zeroionei(0))))), y);
+    a = jtrepeat(jt, maximum(jfalse, minus(c, jtfrom(jt, jtindexof(jt, y, x), jtover(jt, d, zeroionei(0))))), x);
+    w = jtrepeat(jt, maximum(jfalse, minus(d, jtfrom(jt, jtindexof(jt, x, y), jtover(jt, c, zeroionei(0))))), y);
     return link(a, w);
 }
 

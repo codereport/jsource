@@ -164,7 +164,7 @@ jtinpl(J jt, B b, I n, C* s) {
     if (n && (c = s[n - 1], CLF == c || CCR == c)) --n;  // discard trailing [CR], CRLF, CRCR
     ASSERT(!*jt->adbreak, EVINPRUPT);
     if (!b) { /* 1==b means literal input */
-        if (n && COFF == s[n - 1]) jtjoff(jt, num(0));
+        if (n && COFF == s[n - 1]) jtjoff(jt, jfalse);
         c = jt->bx[9];
         if ((UC)c > 127)
             DO(

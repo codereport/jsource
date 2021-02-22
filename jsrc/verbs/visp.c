@@ -171,7 +171,7 @@ jtioe(J jt, I mode, A w) {
         AR(b)        = 2;
     }
     if (1 < AR(b)) RZ(b = jtaslash1(jt, CSTARDOT, b)); /* b=. *./@,"_1 (3$.w)=5$.w */
-    RZ(y = jtirs2(jt, num(0), y, 0L, 0L, 1L, jtfrom));
+    RZ(y = jtirs2(jt, jfalse, y, 0L, 0L, 1L, jtfrom));
     RZ(df2(p, y, b, jtsldot(jt, jtslash(jt, ds(CSTARDOT)))));
     RZ(j = jtrepeat(jt, jtnot(jt, p), jtrepeat(jt, ne(y, jtcurtail(jt, jtover(jt, num(-1), y))), y)));
     jn = AN(j);
@@ -275,7 +275,7 @@ jtiopart(J jt, A w, I r, I mm, I* zc, A* zi, A* zj, A* zx) {
            v += n;)
     }
     if (m) {
-        RZ(f = jtcut(jt, ds(CCOMMA), num(1)));
+        RZ(f = jtcut(jt, ds(CCOMMA), jtrue));
         RZ(df2(y, b, jtdropr(jt, d, wy), f));
         RZ(df2(x, b, wx, f));
     } else {
@@ -398,8 +398,8 @@ jtnubsievesp(J jt, A w) {
     GASPARSE(z, SB01, 1, 1, &n);
     p = PAV(z);
     SPB(p, a, iv0);
-    SPB(p, e, num(0));
+    SPB(p, e, jfalse);
     SPB(p, i, y);
-    SPB(p, x, jtreshape(jt, jtsc(jt, m), num(1)));
+    SPB(p, x, jtreshape(jt, jtsc(jt, m), jtrue));
     return z;
 }

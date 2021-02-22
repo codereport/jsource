@@ -388,7 +388,7 @@ jtatop(J jt, A a, A w) {
             }
             break;  // f//.@(g/) for atomic fg
         case CQQ:
-            if (d == CTHORN && CEXEC == ID(av->fgh[0]) && av->fgh[1] == num(0)) {
+            if (d == CTHORN && CEXEC == ID(av->fgh[0]) && av->fgh[1] == jfalse) {
                 f1 = jtdigits10;
                 flag &= ~VJTFLGOK1;
             }
@@ -433,8 +433,8 @@ jtatop(J jt, A a, A w) {
             cb   = FAV(av->fgh[0])->id;
             A cr = av->fgh[1];
             cr   = (cb & ~2) == CIOTA ? cr : 0;
-            n    = cr == num(0) ? 0 : n;
-            n    = cr == num(1) ? 1 : n;
+            n    = cr == jfalse ? 0 : n;
+            n    = cr == jtrue ? 1 : n;
         }  // i.&0  already has combining op, set n if 0 or 1
         f2 = n >= 0 ? atcomp : f2;
         f2 = (REPSGN(~n) & d) == CFIT ? atcomp0 : f2;  // if valid comparison type, switch to it
@@ -565,8 +565,8 @@ jtatco(J jt, A a, A w) {
         case CAMP: {
             m   = (e & ~2) == CIOTA ? e : m;
             I j = -1;
-            j   = g == num(0) ? 0 : j;
-            j   = g == num(1) ? 1 : j;
+            j   = g == jfalse ? 0 : j;
+            j   = g == jtrue  ? 1 : j;
             m |= j;
             break;
         }             // i.@0/1@:g    i:@0/1@:g
@@ -793,7 +793,7 @@ jtamp(J jt, A a, A w) {
             if ((-AN(a) & -AR(a)) < 0) {
                 // c holds the pseudochar for the v op.  If v is u!.n, replace c with the pseudochar for n
                 // Also set b if the fit is !.0
-                if (b = c == CFIT && v->fgh[1] == num(0)) c = ID(v->fgh[0]);
+                if (b = c == CFIT && v->fgh[1] == jfalse) c = ID(v->fgh[0]);
                 mode = -1;
                 mode = c == CIOTA ? IIDOT : mode;
                 mode = c == CICO ? IICO : mode;
@@ -845,7 +845,7 @@ jtamp(J jt, A a, A w) {
                 // Also set b if the fit is !.0
                 c = v->id;
                 p = v->flag & 255;
-                if (b = c == CFIT && v->fgh[1] == num(0)) c = ID(v->fgh[0]);
+                if (b = c == CFIT && v->fgh[1] == jfalse) c = ID(v->fgh[0]);
                 if (7 == (p & 7))
                     mode = II0EPS + (p >> 3); /* (e.i.0:)  etc. */
                 else

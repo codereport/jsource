@@ -257,7 +257,7 @@ jtscube(J jt, A z, A i1, A p) {
     zp = PAV(z);
     a  = SPA(zp, a);
     y  = SPA(zp, i);
-    return !AN(a) && !*AS(y) ? jttake(jt, num(1), mtm) : jtover(jt, jtscubb(jt, z, i1), jtscubc(jt, z, i1, p));
+    return !AN(a) && !*AS(y) ? jttake(jt, jtrue, mtm) : jtover(jt, jtscubb(jt, z, i1), jtscubc(jt, z, i1, p));
 } /* new rows for the index matrix of z */
 
 static A

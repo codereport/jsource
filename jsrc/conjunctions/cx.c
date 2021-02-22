@@ -466,7 +466,7 @@ jtxdefn(J jt, A a, A w, A self) {
                 parseline(t);
                 // Check for assert.  Since this is only for T-blocks we tolerate the test (rather than duplicating
                 // code)
-                if (ci->type == CASSERT && jt->assert &&t && !(NOUN & AT(t) && all1(eq(num(1), t))))
+                if (ci->type == CASSERT && jt->assert &&t && !(NOUN & AT(t) && all1(eq(jtrue, t))))
                     t = jtpee(jt, line,
                             ci,
                             EVASSERT,
@@ -1352,7 +1352,7 @@ jtcolon(J jt, A a, A w) {
     }
     RE(n = jti0(jt, a));  // m : n; set n=value of a argument
     I col0;               // set if it was m : 0
-    if (col0 = jtequ(jt, w, num(0))) {
+    if (col0 = jtequ(jt, w, jfalse)) {
         RZ(w = jtcolon0(jt, n));
     }  // if m : 0, read up to the ) .  If 0 : n, return the string unedited
     if (!n) {

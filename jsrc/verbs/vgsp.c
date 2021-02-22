@@ -329,7 +329,7 @@ jtgrd1spdd(J jt, A w, I wf, I wcr) {
     n  = wcr ? ws[wf] : 1;
     x  = SPA(wp, x);
     if (AN(x)) {
-        RZ(z = jtfrom(jt, num(0), x));
+        RZ(z = jtfrom(jt, jfalse, x));
         return IRS1(z, 0L, wcr, jtgr1, x);
     } else {
         return jtreshape(jt, jtvec(jt, INT, 1 + wf, ws), IX(n));

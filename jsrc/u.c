@@ -451,7 +451,7 @@ jtsc4(J jt, I t, I v) {
 }  // return scalar with a given I-length type (numeric or box)
 A
 jtscb(J jt, B b) {
-    return num(b);
+    return b ? jtrue : jfalse;
 }  // A block for boolean
 A
 jtscc(J jt, C c) {

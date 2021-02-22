@@ -2094,7 +2094,7 @@ jtindexofsub(J jt, I mode, A a, A w) {
                 case IIFBEPS: return mtv;
                 case IANYEPS:
                 case IALLEPS:
-                case II0EPS: return num(0);
+                case II0EPS: return jfalse;
                 case ISUMEPS: return jtsc(jt, 0L);
                 case II1EPS:
                 case IJ1EPS: return jtsc(jt, witems);
@@ -2246,7 +2246,7 @@ jtindexofsub(J jt, I mode, A a, A w) {
                 return z;
             }  // all 0 but the first has the total count
             case IICO: return jtreshape(jt, shape(jt, z), jtsc(jt, n ? m : m - 1));
-            case INUBSV: return jtreshape(jt, shape(jt, z), jttake(jt, jtsc(jt, m), num(1)));
+            case INUBSV: return jtreshape(jt, shape(jt, z), jttake(jt, jtsc(jt, m), jtrue));
             case INUB:
                 AN(z)  = 0;
                 *AS(z) = m ? 1 : 0;
@@ -2257,7 +2257,7 @@ jtindexofsub(J jt, I mode, A a, A w) {
                 else
                     memcpy(AV(z), AV(w), k1 * AN(w));
                 return z;
-            case IEPS: return jtreshape(jt, shape(jt, z), num(m && (!n || th)));
+            case IEPS: return jtreshape(jt, shape(jt, z), (m && (!n || th)) ? jtrue : jfalse);
             case INUBI: return m ? iv0 : mtv;
             // th<0 means that the result of e. would have rank>1 and would never compare against either 0 or 1
             case II0EPS: return jtsc(jt, n && zn ? 0L : witems);
@@ -2265,8 +2265,8 @@ jtindexofsub(J jt, I mode, A a, A w) {
             case IJ0EPS: return jtsc(jt, n && zn ? MAX(0, witems - 1) : witems);
             case IJ1EPS: return jtsc(jt, n && zn ? witems : MAX(0, witems - 1));
             case ISUMEPS: return jtsc(jt, n ? 0L : c);  // must include shape of w
-            case IANYEPS: return num(!n);
-            case IALLEPS: return num(!(c && n));
+            case IANYEPS: return n ? jfalse : jtrue;
+            case IALLEPS: return (c && n) ? jfalse : jtrue;
             case IIFBEPS: return n ? mtv : IX(c);
         }
     }
@@ -2817,7 +2817,7 @@ jtsclass(J jt, A w) {
     I c, j, m, n, *v;
     P* p;
     // If w is scalar, return 1 1$1
-    if (!AR(w)) return jtreshape(jt, jtv2(jt, 1L, 1L), num(1));
+    if (!AR(w)) return jtreshape(jt, jtv2(jt, 1L, 1L), jtrue);
     SETIC(w, n);                  // n=#items of y
     RZ(x = jtindexof(jt, w, w));  // x = i.~ y
     // if w is dense, return ((x = i.n) # x) =/ x
@@ -2845,9 +2845,9 @@ jtsclass(J jt, A w) {
     v[1] = n;
     p    = PAV(z);
     SPB(p, a, jtv2(jt, 0L, 1L));
-    SPB(p, e, num(0));
+    SPB(p, e, jfalse);
     SPB(p, i, xy);
-    SPB(p, x, jtreshape(jt, jtsc(jt, c), num(1)));
+    SPB(p, x, jtreshape(jt, jtsc(jt, c), jtrue));
     return z;
 }
 

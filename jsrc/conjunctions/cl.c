@@ -88,7 +88,7 @@ jtscfn(J jt, A w, A self) {
         AS(AKASA(self))[0] = n;
     }                                                          // if current buffer is full, reallocate.  ext resets AS
     AAV(AKASA(self))[AS(AKASA(self))[0]++] = jtincorp(jt, w);  // copy in new result pointer
-    return num(0);                                             // harmless good return
+    return jfalse;                                             // harmless good return
 }
 
 // u S: n - like L: except for calling the logger
@@ -101,7 +101,7 @@ jtlevs1(J jt, A w, A self) {
     } else {
         STACKCHKOFL RZ(jtevery(jt, w, self));
     }  // since this recurs, check stack
-    return num(0);
+    return jfalse;
 }
 
 static A
@@ -121,7 +121,7 @@ jtlevs2(J jt, A a, A w, A self) {
     }  // since this recurs, check stack
        // We do this with the if statement rather than a computed branch in the hope that the CPU can detect patterns in
     // the conditions. There may be a structure in the user's data that could be detected for branch prediction.
-    return num(0);
+    return jfalse;
 }
 
 static A

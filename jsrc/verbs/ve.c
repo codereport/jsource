@@ -570,7 +570,7 @@ static A
 jtweight(J jt, A a, A w) {
     A z;
     return df1(
-      z, jtbehead(jt, jtover(jt, AR(w) ? w : jtreshape(jt, a, w), num(1))), jtbsdot(jt, jtslash(jt, ds(CSTAR))));
+      z, jtbehead(jt, jtover(jt, AR(w) ? w : jtreshape(jt, a, w), jtrue)), jtbsdot(jt, jtslash(jt, ds(CSTAR))));
 }  // */\. }. (({:$a)$w),1
 
 A

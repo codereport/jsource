@@ -210,7 +210,7 @@ jttsit2(J jt, A a, A w) {
 
 A
 jttsit1(J jt, A w) {
-    return jttsit2(jt, num(1), w);
+    return jttsit2(jt, jtrue, w);
 }
 
 #define sleepms(i) usleep(i * 1000)
@@ -275,7 +275,7 @@ jtpmfree(J jt, A w) {
            ++v;);
         fa(w);
     }
-    return num(1);
+    return jtrue;
 } /* free old data area */
 
 A

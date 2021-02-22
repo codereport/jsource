@@ -935,7 +935,7 @@ jtfmtxi(J jt, A a, A w, I mode, I *omode) {
     *omode = 0;
     if ((SPARSE & AT(w)) != 0) RZ(w = jtdenseit(jt, w));
     if (!AN(w)) RZ(w = jtreshape(jt, shape(jt, w), chrspace));
-    if (JCHAR & AT(w)) return df1(a, w, jtqq(jt, jtatop(jt, ds(CBOX), ds(CCOMMA)), num(1)));
+    if (JCHAR & AT(w)) return df1(a, w, jtqq(jt, jtatop(jt, ds(CBOX), ds(CCOMMA)), jtrue));
     ASSERT(1 >= AR(a), EVRANK);
     ASSERT(!AN(a) || JCHAR + BOX & AT(a), EVDOMAIN);
     if (JCHAR & AT(a) || !AN(a)) RZ(a = jtfmtbfc(jt, a));
@@ -952,7 +952,7 @@ jtfmtxi(J jt, A a, A w, I mode, I *omode) {
               ASSERT(!(AR(x) && AT(x) & NUMERIC), EVRANK);
           });
         A z;
-        return df2(z, jtreitem(jt, shape(jt, w), a), w, jtamp(jt, jtforeign(jt, num(8), num(0)), ds(COPE)));
+        return df2(z, jtreitem(jt, shape(jt, w), a), w, jtamp(jt, jtforeign(jt, num(8), jfalse), ds(COPE)));
     } else {
         if (XNUM + RAT + CMPX & AT(w)) RZ(w = jtcvt(jt, FL, w));
         *omode = mode;
@@ -980,7 +980,7 @@ jtfmt12(J jt, A a, A w) {
     A t;
     df1(t,
         jtcant1(jt, 2 == r ? z : jtreshape(jt, jtv2(jt, 1L, SETIC(z, j)), z)),
-        jtqq(jt, jtatco(jt, ds(CBOX), ds(COPE)), num(1)));
+        jtqq(jt, jtatco(jt, ds(CBOX), ds(COPE)), jtrue));
     return jtravel(jt, t);
 } /* 8!:1 dyad */
 
@@ -995,7 +995,7 @@ jtfmt22(J jt, A a, A w) {
     A t;
     df1(t,
         jtcant1(jt, 2 == r ? z : jtreshape(jt, jtv2(jt, 1L, SETIC(z, j)), z)),
-        jtqq(jt, jtatco(jt, ds(CBOX), ds(COPE)), num(1)));
+        jtqq(jt, jtatco(jt, ds(CBOX), ds(COPE)), jtrue));
     RZ(z = jtravel(jt, t));
     return AS(z)[0] ? jtrazeh(jt, z) : jtlamin1(jt, z);
 } /* 8!:2 dyad */

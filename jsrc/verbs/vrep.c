@@ -34,7 +34,7 @@ jtrepzsx(J jt, A a, A w, I wf, I wcr) {
     yv = AV(y);
     RZ(x = jtcvt(jt, INT, jtvec(jt, FL, 2 * m, AV(x))));
     xv = AV(x);
-    if (jtequ(jt, num(0), SPA(ap, e))) {
+    if (jtequ(jt, jfalse, SPA(ap, e))) {
         k = c = *(wf + AS(w));
         if (!wf && SPARSE & AT(w)) {
             A a, y;
@@ -356,7 +356,7 @@ jtrep1sa(J jt, A a, I *c, I *d) {
     b = 1 && AT(a) & CMPX;
     if (b) RZ(x = jtrect(jt, a)) else x = a;
     if (AR(a)) {
-        ASSERT(jtequ(jt, num(1), jtaslash(jt, CSTARDOT, le(zeroionei(0), jtravel(jt, x)))), EVDOMAIN);
+        ASSERT(jtequ(jt, jtrue, jtaslash(jt, CSTARDOT, le(zeroionei(0), jtravel(jt, x)))), EVDOMAIN);
         RZ(x = jtaslash(jt, CPLUS, x));
     }
     if (!(INT & AT(x))) RZ(x = jtcvt(jt, INT, x));
