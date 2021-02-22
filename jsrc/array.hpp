@@ -5,6 +5,9 @@ extern "C" {
 #include "j.h"
 }
 
+// C macros that have been replaced by C++ inline methods
+#undef num
+
 using array   = A;           // potentially rename to j_array?
 using shape_t = long long*;  // TODO figure out how to turn this into int64_t
 using rank_t  = unsigned short;
@@ -35,8 +38,8 @@ xor_replicate_sign(int64_t x) noexcept -> int64_t {
  * @return  The J representation of the integer
  */
 [[nodiscard]] inline auto
-refactorme_num(int64_t n) {
-    return reinterpret_cast<array>(Bnum + n - NUMMIN);
+num(int64_t n) {
+    return reinterpret_cast<array>(Bnum[n - NUMMIN]);
 }
 
 [[nodiscard]] inline auto
@@ -97,7 +100,7 @@ make_array(J jt, int64_t n, rank_t r, shape_t s) -> array {
 template <typename T>
 [[nodiscard]] inline auto
 make_scalar_integer(J jt, T k) -> array {
-    if (xor_replicate_sign(k) <= NUMMAX) return refactorme_num(k);
+    if (xor_replicate_sign(k) <= NUMMAX) return num(k);
     array z = make_array<T, copy_shape_0>(jt, 1, 0);
     set_value_at(z, 0, k);
     return z;
