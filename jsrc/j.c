@@ -16,6 +16,9 @@ struct Bd2 {
 #define CREBLOCKATOMV2(name, t, v1, v2) \
     struct Bd2 B##name = {{AKXR(0), (t)&TRAVERSIBLE, 0, (t), ACPERMANENT, 1, 0}, {v1, v2}};
 CREBLOCKATOMV2(a0j1, CMPX, 0.0, 1.0)  // 0j1
+// TODO: This should probably return an AD instead of the current I[8] that just happens to share
+//       the memory layout of AD. The current implementation is bound to break if that layout is
+//       ever changed.
 #define CBAIVAL(t, v) \
     { 7 * SZI, (t)&TRAVERSIBLE, 0, (t), ACPERMANENT, 1, 0, (v) }
 #define CREBLOCKATOMI(name, t, v) I B##name[8] = CBAIVAL(t, v);
