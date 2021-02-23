@@ -823,9 +823,8 @@ extern A mnuvxynam[6];
 extern void moveparseinfotosi(J);
 extern I Bnum[][8];
 #define num(n) ((A)(Bnum + (n)-NUMMIN))
-extern I Bbool[][8];
-#define jfalse ((A)(Bbool[0]))
-#define jtrue  ((A)(Bbool[1]))
+extern A const jfalse;
+extern A const jtrue;
 #define I1mem (Bnum[1-NUMMIN][7])  // 1 stored in memory
 extern struct Bd1 Bnumvr[];
 #define numvr(n) ((A)(Bnumvr + (n)))
