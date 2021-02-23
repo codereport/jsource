@@ -320,7 +320,6 @@
 #define minusA(x, y) jtatomic2((J)((I)jt | JTINPLACEA), (x), (y), ds(CMINUS))
 #define mmharvest(x0, x1, x2, x3, x4, x5, x6) jtmmharvest(jt, (x0), (x1), (x2), (x3), (x4), (x5), (x6))
 #define mmprep(x0, x1, x2, x3, x4, x5) jtmmprep(jt, (x0), (x1), (x2), (x3), (x4), (x5))
-#define move(x, y, z) jtmove(jt, (x), (y), (z))
 #define movandor(x0, x1, x2, x3) jtmovandor(jt, (x0), (x1), (x2), (x3))
 #define movbwneeq(x0, x1, x2, x3) jtmovbwneeq(jt, (x0), (x1), (x2), (x3))
 #define movfslash(x, y, z) jtmovfslash(jt, (x), (y), (z))
