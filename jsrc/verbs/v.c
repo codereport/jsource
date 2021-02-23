@@ -57,7 +57,7 @@ jtravel(J jt, A w) {
         // Not self-virtual.  Create a (noninplace) virtual copy, but not if NJA memory  NJAwhy
         // If rank 0 were the only thing stopping us from inplacing, we could inherit pristinity
         if (!(AFLAG(w) & (AFNJA))) {
-            RZ(z = virtual(w, 0, 1 + f));
+            RZ(z = jtvirtual(jt, w, 0, 1 + f));
             AN(z)                           = AN(w);
             MCISH(AS(z), AS(w), f) AS(z)[f] = m;
             return z;

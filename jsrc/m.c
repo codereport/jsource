@@ -1307,7 +1307,7 @@ jtcar(J jt, A w) {
 A
 jtclonevirtual(J jt, A w) {
     A z;
-    RZ(z = virtual(w, 0, AR(w)));  // allocate a new virtual block
+    RZ(z = jtvirtual(jt, w, 0, AR(w)));  // allocate a new virtual block
     AN(z) = AN(w);
     MCISH(AS(z), AS(w), (I)AR(w));  // copy AN and shape; leave AC alone
     return z;

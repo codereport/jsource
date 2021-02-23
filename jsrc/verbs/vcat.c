@@ -738,7 +738,7 @@ jtapip(J jt, A a, A w) {
                             // virtual extension.  Allocate a virtual block, which will extend past the original block.
                             // Fill in AN and AS for the block
                             A oa = a;
-                            RZ(a = virtual(a, 0, ar));
+                            RZ(a = jtvirtual(jt, a, 0, ar));
                             AN(a)    = AN(oa) + wn;
                             AS(a)[0] = AS(oa)[0] + wm;
                             MCISH(&AS(a)[1], &AS(oa)[1], AR(oa) - 1);

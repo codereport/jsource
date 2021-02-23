@@ -143,7 +143,7 @@ jtifrom(J jt, A a, A w) {
             if ((index0 | (p - indexn - 1)) >= 0) {  // index0>0 and indexn<=p-1
                 // indexes are consecutive and in range.  Make the result virtual.  Rank of w cell must be > 0, since we
                 // have >=2 consecutive result atoms
-                RZ(z = virtualip(w, index0 * k, ar + wr - 1));
+                RZ(z = jtvirtual(jtinplace, w, index0 * k, ar + wr - 1));
                 // fill in shape and number of atoms.  ar can be anything.
                 I *as = AS(a);
                 AN(z) = zn;
@@ -309,7 +309,7 @@ jtfrombu(J jt, A a, A w, I wf) {
     } else {
         //  reshape w to combine the first h axes of each cell.  Be careful with the copying, because w and q may be the
         //  same block.  Some axes may be closed up by the copy
-        RZ(q = virtualip(w, 0, r));
+        RZ(q = jtvirtual(jtinplace, w, 0, r));
         AN(q) = AN(w);
         v     = AS(q);
         MCISH(v, ws, wf);
@@ -513,7 +513,7 @@ jtafrom(J jt, A a, A w) {
     }
     if (i) {
         I *ys;
-        RZ(y = virtual(w, m, pr + wcr - i));
+        RZ(y = jtvirtual(jt, w, m, pr + wcr - i));
         ys = AS(y);
         DO(pr, *ys++ = 1;);
         MCISH(ys, s + i, wcr - i);
@@ -594,7 +594,7 @@ jtfrom(J jt, A a, A w) {
                 PROD(m, wr1, ws + 1);  // number of atoms in a cell
                 I j;
                 SETNDX(j, av, ws[0]);              // j=positive index
-                RZ(z = virtualip(w, j * m, wr1));  // if w is rank 2, could reuse inplaceable a for this virtual block
+                RZ(z = jtvirtual(jtinplace, w, j * m, wr1));  // if w is rank 2, could reuse inplaceable a for this virtual block
                 // fill in shape and number of atoms.  ar can be anything.
                 AN(z) = m;
                 MCISH(AS(z), ws + 1, wr1)

@@ -180,7 +180,7 @@
             z             = (A)(v);                                                                       \
             AC(z)         = (c);                                                                          \
         } else {                                                                                          \
-            RZ(z = virtual((w), 0, (r)));                                                                 \
+            RZ(z = jtvirtual(jt, (w), 0, (r)));                                                                 \
             AFLAG(z) |= AFUNINCORPABLE;                                                                   \
             if ((c) != ACUC1) AC(z) = (c);                                                                \
         }                                                                                                 \
@@ -591,8 +591,6 @@
     jtvaspeqprep(jt, (x0), (x1), (x2), (x3), (x4), (x5), (x6), (x7), (x8), (x9), (x10), (x11))
 #define vec(x, y, z) jtvec(jt, (x), (y), (z))
 #define vecb01(x, y, z) jtvecb01(jt, (x), (y), (z))
-#define virtual(x, y, z) jtvirtual(jt, (x), (y), (z))
-#define virtualip(x, y, z) jtvirtual(jtinplace, (x), (y), (z))
 #define wa(x, y, z) jtwa(jt, (x), (y), (z))
 #define widthdp(x, y, z) jtwidthdp(jt, (x), (y), (z))
 #define words(x) jtwords(jt, (x), ds(CWORDS))

@@ -356,7 +356,7 @@ jtssg(J jt, A w, A self) {
         // if result happens to be the same virtual block that we passed in, we have to clone it before we change the
         // pointer
         else if (a == z) {
-            RZ(z = virtual(z, 0, AR(a)));
+            RZ(z = jtvirtual(jt, z, 0, AR(a)));
             AN(z) = AN(a);
             MCISH(AS(z), AS(a), r - 1);
         }
