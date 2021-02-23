@@ -32,8 +32,6 @@ static JGetAType jgeta;
 static JSetAType jseta;
 std::string path;
 std::string pathdll;
-static char jdllver[20];  // Not sure why this is being added, but keeping it for now.
-static int FHS = 0;       // Not sure what this is
 
 auto
 jedo(char const* sentence) -> int {
@@ -178,15 +176,9 @@ auto
 jefirst(int type, char* arg) -> int {
     std::string input;
 
-    if (type == 0) {
-        if (!FHS)
-            input.append("(3 : '0!:0 y')<BINPATH,'");
-        else {
-            input.append("(3 : '0!:0 y')<'/etc/j/");
-            input.append(jdllver);
-        }
-        input.append("/profile.ijs'");
-    } else if (type == 1)
+    if (type == 0)
+        input.append("(3 : '0!:0 y')<BINPATH,'/profile.ijs'");
+    else if (type == 1)
         input.append("(3 : '0!:0 y')2{ARGV");
     else if (type == 2)
         input.append("");
