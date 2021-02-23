@@ -97,7 +97,6 @@ jeload(void* callbacks) -> J {
 auto
 jepath(char* arg, char* lib) -> void {
     uint32_t const sz = 4000;
-    uint32_t len      = sz;  // Cant be const for function call _NSGetExecutablePath
 
     // C strings need to be used for POSIX APIs and macOS APIs
     auto arg2      = new char[sz];
@@ -109,6 +108,7 @@ jepath(char* arg, char* lib) -> void {
 // try host dependent way to get path to executable
 // use arg if they fail (arg command in PATH won't work)
 #ifdef __MACH__
+    uint32_t len      = sz;  // Cant be const for function call _NSGetExecutablePath
     // Returns 0 if path was copied, otherwise -1 if failed.
     if (_NSGetExecutablePath(arg2, &len) != 0) strcat(arg2, arg);
 #else
