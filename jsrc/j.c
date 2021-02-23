@@ -21,6 +21,9 @@ CREBLOCKATOMV2(a0j1, CMPX, 0.0, 1.0)  // 0j1
 //       ever changed.
 #define CBAIVAL(t, v) \
     { 7 * SZI, (t)&TRAVERSIBLE, 0, (t), ACPERMANENT, 1, 0, (v) }
+// TODO: Next version of CBAIVAL, create AD directly instead of I[8]
+#define CBAIVAL2(t, v) \
+    (AD){ .kchain = 7 * SZI, .flag = (t)&TRAVERSIBLE, .tproxy = (t), .c = ACPERMANENT, .n = 1, .s = (v) }
 #define CREBLOCKATOMI(name, t, v) I B##name[8] = CBAIVAL(t, v);
 #define CREBLOCKVEC0(name, t) \
     I B##name[8] = {          \
@@ -54,12 +57,12 @@ A mnuvxynam[6] = {0, 0, 0, 0, 0, 0};  // name blocks for all arg names
 // and &validitymask[0] as a V* with ID of 0
 I validitymask[16] = {-1, -1, 0, 0, -1, -1, 0, 0, -1, -1, 0, 0, 0, 0, 0, 0};  // native ss2/neon register is s64x2
 
-I Bnum[20][8] =
+AD Bnum[20] =
   {  // the numbers we keep at hand.
-    CBAIVAL(INT, -10), CBAIVAL(INT, -9), CBAIVAL(INT, -8), CBAIVAL(INT, -7), CBAIVAL(INT, -6), CBAIVAL(INT, -5),
-    CBAIVAL(INT, -4),  CBAIVAL(INT, -3), CBAIVAL(INT, -2), CBAIVAL(INT, -1), CBAIVAL(INT, 0),  CBAIVAL(INT, 1),
-    CBAIVAL(INT, 2),   CBAIVAL(INT, 3),  CBAIVAL(INT, 4),  CBAIVAL(INT, 5),  CBAIVAL(INT, 6),  CBAIVAL(INT, 7),
-    CBAIVAL(INT, 8),   CBAIVAL(INT, 9)};
+    CBAIVAL2(INT, -10), CBAIVAL2(INT, -9), CBAIVAL2(INT, -8), CBAIVAL2(INT, -7), CBAIVAL2(INT, -6), CBAIVAL2(INT, -5),
+    CBAIVAL2(INT, -4),  CBAIVAL2(INT, -3), CBAIVAL2(INT, -2), CBAIVAL2(INT, -1), CBAIVAL2(INT, 0),  CBAIVAL2(INT, 1),
+    CBAIVAL2(INT, 2),   CBAIVAL2(INT, 3),  CBAIVAL2(INT, 4),  CBAIVAL2(INT, 5),  CBAIVAL2(INT, 6),  CBAIVAL2(INT, 7),
+    CBAIVAL2(INT, 8),   CBAIVAL2(INT, 9)};
 
 // The booleans
 A const jfalse = (A)(I[8])CBAIVAL(B01, 0);

@@ -821,8 +821,8 @@ extern I Biv1[];
 extern D jnan; /* "nan" name conflict under Solaris       */
 extern A mnuvxynam[6];
 extern void moveparseinfotosi(J);
-extern I Bnum[][8];
-#define num(n) ((A)(Bnum + (n)-NUMMIN))
+extern AD Bnum[];
+#define num(n) (Bnum + (n)-NUMMIN)
 extern A const jfalse;
 extern A const jtrue;
 #define I1mem (num(1)->s[0])  // 1 stored in memory
