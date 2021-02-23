@@ -7,7 +7,6 @@
 #define _isatty isatty
 #define _fileno fileno
 #include <dlfcn.h>
-#define GETPROCADDRESS(h, p) dlsym(h, p)
 #include <signal.h>
 #include <stdint.h>
 #include <locale.h>
@@ -65,11 +64,11 @@ readlineinit() {
 #endif
                     return 0;
                 }
-    add_history   = (ADD_HISTORY)GETPROCADDRESS(hreadline, "add_history");
-    read_history  = (READ_HISTORY)GETPROCADDRESS(hreadline, "read_history");
-    write_history = (WRITE_HISTORY)GETPROCADDRESS(hreadline, "write_history");
-    readline      = (PREADLINE)GETPROCADDRESS(hreadline, "readline");
-    using_history = (USING_HISTORY)GETPROCADDRESS(hreadline, "using_history");
+    add_history   = (ADD_HISTORY)dlsym(hreadline, "add_history");
+    read_history  = (READ_HISTORY)dlsym(hreadline, "read_history");
+    write_history = (WRITE_HISTORY)dlsym(hreadline, "write_history");
+    readline      = (PREADLINE)dlsym(hreadline, "readline");
+    using_history = (USING_HISTORY)dlsym(hreadline, "using_history");
     return 1;
 }
 
