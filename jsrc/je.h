@@ -825,7 +825,7 @@ extern I Bnum[][8];
 #define num(n) ((A)(Bnum + (n)-NUMMIN))
 extern A const jfalse;
 extern A const jtrue;
-#define I1mem (Bnum[1-NUMMIN][7])  // 1 stored in memory
+#define I1mem (num(1)->s[0])  // 1 stored in memory
 extern struct Bd1 Bnumvr[];
 #define numvr(n) ((A)(Bnumvr + (n)))
 extern struct Bd1 Bonehalf;
