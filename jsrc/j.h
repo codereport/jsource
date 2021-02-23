@@ -629,7 +629,7 @@
 // Install new value z into xv[k], where xv is AAV(x).  If x has recursive usecount, we must increment the usecount of
 // z. This also guarantees that z has recursive usecount whenever x does, and that z is realized
 #define INSTALLBOX(x, xv, k, z) \
-    rifv(z);                    \
+    realizeifvirtual(z);        \
     if ((UCISRECUR(x)) != 0) {  \
         A zzZ = xv[k];          \
         ra(z);                  \
@@ -637,11 +637,11 @@
     }                           \
     xv[k] = z
 #define INSTALLBOXNF(x, xv, k, z)       \
-    rifv(z);                            \
+    realizeifvirtual(z);                \
     if ((UCISRECUR(x)) != 0) { ra(z); } \
     xv[k] = z  // Don't do the free - if we are installing into known 0 or known nonrecursive
 #define INSTALLBOXRECUR(xv, k, z) \
-    rifv(z);                      \
+    realizeifvirtual(z);          \
     {                             \
         I zzK = (k);              \
         {                         \

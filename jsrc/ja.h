@@ -433,7 +433,6 @@
     {                                                                \
         if ((AFLAG(x) & AFVIRTUAL) != 0) RZ((x) = jtrealize(jt, x)); \
     }
-#define rifv(x) realizeifvirtual(x)
 // We have used rifvs liberally through the code to guarantee that all functions can deal with virtual blocks returned.
 // In some cases, the call is to an internal routine that we know will not return a virtual block normally, and is in an
 // important performance path.  We use rifvsdebug for these places.  rifvs is called only during debugging.  Review them
@@ -519,7 +518,7 @@
 // usecount We can have an inplaceable but recursible block, if it was gc'd.  We never push a PERMANENT block, so that
 // we won't try to free it NOTE that PERMANENT blocks are always marked traversible if they are of traversible type, so
 // we will not recur on them internally
-#define tpushcommon(x, suffix)                                                                 \
+#define tpush(x)                                                                               \
     {                                                                                          \
         if (!ACISPERM(AC(x))) {                                                                \
             I tt     = AT(x);                                                                  \
@@ -528,10 +527,8 @@
             if (!((I)pushp & (NTSTACKBLOCK - 1))) { RZ(pushp = jttg(jt, pushp)); }             \
             if (((tt ^ AFLAG(x)) & TRAVERSIBLE) != 0) RZ(pushp = jttpush(jt, (x), tt, pushp)); \
             jt->tnextpushp = pushp;                                                            \
-            suffix                                                                             \
         }                                                                                      \
     }
-#define tpush(x) tpushcommon(x, )
 // Internal version, used when the local name pushp is known to hold jt->tnextpushp
 #define tpushi(x)                                                                              \
     {                                                                                          \

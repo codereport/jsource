@@ -449,7 +449,7 @@ jtenqueue(J jt, A a, A w, I env) {
             }  // bad first character or inflection
         }
         // Since the word is being incorporated into a list, we must realize it
-        rifv(*x);
+        realizeifvirtual(*x);
         // Mark the word as not-inplaceable.  Since all allocations start life marked in-placeable, we get into trouble
         // if words in a explicit definition are left that way, because the sentences may get reexecuted and any
         // constant marked inplaceable could be modified by each use.  The trouble happens only if the definition is not
