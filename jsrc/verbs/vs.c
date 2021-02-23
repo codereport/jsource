@@ -240,7 +240,7 @@ jtsparseit(J jt, A w, A a, A e) {
     DO(r, s[i] = v[u[i]];);
     RE(m = jtprod(jt, n, s));
     b = jtequ(jt, a, IX(r));
-    RZ(x = virtual(b ? w : jtcant2(jt, ax, w), 0, 1 + r - n));
+    RZ(x = jtvirtual(jt, b ? w : jtcant2(jt, ax, w), 0, 1 + r - n));
     AN(x) = AN(w);
     v     = AS(x);
     *v    = m;

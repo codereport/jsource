@@ -180,7 +180,7 @@
             z             = (A)(v);                                                                       \
             AC(z)         = (c);                                                                          \
         } else {                                                                                          \
-            RZ(z = virtual((w), 0, (r)));                                                                 \
+            RZ(z = jtvirtual(jt, (w), 0, (r)));                                                                 \
             AFLAG(z) |= AFUNINCORPABLE;                                                                   \
             if ((c) != ACUC1) AC(z) = (c);                                                                \
         }                                                                                                 \
@@ -320,7 +320,6 @@
 #define minusA(x, y) jtatomic2((J)((I)jt | JTINPLACEA), (x), (y), ds(CMINUS))
 #define mmharvest(x0, x1, x2, x3, x4, x5, x6) jtmmharvest(jt, (x0), (x1), (x2), (x3), (x4), (x5), (x6))
 #define mmprep(x0, x1, x2, x3, x4, x5) jtmmprep(jt, (x0), (x1), (x2), (x3), (x4), (x5))
-#define move(x, y, z) jtmove(jt, (x), (y), (z))
 #define movandor(x0, x1, x2, x3) jtmovandor(jt, (x0), (x1), (x2), (x3))
 #define movbwneeq(x0, x1, x2, x3) jtmovbwneeq(jt, (x0), (x1), (x2), (x3))
 #define movfslash(x, y, z) jtmovfslash(jt, (x), (y), (z))
@@ -434,7 +433,6 @@
     {                                                                \
         if ((AFLAG(x) & AFVIRTUAL) != 0) RZ((x) = jtrealize(jt, x)); \
     }
-#define rifv(x) realizeifvirtual(x)
 // We have used rifvs liberally through the code to guarantee that all functions can deal with virtual blocks returned.
 // In some cases, the call is to an internal routine that we know will not return a virtual block normally, and is in an
 // important performance path.  We use rifvsdebug for these places.  rifvs is called only during debugging.  Review them
@@ -520,7 +518,7 @@
 // usecount We can have an inplaceable but recursible block, if it was gc'd.  We never push a PERMANENT block, so that
 // we won't try to free it NOTE that PERMANENT blocks are always marked traversible if they are of traversible type, so
 // we will not recur on them internally
-#define tpushcommon(x, suffix)                                                                 \
+#define tpush(x)                                                                               \
     {                                                                                          \
         if (!ACISPERM(AC(x))) {                                                                \
             I tt     = AT(x);                                                                  \
@@ -529,10 +527,8 @@
             if (!((I)pushp & (NTSTACKBLOCK - 1))) { RZ(pushp = jttg(jt, pushp)); }             \
             if (((tt ^ AFLAG(x)) & TRAVERSIBLE) != 0) RZ(pushp = jttpush(jt, (x), tt, pushp)); \
             jt->tnextpushp = pushp;                                                            \
-            suffix                                                                             \
         }                                                                                      \
     }
-#define tpush(x) tpushcommon(x, )
 // Internal version, used when the local name pushp is known to hold jt->tnextpushp
 #define tpushi(x)                                                                              \
     {                                                                                          \
@@ -591,8 +587,6 @@
     jtvaspeqprep(jt, (x0), (x1), (x2), (x3), (x4), (x5), (x6), (x7), (x8), (x9), (x10), (x11))
 #define vec(x, y, z) jtvec(jt, (x), (y), (z))
 #define vecb01(x, y, z) jtvecb01(jt, (x), (y), (z))
-#define virtual(x, y, z) jtvirtual(jt, (x), (y), (z))
-#define virtualip(x, y, z) jtvirtual(jtinplace, (x), (y), (z))
 #define wa(x, y, z) jtwa(jt, (x), (y), (z))
 #define widthdp(x, y, z) jtwidthdp(jt, (x), (y), (z))
 #define words(x) jtwords(jt, (x), ds(CWORDS))

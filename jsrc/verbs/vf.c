@@ -556,7 +556,7 @@ jtreshape(J jt, A a, A w) {
             // correct   if(!(AFLAG(w)&(AFNJA))){RZ(z=virtual(w,0,r+wf)); AN(z)=m; I *zs=AS(z); DO(wf, *zs++=ws[i];);
             // DO(r, zs[i]=u[i];) return z;}
             if ((SGNIF(AFLAG(w), AFNJAX) | ((t & (DIRECT | RECURSIBLE)) - 1)) >= 0) {
-                RZ(z = virtual(w, 0, r + wf));
+                RZ(z = jtvirtual(jt, w, 0, r + wf));
                 AN(z)          = m;
                 I *RESTRICT zs = AS(z);
                 MCISH(zs, ws, wf) MCISH(zs + wf, u, r) return z;

@@ -278,7 +278,7 @@ jtredg(J jt, A w, A self) {
         // if w happens to be the same virtual block that we passed in as x, we have to clone it before we change the
         // pointer
         if (a == wfaux) {
-            RZ(wfaux = virtual(wfaux, 0, AR(a)));
+            RZ(wfaux = jtvirtual(jt, wfaux, 0, AR(a)));
             AN(wfaux) = AN(a);
             MCISH(AS(wfaux), AS(a), AR(a));
         }
@@ -884,7 +884,7 @@ jtredcatcell(J jt, A w, I r) {
         z     = w;
         AR(z) = (RANKT)(r + 1);  // inplace it, install new rank
     } else {
-        RZ(z = virtual(w, 0, r + 1));
+        RZ(z = jtvirtual(jt, w, 0, r + 1));
         AN(z) = AN(w);  // create virtual block
     }
     I m;

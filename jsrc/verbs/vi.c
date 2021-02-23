@@ -2760,7 +2760,7 @@ jtless(J jt, A a, A w) {
     // if w's rank is larger than that of a cell of a, reheader w to look like a list of such cells.  The number of
     // atoms stays the same
     if (wr && r != wr) {
-        RZ(x = virtual(w, 0, r));
+        RZ(x = jtvirtual(jt, w, 0, r));
         AN(x) = AN(w);
         s     = AS(x);
         ws    = AS(w);

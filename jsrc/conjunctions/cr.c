@@ -750,13 +750,13 @@ jtrank2ex0(J jt, AD *RESTRICT a, AD *RESTRICT w, A fs, AF f2) {
             if (!AN(a)) {
                 RZ(virta = jtfiller(jt, a));
             } else {
-                virta     = virtual(a, 0, 0);
+                virta     = jtvirtual(jt, a, 0, 0);
                 AN(virta) = 1;
             }  // if there are cells, use first atom; else fill atom
             if (!AN(w)) {
                 RZ(virtw = jtfiller(jt, w));
             } else {
-                virtw     = virtual(w, 0, 0);
+                virtw     = jtvirtual(jt, w, 0, 0);
                 AN(virtw) = 1;
             }
             WITHDEBUGOFF(z = CALL2(f2, virta, virtw, fs);)  // normal execution on fill-cell

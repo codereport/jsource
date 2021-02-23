@@ -266,7 +266,7 @@ jttake(J jt, A a, A w) {
             PROD(wcellsize, wr - 1, ws + 1);  // size of a cell in atoms of w
             I offset = woffset * wcellsize;   // offset in atoms of the virtual data
             // allocate virtual block, passing in the in-place status from w
-            RZ(s = virtualip(w, offset, wr));  // allocate block
+            RZ(s = jtvirtual(jtinplace, w, offset, wr));  // allocate block
             // fill in shape.  Note that s and w may be the same block, so ws is destroyed
             I* RESTRICT ss = AS(s);
             ss[0]          = tkabs;
@@ -343,7 +343,7 @@ jtdrop(J jt, A a, A w) {
         PROD(wcellsize, wr - 1, ws + 1);  // size of a cell in atoms of w
         I offset = woffset * wcellsize;   // offset in bytes of the virtual data
         // allocate virtual block.  May use inplace w
-        RZ(s = virtualip(w, offset, wr));  // allocate block
+        RZ(s = jtvirtual(jtinplace, w, offset, wr));  // allocate block
         // fill in shape.  s and w may be the same block, so ws is destroyed
         I* RESTRICT ss = AS(s);
         ss[0]          = remlen;
@@ -413,7 +413,7 @@ jthead(J jt, A w) {
             wcr--;
             wcr = (wcr < 0) ? wr : wcr;  // wn=#atoms of w, wcr=rank of cell being created
             A z;
-            RZ(z = virtualip(w, 0, wcr));  // allocate the cell.  Now fill in shape & #atoms
+            RZ(z = jtvirtual(jtinplace, w, 0, wcr));  // allocate the cell.  Now fill in shape & #atoms
                                            // if w is empty we have to worry about overflow when calculating #atoms
             I zn;
             PROD(zn, wcr, AS(w) + 1)
