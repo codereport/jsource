@@ -16,6 +16,9 @@ struct Bd2 {
 #define CREBLOCKATOMV2(name, t, v1, v2) \
     struct Bd2 B##name = {{AKXR(0), (t)&TRAVERSIBLE, 0, (t), ACPERMANENT, 1, 0}, {v1, v2}};
 CREBLOCKATOMV2(a0j1, CMPX, 0.0, 1.0)  // 0j1
+// TODO: This should probably return an AD instead of the current I[8] that just happens to share
+//       the memory layout of AD. The current implementation is bound to break if that layout is
+//       ever changed.
 #define CBAIVAL(t, v) \
     { 7 * SZI, (t)&TRAVERSIBLE, 0, (t), ACPERMANENT, 1, 0, (v) }
 #define CREBLOCKATOMI(name, t, v) I B##name[8] = CBAIVAL(t, v);
@@ -51,12 +54,16 @@ A mnuvxynam[6] = {0, 0, 0, 0, 0, 0};  // name blocks for all arg names
 // and &validitymask[0] as a V* with ID of 0
 I validitymask[16] = {-1, -1, 0, 0, -1, -1, 0, 0, -1, -1, 0, 0, 0, 0, 0, 0};  // native ss2/neon register is s64x2
 
-I Bnum[22][8] =
-  {  // the numbers we keep at hand.  0 and 1 are B01, the rest INT; but the first 2 are integer forms of 0 and 1
-    CBAIVAL(INT, 0),  CBAIVAL(INT, 1),  CBAIVAL(INT, -10), CBAIVAL(INT, -9), CBAIVAL(INT, -8), CBAIVAL(INT, -7),
-    CBAIVAL(INT, -6), CBAIVAL(INT, -5), CBAIVAL(INT, -4),  CBAIVAL(INT, -3), CBAIVAL(INT, -2), CBAIVAL(INT, -1),
-    CBAIVAL(B01, 0),  CBAIVAL(B01, 1),  CBAIVAL(INT, 2),   CBAIVAL(INT, 3),  CBAIVAL(INT, 4),  CBAIVAL(INT, 5),
-    CBAIVAL(INT, 6),  CBAIVAL(INT, 7),  CBAIVAL(INT, 8),   CBAIVAL(INT, 9)};
+I Bnum[20][8] =
+  {  // the numbers we keep at hand.
+    CBAIVAL(INT, -10), CBAIVAL(INT, -9), CBAIVAL(INT, -8), CBAIVAL(INT, -7), CBAIVAL(INT, -6), CBAIVAL(INT, -5),
+    CBAIVAL(INT, -4),  CBAIVAL(INT, -3), CBAIVAL(INT, -2), CBAIVAL(INT, -1), CBAIVAL(INT, 0),  CBAIVAL(INT, 1),
+    CBAIVAL(INT, 2),   CBAIVAL(INT, 3),  CBAIVAL(INT, 4),  CBAIVAL(INT, 5),  CBAIVAL(INT, 6),  CBAIVAL(INT, 7),
+    CBAIVAL(INT, 8),   CBAIVAL(INT, 9)};
+
+// The booleans
+A const jfalse = (A)(I[8])CBAIVAL(B01, 0);
+A const jtrue = (A)(I[8])CBAIVAL(B01, 1);
 
 struct Bd1 Bnumvr[3] = {  // floating-point 0, 1, and 2, used for constants
   {{AKXR(0), FL& TRAVERSIBLE, 0, FL, ACPERMANENT, 1, 0}, 0.0},

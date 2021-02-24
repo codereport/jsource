@@ -45,7 +45,7 @@ jtdrr(J jt, A w) {
     if (evoke(w)) return jtdrr(jt, jtsfne(jt, w));  // turn nameref into string or verb; then take rep
     if (fs) RZ(df = fl & VGERL ? jtevery(jt, jtfxeach(jt, fs, (A)&jtfxself[0]), (A)&drrself) : jtdrr(jt, fs));
     if (gs) RZ(dg = fl & VGERR ? jtevery(jt, jtfxeach(jt, gs, (A)&jtfxself[0]), (A)&drrself) : jtdrr(jt, gs));
-    if (ex) RZ(dg = jtunparsem(jt, num(0), w));
+    if (ex) RZ(dg = jtunparsem(jt, jfalse, w));
     m += !b && !xop || hs && xop;
     GATV0(z, BOX, m, 1);
     x = AAV(z);
@@ -103,7 +103,7 @@ jtaro(J jt, A w) {
     GATV0(y, BOX, m, 1);
     u = AAV(y);
     if (0 < m) RZ(u[0] = jtincorp(jt, jtaro(jt, fs)));
-    if (1 < m) RZ(u[1] = jtincorp(jt, jtaro(jt, ex ? jtunparsem(jt, num(0), w) : xop ? hs : gs)));
+    if (1 < m) RZ(u[1] = jtincorp(jt, jtaro(jt, ex ? jtunparsem(jt, jfalse, w) : xop ? hs : gs)));
     if (2 < m) RZ(u[2] = jtincorp(jt, jtaro(jt, hs)));
     s = xop               ? jtaro(jt, gs)
         : VDDOP & v->flag ? (hv = AV(hs), jtaro(jt, jtforeign(jt, jtsc(jt, hv[0]), jtsc(jt, hv[1]))))
@@ -496,7 +496,7 @@ jtunparsem(J jt, A a, A w) {
         if (p) RZ(*zv++ = chrcolon);
         DO(dn, *zv++ = jtunDD(jt, AAV(ds)[i]););
     }
-    if (a == num(0)) {
+    if (a == jfalse) {
         RZ(z = jtope(jt, z));
         if (1 == AR(z)) z = jttable(jt, z);
     }

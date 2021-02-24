@@ -438,7 +438,7 @@ jtsscan(J jt, A w, A self) {
     y     = FAV(self)->fgh[0];  // y is f/
     if (((n - 2) | (wn - 1)) < 0) {
         if (FAV(FAV(y)->fgh[0])->flag & VISATOMIC2) {
-            return r ? w : jtreshape(jt, apip(shape(jt, w), zeroionei(1)), w);
+            return r ? w : jtreshape(jt, apip(shape(jt, w), num(1)), w);
         } else
             return IRS1(w, self, r, jtsuffix, z);
     }  // if empty arg, or just 1 cell in selected axis, convert to f/\ which handles the short arg
@@ -470,8 +470,8 @@ jtomask(J jt, A a, A w) {
     SETIC(w, n);
     r = jtsc(jt, 0 > m ? (n + p - 1) / p : MAX(0, 1 + n - m));
     c = tally(jt, w);
-    x = jtreshape(jt, jtsc(jt, p), num(0));
-    y = jtreshape(jt, 0 > m ? c : r, num(1));
+    x = jtreshape(jt, jtsc(jt, p), jfalse);
+    y = jtreshape(jt, 0 > m ? c : r, jtrue);
     return reshapeW(jtover(jt, r, c), jtover(jt, x, y));
 }
 

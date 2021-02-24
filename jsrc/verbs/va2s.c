@@ -238,8 +238,8 @@ jtvaspeq(J jt, A a, A w, C id, VF ado, I cv, I t, I zt, I f, I r) {
     I rc = EVOK;
     RZ(jtvaspeqprep(jt, a, w, t, f, r, &ae, &ay, &ax, &we, &wy, &wx, &za));
     if (id == CSTAR || id == CSTARDOT) {
-        ab = !jtequ(jt, ae, num(0));
-        wb = !jtequ(jt, we, num(0));
+        ab = !jtequ(jt, ae, jfalse);
+        wb = !jtequ(jt, we, jfalse);
     }
     v   = AS(ay);
     m   = v[0];

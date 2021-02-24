@@ -466,7 +466,7 @@ jtxdefn(J jt, A a, A w, A self) {
                 parseline(t);
                 // Check for assert.  Since this is only for T-blocks we tolerate the test (rather than duplicating
                 // code)
-                if (ci->type == CASSERT && jt->assert &&t && !(NOUN & AT(t) && all1(eq(num(1), t))))
+                if (ci->type == CASSERT && jt->assert &&t && !(NOUN & AT(t) && all1(eq(jtrue, t))))
                     t = jtpee(jt, line,
                             ci,
                             EVASSERT,
@@ -1352,7 +1352,7 @@ jtcolon(J jt, A a, A w) {
     }
     RE(n = jti0(jt, a));  // m : n; set n=value of a argument
     I col0;               // set if it was m : 0
-    if (col0 = jtequ(jt, w, num(0))) {
+    if (col0 = jtequ(jt, w, jfalse)) {
         RZ(w = jtcolon0(jt, n));
     }  // if m : 0, read up to the ) .  If 0 : n, return the string unedited
     if (!n) {
@@ -1484,11 +1484,11 @@ jtcolon(J jt, A a, A w) {
     }
     switch (n) {
         case 3:
-            return jtfdef(jt, 0, CCOLON, VERB, xn1, jtxdefn, num(n), 0L, h, flag | VJTFLGOK1 | VJTFLGOK2, RMAX, RMAX, RMAX);
-        case 1: return jtfdef(jt, 0, CCOLON, ADV, b ? xop1 : xadv, 0L, num(n), 0L, h, flag, RMAX, RMAX, RMAX);
-        case 2: return jtfdef(jt, 0, CCOLON, CONJ, 0L, b ? jtxop2 : jtxdefn, num(n), 0L, h, flag, RMAX, RMAX, RMAX);
+            return jtfdef(jt, 0, CCOLON, VERB, xn1, jtxdefn, numbool(n), 0L, h, flag | VJTFLGOK1 | VJTFLGOK2, RMAX, RMAX, RMAX);
+        case 1: return jtfdef(jt, 0, CCOLON, ADV, b ? xop1 : xadv, 0L, numbool(n), 0L, h, flag, RMAX, RMAX, RMAX);
+        case 2: return jtfdef(jt, 0, CCOLON, CONJ, 0L, b ? jtxop2 : jtxdefn, numbool(n), 0L, h, flag, RMAX, RMAX, RMAX);
         case 4:
-            return jtfdef(jt, 0, CCOLON, VERB, xn1, jtxdefn, num(n), 0L, h, flag | VJTFLGOK1 | VJTFLGOK2, RMAX, RMAX, RMAX);
+            return jtfdef(jt, 0, CCOLON, VERB, xn1, jtxdefn, numbool(n), 0L, h, flag | VJTFLGOK1 | VJTFLGOK2, RMAX, RMAX, RMAX);
         case 13: return jtvtrans(jt, w);
         default: ASSERT(0, EVDOMAIN);
     }

@@ -622,7 +622,7 @@ jtinfix(J jt, A a, A w, A self) {
         // Create fill-cell of shape s; apply u to it
         RZ(df1(x, jtreshape(jt, s, jtfiller(jt, w)), fs));
         // Prepend leading axis of 0 to the result
-        z = jtreshape(jt, jtover(jt, zeroionei(0), shape(jt, x)), x);
+        z = jtreshape(jt, jtover(jt, num(0), shape(jt, x)), x);
     }
     EPILOG(z);
 }
@@ -657,7 +657,7 @@ jtginfix(J jt, A a, A w, A self) {
         RZ(s = AR(w) ? shape(jt, w) : jtca(jt, iv0));
         AV(s)[0] = ABS(m);
         RZ(df1(x, jtreshape(jt, s, jtfiller(jt, w)), *hv));
-        return jtreshape(jt, jtover(jt, zeroionei(0), shape(jt, x)), x);
+        return jtreshape(jt, jtover(jt, num(0), shape(jt, x)), x);
     }
 }
 
@@ -864,14 +864,14 @@ jtinfixprefix2(J jt, A a, A w, A self) {
         // for prefix, 0 items of fill
         // for infix +, invabs items of fill
         // for infix -, 0 items of fill
-        RZ(z = jtreitem(jt, zeroionei(0), w));  // create 0 items of the type of w
+        RZ(z = jtreitem(jt, num(0), w));  // create 0 items of the type of w
         if (ilnval >= 0) {
             ilnval = (ilnval == IMAX) ? (wi + 1) : ilnval;
             RZ(z = jttake(jt, jtsc(jt, ilnval), z));
         }  // if items needed, create them.  For compatibility, treat _ as 1 more than #items in w
         WITHDEBUGOFF(zz = CALL1(f1, z, fs);) if (EMSK(jt->jerr) & EXIGENTERROR) RZ(zz);
         RESETERR;
-        RZ(zz = jtreshape(jt, jtover(jt, zeroionei(0), shape(jt, zz ? zz : mtv)), zz ? zz : zeroionei(0)));
+        RZ(zz = jtreshape(jt, jtover(jt, num(0), shape(jt, zz ? zz : mtv)), zz ? zz : num(0)));
     }
 
     // result is now in zz
@@ -909,7 +909,7 @@ jtpscan(J jt, A w, A self) {
     SETICFR(w, f, r, n);  // wn=0 doesn't matter
     // If there are 0 or 1 items, or w is empty, return the input unchanged, except: if rank 0, return (($w),1)($,)w -
     // if atomic op, do it right here, otherwise call the routine to get the shape of result cell
-    if (((1 - n) & -wn) >= 0) { return r ? w : jtreshape(jt, apip(shape(jt, w), zeroionei(1)), w); }  // n<2 or wn=0
+    if (((1 - n) & -wn) >= 0) { return r ? w : jtreshape(jt, apip(shape(jt, w), num(1)), w); }  // n<2 or wn=0
     VARPS adocv;
     varps(adocv, self, wt, 1);  // fetch info for f/\ and this type of arg
     if (!adocv.f)

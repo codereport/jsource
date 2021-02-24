@@ -297,7 +297,7 @@ jttrr(J jt, A w) {
     if (1 < m)
         RZ(x[1] = jtincorp(jt,
                            fl & VGERR ? jttreach(jt, jtfxeach(jt, gs, (A)&jtfxself[0]))
-                           : ex       ? jttrr(jt, jtunparsem(jt, num(0), w))
+                           : ex       ? jttrr(jt, jtunparsem(jt, jfalse, w))
                                       : jttrr(jt, gs)));
     if (2 < m) RZ(x[2] = jtincorp(jt, jttrr(jt, hs)));
     s = xop ? jtspellout(jt, '0')

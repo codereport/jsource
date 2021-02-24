@@ -31,7 +31,7 @@ jthgv(J jt, B b, I n, A w, A self) {
         case 2: y = divide(tymes(c, jtascan(jt, CSTAR, e)), jtascan(jt, CSTAR, d)); break;
         case 3: y = divide(tymes(c, jtascan(jt, CSTAR, e)), d);
     }
-    return b ? jtover(jt, num(0), jtascan(jt, CPLUS, y)) : jtaslash(jt, CPLUS, y);
+    return b ? jtover(jt, jfalse, jtascan(jt, CPLUS, y)) : jtaslash(jt, CPLUS, y);
 } /* verb or complex cases */
 
 static A
@@ -83,7 +83,7 @@ jthgeom2(J jt, A a, A w, A self) {
     av = AV(a);
     n  = 0;
     DO(an, j = av[i]; ASSERT(0 <= j, EVDOMAIN); if (n < j) n = j;);
-    if (!n) return tymes(zeroionei(0), a);
+    if (!n) return tymes(num(0), a);
     h  = sv->fgh[2];
     hv = AAV(h);
     b  = VERB & (AT(sv->fgh[0]) | AT(sv->fgh[1])) || CMPX & (AT(w) | AT(hv[0]) | AT(hv[1]));
@@ -94,7 +94,7 @@ jthgeom2(J jt, A a, A w, A self) {
     else {
         j = 10;
         t = mtv;
-        z = zeroionei(1);
+        z = num(1);
         while (z && !jtequ(jt, z, t)) {
             t = z;
             z = jthgv(jt, 0, j, w, self);
@@ -122,8 +122,8 @@ jtcancel(J jt, A a, A w) {
     w = jtravel(jt, w);
     y = jtnub(jt, w);
     df1(d, w, f);
-    a = jtrepeat(jt, maximum(num(0), minus(c, jtfrom(jt, jtindexof(jt, y, x), jtover(jt, d, zeroionei(0))))), x);
-    w = jtrepeat(jt, maximum(num(0), minus(d, jtfrom(jt, jtindexof(jt, x, y), jtover(jt, c, zeroionei(0))))), y);
+    a = jtrepeat(jt, maximum(jfalse, minus(c, jtfrom(jt, jtindexof(jt, y, x), jtover(jt, d, num(0))))), x);
+    w = jtrepeat(jt, maximum(jfalse, minus(d, jtfrom(jt, jtindexof(jt, x, y), jtover(jt, c, num(0))))), y);
     return link(a, w);
 }
 

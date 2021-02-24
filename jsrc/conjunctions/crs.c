@@ -47,7 +47,7 @@ jtsprinit(J jt, I f, I r, I* s, I t, P* p) {
     SPB(zp, a, a1);
     SPB(zp, e, jtca(jt, SPA(p, e)));
     SPB(zp, i, jtiota(jt, jtv2(jt, 0L, n)));  // empty so cannot be readonly
-    SPB(zp, x, jtrepeat(jt, num(0), SPA(p, x)));
+    SPB(zp, x, jtrepeat(jt, jfalse, SPA(p, x)));
     return z;
 } /* initialize an argument cell */
 

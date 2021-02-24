@@ -332,12 +332,12 @@ jtpdtsp(J jt, A a, A w) {
         if (SPARSE & AT(a)) {
             p  = PAV(a);
             x  = SPA(p, a);
-            ab = AR(a) == AN(x) && jtequ(jt, num(0), SPA(p, e));
+            ab = AR(a) == AN(x) && jtequ(jt, jfalse, SPA(p, e));
         }
         if (SPARSE & AT(w)) {
             p  = PAV(w);
             x  = SPA(p, a);
-            wb = AR(w) == AN(x) && jtequ(jt, num(0), SPA(p, e));
+            wb = AR(w) == AN(x) && jtequ(jt, jfalse, SPA(p, e));
         }
     }
     if (ab && 1 == AR(a) && wb && 1 == AR(w)) return jtpdtspvv(jt, a, w);

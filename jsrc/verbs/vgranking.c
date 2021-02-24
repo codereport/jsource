@@ -132,7 +132,7 @@ jtranking(J jt, A w) {
     else {
         RE(m = jtprod(jt, wf, ws));
         return m ? jtreitem(jt, jtvec(jt, INT, wf, ws), jtiota(jt, jtv2(jt, 1L, n)))
-                 : jtreshape(jt, jtvec(jt, INT, 1 + wf, ws), num(0));
+                 : jtreshape(jt, jtvec(jt, INT, 1 + wf, ws), jfalse);
     }
     PROD(icn, wcr - 1, ws + wf + 1);
     k = icn << bplg(

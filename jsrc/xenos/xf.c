@@ -275,7 +275,7 @@ jtjmkdir(J jt, A w) {
     F1RANK(0, jtjmkdir, UNUSED_VALUE);
     ASSERT(AT(w) & BOX, EVDOMAIN);
     RZ(y = jtstr0(jt, jtvslit(jt, AAV(w)[0])));
-    return mkdir(CAV(y), 0775) ? jtjerrno(jt) : num(1);
+    return mkdir(CAV(y), 0775) ? jtjerrno(jt) : jtrue;
 }
 
 A
@@ -291,7 +291,7 @@ jtjferase(J jt, A w) {
         ASSERT(y = jtvslit(jt, AAV(w)[0]), EVFNUM);
     if (h) RZ(jtjclose(jt, jtsc(jt, h)));
     A y0 = jtstr0(jt, y);
-    return !unlink(CAV(y0)) || !rmdir(CAV(y0)) ? num(1) : jtjerrno(jt);
+    return !unlink(CAV(y0)) || !rmdir(CAV(y0)) ? jtrue : jtjerrno(jt);
 
 } /* erase file or directory */
 
@@ -320,9 +320,9 @@ jtjgetenv(J jt, A w) {
     ASSERT((LIT + C2T + C4T) & AT(w), EVDOMAIN);
     {
         C *s;
-        return (s = getenv(CAV(jttoutf8x(jt, w)))) ? jtcstr(jt, s) : num(0);  // toutf8x has trailing nul
+        return (s = getenv(CAV(jttoutf8x(jt, w)))) ? jtcstr(jt, s) : jfalse;  // toutf8x has trailing nul
     }
-    return num(0);
+    return jfalse;
 }
 
 A

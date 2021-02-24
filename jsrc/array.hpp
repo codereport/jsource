@@ -5,6 +5,9 @@ extern "C" {
 #include "j.h"
 }
 
+// C macros that have been replaced by C++ inline methods
+#undef num
+
 using array   = A;           // potentially rename to j_array?
 using shape_t = long long*;  // TODO figure out how to turn this into int64_t
 using rank_t  = unsigned short;
@@ -18,33 +21,18 @@ item_count(array w) {
     return AR(w) ? AS(w)[0] : 1;
 }
 
-// TODO: rename (propogate_sign_bit)
-[[nodiscard]] constexpr inline auto
-replicate_sign(int64_t x) noexcept -> int64_t {
-    return x < 0 ? -1 : 0;
-}
-
-// TODO: rename
 [[nodiscard]] constexpr auto
-xor_replicate_sign(int64_t x) noexcept -> int64_t {
-    return x < 0 ? (-1 * x) - 1 : x;
+applicable_for_num(int64_t n) noexcept -> bool {
+    return NUMMIN <= n && n <= NUMMAX;
 }
 
-[[nodiscard]] constexpr auto
-zero_or_one(int64_t n) noexcept -> bool {
-    return n == 0 || n == 1;
-}
-
-// TODO: refactor me
+/**
+ * @param n C representation of number, valid range [NUMMIN, NUMMAX]
+ * @return  The J representation of the integer
+ */
 [[nodiscard]] inline auto
-refactorme_num(int64_t n) {
-    return reinterpret_cast<array>(Bnum + 2 + n - NUMMIN);
-}
-
-// TODO: refactor me
-[[nodiscard]] inline auto
-refactorme_zeroionei(int64_t n) {
-    return reinterpret_cast<array>(Bnum + (n));
+num(int64_t n) {
+    return reinterpret_cast<array>(Bnum[n - NUMMIN]);
 }
 
 [[nodiscard]] inline auto
@@ -105,7 +93,7 @@ make_array(J jt, int64_t n, rank_t r, shape_t s) -> array {
 template <typename T>
 [[nodiscard]] inline auto
 make_scalar_integer(J jt, T k) -> array {
-    if (xor_replicate_sign(k) <= NUMMAX) return !zero_or_one(k) ? refactorme_num(k) : zeroionei(k);
+    if (applicable_for_num(k)) return num(k);
     array z = make_array<T, copy_shape_0>(jt, 1, 0);
     set_value_at(z, 0, k);
     return z;

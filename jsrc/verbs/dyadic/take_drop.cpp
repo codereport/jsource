@@ -9,7 +9,7 @@
 A
 jtbehead(J jt, A w) {
     FPREFIP;
-    return jtdrop(jtinplace, zeroionei(1), w);
+    return jtdrop(jtinplace, num(1), w);
 }
 A
 jtcurtail(J jt, A w) {
@@ -19,7 +19,7 @@ jtcurtail(J jt, A w) {
 
 A
 jtshift1(J jt, A w) {
-    return jtdrop(jt, num(-1), jtover(jt, num(1), w));
+    return jtdrop(jt, num(-1), jtover(jt, jtrue, w));
 }
 
 static A
@@ -422,12 +422,12 @@ jthead(J jt, A w) {
             return z;
         } else {
             // frame not 0, or non-virtualable type, or cell is an atom.  Use from.  Note that jt->ranks is still set,
-            // so this may produce multiple cells left rank is garbage, but since zeroionei(0) is an atom it doesn't
+            // so this may produce multiple cells left rank is garbage, but since num(0) is an atom it doesn't
             // matter
-            return jtfrom(jtinplace, zeroionei(0), w);  // could call jtfromi directly for non-sparse w
+            return jtfrom(jtinplace, num(0), w);  // could call jtfromi directly for non-sparse w
         }
     } else {
-        return SPARSE & AT(w) ? jtirs2(jt, num(0), jttake(jt, num(1), w), 0L, 0L, wcr, reinterpret_cast<AF>(jtfrom))
+        return SPARSE & AT(w) ? jtirs2(jt, jfalse, jttake(jt, jtrue, w), 0L, 0L, wcr, reinterpret_cast<AF>(jtfrom))
                               : jtrsh0(jt, w);  // cell of w is empty - create a cell of fills  jt->ranks is still set
                                                 // for use in take.  Left rank is garbage, but that's OK
     }
@@ -445,7 +445,7 @@ jttail(J jt, A w) {
     return !wcr || AS(w)[wf] ? jtfrom(jtinplace, num(-1), w)
                              :  // if cells are atoms, or if the cells are nonempty arrays, result is last cell(s) scaf
                                 // should generate virtual block here for speed
-             SPARSE & AT(w) ? jtirs2(jt, num(0), jttake(jt, num(-1), w), 0L, 0L, wcr, reinterpret_cast<AF>(jtfrom))
+             SPARSE & AT(w) ? jtirs2(jt, jfalse, jttake(jt, num(-1), w), 0L, 0L, wcr, reinterpret_cast<AF>(jtfrom))
                             : jtrsh0(jt, w);
     // pristinity from other verbs
 }

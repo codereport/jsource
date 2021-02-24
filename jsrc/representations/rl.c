@@ -367,21 +367,21 @@ jtlnum(J jt, A w, A *ltext) {
     n = AN(w);
     if (7 < n || 1 < n && 1 < AR(w)) {
         // see if we can use a clever encoding
-        d = minus(jtfrom(jt, num(1), t), b = jtfrom(jt, num(0), t));
+        d = minus(jtfrom(jt, jtrue, t), b = jtfrom(jt, jfalse, t));
         p = jtequ(jt, t, plus(b, tymes(d, IX(n))));
         if (p) {
-            if (jtequ(jt, d, num(0))) return jtover(jt, lsh(w), lnum1(b));
+            if (jtequ(jt, d, jfalse)) return jtover(jt, lsh(w), lnum1(b));
             GAT0(y, BOX, 6, 1);
             v    = AAV(y);
             v[0] = v[1] = v[2] = v[3] = mtv;
             if (p = !(jtequ(jt, b, jtsc(jt, n - 1)) && jtequ(jt, d, num(-1)))) {
-                if (!jtequ(jt, b, num(0))) {
+                if (!jtequ(jt, b, jfalse)) {
                     v[0] = lnum1(b);
                     v[1] = jtspellout(jt, CPLUS);
                 }
                 if (jtequ(jt, d, num(-1)))
                     v[1] = jtspellout(jt, CMINUS);
-                else if (!jtequ(jt, d, num(1))) {
+                else if (!jtequ(jt, d, jtrue)) {
                     v[2] = lnum1(d);
                     v[3] = jtspellout(jt, CSTAR);
                 }
@@ -630,7 +630,7 @@ jtlcolon(J jt, A w, A *ltext) {
     A *v, x, y;
     C *s, *s0;
     I m, n;
-    RZ(y = jtunparsem(jt, num(1), w));
+    RZ(y = jtunparsem(jt, jtrue, w));
     n = AN(y);
     v = AAV(y);
     RZ(x = lrr(VAV(w)->fgh[0]));

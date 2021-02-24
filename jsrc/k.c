@@ -440,7 +440,7 @@ jtccvt(J jt, I tflagged, A w, A *y) {
             P *wp, *yp;
             case 1: RZ(w = jtdenseit(jt, w)); break;  // sparse to dense
             case 2:
-                RZ(*y = jtsparseit(jt, jtcvt(jt, DTYPE(t), w), IX(r), jtcvt(jt, DTYPE(t), num(0))));
+                RZ(*y = jtsparseit(jt, jtcvt(jt, DTYPE(t), w), IX(r), jtcvt(jt, DTYPE(t), jfalse)));
                 jt->ranks = oqr;
                 return 1;  // dense to sparse; convert type first (even if same dtype)
             case 3:        // sparse to sparse

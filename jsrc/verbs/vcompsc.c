@@ -209,7 +209,7 @@
         n  = 1;                                                        \
         n  = AR(a) ? an : n;                                           \
         n  = AR(w) ? wn : n;                                           \
-        if ((q = (n - 1) >> LGSZI) < 0) return zeroionei(0);           \
+        if ((q = (n - 1) >> LGSZI) < 0) return num(0);                 \
         r   = ((n - 1) & (SZI - 1)); /* # first bytes to do minus 1 */ \
         I i = q;                                                       \
         if (!AR(a)) {                                                  \

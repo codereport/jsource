@@ -65,7 +65,7 @@ jtbdot2(J jt, A a, A w, A self) {
 
 static A
 jtbdot1(J jt, A w, A self) {
-    return jtbdot2(jt, num(0), w, self);
+    return jtbdot2(jt, jfalse, w, self);
 }
 
 static A

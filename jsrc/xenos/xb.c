@@ -1051,8 +1051,8 @@ jtiso8601toe(J jt, A a, A w) {
         w    = a;
         prec = 9;  // monad: switch argument, set defaults
     }
-    ASSERT(AT(w) & LIT, EVDOMAIN);                                             // must be LIT
-    ASSERT(AR(w), EVRANK);                                                     // must not be an atom
-    if (!AN(w)) { return df1(z, w, jtqq(jt, jtsc(jt, IMIN), zeroionei(1))); }  // return _"1 w on empty w - equivalent
+    ASSERT(AT(w) & LIT, EVDOMAIN);                                       // must be LIT
+    ASSERT(AR(w), EVRANK);                                               // must not be an atom
+    if (!AN(w)) { return df1(z, w, jtqq(jt, jtsc(jt, IMIN), num(1))); }  // return _"1 w on empty w - equivalent
     return efs(jt, w, prec);
 }

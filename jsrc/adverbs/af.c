@@ -248,7 +248,7 @@ jtfixa(J jt, A a, A w) {
     }
 } /* 0=a if fix names; 1=a if fix names only if does not contain $: */
 
-// On internal calls, self is an integer whose value contains flags.  Otherwise zeroionei is used
+// On internal calls, self is an integer whose value contains flags.  Otherwise num is used
 A
 jtfix(J jt, A w, A self) {
     PROLOG(0005);
@@ -259,7 +259,7 @@ jtfix(J jt, A w, A self) {
     }
     // only verbs/noun can get in through the parser, but internally we also vet adv/conj
     ASSERT(AT(w) & NAME + VERB + ADV + CONJ, EVDOMAIN);
-    self = AT(self) & NOUN ? self : zeroionei(0);  // default to 0 if noun not given
+    self = AT(self) & NOUN ? self : num(0);  // default to 0 if noun not given
     // To avoid infinite recursion we keep an array of names that we have looked up.  We create that array here,
     // initialized to empty.  To pass it into fixa, we create a faux INT block to hold the value, and use AM in that
     // block to point to the list of names

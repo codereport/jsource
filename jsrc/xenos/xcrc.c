@@ -110,9 +110,9 @@ jtqhash12(J jt, A a, A w) {
                   UCAV(w));  // sign-extend result if needed to make 64-bit and 32-bit the same numeric value
     } else {                 // not DIRECT, calculate CRC of component CRCs
         crc    = -1;         // where we accumulate CRC
-        I lpct = AN(w) << ((AT(w) >> RATX) & 1);                                    // number of component values
-        A *av  = AAV(w);                                                            // pointer to subvalues
-        DQ(lpct, crc = CRC32L(crc, jti0(jt, jtqhash12(jt, zeroionei(0), *av++)));)  // recur
+        I lpct = AN(w) << ((AT(w) >> RATX) & 1);                              // number of component values
+        A *av  = AAV(w);                                                      // pointer to subvalues
+        DQ(lpct, crc = CRC32L(crc, jti0(jt, jtqhash12(jt, num(0), *av++)));)  // recur
     }
     if (hsiz) crc = (crc * (UI)hsiz) >> 32;  // convert hash to user's range
     return jtsc(jt, (I)(I4)crc);             // make the result a valid integer.  Could reuse the a arg inplace

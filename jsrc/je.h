@@ -822,9 +822,10 @@ extern D jnan; /* "nan" name conflict under Solaris       */
 extern A mnuvxynam[6];
 extern void moveparseinfotosi(J);
 extern I Bnum[][8];
-#define zeroionei(n) ((A)(Bnum + (n)))
-#define num(n) ((A)(Bnum + 2 + (n)-NUMMIN))
-#define I1mem (Bnum[1][7])  // 1 stored in memory
+#define num(n) ((A)(Bnum + (n)-NUMMIN))
+extern A const jfalse;
+extern A const jtrue;
+#define I1mem (Bnum[1-NUMMIN][7])  // 1 stored in memory
 extern struct Bd1 Bnumvr[];
 #define numvr(n) ((A)(Bnumvr + (n)))
 extern struct Bd1 Bonehalf;
@@ -840,3 +841,20 @@ extern A zpath;
 extern I iotavec[IOTAVECLEN];  // ascending integers, starting at IOTAVECBEGIN
 extern VARPSA rpsnull;
 extern PRIM sfn0overself;
+
+/**
+ * @brief This is the old implementation of `num`, that may return a boolean.
+ *        Some code depends on this behaviour. This code might be up for
+ *        refactoring, but at this moment we don't know enough about it.
+ *
+ * @param n C representation of number, valid range [NUMMIN, NUMMAX]
+ * @return  The J representation of the integer, unless n is in [0, 1], then
+ *          the boolean (false, true) is returned. Except for the values -12
+ *          and -11, those return 0 and 1 instead.
+ */
+#define numbool(n) (        \
+    (n) == -12 ? num(-12) : \
+    (n) == -11 ? num(-11) : \
+    (n) == 0   ? jfalse   : \
+    (n) == 1   ? jtrue    : \
+               num((n)))

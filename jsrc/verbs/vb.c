@@ -222,7 +222,7 @@ jtebar(J jt, A a, A w) {
     n  = AN(w);
     p  = n - m;
     switch (d) {
-        case -1: return jtreshape(jt, shape(jt, w), num(0));
+        case -1: return jtreshape(jt, shape(jt, w), jfalse);
         case -2: return jtebarmat(jt, a, w);
         case -3: return df2(z, shape(jt, a), w, jtcut(jt, jtamp(jt, a, ds(CMATCH)), num(3)));
         case -4: return jtebarvec(jt, a, w);
@@ -273,7 +273,7 @@ jti1ebar(J jt, A a, A w) {
     p  = n - m;
     switch (d) {
         case -1: return jtsc(jt, n);
-        case -4: return jtindexof(jt, jtebarvec(jt, a, w), num(1));
+        case -4: return jtindexof(jt, jtebarvec(jt, a, w), jtrue);
     }
     GATV0(y, INT, d, 1);
     yv = AV(y);
@@ -315,7 +315,7 @@ jtsumebar(J jt, A a, A w) {
     n  = AN(w);
     p  = n - m;
     switch (d) {
-        case -1: return num(0);
+        case -1: return jfalse;
         case -4: return jtaslash(jt, CPLUS, jtebarvec(jt, a, w));
     }
     if ((-m & -n) >= 0) {
@@ -361,11 +361,11 @@ jtanyebar(J jt, A a, A w) {
     n  = AN(w);
     p  = n - m;
     switch (d) {
-        case -1: return num(0);
+        case -1: return jfalse;
         case -4: return jtaslash(jt, CPLUSDOT, jtebarvec(jt, a, w));
     }
     if ((-m & -n) >= 0) {
-        return num(SGNTO0(-n));
+        return numbool(SGNTO0(-n));
     }  // empty argument.  If m, it matches everywhere, so use n; if n, it's 0, use it - 0/1 only
     GATV0(y, INT, d, 1);
     yv = AV(y);
@@ -373,26 +373,26 @@ jtanyebar(J jt, A a, A w) {
     switch (CTTZ(AT(w))) {
         case INTX:
             if (c)
-                EBLOOP(I, u[i] - c, v[k + m] - c, if (i == m) return num(1))
+                EBLOOP(I, u[i] - c, v[k + m] - c, if (i == m) return jtrue)
             else
-                EBLOOP(I, u[i], v[k + m], if (i == m) return num(1));
+                EBLOOP(I, u[i], v[k + m], if (i == m) return jtrue);
             break;
         case SBTX:
             if (c)
-                EBLOOP(SB, u[i] - c, v[k + m] - c, if (i == m) return num(1))
+                EBLOOP(SB, u[i] - c, v[k + m] - c, if (i == m) return jtrue)
             else
-                EBLOOP(SB, u[i], v[k + m], if (i == m) return num(1));
+                EBLOOP(SB, u[i], v[k + m], if (i == m) return jtrue);
             break;
-        case C2TX: EBLOOP(US, u[i], v[k + m], if (i == m) return num(1)); break;
+        case C2TX: EBLOOP(US, u[i], v[k + m], if (i == m) return jtrue); break;
         case C4TX:
             if (c)
-                EBLOOP(C4, u[i] - c, v[k + m] - c, if (i == m) return num(1))
+                EBLOOP(C4, u[i] - c, v[k + m] - c, if (i == m) return jtrue)
             else
-                EBLOOP(C4, u[i], v[k + m], if (i == m) return num(1));
+                EBLOOP(C4, u[i], v[k + m], if (i == m) return jtrue);
             break;
-        default: EBLOOP(UC, u[i], v[k + m], if (i == m) return num(1));
+        default: EBLOOP(UC, u[i], v[k + m], if (i == m) return jtrue);
     }
-    return num(0);
+    return jfalse;
 } /* a ([: +./ E.) w where a and w are atoms or lists */
 
 #define IFB1                         \

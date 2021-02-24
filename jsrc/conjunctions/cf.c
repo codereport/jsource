@@ -232,7 +232,7 @@ jtfolkcomp(J jt, A a, A w, A self) {
         I postflags = jt->workareas.compsc.postflags;
         z           = f(jt, a, w, self);
         if (z) {
-            if (postflags & 2) { z = num((IAV(z)[0] != AN(AR(a) >= AR(w) ? a : w)) ^ (postflags & 1)); }
+            if (postflags & 2) { z = numbool((IAV(z)[0] != AN(AR(a) >= AR(w) ? a : w)) ^ (postflags & 1)); }
         }
     } else if (jtcap(jt, fs))
         CAP2 else FOLK2;
@@ -252,7 +252,7 @@ jtfolkcomp0(J jt, A a, A w, A self) {
         I postflags = jt->workareas.compsc.postflags;
         z           = f(jt, a, w, self);
         if (z) {
-            if (postflags & 2) { z = num((IAV(z)[0] != AN(AR(a) >= AR(w) ? a : w)) ^ (postflags & 1)); }
+            if (postflags & 2) { z = numbool((IAV(z)[0] != AN(AR(a) >= AR(w) ? a : w)) ^ (postflags & 1)); }
         }
     } else if (jtcap(jt, fs))
         CAP2 else FOLK2;
@@ -356,7 +356,7 @@ jtfolk(J jt, A f, A g, A h) {
                 p = fv->fgh[0];
                 q = fv->fgh[1];
                 if (CLEFT == ID(q) && CQQ == ID(p) &&
-                    (v = VAV(p), x = v->fgh[0], CLT == ID(x) && v->fgh[1] == num(1))) {
+                    (v = VAV(p), x = v->fgh[0], CLT == ID(x) && v->fgh[1] == jtrue)) {
                     f2 = jtsfrom;
                     flag &= ~(VJTFLGOK2);
                 }
@@ -630,8 +630,8 @@ jthklvl2(J jt, A a, A w, A self) {
     F2RANK(0, RMAX, jthklvl2, self);
     I comparand;
     RE(comparand = jti0(jt, a));  // get value to compare against
-    return num(((VAV(self)->flag >> VFHKLVLGTX) & 1) ^
-               levelle(w, comparand - (VAV(self)->flag & VFHKLVLDEC)));  // decrement for < or >:; complement for > >:
+    return numbool(((VAV(self)->flag >> VFHKLVLGTX) & 1) ^
+                   levelle(w, comparand - (VAV(self)->flag & VFHKLVLDEC)));  // decrement for < or >:; complement for > >:
 }
 
 A

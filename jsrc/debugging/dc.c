@@ -33,7 +33,7 @@ static SYMWALK(jtdloc,
     *zv++ = jtincorp(jt, jtsfn(jt, 0, si->dca));              /* 0 name                     */
     *zv++ = jtincorp(jt, jtsc(jt, si->dcj));                  /* 1 error number             */
     *zv++ = jtincorp(jt, jtsc(jt, lnumsi(si)));               /* 2 line number              */
-    *zv++ = num(ADV & AT(fs) ? 1 : CONJ & AT(fs) ? 2 : 3);    /* 3 name class               */
+    *zv++ = numbool(ADV & AT(fs) ? 1 : CONJ & AT(fs) ? 2 : 3);/* 3 name class               */
     *zv++ = jtincorp(jt, jtlrep(jt, fs));                     /* 4 linear rep.              */
     *zv++ = 0;                                                /* 5 script name, filled in later              */
     *zv++ = jtincorp(jt, q);                                  /* 6 argument list            */

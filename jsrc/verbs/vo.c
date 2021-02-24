@@ -607,7 +607,7 @@ jtopes1(J jt, B **zb, A *za, A *ze, I *zm, A cs, A w) {
     A bvec = jtifb(jt, wcr, b);
     makewritable(bvec) RZ(*za = bvec); /* union of sparse axes           */  // avoid readonly
     *zb = b;                                                                 /* mask corresp. to sparse axes   */
-    *ze = e ? e : num(0);                                                    /* sparse element                 */
+    *ze = e ? e : jfalse;                                                    /* sparse element                 */
     *zm = m;                                                                 /* estimate # of non-sparse cells */
     return 1;
 }

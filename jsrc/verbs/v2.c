@@ -380,7 +380,7 @@ jtprimetest(J jt, A w) {
     A x;
     I t;
     t = AT(w);
-    if ((UI)SGNIF(t, B01X) >= (UI)AN(w)) return jtreshape(jt, shape(jt, w), num(0));  // AN is 0, or t is boolean
+    if ((UI)SGNIF(t, B01X) >= (UI)AN(w)) return jtreshape(jt, shape(jt, w), jfalse);  // AN is 0, or t is boolean
     switch (CTTZ(t)) {
         default: ASSERT(0, EVDOMAIN);
         case INTX: return jtiprimetest(jt, w);
@@ -629,7 +629,7 @@ jtqco2(J jt, A a, A w) {
     I c, j, k, m, *qv, wn, wr, *yv, *zv;
     wn = AN(w);
     wr = AR(w);
-    b  = all1(lt(a, zeroionei(0)));
+    b  = all1(lt(a, num(0)));
     xt = 1 && AT(w) & XNUM + RAT;
     if (AR(a) || wr && (b || xt)) return jtrank2ex0(jt, a, w, UNUSED_VALUE, jtqco2);
     if (!b && xt) {
@@ -641,8 +641,8 @@ jtqco2(J jt, A a, A w) {
     if (b) RZ(a = jtnegate(jt, a));
     bb = jtequ(jt, a, ainf);
     if (b & bb) { /* __ q: w */
-        RZ(y = ne(q, jtcurtail(jt, jtover(jt, zeroionei(0), q))));
-        return jtlamin2(jt, jtrepeat(jt, y, q), df1(z, y, jtcut(jt, ds(CPOUND), zeroionei(1))));
+        RZ(y = ne(q, jtcurtail(jt, jtover(jt, num(0), q))));
+        return jtlamin2(jt, jtrepeat(jt, y, q), df1(z, y, jtcut(jt, ds(CPOUND), num(1))));
     }
     RZ(y = jtvi(jt, jtplt(jt, q)));
     yv = AV(y);
