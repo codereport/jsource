@@ -1174,7 +1174,7 @@ jtqq(J jt, A a, A w) {
     // Create the derived verb.  The derived verb (u"n) NEVER supports IRS; it inplaces if the action verb u supports
     // inplacing
     A z;
-    RZ(z = fdef(flag2, CQQ, VERB, f1, f2, a, w, ger, vf, r[0], r[1], r[2]));
+    RZ(z = jtfdef(jt, flag2, CQQ, VERB, f1, f2, a, w, ger, vf, r[0], r[1], r[2]));
     FAV(z)->localuse.lI4[0] = (I4)hv[0];
     FAV(z)->localuse.lI4[1] = (I4)hv[1];
     FAV(z)->localuse.lI4[2] = (I4)hv[2];  // pass the possibly-negative ranks in through localuse

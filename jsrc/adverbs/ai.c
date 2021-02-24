@@ -262,11 +262,11 @@ jtinvamp(J jt, A w) {
         case CFIT:
             ASSERT(nf && (CPOUND == ID(FAV(g)->fgh[0])), EVDOMAIN);
             ASSERT(1 == AR(x), EVRANK);
-            return fdef(0, CPOWOP, VERB, jtexpandg, 0L, w, num(-1), 0L, VFLAGNONE, RMAX, 0L, 0L);
+            return jtfdef(jt, 0, CPOWOP, VERB, jtexpandg, 0L, w, num(-1), 0L, VFLAGNONE, RMAX, 0L, 0L);
         case CPOUND:
             ASSERT(nf != 0, EVDOMAIN);
             ASSERT(1 == AR(x), EVRANK);
-            return fdef(0, CPOWOP, VERB, jtexpandf, 0L, w, num(-1), 0L, VFLAGNONE, RMAX, 0L, 0L);
+            return jtfdef(jt, 0, CPOWOP, VERB, jtexpandf, 0L, w, num(-1), 0L, VFLAGNONE, RMAX, 0L, 0L);
             break;
         case CPOWOP:
             if (VGERL & u->flag) {
@@ -409,8 +409,8 @@ jtinv(J jt, A w, I recur) {
         case CBANG:
             return jteval(jt, "3 : '(-(y -~ !)%0.001&* (0.001%~[:-/[:! 0.001 0 +/ ]) ])^:_<.&170^:(-:+)^.y' :. !");
         case CXCO: return jtamp(jt, num(-1), w);
-        case CSPARSE: return fdef(0, CPOWOP, VERB, jtdenseit, 0L, w, num(-1), 0L, VFLAGNONE, RMAX, RMAX, RMAX);
-        case CPCO: return fdef(0, CPOWOP, VERB, jtplt, 0L, w, num(-1), 0L, 0L, 0L, 0L, 0L);
+        case CSPARSE: return jtfdef(jt, 0, CPOWOP, VERB, jtdenseit, 0L, w, num(-1), 0L, VFLAGNONE, RMAX, RMAX, RMAX);
+        case CPCO: return jtfdef(jt, 0, CPOWOP, VERB, jtplt, 0L, w, num(-1), 0L, 0L, 0L, 0L, 0L);
         case CQCO: return jteval(jt, "*/");
         case CUCO: return jtamp(jt, num(3), w);
         case CUNDER: return jtunder(jt, invrecur(f), g);
@@ -472,7 +472,7 @@ jtinv(J jt, A w, I recur) {
             break;
         case CCUT:
             if (CBOX == ID(f) && ng && (p = jti0(jt, g), 1 == p || 2 == p))
-                return fdef(0, CPOWOP, VERB, jtbminv, 0L, w, num(-1), 0L, VFLAGNONE, RMAX, RMAX, RMAX);
+                return jtfdef(jt, 0, CPOWOP, VERB, jtbminv, 0L, w, num(-1), 0L, VFLAGNONE, RMAX, RMAX, RMAX);
             break;
         case CIBEAM:
             p = jti0(jt, f);

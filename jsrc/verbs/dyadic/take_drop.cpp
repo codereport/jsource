@@ -60,7 +60,7 @@ jttks(J jt, array a, array w) { // take_sparse
     wp = PAV(w); // pointer to array values
 
     if (an <= r) {
-        RZ(a = vec(INT, r, s));
+        RZ(a = jtvec(jt, INT, r, s));
         MCISH(AV(a), u, an);
     }  // vec is not virtual
 
@@ -278,7 +278,7 @@ jttake(J jt, A a, A w) {
     }
     // full processing for more complex a
     if ((-wcr & (wf - 1)) >= 0) {  // if y is an atom, or y has multiple cells:
-        RZ(s = vec(INT, wf + n, AS(w)));
+        RZ(s = jtvec(jt, INT, wf + n, AS(w)));
         v = wf + AV(s);  // s is a block holding shape of a cell of input to the result: w-frame followed by #$a axes,
                          // all taken from w.  vec is never virtual
         if (!wcr) {
@@ -386,7 +386,7 @@ jtrsh0(J jt, A w) {
     wf  = wr - wcr;
     RESETRANK;
     ws = AS(w);
-    RZ(x = vec(INT, wr - 1, ws));
+    RZ(x = jtvec(jt, INT, wr - 1, ws));
     MCISH(wf + AV(x), ws + wf + 1, wcr - 1);
     RZ(w = jtsetfv(jt, w, w));
     GA(y, AT(w), 1, 0, 0);

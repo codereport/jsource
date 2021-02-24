@@ -755,5 +755,5 @@ jtdot(J jt, A a, A w) {
                      jt, "[: -/\"1 {.\"2 * |.\"1@:({:\"2)"));  // -/ . * - calculate some function used by determinant?
         }
     }
-    return fdef(0, CDOT, VERB, jtdet, f2, a, w, h, 0L, 2L, RMAX, RMAX);
+    return jtfdef(jt, 0, CDOT, VERB, jtdet, f2, a, w, h, 0L, 2L, RMAX, RMAX);
 }

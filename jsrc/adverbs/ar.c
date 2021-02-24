@@ -1091,7 +1091,7 @@ jtslash(J jt, A w) {
             break;  // monad is inplaceable if the dyad for u is
     }
     RZ(h = jtqq(jt, w, jtv2(jt, lr(w), RMAX)));  // create the rank compound to use if dyad
-    RZ(h = fdef(0, CSLASH, VERB, f1, jtoprod, w, 0L, h, flag | FAV(ds(CSLASH))->flag, RMAX, RMAX, RMAX));
+    RZ(h = jtfdef(jt, 0, CSLASH, VERB, f1, jtoprod, w, 0L, h, flag | FAV(ds(CSLASH))->flag, RMAX, RMAX, RMAX));
     // set lvp[1] to point to the VARPSA block for w if w is atomic dyad; otherwise to the null VARPSA block
     FAV(h)->localuse.lvp[1] = v->flag & VISATOMIC2 ? ((VA*)v->localuse.lvp[0])->rps : &rpsnull;
     return h;

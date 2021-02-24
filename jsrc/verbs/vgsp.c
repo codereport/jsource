@@ -370,7 +370,7 @@ jtgrd1sp(J jt, A w) {
     if (c) RZ(w = jtreaxis(jt, jtifb(jt, wr, wb), w));
     switch (2 * wb[0] + wb[wf]) {
         case 0: /* dense  dense  */ z = jtgrd1spdd(jt, w, wf, wcr); break;
-        case 1: /* dense  sparse */ z = grd1spds(w, wf, wcr); break;
+        case 1: /* dense  sparse */ z = jtgrd1spds(jt, w, wf, wcr); break;
         case 2: /* sparse dense  */ z = jtgrd1spsd(jt, w, wf, wcr); break;
         case 3: /* sparse sparse */ z = jtgrd1spss(jt, w, wf, wcr); break;
     }

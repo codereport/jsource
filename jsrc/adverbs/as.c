@@ -595,7 +595,7 @@ jtbsdot(J jt, A w) {
     C id;
     V* v;  // init flag is IRS1
     if (NOUN & AT(w))
-        return fdef(0,
+        return jtfdef(jt, 0,
                     CBSLASH,
                     VERB,
                     jtgsuffix,

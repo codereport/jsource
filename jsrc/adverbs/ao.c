@@ -1452,5 +1452,5 @@ jtsldot(J jt, A w) {
             // otherwise (including keymean) fall through to...
         default: f2 = jtkey; flag |= (FAV(w)->flag & VASGSAFE);  // pass through ASGSAFE.
     }
-    return fdef(0, CSLDOT, VERB, f1, f2, w, 0L, h, flag, RMAX, RMAX, RMAX);
+    return jtfdef(jt, 0, CSLDOT, VERB, f1, f2, w, 0L, h, flag, RMAX, RMAX, RMAX);
 }

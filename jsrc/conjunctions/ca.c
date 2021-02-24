@@ -271,14 +271,14 @@ jtatop(J jt, A a, A w) {
                 AT(w) |= LIT;
             }
         }
-        return fdef(0, CAT, VERB, onconst1, onconst2, a, w, h, VFLAGNONE, RMAX, RMAX, RMAX);
+        return jtfdef(jt, 0, CAT, VERB, onconst1, onconst2, a, w, h, VFLAGNONE, RMAX, RMAX, RMAX);
     }
     wv = FAV(w);
     d  = wv->id;
     if ((d & ~1) == CLEFT) {
         // the very common case u@] and u@[.  Take ASGSAFE and inplaceability from u.  No IRS.  Vector the monad
         // straight to u; vector the dyad to our routine that shuffles args and inplace bits
-        return fdef(0,
+        return jtfdef(jt, 0,
                     CAT,
                     VERB,
                     onright1,
@@ -471,7 +471,7 @@ jtatop(J jt, A a, A w) {
         }
     }
 
-    return fdef(flag2, CAT, VERB, f1, f2, a, w, h, flag, (I)wv->mr, (I)lrv(wv), rrv(wv));
+    return jtfdef(jt, flag2, CAT, VERB, f1, f2, a, w, h, flag, (I)wv->mr, (I)lrv(wv), rrv(wv));
 }
 
 // u@:v
@@ -493,7 +493,7 @@ jtatco(J jt, A a, A w) {
     if ((d & ~1) == CLEFT) {
         // the very common case u@:] and u@:[.  Take ASGSAFE and inplaceability from u.  No IRS.  Vector the monad
         // straight to u; vector the dyad to our routine that shuffles args and inplace bits
-        return fdef(0,
+        return jtfdef(jt, 0,
                     CATCO,
                     VERB,
                     onright1,
@@ -638,7 +638,7 @@ jtatco(J jt, A a, A w) {
     flag2 |= wv->flag2 & (VF2WILLOPEN1 | VF2WILLOPEN2W | VF2WILLOPEN2A | VF2USESITEMCOUNT1 | VF2USESITEMCOUNT2W |
                           VF2USESITEMCOUNT2A);
 
-    return fdef(flag2, CATCO, VERB, f1, f2, a, w, 0L, flag, RMAX, RMAX, RMAX);
+    return jtfdef(jt, flag2, CATCO, VERB, f1, f2, a, w, 0L, flag, RMAX, RMAX, RMAX);
 }
 
 // u&:v
@@ -693,7 +693,7 @@ jtampco(J jt, A a, A w) {
     flag2 |= (f1 == on1cell) << VF2RANKATOP1X;
     flag2 |= VF2RANKATOP2;
     A z;
-    RZ(z = fdef(flag2, CAMPCO, VERB, f1, f2, a, w, 0L, flag, RMAX, RMAX, RMAX));
+    RZ(z = jtfdef(jt, flag2, CAMPCO, VERB, f1, f2, a, w, 0L, flag, RMAX, RMAX, RMAX));
     FAV(z)->localuse.lclr[0] = linktype;
     return z;
 }
@@ -822,7 +822,7 @@ jtamp(J jt, A a, A w) {
                             flag &= ~VJTFLGOK1;
                         }
                 }
-            return fdef(0, CAMP, VERB, f1, with2, a, w, h, flag, RMAX, RMAX, RMAX);
+            return jtfdef(jt, 0, CAMP, VERB, f1, with2, a, w, h, flag, RMAX, RMAX, RMAX);
         case VN:
             f1 = withr;
             v  = FAV(a);
@@ -862,7 +862,7 @@ jtamp(J jt, A a, A w) {
                     flag &= ~VJTFLGOK1;
                 }
             }
-            return fdef(0, CAMP, VERB, f1, with2, a, w, h, flag, RMAX, RMAX, RMAX);
+            return jtfdef(jt, 0, CAMP, VERB, f1, with2, a, w, h, flag, RMAX, RMAX, RMAX);
         case VV:
             // u&v
             f1 = on1;
@@ -963,7 +963,7 @@ jtamp(J jt, A a, A w) {
                 }
             }
             A z;
-            RZ(z = fdef(flag2, CAMP, VERB, f1, f2, a, w, 0L, flag, r, r, r));
+            RZ(z = jtfdef(jt, flag2, CAMP, VERB, f1, f2, a, w, 0L, flag, r, r, r));
             FAV(z)->localuse.lclr[0] = linktype;
             return z;
     }

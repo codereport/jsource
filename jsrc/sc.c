@@ -286,7 +286,7 @@ jtnamerefacv(J jt, A a, L* w) {
     // result, and we just set INPLACE for everything and let unquote use the up-to-date value. ASGSAFE has a similar
     // problem, and that's more serious, because unquote is too late to stop the inplacing.  We try to ameliorate the
     // problem by making [: unsafe.
-    A z = fdef(0,
+    A z = jtfdef(jt, 0,
                CTILDE,
                AT(y),
                jtunquote1,
@@ -330,7 +330,7 @@ A
 jtnamerefop(J jt, A a, A w) {
     V* v;
     v = FAV(w);
-    return fdef(0, CCOLON, VERB, jtunquote1, jtunquote, 0L, a, w, VXOPCALL | v->flag, v->mr, lrv(v), rrv(v));
+    return jtfdef(jt, 0, CCOLON, VERB, jtunquote1, jtunquote, 0L, a, w, VXOPCALL | v->flag, v->mr, lrv(v), rrv(v));
 }
 
 /* jtnamerefop(jt,) is used by explicit defined operators when: */

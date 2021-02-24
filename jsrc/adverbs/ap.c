@@ -1449,7 +1449,7 @@ jtbslash(J jt, A w) {
     ;
     if (!w) return 0;
     if (NOUN & AT(w))
-        return fdef(
+        return jtfdef(jt, 
           0, CBSLASH, VERB, jtinfixprefix1, jtinfixprefix2, w, 0L, jtfxeachv(jt, 1L, w), VGERL | flag, RMAX, 0L, RMAX);
     v = FAV(w);  // v is the u in u\ y
     switch (v->id) {

@@ -211,7 +211,7 @@ jtlsub(J jt, C id, A a, A w) {
     hv[0] = v[2 == n];
     hv[1] = v[3 == n];
     hv[2] = v[n - 1];  // monad, left, right
-    return fdef(
+    return jtfdef(jt, 
       0, id, VERB, b ? jtlcapco1 : jtscapco1, b ? jtlcapco2 : jtscapco2, a, w, h, VFLAGNONE, RMAX, RMAX, RMAX);
 }
 

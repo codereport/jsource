@@ -913,7 +913,7 @@ xadv(J jt, A w, A self) {
 A
 jtxop2(J jt, A a, A w, A self) {
     A ff, x;
-    RZ(ff = fdef(0,
+    RZ(ff = jtfdef(jt, 0,
                  CCOLON,
                  VERB,
                  xn1,
@@ -1337,7 +1337,7 @@ jtcolon(J jt, A a, A w) {
             a = FAV(a)->fgh[0];  // look for v : v; don't fail if fgh[0]==0 (namerefop).  Must test fgh[0] first
         if (CCOLON == FAV(w)->id && FAV(w)->fgh[0] && VERB & AT(FAV(w)->fgh[0]) && VERB & AT(FAV(w)->fgh[1]))
             w = FAV(w)->fgh[1];
-        return fdef(0,
+        return jtfdef(jt, 0,
                     CCOLON,
                     VERB,
                     xv1,
@@ -1484,11 +1484,11 @@ jtcolon(J jt, A a, A w) {
     }
     switch (n) {
         case 3:
-            return fdef(0, CCOLON, VERB, xn1, jtxdefn, num(n), 0L, h, flag | VJTFLGOK1 | VJTFLGOK2, RMAX, RMAX, RMAX);
-        case 1: return fdef(0, CCOLON, ADV, b ? xop1 : xadv, 0L, num(n), 0L, h, flag, RMAX, RMAX, RMAX);
-        case 2: return fdef(0, CCOLON, CONJ, 0L, b ? jtxop2 : jtxdefn, num(n), 0L, h, flag, RMAX, RMAX, RMAX);
+            return jtfdef(jt, 0, CCOLON, VERB, xn1, jtxdefn, num(n), 0L, h, flag | VJTFLGOK1 | VJTFLGOK2, RMAX, RMAX, RMAX);
+        case 1: return jtfdef(jt, 0, CCOLON, ADV, b ? xop1 : xadv, 0L, num(n), 0L, h, flag, RMAX, RMAX, RMAX);
+        case 2: return jtfdef(jt, 0, CCOLON, CONJ, 0L, b ? jtxop2 : jtxdefn, num(n), 0L, h, flag, RMAX, RMAX, RMAX);
         case 4:
-            return fdef(0, CCOLON, VERB, xn1, jtxdefn, num(n), 0L, h, flag | VJTFLGOK1 | VJTFLGOK2, RMAX, RMAX, RMAX);
+            return jtfdef(jt, 0, CCOLON, VERB, xn1, jtxdefn, num(n), 0L, h, flag | VJTFLGOK1 | VJTFLGOK2, RMAX, RMAX, RMAX);
         case 13: return jtvtrans(jt, w);
         default: ASSERT(0, EVDOMAIN);
     }

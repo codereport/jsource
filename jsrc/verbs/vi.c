@@ -1690,7 +1690,7 @@ jtiobs(J jt, I mode, I m, I n, I c, I k, I acr, I wcr, I ac, I wc, I ak, I wk, A
     zb      = (B*)zv;
     zc      = (C*)zv;
     // If a has not been sorted already, sort it
-    if (mode < IPHOFFSET) RZ(*hp = h = nodupgrade(a, acr, ac, acn, 0, n, m, b, bk));
+    if (mode < IPHOFFSET) RZ(*hp = h = jtnodupgrade(jt, a, acr, ac, acn, 0, n, m, b, bk));
     if (w == mark) return mark;
     hv                           = AV(h) + bk * (m - 1);
     jt->workareas.compare.complt = -1;

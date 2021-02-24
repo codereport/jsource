@@ -340,7 +340,7 @@ enum {
 #define SYMBSIZE sizeof(LX)
 #define CONWSIZE sizeof(CW)
 #define ADVSIZE sizeof(V)
-#define VERBSIZE sizeof(V)  // Note: size of ACV in bp() is INTSIZE because the allocation in fdef() is of INTs
+#define VERBSIZE sizeof(V)  // Note: size of ACV in bp() is INTSIZE because the allocation in jtfdef(jt, ) is of INTs
 #define LPARSIZE sizeof(I)
 #define CONJSIZE sizeof(V)
 #define RPARSIZE sizeof(I)

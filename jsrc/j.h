@@ -360,7 +360,7 @@
         D stackpos;                                             \
         ASSERT((uintptr_t)&stackpos >= jt->cstackmin, EVSTACK); \
     }
-#define FCONS(x) fdef(0, CFCONS, VERB, jtnum1, jtnum2, 0L, 0L, (x), VFLAGNONE, RMAX, RMAX, RMAX)
+#define FCONS(x) jtfdef(jt, 0, CFCONS, VERB, jtnum1, jtnum2, 0L, 0L, (x), VFLAGNONE, RMAX, RMAX, RMAX)
 // fuzzy-equal is used for tolerant comparisons not related to jt->cct; for example testing whether x in x { y is an
 // integer
 #define FUZZ 0.000000000000056843418860808015  // tolerance

@@ -6,9 +6,6 @@
 #define apip(x, y) \
     jtapip((J)((I)jt | JTINPLACEA), (x), (y))  // use apip instead of over when a is an inplaceable context
 
-#define assembleresults(x0, x1, x2, x3, x4, x5, x6, x7, x8, x9, x10) \
-    jtassembleresults(jt, (x0), (x1), (x2), (x3), (x4), (x5), (x6), (x7), (x8), (x9), (x10))
-
 #define beheadW(x) jtbehead((J)((I)jt | JTINPLACEW), (x))
 #define boxW(x) jtbox((J)((I)jt | JTINPLACEW), (x))
 #define box0(x) jtirs1(jt, (x), 0L, 0, jtbox)
@@ -120,9 +117,6 @@
         }                                                                                                 \
     }
 
-#define fdef(x0, x1, x2, x3, x4, x5, x6, x7, x8, x9, x10, x11) \
-    jtfdef(jt, (x0), (x1), (x2), (x3), (x4), (x5), (x6), (x7), (x8), (x9), (x10), (x11))
-
 #define floor1(x) jtatomic1(jt, (x), ds(CFLOOR))
 
 #define fr(x)                    \
@@ -140,15 +134,6 @@
 #define fx(x) jtfx(jt, (x), 0L)
 #define gcd(x, y) jtatomic2(jt, (x), (y), ds(CPLUSDOT))
 #define ge(x, y) jtatomic2(jt, (x), (y), ds(CGE))
-
-#define grd1spdd(x, y, z) jtgrd1spdd(jt, (x), (y), (z))
-#define grd1spds(x, y, z) jtgrd1spds(jt, (x), (y), (z))
-#define grd1spsd(x, y, z) jtgrd1spsd(jt, (x), (y), (z))
-#define grd1spss(x, y, z) jtgrd1spss(jt, (x), (y), (z))
-#define grd1spz(x, y, z) jtgrd1spz(jt, (x), (y), (z))
-#define grd2spsd(x, y, z) jtgrd2spsd(jt, (x), (y), (z))
-#define grd2spss(x, y, z) jtgrd2spss(jt, (x), (y), (z))
-
 #define gt(x, y) jtatomic2(jt, (x), (y), ds(CGT))
 
 #define inv(x) jtinv(jt, (x), 0)
@@ -190,9 +175,6 @@
 #define minusA(x, y) jtatomic2((J)((I)jt | JTINPLACEA), (x), (y), ds(CMINUS))
 
 #define mr(x) ((I)(FAV(x)->mr))
-#define msmerge(x, y, z) jtmsmerge(jt, (x), (y), (z))
-#define msort(x, y, z) jtmsort(jt, (x), (y), (z))
-#define msortitems(w, x, y, z) jtmsortitems(jt, (w), (x), (y), (z))
 #define mult(x, y) \
     jtmult(jt, (x), (y))  // there is a second macro in dtoa.c so when we mass remove one it hits both of them.
 
@@ -200,10 +182,8 @@
 #define negateW(x) jtnegate((J)((I)jt | JTINPLACEW), (x))
 #define nmhash(x, y) hic((x), (y))
 
-#define nodupgrade(x0, x1, x2, x3, x4, x5, x6, x7, x8) \
-    jtnodupgrade(jt, (x0), (x1), (x2), (x3), (x4), (x5), (x6), (x7), (x8))
-
 #define nor(x, y) jtatomic2(jt, (x), (y), ds(CPLUSCO))
+
 #define numb(x0, x1, x2, x3) jtnumb(jt, (x0), (x1), (x2), (x3))
 #define numbpx(x, y, z) jtnumbpx(jt, (x), (y), (z))
 #define numd(x, y, z) jtnumd(jt, (x), (y), (z))
@@ -343,8 +323,6 @@
             z = rpsa->actrtns[3 * tmax + (rps)];               \
         }                                                      \
     }
-#define vec(x, y, z) jtvec(jt, (x), (y), (z))
-
 #define words(x) jtwords(jt, (x), ds(CWORDS))
 #define xcompare(x, y) jtxcompare(jt, (x), (y))  // used in multiple macros in multiple files.
 #define xplus(x, y) jtxplus(jt, (x), (y))    // 5 files use this in macros.

@@ -1951,24 +1951,24 @@ jtcut(J jt, A a, A w) {
     switch (k) {
         case 0:
             if (FAV(a)->id == CBOX) {  // <;.0
-                RZ(z = fdef(0, CCUT, VERB, jtcut01, jtboxcut0, a, w, h, flag | VJTFLGOK2, RMAX, 2L, RMAX));
+                RZ(z = jtfdef(jt, 0, CCUT, VERB, jtcut01, jtboxcut0, a, w, h, flag | VJTFLGOK2, RMAX, 2L, RMAX));
                 FAV(z)->localuse.lpf.parm = ~0;
                 FAV(z)->localuse.lpf.func = jtcut02;  // store parms to specify start/len format
                 return z;
             }
-            z = fdef(0, CCUT, VERB, jtcut01, jtcut02, a, w, h, flag | VJTFLGOK2, RMAX, 2L, RMAX);
+            z = jtfdef(jt, 0, CCUT, VERB, jtcut01, jtcut02, a, w, h, flag | VJTFLGOK2, RMAX, 2L, RMAX);
             break;
         case 1:
         case -1:
         case 2:
         case -2:
             if (!(NOUN & AT(a))) flag = VJTFLGOK2 + VJTFLGOK1;
-            z = fdef(0, CCUT, VERB, jtcut1, jtcut2, a, w, h, flag, RMAX, 1L, RMAX);
+            z = jtfdef(jt, 0, CCUT, VERB, jtcut1, jtcut2, a, w, h, flag, RMAX, 1L, RMAX);
             break;
         case 3:
         case -3:
         case 259:
-        case -259: z = fdef(0, CCUT, VERB, jttess1, jttess2, a, w, h, flag, RMAX, 2L, RMAX); break;
+        case -259: z = jtfdef(jt, 0, CCUT, VERB, jttess1, jttess2, a, w, h, flag, RMAX, 2L, RMAX); break;
         default: ASSERT(0, EVDOMAIN);
     }
     RZ(z);

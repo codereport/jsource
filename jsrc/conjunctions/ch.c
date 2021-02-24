@@ -148,5 +148,5 @@ jthgeom(J jt, A a, A w) {
         ASSERT(1 >= AR(w), EVRANK);
     }
     RZ(h = jtcancel(jt, c, d));
-    return fdef(0, CHGEOM, VERB, jthgeom1, jthgeom2, a, w, h, 0L, 0L, 0L, 0L);
+    return jtfdef(jt, 0, CHGEOM, VERB, jthgeom1, jthgeom2, a, w, h, 0L, 0L, 0L, 0L);
 } /* a H. w */

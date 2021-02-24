@@ -513,9 +513,9 @@ jtpowop(J jt, A a, A w, A self) {
                 flag = (FAV(a)->flag & VASGSAFE) +
                        (h ? FAV(h)->flag & VJTFLGOK1
                           : VJTFLGOK1);  // inv1 inplaces and calculates ip for next step; invh has ip from inverse
-                return fdef(0, CPOWOP, VERB, (AF)(f1), jtinv2, a, w, h, flag, RMAX, RMAX, RMAX);
+                return jtfdef(jt, 0, CPOWOP, VERB, (AF)(f1), jtinv2, a, w, h, flag, RMAX, RMAX, RMAX);
             } else {  // u^:_
-                return fdef(0, CPOWOP, VERB, jtpinf12, jtpinf12, a, w, 0, VFLAGNONE, RMAX, RMAX, RMAX);
+                return jtfdef(jt, 0, CPOWOP, VERB, jtpinf12, jtpinf12, a, w, 0, VFLAGNONE, RMAX, RMAX, RMAX);
             }
         }
         if (IAV(hs)[0] >= 0) {
@@ -526,6 +526,6 @@ jtpowop(J jt, A a, A w, A self) {
     // If not special case, fall through to handle general case
     I m = AN(hs);              // m=#atoms of n; n=1st atom; r=n has rank>0
     ASSERT(m != 0, EVDOMAIN);  // empty power is error
-    return fdef(0, CPOWOP, VERB, f1, jtply2, a, w, hs, flag, RMAX, RMAX, RMAX);  // Create derived verb: pass in integer
+    return jtfdef(jt, 0, CPOWOP, VERB, f1, jtply2, a, w, hs, flag, RMAX, RMAX, RMAX);  // Create derived verb: pass in integer
                                                                                  // powers as h
 }

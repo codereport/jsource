@@ -40,7 +40,7 @@ jtfitct(J jt, A a, A w, I cno) {
         d = DAV(w)[0];
     }  // 0 is usual; otherwise it better be FL, but convert in case its value is 0
     ASSERT(0 <= d && d < 5.82076609134675e-11, EVDOMAIN);  // can't be greater than 2^_34
-    A fn = fdef(0,
+    A fn = jtfdef(jt, 0,
                 CFIT,
                 VERB,
                 (AF)(jtfitct1),
