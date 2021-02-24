@@ -80,7 +80,7 @@ jtmodpow2(J jt, A a, A w, A self) {
 static A
 jtmodpow1(J jt, A w, A self) {
     A g = FAV(self)->fgh[1];
-    return rank2ex0(FAV(g)->fgh[0], w, self, jtmodpow2);
+    return jtrank2ex0(jt, FAV(g)->fgh[0], w, self, jtmodpow2);
 }  // m must be an atom; I think n can have shape.  But we treat w as atomic
    /* m&|@(n&^) w ; m guaranteed to be INT or XNUM */
 
@@ -196,7 +196,7 @@ static A
 atcomp(J jt, A a, A w, A self) {
     AF f;
     A z;
-    f = atcompf(a, w, self);
+    f = jtatcompf(jt, a, w, self);
     if (f) {
         I postflags = jt->workareas.compsc.postflags;
         z           = f(jt, a, w, self);
@@ -204,7 +204,7 @@ atcomp(J jt, A a, A w, A self) {
             if (postflags & 2) { z = num((IAV(z)[0] != AN(AR(a) >= AR(w) ? a : w)) ^ (postflags & 1)); }
         }
     } else
-        z = upon2(a, w, self);
+        z = jtupon2(jt, a, w, self);
     return z;
 }
 
@@ -212,7 +212,7 @@ static A
 atcomp0(J jt, A a, A w, A self) {
     A z;
     AF f;
-    f = atcompf(a, w, self);
+    f = jtatcompf(jt, a, w, self);
     PUSHCCT(1.0)
     if (f) {
         I postflags = jt->workareas.compsc.postflags;
@@ -221,7 +221,7 @@ atcomp0(J jt, A a, A w, A self) {
             if (postflags & 2) { z = num((IAV(z)[0] != AN(AR(a) >= AR(w) ? a : w)) ^ (postflags & 1)); }
         }
     } else
-        z = upon2(a, w, self);
+        z = jtupon2(jt, a, w, self);
     return z;
 }
 
@@ -271,14 +271,14 @@ jtatop(J jt, A a, A w) {
                 AT(w) |= LIT;
             }
         }
-        return fdef(0, CAT, VERB, onconst1, onconst2, a, w, h, VFLAGNONE, RMAX, RMAX, RMAX);
+        return jtfdef(jt, 0, CAT, VERB, onconst1, onconst2, a, w, h, VFLAGNONE, RMAX, RMAX, RMAX);
     }
     wv = FAV(w);
     d  = wv->id;
     if ((d & ~1) == CLEFT) {
         // the very common case u@] and u@[.  Take ASGSAFE and inplaceability from u.  No IRS.  Vector the monad
         // straight to u; vector the dyad to our routine that shuffles args and inplace bits
-        return fdef(0,
+        return jtfdef(jt, 0,
                     CAT,
                     VERB,
                     onright1,
@@ -471,7 +471,7 @@ jtatop(J jt, A a, A w) {
         }
     }
 
-    return fdef(flag2, CAT, VERB, f1, f2, a, w, h, flag, (I)wv->mr, (I)lrv(wv), rrv(wv));
+    return jtfdef(jt, flag2, CAT, VERB, f1, f2, a, w, h, flag, (I)wv->mr, (I)lrv(wv), rrv(wv));
 }
 
 // u@:v
@@ -493,7 +493,7 @@ jtatco(J jt, A a, A w) {
     if ((d & ~1) == CLEFT) {
         // the very common case u@:] and u@:[.  Take ASGSAFE and inplaceability from u.  No IRS.  Vector the monad
         // straight to u; vector the dyad to our routine that shuffles args and inplace bits
-        return fdef(0,
+        return jtfdef(jt, 0,
                     CATCO,
                     VERB,
                     onright1,
@@ -638,7 +638,7 @@ jtatco(J jt, A a, A w) {
     flag2 |= wv->flag2 & (VF2WILLOPEN1 | VF2WILLOPEN2W | VF2WILLOPEN2A | VF2USESITEMCOUNT1 | VF2USESITEMCOUNT2W |
                           VF2USESITEMCOUNT2A);
 
-    return fdef(flag2, CATCO, VERB, f1, f2, a, w, 0L, flag, RMAX, RMAX, RMAX);
+    return jtfdef(jt, flag2, CATCO, VERB, f1, f2, a, w, 0L, flag, RMAX, RMAX, RMAX);
 }
 
 // u&:v
@@ -693,7 +693,7 @@ jtampco(J jt, A a, A w) {
     flag2 |= (f1 == on1cell) << VF2RANKATOP1X;
     flag2 |= VF2RANKATOP2;
     A z;
-    RZ(z = fdef(flag2, CAMPCO, VERB, f1, f2, a, w, 0L, flag, RMAX, RMAX, RMAX));
+    RZ(z = jtfdef(jt, flag2, CAMPCO, VERB, f1, f2, a, w, 0L, flag, RMAX, RMAX, RMAX));
     FAV(z)->localuse.lclr[0] = linktype;
     return z;
 }
@@ -727,13 +727,13 @@ withr(J jt, A w, A self) {
 static A
 ixfixedleft(J jt, A w, A self) {
     V *v = FAV(self);
-    return indexofprehashed(v->fgh[0], w, v->fgh[2]);
+    return jtindexofprehashed(jt, v->fgh[0], w, v->fgh[2]);
 }
 // Here for compounds like (i.&0@:e.)&n or -.&n that compute a prehashed table from w
 static A
 ixfixedright(J jt, A w, A self) {
     V *v = FAV(self);
-    return indexofprehashed(v->fgh[1], w, v->fgh[2]);
+    return jtindexofprehashed(jt, v->fgh[1], w, v->fgh[2]);
 }
 
 // Here if ct was 0 when the compound was created - we must keep it 0
@@ -741,7 +741,7 @@ static A
 ixfixedleft0(J jt, A w, A self) {
     A z;
     V *v           = FAV(self);
-    PUSHCCT(1.0) z = indexofprehashed(v->fgh[0], w, v->fgh[2]);
+    PUSHCCT(1.0) z = jtindexofprehashed(jt, v->fgh[0], w, v->fgh[2]);
     POPCCT
     return z;
 }
@@ -750,7 +750,7 @@ static A
 ixfixedright0(J jt, A w, A self) {
     A z;
     V *v           = FAV(self);
-    PUSHCCT(1.0) z = indexofprehashed(v->fgh[1], w, v->fgh[2]);
+    PUSHCCT(1.0) z = jtindexofprehashed(jt, v->fgh[1], w, v->fgh[2]);
     POPCCT
     return z;
 }
@@ -758,7 +758,7 @@ ixfixedright0(J jt, A w, A self) {
 static A
 with2(J jt, A a, A w, A self) {
     A z;
-    return df1(z, w, powop(self, a, 0));
+    return df1(z, w, jtpowop(jt, self, a, 0));
 }
 
 // u&v
@@ -800,11 +800,11 @@ jtamp(J jt, A a, A w) {
             }
             if (0 <= mode) {
                 if (b) {
-                    PUSHCCT(1.0) h = indexofsub(mode, a, mark);
+                    PUSHCCT(1.0) h = jtindexofsub(jt, mode, a, mark);
                     POPCCT f1      = ixfixedleft0;
                     flag &= ~VJTFLGOK1;
                 } else {
-                    h  = indexofsub(mode, a, mark);
+                    h  = jtindexofsub(jt, mode, a, mark);
                     f1 = ixfixedleft;
                     flag &= ~VJTFLGOK1;
                 }
@@ -822,7 +822,7 @@ jtamp(J jt, A a, A w) {
                             flag &= ~VJTFLGOK1;
                         }
                 }
-            return fdef(0, CAMP, VERB, f1, with2, a, w, h, flag, RMAX, RMAX, RMAX);
+            return jtfdef(jt, 0, CAMP, VERB, f1, with2, a, w, h, flag, RMAX, RMAX, RMAX);
         case VN:
             f1 = withr;
             v  = FAV(a);
@@ -853,16 +853,16 @@ jtamp(J jt, A a, A w) {
             }
             if (0 <= mode) {
                 if (b) {
-                    PUSHCCT(1.0) h = indexofsub(mode, w, mark);
+                    PUSHCCT(1.0) h = jtindexofsub(jt, mode, w, mark);
                     POPCCT f1      = ixfixedright0;
                     flag &= ~VJTFLGOK1;
                 } else {
-                    h  = indexofsub(mode, w, mark);
+                    h  = jtindexofsub(jt, mode, w, mark);
                     f1 = ixfixedright;
                     flag &= ~VJTFLGOK1;
                 }
             }
-            return fdef(0, CAMP, VERB, f1, with2, a, w, h, flag, RMAX, RMAX, RMAX);
+            return jtfdef(jt, 0, CAMP, VERB, f1, with2, a, w, h, flag, RMAX, RMAX, RMAX);
         case VV:
             // u&v
             f1 = on1;
@@ -963,7 +963,7 @@ jtamp(J jt, A a, A w) {
                 }
             }
             A z;
-            RZ(z = fdef(flag2, CAMP, VERB, f1, f2, a, w, 0L, flag, r, r, r));
+            RZ(z = jtfdef(jt, flag2, CAMP, VERB, f1, f2, a, w, 0L, flag, r, r, r));
             FAV(z)->localuse.lclr[0] = linktype;
             return z;
     }

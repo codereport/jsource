@@ -39,14 +39,14 @@ jtunquote(J jt, A a, A w, A self) {
             if (!(thisnameinfo->flag & (NMLOC | NMILOC | NMIMPLOC))) {  // simple name, and not u./v.
                 explocale = 0;                                          // flag no explicit locale
                 if (!(stabent = jtprobelocal(jt, thisname, jt->locsyms)))
-                    stabent = syrd1(thisnameinfo->m,
+                    stabent = jtsyrd1(jt, thisnameinfo->m,
                                     thisnameinfo->s,
                                     thisnameinfo->hash,
                                     jt->global);         // Try local, then look up the name starting in jt->global
             } else {                                     // locative or u/v
                 if (!(thisnameinfo->flag & NMIMPLOC)) {  // locative
                     RZ(explocale = jtsybaseloc(jt, thisname));  //  get the explicit locale.  0 if erroneous locale
-                    stabent = syrd1(thisnameinfo->m,
+                    stabent = jtsyrd1(jt, thisnameinfo->m,
                                     thisnameinfo->s,
                                     thisnameinfo->hash,
                                     explocale);  // Look up the name starting in the locale of the locative
@@ -133,7 +133,7 @@ jtunquote(J jt, A a, A w, A self) {
     } else {
         // Extra processing is required.  Check each option individually
         if (PMCTRBPMON & jt->uflags.us.uq.uq_c.pmctrbstk)
-            pmrecord(thisname,
+            jtpmrecord(jt, thisname,
                      jt->global ? LOCNAME(jt->global) : 0,
                      -1L,
                      dyadex ? VAL2 : VAL1);  // Record the call to the name, if perf monitoring on
@@ -146,7 +146,7 @@ jtunquote(J jt, A a, A w, A self) {
             jt->recurstate <
               RECSTATEPROMPT) {  // The verb is locked if it is marked as locked, or if the script is locked; if
                                  // recursive JDo, can't enter debug suspension so ignore debug
-            z = dbunquote(dyadex ? a : 0,
+            z = jtdbunquote(jt, dyadex ? a : 0,
                           dyadex ? w : a,
                           fs,
                           stabent);  // if debugging, go do that.  save last sym lookup as debug parm
@@ -160,7 +160,7 @@ jtunquote(J jt, A a, A w, A self) {
             fa(fs);
         }
         if (PMCTRBPMON & jt->uflags.us.uq.uq_c.pmctrbstk)
-            pmrecord(thisname,
+            jtpmrecord(jt, thisname,
                      jt->global ? LOCNAME(jt->global) : 0,
                      -2L,
                      dyadex ? VAL2 : VAL1);                    // record the return from call
@@ -262,7 +262,7 @@ jtunquote(J jt, A a, A w, A self) {
 // The monad calls the bivalent case with (w,self,self) so that the inputs can pass through to the executed function
 static A
 jtunquote1(J jt, A w, A self) {
-    return unquote(w, self, self);
+    return jtunquote(jt, w, self, self);
 }  // This just transfers to jtunquote.  It passes jt, with inplacing bits, unmodified
 
 // return ref to adv/conj/verb whose name is a and whose symbol-table entry is w
@@ -286,7 +286,7 @@ jtnamerefacv(J jt, A a, L* w) {
     // result, and we just set INPLACE for everything and let unquote use the up-to-date value. ASGSAFE has a similar
     // problem, and that's more serious, because unquote is too late to stop the inplacing.  We try to ameliorate the
     // problem by making [: unsafe.
-    A z = fdef(0,
+    A z = jtfdef(jt, 0,
                CTILDE,
                AT(y),
                jtunquote1,
@@ -330,7 +330,7 @@ A
 jtnamerefop(J jt, A a, A w) {
     V* v;
     v = FAV(w);
-    return fdef(0, CCOLON, VERB, jtunquote1, jtunquote, 0L, a, w, VXOPCALL | v->flag, v->mr, lrv(v), rrv(v));
+    return jtfdef(jt, 0, CCOLON, VERB, jtunquote1, jtunquote, 0L, a, w, VXOPCALL | v->flag, v->mr, lrv(v), rrv(v));
 }
 
 /* jtnamerefop(jt,) is used by explicit defined operators when: */
@@ -347,5 +347,5 @@ jtimplocref(J jt, A a, A w, A self) {
     self = AT(w) & NOUN ? self : w;
     self = jt->implocref[FAV(self)->id & 1];
     w    = AT(w) & NOUN ? w : self;
-    return unquote(a, w, self);  // call as (w,self,self) or (a,w,self)
+    return jtunquote(jt, a, w, self);  // call as (w,self,self) or (a,w,self)
 }

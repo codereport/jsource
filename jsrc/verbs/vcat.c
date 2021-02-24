@@ -24,7 +24,7 @@ jtovs0(J jt, B p, I r, A a, A w) {
     a1 = SPA(wp, a);
     c  = AN(a1);
     av = AV(a1);
-    RZ(b = bfi(zr, a1, 1));
+    RZ(b = jtbfi(jt, zr, a1, 1));
     at = AT(a);
     wt = AT(x);
     ASSERT(HOMO(at, wt), EVDOMAIN);
@@ -40,20 +40,20 @@ jtovs0(J jt, B p, I r, A a, A w) {
     switch (2 * b[f] + !jtequ(jt, a, e)) {
         case 0: /* dense and a equal e */
             RZ(y = jtca(jt, y));
-            RZ(x = p ? irs2(x, a, 0L, AR(x) - (1 + k), 0L, jtover) : irs2(a, x, 0L, 0L, AR(x) - (1 + k), jtover));
+            RZ(x = p ? jtirs2(jt, x, a, 0L, AR(x) - (1 + k), 0L, jtover) : jtirs2(jt, a, x, 0L, 0L, AR(x) - (1 + k), jtover));
             break;
         case 1: /* dense and a not equal to e */
             GATV0(q, INT, c, 1);
             v = AV(q);
             DO(c, v[i] = ws[av[i]];);
-            RZ(q = odom(2L, c, v));
+            RZ(q = jtodom(jt, 2L, c, v));
             if (AN(q) >= AN(y)) {
                 RZ(z = shape(jt, x));
                 *AV(z) = *AS(q);
                 RZ(x = jtfrom(jt, jtgrade1(jt, jtover(jt, y, jtless(jt, q, y))), jtover(jt, x, jtreshape(jt, z, e))));
                 y = q;
             }
-            RZ(x = p ? irs2(x, a, 0L, AR(x) - (1 + k), 0L, jtover) : irs2(a, x, 0L, 0L, AR(x) - (1 + k), jtover));
+            RZ(x = p ? jtirs2(jt, x, a, 0L, AR(x) - (1 + k), 0L, jtover) : jtirs2(jt, a, x, 0L, 0L, AR(x) - (1 + k), jtover));
             break;
         case 2: /* sparse and a equals e */
             RZ(y = jtca(jt, y));
@@ -67,7 +67,7 @@ jtovs0(J jt, B p, I r, A a, A w) {
             v = AV(q);
             DO(c, v[i] = ws[av[i]];);
             v[j] = 1;
-            RZ(q = odom(2L, c, v));
+            RZ(q = jtodom(jt, 2L, c, v));
             n = *AS(q);
             if (p) {
                 RZ(y = jtover(jt, y, q));
@@ -119,29 +119,29 @@ jtovs(J jt, A a, A w) {
     wt  = AT(w);
     wcr = wr < wcr ? wr : wcr;
     RESETRANK;
-    if (!ar) return ovs0(0, wcr, a, w);
-    if (!wr) return ovs0(1, acr, w, a);
-    if (ar > acr || wr > wcr) return sprank2(a, w, 0L, acr, wcr, jtover);
+    if (!ar) return jtovs0(jt, 0, wcr, a, w);
+    if (!wr) return jtovs0(jt, 1, acr, w, a);
+    if (ar > acr || wr > wcr) return jtsprank2(jt, a, w, 0L, acr, wcr, jtover);
     r = MAX(ar, wr);
-    if (r > ar) RZ(a = jtreshape(jt, jtover(jt, apv(r - ar, 1L, 0L), shape(jt, a)), a));
+    if (r > ar) RZ(a = jtreshape(jt, jtover(jt, jtapv(jt, r - ar, 1L, 0L), shape(jt, a)), a));
     as = AS(a);
-    if (r > wr) RZ(w = jtreshape(jt, jtover(jt, apv(r - wr, 1L, 0L), shape(jt, w)), w));
+    if (r > wr) RZ(w = jtreshape(jt, jtover(jt, jtapv(jt, r - wr, 1L, 0L), shape(jt, w)), w));
     ws = AS(w);
     ASSERT(*as < IMAX - *ws, EVLIMIT);
     if (!(at & SPARSE)) {
         wp = PAV(w);
-        RZ(a = sparseit(a, SPA(wp, a), SPA(wp, e)));
+        RZ(a = jtsparseit(jt, a, SPA(wp, a), SPA(wp, e)));
     }
     if (!(wt & SPARSE)) {
         ap = PAV(a);
-        RZ(w = sparseit(w, SPA(ap, a), SPA(ap, e)));
+        RZ(w = jtsparseit(jt, w, SPA(ap, a), SPA(ap, e)));
     }
     ap = PAV(a);
-    RZ(ab = bfi(r, SPA(ap, a), 1));
+    RZ(ab = jtbfi(jt, r, SPA(ap, a), 1));
     ae = SPA(ap, e);
     at = AT(ae);
     wp = PAV(w);
-    RZ(wb = bfi(r, SPA(wp, a), 1));
+    RZ(wb = jtbfi(jt, r, SPA(wp, a), 1));
     we = SPA(wp, e);
     wt = AT(we);
     ASSERT(jtequ(jt, ae, we), EVNONCE);
@@ -277,7 +277,7 @@ jtovgmove(J jt, I k, I c, I m, A s, A w, C *x, A z) {
             if (n < p) {
                 I *v = AV(s);
                 *v   = m;
-                RZ(w = jttake(jt, d ? vec(INT, AR(w), d + v) : s, w));
+                RZ(w = jttake(jt, d ? jtvec(jt, INT, AR(w), d + v) : s, w));
             }                                        // incoming cell smaller than result area: take to result-cell size
             Jmemcpy(x, AV(w), k * AN(w), loop1, 1);  // copy in the data, now the right cell shape but possibly shorter
                                                      // than the fill  kludge could avoid double copy
@@ -308,7 +308,7 @@ jtovg(J jt, A a, A w) {
     ar = AR(a);
     wr = AR(w);
     r  = ar + wr ? MAX(ar, wr) : 1;
-    RZ(s = r ? vec(INT, r, AS(r == ar ? a : w)) : num(2));
+    RZ(s = r ? jtvec(jt, INT, r, AS(r == ar ? a : w)) : num(2));
     sv = AV(s);  // Allocate list for shape of composite item
     // Calculate the shape of the result: the shape of the item, max of input shapes
     if (m = MIN(ar, wr)) {
@@ -329,8 +329,8 @@ jtovg(J jt, A a, A w) {
     AS(z)[0] = m + n;
     x        = CAV(z);
     k        = bpnoun(AT(a));
-    RZ(x = ovgmove(k, c, m, s, a, x, z));
-    RZ(x = ovgmove(k, c, n, s, w, x, z));
+    RZ(x = jtovgmove(jt, k, c, m, s, a, x, z));
+    RZ(x = jtovgmove(jt, k, c, n, s, w, x, z));
     return z;
 } /* a,w general case for dense array with the same type; jt->ranks=~0 */
 
@@ -695,7 +695,7 @@ jtapip(J jt, A a, A w) {
                         // rank is implicit in the shape of a.
                         // The take relies on the fill value
                         if (p) {
-                            h = vec(INT, wr, AS(a) + ar - wr);
+                            h = jtvec(jt, INT, wr, AS(a) + ar - wr);
                             makewritable(h);
                             if (ar == wr) AV(h)[0] = AS(w)[0];
                             RZ(w = jttake(jt, h, w));

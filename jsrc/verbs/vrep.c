@@ -29,10 +29,10 @@ jtrepzsx(J jt, A a, A w, I wf, I wcr) {
     ap = PAV(a);
     x  = SPA(ap, x);
     m  = AN(x);
-    if (!AN(SPA(ap, a))) return repzdx(jtravel(jt, x), w, wf, wcr);
+    if (!AN(SPA(ap, a))) return jtrepzdx(jt, jtravel(jt, x), w, wf, wcr);
     y  = SPA(ap, i);
     yv = AV(y);
-    RZ(x = jtcvt(jt, INT, vec(FL, 2 * m, AV(x))));
+    RZ(x = jtcvt(jt, INT, jtvec(jt, FL, 2 * m, AV(x))));
     xv = AV(x);
     if (jtequ(jt, num(0), SPA(ap, e))) {
         k = c = *(wf + AS(w));
@@ -58,12 +58,12 @@ jtrepzsx(J jt, A a, A w, I wf, I wcr) {
             }
         }
         ASSERT(k <= IMAX - 1, EVLIMIT);
-        if (c == k) RZ(w = irs2(jtsc(jt, 1 + k), w, 0L, 0L, wcr, jttake));
+        if (c == k) RZ(w = jtirs2(jt, jtsc(jt, 1 + k), w, 0L, 0L, wcr, jttake));
         DO(2 * m, ASSERT(0 <= xv[i], EVDOMAIN); p += xv[i]; ASSERT(0 <= p, EVLIMIT););
         GATV0(q, INT, p, 1);
         qv = AV(q);
         DO(m, c = *xv++; d = *xv++; j = yv[i]; DQ(c, *qv++ = j;); DQ(d, *qv++ = k;););
-        return irs2(q, w, 0L, 1L, wcr, jtfrom);
+        return jtirs2(jt, q, w, 0L, 1L, wcr, jtfrom);
     }
     ASSERT(0, EVNONCE);
 } /* (sparse complex) #"r (dense or sparse) */
@@ -74,7 +74,7 @@ jtrepbdx(J jt, A a, A w, I wf, I wcr) {
     I c, k, m, p;
     // wf and wcr are set
     FPREFIP;
-    if (SPARSE & AT(w)) return irs2(jtifb(jt, AN(a), BAV(a)), w, 0L, 1L, wcr, jtfrom);
+    if (SPARSE & AT(w)) return jtirs2(jt, jtifb(jt, AN(a), BAV(a)), w, 0L, 1L, wcr, jtfrom);
     m = AN(a);
     void *zvv;
     void *wvv = voidAV(w);
@@ -221,18 +221,18 @@ jtrepbsx(J jt, A a, A w, I wf, I wcr) {
     x  = SPA(ap, x);
     n  = AN(x);
     b  = BAV(x);
-    if (!AN(SPA(ap, a))) return irs2(jtifb(jt, n, b), w, 0L, 1L, wcr, jtfrom);
+    if (!AN(SPA(ap, a))) return jtirs2(jt, jtifb(jt, n, b), w, 0L, 1L, wcr, jtfrom);
     if (!*BAV(e)) {
         GATV0(q, INT, n, 1);
         v = v0 = AV(q);
         DO(n, if (*b++) *v++ = u[i];);
         AN(q) = AS(q)[0] = v - v0;
-        return irs2(q, w, 0L, 1L, wcr, jtfrom);
+        return jtirs2(jt, q, w, 0L, 1L, wcr, jtfrom);
     }
     wp = PAV(w);
     if (DENSE & AT(w) || all0(eq(jtsc(jt, wf), SPA(wp, a)))) {
         RZ(q = jtdenseit(jt, a));
-        return irs2(jtifb(jt, AN(q), BAV(q)), w, 0L, 1L, wcr, jtfrom);
+        return jtirs2(jt, jtifb(jt, AN(q), BAV(q)), w, 0L, 1L, wcr, jtfrom);
     }  // here if dense w
     wa = SPA(wp, a);
     wy = SPA(wp, i);
@@ -294,14 +294,14 @@ jtrepisx(J jt, A a, A w, I wf, I wcr) {
     x  = SPA(ap, x);
     if (!(INT & AT(x))) RZ(x = jtcvt(jt, INT, x));
     xv = AV(x);
-    if (!AN(SPA(ap, a))) return repidx(jtravel(jt, x), w, wf, wcr);
+    if (!AN(SPA(ap, a))) return jtrepidx(jt, jtravel(jt, x), w, wf, wcr);
     if (!*AV(e)) {
         m = AN(x);
         DO(m, ASSERT(0 <= xv[i], EVDOMAIN); p += xv[i]; ASSERT(0 <= p, EVLIMIT););
         GATV0(q, INT, p, 1);
         qv = AV(q);
         DO(m, c = xv[i]; j = yv[i]; DQ(c, *qv++ = j;););
-        return irs2(q, w, 0L, 1L, wcr, jtfrom);
+        return jtirs2(jt, q, w, 0L, 1L, wcr, jtfrom);
     }
     ASSERT(0, EVNONCE);
 } /* (sparse integer) #"r (dense or sparse) */
@@ -318,11 +318,11 @@ jtrep1d(J jt, A a, A w, I wf, I wcr) {
     SETICFR(w, wf, wcr, n);  // n=length of item axis in input.  If atom, is repeated to length of a
     if (t & CMPX) {
         if (wcr)
-            return repzdx(jtfrom(jt, apv(n, 0L, 0L), a), w, wf, wcr);
+            return jtrepzdx(jt, jtfrom(jt, jtapv(jt, n, 0L, 0L), a), w, wf, wcr);
         else {
             A za;
-            RZ(za = apv(m, 0L, 0L));
-            return repzdx(a, IRS2(za, w, 0L, 1L, 0L, jtfrom, z), wf, 1L);
+            RZ(za = jtapv(jt, m, 0L, 0L));
+            return jtrepzdx(jt, a, IRS2(za, w, 0L, 1L, 0L, jtfrom, z), wf, 1L);
         }
     }
     if (t & B01) {
@@ -374,11 +374,11 @@ jtrep1s(J jt, A a, A w, I wf, I wcr) {
     I c, d, cd, j, k, m, n, p, q, *u, *v, wr, *ws;
     P *wp, *zp;
     FPREFIP;
-    if (AT(a) & SCMPX) return rep1d(jtdenseit(jt, a), w, wf, wcr);
-    RE(rep1sa(a, &c, &d));
+    if (AT(a) & SCMPX) return jtrep1d(jt, jtdenseit(jt, a), w, wf, wcr);
+    RE(jtrep1sa(jt, a, &c, &d));
     cd = c + d;
     if (DENSE & AT(w))
-        return rep1d(d ? jtjdot2(jt, jtsc(jt, c), jtsc(jt, d)) : jtsc(jt, c), w, wf, wcr);  // here if dense w
+        return jtrep1d(jt, d ? jtjdot2(jt, jtsc(jt, c), jtsc(jt, d)) : jtsc(jt, c), w, wf, wcr);  // here if dense w
     wr = AR(w);
     ws = AS(w);
     n  = wcr ? *(wf + ws) : 1;
@@ -391,7 +391,7 @@ jtrep1s(J jt, A a, A w, I wf, I wcr) {
     GASPARSE(z, AT(w), 1, wr + !wcr, ws);
     *(wf + AS(z)) = m;
     zp            = PAV(z);
-    RE(b = bfi(wr, ax, 1));
+    RE(b = jtbfi(jt, wr, ax, 1));
     if (wcr && b[wf]) { /* along sparse axis */
         u = AS(y);
         p = u[0];
@@ -435,7 +435,7 @@ jtrep1s(J jt, A a, A w, I wf, I wcr) {
             xx       = jt->fill;
             jt->fill = e;
         }  // e cannot be virtual
-        x = irs2(AR(a) && CMPX & AT(a) ? a
+        x = jtirs2(jt, AR(a) && CMPX & AT(a) ? a
                  : d                   ? jtjdot2(jt, jtsc(jt, c), jtsc(jt, d))
                                        : jtsc(jt, c),
                  x,

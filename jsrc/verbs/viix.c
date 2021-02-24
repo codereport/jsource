@@ -241,7 +241,7 @@ jticap2(J jt, A a, A w) {
     t = maxtyped(at, wt);
     if (1 == c) {  // the search is for atoms
         if (at & B01 && wt & B01 + INT + FL) {
-            RZ(iixBX(n, m, a, w, zv));
+            RZ(jtiixBX(jt, n, m, a, w, zv));
             return z;
         }
         if (at & wt & INT) {
@@ -254,7 +254,7 @@ jticap2(J jt, A a, A w) {
               (nlg << 1) +
               (SGNTO0(SGNIF((n << 1), nlg)));  // approx lg with 1 bit frac precision.  Can't shift 64 bits in case r=1
             if ((I)((r >> 2) + 2 * n) < (I)(m * nlg)) {
-                RZ(iixI(n, m, a, w, zv));
+                RZ(jtiixI(jt, n, m, a, w, zv));
                 return z;
             }  // weight misbranches as equiv to 8 stores
         }

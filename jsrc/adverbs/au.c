@@ -47,7 +47,7 @@ jtself2(J jt, A a, A w) {
 
 A
 jtac2(J jt, AF f) {
-    return fdef(0, 0, VERB, 0L, f, 0L, 0L, 0L, VFLAGNONE, RMAX, RMAX, RMAX);
+    return jtfdef(jt, 0, 0, VERB, 0L, f, 0L, 0L, 0L, VFLAGNONE, RMAX, RMAX, RMAX);
 }
 
 A

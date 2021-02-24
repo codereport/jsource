@@ -213,7 +213,7 @@ jtsortdirect(J jt, I m, I api, I n, A w) {
     // make the shape the same as the result shape (if there is more than one sort, this shape will be wrong, but that
     // won't matter, since the shape will never be used elsewhere)
     GA(x, t, n * api, AR(w), AS(w));
-    void *RESTRICT xv = voidAV(x); /* work area for msmerge() */
+    void *RESTRICT xv = voidAV(x); /* work area for jtmsmerge(jt, ) */
     DO(
       m,  // sort each cell
       void *sortres = (*sortfunc)(cmpfunc, cpi, n, bpi, (void *)zv, (void *)xv, wv);
@@ -479,7 +479,7 @@ jtsorti(J jt, I m, I n, A w) {
     if (!rng.range) {                                         // range was too large
         if (n < 50000) return jtsortiq(jtinplace, m, n, w);   // qsort for very short lists.  TUNE
         if (n < 100000) return jtsortdirect(jt, m, 1, n, w);  // 800-99999, mergesort   TUNE
-        return sorti1(m, n, w);                               // 100000+, radix  TUNE
+        return jtsorti1(jt, m, n, w);                               // 100000+, radix  TUNE
     }
     // allocate area for the data, and result area
     GATV0(y, C4T, rng.range, 1);
@@ -522,7 +522,7 @@ jtsortu(J jt, I m, I n, A w) {
         rng = condrange4(wv, AN(w), -1, 0, maxrange);
     } else
         rng.range = 0;
-    if (!rng.range) return n > 700 ? sortu1(m, n, w) : jtsortdirect(jt, m, 1, n, w);  // TUNE
+    if (!rng.range) return n > 700 ? jtsortu1(jt, m, n, w) : jtsortdirect(jt, m, 1, n, w);  // TUNE
     GATV0(y, C4T, rng.range, 1);
     yv = C4AV(y) - rng.min;
     GA(z, AT(w), AN(w), AR(w), AS(w));
@@ -717,14 +717,14 @@ jtgr2(J jt, A a, A w) {
                     RZ(z = (t & INT ? jtsorti : t & FL ? jtsortd : jtsortu)(jtinplace, m, n, w))  // Lists of INT/FL/C4T
                 else if (d == 2) {
                     // 2-byte types, which must be B01/LIT/C2T.  Use special code, unless strings too short
-                    if (t & B01) RZ(z = sortb2(m, n, w))  // Booleans with cell-items 2 bytes long
+                    if (t & B01) RZ(z = jtsortb2(jt, m, n, w))  // Booleans with cell-items 2 bytes long
                     if (t & LIT + C2T && n > 4600)
-                        RZ(z = sortc2(m, n, w))  // long character strings with cell-items 2 bytes long   TUNE
+                        RZ(z = jtsortc2(jt, m, n, w))  // long character strings with cell-items 2 bytes long   TUNE
                 } else if (d < 2)
                     RZ(z = (t & B01 && (m == 1 || 0 == (n & (SZI - 1))) ? jtsortb : jtsortc)(
                          jt, m, n, w))  // Lists of B01/LIT
             } else if (d == 4 && t & B01)
-                RZ(z = sortb4(m, n, w))  // Booleans with cell-items 4 bytes long
+                RZ(z = jtsortb4(jt, m, n, w))  // Booleans with cell-items 4 bytes long
         }
         // for direct types, we have the choice of direct/indirect.  For indirect, we do grade followed by from to apply
         // the grading permutation. for direct, we move the data around until we get the final sort.  Direct is better

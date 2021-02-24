@@ -117,7 +117,7 @@ jtapv(J jt, I n, I b, I m) {
         AFLAG(z) = AFRO;  // mark block readonly and not inplaceable
         return z;
     }
-    return apvwr(n, b, m);
+    return jtapvwr(jt, n, b, m);
 } /* b+m*i.n */
 // same, but never return a readonly block
 A

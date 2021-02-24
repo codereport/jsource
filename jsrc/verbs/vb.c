@@ -215,7 +215,7 @@ jtebar(J jt, A a, A w) {
     ASSERT(!((AT(a) | AT(w)) & SPARSE), EVNONCE);
     ASSERT((AR(a) == AR(w)) || (AR(a) + (AR(w) ^ 1)) == 0, EVRANK);
     if (AN(a) == 1) return eq(jtreshape(jt, mtv, a), w);  // if a is a singleton, just revert to =
-    RE(d = ebarprep(a, w, &a, &w, &c));
+    RE(d = jtebarprep(jt, a, w, &a, &w, &c));
     av = CAV(a);
     m  = AN(a);
     wv = CAV(w);
@@ -265,7 +265,7 @@ jti1ebar(J jt, A a, A w) {
     C *av, *wv;
     I c, d, i, k = 0, m, n, p, *yv;
 
-    RE(d = ebarprep(a, w, &a, &w, &c));
+    RE(d = jtebarprep(jt, a, w, &a, &w, &c));
     av = CAV(a);
     m  = AN(a);
     wv = CAV(w);
@@ -308,7 +308,7 @@ jtsumebar(J jt, A a, A w) {
     A y;
     C *av, *wv;
     I c, d, i, k = 0, m, n, p, *yv, z = 0;
-    RE(d = ebarprep(a, w, &a, &w, &c));
+    RE(d = jtebarprep(jt, a, w, &a, &w, &c));
     av = CAV(a);
     m  = AN(a);
     wv = CAV(w);
@@ -354,7 +354,7 @@ jtanyebar(J jt, A a, A w) {
     A y;
     C *av, *wv;
     I c, d, i, k = 0, m, n, p, *yv;
-    RE(d = ebarprep(a, w, &a, &w, &c));
+    RE(d = jtebarprep(jt, a, w, &a, &w, &c));
     av = CAV(a);
     m  = AN(a);
     wv = CAV(w);
@@ -411,7 +411,7 @@ jtifbebar(J jt, A a, A w) {
     A y, z;
     C *av, *wv;
     I c, d, i, k = 0, m, n, p, *yv, *zu, *zv;
-    RE(d = ebarprep(a, w, &a, &w, &c));
+    RE(d = jtebarprep(jt, a, w, &a, &w, &c));
     av = CAV(a);
     m  = AN(a);
     wv = CAV(w);

@@ -129,7 +129,7 @@ jtcfd(J jt, A w) {
             zv = AAV(z);
             zn = AN(z);
         }
-        RZ(zv[i++] = jtincorp(jt, vec(INT, u - qv, qv)));
+        RZ(zv[i++] = jtincorp(jt, jtvec(jt, INT, u - qv, qv)));
     }
     AN(z) = AS(z)[0] = zn = i;
     j                     = zn - 1;
@@ -149,7 +149,7 @@ jtdfc(J jt, I n, A w) {
     GATV0(b, B01, n, 1);
     bv = BAV(b);
     memset(bv, C1, n);
-    RZ(z = apvwr(n, 0L, 1L));
+    RZ(z = jtapvwr(jt, n, 0L, 1L));
     x  = AV(z);
     wv = AAV(w);
     for (j = AN(w) - 1; 0 <= j; j--) {
@@ -266,7 +266,7 @@ jtadot1(J jt, A w) {
     F1RANK(1, jtadot1, UNUSED_VALUE);
     RZ(y = BOX & AT(w) ? jtcdot1(jt, w) : jtpfill(jt, jtord(jt, w), w));
     SETIC(y, n);
-    return jtbase2(jt, jtcvt(jt, XNUM, apv(n, n, -1L)), jtrfd(jt, y));
+    return jtbase2(jt, jtcvt(jt, XNUM, jtapv(jt, n, n, -1L)), jtrfd(jt, y));
 }
 
 A
@@ -282,7 +282,7 @@ jtadot2(J jt, A a, A w) {
         RZ(jtvi(jt, a));
         return w;
     }
-    RZ(p = jtdfr(jt, jtvi(jt, jtabase2(jt, apv(n, n, -1L), a))));
+    RZ(p = jtdfr(jt, jtvi(jt, jtabase2(jt, jtapv(jt, n, n, -1L), a))));
     return jtequ(jt, w, IX(n))
              ? p
              : jtfrom(

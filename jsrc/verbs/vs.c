@@ -113,7 +113,7 @@ jtsparse1a(J jt, A s, A a, A e, A y, A x) {
     et = AT(e);
     ASSERT(!(et & LIT + BOX), EVNONCE);  // e must be numeric
     ASSERT(STYPE(et) != 0, EVDOMAIN);    // e must be dense
-    RZ(b = bfi(r, a, 0));
+    RZ(b = jtbfi(jt, r, a, 0));
     if (y == mark) {
         GAT0(y, INT, 0L, 2L);
         v    = AS(y);
@@ -230,7 +230,7 @@ jtsparseit(J jt, A w, A a, A e) {
         ASSERT(!AN(a), EVINDEX);
         return jtca(jt, w);
     }
-    RZ(z = sparse1a(shape(jt, w), a, e, mark, mark));
+    RZ(z = jtsparse1a(jt, shape(jt, w), a, e, mark, mark));
     p = PAV(z);
     RZ(ax = jtpaxis(jt, r, a));
     GATV0(y, INT, r, 1);
@@ -247,11 +247,11 @@ jtsparseit(J jt, A w, A a, A e) {
     if (r > n) ICPY(1 + v, n + s, r - n);
     b = b && SB01 & AT(z) && jtequ(jt, e, num(0));
     c = w;
-    if (!b) RZ(c = jtnot(jt, irs2(jtreshape(jt, vec(INT, r - n, n + s), SPA(p, e)), x, VFLAGNONE, RMAX, -1L, jtmatch)));
+    if (!b) RZ(c = jtnot(jt, jtirs2(jt, jtreshape(jt, jtvec(jt, INT, r - n, n + s), SPA(p, e)), x, VFLAGNONE, RMAX, -1L, jtmatch)));
     cn = AN(c);
     cv = BAV(c);
     cm = bsum(cn, cv);
-    /* RZ(y=jtabase2(jt,vec(INT,n,s),jtrepeat(jt,c,IX(cn)))); */
+    /* RZ(y=jtabase2(jt,jtvec(jt, INT,n,s),jtrepeat(jt,c,IX(cn)))); */
     GATV0(y, INT, cm * n, 2);
     u    = AS(y);
     *u++ = cm;
@@ -333,7 +333,7 @@ jtdenseit(J jt, A w) {
     GA(z, t, n, r, s);
     zv = CAV(z);
     xv = CAV(x);
-    if (1 < an) RZ(y = jtbase2(jt, vec(INT, an, s), y));
+    if (1 < an) RZ(y = jtbase2(jt, jtvec(jt, INT, an, s), y));
     yv = AV(y);
     k  = bpnoun(t);
     ck = k * jtaii(jt, x);
@@ -349,7 +349,7 @@ jtreaxis(J jt, A a, A w) {
     I c, d, j, k, m, r, *u, *v, *ws, wt;
     P *wp, *zp;
     wt = AT(w);
-    if (wt & DENSE) return sparseit(w, a, jtselm(jt, wt));
+    if (wt & DENSE) return jtsparseit(jt, w, a, jtselm(jt, wt));
     r  = AR(w);
     ws = AS(w);
     wp = PAV(w);
@@ -379,11 +379,11 @@ jtreaxis(J jt, A a, A w) {
               v[k++] = d;
           } else u[j++] = d;);
         *u = c * m;
-        RZ(x = jtreshape(jt, vec(INT, j, u), jtcant2(jt, jtincrem(jt, jtdgrade1(jt, p)), x)));
-        RZ(q = jtnot(jt, irs2(x, jtreshape(jt, vec(INT, AR(x) - 1, 1 + AS(x)), e), 0L, -1L, RMAX, jtmatch)));
+        RZ(x = jtreshape(jt, jtvec(jt, INT, j, u), jtcant2(jt, jtincrem(jt, jtdgrade1(jt, p)), x)));
+        RZ(q = jtnot(jt, jtirs2(jt, x, jtreshape(jt, jtvec(jt, INT, AR(x) - 1, 1 + AS(x)), e), 0L, -1L, RMAX, jtmatch)));
         SPBV(zp, x, x, jtrepeat(jt, q, x));
         RZ(y = jtstitch(
-             jt, jtrepeat(jt, jtsc(jt, c), y), jtreshape(jt, jtv2(jt, c * m, k), jtabase2(jt, vec(INT, k, v), IX(c)))));
+             jt, jtrepeat(jt, jtsc(jt, c), y), jtreshape(jt, jtv2(jt, c * m, k), jtabase2(jt, jtvec(jt, INT, k, v), IX(c)))));
         RZ(p = jtgrade1(jt, jtover(jt, a, jtless(jt, a1, a))));
         if (jtequ(jt, p, IX(AN(p))))
             SPB(zp, i, jtrepeat(jt, q, y))
@@ -425,7 +425,7 @@ jtreaxis(J jt, A a, A w) {
         RE(jtprod(jt, j, u));
         u[j] = k = 1;
         DQ(c - d, --j; u[j] = k *= u[j];);
-        RZ(q = jtpdt(jt, jttake(jt, jtv2(jt, m, d - c), y), vec(INT, c - d, 1 + u)));
+        RZ(q = jtpdt(jt, jttake(jt, jtv2(jt, m, d - c), y), jtvec(jt, INT, c - d, 1 + u)));
         iv = AV(q);
         RZ(p = jtover(jt, jtless(jt, a, a1), jtdaxis(jt, r, a)));
         v  = AV(p);
@@ -500,12 +500,12 @@ jtaxbytes(J jt, A a, A w) {
         b = BAV(p);
         v = c + AS(x);
         DO(AN(p), if (!b[i]) u[j++] = v[i];);
-        RZ(q = irs2(
-             jtcant2(jt, plus(jtsc(jt, c), jtdgrade1(jt, p)), x), jtreshape(jt, vec(INT, j, u), e), 0L, j, j, jtmatch));
+        RZ(q = jtirs2(jt, 
+             jtcant2(jt, plus(jtsc(jt, c), jtdgrade1(jt, p)), x), jtreshape(jt, jtvec(jt, INT, j, u), e), 0L, j, j, jtmatch));
         b = BAV(q);
         n = AN(q);
         DQ(n, if (*b++)-- n;);
-        return axbytes1(AT(e), d, n, j, u);
+        return jtaxbytes1(jt, AT(e), d, n, j, u);
     }
     if (all1(jteps(jt, a1, a))) {
         A y = SPA(wp, i); /* new is subset of old */
@@ -519,7 +519,7 @@ jtaxbytes(J jt, A a, A w) {
         RZ(p = jtover(jt, jtless(jt, a, a1), jtdaxis(jt, r, a)));
         v = AV(p);
         DQ(AN(p), u[j++] = ws[*v++];);
-        return axbytes1(AT(e), d, n, j, u);
+        return jtaxbytes1(jt, AT(e), d, n, j, u);
     }
     return jtaxbytes(jt, a1, jtreaxis(jt, jtover(jt, a, jtless(jt, a1, a)), w));
 } /* bytes required for (2;a)$.w */
@@ -555,8 +555,8 @@ jtaxtally(J jt, A a, A w) {
         b = BAV(p);
         v = c + AS(x);
         DO(AN(p), if (!b[i]) u[j++] = v[i];);
-        RZ(q = irs2(
-             jtcant2(jt, plus(jtsc(jt, c), jtdgrade1(jt, p)), x), jtreshape(jt, vec(INT, j, u), e), 0L, j, j, jtmatch));
+        RZ(q = jtirs2(jt, 
+             jtcant2(jt, plus(jtsc(jt, c), jtdgrade1(jt, p)), x), jtreshape(jt, jtvec(jt, INT, j, u), e), 0L, j, j, jtmatch));
         b = BAV(q);
         n = AN(q);
         DQ(n, if (*b++)-- n;);
@@ -610,7 +610,7 @@ jtunzero(J jt, A w) {
     r  = AR(x) - 1;
     GASPARSE(z, AT(w), 1, AR(w), AS(w));
     zp = PAV(z);
-    RZ(q = jtnot(jt, irs2(x, jtreshape(jt, vec(INT, r, 1 + AS(x)), e), 0L, r, r, jtmatch)));
+    RZ(q = jtnot(jt, jtirs2(jt, x, jtreshape(jt, jtvec(jt, INT, r, 1 + AS(x)), e), 0L, r, r, jtmatch)));
     SPB(zp, x, jtrepeat(jt, q, x));
     SPB(zp, i, jtrepeat(jt, q, SPA(wp, i)));
     SPB(zp, a, jtca(jt, SPA(wp, a)));
@@ -628,7 +628,7 @@ jtsparsep1(J jt, A w) {
         wv = AAV(w);
         ASSERT(1 <= n && n <= 3 || 5 == n, EVLENGTH);
     }
-    return sparse1a(
+    return jtsparse1a(jt, 
       0 < n ? wv[0] : w, 1 < n ? wv[1] : mark, 2 < n ? wv[2] : mark, 3 < n ? wv[3] : mark, 4 < n ? wv[4] : mark);
 }
 
@@ -650,7 +650,7 @@ jtsparsen1(J jt, A w) {
 A
 jtsparse1(J jt, A w) {
     if (!AR(w) || SPARSE & AT(w)) return jtca(jt, w);
-    return sparseit(w, IX(AR(w)), jtselm(jt, AT(w)));
+    return jtsparseit(jt, w, IX(AR(w)), jtselm(jt, AT(w)));
 } /* $. y */
 
 A

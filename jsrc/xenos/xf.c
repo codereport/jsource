@@ -116,9 +116,9 @@ jtjfread(J jt, A w) {
     if (f)
         return 1 == (I)f   ? jtjgets(jt, "\001")
                : 3 == (I)f ? jtrdns(jt, stdin)
-                           : rd(jtvfn(jt, f), 0L, -1L);  // if special file, read it all, possibly with error
+                           : jtrd(jt, jtvfn(jt, f), 0L, -1L);  // if special file, read it all, possibly with error
     RZ(f = jtjope(jt, w, FREAD_O));
-    z = rd(f, 0L, -1L);
+    z = jtrd(jt, f, 0L, -1L);
     fclose(f);  // otherwise open/read/close named file
     return z;
 }
@@ -145,7 +145,7 @@ jtjfwrite(J jt, A a, A w) {
     if (4 == (I)f) { return (U)AN(a) != fwrite(CAV(a), sizeof(C), AN(a), stdout) ? jtjerrno(jt) : a; }
     if (5 == (I)f) { return (U)AN(a) != fwrite(CAV(a), sizeof(C), AN(a), stderr) ? jtjerrno(jt) : a; }
     if (b = !f) RZ(f = jtjope(jt, w, FWRITE_O)) else RE(jtvfn(jt, f));
-    wa(f, 0L, a);
+    jtwa(jt, f, 0L, a);
     if (b)
         fclose(f);
     else
@@ -169,7 +169,7 @@ jtjfappend(J jt, A a, A w) {
     ASSERT(!AN(a) || AT(a) & LIT + C2T + C4T, EVDOMAIN);
     ASSERT(1 >= AR(a), EVRANK);
     if (b = !f) RZ(f = jtjope(jt, w, FAPPEND_O)) else RE(jtvfn(jt, f));
-    wa(f, fsize(f), a);
+    jtwa(jt, f, fsize(f), a);
     if (b)
         fclose(f);
     else
@@ -243,7 +243,7 @@ jtjiread(J jt, A w) {
     F1RANK(1, jtjiread, UNUSED_VALUE);
     RE(f = jtixf(jt, w));
     if (b = !f) RZ(f = jtjope(jt, w, FREAD_O));
-    if (ixin(w, fsize(f), &i, &n)) z = rd(f, i, n);
+    if (jtixin(jt, w, fsize(f), &i, &n)) z = jtrd(jt, f, i, n);
     if (b)
         fclose(f);
     else
@@ -261,7 +261,7 @@ jtjiwrite(J jt, A a, A w) {
     ASSERT(1 >= AR(a), EVRANK);
     RE(f = jtixf(jt, w));
     if (b = !f) RZ(f = jtjope(jt, w, FUPDATE_O));
-    if (ixin(w, fsize(f), &i, 0L)) wa(f, i, a);
+    if (jtixin(jt, w, fsize(f), &i, 0L)) jtwa(jt, f, i, a);
     if (b)
         fclose(f);
     else

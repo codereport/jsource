@@ -503,31 +503,31 @@ INDF(i0neS, SB, SB, AEQ) JNDF(j0eqS, SB, SB, ANE) JNDF(j0neS, SB, SB, AEQ) SUMF(
 // the special case for compounds like +/@e.
 static A
 jti0eps(J jt, A a, A w) {
-    return indexofsub(II0EPS, w, a);
+    return jtindexofsub(jt, II0EPS, w, a);
 }
 static A
 jti1eps(J jt, A a, A w) {
-    return indexofsub(II1EPS, w, a);
+    return jtindexofsub(jt, II1EPS, w, a);
 }
 static A
 jtj0eps(J jt, A a, A w) {
-    return indexofsub(IJ0EPS, w, a);
+    return jtindexofsub(jt, IJ0EPS, w, a);
 }
 static A
 jtj1eps(J jt, A a, A w) {
-    return indexofsub(IJ1EPS, w, a);
+    return jtindexofsub(jt, IJ1EPS, w, a);
 }
 static A
 jtsumeps(J jt, A a, A w) {
-    return indexofsub(ISUMEPS, w, a);
+    return jtindexofsub(jt, ISUMEPS, w, a);
 }
 static A
 jtanyeps(J jt, A a, A w) {
-    return indexofsub(IANYEPS, w, a);
+    return jtindexofsub(jt, IANYEPS, w, a);
 }
 static A
 jtalleps(J jt, A a, A w) {
-    return indexofsub(IALLEPS, w, a);
+    return jtindexofsub(jt, IALLEPS, w, a);
 }
 
 // This table is indexed by m[5 4 3 0]

@@ -299,7 +299,7 @@ jtsbextend(J jt, I n, C *s, UI h, I hi) {
     if (AN(jt->sbh) < 2 * c) { /* extend sbh hash table        */
 
         FULLHASHSIZE(2 * AN(jt->sbh), INTSIZE, 1, 0, p);
-        RZ(x = apvwr(p, -1L, 0L));
+        RZ(x = jtapvwr(jt, p, -1L, 0L));
         hv = AV(x);
         v  = jt->sbuv;
         DO(
@@ -331,7 +331,7 @@ jtsbinsert(J jt, S c2, S c0, I n, C *s, UI h, UI hi) {
     m = jt->sbsn; /* existing # chars in sbs      */
                   // p = (-m)&(c2+(c2>>1));               /* pad for alignment (leaner)   */
     p = c2 & SBC4 ? ((-m) & 3) : c2 & SBC2 ? (m & 1) : 0; /* pad for alignment            */
-    RE(hi = sbextend(n + p, s, h, hi));                   /* extend global tables as req'd*/
+    RE(hi = jtsbextend(jt, n + p, s, h, hi));                   /* extend global tables as req'd*/
     if (c2 == c0)
         memcpy(SBSV(m + p), s, n); /* copy string into sbs         */
     else {
@@ -402,7 +402,7 @@ jtsbprobe(J jt, S c2, I n, C *s, I test) {
             if (test)
                 return -1;
             else
-                return sbinsert(c2, c0, n, s, h, hi);
+                return jtsbinsert(jt, c2, c0, n, s, h, hi);
         } /* new symbol                   */
         u = SBUV(ui);
         if (h == u->h) { /* old symbol, maybe            */
@@ -506,7 +506,7 @@ jtsbunstr(J jt, I q, A w) {
     S c2;
     I i, j, m, wn;
     SB *zv;
-    if (!AN(w)) return vec(SBT, 0L, 0L);
+    if (!AN(w)) return jtvec(jt, SBT, 0L, 0L);
     ASSERT(AT(w) & LIT + C2T + C4T, EVDOMAIN);
     ASSERT(1 >= AR(w), EVRANK);
     wn = AN(w);
@@ -522,13 +522,13 @@ jtsbunstr(J jt, I q, A w) {
         if (q == -1) {
             for (i = j = 1; i <= wn; ++i)
                 if (c == wv[i] || i == wn) {
-                    RE(*zv++ = sbprobe(c2, 4 * (i - j), (C *)(j + wv), 0));
+                    RE(*zv++ = jtsbprobe(jt, c2, 4 * (i - j), (C *)(j + wv), 0));
                     j = i + 1;
                 }
         } else {
             for (i = j = 0; i < wn; ++i)
                 if (c == wv[i]) {
-                    RE(*zv++ = sbprobe(c2, 4 * (i - j), (C *)(j + wv), 0));
+                    RE(*zv++ = jtsbprobe(jt, c2, 4 * (i - j), (C *)(j + wv), 0));
                     j = i + 1;
                 }
         }
@@ -542,13 +542,13 @@ jtsbunstr(J jt, I q, A w) {
         if (q == -1) {
             for (i = j = 1; i <= wn; ++i)
                 if (c == wv[i] || i == wn) {
-                    RE(*zv++ = sbprobe(c2, 2 * (i - j), (C *)(j + wv), 0));
+                    RE(*zv++ = jtsbprobe(jt, c2, 2 * (i - j), (C *)(j + wv), 0));
                     j = i + 1;
                 }
         } else {
             for (i = j = 0; i < wn; ++i)
                 if (c == wv[i]) {
-                    RE(*zv++ = sbprobe(c2, 2 * (i - j), (C *)(j + wv), 0));
+                    RE(*zv++ = jtsbprobe(jt, c2, 2 * (i - j), (C *)(j + wv), 0));
                     j = i + 1;
                 }
         }
@@ -562,13 +562,13 @@ jtsbunstr(J jt, I q, A w) {
         if (q == -1) {
             for (i = j = 1; i <= wn; ++i)
                 if (c == wv[i] || i == wn) {
-                    RE(*zv++ = sbprobe(c2, i - j, j + wv, 0));
+                    RE(*zv++ = jtsbprobe(jt, c2, i - j, j + wv, 0));
                     j = i + 1;
                 }
         } else {
             for (i = j = 0; i < wn; ++i)
                 if (c == wv[i]) {
-                    RE(*zv++ = sbprobe(c2, i - j, j + wv, 0));
+                    RE(*zv++ = jtsbprobe(jt, c2, i - j, j + wv, 0));
                     j = i + 1;
                 }
         }
@@ -598,7 +598,7 @@ jtsbunlit(J jt, C cx, A w) {
         for (i = 0; i < m; ++i) {
             s = wc + wv;
             DQ(wc, if (c != *--s) break;); /* exclude trailing "blanks"    */
-            RE(*zv++ = sbprobe(c2, 4 * ((c != *s) + s - wv), (C *)wv, 0));
+            RE(*zv++ = jtsbprobe(jt, c2, 4 * ((c != *s) + s - wv), (C *)wv, 0));
             wv += wc;
         }
     } else if (c2 & SBC2) {
@@ -606,7 +606,7 @@ jtsbunlit(J jt, C cx, A w) {
         for (i = 0; i < m; ++i) {
             s = wc + wv;
             DQ(wc, if (c != *--s) break;); /* exclude trailing "blanks"    */
-            RE(*zv++ = sbprobe(c2, 2 * ((c != *s) + s - wv), (C *)wv, 0));
+            RE(*zv++ = jtsbprobe(jt, c2, 2 * ((c != *s) + s - wv), (C *)wv, 0));
             wv += wc;
         }
     } else {
@@ -614,7 +614,7 @@ jtsbunlit(J jt, C cx, A w) {
         for (i = 0; i < m; ++i) {
             s = wc + wv;
             DQ(wc, if (c != *--s) break;); /* exclude trailing "blanks"    */
-            RE(*zv++ = sbprobe(c2, (c != *s) + s - wv, wv, 0));
+            RE(*zv++ = jtsbprobe(jt, c2, (c != *s) + s - wv, wv, 0));
             wv += wc;
         }
     }
@@ -638,7 +638,7 @@ jtsbunbox(J jt, A w) {
         c2 = AT(x) & C4T ? SBC4 : AT(x) & C2T ? SBC2 : 0;
         ASSERT(!n || AT(x) & LIT + C2T + C4T, EVDOMAIN);
         ASSERT(1 >= AR(x), EVRANK);
-        RE(*zv++ = sbprobe(c2, c2 & SBC4 ? (4 * n) : c2 & SBC2 ? (2 * n) : n, CAV(x), 0));
+        RE(*zv++ = jtsbprobe(jt, c2, c2 & SBC4 ? (4 * n) : c2 & SBC2 ? (2 * n) : n, CAV(x), 0));
     }
     return z;
 } /* each element of boxed array w is a string */
@@ -693,8 +693,8 @@ jtsbbox(J jt, A w) {
     GATV(z, BOX, n, AR(w), AS(w));
     zv = AAV(z);
     DO(n, u = SBUV(*v++); s = SBSV(u->i); RZ(*zv++ = jtincorp(jt,
-                                                              SBC4 & u->flag   ? vec(C4T, u->n >> 2, s)
-                                                              : SBC2 & u->flag ? vec(C2T, u->n >> 1, s)
+                                                              SBC4 & u->flag   ? jtvec(jt, C4T, u->n >> 2, s)
+                                                              : SBC2 & u->flag ? jtvec(jt, C2T, u->n >> 1, s)
                                                                                : jtstr(jt, u->n, s))););
     return z;
 } /* boxed strings for symbol array w */
@@ -922,8 +922,8 @@ jtsbcheck1(J jt, A una, A sna, A u, A s, A h, A roota, A ff, A gp) {
         ASSERTD(i == hv[j], "u/h mismatch");
         ASSERTD(BLACK == v->color || RED == v->color, "u color");
         RZ(xv[i] = jtincorp(jt,
-                            c2 & SBC4   ? vec(C4T, vn >> 2, vc)
-                            : c2 & SBC2 ? vec(C2T, vn >> 1, vc)
+                            c2 & SBC4   ? jtvec(jt, C4T, vn >> 2, vc)
+                            : c2 & SBC2 ? jtvec(jt, C2T, vn >> 1, vc)
                                         : jtstr(jt, vn, vc)));
         yv[i] = ord = v->order;
         j           = v->parent;
@@ -943,7 +943,7 @@ jtsbcheck1(J jt, A una, A sna, A u, A s, A h, A roota, A ff, A gp) {
 
 static A
 jtsbcheck(J jt, A w) {
-    return sbcheck1(jtsc(jt, jt->sbun),
+    return jtsbcheck1(jt, jtsc(jt, jt->sbun),
                     jtsc(jt, jt->sbsn),
                     jt->sbu,
                     jt->sbs,
@@ -960,7 +960,7 @@ jtsbsetdata(J jt, A w) {
     ASSERTD(1 == AR(w), "arg rank");
     ASSERTD(8 == AN(w), "arg length");
     wv = AAV(w);
-    RZ(sbcheck1(wv[0], wv[1], wv[2], wv[3], wv[4], wv[5], wv[6], wv[7]));
+    RZ(jtsbcheck1(jt, wv[0], wv[1], wv[2], wv[3], wv[4], wv[5], wv[6], wv[7]));
     jt->sbun = AV(wv[0])[0];
     jt->sbsn = AV(wv[1])[0];
     RZ(x = jtca(jt, wv[2]));
@@ -1073,7 +1073,7 @@ jtsbtypeinit(J jt) {
     jt->sbsv = CAV(x);
     jt->sbsn = 0;                          // size too big for GAT; initialization anyway
     FULLHASHSIZE(2000, INTSIZE, 1, 0, p);  // initial allo
-    RZ(x = apvwr(p, -1L, 0L));
+    RZ(x = jtapvwr(jt, p, -1L, 0L));
     jt->sbh  = x;
     jt->sbhv = AV(x);
     GATVR(x, INT, s[0] * c, 2, s);

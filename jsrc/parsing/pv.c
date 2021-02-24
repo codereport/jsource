@@ -15,8 +15,8 @@
 #define CHK3 (!(stack[b].t || stack[1 + b].t || stack[e].t))
 #define CP ds(CCAP)
 #define DCASE(x, y) (6 * (x) + (y))
-#define FGL(v) folk(v->fgh[0], v->fgh[1], ds(CLEFT))
-#define FGR(v) folk(v->fgh[0], v->fgh[1], ds(CRIGHT))
+#define FGL(v) jtfolk(jt, v->fgh[0], v->fgh[1], ds(CLEFT))
+#define FGR(v) jtfolk(jt, v->fgh[0], v->fgh[1], ds(CRIGHT))
 #define LF ds(CLEFT)
 #define RT ds(CRIGHT)
 #define RZZ(exp)               \
@@ -120,11 +120,11 @@ jtvmonad(J jt, I b, I e, TA *stack, A locsyms, I tmonad, I tsubst, TA *ttab, I *
     else {
         v = FAV(y.t);
         if (!(CFORK == v->id && 0 <= tvi(v->fgh[2])))
-            z.t = folk(CP, fs, tine(y.t));
+            z.t = jtfolk(jt, CP, fs, tine(y.t));
         else if (NOUN & AT(v->fgh[0]))
-            z.t = folk(CP, folk(CP, fs, folk(v->fgh[0], v->fgh[1], RT)), tine(v->fgh[2]));
+            z.t = jtfolk(jt, CP, jtfolk(jt, CP, fs, jtfolk(jt, v->fgh[0], v->fgh[1], RT)), tine(v->fgh[2]));
         else
-            z.t = folk(tine(v->fgh[0]), folk(CP, fs, v->fgh[1]), tine(v->fgh[2]));
+            z.t = jtfolk(jt, tine(v->fgh[0]), jtfolk(jt, CP, fs, v->fgh[1]), tine(v->fgh[2]));
     }
     return z;
 }
@@ -176,8 +176,8 @@ jtvdyad(J jt, I b, I e, TA *stack, A locsyms, I tmonad, I tsubst, TA *ttab, I *t
     }
     if (0 > xi && 0 > yi) switch ((xt ? 2 : 0) + (yt ? 1 : 0)) {
             case 0: df2(z.a, x.a, y.a, fs); break;
-            case 1: z.t = folk(x.a, fs, yt); break;
-            case 2: z.t = folk(y.a, sf, xt); break;
+            case 1: z.t = jtfolk(jt, x.a, fs, yt); break;
+            case 2: z.t = jtfolk(jt, y.a, sf, xt); break;
             case 3:
                 xl = xt == LF;
                 xr = xt == RT;
@@ -190,7 +190,7 @@ jtvdyad(J jt, I b, I e, TA *stack, A locsyms, I tmonad, I tsubst, TA *ttab, I *t
                 else if (xr && yr && tmonad)
                     z.t = jtswap(jt, fs);
                 else
-                    z.t = CFORK == u->id && jtprimitive(jt, yt) ? folk(yt, sf, xt) : folk(xt, fs, yt);
+                    z.t = CFORK == u->id && jtprimitive(jt, yt) ? jtfolk(jt, yt, sf, xt) : jtfolk(jt, xt, fs, yt);
         }
     else {
         B b, c;
@@ -215,69 +215,69 @@ jtvdyad(J jt, I b, I e, TA *stack, A locsyms, I tmonad, I tsubst, TA *ttab, I *t
         b   = xj == yj;
         c   = xj == yi;
         switch (DCASE(i, j)) {
-            case DCASE(0, 2): z.t = folk(x.a, fs, yt); break;
-            case DCASE(2, 0): z.t = folk(y.a, sf, xt); break;
-            case DCASE(0, 3): z.t = folk(CP, folk(x.a, fs, FGR(v)), v->fgh[2]); break;
-            case DCASE(0, 4): z.t = folk(CP, folk(x.a, fs, v->fgh[1]), v->fgh[2]); break;
-            case DCASE(1, 2): z.t = folk(xt, fs, yt); break;
+            case DCASE(0, 2): z.t = jtfolk(jt, x.a, fs, yt); break;
+            case DCASE(2, 0): z.t = jtfolk(jt, y.a, sf, xt); break;
+            case DCASE(0, 3): z.t = jtfolk(jt, CP, jtfolk(jt, x.a, fs, FGR(v)), v->fgh[2]); break;
+            case DCASE(0, 4): z.t = jtfolk(jt, CP, jtfolk(jt, x.a, fs, v->fgh[1]), v->fgh[2]); break;
+            case DCASE(1, 2): z.t = jtfolk(jt, xt, fs, yt); break;
             case DCASE(1, 3):
-            case DCASE(1, 4): z.t = folk(xt, folk(LF, fs, FGR(v)), v->fgh[2]); break;
-            case DCASE(2, 1): z.t = folk(xt, fs, yt); break;
-            case DCASE(3, 1): z.t = folk(xt, fs, yt); break;
-            case DCASE(4, 1): z.t = folk(xt, fs, yt); break;
-            case DCASE(2, 2): z.t = folk(xt, fs, yt); break;
+            case DCASE(1, 4): z.t = jtfolk(jt, xt, jtfolk(jt, LF, fs, FGR(v)), v->fgh[2]); break;
+            case DCASE(2, 1): z.t = jtfolk(jt, xt, fs, yt); break;
+            case DCASE(3, 1): z.t = jtfolk(jt, xt, fs, yt); break;
+            case DCASE(4, 1): z.t = jtfolk(jt, xt, fs, yt); break;
+            case DCASE(2, 2): z.t = jtfolk(jt, xt, fs, yt); break;
             case DCASE(2, 3):
-                z.t = b ? folk(CP, folk(RT, fs, FGR(v)), v->fgh[2]) : folk(xt, folk(LF, fs, FGR(v)), v->fgh[2]);
+                z.t = b ? jtfolk(jt, CP, jtfolk(jt, RT, fs, FGR(v)), v->fgh[2]) : jtfolk(jt, xt, jtfolk(jt, LF, fs, FGR(v)), v->fgh[2]);
                 break;
             case DCASE(2, 4):
-                z.t = b ? folk(CP, folk(RT, fs, v->fgh[1]), v->fgh[2]) : folk(xt, folk(LF, fs, FGR(v)), v->fgh[2]);
+                z.t = b ? jtfolk(jt, CP, jtfolk(jt, RT, fs, v->fgh[1]), v->fgh[2]) : jtfolk(jt, xt, jtfolk(jt, LF, fs, FGR(v)), v->fgh[2]);
                 break;
             case DCASE(3, 2):
-                z.t = b ? folk(CP, folk(FGR(u), fs, RT), yt) : folk(u->fgh[2], folk(FGL(u), fs, RT), yt);
+                z.t = b ? jtfolk(jt, CP, jtfolk(jt, FGR(u), fs, RT), yt) : jtfolk(jt, u->fgh[2], jtfolk(jt, FGL(u), fs, RT), yt);
                 break;
             case DCASE(3, 3):
-                z.t = b ? folk(CP, folk(FGR(u), fs, FGR(v)), v->fgh[2])
-                        : folk(u->fgh[2], folk(FGL(u), fs, FGR(v)), v->fgh[2]);
+                z.t = b ? jtfolk(jt, CP, jtfolk(jt, FGR(u), fs, FGR(v)), v->fgh[2])
+                        : jtfolk(jt, u->fgh[2], jtfolk(jt, FGL(u), fs, FGR(v)), v->fgh[2]);
                 break;
             case DCASE(3, 4):
-                z.t = b ? folk(CP, folk(FGR(u), fs, v->fgh[1]), v->fgh[2])
-                        : folk(u->fgh[2], folk(FGL(u), fs, FGR(v)), v->fgh[2]);
+                z.t = b ? jtfolk(jt, CP, jtfolk(jt, FGR(u), fs, v->fgh[1]), v->fgh[2])
+                        : jtfolk(jt, u->fgh[2], jtfolk(jt, FGL(u), fs, FGR(v)), v->fgh[2]);
                 break;
             case DCASE(4, 2):
-                z.t = b ? folk(CP, folk(u->fgh[1], fs, RT), yt) : folk(u->fgh[2], folk(FGL(u), fs, RT), yt);
+                z.t = b ? jtfolk(jt, CP, jtfolk(jt, u->fgh[1], fs, RT), yt) : jtfolk(jt, u->fgh[2], jtfolk(jt, FGL(u), fs, RT), yt);
                 break;
             case DCASE(4, 3):
-                z.t = b ? folk(CP, folk(u->fgh[1], fs, FGR(v)), v->fgh[2])
-                        : folk(u->fgh[2], folk(FGL(u), fs, FGR(v)), v->fgh[2]);
+                z.t = b ? jtfolk(jt, CP, jtfolk(jt, u->fgh[1], fs, FGR(v)), v->fgh[2])
+                        : jtfolk(jt, u->fgh[2], jtfolk(jt, FGL(u), fs, FGR(v)), v->fgh[2]);
                 break;
             case DCASE(4, 4):
-                z.t = b ? folk(CP, folk(u->fgh[1], fs, v->fgh[1]), v->fgh[2])
-                        : folk(u->fgh[2], folk(FGL(u), fs, FGR(v)), v->fgh[2]);
+                z.t = b ? jtfolk(jt, CP, jtfolk(jt, u->fgh[1], fs, v->fgh[1]), v->fgh[2])
+                        : jtfolk(jt, u->fgh[2], jtfolk(jt, FGL(u), fs, FGR(v)), v->fgh[2]);
                 break;
-            case DCASE(0, 5): z.t = folk(v->fgh[0], folk(x.a, fs, v->fgh[1]), v->fgh[2]); break;
+            case DCASE(0, 5): z.t = jtfolk(jt, v->fgh[0], jtfolk(jt, x.a, fs, v->fgh[1]), v->fgh[2]); break;
             case DCASE(2, 5):
-                if (b || c) z.t = folk(v->fgh[0], folk(b ? RT : LF, fs, v->fgh[1]), v->fgh[2]);
+                if (b || c) z.t = jtfolk(jt, v->fgh[0], jtfolk(jt, b ? RT : LF, fs, v->fgh[1]), v->fgh[2]);
                 break;
             case DCASE(3, 5):
             case DCASE(4, 5):
-                if (b || c) z.t = folk(v->fgh[0], folk(b ? FGR(u) : FGL(u), fs, v->fgh[1]), v->fgh[2]);
+                if (b || c) z.t = jtfolk(jt, v->fgh[0], jtfolk(jt, b ? FGR(u) : FGL(u), fs, v->fgh[1]), v->fgh[2]);
                 break;
-            case DCASE(5, 0): z.t = folk(u->fgh[0], folk(y.a, sf, u->fgh[1]), u->fgh[2]); break;
+            case DCASE(5, 0): z.t = jtfolk(jt, u->fgh[0], jtfolk(jt, y.a, sf, u->fgh[1]), u->fgh[2]); break;
             case DCASE(5, 2):
-                if (b || c) z.t = folk(u->fgh[0], folk(u->fgh[1], fs, b ? RT : LF), yt);
+                if (b || c) z.t = jtfolk(jt, u->fgh[0], jtfolk(jt, u->fgh[1], fs, b ? RT : LF), yt);
                 break;
             case DCASE(5, 3):
             case DCASE(5, 4):
-                if (b || c) z.t = folk(u->fgh[0], folk(u->fgh[1], fs, b ? FGR(v) : FGL(v)), v->fgh[2]);
+                if (b || c) z.t = jtfolk(jt, u->fgh[0], jtfolk(jt, u->fgh[1], fs, b ? FGR(v) : FGL(v)), v->fgh[2]);
                 break;
             case DCASE(5, 5):
                 if (xi == yi && xj == yj || xi == yj && xj == yi)
                     if (b || v->fgh[1] == jtswapc(jt, v->fgh[1]))
-                        z.t = folk(u->fgh[0], folk(u->fgh[1], fs, v->fgh[1]), u->fgh[2]);
+                        z.t = jtfolk(jt, u->fgh[0], jtfolk(jt, u->fgh[1], fs, v->fgh[1]), u->fgh[2]);
                     else if (u->fgh[1] == jtswapc(jt, u->fgh[1]))
-                        z.t = folk(v->fgh[0], folk(u->fgh[1], fs, v->fgh[1]), v->fgh[2]);
+                        z.t = jtfolk(jt, v->fgh[0], jtfolk(jt, u->fgh[1], fs, v->fgh[1]), v->fgh[2]);
                     else
-                        z.t = folk(u->fgh[0], folk(u->fgh[1], fs, jtswap(jt, v->fgh[1])), u->fgh[2]);
+                        z.t = jtfolk(jt, u->fgh[0], jtfolk(jt, u->fgh[1], fs, jtswap(jt, v->fgh[1])), u->fgh[2]);
         }
         RZZ(z.t);
     }
@@ -301,7 +301,7 @@ jtvconj(J jt, I b, I e, TA *stack, A locsyms, I tmonad, I tsubst, TA *ttab, I *t
 TA
 jtvfolk(J jt, I b, I e, TA *stack, A locsyms, I tmonad, I tsubst, TA *ttab, I *ttabi, I ttabi0) {
     TA z = {0, 0};
-    if (CHK3) z.a = folk(stack[b].a, stack[1 + b].a, stack[e].a);
+    if (CHK3) z.a = jtfolk(jt, stack[b].a, stack[1 + b].a, stack[e].a);
     return z;
 }
 
@@ -331,7 +331,7 @@ jtvis(J jt, I b, I e, TA *stack, A locsyms, I tmonad, I tsubst, TA *ttab, I *tta
     DQ(j, if (jtequ(jt, t, u->a)) return z; ++u;);
     ea = stack[e].a;
     et = stack[e].t;
-    symbisdel(n, ea, locsyms);
+    jtsymbisdel(jt, n, ea, locsyms);
     ++*ttabi;
     u->a = t;
     u->t = et ? et : jtcfn(jt, ea);
@@ -383,7 +383,7 @@ jtvfinal(J jt, A w, I tmonad, I tsubst, TA *ttab, I *ttabi, I ttabi0) {
             v->fgh[0] = u->fgh[2];  // must be incorped already
         else if (CQQ == u->id && NOUN & AT(u->fgh[0]) && jtequ(jt, ainf, u->fgh[1]))
             v->fgh[0] = u->fgh[0];  // must be incorped already
-        if (NOUN & AT(v->fgh[0])) RZ(w = folk(v->fgh[0], v->fgh[1], v->fgh[2]));
+        if (NOUN & AT(v->fgh[0])) RZ(w = jtfolk(jt, v->fgh[0], v->fgh[1], v->fgh[2]));
     }
     return tine(w);
 }
@@ -446,9 +446,9 @@ jtvtrans(J jt, A w) {
         RZ(y = jtvtokens(jt, w));  // return AM bit0=monad
         I tmonad = AM(y);
         ttabi    = c;
-        RZ(locsyms = stcreate(2, 40, 0L, 0L));  // not necessary to set global pointers
-        symbis(mnuvxynam[5], num(1), locsyms);
-        if (!tmonad) symbis(mnuvxynam[4], num(1), locsyms);
+        RZ(locsyms = jtstcreate(jt, 2, 40, 0L, 0L));  // not necessary to set global pointers
+        jtsymbis(jt, mnuvxynam[5], num(1), locsyms);
+        if (!tmonad) jtsymbis(jt, mnuvxynam[4], num(1), locsyms);
         z = jttparse(jt, y, locsyms, tmonad, 0 == i, ttab, &ttabi, c);
         RESETERR;
         if (i && !z) z = jtcolon(jt, num(4 - tmonad), w);

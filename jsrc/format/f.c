@@ -204,7 +204,7 @@ jtthn(J jt, A w) {
     GATV0(t, LIT, wd * (1 + n), 1);
     tv = CAV(t);
     if (1 >= r) {
-        p = thv(w, AN(t), tv);
+        p = jtthv(jt, w, AN(t), tv);
         ASSERTSYS(p, "thn");
         AN(t) = AS(t)[0] = p;
         z                = t;
@@ -214,7 +214,7 @@ jtthn(J jt, A w) {
         k = bpnoun(AT(w));
         y = tv - wd;
         x = CAV(w) - k;
-        RZ(d = apvwr(c, 1L, 0L));
+        RZ(d = jtapvwr(jt, c, 1L, 0L));
         dv = AV(d);
         DO(m, DO(c, fmt(jt, y += wd, x += k); p = strlen(y); dv[i] = MAX(dv[i], p);););
         --dv[c - 1];
@@ -276,7 +276,7 @@ jtthsb(J jt, A w, A prxthornuni) {
     q     = jt->sbun;
     if (1 >= r) {
         c = n;
-        RZ(d = apvwr(c, 0L, 0L));
+        RZ(d = jtapvwr(jt, c, 0L, 0L));
         dv = AV(d);
         p  = 2 * n - 1;
         DO(c, p += dv[i] = sbtou8size(jt, SBUV(*x++), 0););
@@ -292,15 +292,15 @@ jtthsb(J jt, A w, A prxthornuni) {
             C *zv1;  // jprx flag, set when result going to display
             c = s[r - 1];
             m = n / c;
-            RZ(d = apvwr(c, 0L, 0L));
+            RZ(d = jtapvwr(jt, c, 0L, 0L));
             dv = AV(d);  // col max byte
-            RZ(dw = apvwr(c, 0L, 0L));
+            RZ(dw = jtapvwr(jt, c, 0L, 0L));
             dwv = AV(dw);  // col max display width
-            RZ(dd = apvwr(c, 0L, 0L));
+            RZ(dd = jtapvwr(jt, c, 0L, 0L));
             ddv = AV(dd);  // col max element byte - display width
-            RZ(e = apvwr(n, 0L, 0L));
+            RZ(e = jtapvwr(jt, n, 0L, 0L));
             ev = AV(e);  // element byte
-            RZ(ew = apvwr(n, 0L, 0L));
+            RZ(ew = jtapvwr(jt, n, 0L, 0L));
             ewv = AV(ew);  // element display width
             j   = 0;
             DO(m,
@@ -338,7 +338,7 @@ jtthsb(J jt, A w, A prxthornuni) {
         } else {
             c = s[r - 1];
             m = n / c;
-            RZ(d = apvwr(c, 0L, 0L));
+            RZ(d = jtapvwr(jt, c, 0L, 0L));
             dv = AV(d);
             DO(m, DO(c, p = sbtou8size(jt, SBUV(*x++), 0); dv[i] = MAX(dv[i], p);););
             p = -1;
@@ -416,7 +416,7 @@ jtthxqe(J jt, A w) {
     m = n / c;
     GATV0(t, BOX, n, 1);
     tv = AAV(t);
-    RZ(d = apvwr(c, 1L, 0L));
+    RZ(d = jtapvwr(jt, c, 1L, 0L));
     dv = AV(d);
     v  = tv;
     switch (CTTZ(AT(w))) {
@@ -457,11 +457,11 @@ jtrc(J jt, A w, A *px, A *py, I *t) {
     v = AAV(w);
     // xn = #rows in 2-cell of joined table, x=vector of (xn+1) 0s, xv->data for vector
     SHAPEN(w, r - 2, xn);
-    RZ(*px = x = apvwr(xn, 0L, 0L));
+    RZ(*px = x = jtapvwr(jt, xn, 0L, 0L));
     xv = AV(x);
     // yn = #rows in 2-cell of joined table, y=vector of (yn+1) 0s, v->data for vector
     SHAPEN(w, r - 1, yn);
-    RZ(*py = y = apvwr(yn, 0L, 0L));
+    RZ(*py = y = jtapvwr(jt, yn, 0L, 0L));
     yv = AV(y);
     // for each atom of w, include height/width in the appropriate row/column cells, and take maximum of types
     DQ(
@@ -549,18 +549,18 @@ jtfminit(J jt, I m, I ht, I wd, A x, A y, C *zv, I cw) {
     // First, install the characters for cells containing data.  We start in the first
     // row of the result, even though this can never keep these characters.
     // Then we propagate this row through all rows except the last.
-    fram(9L, yn, yv, zv, cw);
+    jtfram(jt, 9L, yn, yv, zv, cw);
     u = zv;
     DQ(ht - 2, memcpy(u += wd, zv, wd););
     // Fill in the first interior divider row, whose row index is the height of the first row
     // Then copy this row over all the other interior-divider rows, xn-1 times, which
     //  finishes by writing over the bottom row of the result
-    fram(3L, yn, yv, u = v = zv + wd * *xv, cw);
+    jtfram(jt, 3L, yn, yv, u = v = zv + wd * *xv, cw);
     DO(xn - 1, memcpy(u += wd * xv[1 + i], v, wd););
     // Install the first row, overwriting the data row first put there
-    fram(0L, yn, yv, zv, cw);
+    jtfram(jt, 0L, yn, yv, zv, cw);
     // Install the last row, overwriting the interior-divider row first copied there
-    fram(6L, yn, yv, zv + p - wd, cw);
+    jtfram(jt, 6L, yn, yv, zv + p - wd, cw);
     // First 2-cell is complete.  Copy it over all the others
     u = zv;
     DQ(m - 1, memcpy(u += p, zv, p););
@@ -656,7 +656,7 @@ jtenframe(J jt, A w) {
     // Find the positions of the cell boundaries within each 2-cell of the
     // result. x and y are lists, where x[i] and y[j] give the height/width of cell
     // (i,j) of the result 2-cell. This height/width includes the boxing char
-    RE(rc(w, &x, &y, &t));
+    RE(jtrc(jt, w, &x, &y, &t));
     n  = AN(w);
     wr = MAX(2, AR(w));  // n=#atoms of w, wr=rank of result (2 >. rank of w)
     // Calculate height of result as 1 + sum of row heights.  The 1 is for the final boxing character.
@@ -684,9 +684,9 @@ jtenframe(J jt, A w) {
     zv  = CAV(z);                // zv->result area
     wdb = wd * (t = bpnoun(t));  // Replace t with the length of a character of t; get length of line in bytes
     // Install the boxing characters in each 2-cell of the result
-    fminit(m, ht, wdb, x, y, zv, t);
+    jtfminit(jt, m, ht, wdb, x, y, zv, t);
     // Insert the data for each atom into the result
-    fmfill(p, q, wdb, w, x, y, zv, t);
+    jtfmfill(jt, p, q, wdb, w, x, y, zv, t);
     return z;
 }
 
@@ -734,7 +734,7 @@ jtmat(J jt, A w) {
     x        = CAV(z);
     // If the result has gaps, fill the entire result area with fills
     // (this could be better: just copy the gap, as part of ENGAP; check k above in case of leading unit axes)
-    if (2 < r) fillv(t, zn, x);
+    if (2 < r) jtfillv(jt, t, zn, x);
     // for each 2-cell, leave a gap if required, then copy in the 2-cell.  Change c to size in bytes; qc=size of 2-cell
     if (zn) {
         c <<= bplg(t);
@@ -759,7 +759,7 @@ static EVERYFS(matth1self, 0, jtmatth1, 0, VFLAGNONE)
     // Format the contents of each box; form into a table.  every returns an array of boxes,
     // with the same shape as w, where the contents have been replaced by a table of characters
     // Then call enframe to assemble all the tables into the result table
-    RZ(z = jtenframe(jt, every2(w, prxthornuni, (A)&matth1self)));
+    RZ(z = jtenframe(jt, jtevery2(jt, w, prxthornuni, (A)&matth1self)));
     // Go through each byte of the result, replacing ASCII codes 0, 8, 9, 10, and 13
     // (NUL, BS, TAB, LF, CR) with space
     // Three versions of replacement, depending on datatype of the array
@@ -904,7 +904,7 @@ jtthorn1main(J jt, A w, A prxthornuni) {
 
 // entry point to allow C2T result from thorn1.  But always pass byte arguments unchanged
 // This will enable null insertion/removal for CJK, but that's OK since the result goes to display
-// This is called only from jprx()
+// This is called only from jtjprx(jt, )
 A
 jtthorn1u(J jt, A w) {
     A z;
@@ -1382,7 +1382,7 @@ jtoutstr(J jt, A a, A w) {
     ASSERT(0 <= v[1], EVDOMAIN);
     ASSERT(0 <= v[2], EVDOMAIN);
     ASSERT(0 <= v[3], EVDOMAIN);
-    return jprx(v[0], v[1], v[2], v[3], w);
+    return jtjprx(jt, v[0], v[1], v[2], v[3], w);
 }
 
 // w is a noun.  Convert it to a UTF-8 string and write it to the console
@@ -1391,7 +1391,7 @@ jtjpr1(J jt, A w) {
     PROLOG(0002);
     A z;
     // convert the character array to a null-terminated UTF-8 string
-    RZ(z = jprx(jt->outeol, jt->outmaxlen, jt->outmaxbefore, jt->outmaxafter, w));
+    RZ(z = jtjprx(jt, jt->outeol, jt->outmaxlen, jt->outmaxbefore, jt->outmaxafter, w));
     // write string to stdout, calling it a 'formatted array' unless otherwise overridden
     if (AN(z)) {
         ASSERTSYS(!CAV(z)[AN(z)], "jtjpr1 trailing null byte");

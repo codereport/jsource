@@ -122,7 +122,7 @@ static const UI4 ptcol[11] = {
 
 static PSTK *
 jtpfork(J jt, PSTK *stack) {
-    A y = folk(stack[1].a, stack[2].a, stack[3].a);  // create the fork
+    A y = jtfolk(jt, stack[1].a, stack[2].a, stack[3].a);  // create the fork
     RECURSIVERESULTSCHECK
     RZ(y);  // if error, return 0 stackpointer
     stack[3].t = stack[1].t;
@@ -156,7 +156,7 @@ jtpparen(J jt, PSTK *stack) {
 // routine to open value or convert it to AR
 static A
 jtisf(J jt, A a, A w, A self) {
-    RZ(symbis(jtonm(jt, a), CALL1(FAV(self)->valencefns[0], w, 0L), ABACK(self)));
+    RZ(jtsymbis(jt, jtonm(jt, a), CALL1(FAV(self)->valencefns[0], w, 0L), ABACK(self)));
     return num(0);
 }
 
@@ -171,7 +171,7 @@ jtis(J jt, PSTK *stack) {
     jt->asgn = stack[0].t == 1;  // if the word number of the lhs is 1, it's either (noun)=: or name=: or 'value'=: at
                                  // the beginning of the line; so indicate
     if (jt->assignsym != 0) {
-        symbis(n, v, (A)asgt);
+        jtsymbis(jt, n, v, (A)asgt);
     }  // Assign to the known name.  Pass in the type of the ASGN
     else {
         // Point to the block for the assignment; fetch the assignment pseudochar (=. or =:); choose the starting symbol
@@ -188,11 +188,11 @@ jtis(J jt, PSTK *stack) {
                 ASSERT((-(AR(v)) & (-(AN(n) ^ AS(v)[0]))) >= 0, EVLENGTH);  // v is atom, or length matches n
                 if (((AR(v) ^ 1) + (~AT(v) & BOX)) == 0) {
                     A *nv = AAV(n), *vv = AAV(v);
-                    DO(AN(n), symbis(nv[i], vv[i], symtab);)
+                    DO(AN(n), jtsymbis(jt, nv[i], vv[i], symtab);)
                 }  // v is boxed list
                 else {
                     A *nv = AAV(n);
-                    DO(AN(n), symbis(nv[i], jtope(jt, AR(v) ? jtfrom(jt, jtsc(jt, i), v) : v), symtab);)
+                    DO(AN(n), jtsymbis(jt, nv[i], jtope(jt, AR(v) ? jtfrom(jt, jtsc(jt, i), v) : v), symtab);)
                 }  // repeat atomic v for each name, otherwise select item.  Open in either case
                 goto retstack;
             }
@@ -216,7 +216,7 @@ jtis(J jt, PSTK *stack) {
         }
         // if simple assignment to a name (normal case), do it
         if ((NAME & AT(n)) != 0) {
-            symbis(n, v, symtab);
+            jtsymbis(jt, n, v, symtab);
         } else {
             // computed name(s)
             ASSERT(AN(n) || (AR(v) && !AS(v)[0]), EVILNAME);  // error if namelist empty or multiple assignment to no
@@ -224,7 +224,7 @@ jtis(J jt, PSTK *stack) {
             // otherwise, if it's an assignment to an atomic computed name, convert the string to a name and do the
             // single assignment
             if (!AR(n))
-                symbis(jtonm(jt, n), v, symtab);
+                jtsymbis(jt, jtonm(jt, n), v, symtab);
             else {
                 // otherwise it's multiple assignment (could have just 1 name to assign, if it is AR assignment).
                 // Verify rank 1.  For each lhs-rhs pair, do the assignment (in jtisf).
@@ -260,7 +260,7 @@ jtparse(J jt, A w) {
     if (!w) return 0;
     A *queue = AAV(w);
     I m      = AN(w);                    // addr and length of sentence
-    RZ(deba(DCPARSE, queue, (A)m, 0L));  // We don't need a new stack frame if there is one already and debug is off
+    RZ(jtdeba(jt, DCPARSE, queue, (A)m, 0L));  // We don't need a new stack frame if there is one already and debug is off
     z = jtparsea(jt, queue, m);
     jtdebz(jt);
     return z;

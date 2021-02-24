@@ -213,7 +213,7 @@ jtpolymult(J jt, A a, A w, A self) {
                 VA2 adocv;
                 VARPS adocvsum;
                 b     = 1;
-                adocv = var(ds(CSTAR), at, wt);
+                adocv = jtvar(jt, ds(CSTAR), at, wt);
                 varps(adocvsum, FAV(f)->fgh[0], wt, 0);  // get sum routine from f/, which is +/
                 GATV0(a1, INT, m, 1);
                 aa = AV(a1);
@@ -272,7 +272,7 @@ jtkeysp(J jt, A a, A w, A self) {
     DO(AN(x), if (k <= u[i]) break; if (u[i] == v[i])++ j;);
     RZ(b = ne(e, x));
     RZ(by = jtrepeat(jt, b, y));
-    RZ(x = key(jtrepeat(jt, b, x), jtfrom(jt, jtravel(jt, by), w), self));
+    RZ(x = jtkey(jt, jtrepeat(jt, b, x), jtfrom(jt, jtravel(jt, by), w), self));
     GASPARSE(q, SB01, 1, 1, (I *)0);
     *AS(q) = n; /* q=: 0 by}1$.n;0;1 */
     p      = PAV(q);
@@ -292,12 +292,12 @@ jtkey(J jt, A a, A w, A self) {
     PROLOG(0009);
     A ai, z = 0;
     I nitems;
-    if ((SPARSE & AT(a)) != 0) return keysp(a, w, self);  // if sparse, go handle it
+    if ((SPARSE & AT(a)) != 0) return jtkeysp(jt, a, w, self);  // if sparse, go handle it
     {
         I t2;
         ASSERT(SETIC(a, nitems) == SETIC(w, t2), EVLENGTH);
     }                                    // verify agreement.  nitems is # items of a
-    RZ(ai = indexofsub(IFORKEY, a, a));  // self-classify the input using ct set before this verb
+    RZ(ai = jtindexofsub(jt, IFORKEY, a, a));  // self-classify the input using ct set before this verb
     // indexofsub has 2 returns: most of the time, it returns a normal i.-family result, but with each slot holding the
     // index PLUS the number of values mapped to that index.  If processing determines that small-range lookup would be
     // best, indexofsub doesn't do it, but instead returns a block giving the size, min value, and range. We then
@@ -346,7 +346,7 @@ jtkey(J jt, A a, A w, A self) {
                                             // which differ in type of freq result
                 A accfn = FAV(FAV(self)->fgh[0])->fgh[0];
                 accfn   = keyslashfn == 3 ? ds(CPLUS) : accfn;
-                adocv   = var(
+                adocv   = jtvar(jt, 
                   accfn, AT(w), zt);  // get dyadic action routine for f out of f//. or (+/%#)/. for the given arguments
             }
 
@@ -904,7 +904,7 @@ jtkeybox(J jt, A a, A w, A self) {
     }
 
     // Note: self is invalid from here on
-    RZ(ai = indexofsub(IFORKEY, a, a));  // self-classify the input using ct set before this verb
+    RZ(ai = jtindexofsub(jt, IFORKEY, a, a));  // self-classify the input using ct set before this verb
     // indexofsub has 2 returns: most of the time, it returns a normal i.-family result, but with each slot holding the
     // index PLUS the number of values mapped to that index.  If processing determines that small-range lookup would be
     // best, indexofsub doesn't do it, but instead returns a block giving the size, min value, and range. We then
@@ -1085,7 +1085,7 @@ jtkeytallysp(J jt, A w) {
     DO(c, if (k <= u[i]) break; if (u[i] == v[i])++ j;);
     RZ(b = ne(e, x));
     RZ(x = jtrepeat(jt, b, x));
-    RZ(x = keytally(x, x, mark));
+    RZ(x = jtkeytally(jt, x, x, mark));
     u = AV(x);
     d = AN(x);
     GATV0(z, INT, 1 + d, 1);
@@ -1106,7 +1106,7 @@ jtkeytally(J jt, A a, A w, A self) {
     at = AT(a);
     ASSERT(n == SETIC(w, k), EVLENGTH);
     if (!AN(a))
-        return vec(INT, !!n, &AS(a)[0]);  // handle case of empties - a must have rank, so use AS[0] as  proxy for n
+        return jtvec(jt, INT, !!n, &AS(a)[0]);  // handle case of empties - a must have rank, so use AS[0] as  proxy for n
     if ((at & SPARSE) != 0) return jtkeytallysp(jt, a);
     if ((-n & SGNIF(at, B01X) & (AR(a) - 2)) < 0) {
         B *b = BAV(a);
@@ -1114,7 +1114,7 @@ jtkeytally(J jt, A a, A w, A self) {
         return BETWEENO(k, 1, n) ? jtv2(jt, *b ? k : n - k, *b ? n - k : k) : jtvci(jt, n);
     }                                    // nonempty rank<2 boolean a, just add the 1s
     A ai;                                // result from classifying a
-    RZ(ai = indexofsub(IFORKEY, a, a));  // self-classify the input using ct set before this verb
+    RZ(ai = jtindexofsub(jt, IFORKEY, a, a));  // self-classify the input using ct set before this verb
     // indexofsub has 2 returns: most of the time, it returns a normal i.-family result, but with each slot holding the
     // index PLUS the number of values mapped to that index.  If processing determines that small-range lookup would be
     // best, indexofsub doesn't do it, but instead returns a block giving the size, min value, and range. We then
@@ -1199,7 +1199,7 @@ jtkeyheadtally(J jt, A a, A w, A self) {
     ASSERT((-n & ((wt & NUMERIC + VERB) - 1)) >= 0, EVDOMAIN);  // OK if n=0 or numeric/i.@# w
     if ((((SPARSE & AT(a)) - 1) & ((I)AR(w) - 2) & (-n) & (-AN(a))) >= 0)
         return wt & VERB ? jthook1cell(jt, a, w)
-                         : key(a, w, self);  // if sparse or w has rank>1 or a has no cells or no atoms, revert, to
+                         : jtkey(jt, a, w, self);  // if sparse or w has rank>1 or a has no cells or no atoms, revert, to
                                              // monad/dyad.  w=self for monad
     av = AV(a);
     f  = FAV(f)->fgh[0];
@@ -1236,7 +1236,7 @@ jtkeyheadtally(J jt, A a, A w, A self) {
     // for other types of a, we handle it quickly only if w is B01/INT/FL or i.@# which has type of VERB
     if (wt & B01 + INT + FL + VERB) {
         A ai;                                // result from classifying a
-        RZ(ai = indexofsub(IFORKEY, a, a));  // self-classify the input using ct set before this verb
+        RZ(ai = jtindexofsub(jt, IFORKEY, a, a));  // self-classify the input using ct set before this verb
         // indexofsub has 2 returns: most of the time, it returns a normal i.-family result, but with each slot holding
         // the index PLUS the number of values mapped to that index.  If processing determines that small-range lookup
         // would be best, indexofsub doesn't do it, but instead returns a block giving the size, min value, and range.
@@ -1396,7 +1396,7 @@ jtkeyheadtally(J jt, A a, A w, A self) {
     } else {  // no special processing
         RZ(q = jtindexof(jt, a, a));
         x = jtrepeat(jt, eq(q, IX(n)), w);
-        y = keytally(q, q, 0L);
+        y = jtkeytally(jt, q, q, 0L);
         z = jtstitch(jt, b ? x : y, b ? y : x);  // (((i.~a) = i. # a) # w) ,. (#/.~ i.~ a)   for ({. , #)
     }
     EPILOG(z);
@@ -1452,5 +1452,5 @@ jtsldot(J jt, A w) {
             // otherwise (including keymean) fall through to...
         default: f2 = jtkey; flag |= (FAV(w)->flag & VASGSAFE);  // pass through ASGSAFE.
     }
-    return fdef(0, CSLDOT, VERB, f1, f2, w, 0L, h, flag, RMAX, RMAX, RMAX);
+    return jtfdef(jt, 0, CSLDOT, VERB, f1, f2, w, 0L, h, flag, RMAX, RMAX, RMAX);
 }

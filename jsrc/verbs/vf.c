@@ -22,7 +22,7 @@ jtsetfv(J jt, A a, A w) {
         jt->fillv = CAV(q);                              // jt->fillv points to the fill atom
     } else {
         if (!t) t = AT(w);
-        fillv(t, 1L, jt->fillv0);
+        jtfillv(jt, t, 1L, jt->fillv0);
         jt->fillv = jt->fillv0;
     }  // empty fill.  move 1 std fill atom to fillv0 and point jt->fillv at it
     return TYPESEQ(t, AT(w)) ? w : jtcvt(jt, t, w);  // note if w is boxed and nonempty this won't change it
@@ -32,7 +32,7 @@ A
 jtfiller(J jt, A w) {
     A z;
     GA(z, AT(w), 1, 0, 0);
-    fillv(AT(w), 1L, CAV(z));
+    jtfillv(jt, AT(w), 1L, CAV(z));
     return z;
 }
 
@@ -94,7 +94,7 @@ jtrotsp(J jt, A a, A w) {
     RESETRANK;
     if (1 < acr || af) return df2(z, a, w, jtqq(jt, jtqq(jt, ds(CROT), jtv2(jt, 1L, RMAX)), jtv2(jt, acr, wcr)));
     if (!wcr && 1 < p) {
-        RZ(w = jtreshape(jt, jtover(jt, shape(jt, w), apv(p, 1L, 0L)), w));
+        RZ(w = jtreshape(jt, jtover(jt, shape(jt, w), jtapv(jt, p, 1L, 0L)), w));
         wr = wcr = p;
     }
     ASSERT(!wcr || p <= wcr, EVLENGTH);
@@ -128,7 +128,7 @@ jtrotsp(J jt, A a, A w) {
           bx = 1;
           break;
       });
-    RZ(x = !bx ? jtca(jt, SPA(wp, x)) : irs2(vec(INT, wr - n, n + qv), SPA(wp, x), 0L, 1L, -1L, jtrotate));
+    RZ(x = !bx ? jtca(jt, SPA(wp, x)) : jtirs2(jt, jtvec(jt, INT, wr - n, n + qv), SPA(wp, x), 0L, 1L, -1L, jtrotate));
     if (by) {
         DO(
           n, if (k = qv[i]) {
@@ -241,7 +241,7 @@ jtrotate(J jt, A a, A w) {
                         jtv2(jt, acr, wcr)));  // if multiple a-lists per cell, or a has frame and (a cell is not an
                                                // atom or w has frame) handle rank by using " for it
     if (((wcr - 1) & (1 - p)) < 0) {
-        RZ(w = jtreshape(jt, apip(shape(jt, w), apv(p, 1L, 0L)), w));
+        RZ(w = jtreshape(jt, apip(shape(jt, w), jtapv(jt, p, 1L, 0L)), w));
         wr = wcr = p;
     }  // if cell is an atom, extend it up to #axes being rotated   !wcr && p>1
     ASSERT(((-wcr) & (wcr - p)) >= 0, EVLENGTH);  // !wcr||p<=wcr  !(wcr&&p>wcr)
@@ -257,14 +257,14 @@ jtrotate(J jt, A a, A w) {
     PROD(m, wf, s);
     PROD(d, wr - wf - 1, s + wf + 1);
     SETICFR(w, wf, wcr, n);  // m=#cells of w, n=#items per cell  d=#atoms per item of cell
-    rot(m, d, n, k, 1 >= p ? AN(a) : 1L, av, u, v);
+    jtrot(jt, m, d, n, k, 1 >= p ? AN(a) : 1L, av, u, v);
     if (1 < p) {
         GA(y, AT(w), wn, wr, s);
         u = CAV(y);
         b = 0;
         s += wf;
         DO(p - 1, m *= n; n = *++s; PROD(d, wr - wf - i - 2, s + 1);
-           rot(m, d, n, k, 1L, av + i + 1, b ? u : v, b ? v : u);
+           jtrot(jt, m, d, n, k, 1L, av + i + 1, b ? u : v, b ? v : u);
            b ^= 1;);  // s has moved past the frame
         z = b ? y : z;
     }
@@ -303,7 +303,7 @@ jtrevsp(J jt, A w) {
     if (!r)
         RZ(x = jtca(jt, x))
     else if (k >= n)
-        RZ(x = irs2(apv(m, m - 1, -1L), x, 0L, 1L, wr - k, jtfrom))
+        RZ(x = jtirs2(jt, jtapv(jt, m, m - 1, -1L), x, 0L, 1L, wr - k, jtfrom))
     else {
         v = k + AV(y);
         c = m - 1;
@@ -382,7 +382,7 @@ jtreshapesp0(J jt, A a, A w, I wf, I wcr) {
     wr = AR(w);
     ws = AS(w);
     wp = PAV(w);
-    RZ(b = bfi(wr, SPA(wp, a), 1));
+    RZ(b = jtbfi(jt, wr, SPA(wp, a), 1));
     RZ(e = jtca(jt, SPA(wp, e)));
     x = SPA(wp, x);
     y = SPA(wp, i);
@@ -415,7 +415,7 @@ jtreshapesp0(J jt, A a, A w, I wf, I wcr) {
        ++pv;
        v += c;);
     SPB(zp, i, jtrepeat(jt, p, jttaker(jt, d, y)));
-    SPB(zp, x, irs2(mtv, jtrepeat(jt, p, x), 0L, 1L, wcr - (c - d), jtreshape));
+    SPB(zp, x, jtirs2(jt, mtv, jtrepeat(jt, p, x), 0L, 1L, wcr - (c - d), jtreshape));
     return z;
 } /* '' ($,)"wcr w for sparse w */
 
@@ -436,11 +436,11 @@ jtreshapesp(J jt, A a, A w, I wf, I wcr) {
     wz = 0;
     DO(wcr, if (!ws[wf + i]) wz = 1;);
     ASSERT(az || !wz, EVLENGTH);
-    if (!an) return reshapesp0(a, w, wf, wcr);
+    if (!an) return jtreshapesp0(jt, a, w, wf, wcr);
     wp = PAV(w);
     a1 = SPA(wp, a);
     c  = AN(a1);
-    RZ(b = bfi(wr, a1, 1));  // b=bitmask, length wr, with 1s for each value in a1
+    RZ(b = jtbfi(jt, wr, a1, 1));  // b=bitmask, length wr, with 1s for each value in a1
     RZ(e = jtca(jt, SPA(wp, e)));
     x = SPA(wp, x);
     y = SPA(wp, i);
@@ -452,7 +452,7 @@ jtreshapesp(J jt, A a, A w, I wf, I wcr) {
           m = 1;
           break;
       });
-    if (m || an < wcr) return reshapesp(a, IRS1(w, 0L, wcr, jtravel, z), wf, 1L);
+    if (m || an < wcr) return jtreshapesp(jt, a, IRS1(w, 0L, wcr, jtravel, z), wf, 1L);
     ASSERT(!jt->fill, EVDOMAIN);
     GASPARSE(z, AT(w), 1, wf + an, ws);
     MCISH(wf + AS(z), av, an);
@@ -489,7 +489,7 @@ jtreshapesp(J jt, A a, A w, I wf, I wcr) {
               v = v0;
               m += ws[wf];
           });
-        SPB(zp, i, jtstitch(jt, jtabase2(jt, vec(INT, 1 + d, av), t), jtreitem(jt, jtsc(jt, q), jtdropr(jt, 1L, y))));
+        SPB(zp, i, jtstitch(jt, jtabase2(jt, jtvec(jt, INT, 1 + d, av), t), jtreitem(jt, jtsc(jt, q), jtdropr(jt, 1L, y))));
         SPB(zp, x, jtreitem(jt, jtsc(jt, q), x));
     } else { /* dense  */
         GATV0(t, INT, an, 1);
@@ -499,7 +499,7 @@ jtreshapesp(J jt, A a, A w, I wf, I wcr) {
         j = wf;
         DO(wcr, if (!b[j++]) v[m++] = av[i + d];);
         SPB(zp, i, jtca(jt, y));
-        SPB(zp, x, irs2(vec(INT, m, v), x, 0L, 1L, wcr - (an - m), jtreshape));
+        SPB(zp, x, jtirs2(jt, jtvec(jt, INT, m, v), x, 0L, 1L, wcr - (an - m), jtreshape));
     }
     return z;
 } /* a ($,)"wcr w for sparse w and scalar or vector a */
@@ -529,7 +529,7 @@ jtreshape(J jt, A a, A w) {
     RZ(a = jtvip(jt, a));
     r = AN(a);
     u = AV(a);  // r=length of a   u->values of a
-    if ((SPARSE & AT(w)) != 0) { return reshapesp(a, w, wf, wcr); }
+    if ((SPARSE & AT(w)) != 0) { return jtreshapesp(jt, a, w, wf, wcr); }
     wn = AN(w);
     PRODX(m, r, u, 1)
     CPROD(c, wf, ws);

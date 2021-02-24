@@ -116,7 +116,7 @@ jtxstd(J jt, X w) {
     j = n - 1;
     while (j && !zv[j]) --j;
     ++j;
-    return j == n ? z : vec(INT, j, zv);
+    return j == n ? z : jtvec(jt, INT, j, zv);
 } /* convert to standard form */
 
 I
@@ -235,7 +235,7 @@ jtxtymes(J jt, X a, X w) {
                 }
             }
     }
-    return v[n - 1] ? z : vec(INT, v[n - 2] ? n - 1 : 1, v);
+    return v[n - 1] ? z : jtvec(jt, INT, v[n - 2] ? n - 1 : 1, v);
 }
 
 static X
@@ -296,7 +296,7 @@ jtxdivrem(J jt, X a, X w, X *qz, X *rz) {
     }
     if (1 < n && !qv[n - 1]) AN(q) = AS(q)[0] = n - 1;
     *qz = q;
-    *rz = vec(INT, 1L, &r);
+    *rz = jtvec(jt, INT, 1L, &r);
     return 1;
 } /* (<.a%w),(w|a) where w has a single "digit" and is nonzero */
 
@@ -322,7 +322,7 @@ jtxdiv(J jt, X a, X w, I mode) {
     if (di) return iv0;
     if (1 == wn && d) {
         I *v;
-        RZ(xdivrem(a, w, &q, &r));  // must not return virtual
+        RZ(jtxdivrem(jt, a, w, &q, &r));  // must not return virtual
         if (!AV(r)[0] || mode == XMFLR) return q;
         ASSERT(mode == XMCEIL, EWRAT);
         v = AV(q);
@@ -330,21 +330,21 @@ jtxdiv(J jt, X a, X w, I mode) {
         return XBASE > *v ? q : jtxstd(jt, q);
     }
     switch ((0 <= c ? 2 : 0) + (I)(0 <= d)) {
-        case 0: return xdiv(jtnegate(jt, a), jtnegate(jt, w), mode);
-        case 1: return jtnegate(jt, xdiv(jtnegate(jt, a), w, mode == XMFLR ? XMCEIL : mode == XMCEIL ? XMFLR : mode));
-        case 2: return jtnegate(jt, xdiv(a, jtnegate(jt, w), mode == XMFLR ? XMCEIL : mode == XMCEIL ? XMFLR : mode));
+        case 0: return jtxdiv(jt, jtnegate(jt, a), jtnegate(jt, w), mode);
+        case 1: return jtnegate(jt, jtxdiv(jt, jtnegate(jt, a), w, mode == XMFLR ? XMCEIL : mode == XMCEIL ? XMFLR : mode));
+        case 2: return jtnegate(jt, jtxdiv(jt, a, jtnegate(jt, w), mode == XMFLR ? XMCEIL : mode == XMCEIL ? XMFLR : mode));
         default:
             if (1 != (e = jtxcompare(jt, a, w))) {
                 ASSERT(!(c && e && mode == XMEXACT), EWRAT);
                 d = c && (mode || !e);
-                return vec(INT, 1L, &d);
+                return jtvec(jt, INT, 1L, &d);
             }
             if (1 < an) c = av[an - 2] + c * XBASE;
             if (1 < wn) d = wv[wn - 2] + d * XBASE;
             e    = c >= d ? c / d : (I)((XBASE * (D)c) / d);
             u[0] = e % XBASE;
             u[1] = u1 = e / XBASE;
-            RZ(q = vec(INT, u1 ? 2L : 1L, u));
+            RZ(q = jtvec(jt, INT, u1 ? 2L : 1L, u));
             RZ(y = jtxtymes(jt, w, q));
             yn = AN(y);
             e  = AV(y)[yn - 1];
@@ -355,7 +355,7 @@ jtxdiv(J jt, X a, X w, I mode) {
                 q = jtshift10(jt, s, q);
                 y = jtshift10(jt, s, y);
             }
-            A z = jtxplus(jt, q, xdiv(jtxminus(jt, a, y), w, mode));
+            A z = jtxplus(jt, q, jtxdiv(jt, jtxminus(jt, a, y), w, mode));
             EPILOGNOVIRT(z);
     }
 } /* <.a%w (mode=XMFLR) or >.a%w (mode=XMCEIL) or a%w (mode=XMEXACT) */
@@ -371,7 +371,7 @@ jtxrem(J jt, X a, X w) {
     if (c == XPINF) return 0 <= d ? w : a;
     if (c == XNINF) return 0 >= d ? w : a;
     if (1 == AN(a) && c) {
-        RZ(xdivrem(w, a, &q, &r));
+        RZ(jtxdivrem(jt, w, a, &q, &r));
         return r;
     }
     switch ((0 <= c ? 2 : 0) + (I)(0 <= d)) {
@@ -380,7 +380,7 @@ jtxrem(J jt, X a, X w) {
         case 2: y = jtxrem(jt, a, jtnegate(jt, w)); return jtxcompare(jt, y, iv0) ? jtxminus(jt, a, y) : y;
         default:
             return 0 <= (e = jtxcompare(jt, a, w)) ? (e ? w : iv0)
-                                                   : jtxminus(jt, w, jtxtymes(jt, a, xdiv(w, a, XMFLR)));
+                                                   : jtxminus(jt, w, jtxtymes(jt, a, jtxdiv(jt, w, a, XMFLR)));
     }
 }
 
@@ -402,14 +402,14 @@ jtxgcd(J jt, X a, X w) {
         t = p;
         RZ(p = jtxrem(jt, p, q));
         q = t;
-        if (!gc3(&p, &q, 0L, old)) return 0;
+        if (!jtgc3(jt, &p, &q, 0L, old)) return 0;
     }
     return q;
 }
 
 X
 jtxlcm(J jt, X a, X w) {
-    return jtxtymes(jt, a, xdiv(w, jtxgcd(jt, a, w), XMEXACT));
+    return jtxtymes(jt, a, jtxdiv(jt, w, jtxgcd(jt, a, w), XMEXACT));
 }
 
 static X
@@ -424,7 +424,7 @@ jtxexp(J jt, X w, I mode) {
     s = jtxplus(jt, iv1, w);
     y = w;
     DQ(m, y = jtxtymes(jt, y, w); s = jtxplus(jt, jtxtymes(jt, s, jtxc(jt, k)), y); ++k;);
-    return xdiv(s, jtxev1(jt, apv(1 + m, 1L, 1L), "*/"), mode);
+    return jtxdiv(jt, s, jtxev1(jt, jtapv(jt, 1 + m, 1L, 1L), "*/"), mode);
 }
 
 X
@@ -506,7 +506,7 @@ jtxsqrt(J jt, X w) {
     ASSERT(0 <= c, EWIMAG);
     if (!(1 & n)) c = wv[n - 2] + c * XBASE;
     m = (1 + n) >> 1;
-    RZ(x = apvwr(m, 0L, 0L));
+    RZ(x = jtapvwr(jt, m, 0L, 0L));
     AV(x)[m - 1] = (I)sqrt((D)c);
     RZ(e = jtxc(jt, 2L));
     p = m * XBASEN;
@@ -515,7 +515,7 @@ jtxsqrt(J jt, X w) {
         ++q;
         p >>= 1;
     }
-    DQ(1 + q, RZ(x = xdiv(jtxplus(jt, x, xdiv(w, x, XMFLR)), e, XMFLR)););
+    DQ(1 + q, RZ(x = jtxdiv(jt, jtxplus(jt, x, jtxdiv(jt, w, x, XMFLR)), e, XMFLR)););
     p = jtxcompare(jt, w, jtxsq(jt, x));
     switch (jt->xmode) {
         default: ASSERTSYS(0, "xsqrt");
@@ -625,7 +625,7 @@ jtdigits10(J jt, A w) {
                 v = AV(x);
                 b = 0 <= v[n - 1] && jtequ(jt, iv1, QAV(w)->d);
         }
-    if (!b) return rank1ex0(jtthorn1(jt, w), UNUSED_VALUE, jtexec1);
+    if (!b) return jtrank1ex0(jt, jtthorn1(jt, w), UNUSED_VALUE, jtexec1);
     m = INT & AT(w) ? (19) : XBASEN * AN(x);
     GATV0(z, INT, m, 1);
     zv = zv0 = AV(z);

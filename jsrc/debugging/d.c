@@ -40,7 +40,7 @@ jteputl(J jt, A w) {
 static void
 jteputv(J jt, A w) {
     I m = NETX - jt->etxn;
-    if (m > 0) { jt->etxn += thv(w, MIN(m, 200), jt->etx + jt->etxn); }
+    if (m > 0) { jt->etxn += jtthv(jt, w, MIN(m, 200), jt->etx + jt->etxn); }
 }  // stop writing when there is no room in the buffer
    /* numeric vector w */
 
@@ -129,15 +129,15 @@ jtdisp(J jt, A w, I nflag) {
             }
             // If this is an array of names, turn it back into a character string with spaces between
             else {
-                w = jtcurtail(jt, jtraze(jt, every2(jtevery(jt, w, (A)&sfn0overself), chrspace, (A)&sfn0overself)));
+                w = jtcurtail(jt, jtraze(jt, jtevery2(jt, jtevery(jt, w, (A)&sfn0overself), chrspace, (A)&sfn0overself)));
             }  // }: (string&.> names) ,&.> ' '  then fall through to display it
         case LITX: jteputq(jt, w, nflag); break;
         case NAMEX: jtep(jt, AN(w), NAV(w)->s); break;
         case LPARX: jteputc(jt, '('); break;
         case RPARX: jteputc(jt, ')'); break;
-        case ASGNX: dspell(CAV(w)[0], w, nflag); break;
+        case ASGNX: jtdspell(jt, CAV(w)[0], w, nflag); break;
         case MARKX: break;
-        default: dspell(FAV(w)->id, w, nflag); break;
+        default: jtdspell(jt, FAV(w)->id, w, nflag); break;
     }
     return b;  // new nflag
 }
@@ -299,7 +299,7 @@ jtjsigstr(J jt, I e, I n, C* s) {
 
 static void
 jtjsig(J jt, I e, A x) {
-    jsigstr(e, AN(x), CAV(x));
+    jtjsigstr(jt, e, AN(x), CAV(x));
 }
 /* signal error e with error text x */
 
@@ -312,7 +312,7 @@ jtjsigd(J jt, C* s) {
     n = strlen(s);
     p = MIN(n, 100 - m);
     memcpy(buf + m, s, p);
-    jsigstr(EVDOMAIN, m + p, buf);
+    jtjsigstr(jt, EVDOMAIN, m + p, buf);
 }
 
 void
@@ -326,7 +326,7 @@ jtjsignal(J jt, I e) {
     // Errors > NEVM are internal-only errors that should never make it to the end of execution.
     // Ignore them here - they will not be displayed
     x = BETWEENC(e, 1, NEVM) ? AAV(jt->evm)[e] : mtv;
-    jsigstr(e, AN(x), CAV(x));
+    jtjsigstr(jt, e, AN(x), CAV(x));
 }
 
 void

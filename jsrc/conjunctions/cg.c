@@ -199,10 +199,10 @@ jtevger(J jt, A a, A w) {
     if (k == GTRAIN) return jtexg(jt, a);
     RZ(hs = jtfxeachv(jt, RMAX, a));
     switch (k) {
-        case GAPPEND: return fdef(0, CGRCO, VERB, jtcon1, jtcon2, a, w, hs, VGERL, RMAX, RMAX, RMAX);
+        case GAPPEND: return jtfdef(jt, 0, CGRCO, VERB, jtcon1, jtcon2, a, w, hs, VGERL, RMAX, RMAX, RMAX);
         case GINSERT:
             ASSERT(1 >= AR(a), EVRANK);
-            return fdef(0, CGRCO, VERB, jtinsert, 0L, a, w, hs, VGERL, RMAX, 0L, 0L);
+            return jtfdef(jt, 0, CGRCO, VERB, jtinsert, 0L, a, w, hs, VGERL, RMAX, 0L, 0L);
         default: ASSERT(0, EVDOMAIN);
     }
 }
@@ -416,7 +416,7 @@ jtcasei12(J jt, A a, A w, A self) {
                 // inhomogeneous types or shapes.  Instantiate the entire result and then shuffle it into place
                 // first, install the actual number of boxes of result, which might differ from the calculated maximum
                 AN(zz) = AS(zz)[0] = nblkscreated;                                    // # valid boxes
-                zz                 = ev2(gradepm, zz, "(/:~   >@:;@:((<\"_1)&.>))");  // (> ; <"_1&.> zz) /: gradepm
+                zz                 = jtev2(jt, gradepm, zz, "(/:~   >@:;@:((<\"_1)&.>))");  // (> ; <"_1&.> zz) /: gradepm
             }
             // If the original input had structure, rearrange the result to match it
             if (vr > 1) RZ(zz = jtreitem(jt, shape(jt, vres), zz));
@@ -428,7 +428,7 @@ jtcasei12(J jt, A a, A w, A self) {
             if (ZZFLAGWORD & ZZFLAGISDYAD) {
                 zz = rank2ex(a, w, z, ar, wr, ar, wr, FAV(z)->valencefns[1]);  // Execute on all cells
             } else {
-                zz = rank1ex(w, z, wr, FAV(z)->valencefns[0]);  // Execute on all cells8
+                zz = jtrank1ex(jt, w, z, wr, FAV(z)->valencefns[0]);  // Execute on all cells8
             }
         }
         EPILOG(zz);
@@ -477,7 +477,7 @@ jtagendai(J jt, A a, A w) {
     flag    = VASGSAFE & FAV(w)->flag;
     A *avbv = AAV(avb);
     DQ(AN(avb), flag &= FAV(*avbv)->flag; ++avbv;);  // Don't increment inside FAV!
-    return fdef(0,
+    return jtfdef(jt, 0,
                 CATDOT,
                 VERB,
                 jtcasei12,
@@ -565,7 +565,7 @@ jtgconj(J jt, A a, A w, C id) {
     ASSERT((n & -2) == 2, EVLENGTH);  // length is 2 or 3
     ASSERT(BOX & AT(y), EVDOMAIN);
     RZ(hs = jtfxeach(jt, 3 == n ? y : link(jtscc(jt, CLBKTC), y), (A)&jtfxself[0]));
-    return fdef(
+    return jtfdef(jt, 
       0, id, VERB, na ? jtgcl1 : jtgcr1, na ? jtgcl2 : jtgcr2, a, w, hs, na ? VGERL : VGERR, RMAX, RMAX, RMAX);
 }
 
@@ -657,5 +657,5 @@ jtgadv(J jt, A w, C id) {
     ASSERT(AT(AAV(hs)[0]) & AT(AAV(hs)[1]) & AT(AAV(hs)[2]) & VERB, EVDOMAIN);
     I flag = (FAV(AAV(hs)[0])->flag & FAV(AAV(hs)[1])->flag & FAV(AAV(hs)[2])->flag & VASGSAFE) + (VGERL | VJTFLGOK2) +
              atoplr(AAV(hs)[0]);
-    return fdef(0, id, VERB, jtgav1, jtgav2, w, 0L, hs, flag, RMAX, RMAX, RMAX);  // create the derived verb
+    return jtfdef(jt, 0, id, VERB, jtgav1, jtgav2, w, 0L, hs, flag, RMAX, RMAX, RMAX);  // create the derived verb
 }

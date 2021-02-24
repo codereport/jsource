@@ -147,7 +147,7 @@ jtfixa(J jt, A a, A w) {
                 }
                 f = REFIXA(0, f);
                 h = REFIXA(0, h);
-                return xop2(f, h, g);
+                return jtxop2(jt, f, h, g);
             } else {
                 f = REFIXA(1, f);
                 g = REFIXA(2, g);
@@ -165,11 +165,11 @@ jtfixa(J jt, A a, A w) {
             f = REFIXA(na, f);
             g = REFIXA(ID(f) == CCAP ? 1 : 2, g);
             h = REFIXA(na, h);
-            return folk(f, g, h);  // f first in case it's [:
+            return jtfolk(jt, f, g, h);  // f first in case it's [:
         case CATDOT:
         case CGRCO:
             IAV0(aa)[0] = (aif | na);
-            RZ(f = jtevery(jt, every2(aa, h, (A)&arofixaself), (A)&arofixaself));  // full A block required for call
+            RZ(f = jtevery(jt, jtevery2(jt, aa, h, (A)&arofixaself), (A)&arofixaself));  // full A block required for call
             RZ(g = REFIXA(na, g));
             return df2(z, f, g, wf);
         case CIBEAM:

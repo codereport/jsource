@@ -65,7 +65,7 @@ jtcrccompile(J jt, A w) {
     hv = AAV(h);
     RE(z = jtcrcvalidate(jt, w, crctab));
     RZ(hv[0] =
-         jtrifvs(jt, vec(LIT, sizeof(crctab), crctab)));  // Save the table.  We don't have any other good type to use
+         jtrifvs(jt, jtvec(jt, LIT, sizeof(crctab), crctab)));  // Save the table.  We don't have any other good type to use
     RZ(hv[1] = jtrifvs(jt, jtsc(jt, (I)z)));
     return h;
 }

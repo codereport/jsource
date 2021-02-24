@@ -218,8 +218,8 @@ jtsuffix(J jt, A w, A self) {
     I r;
     r = (RANKT)jt->ranks;
     RESETRANK;
-    if (r < AR(w)) return rank1ex(w, self, r, jtsuffix);
-    return eachl(IX(SETIC(w, r)), w, jtatop(jt, fs, ds(CDROP)));
+    if (r < AR(w)) return jtrank1ex(jt, w, self, r, jtsuffix);
+    return jteachl(jt, IX(SETIC(w, r)), w, jtatop(jt, fs, ds(CDROP)));
 } /* f\."r w for general f */
 
 static A
@@ -228,7 +228,7 @@ jtgsuffix(J jt, A w, A self) {
     I m, n, r;
     r = (RANKT)jt->ranks;
     RESETRANK;
-    if (r < AR(w)) return rank1ex(w, self, r, jtgsuffix);
+    if (r < AR(w)) return jtrank1ex(jt, w, self, r, jtgsuffix);
     SETIC(w, n);
     h  = VAV(self)->fgh[2];
     hv = AAV(h);
@@ -252,7 +252,7 @@ jtssg(J jt, A w, A self) {
     r  = (RANKT)jt->ranks;
     r  = wr < r ? wr : r;
     RESETRANK;
-    if (r < wr) return rank1ex(w, self, r, jtssg);
+    if (r < wr) return jtrank1ex(jt, w, self, r, jtssg);
 
     // From here on we are doing a single scan
     n = AS(w)[0];  // n=#cells
@@ -389,7 +389,7 @@ jtscansp(J jt, A w, A self, AF sf) {
         RZ(x = jtdenseit(jt, w));
         return IRS1(x, self, r, sf, z);
     } else {
-        RZ(b = bfi(wr, SPA(wp, a), 1));
+        RZ(b = jtbfi(jt, wr, SPA(wp, a), 1));
         if (r && b[f]) {
             b[f] = 0;
             RZ(w = jtreaxis(jt, jtifb(jt, wr, b), w));
@@ -422,7 +422,7 @@ jtsscan(J jt, A w, A self) {
     FPREFIP;
     if (!w) return 0;
     wt = AT(w);
-    if ((SPARSE & wt) != 0) return scansp(w, self, jtsscan);
+    if ((SPARSE & wt) != 0) return jtscansp(jt, w, self, jtsscan);
     wn = AN(w);
     wr = AR(w);
     r  = (RANKT)jt->ranks;
@@ -492,7 +492,7 @@ jtgoutfix(J jt, A a, A w, A self) {
     return jtope(jt, z);
 }
 
-static AS2(jtoutfix, eachl(jtomask(jt, a, w), w, jtatop(jt, fs, ds(CPOUND))), 0117)
+static AS2(jtoutfix, jteachl(jt, jtomask(jt, a, w), w, jtatop(jt, fs, ds(CPOUND))), 0117)
 
   static A jtofxinv(J jt, A a, A w, A self) {
     A f, fs, z;
@@ -506,12 +506,12 @@ static AS2(jtoutfix, eachl(jtomask(jt, a, w), w, jtatop(jt, fs, ds(CPOUND))), 01
     c  = v->id;
     t  = AT(w);  // self = f/\. fs = f/  f = f  v = verb info for f
     if (!(c == CPLUS || c == CBDOT && t & INT || ((c & -2) == CEQ) && t & B01))
-        return outfix(a, w, self);  // if not +/\. or m b./\. or =/\. or ~:/\.
+        return jtoutfix(jt, a, w, self);  // if not +/\. or m b./\. or =/\. or ~:/\.
     A z0, z1;
-    z = irs2(df1(z0, w, fs), df2(z1, a, w, jtbslash(jt, fs)), c == CPLUS ? ds(CMINUS) : f, RMAX, -1L, jtatomic2);
+    z = jtirs2(jt, df1(z0, w, fs), df2(z1, a, w, jtbslash(jt, fs)), c == CPLUS ? ds(CMINUS) : f, RMAX, -1L, jtatomic2);
     if (jt->jerr == EVNAN) {
         RESETERR;
-        return outfix(a, w, self);
+        return jtoutfix(jt, a, w, self);
     } else
         return z;
 } /* a f/\. w where f has an "undo" */
@@ -532,15 +532,15 @@ jtofxassoc(J jt, A a, A w, A self) {
     v  = FAV(x);
     id = CBDOT == v->id ? (C)AV(v->fgh[1])[0] : v->id;  // self = f/\. f = f/  x = f  v = verb info for f
     if (k == IMIN || m <= c || id == CSTARDOT && !(B01 & AT(w)))
-        return outfix(a, w, self);  // if there is not >1 outfix, do general code which handles empties
+        return jtoutfix(jt, a, w, self);  // if there is not >1 outfix, do general code which handles empties
     if (-1 <= k) {
         d = m - c;
         RZ(i = IX(d));
-        RZ(j = apv(d, c, 1L));
+        RZ(j = jtapv(jt, d, c, 1L));
     } else {
         d = (m - 1) / c;
-        RZ(i = apv(d, c - 1, c));
-        RZ(j = apv(d, c, c));
+        RZ(i = jtapv(jt, d, c - 1, c));
+        RZ(j = jtapv(jt, d, c, c));
     }
     // d is (number of result cells)-1; i is indexes of last item of the excluded infix for cells AFTER the first
     // j is indexes of first item AFTER the excluded infix for cells BEFORE the last
@@ -562,7 +562,7 @@ jtofxassoc(J jt, A a, A w, A self) {
         PROD(c, AR(p) - 1, AS(p) + 1) t = AT(p);
         klg                             = bplg(t);
         kc                              = c << klg;
-        adocv                           = var(x, t, t);  // analyze the u operand
+        adocv                           = jtvar(jt, x, t, t);  // analyze the u operand
         ASSERTSYS(adocv.f, "ofxassoc");                  // scaf
         GA(z, t, c * (1 + d), r, AS(p));
         AS(z)[0] = 1 + d;
@@ -575,7 +575,7 @@ jtofxassoc(J jt, A a, A w, A self) {
         // We also have to redo if the types of p and s were different (for example, if one overflowed to float and the
         // other didn't)
     }
-    if ((rc & 255) >= EWOV) { return ofxassoc(a, jtcvt(jt, FL, w), self); }
+    if ((rc & 255) >= EWOV) { return jtofxassoc(jt, a, jtcvt(jt, FL, w), self); }
     if (rc) jtjsignal(jt, rc);  // if there was an error, signal it
     return z;
 } /* a f/\. w where f is an atomic associative fn */
@@ -584,7 +584,7 @@ static A
 jtiota1rev(J jt, A w, A self) {
     I j;
     SETIC(w, j);
-    return apv(j, j, -1L);
+    return jtapv(jt, j, j, -1L);
 }
 
 A
@@ -595,7 +595,7 @@ jtbsdot(J jt, A w) {
     C id;
     V* v;  // init flag is IRS1
     if (NOUN & AT(w))
-        return fdef(0,
+        return jtfdef(jt, 0,
                     CBSLASH,
                     VERB,
                     jtgsuffix,

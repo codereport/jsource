@@ -371,13 +371,13 @@ jtnch(J jt, A w) {
             if (*e) {
                 d = *e + LAV0(jt->symp);
                 while (1) {
-                    RZ(ch = nch1(b, d->val, &m, ch));
+                    RZ(ch = jtnch1(jt, b, d->val, &m, ch));
                     if (!d->next) break;
                     d = d->next + LAV0(jt->symp);
                 }
             }
         // now numbered locales
-        DO(jtcountnl(jt), A loc = jtindexnl(jt, i); if (loc) RZ(ch = nch1(b, loc, &m, ch)););
+        DO(jtcountnl(jt), A loc = jtindexnl(jt, i); if (loc) RZ(ch = jtnch1(jt, b, loc, &m, ch)););
     }
     jt->stch = b;
     AN(ch) = AS(ch)[0] = m;
@@ -425,7 +425,7 @@ jtex(J jt, A w) {
             }
             if (!(v->name->flag & NMDOT) && v->val && AT(v->val) & (VERB | ADV | CONJ))
                 modifierchg = 1;  // if we delete a modifier, remember that fact
-            probedel(NAV(v->name)->m,
+            jtprobedel(jt, NAV(v->name)->m,
                      NAV(v->name)->s,
                      NAV(v->name)->hash,
                      locfound);  // delete the symbol (incl name and value) in the locale in which it is defined

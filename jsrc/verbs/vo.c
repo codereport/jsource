@@ -337,7 +337,7 @@ jtassembleresults(J jt,
         zpri += AN(zz) ? 256 : 0;  // priority of unboxed results, giving high pri to nonempty
         zzresultpri = (zpri > zzresultpri) ? zpri : zzresultpri;
         I zft       = ((I)1) << (jt->prioritytype[zzresultpri & 255]);  // zft=highest precision encountered
-        fillv(zft, 1L, jt->fillv0);
+        jtfillv(jt, zft, 1L, jt->fillv0);
         I zfs = bpnoun(zft);
         mvc(sizeof(jt->fillv0),
             jt->fillv0,
@@ -358,7 +358,7 @@ jtassembleresults(J jt,
             // many atoms as given
             I zatomct = (zzcellp >> zzatomshift) -
                         (startatend & (AN(zz) - (zzcelllen >> zzatomshift)));  // get # atoms that have been filled in
-            ASSERT(ccvt(zft | NOUNCVTVALIDCT, zz, (A *)&zatomct), EVDOMAIN);
+            ASSERT(jtccvt(jt, zft | NOUNCVTVALIDCT, zz, (A *)&zatomct), EVDOMAIN);
             zz = (A)zatomct;  // flag means convert zcellct atoms.  Not worth checking for empty
             // change the strides to match the new cellsize
             if (zexpshift >= 0) {
@@ -624,7 +624,7 @@ jtopes2(J jt, A *zx, A *zy, B *b, A a, A e, A q, I wcr) {
     t  = AT(q);
     if (t & SPARSE) {
         p = PAV(q);
-        RZ(c = bfi(r, SPA(p, a), 1));
+        RZ(c = jtbfi(jt, r, SPA(p, a), 1));
         DO(
           r, if (b[k + i] != c[i]) {
               RZ(q = jtreaxis(jt, jtifb(jt, r, k + b), q));
@@ -639,7 +639,7 @@ jtopes2(J jt, A *zx, A *zy, B *b, A a, A e, A q, I wcr) {
             memcpy(AV(x), AV(q), AN(q) << bplg(t));
             q = x;
         }
-        RZ(q = sparseit(t & dt ? q : jtcvt(jt, dt, q), a, e));
+        RZ(q = jtsparseit(jt, t & dt ? q : jtcvt(jt, dt, q), a, e));
     }
     p = PAV(q);
     x = SPA(p, x);
@@ -662,7 +662,7 @@ jtopes(J jt, I zt, A cs, A w) {
     wcr = AN(cs);
     dt  = DTYPE(zt);
     dk  = bpnoun(dt);
-    RZ(opes1(&b, &a, &e, &m, cs, w));
+    RZ(jtopes1(jt, &b, &a, &e, &m, cs, w));
     an = AN(a);
     av = AV(a);
     GASPARSE(z, zt, 1, wr + wcr, (I *)0);
@@ -701,7 +701,7 @@ jtopes(J jt, I zt, A cs, A w) {
     yv   = AV(y);
     memset(yv, C0, SZI * i);
     for (i = p = 0; i < n; ++i) {
-        RZ(opes2(&x1, &y1, b, a, e, wv[i], wcr));
+        RZ(jtopes2(jt, &x1, &y1, b, a, e, wv[i], wcr));
         v  = AS(y1);
         m1 = v[0];
         k  = v[1];
@@ -792,7 +792,7 @@ jtope(J jt, A w) {
     // find the shape of a result-cell
     DO(n, y = v[i]; s = AS(y); p = u + r - AR(y); DO(AR(y), p[i] = MAX(p[i], s[i]);););
     if ((t & SPARSE) != 0)
-        RZ(z = opes(t, cs, w))
+        RZ(z = jtopes(jt, t, cs, w))
     else {
         I klg;
         I m;
@@ -804,7 +804,7 @@ jtope(J jt, A w) {
         GA(z, t, zn, r + AR(w), AS(w));
         MCISH(AS(z) + AR(w), u, r);
         x = CAV(z);
-        fillv(t, zn, x);  // init to a:  fills  bug copy shape could overrun w
+        jtfillv(jt, t, zn, x);  // init to a:  fills  bug copy shape could overrun w
         for (i = 0; i < n; ++i) {
             y = v[i];  // get pointer to contents
             if (!nonh)
@@ -984,7 +984,7 @@ jtraze(J jt, A w) {
         // t is the type to use.  i is 0 if there were no nonempties
         // if there are only empties, t is the type to use
         // if the cell-rank was 2 or higher, there may be reshaping and fill needed - go to the general case
-        if (1 < r) return razeg(w, t, n, r, v, i);
+        if (1 < r) return jtrazeg(jt, w, t, n, r, v, i);
         // fall through for boxes containing lists and atoms, where the result is a list.  No fill possible, but if all
         // inputs are empty the fill-cell will give the type of the result (similar to 0 {.!.f 0$...)
 

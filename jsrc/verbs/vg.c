@@ -219,8 +219,8 @@ jtgrx(J jt, I m, I ai, I n, A w, I *zv) {
     jt->workareas.compare.compusejt = !!(t & BOX + XNUM + RAT);
     void **(*sortfunc)()            = sortroutines[CTTZ(t)][SGNTO0(jt->workareas.compare.complt)].sortfunc;
     GATV0(x, INT, n, 1);
-    xv = AV(x); /* work area for msmerge() */
-    DQ(m, msortitems(sortfunc, n, (void **)zv, (void **)xv); jt->workareas.compare.compv += ck; zv += n;);
+    xv = AV(x); /* work area for jtmsmerge(jt, ) */
+    DQ(m, jtmsortitems(jt, sortfunc, n, (void **)zv, (void **)xv); jt->workareas.compare.compv += ck; zv += n;);
     return !jt->jerr;
 } /* grade"r w on general w */
 
@@ -503,7 +503,7 @@ jtgrd(J jt, I m, I ai, I n, A w, I *zv) {
     I c = ai * n;
     if (ai == 1) { return jtgrdq(jt, m, ai, n, w, zv); }      // if fast list code is available, always use it
                                                               // if not large and 1 atom per key, go do general grade
-    if (!(ai == 1 && n > 3300)) return grx(m, ai, n, w, zv);  // Empirically derived crossover   TUNE
+    if (!(ai == 1 && n > 3300)) return jtgrx(jt, m, ai, n, w, zv);  // Empirically derived crossover   TUNE
     // The rest of this routine is not used on lists when the fast list code is available
     // grade float by radix sort of halfwords.  Save some control parameters
     wv = DAV(w);
@@ -852,7 +852,7 @@ jtgri(J jt, I m, I ai, I n, A w, I *zv) {
             DO(10,
                if (0xffffffff00000000 & (0x0000000080000000 + wv[i << 9])) return jtgriq(
                  jt, m, ai, n, w, zv);)    // quicksort if more than 2 bytes of significance, sampling the input
-            return gri1(m, ai, n, w, zv);  // moderate-range middle lengths use radix sort
+            return jtgri1(jt, m, ai, n, w, zv);  // moderate-range middle lengths use radix sort
         }
         // fall through to small-range
     } else  // ! we already have range, don't calculate it again
@@ -869,8 +869,8 @@ jtgri(J jt, I m, I ai, I n, A w, I *zv) {
     // tweak this line to select path for timing
     // If there is only 1 item, radix beats merge for n>1300 or so (all positive) or more (mixed signed small numbers)
     if (!rng.range)
-        return c == n && n > 2000 ? gri1(m, ai, n, w, zv)
-                                  : grx(m, ai, n, w, zv);  // revert to other methods if not small-range   TUNE
+        return c == n && n > 2000 ? jtgri1(jt, m, ai, n, w, zv)
+                                  : jtgrx(jt, m, ai, n, w, zv);  // revert to other methods if not small-range   TUNE
     // doing small-range grade.  Allocate a hashtable area.  We will access it as UI4
     GATV0(y, C4T, rng.range, 1);
     yvb = C4AV(y);
@@ -962,8 +962,8 @@ jtgru(J jt, I m, I ai, I n, A w, I *zv) {
     } else
         rng.range = 0;
     if (!rng.range)
-        return c == n && n > 1500 ? gru1(m, ai, n, w, zv)
-                                  : grx(m, ai, n, w, zv);  // revert to other methods if not small-range    TUNE
+        return c == n && n > 1500 ? jtgru1(jt, m, ai, n, w, zv)
+                                  : jtgrx(jt, m, ai, n, w, zv);  // revert to other methods if not small-range    TUNE
     GATV0(y, C4T, rng.range, 1);
     yvb = C4AV(y);
     yv  = yvb - rng.min;
@@ -1078,7 +1078,7 @@ jtgrb(J jt, I m, I ai, I n, A w, I *zv) {
     I c = ai * n;
     UI4 lgn;
     CTLZI(n, lgn);
-    if ((UI)ai > 4 * lgn) return grx(m, ai, n, w, zv);  // TUNE
+    if ((UI)ai > 4 * lgn) return jtgrx(jt, m, ai, n, w, zv);  // TUNE
     q  = ai >> 2;
     p  = 16;
     ps = p * SZI;
@@ -1110,7 +1110,7 @@ jtgrc(J jt, I m, I ai, I n, A w, I *zv) {
     UC *vv, *wv;
     UI4 lgn;
     CTLZI(n, lgn);
-    if ((UI)ai > lgn) return grx(m, ai, n, w, zv);  // TUNE
+    if ((UI)ai > lgn) return jtgrx(jt, m, ai, n, w, zv);  // TUNE
     ai <<= ((AT(w) >> C2TX) & 1);
     p  = B01 & AT(w) ? 2 : 256;
     ps = p * SZI;
@@ -1141,7 +1141,7 @@ jtgrc(J jt, I m, I ai, I n, A w, I *zv) {
 
 static B
 jtgrs(J jt, I m, I ai, I n, A w, I *zv) {
-    return gri(m, ai, n, jtsborder(jt, w), zv);
+    return jtgri(jt, m, ai, n, jtsborder(jt, w), zv);
 }
 /* grade"r w on symbols w */
 
@@ -1162,7 +1162,7 @@ jtgrade1p(J jt, A a, A w) {
     zv = AV(z);
     GATV0(x, INT, n, 1);
     xv = AV(x);
-    msortitems(jmsort, n, (void **)zv, (void **)xv);
+    jtmsortitems(jt, jmsort, n, (void **)zv, (void **)xv);
     EPILOG(z);
 } /* /:(}:a){"1 w , permutation a, integer matrix w */
 

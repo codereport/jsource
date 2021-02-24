@@ -8,7 +8,7 @@
 static A
 jthparm(J jt, A j, A f, A h) {
     A z;
-    if (!(VERB & AT(f))) return jtshift1(jt, jtaslash(jt, CSTAR, atab(CPLUS, h, j)));
+    if (!(VERB & AT(f))) return jtshift1(jt, jtaslash(jt, CSTAR, jtatab(jt, CPLUS, h, j)));
     RZ(z = CALL1(FAV(f)->valencefns[0], j, f));
     ASSERT(1 >= AR(z), EVRANK);
     ASSERT(!AR(z) || AN(j) == AN(z), EVLENGTH);
@@ -22,9 +22,9 @@ jthgv(J jt, B b, I n, A w, A self) {
     RZ(j = IX(n));
     h  = sv->fgh[2];
     hv = AAV(h);
-    RZ(c = hparm(j, sv->fgh[0], hv[0]));
-    RZ(d = hparm(j, sv->fgh[1], hv[1]));
-    e = jtshift1(jt, divide(w, apv(n, 1L, 1L)));
+    RZ(c = jthparm(jt, j, sv->fgh[0], hv[0]));
+    RZ(d = jthparm(jt, j, sv->fgh[1], hv[1]));
+    e = jtshift1(jt, divide(w, jtapv(jt, n, 1L, 1L)));
     switch ((VERB & AT(sv->fgh[0]) ? 2 : 0) + (VERB & AT(sv->fgh[1]) ? 1 : 0)) {
         case 0: y = jtascan(jt, CSTAR, divide(tymes(c, e), d)); break;
         case 1: y = divide(jtascan(jt, CSTAR, tymes(c, e)), d); break;
@@ -67,7 +67,7 @@ jthgd(J jt, B b, I n, A w, A p, A q) {
         JBREAK0;
     }
     NAN1;
-    return !b ? jtscf(jt, s) : z ? jttake(jt, jtsc(jt, 1 + j), z) : hgd(b, j, w, p, q);
+    return !b ? jtscf(jt, s) : z ? jttake(jt, jtsc(jt, 1 + j), z) : jthgd(jt, b, j, w, p, q);
 } /* real vector p,q; real scalar w; all terms (1=b) or last term (0=b) */
 
 static A
@@ -77,7 +77,7 @@ jthgeom2(J jt, A a, A w, A self) {
     B b;
     I an, *av, j, n;
     V* sv = FAV(self);
-    if (AR(w)) return rank2ex0(a, w, self, jthgeom2);
+    if (AR(w)) return jtrank2ex0(jt, a, w, self, jthgeom2);
     RZ(a = AT(a) & FL + CMPX ? jtvib(jt, a) : jtvi(jt, a));  // kludge just call vib?
     an = AN(a);
     av = AV(a);
@@ -88,20 +88,20 @@ jthgeom2(J jt, A a, A w, A self) {
     hv = AAV(h);
     b  = VERB & (AT(sv->fgh[0]) | AT(sv->fgh[1])) || CMPX & (AT(w) | AT(hv[0]) | AT(hv[1]));
     if (!b)
-        z = hgd((B)(1 < an), n, w, hv[0], hv[1]);
+        z = jthgd(jt, (B)(1 < an), n, w, hv[0], hv[1]);
     else if (2000 > n)
-        z = hgv((B)(1 < an), n, w, self);
+        z = jthgv(jt, (B)(1 < an), n, w, self);
     else {
         j = 10;
         t = mtv;
         z = zeroionei(1);
         while (z && !jtequ(jt, z, t)) {
             t = z;
-            z = hgv(0, j, w, self);
+            z = jthgv(jt, 0, j, w, self);
             j += j;
         }
         RZ(z);
-        if (1 < an) z = hgv(1, j, w, self);
+        if (1 < an) z = jthgv(jt, 1, j, w, self);
     }
     if (1 < an) z = jtfrom(jt, minimum(a, jtsc(jt, SETIC(z, an) - 1)), z);
     EPILOG(z);
@@ -109,7 +109,7 @@ jthgeom2(J jt, A a, A w, A self) {
 
 static A
 jthgeom1(J jt, A w, A self) {
-    return hgeom2(jtsc(jt, IMAX), w, self);
+    return jthgeom2(jt, jtsc(jt, IMAX), w, self);
 }
 
 static A
@@ -148,5 +148,5 @@ jthgeom(J jt, A a, A w) {
         ASSERT(1 >= AR(w), EVRANK);
     }
     RZ(h = jtcancel(jt, c, d));
-    return fdef(0, CHGEOM, VERB, jthgeom1, jthgeom2, a, w, h, 0L, 0L, 0L, 0L);
+    return jtfdef(jt, 0, CHGEOM, VERB, jthgeom1, jthgeom2, a, w, h, 0L, 0L, 0L, 0L);
 } /* a H. w */

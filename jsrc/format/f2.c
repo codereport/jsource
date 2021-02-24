@@ -160,7 +160,7 @@ jtfmtx(J jt, B e, I m, I d, C *s, I t, X *wv) {
     q = c > 999 ? 4 : c > 99 ? 3 : c > 9 ? 2 : 1;
     p = q + XBASEN * (n - 1);
     if (e)
-        return fmtex(m, d, n, xv, b, c, q, p - 1);
+        return jtfmtex(jt, m, d, n, xv, b, c, q, p - 1);
     else if (m && m < b + p + d + !!d) {
         memset(v, '*', m);
         v[m] = 0;
@@ -209,16 +209,16 @@ jtfmtq(J jt, B e, I m, I d, C *s, I t, Q *wv) {
     if (e && c && 0 > jtxcompare(jt, x, y.d)) {
         ex = XBASEN * (AN(y.n) - AN(y.d));
         g  = jtxtymes(jt, x, jtxpow(jt, jtxc(jt, 10L), jtxc(jt, 1 + d - ex)));
-        RZ(x = xdiv(g, y.d, XMFLR));
+        RZ(x = jtxdiv(jt, g, y.d, XMFLR));
         while (1 == jtxcompare(jt, a, x)) {
             --ex;
             g = jtxtymes(jt, jtxc(jt, 10L), g);
-            RZ(x = xdiv(g, y.d, XMFLR));
+            RZ(x = jtxdiv(jt, g, y.d, XMFLR));
         }
         if (b) x = jtnegate(jt, x);
     } else
-        x = xdiv(jtxtymes(jt, y.n, a), y.d, XMFLR);
-    RZ(x = xdiv(jtxplus(jt, x, jtxc(jt, 5L)), jtxc(jt, 10L), XMFLR));
+        x = jtxdiv(jt, jtxtymes(jt, y.n, a), y.d, XMFLR);
+    RZ(x = jtxdiv(jt, jtxplus(jt, x, jtxc(jt, 5L)), jtxc(jt, 10L), XMFLR));
     n  = AN(x);
     xv = AV(x) + n - 1;
     c  = *xv;
@@ -228,7 +228,7 @@ jtfmtq(J jt, B e, I m, I d, C *s, I t, Q *wv) {
     p = q + XBASEN * (n - 1);
     if (c || !e) ex += p - d - 1;
     if (e)
-        return fmtex(m, d, n, xv, b, c, q, ex);
+        return jtfmtex(jt, m, d, n, xv, b, c, q, ex);
     else if (m && m < b + d + (I) !!d + (0 > ex ? 1 : 1 + ex)) {
         memset(v, '*', m);
         v[m] = 0;
@@ -285,8 +285,8 @@ jtfmt1(J jt, B e, I m, I d, C *s, I t, C *wv) {
             }
             sprintf(jt->th2buf, s, (D) * (I *)wv);
             break;
-        case XNUMX: fmtx(e, m, d, s, t, (X *)wv); break;
-        case RATX: fmtq(e, m, d, s, t, (Q *)wv); break;
+        case XNUMX: jtfmtx(jt, e, m, d, s, t, (X *)wv); break;
+        case RATX: jtfmtq(jt, e, m, d, s, t, (Q *)wv); break;
         default:
             y = *(D *)wv;
             y = y ? y : 0.0; /* -0 to 0 */
@@ -307,7 +307,7 @@ jtfmt1(J jt, B e, I m, I d, C *s, I t, C *wv) {
 // No result: the output area is filled
 static void
 jtth2c(J jt, B e, I m, I d, C *s, I n, I t, I wk, C *wv, I zk, C *zv) {
-    DQ(n, fmt1(e, m, d, s, t, wv); c2j(e, m, zv); zv += zk; wv += wk;);
+    DQ(n, jtfmt1(jt, e, m, d, s, t, wv); jtc2j(jt, e, m, zv); zv += zk; wv += wk;);
 } /* format a column */
 
 // Create a column of results (a table) for a single field
@@ -338,7 +338,7 @@ jtth2a(J jt, B e, I m, I d, C *s, I n, I t, I wk, C *wv, B first) {
     zv       = CAV(z);
     // If field length is fixed, format the column to that width & return it
     if (m) {
-        th2c(e, m, d, s, n, t, wk, wv, m, zv);
+        jtth2c(jt, e, m, d, s, n, t, wk, wv, m, zv);
         return z;
     }
     // Otherwise, field has variable width.  Format the values one by one.
@@ -346,7 +346,7 @@ jtth2a(J jt, B e, I m, I d, C *s, I n, I t, I wk, C *wv, B first) {
     // b will be set for exponential fields only, if no result is negative
     b = e;  // init no negative exponential values (if field is exponential).  0 if nonexponential field
     for (i = q = 0; i < n; ++i) {
-        fmt1(e, m0, d, s, t, wv);  // Create the (null-terminated) string in th2buf.  m0=0
+        jtfmt1(jt, e, m0, d, s, t, wv);  // Create the (null-terminated) string in th2buf.  m0=0
         while (p < q + (I)strlen(jt->th2buf) + 1) {
             RZ(z = jtover(jt, z, z));
             p += p;
@@ -355,7 +355,7 @@ jtth2a(J jt, B e, I m, I d, C *s, I n, I t, I wk, C *wv, B first) {
         // u->place to put string; convert th2buf to j form in *u; k=length of string; update string pointer &
         // null-terminate string; advance to next input value
         u       = q + zv;
-        q += k  = c2j(e, 0L, u);
+        q += k  = jtc2j(jt, e, 0L, u);
         zv[q++] = 0;
         wv += wk;
         // Exponential-field sign spacing:
@@ -518,7 +518,7 @@ jtthorn2(J jt, A a, A w) {
     wk = c * k;
     wv = CAV(w) - k;
     // Analyze a to get info for each format
-    RZ(th2ctrl(a, &ea, &ma, &da, &s, &zk));
+    RZ(jtth2ctrl(jt, a, &ea, &ma, &da, &s, &zk));
     // ev->expformat flags, mv->field width, dv->decimal places, sk=length of each sprintf string, sv->sprintf string
     // (prebiased)
     ev = BAV(ea);
@@ -541,7 +541,7 @@ jtthorn2(J jt, A a, A w) {
               e = ev[i];
               m = mv[i];
               d = dv[i];
-          } th2c(e, m, d, sv += sk, n, t, wk, wv += k, zk, zv);
+          } jtth2c(jt, e, m, d, sv += sk, n, t, wk, wv += k, zk, zv);
           zv += m;);  // Set e,m,d (if atomic a, keep the same values each time
     } else {
         // The width is unknown.  Build up the result one field at a time.  Each field becomes a box in this
@@ -554,14 +554,14 @@ jtthorn2(J jt, A a, A w) {
               e = ev[i];
               m = mv[i];
               d = dv[i];
-          } RZ(yv[i] = th2a(e, m, d, sv += sk, n, t, wk, wv += k, (B)!i)););
+          } RZ(yv[i] = jtth2a(jt, e, m, d, sv += sk, n, t, wk, wv += k, (B)!i)););
         // Join the fields of each line to produce an nxc table of characters, one row per 1-cell of w
         RZ(z = jtrazeh(jt, y));
         // If w has rank > 2, we need to rearrange the rows into an array.  Or, if there is a single 1-cell and
         // r was an atom or a list, we need to change the result from a table to a single list.
         if (2 < r || 1 == n && 2 != r) {
             if (!r) r = 1;  // change atomic r to a list
-            RZ(h = vec(INT, r, ws));
+            RZ(h = jtvec(jt, INT, r, ws));
             AV(h)
             [r - 1] = AS(
               z)[1];  // Create a vector out of the shape of w; replace length of 1-cell with length of a row of result

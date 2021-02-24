@@ -66,7 +66,7 @@
                 z = jtparsea(jt, queue, m);                               \
             else {                                                        \
                 thisframe->dclnk->dcix = i;                               \
-                z                      = parsex(queue, m, ci, callframe); \
+                z                      = jtparsex(jt, queue, m, ci, callframe); \
             }                                                             \
         } else {                                                          \
             jtjsignal(jt, EVATTN);                                        \
@@ -161,7 +161,7 @@ trypopgoto(TD *tdv, I tdi, I dest) {
 #define CHECKNOUN                                                                                                     \
     if (!(NOUN & AT(t))) { /* error, T block not creating noun */                                                     \
         /* Signal post-exec error*/                                                                                   \
-        t = pee(line, &cw[ti], EVNONNOUN, gsfctdl << (BW - 2), callframe);                                            \
+        t = jtpee(jt, line, &cw[ti], EVNONNOUN, gsfctdl << (BW - 2), callframe);                                            \
         /* go to error loc; if we are in a try., send this error to the catch.  z may be unprotected, so clear it, to \
          * 0 if error shows, mtm otherwise */                                                                         \
         i = cw[ti].go;                                                                                                \
@@ -362,12 +362,12 @@ jtxdefn(J jt, A a, A w, A self) {
         // Do the other assignments, which occur less frequently, with symbis
         if ((I)u | (I)v) {
             if (u) {
-                (symbis(mnuvxynam[2], u, locsym));
-                if (NOUN & AT(u)) symbis(mnuvxynam[0], u, locsym);
+                (jtsymbis(jt, mnuvxynam[2], u, locsym));
+                if (NOUN & AT(u)) jtsymbis(jt, mnuvxynam[0], u, locsym);
             }  // assign u, and m if u is a noun
             if (v) {
-                (symbis(mnuvxynam[3], v, locsym));
-                if (NOUN & AT(v)) symbis(mnuvxynam[1], v, locsym);
+                (jtsymbis(jt, mnuvxynam[3], v, locsym));
+                if (NOUN & AT(v)) jtsymbis(jt, mnuvxynam[1], v, locsym);
             }  // bug errors here must be detected
         }
     }
@@ -405,7 +405,7 @@ jtxdefn(J jt, A a, A w, A self) {
                 if (d && jt->recurstate <
                            RECSTATEPROMPT) {  // if there is a call and thus we can suspend; and not prompting already
                     BZ(thisframe =
-                         deba(DCPARSE,
+                         jtdeba(jt, DCPARSE,
                               0L,
                               0L,
                               0L));  // if deba fails it will be before it modifies sitop.  Remember our stack frame
@@ -419,7 +419,7 @@ jtxdefn(J jt, A a, A w, A self) {
 
             // if performance monitor is on, collect data for it
             if (PMCTRBPMON & jt->uflags.us.uq.uq_c.pmctrbstk && C1 == jt->pmrec && FAV(self)->flag & VNAMED)
-                pmrecord(jt->curname, jt->global ? LOCNAME(jt->global) : 0, i, isdyad ? VAL2 : VAL1);
+                jtpmrecord(jt, jt->curname, jt->global ? LOCNAME(jt->global) : 0, i, isdyad ? VAL2 : VAL1);
             // If the executing verb was reloaded during debug, switch over to the modified definition
             if ((gsfctdl & 16) && jt->redefined) {
                 DC siparent;
@@ -467,7 +467,7 @@ jtxdefn(J jt, A a, A w, A self) {
                 // Check for assert.  Since this is only for T-blocks we tolerate the test (rather than duplicating
                 // code)
                 if (ci->type == CASSERT && jt->assert &&t && !(NOUN & AT(t) && all1(eq(num(1), t))))
-                    t = pee(line,
+                    t = jtpee(jt, line,
                             ci,
                             EVASSERT,
                             gsfctdl << (BW - 2),
@@ -613,7 +613,7 @@ jtxdefn(J jt, A a, A w, A self) {
             case CTRY:
                 // try.  create a try-stack entry, step to next line
                 BASSERT(tdi < NTD, EVLIMIT);
-                tryinit(tdv + tdi, i, cw);
+                jttryinit(jt, tdv + tdi, i, cw);
                 // turn off debugging UNLESS there is a catchd; then turn on only if user set debug mode
                 // if debugging is already off, it stays off
                 if (jt->uflags.us.cx.cx_c.db)
@@ -682,11 +682,11 @@ jtxdefn(J jt, A a, A w, A self) {
                           z = jtrat(
                             jt,
                             z));  // if z might be the result, protect it over the possible frees during this assignment
-                    symbisdel(
+                    jtsymbisdel(jt, 
                       jtnfs(jt, 6 + cv->k, cv->xv),
                       x = jtsc(jt, cv->j),
                       locsym);  // Assign iteration number.  since there is no sentence, take deletion off nvr stack
-                    symbisdel(jtnfs(jt, cv->k, cv->iv), cv->j < cv->n ? jtfrom(jt, x, cv->t) : mtv, locsym);
+                    jtsymbisdel(jt, jtnfs(jt, cv->k, cv->iv), cv->j < cv->n ? jtfrom(jt, x, cv->t) : mtv, locsym);
                 }
                 if (cv->j < cv->n) {  // if there are more iterations to do...
                     ++i;
@@ -823,7 +823,7 @@ jtxdefn(J jt, A a, A w, A self) {
             // only the first locative in eqch branch
             z = jtfix(jt, z, jtsc(jt, FIXALOCSONLY | FIXALOCSONLYLOWEST));
         } else {
-            pee(line, &cw[bi], EVNONNOUN, gsfctdl << (BW - 2), callframe);
+            jtpee(jt, line, &cw[bi], EVNONNOUN, gsfctdl << (BW - 2), callframe);
             z = 0;
         }  // signal error, set z to 'no result'
     } else {
@@ -899,11 +899,11 @@ xv2(J jt, A a, A w, A self) {
 }
 static A
 xn1(J jt, A w, A self) {
-    return xdefn(0L, w, self);
+    return jtxdefn(jt, 0L, w, self);
 }  // Transfer monadic xdef to the common code - inplaceable
 static A
 xadv(J jt, A w, A self) {
-    return xdefn(w, 0L, self);
+    return jtxdefn(jt, w, 0L, self);
 }  // inplaceable
 
 // This handles adverbs/conjs that refer to x/y.  Install a[/w] into the derived verb as f/h, and copy the flags
@@ -913,7 +913,7 @@ xadv(J jt, A w, A self) {
 A
 jtxop2(J jt, A a, A w, A self) {
     A ff, x;
-    RZ(ff = fdef(0,
+    RZ(ff = jtfdef(jt, 0,
                  CCOLON,
                  VERB,
                  xn1,
@@ -929,7 +929,7 @@ jtxop2(J jt, A a, A w, A self) {
 }
 static A
 xop1(J jt, A w, A self) {
-    return xop2(w, 0, self);
+    return jtxop2(jt, w, 0, self);
 }
 
 // w is a box containing enqueued words for the sentences of a definition, jammed together
@@ -986,10 +986,10 @@ jtcolon0(J jt, I deftype) {
     I isboxed = BETWEENC(deftype, 1, 9);  // do we return boxes?
     // Allocate the return area, which we extend as needed
     if (isboxed) {
-        RZ(z = exta(BOX, 1L, 1L, 20L));
+        RZ(z = jtexta(jt, BOX, 1L, 1L, 20L));
         sb = AAV(z);
     } else {
-        RZ(z = exta(LIT, 1L, 1L, 300L));
+        RZ(z = jtexta(jt, LIT, 1L, 1L, 300L));
         s = CAV(z);
     }
     while (1) {
@@ -1152,7 +1152,7 @@ jtcrelocalsyms(J jt, A l, A c, I type, I dyad, I flags) {
     C *s;
     I j, ln;
     // Allocate a pro-forma symbol table to hash the names into
-    RZ(pfst = stcreate(2, 40, 0L, 0L));
+    RZ(pfst = jtstcreate(jt, 2, 40, 0L, 0L));
     // Do a probe-for-assignment for every name that is locally assigned in this definition.  This will
     // create a symbol-table entry for each such name
     // Start with the argument names.  We always assign y, and x EXCEPT when there is a monadic guaranteed-verb
@@ -1244,7 +1244,7 @@ jtcrelocalsyms(J jt, A l, A c, I type, I dyad, I flags) {
     }
 
     asgct = asgct + (asgct >> 1);            // leave 33% empty space, since we will have resolved most names here
-    RZ(actst = stcreate(2, asgct, 0L, 0L));  // Allocate the symbol table we will use
+    RZ(actst = jtstcreate(jt, 2, asgct, 0L, 0L));  // Allocate the symbol table we will use
     *(UI4 *)LXAV0(actst) =
       (UI4)((SYMHASH(NAV(mnuvxynam[4])->hash, AN(actst) - SYMLINFOSIZE) << 16) +
             SYMHASH(NAV(mnuvxynam[5])->hash,
@@ -1297,7 +1297,7 @@ jtclonelocalsyms(J jt, A a) {
     I j;
     I an   = AN(a);
     LX *av = LXAV0(a), *zv;
-    RZ(z = stcreate(2, AN(a), 0L, 0L));
+    RZ(z = jtstcreate(jt, 2, AN(a), 0L, 0L));
     zv = LXAV0(z);  // allocate the clone; zv->clone hashchains
     // Copy the first hashchain, which has the x/v hashes
     zv[0] = av[0];  // Copy as Lx; really it's a UI4
@@ -1337,7 +1337,7 @@ jtcolon(J jt, A a, A w) {
             a = FAV(a)->fgh[0];  // look for v : v; don't fail if fgh[0]==0 (namerefop).  Must test fgh[0] first
         if (CCOLON == FAV(w)->id && FAV(w)->fgh[0] && VERB & AT(FAV(w)->fgh[0]) && VERB & AT(FAV(w)->fgh[1]))
             w = FAV(w)->fgh[1];
-        return fdef(0,
+        return jtfdef(jt, 0,
                     CCOLON,
                     VERB,
                     xv1,
@@ -1428,10 +1428,10 @@ jtcolon(J jt, A a, A w) {
         GAT0(h, BOX, 2 * HN, 1);
         hv = AAV(h);
         if (n) {  // if not noun, audit the valences as valid sentences and convert to a queue to send into jtparse(jt,)
-            RE(b = preparse(m, hv, hv + 1));
+            RE(b = jtpreparse(jt, m, hv, hv + 1));
             if (b) flag |= VTRY1;
             hv[2] = jt->retcomm ? m : mtv;
-            RE(b = preparse(d, hv + HN, hv + HN + 1));
+            RE(b = jtpreparse(jt, d, hv + HN, hv + HN + 1));
             if (b) flag |= VTRY2;
             hv[2 + HN] = jt->retcomm ? d : mtv;
         }
@@ -1477,25 +1477,25 @@ jtcolon(J jt, A a, A w) {
     // free the components of the explicit def, we'd better do it now, so that the usecounts are all identical
     if (4 >= n) {
         // Don't bother to create a symbol table for an empty definition, since it is a domain error
-        if (AN(hv[1])) RZ(hv[3] = jtincorp(jt, crelocalsyms(hv[0], hv[1], n, 0, flag)));  // wordss,cws,type,monad,flag
+        if (AN(hv[1])) RZ(hv[3] = jtincorp(jt, jtcrelocalsyms(jt, hv[0], hv[1], n, 0, flag)));  // wordss,cws,type,monad,flag
         if (AN(hv[HN + 1]))
             RZ(hv[HN + 3] =
-                 jtincorp(jt, crelocalsyms(hv[HN + 0], hv[HN + 1], n, 1, flag)));  // words,cws,type,dyad,flag
+                 jtincorp(jt, jtcrelocalsyms(jt, hv[HN + 0], hv[HN + 1], n, 1, flag)));  // words,cws,type,dyad,flag
     }
     switch (n) {
         case 3:
-            return fdef(0, CCOLON, VERB, xn1, jtxdefn, num(n), 0L, h, flag | VJTFLGOK1 | VJTFLGOK2, RMAX, RMAX, RMAX);
-        case 1: return fdef(0, CCOLON, ADV, b ? xop1 : xadv, 0L, num(n), 0L, h, flag, RMAX, RMAX, RMAX);
-        case 2: return fdef(0, CCOLON, CONJ, 0L, b ? jtxop2 : jtxdefn, num(n), 0L, h, flag, RMAX, RMAX, RMAX);
+            return jtfdef(jt, 0, CCOLON, VERB, xn1, jtxdefn, num(n), 0L, h, flag | VJTFLGOK1 | VJTFLGOK2, RMAX, RMAX, RMAX);
+        case 1: return jtfdef(jt, 0, CCOLON, ADV, b ? xop1 : xadv, 0L, num(n), 0L, h, flag, RMAX, RMAX, RMAX);
+        case 2: return jtfdef(jt, 0, CCOLON, CONJ, 0L, b ? jtxop2 : jtxdefn, num(n), 0L, h, flag, RMAX, RMAX, RMAX);
         case 4:
-            return fdef(0, CCOLON, VERB, xn1, jtxdefn, num(n), 0L, h, flag | VJTFLGOK1 | VJTFLGOK2, RMAX, RMAX, RMAX);
+            return jtfdef(jt, 0, CCOLON, VERB, xn1, jtxdefn, num(n), 0L, h, flag | VJTFLGOK1 | VJTFLGOK2, RMAX, RMAX, RMAX);
         case 13: return jtvtrans(jt, w);
         default: ASSERT(0, EVDOMAIN);
     }
 }
 
 // input reader for direct definition
-// This is a drop-in for jttokens(jt,).  It takes a string and env, and returns tokens created by enqueue().  Can
+// This is a drop-in for jttokens(jt,).  It takes a string and env, and returns tokens created by jtenqueue(jt, ).  Can
 // optionally return string
 //
 // Any DDs found are collected and converted into ( m : string ).  This is done recursively.  If an unterminated
@@ -1532,7 +1532,7 @@ jtddtokens(J jt, A w, I env) {
         if (ch2 == DDBGN && (wilv[firstddbgnx][1] - wilv[firstddbgnx][0] == 2)) break;
     }
     if (firstddbgnx >= nw) {
-        ASSERT(AM(wil) >= 0, EVOPENQ) return env & 8 ? w : enqueue(wil, w, env & 3);
+        ASSERT(AM(wil) >= 0, EVOPENQ) return env & 8 ? w : jtenqueue(jt, wil, w, env & 3);
     }  //   If no DD chars found, and caller wants a string, return w fast
     // loop till all DDs found
     while (firstddbgnx < nw) {
@@ -1665,7 +1665,7 @@ jtddtokens(J jt, A w, I env) {
             RZ(remnant =
                  jtstr(jt, AN(w) - enddelimx - 2, CAV(w) + enddelimx + 2));  // get a string for the preserved tail of w
             AS(wil)[0] = ddbgnx;
-            RZ(w = unwordil(wil, w, 0));  // take everything up to the {{)n - it may have been put out of order
+            RZ(w = jtunwordil(jt, wil, w, 0));  // take everything up to the {{)n - it may have been put out of order
             A spacea;
             RZ(spacea = jtscc(jt, ' '));
             RZ(w = apip(w, spacea));                                             // put space before quoted string
@@ -1712,7 +1712,7 @@ jtddtokens(J jt, A w, I env) {
                     wilv[ddendx][1] = bodystart;
                     AN(wil)         = 2 * (AS(wil)[0] = ddendx + 1);
                 }  // make one string of DDEND to end of string
-                RZ(w = unwordil(wil, w, 0));
+                RZ(w = jtunwordil(jt, wil, w, 0));
                 RZ(wil = jtwordil(jt, w));  // run chars in order; get index to words
                 wv   = CAV(w);
                 nw   = AS(wil)[0];
@@ -1740,7 +1740,7 @@ jtddtokens(J jt, A w, I env) {
         AN(wil)            = 2 * (AS(wil)[0] = ddschbgnx + 1);
     }  // make one word of the last part
 
-    w = unwordil(wil, w, 0);                       // the word list is where everything is.  Collect to string
+    w = jtunwordil(jt, wil, w, 0);                       // the word list is where everything is.  Collect to string
     if (!(env & 8)) w = jttokens(jt, w, env & 3);  // enqueue if called for
     EPILOG(w);
 }

@@ -291,7 +291,7 @@ jtspforloc(J jt, A w) {
             ASSERT(vlocnm(m, s), EVILNAME);
             bucketx = BUCKETXLOC(m, s);
         }
-        y = stfind(m, s, bucketx);  // y is the block for the locale
+        y = jtstfind(jt, m, s, bucketx);  // y is the block for the locale
         ASSERT(y != 0, EVLOCALE);
         *v = (D)(FHRHSIZE(AFHRH(y)));  // start with the size of the locale block (always a normal block)
         jtspfor1(jt, LOCPATH(y));
@@ -464,7 +464,7 @@ jtfh(J jt, A w) {
 // jtgc(jt,) protects a result, and pops the stack.  It preserves inplacing and virtuality if possible.  It cannot be
 // used on blocks
 //   that contain contents younger than the block
-// gc3() is a simple-minded jtgc(jt,) that works on all blocks, and can handle up to 3 at a time.
+// jtgc3(jt, ) is a simple-minded jtgc(jt,) that works on all blocks, and can handle up to 3 at a time.
 // virtual() creates a virtual block that refers to a part of another block.  It looks at the inplacing flags to see if
 // it can get away with modifying the
 //    block given rather than creating a new one
@@ -697,8 +697,8 @@ jtgc(J jt, A w, A* old) {
     // NOTE: certain functions (ex: rational determinant) perform operations 'in place' on non-direct names and then
     // protect those names using jtgc(jt,).  The protection is ineffective if the code goes through the fa() path here,
     // because components that were modified will be freed immediately rather than later.  In those places we must
-    // either use gc3() which always does the tpush, or do ACIPNO to force us through the tpush path here.  We generally
-    // use gc3(). Since w now has recursive usecounts (except for sparse, which is never inplaceable), we don't have to
+    // either use jtgc3(jt, ) which always does the tpush, or do ACIPNO to force us through the tpush path here.  We generally
+    // use jtgc3(jt, ). Since w now has recursive usecounts (except for sparse, which is never inplaceable), we don't have to
     // do a full fa() on a block that is returning inplaceable - we just reset the usecount in the block.  If the block
     // is returning inplaceable, we must update AM if we tpush
     I cafter = AC(w);
@@ -823,7 +823,7 @@ jtfa(J jt, AD* RESTRICT wd, I t) {
 // Note: wd CANNOT be virtual
 // tpush, the macro parent of this routine, calls here only if a nonrecursive block is pushed.  This never happens for
 // non-sparse nouns, because they always go through ra() somewhere before the tpush().  Pushing is mostly in jtgc(jt,)
-// and on allocation in ga().
+// and on allocation in jtga(jt, ).
 A*
 jttpush(J jt, AD* RESTRICT wd, I t, A* pushp) {
     I af = AFLAG(wd);

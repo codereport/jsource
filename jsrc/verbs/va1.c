@@ -212,7 +212,7 @@ jtva1(J jt, A w, A self) {
         RESETERR;
     }
     if (ado == 0) return w;                                           // if function is identity, return arg
-    if ((-(AT(w) & SPARSE) & -n) < 0) return va1s(w, self, cv, ado);  // branch off to do sparse
+    if ((-(AT(w) & SPARSE) & -n) < 0) return jtva1s(jt, w, self, cv, ado);  // branch off to do sparse
     // from here on is dense va1
     t  = atype(cv);
     zt = rtype(cv);  // extract required type of input and result

@@ -56,7 +56,7 @@ dgps(D v) {
 
 static Z
 jtzgps(J jt, Z z) {
-    return jtzdiv(jt, z1, zhorner(terms, coeff, z));
+    return jtzdiv(jt, z1, jtzhorner(jt, terms, coeff, z));
 }
 
 D
@@ -122,7 +122,7 @@ jtzstirling(J jt, Z z) {
     Z p, q;
     p = jtztymes(
       jt, jtzsqrt(jt, jtzdiv(jt, zrj0(2 * PI), z)), jtzpow(jt, jtzdiv(jt, z, zrj0(2.718281828459045235360287)), z));
-    q = zhorner(5L, c, jtzdiv(jt, z1, z));
+    q = jtzhorner(jt, 5L, c, jtzdiv(jt, z1, z));
     return jtztymes(jt, p, q);
 } /* Abramowitz & Stegun, 6.1.37 */
 

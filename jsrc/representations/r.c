@@ -189,7 +189,7 @@ jtfx(J jt, A w, A self) {
             ASSERT(AT(g) & VERB, EVSYNTAX);
             RZ(h = fx(yv[2]));
             ASSERT(AT(h) & VERB, EVSYNTAX);
-            return folk(f, g, h);
+            return jtfolk(jt, f, g, h);
         default:
             if (id) fs = ds(id);
             ASSERT(fs && RHS & AT(fs), EVDOMAIN);
@@ -444,8 +444,8 @@ jtunparse1a(J jt, I m, A *hv, A *zv) {
     j = k = -1;
     for (i = 0; i < m; ++i, ++u) {  // for each word
         RZ(
-          x = unparse1(
-            u, vec(BOX, u->n, v + u->i), j, y));  // append new line to y or else return it as x if it is on a new line.
+          x = jtunparse1(jt, 
+            u, jtvec(jt, BOX, u->n, v + u->i), j, y));  // append new line to y or else return it as x if it is on a new line.
         k = u->source;
         if (j < k) {
             if (y) *zv++ = jtunDD(jt, y);
@@ -482,9 +482,9 @@ jtunparsem(J jt, A a, A w) {
         if (n) dn = 1 + ((CW *)AV(dc) + n - 1)->source;
         GATV0(z, BOX, p + mn + dn, 1);
         zu = zv = AAV(z);
-        RZ(zv = unparse1a(m, hv, zv));
+        RZ(zv = jtunparse1a(jt, m, hv, zv));
         if (p) RZ(*zv++ = chrcolon);
-        RZ(zv = unparse1a(n, hv + HN, zv));
+        RZ(zv = jtunparse1a(jt, n, hv + HN, zv));
         ASSERTSYS(AN(z) == zv - zu, "unparsem zn");
     } else {
         // commented text found.  Use it
@@ -533,8 +533,8 @@ jtxrep(J jt, A a, A w) {
         q[0] = u->type;
         q[1] = u->go;
         q[2] = u->source;
-        RZ(*zv++ = jtincorp(jt, vec(INT, 3L, q)));
-        RZ(*zv++ = jtincorp(jt, unparse1(u, vec(BOX, u->n, v + u->i), -1L, 0L)));
+        RZ(*zv++ = jtincorp(jt, jtvec(jt, INT, 3L, q)));
+        RZ(*zv++ = jtincorp(jt, jtunparse1(jt, u, jtvec(jt, BOX, u->n, v + u->i), -1L, 0L)));
     }
     return z;
 } /* explicit representation -- h parameter for : definitions */

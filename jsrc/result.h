@@ -187,7 +187,7 @@ do {
                                                // filled yet in this cell make negative to tell ccvt that the value to
                                                // change are at the end of the block
 #endif
-                            ASSERT(ccvt(zt | NOUNCVTVALIDCT, zz, (A *)&zatomct), EVDOMAIN);
+                            ASSERT(jtccvt(jt, zt | NOUNCVTVALIDCT, zz, (A *)&zatomct), EVDOMAIN);
                             zz = (A)zatomct;  // flag means convert only # atoms given in zatomct
                             // change the strides to match the new cellsize
                             if (zexpshift >= 0) {
@@ -484,7 +484,7 @@ if (ZZFLAGWORD & ZZFLAGWILLBEOPENED) { return zz; }  // no need to check for inh
 ASSERT((ZZFLAGWORD & (ZZFLAGHASUNBOX | ZZFLAGHASBOX)) != (ZZFLAGHASUNBOX | ZZFLAGHASBOX),
        EVDOMAIN);  // if there is a mix of boxed and non-boxed results, fail
 if (ZZFLAGWORD & ZZFLAGBOXALLO) {
-    RZ(zz = assembleresults(ZZFLAGWORD,
+    RZ(zz = jtassembleresults(jt, ZZFLAGWORD,
                             zz,
                             zzbox,
                             zzboxp,

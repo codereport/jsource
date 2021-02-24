@@ -40,7 +40,7 @@ jtswap(J jt, A w) {
         I flag = FAV(w)->flag & (VIRS2 | VJTFLGOK2);
         flag   = (FAV(w)->flag & VASGSAFE) + flag +
                (flag >> 1);  // set ASGSAFE, both inplace/irs bits from dyad; ISATOMIC immaterial, since always dyad
-        return fdef(0, CTILDE, VERB, (AF)(swap1), (AF)(swap2), w, 0L, 0L, flag, (I)(RMAX), (I)(rr(w)), (I)(lr(w)));
+        return jtfdef(jt, 0, CTILDE, VERB, (AF)(swap1), (AF)(swap2), w, 0L, 0L, flag, (I)(RMAX), (I)(rr(w)), (I)(lr(w)));
     } else {
         // evoke.  Ii must be LIT and convertible to ASCII.
         if ((C2T + C4T) & AT(w)) RZ(w = jtcvt(jt, LIT, w)) else ASSERT(LIT & AT(w), EVDOMAIN);
@@ -65,7 +65,7 @@ jtbdot2(J jt, A a, A w, A self) {
 
 static A
 jtbdot1(J jt, A w, A self) {
-    return bdot2(num(0), w, self);
+    return jtbdot2(jt, num(0), w, self);
 }
 
 static A
@@ -116,15 +116,15 @@ jtbdot(J jt, A w) {
         memcpy(AV(b), booltab, 64L);
         RZ(h = jtrifvs(jt, jtcant2(jt, IX(AR(w)), jtfrom(jt, w, b))));  // h is an array representing b.  One cell for
                                                                         // each atom of b; cell is 4 values
-        return fdef(0, CBDOT, VERB, jtbdot1, jtbdot2, 0L, w, h, VFLAGNONE, RMAX, 0L, 0L);
+        return jtfdef(jt, 0, CBDOT, VERB, jtbdot1, jtbdot2, 0L, w, h, VFLAGNONE, RMAX, 0L, 0L);
     } else
         switch (j) {
             case 32:
-                return fdef(0, CBDOT, VERB, jtbitwise1, jtbitwiserotate, 0L, w, 0L, VASGSAFE | VJTFLGOK2, 0L, 0L, 0L);
+                return jtfdef(jt, 0, CBDOT, VERB, jtbitwise1, jtbitwiserotate, 0L, w, 0L, VASGSAFE | VJTFLGOK2, 0L, 0L, 0L);
             case 33:
-                return fdef(0, CBDOT, VERB, jtbitwise1, jtbitwiseshift, 0L, w, 0L, VASGSAFE | VJTFLGOK2, 0L, 0L, 0L);
+                return jtfdef(jt, 0, CBDOT, VERB, jtbitwise1, jtbitwiseshift, 0L, w, 0L, VASGSAFE | VJTFLGOK2, 0L, 0L, 0L);
             case 34:
-                return fdef(0, CBDOT, VERB, jtbitwise1, jtbitwiseshifta, 0L, w, 0L, VASGSAFE | VJTFLGOK2, 0L, 0L, 0L);
+                return jtfdef(jt, 0, CBDOT, VERB, jtbitwise1, jtbitwiseshifta, 0L, w, 0L, VASGSAFE | VJTFLGOK2, 0L, 0L, 0L);
             // The code uses a VERB with id CBDOT to stand for the derived verb of m b. .  This is used for spellout and
             // for inverses, so we retain it. We copy the other information from the verb that executes the function.
             // This contains pointers to the routines, and to the function table
@@ -258,7 +258,7 @@ jtmemo1(J jt, A w, A self) {
     x = IMIN;
     y = jtint0(jt, w);
     if (y == IMIN) return CALL1(f1, w, fs);
-    return (z = memoget(x, y, self)) ? z : memoput(x, y, self, CALL1(f1, w, fs));
+    return (z = jtmemoget(jt, x, y, self)) ? z : jtmemoput(jt, x, y, self, CALL1(f1, w, fs));
 }
 
 static A
@@ -269,9 +269,9 @@ jtmemo2(J jt, A a, A w, A self) {
     x = jtint0(jt, a);
     y = jtint0(jt, w);
     if (MIN(x, y) == IMIN) return CALL2(f2, a, w, fs);  // IMIN is unmemoable, run fn
-    return (z = memoget(x, y, self))
+    return (z = jtmemoget(jt, x, y, self))
              ? z
-             : memoput(x,
+             : jtmemoput(jt, x,
                        y,
                        self,
                        CALL2(f2, a, w, fs));  // if memo lookup returns empty, run the function and remember the result
@@ -300,7 +300,7 @@ jtmemo(J jt, A w) {
     RZ(hv[1] = jtmkwris(jt, q));
     GATV0(q, BOX, m, 1);
     hv[2] = q;
-    EPILOG(fdef(0, CMCAP, VERB, jtmemo1, jtmemo2, w, 0L, h, 0L, v->mr, lrv(v), rrv(v)));
+    EPILOG(jtfdef(jt, 0, CMCAP, VERB, jtmemo1, jtmemo2, w, 0L, h, 0L, v->mr, lrv(v), rrv(v)));
     // Now we have converted the verb result to recursive usecount, and gotten rid of the pending tpops for the
     // components of h
 }

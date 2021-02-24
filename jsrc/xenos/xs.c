@@ -24,14 +24,14 @@ jtxsinit(J jt) {
 A
 jtsnl(J jt, A w) {
     ASSERTMTV(w);
-    return vec(BOX, jt->slistn, AAV(jt->slist));
+    return jtvec(jt, BOX, jt->slistn, AAV(jt->slist));
 }
 /* 4!:3  list of script names */
 
 A
 jtscnl(J jt, A w) {
     ASSERTMTV(w);
-    return vec(INT, jt->slistn, AAV(jt->sclist));
+    return jtvec(jt, INT, jt->slistn, AAV(jt->sclist));
 }
 /* 4!:8  list of script indices which loaded slist */
 
@@ -63,7 +63,7 @@ jtline(J jt, A w, I si, C ce, B tso) {
         tso = 0;  // if locked, keep shtum about internals
     }
     FDEPINC(1);  // No ASSERTs or returns till the FDEPDEC below
-    RZ(d = deba(DCSCRIPT, 0L, w, (A)si));
+    RZ(d = jtdeba(jt, DCSCRIPT, 0L, w, (A)si));
     jt->dcs      = d;
     jt->tostdout = tso && !jt->seclev;
     A *old       = jt->tnextpushp;
@@ -113,7 +113,7 @@ jtaddscriptname(J jt, A w) {
     RE(i = jti0(
          jt,
          jtindexof(
-           jt, vec(BOX, jt->slistn, AAV(jt->slist)), jtbox(jt, jtravel(jt, w)))));  // look up only in the defined names
+           jt, jtvec(jt, BOX, jt->slistn, AAV(jt->slist)), jtbox(jt, jtravel(jt, w)))));  // look up only in the defined names
     if (jt->slistn == i) {
         if (jt->slistn == AN(jt->slist)) {
             RZ(jt->slist = jtext(jt, 1, jt->slist));
@@ -152,7 +152,7 @@ jtlinf(J jt, A a, A w, C ce, B tso) {
 
     // set the current script number
     jt->slisti = (UI4)i;  // glock=0 or 1 is original setting; 2 if this script is locked (so reset after
-    z          = line(x, i, ce, tso);
+    z          = jtline(jt, x, i, ce, tso);
     jt->slisti = (UI4)oldi;
     return z;
 }
@@ -181,42 +181,42 @@ jtscm00(J jt, A w) {
     I r;
     r = 1 && AT(w) & LIT + C2T + C4T;
     F1RANK(r, jtscm00, UNUSED_VALUE);
-    return r ? line(w, -1L, 0, 0) : linf(mark, w, 0, 0);
+    return r ? jtline(jt, w, -1L, 0, 0) : jtlinf(jt, mark, w, 0, 0);
 }
 A
 jtscm01(J jt, A w) {
     I r;
     r = 1 && AT(w) & LIT + C2T + C4T;
     F1RANK(r, jtscm01, UNUSED_VALUE);
-    return r ? line(w, -1L, 0, 1) : linf(mark, w, 0, 1);
+    return r ? jtline(jt, w, -1L, 0, 1) : jtlinf(jt, mark, w, 0, 1);
 }
 A
 jtscm10(J jt, A w) {
     I r;
     r = 1 && AT(w) & LIT + C2T + C4T;
     F1RANK(r, jtscm10, UNUSED_VALUE);
-    return r ? line(w, -1L, 1, 0) : linf(mark, w, 1, 0);
+    return r ? jtline(jt, w, -1L, 1, 0) : jtlinf(jt, mark, w, 1, 0);
 }
 A
 jtscm11(J jt, A w) {
     I r;
     r = 1 && AT(w) & LIT + C2T + C4T;
     F1RANK(r, jtscm11, UNUSED_VALUE);
-    return r ? line(w, -1L, 1, 1) : linf(mark, w, 1, 1);
+    return r ? jtline(jt, w, -1L, 1, 1) : jtlinf(jt, mark, w, 1, 1);
 }
 A
 jtsct1(J jt, A w) {
     I r;
     r = 1 && AT(w) & LIT + C2T + C4T;
     F1RANK(r, jtsct1, UNUSED_VALUE);
-    return r ? line(w, -1L, 2, 1) : linf(mark, w, 2, 1);
+    return r ? jtline(jt, w, -1L, 2, 1) : jtlinf(jt, mark, w, 2, 1);
 }
 A
 jtscz1(J jt, A w) {
     I r;
     r = 1 && AT(w) & LIT + C2T + C4T;
     F1RANK(r, jtscz1, UNUSED_VALUE);
-    return r ? line(w, -1L, 3, 0) : linf(mark, w, 3, 0);
+    return r ? jtline(jt, w, -1L, 3, 0) : jtlinf(jt, mark, w, 3, 0);
 }
 
 A
@@ -224,40 +224,40 @@ jtscm002(J jt, A a, A w) {
     I r;
     r = 1 && AT(w) & LIT + C2T + C4T;
     F2RANK(RMAX, r, jtscm002, UNUSED_VALUE);
-    return r ? line(w, -1L, 0, 0) : linf(a, w, 0, 0);
+    return r ? jtline(jt, w, -1L, 0, 0) : jtlinf(jt, a, w, 0, 0);
 }
 A
 jtscm012(J jt, A a, A w) {
     I r;
     r = 1 && AT(w) & LIT + C2T + C4T;
     F2RANK(RMAX, r, jtscm012, UNUSED_VALUE);
-    return r ? line(w, -1L, 0, 1) : linf(a, w, 0, 1);
+    return r ? jtline(jt, w, -1L, 0, 1) : jtlinf(jt, a, w, 0, 1);
 }
 A
 jtscm102(J jt, A a, A w) {
     I r;
     r = 1 && AT(w) & LIT + C2T + C4T;
     F2RANK(RMAX, r, jtscm102, UNUSED_VALUE);
-    return r ? line(w, -1L, 1, 0) : linf(a, w, 1, 0);
+    return r ? jtline(jt, w, -1L, 1, 0) : jtlinf(jt, a, w, 1, 0);
 }
 A
 jtscm112(J jt, A a, A w) {
     I r;
     r = 1 && AT(w) & LIT + C2T + C4T;
     F2RANK(RMAX, r, jtscm112, UNUSED_VALUE);
-    return r ? line(w, -1L, 1, 1) : linf(a, w, 1, 1);
+    return r ? jtline(jt, w, -1L, 1, 1) : jtlinf(jt, a, w, 1, 1);
 }
 A
 jtsct2(J jt, A a, A w) {
     I r;
     r = 1 && AT(w) & LIT + C2T + C4T;
     F2RANK(RMAX, r, jtsct2, UNUSED_VALUE);
-    return r ? line(w, -1L, 2, 1) : linf(a, w, 2, 1);
+    return r ? jtline(jt, w, -1L, 2, 1) : jtlinf(jt, a, w, 2, 1);
 }
 A
 jtscz2(J jt, A a, A w) {
     I r;
     r = 1 && AT(w) & LIT + C2T + C4T;
     F2RANK(RMAX, r, jtscz2, UNUSED_VALUE);
-    return r ? line(w, -1L, 3, 0) : linf(a, w, 3, 0);
+    return r ? jtline(jt, w, -1L, 3, 0) : jtlinf(jt, a, w, 3, 0);
 }

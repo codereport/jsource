@@ -215,10 +215,10 @@ jtconsinit(J jt) {
                 // Init for u./v.
     A uimp = jtca(jt, mnuvxynam[2]);
     NAV(uimp)->flag |= NMIMPLOC;                                                        // create the name for u.
-    jt->implocref[0] = fdef(0, CTILDE, VERB, 0, 0, uimp, 0L, 0L, 0, RMAX, RMAX, RMAX);  // create 'u.'~
+    jt->implocref[0] = jtfdef(jt, 0, CTILDE, VERB, 0, 0, uimp, 0L, 0L, 0, RMAX, RMAX, RMAX);  // create 'u.'~
     A vimp           = jtca(jt, mnuvxynam[3]);
     NAV(vimp)->flag |= NMIMPLOC;
-    jt->implocref[1] = fdef(0, CTILDE, VERB, 0, 0, vimp, 0L, 0L, 0, RMAX, RMAX, RMAX);  // create 'v.'~
+    jt->implocref[1] = jtfdef(jt, 0, CTILDE, VERB, 0, 0, vimp, 0L, 0L, 0, RMAX, RMAX, RMAX);  // create 'v.'~
 
     return 1;
 }

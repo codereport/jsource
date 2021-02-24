@@ -14,7 +14,7 @@
     {                                                    \
         Q z9;                                            \
         z9 = (jtqstd(jt, q));                            \
-        if (!gc3(&z9.n, &z9.d, 0L, _ttop)) return zeroQ; \
+        if (!jtgc3(jt, &z9.n, &z9.d, 0L, _ttop)) return zeroQ; \
         return z9;                                       \
     }
 #define QRE(exp)                           \

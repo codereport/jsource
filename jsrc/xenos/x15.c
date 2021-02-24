@@ -2400,11 +2400,11 @@ jtcdgahash(J jt, I n) {
 static B
 jtcdinit(J jt) {
     A x;
-    RZ(x = exta(LIT, 2L, sizeof(CCT), 100L));
+    RZ(x = jtexta(jt, LIT, 2L, sizeof(CCT), 100L));
     ras(x);
     memset(AV(x), C0, AN(x));
     jt->cdarg = x;
-    RZ(x = exta(LIT, 1L, 1L, 5000L));
+    RZ(x = jtexta(jt, LIT, 1L, 1L, 5000L));
     ras(x);
     memset(AV(x), C0, AN(x));
     jt->cdstr = x;
@@ -2700,7 +2700,7 @@ jtcdparse(J jt, A a, I empty) {
     lib[cc->ln] = 0;
     memcpy(proc, s0 + pi, cc->pn);
     proc[cc->pn] = 0;
-    RZ(cc = cdload(cc, lib, proc));
+    RZ(cc = jtcdload(jt, cc, lib, proc));
     cc->n = 1 + i;
     RZ(cc = jtcdinsert(jt, a, cc));
     cc->li = li + cc->ai;
@@ -2762,7 +2762,7 @@ jtconvert0(J jt, I zt, I *v, I wt, C *u) {
             *v = rq;
     }
     return v;
-} /* convert a single atom. I from D code adapted from IfromD() in k.c */
+} /* convert a single atom. I from D code adapted from jtIfromD(jt, ) in k.c */
 
 // make one call to the DLL.
 // if cc->zbx is true, zv0 points to AAV(z) where z is the block that will hold the list of boxes that
@@ -2812,7 +2812,7 @@ jtcdexec1(J jt, CCT *cc, C *zv0, C *wu, I wk, I wt, I wd) {
             xv = AV(x);
             if (zbx) *zv = jtincorp(jt, x);
         } else {
-            xv = convert0(t, cv0, wt, u);
+            xv = jtconvert0(jt, t, cv0, wt, u);
             xt = t;
             u += wk;
             CDASSERT(xv != 0, per);
@@ -3105,7 +3105,7 @@ jtmemr(J jt, A w) {
         }
     }
 
-    return vecb01(t, m, u);
+    return jtvecb01(jt, t, m, u);
 } /* 15!:1  memory read */
 
 A
@@ -3413,7 +3413,7 @@ jtnfes(J jt, A w) {
 A
 jtcallbackx(J jt, A w) {
     ASSERTMTV(w);
-    return vec(INT, cbxn, cbx);
+    return jtvec(jt, INT, cbxn, cbx);
 } /* 15!:17 return x callback arguments */
 
 A

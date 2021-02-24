@@ -141,12 +141,12 @@ jtbrephdrq(J jt, B b, B d, A w, C *q) {
     I extt = UNSAFE(AT(w));
     r      = AR(w);
     f      = 0;
-    RZ(mvw(BF(d, q), (C *)&f, 1L, b, BU, d, 1));
+    RZ(jtmvw(jt, BF(d, q), (C *)&f, 1L, b, BU, d, 1));
     *q = d ? (b ? 0xe3 : 0xe2) : (b ? 0xe1 : 0xe0);
-    RZ(mvw(BT(d, q), (C *)&extt, 1L, b, BU, d, 1));
-    RZ(mvw(BN(d, q), (C *)&AN(w), 1L, b, BU, d, 1));
-    RZ(mvw(BR(d, q), (C *)&r, 1L, b, BU, d, 1));  // r is an I
-    RZ(mvw(BS(d, q), (C *)AS(w), r, b, BU, d, 1));
+    RZ(jtmvw(jt, BT(d, q), (C *)&extt, 1L, b, BU, d, 1));
+    RZ(jtmvw(jt, BN(d, q), (C *)&AN(w), 1L, b, BU, d, 1));
+    RZ(jtmvw(jt, BR(d, q), (C *)&r, 1L, b, BU, d, 1));  // r is an I
+    RZ(jtmvw(jt, BS(d, q), (C *)AS(w), r, b, BU, d, 1));
     return BV(d, q, r);
 }
 
@@ -168,21 +168,21 @@ jtbreps(J jt, B b, B d, A w) {
     GATV0(z, BOX, n, 1);
     zv = AAV(z);
     GATV0(y, LIT, bsize(jt, d, 1, INT, n, AR(w), AS(w)), 1);
-    v = brephdr(b, d, w, y);
-    RZ(mvw(v, (C *)&c, 1L, BU, b, d, 1)); /* reserved for flag */
+    v = jtbrephdr(jt, b, d, w, y);
+    RZ(jtmvw(jt, v, (C *)&c, 1L, BU, b, d, 1)); /* reserved for flag */
     zv[0] = jtincorp(jt, y);
     m     = AN(y);
-    RZ(zv[1] = q = jtincorp(jt, brep(b, d, SPA(wp, a))));
-    RZ(mvw(v + kk, (C *)&m, 1L, b, BU, d, 1));
+    RZ(zv[1] = q = jtincorp(jt, jtbrep(jt, b, d, SPA(wp, a))));
+    RZ(jtmvw(jt, v + kk, (C *)&m, 1L, b, BU, d, 1));
     m += AN(q);
-    RZ(zv[2] = q = jtincorp(jt, brep(b, d, SPA(wp, e))));
-    RZ(mvw(v + 2 * kk, (C *)&m, 1L, b, BU, d, 1));
+    RZ(zv[2] = q = jtincorp(jt, jtbrep(jt, b, d, SPA(wp, e))));
+    RZ(jtmvw(jt, v + 2 * kk, (C *)&m, 1L, b, BU, d, 1));
     m += AN(q);
-    RZ(zv[3] = q = jtincorp(jt, brep(b, d, SPA(wp, i))));
-    RZ(mvw(v + 3 * kk, (C *)&m, 1L, b, BU, d, 1));
+    RZ(zv[3] = q = jtincorp(jt, jtbrep(jt, b, d, SPA(wp, i))));
+    RZ(jtmvw(jt, v + 3 * kk, (C *)&m, 1L, b, BU, d, 1));
     m += AN(q);
-    RZ(zv[4] = q = jtincorp(jt, brep(b, d, SPA(wp, x))));
-    RZ(mvw(v + 4 * kk, (C *)&m, 1L, b, BU, d, 1));
+    RZ(zv[4] = q = jtincorp(jt, jtbrep(jt, b, d, SPA(wp, x))));
+    RZ(jtmvw(jt, v + 4 * kk, (C *)&m, 1L, b, BU, d, 1));
     return jtraze(jt, z);
 } /* 3!:1 w for sparse w */
 
@@ -200,9 +200,9 @@ jtbrepfill(J jt, B b, B d, A w, C *zv) {
         I blksize = bsizer(jt, d, 1, w);  // get size of this block (never needs recursion)
         switch (CTTZ(t)) {
             case SBTX:
-            case INTX: RZ(mvw(zv, u, n, b, BU, d, 1)); break;
-            case FLX: RZ(mvw(zv, u, n, b, BU, 1, 1)); break;
-            case CMPXX: RZ(mvw(zv, u, n + n, b, BU, 1, 1)); break;
+            case INTX: RZ(jtmvw(jt, zv, u, n, b, BU, d, 1)); break;
+            case FLX: RZ(jtmvw(jt, zv, u, n, b, BU, 1, 1)); break;
+            case CMPXX: RZ(jtmvw(jt, zv, u, n + n, b, BU, 1, 1)); break;
             default:
                 // 1- and 2-byte C4T types, all of which have LAST0.  We need to clear the last
                 // bytes, because the datalength is rounded up in bsize, and thus there are
@@ -227,7 +227,7 @@ jtbrepfill(J jt, B b, B d, A w, C *zv) {
     zv += n * kk;  // save start of index, step over index
     // move in the blocks: first the offset, writing over the indirect block, then the data
     // the offsets are all relative to the start of the block, which is origzv
-    DO(n, I offset = zv - origzv; RZ(mvw(zvx, (C *)&offset, 1L, b, BU, d, 1)); zvx += kk;
+    DO(n, I offset = zv - origzv; RZ(jtmvw(jt, zvx, (C *)&offset, 1L, b, BU, d, 1)); zvx += kk;
        RZ(zv = jtbrepfill(jt, b, d, wv[i], zv));)
     return zv;
 } /* b iff reverse the bytes; d iff 64-bit */
@@ -239,7 +239,7 @@ jtbrep(J jt, B b, B d, A w) {
     A y;
     I t;
     t = UNSAFE(AT(w));
-    if ((t & SPARSE) != 0) return breps(b, d, w);  // sparse separately
+    if ((t & SPARSE) != 0) return jtbreps(jt, b, d, w);  // sparse separately
     GATV0(y, LIT, bsizer(jt, d, 1, w), 1);         // allocate entire result
     RZ(jtbrepfill(jt, b, d, w, CAV(y)));           // fill it
     return y;                                      // return it
@@ -253,7 +253,7 @@ jthrep(J jt, B b, B d, A w) {
     t = UNSAFE(AT(w));
     if ((t & SPARSE) != 0) {
         A z;  // sparse separately
-        RZ(y = breps(b, d, w));
+        RZ(y = jtbreps(jt, b, d, w));
         n    = AN(y);
         s[0] = n >> LGWS(d);
         s[1] = 2 * WS(d);
@@ -277,12 +277,12 @@ jthrep(J jt, B b, B d, A w) {
 A
 jtbinrep1(J jt, A w) {
     ASSERT(NOUN & AT(w), EVDOMAIN);
-    return brep(BU, 1, w);
+    return jtbrep(jt, BU, 1, w);
 } /* 3!:1 w */
 A
 jthexrep1(J jt, A w) {
     ASSERT(NOUN & AT(w), EVDOMAIN);
-    return hrep(BU, 1, w);
+    return jthrep(jt, BU, 1, w);
 } /* 3!:3 w */
 
 A
@@ -291,7 +291,7 @@ jtbinrep2(J jt, A a, A w) {
     RE(k = jti0(jt, a));
     if (10 <= k) k -= 8;
     ASSERT(BETWEENC(k, 0, 3), EVDOMAIN);
-    return brep((B)(k & 1), (B)(2 <= k), w);
+    return jtbrep(jt, (B)(k & 1), (B)(2 <= k), w);
 } /* a 3!:1 w */
 
 A
@@ -300,7 +300,7 @@ jthexrep2(J jt, A a, A w) {
     RE(k = jti0(jt, a));
     if (10 <= k) k -= 8;
     ASSERT(BETWEENC(k, 0, 3), EVDOMAIN);
-    return hrep((B)(k & 1), (B)(2 <= k), w);
+    return jthrep(jt, (B)(k & 1), (B)(2 <= k), w);
 } /* a 3!:3 w */
 
 static S
@@ -333,9 +333,9 @@ jtunbinr(J jt, B b, B d, B pre601, I m, A w) {
     C *u = (C *)w, *v;
     I e, j, kk, n, p, r, *s, t, *vv;
     ASSERT(m > BH(d), EVLENGTH);
-    RZ(mvw((C *)&t, BTX(d, pre601, w), 1L, BU, b, 1, d));
-    RZ(mvw((C *)&n, BN(d, w), 1L, BU, b, 1, d));
-    RZ(mvw((C *)&r, BR(d, w), 1L, BU, b, 1, d));
+    RZ(jtmvw(jt, (C *)&t, BTX(d, pre601, w), 1L, BU, b, 1, d));
+    RZ(jtmvw(jt, (C *)&n, BN(d, w), 1L, BU, b, 1, d));
+    RZ(jtmvw(jt, (C *)&r, BR(d, w), 1L, BU, b, 1, d));
     kk = WS(d);
     v  = BV(d, w, r);
     ASSERT((t == LOWESTBIT(t)) && t & (B01 | INT | FL | CMPX | BOX | XNUM | RAT | LIT | C2T | C4T | SB01 | SLIT | SINT |
@@ -352,14 +352,14 @@ jtunbinr(J jt, B b, B d, B pre601, I m, A w) {
         GASPARSE(z, t, n, r, (I *)0)
     }
     s = AS(z);
-    RZ(mvw((C *)s, BS(d, w), r, BU, b, 1, d));
+    RZ(jtmvw(jt, (C *)s, BS(d, w), r, BU, b, 1, d));
     j = 1;
     DO(r, ASSERT(0 <= s[i], EVLENGTH); if (t & DENSE) j *= s[i];);
     ASSERT(j == n, EVLENGTH);
     if (t & BOX + XNUM + RAT + SPARSE) {
         GATV0(y, INT, e, 1);
         vv = AV(y);
-        RZ(mvw((C *)vv, v, e, BU, b, 1, d));
+        RZ(jtmvw(jt, (C *)vv, v, e, BU, b, 1, d));
     }
     if (t & BOX + XNUM + RAT) {
         A *zv = AAV(z);
@@ -373,23 +373,23 @@ jtunbinr(J jt, B b, B d, B pre601, I m, A w) {
                 zv[i] = zv[iv[i]];
             else {
                 while (k < e && j >= vv[k]) ++k;
-                zv[i] = jtincorp(jt, unbinr(b, d, pre601, k < e ? vv[k] - j : m - j, (A)(u + j)));
+                zv[i] = jtincorp(jt, jtunbinr(jt, b, d, pre601, k < e ? vv[k] - j : m - j, (A)(u + j)));
             }
         }
     } else if ((t & SPARSE) != 0) {
         P *zp = PAV(z);
         j     = vv[1];
         ASSERT(BETWEENO(j, 0, m), EVINDEX);
-        SPB(zp, a, unbinr(b, d, pre601, vv[2] - j, (A)(u + j)));
+        SPB(zp, a, jtunbinr(jt, b, d, pre601, vv[2] - j, (A)(u + j)));
         j = vv[2];
         ASSERT(BETWEENO(j, 0, m), EVINDEX);
-        SPB(zp, e, unbinr(b, d, pre601, vv[3] - j, (A)(u + j)));
+        SPB(zp, e, jtunbinr(jt, b, d, pre601, vv[3] - j, (A)(u + j)));
         j = vv[3];
         ASSERT(BETWEENO(j, 0, m), EVINDEX);
-        SPB(zp, i, unbinr(b, d, pre601, vv[4] - j, (A)(u + j)));
+        SPB(zp, i, jtunbinr(jt, b, d, pre601, vv[4] - j, (A)(u + j)));
         j = vv[4];
         ASSERT(BETWEENO(j, 0, m), EVINDEX);
-        SPB(zp, x, unbinr(b, d, pre601, m - j, (A)(u + j)));
+        SPB(zp, x, jtunbinr(jt, b, d, pre601, m - j, (A)(u + j)));
     } else if (n)
         switch (CTTZNOFLAG(t)) {
             case B01X: {
@@ -397,9 +397,9 @@ jtunbinr(J jt, B b, B d, B pre601, I m, A w) {
                 DO(n, c = v[i]; ASSERT(c == C0 || c == C1, EVDOMAIN); zv[i] = c;);
             } break;
             case SBTX:
-            case INTX: RZ(mvw(CAV(z), v, n, BU, b, 1, d)); break;
-            case FLX: RZ(mvw(CAV(z), v, n, BU, b, 1, 1)); break;
-            case CMPXX: RZ(mvw(CAV(z), v, n + n, BU, b, 1, 1)); break;
+            case INTX: RZ(jtmvw(jt, CAV(z), v, n, BU, b, 1, d)); break;
+            case FLX: RZ(jtmvw(jt, CAV(z), v, n, BU, b, 1, 1)); break;
+            case CMPXX: RZ(jtmvw(jt, CAV(z), v, n + n, BU, b, 1, 1)); break;
             default:
                 e = n << bplg(t);
                 ASSERTSYS(e <= allosize(z), "unbinr");
@@ -422,10 +422,10 @@ jtunbin(J jt, A w) {
     ASSERT(m >= 8, EVLENGTH);
     q = (A)AV(w);
     switch (CAV(w)[0]) {
-        case (C)0xe0: return unbinr(0, 0, 0, m, q);
-        case (C)0xe1: return unbinr(1, 0, 0, m, q);
-        case (C)0xe2: return unbinr(0, 1, 0, m, q);
-        case (C)0xe3: return unbinr(1, 1, 0, m, q);
+        case (C)0xe0: return jtunbinr(jt, 0, 0, 0, m, q);
+        case (C)0xe1: return jtunbinr(jt, 1, 0, 0, m, q);
+        case (C)0xe2: return jtunbinr(jt, 0, 1, 0, m, q);
+        case (C)0xe3: return jtunbinr(jt, 1, 1, 0, m, q);
     }
     /* code to handle pre 601 headers */
     d = 1;
@@ -437,15 +437,15 @@ jtunbin(J jt, A w) {
       }); /* detect 64-bit        */
     ASSERT(m >= 1 + BH(d), EVLENGTH);
     b = 0;
-    if (!mvw((C *)&t, BTX(d, 1, q), 1L, BU, 0, 1, d)) {
+    if (!jtmvw(jt, (C *)&t, BTX(d, 1, q), 1L, BU, 0, 1, d)) {
         RESETERR;
         b = 1;
     } /* detect reverse bytes */
-    if (!mvw((C *)&n, BN(d, q), 1L, BU, 0, 1, d)) {
+    if (!jtmvw(jt, (C *)&n, BN(d, q), 1L, BU, 0, 1, d)) {
         RESETERR;
         b = 1;
     }
-    if (!mvw((C *)&r, BR(d, q), 1L, BU, 0, 1, d)) {
+    if (!jtmvw(jt, (C *)&r, BR(d, q), 1L, BU, 0, 1, d)) {
         RESETERR;
         b = 1;
     }
@@ -454,7 +454,7 @@ jtunbin(J jt, A w) {
         v = BS(d, q);
         c = 1;
         for (i = 0; !b && i < r; ++i) {
-            if (!mvw((C *)&k, v, 1L, BU, 0, 1, d)) {
+            if (!jtmvw(jt, (C *)&k, v, 1L, BU, 0, 1, d)) {
                 RESETERR;
                 b = 1;
             }
@@ -464,7 +464,7 @@ jtunbin(J jt, A w) {
         }
         b = b || n != c;
     }
-    return unbinr(b, d, 1, m, q);
+    return jtunbinr(jt, b, d, 1, m, q);
 } /* 3!:2 w, inverse for binrep/hexrep */
 
 A

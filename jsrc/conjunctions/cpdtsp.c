@@ -250,17 +250,17 @@ jtpdtspmm(J jt, A a, A w) {
     D *axv, c, d, *dv, *wxv, *zyv;
     I *aiv, *aivm, i, ii, j, k, k0, m, n = 0, p, q, *v, wm, *wiv, *wnv, *zjv, *zjv0;
     P* zp;
-    RZ(mmprep(PAV(a), &m, &aiv, 0L, 0L, &axv));
+    RZ(jtmmprep(jt, PAV(a), &m, &aiv, 0L, 0L, &axv));
     aivm = m + aiv;
-    RZ(mmprep(PAV(w), &m, &wiv, &wm, &wnv, &wxv));
+    RZ(jtmmprep(jt, PAV(w), &m, &wiv, &wm, &wnv, &wxv));
     GATV0(zy, FL, AS(w)[1], 1);
     zyv = DAV(zy);
     memset(zyv, C0, AN(zy) * sizeof(D));
     old = jt->tnextpushp;
-    RZ(zj = exta(INT, 1L, 1L, 1000L));
+    RZ(zj = jtexta(jt, INT, 1L, 1L, 1000L));
     zjv0 = AV(zj);
-    RZ(zi = exta(INT, 2L, 2L, 1000L));
-    RZ(zx = exta(FL, 1L, 1L, 1000L));
+    RZ(zi = jtexta(jt, INT, 2L, 2L, 1000L));
+    RZ(zx = jtexta(jt, FL, 1L, 1L, 1000L));
     NAN0;
     if (wm && aiv < aivm) {
         i   = *aiv++;
@@ -301,8 +301,8 @@ jtpdtspmm(J jt, A a, A w) {
                     k = k0;
             }
             if (aiv >= aivm || i < (p = *aiv++)) { /* done with row i in a, emit row i in z */
-                RZ(mmharvest(i, zjv - zjv0, zj, zyv, &n, &zi, &zx));
-                gc3(&zj, &zi, &zx, old);  // these connot be virtual
+                RZ(jtmmharvest(jt, i, zjv - zjv0, zj, zyv, &n, &zi, &zx));
+                jtgc3(jt, &zj, &zi, &zx, old);  // these connot be virtual
                 zjv = zjv0;
                 k   = -1;
                 i   = p;
@@ -315,7 +315,7 @@ jtpdtspmm(J jt, A a, A w) {
     GASPARSE(z, SFL, 1, 2, AS(a));
     *(1 + AS(z)) = *(1 + AS(w));
     zp           = PAV(z);
-    SPB(zp, a, apvwr(2, 0L, 1L));
+    SPB(zp, a, jtapvwr(jt, 2, 0L, 1L));
     SPB(zp, e, jtscf(jt, 0.0));
     SPB(zp, i, zi);
     SPB(zp, x, zx);

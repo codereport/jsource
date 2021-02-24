@@ -7,7 +7,7 @@
 #include "x.h"
 
 #define SDERIV(id, f1, f2, flag, m, l, r)                                    \
-    fdef(0,                                                                  \
+    jtfdef(jt, 0,                                                            \
          id,                                                                 \
          VERB,                                                               \
          secf1,                                                              \
@@ -21,7 +21,7 @@
          (I)r)
 
 #define SDERI2(id, f1, f2, flag, m, l, r)                                    \
-    fdef(0,                                                                  \
+    jtfdef(jt, 0,                                                            \
          id,                                                                 \
          VERB,                                                               \
          f1,                                                                 \
@@ -90,7 +90,7 @@ jtforeign(J jt, A a, A w) {
     p = jti0(jt, a);
     q = jti0(jt, w);
     RE(0);
-    if (11 == p) return fdef(0, CIBEAM, VERB, jtwd, 0L, a, w, 0L, VASGSAFE, 1L, RMAX, RMAX);
+    if (11 == p) return jtfdef(jt, 0, CIBEAM, VERB, jtwd, 0L, a, w, 0L, VASGSAFE, 1L, RMAX, RMAX);
     ASSERT((UI)p <= (UI)128 && (UI)q < XCC, EVDOMAIN);
     switch (XC(p, q)) {
         case XC(0, 0):
@@ -157,7 +157,7 @@ jtforeign(J jt, A a, A w) {
         case XC(4, 8): return CDERIV(CIBEAM, jtscnl, 0, VASGSAFE, RMAX, 0, 0);
         case XC(4, 55): return CDERIV(CIBEAM, jtex, 0, VASGSAFE, 0, RMAX, RMAX);
 
-        case XC(5, 0): return fdef(0, CIBEAM, ADV, jtfxx, 0L, a, w, 0L, VASGSAFE, 0L, 0L, 0L);
+        case XC(5, 0): return jtfdef(jt, 0, CIBEAM, ADV, jtfxx, 0L, a, w, 0L, VASGSAFE, 0L, 0L, 0L);
         case XC(5, 1): return CDERIV(CIBEAM, jtarx, 0, VASGSAFE, 0, RMAX, RMAX);
         case XC(5, 2): return CDERIV(CIBEAM, jtdrx, 0, VASGSAFE, 0, RMAX, RMAX);
         case XC(5, 4): return CDERIV(CIBEAM, jttrx, 0, VASGSAFE, 0, RMAX, RMAX);

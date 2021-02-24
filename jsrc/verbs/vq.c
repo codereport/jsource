@@ -39,8 +39,8 @@ jtqstd(J jt, Q w) {
     }
     QRE(g = jtxgcd(jt, w.n, w.d));
     if (QX1(g)) return w;
-    z.n = xdiv(w.n, g, XMEXACT);
-    z.d = xdiv(w.d, g, XMEXACT);
+    z.n = jtxdiv(jt, w.n, g, XMEXACT);
+    z.d = jtxdiv(jt, w.d, g, XMEXACT);
     return z;
 }
 
@@ -92,7 +92,7 @@ jtqrem(J jt, Q a, Q w) {
     if (c == XPINF) return 0 <= d ? w : a;
     if (c == XNINF) return 0 >= d ? w : a;
     q   = jtqdiv(jt, w, a);
-    m.n = jtxtymes(jt, a.n, xdiv(q.n, q.d, XMFLR));
+    m.n = jtxtymes(jt, a.n, jtxdiv(jt, q.n, q.d, XMFLR));
     m.d = a.d;
     z   = jtqminus(jt, w, m);
     QEPILOG(z);
@@ -157,7 +157,7 @@ jtqpow(J jt, Q a, Q w) {
         while (XDIG(e)) {
             if (1 & AV(e)[0]) QRE(z = jtqtymes(jt, z, t));
             QRE(t = jtqtymes(jt, t, t));
-            QRE(e = xdiv(e, x2, XMFLR));
+            QRE(e = jtxdiv(jt, e, x2, XMFLR));
         }
     }
     QEPILOG(z);
@@ -197,8 +197,8 @@ jtqlogz1(J jt, Q w) {
         }                     \
     }
 
-AMON(floorQ, X, Q, *z = xdiv(x->n, x->d, XMFLR);)
-AMON(ceilQ, X, Q, *z = xdiv(x->n, x->d, XMCEIL);)
+AMON(floorQ, X, Q, *z = jtxdiv(jt, x->n, x->d, XMFLR);)
+AMON(ceilQ, X, Q, *z = jtxdiv(jt, x->n, x->d, XMCEIL);)
 AMON(sgnQ, X, Q, *z = jtxsgn(jt, x->n);)
 AMON(absQ, Q, Q, z->n = jtrifvs(jt, mag(x->n)); z->d = x->d;)
 AMONPS(sqrtQ, Q, Q, , QSQRT(x), HDR1JERR)

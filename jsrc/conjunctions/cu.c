@@ -451,7 +451,7 @@ jtunderai1(J jt, A w, A self) {
     GATV(z, LIT, n, AR(w), AS(w));
     zv = UAV(z);
     wv = UAV(w);
-    if (!bitwisecharamp(f, n, wv, zv)) DQ(n, *zv++ = f[*wv++];);
+    if (!jtbitwisecharamp(jt, f, n, wv, zv)) DQ(n, *zv++ = f[*wv++];);
     return z;
 } /* f&.(a.&i.) w */
 
@@ -485,7 +485,7 @@ jtunder(J jt, A a, A w) {
     switch (v->id &
             gside) {  // never special if gerund - this could evaluate to 0 or 1, neither of which is one of these codes
         case COPE:
-            return fdef(VF2WILLOPEN1 | VF2WILLOPEN2A | VF2WILLOPEN2W,
+            return jtfdef(jt, VF2WILLOPEN1 | VF2WILLOPEN2A | VF2WILLOPEN2W,
                         CUNDER,
                         VERB,
                         jteveryself,
@@ -570,7 +570,7 @@ jtunder(J jt, A a, A w) {
         flag2 |= VF2RANKATOP2;
         flag &= FAV(h)->flag | (~VJTFLGOK2);
     }  // allow inplace if v is known inplaceable
-    RZ(h = fdef(flag2, CUNDER, VERB, (AF)(f1), (AF)(f2), a, w, h, (flag), rmr, rlr, rrr));
+    RZ(h = jtfdef(jt, flag2, CUNDER, VERB, (AF)(f1), (AF)(f2), a, w, h, (flag), rmr, rlr, rrr));
     // install wvb into the verb so we can get to it if needed
     FAV(h)->localuse.lvp[0] = wvb;
     return h;
@@ -616,7 +616,7 @@ jtundco(J jt, A a, A w) {
     if (!f1) f1 = flag & VFUNDERHASINV ? jtunderh1 : jtundco1;
     f2 = flag & VFUNDERHASINV ? jtunderh2 : jtundco2;
     flag |= (FAV(a)->flag & FAV(wvb)->flag & VASGSAFE) + (FAV(h)->flag & (VJTFLGOK1 | VJTFLGOK2));
-    RZ(h = fdef(0, CUNDCO, VERB, (AF)(f1), (AF)(f2), a, w, h, flag, RMAX, RMAX, RMAX));
+    RZ(h = jtfdef(jt, 0, CUNDCO, VERB, (AF)(f1), (AF)(f2), a, w, h, flag, RMAX, RMAX, RMAX));
     // install wvb into the verb so we can get to it if needed
     FAV(h)->localuse.lvp[0] = wvb;
     return h;

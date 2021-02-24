@@ -227,7 +227,7 @@ jtfolkcomp(J jt, A a, A w, A self) {
     PROLOG(0034);
     A z;
     AF f;
-    f = atcompf(a, w, self);
+    f = jtatcompf(jt, a, w, self);
     if (f) {
         I postflags = jt->workareas.compsc.postflags;
         z           = f(jt, a, w, self);
@@ -247,7 +247,7 @@ jtfolkcomp0(J jt, A a, A w, A self) {
     A z;
     AF f;
     PUSHCCT(1.0)
-    f = atcompf(a, w, self);
+    f = jtatcompf(jt, a, w, self);
     if (f) {
         I postflags = jt->workareas.compsc.postflags;
         z           = f(jt, a, w, self);
@@ -263,12 +263,12 @@ jtfolkcomp0(J jt, A a, A w, A self) {
 static A
 jtcharmapa(J jt, A w, A self) {
     V *v = FAV(self);
-    return charmap(w, FAV(v->fgh[2])->fgh[0], v->fgh[0]);
+    return jtcharmap(jt, w, FAV(v->fgh[2])->fgh[0], v->fgh[0]);
 }
 static A
 jtcharmapb(J jt, A w, A self) {
     V *v = FAV(self);
-    return charmap(w, FAV(v->fgh[0])->fgh[0], FAV(v->fgh[2])->fgh[0]);
+    return jtcharmap(jt, w, FAV(v->fgh[0])->fgh[0], FAV(v->fgh[2])->fgh[0]);
 }
 
 // Create the derived verb for a fork.  Insert in-placeable flags based on routine, and asgsafe based on fgh
@@ -304,7 +304,7 @@ jtfolk(J jt, A f, A g, A h) {
                 flag &= ~(VJTFLGOK1);
             }  // (N {~ N i, ])
         }
-        return fdef(0, CFORK, VERB, f1, jtnvv2, f, g, h, flag, RMAX, RMAX, RMAX);
+        return jtfdef(jt, 0, CFORK, VERB, f1, jtnvv2, f, g, h, flag, RMAX, RMAX, RMAX);
     }
     fv = FAV(f);
     fi = jtcap(jt, f) ? CCAP : fv->id;  // if f is a name defined as [:, detect that now & treat it as if capped fork
@@ -451,7 +451,7 @@ jtfolk(J jt, A f, A g, A h) {
     // If this fork is not a special form, set the flags to indicate whether the f verb does not use an
     // argument.  In that case h can inplace the unused argument.
     if (f1 == jtfolk1 && f2 == jtfolk2) flag |= atoplr(f);
-    return fdef(flag2, CFORK, VERB, f1, f2, f, g, h, flag, RMAX, RMAX, RMAX);
+    return jtfdef(jt, flag2, CFORK, VERB, f1, f2, f, g, h, flag, RMAX, RMAX, RMAX);
 }
 
 // Handlers for to  handle w (aa), w (vc), w (cv)
@@ -551,7 +551,7 @@ jthkodom(J jt, A w, A self) {
         n = AN(w);
         v = AV(w);
         DO(n, if (b = 0 > v[i]) break;);
-        if (!b) return odom(2L, n, v);
+        if (!b) return jtodom(jt, 2L, n, v);
     }
     return CALL2(f2, w, CALL1(g1, w, gs), fs);
 } /* special code for (#: i.@(* /)) */
@@ -725,7 +725,7 @@ jthook(J jt, A a, A w) {
                 }
             // Return the derived verb
             A z;
-            RZ(z = fdef(0, CHOOK, VERB, f1, f2, a, w, 0L, flag, RMAX, RMAX, RMAX));
+            RZ(z = jtfdef(jt, 0, CHOOK, VERB, f1, f2, a, w, 0L, flag, RMAX, RMAX, RMAX));
             FAV(z)->localuse.lclr[0] = linktype;
             return z;  // if it's a form of ;, install the form
         // All other cases produce an adverb
@@ -742,5 +742,5 @@ jthook(J jt, A a, A w) {
             id = ID(a);
             if (BOX & AT(w) && (id == CGRAVE || id == CPOWOP && 1 < AN(w)) && jtgerexact(jt, w)) flag += VGERR;
     }
-    return fdef(0, CADVF, ADV, f1, 0L, a, w, 0L, flag, 0L, 0L, 0L);
+    return jtfdef(jt, 0, CADVF, ADV, f1, 0L, a, w, 0L, flag, 0L, 0L, 0L);
 }

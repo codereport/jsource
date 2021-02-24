@@ -1151,12 +1151,12 @@ jtva2(J jt, AD *RESTRICT a, AD *RESTRICT w, AD *RESTRICT self, UI allranks) {  /
 
             // Figure out the result type.  Don't signal the error from it yet, because domain has lower priority than
             // agreement
-            adocv  = var(self, at, wt);
+            adocv  = jtvar(jt, self, at, wt);
             aadocv = &adocv;
         }
     }
 
-    // finish up the computation of sizes.  We have to defer this till after var() because
+    // finish up the computation of sizes.  We have to defer this till after jtvar(jt, ) because
     // if we are retrying the operation, we may be in error state until var clears it; and prod and mult can fail,
     // so we have to RE when we call them
 
@@ -1401,7 +1401,7 @@ jtva2(J jt, AD *RESTRICT a, AD *RESTRICT w, AD *RESTRICT self, UI allranks) {  /
     }
 
     RESETRANK;  // Ranks are required for xnum/rat/sparse, which call IRS-enabled routines internally.  We could
-                // suppress this for mainline types, perhaps in var().  Anyone who sets this must set it back, so it's
+                // suppress this for mainline types, perhaps in jtvar(jt, ).  Anyone who sets this must set it back, so it's
                 // OK that we don't clear it if we have error
 
     // Signal domain error if appropriate. Must do this after agreement tests
@@ -1410,7 +1410,7 @@ jtva2(J jt, AD *RESTRICT a, AD *RESTRICT w, AD *RESTRICT self, UI allranks) {  /
                            // Not sparse.
 
         // If op specifies forced input conversion AND if both arguments are non-sparse: convert them to the selected
-        // type. Incompatible arguments were detected in var().  If there is an empty operand, skip conversions which
+        // type. Incompatible arguments were detected in jtvar(jt, ).  If there is an empty operand, skip conversions which
         // might fail because the type in t is incompatible with the actual type in a.  t is rare.
         //
         // Because of the priority of errors we mustn't check the type until we have verified agreement above
@@ -1625,7 +1625,7 @@ jtva2(J jt, AD *RESTRICT a, AD *RESTRICT w, AD *RESTRICT self, UI allranks) {  /
                 jt->jerr = (UC)rc;
         }
     } else {
-        z = vasp(a,
+        z = jtvasp(jt, a,
                  w,
                  FAV(self)->id,
                  aadocv->f,
@@ -1990,7 +1990,7 @@ jtfslashatg(J jt, A a, A w, A self) {
     CCM(w, CGE) + CCM(w, CLE) + CCM(w, CGT) + CCM(w, CLT) + CCM(w, CPLUSCO) + CCM(w, CSTARCO) + CCM(w, CNE) + \
       CCM(w, CEQ) + CCM(w, CSTARDOT) + CCM(w, CPLUSDOT) + CCM(w, CMIN) + CCM(w, CMAX) + CCM(w, CSTAR)
             CCMWDS(sumbf)
-            CCMCAND(sumbf, cand, d) if (CCMTST(cand, d)) return sumatgbool(
+            CCMCAND(sumbf, cand, d) if (CCMTST(cand, d)) return jtsumatgbool(jt, 
               a, w, d);  // quickly handle verbs that have primitive inverses
         }
         if (d == CSTAR) {
@@ -2002,11 +2002,11 @@ jtfslashatg(J jt, A a, A w, A self) {
                 return jtsumattymes(jt, a, w, b, at, m, n, nn, r, s, zn);  // +/@:*
         }
     }
-    adocv = var(gs, at, wt);
+    adocv = jtvar(jt, gs, at, wt);
     ASSERT(adocv.f, EVDOMAIN);
     yt     = rtype(adocv.cv);
     t      = atype(adocv.cv);
-    adocvf = var(y, yt, yt);
+    adocvf = jtvar(jt, y, yt, yt);
     ASSERT(adocvf.f, EVDOMAIN);
     zt = rtype(adocvf.cv);
     sb = yt & (c == CPLUS);  // +/@:g where g produces Boolean.

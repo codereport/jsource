@@ -119,7 +119,7 @@ jtipart(J jt, A z, A ind, A *i1, A *i2) {
     n  = AN(ind);
     iv = AAV(ind);
     zp = PAV(z);
-    RZ(b = bfi(AR(z), SPA(zp, a), 1));
+    RZ(b = jtbfi(jt, AR(z), SPA(zp, a), 1));
     c = 0;
     DO(n, if (b[i])++ c;);
     d = n - c;
@@ -190,7 +190,7 @@ jtscubb(J jt, A z, A i1) {
     A a, q, x, y;
     I c, d, h, j, *s, *v, *xv;
     P *zp;
-    RZ(q = scuba(z, i1, 1));
+    RZ(q = jtscuba(jt, z, i1, 1));
     if (!*AS(q)) return mtm;
     s  = AS(z);
     zp = PAV(z);
@@ -206,7 +206,7 @@ jtscubb(J jt, A z, A i1) {
     xv = AV(x);
     j  = c;
     DO(h, xv[i] = s[v[j++]];);
-    RZ(x = odom(2L, h, xv));
+    RZ(x = jtodom(jt, 2L, h, xv));
     c = *AS(q);
     d = *AS(x);
     return jtstitch(jt, jtrepeat(jt, jtsc(jt, d), q), jtreitem(jt, jtsc(jt, c * d), x));
@@ -247,7 +247,7 @@ jtscubc(J jt, A z, A i1, A p) {
     RZ(y1 = jtrepeat(jt, q, y1));
     c = *AS(y1);
     if (!c) return mtm;
-    return jtless(jt, jtstitch(jt, jtrepeat(jt, jtsc(jt, d), y1), jtreitem(jt, jtsc(jt, c * d), odom(2L, h, sv))), y);
+    return jtless(jt, jtstitch(jt, jtrepeat(jt, jtsc(jt, d), y1), jtreitem(jt, jtsc(jt, c * d), jtodom(jt, 2L, h, sv))), y);
 } /* new rows for the index matrix of z for existing cells */
 
 static A
@@ -257,7 +257,7 @@ jtscube(J jt, A z, A i1, A p) {
     zp = PAV(z);
     a  = SPA(zp, a);
     y  = SPA(zp, i);
-    return !AN(a) && !*AS(y) ? jttake(jt, num(1), mtm) : jtover(jt, jtscubb(jt, z, i1), scubc(z, i1, p));
+    return !AN(a) && !*AS(y) ? jttake(jt, num(1), mtm) : jtover(jt, jtscubb(jt, z, i1), jtscubc(jt, z, i1, p));
 } /* new rows for the index matrix of z */
 
 static A
@@ -268,10 +268,10 @@ jtiindx(J jt, A z, A i1) {
     c  = AN(i1);
     zp = PAV(z);
     y  = SPA(zp, i);
-    if (c == *(1 + AS(y))) return jtindexof(jt, y, scuba(z, i1, 0));
+    if (c == *(1 + AS(y))) return jtindexof(jt, y, jtscuba(jt, z, i1, 0));
     /* when y has excess columns, do progressive indexing */
     RZ(y = jttaker(jt, c, y));
-    RZ(j = jtindexof(jt, y, scuba(z, i1, 0))); /* j: group indices           */
+    RZ(j = jtindexof(jt, y, jtscuba(jt, z, i1, 0))); /* j: group indices           */
     n  = AN(j);
     jv = AV(j);
     m  = *AS(y);
@@ -347,7 +347,7 @@ jtam1e(J jt, A a, A z, A ind, B ip) {
     e  = SPA(zp, e);
     RZ(p = jtssel(jt, z, ind));
     pv = BAV(p);
-    RZ(ipart(z, ind, &i1, &i2));
+    RZ(jtipart(jt, z, ind, &i1, &i2));
     m  = AN(p);
     n  = AN(i2);
     u  = CAV(e);
@@ -375,10 +375,10 @@ jtam1a(J jt, A a, A z, A ind, B ip) {
     I ar, c, *iv, *jv, k, m, n, r, *s, uk, vk, xk;
     P *zp;
     RZ(a && (ind = jtistd1(jt, z, ind)));
-    RZ(a = astd1(a, z, ind));
+    RZ(a = jtastd1(jt, a, z, ind));
     if (mtind(ind)) return z;
-    RZ(ipart(z, ind, &i1, &i2));
-    RZ(z = zpad1(z, scube(z, i1, jtssel(jt, z, ind)), ip));
+    RZ(jtipart(jt, z, ind, &i1, &i2));
+    RZ(z = jtzpad1(jt, z, jtscube(jt, z, i1, jtssel(jt, z, ind)), ip));
     zp = PAV(z);
     x  = SPA(zp, x);
     y  = SPA(zp, i);
@@ -398,7 +398,7 @@ jtam1a(J jt, A a, A z, A ind, B ip) {
     m  = AN(t);
     if (!n && !m) {
         a1 = SPA(zp, a);
-        return ar ? sparseit(a0, a1, e) : sparseit(jtreshape(jt, shape(jt, z), a), a1, a);
+        return ar ? jtsparseit(jt, a0, a1, e) : jtsparseit(jt, jtreshape(jt, shape(jt, z), a), a1, a);
     }
     if (n) {
         RZ(t = jtdcube(jt, z, i2));
@@ -417,6 +417,6 @@ jtam1a(J jt, A a, A z, A ind, B ip) {
 
 A
 jtam1sp(J jt, A a, A z, A ind, B ip) {
-    return amnsp(a, z, jtope(jt, jtcatalog(jt, jtistd1(jt, z, ind))), ip);
+    return jtamnsp(jt, a, z, jtope(jt, jtcatalog(jt, jtistd1(jt, z, ind))), ip);
 }
 /* a (<ind)}z; sparse z; ind is index list; arbitrary sparse array a replacement */

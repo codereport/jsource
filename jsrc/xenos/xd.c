@@ -100,14 +100,14 @@ jtdir1(J jt, struct dirent *f, struct stat *dirstatbuf, C *diratts, C *dirmode, 
     n     = strlen(s);
     GAT0(z, BOX, 6, 1);
     zv = AAV(z);
-    RZ(zv[0] = vec(LIT, n, s));
-    RZ(zv[1] = vec(INT, 6L, ts));
+    RZ(zv[0] = jtvec(jt, LIT, n, s));
+    RZ(zv[1] = jtvec(jt, INT, 6L, ts));
     sz = dirstatbuf[0].st_size;
     sz = sz < 0 ? -1 : sz;
     RZ(zv[2] = jtsc(jt, sz));
-    RZ(zv[3] = vec(LIT, 3L, dirrwx));
-    RZ(zv[4] = vec(LIT, 6L, diratts));
-    RZ(zv[5] = vec(LIT, 10L, dirmode));
+    RZ(zv[3] = jtvec(jt, LIT, 3L, dirrwx));
+    RZ(zv[4] = jtvec(jt, LIT, 6L, diratts));
+    RZ(zv[5] = jtvec(jt, LIT, 10L, dirmode));
     return z;
 }
 
@@ -157,7 +157,7 @@ jtjdir(J jt, A w) {
         f = readdir(DP);
     }
     closedir(DP);
-    z = j ? jtope(jt, j < n ? vec(BOX, j, zv) : z) : jtreshape(jt, jtv2(jt, 0L, 6L), ds(CACE));
+    z = j ? jtope(jt, j < n ? jtvec(jt, BOX, j, zv) : z) : jtreshape(jt, jtv2(jt, 0L, 6L), ds(CACE));
     EPILOG(z);
 }
 
@@ -184,7 +184,7 @@ jtjfperm1(J jt, A w) {
     } else
         ASSERT(y = jtstr0(jt, jtvslit(jt, AAV(w)[0])), EVFNUM)
     if (0 != stat(CAV(y), dirstatbuf)) return jtjerrno(jt);
-    return vec(LIT, 9L, 1 + modebuf(dirstatbuf[0].st_mode, b));
+    return jtvec(jt, LIT, 9L, 1 + modebuf(dirstatbuf[0].st_mode, b));
 }
 
 static const struct tperms {

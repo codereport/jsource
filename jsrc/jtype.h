@@ -340,7 +340,7 @@ enum {
 #define SYMBSIZE sizeof(LX)
 #define CONWSIZE sizeof(CW)
 #define ADVSIZE sizeof(V)
-#define VERBSIZE sizeof(V)  // Note: size of ACV in bp() is INTSIZE because the allocation in fdef() is of INTs
+#define VERBSIZE sizeof(V)  // Note: size of ACV in bp() is INTSIZE because the allocation in jtfdef(jt, ) is of INTs
 #define LPARSIZE sizeof(I)
 #define CONJSIZE sizeof(V)
 #define RPARSIZE sizeof(I)
@@ -593,8 +593,8 @@ typedef struct {
 // definition.  0 means we don't know yet.
 
 #define DCPARSE 1  /* sentence for parser                                          */
-#define DCSCRIPT 2 /* script              -- line()                                */
-#define DCCALL 3   /* verb/adv/conj call  -- dbunquote()                           */
+#define DCSCRIPT 2 /* script              -- jtline(jt, )                                */
+#define DCCALL 3   /* verb/adv/conj call  -- jtdbunquote(jt, )                           */
 #define DCJUNK 4   /* stack entry is stale                                      */
 
 typedef struct DS {   /* 1 2 3                                                        */

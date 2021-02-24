@@ -131,14 +131,14 @@ jtranking(J jt, A w) {
     }  // If there are atoms, calculate result-shape the fast way
     else {
         RE(m = jtprod(jt, wf, ws));
-        return m ? jtreitem(jt, vec(INT, wf, ws), jtiota(jt, jtv2(jt, 1L, n)))
-                 : jtreshape(jt, vec(INT, 1 + wf, ws), num(0));
+        return m ? jtreitem(jt, jtvec(jt, INT, wf, ws), jtiota(jt, jtv2(jt, 1L, n)))
+                 : jtreshape(jt, jtvec(jt, INT, 1 + wf, ws), num(0));
     }
     PROD(icn, wcr - 1, ws + wf + 1);
     k = icn << bplg(
           wt);  // wk=size of atom in bytes; icn=# atoms in an item of a cell  k = *bytes in an item of a CELL of w
     // if Boolean 2- or 4-byte, go off to handle that special case
-    if (wt & B01 && (k == 2 || k == sizeof(int))) return rankingb(w, wf, wcr, m, n, k);
+    if (wt & B01 && (k == 2 || k == sizeof(int))) return jtrankingb(jt, w, wf, wcr, m, n, k);
     // See if the values qualify for small-range processing
     if (icn == 1 && wt & INT + C4T) {  // items are individual INTs or C4Ts
         // Calculate the largest range we can abide.  The cost of a sort is about n*lg(n)*4 cycles; the cost of

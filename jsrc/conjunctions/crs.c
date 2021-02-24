@@ -15,7 +15,7 @@ jtsprarg(J jt, I f, A x) {
     xp = PAV(x);
     if (SPARSE & AT(x)) {
         c = 1;
-        RZ(b = bfi(r, SPA(xp, a), 1));
+        RZ(b = jtbfi(jt, r, SPA(xp, a), 1));
         DO(
           f, if (!b[i]) {
               c = 0;
@@ -122,7 +122,7 @@ jtsprz(J jt, A z0, A y, A e, I f, I* s) {
     zp = PAV(z);
     SPB(zp, e, TYPESEQ(m, et) ? e : jtcvt(jt, m, e));
     if (d) {
-        SPB(zp, a, apvwr(f, 0L, 1L));
+        SPB(zp, a, jtapvwr(jt, f, 0L, 1L));
         SPB(zp, i, y);
         SPB(zp, x, TYPESEQ(m, t) ? z0 : jtcvt(jt, m, z0));
         return z;
@@ -184,8 +184,8 @@ jtsprank1(J jt, A w, A fs, I mr, AF f1) {
         c  = v[1];
         wv = AV(wy);
         RZ(wy1 = jtdropr(jt, wf, wy));
-        RZ(wb = spredge(wy, wf, &m));
-        RZ(ww = sprinit(wf, wcr, ws, wt, wp));
+        RZ(wb = jtspredge(jt, wy, wf, &m));
+        RZ(ww = jtsprinit(jt, wf, wcr, ws, wt, wp));
         wq = PAV(ww);
         RZ(ze = CALL1(f1, ww, fs));
         GATV0(z, BOX, m, 1);
@@ -199,7 +199,7 @@ jtsprank1(J jt, A w, A fs, I mr, AF f1) {
             k = 1 + (B*)memchr(wb + j, C1, n - j) - (wb + j);
             ICPY(iv, wv + j * c, wf);
             iv += wf;
-            RZ(q = apv(k, j, 1L));
+            RZ(q = jtapv(jt, k, j, 1L));
             SPB(wq, i, jtfrom(jt, q, wy1));
             SPB(wq, x, jtfrom(jt, q, wx));
             RZ(zv[i] = jtincorp(jt, CALL1(f1, ww, fs)));
@@ -208,10 +208,10 @@ jtsprank1(J jt, A w, A fs, I mr, AF f1) {
         RZ(z = jtope(jt, z));
     } else {
         RZ(zi = jtca(jt, wy));
-        RZ(z = rank1ex(wx, fs, mr, f1));
+        RZ(z = jtrank1ex(jt, wx, fs, mr, f1));
         RZ(ze = CALL1(f1, SPA(wp, e), fs));
     }  // mr is 0
-    z = sprz(z, zi, ze, wf, ws);
+    z = jtsprz(jt, z, zi, ze, wf, ws);
     EPILOG(z);
 } /* f"r w on sparse arrays */
 
@@ -224,7 +224,7 @@ jtspradv(J jt, I n, B* b, I f, I r, I j, P* p, A* z) {
     x = SPA(p, x);
     if (r) {
         q = PAV(*z);
-        RZ(s = apv(k, j, 1L));
+        RZ(s = jtapv(jt, k, j, 1L));
         SPB(q, i, jtfrom(jt, s, jtdropr(jt, f, SPA(p, i))));
         SPB(q, x, jtfrom(jt, s, x));
     } else
@@ -249,8 +249,8 @@ jtsprank2_0w(J jt, A a, A w, A fs, AF f2, I wf, I wcr) {
     wn = v[0];
     wc = v[1];
     wv = AV(y);
-    RZ(wb = spredge(y, wf, &wm));
-    RZ(ww = sprinit(wf, wcr, ws, wt, wp));
+    RZ(wb = jtspredge(jt, y, wf, &wm));
+    RZ(ww = jtsprinit(jt, wf, wcr, ws, wt, wp));
     RZ(we = wcr ? jtca(jt, ww) : SPA(wp, e));
     GATV0(z, BOX, MAX(1, wm), 1);
     zv = AAV(z);
@@ -259,7 +259,7 @@ jtsprank2_0w(J jt, A a, A w, A fs, AF f2, I wf, I wcr) {
     v    = AS(zi);
     v[0] = wm;
     v[1] = f;
-    RE(wj = wk = spradv(wn, wb, wf, wcr, 0L, wp, &ww));
+    RE(wj = wk = jtspradv(jt, wn, wb, wf, wcr, 0L, wp, &ww));
     j = 0;
     while (1) {
         ICPY(iv, wv, f);
@@ -267,12 +267,12 @@ jtsprank2_0w(J jt, A a, A w, A fs, AF f2, I wf, I wcr) {
         RZ(zv[j++] = jtincorp(jt, CALL2(f2, a, ww, fs)));
         if (wj == wn) break;
         wv += wk * wc;
-        RE(wk = spradv(wn, wb, wf, wcr, wj, wp, &ww));
+        RE(wk = jtspradv(jt, wn, wb, wf, wcr, wj, wp, &ww));
         wj += wk;
     }
     RZ(z = jtope(jt, z));
     AS(z)[0] = wm;  // we did one cell of aa to get the shape, but now we have to set back to correct # indexes
-    z        = sprz(z, zi, CALL2(f2, a, we, fs), f, ws);
+    z        = jtsprz(jt, z, zi, CALL2(f2, a, we, fs), f, ws);
     EPILOG(z);
 }
 
@@ -293,8 +293,8 @@ jtsprank2_a0(J jt, A a, A w, A fs, AF f2, I af, I acr) {
     an = v[0];
     ac = v[1];
     av = AV(y);
-    RZ(ab = spredge(y, af, &am));
-    RZ(aa = sprinit(af, acr, as, at, ap));
+    RZ(ab = jtspredge(jt, y, af, &am));
+    RZ(aa = jtsprinit(jt, af, acr, as, at, ap));
     RZ(ae = acr ? jtca(jt, aa) : SPA(ap, e));
     GATV0(z, BOX, MAX(1, am), 1);
     zv = AAV(z);
@@ -303,7 +303,7 @@ jtsprank2_a0(J jt, A a, A w, A fs, AF f2, I af, I acr) {
     v    = AS(zi);
     v[0] = am;
     v[1] = f;
-    RE(aj = ak = spradv(an, ab, af, acr, 0L, ap, &aa));
+    RE(aj = ak = jtspradv(jt, an, ab, af, acr, 0L, ap, &aa));
     j = 0;
     while (1) {
         ICPY(iv, av, f);
@@ -311,12 +311,12 @@ jtsprank2_a0(J jt, A a, A w, A fs, AF f2, I af, I acr) {
         RZ(zv[j++] = jtincorp(jt, CALL2(f2, aa, w, fs)));
         if (aj == an) break;
         av += ak * ac;
-        RE(ak = spradv(an, ab, af, acr, aj, ap, &aa));
+        RE(ak = jtspradv(jt, an, ab, af, acr, aj, ap, &aa));
         aj += ak;
     }
     RZ(z = jtope(jt, z));
     AS(z)[0] = am;  // we did one cell of aa to get the shape, but now we have to set back to correct # indexes
-    z        = sprz(z, zi, CALL2(f2, ae, w, fs), f, as);
+    z        = jtsprz(jt, z, zi, CALL2(f2, ae, w, fs), f, as);
     EPILOG(z);
 }
 
@@ -340,14 +340,14 @@ jtsprank2(J jt, A a, A w, A fs, I lr, I rr, AF f2) {
     if (!af && !wf) return CALL2(f2, a, w, fs);
     DO(af, ASSERT(as[i] != 0, EVNONCE););
     DO(wf, ASSERT(ws[i] != 0, EVNONCE););
-    if (!af) return sprank2_0w(a, w, fs, f2, wf, wcr);
-    if (!wf) return sprank2_a0(a, w, fs, f2, af, acr);
+    if (!af) return jtsprank2_0w(jt, a, w, fs, f2, wf, wcr);
+    if (!wf) return jtsprank2_a0(jt, a, w, fs, f2, af, acr);
     f = MIN(af, wf);
     g = MAX(af, wf);
     m = 1;
     if (f < g) {
         d = g - f;
-        RZ(y = odom(2L, d, f + (af < wf ? ws : as)));
+        RZ(y = jtodom(jt, 2L, d, f + (af < wf ? ws : as)));
         ii = AV(y);
         m  = *AS(y);
     }
@@ -363,16 +363,16 @@ jtsprank2(J jt, A a, A w, A fs, I lr, I rr, AF f2) {
     an = v[0];
     ac = v[1];
     av = an ? AV(y) : 0;
-    RZ(ab = spredge(y, af, &am));
+    RZ(ab = jtspredge(jt, y, af, &am));
     y  = SPA(wp, i);
     v  = AS(y);
     wn = v[0];
     wc = v[1];
     wv = wn ? AV(y) : 0;
-    RZ(wb = spredge(y, wf, &wm));
-    RZ(aa = sprinit(af, acr, as, at, ap));
+    RZ(wb = jtspredge(jt, y, wf, &wm));
+    RZ(aa = jtsprinit(jt, af, acr, as, at, ap));
     RZ(ae = acr ? jtca(jt, aa) : SPA(ap, e));
-    RZ(ww = sprinit(wf, wcr, ws, wt, wp));
+    RZ(ww = jtsprinit(jt, wf, wcr, ws, wt, wp));
     RZ(we = wcr ? jtca(jt, ww) : SPA(wp, e));
     b = af < wf;
     j = am * (af < wf ? m : 1) + wm * (af > wf ? m : 1);
@@ -383,8 +383,8 @@ jtsprank2(J jt, A a, A w, A fs, I lr, I rr, AF f2) {
     v[0] = j;
     v[1] = g;
     iv   = AV(zi);
-    RE(aj = ak = spradv(an, ab, af, acr, 0L, ap, &aa));
-    RE(wj = wk = spradv(wn, wb, wf, wcr, 0L, wp, &ww));
+    RE(aj = ak = jtspradv(jt, an, ab, af, acr, 0L, ap, &aa));
+    RE(wj = wk = jtspradv(jt, wn, wb, wf, wcr, 0L, wp, &ww));
     j = s = k = 0;
     u         = ii;
     y         = 0;
@@ -410,7 +410,7 @@ jtsprank2(J jt, A a, A w, A fs, I lr, I rr, AF f2) {
                     av = 0;
                 else {
                     av += ak * ac;
-                    RE(ak = spradv(an, ab, af, acr, aj, ap, &aa));
+                    RE(ak = jtspradv(jt, an, ab, af, acr, aj, ap, &aa));
                     aj += ak;
                 }
             }
@@ -419,7 +419,7 @@ jtsprank2(J jt, A a, A w, A fs, I lr, I rr, AF f2) {
                     wv = 0;
                 else {
                     wv += wk * wc;
-                    RE(wk = spradv(wn, wb, wf, wcr, wj, wp, &ww));
+                    RE(wk = jtspradv(jt, wn, wb, wf, wcr, wj, wp, &ww));
                     wj += wk;
                 }
             }
@@ -462,7 +462,7 @@ jtsprank2(J jt, A a, A w, A fs, I lr, I rr, AF f2) {
                 else {
                     v = wv;
                     wv += wk * wc;
-                    RE(wk = spradv(wn, wb, wf, wcr, wj, wp, &ww));
+                    RE(wk = jtspradv(jt, wn, wb, wf, wcr, wj, wp, &ww));
                     wj += wk;
                 }
             else if (!b && 0 >= s)
@@ -471,7 +471,7 @@ jtsprank2(J jt, A a, A w, A fs, I lr, I rr, AF f2) {
                 else {
                     v = av;
                     av += ak * ac;
-                    RE(ak = spradv(an, ab, af, acr, aj, ap, &aa));
+                    RE(ak = jtspradv(jt, an, ab, af, acr, aj, ap, &aa));
                     aj += ak;
                 }
             if (b && (!s && !wv || v && ICMP(v, wv, f)) || !b && (!s && !av || v && ICMP(v, av, f))) {
@@ -489,7 +489,7 @@ jtsprank2(J jt, A a, A w, A fs, I lr, I rr, AF f2) {
                     av = 0;
                 else {
                     av += ak * ac;
-                    RE(ak = spradv(an, ab, af, acr, aj, ap, &aa));
+                    RE(ak = jtspradv(jt, an, ab, af, acr, aj, ap, &aa));
                     aj += ak;
                 }
             else if (!b && 0 <= s && (!v || ICMP(v, av, f)))
@@ -497,12 +497,12 @@ jtsprank2(J jt, A a, A w, A fs, I lr, I rr, AF f2) {
                     wv = 0;
                 else {
                     wv += wk * wc;
-                    RE(wk = spradv(wn, wb, wf, wcr, wj, wp, &ww));
+                    RE(wk = jtspradv(jt, wn, wb, wf, wcr, wj, wp, &ww));
                     wj += wk;
                 }
         }
     AN(z) = *AS(z) = *AS(zi) = j;
     AN(zi)                   = j * g;
-    z                        = sprz(jtope(jt, z), zi, CALL2(f2, ae, we, fs), g, g == af ? as : ws);
+    z                        = jtsprz(jt, jtope(jt, z), zi, CALL2(f2, ae, we, fs), g, g == af ? as : ws);
     EPILOG(z);
 } /* a f"r w on sparse arrays */

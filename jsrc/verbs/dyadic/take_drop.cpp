@@ -60,7 +60,7 @@ jttks(J jt, array a, array w) { // take_sparse
     wp = PAV(w); // pointer to array values
 
     if (an <= r) {
-        RZ(a = vec(INT, r, s));
+        RZ(a = jtvec(jt, INT, r, s));
         MCISH(AV(a), u, an);
     }  // vec is not virtual
 
@@ -79,7 +79,7 @@ jttks(J jt, array a, array w) { // take_sparse
 
     if (b) {
         jt->fill = SPA(wp, e);
-        x        = irs2(vec(INT, r - m, m + u), SPA(wp, x), 0L, 1L, -1L, reinterpret_cast<AF>(jttake));
+        x        = jtirs2(jt, jtvec(jt, INT, r - m, m + u), SPA(wp, x), 0L, 1L, -1L, reinterpret_cast<AF>(jttake));
         jt->fill = 0;
         RZ(x);
     }  // fill cannot be virtual
@@ -160,7 +160,7 @@ jttk(J jt, A a, A w) {
               b = 1;
               break;
           });                                         // if empty take, or take from empty cell, set b
-    if (((b - 1) & AN(w)) == 0) return tk0(b, a, w);  // this handles empty w, so PROD OK below   b||!AN(w)
+    if (((b - 1) & AN(w)) == 0) return jttk0(jt, b, a, w);  // this handles empty w, so PROD OK below   b||!AN(w)
     k = bpnoun(t);
     z = w;
     c = q = 1;  // c will be #cells for this axis
@@ -278,7 +278,7 @@ jttake(J jt, A a, A w) {
     }
     // full processing for more complex a
     if ((-wcr & (wf - 1)) >= 0) {  // if y is an atom, or y has multiple cells:
-        RZ(s = vec(INT, wf + n, AS(w)));
+        RZ(s = jtvec(jt, INT, wf + n, AS(w)));
         v = wf + AV(s);  // s is a block holding shape of a cell of input to the result: w-frame followed by #$a axes,
                          // all taken from w.  vec is never virtual
         if (!wcr) {
@@ -386,7 +386,7 @@ jtrsh0(J jt, A w) {
     wf  = wr - wcr;
     RESETRANK;
     ws = AS(w);
-    RZ(x = vec(INT, wr - 1, ws));
+    RZ(x = jtvec(jt, INT, wr - 1, ws));
     MCISH(wf + AV(x), ws + wf + 1, wcr - 1);
     RZ(w = jtsetfv(jt, w, w));
     GA(y, AT(w), 1, 0, 0);
@@ -427,7 +427,7 @@ jthead(J jt, A w) {
             return jtfrom(jtinplace, zeroionei(0), w);  // could call jtfromi directly for non-sparse w
         }
     } else {
-        return SPARSE & AT(w) ? irs2(num(0), jttake(jt, num(1), w), 0L, 0L, wcr, reinterpret_cast<AF>(jtfrom))
+        return SPARSE & AT(w) ? jtirs2(jt, num(0), jttake(jt, num(1), w), 0L, 0L, wcr, reinterpret_cast<AF>(jtfrom))
                               : jtrsh0(jt, w);  // cell of w is empty - create a cell of fills  jt->ranks is still set
                                                 // for use in take.  Left rank is garbage, but that's OK
     }
@@ -445,7 +445,7 @@ jttail(J jt, A w) {
     return !wcr || AS(w)[wf] ? jtfrom(jtinplace, num(-1), w)
                              :  // if cells are atoms, or if the cells are nonempty arrays, result is last cell(s) scaf
                                 // should generate virtual block here for speed
-             SPARSE & AT(w) ? irs2(num(0), jttake(jt, num(-1), w), 0L, 0L, wcr, reinterpret_cast<AF>(jtfrom))
+             SPARSE & AT(w) ? jtirs2(jt, num(0), jttake(jt, num(-1), w), 0L, 0L, wcr, reinterpret_cast<AF>(jtfrom))
                             : jtrsh0(jt, w);
     // pristinity from other verbs
 }
