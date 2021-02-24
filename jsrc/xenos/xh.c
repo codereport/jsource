@@ -72,7 +72,7 @@ jthost(J jt, A w) {
 #endif
         if (b) {
             f = fopen(fn, FREAD_O);
-            z = rd(f, 0L, -1L);
+            z = jtrd(jt, f, 0L, -1L);
             fclose(f);
         }
         unlink(fn);
@@ -129,7 +129,7 @@ jthostio(J jt, A w) {
         CL(fi);
         CL(fo);
     }
-    if (!add2(pz[1], pz[2], s)) {
+    if (!jtadd2(jt, pz[1], pz[2], s)) {
         fclose(pz[1]);
         fclose(pz[2]);
         CL(fi);
@@ -153,7 +153,7 @@ jthostio(J jt, A w) {
     }
     close(fo[0]);
     close(fi[1]);
-    add2(NULL, NULL, NULL);
+    jtadd2(jt, NULL, NULL, NULL);
     pz[0] = (F)(intptr_t)r;
     return z;
 }

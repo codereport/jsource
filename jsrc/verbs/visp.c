@@ -67,10 +67,10 @@ jtiovxs(J jt, I mode, A a, A w) {
         if (jtequ(jt, ae, e))
             SPB(zp, e, jtsc(jt, j))
         else {
-            RE(k = jti0(jt, indexofsub(mode, ax, e)));
+            RE(k = jti0(jt, jtindexofsub(jt, mode, ax, e)));
             SPB(zp, e, jtsc(jt, AN(ay) ? (m > k ? yv[k] : n) : k));
         }
-        RZ(q = indexofsub(mode, ax, x));
+        RZ(q = jtindexofsub(jt, mode, ax, x));
         v = AV(q);
         if (AN(ay) || AN(SPA(ap, a))) {
             DQ(AN(x), k = *v; *v++ = m > k ? yv[k] : n;);
@@ -84,8 +84,8 @@ jtiovxs(J jt, I mode, A a, A w) {
         SPB(zp, x, q);
     } else {
         if (h && TYPESNE(t, at)) RZ(a = jtcvt(jt, t, a));
-        SPB(zp, e, indexofsub(mode, a, e));
-        SPB(zp, x, indexofsub(mode, a, x));
+        SPB(zp, e, jtindexofsub(jt, mode, a, e));
+        SPB(zp, x, jtindexofsub(jt, mode, a, x));
     }
     return z;
 } /* vector i. sparse */
@@ -99,7 +99,7 @@ jtiovsd(J jt, I mode, A a, A w) {
     ap = PAV(a);
     ax = SPA(ap, x);
     ay = SPA(ap, i);
-    if (!AN(ay)) return indexofsub(mode, jtravel(jt, ax), w);
+    if (!AN(ay)) return jtindexofsub(jt, mode, jtravel(jt, ax), w);
     m  = AN(ax);
     n  = *AS(a);
     yv = AV(ay);
@@ -109,7 +109,7 @@ jtiovsd(J jt, I mode, A a, A w) {
     if (h = HOMO(at, wt)) t = maxtype(at, wt);
     if (h && TYPESNE(t, wt)) RZ(w = jtcvt(jt, t, w));
     j = jtioev(jt, mode, a);
-    RZ(z = indexofsub(mode, ax, w));
+    RZ(z = jtindexofsub(jt, mode, ax, w));
     v = AV(z);
     RZ(p = eq(ae, w));
     pv = BAV(p);
@@ -136,14 +136,14 @@ jtindexofxx(J jt, I mode, A a, A w) {
         m = wr;
         n = ar;
     }
-    RZ(b = bfi(m, SPA(p, a), 1));
+    RZ(b = jtbfi(jt, m, SPA(p, a), 1));
     b[0] = 1;
     GATV0(x, B01, n, 1);
     c = BAV(x);
     DO(ABS(d), c[i] = s;);  // initialize unfilled part of c
     j = 0;
     DQ(MIN(ar, wr), ++j; c[n - j] = b[m - j];);
-    return indexofss(mode, s ? a : jtreaxis(jt, jtifb(jt, n, c), a), s ? jtreaxis(jt, jtifb(jt, n, c), w) : w);
+    return jtindexofss(jt, mode, s ? a : jtreaxis(jt, jtifb(jt, n, c), a), s ? jtreaxis(jt, jtifb(jt, n, c), w) : w);
 } /* dense i. sparse   or   sparse i. dense;  1<AR(a) */
 
 static A
@@ -171,7 +171,7 @@ jtioe(J jt, I mode, A w) {
         AR(b)        = 2;
     }
     if (1 < AR(b)) RZ(b = jtaslash1(jt, CSTARDOT, b)); /* b=. *./@,"_1 (3$.w)=5$.w */
-    RZ(y = irs2(num(0), y, 0L, 0L, 1L, jtfrom));
+    RZ(y = jtirs2(jt, num(0), y, 0L, 0L, 1L, jtfrom));
     RZ(df2(p, y, b, jtsldot(jt, jtslash(jt, ds(CSTARDOT)))));
     RZ(j = jtrepeat(jt, jtnot(jt, p), jtrepeat(jt, ne(y, jtcurtail(jt, jtover(jt, num(-1), y))), y)));
     jn = AN(j);
@@ -210,7 +210,7 @@ jtioresparse(J jt, B aw, A* za, A* zw) {
     a  = *za;
     ar = AR(a);
     ap = PAV(a);
-    RZ(ab = bfi(ar, SPA(ap, a), 1));
+    RZ(ab = jtbfi(jt, ar, SPA(ap, a), 1));
     if (!*ab) *ab = ac = 1;
     if (aw) {
         w  = *zw;
@@ -221,7 +221,7 @@ jtioresparse(J jt, B aw, A* za, A* zw) {
             RZ(w = jtrezero(jt, e, w));
             wp = PAV(w);
         }
-        RZ(wb = bfi(wr, SPA(wp, a), 1));
+        RZ(wb = jtbfi(jt, wr, SPA(wp, a), 1));
         j = wr - ar;
         DO(ar - 1, ++j; if (ab[1 + i] < wb[j]) ab[1 + i] = ac = 1; else if (ab[1 + i] > wb[j]) wb[j] = wc = 1;);
         DO(1 + wr - ar, if (!wb[i]) wb[i] = wc = 1;);
@@ -243,7 +243,7 @@ jtiopart(J jt, A w, I r, I mm, I* zc, A* zi, A* zj, A* zx) {
     wy = SPA(wp, i);
     wx = SPA(wp, x);
     n  = AR(wx) - 1;
-    RZ(b = jtnot(jt, irs2(wx, jtreshape(jt, vec(INT, n, 1 + AS(wx)), SPA(wp, e)), 0L, n, n, jtmatch)));
+    RZ(b = jtnot(jt, jtirs2(jt, wx, jtreshape(jt, jtvec(jt, INT, n, 1 + AS(wx)), SPA(wp, e)), 0L, n, n, jtmatch)));
     if (!all1(b)) {
         RZ(wx = jtrepeat(jt, b, wx));
         RZ(wy = jtrepeat(jt, b, wy));
@@ -319,26 +319,26 @@ jtindexofss(J jt, I mode, A a, A w) {
     wr = AR(w);
     wp = PAV(w);
     r  = 1 + wr - ar;
-    RZ(ioresparse(aw, &a, &w));
+    RZ(jtioresparse(jt, aw, &a, &w));
     v  = AS(a);
     n  = *v++;
     mm = -1;
     DO(ar - 1, mm = MAX(mm, v[i]););
     c = -1;
-    RZ(iopart(a, ar - 1, mm, &c, &ai, &aj, &ax));
-    if (aw) RZ(iopart(w, ar - 1, mm, &c, &wi, &wj, &wx));
+    RZ(jtiopart(jt, a, ar - 1, mm, &c, &ai, &aj, &ax));
+    if (aw) RZ(jtiopart(jt, w, ar - 1, mm, &c, &wi, &wj, &wx));
     switch (aw ? (FL + CMPX & maxtype(AT(ax), AT(wx)) ? 3 : 1) : FL + CMPX & AT(ax) ? 2 : 0) {
         case 0: x = jtstitch(jt, aj, ax); break;
         case 1:
             x = jtstitch(jt, aj, ax);
             y = jtstitch(jt, wj, wx);
             break;
-        case 2: x = jtstitch(jt, aj, 1.0 != jt->cct ? iocol(mode, ax, ax) : jtifdz(jt, ax)); break;
+        case 2: x = jtstitch(jt, aj, 1.0 != jt->cct ? jtiocol(jt, mode, ax, ax) : jtifdz(jt, ax)); break;
         case 3:
-            x = jtstitch(jt, aj, 1.0 != jt->cct ? iocol(mode, ax, ax) : jtifdz(jt, ax));
-            y = jtstitch(jt, wj, 1.0 != jt->cct ? iocol(mode, ax, wx) : jtifdz(jt, wx));
+            x = jtstitch(jt, aj, 1.0 != jt->cct ? jtiocol(jt, mode, ax, ax) : jtifdz(jt, ax));
+            y = jtstitch(jt, wj, 1.0 != jt->cct ? jtiocol(jt, mode, ax, wx) : jtifdz(jt, wx));
     }
-    RZ(x = indexofsub(mode, x, aw ? y : x));
+    RZ(x = jtindexofsub(jt, mode, x, aw ? y : x));
     u = AV(x);
     m = *AS(ai);
     v = AV(ai);
@@ -349,7 +349,7 @@ jtindexofss(J jt, I mode, A a, A w) {
     if (!r) return AN(x) ? jtsc(jt, *u) : jtioe(jt, mode, a);
     GASPARSE(z, SINT, 1, r, AS(w));
     zp = PAV(z);
-    SPB(zp, a, apvwr(r, 0L, 1L));
+    SPB(zp, a, jtapvwr(jt, r, 0L, 1L));
     SPB(zp, e, jtioe(jt, mode, a));
     SPB(zp, i, aw ? wi : ai);
     SPB(zp, x, x);
@@ -368,7 +368,7 @@ jtnubsievesp(J jt, A w) {
     RESETRANK;
     n = r ? *(AS(w) + wr - r) : 1;
     if (r < wr)
-        return ATOMIC2(jt, IX(n), irs2(w, w, 0L, r, r, jtindexof), rkblk, 1L, r ? 1L : 0L, CEQ);  // seems to fail
+        return ATOMIC2(jt, IX(n), jtirs2(jt, w, w, 0L, r, r, jtindexof), rkblk, 1L, r ? 1L : 0L, CEQ);  // seems to fail
     RZ(x = jtindexof(jt, w, w));
     p = PAV(x);
     y = SPA(p, i);

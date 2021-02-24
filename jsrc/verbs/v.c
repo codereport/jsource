@@ -77,7 +77,7 @@ jtravel(J jt, A w) {
     AS(z)[f] = m;  // allocate result area, shape=frame+1 more to hold size of cell; fill in shape
     wp       = PAV(w);
     zp       = PAV(z);
-    RZ(b = bfi(AR(w), SPA(wp, a), 1));
+    RZ(b = jtbfi(jt, AR(w), SPA(wp, a), 1));
     if (memchr(b + f, C1, r)) {
         if (memchr(b + f, C0, r)) {
             memset(b + f, C1, r);
@@ -153,7 +153,7 @@ jtlr2(J jt, RANK2T ranks, A a, A w) {
     if (wf >= af) { return w; }  // no replication - quick out
     RESETRANK;
     return jtreitem(
-      jt, vec(INT, af - wf, AS(a)), jtlamin1(jt, w));  // could use virtual block, but this case is so rare...
+      jt, jtvec(jt, INT, af - wf, AS(a)), jtlamin1(jt, w));  // could use virtual block, but this case is so rare...
 }
 
 A
@@ -161,14 +161,14 @@ jtleft2(J jt, A a, A w) {
     FPREFIP;
     RANK2T jtr = jt->ranks;
     if (jtr == (RANK2T)~0) a;
-    return lr2((jtr << RMAXX) | (jtr >> RMAXX), w, a);
+    return jtlr2(jt, (jtr << RMAXX) | (jtr >> RMAXX), w, a);
 }  // swap a & w, and their ranks
 A
 jtright2(J jt, A a, A w) {
     FPREFIP;
     RANK2T jtr = jt->ranks;
     if (jtr == (RANK2T)~0) w;
-    return lr2(jtr, a, w);
+    return jtlr2(jt, jtr, a, w);
 }
 
 // i. y
@@ -184,7 +184,7 @@ jtiota(J jt, A w) {
     v = AV(w);
     if (1 == n) {
         m = *v;
-        return 0 > m ? apv(-m, -m - 1, -1L) : IX(m);
+        return 0 > m ? jtapv(jt, -m, -m - 1, -1L) : IX(m);
     }
     A mg;
     RZ(mg = mag(w));
@@ -213,10 +213,10 @@ jtjico1(J jt, A w) {
     b = FFIEQ(d, n);
     c = (2 * ABS(n)) / (m ? m : 1);  // try as integer
     if (b && m * c == 2 * ABS(n))
-        z = apv(1 + m, -n, 0 > d ? -c : c);  // if integer works, use it
+        z = jtapv(jt, 1 + m, -n, 0 > d ? -c : c);  // if integer works, use it
     else
         z = plusW(jtscf(jt, 0 > d ? d : -d),
-                  tymesW(jtscf(jt, 2 * ABS(d) / m), apv(1 + m, 0 > d ? m : 0L, 0 > d ? -1L : 1L)));  // otherwise FL
+                  tymesW(jtscf(jt, 2 * ABS(d) / m), jtapv(jt, 1 + m, 0 > d ? m : 0L, 0 > d ? -1L : 1L)));  // otherwise FL
     if (AT(w) & XNUM + RAT)
         z = jtcvt(jt, AT(w) & XNUM || jtequ(jt, w, floor1(w)) ? XNUM : RAT, z);  // cvrt to XNUM as needed
     return z;
@@ -299,7 +299,7 @@ jtcharmap(J jt, A w, A x, A y) {
     if (((k - 1) & (n - AN(y))) >= 0)
         DQ(wn, c = *u++; ASSERT(bb[c], EVINDEX);
            *v++ = zz[c];)  // not all codes mapped AND #x>=#y, meaning index error possible on {
-    else if (!bitwisecharamp(zz, wn, u, v))
+    else if (!jtbitwisecharamp(jt, zz, wn, u, v))
         DQ(wn, *v++ = zz[*u++];);  // no index error possible, and special case not handled
     return z;
 } /* y {~ x i. w */

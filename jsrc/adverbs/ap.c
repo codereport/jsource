@@ -274,12 +274,12 @@ jtpscanlt(J jt, I m, I d, I n, B* z, B* x, B p) {
 
 I
 ltpfxB(I d, I n, I m, B* RESTRICTI x, B* RESTRICTI z, J jt) {
-    pscanlt(m, d, n, z, x, C1);
+    jtpscanlt(jt, m, d, n, z, x, C1);
     return EVOK;
 }
 I
 lepfxB(I d, I n, I m, B* RESTRICTI x, B* RESTRICTI z, J jt) {
-    pscanlt(m, d, n, z, x, C0);
+    jtpscanlt(jt, m, d, n, z, x, C0);
     return EVOK;
 }
 
@@ -377,22 +377,22 @@ jtpscangt(J jt, I m, I d, I n, B* z, B* x, I apas) {
 
 I
 gtpfxB(I d, I n, I m, B* RESTRICTI x, B* RESTRICTI z, J jt) {
-    pscangt(m, d, n, z, x, 0x2);
+    jtpscangt(jt, m, d, n, z, x, 0x2);
     return EVOK;
 }
 I
 gepfxB(I d, I n, I m, B* RESTRICTI x, B* RESTRICTI z, J jt) {
-    pscangt(m, d, n, z, x, 0xd);
+    jtpscangt(jt, m, d, n, z, x, 0xd);
     return EVOK;
 }
 I
 norpfxB(I d, I n, I m, B* RESTRICTI x, B* RESTRICTI z, J jt) {
-    pscangt(m, d, n, z, x, 0x5);
+    jtpscangt(jt, m, d, n, z, x, 0x5);
     return EVOK;
 }
 I
 nandpfxB(I d, I n, I m, B* RESTRICTI x, B* RESTRICTI z, J jt) {
-    pscangt(m, d, n, z, x, 0xa);
+    jtpscangt(jt, m, d, n, z, x, 0xa);
     return EVOK;
 }
 
@@ -508,8 +508,8 @@ jtprefix(J jt, A w, A self) {
     I r;
     r = (RANKT)jt->ranks;
     RESETRANK;
-    if (r < AR(w)) { return rank1ex(w, self, r, jtprefix); }
-    return eachl(apv(SETIC(w, r), 1L, 1L), w, jtatop(jt, fs, ds(CTAKE)));
+    if (r < AR(w)) { return jtrank1ex(jt, w, self, r, jtprefix); }
+    return jteachl(jt, jtapv(jt, SETIC(w, r), 1L, 1L), w, jtatop(jt, fs, ds(CTAKE)));
 } /* f\"r w for general f */
 
 static A
@@ -519,7 +519,7 @@ jtgprefix(J jt, A w, A self) {
     ASSERT(DENSE & AT(w), EVNONCE);
     r = (RANKT)jt->ranks;
     RESETRANK;
-    if (r < AR(w)) { return rank1ex(w, self, r, jtgprefix); }
+    if (r < AR(w)) { return jtrank1ex(jt, w, self, r, jtgprefix); }
     SETIC(w, n);
     h  = VAV(self)->fgh[2];
     hv = AAV(h);
@@ -605,7 +605,7 @@ jtinfix(J jt, A a, A w, A self) {
     RZ(x = jtifxi(jt, m, w));
     // If there are infixes, apply fs@:jtseg (ac2 creates an A verb for jtseg)
     if (AS(x)[0])
-        z = eachl(x, w, jtatop(jt, fs, jtac2(jt, jtseg)));
+        z = jteachl(jt, x, w, jtatop(jt, fs, jtac2(jt, jtseg)));
     else {
         A s;
         I r, rr;
@@ -896,7 +896,7 @@ jtpscan(J jt, A w, A self) {
     I f, n, r, t, wn, wr, *ws, wt;
     FPREFIP;
     wt = AT(w);                                               // get type of w
-    if ((SPARSE & wt) != 0) return scansp(w, self, jtpscan);  // if sparse, go do it separately
+    if ((SPARSE & wt) != 0) return jtscansp(jt, w, self, jtpscan);  // if sparse, go do it separately
     // wn = #atoms in w, wr=rank of w, r=effective rank, f=length of frame, ws->shape of w
     wn = AN(w);
     wr = AR(w);
@@ -974,7 +974,7 @@ jtinfixd(J jt, A a, A w, A self) {
             DQ(d, memcpy(x, y, q); x += q; y += k;);
         } else {
             memcpy(x, y, n * k);
-            if (q = d * p - n) fillv(wt, q * c, x + n * k);
+            if (q = d * p - n) jtfillv(jt, wt, q * c, x + n * k);
         }
     }
     return z;
@@ -1056,7 +1056,7 @@ jtmovsumavg1(J jt, I m, A w, A fs, B avg) {
 static A
 jtmovsumavg(J jt, I m, A w, A fs, B avg) {
     A z;
-    z = movsumavg1(m, w, fs, avg);
+    z = jtmovsumavg1(jt, m, w, fs, avg);
     if (jt->jerr == EVNAN) RESETERR else return z;
     return jtinfixprefix2(jt, jtsc(jt, m), w, fs);
 }
@@ -1067,7 +1067,7 @@ jtmovavg(J jt, A a, A w, A self) {
     PREF2(jtmovavg);
     RE(m = jti0(jt, jtvib(jt, a)));
     SETIC(w, j);
-    if (0 < m && m <= j && AT(w) & B01 + FL + INT) return movsumavg(m, w, self, 1);  // j may be 0
+    if (0 < m && m <= j && AT(w) & B01 + FL + INT) return jtmovsumavg(jt, m, w, self, 1);  // j may be 0
     return jtinfixprefix2(jt, a, w, self);
 } /* a (+/ % #)\w */
 
@@ -1362,31 +1362,31 @@ jtmovfslash(J jt, A a, A w, A self) {
     if (id == CBDOT && (x = VAV(x)->fgh[1], INT & AT(x) && !AR(x))) id = (C)AV(x)[0];
     switch (AR(w) && BETWEENC(m0, 0, AS(w)[0]) ? id : 0) {
         case CPLUS:
-            if (wt & B01 + INT + FL) return movsumavg(m, w, self, 0);
+            if (wt & B01 + INT + FL) return jtmovsumavg(jt, m, w, self, 0);
             break;
         case CMIN:
-            if (wt & SBT + INT + FL) return movminmax(m, w, self, 0);
+            if (wt & SBT + INT + FL) return jtmovminmax(jt, m, w, self, 0);
             break;
         case CMAX:
-            if (wt & SBT + INT + FL) return movminmax(m, w, self, 1);
+            if (wt & SBT + INT + FL) return jtmovminmax(jt, m, w, self, 1);
             break;
         case CSTARDOT:
-            if (wt & B01) return movandor(m, w, self, 0);
+            if (wt & B01) return jtmovandor(jt, m, w, self, 0);
             break;
         case CPLUSDOT:
-            if (wt & B01) return movandor(m, w, self, 1);
+            if (wt & B01) return jtmovandor(jt, m, w, self, 1);
             break;
         case CNE:
-            if (wt & B01) return movneeq(m, w, self, 0);
+            if (wt & B01) return jtmovneeq(jt, m, w, self, 0);
             break;
         case CEQ:
-            if (wt & B01) return movneeq(m, w, self, 1);
+            if (wt & B01) return jtmovneeq(jt, m, w, self, 1);
             break;
         case CBW1001:
-            if (wt & INT) return movbwneeq(m, w, self, 1);
+            if (wt & INT) return jtmovbwneeq(jt, m, w, self, 1);
             break;
         case CBW0110:
-            if (wt & INT) return movbwneeq(m, w, self, 0);
+            if (wt & INT) return jtmovbwneeq(jt, m, w, self, 0);
             break;
     }
     VARPS adocv;
@@ -1427,7 +1427,7 @@ jtmovfslash(J jt, A a, A w, A self) {
         jtjsignal(jt, rc);
         if (rc >= EWOV) {
             RESETERR;
-            return movfslash(a, jtcvt(jt, FL, w), self);
+            return jtmovfslash(jt, a, jtcvt(jt, FL, w), self);
         }
         return 0;
     } else
@@ -1437,7 +1437,7 @@ jtmovfslash(J jt, A a, A w, A self) {
 static A
 jtiota1(J jt, A w, A self) {
     I j;
-    return apv(SETIC(w, j), 1L, 1L);
+    return jtapv(jt, SETIC(w, j), 1L, 1L);
 }
 
 A

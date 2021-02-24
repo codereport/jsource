@@ -16,13 +16,13 @@ jtvaspc(J jt, A a, A w, C id, VF ado, I cv, I t, I zt, I af, I acr, I wf, I wcr,
     v = AV(q);
     if (r > acr) {
         ICPY(v, wf + ws, r);
-        RZ(a = irs2(vec(INT, r - acr, acr + v), a, 0L, 1L, 0L, jtreshape));
+        RZ(a = jtirs2(jt, jtvec(jt, INT, r - acr, acr + v), a, 0L, 1L, 0L, jtreshape));
     }
     if (r > wcr) {
         ICPY(v, af + as, r);
-        RZ(w = irs2(vec(INT, r - wcr, wcr + v), w, 0L, 1L, 0L, jtreshape));
+        RZ(w = jtirs2(jt, jtvec(jt, INT, r - wcr, wcr + v), w, 0L, 1L, 0L, jtreshape));
     }
-    return vasp(a, w, id, ado, cv, t, zt, af, r, wf, r, f, r);
+    return jtvasp(jt, a, w, id, ado, cv, t, zt, af, r, wf, r, f, r);
 } /* prefix agreement on cells */
 
 A
@@ -122,8 +122,8 @@ static B jtvaspprep(J jt,A a,A w,I t,I af,I acr,I wf,I wcr,I f,I r,A*ae,A*ay,A*a
  if(sw){wp=PAV(w); wa=SPA(wp,a); v=AV(wa); d=f-wf; DO(AN(wa), c=v[i]; if(wf<=c)b[c+d]=1;);}
  GATV0(x,INT,f+r,1); u=AV(x); m=0; DO(af, if(b[i])u[m++]=i;); DO(acr, if(b[f+i])u[m++]=af+i;);
  GATV0(x,INT,f+r,1); v=AV(x); n=0; DO(wf, if(b[i])v[n++]=i;); DO(wcr, if(b[f+i])v[n++]=wf+i;);
- if(!sa||m!=AN(aa)||memcmp(u,AV(aa),m*SZI))RZ(a=jtreaxis(jt,vec(INT,m,u),a));
- if(!sw||n!=AN(wa)||memcmp(v,AV(wa),n*SZI))RZ(w=jtreaxis(jt,vec(INT,n,v),w));
+ if(!sa||m!=AN(aa)||memcmp(u,AV(aa),m*SZI))RZ(a=jtreaxis(jt,jtvec(jt, INT,m,u),a));
+ if(!sw||n!=AN(wa)||memcmp(v,AV(wa),n*SZI))RZ(w=jtreaxis(jt,jtvec(jt, INT,n,v),w));
  ap=PAV(a); *ae=e=SPA(ap,e); *ay=SPA(ap,i); *ax=x=SPA(ap,x); if(t&&TYPESNE(t,AT(x))){RZ(*ae=jtcvt(jt,t,e));
 RZ(*ax=jtcvt(jt,t,x));} wp=PAV(w); *we=e=SPA(wp,e); *wy=SPA(wp,i); *wx=x=SPA(wp,x);
 if(t&&TYPESNE(t,AT(x))){RZ(*we=jtcvt(jt,t,e)); RZ(*wx=jtcvt(jt,t,x));} RZ(*za=jtifb(jt,f+r,b)); return 1;
@@ -236,7 +236,7 @@ jtvaspeq(J jt, A a, A w, C id, VF ado, I cv, I t, I zt, I f, I r) {
     I ak, c, d, i, j, m, n, *u, *v, wk, xc, yc, zk, *zyv;
     P *zp;
     I rc = EVOK;
-    RZ(vaspeqprep(a, w, t, f, r, &ae, &ay, &ax, &we, &wy, &wx, &za));
+    RZ(jtvaspeqprep(jt, a, w, t, f, r, &ae, &ay, &ax, &we, &wy, &wx, &za));
     if (id == CSTAR || id == CSTARDOT) {
         ab = !jtequ(jt, ae, num(0));
         wb = !jtequ(jt, we, num(0));
@@ -329,12 +329,12 @@ jtvaspeq(J jt, A a, A w, C id, VF ado, I cv, I t, I zt, I f, I r) {
 A
 jtvasp(J jt, A a, A w, C id, VF ado, I cv, I t, I zt, I af, I acr, I wf, I wcr, I f, I r) {
     A fs, z;
-    if (!AR(a) || !AR(w)) return vasp0(a, w, ado, cv, t, zt);
-    if ((SPARSE & AT(a) || SPARSE & AT(w)) && spmult(&z, a, w, id, af, acr, wf, wcr)) return z;
+    if (!AR(a) || !AR(w)) return jtvasp0(jt, a, w, ado, cv, t, zt);
+    if ((SPARSE & AT(a) || SPARSE & AT(w)) && jtspmult(jt, &z, a, w, id, af, acr, wf, wcr)) return z;
     if (af != wf) {
         RZ(fs = ds(id));
-        return sprank2(a, w, fs, acr, wcr, VAV(fs)->valencefns[1]);
+        return jtsprank2(jt, a, w, fs, acr, wcr, VAV(fs)->valencefns[1]);
     }
-    if (acr != wcr) return vaspc(a, w, id, ado, cv, t, zt, af, acr, wf, wcr, f, r);
-    return vaspeq(a, w, id, ado, cv, t, zt, f, r);
+    if (acr != wcr) return jtvaspc(jt, a, w, id, ado, cv, t, zt, af, acr, wf, wcr, f, r);
+    return jtvaspeq(jt, a, w, id, ado, cv, t, zt, f, r);
 } /* scalar dyadic fns with one or both arguments sparse */

@@ -451,7 +451,7 @@ jtunderai1(J jt, A w, A self) {
     GATV(z, LIT, n, AR(w), AS(w));
     zv = UAV(z);
     wv = UAV(w);
-    if (!bitwisecharamp(f, n, wv, zv)) DQ(n, *zv++ = f[*wv++];);
+    if (!jtbitwisecharamp(jt, f, n, wv, zv)) DQ(n, *zv++ = f[*wv++];);
     return z;
 } /* f&.(a.&i.) w */
 

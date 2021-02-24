@@ -17,7 +17,7 @@ jtcsize(J jt, A z, A ind) {
     r  = AR(z);
     s  = AS(z);
     zp = PAV(z);
-    RZ(b = bfi(r, SPA(zp, a), 0));
+    RZ(b = jtbfi(jt, r, SPA(zp, a), 0));
     m = 1;
     j = h = *(AR(ind) + AS(ind) - 1);
     DQ(r - h, if (b[j]) m *= s[j]; ++j;);
@@ -48,7 +48,7 @@ jtiaddr(J jt, A z, A ind, A* i1, A* i2) {
     e = 0;
     d = 1;
     DO(n, if (h > u[i]) v[e++] = s[i]; else d *= s[i];);
-    RZ(*i2 = jj = tymes(jtsc(jt, d), jtbase2(jt, vec(INT, e, v), jtrepeatr(jt, jteps(jt, ai, as), ind))));
+    RZ(*i2 = jj = tymes(jtsc(jt, d), jtbase2(jt, jtvec(jt, INT, e, v), jtrepeatr(jt, jteps(jt, ai, as), ind))));
     c = *(1 + AS(y));
     if (!c) {
         n = AN(jj);
@@ -106,7 +106,7 @@ jtzpadn(J jt, A z, A ind, B ip) {
     RZ(p = jtnub(jt, jtless(jt, i1, y1)));
     if (c = AN(a) - d) {
         RZ(t = jtfrom(jt, jtless(jt, a, ai), shape(jt, z)));
-        RZ(p1 = odom(2L, c, AV(t)));
+        RZ(p1 = jtodom(jt, 2L, c, AV(t)));
         n = *AS(p1);
         if (m = *AS(p)) RZ(p = jtstitch(jt, jtrepeat(jt, jtsc(jt, n), p), jtreshape(jt, jtv2(jt, n * m, c), p1)));
         RZ(t = jtnub(jt, jtrepeat(jt, jteps(jt, y1, i1), y1)));
@@ -171,7 +171,7 @@ jtastdn(J jt, A a, A z, A ind) {
     v    = AV(r);
     *v++ = ar - (zr - n);
     DQ(zr - n, *v++ = 1;);
-    RZ(q = jtdgrade1(jt, jtrepeat(jt, r, vec(B01, zr - n1, b + n1))));
+    RZ(q = jtdgrade1(jt, jtrepeat(jt, r, jtvec(jt, B01, zr - n1, b + n1))));
     return jtequ(jt, q, IX(ar)) ? a : jtcant2(jt, q, a);
 } /* convert replacement array a into standard form relative to index array ind */
 
@@ -182,7 +182,7 @@ jtamne(J jt, A a, A z, A ind, B ip) {
     I *iv, *jv, k, m, n, vk, xk;
     P* zp;
     RZ(a && z && ind);
-    RZ(iaddr(z, ind, &i1, &i2));
+    RZ(jtiaddr(jt, z, ind, &i1, &i2));
     zp = PAV(z);
     x  = SPA(zp, x);
     y  = SPA(zp, i);
@@ -206,9 +206,9 @@ jtamna(J jt, A a, A z, A ind, B ip) {
     I *iv, *jv, k, n, vk, xk;
     P* zp;
     RZ(a && z && ind);
-    RZ(z = zpadn(z, ind, ip));
-    RZ(a = astdn(a, z, ind));
-    RZ(iaddr(z, ind, &i1, &i2));
+    RZ(z = jtzpadn(jt, z, ind, ip));
+    RZ(a = jtastdn(jt, a, z, ind));
+    RZ(jtiaddr(jt, z, ind, &i1, &i2));
     zp = PAV(z);
     x  = SPA(zp, x);
     n  = AN(i1);
@@ -237,11 +237,11 @@ jtamnsp(J jt, A a, A z, A ind, B ip) {
     ap = PAV(a);
     t  = SPA(ap, a);
     if (r > AN(t)) RZ(a = jtreaxis(jt, IX(r), a));
-    RZ(a = astdn(a, z, ind));
+    RZ(a = jtastdn(jt, a, z, ind));
     ap = PAV(a);
-    RZ(z = zpadn(z, ind, ip));
+    RZ(z = jtzpadn(jt, z, ind, ip));
     zp = PAV(z);
-    RZ(iaddr(z, ind, &i1, &i2));
+    RZ(jtiaddr(jt, z, ind, &i1, &i2));
     s  = AS(a);
     n  = AN(i1);
     c  = jtcsize(jt, z, ind);

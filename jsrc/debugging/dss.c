@@ -69,32 +69,32 @@ jtssdo(J jt, A a, A w, C c) {
 
 A
 jtdbcutback(J jt, A w) {
-    return ssdo(0L, w, SSCUTBACK);
+    return jtssdo(jt, 0L, w, SSCUTBACK);
 } /* 13!:19 */
 
 A
 jtdbstepover1(J jt, A w) {
-    return ssdo(0L, w, SSSTEPOVER);
+    return jtssdo(jt, 0L, w, SSSTEPOVER);
 } /* 13!:20 */
 A
 jtdbstepover2(J jt, A a, A w) {
-    return ssdo(a, w, SSSTEPOVER);
+    return jtssdo(jt, a, w, SSSTEPOVER);
 }
 
 A
 jtdbstepinto1(J jt, A w) {
-    return ssdo(0L, w, SSSTEPINTO);
+    return jtssdo(jt, 0L, w, SSSTEPINTO);
 } /* 13!:21 */
 A
 jtdbstepinto2(J jt, A a, A w) {
-    return ssdo(a, w, SSSTEPINTO);
+    return jtssdo(jt, a, w, SSSTEPINTO);
 }
 
 A
 jtdbstepout1(J jt, A w) {
-    return ssdo(0L, w, SSSTEPOUT);
+    return jtssdo(jt, 0L, w, SSSTEPOUT);
 } /* 13!:22 */
 A
 jtdbstepout2(J jt, A a, A w) {
-    return ssdo(a, w, SSSTEPOUT);
+    return jtssdo(jt, a, w, SSSTEPOUT);
 }

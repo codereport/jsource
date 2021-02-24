@@ -593,8 +593,8 @@ typedef struct {
 // definition.  0 means we don't know yet.
 
 #define DCPARSE 1  /* sentence for parser                                          */
-#define DCSCRIPT 2 /* script              -- line()                                */
-#define DCCALL 3   /* verb/adv/conj call  -- dbunquote()                           */
+#define DCSCRIPT 2 /* script              -- jtline(jt, )                                */
+#define DCCALL 3   /* verb/adv/conj call  -- jtdbunquote(jt, )                           */
 #define DCJUNK 4   /* stack entry is stale                                      */
 
 typedef struct DS {   /* 1 2 3                                                        */

@@ -44,7 +44,7 @@ jtfnum(J jt, A w) {
         ASSERT(h = jti0(jt, y), EVFNUM);
         return h;
     }
-    RE(j = jti0(jt, jtindexof(jt, vec(BOX, AM(jt->fopf), AAV(jt->fopa)), boxW(jtfullname(jt, jtvslit(jt, y))))));
+    RE(j = jti0(jt, jtindexof(jt, jtvec(jt, BOX, AM(jt->fopf), AAV(jt->fopa)), boxW(jtfullname(jt, jtvslit(jt, y))))));
     return j < AM(jt->fopf) ? *(j + AV(jt->fopf)) : 0;
 } /* file# corresp. to standard argument w */
 
@@ -60,8 +60,8 @@ A
 jtjfiles(J jt, A w) {
     A y, z;
     ASSERTMTV(w);
-    RZ(y = vec(INT, AM(jt->fopf), AV(jt->fopf)));
-    return jtgrade2(jt, jtstitch(jt, IRS1(y, 0, 0, jtbox, z), vec(BOX, AM(jt->fopf), AV(jt->fopa))), y);
+    RZ(y = jtvec(jt, INT, AM(jt->fopf), AV(jt->fopf)));
+    return jtgrade2(jt, jtstitch(jt, IRS1(y, 0, 0, jtbox, z), jtvec(jt, BOX, AM(jt->fopf), AV(jt->fopa))), y);
 } /* file (number,name) table */
 
 F
@@ -89,7 +89,7 @@ jtjopen(J jt, A w) {
     A z;
     I h;
     if (!AN(w)) return w;
-    if (AR(w)) return rank1ex0(w, UNUSED_VALUE, jtjopen);
+    if (AR(w)) return jtrank1ex0(jt, w, UNUSED_VALUE, jtjopen);
     RE(h = jtfnum(jt, w));
     if (h) {
         RZ(z = jtsc(jt, h));
@@ -148,7 +148,7 @@ jtjclose(J jt, A w) {
     A* av;
     I *iv, j;
     if (!AN(w)) return w;
-    if (AR(w)) return rank1ex0(w, UNUSED_VALUE, jtjclose);
+    if (AR(w)) return jtrank1ex0(jt, w, UNUSED_VALUE, jtjclose);
     RE(j = jti0(jt, jtindexof(jt, jt->fopf, jtsc(jt, jtfnum(jt, w)))));
     ASSERT(j < AM(jt->fopf), EVFNUM);
     av = AAV(jt->fopa);

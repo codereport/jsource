@@ -170,12 +170,12 @@ jtstcreate(J jt, C k, I p, I n, C *u) {
             // Install name and path.  Path is 'z' except in z locale itself, which has empty path
             RZ(ras(x));
             LOCNAME(g) = x;
-            xx         = 1 == n && 'z' == *u ? vec(BOX, 0L, 0L) : zpath;
+            xx         = 1 == n && 'z' == *u ? jtvec(jt, BOX, 0L, 0L) : zpath;
             ras(xx);
             LOCPATH(g) = xx;  // ras() is never VIRTUAL
             // Assign this name in the locales symbol table to point to the allocated SYMB block
             // This does ras() on g
-            symbisdel(x, g, jt->stloc);
+            jtsymbisdel(jt, x, g, jt->stloc);
             break;
         case 1: /* numbered locale */
             RZ(v = jtsymnew(jt, &LXAV0(g)[SYMLINFO], 0));
@@ -212,12 +212,12 @@ jtsymbinit(J jt) {
     jt->stloc = q;                                          // alloc space, clear hashchains.  No name/val for stloc
     jtinitnl(jt);                                           // init numbered locales
     FULLHASHSIZE(1LL << 10, SYMBSIZE, 1, SYMLINFOSIZE, p);  // about 2^11 chains
-    RZ(jt->global = stcreate(0, p, sizeof(jt->baselocale), jt->baselocale));
+    RZ(jt->global = jtstcreate(jt, 0, p, sizeof(jt->baselocale), jt->baselocale));
     FULLHASHSIZE(1LL << 12, SYMBSIZE, 1, SYMLINFOSIZE, p);  // about 2^13 chains
-    RZ(stcreate(0, p, 1L, "z"));
+    RZ(jtstcreate(jt, 0, p, 1L, "z"));
     // Allocate a symbol table with just 1 (empty) chain; then set length to 1 indicating 0 chains; make this the
     // current local symbols, to use when no explicit def is running
-    RZ(jt->locsyms = stcreate(2, 2, 0, 0));
+    RZ(jt->locsyms = jtstcreate(jt, 2, 2, 0, 0));
     AKGST(jt->locsyms) = jt->global;
     AN(jt->locsyms)    = 1;
     AM(jt->locsyms)    = (I)jt->locsyms;  // close chain so u. at top level has no effect
@@ -262,7 +262,7 @@ jtstfind(J jt, I n, C *u, I bucketx) {
         bucketx = jt->baselocalehash;
     }
     if (n > 0 && '9' < *u) {  // named locale   > because baselocale is known to be non-empty
-        v = probe(n, u, (UI4)bucketx, jt->stloc);
+        v = jtprobe(jt, n, u, (UI4)bucketx, jt->stloc);
         if (v) return v->val;  // if there is a symbol, return its value
     } else {
         return jtfindnl(jt, bucketx);
@@ -276,12 +276,12 @@ jtstfind(J jt, I n, C *u, I bucketx) {
 // n=-1 means 'numbered locale, don't bother checking digits'   u is invalid
 A
 jtstfindcre(J jt, I n, C *u, I bucketx) {
-    A v = stfind(n, u, bucketx);  // lookup
+    A v = jtstfind(jt, n, u, bucketx);  // lookup
     if (v) return v;              // return if found
     if (n >= 0 && '9' < *u) {     // nonnumeric locale:
         I p;
         FULLHASHSIZE(1LL << (5 + jt->locsize[0]), SYMBSIZE, 1, SYMLINFOSIZE, p);
-        return stcreate(0, p, n, u);  // create it with name
+        return jtstcreate(jt, 0, p, n, u);  // create it with name
     } else {
         ASSERT(0, EVLOCALE);  // illegal to create numeric locale explicitly
     }
@@ -360,7 +360,7 @@ jtlocnc(J jt, A w) {
             else if (c <= '9')
                 zv[i] = jtfindnl(jt, strtoI10s(m, u)) ? 1 : -1;
             else
-                zv[i] = probe(m, u, (UI4)nmhash(m, u), jt->stloc) ? 0 : -1;
+                zv[i] = jtprobe(jt, m, u, (UI4)nmhash(m, u), jt->stloc) ? 0 : -1;
         }
     }
     return z;
@@ -466,15 +466,15 @@ jtloccre(J jt, A a, A w) {
     y = AAV(w)[0];
     n = AN(y);
     s = CAV(y);
-    if (v = probe(n, s, (UI4)nmhash(n, s), jt->stloc)) {  // scaf this is disastrous if the named locale is on the stack
+    if (v = jtprobe(jt, n, s, (UI4)nmhash(n, s), jt->stloc)) {  // scaf this is disastrous if the named locale is on the stack
         // named locale exists.  Verify no defined names, then delete it
         g     = v->val;
         LX *u = SYMLINFOSIZE + LXAV0(g);
         DO(AN(g) - SYMLINFOSIZE, ASSERT(!u[i], EVLOCALE););
-        probedel(n, s, (UI4)nmhash(n, s), jt->stloc);  // delete the symbol for the locale, and the locale itself
+        jtprobedel(jt, n, s, (UI4)nmhash(n, s), jt->stloc);  // delete the symbol for the locale, and the locale itself
     }
     FULLHASHSIZE(1LL << (p + 5), SYMBSIZE, 1, SYMLINFOSIZE, p);  // get table, size 2^p+6 minus a little
-    RZ(stcreate(0, p, n, s));
+    RZ(jtstcreate(jt, 0, p, n, s));
     return boxW(jtca(jt, y));
 } /* create a locale named w with hash table size a */
 
@@ -491,23 +491,23 @@ jtloccrenum(J jt, A w) {
     }
     RE(k = jtgetnl(jt));
     FULLHASHSIZE(1LL << (p + 5), SYMBSIZE, 1, SYMLINFOSIZE, p);  // get table, size 2^p+6 minus a little
-    RZ(stcreate(1, p, k, 0L));
+    RZ(jtstcreate(jt, 1, p, k, 0L));
     sprintf(s, FMTI, k);
     return boxW(jtcstr(jt, s));
 } /* create a numbered locale with hash table size n */
 
 A
 jtloccre1(J jt, A w) {
-    if (AN(w)) return rank2ex0(mark, jtvlocnl(jt, 2 + 1, w), UNUSED_VALUE, jtloccre);
+    if (AN(w)) return jtrank2ex0(jt, mark, jtvlocnl(jt, 2 + 1, w), UNUSED_VALUE, jtloccre);
     ASSERT(1 == AR(w), EVRANK);
     return jtloccrenum(jt, mark);
 } /* 18!:3  create locale */
 
 A
 jtloccre2(J jt, A a, A w) {
-    if (AN(w)) return rank2ex0(a, jtvlocnl(jt, 2 + 1, w), UNUSED_VALUE, jtloccre);
+    if (AN(w)) return jtrank2ex0(jt, a, jtvlocnl(jt, 2 + 1, w), UNUSED_VALUE, jtloccre);
     ASSERT(1 == AR(w), EVRANK);
-    return rank1ex0(a, UNUSED_VALUE, jtloccrenum);
+    return jtrank1ex0(jt, a, UNUSED_VALUE, jtloccrenum);
 } /* 18!:3  create locale with specified hash table size */
 
 A
@@ -604,7 +604,7 @@ static SYMWALK(jtredefg, B, B01, 100, 1, 1, RZ(jtredef(jt, mark, d)))
                 if ('9' >= *u) {
                     g = jtfindnl(jt, strtoI10s(m, u));
                 } else {
-                    v = probe(m, u, (UI4)nmhash(m, u), jt->stloc);
+                    v = jtprobe(jt, m, u, (UI4)nmhash(m, u), jt->stloc);
                     if (v) g = v->val;
                 }  // g is locale block for named locale
             }
@@ -644,7 +644,7 @@ jtlocdestroy(J jt, A g) {
         // For named locale, find the entry for this locale in the locales symbol table, and free the locale and the
         // entry for it
         RZ(jtredefg(jt, g));
-        probedel(locname->m,
+        jtprobedel(jt, locname->m,
                  locname->s,
                  locname->hash,
                  jt->stloc);  // free the L block for the locale, which frees the locale itself and its names

@@ -167,7 +167,7 @@ jtcasev(J jt, A w) {
     // have to make sure abc is locally defined
     if (p = q && 0 <= c && ACUC1 >= AC(u[c])) {  // passes quick check
         p = (AN(jt->locsyms) == 1) || CAV(AAV(v[m + 2])[1])[0] != CASGN ||
-            probe(
+            jtprobe(jt, 
               NAV(AAV(v[m + 2])[0])->m,
               NAV(AAV(v[m + 2])[0])->s,
               NAV(AAV(v[m + 2])[0])->hash,
@@ -436,7 +436,7 @@ jtjstd(J jt, A w, A ind, I *cellframelen) {
         return x;
     }                                // if w is an atom, the best you can get is indexes of 0.  No axes are used
     if ((b & -AR(ind)) < 0) {        // array of boxed indexes
-        RE(aindex(ind, w, 0L, &j));  // see if the boxes are homogeneous
+        RE(jtaindex(jt, ind, w, 0L, &j));  // see if the boxes are homogeneous
         if (!j) {                    // if not...
             RZ(x = MODIFIABLE(jtfrom(jt, ind, jtincrem(jt, jtiota(jt, shape(jt, w))))));
             u = AV(x);  // go back to the original indexes, select from table of all possible incremented indexes; since
@@ -507,7 +507,7 @@ jtamendn2(J jt, A a, A w, A self) {
     AD *RESTRICT ind = VAV(self)->fgh[0];
     if (!((AT(w) | AT(ind)) & SPARSE)) {
         I cellframelen;
-        ind = jstd(w, ind, &cellframelen);  // convert indexes to cell indexes; remember how many were converted
+        ind = jtjstd(jt, w, ind, &cellframelen);  // convert indexes to cell indexes; remember how many were converted
         z   = jtmerge2(
           jtinplace, AT(a) & SPARSE ? jtdenseit(jt, a) : a, w, ind, cellframelen);  //  dense a if needed; dense amend
         // We modified w which is now not pristine.
@@ -552,7 +552,7 @@ jtamendn2(J jt, A a, A w, A self) {
              : AT(a) & SPARSE ? jtam1sp
                               : jtam1a)(jt, a, z, AT(ind) & NUMERIC ? jtbox(jt, ind) : jtope(jt, ind), ip);
     else {
-        RE(aindex(ind, z, 0L, (A *)&ind));
+        RE(jtaindex(jt, ind, z, 0L, (A *)&ind));
         ASSERT(ind != 0, EVNONCE);
         z = (b ? jtamne : AT(a) & SPARSE ? jtamnsp : jtamna)(jt, a, z, ind, ip);
     }               // A* for the #$&^% type-checking

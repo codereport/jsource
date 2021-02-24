@@ -162,13 +162,13 @@ jtfit(J jt, A a, A w) {
         case CXCO:
         case CSLDOT:
         case CSPARSE:
-        case CEBAR: return fitct(a, w, cno);
+        case CEBAR: return jtfitct(jt, a, w, cno);
         case CEXP: ASSERT(AT(w) & NUMERIC, EVDOMAIN); return CDERIV(CFIT, 0L, jtfitexp2, 0L, m, l, r);
         case CPOLY:
             ASSERT(AT(w) & NUMERIC, EVDOMAIN);
             return CDERIV(CFIT, 0L, jtfitpoly2, 0L, m, l, r);  // CPOLY has no VIRS
         case CPOWOP:                                           // support for #^:_1!.n
-            if (sv->fgh[1] != num(-1)) return fitct(a, w, 0);
+            if (sv->fgh[1] != num(-1)) return jtfitct(jt, a, w, 0);
             f = sv->fgh[0];
             c = ID(f);
             if (c == CPOUND) {

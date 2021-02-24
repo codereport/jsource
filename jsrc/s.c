@@ -302,7 +302,7 @@ jtprobelocal(J jt, A a, A locsyms) {
     } else {
         // No bucket information, do full search.  This includes names that don't come straight from words in an
         // explicit definition
-        return probe(NAV(a)->m, NAV(a)->s, NAV(a)->hash, locsyms);
+        return jtprobe(jt, NAV(a)->m, NAV(a)->s, NAV(a)->hash, locsyms);
     }
 }
 
@@ -400,15 +400,15 @@ L *
 jtsyrd1(J jt, I l, C *string, UI4 hash, A g) {
     A *v, x, y;
     L *e;
-    // if(b&&jt->local&&(e=probe(NAV(a)->m,NAV(a)->s,NAV(a)->hash,jt->local))){av=NAV(a); return e;}  // return if found
+    // if(b&&jt->local&&(e=jtprobe(jt, NAV(a)->m,NAV(a)->s,NAV(a)->hash,jt->local))){av=NAV(a); return e;}  // return if found
     // local
     RZ(g);                                        // make sure there is a locale...
-    if (e = probe(l, string, hash, g)) return e;  // and if the name is defined there, use it
+    if (e = jtprobe(jt, l, string, hash, g)) return e;  // and if the name is defined there, use it
     RZ(y = LOCPATH(g));                           // Not found in locale.  We must use the path
     v = AAV(y);
     // in LOCPATH the 'shape' of each string is used to store the bucketx
     DO(AN(y), x = v[i];
-       if (e = probe(l, string, hash, stfindcre(AN(x), CAV(x), AS(x)[0]))) break;);  // return when name found.  Create
+       if (e = jtprobe(jt, l, string, hash, jtstfindcre(jt, AN(x), CAV(x), AS(x)[0]))) break;);  // return when name found.  Create
                                                                                      // path locale if it does not exist
     return e;                                                                        // fall through: not found
 } /* find name a where the current locale is g */
@@ -417,16 +417,16 @@ A
 jtsyrd1forlocale(J jt, I l, C *string, UI4 hash, A g) {
     A *v, x, y;
     L *e;
-    // if(b&&jt->local&&(e=probe(NAV(a)->m,NAV(a)->s,NAV(a)->hash,jt->local))){av=NAV(a); return e;}  // return if found
+    // if(b&&jt->local&&(e=jtprobe(jt, NAV(a)->m,NAV(a)->s,NAV(a)->hash,jt->local))){av=NAV(a); return e;}  // return if found
     // local
     RZ(g);                                        // make sure there is a locale...
-    if (e = probe(l, string, hash, g)) return g;  // and if the name is defined there, use it
+    if (e = jtprobe(jt, l, string, hash, g)) return g;  // and if the name is defined there, use it
     RZ(y = LOCPATH(g));                           // Not found in locale.  We must use the path
     v = AAV(y);
     // in LOCPATH the 'shape' of each string is used to store the bucketx
     DO(AN(y), x = v[i];
-       if (e = probe(
-             l, string, hash, g = stfindcre(AN(x), CAV(x), AS(x)[0]))) break;);  // return when name found.  Create path
+       if (e = jtprobe(jt, 
+             l, string, hash, g = jtstfindcre(jt, AN(x), CAV(x), AS(x)[0]))) break;);  // return when name found.  Create path
                                                                                  // locale if it does not exist
     return g;
 }
@@ -450,10 +450,10 @@ jtlocindirect(J jt, I n, C *u, UI4 hash) {
         k = s - v;
         s = v - 2;                               // k=length of indirect locative; s->end+1 of next name if any
         if (!e) {                                // first time through
-            e = probe(k, v, hash, jt->locsyms);  // look up local first
-            if (!e) e = syrd1(k, v, hash, jt->global);
+            e = jtprobe(jt, k, v, hash, jt->locsyms);  // look up local first
+            if (!e) e = jtsyrd1(jt, k, v, hash, jt->global);
         } else
-            e = syrd1(
+            e = jtsyrd1(jt, 
               k, v, (UI4)nmhash(k, v), g);     // look up later indirect locatives, yielding an A block for a locative
         ASSERTN(e, EVVALUE, jtnfs(jt, k, v));  // verify found
         y = e->val;                            // y->A block for locale
@@ -476,7 +476,7 @@ jtlocindirect(J jt, I n, C *u, UI4 hash) {
                 ASSERTN(LIT & AT(x), EVDOMAIN, jtnfs(jt, k, v));     // verify string
                 ASSERTN(vlocnm(xn, xv), EVILNAME, jtnfs(jt, k, v));  // verify legal name
                 I bucketx = BUCKETXLOC(xn, xv);
-                RZ(g = stfindcre(xn, xv, bucketx));  // find st for the name
+                RZ(g = jtstfindcre(jt, xn, xv, bucketx));  // find st for the name
             }
         }
     }
@@ -492,8 +492,8 @@ jtsybaseloc(J jt, A a) {
     v = NAV(a);
     m = v->m;
     // Locative: find the indirect locale to start on, or the named locale, creating the locale if not found
-    return NMILOC & v->flag ? locindirect(n - m - 2, 2 + m + v->s, (UI4)v->bucketx)
-                            : stfindcre(n - m - 2, 1 + m + v->s, v->bucketx);
+    return NMILOC & v->flag ? jtlocindirect(jt, n - m - 2, 2 + m + v->s, (UI4)v->bucketx)
+                            : jtstfindcre(jt, n - m - 2, 1 + m + v->s, v->bucketx);
 }
 
 // look up a name (either simple or locative) using the full name resolution
@@ -510,7 +510,7 @@ jtsyrd(J jt, A a, A locsyms) {
         g = jt->global;                                      // Continue with the current locale
     } else
         RZ(g = jtsybaseloc(jt, a));
-    return syrd1(NAV(a)->m, NAV(a)->s, NAV(a)->hash, g);  // Not local: look up the name starting in locale g
+    return jtsyrd1(jt, NAV(a)->m, NAV(a)->s, NAV(a)->hash, g);  // Not local: look up the name starting in locale g
 }
 // same, but return locale in which found
 A
@@ -523,7 +523,7 @@ jtsyrdforlocale(J jt, A a) {
         g = jt->global;                                                    // Start with the current locale
     } else
         RZ(g = jtsybaseloc(jt, a));
-    return syrd1forlocale(NAV(a)->m, NAV(a)->s, NAV(a)->hash, g);  // Not local: look up the name starting in locale g
+    return jtsyrd1forlocale(jt, NAV(a)->m, NAV(a)->s, NAV(a)->hash, g);  // Not local: look up the name starting in locale g
 }
 // same as syrd, but we have already checked for buckets
 // look up a name (either simple or locative) using the full name resolution
@@ -535,13 +535,13 @@ jtsyrdnobuckets(J jt, A a) {
     if (!(NAV(a)->flag & (NMLOC | NMILOC))) {
         L *e;
         // If there is a local symbol table, search it first
-        if (!NAV(a)->bucket && (e = probe(NAV(a)->m, NAV(a)->s, NAV(a)->hash, jt->locsyms))) {
+        if (!NAV(a)->bucket && (e = jtprobe(jt, NAV(a)->m, NAV(a)->s, NAV(a)->hash, jt->locsyms))) {
             return e;
         }                // return if found locally from name
         g = jt->global;  // Start with the current locale
     } else
         RZ(g = jtsybaseloc(jt, a));                       // if locative, start in locative locale
-    return syrd1(NAV(a)->m, NAV(a)->s, NAV(a)->hash, g);  // Not local: look up the name starting in locale g
+    return jtsyrd1(jt, NAV(a)->m, NAV(a)->s, NAV(a)->hash, g);  // Not local: look up the name starting in locale g
 }
 
 static A
@@ -656,8 +656,8 @@ jtprobeisquiet(J jt, A a, A locsyms) {
     }  // if not locative, define in default locale
     else {
         C *s = 1 + m + v->s;
-        if (!(g = NMILOC & v->flag ? locindirect(n - m - 2, 1 + s, (UI4)v->bucketx)
-                                   : stfindcre(n - m - 2, s, v->bucketx))) {
+        if (!(g = NMILOC & v->flag ? jtlocindirect(jt, n - m - 2, 1 + s, (UI4)v->bucketx)
+                                   : jtstfindcre(jt, n - m - 2, s, v->bucketx))) {
             RESETERR;
             return 0;
         }
@@ -693,8 +693,8 @@ jtsymbis(J jt, A a, A w, A g) {
         // symbol table, and we are assigning to the global symbol table, and the name is defined in the local table
         else {
             C *s = 1 + m + v->s;
-            RZ(g = NMILOC & v->flag ? locindirect(n - m - 2, 1 + s, (UI4)v->bucketx)
-                                    : stfindcre(n - m - 2, s, v->bucketx));
+            RZ(g = NMILOC & v->flag ? jtlocindirect(jt, n - m - 2, 1 + s, (UI4)v->bucketx)
+                                    : jtstfindcre(jt, n - m - 2, s, v->bucketx));
         }
         // locative: s is the length of name_.  Find the symbol table to use, creating one if none found
         // Now g has the symbol table to look in
@@ -823,7 +823,7 @@ jtsymbis(J jt, A a, A w, A g) {
 L *
 jtsymbisdel(J jt, A a, A w, A g) {
     I nvrtop  = jt->parserstackframe.nvrtop;  // save stack before deletion
-    L *ret    = symbis(a, w, g);              // perform assignment
+    L *ret    = jtsymbis(jt, a, w, g);              // perform assignment
     I currtop = jt->parserstackframe.nvrtop;
     while (currtop > nvrtop) {  // the only new blocks must be ones that were newly added to the nvr stack by symbis
         --currtop;              // index points to OPEN slot; back up to slot to free

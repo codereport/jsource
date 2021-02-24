@@ -112,14 +112,14 @@ jtexg(J jt, A w) {
     GATV0(z, BOX, n, 1);
     v = AAV(z);
     DO(n, x = wv[i];
-       RZ(*v++ = (y = cex(x, jtfx, 0L)) ? y : jtexg(jt, x)););  // if the AR can be converted to an A, do so; otherwise
+       RZ(*v++ = (y = jtcex(jt, x, jtfx, 0L)) ? y : jtexg(jt, x)););  // if the AR can be converted to an A, do so; otherwise
                                                                 // it should be a list of ARs, recur on each
     return jtparse(jt, z);
 }
 
 L*
 jtjset(J jt, C* name, A x) {
-    return symbisdel(jtnfs(jt, (I)strlen(name), name), x, jt->global);
+    return jtsymbisdel(jt, jtnfs(jt, (I)strlen(name), name), x, jt->global);
 }
 
 A

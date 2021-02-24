@@ -63,7 +63,7 @@ jtjlock(J jt, A w) {
         RZ(jt->flkd = jtext(jt, 1, jt->flkd));
         AM(jt->flkd) = ct;
     }
-    RE(b = dolock(1, (F)v[0], v[1], v[2]));
+    RE(b = jtdolock(jt, 1, (F)v[0], v[1], v[2]));
     if (!b) return num(0);
     ICPY(AV(jt->flkd) + LKC * AM(jt->flkd), v, LKC);
     ++AM(jt->flkd);
@@ -78,7 +78,7 @@ jtunlj(J jt, I j) {
     ASSERT(BETWEENO(j, 0, AM(jt->flkd)), EVINDEX);
     u = AV(jt->flkd);
     v = u + j * LKC;
-    RE(b = dolock(0, (F)v[0], v[1], v[2]));
+    RE(b = jtdolock(jt, 0, (F)v[0], v[1], v[2]));
     if (!b) return num(0);
     --AM(jt->flkd);
     if (j < AM(jt->flkd))

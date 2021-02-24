@@ -124,13 +124,13 @@ I
 cirBD(I n, I m, B* RESTRICTI x, D* RESTRICTI y, D* RESTRICTI z, J jt) {
     ASSERTWR(n <= 1 && 1 == m, EWIMAG);
     n ^= REPSGN(n);
-    return cirx(n, (I)*x, z, y);
+    return jtcirx(jt, n, (I)*x, z, y);
 }
 I
 cirID(I n, I m, I* RESTRICTI x, D* RESTRICTI y, D* RESTRICTI z, J jt) {
     ASSERTWR(n <= 1 && 1 == m, EWIMAG);
     n ^= REPSGN(n);
-    return cirx(n, *x, z, y);
+    return jtcirx(jt, n, *x, z, y);
 }
 
 I
@@ -139,7 +139,7 @@ cirDD(I n, I m, D* RESTRICTI x, D* RESTRICTI y, D* RESTRICTI z, J jt) {
     ASSERTWR(k == *x, EVDOMAIN);
     ASSERTWR(n <= 1 && 1 == m, EWIMAG);  // if more than one x value, retry as general case
     n ^= REPSGN(n);                      // convert complementary n to nonneg
-    return cirx(n, k, z, y);
+    return jtcirx(jt, n, k, z, y);
 }
 
 A

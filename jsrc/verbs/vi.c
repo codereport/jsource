@@ -641,8 +641,8 @@ hashallo(IH* RESTRICT hh, UI p, UI m, I md) {
 //
 static IOFX(A, jtioax1, jthia(jt, t1, *v), !jtequ(jt, *v, av[hj]), ++v, --v)         /* boxed exact 1-element item */
   static IOFX(A, jtioau, jthiau(jt, *v), !jtequ(jt, *v, av[hj]), ++v, --v)           /* boxed uniform type         */
-  static IOFX(X, jtiox, hix(v), !eqx(n, v, av + n * hj), v += cn, v -= cn)           /* extended integer           */
-  static IOFX(Q, jtioq, hiq(v), !eqq(n, v, av + n * hj), v += cn, v -= cn)           /* rational number            */
+  static IOFX(X, jtiox, hix(v), !jteqx(jt, n, v, av + n * hj), v += cn, v -= cn)           /* extended integer           */
+  static IOFX(Q, jtioq, hiq(v), !jteqq(jt, n, v, av + n * hj), v += cn, v -= cn)           /* rational number            */
   static IOFX(C, jtioc, hic(k, (UC*)v), memcmp(v, av + k * hj, k), v += cn, v -= cn) /* boolean, char, or integer  */
   static IOFX(
     C, jtiocx, hicx(jt, k, (UC*)v), memcmp(v, av + k * hj, k), v += cn, v -= cn) /* boolean, char, or integer  */
@@ -931,16 +931,16 @@ static IOFX(A, jtioax1, jthia(jt, t1, *v), !jtequ(jt, *v, av[hj]), ++v, --v)    
   // Verbs for the types of inputs
 
   // CMPLX array
-  static IOFT(Z, jtioz, THASHA, TFINDXY, TFINDYY, memcmp(v, av + n * hj, n * 2 * sizeof(D)), !eqz(n, v, av + n * hj))
+  static IOFT(Z, jtioz, THASHA, TFINDXY, TFINDYY, memcmp(v, av + n * hj, n * 2 * sizeof(D)), !jteqz(jt, n, v, av + n * hj))
   // CMPLX list
   static IOFT(Z, jtioz1, THASHA, TFINDXY, TFINDYY, memcmp(v, av + n * hj, 2 * sizeof(D)), !jtzeq(jt, *v, av[hj]))
   // FL array
-  static IOFT(D, jtiod, THASHA, TFINDXY, TFINDYY, memcmp(v, av + n * hj, n * sizeof(D)), !eqd(n, v, av + n * hj))
+  static IOFT(D, jtiod, THASHA, TFINDXY, TFINDYY, memcmp(v, av + n * hj, n * sizeof(D)), !jteqd(jt, n, v, av + n * hj))
   // FL list
   // should use macro for teq
   static IOFT(D, jtiod1, THASHA, TFINDXY, TFINDY1, x != av[hj], !TEQ(x, av[hj]))
   // boxed array with more than 1 box
-  static IOFT(A, jtioa, THASHBX, TFINDBX, TFINDBX, !eqa(n, v, av + n * hj), !eqa(n, v, av + n * hj))
+  static IOFT(A, jtioa, THASHBX, TFINDBX, TFINDBX, !jteqa(jt, n, v, av + n * hj), !jteqa(jt, n, v, av + n * hj))
   // singleton box
   static IOFT(A, jtioa1, THASHBX, TFINDBX, TFINDBX, !jtequ(jt, *v, av[hj]), !jtequ(jt, *v, av[hj]))
 
@@ -1587,7 +1587,7 @@ jtnodupgrade(J jt, A a, I acr, I ac, I acn, I ad, I n, I m, B b, B bk) {
             if (bk) {
                 hu = --hi;
                 DQ(
-                  m - 1, q = *hi--; v = av + n * q; if (!eqa(n, u, v)) {
+                  m - 1, q = *hi--; v = av + n * q; if (!jteqa(jt, n, u, v)) {
                       u     = v;
                       *hu-- = q;
                   });
@@ -1596,7 +1596,7 @@ jtnodupgrade(J jt, A a, I acr, I ac, I acn, I ad, I n, I m, B b, B bk) {
             } else {
                 hu = ++hi;
                 DQ(
-                  m - 1, q = *hi++; v = av + n * q; if (!eqa(n, u, v)) {
+                  m - 1, q = *hi++; v = av + n * q; if (!jteqa(jt, n, u, v)) {
                       u     = v;
                       *hu++ = q;
                   });
@@ -1621,7 +1621,7 @@ jtnodupgrade(J jt, A a, I acr, I ac, I acn, I ad, I n, I m, B b, B bk) {
         u              = av + n * p;                                                                           \
         zstmti; /* u->first result value, install result for that value to index itself */                     \
         DQ(                                                                                                    \
-          m - 1, q = *hiinc; v = av + n * q; if (eqa(n, u, v)) { zstmt1; } else {                              \
+          m - 1, q = *hiinc; v = av + n * q; if (jteqa(jt, n, u, v)) { zstmt1; } else {                              \
               u = v;                                                                                           \
               zstmt0;                                                                                          \
           }); /*                                                                                               \
@@ -2112,12 +2112,12 @@ jtindexofsub(J jt, I mode, A a, A w) {
         A z;
         // Handle sparse arguments
         if (1 >= acr)
-            return af ? sprank2(a, w, 0L, acr, RMAX, jtindexof) : wt & SPARSE ? iovxs(mode, a, w) : iovsd(mode, a, w);
-        if (af || wf) return sprank2(a, w, 0L, acr, wcr, jtindexof);
+            return af ? jtsprank2(jt, a, w, 0L, acr, RMAX, jtindexof) : wt & SPARSE ? jtiovxs(jt, mode, a, w) : jtiovsd(jt, mode, a, w);
+        if (af || wf) return jtsprank2(jt, a, w, 0L, acr, wcr, jtindexof);
         switch ((at & SPARSE ? 2 : 0) + (wt & SPARSE ? 1 : 0)) {
-            case 1: z = indexofxx(mode, a, w); break;
-            case 2: z = indexofxx(mode, a, w); break;
-            case 3: z = indexofss(mode, a, w); break;
+            case 1: z = jtindexofxx(jt, mode, a, w); break;
+            case 2: z = jtindexofxx(jt, mode, a, w); break;
+            case 3: z = jtindexofss(jt, mode, a, w); break;
         }
         EPILOG(z);
     }
@@ -2295,7 +2295,7 @@ jtindexofsub(J jt, I mode, A a, A w) {
         p = (UI)MIN(FLIMAX, (2.1 * MAX(m, c)));  // length we will use for hashtable, if small-range not used.
         if (!b && t & BOX + FL + CMPX) ctmask(jt);
         if (t & BOX)
-            fn = b && (1 < n || usebs(a, ac, m))                                                  ? jtiobs
+            fn = b && (1 < n || jtusebs(jt, a, ac, m))                                                  ? jtiobs
                  : 1 < n                                                                          ? jtioa
                  : b                                                                              ? jtioax1
                  : (t1 = jtutype(jt, a, ac)) && (mk || a == w || TYPESEQ(t1, jtutype(jt, w, wc))) ? jtioau
@@ -2670,7 +2670,7 @@ jtindexofprehashed(J jt, A a, A w, A hs) {
     if (ICMP(as + ar - r, ws + f1, r)) c = 0;  // and its shape at that rank must match the shape of a cell of a
     // If there is any error, switch back to the non-prehashed code.  We must remove any command bits from mode, leaving
     // just the operation type
-    if (!(m && n && c && HOMO(t, wt) && UNSAFE(t) >= UNSAFE(wt))) return indexofsub(mode & IIOPMSK, a, w);
+    if (!(m && n && c && HOMO(t, wt) && UNSAFE(t) >= UNSAFE(wt))) return jtindexofsub(jt, mode & IIOPMSK, a, w);
 
     // allocate enough space for the result, depending on the type of the operation
     switch (ztype) {
@@ -2712,14 +2712,14 @@ jtindexofprehashed(J jt, A a, A w, A hs) {
 // x i. y
 A
 jtindexof(J jt, A a, A w) {
-    return indexofsub(IIDOT, a, w);
+    return jtindexofsub(jt, IIDOT, a, w);
 }
 /* a i."r w */
 
 // x i: y
 A
 jtjico2(J jt, A a, A w) {
-    return indexofsub(IICO, a, w);
+    return jtindexofsub(jt, IICO, a, w);
 }
 /* a i:"r w */
 
@@ -2728,7 +2728,7 @@ A
 jtnubsieve(J jt, A w) {
     if (SPARSE & AT(w)) return jtnubsievesp(jt, w);
     jt->ranks = (RANKT)jt->ranks + ((RANKT)jt->ranks << RANKTX);  // we process as if dyad; make left rank=right rank
-    return indexofsub(INUBSV, w, w);
+    return jtindexofsub(jt, INUBSV, w, w);
 } /* ~:"r w */
 
 // ~. y  - does not have IRS
@@ -2737,7 +2737,7 @@ jtnub(J jt, A w) {
     FPREFIP;
     if (SPARSE & AT(w) || AFLAG(w) & AFNJA) return jtrepeat(jt, jtnubsieve(jt, w), w);
     A z;
-    RZ(z = indexofsub(INUB, w, w));
+    RZ(z = jtindexofsub(jt, INUB, w, w));
     // We extracted from w, so mark it (or its backer if virtual) non-pristine.  If w was pristine and inplaceable,
     // transfer its pristine status to the result.  We overwrite w because it is no longer in use
     PRISTXFERF(z, w)
@@ -2771,7 +2771,7 @@ jtless(J jt, A a, A w) {
     // if nothing special (like sparse, or incompatible types, or x requires conversion) do the fast way; otherwise (-.
     // x e. y) # y
     RZ(x = !(at & SPARSE) && HOMO(at, wt) && TYPESEQ(at, maxtype(at, wt)) && !(AFLAG(a) & AFNJA)
-             ? indexofsub(ILESS, x, a)
+             ? jtindexofsub(jt, ILESS, x, a)
              : jtrepeat(jt, jtnot(jt, jteps(jt, a, x)), a));
     // We extracted from a, so mark it non-pristine.  If a was pristine and inplaceable, transfer its pristine status to
     // the result
@@ -2789,23 +2789,23 @@ jteps(J jt, A a, A w) {
     r = AR(w) < r ? AR(w) : r;
     RESETRANK;
     if (SPARSE & (AT(a) | AT(w)))
-        return lt(irs2(w, a, 0L, r, l, jtindexof),
+        return lt(jtirs2(jt, w, a, 0L, r, l, jtindexof),
                   jtsc(jt, r ? *(AS(w) + AR(w) - r) : 1));  // for sparse, implement as (# cell of y) > y i. x
     jt->ranks = (RANK2T)((r << RANKTX) + l);                // swap ranks for subroutine.  Subroutine will reset ranks
-    return indexofsub(IEPS, w, a);
+    return jtindexofsub(jt, IEPS, w, a);
 } /* a e."r w */
 
 // I.@~: y   does not have IRS
 A
 jtnubind(J jt, A w) {
-    return SPARSE & AT(w) ? jticap(jt, jtnubsieve(jt, w)) : indexofsub(INUBI, w, w);
+    return SPARSE & AT(w) ? jticap(jt, jtnubsieve(jt, w)) : jtindexofsub(jt, INUBI, w, w);
 } /* I.@~: w */
 
 // i.@(~:!.0) y     does not have IRS
 A
 jtnubind0(J jt, A w) {
     A z;
-    PUSHCCT(1.0) z = SPARSE & AT(w) ? jticap(jt, jtnubsieve(jt, w)) : indexofsub(INUBI, w, w);
+    PUSHCCT(1.0) z = SPARSE & AT(w) ? jticap(jt, jtnubsieve(jt, w)) : jtindexofsub(jt, INUBI, w, w);
     POPCCT
     return z;
 } /* I.@(~:!.0) w */
@@ -2821,7 +2821,7 @@ jtsclass(J jt, A w) {
     SETIC(w, n);                  // n=#items of y
     RZ(x = jtindexof(jt, w, w));  // x = i.~ y
     // if w is dense, return ((x = i.n) # x) =/ x
-    if (DENSE & AT(w)) return atab(CEQ, jtrepeat(jt, eq(IX(n), x), x), x);
+    if (DENSE & AT(w)) return jtatab(jt, CEQ, jtrepeat(jt, eq(IX(n), x), x), x);
     // if x is sparse... ??
     p = PAV(x);
     e = SPA(p, e);

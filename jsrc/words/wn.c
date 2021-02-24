@@ -62,10 +62,10 @@ jtnumj(J jt, I n, C *s, void *vv) {
         ta = 0;
     else
         t = ta = memchr(s, 'a', n);
-    if (!(numd(t ? t - s : n, s, &x))) return 0;
+    if (!(jtnumd(jt, t ? t - s : n, s, &x))) return 0;
     if (t) {
         t += ta ? 2 : 1;
-        if (!(numd(n + s - t, t, &y))) return 0;
+        if (!(jtnumd(jt, n + s - t, t, &y))) return 0;
     } else
         y = 0;
     if (ta) {
@@ -142,12 +142,12 @@ jtnumr(J jt, I n, C *s, void *vv) {
     Q *v;
     v = (Q *)vv;
     m = (t = memchr(s, 'r', n)) ? t - s : n;
-    if (!(numx(m, s, &v->n))) return 0;
+    if (!(jtnumx(jt, m, s, &v->n))) return 0;
     v->d = iv1;
     if (t) {
         c = s[n - 1];
         if (!('r' != c && 'x' != c)) return 0;
-        if (!(numx(n - m - 1, s + m + 1, &v->d))) return 0;
+        if (!(jtnumx(jt, n - m - 1, s + m + 1, &v->d))) return 0;
         p = AV(v->n)[0];
         q = AV(v->d)[0];
         if (!(p != XPINF && p != XNINF || q != XPINF && q != XNINF)) return 0;
@@ -162,7 +162,7 @@ jtnumq(J jt, I n, C *s, void *vv) {
     C c, *t;
     t = s;
     DQ(n, c = *t++;);
-    return numr(n, s, vv);
+    return jtnumr(jt, n, s, vv);
 }
 
 static const Z zpi   = {PI, 0};
@@ -196,7 +196,7 @@ jtnumbpx(J jt, I n, C *s, void *vv) {
     v = (Z *)vv;
     if (t = memchr(s, 'b', n)) {
         // base given
-        if (!(numbpx(t - s, s, &b))) return 0;
+        if (!(jtnumbpx(jt, t - s, s, &b))) return 0;
         ++t;
         if (ne = '-' == *t) ++t;  // t->first nonsign digit
         m = k = n + s - t;
@@ -225,11 +225,11 @@ jtnumbpx(J jt, I n, C *s, void *vv) {
             }  // if result is INT, keep it at full precision
         }
 #endif
-        if (!(numb(k, t, &p, b))) return 0;
+        if (!(jtnumb(jt, k, t, &p, b))) return 0;
         if (u) {
             k = m - (1 + k);
             if (ze = !(b.re || b.im)) b.re = 1;
-            if (!(numb(k, 1 + u, &q, b))) return 0;
+            if (!(jtnumb(jt, k, 1 + u, &q, b))) return 0;
             if (ze) {
                 if (q.re) p.re = inf;
             } else {
@@ -250,18 +250,18 @@ jtnumbpx(J jt, I n, C *s, void *vv) {
     else
         t = u =
           memchr(s, 'x', n);  // t=0 means 'no p/x, just plain complex' nonzero t-> p/x u=0 means 'p' non0 u means 'x'
-    if (!t) return numj(n, s, v);  // if it's a single (complex) number, return it
+    if (!t) return jtnumj(jt, n, s, v);  // if it's a single (complex) number, return it
     // We have to make sure that numeric parts passed to strtod end with null or a certifiable nonnumeric.  On
     // Linux/Mac, 'x' looks numeric if the value starts with '0x'.  So we zap the p/x character before converting the
     // mantissa/exponent, and restore.  We know there will be no exceptions, and that the input area is writable.  The
     // exponent part ends with a natural NUL.
     C savpx = *t;
     *t      = 0;
-    B rc    = numj(t - s, s, &x);
+    B rc    = jtnumj(jt, t - s, s, &x);
     *t      = savpx;
     RZ(rc);
     ++t;
-    if (!(numj(n + s - t, t, &y))) return 0;      // if p- or x-type, get x=mantissa y=exponent
+    if (!(jtnumj(jt, n + s - t, t, &y))) return 0;      // if p- or x-type, get x=mantissa y=exponent
     y  = u ? jtzexp(jt, y) : jtzpow(jt, zpi, y);  // ^y or pi^y
     *v = jtztymes(jt, x, y);                      // calculate x*^y or x*pi^y
     return 1;
@@ -379,7 +379,7 @@ jtconnum(J jt, I n, C *s) {
     v = CAV(z);
     if (t == INT) {  // if we think the values are ints, see if they really are
         DO(
-          m, d = i + i; e = yv[d]; if (!numi(yv[1 + d] - e, e + s, v)) {
+          m, d = i + i; e = yv[d]; if (!jtnumi(jt, yv[1 + d] - e, e + s, v)) {
               t = FL;
               break;
           } v += k;);  // read all values, stopping if a value overflows
@@ -639,7 +639,7 @@ jtexec2r(J jt, A a, A w, I n, I m, I c, I fillreqd) {
             case 'r':
             case 'x':
                 // case requiring analysis for complex numbers - switch over to that code, abandoning our work here
-                if (u != v) return exec2z(a, w, n, m, c);
+                if (u != v) return jtexec2z(jt, a, w, n, m, c);
                 // but if special character at beginning of field, that's not a valid complex number, fall through to...
             default:
                 // Other stopper character, that's invalid, use default, skip the field
@@ -712,14 +712,14 @@ jtexec2(J jt, A a, A w) {
 
     // Select the conversion routine.  We allow -0 in the result now
     if (at & CMPX)
-        z = exec2z(a, w, n, m, c);  // If x argument is complex, force that mode
+        z = jtexec2z(jt, a, w, n, m, c);  // If x argument is complex, force that mode
     else if (tt & RAT)
-        z = exec2q(a, w, n, m, c);  // Otherwise, if data contains rationals, use that mode
+        z = jtexec2q(jt, a, w, n, m, c);  // Otherwise, if data contains rationals, use that mode
     else if (tt & XNUM && at & B01 + INT + XNUM)
-        z = exec2x(
+        z = jtexec2x(jt, 
           a, w, n, m, c);  // Otherwise if data contains extended integers, use that mode as long as x is compatible
     else
-        z = exec2r(a, w, n, m, c, fillreqd);  // otherwise do normal int/float conversion, with failover to other types
+        z = jtexec2r(jt, a, w, n, m, c, fillreqd);  // otherwise do normal int/float conversion, with failover to other types
     // Select the precision to use: the smallest that can hold the data, but never less than the precision of x
     C cvtmask = (~AT(a) & B01) << 1;  // if x is not B01, set mask to suppress conversion to B01
     cvtmask =

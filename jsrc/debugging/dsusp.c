@@ -27,10 +27,10 @@ moveparseinfotosi(J jt) {
       jt, jt->parserstackframe.parserqueue, jt->parserstackframe.parserqueuelen, jt->parserstackframe.parsercurrtok);
 }
 
-/* deba() and jtdebz(jt) must be coded and executed in pairs */
+/* jtdeba(jt, ) and jtdebz(jt) must be coded and executed in pairs */
 /* in particular, do NOT do error exits between them     */
 /* e.g. the following is a NO NO:                        */
-/*    d=deba(...);                                       */
+/*    d=jtdeba(jt, ...);                                       */
 /*    ASSERT(blah,EVDOMAIN);                             */
 /*    jtdebz(jt)                                             */
 
@@ -133,7 +133,7 @@ jtsusp(J jt) {
     // top-of-stack if it holds error information.  So, we create an empty frame to take the store from immex.  This
     // frame has no display.
     jt->dbsusact = SUSCLEAR;             // if we can't add a frame, exit suspension
-    if (!deba(DCJUNK, 0, 0, 0)) return;  // create spacer frame
+    if (!jtdeba(jt, DCJUNK, 0, 0, 0)) return;  // create spacer frame
     jt->dbsusact  = SUSCONT;
     A *old        = jt->tnextpushp;  // fence must be after we have allocated out stack block
     d             = jt->dcs;
@@ -279,13 +279,13 @@ jtdbunquote(J jt, A a, A w, A self, L *stabent) {
     V *sv;
     sv = FAV(self);
     t  = sv->fgh[0];
-    RZ(d = deba(DCCALL, a, w, self));
+    RZ(d = jtdeba(jt, DCCALL, a, w, self));
     d->dcn = (I)stabent;
     if (CCOLON == sv->id &&
         (sv->flag & VXOP ||
          t && NOUN & AT(t))) {  // : and executable body: either OP (adv/conj now with noun operands) or m : n
         ras(self);
-        z = a ? dfs2(a, w, self) : jtdfs1(jt, w, self);
+        z = a ? jtdfs2(jt, a, w, self) : jtdfs1(jt, w, self);
         fa(self);
     } else {          /* tacit    */
         d->dcix = 0;  // set a pseudo-line-number for display purposes for the tacit
@@ -297,7 +297,7 @@ jtdbunquote(J jt, A a, A w, A self, L *stabent) {
             }  // if this line is a stop
             else {
                 ras(self);
-                z = a ? dfs2(a, w, self) : jtdfs1(jt, w, self);
+                z = a ? jtdfs2(jt, a, w, self) : jtdfs1(jt, w, self);
                 fa(self);
             }
             // If we hit a stop, or if we hit an error outside of try./catch., enter debug mode.  But if debug mode is

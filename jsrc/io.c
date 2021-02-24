@@ -54,7 +54,7 @@ and continue through various inputs to see the flow
  s=input()
  call jdo(s)           ---------> jdo() calls jtddtokens(jt,sentence)
    input()   (optional) <-------- if DD seen, get more lines if needed by calling jt->sminput
-                                  jdo() calls jtimmex(jt,inpl(sentence))
+                                  jdo() calls jtimmex(jt,jtinpl(jt, sentence))
                                    ...
    output(s)           <--------  jsto(type,s) - jt->smoutout(type,s)
    output returns      ---------> ...
@@ -81,7 +81,7 @@ and continue through various inputs to see the flow
    input()            <---------       call jt->sminput()
    return line        --------->
    input()   (optional) <--------      if DD seen, get more lines if needed by calling jt->sminput
-                                       call jtimmex(jt,inpl(line)
+                                       call jtimmex(jt,jtinpl(jt, line)
                                        loop
 *** m : 0
 similar to debug suspension except jtjgets(jt,) lines added  to defn.  m : 0 stops reading
@@ -89,7 +89,7 @@ after encountering ) on a line by itself.  If not 0 : 0, call jtddtokens(jt,) af
 to see if more lines need to be read to finish the DD; is so, call jtjgets(jt,) to get them
 
 *** script load
-linf() is called first to read in all lines.  It sets jt->dcs to indicate that fact.  Thereafter
+jtlinf(jt, ) is called first to read in all lines.  It sets jt->dcs to indicate that fact.  Thereafter
 all calls to jtjgets(jt,) return llies from the file without calling jt->sminput().
 jtjgets(jt,) calls advl() to advance through the lines, returns 0 for EOF.  Error is possible.
 
@@ -231,7 +231,7 @@ jtjgets(J jt, C* p) {
             --m;  // m is length; discard trailing control characters (usually CRLF, but not necessarily) ?not needed:
                   // done in inpl
         jtwri(jt, MTYOLOG, p, m, k + s);  // log the input
-        return inpl(b, m, k + s);         // process & return the line
+        return jtinpl(jt, b, m, k + s);         // process & return the line
     }
     /* J calls for input in 3 cases:
        debug suspension for normal input
@@ -251,7 +251,7 @@ jtjgets(J jt, C* p) {
         v              = ((inputtype)(jt->sminput))(jt, p);
     }
     jt->recurstate = RECSTATEBUSY;    // prompt complete, go back to normal running state
-    return inpl(b, (I)strlen(v), v);  // return A block for string
+    return jtinpl(jt, b, (I)strlen(v), v);  // return A block for string
 }
 
 void
@@ -295,7 +295,7 @@ jdo(J jt, C* lp) {
     if (jt->capture) jt->capture[0] = 0;  // clear capture buffer
     A* old       = jt->tnextpushp;
     *jt->adbreak = 0;
-    x            = inpl(0, (I)strlen(lp), lp);
+    x            = jtinpl(jt, 0, (I)strlen(lp), lp);
     // Run any enabled immex sentences both before & after the line being executed.  I don't understand why we do it
     // before, but it can't hurt since there won't be any. BUT: don't do it if the call is recursive.  The user might
     // have set the iep before a prompt, and won't expect it to be executed asynchronously
@@ -306,10 +306,10 @@ jdo(J jt, C* lp) {
             if (savcallstack == 0) CALLSTACKRESET MODESRESET jt->jerr = 0;
             jttpop(jt, old);
         }
-    // Check for DDs in the input sentence.  If there is one, call jtjgets(jt,) to finish it.  Result is enqueue()d
+    // Check for DDs in the input sentence.  If there is one, call jtjgets(jt,) to finish it.  Result is jtenqueue(jt, )d
     // sentence.  If recursive, don't allow call to jtjgets(jt,)
     x = jtddtokens(jt, x, (((jt->recurstate & RECSTATEPROMPT) << (2 - 1))) + 1 + (AN(jt->locsyms) > 1));
-    if (!jt->jerr) jtimmex(jt, x);  // allow reads from jtjgets(jt,) if not recursive; return enqueue() result
+    if (!jt->jerr) jtimmex(jt, x);  // allow reads from jtjgets(jt,) if not recursive; return jtenqueue(jt, ) result
     e = jt->jerr;
     if (savcallstack == 0) CALLSTACKRESET MODESRESET jt->jerr = 0;
     if (jt->recurstate < RECSTATEPROMPT)
@@ -524,7 +524,7 @@ I _stdcall JSetA(J jt, I n, C* name, I dlen, C* d) {
         return EVILNAME;
     }
     A* old = jt->tnextpushp;
-    symbisdel(jtnfs(jt, n, name), jtunbin(jt, jtstr(jt, dlen, d)), jt->global);
+    jtsymbisdel(jt, jtnfs(jt, n, name), jtunbin(jt, jtstr(jt, dlen, d)), jt->global);
     jttpop(jt, old);
     return jt->jerr;
 }
@@ -607,7 +607,7 @@ C* _stdcall JGetLocale(J jt) {
 
 A _stdcall Jga(J jt, I t, I n, I r, I* s) {
     A z;
-    RZ(z = ga(t, n, r, s));
+    RZ(z = jtga(jt, t, n, r, s));
     AC(z) = ACUC1;  // set nonrecursive usecount so that parser won't free the block prematurely.  This gives the
                     // usecount as if the block were 'assigned' by this call
     return z;
@@ -803,7 +803,7 @@ setterm(J jt, C* name, I* jtype, I* jrank, I* jshape, I* jdata) {
     if (strlen(name) >= sizeof(gn)) return EVILNAME;
     if (valid(name, gn)) return EVILNAME;
     for (i = 0; i < *jrank; ++i) k *= ((I*)(*jshape))[i];
-    a = ga(*jtype, k, *jrank, (I*)*jshape);
+    a = jtga(jt, *jtype, k, *jrank, (I*)*jshape);
     if (!a) return EVWSFULL;
     memcpy(AV(a), (void*)*jdata, n * k);
     jtjset(jt, gn, a);

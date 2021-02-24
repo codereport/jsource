@@ -438,13 +438,13 @@ jtenqueue(J jt, A a, A w, I env) {
                 if (!(*x = jtconnum(jt, wl, wi))) {
                     I lje = jt->jerr;
                     RESETERR;
-                    jsignal3(lje, w, u[0]);
+                    jtjsignal3(jt, lje, w, u[0]);
                     return 0;
                 }  // starts with numeric, create numeric constant.. If error, give a message showing the bad number
             } else if (p == CQ) {
                 RZ(*x = jtconstr(jt, wl, wi));  // start with ', make string constant
             } else {
-                jsignal3(EVSPELL, w, wi - s);
+                jtjsignal3(jt, EVSPELL, w, wi - s);
                 return 0;
             }  // bad first character or inflection
         }
@@ -536,7 +536,7 @@ A
 jttokens(J jt, A w, I env) {
     A t;
     RZ(t = jtwordil(jt, w));
-    ASSERT(AM(t) >= 0, EVOPENQ) return enqueue(t, w, env);
+    ASSERT(AM(t) >= 0, EVOPENQ) return jtenqueue(jt, t, w, env);
 }
 // enqueue produces nonrecursive result, and so does tokens.  This is OK because the result is always parsed and is
 // never an argument to a verb
@@ -562,7 +562,7 @@ jttokens(J jt, A w, I env) {
         CHKJ(j);                          \
         p = (i) - (j);                    \
         EXTZ(T, 1);                       \
-        RZ(*u++ = vec(B01, p, (j) + wv)); \
+        RZ(*u++ = jtvec(jt, B01, p, (j) + wv)); \
     }
 #define EMIT0x(T, j, i, r, c)                  \
     {                                          \
@@ -661,7 +661,7 @@ jttokens(J jt, A w, I env) {
 #define FSMF(T, zk, zt, zr, zm, cexp, EMIT, ZVA)                                      \
     {                                                                                 \
         T *u, *uu;                                                                    \
-        RZ(z = exta((zt), (zr), (zm), (f | 4) == 5 ? n + 1 : n / 3));                 \
+        RZ(z = jtexta(jt, (zt), (zr), (zm), (f | 4) == 5 ? n + 1 : n / 3));                 \
         if (1 < (zr)) {                                                               \
             I *s = AS(z);                                                             \
             s[1] = (zm);                                                              \
@@ -857,7 +857,7 @@ jtfsmvfya(J jt, A w) {
     RZ(zv[0] = jtrifvs(jt, jtsc(jt, f)));
     RZ(zv[1] = jtrifvs(jt, s));
     RZ(zv[2] = jtrifvs(jt, m));
-    RZ(zv[3] = jtrifvs(jt, vec(INT, 4L, ijrd)));
+    RZ(zv[3] = jtrifvs(jt, jtvec(jt, INT, 4L, ijrd)));
     EPILOG(z);
 } /* check left argument of x;:y */
 
@@ -916,18 +916,18 @@ jtfsm0(J jt, A a, A w, C chka) {
             RZ(w = jtfrom(jt, jtindexof(jt, y, w), x));
         }  // # columns of machine must be at least c+1; look up the rest
     }
-    A z = fsmdo(f, s, m, ijrd, w, w0);
+    A z = jtfsmdo(jt, f, s, m, ijrd, w, w0);
     EPILOG(z);
 }
 
 A
 jtfsm(J jt, A a, A w) {
-    return fsm0(a, w, 1);
+    return jtfsm0(jt, a, w, 1);
 }
 /* x;:y */
 
 A
 jtfsmfx(J jt, A w, A self) {
-    return fsm0(FAV(self)->fgh[0], w, 0);
+    return jtfsm0(jt, FAV(self)->fgh[0], w, 0);
 }
 /* x&;: y */

@@ -208,7 +208,7 @@ jtlchar(J jt, A w, A *ltext) {
     if (!p) {  // if the string contains a nonprintable, represent it as nums { a.
         k = (UC)d;
         RZ(y = jtindexof(jt, ds(CALP), w));
-        if (r1 && n < m && (!k || k == m - n) && jtequ(jt, y, apv(n, k, 1L)))
+        if (r1 && n < m && (!k || k == m - n) && jtequ(jt, y, jtapv(jt, n, k, 1L)))
             return jtover(jt, jtthorn1(jt, jtsc(jt, d ? -n : n)), jtcstr(jt, "{.a."));
         RZ(y = lnum(y));
         return jtlp(jt, y) ? jtover(jt, jtcstr(jt, "a.{~"), y) : jtover(jt, y, jtcstr(jt, "{a."));

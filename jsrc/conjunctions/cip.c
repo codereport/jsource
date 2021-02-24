@@ -88,7 +88,7 @@ jtpdtby(J jt, A a, A w) {
     at = AT(a);
     wt = AT(w);
     t  = at & B01 ? wt : at;
-    RZ(z = ipprep(a, w, t, &m, &n, &p));
+    RZ(z = jtipprep(jt, a, w, t, &m, &n, &p));
     zk = n << bplg(t);
     u  = BAV(a);
     v = wv = BAV(w);
@@ -104,7 +104,7 @@ jtpdtby(J jt, A a, A w) {
         case INTX:
             if (at & B01) PDTBY(I, I, IINC) else PDTXB(I, I, IINC, c = *u++);
             if (er >= EWOV) {
-                RZ(z = ipprep(a, w, FL, &m, &n, &p));
+                RZ(z = jtipprep(jt, a, w, FL, &m, &n, &p));
                 zk = n * sizeof(D);
                 u  = BAV(a);
                 v = wv = BAV(w);
@@ -345,7 +345,7 @@ jtpdt(J jt, A a, A w) {
     m = t;
     m = t & INT ? FL : m;
     m = t & B01 ? INT : m;                // type of result, promoting bool and int
-    RZ(z = ipprep(a, w, m, &m, &n, &p));  // allocate the result area, with the needed shape and type
+    RZ(z = jtipprep(jt, a, w, m, &m, &n, &p));  // allocate the result area, with the needed shape and type
     if (AN(z) == 0) return z;             // return without computing if result is empty
     if (!p) {
         memset(AV(z), C0, AN(z) << bplg(AT(z)));
@@ -606,7 +606,7 @@ jtipbx(J jt, A a, A w, C c, C d) {
     B *av, *av0, b, *v0, *v1, *zv;
     C c0, c1;
     I ana, i, j, m, n, p, q, r, *uu, *vv, wc;
-    RZ(z = ipprep(a, w, B01, &m, &n, &p));
+    RZ(z = jtipprep(jt, a, w, B01, &m, &n, &p));
     // m=#1-cells of a, n=# bytes in 1-cell of w, p=length of individual inner product creating an atom
     ana = !!AR(a);
     wc  = AR(w) ? n : 0;
@@ -696,7 +696,7 @@ jtdotprod(J jt, A a, A w, A self) {
     if ((SGNIF(AT(a) & AT(w), B01X) & -AN(a) & -AN(w) & -(FAV(gs)->flag & VISATOMIC2)) < 0 &&
         CSLASH == ID(fs) &&  // fs is c/
         (c = FAV(FAV(fs)->fgh[0])->id, c == CSTARDOT || c == CPLUSDOT || c == CNE))
-        return ipbx(a, w, c, FAV(gs)->id);  // [+.*.~:]/ . boolean
+        return jtipbx(jt, a, w, c, FAV(gs)->id);  // [+.*.~:]/ . boolean
     r = lr(gs);                             // left rank of v
     A z;
     return df2(
@@ -709,7 +709,7 @@ jtdotprod(J jt, A a, A w, A self) {
 static A
 jtminors(J jt, A w) {
     A d, z;
-    RZ(d = apvwr(3L, -1L, 1L));
+    RZ(d = jtapvwr(jt, 3L, -1L, 1L));
     AV(d)[0] = 0;
     return jtdrop(jt, d, df2(z, num(1), w, jtbsdot(jt, ds(CLEFT))));  // 0 0 1 }. 1 [\. w
 }
@@ -734,7 +734,7 @@ jtdet(J jt, A w, A self) {
 A
 jtdetxm(J jt, A w, A self) {
     A z;
-    return dotprod(IRS1(w, 0L, 1L, jthead, z), jtdet(jt, jtminors(jt, w), self), self);
+    return jtdotprod(jt, IRS1(w, 0L, 1L, jthead, z), jtdet(jt, jtminors(jt, w), self), self);
 }
 /* determinant via expansion by minors. w is matrix with >1 columns */
 

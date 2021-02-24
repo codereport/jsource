@@ -35,8 +35,8 @@ jtfong(J jt, A a, A w) {
     c = v->id;
     f = v->fgh[0];
     return c == CRIGHT                                     ? w
-           : c == CFORK && (NOUN & AT(f) || CCAP == ID(f)) ? folk(f, v->fgh[1], jtfong(jt, v->fgh[2], w))
-                                                           : folk(ds(CCAP), a, w);
+           : c == CFORK && (NOUN & AT(f) || CCAP == ID(f)) ? jtfolk(jt, f, v->fgh[1], jtfong(jt, v->fgh[2], w))
+                                                           : jtfolk(jt, ds(CCAP), a, w);
 }  // [: f g  with simplifications: [: ] w -> w;  [: (N/[: x y) w -> N/[: x [: y w   and y omittrd if ]
 
 static A
@@ -58,9 +58,9 @@ jtinvfork(J jt, A w) {
     if (CAMP == ID(gi)) {
         v = FAV(gi);
         if (NOUN & AT(v->fgh[0]))
-            RZ(gi = folk(v->fgh[0], v->fgh[1], ds(CRIGHT)))
+            RZ(gi = jtfolk(jt, v->fgh[0], v->fgh[1], ds(CRIGHT)))
         else if (NOUN & AT(v->fgh[1]))
-            RZ(gi = folk(v->fgh[1], jtswap(jt, v->fgh[0]), ds(CRIGHT)));
+            RZ(gi = jtfolk(jt, v->fgh[1], jtswap(jt, v->fgh[0]), ds(CRIGHT)));
     }
     return jtfong(jt, fi, gi);
 }
@@ -280,7 +280,7 @@ jtinvamp(J jt, A w) {
         case CBASE:
             if (!nf) break;
             return AR(x) ? jtamp(jt, x, ds(CABASE))
-                         : jtobverse(jt, evc(x, mag(x), "$&u@>:@(v&(<.@^.))@(1&>.)@(>./)@:|@, #: ]"), w);
+                         : jtobverse(jt, jtevc(jt, x, mag(x), "$&u@>:@(v&(<.@^.))@(1&>.)@(>./)@:|@, #: ]"), w);
         case CATOMIC:
             if (ng) {
                 ASSERT(jtequ(jt, x, jtnub(jt, x)), EVDOMAIN);
@@ -440,7 +440,7 @@ jtinv(J jt, A w, I recur) {
         case CPOWOP:
             if (vf && ng) {
                 RE(p = jti0(jt, g));
-                return -1 == p ? f : 1 == p ? invrecur(f) : powop(0 > p ? f : invrecur(f), jtsc(jt, ABS(p)), 0);
+                return -1 == p ? f : 1 == p ? invrecur(f) : jtpowop(jt, 0 > p ? f : invrecur(f), jtsc(jt, ABS(p)), 0);
             }
             if (VGERL & v->flag) return *(1 + AAV(v->fgh[2]));
             break;
@@ -604,7 +604,7 @@ jtiden(J jt, A w) {
             break;
     }
     ASSERT(x != 0, EVDOMAIN);
-    return folk(x, jtswap(jt, ds(CDOLLAR)), jtatop(jt, ds(CBEHEAD), ds(CDOLLAR)));
+    return jtfolk(jt, x, jtswap(jt, ds(CDOLLAR)), jtatop(jt, ds(CBEHEAD), ds(CDOLLAR)));
 }
 
 A
@@ -628,5 +628,5 @@ jtidensb(J jt, A w) {
             break;
     }
     ASSERT(x != 0, EVDOMAIN);
-    return folk(x, jtswap(jt, ds(CDOLLAR)), jtatop(jt, ds(CBEHEAD), ds(CDOLLAR)));
+    return jtfolk(jt, x, jtswap(jt, ds(CDOLLAR)), jtatop(jt, ds(CBEHEAD), ds(CDOLLAR)));
 }

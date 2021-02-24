@@ -222,7 +222,7 @@ jtmultiple(J jt, D x, Q m) {
     q1r2.d = jtxplus(jt, iv1, iv1);
     QRE(y = jtcvt(jt, RAT, jtscf(jt, x)));
     QRE(q1 = jtqplus(jt, q1r2, jtqtymes(jt, m, QAV(y)[0])));
-    QRE(q2.n = xdiv(q1.n, q1.d, XMFLR));
+    QRE(q2.n = jtxdiv(jt, q1.n, q1.d, XMFLR));
     q2.d = iv1;
     return jtqdiv(jt, q2, m);
 } /* nearest multiple of m to x */
@@ -271,7 +271,7 @@ jtrfcq(J jt, I m, A w, A* zz, A* ww) {
     // loop to find each root by Laguerre's method
     while (i < m) {
         // find one (complex) root.  Exit if error
-        r = laguerre(m, xv, laguerre(m - i, yv, zeroZ));
+        r = jtlaguerre(jt, m, xv, jtlaguerre(jt, m - i, yv, zeroZ));
         if (jt->jerr) {
             RESETERR;
             break;
@@ -282,7 +282,7 @@ jtrfcq(J jt, I m, A w, A* zz, A* ww) {
         b = 0;  // set 'no rational root found'
         // If the value found IS a root, divide it from the polynomial repeatedly, and move a copy
         // to the result for each repetition
-        while (deflateq(1, m - j, qv, rq)) {
+        while (jtdeflateq(jt, 1, m - j, qv, rq)) {
             *zv++ = rq;
             ++j;
             b = 1;
@@ -294,13 +294,13 @@ jtrfcq(J jt, I m, A w, A* zz, A* ww) {
             q1   = rq;
             q1.n = iv1;
             rq   = jtqplus(jt, rq, q1);
-            while (deflateq(1, m - j, qv, rq)) {
+            while (jtdeflateq(jt, 1, m - j, qv, rq)) {
                 *zv++ = rq;
                 ++j;
                 b = 1;
             }
             rq = jtqminus(jt, rq, q1);
-            while (deflateq(1, m - j, qv, rq)) {
+            while (jtdeflateq(jt, 1, m - j, qv, rq)) {
                 *zv++ = rq;
                 ++j;
                 b = 1;
@@ -321,10 +321,10 @@ jtrfcq(J jt, I m, A w, A* zz, A* ww) {
             if (d < EPS * c) r.im = 0;
             if (c < EPS * d) r.re = 0;
             // Use Newton's method to find a root (we hope)
-            r = newt(m, xv, r, 10L);
+            r = jtnewt(jt, m, xv, r, 10L);
             b = !r.im || i == m - 1;
             // Divide out the root - or the pair of them, if they are complex.
-            deflate(b, m - i, yv, r);
+            jtdeflate(jt, b, m - i, yv, r);
             i += 2 - b;
             // We don't use the roots we find here - we just have to make some progress
             // before the next iteration
@@ -358,12 +358,12 @@ jtrfcz(J jt, I m, A w) {
         c     = xv[0];
         d     = jtzsqrt(jt, jtzminus(jt, jtztymes(jt, b, b), jtztymes(jt, z2, jtztymes(jt, a2, c))));
         r     = jtzdiv(jt, jtzplus(jt, b, d), a2);
-        zv[0] = newt(m, xv, r, 10L);
+        zv[0] = jtnewt(jt, m, xv, r, 10L);
         r     = jtzdiv(jt, jtzminus(jt, b, d), a2);
-        zv[1] = newt(m, xv, r, 10L);
+        zv[1] = jtnewt(jt, m, xv, r, 10L);
     } else {
         for (i = 0; i < m; ++i) {
-            r = laguerre(m, xv, laguerre(m - i, yv, zeroZ));
+            r = jtlaguerre(jt, m, xv, jtlaguerre(jt, m - i, yv, zeroZ));
             if (jt->jerr) {
                 RESETERR;
                 bb = 1;
@@ -377,14 +377,14 @@ jtrfcz(J jt, I m, A w) {
                 else if (d < EPS * c)
                     r.re = 0;
             }
-            zv[i] = r = newt(m, xv, r, 10L);
+            zv[i] = r = jtnewt(jt, m, xv, r, 10L);
             if (real && r.im && i < m - 1) {
                 r.im      = -r.im;
                 zv[1 + i] = r;
-                deflate(0, m - i, yv, r);
+                jtdeflate(jt, 0, m - i, yv, r);
                 ++i;
             } else
-                deflate(1, m - i, yv, r);
+                jtdeflate(jt, 1, m - i, yv, r);
         }
         if (bb) {
             A x1;
@@ -392,14 +392,14 @@ jtrfcz(J jt, I m, A w) {
             // If we failed on an iteration, perturb the highest coefficient a little bit and see if we can solve that
             // instead.
             if (real) {
-                RZ(x1 = jtcvt(jt, FL, vec(CMPX, 1 + m, xv)));
+                RZ(x1 = jtcvt(jt, FL, jtvec(jt, CMPX, 1 + m, xv)));
                 u = DAV(x1) + m - 1;
                 if (*u)
                     *u *= 1 + 1e-12;
                 else
                     *u = 1e-12;
             } else {
-                RZ(x1 = vec(CMPX, 1 + m, xv));
+                RZ(x1 = jtvec(jt, CMPX, 1 + m, xv));
                 u = &(ZAV(x1) + m - 1)->re;
                 if (*u)
                     *u *= 1 + 1e-12;
@@ -408,7 +408,7 @@ jtrfcz(J jt, I m, A w) {
             }
             RZ(z = jtrfcz(jt, m, x1));
             zv = ZAV(z);
-            DO(m, zv[i] = newt(m, xv, zv[i], 10L););
+            DO(m, zv[i] = jtnewt(jt, m, xv, zv[i], 10L););
         }
     }
     if (real) {
@@ -447,7 +447,7 @@ jtrfc(J jt, A w) {
             if (t & CMPX)
                 r = jtrfcz(jt, m, w);  // higher order - if complex, go straight to complex solutions
             else {
-                RZ(rfcq(m, w, &r, &w1));
+                RZ(jtrfcq(jt, m, w, &r, &w1));
                 if (m > AN(r)) r = jtover(jt, r, jtrfcz(jt, m - AN(r), w1));
             }  // otherwise, find rational solutions in r, and residual polynomial in w1.
                // if there are residual (complex) solutions, go find them
@@ -472,7 +472,7 @@ jtpoly1(J jt, A w) {
     RZ(IRS1(x, 0L, 1L, jthead, c));                                    // c = {."1>y = list of coefficients
     RZ(IRS1(x, 0L, 1L, jttail, e));                                    // e = {:"1>y = list of exponents
     ASSERT(jtequ(jt, e, floor1(e)) && all1(le(num(0), e)), EVDOMAIN);  // insist on nonnegative integral exponents
-    return evc(c, e, "u v}(1+>./v)$0");                                // evaluate c 2 : 'u v}(1+>./v)$0' e
+    return jtevc(jt, c, e, "u v}(1+>./v)$0");                                // evaluate c 2 : 'u v}(1+>./v)$0' e
 }
 
 static A
@@ -663,7 +663,7 @@ A
 jtpderiv1(J jt, A w) {
     F1RANK(1, jtpderiv1, UNUSED_VALUE);
     if (AN(w) && !(NUMERIC & AT(w))) RZ(w = jtpoly1(jt, w));
-    return 1 >= AN(w) ? apv(1L, 0L, 0L) : tymes(jtbehead(jt, w), apv(AN(w) - 1, 1L, 1L));
+    return 1 >= AN(w) ? jtapv(jt, 1L, 0L, 0L) : tymes(jtbehead(jt, w), jtapv(jt, AN(w) - 1, 1L, 1L));
 } /* p.. w */
 
 A
@@ -671,5 +671,5 @@ jtpderiv2(J jt, A a, A w) {
     F2RANK(0, 1, jtpderiv2, UNUSED_VALUE);
     if (!(NUMERIC & AT(w))) RZ(w = jtpoly1(jt, w));
     ASSERT(NUMERIC & AT(a), EVDOMAIN);
-    return jtover(jt, a, divideW(w, apv(AN(w), 1L, 1L)));
+    return jtover(jt, a, divideW(w, jtapv(jt, AN(w), 1L, 1L)));
 } /* a p.. w */

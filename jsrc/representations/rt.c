@@ -16,10 +16,10 @@ jttrc(J jt, A w) {
     s  = AS(w);
     v  = AAV(w);
     xn = s[0];
-    RZ(x = apvwr(xn, 0L, 0L));
+    RZ(x = jtapvwr(jt, xn, 0L, 0L));
     xv = AV(x);
     yn = s[1];
-    RZ(y = apvwr(yn, 0L, 0L));
+    RZ(y = jtapvwr(jt, yn, 0L, 0L));
     yv = AV(y);
     j  = 0;
     DO(xn, xv[i] = SETIC(v[j], k); j += yn;);
@@ -100,7 +100,7 @@ jtgraft(J jt, A w) {
         memset(v, ' ', AN(q));
         pv[1] = yv[j];
         k     = j - yn;
-        DO(xn, *pv = xv[i]; RE(v += pad(p, u[k += yn], v)););
+        DO(xn, *pv = xv[i]; RE(v += jtpad(jt, p, u[k += yn], v)););
         zv[j] = jtincorp(jt, q);
     }
     t = zv[0];
@@ -187,7 +187,7 @@ jttroot(J jt, A a, A w) {
           k = i;
           break;
       } u -= n;);
-    return link(center(x, j, k, m), w);
+    return link(jtcenter(jt, x, j, k, m), w);
 }
 
 static A

@@ -227,7 +227,7 @@ jtfolkcomp(J jt, A a, A w, A self) {
     PROLOG(0034);
     A z;
     AF f;
-    f = atcompf(a, w, self);
+    f = jtatcompf(jt, a, w, self);
     if (f) {
         I postflags = jt->workareas.compsc.postflags;
         z           = f(jt, a, w, self);
@@ -247,7 +247,7 @@ jtfolkcomp0(J jt, A a, A w, A self) {
     A z;
     AF f;
     PUSHCCT(1.0)
-    f = atcompf(a, w, self);
+    f = jtatcompf(jt, a, w, self);
     if (f) {
         I postflags = jt->workareas.compsc.postflags;
         z           = f(jt, a, w, self);
@@ -263,12 +263,12 @@ jtfolkcomp0(J jt, A a, A w, A self) {
 static A
 jtcharmapa(J jt, A w, A self) {
     V *v = FAV(self);
-    return charmap(w, FAV(v->fgh[2])->fgh[0], v->fgh[0]);
+    return jtcharmap(jt, w, FAV(v->fgh[2])->fgh[0], v->fgh[0]);
 }
 static A
 jtcharmapb(J jt, A w, A self) {
     V *v = FAV(self);
-    return charmap(w, FAV(v->fgh[0])->fgh[0], FAV(v->fgh[2])->fgh[0]);
+    return jtcharmap(jt, w, FAV(v->fgh[0])->fgh[0], FAV(v->fgh[2])->fgh[0]);
 }
 
 // Create the derived verb for a fork.  Insert in-placeable flags based on routine, and asgsafe based on fgh
@@ -551,7 +551,7 @@ jthkodom(J jt, A w, A self) {
         n = AN(w);
         v = AV(w);
         DO(n, if (b = 0 > v[i]) break;);
-        if (!b) return odom(2L, n, v);
+        if (!b) return jtodom(jt, 2L, n, v);
     }
     return CALL2(f2, w, CALL1(g1, w, gs), fs);
 } /* special code for (#: i.@(* /)) */

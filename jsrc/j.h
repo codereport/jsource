@@ -119,7 +119,7 @@
 #define IOTAVECBEGIN (-20)
 #define IOTAVECLEN 400
 
-// modes for indexofsub()
+// modes for jtindexofsub(jt, )
 #define IIOPMSK 0xf  // operation bits
 #define IIDOT 0      // IIDOT and IICO must be 0-1
 #define IICO 1
@@ -377,14 +377,14 @@
     {                                                \
         if (m < AR(w))                               \
             if (m == 0)                              \
-                return rank1ex0(w, (A)self, f);      \
+                return jtrank1ex0(jt, w, (A)self, f);      \
             else                                     \
-                return rank1ex(w, (A)self, (I)m, f); \
+                return jtrank1ex(jt, w, (A)self, (I)m, f); \
     }  // if there is more than one cell, run rank1ex on them.  m=monad rank, f=function to call for monad cell.  Fall
        // through otherwise
 #define F2RANKcommon(l, r, f, self, extra)                                                                 \
     {                                                                                                      \
-        extra if ((I)((l - AR(a)) | (r - AR(w))) < 0) if ((l | r) == 0) return rank2ex0(a, w, (A)self, f); \
+        extra if ((I)((l - AR(a)) | (r - AR(w))) < 0) if ((l | r) == 0) return jtrank2ex0(jt, a, w, (A)self, f); \
         else {                                                                                             \
             I lr = MIN((I)l, AR(a));                                                                       \
             I rr = MIN((I)r, AR(w));                                                                       \
@@ -488,10 +488,10 @@
             *_d = 1;                             \
         } while (++_r < 0);                      \
     }  // copy all 1s to shape
-#define GA(v, t, n, r, s) RZ(v = ga(t, (I)(n), (I)(r), (I *)(s)))
+#define GA(v, t, n, r, s) RZ(v = jtga(jt, t, (I)(n), (I)(r), (I *)(s)))
 // GAE executes the given expression when there is an error
 #define GAE(v, t, n, r, s, erraction) \
-    if (!(v = ga(t, (I)(n), (I)(r), (I *)(s)))) erraction;
+    if (!(v = jtga(jt, t, (I)(n), (I)(r), (I *)(s)))) erraction;
 
 // When the type and all rank/shape are known at compile time, use GAT.  The compiler precalculates
 // almost everything For best results declare name as: AD* RESTRICT name;  The number of bytes,
@@ -693,7 +693,7 @@
 #define Jmemcpy(d, s, l, lbl, bytelen) memcpy(d, s, bytelen ? (l) : (l) & -SZI);
 #define JMCR(d, s, l, lbl, bytelen, maskname) memcpy(d, s, bytelen ? (l) : (l) & -SZI);
 
-#define IX(n) apv((n), 0L, 1L)
+#define IX(n) jtapv(jt, (n), 0L, 1L)
 #define JATTN                      \
     {                              \
         if (*jt->adbreakr != 0) {  \
@@ -898,7 +898,7 @@
 #define EPILOGNOVIRT(z) \
     return (jtgc(jt, z, _ttop))  // use this when the repercussions of allowing virtual result are too severe
 #define EPILOGZOMB(z)                        \
-    if (!gc3(&(z), 0L, 0L, _ttop)) return 0; \
+    if (!jtgc3(jt, &(z), 0L, 0L, _ttop)) return 0; \
     return z;  // z is the result block.  Use this if z may contain inplaceable contents that would free prematurely
 // Routines that do little except call a function that does PROLOG/EPILOG have EPILOGNULL as a placeholder
 // Routines that do not return A

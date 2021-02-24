@@ -246,7 +246,7 @@ jtfmtparse(J jt, A w) {
         }
         mi = i;
         if (BETWEENC(c, '0', '9')) {
-            RZ(widthdp(jtstr(jt, n - i, wv + i), vals, vals + 1));
+            RZ(jtwidthdp(jt, jtstr(jt, n - i, wv + i), vals, vals + 1));
             break;
         }
     }
@@ -263,7 +263,7 @@ jtfmtparse(J jt, A w) {
         RZ(zv[NMODVALS] = jtincorp(jt, jtstr(jt, 5L, subs)));
     }
     vals[2] = fb;
-    RZ(*zv = jtincorp(jt, vec(INT, 3, vals)));
+    RZ(*zv = jtincorp(jt, jtvec(jt, INT, 3, vals)));
     return z;
 }
 
@@ -367,7 +367,7 @@ jtsprintfnD(J jt, C *x, I m, I dp, D dw, C *subs) {
         nd = dp;
     else
         nd = m - !!dp;
-    RZ(ecvt(dw, nd, &decpt, &sign, x));
+    RZ(jtecvt(jt, dw, nd, &decpt, &sign, x));
     if (decpt > 0) {
         memmove(x + decpt + 1, x + decpt, dp);
         if (dp) x[decpt] = SUBd;
@@ -383,7 +383,7 @@ static B
 jtsprintfeD(J jt, C *x, I m, I dp, D dw, C *subs) {
     I y, y0;
     int decpt, sign;
-    RZ(ecvt(dw, 1 + dp, &decpt, &sign, x + !!dp));
+    RZ(jtecvt(jt, dw, 1 + dp, &decpt, &sign, x + !!dp));
     if (dp) {
         x[0] = x[1];
         x[1] = SUBd;
@@ -829,7 +829,7 @@ jtfmtallcol(J jt, A a, A w, I mode) {
                         memcpy(cv, cP, nP);
                         memcpy(cv + *il - nQ, cQ, nQ);
                     }                                                  // if p<xx> or q<xx> given, move in those fields
-                    RZ(sprintfI(cv + nP, *il - nP - nQ, d, 0, subs));  // format 0 into the field, skipping p/q
+                    RZ(jtsprintfI(jt, cv + nP, *il - nP - nQ, d, 0, subs));  // format 0 into the field, skipping p/q
                 }
             } else if (mI && t & INT && *iv == IMIN) {
                 memcpy(cv, cI, nI);      // if we are checking for NULL, that overrides exponential
@@ -845,7 +845,7 @@ jtfmtallcol(J jt, A a, A w, I mode) {
                     y = nP;
                     g = nQ;
                 }  // if value is nonnegative and p<xx> or q<xx> given, set pref/suff length from p/q
-                RZ(sprintfeD(
+                RZ(jtsprintfeD(jt, 
                   cv + y, *il - y - g, d, jtexprndID(jt, d, dtmp), subs));  // format the number, skipping pref/suff
                 if (dtmp < 0 && mMN) {
                     memcpy(cv, cM, nM);
@@ -872,8 +872,8 @@ jtfmtallcol(J jt, A a, A w, I mode) {
                     m = *il - y - g;
                     if (mC)
                         m = m - ((m - !!d - d) >> 2);  // m=length left for value after pref/suff, and any added commas
-                    RZ(sprintfI(cv + y, m, d, *iv, subs));               // format as integer
-                    if (mC) RZ(fmtcomma(cv + y, *il - y - g, d, subs));  // insert commas if called for
+                    RZ(jtsprintfI(jt, cv + y, m, d, *iv, subs));               // format as integer
+                    if (mC) RZ(jtfmtcomma(jt, cv + y, *il - y - g, d, subs));  // insert commas if called for
                     if (*iv < 0 && mMN) {
                         memcpy(cv, cM, nM);
                         memcpy(cv + *il - nN, cN, nN);
@@ -889,7 +889,7 @@ jtfmtallcol(J jt, A a, A w, I mode) {
                         memcpy(cv, cP, nP);
                         memcpy(cv + *il - nQ, cQ, nQ);
                     }
-                    RZ(sprintfI(cv + nP, *il - nP - nQ, d, *bv, subs));
+                    RZ(jtsprintfI(jt, cv + nP, *il - nP - nQ, d, *bv, subs));
                 } else {  // FL to be displayed in fixed point, as above but with decimal places
                     y = *dv < 0;
                     g = 0;
@@ -902,8 +902,8 @@ jtfmtallcol(J jt, A a, A w, I mode) {
                     }
                     m = *il - y - g;
                     if (mC) m = m - ((m - !!d - d) >> 2);
-                    RZ(sprintfnD(cv + y, m, d, jtafzrndID(jt, d, *dv), subs));  // round to the display precision
-                    if (mC) RZ(fmtcomma(cv + y, *il - y - g, d, subs));
+                    RZ(jtsprintfnD(jt, cv + y, m, d, jtafzrndID(jt, d, *dv), subs));  // round to the display precision
+                    if (mC) RZ(jtfmtcomma(jt, cv + y, *il - y - g, d, subs));
                     if (*dv < 0 && mMN) {
                         memcpy(cv, cM, nM);
                         memcpy(cv + *il - nN, cN, nN);
@@ -956,7 +956,7 @@ jtfmtxi(J jt, A a, A w, I mode, I *omode) {
     } else {
         if (XNUM + RAT + CMPX & AT(w)) RZ(w = jtcvt(jt, FL, w));
         *omode = mode;
-        return fmtallcol(jtfmtprecomp(jt, rank1ex0(a, UNUSED_VALUE, jtfmtparse), w), w, mode);
+        return jtfmtallcol(jt, jtfmtprecomp(jt, jtrank1ex0(jt, a, UNUSED_VALUE, jtfmtparse), w), w, mode);
     }
 } /* 8!:x internals */
   /* mode is the requested mode, *omode is the actual mode computed */
@@ -966,7 +966,7 @@ jtfmtxi(J jt, A a, A w, I mode, I *omode) {
 A
 jtfmt02(J jt, A a, A w) {
     I mode;
-    return fmtxi(a, w, 0, &mode);
+    return jtfmtxi(jt, a, w, 0, &mode);
 } /* 8!:0 dyad */
 
 A
@@ -974,7 +974,7 @@ jtfmt12(J jt, A a, A w) {
     A z;
     I mode, r, j;
     ASSERT(2 >= AR(w), EVRANK);
-    RZ(z = fmtxi(a, w, 1, &mode));
+    RZ(z = jtfmtxi(jt, a, w, 1, &mode));
     if (mode == 1) return z;
     r = AR(z);
     A t;
@@ -989,7 +989,7 @@ jtfmt22(J jt, A a, A w) {
     A z;
     I mode, r, j;
     ASSERT(2 >= AR(w), EVRANK);
-    RZ(z = fmtxi(a, w, 2, &mode));
+    RZ(z = jtfmtxi(jt, a, w, 2, &mode));
     if (mode == 2) return z;
     r = AR(z);
     A t;

@@ -145,7 +145,7 @@ jtgrd1spss(J jt, A w, I wf, I wcr) {
     wt = AT(w);
     ws = AS(w);
     n  = wcr ? ws[wf] : 1;
-    RZ(z = grd1spz(w, wf, wcr));
+    RZ(z = jtgrd1spz(jt, w, wf, wcr));
     zv                            = AV(z);
     x                             = SPA(wp, e);
     jt->workareas.compare.compsev = CAV(x);
@@ -161,13 +161,13 @@ jtgrd1spss(J jt, A w, I wf, I wcr) {
                                                : wt & SFL  ? compspssD
                                                            : compspssZ);
     jt->workareas.compare.compusejt    = 1;
-    RZ(spsscell(w, wf, wcr, &c, &t));
+    RZ(jtspsscell(jt, w, wf, wcr, &c, &t));
     tv = AV(t);
     cv = AV(c);
     cn = AN(c);
     GATV0(x, INT, 2 + n, 1);
-    xv = AV(x); /* work area for msmerge() */
-    RZ(d = apvwr(wf, 0L, 0L));
+    xv = AV(x); /* work area for jtmsmerge(jt, ) */
+    RZ(d = jtapvwr(jt, wf, 0L, 0L));
     dv = AV(d); /* odometer for frame      */
     for (i = 0; i < cn; i += 2) {
         jt->workareas.compare.compstv = u = tv + cv[i];
@@ -179,10 +179,10 @@ jtgrd1spss(J jt, A w, I wf, I wcr) {
         }
         if (u[0] < u[1]) {
             DO(n1, zv[i] = i;);
-            msort(n1, (void**)zv, (void**)xv);
+            jtmsort(jt, n1, (void**)zv, (void**)xv);
         } else {
             DO(n1, xv[i] = i;);
-            msort(n1, (void**)xv, (void**)zv);
+            jtmsort(jt, n1, (void**)xv, (void**)zv);
             sp1merge0(n, n1, yc, zv, xv, yv + wf, u);
         }
         zv += n;
@@ -201,11 +201,11 @@ jtgrd1spsd(J jt, A w, I wf, I wcr) {
     wp = PAV(w);
     ws = AS(w);
     n  = wcr ? ws[wf] : 1;
-    RZ(z = grd1spz(w, wf, wcr));
+    RZ(z = jtgrd1spz(jt, w, wf, wcr));
     zv = AV(z);
     RZ(IRS1(SPA(wp, x), 0L, wcr, jtgr1, t));
     tv = AV(t); /* grade dense cells              */
-    RZ(d = apvwr(wf, 0L, 0L));
+    RZ(d = jtapvwr(jt, wf, 0L, 0L));
     dv = AV(d); /* odometer for frame             */
     y  = SPA(wp, i);
     ys = AS(y);
@@ -284,7 +284,7 @@ jtgrd1spds(J jt, A w, I wf, I wcr) {
     ws = AS(w);
     n  = wcr ? ws[wf] : 1;
     RE(m = jtprod(jt, wf, ws));
-    RZ(z = grd1spz(w, wf, wcr));
+    RZ(z = jtgrd1spz(jt, w, wf, wcr));
     zv                            = AV(z);
     x                             = SPA(wp, e);
     jt->workareas.compare.compsev = CAV(x);
@@ -300,7 +300,7 @@ jtgrd1spds(J jt, A w, I wf, I wcr) {
                                               : wt & SFL  ? compspdsD
                                                           : compspdsZ);
     jt->workareas.compare.compusejt   = 1;
-    RZ(spdscell(w, wf, wcr, &c, &t));
+    RZ(jtspdscell(jt, w, wf, wcr, &c, &t));
     if (!AN(c)) {
         DO(m, DO(n, zv[i] = i;); zv += n;);
         return z;
@@ -309,11 +309,11 @@ jtgrd1spds(J jt, A w, I wf, I wcr) {
     n1                            = cv[1] - 1;
     jt->workareas.compare.compstv = tv = cv[0] + AV(t);
     GATV0(x, INT, MAX(n, 1 + n1), 1);
-    xv = AV(x); /* work area for msmerge() */
+    xv = AV(x); /* work area for jtmsmerge(jt, ) */
     if (cv[0])
-        DO(m, jt->workareas.compare.compsi = i; DO(n1, zv[i] = i;); msort(n1, (void**)zv, (void**)xv); zv += n;)
+        DO(m, jt->workareas.compare.compsi = i; DO(n1, zv[i] = i;); jtmsort(jt, n1, (void**)zv, (void**)xv); zv += n;)
     else
-        DO(m, jt->workareas.compare.compsi = i; DO(n1, xv[i] = i;); msort(n1, (void**)xv, (void**)zv);
+        DO(m, jt->workareas.compare.compsi = i; DO(n1, xv[i] = i;); jtmsort(jt, n1, (void**)xv, (void**)zv);
            sp1merge0(n, n1, yc, zv, xv, yv, tv);
            zv += n;);
     return z;
@@ -332,7 +332,7 @@ jtgrd1spdd(J jt, A w, I wf, I wcr) {
         RZ(z = jtfrom(jt, num(0), x));
         return IRS1(z, 0L, wcr, jtgr1, x);
     } else {
-        return jtreshape(jt, vec(INT, 1 + wf, ws), IX(n));
+        return jtreshape(jt, jtvec(jt, INT, 1 + wf, ws), IX(n));
     }
 } /* grade"r w , dense frame, dense cell */
 
@@ -353,7 +353,7 @@ jtgrd1sp(J jt, A w) {
     wf  = wr - wcr;
     RESETRANK;
     wp = PAV(w);
-    RZ(wb = bfi(wr, SPA(wp, a), 1));
+    RZ(wb = jtbfi(jt, wr, SPA(wp, a), 1));
     m = 0;
     j = wr;
     b = c = 0;
@@ -369,10 +369,10 @@ jtgrd1sp(J jt, A w) {
       });
     if (c) RZ(w = jtreaxis(jt, jtifb(jt, wr, wb), w));
     switch (2 * wb[0] + wb[wf]) {
-        case 0: /* dense  dense  */ z = grd1spdd(w, wf, wcr); break;
+        case 0: /* dense  dense  */ z = jtgrd1spdd(jt, w, wf, wcr); break;
         case 1: /* dense  sparse */ z = grd1spds(w, wf, wcr); break;
-        case 2: /* sparse dense  */ z = grd1spsd(w, wf, wcr); break;
-        case 3: /* sparse sparse */ z = grd1spss(w, wf, wcr); break;
+        case 2: /* sparse dense  */ z = jtgrd1spsd(jt, w, wf, wcr); break;
+        case 3: /* sparse sparse */ z = jtgrd1spss(jt, w, wf, wcr); break;
     }
     EPILOG(z);
 } /* grade"r w for sparse w */
@@ -454,7 +454,7 @@ jtgrd2spss(J jt, A w, I wf, I wcr) {
                                                : wt & SFL  ? compspssD
                                                            : compspssZ);
     jt->workareas.compare.compusejt    = 1;
-    RZ(spsscell(w, wf, wcr, &c, &t));
+    RZ(jtspsscell(jt, w, wf, wcr, &c, &t));
     tv = AV(t);
     cv = AV(c);
     cn = AN(c);
@@ -462,9 +462,9 @@ jtgrd2spss(J jt, A w, I wf, I wcr) {
     j  = 1;
     DQ(cn, m = MAX(m, cv[j]); j += 2;);
     GATV0(x, INT, m, 1);
-    xu = AV(x); /* work area for msmerge() */
+    xu = AV(x); /* work area for jtmsmerge(jt, ) */
     GATV0(x, INT, m, 1);
-    xv  = AV(x); /* work area for msmerge() */
+    xv  = AV(x); /* work area for jtmsmerge(jt, ) */
     zy  = SPA(zp, i);
     zyv = AV(zy);
     for (i = 0; i < cn; i += 2) {
@@ -472,7 +472,7 @@ jtgrd2spss(J jt, A w, I wf, I wcr) {
         n1                                = cv[1 + i] - 1;
         m                                 = 0;
         DO(n1, xv[i] = i;);
-        msort(n1, (void**)xv, (void**)xu);
+        jtmsort(jt, n1, (void**)xv, (void**)xu);
         if (u[0] < u[1])
             SP2RENUM(0, n1, zyv + wf, u)
         else
@@ -491,7 +491,7 @@ jtgrd2spsd(J jt, A w, I wf, I wcr) {
     RZ(z = jtca(jt, w));
     zp = PAV(z);
     x  = SPA(zp, x);
-    SPB(zp, x, irs2(irs1(x, 0L, -1L, jtgr1), x, 0L, 1L, -1L, jtfrom));
+    SPB(zp, x, jtirs2(jt, jtirs1(jt, x, 0L, -1L, jtgr1), x, 0L, 1L, -1L, jtfrom));
     return z;
 } /* sparse frame, dense cell */
 
@@ -517,7 +517,7 @@ jtgrd2sp(J jt, A a, A w) {
     wm = wcr ? ws[wf] : 1;
     ASSERT(am <= wm, EVINDEX);
     wp = PAV(w);
-    RZ(wb = bfi(wr, SPA(wp, a), 1));
+    RZ(wb = jtbfi(jt, wr, SPA(wp, a), 1));
     m = 0;
     j = wr;
     b = c = 0;
@@ -538,15 +538,15 @@ jtgrd2sp(J jt, A a, A w) {
     }
     switch ((2 * wb[0] + wb[wf]) * (a == w && af == wf && acr == wcr)) {
         default:
-            z = irs2(IRS1(w, 0L, wcr, jt->workareas.compare.complt < 0 ? jtgrade1 : jtdgrade1, z),
+            z = jtirs2(jt, IRS1(w, 0L, wcr, jt->workareas.compare.complt < 0 ? jtgrade1 : jtdgrade1, z),
                      a,
                      VFLAGNONE,
                      RMAX,
                      acr,
                      jtfrom);
             break;
-        case 2: /* sparse dense  */ z = grd2spsd(w, wf, wcr); break;
-        case 3: /* sparse sparse */ z = grd2spss(w, wf, wcr); break;
+        case 2: /* sparse dense  */ z = jtgrd2spsd(jt, w, wf, wcr); break;
+        case 3: /* sparse sparse */ z = jtgrd2spss(jt, w, wf, wcr); break;
     }
     EPILOG(z);
 } /* a grade"r w for sparse w */

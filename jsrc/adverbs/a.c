@@ -65,7 +65,7 @@ jtbdot2(J jt, A a, A w, A self) {
 
 static A
 jtbdot1(J jt, A w, A self) {
-    return bdot2(num(0), w, self);
+    return jtbdot2(jt, num(0), w, self);
 }
 
 static A
@@ -258,7 +258,7 @@ jtmemo1(J jt, A w, A self) {
     x = IMIN;
     y = jtint0(jt, w);
     if (y == IMIN) return CALL1(f1, w, fs);
-    return (z = memoget(x, y, self)) ? z : memoput(x, y, self, CALL1(f1, w, fs));
+    return (z = jtmemoget(jt, x, y, self)) ? z : jtmemoput(jt, x, y, self, CALL1(f1, w, fs));
 }
 
 static A
@@ -269,9 +269,9 @@ jtmemo2(J jt, A a, A w, A self) {
     x = jtint0(jt, a);
     y = jtint0(jt, w);
     if (MIN(x, y) == IMIN) return CALL2(f2, a, w, fs);  // IMIN is unmemoable, run fn
-    return (z = memoget(x, y, self))
+    return (z = jtmemoget(jt, x, y, self))
              ? z
-             : memoput(x,
+             : jtmemoput(jt, x,
                        y,
                        self,
                        CALL2(f2, a, w, fs));  // if memo lookup returns empty, run the function and remember the result

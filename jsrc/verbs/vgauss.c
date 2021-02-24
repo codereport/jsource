@@ -53,7 +53,7 @@ jtgausselm(J jt, A w) {
             fa(p.n);
             fa(p.d);
         }
-        if (!gc3(&w, 0L, 0L, old))
+        if (!jtgc3(jt, &w, 0L, 0L, old))
             return 0;  // use simple gc3 to ensure all changes use the stack, since w is modified inplace. Alternatively
                        // could turn off inplacing here
     }
@@ -101,7 +101,7 @@ jtdetr(J jt, A w) {
                 fa(p.d);
             }
         }
-        if (!gc3(&w, 0L, 0L, old))
+        if (!jtgc3(jt, &w, 0L, 0L, old))
             return 0;  // use simple gc3 to ensure all changes use the stack, since w is modified inplace. Alternatively
                        // could turn off inplacing here
     }

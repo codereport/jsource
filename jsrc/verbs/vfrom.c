@@ -30,7 +30,7 @@ jtcatalog(J jt, A w) {
     qv = AV(x);  // allocate vector of max-indexes for each box - only the address is used  qv->max-index 0
     GATV0(x, BOX, n, 1);
     pv = (C **)AV(x);  // allocate vector of pointers to each box's data  pv->box-data-base 0
-    RZ(x = apvwr(n, 0L, 0L));
+    RZ(x = jtapvwr(jt, n, 0L, 0L));
     cv = AV(x);  // allocate vector of current indexes, init to 0  cv->current-index 0
     DO(n, x = wv[i]; if (TYPESNE(t, AT(x))) RZ(x = jtcvt(jt, t, x)); r += AR(x); qv[i] = p = AN(x); DPMULDE(m, p, m);
        pv[i] = CAV(x););  // fill in *qv and *pv; calculate r=+/ #@$@> w, m=*/ */@$@> w
@@ -478,8 +478,8 @@ jtafrom(J jt, A a, A w) {
     RESETRANK;
     if (ar) {  // if there is an array of boxes
         if (((ar ^ acr) | (wr ^ wcr)) == 0) {
-            RE(aindex(a, w, wf, &ind));
-            if (ind) return frombu(ind, w, wf);
+            RE(jtaindex(jt, a, w, wf, &ind));
+            if (ind) return jtfrombu(jt, ind, w, wf);
         }  // if boxing doesn't contribute to shape, open the boxes of a and copy the values
         return wr == wcr ? rank2ex(a, w, UNUSED_VALUE, 0L, wcr, 0L, wcr, jtafrom) :  // if a has frame, rank-loop over a
                  df2(p,
@@ -495,8 +495,8 @@ jtafrom(J jt, A a, A w) {
     ASSERT(1 >= AR(c), EVRANK);
     ASSERT(n <= wcr, EVLENGTH);
     if ((-n & SGNIFNOT(t, BOXX)) < 0) {
-        RE(aindex(a, w, wf, &ind));
-        if (ind) return frombu(ind, w, wf);
+        RE(jtaindex(jt, a, w, wf, &ind));
+        if (ind) return jtfrombu(jt, ind, w, wf);
     }  // not empty and not boxed, handle as 1 index list
     if (wcr == wr) {
         for (i = m = pr = 0; i < n; ++i) {
@@ -529,7 +529,7 @@ jtafrom(J jt, A a, A w) {
         q = j < n ? jtafi(jt, s[j], v[j]) : ds(CACE);
         if (!(p && q)) break;  // pq are 0 if error.  Result of ds(CACE)=axis in full
         if (p != ds(CACE) && q != ds(CACE)) {
-            y = afrom2(p, q, y, wcr - i);
+            y = jtafrom2(jt, p, q, y, wcr - i);
         } else {
             if (q == ds(CACE)) {
                 q = p;
@@ -671,8 +671,8 @@ jtsfrom(J jt, A a, A w) {
     } else {
         A ind;
         // sparse.  See if we can audit the index list.  If we can, use it, else execute the slow way
-        RE(aindex1(a, w, 0L, &ind));
-        if (ind) return frombsn(ind, w, 0L);
+        RE(jtaindex1(jt, a, w, 0L, &ind));
+        if (ind) return jtfrombsn(jt, ind, w, 0L);
     }
     // If we couldn't handle it as a special case, do it the hard way
     A z;
@@ -687,9 +687,9 @@ static EVERYFS(mapxself, 0, jtmapx, 0, VFLAGNONE)
     if (!(BOX & AT(w))) return jtope(jt, a);
     RZ(z1 = jtcatalog(jt, jtevery(jt, shape(jt, w), ds(CIOTA))));  // create index list of each box
     IRS1(z1, 0, 0, jtbox, z2);
-    RZ(z2 = every2(a, z2, (A)&sfn0overself));
+    RZ(z2 = jtevery2(jt, a, z2, (A)&sfn0overself));
     IRS1(z2, 0, 0, jtbox, z3);
-    return every2(z3, w, (A)&mapxself);
+    return jtevery2(jt, z3, w, (A)&mapxself);
 }
 
 A

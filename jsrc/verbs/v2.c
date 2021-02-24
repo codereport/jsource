@@ -415,7 +415,7 @@ jtnextprime(J jt, A w) {
               b = 0;
               break;
           } else *xv++ = 2 > k ? 2 : (k + 1) | 1;);
-        if (b) return rank1ex0(x, fs, FAV(fs)->valencefns[0]);
+        if (b) return jtrank1ex0(jt, x, fs, FAV(fs)->valencefns[0]);
         RZ(w = jtcvt(jt, XNUM, w));
     }
     if (AT(w) & FL + RAT) RZ(w = jtcvt(jt, XNUM, floor1(w)));
@@ -425,7 +425,7 @@ jtnextprime(J jt, A w) {
     wv = XAV(w);
     DQ(n, y = *wv++; yv = AV(y); *bv++ = 0 < yv[AN(y) - 1]; k = *yv;
        *xv++ = AN(y) == 1 && 2 > k ? 2 - k : (k & 1) + 1;);
-    return rank1ex0(tymes(b, plus(w, x)), fs, FAV(fs)->valencefns[0]);
+    return jtrank1ex0(jt, tymes(b, plus(w, x)), fs, FAV(fs)->valencefns[0]);
 }
 
 static A
@@ -441,14 +441,14 @@ jtprevprime(J jt, A w) {
     if (INT & AT(w)) {
         I *wv = AV(w);
         DQ(n, k = *wv++; ASSERT(2 < k, EVDOMAIN); *xv++ = 3 == k ? 2 : (k - 2) | 1;);
-        return rank1ex0(x, fs, FAV(fs)->valencefns[0]);
+        return jtrank1ex0(jt, x, fs, FAV(fs)->valencefns[0]);
     }
     if (AT(w) & FL + RAT) RZ(w = jtcvt(jt, XNUM, ceil1(w)));
     if (AT(w) & CMPX) RZ(w = jtcvt(jt, XNUM, ceil1(jtcvt(jt, FL, w))));
     wv = XAV(w);
     DQ(n, y = *wv++; yv = AV(y); m = AN(y); k = *yv; ASSERT(0 < yv[m - 1] && (1 < m || 2 < k), EVDOMAIN);
        *xv++ = 1 == m && 3 == k ? 1 : 1 + (k & 1););
-    return rank1ex0(minus(w, x), fs, FAV(fs)->valencefns[0]);
+    return jtrank1ex0(jt, minus(w, x), fs, FAV(fs)->valencefns[0]);
 }
 
 static A
@@ -558,11 +558,11 @@ jtdetmr(J jt, A w) {
             d >>= 1;
         }
         if (n < 9080191)
-            *zv++ = spspd(31, n, d, h) && spspd(73, n, d, h);
+            *zv++ = jtspspd(jt, 31, n, d, h) && jtspspd(jt, 73, n, d, h);
         else if (n < 94906266)
-            *zv++ = spspd(2, n, d, h) && spspd(7, n, d, h) && spspd(61, n, d, h);
+            *zv++ = jtspspd(jt, 2, n, d, h) && jtspspd(jt, 7, n, d, h) && jtspspd(jt, 61, n, d, h);
         else
-            *zv++ = spspx(2, n, d, h) && spspx(7, n, d, h) && spspx(61, n, d, h);
+            *zv++ = jtspspx(jt, 2, n, d, h) && jtspspx(jt, 7, n, d, h) && jtspspx(jt, 61, n, d, h);
     }
     RE(0);
     return z;
@@ -611,7 +611,7 @@ jtqco2x(J jt, I m, A w) {
         c   = 0;
         *dv = pv[i];
         while (1) {
-            RZ(xdivrem(x, d, &q, &r));
+            RZ(jtxdivrem(jt, x, d, &q, &r));
             if (AV(r)[0]) break;
             ++c;
             x = q;
@@ -631,7 +631,7 @@ jtqco2(J jt, A a, A w) {
     wr = AR(w);
     b  = all1(lt(a, zeroionei(0)));
     xt = 1 && AT(w) & XNUM + RAT;
-    if (AR(a) || wr && (b || xt)) return rank2ex0(a, w, UNUSED_VALUE, jtqco2);
+    if (AR(a) || wr && (b || xt)) return jtrank2ex0(jt, a, w, UNUSED_VALUE, jtqco2);
     if (!b && xt) {
         RE(m = jti0(jt, jtvib(jt, a)));
         if (BETWEENO(m, 0, 1229)) return jtqco2x(jt, m, w);
@@ -725,7 +725,7 @@ jtxprimeq(J jt, I n, X y) {
     RZ(m = y1 = jtxminus(jt, y, iv1));
     while (0 == (AV(m)[0] & 1)) {
         ++k;
-        RZ(m = xdiv(m, t, XMFLR));
+        RZ(m = jtxdiv(jt, m, t, XMFLR));
     }
     GAT0(d, INT, 1, 1);
     dv     = AV(d);  // could use faux block

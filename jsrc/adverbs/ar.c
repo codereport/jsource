@@ -208,7 +208,7 @@ jtred0(J jt, A w, A self) {
     } else {
         GASPARSE(x, AT(w), 1, r, f + s);
     }
-    return jtreitem(jt, vec(INT, f, s), jtlamin1(jt, df1(z, x, (AT(w) & SBT) ? jtidensb(jt, fs) : jtiden(jt, fs))));
+    return jtreitem(jt, jtvec(jt, INT, f, s), jtlamin1(jt, df1(z, x, (AT(w) & SBT) ? jtidensb(jt, fs) : jtiden(jt, fs))));
 } /* f/"r w identity case */
 
 // general reduce.  We inplace the results into the next iteration.  This routine cannot inplace its inputs.
@@ -225,7 +225,7 @@ jtredg(J jt, A w, A self) {
     r  = (RANKT)jt->ranks;
     r  = wr < r ? wr : r;
     RESETRANK;
-    if (r < wr) return rank1ex(w, self, r, jtredg);
+    if (r < wr) return jtrank1ex(jt, w, self, r, jtredg);
     // From here on we are doing a single reduction
     n = AS(w)[0];  // n=#cells
     // Allocate virtual block for the running x argument.
@@ -349,7 +349,7 @@ jtredsp1(J jt, A w, A self, C id, VARPSF ado, I cv, I f, I r, I zt) {
         RE(0);
         if (m == n) return z;
     }
-    return redsp1a(id, z, e, n, AR(w), AS(w));
+    return jtredsp1a(jt, id, z, e, n, AR(w), AS(w));
 } /* f/"r w for sparse vector w */
 
 A
@@ -375,7 +375,7 @@ jtredravel(J jt, A w, A self) {
         if (rc) jtjsignal(jt, rc);
         if (rc < EWOV) {
             if (rc) return 0;
-            return redsp1a(FAV(FAV(f)->fgh[0])->id, z, SPA(wp, e), n, AR(w), AS(w));
+            return jtredsp1a(jt, FAV(FAV(f)->fgh[0])->id, z, SPA(wp, e), n, AR(w), AS(w));
         }  // since f has an insert fn, its id must be OK
     }
 } /* f/@, w */
@@ -644,7 +644,7 @@ jtredsps(J jt, A w, A self, C id, VARPSF ado, I cv, I f, I r, I zt) {
             yv += n * yc;
         }
     }
-    if (sn) RZ(redspse(id, wm, xt, e, zx, sn, &e, &zx));
+    if (sn) RZ(jtredspse(jt, id, wm, xt, e, zx, sn, &e, &zx));
     RZ(a1 = jtca(jt, a));
     v = AV(a1);
     n = 0;
@@ -652,7 +652,7 @@ jtredsps(J jt, A w, A self, C id, VARPSF ado, I cv, I f, I r, I zt) {
     GASPARSE(z, STYPE(AT(zx)), 1, wr - 1, ws);
     if (1 < r) MCISH(f + AS(z), f + 1 + ws, r - 1);
     zp = PAV(z);
-    SPB(zp, a, vec(INT, n, v));
+    SPB(zp, a, jtvec(jt, INT, n, v));
     SPB(zp, e, jtcvt(jt, AT(zx), e));
     SPB(zp, x, zx);
     SPB(zp, i, zy);
@@ -698,7 +698,7 @@ jtreducesp(J jt, A w, A self) {
     zt = rtype(adocv.cv);
     RESETRANK;
     if (1 == wr)
-        z = redsp1(w, self, id, adocv.f, adocv.cv, f, r, zt);
+        z = jtredsp1(jt, w, self, id, adocv.f, adocv.cv, f, r, zt);
     else {
         wp = PAV(w);
         a  = SPA(wp, a);
@@ -709,7 +709,7 @@ jtreducesp(J jt, A w, A self) {
               b = 1;
               break;
           });
-        z = b ? redsps(w, self, id, adocv.f, adocv.cv, f, r, zt) : redspd(w, self, id, adocv.f, adocv.cv, f, r, zt);
+        z = b ? jtredsps(jt, w, self, id, adocv.f, adocv.cv, f, r, zt) : jtredspd(jt, w, self, id, adocv.f, adocv.cv, f, r, zt);
     }
     return jt->jerr >= EWOV ? IRS1(w, self, r, jtreducesp, z) : z;
 } /* f/"r for sparse w */
@@ -801,7 +801,7 @@ jtredcatsp(J jt, A w, A z, I r) {
     n  = AN(a);
     n1 = n - 1;
     xr = AR(x);
-    RZ(b = bfi(wr, a, 1));
+    RZ(b = jtbfi(jt, wr, a, 1));
     c = b[f];
     d = b[1 + f];
     if (c && d) b[f] = 0;
@@ -850,7 +850,7 @@ jtredcatsp(J jt, A w, A z, I r) {
         u  = AS(x);
         *v = u[0] * u[1];
         MCISH(1 + v, 2 + u, xr - 1);
-        RZ(x = jtreshape(jt, vec(INT, xr - 1, v), x));
+        RZ(x = jtreshape(jt, jtvec(jt, INT, xr - 1, v), x));
         e = ws[f + c];
         RZ(y = jtrepeat(jt, jtsc(jt, e), y));
         RZ(y = jtmkwris(jt, y));
@@ -927,7 +927,7 @@ jtredcat(J jt, A w, A self) {
             DPMULDE(s[f], s[1 + f], *v);
             MCISH(1 + v, 2 + f + s, r - 2);
         }
-        return redcatsp(w, z, r);
+        return jtredcatsp(jt, w, z, r);
     }
 } /* ,/"r w */
 
@@ -974,7 +974,7 @@ jtredstitch(J jt, A w, A self) {
         return IRS2(z1, z2, 0L, 1L, 0L, jtover, z3);
     }
     if (2 == r) return IRS1(w, 0L, 2L, jtcant1, y);
-    RZ(c = apvwr(wr, 0L, 1L));
+    RZ(c = jtapvwr(jt, wr, 0L, 1L));
     v        = AV(c);
     v[f]     = f + 1;
     v[f + 1] = f;
@@ -1142,7 +1142,7 @@ jtfoldx(J jt, A a, A w, A self) {
     // get the rest of the flags from the original ID byte, which was moved to lc
     foldflag |= FAV(self)->lc - CFDOT;  // this sets mult fwd rev
     // define the flags as the special global
-    RZ(symbis(jtnfs(jt, 11, "Foldtype_j_"), jtsc(jt, foldflag), jt->locsyms));
+    RZ(jtsymbis(jt, jtnfs(jt, 11, "Foldtype_j_"), jtsc(jt, foldflag), jt->locsyms));
     // execute the Fold.  While it is running, set the flag to allow Z:
     B foldrunning   = jt->foldrunning;
     jt->foldrunning = 1;
@@ -1178,7 +1178,7 @@ found:;
 
     // Apply Fold_j_ to the input arguments, creating a derived verb to do the work
     A derivvb;
-    RZ(derivvb = unquote(a, w, foldconj));
+    RZ(derivvb = jtunquote(jt, a, w, foldconj));
     // Modify the derived verb to go to our preparatory stub.  Save the dyadic entry point for the derived verb so the
     // stub can call it
     FAV(derivvb)->localuse.lfns[1] = FAV(derivvb)->valencefns[1];
@@ -1197,7 +1197,7 @@ jtfoldZ(J jt, A a, A w, A self) {
     RZ(foldvb = jtnameref(jt, jtnfs(jt, 8, "FoldZ_j_"), jt->locsyms));
     ASSERT((AT(foldvb) & VERB), EVNONCE);  // error if undefined or not verb
     // Apply FoldZ_j_ to the input arguments, creating a derived verb to do the work
-    A z = unquote(a, w, foldvb);
+    A z = jtunquote(jt, a, w, foldvb);
     // if there was an error, save the error code and recreate the error at this level, to cover up details inside the
     // script
     if (jt->jerr) {

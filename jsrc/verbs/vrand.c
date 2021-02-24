@@ -490,13 +490,13 @@ jtrngstateq(J jt, A w) {
             zv = AAV(z);
             RZ(*zv++ = num(0));
             RZ(*zv++ = jtincorp(jt, jtsc(jt, jt->rngI0[GBI])));
-            RZ(*zv++ = jtincorp(jt, vec(INT, GBN, jt->rngV0[GBI])));
+            RZ(*zv++ = jtincorp(jt, jtvec(jt, INT, GBN, jt->rngV0[GBI])));
             RZ(*zv++ = jtincorp(jt, jtsc(jt, jt->rngI0[MTI])));
-            RZ(*zv++ = jtincorp(jt, vec(INT, MTN, jt->rngV0[MTI])));
+            RZ(*zv++ = jtincorp(jt, jtvec(jt, INT, MTN, jt->rngV0[MTI])));
             RZ(*zv++ = jtincorp(jt, jtsc(jt, jt->rngI0[DXI])));
-            RZ(*zv++ = jtincorp(jt, vec(INT, DXN, jt->rngV0[DXI])));
+            RZ(*zv++ = jtincorp(jt, jtvec(jt, INT, DXN, jt->rngV0[DXI])));
             RZ(*zv++ = jtincorp(jt, jtsc(jt, jt->rngI0[MRI])));
-            RZ(*zv++ = jtincorp(jt, vec(INT, MRN, jt->rngV0[MRI])));
+            RZ(*zv++ = jtincorp(jt, jtvec(jt, INT, MRN, jt->rngV0[MRI])));
             return z;
         case GBI:
             n = GBN;
@@ -519,7 +519,7 @@ jtrngstateq(J jt, A w) {
     zv = AAV(z);
     RZ(*zv++ = jtincorp(jt, jtsc(jt, jt->rng)));
     RZ(*zv++ = jtincorp(jt, jtsc(jt, jt->rngi)));
-    RZ(*zv++ = jtincorp(jt, vec(INT, n, v)));
+    RZ(*zv++ = jtincorp(jt, jtvec(jt, INT, n, v)));
     return z;
 }
 
@@ -553,31 +553,31 @@ jtrngstates(J jt, A w) {
         case SMI:
             vv = jt->rngV0;
             RE(k = jti0(jt, wv[1]));
-            RZ(rngstates1(GBI, GBN, vv, 0, k, wv[2], 1));
+            RZ(jtrngstates1(jt, GBI, GBN, vv, 0, k, wv[2], 1));
             jt->rngI0[GBI] = k;  // We accept 0-55 even though we never produce 55 ourselves
             RE(k = jti0(jt, wv[3]));
-            RZ(rngstates1(MTI, MTN, vv, 0, k, wv[4], 0));
+            RZ(jtrngstates1(jt, MTI, MTN, vv, 0, k, wv[4], 0));
             jt->rngI0[MTI] = k;
             RE(k = jti0(jt, wv[5]));
-            RZ(rngstates1(DXI, DXN, vv, 0, k, wv[6], 1));
+            RZ(jtrngstates1(jt, DXI, DXN, vv, 0, k, wv[6], 1));
             jt->rngI0[DXI] = k;
             RE(k = jti0(jt, wv[7]));
-            RZ(rngstates1(MRI, MRN, vv, 0, k, wv[8], 0));
+            RZ(jtrngstates1(jt, MRI, MRN, vv, 0, k, wv[8], 0));
             jt->rngI0[MRI] = k;
             break;
         case GBI:
             RE(k = jti0(jt, wv[1]));
-            RZ(rngstates1(GBI, GBN, vv, 0, k, wv[2], 1));
+            RZ(jtrngstates1(jt, GBI, GBN, vv, 0, k, wv[2], 1));
             break;  // We accept 0-55 even though we never produce 55 ourselves
         case MTI:
             RE(k = jti0(jt, wv[1]));
-            RZ(rngstates1(MTI, MTN, vv, 0, k, wv[2], 0));
+            RZ(jtrngstates1(jt, MTI, MTN, vv, 0, k, wv[2], 0));
             break;
         case DXI:
             RE(k = jti0(jt, wv[1]));
-            RZ(rngstates1(DXI, DXN, vv, 0, k, wv[2], 1));
+            RZ(jtrngstates1(jt, DXI, DXN, vv, 0, k, wv[2], 1));
             break;
-        case MRI: RE(k = jti0(jt, wv[1])); RZ(rngstates1(MRI, MRN, vv, 0, k, wv[2], 0));
+        case MRI: RE(k = jti0(jt, wv[1])); RZ(jtrngstates1(jt, MRI, MRN, vv, 0, k, wv[2], 0));
     }
     return mtv;
 }
@@ -888,7 +888,7 @@ jtdeal(J jt, A a, A w) {
         do { RZ(z = jtnub(jt, jtrollksub(jt, h, w))); } while (AN(z) < m);
         RZ(z = jttake(JTIPW, a, z));
     } else {
-        RZ(z = apvwr(n, 0L, 1L));
+        RZ(z = jtapvwr(jt, n, 0L, 1L));
         zv = AV(z);
         if (n < (1LL << 50)) {
             // If we can do the calculation in the floating-point unit, do
@@ -1193,7 +1193,7 @@ jtdealdot(J jt, A a, A w) {
             }
         }
     } else {
-        RZ(z = apvwr(n, 0L, 1L));
+        RZ(z = jtapvwr(jt, n, 0L, 1L));
         zv = AV(z);
         DO(m, s = GMOF(c, x); t = NEXT; if (s) while (s <= t) t = NEXT; j = i + t % c--; k = zv[i]; zv[i] = zv[j];
            zv[j] = k;);

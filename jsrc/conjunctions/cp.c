@@ -19,7 +19,7 @@ jtpowseqlim(J jt, A w, A self) {
     PROLOG(0039);
     A x, y, z, *zv;
     I i, n;
-    RZ(z = exta(BOX, 1L, 1L, 20L));
+    RZ(z = jtexta(jt, BOX, 1L, 1L, 20L));
     zv = AAV(z);
     INCORP(w);
     *zv++ = x = w;
@@ -57,7 +57,7 @@ jttclosure(J jt, A a, A w) {
     wv = AV(w);
     av = AV(a);
     an = AN(a);
-    RZ(z = exta(INT, 1 + wr, wn, 20L));  // init the expanding result area
+    RZ(z = jtexta(jt, INT, 1 + wr, wn, 20L));  // init the expanding result area
     zv = AV(z);
     zz = zv + AN(z);
     if (1 == wn) {        // just 1 result, which will be a list
@@ -136,7 +136,7 @@ jtpowseq(J jt, A w, A self) {
         n = -n;
     }
     if (n == IMAX || 1 == AR(x) && !AN(x)) return jtpowseqlim(jt, w, fs);
-    return df1(gs, w, powop(fs, IX(n), 0));
+    return df1(gs, w, jtpowop(jt, fs, IX(n), 0));
 } /* f^:(<n) w */
 
 // u^:n w where n is nonnegative finite integer atom (but never 0 or 1, which are handled as special cases)
@@ -243,12 +243,12 @@ jtply1(J jt, A w, A self) {
                 // have been moved), we have to pop explicitly.  We protect the components of the overall result and the
                 // most recent result We do this only occasionally
                 JBREAK0;  // while we're waiting, check for attention interrupt
-                if (!gc3(&z, zz ? &zz : 0, zzbox ? &zzbox : 0, stkfreept)) return 0;  // free old unused blocks
+                if (!jtgc3(jt, &z, zz ? &zz : 0, zzbox ? &zzbox : 0, stkfreept)) return 0;  // free old unused blocks
                 if (zzbox) {
                     // zzbox is normally NONrecursive and we add boxes to it as they come in.  Protecting it has made it
                     // recursive, which will cause a double-free if we add another box to it.  So we have to go through
                     // it and make it nonrecursive again.  We don't have to do it recursively. This is regrettable, but
-                    // rare.  If we cared, we could save the whole gc3() call any time the result is going to be stored
+                    // rare.  If we cared, we could save the whole jtgc3(jt, ) call any time the result is going to be stored
                     // in zzbox, since there's nothing else to free; but that's not worth it.  zzbox itself becomes
                     // nonrecursive but its descendants remain recursive, which is important because tpop expects
                     // recursive contents
@@ -342,7 +342,7 @@ jtinverr(J jt, A w, A self) {
     ASSERT(0, EVDOMAIN);
 }  // used for uninvertible monads
 
-// old static CS2(jtply2, df1(z,w,powop(jtamp(jt,a,fs),gs,0)),0107)  // dyad adds x to make x&u, and then reinterpret
+// old static CS2(jtply2, df1(z,w,jtpowop(jt, jtamp(jt,a,fs),gs,0)),0107)  // dyad adds x to make x&u, and then reinterpret
 // the compound.  We could interpret u differently now that it has been changed (x {~^:a: y)
 A
 jtply2(J jt, A a, A w, A self) {
@@ -350,7 +350,7 @@ jtply2(J jt, A a, A w, A self) {
     DECLFG;
     A z, zz;
     PREF2(jtply2);
-    z = (df1(zz, w, powop(jtamp(jt, a, fs), gs, 0)));
+    z = (df1(zz, w, jtpowop(jt, jtamp(jt, a, fs), gs, 0)));
     EPILOG(z);
 }
 
@@ -362,7 +362,7 @@ jtply2(J jt, A a, A w, A self) {
 //                sv->fgh[1] (0 if sv->fgh[1]==0)
 // Here, f1 is the original u and g1 is the original v
 // We call g1 (=original v), passing in y (and gs as self).  This returns v y
-// We then call powop(original u,result of v y), which is the VN case for u^:(v y) and creates a derived verb to perform
+// We then call jtpowop(jt, original u,result of v y), which is the VN case for u^:(v y) and creates a derived verb to perform
 // that function Finally df1 treats the powop result as self, calling self/powop->valencefns[0] (the appropriate power
 // case based on v y)
 //   with the y arg as the w operand (and self/powop included to provide access to the original u)
@@ -398,7 +398,7 @@ REFACTORME_CS1IP(
       z = IAV(v)[0] ? (FAV(fs)->valencefns[0])(FAV(fs)->flag & VJTFLGOK1 ? jtinplace : jt, w, fs) : w;
   } else {
       RESETERR;
-      RZ(u = powop(fs, u, (A)1));
+      RZ(u = jtpowop(jt, fs, u, (A)1));
       z = (FAV(u)->valencefns[0])(FAV(u)->flag & VJTFLGOK1 ? jtinplace : jt, w, u);
   },
   0108)
@@ -409,7 +409,7 @@ REFACTORME_CS2IP(
       z = IAV(v)[0] ? (FAV(fs)->valencefns[1])(FAV(fs)->flag & VJTFLGOK2 ? jtinplace : jt, a, w, fs) : w;
   } else {
       RESETERR;
-      RZ(u = powop(fs, u, (A)1));
+      RZ(u = jtpowop(jt, fs, u, (A)1));
       z = (FAV(u)->valencefns[1])(FAV(u)->flag & VJTFLGOK2 ? jtinplace : jt, a, w, u);
   },
   0109)
@@ -424,7 +424,7 @@ REFACTORME_CS2IP(
       z = IAV(v)[0] ? (FAV(fs)->valencefns[0])(FAV(fs)->flag & VJTFLGOK1 ? jtinplace : jt, w, fs) : w;
   } else {
       RESETERR;
-      RZ(u = powop(fs, u, (A)1));
+      RZ(u = jtpowop(jt, fs, u, (A)1));
       z = (FAV(u)->valencefns[0])(FAV(u)->flag & VJTFLGOK1 ? jtinplace : jt, w, u);
   },
   0110)
@@ -482,7 +482,7 @@ jtpowop(J jt, A a, A w, A self) {
         }
         //    ASSERT(self!=0,EVDOMAIN);  // If gerund returns gerund, error.  This check is removed pending further
         //    design
-        return gconj(a, w, CPOWOP);  // create the derived verb for [v0`]v1`v2
+        return jtgconj(jt, a, w, CPOWOP);  // create the derived verb for [v0`]v1`v2
     }
     // fall through for unboxed n.
     // handle the very important case of scalar   int/boolean   n of 0/1

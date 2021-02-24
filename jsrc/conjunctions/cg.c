@@ -416,7 +416,7 @@ jtcasei12(J jt, A a, A w, A self) {
                 // inhomogeneous types or shapes.  Instantiate the entire result and then shuffle it into place
                 // first, install the actual number of boxes of result, which might differ from the calculated maximum
                 AN(zz) = AS(zz)[0] = nblkscreated;                                    // # valid boxes
-                zz                 = ev2(gradepm, zz, "(/:~   >@:;@:((<\"_1)&.>))");  // (> ; <"_1&.> zz) /: gradepm
+                zz                 = jtev2(jt, gradepm, zz, "(/:~   >@:;@:((<\"_1)&.>))");  // (> ; <"_1&.> zz) /: gradepm
             }
             // If the original input had structure, rearrange the result to match it
             if (vr > 1) RZ(zz = jtreitem(jt, shape(jt, vres), zz));
@@ -428,7 +428,7 @@ jtcasei12(J jt, A a, A w, A self) {
             if (ZZFLAGWORD & ZZFLAGISDYAD) {
                 zz = rank2ex(a, w, z, ar, wr, ar, wr, FAV(z)->valencefns[1]);  // Execute on all cells
             } else {
-                zz = rank1ex(w, z, wr, FAV(z)->valencefns[0]);  // Execute on all cells8
+                zz = jtrank1ex(jt, w, z, wr, FAV(z)->valencefns[0]);  // Execute on all cells8
             }
         }
         EPILOG(zz);

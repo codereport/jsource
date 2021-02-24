@@ -92,7 +92,7 @@ jtcongoto(J jt, I n, CW* con, A* lv) {
                     CWASSERT(0);
                 }
             }
-            if (0 <= congotochk(i, j - 1, z)) return i;
+            if (0 <= jtcongotochk(jt, i, j - 1, z)) return i;
         }
     return -1;
 } /* same result as conall */
@@ -611,7 +611,7 @@ jtgetsen(J jt, A w) {
     }
     if (0 <= k)
         RZ(*zv++ = jtincorp(jt, jtstr(jt, j + m - k, k + s)));  // if there was a final sentence in progress, append it
-    return vec(BOX, zv - z0, z0);                               // keep only the boxes that we used
+    return jtvec(jt, BOX, zv - z0, z0);                               // keep only the boxes that we used
 } /* partition by controls */
 
 /* preparse - return tokenized lines and control information     */
@@ -627,7 +627,7 @@ jtgetsen(J jt, A w) {
     {                                     \
         if (!(b)) {                       \
             I jj = (j);                   \
-            jsignal3(EVCTRL, wv[jj], jj); \
+            jtjsignal3(jt, EVCTRL, wv[jj], jj); \
             return 0;                     \
         }                                 \
     }
@@ -643,10 +643,10 @@ jtpreparse(J jt, A w, A* zl, A* zc) {
     p    = AN(w);
     wv   = AAV(w);  // p=#lines, wv->line 0 (a line is a boxed string)
     ASSERT(p < SMAX, EVLIMIT);
-    RZ(c = exta(CONW, 1L, 1L, 3 * p));
+    RZ(c = jtexta(jt, CONW, 1L, 1L, 3 * p));
     cv = (CW*)AV(c);
     n  = 0;  // allocate result area, cv->start of block of CWs, n=#cws encountered
-    RZ(l = exta(BOX, 1L, 1L, 5 * p));
+    RZ(l = jtexta(jt, BOX, 1L, 1L, 5 * p));
     lv = AAV(l);
     m  = 0;                    // allocate list of boxed words, lv->&A for first word; m=#words
     for (i = 0; i < p; ++i) {  // loop for each line
@@ -695,7 +695,7 @@ jtpreparse(J jt, A w, A* zl, A* zc) {
             // if not cw (ie executable sentence), turn words into an executable queue.  If cw, check for cw with data.
             // Set x to queue/cw, or 1 if cw w/o data
             if (!k) {
-                RZ(x = enqueue(w1, w0, 2))
+                RZ(x = jtenqueue(jt, w1, w0, 2))
             } else {
                 x = k == CLABEL || k == CGOTO || k == CFOR ? w0 : 0L;
             }                        // FOR must always go out; the length of the name is always needed, even if 0
@@ -724,7 +724,7 @@ jtpreparse(J jt, A w, A* zl, A* zc) {
     }
     RE(0);
     ASSERTCW(!as, p - 1);
-    ASSERTCW(!b || 0 > (i = congoto(n, cv, lv)), (i + cv)->source);
+    ASSERTCW(!b || 0 > (i = jtcongoto(jt, n, cv, lv)), (i + cv)->source);
     // Audit control structures and point the go line correctly
     ASSERTCW(0 > (i = jtconall(jt, n, cv)), (i + cv)->source);
     // Install the number of words and cws into the return blocks, and return those blocks

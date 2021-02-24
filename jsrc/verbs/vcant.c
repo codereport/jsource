@@ -20,7 +20,7 @@ jtcants(J jt, A a, A w, A z) {
     zr = AR(z);
     zp = PAV(z);
     ASSERT(wr == zr, EVNONCE);
-    RZ(b = bfi(wr, a1, 1));
+    RZ(b = jtbfi(jt, wr, a1, 1));
     GATV0(q, B01, wr, 1);
     c = BAV(q);
     u = AV(a);
@@ -136,7 +136,7 @@ jtcanta(J jt, A a, A w) {
     }
     if ((SPARSE & AT(w)) != 0) {
         GASPARSE(z, AT(w), 1, zr, sv);
-        return cants(a, w, z);
+        return jtcants(jt, a, w, z);
     }  // if sparse, go to sparse transpose code.
     GA(z, AT(w), zn, zr, sv);
     if (!zn) return z;  // allocate result.  If result is empty, return it now
@@ -164,7 +164,7 @@ jtcant1(J jt, A w) {
     FPREFIP;
     r   = (RANKT)jt->ranks;
     r   = AR(w) < r ? AR(w) : r;  // no RESETRANK; we pass the rank of w on
-    A z = jtcanta(jt, apv(r, r - 1, -1L), w);
+    A z = jtcanta(jt, jtapv(jt, r, r - 1, -1L), w);
     RZ(z);  // rank is set
     // We extracted from w, so mark it (or its backer if virtual) non-pristine.  If w was pristine and inplaceable,
     // transfer its pristine status to the result But if we are returning the input block unchanged, leave pristinity

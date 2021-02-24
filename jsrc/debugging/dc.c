@@ -67,7 +67,7 @@ jtdbcall(J jt, A w) {
     zv   = AAV(z);
     while (si) {
         if (DCCALL == si->dctype) {
-            RZ(drow(si, s0, zv));
+            RZ(jtdrow(jt, si, s0, zv));
             zv += c;
         }
         s0 = si;

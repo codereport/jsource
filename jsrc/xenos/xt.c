@@ -280,7 +280,7 @@ jtpmfree(J jt, A w) {
 
 A
 jtpmarea1(J jt, A w) {
-    return jtpmarea2(jt, vec(B01, 2L, &zeroZ), w);
+    return jtpmarea2(jt, jtvec(jt, B01, 2L, &zeroZ), w);
 }  // 6!:10
 
 A
@@ -424,8 +424,8 @@ jtpmunpack(J jt, A w) {
     RZ(zv[6] = jtincorp(jt, jtrepeat(jt, c, t)));
     RZ(x = jtindexof(jt, jtrepeat(jt, c, x), x));
     iv = AV(x);
-    RZ(zv[0] = jtincorp(jt, vec(INT, m, iv)));
-    RZ(zv[1] = jtincorp(jt, vec(INT, m, m + iv)));
+    RZ(zv[0] = jtincorp(jt, jtvec(jt, INT, m, iv)));
+    RZ(zv[1] = jtincorp(jt, jtvec(jt, INT, m, m + iv)));
     GATV0(t, INT, m, 1);
     zv[2] = jtincorp(jt, t);
     iv    = AV(t);

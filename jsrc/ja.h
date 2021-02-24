@@ -36,7 +36,7 @@
 #define bfi(x, y, z) jtbfi(jt, (x), (y), (z))
 #define bitwisecharamp(x0, x1, x2, x3) jtbitwisecharamp(jt, (x0), (x1), (x2), (x3))
 #define boxW(x) jtbox((J)((I)jt | JTINPLACEW), (x))
-#define box0(x) irs1((x), 0L, 0, jtbox)
+#define box0(x) jtirs1(jt, (x), 0L, 0, jtbox)
 #define brep(x, y, z) jtbrep(jt, (x), (y), (z))
 #define brephdr(x0, x1, x2, x3) jtbrephdr(jt, (x0), (x1), (x2), (x3))
 #define breps(x, y, z) jtbreps(jt, (x), (y), (z))

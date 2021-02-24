@@ -12,7 +12,7 @@
 #define XDIG(a) (AV(a)[AN(a) - 1]) /* leading digit              */
 #define XMAX(x, y) (1 == jtxcompare(jt, x, y) ? x : y)
 #define XMIN(x, y) (1 == jtxcompare(jt, x, y) ? y : x)
-#define XDIV(x, y) xdiv(x, y, jt->xmode)
+#define XDIV(x, y) jtxdiv(jt, x, y, jt->xmode)
 #define XCUBE(x) jtxtymes(jt, x, jtxtymes(jt, x, x))
 
 /* values for jt->xmode */

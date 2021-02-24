@@ -396,7 +396,7 @@ jtmdivsp(J jt, A a, A w) {
     RE(t = maxtype(t, FL));
     RZ(a = jtcvt(jt, t, a));
     RZ(x = jtcvt(jt, t, x));
-    if (t & CMPX) RZ(ztridiag(n, a, x)) else RZ(tridiag(n, a, x));
+    if (t & CMPX) RZ(jtztridiag(jt, n, a, x)) else RZ(jttridiag(jt, n, a, x));
     return a;
 } /* currently only handles tridiagonal sparse w */
 

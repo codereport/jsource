@@ -153,7 +153,7 @@ jtcut02(J jt, A a, A w, A self) {
                         RZ(
                           qv[i] = jtincorp(
                             jt,
-                            apv(k, j, 2 * e + 1)));  // create ascending or descending vector.  The increment is 1 or -1
+                            jtapv(jt, k, j, 2 * e + 1)));  // create ascending or descending vector.  The increment is 1 or -1
                     }
                     break;  // this is the loop exit
                 } else {    // we have not allocated the input to {; do so now
@@ -417,7 +417,7 @@ jtcut2bx(J jt, A a, A w, A self) {
     } else {
         RZ(t = jtiota(jt, apip(shape(jt, x), jtv2(jt, 2L, 0L))));
     }
-    return cut02(t, w, self);
+    return jtcut02(jt, t, w, self);
 } /* a f;.n w for boxed a, with special code for matrix w */
 
 #define CUTSWITCH(EACHC)                                                                                             \
@@ -435,7 +435,7 @@ jtcut2bx(J jt, A a, A w, A self) {
             zi = AV(z);                                                                                              \
             EACHC(*zi++ = d;);                                                                                       \
             A zz, zw;                                                                                                \
-            RZ(zw = vec(INT, MAX(0, r - 1), 1 + s));                                                                 \
+            RZ(zw = jtvec(jt, INT, MAX(0, r - 1), 1 + s));                                                                 \
             IRS2(z, zw, 0L, 0L, 1L, jtover, zz);                                                                     \
             return zz;                                                                                               \
         case CHEAD:                                                                                                  \
@@ -457,7 +457,7 @@ jtcut2bx(J jt, A a, A w, A self) {
             DPMULDE(m *c, e, d);                                                                                     \
             GA(z, t, d, id == CCOMMA ? 2 : 1 + r, s - 1);                                                            \
             zc = CAV(z);                                                                                             \
-            fillv(t, d, zc);                                                                                         \
+            jtfillv(jt, t, d, zc);                                                                                         \
             zs    = AS(z);                                                                                           \
             zs[0] = m;                                                                                               \
             zs[1] = id == CCOMMA ? e * c : e;                                                                        \
@@ -581,7 +581,7 @@ jtcut2sx(J jt, A a, A w, A self) {
     RZ(a = a == mark ? jteps(jt, w, jttake(jt, num(pfx ? 1 : -1), w)) : DENSE & AT(a) ? jtsparse1(jt, a) : a);
     ASSERT(n == AS(a)[0], EVLENGTH);
     ap = PAV(a);
-    if (!(jtequ(jt, num(0), SPA(ap, e)) && AN(SPA(ap, a)))) return cut2(jtcvt(jt, B01, a), w, self);
+    if (!(jtequ(jt, num(0), SPA(ap, e)) && AN(SPA(ap, a)))) return jtcut2(jt, jtcvt(jt, B01, a), w, self);
     vf = VAV(fs);
     if (VGERL & sv->flag) {
         h  = sv->fgh[2];
@@ -692,8 +692,8 @@ jtcut2sx(J jt, A a, A w, A self) {
                               break;
                           });
                     *AS(ww) = (yu[i] - yu[i - 1]) - neg;
-                    SPB(wwp, i, sely(y, qn, p, 1 + yu[i - 1]));
-                    SPB(wwp, x, selx(x, qn, p));
+                    SPB(wwp, i, jtsely(jt, y, qn, p, 1 + yu[i - 1]));
+                    SPB(wwp, x, jtselx(jt, x, qn, p));
                     RZ(zz = h ? df1(z0, ww, hv[(i - 1) % hn]) : CALL1(f1, ww, fs));
                     // reallocate ww if it was used, which we detect by seeing the usecount incremented.  This requires
                     // that everything that touches a buffer either copy it or jtrat(jt,).  So that ] doesn't have to
@@ -731,8 +731,8 @@ jtcut2sx(J jt, A a, A w, A self) {
                           });
                     }
                     *AS(ww) = (yu[i - 1] - yu[i]) - neg;
-                    SPB(wwp, i, sely(y, qn, p + q - qn, yu[i] + neg));
-                    SPB(wwp, x, selx(x, qn, p + q - qn));
+                    SPB(wwp, i, jtsely(jt, y, qn, p + q - qn, yu[i] + neg));
+                    SPB(wwp, x, jtselx(jt, x, qn, p + q - qn));
                     RZ(zz = h ? df1(z0, ww, hv[(m - i) % hn]) : CALL1(f1, ww, fs));
                     p += q;
                     if (WASINCORP1(zz, ww)) {
@@ -746,7 +746,7 @@ jtcut2sx(J jt, A a, A w, A self) {
                 for (i = 1; i <= m; ++i) {
                     q       = yu[i] - yu[i - 1];
                     *AS(ww) = q - neg;
-                    SPB(wwp, x, irs2(apv(q - neg, p, 1L), x, 0L, 1L, -1L, jtfrom));
+                    SPB(wwp, x, jtirs2(jt, jtapv(jt, q - neg, p, 1L), x, 0L, 1L, -1L, jtfrom));
                     RZ(zz = h ? df1(z0, ww, hv[(i - 1) % hn]) : CALL1(f1, ww, fs));
                     p += q;
                     if (WASINCORP1(zz, ww)) {
@@ -760,7 +760,7 @@ jtcut2sx(J jt, A a, A w, A self) {
                 for (i = m; i >= 1; --i) {
                     q       = yu[i - 1] - yu[i];
                     *AS(ww) = q - neg;
-                    SPB(wwp, x, irs2(apv(q - neg, p + neg, 1L), x, 0L, 1L, -1L, jtfrom));
+                    SPB(wwp, x, jtirs2(jt, jtapv(jt, q - neg, p + neg, 1L), x, 0L, 1L, -1L, jtfrom));
                     RZ(zz = h ? df1(z0, ww, hv[(i - 1) % hn]) : CALL1(f1, ww, fs));
                     p += q;
                     if (WASINCORP1(zz, ww)) {
@@ -784,7 +784,7 @@ jtidenv0(J jt, A a, A w, V *sv, I zt, A *zz) {
     fs  = sv->fgh[0];
     RE(df1(y, num(0), jtiden(jt, VAV(fs)->fgh[0])));
     if (TYPESLT(zt, AT(y))) {
-        *zz = df1(z, cut2(a, w, jtcut(jt, ds(CBOX), sv->fgh[1])), jtamp(jt, fs, ds(COPE)));
+        *zz = df1(z, jtcut2(jt, a, w, jtcut(jt, ds(CBOX), sv->fgh[1])), jtamp(jt, fs, ds(COPE)));
         return 0;
     }  // fgh still has the original A, OK to use
     if (TYPESGT(zt, AT(y))) RE(y = jtcvt(jt, zt, y));
@@ -938,7 +938,7 @@ jtcut2(J jt, A a, A w, A self) {
     UC *pd, *pdend;  // Don't make d1 too big - it fill lots of stack space
     PREF2(jtcut2);
     // a may have come from /., in which case it is incompletely filled in.  We look at the type, but nothing else
-    if ((SGNIF(AT(a), SB01X) | -(AT(w) & SPARSE)) < 0) return cut2sx(a, w, self);
+    if ((SGNIF(AT(a), SB01X) | -(AT(w) & SPARSE)) < 0) return jtcut2sx(jt, a, w, self);
 #define ZZFLAGWORD state
     I state = ZZFLAGINITSTATE;  // init flags, including zz flags
 
@@ -979,7 +979,7 @@ jtcut2(J jt, A a, A w, A self) {
                 return CALL1(f1, w, fs);
             }
             if (((-AN(a)) & (SGNIF(AT(a), BOXX))) < 0)
-                return cut2bx(a, w, self);                      // handle boxed a separately if a not empty
+                return jtcut2bx(jt, a, w, self);                      // handle boxed a separately if a not empty
             if (!(B01 & AT(a))) RZ(a = jtcvt(jt, B01, a));      // convert other a to binary, error if impossible
             if (!AR(a)) RZ(a = jtreshape(jt, jtsc(jt, n), a));  // extend scalar x to length of y
             ak = 1;
@@ -1291,7 +1291,7 @@ jtcut2(J jt, A a, A w, A self) {
             GATV0(zz, INT, m, 1);
             zi = AV(zz);
             EACHCUT(*zi++ = d;);
-            A zw = vec(INT, MAX(0, r - 1), AS(w) + 1);  // could use virt block
+            A zw = jtvec(jt, INT, MAX(0, r - 1), AS(w) + 1);  // could use virt block
             return IRS2(zz, zw, 0L, 0L, 1L, jtover, z);
         case CTAIL:
         case CHEAD:;
@@ -1300,7 +1300,7 @@ jtcut2(J jt, A a, A w, A self) {
             GA(zz, wt, m * wcn, r, AS(w));
             zc        = CAV(zz);
             AS(zz)[0] = m;
-            EACHCUT(if (d) memcpy(zc, id == CHEAD ? v1 : v1 + k * (d - 1), k); else fillv(wt, wcn, zc); zc += k;);
+            EACHCUT(if (d) memcpy(zc, id == CHEAD ? v1 : v1 + k * (d - 1), k); else jtfillv(jt, wt, wcn, zc); zc += k;);
             break;
         case CSLASH:;
             // no need to turn off pristinity in w, because we handle only DIRECT types here
@@ -1328,7 +1328,7 @@ jtcut2(J jt, A a, A w, A self) {
                       rc    = lrc < rc ? lrc : rc;
                   } else if (d == 1) { copyTT(zc, v1, wcn, zt, wt); } else {
                       if (!z0) {
-                          z0 = idenv0(a, w, FAV(self), zt, &z);  // compared to normal reduces, c means d and d means n
+                          z0 = jtidenv0(jt, a, w, FAV(self), zt, &z);  // compared to normal reduces, c means d and d means n
                           if (!z0) {
                               if (z)
                                   return z;
@@ -1345,7 +1345,7 @@ jtcut2(J jt, A a, A w, A self) {
                     if (FAV(self)->id != CCUT)
                         CUTFRETCOUNT(a) = m;  // if we are going to retry, we have to reset the # frets indicator which
                                               // has been destroyed
-                    return rc >= EWOV ? cut2(a, w, self) : 0;
+                    return rc >= EWOV ? jtcut2(jt, a, w, self) : 0;
                 } else
                     return adocv.cv & VRI + VRD ? jtcvz(jt, adocv.cv, zz) : zz;
                 break;
@@ -1426,7 +1426,7 @@ jtcut2(J jt, A a, A w, A self) {
 
 static A
 jtcut1(J jt, A w, A self) {
-    return cut2(mark, w, self);
+    return jtcut2(jt, mark, w, self);
 }
 
 // ;@((<@(f/\));._2 _1 1 2) when  f is atomic   also @: but only when no rank
@@ -1517,7 +1517,7 @@ jtrazecut2(J jt, A a, A w, A self) {
                   d, n, (I)1, wv + k * (b + wi - p), zv, jt);  // do the prefix, but not if items empty
             if (rc & 255) {
                 jtjsignal(jt, rc);
-                return rc >= EWOV ? razecut2(a, w, self) : 0;
+                return rc >= EWOV ? jtrazecut2(jt, a, w, self) : 0;
             }  // if overflow, restart the whole thing with conversion to float
             m += n;
             zv += n * zk;
@@ -1532,7 +1532,7 @@ jtrazecut2(J jt, A a, A w, A self) {
 
 A
 jtrazecut1(J jt, A w, A self) {
-    return razecut2(mark, w, self);
+    return jtrazecut2(jt, mark, w, self);
 }
 
 // if pv given, it is the place to put the shapes of the top 2 result axes.  If omitted, do them all and return an A
@@ -1619,7 +1619,7 @@ jttess2(J jt, A a, A w, A self) {
     I wt  = AT(w);                                // rank of w, type of w
     I *as = AS(a), *av = IAV(a), axisct = as[1];  // a-> shape of a, axisct=# axes in a, av->mv/size area
     // get shape of final result
-    tesos(a, w, n, rs);  // vert/horiz shape of 1st 2 axes of result, from argument sizes and cut type
+    jttesos(jt, a, w, n, rs);  // vert/horiz shape of 1st 2 axes of result, from argument sizes and cut type
     I nregcells;
     PROD(nregcells,
          axisct,
@@ -1629,11 +1629,11 @@ jttess2(J jt, A a, A w, A self) {
         // w is sparse, atomic, or empty, or the region has no axes or is empty, or the result is empty.  Go the slow
         // way: create a selector block for each cell, and then apply u;.0 to each cell trailing axes taken in full will
         // be omitted from the shape of the result
-        RZ(p = tesos(a, w, n, 0));  // recalculate all the result shapes
+        RZ(p = jttesos(jt, a, w, n, 0));  // recalculate all the result shapes
         A za, zw;
         RZ(za = jtcant1(jt, tymesW(jthead(jt, a), jtcant1(jt, jtabase2(jt, p, jtiota(jt, p))))));
         RZ(zw = jttail(jt, a));
-        return cut02(IRS2(za, zw, 0L, 1L, 1L, jtlamin2, z), w, self);  // ((|: ({.a) * |: (#: i.)p) ,:"1 ({:a)) u;.0 w
+        return jtcut02(jt, IRS2(za, zw, 0L, 1L, 1L, jtlamin2, z), w, self);  // ((|: ({.a) * |: (#: i.)p) ,:"1 ({:a)) u;.0 w
     }
     DECLF;                      // get the function pointers
     fauxblockINT(xfaux, 5, 1);  // declare xpose arg where it has scope
@@ -1912,7 +1912,7 @@ jttess2(J jt, A a, A w, A self) {
     // and we are deferring the transpose until the top level because n is negative
     if (!(((axisproc << 9) | (inrecursion & n)) & 512)) {
         A xposeaxes;  // axisproc=1, or bit 9 of n mismatches bit 8 (with n>0), is enough to turn off transpose
-        RZ(xposeaxes = apvwr(AR(zz), 0L, 1L));
+        RZ(xposeaxes = jtapvwr(jt, AR(zz), 0L, 1L));
         IAV(xposeaxes)[0] = 1;
         IAV(xposeaxes)[1] = 0;  // xpose arg, 1 0 2 3 4...
         RZ(zz = jtcant2(jt, xposeaxes, zz));
@@ -1932,7 +1932,7 @@ jttess1(J jt, A w, A self) {
     m = IMAX;
     DO(r, if (m > v[i]) m = v[i];);
     DO(r, v[i] = m;);  // Get length of long axis; set all axes to that length in a arg to cut
-    return tess2(s, w, self);
+    return jttess2(jt, s, w, self);
 }
 
 A

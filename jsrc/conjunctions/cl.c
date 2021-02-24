@@ -32,7 +32,7 @@ jtlev2(J jt, A a, A w, A self) {
     if (aready & wready) {
         return CALL2(fsf, a, w, fs);
     } else {
-        STACKCHKOFL return every2(aready ? jtbox(jt, a) : a, wready ? jtbox(jt, w) : w, self);
+        STACKCHKOFL return jtevery2(jt, aready ? jtbox(jt, a) : a, wready ? jtbox(jt, w) : w, self);
     }  // since this recurs, check stack
        // We do this with the if statement rather than a computed branch in the hope that the CPU can detect patterns in
     // the conditions. There may be a structure in the user's data that could be detected for branch prediction.
@@ -58,7 +58,7 @@ jtlcapco1(J jt, A w, A self) {
     A recurself                   = (A)&shdr;                  // allocate the block we will recur with
     AM(recurself)                 = (I)v->fgh[0];              // fill in the pointer to u
     FAV(recurself)->valencefns[0] = jtlev1;                    // fill in function pointer
-    AT(recurself)                 = efflev(0L, v->fgh[2], w);  // fill in the trigger level
+    AT(recurself)                 = jtefflev(jt, 0L, v->fgh[2], w);  // fill in the trigger level
     FAV(recurself)->flag          = VFLAGNONE;                 // fill in the inplaceability flags
     return jtlev1(jt, w, recurself);
 }
@@ -71,10 +71,10 @@ jtlcapco2(J jt, A a, A w, A self) {
     A recurself                   = (A)&shdr;      // allocate the block we will recur with
     AM(recurself)                 = (I)v->fgh[0];  // fill in the pointer to u
     FAV(recurself)->valencefns[1] = jtlev2;        // fill in function pointer
-    AT(recurself)                 = efflev(1L, v->fgh[2], a);
-    AC(recurself)                 = efflev(2L, v->fgh[2], w);  // fill in the trigger levels
+    AT(recurself)                 = jtefflev(jt, 1L, v->fgh[2], a);
+    AC(recurself)                 = jtefflev(jt, 2L, v->fgh[2], w);  // fill in the trigger levels
     FAV(recurself)->flag          = VFLAGNONE;                 // fill in the inplaceability flags
-    return lev2(a, w, recurself);
+    return jtlev2(jt, a, w, recurself);
 }
 
 // Result logger for S:   w is the result; we add it to AK(self), reallocating as needed
@@ -117,7 +117,7 @@ jtlevs2(J jt, A a, A w, A self) {
     if (aready & wready) {
         RZ(jtscfn(jt, CALL2(fsf, a, w, fs), self));
     } else {
-        STACKCHKOFL RZ(every2(aready ? jtbox(jt, a) : a, wready ? jtbox(jt, w) : w, self));
+        STACKCHKOFL RZ(jtevery2(jt, aready ? jtbox(jt, a) : a, wready ? jtbox(jt, w) : w, self));
     }  // since this recurs, check stack
        // We do this with the if statement rather than a computed branch in the hope that the CPU can detect patterns in
     // the conditions. There may be a structure in the user's data that could be detected for branch prediction.
@@ -135,7 +135,7 @@ jtscapco1(J jt, A w, A self) {
     A recurself                   = (A)&shdr;                  // allocate the block we will recur with
     AM(recurself)                 = (I)v->fgh[0];              // fill in the pointer to u
     FAV(recurself)->valencefns[0] = jtlevs1;                   // fill in function pointer
-    AT(recurself)                 = efflev(0L, v->fgh[2], w);  // fill in the trigger level
+    AT(recurself)                 = jtefflev(jt, 0L, v->fgh[2], w);  // fill in the trigger level
     FAV(recurself)->flag          = VFLAGNONE;                 // fill in the inplaceability flags
     GAT0(x, INT, 54, 1);
     AKASA(recurself) = x;
@@ -169,8 +169,8 @@ jtscapco2(J jt, A a, A w, A self) {
     A recurself                   = (A)&shdr;      // allocate the block we will recur with
     AM(recurself)                 = (I)v->fgh[0];  // fill in the pointer to u
     FAV(recurself)->valencefns[1] = jtlevs2;       // fill in function pointer
-    AT(recurself)                 = efflev(1L, v->fgh[2], a);
-    AC(recurself)                 = efflev(2L, v->fgh[2], w);  // fill in the trigger levels
+    AT(recurself)                 = jtefflev(jt, 1L, v->fgh[2], a);
+    AC(recurself)                 = jtefflev(jt, 2L, v->fgh[2], w);  // fill in the trigger levels
     FAV(recurself)->flag          = VFLAGNONE;                 // fill in the inplaceability flags
     GAT0(x, INT, 54, 1);
     AKASA(recurself) = x;
@@ -183,7 +183,7 @@ jtscapco2(J jt, A a, A w, A self) {
     // to handle things is to ra() the first one too.  When we fa() at the end we may be freeing a different buffer, but
     // that's OK since all have been raised.
     ras(AKASA(recurself));
-    x = levs2(a, w, recurself);
+    x = jtlevs2(jt, a, w, recurself);
     if (x) {
         AT(AKASA(recurself)) = BOX;
         AN(AKASA(recurself)) = AS(AKASA(recurself))[0];
@@ -217,9 +217,9 @@ jtlsub(J jt, C id, A a, A w) {
 
 A
 jtlcapco(J jt, A a, A w) {
-    return lsub(CLCAPCO, a, w);
+    return jtlsub(jt, CLCAPCO, a, w);
 }
 A
 jtscapco(J jt, A a, A w) {
-    return lsub(CSCAPCO, a, w);
+    return jtlsub(jt, CSCAPCO, a, w);
 }

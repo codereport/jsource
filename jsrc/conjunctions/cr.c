@@ -39,7 +39,7 @@ jtrank1ex(J jt, AD *RESTRICT w, A fs, I rr, AF f1) {
     I mn, wcn, wf, wk;
     wf = AR(w) - rr;
     if (!wf) { return CALL1IP(f1, w, fs); }  // if there's only one cell and no frame, run on it, that's the result.
-    if ((AT(w) & SPARSE) != 0) return sprank1(w, fs, rr, f1);
+    if ((AT(w) & SPARSE) != 0) return jtsprank1(jt, w, fs, rr, f1);
 #define ZZFLAGWORD state
     I state = ZZFLAGINITSTATE;  // init flags, including zz flags
     // RANKONLY verbs were handled in the caller to this routine, but fs might be RANKATOP.  In that case we could
@@ -120,7 +120,7 @@ jtrank1ex(J jt, AD *RESTRICT w, A fs, I rr, AF f1) {
     } else {
         I *zzs;
         // no cells - execute on a cell of fills
-        RZ(virtw = jtreshape(jt, vec(INT, rr, AS(w) + wf), jtfiller(jt, w)));  // The cell of fills
+        RZ(virtw = jtreshape(jt, jtvec(jt, INT, rr, AS(w) + wf), jtfiller(jt, w)));  // The cell of fills
         // Do this quietly, because
         // if there is an error, we just want to use a value of 0 for the result; thus debug
         // mode off and RESETERR on failure.
@@ -156,7 +156,7 @@ jtrank1ex0(J jt, AD *RESTRICT w, A fs, AF f1) {
         return CALL1IP(f1, w, fs);
     }  // if there's only one cell and no frame, run on it, that's the result.  Make this as fast as possible.
     // Switch to sparse code if argument is sparse
-    if ((AT(w) & SPARSE) != 0) return sprank1(w, fs, 0, f1);
+    if ((AT(w) & SPARSE) != 0) return jtsprank1(jt, w, fs, 0, f1);
 #define ZZFLAGWORD state
     // wr=rank, ws->shape
     // Each cell is an atom.  Get # atoms (=#result cells)
@@ -316,7 +316,7 @@ jtrank2ex(J jt, AD *RESTRICT a, AD *RESTRICT w, A fs, UI lrrrlcrrcr, AF f2) {
         return CALL2IP(f2, a, w, fs);
     }  // if there's only one cell and no frame, run on it, that's the result.
     if (((AT(a) | AT(w)) & SPARSE) != 0)
-        return sprank2(
+        return jtsprank2(jt, 
           a, w, fs, (UI)lcrrcr >> RANKTX, lcrrcr & RANKTMSK, f2);  // this needs to be updated to handle multiple ranks
         // lr,rr are the ranks of the underlying verb.  lcr,rcr are the cell-ranks given by u"lcr rcr.
         // If " was not used, lcr,rcr=lr,rr usually
@@ -458,7 +458,7 @@ jtrank2ex(J jt, AD *RESTRICT a, AD *RESTRICT w, A fs, UI lrrrlcrrcr, AF f2) {
         // right unless it gets virtualed
         AC(virta) = ACUC1 + ((state & ZZFLAGVIRTAINPLACE) << (ACINPLACEX - ZZFLAGVIRTAINPLACEX));
     } else {
-        RZ(virta = jtreshape(jt, vec(INT, (UI)lrrr >> RANKTX, AS(a) + (afwf >> RANKTX)), jtfiller(jt, a)));
+        RZ(virta = jtreshape(jt, jtvec(jt, INT, (UI)lrrr >> RANKTX, AS(a) + (afwf >> RANKTX)), jtfiller(jt, a)));
     }
 
     if ((mn | (state & STATEWNOTEMPTY)) != 0) {  // repeat for w
@@ -470,7 +470,7 @@ jtrank2ex(J jt, AD *RESTRICT a, AD *RESTRICT w, A fs, UI lrrrlcrrcr, AF f2) {
         AN(virtw) = wcn;
         AC(virtw) = ACUC1 + ((state & ZZFLAGVIRTWINPLACE) << (ACINPLACEX - ZZFLAGVIRTWINPLACEX));
     } else {
-        RZ(virtw = jtreshape(jt, vec(INT, lrrr & RANKTMSK, AS(w) + (afwf & RANKTMSK)), jtfiller(jt, w)));
+        RZ(virtw = jtreshape(jt, jtvec(jt, INT, lrrr & RANKTMSK, AS(w) + (afwf & RANKTMSK)), jtfiller(jt, w)));
     }
     // Allow inplacing if the verb supports it, but with the raze flags removed.  We can be loose here because we must
     // be strict about the virt inplaceability to get pristinity right.
@@ -571,7 +571,7 @@ jtrank2ex0(J jt, AD *RESTRICT a, AD *RESTRICT w, A fs, AF f2) {
     wr = AR(w);
     if (!(ar + wr)) return CALL2IP(f2, a, w, fs);  // if no frame, make just 1 call
     if (((AT(a) | AT(w)) & SPARSE) != 0)
-        return sprank2(a, w, fs, 0, 0, f2);  // this needs to be updated to handle multiple ranks
+        return jtsprank2(jt, a, w, fs, 0, 0, f2);  // this needs to be updated to handle multiple ranks
 #define ZZFLAGWORD state
 
     // Verify agreement
@@ -791,7 +791,7 @@ jtrank2ex0(J jt, AD *RESTRICT a, AD *RESTRICT w, A fs, AF f2) {
 /* (i.e. prefix agreement invokes general case)         */
 // If the action verb handles inplacing, we pass that through
 
-// irs1() and irs2() are simply calls to the IRS-savvy function f[12] with the specified rank, faster than creating a
+// jtirs1(jt, ) and jtirs2(jt, ) are simply calls to the IRS-savvy function f[12] with the specified rank, faster than creating a
 // verb with rank
 
 A
@@ -863,7 +863,7 @@ cons1(J jt, A w, A self) {
     V *sv = FAV(self);
     I mr;
     efr(mr, AR(w), (I)sv->localuse.lI4[0]);
-    return rank1ex(w, self, mr, cons1a);
+    return jtrank1ex(jt, w, self, mr, cons1a);
 }
 static A
 cons2(J jt, A a, A w, A self) {
@@ -882,7 +882,7 @@ cycr1(J jt, A w, A self) {
     RZ(self = jtcreatecycliciterator(jt, (A)&cger, self));  // fill in an iterator for this gerund
     I mr;
     efr(mr, AR(w), (I)sv->localuse.lI4[0]);
-    return rank1ex(w, self, mr, FAV(self)->valencefns[0]);  // callback is to the cyclic-execution function
+    return jtrank1ex(jt, w, self, mr, FAV(self)->valencefns[0]);  // callback is to the cyclic-execution function
 }
 static A
 cycr2(J jt, A a, A w, A self) {
@@ -984,7 +984,7 @@ rank1(J jt, A w, A self) {
         fs = FAV(fs)->fgh[0];
         f1 = FAV(fs)->valencefns[0];
     }
-    return m < wr ? rank1ex(w, fs, m, f1) : CALL1(f1, w, fs);
+    return m < wr ? jtrank1ex(jt, w, fs, m, f1) : CALL1(f1, w, fs);
 }
 // Version for rank 0.  Call rank1ex0, pointing to the u"r
 static A
@@ -1002,7 +1002,7 @@ rank1q(J jt, A w, A self) {  // fast version: nonneg rank, no check for multiple
     I r  = AR(w);
     r    = r > FAV(self)->localuse.lI4[0] ? FAV(self)->localuse.lI4[0] : r;
     A fs = FAV(self)->fgh[0];
-    return rank1ex(w, fs, r, FAV(fs)->valencefns[0]);
+    return jtrank1ex(jt, w, fs, r, FAV(fs)->valencefns[0]);
 }
 // For the dyads, rank2ex does a quadruply-nested loop over two rank-pairs, which are the n in u"n (stored in h) and the
 // rank of u itself (fetched from u). THIS SUPPORTS INPLACING: NOTHING HERE MAY DEREFERENCE jt!! This version for use
