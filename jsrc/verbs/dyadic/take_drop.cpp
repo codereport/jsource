@@ -79,7 +79,7 @@ jttks(J jt, array a, array w) { // take_sparse
 
     if (b) {
         jt->fill = SPA(wp, e);
-        x        = irs2(vec(INT, r - m, m + u), SPA(wp, x), 0L, 1L, -1L, reinterpret_cast<AF>(jttake));
+        x        = jtirs2(jt, jtvec(jt, INT, r - m, m + u), SPA(wp, x), 0L, 1L, -1L, reinterpret_cast<AF>(jttake));
         jt->fill = 0;
         RZ(x);
     }  // fill cannot be virtual
@@ -160,7 +160,7 @@ jttk(J jt, A a, A w) {
               b = 1;
               break;
           });                                         // if empty take, or take from empty cell, set b
-    if (((b - 1) & AN(w)) == 0) return tk0(b, a, w);  // this handles empty w, so PROD OK below   b||!AN(w)
+    if (((b - 1) & AN(w)) == 0) return jttk0(jt, b, a, w);  // this handles empty w, so PROD OK below   b||!AN(w)
     k = bpnoun(t);
     z = w;
     c = q = 1;  // c will be #cells for this axis
@@ -427,7 +427,7 @@ jthead(J jt, A w) {
             return jtfrom(jtinplace, zeroionei(0), w);  // could call jtfromi directly for non-sparse w
         }
     } else {
-        return SPARSE & AT(w) ? irs2(num(0), jttake(jt, num(1), w), 0L, 0L, wcr, reinterpret_cast<AF>(jtfrom))
+        return SPARSE & AT(w) ? jtirs2(jt, num(0), jttake(jt, num(1), w), 0L, 0L, wcr, reinterpret_cast<AF>(jtfrom))
                               : jtrsh0(jt, w);  // cell of w is empty - create a cell of fills  jt->ranks is still set
                                                 // for use in take.  Left rank is garbage, but that's OK
     }
@@ -445,7 +445,7 @@ jttail(J jt, A w) {
     return !wcr || AS(w)[wf] ? jtfrom(jtinplace, num(-1), w)
                              :  // if cells are atoms, or if the cells are nonempty arrays, result is last cell(s) scaf
                                 // should generate virtual block here for speed
-             SPARSE & AT(w) ? irs2(num(0), jttake(jt, num(-1), w), 0L, 0L, wcr, reinterpret_cast<AF>(jtfrom))
+             SPARSE & AT(w) ? jtirs2(jt, num(0), jttake(jt, num(-1), w), 0L, 0L, wcr, reinterpret_cast<AF>(jtfrom))
                             : jtrsh0(jt, w);
     // pristinity from other verbs
 }
