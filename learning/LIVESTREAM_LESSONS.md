@@ -128,7 +128,7 @@ Prelude> let innerProduct = blackbird sum (zipWith (*))
 * Discrovered [Try J](http://tryj.freeddns.org/) site set up by Nathan
 * Used our first C++ Standard Algorithm (`std::mismatch` x2)
 
-### Livestream #8 2021-02-24
+### Livestream #9 2021-02-24
 
 * Learned about J's `trace` function from Bob's video
 * Learned this fancy incantation `((void)++fs,...)`
