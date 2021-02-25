@@ -101,7 +101,7 @@ is_equal(I f, I l, Is... fs) -> bool {
 template <typename... Rs>
 constexpr auto
 is_equal_r(Rs... rs) -> bool {
-    return !is_mismatched_r(r, rs...);
+    return !is_mismatched_r(rs...);
 }
 
 // static_assert tests. With constexpr we can start checking to make sure our functions work at compile time.
