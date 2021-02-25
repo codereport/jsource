@@ -127,3 +127,10 @@ Prelude> let innerProduct = blackbird sum (zipWith (*))
 * IRS = Integral/Integrated Rank Support (optimizations for certain verbs - see [this paper](https://www.jsoftware.com/papers/rank.htm))
 * Discrovered [Try J](http://tryj.freeddns.org/) site set up by Nathan
 * Used our first C++ Standard Algorithm (`std::mismatch` x2)
+
+### Livestream #9 2021-02-24
+
+* Learned about J's `trace` function from Bob's video
+* Learned this fancy incantation `((void)++fs,...)`
+* Learned can't be in a deduced context then variadic template is not the last template
+* Added `algorithm.hpp` with `zip_find`, `zip_found` and `is_mismatched`

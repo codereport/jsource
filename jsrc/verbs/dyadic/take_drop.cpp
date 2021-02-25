@@ -1,7 +1,9 @@
 
 #include <algorithm>
+#include <functional>
 #include <iterator>
 
+#include "algorithm.hpp"
 #include "array.hpp"
 
 /** @file */
@@ -75,7 +77,7 @@ jttks(J jt, array a, array w) { // take_sparse
     s = AV(y);
 
     // TODO: rename b when we figure out what it is doing
-    auto const b = std::mismatch(u + m, u + r, s + m).first != u + r; 
+    auto const b = algo::is_mismatched(u + m, u + r, s + m);
 
     if (b) {
         jt->fill = SPA(wp, e);
@@ -87,7 +89,7 @@ jttks(J jt, array a, array w) { // take_sparse
         x = SPA(wp, x);
     
     // TODO: rename c when we figure out what it is doing
-    if (auto const c = std::mismatch(u, u + m, s).first != u + m; c) {
+    if (auto const c = algo::is_mismatched(u, u + m, s); c) {
         A j;
         C *xv, *yv;
         I d, i, *iv, *jv, k, n, t;
@@ -104,22 +106,19 @@ jttks(J jt, array a, array w) { // take_sparse
         xv = CAV(x);
         for (i = 0; i < n; ++i) {
             
-            // this is std::mismatch3 (or std::zip_find3)
-            bool cc = 0;
-            for (int64_t i = 0; i < m; ++i) {
-                t = u[i]; 
-                if (0 > t ? iv[i] < t + s[i] : iv[i] >= t) {
-                    cc = true;
-                    break;
-                }
-            }
+            auto const cc = algo::zip_found(
+                [](auto a, auto b, auto c) { return 0 > a ? c < a + b : c >= a; },
+                u, u + m, s, iv);
 
             if (!cc) {
                 ++d;
                 memcpy(yv, xv, k);
                 yv += k;
-                // TODO: use algorithm created above
-                DO(m, t = u[i]; *jv++ = 0 > t ? iv[i] - (t + s[i]) : iv[i];);
+                // TODO: create variadic `algo::transform`
+                for (int64_t i = 0; i < m; ++i) {
+                    t = u[i];
+                    *jv++ = 0 > u[i] ? iv[i] - (u[i] + s[i]) : iv[i];
+                }
             }
             iv += m;
             xv += k;
