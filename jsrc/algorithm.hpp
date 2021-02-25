@@ -73,8 +73,7 @@ is_mismatched(I f, I l, I2 f2) -> bool {
  * @brief Variadic, Predicate version of `std::mismatch`
  */
 template <typename I, typename... Is>
-[[nodiscard]] static auto constexpr
-is_mismatched_v(I f, I l, Is... fs) -> bool {
+[[nodiscard]] static auto constexpr is_mismatched_v(I f, I l, Is... fs) -> bool {
     return zip_found(is_not_equal_to, f, l, fs...);
 }
 
@@ -82,8 +81,7 @@ is_mismatched_v(I f, I l, Is... fs) -> bool {
  * @brief Variadic, Predicate version of `std::mismatch`, for ranges;
  */
 template <typename R, typename... Rs>
-[[nodiscard]] static auto constexpr
-is_mismatched_r(R const &r, Rs const &...rs) -> bool {
+[[nodiscard]] static auto constexpr is_mismatched_r(R const &r, Rs const &...rs) -> bool {
     return is_not_equal_to(std::size(r), std::size(rs)...) ||
            is_mismatched_v(std::cbegin(r), std::cend(r), std::cbegin(rs)...);
 }
@@ -92,8 +90,7 @@ is_mismatched_r(R const &r, Rs const &...rs) -> bool {
  * @brief Variadic, Predicate version of `std::equal`
  */
 template <typename I, typename... Is>
-[[nodiscard]] static auto constexpr
-is_equal(I f, I l, Is... fs) -> bool {
+[[nodiscard]] static auto constexpr is_equal(I f, I l, Is... fs) -> bool {
     return !is_mismatched_v(f, l, fs...);
 }
 
@@ -101,8 +98,7 @@ is_equal(I f, I l, Is... fs) -> bool {
  * @brief Variadic, Predicate version of `std::equal`, for ranges;
  */
 template <typename... Rs>
-[[nodiscard]] static auto constexpr
-is_equal_r(Rs const &...rs) -> bool {
+[[nodiscard]] static auto constexpr is_equal_r(Rs const &...rs) -> bool {
     return !is_mismatched_r(rs...);
 }
 
