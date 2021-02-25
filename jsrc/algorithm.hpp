@@ -15,7 +15,7 @@ static auto constexpr is_equal_to = [](auto const &first, auto const &...values)
 /**
  * @brief Variadic version of `std::not_equal_to`
  */
-static auto constexpr is_not_equal_to = [](auto const &first, auto const &...values) -> bool {
+static auto constexpr not_equal_to = [](auto const &first, auto const &...values) -> bool {
     return !is_equal_to(first, values...);
 };
 
