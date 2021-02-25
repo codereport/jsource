@@ -78,7 +78,7 @@ jtdetr(J jt, A w) {
               e = i + j;
               break;
           } u += c;); /* find pivot row */
-        if (0 > e) return jtcvt(jt, RAT, num(0));
+        if (0 > e) return jtcvt(jt, RAT, jfalse);
         x = v + c * j;
         if (j != e) {
             u = v + c * e;

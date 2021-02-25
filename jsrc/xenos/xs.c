@@ -51,7 +51,7 @@ jtline(J jt, A w, I si, C ce, B tso) {
     A x  = mtv, z;
     B xt = jt->tostdout;
     DC d, xd = jt->dcs;
-    if (jtequ(jt, w, num(1))) return mtm;
+    if (jtequ(jt, w, jtrue)) return mtm;
     RZ(w = jtvs(jt, w));
     // Handle locking.  Global glock has lock status for higher levels.  We see if this text is locked; if so, we mark
     // lock status for this level We do not inherit the lock from higher levels, per the original design
@@ -100,7 +100,7 @@ jtline(J jt, A w, I si, C ce, B tso) {
     FDEPDEC(1);                          // ASSERT OK now
     jt->uflags.us.cx.cx_c.glock = oldk;  // pop lock status
     if (3 == ce) {
-        z = num(jt->jerr == 0);
+        z = jt->jerr == 0 ? jtrue : jfalse;
         RESETERR;
         return z;
     } else

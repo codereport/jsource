@@ -92,7 +92,7 @@ jtcfr(J jt, A w) {
         c = wv[0];
         r = wv[1];
     } else {
-        c = num(1);
+        c = jtrue;
         r = wv[0];
     }
     ASSERT(((AR(c) - 1) & (AR(r) - 2)) < 0, EVRANK);
@@ -432,14 +432,14 @@ jtrfc(J jt, A w) {
     t   = AT(w);  // n=#coeffs, t=type
     if (n) {
         ASSERT(t & (DENSE & NUMERIC), EVDOMAIN);  // coeffs must be dense numeric
-        RZ(r = jtjico2(jt, ne(w, num(0)), num(1)));
+        RZ(r = jtjico2(jt, ne(w, jfalse), jtrue));
         m = AV(r)[0];
         m = (m == n) ? 0 : m;  // r=block for index of last nonzero; m=degree of polynomial (but 0 if all zeros)
-        ASSERT(m || jtequ(jt, num(0), jthead(jt, w)), EVDOMAIN);  // error if unsolvable constant polynomial
+        ASSERT(m || jtequ(jt, jfalse, jthead(jt, w)), EVDOMAIN);  // error if unsolvable constant polynomial
     }
     // switch based on degree of polynomial
     switch (m) {
-        case 0: return link(num(0), mtv);  // degree 0 - return 0;''
+        case 0: return link(jfalse, mtv);  // degree 0 - return 0;''
         case 1:
             r = jtravel(jt, jtnegate(jt, jtaslash(jt, CDIV, jttake(jt, num(2), w))));
             break;  // linear - return solution, whatever its type
@@ -471,7 +471,7 @@ jtpoly1(J jt, A w) {
     ASSERT(2 == *(1 + AS(x)), EVLENGTH);
     RZ(IRS1(x, 0L, 1L, jthead, c));                                    // c = {."1>y = list of coefficients
     RZ(IRS1(x, 0L, 1L, jttail, e));                                    // e = {:"1>y = list of exponents
-    ASSERT(jtequ(jt, e, floor1(e)) && all1(le(num(0), e)), EVDOMAIN);  // insist on nonnegative integral exponents
+    ASSERT(jtequ(jt, e, floor1(e)) && all1(le(jfalse, e)), EVDOMAIN);  // insist on nonnegative integral exponents
     return jtevc(jt, c, e, "u v}(1+>./v)$0");                                // evaluate c 2 : 'u v}(1+>./v)$0' e
 }
 
@@ -552,7 +552,7 @@ jtpoly2(J jt, A a, A w, A self) {
         A* av = AAV(a);
         if (postfn) return jtupon2cell(jt, a, w, self);  // revert if ^@:p.   must do before a is modified
         ASSERT(2 >= an, EVLENGTH);
-        c = 1 == an ? num(1) : av[0];
+        c = 1 == an ? jtrue : av[0];
         a = av[1 != an];  // c=mplr, a=roots
         if ((an ^ 1) + (AR(a) ^ 2) == 0)
             return jtpoly2a(jt, a, w);  // if coeff is 1 and exponent-list is a table, go do multinomial

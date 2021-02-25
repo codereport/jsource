@@ -1364,7 +1364,7 @@ jtordstat(J jt, A a, A w) {
         ASSERT((UI)j < (UI)n, EVINDEX);
     }
     // deal a bunch of random floats to provide pivots.  We reuse them if needed
-    RZ(df2(q, jtsc(jt, NRANDS), num(0), jtatop(jt, ds(CQUERY), ds(CDOLLAR))));
+    RZ(df2(q, jtsc(jt, NRANDS), jfalse, jtatop(jt, ds(CQUERY), ds(CDOLLAR))));
     qv = DAV(q);
     if (wt & FL) OSLOOP(D, jtscf) else OSLOOP(I, jtsc);
 } /* a{/:~w */

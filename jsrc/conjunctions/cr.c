@@ -130,7 +130,7 @@ jtrank1ex(J jt, AD *RESTRICT w, A fs, I rr, AF f1) {
         WITHDEBUGOFF(z = CALL1(f1, virtw, fs);)
         if (jt->jerr) {
             if (EMSK(jt->jerr) & EXIGENTERROR) RZ(z);
-            z = num(0);
+            z = jfalse;
             RESETERR;
         }  // use 0 as result if error encountered
         GA(zz, AT(z), 0L, wf + AR(z), 0L);
@@ -282,7 +282,7 @@ jtrank1ex0(J jt, AD *RESTRICT w, A fs, AF f1) {
             WITHDEBUGOFF(z = CALL1(f1, virtw, fs);)  // normal execution on fill-cell
             if (jt->jerr) {
                 if (EMSK(jt->jerr) & EXIGENTERROR) RZ(z);
-                z = num(0);
+                z = jfalse;
                 RESETERR;
             }  // use 0 as result if error encountered
         } else {
@@ -544,7 +544,7 @@ jtrank2ex(J jt, AD *RESTRICT a, AD *RESTRICT w, A fs, UI lrrrlcrrcr, AF f2) {
         WITHDEBUGOFF(z = CALL2(f2, virta, virtw, fs);)
         if (jt->jerr != 0) {
             if (EMSK(jt->jerr) & EXIGENTERROR) RZ(z);
-            z = num(0);
+            z = jfalse;
             RESETERR;
         }  // use 0 as result if error encountered
         GA(zz, AT(z), 0L, lof + lif + AR(z), 0L);
@@ -762,7 +762,7 @@ jtrank2ex0(J jt, AD *RESTRICT a, AD *RESTRICT w, A fs, AF f2) {
             WITHDEBUGOFF(z = CALL2(f2, virta, virtw, fs);)  // normal execution on fill-cell
             if (jt->jerr) {
                 if (EMSK(jt->jerr) & EXIGENTERROR) RZ(z);
-                z = num(0);
+                z = jfalse;
                 RESETERR;
             }  // use 0 as result if error encountered
         } else {

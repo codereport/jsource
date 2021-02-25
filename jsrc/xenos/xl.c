@@ -64,10 +64,10 @@ jtjlock(J jt, A w) {
         AM(jt->flkd) = ct;
     }
     RE(b = jtdolock(jt, 1, (F)v[0], v[1], v[2]));
-    if (!b) return num(0);
+    if (!b) return jfalse;
     ICPY(AV(jt->flkd) + LKC * AM(jt->flkd), v, LKC);
     ++AM(jt->flkd);
-    return num(1);
+    return jtrue;
 } /* w is (number,index,length); lock the specified region */
 
 static A
@@ -79,13 +79,13 @@ jtunlj(J jt, I j) {
     u = AV(jt->flkd);
     v = u + j * LKC;
     RE(b = jtdolock(jt, 0, (F)v[0], v[1], v[2]));
-    if (!b) return num(0);
+    if (!b) return jfalse;
     --AM(jt->flkd);
     if (j < AM(jt->flkd))
         ICPY(v, u + AM(jt->flkd) * LKC, LKC);
     else
         *v = 0;
-    return num(1);
+    return jtrue;
 } /* unlock the j-th entry in jt->flkd */
 
 A

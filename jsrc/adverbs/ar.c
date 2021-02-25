@@ -309,12 +309,12 @@ jtredsp1a(J jt, C id, A z, A e, I n, I r, I* s) {
         case CMIN: return n ? minimum(z, e) : jtca(jt, e);
         case CMAX: return n ? maximum(z, e) : jtca(jt, e);
         case CPLUS:
-            if (n && jtequ(jt, e, num(0))) return z;
+            if (n && jtequ(jt, e, jfalse)) return z;
             DO(r, d *= s[i];);
             t = tymes(e, d >= FLIMAX ? jtscf(jt, d - n) : jtsc(jt, (I)d - n));
             return n ? plus(z, t) : t;
         case CSTAR:
-            if (n && jtequ(jt, e, num(1))) return z;
+            if (n && jtequ(jt, e, jtrue)) return z;
             DO(r, d *= s[i];);
             t = expn2(e, d >= FLIMAX ? jtscf(jt, d - n) : jtsc(jt, (I)d - n));
             return n ? tymes(z, t) : t;
@@ -405,18 +405,18 @@ jtredspd(J jt, A w, A self, C id, VARPSF ado, I cv, I f, I r, I zt) {
     RE(0);
     switch (id) {
         case CPLUS:
-            if (!jtequ(jt, e, num(0))) RZ(e = tymes(e, jtsc(jt, n)));
+            if (!jtequ(jt, e, jfalse)) RZ(e = tymes(e, jtsc(jt, n)));
             break;
         case CSTAR:
-            if (!jtequ(jt, e, num(1)) && !jtequ(jt, e, num(0))) RZ(e = expn2(e, jtsc(jt, n)));
+            if (!jtequ(jt, e, jtrue) && !jtequ(jt, e, jfalse)) RZ(e = expn2(e, jtsc(jt, n)));
             break;
         case CEQ:
             ASSERT(B01 & AT(x), EVNONCE);
-            if (!BAV(e)[0] && 0 == (n & 1)) e = num(1);
+            if (!BAV(e)[0] && 0 == (n & 1)) e = jtrue;
             break;
         case CNE:
             ASSERT(B01 & AT(x), EVNONCE);
-            if (BAV(e)[0] && 1 == (n & 1)) e = num(0);
+            if (BAV(e)[0] && 1 == (n & 1)) e = jfalse;
     }
     if (TYPESNE(AT(e), AT(zx))) {
         t = jtmaxtype(jt, AT(e), AT(zx));
@@ -490,11 +490,11 @@ jtredspsprep(J jt, C id, I f, I zt, A a, A e, A x, A y, I* zm, I** zdv, B** zpv,
     }
     switch (id) {
         case CPLUS:
-        case CPLUSDOT: j = !jtequ(jt, e, num(0)); break;
+        case CPLUSDOT: j = !jtequ(jt, e, jfalse); break;
         case CSTAR:
-        case CSTARDOT: j = !jtequ(jt, e, num(1)); break;
-        case CMIN: j = !jtequ(jt, e, zt & B01 ? num(1) : zt & INT ? jtsc(jt, IMAX) : ainf); break;
-        case CMAX: j = !jtequ(jt, e, zt & B01 ? num(0) : zt & INT ? jtsc(jt, IMIN) : jtscf(jt, infm)); break;
+        case CSTARDOT: j = !jtequ(jt, e, jtrue); break;
+        case CMIN: j = !jtequ(jt, e, zt & B01 ? jtrue  : zt & INT ? jtsc(jt, IMAX) : ainf); break;
+        case CMAX: j = !jtequ(jt, e, zt & B01 ? jfalse : zt & INT ? jtsc(jt, IMIN) : jtscf(jt, infm)); break;
         case CEQ: j = !*BAV(e); break;
         case CNE: j = *BAV(e); break;
     }
@@ -513,7 +513,7 @@ jtredspse(J jt, C id, I wm, I xt, A e, A zx, A sn, A* ze, A* zzx) {
     A b;
     B nz;
     I t, zt;
-    RZ(b = ne(num(0), sn));
+    RZ(b = ne(jfalse, sn));
     nz = !all0(b);
     zt = AT(zx);
     switch (id) {
@@ -526,10 +526,10 @@ jtredspse(J jt, C id, I wm, I xt, A e, A zx, A sn, A* ze, A* zzx) {
             RZ(e = jtbcvt(jt, 1, expn2(e, jtsc(jt, wm))));
             break;
         case CPLUSDOT:
-            if (nz) RZ(zx = gcd(zx, jtfrom(jt, b, jtover(jt, num(0), e))));
+            if (nz) RZ(zx = gcd(zx, jtfrom(jt, b, jtover(jt, jfalse, e))));
             break;
         case CSTARDOT:
-            if (nz) RZ(zx = lcm(zx, jtfrom(jt, b, jtover(jt, num(1), e))));
+            if (nz) RZ(zx = lcm(zx, jtfrom(jt, b, jtover(jt, jtrue, e))));
             break;
         case CMIN:
             if (nz)
@@ -537,7 +537,7 @@ jtredspse(J jt, C id, I wm, I xt, A e, A zx, A sn, A* ze, A* zzx) {
                                 jtfrom(jt,
                                        b,
                                        jtover(jt,
-                                              zt & B01   ? num(1)
+                                              zt & B01   ? jtrue
                                               : zt & INT ? jtsc(jt, IMAX)
                                                          : ainf,
                                               e))));
@@ -548,20 +548,20 @@ jtredspse(J jt, C id, I wm, I xt, A e, A zx, A sn, A* ze, A* zzx) {
                                 jtfrom(jt,
                                        b,
                                        jtover(jt,
-                                              zt & B01   ? num(0)
+                                              zt & B01   ? jfalse
                                               : zt & INT ? jtsc(jt, IMIN)
                                                          : jtscf(jt, infm),
                                               e))));
             break;
         case CEQ:
             ASSERT(B01 & xt, EVNONCE);
-            if (nz) RZ(zx = eq(zx, eq(num(0), residue(num(2), sn))));
-            if (!(wm & 1)) e = num(1);
+            if (nz) RZ(zx = eq(zx, eq(jfalse, residue(num(2), sn))));
+            if (!(wm & 1)) e = jtrue;
             break;
         case CNE:
             ASSERT(B01 & xt, EVNONCE);
-            if (nz) RZ(zx = ne(zx, eq(num(1), residue(num(2), sn))));
-            if (!(wm & 1)) e = num(0);
+            if (nz) RZ(zx = ne(zx, eq(jtrue, residue(num(2), sn))));
+            if (!(wm & 1)) e = jfalse;
             break;
     }
     if (TYPESNE(AT(e), AT(zx))) {
@@ -687,9 +687,9 @@ jtreducesp(J jt, A w, A self) {
     varps(adocv, self, wt, 0);
     if (2 == n && !(adocv.f && strchr(fca, id))) {
         A x;
-        IRS2(num(0), w, 0L, 0, r, jtfrom, x);
+        IRS2(jfalse, w, 0L, 0, r, jtfrom, x);
         A y;
-        IRS2(num(1), w, 0L, 0, r, jtfrom, y);
+        IRS2(jtrue, w, 0L, 0, r, jtfrom, y);
         return df2(z, x, y, g);  // rank has been reset for this call
     }
     // original rank still set
@@ -1025,7 +1025,7 @@ jtredcateach(J jt, A w, A self) {
     SETICFR(w, f, r, n);
     if (!r || 1 >= n) return jtreshape(jt, jtrepeat(jt, ne(jtsc(jt, f), IX(wr)), shape(jt, w)), n ? w : ds(CACE));
     if (!(BOX & AT(w)))
-        return df1(z, jtcant2(jt, jtsc(jt, f), w), jtqq(jt, ds(CBOX), zeroionei(1)));  // handle unboxed args
+        return df1(z, jtcant2(jt, jtsc(jt, f), w), jtqq(jt, ds(CBOX), num(1)));  // handle unboxed args
     // bug: ,&.>/ y does scalar replication wrong
     // wv=AN(w)+AAV(w); DQ(AN(w), if(AN(*--wv)&&AR(*wv)&&n1&&n2) ASSERT(0,EVNONCE); if((!AR(*wv))&&n1)n2=1;
     // if(AN(*wv)&&1<AR(*wv))n1=1;);
@@ -1107,7 +1107,7 @@ A
 jtaslash1(J jt, C c, A w) {
     RZ(w);
     A z;
-    return df1(z, w, jtqq(jt, jtslash(jt, ds(c)), zeroionei(1)));
+    return df1(z, w, jtqq(jt, jtslash(jt, ds(c)), num(1)));
 }
 A
 jtatab(J jt, C c, A a, A w) {

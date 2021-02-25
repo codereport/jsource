@@ -570,7 +570,7 @@ static A
 jtweight(J jt, A a, A w) {
     A z;
     return df1(
-      z, jtbehead(jt, jtover(jt, AR(w) ? w : jtreshape(jt, a, w), num(1))), jtbsdot(jt, jtslash(jt, ds(CSTAR))));
+      z, jtbehead(jt, jtover(jt, AR(w) ? w : jtreshape(jt, a, w), jtrue)), jtbsdot(jt, jtslash(jt, ds(CSTAR))));
 }  // */\. }. (({:$a)$w),1
 
 A
@@ -638,11 +638,11 @@ jtabase1(J jt, A w) {
     ASSERT(t & DENSE, EVNONCE);
     // Result has rank one more than the input.  If there are no atoms,
     // return (($w),0)($,)w; if Boolean, return (($w),1)($,)w
-    if ((-n & SGNIFNOT(t, B01X)) >= 0) return jtreshape(jt, apip(shape(jt, w), zeroionei(n != 0)), w);
+    if ((-n & SGNIFNOT(t, B01X)) >= 0) return jtreshape(jt, apip(shape(jt, w), num(n != 0)), w);
     if (!(t & INT)) {
         // Not integer.  Calculate # digits-1 as d = 2 <.@^. >./ | , w
         df2(
-          d, num(2), maximum(zeroionei(1), jtaslash(jt, CMAX, mag(jtravel(jt, w)))), jtatop(jt, ds(CFLOOR), ds(CLOG)));
+          d, num(2), maximum(num(1), jtaslash(jt, CMAX, mag(jtravel(jt, w)))), jtatop(jt, ds(CFLOOR), ds(CLOG)));
         // Calculate z = ((1+d)$2) #: w
         RZ(z = jtabase2(jt, jtreshape(jt, jtincrem(jt, d), num(2)), w));
         // If not float, result is exact or complex; either way, keep it
@@ -651,7 +651,7 @@ jtabase1(J jt, A w) {
         // calculate that as (0 = >./ ({."1 z)).  If so, return }."1 z ,  otherwise z
         // But we can't delete a digit if any of the values were negative - all are significant then
         // We also can't delete a digit if there is only 1 digit in the numbers
-        if (AS(z)[AR(z) - 1] <= 1 || jti0(jt, jtaslash(jt, CPLUSDOT, jtravel(jt, lt(w, zeroionei(0)))))) return z;
+        if (AS(z)[AR(z) - 1] <= 1 || jti0(jt, jtaslash(jt, CPLUSDOT, jtravel(jt, lt(w, num(0)))))) return z;
         if (0 == jti0(jt, jtaslash(jt, CMAX, jtravel(jt, IRS1(z, 0L, 1L, jthead, d)))))
             return IRS1(z, 0L, 1L, jtbehead, d);
         return z;

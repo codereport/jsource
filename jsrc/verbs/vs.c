@@ -37,7 +37,7 @@ jtscheck(J jt, A w) {
     ASSERTSYS(SETIC(y, k1) == SETIC(x, k2), "scheck i/x tally");
     ASSERTSYS(*(1 + AS(y)) == SETIC(a, k1), "scheck i/a length");
     ASSERTSYS(jtequ(jt, y, jtnub(jt, y)), "scheck i unique");
-    ASSERTSYS(all1(le(num(0), y)), "scheck i negative");
+    ASSERTSYS(all1(le(jfalse, y)), "scheck i negative");
     ASSERTSYS(all1(ATOMIC2(jt, y, jtfrom(jt, a, shape(jt, w)), rkblk, 1L, 1L, CLT)), "scheck i index");
     ASSERTSYS(jtequ(jt, jtgrade1(jt, y), IX(*AS(y))), "scheck i sorted");
     ASSERTSYS(AR(x) == 1 + r - AN(a), "scheck x rank");
@@ -47,7 +47,7 @@ jtscheck(J jt, A w) {
 
 static A
 jtselm(J jt, I t) {
-    return t & NUMERIC ? jtcvt(jt, t, num(0)) : t & BOX ? ds(CACE) : chrspace;
+    return t & NUMERIC ? jtcvt(jt, t, jfalse) : t & BOX ? ds(CACE) : chrspace;
 }
 
 A
@@ -245,7 +245,7 @@ jtsparseit(J jt, A w, A a, A e) {
     v     = AS(x);
     *v    = m;
     if (r > n) ICPY(1 + v, n + s, r - n);
-    b = b && SB01 & AT(z) && jtequ(jt, e, num(0));
+    b = b && SB01 & AT(z) && jtequ(jt, e, jfalse);
     c = w;
     if (!b) RZ(c = jtnot(jt, jtirs2(jt, jtreshape(jt, jtvec(jt, INT, r - n, n + s), SPA(p, e)), x, VFLAGNONE, RMAX, -1L, jtmatch)));
     cn = AN(c);
@@ -298,7 +298,7 @@ jtsparseit(J jt, A w, A a, A e) {
         }
     }
     SPB(p, i, y);
-    SPB(p, x, b ? jtreshape(jt, jtsc(jt, cm), num(1)) : jtrepeat(jt, c, x));
+    SPB(p, x, b ? jtreshape(jt, jtsc(jt, cm), jtrue) : jtrepeat(jt, c, x));
     EPILOG(z);
 }
 

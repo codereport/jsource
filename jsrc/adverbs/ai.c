@@ -52,7 +52,7 @@ jtinvfork(J jt, A w) {
     c = 1 && NOUN & AT(f);
     b = c || consf(f);
     ASSERT(b != consf(h), EVDOMAIN);
-    RZ(k = c ? f : df1(gi, num(0), b ? f : h));
+    RZ(k = c ? f : df1(gi, jfalse, b ? f : h));
     RZ(gi = invrecur(b ? jtamp(jt, k, g) : jtamp(jt, g, k)));
     RZ(fi = invrecur(b ? h : f));
     if (CAMP == ID(gi)) {
@@ -117,7 +117,7 @@ jtbminv(J jt, A w) {
     ws = AS(w);
     wv = AAV(w);
     if (1 >= wr) return jtraze(jt, w);
-    if (!wn) return jtiota(jt, jtreshape(jt, jtsc(jt, wr), num(0)));
+    if (!wn) return jtiota(jt, jtreshape(jt, jtsc(jt, wr), jfalse));
     GATV0(x, INT, wr, 1);
     u = AV(x);
     memset(u, C0, wr * SZI);
@@ -256,7 +256,7 @@ jtinvamp(J jt, A w) {
         case CQCO:
             if (nf) {
                 ASSERT(!AR(x), EVRANK);
-                return jtobverse(jt, jteval(jt, all1(lt(x, zeroionei(0))) ? "*/@(^/)\"2" : "(p:@i.@# */ .^ ])\"1"), w);
+                return jtobverse(jt, jteval(jt, all1(lt(x, num(0))) ? "*/@(^/)\"2" : "(p:@i.@# */ .^ ])\"1"), w);
             }
             break;
         case CFIT:
@@ -310,7 +310,7 @@ jtinvamp(J jt, A w) {
             }
             break;
         case CQQ:
-            if (ng && jtequ(jt, x, num(1)) && jtequ(jt, f, jteval(jt, "i.\"1"))) return jthook(jt, ds(CFROM), ds(CEQ));
+            if (ng && jtequ(jt, x, jtrue) && jtequ(jt, f, jteval(jt, "i.\"1"))) return jthook(jt, ds(CFROM), ds(CEQ));
             break;
         case CBSLASH:
             if (nf && (n = jti0(jt, x), 0 > n) && (d = ID(u->fgh[0]), (d & -2) == CLEFT))
@@ -351,7 +351,7 @@ jtinvamp(J jt, A w) {
             break;
         case CPOLY:
             if (nf && 1 == AR(x) && 2 == AN(x) && NUMERIC & AT(x) &&
-                !jtequ(jt, zeroionei(0), jttail(jt, x))) {  // linear polynomial only
+                !jtequ(jt, num(0), jttail(jt, x))) {  // linear polynomial only
                 RZ(y = jtrecip(jt, jttail(jt, x)));
                 return jtamp(jt, apip(tymes(y, jtnegate(jt, jthead(jt, x))), y), h);
             }
@@ -478,7 +478,7 @@ jtinv(J jt, A w, I recur) {
             p = jti0(jt, f);
             q = jti0(jt, g);
             if (3 == p && 1 == q) return jtforeign(jt, f, num(2));
-            if (3 == p && 2 == q) return jtforeign(jt, f, num(1));
+            if (3 == p && 2 == q) return jtforeign(jt, f, jtrue);
             if (3 == p && 3 == q) return jtforeign(jt, f, num(2));
             break;
         case CHOOK:
@@ -489,7 +489,7 @@ jtinv(J jt, A w, I recur) {
     // But only fix once, at the top recursion level, (1) to avoid an infinite loop if
     // there is a circular reference that leaves names in the fixed form of w; (2) to avoid
     // repeated fixing of lower branches, which will only be tried again when higher levels are fixed
-    if (!recur && !nameless(w)) return invrecur(jtfix(jt, w, zeroionei(0)));
+    if (!recur && !nameless(w)) return invrecur(jtfix(jt, w, num(0)));
     ASSERT(0, EVDOMAIN);
 }
 
@@ -509,14 +509,14 @@ jtneutral(J jt, A w) {
     b = jtequ(jt, y, CALL2(v->valencefns[1], x, y, w));
     RESETERR;
     if (b) return x;
-    x = zeroionei(0);
+    x = num(0);
     b = jtequ(jt, y, CALL2(v->valencefns[1], x, y, w));
     RESETERR;
-    if (b) return num(0);
-    x = zeroionei(1);
+    if (b) return jfalse;
+    x = num(1);
     b = jtequ(jt, y, CALL2(v->valencefns[1], x, y, w));
     RESETERR;
-    if (b) return num(1);
+    if (b) return jtrue;
     RZ(x = jtscf(jt, infm));
     b = jtequ(jt, y, CALL2(v->valencefns[1], y, x, w));
     RESETERR;
@@ -525,14 +525,14 @@ jtneutral(J jt, A w) {
     b = jtequ(jt, y, CALL2(v->valencefns[1], y, x, w));
     RESETERR;
     if (b) return x;
-    x = zeroionei(0);
+    x = num(0);
     b = jtequ(jt, y, CALL2(v->valencefns[1], y, x, w));
     RESETERR;
-    if (b) return num(0);
-    x = zeroionei(1);
+    if (b) return jfalse;
+    x = num(1);
     b = jtequ(jt, y, CALL2(v->valencefns[1], y, x, w));
     RESETERR;
-    if (b) return num(1);
+    if (b) return jtrue;
     ASSERT(0, EVDOMAIN);
 } /* neutral of arbitrary rank-0 function */
 
@@ -540,7 +540,7 @@ A
 jtiden(J jt, A w) {
     A f, g, x = 0;
     V *u, *v;
-    RZ(w = jtfix(jt, w, zeroionei(0)));
+    RZ(w = jtfix(jt, w, num(0)));
     ASSERT(VERB & AT(w), EVDOMAIN);
     v = FAV(w);
     f = v->fgh[0];
@@ -565,7 +565,7 @@ jtiden(J jt, A w) {
         case CLT:
         case CPLUSDOT:
         case CJDOT:
-        case CRDOT: x = num(0); break;
+        case CRDOT: x = jfalse; break;
         case CSTAR:
         case CDIV:
         case CEXP:
@@ -574,7 +574,7 @@ jtiden(J jt, A w) {
         case CEQ:
         case CGE:
         case CLE:
-        case CSTARDOT: x = num(1); break;
+        case CSTARDOT: x = jtrue; break;
         case CMAX: x = jtscf(jt, infm); break;
         case CMIN: x = ainf; break;
         case CUNDER:;
@@ -585,8 +585,8 @@ jtiden(J jt, A w) {
             if (CAMP == ID(f) && (u = FAV(f), NOUN & AT(u->fgh[0]) && !AR(u->fgh[0]) && CSTILE == ID(u->fgh[1])))
                 switch (ID(g)) {
                     case CSTAR:
-                    case CEXP: x = num(1); break;
-                    case CPLUS: x = num(0);
+                    case CEXP: x = jtrue; break;
+                    case CPLUS: x = jfalse;
                 }
             break;
         case CBDOT:;  // canned inverses for (bt b.)
@@ -599,7 +599,7 @@ jtiden(J jt, A w) {
                 bi = -1;
                 bi = INV0 & (1LL << bt) ? 0 : bi;
                 bi = INV1 & (1LL << bt) ? 1 : bi;
-                x  = num(bi);
+                x  = numbool(bi);
             }
             break;
     }
@@ -611,7 +611,7 @@ A
 jtidensb(J jt, A w) {
     A f, g, x = 0, w0 = w;
     V* v;
-    RZ(w = jtfix(jt, w, zeroionei(0)));
+    RZ(w = jtfix(jt, w, num(0)));
     ASSERT(VERB & AT(w), EVDOMAIN);
     v = FAV(w);
     f = v->fgh[0];

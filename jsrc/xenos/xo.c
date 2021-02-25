@@ -160,7 +160,7 @@ jtjclose(J jt, A w) {
         av[j] = av[AM(jt->fopf)];
         iv[j] = iv[AM(jt->fopf)];
     }
-    return num(1);
+    return jtrue;
 } /* close file# w */
 
 F

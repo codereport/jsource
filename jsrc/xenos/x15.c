@@ -3063,7 +3063,7 @@ jtmemf(J jt, A w) {
     I k;
     RE(k = jti0(jt, w));
     free((void *)k);
-    return num(0);
+    return jfalse;
 }
 /* 15!:4  memory free */
 
@@ -3160,7 +3160,7 @@ jtfh15(J jt, A w) {
     I k;
     RE(k = jti0(jt, w));
     jtfh(jt, (A)k);
-    return num(0);
+    return jfalse;
 }
 /* 15!:9  free header */
 

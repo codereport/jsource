@@ -631,15 +631,15 @@ jtipbx(J jt, A a, A w, C c, C d) {
         // unsupported g.  Set c0/c1 to invalid and execute g to find x0/x1
         c0 = c1 = -1;
         g       = ds(d);
-        RZ(df2(x0, num(0), w, g));
-        RZ(df2(x1, num(0), w, g));
+        RZ(df2(x0, jfalse, w, g));
+        RZ(df2(x1, jfalse, w, g));
     } else {
-        RZ(x0 = c0 == IPBX0   ? jtreshape(jt, jtsc(jt, n), num(0))
-                : c0 == IPBX1 ? jtreshape(jt, jtsc(jt, c == CNE ? AN(w) : n), num(1))
+        RZ(x0 = c0 == IPBX0   ? jtreshape(jt, jtsc(jt, n), jfalse)
+                : c0 == IPBX1 ? jtreshape(jt, jtsc(jt, c == CNE ? AN(w) : n), jtrue)
                 : c0 == IPBXW ? w
                               : jtnot(jt, w));
-        RZ(x1 = c1 == IPBX0   ? jtreshape(jt, jtsc(jt, n), num(0))
-                : c1 == IPBX1 ? jtreshape(jt, jtsc(jt, c == CNE ? AN(w) : n), num(1))
+        RZ(x1 = c1 == IPBX0   ? jtreshape(jt, jtsc(jt, n), jfalse)
+                : c1 == IPBX1 ? jtreshape(jt, jtsc(jt, c == CNE ? AN(w) : n), jtrue)
                 : c1 == IPBXW ? w
                               : jtnot(jt, w));
     }
@@ -711,7 +711,7 @@ jtminors(J jt, A w) {
     A d, z;
     RZ(d = jtapvwr(jt, 3L, -1L, 1L));
     AV(d)[0] = 0;
-    return jtdrop(jt, d, df2(z, num(1), w, jtbsdot(jt, ds(CLEFT))));  // 0 0 1 }. 1 [\. w
+    return jtdrop(jt, d, df2(z, jtrue, w, jtbsdot(jt, ds(CLEFT))));  // 0 0 1 }. 1 [\. w
 }
 
 static A

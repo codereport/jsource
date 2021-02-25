@@ -34,7 +34,7 @@ jtcants(J jt, A a, A w, A z) {
     SPB(
       zp,
       x,
-      jtfrom(jt, q, jtcanta(jt, jtover(jt, zeroionei(0), jtincrem(jt, jtgrade1(jt, jtless(jt, a, a1)))), SPA(wp, x))));
+      jtfrom(jt, q, jtcanta(jt, jtover(jt, num(0), jtincrem(jt, jtgrade1(jt, jtless(jt, a, a1)))), SPA(wp, x))));
     return z;
 } /* w is sparse */
 

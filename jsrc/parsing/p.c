@@ -157,7 +157,7 @@ jtpparen(J jt, PSTK *stack) {
 static A
 jtisf(J jt, A a, A w, A self) {
     RZ(jtsymbis(jt, jtonm(jt, a), CALL1(FAV(self)->valencefns[0], w, 0L), ABACK(self)));
-    return num(0);
+    return jfalse;
 }
 
 // assignment, single or multiple

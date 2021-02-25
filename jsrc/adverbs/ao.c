@@ -277,9 +277,9 @@ jtkeysp(J jt, A a, A w, A self) {
     *AS(q) = n; /* q=: 0 by}1$.n;0;1 */
     p      = PAV(q);
     SPB(p, a, iv0);
-    SPB(p, e, num(1));
+    SPB(p, e, jtrue);
     SPB(p, i, by);
-    SPB(p, x, jtreshape(jt, tally(jt, by), num(0)));
+    SPB(p, x, jtreshape(jt, tally(jt, by), jfalse));
     RZ(z = jtover(jt, df1(b, jtrepeat(jt, q, w), VAV(self)->fgh[0]), x));
     z = j ? jtcdot2(jt, jtbox(jt, IX(1 + j)), z) : z;
     EPILOG(z);

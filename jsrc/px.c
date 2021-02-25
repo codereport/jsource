@@ -32,7 +32,7 @@ jtev2(J jt, A a, A w, C* s) {
 A
 jteva(J jt, A w, C* s) {
     A z;
-    return df1(z, w, jtcolon(jt, num(1), jtcstr(jt, s)));
+    return df1(z, w, jtcolon(jt, jtrue, jtcstr(jt, s)));
 }
 A
 jtevc(J jt, A a, A w, C* s) {
@@ -83,7 +83,7 @@ jtimmea(J jt, A w) {
     z = jtimmex(jt, w);  // check for DD, but don't allow continuation read
     ASSERT(
       jt->asgn || !z || !(AT(z) & NOUN) ||
-        (t = eq(num(1), z), all1(AT(z) & SPARSE ? df1(z1, t, jtatop(jt, jtslash(jt, ds(CSTARDOT)), ds(CCOMMA))) : t)),
+        (t = eq(jtrue, z), all1(AT(z) & SPARSE ? df1(z1, t, jtatop(jt, jtslash(jt, ds(CSTARDOT)), ds(CCOMMA))) : t)),
       EVASSERT);  // apply *./@, if sparse
     return z;
 }

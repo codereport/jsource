@@ -488,7 +488,7 @@ jtrngstateq(J jt, A w) {
         case SMI:
             GAT0(z, BOX, 9, 1);
             zv = AAV(z);
-            RZ(*zv++ = num(0));
+            RZ(*zv++ = jfalse);
             RZ(*zv++ = jtincorp(jt, jtsc(jt, jt->rngI0[GBI])));
             RZ(*zv++ = jtincorp(jt, jtvec(jt, INT, GBN, jt->rngV0[GBI])));
             RZ(*zv++ = jtincorp(jt, jtsc(jt, jt->rngI0[MTI])));

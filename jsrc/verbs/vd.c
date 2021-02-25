@@ -106,9 +106,9 @@ jtqrr(J jt, A w) {
     m     = (m + tom < n) ? m + tom : m;  // Minimize number of wasted multiply slots, processing in batches of 4
     if (1 >= n) {                         // just 1 col
         t = jtnorm(jt, jtravel(jt, w));   // norm of col
-        ASSERT(!AN(w) || !jtequ(jt, t, num(0)), EVDOMAIN);  // norm must not be 0 unless column is empty
+        ASSERT(!AN(w) || !jtequ(jt, t, jfalse), EVDOMAIN);  // norm must not be 0 unless column is empty
         RZ(q = tymes(w, jtrecip(jt, t)));
-        return link(2 > AR(q) ? jttable(jt, q) : q, jtreshape(jt, jtv2(jt, n, n), p ? t : num(1)));
+        return link(2 > AR(q) ? jttable(jt, q) : q, jtreshape(jt, jtv2(jt, n, n), p ? t : jtrue));
     }
     // construe w as w0 w1 w0t w1t
     RZ(t0 = jtqrr(jt, jttake(jt, jtv2(jt, p, m), w)));  // find QR of w0 pxm   w0t
@@ -156,7 +156,7 @@ jtltqip(J jt, A w) {
             AN(q0)    = cl;  // kludge use sumattymesprod to create a table result directly
             A t;
             RZ(t = jtnorm(jt, q0));                   // norm of row
-            ASSERT(!jtequ(jt, t, num(0)), EVDOMAIN);  // norm must not be 0
+            ASSERT(!jtequ(jt, t, jfalse), EVDOMAIN);  // norm must not be 0
             A z;
             RZ(z = tymesA(w, jtrecip(jt, t)));
             verifyinplace(w, z);
