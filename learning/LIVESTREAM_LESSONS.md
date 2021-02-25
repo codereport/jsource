@@ -134,3 +134,4 @@ Prelude> let innerProduct = blackbird sum (zipWith (*))
 * Learned this fancy incantation `((void)++fs,...)`
 * Learned can't be in a deduced context then variadic template is not the last template
 * Added `algorithm.hpp` with `zip_find`, `zip_found` and `is_mismatched`
+* `git reset --merge` to abort `git stash pop`
