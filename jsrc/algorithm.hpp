@@ -7,7 +7,7 @@ namespace algo {
 /**
  * @brief Variadic version of `std::equal_to`
  */
-static auto constexpr is_equal_to = [](auto const &first, auto const &...values) -> bool {
+static auto constexpr equal_to = [](auto const &first, auto const &...values) -> bool {
     static_assert(sizeof...(values) != 0);
     return ((first == values) && ...);
 };
