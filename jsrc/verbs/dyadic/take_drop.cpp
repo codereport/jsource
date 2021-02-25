@@ -45,8 +45,7 @@ jttk0(J jt, B b, A a, A w) {
     return z;
 }
 
-static array
-jttks(J jt, array a, array w) { // take_sparse
+static array jttks(J jt, array a, array w) {  // take_sparse
     PROLOG(0092);
     array x, y, z;
     I an, r, *s, *u, *v;
@@ -59,7 +58,7 @@ jttks(J jt, array a, array w) { // take_sparse
     v = AS(z);
     DO(an, v[i] = ABS(u[i]););
     zp = PAV(z);
-    wp = PAV(w); // pointer to array values
+    wp = PAV(w);  // pointer to array values
 
     if (an <= r) {
         RZ(a = jtvec(jt, INT, r, s));
@@ -69,7 +68,7 @@ jttks(J jt, array a, array w) { // take_sparse
     auto [m, q] = [&] {
         array const a1 = SPA(wp, a);
         return std::pair{AN(a1), jtpaxis(jt, r, a1)};
-    } ();
+    }();
 
     RZ(a = jtfrom(jt, q, a));
     u = AV(a);
@@ -87,7 +86,7 @@ jttks(J jt, array a, array w) { // take_sparse
     }  // fill cannot be virtual
     else
         x = SPA(wp, x);
-    
+
     // TODO: rename c when we figure out what it is doing
     if (auto const c = algo::is_mismatched(u, u + m, s); c) {
         A j;
@@ -105,18 +104,15 @@ jttks(J jt, array a, array w) { // take_sparse
         yv = CAV(y);
         xv = CAV(x);
         for (i = 0; i < n; ++i) {
-            
-            auto const cc = algo::zip_found(
-                [](auto a, auto b, auto c) { return 0 > a ? c < a + b : c >= a; },
-                u, u + m, s, iv);
-
+            auto const cc =
+              algo::zip_found([](auto a, auto b, auto c) { return 0 > a ? c < a + b : c >= a; }, u, u + m, s, iv);
             if (!cc) {
                 ++d;
                 memcpy(yv, xv, k);
                 yv += k;
                 // TODO: create variadic `algo::transform`
                 for (int64_t i = 0; i < m; ++i) {
-                    t = u[i];
+                    t     = u[i];
                     *jv++ = 0 > u[i] ? iv[i] - (u[i] + s[i]) : iv[i];
                 }
             }
@@ -158,7 +154,7 @@ jttk(J jt, A a, A w) {
           r - n, if (!s[n + i]) {
               b = 1;
               break;
-          });                                         // if empty take, or take from empty cell, set b
+          });                                               // if empty take, or take from empty cell, set b
     if (((b - 1) & AN(w)) == 0) return jttk0(jt, b, a, w);  // this handles empty w, so PROD OK below   b||!AN(w)
     k = bpnoun(t);
     z = w;
@@ -212,10 +208,17 @@ jttake(J jt, A a, A w) {
     wf  = wr - wcr;
     RESETRANK;
     if (((af - 1) & (acr - 2)) >= 0) {
-        s = rank2ex(a, w, UNUSED_VALUE, MIN(acr, 1), wcr, acr, wcr, reinterpret_cast<AF>(jttake));  // if multiple x values, loop over them
-                                                                              // af>0 or acr>1
-        // We extracted from w, so mark it (or its backer if virtual) non-pristine.  There may be replication (if there
-        // was fill), so we don't pass pristinity through  We overwrite w because it is no longer in use
+        s = rank2ex(a,
+                    w,
+                    UNUSED_VALUE,
+                    MIN(acr, 1),
+                    wcr,
+                    acr,
+                    wcr,
+                    reinterpret_cast<AF>(jttake));  // if multiple x values, loop
+                                                    // over them af>0 or acr>1
+        // We extracted from w, so mark it (or its backer if virtual) non-pristine.  There may be replication (if
+        // there was fill), so we don't pass pristinity through  We overwrite w because it is no longer in use
         PRISTCLRF(w)
         return s;
     }
@@ -225,8 +228,8 @@ jttake(J jt, A a, A w) {
     I* RESTRICT ws = AS(w);                 // ws->shape of w
     RZ(s =
          jtvib(jt, a));  // convert input to integer, auditing for illegal values; and convert infinities to IMAX/-IMAX
-    // if the input was not INT/bool, we go through and replace any infinities with the length of the axis.  If we do
-    // this, we have to clone the area, because vib might return a canned value
+    // if the input was not INT/bool, we go through and replace any infinities with the length of the axis.  If we
+    // do this, we have to clone the area, because vib might return a canned value
     if (!(AT(a) & (B01 + INT))) {
         I i;
         for (i = 0; i < AN(s); ++i) {
@@ -237,8 +240,9 @@ jttake(J jt, A a, A w) {
         if (i < AN(s)) {
             s = jtca(jt, s);
             if (!(AT(a) & FL))
-                RZ(a = jtcvt(
-                     jt, FL, a));  // copy area we are going to change; put a in a form where we can recognize infinity
+                RZ(a = jtcvt(jt,
+                             FL,
+                             a));  // copy area we are going to change; put a in a form where we can recognize infinity
             for (; i < AN(s); ++i) {
                 if (DAV(a)[i] == IMIN)
                     IAV(s)[i] = IMIN;
@@ -248,8 +252,8 @@ jttake(J jt, A a, A w) {
         }
     }
     a = s;
-    // correct if(!(ar|wf|(SPARSE&wt)|!wcr|(AFLAG(w)&(AFNJA)))){  // if there is only 1 take axis, w has no frame and is
-    // not atomic
+    // correct if(!(ar|wf|(SPARSE&wt)|!wcr|(AFLAG(w)&(AFNJA)))){  // if there is only 1 take axis, w has no frame
+    // and is not atomic
     if (!(ar | wf | ((NOUN & ~(DIRECT | RECURSIBLE)) & wt) | !wcr |
           (AFLAG(w) & (AFNJA)))) {  // if there is only 1 take axis, w has no frame and is not atomic  NJAwhy
         // if the length of take is within the bounds of the first axis
@@ -278,8 +282,8 @@ jttake(J jt, A a, A w) {
     // full processing for more complex a
     if ((-wcr & (wf - 1)) >= 0) {  // if y is an atom, or y has multiple cells:
         RZ(s = jtvec(jt, INT, wf + n, AS(w)));
-        v = wf + AV(s);  // s is a block holding shape of a cell of input to the result: w-frame followed by #$a axes,
-                         // all taken from w.  vec is never virtual
+        v = wf + AV(s);  // s is a block holding shape of a cell of input to the result: w-frame followed by #$a
+                         // axes, all taken from w.  vec is never virtual
         if (!wcr) {
             DO(n, v[i] = 1;);
             RZ(w = jtreshape(jt, s, w));
@@ -288,8 +292,8 @@ jttake(J jt, A a, A w) {
                              // leaves s with the final shape of the result
     }
     s = jttk(jt, s, w);  // go do the general take/drop
-    // We extracted from w, so mark it (or its backer if virtual) non-pristine.  There may be replication (if there was
-    // fill), so we don't pass pristinity through  We overwrite w because it is no longer in use
+    // We extracted from w, so mark it (or its backer if virtual) non-pristine.  There may be replication (if there
+    // was fill), so we don't pass pristinity through  We overwrite w because it is no longer in use
     PRISTCLRF(w)
     return s;
 }
@@ -313,8 +317,15 @@ jtdrop(J jt, A a, A w) {
     // special case: if a is atomic 0, and cells of w are not atomic
     if ((-wcr & (ar - 1)) < 0 && (IAV(a)[0] == 0)) return w;  // 0 }. y, return y
     if (((af - 1) & (acr - 2)) >= 0) {
-        s = rank2ex(a, w, UNUSED_VALUE, MIN(acr, 1), wcr, acr, wcr, reinterpret_cast<AF>(jtdrop));  // if multiple x values, loop over them
-                                                                              // af>0 or acr>1
+        s = rank2ex(a,
+                    w,
+                    UNUSED_VALUE,
+                    MIN(acr, 1),
+                    wcr,
+                    acr,
+                    wcr,
+                    reinterpret_cast<AF>(jtdrop));  // if multiple x values, loop
+                                                    // over them af>0 or acr>1
         // We extracted from w, so mark it (or its backer if virtual) non-pristine.  There may be replication, so we
         // don't pass pristinity through  We overwrite w because it is no longer in use
         PRISTCLRF(w)
@@ -323,8 +334,8 @@ jtdrop(J jt, A a, A w) {
     n = AN(a);
     u = AV(a);  // n=#axes to drop, u->1st axis
     // virtual case: scalar a
-    // correct if(!(ar|wf|(SPARSE&wt)|!wcr|(AFLAG(w)&(AFNJA)))){  // if there is only 1 take axis, w has no frame and is
-    // not atomic
+    // correct if(!(ar|wf|(SPARSE&wt)|!wcr|(AFLAG(w)&(AFNJA)))){  // if there is only 1 take axis, w has no frame
+    // and is not atomic
     if (!(ar | wf | ((NOUN & ~(DIRECT | RECURSIBLE)) & wt) | !wcr |
           (AFLAG(w) & (AFNJA)))) {   // if there is only 1 take axis, w has no frame and is not atomic  BJAwhy
         I* RESTRICT ws = AS(w);      // ws->shape of w
@@ -412,23 +423,25 @@ jthead(J jt, A w) {
             wcr--;
             wcr = (wcr < 0) ? wr : wcr;  // wn=#atoms of w, wcr=rank of cell being created
             A z;
-            RZ(z = jtvirtual(jtinplace, w, 0, wcr));  // allocate the cell.  Now fill in shape & #atoms
-                                           // if w is empty we have to worry about overflow when calculating #atoms
+            RZ(z = jtvirtual(
+                 jtinplace, w, 0, wcr));  // allocate the cell.  Now fill in shape & #atoms
+                                          // if w is empty we have to worry about overflow when calculating #atoms
             I zn;
             PROD(zn, wcr, AS(w) + 1)
-            MCISH(AS(z), AS(w) + 1, wcr) AN(z) = zn;  // Since z and w may be the same, the copy destroys AS(w).  So
-                                                      // calc zn first.  copy shape of CELL of w into z
+            MCISH(AS(z), AS(w) + 1, wcr)
+            AN(z) = zn;  // Since z and w may be the same, the copy destroys AS(w).  So
+                         // calc zn first.  copy shape of CELL of w into z
             return z;
         } else {
-            // frame not 0, or non-virtualable type, or cell is an atom.  Use from.  Note that jt->ranks is still set,
-            // so this may produce multiple cells left rank is garbage, but since num(0) is an atom it doesn't
+            // frame not 0, or non-virtualable type, or cell is an atom.  Use from.  Note that jt->ranks is still
+            // set, so this may produce multiple cells left rank is garbage, but since num(0) is an atom it doesn't
             // matter
             return jtfrom(jtinplace, num(0), w);  // could call jtfromi directly for non-sparse w
         }
     } else {
         return SPARSE & AT(w) ? jtirs2(jt, jfalse, jttake(jt, jtrue, w), 0L, 0L, wcr, reinterpret_cast<AF>(jtfrom))
-                              : jtrsh0(jt, w);  // cell of w is empty - create a cell of fills  jt->ranks is still set
-                                                // for use in take.  Left rank is garbage, but that's OK
+                              : jtrsh0(jt, w);  // cell of w is empty - create a cell of fills  jt->ranks is still
+                                                // set for use in take.  Left rank is garbage, but that's OK
     }
     // pristinity from the called verb
 }
@@ -442,8 +455,8 @@ jttail(J jt, A w) {
     wcr = wr < wcr ? wr : wcr;
     wf  = wr - wcr;  // no RESETRANK: rank is passed into from/take/rsh0.  Left rank is garbage but that's OK
     return !wcr || AS(w)[wf] ? jtfrom(jtinplace, num(-1), w)
-                             :  // if cells are atoms, or if the cells are nonempty arrays, result is last cell(s) scaf
-                                // should generate virtual block here for speed
+                             :  // if cells are atoms, or if the cells are nonempty arrays, result is last cell(s)
+                                // scaf should generate virtual block here for speed
              SPARSE & AT(w) ? jtirs2(jt, jfalse, jttake(jt, num(-1), w), 0L, 0L, wcr, reinterpret_cast<AF>(jtfrom))
                             : jtrsh0(jt, w);
     // pristinity from other verbs
