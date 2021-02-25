@@ -792,23 +792,15 @@ extern I Bmtv[];
 #define mtv ((A)&Bmtv)
 extern I Bmtm[];
 #define mtm ((A)&Bmtm)
-extern I Basgnlocsimp[];
-#define asgnlocsimp ((A)&Basgnlocsimp)
-extern I Basgngloname[];
-#define asgngloname ((A)&Basgngloname)
-extern I Basgnforceglo[];
-#define asgnforceglo ((A)&Basgnforceglo)
-extern I Basgnforcegloname[];
-#define asgnforcegloname ((A)&Basgnforcegloname)
-extern I Bimax[];
-#define imax ((A)&Bimax)
-extern I Bmark[];
-#define mark ((A)&Bmark)
+extern A const asgnlocsimp;
+extern A const asgngloname;
+extern A const asgnforceglo;
+extern A const asgnforcegloname;
+extern A const imax;
+extern A const mark;
 extern C breakdata;
-extern I Bchrcolon[];
-#define chrcolon ((A)&Bchrcolon)
-extern I Bchrspace[];
-#define chrspace ((A)&Bchrspace)
+extern A const chrcolon;
+extern A const chrspace;
 extern I validitymask[];
 extern C ctype[];
 extern const double dzero;

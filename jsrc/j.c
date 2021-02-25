@@ -24,24 +24,23 @@ CREBLOCKATOMV2(a0j1, CMPX, 0.0, 1.0)  // 0j1
 // TODO: Next version of CBAIVAL, create AD directly instead of I[8]
 #define CBAIVAL2(t, v) \
     (AD){ .kchain = 7 * SZI, .flag = (t)&TRAVERSIBLE, .tproxy = (t), .c = ACPERMANENT, .n = 1, .s = (v) }
-#define CREBLOCKATOMI(name, t, v) I B##name[8] = CBAIVAL(t, v);
 #define CREBLOCKVEC0(name, t) \
     I B##name[8] = {          \
       8 * SZI, (t)&TRAVERSIBLE, 0, (t), ACPERMANENT, 0, 1, 0};  // no padding at end - no atoms should be referenced
 CREBLOCKVEC0(aqq, LIT)                                          // ''
 CREBLOCKVEC0(mtv, B01)                                          // i.0 boolean
 #define CREBLOCKATOMV1(name, t, v1) struct Bd1 B##name = {{AKXR(0), (t)&TRAVERSIBLE, 0, (t), ACPERMANENT, 1, 0}, {v1}};
-CREBLOCKATOMV1(onehalf, FL, 0.5)                                  // 0.5
-CREBLOCKATOMV1(ainf, FL, INFINITY)                                // _
-CREBLOCKATOMV1(pie, FL, PI)                                       // PI
-CREBLOCKATOMI(asgnlocsimp, ASGN + ASGNLOCAL + ASGNTONAME, CASGN)  // =. flagged as LOCAL+NAME
-CREBLOCKATOMI(asgngloname, ASGN + ASGNTONAME, CGASGN)             // =: flagged as NAME
-CREBLOCKATOMI(asgnforcegloname, ASGN + ASGNTONAME, CASGN)         // =. converted to global+NAME
-CREBLOCKATOMI(asgnforceglo, ASGN, CASGN)                          // =. converted to global
-CREBLOCKATOMI(mark, MARK, 0)                                      // parser mark, also used generally as a special value
-CREBLOCKATOMI(imax, INT, IMAX)                                    // max positive value
-CREBLOCKATOMI(chrcolon, LIT, ':')                                 // the one character
-CREBLOCKATOMI(chrspace, LIT, ' ')                                 // the one character
+CREBLOCKATOMV1(onehalf, FL, 0.5)                                        // 0.5
+CREBLOCKATOMV1(ainf, FL, INFINITY)                                      // _
+CREBLOCKATOMV1(pie, FL, PI)                                             // PI
+A const asgnlocsimp = &CBAIVAL2(ASGN + ASGNLOCAL + ASGNTONAME, CASGN);  // =. flagged as LOCAL+NAME
+A const asgngloname = &CBAIVAL2(ASGN + ASGNTONAME, CGASGN);             // =: flagged as NAME
+A const asgnforcegloname = &CBAIVAL2(ASGN + ASGNTONAME, CASGN);         // =. converted to global+NAME
+A const asgnforceglo = &CBAIVAL2(ASGN, CASGN);                          // =. converted to global
+A const mark = &CBAIVAL2(MARK, 0);                                      // parser mark, also used generally as a special value
+A const imax = &CBAIVAL2(INT, IMAX);                                    // max positive value
+A const chrcolon = &CBAIVAL2(LIT, ':');                                 // the one character
+A const chrspace = &CBAIVAL2(LIT, ' ');                                 // the one character
 C breakdata = 0;
 D inf       = INFINITY;  /* _                                    */
 D infm      = -INFINITY; /* __                                   */
