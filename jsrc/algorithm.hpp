@@ -7,7 +7,7 @@ namespace algo {
 /**
  * @brief Variadic version of `std::equal_to`
  */
-static auto constexpr is_equal_to = [](const auto first, const auto... values) -> bool {
+static auto constexpr is_equal_to = [](const auto &first, const auto &...values) -> bool {
     static_assert(sizeof...(values) != 0);
     return ((first == values) && ...);
 };
@@ -15,7 +15,7 @@ static auto constexpr is_equal_to = [](const auto first, const auto... values) -
 /**
  * @brief Variadic version of `std::not_equal_to`
  */
-static auto constexpr is_not_equal_to = [](const auto first, const auto... values) -> bool {
+static auto constexpr is_not_equal_to = [](const auto &first, const auto &...values) -> bool {
     return !is_equal_to(first, values...);
 };
 
@@ -23,7 +23,7 @@ static auto constexpr is_not_equal_to = [](const auto first, const auto... value
  * @brief Variadic version of `std::mismatch`
  */
 template <typename P, typename I, typename... Is>
-static auto constexpr zip_find(const P pred, I f, I l, Is... fs) {
+static auto constexpr zip_find(const P &pred, I f, I l, Is... fs) {
     while (f != l) {
         if (pred(*f, *fs...)) break;
         ++f, ((void)++fs, ...);
@@ -36,7 +36,7 @@ static auto constexpr zip_find(const P pred, I f, I l, Is... fs) {
  * @note This can be the same name as zip_find if we use concepts.
  */
 template <typename P, typename R, typename... Rs>
-static auto constexpr zip_find_r(const P pred, R r, Rs... rs) {
+static auto constexpr zip_find_r(const P &pred, R &r, Rs &...rs) {
     return zip_find(pred, std::begin(r), std::end(r), std::begin(rs)...);
 }
 
@@ -44,7 +44,7 @@ static auto constexpr zip_find_r(const P pred, R r, Rs... rs) {
  * @brief Predicate version of `algo::zip_found`
  */
 template <typename P, typename I, typename... Is>
-static auto constexpr zip_found(const P pred, I f, I l, Is... fs) -> bool {
+static auto constexpr zip_found(const P &pred, I f, I l, Is... fs) -> bool {
     auto const t = zip_find(pred, f, l, fs...);
     return std::get<0>(t) != l;
 }
@@ -54,7 +54,7 @@ static auto constexpr zip_found(const P pred, I f, I l, Is... fs) -> bool {
  * @note This can be the same name as zip_found if we use concepts.
  */
 template <typename P, typename R, typename... Rs>
-static auto constexpr zip_found_r(const P pred, R r, Rs... rs) -> bool {
+static auto constexpr zip_found_r(const P &pred, R &r, Rs &...rs) -> bool {
     return zip_found(pred, std::begin(r), std::end(r), std::begin(rs)...);
 }
 
@@ -82,8 +82,9 @@ is_mismatched_v(I f, I l, Is... fs) -> bool {
  */
 template <typename R, typename... Rs>
 static constexpr auto
-is_mismatched_r(R r, Rs... rs) -> bool {
-    return is_not_equal_to(std::size(rs)...) || is_mismatched_v(std::begin(r), std::end(r), std::begin(rs)...);
+is_mismatched_r(R &r, Rs &...rs) -> bool {
+    return is_not_equal_to(std::size(r), std::size(rs)...) ||
+           is_mismatched_v(std::begin(r), std::end(r), std::begin(rs)...);
 }
 
 /**
@@ -100,7 +101,7 @@ is_equal(I f, I l, Is... fs) -> bool {
  */
 template <typename... Rs>
 static constexpr auto
-is_equal_r(Rs... rs) -> bool {
+is_equal_r(Rs &...rs) -> bool {
     return !is_mismatched_r(rs...);
 }
 
