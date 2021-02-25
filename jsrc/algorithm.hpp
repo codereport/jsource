@@ -24,6 +24,7 @@ static auto constexpr is_not_equal_to = [](const auto &first, const auto &...val
  */
 template <typename P, typename I, typename... Is>
 [[nodiscard]] static auto constexpr zip_find(const P &pred, I f, I l, Is... fs) {
+    static_assert(sizeof...(Is) != 0);
     while (f != l) {
         if (pred(*f, *fs...)) break;
         ++f, ((void)++fs, ...);
