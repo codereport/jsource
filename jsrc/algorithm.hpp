@@ -16,7 +16,7 @@ static auto constexpr equal_to = [](auto const &first, auto const &...values) ->
  * @brief Variadic version of `std::not_equal_to`
  */
 static auto constexpr not_equal_to = [](auto const &first, auto const &...values) -> bool {
-    return !is_equal_to(first, values...);
+    return !equal_to(first, values...);
 };
 
 /**
@@ -33,30 +33,12 @@ template <typename P, typename I, typename... Is>
 }
 
 /**
- * @brief Variadic version of `std::mismatch`, for ranges.
- * @note This can be the same name as zip_find if we use concepts.
- */
-template <typename P, typename R, typename... Rs>
-[[nodiscard]] static auto constexpr zip_find_r(P const &pred, R const &r, Rs const &...rs) {
-    return zip_find(pred, std::cbegin(r), std::cend(r), std::cbegin(rs)...);
-}
-
-/**
  * @brief Predicate version of `algo::zip_found`
  */
 template <typename P, typename I, typename... Is>
 [[nodiscard]] static auto constexpr zip_found(P const &pred, I f, I l, Is... fs) -> bool {
     auto const t = zip_find(pred, f, l, fs...);
     return std::get<0>(t) != l;
-}
-
-/**
- * @brief Variadic version of `algo::zip_found`, for ranges.
- * @note This can be the same name as zip_found if we use concepts.
- */
-template <typename P, typename R, typename... Rs>
-[[nodiscard]] static auto constexpr zip_found_r(P const &pred, R const &r, Rs const &...rs) -> bool {
-    return zip_found(pred, std::cbegin(r), std::cend(r), std::cbegin(rs)...);
 }
 
 /**
@@ -74,16 +56,7 @@ is_mismatched(I f, I l, I2 f2) -> bool {
  */
 template <typename I, typename... Is>
 [[nodiscard]] static auto constexpr is_mismatched(I f, I l, Is... fs) -> bool {
-    return zip_found(is_not_equal_to, f, l, fs...);
-}
-
-/**
- * @brief Variadic, Predicate version of `std::mismatch`, for ranges;
- */
-template <typename R, typename... Rs>
-[[nodiscard]] static auto constexpr is_mismatched_r(R const &r, Rs const &...rs) -> bool {
-    return is_not_equal_to(std::size(r), std::size(rs)...) ||
-           is_mismatched_v(std::cbegin(r), std::cend(r), std::cbegin(rs)...);
+    return zip_found(not_equal_to, f, l, fs...);
 }
 
 /**
@@ -91,29 +64,53 @@ template <typename R, typename... Rs>
  */
 template <typename I, typename... Is>
 [[nodiscard]] static auto constexpr is_equal(I f, I l, Is... fs) -> bool {
-    return !is_mismatched_v(f, l, fs...);
+    return !is_mismatched(f, l, fs...);
 }
 
+namespace ranges {
+/**
+ * @brief Variadic version of `std::mismatch`, for ranges.
+ * @note This can be the same name as zip_find if we use concepts.
+ */
+template <typename P, typename R, typename... Rs>
+[[nodiscard]] static auto constexpr zip_find(P const &pred, R const &r, Rs const &...rs) {
+    return algo::zip_find(pred, std::cbegin(r), std::cend(r), std::cbegin(rs)...);
+}
+/**
+ * @brief Variadic version of `algo::zip_found`, for ranges.
+ * @note This can be the same name as zip_found if we use concepts.
+ */
+template <typename P, typename R, typename... Rs>
+[[nodiscard]] static auto constexpr zip_found(P const &pred, R const &r, Rs const &...rs) -> bool {
+    return algo::zip_found(pred, std::cbegin(r), std::cend(r), std::cbegin(rs)...);
+}
+/**
+ * @brief Variadic, Predicate version of `std::mismatch`, for ranges;
+ */
+template <typename R, typename... Rs>
+[[nodiscard]] static auto constexpr is_mismatched(R const &r, Rs const &...rs) -> bool {
+    return not_equal_to(std::size(r), std::size(rs)...) ||
+           algo::is_mismatched(std::cbegin(r), std::cend(r), std::cbegin(rs)...);
+}
 /**
  * @brief Variadic, Predicate version of `std::equal`, for ranges;
  */
 template <typename... Rs>
-[[nodiscard]] static auto constexpr is_equal_r(Rs const &...rs) -> bool {
-    return !is_mismatched_r(rs...);
+[[nodiscard]] static auto constexpr is_equal(Rs const &...rs) -> bool {
+    return !is_mismatched(rs...);
 }
-
 // static_assert tests. With constexpr we can start checking to make sure our functions work at compile time.
-static_assert(!is_equal_to(1, 2, 3, 4));
-static_assert(is_equal_to(1, 1, 1, 1));
-static_assert(is_not_equal_to(1, 2, 3, 4));
-static_assert(!is_not_equal_to(1, 1, 1, 1));
+static_assert(!equal_to(1, 2, 3, 4));
+static_assert(equal_to(1, 1, 1, 1));
+static_assert(not_equal_to(1, 2, 3, 4));
+static_assert(!not_equal_to(1, 1, 1, 1));
 static_assert(
-  !zip_found_r(is_not_equal_to, std::array{0, 1, 2, 3, 4}, std::array{0, 1, 2, 3, 4}, std::array{0, 1, 2, 3, 4}));
+  !ranges::zip_found(not_equal_to, std::array{0, 1, 2, 3, 4}, std::array{0, 1, 2, 3, 4}, std::array{0, 1, 2, 3, 4}));
 static_assert(
-  zip_found_r(is_not_equal_to, std::array{0, 1, 2, 5, 4}, std::array{0, 1, 2, 3, 4}, std::array{0, 1, 2, 3, 6}));
-static_assert(is_mismatched_r(std::array{0, 1, 2, 5, 4}, std::array{0, 1, 2, 3, 4}, std::array{0, 1, 2, 3, 6}));
-static_assert(is_mismatched_r(std::array{0, 1, 2, 5, 4}, std::array{0, 1, 2, 3}, std::array{0, 1, 2, 3, 6}));
-static_assert(!is_mismatched_r(std::array{0, 1, 2, 3}, std::array{0, 1, 2, 3}, std::array{0, 1, 2, 3}));
-static_assert(is_equal_r(std::array{0, 1, 2, 3}, std::array{0, 1, 2, 3}, std::array{0, 1, 2, 3}));
-
+  ranges::zip_found(not_equal_to, std::array{0, 1, 2, 5, 4}, std::array{0, 1, 2, 3, 4}, std::array{0, 1, 2, 3, 6}));
+static_assert(is_mismatched(std::array{0, 1, 2, 5, 4}, std::array{0, 1, 2, 3, 4}, std::array{0, 1, 2, 3, 6}));
+static_assert(is_mismatched(std::array{0, 1, 2, 5, 4}, std::array{0, 1, 2, 3}, std::array{0, 1, 2, 3, 6}));
+static_assert(!is_mismatched(std::array{0, 1, 2, 3}, std::array{0, 1, 2, 3}, std::array{0, 1, 2, 3}));
+static_assert(is_equal(std::array{0, 1, 2, 3}, std::array{0, 1, 2, 3}, std::array{0, 1, 2, 3}));
+}  // namespace ranges
 }  // namespace algo
