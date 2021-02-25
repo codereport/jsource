@@ -73,7 +73,7 @@ is_mismatched(I f, I l, I2 f2) -> bool {
  * @brief Variadic, Predicate version of `std::mismatch`
  */
 template <typename I, typename... Is>
-[[nodiscard]] static auto constexpr is_mismatched_v(I f, I l, Is... fs) -> bool {
+[[nodiscard]] static auto constexpr is_mismatched(I f, I l, Is... fs) -> bool {
     return zip_found(is_not_equal_to, f, l, fs...);
 }
 
