@@ -65,8 +65,8 @@ AD Bnum[20] =
     CBAIVAL2(INT, 8),   CBAIVAL2(INT, 9)};
 
 // The booleans
-A const jfalse = (A)(I[8])CBAIVAL(B01, 0);
-A const jtrue = (A)(I[8])CBAIVAL(B01, 1);
+A const jfalse = &CBAIVAL2(B01, 0);
+A const jtrue = &CBAIVAL2(B01, 1);
 
 struct Bd1 Bnumvr[3] = {  // floating-point 0, 1, and 2, used for constants
   {{AKXR(0), FL& TRAVERSIBLE, 0, FL, ACPERMANENT, 1, 0}, 0.0},
