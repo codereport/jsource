@@ -16,13 +16,7 @@ struct Bd2 {
 #define CREBLOCKATOMV2(name, t, v1, v2) \
     struct Bd2 B##name = {{AKXR(0), (t)&TRAVERSIBLE, 0, (t), ACPERMANENT, 1, 0}, {v1, v2}};
 CREBLOCKATOMV2(a0j1, CMPX, 0.0, 1.0)  // 0j1
-// TODO: This should probably return an AD instead of the current I[8] that just happens to share
-//       the memory layout of AD. The current implementation is bound to break if that layout is
-//       ever changed.
 #define CBAIVAL(t, v) \
-    { 7 * SZI, (t)&TRAVERSIBLE, 0, (t), ACPERMANENT, 1, 0, (v) }
-// TODO: Next version of CBAIVAL, create AD directly instead of I[8]
-#define CBAIVAL2(t, v) \
     (AD){ .kchain = 7 * SZI, .flag = (t)&TRAVERSIBLE, .tproxy = (t), .c = ACPERMANENT, .n = 1, .s = (v) }
 #define CREBLOCKVEC0(name, t) \
     I B##name[8] = {          \
@@ -30,17 +24,17 @@ CREBLOCKATOMV2(a0j1, CMPX, 0.0, 1.0)  // 0j1
 CREBLOCKVEC0(aqq, LIT)                                          // ''
 CREBLOCKVEC0(mtv, B01)                                          // i.0 boolean
 #define CREBLOCKATOMV1(name, t, v1) struct Bd1 B##name = {{AKXR(0), (t)&TRAVERSIBLE, 0, (t), ACPERMANENT, 1, 0}, {v1}};
-CREBLOCKATOMV1(onehalf, FL, 0.5)                                        // 0.5
-CREBLOCKATOMV1(ainf, FL, INFINITY)                                      // _
-CREBLOCKATOMV1(pie, FL, PI)                                             // PI
-A const asgnlocsimp = &CBAIVAL2(ASGN + ASGNLOCAL + ASGNTONAME, CASGN);  // =. flagged as LOCAL+NAME
-A const asgngloname = &CBAIVAL2(ASGN + ASGNTONAME, CGASGN);             // =: flagged as NAME
-A const asgnforcegloname = &CBAIVAL2(ASGN + ASGNTONAME, CASGN);         // =. converted to global+NAME
-A const asgnforceglo = &CBAIVAL2(ASGN, CASGN);                          // =. converted to global
-A const mark = &CBAIVAL2(MARK, 0);                                      // parser mark, also used generally as a special value
-A const imax = &CBAIVAL2(INT, IMAX);                                    // max positive value
-A const chrcolon = &CBAIVAL2(LIT, ':');                                 // the one character
-A const chrspace = &CBAIVAL2(LIT, ' ');                                 // the one character
+CREBLOCKATOMV1(onehalf, FL, 0.5)                                       // 0.5
+CREBLOCKATOMV1(ainf, FL, INFINITY)                                     // _
+CREBLOCKATOMV1(pie, FL, PI)                                            // PI
+A const asgnlocsimp = &CBAIVAL(ASGN + ASGNLOCAL + ASGNTONAME, CASGN);  // =. flagged as LOCAL+NAME
+A const asgngloname = &CBAIVAL(ASGN + ASGNTONAME, CGASGN);             // =: flagged as NAME
+A const asgnforcegloname = &CBAIVAL(ASGN + ASGNTONAME, CASGN);         // =. converted to global+NAME
+A const asgnforceglo = &CBAIVAL(ASGN, CASGN);                          // =. converted to global
+A const mark = &CBAIVAL(MARK, 0);                                      // parser mark, also used generally as a special value
+A const imax = &CBAIVAL(INT, IMAX);                                    // max positive value
+A const chrcolon = &CBAIVAL(LIT, ':');                                 // the one character
+A const chrspace = &CBAIVAL(LIT, ' ');                                 // the one character
 C breakdata = 0;
 D inf       = INFINITY;  /* _                                    */
 D infm      = -INFINITY; /* __                                   */
@@ -58,14 +52,14 @@ I validitymask[16] = {-1, -1, 0, 0, -1, -1, 0, 0, -1, -1, 0, 0, 0, 0, 0, 0};  //
 
 AD Bnum[20] =
   {  // the numbers we keep at hand.
-    CBAIVAL2(INT, -10), CBAIVAL2(INT, -9), CBAIVAL2(INT, -8), CBAIVAL2(INT, -7), CBAIVAL2(INT, -6), CBAIVAL2(INT, -5),
-    CBAIVAL2(INT, -4),  CBAIVAL2(INT, -3), CBAIVAL2(INT, -2), CBAIVAL2(INT, -1), CBAIVAL2(INT, 0),  CBAIVAL2(INT, 1),
-    CBAIVAL2(INT, 2),   CBAIVAL2(INT, 3),  CBAIVAL2(INT, 4),  CBAIVAL2(INT, 5),  CBAIVAL2(INT, 6),  CBAIVAL2(INT, 7),
-    CBAIVAL2(INT, 8),   CBAIVAL2(INT, 9)};
+    CBAIVAL(INT, -10), CBAIVAL(INT, -9), CBAIVAL(INT, -8), CBAIVAL(INT, -7), CBAIVAL(INT, -6), CBAIVAL(INT, -5),
+    CBAIVAL(INT, -4),  CBAIVAL(INT, -3), CBAIVAL(INT, -2), CBAIVAL(INT, -1), CBAIVAL(INT, 0),  CBAIVAL(INT, 1),
+    CBAIVAL(INT, 2),   CBAIVAL(INT, 3),  CBAIVAL(INT, 4),  CBAIVAL(INT, 5),  CBAIVAL(INT, 6),  CBAIVAL(INT, 7),
+    CBAIVAL(INT, 8),   CBAIVAL(INT, 9)};
 
 // The booleans
-A const jfalse = &CBAIVAL2(B01, 0);
-A const jtrue = &CBAIVAL2(B01, 1);
+A const jfalse = &CBAIVAL(B01, 0);
+A const jtrue = &CBAIVAL(B01, 1);
 
 struct Bd1 Bnumvr[3] = {  // floating-point 0, 1, and 2, used for constants
   {{AKXR(0), FL& TRAVERSIBLE, 0, FL, ACPERMANENT, 1, 0}, 0.0},
