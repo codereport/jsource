@@ -40,6 +40,11 @@ pointer_to_values(array x) -> int64_t* {
     return reinterpret_cast<int64_t*>(reinterpret_cast<C*>(x) + x->kchain.k);
 }
 
+[[nodiscard]] constexpr auto
+is_sparse(array x) noexcept -> bool {
+    return (AT(x) & SPARSE) != 0;
+}
+
 // TODO: replace with `auto` concepts
 template <typename T>
 auto
