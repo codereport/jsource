@@ -49,8 +49,8 @@ zip_found(P const &pred, I f, I const l, Is... fs) -> bool {
  */
 template <typename I, typename... Is>
 [[nodiscard]] static constexpr auto
-is_mismatched(I f, I const l, Is... fs) -> bool {
-    return zip_found(not_equal_to, f, l, fs...);
+is_equal(I f, I const l, Is... fs) -> bool {
+    return zip_found(equal_to, f, l, fs...);
 }
 
 
