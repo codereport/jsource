@@ -43,17 +43,6 @@ zip_found(P const &pred, I f, I const l, Is... fs) -> bool {
     return std::get<0>(t) != l;
 }
 
-// This 2 arg function takes priority so will not work when called from constexpr functions. This isn't an issue in
-// cpp20.
-// /**
-//  * @brief Predicate version of `std::mismatch`
-//  * @note std::mismatch isn't constexpr till cpp20
-//  */
-// template <typename I, typename I2>
-// [[nodiscard]] static auto
-// is_mismatched(I f, I const l, I2 f2) -> bool {
-//     return std::mismatch(f, l, f2).first != l;
-// }
 
 /**
  * @brief Variadic, Predicate version of `std::mismatch`
