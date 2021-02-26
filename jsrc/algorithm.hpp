@@ -86,6 +86,7 @@ is_equal(I f, I const l, Is... fs) -> bool {
 }
 
 namespace ranges {
+
 /**
  * @brief Variadic version of `std::mismatch`, for ranges.
  * @note This can be the same name as zip_find if we use concepts.
@@ -95,6 +96,7 @@ template <typename P, typename R, typename... Rs>
 zip_find(P const &pred, R const &r, Rs const &...rs) {
     return algo::zip_find(pred, std::cbegin(r), std::cend(r), std::cbegin(rs)...);
 }
+
 /**
  * @brief Variadic version of `algo::zip_found`, for ranges.
  * @note This can be the same name as zip_found if we use concepts.
@@ -104,6 +106,7 @@ template <typename P, typename R, typename... Rs>
 zip_found(P const &pred, R const &r, Rs const &...rs) -> bool {
     return algo::zip_found(pred, std::cbegin(r), std::cend(r), std::cbegin(rs)...);
 }
+
 /**
  * @brief Variadic, Predicate version of `std::mismatch`, for ranges;
  */
@@ -113,6 +116,7 @@ is_mismatched(R const &r, Rs const &...rs) -> bool {
     return not_equal_to(std::size(r), std::size(rs)...) ||
            algo::is_mismatched(std::cbegin(r), std::cend(r), std::cbegin(rs)...);
 }
+
 /**
  * @brief Variadic, Predicate version of `std::equal`, for ranges;
  */
@@ -121,6 +125,7 @@ template <typename... Rs>
 is_equal(Rs const &...rs) -> bool {
     return !is_mismatched(rs...);
 }
+
 // static_assert tests. With constexpr we can start checking to make sure our functions work at compile time.
 static_assert(!equal_to(1, 2, 3, 4));
 static_assert(equal_to(1, 1, 1, 1));
