@@ -53,17 +53,6 @@ is_mismatched(I f, I const l, Is... fs) -> bool {
     return zip_found(not_equal_to, f, l, fs...);
 }
 
-// // This 2 arg function takes priority so will not work when called from constexpr functions. This isn't an issue in
-// cpp20.
-// /**
-//  * @brief Predicate version of `std::equal`
-//  * @note std::equal isn't constexpr till cpp20
-//  */
-// template <typename I, typename I2>
-// [[nodiscard]] static auto
-// is_equal(I f, I const l, I2 f2) -> bool {
-//     return std::equal(f, l, f2);
-// }
 
 /**
  * @brief Variadic, Predicate version of `std::equal`
