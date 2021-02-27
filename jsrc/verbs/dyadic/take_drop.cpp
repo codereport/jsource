@@ -76,7 +76,7 @@ static array jttks(J jt, array a, array w) {  // take_sparse
     s = AV(y);
 
     // TODO: rename b when we figure out what it is doing
-    auto const b = !std::equal(u + m, u + r, s + m);
+    auto const b = not std::equal(u + m, u + r, s + m);
 
     if (b) {
         jt->fill = SPA(wp, e);
@@ -88,7 +88,7 @@ static array jttks(J jt, array a, array w) {  // take_sparse
         x = SPA(wp, x);
 
     // TODO: rename c when we figure out what it is doing
-    if (auto const c = !std::equal(u, u + m, s); c) {
+    if (auto const c = not std::equal(u, u + m, s); c) {
         A j;
         C *xv, *yv;
         I d, i, *iv, *jv, k, n, t;
@@ -105,7 +105,7 @@ static array jttks(J jt, array a, array w) {  // take_sparse
         xv = CAV(x);
         for (i = 0; i < n; ++i) {
             auto const cc =
-              algo::zip_found([](auto a, auto b, auto c) { return 0 > a ? c < a + b : c >= a; }, u, u + m, s, iv);
+              aal::var::found([](auto a, auto b, auto c) { return 0 > a ? c < a + b : c >= a; }, u, u + m, s, iv);
             if (!cc) {
                 ++d;
                 memcpy(yv, xv, k);
