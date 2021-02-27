@@ -135,3 +135,10 @@ Prelude> let innerProduct = blackbird sum (zipWith (*))
 * Learned can't be in a deduced context then variadic template is not the last template
 * Added `algorithm.hpp` with `zip_find`, `zip_found` and `is_mismatched`
 * `git reset --merge` to abort `git stash pop`
+
+### Livestream #10 2021-02-27
+
+* `git switch` (although not on my git, might need to upgrade)
+* `git add submodule` to depend on other repo
+* `target_include_directories` in CMake to depend on other directory
+* Boost vs MIT vs Apache 2.0, all are great - went with Boost b/c of C++ ecosystem
