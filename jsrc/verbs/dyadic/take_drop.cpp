@@ -76,7 +76,7 @@ static array jttks(J jt, array a, array w) {  // take_sparse
     s = AV(y);
 
     // TODO: rename b when we figure out what it is doing
-    auto const b = algo::is_mismatched(u + m, u + r, s + m);
+    auto const b = !std::equal(u + m, u + r, s + m);
 
     if (b) {
         jt->fill = SPA(wp, e);
@@ -88,7 +88,7 @@ static array jttks(J jt, array a, array w) {  // take_sparse
         x = SPA(wp, x);
 
     // TODO: rename c when we figure out what it is doing
-    if (auto const c = algo::is_mismatched(u, u + m, s); c) {
+    if (auto const c = !std::equal(u, u + m, s); c) {
         A j;
         C *xv, *yv;
         I d, i, *iv, *jv, k, n, t;

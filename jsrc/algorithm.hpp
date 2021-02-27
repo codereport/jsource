@@ -43,7 +43,6 @@ zip_found(P const &pred, I f, I const l, Is... fs) -> bool {
     return std::get<0>(t) != l;
 }
 
-
 /**
  * @brief Variadic, Predicate version of `std::mismatch`
  */
@@ -51,16 +50,6 @@ template <typename I, typename... Is>
 [[nodiscard]] static constexpr auto
 is_equal(I f, I const l, Is... fs) -> bool {
     return zip_found(equal_to, f, l, fs...);
-}
-
-
-/**
- * @brief Variadic, Predicate version of `std::equal`
- */
-template <typename I, typename... Is>
-[[nodiscard]] static constexpr auto
-is_equal(I f, I const l, Is... fs) -> bool {
-    return !is_mismatched(f, l, fs...);
 }
 
 namespace ranges {
@@ -86,22 +75,12 @@ zip_found(P const &pred, R const &r, Rs const &...rs) -> bool {
 }
 
 /**
- * @brief Variadic, Predicate version of `std::mismatch`, for ranges;
+ * @brief Variadic, Predicate version of `std::equal`, for ranges;
  */
 template <typename R, typename... Rs>
 [[nodiscard]] static constexpr auto
-is_mismatched(R const &r, Rs const &...rs) -> bool {
-    return not_equal_to(std::size(r), std::size(rs)...) ||
-           algo::is_mismatched(std::cbegin(r), std::cend(r), std::cbegin(rs)...);
-}
-
-/**
- * @brief Variadic, Predicate version of `std::equal`, for ranges;
- */
-template <typename... Rs>
-[[nodiscard]] static constexpr auto
-is_equal(Rs const &...rs) -> bool {
-    return !is_mismatched(rs...);
+is_equal(R const &r, Rs const &...rs) -> bool {
+    return equal_to(std::size(r), std::size(rs)...) && algo::is_equal(std::cbegin(r), std::cend(r), std::cbegin(rs)...);
 }
 
 // static_assert tests. With constexpr we can start checking to make sure our functions work at compile time.
@@ -113,9 +92,8 @@ static_assert(
   !ranges::zip_found(not_equal_to, std::array{0, 1, 2, 3, 4}, std::array{0, 1, 2, 3, 4}, std::array{0, 1, 2, 3, 4}));
 static_assert(
   ranges::zip_found(not_equal_to, std::array{0, 1, 2, 5, 4}, std::array{0, 1, 2, 3, 4}, std::array{0, 1, 2, 3, 6}));
-static_assert(is_mismatched(std::array{0, 1, 2, 5, 4}, std::array{0, 1, 2, 3, 4}, std::array{0, 1, 2, 3, 6}));
-static_assert(is_mismatched(std::array{0, 1, 2, 5, 4}, std::array{0, 1, 2, 3}, std::array{0, 1, 2, 3, 6}));
-static_assert(!is_mismatched(std::array{0, 1, 2, 3}, std::array{0, 1, 2, 3}, std::array{0, 1, 2, 3}));
+static_assert(is_equal(std::array{0, 1, 2, 5, 4}, std::array{0, 1, 2, 3, 4}, std::array{0, 1, 2, 3, 6}));
+static_assert(!is_equal(std::array{0, 1, 2, 5, 4}, std::array{0, 1, 2, 3}, std::array{0, 1, 2, 3, 6}));
 static_assert(is_equal(std::array{0, 1, 2, 3}, std::array{0, 1, 2, 3}, std::array{0, 1, 2, 3}));
 static_assert(ranges::is_equal(std::array{0, 1, 2, 3}, std::array{0, 1, 2, 3}));
 }  // namespace ranges
