@@ -1,13 +1,17 @@
 ### Getting Started & Building:
 1. Prerequisites:
-   * CMake version 3.17.0+ -> Ubuntu systems seem to have a problem getting the latest version, please build from sources or use another package such as snap. 
+   * CMake version 3.17.0+ -> Ubuntu systems seem to have a problem getting the latest version, please build from sources or use another package such as snap.
      * [Ubuntu CMake update instructions](https://apt.kitware.com/)
    * Ninja
+   * Additional prerequisites for building the documentation:
+     * python packages: sphinx, breathe, divio-docs-theme
+     * doxygen
 2. Checkout the repository:
     ```sh
-    git clone https://github.com/codereport/jsource.git
+    # --recursive flag is needed to pull in the submodule
+    git clone https://github.com/codereport/jsource.git --recursive
     ```
-3. Build jconsole:    
+3. Build jconsole:
    * Run cmake:
     ```sh
     cd jsource
@@ -18,11 +22,11 @@
     ```
    * To build debug:
     ```sh
-    ninja -C build 
+    ninja -C build
     ```
    * To build release:
     ```sh
-    ninja -C build -f build-Release.ninja` 
+    ninja -C build -f build-Release.ninja
     ```
 4. Run jconsole:
    * To run the debug build:
