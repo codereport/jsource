@@ -91,7 +91,7 @@ target_sources(j PRIVATE
         io.c
         j.c
         jdlllic.c
-        k.c
+        conversions.cpp
         m.c
         parsing/p.c
         parsing/pv.c

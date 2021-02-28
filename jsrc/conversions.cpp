@@ -3,8 +3,10 @@
 /*                                                                         */
 /* Conversions Amongst Internal Types                                      */
 
+extern "C" {
 #include "j.h"
 #include "verbs/vcomp.h"
+}
 
 #define CVCASE(a, b) (((a) << 3) + (b))  // The main cases fit in low 8 bits of mask
 
@@ -105,7 +107,7 @@ jtBfromD(J jt, A w, void *yv, D fuzz) {
 static B
 jtIfromD(J jt, A w, void *yv, D fuzz) {
     D p, q, *v;
-    I i, k = 0, n, *x;
+    I i, n, *x;
     n = AN(w);
     v = DAV(w);
     x = (I *)yv;
@@ -315,7 +317,7 @@ jtQfromD(J jt, A w, void *yv, I mode) {
     for (i = 0; i < n; ++i) {
         t = wv[i];
         ASSERT(!_isnan(t), EVNAN);
-        if (neg = 0 > t) t = -t;
+        if ((neg = 0 > t)) t = -t;
         q.d = iv1;
         if (t == inf)
             q.n = jtvci(jt, XPINF);
@@ -328,7 +330,7 @@ jtQfromD(J jt, A w, void *yv, I mode) {
             q.d = jtxd1(jt, d, mode);
             q   = jtqstd(jt, q);
         } else {
-            if (recip = 1 > t) t = 1.0 / t;
+            if ((recip = 1 > t)) t = 1.0 / t;
             e = (I)(0xfff0 & *tv);
             e >>= 4;
             e -= 1023;
@@ -413,7 +415,7 @@ jtXfromQ(J jt, A w, void *yv) {
 static B
 jtZfromD(J jt, A w, void *yv) {
     D *wv = DAV(w);
-    Z *zv = yv;
+    Z *zv = static_cast<Z*>(yv);
     DQ(AN(w), zv++->re = *wv++;) return 1;
 }
 
@@ -478,7 +480,6 @@ jtccvt(J jt, I tflagged, A w, A *y) {
         if (inputn > 0) {                        // if converting the leading values, just update the counts
             n = inputn;                          // set the counts for local use, and in the block to be converted
         } else {                                 // if converting trailing values...
-            I offset = (n + inputn) << bplg(t);  // byte offset to start of data
             AK(w) += (n + inputn) << bplg(wt);
             yv = (I *)((C *)yv + ((n + inputn) << bplg(t)));  // advance input and output pointers to new area
             n  = -inputn;                                     // get positive # atoms to convert
@@ -512,7 +513,7 @@ jtccvt(J jt, I tflagged, A w, A *y) {
     }
     switch (CVCASE(CTTZ(t), CTTZ(wt))) {
         case CVCASE(INTX, B01X): {
-            I *x = yv;
+            I *x = static_cast<I*>(yv);
             B *v = (B *)wv;
             DQ(n, *x++ = *v++;);
         }
@@ -536,13 +537,13 @@ jtccvt(J jt, I tflagged, A w, A *y) {
         case CVCASE(RATX, INTX): GATV(d, XNUM, n, r, s); return jtXfromI(jt, w, AV(d)) && jtQfromX(jt, d, yv);
         case CVCASE(FLX, INTX): {
             D *x = (D *)yv;
-            I *v = wv;
+            I *v = static_cast<I*>(wv);
             DQ(n, *x++ = (D)*v++;);
         }
             return 1;
         case CVCASE(CMPXX, INTX): {
             Z *x = (Z *)yv;
-            I *v = wv;
+            I *v = static_cast<I*>(wv);
             DQ(n, x++->re = (D)*v++;);
         }
             return 1;
@@ -710,8 +711,7 @@ jtxco1(J jt, A w) {
 A
 jtxco2(J jt, A a, A w) {
     A z;
-    B b;
-    I j, n, r, *s, t, *wv, *zu, *zv;
+    I j, n, r, t;
     n = AN(w);
     r = AR(w);
     t = AT(w);
