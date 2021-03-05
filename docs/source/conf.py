@@ -31,10 +31,6 @@ author = 'Conor Hoekstra + contributors'
 # ones.
 extensions = [ "breathe" ]
 
-breathe_projects = { 'j' : '../../build/docs/doxygen/xml'}
-
-breathe_default_project = "j"
-
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
 
