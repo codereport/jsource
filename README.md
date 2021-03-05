@@ -22,7 +22,7 @@ This is a fork of [`jsoftware/jsource`](https://github.com/jsoftware/jsource) an
 If you would like to try J without building from source, check out this site: http://tryj.freeddns.org/
 
 ## Goals
-* [ ] [Reduce complexity of build options](https://github.com/codereport/jsource/issues/13)
+* [x] [Reduce complexity of build options](https://github.com/codereport/jsource/issues/13)
 * [ ] Compile with GCC 10+
 * [ ] Compile with Clang 11+
 * [ ] Remove all (most) of the macros
