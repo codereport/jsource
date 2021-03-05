@@ -3,7 +3,7 @@
 #include <functional>
 #include <iterator>
 
-#include "algorithm.hpp"
+#include "aal/algorithm.hpp"
 #include "array.hpp"
 
 /** @file */
@@ -225,7 +225,7 @@ jttake(J jt, A a, A w) {
     // canonicalize x
     n = AN(a);                              // n = #axes in a
     ASSERT(BETWEENC(n, 1, wcr), EVLENGTH);  // if y is not atomic, a must not have extra axes  wcr==0 is always true
-    I* ws = AS(w);                 // ws->shape of w
+    I* ws = AS(w);                          // ws->shape of w
     RZ(s =
          jtvib(jt, a));  // convert input to integer, auditing for illegal values; and convert infinities to IMAX/-IMAX
     // if the input was not INT/bool, we go through and replace any infinities with the length of the axis.  If we
@@ -272,7 +272,7 @@ jttake(J jt, A a, A w) {
             RZ(s = jtvirtual(jtinplace, w, offset, wr));  // allocate block
             // fill in shape.  Note that s and w may be the same block, so ws is destroyed
             I* ss = AS(s);
-            ss[0]          = tkabs;
+            ss[0] = tkabs;
             DO(wr - 1, ss[i + 1] = ws[i + 1];);  // shape of virtual matches shape of w except for #items
             AN(s) = tkabs * wcellsize;           // install # atoms
             // virtual block does not affect pristinity of w
@@ -337,12 +337,12 @@ jtdrop(J jt, A a, A w) {
     // correct if(!(ar|wf|is_sparse(w)|!wcr|(AFLAG(w)&(AFNJA)))){  // if there is only 1 take axis, w has no frame
     // and is not atomic
     if (!(ar | wf | ((NOUN & ~(DIRECT | RECURSIBLE)) & wt) | !wcr |
-          (AFLAG(w) & (AFNJA)))) {   // if there is only 1 take axis, w has no frame and is not atomic  BJAwhy
-        I* ws = AS(w);      // ws->shape of w
-        I droplen      = IAV(a)[0];  // get the one number in a, the take amount
-        I dropabs      = droplen < 0 ? -droplen : droplen;  // ABS(droplen), but may be as high as IMIN
-        I remlen       = ws[0] - dropabs;
-        remlen         = remlen < 0 ? 0 : remlen;  // length remaining after drop: (#y)-abs(x), 0 if overdrop
+          (AFLAG(w) & (AFNJA)))) {  // if there is only 1 take axis, w has no frame and is not atomic  BJAwhy
+        I* ws     = AS(w);          // ws->shape of w
+        I droplen = IAV(a)[0];      // get the one number in a, the take amount
+        I dropabs = droplen < 0 ? -droplen : droplen;  // ABS(droplen), but may be as high as IMIN
+        I remlen  = ws[0] - dropabs;
+        remlen    = remlen < 0 ? 0 : remlen;  // length remaining after drop: (#y)-abs(x), 0 if overdrop
         // calculate offset
         I woffset =
           droplen < 0
@@ -356,7 +356,7 @@ jtdrop(J jt, A a, A w) {
         RZ(s = jtvirtual(jtinplace, w, offset, wr));  // allocate block
         // fill in shape.  s and w may be the same block, so ws is destroyed
         I* ss = AS(s);
-        ss[0]          = remlen;
+        ss[0] = remlen;
         DO(wr - 1, ss[i + 1] = ws[i + 1];);  // shape of virtual matches shape of w except for #items
         AN(s) = remlen * wcellsize;          // install # atoms
         // virtual block does not affect pristinity
