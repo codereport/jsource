@@ -1,9 +1,8 @@
 
 add_library(j)
 target_include_directories(j PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
-target_include_directories(j PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/../An-Algorithm-Library)
 target_compile_definitions(j PRIVATE)
-target_link_libraries(j PRIVATE ${STANDARD_MATH_LIBRARY})
+target_link_libraries(j PRIVATE ${STANDARD_MATH_LIBRARY} An-Algorithm-Library_aal)
 target_sources(j PRIVATE
         adverbs/a.c
         adverbs/ab.c

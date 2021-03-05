@@ -82,6 +82,7 @@ add_compile_options($<$<COMPILE_LANGUAGE:C>:-Wno-unknown-pragmas>)
 
 add_subdirectory(jsrc)
 add_subdirectory(base64)
+add_subdirectory(An-Algorithm-Library)
 if(${DOCS} STREQUAL "YES")
     add_subdirectory(docs)
 endif()
