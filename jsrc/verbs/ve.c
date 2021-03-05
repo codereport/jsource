@@ -162,7 +162,7 @@ minusIB(I n, I m, I* RESTRICTI x, B* RESTRICTI y, I* RESTRICTI z, J jt) {
 // II multiply, in double precision.  Always return error code so we can clean up
 I
 tymesII(I n, I m, I* RESTRICTI x, I* RESTRICTI y, I* RESTRICTI z, J jt) {
-    DPMULDECLS I u;
+    I u;
     I v;
     if (jt->mulofloloc < 0) return EWOVIP + EWOVIPMULII;
     I* zi = z;  // could use a side channel to avoid having main loop look at rc

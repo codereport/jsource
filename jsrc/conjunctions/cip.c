@@ -408,7 +408,7 @@ jtpdt(J jt, A a, A w) {
             // accumulating in registers.  And we have multiple versions of that: one when the totals can't get close to
             // overflow, and other belt-and-suspenders variants for arbitrary inputs
             if (n == 1) {
-                DPMULDDECLS I tot;
+                I tot;
                 I *RESTRICT zv, *RESTRICT av;
                 // vector products
                 // The fast loop will be used if each multiplicand, and each product, fits in 32 bits

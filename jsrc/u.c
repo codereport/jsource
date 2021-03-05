@@ -12,7 +12,7 @@
 I
 jtmult(J jt, I x, I y) {
     I z;
-    DPMULDDECLS DPMULD(x, y, z, {
+    DPMULD(x, y, z, {
         if (jt) jtjsignal(jt, EVLIMIT);
         return 0;
     }) return z;
@@ -69,7 +69,6 @@ jtmult(J jt, I x, I y) {
 I
 jtprod(J jt, I n, I *v) {
     I z;
-    DPMULDDECLS
     // We generally don't call here unless n>2, so we optimize for that case
     // We want to make sure that if any of the numbers being multiplied is 0, we return 0 with no error.
     // So we check each number as it is read, and exit early if 0 is encountered.  When we multiply, we suppress

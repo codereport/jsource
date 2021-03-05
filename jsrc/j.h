@@ -1126,7 +1126,6 @@ _clearfp(void) {
     return r;
 }
 
-#define DPMULDECLS
 #define DPMUL(x, y, z, s)           \
     {                               \
         I _l, _x = (x), _y = (y);   \
@@ -1137,7 +1136,6 @@ _clearfp(void) {
         _d = ABS(_d);               \
         if (_d > 1e8) s             \
     }  // *z may be the same as x or y
-#define DPMULDDECLS
 #define DPMULD(x, y, z, s)          \
     {                               \
         I _l, _x = (x), _y = (y);   \
