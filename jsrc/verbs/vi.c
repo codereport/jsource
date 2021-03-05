@@ -284,7 +284,6 @@ jteqa(J jt, I n, A* u, A* v) {
     }
 // define ad and wd, which are bases to be added to boxed addresses
 // should use conditional statement
-#define RDECL
 // Misc code to set the shape once we see how many results there are, used for ~. y and x -. y
 #define ZISHAPE *AS(z) = AN(z) = zi - zv
 #define ZCSHAPE                 \
@@ -505,7 +504,6 @@ hashallo(IH* RESTRICT hh, UI p, UI m, I md) {
 // if there is not a prehashed hashtable, we clear the hashtable and fill it from a, then hash & check each item of w
 #define IOFX(T, f, hash, exp, inc, dec)                                                                            \
     A f(J jt, I mode, I m, I n, I c, I k, I acr, I wcr, I ac, I wc, I ak, I wk, A a, A w, A* hp, A z) {            \
-        RDECL;                                                                                                     \
         IODECL(T);                                                                                                 \
         B b;                                                                                                       \
         I cm, md, s;                                                                                               \
@@ -800,7 +798,6 @@ static IOFX(A, jtioax1, jthia(jt, t1, *v), !jtequ(jt, *v, av[hj]), ++v, --v)    
 // Do the operation.  Build a hash for a except when unboxed self-index
 #define IOFT(T, f, FA, FXY, FYY, expa, expw)                                                                       \
     A f(J jt, I mode, I m, I n, I c, I k, I acr, I wcr, I ac, I wc, I ak, I wk, A a, A w, A* hp, A z) {            \
-        RDECL;                                                                                                     \
         IODECL(T);                                                                                                 \
         B b, bx;                                                                                                   \
         D tl = jt->cct, tr = 1 / tl, x, *zd;                                                                       \
@@ -1527,10 +1524,7 @@ static IOFX(A, jtioax1, jthia(jt, t1, *v), !jtequ(jt, *v, av[hj]), ++v, --v)    
         case RATX: SCDO(Q, *wv, !QEQ(x, av[j])); break;
         case INTX: SCDO(I, *wv, x != av[j]); break;
         case SBTX: SCDO(SB, *wv, x != av[j]); break;
-        case BOXX: {
-            RDECL;
-            SCDO(A, *wv, !jtequ(jt, x, av[j]));
-        } break;
+        case BOXX: SCDO(A, *wv, !jtequ(jt, x, av[j])); break;
         case FLX:
             if (1.0 == jt->cct)
                 SCDO(D, *wv, x != av[j])
