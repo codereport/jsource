@@ -386,6 +386,8 @@ set(hare_test_cases #fast
         gxco1     # 0.700 seconds
         gxco2     # 0.260 seconds
         gxinf     # 0.160 seconds
+        g18x
+        g420
         )
 set(tortoise_test_cases #slow
         g001      #  4.890 seconds
@@ -407,10 +409,8 @@ set(tortoise_test_cases #slow
         gss       # 55.860 seconds
         )
 set(disabled_test_cases # tests that fail on CI. Other tests might fail on other systems.
-        g18x      # Failed Test, Both CI and Windows
         g210a     # Exception: SegFault, Both CI and Windows
         g331      # Exception: SegFault, Both CI and Windows
-        g420      # Failed Test, Both CI and Windows
         # tests below are flaky (on Linux)
         gmmf      # 0.150 seconds, Exception: SegFault, Only on Windows, #bus errors, unstable on CI?
         gmmf1s    # 0.110 seconds, Exception: SegFault, Only on Windows
