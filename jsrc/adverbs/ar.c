@@ -1165,8 +1165,15 @@ jtfold(J jt, A a, A w, A self) {
     A foldconj;
     I step;
     for (step = 0; step < 2; ++step) {
-        switch (step) {                                              // try the startup, from the bottom up
-            case 1: jteval(jt, "load'~addons/dev/fold/foldr.ijs'");  // fall through
+        switch (step) { // try the startup, from the bottom up
+            case 1:
+                // FIXME: dirty hack to get the correct path to fold.ijs
+                // '~dev/fold/foldr.ijs' feels like it should work,
+                // but no, it doesn't. The tilde ~ is handled specially by j,
+                // however, the special handling seems to only detect certain
+                // directory names (e.g. 'addons')
+                jteval(jt, "load'~addons/../dev/fold/foldr.ijs'");
+                // fall through
             case 0:
                 if ((foldconj = jtnameref(jt, jtnfs(jt, 8, "Foldr_j_"), jt->locsyms)) && AT(foldconj) & CONJ)
                     goto found;  // there is always a ref, but it may be to [:
