@@ -14,7 +14,7 @@
 #else
 #define MATCHSUBDEFAULTS , 0, 0, 1, 1, 1
 #endif
-static B jtmatchsub(J, A, A, B* RESTRICT, I, I, I, I, I);
+static B jtmatchsub(J, A, A, B*, I, I, I, I, I);
 static A jtmatchs(J jt, A a, A w);
 
 #define MCS(q, af, wf) ((((q > 1) + (q > 0)) << 2) + (af ? 2 : 0) + (wf ? 1 : 0))
@@ -31,7 +31,7 @@ static A jtmatchs(J jt, A a, A w);
 // we know there is a frame somewhere.  This is for plain byte comparison - no tolerance
 #define EQV(T)                                                                          \
     {                                                                                   \
-        T h, *RESTRICT u = (T*)av, *RESTRICT v = (T*)wv;                                \
+        T h, *u = (T*)av, *v = (T*)wv;                                \
         q = k / sizeof(T);                                                              \
         switch (MCS(q, af, wf)) {                                                       \
             case MCS(1, 0, 1):                                                          \
@@ -77,8 +77,8 @@ static A jtmatchs(J jt, A a, A w);
 // If we get here, we know that at least one of the arguments has a frame
 // m=#cells of shorter frame, n=#times a cell of shorter frame must be repeated
 static B
-eqv(I af, I wf, I m, I n, I k, C* av, C* wv, B* RESTRICT x, B b1) {
-    B b, *RESTRICT xx = x;
+eqv(I af, I wf, I m, I n, I k, C* av, C* wv, B* x, B b1) {
+    B b, *xx = x;
     I mn = m * n, q;
     // select a comparison loop based on the size of the data area.  It's all about the fastest way to compare bytes
     if (0 == (k & (SZI - 1)))
@@ -142,7 +142,7 @@ jteqf(J jt, A a, A w) {
 // we don't store the result.  In any case, b holds the result of the last comparison
 #define INNERT(T, f)                                     \
     {                                                    \
-        T *RESTRICT u = (T*)av, *RESTRICT v = (T*)wv;    \
+        T *u = (T*)av, *v = (T*)wv;    \
         I m0 = m, n0 = n;                                \
         m0 = x == 0 ? 1 : m0;                            \
         n0 = x == 0 ? 1 : n0; /* u->a data, v->w data */ \
@@ -193,7 +193,7 @@ jteqf(J jt, A a, A w) {
 // -.@-: m=#cells of shorter frame, n=#times a cell of shorter frame must be repeated the comparands may not be sparse
 // arguments after x may be omitted if x==0, and are then assumed to be 0 0 1 1 1
 static B
-jtmatchsub(J jt, A a, A w, B* RESTRICT x, I af, I wf, I m, I n, I b1) {
+jtmatchsub(J jt, A a, A w, B* x, I af, I wf, I m, I n, I b1) {
     C *av, *wv;
     I at, c, j = 0, t, wt;
     // we tested for a==w before the call, to save on call overhead (usually)

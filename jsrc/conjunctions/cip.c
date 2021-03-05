@@ -164,13 +164,13 @@ cachedmmult(J jt, D* av, D* wv, D* zv, I m, I n, I p, I flgs) {
         D* z1base = z0base;
         I w1rem   = p >> (flgs & FLGCMP);
         for (; w1rem > 0; w1rem -= CACHEHEIGHT, a1base += CACHEHEIGHT << (flgs & FLGCMP), w1base += CACHEHEIGHT * n) {
-            D* RESTRICT cvx;
+            D* cvx;
             D* w1next = w1base;
             I i;
             // read the 16x64 section of w into the cache area (8KB, 2 ways of cache), with prefetch of rows
             for (i = MIN(CACHEHEIGHT, w1rem), cvx = cvw; i; --i) {
                 I j;
-                D* RESTRICT w1x = w1next;
+                D* w1x = w1next;
                 w1next += n;  // save start of current input row, point to next row...
                 // I don't think it's worth the trouble to move the data with avx instructions - though it was to
                 // prefetch it
@@ -200,7 +200,7 @@ cachedmmult(J jt, D* av, D* wv, D* zv, I m, I n, I p, I flgs) {
                 D* a2base1 = (a2rem > 1) ? a2base0 + p : missingrow;
                 // process each 16x4 section of cache, accumulating into z (this holds 16x2 complex values, if flgs)
                 I a3rem            = MIN(w0rem, CACHEWIDTH);
-                D* RESTRICT z3base = z2base;
+                D* z3base = z2base;
                 D* c3base          = c2base;
                 for (; a3rem > 0; a3rem -= OPWIDTH, c3base += OPWIDTH, z3base += OPWIDTH) {
                     // initialize accumulator with the z values accumulated so far.
@@ -224,10 +224,10 @@ cachedmmult(J jt, D* av, D* wv, D* zv, I m, I n, I p, I flgs) {
 
                     // Now do the 16 outer products for the block, each 2ax4w (or 2ax2w if flgs)
                     I a4rem            = MIN(w1rem, CACHEHEIGHT);
-                    D* RESTRICT c4base = c3base;
+                    D* c4base = c3base;
                     if (!(flgs & (FLGCMP | FLGINT))) {  // real
-                        D* RESTRICT a4base0 = a2base0;
-                        D* RESTRICT a4base1 = a2base1;
+                        D* a4base0 = a2base0;
+                        D* a4base1 = a2base1;
                         do {  // loop for each small outer product
                             // read the 2x1 a values and the 1x4 cache values
                             // form outer product, add to accumulator
@@ -243,8 +243,8 @@ cachedmmult(J jt, D* av, D* wv, D* zv, I m, I n, I p, I flgs) {
                             c4base += CACHEWIDTH;
                         } while (--a4rem > 0);
                     } else if (flgs & FLGINT) {  // INT
-                        I* RESTRICT a4base0 = (I*)a2base0;
-                        I* RESTRICT a4base1 = (I*)a2base1;
+                        I* a4base0 = (I*)a2base0;
+                        I* a4base1 = (I*)a2base1;
                         do {  // loop for each small outer product
                             // read the 2x1 a values and the 1x4 cache values
                             // form outer product, add to accumulator
@@ -262,8 +262,8 @@ cachedmmult(J jt, D* av, D* wv, D* zv, I m, I n, I p, I flgs) {
                     } else {
                         // complex.  The 1x4 cache values represent 1x2 complex values.  The a is fetched as 2x1 complex
                         // values.  Result is 2x2 conplex values
-                        D* RESTRICT a4base0 = a2base0;
-                        D* RESTRICT a4base1 = a2base1;
+                        D* a4base0 = a2base0;
+                        D* a4base1 = a2base1;
                         do {  // loop for each small outer product
                             // read the 2x1 a values and the 1x4 cache values
                             // form outer product, add to accumulator
@@ -409,11 +409,11 @@ jtpdt(J jt, A a, A w) {
             // overflow, and other belt-and-suspenders variants for arbitrary inputs
             if (n == 1) {
                 I tot;
-                I *RESTRICT zv, *RESTRICT av;
+                I *zv, *av;
                 // vector products
                 // The fast loop will be used if each multiplicand, and each product, fits in 32 bits
                 I er           = 0;  // will be set if overflow detected
-                I* RESTRICT wv = AV(w);
+                I* wv = AV(w);
                 tot            = 0;
                 DQ(
                   p, I wvv = *wv; if ((I4)wvv != wvv) {

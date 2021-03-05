@@ -10,7 +10,7 @@
 #include "result.h"
 
 #define SUFFIXPFX(f, Tz, Tx, pfx, vecfn, retstmt)                                \
-    I f(I d, I n, I m, Tx* RESTRICTI x, Tz* RESTRICTI z, J jt) {                 \
+    I f(I d, I n, I m, Tx* x, Tz* z, J jt) {                 \
         I i;                                                                     \
         Tz v;                                                                    \
         x += m * d * n;                                                          \
@@ -27,7 +27,7 @@
     }
 
 #define SUFFIXNAN(f, Tz, Tx, pfx, vecfn)                                         \
-    I f(I d, I n, I m, Tx* RESTRICTI x, Tz* RESTRICTI z, J jt) {                 \
+    I f(I d, I n, I m, Tx* x, Tz* z, J jt) {                 \
         I i;                                                                     \
         Tz v;                                                                    \
         NAN0;                                                                    \
@@ -45,7 +45,7 @@
     }
 
 #define SUFFICPFX(f, Tz, Tx, pfx)                                                   \
-    I f(I d, I n, I m, Tx* RESTRICTI x, Tz* RESTRICTI z, J jt) {                    \
+    I f(I d, I n, I m, Tx* x, Tz* z, J jt) {                    \
         I i;                                                                        \
         Tz v, *y;                                                                   \
         x += m * d * n;                                                             \
@@ -63,7 +63,7 @@
     }
 
 #define SUFFIXOVF(f, Tz, Tx, fs1, fvv)                                         \
-    I f(I d, I n, I m, I* RESTRICTI x, I* RESTRICTI z, J jt) {                 \
+    I f(I d, I n, I m, I* x, I* z, J jt) {                 \
         C er = 0;                                                              \
         I i, *xx, *y, *zz;                                                     \
         xx = x += m * d * n;                                                   \
@@ -84,14 +84,14 @@
 
 #define SUFFIXBFXLOOP(T, pfx)                                                                            \
     {                                                                                                    \
-        T *RESTRICT xx = (T*)x, *RESTRICT yy, *RESTRICT zz = (T*)z;                                      \
+        T *xx = (T*)x, *yy, *zz = (T*)z;                                      \
         q = d / sizeof(T);                                                                               \
         DQ(m, yy = zz; DQ(q, *--zz = *--xx;); DQ(n - 1, DQ(q, --xx; --yy; --zz; *zz = pfx(*xx, *yy);))); \
     }
 
 #define SUFFIXBFX(f, pfx, ipfx, spfx, bpfx, vexp)                                               \
-    I f(I d, I n, I m, B* RESTRICTI x, B* RESTRICTI z, J jt) {                                  \
-        B v, *RESTRICT y;                                                                       \
+    I f(I d, I n, I m, B* x, B* z, J jt) {                                  \
+        B v, *y;                                                                       \
         I q;                                                                                    \
         x += m * d * n;                                                                         \
         z += m * d * n;                                                                         \
@@ -136,7 +136,7 @@ SUFFICPFX(tymessfxO, D, I, TYMES)
 
 SUFFIXPFX(plussfxB, I, B, PLUS, plusBI, return EVOK;)
 I
-plussfxD(I d, I n, I m, D* RESTRICTI x, D* RESTRICTI z, J jt) {
+plussfxD(I d, I n, I m, D* x, D* z, J jt) {
     I i;
     NAN0;
     x += m * d * n;
@@ -333,7 +333,7 @@ jtssg(J jt, A w, A self) {
     ZZPARMS(1, n, 2)
 #define ZZINSTALLFRAME(optr) *optr++ = n;
 
-    AD* RESTRICT zz = 0;
+    AD* zz = 0;
     for (i = 0; i < n; ++i) {                      // loop through items, noting that the first is the tail itself
         if (i) { RZ(z = CALL2IP(f2, a, z, fs)); }  // apply the verb to the arguments (except the first time)
         // In case we are performing f&.>, we must set z non-PRISTINE, which it is by definition because all its boxes

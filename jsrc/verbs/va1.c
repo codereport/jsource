@@ -83,7 +83,7 @@ static AMONPS(
                       *z = val;
                       , return vtot < 0 ? EWOV : EVOK;) static AMONPS(absZ, D, Z, , *z = zmag(*x);, HDR1JERR)
 
-          static I oneB(JST *RESTRICT jt, I n, C *z, C *x) {
+          static I oneB(JST *jt, I n, C *z, C *x) {
     memset(z, C1, n);
     return EVOK;
 }

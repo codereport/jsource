@@ -509,7 +509,7 @@ jtreshape(J jt, A a, A w) {
     A z;
     B filling;
     C *wv, *zv;
-    I acr, ar, c, k, m, n, p, q, r, *s, t, *RESTRICT u, wcr, wf, wn, wr, *RESTRICT ws, zn;
+    I acr, ar, c, k, m, n, p, q, r, *s, t, *u, wcr, wf, wn, wr, *ws, zn;
     FPREFIP;
     if (!(a && w)) return 0;
     ar  = AR(a);
@@ -558,7 +558,7 @@ jtreshape(J jt, A a, A w) {
             if ((SGNIF(AFLAG(w), AFNJAX) | ((t & (DIRECT | RECURSIBLE)) - 1)) >= 0) {
                 RZ(z = jtvirtual(jt, w, 0, r + wf));
                 AN(z)          = m;
-                I *RESTRICT zs = AS(z);
+                I *zs = AS(z);
                 MCISH(zs, ws, wf) MCISH(zs + wf, u, r) return z;
             }  // NJAwhy
                // for NJA/SMM, fall through to nonvirtual code

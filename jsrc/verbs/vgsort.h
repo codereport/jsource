@@ -12,17 +12,17 @@
 // before op1,
 //  i. e. comp returns the number of the after argument
 // wk[] is a workarea, big enough to hold the combined result.  It may overlap with hi[]
-// We don't use RESTRICT on lo/hi/wkptr, even though the areas are separate, because VS will convert the loop
+// We don't use restrict on lo/hi/wkptr, even though the areas are separate, because VS will convert the loop
 // to a memcpy, which is slower for the item-sizes we expect
 static void *
-MERGEFNNAME(CMP comp, I compn, I bpi, T *lo, I lon, T *hi, I hin, T *RESTRICT wk) {
+MERGEFNNAME(CMP comp, I compn, I bpi, T *lo, I lon, T *hi, I hin, T *wk) {
     // First, look for in-order or almost-in-order merges.  If the first 3/4 of lo is ahead of all of hi, we
     // can start comparing there.  In fact, we keep looking further, ending up with a check for whether the entire
     // lo is ahead of hi, in which case we can return lo followed by hi unaltered.
     I orderedlen      = 0;                // length of prefix that is ahead of hi
     I taillen         = lon;              // length of tail, hoping that all before the tail is ordered
     T *wkptr          = wk;               // running output pointer
-    T *RESTRICT loend = PTRADD(lo, lon);  // address of end+1 of lo
+    T *loend = PTRADD(lo, lon);  // address of end+1 of lo
     do {
         taillen >>= 2;  // 1/4 of remaining length
         I offsettotry = lon - taillen;
@@ -95,7 +95,7 @@ MERGEFNNAME(CMP comp, I compn, I bpi, T *lo, I lon, T *hi, I hin, T *RESTRICT wk
 // might run out of cache. By doing the sort we have more work to do between copied blocks & can take more time to
 // prefetch into cache.
 static T *
-GRADEFNNAME(CMP comp, I compn, I n, I bpi, T *RESTRICT in, T *RESTRICT wk, T *RESTRICT wv) {
+GRADEFNNAME(CMP comp, I compn, I n, I bpi, T *in, T *wk, T *wv) {
     T *a, *b, *c, *d, *e, *iin = in;
     switch (n) {
         case 1: e = wv; goto exite;

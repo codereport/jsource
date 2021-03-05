@@ -938,8 +938,8 @@ jtrazeg(J jt, A w, I t, I n, I r, A *v, I nonempt) {
 // ; y
 A
 jtraze(J jt, A w) {
-    A *v, y, z, *RESTRICT zv;
-    C *RESTRICT zu;
+    A *v, y, z, *zv;
+    C *zu;
     I *wws, d, i, klg, m = 0, n, r = 1, t = 0, te = 0;
     n = AN(w);
     v = AAV(w);                                 // n=#,w  v->w data

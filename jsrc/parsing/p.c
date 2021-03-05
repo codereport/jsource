@@ -286,7 +286,7 @@ jtextnvr(J jt) {
 // Parse a J sentence.  Input is the queue of tokens
 A
 jtparsea(J jt, A *queue, I m) {
-    PSTK *RESTRICT stack;
+    PSTK *stack;
     A z, *v;
     I es;
 

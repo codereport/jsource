@@ -32,7 +32,7 @@ jteveryself(J jt, A w, A self) {
 // u&.>, but w may be a gerund, which makes the result a list of functions masquerading as an aray of boxes
 A
 jtevery(J jt, A w, A fs) {
-    A *RESTRICT wv, x, z, *RESTRICT zv;
+    A *wv, x, z, *zv;
     FPREFIP;
     RESETRANK;  // we claim to support IRS1 but really there's nothing to do for it
     if ((SPARSE & AT(w)) != 0) return jteverysp(jt, w, fs);

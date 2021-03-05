@@ -32,7 +32,7 @@
 // which is often the same original function that called here.
 // rr is the rank at which the verb will be applied: in u"n, the smaller of rank-of-u and n
 A
-jtrank1ex(J jt, AD *RESTRICT w, A fs, I rr, AF f1) {
+jtrank1ex(J jt, AD *w, A fs, I rr, AF f1) {
     FPREFIP;
     PROLOG(0041);
     A z, virtw;
@@ -147,7 +147,7 @@ jtrank1ex(J jt, AD *RESTRICT w, A fs, I rr, AF f1) {
 // Streamlined version when rank is 0.  In this version we look for ATOPOPEN (i. e. each and every)
 // f1 is the function to use if there are no flags, OR if there is just 1 cell with no frame or a cell of fill
 A
-jtrank1ex0(J jt, AD *RESTRICT w, A fs, AF f1) {
+jtrank1ex0(J jt, AD *w, A fs, AF f1) {
     FPREFIP;
     PROLOG(0041);
     A z, virtw;
@@ -303,7 +303,7 @@ jtrank1ex0(J jt, AD *RESTRICT w, A fs, AF f1) {
 }
 
 A
-jtrank2ex(J jt, AD *RESTRICT a, AD *RESTRICT w, A fs, UI lrrrlcrrcr, AF f2) {
+jtrank2ex(J jt, AD *a, AD *w, A fs, UI lrrrlcrrcr, AF f2) {
     I lrrr   = (UI4)lrrrlcrrcr;
     I lcrrcr = lrrrlcrrcr >> 2 * RANKTX;  // inner, outer ranks
     FPREFIP;
@@ -561,7 +561,7 @@ jtrank2ex(J jt, AD *RESTRICT a, AD *RESTRICT w, A fs, UI lrrrlcrrcr, AF f2) {
 // version for rank 0.  We look at ATOPOPEN too.  f2 is the function to use if there is no frame
 // This code does not set inplaceability on nonrepeated cells - hardly useful at rank 0
 A
-jtrank2ex0(J jt, AD *RESTRICT a, AD *RESTRICT w, A fs, AF f2) {
+jtrank2ex0(J jt, AD *a, AD *w, A fs, AF f2) {
     FPREFIP;
     PROLOG(0042);
     A virta, virtw, z;

@@ -310,8 +310,8 @@ A
 jtunwordil(J jt, A wil, A w, I opts) {
     A z;
     I n                  = AS(wil)[0];
-    I(*RESTRICT wilv)[2] = voidAV(wil);
-    C *RESTRICT wv       = CAV(w);  // n=#words; wilv->start,end pairs; wv->chars
+    I(*wilv)[2] = (I(*)[2])voidAV(wil);
+    C *wv       = CAV(w);  // n=#words; wilv->start,end pairs; wv->chars
     I cc                 = 0;
     DO(n, cc -= wilv[i][0]; cc += wilv[i][1];)  // cc=# characters in all words
     I buflen = (cc << (opts & 1)) + ((opts & 1) << 1) +

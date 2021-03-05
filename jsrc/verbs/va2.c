@@ -1104,7 +1104,7 @@ static VF repairip[4] = {plusBIO, plusIIO, minusBIO, minusIIO};
 // is the pseudocharacter indicating what operation is to be performed.  self is the block for this primitive,
 // allranks is (ranks of a and w),(verb ranks)
 static A
-jtva2(J jt, AD *RESTRICT a, AD *RESTRICT w, AD *RESTRICT self, UI allranks) {  // allranks is argranks/ranks
+jtva2(J jt, AD *a, AD *w, AD *self, UI allranks) {  // allranks is argranks/ranks
     A z;
     I m, mf, n, nf, zn;
     VA2 adocv, *aadocv;
@@ -1645,8 +1645,8 @@ jtva2(J jt, AD *RESTRICT a, AD *RESTRICT w, AD *RESTRICT self, UI allranks) {  /
 
 #define SUMATLOOP(ti, to, oneprod)                                                                 \
     {                                                                                              \
-        ti *RESTRICT av = avp, *RESTRICT wv = wvp;                                                 \
-        to *RESTRICT zv = zvp;                                                                     \
+        ti *av = avp, *wv = wvp;                                                 \
+        to *zv = zvp;                                                                     \
         DQ(                                                                                        \
           nfro, I jj = nfri; ti *ov0 = it & BOX ? av : wv; while (1) {                             \
               DQ(                                                                                  \
@@ -1901,10 +1901,10 @@ jtsumattymes(J jt, A a, A w, I b, I t, I m, I n, I nn, I r, I *s, I zn) {
 static A
 jtsumatgbool(J jt, A a, A w, C id) {
     A t, z;
-    B *RESTRICTI av, *RESTRICTI wv;
-    I dw, n, p, q, r, *s, zn, *RESTRICT zv;
-    UC *RESTRICT tu;
-    UI *RESTRICTI tv, *u, *v;
+    B *av, *wv;
+    I dw, n, p, q, r, *s, zn, *zv;
+    UC *tu;
+    UI *tv, *u, *v;
     s  = AS(w);
     n  = *s;
     zn = AN(w) / n;
@@ -2196,12 +2196,12 @@ jthalve(J jt, A w) {
 }
 
 static I
-zeroF(I n, I m, void *RESTRICTI x, void *RESTRICTI y, B *RESTRICTI z, J jt) {
+zeroF(I n, I m, void *x, void *y, B *z, J jt) {
     memset(z, C0, m * (n ^ REPSGN(n)));
     return EVOK;
 }
 static I
-oneF(I n, I m, void *RESTRICTI x, void *RESTRICTI y, B *RESTRICTI z, J jt) {
+oneF(I n, I m, void *x, void *y, B *z, J jt) {
     memset(z, C1, m * (n ^ REPSGN(n)));
     return EVOK;
 }

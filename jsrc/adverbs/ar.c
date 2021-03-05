@@ -69,7 +69,7 @@ vdone(I m, I n, B* x, B* z, B pc) {
 
 #define RBFXLOOP(T, pfx)                                                  \
     {                                                                     \
-        T *RESTRICT xx = (T*)x, *RESTRICT yy, *z0, *RESTRICT zz = (T*)z;  \
+        T *xx = (T*)x, *yy, *z0, *zz = (T*)z;  \
         q = d / sizeof(T);                                                \
         for (j = 0; j < m; ++j) {                                         \
             yy = xx;                                                      \
@@ -85,7 +85,7 @@ vdone(I m, I n, B* x, B* z, B pc) {
 
 // no errors possible here
 #define REDUCEBFX(f, pfx, ipfx, spfx, bpfx, vdo)               \
-    I f(I d, I n, I m, B* RESTRICTI x, B* RESTRICTI z, J jt) { \
+    I f(I d, I n, I m, B* x, B* z, J jt) { \
         B* y = 0;                                              \
         I j, q;                                                \
         if (d == 1) {                                          \
@@ -140,9 +140,9 @@ REDUCCPFX( plusinsO, D, I,  PLUSO)
 REDUCCPFX(minusinsO, D, I, MINUSO) 
 REDUCCPFX(tymesinsO, D, I, TYMESO) 
 
- I plusinsD(I d,I n,I m,D* RESTRICTI x,D* RESTRICTI z,J jt){
+ I plusinsD(I d,I n,I m,D* x,D* z,J jt){
     I i;
-    D* RESTRICT y;
+    D* y;
     NAN0;
     // latency of add is 4, so use 4 accumulators
     if (d == 1) {
@@ -217,7 +217,7 @@ jtredg(J jt, A w, A self) {
     FPREFIP;
     PROLOG(0020);
     DECLF;
-    AD* RESTRICT a;
+    AD* a;
     I i, n, r, wr;
     ASSERT(DENSE & AT(w), EVNONCE);
     // loop over rank

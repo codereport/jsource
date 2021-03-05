@@ -416,8 +416,8 @@ jtlocale(J jt, B b, A w) {
 
 A
 jtlocpath1(J jt, A w) {
-    AD *RESTRICT g;
-    AD *RESTRICT z;
+    AD *g;
+    AD *z;
     F1RANK(0, jtlocpath1, UNUSED_VALUE);
     ASSERT(jtvlocnl(jt, 1, w), EVDOMAIN);
     RZ(g = jtlocale(jt, 1, w));
@@ -432,13 +432,13 @@ jtlocpath1(J jt, A w) {
 A
 jtlocpath2(J jt, A a, A w) {
     A g;
-    AD *RESTRICT x;
+    AD *x;
     F2RANK(1, 0, jtlocpath2, UNUSED_VALUE);
     if (AN(a)) RZ(jtlocale(jt, 1, a));
     RZ(x = jtevery(jt, jtravel(jt, a), ds(CCOMMA)));  // Don't audit empty a
     RZ(g = jtlocale(jt, 1, w));
     // paths are special: the shape of each string holds the bucketx for the string.  Install that.
-    AD *RESTRICT z;
+    AD *z;
     RZ(z = jtca(jt, x));
     DO(AN(x), A t; RZ(t = jtca(jt, AT(AAV(x)[i]) & ((INT | B01)) ? jtthorn1(jt, AAV(x)[i]) : AAV(x)[i]));
        AS(t)[0]  = BUCKETXLOC(AN(t), CAV(t));

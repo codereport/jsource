@@ -141,8 +141,8 @@ jtb0(J jt, A w) {
 B *
 jtbfi(J jt, I n, A w, B p) {
     A t;
-    B *RESTRICT b;
-    I *RESTRICT v;
+    B *b;
+    I *v;
     GATV0(t, B01, n + 1, 1);
     b = BAV(t);  // allo n+1 slots
     memset(b, !p, (n | (SZI - 1)) + 1);
@@ -312,9 +312,9 @@ jti0(J jt, A w) {
 }  // can't move the ASSERT earlier without breaking a lot of tests
 
 A
-jtifb(J jt, I n, B *RESTRICT b) {
+jtifb(J jt, I n, B *b) {
     A z;
-    I p, *RESTRICT zv;
+    I p, *zv;
     p = bsum(n, b);
     if (p == n) return IX(n);
     GATV0(z, INT, p, 1);
@@ -396,7 +396,7 @@ mvc(I m, void *z, I n, void *w) {
 
 // odometer, up to the n numbers s[]
 A
-jtodom(J jt, I r, I n, I *RESTRICT s) {
+jtodom(J jt, I r, I n, I *s) {
     A z;
     I m, mn, *u, *zv;
     PRODX(m, n, s, 1) DPMULDE(m, n, mn);

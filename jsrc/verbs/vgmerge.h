@@ -10,14 +10,14 @@
 //  i. e. comp returns the number of the after argument
 // wk[] is a workarea, big enough to hold the combined result.  It may overlap with hi[]
 static void **
-MERGEFNNAME(CMP comp, I compn, void **RESTRICT lo, I lon, void **RESTRICT hi, I hin, void **RESTRICT wk) {
+MERGEFNNAME(CMP comp, I compn, void **lo, I lon, void **hi, I hin, void **wk) {
     // First, look for in-order or almost-in-order merges.  If the first 3/4 of lo is ahead of all of hi, we
     // can start comparing there.  In fact, we keep looking further, ending up with a check for whether the entire
     // lo is ahead of hi, in which case we can return lo followed by hi unaltered.
     I orderedlen          = 0;         // length of prefix that is ahead of hi
     I taillen             = lon;       // length of tail, hoping that all before the tail is ordered
-    void **RESTRICT wkptr = wk;        // running output pointer
-    void **RESTRICT loend = lo + lon;  // address of end+1 of lo
+    void **wkptr = wk;        // running output pointer
+    void **loend = lo + lon;  // address of end+1 of lo
     do {
         taillen >>= 2;  // 1/4 of remaining length
         I offsettotry = lon - taillen;

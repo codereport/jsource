@@ -121,20 +121,20 @@ jtcirx(J jt, I n, I k, D* z, D* x) {
 }
 
 I
-cirBD(I n, I m, B* RESTRICTI x, D* RESTRICTI y, D* RESTRICTI z, J jt) {
+cirBD(I n, I m, B* x, D* y, D* z, J jt) {
     ASSERTWR(n <= 1 && 1 == m, EWIMAG);
     n ^= REPSGN(n);
     return jtcirx(jt, n, (I)*x, z, y);
 }
 I
-cirID(I n, I m, I* RESTRICTI x, D* RESTRICTI y, D* RESTRICTI z, J jt) {
+cirID(I n, I m, I* x, D* y, D* z, J jt) {
     ASSERTWR(n <= 1 && 1 == m, EWIMAG);
     n ^= REPSGN(n);
     return jtcirx(jt, n, *x, z, y);
 }
 
 I
-cirDD(I n, I m, D* RESTRICTI x, D* RESTRICTI y, D* RESTRICTI z, J jt) {
+cirDD(I n, I m, D* x, D* y, D* z, J jt) {
     I k = (I)jround(*x);
     ASSERTWR(k == *x, EVDOMAIN);
     ASSERTWR(n <= 1 && 1 == m, EWIMAG);  // if more than one x value, retry as general case
