@@ -7,7 +7,7 @@
 #include "vasm.h"
 #include "vcomp.h"
 
-#define DIVI(u, v) (u || v ? ddiv2(u, (D)v) : 0.0)
+#define DIVI(u, v) (u || v ? (u) / (D)(v) : 0.0)
 #define DIVBB(u, v) (v ? u : u ? inf : 0.0)
 
 #define TYMESID(u, v) (u ? u * v : 0)

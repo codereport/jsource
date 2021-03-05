@@ -1112,23 +1112,6 @@ extern I CTLZI_(UI, UI4 *);
 #define CTLZI(in, out) CTLZI_(in, &(out))
 #endif
 
-/* workaround clang branch prediction side effect */
-#if defined(__clang__) && ((__clang_major__ > 3) || ((__clang_major__ == 3) && (__clang_minor__ > 3)))
-#define dmul2(u, v)           \
-    ({                        \
-        __asm__("" ::: "cc"); \
-        (u) * (v);            \
-    })
-#define ddiv2(u, v)           \
-    ({                        \
-        __asm__("" ::: "cc"); \
-        (u) / (v);            \
-    })
-#else
-#define dmul2(u, v) ((u) * (v))
-#define ddiv2(u, v) ((u) / (v))
-#endif
-
 /* (hopefully) turn off some re-scheduling optimization  */
 #ifdef __GNUC__
 #define CCBLOCK __asm__("" ::: "cc")

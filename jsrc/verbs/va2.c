@@ -1690,7 +1690,7 @@ jtsumattymesprods(J jt, I it, void *avp, void *wvp, I dplen, I nfro, I nfri, I n
         if (NANTEST) {  // if there was an error, it might be 0 * _ which we will turn to 0.  So rerun, checking for
                         // that.
             NAN0;
-            SUMATLOOP(D, D, D total = 0.0; DQ(dplen, D u = *av++; D v = *wv++; if (u && v) total += dmul2(u, v););
+            SUMATLOOP(D, D, D total = 0.0; DQ(dplen, D u = *av++; D v = *wv++; if (u && v) total += u * v;);
                       *zv++ = total;)
             NAN1;
         }
@@ -1874,13 +1874,13 @@ jtsumattymes(J jt, A a, A w, I b, I t, I m, I n, I nn, I r, I *s, I zn) {
                 NAN0;
                 if (1 == n) {
                     zv = zu;
-                    DQ(m, u = *av++; v = *wv++; *zv++ = u && v ? dmul2(u, v) : 0;);
-                    DQ(nn - 1, zv = zu; DQ(m, u = *av++; v = *wv++; *zv++ += u && v ? dmul2(u, v) : 0;););
+                    DQ(m, u = *av++; v = *wv++; *zv++ = u && v ? u * v : 0;);
+                    DQ(nn - 1, zv = zu; DQ(m, u = *av++; v = *wv++; *zv++ += u && v ? u * v : 0;););
                 } else {  // don't swap again
                     zv = zu;
-                    DQ(m, u = *av++; DQ(n, v = *wv++; *zv++ = u && v ? dmul2(u, v) : 0;););
+                    DQ(m, u = *av++; DQ(n, v = *wv++; *zv++ = u && v ? u * v : 0;););
                     DQ(nn - 1, zv = zu;
-                       DQ(m, u = *av++; if (u) DQ(n, v = *wv++; *zv++ += v ? dmul2(u, v) : 0;) else wv += n;););
+                       DQ(m, u = *av++; if (u) DQ(n, v = *wv++; *zv++ += v ? u * v : 0;) else wv += n;););
                 }
                 NAN1;
             }
