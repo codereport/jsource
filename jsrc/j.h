@@ -1112,13 +1112,6 @@ extern I CTLZI_(UI, UI4 *);
 #define CTLZI(in, out) CTLZI_(in, &(out))
 #endif
 
-/* (hopefully) turn off some re-scheduling optimization  */
-#ifdef __GNUC__
-#define CCBLOCK __asm__("" ::: "cc")
-#else
-#define CCBLOCK
-#endif
-
 #include <fenv.h>
 // bug clang isnan(x) set NaN flag if x is NaN
 
