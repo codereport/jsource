@@ -123,9 +123,9 @@
 #define PLUSO(u, v) ((u) + (D)(v))
 #define MINUS(u, v) ((u) - (v))
 #define MINUSO(u, v) ((u) - (D)(v))
-#define TYMES(u, v) ((u) && (v) ? dmul2(u, v) : 0)
-#define TYMESO(u, v) ((u) && (v) ? dmul2(u, (D)v) : 0)
-#define DIV(u, v) ((u) || (v) ? ddiv2(u, v) : 0)
+#define TYMES(u, v) ((u) && (v) ? (u) * (v) : 0)
+#define TYMESO(u, v) ((u) && (v) ? (u) * (D)(v) : 0)
+#define DIV(u, v) ((u) || (v) ? (u) / (v) : 0)
 
 #define SBORDER(v) (SBUV(v)->order)
 
@@ -164,20 +164,20 @@
 #define BW1110(x, y) (~((x) & (y)))
 #define BW1111(x, y) (-1)
 
-typedef I AHDR1FN(JST* RESTRICT jt, I n, void* z, void* x);
-typedef I AHDR2FN(I n, I m, void* RESTRICTI x, void* RESTRICTI y, void* RESTRICTI z, J jt);
+typedef I AHDR1FN(JST* jt, I n, void* z, void* x);
+typedef I AHDR2FN(I n, I m, void* x, void* y, void* z, J jt);
 typedef I AHDRPFN(
-  I d, I n, I m, void* RESTRICTI x, void* RESTRICTI z, J jt);  // these 3 must be the same for now, for VARPS
-typedef I AHDRRFN(I d, I n, I m, void* RESTRICTI x, void* RESTRICTI z, J jt);
-typedef I AHDRSFN(I d, I n, I m, void* RESTRICTI x, void* RESTRICTI z, J jt);
+  I d, I n, I m, void* x, void* z, J jt);  // these 3 must be the same for now, for VARPS
+typedef I AHDRRFN(I d, I n, I m, void* x, void* z, J jt);
+typedef I AHDRSFN(I d, I n, I m, void* x, void* z, J jt);
 
 #define AMON(f, Tz, Tx, stmt)                  \
-    I f(JST* RESTRICT jt, I n, Tz* z, Tx* x) { \
+    I f(JST* jt, I n, Tz* z, Tx* x) { \
         DQ(n, { stmt } ++z; ++x;);             \
         return EVOK;                           \
     }
 #define AMONPS(f, Tz, Tx, prefix, stmt, suffix) \
-    I f(JST* RESTRICT jt, I n, Tz* z, Tx* x) {  \
+    I f(JST* jt, I n, Tz* z, Tx* x) {  \
         prefix DQ(n, { stmt } ++z; ++x;) suffix \
     }
 #define HDR1JERR         \
@@ -249,7 +249,7 @@ typedef I AHDRSFN(I d, I n, I m, void* RESTRICTI x, void* RESTRICTI z, J jt);
 */
 
 #define AIFX(f, Tz, Tx, Ty, symb)                                            \
-    I f(I n, I m, Tx* RESTRICTI x, Ty* RESTRICTI y, Tz* RESTRICTI z, J jt) { \
+    I f(I n, I m, Tx* x, Ty* y, Tz* z, J jt) { \
         Tx u;                                                                \
         Ty v;                                                                \
         if (n - 1 == 0)                                                      \
@@ -263,7 +263,7 @@ typedef I AHDRSFN(I d, I n, I m, void* RESTRICTI x, void* RESTRICTI z, J jt);
 
 // suff must return the correct result
 #define APFX(f, Tz, Tx, Ty, pfx, pref, suff)                                                                     \
-    I f(I n, I m, Tx* RESTRICTI x, Ty* RESTRICTI y, Tz* RESTRICTI z, J jt) {                                     \
+    I f(I n, I m, Tx* x, Ty* y, Tz* z, J jt) {                                     \
         Tx u;                                                                                                    \
         Ty v;                                                                                                    \
         pref if (n - 1 == 0) DQ(m, *z++ = pfx(*x, *y); x++; y++;) else if (n - 1 < 0)                            \
@@ -273,7 +273,7 @@ typedef I AHDRSFN(I d, I n, I m, void* RESTRICTI x, void* RESTRICTI z, J jt);
 
 // support intolerant comparisons explicitly
 #define ACMP0(f, Tz, Tx, Ty, pfx, pfx0)                                       \
-    I f(I n, I m, Tx* RESTRICTI x, Ty* RESTRICTI y, B* RESTRICTI z, J jt) {   \
+    I f(I n, I m, Tx* x, Ty* y, B* z, J jt) {   \
         D u, v;                                                               \
         if (jt->cct != 1.0) {                                                 \
             if (n - 1 == 0)                                                   \
@@ -296,7 +296,7 @@ typedef I AHDRSFN(I d, I n, I m, void* RESTRICTI x, void* RESTRICTI z, J jt);
 // n and m are never 0.
 
 #define BPFXNOAVX(f, pfx, bpfx, pfyx, bpfyx, fuv, decls, decls256)                                                      \
-    I f(I n, I m, void* RESTRICTI x, void* RESTRICTI y, void* RESTRICTI z, J jt) {                                      \
+    I f(I n, I m, void* x, void* y, void* z, J jt) {                                      \
         I u, v;                                                                                                         \
         decls if (n - 1 == 0) {                                                                                         \
             DQ(((m - 1) >> LGSZI), u = *(I*)x; v = *(I*)y; *(I*)z = pfx(u, v); x = (C*)x + SZI; y = (C*)y + SZI;        \

@@ -98,7 +98,7 @@ jtsymnew(J jt, LX *hv, LX tailx) {
 extern void
 jtsymfreeha(J jt, A w) {
     I j, wn            = AN(w);
-    LX k, *RESTRICT wv = LXAV0(w);
+    LX k, *wv = LXAV0(w);
     L *jtsympv = LAV0(
       jt->symp);  // Move base of symbol block to a register.  Block 0 is the base of the free chain.  MUST NOT move the
                   // base of the free queue to a register, because when we free a locale it frees its symbols here, and

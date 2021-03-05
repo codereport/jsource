@@ -286,9 +286,9 @@ jtmerge2(J jt, A a, A w, A ind, I cellframelen) {
     // If w has recursive usecount, all the blocks referred to in w have had their usecount incremented; we must
     // free them before we overwrite them, and we must increment the usecount in the block we store into them
     // It is possible that the same cell of w will be written multiple times, so we do the fa-then-ra each time we store
-    C *RESTRICT av0 = CAV(a);
+    C *av0 = CAV(a);
     I k             = bpnoun(t);
-    C *RESTRICT avn = av0 + (AN(a) * k);
+    C *avn = av0 + (AN(a) * k);
     // Extract the number of axes included in each cell offset; get the cell size
     I cellsize;
     PROD(cellsize, AR(w) - cellframelen, AS(w) + cellframelen);  // number of atoms per index in ind
@@ -296,8 +296,8 @@ jtmerge2(J jt, A a, A w, A ind, I cellframelen) {
     if (UCISRECUR(z)) {
         cellsize <<= (t >> RATX);  // RAT has 2 boxes per atom, all other recursibles have 1 and are lower
         {
-            A *RESTRICT zv = AAV(z);
-            A *RESTRICT av = (A *)av0;
+            A *zv = AAV(z);
+            A *av = (A *)av0;
             DO(AN(ind), I ix0 = iv[i] * cellsize;
                DQ(cellsize, INSTALLBOXRECUR(zv, ix0, *av); ++ix0; ++av; av = (av == (A *)avn) ? (A *)av0 : av;))
         }
@@ -307,21 +307,21 @@ jtmerge2(J jt, A a, A w, A ind, I cellframelen) {
             cellsize *= k;  // change cellsize to bytes
             switch (cellsize) {
                 case sizeof(C): {
-                    C *RESTRICT zv = CAV(z);
-                    C *RESTRICT av = (C *)av0;
+                    C *zv = CAV(z);
+                    C *av = (C *)av0;
                     DO(AN(ind), zv[iv[i]] = *av; ++av; av = (av == (C *)avn) ? (C *)av0 : av;);
                     break;
                 }                // scatter-copy the data, cyclically
                 case sizeof(I):  // may include D
                 {
-                    I *RESTRICT zv = AV(z);
-                    I *RESTRICT av = (I *)av0;
+                    I *zv = AV(z);
+                    I *av = (I *)av0;
                     DO(AN(ind), zv[iv[i]] = *av; ++av; av = (av == (I *)avn) ? (I *)av0 : av;);
                     break;
                 }  // scatter-copy the data
                 default:;
-                    C *RESTRICT zv = CAV(z);
-                    C *RESTRICT av = (C *)av0;
+                    C *zv = CAV(z);
+                    C *av = (C *)av0;
                     DO(AN(ind), JMCR(zv + (iv[i] * cellsize), av, cellsize, loop1, 1, endmask); av += cellsize;
                        av = (av == avn) ? av0 : av;);  // scatter-copy the data, cyclically.  Don't overwrite
             }
@@ -330,7 +330,7 @@ jtmerge2(J jt, A a, A w, A ind, I cellframelen) {
             // We must repeat for each axis between the end of ind and the start of a
             I abytes = AN(a) * k;  // number of bytes in a
             cellsize *= k;         // change cellsize to bytes
-            C *RESTRICT zv = CAV(z);
+            C *zv = CAV(z);
             DO(AN(ind), mvc(cellsize, zv + iv[i] * cellsize, abytes, av0);)  // scatter-copy the data, with repeat
         }
     }
@@ -348,7 +348,7 @@ jtmerge2(J jt, A a, A w, A ind, I cellframelen) {
 // Rule creates.  This version keeps things in registers and has less setup time; and it is much better if there are
 // negative indexes.
 A
-jtcelloffset(J jt, AD *RESTRICT w, AD *RESTRICT ind) {
+jtcelloffset(J jt, AD *w, AD *ind) {
     A z;
     if (AR(ind) < 2) {
         RZ(z = jtpind(jt, AS(w)[0], ind));  // (m}only) treat a list as a list of independent indexes.  pind handles
@@ -504,7 +504,7 @@ jtamendn2(J jt, A a, A w, A self) {
     B b;
     I atd, wtd, t, t1;
     P *p;
-    AD *RESTRICT ind = VAV(self)->fgh[0];
+    AD *ind = VAV(self)->fgh[0];
     if (!((AT(w) | AT(ind)) & SPARSE)) {
         I cellframelen;
         ind = jtjstd(jt, w, ind, &cellframelen);  // convert indexes to cell indexes; remember how many were converted

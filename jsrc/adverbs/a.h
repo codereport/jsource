@@ -17,18 +17,18 @@
 #define VV CONJCASET(VERB, VERB) /* VERB VERB                       */
 
 #define DECLF                     \
-    V* RESTRICT sv  = FAV(self);  \
-    AD* RESTRICT fs = sv->fgh[0]; \
+    V* sv  = FAV(self);  \
+    AD* fs = sv->fgh[0]; \
     AF f1 = fs ? FAV(fs)->valencefns[0] : 0, f2 = fs ? FAV(fs)->valencefns[1] : 0
 
 #define DECLFG                    \
     DECLF;                        \
-    AD* RESTRICT gs = sv->fgh[1]; \
+    AD* gs = sv->fgh[1]; \
     AF g1 = gs ? FAV(gs)->valencefns[0] : 0, g2 = gs ? FAV(gs)->valencefns[1] : 0
 
 #define DECLFGH                   \
     DECLFG;                       \
-    AD* RESTRICT hs = sv->fgh[2]; \
+    AD* hs = sv->fgh[2]; \
     AF h1 = hs ? FAV(hs)->valencefns[0] : 0, h2 = hs ? FAV(hs)->valencefns[1] : 0
 
 // If there are multiple cells, loop over them & call back; otherwise fall through to handle to single cell

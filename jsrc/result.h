@@ -144,8 +144,8 @@ do {
             I zzt           = AT(zz);
             I zr            = AR(z);
             I zzr           = AR(zz);
-            I *RESTRICT zs  = AS(z);
-            I *RESTRICT zzs = AS(zz) + zzframelen;
+            I *zs  = AS(z);
+            I *zzs = AS(zz) + zzframelen;
             I zexprank      = zzr - zzframelen;
             // The main result must be recursive if boxed, because it has to get through EPILOG.  To avoid having to
             // pass through the result issuing ra() on the elements, we ra() each one as it comes along, while we have
@@ -412,7 +412,7 @@ do {
 #endif
         break;  // skip the first-cell processing
     } else {
-        I *RESTRICT is;
+        I *is;
         // Processing the first cell.  Allocate the result area now that we know the shape/type of the result.
         // Get the rank/type to allocate for the presumed result
         // Get the type to allocate
@@ -433,7 +433,7 @@ do {
         DPMULDE(natoms, zzncells, natoms)
         // Allocate the result
         GA(zz, zzt, natoms, zzframelen + zzr, 0L);
-        I *RESTRICT zzs = AS(zz);  // rank is aframelen+wframelen+resultrank
+        I *zzs = AS(zz);  // rank is aframelen+wframelen+resultrank
         // If zz is recursible, make it recursive-usecount (without actually recurring, since it's empty), unless
         // WILLBEOPENED is set, since then we may put virtual blocks in the boxed array
         AFLAG(zz) |= (zzt & RECURSIBLE) &

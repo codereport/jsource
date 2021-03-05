@@ -1822,7 +1822,7 @@ jttess2(J jt, A a, A w, A self) {
     }
     // The rest is the same for 1- and 2-axis cut
     I hvirtofst        = AK(virtw);
-    I *RESTRICT virtws = AS(virtw);  // save initial offset (to top-left of source)
+    I *virtws = AS(virtw);  // save initial offset (to top-left of source)
     // Install shape/item count into the virtual array.  First install height; then width if given; then the rest of the
     // shape of w
     *virtws++ = vsz;

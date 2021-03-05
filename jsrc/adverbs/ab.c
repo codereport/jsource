@@ -44,67 +44,67 @@ REDUCEPFX(bw1110insI, UI, UI, BW1110, bw1110II, bw1110II)    static REDUCEPFX(bw
 /* see below */                         /* see below */
 
 I
-bw0000insI(I d, I n, I m, UI* RESTRICTI x, UI* RESTRICTI z, J jt) {
+bw0000insI(I d, I n, I m, UI* x, UI* z, J jt) {
     I k = SZI * m * d;
     memset(z, C0, k);
     return EVOK;
 }
 
 static I
-bw0000insC(I d, I n, I m, UC* RESTRICTI x, UC* RESTRICTI z, J jt) {
+bw0000insC(I d, I n, I m, UC* x, UC* z, J jt) {
     I k = m * d;
     memset(z, C0, k);
     return EVOK;
 }
 
 I
-bw1111insI(I d, I n, I m, UI* RESTRICTI x, UI* RESTRICTI z, J jt) {
+bw1111insI(I d, I n, I m, UI* x, UI* z, J jt) {
     I k = SZI * m * d;
     memset(z, CFF, k);
     return EVOK;
 }
 static I
-bw1111insC(I d, I n, I m, UC* RESTRICTI x, UC* RESTRICTI z, J jt) {
+bw1111insC(I d, I n, I m, UC* x, UC* z, J jt) {
     I k = m * d;
     memset(z, CFF, k);
     return EVOK;
 }
 
 I
-bw0011insI(I d, I n, I m, UI* RESTRICTI x, UI* RESTRICTI z, J jt) {
+bw0011insI(I d, I n, I m, UI* x, UI* z, J jt) {
     I k = d * (n - 1);
     DQ(m, DQ(d, *z++ = *x++;); x += k;);
     return EVOK;
 }
 static I
-bw0011insC(I d, I n, I m, UC* RESTRICTI x, UC* RESTRICTI z, J jt) {
+bw0011insC(I d, I n, I m, UC* x, UC* z, J jt) {
     I k = d * (n - 1);
     DQ(m, DQ(d, *z++ = *x++;); x += k;);
     return EVOK;
 }
 
 I
-bw1100insI(I d, I n, I m, UI* RESTRICTI x, UI* RESTRICTI z, J jt) {
+bw1100insI(I d, I n, I m, UI* x, UI* z, J jt) {
     I k = d * (n - 1);
     if (1 < n) DQ(m, DQ(d, *z++ = ~*x++;); x += k;) else memcpy(z, x, SZI * m * d);
     return EVOK;
 }
 static I
-bw1100insC(I d, I n, I m, UC* RESTRICTI x, UC* RESTRICTI z, J jt) {
+bw1100insC(I d, I n, I m, UC* x, UC* z, J jt) {
     I k = d * (n - 1);
     if (1 < n) DQ(m, DQ(d, *z++ = ~*x++;); x += k;) else memcpy(z, x, m * d);
     return EVOK;
 }
 
 I
-bw0101insI(I d, I n, I m, UI* RESTRICTI x, UI* RESTRICTI z, J jt) {
+bw0101insI(I d, I n, I m, UI* x, UI* z, J jt) {
     I k = d * (n - 1);
     x += k;
     DQ(m, DQ(d, *z++ = *x++;); x += k;);
     return EVOK;
 }
 static I
-bw0101insC(I d, I n, I m, UC* RESTRICTI x, UC* RESTRICTI z, J jt) {
+bw0101insC(I d, I n, I m, UC* x, UC* z, J jt) {
     I k = d * (n - 1);
     x += k;
     DQ(m, DQ(d, *z++ = *x++;); x += k;);
@@ -112,7 +112,7 @@ bw0101insC(I d, I n, I m, UC* RESTRICTI x, UC* RESTRICTI z, J jt) {
 }
 
 I
-bw1010insI(I d, I n, I m, UI* RESTRICTI x, UI* RESTRICTI z, J jt) {
+bw1010insI(I d, I n, I m, UI* x, UI* z, J jt) {
     I k  = d * (n - 1);
     UI t = (n & 1) - 1;
     x += k;
@@ -120,7 +120,7 @@ bw1010insI(I d, I n, I m, UI* RESTRICTI x, UI* RESTRICTI z, J jt) {
     return EVOK;
 }
 static I
-bw1010insC(I d, I n, I m, UC* RESTRICTI x, UC* RESTRICTI z, J jt) {
+bw1010insC(I d, I n, I m, UC* x, UC* z, J jt) {
     I k  = d * (n - 1);
     UC t = (UC)((n & 1) - 1);
     x += k;

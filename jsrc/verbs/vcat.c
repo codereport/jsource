@@ -410,7 +410,7 @@ int (*p[4])(int x, int y);
 static void (*moveawtbl[])() = {moveawVV, moveawVS, moveawSV};
 A
 jtover(J jt, A a, A w) {
-    AD *RESTRICT z;
+    AD *z;
     C *zv;
     I replct, framect, acr, af, ar, *as, k, ma, mw, p, q, r, t, wcr, wf, wr, *ws, zn;
     FPREFIP;
@@ -572,7 +572,7 @@ jtstitch(J jt, A a, A w) {
 A
 jtlamin1(J jt, A w) {
     A x;
-    I *RESTRICT s, *RESTRICT v, wcr, wf, wr;
+    I *s, *v, wcr, wf, wr;
     FPREFIP;
     if (!w) return 0;
     wr  = AR(w);

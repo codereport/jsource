@@ -249,7 +249,7 @@ jteqa(J jt, I n, A* u, A* v) {
  z    result
 */
 
-// should RESTRICT all pointers used for hashtables, inputs, outputs
+// should restrict all pointers used for hashtables, inputs, outputs
 
 // should change IOF to return pointer to h; then could just pass in h rather than hp
 // should not pass in wcr - not used.  Check other args
@@ -284,7 +284,6 @@ jteqa(J jt, I n, A* u, A* v) {
     }
 // define ad and wd, which are bases to be added to boxed addresses
 // should use conditional statement
-#define RDECL
 // Misc code to set the shape once we see how many results there are, used for ~. y and x -. y
 #define ZISHAPE *AS(z) = AN(z) = zi - zv
 #define ZCSHAPE                 \
@@ -341,7 +340,7 @@ jteqa(J jt, I n, A* u, A* v) {
 // allocated space The nominal result is the new value for md.  This routine is responsible for setting/clearing
 // IIMODBASE0 appropriately, but only when IIMODBITS is clear
 static I
-hashallo(IH* RESTRICT hh, UI p, UI m, I md) {
+hashallo(IH* hh, UI p, UI m, I md) {
     // If the request is for bits, allocate them starting at the beginning of the table.
     if (md & IIMODBITS) {
         hh->currentlo        = 0;
@@ -505,7 +504,6 @@ hashallo(IH* RESTRICT hh, UI p, UI m, I md) {
 // if there is not a prehashed hashtable, we clear the hashtable and fill it from a, then hash & check each item of w
 #define IOFX(T, f, hash, exp, inc, dec)                                                                            \
     A f(J jt, I mode, I m, I n, I c, I k, I acr, I wcr, I ac, I wc, I ak, I wk, A a, A w, A* hp, A z) {            \
-        RDECL;                                                                                                     \
         IODECL(T);                                                                                                 \
         B b;                                                                                                       \
         I cm, md, s;                                                                                               \
@@ -800,7 +798,6 @@ static IOFX(A, jtioax1, jthia(jt, t1, *v), !jtequ(jt, *v, av[hj]), ++v, --v)    
 // Do the operation.  Build a hash for a except when unboxed self-index
 #define IOFT(T, f, FA, FXY, FYY, expa, expw)                                                                       \
     A f(J jt, I mode, I m, I n, I c, I k, I acr, I wcr, I ac, I wc, I ak, I wk, A a, A w, A* hp, A z) {            \
-        RDECL;                                                                                                     \
         IODECL(T);                                                                                                 \
         B b, bx;                                                                                                   \
         D tl = jt->cct, tr = 1 / tl, x, *zd;                                                                       \
@@ -957,7 +954,7 @@ static IOFX(A, jtioax1, jthia(jt, t1, *v), !jtequ(jt, *v, av[hj]), ++v, --v)    
 // unpacked version expects default of 1
 #define SNUB(decl, stmt)                      \
     I zi = 0, zie = m;                        \
-    decl UC* RESTRICT hu = hh->data.UC - min; \
+    decl UC* hu = hh->data.UC - min; \
     while (zi != zie) {                       \
         UC v       = hu[wv[zi]];              \
         hu[wv[zi]] = 0;                       \
@@ -966,7 +963,7 @@ static IOFX(A, jtioax1, jthia(jt, t1, *v), !jtequ(jt, *v, av[hj]), ++v, --v)    
 // packed version.  Default of 0
 #define SNUBP(decl, stmt)                             \
     I zi = 0, zie = m;                                \
-    decl UC* RESTRICT hu = hh->data.UC - BYTENO(min); \
+    decl UC* hu = hh->data.UC - BYTENO(min); \
     while (zi != zie) {                               \
         UC v = hu[BYTENO(wv[zi])];                    \
         hu[BYTENO(wv[zi])] |= 1 << BITNO(wv[zi]);     \
@@ -985,15 +982,15 @@ static IOFX(A, jtioax1, jthia(jt, t1, *v), !jtequ(jt, *v, av[hj]), ++v, --v)    
 // We init the table to 0 or 1 depending on the primitive; but we always use 0 for PACKed bits, because it's never right
 // to add an instruction to building the table
 #define SDO(T, bitdef)                   \
-    UC* RESTRICT hu = hh->data.UC - min; \
+    UC* hu = hh->data.UC - min; \
     if (!(mode & IPHOFFSET)) {           \
-        T* RESTRICT mav = av;            \
+        T* mav = av;            \
         DO(m, hu[mav[i]] = 1 - bitdef;)  \
     }
 #define SDOP(T)                                          \
-    UC* RESTRICT hu = hh->data.UC - BYTENO(min);         \
+    UC* hu = hh->data.UC - BYTENO(min);         \
     if (!(mode & IPHOFFSET)) {                           \
-        T* RESTRICT mav = av;                            \
+        T* mav = av;                            \
         DO(m, hu[BYTENO(mav[i])] |= 1 << BITNO(mav[i]);) \
     }
 
@@ -1002,9 +999,9 @@ static IOFX(A, jtioax1, jthia(jt, t1, *v), !jtequ(jt, *v, av[hj]), ++v, --v)    
 // Go through and remember the index for each value.  Leaves last index, so used for i:.  Leave zi correct at end
 #define SDOA(T, Ttype)                                                                                           \
     I zi = hh->currentindexofst, zi0 = zi, zie = zi + m;                                                         \
-    Ttype* RESTRICT hu = hh->data.Ttype - min + hh->currentlo; /* biased start,end+1 index, and data pointers */ \
+    Ttype* hu = hh->data.Ttype - min + hh->currentlo; /* biased start,end+1 index, and data pointers */ \
     if (!(mode & IPHOFFSET)) {                                                                                   \
-        T* RESTRICT mav = av - zi;                                                                               \
+        T* mav = av - zi;                                                                               \
         while (zi != zie) {                                                                                      \
             hu[mav[zi]] = (Ttype)zi;                                                                             \
             ++zi;                                                                                                \
@@ -1015,9 +1012,9 @@ static IOFX(A, jtioax1, jthia(jt, t1, *v), !jtequ(jt, *v, av[hj]), ++v, --v)    
 // Go through and remember the index for each value.  Reverse order, so leaves first index, so used for i.
 #define SDQA(T, Ttype)                                         \
     I zi = hh->currentindexofst, zi0 = zi, zie = zi + m;       \
-    Ttype* RESTRICT hu = hh->data.Ttype - min + hh->currentlo; \
+    Ttype* hu = hh->data.Ttype - min + hh->currentlo; \
     if (!(mode & IPHOFFSET)) {                                 \
-        T* RESTRICT mav = av - zi;                             \
+        T* mav = av - zi;                             \
         do {                                                   \
             --zie;                                             \
             hu[mav[zie]] = (Ttype)zie;                         \
@@ -1026,7 +1023,7 @@ static IOFX(A, jtioax1, jthia(jt, t1, *v), !jtequ(jt, *v, av[hj]), ++v, --v)    
 // This version if we know the area starts at 0
 #define SDQA0(T, Ttype)                                        \
     I zie              = m - 1;                                \
-    Ttype* RESTRICT hu = hh->data.Ttype - min + hh->currentlo; \
+    Ttype* hu = hh->data.Ttype - min + hh->currentlo; \
     if (!(mode & IPHOFFSET)) {                                 \
         do { hu[av[zie]] = (Ttype)zie; } while (--zie >= 0);   \
     }
@@ -1040,8 +1037,8 @@ static IOFX(A, jtioax1, jthia(jt, t1, *v), !jtequ(jt, *v, av[hj]), ++v, --v)    
 // aborted; we scan forward from the beginning of w
 #define SCOZ(T, Ttype, vv)                          \
     {                                               \
-        I* RESTRICT zv  = AV(z) + l * c - zi;       \
-        T* RESTRICT mwv = wv - zi;                  \
+        I* zv  = AV(z) + l * c - zi;       \
+        T* mwv = wv - zi;                  \
         Ttype def[1];                               \
         zie    = zi + c;                            \
         def[0] = (Ttype)(vv + zi0);                 \
@@ -1061,8 +1058,8 @@ static IOFX(A, jtioax1, jthia(jt, t1, *v), !jtequ(jt, *v, av[hj]), ++v, --v)    
 // check.  Since the range-scan of w ran to completion, the end of w is most likely to be in-cache; so scan backwards
 #define SCOZF(T, Ttype, vv)                                  \
     {                                                        \
-        I* RESTRICT zv  = AV(z) + l * c - zi;                \
-        T* RESTRICT mwv = wv - zi;                           \
+        I* zv  = AV(z) + l * c - zi;                \
+        T* mwv = wv - zi;                           \
         zie             = zi + c;                            \
         while (zi != zie) {                                  \
             --zie;                                           \
@@ -1076,8 +1073,8 @@ static IOFX(A, jtioax1, jthia(jt, t1, *v), !jtequ(jt, *v, av[hj]), ++v, --v)    
 #define SCOZ0(T, Ttype, vv)                   \
     {                                         \
         I zi            = -c;                 \
-        I* RESTRICT zv  = AV(z) + l * c - zi; \
-        T* RESTRICT mwv = wv - zi;            \
+        I* zv  = AV(z) + l * c - zi; \
+        T* mwv = wv - zi;            \
         Ttype def[1];                         \
         def[0] = (Ttype)vv;                   \
         while (zi) {                          \
@@ -1092,7 +1089,7 @@ static IOFX(A, jtioax1, jthia(jt, t1, *v), !jtequ(jt, *v, av[hj]), ++v, --v)    
 #define SCOZF0(T, Ttype, vv)            \
     {                                   \
         zie            = c - 1;         \
-        I* RESTRICT zv = AV(z) + l * c; \
+        I* zv = AV(z) + l * c; \
         while (zie >= 0) {              \
             zv[zie] = hu[wv[zie]];      \
             --zie;                      \
@@ -1103,7 +1100,7 @@ static IOFX(A, jtioax1, jthia(jt, t1, *v), !jtequ(jt, *v, av[hj]), ++v, --v)    
 // in table). The table is always allocated as a bit vector and therefore is at offset 0 in the table wv[i] is the data
 // value read, if that's needed should revise loops to count up from -n to 0, saving 1 inst Declare the result vector,
 // and prebias it for our loop if needed.  indexed is 1 if zv will be referred to as zv[i], 0 if by *zv
-#define DCLZVO(T, indexed) T* RESTRICT zv = T##AV(z) + (l + indexed) * c;
+#define DCLZVO(T, indexed) T* zv = T##AV(z) + (l + indexed) * c;
 #define SCOW(T, bitdef, stmt)      \
     {                              \
         UC def[1];                 \
@@ -1159,7 +1156,7 @@ static IOFX(A, jtioax1, jthia(jt, t1, *v), !jtequ(jt, *v, av[hj]), ++v, --v)    
     }
 
 // just like SCOW/SCOWF but scanning from the end of w
-#define DCLZVQ(T, unused) T* RESTRICT zv = T##AV(z) + l * c;
+#define DCLZVQ(T, unused) T* zv = T##AV(z) + l * c;
 #define SCQW(T, bitdef, stmt)          \
     {                                  \
         UC def[1];                     \
@@ -1246,7 +1243,7 @@ static IOFX(A, jtioax1, jthia(jt, t1, *v), !jtequ(jt, *v, av[hj]), ++v, --v)    
     A f(J jt, I mode, I m, I n, I c, I k, I acr, I wcr, I ac, I wc, I ak, I wk, A a, A w, A* hp, A z) {               \
         IH* hh = IHAV(*hp);                                                                                           \
         I e, l;                                                                                                       \
-        T *RESTRICT av, *RESTRICT wv;                                                                                 \
+        T *av, *wv;                                                                                 \
         T max, min;                                                                                                   \
         UI p;                                                                                                         \
         mode |= ((mode & (IIOPMSK & ~(IIDOT ^ IICO))) | ((I)a ^ (I)w) | (ac ^ wc)) ? 0 : IIMODREFLEX;                 \
@@ -1276,9 +1273,9 @@ static IOFX(A, jtioax1, jthia(jt, t1, *v), !jtequ(jt, *v, av[hj]), ++v, --v)    
                 case IIMODREFLEX + IIMODFULL + IIDOT:                                                                 \
                 case IIMODREFLEX + IIDOT: {                                                                           \
                     I zi = hh->currentindexofst, zi0 = zi, zie = zi + m;                                              \
-                    I* RESTRICT zv  = AV(z) + l * m - zi;                                                             \
-                    T* RESTRICT mwv = wv - zi;                                                                        \
-                    Ttype* RESTRICT hu =                                                                              \
+                    I* zv  = AV(z) + l * m - zi;                                                             \
+                    T* mwv = wv - zi;                                                                        \
+                    Ttype* hu =                                                                              \
                       hh->data.Ttype - min + hh->currentlo; /* biased start,end+1 index, and data pointers */         \
                     while (zi != zie) {                                                                               \
                         I vv = hu[mwv[zi]];                                                                           \
@@ -1291,8 +1288,8 @@ static IOFX(A, jtioax1, jthia(jt, t1, *v), !jtequ(jt, *v, av[hj]), ++v, --v)    
                 case IIMODBASE0 + IIMODREFLEX + IIMODFULL + IIDOT:                                                    \
                 case IIMODBASE0 + IIMODREFLEX + IIDOT: {                                                              \
                     I zi           = 0;                                                                               \
-                    I* RESTRICT zv = AV(z) + l * m;                                                                   \
-                    Ttype* RESTRICT hu =                                                                              \
+                    I* zv = AV(z) + l * m;                                                                   \
+                    Ttype* hu =                                                                              \
                       hh->data.Ttype - min + hh->currentlo; /* biased start,end+1 index, and data pointers */         \
                     while (zi != m) {                                                                                 \
                         I vv = hu[wv[zi]];                                                                            \
@@ -1305,9 +1302,9 @@ static IOFX(A, jtioax1, jthia(jt, t1, *v), !jtequ(jt, *v, av[hj]), ++v, --v)    
                 case IIMODREFLEX + IIMODFULL + IICO:                                                                  \
                 case IIMODREFLEX + IICO: {                                                                            \
                     I zi = hh->currentindexofst, zi0 = zi, zie = zi + m;                                              \
-                    I* RESTRICT zv     = AV(z) + l * m - zi;                                                          \
-                    T* RESTRICT mwv    = wv - zi;                                                                     \
-                    Ttype* RESTRICT hu = hh->data.Ttype - min + hh->currentlo;                                        \
+                    I* zv     = AV(z) + l * m - zi;                                                          \
+                    T* mwv    = wv - zi;                                                                     \
+                    Ttype* hu = hh->data.Ttype - min + hh->currentlo;                                        \
                     do {                                                                                              \
                         --zie;                                                                                        \
                         I vv = hu[mwv[zie]];                                                                          \
@@ -1319,8 +1316,8 @@ static IOFX(A, jtioax1, jthia(jt, t1, *v), !jtequ(jt, *v, av[hj]), ++v, --v)    
                 case IIMODBASE0 + IIMODREFLEX + IIMODFULL + IICO:                                                     \
                 case IIMODBASE0 + IIMODREFLEX + IICO: {                                                               \
                     I zie              = m - 1;                                                                       \
-                    I* RESTRICT zv     = AV(z) + l * m;                                                               \
-                    Ttype* RESTRICT hu = hh->data.Ttype - min + hh->currentlo;                                        \
+                    I* zv     = AV(z) + l * m;                                                               \
+                    Ttype* hu = hh->data.Ttype - min + hh->currentlo;                                        \
                     do {                                                                                              \
                         I vv = hu[wv[zie]];                                                                           \
                         if (vv == m) vv = zie;                                                                        \
@@ -1334,29 +1331,29 @@ static IOFX(A, jtioax1, jthia(jt, t1, *v), !jtequ(jt, *v, av[hj]), ++v, --v)    
                      * support PACK. */                                                                               \
                 case IIMODFULL + INUBSV:                                                                              \
                 case INUBSV: {                                                                                        \
-                    SNUB(B* RESTRICT zv = BAV(z) + l * m;, zv[zi] = v;)                                               \
+                    SNUB(B* zv = BAV(z) + l * m;, zv[zi] = v;)                                               \
                 } break;                                                                                              \
                 case IIMODPACK + IIMODFULL + INUBSV:                                                                  \
                 case IIMODPACK + INUBSV: {                                                                            \
-                    SNUBP(B* RESTRICT zv = BAV(z) + l * m;, zv[zi] = v;)                                              \
+                    SNUBP(B* zv = BAV(z) + l * m;, zv[zi] = v;)                                              \
                 } break;                                                                                              \
                 case IIMODFULL + INUB:                                                                                \
                 case INUB: {                                                                                          \
-                    SNUB(T* RESTRICT zv = (T*)AV(z); T* zv0 = zv;, *zv = wv[zi]; zv += v;) * AS(z) = zv - zv0;        \
+                    SNUB(T* zv = (T*)AV(z); T* zv0 = zv;, *zv = wv[zi]; zv += v;) * AS(z) = zv - zv0;        \
                     AN(z)                                                                          = n * (zv - zv0);  \
                 } break;                                                                                              \
                 case IIMODPACK + IIMODFULL + INUB:                                                                    \
                 case IIMODPACK + INUB: {                                                                              \
-                    SNUBP(T* RESTRICT zv = (T*)AV(z); T* zv0 = zv;, *zv = wv[zi]; zv += v;) * AS(z) = zv - zv0;       \
+                    SNUBP(T* zv = (T*)AV(z); T* zv0 = zv;, *zv = wv[zi]; zv += v;) * AS(z) = zv - zv0;       \
                     AN(z)                                                                           = n * (zv - zv0); \
                 } break;                                                                                              \
                 case IIMODFULL + INUBI:                                                                               \
                 case INUBI: {                                                                                         \
-                    SNUB(I* RESTRICT zv = AV(z); I* zv0 = zv;, *zv = zi; zv += v;) * AS(z) = AN(z) = zv - zv0;        \
+                    SNUB(I* zv = AV(z); I* zv0 = zv;, *zv = zi; zv += v;) * AS(z) = AN(z) = zv - zv0;        \
                 } break;                                                                                              \
                 case IIMODPACK + IIMODFULL + INUBI:                                                                   \
                 case IIMODPACK + INUBI: {                                                                             \
-                    SNUBP(I* RESTRICT zv = AV(z); I* zv0 = zv;, *zv = zi; zv += v;) * AS(z) = AN(z) = zv - zv0;       \
+                    SNUBP(I* zv = AV(z); I* zv0 = zv;, *zv = zi; zv += v;) * AS(z) = AN(z) = zv - zv0;       \
                 } break;                                                                                              \
                     /* non-reflexives can benefit from FULL checking.  IIDOT and IICO need full indexes (and thus use \
                      * BASE0, but no PACK); everything else is Boolean */                                             \
@@ -1527,10 +1524,7 @@ static IOFX(A, jtioax1, jthia(jt, t1, *v), !jtequ(jt, *v, av[hj]), ++v, --v)    
         case RATX: SCDO(Q, *wv, !QEQ(x, av[j])); break;
         case INTX: SCDO(I, *wv, x != av[j]); break;
         case SBTX: SCDO(SB, *wv, x != av[j]); break;
-        case BOXX: {
-            RDECL;
-            SCDO(A, *wv, !jtequ(jt, x, av[j]));
-        } break;
+        case BOXX: SCDO(A, *wv, !jtequ(jt, x, av[j])); break;
         case FLX:
             if (1.0 == jt->cct)
                 SCDO(D, *wv, x != av[j])
@@ -1615,8 +1609,8 @@ jtnodupgrade(J jt, A a, I acr, I ac, I acn, I ad, I n, I m, B b, B bk) {
 // descending and q>p should look into having a grade that discards dups
 #define BSLOOPAA(hiinc, zstmti, zstmt1, zstmt0)                                                                \
     {                                                                                                          \
-        A *RESTRICT u  = av, *RESTRICT v;                                                                      \
-        I *RESTRICT hi = hv, p, q;                                                                             \
+        A *u  = av, *v;                                                                      \
+        I *hi = hv, p, q;                                                                             \
         p              = *hiinc;                                                                               \
         u              = av + n * p;                                                                           \
         zstmti; /* u->first result value, install result for that value to index itself */                     \
@@ -1639,26 +1633,26 @@ q is input element# that will have result index i, v->it; if *u=*v, v is a dupli
 // uinc advances the pointer to the next item of w (depends on direction - I don't see why)
 // zstmt creates the result when a match has been found.  At that point q=-2 if there was no match, otherwise
 //  it holds the index of the match
-#define BSLOOPAWX(ii, icmp, iinc, uinc, zstmt)                    \
-    {                                                             \
-        A *RESTRICT u = wv + n * (ii), *RESTRICT v;               \
-        I i, j, p, q;                                             \
-        I t;                                                      \
-        for (i = ii; icmp; iinc, uinc) {                          \
-            p = 0;                                                \
-            q = m1;                                               \
-            while (p <= q) {                                      \
-                t = 0;                                            \
-                j = (p + q) >> 1;                                 \
-                v = av + n * hu[j];                               \
-                DO(n, if (t = jtcompare(jt, u[i], v[i])) break;); \
-                if (0 < t)                                        \
-                    p = j + 1;                                    \
-                else                                              \
-                    q = t ? j - 1 : -2;                           \
-            }                                                     \
-            zstmt;                                                \
-        }                                                         \
+#define BSLOOPAWX(ii, icmp, iinc, uinc, zstmt)                      \
+    {                                                               \
+        A *u = wv + n * (ii), *v;                 \
+        I i, j, p, q;                                               \
+        I t;                                                        \
+        for (i = ii; icmp; iinc, uinc) {                            \
+            p = 0;                                                  \
+            q = m1;                                                 \
+            while (p <= q) {                                        \
+                t = 0;                                              \
+                j = (p + q) >> 1;                                   \
+                v = av + n * hu[j];                                 \
+                DO(n, if ((t = jtcompare(jt, u[i], v[i]))) break;); \
+                if (0 < t)                                          \
+                    p = j + 1;                                      \
+                else                                                \
+                    q = t ? j - 1 : -2;                             \
+            }                                                       \
+            zstmt;                                                  \
+        }                                                           \
     }
 
 // macros to create ascending or descending binary search, executing zstmt afterwards

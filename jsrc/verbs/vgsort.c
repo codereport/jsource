@@ -205,15 +205,15 @@ jtsortdirect(J jt, I m, I api, I n, A w) {
     I cpi               = api << ((t >> CMPXX) & 1);  // compares per item on a sort
     I bpi               = api << bplg(t);             // bytes per item of a sort
     I bps               = bpi * n;                    // bytes per sort
-    void *RESTRICT wv   = voidAV(w);
-    void *RESTRICT zv   = voidAV(z);
+    void *wv            = voidAV(w);
+    void *zv            = voidAV(z);
     CMP cmpfunc         = sortroutines[CTTZ(t)][SGNTO0(jt->workareas.compare.complt)].comproutine;
     void *(*sortfunc)() = sortroutines[CTTZ(t)][SGNTO0(jt->workareas.compare.complt)].sortfunc;
     // allocate the merge work area, large enough to hold one sort.  In case this turns out to be the final result,
     // make the shape the same as the result shape (if there is more than one sort, this shape will be wrong, but that
     // won't matter, since the shape will never be used elsewhere)
     GA(x, t, n * api, AR(w), AS(w));
-    void *RESTRICT xv = voidAV(x); /* work area for jtmsmerge(jt, ) */
+    void *xv = voidAV(x); /* work area for jtmsmerge(jt, ) */
     DO(
       m,  // sort each cell
       void *sortres = (*sortfunc)(cmpfunc, cpi, n, bpi, (void *)zv, (void *)xv, wv);

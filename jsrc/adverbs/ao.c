@@ -44,8 +44,8 @@ jtoblique(J jt, A w, A self) {
 
 #define OBQLOOP(Tw, Tz, zt, init, expr)                                                                            \
     {                                                                                                              \
-        Tw *RESTRICT u, *v, *ww = (Tw *)wv;                                                                        \
-        Tz x, *RESTRICT zz;                                                                                        \
+        Tw *u, *v, *ww = (Tw *)wv;                                                                        \
+        Tz x, *zz;                                                                                        \
         b = 1;                                                                                                     \
         k = n1;                                                                                                    \
         GA(z, zt, d *c, r - 1, 1 + s);                                                                             \
@@ -134,8 +134,8 @@ jtobqfslash(J jt, A w, A self) {
 
 #define PMLOOP(Tw, Tz, zt, expr0, expr)                              \
     {                                                                \
-        Tw *aa = (Tw *)av, *RESTRICT u, *RESTRICT v, *ww = (Tw *)wv; \
-        Tz x, *RESTRICT zv;                                          \
+        Tw *aa = (Tw *)av, *u, *v, *ww = (Tw *)wv; \
+        Tz x, *zv;                                          \
         b = 1;                                                       \
         GATVS(z, zt, zn, 1, 0, zt##SIZE, GACOPYSHAPE0, return 0);    \
         zv = (Tz *)AV(z);                                            \
@@ -744,9 +744,9 @@ jtkey(J jt, A a, A w, A self) {
         // scatter-writing.
         I i;
         I nextpartitionx;         // loop index, address of place to store next partition
-        I *RESTRICT wv = IAV(w);  // source & target pointers
+        I *wv = IAV(w);  // source & target pointers
         for (i = 0, nextpartitionx = (I)IAV(wperm); i < nitems; ++i) {
-            I *RESTRICT partitionptr;             // pointer to where output will go
+            I *partitionptr;             // pointer to where output will go
             I avvalue = av[i];                    // fetch partition length/index
             if (avvalue < i) {                    // this value extends its partition
                 partitionptr = (I *)av[avvalue];  // addr of end of selected partition
@@ -816,8 +816,8 @@ jtkey(J jt, A a, A w, A self) {
 
         I i;
         I nextpartitionx;                 // loop index, index of place to store next partition
-        I *RESTRICT wv     = IAV(w);      // source pointer
-        C *RESTRICT wpermv = CAV(wperm);  // addr of output area
+        I *wv     = IAV(w);      // source pointer
+        C *wpermv = CAV(wperm);  // addr of output area
         for (av = IAV(a), i = nitems, nextpartitionx = 0; i; --i) {
             I partitionndx;                      // index of where this output will go
             I *slotaddr = &ftblv[*av & valmsk];  // the slot in the table we are processing
@@ -939,11 +939,11 @@ jtkeybox(J jt, A a, A w, A self) {
         // creating partitions as they come up, and moving the data for each input value in turn, reading in order and
         // scatter-writing.
         I i;                      // loop index
-        I *RESTRICT wv = IAV(w);  // source pointer, advanced item by item
+        I *wv = IAV(w);  // source pointer, advanced item by item
         I wt           = AT(w);
         I yr           = MAX(AR(w), 1);  // type of cells, and rank
         for (i = 0; i < nitems; ++i) {
-            I *RESTRICT partitionptr;             // pointer to where output will go
+            I *partitionptr;             // pointer to where output will go
             I avvalue = av[i];                    // fetch partition length/index
             if (avvalue < i) {                    // this value extends its partition
                 partitionptr = (I *)av[avvalue];  // addr of end of selected partition
@@ -1015,7 +1015,7 @@ jtkeybox(J jt, A a, A w, A self) {
         // and advance that partition's pointer
 
         I i;                      // loop index
-        I *RESTRICT wv = IAV(w);  // source pointer
+        I *wv = IAV(w);  // source pointer
         I wt           = AT(w);
         I yr           = MAX(AR(w), 1);  // type of cells, and rank
         for (av = IAV(a), i = nitems; i; --i) {

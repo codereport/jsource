@@ -41,7 +41,6 @@ otherwise the regs may be used and the parameter lost.
 
 #include <stdlib.h>
 typedef unsigned char BYTE;
-#define CALLBACK
 #include <stdint.h>
 #include <wchar.h>
 #include <complex.h>
@@ -3215,77 +3214,77 @@ cbnew() {
 static I cbx[CBTYPESMAX - 1];
 I cbxn = 0;
 
-static I CALLBACK
+static I
 cb0() {
     I x[] = {0};
     return cbold(0, x);
 }
-static I CALLBACK
+static I
 cb1(I a) {
     I x[] = {a};
     return cbold(1, x);
 }
-static I CALLBACK
+static I
 cb2(I a, I b) {
     I x[] = {a, b};
     return cbold(2, x);
 }
-static I CALLBACK
+static I
 cb3(I a, I b, I c) {
     I x[] = {a, b, c};
     return cbold(3, x);
 }
-static I CALLBACK
+static I
 cb4(I a, I b, I c, I d) {
     I x[] = {a, b, c, d};
     return cbold(4, x);
 }
-static I CALLBACK
+static I
 cb5(I a, I b, I c, I d, I e) {
     I x[] = {a, b, c, d, e};
     return cbold(5, x);
 }
-static I CALLBACK
+static I
 cb6(I a, I b, I c, I d, I e, I f) {
     I x[] = {a, b, c, d, e, f};
     return cbold(6, x);
 }
-static I CALLBACK
+static I
 cb7(I a, I b, I c, I d, I e, I f, I g) {
     I x[] = {a, b, c, d, e, f, g};
     return cbold(7, x);
 }
-static I CALLBACK
+static I
 cb8(I a, I b, I c, I d, I e, I f, I g, I h) {
     I x[] = {a, b, c, d, e, f, g, h};
     return cbold(8, x);
 }
-static I CALLBACK
+static I
 cb9(I a, I b, I c, I d, I e, I f, I g, I h, I i) {
     I x[] = {a, b, c, d, e, f, g, h, i};
     return cbold(9, x);
 }
 static I cbv[] = {(I)&cb0, (I)&cb1, (I)&cb2, (I)&cb3, (I)&cb4, (I)&cb5, (I)&cb6, (I)&cb7, (I)&cb8, (I)&cb9};
 
-static I CALLBACK
+static I
 cbx0() {
     cbxn = 0;
     return cbnew();
 }
-static I CALLBACK
+static I
 cbx1(I a) {
     cbxn   = 1;
     cbx[0] = a;
     return cbnew();
 }
-static I CALLBACK
+static I
 cbx2(I a, I b) {
     cbxn   = 2;
     cbx[0] = a;
     cbx[1] = b;
     return cbnew();
 }
-static I CALLBACK
+static I
 cbx3(I a, I b, I c) {
     cbxn   = 3;
     cbx[0] = a;
@@ -3293,7 +3292,7 @@ cbx3(I a, I b, I c) {
     cbx[2] = c;
     return cbnew();
 }
-static I CALLBACK
+static I
 cbx4(I a, I b, I c, I d) {
     cbxn   = 4;
     cbx[0] = a;
@@ -3302,7 +3301,7 @@ cbx4(I a, I b, I c, I d) {
     cbx[3] = d;
     return cbnew();
 }
-static I CALLBACK
+static I
 cbx5(I a, I b, I c, I d, I e) {
     cbxn   = 5;
     cbx[0] = a;
@@ -3312,7 +3311,7 @@ cbx5(I a, I b, I c, I d, I e) {
     cbx[4] = e;
     return cbnew();
 }
-static I CALLBACK
+static I
 cbx6(I a, I b, I c, I d, I e, I f) {
     cbxn   = 6;
     cbx[0] = a;
@@ -3323,7 +3322,7 @@ cbx6(I a, I b, I c, I d, I e, I f) {
     cbx[5] = f;
     return cbnew();
 }
-static I CALLBACK
+static I
 cbx7(I a, I b, I c, I d, I e, I f, I g) {
     cbxn   = 7;
     cbx[0] = a;
@@ -3335,7 +3334,7 @@ cbx7(I a, I b, I c, I d, I e, I f, I g) {
     cbx[6] = g;
     return cbnew();
 }
-static I CALLBACK
+static I
 cbx8(I a, I b, I c, I d, I e, I f, I g, I h) {
     cbxn   = 8;
     cbx[0] = a;
@@ -3348,7 +3347,7 @@ cbx8(I a, I b, I c, I d, I e, I f, I g, I h) {
     cbx[7] = h;
     return cbnew();
 }
-static I CALLBACK
+static I
 cbx9(I a, I b, I c, I d, I e, I f, I g, I h, I i) {
     cbxn   = 9;
     cbx[0] = a;

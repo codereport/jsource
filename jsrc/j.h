@@ -60,30 +60,6 @@
 #ifndef UNDERFLOW
 #define UNDERFLOW ((D)4.450147717014403e-308)
 #endif
-// RESTRICT causes the compiler to generate better code by assuming no overlap of regions pointed to by pointers
-// We use RESTRICT for routines that operate in-place on an argument.  This is strictly speaking a violation of the
-// rule, but normally something like *z = *x + *y will not cause trouble because there is no reason to refetch an input
-// after the result has been written.  On 32-bit machines, registers are so short that sometimes the compilers refetch
-// an input after writing to *z, so we don't turn RESTRICT on for 32-bit
-
-#ifdef __GNUC__
-#define RESTRICT __restrict
-// No RESTRICTF on GCC
-#endif
-
-#ifdef __GNUC__
-#define RESTRICTI  // __restrict  don't take chances
-#endif
-
-#ifndef RESTRICT
-#define RESTRICT
-#endif
-#ifndef RESTRICTF
-#define RESTRICTF
-#endif
-#ifndef RESTRICTI
-#define RESTRICTI
-#endif
 
 #define NALP 256                      /* size of alphabet                */
 #define NETX 2000                     /* size of error display buffer    */
@@ -494,8 +470,7 @@
     if (!(v = jtga(jt, t, (I)(n), (I)(r), (I *)(s)))) erraction;
 
 // When the type and all rank/shape are known at compile time, use GAT.  The compiler precalculates
-// almost everything For best results declare name as: AD* RESTRICT name;  The number of bytes,
-// rounded up with overhead added, must not exceed 2^(PMINL+4)
+// almost everything. The number of bytes, rounded up with overhead added, must not exceed 2^(PMINL+4)
 #define GATS(name, type, atoms, rank, shaape, size, shapecopier, erraction) \
     {                                                                       \
         ASSERT(!((rank) & ~RMAX), EVLIMIT);                                 \
@@ -819,7 +794,7 @@
 #define PROD(z, length, ain)                \
     {                                       \
         I _i             = (length);        \
-        I *RESTRICT _zzt = (ain)-2;         \
+        I * _zzt = (ain)-2;         \
         if (_i < 3) {                       \
             _zzt += _i;                     \
             z    = (I)&oneone;              \
@@ -835,7 +810,7 @@
 #define PRODRNK(result, length, ain)                             \
     {                                                            \
         I _i             = (length);                             \
-        I *RESTRICT _zzt = (ain);                                \
+        I * _zzt = (ain);                                \
         if ((US)_i < 3) {                                        \
             _zzt   = _i & 3 ? _zzt : iotavec - IOTAVECBEGIN + 1; \
             result = *_zzt;                                      \
@@ -1112,38 +1087,6 @@ extern I CTLZI_(UI, UI4 *);
 #define CTLZI(in, out) CTLZI_(in, &(out))
 #endif
 
-#if (defined(__arm__) || defined(__aarch64__) || defined(_M_ARM64)) && !defined(__MACH__)
-// option -fsigned-char in android and raspberry
-#ifdef strchr
-#undef strchr
-#endif
-#define strchr(a, b) (C *)strchr((unsigned char *)(a), (unsigned char)(b))
-#endif
-
-/* workaround clang branch prediction side effect */
-#if defined(__clang__) && ((__clang_major__ > 3) || ((__clang_major__ == 3) && (__clang_minor__ > 3)))
-#define dmul2(u, v)           \
-    ({                        \
-        __asm__("" ::: "cc"); \
-        (u) * (v);            \
-    })
-#define ddiv2(u, v)           \
-    ({                        \
-        __asm__("" ::: "cc"); \
-        (u) / (v);            \
-    })
-#else
-#define dmul2(u, v) ((u) * (v))
-#define ddiv2(u, v) ((u) / (v))
-#endif
-
-/* (hopefully) turn off some re-scheduling optimization  */
-#ifdef __GNUC__
-#define CCBLOCK __asm__("" ::: "cc")
-#else
-#define CCBLOCK
-#endif
-
 #include <fenv.h>
 // bug clang isnan(x) set NaN flag if x is NaN
 
@@ -1158,7 +1101,6 @@ _clearfp(void) {
     return r;
 }
 
-#define DPMULDECLS
 #define DPMUL(x, y, z, s)           \
     {                               \
         I _l, _x = (x), _y = (y);   \
@@ -1169,7 +1111,6 @@ _clearfp(void) {
         _d = ABS(_d);               \
         if (_d > 1e8) s             \
     }  // *z may be the same as x or y
-#define DPMULDDECLS
 #define DPMULD(x, y, z, s)          \
     {                               \
         I _l, _x = (x), _y = (y);   \

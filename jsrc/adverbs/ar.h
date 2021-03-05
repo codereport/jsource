@@ -9,7 +9,7 @@
 // d=#atoms in an item of a cell of w (thus c=d*n)
 
 #define REDUCEPFX(f, Tz, Tx, pfx, vecfn1, vecfnn)                                          \
-    I f(I d, I n, I m, Tx* RESTRICTI x, Tz* RESTRICTI z, J jt) {                           \
+    I f(I d, I n, I m, Tx* x, Tz* z, J jt) {                           \
         I i;                                                                               \
         Tz v;                                                                              \
         if (d == 1) {                                                                      \
@@ -23,7 +23,7 @@
             x += (m * n - 1) * d;                                                          \
             for (i = 0; i < m; ++i, z -= d) {                                              \
                 I rc;                                                                      \
-                Tx* RESTRICT y = x;                                                        \
+                Tx* y = x;                                                        \
                 x -= d;                                                                    \
                 if (255 & (rc = vecfn1(1, d, x, y, z, jt))) return rc;                     \
                 x -= d;                                                                    \
@@ -35,7 +35,7 @@
 
 // used on idempotent verbs, using 2 accumulators
 #define REDUCEPFXIDEM2(f, Tz, Tx, pfx, vecfn)                                     \
-    I f(I d, I n, I m, Tx* RESTRICTI x, Tz* RESTRICTI z, J jt) {                  \
+    I f(I d, I n, I m, Tx* x, Tz* z, J jt) {                  \
         I i;                                                                      \
         if (d == 1) {                                                             \
             x += m * n;                                                           \
@@ -50,7 +50,7 @@
             z += (m - 1) * d;                                                     \
             x += (m * n - 1) * d;                                                 \
             for (i = 0; i < m; ++i, z -= d) {                                     \
-                Tx* RESTRICT y = x;                                               \
+                Tx* y = x;                                               \
                 x -= d;                                                           \
                 vecfn(1, d, x, y, z, jt);                                         \
                 x -= d;                                                           \
@@ -64,7 +64,7 @@
 #define REDUCEPFXIDEM2PRIM256(f, Tz, Tx, pfx, vecfn, prim, identity) REDUCEPFXIDEM2(f, Tz, Tx, pfx, vecfn)
 
 #define REDUCENAN(f, Tz, Tx, pfx, vecfn)                                                  \
-    I f(I d, I n, I m, Tx* RESTRICTI x, Tz* RESTRICTI z, J jt) {                          \
+    I f(I d, I n, I m, Tx* x, Tz* z, J jt) {                          \
         I i;                                                                              \
         Tz v;                                                                             \
         NAN0;                                                                             \
@@ -79,7 +79,7 @@
             x += (m * n - 1) * d;                                                         \
             for (i = 0; i < m; ++i, z -= d) {                                             \
                 I rc;                                                                     \
-                Tx* RESTRICT y = x;                                                       \
+                Tx* y = x;                                                       \
                 x -= d;                                                                   \
                 if (255 & (rc = vecfn(1, d, x, y, z, jt))) return rc;                     \
                 x -= d;                                                                   \
@@ -90,10 +90,10 @@
     }
 
 #define REDUCCPFX(f, Tz, Tx, pfx)                                             \
-    I f(I d, I n, I m, Tx* RESTRICTI x, Tz* RESTRICTI z, J jt) {              \
+    I f(I d, I n, I m, Tx* x, Tz* z, J jt) {              \
         I i;                                                                  \
-        Tx* RESTRICT y;                                                       \
-        Tz v, *RESTRICT zz;                                                   \
+        Tx* y;                                                       \
+        Tz v, *zz;                                                   \
         if (d == 1) {                                                         \
             x += m * n;                                                       \
             z += m;                                                           \
@@ -115,9 +115,9 @@
     }
 
 #define REDUCEOVF(f, Tz, Tx, fr1, fvv, frn)                    \
-    I f(I d, I n, I m, I* RESTRICTI x, I* RESTRICTI z, J jt) { \
+    I f(I d, I n, I m, I* x, I* z, J jt) { \
         I er = EVOK;                                           \
-        I i, *RESTRICT xx, *y, *RESTRICT zz;                   \
+        I i, *xx, *y, *zz;                   \
         if (d == 1) {                                          \
             xx = x;                                            \
             zz = z;                                            \

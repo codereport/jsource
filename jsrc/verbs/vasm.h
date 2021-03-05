@@ -26,7 +26,7 @@
         DQ(n, u = *x; v = *y; w = u - v; *z = w; ++x; ++y; ++z; v ^= u; u ^= w; if (XANDY(u, v) < 0) return EWOV;) \
     }
 #define TYMESVV(n, z, x, y) \
-    { DPMULDECLS DQ(n, DPMUL(*x, *y, z, return EWOV;); z++; x++; y++;) }
+    { DQ(n, DPMUL(*x, *y, z, return EWOV;); z++; x++; y++;) }
 
 // overflow if (~ssign^vsign)&&(resultsign^vsign), i. e. input signs equal and result changes sign
 #define PLUSP(n, z, x)                                                                                   \
@@ -42,7 +42,7 @@
     }
 #define TYMESP(n, z, x)                                      \
     {                                                        \
-        DPMULDDECLS I s = 1;                                 \
+        I s = 1;                                 \
         DQ(n, DPMULD(*x, s, s, return EWOV;) *z++ = s; x++;) \
     }
 
@@ -82,7 +82,7 @@
 #define TYMESR(n, z, x)                                                 \
     {                                                                   \
         I l                                                        = 1; \
-        DPMULDDECLS DQ(n, DPMULD(l, *x, l, return EWOV;); x++;) *z = l; \
+        DQ(n, DPMULD(l, *x, l, return EWOV;); x++;) *z = l; \
     }
 
 #define PLUSRV(n, z, x)                                                                                            \
@@ -96,7 +96,7 @@
         DQ(n, u = *x; v = *z; w = u - v; *z = w; ++x; ++z; v ^= u; u ^= w; if (XANDY(u, v) < 0) return EWOV;) \
     }
 #define TYMESRV(n, z, x) \
-    { DPMULDECLS DQ(n, DPMUL(*x, *z, z, return EWOV;); x++; z++;); }
+    { DQ(n, DPMUL(*x, *z, z, return EWOV;); x++; z++;); }
 
 #define PLUSS(n, z, x)                                                                                \
     {                                                                                                 \
@@ -115,7 +115,7 @@
     }
 #define TYMESS(n, z, x)                                         \
     {                                                           \
-        DPMULDDECLS I s = 1;                                    \
+        I s = 1;                                    \
         x += n;                                                 \
         z += n;                                                 \
         DQ(n, --x; --z; DPMULD(*x, s, s, return EWOV; *z = s;)) \

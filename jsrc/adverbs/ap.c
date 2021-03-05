@@ -34,9 +34,8 @@
     else                      \
         r = jtztymes(jt, u, v);
 
-// Don't RESTRICT y since function may be called inplace
 #define PREFIXPFX(f, Tz, Tx, pfx, vecfn, retstmt)                             \
-    I f(I d, I n, I m, Tx* RESTRICTI x, Tz* RESTRICTI z, J jt) {              \
+    I f(I d, I n, I m, Tx* x, Tz* z, J jt) {              \
         I i;                                                                  \
         Tz v;                                                                 \
         if (d == 1)                                                           \
@@ -53,7 +52,7 @@
     } /* for associative functions only */
 
 #define PREFIXNAN(f, Tz, Tx, pfx, vecfn)                                      \
-    I f(I d, I n, I m, Tx* RESTRICTI x, Tz* RESTRICTI z, J jt) {              \
+    I f(I d, I n, I m, Tx* x, Tz* z, J jt) {              \
         I i;                                                                  \
         Tz v;                                                                 \
         NAN0;                                                                 \
@@ -71,7 +70,7 @@
     } /* for associative functions only */
 
 #define PREFICPFX(f, Tz, Tx, pfx)                                                 \
-    I f(I d, I n, I m, Tx* RESTRICTI x, Tz* RESTRICTI z, J jt) {                  \
+    I f(I d, I n, I m, Tx* x, Tz* z, J jt) {                  \
         I i;                                                                      \
         Tz v, *y;                                                                 \
         if (d == 1)                                                               \
@@ -87,7 +86,7 @@
     } /* for associative functions only */
 
 #define PREFIXALT(f, Tz, Tx, pfx, retstmt)                                                         \
-    I f(I d, I n, I m, Tx* RESTRICTI x, Tz* RESTRICTI z, J jt) {                                   \
+    I f(I d, I n, I m, Tx* x, Tz* z, J jt) {                                   \
         B b;                                                                                       \
         I i;                                                                                       \
         Tz v, *y;                                                                                  \
@@ -105,7 +104,7 @@
     }
 
 #define PREALTNAN(f, Tz, Tx, pfx)                                                                  \
-    I f(I d, I n, I m, Tx* RESTRICTI x, Tz* RESTRICTI z, J jt) {                                   \
+    I f(I d, I n, I m, Tx* x, Tz* z, J jt) {                                   \
         B b;                                                                                       \
         I i;                                                                                       \
         Tz v, *y;                                                                                  \
@@ -124,7 +123,7 @@
     }
 
 #define PREFICALT(f, Tz, Tx, pfx)                                                                      \
-    I f(I d, I n, I m, Tx* RESTRICTI x, Tz* RESTRICTI z, J jt) {                                       \
+    I f(I d, I n, I m, Tx* x, Tz* z, J jt) {                                       \
         B b;                                                                                           \
         I i;                                                                                           \
         Tz v, *y;                                                                                      \
@@ -142,7 +141,7 @@
     }
 
 #define PREFIXOVF(f, Tz, Tx, fp1, fvv)                                         \
-    I f(I d, I n, I m, I* RESTRICTI x, I* RESTRICTI z, J jt) {                 \
+    I f(I d, I n, I m, I* x, I* z, J jt) {                 \
         I i, *xx = x, *y, *zz = z;                                             \
         if (d == 1) {                                                          \
             if (1 == n)                                                        \
@@ -172,7 +171,7 @@
     }
 
 #define PREFIXBFX(f, pfx, ipfx, spfx, bpfx, vexp)                                                \
-    I f(I d, I n, I m, B* RESTRICTI x, B* RESTRICTI z, J jt) {                                   \
+    I f(I d, I n, I m, B* x, B* z, J jt) {                                   \
         B* y;                                                                                    \
         I j, q;                                                                                  \
         if (1 == d)                                                                              \
@@ -273,12 +272,12 @@ jtpscanlt(J jt, I m, I d, I n, B* z, B* x, B p) {
 } /* f/\"r w for < and <: */
 
 I
-ltpfxB(I d, I n, I m, B* RESTRICTI x, B* RESTRICTI z, J jt) {
+ltpfxB(I d, I n, I m, B* x, B* z, J jt) {
     jtpscanlt(jt, m, d, n, z, x, C1);
     return EVOK;
 }
 I
-lepfxB(I d, I n, I m, B* RESTRICTI x, B* RESTRICTI z, J jt) {
+lepfxB(I d, I n, I m, B* x, B* z, J jt) {
     jtpscanlt(jt, m, d, n, z, x, C0);
     return EVOK;
 }
@@ -376,22 +375,22 @@ jtpscangt(J jt, I m, I d, I n, B* z, B* x, I apas) {
 } /* f/\"r w for > >: +: *: */
 
 I
-gtpfxB(I d, I n, I m, B* RESTRICTI x, B* RESTRICTI z, J jt) {
+gtpfxB(I d, I n, I m, B* x, B* z, J jt) {
     jtpscangt(jt, m, d, n, z, x, 0x2);
     return EVOK;
 }
 I
-gepfxB(I d, I n, I m, B* RESTRICTI x, B* RESTRICTI z, J jt) {
+gepfxB(I d, I n, I m, B* x, B* z, J jt) {
     jtpscangt(jt, m, d, n, z, x, 0xd);
     return EVOK;
 }
 I
-norpfxB(I d, I n, I m, B* RESTRICTI x, B* RESTRICTI z, J jt) {
+norpfxB(I d, I n, I m, B* x, B* z, J jt) {
     jtpscangt(jt, m, d, n, z, x, 0x5);
     return EVOK;
 }
 I
-nandpfxB(I d, I n, I m, B* RESTRICTI x, B* RESTRICTI z, J jt) {
+nandpfxB(I d, I n, I m, B* x, B* z, J jt) {
     jtpscangt(jt, m, d, n, z, x, 0xa);
     return EVOK;
 }
@@ -400,7 +399,7 @@ PREFIXOVF(pluspfxI, I, I, PLUSP, PLUSVV)
 PREFIXOVF(tymespfxI, I, I, TYMESP, TYMESVV)
 
 I
-minuspfxI(I d, I n, I m, I* RESTRICTI x, I* RESTRICTI z, J jt) {
+minuspfxI(I d, I n, I m, I* x, I* z, J jt) {
     C er = 0;
     I i, j, n1 = n - 1, *xx = x, *y, *zz = z;
     if (1 == d) {
@@ -430,7 +429,7 @@ PREFICALT(minuspfxO, D, I, MINUSPA)
 
 PREFIXPFX(pluspfxB, I, B, PLUS, plusIB, return EVOK;)
 I
-pluspfxD(I d, I n, I m, D* RESTRICTI x, D* RESTRICTI z, J jt) {
+pluspfxD(I d, I n, I m, D* x, D* z, J jt) {
     I i;
     NAN0;
     if (d == 1) {

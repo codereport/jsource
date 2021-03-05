@@ -216,7 +216,7 @@ A
 jticap2(J jt, A a, A w) {
     A *av, *wv, z;
     C *uu, *vv;
-    I ar, *as, at, b, c, ck, cm, ge, gt, j, k, m, n, p, q, r, t, wr, *ws, wt, *RESTRICT zv;
+    I ar, *as, at, b, c, ck, cm, ge, gt, j, k, m, n, p, q, r, t, wr, *ws, wt, *zv;
     I cc;
     ar = AR(a);
     at = AT(a);

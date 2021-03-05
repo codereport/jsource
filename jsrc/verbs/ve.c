@@ -7,7 +7,7 @@
 #include "vasm.h"
 #include "vcomp.h"
 
-#define DIVI(u, v) (u || v ? ddiv2(u, (D)v) : 0.0)
+#define DIVI(u, v) (u || v ? (u) / (D)(v) : 0.0)
 #define DIVBB(u, v) (v ? u : u ? inf : 0.0)
 
 #define TYMESID(u, v) (u ? u * v : 0)
@@ -17,7 +17,7 @@
 // BI add, noting overflow and leaving it, possibly in place.  If we add 0, copy the numbers (or leave unchanged, if in
 // place)
 I
-plusBI(I n, I m, B* RESTRICTI x, I* RESTRICTI y, I* RESTRICTI z, J jt) {
+plusBI(I n, I m, B* x, I* y, I* z, J jt) {
     I u;
     I v;
     I oflo = 0;
@@ -39,7 +39,7 @@ plusBI(I n, I m, B* RESTRICTI x, I* RESTRICTI y, I* RESTRICTI z, J jt) {
 // IB add, noting overflow and leaving it, possibly in place.  If we add 0, copy the numbers (or leave unchanged, if in
 // place)
 I
-plusIB(I n, I m, I* RESTRICTI x, B* RESTRICTI y, I* RESTRICTI z, J jt) {
+plusIB(I n, I m, I* x, B* y, I* z, J jt) {
     I u;
     I v;
     I oflo = 0;
@@ -66,7 +66,7 @@ APFX(divDD, D, D, D, DIV, NAN0;, ASSERTWR(!NANTEST, EVNAN); return EVOK;)
 
 // II add, noting overflow and leaving it, possibly in place
 I
-plusII(I n, I m, I* RESTRICTI x, I* RESTRICTI y, I* RESTRICTI z, J jt) {
+plusII(I n, I m, I* x, I* y, I* z, J jt) {
     I u;
     I v;
     I w;
@@ -89,7 +89,7 @@ plusII(I n, I m, I* RESTRICTI x, I* RESTRICTI y, I* RESTRICTI z, J jt) {
     // II subtract, noting overflow and leaving it, possibly in place
 }
 I
-minusII(I n, I m, I* RESTRICTI x, I* RESTRICTI y, I* RESTRICTI z, J jt) {
+minusII(I n, I m, I* x, I* y, I* z, J jt) {
     I u;
     I v;
     I w;
@@ -122,7 +122,7 @@ APFX(maxII, I, I, I, MAX, , return EVOK;)
 // BI subtract, noting overflow and leaving it, possibly in place.  If we add 0, copy the numbers (or leave unchanged,
 // if in place)
 I
-minusBI(I n, I m, B* RESTRICTI x, I* RESTRICTI y, I* RESTRICTI z, J jt) {
+minusBI(I n, I m, B* x, I* y, I* z, J jt) {
     I u;
     I v;
     I w;
@@ -139,7 +139,7 @@ minusBI(I n, I m, B* RESTRICTI x, I* RESTRICTI y, I* RESTRICTI z, J jt) {
 // IB subtract, noting overflow and leaving it, possibly in place.  If we add 0, copy the numbers (or leave unchanged,
 // if in place)
 I
-minusIB(I n, I m, I* RESTRICTI x, B* RESTRICTI y, I* RESTRICTI z, J jt) {
+minusIB(I n, I m, I* x, B* y, I* z, J jt) {
     I u;
     I v;
     I w;
@@ -161,8 +161,8 @@ minusIB(I n, I m, I* RESTRICTI x, B* RESTRICTI y, I* RESTRICTI z, J jt) {
 
 // II multiply, in double precision.  Always return error code so we can clean up
 I
-tymesII(I n, I m, I* RESTRICTI x, I* RESTRICTI y, I* RESTRICTI z, J jt) {
-    DPMULDECLS I u;
+tymesII(I n, I m, I* x, I* y, I* z, J jt) {
+    I u;
     I v;
     if (jt->mulofloloc < 0) return EWOVIP + EWOVIPMULII;
     I* zi = z;  // could use a side channel to avoid having main loop look at rc
@@ -183,7 +183,7 @@ oflo:
 
 // BI multiply, using clear/copy
 I
-tymesBI(I n, I m, B* RESTRICTI x, I* RESTRICTI y, I* RESTRICTI z, J jt) {
+tymesBI(I n, I m, B* x, I* y, I* z, J jt) {
     I v;
     if (n - 1 == 0)
         DQ(m, I u = *x; *z++ = *y & -u; x++; y++;)
@@ -201,7 +201,7 @@ tymesBI(I n, I m, B* RESTRICTI x, I* RESTRICTI y, I* RESTRICTI z, J jt) {
 
 // IB multiply, using clear/copy
 I
-tymesIB(I n, I m, I* RESTRICTI x, B* RESTRICTI y, I* RESTRICTI z, J jt) {
+tymesIB(I n, I m, I* x, B* y, I* z, J jt) {
     I u;
     if (n - 1 == 0)
         DQ(m, I v = *y; *z++ = *x & -v; x++; y++;)
@@ -218,7 +218,7 @@ tymesIB(I n, I m, I* RESTRICTI x, B* RESTRICTI y, I* RESTRICTI z, J jt) {
 
 // BD multiply, using clear/copy
 I
-tymesBD(I n, I m, B* RESTRICTI x, D* RESTRICTI y, D* RESTRICTI z, J jt) {
+tymesBD(I n, I m, B* x, D* y, D* z, J jt) {
     if (n - 1 == 0)
         DQ(m, D* yv = (D*)&dzero; yv = *x ? y : yv; *z++ = *yv; x++; y++;)
     else if (n - 1 < 0) {
@@ -235,7 +235,7 @@ tymesBD(I n, I m, B* RESTRICTI x, D* RESTRICTI y, D* RESTRICTI z, J jt) {
 
 // DB multiply, using clear/copy
 I
-tymesDB(I n, I m, D* RESTRICTI x, B* RESTRICTI y, D* RESTRICTI z, J jt) {
+tymesDB(I n, I m, D* x, B* y, D* z, J jt) {
     if (n - 1 == 0)
         DQ(m, D* yv = (D*)&dzero; yv = *y ? x : yv; *z++ = *yv; x++; y++;)
     else if (n - 1 < 0)
@@ -256,14 +256,14 @@ tymesDB(I n, I m, D* RESTRICTI x, B* RESTRICTI y, D* RESTRICTI z, J jt) {
 // *z is the D result area (which might be the same as *y)
 // b is unused for plus
 I
-plusIIO(I n, I m, I* RESTRICTI x, I* RESTRICTI y, D* RESTRICTI z, J jt) {
+plusIIO(I n, I m, I* x, I* y, D* z, J jt) {
     I u;
     I absn = n ^ REPSGN(n);
     DQ(m, u = *x++; DQ(absn, *z = (D)u + (D)(*y - u); ++y; ++z;));
     return EVOK;
 }
 I
-plusBIO(I n, I m, B* RESTRICTI x, I* RESTRICTI y, D* RESTRICTI z, J jt) {
+plusBIO(I n, I m, B* x, I* y, D* z, J jt) {
     I u;
     I absn = n ^ REPSGN(n);
     DQ(m, u = (I)*x++; DQ(absn, *z = (D)u + (D)(*y - u); ++y; ++z;));
@@ -272,14 +272,14 @@ plusBIO(I n, I m, B* RESTRICTI x, I* RESTRICTI y, D* RESTRICTI z, J jt) {
 
 // For subtract repair, b is 1 if x was the subtrahend, 0 if the minuend
 I
-minusIIO(I n, I m, I* RESTRICTI x, I* RESTRICTI y, D* RESTRICTI z, J jt) {
+minusIIO(I n, I m, I* x, I* y, D* z, J jt) {
     I u;
     I absn = n ^ REPSGN(n);
     DQ(m, u = *x++; DQ(absn, *z = n < 0 ? ((D)(*y + u) - (D)u) : ((D)u - (D)(u - *y)); ++y; ++z;));
     return EVOK;
 }
 I
-minusBIO(I n, I m, B* RESTRICTI x, I* RESTRICTI y, D* RESTRICTI z, J jt) {
+minusBIO(I n, I m, B* x, I* y, D* z, J jt) {
     I u;
     I absn = n ^ REPSGN(n);
     DQ(m, u = (I)*x++; DQ(absn, *z = n < 0 ? ((D)(*y + u) - (D)u) : ((D)u - (D)(u - *y)); ++y; ++z;));
@@ -290,7 +290,7 @@ minusBIO(I n, I m, B* RESTRICTI x, I* RESTRICTI y, D* RESTRICTI z, J jt) {
 // Parts of z before mulofloloc have been filled in already
 // We have to track the inputs just as for any other action routine
 I
-tymesIIO(I n, I m, I* RESTRICTI x, I* RESTRICTI y, D* RESTRICTI z, J jt) {
+tymesIIO(I n, I m, I* x, I* y, D* z, J jt) {
     I u, v;
     I absn = n ^ REPSGN(n);
     // if all the multiplies are to be skipped, skip them quickly
@@ -391,7 +391,7 @@ remii(I a, I b) {
 }  // must handle IMIN/-1, which overflows.  If a=0, return b.
 
 I
-remII(I n, I m, I* RESTRICTI x, I* RESTRICTI y, I* RESTRICTI z, J jt) {
+remII(I n, I m, I* x, I* y, I* z, J jt) {
     I u, v;
     if (n - 1 == 0) {
         DQ(m, *z++ = remii(*x, *y); x++; y++;)

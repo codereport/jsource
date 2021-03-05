@@ -377,7 +377,7 @@ jtspendtracking(J jt) {
 static void
 freesymb(J jt, A w) {
     I j, wn = AN(w);
-    LX k, kt, *RESTRICT wv = LXAV0(w);
+    LX k, kt, *wv = LXAV0(w);
     L* jtsympv = LAV0(
       jt->symp);  // Move base of symbol block to a register.  Block 0 is the base of the free chain.  MUST NOT move the
                   // base of the free queue to a register, because when we free a locale it frees its symbols here, and
@@ -502,9 +502,9 @@ jtincorp(J jt, A w) {
 // You should be wary of making an NJA block virtual, because with a usecount of 1 it might be inplaced by the code for
 // x,y or x u}y If this code is called with inplacing turned on (* w inplaceable), we assume that w is going to be
 // replaced by the virtual result, and we make the virtual block inplaceable if w was
-RESTRICTF A
-jtvirtual(J jtip, AD* RESTRICT w, I offset, I r) {
-    AD* RESTRICT z;
+A
+jtvirtual(J jtip, AD* w, I offset, I r) {
+    AD* z;
     J jt = (J)(intptr_t)((I)jtip & ~JTFLAGMSK);  // get flag-free pointer to J block
     ASSERT(RMAX >= r, EVLIMIT);
     I t = AT(w);                                  // type of input
@@ -730,7 +730,7 @@ jtgc3(J jt, A* x, A* y, A* z, A* old) {
 
 // subroutine version of ra without rifv to save space
 static A
-raonlys(AD* RESTRICT w) {
+raonlys(AD* w) {
     RZ(w);
     ra(w);
     return w;
@@ -738,12 +738,12 @@ raonlys(AD* RESTRICT w) {
 
 // This routine handles the recursion for ra().  ra() itself does the top level, this routine handles the contents
 I
-jtra(AD* RESTRICT wd, I t) {
+jtra(AD* wd, I t) {
     I n = AN(wd);
     if (t & BOX) {
         AD* np;
         // boxed.  Loop through each box, recurring if called for.  Two passes are intertwined in the loop
-        A* RESTRICT wv = AAV(wd);  // pointer to box pointers
+        A* wv = AAV(wd);  // pointer to box pointers
         if (n == 0) return 0;      // Can't be mapped boxed; skip everything if no boxes
         np = *wv;                  // prefetch first box
         while (--n > 0) {
@@ -755,17 +755,17 @@ jtra(AD* RESTRICT wd, I t) {
         };
         if (np) ra(np);  // handle last one
     } else if (t & (VERB | ADV | CONJ)) {
-        V* RESTRICT v = FAV(wd);
+        V* v = FAV(wd);
         // ACV.  Recur on each component
         raonlys(v->fgh[0]);
         raonlys(v->fgh[1]);
         raonlys(v->fgh[2]);
     } else if (t & (RAT | XNUM)) {
-        A* RESTRICT v = AAV(wd);
+        A* v = AAV(wd);
         // single-level indirect forms.  handle each block
         DQ(t & RAT ? 2 * n : n, if (*v) ACINCR(*v); ++v;);
     } else if (t & SPARSE) {
-        P* RESTRICT v = PAV(wd);
+        P* v = PAV(wd);
         A x;
         // all elements of sparse blocks are guaranteed non-virtual, so ra will not reassign them
         x = SPA(v, a);
@@ -782,12 +782,12 @@ jtra(AD* RESTRICT wd, I t) {
 
 // This handles the recursive part of fa(), freeing the contents of wd
 I
-jtfa(J jt, AD* RESTRICT wd, I t) {
+jtfa(J jt, AD* wd, I t) {
     I n = AN(wd);
     if (t & BOX) {
         AD* np;
         // boxed.  Loop through each box, recurring if called for.
-        A* RESTRICT wv = AAV(wd);  // pointer to box pointers
+        A* wv = AAV(wd);  // pointer to box pointers
         if (n == 0) return 0;      // Can't be mapped boxed; skip everything if no boxes
         np = *wv;                  // prefetch first box
         while (--n > 0) {
@@ -799,17 +799,17 @@ jtfa(J jt, AD* RESTRICT wd, I t) {
         };
         fana(np);  // increment the box, possibly turning it to recursive
     } else if (t & (VERB | ADV | CONJ)) {
-        V* RESTRICT v = FAV(wd);
+        V* v = FAV(wd);
         // ACV.
         fana(v->fgh[0]);
         fana(v->fgh[1]);
         fana(v->fgh[2]);
     } else if (t & (RAT | XNUM)) {
-        A* RESTRICT v = AAV(wd);
+        A* v = AAV(wd);
         // single-level indirect forms.  handle each block
         DQ(t & RAT ? 2 * n : n, if (*v) fr(*v); ++v;);
     } else if (t & SPARSE) {
-        P* RESTRICT v = PAV(wd);
+        P* v = PAV(wd);
         fana(SPA(v, a));
         fana(SPA(v, e));
         fana(SPA(v, i));
@@ -825,13 +825,12 @@ jtfa(J jt, AD* RESTRICT wd, I t) {
 // non-sparse nouns, because they always go through ra() somewhere before the tpush().  Pushing is mostly in jtgc(jt,)
 // and on allocation in jtga(jt, ).
 A*
-jttpush(J jt, AD* RESTRICT wd, I t, A* pushp) {
-    I af = AFLAG(wd);
+jttpush(J jt, AD* wd, I t, A* pushp) {
     I n  = AN(wd);
     if (t & BOX) {
         // THIS CODE IS NEVER EXECUTED
         // boxed.  Loop through each box, recurring if called for.
-        A* RESTRICT wv = AAV(wd);  // pointer to box pointers
+        A* wv = AAV(wd);  // pointer to box pointers
         while (n--) {
             A np = *wv;
             ++wv;      // point to block for box
@@ -852,17 +851,17 @@ jttpush(J jt, AD* RESTRICT wd, I t, A* pushp) {
         }
 
     } else if (t & (VERB | ADV | CONJ)) {
-        V* RESTRICT v = FAV(wd);
+        V* v = FAV(wd);
         // ACV.  Recur on each component
         if (v->fgh[0]) tpushi(v->fgh[0]);
         if (v->fgh[1]) tpushi(v->fgh[1]);
         if (v->fgh[2]) tpushi(v->fgh[2]);
     } else if (t & (RAT | XNUM)) {
-        A* RESTRICT v = AAV(wd);
+        A* v = AAV(wd);
         // single-level indirect forms.  handle each block
         DQ(t & RAT ? 2 * n : n, if (*v) tpushi(*v); ++v;);
     } else if (t & SPARSE) {
-        P* RESTRICT v = PAV(wd);
+        P* v = PAV(wd);
         if (SPA(v, a)) tpushi(SPA(v, a));
         if (SPA(v, e)) tpushi(SPA(v, e));
         if (SPA(v, x)) tpushi(SPA(v, x));
@@ -1017,7 +1016,7 @@ jtrat(J jt, A w) {
 }  // recursive.  w can be zero only if explicit definition had a failing sentence
 
 A
-jtras(J jt, AD* RESTRICT w) {
+jtras(J jt, AD* w) {
     if (!w) return 0;
     realizeifvirtual(w);
     ra(w);
@@ -1025,19 +1024,19 @@ jtras(J jt, AD* RESTRICT w) {
 }  // subroutine version of ra() to save space
 
 A
-jtrifvs(J jt, AD* RESTRICT w) {
+jtrifvs(J jt, AD* w) {
     realizeifvirtual(w);
     return w;
 }  // subroutine version of rifv() to save space and be an rvalue
 A
-jtmkwris(J jt, AD* RESTRICT w) {
+jtmkwris(J jt, AD* w) {
     makewritable(w);
     return w;
 }  // subroutine version of makewritable() to save space and be an rvalue
 
 // static auditmodulus = 0;
 // blockx is bit# of MSB in (length-1), i. e. lg2(bufsize)-1
-RESTRICTF A
+A
 jtgaf(J jt, I blockx) {
     A z;
     I mfreeb;
@@ -1129,7 +1128,7 @@ jtgaf(J jt, I blockx) {
 }
 
 // bytes is total #bytes needed including headers, -1
-RESTRICTF A
+A
 jtgafv(J jt, I bytes) {
     UI4 j;
 #if NORMAH * 8 < (1LL << (PMINL - 1))
@@ -1145,7 +1144,7 @@ jtgafv(J jt, I bytes) {
     }  // do it this way for branch-prediction
 }
 
-RESTRICTF A
+A
 jtga(J jt, I type, I atoms, I rank, I* shaape) {
     A z;
     // Get the number of bytes needed, including the header, the atoms, and a full I appended for types that require a
@@ -1211,7 +1210,7 @@ jtmf(J jt, A w) {
 // allocate header with rank r; if r==1, move the item count to be the shape also
 // a header is a simplified virtual block, for temporary use only, that must never escape into the wild, either in full
 // or as a backer for a virtual block
-RESTRICTF A
+A
 jtgah(J jt, I r, A w) {
     A z;
     ASSERT(RMAX >= r, EVLIMIT);

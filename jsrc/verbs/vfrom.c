@@ -70,7 +70,7 @@ jtcatalog(J jt, A w) {
 
 #define IFROMLOOP(T)                                           \
     {                                                          \
-        T *RESTRICT v = (T *)wv, *RESTRICT x = (T *)zv;        \
+        T *v = (T *)wv, *x = (T *)zv;        \
         if (1 == an) {                                         \
             v += j;                                            \
             DQ(m, *x++ = *v; v += p;);                         \
@@ -177,7 +177,7 @@ jtifrom(J jt, A a, A w) {
             // cells are not simple types.  We can safely move full words, since there is always extra buffer space at
             // the end of any type that is not a word-multiple
             {
-                C *RESTRICT u, *RESTRICT v = (C *)wv, *RESTRICT x = (C *)zv;
+                C *u, *v = (C *)wv, *x = (C *)zv;
                 pq = p * k;
                 if (1 == an) {
                     v += j * k;
@@ -397,7 +397,7 @@ static A
 jtafrom2(J jt, A p, A q, A w, I r) {
     A z;
     C *wv, *zv;
-    I d, e, j, k, m, n, pn, pr, *RESTRICT pv, qn, qr, *RESTRICT qv, *RESTRICT s, wf, wr, *RESTRICT ws, zn;
+    I d, e, j, k, m, n, pn, pr, *pv, qn, qr, *qv, *s, wf, wr, *ws, zn;
     wr = AR(w);
     ws = AS(w);
     wf = wr - r;
@@ -430,7 +430,7 @@ jtafrom2(J jt, A p, A q, A w, I r) {
     switch (k = d << bplg(AT(w))) {  // k=*bytes in a _2-cell of a cell of w
 #define INNER2(T)                                                            \
     {                                                                        \
-        T *RESTRICT v = (T *)wv, *RESTRICT x = (T *)zv;                      \
+        T *v = (T *)wv, *x = (T *)zv;                      \
         DQ(m, DO(pn, j = e * pv[i]; DO(qn, *x++ = v[j + qv[i]];)); v += n;); \
     }                                                                        \
     break;  // n=#_2-cells in a cell of w.
@@ -440,7 +440,7 @@ jtafrom2(J jt, A p, A q, A w, I r) {
         case sizeof(I4): INNER2(I4);
 
         default: {
-            C *RESTRICT v = wv, *RESTRICT x = zv - k;
+            C *v = wv, *x = zv - k;
             n = k * n;  // n=#bytes in a cell of w
             DQ(m,
                DO(pn, j = e * pv[i]; DO(qn, x += k; JMCR(x, v + k * (j + qv[i]), k + (SZI - 1), loop1, 0, endmask);));
@@ -638,7 +638,7 @@ jtsfrom(J jt, A a, A w) {
                 // right here Find the number of axes included in each cell offset; get the cell size
                 I cellsize;
                 PROD(cellsize, AR(w) - AS(a)[AR(a) - 1], AS(w) + AS(a)[AR(a) - 1]);  // number of atoms per index in ind
-                I *RESTRICT iv = AV(ind);                                            // start of the cell-index array
+                I *iv = AV(ind);                                            // start of the cell-index array
                 A z;
                 GA(z, AT(w), cellsize * AN(ind), AR(ind) + AR(w) - AS(a)[AR(a) - 1], 0)
                 MCISH(AS(z), AS(ind), AR(ind))
@@ -646,21 +646,21 @@ jtsfrom(J jt, A a, A w) {
                   cellsize <<= bplg(AT(w));  // change cellsize to bytes
                 switch (cellsize) {
                     case sizeof(C): {
-                        C *RESTRICT zv = CAV(z);
-                        C *RESTRICT wv = CAV(w);
+                        C *zv = CAV(z);
+                        C *wv = CAV(w);
                         DQ(AN(ind), *zv++ = wv[*iv++];) break;
                     }                // scatter-copy the data
                     case sizeof(I):  // may include D
                     {
-                        I *RESTRICT zv = IAV(z);
-                        I *RESTRICT wv = IAV(w);
+                        I *zv = IAV(z);
+                        I *wv = IAV(w);
                         DQ(AN(ind), *zv++ = wv[*iv++];) break;
                     }  // scatter-copy the data, 8-byte chunks
                     default:;
                         // It is OK to pad to an I boundary, because any block with cells not a multiple of I is padded
                         // to an I
-                        C *RESTRICT zv = CAV(z);
-                        C *RESTRICT wv = CAV(w);
+                        C *zv = CAV(z);
+                        C *wv = CAV(w);
                         DQ(AN(ind), JMCR(zv, wv + *iv++ * cellsize, cellsize + (SZI - 1), loop1, 0, endmask);
                            zv += cellsize;)  // use memcpy
                         break;
