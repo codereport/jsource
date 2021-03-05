@@ -1112,14 +1112,6 @@ extern I CTLZI_(UI, UI4 *);
 #define CTLZI(in, out) CTLZI_(in, &(out))
 #endif
 
-#if (defined(__arm__) || defined(__aarch64__) || defined(_M_ARM64)) && !defined(__MACH__)
-// option -fsigned-char in android and raspberry
-#ifdef strchr
-#undef strchr
-#endif
-#define strchr(a, b) (C *)strchr((unsigned char *)(a), (unsigned char)(b))
-#endif
-
 /* workaround clang branch prediction side effect */
 #if defined(__clang__) && ((__clang_major__ > 3) || ((__clang_major__ == 3) && (__clang_minor__ > 3)))
 #define dmul2(u, v)           \
