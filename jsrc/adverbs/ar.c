@@ -1161,27 +1161,9 @@ jtfoldx(J jt, A a, A w, A self) {
 // entry point for monad and dyad F. F.. F.: F: F:. F::
 A
 jtfold(J jt, A a, A w, A self) {
-    // The name Fold_j_ should have been loaded at startup.  If not, try loading its script.  If that still fails, quit
-    A foldconj;
-    I step;
-    for (step = 0; step < 2; ++step) {
-        switch (step) { // try the startup, from the bottom up
-            case 1:
-                // FIXME: dirty hack to get the correct path to fold.ijs
-                // '~dev/fold/foldr.ijs' feels like it should work,
-                // but no, it doesn't. The tilde ~ is handled specially by j,
-                // however, the special handling seems to only detect certain
-                // directory names (e.g. 'addons')
-                jteval(jt, "load'~addons/../dev/fold/foldr.ijs'");
-                // fall through
-            case 0:
-                if ((foldconj = jtnameref(jt, jtnfs(jt, 8, "Foldr_j_"), jt->locsyms)) && AT(foldconj) & CONJ)
-                    goto found;  // there is always a ref, but it may be to [:
-        }
-        RESETERR;  // if we loop back, clear errors
-    }
-    ASSERT(0, EVNONCE);  // not found or not conjunction - error
-found:;
+    // The name Fold_j_ should have been loaded at startup.  If not, quit
+    A foldconj = jtnameref(jt, jtnfs(jt, 8, "Foldr_j_"), jt->locsyms); // there is always a ref, but it may be to [:
+    ASSERT((foldconj && AT(foldconj) & CONJ), EVNONCE);  // not found or not conjunction - error
 
     // Apply Fold_j_ to the input arguments, creating a derived verb to do the work
     A derivvb;

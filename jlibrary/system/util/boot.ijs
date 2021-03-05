@@ -33,6 +33,7 @@ end.
 
 NB. ---------------------------------------------------------
 boot 'main/stdlib.ijs'
+load sys,'../dev/fold/foldr.ijs' NB. Consider moving fold out of `dev` directory
 load sys,'util/p.ijs' NB. This is a joke referring to k -> Q
 load sys,'util/scripts.ijs'
 load 'regex'
