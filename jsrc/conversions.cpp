@@ -21,19 +21,19 @@ extern "C" {
        ABS(v))  // used when v is known to be exact integer.  It's close enough, maybe ULP too small on the high end
 
 template <typename T, typename V>
-[[nodiscard]] static constexpr auto
+[[nodiscard]] constexpr auto
 in_range(V value) -> bool {
     return std::numeric_limits<T>::min() <= value && value <= std::numeric_limits<T>::max();
 }
 
 template <typename T, typename V>
-[[nodiscard]] static constexpr auto
+[[nodiscard]] constexpr auto
 in_range() -> bool {
     return in_range<T>(std::numeric_limits<V>::min()) && in_range<T>(std::numeric_limits<V>::max());
 }
 
 template <typename From, typename To>
-[[nodiscard]] static auto
+[[nodiscard]] auto
 convert(J jt, array w, void *yv) -> bool {
     From *v = reinterpret_cast<From *>(UAV(w));
     if constexpr (!in_range<To, From>()) {
@@ -46,15 +46,16 @@ convert(J jt, array w, void *yv) -> bool {
 }
 
 template <typename From, typename To, typename Transform>
-[[nodiscard]] static auto
+[[nodiscard]] auto
 convert(J jt, array w, void *yv, Transform t) -> bool {
     From *v = reinterpret_cast<From*>(UAV(w));
     std::transform(v, v + AN(w), static_cast<To*>(yv), t);
     return 1;
 }
 
-static B
-jtBfromD(J jt, A w, void *yv, D fuzz) {
+template <>
+[[nodiscard]] auto
+convert<D, bool>(J jt, A w, void *yv, D fuzz) -> bool {
     auto n = AN(w);
     auto v = DAV(w);
     auto x = (B *)yv;
@@ -67,8 +68,9 @@ jtBfromD(J jt, A w, void *yv, D fuzz) {
     return 1;
 }
 
-static B
-jtIfromD(J jt, A w, void *yv, D fuzz) {
+template <>
+[[nodiscard]] auto
+convert<D, I>(J jt, A w, void *yv, D fuzz) -> bool {
     auto n = AN(w);
     auto v = DAV(w);
     auto x = (I *)yv;
@@ -91,8 +93,9 @@ jtIfromD(J jt, A w, void *yv, D fuzz) {
     return 1;
 }
 
-static B
-jtDfromZ(J jt, A w, void *yv, D fuzz) {
+template <>
+[[nodiscard]] auto
+convert<Z, D>(J jt, A w, void *yv, D fuzz) -> bool {
     auto const n  = AN(w);
     auto const *v = ZAV(w);
     auto x        = (D *)yv;
@@ -111,8 +114,9 @@ jtDfromZ(J jt, A w, void *yv, D fuzz) {
     return 1;
 }
 
-static B
-jtXfromB(J jt, A w, void *yv) {
+template <>
+[[nodiscard]] auto
+convert<bool, X>(J jt, A w, void *yv) -> bool {
     return convert<B, X>(jt,
                          w,
                          yv,
@@ -129,8 +133,9 @@ inplace_negate(T& u, int64_t n) {
         std::transform(u, u + n, u, [](auto v) { return -v; });
 }
 
-static B
-jtXfromI(J jt, A w, void *yv) {
+template <>
+[[nodiscard]] auto
+convert<I, X>(J jt, A w, void *yv) -> bool {
     I u[XIDIG];
     auto const v = AV(w);
     std::transform(v, v + AN(w), static_cast<X *>(yv), [&](auto c) {
@@ -191,13 +196,15 @@ jtxd1(J jt, D p, I mode) {
     EPILOG(z);
 }
 
-static B
-jtXfromD(J jt, A w, void *yv, I mode) {
+template <>
+[[nodiscard]] auto
+convert<D, X>(J jt, A w, void *yv, I mode) -> bool {
     return convert<D, X>(jt, w, yv, [=](auto v){ return jtxd1(jt, v, mode); }) && !jt->jerr;
 }
 
-static B
-jtBfromX(J jt, A w, void *yv) {
+template <>
+[[nodiscard]] auto
+convert<X, bool>(J jt, A w, void *yv) -> bool {
     auto v = XAV(w);
     auto x = (B *)yv;
     DO(AN(w), A q = v[i]; I e = AV(q)[0]; if ((AN(q) ^ 1) | (e & -2)) return 0; x[i] = (B)e;);
@@ -212,8 +219,9 @@ value_from_X(X p) -> T {
         return std::accumulate(v, v + n, T{}, [](auto d, auto v) { return v + d * XBASE; });
 }
 
-static B
-jtIfromX(J jt, A w, void *yv) {
+template <>
+[[nodiscard]] auto
+convert<X, I>(J jt, A w, void *yv) -> bool {
     auto v = XAV(w);
     auto x = (I *)yv;
     auto n = AN(w);
@@ -228,8 +236,9 @@ jtIfromX(J jt, A w, void *yv) {
     return 1;
 }
 
-static B
-jtDfromX(J jt, A w, void *yv) {
+template <>
+[[nodiscard]] auto
+convert<X, D>(J jt, A w, void *yv) -> bool {
     auto const wv = XAV(w);
     std::transform(wv, wv + AN(w), static_cast<D *>(yv), [](auto p) {
         auto const c = AV(p)[AN(p)-1];
@@ -240,13 +249,15 @@ jtDfromX(J jt, A w, void *yv) {
     return 1;
 }
 
-static B
-jtQfromX(J jt, A w, void *yv) {
+template <>
+[[nodiscard]] auto
+convert<X, Q>(J jt, A w, void *yv) -> bool {
     return convert<X, Q>(jt, w, yv, [](auto v) -> Q { return {v, iv1}; });
 }
 
-static B
-jtQfromD(J jt, A w, void *yv, I mode) {
+template <>
+[[nodiscard]] auto
+convert<D, Q>(J jt, A w, void *yv, I mode) -> bool {
     B neg, recip;
     D c, d, t, *wv;
     I e, i, n, *v;
@@ -294,8 +305,9 @@ jtQfromD(J jt, A w, void *yv, I mode) {
     return !jt->jerr;
 }
 
-static B
-jtDfromQ(J jt, A w, void *yv) {
+template <>
+[[nodiscard]] auto
+convert<Q, D>(J jt, A w, void *yv) -> bool {
     auto const xb = (D)XBASE;
     auto const wn = AN(w);
     auto const wv = QAV(w);
@@ -343,8 +355,9 @@ jtDfromQ(J jt, A w, void *yv) {
     return 1;
 }
 
-static B
-jtXfromQ(J jt, A w, void *yv) {
+template <>
+[[nodiscard]] auto
+convert<Q, X>(J jt, A w, void *yv) -> bool {
     auto v = QAV(w);
     auto x = (X *)yv;
     DQ(AN(w), if (!(jtequ(jt, iv1, v->d))) return 0; *x++ = v->n; ++v;);
@@ -352,8 +365,9 @@ jtXfromQ(J jt, A w, void *yv) {
 }
 
 // Imaginary parts have already been cleared
-static B
-jtZfromD(J jt, A w, void *yv) {
+template <>
+[[nodiscard]] auto
+convert<D, Z>(J jt, A w, void *yv) -> bool {
     D *wv = DAV(w);
     Z *zv = static_cast<Z*>(yv);
     DQ(AN(w), zv++->re = *wv++;);
@@ -455,8 +469,8 @@ jtccvt(J jt, I tflagged, A w, A *y) {
         case CVCASE(INTX, B01X):
             std::copy_n(static_cast<B*>(wv), n, static_cast<I*>(yv));
             return 1;
-        case CVCASE(XNUMX, B01X): return jtXfromB(jt, w, yv);
-        case CVCASE(RATX, B01X): GATV(d, XNUM, n, r, s); return jtXfromB(jt, w, AV(d)) && jtQfromX(jt, d, yv);
+        case CVCASE(XNUMX, B01X): return convert<bool, X>(jt, w, yv);
+        case CVCASE(RATX, B01X): GATV(d, XNUM, n, r, s); return convert<bool, X>(jt, w, AV(d)) && convert<X, Q>(jt, d, yv);
         case CVCASE(FLX, B01X):
             std::copy_n(static_cast<B*>(wv), n, static_cast<D*>(yv));
             return 1;
@@ -467,8 +481,8 @@ jtccvt(J jt, I tflagged, A w, A *y) {
         }
             return 1;
         case CVCASE(B01X, INTX): return convert<I, bool>(jt, w, yv);
-        case CVCASE(XNUMX, INTX): return jtXfromI(jt, w, yv);
-        case CVCASE(RATX, INTX): GATV(d, XNUM, n, r, s); return jtXfromI(jt, w, AV(d)) && jtQfromX(jt, d, yv);
+        case CVCASE(XNUMX, INTX): return convert<I, X>(jt, w, yv);
+        case CVCASE(RATX, INTX): GATV(d, XNUM, n, r, s); return convert<I, X>(jt, w, AV(d)) && convert<X, Q>(jt, d, yv);
         case CVCASE(FLX, INTX):
             std::copy_n(static_cast<I*>(wv), n, static_cast<D*>(yv));
             return 1;
@@ -478,52 +492,52 @@ jtccvt(J jt, I tflagged, A w, A *y) {
             DQ(n, x++->re = (D)*v++;);
         }
             return 1;
-        case CVCASE(B01X, FLX): return jtBfromD(jt, w, yv, (I)jtinplace & JTNOFUZZ ? 0.0 : FUZZ);
-        case CVCASE(INTX, FLX): return jtIfromD(jt, w, yv, (I)jtinplace & JTNOFUZZ ? 0.0 : FUZZ);
+        case CVCASE(B01X, FLX): return convert<D, bool>(jt, w, yv, (I)jtinplace & JTNOFUZZ ? 0.0 : FUZZ);
+        case CVCASE(INTX, FLX): return convert<D, I>(jt, w, yv, (I)jtinplace & JTNOFUZZ ? 0.0 : FUZZ);
         case CVCASE(XNUMX, FLX):
-            return jtXfromD(jt, w, yv, (jt->xmode & REPSGN(SGNIFNOT(tflagged, XCVTXNUMORIDEX))) | (tflagged >> XCVTXNUMCVX));
+            return convert<D, X>(jt, w, yv, (jt->xmode & REPSGN(SGNIFNOT(tflagged, XCVTXNUMORIDEX))) | (tflagged >> XCVTXNUMCVX));
         case CVCASE(RATX, FLX):
-            return jtQfromD(jt, w, yv, (jt->xmode & REPSGN(SGNIFNOT(tflagged, XCVTXNUMORIDEX))) | (tflagged >> XCVTXNUMCVX));
-        case CVCASE(CMPXX, FLX): return jtZfromD(jt, w, yv);
+            return convert<D, Q>(jt, w, yv, (jt->xmode & REPSGN(SGNIFNOT(tflagged, XCVTXNUMORIDEX))) | (tflagged >> XCVTXNUMCVX));
+        case CVCASE(CMPXX, FLX): return convert<D, Z>(jt, w, yv);
         case CVCASE(B01X, CMPXX):
             GATV(d, FL, n, r, s);
-            if (!(jtDfromZ(jt, w, AV(d), (I)jtinplace & JTNOFUZZ ? 0.0 : FUZZ))) return 0;
-            return jtBfromD(jt, d, yv, (I)jtinplace & JTNOFUZZ ? 0.0 : FUZZ);
+            if (!(convert<Z, D>(jt, w, AV(d), (I)jtinplace & JTNOFUZZ ? 0.0 : FUZZ))) return 0;
+            return convert<D, bool>(jt, d, yv, (I)jtinplace & JTNOFUZZ ? 0.0 : FUZZ);
         case CVCASE(INTX, CMPXX):
             GATV(d, FL, n, r, s);
-            if (!(jtDfromZ(jt, w, AV(d), (I)jtinplace & JTNOFUZZ ? 0.0 : FUZZ))) return 0;
-            return jtIfromD(jt, d, yv, (I)jtinplace & JTNOFUZZ ? 0.0 : FUZZ);
+            if (!(convert<Z, D>(jt, w, AV(d), (I)jtinplace & JTNOFUZZ ? 0.0 : FUZZ))) return 0;
+            return convert<D, I>(jt, d, yv, (I)jtinplace & JTNOFUZZ ? 0.0 : FUZZ);
         case CVCASE(XNUMX, CMPXX):
             GATV(d, FL, n, r, s);
-            if (!(jtDfromZ(jt, w, AV(d), (I)jtinplace & JTNOFUZZ ? 0.0 : FUZZ))) return 0;
-            return jtXfromD(jt, d, yv, (jt->xmode & REPSGN(SGNIFNOT(tflagged, XCVTXNUMORIDEX))) | (tflagged >> XCVTXNUMCVX));
+            if (!(convert<Z, D>(jt, w, AV(d), (I)jtinplace & JTNOFUZZ ? 0.0 : FUZZ))) return 0;
+            return convert<D, X>(jt, d, yv, (jt->xmode & REPSGN(SGNIFNOT(tflagged, XCVTXNUMORIDEX))) | (tflagged >> XCVTXNUMCVX));
         case CVCASE(RATX, CMPXX):
             GATV(d, FL, n, r, s);
-            if (!(jtDfromZ(jt, w, AV(d), (I)jtinplace & JTNOFUZZ ? 0.0 : FUZZ))) return 0;
-            return jtQfromD(jt, d, yv, (jt->xmode & REPSGN(SGNIFNOT(tflagged, XCVTXNUMORIDEX))) | (tflagged >> XCVTXNUMCVX));
-        case CVCASE(FLX, CMPXX): return jtDfromZ(jt, w, yv, (I)jtinplace & JTNOFUZZ ? 0.0 : FUZZ);
-        case CVCASE(B01X, XNUMX): return jtBfromX(jt, w, yv);
-        case CVCASE(INTX, XNUMX): return jtIfromX(jt, w, yv);
-        case CVCASE(RATX, XNUMX): return jtQfromX(jt, w, yv);
-        case CVCASE(FLX, XNUMX): return jtDfromX(jt, w, yv);
+            if (!(convert<Z, D>(jt, w, AV(d), (I)jtinplace & JTNOFUZZ ? 0.0 : FUZZ))) return 0;
+            return convert<D, Q>(jt, d, yv, (jt->xmode & REPSGN(SGNIFNOT(tflagged, XCVTXNUMORIDEX))) | (tflagged >> XCVTXNUMCVX));
+        case CVCASE(FLX, CMPXX): return convert<Z, D>(jt, w, yv, (I)jtinplace & JTNOFUZZ ? 0.0 : FUZZ);
+        case CVCASE(B01X, XNUMX): return convert<X, bool>(jt, w, yv);
+        case CVCASE(INTX, XNUMX): return convert<X, I>(jt, w, yv);
+        case CVCASE(RATX, XNUMX): return convert<X, Q>(jt, w, yv);
+        case CVCASE(FLX, XNUMX): return convert<X, D>(jt, w, yv);
         case CVCASE(CMPXX, XNUMX):
             GATV(d, FL, n, r, s);
-            if (!(jtDfromX(jt, w, AV(d)))) return 0;
-            return jtZfromD(jt, d, yv);
+            if (!(convert<X, D>(jt, w, AV(d)))) return 0;
+            return convert<D, Z>(jt, d, yv);
         case CVCASE(B01X, RATX):
             GATV(d, XNUM, n, r, s);
-            if (!(jtXfromQ(jt, w, AV(d)))) return 0;
-            return jtBfromX(jt, d, yv);
+            if (!(convert<Q, X>(jt, w, AV(d)))) return 0;
+            return convert<X, bool>(jt, d, yv);
         case CVCASE(INTX, RATX):
             GATV(d, XNUM, n, r, s);
-            if (!(jtXfromQ(jt, w, AV(d)))) return 0;
-            return jtIfromX(jt, d, yv);
-        case CVCASE(XNUMX, RATX): return jtXfromQ(jt, w, yv);
-        case CVCASE(FLX, RATX): return jtDfromQ(jt, w, yv);
+            if (!(convert<Q, X>(jt, w, AV(d)))) return 0;
+            return convert<X, I>(jt, d, yv);
+        case CVCASE(XNUMX, RATX): return convert<Q, X>(jt, w, yv);
+        case CVCASE(FLX, RATX): return convert<Q, D>(jt, w, yv);
         case CVCASE(CMPXX, RATX):
             GATV(d, FL, n, r, s);
-            if (!(jtDfromQ(jt, w, AV(d)))) return 0;
-            return jtZfromD(jt, d, yv);
+            if (!(convert<Q, D>(jt, w, AV(d)))) return 0;
+            return convert<D, Z>(jt, d, yv);
         default: ASSERT(0, EVDOMAIN);
     }
 }
