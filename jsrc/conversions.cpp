@@ -301,49 +301,48 @@ jtQfromD(J jt, A w, void *yv, I mode) {
 
 static B
 jtDfromQ(J jt, A w, void *yv) {
-    D d, f, n, *x, xb = (D)XBASE;
-    I cn, i, k, m, nn, pn, qn, r, *v, wn;
-    Q *wv;
-    X c, p, q, x2 = 0;
-    wn = AN(w);
-    wv = QAV(w);
-    x  = (D *)yv;
-    nn = 308 / XBASEN;
-    for (i = 0; i < wn; ++i) {
-        p  = wv[i].n;
-        pn = AN(p);
-        k  = 1 == pn ? AV(p)[0] : 0;
-        q  = wv[i].d;
-        qn = AN(q);
+    auto const xb = (D)XBASE;
+    auto const wn = AN(w);
+    auto const wv = QAV(w);
+    auto const x  = (D *)yv;
+    auto const nn = 308 / XBASEN;
+
+    // TODO: figure out nice algorithm for this
+    auto const add_digits = [&](auto n, auto v) {
+        auto f = 1.0;
+        auto d = 0.0;
+        DO(n, d += f * v[i]; f *= xb;);
+        return d;
+    };
+
+    X x2 = 0;
+    for (int64_t i = 0; i < wn; ++i) {
+        auto const p  = wv[i].n;
+        auto const pn = AN(p);
+        auto const k  = 1 == pn ? AV(p)[0] : 0;
+        auto const q  = wv[i].d;
+        auto const qn = AN(q);
         if (k == XPINF)
             x[i] = inf;
         else if (k == XNINF)
             x[i] = infm;
         else if (pn <= nn && qn <= nn) {
-            n = 0.0;
-            f = 1.0;
-            v = AV(p);
-            DO(pn, n += f * v[i]; f *= xb;);
-            d = 0.0;
-            f = 1.0;
-            v = AV(q);
-            DO(qn, d += f * v[i]; f *= xb;);
-            x[i] = n / d;
+            auto const n = add_digits(pn, AV(p));
+            auto const d = add_digits(qn, AV(q));
+            x[i]         = n / d;
         } else {
-            k = 5 + qn;
             if (!x2)
                 if (!(x2 = jtxc(jt, 2L))) return 0;
-            if (!(c = jtxdiv(jt, jttake(jt, jtsc(jt, -(k + pn)), p), q, XMFLR))) return 0;
-            cn = AN(c);
-            m  = MIN(cn, 5);
-            r  = cn - (m + k);
-            v  = AV(c) + cn - m;
-            n  = 0.0;
-            f  = 1.0;
-            DO(m, n += f * v[i]; f *= xb;);
-            d = 1.0;
-            DQ(ABS(r), d *= xb;);
-            x[i] = 0 > r ? n / d : n * d;
+            auto const k = 5 + qn;
+            auto c       = jtxdiv(jt, jttake(jt, jtsc(jt, -(k + pn)), p), q, XMFLR);
+            if (!c) return 0;
+            auto const cn = AN(c);
+            auto const m  = MIN(cn, 5);
+            auto const r  = cn - (m + k);
+            auto const v  = AV(c) + cn - m;
+            auto const n  = add_digits(m, v);
+            auto d        = std::pow(xb, std::abs(r));
+            x[i]          = 0 > r ? n / d : n * d;
         }
     }
     return 1;
