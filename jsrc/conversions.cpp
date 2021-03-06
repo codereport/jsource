@@ -4,6 +4,8 @@
 /* Conversions Amongst Internal Types                                      */
 
 #include <algorithm>
+#include <limits>
+#include <numeric>
 
 #include "array.hpp"
 extern "C" {
@@ -232,27 +234,14 @@ jtIfromX(J jt, A w, void *yv) {
 
 static B
 jtDfromX(J jt, A w, void *yv) {
-    D d, *x = (D *)yv /*,dm,dp*/;
-    I c, i, n, *v, wn;
-    X p, *wv;
-    // dp=1.7976931348623157e308; dm=-dp;
-    wn = AN(w);
-    wv = XAV(w);
-    for (i = 0; i < wn; ++i) {
-        p = wv[i];
-        n = AN(p);
-        v = AV(p) + n - 1;
-        c = *v;
-        if (c == XPINF)
-            d = inf;
-        else if (c == XNINF)
-            d = infm;
-        else {
-            d = 0.0;
-            DQ(n, d = *v-- + d * XBASE;);
-        }
-        x[i] = d;
-    }
+    auto const wv = XAV(w);
+    std::transform(wv, wv + AN(w), static_cast<D *>(yv), [](auto p) {
+        auto const n = AN(p);
+        auto const v = std::reverse_iterator(AV(p) + n);
+        if (*v == XPINF) return inf;
+        if (*v == XNINF) return infm;
+        return std::accumulate(v, v + n, 0.0, [](auto d, auto v) { return v + d * XBASE; });
+    });
     return 1;
 }
 
