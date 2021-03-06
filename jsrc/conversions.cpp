@@ -3,8 +3,10 @@
 /*                                                                         */
 /* Conversions Amongst Internal Types                                      */
 
+#include <algorithm>
+
+#include "array.hpp"
 extern "C" {
-#include "j.h"
 #include "verbs/vcomp.h"
 }
 
@@ -26,13 +28,19 @@ jtC1fromC2(J jt, A w, void *yv) {
     return 1;
 }
 
-static B
-jtC2fromC1(J jt, A w, void *yv) {
-    UC *v;
-    US *x;
-    v = UAV(w);
-    x = (US *)yv;
-    DQ(AN(w), *x++ = *v++;);
+template <typename From, typename To>
+[[nodiscard]] static auto
+convert(J jt, array w, void *yv) -> bool {
+    From *v = reinterpret_cast<From*>(UAV(w));
+    std::copy(v, v + AN(w), static_cast<To*>(yv));
+    return 1;
+}
+
+template <typename From, typename To, typename Transform>
+[[nodiscard]] static auto
+convert(J jt, array w, void *yv, Transform t) -> bool {
+    From *v = reinterpret_cast<From*>(UAV(w));
+    std::transform(v, v + AN(w), static_cast<To*>(yv), t);
     return 1;
 }
 
@@ -53,26 +61,6 @@ jtC2fromC4(J jt, A w, void *yv) {
     v = C4AV(w);
     x = (US *)yv;
     DQ(AN(w), c = *v++; if (!(65536 > c)) return 0; *x++ = (US)c;);
-    return 1;
-}
-
-static B
-jtC4fromC1(J jt, A w, void *yv) {
-    UC *v;
-    C4 *x;
-    v = UAV(w);
-    x = (C4 *)yv;
-    DQ(AN(w), *x++ = *v++;);
-    return 1;
-}
-
-static B
-jtC4fromC2(J jt, A w, void *yv) {
-    US *v;
-    C4 *x;
-    v = USAV(w);
-    x = (C4 *)yv;
-    DQ(AN(w), *x++ = *v++;);
     return 1;
 }
 
@@ -155,14 +143,14 @@ jtDfromZ(J jt, A w, void *yv, D fuzz) {
 
 static B
 jtXfromB(J jt, A w, void *yv) {
-    B *v;
-    I n, u[1];
-    X *x;
-    n = AN(w);
-    v = BAV(w);
-    x = (X *)yv;
-    DO(n, *u = v[i]; x[i] = jtvec(jt, INT, 1L, u););
-    return !jt->jerr;
+    return convert<B, X>(jt,
+                         w,
+                         yv,
+                         [=](auto v) {
+                             int64_t u[] = {v};
+                             return jtvec(jt, INT, 1L, u);
+                         }) &&
+           !jt->jerr;
 }
 
 static B
@@ -230,10 +218,7 @@ jtxd1(J jt, D p, I mode) {
 
 static B
 jtXfromD(J jt, A w, void *yv, I mode) {
-    D *v = DAV(w);
-    X *x = (X *)yv;
-    DO(AN(w), x[i] = jtxd1(jt, v[i], mode););
-    return !jt->jerr;
+    return convert<D, X>(jt, w, yv, [=](auto v){ return jtxd1(jt, v, mode); }) && !jt->jerr;
 }
 
 static B
@@ -297,9 +282,7 @@ jtDfromX(J jt, A w, void *yv) {
 
 static B
 jtQfromX(J jt, A w, void *yv) {
-    X *v = XAV(w), *x = (X *)yv;
-    DQ(AN(w), *x++ = *v++; *x++ = iv1;);
-    return 1;
+    return convert<X, Q>(jt, w, yv, [](auto v) -> Q { return {v, iv1}; });
 }
 
 static B
@@ -416,7 +399,8 @@ static B
 jtZfromD(J jt, A w, void *yv) {
     D *wv = DAV(w);
     Z *zv = static_cast<Z*>(yv);
-    DQ(AN(w), zv++->re = *wv++;) return 1;
+    DQ(AN(w), zv++->re = *wv++;);
+    return 1;
 }
 
 // Convert the data in w to the type t.  w and t must be noun types.  A new buffer is always created (with a
@@ -504,10 +488,10 @@ jtccvt(J jt, I tflagged, A w, A *y) {
         switch (CVCASE(CTTZ(t), CTTZ(wt))) {
             case CVCASE(LITX, C2TX): return jtC1fromC2(jt, w, yv);
             case CVCASE(LITX, C4TX): return jtC1fromC4(jt, w, yv);
-            case CVCASE(C2TX, LITX): return jtC2fromC1(jt, w, yv);
+            case CVCASE(C2TX, LITX): return convert<UC, US>(jt, w, yv);
             case CVCASE(C2TX, C4TX): return jtC2fromC4(jt, w, yv);
-            case CVCASE(C4TX, LITX): return jtC4fromC1(jt, w, yv);
-            case CVCASE(C4TX, C2TX): return jtC4fromC2(jt, w, yv);
+            case CVCASE(C4TX, LITX): return convert<UC, C4>(jt, w, yv);
+            case CVCASE(C4TX, C2TX): return convert<US, C4>(jt, w, yv);
             default: ASSERT(0, EVDOMAIN);
         }
     }
