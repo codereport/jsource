@@ -55,13 +55,10 @@ convert(J jt, array w, void *yv, Transform t) -> bool {
 
 static B
 jtBfromD(J jt, A w, void *yv, D fuzz) {
-    B *x;
-    D p, *v;
-    I n;
-    n = AN(w);
-    v = DAV(w);
-    x = (B *)yv;
-    DQ(n, p = *v++; if (p < -2 || 2 < p) return 0;  // handle infinities
+    auto n = AN(w);
+    auto v = DAV(w);
+    auto x = (B *)yv;
+    DQ(n, auto p = *v++; if (p < -2 || 2 < p) return 0;  // handle infinities
        I val = 2;
        val   = (p == 0) ? 0 : val;
        val   = FIEQ(p, 1.0, fuzz) ? 1 : val;
@@ -72,15 +69,13 @@ jtBfromD(J jt, A w, void *yv, D fuzz) {
 
 static B
 jtIfromD(J jt, A w, void *yv, D fuzz) {
-    D p, q, *v;
-    I i, n, *x;
-    n = AN(w);
-    v = DAV(w);
-    x = (I *)yv;
-    for (i = 0; i < n; ++i) {
-        p    = v[i];
-        q    = jround(p);
-        I rq = (I)q;
+    auto n = AN(w);
+    auto v = DAV(w);
+    auto x = (I *)yv;
+    for (int64_t i = 0; i < n; ++i) {
+        auto const p = v[i];
+        auto const q = jround(p);
+        I rq         = (I)q;
         if (!(p == q || FIEQ(p, q, fuzz))) return 0;  // must equal int, possibly out of range
         // out-of-range values don't convert, handle separately
         if (p < (D)IMIN) {
@@ -98,21 +93,18 @@ jtIfromD(J jt, A w, void *yv, D fuzz) {
 
 static B
 jtDfromZ(J jt, A w, void *yv, D fuzz) {
-    D d, *x;
-    I n;
-    Z *v;
-    n = AN(w);
-    v = ZAV(w);
-    x = (D *)yv;
+    auto const n  = AN(w);
+    auto const *v = ZAV(w);
+    auto x        = (D *)yv;
     if (fuzz)
         DQ(
-          n, d = ABS(v->im); if (d != inf && d <= fuzz * ABS(v->re)) {
+          n, auto d = std::abs(v->im); if (d != inf && d <= fuzz * std::abs(v->re)) {
               *x++ = v->re;
               v++;
           } else return 0;)
     else
         DQ(
-          n, d = v->im; if (!d) {
+          n, if (!v->im) {
               *x++ = v->re;
               v++;
           } else return 0;);
@@ -161,9 +153,7 @@ jtXfromI(J jt, A w, void *yv) {
 static X
 jtxd1(J jt, D p, I mode) {
     PROLOG(0052);
-    A t;
-    D d, e = jttfloor(jt, p), q, r;
-    I m, *u;
+    D e = jttfloor(jt, p);
     switch (mode) {
         case XMFLR: p = e; break;
         case XMCEIL: p = ceil(p); break;
@@ -176,15 +166,16 @@ jtxd1(J jt, D p, I mode) {
     }
     if (p == inf) return jtvci(jt, XPINF);
     if (p == -inf) return jtvci(jt, XNINF);
+    A t;
     GAT0(t, INT, 30, 1);
-    u = AV(t);
-    m = 0;
-    d = ABS(p);
+    auto u = AV(t);
+    int64_t m = 0;
+    auto d = std::abs(p);
     while (0 < d) {
-        q      = floor(d / XBASE);
-        r      = d - q * XBASE;
-        u[m++] = (I)r;
-        d      = q;
+        auto const q = floor(d / XBASE);
+        auto const r = d - q * XBASE;
+        u[m++]       = (I)r;
+        d            = q;
         if (m == AN(t)) {
             RZ(t = jtext(jt, 0, t));
             u = AV(t);
@@ -207,13 +198,9 @@ jtXfromD(J jt, A w, void *yv, I mode) {
 
 static B
 jtBfromX(J jt, A w, void *yv) {
-    A q;
-    B *x;
-    I e;
-    X *v;
-    v = XAV(w);
-    x = (B *)yv;
-    DO(AN(w), q = v[i]; e = AV(q)[0]; if ((AN(q) ^ 1) | (e & -2)) return 0; x[i] = (B)e;);
+    auto v = XAV(w);
+    auto x = (B *)yv;
+    DO(AN(w), A q = v[i]; I e = AV(q)[0]; if ((AN(q) ^ 1) | (e & -2)) return 0; x[i] = (B)e;);
     return 1;
 }
 
@@ -227,15 +214,14 @@ value_from_X(X p) -> T {
 
 static B
 jtIfromX(J jt, A w, void *yv) {
-    I a, i, m, n, *u, *x;
-    X c, p, q, *v;
-    v = XAV(w);
-    x = (I *)yv;
-    n = AN(w);
+    auto v = XAV(w);
+    auto x = (I *)yv;
+    auto n = AN(w);
+    X p, q;
     if (!(p = jtxc(jt, IMAX))) return 0;
     if (!(q = jtxminus(jt, jtnegate(jt, p), jtxc(jt, 1L)))) return 0;
-    for (i = 0; i < n; ++i) {
-        c = v[i];
+    for (int64_t i = 0; i < n; ++i) {
+        auto c = v[i];
         if (!(1 != jtxcompare(jt, q, c) && 1 != jtxcompare(jt, c, p))) return 0;
         x[i] = value_from_X<int64_t>(c);
     }
@@ -359,10 +345,8 @@ jtDfromQ(J jt, A w, void *yv) {
 
 static B
 jtXfromQ(J jt, A w, void *yv) {
-    Q *v;
-    X *x;
-    v = QAV(w);
-    x = (X *)yv;
+    auto v = QAV(w);
+    auto x = (X *)yv;
     DQ(AN(w), if (!(jtequ(jt, iv1, v->d))) return 0; *x++ = v->n; ++v;);
     return !jt->jerr;
 }
@@ -548,9 +532,8 @@ jtccvt(J jt, I tflagged, A w, A *y) {
 A
 jtcvt(J jt, I t, A w) {
     A y;
-    B b;
-    b = jtccvt(jt, t, w, &y);
-    ASSERT(b != 0, EVDOMAIN);
+    bool const b = jtccvt(jt, t, w, &y);
+    ASSERT(b, EVDOMAIN);
     return y;
 }
 
@@ -635,14 +618,11 @@ jtpcvt(J jt, I t, A w) {
 
 A
 jtcvt0(J jt, A w) {
-    I n, t;
-    D *u;
-    t = AT(w);
-    n = AN(w);
+    auto const t = AT(w);
+    auto const n = (t & CMPX) ? 2 * AN(w) : AN(w);
     if (n && t & FL + CMPX) {
-        if (t & CMPX) n += n;
-        u = DAV(w);
-        DQ(n, if (*u == 0.0) *u = 0.0; ++u;);
+        auto u = DAV(w);
+        std::transform(u, u + n, u, [](auto v) { return v == 0.0 ? 0.0 : v; });
     }
     return w;
 } /* convert -0 to 0 in place */
@@ -655,24 +635,24 @@ jtxco1(J jt, A w) {
 
 A
 jtxco2(J jt, A a, A w) {
-    A z;
-    I j, n, r, t;
-    n = AN(w);
-    r = AR(w);
-    t = AT(w);
-    ASSERT(t & DENSE, EVNONCE);
+    ASSERT(AT(w) & DENSE, EVNONCE);
+    I j;
     RE(j = jti0(jt, a));
     switch (j) {
         case -2: return jtaslash1(jt, CDIV, w);
         case -1: return jtbcvt(jt, 1, w);
         case 1: return jtxco1(jt, w);
         case 2:
-            if (!(t & RAT)) RZ(w = jtcvt(jt, RAT, w));
-            GATV(z, XNUM, 2 * n, r + 1, AS(w));
-            AS(z)[r] = 2;
-            memcpy(AV(z), AV(w), 2 * n * SZI);
-            return z;
-        default:
-            ASSERT(0, EVDOMAIN);
+            if (!(AT(w) & RAT)) RZ(w = jtcvt(jt, RAT, w));
+            {
+                auto const n = AN(w);
+                auto const r = AR(w);
+                A z;
+                GATV(z, XNUM, 2 * n, r + 1, AS(w));
+                AS(z)[r] = 2;
+                memcpy(AV(z), AV(w), 2 * n * SZI);
+                return z;
+            }
+        default: ASSERT(0, EVDOMAIN);
     }
 }
