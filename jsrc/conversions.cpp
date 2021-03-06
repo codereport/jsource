@@ -258,34 +258,35 @@ convert<X, Q>(J jt, A w, void *yv) -> bool {
 template <>
 [[nodiscard]] auto
 convert<D, Q>(J jt, A w, void *yv, I mode) -> bool {
-    B neg, recip;
-    D c, d, t, *wv;
-    I e, i, n, *v;
-    Q q, *x;
-    S *tv;
     if (!(w)) return 0;
-    n  = AN(w);
-    wv = DAV(w);
-    x  = (Q *)yv;
-    tv = 3 + (S *)&t;
-    for (i = 0; i < n; ++i) {
+    auto const n  = AN(w);
+    auto const wv = DAV(w);
+    auto x        = (Q *)yv;
+    D t;
+    auto tv = 3 + (S *)&t;
+    Q q;
+    for (int64_t i = 0; i < n; ++i) {
         t = wv[i];
         ASSERT(!_isnan(t), EVNAN);
-        if ((neg = 0 > t)) t = -t;
+        bool const neg = 0 > t;
+        if (neg) t = -t;
         q.d = iv1;
         if (t == inf)
             q.n = jtvci(jt, XPINF);
         else if (t == 0.0)
             q.n = iv0;
         else if (1.1102230246251565e-16 < t && t < 9.007199254740992e15) {
-            d   = jround(1 / jtdgcd(jt, 1.0, t));
-            c   = jround(d * t);
-            q.n = jtxd1(jt, c, mode);
-            q.d = jtxd1(jt, d, mode);
-            q   = jtqstd(jt, q);
+            auto const d = jround(1 / jtdgcd(jt, 1.0, t));
+            auto const c = jround(d * t);
+            q            = jtqstd(jt,
+                       {
+                         .n = jtxd1(jt, c, mode),
+                         .d = jtxd1(jt, d, mode),
+                       });
         } else {
-            if ((recip = 1 > t)) t = 1.0 / t;
-            e = (I)(0xfff0 & *tv);
+            bool const recip = 1 > t;
+            if (recip) t = 1.0 / t;
+            auto e = (I)(0xfff0 & *tv);
             e >>= 4;
             e -= 1023;
             if (recip) {
@@ -297,7 +298,7 @@ convert<D, Q>(J jt, A w, void *yv, I mode) -> bool {
             }
         }
         if (neg) {
-            v = AV(q.n);
+            auto v = AV(q.n);
             DQ(AN(q.n), *v = -*v; ++v;);
         }
         *x++ = q;
@@ -381,13 +382,10 @@ convert<D, Z>(J jt, A w, void *yv) -> bool {
 B
 jtccvt(J jt, I tflagged, A w, A *y) {
     FPREFIP;
-    A d;
-    I n, r, *s, wt;
-    void *wv, *yv;
-    I t = tflagged & NOUN;
+    I const t = tflagged & NOUN;
     if (!w) return 0;
-    r = AR(w);
-    s = AS(w);
+    auto const r = AR(w);
+    auto const s = AS(w);
     if (((t | AT(w)) & SPARSE) != 0) {
         // Handle sparse
         RANK2T oqr = jt->ranks;
@@ -415,8 +413,7 @@ jtccvt(J jt, I tflagged, A w, A *y) {
         jt->ranks = oqr;
     }
     // Now known to be non-sparse
-    n  = AN(w);
-    wt = AT(w);
+    auto const wt = AT(w);
     // If type is already correct, return a clone - used to force a copy.  Should get rid of this kludge
     if (TYPESEQ(t, wt)) {
         RZ(*y = jtca(jt, w));
@@ -427,13 +424,15 @@ jtccvt(J jt, I tflagged, A w, A *y) {
     // replace n (for use here) and yv, and AK(w) and AN(w) for the subroutines. If NOUNCVTVALIDCT is set, w is
     // modified: the caller must restore AN(w) and AK(w) if it needs it
     // TODO: same-length conversion could be done in place
+    auto n = AN(w);
+    A d;
     GA(d, t, n, r, s);
-    yv = voidAV(d);  // allocate the same # atoms, even if we will convert fewer
+    auto yv = voidAV(d);  // allocate the same # atoms, even if we will convert fewer
     if (tflagged & NOUNCVTVALIDCT) {
-        I inputn = *(I *)y;                      // fetch input, in case it is called for
-        if (inputn > 0) {                        // if converting the leading values, just update the counts
-            n = inputn;                          // set the counts for local use, and in the block to be converted
-        } else {                                 // if converting trailing values...
+        I inputn = *(I *)y;  // fetch input, in case it is called for
+        if (inputn > 0) {    // if converting the leading values, just update the counts
+            n = inputn;      // set the counts for local use, and in the block to be converted
+        } else {             // if converting trailing values...
             AK(w) += (n + inputn) << bplg(wt);
             yv = (I *)((C *)yv + ((n + inputn) << bplg(t)));  // advance input and output pointers to new area
             n  = -inputn;                                     // get positive # atoms to convert
@@ -443,8 +442,8 @@ jtccvt(J jt, I tflagged, A w, A *y) {
     // If n and AN have been modified, it doesn't matter for rank-1 arguments whether the shape of the result is listed
     // as n or s[0] since only n atoms will be used.  For higher ranks, we need the shape from s.  So it's just as well
     // that we take the shape from s now
-    *y = d;
-    wv = voidAV(w);                      // return the address of the new block
+    *y      = d;
+    auto wv = voidAV(w);                       // return the address of the new block
     if (t & CMPX) jtfillv(jt, t, n, (C *)yv);  // why??  just fill in imaginary parts as we need to
     if (!n) return 1;
     // Perform the conversion based on data types
@@ -466,14 +465,12 @@ jtccvt(J jt, I tflagged, A w, A *y) {
         }
     }
     switch (CVCASE(CTTZ(t), CTTZ(wt))) {
-        case CVCASE(INTX, B01X):
-            std::copy_n(static_cast<B*>(wv), n, static_cast<I*>(yv));
-            return 1;
+        case CVCASE(INTX, B01X): std::copy_n(static_cast<B *>(wv), n, static_cast<I *>(yv)); return 1;
         case CVCASE(XNUMX, B01X): return convert<bool, X>(jt, w, yv);
-        case CVCASE(RATX, B01X): GATV(d, XNUM, n, r, s); return convert<bool, X>(jt, w, AV(d)) && convert<X, Q>(jt, d, yv);
-        case CVCASE(FLX, B01X):
-            std::copy_n(static_cast<B*>(wv), n, static_cast<D*>(yv));
-            return 1;
+        case CVCASE(RATX, B01X):
+            GATV(d, XNUM, n, r, s);
+            return convert<bool, X>(jt, w, AV(d)) && convert<X, Q>(jt, d, yv);
+        case CVCASE(FLX, B01X): std::copy_n(static_cast<B *>(wv), n, static_cast<D *>(yv)); return 1;
         case CVCASE(CMPXX, B01X): {
             Z *x = (Z *)yv;
             B *v = (B *)wv;
@@ -483,21 +480,21 @@ jtccvt(J jt, I tflagged, A w, A *y) {
         case CVCASE(B01X, INTX): return convert<I, bool>(jt, w, yv);
         case CVCASE(XNUMX, INTX): return convert<I, X>(jt, w, yv);
         case CVCASE(RATX, INTX): GATV(d, XNUM, n, r, s); return convert<I, X>(jt, w, AV(d)) && convert<X, Q>(jt, d, yv);
-        case CVCASE(FLX, INTX):
-            std::copy_n(static_cast<I*>(wv), n, static_cast<D*>(yv));
-            return 1;
+        case CVCASE(FLX, INTX): std::copy_n(static_cast<I *>(wv), n, static_cast<D *>(yv)); return 1;
         case CVCASE(CMPXX, INTX): {
             Z *x = (Z *)yv;
-            I *v = static_cast<I*>(wv);
+            I *v = static_cast<I *>(wv);
             DQ(n, x++->re = (D)*v++;);
         }
             return 1;
         case CVCASE(B01X, FLX): return convert<D, bool>(jt, w, yv, (I)jtinplace & JTNOFUZZ ? 0.0 : FUZZ);
         case CVCASE(INTX, FLX): return convert<D, I>(jt, w, yv, (I)jtinplace & JTNOFUZZ ? 0.0 : FUZZ);
         case CVCASE(XNUMX, FLX):
-            return convert<D, X>(jt, w, yv, (jt->xmode & REPSGN(SGNIFNOT(tflagged, XCVTXNUMORIDEX))) | (tflagged >> XCVTXNUMCVX));
+            return convert<D, X>(
+              jt, w, yv, (jt->xmode & REPSGN(SGNIFNOT(tflagged, XCVTXNUMORIDEX))) | (tflagged >> XCVTXNUMCVX));
         case CVCASE(RATX, FLX):
-            return convert<D, Q>(jt, w, yv, (jt->xmode & REPSGN(SGNIFNOT(tflagged, XCVTXNUMORIDEX))) | (tflagged >> XCVTXNUMCVX));
+            return convert<D, Q>(
+              jt, w, yv, (jt->xmode & REPSGN(SGNIFNOT(tflagged, XCVTXNUMORIDEX))) | (tflagged >> XCVTXNUMCVX));
         case CVCASE(CMPXX, FLX): return convert<D, Z>(jt, w, yv);
         case CVCASE(B01X, CMPXX):
             GATV(d, FL, n, r, s);
@@ -510,11 +507,13 @@ jtccvt(J jt, I tflagged, A w, A *y) {
         case CVCASE(XNUMX, CMPXX):
             GATV(d, FL, n, r, s);
             if (!(convert<Z, D>(jt, w, AV(d), (I)jtinplace & JTNOFUZZ ? 0.0 : FUZZ))) return 0;
-            return convert<D, X>(jt, d, yv, (jt->xmode & REPSGN(SGNIFNOT(tflagged, XCVTXNUMORIDEX))) | (tflagged >> XCVTXNUMCVX));
+            return convert<D, X>(
+              jt, d, yv, (jt->xmode & REPSGN(SGNIFNOT(tflagged, XCVTXNUMORIDEX))) | (tflagged >> XCVTXNUMCVX));
         case CVCASE(RATX, CMPXX):
             GATV(d, FL, n, r, s);
             if (!(convert<Z, D>(jt, w, AV(d), (I)jtinplace & JTNOFUZZ ? 0.0 : FUZZ))) return 0;
-            return convert<D, Q>(jt, d, yv, (jt->xmode & REPSGN(SGNIFNOT(tflagged, XCVTXNUMORIDEX))) | (tflagged >> XCVTXNUMCVX));
+            return convert<D, Q>(
+              jt, d, yv, (jt->xmode & REPSGN(SGNIFNOT(tflagged, XCVTXNUMORIDEX))) | (tflagged >> XCVTXNUMCVX));
         case CVCASE(FLX, CMPXX): return convert<Z, D>(jt, w, yv, (I)jtinplace & JTNOFUZZ ? 0.0 : FUZZ);
         case CVCASE(B01X, XNUMX): return convert<X, bool>(jt, w, yv);
         case CVCASE(INTX, XNUMX): return convert<X, I>(jt, w, yv);
@@ -604,15 +603,13 @@ jtbcvt(J jt, C mode, A w) {
 
 A
 jticvt(J jt, A w) {
+    auto const n = AN(w);
+    auto const* v = DAV(w);
     A z;
-    D *v, x;
-    I i, n, *u;
-    n = AN(w);
-    v = DAV(w);
     GATV(z, INT, n, AR(w), AS(w));
-    u = AV(z);
-    for (i = 0; i < n; ++i) {
-        x = *v++;
+    auto u = AV(z);
+    for (int64_t i = 0; i < n; ++i) {
+        auto x = *v++;
         if (x < IMIN || FLIMAX <= x) return w;  // if conversion will fail, skip it
         *u++ = (I)x;
     }
@@ -621,12 +618,11 @@ jticvt(J jt, A w) {
 
 A
 jtpcvt(J jt, I t, A w) {
-    A y;
-    B b;
     RANK2T oqr = jt->ranks;
     RESETRANK;
-    b         = jtccvt(jt, t, w, &y);
-    jt->ranks = oqr;
+    A y;
+    bool const b = jtccvt(jt, t, w, &y);
+    jt->ranks    = oqr;
     return b ? y : w;
 } /* convert w to type t, if possible, otherwise just return w */
 
