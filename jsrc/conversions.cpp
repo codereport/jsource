@@ -561,48 +561,48 @@ jtcvt(J jt, I t, A w) {
 A
 jtbcvt(J jt, C mode, A w) {
     FPREFIP;
-    A y, z = w;
     if (!w) return 0;
+
+    auto const as_integer = [](auto const &v) { return *(I *)&v; };
+    auto const isflag     = [&](auto const &z) { return as_integer(z.im) == NANFLAG; };
+
     // there may be values (especially b types) that were nominally CMPX but might actually be integers.  Those were
     // stored with the real part being the actual integer value and the imaginary part as the special 'flag' value.  We
     // handle those here.  If all the imaginary parts were flags, we accept all the integer parts and change the type
     // to integer.  If none of the imaginary parts were flags, we leave the input unchanged.  If some were flags, we
     // convert the flagged values to float and keep the result as complex
+    array result = w;
     if ((((AN(w) - 1) | (AT(w) & CMPX) - 1)) >= 0) {  // not empty AND complex
-        I allflag = 1, anyflag = 0;
-        Z *wv = ZAV(w);
-        DO(AN(w), I isflag = *(I *)&wv[i].im == NANFLAG; allflag &= isflag; anyflag |= isflag;)
-        if (anyflag) {
+        Z *wv      = ZAV(w);
+        auto flags = std::transform_reduce(wv, wv + AN(w), int64_t{}, std::plus{}, isflag);
+        if (flags) {
             I ipok = SGNIF(jtinplace, JTINPLACEWX) & AC(w);  // both sign bits set (<0) if inplaceable
-            if (allflag) {
-                if (ipok >= 0) GATV(z, INT, AN(w), AR(w), AS(w));
-                I *zv = IAV(z);                      // output area
-                DO(AN(w), zv[i] = *(I *)&wv[i].re;)  // copy the results as integers
+            if (flags == AN(w)) {
+                if (ipok >= 0) GATV(result, INT, AN(w), AR(w), AS(w));
+                std::transform(wv, wv + AN(w), IAV(result), [&](auto const &z) { return as_integer(z.re); });
             } else {
-                if (ipok >= 0) GATV(z, CMPX, AN(w), AR(w), AS(w));
-                Z *zv = ZAV(z);  // output area
-                DO(
-                  AN(w),
-                  if (*(I *)&wv[i].im == NANFLAG) {
-                      zv[i].re = (D) * (I *)&wv[i].re;
-                      zv[i].im = 0.0;
-                  } else { zv[i] = wv[i]; })  // copy floats, and converts any integers back to float
+                if (ipok >= 0) GATV(result, CMPX, AN(w), AR(w), AS(w));
+                std::transform(wv, wv + AN(w), ZAV(result), [&](auto const &z) -> Z {
+                    if (isflag(z)) return {.re = (D)as_integer(z.re), .im = 0.0};
+                    return z;  // copy floats, and converts any integers back to float
+                });
             }
-            w = z;  // this result is now eligible for further demotion
+            w = result;  // this result is now eligible for further demotion
         }
     }
     // for all numerics, try Boolean/int/float in order, stopping when we find one that holds the data
     if (mode & 1 || !(AT(w) & XNUM + RAT)) {  // if we are not stopping at XNUM/RAT
         // To avoid a needless copy, suppress conversion to B01 if type is B01, to INT if type is INT, etc
         // set the NOFUZZ flag in jt to insist on an exact match so we won't lose precision
+        array y;
         jtinplace = (J)((I)jt + JTNOFUZZ);  // demand exact match
-        z         = !(mode & 14) && jtccvt(jtinplace, B01, w, &y)                             ? y
+        result    = !(mode & 14) && jtccvt(jtinplace, B01, w, &y)                             ? y
                     : (y = w, AT(w) & INT || (!(mode & 12) && jtccvt(jtinplace, INT, w, &y))) ? y
                     : (y = w, AT(w) & FL || (!(mode & 8) && jtccvt(jtinplace, FL, w, &y)))
                       ? y
                       : w;  // convert to enabled modes one by one, stopping when one works
     }
-    RNE(z);
+    RNE(result);
 } /* convert to lowest type. 0=mode: don't convert XNUM/RAT to other types */
 
 A
