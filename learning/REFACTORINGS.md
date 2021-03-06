@@ -2,6 +2,7 @@
 
 ### Core Guidelines Used
 * [Con.4: Use const to define objects with values that do not change after construction](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#con4-use-const-to-define-objects-with-values-that-do-not-change-after-construction)
+* [ES.1: Prefer the standard library to other libraries and to “handcrafted code”](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#es1-prefer-the-standard-library-to-other-libraries-and-to-handcrafted-code)
 * [ES.21: Don’t introduce a variable (or constant) before you need to use it](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines.html#es21-dont-introduce-a-variable-or-constant-before-you-need-to-use-it)
 * [ES.22: Don’t declare a variable until you have a value to initialize it with](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#es22-dont-declare-a-variable-until-you-have-a-value-to-initialize-it-with)
 * [ES.30: Don’t use macros for program text manipulation](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#es30-dont-use-macros-for-program-text-manipulation)
@@ -10,9 +11,10 @@
 
 | Rule  |   Core Guideline   | Count |
 | :---: | :----------------: | :---: |
-| CON.4 |    Use `const`     |   4   |
+| CON.4 |    Use `const`     |   7   |
+| ES.1  |   No raw loops*    |   5   |
 | ES.21 |    Reduce scope    |   3   |
-| ES.22 |  Decl-Init Split   |   5   |
+| ES.22 |  Decl-Init Split   |  20   |
 | ES.30 |   No Text Macros   |   6   |
 | ES.49 | Use explicit casts |   4   |
 | E.12  |   Use `noexcept`   |   3   |
@@ -32,3 +34,12 @@
 |      `DO(m, s)`       | `for (int i = 0; i < m; ++i) m` OR `std::algorithm` |
 
 1. There could be exceptions where this doesn't work
+
+### Algorithm Usage
+
+|       Algorithm       | Count |
+| :-------------------: | :---: |
+|     `std::equal`      |   2   |
+|   `std::transform`    |   1   |
+|   `aal::var::found`   |   1   |
+| `aal::var::transform` |   1   |
