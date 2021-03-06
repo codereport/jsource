@@ -45,20 +45,19 @@ jttk0(J jt, B b, A a, A w) {
     return z;
 }
 
-static array jttks(J jt, array a, array w) {  // take_sparse
+static array
+take_sparse(J jt, array a, array w) {
     PROLOG(0092);
     array x, y, z;
-    I an, r, *s, *u, *v;
-    P *wp, *zp;
-    an = AN(a);
-    u  = AV(a);
-    r  = AR(w);
-    s  = AS(w);
+    I an = AN(a);
+    I* u = AV(a);
+    I r  = AR(w);
+    I* s = AS(w);
     GASPARSE(z, AT(w), 1, r, s);
-    v = AS(z);
-    DO(an, v[i] = ABS(u[i]););
-    zp = PAV(z);
-    wp = PAV(w);  // pointer to array values
+    I* v = AS(z);
+    std::transform(u, u + an, v, [](auto e) { return std::abs(e); });
+    P* zp = PAV(z);
+    P* wp = PAV(w);  // pointer to array values
 
     if (an <= r) {
         RZ(a = jtvec(jt, INT, r, s));
@@ -89,32 +88,28 @@ static array jttks(J jt, array a, array w) {  // take_sparse
 
     // TODO: rename c when we figure out what it is doing
     if (auto const c = not std::equal(u, u + m, s); c) {
-        A j;
-        C *xv, *yv;
-        I d, i, *iv, *jv, k, n, t;
-        d = 0;
-        t = AT(x);
-        k = jtaii(jt, x) << bplg(t);
-        q = SPA(wp, i);
-        SETIC(q, n);
+        array j;
+        I d       = 0;
+        I const t = AT(x);
+        I const k = jtaii(jt, x) << bplg(t);
+        q         = SPA(wp, i);
+        I const n = item_count(q);
         GATV(j, INT, AN(q), AR(q), AS(q));
-        jv = AV(j);
-        iv = AV(q);
+        I* jv = AV(j);
+        I* iv = AV(q);
         GA(y, t, AN(x), AR(x), AS(x));
-        yv = CAV(y);
-        xv = CAV(x);
-        for (i = 0; i < n; ++i) {
+        C* yv = CAV(y);
+        C* xv = CAV(x);
+        for (int64_t i = 0; i < n; ++i) {
+            // TODO: rename cc (and u, s, iv) when we know what to call them
             auto const cc =
               aal::var::found([](auto a, auto b, auto c) { return 0 > a ? c < a + b : c >= a; }, u, u + m, s, iv);
             if (!cc) {
                 ++d;
                 memcpy(yv, xv, k);
                 yv += k;
-                // TODO: create variadic `algo::transform`
-                for (int64_t i = 0; i < m; ++i) {
-                    t     = u[i];
-                    *jv++ = 0 > u[i] ? iv[i] - (u[i] + s[i]) : iv[i];
-                }
+                jv = aal::var::transform(
+                  [](auto a, auto b, auto c) { return 0 > a ? c - (a + b) : c; }, jv, u, u + m, s, iv);
             }
             iv += m;
             xv += k;
@@ -143,7 +138,7 @@ jttk(J jt, A a, A w) {
     r = AR(w);
     s = AS(w);
     t = AT(w);
-    if (is_sparse(w)) return jttks(jt, a, w);
+    if (is_sparse(w)) return take_sparse(jt, a, w);
     DO(
       n, if (!u[i]) {
           b = 1;

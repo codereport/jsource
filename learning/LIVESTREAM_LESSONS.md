@@ -142,3 +142,8 @@ Prelude> let innerProduct = blackbird sum (zipWith (*))
 * `git add submodule` to depend on other repo
 * `target_include_directories` in CMake to depend on other directory
 * Boost vs MIT vs Apache 2.0, all are great - went with Boost b/c of C++ ecosystem
+
+### Livestream #10 2021-02-27
+* `13 :` with a verb using `x` and `y` will convert to point free form
+* `softMax =. [:(%+/)^`
+* ISO C++ Core Guidelines has 4 `for`/`while` loop guidelines, no "no raw loops"
