@@ -133,23 +133,22 @@ jtXfromB(J jt, A w, void *yv) {
 
 static B
 jtXfromI(J jt, A w, void *yv) {
-    B b;
-    I c, d, i, j, n, r, u[XIDIG], *v;
-    X *x;
-    n = AN(w);
-    v = AV(w);
-    x = (X *)yv;
-    for (i = 0; i < n; ++i) {
-        c = v[i];
-        b = c == IMIN;
-        d = b ? -(1 + c) : ABS(c);
-        j = 0;
-        DO(XIDIG, u[i] = r = d % XBASE; d = d / XBASE; if (r) j = i;);
-        ++j;
+    I u[XIDIG];
+    auto const v = AV(w);
+    std::transform(v, v + AN(w), static_cast<X *>(yv), [&](auto c) {
+        auto const b   = c == IMIN;
+        auto d         = b ? -(1 + c) : std::abs(c);
+        int64_t length = 0;
+        for (int64_t i = 0; i < XIDIG; ++i) {
+            u[i] = d % XBASE;
+            d    = d / XBASE;
+            if (u[i]) length = i;
+        }
+        ++length;
         *u += b;
-        if (0 > c) DO(XIDIG, u[i] = -u[i];);
-        x[i] = jtvec(jt, INT, j, u);
-    }
+        if (0 > c) std::transform(u, u + XIDIG, u, [](auto v) { return -v; });
+        return jtvec(jt, INT, length, u);
+    });
     return !jt->jerr;
 }
 
