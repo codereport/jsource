@@ -131,6 +131,12 @@ jtXfromB(J jt, A w, void *yv) {
            !jt->jerr;
 }
 
+template <typename T>
+static auto
+inplace_negate(T& u, int64_t n) {
+        std::transform(u, u + n, u, [](auto v) { return -v; });
+}
+
 static B
 jtXfromI(J jt, A w, void *yv) {
     I u[XIDIG];
@@ -146,7 +152,7 @@ jtXfromI(J jt, A w, void *yv) {
         }
         ++length;
         *u += b;
-        if (0 > c) std::transform(u, u + XIDIG, u, [](auto v) { return -v; });
+        if (0 > c) inplace_negate(u, XIDIG);
         return jtvec(jt, INT, length, u);
     });
     return !jt->jerr;
@@ -187,8 +193,9 @@ jtxd1(J jt, D p, I mode) {
     if (!m) {
         u[0] = 0;
         ++m;
-    } else if (0 > p)
-        DO(m, u[i] = -u[i];);
+    } else if (0 > p) {
+        inplace_negate(u, m);
+    }
     A z = jtxstd(jt, jtvec(jt, INT, m, u));
     EPILOG(z);
 }
@@ -210,6 +217,14 @@ jtBfromX(J jt, A w, void *yv) {
     return 1;
 }
 
+template <typename T>
+[[nodiscard]] static auto
+value_from_X(X p) -> T {
+        auto const n = AN(p);
+        auto const v = std::reverse_iterator(AV(p) + n);
+        return std::accumulate(v, v + n, T{}, [](auto d, auto v) { return v + d * XBASE; });
+}
+
 static B
 jtIfromX(J jt, A w, void *yv) {
     I a, i, m, n, *u, *x;
@@ -222,11 +237,7 @@ jtIfromX(J jt, A w, void *yv) {
     for (i = 0; i < n; ++i) {
         c = v[i];
         if (!(1 != jtxcompare(jt, q, c) && 1 != jtxcompare(jt, c, p))) return 0;
-        m = AN(c);
-        u = AV(c) + m - 1;
-        a = 0;
-        DO(m, a = *u-- + a * XBASE;);
-        x[i] = a;
+        x[i] = value_from_X<int64_t>(c);
     }
     return 1;
 }
@@ -235,11 +246,10 @@ static B
 jtDfromX(J jt, A w, void *yv) {
     auto const wv = XAV(w);
     std::transform(wv, wv + AN(w), static_cast<D *>(yv), [](auto p) {
-        auto const n = AN(p);
-        auto const v = std::reverse_iterator(AV(p) + n);
-        if (*v == XPINF) return inf;
-        if (*v == XNINF) return infm;
-        return std::accumulate(v, v + n, 0.0, [](auto d, auto v) { return v + d * XBASE; });
+        auto const c = AV(p)[AN(p)-1];
+        if (c == XPINF) return inf;
+        if (c == XNINF) return infm;
+        return value_from_X<double>(p);
     });
     return 1;
 }
