@@ -600,7 +600,6 @@ jtbcvt(J jt, C mode, A w) {
     FPREFIP;
     A y, z = w;
     if (!w) return 0;
-#ifdef NANFLAG
     // there may be values (especially b types) that were nominally CMPX but might actually be integers.  Those were
     // stored with the real part being the actual integer value and the imaginary part as the special 'flag' value.  We
     // handle those here.  If all the imaginary parts were flags, we accept all the integer parts and change the type
@@ -629,7 +628,6 @@ jtbcvt(J jt, C mode, A w) {
             w = z;  // this result is now eligible for further demotion
         }
     }
-#endif
     // for all numerics, try Boolean/int/float in order, stopping when we find one that holds the data
     if (mode & 1 || !(AT(w) & XNUM + RAT)) {  // if we are not stopping at XNUM/RAT
         // To avoid a needless copy, suppress conversion to B01 if type is B01, to INT if type is INT, etc
