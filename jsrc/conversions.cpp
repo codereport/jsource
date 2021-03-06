@@ -18,21 +18,28 @@ extern "C" {
      fuzz *              \
        ABS(v))  // used when v is known to be exact integer.  It's close enough, maybe ULP too small on the high end
 
-static B
-jtC1fromC2(J jt, A w, void *yv) {
-    UC *x;
-    US c, *v;
-    v = USAV(w);
-    x = (C *)yv;
-    DQ(AN(w), c = *v++; if (!(256 > c)) return 0; *x++ = (UC)c;);
-    return 1;
+template <typename T, typename V>
+[[nodiscard]] static constexpr auto
+in_range(V value) -> bool {
+    return std::numeric_limits<T>::min() <= value && value <= std::numeric_limits<T>::max();
+}
+
+template <typename T, typename V>
+[[nodiscard]] static constexpr auto
+in_range() -> bool {
+    return in_range<T>(std::numeric_limits<V>::min()) && in_range<T>(std::numeric_limits<V>::max());
 }
 
 template <typename From, typename To>
 [[nodiscard]] static auto
 convert(J jt, array w, void *yv) -> bool {
-    From *v = reinterpret_cast<From*>(UAV(w));
-    std::copy(v, v + AN(w), static_cast<To*>(yv));
+    From *v = reinterpret_cast<From *>(UAV(w));
+    if constexpr (!in_range<To, From>()) {
+        // TODO: replace with short circuiting solution
+        auto out = static_cast<To *>(yv);
+        return out + AN(w) == std::copy_if(v, v + AN(w), out, [](auto v) { return in_range<To>(v); });
+    }
+    std::copy(v, v + AN(w), static_cast<To *>(yv));
     return 1;
 }
 
@@ -41,37 +48,6 @@ template <typename From, typename To, typename Transform>
 convert(J jt, array w, void *yv, Transform t) -> bool {
     From *v = reinterpret_cast<From*>(UAV(w));
     std::transform(v, v + AN(w), static_cast<To*>(yv), t);
-    return 1;
-}
-
-static B
-jtC1fromC4(J jt, A w, void *yv) {
-    UC *x;
-    C4 c, *v;
-    v = C4AV(w);
-    x = (C *)yv;
-    DQ(AN(w), c = *v++; if (!(256 > c)) return 0; *x++ = (UC)c;);
-    return 1;
-}
-
-static B
-jtC2fromC4(J jt, A w, void *yv) {
-    US *x;
-    C4 c, *v;
-    v = C4AV(w);
-    x = (US *)yv;
-    DQ(AN(w), c = *v++; if (!(65536 > c)) return 0; *x++ = (US)c;);
-    return 1;
-}
-
-static B
-jtBfromI(J jt, A w, void *yv) {
-    B *x;
-    I n, p, *v;
-    n = AN(w);
-    v = AV(w);
-    x = (B *)yv;
-    DQ(n, p = *v++; *x++ = (B)p; if (p & -2) return 0;);
     return 1;
 }
 
@@ -451,7 +427,6 @@ jtccvt(J jt, I tflagged, A w, A *y) {
         RZ(*y = jtca(jt, w));
         return 1;
     }
-    // else if(n&&t&JCHAR){ASSERT(HOMO(t,wt),EVDOMAIN); RZ(*y=jtuco1(jt,w)); return 1;}
     // Kludge on behalf of result assembly: we want to be able to stop converting after the valid cells.  If
     // NOUNCVTVALIDCT is set in the type, we use the input *y as as override on the # cells to convert.  We use it to
     // replace n (for use here) and yv, and AK(w) and AN(w) for the subroutines. If NOUNCVTVALIDCT is set, w is
@@ -480,35 +455,29 @@ jtccvt(J jt, I tflagged, A w, A *y) {
     // Perform the conversion based on data types
     // For branch-table efficiency, we split the C2T and C4T and BIT conversions into one block, and
     // the rest in another
-    if ((t | wt) &
-        (C2T + C4T + BIT + SBT)) {  // there are no SBT conversions, but we have to show domain error
-        // we must account for all NOUN types.  Low 8 bits have most of them, and we know type can't be sparse.  This
-        // picks up the others
+    if ((t | wt) & (C2T + C4T + BIT + SBT)) {
+        // there are no SBT conversions, but we have to show domain error we
+        // must account for all NOUN types.  Low 8 bits have most of them, and
+        // we know type can't be sparse.  This picks up the others
         ASSERT(!((t | wt) & SBT), EVDOMAIN);  // No conversions for these types
         switch (CVCASE(CTTZ(t), CTTZ(wt))) {
-            case CVCASE(LITX, C2TX): return jtC1fromC2(jt, w, yv);
-            case CVCASE(LITX, C4TX): return jtC1fromC4(jt, w, yv);
+            case CVCASE(LITX, C2TX): return convert<US, UC>(jt, w, yv);
+            case CVCASE(LITX, C4TX): return convert<C4, UC>(jt, w, yv);
             case CVCASE(C2TX, LITX): return convert<UC, US>(jt, w, yv);
-            case CVCASE(C2TX, C4TX): return jtC2fromC4(jt, w, yv);
+            case CVCASE(C2TX, C4TX): return convert<C4, US>(jt, w, yv);
             case CVCASE(C4TX, LITX): return convert<UC, C4>(jt, w, yv);
             case CVCASE(C4TX, C2TX): return convert<US, C4>(jt, w, yv);
             default: ASSERT(0, EVDOMAIN);
         }
     }
     switch (CVCASE(CTTZ(t), CTTZ(wt))) {
-        case CVCASE(INTX, B01X): {
-            I *x = static_cast<I*>(yv);
-            B *v = (B *)wv;
-            DQ(n, *x++ = *v++;);
-        }
+        case CVCASE(INTX, B01X):
+            std::copy_n(static_cast<B*>(wv), n, static_cast<I*>(yv));
             return 1;
         case CVCASE(XNUMX, B01X): return jtXfromB(jt, w, yv);
         case CVCASE(RATX, B01X): GATV(d, XNUM, n, r, s); return jtXfromB(jt, w, AV(d)) && jtQfromX(jt, d, yv);
-        case CVCASE(FLX, B01X): {
-            D *x = (D *)yv;
-            B *v = (B *)wv;
-            DQ(n, *x++ = *v++;);
-        }
+        case CVCASE(FLX, B01X):
+            std::copy_n(static_cast<B*>(wv), n, static_cast<D*>(yv));
             return 1;
         case CVCASE(CMPXX, B01X): {
             Z *x = (Z *)yv;
@@ -516,14 +485,11 @@ jtccvt(J jt, I tflagged, A w, A *y) {
             DQ(n, x++->re = *v++;);
         }
             return 1;
-        case CVCASE(B01X, INTX): return jtBfromI(jt, w, yv);
+        case CVCASE(B01X, INTX): return convert<I, bool>(jt, w, yv);
         case CVCASE(XNUMX, INTX): return jtXfromI(jt, w, yv);
         case CVCASE(RATX, INTX): GATV(d, XNUM, n, r, s); return jtXfromI(jt, w, AV(d)) && jtQfromX(jt, d, yv);
-        case CVCASE(FLX, INTX): {
-            D *x = (D *)yv;
-            I *v = static_cast<I*>(wv);
-            DQ(n, *x++ = (D)*v++;);
-        }
+        case CVCASE(FLX, INTX):
+            std::copy_n(static_cast<I*>(wv), n, static_cast<D*>(yv));
             return 1;
         case CVCASE(CMPXX, INTX): {
             Z *x = (Z *)yv;
