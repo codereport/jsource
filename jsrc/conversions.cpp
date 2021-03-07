@@ -55,7 +55,7 @@ convert(J jt, array w, void *yv, Transform t) -> bool {
 
 template <>
 [[nodiscard]] auto
-convert<D, bool>(J jt, A w, void *yv, D fuzz) -> bool {
+convert<D, bool>(J jt, array w, void *yv, D fuzz) -> bool {
     auto n = AN(w);
     auto v = pointer_to_values<double>(w);
     auto x = (B *)yv;
@@ -70,7 +70,7 @@ convert<D, bool>(J jt, A w, void *yv, D fuzz) -> bool {
 
 template <>
 [[nodiscard]] auto
-convert<D, I>(J jt, A w, void *yv, D fuzz) -> bool {
+convert<D, I>(J jt, array w, void *yv, D fuzz) -> bool {
     auto n = AN(w);
     auto v = pointer_to_values<double>(w);
     auto x = (I *)yv;
@@ -95,7 +95,7 @@ convert<D, I>(J jt, A w, void *yv, D fuzz) -> bool {
 
 template <>
 [[nodiscard]] auto
-convert<Z, D>(J jt, A w, void *yv, D fuzz) -> bool {
+convert<Z, D>(J jt, array w, void *yv, D fuzz) -> bool {
     auto const n  = AN(w);
     auto const *v = pointer_to_values<Z>(w);
     auto x        = (D *)yv;
@@ -116,7 +116,7 @@ convert<Z, D>(J jt, A w, void *yv, D fuzz) -> bool {
 
 template <>
 [[nodiscard]] auto
-convert<bool, X>(J jt, A w, void *yv) -> bool {
+convert<bool, X>(J jt, array w, void *yv) -> bool {
     return convert<B, X>(jt,
                          w,
                          yv,
@@ -135,7 +135,7 @@ inplace_negate(T *u, int64_t n) {
 
 template <>
 [[nodiscard]] auto
-convert<I, X>(J jt, A w, void *yv) -> bool {
+convert<I, X>(J jt, array w, void *yv) -> bool {
     I u[XIDIG];
     auto const convert_one = [&](auto c) {
         auto const b   = c == IMIN;
@@ -170,7 +170,7 @@ jtxd1(J jt, D p, I mode) {
     }
     if (p == inf) return jtvci(jt, XPINF);
     if (p == -inf) return jtvci(jt, XNINF);
-    A t;
+    array t;
     GAT0(t, INT, 30, 1);
     auto u = pointer_to_values(t);
     int64_t m = 0;
@@ -191,22 +191,22 @@ jtxd1(J jt, D p, I mode) {
     } else if (0 > p) {
         inplace_negate(u, m);
     }
-    A z = jtxstd(jt, jtvec(jt, INT, m, u));
+    array z = jtxstd(jt, jtvec(jt, INT, m, u));
     EPILOG(z);
 }
 
 template <>
 [[nodiscard]] auto
-convert<D, X>(J jt, A w, void *yv, I mode) -> bool {
+convert<D, X>(J jt, array w, void *yv, I mode) -> bool {
     return convert<D, X>(jt, w, yv, [=](auto v){ return jtxd1(jt, v, mode); }) && !jt->jerr;
 }
 
 template <>
 [[nodiscard]] auto
-convert<X, bool>(J jt, A w, void *yv) -> bool {
+convert<X, bool>(J jt, array w, void *yv) -> bool {
     auto v = pointer_to_values<X>(w);
     auto x = (B *)yv;
-    DO(AN(w), A q = v[i]; I e = pointer_to_values(q)[0]; if ((AN(q) ^ 1) | (e & -2)) return 0; x[i] = (B)e;);
+    DO(AN(w), array q = v[i]; I e = pointer_to_values(q)[0]; if ((AN(q) ^ 1) | (e & -2)) return 0; x[i] = (B)e;);
     return 1;
 }
 
@@ -220,7 +220,7 @@ value_from_X(X p) -> T {
 
 template <>
 [[nodiscard]] auto
-convert<X, I>(J jt, A w, void *yv) -> bool {
+convert<X, I>(J jt, array w, void *yv) -> bool {
     auto v = pointer_to_values<X>(w);
     auto x = (I *)yv;
     auto n = AN(w);
@@ -237,7 +237,7 @@ convert<X, I>(J jt, A w, void *yv) -> bool {
 
 template <>
 [[nodiscard]] auto
-convert<X, D>(J jt, A w, void *yv) -> bool {
+convert<X, D>(J jt, array w, void *yv) -> bool {
     return convert<X, D>(jt, w, yv, [](auto p) {
         auto const c = pointer_to_values(p)[AN(p) - 1];
         if (c == XPINF) return inf;
@@ -248,13 +248,13 @@ convert<X, D>(J jt, A w, void *yv) -> bool {
 
 template <>
 [[nodiscard]] auto
-convert<X, Q>(J jt, A w, void *yv) -> bool {
+convert<X, Q>(J jt, array w, void *yv) -> bool {
     return convert<X, Q>(jt, w, yv, [](auto v) -> Q { return {v, iv1}; });
 }
 
 template <>
 [[nodiscard]] auto
-convert<D, Q>(J jt, A w, void *yv, I mode) -> bool {
+convert<D, Q>(J jt, array w, void *yv, I mode) -> bool {
     if (!(w)) return 0;
     auto const n  = AN(w);
     auto const wv = pointer_to_values<double>(w);
@@ -302,7 +302,7 @@ convert<D, Q>(J jt, A w, void *yv, I mode) -> bool {
 
 template <>
 [[nodiscard]] auto
-convert<Q, D>(J jt, A w, void *yv) -> bool {
+convert<Q, D>(J jt, array w, void *yv) -> bool {
     auto const xb = (D)XBASE;
     auto const wn = AN(w);
     auto const wv = pointer_to_values<Q>(w);
@@ -352,7 +352,7 @@ convert<Q, D>(J jt, A w, void *yv) -> bool {
 
 template <>
 [[nodiscard]] auto
-convert<Q, X>(J jt, A w, void *yv) -> bool {
+convert<Q, X>(J jt, array w, void *yv) -> bool {
     auto v = pointer_to_values<Q>(w);
     auto x = (X *)yv;
     DQ(AN(w), if (!(jtequ(jt, iv1, v->d))) return 0; *x++ = v->n; ++v;);
@@ -368,7 +368,7 @@ set_real_part(Z *z, int64_t n, T *t) {
 // Imaginary parts have already been cleared
 template <>
 [[nodiscard]] auto
-convert<D, Z>(J jt, A w, void *yv) -> bool {
+convert<D, Z>(J jt, array w, void *yv) -> bool {
     set_real_part(static_cast<Z*>(yv), AN(w), pointer_to_values<double>(w));
     return 1;
 }
@@ -378,7 +378,7 @@ convert<D, Z>(J jt, A w, void *yv) -> bool {
 // 0 if error, 1 if success.  If the conversion loses precision, error is returned
 // Calls through bcvt are tagged with a flag in jt, indicating to set fuzz=0
 B
-jtccvt(J jt, I tflagged, A w, A *y) {
+jtccvt(J jt, I tflagged, array w, array *y) {
     FPREFIP;
     I const t = tflagged & NOUN;
     if (!w) return 0;
@@ -423,7 +423,7 @@ jtccvt(J jt, I tflagged, A w, A *y) {
     // modified: the caller must restore AN(w) and AK(w) if it needs it
     // TODO: same-length conversion could be done in place
     auto n = AN(w);
-    A d;
+    array d;
     GA(d, t, n, r, s);
     auto yv = pointer_to_values<void>(d);  // allocate the same # atoms, even if we will convert fewer
     if (tflagged & NOUNCVTVALIDCT) {
@@ -530,9 +530,9 @@ jtccvt(J jt, I tflagged, A w, A *y) {
 }
 
 // clear rank before calling ccvt - needed for sparse arrays only but returns the block as the result
-A
-jtcvt(J jt, I t, A w) {
-    A y;
+auto
+jtcvt(J jt, I t, array w) -> array {
+    array y;
     bool const b = jtccvt(jt, t, w, &y);
     ASSERT(b, EVDOMAIN);
     return y;
@@ -542,8 +542,8 @@ jtcvt(J jt, I t, A w) {
 // and use 'exact' and 'no rank' for them.  If mode=0, do not promote XNUM/RAT to fixed-length types.
 // If mode bit 1 is set, minimum precision is INT; if mode bit 2 is set, minimum precision is FL; if mode bit 3 is set,
 // minimum precision is CMPX Result is a new buffer, always
-A
-jtbcvt(J jt, C mode, A w) {
+auto
+jtbcvt(J jt, C mode, array w) -> array {
     FPREFIP;
     if (!w) return 0;
 
@@ -556,7 +556,7 @@ jtbcvt(J jt, C mode, A w) {
     // to integer.  If none of the imaginary parts were flags, we leave the input unchanged.  If some were flags, we
     // convert the flagged values to float and keep the result as complex
     array result = w;
-    if ((((AN(w) - 1) | (AT(w) & CMPX) - 1)) >= 0) {  // not empty AND complex
+    if ((((AN(w) - 1) | ((AT(w) & CMPX) - 1))) >= 0) {  // not empty AND complex
         Z *wv      = pointer_to_values<Z>(w);
         auto flags = std::transform_reduce(wv, wv + AN(w), int64_t{}, std::plus{}, isflag);
         if (flags) {
@@ -589,11 +589,11 @@ jtbcvt(J jt, C mode, A w) {
     RNE(result);
 } /* convert to lowest type. 0=mode: don't convert XNUM/RAT to other types */
 
-A
-jticvt(J jt, A w) {
+auto
+jticvt(J jt, array w) -> array {
     auto const n = AN(w);
     auto const* v = pointer_to_values<double>(w);
-    A z;
+    array z;
     GATV(z, INT, n, AR(w), AS(w));
     auto u = pointer_to_values(z);
     for (int64_t i = 0; i < n; ++i) {
@@ -604,18 +604,18 @@ jticvt(J jt, A w) {
     return z;
 }
 
-A
-jtpcvt(J jt, I t, A w) {
+auto
+jtpcvt(J jt, I t, array w) -> array {
     RANK2T oqr = jt->ranks;
     RESETRANK;
-    A y;
+    array y;
     bool const b = jtccvt(jt, t, w, &y);
     jt->ranks    = oqr;
     return b ? y : w;
 } /* convert w to type t, if possible, otherwise just return w */
 
-A
-jtcvt0(J jt, A w) {
+auto
+jtcvt0(J jt, array w) -> array {
     auto const t = AT(w);
     auto const n = (t & CMPX) ? 2 * AN(w) : AN(w);
     if (n && t & FL + CMPX) {
@@ -625,14 +625,14 @@ jtcvt0(J jt, A w) {
     return w;
 } /* convert -0 to 0 in place */
 
-A
-jtxco1(J jt, A w) {
+auto
+jtxco1(J jt, array w) -> array {
     ASSERT(AT(w) & DENSE, EVNONCE);
     return jtcvt(jt, AT(w) & B01 + INT + XNUM ? XNUM : RAT, w);
 }
 
-A
-jtxco2(J jt, A a, A w) {
+auto
+jtxco2(J jt, array a, array w) -> array {
     ASSERT(AT(w) & DENSE, EVNONCE);
     I j;
     RE(j = jti0(jt, a));
@@ -645,7 +645,7 @@ jtxco2(J jt, A a, A w) {
             {
                 auto const n = AN(w);
                 auto const r = AR(w);
-                A z;
+                array z;
                 GATV(z, XNUM, 2 * n, r + 1, AS(w));
                 AS(z)[r] = 2;
                 memcpy(pointer_to_values(z), pointer_to_values(w), 2 * n * SZI);
