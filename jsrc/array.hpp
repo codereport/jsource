@@ -35,9 +35,10 @@ num(int64_t n) {
     return reinterpret_cast<array>(Bnum[n - NUMMIN]);
 }
 
+template <typename Value = int64_t>
 [[nodiscard]] inline auto
-pointer_to_values(array x) -> int64_t* {
-    return reinterpret_cast<int64_t*>(reinterpret_cast<C*>(x) + x->kchain.k);
+pointer_to_values(array x) -> Value* {
+    return reinterpret_cast<Value*>(reinterpret_cast<C*>(x) + x->kchain.k);
 }
 
 [[nodiscard]] constexpr auto
