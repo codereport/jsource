@@ -558,7 +558,9 @@ jtbcvt(J jt, C mode, array w) -> array {
     array result = w;
     if ((((AN(w) - 1) | ((AT(w) & CMPX) - 1))) >= 0) {  // not empty AND complex
         Z *wv      = pointer_to_values<Z>(w);
-        auto flags = std::transform_reduce(wv, wv + AN(w), int64_t{}, std::plus{}, isflag);
+        // FIXME: get proper c++17 support
+        // auto flags = std::transform_reduce(wv, wv + AN(w), int64_t{}, std::plus{}, isflag);
+        auto flags = std::accumulate(wv, wv + AN(w), int64_t{}, [&](auto sum, auto v) { return sum + isflag(v); });
         if (flags) {
             I ipok = SGNIF(jtinplace, JTINPLACEWX) & AC(w);  // both sign bits set (<0) if inplaceable
             if (flags == AN(w)) {
