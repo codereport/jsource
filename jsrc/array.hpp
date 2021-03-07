@@ -35,7 +35,7 @@ num(int64_t n) {
     return reinterpret_cast<array>(Bnum[n - NUMMIN]);
 }
 
-template <typename Value = int64_t>
+template <typename Value>
 [[nodiscard]] inline auto
 pointer_to_values(array x) -> Value* {
     return reinterpret_cast<Value*>(reinterpret_cast<C*>(x) + x->kchain.k);
@@ -50,7 +50,7 @@ is_sparse(array x) noexcept -> bool {
 template <typename T>
 auto
 set_value_at(array x, int32_t index, T const& value) -> void {
-    pointer_to_values(x)[index] = value;
+    pointer_to_values<T>(x)[index] = value;
 }
 
 // TODO: remove eventually, temporary while c_types exist

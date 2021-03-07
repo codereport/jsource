@@ -174,7 +174,7 @@ jtxd1(J jt, D p, I mode) -> X {
     if (p == -inf) { return jtvci(jt, XNINF); }
     array t = make_array<int64_t, copy_shape_0>(jt, 30, 1);
     if (!t) return 0;
-    auto *u   = pointer_to_values(t);
+    auto *u   = pointer_to_values<int64_t>(t);
     int64_t m = 0;
     auto d    = std::abs(p);
     while (0 < d) {
@@ -184,7 +184,7 @@ jtxd1(J jt, D p, I mode) -> X {
         d            = q;
         if (m == AN(t)) {
             RZ(t = jtext(jt, 0, t));
-            u = pointer_to_values(t);
+            u = pointer_to_values<int64_t>(t);
         }
     }
     if (m == 0) {
@@ -208,7 +208,7 @@ template <>
 convert<X, bool>(J jt, array w, void *yv) -> bool {
     auto *v = pointer_to_values<X>(w);
     auto *x = static_cast<B *>(yv);
-    DO(AN(w), array q = v[i]; I e = pointer_to_values(q)[0]; if ((AN(q) ^ 1) | (e & -2)) return false; x[i] = (B)e;);
+    DO(AN(w), array q = v[i]; I e = pointer_to_values<int64_t>(q)[0]; if ((AN(q) ^ 1) | (e & -2)) return false; x[i] = (B)e;);
     return true;
 }
 
@@ -216,7 +216,7 @@ template <typename T>
 [[nodiscard]] static auto
 value_from_X(X p) -> T {
     auto const n = AN(p);
-    auto const v = std::reverse_iterator(pointer_to_values(p) + n);
+    auto const v = std::reverse_iterator(pointer_to_values<int64_t>(p) + n);
     return std::accumulate(v, v + n, T{}, [](auto d, auto v) { return v + d * XBASE; });
 }
 
@@ -242,7 +242,7 @@ template <>
 [[nodiscard]] auto
 convert<X, D>(J jt, array w, void *yv) -> bool {
     return convert<X, D>(jt, w, yv, [](auto p) {
-        auto const c = pointer_to_values(p)[AN(p) - 1];
+        auto const c = pointer_to_values<int64_t>(p)[AN(p) - 1];
         if (c == XPINF) { return inf; }
         if (c == XNINF) { return infm; }
         return value_from_X<double>(p);
@@ -297,7 +297,7 @@ convert<D, Q>(J jt, array w, void *yv, I mode) -> bool {
                 q.d = jtca(jt, iv1);
             }
         }
-        if (neg) { inplace_negate(pointer_to_values(q.n), AN(q.n)); }
+        if (neg) { inplace_negate(pointer_to_values<int64_t>(q.n), AN(q.n)); }
         *x++ = q;
     }
     return !jt->jerr;
@@ -324,7 +324,7 @@ convert<Q, D>(J jt, array w, void *yv) -> bool {
     for (int64_t i = 0; i < wn; ++i) {
         auto *const p = wv[i].n;
         auto const pn = AN(p);
-        auto const k  = 1 == pn ? pointer_to_values(p)[0] : 0;
+        auto const k  = 1 == pn ? pointer_to_values<int64_t>(p)[0] : 0;
         auto *const q = wv[i].d;
         auto const qn = AN(q);
         if (k == XPINF) {
@@ -332,8 +332,8 @@ convert<Q, D>(J jt, array w, void *yv) -> bool {
         } else if (k == XNINF) {
             x[i] = infm;
         } else if (pn <= nn && qn <= nn) {
-            auto const n = add_digits(pn, pointer_to_values(p));
-            auto const d = add_digits(qn, pointer_to_values(q));
+            auto const n = add_digits(pn, pointer_to_values<int64_t>(p));
+            auto const d = add_digits(qn, pointer_to_values<int64_t>(q));
             x[i]         = n / d;
         } else {
             if (x2 == nullptr) {
@@ -345,7 +345,7 @@ convert<Q, D>(J jt, array w, void *yv) -> bool {
             auto const cn = AN(c);
             auto const m  = MIN(cn, 5);
             auto const r  = cn - (m + k);
-            auto *const v = pointer_to_values(c) + cn - m;
+            auto *const v = pointer_to_values<int64_t>(c) + cn - m;
             auto const n  = add_digits(m, v);
             auto d        = std::pow(xb, std::abs(r));
             x[i]          = 0 > r ? n / d : n * d;
@@ -471,14 +471,14 @@ jtccvt(J jt, I tflagged, array w, array *y) -> bool {
         case CVCASE(XNUMX, B01X): return convert<bool, X>(jt, w, yv);
         case CVCASE(RATX, B01X):
             GATV(d, XNUM, n, r, s);
-            return convert<bool, X>(jt, w, pointer_to_values(d)) && convert<X, Q>(jt, d, yv);
+            return convert<bool, X>(jt, w, pointer_to_values<int64_t>(d)) && convert<X, Q>(jt, d, yv);
         case CVCASE(FLX, B01X): std::copy_n(pointer_to_values<B>(w), n, static_cast<D *>(yv)); return true;
         case CVCASE(CMPXX, B01X): set_real_part(static_cast<Z *>(yv), n, pointer_to_values<B>(w)); return true;
         case CVCASE(B01X, INTX): return convert<I, bool>(jt, w, yv);
         case CVCASE(XNUMX, INTX): return convert<I, X>(jt, w, yv);
         case CVCASE(RATX, INTX):
             GATV(d, XNUM, n, r, s);
-            return convert<I, X>(jt, w, pointer_to_values(d)) && convert<X, Q>(jt, d, yv);
+            return convert<I, X>(jt, w, pointer_to_values<int64_t>(d)) && convert<X, Q>(jt, d, yv);
         case CVCASE(FLX, INTX): std::copy_n(pointer_to_values<I>(w), n, static_cast<D *>(yv)); return true;
         case CVCASE(CMPXX, INTX): set_real_part(static_cast<Z *>(yv), n, pointer_to_values<I>(w)); return true;
         case CVCASE(B01X, FLX): return convert<D, bool>(jt, w, yv, ((I)jtinplace & JTNOFUZZ) != 0 ? 0.0 : FUZZ);
@@ -492,20 +492,20 @@ jtccvt(J jt, I tflagged, array w, array *y) -> bool {
         case CVCASE(CMPXX, FLX): return convert<D, Z>(jt, w, yv);
         case CVCASE(B01X, CMPXX):
             GATV(d, FL, n, r, s);
-            return convert<Z, D>(jt, w, pointer_to_values(d), ((I)jtinplace & JTNOFUZZ) != 0 ? 0.0 : FUZZ) &&
+            return convert<Z, D>(jt, w, pointer_to_values<int64_t>(d), ((I)jtinplace & JTNOFUZZ) != 0 ? 0.0 : FUZZ) &&
                    convert<D, bool>(jt, d, yv, ((I)jtinplace & JTNOFUZZ) != 0 ? 0.0 : FUZZ);
         case CVCASE(INTX, CMPXX):
             GATV(d, FL, n, r, s);
-            return convert<Z, D>(jt, w, pointer_to_values(d), ((I)jtinplace & JTNOFUZZ) != 0 ? 0.0 : FUZZ) &&
+            return convert<Z, D>(jt, w, pointer_to_values<int64_t>(d), ((I)jtinplace & JTNOFUZZ) != 0 ? 0.0 : FUZZ) &&
                    convert<D, I>(jt, d, yv, ((I)jtinplace & JTNOFUZZ) != 0 ? 0.0 : FUZZ);
         case CVCASE(XNUMX, CMPXX):
             GATV(d, FL, n, r, s);
-            return convert<Z, D>(jt, w, pointer_to_values(d), ((I)jtinplace & JTNOFUZZ) != 0 ? 0.0 : FUZZ) &&
+            return convert<Z, D>(jt, w, pointer_to_values<int64_t>(d), ((I)jtinplace & JTNOFUZZ) != 0 ? 0.0 : FUZZ) &&
                    convert<D, X>(
                      jt, d, yv, (jt->xmode & REPSGN(SGNIFNOT(tflagged, XCVTXNUMORIDEX))) | (tflagged >> XCVTXNUMCVX));
         case CVCASE(RATX, CMPXX):
             GATV(d, FL, n, r, s);
-            return convert<Z, D>(jt, w, pointer_to_values(d), ((I)jtinplace & JTNOFUZZ) != 0 ? 0.0 : FUZZ) &&
+            return convert<Z, D>(jt, w, pointer_to_values<int64_t>(d), ((I)jtinplace & JTNOFUZZ) != 0 ? 0.0 : FUZZ) &&
                    convert<D, Q>(
                      jt, d, yv, (jt->xmode & REPSGN(SGNIFNOT(tflagged, XCVTXNUMORIDEX))) | (tflagged >> XCVTXNUMCVX));
         case CVCASE(FLX, CMPXX): return convert<Z, D>(jt, w, yv, ((I)jtinplace & JTNOFUZZ) != 0 ? 0.0 : FUZZ);
@@ -515,18 +515,18 @@ jtccvt(J jt, I tflagged, array w, array *y) -> bool {
         case CVCASE(FLX, XNUMX): return convert<X, D>(jt, w, yv);
         case CVCASE(CMPXX, XNUMX):
             GATV(d, FL, n, r, s);
-            return convert<X, D>(jt, w, pointer_to_values(d)) && convert<D, Z>(jt, d, yv);
+            return convert<X, D>(jt, w, pointer_to_values<int64_t>(d)) && convert<D, Z>(jt, d, yv);
         case CVCASE(B01X, RATX):
             GATV(d, XNUM, n, r, s);
-            return convert<Q, X>(jt, w, pointer_to_values(d)) && convert<X, bool>(jt, d, yv);
+            return convert<Q, X>(jt, w, pointer_to_values<int64_t>(d)) && convert<X, bool>(jt, d, yv);
         case CVCASE(INTX, RATX):
             GATV(d, XNUM, n, r, s);
-            return convert<Q, X>(jt, w, pointer_to_values(d)) && convert<X, I>(jt, d, yv);
+            return convert<Q, X>(jt, w, pointer_to_values<int64_t>(d)) && convert<X, I>(jt, d, yv);
         case CVCASE(XNUMX, RATX): return convert<Q, X>(jt, w, yv);
         case CVCASE(FLX, RATX): return convert<Q, D>(jt, w, yv);
         case CVCASE(CMPXX, RATX):
             GATV(d, FL, n, r, s);
-            return convert<Q, D>(jt, w, pointer_to_values(d)) && convert<D, Z>(jt, d, yv);
+            return convert<Q, D>(jt, w, pointer_to_values<int64_t>(d)) && convert<D, Z>(jt, d, yv);
         default: ASSERT(0, EVDOMAIN);
     }
 }
@@ -568,7 +568,7 @@ jtbcvt(J jt, C mode, array w) -> array {
             if (flags == AN(w)) {
                 if (ipok >= 0) GATV(result, INT, AN(w), AR(w), AS(w));
                 std::transform(
-                  wv, wv + AN(w), pointer_to_values(result), [&](auto const &z) { return as_integer(z.re); });
+                  wv, wv + AN(w), pointer_to_values<int64_t>(result), [&](auto const &z) { return as_integer(z.re); });
             } else {
                 if (ipok >= 0) GATV(result, CMPX, AN(w), AR(w), AS(w));
                 std::transform(wv, wv + AN(w), pointer_to_values<Z>(result), [&](auto const &z) -> Z {
@@ -600,7 +600,7 @@ jticvt(J jt, array w) -> array {
     auto const *v = pointer_to_values<double>(w);
     array z       = nullptr;
     GATV(z, INT, n, AR(w), AS(w));
-    auto *u = pointer_to_values(z);
+    auto *u = pointer_to_values<int64_t>(z);
     for (int64_t i = 0; i < n; ++i) {
         auto x = *v++;
         if (x < IMIN || FLIMAX <= x) {
@@ -655,7 +655,7 @@ jtxco2(J jt, array a, array w) -> array {
                 array z      = nullptr;
                 GATV(z, XNUM, 2 * n, r + 1, AS(w));
                 AS(z)[r] = 2;
-                memcpy(pointer_to_values(z), pointer_to_values(w), 2 * n * SZI);
+                memcpy(pointer_to_values<void>(z), pointer_to_values<void>(w), 2 * n * SZI);
                 return z;
             }
         default: ASSERT(0, EVDOMAIN);
