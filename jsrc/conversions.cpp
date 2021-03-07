@@ -6,6 +6,7 @@
 #include <algorithm>
 #include <limits>
 #include <numeric>
+#include <optional>
 
 #include "array.hpp"
 extern "C" {
@@ -14,11 +15,12 @@ extern "C" {
 
 #define CVCASE(a, b) (((a) << 3) + (b))  // The main cases fit in low 8 bits of mask
 
-// FIEQ are used in bcvt, where FUZZ may be set to 0 to ensure only exact values are demoted to lower precision
-#define FIEQ(u, v, fuzz) \
-    (ABS((u) - (v)) <=   \
-     fuzz *              \
-       ABS(v))  // used when v is known to be exact integer.  It's close enough, maybe ULP too small on the high end
+// fuzzy_equal() is used in bcvt, where FUZZ may be set to 0 to ensure only exact values are demoted to lower precision
+// used when v is known to be exact integer. It's close enough, maybe ULP too small on the high end
+[[nodiscard]] static auto
+fuzzy_equal(double u, double v, double fuzz) -> bool {
+    return std::abs(u - v) <= fuzz * std::abs(v);
+}
 
 template <typename T, typename V>
 [[nodiscard]] constexpr auto
@@ -32,88 +34,84 @@ in_range() -> bool {
     return in_range<T>(std::numeric_limits<V>::min()) && in_range<T>(std::numeric_limits<V>::max());
 }
 
-template <typename From, typename To>
+template <typename T>
+struct is_optional : std::false_type {};
+
+template <typename T>
+struct is_optional<std::optional<T>> : std::true_type {};
+
+template <typename T>
 [[nodiscard]] auto
-convert(J jt, array w, void *yv) -> bool {
-    auto *v = pointer_to_values<From>(w);
-    if constexpr (!in_range<To, From>()) {
-        // TODO: replace with short circuiting solution
-        auto *out = static_cast<To *>(yv);
-        return out + AN(w) == std::copy_if(v, v + AN(w), out, [](auto v) { return in_range<To>(v); });
-    }
-    std::copy(v, v + AN(w), static_cast<To *>(yv));
-    return true;
+value_if(bool cond, T value) -> std::optional<T> {
+    return cond ? std::optional(value) : std::nullopt;
 }
 
 template <typename From, typename To, typename Transform>
 [[nodiscard]] auto
 convert(J jt, array w, void *yv, Transform t) -> bool {
     auto *v = pointer_to_values<From>(w);
-    std::transform(v, v + AN(w), static_cast<To *>(yv), t);
+    auto *result = static_cast<To *>(yv);
+    if constexpr (is_optional<decltype(t(*v))>::value) {
+        for (int64_t i = 0; i < AN(w); ++i) {
+            auto opt = t(v[i]);
+            if (!opt) return false;
+            result[i] = opt.value();
+        }
+    } else {
+        std::transform(v, v + AN(w), result, t);
+    }
+    return true;
+}
+
+template <typename From, typename To>
+[[nodiscard]] auto
+convert(J jt, array w, void *yv) -> bool {
+    if constexpr (!in_range<To, From>()) {
+        return convert<From, To>(jt, w, yv, [](auto v) { return value_if(in_range<To>(v), v); });
+    }
+    auto *v = pointer_to_values<From>(w);
+    std::copy(v, v + AN(w), static_cast<To *>(yv));
     return true;
 }
 
 template <>
 [[nodiscard]] auto
 convert<D, bool>(J jt, array w, void *yv, D fuzz) -> bool {
-    auto n  = AN(w);
-    auto *v = pointer_to_values<double>(w);
-    auto *x = static_cast<B *>(yv);
-    DQ(n, auto p = *v++; if (p < -2 || 2 < p) return false;  // handle infinities
-       I val = 2;
-       val   = (p == 0) ? 0 : val;
-       val   = FIEQ(p, 1.0, fuzz) ? 1 : val;
-       if (val == 2) return false;
-       *x++ = (B)val;)
-    return true;
+    auto const infinity = [](auto p) { return p < -2 || 2 < p; };
+    return convert<D, bool>(jt, w, yv, [&](auto p) {
+        return value_if(!infinity(p) && (p == 0.0 || fuzzy_equal(p, 1.0, fuzz)), p != 0.0);
+    });
 }
 
 template <>
 [[nodiscard]] auto
 convert<D, I>(J jt, array w, void *yv, D fuzz) -> bool {
-    auto n  = AN(w);
-    auto *v = pointer_to_values<double>(w);
-    auto *x = static_cast<I *>(yv);
-    for (int64_t i = 0; i < n; ++i) {
-        auto const p = v[i];
+    return convert<D, I>(jt, w, yv, [&](auto p) -> std::optional<I> {
         auto const q = jround(p);
-        I rq         = static_cast<I>(q);
-        if (!(p == q || FIEQ(p, q, fuzz))) {
-            return 0;  // must equal int, possibly out of range
+        if (!(p == q || fuzzy_equal(p, q, fuzz))) {
+            return std::nullopt;  // must equal int, possibly out of range
         }
         // out-of-range values don't convert, handle separately
         if (p < static_cast<D> IMIN) {
-            if (!(p >= IMIN * (1 + fuzz))) return false;
-            rq = IMIN;
+            return value_if(p >= IMIN * (1 + fuzz), IMIN);
         }  // if tolerantly < IMIN, error; else take IMIN
         else if (p >= FLIMAX) {
-            if (!(p <= -static_cast<D> IMIN * (1 + fuzz))) return false;
-            rq = IMAX;
+            return value_if(p <= -static_cast<D> IMIN * (1 + fuzz), IMAX);
         }  // if tolerantly > IMAX, error; else take IMAX
-        *x++ = rq;
-    }
-    return true;
+        return q;
+    });
 }
 
 template <>
 [[nodiscard]] auto
 convert<Z, D>(J jt, array w, void *yv, D fuzz) -> bool {
-    auto const n  = AN(w);
-    auto const *v = pointer_to_values<Z>(w);
-    auto *x       = static_cast<D *>(yv);
-    if (fuzz != 0.0)
-        DQ(
-          n, auto d = std::abs(v->im); if (d != inf && d <= fuzz * std::abs(v->re)) {
-              *x++ = v->re;
-              v++;
-          } else return false;)
-    else
-        DQ(
-          n, if (!v->im) {
-              *x++ = v->re;
-              v++;
-          } else return false;);
-    return true;
+    if (fuzz != 0.0) {
+        return convert<Z, D>(jt, w, yv, [&](auto const &v) {
+            auto const d = std::abs(v.im);
+            return value_if(d != inf && d <= fuzz * std::abs(v.re), v.re);
+        });
+    }
+    return convert<Z, D>(jt, w, yv, [](auto v) { return value_if(!v.im, v.re); });
 }
 
 template <>
@@ -206,10 +204,10 @@ convert<D, X>(J jt, array w, void *yv, I mode) -> bool {
 template <>
 [[nodiscard]] auto
 convert<X, bool>(J jt, array w, void *yv) -> bool {
-    auto *v = pointer_to_values<X>(w);
-    auto *x = static_cast<B *>(yv);
-    DO(AN(w), array q = v[i]; I e = pointer_to_values<int64_t>(q)[0]; if ((AN(q) ^ 1) | (e & -2)) return false; x[i] = (B)e;);
-    return true;
+    return convert<X, bool>(jt, w, yv, [](auto q) {
+        auto const e = pointer_to_values<int64_t>(q)[0];
+        return value_if(!((AN(q) ^ 1) | (e & -2)), e);
+    });
 }
 
 template <typename T>
@@ -316,7 +314,10 @@ convert<Q, D>(J jt, array w, void *yv) -> bool {
     auto const add_digits = [&](auto n, auto v) {
         auto f = 1.0;
         auto d = 0.0;
-        DO(n, d += f * v[i]; f *= xb;);
+        std::for_each(v, v + n, [&](auto i) {
+            d += f * i;
+            f *= xb;
+        });
         return d;
     };
 
@@ -357,10 +358,7 @@ convert<Q, D>(J jt, array w, void *yv) -> bool {
 template <>
 [[nodiscard]] auto
 convert<Q, X>(J jt, array w, void *yv) -> bool {
-    auto *v = pointer_to_values<Q>(w);
-    auto *x = static_cast<X *>(yv);
-    DQ(AN(w), if (!(jtequ(jt, iv1, v->d))) return 0; *x++ = v->n; ++v;);
-    return !jt->jerr;
+    return convert<Q, X>(jt, w, yv, [&](auto v) { return value_if(jtequ(jt, iv1, v.d), v.n); }) && !jt->jerr;
 }
 
 template <typename T>
@@ -641,14 +639,17 @@ jtxco1(J jt, array w) -> array {
 auto
 jtxco2(J jt, array a, array w) -> array {
     ASSERT(AT(w) & DENSE, EVNONCE);
-    I j = 0;
-    RE(j = jti0(jt, a));
+    I j = jti0(jt, a);
+    if (jt->jerr != 0) return nullptr;
     switch (j) {
         case -2: return jtaslash1(jt, CDIV, w);
         case -1: return jtbcvt(jt, 1, w);
         case 1: return jtxco1(jt, w);
         case 2:
-            if ((AT(w) & RAT) == 0) RZ(w = jtcvt(jt, RAT, w));
+            if ((AT(w) & RAT) == 0) {
+                w = jtcvt(jt, RAT, w);
+                if (!w) return nullptr;
+            }
             {
                 auto const n = AN(w);
                 auto const r = AR(w);
