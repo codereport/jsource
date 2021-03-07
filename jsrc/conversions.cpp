@@ -365,13 +365,17 @@ convert<Q, X>(J jt, A w, void *yv) -> bool {
     return !jt->jerr;
 }
 
+template <typename T>
+auto
+set_real_part(Z *z, int64_t n, T *t) {
+    for (int64_t i = 0; i < n; ++i) z[i].re = t[i];
+}
+
 // Imaginary parts have already been cleared
 template <>
 [[nodiscard]] auto
 convert<D, Z>(J jt, A w, void *yv) -> bool {
-    D *wv = DAV(w);
-    Z *zv = static_cast<Z*>(yv);
-    DQ(AN(w), zv++->re = *wv++;);
+    set_real_part(static_cast<Z*>(yv), AN(w), DAV(w));
     return 1;
 }
 
@@ -471,22 +475,12 @@ jtccvt(J jt, I tflagged, A w, A *y) {
             GATV(d, XNUM, n, r, s);
             return convert<bool, X>(jt, w, AV(d)) && convert<X, Q>(jt, d, yv);
         case CVCASE(FLX, B01X): std::copy_n(static_cast<B *>(wv), n, static_cast<D *>(yv)); return 1;
-        case CVCASE(CMPXX, B01X): {
-            Z *x = (Z *)yv;
-            B *v = (B *)wv;
-            DQ(n, x++->re = *v++;);
-        }
-            return 1;
+        case CVCASE(CMPXX, B01X): set_real_part(static_cast<Z*>(yv), n, static_cast<B*>(wv)); return 1;
         case CVCASE(B01X, INTX): return convert<I, bool>(jt, w, yv);
         case CVCASE(XNUMX, INTX): return convert<I, X>(jt, w, yv);
         case CVCASE(RATX, INTX): GATV(d, XNUM, n, r, s); return convert<I, X>(jt, w, AV(d)) && convert<X, Q>(jt, d, yv);
         case CVCASE(FLX, INTX): std::copy_n(static_cast<I *>(wv), n, static_cast<D *>(yv)); return 1;
-        case CVCASE(CMPXX, INTX): {
-            Z *x = (Z *)yv;
-            I *v = static_cast<I *>(wv);
-            DQ(n, x++->re = (D)*v++;);
-        }
-            return 1;
+        case CVCASE(CMPXX, INTX): set_real_part(static_cast<Z *>(yv), n, static_cast<I *>(wv)); return 1;
         case CVCASE(B01X, FLX): return convert<D, bool>(jt, w, yv, (I)jtinplace & JTNOFUZZ ? 0.0 : FUZZ);
         case CVCASE(INTX, FLX): return convert<D, I>(jt, w, yv, (I)jtinplace & JTNOFUZZ ? 0.0 : FUZZ);
         case CVCASE(XNUMX, FLX):
