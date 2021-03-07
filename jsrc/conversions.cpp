@@ -129,16 +129,15 @@ convert<bool, X>(J jt, A w, void *yv) -> bool {
 
 template <typename T>
 static auto
-inplace_negate(T& u, int64_t n) {
-        std::transform(u, u + n, u, [](auto v) { return -v; });
+inplace_negate(T *u, int64_t n) {
+    std::transform(u, u + n, u, [](auto v) { return -v; });
 }
 
 template <>
 [[nodiscard]] auto
 convert<I, X>(J jt, A w, void *yv) -> bool {
     I u[XIDIG];
-    auto const v = AV(w);
-    std::transform(v, v + AN(w), static_cast<X *>(yv), [&](auto c) {
+    auto const convert_one = [&](auto c) {
         auto const b   = c == IMIN;
         auto d         = b ? -(1 + c) : std::abs(c);
         int64_t length = 0;
@@ -151,8 +150,8 @@ convert<I, X>(J jt, A w, void *yv) -> bool {
         *u += b;
         if (0 > c) inplace_negate(u, XIDIG);
         return jtvec(jt, INT, length, u);
-    });
-    return !jt->jerr;
+    };
+    return convert<I, X>(jt, w, yv, convert_one) && !jt->jerr;
 }
 
 static X
@@ -239,14 +238,12 @@ convert<X, I>(J jt, A w, void *yv) -> bool {
 template <>
 [[nodiscard]] auto
 convert<X, D>(J jt, A w, void *yv) -> bool {
-    auto const wv = XAV(w);
-    std::transform(wv, wv + AN(w), static_cast<D *>(yv), [](auto p) {
-        auto const c = AV(p)[AN(p)-1];
+    return convert<X, D>(jt, w, yv, [](auto p) {
+        auto const c = AV(p)[AN(p) - 1];
         if (c == XPINF) return inf;
         if (c == XNINF) return infm;
         return value_from_X<double>(p);
     });
-    return 1;
 }
 
 template <>
@@ -297,10 +294,7 @@ convert<D, Q>(J jt, A w, void *yv, I mode) -> bool {
                 q.d = jtca(jt, iv1);
             }
         }
-        if (neg) {
-            auto v = AV(q.n);
-            DQ(AN(q.n), *v = -*v; ++v;);
-        }
+        if (neg) inplace_negate(AV(q.n), AN(q.n));
         *x++ = q;
     }
     return !jt->jerr;
