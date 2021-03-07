@@ -444,7 +444,6 @@ jtccvt(J jt, I tflagged, array w, array *y) -> bool {
     // as n or s[0] since only n atoms will be used.  For higher ranks, we need the shape from s.  So it's just as well
     // that we take the shape from s now
     *y       = d;
-    auto *wv = pointer_to_values<void>(w);  // return the address of the new block
     if ((t & CMPX) != 0) {
         jtfillv(jt, t, n, static_cast<C *>(yv));  // why??  just fill in imaginary parts as we need to
     }
@@ -468,20 +467,20 @@ jtccvt(J jt, I tflagged, array w, array *y) -> bool {
         }
     }
     switch (CVCASE(CTTZ(t), CTTZ(wt))) {
-        case CVCASE(INTX, B01X): std::copy_n(static_cast<B *>(wv), n, static_cast<I *>(yv)); return true;
+        case CVCASE(INTX, B01X): std::copy_n(pointer_to_values<B>(w), n, static_cast<I *>(yv)); return true;
         case CVCASE(XNUMX, B01X): return convert<bool, X>(jt, w, yv);
         case CVCASE(RATX, B01X):
             GATV(d, XNUM, n, r, s);
             return convert<bool, X>(jt, w, pointer_to_values(d)) && convert<X, Q>(jt, d, yv);
-        case CVCASE(FLX, B01X): std::copy_n(static_cast<B *>(wv), n, static_cast<D *>(yv)); return true;
-        case CVCASE(CMPXX, B01X): set_real_part(static_cast<Z *>(yv), n, static_cast<B *>(wv)); return true;
+        case CVCASE(FLX, B01X): std::copy_n(pointer_to_values<B>(w), n, static_cast<D *>(yv)); return true;
+        case CVCASE(CMPXX, B01X): set_real_part(static_cast<Z *>(yv), n, pointer_to_values<B>(w)); return true;
         case CVCASE(B01X, INTX): return convert<I, bool>(jt, w, yv);
         case CVCASE(XNUMX, INTX): return convert<I, X>(jt, w, yv);
         case CVCASE(RATX, INTX):
             GATV(d, XNUM, n, r, s);
             return convert<I, X>(jt, w, pointer_to_values(d)) && convert<X, Q>(jt, d, yv);
-        case CVCASE(FLX, INTX): std::copy_n(static_cast<I *>(wv), n, static_cast<D *>(yv)); return true;
-        case CVCASE(CMPXX, INTX): set_real_part(static_cast<Z *>(yv), n, static_cast<I *>(wv)); return true;
+        case CVCASE(FLX, INTX): std::copy_n(pointer_to_values<I>(w), n, static_cast<D *>(yv)); return true;
+        case CVCASE(CMPXX, INTX): set_real_part(static_cast<Z *>(yv), n, pointer_to_values<I>(w)); return true;
         case CVCASE(B01X, FLX): return convert<D, bool>(jt, w, yv, ((I)jtinplace & JTNOFUZZ) != 0 ? 0.0 : FUZZ);
         case CVCASE(INTX, FLX): return convert<D, I>(jt, w, yv, ((I)jtinplace & JTNOFUZZ) != 0 ? 0.0 : FUZZ);
         case CVCASE(XNUMX, FLX):
