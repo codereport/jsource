@@ -398,7 +398,7 @@ jtccvt(J jt, I tflagged, array w, array *y) -> bool {
                 RZ(*y = jtsparseit(jt, jtcvt(jt, DTYPE(t), w), IX(r), jtcvt(jt, DTYPE(t), jfalse)));
                 jt->ranks = oqr;
                 return true;  // dense to sparse; convert type first (even if same dtype)
-            case 3:        // sparse to sparse
+            case 3:           // sparse to sparse
                 I t1 = DTYPE(t);
                 GASPARSE(*y, t, 1, r, s);
                 P *yp = pointer_to_values<P>(*y);
@@ -482,10 +482,8 @@ jtccvt(J jt, I tflagged, array w, array *y) -> bool {
             return convert<I, X>(jt, w, pointer_to_values(d)) && convert<X, Q>(jt, d, yv);
         case CVCASE(FLX, INTX): std::copy_n(static_cast<I *>(wv), n, static_cast<D *>(yv)); return true;
         case CVCASE(CMPXX, INTX): set_real_part(static_cast<Z *>(yv), n, static_cast<I *>(wv)); return true;
-        case CVCASE(B01X, FLX):
-            return convert<D, bool>(jt, w, yv, ((I)jtinplace & JTNOFUZZ) != 0 ? 0.0 : FUZZ);
-        case CVCASE(INTX, FLX):
-            return convert<D, I>(jt, w, yv, ((I)jtinplace & JTNOFUZZ) != 0 ? 0.0 : FUZZ);
+        case CVCASE(B01X, FLX): return convert<D, bool>(jt, w, yv, ((I)jtinplace & JTNOFUZZ) != 0 ? 0.0 : FUZZ);
+        case CVCASE(INTX, FLX): return convert<D, I>(jt, w, yv, ((I)jtinplace & JTNOFUZZ) != 0 ? 0.0 : FUZZ);
         case CVCASE(XNUMX, FLX):
             return convert<D, X>(
               jt, w, yv, (jt->xmode & REPSGN(SGNIFNOT(tflagged, XCVTXNUMORIDEX))) | (tflagged >> XCVTXNUMCVX));
@@ -495,54 +493,41 @@ jtccvt(J jt, I tflagged, array w, array *y) -> bool {
         case CVCASE(CMPXX, FLX): return convert<D, Z>(jt, w, yv);
         case CVCASE(B01X, CMPXX):
             GATV(d, FL, n, r, s);
-            if (!(convert<Z, D>(jt, w, pointer_to_values(d), ((I)jtinplace & JTNOFUZZ) != 0 ? 0.0 : FUZZ))) {
-                return false;
-            }
-            return convert<D, bool>(jt, d, yv, ((I)jtinplace & JTNOFUZZ) != 0 ? 0.0 : FUZZ);
+            return convert<Z, D>(jt, w, pointer_to_values(d), ((I)jtinplace & JTNOFUZZ) != 0 ? 0.0 : FUZZ) &&
+                   convert<D, bool>(jt, d, yv, ((I)jtinplace & JTNOFUZZ) != 0 ? 0.0 : FUZZ);
         case CVCASE(INTX, CMPXX):
             GATV(d, FL, n, r, s);
-            if (!(convert<Z, D>(jt, w, pointer_to_values(d), ((I)jtinplace & JTNOFUZZ) != 0 ? 0.0 : FUZZ))) {
-                return false;
-            }
-            return convert<D, I>(jt, d, yv, ((I)jtinplace & JTNOFUZZ) != 0 ? 0.0 : FUZZ);
+            return convert<Z, D>(jt, w, pointer_to_values(d), ((I)jtinplace & JTNOFUZZ) != 0 ? 0.0 : FUZZ) &&
+                   convert<D, I>(jt, d, yv, ((I)jtinplace & JTNOFUZZ) != 0 ? 0.0 : FUZZ);
         case CVCASE(XNUMX, CMPXX):
             GATV(d, FL, n, r, s);
-            if (!(convert<Z, D>(jt, w, pointer_to_values(d), ((I)jtinplace & JTNOFUZZ) != 0 ? 0.0 : FUZZ))) {
-                return false;
-            }
-            return convert<D, X>(
-              jt, d, yv, (jt->xmode & REPSGN(SGNIFNOT(tflagged, XCVTXNUMORIDEX))) | (tflagged >> XCVTXNUMCVX));
+            return convert<Z, D>(jt, w, pointer_to_values(d), ((I)jtinplace & JTNOFUZZ) != 0 ? 0.0 : FUZZ) &&
+                   convert<D, X>(
+                     jt, d, yv, (jt->xmode & REPSGN(SGNIFNOT(tflagged, XCVTXNUMORIDEX))) | (tflagged >> XCVTXNUMCVX));
         case CVCASE(RATX, CMPXX):
             GATV(d, FL, n, r, s);
-            if (!(convert<Z, D>(jt, w, pointer_to_values(d), ((I)jtinplace & JTNOFUZZ) != 0 ? 0.0 : FUZZ))) {
-                return false;
-            }
-            return convert<D, Q>(
-              jt, d, yv, (jt->xmode & REPSGN(SGNIFNOT(tflagged, XCVTXNUMORIDEX))) | (tflagged >> XCVTXNUMCVX));
-        case CVCASE(FLX, CMPXX):
-            return convert<Z, D>(jt, w, yv, ((I)jtinplace & JTNOFUZZ) != 0 ? 0.0 : FUZZ);
+            return convert<Z, D>(jt, w, pointer_to_values(d), ((I)jtinplace & JTNOFUZZ) != 0 ? 0.0 : FUZZ) &&
+                   convert<D, Q>(
+                     jt, d, yv, (jt->xmode & REPSGN(SGNIFNOT(tflagged, XCVTXNUMORIDEX))) | (tflagged >> XCVTXNUMCVX));
+        case CVCASE(FLX, CMPXX): return convert<Z, D>(jt, w, yv, ((I)jtinplace & JTNOFUZZ) != 0 ? 0.0 : FUZZ);
         case CVCASE(B01X, XNUMX): return convert<X, bool>(jt, w, yv);
         case CVCASE(INTX, XNUMX): return convert<X, I>(jt, w, yv);
         case CVCASE(RATX, XNUMX): return convert<X, Q>(jt, w, yv);
         case CVCASE(FLX, XNUMX): return convert<X, D>(jt, w, yv);
         case CVCASE(CMPXX, XNUMX):
             GATV(d, FL, n, r, s);
-            if (!(convert<X, D>(jt, w, pointer_to_values(d)))) return false;
-            return convert<D, Z>(jt, d, yv);
+            return convert<X, D>(jt, w, pointer_to_values(d)) && convert<D, Z>(jt, d, yv);
         case CVCASE(B01X, RATX):
             GATV(d, XNUM, n, r, s);
-            if (!(convert<Q, X>(jt, w, pointer_to_values(d)))) return false;
-            return convert<X, bool>(jt, d, yv);
+            return convert<Q, X>(jt, w, pointer_to_values(d)) && convert<X, bool>(jt, d, yv);
         case CVCASE(INTX, RATX):
             GATV(d, XNUM, n, r, s);
-            if (!(convert<Q, X>(jt, w, pointer_to_values(d)))) return false;
-            return convert<X, I>(jt, d, yv);
+            return convert<Q, X>(jt, w, pointer_to_values(d)) && convert<X, I>(jt, d, yv);
         case CVCASE(XNUMX, RATX): return convert<Q, X>(jt, w, yv);
         case CVCASE(FLX, RATX): return convert<Q, D>(jt, w, yv);
         case CVCASE(CMPXX, RATX):
             GATV(d, FL, n, r, s);
-            if (!(convert<Q, D>(jt, w, pointer_to_values(d)))) return false;
-            return convert<D, Z>(jt, d, yv);
+            return convert<Q, D>(jt, w, pointer_to_values(d)) && convert<D, Z>(jt, d, yv);
         default: ASSERT(0, EVDOMAIN);
     }
 }
@@ -551,7 +536,7 @@ jtccvt(J jt, I tflagged, array w, array *y) -> bool {
 auto
 jtcvt(J jt, I t, array w) -> array {
     array y      = nullptr;
-    bool const b = jtccvt(jt, t, w, &y);;
+    bool const b = jtccvt(jt, t, w, &y);
     ASSERT(b, EVDOMAIN);
     return y;
 }
