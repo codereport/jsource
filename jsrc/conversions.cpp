@@ -69,12 +69,15 @@ convert(J jt, array w, void *yv, Transform t) -> bool {
 template <typename From, typename To>
 [[nodiscard]] auto
 convert(J jt, array w, void *yv) -> bool {
-    if constexpr (!in_range<To, From>()) {
+    if constexpr (std::is_same_v<To, Z>) {
+        return convert<From, To>(jt, w, yv, [](auto v) { return To{.re = static_cast<D>(v), .im = {}}; });
+    } else if constexpr (!in_range<To, From>()) {
         return convert<From, To>(jt, w, yv, [](auto v) { return value_if(in_range<To>(v), v); });
+    } else {
+        auto *v = pointer_to_values<From>(w);
+        std::copy(v, v + AN(w), static_cast<To *>(yv));
+        return true;
     }
-    auto *v = pointer_to_values<From>(w);
-    std::copy(v, v + AN(w), static_cast<To *>(yv));
-    return true;
 }
 
 template <>
@@ -349,20 +352,6 @@ convert<Q, X>(J jt, array w, void *yv) -> bool {
     return convert<Q, X>(jt, w, yv, [&](auto v) { return value_if(jtequ(jt, iv1, v.d), v.n); }) && !jt->jerr;
 }
 
-template <typename T>
-auto
-set_real_part(Z *z, int64_t n, T *t) {
-    for (int64_t i = 0; i < n; ++i) { z[i].re = t[i]; }
-}
-
-// Imaginary parts have already been cleared
-template <>
-[[nodiscard]] auto
-convert<D, Z>(J jt, array w, void *yv) -> bool {
-    set_real_part(static_cast<Z *>(yv), AN(w), pointer_to_values<double>(w));
-    return true;
-}
-
 // Convert the data in w to the type t.  w and t must be noun types.  A new buffer is always created (with a
 // copy of the data if w is already of the right type), and returned in *y.  Result is
 // 0 if error, 1 if success.  If the conversion loses precision, error is returned
@@ -459,14 +448,14 @@ jtccvt(J jt, I tflagged, array w, array *y) -> bool {
             GATV(d, XNUM, n, r, s);
             return convert<bool, X>(jt, w, pointer_to_values<int64_t>(d)) && convert<X, Q>(jt, d, yv);
         case CVCASE(FLX, B01X): return convert<bool, double>(jt, w, yv);
-        case CVCASE(CMPXX, B01X): set_real_part(static_cast<Z *>(yv), n, pointer_to_values<B>(w)); return true;
+        case CVCASE(CMPXX, B01X): return convert<bool, Z>(jt, w, yv);
         case CVCASE(B01X, INTX): return convert<I, bool>(jt, w, yv);
         case CVCASE(XNUMX, INTX): return convert<I, X>(jt, w, yv);
         case CVCASE(RATX, INTX):
             GATV(d, XNUM, n, r, s);
             return convert<I, X>(jt, w, pointer_to_values<int64_t>(d)) && convert<X, Q>(jt, d, yv);
         case CVCASE(FLX, INTX): return convert<int64_t, double>(jt, w, yv);
-        case CVCASE(CMPXX, INTX): set_real_part(static_cast<Z *>(yv), n, pointer_to_values<I>(w)); return true;
+        case CVCASE(CMPXX, INTX): return convert<int64_t, Z>(jt, w, yv);
         case CVCASE(B01X, FLX): return convert<D, bool>(jt, w, yv, ((I)jtinplace & JTNOFUZZ) != 0 ? 0.0 : FUZZ);
         case CVCASE(INTX, FLX): return convert<D, I>(jt, w, yv, ((I)jtinplace & JTNOFUZZ) != 0 ? 0.0 : FUZZ);
         case CVCASE(XNUMX, FLX):
