@@ -25,13 +25,16 @@ fuzzy_equal(double u, double v, double fuzz) -> bool {
 template <typename T, typename V>
 [[nodiscard]] constexpr auto
 in_range(V value) -> bool {
-    return std::numeric_limits<T>::min() <= value && value <= std::numeric_limits<T>::max();
+    if constexpr (std::is_same_v<bool, V>)
+        return true;
+    else
+        return std::numeric_limits<T>::lowest() <= value && value <= std::numeric_limits<T>::max();
 }
 
 template <typename T, typename V>
 [[nodiscard]] constexpr auto
 in_range() -> bool {
-    return in_range<T>(std::numeric_limits<V>::min()) && in_range<T>(std::numeric_limits<V>::max());
+    return in_range<T>(std::numeric_limits<V>::lowest()) && in_range<T>(std::numeric_limits<V>::max());
 }
 
 template <typename T>
@@ -450,19 +453,19 @@ jtccvt(J jt, I tflagged, array w, array *y) -> bool {
         }
     }
     switch (CVCASE(CTTZ(t), CTTZ(wt))) {
-        case CVCASE(INTX, B01X): std::copy_n(pointer_to_values<B>(w), n, static_cast<I *>(yv)); return true;
+        case CVCASE(INTX, B01X):  return convert<bool, int64_t>(jt, w, yv);
         case CVCASE(XNUMX, B01X): return convert<bool, X>(jt, w, yv);
         case CVCASE(RATX, B01X):
             GATV(d, XNUM, n, r, s);
             return convert<bool, X>(jt, w, pointer_to_values<int64_t>(d)) && convert<X, Q>(jt, d, yv);
-        case CVCASE(FLX, B01X): std::copy_n(pointer_to_values<B>(w), n, static_cast<D *>(yv)); return true;
+        case CVCASE(FLX, B01X): return convert<bool, double>(jt, w, yv);
         case CVCASE(CMPXX, B01X): set_real_part(static_cast<Z *>(yv), n, pointer_to_values<B>(w)); return true;
         case CVCASE(B01X, INTX): return convert<I, bool>(jt, w, yv);
         case CVCASE(XNUMX, INTX): return convert<I, X>(jt, w, yv);
         case CVCASE(RATX, INTX):
             GATV(d, XNUM, n, r, s);
             return convert<I, X>(jt, w, pointer_to_values<int64_t>(d)) && convert<X, Q>(jt, d, yv);
-        case CVCASE(FLX, INTX): std::copy_n(pointer_to_values<I>(w), n, static_cast<D *>(yv)); return true;
+        case CVCASE(FLX, INTX): return convert<int64_t, double>(jt, w, yv);
         case CVCASE(CMPXX, INTX): set_real_part(static_cast<Z *>(yv), n, pointer_to_values<I>(w)); return true;
         case CVCASE(B01X, FLX): return convert<D, bool>(jt, w, yv, ((I)jtinplace & JTNOFUZZ) != 0 ? 0.0 : FUZZ);
         case CVCASE(INTX, FLX): return convert<D, I>(jt, w, yv, ((I)jtinplace & JTNOFUZZ) != 0 ? 0.0 : FUZZ);
