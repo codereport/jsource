@@ -569,7 +569,8 @@ jtcvt0(J jt, array w) -> array {
 auto
 jtxco1(J jt, array w) -> array {
     ASSERT(AT(w) & DENSE, EVNONCE);
-    return jtcvt(jt, AT(w) & (B01 + INT + XNUM) ? XNUM : RAT, w);
+    ASSERT(!(AT(w) & (B01 + INT + XNUM)), EVDOMAIN);
+    return jtcvt(jt, RAT, w);
 }
 
 auto
