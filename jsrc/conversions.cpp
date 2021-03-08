@@ -221,19 +221,14 @@ value_from_X(X p) -> T {
 template <>
 [[nodiscard]] auto
 convert<X, I>(J jt, array w, void *yv) -> bool {
-    auto *v = pointer_to_values<X>(w);
-    auto *x = static_cast<I *>(yv);
-    auto n  = AN(w);
-    X p     = nullptr;
-    X q;
-    if ((p = jtxc(jt, IMAX)) == nullptr) return false;
-    if ((q = jtxminus(jt, jtnegate(jt, p), jtxc(jt, 1L))) == nullptr) return false;
-    for (int64_t i = 0; i < n; ++i) {
-        auto *c = v[i];
-        if (!(1 != jtxcompare(jt, q, c) && 1 != jtxcompare(jt, c, p))) return false;
-        x[i] = value_from_X<int64_t>(c);
-    }
-    return 1;
+    X p = jtxc(jt, IMAX);
+    if (!p) return false;
+    X q = jtxminus(jt, jtnegate(jt, p), jtxc(jt, 1L));
+    if (!q) return false;
+    return convert<X, I>(jt, w, yv, [&](auto c) -> std::optional<int64_t> {
+        if (!(1 != jtxcompare(jt, q, c) && 1 != jtxcompare(jt, c, p))) return std::nullopt;
+        return value_from_X<int64_t>(c);
+    });
 }
 
 template <>
@@ -305,9 +300,6 @@ template <>
 [[nodiscard]] auto
 convert<Q, D>(J jt, array w, void *yv) -> bool {
     auto const xb  = static_cast<D>(XBASE);
-    auto const wn  = AN(w);
-    auto *const wv = pointer_to_values<Q>(w);
-    auto *const x  = static_cast<D *>(yv);
     auto const nn  = 308 / XBASEN;
 
     // TODO: figure out nice algorithm for this
@@ -322,37 +314,30 @@ convert<Q, D>(J jt, array w, void *yv) -> bool {
     };
 
     X x2 = nullptr;
-    for (int64_t i = 0; i < wn; ++i) {
-        auto *const p = wv[i].n;
+    return convert<Q, D>(jt, w, yv, [&](auto nd) -> std::optional<D> {
+        auto *const p = nd.n;
         auto const pn = AN(p);
-        auto const k  = 1 == pn ? pointer_to_values<int64_t>(p)[0] : 0;
-        auto *const q = wv[i].d;
+        auto const kk = 1 == pn ? pointer_to_values<int64_t>(p)[0] : 0;
+        if (kk == XPINF) return inf;
+        if (kk == XNINF) return infm;
+        auto *const q = nd.d;
         auto const qn = AN(q);
-        if (k == XPINF) {
-            x[i] = inf;
-        } else if (k == XNINF) {
-            x[i] = infm;
-        } else if (pn <= nn && qn <= nn) {
+        if (pn <= nn && qn <= nn) {
             auto const n = add_digits(pn, pointer_to_values<int64_t>(p));
             auto const d = add_digits(qn, pointer_to_values<int64_t>(q));
-            x[i]         = n / d;
-        } else {
-            if (x2 == nullptr) {
-                if ((x2 = jtxc(jt, 2L)) == nullptr) return false;
-            }
-            auto const k = 5 + qn;
-            auto *c      = jtxdiv(jt, jttake(jt, jtsc(jt, -(k + pn)), p), q, XMFLR);
-            if (c == nullptr) return false;
-            auto const cn = AN(c);
-            auto const m  = MIN(cn, 5);
-            auto const r  = cn - (m + k);
-            auto *const v = pointer_to_values<int64_t>(c) + cn - m;
-            auto const n  = add_digits(m, v);
-            auto d        = std::pow(xb, std::abs(r));
-            x[i]          = 0 > r ? n / d : n * d;
+            return n / d;
         }
-    }
-    return true;
+        if (!x2 && !(x2 = jtxc(jt, 2L))) return std::nullopt;
+        auto const k = 5 + qn;
+        auto *c      = jtxdiv(jt, jttake(jt, jtsc(jt, -(k + pn)), p), q, XMFLR);
+        if (!c) return std::nullopt;
+        auto const cn = AN(c);
+        auto const m  = MIN(cn, 5);
+        auto const r  = cn - (m + k);
+        auto const n  = add_digits(m, pointer_to_values<int64_t>(c) + cn - m);
+        auto d        = std::pow(xb, std::abs(r));
+        return 0 > r ? n / d : n * d;
+    });
 }
 
 template <>
@@ -594,19 +579,12 @@ jtbcvt(J jt, C mode, array w) -> array {
 
 auto
 jticvt(J jt, array w) -> array {
-    auto const n  = AN(w);
-    auto const *v = pointer_to_values<double>(w);
-    array z       = nullptr;
-    GATV(z, INT, n, AR(w), AS(w));
-    auto *u = pointer_to_values<int64_t>(z);
-    for (int64_t i = 0; i < n; ++i) {
-        auto x = *v++;
-        if (x < IMIN || FLIMAX <= x) {
-            return w;  // if conversion will fail, skip it
-        }
-        *u++ = static_cast<I>(x);
-    }
-    return z;
+    array z = nullptr;
+    GATV(z, INT, AN(w), AR(w), AS(w));
+    return convert<double, int64_t>(
+             jt, w, pointer_to_values<void>(z), [](auto x) { return value_if(IMIN <= x && x < FLIMAX, x); })
+             ? z
+             : w;  // if conversion will fail, skip it
 }
 
 auto
