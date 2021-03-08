@@ -25,10 +25,12 @@ fuzzy_equal(double u, double v, double fuzz) -> bool {
 template <typename T, typename V>
 [[nodiscard]] constexpr auto
 in_range(V value) -> bool {
-    if constexpr (std::is_same_v<bool, V>)
+    if constexpr (std::is_same_v<bool, V>) {
+        (void)value;
         return true;
-    else
+    } else {
         return std::numeric_limits<T>::lowest() <= value && value <= std::numeric_limits<T>::max();
+    }
 }
 
 template <typename T, typename V>
@@ -74,6 +76,7 @@ convert(J jt, array w, void *yv) -> bool {
     } else if constexpr (!in_range<To, From>()) {
         return convert<From, To>(jt, w, yv, [](auto v) { return value_if(in_range<To>(v), v); });
     } else {
+        (void)jt;
         auto *v = pointer_to_values<From>(w);
         std::copy(v, v + AN(w), static_cast<To *>(yv));
         return true;
