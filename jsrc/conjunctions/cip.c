@@ -91,7 +91,7 @@ jtpdtby(J jt, A a, A w) {
     RZ(z = jtipprep(jt, a, w, t, &m, &n, &p));
     zk = n << bplg(t);
     u  = BAV(a);
-    v = wv = BAV(w);
+    wv = BAV(w);
     NAN0;
     switch (CTTZ(t)) {
         default: ASSERT(0, EVDOMAIN);
@@ -107,7 +107,7 @@ jtpdtby(J jt, A a, A w) {
                 RZ(z = jtipprep(jt, a, w, FL, &m, &n, &p));
                 zk = n * sizeof(D);
                 u  = BAV(a);
-                v = wv = BAV(w);
+                wv = BAV(w);
                 if (at & B01) PDTBY(D, I, IINC) else PDTXB(D, I, IINC, c = (D)*u++);
             }
     }
@@ -148,8 +148,6 @@ cachedmmult(J jt, D* av, D* wv, D* zv, I m, I n, I p, I flgs) {
     // flgs is 0 for float, 1 for complex, i. e. lg2(# values per atom).  If flgs is set, n and p are even, and give the
     // lengths of the arguments in values
     D* cvw = (D*)(((I)&c + (CACHELINESIZE - 1)) & -CACHELINESIZE);  // place where cache-blocks of w are staged
-    D* cva = (D*)(((I)cvw + (CACHEHEIGHT + 1) * CACHEWIDTH * sizeof(D) + (CACHELINESIZE - 1)) &
-                  -CACHELINESIZE);  // place where expanded rows of a are staged
     // zero the result area
     memset(zv, C0, m * n * sizeof(D));
     // process each 64-float vertical stripe of w, producing the corresponding columns of z
@@ -189,7 +187,6 @@ cachedmmult(J jt, D* av, D* wv, D* zv, I m, I n, I p, I flgs) {
             // the mx16 vertical strip of a (mx32 if flgs) will be multiplied by the 16x64 section of w and accumulated
             // into z process each 2x16 section of a against the 16x64 cache block
             D* a2base0 = a1base;
-            D* w2base  = w1base;
             I a2rem    = m;
             D* z2base  = z1base;
             D* c2base  = cvw;
@@ -474,7 +471,7 @@ jtpdt(J jt, A a, A w) {
                 // there is no way to be sure that some overflow has not occurred.  So we guess.  If the result is much
                 // less than the dynamic range of a float integer, convert the result to integer.
                 I i;
-                D* zv = DAV(z);
+                D* zv;
                 for (zv = DAV(z), i = AN(z); i; --i, ++zv)
                     if (*zv > 1e13 || *zv < -1e13) break;  // see if any value is out of range
                 if (!i) {

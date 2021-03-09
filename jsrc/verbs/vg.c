@@ -209,7 +209,6 @@ static B
 jtgrx(J jt, I m, I ai, I n, A w, I *zv) {
     A x;
     I ck, t, *xv;
-    I c                             = ai * n;
     t                               = AT(w);
     jt->workareas.compare.compk     = ai << bplg(t);
     ck                              = jt->workareas.compare.compk * n;
@@ -1196,7 +1195,7 @@ A
 jtgr1(J jt, A w) {
     PROLOG(0075);
     A z;
-    I c, f, ai, m, n, r, *s, t, wn, wr, zn;
+    I f, ai, m, n, r, *s, t, wn, wr, zn;
     t  = AT(w);
     wr = AR(w);
     r  = (RANKT)jt->ranks;
@@ -1204,14 +1203,13 @@ jtgr1(J jt, A w) {
     RESETRANK;
     f = wr - r;
     s = AS(w);
-    // Calculate m: #cells in w   n: #items in a cell of w   ai: #atoms in an item of a cell of w  c: #atoms in a cell
+    // Calculate m: #cells in w   n: #items in a cell of w   ai: #atoms in an item of a cell of w
     // of w
     SETICFR(w, f, r, n);
     if (wn = AN(w)) {
         // If w is not empty, it must have an acceptable number of cells
         PROD(m, f, s);
         PROD(ai, r - 1, f + s + 1);
-        c  = ai * n;
         zn = m * n;
     } else {
         // empty w.  The number of cells may overflow, but reshape will catch that

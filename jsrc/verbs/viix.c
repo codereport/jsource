@@ -53,7 +53,7 @@ static B
 jtiixI(J jt, I n, I m, A a, A w, I* zv) {
     A t;
     B ascend;
-    I *av, j, p, q, *tv, *u, *v, *vv, *wv, x, y;
+    I *av, j, p, q, *tv, *u, *v, *wv, x, y;
     av     = AV(a);
     wv     = AV(w);
     p      = av[0];
@@ -67,7 +67,6 @@ jtiixI(J jt, I n, I m, A a, A w, I* zv) {
     GATV0(t, INT, 1 + q - p, 1);
     v  = AV(t);
     tv = v - p;
-    vv = v + AN(t);  // v->buffer; tv->virtual buffer origin, where p=0; vv->buffer end
     // This could be recoded to allocate slots for <p and >q, but it would be better only if those cases were common
     if (ascend) {
         u    = av;

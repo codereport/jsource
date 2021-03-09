@@ -405,7 +405,6 @@ jtlocale(J jt, B b, A w) {
     if (((AR(w) - 1) & -(AT(w) & (INT | B01))) < 0)
         return (b ? jtstfindcre : jtstfind)(jt, -1, 0, BIV0(w));  // atomic integer is OK
     RZ(jtvlocnl(jt, 1, w));
-    wv = AAV(w);
     DO(AN(w), y = AT(w) & BOX ? AAV(w)[i] : jtsc(jt, IAV(w)[i]);
        if (!(g = (b ? jtstfindcre : jtstfind)(jt,
                                               AT(y) & (INT | B01) ? -1 : AN(y),

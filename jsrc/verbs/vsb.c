@@ -509,7 +509,6 @@ jtsbunstr(J jt, I q, A w) {
     if (!AN(w)) return jtvec(jt, SBT, 0L, 0L);
     ASSERT(AT(w) & LIT + C2T + C4T, EVDOMAIN);
     ASSERT(1 >= AR(w), EVRANK);
-    wn = AN(w);
     c2 = AT(w) & C4T ? SBC4 : AT(w) & C2T ? SBC2 : 0;
     wn = AN(w);  // c2=0 for LIT, SBC2 for C2T, SBC4 for C4T
     if (c2 & SBC4) {

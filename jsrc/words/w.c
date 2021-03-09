@@ -250,9 +250,8 @@ static const ST state[SDDD + 1][16] = {
 A
 jtwordil(J jt, A w) {
     A z;
-    I s, i, m, n, nv, *x;
+    I s, i, m, n, *x;
     UC *v;
-    nv = 0;  // set not creating numeric constant
     n  = AN(w);
     v  = UAV(w);
     GATV0(z, INT, n + n, 3);
@@ -866,7 +865,7 @@ jtfsm0(J jt, A a, A w, C chka) {
     PROLOG(0100);
     A *av, m, s, x, w0 = w;
     B b;
-    I c, f, *ijrd, k, n, p, q, *v;
+    I c, f, *ijrd, k, n, q, *v;
     if (chka) RZ(a = jtfsmvfya(jt, a));
     av   = AAV(a);
     f    = jti0(jt, av[0]);
@@ -875,7 +874,6 @@ jtfsm0(J jt, A a, A w, C chka) {
     ijrd = AV(av[3]);
     n    = AN(w);
     v    = AS(s);
-    p    = v[0];
     q    = v[1];
     ASSERT((UI)ijrd[0] < (UI)n, EVINDEX);
     b = 1 >= AR(w) && (!n || LIT & AT(w));

@@ -94,7 +94,6 @@ jtversq(J jt, A w) {
     char d[21];
     char months[] = "Jan01Feb02Mar03Apr04May05Jun06Jul07Aug08Sep09Oct10Nov11Dec12";
     C* p;
-    C* q;
     ASSERTMTV(w);
     strcpy(m, jeversion + 8);
     p = m + strlen(m) - 20;
@@ -104,7 +103,6 @@ jtversq(J jt, A w) {
     strncat(p, d + 7, 4);
     strcat(p, "-");
     d[3] = 0;
-    q    = strstr(months, d);
     strncat(p, 3 + strstr(months, d), 2);
     strcat(p, "-");
     strncat(p, d + 4, 2);

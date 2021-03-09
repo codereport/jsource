@@ -133,7 +133,7 @@ A
 jtfromis(J jt, A a, A w) {
     A ind, x, z;
     B *b;
-    I acr, af, an, ar, *av, k, m, *v, wcr, wf, wn, wr, *ws, wt;
+    I acr, af, an, ar, *av, k, m, *v, wcr, wf, wr, *ws, wt;
     P *wp, *zp;
     ar  = AR(a);
     acr = jt->ranks >> RANKTX;
@@ -145,7 +145,6 @@ jtfromis(J jt, A a, A w) {
     wf  = wr - wcr;
     RESETRANK;
     if (af) return rank2ex(a, w, UNUSED_VALUE, acr, wcr, acr, wcr, jtfromis);
-    wn = AN(w);
     ws = AS(w);
     wt = AT(w);
     RZ(ind = jtpind(jt, wcr ? *(ws + wf) : 1, a));  // ind is the INT list of indexes being selected
@@ -455,7 +454,6 @@ jtfromss(J jt, A a, A w) {
         b[wf] = 1;
         ++n;
         RZ(w = jtreaxis(jt, jtifb(jt, wr, b), w));
-        wp = PAV(w);
     }
     GATV0(x, INT, ar + n - !!wcr, 1);
     v = AV(x);

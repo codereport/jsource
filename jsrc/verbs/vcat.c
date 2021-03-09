@@ -411,7 +411,6 @@ static void (*moveawtbl[])() = {moveawVV, moveawVS, moveawSV};
 A
 jtover(J jt, A a, A w) {
     AD *z;
-    C *zv;
     I replct, framect, acr, af, ar, *as, k, ma, mw, p, q, r, t, wcr, wf, wr, *ws, zn;
     FPREFIP;
     if (!(a && w)) return 0;
@@ -537,7 +536,6 @@ jtover(J jt, A a, A w) {
     PROD(framect, shortf, s);                // Number of cells in a and w; known non-empty shapes
     DPMULDE(replct * framect, ma + mw, zn);  // total # atoms in result
     GA(z, t, zn, f + r, s);
-    zv = CAV(z);
     s  = AS(z) + f + r;  // allocate result; repurpose s to point to END+1 of shape field
     if (2 > r)
         s[-1] = ma + mw;

@@ -107,12 +107,10 @@ jtsprz(J jt, A z0, A y, A e, I f, I* s) {
         return z;
     }
     e  = q;
-    zt = t = AT(z0);
+    t = AT(z0);
     d      = t & SPARSE ? 0 : 1;
-    if (d)
-        zt = STYPE(t);
-    else
-        t = DTYPE(zt);
+    if (!d)
+        t = DTYPE(t);
     et = AT(e);
     m  = maxtype(et, t);
     zt = STYPE(m);

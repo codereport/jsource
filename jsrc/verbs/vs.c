@@ -217,12 +217,11 @@ jtsparseit(J jt, A w, A a, A e) {
     PROLOG(0091);
     A ax, c, x, y, z;
     B b, *cv;
-    I cm, cn, m, n, r, *s, t, *u, *v, wn;
+    I cm, cn, m, n, r, *s, t, *u, *v;
     P* p;
     RZ(w && a && e);
     r  = AR(w);
     t  = AT(w);
-    wn = AN(w);
     n  = AN(a);
     ASSERT(!(t & LIT + BOX), EVNONCE);  // must not be LIT or BOX
     ASSERT(STYPE(t) != 0, EVDOMAIN);    // w must be dense
@@ -528,10 +527,9 @@ static A
 jtaxtally(J jt, A a, A w) {
     A a1, e, p, q, x;
     B* b;
-    I c, d, j, m, n = 0, r, *u, *v, *ws, wt;
+    I c, d, j, m, n = 0, r, *u, *v, wt;
     P* wp;
     r  = AR(w);
-    ws = AS(w);
     wt = AT(w);
     GATV0(q, INT, r, 1);
     u = AV(q);

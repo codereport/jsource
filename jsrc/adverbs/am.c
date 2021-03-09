@@ -32,7 +32,6 @@ jtmerge1(J jt, A w, A ind) {
     A z;
     B *b;
     C *wc, *zc;
-    D *wd, *zd;
     I c, it, j, k, m, r, *s, t, *u, *wi, *zi;
     r = MAX(0, AR(w) - 1);
     s = 1 + AS(w);
@@ -53,10 +52,8 @@ jtmerge1(J jt, A w, A ind) {
                       // checked individually, so we just look at the first c bytes
     zi = AV(z);
     zc = (C *)zi;
-    zd = (D *)zc;
     wi = AV(w);
     wc = (C *)wi;
-    wd = (D *)wc;
     switch (MCASE(CTTZ(it), k)) {
         case MCASE(B01X, sizeof(C)): DO(c, *zc++ = wc[i + c * (I)*b++];); break;
         case MCASE(B01X, sizeof(I)): DO(c, *zi++ = wi[i + c * (I)*b++];); break;

@@ -145,7 +145,7 @@ jthia(J jt, D hct, A y) {
 static UI
 jthiau(J jt, A y) {
     I m, n;
-    UC* v = UAV(y);
+    UC* v;
     UI z  = 2038074751;
     X *u, x;
     m = n = AN(y);
@@ -429,7 +429,6 @@ hashallo(IH* hh, UI p, UI m, I md) {
                        C0,
                        (nclrhsh << hh->hashelelgsize));  // clear the region to 0
                 if (p <= clrpt) {
-                    startx              = hh->currentindexofst;
                     hh->currentindexend = MAX(m, hh->currentindexofst);
                 }  // If we cleared the whole left side, we can back the left-side pointer to match the right
                 hh->invalidlo = clrpt;  // Indicate that we have cleared this region
@@ -1507,10 +1506,9 @@ static IOFX(A, jtioax1, jthia(jt, t1, *v), !jtequ(jt, *v, av[hj]), ++v, --v)    
 
   static void jtiosc(J jt, I mode, I m, I c, I ac, I wc, A a, A w, A z) {
     B* zb;
-    I j, p, q, *u, *v, zn, *zv;
+    I j, p, q, *u, *v, *zv;
     p  = 1 < ac ? m : 0;
     q  = 1 < wc || 1 < c;
-    zn = AN(z);
     zv = AV(z);
     zb = (B*)zv;
     u  = AV(a);

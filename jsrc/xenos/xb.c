@@ -331,12 +331,11 @@ static A
 jtunbinr(J jt, B b, B d, B pre601, I m, A w) {
     A y, z;
     C *u = (C *)w, *v;
-    I e, j, kk, n, p, r, *s, t, *vv;
+    I e, j, n, p, r, *s, t, *vv;
     ASSERT(m > BH(d), EVLENGTH);
     RZ(jtmvw(jt, (C *)&t, BTX(d, pre601, w), 1L, BU, b, 1, d));
     RZ(jtmvw(jt, (C *)&n, BN(d, w), 1L, BU, b, 1, d));
     RZ(jtmvw(jt, (C *)&r, BR(d, w), 1L, BU, b, 1, d));
-    kk = WS(d);
     v  = BV(d, w, r);
     ASSERT((t == LOWESTBIT(t)) && t & (B01 | INT | FL | CMPX | BOX | XNUM | RAT | LIT | C2T | C4T | SB01 | SLIT | SINT |
                                        SFL | SCMPX | SBOX | SBT),
