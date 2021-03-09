@@ -877,7 +877,6 @@ A
 jttou32(J jt, A w) {
     A z;
     I n, t, b = 0, j;
-    UC* wv;
     US* c2v;
     C4* c4v;
     I* v;
@@ -885,7 +884,6 @@ jttou32(J jt, A w) {
     PROLOG(0000);
     n  = AN(w);
     t  = AT(w);
-    wv = UAV(w);
     if (C4T & AT(w)) return w;                          // if already C4T, return
     ASSERT(!n || (NUMERIC + JCHAR) & AT(w), EVDOMAIN);  // must be empty or unicode
     if (!n) {

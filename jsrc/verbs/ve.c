@@ -577,8 +577,7 @@ A
 jtbase1(J jt, A w) {
     A z;
     B* v;
-    I c, m, n, p, r, *s, t, *x;
-    n = AN(w);
+    I c, m, p, r, *s, t, *x;
     t = AT(w);
     r = AR(w);
     s = AS(w);
@@ -600,13 +599,11 @@ jtbase1(J jt, A w) {
 
 A
 jtbase2(J jt, A a, A w) {
-    I ar, *as, at, c, t, wr, *ws, wt;
+    I ar, at, c, t, wr, wt;
     at = AT(a);
     ar = AR(a);
-    as = AS(a);
     wt = AT(w);
     wr = AR(w);
-    ws = AS(w);
     c  = AS(w)[wr - 1];
     c  = wr ? c : 1;
     ASSERT(!((at | wt) & SPARSE), EVNONCE);

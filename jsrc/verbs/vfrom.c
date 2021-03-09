@@ -83,7 +83,7 @@ A
 jtifrom(J jt, A a, A w) {
     A z;
     C *wv, *zv;
-    I acr, an, ar, *av, j, k, m, p, pq, q, wcr, wf, wk, wn, wr, *ws, zn;
+    I acr, an, ar, *av, j, k, m, p, pq, q, wcr, wf, wn, wr, *ws, zn;
     FPREFIP;
     // IRS supported.  This has implications for empty arguments.
     ar  = AR(a);
@@ -164,7 +164,6 @@ jtifrom(J jt, A a, A w) {
     if (wcr) MCISH(&AS(z)[wf + ar], 1 + wf + ws, wcr - 1);
     if (!zn) { DO(an, SETJ(av[i])) return z; }  // If no data to move, just audit the indexes and quit
     // from here on we are moving items
-    wk = k * p;  // stride between cells of w
     wv = CAV(w);
     zv = CAV(z);
     SETJ(*av);
@@ -211,7 +210,7 @@ jtbfrom(J jt, A a, A w) {
     A z;
     B *av, *b;
     C *wv, *zv;
-    I acr, an, ar, k, m, p, q, r, *u = 0, wcr, wf, wk, wn, wr, *ws, zn;
+    I acr, an, ar, k, m, p, *u = 0, wcr, wf, wk, wn, wr, *ws, zn;
     ar  = AR(a);
     acr = jt->ranks >> RANKTX;
     acr = ar < acr ? ar : acr;
@@ -229,8 +228,6 @@ jtbfrom(J jt, A a, A w) {
     // no items, where 0 { empty is an index error!  In that case, we set wr to 0, in effect making it an atom (since
     // failing exec on fill-cell produces atomic result)
     p = wcr ? ws[wf] : 1;
-    q = an >> LGSZI;
-    r = an & (SZI - 1);  // p=# items of w
     ASSERT(((p - 2) & -(p | an)) >= 0 || (p & all0(a)),
            EVINDEX);  // OK if p has >1 item, or if it has 0 but an is 0, or is a is all 0 and p has 1 item
     // We always need zn, the number of result atoms

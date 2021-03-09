@@ -938,7 +938,7 @@ jtrazeg(J jt, A w, I t, I n, I r, A *v, I nonempt) {
 // ; y
 A
 jtraze(J jt, A w) {
-    A *v, y, z, *zv;
+    A *v, y, z;
     C *zu;
     I *wws, d, i, klg, m = 0, n, r = 1, t = 0, te = 0;
     n = AN(w);
@@ -990,7 +990,6 @@ jtraze(J jt, A w) {
 
         GA(z, t, m, r, 0);  // allocate the result area
         zu  = CAV(z);
-        zv  = AAV(z);
         klg = bplg(t);  // input pointers, depending on type; length of an item
         // loop through the boxes copying
         for (i = 0; i < n; ++i) {
@@ -1017,7 +1016,6 @@ jtraze(J jt, A w) {
         GA(z, t, m * nitems, r, wws);
         AS(z)[0] = nitems;  // allocate the result area; finish shape
         zu       = CAV(z);
-        zv       = AAV(z);
         klg      = bplg(t);  // input pointers, depending on type; length of an item
         // loop through the boxes copying the data into sequential output positions
         DO(n, y = v[i]; d = AN(y) << klg; memcpy(zu, AV(y), d); zu += d;)

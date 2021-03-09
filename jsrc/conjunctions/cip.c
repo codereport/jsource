@@ -91,7 +91,7 @@ jtpdtby(J jt, A a, A w) {
     RZ(z = jtipprep(jt, a, w, t, &m, &n, &p));
     zk = n << bplg(t);
     u  = BAV(a);
-    v = wv = BAV(w);
+    wv = BAV(w);
     NAN0;
     switch (CTTZ(t)) {
         default: ASSERT(0, EVDOMAIN);
@@ -107,7 +107,7 @@ jtpdtby(J jt, A a, A w) {
                 RZ(z = jtipprep(jt, a, w, FL, &m, &n, &p));
                 zk = n * sizeof(D);
                 u  = BAV(a);
-                v = wv = BAV(w);
+                wv = BAV(w);
                 if (at & B01) PDTBY(D, I, IINC) else PDTXB(D, I, IINC, c = (D)*u++);
             }
     }

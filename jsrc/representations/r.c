@@ -276,9 +276,6 @@ jtunDD(J jt, A w) {
             if (inx != outx || shortres) {
                 DQ(endx - inx, currc = wv[inx++]; if (shortres && currc == CLF) break;
                    wv[outx++] = currc;)  // copy in to end
-            } else {
-                // we are at the beginning.  No need to move
-                inx = outx = endx;
             }
             if (wilx == AS(wil)[0]) break;  // break if no more DDs
             if (shortres && currc == CLF) {

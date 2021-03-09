@@ -529,13 +529,11 @@ A
 RoutineB(J jt, A w, A prxthornuni) {
     A z;
     I n, t, q, b = 0;
-    UC* wv;
     US* c2v;
     C4* c4v;
     ASSERT(1 >= AR(w), EVRANK);
     n  = AN(w);
     t  = AT(w);
-    wv = UAV(w);
     ASSERT(t & C2T, EVDOMAIN);
     if (!n) {
         GATV(z, C2T, n, AR(w), AS(w));

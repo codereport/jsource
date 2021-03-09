@@ -663,9 +663,9 @@ static A
 jtfmtallcol(J jt, A a, A w, I mode) {
     A *a1v, base, fb, len, strs, *u, v, x;
     B *bits, *bv;
-    C *cB, *cD, *cM, *cN, *cP, *cQ, *cR, *cI, *cJ, *cK, *cv, **cvv, *cx, *subs;
+    C *cB, *cD, *cM, *cN, *cP, *cQ, *cR, *cI, *cv, **cvv, *cx, *subs;
     D dtmp, *dv;
-    I coll, d, g, h, i, *ib, imod, *iv, *il, j, k, l, m, mods, nB, nD, nM, nN, nP, nQ, nR, nI, nJ, nK, n, nc, nf, t, wr,
+    I coll, d, g, h, i, *ib, imod, *iv, *il, j, k, l, m, mods, nB, nD, nM, nN, nP, nQ, nR, nI, n, nc, nf, t, wr,
       *ws, y, zs[2];
     if (!a) return 0;
     u    = AAV(a);
@@ -759,8 +759,6 @@ jtfmtallcol(J jt, A a, A w, I mode) {
         nQ    = AN(uQ);
         nR    = AN(uR);
         nI    = AN(uI);
-        nJ    = AN(uJ);
-        nK    = AN(uK);
         cB    = CAV(uB);
         cD    = CAV(uD);
         cM    = CAV(uM);
@@ -769,8 +767,6 @@ jtfmtallcol(J jt, A a, A w, I mode) {
         cQ    = CAV(uQ);
         cR    = CAV(uR);
         cI    = CAV(uI);
-        cJ    = CAV(uJ);
-        cK    = CAV(uK);
         subs  = AN(uS) ? CAV(uS) : (C *)"e,.-*";
         switch (mode) {
             case 0:

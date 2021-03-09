@@ -509,7 +509,7 @@ jtreshape(J jt, A a, A w) {
     A z;
     B filling;
     C *wv, *zv;
-    I acr, ar, c, k, m, n, p, q, r, *s, t, *u, wcr, wf, wn, wr, *ws, zn;
+    I acr, ar, c, k, m, n, p, q, r, *s, t, *u, wcr, wf, wr, *ws, zn;
     FPREFIP;
     if (!(a && w)) return 0;
     ar  = AR(a);
@@ -530,7 +530,6 @@ jtreshape(J jt, A a, A w) {
     r = AN(a);
     u = AV(a);  // r=length of a   u->values of a
     if ((SPARSE & AT(w)) != 0) { return jtreshapesp(jt, a, w, wf, wcr); }
-    wn = AN(w);
     PRODX(m, r, u, 1)
     CPROD(c, wf, ws);
     CPROD(n, wcr, wf + ws);                 // m=*/a (#atoms in result)  c=#cells of w  n=#atoms/cell of w
@@ -634,22 +633,19 @@ A
 jtexpand(J jt, A a, A w) {
     A z;
     B *av;
-    C *wv, *wx, *zv;
-    I an, *au, i, k, p, wc, wk, wn, wt, zn;
+    C *wv, *zv;
+    I an, i, k, p, wc, wk, wt, zn;
     if (!(B01 & AT(a))) RZ(a = jtcvt(jt, B01, a));
     ASSERT(1 == AR(a), EVRANK);
     RZ(w = jtsetfv(jt, w, w));
     if (!AR(w)) return jtfrom(jt, a, jttake(jt, num(-2), w));  // atomic w, use a { _2 {. w
     av = BAV(a);
     an = AN(a);
-    au = (I *)av;
     ASSERT(bsum(an, av) == AS(w)[0], EVLENGTH);  // each item of w must be used exactly once
     wv                                = CAV(w);
-    wn                                = AN(w);
     PROD(wc, AR(w) - 1, AS(w) + 1) wt = AT(w);
     k                                 = bpnoun(wt);
     wk                                = k * wc;
-    wx                                = wv + wk * AS(w)[0];  // k=bytes/atom, wk=bytes/item, wx=end+1 of area
     DPMULDE(an, wc, zn);
     GA(z, wt, zn, AR(w), AS(w));
     AS(z)[0] = an;

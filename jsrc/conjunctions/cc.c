@@ -1319,7 +1319,6 @@ jtcut2(J jt, A a, A w, A self) {
                 zk         = wcn * atomsize;
                 if ((t = atype(adocv.cv)) && TYPESNE(t, wt)) {
                     RZ(w = jtcvt(jt, t, w));
-                    wv = CAV(w);
                 }
                 I rc = EVOK;  // accumulate error code
                 EACHCUT(
@@ -1725,7 +1724,6 @@ jttess2(J jt, A a, A w, A self) {
         vtrc = vlrc = 0;  // stifle all copying to the strip, which doesn't exist
         hss = hds = lrchsiz = 0;
         vds1 = vss1 = 0;
-        vss         = 0;
         svh = dvh = 0;  // no horiz looping, so this is immaterial
         vss       = 0;  // since we never loop back in horiz loop, this is immaterial
 

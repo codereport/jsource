@@ -313,11 +313,9 @@ jtindexofss(J jt, I mode, A a, A w) {
     A ai, aj, ax, wi, wj, wx, x, y, z;
     B aw = a != w;
     I ar, c, m, mm, n, r, *u, *v, wr;
-    P *ap, *wp, *zp;
+    P *zp;
     ar = AR(a);
-    ap = PAV(a);
     wr = AR(w);
-    wp = PAV(w);
     r  = 1 + wr - ar;
     RZ(jtioresparse(jt, aw, &a, &w));
     v  = AS(a);

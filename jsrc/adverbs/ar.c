@@ -933,12 +933,11 @@ jtredcat(J jt, A w, A self) {
 
 static A
 jtredsemi(J jt, A w, A self) {
-    I f, n, r, *s, wr;
+    I f, n, r, wr;
     wr = AR(w);
     r  = (RANKT)jt->ranks;
     r  = wr < r ? wr : r;
     f  = wr - r;
-    s  = AS(w);
     SETICFR(w, f, r, n);  // let the rank run into tail   n=#items  in a cell of w
     if (2 > n) {
         ASSERT(n != 0, EVDOMAIN);

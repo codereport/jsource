@@ -61,7 +61,7 @@ jtobqfslash(J jt, A w, A self) {
     A y, z;
     B b = 0, p;
     C er, id, *wv;
-    I c, d, k, m, m1, mn, n, n1, r, *s, wt;
+    I c, d, k, m, m1, n, n1, r, *s, wt;
     r  = AR(w);
     s  = AS(w);
     wt = AT(w);
@@ -76,7 +76,6 @@ jtobqfslash(J jt, A w, A self) {
     m1 = m - 1;
     n  = s[1];
     n1 = n - 1;
-    mn = m * n;
     d  = m + n - 1;
     PROD(c, r - 2, 2 + s);
     if (((1 - m) & (1 - n)) >= 0) {

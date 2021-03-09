@@ -92,7 +92,6 @@ jtzpadn(J jt, A z, A ind, B ip) {
     a  = SPA(zp, a);
     x = x0 = SPA(zp, x);
     y = y0 = SPA(zp, i);
-    n      = 1;
     h      = *(AS(ind) + AR(ind) - 1);
     RZ(ai = IX(h));
     RZ(t = jteps(jt, ai, a));

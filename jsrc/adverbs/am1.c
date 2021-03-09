@@ -48,7 +48,6 @@ jtastd1(J jt, A a, A z, A ind) {
     B b;
     I ar, *as, d, j, m, n, *rv, zr, *zs;
     P *zp;
-    I *s1v;
     ar = AR(a);
     as = AS(a);
     zr = AR(z);
@@ -68,7 +67,6 @@ jtastd1(J jt, A a, A z, A ind) {
     d = m + zr - n;
     ASSERT(ar <= d, EVRANK);
     RZ(s1 = jtraze(jt, s));
-    s1v = AV(s1);
     ASSERT(!ICMP(as, AV(s1) + d - ar, ar), EVLENGTH);
     if (ar < d) RZ(a = jtreshape(jt, s1, a));
     RZ(q = jtdgrade1(jt, jteps(jt, jtrepeat(jt, r, IX(zr)), SPA(zp, a))));
@@ -334,16 +332,14 @@ mtind(A ind) {
 
 A
 jtam1e(J jt, A a, A z, A ind, B ip) {
-    A e, i1, i2, p, x, y;
+    A e, i1, i2, p, x;
     B *pv;
     C *u, *v;
     I *iv, k, m, n, r, *s, vk, xk;
     P *zp;
     RZ(a && (ind = jtistd1(jt, z, ind)));
-    r  = AR(z);
     zp = PAV(z);
     x  = SPA(zp, x);
-    y  = SPA(zp, i);
     e  = SPA(zp, e);
     RZ(p = jtssel(jt, z, ind));
     pv = BAV(p);
@@ -370,7 +366,7 @@ jtam1e(J jt, A a, A z, A ind, B ip) {
 
 A
 jtam1a(J jt, A a, A z, A ind, B ip) {
-    A a0 = a, a1, e, i1, i2, t, x, y;
+    A a0 = a, a1, e, i1, i2, t, x;
     C *u, *v, *xv;
     I ar, c, *iv, *jv, k, m, n, r, *s, uk, vk, xk;
     P *zp;
@@ -381,7 +377,6 @@ jtam1a(J jt, A a, A z, A ind, B ip) {
     RZ(z = jtzpad1(jt, z, jtscube(jt, z, i1, jtssel(jt, z, ind)), ip));
     zp = PAV(z);
     x  = SPA(zp, x);
-    y  = SPA(zp, i);
     e  = SPA(zp, e);
     ar = AR(a);
     n  = AN(i2);

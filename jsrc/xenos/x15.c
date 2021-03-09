@@ -3369,15 +3369,13 @@ A
 jtcallback(J jt, A w) {
     cbjt = jt; /* callbacks don't work with multiple instances of j */
     if (LIT & AT(w)) {
-        I cnt, alt;
+        I cnt;
         C c;
         C *s;
         ASSERT(1 >= AR(w), EVRANK);
         s   = CAV(jtstr0(jt, w));
-        alt = 0;
         while (*s == ' ') ++s;
         if ('+' == *s) {
-            alt = 1;
             ++s;
         }
 
@@ -3390,7 +3388,7 @@ jtcallback(J jt, A w) {
         }
         ASSERT(cnt > 0 && cnt < CBTYPESMAX, EVDOMAIN);
 
-        return jtsc(jt, cbvx[--cnt]); /* select callback based on alt * args */
+        return jtsc(jt, cbvx[--cnt]); /* select callback based on cnt * args */
     } else {
         I k;
         RE(k = jti0(jt, w));

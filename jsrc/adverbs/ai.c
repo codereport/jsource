@@ -609,13 +609,11 @@ jtiden(J jt, A w) {
 
 A
 jtidensb(J jt, A w) {
-    A f, g, x = 0, w0 = w;
+    A x = 0, w0 = w;
     V* v;
     RZ(w = jtfix(jt, w, num(0)));
     ASSERT(VERB & AT(w), EVDOMAIN);
     v = FAV(w);
-    f = v->fgh[0];
-    g = v->fgh[1];
     switch (v->id) {
         default: return jtiden(jt, w0);
         case CMAX:

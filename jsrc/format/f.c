@@ -265,7 +265,7 @@ static A
 jtthsb(J jt, A w, A prxthornuni) {
     A d, z;
     C *zv;
-    I c, *dv, m, n, p, q, r, *s;
+    I c, *dv, m, n, p, r, *s;
     SB *x, *y;
     SBU *u;
     PROLOG(0000);
@@ -273,7 +273,6 @@ jtthsb(J jt, A w, A prxthornuni) {
     r = AR(w);
     s = AS(w);
     x = y = SBAV(w);
-    q     = jt->sbun;
     if (1 >= r) {
         c = n;
         RZ(d = jtapvwr(jt, c, 0L, 0L));
@@ -453,7 +452,6 @@ jtrc(J jt, A w, A *px, A *py, I *t) {
     I j = 0, k = 0, maxt = 0, r, *s, xn, *xv, yn, *yv;
     // r = rank of w, s->shape of w, v->values
     r = AR(w);
-    s = AS(w);
     v = AAV(w);
     // xn = #rows in 2-cell of joined table, x=vector of (xn+1) 0s, xv->data for vector
     SHAPEN(w, r - 2, xn);
@@ -792,7 +790,6 @@ jtths(J jt, A w) {
     P *p;
     RZ(jtscheck(jt, w));
     p = PAV(w);
-    e = SPA(p, e);
     i = SPA(p, i);
     x = SPA(p, x);
     RZ(i = jtthorn1(jt, i));

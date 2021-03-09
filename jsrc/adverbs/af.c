@@ -143,7 +143,6 @@ jtfixa(J jt, A a, A w) {
                     f  = v->fgh[0];
                     g  = v->fgh[1];
                     h  = v->fgh[2];
-                    wf = ds(v->id);
                 }
                 f = REFIXA(0, f);
                 h = REFIXA(0, h);
