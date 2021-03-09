@@ -43,8 +43,6 @@ static const C *qq       = ">)}]";
 #define mD (mods & 0x0040)
 #define mMN (mods & 0x0030)
 #define mPQ (mods & 0x000c)
-#define uK (u[1])  // unused
-#define uJ (u[2])  // unused
 #define uI (u[3])
 #define uB (u[4])
 #define uD (u[5])
