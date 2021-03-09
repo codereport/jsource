@@ -12,8 +12,6 @@
 /* fs   zv=.+/\.xv    1<n */
 
 /* C routines for platforms without asm support */
-#define DI LD
-
 #define PLUSVV(n, z, x, y)                                                           \
     {                                                                                \
         I u, v, w;                                                                   \
