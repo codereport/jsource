@@ -73,14 +73,14 @@ template <typename Type, typename Copier>
 [[nodiscard]] auto
 make_array(J jt, int64_t atoms, rank_t rank) {
     int64_t const ctype = to_c_type<Type>();
-    int64_t const bytes = ALLOBYTES(atoms, rank, sizeof(Type), (ctype)&LAST0, (ctype)&NAME);
+    int64_t const bytes = ALLOBYTES(atoms, rank, sizeof(Type), ctype & LAST0, ctype & NAME);
 
     array name = jtgaf(jt, ALLOBLOCK(bytes));
     AK(name)   = AKXR(rank);
     AT(name)   = ctype;
     AN(name)   = atoms;
     AR(name)   = rank;
-    if (!((ctype)&DIRECT)) {
+    if (!(ctype & DIRECT)) {
         if (rank == 0) AS(name)[0] = 0;
         memset(reinterpret_cast<C*>(AS(name) + 1), C0, (bytes - 32) & -32);
     }
