@@ -66,7 +66,6 @@ jtfmtD(J jt, C *s, D *v) {
         return;
     }
     // x=*v; x=x==*(D*)minus0?0.0:x;  /* -0 to 0*/
-    x = *v;
     x = x == (-1) * 0.0 ? 0.0 : x; /* -0 to 0*/
     sprintf(buf, jt->pp, x);
     c = *buf;

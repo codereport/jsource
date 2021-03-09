@@ -43,7 +43,6 @@ jtbox(J jt, A w) {
     FPREFIP;
     if (!w) return 0;
     I wt      = AT(w);
-    FLAGT waf = AFLAG(w);
     ASSERT(!(SPARSE & wt), EVNONCE);
     wr = AR(w);
     r  = (RANKT)jt->ranks;

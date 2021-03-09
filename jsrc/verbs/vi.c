@@ -145,7 +145,7 @@ jthia(J jt, D hct, A y) {
 static UI
 jthiau(J jt, A y) {
     I m, n;
-    UC* v = UAV(y);
+    UC* v;
     UI z  = 2038074751;
     X *u, x;
     m = n = AN(y);

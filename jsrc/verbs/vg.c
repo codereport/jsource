@@ -209,7 +209,6 @@ static B
 jtgrx(J jt, I m, I ai, I n, A w, I *zv) {
     A x;
     I ck, t, *xv;
-    I c                             = ai * n;
     t                               = AT(w);
     jt->workareas.compare.compk     = ai << bplg(t);
     ck                              = jt->workareas.compare.compk * n;
