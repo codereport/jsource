@@ -90,8 +90,8 @@ make_array(J jt, int64_t atoms, rank_t rank) {
 
 template <typename Type>
 [[nodiscard]] inline auto
-make_array(J jt, int64_t n, rank_t r, shape_t s) -> array {
-    return jtga(jt, to_c_type<Type>(), n, r, s);
+make_array(J jt, int64_t atoms, rank_t rank, shape_t shape) -> array {
+    return jtga(jt, to_c_type<Type>(), atoms, rank, shape);
 }
 
 // this is for "creating an integer atom with value k"
