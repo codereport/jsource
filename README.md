@@ -3,7 +3,7 @@
 <p align="center">
     <a href="https://buildkite.com/codereport/jsource" alt="Build Status">
         <img src="https://badge.buildkite.com/836b4e62ac875246eb46bcf44cc5522af1ffca85451354c87d.svg?branch=main" /></a>
-    <a href="https://github.com/code_report/jsource/issues" alt="contributions welcome">
+    <a href="https://github.com/codereport/jsource/issues" alt="contributions welcome">
         <img src="https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat" /></a>
     <a href="https://github.com/codereport?tab=followers" alt="GitHub followers">
         <img src="https://img.shields.io/github/followers/codereport.svg?style=social&label=Follow" /></a>
