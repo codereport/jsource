@@ -72,7 +72,7 @@ template <typename From, typename To>
 [[nodiscard]] auto
 convert(J jt, array w, void *yv) -> bool {
     if constexpr (std::is_same_v<To, Z>) {
-        return convert<From, To>(jt, w, yv, [](auto v) { return To{.re = static_cast<D>(v), .im = {}}; });
+        return convert<From, To>(jt, w, yv, [](auto v) { return To{.re = static_cast<double>(v), .im = {}}; });
     } else if constexpr (!in_range<To, From>()) {
         return convert<From, To>(jt, w, yv, [](auto v) { return value_if(in_range<To>(v), v); });
     } else {
@@ -85,26 +85,26 @@ convert(J jt, array w, void *yv) -> bool {
 
 template <>
 [[nodiscard]] auto
-convert<D, bool>(J jt, array w, void *yv, D fuzz) -> bool {
+convert<double, bool>(J jt, array w, void *yv, double fuzz) -> bool {
     auto const infinity = [](auto p) { return p < -2 || 2 < p; };
-    return convert<D, bool>(
+    return convert<double, bool>(
       jt, w, yv, [&](auto p) { return value_if(!infinity(p) && (p == 0.0 || fuzzy_equal(p, 1.0, fuzz)), p != 0.0); });
 }
 
 template <>
 [[nodiscard]] auto
-convert<D, I>(J jt, array w, void *yv, D fuzz) -> bool {
-    return convert<D, I>(jt, w, yv, [&](auto p) -> std::optional<I> {
+convert<double, int64_t>(J jt, array w, void *yv, double fuzz) -> bool {
+    return convert<double, int64_t>(jt, w, yv, [&](auto p) -> std::optional<int64_t> {
         auto const q = jround(p);
         if (!(p == q || fuzzy_equal(p, q, fuzz))) {
             return std::nullopt;  // must equal int, possibly out of range
         }
         // out-of-range values don't convert, handle separately
-        if (p < static_cast<D>(IMIN)) {
+        if (p < static_cast<double>(IMIN)) {
             return value_if(p >= IMIN * (1 + fuzz), IMIN);
         }  // if tolerantly < IMIN, error; else take IMIN
         else if (p >= FLIMAX) {
-            return value_if(p <= -static_cast<D>(IMIN) * (1 + fuzz), IMAX);
+            return value_if(p <= -static_cast<double>(IMIN) * (1 + fuzz), IMAX);
         }  // if tolerantly > IMAX, error; else take IMAX
         return q;
     });
@@ -112,14 +112,14 @@ convert<D, I>(J jt, array w, void *yv, D fuzz) -> bool {
 
 template <>
 [[nodiscard]] auto
-convert<Z, D>(J jt, array w, void *yv, D fuzz) -> bool {
+convert<Z, double>(J jt, array w, void *yv, double fuzz) -> bool {
     if (fuzz != 0.0) {
-        return convert<Z, D>(jt, w, yv, [&](auto const &v) {
+        return convert<Z, double>(jt, w, yv, [&](auto const &v) {
             auto const d = std::abs(v.im);
             return value_if(d != inf && d <= fuzz * std::abs(v.re), v.re);
         });
     }
-    return convert<Z, D>(jt, w, yv, [](auto v) { return value_if(!v.im, v.re); });
+    return convert<Z, double>(jt, w, yv, [](auto v) { return value_if(!v.im, v.re); });
 }
 
 template <>
@@ -143,8 +143,8 @@ inplace_negate(T *u, int64_t n) {
 
 template <>
 [[nodiscard]] auto
-convert<I, X>(J jt, array w, void *yv) -> bool {
-    I u[XIDIG];
+convert<int64_t, X>(J jt, array w, void *yv) -> bool {
+    int64_t u[XIDIG];
     auto const convert_one = [&](auto c) {
         auto const b   = c == IMIN;
         auto d         = b ? -(1 + c) : std::abs(c);
@@ -159,13 +159,13 @@ convert<I, X>(J jt, array w, void *yv) -> bool {
         if (0 > c) { inplace_negate(u, XIDIG); }
         return jtvec(jt, INT, length, u);
     };
-    return convert<I, X>(jt, w, yv, convert_one) && !jt->jerr;
+    return convert<int64_t, X>(jt, w, yv, convert_one) && !jt->jerr;
 }
 
 static auto
-jtxd1(J jt, D p, I mode) -> X {
+jtxd1(J jt, double p, int64_t mode) -> X {
     PROLOG(0052);
-    D e = jttfloor(jt, p);
+    double e = jttfloor(jt, p);
     switch (mode) {
         case XMFLR: p = e; break;
         case XMCEIL: p = ceil(p); break;
@@ -186,7 +186,7 @@ jtxd1(J jt, D p, I mode) -> X {
     while (0 < d) {
         auto const q = floor(d / XBASE);
         auto const r = d - q * XBASE;
-        u[m++]       = static_cast<I>(r);
+        u[m++]       = static_cast<int64_t>(r);
         d            = q;
         if (m == AN(t)) {
             RZ(t = jtext(jt, 0, t));
@@ -205,8 +205,8 @@ jtxd1(J jt, D p, I mode) -> X {
 
 template <>
 [[nodiscard]] auto
-convert<D, X>(J jt, array w, void *yv, I mode) -> bool {
-    return convert<D, X>(jt, w, yv, [=](auto v) { return jtxd1(jt, v, mode); }) && !jt->jerr;
+convert<double, X>(J jt, array w, void *yv, int64_t mode) -> bool {
+    return convert<double, X>(jt, w, yv, [=](auto v) { return jtxd1(jt, v, mode); }) && !jt->jerr;
 }
 
 template <>
@@ -228,12 +228,12 @@ value_from_X(X p) -> T {
 
 template <>
 [[nodiscard]] auto
-convert<X, I>(J jt, array w, void *yv) -> bool {
+convert<X, int64_t>(J jt, array w, void *yv) -> bool {
     X p = jtxc(jt, IMAX);
     if (!p) return false;
     X q = jtxminus(jt, jtnegate(jt, p), jtxc(jt, 1L));
     if (!q) return false;
-    return convert<X, I>(jt, w, yv, [&](auto c) -> std::optional<int64_t> {
+    return convert<X, int64_t>(jt, w, yv, [&](auto c) -> std::optional<int64_t> {
         if (!(1 != jtxcompare(jt, q, c) && 1 != jtxcompare(jt, c, p))) return std::nullopt;
         return value_from_X<int64_t>(c);
     });
@@ -241,8 +241,8 @@ convert<X, I>(J jt, array w, void *yv) -> bool {
 
 template <>
 [[nodiscard]] auto
-convert<X, D>(J jt, array w, void *yv) -> bool {
-    return convert<X, D>(jt, w, yv, [](auto p) {
+convert<X, double>(J jt, array w, void *yv) -> bool {
+    return convert<X, double>(jt, w, yv, [](auto p) {
         auto const c = pointer_to_values<int64_t>(p)[AN(p) - 1];
         if (c == XPINF) { return inf; }
         if (c == XNINF) { return infm; }
@@ -258,12 +258,12 @@ convert<X, Q>(J jt, array w, void *yv) -> bool {
 
 template <>
 [[nodiscard]] auto
-convert<D, Q>(J jt, array w, void *yv, I mode) -> bool {
+convert<double, Q>(J jt, array w, void *yv, int64_t mode) -> bool {
     if ((w) == nullptr) return false;
     auto const n   = AN(w);
     auto *const wv = pointer_to_values<double>(w);
     auto *x        = static_cast<Q *>(yv);
-    D t            = NAN;
+    double t       = NAN;
     auto *tv       = 3 + reinterpret_cast<S *>(&t);
     Q q;
     for (int64_t i = 0; i < n; ++i) {
@@ -287,7 +287,7 @@ convert<D, Q>(J jt, array w, void *yv, I mode) -> bool {
         } else {
             bool const recip = 1 > t;
             if (recip) { t = 1.0 / t; }
-            auto e = static_cast<I>(0xfff0 & *tv);
+            auto e = static_cast<int64_t>(0xfff0 & *tv);
             e >>= 4;
             e -= 1023;
             if (recip) {
@@ -306,8 +306,8 @@ convert<D, Q>(J jt, array w, void *yv, I mode) -> bool {
 
 template <>
 [[nodiscard]] auto
-convert<Q, D>(J jt, array w, void *yv) -> bool {
-    auto const xb = static_cast<D>(XBASE);
+convert<Q, double>(J jt, array w, void *yv) -> bool {
+    auto const xb = static_cast<double>(XBASE);
     auto const nn = 308 / XBASEN;
 
     // TODO: figure out nice algorithm for this
@@ -322,7 +322,7 @@ convert<Q, D>(J jt, array w, void *yv) -> bool {
     };
 
     X x2 = nullptr;
-    return convert<Q, D>(jt, w, yv, [&](auto nd) -> std::optional<D> {
+    return convert<Q, double>(jt, w, yv, [&](auto nd) -> std::optional<double> {
         auto *const p = nd.n;
         auto const pn = AN(p);
         auto const kk = 1 == pn ? pointer_to_values<int64_t>(p)[0] : 0;
@@ -359,9 +359,9 @@ convert<Q, X>(J jt, array w, void *yv) -> bool {
 // 0 if error, 1 if success.  If the conversion loses precision, error is returned
 // Calls through bcvt are tagged with a flag in jt, indicating to set fuzz=0
 auto
-jtccvt(J jt, I tflagged, array w, array *y) -> bool {
+jtccvt(J jt, int64_t tflagged, array w, array *y) -> bool {
     FPREFIP;
-    I const t = tflagged & NOUN;
+    int64_t const t = tflagged & NOUN;
     if (w == nullptr) return false;
     auto const r  = AR(w);
     auto *const s = AS(w);
@@ -376,7 +376,7 @@ jtccvt(J jt, I tflagged, array w, array *y) -> bool {
                 jt->ranks = oqr;
                 return true;  // dense to sparse; convert type first (even if same dtype)
             case 3:           // sparse to sparse
-                I t1 = DTYPE(t);
+                int64_t t1 = DTYPE(t);
                 GASPARSE(*y, t, 1, r, s);
                 P *yp = pointer_to_values<P>(*y);
                 P *wp = pointer_to_values<P>(w);
@@ -406,14 +406,14 @@ jtccvt(J jt, I tflagged, array w, array *y) -> bool {
     if (!d) return false;
     auto *yv = pointer_to_values<void>(d);  // allocate the same # atoms, even if we will convert fewer
     if ((tflagged & NOUNCVTVALIDCT) != 0) {
-        I inputn = *reinterpret_cast<I *>(y);  // fetch input, in case it is called for
-        if (inputn > 0) {                      // if converting the leading values, just update the counts
-            n = inputn;                        // set the counts for local use, and in the block to be converted
-        } else {                               // if converting trailing values...
+        int64_t inputn = *reinterpret_cast<int64_t *>(y);  // fetch input, in case it is called for
+        if (inputn > 0) {                                  // if converting the leading values, just update the counts
+            n = inputn;  // set the counts for local use, and in the block to be converted
+        } else {         // if converting trailing values...
             AK(w) += (n + inputn) << bplg(wt);
-            yv = reinterpret_cast<I *>(static_cast<C *>(yv) +
-                                       ((n + inputn) << bplg(t)));  // advance input and output pointers to new area
-            n  = -inputn;                                           // get positive # atoms to convert
+            yv = reinterpret_cast<int64_t *>(
+              static_cast<C *>(yv) + ((n + inputn) << bplg(t)));  // advance input and output pointers to new area
+            n = -inputn;                                          // get positive # atoms to convert
         }
         AN(w) = n;  // change atomct of w to # atoms to convert
     }
@@ -451,66 +451,73 @@ jtccvt(J jt, I tflagged, array w, array *y) -> bool {
             return convert<bool, X>(jt, w, pointer_to_values<int64_t>(d)) && convert<X, Q>(jt, d, yv);
         case CVCASE(FLX, B01X): return convert<bool, double>(jt, w, yv);
         case CVCASE(CMPXX, B01X): return convert<bool, Z>(jt, w, yv);
-        case CVCASE(B01X, INTX): return convert<I, bool>(jt, w, yv);
-        case CVCASE(XNUMX, INTX): return convert<I, X>(jt, w, yv);
+        case CVCASE(B01X, INTX): return convert<int64_t, bool>(jt, w, yv);
+        case CVCASE(XNUMX, INTX): return convert<int64_t, X>(jt, w, yv);
         case CVCASE(RATX, INTX):
             GATV(d, XNUM, n, r, s);
-            return convert<I, X>(jt, w, pointer_to_values<int64_t>(d)) && convert<X, Q>(jt, d, yv);
+            return convert<int64_t, X>(jt, w, pointer_to_values<int64_t>(d)) && convert<X, Q>(jt, d, yv);
         case CVCASE(FLX, INTX): return convert<int64_t, double>(jt, w, yv);
         case CVCASE(CMPXX, INTX): return convert<int64_t, Z>(jt, w, yv);
-        case CVCASE(B01X, FLX): return convert<D, bool>(jt, w, yv, ((I)jtinplace & JTNOFUZZ) != 0 ? 0.0 : FUZZ);
-        case CVCASE(INTX, FLX): return convert<D, I>(jt, w, yv, ((I)jtinplace & JTNOFUZZ) != 0 ? 0.0 : FUZZ);
+        case CVCASE(B01X, FLX):
+            return convert<double, bool>(jt, w, yv, ((int64_t)jtinplace & JTNOFUZZ) != 0 ? 0.0 : FUZZ);
+        case CVCASE(INTX, FLX):
+            return convert<double, int64_t>(jt, w, yv, ((int64_t)jtinplace & JTNOFUZZ) != 0 ? 0.0 : FUZZ);
         case CVCASE(XNUMX, FLX):
-            return convert<D, X>(
-              jt, w, yv, (jt->xmode & REPSGN(SGNIFNOT(tflagged, XCVTXNUMORIDEX))) | (tflagged >> XCVTXNUMCVX));
+            return convert<double, X>(
+              jt, w, yv, int64_t{(jt->xmode & REPSGN(SGNIFNOT(tflagged, XCVTXNUMORIDEX))) | (tflagged >> XCVTXNUMCVX)});
         case CVCASE(RATX, FLX):
-            return convert<D, Q>(
-              jt, w, yv, (jt->xmode & REPSGN(SGNIFNOT(tflagged, XCVTXNUMORIDEX))) | (tflagged >> XCVTXNUMCVX));
-        case CVCASE(CMPXX, FLX): return convert<D, Z>(jt, w, yv);
+            return convert<double, Q>(
+              jt, w, yv, int64_t{(jt->xmode & REPSGN(SGNIFNOT(tflagged, XCVTXNUMORIDEX))) | (tflagged >> XCVTXNUMCVX)});
+        case CVCASE(CMPXX, FLX): return convert<double, Z>(jt, w, yv);
         case CVCASE(B01X, CMPXX):
             GATV(d, FL, n, r, s);
-            return convert<Z, D>(jt, w, pointer_to_values<int64_t>(d), ((I)jtinplace & JTNOFUZZ) != 0 ? 0.0 : FUZZ) &&
-                   convert<D, bool>(jt, d, yv, ((I)jtinplace & JTNOFUZZ) != 0 ? 0.0 : FUZZ);
+            return convert<Z, double>(
+                     jt, w, pointer_to_values<int64_t>(d), ((int64_t)jtinplace & JTNOFUZZ) != 0 ? 0.0 : FUZZ) &&
+                   convert<double, bool>(jt, d, yv, ((int64_t)jtinplace & JTNOFUZZ) != 0 ? 0.0 : FUZZ);
         case CVCASE(INTX, CMPXX):
             GATV(d, FL, n, r, s);
-            return convert<Z, D>(jt, w, pointer_to_values<int64_t>(d), ((I)jtinplace & JTNOFUZZ) != 0 ? 0.0 : FUZZ) &&
-                   convert<D, I>(jt, d, yv, ((I)jtinplace & JTNOFUZZ) != 0 ? 0.0 : FUZZ);
+            return convert<Z, double>(
+                     jt, w, pointer_to_values<int64_t>(d), ((int64_t)jtinplace & JTNOFUZZ) != 0 ? 0.0 : FUZZ) &&
+                   convert<double, int64_t>(jt, d, yv, ((int64_t)jtinplace & JTNOFUZZ) != 0 ? 0.0 : FUZZ);
         case CVCASE(XNUMX, CMPXX):
             GATV(d, FL, n, r, s);
-            return convert<Z, D>(jt, w, pointer_to_values<int64_t>(d), ((I)jtinplace & JTNOFUZZ) != 0 ? 0.0 : FUZZ) &&
-                   convert<D, X>(
-                     jt, d, yv, (jt->xmode & REPSGN(SGNIFNOT(tflagged, XCVTXNUMORIDEX))) | (tflagged >> XCVTXNUMCVX));
+            return convert<Z, double>(
+                     jt, w, pointer_to_values<int64_t>(d), ((int64_t)jtinplace & JTNOFUZZ) != 0 ? 0.0 : FUZZ) &&
+                   convert<double, X>(
+                     jt, d, yv, int64_t{(jt->xmode & REPSGN(SGNIFNOT(tflagged, XCVTXNUMORIDEX))) | (tflagged >> XCVTXNUMCVX)});
         case CVCASE(RATX, CMPXX):
             GATV(d, FL, n, r, s);
-            return convert<Z, D>(jt, w, pointer_to_values<int64_t>(d), ((I)jtinplace & JTNOFUZZ) != 0 ? 0.0 : FUZZ) &&
-                   convert<D, Q>(
-                     jt, d, yv, (jt->xmode & REPSGN(SGNIFNOT(tflagged, XCVTXNUMORIDEX))) | (tflagged >> XCVTXNUMCVX));
-        case CVCASE(FLX, CMPXX): return convert<Z, D>(jt, w, yv, ((I)jtinplace & JTNOFUZZ) != 0 ? 0.0 : FUZZ);
+            return convert<Z, double>(
+                     jt, w, pointer_to_values<int64_t>(d), ((int64_t)jtinplace & JTNOFUZZ) != 0 ? 0.0 : FUZZ) &&
+                   convert<double, Q>(
+                     jt, d, yv, int64_t{(jt->xmode & REPSGN(SGNIFNOT(tflagged, XCVTXNUMORIDEX))) | (tflagged >> XCVTXNUMCVX)});
+        case CVCASE(FLX, CMPXX):
+            return convert<Z, double>(jt, w, yv, ((int64_t)jtinplace & JTNOFUZZ) != 0 ? 0.0 : FUZZ);
         case CVCASE(B01X, XNUMX): return convert<X, bool>(jt, w, yv);
-        case CVCASE(INTX, XNUMX): return convert<X, I>(jt, w, yv);
+        case CVCASE(INTX, XNUMX): return convert<X, int64_t>(jt, w, yv);
         case CVCASE(RATX, XNUMX): return convert<X, Q>(jt, w, yv);
-        case CVCASE(FLX, XNUMX): return convert<X, D>(jt, w, yv);
+        case CVCASE(FLX, XNUMX): return convert<X, double>(jt, w, yv);
         case CVCASE(CMPXX, XNUMX):
             GATV(d, FL, n, r, s);
-            return convert<X, D>(jt, w, pointer_to_values<int64_t>(d)) && convert<D, Z>(jt, d, yv);
+            return convert<X, double>(jt, w, pointer_to_values<int64_t>(d)) && convert<double, Z>(jt, d, yv);
         case CVCASE(B01X, RATX):
             GATV(d, XNUM, n, r, s);
             return convert<Q, X>(jt, w, pointer_to_values<int64_t>(d)) && convert<X, bool>(jt, d, yv);
         case CVCASE(INTX, RATX):
             GATV(d, XNUM, n, r, s);
-            return convert<Q, X>(jt, w, pointer_to_values<int64_t>(d)) && convert<X, I>(jt, d, yv);
+            return convert<Q, X>(jt, w, pointer_to_values<int64_t>(d)) && convert<X, int64_t>(jt, d, yv);
         case CVCASE(XNUMX, RATX): return convert<Q, X>(jt, w, yv);
-        case CVCASE(FLX, RATX): return convert<Q, D>(jt, w, yv);
+        case CVCASE(FLX, RATX): return convert<Q, double>(jt, w, yv);
         case CVCASE(CMPXX, RATX):
             GATV(d, FL, n, r, s);
-            return convert<Q, D>(jt, w, pointer_to_values<int64_t>(d)) && convert<D, Z>(jt, d, yv);
+            return convert<Q, double>(jt, w, pointer_to_values<int64_t>(d)) && convert<double, Z>(jt, d, yv);
         default: ASSERT(0, EVDOMAIN);
     }
 }
 
 // clear rank before calling ccvt - needed for sparse arrays only but returns the block as the result
 auto
-jtcvt(J jt, I t, array w) -> array {
+jtcvt(J jt, int64_t t, array w) -> array {
     array y      = nullptr;
     bool const b = jtccvt(jt, t, w, &y);
     ASSERT(b, EVDOMAIN);
@@ -526,7 +533,7 @@ jtbcvt(J jt, C mode, array w) -> array {
     FPREFIP;
     if (w == nullptr) { return nullptr; }
 
-    auto const as_integer = [](auto const &v) { return *(I *)&v; };
+    auto const as_integer = [](auto const &v) { return *(int64_t *)&v; };
     auto const isflag     = [&](auto const &z) { return as_integer(z.im) == NANFLAG; };
 
     // there may be values (especially b types) that were nominally CMPX but might actually be integers.  Those were
@@ -541,7 +548,7 @@ jtbcvt(J jt, C mode, array w) -> array {
         // auto flags = std::transform_reduce(wv, wv + AN(w), int64_t{}, std::plus{}, isflag);
         auto flags = std::accumulate(wv, wv + AN(w), int64_t{}, [&](auto sum, auto v) { return sum + isflag(v); });
         if (flags != 0) {
-            I ipok = SGNIF(jtinplace, JTINPLACEWX) & AC(w);  // both sign bits set (<0) if inplaceable
+            int64_t ipok = SGNIF(jtinplace, JTINPLACEWX) & AC(w);  // both sign bits set (<0) if inplaceable
             if (flags == AN(w)) {
                 if (ipok >= 0) GATV(result, INT, AN(w), AR(w), AS(w));
                 std::transform(
@@ -549,7 +556,7 @@ jtbcvt(J jt, C mode, array w) -> array {
             } else {
                 if (ipok >= 0) GATV(result, CMPX, AN(w), AR(w), AS(w));
                 std::transform(wv, wv + AN(w), pointer_to_values<Z>(result), [&](auto const &z) -> Z {
-                    if (isflag(z)) { return {.re = (D)as_integer(z.re), .im = 0.0}; };
+                    if (isflag(z)) { return {.re = (double)as_integer(z.re), .im = 0.0}; };
                     return z;  // copy floats, and converts any integers back to float
                 });
             }
@@ -561,7 +568,7 @@ jtbcvt(J jt, C mode, array w) -> array {
         // To avoid a needless copy, suppress conversion to B01 if type is B01, to INT if type is INT, etc
         // set the NOFUZZ flag in jt to insist on an exact match so we won't lose precision
         array y   = nullptr;
-        jtinplace = (J)((I)jt + JTNOFUZZ);  // demand exact match
+        jtinplace = (J)((int64_t)jt + JTNOFUZZ);  // demand exact match
         result    = ((mode & 14) == 0) && jtccvt(jtinplace, B01, w, &y)                             ? y
                     : (y = w, AT(w) & INT || (((mode & 12) == 0) && jtccvt(jtinplace, INT, w, &y))) ? y
                     : (y = w, AT(w) & FL || (((mode & 8) == 0) && jtccvt(jtinplace, FL, w, &y)))
@@ -582,7 +589,7 @@ jticvt(J jt, array w) -> array {
 }
 
 auto
-jtpcvt(J jt, I t, array w) -> array {
+jtpcvt(J jt, int64_t t, array w) -> array {
     RANK2T oqr = jt->ranks;
     RESETRANK;
     array y      = nullptr;
@@ -611,7 +618,7 @@ jtxco1(J jt, array w) -> array {
 auto
 jtxco2(J jt, array a, array w) -> array {
     ASSERT(AT(w) & DENSE, EVNONCE);
-    I j = jti0(jt, a);
+    int64_t j = jti0(jt, a);
     if (jt->jerr != 0) return nullptr;
     switch (j) {
         case -2: return jtaslash1(jt, CDIV, w);
