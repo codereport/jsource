@@ -54,7 +54,7 @@ value_if(bool cond, T value) -> std::optional<T> {
 template <typename From, typename To, typename Transform>
 [[nodiscard]] auto
 convert(J jt, array w, void *yv, Transform t) -> bool {
-    auto *v = pointer_to_values<From>(w);
+    auto *v      = pointer_to_values<From>(w);
     auto *result = static_cast<To *>(yv);
     if constexpr (is_optional<decltype(t(*v))>::value) {
         for (int64_t i = 0; i < AN(w); ++i) {
@@ -87,9 +87,8 @@ template <>
 [[nodiscard]] auto
 convert<D, bool>(J jt, array w, void *yv, D fuzz) -> bool {
     auto const infinity = [](auto p) { return p < -2 || 2 < p; };
-    return convert<D, bool>(jt, w, yv, [&](auto p) {
-        return value_if(!infinity(p) && (p == 0.0 || fuzzy_equal(p, 1.0, fuzz)), p != 0.0);
-    });
+    return convert<D, bool>(
+      jt, w, yv, [&](auto p) { return value_if(!infinity(p) && (p == 0.0 || fuzzy_equal(p, 1.0, fuzz)), p != 0.0); });
 }
 
 template <>
@@ -101,11 +100,11 @@ convert<D, I>(J jt, array w, void *yv, D fuzz) -> bool {
             return std::nullopt;  // must equal int, possibly out of range
         }
         // out-of-range values don't convert, handle separately
-        if (p < static_cast<D> IMIN) {
+        if (p < static_cast<D>(IMIN)) {
             return value_if(p >= IMIN * (1 + fuzz), IMIN);
         }  // if tolerantly < IMIN, error; else take IMIN
         else if (p >= FLIMAX) {
-            return value_if(p <= -static_cast<D> IMIN * (1 + fuzz), IMAX);
+            return value_if(p <= -static_cast<D>(IMIN) * (1 + fuzz), IMAX);
         }  // if tolerantly > IMAX, error; else take IMAX
         return q;
     });
@@ -308,8 +307,8 @@ convert<D, Q>(J jt, array w, void *yv, I mode) -> bool {
 template <>
 [[nodiscard]] auto
 convert<Q, D>(J jt, array w, void *yv) -> bool {
-    auto const xb  = static_cast<D>(XBASE);
-    auto const nn  = 308 / XBASEN;
+    auto const xb = static_cast<D>(XBASE);
+    auto const nn = 308 / XBASEN;
 
     // TODO: figure out nice algorithm for this
     auto const add_digits = [&](auto n, auto v) {
@@ -421,7 +420,7 @@ jtccvt(J jt, I tflagged, array w, array *y) -> bool {
     // If n and AN have been modified, it doesn't matter for rank-1 arguments whether the shape of the result is listed
     // as n or s[0] since only n atoms will be used.  For higher ranks, we need the shape from s.  So it's just as well
     // that we take the shape from s now
-    *y       = d;
+    *y = d;
     if ((t & CMPX) != 0) {
         jtfillv(jt, t, n, static_cast<C *>(yv));  // why??  just fill in imaginary parts as we need to
     }
@@ -445,7 +444,7 @@ jtccvt(J jt, I tflagged, array w, array *y) -> bool {
         }
     }
     switch (CVCASE(CTTZ(t), CTTZ(wt))) {
-        case CVCASE(INTX, B01X):  return convert<bool, int64_t>(jt, w, yv);
+        case CVCASE(INTX, B01X): return convert<bool, int64_t>(jt, w, yv);
         case CVCASE(XNUMX, B01X): return convert<bool, X>(jt, w, yv);
         case CVCASE(RATX, B01X):
             GATV(d, XNUM, n, r, s);
