@@ -125,14 +125,11 @@ convert<Z, double>(J jt, array w, void *yv, double fuzz) -> bool {
 template <>
 [[nodiscard]] auto
 convert<bool, X>(J jt, array w, void *yv) -> bool {
-    return convert<B, X>(jt,
-                         w,
-                         yv,
-                         [=](auto v) {
-                             int64_t u[] = {v};
-                             return jtvec(jt, INT, 1L, u);
-                         }) &&
-           !jt->jerr;
+    auto const convert_one = [=](auto v) {
+        int64_t u[] = {v};
+        return jtvec(jt, INT, 1L, u);
+    };
+    return convert<bool, X>(jt, w, yv, convert_one) && !jt->jerr;
 }
 
 template <typename T>
