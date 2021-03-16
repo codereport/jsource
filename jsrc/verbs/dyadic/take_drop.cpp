@@ -103,7 +103,7 @@ take_sparse(J jt, array a, array w) {
         for (int64_t i = 0; i < n; ++i) {
             // TODO: rename cc (and u, s, iv) when we know what to call them
             auto const cc =
-              aal::var::found([](auto a, auto b, auto c) { return 0 > a ? c < a + b : c >= a; }, u, u + m, s, iv);
+              aal::var::any_of([](auto a, auto b, auto c) { return 0 > a ? c < a + b : c >= a; }, u, u + m, s, iv);
             if (!cc) {
                 ++d;
                 memcpy(yv, xv, k);
