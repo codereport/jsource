@@ -150,4 +150,5 @@ Prelude> let innerProduct = blackbird sum (zipWith (*))
 
 ### Livestream #12 2021-03-16
 * `⍝` this is referred to as "lamp" because comments help illuminate your code
-* 
+* `std::div` & friends exist in `<cstdlib>` which are analogs of Python's `divmod`
+* `std::negate` exists as a function object
