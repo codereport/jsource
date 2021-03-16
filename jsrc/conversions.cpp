@@ -130,7 +130,7 @@ convert<bool, X>(J jt, array w, void *yv) -> bool {
 template <typename T>
 static auto
 inplace_negate(T *u, int64_t n) {
-    std::transform(u, u + n, u, [](auto v) { return -v; });
+    std::transform(u, u + n, u, std::negate{});
 }
 
 template <>
