@@ -143,7 +143,12 @@ Prelude> let innerProduct = blackbird sum (zipWith (*))
 * `target_include_directories` in CMake to depend on other directory
 * Boost vs MIT vs Apache 2.0, all are great - went with Boost b/c of C++ ecosystem
 
-### Livestream #10 2021-02-27
+### Livestream #11 2021-03-05
 * `13 :` with a verb using `x` and `y` will convert to point free form
 * `softMax =. [:(%+/)^`
 * ISO C++ Core Guidelines has 4 `for`/`while` loop guidelines, no "no raw loops"
+
+### Livestream #12 2021-03-16
+* `⍝` this is referred to as "lamp" because comments help illuminate your code
+* `std::div` & friends exist in `<cstdlib>` which are analogs of Python's `divmod`
+* `std::negate` exists as a function object
