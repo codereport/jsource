@@ -25,12 +25,7 @@ fuzzy_equal(double u, double v, double fuzz) -> bool {
 template <typename T, typename V>
 [[nodiscard]] constexpr auto
 in_range(V value) -> bool {
-    if constexpr (std::is_same_v<bool, V>) {
-        (void)value;
-        return true;
-    } else {
-        return std::numeric_limits<T>::lowest() <= value && value <= std::numeric_limits<T>::max();
-    }
+    return std::numeric_limits<T>::lowest() <= value && value <= std::numeric_limits<T>::max();
 }
 
 template <typename T, typename V>
