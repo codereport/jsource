@@ -3,6 +3,12 @@
 /*                                                                         */
 /* Global Definitions                                                      */
 
+#ifdef __cplusplus
+extern "C" {
+#else
+#include <stdbool.h>
+#endif
+
 #if defined(__clang_major__) && !defined(__clang__)
 #error need workaround by define __clang__ in preprocessor macro
 #endif
@@ -1135,3 +1141,7 @@ _clearfp(void) {
 
 // Create (x&y) where x and y are signed, so we can test for overflow.
 #define XANDY(x, y) ((I)((UI)(x) & (UI)(y)))
+
+#ifdef __cplusplus
+}
+#endif
