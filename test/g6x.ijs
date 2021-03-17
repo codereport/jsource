@@ -207,7 +207,6 @@ m=: sp ''
 'domain error' -: 1 2     pmdata etx 20$'x'
 'domain error' -: 1.2     pmdata etx 20$'x'
 'domain error' -: 1j2     pmdata etx 20$'x'
-'domain error' -: 1 2x    pmdata etx 20$'x'
 'domain error' -: 1r2     pmdata etx 20$'x'
 'domain error' -: '01'    pmdata etx 20$'x'
 'domain error' -: (1;0)   pmdata etx 20$'x'
@@ -218,7 +217,6 @@ m=: sp ''
 
 'domain error' -: pmctr etx 1.5
 'domain error' -: pmctr etx 1j5
-'domain error' -: pmctr etx 10^100x
 'domain error' -: pmctr etx 1r5
 'domain error' -: pmctr etx <2
 

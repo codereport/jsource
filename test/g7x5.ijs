@@ -141,66 +141,67 @@ x=: 2 : 0
 
 
 NB. 7!:5 on mapped arrays -----------------------------------------------
-
-load'jmf'
-3 : 0 ''
-if. _1=nc<'MAPNAME_jmf_' do.
- 'MAPNAME_jmf_ MAPFN_jmf_ MAPSN_jmf_ MAPFH_jmf_ MAPMH_jmf_ MAPADDRESS_jmf_ MAPHEADER_jmf_ MAPFSIZE_jmf_ MAPMSIZE_jmf_ MAPREFS_jmf_'=: i.10
-end. 
-1
-) 
-18!:4 <'base'
-1 [ unmap_jmf_ 'q'
-f=: <jpath '~temp/q.jmf'
-1 [ createjmf_jmf_ f,<3e5      NB. 3e5 bytes for data
-map_jmf_ (<'q'),f,'';0   NB. map q to jmf file
-'' -: q
-
-(fmapped -: gmapped) q [ q=:x=:     (?1e4)?@$2
-(fmapped -: gmapped) q [ q=:x=: a.{~(?1e4)?@$#a.
-(fmapped -: gmapped) q [ q=:x=: adot1{~(?1e4)?@$#adot1
-(fmapped -: gmapped) q [ q=:x=: adot2{~(?1e4)?@$#adot2
-(fmapped -: gmapped) q [ q=:x=: (?100 100)?@$1e6
-(fmapped -: gmapped) q [ q=:x=: o.(?30 30 30)?@$1e6
-(fmapped -: gmapped) q [ q=:x=: j./(2,?100 100)?@$1e6
-(fmapped -: gmapped) q [ q=:x=: s: <"0 a.{~(?1e4)?@$#a.
-(fmapped -: gmapped) q [ q=:x=: s: <"0 adot1{~(?1e4)?@$#adot1
-(fmapped -: gmapped) q [ q=:x=: s: <"0 adot2{~(?1e4)?@$#adot2
-
-'domain error' -: 3!:9 etx q
-'domain error' -: (1) 3!:9 etx q
-'rank error' -: (,.0) 3!:9 etx q
-1 -: (0) 3!:9 q
-(,1) -: (,0) 3!:9 q
-0 -: (0) 3!:9 a:
-(,0) -: (,0) 3!:9 a:
-
-
-1 [ unmap_jmf_ 'q'
-
-NB. Test usecount on mapped arrays
-NB. create clean mapped noun a
-f=: jpath'~temp/t.jmf'
-1 [ createjmf_jmf_ f;1000
-1 [ 1 unmap_jmf_'a' NB. 1 forces unmap - even with dangling refs
-1 [ map_jmf_ 'a';f
-a=: i.5
-
-NB. create foo and goo to create the problem
-foo=: 4 : 0
-if. x do. goo'' return. end.
-)
-
-goo=: 3 : 0
-0 foo <a NB. ".&.><'a'
-)
-
-NB. run foo calling goo calling foo (note perhaps nasty goo calling foo!)
-1 [ 1 foo '' NB. a NB. ".&.> <'a' [ !a
-(<,2) -: (<1,MAPREFS_jmf_) { showmap_jmf_''
-1 [ unmap_jmf_ 'a'
-
-18!:55 <'jmf'
+NB. jmf is broken without extended
+NB. load'jmf'
+NB. 3 : 0 ''
+NB. if. _1=nc<'MAPNAME_jmf_' do.
+NB.  'MAPNAME_jmf_ MAPFN_jmf_ MAPSN_jmf_ MAPFH_jmf_ MAPMH_jmf_ MAPADDRESS_jmf_ MAPHEADER_jmf_ MAPFSIZE_jmf_ MAPMSIZE_jmf_ MAPREFS_jmf_'=: i.10
+NB. end. 
+NB. 1
+NB. ) 
+NB. 18!:4 <'base'
+NB. 1 [ unmap_jmf_ 'q'
+NB. f=: <jpath '~temp/q.jmf'
+NB. 1 [ createjmf_jmf_ f,<3e5      NB. 3e5 bytes for data
+NB. map_jmf_ (<'q'),f,'';0   NB. map q to jmf file
+NB. '' -: q
+NB. 
+NB. (fmapped -: gmapped) q [ q=:x=:     (?1e4)?@$2
+NB. (fmapped -: gmapped) q [ q=:x=: a.{~(?1e4)?@$#a.
+NB. (fmapped -: gmapped) q [ q=:x=: adot1{~(?1e4)?@$#adot1
+NB. (fmapped -: gmapped) q [ q=:x=: adot2{~(?1e4)?@$#adot2
+NB. (fmapped -: gmapped) q [ q=:x=: (?100 100)?@$1e6
+NB. (fmapped -: gmapped) q [ q=:x=: o.(?30 30 30)?@$1e6
+NB. (fmapped -: gmapped) q [ q=:x=: j./(2,?100 100)?@$1e6
+NB. (fmapped -: gmapped) q [ q=:x=: s: <"0 a.{~(?1e4)?@$#a.
+NB. (fmapped -: gmapped) q [ q=:x=: s: <"0 adot1{~(?1e4)?@$#adot1
+NB. (fmapped -: gmapped) q [ q=:x=: s: <"0 adot2{~(?1e4)?@$#adot2
+NB. 
+NB. 'domain error' -: 3!:9 etx q
+NB. 'domain error' -: (1) 3!:9 etx q
+NB. 'rank error' -: (,.0) 3!:9 etx q
+NB. 1 -: (0) 3!:9 q
+NB. (,1) -: (,0) 3!:9 q
+NB. 0 -: (0) 3!:9 a:
+NB. (,0) -: (,0) 3!:9 a:
+NB. 
+NB. 
+NB. 1 [ unmap_jmf_ 'q'
+NB. 
+NB. NB. Test usecount on mapped arrays
+NB. NB. create clean mapped noun a
+NB. f=: jpath'~temp/t.jmf'
+NB. 1 [ createjmf_jmf_ f;1000
+NB. 1 [ 1 unmap_jmf_'a' NB. 1 forces unmap - even with dangling refs
+NB. 1 [ map_jmf_ 'a';f
+NB. a=: i.5
+NB. 
+NB. NB. create foo and goo to create the problem
+NB. foo=: 4 : 0
+NB. if. x do. goo'' return. end.
+NB. )
+NB. 
+NB. goo=: 3 : 0
+NB. 0 foo <a NB. ".&.><'a'
+NB. )
+NB. 
+NB. NB. run foo calling goo calling foo (note perhaps nasty goo calling foo!)
+NB. 1 [ 1 foo '' NB. a NB. ".&.> <'a' [ !a
+NB. (<,2) -: (<1,MAPREFS_jmf_) { showmap_jmf_''
+NB. 1 [ unmap_jmf_ 'a'
+NB. 
+NB. 18!:55 <'jmf'
+NB.
 
 4!:55 ;:'adot1 adot2 fmapped gmapped sdot0 bp f g q sp x a foo goo'
 randfini''

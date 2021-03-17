@@ -220,12 +220,5 @@ NB.  S: CSCO,    CONJ, 0L,      sco,
 NB.  t. CTDOT,   ADV,  tdot,    0L,     
 NB.  t: CTCO,    ADV,  tco,     0L,     
 NB.  T. CTCAP,   CONJ, 0L,      tcap,  
- 
-'nonce error' -: x: etx s
-'nonce error' -: 1 x: etx s
-'nonce error' -: 2 x: etx s
-
 
 4!:55 ;:'i s t x y'
-
-

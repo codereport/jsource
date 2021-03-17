@@ -1,11 +1,11 @@
 1:@:(dbr bind Debug)@:(9!:19)2^_44[(echo^:ECHOFILENAME) './gnan.ijs'
 NB. NaN -----------------------------------------------------------------
 
-t1=. }.&.> 3.4 _ __; 3j4 _ __; 34x _ __ ; 3r4 _ __
+t1=. }.&.> 3.4 _ __; 3j4 _ __; 34 _ __ ; 3r4 _ __
 pinf=: {.&.> t1
 ninf=: {:&.> t1
 inf =: pinf,ninf
-zero=: 0 ; -&.>~ 2 ; 3.4 ; 3j4 ; 3x ; 3r4
+zero=: 0 ; -&.>~ 2 ; 3.4 ; 3j4 ; 3 ; 3r4
 znan=: {. _. 3j4
 
 NB. =<>_  +*-%  ^$~|  .:,;  #!/\  []{}  "`@&?
@@ -27,28 +27,15 @@ NB. +*-% ----------------------------------------------------------------
 
 (<'NaN error') = inf +.etx&.>/  x=: 20 ?@$ 2
 (<'NaN error') = inf +.etx&.>/~ x
-(<'NaN error') = inf +.etx&.>/  x=: 0,    _5e3+20 ?@$ 1e4
-(<'NaN error') = inf +.etx&.>/~ x
 (<'NaN error') = inf +.etx&.>/  x=: 0, o. _5e3+20 ?@$ 1e4
 (<'NaN error') = inf +.etx&.>/~ x
 (<'NaN error') = inf +.etx&.>/  x=: 0, r. _5e3+20 ?@$ 1e4
-(<'NaN error') = inf +.etx&.>/~ x
-(<'NaN error') = inf +.etx&.>/  x=: 0,  _5000 +20 ?@$ 10000
 (<'NaN error') = inf +.etx&.>/~ x
 (<'NaN error') = inf +.etx&.>/  x=: 0, 4%~_5000 +20 ?@$ 10000
 (<'NaN error') = inf +.etx&.>/~ x
 
 'domain error' -: _. +: etx 1
 'domain error' -: 0  +: etx _.
-
-(<0) = zero *&.>/ inf
-(<0) = inf  *&.>/ zero
-
-NB. x=:  4{. 2 (3!:3) 0j1
-NB. t=: _4{. 2 (3!:3) _. __ 0 _
-NB. y=: 3!:2&.> (<x),&.> (,{;~i.#t){&.><t
-NB. (<0) = zero *&.> /  y 
-NB. (<0) = zero *&.> /~ y
 
 (<'NaN error') = * etx&.> j./~ _ __
 
@@ -57,13 +44,9 @@ NB. (<0) = zero *&.> /~ y
 
 (<'NaN error') = inf *.etx&.>/  x=: 20 ?@$ 2
 (<'NaN error') = inf *.etx&.>/~ x
-(<'NaN error') = inf *.etx&.>/  x=: 0,    _5e3+20 ?@$ 1e4
-(<'NaN error') = inf *.etx&.>/~ x
 (<'NaN error') = inf *.etx&.>/  x=: 0, o. _5e3+20 ?@$ 1e4
 (<'NaN error') = inf *.etx&.>/~ x
 (<'NaN error') = inf *.etx&.>/  x=: 0, r. _5e3+20 ?@$ 1e4
-(<'NaN error') = inf *.etx&.>/~ x
-(<'NaN error') = inf *.etx&.>/  x=: 0,  _5000 +20 ?@$ 10000
 (<'NaN error') = inf *.etx&.>/~ x
 (<'NaN error') = inf *.etx&.>/  x=: 0, 4%~_5000 +20 ?@$ 10000
 (<'NaN error') = inf *.etx&.>/~ x
@@ -75,8 +58,6 @@ NB. (<0) = zero *&.> /~ y
 (<'NaN error') = ninf - etx&.>/ ninf 
 
 'NaN error' -: (1$.1e9;0;_) - etx 1$.1e9;0;_
-
-(<0) = zero %&.>/ zero
 
 (<'NaN error') = % etx&.>/~ inf
 
@@ -96,24 +77,16 @@ NB. ^$~| ----------------------------------------------------------------
 NB. funny business if moved as doubles
 (a.{~32$240 255) -: 32 $ 240 255{a.
 
-(($zero)$,:inf) -: zero |&.>/ inf
-
-(<'NaN error') = inf | etx&.>/~ x=:        1+7 ?@$ 40
 (<'NaN error') = inf | etx&.>/~ x=:       r. 7 ?@$ 40
-(<'NaN error') = inf | etx&.>/~ x=:      - 1+7 ?@$ 40
 (<'NaN error') = inf | etx&.>/~ x=:  100%~ 1+7 ?@$ 40
 (<'NaN error') = inf | etx&.>/~ x=: _100%~ 1+7 ?@$ 40
 
-x ="1 pinf |&>/  x=:         1+7 ?@$ 40
 x ="1 pinf |&>/  x=:   100%~ 1+7 ?@$ 40
 
-pinf = pinf |&.>/ x=:      - 1+7 ?@$ 40
 pinf = pinf |&.>/ x=: _100%~ 1+7 ?@$ 40
 
-ninf = ninf |&.>/ x=:        1+7 ?@$ 40
 ninf = ninf |&.>/ x=:  100%~ 1+7 ?@$ 40
 
-x ="1 ninf |&>/ x=:       - 1+7 ?@$ 40
 x ="1 ninf |&>/ x=:  _100%~ 1+7 ?@$ 40
 
 
@@ -180,7 +153,6 @@ x -:&(3!:1) _2 (3!:5) 2 (3!:5) x=: 3 4 _.
 'NaN error' -: %/ etx _    (2?1e9)}1$.1e9;0;1.5-0.5
 
 (<'NaN error') = (+/%#)etx&.>             pinf ,&.>/ ninf
-(<'NaN error') = (+/%#)etx&.> (<2 3) ,&.> pinf ,&.>/ ninf
 
 (<'NaN error') = +//. etx&.> 2 2&$@(1&,)&.> pinf ,&.>/ ninf
 
@@ -199,10 +171,7 @@ x -:&(3!:1) _2 (3!:5) 2 (3!:5) x=: 3 4 _.
 'NaN error' -: 3 (+/%#)\ etx _ 4 __ 5
 
 2 _ _ _ 5 -: 3 (+/%#)\ 1 2 3 _ 4 5 6
-(<,_ ) = 3 +/\    &.> 3#&.> pinf
 (<,__) = 3 +/\    &.> 3#&.> ninf
-(<,_ ) = 3 (+/%#)\&.> 3#&.> pinf
-(<,__) = 3 (+/%#)\&.> 3#&.> ninf
 
 (<'NaN error') = +/\. etx&.> pinf ,&.>/ ninf
 (<'NaN error') = -/\. etx&.> ,&.>/~ pinf
@@ -223,14 +192,6 @@ NB. "`@&? ---------------------------------------------------------------
 
 (<,'_') = ":&.> pinf
 (<'__') = ":&.> ninf
-
-x=: 1 _1 ; 3.5 _3.5 ; 3j4 _3j_4; 3 _3x ; 3r5 _3r5
-(<'NaN error') = x +/@:* etx&.>/ 2#&.>inf
-
-x=: 2#&.> 2; 3.5 ; 3j4 ; _3x ; 3r5
-(<'NaN error') = x -/@:* etx&.>/ 2#&.>inf
-
-(<0) = zero +/@:*&.>/ pinf ,&.>/ ninf
 
 'NaN error' -: +/@, etx    2 2$1 _ __
 'NaN error' -: +/@, etx $. 2 2$1 _ __

@@ -309,9 +309,6 @@ NB. Not boxed
 a =: <"0 i. 1e5
 2000 < 7!:2 '_5 {. a , a:'
 a -: <"0 i. 1e5
-NB. Not extended
-a =: i. 100000x
-2000 < 7!:2 '_5 {. a , _1'
 
 NB. Verify forms for indexing
 a =: i. 1e6

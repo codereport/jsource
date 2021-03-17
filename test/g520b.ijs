@@ -70,8 +70,6 @@ f2=: 3 : 0
  assert. (b{x) -: i{x=:     ?  2$2e9
  assert. (b{x) -: i{x=: o.  ?  2$2e9
  assert. (b{x) -: i{x=: r.  ?  2$2e5
- assert. (b{x) -: i{x=: x:  ?  2$2e9
- assert. (b{x) -: i{x=: %/x:?2 2$2e9
  assert. (b{x) -: i{x=: x{~ ?  2$#x=: ;:'Cogito, ergo sum. kakistocracy'
  assert. (b{x) -: i{x=: x{~ ?  2$#x=: (u:&.>) ;:'Cogito, ergo sum. kakistocracy'
  assert. (b{x) -: i{x=: x{~ ?  2$#x=: (10&u:&.>) ;:'Cogito, ergo sum. kakistocracy'
@@ -87,8 +85,6 @@ f2"0 ] 1000+i.10
 (b{"1 x) -: i{"1 x=:     ?  5 2$2e9
 (b{"1 x) -: i{"1 x=: o.  ?  5 2$2e9
 (b{"1 x) -: i{"1 x=: r.  ?  5 2$2e5
-(b{"1 x) -: i{"1 x=: x:  ?  5 2$2e9
-(b{"1 x) -: i{"1 x=: %/x:?2 5 2$2e9
 (b{"1 x) -: i{"1 x=: x{~?5 2$#x=: ;:'Cogito, ergo sum. kakistocracy'
 (b{"1 x) -: i{"1 x=: x{~?5 2$#x=: (u:&.>) ;:'Cogito, ergo sum. kakistocracy'
 (b{"1 x) -: i{"1 x=: x{~?5 2$#x=: (10&u:&.>) ;:'Cogito, ergo sum. kakistocracy'

@@ -408,8 +408,8 @@ test1 0 1
 test1 'abcdefghijklmno'
 test1 0.4 + i. 10
 test1 5 j. i. 10
-test1 i. 10x
-test1 1r2 + i. 10x
+test1 i. 10
+test1 1r2 + i. 10
 test1 (1;'a';4x) , <"0 i. 7
 test1 2 u: 'abcdefghijklmno'
 test1 10 u: 'abcdefghijklmno'
@@ -453,8 +453,8 @@ test1 0 1
 test1 'abcdefghijklmno'
 test1 0.4 + i. 10
 test1 5 j. i. 10
-test1 i. 10x
-test1 1r2 + i. 10x
+test1 i. 10
+test1 1r2 + i. 10
 test1 (1;'a';4x) , <"0 i. 7
 test1 2 u: 'abcdefghijklmno'
 test1 10 u: 'abcdefghijklmno'

@@ -14,7 +14,6 @@ data=: 4 : 0
   case. 'I' do. y ?@$ 1e9
   case. 'd' do.     1e_4 * _5e6 +    y  ?@$ 1e7
   case. 'z' do. j./ 1e_4 * _5e6 + (2,y) ?@$ 1e7
-  case. 'x' do. x:         _5e8 +    y  ?@$ 1e9
   case. 'q' do. x:  1e_4 * _5e8 +    y  ?@$ 1e9
   case. 's' do. sdot0{~ y ?@$ #sdot0
  end.
@@ -35,9 +34,9 @@ test2=: 2 : 0
  1
 )
 
-+  test"0 'biIdxqz'
->. test"0 'biIdxqs'
-<. test"0 'biIdxqs'
++  test"0 'biIdqz'
+>. test"0 'biIdqs'
+<. test"0 'biIdqs'
 
 +. test 'b'
 *. test 'b'
@@ -52,7 +51,7 @@ test2=: 2 : 0
 22 b. test"0 'iI'
 23 b. test"0 'iI'
 
-+ test2 *"0 'biIdxqz'
++ test2 *"0 'biIdqz'
 
 ~: test2 *. 'bs'
 

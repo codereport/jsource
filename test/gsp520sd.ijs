@@ -24,8 +24,6 @@ f&> c [ q=: 2 1 1 3$j./?2$2e6
 'nonce error'  -: ($.i.2 3)        { etx ;:'a b c d e f'
 'nonce error'  -: ($.i.2 3)        { etx u:&.> ;:'a b c d e f'
 'nonce error'  -: ($.i.2 3)        { etx 10&u:&.> ;:'a b c d e f'
-'nonce error'  -: ($.i.2 3)        { etx i.7x
-'nonce error'  -: ($.i.2 3)        { etx 9 % 1+i.7x
 'nonce error'  -: ($.i.2 3)        { etx s: ' a b c d e f'
 'nonce error'  -: ($.i.2 3)        { etx s: u: 128+a.i. ' a b c d e f'
 'nonce error'  -: ($.i.2 3)        { etx s: 10&u: 65536+a.i. ' a b c d e f'

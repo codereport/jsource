@@ -478,8 +478,8 @@ NB. Verify excluded-rank cases work
 10 -: (i. 1 10) i."_&0@:E. (i. 10 5)
 
 NB. Verify reversion for other types
-4 -: (i. 10x) +/@:> 5x
-4 -: (i. 10x) +/@:> 11r2
+4 -: (i. 10) +/@:> 5
+4 -: (i. 10) +/@:> 11r2
 4 -: 'abcdefegehie' +/@:= 'e'
 'domain error' -: 'abcdefegehie' +/@:> etx 'e'
 
