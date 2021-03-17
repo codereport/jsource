@@ -7,6 +7,7 @@
 #include <limits>
 #include <numeric>
 #include <optional>
+#include <cstdlib>
 
 #include "array.hpp"
 extern "C" {
@@ -138,13 +139,14 @@ template <>
 convert<int64_t, X>(J jt, array w, void *yv) -> bool {
     int64_t u[XIDIG];
     auto const convert_one = [&](auto c) {
-        auto const b   = c == IMIN;
-        auto d         = b ? -(1 + c) : std::abs(c);
+        bool const b   = c == IMIN;
+        int64_t d      = b ? -(1 + c) : std::abs(c);
         int64_t length = 0;
         for (int64_t i = 0; i < XIDIG; ++i) {
-            u[i] = d % XBASE;
-            d    = d / XBASE;
-            if (u[i]) length = i;
+            auto const [q, r] = std::div(d, int64_t{XBASE});
+            u[i]              = r;
+            d                 = q;
+            if (r) length = i;
         }
         ++length;
         *u += b;
@@ -174,11 +176,10 @@ jtxd1(J jt, double p, int64_t mode) -> X {
     if (!t) return 0;
     auto *u   = pointer_to_values<int64_t>(t);
     int64_t m = 0;
-    auto d    = std::abs(p);
+    int64_t d = std::abs(p);
     while (0 < d) {
-        auto const q = floor(d / XBASE);
-        auto const r = d - q * XBASE;
-        u[m++]       = static_cast<int64_t>(r);
+        auto const [q, r] = std::div(d, int64_t{XBASE});
+        u[m++]       = r;
         d            = q;
         if (m == AN(t)) {
             RZ(t = jtext(jt, 0, t));
