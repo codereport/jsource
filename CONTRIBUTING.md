@@ -1,7 +1,8 @@
 ### Getting Started & Building:
 1. Prerequisites:
-   * CMake version 3.17.0+ -> Ubuntu systems seem to have a problem getting the latest version, please build from sources or use another package such as snap.
-     * [Ubuntu CMake update instructions](https://apt.kitware.com/)
+   * CMake version 3.18.0+
+     * Ubuntu systems may have a problem getting the latest cmake version
+       * [Ubuntu CMake update instructions](https://apt.kitware.com/)
    * Ninja
    * Additional prerequisites for building the documentation:
      * python packages: sphinx, breathe, divio-docs-theme
