@@ -32,7 +32,7 @@ applicable_for_num(int64_t n) noexcept -> bool {
  */
 [[nodiscard]] inline auto
 num(int64_t n) {
-    return reinterpret_cast<array>(Bnum[n - NUMMIN]);
+    return reinterpret_cast<array>(&Bnum[n - NUMMIN]);
 }
 
 [[nodiscard]] inline auto

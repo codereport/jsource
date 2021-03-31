@@ -16,29 +16,25 @@ struct Bd2 {
 #define CREBLOCKATOMV2(name, t, v1, v2) \
     struct Bd2 B##name = {{AKXR(0), (t)&TRAVERSIBLE, 0, (t), ACPERMANENT, 1, 0}, {v1, v2}};
 CREBLOCKATOMV2(a0j1, CMPX, 0.0, 1.0)  // 0j1
-// TODO: This should probably return an AD instead of the current I[8] that just happens to share
-//       the memory layout of AD. The current implementation is bound to break if that layout is
-//       ever changed.
 #define CBAIVAL(t, v) \
-    { 7 * SZI, (t)&TRAVERSIBLE, 0, (t), ACPERMANENT, 1, 0, (v) }
-#define CREBLOCKATOMI(name, t, v) I B##name[8] = CBAIVAL(t, v);
+    (AD){ .kchain = 7 * SZI, .flag = (t)&TRAVERSIBLE, .tproxy = (t), .c = ACPERMANENT, .n = 1, .s = (v) }
 #define CREBLOCKVEC0(name, t) \
     I B##name[8] = {          \
       8 * SZI, (t)&TRAVERSIBLE, 0, (t), ACPERMANENT, 0, 1, 0};  // no padding at end - no atoms should be referenced
 CREBLOCKVEC0(aqq, LIT)                                          // ''
 CREBLOCKVEC0(mtv, B01)                                          // i.0 boolean
 #define CREBLOCKATOMV1(name, t, v1) struct Bd1 B##name = {{AKXR(0), (t)&TRAVERSIBLE, 0, (t), ACPERMANENT, 1, 0}, {v1}};
-CREBLOCKATOMV1(onehalf, FL, 0.5)                                  // 0.5
-CREBLOCKATOMV1(ainf, FL, INFINITY)                                // _
-CREBLOCKATOMV1(pie, FL, PI)                                       // PI
-CREBLOCKATOMI(asgnlocsimp, ASGN + ASGNLOCAL + ASGNTONAME, CASGN)  // =. flagged as LOCAL+NAME
-CREBLOCKATOMI(asgngloname, ASGN + ASGNTONAME, CGASGN)             // =: flagged as NAME
-CREBLOCKATOMI(asgnforcegloname, ASGN + ASGNTONAME, CASGN)         // =. converted to global+NAME
-CREBLOCKATOMI(asgnforceglo, ASGN, CASGN)                          // =. converted to global
-CREBLOCKATOMI(mark, MARK, 0)                                      // parser mark, also used generally as a special value
-CREBLOCKATOMI(imax, INT, IMAX)                                    // max positive value
-CREBLOCKATOMI(chrcolon, LIT, ':')                                 // the one character
-CREBLOCKATOMI(chrspace, LIT, ' ')                                 // the one character
+CREBLOCKATOMV1(onehalf, FL, 0.5)                                       // 0.5
+CREBLOCKATOMV1(ainf, FL, INFINITY)                                     // _
+CREBLOCKATOMV1(pie, FL, PI)                                            // PI
+A const asgnlocsimp = &CBAIVAL(ASGN + ASGNLOCAL + ASGNTONAME, CASGN);  // =. flagged as LOCAL+NAME
+A const asgngloname = &CBAIVAL(ASGN + ASGNTONAME, CGASGN);             // =: flagged as NAME
+A const asgnforcegloname = &CBAIVAL(ASGN + ASGNTONAME, CASGN);         // =. converted to global+NAME
+A const asgnforceglo = &CBAIVAL(ASGN, CASGN);                          // =. converted to global
+A const mark = &CBAIVAL(MARK, 0);                                      // parser mark, also used generally as a special value
+A const imax = &CBAIVAL(INT, IMAX);                                    // max positive value
+A const chrcolon = &CBAIVAL(LIT, ':');                                 // the one character
+A const chrspace = &CBAIVAL(LIT, ' ');                                 // the one character
 C breakdata = 0;
 D inf       = INFINITY;  /* _                                    */
 D infm      = -INFINITY; /* __                                   */
@@ -54,7 +50,7 @@ A mnuvxynam[6] = {0, 0, 0, 0, 0, 0};  // name blocks for all arg names
 // and &validitymask[0] as a V* with ID of 0
 I validitymask[16] = {-1, -1, 0, 0, -1, -1, 0, 0, -1, -1, 0, 0, 0, 0, 0, 0};  // native ss2/neon register is s64x2
 
-I Bnum[20][8] =
+AD Bnum[20] =
   {  // the numbers we keep at hand.
     CBAIVAL(INT, -10), CBAIVAL(INT, -9), CBAIVAL(INT, -8), CBAIVAL(INT, -7), CBAIVAL(INT, -6), CBAIVAL(INT, -5),
     CBAIVAL(INT, -4),  CBAIVAL(INT, -3), CBAIVAL(INT, -2), CBAIVAL(INT, -1), CBAIVAL(INT, 0),  CBAIVAL(INT, 1),
@@ -62,8 +58,8 @@ I Bnum[20][8] =
     CBAIVAL(INT, 8),   CBAIVAL(INT, 9)};
 
 // The booleans
-A const jfalse = (A)(I[8])CBAIVAL(B01, 0);
-A const jtrue = (A)(I[8])CBAIVAL(B01, 1);
+A const jfalse = &CBAIVAL(B01, 0);
+A const jtrue = &CBAIVAL(B01, 1);
 
 struct Bd1 Bnumvr[3] = {  // floating-point 0, 1, and 2, used for constants
   {{AKXR(0), FL& TRAVERSIBLE, 0, FL, ACPERMANENT, 1, 0}, 0.0},
