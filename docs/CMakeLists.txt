@@ -40,6 +40,7 @@ set(SPHINX_BUILD ${CMAKE_CURRENT_BINARY_DIR}/sphinx)
 set(SPHINX_INDEX_FILE ${SPHINX_BUILD}/index.html)
 
 file(GLOB_RECURSE SPHINX_SOURCE_SOURCE_CODE
+        ${SPHINX_SOURCE}/*.md
         ${SPHINX_SOURCE}/*.rst
         )
 
