@@ -35,7 +35,6 @@ add_custom_command(OUTPUT ${DOXYGEN_INDEX_FILE}
 add_custom_target(Doxygen ALL DEPENDS ${DOXYGEN_INDEX_FILE})
 
 set(SPHINX_SOURCE ${CMAKE_CURRENT_SOURCE_DIR}/source)
-set(SPHINX_TEMP ${CMAKE_CURRENT_BINARY_DIR}/sphinx_temp)
 set(SPHINX_BUILD ${CMAKE_CURRENT_BINARY_DIR}/sphinx)
 set(SPHINX_INDEX_FILE ${SPHINX_BUILD}/index.html)
 
@@ -50,15 +49,11 @@ file(GLOB_RECURSE SPHINX_SOURCE_SOURCE_CODE
 # - The Sphinx config has been updated
 add_custom_command(OUTPUT ${SPHINX_INDEX_FILE}
         COMMAND
-        ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/scripts/preprocessor.py
-        --input ${SPHINX_SOURCE}
-        --output ${SPHINX_TEMP}
-        &&
         ${SPHINX_EXECUTABLE} -b html
         # Tell Breathe where to find the Doxygen output
         -Dbreathe_projects.jsrc=${DOXYGEN_OUTPUT_DIR}/xml
         -Dbreathe_default_project=jsrc
-        ${SPHINX_TEMP} ${SPHINX_BUILD}
+        ${SPHINX_SOURCE} ${SPHINX_BUILD}
         WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
         DEPENDS
         # Other docs files you want to track should go here (or in some variable)

@@ -4,7 +4,7 @@
      * [Ubuntu CMake update instructions](https://apt.kitware.com/)
    * Ninja
    * Additional prerequisites for building the documentation:
-     * python packages: sphinx, breathe, divio-docs-theme
+     * python packages: sphinx, breathe, myst_parser, divio-docs-theme
      * doxygen
 2. Checkout the repository:
     ```sh
