@@ -1,8 +1,6 @@
 
 # Verbs
-```{toctree}
-```
-   
+
 ## Monadic
 
 ### Rank
