@@ -13,6 +13,8 @@
         <img src="https://img.shields.io/twitter/follow/code_report.svg?style=social&label=@code_report" /></a>
 </p>
 
+> :warning::warning::warning: THIS PROJECT IS ON PAUSE DURING SUMMER 2021 BECAUSE I LOVE THE WEATHER! :warning::warning::warning:
+    
 J is an [array programming language](https://en.wikipedia.org/wiki/Array_programming) created by [Ken Iverson](https://en.wikipedia.org/wiki/Kenneth_E._Iverson) and [Roger Hui](https://en.wikipedia.org/wiki/Roger_Hui) ([see image below](https://github.com/codereport/jsource#image-of-ken-iverson-and-roger-hui)).
 
 This is a fork of [`jsoftware/jsource`](https://github.com/jsoftware/jsource) and we will be porting it to [C++20](https://en.cppreference.com/w/cpp/20).
