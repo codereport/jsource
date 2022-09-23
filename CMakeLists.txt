@@ -79,6 +79,8 @@ add_compile_options($<$<COMPILE_LANGUAGE:C>:-Wno-char-subscripts>)
 add_compile_options($<$<COMPILE_LANG_AND_ID:C,AppleClang,Clang>:-Wno-string-plus-int>)
 add_compile_options($<$<COMPILE_LANGUAGE:C>:-Wno-missing-braces>)
 add_compile_options($<$<COMPILE_LANGUAGE:C>:-Wno-unknown-pragmas>)
+add_compile_options($<$<COMPILE_LANG_AND_ID:CXX,GNU>:-Wno-bool-compare>)
+
 
 add_subdirectory(jsrc)
 add_subdirectory(base64)
