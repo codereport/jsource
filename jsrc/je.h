@@ -792,23 +792,15 @@ extern I Bmtv[];
 #define mtv ((A)&Bmtv)
 extern I Bmtm[];
 #define mtm ((A)&Bmtm)
-extern I Basgnlocsimp[];
-#define asgnlocsimp ((A)&Basgnlocsimp)
-extern I Basgngloname[];
-#define asgngloname ((A)&Basgngloname)
-extern I Basgnforceglo[];
-#define asgnforceglo ((A)&Basgnforceglo)
-extern I Basgnforcegloname[];
-#define asgnforcegloname ((A)&Basgnforcegloname)
-extern I Bimax[];
-#define imax ((A)&Bimax)
-extern I Bmark[];
-#define mark ((A)&Bmark)
+extern A const asgnlocsimp;
+extern A const asgngloname;
+extern A const asgnforceglo;
+extern A const asgnforcegloname;
+extern A const imax;
+extern A const mark;
 extern C breakdata;
-extern I Bchrcolon[];
-#define chrcolon ((A)&Bchrcolon)
-extern I Bchrspace[];
-#define chrspace ((A)&Bchrspace)
+extern A const chrcolon;
+extern A const chrspace;
 extern I validitymask[];
 extern C ctype[];
 extern const double dzero;
@@ -821,11 +813,11 @@ extern I Biv1[];
 extern D jnan; /* "nan" name conflict under Solaris       */
 extern A mnuvxynam[6];
 extern void moveparseinfotosi(J);
-extern I Bnum[][8];
-#define num(n) ((A)(Bnum + (n)-NUMMIN))
+extern AD Bnum[];
+#define num(n) (Bnum + (n)-NUMMIN)
 extern A const jfalse;
 extern A const jtrue;
-#define I1mem (Bnum[1-NUMMIN][7])  // 1 stored in memory
+#define I1mem (num(1)->s[0])  // 1 stored in memory
 extern struct Bd1 Bnumvr[];
 #define numvr(n) ((A)(Bnumvr + (n)))
 extern struct Bd1 Bonehalf;
