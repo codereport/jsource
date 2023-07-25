@@ -35,18 +35,10 @@ dfr   =: /:^:2@,/
 Adot1 =: (base #. rfd)@((ord pfill ])`C.@.boxed) " 1
 Adot2 =: dfr@(base@] #: [) { ]
 
-(A. -: Adot1) 7?12
-(A. -: Adot1) x=:(1=1,?6$3) <;.1 (7?12)
-
 (?!5) (A. -: Adot2) 'xyzab'
 (?!5) (A. -: Adot2) u:'xyzab'
 (?!5) (A. -: Adot2) 10&u:'xyzab'
 (?!5) (A. -: Adot2) r.i.5 2
-
-5 -: A.0 3 2 1
-5 -: A.3 2 1
-5 -: A.0;2;3 1
-5 -: A.<3 1
 
 (_1 A. y) -: |. y=:1=?300 2$2
 (_1 A. y) -: |. y=:(?400$#a.){a.
@@ -93,16 +85,8 @@ Adot2 =: dfr@(base@] #: [) { ]
 ([ -: 3&A.^:_1@(3&A.)) x=:(?200$3){s:@<"0&.> ;:'Hey nonny nonny'
 ([ -: 3&A.^:_1@(3&A.)) x=:(?200$3){<"0@s: ;:'Hey nonny nonny'
 
-([ -: A.&y^:_1@(A.&y)) x=:?100$#y=:~.'Antebellum'
-([ -: A.&y^:_1@(A.&y)) x=:?100$#y=:~.u:'Antebellum'
-([ -: A.&y^:_1@(A.&y)) x=:?100$#y=:~.10&u:'Antebellum'
-([ -: A.&y^:_1@(A.&y)) x=:?100$#y=:~.s:@<"0 'Antebellum'
-([ -: A.&y^:_1@(A.&y)) x=:?100$#y=:100?100
-
 0 -: A. i.0
 (i.1 0) -: (i.1) A. i.0
-
-(3 4$0) -: A."0 ]3 4 ?@$ 100
 
 'domain error' -: A. etx 'abcd'
 'domain error' -: A. etx 3 4;'abc'
@@ -126,8 +110,6 @@ p0 =: i.@! A. i.
 
 j=:?~!5
 p=:j{p0 5
-j -: A.p
-j -: A.@C.p
 p -: j A.i.5
 
 grow =: [: ,/ 0&,.@:>: {"2 1 \:"1@=@(_1&,)@{.

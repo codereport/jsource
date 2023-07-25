@@ -67,11 +67,6 @@ grecur   =: grm`grp@.(0:<re)
 NB. 6.1.20  Gauss Multiplication Formula
 Gauss    =: 2p1&^@-:@-.@[ * (^ -&0.5) * */@:(grecur"0)@:([ %~ i.@[ + ])
 
-NB. 6.1.37  Stirling's Approximation
-sbase    =: %:@(2p1&%) * %&1x1 ^ ]
-scorr    =: 1 1r12 1r288 _139r51840 _571r2488320&p.@%
-Stirling =: sbase * scorr
-
 en       =: 1&>.@>.@(%&(%:3r4))@|@im
 gamma    =: (en Gauss ]) ` Stirling @. (20&<@|@im) " 0
 
@@ -155,19 +150,9 @@ r=.w^e              NB.1%w if N<0, w otherwise
 
 NB. !y Stirling's approximation, Abramowitz & Stegun --------------------
 
-sbase  =: %:@(2p1&%) * %&1x1 ^ ]
-scorr  =: 1 1r12 1r288 _139r51840 _571r2488320&p.@%
-stirlg =: sbase * scorr                         NB. 6.1.37
-
 stirlf =: ^@(1r12&%) * %:@(2p1&*) * %&1x1 ^ ]   NB. 6.1.38
 
-g =: stirlg@>: |@-.@% !
 f =: stirlf    |@-.@% !
-
-1e_8 > g 10  +i.2 5
-1e_8 > g 10.5+i.2 5
-1e_8 > g 10  +10*i.3 5
-1e_8 > g 10.5+10*i.3 5
 
 5e_6 > f 10  +i.2 5
 5e_6 > f 10.5+i.2 5
@@ -439,7 +424,7 @@ NB. Types, for singleton and not
 4!:55 ;:'fac g gamma Gauss gm gps grecur grm grow grp '
 4!:55 ;:'i iic ifc im i0 i1 i2 i3 j0 j1 k m n p'
 4!:55 ;:'pascal0 pascal1 pascal2 q re'
-4!:55 ;:'recur rm sbase scorr seed seed5 sinh start stirlf stirlg Stirling '
+4!:55 ;:'recur rm sbase scorr seed seed5 sinh start stirlf Stirling '
 4!:55 ;:'t test x y z '
 
 

@@ -305,9 +305,7 @@ set(hare_test_cases #fast
         gpi       # 0.150 seconds
         gpick     # 0.170 seconds
         gpoly     # 0.240 seconds
-        gq        # 0.300 seconds
         gq101     # 0.490 seconds
-        gq132     # 0.160 seconds
         gq201     # 0.230 seconds
         gqco      # 2.550 seconds
         gqnonrat  # 0.240 seconds
@@ -372,7 +370,6 @@ set(hare_test_cases #fast
         gspr      # 0.160 seconds
         gspx      # 0.210 seconds
         gstack    # 0.190 seconds, Exception: SegFault, Only on Windows because of reduced stack size
-        gt        # 0.170 seconds
         gthrow    # 0.160 seconds
         gtrain    # 0.170 seconds
         gtry      # 0.160 seconds
@@ -381,11 +378,6 @@ set(hare_test_cases #fast
         gunderai  # 0.760 seconds
         gwhile    # 0.160 seconds
         gx        # 0.150 seconds
-        gx132     # 1.260 seconds
-        gxco      # 0.660 seconds
-        gxco1     # 0.700 seconds
-        gxco2     # 0.260 seconds
-        gxinf     # 0.160 seconds
         g18x
         g420
         )

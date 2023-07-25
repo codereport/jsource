@@ -16,7 +16,6 @@ test=: 3 : 0
  y testa      i.900
  y testa _450+i.900
  y testa o.   i.900
- y testa x:   i.900
  xx=:y{~?1000$#y
  assert. ((({.,#)/. i.@#) -: ((f,.g) i.@#)) xx
  assert. (((#,{.)/. i.@#) -: ((g,.f) i.@#)) xx

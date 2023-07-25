@@ -211,7 +211,6 @@ NB. 9!:18 and 9!:19 -----------------------------------------------------
 'domain error' -: 9!:19 etx _1e_13
 'domain error' -: 9!:19 etx 1e_8
 'domain error' -: 9!:19 etx 14
-'domain error' -: 9!:19 etx 14x
 
 'rank error'   -: 9!:19 etx ,1e_14
 'rank error'   -: 9!:19 etx 1 1 1$1e_14

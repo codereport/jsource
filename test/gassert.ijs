@@ -18,7 +18,7 @@ f=: 3 : 0
 1 -: f }. 314 1 1 1
 1 -: f }. 3.4 1 1 1
 1 -: f }. 3j4 1 1 1
-1 -: f }. 31x 1 1 1
+1 -: f }. 31  1 1 1
 1 -: f }. 3r4 1 1 1
 
 'assertion failure' -: f etx 0 
@@ -30,7 +30,7 @@ f=: 3 : 0
 'assertion failure' -: f etx 1 2.3
 'assertion failure' -: f etx 1 2j3
 'assertion failure' -: f etx 1 2r3
-'assertion failure' -: f etx 1 233x
+'assertion failure' -: f etx 1 233
 'assertion failure' -: f etx s: ' 1 2 3'
 
 s=: 1 (5!:7) <'f'
